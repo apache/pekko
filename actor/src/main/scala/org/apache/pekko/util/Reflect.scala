@@ -40,7 +40,7 @@ private[pekko] object Reflect {
    *
    * Hint: when comparing to Thread.currentThread().getStackTrace, add two levels.
    */
-  val getCallerClass: Option[Int => Class[_]] = {
+  val getCallerClass: Option[Int => Class[_]] =
     try {
       val c = Class.forName("sun.reflect.Reflection")
       val m = c.getMethod("getCallerClass", Array(classOf[Int]): _*)
@@ -48,7 +48,6 @@ private[pekko] object Reflect {
     } catch {
       case NonFatal(_) => None
     }
-  }
 
   /**
    * INTERNAL API
@@ -69,9 +68,8 @@ private[pekko] object Reflect {
    * INTERNAL API
    * Calls findConstructor and invokes it with the given arguments.
    */
-  private[pekko] def instantiate[T](clazz: Class[T], args: immutable.Seq[Any]): T = {
+  private[pekko] def instantiate[T](clazz: Class[T], args: immutable.Seq[Any]): T =
     instantiate(findConstructor(clazz, args), args)
-  }
 
   /**
    * INTERNAL API
@@ -99,7 +97,7 @@ private[pekko] object Reflect {
     }
 
     val constructor: Constructor[T] =
-      if (args.isEmpty) Try { clazz.getDeclaredConstructor() }.getOrElse(null)
+      if (args.isEmpty) Try(clazz.getDeclaredConstructor()).getOrElse(null)
       else {
         val length = args.length
         val candidates =
@@ -134,7 +132,7 @@ private[pekko] object Reflect {
   private[pekko] def instantiator[T](clazz: Class[T]): () => T = () => instantiate(clazz)
 
   def findMarker(root: Class[_], marker: Class[_]): Type = {
-    @tailrec def rec(curr: Class[_]): Type = {
+    @tailrec def rec(curr: Class[_]): Type =
       if (curr.getSuperclass != null && marker.isAssignableFrom(curr.getSuperclass)) rec(curr.getSuperclass)
       else
         curr.getGenericInterfaces.collectFirst {
@@ -146,7 +144,6 @@ private[pekko] object Reflect {
           case Some(t: ParameterizedType) => if (t.getRawType == marker) t else rec(t.getRawType.asInstanceOf[Class[_]])
           case _                          => ??? // cannot happen due to collectFirst
         }
-    }
     rec(root)
   }
 

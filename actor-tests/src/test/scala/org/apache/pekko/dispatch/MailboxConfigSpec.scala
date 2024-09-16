@@ -161,7 +161,7 @@ abstract class MailboxSpec extends PekkoSpec with BeforeAndAfterAll with BeforeA
         val ps = for (i <- (1 to enqueueN by step).toList) yield createProducer(i, Math.min(enqueueN, i + step - 1))
 
         if (parallel == false)
-          ps.foreach { Await.ready(_, remainingOrDefault) }
+          ps.foreach(Await.ready(_, remainingOrDefault))
 
         ps
       }

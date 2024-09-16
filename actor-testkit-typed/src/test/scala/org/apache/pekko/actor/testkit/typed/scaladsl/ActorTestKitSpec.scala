@@ -49,34 +49,34 @@ class ActorTestKitSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike wi
 
     "generate a default name from the test class" in {
       val testkit2 = ActorTestKit()
-      try {
+      try
         testkit2.system.name should ===("ActorTestKitSpec")
-      } finally testkit2.shutdownTestKit()
+      finally testkit2.shutdownTestKit()
     }
 
     "use name from given class name with replaced package name" in {
       val testkit2 = ActorTestKit(classOf[Vector[_]].getName)
-      try {
+      try
         // removing package name and such
         testkit2.system.name should ===("Vector")
-      } finally testkit2.shutdownTestKit()
+      finally testkit2.shutdownTestKit()
     }
 
     "use sanitized name if passed invalid characters" in {
       val testkit2 = ActorTestKit("actor~!sys-tem&Name#1%(with*invalid^ch@racter$)`")
-      try {
+      try
         // replacing invalid characters with underscore
         testkit2.system.name should ===("actor__sys-tem_Name_1__with_invalid_ch_racter___")
-      } finally testkit2.shutdownTestKit()
+      finally testkit2.shutdownTestKit()
     }
 
     "use the same name if passed valid ActorSystem name" in {
       val validActorSystemNameChars = "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789_"
       val testkit2 = ActorTestKit(validActorSystemNameChars)
-      try {
+      try
         // all characters should be the same
         testkit2.system.name should ===(validActorSystemNameChars)
-      } finally testkit2.shutdownTestKit()
+      finally testkit2.shutdownTestKit()
     }
 
     "spawn an actor" in {
@@ -164,16 +164,16 @@ class MyConcreteDerivateSpec extends MyBaseSpec {
 
     "generate a default name from the test class" in {
       val testkit2 = ActorTestKit()
-      try {
+      try
         testkit2.system.name should ===("MyConcreteDerivateSpec")
-      } finally testkit2.shutdownTestKit()
+      finally testkit2.shutdownTestKit()
     }
 
     "use name from given class name" in {
       val testkit2 = ActorTestKit(classOf[Vector[_]].getName)
-      try {
+      try
         testkit2.system.name should ===("Vector")
-      } finally testkit2.shutdownTestKit()
+      finally testkit2.shutdownTestKit()
     }
   }
 
@@ -182,9 +182,8 @@ class MyConcreteDerivateSpec extends MyBaseSpec {
 class CompositionSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll with LogCapturing {
   val testKit = ActorTestKit()
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     testKit.shutdownTestKit()
-  }
 
   "generate a default name from the test class" in {
     testKit.system.name should ===("CompositionSpec")

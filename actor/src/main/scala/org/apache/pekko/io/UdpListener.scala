@@ -123,7 +123,7 @@ private[io] class UdpListener(val udp: UdpExt, channelRegistry: ChannelRegistry,
     }
   }
 
-  override def postStop(): Unit = {
+  override def postStop(): Unit =
     if (channel.isOpen) {
       log.debug("Closing DatagramChannel after being stopped")
       try channel.close()
@@ -131,5 +131,4 @@ private[io] class UdpListener(val udp: UdpExt, channelRegistry: ChannelRegistry,
         case NonFatal(e) => log.debug("Error closing DatagramChannel: {}", e)
       }
     }
-  }
 }

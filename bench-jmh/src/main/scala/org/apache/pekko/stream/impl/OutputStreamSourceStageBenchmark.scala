@@ -57,8 +57,7 @@ class OutputStreamSourceStageBenchmark {
   }
 
   @TearDown
-  def shutdown(): Unit = {
+  def shutdown(): Unit =
     Await.result(system.terminate(), 5.seconds)
-  }
 
 }

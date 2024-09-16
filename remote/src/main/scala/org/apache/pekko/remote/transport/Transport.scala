@@ -159,7 +159,7 @@ trait Transport {
    * @param cmd Command message to the transport
    * @return Future that succeeds when the command was handled or dropped
    */
-  def managementCommand(@unused cmd: Any): Future[Boolean] = { Future.successful(false) }
+  def managementCommand(@unused cmd: Any): Future[Boolean] = Future.successful(false)
 
 }
 

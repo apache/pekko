@@ -23,9 +23,8 @@ import pekko.util.{ ByteIterator, ByteStringBuilder, OptionVal }
 private[pekko] object RecordTypeSerializer {
 
   // TODO other type than ByteStringBuilder? (was used in pekko-dns)
-  def write(out: ByteStringBuilder, value: RecordType): Unit = {
+  def write(out: ByteStringBuilder, value: RecordType): Unit =
     out.putShort(value.code)
-  }
 
   def parse(it: ByteIterator): RecordType = {
     val id = it.getShort

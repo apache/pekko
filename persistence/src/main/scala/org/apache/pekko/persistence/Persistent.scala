@@ -214,9 +214,8 @@ private[persistence] final case class PersistentImpl(
     if (this.timestamp == newTimestamp) this
     else copy(timestamp = newTimestamp)
 
-  override def withMetadata(metadata: Any): PersistentRepr = {
+  override def withMetadata(metadata: Any): PersistentRepr =
     copy(metadata = Some(metadata))
-  }
 
   def update(sequenceNr: Long, persistenceId: String, deleted: Boolean, sender: ActorRef, writerUuid: String) =
     copy(
@@ -248,7 +247,6 @@ private[persistence] final case class PersistentImpl(
     case _ => false
   }
 
-  override def toString: String = {
+  override def toString: String =
     s"PersistentRepr($persistenceId,$sequenceNr,$writerUuid,$timestamp,$metadata)"
-  }
 }

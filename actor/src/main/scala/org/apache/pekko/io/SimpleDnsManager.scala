@@ -65,9 +65,8 @@ final class SimpleDnsManager(val ext: DnsExt)
       cacheCleanup.foreach(_.cleanup())
   }
 
-  override def postStop(): Unit = {
+  override def postStop(): Unit =
     cleanupTimer.foreach(_.cancel())
-  }
 }
 
 object SimpleDnsManager {

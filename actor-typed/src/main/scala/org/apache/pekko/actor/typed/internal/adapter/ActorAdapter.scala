@@ -86,7 +86,7 @@ import pekko.util.OptionVal
 
   override protected[pekko] def aroundReceive(receive: Receive, msg: Any): Unit = {
     ctx.setCurrentActorThread()
-    try {
+    try
       // as we know we never become in "normal" typed actors, it is just the current behavior that
       // changes, we can avoid some overhead with the partial function/behavior stack of untyped entirely
       // we also know that the receive is total, so we can avoid the orElse part as well.
@@ -116,13 +116,13 @@ import pekko.util.OptionVal
           val t = msg.asInstanceOf[T]
           handleMessage(t)
       }
-    } finally {
+    finally {
       ctx.clearCurrentActorThread()
       ctx.clearMdc()
     }
   }
 
-  private def handleMessage(msg: T): Unit = {
+  private def handleMessage(msg: T): Unit =
     try {
       val c = ctx
       if (c.hasTimer) {
@@ -141,13 +141,11 @@ import pekko.util.OptionVal
         next(Behavior.interpretMessage(behavior, c, msg), msg)
       }
     } catch handleUnstashException
-  }
 
-  private def handleSignal(sig: Signal): Unit = {
-    try {
+  private def handleSignal(sig: Signal): Unit =
+    try
       next(Behavior.interpretSignal(behavior, ctx, sig), sig)
-    } catch handleUnstashException
-  }
+    catch handleUnstashException
 
   private def handleUnstashException: Catcher[Unit] = {
     case e: UnstashException[T] @unchecked =>
@@ -161,7 +159,7 @@ import pekko.util.OptionVal
       throw ActorInitializationException(actor, message, e.cause)
   }
 
-  private def next(b: Behavior[T], msg: Any): Unit = {
+  private def next(b: Behavior[T], msg: Any): Unit =
     (b._tag: @switch) match {
       case BehaviorTags.UnhandledBehavior =>
         unhandled(msg)
@@ -177,10 +175,9 @@ import pekko.util.OptionVal
       case _ =>
         behavior = Behavior.canonicalize(b, behavior, ctx)
     }
-  }
 
   private def adaptAndHandle(msg: Any): Unit = {
-    @tailrec def handle(adapters: List[(Class[_], Any => T)]): Unit = {
+    @tailrec def handle(adapters: List[(Class[_], Any => T)]): Unit =
       adapters match {
         case Nil =>
           // no adapter function registered for message class
@@ -191,16 +188,15 @@ import pekko.util.OptionVal
           } else
             handle(tail) // recursive
       }
-    }
     handle(ctx.messageAdapters)
   }
 
   private def withSafelyAdapted[U, V](adapt: () => U)(body: U => V): Unit = {
     var failed = false
     val adapted: U =
-      try {
+      try
         adapt()
-      } catch {
+      catch {
         case NonFatal(ex) =>
           // pass it on through the signal handler chain giving supervision a chance to deal with it
           handleSignal(MessageAdaptionFailure(ex))
@@ -260,9 +256,8 @@ import pekko.util.OptionVal
             else
               ActorAdapter.classicSupervisorDecider(ex)
         }
-      finally {
+      finally
         ctx.clearCurrentActorThread()
-      }
   }
 
   private def recordChildFailure(ex: Throwable): Unit = {
@@ -296,7 +291,7 @@ import pekko.util.OptionVal
     finally ctx.clearCurrentActorThread()
   }
 
-  override def preStart(): Unit = {
+  override def preStart(): Unit =
     try {
       if (Behavior.isAlive(behavior)) {
         behavior = Behavior.validateAsInitial(Behavior.start(behavior, ctx))
@@ -304,25 +299,22 @@ import pekko.util.OptionVal
       // either was stopped initially or became stopped on start
       if (!Behavior.isAlive(behavior)) context.stop(self)
     } finally ctx.clearMdc()
-  }
 
-  override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
+  override def preRestart(reason: Throwable, message: Option[Any]): Unit =
     try {
       ctx.cancelAllTimers()
       Behavior.interpretSignal(behavior, ctx, PreRestart)
       behavior = BehaviorImpl.stopped
     } finally ctx.clearMdc()
-  }
 
-  override def postRestart(reason: Throwable): Unit = {
+  override def postRestart(reason: Throwable): Unit =
     try {
       ctx.cancelAllTimers()
       behavior = Behavior.validateAsInitial(Behavior.start(behavior, ctx))
       if (!Behavior.isAlive(behavior)) context.stop(self)
     } finally ctx.clearMdc()
-  }
 
-  override def postStop(): Unit = {
+  override def postStop(): Unit =
     try {
       ctx.cancelAllTimers()
       behavior match {
@@ -332,7 +324,6 @@ import pekko.util.OptionVal
       }
       behavior = BehaviorImpl.stopped
     } finally ctx.clearMdc()
-  }
 
 }
 

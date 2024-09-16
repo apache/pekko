@@ -70,7 +70,7 @@ object Source {
    * If the downstream of this source cancels or fails before the promise has been completed, then the promise will be completed
    * with an empty Optional.
    */
-  def maybe[T]: Source[T, CompletableFuture[Optional[T]]] = {
+  def maybe[T]: Source[T, CompletableFuture[Optional[T]]] =
     new Source(scaladsl.Source.maybe[T].mapMaterializedValue { (scalaOptionPromise: Promise[Option[T]]) =>
       val javaOptionPromise = new CompletableFuture[Optional[T]]()
       scalaOptionPromise.completeWith(
@@ -78,7 +78,6 @@ object Source {
 
       javaOptionPromise
     })
-  }
 
   /**
    * Helper to create [[Source]] from `Publisher`.
@@ -731,11 +730,10 @@ object Source {
       @nowarn
       @deprecatedName(Symbol("strategy"))
       fanInStrategy: function.Function[java.lang.Integer, _ <: Graph[UniformFanInShape[T, U], NotUsed]],
-      combine: function.Function2[M1, M2, M]): Source[U, M] = {
+      combine: function.Function2[M1, M2, M]): Source[U, M] =
     new Source(
       scaladsl.Source.combineMat(first.asScala, second.asScala)(num => fanInStrategy.apply(num))(
         combinerToScala(combine)))
-  }
 
   /**
    * Combines several sources with fan-in strategy like [[Merge]] or [[Concat]] into a single [[Source]].

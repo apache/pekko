@@ -45,8 +45,7 @@ class PekkoClusterTypedSerializerSpec extends ScalaTestWithActorTestKit with Any
     }
   }
 
-  def verifySerialization(msg: AnyRef): Unit = {
+  def verifySerialization(msg: AnyRef): Unit =
     serializer.fromBinary(serializer.toBinary(msg), serializer.manifest(msg)) should be(msg)
-  }
 
 }

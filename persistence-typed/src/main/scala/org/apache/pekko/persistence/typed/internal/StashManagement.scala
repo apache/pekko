@@ -95,41 +95,37 @@ private[pekko] trait StashManagement[C, E, S] {
    * `unstashAll` was called, i.e. if subsequent commands stash more, those will
    * not be unstashed until `unstashAll` is called again.
    */
-  protected def unstashAll(): Unit = {
+  protected def unstashAll(): Unit =
     if (stashState.userStashBuffer.nonEmpty) {
       logUnstashAll()
       stashState.startUnstashAll()
       // tryUnstashOne is called from EventSourcedRunning at the end of processing each command
       // or when persist is completed
     }
-  }
 
   protected def isUnstashAllInProgress: Boolean =
     stashState.isUnstashAllInProgress
 
-  private def logStashMessage(msg: InternalProtocol, buffer: StashBuffer[InternalProtocol]): Unit = {
+  private def logStashMessage(msg: InternalProtocol, buffer: StashBuffer[InternalProtocol]): Unit =
     if (setup.settings.logOnStashing)
       setup.internalLogger.debugN(
         "Stashing message to {} stash: [{}] ",
         if (buffer eq stashState.internalStashBuffer) "internal" else "user",
         msg)
-  }
 
-  private def logUnstashMessage(buffer: StashBuffer[InternalProtocol]): Unit = {
+  private def logUnstashMessage(buffer: StashBuffer[InternalProtocol]): Unit =
     if (setup.settings.logOnStashing)
       setup.internalLogger.debugN(
         "Unstashing message from {} stash: [{}]",
         if (buffer eq stashState.internalStashBuffer) "internal" else "user",
         buffer.head)
-  }
 
-  private def logUnstashAll(): Unit = {
+  private def logUnstashAll(): Unit =
     if (setup.settings.logOnStashing)
       setup.internalLogger.debug2(
         "Unstashing all [{}] messages from user stash, first is: [{}]",
         stashState.userStashBuffer.size,
         stashState.userStashBuffer.head)
-  }
 
 }
 
@@ -154,10 +150,9 @@ private[pekko] class StashState(ctx: ActorContext[InternalProtocol], settings: E
   def isUnstashAllInProgress: Boolean =
     unstashAllInProgress > 0
 
-  def decrementUnstashAllProgress(): Unit = {
+  def decrementUnstashAllProgress(): Unit =
     if (isUnstashAllInProgress)
       unstashAllInProgress -= 1
-  }
 
   def startUnstashAll(): Unit =
     unstashAllInProgress = _userStashBuffer.size

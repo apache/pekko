@@ -71,7 +71,7 @@ object TimestampOffset {
   /**
    * Try to convert the Offset to a TimestampOffset. Epoch timestamp is used for `NoOffset`.
    */
-  def toTimestampOffset(offset: Offset): TimestampOffset = {
+  def toTimestampOffset(offset: Offset): TimestampOffset =
     offset match {
       case t: TimestampOffset => t
       case NoOffset           => TimestampOffset.Zero
@@ -81,7 +81,6 @@ object TimestampOffset {
           s"Supported offset types are TimestampOffset and NoOffset, " +
           s"received ${other.getClass.getName}")
     }
-  }
 }
 
 /**

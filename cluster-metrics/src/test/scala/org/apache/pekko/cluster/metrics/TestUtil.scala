@@ -80,7 +80,7 @@ case class MockitoSigarProvider(
   /** Generate monotonic array from 0 to value. */
   def increase(value: Double): Array[Double] = {
     val delta = value / steps
-    (0 to steps).map { _ * delta } toArray
+    (0 to steps).map(_ * delta) toArray
   }
 
   /** Sigar mock instance. */
@@ -115,10 +115,10 @@ trait MetricsCollectorFactory { this: PekkoSpec =>
   def selfAddress = extendedActorSystem.provider.rootPath.address
 
   def createMetricsCollector: MetricsCollector =
-    try {
+    try
       new SigarMetricsCollector(selfAddress, defaultDecayFactor, new Sigar())
-      // new SigarMetricsCollector(selfAddress, defaultDecayFactor, SimpleSigarProvider().createSigarInstance)
-    } catch {
+    // new SigarMetricsCollector(selfAddress, defaultDecayFactor, SimpleSigarProvider().createSigarInstance)
+    catch {
       case e: Throwable =>
         log.warning("Sigar failed to load. Using JMX. Reason: " + e.toString)
         new JmxMetricsCollector(selfAddress, defaultDecayFactor)
@@ -218,7 +218,7 @@ class ClusterMetricsView(system: ExtendedActorSystem) extends Closeable {
   private var collectedMetricsList: List[Set[NodeMetrics]] = List.empty
 
   /** Create actor that subscribes to the cluster eventBus to update current read view state. */
-  private val eventBusListener: ActorRef = {
+  private val eventBusListener: ActorRef =
     system.systemActorOf(
       Props(new Actor with ActorLogging with RequiresMessageQueue[UnboundedMessageQueueSemantics] {
         override def preStart(): Unit = extension.subscribe(self)
@@ -232,7 +232,6 @@ class ClusterMetricsView(system: ExtendedActorSystem) extends Closeable {
         }
       }).withDispatcher(Dispatchers.DefaultDispatcherId).withDeploy(Deploy.local),
       name = "metrics-event-bus-listener")
-  }
 
   /** Current cluster metrics. */
   def clusterMetrics: Set[NodeMetrics] = currentMetricsSet

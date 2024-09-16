@@ -235,9 +235,8 @@ class SerializationDocSpec
 
   val serialization: Serialization = SerializationExtension(system)
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     shutdown()
-  }
 
   def verifySerialization(obj: AnyRef): AnyRef = {
     val serializer = serialization.serializerFor(obj.getClass)

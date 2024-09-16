@@ -24,12 +24,10 @@ object LoggingDocSpec {
 
   class MyActor extends Actor {
     val log = Logging(context.system, this)
-    override def preStart() = {
+    override def preStart() =
       log.debug("Starting")
-    }
-    override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
+    override def preRestart(reason: Throwable, message: Option[Any]): Unit =
       log.error(reason, "Restarting due to [{}] when processing [{}]", reason.getMessage, message.getOrElse(""))
-    }
     def receive = {
       case "test" => log.info("Received test")
       case x      => log.warning("Received unknown message: {}", x)
@@ -43,7 +41,7 @@ object LoggingDocSpec {
     val log = Logging(this)
     def receive = {
 
-      case _ => {
+      case _ =>
         // #mdc
         val mdc = Map("requestId" -> 1234, "visitorId" -> 5678)
         log.mdc(mdc)
@@ -52,8 +50,7 @@ object LoggingDocSpec {
         log.info("Starting new request")
 
         log.clearMDC()
-        // #mdc
-      }
+      // #mdc
     }
   }
 
@@ -76,9 +73,8 @@ object LoggingDocSpec {
     }
 
     def receive: Receive = {
-      case r: Req => {
+      case r: Req =>
         log.info(s"Starting new request: ${r.work}")
-      }
     }
   }
 

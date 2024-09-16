@@ -37,10 +37,9 @@ object IotSupervisor {
 class IotSupervisor(context: ActorContext[Nothing]) extends AbstractBehavior[Nothing](context) {
   context.log.info("IoT Application started")
 
-  override def onMessage(msg: Nothing): Behavior[Nothing] = {
+  override def onMessage(msg: Nothing): Behavior[Nothing] =
     // No need to handle any messages
     Behaviors.unhandled
-  }
 
   override def onSignal: PartialFunction[Signal, Behavior[Nothing]] = {
     case PostStop =>

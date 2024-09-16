@@ -82,9 +82,8 @@ object AccountExampleWithOptionDurableState {
 
         }
 
-      def canWithdraw(amount: BigDecimal): Boolean = {
+      def canWithdraw(amount: BigDecimal): Boolean =
         balance - amount >= Zero
-      }
     }
 
     case object ClosedAccount extends Account {
@@ -110,7 +109,7 @@ object AccountExampleWithOptionDurableState {
     val TypeKey: EntityTypeKey[Command] =
       EntityTypeKey[Command]("Account")
 
-    def apply(persistenceId: PersistenceId): Behavior[Command] = {
+    def apply(persistenceId: PersistenceId): Behavior[Command] =
       DurableStateBehavior.withEnforcedReplies[Command, Option[Account]](
         persistenceId,
         None,
@@ -119,9 +118,8 @@ object AccountExampleWithOptionDurableState {
             case None          => onFirstCommand(cmd)
             case Some(account) => account.applyCommand(cmd)
           })
-    }
 
-    def onFirstCommand(cmd: Command): ReplyEffect = {
+    def onFirstCommand(cmd: Command): ReplyEffect =
       cmd match {
         case CreateAccount(replyTo) =>
           Effect.persist(Some(OpenedAccount(Zero))).thenReply(replyTo)(_ => StatusReply.Ack)
@@ -129,7 +127,6 @@ object AccountExampleWithOptionDurableState {
           // CreateAccount before handling any other commands
           Effect.unhandled.thenNoReply()
       }
-    }
   }
   // #account-entity
 

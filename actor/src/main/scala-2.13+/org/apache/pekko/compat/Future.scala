@@ -28,30 +28,27 @@ import org.apache.pekko.annotation.InternalApi
  */
 @InternalApi private[pekko] object Future {
   def fold[T, R](futures: IterableOnce[SFuture[T]])(zero: R)(op: (R, T) => R)(
-      implicit executor: ExecutionContext): SFuture[R] = {
+      implicit executor: ExecutionContext): SFuture[R] =
     // This will have performance implications since the elements are copied to a Vector
     SFuture.foldLeft[T, R](futures.iterator.to(immutable.Iterable))(zero)(op)(executor)
-  }
 
   def fold[T, R](futures: immutable.Iterable[SFuture[T]])(zero: R)(op: (R, T) => R)(
       implicit executor: ExecutionContext): SFuture[R] =
     SFuture.foldLeft[T, R](futures)(zero)(op)(executor)
 
   def reduce[T, R >: T](futures: IterableOnce[SFuture[T]])(op: (R, T) => R)(
-      implicit executor: ExecutionContext): SFuture[R] = {
+      implicit executor: ExecutionContext): SFuture[R] =
     // This will have performance implications since the elements are copied to a Vector
     SFuture.reduceLeft[T, R](futures.iterator.to(immutable.Iterable))(op)(executor)
-  }
 
   def reduce[T, R >: T](futures: immutable.Iterable[SFuture[T]])(op: (R, T) => R)(
       implicit executor: ExecutionContext): SFuture[R] =
     SFuture.reduceLeft[T, R](futures)(op)(executor)
 
   def find[T](futures: IterableOnce[SFuture[T]])(p: T => Boolean)(
-      implicit executor: ExecutionContext): SFuture[Option[T]] = {
+      implicit executor: ExecutionContext): SFuture[Option[T]] =
     // This will have performance implications since the elements are copied to a Vector
     SFuture.find[T](futures.iterator.to(immutable.Iterable))(p)(executor)
-  }
 
   def find[T](futures: immutable.Iterable[SFuture[T]])(p: T => Boolean)(
       implicit executor: ExecutionContext): SFuture[Option[T]] =

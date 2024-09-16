@@ -437,10 +437,9 @@ class TestMessageSerializer(val system: ExtendedActorSystem) extends SerializerW
     case _                => throw new NotSerializableException()
   }
 
-  override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = {
+  override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef =
     manifest match {
       case TestMessageManifest => TestMessage(new String(bytes))
       case unknown             => throw new Exception("Unknown manifest: " + unknown)
     }
-  }
 }

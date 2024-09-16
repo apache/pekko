@@ -32,7 +32,7 @@ object SingletonCompileOnlySpec {
     case object GoodByeCounter extends Command
 
     def apply(): Behavior[Command] = {
-      def updated(value: Int): Behavior[Command] = {
+      def updated(value: Int): Behavior[Command] =
         Behaviors.receiveMessage[Command] {
           case Increment =>
             updated(value + 1)
@@ -43,7 +43,6 @@ object SingletonCompileOnlySpec {
             // Possible async action then stop
             Behaviors.stopped
         }
-      }
 
       updated(0)
     }

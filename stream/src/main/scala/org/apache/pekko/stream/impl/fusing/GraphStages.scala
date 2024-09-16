@@ -94,27 +94,24 @@ import pekko.stream.stage._
       new GraphStageLogic(shape) with InHandler with OutHandler {
         private val contextPropagation = ContextPropagation()
 
-        def onPush(): Unit = {
+        def onPush(): Unit =
           if (isAvailable(out)) {
             push(out, grab(in))
             tryPull(in)
           } else {
             contextPropagation.suspendContext()
           }
-        }
 
-        override def onUpstreamFinish(): Unit = {
+        override def onUpstreamFinish(): Unit =
           if (!isAvailable(in)) completeStage()
-        }
 
-        def onPull(): Unit = {
+        def onPull(): Unit =
           if (isAvailable(in)) {
             contextPropagation.resumeContext()
             push(out, grab(in))
             if (isClosed(in)) completeStage()
             else pull(in)
           }
-        }
 
         setHandlers(in, out, this)
 
@@ -160,9 +157,8 @@ import pekko.stream.stage._
             cancelStage(cause)
           }
 
-          override def postStop(): Unit = {
+          override def postStop(): Unit =
             if (!finishPromise.isCompleted) finishPromise.failure(new AbruptStageTerminationException(this))
-          }
 
           setHandlers(in, out, this)
         }, finishPromise.future)
@@ -214,12 +210,11 @@ import pekko.stream.stage._
           monitor.set(Finished)
         }
 
-        override def postStop(): Unit = {
+        override def postStop(): Unit =
           monitor.state match {
             case Finished | _: Failed =>
             case _                    => monitor.set(Failed(new AbruptStageTerminationException(this)))
           }
-        }
 
         setHandler(in, this)
         setHandler(out, this)
@@ -353,7 +348,7 @@ import pekko.stream.stage._
           super.onDownstreamFinish(cause)
         }
 
-        def onFutureSourceCompleted(result: Try[Graph[SourceShape[T], M]]): Unit = {
+        def onFutureSourceCompleted(result: Try[Graph[SourceShape[T], M]]): Unit =
           result
             .map { graph =>
               val runnable = Source.fromGraph(graph).toMat(sinkIn.sink)(Keep.left)
@@ -374,7 +369,6 @@ import pekko.stream.stage._
                 materialized.failure(t)
                 failStage(t)
             }
-        }
       }
 
       (logic, materialized.future)
@@ -390,7 +384,7 @@ import pekko.stream.stage._
     override def initialAttributes: Attributes = DefaultAttributes.futureSource
     override def createLogic(attr: Attributes) =
       new GraphStageLogic(shape) with OutHandler {
-        override def preStart(): Unit = {
+        override def preStart(): Unit =
           future.value match {
             case Some(completed) =>
               // optimization if the future is already completed
@@ -399,7 +393,6 @@ import pekko.stream.stage._
               val cb = getAsyncCallback[Try[T]](handle).invoke _
               future.onComplete(cb)(ExecutionContexts.parasitic)
           }
-        }
 
         private def handle(result: Try[T]): Unit = result match {
           case scala.util.Success(null) => completeStage()
@@ -443,9 +436,8 @@ import pekko.stream.stage._
           promise.tryFailure(ex)
         }
 
-        override def postStop(): Unit = {
+        override def postStop(): Unit =
           if (!promise.isCompleted) promise.tryFailure(new AbruptStageTerminationException(this))
-        }
 
         setHandler(in, this)
 
@@ -494,9 +486,8 @@ import pekko.stream.stage._
           promise.tryFailure(ex)
         }
 
-        override def postStop(): Unit = {
+        override def postStop(): Unit =
           if (!promise.isCompleted) promise.tryFailure(new AbruptStageTerminationException(this))
-        }
 
         setHandler(in, this)
       }

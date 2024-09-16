@@ -184,13 +184,12 @@ class WithContextUsageSpec extends StreamSpec {
   def commit[Ctx](uninitialized: Ctx): Sink[Ctx, Probe[Ctx]] = {
     val testSink = TestSink.probe[Ctx]
     Flow[Ctx]
-      .statefulMap(() => uninitialized)((prevCtx, ctx) => {
+      .statefulMap(() => uninitialized)((prevCtx, ctx) =>
           if (prevCtx != uninitialized && ctx != prevCtx) {
             (ctx, Some(prevCtx))
           } else {
             (ctx, None)
-          }
-        }, _ => None)
+          }, _ => None)
       .collect { case Some(ctx) => ctx }
       .toMat(testSink)(Keep.right)
   }
@@ -209,9 +208,8 @@ case class MultiRecord(records: immutable.Seq[Record])
 
 object Consumer {
   def committableSource(
-      committableMessages: Vector[CommittableMessage[Record]]): Source[CommittableMessage[Record], NotUsed] = {
+      committableMessages: Vector[CommittableMessage[Record]]): Source[CommittableMessage[Record], NotUsed] =
     Source(committableMessages)
-  }
   case class CommittableMessage[V](record: V, committableOffset: CommittableOffset)
 
   trait Committable {

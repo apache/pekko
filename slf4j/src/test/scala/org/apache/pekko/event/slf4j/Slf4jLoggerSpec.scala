@@ -89,9 +89,8 @@ class Slf4jLoggerSpec extends PekkoSpec(Slf4jLoggerSpec.config) with BeforeAndAf
 
   val producer = system.actorOf(Props[LogProducer](), name = "logProducer")
 
-  override def beforeEach(): Unit = {
+  override def beforeEach(): Unit =
     output.reset()
-  }
 
   val sourceThreadRegex = "sourceThread=Slf4jLoggerSpec-pekko.actor.default-dispatcher-[1-9][0-9]*"
 

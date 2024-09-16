@@ -155,24 +155,23 @@ private[pekko] trait DeathWatch { this: ActorCell =>
          */
         watchedBy.foreach(sendTerminated(ifLocal = false))
         watchedBy.foreach(sendTerminated(ifLocal = true))
-      } finally {
+      } finally
         maintainAddressTerminatedSubscription() {
           watchedBy = ActorCell.emptyActorRefSet
         }
-      }
     }
 
   protected def unwatchWatchedActors(@unused actor: Actor): Unit =
     if (watching.nonEmpty) {
       maintainAddressTerminatedSubscription() {
-        try {
+        try
           watching.foreach { // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
             case (watchee: InternalActorRef, _) => watchee.sendSystemMessage(Unwatch(watchee, self))
             case (watchee, _)                   =>
               // should never happen, suppress "match may not be exhaustive" compiler warning
               throw new IllegalStateException(s"Expected InternalActorRef, but got [${watchee.getClass.getName}]")
           }
-        } finally {
+        finally {
           watching = Map.empty
           terminatedQueued = Map.empty
         }
@@ -226,10 +225,9 @@ private[pekko] trait DeathWatch { this: ActorCell =>
     // When a parent is watching a child and it terminates due to AddressTerminated
     // it is removed by sending DeathWatchNotification with existenceConfirmed = true to support
     // immediate creation of child with same name.
-    for ((a, _) <- watching; if a.path.address == address) {
+    for ((a, _) <- watching; if a.path.address == address)
       self.sendSystemMessage(
         DeathWatchNotification(a, existenceConfirmed = childrenRefs.getByRef(a).isDefined, addressTerminated = true))
-    }
   }
 
   /**

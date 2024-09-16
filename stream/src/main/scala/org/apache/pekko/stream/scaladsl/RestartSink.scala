@@ -133,9 +133,8 @@ private final class RestartWithBackoffSink[T](sinkFactory: () => Sink[T, _], res
         subFusingMaterializer.materialize(Source.fromGraph(sourceOut.source).to(sinkFactory()), inheritedAttributes)
       }
 
-      override protected def backoff() = {
+      override protected def backoff() =
         setHandler(in, GraphStageLogic.EagerTerminateInput)
-      }
 
       backoff()
     }

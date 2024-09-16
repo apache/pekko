@@ -55,7 +55,7 @@ class ProjectFileIgnoreSupport(ignoreConfigFile: File, descriptor: String) {
   }
 
   private def isIgnoredByPackages(file: File): Boolean = {
-    val ignoredByPackages = ignoredPackages.exists(pkg => {
+    val ignoredByPackages = ignoredPackages.exists { pkg =>
       getPackageName(file.toURI.toString) match {
         case Some(packageName) =>
           val ignored = packageName.startsWith(pkg)
@@ -66,7 +66,7 @@ class ProjectFileIgnoreSupport(ignoreConfigFile: File, descriptor: String) {
           ignored
         case None => false
       }
-    })
+    }
     ignoredByPackages
   }
 

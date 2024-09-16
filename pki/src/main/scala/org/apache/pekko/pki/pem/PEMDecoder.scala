@@ -63,12 +63,12 @@ object PEMDecoder {
   @throws[PEMLoadingException](
     "If the `pemData` is not valid PEM format (according to https://tools.ietf.org/html/rfc7468).")
   @ApiMayChange
-  def decode(pemData: String): DERData = {
+  def decode(pemData: String): DERData =
     pemData match {
       case PEMRegex(label, base64) =>
-        try {
+        try
           new DERData(label, Base64.getMimeDecoder.decode(base64))
-        } catch {
+        catch {
           case iae: IllegalArgumentException =>
             throw new PEMLoadingException(
               s"Error decoding base64 data from PEM data (note: expected MIME-formatted Base64)",
@@ -77,7 +77,6 @@ object PEMDecoder {
 
       case _ => throw new PEMLoadingException("Not a PEM encoded data.")
     }
-  }
 
   @ApiMayChange
   final class DERData(val label: String, val bytes: Array[Byte])

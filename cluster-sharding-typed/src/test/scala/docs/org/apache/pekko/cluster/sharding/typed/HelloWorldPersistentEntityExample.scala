@@ -93,12 +93,11 @@ object HelloWorldPersistentEntityExample {
     val TypeKey: EntityTypeKey[Command] =
       EntityTypeKey[Command]("HelloWorld")
 
-    def apply(entityId: String, persistenceId: PersistenceId): Behavior[Command] = {
+    def apply(entityId: String, persistenceId: PersistenceId): Behavior[Command] =
       Behaviors.setup { context =>
         context.log.info("Starting HelloWorld {}", entityId)
         EventSourcedBehavior(persistenceId, emptyState = KnownPeople(Set.empty), commandHandler, eventHandler)
       }
-    }
 
   }
   // #persistent-entity

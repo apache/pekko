@@ -187,13 +187,12 @@ object LineNumbers {
 
     } catch {
       case NonFatal(ex) => UnknownSourceFormat(s"parse error: ${ex.getMessage}")
-    } finally {
+    } finally
       try dis.close()
       catch {
         case ex: InterruptedException => throw ex
         case NonFatal(_)              => // ignore
       }
-    }
   }
 
   private def getStreamForClass(c: Class[_]): Option[(InputStream, None.type)] = {

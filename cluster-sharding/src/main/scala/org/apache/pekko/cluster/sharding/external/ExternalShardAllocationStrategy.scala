@@ -57,9 +57,8 @@ object ExternalShardAllocationStrategy {
    * Scala API: Create an [[ExternalShardAllocationStrategy]]
    */
   def apply(systemProvider: ClassicActorSystemProvider, typeName: String, timeout: FiniteDuration)
-      : ExternalShardAllocationStrategy = {
+      : ExternalShardAllocationStrategy =
     new ExternalShardAllocationStrategy(systemProvider, typeName)(timeout)
-  }
 
   /**
    * Java API: Create an [[ExternalShardAllocationStrategy]]
@@ -83,9 +82,8 @@ object ExternalShardAllocationStrategy {
 
   // uses a string primitive types are optimized in ddata to not serialize every entity
   // separately
-  private[pekko] def ddataKey(typeName: String): LWWMapKey[ShardId, String] = {
+  private[pekko] def ddataKey(typeName: String): LWWMapKey[ShardId, String] =
     LWWMapKey[ShardId, String](s"external-sharding-$typeName")
-  }
 
   private class DDataStateActor(typeName: String) extends Actor with ActorLogging with Stash {
 
@@ -133,17 +131,15 @@ class ExternalShardAllocationStrategy(systemProvider: ClassicActorSystemProvider
 
   private var shardState: ActorRef = _
 
-  private[pekko] def createShardStateActor(): ActorRef = {
+  private[pekko] def createShardStateActor(): ActorRef =
     system
       .asInstanceOf[ExtendedActorSystem]
       .systemActorOf(DDataStateActor.props(typeName), s"external-allocation-state-$typeName")
-  }
 
   private val cluster = Cluster(system)
 
-  override def start(): Unit = {
+  override def start(): Unit =
     shardState = createShardStateActor()
-  }
 
   override def allocateShard(
       requester: ShardRegion,

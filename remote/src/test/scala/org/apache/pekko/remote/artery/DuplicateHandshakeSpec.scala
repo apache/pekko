@@ -39,7 +39,7 @@ class DuplicateHandshakeSpec extends PekkoSpec("""
   val addressA = UniqueAddress(Address("pekko", "sysA", "hostA", 1001), 1)
   val addressB = UniqueAddress(Address("pekko", "sysB", "hostB", 1002), 2)
 
-  private def setupStream(inboundContext: InboundContext): (TestPublisher.Probe[AnyRef], TestSubscriber.Probe[Any]) = {
+  private def setupStream(inboundContext: InboundContext): (TestPublisher.Probe[AnyRef], TestSubscriber.Probe[Any]) =
     TestSource
       .probe[AnyRef]
       .map { msg =>
@@ -70,7 +70,6 @@ class DuplicateHandshakeSpec extends PekkoSpec("""
       .map { case env: InboundEnvelope => env.message -> env.lane }
       .toMat(TestSink.probe[Any])(Keep.both)
       .run()
-  }
 
   "DuplicateHandshake stage" must {
 

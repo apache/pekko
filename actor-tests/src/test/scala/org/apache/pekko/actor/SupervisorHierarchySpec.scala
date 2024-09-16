@@ -55,9 +55,8 @@ object SupervisorHierarchySpec {
     }
     // test relies on keeping children around during restart
     override def preRestart(cause: Throwable, msg: Option[Any]): Unit = {}
-    override def postRestart(reason: Throwable) = {
+    override def postRestart(reason: Throwable) =
       countDown.countDown()
-    }
   }
 
   class Resumer extends Actor {
@@ -193,7 +192,7 @@ object SupervisorHierarchySpec {
     }
 
     var preRestartCalled = false
-    override def preRestart(cause: Throwable, msg: Option[Any]): Unit = {
+    override def preRestart(cause: Throwable, msg: Option[Any]): Unit =
       // do not scrap children
       if (preRestartCalled) abort("preRestart called twice")
       else {
@@ -214,7 +213,6 @@ object SupervisorHierarchySpec {
           case _ => stateCache.put(self.path, stateCache.get(self.path).copy(log = log))
         }
       }
-    }
 
     val unwrap: PartialFunction[Throwable, (Throwable, Throwable)] = {
       case x @ PostRestartException(_, f: Failure, _)         => (f, x)
@@ -262,13 +260,13 @@ object SupervisorHierarchySpec {
         abort("invariant violated: " + state.kids.size + " != " + context.children.size)
       }
       cause match {
-        case f: Failure if f.failPost > 0                                  => { f.failPost -= 1; throw f }
-        case PostRestartException(`self`, f: Failure, _) if f.failPost > 0 => { f.failPost -= 1; throw f }
+        case f: Failure if f.failPost > 0                                  => f.failPost -= 1; throw f
+        case PostRestartException(`self`, f: Failure, _) if f.failPost > 0 => f.failPost -= 1; throw f
         case _                                                             =>
       }
     }
 
-    override def postStop(): Unit = {
+    override def postStop(): Unit =
       if (failed || suspended) {
         listener ! ErrorLog("not resumed (" + failed + ", " + suspended + ")", log)
         val state = stateCache.get(self)
@@ -276,7 +274,6 @@ object SupervisorHierarchySpec {
       } else {
         stateCache.put(self.path, HierarchyState(log, Map(), null))
       }
-    }
 
     def check(msg: Any): Boolean = {
       suspended = false
@@ -304,7 +301,7 @@ object SupervisorHierarchySpec {
           setFlags(f.directive)
           stateCache.put(self.path, stateCache.get(self.path).copy(failConstr = f.copy()))
           throw f
-        case "ping"          => { Thread.sleep((random.nextFloat() * 1.03).toLong); sender() ! "pong" }
+        case "ping"          => Thread.sleep((random.nextFloat() * 1.03).toLong); sender() ! "pong"
         case Dump(0)         => abort("dump")
         case Dump(level)     => context.children.foreach(_ ! Dump(level - 1))
         case Terminated(ref) =>
@@ -344,7 +341,7 @@ object SupervisorHierarchySpec {
           }
       }
       override def isDefinedAt(msg: Any) = handler.isDefinedAt(msg)
-      override def apply(msg: Any) = { if (check(msg)) handler(msg) }
+      override def apply(msg: Any) = if (check(msg)) handler(msg)
     }
   }
 
@@ -458,17 +455,14 @@ object SupervisorHierarchySpec {
 
     var hierarchy: ActorRef = _
 
-    override def preRestart(cause: Throwable, msg: Option[Any]): Unit = {
+    override def preRestart(cause: Throwable, msg: Option[Any]): Unit =
       throw ActorKilledException("I want to DIE")
-    }
 
-    override def postRestart(cause: Throwable): Unit = {
+    override def postRestart(cause: Throwable): Unit =
       throw ActorKilledException("I said I wanted to DIE, dammit!")
-    }
 
-    override def postStop(): Unit = {
+    override def postStop(): Unit =
       testActor ! "stressTestStopped"
-    }
 
     // number of Work packages to execute for the test
     startWith(Idle, size * 1000)
@@ -683,7 +677,7 @@ object SupervisorHierarchySpec {
       case this.Event(Died(_), _) => stay()
     }
 
-    def getErrors(target: ActorRef, depth: Int): Unit = {
+    def getErrors(target: ActorRef, depth: Int): Unit =
       target match {
         case l: LocalActorRef =>
           l.underlying.actor match {
@@ -695,9 +689,8 @@ object SupervisorHierarchySpec {
           }
         case _ => throw new IllegalArgumentException()
       }
-    }
 
-    def getErrorsUp(target: ActorRef): Unit = {
+    def getErrorsUp(target: ActorRef): Unit =
       target match {
         case l: LocalActorRef =>
           l.underlying.actor match {
@@ -707,7 +700,6 @@ object SupervisorHierarchySpec {
           if (target != hierarchy) getErrorsUp(l.getParent)
         case _ => throw new IllegalArgumentException()
       }
-    }
 
     def printErrors(): Unit = {
       errors.collect {
@@ -887,12 +879,10 @@ class SupervisorHierarchySpec extends PekkoSpec(SupervisorHierarchySpec.config) 
                   if (ca < 6) {
                     throw new IllegalArgumentException("OH NO!")
                   }
-                  override def preStart() = {
+                  override def preStart() =
                     preStartCalled.incrementAndGet()
-                  }
-                  override def postRestart(reason: Throwable) = {
+                  override def postRestart(reason: Throwable) =
                     postRestartCalled.incrementAndGet()
-                  }
                   override def receive = {
                     case m => sender() ! m
                   }

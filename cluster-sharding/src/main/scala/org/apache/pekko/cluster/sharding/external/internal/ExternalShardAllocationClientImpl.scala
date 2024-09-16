@@ -87,7 +87,7 @@ final private[external] class ExternalShardAllocationClientImpl(system: ActorSys
   override def setShardLocation(shard: ShardId, location: Address): CompletionStage[Done] =
     updateShardLocation(shard, location).asJava
 
-  override def shardLocations(): Future[ShardLocations] = {
+  override def shardLocations(): Future[ShardLocations] =
     (replicator ? Get(Key, ReadMajority(timeout)))
       .flatMap {
         case success @ GetSuccess(`Key`, _) =>
@@ -102,7 +102,6 @@ final private[external] class ExternalShardAllocationClientImpl(system: ActorSys
       .map { locations =>
         new ShardLocations(locations)
       }
-  }
 
   override def getShardLocations(): CompletionStage[ShardLocations] = shardLocations().asJava
 
@@ -120,7 +119,6 @@ final private[external] class ExternalShardAllocationClientImpl(system: ActorSys
     }
   }
 
-  override def setShardLocations(locations: java.util.Map[ShardId, Address]): CompletionStage[Done] = {
+  override def setShardLocations(locations: java.util.Map[ShardId, Address]): CompletionStage[Done] =
     updateShardLocations(locations.asScala.toMap).asJava
-  }
 }

@@ -198,9 +198,8 @@ private[pekko] object Buffer {
     override def enqueue(elem: T): Unit =
       if (tail - head == FixedQueueSize) {
         val queue = new DynamicQueue[T](capacity)
-        while (nonEmpty) {
+        while (nonEmpty)
           queue.enqueue(dequeue())
-        }
         switchBuffer(queue)
         queue.enqueue(elem)
       } else {
@@ -219,9 +218,8 @@ private[pekko] object Buffer {
       if (tail == head) null.asInstanceOf[T]
       else queue(head & FixedQueueMask).asInstanceOf[T]
     override def clear(): Unit =
-      while (nonEmpty) {
+      while (nonEmpty)
         dequeue()
-      }
     override def dropHead(): Unit = dequeue()
     override def dropTail(): Unit = {
       tail -= 1

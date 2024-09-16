@@ -216,7 +216,7 @@ private final class BuiltReceive[T](
   override def receiveSignal(msg: Signal): Behavior[T] = receive[Signal](msg, signalHandlers, 0)
 
   @tailrec
-  private def receive[M](msg: M, handlers: Array[Case[T, M]], idx: Int): Behavior[T] = {
+  private def receive[M](msg: M, handlers: Array[Case[T, M]], idx: Int): Behavior[T] =
     if (handlers.length == 0) {
       Behaviors.unhandled[T]
     } else {
@@ -228,5 +228,4 @@ private final class BuiltReceive[T](
       else
         receive(msg, handlers, idx + 1)
     }
-  }
 }

@@ -43,9 +43,8 @@ class JFRRemotingFlightRecorderSpec extends PekkoSpec {
       try {
         val extension = RemotingFlightRecorder(system)
         extension should ===(NoOpRemotingFlightRecorder)
-      } finally {
+      } finally
         TestKit.shutdownActorSystem(system)
-      }
     }
   }
 

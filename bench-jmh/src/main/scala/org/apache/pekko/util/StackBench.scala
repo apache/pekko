@@ -27,13 +27,11 @@ class StackBench {
   }
 
   @Benchmark
-  def currentThread(): Array[StackTraceElement] = {
+  def currentThread(): Array[StackTraceElement] =
     Thread.currentThread().getStackTrace
-  }
 
   @Benchmark
-  def securityManager(): Array[Class[_]] = {
+  def securityManager(): Array[Class[_]] =
     (new CustomSecurtyManager).getTrace
-  }
 
 }

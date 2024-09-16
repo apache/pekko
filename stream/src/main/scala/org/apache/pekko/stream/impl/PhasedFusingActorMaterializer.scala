@@ -378,7 +378,7 @@ private final case class SavedIslandData(
 
   }
 
-  @InternalApi private[pekko] def allNestedIslandsReady(): Unit = {
+  @InternalApi private[pekko] def allNestedIslandsReady(): Unit =
     if (activePhases ne null) {
       var i = 0
       while (i < activePhases.size()) {
@@ -386,7 +386,6 @@ private final case class SavedIslandData(
         i += 1
       }
     }
-  }
 
 }
 
@@ -568,9 +567,8 @@ private final case class SavedIslandData(
       if (Debug) println("--- Finished materialization")
       matValueStack.peekLast().asInstanceOf[Mat]
 
-    } finally {
+    } finally
       if (isShutdown) throw shutdownWhileMaterializingFailure
-    }
 
   }
 
@@ -871,11 +869,10 @@ private final case class SavedIslandData(
     extends PhaseIsland[Publisher[Any]] {
   override def name: String = s"SourceModule phase"
 
-  override def materializeAtomic(mod: AtomicModule[Shape, Any], attributes: Attributes): (Publisher[Any], Any) = {
+  override def materializeAtomic(mod: AtomicModule[Shape, Any], attributes: Attributes): (Publisher[Any], Any) =
     mod
       .asInstanceOf[SourceModule[Any, Any]]
       .create(MaterializationContext(materializer, attributes, islandName + "-" + attributes.nameOrDefault()))
-  }
 
   override def assignPort(in: InPort, slot: Int, logic: Publisher[Any]): Unit = ()
 
@@ -916,17 +913,15 @@ private final case class SavedIslandData(
 
   override def assignPort(out: OutPort, slot: Int, logic: AnyRef): Unit = ()
 
-  override def createPublisher(out: OutPort, logic: AnyRef): Publisher[Any] = {
+  override def createPublisher(out: OutPort, logic: AnyRef): Publisher[Any] =
     throw new UnsupportedOperationException("A Sink cannot create a Publisher")
-  }
 
-  override def takePublisher(slot: Int, publisher: Publisher[Any], attributes: Attributes): Unit = {
+  override def takePublisher(slot: Int, publisher: Publisher[Any], attributes: Attributes): Unit =
     subscriberOrVirtualPublisher match {
       case v: VirtualPublisher[_]        => v.registerPublisher(publisher)
       case s: Subscriber[Any] @unchecked => publisher.subscribe(s)
       case _                             => throw new IllegalStateException() // won't happen, compiler exhaustiveness check pleaser
     }
-  }
 
   override def onIslandReady(): Unit = ()
 }

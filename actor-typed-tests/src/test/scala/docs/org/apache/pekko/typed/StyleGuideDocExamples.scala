@@ -84,9 +84,8 @@ object StyleGuideDocExamples {
       final case class GetValue(replyTo: ActorRef[Value]) extends Command
       final case class Value(n: Int)
 
-      def apply(): Behavior[Command] = {
+      def apply(): Behavior[Command] =
         Behaviors.setup(context => new Counter(context))
-      }
     }
 
     class Counter(context: ActorContext[Counter.Command]) extends AbstractBehavior[Counter.Command](context) {
@@ -94,7 +93,7 @@ object StyleGuideDocExamples {
 
       private var n = 0
 
-      override def onMessage(msg: Command): Behavior[Counter.Command] = {
+      override def onMessage(msg: Command): Behavior[Counter.Command] =
         msg match {
           case Increment =>
             n += 1
@@ -104,7 +103,6 @@ object StyleGuideDocExamples {
             replyTo ! Value(n)
             this
         }
-      }
     }
     // #oo-style
 
@@ -294,7 +292,7 @@ object StyleGuideDocExamples {
     private class CountDown(notifyWhenZero: ActorRef[Done]) {
       import CountDown._
 
-      private def counter(remaining: Int): Behavior[Command] = {
+      private def counter(remaining: Int): Behavior[Command] =
         // #exhastivness-check
         Behaviors.receiveMessage {
           case Down =>
@@ -304,8 +302,7 @@ object StyleGuideDocExamples {
             } else
               counter(remaining - 1)
         }
-        // #exhastivness-check
-      }
+      // #exhastivness-check
 
     }
     // #behavior-factory-method
@@ -398,7 +395,7 @@ object StyleGuideDocExamples {
       // Tick is a private command so can't be sent to an ActorRef[Command]
       case object Tick extends PrivateCommand
 
-      def apply(name: String, tickInterval: FiniteDuration): Behavior[Command] = {
+      def apply(name: String, tickInterval: FiniteDuration): Behavior[Command] =
         Behaviors
           .setup[Counter.Message] { context =>
             Behaviors.withTimers { timers =>
@@ -407,7 +404,6 @@ object StyleGuideDocExamples {
             }
           }
           .narrow // note narrow here
-      }
     }
 
     class Counter private (name: String, context: ActorContext[Counter.Message]) {
@@ -478,7 +474,7 @@ object StyleGuideDocExamples {
       import CountDown._
 
       // #pattern-match-unhandled
-      val zero: Behavior[Command] = {
+      val zero: Behavior[Command] =
         Behaviors.receiveMessage {
           case GetValue(replyTo) =>
             replyTo ! Value(0)
@@ -486,19 +482,17 @@ object StyleGuideDocExamples {
           case Down =>
             Behaviors.unhandled
         }
-      }
       // #pattern-match-unhandled
 
       @nowarn
       object partial {
         // #pattern-match-partial
-        val zero: Behavior[Command] = {
+        val zero: Behavior[Command] =
           Behaviors.receiveMessagePartial {
             case GetValue(replyTo) =>
               replyTo ! Value(0)
               Behaviors.same
           }
-        }
         // #pattern-match-partial
       }
 

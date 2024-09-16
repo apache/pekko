@@ -217,12 +217,11 @@ final class ActorTestKit private[pekko] (
 
   def scheduler: Scheduler = system.scheduler
 
-  def shutdownTestKit(): Unit = {
+  def shutdownTestKit(): Unit =
     ActorTestKit.shutdown(
       system,
       testKitSettings.DefaultActorSystemShutdownTimeout,
       testKitSettings.ThrowOnShutdownTimeout)
-  }
 
   /**
    * Spawn the given behavior. This is created as a child of the test kit
@@ -262,11 +261,11 @@ final class ActorTestKit private[pekko] (
    * Other actors will not be stopped by this method.
    */
   def stop[T](ref: ActorRef[T], max: FiniteDuration = timeout.duration): Unit =
-    try {
+    try
       Await.result(internalTestKitGuardian.ask { (x: ActorRef[ActorTestKitGuardian.Ack.type]) =>
           ActorTestKitGuardian.StopActor(ref, x)
         }(Timeout(max), scheduler), max)
-    } catch {
+    catch {
       case _: TimeoutException =>
         assert(false, s"timeout ($max) during stop() waiting for actor [${ref.path}] to stop")
     }

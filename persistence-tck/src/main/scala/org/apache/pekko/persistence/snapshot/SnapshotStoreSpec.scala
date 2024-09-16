@@ -73,13 +73,12 @@ abstract class SnapshotStoreSpec(config: Config)
   def snapshotStore: ActorRef =
     extension.snapshotStoreFor(null)
 
-  def writeSnapshots(): Seq[SnapshotMetadata] = {
+  def writeSnapshots(): Seq[SnapshotMetadata] =
     (1 to 5).map { i =>
       val metadata = SnapshotMetadata(pid, i + 10)
       snapshotStore.tell(SaveSnapshot(metadata, s"s-$i"), senderProbe.ref)
       senderProbe.expectMsgPF() { case SaveSnapshotSuccess(md) => md }
     }
-  }
 
   /**
    * The limit defines a number of bytes persistence plugin can support to store the snapshot.

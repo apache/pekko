@@ -116,10 +116,9 @@ private[remote] final class TopHeavyHitters[T >: Null](val max: Int)(implicit cl
     new Iterator[T] {
       var i = 0
 
-      @tailrec override final def hasNext: Boolean = {
+      @tailrec override final def hasNext: Boolean =
         // note that this is using max and not adjustedMax so will be empty if disabled (max=0)
         (i < self.max) && ((value != null) || { next(); hasNext })
-      }
 
       override final def next(): T = {
         val v = value
@@ -205,7 +204,7 @@ private[remote] final class TopHeavyHitters[T >: Null](val max: Int)(implicit cl
    * equality).
    */
   private def findItemIdx(searchFromIndex: Int, hashCode: HashCodeVal, o: T): Int = {
-    @tailrec def loop(index: Int, start: Int, hashCodeVal: HashCodeVal, o: T): Int = {
+    @tailrec def loop(index: Int, start: Int, hashCodeVal: HashCodeVal, o: T): Int =
       // Scanned the whole table, returned to the start => element not in table
       if (index == start) -1
       else if (hashCodeVal.get == hashes(index)) { // First check on hashcode to avoid costly equality
@@ -223,7 +222,6 @@ private[remote] final class TopHeavyHitters[T >: Null](val max: Int)(implicit cl
         // hashcode did not match the one in slot, move to next index (linear probing)
         loop((index + 1) & mask, start, hashCodeVal, o)
       }
-    }
 
     if (searchFromIndex == -1) -1
     else if (Objects.equals(items(searchFromIndex), o)) searchFromIndex
@@ -348,14 +346,13 @@ private[remote] final class TopHeavyHitters[T >: Null](val max: Int)(implicit cl
   /**
    * Remove value from hash-table based on position.
    */
-  private def removeHash(index: Int): Unit = {
+  private def removeHash(index: Int): Unit =
     if (index >= 0) {
       items(index) = null
       heapIndex(index) = -1
       hashes(index) = 0
       weights(index) = 0
     }
-  }
 
   /**
    * Insert value in hash-table.
@@ -370,9 +367,8 @@ private[remote] final class TopHeavyHitters[T >: Null](val max: Int)(implicit cl
    */
   private def insert(hashCode: HashCodeVal, item: T, count: Long): Int = {
     var index: Int = hashCode.get & mask
-    while (items(index) != null) {
+    while (items(index) != null)
       index = (index + 1) & mask
-    }
     hashes(index) = hashCode.get
     items(index) = item
     weights(index) = count
@@ -400,9 +396,8 @@ private[remote] final class TopHeavyHitters[T >: Null](val max: Int)(implicit cl
    * is empty, this returns a negative index.
    * Implemented by looking at the top of the heap and extracting the index which is O(1).
    */
-  private def lowestHitterIndex: Int = {
+  private def lowestHitterIndex: Int =
     heap(0)
-  }
 
   override def toString =
     s"${getClass.getSimpleName}(max:$max)"

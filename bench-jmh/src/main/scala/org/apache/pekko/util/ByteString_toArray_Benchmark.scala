@@ -64,19 +64,16 @@ class ByteString_toArray_Benchmark {
     val bytes = Array.ofDim[Byte](1024 * kb)
     bs = ByteString(bytes)
     composed = ByteString.empty
-    for (_ <- 0 to 100) {
+    for (_ <- 0 to 100)
       composed = composed ++ bs
-    }
   }
 
   @Benchmark
-  def single_bs_to_array(blackhole: Blackhole): Unit = {
+  def single_bs_to_array(blackhole: Blackhole): Unit =
     blackhole.consume(bs.toArray[Byte])
-  }
 
   @Benchmark
-  def composed_bs_to_array(blackhole: Blackhole): Unit = {
+  def composed_bs_to_array(blackhole: Blackhole): Unit =
     blackhole.consume(composed.toArray[Byte])
-  }
 
 }

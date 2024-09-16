@@ -231,13 +231,12 @@ class MyTaggingEventAdapter(system: ExtendedActorSystem) extends EventAdapter {
     case j: MyTaggingJournalModel => EventSeq.single(j)
   }
 
-  override def toJournal(event: Any): Any = {
+  override def toJournal(event: Any): Any =
     event match {
       case Person(_, age) if age >= 18 => MyTaggingJournalModel(event, tags = Set("adult"))
       case Person(_, age)              => MyTaggingJournalModel(event, tags = Set("minor"))
       case _                           => MyTaggingJournalModel(event, tags = Set.empty)
     }
-  }
 }
 
 object v1 {

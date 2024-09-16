@@ -52,11 +52,10 @@ object TestActorRefSpec {
     var replyTo: ActorRef = null
 
     def receiveT = {
-      case "complexRequest" => {
+      case "complexRequest" =>
         replyTo = sender()
         val worker = TestActorRef(Props[WorkerActor]())
         worker ! "work"
-      }
       case "complexRequest2" =>
         val worker = TestActorRef(Props[WorkerActor]())
         worker ! sender()
@@ -84,12 +83,10 @@ object TestActorRefSpec {
       case "complex"  => replyActor ! "complexRequest"
       case "complex2" => replyActor ! "complexRequest2"
       case "simple"   => replyActor ! "simpleRequest"
-      case "complexReply" => {
+      case "complexReply" =>
         counter -= 1
-      }
-      case "simpleReply" => {
+      case "simpleReply" =>
         counter -= 1
-      }
     }
   }
 
@@ -205,8 +202,8 @@ class TestActorRefSpec extends PekkoSpec("disp1.type=Dispatcher") with BeforeAnd
         val boss = TestActorRef(Props(new TActor {
           val ref = TestActorRef(Props(new TActor {
               def receiveT = { case _ => }
-              override def preRestart(reason: Throwable, msg: Option[Any]): Unit = { counter -= 1 }
-              override def postRestart(reason: Throwable): Unit = { counter -= 1 }
+              override def preRestart(reason: Throwable, msg: Option[Any]): Unit = counter -= 1
+              override def postRestart(reason: Throwable): Unit = counter -= 1
             }), self, "child")
 
           override def supervisorStrategy =

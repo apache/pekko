@@ -410,7 +410,7 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
       connectTimeout: Optional[java.time.Duration],
       idleTimeout: Optional[java.time.Duration],
       verifySession: JFunction[SSLSession, Optional[Throwable]],
-      closing: TLSClosing): Flow[ByteString, ByteString, CompletionStage[OutgoingConnection]] = {
+      closing: TLSClosing): Flow[ByteString, ByteString, CompletionStage[OutgoingConnection]] =
     Flow.fromGraph(
       delegate
         .outgoingConnectionWithTls(
@@ -427,7 +427,6 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
             },
           closing)
         .mapMaterializedValue(_.map(new OutgoingConnection(_))(parasitic).asJava))
-  }
 
   /**
    * Creates a [[Tcp.ServerBinding]] instance which represents a prospective TCP server binding on the given `endpoint`
@@ -488,13 +487,12 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
   def bindWithTls(
       interface: String,
       port: Int,
-      createSSLEngine: Supplier[SSLEngine]): Source[IncomingConnection, CompletionStage[ServerBinding]] = {
+      createSSLEngine: Supplier[SSLEngine]): Source[IncomingConnection, CompletionStage[ServerBinding]] =
     Source.fromGraph(
       delegate
         .bindWithTls(interface, port, createSSLEngine = () => createSSLEngine.get())
         .map(new IncomingConnection(_))
         .mapMaterializedValue(_.map(new ServerBinding(_))(parasitic).asJava))
-  }
 
   /**
    * Creates a [[Tcp.ServerBinding]] instance which represents a prospective TCP server binding on the given `endpoint`
@@ -510,7 +508,7 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
       options: JIterable[SocketOption],
       idleTimeout: Optional[java.time.Duration],
       verifySession: JFunction[SSLSession, Optional[Throwable]],
-      closing: TLSClosing): Source[IncomingConnection, CompletionStage[ServerBinding]] = {
+      closing: TLSClosing): Source[IncomingConnection, CompletionStage[ServerBinding]] =
     Source.fromGraph(
       delegate
         .bindWithTls(
@@ -528,13 +526,10 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
           closing)
         .map(new IncomingConnection(_))
         .mapMaterializedValue(_.map(new ServerBinding(_))(parasitic).asJava))
-  }
 
-  private def optionalDurationToScala(duration: Optional[java.time.Duration]) = {
+  private def optionalDurationToScala(duration: Optional[java.time.Duration]) =
     if (duration.isPresent) duration.get.asScala else Duration.Inf
-  }
 
-  private def durationToJavaOptional(duration: Duration): Optional[java.time.Duration] = {
+  private def durationToJavaOptional(duration: Duration): Optional[java.time.Duration] =
     if (duration.isFinite) Optional.ofNullable(duration.asJava) else Optional.empty()
-  }
 }

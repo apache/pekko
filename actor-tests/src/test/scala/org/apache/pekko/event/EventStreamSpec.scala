@@ -54,7 +54,7 @@ object EventStreamSpec {
         bus.subscribe(context.self, classOf[SetTarget])
         bus.subscribe(context.self, classOf[UnhandledMessage])
         sender() ! Logging.LoggerInitialized
-      case SetTarget(ref)      => { dst = ref; dst ! "OK" }
+      case SetTarget(ref)      => dst = ref; dst ! "OK"
       case e: Logging.LogEvent => dst ! e
       case u: UnhandledMessage => dst ! u
     }
@@ -101,15 +101,15 @@ class EventStreamSpec extends PekkoSpec(EventStreamSpec.config) {
 
     "not allow null as subscriber" in {
       val bus = new EventStream(system, true)
-      intercept[IllegalArgumentException] { bus.subscribe(null, classOf[M]) }.getMessage should ===(
+      intercept[IllegalArgumentException](bus.subscribe(null, classOf[M])).getMessage should ===(
         "subscriber is null")
     }
 
     "not allow null as unsubscriber" in {
       val bus = new EventStream(system, true)
-      intercept[IllegalArgumentException] { bus.unsubscribe(null, classOf[M]) }.getMessage should ===(
+      intercept[IllegalArgumentException](bus.unsubscribe(null, classOf[M])).getMessage should ===(
         "subscriber is null")
-      intercept[IllegalArgumentException] { bus.unsubscribe(null) }.getMessage should ===("subscriber is null")
+      intercept[IllegalArgumentException](bus.unsubscribe(null)).getMessage should ===("subscriber is null")
     }
 
     "be able to log unhandled messages" in {
@@ -125,9 +125,8 @@ class EventStreamSpec extends PekkoSpec(EventStreamSpec.config) {
             sys.deadLetters.getClass,
             "unhandled message from " + sys.deadLetters + ": 42"))
         sys.eventStream.unsubscribe(testActor)
-      } finally {
+      } finally
         shutdown(sys)
-      }
     }
 
     "manage log levels" in {
@@ -319,9 +318,8 @@ class EventStreamSpec extends PekkoSpec(EventStreamSpec.config) {
 
         a1.expectNoMessage(1.second)
         a2.expectMsg(tm)
-      } finally {
+      } finally
         shutdown(sys)
-      }
     }
 
     "unsubscribe the actor, when it subscribes already in terminated state" in {
@@ -350,9 +348,8 @@ class EventStreamSpec extends PekkoSpec(EventStreamSpec.config) {
           es.subscribe(terminated, classOf[A]) should ===(true)
         }
         fishForDebugMessage(probe, s"unsubscribing $terminated from all channels")
-      } finally {
+      } finally
         shutdown(sys)
-      }
     }
 
     "not allow initializing a TerminatedUnsubscriber twice" in {
@@ -367,9 +364,8 @@ class EventStreamSpec extends PekkoSpec(EventStreamSpec.config) {
 
         refWillBeUsedAsUnsubscriber should equal(false)
 
-      } finally {
+      } finally
         shutdown(sys)
-      }
     }
 
     "unwatch an actor from unsubscriber when that actor unsubscribes from the stream" in {
@@ -387,9 +383,8 @@ class EventStreamSpec extends PekkoSpec(EventStreamSpec.config) {
         es.unsubscribe(a2.ref)
         fishForDebugMessage(a1, s"unwatching ${a2.ref}")
 
-      } finally {
+      } finally
         shutdown(sys)
-      }
     }
 
     "unwatch an actor from unsubscriber when that actor unsubscribes from channels it subscribed" in {
@@ -424,9 +419,8 @@ class EventStreamSpec extends PekkoSpec(EventStreamSpec.config) {
 
         es.unsubscribe(a2.ref, classOf[T]) should equal(false)
 
-      } finally {
+      } finally
         shutdown(sys)
-      }
     }
 
   }
@@ -440,11 +434,10 @@ class EventStreamSpec extends PekkoSpec(EventStreamSpec.config) {
     msg.foreach(expectMsg(_))
   }
 
-  private def fishForDebugMessage(a: TestProbe, messagePrefix: String): Unit = {
+  private def fishForDebugMessage(a: TestProbe, messagePrefix: String): Unit =
     a.fishForMessage(hint = "expected debug message prefix: " + messagePrefix) {
       case Logging.Debug(_, _, msg: String) if msg.startsWith(messagePrefix) => true
       case _                                                                 => false
     }
-  }
 
 }

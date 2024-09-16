@@ -64,7 +64,7 @@ import pekko.util.ccompat.JavaConverters._
 
       override def preStart(): Unit = queue = BufferImpl(breadth, enclosingAttributes)
 
-      def pushOut(): Unit = {
+      def pushOut(): Unit =
         queue.dequeue() match {
           case src: SubSinkInlet[T] @unchecked =>
             push(out, src.grab())
@@ -76,7 +76,6 @@ import pekko.util.ccompat.JavaConverters._
           case other =>
             throw new IllegalStateException(s"Unexpected source type in queue: '${other.getClass}'")
         }
-      }
 
       override def onPush(): Unit = {
         val source = grab(in)
@@ -89,16 +88,15 @@ import pekko.util.ccompat.JavaConverters._
         pull(in)
         setHandler(out,
           new OutHandler {
-            override def onPull(): Unit = {
+            override def onPull(): Unit =
               // could be unavailable due to async input having been executed before this notification
               if (queue.nonEmpty && isAvailable(out)) pushOut()
-            }
           })
       }
 
       setHandlers(in, out, this)
 
-      def addSource(source: Graph[SourceShape[T], M]): Unit = {
+      def addSource(source: Graph[SourceShape[T], M]): Unit =
         // If it's a SingleSource or wrapped such we can push the element directly instead of materializing it.
         // Have to use AnyRef because of OptionVal null value.
         TraversalBuilder.getSingleSource(source.asInstanceOf[Graph[SourceShape[AnyRef], M]]) match {
@@ -112,14 +110,13 @@ import pekko.util.ccompat.JavaConverters._
           case _ =>
             val sinkIn = new SubSinkInlet[T]("FlattenMergeSink")
             sinkIn.setHandler(new InHandler {
-              override def onPush(): Unit = {
+              override def onPush(): Unit =
                 if (isAvailable(out)) {
                   push(out, sinkIn.grab())
                   sinkIn.pull()
                 } else {
                   queue.enqueue(sinkIn)
                 }
-              }
               override def onUpstreamFinish(): Unit = if (!sinkIn.isAvailable) removeSource(sinkIn)
             })
             sinkIn.pull()
@@ -127,7 +124,6 @@ import pekko.util.ccompat.JavaConverters._
             val graph = Source.fromGraph(source).to(sinkIn.sink)
             interpreter.subFusingMaterializer.materialize(graph, defaultAttributes = enclosingAttributes)
         }
-      }
 
       def removeSource(src: AnyRef): Unit = {
         val pullSuppressed = activeSources == breadth
@@ -215,7 +211,7 @@ import pekko.util.ccompat.JavaConverters._
       Source.fromGraph(tailSource.source)
     }
 
-    override def onPush(): Unit = {
+    override def onPush(): Unit =
       if (prefixComplete) {
         tailSource.push(grab(in))
       } else {
@@ -226,15 +222,13 @@ import pekko.util.ccompat.JavaConverters._
           complete(out)
         } else pull(in)
       }
-    }
-    override def onPull(): Unit = {
+    override def onPull(): Unit =
       if (left == 0) {
         push(out, (Nil, openSubstream()))
         complete(out)
       } else pull(in)
-    }
 
-    override def onUpstreamFinish(): Unit = {
+    override def onUpstreamFinish(): Unit =
       if (!prefixComplete) {
         // This handles the unpulled out case as well
         emit(out, (builder.result(), Source.empty), () => completeStage())
@@ -242,19 +236,16 @@ import pekko.util.ccompat.JavaConverters._
         if (!tailSource.isClosed) tailSource.complete()
         completeStage()
       }
-    }
 
-    override def onUpstreamFailure(ex: Throwable): Unit = {
+    override def onUpstreamFailure(ex: Throwable): Unit =
       if (prefixComplete) {
         if (!tailSource.isClosed) tailSource.fail(ex)
         completeStage()
       } else failStage(ex)
-    }
 
-    override def onDownstreamFinish(cause: Throwable): Unit = {
+    override def onDownstreamFinish(cause: Throwable): Unit =
       if (!prefixComplete) cancelStage(cause)
-      // Otherwise substream is open, ignore
-    }
+    // Otherwise substream is open, ignore
 
     setHandlers(in, out, this)
   }
@@ -328,7 +319,7 @@ import pekko.util.ccompat.JavaConverters._
       private def needToPull: Boolean =
         !(hasBeenPulled(in) || isClosed(in) || hasNextElement || substreamWaitingToBePushed.nonEmpty)
 
-      override def onPull(): Unit = {
+      override def onPull(): Unit =
         substreamWaitingToBePushed match {
           case Some(substreamSource) =>
             push(out, Source.fromGraph(substreamSource.source))
@@ -343,7 +334,6 @@ import pekko.util.ccompat.JavaConverters._
               }
             } else if (!hasBeenPulled(in)) tryPull(in)
         }
-      }
 
       override def onUpstreamFailure(ex: Throwable): Unit = fail(ex)
 
@@ -420,12 +410,11 @@ import pekko.util.ccompat.JavaConverters._
           }
         }
 
-        private def tryCompleteHandler(): Unit = {
+        private def tryCompleteHandler(): Unit =
           if (parent.isClosed(in) && !hasNextForSubSource) {
             completeSubStream()
             tryCompleteAll()
           }
-        }
 
         override def onPull(): Unit = {
           cancelTimer(key)
@@ -478,9 +467,8 @@ import pekko.util.ccompat.JavaConverters._
       case SubstreamCancelStrategies.Drain     => Supervision.resumingDecider
     }
 
-  def when[T](p: T => Boolean): Graph[FlowShape[T, Source[T, NotUsed]], NotUsed] = {
+  def when[T](p: T => Boolean): Graph[FlowShape[T, Source[T, NotUsed]], NotUsed] =
     new Split(Split.SplitBefore, p)
-  }
 
   def after[T](p: T => Boolean): Graph[FlowShape[T, Source[T, NotUsed]], NotUsed] =
     new Split(Split.SplitAfter, p)
@@ -520,17 +508,15 @@ import pekko.util.ccompat.JavaConverters._
           case Supervision.Restart => false
         }
 
-      override def onPull(): Unit = {
+      override def onPull(): Unit =
         if (substreamSource eq null) {
           // can be already pulled from substream in case split after
           if (!hasBeenPulled(in)) pull(in)
         } else if (substreamWaitingToBePushed) pushSubstreamSource()
-      }
 
-      override def onDownstreamFinish(cause: Throwable): Unit = {
+      override def onDownstreamFinish(cause: Throwable): Unit =
         // If the substream is already cancelled or it has not been handed out, we can go away
         if ((substreamSource eq null) || substreamWaitingToBePushed || substreamCancelled) cancelStage(cause)
-      }
 
       override def onPush(): Unit = {
         val handler = new SubstreamHandler
@@ -552,7 +538,7 @@ import pekko.util.ccompat.JavaConverters._
       // initial input handler
       setHandlers(in, out, this)
 
-      private def handOver(handler: SubstreamHandler): Unit = {
+      private def handOver(handler: SubstreamHandler): Unit =
         if (isClosed(out)) completeStage()
         else {
           substreamSource = new SubSourceOutlet[T]("SplitSource")
@@ -565,7 +551,6 @@ import pekko.util.ccompat.JavaConverters._
             if (decision == SplitBefore || handler.hasInitialElement) pushSubstreamSource() else pull(in)
           } else substreamWaitingToBePushed = true
         }
-      }
 
       private def pushSubstreamSource(): Unit = {
         push(out, Source.fromGraph(substreamSource.source))
@@ -583,7 +568,7 @@ import pekko.util.ccompat.JavaConverters._
         private var willCompleteAfterInitialElement = false
 
         // Substreams are always assumed to be pushable position when we enter this method
-        private def closeThis(handler: SubstreamHandler, currentElem: T): Unit = {
+        private def closeThis(handler: SubstreamHandler, currentElem: T): Unit =
           decision match {
             case SplitAfter =>
               if (!substreamCancelled) {
@@ -594,7 +579,6 @@ import pekko.util.ccompat.JavaConverters._
               handler.firstElem = currentElem
               if (!substreamCancelled) substreamSource.complete()
           }
-        }
 
         override def onPull(): Unit = {
           cancelTimer(SubscriptionTimer)
@@ -621,7 +605,7 @@ import pekko.util.ccompat.JavaConverters._
 
         override def onPush(): Unit = {
           val elem = grab(in)
-          try {
+          try
             if (p(elem)) {
               val handler = new SubstreamHandler
               closeThis(handler, elem)
@@ -636,7 +620,7 @@ import pekko.util.ccompat.JavaConverters._
               if (substreamCancelled) pull(in)
               else substreamSource.push(elem)
             }
-          } catch {
+          catch {
             case NonFatal(ex) =>
               decider(ex) match {
                 case Supervision.Resume  => pull(in)
@@ -839,7 +823,7 @@ import pekko.util.ccompat.JavaConverters._
 
     setHandler(out, this)
 
-    @tailrec private def setCB(cb: AsyncCallback[ActorSubscriberMessage]): Unit = {
+    @tailrec private def setCB(cb: AsyncCallback[ActorSubscriberMessage]): Unit =
       status.get match {
         case null                               => if (!status.compareAndSet(null, cb)) setCB(cb)
         case ActorSubscriberMessage.OnComplete  => completeStage()
@@ -848,7 +832,6 @@ import pekko.util.ccompat.JavaConverters._
           failStage(materializationException.getOrElse(createMaterializedTwiceException()))
         case _ => throw new RuntimeException() // won't happen, compiler exhaustiveness check pleaser
       }
-    }
 
     override def preStart(): Unit = {
       val ourOwnCallback = getAsyncCallback[ActorSubscriberMessage] {

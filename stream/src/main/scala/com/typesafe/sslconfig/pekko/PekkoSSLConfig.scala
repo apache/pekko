@@ -150,10 +150,9 @@ final class PekkoSSLConfig(system: ExtendedActorSystem, val config: SSLConfigSet
 
   @deprecated("validateDefaultTrustManager is not doing anything since akka 2.6.19 and should not be used",
     "Akka 2.6.19")
-  def validateDefaultTrustManager(@nowarn("msg=never used") sslConfig: SSLConfigSettings): Unit = {
+  def validateDefaultTrustManager(@nowarn("msg=never used") sslConfig: SSLConfigSettings): Unit =
     log.warning(
       "validateDefaultTrustManager is not doing anything since akka 2.6.19, it was useful only in Java 7 and below");
-  }
 
   def configureProtocols(existingProtocols: Array[String], sslConfig: SSLConfigSettings): Array[String] = {
     val definedProtocols = sslConfig.enabledProtocols match {

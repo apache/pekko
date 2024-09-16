@@ -96,14 +96,13 @@ abstract class ClusterShardCoordinatorDowning2Spec(multiNodeConfig: ClusterShard
 
   import ClusterShardCoordinatorDowning2Spec._
 
-  def startSharding(): Unit = {
+  def startSharding(): Unit =
     startSharding(
       system,
       typeName = "Entity",
       entityProps = Props[Entity](),
       extractEntityId = extractEntityId,
       extractShardId = extractShardId)
-  }
 
   lazy val region = ClusterSharding(system).shardRegion("Entity")
 

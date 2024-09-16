@@ -228,8 +228,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
       extractEntityId: ShardRegion.ExtractEntityId,
       extractShardId: ShardRegion.ExtractShardId,
       allocationStrategy: ShardAllocationStrategy,
-      handOffStopMessage: Any): ActorRef = {
-
+      handOffStopMessage: Any): ActorRef =
     internalStart(
       typeName,
       _ => entityProps,
@@ -238,7 +237,6 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
       extractShardId,
       allocationStrategy,
       handOffStopMessage)
-  }
 
   /**
    * Scala API: Register a named entity type by defining the [[pekko.actor.Props]] of the entity actor
@@ -270,8 +268,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
       extractEntityId: ShardRegion.ExtractEntityId,
       extractShardId: ShardRegion.ExtractShardId,
       allocationStrategy: ShardAllocationStrategy,
-      handOffStopMessage: Any): ActorRef = {
-
+      handOffStopMessage: Any): ActorRef =
     start(
       typeName,
       entityProps,
@@ -280,7 +277,6 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
       extractShardId,
       allocationStrategy,
       handOffStopMessage)
-  }
 
   /**
    * INTERNAL API
@@ -390,10 +386,8 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
       typeName: String,
       entityProps: Props,
       extractEntityId: ShardRegion.ExtractEntityId,
-      extractShardId: ShardRegion.ExtractShardId): ActorRef = {
-
+      extractShardId: ShardRegion.ExtractShardId): ActorRef =
     start(typeName, entityProps, ClusterShardingSettings(system), extractEntityId, extractShardId)
-  }
 
   /**
    * Java/Scala API: Register a named entity type by defining the [[pekko.actor.Props]] of the entity actor
@@ -423,8 +417,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
       settings: ClusterShardingSettings,
       messageExtractor: ShardRegion.MessageExtractor,
       allocationStrategy: ShardAllocationStrategy,
-      handOffStopMessage: Any): ActorRef = {
-
+      handOffStopMessage: Any): ActorRef =
     internalStart(
       typeName,
       _ => entityProps,
@@ -436,7 +429,6 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
       extractShardId = msg => messageExtractor.shardId(msg),
       allocationStrategy = allocationStrategy,
       handOffStopMessage = handOffStopMessage)
-  }
 
   /**
    * Java/Scala API: Register a named entity type by defining the [[pekko.actor.Props]] of the entity actor
@@ -490,9 +482,8 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    *   entity from the incoming message
    * @return the actor ref of the [[ShardRegion]] that is to be responsible for the shard
    */
-  def start(typeName: String, entityProps: Props, messageExtractor: ShardRegion.MessageExtractor): ActorRef = {
+  def start(typeName: String, entityProps: Props, messageExtractor: ShardRegion.MessageExtractor): ActorRef =
     start(typeName, entityProps, ClusterShardingSettings(system), messageExtractor)
-  }
 
   /**
    * Scala API: Register a named entity type `ShardRegion` on this node that will run in proxy only mode,
@@ -546,8 +537,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
       role: Option[String],
       dataCenter: Option[DataCenter],
       extractEntityId: ShardRegion.ExtractEntityId,
-      extractShardId: ShardRegion.ExtractShardId): ActorRef = {
-
+      extractShardId: ShardRegion.ExtractShardId): ActorRef =
     proxies.get(proxyName(typeName, dataCenter)) match {
       case null =>
         // it's ok to StartProxy several time, the guardian will deduplicate concurrent requests
@@ -560,14 +550,12 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
         shardRegion
       case ref => ref // already started, use cached ActorRef
     }
-  }
 
-  private def proxyName(typeName: String, dataCenter: Option[DataCenter]): String = {
+  private def proxyName(typeName: String, dataCenter: Option[DataCenter]): String =
     dataCenter match {
       case None    => s"${typeName}Proxy"
       case Some(t) => s"${typeName}Proxy" + "-" + t
     }
-  }
 
   /**
    * Java/Scala API: Register a named entity type `ShardRegion` on this node that will run in proxy only mode,
@@ -610,15 +598,12 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
       typeName: String,
       role: Optional[String],
       dataCenter: Optional[String],
-      messageExtractor: ShardRegion.MessageExtractor): ActorRef = {
-
+      messageExtractor: ShardRegion.MessageExtractor): ActorRef =
     startProxy(typeName, Option(role.orElse(null)), Option(dataCenter.orElse(null)),
       extractEntityId = {
         case msg if messageExtractor.entityId(msg) ne null =>
           (messageExtractor.entityId(msg), messageExtractor.entityMessage(msg))
       }, extractShardId = msg => messageExtractor.shardId(msg))
-
-  }
 
   /**
    * Scala API: get all currently defined sharding type names.
@@ -635,7 +620,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    * The entity type must be registered with the [[#start]] or [[#startProxy]] method before it
    * can be used here. Messages to the entity is always sent via the `ShardRegion`.
    */
-  def shardRegion(typeName: String): ActorRef = {
+  def shardRegion(typeName: String): ActorRef =
     regions.get(typeName) match {
       case null =>
         proxies.get(proxyName(typeName, None)) match {
@@ -646,7 +631,6 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
         }
       case ref => ref
     }
-  }
 
   /**
    * Retrieve the actor reference of the [[ShardRegion]] actor that will act as a proxy to the
@@ -655,18 +639,17 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    * [[#startProxy]] method before it can be used here. Messages to the entity is always sent
    * via the `ShardRegion`.
    */
-  def shardRegionProxy(typeName: String, dataCenter: DataCenter): ActorRef = {
+  def shardRegionProxy(typeName: String, dataCenter: DataCenter): ActorRef =
     proxies.get(proxyName(typeName, Some(dataCenter))) match {
       case null =>
         throw new IllegalStateException(s"Shard type [$typeName] must be started first")
       case ref => ref
     }
-  }
 
   /**
    * The default `ShardAllocationStrategy` is configured by `least-shard-allocation-strategy` properties.
    */
-  def defaultShardAllocationStrategy(settings: ClusterShardingSettings): ShardAllocationStrategy = {
+  def defaultShardAllocationStrategy(settings: ClusterShardingSettings): ShardAllocationStrategy =
     if (settings.tuningParameters.leastShardAllocationAbsoluteLimit > 0) {
       // new algorithm
       val absoluteLimit = settings.tuningParameters.leastShardAllocationAbsoluteLimit
@@ -678,7 +661,6 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
       val maxSimultaneousRebalance = settings.tuningParameters.leastShardAllocationMaxSimultaneousRebalance
       new ShardCoordinator.LeastShardAllocationStrategy(threshold, maxSimultaneousRebalance)
     }
-  }
 }
 
 /**
@@ -736,7 +718,7 @@ private[pekko] class ClusterShardingGuardian extends Actor {
       settingsWithRoles.withDurableKeys(Set.empty[String])
   }
 
-  private def replicator(settings: ClusterShardingSettings): ActorRef = {
+  private def replicator(settings: ClusterShardingSettings): ActorRef =
     if (settings.stateStoreMode == ClusterShardingSettings.StateStoreModeDData ||
       settings.stateStoreMode == ClusterShardingSettings.RememberEntitiesStoreCustom) {
       // one Replicator per role
@@ -753,7 +735,6 @@ private[pekko] class ClusterShardingGuardian extends Actor {
       }
     } else
       context.system.deadLetters
-  }
 
   def receive: Receive = {
     case Start(

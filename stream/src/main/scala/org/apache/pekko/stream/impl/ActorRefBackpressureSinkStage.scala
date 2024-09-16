@@ -50,7 +50,7 @@ import pekko.stream.stage._
       private var completeReceived = false
       private var completionSignalled = false
 
-      private def receive(evt: (ActorRef, Any)): Unit = {
+      private def receive(evt: (ActorRef, Any)): Unit =
         evt._2 match {
           case Terminated(`ref`) => completeStage()
           case ackMsg if ackMessage.isEmpty || ackMessage.contains(ackMsg) =>
@@ -65,7 +65,6 @@ import pekko.stream.stage._
             }
           case _ => // ignore all other messages
         }
-      }
 
       override def preStart(): Unit = {
         setKeepGoing(true)
@@ -74,9 +73,8 @@ import pekko.stream.stage._
         pull(in)
       }
 
-      private def dequeueAndSend(): Unit = {
+      private def dequeueAndSend(): Unit =
         ref ! messageAdapter(self)(buffer.poll())
-      }
 
       private def finish(): Unit = {
         ref ! onCompleteMessage
@@ -93,10 +91,9 @@ import pekko.stream.stage._
         if (buffer.size() < maxBuffer) pull(in)
       }
 
-      override def onUpstreamFinish(): Unit = {
+      override def onUpstreamFinish(): Unit =
         if (buffer.isEmpty) finish()
         else completeReceived = true
-      }
 
       override def onUpstreamFailure(ex: Throwable): Unit = {
         ref ! onFailureMessage(ex)
@@ -104,11 +101,10 @@ import pekko.stream.stage._
         failStage(ex)
       }
 
-      override def postStop(): Unit = {
+      override def postStop(): Unit =
         if (!completionSignalled) {
           ref ! onFailureMessage(new AbruptStageTerminationException(this))
         }
-      }
 
       setHandler(in, this)
     }

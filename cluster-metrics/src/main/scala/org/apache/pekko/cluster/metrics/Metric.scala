@@ -139,7 +139,7 @@ object StandardMetrics {
      * necessary heap metrics.
      * @return if possible a tuple matching the HeapMemory constructor parameters
      */
-    def unapply(nodeMetrics: NodeMetrics): Option[(Address, Long, Long, Long, Option[Long])] = {
+    def unapply(nodeMetrics: NodeMetrics): Option[(Address, Long, Long, Long, Option[Long])] =
       for {
         used <- nodeMetrics.metric(HeapMemoryUsed)
         committed <- nodeMetrics.metric(HeapMemoryCommitted)
@@ -149,7 +149,6 @@ object StandardMetrics {
         used.smoothValue.longValue,
         committed.smoothValue.longValue,
         nodeMetrics.metric(HeapMemoryMax).map(_.smoothValue.longValue))
-    }
 
   }
 
@@ -191,7 +190,7 @@ object StandardMetrics {
      * @return if possible a tuple matching the Cpu constructor parameters
      */
     def unapply(
-        nodeMetrics: NodeMetrics): Option[(Address, Long, Option[Double], Option[Double], Option[Double], Int)] = {
+        nodeMetrics: NodeMetrics): Option[(Address, Long, Option[Double], Option[Double], Option[Double], Int)] =
       for {
         processors <- nodeMetrics.metric(Processors)
       } yield (
@@ -201,7 +200,6 @@ object StandardMetrics {
         nodeMetrics.metric(CpuCombined).map(_.smoothValue),
         nodeMetrics.metric(CpuStolen).map(_.smoothValue),
         processors.value.intValue)
-    }
 
   }
 
@@ -320,9 +318,7 @@ final case class NodeMetrics(address: Address, timestamp: Long, metrics: Set[Met
       latest <- latestNode.metrics
       current <- currentNode.metrics
       if latest.sameAs(current)
-    } yield {
-      current :+ latest
-    }
+    } yield current :+ latest
     // Append metrics missing from either latest or current.
     // Equality is based on the [[Metric.name]]
     val merged =
@@ -376,7 +372,7 @@ private[metrics] final case class MetricsGossip(nodes: Set[NodeMetrics]) {
    * Only the nodes that are in the `includeNodes` Set.
    */
   def filter(includeNodes: Set[Address]): MetricsGossip =
-    copy(nodes = nodes.filter { includeNodes contains _.address })
+    copy(nodes = nodes.filter(includeNodes contains _.address))
 
   /**
    * Adds new remote [[NodeMetrics]] and merges existing from a remote gossip.

@@ -50,12 +50,10 @@ class PersistenceTestKitDurableStateStore[A](stateStore: SStore[A])
   def deleteObject(persistenceId: String, revision: Long): CompletionStage[Done] =
     stateStore.deleteObject(persistenceId, revision).asJava
 
-  def changes(tag: String, offset: Offset): Source[DurableStateChange[A], pekko.NotUsed] = {
+  def changes(tag: String, offset: Offset): Source[DurableStateChange[A], pekko.NotUsed] =
     stateStore.changes(tag, offset).asJava
-  }
-  def currentChanges(tag: String, offset: Offset): Source[DurableStateChange[A], pekko.NotUsed] = {
+  def currentChanges(tag: String, offset: Offset): Source[DurableStateChange[A], pekko.NotUsed] =
     stateStore.currentChanges(tag, offset).asJava
-  }
 
   override def currentChangesBySlices(
       entityType: String,

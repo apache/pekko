@@ -102,13 +102,12 @@ abstract class Props private[pekko] () extends Product with Serializable {
    */
   @InternalApi
   private[pekko] def firstOrElse[T <: Props: ClassTag](default: T): T = {
-    @tailrec def rec(d: Props): T = {
+    @tailrec def rec(d: Props): T =
       d match {
         case EmptyProps => default
         case t: T       => t
         case _          => rec(d.next)
       }
-    }
     rec(this)
   }
 

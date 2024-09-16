@@ -131,9 +131,8 @@ class DispatcherSelectorSpec(config: Config)
 
         val response = probe.receiveMessage()
         response.threadName should startWith("DispatcherSelectorSpec2-pekko.actor.default-dispatcher")
-      } finally {
+      } finally
         ActorTestKit.shutdown(sys)
-      }
     }
 
   }

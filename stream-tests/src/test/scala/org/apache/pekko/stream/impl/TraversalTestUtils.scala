@@ -89,9 +89,8 @@ object TraversalTestUtils {
       val attributesAssignments: List[(AtomicModule[Shape, Any], Attributes)],
       val islandAssignments: List[(AtomicModule[Shape, Any], Attributes, IslandTag)]) {
 
-    override def toString = {
+    override def toString =
       outlets.iterator.zip(inlets.iterator).mkString("connections: ", ", ", "")
-    }
   }
 
   case object TestDefaultIsland extends IslandTag

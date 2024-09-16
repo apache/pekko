@@ -76,7 +76,7 @@ private[cluster] class Reachability private (
   private class Cache {
     // `allUnreachable` contains all nodes that have been observed as Unreachable by at least one other node
     // `allTerminated` contains all nodes that have been observed as Terminated by at least one other node
-    val (observerRowsMap, allUnreachable, allTerminated) = {
+    val (observerRowsMap, allUnreachable, allTerminated) =
       if (records.isEmpty) {
         val observerRowsMap = Map.empty[UniqueAddress, Map[UniqueAddress, Reachability.Record]]
         val allTerminated = Set.empty[UniqueAddress]
@@ -102,7 +102,6 @@ private[cluster] class Reachability private (
 
         (observerRowsMap, allUnreachable.diff(allTerminated), allTerminated)
       }
-    }
 
     val allUnreachableOrTerminated: Set[UniqueAddress] =
       if (allTerminated.isEmpty) allUnreachable
@@ -283,23 +282,21 @@ private[cluster] class Reachability private (
           .to(immutable.Set)
     }
 
-  def observersGroupedByUnreachable: Map[UniqueAddress, Set[UniqueAddress]] = {
+  def observersGroupedByUnreachable: Map[UniqueAddress, Set[UniqueAddress]] =
     records.groupBy(_.subject).collect {
       case (subject, records) if records.exists(_.status == Unreachable) =>
         val observers: Set[UniqueAddress] =
           records.iterator.collect { case r if r.status == Unreachable => r.observer }.to(immutable.Set)
         subject -> observers
     }
-  }
 
   def allObservers: Set[UniqueAddress] = records.iterator.map(_.observer).toSet
 
-  def recordsFrom(observer: UniqueAddress): immutable.IndexedSeq[Record] = {
+  def recordsFrom(observer: UniqueAddress): immutable.IndexedSeq[Record] =
     observerRows(observer) match {
       case None       => Vector.empty
       case Some(rows) => rows.valuesIterator.toVector
     }
-  }
 
   // only used for testing
   override def hashCode: Int = versions.hashCode

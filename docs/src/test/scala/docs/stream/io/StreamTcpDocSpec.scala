@@ -110,12 +110,11 @@ class StreamTcpDocSpec extends PekkoSpec {
     import org.apache.pekko.stream.scaladsl.Framing
 
     val input = new AtomicReference("Hello world" :: "What a lovely day" :: Nil)
-    def readLine(prompt: String): String = {
+    def readLine(prompt: String): String =
       input.get() match {
         case all @ cmd :: tail if input.compareAndSet(all, tail) => cmd
         case _                                                   => "q"
       }
-    }
 
     {
       // just for docs, never actually used

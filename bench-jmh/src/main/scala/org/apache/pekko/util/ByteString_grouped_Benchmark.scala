@@ -34,7 +34,6 @@ class ByteString_grouped_Benchmark {
    */
 
   @Benchmark
-  def grouped(bh: Blackhole): Unit = {
+  def grouped(bh: Blackhole): Unit =
     bh.consume(bsLarge.grouped(1000).foreach(bh.consume))
-  }
 }

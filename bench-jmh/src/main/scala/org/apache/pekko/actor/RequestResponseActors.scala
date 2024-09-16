@@ -30,7 +30,7 @@ object RequestResponseActors {
     private val randGenerator = new Random()
 
     override def receive: Receive = {
-      case u: User => {
+      case u: User =>
         receivedUsers.put(u.userId, u)
         if (left == 0) {
           latch.countDown()
@@ -39,14 +39,12 @@ object RequestResponseActors {
           sender() ! Request(randGenerator.nextInt(numUsersInDB))
         }
         left -= 1
-      }
     }
   }
 
   object UserQueryActor {
-    def props(latch: CountDownLatch, numQueries: Int, numUsersInDB: Int) = {
+    def props(latch: CountDownLatch, numQueries: Int, numUsersInDB: Int) =
       Props(new UserQueryActor(latch, numQueries, numUsersInDB))
-    }
   }
 
   class UserServiceActor(userDb: Map[Int, User], latch: CountDownLatch, numQueries: Int) extends Actor {
@@ -94,13 +92,11 @@ object RequestResponseActors {
     (actorsPairs, latch)
   }
 
-  def initiateQuerySimulation(requestResponseActorPairs: Seq[(ActorRef, ActorRef)], inFlight: Int) = {
+  def initiateQuerySimulation(requestResponseActorPairs: Seq[(ActorRef, ActorRef)], inFlight: Int) =
     for {
       (queryActor, serviceActor) <- requestResponseActorPairs
       i <- 1 to inFlight
-    } {
-      serviceActor.tell(Request(i), queryActor)
     }
-  }
+      serviceActor.tell(Request(i), queryActor)
 
 }

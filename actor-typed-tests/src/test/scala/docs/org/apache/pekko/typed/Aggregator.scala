@@ -34,13 +34,13 @@ object Aggregator {
       expectedReplies: Int,
       replyTo: ActorRef[Aggregate],
       aggregateReplies: immutable.IndexedSeq[Reply] => Aggregate,
-      timeout: FiniteDuration): Behavior[Command] = {
+      timeout: FiniteDuration): Behavior[Command] =
     Behaviors.setup { context =>
       context.setReceiveTimeout(timeout, ReceiveTimeout)
       val replyAdapter = context.messageAdapter[Reply](WrappedReply(_))
       sendRequests(replyAdapter)
 
-      def collecting(replies: immutable.IndexedSeq[Reply]): Behavior[Command] = {
+      def collecting(replies: immutable.IndexedSeq[Reply]): Behavior[Command] =
         Behaviors.receiveMessage {
           case WrappedReply(reply) =>
             val newReplies = replies :+ reply.asInstanceOf[Reply]
@@ -56,11 +56,9 @@ object Aggregator {
             replyTo ! aggregate
             Behaviors.stopped
         }
-      }
 
       collecting(Vector.empty)
     }
-  }
 
 }
 //#behavior

@@ -343,13 +343,11 @@ class MessageSerializerRemotingSpec extends PekkoSpec(remote.withFallback(custom
 
   val serialization = SerializationExtension(system)
 
-  override protected def atStartup(): Unit = {
+  override protected def atStartup(): Unit =
     remoteSystem.actorOf(Props[RemoteActor](), "remote")
-  }
 
-  override def afterTermination(): Unit = {
+  override def afterTermination(): Unit =
     Await.ready(remoteSystem.terminate(), Duration.Inf)
-  }
 
   "A message serializer" must {
     "custom-serialize PersistentRepr messages during remoting" in {

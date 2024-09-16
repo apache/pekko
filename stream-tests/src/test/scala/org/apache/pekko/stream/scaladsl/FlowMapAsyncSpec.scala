@@ -462,14 +462,13 @@ class FlowMapAsyncSpec extends StreamSpec {
       }
       timer.start
 
-      def deferred(): Future[Int] = {
+      def deferred(): Future[Int] =
         if (counter.incrementAndGet() > parallelism) Future.failed(new Exception("parallelism exceeded"))
         else {
           val p = Promise[Int]()
           queue.offer(p -> System.nanoTime())
           p.future
         }
-      }
 
       try {
         val N = 10000
@@ -477,9 +476,8 @@ class FlowMapAsyncSpec extends StreamSpec {
           .mapAsync(parallelism)(_ => deferred())
           .runFold(0)((c, _) => c + 1)
           .futureValue(Timeout(3.seconds)) should ===(N)
-      } finally {
+      } finally
         timer.interrupt()
-      }
     }
 
     "not invoke the decider twice for the same failed future" in {

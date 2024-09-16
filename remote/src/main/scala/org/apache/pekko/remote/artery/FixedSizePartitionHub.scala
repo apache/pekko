@@ -73,10 +73,9 @@ import pekko.stream.scaladsl.PartitionHub
   override def nonEmpty(id: Long): Boolean =
     !isEmpty(id)
 
-  override def offer(id: Long, elem: Any): Unit = {
+  override def offer(id: Long, elem: Any): Unit =
     if (!queues(id.toInt).offer(elem.asInstanceOf[AnyRef]))
       throw new IllegalStateException(s"queue is full, id [$id]")
-  }
 
   override def poll(id: Long): AnyRef =
     queues(id.toInt).poll()

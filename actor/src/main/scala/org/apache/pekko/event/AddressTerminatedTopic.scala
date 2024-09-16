@@ -64,8 +64,7 @@ private[pekko] final class AddressTerminatedTopic extends Extension {
       unsubscribe(subscriber) // retry
   }
 
-  def publish(msg: AddressTerminated): Unit = {
-    subscribers.get.foreach { _.tell(msg, ActorRef.noSender) }
-  }
+  def publish(msg: AddressTerminated): Unit =
+    subscribers.get.foreach(_.tell(msg, ActorRef.noSender))
 
 }

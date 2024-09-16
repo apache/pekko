@@ -46,7 +46,7 @@ private[pekko] final class CollectFirst[In, Out](pf: PartialFunction[In, Out]) e
 
       @nowarn("msg=Any")
       override final def onPush(): Unit =
-        try {
+        try
           // 1. `applyOrElse` is faster than (`pf.isDefinedAt` and then `pf.apply`)
           // 2. using reference comparing here instead of pattern matching can generate less and quicker bytecode,
           //   eg: just a simple `IF_ACMPNE`, and you can find the same trick in `CollectWhile` operator.
@@ -58,7 +58,7 @@ private[pekko] final class CollectFirst[In, Out](pf: PartialFunction[In, Out]) e
               push(out, elem)
               completeStage()
           }
-        } catch {
+        catch {
           case NonFatal(ex) =>
             decider(ex) match {
               case Supervision.Stop => failStage(ex)

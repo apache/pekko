@@ -59,9 +59,8 @@ class StreamTestKitSpec extends PekkoSpec {
         error.getMessage should startWith("toStrict received OnError")
         error.getMessage should include("List(1, 2)")
         error.getCause should ===(ex)
-      } finally {
+      } finally
         system.eventStream.publish(UnMute(EventFilter[Exception]()))
-      }
     }
 
     "#toStrict when subscription was already obtained" in {

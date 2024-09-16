@@ -81,9 +81,9 @@ class KeepGoingStageSpec extends StreamSpec {
             failStage(TE("test"))
             listener.foreach(_ ! EndOfEventHandler)
           case Throw =>
-            try {
+            try
               throw TE("test")
-            } finally listener.foreach(_ ! EndOfEventHandler)
+            finally listener.foreach(_ ! EndOfEventHandler)
         }
 
         setHandler(shape.in,

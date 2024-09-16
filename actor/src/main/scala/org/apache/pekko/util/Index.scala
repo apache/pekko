@@ -93,12 +93,11 @@ class Index[K, V](val mapSize: Int, val valueComparator: Comparator[V]) {
   /**
    * Returns an Iterator of V containing the values for the supplied key, or an empty iterator if the key doesn't exist
    */
-  def valueIterator(key: K): scala.Iterator[V] = {
+  def valueIterator(key: K): scala.Iterator[V] =
     container.get(key) match {
       case null => Iterator.empty
       case some => some.iterator.asScala
     }
-  }
 
   /**
    * Applies the supplied function to all keys and their values

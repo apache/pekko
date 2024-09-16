@@ -44,21 +44,19 @@ package docs.serialization {
     def identifier = 1234567
 
     // "toBinary" serializes the given object to an Array of Bytes
-    def toBinary(obj: AnyRef): Array[Byte] = {
+    def toBinary(obj: AnyRef): Array[Byte] =
       // Put the code that serializes the object here
       // #...
       Array[Byte]()
-      // #...
-    }
+    // #...
 
     // "fromBinary" deserializes the given array,
     // using the type hint (if any, see "includeManifest" above)
-    def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]): AnyRef = {
+    def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]): AnyRef =
       // Put your code that deserializes here
       // #...
       null
-      // #...
-    }
+    // #...
   }
   // #my-own-serializer
 
@@ -83,17 +81,16 @@ package docs.serialization {
       }
 
     // "toBinary" serializes the given object to an Array of Bytes
-    def toBinary(obj: AnyRef): Array[Byte] = {
+    def toBinary(obj: AnyRef): Array[Byte] =
       // Put the real code that serializes the object here
       obj match {
         case Customer(name) => name.getBytes(UTF_8)
         case User(name)     => name.getBytes(UTF_8)
       }
-    }
 
     // "fromBinary" deserializes the given array,
     // using the type hint
-    def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = {
+    def fromBinary(bytes: Array[Byte], manifest: String): AnyRef =
       // Put the real code that deserializes here
       manifest match {
         case CustomerManifest =>
@@ -101,7 +98,6 @@ package docs.serialization {
         case UserManifest =>
           User(new String(bytes, UTF_8))
       }
-    }
   }
   // #my-own-serializer2
 

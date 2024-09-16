@@ -131,7 +131,7 @@ private[remote] class OutboundHandshake(
       }
 
       // OutHandler
-      override def onPull(): Unit = {
+      override def onPull(): Unit =
         handshakeState match {
           case Completed =>
             pendingMessage match {
@@ -162,7 +162,6 @@ private[remote] class OutboundHandshake(
 
           case ReqInProgress => // will pull when handshake reply is received
         }
-      }
 
       private def pushHandshakeReq(): Unit = {
         injectHandshakeTickScheduled = true
@@ -172,7 +171,7 @@ private[remote] class OutboundHandshake(
           push(out, createHandshakeReqEnvelope())
       }
 
-      private def pushLivenessProbeReq(): Unit = {
+      private def pushLivenessProbeReq(): Unit =
         // The associationState.lastUsedTimestamp will be updated when the HandshakeRsp is received
         // and that is the confirmation that the other system is alive, and will not be quarantined
         // by the quarantine-idle-outbound-after even though no real messages have been sent.
@@ -186,16 +185,14 @@ private[remote] class OutboundHandshake(
             push(out, createHandshakeReqEnvelope())
           }
         }
-      }
 
-      private def createHandshakeReqEnvelope(): OutboundEnvelope = {
+      private def createHandshakeReqEnvelope(): OutboundEnvelope =
         outboundEnvelopePool
           .acquire()
           .init(
             recipient = OptionVal.None,
             message = HandshakeReq(outboundContext.localAddress, outboundContext.remoteAddress),
             sender = OptionVal.None)
-      }
 
       private def handshakeCompleted(): Unit = {
         handshakeState = Completed
@@ -279,7 +276,7 @@ private[remote] class InboundHandshake(inboundContext: InboundContext, inControl
             }
           })
 
-      private def onHandshakeReq(from: UniqueAddress, to: Address): Unit = {
+      private def onHandshakeReq(from: UniqueAddress, to: Address): Unit =
         if (to == inboundContext.localAddress.address) {
           after(inboundContext.completeHandshake(from)) { () =>
             inboundContext.sendControl(from.address, HandshakeRsp(inboundContext.localAddress))
@@ -298,9 +295,8 @@ private[remote] class InboundHandshake(inboundContext: InboundContext, inControl
 
           pull(in)
         }
-      }
 
-      private def after(first: Future[Done])(thenInside: () => Unit): Unit = {
+      private def after(first: Future[Done])(thenInside: () => Unit): Unit =
         first.value match {
           case Some(_) =>
             // This in the normal case (all but the first). The future will be completed
@@ -311,9 +307,7 @@ private[remote] class InboundHandshake(inboundContext: InboundContext, inControl
             first.onComplete(_ => runInStage.invoke(thenInside))(ExecutionContexts.parasitic)
         }
 
-      }
-
-      private def onMessage(env: InboundEnvelope): Unit = {
+      private def onMessage(env: InboundEnvelope): Unit =
         if (isKnownOrigin(env))
           push(out, env)
         else {
@@ -323,14 +317,12 @@ private[remote] class InboundHandshake(inboundContext: InboundContext, inControl
           inboundContext.publishDropped(env, dropReason)
           pull(in)
         }
-      }
 
-      private def isKnownOrigin(env: InboundEnvelope): Boolean = {
+      private def isKnownOrigin(env: InboundEnvelope): Boolean =
         // the association is passed in the envelope from the Decoder stage to avoid
         // additional lookup. The second OR case is because if we didn't use fusing it
         // would be possible that it was not found by Decoder (handshake not completed yet)
         env.association.isDefined || inboundContext.association(env.originUid).isDefined
-      }
 
       // OutHandler
       override def onPull(): Unit = pull(in)

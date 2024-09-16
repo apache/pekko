@@ -85,7 +85,7 @@ private[pekko] class DnsServiceDiscovery(system: ExtendedActorSystem) extends Se
   private val dns = initializeDns()
 
   // exposed for testing
-  private[dns] def initializeDns(): ActorRef = {
+  private[dns] def initializeDns(): ActorRef =
     if (system.settings.config.getString("pekko.io.dns.resolver") == "async-dns") {
       log.debug("using system resolver as it is set to async-dns")
       IO(Dns)(system)
@@ -93,7 +93,6 @@ private[pekko] class DnsServiceDiscovery(system: ExtendedActorSystem) extends Se
       log.debug("system resolver is not async-dns. Loading isolated resolver")
       Dns(system).loadAsyncDns("SD-DNS")
     }
-  }
 
   // updated from ask AsyncDnsManager.GetCache, but doesn't have to volatile since will still work when unset
   // (eventually visible)
@@ -113,19 +112,18 @@ private[pekko] class DnsServiceDiscovery(system: ExtendedActorSystem) extends Se
   private def cleanIpString(ipString: String): String =
     if (ipString.startsWith("/")) ipString.tail else ipString
 
-  override def lookup(lookup: Lookup, resolveTimeout: FiniteDuration): Future[Resolved] = {
+  override def lookup(lookup: Lookup, resolveTimeout: FiniteDuration): Future[Resolved] =
     if (lookup.portName.isDefined && lookup.protocol.isDefined)
       lookupSrv(lookup, resolveTimeout)
     else
       lookupIp(lookup, resolveTimeout)
-  }
 
   private def lookupSrv(lookup: Lookup, resolveTimeout: FiniteDuration) = {
     val srvRequest = s"_${lookup.portName.get}._${lookup.protocol.get}.${lookup.serviceName}"
     log.debug("Lookup [{}] translated to SRV query [{}] as contains portName and protocol", lookup, srvRequest)
     val mode = Srv
 
-    def askResolve(): Future[Resolved] = {
+    def askResolve(): Future[Resolved] =
       dns
         .ask(DnsProtocol.Resolve(srvRequest, mode))(resolveTimeout)
         .map {
@@ -137,7 +135,6 @@ private[pekko] class DnsServiceDiscovery(system: ExtendedActorSystem) extends Se
             Resolved(srvRequest, Nil)
         }
         .recoverWith(convertToTimeout(resolveTimeout))
-    }
 
     asyncDnsCache match {
       case OptionVal.Some(cache) =>
@@ -172,7 +169,7 @@ private[pekko] class DnsServiceDiscovery(system: ExtendedActorSystem) extends Se
       Resolved(lookup.serviceName, addresses)
     }
 
-    def askResolve(): Future[Resolved] = {
+    def askResolve(): Future[Resolved] =
       dns
         .ask(DnsProtocol.Resolve(lookup.serviceName, mode))(resolveTimeout)
         .map {
@@ -184,7 +181,6 @@ private[pekko] class DnsServiceDiscovery(system: ExtendedActorSystem) extends Se
             Resolved(lookup.serviceName, Nil)
         }
         .recoverWith(convertToTimeout(resolveTimeout))
-    }
 
     asyncDnsCache match {
       case OptionVal.Some(cache) =>

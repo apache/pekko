@@ -86,29 +86,26 @@ object ReplicatorDeltaSpec extends MultiNodeConfig {
   def generateOperations(onNode: RoleName): Vector[Op] = {
     val rnd = ThreadLocalRandom.current()
 
-    def consistency(): WriteConsistency = {
+    def consistency(): WriteConsistency =
       rnd.nextInt(100) match {
         case n if n < 90  => WriteLocal
         case n if n < 95  => writeTwo
         case n if n < 100 => writeMajority
       }
-    }
 
-    def rndPnCounterkey(): PNCounterKey = {
+    def rndPnCounterkey(): PNCounterKey =
       rnd.nextInt(3) match {
         case 0 => KeyA
         case 1 => KeyB
         case 2 => KeyC
       }
-    }
 
-    def rndOrSetkey(): ORSetKey[String] = {
+    def rndOrSetkey(): ORSetKey[String] =
       rnd.nextInt(3) match {
         case 0 => KeyD
         case 1 => KeyE
         case 2 => KeyF
       }
-    }
 
     var availableForRemove = Set.empty[String]
 
@@ -119,12 +116,11 @@ object ReplicatorDeltaSpec extends MultiNodeConfig {
       s
     }
 
-    def rndRemoveElement(): String = {
+    def rndRemoveElement(): String =
       if (availableForRemove.isEmpty)
         "a"
       else
         availableForRemove.toVector(rnd.nextInt(availableForRemove.size))
-    }
 
     (0 to (30 + rnd.nextInt(10))).map { _ =>
       rnd.nextInt(4) match {

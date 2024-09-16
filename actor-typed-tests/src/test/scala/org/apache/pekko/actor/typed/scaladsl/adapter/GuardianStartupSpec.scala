@@ -44,10 +44,9 @@ class GuardianStartupSpec extends AnyWordSpec with Matchers with ScalaFutures wi
 
         sawMsg.await(3, TimeUnit.SECONDS) should ===(true)
 
-      } finally {
+      } finally
         if (system ne null)
           ActorTestKit.shutdown(system)
-      }
     }
 
     "not start before classic system initialization is complete" in {
@@ -64,10 +63,9 @@ class GuardianStartupSpec extends AnyWordSpec with Matchers with ScalaFutures wi
 
         initialized.await(3, TimeUnit.SECONDS) should ===(true)
 
-      } finally {
+      } finally
         if (system ne null)
           ActorTestKit.shutdown(system)
-      }
     }
 
     "have its shutdown hook run on immediate shutdown (after start)" in {
@@ -82,10 +80,9 @@ class GuardianStartupSpec extends AnyWordSpec with Matchers with ScalaFutures wi
         system.whenTerminated.futureValue
         stopHookExecuted.await(3, TimeUnit.SECONDS) should ===(true)
 
-      } finally {
+      } finally
         if (system ne null)
           ActorTestKit.shutdown(system)
-      }
     }
 
   }

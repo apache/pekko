@@ -103,18 +103,16 @@ class RemoteRouterSpec extends PekkoSpec(s"""
     }""").withFallback(system.settings.config)
   val masterSystem = ActorSystem(masterSystemName, conf)
 
-  override def afterTermination(): Unit = {
+  override def afterTermination(): Unit =
     shutdown(masterSystem)
-  }
 
-  def collectRouteePaths(probe: TestProbe, router: ActorRef, n: Int): immutable.Seq[ActorPath] = {
+  def collectRouteePaths(probe: TestProbe, router: ActorRef, n: Int): immutable.Seq[ActorPath] =
     for (i <- 1 to n) yield {
       val msg = i.toString
       router.tell(msg, probe.ref)
       probe.expectMsg(msg)
       probe.lastSender.path
     }
-  }
 
   "A Remote Router" must {
 

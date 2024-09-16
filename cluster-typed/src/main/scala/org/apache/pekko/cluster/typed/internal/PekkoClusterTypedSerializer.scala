@@ -63,13 +63,12 @@ private[pekko] final class PekkoClusterTypedSerializer(override val system: Exte
         s"Unimplemented deserialization of message with manifest [$manifest] in [${getClass.getName}]")
   }
 
-  private def pubSubPublishToBinary(m: TopicImpl.MessagePublished[_]): Array[Byte] = {
+  private def pubSubPublishToBinary(m: TopicImpl.MessagePublished[_]): Array[Byte] =
     ClusterMessages.PubSubMessagePublished
       .newBuilder()
       .setMessage(payloadSupport.payloadBuilder(m.message))
       .build()
       .toByteArray
-  }
 
   private def receptionistEntryToBinary(e: Entry): Array[Byte] = {
     val b = ClusterMessages.ReceptionistEntry

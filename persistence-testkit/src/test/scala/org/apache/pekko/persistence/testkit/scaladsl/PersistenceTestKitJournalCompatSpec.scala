@@ -29,7 +29,7 @@ class PersistenceTestKitJournalCompatSpec extends JournalSpec(config = Persisten
   override def beforeAll(): Unit = {
     super.beforeAll()
     InMemStorageExtension(system).setPolicy(new JournalPolicies.PolicyType {
-      override def tryProcess(persistenceId: String, op: JournalOperation): ProcessingResult = {
+      override def tryProcess(persistenceId: String, op: JournalOperation): ProcessingResult =
         op match {
           case WriteEvents(batch) =>
             val allSerializable =
@@ -42,7 +42,6 @@ class PersistenceTestKitJournalCompatSpec extends JournalSpec(config = Persisten
           case _ => ProcessingSuccess
         }
 
-      }
     })
   }
 

@@ -26,18 +26,16 @@ class DispatcherActorsSpec extends PekkoSpec {
   class SlowActor(finishedCounter: CountDownLatch) extends Actor {
 
     def receive = {
-      case _: Int => {
+      case _: Int =>
         Thread.sleep(50) // slow actor
         finishedCounter.countDown()
-      }
     }
   }
 
   class FastActor(finishedCounter: CountDownLatch) extends Actor {
     def receive = {
-      case _: Int => {
+      case _: Int =>
         finishedCounter.countDown()
-      }
     }
   }
 
@@ -49,14 +47,12 @@ class DispatcherActorsSpec extends PekkoSpec {
       val f = system.actorOf(Props(new FastActor(fFinished)))
 
       // send a lot of stuff to s
-      for (i <- 1 to 50) {
+      for (i <- 1 to 50)
         s ! i
-      }
 
       // send some messages to f
-      for (i <- 1 to 10) {
+      for (i <- 1 to 10)
         f ! i
-      }
 
       // now assert that f is finished while s is still busy
       fFinished.await()

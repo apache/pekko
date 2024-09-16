@@ -407,7 +407,7 @@ router-dispatcher {}
       context.actorOf(BalancingPool(20).props(Props[Worker]()), "router10b")
     // #balancing-pool-3
     for (i <- 1 to 100) router10b ! i
-    val threads10b = Thread.getAllStackTraces.keySet.asScala.filter { _.getName contains "router10b" }
+    val threads10b = Thread.getAllStackTraces.keySet.asScala.filter(_.getName contains "router10b")
     val threads10bNr = threads10b.size
     require(
       threads10bNr == 5,

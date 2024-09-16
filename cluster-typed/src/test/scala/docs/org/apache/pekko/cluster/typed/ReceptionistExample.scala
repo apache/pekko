@@ -30,7 +30,7 @@ object PingPongExample {
     final case class Ping(replyTo: ActorRef[Pong.type])
     case object Pong
 
-    def apply(): Behavior[Ping] = {
+    def apply(): Behavior[Ping] =
       Behaviors.setup { context =>
         context.system.receptionist ! Receptionist.Register(PingServiceKey, context.self)
 
@@ -41,13 +41,12 @@ object PingPongExample {
             Behaviors.same
         }
       }
-    }
   }
   // #ping-service
 
   // #pinger
   object Pinger {
-    def apply(pingService: ActorRef[PingService.Ping]): Behavior[PingService.Pong.type] = {
+    def apply(pingService: ActorRef[PingService.Ping]): Behavior[PingService.Pong.type] =
       Behaviors.setup { context =>
         pingService ! PingService.Ping(context.self)
 
@@ -56,13 +55,12 @@ object PingPongExample {
           Behaviors.stopped
         }
       }
-    }
   }
   // #pinger
 
   // #pinger-guardian
   object Guardian {
-    def apply(): Behavior[Nothing] = {
+    def apply(): Behavior[Nothing] =
       Behaviors
         .setup[Receptionist.Listing] { context =>
           context.spawnAnonymous(PingService())
@@ -75,7 +73,6 @@ object PingPongExample {
           }
         }
         .narrow
-    }
   }
   // #pinger-guardian
 
@@ -85,7 +82,7 @@ object PingPongExample {
     case object PingAll extends Command
     private case class ListingResponse(listing: Receptionist.Listing) extends Command
 
-    def apply(): Behavior[Command] = {
+    def apply(): Behavior[Command] =
       Behaviors.setup[Command] { context =>
         val listingResponseAdapter = context.messageAdapter[Receptionist.Listing](ListingResponse.apply)
 
@@ -100,7 +97,6 @@ object PingPongExample {
             Behaviors.same
         }
       }
-    }
   }
   // #find
 

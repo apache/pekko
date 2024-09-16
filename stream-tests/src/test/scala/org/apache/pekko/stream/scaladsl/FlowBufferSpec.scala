@@ -197,9 +197,8 @@ class FlowBufferSpec extends StreamSpec("""
       subscriber.expectNoMessage(500.millis)
 
       // drain
-      for (i <- 1 to 100) {
+      for (i <- 1 to 100)
         subscriber.requestNext(i)
-      }
 
       subscriber.request(1)
       subscriber.expectNoMessage(1.seconds)
@@ -238,8 +237,7 @@ class FlowBufferSpec extends StreamSpec("""
       subscriber.expectError(error)
     }
 
-    for (strategy <- List(OverflowStrategy.dropHead, OverflowStrategy.dropTail, OverflowStrategy.dropBuffer)) {
-
+    for (strategy <- List(OverflowStrategy.dropHead, OverflowStrategy.dropTail, OverflowStrategy.dropBuffer))
       s"work with $strategy if buffer size of one" in {
 
         val publisher = TestPublisher.probe[Int]()
@@ -265,7 +263,6 @@ class FlowBufferSpec extends StreamSpec("""
 
         sub.cancel()
       }
-    }
 
   }
 }

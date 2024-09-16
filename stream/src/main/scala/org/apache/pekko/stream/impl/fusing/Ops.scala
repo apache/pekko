@@ -59,17 +59,16 @@ import pekko.util.ccompat._
       private def decider =
         inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
 
-      override def onPush(): Unit = {
-        try {
+      override def onPush(): Unit =
+        try
           push(out, f(grab(in)))
-        } catch {
+        catch {
           case NonFatal(ex) =>
             decider(ex) match {
               case Supervision.Stop => failStage(ex)
               case _                => pull(in)
             }
         }
-      }
 
       override def onPull(): Unit = pull(in)
 
@@ -147,7 +146,7 @@ import pekko.util.ccompat._
 
       def decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
 
-      override def onPush(): Unit = {
+      override def onPush(): Unit =
         try {
           val elem = grab(in)
           if (p(elem)) {
@@ -163,7 +162,6 @@ import pekko.util.ccompat._
               case _                => pull(in)
             }
         }
-      }
 
       override def onPull(): Unit = pull(in)
 
@@ -214,9 +212,9 @@ import pekko.util.ccompat._
   private lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
 
   def withSupervision[T](f: () => T): Option[T] =
-    try {
+    try
       Some(f())
-    } catch {
+    catch {
       case NonFatal(ex) =>
         decider(ex) match {
           case Supervision.Stop    => onStop(ex)
@@ -260,7 +258,7 @@ private[stream] object Collect {
 
       @nowarn("msg=Any")
       override def onPush(): Unit =
-        try {
+        try
           // 1. `applyOrElse` is faster than (`pf.isDefinedAt` and then `pf.apply`)
           // 2. using reference comparing here instead of pattern matching can generate less and quicker bytecode,
           //   eg: just a simple `IF_ACMPNE`, and you can find the same trick in `CollectWhile` operator.
@@ -270,7 +268,7 @@ private[stream] object Collect {
             case _: NotApplied.type   => pull(in)
             case elem: Out @unchecked => push(out, elem)
           }
-        } catch {
+        catch {
           case NonFatal(ex) =>
             decider(ex) match {
               case Supervision.Stop => failStage(ex)
@@ -316,14 +314,13 @@ private[stream] object Collect {
       override def onUpstreamFailure(ex: Throwable): Unit =
         try pf.applyOrElse(ex, NotApplied) match {
             case _: NotApplied.type => failStage(ex)
-            case result: T @unchecked => {
+            case result: T @unchecked =>
               if (isAvailable(out)) {
                 push(out, result)
                 completeStage()
               } else {
                 recovered = OptionVal.Some(result)
               }
-            }
             case _ => throw new RuntimeException() // won't happen, compiler exhaustiveness check pleaser
           }
         catch {
@@ -382,10 +379,9 @@ private[stream] object Collect {
         if (left <= 0) completeStage()
       }
 
-      override def onPull(): Unit = {
+      override def onPull(): Unit =
         if (left > 0) pull(in)
         else completeStage()
-      }
 
       setHandlers(in, out, this)
     }
@@ -403,12 +399,11 @@ private[stream] object Collect {
     new GraphStageLogic(shape) with InHandler with OutHandler {
       private var left: Long = count
 
-      override def onPush(): Unit = {
+      override def onPush(): Unit =
         if (left > 0) {
           left -= 1
           pull(in)
         } else push(out, grab(in))
-      }
 
       override def onPull(): Unit = pull(in)
 
@@ -461,7 +456,7 @@ private[stream] object Collect {
 
       override def onPull(): Unit = pull(in)
 
-      override def onPush(): Unit = {
+      override def onPush(): Unit =
         try {
           aggregator = f(aggregator, grab(in))
           push(out, aggregator)
@@ -475,7 +470,6 @@ private[stream] object Collect {
                 push(out, aggregator)
             }
         }
-      }
     }
 }
 
@@ -527,7 +521,7 @@ private[stream] object Collect {
         elementHandled = false
       }
 
-      private def safePull(): Unit = {
+      private def safePull(): Unit =
         if (isClosed(in)) {
           completeStage()
         } else if (isAvailable(out)) {
@@ -535,7 +529,6 @@ private[stream] object Collect {
             tryPull(in)
           }
         }
-      }
 
       private def pushAndPullOrFinish(update: Out): Unit = {
         push(out, update)
@@ -569,7 +562,7 @@ private[stream] object Collect {
 
       def onPull(): Unit = safePull()
 
-      def onPush(): Unit = {
+      def onPush(): Unit =
         try {
           elementHandled = false
 
@@ -589,13 +582,11 @@ private[stream] object Collect {
             tryPull(in)
             elementHandled = true
         }
-      }
 
-      override def onUpstreamFinish(): Unit = {
+      override def onUpstreamFinish(): Unit =
         if (elementHandled) {
           completeStage()
         }
-      }
 
       override val toString: String = s"ScanAsync.Logic(completed=$elementHandled)"
     }
@@ -644,26 +635,23 @@ private[stream] object Collect {
               case Supervision.Restart => aggregator = zero
               case _                   => ()
             }
-        } finally {
+        } finally
           if (!isClosed(in)) pull(in)
-        }
       }
 
-      override def onPull(): Unit = {
+      override def onPull(): Unit =
         if (isClosed(in)) {
           push(out, aggregator)
           completeStage()
         } else {
           pull(in)
         }
-      }
 
-      override def onUpstreamFinish(): Unit = {
+      override def onUpstreamFinish(): Unit =
         if (isAvailable(out)) {
           push(out, aggregator)
           completeStage()
         }
-      }
 
       setHandlers(in, out, this)
     }
@@ -694,9 +682,8 @@ private[stream] object Collect {
       private var aggregator: Out = zero
       private var aggregating: Future[Out] = Future.successful(aggregator)
 
-      private def onRestart(@unused t: Throwable): Unit = {
+      private def onRestart(@unused t: Throwable): Unit =
         aggregator = zero
-      }
 
       private val futureCB = getAsyncCallback[Try[Out]] {
         case Success(update) if update != null =>
@@ -728,7 +715,7 @@ private[stream] object Collect {
           }
       }.invoke _
 
-      def onPush(): Unit = {
+      def onPush(): Unit =
         try {
           aggregating = f(aggregator, grab(in))
           handleAggregatingValue()
@@ -736,30 +723,26 @@ private[stream] object Collect {
           case NonFatal(ex) =>
             decider(ex) match {
               case Supervision.Stop => failStage(ex)
-              case supervision => {
+              case supervision =>
                 supervision match {
                   case Supervision.Restart => onRestart(ex)
                   case _                   => () // just ignore on Resume
                 }
 
                 tryPull(in)
-              }
             }
         }
-      }
 
-      override def onUpstreamFinish(): Unit = {
+      override def onUpstreamFinish(): Unit =
         handleAggregatingValue()
-      }
 
       def onPull(): Unit = if (!hasBeenPulled(in)) tryPull(in)
 
-      private def handleAggregatingValue(): Unit = {
+      private def handleAggregatingValue(): Unit =
         aggregating.value match {
           case Some(result) => futureCB(result) // already completed
           case _            => aggregating.onComplete(futureCB)(ExecutionContexts.parasitic)
         }
-      }
 
       setHandlers(in, out, this)
 
@@ -845,9 +828,8 @@ private[stream] object Collect {
         }
       }
 
-      override def onPull(): Unit = {
+      override def onPull(): Unit =
         pull(in)
-      }
 
       override def onUpstreamFinish(): Unit = {
         // Since the upstream has finished we have to push any buffered elements downstream.
@@ -938,9 +920,8 @@ private[stream] object Collect {
         }
       }
 
-      override def onPull(): Unit = {
+      override def onPull(): Unit =
         pull(in)
-      }
 
       override def onUpstreamFinish(): Unit = {
 
@@ -1041,9 +1022,8 @@ private[stream] object Collect {
               }
         }
 
-      override def preStart(): Unit = {
+      override def preStart(): Unit =
         pull(in)
-      }
 
       override def onPush(): Unit = {
         val elem = grab(in)
@@ -1067,9 +1047,8 @@ private[stream] object Collect {
         }
       }
 
-      override def onUpstreamFinish(): Unit = {
+      override def onUpstreamFinish(): Unit =
         if (buffer.isEmpty) completeStage()
-      }
 
       setHandlers(in, out, this)
     }
@@ -1166,11 +1145,10 @@ private[stream] object Collect {
         if (pending == null) pull(in)
       }
 
-      override def onUpstreamFinish(): Unit = {
+      override def onUpstreamFinish(): Unit =
         if (agg == null) completeStage()
-      }
 
-      def onPull(): Unit = {
+      def onPull(): Unit =
         if (agg == null) {
           if (isClosed(in)) completeStage()
           else if (!hasBeenPulled(in)) pull(in)
@@ -1179,9 +1157,9 @@ private[stream] object Collect {
           push(out, agg)
           if (pending == null) completeStage()
           else {
-            try {
+            try
               agg = seed(pending)
-            } catch {
+            catch {
               case NonFatal(ex) =>
                 decider(ex) match {
                   case Supervision.Stop   => failStage(ex)
@@ -1198,8 +1176,6 @@ private[stream] object Collect {
           flush()
           if (!hasBeenPulled(in)) pull(in)
         }
-
-      }
 
       private def restartState(): Unit = {
         agg = null.asInstanceOf[Out]
@@ -1242,12 +1218,11 @@ private[stream] object Collect {
       } else pull(in)
     }
 
-    override def onUpstreamFinish(): Unit = {
+    override def onUpstreamFinish(): Unit =
       if (iterator.hasNext && !expanded) () // need to wait
       else completeStage()
-    }
 
-    def onPull(): Unit = {
+    def onPull(): Unit =
       if (iterator.hasNext) {
         contextPropagation.resumeContext()
         if (!expanded) {
@@ -1262,7 +1237,6 @@ private[stream] object Collect {
           }
         } else push(out, iterator.next())
       }
-    }
 
     setHandler(in, this)
     setHandler(out, this)
@@ -1280,7 +1254,7 @@ private[stream] object Collect {
     // and not calling the decider multiple times (#23888) we need to cache the decider result and re-use that
     private var cachedSupervisionDirective: OptionVal[Supervision.Directive] = OptionVal.None
 
-    def supervisionDirectiveFor(decider: Supervision.Decider, ex: Throwable): Supervision.Directive = {
+    def supervisionDirectiveFor(decider: Supervision.Decider, ex: Throwable): Supervision.Directive =
       cachedSupervisionDirective match {
         case OptionVal.Some(d) => d
         case _ =>
@@ -1288,11 +1262,9 @@ private[stream] object Collect {
           cachedSupervisionDirective = OptionVal.Some(d)
           d
       }
-    }
 
-    def setElem(t: Try[T]): Unit = {
+    def setElem(t: Try[T]): Unit =
       elem = t
-    }
 
     override def apply(t: Try[T]): Unit = {
       setElem(t)
@@ -1400,11 +1372,10 @@ private[stream] object Collect {
           }
         }
 
-      private def pullIfNeeded(): Unit = {
+      private def pullIfNeeded(): Unit =
         if (isClosed(in) && buffer.isEmpty) completeStage()
         else if (buffer.used < parallelism && !hasBeenPulled(in)) tryPull(in)
-        // else already pulled and waiting for next element
-      }
+      // else already pulled and waiting for next element
 
       setHandlers(in, out, this)
     }
@@ -1471,9 +1442,8 @@ private[stream] object Collect {
         if (todo < parallelism && !hasBeenPulled(in)) tryPull(in)
       }
 
-      override def onUpstreamFinish(): Unit = {
+      override def onUpstreamFinish(): Unit =
         if (todo == 0) completeStage()
-      }
 
       override def onPull(): Unit = {
         if (!buffer.isEmpty) push(out, buffer.dequeue())
@@ -1542,7 +1512,7 @@ private[stream] object Collect {
         }
       }
 
-      override def onPush(): Unit = {
+      override def onPush(): Unit =
         try {
           val elem = grab(in)
           if (isEnabled(logLevels.onElement))
@@ -1556,7 +1526,6 @@ private[stream] object Collect {
               case _                => pull(in)
             }
         }
-      }
 
       override def onPull(): Unit = pull(in)
 
@@ -1615,12 +1584,11 @@ private[stream] object Collect {
     // do not expose private context classes (of OneBoundedInterpreter)
     override def getClazz(t: Materializer): Class[_] = classOf[Materializer]
 
-    override def genString(t: Materializer): String = {
+    override def genString(t: Materializer): String =
       try s"$DefaultLoggerName(${t.supervisor.path})"
       catch {
         case _: Exception => LogSource.fromString.genString(DefaultLoggerName)
       }
-    }
 
   }
 
@@ -1662,7 +1630,7 @@ private[stream] object Collect {
         }
       }
 
-      override def onPush(): Unit = {
+      override def onPush(): Unit =
         try {
           val elem = grab(in)
           if (isEnabled(logLevels.onElement))
@@ -1676,7 +1644,6 @@ private[stream] object Collect {
               case _                => pull(in)
             }
         }
-      }
 
       override def onPull(): Unit = pull(in)
 
@@ -1735,12 +1702,11 @@ private[stream] object Collect {
     // do not expose private context classes (of OneBoundedInterpreter)
     override def getClazz(t: Materializer): Class[_] = classOf[Materializer]
 
-    override def genString(t: Materializer): String = {
+    override def genString(t: Materializer): String =
       try s"$DefaultLoggerName(${t.supervisor.path})"
       catch {
         case _: Exception => LogSource.fromString.genString(DefaultLoggerName)
       }
-    }
 
   }
 
@@ -1848,10 +1814,9 @@ private[stream] object Collect {
         }
       }
 
-      private def tryCloseGroup(): Unit = {
+      private def tryCloseGroup(): Unit =
         if (isAvailable(out)) emitGroup()
         else if (pending != null || finished) pushEagerly = true
-      }
 
       private def emitGroup(): Unit = {
         groupEmitted = true
@@ -1934,7 +1899,7 @@ private[stream] object Collect {
 
       private[this] val onPushWhenBufferFull: () => Unit = overflowStrategy match {
         case EmitEarly =>
-          () => {
+          () =>
             if (isAvailable(out)) {
               if (isTimerActive(TimerName)) {
                 cancelTimer(TimerName)
@@ -1947,7 +1912,6 @@ private[stream] object Collect {
               throw new IllegalStateException(
                 "Was configured to emitEarly and got element when out is not ready and buffer is full, should not be possible.")
             }
-          }
         case _: DropHead =>
           () => {
             buffer.dropHead()
@@ -1969,16 +1933,14 @@ private[stream] object Collect {
             grabAndPull()
           }
         case _: Fail =>
-          () => {
+          () =>
             failStage(new BufferOverflowException(s"Buffer overflow for delay operator (max capacity was: $size)!"))
-          }
         case _: Backpressure =>
-          () => {
+          () =>
             throw new IllegalStateException("Delay buffer must never overflow in Backpressure mode")
-          }
       }
 
-      def onPush(): Unit = {
+      def onPush(): Unit =
         if (buffer.isFull)
           onPushWhenBufferFull()
         else {
@@ -1992,7 +1954,6 @@ private[stream] object Collect {
               scheduleOnce(TimerName, waitTime.millis)
           }
         }
-      }
 
       private def shouldPull: Boolean =
         buffer.used < size || !overflowStrategy.isBackpressure ||
@@ -2028,9 +1989,8 @@ private[stream] object Collect {
 
       def completeIfReady(): Unit = if (isClosed(in) && buffer.isEmpty) completeStage()
 
-      private def nextElementWaitTime(): Long = {
+      private def nextElementWaitTime(): Long =
         NANOSECONDS.toMillis(buffer.peek()._1 - System.nanoTime())
-      }
 
       final override protected def onTimer(key: Any): Unit = {
         if (isAvailable(out))
@@ -2082,7 +2042,7 @@ private[pekko] object TakeWithin {
       private val startNanoTime = System.nanoTime()
       private val timeoutInNano = timeout.toNanos
 
-      def onPush(): Unit = {
+      def onPush(): Unit =
         if (System.nanoTime() - startNanoTime <= timeoutInNano) {
           pull(in)
         } else {
@@ -2093,7 +2053,6 @@ private[pekko] object TakeWithin {
               def onPush() = push(out, grab(in))
             })
         }
-      }
 
       def onPull(): Unit = pull(in)
 
@@ -2120,7 +2079,7 @@ private[pekko] object TakeWithin {
       private def decider =
         inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
 
-      def setInitialInHandler(): Unit = {
+      def setInitialInHandler(): Unit =
         // Initial input handler
         setHandler(in,
           new InHandler {
@@ -2133,14 +2092,13 @@ private[pekko] object TakeWithin {
             override def onUpstreamFinish(): Unit =
               failStage(new NoSuchElementException("reduce over empty stream"))
           })
-      }
 
       @nowarn // compiler complaining about aggregator = _: T
       override def onPush(): Unit = {
         val elem = grab(in)
-        try {
+        try
           aggregator = f(aggregator, elem)
-        } catch {
+        catch {
           case NonFatal(ex) =>
             decider(ex) match {
               case Supervision.Stop => failStage(ex)
@@ -2150,9 +2108,8 @@ private[pekko] object TakeWithin {
               case _ => ()
 
             }
-        } finally {
+        } finally
           if (!isClosed(in)) pull(in)
-        }
       }
 
       override def onPull(): Unit = pull(in)
@@ -2315,11 +2272,10 @@ private[pekko] final class StatefulMap[S, In, Out](create: () => S, f: (S, In) =
 
       override def onPull(): Unit = pull(in)
 
-      override def postStop(): Unit = {
+      override def postStop(): Unit =
         if (needInvokeOnCompleteCallback) {
           onComplete(state)
         }
-      }
 
       setHandlers(in, out, this)
     }

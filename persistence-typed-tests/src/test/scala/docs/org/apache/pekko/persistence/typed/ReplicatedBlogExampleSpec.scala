@@ -60,7 +60,7 @@ object ReplicatedBlogExampleSpec {
     final case class PostAdded(postId: String, content: PostContent, timestamp: LwwTime) extends Event
     final case class BodyChanged(postId: String, newContent: PostContent, timestamp: LwwTime) extends Event
 
-    def apply(entityId: String, replicaId: ReplicaId, allReplicaIds: Set[ReplicaId]): Behavior[Command] = {
+    def apply(entityId: String, replicaId: ReplicaId, allReplicaIds: Set[ReplicaId]): Behavior[Command] =
       Behaviors.setup[Command] { ctx =>
         ReplicatedEventSourcing.commonJournalConfig(
           ReplicationId("blog", entityId, replicaId),
@@ -73,14 +73,13 @@ object ReplicatedBlogExampleSpec {
             (state, event) => eventHandler(ctx, replicationContext, state, event))
         }
       }
-    }
 
     // #command-handler
     private def commandHandler(
         ctx: ActorContext[Command],
         replicationContext: ReplicationContext,
         state: BlogState,
-        cmd: Command): Effect[Event, BlogState] = {
+        cmd: Command): Effect[Event, BlogState] =
       cmd match {
         case AddPost(_, content, replyTo) =>
           val evt =
@@ -109,7 +108,6 @@ object ReplicatedBlogExampleSpec {
           state.content.foreach(content => gp.replyTo ! content)
           Effect.none
       }
-    }
     // #command-handler
 
     // #event-handler

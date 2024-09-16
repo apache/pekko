@@ -239,9 +239,8 @@ object IntroSpec {
         }
       }
 
-    def main(args: Array[String]): Unit = {
+    def main(args: Array[String]): Unit =
       ActorSystem(Main(), "ChatRoomDemo")
-    }
 
   }
   // #chatroom-main

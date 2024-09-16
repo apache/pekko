@@ -188,8 +188,7 @@ final class TestKitJunitResource(_kit: ActorTestKit) extends ExternalResource {
    */
   def serializationTestKit: SerializationTestKit = testKit.serializationTestKit
 
-  override def after(): Unit = {
+  override def after(): Unit =
     testKit.shutdownTestKit()
-  }
 
 }

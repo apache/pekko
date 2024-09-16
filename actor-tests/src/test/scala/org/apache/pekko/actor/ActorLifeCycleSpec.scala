@@ -32,8 +32,8 @@ object ActorLifeCycleSpec {
     def report(msg: Any) = testActor ! message(msg)
     def message(msg: Any): (Any, String, Int) = (msg, id, currentGen)
     val currentGen = generationProvider.getAndIncrement()
-    override def preStart(): Unit = { report("preStart") }
-    override def postStop(): Unit = { report("postStop") }
+    override def preStart(): Unit = report("preStart")
+    override def postStop(): Unit = report("postStop")
     def receive = { case "status" => sender() ! message("OK") }
   }
 
@@ -51,8 +51,8 @@ class ActorLifeCycleSpec extends PekkoSpec with BeforeAndAfterEach with Implicit
           system.actorOf(Props(classOf[Supervisor], OneForOneStrategy(maxNrOfRetries = 3)(List(classOf[Exception]))))
         val gen = new AtomicInteger(0)
         val restarterProps = Props(new LifeCycleTestActor(testActor, id, gen) {
-          override def preRestart(reason: Throwable, message: Option[Any]): Unit = { report("preRestart") }
-          override def postRestart(reason: Throwable): Unit = { report("postRestart") }
+          override def preRestart(reason: Throwable, message: Option[Any]): Unit = report("preRestart")
+          override def postRestart(reason: Throwable): Unit = report("postRestart")
         }).withDeploy(Deploy.local)
         val restarter = Await.result((supervisor ? restarterProps).mapTo[ActorRef], timeout.duration)
 
@@ -130,7 +130,7 @@ class ActorLifeCycleSpec extends PekkoSpec with BeforeAndAfterEach with Implicit
     "log failures in postStop" in {
       val a = system.actorOf(Props(new Actor {
         def receive = Actor.emptyBehavior
-        override def postStop(): Unit = { throw new Exception("hurrah") }
+        override def postStop(): Unit = throw new Exception("hurrah")
       }))
       EventFilter[Exception]("hurrah", occurrences = 1).intercept {
         a ! PoisonPill
@@ -141,7 +141,7 @@ class ActorLifeCycleSpec extends PekkoSpec with BeforeAndAfterEach with Implicit
       final case class Become(recv: ActorContext => Receive)
       val a = system.actorOf(Props(new Actor {
         def receive = {
-          case Become(beh) => { context.become(beh(context), discardOld = false); sender() ! "ok" }
+          case Become(beh) => context.become(beh(context), discardOld = false); sender() ! "ok"
           case _           => sender() ! 42
         }
       }))
@@ -181,9 +181,9 @@ class ActorLifeCycleSpec extends PekkoSpec with BeforeAndAfterEach with Implicit
       val supervisor = system.actorOf(Props(classOf[Supervisor], supervisorStrategy))
       Await.result((supervisor ? childProps).mapTo[ActorRef], timeout.duration)
 
-      (0 to maxRetryNum).foreach(i => {
+      (0 to maxRetryNum).foreach { i =>
         expectMsg(("preStart", id, i))
-      })
+      }
       expectNoMessage()
       system.stop(supervisor)
     }
@@ -210,7 +210,7 @@ class ActorLifeCycleSpec extends PekkoSpec with BeforeAndAfterEach with Implicit
             // when the flatMap thunk is run. Previously, the context was nulled when the actor
             // was terminated. This isn't done any more. Still, the pattern of `import context.dispatcher`
             // is discouraged as closing over `context` is unsafe in general.
-            .flatMap(x => Future { x + "ng" } /* implicitly: (this.context.dispatcher) */ )
+            .flatMap(x => Future(x + "ng") /* implicitly: (this.context.dispatcher) */ )
             .recover { case _: NullPointerException => "npe" }
             .pipeTo(replyTo)
       }

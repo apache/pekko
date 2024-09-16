@@ -34,7 +34,7 @@ object Scaladoc extends AutoPlugin {
 
   val validateDiagrams = settingKey[Boolean]("Validate generated scaladoc diagrams")
 
-  override lazy val projectSettings = {
+  override lazy val projectSettings =
     inTask(doc)(
       Seq(
         Compile / scalacOptions ++= scaladocOptions(version.value, (ThisBuild / baseDirectory).value),
@@ -48,7 +48,6 @@ object Scaladoc extends AutoPlugin {
         scaladocVerifier(docs)
       docs
     })
-  }
 
   def scaladocOptions(ver: String, base: File): List[String] = {
     val urlString = GitHub.url(ver) + "/€{FILE_PATH_EXT}#L€{FILE_LINE}"
@@ -70,7 +69,7 @@ object Scaladoc extends AutoPlugin {
 
   def scaladocVerifier(file: File): File = {
     @tailrec
-    def findHTMLFileWithDiagram(dirs: Seq[File]): Boolean = {
+    def findHTMLFileWithDiagram(dirs: Seq[File]): Boolean =
       if (dirs.isEmpty) false
       else {
         val curr = dirs.head
@@ -97,7 +96,6 @@ object Scaladoc extends AutoPlugin {
         }
         hasDiagram || findHTMLFileWithDiagram(rest)
       }
-    }
 
     // if we have generated scaladoc and none of the files have a diagram then fail
     if (file.exists() && !findHTMLFileWithDiagram(List(file)))
@@ -148,7 +146,7 @@ object UnidocRoot extends AutoPlugin {
 
   override lazy val projectSettings = {
     def unidocRootProjectFilter(ignoreProjects: Seq[ProjectReference]): ProjectFilter =
-      ignoreProjects.foldLeft(inAnyProject) { _ -- inProjects(_) }
+      ignoreProjects.foldLeft(inAnyProject)(_ -- inProjects(_))
 
     inTask(unidoc)(
       Seq(
@@ -162,23 +160,21 @@ object UnidocRoot extends AutoPlugin {
             (LocalProject("stream") / Compile / fullClasspath).value
 
           def mappingsFor(organization: String, names: List[String], location: String,
-              revision: String => String = identity): Seq[(File, URL)] = {
+              revision: String => String = identity): Seq[(File, URL)] =
             for {
               entry: Attributed[File] <- entries
               module: ModuleID <- entry.get(moduleID.key)
               if module.organization == organization
               if names.exists(module.name.startsWith)
             } yield entry.data -> url(location.format(module.revision))
-          }
 
-          val mappings: Seq[(File, URL)] = {
+          val mappings: Seq[(File, URL)] =
             mappingsFor("org.slf4j", List("slf4j-api"), "https://www.javadoc.io/doc/org.slf4j/slf4j-api/%s/") ++
             mappingsFor("com.typesafe", List("config"), "https://www.javadoc.io/doc/com.typesafe/config/%s/") ++
             mappingsFor("io.aeron", List("aeron-client", "aeron-driver"),
               "https://www.javadoc.io/doc/io.aeron/aeron-all/%s/") ++
             mappingsFor("org.reactivestreams", List("reactive-streams"),
               "https://www.javadoc.io/doc/org.reactivestreams/reactive-streams/%s/")
-          }
 
           mappings.toMap
         },

@@ -126,18 +126,16 @@ class ClusterSpec extends PekkoSpec(ClusterSpec.config) with ImplicitSender {
       try {
         cluster.subscribe(testActor, ClusterEvent.InitialStateAsSnapshot, classOf[ClusterEvent.MemberEvent])
         expectMsgClass(classOf[ClusterEvent.CurrentClusterState])
-      } finally {
+      } finally
         cluster.unsubscribe(testActor)
-      }
     }
 
     "publish initial state as events to subscribers" in {
       try {
         cluster.subscribe(testActor, ClusterEvent.InitialStateAsEvents, classOf[ClusterEvent.MemberEvent])
         expectMsgClass(classOf[ClusterEvent.MemberUp])
-      } finally {
+      } finally
         cluster.unsubscribe(testActor)
-      }
     }
 
     "send CurrentClusterState to one receiver when requested" in {
@@ -178,9 +176,8 @@ class ClusterSpec extends PekkoSpec(ClusterSpec.config) with ImplicitSender {
             Cluster(sys2).isTerminated should ===(true)
           }
         }
-      } finally {
+      } finally
         shutdown(sys2)
-      }
     }
 
     "allow to resolve remotePathOf any actor" in {
@@ -214,9 +211,8 @@ class ClusterSpec extends PekkoSpec(ClusterSpec.config) with ImplicitSender {
           }
           .asInstanceOf[MemberRemoved]
         removed.previousStatus should ===(MemberStatus.Exiting)
-      } finally {
+      } finally
         shutdown(sys2)
-      }
     }
 
     "terminate ActorSystem via CoordinatedShutdown.run when a stream involving StreamRefs is running" in {
@@ -252,9 +248,8 @@ class ClusterSpec extends PekkoSpec(ClusterSpec.config) with ImplicitSender {
         Await.result(sys2.whenTerminated, 10.seconds)
         Cluster(sys2).isTerminated should ===(true)
         CoordinatedShutdown(sys2).shutdownReason() should ===(Some(CoordinatedShutdown.UnknownReason))
-      } finally {
+      } finally
         shutdown(sys2)
-      }
     }
 
     "leave via CoordinatedShutdown.run when member status is Joining" in {
@@ -283,9 +278,8 @@ class ClusterSpec extends PekkoSpec(ClusterSpec.config) with ImplicitSender {
           }
           .asInstanceOf[MemberRemoved]
         removed.previousStatus should ===(MemberStatus.Exiting)
-      } finally {
+      } finally
         shutdown(sys2)
-      }
     }
 
     "terminate ActorSystem via leave (CoordinatedShutdown)" in {
@@ -317,9 +311,8 @@ class ClusterSpec extends PekkoSpec(ClusterSpec.config) with ImplicitSender {
         Await.result(sys2.whenTerminated, 10.seconds)
         Cluster(sys2).isTerminated should ===(true)
         CoordinatedShutdown(sys2).shutdownReason() should ===(Some(CoordinatedShutdown.ClusterLeavingReason))
-      } finally {
+      } finally
         shutdown(sys2)
-      }
     }
 
     "terminate ActorSystem via down (CoordinatedShutdown)" in {
@@ -345,9 +338,8 @@ class ClusterSpec extends PekkoSpec(ClusterSpec.config) with ImplicitSender {
         Await.result(sys3.whenTerminated, 10.seconds)
         Cluster(sys3).isTerminated should ===(true)
         CoordinatedShutdown(sys3).shutdownReason() should ===(Some(CoordinatedShutdown.ClusterDowningReason))
-      } finally {
+      } finally
         shutdown(sys3)
-      }
     }
 
     "register multiple cluster JMX MBeans with pekko.cluster.jmx.multi-mbeans-in-same-jvm = on" in {

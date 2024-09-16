@@ -46,9 +46,8 @@ object ClusterDeathWatchNotificationSpec {
       case msg => sender() ! msg
     }
 
-    override def postStop(): Unit = {
+    override def postStop(): Unit =
       sendOnStop.foreach(receiver ! _)
-    }
   }
 }
 

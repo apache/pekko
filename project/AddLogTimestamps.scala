@@ -28,7 +28,7 @@ object AddLogTimestamps extends AutoPlugin {
 
   private val UTC = ZoneId.of("UTC")
 
-  override lazy val projectSettings: Seq[Def.Setting[_]] = {
+  override lazy val projectSettings: Seq[Def.Setting[_]] =
     logManager := {
       val original = logManager.value
 
@@ -72,5 +72,4 @@ object AddLogTimestamps extends AutoPlugin {
       } else
         original
     }
-  }
 }

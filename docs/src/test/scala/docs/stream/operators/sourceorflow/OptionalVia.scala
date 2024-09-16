@@ -27,7 +27,7 @@ object OptionalVia {
     // #optionalVia
     Source.optionalVia(
       Source(List(Some("1"), None, None, Some("4"))),
-      Flow.fromFunction { (string: String) => string.toInt }
+      Flow.fromFunction((string: String) => string.toInt)
     )(Keep.none).runForeach(println)
     // Some(1)
     // None

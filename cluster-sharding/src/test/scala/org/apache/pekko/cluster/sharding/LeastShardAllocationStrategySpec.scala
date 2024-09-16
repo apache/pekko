@@ -60,20 +60,17 @@ object LeastShardAllocationStrategySpec {
     }
   }
 
-  def countShardsPerRegion(newAllocations: Map[ActorRef, immutable.IndexedSeq[ShardId]]): Vector[Int] = {
+  def countShardsPerRegion(newAllocations: Map[ActorRef, immutable.IndexedSeq[ShardId]]): Vector[Int] =
     newAllocations.valuesIterator.map(_.size).toVector
-  }
 
-  def countShards(allocations: Map[ActorRef, immutable.IndexedSeq[ShardId]]): Int = {
+  def countShards(allocations: Map[ActorRef, immutable.IndexedSeq[ShardId]]): Int =
     countShardsPerRegion(allocations).sum
-  }
 
   def allocationCountsAfterRebalance(
       allocationStrategy: ShardAllocationStrategy,
       allocations: Map[ActorRef, immutable.IndexedSeq[ShardId]],
-      rebalance: Set[ShardId]): Vector[Int] = {
+      rebalance: Set[ShardId]): Vector[Int] =
     countShardsPerRegion(afterRebalance(allocationStrategy, allocations, rebalance))
-  }
 
   final class DummyActorRef(val path: ActorPath) extends MinimalActorRef {
     override def provider: ActorRefProvider = ???
@@ -102,12 +99,11 @@ class LeastShardAllocationStrategySpec extends PekkoSpec {
 
   private val shards = (1 to 999).map(n => ("00" + n.toString).takeRight(3))
 
-  def createAllocations(aCount: Int, bCount: Int = 0, cCount: Int = 0): Map[ActorRef, Vector[String]] = {
+  def createAllocations(aCount: Int, bCount: Int = 0, cCount: Int = 0): Map[ActorRef, Vector[String]] =
     Map(
       regionA -> shards.take(aCount).toVector,
       regionB -> shards.slice(aCount, aCount + bCount).toVector,
       regionC -> shards.slice(aCount + bCount, aCount + bCount + cCount).toVector)
-  }
 
   private val strategyWithoutLimits =
     strategyWithFakeCluster(absoluteLimit = 1000, relativeLimit = 1.0)

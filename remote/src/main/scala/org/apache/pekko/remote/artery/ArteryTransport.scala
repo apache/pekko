@@ -142,20 +142,18 @@ private[remote] final class AssociationState private (
    */
   def uniqueRemoteAddress(): Option[UniqueAddress] = _uniqueRemoteAddress.get().uniqueRemoteAddress
 
-  def uniqueRemoteAddressState(): UniqueRemoteAddressState = {
+  def uniqueRemoteAddressState(): UniqueRemoteAddressState =
     uniqueRemoteAddress() match {
       case Some(a) if isQuarantined(a.uid) => UidQuarantined
       case Some(_)                         => UidKnown
       case None                            => UidUnknown // handshake not completed yet
     }
-  }
 
-  def isQuarantined(): Boolean = {
+  def isQuarantined(): Boolean =
     uniqueRemoteAddress() match {
       case Some(a) => isQuarantined(a.uid)
       case None    => false // handshake not completed yet
     }
-  }
 
   def isQuarantined(uid: Long): Boolean = quarantined.contains(uid)
 
@@ -298,11 +296,10 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
    *
    * Use `inboundCompressionAccess` (provided by the materialized `Decoder`) to call into the compression infrastructure.
    */
-  protected val _inboundCompressions = {
+  protected val _inboundCompressions =
     if (settings.Advanced.Compression.Enabled) {
       new InboundCompressionsImpl(system, this, settings.Advanced.Compression, flightRecorder)
     } else NoInboundCompressions
-  }
 
   @volatile private[this] var _inboundCompressionAccess: OptionVal[InboundCompressionAccess] = OptionVal.None
 
@@ -455,7 +452,7 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
   // Select inbound lane based on destination to preserve message order,
   // Also include the uid of the sending system in the hash to spread
   // "hot" destinations, e.g. ActorSelection anchor.
-  protected val inboundLanePartitioner: InboundEnvelope => Int = env => {
+  protected val inboundLanePartitioner: InboundEnvelope => Int = env =>
     env.recipient match {
       case OptionVal.Some(r) =>
         val a = r.path.uid
@@ -467,10 +464,9 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
         // the lane is set by the DuplicateHandshakeReq stage, otherwise 0
         env.lane
     }
-  }
 
   private lazy val shutdownHook = new Thread {
-    override def run(): Unit = {
+    override def run(): Unit =
       if (!hasBeenShutdown.get) {
         val coord = CoordinatedShutdown(system)
         // totalTimeout will be 0 when no tasks registered, so at least 3.seconds
@@ -486,14 +482,13 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
           Await.result(internalShutdown(), settings.Advanced.Aeron.DriverTimeout + 3.seconds)
         }
       }
-    }
   }
 
   protected def attachControlMessageObserver(ctrl: ControlMessageSubject): Unit = {
     controlSubject = ctrl
     controlSubject.attach(new ControlMessageObserver {
-      override def notify(inboundEnvelope: InboundEnvelope): Unit = {
-        try {
+      override def notify(inboundEnvelope: InboundEnvelope): Unit =
+        try
           inboundEnvelope.message match {
             case m: CompressionMessage =>
               import CompressionProtocol._
@@ -573,10 +568,9 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
 
             case _ => // not interesting
           }
-        } catch {
+        catch {
           case ShuttingDown => // silence it
         }
-      }
 
       override def controlSubjectCompleted(signal: Try[Done]): Unit = ()
     })
@@ -613,7 +607,7 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
     }
   }
 
-  override def shutdown(): Future[Done] = {
+  override def shutdown(): Future[Done] =
     if (hasBeenShutdown.compareAndSet(false, true)) {
       log.debug("Shutting down [{}]", localAddress)
       if (system.settings.JvmShutdownHooks)
@@ -637,7 +631,6 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
     } else {
       Future.successful(Done)
     }
-  }
 
   private def internalShutdown(): Future[Done] = {
     implicit val ec = system.dispatchers.internalDispatcher
@@ -695,9 +688,9 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
 
   // InboundContext
   override def sendControl(to: Address, message: ControlMessage) =
-    try {
+    try
       association(to).sendControl(message)
-    } catch {
+    catch {
       case ShuttingDown => // silence it
     }
 
@@ -728,26 +721,23 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
   override def association(uid: Long): OptionVal[Association] =
     associationRegistry.association(uid)
 
-  override def completeHandshake(peer: UniqueAddress): Future[Done] = {
-    try {
+  override def completeHandshake(peer: UniqueAddress): Future[Done] =
+    try
       associationRegistry.setUID(peer).completeHandshake(peer)
-    } catch {
+    catch {
       case ShuttingDown => Future.successful(Done) // silence it
     }
-  }
 
   @InternalStableApi
-  override def quarantine(remoteAddress: Address, uid: Option[Long], reason: String): Unit = {
+  override def quarantine(remoteAddress: Address, uid: Option[Long], reason: String): Unit =
     quarantine(remoteAddress, uid, reason, harmless = false)
-  }
 
-  def quarantine(remoteAddress: Address, uid: Option[Long], reason: String, harmless: Boolean): Unit = {
-    try {
+  def quarantine(remoteAddress: Address, uid: Option[Long], reason: String, harmless: Boolean): Unit =
+    try
       association(remoteAddress).quarantine(reason, uid, harmless)
-    } catch {
+    catch {
       case ShuttingDown => // silence it
     }
-  }
 
   def outboundLarge(outboundContext: OutboundContext): Sink[OutboundEnvelope, Future[Done]] =
     createOutboundSink(LargeStreamId, outboundContext, largeEnvelopeBufferPool).mapMaterializedValue {
@@ -760,11 +750,9 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
   private def createOutboundSink(
       streamId: Int,
       outboundContext: OutboundContext,
-      bufferPool: EnvelopeBufferPool): Sink[OutboundEnvelope, (OutboundCompressionAccess, Future[Done])] = {
-
+      bufferPool: EnvelopeBufferPool): Sink[OutboundEnvelope, (OutboundCompressionAccess, Future[Done])] =
     outboundLane(outboundContext, bufferPool, streamId).toMat(
       outboundTransportSink(outboundContext, streamId, bufferPool))(Keep.both)
-  }
 
   def outboundTransportSink(outboundContext: OutboundContext): Sink[EnvelopeBuffer, Future[Done]] =
     outboundTransportSink(outboundContext, OrdinaryStreamId, envelopeBufferPool)
@@ -781,8 +769,7 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
   private def outboundLane(
       outboundContext: OutboundContext,
       bufferPool: EnvelopeBufferPool,
-      streamId: Int): Flow[OutboundEnvelope, EnvelopeBuffer, OutboundCompressionAccess] = {
-
+      streamId: Int): Flow[OutboundEnvelope, EnvelopeBuffer, OutboundCompressionAccess] =
     Flow
       .fromGraph(killSwitch.flow[OutboundEnvelope])
       .via(
@@ -795,7 +782,6 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
           settings.Advanced.InjectHandshakeInterval,
           Duration.Undefined))
       .viaMat(createEncoder(bufferPool, streamId))(Keep.right)
-  }
 
   def outboundControl(
       outboundContext: OutboundContext): Sink[OutboundEnvelope, (OutboundControlIngress, Future[Done])] = {
@@ -852,7 +838,7 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
   // Checks for termination hint messages and sends an ACK for those (not processing them further)
   // Purpose of this stage is flushing, the sender can wait for the ACKs up to try flushing
   // pending messages.
-  def terminationHintReplier(inControlStream: Boolean): Flow[InboundEnvelope, InboundEnvelope, NotUsed] = {
+  def terminationHintReplier(inControlStream: Boolean): Flow[InboundEnvelope, InboundEnvelope, NotUsed] =
     Flow[InboundEnvelope].filter { envelope =>
       envelope.message match {
         case ActorSystemTerminating(from) =>
@@ -871,7 +857,6 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
         case _ => true
       }
     }
-  }
 
   // Checks for Flush messages and sends an FlushAck for those (not processing them further)
   // Purpose of this stage is flushing, the sender can wait for the ACKs up to try flushing
@@ -879,7 +864,7 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
   // The Flush messages are duplicated into all lanes by the DuplicateFlush stage and
   // the `expectedAcks` corresponds to the number of lanes. The sender receives the `expectedAcks` and
   // thereby knows how many to wait for.
-  def flushReplier(expectedAcks: Int): Flow[InboundEnvelope, InboundEnvelope, NotUsed] = {
+  def flushReplier(expectedAcks: Int): Flow[InboundEnvelope, InboundEnvelope, NotUsed] =
     Flow[InboundEnvelope].filter { envelope =>
       envelope.message match {
         case Flush =>
@@ -893,7 +878,6 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
         case _ => true
       }
     }
-  }
 
   def inboundSink(bufferPool: EnvelopeBufferPool): Sink[InboundEnvelope, Future[Done]] =
     Flow[InboundEnvelope]
@@ -907,15 +891,14 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
 
   def inboundFlow(
       settings: ArterySettings,
-      compressions: InboundCompressions): Flow[EnvelopeBuffer, InboundEnvelope, InboundCompressionAccess] = {
+      compressions: InboundCompressions): Flow[EnvelopeBuffer, InboundEnvelope, InboundCompressionAccess] =
     Flow[EnvelopeBuffer].via(killSwitch.flow).viaMat(createDecoder(settings, compressions))(Keep.right)
-  }
 
   // large messages flow does not use compressions, since the message size dominates the size anyway
   def inboundLargeFlow(settings: ArterySettings): Flow[EnvelopeBuffer, InboundEnvelope, Any] =
     inboundFlow(settings, NoInboundCompressions)
 
-  def inboundControlSink: Sink[InboundEnvelope, (ControlMessageSubject, Future[Done])] = {
+  def inboundControlSink: Sink[InboundEnvelope, (ControlMessageSubject, Future[Done])] =
     Flow[InboundEnvelope]
       .via(createDeserializer(envelopeBufferPool))
       .via(if (settings.Advanced.TestMode) new InboundTestStage(this, testState) else Flow[InboundEnvelope])
@@ -926,14 +909,13 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
       .viaMat(new InboundControlJunction)(Keep.right)
       .via(new SystemMessageAcker(this))
       .toMat(messageDispatcherSink)(Keep.both)
-  }
 
   def outboundTestFlow(outboundContext: OutboundContext): Flow[OutboundEnvelope, OutboundEnvelope, NotUsed] =
     if (settings.Advanced.TestMode) Flow.fromGraph(new OutboundTestStage(outboundContext, testState))
     else Flow[OutboundEnvelope]
 
   /** INTERNAL API: for testing only. */
-  private[remote] def triggerCompressionAdvertisements(actorRef: Boolean, manifest: Boolean) = {
+  private[remote] def triggerCompressionAdvertisements(actorRef: Boolean, manifest: Boolean) =
     inboundCompressionAccess match {
       case OptionVal.Some(c) if actorRef || manifest =>
         log.info("Triggering compression table advertisement for {}", c)
@@ -941,11 +923,9 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
         if (manifest) c.runNextClassManifestAdvertisement()
       case _ =>
     }
-  }
 
-  override def publishDropped(env: InboundEnvelope, reason: String): Unit = {
+  override def publishDropped(env: InboundEnvelope, reason: String): Unit =
     system.eventStream.publish(Dropped(env.message, reason, env.recipient.getOrElse(system.deadLetters)))
-  }
 
 }
 

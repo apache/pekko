@@ -170,7 +170,7 @@ class CircuitBreaker(
       resetTimeout: FiniteDuration,
       maxResetTimeout: FiniteDuration,
       exponentialBackoffFactor: Double,
-      randomFactor: Double)(implicit executor: ExecutionContext) = {
+      randomFactor: Double)(implicit executor: ExecutionContext) =
     this(
       scheduler,
       maxFailures,
@@ -181,7 +181,6 @@ class CircuitBreaker(
       randomFactor,
       Set.empty,
       CircuitBreakerNoopTelemetry)(executor)
-  }
 
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def this(
@@ -189,7 +188,7 @@ class CircuitBreaker(
       scheduler: Scheduler,
       maxFailures: Int,
       callTimeout: FiniteDuration,
-      resetTimeout: FiniteDuration) = {
+      resetTimeout: FiniteDuration) =
     this(
       scheduler,
       maxFailures,
@@ -198,14 +197,13 @@ class CircuitBreaker(
       maxResetTimeout = 36500.days,
       exponentialBackoffFactor = 1.0,
       randomFactor = 0.0)(executor)
-  }
 
   def this(
       executor: ExecutionContext,
       scheduler: Scheduler,
       maxFailures: Int,
       callTimeout: java.time.Duration,
-      resetTimeout: java.time.Duration) = {
+      resetTimeout: java.time.Duration) =
     this(
       scheduler,
       maxFailures,
@@ -214,12 +212,11 @@ class CircuitBreaker(
       maxResetTimeout = 36500.days,
       exponentialBackoffFactor = 1.0,
       randomFactor = 0.0)(executor)
-  }
 
   // add the old constructor to make it binary compatible
   def this(scheduler: Scheduler, maxFailures: Int, callTimeout: FiniteDuration, resetTimeout: FiniteDuration)(
       implicit
-      executor: ExecutionContext) = {
+      executor: ExecutionContext) =
     this(
       scheduler,
       maxFailures,
@@ -228,7 +225,6 @@ class CircuitBreaker(
       maxResetTimeout = 36500.days,
       exponentialBackoffFactor = 1.0,
       randomFactor = 0.0)(executor)
-  }
 
   // add the old constructor to make it binary compatible
   def this(
@@ -239,9 +235,8 @@ class CircuitBreaker(
       maxResetTimeout: FiniteDuration,
       exponentialBackoffFactor: Double)(
       implicit
-      executor: ExecutionContext) = {
+      executor: ExecutionContext) =
     this(scheduler, maxFailures, callTimeout, resetTimeout, maxResetTimeout, exponentialBackoffFactor, 0.0)(executor)
-  }
 
   /**
    * The `resetTimeout` will be increased exponentially for each failed attempt to close the circuit.
@@ -249,7 +244,7 @@ class CircuitBreaker(
    *
    * @param maxResetTimeout the upper bound of resetTimeout
    */
-  def withExponentialBackoff(maxResetTimeout: FiniteDuration): CircuitBreaker = {
+  def withExponentialBackoff(maxResetTimeout: FiniteDuration): CircuitBreaker =
     new CircuitBreaker(
       scheduler,
       maxFailures,
@@ -260,7 +255,6 @@ class CircuitBreaker(
       randomFactor,
       allowExceptions,
       telemetry)(executor)
-  }
 
   /**
    * The `resetTimeout` will be increased exponentially for each failed attempt to close the circuit.
@@ -268,9 +262,8 @@ class CircuitBreaker(
    *
    * @param maxResetTimeout the upper bound of resetTimeout
    */
-  def withExponentialBackoff(maxResetTimeout: java.time.Duration): CircuitBreaker = {
+  def withExponentialBackoff(maxResetTimeout: java.time.Duration): CircuitBreaker =
     withExponentialBackoff(maxResetTimeout.asScala)
-  }
 
   /**
    * Adds jitter to the delay.
@@ -278,7 +271,7 @@ class CircuitBreaker(
    *                     factor is added, e.g. 0.2 adds up to 20% delay. In order to skip this
    *                     additional delay pass in 0.
    */
-  def withRandomFactor(randomFactor: Double): CircuitBreaker = {
+  def withRandomFactor(randomFactor: Double): CircuitBreaker =
     new CircuitBreaker(
       scheduler,
       maxFailures,
@@ -289,7 +282,6 @@ class CircuitBreaker(
       randomFactor,
       allowExceptions,
       telemetry)(executor)
-  }
 
   /**
    * Holds reference to current state of CircuitBreaker - *access only via helper methods*
@@ -482,18 +474,16 @@ class CircuitBreaker(
    * caller Actor. In such a case, it is convenient to mark a successful call instead of using Future
    * via [[withCircuitBreaker]]
    */
-  def succeed(): Unit = {
+  def succeed(): Unit =
     currentState.callSucceeds()
-  }
 
   /**
    * Mark a failed call through CircuitBreaker. Sometimes the callee of CircuitBreaker sends back a message to the
    * caller Actor. In such a case, it is convenient to mark a failed call instead of using Future
    * via [[withCircuitBreaker]]
    */
-  def fail(): Unit = {
+  def fail(): Unit =
     currentState.callFails()
-  }
 
   /**
    * Return true if the internal state is Closed. WARNING: It is a "power API" call which you should use with care.
@@ -501,9 +491,8 @@ class CircuitBreaker(
    * So, if you check the state by yourself, and make a remote call outside CircuitBreaker, you should
    * manage the state yourself.
    */
-  def isClosed: Boolean = {
+  def isClosed: Boolean =
     currentState == Closed
-  }
 
   /**
    * Return true if the internal state is Open. WARNING: It is a "power API" call which you should use with care.
@@ -511,9 +500,8 @@ class CircuitBreaker(
    * So, if you check the state by yourself, and make a remote call outside CircuitBreaker, you should
    * manage the state yourself.
    */
-  def isOpen: Boolean = {
+  def isOpen: Boolean =
     currentState == Open
-  }
 
   /**
    * Return true if the internal state is HalfOpen. WARNING: It is a "power API" call which you should use with care.
@@ -521,9 +509,8 @@ class CircuitBreaker(
    * So, if you check the state by yourself, and make a remote call outside CircuitBreaker, you should
    * manage the state yourself.
    */
-  def isHalfOpen: Boolean = {
+  def isHalfOpen: Boolean =
     currentState == HalfOpen
-  }
 
   /**
    * Adds a callback to execute when circuit breaker opens
@@ -694,11 +681,10 @@ class CircuitBreaker(
    * @param fromState State being transitioning from
    * @param toState State being transitioning from
    */
-  private def transition(fromState: State, toState: State): Unit = {
+  private def transition(fromState: State, toState: State): Unit =
     if (swapState(fromState, toState))
       toState.enter()
-    // else some other thread already swapped state
-  }
+  // else some other thread already swapped state
 
   /**
    * Trips breaker to an open state.  This is valid from Closed or Half-Open states.
@@ -833,7 +819,7 @@ class CircuitBreaker(
      *
      * @return Promise which executes listener in supplied [[scala.concurrent.ExecutionContext]]
      */
-    protected def notifyTransitionListeners(): Unit = {
+    protected def notifyTransitionListeners(): Unit =
       if (hasListeners) {
         val iterator = listeners.iterator
         while (iterator.hasNext) {
@@ -841,7 +827,6 @@ class CircuitBreaker(
           executor.execute(listener)
         }
       }
-    }
 
     /**
      * Shared implementation of call across all states.  Thrown exception or execution of the call beyond the allowed

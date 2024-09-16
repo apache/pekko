@@ -66,18 +66,14 @@ class TellPatternActor(recipient: ActorRef) extends Actor with ActorLogging {
   import org.apache.pekko.actor.ReceiveTimeout
 
   def receive = {
-    case "call" if breaker.isClosed => {
+    case "call" if breaker.isClosed =>
       recipient ! "message"
-    }
-    case "response" => {
+    case "response" =>
       breaker.succeed()
-    }
-    case err: Throwable => {
+    case err: Throwable =>
       breaker.fail()
-    }
-    case ReceiveTimeout => {
+    case ReceiveTimeout =>
       breaker.fail()
-    }
   }
   // #circuit-breaker-tell-pattern
 }

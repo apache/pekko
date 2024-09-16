@@ -285,12 +285,11 @@ private[pekko] object Shard {
     // optimization to not have to go through all entities to find batched writes
     private val remembering = new util.HashSet[EntityId]()
 
-    def alreadyRemembered(set: Set[EntityId]): Unit = {
+    def alreadyRemembered(set: Set[EntityId]): Unit =
       set.foreach { entityId =>
         val state = entityState(entityId).transition(RememberedButNotCreated, this)
         entities.put(entityId, state)
       }
-    }
     def rememberingStart(entityId: EntityId, ackTo: Option[ActorRef]): Unit = {
       val newState = RememberingStart(ackTo)
       val state = entityState(entityId).transition(newState, this)
@@ -344,12 +343,11 @@ private[pekko] object Shard {
 
     def entityId(ref: ActorRef): OptionVal[EntityId] = OptionVal(byRef.get(ref))
 
-    def isPassivating(id: EntityId): Boolean = {
+    def isPassivating(id: EntityId): Boolean =
       entities.get(id) match {
         case _: Passivating => true
         case _              => false
       }
-    }
     def entityPassivating(entityId: EntityId): Unit = {
       if (verboseDebug) log.debug("[{}] passivating", entityId)
       entities.get(entityId) match {
@@ -361,13 +359,12 @@ private[pekko] object Shard {
             s"Tried to passivate entity without an actor ref $entityId. Current state $other")
       }
     }
-    private def removeRefIfThereIsOne(state: EntityState): Unit = {
+    private def removeRefIfThereIsOne(state: EntityState): Unit =
       state match {
         case wr: WithRef =>
           byRef.remove(wr.ref)
         case _ =>
       }
-    }
 
     import pekko.util.ccompat.JavaConverters._
     // only called once during handoff
@@ -381,7 +378,7 @@ private[pekko] object Shard {
     /**
      * @return (remembering start, remembering stop)
      */
-    def pendingRememberEntities(): (Map[EntityId, RememberingStart], Set[EntityId]) = {
+    def pendingRememberEntities(): (Map[EntityId, RememberingStart], Set[EntityId]) =
       if (remembering.isEmpty) {
         (Map.empty, Set.empty)
       } else {
@@ -395,7 +392,6 @@ private[pekko] object Shard {
           })
         (starts.result(), stops.result())
       }
-    }
 
     def pendingRememberedEntitiesExist(): Boolean = !remembering.isEmpty
 
@@ -500,7 +496,7 @@ private[pekko] class Shard(
   }
 
   // ===== lease handling initialization =====
-  def acquireLeaseIfNeeded(): Unit = {
+  def acquireLeaseIfNeeded(): Unit =
     lease match {
       case Some(l) =>
         tryGetLease(l)
@@ -508,7 +504,6 @@ private[pekko] class Shard(
       case None =>
         tryLoadRememberedEntities()
     }
-  }
 
   // Don't send back ShardInitialized so that messages are buffered in the ShardRegion
   // while awaiting the lease
@@ -555,7 +550,7 @@ private[pekko] class Shard(
   }
 
   // ===== remember entities initialization =====
-  def tryLoadRememberedEntities(): Unit = {
+  def tryLoadRememberedEntities(): Unit =
     rememberEntitiesStore match {
       case Some(store) =>
         log.debug("{}: Waiting for load of entity ids using [{}] to complete", typeName, store)
@@ -568,7 +563,6 @@ private[pekko] class Shard(
       case None =>
         shardInitialized()
     }
-  }
 
   def awaitingRememberedEntities(): Receive = {
     case RememberEntitiesShardStore.RememberedEntities(entityIds) =>
@@ -635,14 +629,13 @@ private[pekko] class Shard(
     case msg if extractEntityId.isDefinedAt(msg) => deliverMessage(msg, sender())
   }
 
-  def rememberUpdate(add: Set[EntityId] = Set.empty, remove: Set[EntityId] = Set.empty): Unit = {
+  def rememberUpdate(add: Set[EntityId] = Set.empty, remove: Set[EntityId] = Set.empty): Unit =
     rememberEntitiesStore match {
       case None =>
         onUpdateDone(add, remove)
       case Some(store) =>
         sendToRememberStore(store, storingStarts = add, storingStops = remove)
     }
-  }
 
   def sendToRememberStore(store: ActorRef, storingStarts: Set[EntityId], storingStops: Set[EntityId]): Unit = {
     if (verboseDebug)
@@ -814,7 +807,7 @@ private[pekko] class Shard(
 
   // this could be because of a start message or due to a new message for the entity
   // if it is a start entity then start entity ack is sent after it is created
-  private def startEntity(entityId: EntityId, ackTo: Option[ActorRef]): Unit = {
+  private def startEntity(entityId: EntityId, ackTo: Option[ActorRef]): Unit =
     entities.entityState(entityId) match {
       case Active(_) =>
         if (verboseDebug)
@@ -844,7 +837,6 @@ private[pekko] class Shard(
         entities.rememberingStart(entityId, ackTo)
         rememberUpdate(add = Set(entityId))
     }
-  }
 
   private def receiveCoordinatorMessage(msg: CoordinatorMessage): Unit = msg match {
     case HandOff(`shardId`) =>
@@ -875,7 +867,7 @@ private[pekko] class Shard(
       val activeEntities = entities.activeEntities()
       if (preparingForShutdown) {
         log.info("{}: HandOff shard [{}] while preparing for shutdown. Stopping right away.", typeName, shardId)
-        activeEntities.foreach { _ ! handOffStopMessage }
+        activeEntities.foreach(_ ! handOffStopMessage)
         replyTo ! ShardStopped(shardId)
         context.stop(self)
       } else if (activeEntities.nonEmpty && !preparingForShutdown) {
@@ -901,10 +893,9 @@ private[pekko] class Shard(
       }
   }
 
-  private def receiveTerminated(ref: ActorRef): Unit = {
+  private def receiveTerminated(ref: ActorRef): Unit =
     if (handOffStopper.contains(ref))
       context.stop(self)
-  }
 
   @InternalStableApi
   def entityTerminated(ref: ActorRef): Unit = {
@@ -971,7 +962,7 @@ private[pekko] class Shard(
     }
   }
 
-  private def passivate(entity: ActorRef, stopMessage: Any): Unit = {
+  private def passivate(entity: ActorRef, stopMessage: Any): Unit =
     entities.entityId(entity) match {
       case OptionVal.Some(id) =>
         if (entities.isPassivating(id)) {
@@ -991,7 +982,6 @@ private[pekko] class Shard(
       case _ =>
         log.debug("{}: Unknown entity passivating [{}]. Not sending stopMessage back to entity", typeName, entity)
     }
-  }
 
   private def activeEntityLimitUpdated(updated: ShardRegion.SetActiveEntityLimit): Unit = {
     val entitiesToPassivate = passivationStrategy.limitUpdated(updated.perRegionLimit)
@@ -1008,7 +998,7 @@ private[pekko] class Shard(
     passivateEntities(entitiesToPassivate)
   }
 
-  private def passivateEntities(entitiesToPassivate: EntityPassivationStrategy.PassivateEntities): Unit = {
+  private def passivateEntities(entitiesToPassivate: EntityPassivationStrategy.PassivateEntities): Unit =
     if (entitiesToPassivate.nonEmpty) {
       val refsToPassivate = entitiesToPassivate.collect {
         case entityId if entities.entity(entityId).isDefined => entities.entity(entityId).get
@@ -1018,7 +1008,6 @@ private[pekko] class Shard(
         refsToPassivate.foreach(passivate(_, handOffStopMessage))
       }
     }
-  }
 
   // After entity stopped
   def passivateCompleted(entityId: EntityId): Unit = {
@@ -1121,7 +1110,7 @@ private[pekko] class Shard(
   }
 
   @InternalStableApi
-  def getOrCreateEntity(id: EntityId): ActorRef = {
+  def getOrCreateEntity(id: EntityId): ActorRef =
     entities.entity(id) match {
       case OptionVal.Some(child) => child
       case _ =>
@@ -1133,7 +1122,6 @@ private[pekko] class Shard(
         entityCreated(id)
         a
     }
-  }
 
   /**
    * Called when an entity has been created. Returning the number
@@ -1143,7 +1131,7 @@ private[pekko] class Shard(
   def entityCreated(@unused id: EntityId): Int = entities.nrActiveEntities()
 
   // ===== buffering while busy saving a start or stop when remembering entities =====
-  def appendToMessageBuffer(id: EntityId, msg: Any, snd: ActorRef): Unit = {
+  def appendToMessageBuffer(id: EntityId, msg: Any, snd: ActorRef): Unit =
     if (messageBuffers.totalSize >= settings.tuningParameters.bufferSize) {
       if (log.isDebugEnabled)
         log.debug(
@@ -1157,7 +1145,6 @@ private[pekko] class Shard(
         log.debug("{}: Message of type [{}] for entity [{}] buffered", typeName, msg.getClass.getName, id)
       messageBuffers.append(id, msg, snd)
     }
-  }
 
   // After entity started
   def sendMsgBuffer(entityId: EntityId): Unit = {
@@ -1184,9 +1171,8 @@ private[pekko] class Shard(
     }
   }
 
-  private def rememberEntityStoreCrashed(msg: RememberEntityStoreCrashed): Unit = {
+  private def rememberEntityStoreCrashed(msg: RememberEntityStoreCrashed): Unit =
     throw new RuntimeException(s"Remember entities store [${msg.store}] crashed")
-  }
 
   override def postStop(): Unit = {
     passivateIntervalTask.foreach(_.cancel())

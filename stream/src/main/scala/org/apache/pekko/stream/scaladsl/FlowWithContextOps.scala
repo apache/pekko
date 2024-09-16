@@ -154,12 +154,11 @@ trait FlowWithContextOps[+Out, +Ctx, +Mat] {
    */
   def mapAsyncPartitioned[Out2, P](parallelism: Int)(
       partitioner: Out => P)(
-      f: (Out, P) => Future[Out2]): Repr[Out2, Ctx] = {
+      f: (Out, P) => Future[Out2]): Repr[Out2, Ctx] =
     via(flow[Out, Ctx].mapAsyncPartitioned(parallelism)(pair => partitioner(pair._1)) {
       (pair, partition) =>
         f(pair._1, partition).map((_, pair._2))(ExecutionContexts.parasitic)
     })
-  }
 
   /**
    * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.mapAsyncPartitionedUnordered]].
@@ -169,12 +168,11 @@ trait FlowWithContextOps[+Out, +Ctx, +Mat] {
    */
   def mapAsyncPartitionedUnordered[Out2, P](parallelism: Int)(
       partitioner: Out => P)(
-      f: (Out, P) => Future[Out2]): Repr[Out2, Ctx] = {
+      f: (Out, P) => Future[Out2]): Repr[Out2, Ctx] =
     via(flow[Out, Ctx].mapAsyncPartitionedUnordered(parallelism)(pair => partitioner(pair._1)) {
       (pair, partition) =>
         f(pair._1, partition).map((_, pair._2))(ExecutionContexts.parasitic)
     })
-  }
 
   /**
    * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.collect]].

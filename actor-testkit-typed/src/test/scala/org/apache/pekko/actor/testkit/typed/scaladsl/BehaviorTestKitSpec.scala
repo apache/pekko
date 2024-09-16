@@ -97,9 +97,8 @@ object BehaviorTestKitSpec {
               }
               Behaviors.same
             case SpawnAdapterWithName(name) =>
-              context.spawnMessageAdapter({ (r: Reproduce) =>
-                  SpawnAnonymous(r.times)
-                }, name)
+              context.spawnMessageAdapter((r: Reproduce) =>
+                  SpawnAnonymous(r.times), name)
               Behaviors.same
             case SpawnAndWatchUnwatch(name) =>
               val c = context.spawn(Child.initial, name)

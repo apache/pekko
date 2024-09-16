@@ -35,9 +35,8 @@ import scala.concurrent.duration.FiniteDuration
     override def toString = s"TimerMsg(key=$key, generation=$generation, owner=$owner)"
   }
 
-  def withTimers[T](factory: TimerSchedulerCrossDslSupport[T] => Behavior[T]): Behavior[T] = {
+  def withTimers[T](factory: TimerSchedulerCrossDslSupport[T] => Behavior[T]): Behavior[T] =
     scaladsl.Behaviors.setup[T](wrapWithTimers(factory))
-  }
 
   def wrapWithTimers[T](factory: TimerSchedulerCrossDslSupport[T] => Behavior[T])(ctx: ActorContext[T]): Behavior[T] =
     ctx match {
@@ -78,10 +77,9 @@ import scala.concurrent.duration.FiniteDuration
   override final def startTimerAtFixedRate(key: Any, msg: T, initialDelay: Duration, interval: Duration): Unit =
     startTimerAtFixedRate(key, msg, initialDelay.asScala, interval.asScala)
 
-  override final def startPeriodicTimer(key: Any, msg: T, interval: Duration): Unit = {
+  override final def startPeriodicTimer(key: Any, msg: T, interval: Duration): Unit =
     // this follows the deprecation note in the super class
     startTimerWithFixedDelay(key, msg, interval.asScala)
-  }
 
   override final def startSingleTimer(key: Any, msg: T, delay: Duration): Unit =
     startSingleTimer(key, msg, delay.asScala)
@@ -147,12 +145,11 @@ import scala.concurrent.duration.FiniteDuration
   override def isTimerActive(key: Any): Boolean =
     timers.contains(key)
 
-  override def cancel(key: Any): Unit = {
+  override def cancel(key: Any): Unit =
     timers.get(key) match {
       case None    => // already removed/canceled
       case Some(t) => cancelTimer(t)
     }
-  }
 
   private def cancelTimer(timer: Timer[T]): Unit = {
     timer.task.cancel()
@@ -166,7 +163,7 @@ import scala.concurrent.duration.FiniteDuration
     timers = Map.empty
   }
 
-  def interceptTimerMsg(log: Logger, timerMsg: TimerMsg): OptionVal[T] = {
+  def interceptTimerMsg(log: Logger, timerMsg: TimerMsg): OptionVal[T] =
     timers.get(timerMsg.key) match {
       case None =>
         // it was from canceled timer that was already enqueued in mailbox
@@ -193,5 +190,4 @@ import scala.concurrent.duration.FiniteDuration
           OptionVal.none // message should be ignored
         }
     }
-  }
 }

@@ -49,14 +49,13 @@ import pekko.util.unused
 @InternalApi
 private[pekko] object Recovering {
 
-  def apply[C, S](setup: BehaviorSetup[C, S], receivedPoisonPill: Boolean): Behavior[InternalProtocol] = {
+  def apply[C, S](setup: BehaviorSetup[C, S], receivedPoisonPill: Boolean): Behavior[InternalProtocol] =
     Behaviors.setup { _ =>
       // protect against store stalling forever because of store overloaded and such
       setup.startRecoveryTimer()
       val recoveryState = RecoveryState[S](0L, null.asInstanceOf[S], receivedPoisonPill, System.nanoTime())
       new Recovering(setup.setMdcPhase(PersistenceMdc.RecoveringState), recoveryState)
     }
-  }
 
   @InternalApi
   private[pekko] final case class RecoveryState[State](
@@ -82,7 +81,7 @@ private[pekko] class Recovering[C, S](
   onRecoveryStart(setup.context)
   internalGet(setup.context)
 
-  override def onMessage(msg: InternalProtocol): Behavior[InternalProtocol] = {
+  override def onMessage(msg: InternalProtocol): Behavior[InternalProtocol] =
     msg match {
       case success: GetSuccess[S @unchecked] => onGetSuccess(success.result)
       case GetFailure(exc)                   => onGetFailure(exc)
@@ -101,7 +100,6 @@ private[pekko] class Recovering[C, S](
       case DeleteSuccess               => Behaviors.unhandled
       case _: DeleteFailure            => Behaviors.unhandled
     }
-  }
 
   override def onSignal: PartialFunction[Signal, Behavior[InternalProtocol]] = {
     case PoisonPill =>
@@ -147,10 +145,9 @@ private[pekko] class Recovering[C, S](
     onRecoveryFailure(ex)
   }
 
-  def onCommand(cmd: IncomingCommand[C]): Behavior[InternalProtocol] = {
+  def onCommand(cmd: IncomingCommand[C]): Behavior[InternalProtocol] =
     // during recovery, stash all incoming commands
     stashInternal(cmd)
-  }
 
   def onGetSuccess(result: GetObjectResult[S]): Behavior[InternalProtocol] = {
     val state = result.value match {
@@ -190,13 +187,11 @@ private[pekko] class Recovering[C, S](
         val running = new Running(setup.setMdcPhase(PersistenceMdc.RunningCmds))
         tryUnstashOne(new running.HandlingCommands(runningState))
       }
-    } finally {
+    } finally
       setup.cancelRecoveryTimer()
-    }
 
-  def onGetFailure(cause: Throwable): Behavior[InternalProtocol] = {
+  def onGetFailure(cause: Throwable): Behavior[InternalProtocol] =
     onRecoveryFailure(cause)
-  }
 
   override def currentRevision: Long =
     recoveryState.revision

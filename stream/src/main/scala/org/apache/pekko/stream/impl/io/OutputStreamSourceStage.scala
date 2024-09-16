@@ -57,14 +57,13 @@ final private[stream] class OutputStreamSourceStage(writeTimeout: FiniteDuration
       val upstreamCallback: AsyncCallback[AdapterToStageMessage] =
         getAsyncCallback(onAsyncMessage)
 
-      private def onAsyncMessage(event: AdapterToStageMessage): Unit = {
+      private def onAsyncMessage(event: AdapterToStageMessage): Unit =
         event match {
           case Send(data) =>
             emit(out, data, () => semaphore.release())
           case Close =>
             completeStage()
         }
-      }
 
       setHandler(out, GraphStageLogic.EagerTerminateOutput)
     }
@@ -86,24 +85,22 @@ private[pekko] class OutputStreamAdapter(
       throw new IOException("Timed out trying to write data to stream")
     }
 
-    try {
+    try
       Await.result(sendToStage.invokeWithFeedback(Send(data)), writeTimeout)
-    } catch {
+    catch {
       case NonFatal(e) => throw new IOException(e)
     }
   }
 
   @scala.throws(classOf[IOException])
-  override def write(b: Int): Unit = {
+  override def write(b: Int): Unit =
     sendData(ByteString(b))
-  }
 
   @scala.throws(classOf[IOException])
-  override def write(b: Array[Byte], off: Int, len: Int): Unit = {
+  override def write(b: Array[Byte], off: Int, len: Int): Unit =
     if (b.nonEmpty) {
       sendData(ByteString.fromArray(b, off, len))
     }
-  }
 
   @scala.throws(classOf[IOException])
   override def flush(): Unit =
@@ -113,11 +110,10 @@ private[pekko] class OutputStreamAdapter(
     ()
 
   @scala.throws(classOf[IOException])
-  override def close(): Unit = {
-    try {
+  override def close(): Unit =
+    try
       Await.result(sendToStage.invokeWithFeedback(Close), writeTimeout)
-    } catch {
+    catch {
       case NonFatal(e) => throw new IOException(e)
     }
-  }
 }

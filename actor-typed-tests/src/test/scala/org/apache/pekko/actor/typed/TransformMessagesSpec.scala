@@ -49,7 +49,7 @@ class TransformMessagesSpec extends ScalaTestWithActorTestKit with AnyWordSpecLi
 
   implicit val classicSystem: actor.ActorSystem = system.toClassic
 
-  def intToString(probe: ActorRef[String]): Behavior[Int] = {
+  def intToString(probe: ActorRef[String]): Behavior[Int] =
     Behaviors
       .receiveMessage[String] { message =>
         probe ! message
@@ -58,7 +58,6 @@ class TransformMessagesSpec extends ScalaTestWithActorTestKit with AnyWordSpecLi
       .transformMessages[Int] {
         case n if n != 13 => n.toString
       }
-  }
 
   "transformMessages" should {
 

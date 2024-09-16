@@ -117,10 +117,9 @@ private[cluster] class ClusterRemoteWatcher(
     case DelayedQuarantine(m, previousStatus) => delayedQuarantine(m, previousStatus)
   }
 
-  private def memberJoined(m: Member): Unit = {
+  private def memberJoined(m: Member): Unit =
     if (m.address != selfAddress)
       quarantineOldIncarnation(m)
-  }
 
   def memberUp(m: Member): Unit =
     if (m.address != selfAddress) {
@@ -154,7 +153,7 @@ private[cluster] class ClusterRemoteWatcher(
       publishAddressTerminated(m.address)
     }
 
-  def quarantineOldIncarnation(newIncarnation: Member): Unit = {
+  def quarantineOldIncarnation(newIncarnation: Member): Unit =
     // If new incarnation of same host:port is seen then quarantine previous incarnation
     if (pendingDelayedQuarantine.nonEmpty)
       pendingDelayedQuarantine.find(_.address == newIncarnation.address).foreach { oldIncarnation =>
@@ -165,9 +164,8 @@ private[cluster] class ClusterRemoteWatcher(
           s"Cluster member removed, new incarnation joined",
           harmless = true)
       }
-  }
 
-  def delayedQuarantine(m: Member, previousStatus: MemberStatus): Unit = {
+  def delayedQuarantine(m: Member, previousStatus: MemberStatus): Unit =
     if (pendingDelayedQuarantine(m.uniqueAddress)) {
       pendingDelayedQuarantine -= m.uniqueAddress
       quarantine(
@@ -176,7 +174,6 @@ private[cluster] class ClusterRemoteWatcher(
         s"Cluster member removed, previous status [$previousStatus]",
         harmless = true)
     }
-  }
 
   override def addWatch(watchee: InternalActorRef, watcher: InternalActorRef): Unit = {
     val watcheeNode = watchee.path.address
@@ -200,12 +197,11 @@ private[cluster] class ClusterRemoteWatcher(
    * Needed for ShardCoordinator that has to watch old incarnations of region ActorRef from the
    * recovered state.
    */
-  private def isWatchOutsideClusterAllowed(watchee: InternalActorRef): Boolean = {
+  private def isWatchOutsideClusterAllowed(watchee: InternalActorRef): Boolean =
     context.system.name == watchee.path.address.system && {
       val pathPrefix = watchee.path.elements.take(2).mkString("/", "/", "/")
       watchPathAllowList.contains(pathPrefix)
     }
-  }
 
   /**
    * When a cluster node is added this class takes over the

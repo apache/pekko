@@ -22,7 +22,7 @@ sealed abstract class CapabilityFlag {
       val clazz = Class.forName(el.getClassName)
       clazz.getDeclaredMethod(el.getMethodName).getReturnType == classOf[CapabilityFlag]
     }
-    .map { _.getMethodName }
+    .map(_.getMethodName)
     .getOrElse("[unknown]")
 
   def name: String = capturedStack

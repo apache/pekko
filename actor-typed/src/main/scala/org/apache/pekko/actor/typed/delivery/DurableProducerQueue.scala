@@ -80,9 +80,8 @@ object DurableProducerQueue {
       unconfirmed: immutable.IndexedSeq[MessageSent[A]])
       extends DeliverySerializable {
 
-    def addMessageSent(sent: MessageSent[A]): State[A] = {
+    def addMessageSent(sent: MessageSent[A]): State[A] =
       copy(currentSeqNr = sent.seqNr + 1, unconfirmed = unconfirmed :+ sent)
-    }
 
     def confirmed(
         seqNr: SeqNr,
@@ -97,14 +96,13 @@ object DurableProducerQueue {
         unconfirmed = newUnconfirmed)
     }
 
-    def cleanup(confirmationQualifiers: Set[String]): State[A] = {
+    def cleanup(confirmationQualifiers: Set[String]): State[A] =
       copy(confirmedSeqNr = confirmedSeqNr -- confirmationQualifiers)
-    }
 
     /**
      * If not all chunked messages were stored before crash those partial chunked messages should not be resent.
      */
-    def cleanupPartialChunkedMessages(): State[A] = {
+    def cleanupPartialChunkedMessages(): State[A] =
       if (unconfirmed.isEmpty || unconfirmed.forall(u => u.isFirstChunk && u.isLastChunk)) {
         this
       } else {
@@ -130,7 +128,6 @@ object DurableProducerQueue {
         }
         copy(currentSeqNr = newCurrentSeqNr, unconfirmed = newUnconfirmed.result())
       }
-    }
   }
 
   /**
@@ -150,20 +147,18 @@ object DurableProducerQueue {
       extends Event {
 
     /** INTERNAL API */
-    @InternalApi private[pekko] def isFirstChunk: Boolean = {
+    @InternalApi private[pekko] def isFirstChunk: Boolean =
       message match {
         case c: ChunkedMessage => c.firstChunk
         case _                 => true
       }
-    }
 
     /** INTERNAL API */
-    @InternalApi private[pekko] def isLastChunk: Boolean = {
+    @InternalApi private[pekko] def isLastChunk: Boolean =
       message match {
         case c: ChunkedMessage => c.lastChunk
         case _                 => true
       }
-    }
 
     def withConfirmationQualifier(qualifier: ConfirmationQualifier): MessageSent[A] =
       new MessageSent(seqNr, message, ack, qualifier, timestampMillis)
@@ -171,14 +166,13 @@ object DurableProducerQueue {
     def withTimestampMillis(timestamp: TimestampMillis): MessageSent[A] =
       new MessageSent(seqNr, message, ack, confirmationQualifier, timestamp)
 
-    override def equals(obj: Any): Boolean = {
+    override def equals(obj: Any): Boolean =
       obj match {
         case other: MessageSent[_] =>
           seqNr == other.seqNr && message == other.message && ack == other.ack && confirmationQualifier == other
             .confirmationQualifier && timestampMillis == other.timestampMillis
         case _ => false
       }
-    }
 
     override def hashCode(): Int = seqNr.hashCode()
 

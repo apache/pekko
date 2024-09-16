@@ -66,16 +66,15 @@ class LocalActorRefProviderLogMessagesSpec
       val invalidPath = otherSystem.provider.rootPath / "user" / "foo"
 
       val provider = system.asInstanceOf[ActorSystemAdapter[_]].provider
-      try {
+      try
         LoggingTestKit
           .debug("Resolve (deserialization) of foreign path [pekko://otherSystem/user/foo]")
           .withLoggerName("org.apache.pekko.actor.LocalActorRefProvider.Deserialization")
           .expect {
             provider.resolveActorRef(invalidPath)
           }
-      } finally {
+      finally
         ActorTestKit.shutdown(otherSystem)
-      }
     }
   }
 }

@@ -147,14 +147,13 @@ final class Merge[T](val inputPorts: Int, val eagerComplete: Boolean) extends Gr
         setHandler(
           i,
           new InHandler {
-            override def onPush(): Unit = {
+            override def onPush(): Unit =
               if (isAvailable(out)) {
                 // isAvailable(out) implies !pending
                 // -> grab and push immediately
                 push(out, grab(i))
                 tryPull(i)
               } else pendingQueue.enqueue(i)
-            }
 
             override def onUpstreamFinish() =
               if (eagerComplete) {
@@ -172,10 +171,9 @@ final class Merge[T](val inputPorts: Int, val eagerComplete: Boolean) extends Gr
           })
       }
 
-      override def onPull(): Unit = {
+      override def onPull(): Unit =
         if (pending)
           dequeueAndDispatch()
-      }
 
       setHandler(out, this)
     }
@@ -238,17 +236,16 @@ final class MergePreferred[T](val secondaryPorts: Int, val eagerComplete: Boolea
       if (eagerComplete || openInputs == 0) completeStage()
     }
 
-    override def preStart(): Unit = {
+    override def preStart(): Unit =
       // while initializing this `MergePreferredShape`, the `preferred` port gets added to `inlets` by side-effect.
       shape.inlets.foreach(tryPull)
-    }
 
     setHandler(out, eagerTerminateOutput)
 
-    val pullMe = Array.tabulate(secondaryPorts)(i => {
+    val pullMe = Array.tabulate(secondaryPorts) { i =>
       val port = in(i)
       () => tryPull(port)
-    })
+    }
 
     /*
      * This determines the unfairness of the merge:
@@ -296,12 +293,11 @@ final class MergePreferred[T](val secondaryPorts: Int, val eagerComplete: Boolea
       setHandler(
         port,
         new InHandler {
-          override def onPush(): Unit = {
+          override def onPush(): Unit =
             if (preferredEmitting > 0) () // blocked
             else {
               emit(out, grab(port), pullPort)
             }
-          }
           override def onUpstreamFinish(): Unit = onComplete()
         })
       i += 1
@@ -358,14 +354,13 @@ final class MergePrioritized[T] private (val priorities: Seq[Int], val eagerComp
         setHandler(
           inlet,
           new InHandler {
-            override def onPush(): Unit = {
+            override def onPush(): Unit =
               if (isAvailable(out) && !hasOtherInletAvailable(inlet)) {
                 push(out, grab(inlet))
                 tryPull(inlet)
               }
-            }
 
-            override def onUpstreamFinish(): Unit = {
+            override def onUpstreamFinish(): Unit =
               if (eagerComplete) {
                 in.foreach(cancel(_))
                 runningUpstreams = 0
@@ -374,7 +369,6 @@ final class MergePrioritized[T] private (val priorities: Seq[Int], val eagerComp
                 runningUpstreams -= 1
                 if (upstreamsClosed && !hasPending) completeStage()
               }
-            }
           })
       }
 
@@ -509,7 +503,7 @@ final class Interleave[T](val inputPorts: Int, val segmentSize: Int, val eagerCl
               if (counter == segmentSize) switchToNextInput()
             }
 
-            override def onUpstreamFinish(): Unit = {
+            override def onUpstreamFinish(): Unit =
               if (!eagerClose) {
                 runningUpstreams -= 1
                 if (!upstreamsClosed) {
@@ -519,7 +513,6 @@ final class Interleave[T](val inputPorts: Int, val segmentSize: Int, val eagerCl
                   }
                 } else completeStage()
               } else completeStage()
-            }
           })
       }
 
@@ -667,7 +660,7 @@ final class Broadcast[T](val outputPorts: Int, val eagerCancel: Boolean) extends
                 tryPull()
               }
 
-              override def onDownstreamFinish(cause: Throwable) = {
+              override def onDownstreamFinish(cause: Throwable) =
                 if (eagerCancel) cancelStage(cause)
                 else {
                   downstreamsRunning -= 1
@@ -678,7 +671,6 @@ final class Broadcast[T](val outputPorts: Int, val eagerCancel: Boolean) extends
                     tryPull()
                   }
                 }
-              }
             })
           idx += 1
         }
@@ -734,33 +726,29 @@ private[stream] final class WireTap[T] extends GraphStage[FanOutShape2[T, T, T]]
           pendingTap = Some(elem)
         }
       }
-      override def onPull(): Unit = {
+      override def onPull(): Unit =
         pull(in)
-      }
 
-      override def onDownstreamFinish(cause: Throwable): Unit = {
+      override def onDownstreamFinish(cause: Throwable): Unit =
         cancelStage(cause)
-      }
 
       // The 'tap' output can neither backpressure, nor cancel, the stage.
       setHandler(
         outTap,
         new OutHandler {
-          override def onPull() = {
+          override def onPull() =
             pendingTap match {
               case Some(elem) =>
                 push(outTap, elem)
                 pendingTap = None
               case None => // no pending element to emit
             }
-          }
 
           override def onDownstreamFinish(cause: Throwable): Unit = {
             setHandler(in,
               new InHandler {
-                override def onPush() = {
+                override def onPush() =
                   push(outMain, grab(in))
-                }
               })
             // Allow any outstanding element to be garbage-collected
             pendingTap = None
@@ -858,14 +846,12 @@ final class Partition[T](val outputPorts: Int, val partitioner: T => Int, val ea
         }
       }
 
-      private def pullIfAnyOutIsAvailable(): Unit = {
+      private def pullIfAnyOutIsAvailable(): Unit =
         if (out.exists(isAvailable(_)))
           pull(in)
-      }
 
-      override def onUpstreamFinish(): Unit = {
+      override def onUpstreamFinish(): Unit =
         if (outPendingElem == null) completeStage()
-      }
 
       setHandler(in, this)
 
@@ -874,7 +860,7 @@ final class Partition[T](val outputPorts: Int, val partitioner: T => Int, val ea
           setHandler(
             o,
             new OutHandler {
-              override def onPull() = {
+              override def onPull() =
                 if (outPendingElem != null) {
                   val elem = outPendingElem.asInstanceOf[T]
                   if (idx == outPendingIdx) {
@@ -887,7 +873,6 @@ final class Partition[T](val outputPorts: Int, val partitioner: T => Int, val ea
                   }
                 } else if (!hasBeenPulled(in))
                   pull(in)
-              }
 
               override def onDownstreamFinish(cause: Throwable) =
                 if (eagerCancel) cancelStage(cause)
@@ -1006,7 +991,7 @@ final class Balance[T](val outputPorts: Int, val waitForAllDownstreams: Boolean,
               } else pendingQueue.enqueue(o)
             }
 
-            override def onDownstreamFinish(cause: Throwable) = {
+            override def onDownstreamFinish(cause: Throwable) =
               if (eagerCancel) cancelStage(cause)
               else {
                 downstreamsRunning -= 1
@@ -1016,7 +1001,6 @@ final class Balance[T](val outputPorts: Int, val waitForAllDownstreams: Boolean,
                   if (needDownstreamPulls == 0 && !hasBeenPulled(in)) pull(in)
                 }
               }
-            }
           })
       }
     }
@@ -1245,9 +1229,8 @@ class ZipWithN[A, O](zipper: immutable.Seq[A] => O)(n: Int) extends GraphStage[U
         else shape.inlets.foreach(pullInlet)
       }
 
-      override def preStart(): Unit = {
+      override def preStart(): Unit =
         shape.inlets.foreach(pullInlet)
-      }
 
       shape.inlets.zipWithIndex.foreach {
         case (in, i) =>
@@ -1299,10 +1282,9 @@ object Concat {
    * @return
    */
   def apply[T](inputPorts: Int, detachedInputs: Boolean): Graph[UniformFanInShape[T, T], NotUsed] = {
-    val concat = {
+    val concat =
       if (inputPorts == 2) concatTwo[T]
       else new Concat[T](inputPorts)
-    }
 
     if (detachedInputs) GraphStages.withDetachedInputs(concat)
     else concat
@@ -1344,11 +1326,10 @@ final class Concat[T](val inputPorts: Int) extends GraphStage[UniformFanInShape[
         setHandler(
           i,
           new InHandler {
-            override def onPush() = {
+            override def onPush() =
               push(out, grab(i))
-            }
 
-            override def onUpstreamFinish() = {
+            override def onUpstreamFinish() =
               if (idx == activeStream) {
                 activeStream += 1
                 // Skip closed inputs
@@ -1356,7 +1337,6 @@ final class Concat[T](val inputPorts: Int) extends GraphStage[UniformFanInShape[
                 if (activeStream == inputPorts) completeStage()
                 else if (isAvailable(out)) pull(in(activeStream))
               }
-            }
           })
         idxx += 1
       }
@@ -1413,9 +1393,8 @@ private[stream] final class OrElse[T] extends GraphStage[UniformFanInShape[T, T]
       private[this] var currentIn = primary
       private[this] var primaryPushed = false
 
-      override def onPull(): Unit = {
+      override def onPull(): Unit =
         pull(currentIn)
-      }
 
       // for the primary inHandler
       override def onPush(): Unit = {
@@ -1428,24 +1407,21 @@ private[stream] final class OrElse[T] extends GraphStage[UniformFanInShape[T, T]
       }
 
       // for the primary inHandler
-      override def onUpstreamFinish(): Unit = {
+      override def onUpstreamFinish(): Unit =
         if (!primaryPushed && !isClosed(secondary)) {
           currentIn = secondary
           if (isAvailable(out)) pull(secondary)
         } else {
           completeStage()
         }
-      }
 
       setHandler(secondary,
         new InHandler {
-          override def onPush(): Unit = {
+          override def onPush(): Unit =
             push(out, grab(secondary))
-          }
 
-          override def onUpstreamFinish(): Unit = {
+          override def onUpstreamFinish(): Unit =
             if (isClosed(primary)) completeStage()
-          }
         })
 
       setHandlers(primary, out, this)
@@ -1733,20 +1709,18 @@ object GraphDSL extends GraphApply {
   object Implicits {
 
     @tailrec
-    private[stream] def findOut[I, O](b: Builder[_], junction: UniformFanOutShape[I, O], n: Int): Outlet[O] = {
+    private[stream] def findOut[I, O](b: Builder[_], junction: UniformFanOutShape[I, O], n: Int): Outlet[O] =
       if (n == junction.outlets.length)
         throw new IllegalArgumentException(s"no more outlets free on $junction")
       else if (!b.traversalBuilder.isUnwired(junction.out(n))) findOut(b, junction, n + 1)
       else junction.out(n)
-    }
 
     @tailrec
-    private[stream] def findIn[I, O](b: Builder[_], junction: UniformFanInShape[I, O], n: Int): Inlet[I] = {
+    private[stream] def findIn[I, O](b: Builder[_], junction: UniformFanInShape[I, O], n: Int): Inlet[I] =
       if (n == junction.inlets.length)
         throw new IllegalArgumentException(s"no more inlets free on $junction")
       else if (!b.traversalBuilder.isUnwired(junction.in(n))) findIn(b, junction, n + 1)
       else junction.in(n)
-    }
 
     sealed trait CombinerBase[+T] extends Any {
       def importAndGetPort(b: Builder[_]): Outlet[T @uncheckedVariance]
@@ -1761,12 +1735,11 @@ object GraphDSL extends GraphApply {
       }
 
       def ~>[Out](junction: UniformFanInShape[T, Out])(implicit b: Builder[_]): PortOps[Out] = {
-        def bind(n: Int): Unit = {
+        def bind(n: Int): Unit =
           if (n == junction.inlets.length)
             throw new IllegalArgumentException(s"no more inlets free on $junction")
           else if (!b.traversalBuilder.isUnwired(junction.in(n))) bind(n + 1)
           else b.addEdge(importAndGetPort(b), junction.in(n))
-        }
         bind(0)
         junction.out
       }
@@ -1804,12 +1777,11 @@ object GraphDSL extends GraphApply {
       }
 
       def <~[In](junction: UniformFanOutShape[In, T])(implicit b: Builder[_]): ReversePortOps[In] = {
-        def bind(n: Int): Unit = {
+        def bind(n: Int): Unit =
           if (n == junction.outlets.length)
             throw new IllegalArgumentException(s"no more outlets free on $junction")
           else if (!b.traversalBuilder.isUnwired(junction.out(n))) bind(n + 1)
           else b.addEdge(junction.out(n), importAndGetPortReverse(b))
-        }
         bind(0)
         junction.in
       }
@@ -1858,9 +1830,8 @@ object GraphDSL extends GraphApply {
       override def via[T, Mat2](flow: Graph[FlowShape[Out, T], Mat2]): Repr[T] =
         super.~>(flow)(b)
 
-      def to[Mat2](sink: Graph[SinkShape[Out], Mat2]): Closed = {
+      def to[Mat2](sink: Graph[SinkShape[Out], Mat2]): Closed =
         super.~>(sink)(b)
-      }
     }
 
     private class DisabledPortOps[Out](msg: String) extends PortOpsImpl[Out](null, null) {

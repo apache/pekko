@@ -34,7 +34,7 @@ object SigarLoader {
   val sigarFolderProperty = "kamon.sigar.folder"
 
   // TODO remove Sigar form test:test* classpath, it is provided by Sigar agent.
-  lazy val sigarSettings = {
+  lazy val sigarSettings =
     Seq(
       //
       // Prepare Sigar agent options.
@@ -51,6 +51,5 @@ object SigarLoader {
       Test / fork := true) ++ ( // Invoke Sigar agent at JVM init time, to extract and load native Sigar library.
       if (sigarTestEnabled) Seq(Test / javaOptions += sigarOptions.value)
       else Seq())
-  }
 
 }

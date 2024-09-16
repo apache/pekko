@@ -98,9 +98,9 @@ abstract class AbstractSystemMessageDeliverySpec(c: Config) extends ArteryMultiN
       .via(new SystemMessageAcker(inboundContext))
   }
 
-  protected def drop(dropSeqNumbers: Vector[Long]): Flow[OutboundEnvelope, OutboundEnvelope, NotUsed] = {
+  protected def drop(dropSeqNumbers: Vector[Long]): Flow[OutboundEnvelope, OutboundEnvelope, NotUsed] =
     Flow[OutboundEnvelope].statefulMap(() => dropSeqNumbers)(
-      (dropping, outboundEnvelope) => {
+      (dropping, outboundEnvelope) =>
         outboundEnvelope.message match {
           case SystemMessageEnvelope(_, seqNo, _) =>
             val i = dropping.indexOf(seqNo)
@@ -109,10 +109,8 @@ abstract class AbstractSystemMessageDeliverySpec(c: Config) extends ArteryMultiN
             } else
               (dropping, Some(outboundEnvelope))
           case _ => (dropping, None)
-        }
-      }, _ => None)
+        }, _ => None)
       .collect { case Some(outboundEnvelope) => outboundEnvelope }
-  }
 
   protected def randomDrop[T](dropRate: Double): Flow[T, T, NotUsed] = Flow[T].mapConcat { elem =>
     if (ThreadLocalRandom.current().nextDouble() < dropRate) Nil
@@ -188,9 +186,8 @@ class SystemMessageDeliverySpec extends AbstractSystemMessageDeliverySpec(System
         system.log.debug("systemC terminated")
         // DeathWatchNotification is sent from systemC, failure detection takes longer than 3 seconds
         expectTerminated(remoteRef, 10.seconds)
-      } finally {
+      } finally
         shutdown(systemC)
-      }
     }
 
     "be resent when some in the middle are lost" in {

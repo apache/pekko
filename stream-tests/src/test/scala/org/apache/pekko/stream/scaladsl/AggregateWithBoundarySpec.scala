@@ -90,12 +90,11 @@ class AggregateWithTimeBoundaryAndSimulatedTimeSpec extends AnyWordSpecLike with
           "pekko.scheduler.implementation",
           ConfigValueFactory.fromAnyRef("org.apache.pekko.testkit.ExplicitlyTriggeredScheduler"))))
 
-  private def getEts(actor: ActorSystem): ExplicitlyTriggeredScheduler = {
+  private def getEts(actor: ActorSystem): ExplicitlyTriggeredScheduler =
     actor.scheduler match {
       case ets: ExplicitlyTriggeredScheduler => ets
       case other                             => throw new Exception(s"expecting ${classOf[ExplicitlyTriggeredScheduler]} but got ${other.getClass}")
     }
-  }
 
   private def timePasses(amount: FiniteDuration)(implicit actorSystem: ActorSystem): Unit =
     getEts(actorSystem).timePasses(amount)

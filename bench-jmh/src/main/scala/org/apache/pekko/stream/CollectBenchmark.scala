@@ -54,9 +54,8 @@ class CollectBenchmark {
   private implicit val system: ActorSystem = ActorSystem("CollectBenchmark", config)
 
   @TearDown
-  def shutdown(): Unit = {
+  def shutdown(): Unit =
     Await.result(system.terminate(), 5.seconds)
-  }
 
   private val newCollect = Source
     .repeat(1)
@@ -85,13 +84,13 @@ class CollectBenchmark {
 
         @nowarn("msg=Any")
         override def onPush(): Unit =
-          try {
+          try
             pf.applyOrElse(grab(in), NotApplied) match {
               case NotApplied             => pull(in)
               case result: Out @unchecked => push(out, result)
               case _                      => throw new RuntimeException()
             }
-          } catch {
+          catch {
             case NonFatal(ex) =>
               decider(ex) match {
                 case Supervision.Stop    => failStage(ex)

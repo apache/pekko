@@ -117,9 +117,8 @@ private[pekko] final class DDataRememberEntitiesShardStore(
     keys(i)
   }
 
-  override def receive: Receive = {
+  override def receive: Receive =
     waitingForAllEntityIds(Set.empty, Set.empty, None)
-  }
 
   def idle: Receive = {
     case RememberEntitiesShardStore.GetEntities =>
@@ -260,11 +259,10 @@ private[pekko] final class DDataRememberEntitiesShardStore(
     next(allUpdates)
   }
 
-  private def loadAllEntities(): Unit = {
+  private def loadAllEntities(): Unit =
     (0 until numberOfKeys).toSet[Int].foreach { i =>
       val key = keys(i)
       replicator ! Get(key, readMajority, Some(i))
     }
-  }
 
 }

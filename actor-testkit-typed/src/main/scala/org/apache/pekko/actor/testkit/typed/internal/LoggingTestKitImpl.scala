@@ -58,7 +58,7 @@ import pekko.testkit.TestKit
   @volatile // JMM does not guarantee visibility for non-final fields
   private var todo = occurrences
 
-  def matches(event: LoggingEvent): Boolean = {
+  def matches(event: LoggingEvent): Boolean =
     logLevel.forall(_ == event.level) &&
     source.forall(_ == sourceOrEmpty(event)) &&
     messageContains.forall(messageOrEmpty(event).contains) &&
@@ -67,8 +67,7 @@ import pekko.testkit.TestKit
     mdc.forall { case (key, value) => event.mdc.contains(key) && event.mdc(key) == value } &&
     custom.forall(f => f(event))
 
-    // loggerName is handled when installing the filter, in `expect`
-  }
+  // loggerName is handled when installing the filter, in `expect`
 
   private def messageOrEmpty(event: LoggingEvent): String =
     if (event.message == null) "" else event.message
@@ -76,24 +75,22 @@ import pekko.testkit.TestKit
   private def sourceOrEmpty(event: LoggingEvent): String =
     event.mdc.getOrElse("pekkoSource", "")
 
-  def apply(event: LoggingEvent): Boolean = {
+  def apply(event: LoggingEvent): Boolean =
     if (matches(event)) {
       if (todo != Int.MaxValue) todo -= 1
       true
     } else false
-  }
 
   private def awaitDone(max: Duration): Boolean = {
     if (todo != Int.MaxValue && todo > 0) TestKit.awaitCond(todo <= 0, max, noThrow = true)
     todo == Int.MaxValue || todo == 0
   }
 
-  private def awaitNoExcess(max: Duration): Boolean = {
+  private def awaitNoExcess(max: Duration): Boolean =
     if (todo == 0)
       !TestKit.awaitCond(todo < 0, max, noThrow = true)
     else
       todo > 0
-  }
 
   override def expect[T](code: => T)(implicit system: ActorSystem[_]): T = {
     val effectiveLoggerName = loggerName.getOrElse("")
@@ -127,11 +124,10 @@ import pekko.testkit.TestKit
   override def intercept[T](code: => T)(implicit system: ActorSystem[_]): T =
     expect(code)(system)
 
-  private def checkLogback(system: ActorSystem[_]): Unit = {
+  private def checkLogback(system: ActorSystem[_]): Unit =
     if (!system.dynamicAccess.classIsOnClasspath("ch.qos.logback.classic.spi.ILoggingEvent")) {
       throw new IllegalStateException("LoggingEventFilter requires logback-classic dependency in classpath.")
     }
-  }
 
   override def withOccurrences(newOccurrences: Int): LoggingTestKitImpl =
     copy(occurrences = newOccurrences)

@@ -214,15 +214,14 @@ object RotatingKeysSSLEngineProviderSpec {
       case NonFatal(t) => throw new RuntimeException(s"Can't copy resource [$resourceName] to [$to].", t)
     }
   }
-  def deployCaCert(): Unit = {
+  def deployCaCert(): Unit =
     deployResource("ssl/exampleca.crt", cacertLocation.toPath)
-  }
   def deployKeySet(setName: String): Unit = {
     deployResource(setName + ".crt", certLocation.toPath)
     deployResource(setName + ".pem", keyLocation.toPath)
   }
   def cleanupTemporaryDirectory(): Unit = {
-    temporaryDirectory.toFile.listFiles().foreach { _.delete() }
+    temporaryDirectory.toFile.listFiles().foreach(_.delete())
     temporaryDirectory.toFile.delete()
   }
 }
@@ -256,9 +255,8 @@ abstract class RotatingKeysSSLEngineProviderSpec(extraConfig: String)
   }
 
   // sleep to force the cache in sysB's instance to expire
-  def awaitCacheExpiration(): Unit = {
+  def awaitCacheExpiration(): Unit =
     Thread.sleep((RotatingKeysSSLEngineProviderSpec.cacheTtlInSeconds + 1) * 1000)
-  }
 
   def contact(fromSystem: ActorSystem, toPath: ActorPath): Unit = {
     val senderOnSource = TestProbe()(fromSystem)

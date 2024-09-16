@@ -43,17 +43,15 @@ object UnfoldResource {
     val queryResultSource: Source[DatabaseEntry, NotUsed] =
       Source.unfoldResource[DatabaseEntry, QueryResult](
         // open
-        { () =>
-          database.doQuery()
-        },
+        () =>
+          database.doQuery(),
         // read
-        { query =>
+        query =>
           if (query.hasMore)
             Some(query.nextEntry())
           else
             // signals end of resource
-            None
-        },
+            None,
         // close
         query => query.close())
 

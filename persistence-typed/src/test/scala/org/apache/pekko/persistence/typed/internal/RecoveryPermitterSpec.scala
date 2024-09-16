@@ -202,7 +202,7 @@ class RecoveryPermitterSpec extends ScalaTestWithActorTestKit(s"""
       val stopProbe = createTestProbe[ActorRef[Command]]()
       val parent =
         LoggingTestKit.error("Exception during recovery.").expect {
-          spawn(Behaviors.setup[Command](ctx => {
+          spawn(Behaviors.setup[Command] { ctx =>
             val persistentActor =
               ctx.spawnAnonymous(persistentBehavior("p3", p3, p3, throwOnRecovery = true))
             Behaviors.receive[Command] {
@@ -214,7 +214,7 @@ class RecoveryPermitterSpec extends ScalaTestWithActorTestKit(s"""
                 persistentActor ! message
                 Behaviors.same
             }
-          }))
+          })
         }
       p3.expectMessage(Recovered)
       // stop it

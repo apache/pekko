@@ -64,13 +64,12 @@ object UidClashTest {
       case RestartedSafely => context.parent ! RestartedSafely
     }
 
-    override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
+    override def preRestart(reason: Throwable, message: Option[Any]): Unit =
       context.children.foreach { child =>
         oldActor = child
         context.unwatch(child)
         context.stop(child)
       }
-    }
 
     override def preStart(): Unit = context.watch(context.actorOf(Props.empty, "child"))
 

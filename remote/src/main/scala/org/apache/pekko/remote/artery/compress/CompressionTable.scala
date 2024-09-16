@@ -106,10 +106,9 @@ private[remote] object CompressionTable {
   }
   def compareBy2ndValue[T]: Comparator[Tuple2[T, Int]] = CompareBy2ndValue.asInstanceOf[Comparator[(T, Int)]]
 
-  private def newObject2IntHashMap[T](initialCapacity: Int): Object2IntHashMap[T] = {
+  private def newObject2IntHashMap[T](initialCapacity: Int): Object2IntHashMap[T] =
     // import to use shouldAvoidAllocation = false because of concurrent access of dictionary
     new Object2IntHashMap[T](initialCapacity, Hashing.DEFAULT_LOAD_FACTOR, NotCompressedId, false)
-  }
 
   def empty[T] = new CompressionTable[T](0, 0, newObject2IntHashMap(2))
 

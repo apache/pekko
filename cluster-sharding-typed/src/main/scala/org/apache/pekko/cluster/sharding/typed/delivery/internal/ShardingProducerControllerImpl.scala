@@ -102,16 +102,15 @@ import pekko.util.Timeout
       // replyAfterStore is used when durableQueue is enabled, otherwise they are tracked in OutState
       replyAfterStore: Map[TotalSeqNr, ActorRef[Done]]) {
 
-    def bufferSize: Long = {
+    def bufferSize: Long =
       out.valuesIterator.foldLeft(0L) { case (acc, outState) => acc + outState.buffered.size }
-    }
   }
 
   def apply[A: ClassTag](
       producerId: String,
       region: ActorRef[ShardingEnvelope[ConsumerController.SequencedMessage[A]]],
       durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]],
-      settings: ShardingProducerController.Settings): Behavior[Command[A]] = {
+      settings: ShardingProducerController.Settings): Behavior[Command[A]] =
     Behaviors
       .withStash[InternalCommand](settings.bufferSize) { stashBuffer =>
         Behaviors.setup[InternalCommand] { context =>
@@ -133,11 +132,9 @@ import pekko.util.Timeout
         }
       }
       .narrow
-  }
 
-  private def createInitialState[A](hasDurableQueue: Boolean) = {
+  private def createInitialState[A](hasDurableQueue: Boolean) =
     if (hasDurableQueue) None else Some(DurableProducerQueue.State.empty[A])
-  }
 
   private def waitingForStart[A: ClassTag](
       producerId: String,
@@ -149,7 +146,7 @@ import pekko.util.Timeout
       initialState: Option[DurableProducerQueue.State[A]],
       settings: ShardingProducerController.Settings): Behavior[InternalCommand] = {
 
-    def becomeActive(p: ActorRef[RequestNext[A]], s: DurableProducerQueue.State[A]): Behavior[InternalCommand] = {
+    def becomeActive(p: ActorRef[RequestNext[A]], s: DurableProducerQueue.State[A]): Behavior[InternalCommand] =
       Behaviors.withTimers { timers =>
         timers.startTimerWithFixedDelay(CleanupUnused, settings.cleanupUnusedAfter / 2)
         timers.startTimerWithFixedDelay(ResendFirstUnconfirmed, settings.resendFirstUnconfirmedIdleTimeout / 2)
@@ -173,7 +170,6 @@ import pekko.util.Timeout
           }
         }
       }
-    }
 
     Behaviors.receiveMessage {
       case start: Start[A] @unchecked =>
@@ -236,23 +232,20 @@ import pekko.util.Timeout
     }
   }
 
-  private def checkStashFull[A](stashBuffer: StashBuffer[InternalCommand]): Unit = {
+  private def checkStashFull[A](stashBuffer: StashBuffer[InternalCommand]): Unit =
     if (stashBuffer.isFull)
       throw new IllegalArgumentException(s"Buffer is full, size [${stashBuffer.size}].")
-  }
 
   private def askLoadState[A](
       context: ActorContext[InternalCommand],
       durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]],
-      settings: ShardingProducerController.Settings): Option[ActorRef[DurableProducerQueue.Command[A]]] = {
-
+      settings: ShardingProducerController.Settings): Option[ActorRef[DurableProducerQueue.Command[A]]] =
     durableQueueBehavior.map { b =>
       val ref = context.spawn(b, "durable", DispatcherSelector.sameAsParent())
       context.watchWith(ref, DurableQueueTerminated)
       askLoadState(context, Some(ref), settings, attempt = 1)
       ref
     }
-  }
 
   private def askLoadState[A](
       context: ActorContext[InternalCommand],
@@ -399,7 +392,7 @@ private class ShardingProducerControllerImpl[A: ClassTag](
       onMessage(entityId, msg, replyTo = None, seqNr, newReplyAfterStore)
     }
 
-    def receiveStoreMessageSentFailed(f: StoreMessageSentFailed[A]): Behavior[InternalCommand] = {
+    def receiveStoreMessageSentFailed(f: StoreMessageSentFailed[A]): Behavior[InternalCommand] =
       if (f.attempt >= producerControllerSettings.durableQueueRetryAttempts) {
         val errorMessage =
           s"StoreMessageSentFailed seqNr [${f.messageSent.seqNr}] failed after [${f.attempt}] attempts, giving up."
@@ -411,9 +404,8 @@ private class ShardingProducerControllerImpl[A: ClassTag](
         storeMessageSent(f.messageSent, attempt = f.attempt + 1)
         Behaviors.same
       }
-    }
 
-    def receiveAck(ack: Ack): Behavior[InternalCommand] = {
+    def receiveAck(ack: Ack): Behavior[InternalCommand] =
       s.out.get(ack.outKey) match {
         case Some(outState) =>
           if (traceEnabled)
@@ -428,7 +420,6 @@ private class ShardingProducerControllerImpl[A: ClassTag](
           // obsolete Ack, ConsumerController already deregistered
           Behaviors.unhandled
       }
-    }
 
     def receiveWrappedRequestNext(w: WrappedRequestNext[A]): Behavior[InternalCommand] = {
       val next = w.next

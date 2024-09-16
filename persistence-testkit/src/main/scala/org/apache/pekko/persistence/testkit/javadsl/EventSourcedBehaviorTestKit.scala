@@ -93,9 +93,8 @@ object EventSourcedBehaviorTestKit {
         verifyEquality: Boolean = this.verifyEquality,
         verifyCommands: Boolean = this.verifyCommands,
         verifyEvents: Boolean = this.verifyEvents,
-        verifyState: Boolean = this.verifyState): SerializationSettings = {
+        verifyState: Boolean = this.verifyState): SerializationSettings =
       new SerializationSettings(enabled, verifyEquality, verifyCommands, verifyEvents, verifyState)
-    }
   }
 
   /**

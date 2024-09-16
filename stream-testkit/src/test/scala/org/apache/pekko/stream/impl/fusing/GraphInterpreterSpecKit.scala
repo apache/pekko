@@ -250,9 +250,8 @@ object GraphInterpreterSpecKit {
     stage.shape.outlets.zipWithIndex.foreach { case (inlet, idx) => inlet.id = idx }
   }
 
-  private def setLogicIds(logics: Array[GraphStageLogic]): Unit = {
+  private def setLogicIds(logics: Array[GraphStageLogic]): Unit =
     logics.zipWithIndex.foreach { case (logic, idx) => logic.stageId = idx }
-  }
 
 }
 
@@ -537,13 +536,12 @@ trait GraphInterpreterSpecKit extends StreamSpec {
     // Must be lazy because I turned this stage "inside-out" therefore changing initialization order
     // to make tests a bit more readable
     lazy val insideOutStage: GraphStageLogic = new GraphStageLogic(stageshape) {
-      private def mayFail(task: => Unit): Unit = {
+      private def mayFail(task: => Unit): Unit =
         if (!_failOnNextEvent) task
         else {
           _failOnNextEvent = false
           throw testException
         }
-      }
 
       setHandler(stagein,
         new InHandler {
@@ -630,10 +628,9 @@ trait GraphInterpreterSpecKit extends StreamSpec {
       setHandler(
         out,
         new OutHandler {
-          override def onPull(): Unit = {
+          override def onPull(): Unit =
             if (lastEvent.contains(RequestOne)) lastEvent += RequestAnother
             else lastEvent += RequestOne
-          }
 
           override def onDownstreamFinish(cause: Throwable): Unit = lastEvent += Cancel(cause)
         })
@@ -667,9 +664,8 @@ trait GraphInterpreterSpecKit extends StreamSpec {
         new InHandler {
 
           // Modified onPush that does not grab() automatically the element. This accesses some internals.
-          override def onPush(): Unit = {
+          override def onPush(): Unit =
             lastEvent += OnNext(grab(in))
-          }
 
           override def onUpstreamFinish() = lastEvent += OnComplete
           override def onUpstreamFailure(ex: Throwable) = lastEvent += OnError(ex)

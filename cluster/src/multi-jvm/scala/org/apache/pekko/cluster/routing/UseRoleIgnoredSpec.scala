@@ -96,9 +96,9 @@ abstract class UseRoleIgnoredSpec
   "A cluster" must {
     "start cluster" taggedAs LongRunningTest in {
       awaitClusterUp(first, second, third)
-      runOn(first) { info("first, roles: " + cluster.selfRoles) }
-      runOn(second) { info("second, roles: " + cluster.selfRoles) }
-      runOn(third) { info("third, roles: " + cluster.selfRoles) }
+      runOn(first)(info("first, roles: " + cluster.selfRoles))
+      runOn(second)(info("second, roles: " + cluster.selfRoles))
+      runOn(third)(info("third, roles: " + cluster.selfRoles))
 
       // routees for the group routers
       system.actorOf(Props(classOf[SomeActor], GroupRoutee), "foo")
@@ -125,9 +125,8 @@ abstract class UseRoleIgnoredSpec
         awaitAssert(currentRoutees(router).size should ===(4))
 
         val iterationCount = 10
-        for (i <- 0 until iterationCount) {
+        for (i <- 0 until iterationCount)
           router ! s"hit-$i"
-        }
 
         val replies = receiveReplies(PoolRoutee, iterationCount)
 
@@ -158,9 +157,8 @@ abstract class UseRoleIgnoredSpec
         awaitAssert(currentRoutees(router).size should ===(4))
 
         val iterationCount = 10
-        for (i <- 0 until iterationCount) {
+        for (i <- 0 until iterationCount)
           router ! s"hit-$i"
-        }
 
         val replies = receiveReplies(GroupRoutee, iterationCount)
 
@@ -191,9 +189,8 @@ abstract class UseRoleIgnoredSpec
         awaitAssert(currentRoutees(router).size should ===(4))
 
         val iterationCount = 10
-        for (i <- 0 until iterationCount) {
+        for (i <- 0 until iterationCount)
           router ! s"hit-$i"
-        }
 
         val replies = receiveReplies(PoolRoutee, iterationCount)
 
@@ -224,9 +221,8 @@ abstract class UseRoleIgnoredSpec
         awaitAssert(currentRoutees(router).size should ===(4))
 
         val iterationCount = 10
-        for (i <- 0 until iterationCount) {
+        for (i <- 0 until iterationCount)
           router ! s"hit-$i"
-        }
 
         val replies = receiveReplies(GroupRoutee, iterationCount)
 
@@ -257,9 +253,8 @@ abstract class UseRoleIgnoredSpec
         awaitAssert(currentRoutees(router).size should ===(2))
 
         val iterationCount = 10
-        for (i <- 0 until iterationCount) {
+        for (i <- 0 until iterationCount)
           router ! s"hit-$i"
-        }
 
         val replies = receiveReplies(PoolRoutee, iterationCount)
 
@@ -290,9 +285,8 @@ abstract class UseRoleIgnoredSpec
         awaitAssert(currentRoutees(router).size should ===(2))
 
         val iterationCount = 10
-        for (i <- 0 until iterationCount) {
+        for (i <- 0 until iterationCount)
           router ! s"hit-$i"
-        }
 
         val replies = receiveReplies(GroupRoutee, iterationCount)
 
@@ -323,9 +317,8 @@ abstract class UseRoleIgnoredSpec
         awaitAssert(currentRoutees(router).size should ===(6))
 
         val iterationCount = 10
-        for (i <- 0 until iterationCount) {
+        for (i <- 0 until iterationCount)
           router ! s"hit-$i"
-        }
 
         val replies = receiveReplies(PoolRoutee, iterationCount)
 
@@ -356,9 +349,8 @@ abstract class UseRoleIgnoredSpec
         awaitAssert(currentRoutees(router).size should ===(6))
 
         val iterationCount = 10
-        for (i <- 0 until iterationCount) {
+        for (i <- 0 until iterationCount)
           router ! s"hit-$i"
-        }
 
         val replies = receiveReplies(GroupRoutee, iterationCount)
 

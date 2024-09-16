@@ -100,14 +100,13 @@ abstract class ClusterShardingLeavingSpec(multiNodeConfig: ClusterShardingLeavin
   import ClusterShardingLeavingSpec._
   import multiNodeConfig._
 
-  def startSharding(): Unit = {
+  def startSharding(): Unit =
     startSharding(
       system,
       typeName = "Entity",
       entityProps = Props[Entity](),
       extractEntityId = extractEntityId,
       extractShardId = extractShardId)
-  }
 
   lazy val region = ClusterSharding(system).shardRegion("Entity")
 

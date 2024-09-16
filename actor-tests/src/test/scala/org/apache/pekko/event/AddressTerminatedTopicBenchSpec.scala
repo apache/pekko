@@ -28,9 +28,8 @@ object AddressTerminatedTopicBenchSpec {
     AddressTerminatedTopic(context.system).subscribe(self)
     testActor ! "started"
 
-    override def postStop(): Unit = {
+    override def postStop(): Unit =
       AddressTerminatedTopic(context.system).unsubscribe(self)
-    }
 
     def receive = Actor.emptyBehavior
   }
@@ -55,9 +54,8 @@ class AddressTerminatedTopicBenchSpec extends PekkoSpec("pekko.loglevel=INFO") {
         val t2 = System.nanoTime()
         shutdown(sys, 10.seconds, verifySystemShutdown = true)
         log.info("Stopping {} actors took {} ms", num, (System.nanoTime() - t2).nanos.toMillis)
-      } finally {
+      } finally
         shutdown(sys)
-      }
     }
 
   }

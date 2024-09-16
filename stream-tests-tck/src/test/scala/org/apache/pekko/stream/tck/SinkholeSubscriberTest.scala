@@ -27,7 +27,7 @@ import pekko.Done
 import pekko.stream.impl.SinkholeSubscriber
 
 class SinkholeSubscriberTest extends SubscriberWhiteboxVerification[JInt](new TestEnvironment()) with TestNGSuiteLike {
-  override def createSubscriber(probe: WhiteboxSubscriberProbe[JInt]): Subscriber[JInt] = {
+  override def createSubscriber(probe: WhiteboxSubscriberProbe[JInt]): Subscriber[JInt] =
     new Subscriber[JInt] {
       val hole = new SinkholeSubscriber[JInt](Promise[Done]())
 
@@ -54,7 +54,6 @@ class SinkholeSubscriberTest extends SubscriberWhiteboxVerification[JInt](new Te
         probe.registerOnNext(t)
       }
     }
-  }
 
   override def createElement(element: Int): JInt = element
 }

@@ -107,10 +107,9 @@ private[remote] object Association {
   final case class LazyQueueWrapper(queue: Queue[OutboundEnvelope], materialize: () => Unit) extends QueueWrapper {
     private val onlyOnce = new AtomicBoolean
 
-    def runMaterialize(): Unit = {
+    def runMaterialize(): Unit =
       if (onlyOnce.compareAndSet(false, true))
         materialize()
-    }
 
     override def offer(message: OutboundEnvelope): Boolean = {
       runMaterialize()
@@ -234,7 +233,7 @@ private[remote] class Association(
 
   private def deadletters = transport.system.deadLetters
 
-  def outboundControlIngress: OutboundControlIngress = {
+  def outboundControlIngress: OutboundControlIngress =
     _outboundControlIngress match {
       case OptionVal.Some(o) => o
       case _ =>
@@ -252,7 +251,6 @@ private[remote] class Association(
             else throw new IllegalStateException(s"outboundControlIngress for [$remoteAddress] not initialized yet")
         }
     }
-  }
 
   override def localAddress: UniqueAddress = transport.localAddress
 
@@ -328,8 +326,8 @@ private[remote] class Association(
   }
 
   // OutboundContext
-  override def sendControl(message: ControlMessage): Unit = {
-    try {
+  override def sendControl(message: ControlMessage): Unit =
+    try
       if (!transport.isShutdown && !isRemovedAfterQuarantined()) {
         if (associationState.isQuarantined()) {
           log.debug("Send control message [{}] to quarantined [{}]", Logging.messageClassName(message), remoteAddress)
@@ -337,10 +335,9 @@ private[remote] class Association(
         }
         outboundControlIngress.sendControlMessage(message)
       }
-    } catch {
+    catch {
       case ShuttingDown => // silence it
     }
-  }
 
   def send(message: Any, sender: OptionVal[ActorRef], recipient: OptionVal[RemoteActorRef]): Unit = {
 
@@ -373,7 +370,7 @@ private[remote] class Association(
     def shouldSendDeathWatchNotification(d: DeathWatchNotification): Boolean =
       d.addressTerminated || !transport.provider.settings.HasCluster || !transport.system.isTerminating()
 
-    def sendSystemMessage(outboundEnvelope: OutboundEnvelope): Unit = {
+    def sendSystemMessage(outboundEnvelope: OutboundEnvelope): Unit =
       outboundEnvelope.message match {
         case u: Unwatch if shouldSendUnwatch() =>
           log.debug(
@@ -393,7 +390,6 @@ private[remote] class Association(
             dropped(ControlQueueIndex, controlQueueSize, outboundEnvelope)
           }
       }
-    }
 
     val state = associationState
     val quarantined = state.isQuarantined()
@@ -456,7 +452,7 @@ private[remote] class Association(
         remoteAddress)
   }
 
-  private def selectQueue(recipient: OptionVal[RemoteActorRef]): Int = {
+  private def selectQueue(recipient: OptionVal[RemoteActorRef]): Int =
     recipient match {
       case OptionVal.Some(r) =>
         r.cachedSendQueueIndex match {
@@ -485,19 +481,17 @@ private[remote] class Association(
       case _ =>
         OrdinaryQueueIndex
     }
-  }
 
   override def isOrdinaryMessageStreamActive(): Boolean =
     isStreamActive(OrdinaryQueueIndex)
 
-  def isStreamActive(queueIndex: Int): Boolean = {
+  def isStreamActive(queueIndex: Int): Boolean =
     queues(queueIndex) match {
       case _: LazyQueueWrapper  => false
       case DisabledQueueWrapper => false
       case RemovedQueueWrapper  => false
       case _                    => true
     }
-  }
 
   def sendTerminationHint(replyTo: ActorRef): Int = {
     log.debug("Sending ActorSystemTerminating to all queues")
@@ -507,7 +501,7 @@ private[remote] class Association(
   def sendFlush(replyTo: ActorRef, excludeControlQueue: Boolean): Int =
     sendToAllQueues(Flush, replyTo, excludeControlQueue)
 
-  def sendToAllQueues(msg: ControlMessage, replyTo: ActorRef, excludeControlQueue: Boolean): Int = {
+  def sendToAllQueues(msg: ControlMessage, replyTo: ActorRef, excludeControlQueue: Boolean): Int =
     if (!associationState.isQuarantined()) {
       var sent = 0
       val queuesIter = if (excludeControlQueue) queues.iterator.drop(1) else queues.iterator
@@ -523,7 +517,6 @@ private[remote] class Association(
       }
       sent
     } else 0
-  }
 
   // OutboundContext
   override def quarantine(reason: String): Unit = {
@@ -531,7 +524,7 @@ private[remote] class Association(
     quarantine(reason, uid, harmless = false)
   }
 
-  @tailrec final def quarantine(reason: String, uid: Option[Long], harmless: Boolean): Unit = {
+  @tailrec final def quarantine(reason: String, uid: Option[Long], harmless: Boolean): Unit =
     uid match {
       case Some(u) =>
         val current = associationState
@@ -598,12 +591,10 @@ private[remote] class Association(
           reason)
     }
 
-  }
-
   /**
    * After calling this no messages can be sent with this Association instance
    */
-  def removedAfterQuarantined(): Unit = {
+  def removedAfterQuarantined(): Unit =
     if (!isRemovedAfterQuarantined()) {
       flightRecorder.transportRemoveQuarantined(remoteAddress)
       queues(ControlQueueIndex) = RemovedQueueWrapper
@@ -624,7 +615,6 @@ private[remote] class Association(
 
       log.info("Unused association to [{}] removed after quarantine", remoteAddress)
     }
-  }
 
   def isRemovedAfterQuarantined(): Boolean =
     queues(ControlQueueIndex) == RemovedQueueWrapper
@@ -663,7 +653,7 @@ private[remote] class Association(
     idleTimer.compareAndSet(current, None)
   }
 
-  private def setupIdleTimer(): Unit = {
+  private def setupIdleTimer(): Unit =
     if (idleTimer.get.isEmpty) {
       val StopIdleOutboundAfter = settings.Advanced.StopIdleOutboundAfter
       val QuarantineIdleOutboundAfter = settings.Advanced.QuarantineIdleOutboundAfter
@@ -723,16 +713,14 @@ private[remote] class Association(
         task.cancel()
       }
     }
-  }
 
   private def cancelAllTimers(): Unit = {
     cancelIdleTimer()
     cancelStopQuarantinedTimer()
   }
 
-  private def sendToDeadLetters[T](pending: Vector[OutboundEnvelope]): Unit = {
+  private def sendToDeadLetters[T](pending: Vector[OutboundEnvelope]): Unit =
     pending.foreach(transport.system.deadLetters ! _)
-  }
 
   /**
    * Called once after construction when the `Association` instance
@@ -956,9 +944,8 @@ private[remote] class Association(
         _outboundControlIngress = OptionVal.None
       }
       // LazyQueueWrapper will invoke the `restart` function when first message is offered
-      val wrappedRestartFun: () => Unit = () => {
+      val wrappedRestartFun: () => Unit = () =>
         restart()
-      }
 
       if (!isRemovedAfterQuarantined())
         queues(queueIndex) = LazyQueueWrapper(createQueue(queueCapacity, queueIndex), wrappedRestartFun)
@@ -1089,12 +1076,11 @@ private[remote] class Association(
     }
   }
 
-  private def getStopReason(streamId: Int): OptionVal[StopSignal] = {
+  private def getStopReason(streamId: Int): OptionVal[StopSignal] =
     streamMatValues.get().get(streamId) match {
       case Some(OutboundStreamMatValues(_, _, stopping)) => stopping
       case None                                          => OptionVal.None
     }
-  }
 
   // after it has been used we remove the kill switch to cleanup some memory,
   // not a "leak" but a KillSwitch is rather heavy

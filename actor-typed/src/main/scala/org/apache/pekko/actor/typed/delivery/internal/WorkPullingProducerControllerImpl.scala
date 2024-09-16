@@ -124,7 +124,7 @@ import pekko.util.Timeout
       producerId: String,
       workerServiceKey: ServiceKey[ConsumerController.Command[A]],
       durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]],
-      settings: WorkPullingProducerController.Settings): Behavior[Command[A]] = {
+      settings: WorkPullingProducerController.Settings): Behavior[Command[A]] =
     Behaviors
       .withStash[InternalCommand](settings.bufferSize) { stashBuffer =>
         Behaviors.setup[InternalCommand] { context =>
@@ -148,11 +148,9 @@ import pekko.util.Timeout
         }
       }
       .narrow
-  }
 
-  private def createInitialState[A](hasDurableQueue: Boolean) = {
+  private def createInitialState[A](hasDurableQueue: Boolean) =
     if (hasDurableQueue) None else Some(DurableProducerQueue.State.empty[A])
-  }
 
   private def waitingForStart[A: ClassTag](
       producerId: String,
@@ -231,23 +229,20 @@ import pekko.util.Timeout
     }
   }
 
-  private def checkStashFull[A](stashBuffer: StashBuffer[InternalCommand]): Unit = {
+  private def checkStashFull[A](stashBuffer: StashBuffer[InternalCommand]): Unit =
     if (stashBuffer.isFull)
       throw new IllegalArgumentException(s"Buffer is full, size [${stashBuffer.size}].")
-  }
 
   private def askLoadState[A](
       context: ActorContext[InternalCommand],
       durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]],
-      settings: WorkPullingProducerController.Settings): Option[ActorRef[DurableProducerQueue.Command[A]]] = {
-
+      settings: WorkPullingProducerController.Settings): Option[ActorRef[DurableProducerQueue.Command[A]]] =
     durableQueueBehavior.map { b =>
       val ref = context.spawn(b, "durable", DispatcherSelector.sameAsParent())
       context.watchWith(ref, DurableQueueTerminated)
       askLoadState(context, Some(ref), settings, attempt = 1)
       ref
     }
-  }
 
   private def askLoadState[A](
       context: ActorContext[InternalCommand],
@@ -409,7 +404,7 @@ private class WorkPullingProducerControllerImpl[A: ClassTag](
       }
     }
 
-    def onMessageBeforeDurableQueue(msg: A, replyTo: Option[ActorRef[Done]]): Behavior[InternalCommand] = {
+    def onMessageBeforeDurableQueue(msg: A, replyTo: Option[ActorRef[Done]]): Behavior[InternalCommand] =
       selectWorker() match {
         case Some((outKey, out)) =>
           storeMessageSent(
@@ -438,7 +433,6 @@ private class WorkPullingProducerControllerImpl[A: ClassTag](
           stashBuffer.stash(Msg(msg, wasStashed = false, replyTo))
           active(s)
       }
-    }
 
     def onResendDurableMsg(resend: ResendDurableMsg[A]): Behavior[InternalCommand] = {
       require(durableQueue.isDefined, "Unexpected ResendDurableMsg when DurableQueue not defined.")
@@ -487,7 +481,7 @@ private class WorkPullingProducerControllerImpl[A: ClassTag](
       active(newState.copy(replyAfterStore = newState.replyAfterStore - seqNr, handOver = newState.handOver - seqNr))
     }
 
-    def receiveAck(ack: Ack): Behavior[InternalCommand] = {
+    def receiveAck(ack: Ack): Behavior[InternalCommand] =
       s.out.get(ack.outKey) match {
         case Some(outState) =>
           val newUnconfirmed = onAck(outState, ack.confirmedSeqNr)
@@ -496,7 +490,6 @@ private class WorkPullingProducerControllerImpl[A: ClassTag](
           // obsolete Next, ConsumerController already deregistered
           Behaviors.unhandled
       }
-    }
 
     def onAck(outState: OutState[A], confirmedSeqNr: OutSeqNr): Vector[Unconfirmed[A]] = {
       val (confirmed, newUnconfirmed) = outState.unconfirmed.partition {
@@ -675,7 +668,7 @@ private class WorkPullingProducerControllerImpl[A: ClassTag](
     }
   }
 
-  private def receiveStoreMessageSentFailed(f: StoreMessageSentFailed[A]): Behavior[InternalCommand] = {
+  private def receiveStoreMessageSentFailed(f: StoreMessageSentFailed[A]): Behavior[InternalCommand] =
     if (f.attempt >= producerControllerSettings.durableQueueRetryAttempts) {
       val errorMessage =
         s"StoreMessageSentFailed seqNr [${f.messageSent.seqNr}] failed after [${f.attempt}] attempts, giving up."
@@ -687,7 +680,6 @@ private class WorkPullingProducerControllerImpl[A: ClassTag](
       storeMessageSent(f.messageSent, attempt = f.attempt + 1)
       Behaviors.same
     }
-  }
 
   private def storeMessageSent(messageSent: MessageSent[A], attempt: Int): Unit = {
     implicit val askTimout: Timeout = durableQueueAskTimeout

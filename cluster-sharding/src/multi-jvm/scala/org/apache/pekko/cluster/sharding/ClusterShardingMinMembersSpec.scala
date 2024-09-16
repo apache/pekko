@@ -60,7 +60,7 @@ abstract class ClusterShardingMinMembersSpec(multiNodeConfig: ClusterShardingMin
   import MultiNodeClusterShardingSpec.ShardedEntity
   import multiNodeConfig._
 
-  def startSharding(): Unit = {
+  def startSharding(): Unit =
     startSharding(
       system,
       typeName = "Entity",
@@ -69,7 +69,6 @@ abstract class ClusterShardingMinMembersSpec(multiNodeConfig: ClusterShardingMin
       extractShardId = MultiNodeClusterShardingSpec.intExtractShardId,
       allocationStrategy = ShardAllocationStrategy.leastShardAllocationStrategy(absoluteLimit = 2, relativeLimit = 1.0),
       handOffStopMessage = ShardedEntity.Stop)
-  }
 
   lazy val region = ClusterSharding(system).shardRegion("Entity")
 

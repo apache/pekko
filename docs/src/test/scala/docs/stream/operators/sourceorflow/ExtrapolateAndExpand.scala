@@ -69,11 +69,11 @@ object ExtrapolateAndExpand {
   // of the upstream frame and grayed out copies. The grayed out copies should
   // only be used downstream if the producer is too slow.
   val watermarkerRateControl: Flow[Frame, Frame, NotUsed] =
-    Flow[Frame].expand((frame: Frame) => {
+    Flow[Frame].expand { (frame: Frame) =>
       val watermarked = frame.withFilter(Watermark)
       val grayedOut = frame.withFilter(Gray)
       Iterator.single(watermarked) ++ Iterator.continually(grayedOut)
-    })
+    }
 
   val watermarkedVideoSource: Source[Frame, NotUsed] =
     networkSource.via(decode).via(rateControl)

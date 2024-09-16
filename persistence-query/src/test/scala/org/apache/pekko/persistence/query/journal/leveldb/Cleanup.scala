@@ -26,11 +26,9 @@ trait Cleanup { this: PekkoSpec =>
       "pekko.persistence.journal.leveldb-shared.store.dir",
       "pekko.persistence.snapshot-store.local.dir").map(s => new File(system.settings.config.getString(s)))
 
-  override protected def atStartup(): Unit = {
+  override protected def atStartup(): Unit =
     storageLocations.foreach(FileUtils.deleteDirectory)
-  }
 
-  override protected def afterTermination(): Unit = {
+  override protected def afterTermination(): Unit =
     storageLocations.foreach(FileUtils.deleteDirectory)
-  }
 }

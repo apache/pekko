@@ -177,7 +177,7 @@ object StreamRefsSpec {
   final case class SinkMsg(dataSink: SinkRef[String])
   final case class BulkSinkMsg(dataSink: SinkRef[ByteString])
 
-  def config(): Config = {
+  def config(): Config =
     ConfigFactory.parseString(s"""
     pekko {
       loglevel = DEBUG
@@ -194,7 +194,6 @@ object StreamRefsSpec {
       }
     }
   """).withFallback(ConfigFactory.load())
-  }
 
   object SnitchActor {
     def props(probe: ActorRef) = Props(new SnitchActor(probe))

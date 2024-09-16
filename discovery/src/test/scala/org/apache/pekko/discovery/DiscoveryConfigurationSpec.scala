@@ -123,9 +123,9 @@ class DiscoveryConfigurationSpec extends AnyWordSpec with Matchers {
             }
         """).withFallback(ConfigFactory.load()))
 
-      try {
+      try
         an[DiscoveryException] should be thrownBy Discovery(sys).discovery
-      } finally TestKit.shutdownActorSystem(sys)
+      finally TestKit.shutdownActorSystem(sys)
     }
 
     "throw an illegal argument exception for not existing method" in {
@@ -139,9 +139,9 @@ class DiscoveryConfigurationSpec extends AnyWordSpec with Matchers {
             }
         """).withFallback(ConfigFactory.load()))
 
-      try {
+      try
         an[IllegalArgumentException] should be thrownBy Discovery(sys).discovery
-      } finally TestKit.shutdownActorSystem(sys)
+      finally TestKit.shutdownActorSystem(sys)
     }
 
   }
@@ -159,7 +159,6 @@ class DiscoveryException(message: String) extends Exception(message)
 
 class ExceptionThrowingDiscovery extends FakeTestDiscovery {
   bad()
-  def bad(): Unit = {
+  def bad(): Unit =
     throw new DiscoveryException("oh no")
-  }
 }

@@ -30,9 +30,8 @@ import pekko.annotation.InternalApi
   def apply[T: ClassTag](
       staticMdc: Map[String, String],
       mdcForMessage: T => Map[String, String],
-      behavior: Behavior[T]): Behavior[T] = {
+      behavior: Behavior[T]): Behavior[T] =
     BehaviorImpl.intercept(() => new WithMdcBehaviorInterceptor[T](staticMdc, mdcForMessage))(behavior)
-  }
 
 }
 
@@ -57,7 +56,7 @@ import pekko.annotation.InternalApi
     // val withMdc2 = withMdc(Map("second" -> true))
     // we'd expect the second one to be used
     // so we need to look through the stack and eliminate any MCD already existing
-    def loop(next: Behavior[T]): Behavior[T] = {
+    def loop(next: Behavior[T]): Behavior[T] =
       next match {
         case i: InterceptorImpl[_, T @unchecked]
             if i.interceptor.isSame(this.asInstanceOf[BehaviorInterceptor[Any, Any]]) =>
@@ -72,13 +71,11 @@ import pekko.annotation.InternalApi
 
         case b => b
       }
-    }
     try {
       setMdcValues(Map.empty)
       loop(target.start(ctx))
-    } finally {
+    } finally
       MDC.clear()
-    }
   }
 
   // in the normal case, a new withMDC replaces the previous one
@@ -87,23 +84,19 @@ import pekko.annotation.InternalApi
     case _                                => false
   }
 
-  override def aroundReceive(ctx: TypedActorContext[T], msg: T, target: ReceiveTarget[T]): Behavior[T] = {
+  override def aroundReceive(ctx: TypedActorContext[T], msg: T, target: ReceiveTarget[T]): Behavior[T] =
     try {
       setMdcValues(mdcForMessage(msg))
       target(ctx, msg)
-    } finally {
+    } finally
       MDC.clear()
-    }
-  }
 
-  override def aroundSignal(ctx: TypedActorContext[T], signal: Signal, target: SignalTarget[T]): Behavior[T] = {
+  override def aroundSignal(ctx: TypedActorContext[T], signal: Signal, target: SignalTarget[T]): Behavior[T] =
     try {
       setMdcValues(Map.empty)
       target(ctx, signal)
-    } finally {
+    } finally
       MDC.clear()
-    }
-  }
 
   private def setMdcValues(dynamicMdc: Map[String, String]): Unit = {
     if (staticMdc.nonEmpty) staticMdc.foreach {

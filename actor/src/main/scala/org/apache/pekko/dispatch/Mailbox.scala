@@ -226,17 +226,16 @@ private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
       case _                => hasSystemMessageHint || hasSystemMessages
     }
 
-  override final def run(): Unit = {
-    try {
+  override final def run(): Unit =
+    try
       if (!isClosed) { // Volatile read, needed here
         processAllSystemMessages() // First, deal with any system messages
         processMailbox() // Then deal with messages
       }
-    } finally {
+    finally {
       setAsIdle() // Volatile write, needed here
       dispatcher.registerForExecution(this, false, false)
     }
-  }
 
   override final def getRawResult(): Unit = ()
   override final def setRawResult(unit: Unit): Unit = ()
@@ -514,7 +513,7 @@ trait QueueBasedMessageQueue extends MessageQueue with MultipleConsumerSemantics
   def queue: Queue[Envelope]
   def numberOfMessages = queue.size
   def hasMessages = !queue.isEmpty
-  def cleanUp(owner: ActorRef, deadLetters: MessageQueue): Unit = {
+  def cleanUp(owner: ActorRef, deadLetters: MessageQueue): Unit =
     if (hasMessages) {
       var envelope = dequeue()
       while (envelope ne null) {
@@ -522,7 +521,6 @@ trait QueueBasedMessageQueue extends MessageQueue with MultipleConsumerSemantics
         envelope = dequeue()
       }
     }
-  }
 }
 
 /**
@@ -989,11 +987,10 @@ object BoundedControlAwareMailbox {
     private def signalNotFull(): Unit = {
       putLock.lock()
 
-      try {
+      try
         notFull.signal()
-      } finally {
+      finally
         putLock.unlock()
-      }
     }
 
     private final def enqueueWithTimeout(q: Queue[Envelope], receiver: ActorRef, envelope: Envelope): Unit = {
@@ -1018,9 +1015,8 @@ object BoundedControlAwareMailbox {
 
             true
           }
-        } finally {
+        } finally
           putLock.unlock()
-        }
 
       if (!inserted) {
         receiver

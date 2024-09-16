@@ -27,9 +27,8 @@ object ClusterHeartbeatSenderSpec {
     override def preStart(): Unit = {}
 
     // override where the heart beats go to
-    override def heartbeatReceiver(address: Address): ActorSelection = {
+    override def heartbeatReceiver(address: Address): ActorSelection =
       context.actorSelection(probe.ref.path)
-    }
   }
 }
 

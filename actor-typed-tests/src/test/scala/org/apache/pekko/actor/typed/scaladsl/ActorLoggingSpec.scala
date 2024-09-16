@@ -57,9 +57,8 @@ object BehaviorWhereTheLoggerIsUsed {
 }
 class BehaviorWhereTheLoggerIsUsed(context: ActorContext[String]) extends AbstractBehavior[String](context) {
   context.log.info("Starting up")
-  override def onMessage(msg: String): Behavior[String] = {
+  override def onMessage(msg: String): Behavior[String] =
     Behaviors.same
-  }
 }
 
 class ActorLoggingSpec extends ScalaTestWithActorTestKit("""
@@ -314,9 +313,8 @@ class ActorLoggingSpec extends ScalaTestWithActorTestKit("""
         classicSys.settings.Loggers should ===(List(classOf[Slf4jLogger].getName))
         classicSys.settings.LoggingFilter should ===(classOf[Slf4jLoggingFilter].getName)
 
-      } finally {
+      } finally
         ActorTestKit.shutdown(classicSys.toTyped)
-      }
     }
 
     "not be amended when use-slf4j=off" in {
@@ -495,7 +493,7 @@ class ActorLoggingSpec extends ScalaTestWithActorTestKit("""
           }
         }
 
-      def assertExpectedMdc(event: LoggingEvent) = {
+      def assertExpectedMdc(event: LoggingEvent) =
         try {
           event.mdc should contain allElementsOf (
             Map(
@@ -509,7 +507,6 @@ class ActorLoggingSpec extends ScalaTestWithActorTestKit("""
             ex.printStackTrace()
             false
         }
-      }
 
       // log from setup
       // can't use LoggingEventFilter.withMdc here because the actorPathStr isn't know yet

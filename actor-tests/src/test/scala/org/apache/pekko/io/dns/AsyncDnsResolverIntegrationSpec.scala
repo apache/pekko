@@ -203,7 +203,7 @@ class AsyncDnsResolverIntegrationSpec
       }
     }
 
-    def resolve(name: String, requestType: RequestType = Ip()): DnsProtocol.Resolved = {
+    def resolve(name: String, requestType: RequestType = Ip()): DnsProtocol.Resolved =
       try {
         (IO(Dns) ? DnsProtocol.Resolve(name, requestType)).mapTo[DnsProtocol.Resolved].futureValue
       } catch {
@@ -211,7 +211,6 @@ class AsyncDnsResolverIntegrationSpec
           dumpNameserverLogs()
           throw e
       }
-    }
 
   }
 }

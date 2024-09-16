@@ -126,7 +126,7 @@ object SimulatorSettings {
           counterBits: Int)
           extends AdmissionFilterSettings
 
-      def apply(config: Config): AdmissionFilterSettings = {
+      def apply(config: Config): AdmissionFilterSettings =
         lowerCase(config.getString("admission.filter")) match {
           case "frequency-sketch" =>
             FrequencySketchFilter(
@@ -136,7 +136,6 @@ object SimulatorSettings {
               config.getInt("admission.frequency-sketch.counter-bits"))
           case _ => NoFilter
         }
-      }
     }
 
     sealed trait AdmissionOptimizerSettings
@@ -150,7 +149,7 @@ object SimulatorSettings {
           stepDecay: Double)
           extends AdmissionOptimizerSettings
 
-      def apply(config: Config): AdmissionOptimizerSettings = {
+      def apply(config: Config): AdmissionOptimizerSettings =
         lowerCase(config.getString("admission.optimizer")) match {
           case "hill-climbing" =>
             HillClimbingOptimizer(
@@ -160,7 +159,6 @@ object SimulatorSettings {
               config.getDouble("admission.hill-climbing.step-decay"))
           case _ => NoOptimizer
         }
-      }
     }
   }
 

@@ -80,7 +80,7 @@ object InmemJournal {
 
   private val eventStream = context.system.eventStream
 
-  override def asyncWriteMessages(messages: immutable.Seq[AtomicWrite]): Future[immutable.Seq[Try[Unit]]] = {
+  override def asyncWriteMessages(messages: immutable.Seq[AtomicWrite]): Future[immutable.Seq[Try[Unit]]] =
     try {
       for (w <- messages; p <- w.payload) {
         val payload = p.payload match {
@@ -97,11 +97,9 @@ object InmemJournal {
         // serialization problem
         Future.failed(e)
     }
-  }
 
-  override def asyncReadHighestSequenceNr(persistenceId: String, fromSequenceNr: Long): Future[Long] = {
+  override def asyncReadHighestSequenceNr(persistenceId: String, fromSequenceNr: Long): Future[Long] =
     Future.successful(highestSequenceNr(persistenceId))
-  }
 
   override def asyncReplayMessages(persistenceId: String, fromSequenceNr: Long, toSequenceNr: Long, max: Long)(
       recoveryCallback: PersistentRepr => Unit): Future[Unit] = {
@@ -137,7 +135,7 @@ object InmemJournal {
 
   }
 
-  private def verifySerialization(event: Any): Unit = {
+  private def verifySerialization(event: Any): Unit =
     if (testSerialization) {
       val eventAnyRef = event.asInstanceOf[AnyRef]
       val bytes = serialization.serialize(eventAnyRef).get
@@ -145,7 +143,6 @@ object InmemJournal {
       val manifest = Serializers.manifestFor(serializer, eventAnyRef)
       serialization.deserialize(bytes, serializer.identifier, manifest).get
     }
-  }
 }
 
 /**
@@ -182,9 +179,8 @@ object InmemJournal {
       case None     => Nil
     }
 
-  def highestSequenceNr(pid: String): Long = {
+  def highestSequenceNr(pid: String): Long =
     highestSequenceNumbers.getOrElse(pid, 0L)
-  }
 
   private def safeLongToInt(l: Long): Int =
     if (Int.MaxValue < l) Int.MaxValue else l.toInt

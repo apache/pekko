@@ -20,7 +20,7 @@ import org.apache.pekko.stream.Attributes
 //#log
 
 object Log {
-  def logExample(): Unit = {
+  def logExample(): Unit =
     Flow[String]
       // #log
       .log(name = "myStream")
@@ -29,6 +29,5 @@ object Log {
           onElement = Attributes.LogLevels.Off,
           onFinish = Attributes.LogLevels.Info,
           onFailure = Attributes.LogLevels.Error))
-    // #log
-  }
+  // #log
 }

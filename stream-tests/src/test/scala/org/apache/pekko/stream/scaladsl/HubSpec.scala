@@ -316,13 +316,11 @@ class HubSpec extends StreamSpec {
       val sourceQueue = Source.queue[Int](10) // used to block the source until we say so
       val (queue, broadcast) = sourceQueue.toMat(BroadcastHub.sink(2, 256))(Keep.both).run()
       val resultOne = broadcast.runWith(Sink.seq) // nothing happening yet
-      for (i <- 1 to 5) {
+      for (i <- 1 to 5)
         queue.offer(i)
-      }
       val resultTwo = broadcast.runWith(Sink.seq)
-      for (i <- 6 to 10) {
+      for (i <- 6 to 10)
         queue.offer(i)
-      }
       queue.complete() // only now is the source emptied
 
       Await.result(resultOne, 1.second) should be(1 to 10)
@@ -591,7 +589,7 @@ class HubSpec extends StreamSpec {
           var sessions = Map.empty[String, Long]
           var n = 0L
 
-          (info, elem) => {
+          (info, elem) =>
             sessions.get(elem) match {
               case Some(id) if info.consumerIds.exists(_ == id) => id
               case _ =>
@@ -600,7 +598,6 @@ class HubSpec extends StreamSpec {
                 sessions = sessions.updated(elem, id)
                 id
             }
-          }
         }, startAfterNrOfConsumers = 2, bufferSize = 8))
       val result1 = source.runWith(Sink.seq)
       val result2 = source.runWith(Sink.seq)

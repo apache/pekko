@@ -105,14 +105,13 @@ private[pekko] final class SegmentedRecencyList[A](
 
   def leastToMostRecentOf(level: Int): Iterator[A] = segments(level).forwardIterator.map(_.value)
 
-  def removeLeastRecentOverLimit(): immutable.Seq[A] = {
+  def removeLeastRecentOverLimit(): immutable.Seq[A] =
     if (size > totalLimit) {
       adjustProtectedLevels()
       val excess = size - totalLimit
       if (excess == 1) removeLeastRecent() // optimised removal of just 1 node
       else segments(lowest).forwardIterator.take(excess).map(removeNode).toList
     } else Nil
-  }
 
   def removeLeastRecent(): immutable.Seq[A] = segments(lowest).getFirst match {
     case OptionVal.Some(first) => List(removeNode(first))

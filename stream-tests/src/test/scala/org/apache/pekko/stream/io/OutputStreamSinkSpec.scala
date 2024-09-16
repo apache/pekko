@@ -99,13 +99,13 @@ class OutputStreamSinkSpec extends StreamSpec(UnboundedMailboxConfig) with Scala
     "complete materialized value with the error if creation fails" in {
       val completion = Source
         .single(ByteString(1))
-        .runWith(StreamConverters.fromOutputStream(() => {
+        .runWith(StreamConverters.fromOutputStream { () =>
           throw TE("Boom!")
           new OutputStream {
             override def write(i: Int): Unit = ()
             override def close() = ()
           }
-        }))
+        })
 
       completion.failed.futureValue shouldBe an[IOOperationIncompleteException]
     }
@@ -113,14 +113,13 @@ class OutputStreamSinkSpec extends StreamSpec(UnboundedMailboxConfig) with Scala
     "complete materialized value with the error if write fails" in {
       val completion = Source
         .single(ByteString(1))
-        .runWith(StreamConverters.fromOutputStream(() => {
+        .runWith(StreamConverters.fromOutputStream { () =>
           new OutputStream {
-            override def write(i: Int): Unit = {
+            override def write(i: Int): Unit =
               throw TE("Boom!")
-            }
             override def close() = ()
           }
-        }))
+        })
 
       completion.failed.futureValue shouldBe an[IOOperationIncompleteException]
     }
@@ -131,9 +130,8 @@ class OutputStreamSinkSpec extends StreamSpec(UnboundedMailboxConfig) with Scala
         .runWith(StreamConverters.fromOutputStream(() =>
           new OutputStream {
             override def write(i: Int): Unit = ()
-            override def close(): Unit = {
+            override def close(): Unit =
               throw TE("Boom!")
-            }
           }))
 
       completion.failed.futureValue shouldBe an[IOOperationIncompleteException]

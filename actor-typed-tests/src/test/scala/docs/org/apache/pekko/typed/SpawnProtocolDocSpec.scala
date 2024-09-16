@@ -86,9 +86,8 @@ class SpawnProtocolDocSpec extends ScalaTestWithActorTestKit with AnyWordSpecLik
       val greetedReplyTo: Future[ActorRef[HelloWorld.Greeted]] =
         system.ask(SpawnProtocol.Spawn(greetedBehavior, name = "", props = Props.empty, _))
 
-      for (greeterRef <- greeter; replyToRef <- greetedReplyTo) {
+      for (greeterRef <- greeter; replyToRef <- greetedReplyTo)
         greeterRef ! HelloWorld.Greet("Pekko", replyToRef)
-      }
 
       // #system-spawn
 

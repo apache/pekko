@@ -104,7 +104,7 @@ trait ScriptedTest extends Matchers {
         completed)
     }
 
-    def complete(): Script[In, Out] = {
+    def complete(): Script[In, Out] =
       if (finished)
         new Script(
           providedInputs,
@@ -115,7 +115,6 @@ trait ScriptedTest extends Matchers {
           outputEndCursor,
           completed = true)
       else fail("received onComplete prematurely")
-    }
 
     def finished: Boolean = outputCursor == expectedOutputs.size
 
@@ -256,8 +255,7 @@ trait ScriptedTest extends Matchers {
       settings: ActorMaterializerSettings,
       maximumOverrun: Int = 3,
       maximumRequest: Int = 3,
-      maximumBuffer: Int = 3)(op: Flow[In, In, NotUsed] => Flow[In, Out, M])(implicit system: ActorSystem): Unit = {
+      maximumBuffer: Int = 3)(op: Flow[In, In, NotUsed] => Flow[In, Out, M])(implicit system: ActorSystem): Unit =
     new ScriptRunner(op, settings, script, maximumOverrun, maximumRequest, maximumBuffer).run()
-  }
 
 }

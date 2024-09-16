@@ -38,9 +38,8 @@ object PerformanceSpec {
     private var startTime: Long = 0L
     private var stopTime: Long = 0L
 
-    def startMeasure(): Unit = {
+    def startMeasure(): Unit =
       startTime = System.nanoTime
-    }
 
     def stopMeasure(): Double = {
       stopTime = System.nanoTime
@@ -134,7 +133,7 @@ class PerformanceSpec
   val loadCycles = system.settings.config.getInt("pekko.persistence.performance.cycles.load")
 
   def stressPersistentActor(persistentActor: ActorRef, failAt: Option[Long], description: String): Unit = {
-    failAt.foreach { persistentActor ! FailAt(_) }
+    failAt.foreach(persistentActor ! FailAt(_))
     val m = new Measure(loadCycles)
     m.startMeasure()
     (1 to loadCycles).foreach { i =>

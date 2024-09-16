@@ -44,18 +44,16 @@ object PersistentActorRecoveryTimeoutSpec {
         }
     }
 
-    override protected def onRecoveryFailure(cause: Throwable, event: Option[Any]): Unit = {
+    override protected def onRecoveryFailure(cause: Throwable, event: Option[Any]): Unit =
       probe ! Failure(cause)
-    }
   }
 
   class TestReceiveTimeoutActor(receiveTimeout: FiniteDuration, probe: ActorRef)
       extends NamedPersistentActor("recovery-timeout-actor-2")
       with ActorLogging {
 
-    override def preStart(): Unit = {
+    override def preStart(): Unit =
       context.setReceiveTimeout(receiveTimeout)
-    }
 
     override def receiveRecover: Receive = {
       case RecoveryCompleted => probe ! context.receiveTimeout

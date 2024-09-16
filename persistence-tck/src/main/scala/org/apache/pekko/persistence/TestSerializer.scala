@@ -48,7 +48,7 @@ class TestSerializer(system: ExtendedActorSystem) extends SerializerWithStringMa
     }
   }
 
-  private def verifyTransportInfo(): Unit = {
+  private def verifyTransportInfo(): Unit =
     Serialization.currentTransportInformation.value match {
       case null =>
         throw new IllegalStateException("currentTransportInformation was not set")
@@ -59,5 +59,4 @@ class TestSerializer(system: ExtendedActorSystem) extends SerializerWithStringMa
           throw new IllegalStateException(
             s"wrong address in currentTransportInformation, ${t.address} != ${system.provider.getDefaultAddress}")
     }
-  }
 }

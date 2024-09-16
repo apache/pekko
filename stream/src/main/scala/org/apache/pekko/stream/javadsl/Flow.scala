@@ -455,9 +455,8 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * Materializes this [[Flow]], immediately returning (1) its materialized value, and (2) a newly materialized [[Flow]].
    */
   def preMaterialize(
-      systemProvider: ClassicActorSystemProvider): pekko.japi.Pair[Mat @uncheckedVariance, Flow[In, Out, NotUsed]] = {
+      systemProvider: ClassicActorSystemProvider): pekko.japi.Pair[Mat @uncheckedVariance, Flow[In, Out, NotUsed]] =
     preMaterialize(SystemMaterializer(systemProvider.classicSystem).materializer)
-  }
 
   /**
    * Materializes this [[Flow]], immediately returning (1) its materialized value, and (2) a newly materialized [[Flow]].
@@ -1337,9 +1336,8 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * See also [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
    */
-  def limitWeighted(n: Long, costFn: function.Function[Out, java.lang.Long]): javadsl.Flow[In, Out, Mat] = {
+  def limitWeighted(n: Long, costFn: function.Function[Out, java.lang.Long]): javadsl.Flow[In, Out, Mat] =
     new Flow(delegate.limitWeighted(n)(costFn.apply))
-  }
 
   /**
    * Apply a sliding window over the stream and return the windows as groups of elements, with the last group
@@ -4496,9 +4494,8 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * @return A [[RunnableGraph]] that materializes to a Processor when run() is called on it.
    */
-  def toProcessor: RunnableGraph[Processor[In, Out]] = {
+  def toProcessor: RunnableGraph[Processor[In, Out]] =
     RunnableGraph.fromGraph(delegate.toProcessor)
-  }
 
   /**
    * Turns a Flow into a FlowWithContext which manages a context per element along a stream.
@@ -4593,9 +4590,8 @@ abstract class RunnableGraph[+Mat] extends Graph[ClosedShape, Mat] {
    *
    * Uses the system materializer.
    */
-  def run(systemProvider: ClassicActorSystemProvider): Mat = {
+  def run(systemProvider: ClassicActorSystemProvider): Mat =
     run(SystemMaterializer(systemProvider.classicSystem).materializer)
-  }
 
   /**
    * Run this flow using a special materializer and return the materialized values of the flow.

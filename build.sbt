@@ -376,7 +376,7 @@ lazy val protobufV3 = pekkoModule("protobuf-v3")
             val uberJar = (Compile / assembly).value
             ReproducibleBuildsPlugin.postProcessJar(uberJar)
           }
-        } else Def.task { file }
+        } else Def.task(file)
       }
       tracker(() => uberJarLocation)
     }.value,

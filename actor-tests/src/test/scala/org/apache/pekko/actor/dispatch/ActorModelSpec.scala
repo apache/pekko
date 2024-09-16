@@ -76,37 +76,34 @@ object ActorModelSpec {
 
     def interceptor = context.dispatcher.asInstanceOf[MessageDispatcherInterceptor]
 
-    def ack(): Unit = {
+    def ack(): Unit =
       if (!busy.switchOn(())) {
         throw new Exception("isolation violated")
       } else {
         interceptor.getStats(self).msgsProcessed.incrementAndGet()
       }
-    }
 
-    override def postRestart(reason: Throwable): Unit = {
+    override def postRestart(reason: Throwable): Unit =
       interceptor.getStats(self).restarts.incrementAndGet()
-    }
 
     def receive = {
-      case AwaitLatch(latch) => { ack(); latch.await(); busy.switchOff(()) }
-      case Meet(sign, wait)  => { ack(); sign.countDown(); wait.await(); busy.switchOff(()) }
-      case Wait(time)        => { ack(); Thread.sleep(time); busy.switchOff(()) }
-      case WaitAck(time, l)  => { ack(); Thread.sleep(time); l.countDown(); busy.switchOff(()) }
-      case Reply(msg)        => { ack(); sender() ! msg; busy.switchOff(()) }
-      case TryReply(msg)     => { ack(); sender().tell(msg, null); busy.switchOff(()) }
-      case Forward(to, msg)  => { ack(); to.forward(msg); busy.switchOff(()) }
-      case CountDown(latch)  => { ack(); latch.countDown(); busy.switchOff(()) }
-      case Increment(count)  => { ack(); count.incrementAndGet(); busy.switchOff(()) }
-      case CountDownNStop(l) => { ack(); l.countDown(); context.stop(self); busy.switchOff(()) }
-      case Restart           => { ack(); busy.switchOff(()); throw new Exception("Restart requested") }
-      case Interrupt => {
+      case AwaitLatch(latch) => ack(); latch.await(); busy.switchOff(())
+      case Meet(sign, wait)  => ack(); sign.countDown(); wait.await(); busy.switchOff(())
+      case Wait(time)        => ack(); Thread.sleep(time); busy.switchOff(())
+      case WaitAck(time, l)  => ack(); Thread.sleep(time); l.countDown(); busy.switchOff(())
+      case Reply(msg)        => ack(); sender() ! msg; busy.switchOff(())
+      case TryReply(msg)     => ack(); sender().tell(msg, null); busy.switchOff(())
+      case Forward(to, msg)  => ack(); to.forward(msg); busy.switchOff(())
+      case CountDown(latch)  => ack(); latch.countDown(); busy.switchOff(())
+      case Increment(count)  => ack(); count.incrementAndGet(); busy.switchOff(())
+      case CountDownNStop(l) => ack(); l.countDown(); context.stop(self); busy.switchOff(())
+      case Restart           => ack(); busy.switchOff(()); throw new Exception("Restart requested")
+      case Interrupt =>
         ack(); sender() ! Status.Failure(new ActorInterruptedException(new InterruptedException("Ping!")));
         busy.switchOff(()); throw new InterruptedException("Ping!")
-      }
-      case InterruptNicely(msg)         => { ack(); sender() ! msg; busy.switchOff(()); Thread.currentThread().interrupt() }
-      case ThrowException(e: Throwable) => { ack(); busy.switchOff(()); throw e }
-      case DoubleStop                   => { ack(); context.stop(self); context.stop(self); busy.switchOff }
+      case InterruptNicely(msg)         => ack(); sender() ! msg; busy.switchOff(()); Thread.currentThread().interrupt()
+      case ThrowException(e: Throwable) => ack(); busy.switchOff(()); throw e
+      case DoubleStop                   => ack(); context.stop(self); context.stop(self); busy.switchOff
     }
   }
 
@@ -128,7 +125,7 @@ object ActorModelSpec {
     val stats = new ConcurrentHashMap[ActorRef, InterceptorStats]
     val stops = new AtomicLong(0)
 
-    def getStats(actorRef: ActorRef) = {
+    def getStats(actorRef: ActorRef) =
       stats.get(actorRef) match {
         case null =>
           val is = new InterceptorStats
@@ -138,8 +135,6 @@ object ActorModelSpec {
           }
         case existing => existing
       }
-
-    }
 
     protected[pekko] abstract override def suspend(actor: ActorCell): Unit = {
       getStats(actor.self).suspensions.incrementAndGet()
@@ -176,9 +171,9 @@ object ActorModelSpec {
   def assertDispatcher(dispatcher: MessageDispatcherInterceptor)(stops: Long = dispatcher.stops.get())(
       implicit system: ActorSystem): Unit = {
     val deadline = System.currentTimeMillis + dispatcher.shutdownTimeout.toMillis * 5
-    try {
+    try
       await(deadline)(stops == dispatcher.stops.get)
-    } catch {
+    catch {
       case e: Throwable =>
         system.eventStream.publish(
           Error(
@@ -191,15 +186,13 @@ object ActorModelSpec {
     }
   }
 
-  def assertCountDown(latch: CountDownLatch, wait: Long, hint: String): Unit = {
+  def assertCountDown(latch: CountDownLatch, wait: Long, hint: String): Unit =
     if (!latch.await(wait, TimeUnit.MILLISECONDS))
       fail("Failed to count down within " + wait + " millis (count at " + latch.getCount + "). " + hint)
-  }
 
-  def assertNoCountDown(latch: CountDownLatch, wait: Long, hint: String): Unit = {
+  def assertNoCountDown(latch: CountDownLatch, wait: Long, hint: String): Unit =
     if (latch.await(wait, TimeUnit.MILLISECONDS))
       fail("Expected count down to fail after " + wait + " millis. " + hint)
-  }
 
   def statsFor(actorRef: ActorRef, dispatcher: MessageDispatcher = null) =
     dispatcher.asInstanceOf[MessageDispatcherInterceptor].getStats(actorRef)
@@ -211,9 +204,8 @@ object ActorModelSpec {
       unregisters: Long = 0,
       msgsReceived: Long = 0,
       msgsProcessed: Long = 0,
-      restarts: Long = 0)(implicit system: ActorSystem): Unit = {
+      restarts: Long = 0)(implicit system: ActorSystem): Unit =
     assertRef(actorRef, dispatcher)(suspensions, resumes, registers, unregisters, msgsReceived, msgsProcessed, restarts)
-  }
 
   def assertRef(actorRef: ActorRef, dispatcher: MessageDispatcher = null)(
       suspensions: Long = statsFor(actorRef, dispatcher).suspensions.get(),
@@ -269,12 +261,11 @@ abstract class ActorModelSpec(config: String) extends PekkoSpec(config) with Def
 
   def newTestActor(dispatcher: String) = system.actorOf(Props[DispatcherActor]().withDispatcher(dispatcher))
 
-  def awaitStarted(ref: ActorRef): Unit = {
+  def awaitStarted(ref: ActorRef): Unit =
     awaitCond(ref match {
         case r: RepointableRef => r.isStarted
         case _                 => true
       }, 1 second, 10 millis)
-  }
 
   protected def interceptedDispatcher(): MessageDispatcherInterceptor
   protected def dispatcherType: String
@@ -297,11 +288,11 @@ abstract class ActorModelSpec(config: String) extends PekkoSpec(config) with Def
         msgsProcessed = 0,
         restarts = 0)
 
-      for (i <- 1 to 10) yield Future { i }
+      for (i <- 1 to 10) yield Future(i)
       assertDispatcher(dispatcher)(stops = 2)
 
       val a2 = newTestActor(dispatcher.id)
-      for (i <- 1 to 10) yield Future { i }
+      for (i <- 1 to 10) yield Future(i)
 
       assertDispatcher(dispatcher)(stops = 2)
 
@@ -334,20 +325,18 @@ abstract class ActorModelSpec(config: String) extends PekkoSpec(config) with Def
       val counter = new CountDownLatch(200)
       val a = newTestActor(dispatcher.id)
 
-      for (_ <- 1 to 10) {
+      for (_ <- 1 to 10)
         spawn {
-          for (_ <- 1 to 20) {
+          for (_ <- 1 to 20)
             a ! WaitAck(1, counter)
-          }
         }
-      }
       assertCountDown(counter, 3.seconds.dilated.toMillis, "Should process 200 messages")
       assertRefDefaultZero(a)(registers = 1, msgsReceived = 200, msgsProcessed = 200)
 
       system.stop(a)
     }
 
-    def spawn(f: => Unit): Unit = {
+    def spawn(f: => Unit): Unit =
       (new Thread {
         override def run(): Unit =
           try f
@@ -355,7 +344,6 @@ abstract class ActorModelSpec(config: String) extends PekkoSpec(config) with Def
             case e: Throwable => system.eventStream.publish(Error(e, "spawn", this.getClass, "error in spawned thread"))
           }
       }).start()
-    }
 
     "not process messages for a suspended actor" in {
       implicit val dispatcher = interceptedDispatcher()
@@ -511,7 +499,7 @@ abstract class ActorModelSpec(config: String) extends PekkoSpec(config) with Def
 object DispatcherModelSpec {
   import ActorModelSpec._
 
-  val config = {
+  val config =
     """
       boss {
         executor = thread-pool-executor
@@ -523,7 +511,6 @@ object DispatcherModelSpec {
         test-dispatcher-%s {
           type = "org.apache.pekko.actor.dispatch.DispatcherModelSpec$MessageDispatcherInterceptorConfigurator"
         }""".format(n)).mkString
-  }
 
   class MessageDispatcherInterceptorConfigurator(config: Config, prerequisites: DispatcherPrerequisites)
       extends MessageDispatcherConfigurator(config, prerequisites) {
@@ -548,12 +535,11 @@ class DispatcherModelSpec extends ActorModelSpec(DispatcherModelSpec.config) {
 
   val dispatcherCount = new AtomicInteger()
 
-  override def interceptedDispatcher(): MessageDispatcherInterceptor = {
+  override def interceptedDispatcher(): MessageDispatcherInterceptor =
     // use new id for each test, since the MessageDispatcherInterceptor holds state
     system.dispatchers
       .lookup("test-dispatcher-" + dispatcherCount.incrementAndGet())
       .asInstanceOf[MessageDispatcherInterceptor]
-  }
 
   override def dispatcherType = "Dispatcher"
 
@@ -591,7 +577,7 @@ object BalancingDispatcherModelSpec {
   import ActorModelSpec._
 
   // TODO check why throughput=1 here? (came from old test)
-  val config = {
+  val config =
     """
       boss {
         executor = thread-pool-executor
@@ -605,7 +591,6 @@ object BalancingDispatcherModelSpec {
           type = "org.apache.pekko.actor.dispatch.BalancingDispatcherModelSpec$BalancingMessageDispatcherInterceptorConfigurator"
           throughput=1
         }""".format(n)).mkString
-  }
 
   class BalancingMessageDispatcherInterceptorConfigurator(config: Config, prerequisites: DispatcherPrerequisites)
       extends BalancingDispatcherConfigurator(config, prerequisites) {
@@ -631,12 +616,11 @@ class BalancingDispatcherModelSpec extends ActorModelSpec(BalancingDispatcherMod
 
   val dispatcherCount = new AtomicInteger()
 
-  override def interceptedDispatcher(): MessageDispatcherInterceptor = {
+  override def interceptedDispatcher(): MessageDispatcherInterceptor =
     // use new id for each test, since the MessageDispatcherInterceptor holds state
     system.dispatchers
       .lookup("test-balancing-dispatcher-" + dispatcherCount.incrementAndGet())
       .asInstanceOf[MessageDispatcherInterceptor]
-  }
 
   override def dispatcherType = "Balancing Dispatcher"
 

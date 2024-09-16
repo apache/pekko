@@ -192,7 +192,7 @@ private[pekko] object Running {
           replicationControl =
             state.replicationControl.updated(replicaId,
               new ReplicationStreamControl {
-                override def fastForward(sequenceNumber: Long): Unit = {
+                override def fastForward(sequenceNumber: Long): Unit =
                   // (logging is safe here since invoked on message receive
                   OptionVal(controlRef.get) match {
                     case OptionVal.Some(control) =>
@@ -207,7 +207,6 @@ private[pekko] object Running {
                           replicaId,
                           sequenceNumber)
                   }
-                }
               }))
       } else {
         state
@@ -218,9 +217,8 @@ private[pekko] object Running {
   private val timestampFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
   private val UTC = ZoneId.of("UTC")
 
-  def formatTimestamp(time: Long): String = {
+  def formatTimestamp(time: Long): String =
     timestampFormatter.format(LocalDateTime.ofInstant(Instant.ofEpochMilli(time), UTC))
-  }
 }
 
 // ===============================================
@@ -244,9 +242,8 @@ private[pekko] object Running {
 
     _currentSequenceNumber = state.seqNr
 
-    private def alreadySeen(e: ReplicatedEvent[_]): Boolean = {
+    private def alreadySeen(e: ReplicatedEvent[_]): Boolean =
       e.originSequenceNr <= state.seenPerReplica.getOrElse(e.originReplica, 0L)
-    }
 
     def onMessage(msg: InternalProtocol): Behavior[InternalProtocol] = msg match {
       case IncomingCommand(c: C @unchecked)          => onCommand(state, c)
@@ -451,7 +448,7 @@ private[pekko] object Running {
     private def handleEventPersist(
         event: E,
         cmd: Any,
-        sideEffects: immutable.Seq[SideEffect[S]]): (Behavior[InternalProtocol], Boolean) = {
+        sideEffects: immutable.Seq[SideEffect[S]]): (Behavior[InternalProtocol], Boolean) =
       try {
         // apply the event before persist so that validation exception is handled before persisting
         // the invalid event, in case such validation is implemented in the event handler.
@@ -501,15 +498,13 @@ private[pekko] object Running {
             shouldPublish = true,
             sideEffects),
           false)
-      } finally {
+      } finally
         setup.replication.foreach(_.clearContext())
-      }
-    }
 
     private def handleEventPersistAll(
         events: immutable.Seq[E],
         cmd: Any,
-        sideEffects: immutable.Seq[SideEffect[S]]): (Behavior[InternalProtocol], Boolean) = {
+        sideEffects: immutable.Seq[SideEffect[S]]): (Behavior[InternalProtocol], Boolean) =
       if (events.nonEmpty) {
         try {
           // apply the event before persist so that validation exception is handled before persisting
@@ -564,14 +559,12 @@ private[pekko] object Running {
               shouldPublish = true,
               sideEffects = sideEffects),
             false)
-        } finally {
+        } finally
           setup.replication.foreach(_.clearContext())
-        }
       } else {
         // run side-effects even when no events are emitted
         (applySideEffects(sideEffects, state), true)
       }
-    }
     @tailrec def applyEffects(
         msg: Any,
         state: RunningState[S],
@@ -654,7 +647,7 @@ private[pekko] object Running {
 
     private var eventCounter = 0
 
-    override def onMessage(msg: InternalProtocol): Behavior[InternalProtocol] = {
+    override def onMessage(msg: InternalProtocol): Behavior[InternalProtocol] =
       msg match {
         case JournalResponse(r)                        => onJournalResponse(r)
         case in: IncomingCommand[C @unchecked]         => onCommand(in)
@@ -666,9 +659,8 @@ private[pekko] object Running {
         case RecoveryTickEvent(_)                      => Behaviors.unhandled
         case RecoveryPermitGranted                     => Behaviors.unhandled
       }
-    }
 
-    def onCommand(cmd: IncomingCommand[C]): Behavior[InternalProtocol] = {
+    def onCommand(cmd: IncomingCommand[C]): Behavior[InternalProtocol] =
       if (state.receivedPoisonPill) {
         if (setup.settings.logOnStashing)
           setup.internalLogger.debug("Discarding message [{}], because actor is to be stopped.", cmd)
@@ -676,28 +668,25 @@ private[pekko] object Running {
       } else {
         stashInternal(cmd)
       }
-    }
 
     def onGetSeenSequenceNr(get: GetSeenSequenceNr): PersistingEvents = {
       get.replyTo ! state.seenPerReplica(get.replica)
       this
     }
 
-    def onReplicatedEvent(event: InternalProtocol.ReplicatedEventEnvelope[E]): Behavior[InternalProtocol] = {
+    def onReplicatedEvent(event: InternalProtocol.ReplicatedEventEnvelope[E]): Behavior[InternalProtocol] =
       if (state.receivedPoisonPill) {
         Behaviors.unhandled
       } else {
         stashInternal(event)
       }
-    }
 
-    def onPublishedEvent(event: PublishedEventImpl): Behavior[InternalProtocol] = {
+    def onPublishedEvent(event: PublishedEventImpl): Behavior[InternalProtocol] =
       if (state.receivedPoisonPill) {
         Behaviors.unhandled
       } else {
         stashInternal(event)
       }
-    }
 
     final def onJournalResponse(response: Response): Behavior[InternalProtocol] = {
       if (setup.internalLogger.isDebugEnabled) {
@@ -780,9 +769,8 @@ private[pekko] object Running {
         else Behaviors.unhandled
     }
 
-    override def currentSequenceNumber: Long = {
+    override def currentSequenceNumber: Long =
       _currentSequenceNumber
-    }
   }
 
   // ===============================================
@@ -796,7 +784,7 @@ private[pekko] object Running {
       with WithSeqNrAccessible {
     setup.setMdcPhase(PersistenceMdc.StoringSnapshot)
 
-    def onCommand(cmd: IncomingCommand[C]): Behavior[InternalProtocol] = {
+    def onCommand(cmd: IncomingCommand[C]): Behavior[InternalProtocol] =
       if (state.receivedPoisonPill) {
         if (setup.settings.logOnStashing)
           setup.internalLogger.debug("Discarding message [{}], because actor is to be stopped.", cmd)
@@ -804,7 +792,6 @@ private[pekko] object Running {
       } else {
         stashInternal(cmd)
       }
-    }
 
     def onSaveSnapshotResponse(response: SnapshotProtocol.Response): Unit = {
       val signal = response match {
@@ -906,7 +893,7 @@ private[pekko] object Running {
   def applySideEffect(
       effect: SideEffect[S],
       state: RunningState[S],
-      behavior: Behavior[InternalProtocol]): Behavior[InternalProtocol] = {
+      behavior: Behavior[InternalProtocol]): Behavior[InternalProtocol] =
     effect match {
       case _: Stop.type @unchecked =>
         Behaviors.stopped
@@ -919,7 +906,6 @@ private[pekko] object Running {
         callback.sideEffect(state.state)
         behavior
     }
-  }
 
   /**
    * Handle journal responses for non-persist events workloads.

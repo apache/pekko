@@ -697,9 +697,8 @@ class SubSource[Out, Mat](
    *
    * See also [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
    */
-  def limitWeighted(n: Long, costFn: function.Function[Out, java.lang.Long]): javadsl.SubSource[Out, Mat] = {
+  def limitWeighted(n: Long, costFn: function.Function[Out, java.lang.Long]): javadsl.SubSource[Out, Mat] =
     new SubSource(delegate.limitWeighted(n)(costFn.apply))
-  }
 
   def sliding(n: Int, step: Int = 1): SubSource[java.util.List[Out @uncheckedVariance], Mat] =
     new SubSource(delegate.sliding(n, step).map(_.asJava)) // TODO optimize to one step

@@ -175,7 +175,7 @@ class ClusterHeartbeatSenderStateSpec extends AnyWordSpec with Matchers {
       for (i <- 1 to 100000) {
         val operation = rnd.nextInt(Add, HeartbeatRsp + 1)
         val node = rndNode()
-        try {
+        try
           operation match {
             case Add =>
               if (node != selfUniqueAddress && !state.ring.nodes.contains(node)) {
@@ -232,7 +232,7 @@ class ClusterHeartbeatSenderStateSpec extends AnyWordSpec with Matchers {
 
             case _ => throw new RuntimeException()
           }
-        } catch {
+        catch {
           case e: Throwable =>
             println(
               s"Failure context: i=$i, node=$node, op=$operation, " +

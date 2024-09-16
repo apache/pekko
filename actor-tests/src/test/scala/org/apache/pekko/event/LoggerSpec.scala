@@ -109,15 +109,15 @@ object LoggerSpec {
         ref ! "OK"
       case event: LogEvent if !event.mdc.isEmpty =>
         print(event)
-        target.foreach { _ ! event }
+        target.foreach(_ ! event)
       case event: LogEvent =>
         print(event)
-        target.foreach { _ ! event.message }
+        target.foreach(_ ! event.message)
     }
   }
 
   class SlowLogger extends Logging.DefaultLogger {
-    override def aroundReceive(r: Receive, msg: Any): Unit = {
+    override def aroundReceive(r: Receive, msg: Any): Unit =
       msg match {
         case event: LogEvent =>
           if (event.message.toString.startsWith("msg1"))
@@ -126,7 +126,6 @@ object LoggerSpec {
         case _ => super.aroundReceive(r, msg)
       }
 
-    }
   }
 
   class ActorWithMDC extends Actor with DiagnosticActorLogging {
@@ -172,9 +171,8 @@ class LoggerSpec extends AnyWordSpec with Matchers {
         } else {
           probe.expectNoMessage(0.5.seconds.dilated)
         }
-      } finally {
+      } finally
         TestKit.shutdownActorSystem(system)
-      }
     }
     out
   }
@@ -230,9 +228,8 @@ class LoggerSpec extends AnyWordSpec with Matchers {
           system.log.warning("log it")
           probe1.expectMsg("log it")
           probe2.expectMsg("log it")
-        } finally {
+        } finally
           TestKit.shutdownActorSystem(system)
-        }
       }
     }
   }
@@ -272,9 +269,8 @@ class LoggerSpec extends AnyWordSpec with Matchers {
           case w @ Warning(_, _, "Current Message removed from MDC") if w.mdc.size == 1 && w.mdc("requestId") == 4 =>
         }
 
-      } finally {
+      } finally
         TestKit.shutdownActorSystem(system)
-      }
     }
 
   }
@@ -347,11 +343,10 @@ class LoggerSpec extends AnyWordSpec with Matchers {
   "Ticket 3165 - serialize-messages and dual-entry serialization of LogEvent" must {
     "not cause StackOverflowError" in {
       implicit val s = ActorSystem("foo", ticket3165Config)
-      try {
+      try
         SerializationExtension(s).serialize(Warning("foo", classOf[String]))
-      } finally {
+      finally
         TestKit.shutdownActorSystem(s)
-      }
     }
   }
 }

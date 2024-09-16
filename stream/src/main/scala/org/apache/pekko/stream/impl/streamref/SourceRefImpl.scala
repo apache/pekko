@@ -408,7 +408,7 @@ private[stream] final class SourceRefStageImpl[Out](val initialPartnerRef: Optio
         case other => throw new IllegalArgumentException(s"Unknown timer key: $other")
       }
 
-      override def onDownstreamFinish(cause: Throwable): Unit = {
+      override def onDownstreamFinish(cause: Throwable): Unit =
         state match {
           case Running(ref) =>
             triggerCancellationExchange(ref, cause)
@@ -447,7 +447,6 @@ private[stream] final class SourceRefStageImpl[Out](val initialPartnerRef: Optio
               // if there are elements left in the buffer we try to emit those
               tryPush()
         }
-      }
 
       private def triggerCancellationExchange(partner: ActorRef, cause: Throwable): Unit = {
         if (receiveBuffer.nonEmpty)
@@ -527,14 +526,13 @@ private[stream] final class SourceRefStageImpl[Out](val initialPartnerRef: Optio
         }
       }
 
-      private def verifyPartner(sender: ActorRef, partner: ActorRef): Unit = {
+      private def verifyPartner(sender: ActorRef, partner: ActorRef): Unit =
         if (sender != partner)
           throw InvalidPartnerActorException(
             partner,
             sender,
             s"[$stageActorName] Received message from UNEXPECTED sender [$sender]! " +
             s"This actor is NOT our trusted remote partner, which is [$partner]. Tearing down.")
-      }
 
       /** @throws InvalidSequenceNumberException when sequence number is invalid */
       private def observeAndValidateSequenceNr(seqNr: Long, msg: String): Unit =

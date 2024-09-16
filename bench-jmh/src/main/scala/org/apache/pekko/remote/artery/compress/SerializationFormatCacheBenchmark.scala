@@ -86,18 +86,16 @@ class SerializationFormatCacheBenchmark {
 
   // new empty cache instance each iteration to have more control over cached contents
   @Setup(Level.Iteration)
-  def perRunSetup(): Unit = {
+  def perRunSetup(): Unit =
     cache = new SerializationFormatCache
-  }
 
   @TearDown
-  def shutdown(): Unit = {
+  def shutdown(): Unit =
     system.terminate()
-  }
 
   @Benchmark
   @OperationsPerInvocation(2000)
-  def useCache(blackhole: Blackhole): Unit = {
+  def useCache(blackhole: Blackhole): Unit =
     // serialization requires this
     Serialization.withTransportInformation(system.asInstanceOf[ExtendedActorSystem]) { () =>
       var i: Int = 0
@@ -109,6 +107,5 @@ class SerializationFormatCacheBenchmark {
         i += 1
       }
     }
-  }
 
 }

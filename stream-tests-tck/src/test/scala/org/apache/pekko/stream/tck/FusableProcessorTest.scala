@@ -21,13 +21,12 @@ import pekko.stream.scaladsl.Flow
 
 class FusableProcessorTest extends PekkoIdentityProcessorVerification[Int] {
 
-  override def createIdentityProcessor(maxBufferSize: Int): Processor[Int, Int] = {
+  override def createIdentityProcessor(maxBufferSize: Int): Processor[Int, Int] =
     Flow[Int]
       .map(identity)
       .toProcessor
       .withAttributes(Attributes.inputBuffer(initial = maxBufferSize / 2, max = maxBufferSize))
       .run()
-  }
 
   override def createElement(element: Int): Int = element
 

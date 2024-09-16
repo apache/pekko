@@ -33,12 +33,11 @@ class FlightRecording(system: ActorSystem) {
   private val stopMethod = clazz.map(_.getDeclaredMethod("stop"))
   private val dumpMethod = clazz.map(_.getDeclaredMethod("dump", classOf[Path]))
 
-  def start() = {
+  def start() =
     for {
       r <- recording
       m <- startMethod
     } yield m.invoke(r)
-  }
 
   def endAndDump(location: Path) = {
     // Make sure parent directory exists

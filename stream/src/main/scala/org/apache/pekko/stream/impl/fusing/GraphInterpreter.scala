@@ -255,10 +255,10 @@ import pekko.stream.stage._
   private[this] var chasedPull: Connection = NoEvent
 
   private def queueStatus: String = {
-    val contents = (queueHead until queueTail).map(idx => {
+    val contents = (queueHead until queueTail).map { idx =>
       val conn = eventQueue(idx & mask)
       conn
-    })
+    }
     s"(${eventQueue.length}, $queueHead, $queueTail)(${contents.mkString(", ")})"
   }
   private[this] var _Name: String = _
@@ -369,7 +369,7 @@ import pekko.stream.stage._
         eventsRemaining -= 1
         chaseCounter = math.min(ChaseLimit, eventsRemaining)
 
-        def reportStageError(e: Throwable): Unit = {
+        def reportStageError(e: Throwable): Unit =
           if (activeStage == null) throw e
           else {
             val loggingEnabled = activeStage.attributes.get[LogLevels] match {
@@ -391,7 +391,6 @@ import pekko.stream.stage._
               chasedPull = NoEvent
             }
           }
-        }
 
         /*
          * This is the "normal" event processing code which dequeues directly from the internal event queue. Since
@@ -457,9 +456,8 @@ import pekko.stream.stage._
       }
       // Event *must* be enqueued while not in the execute loop (events enqueued from external, possibly async events)
       chaseCounter = 0
-    } finally {
+    } finally
       currentInterpreterHolder(0) = previousInterpreter
-    }
     if (Debug) println(s"$Name ---------------- $queueStatus (running=$runningStages, shutdown=$shutdownCounters)")
     // TODO: deadlock detection
     eventsRemaining
@@ -610,7 +608,7 @@ import pekko.stream.stage._
     else shutdownCounter(logic.stageId) &= KeepGoingMask
 
   @InternalStableApi
-  private[stream] def finalizeStage(logic: GraphStageLogic): Unit = {
+  private[stream] def finalizeStage(logic: GraphStageLogic): Unit =
     try {
       logic.postStop()
       logic.afterPostStop()
@@ -618,21 +616,18 @@ import pekko.stream.stage._
       case NonFatal(e) =>
         log.error(e, s"Error during postStop in [{}]: {}", logic.toString, e.getMessage)
     }
-  }
 
-  private[stream] def chasePush(connection: Connection): Unit = {
+  private[stream] def chasePush(connection: Connection): Unit =
     if (chaseCounter > 0 && chasedPush == NoEvent) {
       chaseCounter -= 1
       chasedPush = connection
     } else enqueue(connection)
-  }
 
-  private[stream] def chasePull(connection: Connection): Unit = {
+  private[stream] def chasePull(connection: Connection): Unit =
     if (chaseCounter > 0 && chasedPull == NoEvent) {
       chaseCounter -= 1
       chasedPull = connection
     } else enqueue(connection)
-  }
 
   private[stream] def complete(connection: Connection): Unit = {
     val currentState = connection.portState

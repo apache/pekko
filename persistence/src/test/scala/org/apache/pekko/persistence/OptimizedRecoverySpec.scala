@@ -26,9 +26,8 @@ object OptimizedRecoverySpec {
     final case class Saved(s: String, seqNr: Long)
     case object PersistFromRecoveryCompleted
 
-    def props(name: String, recovery: Recovery, probe: ActorRef): Props = {
+    def props(name: String, recovery: Recovery, probe: ActorRef): Props =
       Props(new TestPersistentActor(name, recovery, probe))
-    }
   }
 
   class TestPersistentActor(name: String, override val recovery: Recovery, probe: ActorRef)

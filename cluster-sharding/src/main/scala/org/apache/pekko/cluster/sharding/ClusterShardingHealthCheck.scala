@@ -72,7 +72,7 @@ final class ClusterShardingHealthCheck private[pekko] (
   // Once the check has passed it always does
   @volatile private var registered = false
 
-  override def apply(): Future[Boolean] = {
+  override def apply(): Future[Boolean] =
     if (settings.names.isEmpty || registered) {
       ClusterShardingHealthCheck.Success
     } else {
@@ -108,5 +108,4 @@ final class ClusterShardingHealthCheck private[pekko] (
             false
         }
     }
-  }
 }

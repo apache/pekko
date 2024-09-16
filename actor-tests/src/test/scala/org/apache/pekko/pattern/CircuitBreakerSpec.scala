@@ -60,18 +60,18 @@ object CircuitBreakerSpec {
       .onClose(closedLatch.countDown())
       .onHalfOpen(halfOpenLatch.countDown())
       .onOpen(openLatch.countDown())
-      .onCallSuccess(value => {
+      .onCallSuccess { value =>
         probe.ref ! CBSuccess(value.nanos)
         callSuccessLatch.countDown()
-      })
-      .onCallFailure(value => {
+      }
+      .onCallFailure { value =>
         probe.ref ! CBFailure(value.nanos)
         callFailureLatch.countDown()
-      })
-      .onCallTimeout(value => {
+      }
+      .onCallTimeout { value =>
         probe.ref ! CBTimeout(value.nanos)
         callTimeoutLatch.countDown()
-      })
+      }
       .onCallBreakerOpen(callBreakerOpenLatch.countDown())
   }
 
@@ -137,24 +137,24 @@ class CircuitBreakerSpec extends PekkoSpec("""
     "throw exceptions when called before reset timeout" taggedAs TimingTest in {
       val breaker = longResetTimeoutCb()
 
-      intercept[TestException] { breaker().withSyncCircuitBreaker(throwException) }
+      intercept[TestException](breaker().withSyncCircuitBreaker(throwException))
 
       checkLatch(breaker.openLatch)
 
-      val e = intercept[CircuitBreakerOpenException] { breaker().withSyncCircuitBreaker(sayHi) }
+      val e = intercept[CircuitBreakerOpenException](breaker().withSyncCircuitBreaker(sayHi))
       e.remainingDuration should be > Duration.Zero
       e.remainingDuration should be <= longResetTimeout
     }
 
     "transition to half-open on reset timeout" taggedAs TimingTest in {
       val breaker = shortResetTimeoutCb()
-      intercept[TestException] { breaker().withSyncCircuitBreaker(throwException) }
+      intercept[TestException](breaker().withSyncCircuitBreaker(throwException))
       checkLatch(breaker.halfOpenLatch)
     }
 
     "still be in open state after calling success method" taggedAs TimingTest in {
       val breaker = longResetTimeoutCb()
-      intercept[TestException] { breaker().withSyncCircuitBreaker(throwException) }
+      intercept[TestException](breaker().withSyncCircuitBreaker(throwException))
       checkLatch(breaker.openLatch)
       breaker().succeed()
       breaker().isOpen should ===(true)
@@ -162,7 +162,7 @@ class CircuitBreakerSpec extends PekkoSpec("""
 
     "still be in open state after calling fail method" taggedAs TimingTest in {
       val breaker = longResetTimeoutCb()
-      intercept[TestException] { breaker().withSyncCircuitBreaker(throwException) }
+      intercept[TestException](breaker().withSyncCircuitBreaker(throwException))
       checkLatch(breaker.openLatch)
       breaker().fail()
       breaker().isOpen should ===(true)
@@ -170,22 +170,22 @@ class CircuitBreakerSpec extends PekkoSpec("""
 
     "invoke onHalfOpen during transition to half-open state" taggedAs TimingTest in {
       val breaker = shortResetTimeoutCb()
-      intercept[TestException] { breaker().withSyncCircuitBreaker(throwException) }
+      intercept[TestException](breaker().withSyncCircuitBreaker(throwException))
       checkLatch(breaker.halfOpenLatch)
     }
 
     "invoke onCallBreakerOpen when called before reset timeout" taggedAs TimingTest in {
       val breaker = longResetTimeoutCb()
-      intercept[TestException] { breaker().withSyncCircuitBreaker(throwException) }
+      intercept[TestException](breaker().withSyncCircuitBreaker(throwException))
       checkLatch(breaker.openLatch)
-      intercept[CircuitBreakerOpenException] { breaker().withSyncCircuitBreaker(sayHi) }
+      intercept[CircuitBreakerOpenException](breaker().withSyncCircuitBreaker(sayHi))
       checkLatch(breaker.callBreakerOpenLatch)
     }
 
     "invoke onCallFailure when call results in exception" taggedAs TimingTest in {
       val breaker = longResetTimeoutCb()
 
-      intercept[TestException] { breaker().withSyncCircuitBreaker(throwException) }
+      intercept[TestException](breaker().withSyncCircuitBreaker(throwException))
       checkLatch(breaker.callFailureLatch)
 
       val failure = breaker.probe.expectMsgType[CBFailure]
@@ -196,7 +196,7 @@ class CircuitBreakerSpec extends PekkoSpec("""
   "A synchronous circuit breaker that is half-open" must {
     "pass through next call and close on success" taggedAs TimingTest in {
       val breaker = shortResetTimeoutCb()
-      intercept[TestException] { breaker().withSyncCircuitBreaker(throwException) }
+      intercept[TestException](breaker().withSyncCircuitBreaker(throwException))
       checkLatch(breaker.halfOpenLatch)
       assert("hi" == breaker().withSyncCircuitBreaker(sayHi))
       checkLatch(breaker.closedLatch)
@@ -205,29 +205,29 @@ class CircuitBreakerSpec extends PekkoSpec("""
     "pass through next call and close on exception" when {
       "exception is defined as call succeeded" taggedAs TimingTest in {
         val breaker = shortResetTimeoutCb()
-        intercept[TestException] { breaker().withSyncCircuitBreaker(throwException) }
+        intercept[TestException](breaker().withSyncCircuitBreaker(throwException))
         checkLatch(breaker.halfOpenLatch)
 
         val allReturnIsSuccess: Try[String] => Boolean = _ => false
 
-        intercept[TestException] { breaker().withSyncCircuitBreaker(throwException, allReturnIsSuccess) }
+        intercept[TestException](breaker().withSyncCircuitBreaker(throwException, allReturnIsSuccess))
         checkLatch(breaker.closedLatch)
       }
     }
 
     "open on exception in call" taggedAs TimingTest in {
       val breaker = shortResetTimeoutCb()
-      intercept[TestException] { breaker().withSyncCircuitBreaker(throwException) }
+      intercept[TestException](breaker().withSyncCircuitBreaker(throwException))
       checkLatch(breaker.halfOpenLatch)
       breaker.openLatch.reset()
-      intercept[TestException] { breaker().withSyncCircuitBreaker(throwException) }
+      intercept[TestException](breaker().withSyncCircuitBreaker(throwException))
       checkLatch(breaker.openLatch)
     }
 
     "open on even number" when {
       "even number is defined as failure" taggedAs TimingTest in {
         val breaker = shortResetTimeoutCb()
-        intercept[TestException] { breaker().withSyncCircuitBreaker(throwException) }
+        intercept[TestException](breaker().withSyncCircuitBreaker(throwException))
         checkLatch(breaker.halfOpenLatch)
         breaker.openLatch.reset()
         breaker().withSyncCircuitBreaker(2, evenNumberIsFailure)
@@ -237,7 +237,7 @@ class CircuitBreakerSpec extends PekkoSpec("""
 
     "open on calling fail method" taggedAs TimingTest in {
       val breaker = shortResetTimeoutCb()
-      intercept[TestException] { breaker().withSyncCircuitBreaker(throwException) }
+      intercept[TestException](breaker().withSyncCircuitBreaker(throwException))
       checkLatch(breaker.halfOpenLatch)
       breaker.openLatch.reset()
       breaker().fail()
@@ -246,7 +246,7 @@ class CircuitBreakerSpec extends PekkoSpec("""
 
     "close on calling success method" taggedAs TimingTest in {
       val breaker = shortResetTimeoutCb()
-      intercept[TestException] { breaker().withSyncCircuitBreaker(throwException) }
+      intercept[TestException](breaker().withSyncCircuitBreaker(throwException))
       checkLatch(breaker.halfOpenLatch)
       breaker().succeed()
       checkLatch(breaker.closedLatch)
@@ -255,7 +255,7 @@ class CircuitBreakerSpec extends PekkoSpec("""
     "pass through next call and invoke onCallSuccess on success" taggedAs TimingTest in {
       val breaker = shortResetTimeoutCb()
 
-      intercept[TestException] { breaker().withSyncCircuitBreaker(throwException) }
+      intercept[TestException](breaker().withSyncCircuitBreaker(throwException))
       checkLatch(breaker.halfOpenLatch)
       breaker.probe.expectMsgType[CBFailure]
 
@@ -269,13 +269,13 @@ class CircuitBreakerSpec extends PekkoSpec("""
     "pass through next call and invoke onCallFailure on failure" taggedAs TimingTest in {
       val breaker = shortResetTimeoutCb()
 
-      intercept[TestException] { breaker().withSyncCircuitBreaker(throwException) }
+      intercept[TestException](breaker().withSyncCircuitBreaker(throwException))
       checkLatch(breaker.halfOpenLatch)
       checkLatch(breaker.callFailureLatch)
 
       breaker.callFailureLatch.reset()
 
-      intercept[TestException] { breaker().withSyncCircuitBreaker(throwException) }
+      intercept[TestException](breaker().withSyncCircuitBreaker(throwException))
       checkLatch(breaker.callFailureLatch)
 
       breaker.probe.expectMsgType[CBFailure]
@@ -286,10 +286,10 @@ class CircuitBreakerSpec extends PekkoSpec("""
     "pass through next call and invoke onCallTimeout on timeout" taggedAs TimingTest in {
       val breaker = shortCallTimeoutCb()
 
-      intercept[TestException] { breaker().withSyncCircuitBreaker(throwException) }
+      intercept[TestException](breaker().withSyncCircuitBreaker(throwException))
       checkLatch(breaker.halfOpenLatch)
 
-      intercept[TimeoutException] { breaker().withSyncCircuitBreaker(Thread.sleep(200.millis.dilated.toMillis)) }
+      intercept[TimeoutException](breaker().withSyncCircuitBreaker(Thread.sleep(200.millis.dilated.toMillis)))
       checkLatch(breaker.callTimeoutLatch)
 
       breaker.probe.expectMsgType[CBFailure]
@@ -300,11 +300,11 @@ class CircuitBreakerSpec extends PekkoSpec("""
     "pass through next call and invoke onCallBreakerOpen while executing other" taggedAs TimingTest in {
       val breaker = shortResetTimeoutCb()
 
-      intercept[TestException] { breaker().withSyncCircuitBreaker(throwException) }
+      intercept[TestException](breaker().withSyncCircuitBreaker(throwException))
       checkLatch(breaker.halfOpenLatch)
 
       breaker().withCircuitBreaker(Future(Thread.sleep(250.millis.dilated.toMillis)))
-      intercept[CircuitBreakerOpenException] { breaker().withSyncCircuitBreaker(sayHi) }
+      intercept[CircuitBreakerOpenException](breaker().withSyncCircuitBreaker(sayHi))
 
       checkLatch(breaker.callBreakerOpenLatch)
     }
@@ -312,7 +312,7 @@ class CircuitBreakerSpec extends PekkoSpec("""
     "pass through next call and invoke onCallSuccess after transition to open state" taggedAs TimingTest in {
       val breaker = shortResetTimeoutCb()
 
-      intercept[TestException] { breaker().withSyncCircuitBreaker(throwException) }
+      intercept[TestException](breaker().withSyncCircuitBreaker(throwException))
       checkLatch(breaker.halfOpenLatch)
 
       breaker().withSyncCircuitBreaker(Future.successful(sayHi))
@@ -329,7 +329,7 @@ class CircuitBreakerSpec extends PekkoSpec("""
     "increment failure count on failure" taggedAs TimingTest in {
       val breaker = longCallTimeoutCb()
       breaker().currentFailureCount should ===(0)
-      intercept[TestException] { breaker().withSyncCircuitBreaker(throwException) }
+      intercept[TestException](breaker().withSyncCircuitBreaker(throwException))
       checkLatch(breaker.openLatch)
       breaker().currentFailureCount should ===(1)
     }
@@ -359,7 +359,7 @@ class CircuitBreakerSpec extends PekkoSpec("""
       breaker().currentFailureCount should ===(0)
       intercept[TestException] {
         val ct = Thread.currentThread() // Ensure that the thunk is executed in the tests thread
-        breaker().withSyncCircuitBreaker { if (Thread.currentThread() eq ct) throwException else "fail" }
+        breaker().withSyncCircuitBreaker(if (Thread.currentThread() eq ct) throwException else "fail")
       }
       breaker().currentFailureCount should ===(1)
       breaker().withSyncCircuitBreaker(sayHi)
@@ -372,7 +372,7 @@ class CircuitBreakerSpec extends PekkoSpec("""
         breaker().currentFailureCount should ===(0)
         intercept[TestException] {
           val ct = Thread.currentThread() // Ensure that the thunk is executed in the tests thread
-          breaker().withSyncCircuitBreaker { if (Thread.currentThread() eq ct) throwException else "fail" }
+          breaker().withSyncCircuitBreaker(if (Thread.currentThread() eq ct) throwException else "fail")
         }
         breaker().currentFailureCount should ===(1)
 
@@ -395,7 +395,7 @@ class CircuitBreakerSpec extends PekkoSpec("""
       breaker().currentFailureCount should ===(0)
       intercept[TestException] {
         val ct = Thread.currentThread() // Ensure that the thunk is executed in the tests thread
-        breaker().withSyncCircuitBreaker { if (Thread.currentThread() eq ct) throwException else "fail" }
+        breaker().withSyncCircuitBreaker(if (Thread.currentThread() eq ct) throwException else "fail")
       }
       breaker().currentFailureCount should ===(1)
       breaker().succeed()
@@ -469,7 +469,7 @@ class CircuitBreakerSpec extends PekkoSpec("""
 
       checkLatch(breaker.openLatch)
 
-      intercept[CircuitBreakerOpenException] { Await.result(breaker().withCircuitBreaker(Future(sayHi)), awaitTimeout) }
+      intercept[CircuitBreakerOpenException](Await.result(breaker().withCircuitBreaker(Future(sayHi)), awaitTimeout))
     }
 
     "transition to half-open on reset timeout" taggedAs TimingTest in {
@@ -483,7 +483,7 @@ class CircuitBreakerSpec extends PekkoSpec("""
       breaker().withCircuitBreaker(Future(throwException))
       checkLatch(breaker.openLatch)
 
-      val e1 = intercept[CircuitBreakerOpenException] { breaker().withSyncCircuitBreaker(sayHi) }
+      val e1 = intercept[CircuitBreakerOpenException](breaker().withSyncCircuitBreaker(sayHi))
       val shortRemainingDuration = e1.remainingDuration
 
       Thread.sleep(1000.millis.dilated.toMillis)
@@ -494,7 +494,7 @@ class CircuitBreakerSpec extends PekkoSpec("""
       breaker().withCircuitBreaker(Future(throwException))
       checkLatch(breaker.openLatch)
 
-      val e2 = intercept[CircuitBreakerOpenException] { breaker().withSyncCircuitBreaker(sayHi) }
+      val e2 = intercept[CircuitBreakerOpenException](breaker().withSyncCircuitBreaker(sayHi))
       val longRemainingDuration = e2.remainingDuration
 
       shortRemainingDuration should be < longRemainingDuration
@@ -503,7 +503,7 @@ class CircuitBreakerSpec extends PekkoSpec("""
     "invoke onHalfOpen during transition to half-open state" taggedAs TimingTest in {
       val breaker = shortResetTimeoutCb()
 
-      intercept[TestException] { Await.result(breaker().withCircuitBreaker(Future(throwException)), awaitTimeout) }
+      intercept[TestException](Await.result(breaker().withCircuitBreaker(Future(throwException)), awaitTimeout))
       checkLatch(breaker.halfOpenLatch)
     }
 
@@ -553,14 +553,14 @@ class CircuitBreakerSpec extends PekkoSpec("""
       breaker().withCircuitBreaker(Future(throwException))
       checkLatch(breaker.halfOpenLatch)
       breaker.openLatch.reset()
-      intercept[TestException] { Await.result(breaker().withCircuitBreaker(Future(throwException)), awaitTimeout) }
+      intercept[TestException](Await.result(breaker().withCircuitBreaker(Future(throwException)), awaitTimeout))
       checkLatch(breaker.openLatch)
     }
 
     "re-open on even number" when {
       "even number is defined as failure" taggedAs TimingTest in {
         val breaker = shortResetTimeoutCb()
-        intercept[TestException] { breaker().withSyncCircuitBreaker(throwException) }
+        intercept[TestException](breaker().withSyncCircuitBreaker(throwException))
         checkLatch(breaker.halfOpenLatch)
         breaker.openLatch.reset()
         Await.result(breaker().withCircuitBreaker(Future(2), evenNumberIsFailure), awaitTimeout)
@@ -653,7 +653,7 @@ class CircuitBreakerSpec extends PekkoSpec("""
 
     "increment failure count on exception" taggedAs TimingTest in {
       val breaker = longCallTimeoutCb()
-      intercept[TestException] { Await.result(breaker().withCircuitBreaker(Future(throwException)), awaitTimeout) }
+      intercept[TestException](Await.result(breaker().withCircuitBreaker(Future(throwException)), awaitTimeout))
       checkLatch(breaker.openLatch)
       breaker().currentFailureCount should ===(1)
     }
@@ -772,13 +772,13 @@ class CircuitBreakerSpec extends PekkoSpec("""
 
     "be closed after throw allowable exception" taggedAs TimingTest in {
       breaker.resetAll()
-      intercept[AllowException] { Await.result(cb.withCircuitBreaker(Future(throwAllowException)), awaitTimeout) }
+      intercept[AllowException](Await.result(cb.withCircuitBreaker(Future(throwAllowException)), awaitTimeout))
       checkLatch(breaker.callSuccessLatch)
     }
 
     "be open after throw exception and half-open after reset timeout" taggedAs TimingTest in {
       breaker.resetAll()
-      intercept[TestException] { Await.result(cb.withCircuitBreaker(Future(throwException)), awaitTimeout) }
+      intercept[TestException](Await.result(cb.withCircuitBreaker(Future(throwException)), awaitTimeout))
       checkLatch(breaker.openLatch)
       Thread.sleep(250.millis.dilated(system).toMillis)
       checkLatch(breaker.halfOpenLatch)

@@ -147,9 +147,8 @@ trait AtLeastOnceDelivery extends PersistentActor with AtLeastOnceDeliveryLike {
    * This method will throw [[AtLeastOnceDelivery.MaxUnconfirmedMessagesExceededException]]
    * if [[#numberOfUnconfirmed]] is greater than or equal to [[#maxUnconfirmedMessages]].
    */
-  def deliver(destination: ActorPath)(deliveryIdToMessage: Long => Any): Unit = {
+  def deliver(destination: ActorPath)(deliveryIdToMessage: Long => Any): Unit =
     internalDeliver(destination)(deliveryIdToMessage)
-  }
 
   /**
    * Scala API: Send the message created by the `deliveryIdToMessage` function to
@@ -171,9 +170,8 @@ trait AtLeastOnceDelivery extends PersistentActor with AtLeastOnceDeliveryLike {
    * This method will throw [[AtLeastOnceDelivery.MaxUnconfirmedMessagesExceededException]]
    * if [[#numberOfUnconfirmed]] is greater than or equal to [[#maxUnconfirmedMessages]].
    */
-  def deliver(destination: ActorSelection)(deliveryIdToMessage: Long => Any): Unit = {
+  def deliver(destination: ActorSelection)(deliveryIdToMessage: Long => Any): Unit =
     internalDeliver(destination)(deliveryIdToMessage)
-  }
 
 }
 
@@ -248,13 +246,12 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
   private var deliverySequenceNr = 0L
   private var unconfirmed = immutable.SortedMap.empty[Long, Delivery]
 
-  private def startRedeliverTask(): Unit = {
+  private def startRedeliverTask(): Unit =
     if (redeliverTask.isEmpty) {
       val interval = redeliverInterval / 2
       redeliverTask = Some(
         context.system.scheduler.scheduleWithFixedDelay(interval, interval, self, RedeliveryTick)(context.dispatcher))
     }
-  }
 
   private def cancelRedeliveryTask(): Unit = {
     redeliverTask.foreach(_.cancel())
@@ -307,14 +304,13 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
    * @see [[#deliver]]
    * @return `true` the first time the `deliveryId` is confirmed, i.e. `false` for duplicate confirm
    */
-  def confirmDelivery(deliveryId: Long): Boolean = {
+  def confirmDelivery(deliveryId: Long): Boolean =
     if (unconfirmed.contains(deliveryId)) {
       unconfirmed -= deliveryId
       if (unconfirmed.isEmpty)
         cancelRedeliveryTask()
       true
     } else false
-  }
 
   /**
    * Number of messages that have not been confirmed yet.

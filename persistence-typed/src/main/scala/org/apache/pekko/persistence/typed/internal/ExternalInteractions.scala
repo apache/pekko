@@ -94,7 +94,7 @@ private[pekko] trait JournalInteractions[C, E, S] {
       ctx: ActorContext[_],
       cmd: Any,
       state: Running.RunningState[S],
-      events: immutable.Seq[EventToPersist]): Running.RunningState[S] = {
+      events: immutable.Seq[EventToPersist]): Running.RunningState[S] =
     if (events.nonEmpty) {
       var newState = state
 
@@ -123,7 +123,6 @@ private[pekko] trait JournalInteractions[C, E, S] {
 
       newState
     } else state
-  }
 
   @InternalStableApi
   private[pekko] def onWritesInitiated(
@@ -138,9 +137,8 @@ private[pekko] trait JournalInteractions[C, E, S] {
       setup.selfClassic)
   }
 
-  protected def requestRecoveryPermit(): Unit = {
+  protected def requestRecoveryPermit(): Unit =
     setup.persistence.recoveryPermitter.tell(RecoveryPermitter.RequestRecoveryPermit, setup.selfClassic)
-  }
 
   /** Intended to be used in .onSignal(returnPermitOnStop) by behaviors */
   protected def returnPermitOnStop
@@ -154,13 +152,12 @@ private[pekko] trait JournalInteractions[C, E, S] {
   }
 
   /** Mutates setup, by setting the `holdingRecoveryPermit` to false */
-  protected def tryReturnRecoveryPermit(reason: String): Unit = {
+  protected def tryReturnRecoveryPermit(reason: String): Unit =
     if (setup.holdingRecoveryPermit) {
       setup.internalLogger.debug("Returning recovery permit, reason: {}", reason)
       setup.persistence.recoveryPermitter.tell(RecoveryPermitter.ReturnRecoveryPermit, setup.selfClassic)
       setup.holdingRecoveryPermit = false
     } // else, no need to return the permit
-  }
 
   /**
    * On [[pekko.persistence.SaveSnapshotSuccess]], if `SnapshotCountRetentionCriteria.deleteEventsOnSnapshot`
@@ -198,9 +195,8 @@ private[pekko] trait SnapshotInteractions[C, E, S] {
    * Instructs the snapshot store to load the specified snapshot and send it via an [[SnapshotOffer]]
    * to the running [[PersistentActor]].
    */
-  protected def loadSnapshot(criteria: SnapshotSelectionCriteria, toSequenceNr: Long): Unit = {
+  protected def loadSnapshot(criteria: SnapshotSelectionCriteria, toSequenceNr: Long): Unit =
     setup.snapshotStore.tell(LoadSnapshot(setup.persistenceId.id, criteria, toSequenceNr), setup.selfClassic)
-  }
 
   protected def internalSaveSnapshot(state: Running.RunningState[S]): Unit = {
     setup.internalLogger.debug("Saving snapshot sequenceNr [{}]", state.seqNr)
@@ -222,12 +218,11 @@ private[pekko] trait SnapshotInteractions[C, E, S] {
   }
 
   /** Deletes the snapshots up to and including the `sequenceNr`. */
-  protected def internalDeleteSnapshots(fromSequenceNr: Long, toSequenceNr: Long): Unit = {
+  protected def internalDeleteSnapshots(fromSequenceNr: Long, toSequenceNr: Long): Unit =
     if (toSequenceNr > 0) {
       val snapshotCriteria = SnapshotSelectionCriteria(minSequenceNr = fromSequenceNr, maxSequenceNr = toSequenceNr)
       setup.internalLogger.debug2("Deleting snapshots from sequenceNr [{}] to [{}]", fromSequenceNr, toSequenceNr)
       setup.snapshotStore
         .tell(SnapshotProtocol.DeleteSnapshots(setup.persistenceId.id, snapshotCriteria), setup.selfClassic)
     }
-  }
 }

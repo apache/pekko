@@ -155,9 +155,8 @@ object TestPublisher {
      * JAVA API
      * @since 1.1.0
      */
-    def executeAfterSubscription[T](f: function.Creator[T]): T = {
+    def executeAfterSubscription[T](f: function.Creator[T]): T =
       executeAfterSubscription(f.create())
-    }
 
     /**
      * Expect a subscription.
@@ -490,9 +489,8 @@ object TestSubscriber {
     /**
      * Expect and return a stream element.
      */
-    def expectNext(): I = {
+    def expectNext(): I =
       expectNext(probe.testKitSettings.SingleExpectDefaultTimeout.dilated)
-    }
 
     /**
      * Expect and return a stream element during specified time or timeout.
@@ -655,9 +653,8 @@ object TestSubscriber {
      *
      * See also [[#expectSubscriptionAndError(signalDemand:Boolean)* #expectSubscriptionAndError(signalDemand: Boolean)]] if no demand should be signalled.
      */
-    def expectSubscriptionAndError(): Throwable = {
+    def expectSubscriptionAndError(): Throwable =
       expectSubscriptionAndError(true)
-    }
 
     /**
      * Expect subscription to be followed immediately by an error signal.
@@ -733,7 +730,7 @@ object TestSubscriber {
      *
      * Expect given next element or error signal, returning whichever was signalled.
      */
-    def expectNextOrError(): Either[Throwable, I] = {
+    def expectNextOrError(): Either[Throwable, I] =
       probe.fishForMessage(hint = s"OnNext(_) or error") {
         case OnNext(_)  => true
         case OnError(_) => true
@@ -742,13 +739,12 @@ object TestSubscriber {
         case OnError(err)            => Left(err)
         case _                       => throw new RuntimeException() // compiler exhaustiveness check pleaser
       }
-    }
 
     /**
      * Fluent DSL
      * Expect given next element or error signal.
      */
-    def expectNextOrError(element: I, cause: Throwable): Either[Throwable, I] = {
+    def expectNextOrError(element: I, cause: Throwable): Either[Throwable, I] =
       probe.fishForMessage(hint = s"OnNext($element) or ${cause.getClass.getName}") {
         case OnNext(`element`) => true
         case OnError(`cause`)  => true
@@ -757,12 +753,11 @@ object TestSubscriber {
         case OnError(err)            => Left(err)
         case _                       => throw new RuntimeException() // compiler exhaustiveness check pleaser
       }
-    }
 
     /**
      * Expect next element or stream completion - returning whichever was signalled.
      */
-    def expectNextOrComplete(): Either[OnComplete.type, I] = {
+    def expectNextOrComplete(): Either[OnComplete.type, I] =
       probe.fishForMessage(hint = s"OnNext(_) or OnComplete") {
         case OnNext(_)  => true
         case OnComplete => true
@@ -771,7 +766,6 @@ object TestSubscriber {
         case OnNext(n: I @unchecked) => Right(n)
         case _                       => throw new RuntimeException() // compiler exhaustiveness check pleaser
       }
-    }
 
     /**
      * Fluent DSL

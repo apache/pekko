@@ -53,9 +53,8 @@ import pekko.stream.scaladsl.Sink
 
     override def hasNoEvents: Boolean = events.isEmpty
 
-    override def event: Event = {
+    override def event: Event =
       if (events.nonEmpty) events.head else throw new AssertionError("No events")
-    }
 
     override def eventOfType[E <: Event: ClassTag]: E =
       ofType(event, "event")
@@ -69,7 +68,7 @@ import pekko.stream.scaladsl.Sink
       ofType(reply, "reply")
 
     // cast with nice error message
-    private def ofType[A: ClassTag](obj: Any, errorParam: String): A = {
+    private def ofType[A: ClassTag](obj: Any, errorParam: String): A =
       obj match {
         case a: A => a
         case other =>
@@ -78,7 +77,6 @@ import pekko.stream.scaladsl.Sink
             s"Expected $errorParam class [${expectedClass.getName}], " +
             s"but was [${other.getClass.getName}]")
       }
-    }
 
     override def hasNoReply: Boolean = replyOption.isEmpty
   }
@@ -124,9 +122,9 @@ import pekko.stream.scaladsl.Sink
   private def internalActor = actor.unsafeUpcast[Any]
   private val persistenceId: PersistenceId = {
     internalActor ! EventSourcedBehaviorImpl.GetPersistenceId(probe.ref)
-    try {
+    try
       probe.expectMessageType[PersistenceId]
-    } catch {
+    catch {
       case NonFatal(_) =>
         throw new IllegalArgumentException("Only EventSourcedBehavior, or nested EventSourcedBehavior allowed.")
     }
@@ -158,14 +156,13 @@ import pekko.stream.scaladsl.Sink
     actor ! command
 
     val reply =
-      try {
+      try
         replyProbe.receiveMessage()
-      } catch {
+      catch {
         case NonFatal(_) =>
           throw new AssertionError(s"Missing expected reply for command [$command].")
-      } finally {
+      } finally
         replyProbe.stop()
-      }
 
     val newState = getState()
     val newEvents = getEvents(seqNrBefore + 1)
@@ -199,7 +196,7 @@ import pekko.stream.scaladsl.Sink
     stateProbe.receiveMessage().currentState
   }
 
-  private def preCommandCheck(command: Command): Unit = {
+  private def preCommandCheck(command: Command): Unit =
     if (serializationSettings.enabled) {
       if (serializationSettings.verifyCommands)
         verifySerializationAndThrow(command, "Command")
@@ -210,9 +207,8 @@ import pekko.stream.scaladsl.Sink
         emptyStateVerified = true
       }
     }
-  }
 
-  private def postCommandCheck(newEvents: immutable.Seq[Event], newState: State, reply: Option[Any]): Unit = {
+  private def postCommandCheck(newEvents: immutable.Seq[Event], newState: State, reply: Option[Any]): Unit =
     if (serializationSettings.enabled) {
       if (serializationSettings.verifyEvents) {
         newEvents.foreach(verifySerializationAndThrow(_, "Event"))
@@ -225,7 +221,6 @@ import pekko.stream.scaladsl.Sink
         reply.foreach(verifySerializationAndThrow(_, "Reply"))
       }
     }
-  }
 
   override def restart(): RestartResult[State] = {
     actorTestKit.stop(actor)
@@ -246,14 +241,13 @@ import pekko.stream.scaladsl.Sink
     restart()
   }
 
-  private def verifySerializationAndThrow(obj: Any, errorMessagePrefix: String): Unit = {
-    try {
+  private def verifySerializationAndThrow(obj: Any, errorMessagePrefix: String): Unit =
+    try
       serializationTestKit.verifySerialization(obj, serializationSettings.verifyEquality)
-    } catch {
+    catch {
       case NonFatal(exc) =>
         throw new IllegalArgumentException(s"$errorMessagePrefix [$obj] isn't serializable.", exc)
     }
-  }
 
   override def initialize(state: State, events: Event*): Unit = internalInitialize(Some(state), events: _*)
 

@@ -31,9 +31,8 @@ object MaterializationBenchmark {
 
   val flowWithMapBuilder = (numOfOperators: Int) => {
     var source = Source.single(())
-    for (_ <- 1 to numOfOperators) {
+    for (_ <- 1 to numOfOperators)
       source = source.map(identity)
-    }
     source.to(Sink.ignore)
   }
 
@@ -61,9 +60,8 @@ object MaterializationBenchmark {
 
       val broadcast = b.add(Broadcast[Unit](numOfJunctions))
       val merge = b.add(Merge[Unit](numOfJunctions))
-      for (_ <- 0 until numOfJunctions) {
+      for (_ <- 0 until numOfJunctions)
         broadcast ~> merge
-      }
 
       Source.single(()) ~> broadcast
       merge             ~> Sink.ignore
@@ -90,9 +88,8 @@ object MaterializationBenchmark {
 
     val subFlow = {
       var flow = Flow[Unit]
-      for (_ <- 1 to numOfOperators) {
+      for (_ <- 1 to numOfOperators)
         flow = flow.map(identity)
-      }
       flow
     }
 
@@ -128,9 +125,8 @@ class MaterializationBenchmark {
   }
 
   @TearDown
-  def shutdown(): Unit = {
+  def shutdown(): Unit =
     Await.result(system.terminate(), 5.seconds)
-  }
 
   @Benchmark
   def flow_with_map(): NotUsed = flowWithMap.run()

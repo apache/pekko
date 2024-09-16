@@ -55,9 +55,8 @@ class TestKitUsageSpec
   val seqRef =
     system.actorOf(Props(classOf[SequencingActor], testActor, headList, tailList))
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     shutdown()
-  }
 
   "An EchoActor" should {
     "Respond with the same message it receives" in {
@@ -150,11 +149,10 @@ object TestKitUsageSpec {
    */
   class SequencingActor(next: ActorRef, head: immutable.Seq[String], tail: immutable.Seq[String]) extends Actor {
     def receive = {
-      case msg => {
-        head.foreach { next ! _ }
+      case msg =>
+        head.foreach(next ! _)
         next ! msg
-        tail.foreach { next ! _ }
-      }
+        tail.foreach(next ! _)
     }
   }
 }

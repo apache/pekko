@@ -82,19 +82,19 @@ class FlowReduceSpec extends StreamSpec {
 
     "fail on empty stream using Source.runReduce" in {
       val result = Source.empty[Int].runReduce(_ + _)
-      val ex = intercept[NoSuchElementException] { Await.result(result, 3.seconds) }
+      val ex = intercept[NoSuchElementException](Await.result(result, 3.seconds))
       ex.getMessage should include("empty stream")
     }
 
     "fail on empty stream using Flow.reduce" in {
       val result = Source.empty[Int].via(reduceFlow).runWith(Sink.fold(0)(_ + _))
-      val ex = intercept[NoSuchElementException] { Await.result(result, 3.seconds) }
+      val ex = intercept[NoSuchElementException](Await.result(result, 3.seconds))
       ex.getMessage should include("empty stream")
     }
 
     "fail on empty stream using Sink.reduce" in {
       val result = Source.empty[Int].runWith(reduceSink)
-      val ex = intercept[NoSuchElementException] { Await.result(result, 3.seconds) }
+      val ex = intercept[NoSuchElementException](Await.result(result, 3.seconds))
       ex.getMessage should include("empty stream")
     }
 

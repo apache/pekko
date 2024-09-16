@@ -47,7 +47,7 @@ class PingSerializer(system: ExtendedActorSystem) extends SerializerWithStringMa
       throw new IllegalArgumentException(s"Can't serialize object of type ${msg.getClass} in [${getClass.getName}]")
   }
 
-  override def fromBinary(bytes: Array[Byte], manifest: String) = {
+  override def fromBinary(bytes: Array[Byte], manifest: String) =
     manifest match {
       case PingManifest =>
         val str = new String(bytes, StandardCharsets.UTF_8)
@@ -58,6 +58,5 @@ class PingSerializer(system: ExtendedActorSystem) extends SerializerWithStringMa
       case _ =>
         throw new IllegalArgumentException(s"Unknown manifest [$manifest]")
     }
-  }
 }
 //#serializer

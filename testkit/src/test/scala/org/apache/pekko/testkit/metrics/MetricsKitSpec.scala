@@ -30,9 +30,8 @@ class MetricsKitSpec extends AnyWordSpec with Matchers with BeforeAndAfter with 
     clearMetrics()
   }
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     shutdownMetrics()
-  }
 
   "MetricsKit" must {
 

@@ -105,7 +105,7 @@ class RoutingSpec extends PekkoSpec(RoutingSpec.config) with DefaultTimeout with
       router ! GetRoutees
       val routees = expectMsgType[Routees].routees
       routees.size should ===(2)
-      routees.foreach { _.send(PoisonPill, testActor) }
+      routees.foreach(_.send(PoisonPill, testActor))
       // expect no Terminated
       expectNoMessage(2.seconds)
     }
@@ -250,11 +250,10 @@ class RoutingSpec extends PekkoSpec(RoutingSpec.config) with DefaultTimeout with
         ConfigFactory
           .parseString("pekko.actor.deployment./routed.router=round-robin-pool")
           .withFallback(system.settings.config))
-      try {
+      try
         sys.actorOf(FromConfig.props(routeeProps = Props[TestActor]()), "routed")
-      } finally {
+      finally
         shutdown(sys)
-      }
     }
 
   }

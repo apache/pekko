@@ -153,10 +153,10 @@ object PersistentActorCompileOnlyTest {
         case (_, MoodChanged(to)) => to
       })
 
-    Behaviors.withTimers((timers: TimerScheduler[Command]) => {
+    Behaviors.withTimers { (timers: TimerScheduler[Command]) =>
       timers.startTimerWithFixedDelay(MoodSwing, 10.seconds)
       b
-    })
+    }
   }
 
   object ExplicitSnapshots {

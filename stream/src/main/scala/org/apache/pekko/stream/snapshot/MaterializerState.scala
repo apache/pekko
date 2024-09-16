@@ -42,25 +42,23 @@ object MaterializerState {
    * Dump stream snapshots of all streams of the default system materializer.
    */
   @ApiMayChange
-  def streamSnapshots(system: ActorSystem): Future[immutable.Seq[StreamSnapshot]] = {
+  def streamSnapshots(system: ActorSystem): Future[immutable.Seq[StreamSnapshot]] =
     SystemMaterializer(system).materializer match {
       case impl: PhasedFusingActorMaterializer =>
         requestFromSupervisor(impl.supervisor)(impl.system.dispatchers.internalDispatcher)
       case other => throw new IllegalArgumentException(s"Unsupported Materializer type ${other.getClass}")
     }
-  }
 
   /**
    * Dump stream snapshots of all streams of the given materializer.
    */
   @ApiMayChange
-  def streamSnapshots(mat: Materializer): Future[immutable.Seq[StreamSnapshot]] = {
+  def streamSnapshots(mat: Materializer): Future[immutable.Seq[StreamSnapshot]] =
     mat match {
       case impl: PhasedFusingActorMaterializer =>
         requestFromSupervisor(impl.supervisor)(impl.system.dispatchers.internalDispatcher)
       case other => throw new IllegalArgumentException(s"Unsupported Materializer type ${other.getClass}")
     }
-  }
 
   /** INTERNAL API */
   @InternalApi

@@ -106,12 +106,11 @@ private[remote] final class InboundCompressionsImpl(
     actorRefsIn(originUid).increment(address, ref, n)
   }
 
-  override def confirmActorRefCompressionAdvertisement(originUid: Long, tableVersion: Byte): Unit = {
+  override def confirmActorRefCompressionAdvertisement(originUid: Long, tableVersion: Byte): Unit =
     _actorRefsIns.get(originUid) match {
       case null => // ignore
       case a    => a.confirmAdvertisement(tableVersion, gaveUp = false)
     }
-  }
 
   /** Send compression table advertisement over control stream. Should be called from Decoder. */
   override def runNextActorRefAdvertisement(): Unit = {
@@ -138,12 +137,11 @@ private[remote] final class InboundCompressionsImpl(
     if (ArterySettings.Compression.Debug) println(s"[compress] hitClassManifest($originUid, $address, $manifest, $n)")
     classManifestsIn(originUid).increment(address, manifest, n)
   }
-  override def confirmClassManifestCompressionAdvertisement(originUid: Long, tableVersion: Byte): Unit = {
+  override def confirmClassManifestCompressionAdvertisement(originUid: Long, tableVersion: Byte): Unit =
     _classManifestsIns.get(originUid) match {
       case null => // ignore
       case a    => a.confirmAdvertisement(tableVersion, gaveUp = false)
     }
-  }
 
   /** Send compression table advertisement over control stream. Should be called from Decoder. */
   override def runNextClassManifestAdvertisement(): Unit = {
@@ -192,10 +190,9 @@ private[remote] final class InboundActorRefCompression(
     heavyHitters: TopHeavyHitters[ActorRef])
     extends InboundCompression[ActorRef](log, settings, originUid, inboundContext, heavyHitters) {
 
-  override def increment(remoteAddress: Address, value: ActorRef, n: Long): Unit = {
+  override def increment(remoteAddress: Address, value: ActorRef, n: Long): Unit =
     // don't count PromiseActorRefs as they are used only once and becomes a sort of memory leak
     if (!InternalActorRef.isTemporaryRef(value)) super.increment(remoteAddress, value, n)
-  }
 
   override def decompress(tableVersion: Byte, idx: Int): OptionVal[ActorRef] =
     super.decompressInternal(tableVersion, idx, 0)
@@ -286,20 +283,19 @@ private[remote] object InboundCompression {
       advertisementInProgress: Option[CompressionTable[T]],
       keepOldTables: Int) {
 
-    def selectTable(version: Int): OptionVal[DecompressionTable[T]] = {
+    def selectTable(version: Int): OptionVal[DecompressionTable[T]] =
       if (activeTable.version == version) {
         if (ArterySettings.Compression.Debug)
           println(s"[compress] Found table [version: $version], was [ACTIVE]$activeTable")
         OptionVal.Some(activeTable)
       } else {
-        @tailrec def find(tables: List[DecompressionTable[T]]): OptionVal[DecompressionTable[T]] = {
+        @tailrec def find(tables: List[DecompressionTable[T]]): OptionVal[DecompressionTable[T]] =
           tables match {
             case Nil => OptionVal.None
             case t :: tail =>
               if (t.version == version) OptionVal.Some(t)
               else find(tail)
           }
-        }
         val found = find(oldTables)
 
         if (ArterySettings.Compression.Debug) {
@@ -314,7 +310,6 @@ private[remote] object InboundCompression {
         }
         found
       }
-    }
 
     def startUsingNextTable(): Tables[T] = {
       def incrementTableVersion(version: Byte): Byte =
@@ -415,7 +410,7 @@ private[remote] abstract class InboundCompression[T >: Null](
     }
   }
 
-  final def confirmAdvertisement(tableVersion: Byte, gaveUp: Boolean): Unit = {
+  final def confirmAdvertisement(tableVersion: Byte, gaveUp: Boolean): Unit =
     tables.advertisementInProgress match {
       case Some(inProgress) if tableVersion == inProgress.version =>
         tables = tables.startUsingNextTable()
@@ -435,8 +430,6 @@ private[remote] abstract class InboundCompression[T >: Null](
       // already confirmed
     }
 
-  }
-
   /**
    * Add `n` occurrence for the given key and call `heavyHittedDetected` if element has become a heavy hitter.
    * Empty keys are omitted.
@@ -448,9 +441,8 @@ private[remote] abstract class InboundCompression[T >: Null](
   }
 
   /** Mutates heavy hitters */
-  private def addAndCheckIfheavyHitterDetected(value: T, count: Long): Boolean = {
+  private def addAndCheckIfheavyHitterDetected(value: T, count: Long): Boolean =
     heavyHitters.update(value, count)
-  }
 
   /* ==== TABLE ADVERTISEMENT ==== */
 

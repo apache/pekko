@@ -110,9 +110,8 @@ class ActorsLeakSpec extends PekkoSpec(ActorsLeakSpec.config) with ImplicitSende
           remoteSystem.actorSelection(echoPath).tell(Identify(1), probe.ref)
           probe.expectMsgType[ActorIdentity].ref.nonEmpty should be(true)
 
-        } finally {
+        } finally
           remoteSystem.terminate()
-        }
 
         Await.result(remoteSystem.whenTerminated, 10.seconds)
       }
@@ -153,9 +152,8 @@ class ActorsLeakSpec extends PekkoSpec(ActorsLeakSpec.config) with ImplicitSende
 
           assertResult(beforeQuarantineActors)(afterQuarantineActors)
 
-        } finally {
+        } finally
           remoteSystem.terminate()
-        }
 
         Await.result(remoteSystem.whenTerminated, 10.seconds)
 
@@ -182,9 +180,8 @@ class ActorsLeakSpec extends PekkoSpec(ActorsLeakSpec.config) with ImplicitSende
           // This will make sure that no SHUTDOWN message gets through
           Await.result(RARP(system).provider.transport.managementCommand(ForceDisassociate(remoteAddress)), 3.seconds)
 
-        } finally {
+        } finally
           remoteSystem.terminate()
-        }
 
         EventFilter
           .warning(start = s"Association with remote system [$remoteAddress] has failed", occurrences = 1)
@@ -217,9 +214,8 @@ class ActorsLeakSpec extends PekkoSpec(ActorsLeakSpec.config) with ImplicitSende
         // This will make sure that no SHUTDOWN message gets through
         Await.result(RARP(system).provider.transport.managementCommand(ForceDisassociate(remoteAddress)), 3.seconds)
 
-      } finally {
+      } finally
         remoteSystem.terminate()
-      }
 
       Await.result(remoteSystem.whenTerminated, 10.seconds)
       awaitAssert(assertResult(initialActors)(targets.flatMap(collectLiveActors).toSet), 10.seconds)

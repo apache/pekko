@@ -226,9 +226,8 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
   def mapAsyncPartitioned[Out2, P](
       parallelism: Int,
       partitioner: function.Function[Out, P],
-      f: function.Function2[Out, P, CompletionStage[Out2]]): FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] = {
+      f: function.Function2[Out, P, CompletionStage[Out2]]): FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] =
     viaScala(_.mapAsyncPartitioned(parallelism)(partitioner(_))(f(_, _).asScala))
-  }
 
   /**
    * Context-preserving variant of [[pekko.stream.javadsl.Flow.mapAsyncPartitionedUnordered]].
@@ -239,9 +238,8 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
   def mapAsyncPartitionedUnordered[Out2, P](
       parallelism: Int,
       partitioner: function.Function[Out, P],
-      f: function.Function2[Out, P, CompletionStage[Out2]]): FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] = {
+      f: function.Function2[Out, P, CompletionStage[Out2]]): FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] =
     viaScala(_.mapAsyncPartitionedUnordered(parallelism)(partitioner(_))(f(_, _).asScala))
-  }
 
   /**
    * Context-preserving variant of [[pekko.stream.javadsl.Flow.mapConcat]].
@@ -279,9 +277,8 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    * Apply the given function to each context element (leaving the data elements unchanged).
    */
   def mapContext[CtxOut2](
-      extractContext: function.Function[CtxOut, CtxOut2]): FlowWithContext[In, CtxIn, Out, CtxOut2, Mat] = {
+      extractContext: function.Function[CtxOut, CtxOut2]): FlowWithContext[In, CtxIn, Out, CtxOut2, Mat] =
     viaScala(_.mapContext(extractContext.apply))
-  }
 
   /**
    * Context-preserving variant of [[pekko.stream.javadsl.Flow.sliding]].

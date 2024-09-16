@@ -56,11 +56,10 @@ private[pekko] final case class GroupRouterBuilder[T] private[pekko] (
       mapping: function.Function[T, String]): GroupRouterBuilder[T] =
     withConsistentHashingRouting(virtualNodesFactor, mapping.apply(_))
 
-  def withConsistentHashingRouting(virtualNodesFactor: Int, mapping: T => String): GroupRouterBuilder[T] = {
+  def withConsistentHashingRouting(virtualNodesFactor: Int, mapping: T => String): GroupRouterBuilder[T] =
     copy(
       preferLocalRoutees = false,
       logicFactory = system => new RoutingLogics.ConsistentHashingLogic[T](virtualNodesFactor, mapping, system.address))
-  }
 }
 
 /**
@@ -109,12 +108,11 @@ private final class InitialGroupRouterImpl[T](
  */
 @InternalApi
 private[routing] object GroupRouterHelper {
-  def routeesToUpdate[T](allRoutees: Set[ActorRef[T]], preferLocalRoutees: Boolean): Set[ActorRef[T]] = {
+  def routeesToUpdate[T](allRoutees: Set[ActorRef[T]], preferLocalRoutees: Boolean): Set[ActorRef[T]] =
     if (preferLocalRoutees) {
       val localRoutees = allRoutees.filter(_.path.address.hasLocalScope)
       if (localRoutees.nonEmpty) localRoutees else allRoutees
     } else allRoutees
-  }
 }
 
 /**

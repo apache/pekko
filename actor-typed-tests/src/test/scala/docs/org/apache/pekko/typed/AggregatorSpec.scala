@@ -42,8 +42,7 @@ object AggregatorSpec {
       final case class Quote(hotel: String, price: BigDecimal)
       final case class AggregatedQuotes(quotes: List[Quote]) extends Command
 
-      def apply(hotel1: ActorRef[Hotel1.RequestQuote], hotel2: ActorRef[Hotel2.RequestPrice]): Behavior[Command] = {
-
+      def apply(hotel1: ActorRef[Hotel1.RequestQuote], hotel2: ActorRef[Hotel2.RequestPrice]): Behavior[Command] =
         Behaviors.setup[Command] { context =>
           context.spawnAnonymous(
             Aggregator[Reply, AggregatedQuotes](
@@ -73,7 +72,6 @@ object AggregatorSpec {
               Behaviors.same
           }
         }
-      }
     }
     // #usage
   }

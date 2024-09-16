@@ -107,7 +107,7 @@ private[pekko] final class EventSourcedRememberEntitiesShardStore(
         (if (stopped.nonEmpty) EntitiesStopped(stopped) :: Nil else Nil)
       var left = events.size
       var saveSnap = false
-      def persistEventsAndHandleComplete(evts: List[StateChange]): Unit = {
+      def persistEventsAndHandleComplete(evts: List[StateChange]): Unit =
         persistAll(evts) { _ =>
           left -= 1
           saveSnap = saveSnap || isSnapshotNeeded
@@ -119,7 +119,6 @@ private[pekko] final class EventSourcedRememberEntitiesShardStore(
             }
           }
         }
-      }
       if (left <= maxUpdatesPerWrite) {
         // optimized when batches are small
         persistEventsAndHandleComplete(events)
@@ -166,18 +165,16 @@ private[pekko] final class EventSourcedRememberEntitiesShardStore(
     log.debug("Store stopping")
   }
 
-  def saveSnapshotWhenNeeded(): Unit = {
+  def saveSnapshotWhenNeeded(): Unit =
     if (isSnapshotNeeded) {
       saveSnapshot()
     }
-  }
 
   private def saveSnapshot(): Unit = {
     log.debug("Saving snapshot, sequence number [{}]", snapshotSequenceNr)
     saveSnapshot(state)
   }
 
-  private def isSnapshotNeeded = {
+  private def isSnapshotNeeded =
     lastSequenceNr % snapshotAfter == 0 && lastSequenceNr != 0
-  }
 }

@@ -23,9 +23,8 @@ object Jvm {
       jvmOptions: Seq[String],
       runOptions: Seq[String],
       logger: Logger,
-      connectInput: Boolean) = {
+      connectInput: Boolean) =
     forkJava(javaBin, jvmOptions ++ runOptions, logger, connectInput)
-  }
 
   def forkJava(javaBin: File, options: Seq[String], logger: Logger, connectInput: Boolean) = {
     val java = javaBin.toString
@@ -38,9 +37,9 @@ object Jvm {
    * check if the current operating system is some OS
    */
   def isOS(os: String) =
-    try {
+    try
       System.getProperty("os.name").toUpperCase.startsWith(os.toUpperCase)
-    } catch {
+    catch {
       case _: Throwable => false
     }
 
@@ -119,7 +118,7 @@ class JvmBasicLogger(name: String) extends BasicLogger {
   def success(message: => String) = log(Level.Info, message)
   def control(event: ControlEvent.Value, message: => String) = log(Level.Info, message)
 
-  def logAll(events: Seq[LogEvent]) = System.out.synchronized { events.foreach(log) }
+  def logAll(events: Seq[LogEvent]) = System.out.synchronized(events.foreach(log))
 }
 
 final class JvmLogger(name: String) extends JvmBasicLogger(name)

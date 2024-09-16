@@ -157,13 +157,14 @@ class SinkSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
     "combine two sinks with combineMat" in {
       implicit val ex = org.apache.pekko.dispatch.ExecutionContexts.parasitic
       Source(List(0, 1, 2, 3, 4, 5))
-        .toMat(Sink.combineMat(Sink.reduce[Int]((a, b) => a + b), Sink.reduce[Int]((a, b) => a + b))(Broadcast[Int](_))(
-          (f1, f2) => {
+        .toMat(Sink.combineMat(Sink.reduce[Int]((a, b) => a + b), Sink.reduce[Int]((a, b) => a + b))(
+          Broadcast[Int](_)) {
+          (f1, f2) =>
             for {
               r1 <- f1
               r2 <- f2
             } yield r1 + r2
-          }))(Keep.right)
+        })(Keep.right)
         .run()
         .futureValue should be(30)
     }
@@ -367,12 +368,12 @@ class SinkSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
     }
 
     "completes with `true` with restart strategy" in {
-      val sink = Sink.forall[Int](elem => {
+      val sink = Sink.forall[Int] { elem =>
         if (elem == 2) {
           throw new RuntimeException("Oops")
         }
         elem > 0
-      }).withAttributes(supervisionStrategy(Supervision.restartingDecider))
+      }.withAttributes(supervisionStrategy(Supervision.restartingDecider))
 
       Source(1 to 2)
         .runWith(sink)
@@ -408,12 +409,12 @@ class SinkSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
     }
 
     "completes with `exists` with restart strategy" in {
-      val sink = Sink.exists[Int](elem => {
+      val sink = Sink.exists[Int] { elem =>
         if (elem == 2) {
           throw new RuntimeException("Oops")
         }
         elem > 1
-      }).withAttributes(supervisionStrategy(Supervision.restartingDecider))
+      }.withAttributes(supervisionStrategy(Supervision.restartingDecider))
 
       Source(1 to 2)
         .runWith(sink)

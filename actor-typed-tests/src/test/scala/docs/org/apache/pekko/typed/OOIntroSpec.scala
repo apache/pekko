@@ -61,7 +61,7 @@ object OOIntroSpec {
     class ChatRoomBehavior(context: ActorContext[RoomCommand]) extends AbstractBehavior[RoomCommand](context) {
       private var sessions: List[ActorRef[SessionCommand]] = List.empty
 
-      override def onMessage(message: RoomCommand): Behavior[RoomCommand] = {
+      override def onMessage(message: RoomCommand): Behavior[RoomCommand] =
         message match {
           case GetSession(screenName, client) =>
             // create a child actor for further interaction with the client
@@ -76,7 +76,6 @@ object OOIntroSpec {
             sessions.foreach(_ ! notification)
             this
         }
-      }
     }
 
     private object SessionBehavior {
@@ -147,9 +146,8 @@ object OOIntroSpec {
         }
       }
 
-    def main(args: Array[String]): Unit = {
+    def main(args: Array[String]): Unit =
       ActorSystem(Main(), "ChatRoomDemo")
-    }
 
   }
   // #chatroom-main

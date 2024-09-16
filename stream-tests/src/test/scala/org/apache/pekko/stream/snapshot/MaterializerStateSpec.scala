@@ -40,9 +40,8 @@ class MaterializerStateSpec extends PekkoSpec() {
             snapshot.head.activeInterpreters should have size 1
             snapshot.head.activeInterpreters.head.logics should have size 4 // all 4 operators
           }, remainingOrDefault)
-      } finally {
+      } finally
         mat.shutdown()
-      }
     }
 
     "snapshot a running stream on the default dispatcher" in {
@@ -90,9 +89,8 @@ class MaterializerStateSpec extends PekkoSpec() {
             snapshot.head.activeInterpreters.head.stoppedLogics should have size 2 // Source.single and a detach
           }, remainingOrDefault)
 
-      } finally {
+      } finally
         mat.shutdown()
-      }
     }
 
     "snapshot a more complicated graph" in {
@@ -134,9 +132,8 @@ class MaterializerStateSpec extends PekkoSpec() {
         Thread.sleep(100) // just to give it a bigger chance to cover different states of shutting down
         MaterializerState.streamSnapshots(mat).futureValue
 
-      } finally {
+      } finally
         mat.shutdown()
-      }
     }
 
   }

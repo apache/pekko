@@ -76,7 +76,7 @@ class DslFactoriesConsistencySpec extends AnyWordSpec with Matchers {
       (classOf[pekko.stream.scaladsl.Sink[_, _]],           classOf[pekko.stream.javadsl.Sink[_, _]]) ::
       (classOf[pekko.stream.scaladsl.Flow[_, _, _]],        classOf[pekko.stream.javadsl.Flow[_, _, _]]) ::
       (classOf[pekko.stream.scaladsl.RunnableGraph[_]],     classOf[pekko.stream.javadsl.RunnableGraph[_]]) ::
-      (2 to 22) .map { i => (Class.forName(s"scala.Function$i"), Class.forName(s"org.apache.pekko.japi.function.Function$i")) }.toList
+      (2 to 22) .map {i => (Class.forName(s"scala.Function$i"), Class.forName(s"org.apache.pekko.japi.function.Function$i"))}.toList
   // format: ON
 
   val sSource = classOf[scaladsl.Source[_, _]]
@@ -214,7 +214,7 @@ class DslFactoriesConsistencySpec extends AnyWordSpec with Matchers {
     for {
       row <- results.groupBy(_.s)
       matches = row._2.filter(_.matches)
-    } {
+    }
       if (matches.length == 0) {
         warnings += 1
         alert("No match for " + row._1)
@@ -237,7 +237,6 @@ class DslFactoriesConsistencySpec extends AnyWordSpec with Matchers {
           alert(s" > ${m.j.toString}")
         }
       }
-    }
 
     if (warnings > 0) {
       jMethods.foreach { m =>
@@ -264,7 +263,7 @@ class DslFactoriesConsistencySpec extends AnyWordSpec with Matchers {
   case class MatchFailure(s: Method, j: Method, reason: String = "") extends MatchResult { val matches = false }
   case class Match(s: Method, j: Method, reason: String = "") extends MatchResult { val matches = true }
 
-  def delegationCheck(s: Method, j: Method): MatchResult = {
+  def delegationCheck(s: Method, j: Method): MatchResult =
     if (nameMatch(s.name, j.name)) {
       if (s.parameterTypes.length == j.parameterTypes.length)
         if (typeMatch(s.parameterTypes, j.parameterTypes))
@@ -279,7 +278,6 @@ class DslFactoriesConsistencySpec extends AnyWordSpec with Matchers {
     } else {
       MatchFailure(s, j, "Names don't match!")
     }
-  }
 
   def nameMatch(scalaName: String, javaName: String): Boolean =
     (scalaName, javaName) match {

@@ -151,9 +151,8 @@ class LargeMessagesStreamSpec
     }
   }
 
-  def awaitResolve(selection: ActorSelection): ActorRef = {
+  def awaitResolve(selection: ActorSelection): ActorRef =
     awaitAssert {
       Await.result(selection.resolveOne(1.second), 1.seconds)
     }
-  }
 }

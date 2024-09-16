@@ -44,17 +44,15 @@ private[pekko] final case class AggregateWithBoundary[In, Agg, Out](
 
       private[this] var aggregated: Agg = null.asInstanceOf[Agg]
 
-      override def preStart(): Unit = {
+      override def preStart(): Unit =
         emitOnTimer.foreach {
           case (_, interval) => scheduleWithFixedDelay(s"${this.getClass.getSimpleName}Timer", interval, interval)
         }
-      }
 
-      override protected def onTimer(timerKey: Any): Unit = {
+      override protected def onTimer(timerKey: Any): Unit =
         emitOnTimer.foreach {
           case (isReadyOnTimer, _) => if (aggregated != null && isReadyOnTimer(aggregated)) harvestAndEmit()
         }
-      }
 
       // at onPush, isAvailable(in)=true hasBeenPulled(in)=false, isAvailable(out) could be true or false due to timer triggered emit
       override def onPush(): Unit = {

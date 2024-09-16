@@ -177,7 +177,7 @@ object SharedLeveldbJournal {
    *
    * For testing only.
    */
-  def configToEnableJavaSerializationForTest: Config = {
+  def configToEnableJavaSerializationForTest: Config =
     ConfigFactory.parseString(s"""
     pekko.actor.serialization-bindings {
       "org.apache.pekko.persistence.journal.AsyncWriteTarget$$WriteMessages" = java-test
@@ -190,5 +190,4 @@ object SharedLeveldbJournal {
       "scala.collection.immutable.Vector" = java-test
     }
     """)
-  }
 }

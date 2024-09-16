@@ -88,15 +88,14 @@ object EventSourcedBehaviorStashSpec {
 
   def eventSourcedCounter(
       persistenceId: PersistenceId,
-      signalProbe: Option[ActorRef[String]]): EventSourcedBehavior[Command[_], Event, State] = {
+      signalProbe: Option[ActorRef[String]]): EventSourcedBehavior[Command[_], Event, State] =
     EventSourcedBehavior
       .withEnforcedReplies[Command[_], Event, State](
         persistenceId,
         emptyState = State(0, active = true),
-        commandHandler = (state, command) => {
+        commandHandler = (state, command) =>
           if (state.active) active(state, command)
-          else inactive(state, command)
-        },
+          else inactive(state, command),
         eventHandler = (state, evt) =>
           evt match {
             case Incremented(delta) =>
@@ -118,9 +117,8 @@ object EventSourcedBehaviorStashSpec {
         case (state, RecoveryCompleted) => signalProbe.foreach(_ ! s"RecoveryCompleted-${state.value}")
         case (_, PostStop)              => signalProbe.foreach(_ ! "PostStop")
       }
-  }
 
-  private def active(state: State, command: Command[_]): ReplyEffect[Event, State] = {
+  private def active(state: State, command: Command[_]): ReplyEffect[Event, State] =
     command match {
       case Increment(id, replyTo) =>
         Effect.persist(Incremented(1)).thenReply(replyTo)(_ => Ack(id))
@@ -144,9 +142,8 @@ object EventSourcedBehaviorStashSpec {
         latch.await(30, TimeUnit.SECONDS)
         Effect.reply(replyTo)(Ack(id))
     }
-  }
 
-  private def inactive(state: State, command: Command[_]): ReplyEffect[Event, State] = {
+  private def inactive(state: State, command: Command[_]): ReplyEffect[Event, State] =
     command match {
       case _: Increment =>
         Effect.stash()
@@ -169,7 +166,6 @@ object EventSourcedBehaviorStashSpec {
       case _: Slow =>
         Effect.stash()
     }
-  }
 }
 
 class EventSourcedBehaviorStashSpec
@@ -638,9 +634,8 @@ class EventSourcedBehaviorStashSpec
             }
             probe.expectTerminated(c, 10.seconds)
           }(failStashTestKit.system)
-      } finally {
+      } finally
         failStashTestKit.shutdownTestKit()
-      }
     }
 
     "stop from PoisonPill even though user stash is not empty" in {

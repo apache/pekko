@@ -200,9 +200,8 @@ trait PersistentActor extends Eventsourced with PersistenceIdentity {
    * @param event event to be persisted
    * @param handler handler for each persisted `event`
    */
-  def persist[A](event: A)(handler: A => Unit): Unit = {
+  def persist[A](event: A)(handler: A => Unit): Unit =
     internalPersist(event)(handler)
-  }
 
   /**
    * Asynchronously persists `events` in specified order. This is equivalent to calling
@@ -212,9 +211,8 @@ trait PersistentActor extends Eventsourced with PersistenceIdentity {
    * @param events events to be persisted
    * @param handler handler for each persisted `events`
    */
-  def persistAll[A](events: immutable.Seq[A])(handler: A => Unit): Unit = {
+  def persistAll[A](events: immutable.Seq[A])(handler: A => Unit): Unit =
     internalPersistAll(events)(handler)
-  }
 
   /**
    * Asynchronously persists `event`. On successful persistence, `handler` is called with the
@@ -239,9 +237,8 @@ trait PersistentActor extends Eventsourced with PersistenceIdentity {
    * @param event event to be persisted
    * @param handler handler for each persisted `event`
    */
-  def persistAsync[A](event: A)(handler: A => Unit): Unit = {
+  def persistAsync[A](event: A)(handler: A => Unit): Unit =
     internalPersistAsync(event)(handler)
-  }
 
   /**
    * Asynchronously persists `events` in specified order. This is equivalent to calling
@@ -251,9 +248,8 @@ trait PersistentActor extends Eventsourced with PersistenceIdentity {
    * @param events events to be persisted
    * @param handler handler for each persisted `events`
    */
-  def persistAllAsync[A](events: immutable.Seq[A])(handler: A => Unit): Unit = {
+  def persistAllAsync[A](events: immutable.Seq[A])(handler: A => Unit): Unit =
     internalPersistAllAsync(events)(handler)
-  }
 
   /**
    * Defer the handler execution until all pending handlers have been executed.
@@ -272,9 +268,8 @@ trait PersistentActor extends Eventsourced with PersistenceIdentity {
    * @param event event to be handled in the future, when preceding persist operations have been processes
    * @param handler handler for the given `event`
    */
-  def deferAsync[A](event: A)(handler: A => Unit): Unit = {
+  def deferAsync[A](event: A)(handler: A => Unit): Unit =
     internalDeferAsync(event)(handler)
-  }
 
   /**
    * Defer the handler execution until all pending handlers have been executed. It is guaranteed that no new commands
@@ -294,9 +289,8 @@ trait PersistentActor extends Eventsourced with PersistenceIdentity {
    * @param event event to be handled in the future, when preceding persist operations have been processes
    * @param handler handler for the given `event`
    */
-  def defer[A](event: A)(handler: A => Unit): Unit = {
+  def defer[A](event: A)(handler: A => Unit): Unit =
     internalDefer(event)(handler)
-  }
 }
 
 /**
@@ -476,9 +470,8 @@ abstract class AbstractPersistentActor extends AbstractActor with AbstractPersis
    * @param event event to be handled in the future, when preceding persist operations have been processes
    * @param handler handler for the given `event`
    */
-  def defer[A](event: A)(handler: Procedure[A]): Unit = {
+  def defer[A](event: A)(handler: Procedure[A]): Unit =
     internalDefer(event)(event => handler(event))
-  }
 
 }
 

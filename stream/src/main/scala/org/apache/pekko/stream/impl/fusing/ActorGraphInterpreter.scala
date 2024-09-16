@@ -154,7 +154,7 @@ import org.reactivestreams.Subscription
 
     def setActor(actor: ActorRef): Unit = this.actor = actor
 
-    override def preStart(): Unit = {
+    override def preStart(): Unit =
       publisher.subscribe(new Subscriber[Any] {
         override def onError(t: Throwable): Unit = {
           ReactiveStreamsCompliance.requireNonNullException(t)
@@ -166,16 +166,14 @@ import org.reactivestreams.Subscription
           actor ! OnSubscribe(shell, s)
         }
 
-        override def onComplete(): Unit = {
+        override def onComplete(): Unit =
           actor ! OnComplete(shell)
-        }
 
         override def onNext(t: Any): Unit = {
           ReactiveStreamsCompliance.requireNonNullElement(t)
           actor ! OnNext(shell, t)
         }
       })
-    }
 
     @InternalStableApi
     private def dequeue(): Any = {
@@ -210,14 +208,13 @@ import org.reactivestreams.Subscription
     }
 
     @InternalStableApi
-    def onNext(elem: Any): Unit = {
+    def onNext(elem: Any): Unit =
       if (!upstreamCompleted) {
         if (inputBufferElements == size) throw new IllegalStateException("Input buffer overrun")
         inputBuffer((nextInputElementCursor + inputBufferElements) & IndexMask) = elem.asInstanceOf[AnyRef]
         inputBufferElements += 1
         if (isAvailable(out)) push(out, dequeue())
       }
-    }
 
     def onError(e: Throwable): Unit =
       if (!upstreamCompleted || downstreamCanceled.isEmpty) {
@@ -260,8 +257,8 @@ import org.reactivestreams.Subscription
 
     setHandler(out, this)
 
-    override def onPull(): Unit = {
-      try {
+    override def onPull(): Unit =
+      try
         if (inputBufferElements > 1) push(out, dequeue())
         else if (inputBufferElements == 1) {
           if (upstreamCompleted) {
@@ -271,10 +268,9 @@ import org.reactivestreams.Subscription
         } else if (upstreamCompleted) {
           complete(out)
         }
-      } catch {
+      catch {
         case s: SpecViolation => shell.tryAbort(s)
       }
-    }
 
     override def onDownstreamFinish(cause: Throwable): Unit =
       try cancel(cause)
@@ -410,27 +406,25 @@ import org.reactivestreams.Subscription
       tryOnNext(subscriber, elem)
     }
 
-    private def complete(): Unit = {
+    private def complete(): Unit =
       // No need to complete if had already been cancelled, or we closed earlier
       if (!(upstreamCompleted || downstreamCompleted)) {
         upstreamCompleted = true
         publisher.shutdown(None)
         if (subscriber ne null) tryOnComplete(subscriber)
       }
-    }
 
-    def fail(e: Throwable): Unit = {
+    def fail(e: Throwable): Unit =
       // No need to fail if had already been cancelled, or we closed earlier
       if (!(downstreamCompleted || upstreamCompleted)) {
         upstreamCompleted = true
         publisher.shutdown(Some(e))
         if ((subscriber ne null) && !e.isInstanceOf[SpecViolation]) tryOnError(subscriber, e)
       }
-    }
 
     setHandler(in, this)
 
-    override def onPush(): Unit = {
+    override def onPush(): Unit =
       try {
         onNext(grab(in))
         if (downstreamCompleted) cancel(in, downstreamCompletionCause.get)
@@ -438,7 +432,6 @@ import org.reactivestreams.Subscription
       } catch {
         case s: SpecViolation => shell.tryAbort(s)
       }
-    }
 
     override def onUpstreamFinish(): Unit =
       try complete()
@@ -470,7 +463,7 @@ import org.reactivestreams.Subscription
           rejectAdditionalSubscriber(subscriber, s"${Logging.simpleName(this)}")
       }
 
-    def requestMore(elements: Long): Unit = {
+    def requestMore(elements: Long): Unit =
       if (elements < 1) {
         cancel(in, ReactiveStreamsCompliance.numberOfElementsInRequestMustBePositiveException)
         fail(ReactiveStreamsCompliance.numberOfElementsInRequestMustBePositiveException)
@@ -480,7 +473,6 @@ import org.reactivestreams.Subscription
           downstreamDemand = Long.MaxValue // Long overflow, Reactive Streams Spec 3:17: effectively unbounded
         if (!hasBeenPulled(in) && !isClosed(in)) pull(in)
       }
-    }
 
     def cancel(cause: Throwable): Unit = {
       downstreamCompletionCause = Some(cause)
@@ -523,7 +515,7 @@ import org.reactivestreams.Subscription
       extends BoundaryEvent {
 
     @InternalStableApi
-    override def execute(eventLimit: Int): Int = {
+    override def execute(eventLimit: Int): Int =
       if (!waitingForShutdown) {
         interpreter.runAsyncInput(logic, evt, promise, handler)
         if (eventLimit == 1 && interpreter.isSuspended) {
@@ -533,7 +525,6 @@ import org.reactivestreams.Subscription
       } else {
         eventLimit
       }
-    }
 
     override def cancel(): Unit = ()
   }
@@ -642,9 +633,8 @@ import org.reactivestreams.Subscription
 
   private def canShutDown: Boolean = subscribesPending == 0
 
-  def subscribeArrived(): Unit = {
+  def subscribeArrived(): Unit =
     subscribesPending -= 1
-  }
 
   private var waitingForShutdown: Boolean = false
 
@@ -656,7 +646,7 @@ import org.reactivestreams.Subscription
     else enqueueToShortCircuit(resume)
   }
 
-  def runBatch(actorEventLimit: Int): Int = {
+  def runBatch(actorEventLimit: Int): Int =
     try {
       val usingShellLimit = shellEventLimit < actorEventLimit
       val remainingQuota = interpreter.execute(Math.min(actorEventLimit, shellEventLimit))
@@ -679,7 +669,6 @@ import org.reactivestreams.Subscription
         tryAbort(e)
         actorEventLimit - 1
     }
-  }
 
   /**
    * Attempts to abort execution, by first propagating the reason given until either
@@ -713,14 +702,13 @@ import org.reactivestreams.Subscription
     }
   }
 
-  def toSnapshot: InterpreterSnapshot = {
+  def toSnapshot: InterpreterSnapshot =
     if (!isInitialized)
       UninitializedInterpreterImpl(logics.zipWithIndex.map {
         case (logic, idx) =>
           LogicSnapshotImpl(idx, logic.toString, logic.attributes)
       }.toVector)
     else interpreter.toSnapshot
-  }
 }
 
 /**
@@ -791,7 +779,7 @@ import org.reactivestreams.Subscription
     else if (shortCircuitBuffer != null) shortCircuitBatch()
   }
 
-  @tailrec private def shortCircuitBatch(): Unit = {
+  @tailrec private def shortCircuitBatch(): Unit =
     if (shortCircuitBuffer.isEmpty) ()
     else if (currentLimit == 0) {
       self ! Resume
@@ -804,7 +792,6 @@ import org.reactivestreams.Subscription
       }
       shortCircuitBatch()
     }
-  }
 
   private def processEvent(b: BoundaryEvent): Unit = {
     val shell = b.shell
@@ -844,14 +831,13 @@ import org.reactivestreams.Subscription
 
   override def postStop(): Unit = {
     if (shortCircuitBuffer ne null) {
-      while (!shortCircuitBuffer.isEmpty) {
+      while (!shortCircuitBuffer.isEmpty)
         shortCircuitBuffer.poll() match {
           case b: BoundaryEvent =>
             // signal to telemetry that this event won't be processed
             b.cancel()
           case _ => // ignore
         }
-      }
     }
     // avoid creating exception in happy case since it uses self.toString which is somewhat slow
     if (activeInterpreters.nonEmpty || newShells.nonEmpty) {

@@ -54,7 +54,7 @@ class SubstreamDocSpec extends PekkoSpec {
       "There is also the 3rd line\n"
 
     val charCount = Source(text.toList)
-      .splitAfter { _ == '\n' }
+      .splitAfter(_ == '\n')
       .filter(_ != '\n')
       .map(_ => 1)
       .reduce(_ + _)

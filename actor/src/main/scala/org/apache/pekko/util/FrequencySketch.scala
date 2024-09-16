@@ -403,7 +403,7 @@ private[pekko] object FrequencySketchUtil {
       builder ++= s" %${counterDigits}d ".format(slot)
     }
     builder ++= "║\n"
-    for (row <- matrix.indices) {
+    for (row <- matrix.indices)
       for (column <- matrix(0).indices) {
         builder ++= (if (column == 0) divider("╠", "═", "╬", "╪", "╣")
                      else divider("╟", "─", "╫", "┼", "╢"))
@@ -417,7 +417,6 @@ private[pekko] object FrequencySketchUtil {
         }
         builder ++= "║\n"
       }
-    }
     builder ++= divider("╚", "═", "╩", "╧", "╝")
     builder.result()
   }

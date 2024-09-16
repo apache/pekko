@@ -86,12 +86,11 @@ object IntegrationDocSpec {
 
   class SmsServer(probe: ActorRef) {
     // #sms-server-send
-    def send(text: TextMessage): Unit = {
+    def send(text: TextMessage): Unit =
       // ...
       // #sms-server-send
       probe ! text.to
-      // #sms-server-send
-    }
+    // #sms-server-send
     // #sms-server-send
   }
 
@@ -181,9 +180,9 @@ class IntegrationDocSpec extends PekkoSpec(IntegrationDocSpec.config) {
     // #send-emails
     val sendEmails: RunnableGraph[NotUsed] =
       emailAddresses
-        .mapAsync(4)(address => {
+        .mapAsync(4) { address =>
           emailServer.send(Email(to = address, title = "pekko", body = "I like your tweet"))
-        })
+        }
         .to(Sink.ignore)
 
     sendEmails.run()
@@ -294,9 +293,9 @@ class IntegrationDocSpec extends PekkoSpec(IntegrationDocSpec.config) {
 
     val sendEmails: RunnableGraph[NotUsed] =
       emailAddresses
-        .mapAsyncUnordered(4)(address => {
+        .mapAsyncUnordered(4) { address =>
           emailServer.send(Email(to = address, title = "Pekko", body = "I like your tweet"))
-        })
+        }
         .to(Sink.ignore)
 
     sendEmails.run()
@@ -330,11 +329,11 @@ class IntegrationDocSpec extends PekkoSpec(IntegrationDocSpec.config) {
 
     val sendTextMessages: RunnableGraph[NotUsed] =
       phoneNumbers
-        .mapAsync(4)(phoneNo => {
+        .mapAsync(4) { phoneNo =>
           Future {
             smsServer.send(TextMessage(to = phoneNo, body = "I like your tweet"))
           }(blockingExecutionContext)
-        })
+        }
         .to(Sink.ignore)
 
     sendTextMessages.run()
@@ -411,17 +410,16 @@ class IntegrationDocSpec extends PekkoSpec(IntegrationDocSpec.config) {
 
   "illustrate ordering and parallelism of mapAsync" in {
     val probe = TestProbe()
-    def println(s: String): Unit = {
+    def println(s: String): Unit =
       if (s.startsWith("after:"))
         probe.ref ! s
-    }
 
     // #sometimes-slow-mapAsync
     implicit val blockingExecutionContext = system.dispatchers.lookup("blocking-dispatcher")
     val service = new SometimesSlowService
 
     Source(List("a", "B", "C", "D", "e", "F", "g", "H", "i", "J"))
-      .map(elem => { println(s"before: $elem"); elem })
+      .map { elem => println(s"before: $elem"); elem }
       .mapAsync(4)(service.convert)
       .to(Sink.foreach(elem => println(s"after: $elem")))
       .withAttributes(Attributes.inputBuffer(initial = 4, max = 4))
@@ -442,17 +440,16 @@ class IntegrationDocSpec extends PekkoSpec(IntegrationDocSpec.config) {
 
   "illustrate ordering and parallelism of mapAsyncUnordered" in {
     val probe = TestProbe()
-    def println(s: String): Unit = {
+    def println(s: String): Unit =
       if (s.startsWith("after:"))
         probe.ref ! s
-    }
 
     // #sometimes-slow-mapAsyncUnordered
     implicit val blockingExecutionContext = system.dispatchers.lookup("blocking-dispatcher")
     val service = new SometimesSlowService
 
     Source(List("a", "B", "C", "D", "e", "F", "g", "H", "i", "J"))
-      .map(elem => { println(s"before: $elem"); elem })
+      .map { elem => println(s"before: $elem"); elem }
       .mapAsyncUnordered(4)(service.convert)
       .to(Sink.foreach(elem => println(s"after: $elem")))
       .withAttributes(Attributes.inputBuffer(initial = 4, max = 4))
@@ -489,14 +486,14 @@ class IntegrationDocSpec extends PekkoSpec(IntegrationDocSpec.config) {
 
     implicit val ec = system.dispatcher
     source
-      .map(x => {
+      .map { x =>
         queue.offer(x).map {
           case QueueOfferResult.Enqueued    => println(s"enqueued $x")
           case QueueOfferResult.Dropped     => println(s"dropped $x")
           case QueueOfferResult.Failure(ex) => println(s"Offer failed ${ex.getMessage}")
           case QueueOfferResult.QueueClosed => println("Source Queue closed")
         }
-      })
+      }
       .runWith(Sink.ignore)
     // #source-queue
   }

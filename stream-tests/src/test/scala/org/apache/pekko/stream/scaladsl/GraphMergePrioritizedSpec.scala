@@ -154,7 +154,7 @@ class GraphMergePrioritizedSpec extends TwoStreamsSetup {
       source2: Source[T, NotUsed],
       source3: Source[T, NotUsed],
       priorities: Seq[Int],
-      probe: ManualProbe[T]) = {
+      probe: ManualProbe[T]) =
     RunnableGraph.fromGraph(GraphDSL.createGraph(source1, source2, source3)((_, _, _)) { implicit b => (s1, s2, s3) =>
       val merge = b.add(MergePrioritized[T](priorities))
       // introduce a delay on the consuming side making it more likely that
@@ -166,5 +166,4 @@ class GraphMergePrioritizedSpec extends TwoStreamsSetup {
       merge.out ~> delayFirst ~> Sink.fromSubscriber(probe)
       ClosedShape
     })
-  }
 }

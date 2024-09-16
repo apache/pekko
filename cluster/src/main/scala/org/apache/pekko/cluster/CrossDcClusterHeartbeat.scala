@@ -210,7 +210,7 @@ private[cluster] class CrossDcHeartbeatSender extends Actor {
   }
 
   /** Idempotent, become active if this node is n-th oldest and should monitor other nodes */
-  private def becomeActiveIfResponsibleForHeartbeat(): Unit = {
+  private def becomeActiveIfResponsibleForHeartbeat(): Unit =
     if (!activelyMonitoring && selfIsResponsibleForCrossDcHeartbeat()) {
       logInfo(
         "Cross DC heartbeat becoming ACTIVE on this node (for DC: {}), monitoring other DCs oldest nodes",
@@ -220,7 +220,6 @@ private[cluster] class CrossDcHeartbeatSender extends Actor {
       context.become(active.orElse(introspecting))
     } else if (!activelyMonitoring)
       if (verboseHeartbeat) logInfo("Remaining DORMANT; others in {} handle heartbeating other DCs", selfDataCenter)
-  }
 
 }
 
@@ -345,7 +344,7 @@ private[cluster] object CrossDcHeartbeatingState {
       selfDataCenter: DataCenter,
       crossDcFailureDetector: FailureDetectorRegistry[Address],
       nrOfMonitoredNodesPerDc: Int,
-      members: immutable.SortedSet[Member]): CrossDcHeartbeatingState = {
+      members: immutable.SortedSet[Member]): CrossDcHeartbeatingState =
     new CrossDcHeartbeatingState(selfDataCenter, crossDcFailureDetector, nrOfMonitoredNodesPerDc,
       state = {
         // TODO unduplicate this with the logic in MembershipState.ageSortedTopOldestMembersPerDc
@@ -362,6 +361,5 @@ private[cluster] object CrossDcHeartbeatingState {
           }
         }
       })
-  }
 
 }

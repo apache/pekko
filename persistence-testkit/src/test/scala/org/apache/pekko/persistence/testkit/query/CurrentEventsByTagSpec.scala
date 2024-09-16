@@ -36,12 +36,11 @@ class CurrentEventsByTagSpec
   private val queries =
     PersistenceQuery(system).readJournalFor[PersistenceTestKitReadJournal](PersistenceTestKitReadJournal.Identifier)
 
-  def setupEmpty(persistenceId: String): ActorRef[Command] = {
+  def setupEmpty(persistenceId: String): ActorRef[Command] =
     spawn(
       testBehaviour(persistenceId).withTagger(evt =>
         if (evt.indexOf('-') > 0) Set(evt.split('-')(1), "all")
         else Set("all")))
-  }
 
   "Persistent test kit currentEventsByTag query" must {
 

@@ -129,7 +129,7 @@ trait CommonTestKitTests extends ScalaDslUtils {
       val err = new Exception("BOOM!")
 
       val newPolicy = new EventStorage.JournalPolicies.PolicyType {
-        override def tryProcess(persistenceId: String, processingUnit: JournalOperation): ProcessingResult = {
+        override def tryProcess(persistenceId: String, processingUnit: JournalOperation): ProcessingResult =
           processingUnit match {
             case WriteEvents(msgs) =>
               val ex = msgs.exists {
@@ -143,7 +143,6 @@ trait CommonTestKitTests extends ScalaDslUtils {
               }
             case _ => ProcessingSuccess
           }
-        }
       }
 
       withPolicy(newPolicy)

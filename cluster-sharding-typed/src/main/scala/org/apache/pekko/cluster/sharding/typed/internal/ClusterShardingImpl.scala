@@ -60,17 +60,16 @@ import pekko.util.JavaDurationConverters._
  */
 @InternalApi private[pekko] class ExtractorAdapter[E, M](delegate: ShardingMessageExtractor[E, M])
     extends ShardingMessageExtractor[Any, M] {
-  override def entityId(message: Any): String = {
+  override def entityId(message: Any): String =
     message match {
       case ShardingEnvelope(entityId, _) => entityId // also covers ClassicStartEntity in ShardingEnvelope
       case ClassicStartEntity(entityId)  => entityId
       case msg                           => delegate.entityId(msg.asInstanceOf[E])
     }
-  }
 
   override def shardId(entityId: String): String = delegate.shardId(entityId)
 
-  override def unwrapMessage(message: Any): M = {
+  override def unwrapMessage(message: Any): M =
     message match {
       case ShardingEnvelope(_, msg: M @unchecked) =>
         // also covers ClassicStartEntity in ShardingEnvelope
@@ -81,7 +80,6 @@ import pekko.util.JavaDurationConverters._
       case msg =>
         delegate.unwrapMessage(msg.asInstanceOf[E])
     }
-  }
 
   override def toString: String = delegate.toString
 }
@@ -192,19 +190,17 @@ import pekko.util.JavaDurationConverters._
           shardCommandActors.computeIfAbsent(
             typeKey.name,
             new java.util.function.Function[String, ActorRef[scaladsl.ClusterSharding.ShardCommand]] {
-              override def apply(t: String): ActorRef[scaladsl.ClusterSharding.ShardCommand] = {
+              override def apply(t: String): ActorRef[scaladsl.ClusterSharding.ShardCommand] =
                 system.systemActorOf(
                   ShardCommandActor.behavior(stopMessage.getOrElse(PoisonPill)),
                   URLEncoder.encode(typeKey.name, ByteString.UTF_8) + "ShardCommandDelegator")
-              }
             })
 
-        def poisonPillInterceptor(behv: Behavior[M]): Behavior[M] = {
+        def poisonPillInterceptor(behv: Behavior[M]): Behavior[M] =
           stopMessage match {
             case Some(_) => behv
             case None    => Behaviors.intercept(() => new PoisonPillInterceptor[M])(behv)
           }
-        }
 
         val classicEntityPropsFactory: String => pekko.actor.Props = { entityId =>
           val behv = behavior(new EntityContext(typeKey, entityId, shardCommandDelegator))
@@ -247,17 +243,16 @@ import pekko.util.JavaDurationConverters._
     ActorRefAdapter(ref)
   }
 
-  override def entityRefFor[M](typeKey: scaladsl.EntityTypeKey[M], entityId: String): scaladsl.EntityRef[M] = {
+  override def entityRefFor[M](typeKey: scaladsl.EntityTypeKey[M], entityId: String): scaladsl.EntityRef[M] =
     new EntityRefImpl[M](
       classicSharding.shardRegion(typeKey.name),
       entityId,
       typeKey.asInstanceOf[EntityTypeKeyImpl[M]])
-  }
 
   override def entityRefFor[M](
       typeKey: scaladsl.EntityTypeKey[M],
       entityId: String,
-      dataCenter: DataCenter): scaladsl.EntityRef[M] = {
+      dataCenter: DataCenter): scaladsl.EntityRef[M] =
     if (dataCenter == cluster.selfMember.dataCenter)
       entityRefFor(typeKey, entityId).asInstanceOf[EntityRefImpl[M]].withDataCenter(Some(dataCenter))
     else
@@ -266,19 +261,17 @@ import pekko.util.JavaDurationConverters._
         entityId,
         typeKey.asInstanceOf[EntityTypeKeyImpl[M]],
         Some(dataCenter))
-  }
 
-  override def entityRefFor[M](typeKey: javadsl.EntityTypeKey[M], entityId: String): javadsl.EntityRef[M] = {
+  override def entityRefFor[M](typeKey: javadsl.EntityTypeKey[M], entityId: String): javadsl.EntityRef[M] =
     new EntityRefImpl[M](
       classicSharding.shardRegion(typeKey.name),
       entityId,
       typeKey.asInstanceOf[EntityTypeKeyImpl[M]])
-  }
 
   override def entityRefFor[M](
       typeKey: javadsl.EntityTypeKey[M],
       entityId: String,
-      dataCenter: String): javadsl.EntityRef[M] = {
+      dataCenter: String): javadsl.EntityRef[M] =
     if (dataCenter == cluster.selfMember.dataCenter)
       entityRefFor(typeKey, entityId).asInstanceOf[EntityRefImpl[M]].withDataCenter(Some(dataCenter))
     else
@@ -287,9 +280,8 @@ import pekko.util.JavaDurationConverters._
         entityId,
         typeKey.asInstanceOf[EntityTypeKeyImpl[M]],
         Some(dataCenter))
-  }
 
-  override def defaultShardAllocationStrategy(settings: ClusterShardingSettings): ShardAllocationStrategy = {
+  override def defaultShardAllocationStrategy(settings: ClusterShardingSettings): ShardAllocationStrategy =
     if (settings.tuningParameters.leastShardAllocationAbsoluteLimit > 0) {
       // new algorithm
       val absoluteLimit = settings.tuningParameters.leastShardAllocationAbsoluteLimit
@@ -301,7 +293,6 @@ import pekko.util.JavaDurationConverters._
       val maxSimultaneousRebalance = settings.tuningParameters.leastShardAllocationMaxSimultaneousRebalance
       new ShardCoordinator.LeastShardAllocationStrategy(threshold, maxSimultaneousRebalance)
     }
-  }
 
   override lazy val shardState: ActorRef[ClusterShardingQuery] =
     system.systemActorOf(ShardingState.behavior(classicSharding), "typedShardState")

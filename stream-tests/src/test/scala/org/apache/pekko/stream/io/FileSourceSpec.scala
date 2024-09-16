@@ -48,14 +48,13 @@ class FileSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
 
   val fs = Jimfs.newFileSystem("FileSourceSpec", Configuration.unix())
 
-  val TestText = {
+  val TestText =
     ("a" * 1000) +
     ("b" * 1000) +
     ("c" * 1000) +
     ("d" * 1000) +
     ("e" * 1000) +
     ("f" * 1000)
-  }
 
   val testFile = {
     val f = Files.createTempFile(fs.getPath("/"), "file-source-spec", ".tmp")
@@ -157,9 +156,8 @@ class FileSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
 
       sub.request(5000)
 
-      for (_ <- 1 to 10) {
+      for (_ <- 1 to 10)
         c.expectNext().utf8String should ===(nextChunk().toString)
-      }
       c.expectComplete()
     }
 
@@ -306,8 +304,7 @@ class FileSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
     }
   }
 
-  override def afterTermination(): Unit = {
+  override def afterTermination(): Unit =
     fs.close()
-  }
 
 }

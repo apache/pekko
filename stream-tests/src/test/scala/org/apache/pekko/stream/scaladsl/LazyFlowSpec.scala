@@ -307,10 +307,10 @@ class LazyFlowSpec extends StreamSpec("""
       p.success(Flow[Int])
       flowProbe.request(99)
       flowProbe.expectNext(0)
-      (1 to 10).foreach(i => {
+      (1 to 10).foreach { i =>
         sourceSub.sendNext(i)
         flowProbe.expectNext(i)
-      })
+      }
       sourceSub.sendComplete()
     }
 

@@ -144,14 +144,13 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
     DowningProvider.load(settings.DowningProviderClassName, system)
   }
 
-  private def checkAutoDownUsage(): Unit = {
+  private def checkAutoDownUsage(): Unit =
     if (settings.DowningProviderClassName == "org.apache.pekko.cluster.AutoDowning" ||
       (settings.config.hasPath("auto-down-unreachable-after") && settings.config.getString(
         "auto-down-unreachable-after") != "off"))
       logWarning(
         "auto-down has been removed in Akka 2.6.0. See " +
         "https://pekko.apache.org/docs/pekko/current/typed/cluster.html#downing for alternatives.")
-  }
 
   // ========================================================
   // ===================== WORK DAEMONS =====================
@@ -160,7 +159,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
   /**
    * INTERNAL API
    */
-  private[cluster] val scheduler: Scheduler = {
+  private[cluster] val scheduler: Scheduler =
     if (system.scheduler.maxFrequency < 1.second / SchedulerTickDuration) {
       logInfo(
         "Using a dedicated scheduler for cluster. Default scheduler can be used if configured " +
@@ -199,23 +198,21 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
           systemScheduler.scheduleOnce(delay, runnable)
       }
     }
-  }
 
   // create supervisor for daemons under path "/system/cluster"
-  private val clusterDaemons: ActorRef = {
+  private val clusterDaemons: ActorRef =
     system.systemActorOf(
       Props(classOf[ClusterDaemon], joinConfigCompatChecker).withDispatcher(UseDispatcher).withDeploy(Deploy.local),
       name = "cluster")
-  }
 
   /**
    * INTERNAL API
    */
   private[cluster] val clusterCore: ActorRef = {
     implicit val timeout = system.settings.CreationTimeout
-    try {
+    try
       Await.result((clusterDaemons ? InternalClusterAction.GetClusterCoreRef).mapTo[ActorRef], timeout.duration)
-    } catch {
+    catch {
       case NonFatal(e) =>
         log.error(e, "Failed to startup Cluster. You can try to increase 'pekko.actor.creation-timeout'.")
         shutdown()
@@ -334,15 +331,13 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
   /**
    * Change the state of every member in preparation for a full cluster shutdown.
    */
-  def prepareForFullClusterShutdown(): Unit = {
+  def prepareForFullClusterShutdown(): Unit =
     clusterCore ! ClusterUserAction.PrepareForShutdown
-  }
 
-  private def fillLocal(address: Address): Address = {
+  private def fillLocal(address: Address): Address =
     // local address might be used if grabbed from actorRef.path.address
     if (address.hasLocalScope && address.system == selfAddress.system) selfAddress
     else address
-  }
 
   /**
    * Join the specified seed nodes without defining them in config.
@@ -429,12 +424,11 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
    * If this is called "at the same time" as `shutdown()` there is a possibility that the the thunk
    * is not invoked. It's often better to use [[pekko.actor.CoordinatedShutdown]] for this purpose.
    */
-  def registerOnMemberRemoved(callback: Runnable): Unit = {
+  def registerOnMemberRemoved(callback: Runnable): Unit =
     if (_isTerminated.get())
       callback.run()
     else
       clusterDaemons ! InternalClusterAction.AddOnMemberRemovedListener(callback)
-  }
 
   /**
    * Generate the remote actor path by replacing the Address in the RootActor Path for the given
@@ -461,7 +455,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
    * Should not called by the user. The user can issue a LEAVE command which will tell the node
    * to go through graceful handoff process `LEAVE -&gt; EXITING -&gt; REMOVED -&gt; SHUTDOWN`.
    */
-  @InternalApi private[cluster] def shutdown(): Unit = {
+  @InternalApi private[cluster] def shutdown(): Unit =
     if (_isTerminated.compareAndSet(false, true)) {
       logInfo("Shutting down...")
 
@@ -473,11 +467,10 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
 
       closeScheduler()
 
-      clusterJmx.foreach { _.unregisterMBean() }
+      clusterJmx.foreach(_.unregisterMBean())
 
       logInfo("Successfully shut down")
     }
-  }
 
   private def closeScheduler(): Unit = scheduler match {
     case x: Closeable => x.close()
@@ -588,12 +581,11 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
       if (log.isErrorEnabled)
         logAtLevel(Logging.ErrorLevel, log.format(template, arg1, arg2, arg3))
 
-    def logError(cause: Throwable, message: String): Unit = {
+    def logError(cause: Throwable, message: String): Unit =
       if (settings.SelfDataCenter == ClusterSettings.DefaultDataCenter)
         log.error(cause, "Cluster Node [{}] - {}", selfAddress, message)
       else
         log.error(cause, "Cluster Node [{}] dc [{}] - {}", selfAddress, settings.SelfDataCenter, message)
-    }
 
     def logError(cause: Throwable, template: String, arg1: Any): Unit =
       logError(cause, log.format(template, arg1))
@@ -604,14 +596,13 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
     def logError(cause: Throwable, template: String, arg1: Any, arg2: Any, arg3: Any): Unit =
       logError(cause, log.format(template, arg1, arg2, arg3))
 
-    private def logAtLevel(logLevel: LogLevel, message: String): Unit = {
+    private def logAtLevel(logLevel: LogLevel, message: String): Unit =
       if (settings.SelfDataCenter == ClusterSettings.DefaultDataCenter)
         log.log(logLevel, "Cluster Node [{}] - {}", selfAddress, message)
       else
         log.log(logLevel, "Cluster Node [{}] dc [{}] - {}", selfAddress, settings.SelfDataCenter, message)
-    }
 
-    private def logAtLevel(marker: LogMarker, logLevel: LogLevel, message: String): Unit = {
+    private def logAtLevel(marker: LogMarker, logLevel: LogLevel, message: String): Unit =
       if (settings.SelfDataCenter == ClusterSettings.DefaultDataCenter)
         log.log(marker, logLevel, log.format("Cluster Node [{}] - {}", selfAddress, message))
       else
@@ -619,7 +610,6 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
           marker,
           logLevel,
           log.format("Cluster Node [{}] dc [{}] - {}", selfAddress, settings.SelfDataCenter, message))
-    }
 
   }
 

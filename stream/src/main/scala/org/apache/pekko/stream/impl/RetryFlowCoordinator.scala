@@ -84,22 +84,20 @@ import pekko.util.OptionVal
       internalOut,
       new OutHandler {
 
-        override def onPull(): Unit = {
+        override def onPull(): Unit =
           if (elementInProgress.isEmpty) {
             if (!hasBeenPulled(externalIn) && !isClosed(externalIn)) {
               pull(externalIn)
             }
           }
-        }
 
-        override def onDownstreamFinish(cause: Throwable): Unit = {
+        override def onDownstreamFinish(cause: Throwable): Unit =
           if (elementInProgress.isEmpty || !cause.isInstanceOf[NonFailureCancellation]) {
             super.onDownstreamFinish(cause)
           } else {
             // emit elements before finishing
             setKeepGoing(true)
           }
-        }
       })
 
     setHandler(
@@ -129,9 +127,8 @@ import pekko.util.OptionVal
           if (!hasBeenPulled(internalIn)) pull(internalIn)
       })
 
-    private def pushInternal(element: In): Unit = {
+    private def pushInternal(element: In): Unit =
       push(internalOut, element)
-    }
 
     private def pushExternal(result: Out): Unit = {
       elementInProgress = OptionVal.none

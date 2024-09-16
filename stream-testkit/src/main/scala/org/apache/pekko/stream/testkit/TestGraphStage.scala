@@ -69,7 +69,7 @@ private[testkit] class TestSinkStage[T, M](
 
     val inHandler = logic.handlers(in.id).asInstanceOf[InHandler]
     logic.handlers(in.id) = new InHandler {
-      override def onPush(): Unit = {
+      override def onPush(): Unit =
         try {
           inHandler.onPush()
           probe.ref ! GraphStageMessages.Push
@@ -78,8 +78,7 @@ private[testkit] class TestSinkStage[T, M](
             probe.ref ! GraphStageMessages.StageFailure(GraphStageMessages.Push, ex)
             throw ex
         }
-      }
-      override def onUpstreamFinish(): Unit = {
+      override def onUpstreamFinish(): Unit =
         try {
           inHandler.onUpstreamFinish()
           probe.ref ! GraphStageMessages.UpstreamFinish
@@ -89,8 +88,7 @@ private[testkit] class TestSinkStage[T, M](
             throw ex
         }
 
-      }
-      override def onUpstreamFailure(ex: Throwable): Unit = {
+      override def onUpstreamFailure(ex: Throwable): Unit =
         try {
           inHandler.onUpstreamFailure(ex)
           probe.ref ! GraphStageMessages.Failure(ex)
@@ -99,7 +97,6 @@ private[testkit] class TestSinkStage[T, M](
             probe.ref ! GraphStageMessages.StageFailure(GraphStageMessages.Failure(ex), ex)
             throw ex
         }
-      }
     }
     (logic, mat)
   }
@@ -133,7 +130,7 @@ private[testkit] class TestSourceStage[T, M](
 
     val outHandler = logic.handlers(out.id).asInstanceOf[OutHandler]
     logic.handlers(out.id) = new OutHandler {
-      override def onPull(): Unit = {
+      override def onPull(): Unit =
         try {
           outHandler.onPull()
           probe.ref ! GraphStageMessages.Pull
@@ -142,8 +139,7 @@ private[testkit] class TestSourceStage[T, M](
             probe.ref ! GraphStageMessages.StageFailure(GraphStageMessages.Pull, ex)
             throw ex
         }
-      }
-      override def onDownstreamFinish(cause: Throwable): Unit = {
+      override def onDownstreamFinish(cause: Throwable): Unit =
         try {
           outHandler.onDownstreamFinish(cause)
           probe.ref ! GraphStageMessages.DownstreamFinish
@@ -152,7 +148,6 @@ private[testkit] class TestSourceStage[T, M](
             probe.ref ! GraphStageMessages.StageFailure(GraphStageMessages.DownstreamFinish, ex)
             throw ex
         }
-      }
     }
     (logic, mat)
   }

@@ -51,9 +51,8 @@ class LocalPubSubSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike wit
         probe2.expectMessage("banana")
         probe3.expectMessage("banana")
 
-      } finally {
+      } finally
         testKit.stop(fruitTopic)
-      }
     }
 
     "publish to all subscriber actors across several instances of the same topic" in {
@@ -120,9 +119,8 @@ class LocalPubSubSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike wit
         veggieTopic ! Topic.Publish("carrot")
         probe1.expectNoMessage(200.millis)
 
-      } finally {
+      } finally
         testKit.stop(fruitTopic)
-      }
     }
 
     "doesn't publish after unsubscribe" in {
@@ -148,9 +146,8 @@ class LocalPubSubSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike wit
         fruitTopic ! Topic.Publish("orange")
         probe1.expectNoMessage(200.millis)
 
-      } finally {
+      } finally
         testKit.stop(fruitTopic)
-      }
     }
 
   }

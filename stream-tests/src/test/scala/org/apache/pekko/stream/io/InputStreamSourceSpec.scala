@@ -72,9 +72,9 @@ class InputStreamSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
     "return failure if creation fails" in {
       val fail = new RuntimeException("oh dear indeed")
       StreamConverters
-        .fromInputStream(() => {
+        .fromInputStream { () =>
           throw fail
-        })
+        }
         .toMat(Sink.ignore)(Keep.left)
         .run()
         .failed
@@ -124,7 +124,7 @@ class InputStreamSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
           () =>
             new InputStream {
               @volatile var emitted = false
-              override def read(): Int = {
+              override def read(): Int =
                 if (!emitted) {
                   emitted = true
                   'M'.toInt
@@ -132,7 +132,6 @@ class InputStreamSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
                   latch.await()
                   -1
                 }
-              }
             },
           chunkSize = 1)
         .runWith(TestSink.probe)

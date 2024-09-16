@@ -117,9 +117,8 @@ class ClusterApiSpec extends ScalaTestWithActorTestKit(ClusterApiSpec.config) wi
         clusterNode2.subscriptions ! Subscribe(node2Probe.ref, classOf[SelfUp])
         node2Probe.expectNoMessage()
 
-      } finally {
+      } finally
         ActorTestKit.shutdown(adaptedSystem2)
-      }
     }
   }
 

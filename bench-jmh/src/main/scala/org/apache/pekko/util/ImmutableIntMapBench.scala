@@ -53,12 +53,11 @@ class ImmutableIntMapBench {
     if (n <= to) updateIfAbsent(n + by, by, to, in.updateIfAbsent(n, n))
     else in
 
-  @tailrec private[this] final def getKey(iterations: Int, key: Int, from: ImmutableIntMap): ImmutableIntMap = {
+  @tailrec private[this] final def getKey(iterations: Int, key: Int, from: ImmutableIntMap): ImmutableIntMap =
     if (iterations > 0 && key != Int.MinValue) {
       val k = from.get(key)
       getKey(iterations - 1, k, from)
     } else from
-  }
 
   val odd1000 = (0 to 1000).iterator.filter(_ % 2 == 1).foldLeft(ImmutableIntMap.empty)((l, i) => l.updated(i, i))
 

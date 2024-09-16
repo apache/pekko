@@ -40,15 +40,13 @@ private[pekko] final class SingleConcat[E](singleElem: E) extends GraphStage[Flo
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new GraphStageLogic(shape) with InHandler with OutHandler {
-      override def onPush(): Unit = {
+      override def onPush(): Unit =
         push(out, grab(in))
-      }
 
       override def onPull(): Unit = pull(in)
 
-      override def onUpstreamFinish(): Unit = {
+      override def onUpstreamFinish(): Unit =
         emit(out, singleElem, () => completeStage())
-      }
       setHandlers(in, out, this)
     }
 

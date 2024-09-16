@@ -211,9 +211,8 @@ class PersistenceTestKitDurableStateStoreSpec
       val record = Record(1, "name-1")
       val tag = "tag-1"
       val ids = (1 to 20).map(i => s"id-$i")
-      for (id <- ids) {
+      for (id <- ids)
         stateStore.upsertObject(id, 1, record, tag)
-      }
 
       val resultIds = stateStore.currentPersistenceIds(None, Long.MaxValue).runWith(Sink.seq).futureValue
       resultIds should have size 20
@@ -226,9 +225,8 @@ class PersistenceTestKitDurableStateStoreSpec
       val record = Record(1, "name-1")
       val tag = "tag-1"
       val ids = (1 to 20).map(i => s"id-$i")
-      for (id <- ids) {
+      for (id <- ids)
         stateStore.upsertObject(id, 1, record, tag)
-      }
 
       val page1 = stateStore.currentPersistenceIds(None, 9).runWith(Sink.seq).futureValue
       page1 should have size 9

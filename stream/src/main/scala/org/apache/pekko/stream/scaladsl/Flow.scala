@@ -77,7 +77,7 @@ final class Flow[-In, +Out, +Mat](
   override def via[T, Mat2](flow: Graph[FlowShape[Out, T], Mat2]): Repr[T] = viaMat(flow)(Keep.left)
 
   override def viaMat[T, Mat2, Mat3](flow: Graph[FlowShape[Out, T], Mat2])(
-      combine: (Mat, Mat2) => Mat3): Flow[In, T, Mat3] = {
+      combine: (Mat, Mat2) => Mat3): Flow[In, T, Mat3] =
     if (this.isIdentity) {
       // optimization by returning flow if possible since we know Mat2 == Mat3 from flow
       if (combine == Keep.right) Flow.fromGraph(flow).asInstanceOf[Flow[In, T, Mat3]]
@@ -106,7 +106,6 @@ final class Flow[-In, +Out, +Mat](
         traversalBuilder.append(flow.traversalBuilder, flow.shape, combine),
         FlowShape[In, T](shape.in, flow.shape.out))
     }
-  }
 
   /**
    * Connect this [[Flow]] to a [[Sink]], concatenating the processing steps of both.
@@ -148,14 +147,13 @@ final class Flow[-In, +Out, +Mat](
    * It is recommended to use the internally optimized `Keep.left` and `Keep.right` combiners
    * where appropriate instead of manually writing functions that pass through one of the values.
    */
-  def toMat[Mat2, Mat3](sink: Graph[SinkShape[Out], Mat2])(combine: (Mat, Mat2) => Mat3): Sink[In, Mat3] = {
+  def toMat[Mat2, Mat3](sink: Graph[SinkShape[Out], Mat2])(combine: (Mat, Mat2) => Mat3): Sink[In, Mat3] =
     if (isIdentity) {
       new Sink(LinearTraversalBuilder.fromBuilder(sink.traversalBuilder, sink.shape, combine), SinkShape(sink.shape.in))
         .asInstanceOf[Sink[In, Mat3]]
     } else {
       new Sink(traversalBuilder.append(sink.traversalBuilder, sink.shape, combine), SinkShape(shape.in))
     }
-  }
 
   /**
    * Transform the materialized value of this Flow, leaving all other properties as they were.
@@ -407,9 +405,8 @@ object Flow {
   /**
    * Creates a Flow from a Reactive Streams [[org.reactivestreams.Processor]]
    */
-  def fromProcessor[I, O](processorFactory: () => Processor[I, O]): Flow[I, O, NotUsed] = {
+  def fromProcessor[I, O](processorFactory: () => Processor[I, O]): Flow[I, O, NotUsed] =
     fromProcessorMat(() => (processorFactory(), NotUsed))
-  }
 
   /**
    * Creates a Flow from a Reactive Streams [[org.reactivestreams.Processor]] and returns a materialized value.
@@ -1357,14 +1354,13 @@ trait FlowOps[+Out, +Mat] {
    */
   def mapAsyncPartitioned[T, P](parallelism: Int)(
       partitioner: Out => P)(
-      f: (Out, P) => Future[T]): Repr[T] = {
+      f: (Out, P) => Future[T]): Repr[T] =
     (if (parallelism == 1) {
        via(MapAsyncUnordered(1, elem => f(elem, partitioner(elem))))
      } else {
        via(new MapAsyncPartitioned(parallelism, orderedOutput = true, partitioner, f))
      })
       .withAttributes(DefaultAttributes.mapAsyncPartition and SourceLocation.forLambda(f))
-  }
 
   /**
    * Transforms this stream. Works very similarly to [[#mapAsyncUnordered]] but with an additional
@@ -1395,13 +1391,12 @@ trait FlowOps[+Out, +Mat] {
    */
   def mapAsyncPartitionedUnordered[T, P](parallelism: Int)(
       partitioner: Out => P)(
-      f: (Out, P) => Future[T]): Repr[T] = {
+      f: (Out, P) => Future[T]): Repr[T] =
     (if (parallelism == 1) {
        via(MapAsyncUnordered(1, elem => f(elem, partitioner(elem))))
      } else {
        via(new MapAsyncPartitioned(parallelism, orderedOutput = false, partitioner, f))
      }).withAttributes(DefaultAttributes.mapAsyncPartitionUnordered and SourceLocation.forLambda(f))
-  }
 
   /**
    * Use the `ask` pattern to send a request-reply message to the target `ref` actor.
@@ -2456,9 +2451,8 @@ trait FlowOps[+Out, +Mat] {
    *  @param n the number of elements to accumulate before materializing the downstream flow.
    *  @param f a function that produces the downstream flow based on the upstream's prefix.
    */
-  def flatMapPrefix[Out2, Mat2](n: Int)(f: immutable.Seq[Out] => Flow[Out, Out2, Mat2]): Repr[Out2] = {
+  def flatMapPrefix[Out2, Mat2](n: Int)(f: immutable.Seq[Out] => Flow[Out, Out2, Mat2]): Repr[Out2] =
     via(new FlatMapPrefix(n, f))
-  }
 
   /**
    * This operation demultiplexes the incoming stream into separate output
@@ -3157,9 +3151,8 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream cancels
    */
-  def zipAll[U, A >: Out](that: Graph[SourceShape[U], _], thisElem: A, thatElem: U): Repr[(A, U)] = {
+  def zipAll[U, A >: Out](that: Graph[SourceShape[U], _], thisElem: A, thatElem: U): Repr[(A, U)] =
     via(zipAllFlow(that, thisElem, thatElem))
-  }
 
   protected def zipAllFlow[U, A >: Out, Mat2](
       that: Graph[SourceShape[U], Mat2],
@@ -4013,9 +4006,8 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    * see [[#flatMapPrefix]] for details.
    */
   def flatMapPrefixMat[Out2, Mat2, Mat3](n: Int)(f: immutable.Seq[Out] => Flow[Out, Out2, Mat2])(
-      matF: (Mat, Future[Mat2]) => Mat3): ReprMat[Out2, Mat3] = {
+      matF: (Mat, Future[Mat2]) => Mat3): ReprMat[Out2, Mat3] =
     viaMat(new FlatMapPrefix(n, f))(matF)
-  }
 
   /**
    * Combine the elements of current flow and the given [[Source]] into a stream of tuples.
@@ -4042,9 +4034,8 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    * '''Cancels when''' downstream cancels
    */
   def zipAllMat[U, Mat2, Mat3, A >: Out](that: Graph[SourceShape[U], Mat2], thisElem: A, thatElem: U)(
-      matF: (Mat, Mat2) => Mat3): ReprMat[(A, U), Mat3] = {
+      matF: (Mat, Mat2) => Mat3): ReprMat[(A, U), Mat3] =
     viaMat(zipAllFlow(that, thisElem, thatElem))(matF)
-  }
 
   /**
    * Put together the elements of current flow and the given [[Source]]

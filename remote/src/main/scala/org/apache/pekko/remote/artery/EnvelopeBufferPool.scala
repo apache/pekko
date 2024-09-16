@@ -46,10 +46,9 @@ private[remote] class EnvelopeBufferPool(maximumPayload: Int, maximumBuffers: In
     }
   }
 
-  def release(buffer: EnvelopeBuffer) = {
+  def release(buffer: EnvelopeBuffer) =
     // only reuse direct buffers, e.g. not those wrapping ByteString
     if (buffer.byteBuffer.isDirect && !availableBuffers.offer(buffer)) buffer.tryCleanDirectByteBuffer()
-  }
 
 }
 
@@ -297,39 +296,35 @@ private[remote] final class HeaderBuilderImpl(
   def useOutboundCompression(on: Boolean): Unit =
     _useOutboundCompression = on
 
-  def setOutboundActorRefCompression(table: CompressionTable[ActorRef]): Unit = {
+  def setOutboundActorRefCompression(table: CompressionTable[ActorRef]): Unit =
     _outboundActorRefCompression = table
-  }
   override def outboundActorRefCompression: CompressionTable[ActorRef] = _outboundActorRefCompression
 
-  def setOutboundClassManifestCompression(table: CompressionTable[String]): Unit = {
+  def setOutboundClassManifestCompression(table: CompressionTable[String]): Unit =
     _outboundClassManifestCompression = table
-  }
   def outboundClassManifestCompression: CompressionTable[String] = _outboundClassManifestCompression
 
   /**
    * Note that Serialization.currentTransportInformation must be set when calling this method,
    * because it's using `Serialization.serializedActorPath`
    */
-  override def setSenderActorRef(ref: ActorRef): Unit = {
+  override def setSenderActorRef(ref: ActorRef): Unit =
     if (_useOutboundCompression) {
       _senderActorRefIdx = outboundActorRefCompression.compress(ref)
       if (_senderActorRefIdx == -1) _senderActorRef = Serialization.serializedActorPath(ref)
     } else
       _senderActorRef = Serialization.serializedActorPath(ref)
-  }
   override def setNoSender(): Unit = {
     _senderActorRef = null
     _senderActorRefIdx = DeadLettersCode
   }
   override def isNoSender: Boolean =
     (_senderActorRef eq null) && _senderActorRefIdx == DeadLettersCode
-  override def senderActorRef(originUid: Long): OptionVal[ActorRef] = {
+  override def senderActorRef(originUid: Long): OptionVal[ActorRef] =
     // we treat deadLetters as always present, but not included in table
     if ((_senderActorRef eq null) && !isNoSender)
       inboundCompression.decompressActorRef(originUid, inboundActorRefCompressionTableVersion, _senderActorRefIdx)
     else OptionVal.None
-  }
 
   def senderActorRefPath: OptionVal[String] =
     OptionVal(_senderActorRef)
@@ -345,45 +340,39 @@ private[remote] final class HeaderBuilderImpl(
    * Note that Serialization.currentTransportInformation must be set when calling this method,
    * because it's using `Serialization.serializedActorPath`
    */
-  def setRecipientActorRef(ref: ActorRef): Unit = {
+  def setRecipientActorRef(ref: ActorRef): Unit =
     if (_useOutboundCompression) {
       _recipientActorRefIdx = outboundActorRefCompression.compress(ref)
       if (_recipientActorRefIdx == -1) _recipientActorRef = toSerializationFormat.getOrCompute(ref)
     } else
       _recipientActorRef = toSerializationFormat.getOrCompute(ref)
-  }
-  def recipientActorRef(originUid: Long): OptionVal[ActorRef] = {
+  def recipientActorRef(originUid: Long): OptionVal[ActorRef] =
     // we treat deadLetters as always present, but not included in table
     if ((_recipientActorRef eq null) && !isNoRecipient)
       inboundCompression.decompressActorRef(originUid, inboundActorRefCompressionTableVersion, _recipientActorRefIdx)
     else OptionVal.None
-  }
   def recipientActorRefPath: OptionVal[String] =
     OptionVal(_recipientActorRef)
 
-  override def setSerializer(serializer: Int): Unit = {
+  override def setSerializer(serializer: Int): Unit =
     _serializer = serializer
-  }
   override def serializer: Int =
     _serializer
 
-  override def setManifest(manifest: String): Unit = {
+  override def setManifest(manifest: String): Unit =
     if (_useOutboundCompression) {
       _manifestIdx = outboundClassManifestCompression.compress(manifest)
       if (_manifestIdx == -1) _manifest = manifest
     } else
       _manifest = manifest
-  }
-  override def manifest(originUid: Long): OptionVal[String] = {
+  override def manifest(originUid: Long): OptionVal[String] =
     if (_manifest ne null) OptionVal.Some(_manifest)
     else {
       inboundCompression.decompressClassManifest(originUid, inboundClassManifestCompressionTableVersion, _manifestIdx)
     }
-  }
 
-  override def setRemoteInstruments(instruments: RemoteInstruments): Unit = {
+  override def setRemoteInstruments(instruments: RemoteInstruments): Unit =
     _remoteInstruments = OptionVal(instruments)
-  }
 
   override def toString =
     "HeaderBuilderImpl(" +
@@ -559,12 +548,11 @@ private[remote] final class EnvelopeBuffer(val byteBuffer: ByteBuffer) {
     }
   }
 
-  private def ensureLiteralCharsLength(length: Int): Unit = {
+  private def ensureLiteralCharsLength(length: Int): Unit =
     if (length > literalChars.length) {
       literalChars = new Array[Char](length)
       literalBytes = new Array[Byte](length)
     }
-  }
 
   def tryCleanDirectByteBuffer(): Unit = DirectByteBufferPool.tryCleanDirectByteBuffer(byteBuffer)
 

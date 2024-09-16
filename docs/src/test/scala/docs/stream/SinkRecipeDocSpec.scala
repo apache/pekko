@@ -21,7 +21,7 @@ import scala.concurrent.Future
 class SinkRecipeDocSpec extends RecipeSpec {
   "Sink.foreachAsync" must {
     "processing each element asynchronously" in {
-      def asyncProcessing(value: Int): Future[Unit] = Future { println(value) }(system.dispatcher)
+      def asyncProcessing(value: Int): Future[Unit] = Future(println(value))(system.dispatcher)
       // #forseachAsync-processing
       // def asyncProcessing(value: Int): Future[Unit] = _
 

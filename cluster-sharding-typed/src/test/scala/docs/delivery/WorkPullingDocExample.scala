@@ -44,7 +44,7 @@ object WorkPullingDocExample {
 
     val serviceKey = ServiceKey[ConsumerController.Command[ConversionJob]]("ImageConverter")
 
-    def apply(): Behavior[Command] = {
+    def apply(): Behavior[Command] =
       Behaviors.setup { context =>
         val deliveryAdapter =
           context.messageAdapter[ConsumerController.Delivery[ConversionJob]](WrappedDelivery(_))
@@ -67,7 +67,6 @@ object WorkPullingDocExample {
         }
 
       }
-    }
 
   }
   // #consumer
@@ -106,7 +105,7 @@ object WorkPullingDocExample {
     // #ask
 
     // #producer
-    def apply(): Behavior[Command] = {
+    def apply(): Behavior[Command] =
       Behaviors.setup { context =>
         val requestNextAdapter =
           context.messageAdapter[WorkPullingProducerController.RequestNext[ImageConverter.ConversionJob]](
@@ -139,7 +138,6 @@ object WorkPullingDocExample {
           new ImageWorkManager(context, stashBuffer).waitForNext()
         }
       }
-    }
 
   }
 
@@ -149,7 +147,7 @@ object WorkPullingDocExample {
 
     import ImageWorkManager._
 
-    private def waitForNext(): Behavior[Command] = {
+    private def waitForNext(): Behavior[Command] =
       Behaviors.receiveMessagePartial {
         case WrappedRequestNext(next) =>
           stashBuffer.unstashAll(active(next))
@@ -165,10 +163,9 @@ object WorkPullingDocExample {
           // TODO retrieve the stored result and reply
           Behaviors.same
       }
-    }
 
     private def active(
-        next: WorkPullingProducerController.RequestNext[ImageConverter.ConversionJob]): Behavior[Command] = {
+        next: WorkPullingProducerController.RequestNext[ImageConverter.ConversionJob]): Behavior[Command] =
       Behaviors.receiveMessagePartial {
         case Convert(from, to, image) =>
           val resultId = UUID.randomUUID()
@@ -180,7 +177,6 @@ object WorkPullingDocExample {
         case _: WrappedRequestNext =>
           throw new IllegalStateException("Unexpected RequestNext")
       }
-    }
     // #producer
     object askScope {
       // #ask
@@ -190,7 +186,7 @@ object WorkPullingDocExample {
 
       implicit val askTimeout: Timeout = 5.seconds
 
-      private def waitForNext(): Behavior[Command] = {
+      private def waitForNext(): Behavior[Command] =
         Behaviors.receiveMessagePartial {
           case WrappedRequestNext(next) =>
             stashBuffer.unstashAll(active(next))
@@ -210,10 +206,9 @@ object WorkPullingDocExample {
             // TODO retrieve the stored result and reply
             Behaviors.same
         }
-      }
 
       private def active(
-          next: WorkPullingProducerController.RequestNext[ImageConverter.ConversionJob]): Behavior[Command] = {
+          next: WorkPullingProducerController.RequestNext[ImageConverter.ConversionJob]): Behavior[Command] =
         Behaviors.receiveMessagePartial {
           case ConvertRequest(from, to, image, originalReplyTo) =>
             val resultId = UUID.randomUUID()
@@ -235,7 +230,6 @@ object WorkPullingDocExample {
           case _: WrappedRequestNext =>
             throw new IllegalStateException("Unexpected RequestNext")
         }
-      }
 
       // #ask
     }

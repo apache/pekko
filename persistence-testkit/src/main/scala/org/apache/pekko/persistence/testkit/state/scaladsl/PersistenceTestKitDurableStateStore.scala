@@ -108,13 +108,12 @@ class PersistenceTestKitDurableStateStore[A](val system: ExtendedActorSystem)
     Source(store.values.toVector.filter(byTagFromOffset).sortBy(_.globalOffset))
       .concat(changesSource)
       .filter(byTagFromOffsetNotDeleted)
-      .statefulMap(() => EarliestOffset)((globalOffsetSeen, record) => {
+      .statefulMap(() => EarliestOffset)((globalOffsetSeen, record) =>
           if (record.globalOffset > globalOffsetSeen) {
             (record.globalOffset, Some(record))
           } else {
             (globalOffsetSeen, None)
-          }
-        }, _ => None)
+          }, _ => None)
       .collect { case Some(record) => record }
       .map(_.toDurableStateChange)
   }
@@ -170,13 +169,12 @@ class PersistenceTestKitDurableStateStore[A](val system: ExtendedActorSystem)
       Source(store.values.toVector.filter(bySliceFromOffset).sortBy(_.globalOffset))
         .concat(changesSource)
         .filter(bySliceFromOffsetNotDeleted)
-        .statefulMap(() => EarliestOffset)((globalOffsetSeen, record) => {
+        .statefulMap(() => EarliestOffset)((globalOffsetSeen, record) =>
             if (record.globalOffset > globalOffsetSeen) {
               (record.globalOffset, Some(record))
             } else {
               (globalOffsetSeen, None)
-            }
-          }, _ => None)
+            }, _ => None)
         .collect { case Some(record) => record }
         .map(_.toDurableStateChange)
     }
@@ -211,12 +209,11 @@ private final case class Record[A](
     value: Option[A],
     tag: String,
     timestamp: Long = System.currentTimeMillis) {
-  def toDurableStateChange: DurableStateChange[A] = {
+  def toDurableStateChange: DurableStateChange[A] =
     value match {
       case Some(v) =>
         new UpdatedDurableState(persistenceId, revision, v, Sequence(globalOffset), timestamp)
       case None =>
         new DeletedDurableState(persistenceId, revision, Sequence(globalOffset), timestamp)
     }
-  }
 }

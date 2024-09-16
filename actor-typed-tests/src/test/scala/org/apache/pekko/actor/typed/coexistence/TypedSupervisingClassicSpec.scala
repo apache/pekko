@@ -41,13 +41,11 @@ object TypedSupervisingClassicSpec {
       case "throw" => throw TestException("oh dear")
     }
 
-    override def postStop(): Unit = {
+    override def postStop(): Unit =
       lifecycleProbe ! "postStop"
-    }
 
-    override def preStart(): Unit = {
+    override def preStart(): Unit =
       lifecycleProbe ! "preStart"
-    }
   }
 
 }

@@ -59,18 +59,15 @@ class VectorClockPerfSpec extends AnyWordSpec with Matchers {
   def checkThunkFor(vc1: VectorClock, vc2: VectorClock, thunk: (VectorClock, VectorClock) => Unit, times: Int): Unit = {
     val vcc1 = copyVectorClock(vc1)
     val vcc2 = copyVectorClock(vc2)
-    for (_ <- 1 to times) {
+    for (_ <- 1 to times)
       thunk(vcc1, vcc2)
-    }
   }
 
-  def compareTo(order: Ordering)(vc1: VectorClock, vc2: VectorClock): Unit = {
+  def compareTo(order: Ordering)(vc1: VectorClock, vc2: VectorClock): Unit =
     vc1.compareTo(vc2) should ===(order)
-  }
 
-  def notEqual(vc1: VectorClock, vc2: VectorClock): Unit = {
+  def notEqual(vc1: VectorClock, vc2: VectorClock): Unit =
     vc1 == vc2 should ===(false)
-  }
 
   s"VectorClock comparisons of size $clockSize" must {
 

@@ -73,10 +73,9 @@ private[pekko] trait DeltaPropagationSelector {
     deltaSentToNode -= key
   }
 
-  def nodesSliceSize(allNodesSize: Int): Int = {
+  def nodesSliceSize(allNodesSize: Int): Int =
     // 2 - 10 nodes
     math.min(math.max((allNodesSize / gossipIntervalDivisor) + 1, 2), math.min(allNodesSize, 10))
-  }
 
   def collectPropagations(): Map[UniqueAddress, DeltaPropagation] = {
     _propagationCount += 1
@@ -88,7 +87,7 @@ private[pekko] trait DeltaPropagationSelector {
       // Normally the delta is propagated to all nodes within the gossip tick, so that
       // full state gossip is not needed.
       val sliceSize = nodesSliceSize(all.size)
-      val slice = {
+      val slice =
         if (all.size <= sliceSize)
           all
         else {
@@ -97,7 +96,6 @@ private[pekko] trait DeltaPropagationSelector {
           if (first.size == sliceSize) first
           else first ++ all.take(sliceSize - first.size)
         }
-      }
       deltaNodeRoundRobinCounter += sliceSize
 
       var result = Map.empty[UniqueAddress, DeltaPropagation]
@@ -163,14 +161,13 @@ private[pekko] trait DeltaPropagationSelector {
       case ntrs                             => ntrs
     }
 
-  def hasDeltaEntries(key: KeyId): Boolean = {
+  def hasDeltaEntries(key: KeyId): Boolean =
     deltaEntries.get(key) match {
       case Some(m) => m.nonEmpty
       case None    => false
     }
-  }
 
-  private def findSmallestVersionPropagatedToAllNodes(key: KeyId, all: Vector[UniqueAddress]): Long = {
+  private def findSmallestVersionPropagatedToAllNodes(key: KeyId, all: Vector[UniqueAddress]): Long =
     deltaSentToNode.get(key) match {
       case None => 0L
       case Some(deltaSentToNodeForKey) =>
@@ -178,7 +175,6 @@ private[pekko] trait DeltaPropagationSelector {
         else if (all.exists(node => !deltaSentToNodeForKey.contains(node))) 0L
         else deltaSentToNodeForKey.valuesIterator.min
     }
-  }
 
   def cleanupDeltaEntries(): Unit = {
     val all = allNodes
@@ -198,10 +194,9 @@ private[pekko] trait DeltaPropagationSelector {
     }
   }
 
-  def cleanupRemovedNode(address: UniqueAddress): Unit = {
+  def cleanupRemovedNode(address: UniqueAddress): Unit =
     deltaSentToNode = deltaSentToNode.map {
       case (key, deltaSentToNodeForKey) =>
         key -> (deltaSentToNodeForKey - address)
     }
-  }
 }

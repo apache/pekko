@@ -47,12 +47,11 @@ class TestSource(elems: Array[MutableElement]) extends GraphStage[SourceShape[Mu
     new GraphStageLogic(shape) with OutHandler {
       private[this] var left = FusedGraphsBenchmark.ElementCount - 1
 
-      override def onPull(): Unit = {
+      override def onPull(): Unit =
         if (left >= 0) {
           push(out, elems(left))
           left -= 1
         } else completeStage()
-      }
 
       setHandler(out, this)
     }
@@ -135,9 +134,8 @@ class FusedGraphsBenchmark {
     val testSource = Source.fromGraph(new TestSource(testElements))
     val testSink = Sink.fromGraph(new JitSafeCompletionLatch)
 
-    def fuse(r: RunnableGraph[CountDownLatch]): RunnableGraph[CountDownLatch] = {
+    def fuse(r: RunnableGraph[CountDownLatch]): RunnableGraph[CountDownLatch] =
       RunnableGraph.fromGraph(r)
-    }
 
     val identityStage = new IdentityStage
 
@@ -179,7 +177,7 @@ class FusedGraphsBenchmark {
         .take(ElementCount)
         .map(addFunc)
         .map(addFunc)
-        .fold(new MutableElement(0))((acc, x) => { acc.value += x.value; acc })
+        .fold(new MutableElement(0)) { (acc, x) => acc.value += x.value; acc }
         .toMat(testSink)(Keep.right))
 
     singleBuffer = fuse(testSource.buffer(10, OverflowStrategy.backpressure).toMat(testSink)(Keep.right))
@@ -302,8 +300,7 @@ class FusedGraphsBenchmark {
   }
 
   @TearDown
-  def shutdown(): Unit = {
+  def shutdown(): Unit =
     Await.result(system.terminate(), 5.seconds)
-  }
 
 }

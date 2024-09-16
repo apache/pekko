@@ -51,10 +51,9 @@ class Member private[cluster] (
     case m: Member => uniqueAddress == m.uniqueAddress
     case _         => false
   }
-  override def toString: String = {
+  override def toString: String =
     s"Member($address, $status${if (dataCenter == ClusterSettings.DefaultDataCenter) "" else s", $dataCenter"}${if (appVersion == Version.Zero) ""
       else s", $appVersion"})"
-  }
 
   def hasRole(role: String): Boolean = roles.contains(role)
 
@@ -98,9 +97,8 @@ class Member private[cluster] (
     }
   }
 
-  def copyUp(upNumber: Int): Member = {
+  def copyUp(upNumber: Int): Member =
     new Member(uniqueAddress, upNumber, status, roles, appVersion).copy(Up)
-  }
 }
 
 /**
@@ -159,9 +157,8 @@ object Member {
    * `Member` ordering type class, sorts members by host and port.
    */
   implicit val ordering: Ordering[Member] = new Ordering[Member] {
-    def compare(a: Member, b: Member): Int = {
+    def compare(a: Member, b: Member): Int =
       a.uniqueAddress.compare(b.uniqueAddress)
-    }
   }
 
   /**
@@ -207,7 +204,7 @@ object Member {
    * Picks the Member with the highest "priority" MemberStatus.
    * Where highest priority is furthest along the membership state machine
    */
-  def highestPriorityOf(m1: Member, m2: Member): Member = {
+  def highestPriorityOf(m1: Member, m2: Member): Member =
     if (m1.status == m2.status)
       // preserve the oldest in case of different upNumber
       if (m1.isOlderThan(m2)) m1 else m2
@@ -231,7 +228,6 @@ object Member {
         case (_, PreparingForShutdown) => m2
         case (Up, Up)                  => m1
       }
-  }
 
 }
 

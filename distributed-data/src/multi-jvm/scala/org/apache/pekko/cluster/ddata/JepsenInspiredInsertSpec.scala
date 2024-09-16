@@ -87,10 +87,9 @@ class JepsenInspiredInsertSpec
       if (rndDelay != 0) Thread.sleep(delayMillis)
     }
 
-  def sleepBeforePartition(): Unit = {
+  def sleepBeforePartition(): Unit =
     if (delayMillis != 0)
       Thread.sleep(delayMillis * totalCount / nodeCount / 10)
-  }
 
   def sleepDuringPartition(): Unit =
     Thread.sleep(math.max(5000, delayMillis * totalCount / nodeCount / 2))
@@ -106,7 +105,7 @@ class JepsenInspiredInsertSpec
 
     "setup cluster" in {
       runOn(nodes: _*) {
-        nodes.foreach { join(_, n1) }
+        nodes.foreach(join(_, n1))
 
         within(10.seconds) {
           awaitAssert {

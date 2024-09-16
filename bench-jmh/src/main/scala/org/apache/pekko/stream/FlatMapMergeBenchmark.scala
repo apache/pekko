@@ -58,13 +58,11 @@ class FlatMapMergeBenchmark {
   }
 
   @TearDown
-  def shutdown(): Unit = {
+  def shutdown(): Unit =
     Await.result(system.terminate(), 5.seconds)
-  }
 
   @Benchmark
   @OperationsPerInvocation(100000) // Note: needs to match NumberOfElements.
-  def flat_map_merge_100k_elements(): Unit = {
+  def flat_map_merge_100k_elements(): Unit =
     Await.result(graph.run(), Duration.Inf)
-  }
 }

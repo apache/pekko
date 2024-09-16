@@ -38,7 +38,7 @@ class DuplicateFlushSpec extends PekkoSpec("""
   private val addressA = UniqueAddress(Address("pekko", "sysA", "hostA", 1001), 1)
   private val addressB = UniqueAddress(Address("pekko", "sysB", "hostB", 1002), 2)
 
-  private def setupStream(inboundContext: InboundContext): (TestPublisher.Probe[AnyRef], TestSubscriber.Probe[Any]) = {
+  private def setupStream(inboundContext: InboundContext): (TestPublisher.Probe[AnyRef], TestSubscriber.Probe[Any]) =
     TestSource
       .probe[AnyRef]
       .map { msg =>
@@ -69,7 +69,6 @@ class DuplicateFlushSpec extends PekkoSpec("""
       .map(env => env.message -> env.lane)
       .toMat(TestSink.probe[Any])(Keep.both)
       .run()
-  }
 
   "DuplicateFlush stage" must {
 

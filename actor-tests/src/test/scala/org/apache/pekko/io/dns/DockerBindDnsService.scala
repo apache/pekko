@@ -55,12 +55,12 @@ abstract class DockerBindDnsService(config: Config) extends PekkoSpec(config) wi
 
     // https://github.com/sameersbn/docker-bind/pull/61
     val image = "raboof/bind:9.11.3-20180713-nochown"
-    try {
+    try
       client
         .pullImageCmd(image)
         .start()
         .awaitCompletion()
-    } catch {
+    catch {
       case NonFatal(_) =>
         log.warning(s"Failed to pull docker image [$image], is docker running?")
         return
@@ -86,12 +86,12 @@ abstract class DockerBindDnsService(config: Config) extends PekkoSpec(config) wi
       .exec()
       .asScala
       .find((c: Container) => c.getNames().exists(_.contains(containerName)))
-      .foreach((c: Container) => {
+      .foreach { (c: Container) =>
         if ("running" == c.getState()) {
           client.killContainerCmd(c.getId()).exec()
         }
         client.removeContainerCmd(c.getId()).exec()
-      })
+      }
 
     val creation = containerCommand.exec()
     if (creation.getWarnings() != null)
@@ -112,7 +112,7 @@ abstract class DockerBindDnsService(config: Config) extends PekkoSpec(config) wi
   }
 
   def dumpNameserverLogs(): Unit = {
-    id.foreach(id => {
+    id.foreach { id =>
       val reader = new StringBuilderLogReader
       client
         .logContainerCmd(id)
@@ -121,8 +121,8 @@ abstract class DockerBindDnsService(config: Config) extends PekkoSpec(config) wi
         .awaitCompletion()
 
       log.info("Nameserver std out: {} ", reader.toString())
-    })
-    id.foreach(id => {
+    }
+    id.foreach { id =>
       val reader = new StringBuilderLogReader
       client
         .logContainerCmd(id)
@@ -130,7 +130,7 @@ abstract class DockerBindDnsService(config: Config) extends PekkoSpec(config) wi
         .exec(reader)
         .awaitCompletion()
       log.info("Nameserver std err: {} ", reader.toString())
-    })
+    }
   }
 
   override def afterTermination(): Unit = {

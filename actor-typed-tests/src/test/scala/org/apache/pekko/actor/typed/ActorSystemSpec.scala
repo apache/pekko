@@ -40,9 +40,8 @@ class ActorSystemSpec extends PekkoSpec {
         (debugText should not).include(username)
         (debugText should not).include(userHome)
         debugText should include("<username>")
-      } finally {
+      } finally
         system.terminate()
-      }
     }
   }
 }

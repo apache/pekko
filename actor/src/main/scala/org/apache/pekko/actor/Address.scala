@@ -47,9 +47,8 @@ final case class Address private[pekko] (protocol: String, system: String, host:
       protocol: String = protocol,
       system: String = system,
       host: Option[String] = host,
-      port: Option[Int] = port) = {
+      port: Option[Int] = port) =
     Address(protocol, system, host, port)
-  }
 
   /**
    * Java API: The hostname if specified or empty optional if not
@@ -167,7 +166,7 @@ private[pekko] trait PathUtils {
  *  * "/user/hello/world"
  */
 object RelativeActorPath extends PathUtils {
-  def unapply(addr: String): Option[immutable.Seq[String]] = {
+  def unapply(addr: String): Option[immutable.Seq[String]] =
     try {
       val uri = new URI(addr)
       if (uri.isAbsolute) None
@@ -175,7 +174,6 @@ object RelativeActorPath extends PathUtils {
     } catch {
       case _: URISyntaxException => None
     }
-  }
 }
 
 /**

@@ -258,9 +258,8 @@ sealed abstract class VersionVector extends ReplicatedData with ReplicatedDataSe
    *   4. Version 1 is CONCURRENT (<>) to Version 2 otherwise.
    * }}}
    */
-  def compareTo(that: VersionVector): Ordering = {
+  def compareTo(that: VersionVector): Ordering =
     compareOnlyTo(that, FullOrder)
-  }
 
   /**
    * Merges this VersionVector with another VersionVector. E.g. merges its versioned history.
@@ -306,7 +305,7 @@ final case class OneVersionVector private[pekko] (node: UniqueAddress, version: 
   @InternalApi private[pekko] override def versionsIterator: Iterator[(UniqueAddress, Long)] =
     Iterator.single((node, version))
 
-  override def merge(that: VersionVector): VersionVector = {
+  override def merge(that: VersionVector): VersionVector =
     that match {
       case OneVersionVector(n2, v2) =>
         if (node == n2) if (version >= v2) this else OneVersionVector(n2, v2)
@@ -318,7 +317,6 @@ final case class OneVersionVector private[pekko] (node: UniqueAddress, version: 
           else vs2.updated(node, version)
         VersionVector(mergedVersions)
     }
-  }
 
   override def modifiedByNodes: Set[UniqueAddress] =
     Set(node)
@@ -369,7 +367,7 @@ final case class ManyVersionVector(versions: TreeMap[UniqueAddress, Long]) exten
   @InternalApi private[pekko] override def versionsIterator: Iterator[(UniqueAddress, Long)] =
     versions.iterator
 
-  override def merge(that: VersionVector): VersionVector = {
+  override def merge(that: VersionVector): VersionVector =
     if (that.isEmpty) this
     else if (this.isEmpty) that
     else
@@ -389,7 +387,6 @@ final case class ManyVersionVector(versions: TreeMap[UniqueAddress, Long]) exten
             else versions.updated(n2, v2)
           VersionVector(mergedVersions)
       }
-  }
 
   override def modifiedByNodes: Set[UniqueAddress] =
     versions.keySet

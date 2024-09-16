@@ -39,11 +39,10 @@ object TestQuickUntilPassed extends AutoPlugin {
     }
   }
 
-  override lazy val projectSettings = {
+  override lazy val projectSettings =
     testQuickUntilPassed := {
       // TODO Figure out a way to pass input from testQuickUntilPassed into testQuickRecursive
       testQuickRecursive("").value
     }
-  }
 
 }

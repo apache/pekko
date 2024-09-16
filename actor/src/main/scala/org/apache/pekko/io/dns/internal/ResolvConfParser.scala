@@ -33,11 +33,10 @@ private[dns] object ResolvConfParser {
   /**
    * Does a partial parse according to https://linux.die.net/man/5/resolver.
    */
-  def parseFile(file: File): Try[ResolvConf] = {
+  def parseFile(file: File): Try[ResolvConf] =
     Try {
       parseLines(Files.lines(file.toPath).iterator().asScala)
     }
-  }
 
   def parseLines(lines: Iterator[String]): ResolvConf = {
     // A few notes - according to the spec, search and domain are mutually exclusive, the domain is used as the

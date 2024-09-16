@@ -203,7 +203,7 @@ case class DefaultResizer(
    * @param routees the current resizer of routees
    * @return number of busy routees, between 0 and routees.size
    */
-  def pressure(routees: immutable.IndexedSeq[Routee]): Int = {
+  def pressure(routees: immutable.IndexedSeq[Routee]): Int =
     routees.count {
       case ActorRefRoutee(a: ActorRefWithCell) =>
         a.underlying match {
@@ -223,7 +223,6 @@ case class DefaultResizer(
       case _ =>
         false
     }
-  }
 
   /**
    * This method can be used to smooth the capacity delta by considering
@@ -276,12 +275,11 @@ private[pekko] final class ResizablePoolCell(
   private val resizeInProgress = new AtomicBoolean
   private val resizeCounter = new AtomicLong
 
-  override protected def preSuperStart(): Unit = {
+  override protected def preSuperStart(): Unit =
     // initial resize, before message send
     if (resizer.isTimeForResize(resizeCounter.getAndIncrement())) {
       resize(initial = true)
     }
-  }
 
   override def sendMessage(envelope: Envelope): Unit = {
     if (!routerConfig.isManagementMessage(envelope.message) &&
@@ -292,7 +290,7 @@ private[pekko] final class ResizablePoolCell(
     super.sendMessage(envelope)
   }
 
-  private[pekko] def resize(initial: Boolean): Unit = {
+  private[pekko] def resize(initial: Boolean): Unit =
     if (resizeInProgress.get || initial)
       try {
         tryReportMessageCount()
@@ -306,17 +304,15 @@ private[pekko] final class ResizablePoolCell(
           removeRoutees(abandon, stopChild = true)
         }
       } finally resizeInProgress.set(false)
-  }
 
   /**
    * This approach is chosen for binary compatibility
    */
-  private def tryReportMessageCount(): Unit = {
+  private def tryReportMessageCount(): Unit =
     resizer match {
       case r: OptimalSizeExploringResizer => r.reportMessageCount(router.routees, resizeCounter.get())
       case _                              => // ignore
     }
-  }
 
 }
 

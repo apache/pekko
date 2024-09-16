@@ -137,23 +137,21 @@ import org.reactivestreams.{ Subscriber, Subscription }
 
     def onCompleteWhenNoInput(): Unit = ()
 
-    def markInput(input: Int): Unit = {
+    def markInput(input: Int): Unit =
       if (!marked(input)) {
         if (depleted(input)) markedDepleted += 1
         if (pending(input)) markedPending += 1
         marked(input, on = true)
         markCount += 1
       }
-    }
 
-    def unmarkInput(input: Int): Unit = {
+    def unmarkInput(input: Int): Unit =
       if (marked(input)) {
         if (depleted(input)) markedDepleted -= 1
         if (pending(input)) markedPending -= 1
         marked(input, on = false)
         markCount -= 1
       }
-    }
 
     def markAllInputs(): Unit = {
       var i = 0

@@ -47,9 +47,8 @@ class IndirectMaterializerCreation(ex: ExtendedActorSystem) extends Extension {
   // extension instantiation blocked on materializer (which has Await.result inside)
   implicit val mat: ActorMaterializer = ActorMaterializer()(ex)
 
-  def futureThing(n: Int): Future[Int] = {
+  def futureThing(n: Int): Future[Int] =
     Source.single(n).runWith(Sink.head)
-  }
 
 }
 
@@ -88,9 +87,8 @@ class ActorMaterializerSpec extends StreamSpec with ImplicitSender {
         // with starvation these fail
         result.futureValue.size should ===(n + 1)
 
-      } finally {
+      } finally
         TestKit.shutdownActorSystem(deadlockSystem)
-      }
     }
 
     "report shutdown status properly" in {
@@ -178,9 +176,9 @@ object ActorMaterializerSpec {
       .take(1)
       .concat(Source.maybe)
       .map(p.ref ! _)
-      .runWith(Sink.onComplete(signal => {
+      .runWith(Sink.onComplete { signal =>
         p.ref ! signal
-      }))
+      })
 
     def receive = Actor.emptyBehavior
   }

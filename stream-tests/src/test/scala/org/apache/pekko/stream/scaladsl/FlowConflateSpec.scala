@@ -82,9 +82,8 @@ class FlowConflateSpec extends StreamSpec("""
         .run()
       val sub = subscriber.expectSubscription()
 
-      for (i <- 1 to 100) {
+      for (i <- 1 to 100)
         publisher.sendNext(i)
-      }
       subscriber.expectNoMessage(1.second)
       sub.request(1)
       subscriber.expectNext(5050)
@@ -98,9 +97,8 @@ class FlowConflateSpec extends StreamSpec("""
       Source.fromPublisher(publisher).conflate(_ + _).to(Sink.fromSubscriber(subscriber)).run()
       val sub = subscriber.expectSubscription()
 
-      for (i <- 1 to 100) {
+      for (i <- 1 to 100)
         publisher.sendNext(i)
-      }
       subscriber.expectNoMessage(1.second)
       sub.request(1)
       subscriber.expectNext(5050)

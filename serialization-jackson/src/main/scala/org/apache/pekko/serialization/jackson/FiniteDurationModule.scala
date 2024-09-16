@@ -50,9 +50,8 @@ import pekko.util.JavaDurationConverters._
  */
 @InternalApi private[pekko] class FiniteDurationSerializer
     extends StdScalarSerializer[FiniteDuration](classOf[FiniteDuration]) {
-  override def serialize(value: FiniteDuration, jgen: JsonGenerator, provider: SerializerProvider): Unit = {
+  override def serialize(value: FiniteDuration, jgen: JsonGenerator, provider: SerializerProvider): Unit =
     DurationSerializer.INSTANCE.serialize(value.asJava, jgen, provider)
-  }
 }
 
 /**
@@ -68,7 +67,6 @@ import pekko.util.JavaDurationConverters._
 @InternalApi private[pekko] class FiniteDurationDeserializer
     extends StdScalarDeserializer[FiniteDuration](classOf[FiniteDuration]) {
 
-  def deserialize(jp: JsonParser, ctxt: DeserializationContext): FiniteDuration = {
+  def deserialize(jp: JsonParser, ctxt: DeserializationContext): FiniteDuration =
     DurationDeserializer.INSTANCE.deserialize(jp, ctxt).asScala
-  }
 }

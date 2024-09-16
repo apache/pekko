@@ -67,8 +67,7 @@ private[pekko] class ConfigServiceDiscovery(system: ExtendedActorSystem) extends
 
   log.debug("Config discovery serving: {}", resolvedServices)
 
-  override def lookup(lookup: Lookup, resolveTimeout: FiniteDuration): Future[Resolved] = {
+  override def lookup(lookup: Lookup, resolveTimeout: FiniteDuration): Future[Resolved] =
     Future.successful(resolvedServices.getOrElse(lookup.serviceName, Resolved(lookup.serviceName, Nil)))
-  }
 
 }

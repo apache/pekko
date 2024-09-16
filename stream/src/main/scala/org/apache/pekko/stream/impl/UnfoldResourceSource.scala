@@ -51,12 +51,12 @@ import pekko.stream.stage._
       @tailrec
       final override def onPull(): Unit = {
         var resumingMode = false
-        try {
+        try
           readData(resource) match {
             case Some(data) => push(out, data)
             case None       => closeStage()
           }
-        } catch {
+        catch {
           case NonFatal(ex) =>
             decider(ex) match {
               case Supervision.Stop =>
@@ -91,9 +91,8 @@ import pekko.stream.stage._
           case NonFatal(ex) => failStage(ex)
         }
 
-      override def postStop(): Unit = {
+      override def postStop(): Unit =
         if (open) close(resource)
-      }
 
       setHandler(out, this)
     }

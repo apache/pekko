@@ -36,9 +36,8 @@ object RecoveryPermitterSpec {
 
     override def persistenceId = name
 
-    override def postStop(): Unit = {
+    override def postStop(): Unit =
       probe ! "postStop"
-    }
 
     override def receiveRecover: Receive = {
       case RecoveryCompleted =>

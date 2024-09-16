@@ -275,13 +275,13 @@ class LazySourceSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
 
   "Source.lazyFutureSource" must {
     "work like a normal source, happy path" in {
-      val result = Source.lazyFutureSource(() => Future { Source(List(1, 2, 3)) }).runWith(Sink.seq)
+      val result = Source.lazyFutureSource(() => Future(Source(List(1, 2, 3)))).runWith(Sink.seq)
 
       result.futureValue should ===(Seq(1, 2, 3))
     }
 
     "work like a normal source, happy path, already completed future" in {
-      val result = Source.lazyFutureSource(() => Future.successful { Source(List(1, 2, 3)) }).runWith(Sink.seq)
+      val result = Source.lazyFutureSource(() => Future.successful(Source(List(1, 2, 3)))).runWith(Sink.seq)
 
       result.futureValue should ===(Seq(1, 2, 3))
     }
@@ -306,7 +306,7 @@ class LazySourceSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
 
     "fail the materialized value when downstream cancels without ever consuming any element" in {
       val lazyMatVal: Future[NotUsed] =
-        Source.lazyFutureSource(() => Future { Source(List(1, 2, 3)) }).toMat(Sink.cancelled)(Keep.left).run()
+        Source.lazyFutureSource(() => Future(Source(List(1, 2, 3)))).toMat(Sink.cancelled)(Keep.left).run()
 
       lazyMatVal.failed.futureValue shouldBe a[NeverMaterializedException]
     }
@@ -315,7 +315,7 @@ class LazySourceSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
       val outProbe = TestSubscriber.probe[Int]()
       val inProbe = TestPublisher.probe[Int]()
 
-      Source.lazyFutureSource(() => Future { Source.fromPublisher(inProbe) }).runWith(Sink.fromSubscriber(outProbe))
+      Source.lazyFutureSource(() => Future(Source.fromPublisher(inProbe))).runWith(Sink.fromSubscriber(outProbe))
 
       outProbe.request(1)
       inProbe.expectRequest()
