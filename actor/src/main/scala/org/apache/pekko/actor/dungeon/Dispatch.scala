@@ -159,7 +159,7 @@ private[pekko] trait Dispatch { this: ActorCell =>
     catch handleException
 
   // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
-  final def stop(): Unit =
+  @noinline final def stop(): Unit =
     try dispatcher.systemDispatch(this, Terminate())
     catch handleException
 
