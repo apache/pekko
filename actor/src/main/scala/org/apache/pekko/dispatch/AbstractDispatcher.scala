@@ -34,6 +34,7 @@ import com.typesafe.config.Config
 
 final case class Envelope private (message: Any, sender: ActorRef) {
 
+  @noinline
   def copy(message: Any = message, sender: ActorRef = sender) = {
     Envelope(message, sender)
   }
