@@ -85,6 +85,8 @@ final case class ThreadPoolConfig(
     queueFactory: ThreadPoolConfig.QueueFactory = ThreadPoolConfig.linkedBlockingQueue(),
     rejectionPolicy: RejectedExecutionHandler = ThreadPoolConfig.defaultRejectionPolicy)
     extends ExecutorServiceFactoryProvider {
+  // Written explicitly to permit non-inlined defn; this is necessary for downstream instrumentation that stores extra
+  // context information on the config
   @noinline
   def copy(
       allowCorePoolTimeout: Boolean = allowCorePoolTimeout,

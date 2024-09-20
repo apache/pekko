@@ -160,7 +160,7 @@ final class MessageBuffer private (private var _head: MessageBuffer.Node, privat
 
 object MessageBuffer {
   private final class Node(var next: Node, val message: Any, val ref: ActorRef) {
-    @noinline
+    @noinline // not inlined to permit downstream bytecode instrumentation to apply context information on the Node to the message
     def apply(f: (Any, ActorRef) => Unit): Unit = {
       f(message, ref)
     }

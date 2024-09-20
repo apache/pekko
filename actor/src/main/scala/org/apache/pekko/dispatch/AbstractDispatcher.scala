@@ -34,7 +34,7 @@ import com.typesafe.config.Config
 
 final case class Envelope private (message: Any, sender: ActorRef) {
 
-  @noinline
+  @noinline // not inlined to permit downstream bytecode instrumentation to attach context information to the Envelope
   def copy(message: Any = message, sender: ActorRef = sender) = {
     Envelope(message, sender)
   }
