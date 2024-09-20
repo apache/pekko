@@ -27,7 +27,7 @@ import org.apache.pekko
 import pekko.NotUsed
 import pekko.annotation.ApiMayChange
 import pekko.event.{ LogMarker, LoggingAdapter, MarkerLoggingAdapter }
-import pekko.japi.{ function, Pair, Util }
+import pekko.japi.{ function, Pair }
 import pekko.stream._
 import pekko.util.ConstantFun
 import pekko.util.FutureConverters._
@@ -193,7 +193,7 @@ class SubSource[Out, Mat](
    */
   def mapConcat[T](f: function.Function[Out, java.lang.Iterable[T]]): SubSource[T, Mat] =
     new SubSource(delegate.mapConcat { elem =>
-      Util.immutableSeq(f(elem))
+      f(elem).asScala
     })
 
   /**
@@ -347,7 +347,7 @@ class SubSource[Out, Mat](
   def statefulMapConcat[T](f: function.Creator[function.Function[Out, java.lang.Iterable[T]]]): SubSource[T, Mat] =
     new SubSource(delegate.statefulMapConcat { () =>
       val fun = f.create()
-      elem => Util.immutableSeq(fun(elem))
+      elem => fun(elem).asScala
     })
 
   /**
@@ -2022,7 +2022,7 @@ class SubSource[Out, Mat](
   def mergeAll(
       those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
       eagerComplete: Boolean): SubSource[Out, Mat] = {
-    val seq = if (those != null) Util.immutableSeq(those).collect {
+    val seq = if (those != null) CollectionUtil.toSeq(those).collect {
       case source: Source[Out @unchecked, _] => source.asScala
       case other                             => other
     }
@@ -2081,7 +2081,7 @@ class SubSource[Out, Mat](
       those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
       segmentSize: Int,
       eagerClose: Boolean): SubSource[Out, Mat] = {
-    val seq = if (those != null) Util.immutableSeq(those).collect {
+    val seq = if (those != null) CollectionUtil.toSeq(those).collect {
       case source: Source[Out @unchecked, _] => source.asScala
       case other                             => other
     }
