@@ -1686,7 +1686,7 @@ trait FlowOps[+Out, +Mat] {
    * '''Cancels when''' downstream cancels
    */
   def collectType[T](implicit tag: ClassTag[T]): Repr[T] =
-    collect { case c if tag.runtimeClass.isInstance(c) => c.asInstanceOf[T] }
+    collect { case tag(c) => c }
 
   /**
    * Chunk up this stream into groups of the given size, with the last group
