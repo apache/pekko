@@ -25,7 +25,7 @@ class FlowCollectTypeSpec extends StreamSpec {
 
   "A CollectType" must {
 
-    "collectType" in {
+    "collectType with references" in {
       val fruit = Source(List(Orange, Apple, Apple, Orange))
 
       val apples = fruit.collectType[Apple].runWith(Sink.seq).futureValue
@@ -34,6 +34,17 @@ class FlowCollectTypeSpec extends StreamSpec {
       oranges should equal(List(Orange, Orange))
       val all = fruit.collectType[Fruit].runWith(Sink.seq).futureValue
       all should equal(List(Orange, Apple, Apple, Orange))
+    }
+
+    "collectType with primitives" in {
+      val numbers = Source(List[Int](1, 2, 3) ++ List[Double](1.5))
+
+      val integers = numbers.collectType[Int].runWith(Sink.seq).futureValue
+      integers should equal(List(1, 2, 3))
+      val doubles = numbers.collectType[Double].runWith(Sink.seq).futureValue
+      doubles should equal(List(1.5))
+      val all = numbers.collectType[Any].runWith(Sink.seq).futureValue
+      all should equal(List(1, 2, 3, 1.5))
     }
 
   }
