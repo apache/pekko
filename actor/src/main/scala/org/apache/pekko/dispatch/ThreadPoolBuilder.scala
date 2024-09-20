@@ -85,6 +85,17 @@ final case class ThreadPoolConfig(
     queueFactory: ThreadPoolConfig.QueueFactory = ThreadPoolConfig.linkedBlockingQueue(),
     rejectionPolicy: RejectedExecutionHandler = ThreadPoolConfig.defaultRejectionPolicy)
     extends ExecutorServiceFactoryProvider {
+  @noinline
+  def copy(
+      allowCorePoolTimeout: Boolean = allowCorePoolTimeout,
+      corePoolSize: Int = corePoolSize,
+      maxPoolSize: Int = maxPoolSize,
+      threadTimeout: Duration = threadTimeout,
+      queueFactory: ThreadPoolConfig.QueueFactory = queueFactory,
+      rejectionPolicy: RejectedExecutionHandler = rejectionPolicy
+  ): ThreadPoolConfig =
+    ThreadPoolConfig(allowCorePoolTimeout, corePoolSize, maxPoolSize, threadTimeout, queueFactory, rejectionPolicy)
+
   class ThreadPoolExecutorServiceFactory(val threadFactory: ThreadFactory) extends ExecutorServiceFactory {
     def createExecutorService: ExecutorService = {
       val service: ThreadPoolExecutor = new ThreadPoolExecutor(
