@@ -21,7 +21,7 @@ package javadsl
 import scala.collection.immutable
 
 import org.apache.pekko
-import pekko.util.japi.Util
+import pekko.japi.Util.immutableSeq
 
 /**
  * INTERNAL API
@@ -30,8 +30,8 @@ import pekko.util.japi.Util
  */
 private[javadsl] object CollectionUtil {
   @inline def toSeq[T](jlist: java.util.List[T]): immutable.Seq[T] =
-    Util.immutableSeq(jlist)
+    immutableSeq(jlist)
 
   @inline def toSeq[T](jiterable: java.lang.Iterable[T]): immutable.Seq[T] =
-    Util.immutableSeq(jiterable)
+    immutableSeq(jiterable)
 }
