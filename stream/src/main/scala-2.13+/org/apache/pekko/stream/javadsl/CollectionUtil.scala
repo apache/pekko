@@ -25,6 +25,8 @@ import pekko.util.ccompat.JavaConverters._
 
 /**
  * INTERNAL API
+ *
+ * Utility methods for converting Java collections to Scala collections.
  */
 private[javadsl] object CollectionUtil {
   @inline def toSeq[T](jlist: java.util.List[T]): immutable.Seq[T] =

@@ -21,15 +21,17 @@ package javadsl
 import scala.collection.immutable
 
 import org.apache.pekko
-import pekko.util.ccompat.JavaConverters._
+import pekko.util.japi.Util
 
 /**
  * INTERNAL API
+ *
+ * Utility methods for converting Java collections to Scala collections.
  */
 private[javadsl] object CollectionUtil {
   @inline def toSeq[T](jlist: java.util.List[T]): immutable.Seq[T] =
-    jlist.asScala.toList
+    Util.immutableSeq(jlist)
 
   @inline def toSeq[T](jiterable: java.lang.Iterable[T]): immutable.Seq[T] =
-    jiterable.asScala.toList
+    Util.immutableSeq(jiterable)
 }
