@@ -26,10 +26,10 @@ import pekko.util.ccompat.JavaConverters._
 /**
  * INTERNAL API
  */
-private[javadsl] object CollectionUtil {
-  def toSeq[T](jlist: java.util.List[T]): immutable.Seq[T] =
+private[javadsl] final object CollectionUtil {
+  @inline def toSeq[T](jlist: java.util.List[T]): immutable.Seq[T] =
     jlist.asScala.toSeq
 
-  def toSeq[T](jiterable: java.lang.Iterable[T]): immutable.Seq[T] =
+  @inline def toSeq[T](jiterable: java.lang.Iterable[T]): immutable.Seq[T] =
     jiterable.asScala.toSeq
 }
