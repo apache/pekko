@@ -122,7 +122,7 @@ object Dependencies {
       val bcprov = "org.bouncycastle" % "bcprov-jdk18on" % bouncyCastleVersion % Test
       val bcpkix = "org.bouncycastle" % "bcpkix-jdk18on" % bouncyCastleVersion % Test
       val bcutil = "org.bouncycastle" % "bcutil-jdk18on" % bouncyCastleVersion % Test
-      val commonsIo = "commons-io" % "commons-io" % "2.16.1" % Test
+      val commonsIo = "commons-io" % "commons-io" % "2.17.0" % Test
       val commonsCodec = "commons-codec" % "commons-codec" % "1.17.1" % Test
       val commonsCompress = "org.apache.commons" % "commons-compress" % "1.27.1" % Test
       val guava = "com.google.guava" % "guava" % "33.3.0-jre" % Test
