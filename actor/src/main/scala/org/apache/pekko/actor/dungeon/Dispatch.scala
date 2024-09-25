@@ -159,7 +159,9 @@ private[pekko] trait Dispatch { this: ActorCell =>
     catch handleException
 
   // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
-  final def stop(): Unit =
+  // this function is marked `noinline` because Kamon and other metrics libraries
+  // instrument this function
+  @noinline final def stop(): Unit =
     try dispatcher.systemDispatch(this, Terminate())
     catch handleException
 
