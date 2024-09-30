@@ -40,7 +40,7 @@ private[pekko] class SSLSettings(config: Config) {
 
   val SSLTrustStorePassword = getString("trust-store-password")
 
-  val SSLEnabledAlgorithms = getStringList("enabled-algorithms").asScala.to(Set)
+  val SSLEnabledAlgorithms = getStringList("enabled-algorithms").asScala.toSet
 
   val SSLProtocol = getString("protocol")
 
