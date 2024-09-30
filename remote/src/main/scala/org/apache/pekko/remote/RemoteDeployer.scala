@@ -18,10 +18,10 @@ import com.typesafe.config._
 import org.apache.pekko
 import pekko.ConfigurationException
 import pekko.actor._
-import pekko.japi.Util.immutableSeq
 import pekko.remote.routing.RemoteRouterConfig
 import pekko.routing._
 import pekko.routing.Pool
+import pekko.util.ccompat.JavaConverters._
 
 @SerialVersionUID(1L)
 final case class RemoteScope(node: Address) extends Scope {
@@ -41,7 +41,7 @@ private[pekko] class RemoteDeployer(_settings: ActorSystem.Settings, _pm: Dynami
           case AddressFromURIString(r) => Some(deploy.copy(scope = RemoteScope(r)))
           case str if !str.isEmpty     => throw new ConfigurationException(s"unparseable remote node name [$str]")
           case _ =>
-            val nodes = immutableSeq(deploy.config.getStringList("target.nodes")).map(AddressFromURIString(_))
+            val nodes = deploy.config.getStringList("target.nodes").asScala.map(AddressFromURIString(_))
             if (nodes.isEmpty || deploy.routerConfig == NoRouter) d
             else
               deploy.routerConfig match {

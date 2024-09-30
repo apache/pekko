@@ -62,7 +62,7 @@ final class RemoteSettings(val config: Config) {
     if (Artery.Enabled) Artery.UntrustedMode else UntrustedMode
   @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
   val TrustedSelectionPaths: Set[String] =
-    immutableSeq(getStringList("pekko.remote.classic.trusted-selection-paths")).toSet
+    getStringList("pekko.remote.classic.trusted-selection-paths").asScala.toSet
 
   @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
   val RemoteLifecycleEventsLogLevel: LogLevel = toRootLowerCase(
@@ -211,7 +211,7 @@ final class RemoteSettings(val config: Config) {
   }
 
   val AcceptProtocolNames: Set[String] = {
-    val set = immutableSeq(getStringList("pekko.remote.accept-protocol-names")).toSet
+    val set = getStringList("pekko.remote.accept-protocol-names").asScala.toSet
     if (set.isEmpty) {
       throw new ConfigurationException("pekko.remote.accept-protocol-names setting must not be empty. " +
         "The setting is an array and the only acceptable values are \"pekko\" and \"akka\".")

@@ -43,6 +43,7 @@ import pekko.util._
 import pekko.util.FutureConverters._
 import pekko.util.OptionConverters._
 import pekko.util.Helpers.toRootLowerCase
+import pekko.util.ccompat.JavaConverters._
 
 object BootstrapSetup {
 
@@ -564,7 +565,7 @@ abstract class ActorSystem extends ActorRefFactory with ClassicActorSystemProvid
   /**
    * Java API: Recursively create a descendant’s path by appending all child names.
    */
-  def descendant(names: java.lang.Iterable[String]): ActorPath = /(immutableSeq(names))
+  def descendant(names: java.lang.Iterable[String]): ActorPath = /(names.asScala)
 
   /**
    * Start-up time in milliseconds since the epoch.
@@ -1210,7 +1211,7 @@ private[pekko] class ActorSystemImpl(
      */
     def loadExtensions(key: String, throwOnLoadFail: Boolean): Unit = {
 
-      immutableSeq(settings.config.getStringList(key)).foreach { fqcn =>
+      settings.config.getStringList(key).asScala.foreach { fqcn =>
         dynamicAccess.getObjectFor[AnyRef](fqcn).recoverWith {
           case firstProblem =>
             dynamicAccess.createInstanceFor[AnyRef](fqcn, Nil).recoverWith { case _ => Failure(firstProblem) }

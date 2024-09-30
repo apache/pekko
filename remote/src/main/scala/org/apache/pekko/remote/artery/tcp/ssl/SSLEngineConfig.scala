@@ -15,7 +15,7 @@ package org.apache.pekko.remote.artery.tcp.ssl
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.japi.Util.immutableSeq
+import pekko.util.ccompat.JavaConverters._
 import com.typesafe.config.Config
 
 import scala.concurrent.duration.FiniteDuration
@@ -30,7 +30,7 @@ private[tcp] class SSLEngineConfig(config: Config) {
 
   private[tcp] val SSLProtocol: String = config.getString("protocol")
   private[tcp] val SSLEnabledAlgorithms: Set[String] =
-    immutableSeq(config.getStringList("enabled-algorithms")).toSet
+    config.getStringList("enabled-algorithms").asScala.toSet
   private[tcp] val SSLRequireMutualAuthentication: Boolean = {
     if (config.hasPath("require-mutual-authentication"))
       config.getBoolean("require-mutual-authentication")

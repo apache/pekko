@@ -21,7 +21,7 @@ import scala.collection.immutable
 import scala.annotation.nowarn
 
 import org.apache.pekko
-import pekko.japi.Util.immutableSeq
+import pekko.util.ccompat.JavaConverters._
 
 /**
  * Java API
@@ -206,7 +206,7 @@ sealed trait ActorPath extends Comparable[ActorPath] with Serializable {
   /**
    * Java API: Recursively create a descendant’s path by appending all child names.
    */
-  def descendant(names: java.lang.Iterable[String]): ActorPath = /(immutableSeq(names))
+  def descendant(names: java.lang.Iterable[String]): ActorPath = /(names.asScala)
 
   /**
    * Sequence of names for this path from root to this. Performance implication: has to allocate a list.
