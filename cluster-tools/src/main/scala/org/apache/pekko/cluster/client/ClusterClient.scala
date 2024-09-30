@@ -47,12 +47,12 @@ import pekko.cluster.ClusterEvent._
 import pekko.cluster.Member
 import pekko.cluster.MemberStatus
 import pekko.cluster.pubsub._
-import pekko.japi.Util.immutableSeq
 import pekko.remote.DeadlineFailureDetector
 import pekko.routing.ConsistentHash
 import pekko.routing.MurmurHash
 import pekko.util.MessageBuffer
-import pekko.util.ccompat.ccompatUsedUntil213
+import pekko.util.ccompat._
+import pekko.util.ccompat.JavaConverters._
 
 @ccompatUsedUntil213
 @deprecated(
@@ -72,7 +72,7 @@ object ClusterClientSettings {
    * the default configuration `pekko.cluster.client`.
    */
   def apply(config: Config): ClusterClientSettings = {
-    val initialContacts = immutableSeq(config.getStringList("initial-contacts")).map(ActorPath.fromString).toSet
+    val initialContacts = config.getStringList("initial-contacts").asScala.map(ActorPath.fromString).toSet
     new ClusterClientSettings(
       initialContacts,
       establishingGetContactsInterval = config.getDuration("establishing-get-contacts-interval", MILLISECONDS).millis,
