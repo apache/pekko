@@ -28,7 +28,7 @@ import org.apache.pekko
 import pekko._
 import pekko.actor.{ ActorRef, ClassicActorSystemProvider, Status }
 import pekko.dispatch.ExecutionContexts
-import pekko.japi.{ function, Util }
+import pekko.japi.function
 import pekko.japi.function.Creator
 import pekko.stream._
 import pekko.stream.impl.LinearTraversalBuilder
@@ -461,7 +461,7 @@ object Sink {
       sinks: java.util.List[_ <: Graph[SinkShape[U], M]],
       fanOutStrategy: function.Function[java.lang.Integer, Graph[UniformFanOutShape[T, U], NotUsed]])
       : Sink[T, java.util.List[M]] = {
-    val seq = if (sinks != null) Util.immutableSeq(sinks).collect {
+    val seq = if (sinks != null) CollectionUtil.toSeq(sinks).collect {
       case sink: Sink[U @unchecked, M @unchecked] => sink.asScala
       case other                                  => other
     }

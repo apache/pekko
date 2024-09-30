@@ -21,7 +21,7 @@ import scala.annotation.unchecked.uncheckedVariance
 import org.apache.pekko
 import pekko.annotation.ApiMayChange
 import pekko.event.{ LogMarker, LoggingAdapter, MarkerLoggingAdapter }
-import pekko.japi.{ function, Pair, Util }
+import pekko.japi.{ function, Pair }
 import pekko.stream._
 import pekko.util.ConstantFun
 import pekko.util.FutureConverters._
@@ -273,7 +273,7 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    */
   def mapConcat[Out2](
       f: function.Function[Out, _ <: java.lang.Iterable[Out2]]): FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] =
-    viaScala(_.mapConcat(elem => Util.immutableSeq(f.apply(elem))))
+    viaScala(_.mapConcat(elem => f.apply(elem).asScala))
 
   /**
    * Apply the given function to each context element (leaving the data elements unchanged).
