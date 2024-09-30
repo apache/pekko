@@ -51,7 +51,8 @@ import pekko.remote.DeadlineFailureDetector
 import pekko.routing.ConsistentHash
 import pekko.routing.MurmurHash
 import pekko.util.MessageBuffer
-import pekko.util.ccompat._
+import pekko.util.ccompat.ccompatUsedUntil213
+import pekko.util.ccompat.JavaConverters._
 
 @ccompatUsedUntil213
 @deprecated(
