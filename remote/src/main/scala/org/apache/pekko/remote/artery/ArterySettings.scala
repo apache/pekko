@@ -23,7 +23,6 @@ import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.NotUsed
-import pekko.japi.Util.immutableSeq
 import pekko.stream.ActorMaterializerSettings
 import pekko.util.Helpers.ConfigOps
 import pekko.util.Helpers.Requiring
@@ -79,7 +78,7 @@ private[pekko] final class ArterySettings private (config: Config) {
   val SSLEngineProviderClassName: String = config.getString("ssl.ssl-engine-provider")
 
   val UntrustedMode: Boolean = getBoolean("untrusted-mode")
-  val TrustedSelectionPaths: Set[String] = immutableSeq(getStringList("trusted-selection-paths")).toSet
+  val TrustedSelectionPaths: Set[String] = getStringList("trusted-selection-paths").asScala.toSet
 
   val LogReceive: Boolean = getBoolean("log-received-messages")
   val LogSend: Boolean = getBoolean("log-sent-messages")
