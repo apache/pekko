@@ -22,7 +22,7 @@ import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.japi.Util.immutableSeq
+import pekko.util.ccompat.JavaConverters._
 
 /**
  * INTERNAL API
@@ -31,9 +31,9 @@ import pekko.japi.Util.immutableSeq
  */
 @InternalApi
 private[javadsl] object CollectionUtil {
-  @inline def toSeq[T](jlist: java.util.List[T]): immutable.Seq[T] =
-    immutableSeq(jlist)
+  inline def toSeq[T](jlist: java.util.List[T]): immutable.Seq[T] =
+    jlist.asScala.toSeq
 
-  @inline def toSeq[T](jiterable: java.lang.Iterable[T]): immutable.Seq[T] =
-    immutableSeq(jiterable)
+  inline def toSeq[T](jiterable: java.lang.Iterable[T]): immutable.Seq[T] =
+    jiterable.asScala.toSeq
 }
