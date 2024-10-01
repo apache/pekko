@@ -17,8 +17,8 @@ import scala.annotation.nowarn
 
 import com.typesafe.config.Config
 import org.apache.pekko
-import pekko.japi.Util._
-import pekko.util.ccompat._
+import pekko.util.ccompat.ccompatUsedUntil213
+import pekko.util.ccompat.JavaConverters._
 
 import io.netty.channel.Channel
 import io.netty.handler.ssl.SslHandler
@@ -40,7 +40,7 @@ private[pekko] class SSLSettings(config: Config) {
 
   val SSLTrustStorePassword = getString("trust-store-password")
 
-  val SSLEnabledAlgorithms = immutableSeq(getStringList("enabled-algorithms")).to(Set)
+  val SSLEnabledAlgorithms = getStringList("enabled-algorithms").asScala.toSet
 
   val SSLProtocol = getString("protocol")
 

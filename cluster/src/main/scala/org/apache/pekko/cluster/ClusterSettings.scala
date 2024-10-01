@@ -23,9 +23,9 @@ import org.apache.pekko
 import pekko.actor.Address
 import pekko.actor.AddressFromURIString
 import pekko.annotation.InternalApi
-import pekko.japi.Util.immutableSeq
 import pekko.util.Helpers.{ toRootLowerCase, ConfigOps, Requiring }
 import pekko.util.Version
+import pekko.util.ccompat.JavaConverters._
 
 object ClusterSettings {
   type DataCenter = String
@@ -87,7 +87,7 @@ final class ClusterSettings(val config: Config, val systemName: String) {
   }
 
   val SeedNodes: immutable.IndexedSeq[Address] =
-    immutableSeq(cc.getStringList("seed-nodes")).map {
+    cc.getStringList("seed-nodes").asScala.map {
       case AddressFromURIString(address) => address
       case _                             => throw new RuntimeException() // compiler exhaustiveness check pleaser
     }.toVector
@@ -161,7 +161,7 @@ final class ClusterSettings(val config: Config, val systemName: String) {
   val SelfDataCenter: DataCenter = cc.getString("multi-data-center.self-data-center")
 
   val Roles: Set[String] = {
-    val configuredRoles = immutableSeq(cc.getStringList("roles")).toSet.requiring(
+    val configuredRoles = cc.getStringList("roles").asScala.toSet.requiring(
       _.forall(!_.startsWith(DcRolePrefix)),
       s"Roles must not start with '$DcRolePrefix' as that is reserved for the cluster self-data-center setting")
 

@@ -26,7 +26,6 @@ import pekko.actor.Address
 import pekko.actor.Deploy
 import pekko.actor.Props
 import pekko.actor.SupervisorStrategy
-import pekko.japi.Util.immutableSeq
 import pekko.remote.RemoteScope
 import pekko.routing.ActorRefRoutee
 import pekko.routing.Pool
@@ -35,6 +34,7 @@ import pekko.routing.Routee
 import pekko.routing.Router
 import pekko.routing.RouterActor
 import pekko.routing.RouterConfig
+import pekko.util.ccompat.JavaConverters._
 
 /**
  * [[pekko.routing.RouterConfig]] implementation for remote deployment on defined
@@ -47,8 +47,8 @@ final case class RemoteRouterConfig(local: Pool, nodes: Iterable[Address]) exten
 
   require(nodes.nonEmpty, "Must specify list of remote target.nodes")
 
-  def this(local: Pool, nodes: java.lang.Iterable[Address]) = this(local, immutableSeq(nodes))
-  def this(local: Pool, nodes: Array[Address]) = this(local, nodes: Iterable[Address])
+  def this(local: Pool, nodes: java.lang.Iterable[Address]) = this(local, nodes.asScala.toSeq)
+  def this(local: Pool, nodes: Array[Address]) = this(local, nodes.toSeq)
 
   // need this iterator as instance variable since Resizer may call createRoutees several times
   @nowarn @transient private val nodeAddressIter: Iterator[Address] = Stream.continually(nodes).flatten.iterator
