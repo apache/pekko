@@ -42,8 +42,10 @@ private[pekko] trait Children { this: ActorCell =>
 
   final def children: immutable.Iterable[ActorRef] = childrenRefs.children
   @nowarn("msg=deprecated")
-  final def getChildren(): java.lang.Iterable[ActorRef] =
-    scala.collection.JavaConverters.asJavaIterableConverter(children).asJava
+  final def getChildren(): java.lang.Iterable[ActorRef] = {
+    import pekko.util.ccompat.JavaConverters._
+    children.asJava
+  }
 
   final def child(name: String): Option[ActorRef] = Option(getChild(name))
   final def getChild(name: String): ActorRef = childrenRefs.getByName(name) match {

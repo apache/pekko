@@ -30,6 +30,7 @@ import pekko.cluster.MemberStatus._
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.event.EventStream
 import pekko.util.ccompat._
+import pekko.util.ccompat.JavaConverters._
 
 /**
  * Domain events published to the event bus.
@@ -138,31 +139,29 @@ object ClusterEvent {
     /**
      * Java API: get current member list.
      */
-    def getMembers: java.lang.Iterable[Member] = {
-      import pekko.util.ccompat.JavaConverters._
+    def getMembers: java.lang.Iterable[Member] =
       members.asJava
-    }
 
     /**
      * Java API: get current unreachable set.
      */
     @nowarn("msg=deprecated")
     def getUnreachable: java.util.Set[Member] =
-      scala.collection.JavaConverters.setAsJavaSetConverter(unreachable).asJava
+      unreachable.asJava
 
     /**
      * Java API: All data centers in the cluster
      */
     @nowarn("msg=deprecated")
     def getUnreachableDataCenters: java.util.Set[String] =
-      scala.collection.JavaConverters.setAsJavaSetConverter(unreachableDataCenters).asJava
+      unreachableDataCenters.asJava
 
     /**
      * Java API: get current “seen-by” set.
      */
     @nowarn("msg=deprecated")
     def getSeenBy: java.util.Set[Address] =
-      scala.collection.JavaConverters.setAsJavaSetConverter(seenBy).asJava
+      seenBy.asJava
 
     /**
      * Java API: get address of current data center leader, or null if none
@@ -190,7 +189,7 @@ object ClusterEvent {
      */
     @nowarn("msg=deprecated")
     def getAllRoles: java.util.Set[String] =
-      scala.collection.JavaConverters.setAsJavaSetConverter(allRoles).asJava
+      allRoles.asJava
 
     /**
      * All data centers in the cluster
@@ -202,7 +201,7 @@ object ClusterEvent {
      */
     @nowarn("msg=deprecated")
     def getAllDataCenters: java.util.Set[String] =
-      scala.collection.JavaConverters.setAsJavaSetConverter(allDataCenters).asJava
+      allDataCenters.asJava
 
     /**
      * Replace the set of unreachable datacenters with the given set

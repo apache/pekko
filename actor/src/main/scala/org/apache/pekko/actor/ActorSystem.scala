@@ -427,10 +427,8 @@ object ActorSystem {
     final val EnableAdditionalSerializationBindings: Boolean = true
     final val SerializeAllMessages: Boolean = getBoolean("pekko.actor.serialize-messages")
     final val SerializeAllCreators: Boolean = getBoolean("pekko.actor.serialize-creators")
-    final val NoSerializationVerificationNeededClassPrefix: Set[String] = {
-      import pekko.util.ccompat.JavaConverters._
+    final val NoSerializationVerificationNeededClassPrefix: Set[String] =
       getStringList("pekko.actor.no-serialization-verification-needed-class-prefix").asScala.toSet
-    }
 
     final val LogLevel: String = getString("pekko.loglevel")
     final val StdoutLogLevel: String = getString("pekko.stdout-loglevel")

@@ -171,10 +171,8 @@ final class ClusterClientSettings(
   /**
    * Java API
    */
-  def withInitialContacts(initialContacts: java.util.Set[ActorPath]): ClusterClientSettings = {
-    import pekko.util.ccompat.JavaConverters._
+  def withInitialContacts(initialContacts: java.util.Set[ActorPath]): ClusterClientSettings =
     withInitialContacts(initialContacts.asScala.toSet)
-  }
 
   def withEstablishingGetContactsInterval(establishingGetContactsInterval: FiniteDuration): ClusterClientSettings =
     copy(establishingGetContactsInterval = establishingGetContactsInterval)
@@ -282,7 +280,6 @@ case object GetContactPoints extends GetContactPoints {
  * @param contactPoints The presently known list of contact points.
  */
 final case class ContactPoints(contactPoints: Set[ActorPath]) {
-  import pekko.util.ccompat.JavaConverters._
 
   /**
    * Java API
@@ -865,7 +862,6 @@ case object GetClusterClients extends GetClusterClients {
  * @param clusterClients The presently known list of cluster clients.
  */
 final case class ClusterClients(clusterClients: Set[ActorRef]) {
-  import pekko.util.ccompat.JavaConverters._
 
   /**
    * Java API

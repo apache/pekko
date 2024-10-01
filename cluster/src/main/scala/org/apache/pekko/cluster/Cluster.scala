@@ -111,8 +111,10 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
    * Java API: roles that this member has
    */
   @nowarn("msg=deprecated")
-  def getSelfRoles: java.util.Set[String] =
-    scala.collection.JavaConverters.setAsJavaSetConverter(selfRoles).asJava
+  def getSelfRoles: java.util.Set[String] = {
+    import pekko.util.ccompat.JavaConverters._
+    selfRoles.asJava
+  }
 
   private val _isTerminated = new AtomicBoolean(false)
   private val log = Logging.withMarker(system, ClusterLogClass.ClusterCore)
