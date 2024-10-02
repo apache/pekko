@@ -53,6 +53,11 @@ object PekkoDevelocityPlugin extends AutoPlugin {
               .withObfuscation(
                 original.buildScan.obfuscation
                   .withIpAddresses(_.map(_ => ObfuscatedIPv4Address))))
+          .withBuildCache(
+            original.buildCache
+              .withLocal(
+                original.buildCache.local
+                  .withEnabled(false)))
       if (isInsideCI) {
         apacheDevelocityConfiguration
           .withTestRetryConfiguration(
@@ -71,7 +76,6 @@ object PekkoDevelocityJdk9TestSettingsPlugin extends AutoPlugin {
   override lazy val trigger: PluginTrigger = allRequirements
   override lazy val requires: Plugins = DevelocityPlugin && Jdk9
 
-  // See https://docs.gradle.com/develocity/sbt-plugin/#capturing_test_data_in_a_custom_configuration
-  override lazy val projectSettings =
-    inConfig(Jdk9.TestJdk9)(DevelocityPlugin.testSettings)
+  // See https://docs.gradle.com/develocity/sbt-plugin/#enabling_build_cache_in_a_custom_sbt_configuration
+  override lazy val projectSettings = DevelocityPlugin.develocitySettings(Jdk9.TestJdk9)
 }
