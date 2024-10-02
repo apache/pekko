@@ -218,7 +218,7 @@ sealed trait ActorPath extends Comparable[ActorPath] with Serializable {
    */
   @nowarn("msg=deprecated")
   def getElements: java.lang.Iterable[String] =
-    scala.collection.JavaConverters.asJavaIterableConverter(elements).asJava
+    elements.asJava
 
   /**
    * Walk up the tree to obtain and return the RootActorPath.

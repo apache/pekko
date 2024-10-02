@@ -25,7 +25,7 @@ private[cluster] object ConfigUtil {
 
   @nowarn("msg=deprecated")
   def addAkkaConfig(cfg: Config, akkaVersion: String): Config = {
-    import scala.collection.JavaConverters._
+    import org.apache.pekko.util.ccompat.JavaConverters._
     val innerSet = cfg.entrySet().asScala
       .filter(e => e.getKey.startsWith("pekko.") && e.getValue.valueType() != ConfigValueType.OBJECT)
       .map { entry =>

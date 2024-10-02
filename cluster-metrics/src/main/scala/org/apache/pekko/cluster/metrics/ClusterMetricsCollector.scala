@@ -107,8 +107,10 @@ final case class ClusterMetricsChanged(nodeMetrics: Set[NodeMetrics]) extends Cl
 
   /** Java API */
   @nowarn("msg=deprecated")
-  def getNodeMetrics: java.lang.Iterable[NodeMetrics] =
-    scala.collection.JavaConverters.asJavaIterableConverter(nodeMetrics).asJava
+  def getNodeMetrics: java.lang.Iterable[NodeMetrics] = {
+    import pekko.util.ccompat.JavaConverters._
+    nodeMetrics.asJava
+  }
 }
 
 /**

@@ -62,8 +62,10 @@ class Member private[cluster] (
    * Java API
    */
   @nowarn("msg=deprecated")
-  def getRoles: java.util.Set[String] =
-    scala.collection.JavaConverters.setAsJavaSetConverter(roles).asJava
+  def getRoles: java.util.Set[String] = {
+    import pekko.util.ccompat.JavaConverters._
+    roles.asJava
+  }
 
   /**
    * Is this member older, has been part of cluster longer, than another

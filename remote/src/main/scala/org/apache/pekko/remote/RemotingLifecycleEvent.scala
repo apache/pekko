@@ -78,8 +78,10 @@ final case class AssociationErrorEvent(
 @SerialVersionUID(1L)
 @nowarn("msg=deprecated")
 final case class RemotingListenEvent(listenAddresses: Set[Address]) extends RemotingLifecycleEvent {
-  def getListenAddresses: java.util.Set[Address] =
-    scala.collection.JavaConverters.setAsJavaSetConverter(listenAddresses).asJava
+  def getListenAddresses: java.util.Set[Address] = {
+    import pekko.util.ccompat.JavaConverters._
+    listenAddresses.asJava
+  }
   override def logLevel: Logging.LogLevel = Logging.InfoLevel
   override def toString: String = "Remoting now listens on addresses: " + listenAddresses.mkString("[", ", ", "]")
 }
