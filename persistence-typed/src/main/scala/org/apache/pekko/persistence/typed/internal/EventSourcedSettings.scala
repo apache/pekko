@@ -64,8 +64,6 @@ import pekko.persistence.Persistence
 
     val useContextLoggerForInternalLogging = typedConfig.getBoolean("use-context-logger-for-internal-logging")
 
-    Persistence.verifyPluginConfigExists(config, snapshotPluginId, "Snapshot store")
-
     EventSourcedSettings(
       stashCapacity = stashCapacity,
       stashOverflowStrategy,
