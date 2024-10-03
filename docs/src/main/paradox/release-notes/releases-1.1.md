@@ -2,9 +2,27 @@
 
 Apache Pekko 1.1.x releases support Java 8 and above.
 
+## 1.1.2
+
+Pekko 1.1.2 is a bug fix and dependency upgrade release.
+
+### Bug Fixes
+
+* Fix version issue in OSGi metadata ([PR1464](https://github.com/apache/pekko/pull/1464))
+* Support primitives in Flow#collectType ([PR1490](https://github.com/apache/pekko/pull/1490))
+
+### Changes
+
+* Some updates to fix issues seen by Kamon users ([#1484](https://github.com/apache/pekko/issues/1484))
+
+### Dependency Changes
+
+* pekko-protobuf-v3 is now based on protobuf-java 3.25.5
+* netty 4.1.114.Final
+
 ## 1.1.1
 
-Pekko 1.1.1 is a bugfix release.
+Pekko 1.1.1 is a bug fix release.
 
 ### Bug Fixes
 
