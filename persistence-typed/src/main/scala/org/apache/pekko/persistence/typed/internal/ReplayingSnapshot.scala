@@ -127,7 +127,7 @@ private[pekko] class ReplayingSnapshot[C, E, S](override val setup: BehaviorSetu
     if (snapshot) {
       // we know we're in snapshotting mode; snapshot recovery timeout arrived
       val ex = new RecoveryTimedOut(
-        s"Recovery timed out, didn't get snapshot within ${setup.settings.recoveryEventTimeout}")
+        s"Recovery timed out, didn't get snapshot within ${setup.recoveryEventTimeout}")
       onRecoveryFailure(ex)
     } else Behaviors.same // ignore, since we received the snapshot already
 

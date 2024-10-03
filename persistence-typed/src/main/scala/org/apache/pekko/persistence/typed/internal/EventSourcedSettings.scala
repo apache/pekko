@@ -13,10 +13,6 @@
 
 package org.apache.pekko.persistence.typed.internal
 
-import java.util.concurrent.TimeUnit
-
-import scala.concurrent.duration._
-
 import com.typesafe.config.Config
 
 import org.apache.pekko
@@ -29,10 +25,29 @@ import pekko.persistence.Persistence
  */
 @InternalApi private[pekko] object EventSourcedSettings {
 
-  def apply(system: ActorSystem[_], journalPluginId: String, snapshotPluginId: String): EventSourcedSettings =
-    apply(system.settings.config, journalPluginId, snapshotPluginId)
+  def apply(
+      system: ActorSystem[_],
+      journalPluginId: String,
+      snapshotPluginId: String
+  ): EventSourcedSettings =
+    apply(system.settings.config, journalPluginId, snapshotPluginId, None, None)
 
-  def apply(config: Config, journalPluginId: String, snapshotPluginId: String): EventSourcedSettings = {
+  def apply(
+      system: ActorSystem[_],
+      journalPluginId: String,
+      snapshotPluginId: String,
+      journalPluginConfig: Option[Config],
+      snapshotPluginConfig: Option[Config]
+  ): EventSourcedSettings =
+    apply(system.settings.config, journalPluginId, snapshotPluginId, journalPluginConfig, snapshotPluginConfig)
+
+  def apply(
+      config: Config,
+      journalPluginId: String,
+      snapshotPluginId: String,
+      journalPluginConfig: Option[Config],
+      snapshotPluginConfig: Option[Config]
+  ): EventSourcedSettings = {
     val typedConfig = config.getConfig("pekko.persistence.typed")
 
     val stashOverflowStrategy = typedConfig.getString("stash-overflow-strategy").toLowerCase match {
@@ -47,10 +62,6 @@ import pekko.persistence.Persistence
 
     val logOnStashing = typedConfig.getBoolean("log-stashing")
 
-    val journalConfig = journalConfigFor(config, journalPluginId)
-    val recoveryEventTimeout: FiniteDuration =
-      journalConfig.getDuration("recovery-event-timeout", TimeUnit.MILLISECONDS).millis
-
     val useContextLoggerForInternalLogging = typedConfig.getBoolean("use-context-logger-for-internal-logging")
 
     Persistence.verifyPluginConfigExists(config, snapshotPluginId, "Snapshot store")
@@ -59,24 +70,12 @@ import pekko.persistence.Persistence
       stashCapacity = stashCapacity,
       stashOverflowStrategy,
       logOnStashing = logOnStashing,
-      recoveryEventTimeout,
       journalPluginId,
       snapshotPluginId,
+      journalPluginConfig,
+      snapshotPluginConfig,
       useContextLoggerForInternalLogging)
   }
-
-  private def journalConfigFor(config: Config, journalPluginId: String): Config = {
-    def defaultJournalPluginId = {
-      val configPath = config.getString("pekko.persistence.journal.plugin")
-      Persistence.verifyPluginConfigIsDefined(configPath, "Default journal")
-      configPath
-    }
-
-    val configPath = if (journalPluginId == "") defaultJournalPluginId else journalPluginId
-    Persistence.verifyPluginConfigExists(config, configPath, "Journal")
-    config.getConfig(configPath).withFallback(config.getConfig(Persistence.JournalFallbackConfigPath))
-  }
-
 }
 
 /**
@@ -87,9 +86,10 @@ private[pekko] final case class EventSourcedSettings(
     stashCapacity: Int,
     stashOverflowStrategy: StashOverflowStrategy,
     logOnStashing: Boolean,
-    recoveryEventTimeout: FiniteDuration,
     journalPluginId: String,
     snapshotPluginId: String,
+    journalPluginConfig: Option[Config],
+    snapshotPluginConfig: Option[Config],
     useContextLoggerForInternalLogging: Boolean) {
 
   require(journalPluginId != null, "journal plugin id must not be null; use empty string for 'default' journal")
