@@ -112,9 +112,12 @@ object PersistenceTestKitPlugin {
  * Persistence testkit plugin for snapshots.
  */
 @InternalApi
-class PersistenceTestKitSnapshotPlugin extends SnapshotStore {
+class PersistenceTestKitSnapshotPlugin(@unused cfg: Config, cfgPath: String) extends SnapshotStore {
 
-  private final val storage = SnapshotStorageEmulatorExtension(context.system)
+  private final val storage = {
+    log.debug("Using snapshot storage emulator extension [{}] for test kit snapshot storage", cfgPath)
+    SnapshotStorageEmulatorExtension(context.system).storageFor(cfgPath)
+  }
 
   override def loadAsync(persistenceId: String, criteria: SnapshotSelectionCriteria): Future[Option[SelectedSnapshot]] =
     Future.fromTry(Try(storage.tryRead(persistenceId, criteria)))

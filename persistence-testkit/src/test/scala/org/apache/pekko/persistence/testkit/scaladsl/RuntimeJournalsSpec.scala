@@ -7,26 +7,34 @@ import org.apache.pekko.actor.testkit.typed.scaladsl.LogCapturing
 import org.apache.pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import org.apache.pekko.actor.typed.ActorRef
 import org.apache.pekko.actor.typed.Behavior
+import org.apache.pekko.actor.typed.scaladsl.adapter._
+import org.apache.pekko.persistence.Persistence
+import org.apache.pekko.persistence.SelectedSnapshot
+import org.apache.pekko.persistence.SnapshotProtocol
+import org.apache.pekko.persistence.SnapshotProtocol.LoadSnapshot
+import org.apache.pekko.persistence.SnapshotProtocol.LoadSnapshotResult
+import org.apache.pekko.persistence.SnapshotSelectionCriteria
 import org.apache.pekko.persistence.testkit.PersistenceTestKitPlugin
 import org.apache.pekko.persistence.testkit.PersistenceTestKitSnapshotPlugin
 import org.apache.pekko.persistence.typed.PersistenceId
 import org.apache.pekko.persistence.typed.scaladsl.Effect
 import org.apache.pekko.persistence.typed.scaladsl.EventSourcedBehavior
 import org.apache.pekko.persistence.typed.scaladsl.RetentionCriteria
+import org.scalatest.Inside
 import org.scalatest.wordspec.AnyWordSpecLike
 
 object RuntimeJournalsSpec {
 
-  object ListActor {
+  object Actor {
     sealed trait Command
     case class Save(text: String, replyTo: ActorRef[Done]) extends Command
-    case class ShowMeWhatYouGot(replyTo: ActorRef[Set[String]]) extends Command
+    case class ShowMeWhatYouGot(replyTo: ActorRef[String]) extends Command
     case object Stop extends Command
 
     def apply(persistenceId: String, journal: String, config: Config): Behavior[Command] =
-      EventSourcedBehavior[Command, String, Set[String]](
+      EventSourcedBehavior[Command, String, String](
         PersistenceId.ofUniqueId(persistenceId),
-        Set.empty[String],
+        "",
         (state, cmd) =>
           cmd match {
             case Save(text, replyTo) =>
@@ -37,7 +45,7 @@ object RuntimeJournalsSpec {
             case Stop =>
               Effect.stop()
           },
-        (state, evt) => state + evt)
+        (state, evt) => Seq(state, evt).filter(_.nonEmpty).mkString("|"))
         .withRetention(RetentionCriteria.snapshotEvery(1, Int.MaxValue))
         .withJournalPluginId(s"$journal.journal")
         .withJournalPluginConfig(Some(config))
@@ -65,7 +73,8 @@ object RuntimeJournalsSpec {
 class RuntimeJournalsSpec
     extends ScalaTestWithActorTestKit
     with AnyWordSpecLike
-    with LogCapturing {
+    with LogCapturing
+    with Inside {
 
   import RuntimeJournalsSpec._
 
@@ -76,34 +85,46 @@ class RuntimeJournalsSpec
 
       {
         // one actor in each journal with same id
-        val j1 = spawn(ListActor("id1", "journal1", config1))
-        val j2 = spawn(ListActor("id1", "journal2", config2))
-        j1 ! ListActor.Save("j1m1", probe.ref)
+        val j1 = spawn(Actor("id1", "journal1", config1))
+        val j2 = spawn(Actor("id1", "journal2", config2))
+        j1 ! Actor.Save("j1m1", probe.ref)
         probe.receiveMessage()
-        j2 ! ListActor.Save("j2m1", probe.ref)
+        j2 ! Actor.Save("j2m1", probe.ref)
         probe.receiveMessage()
 
-        j1 ! ListActor.Stop
+        j1 ! Actor.Stop
         probe.expectTerminated(j1)
-        j2 ! ListActor.Stop
+        j2 ! Actor.Stop
         probe.expectTerminated(j2)
       }
 
       {
         // new incarnations in each journal with same id
-        val j1 = spawn(ListActor("id1", "journal1", config1))
-        val j2 = spawn(ListActor("id1", "journal2", config2))
+        val j1 = spawn(Actor("id1", "journal1", config1))
+        val j2 = spawn(Actor("id1", "journal2", config2))
 
         // does not see each others events
-        j1 ! ListActor.ShowMeWhatYouGot(probe.ref)
-        probe.expectMessage(Set("j1m1"))
-        j2 ! ListActor.ShowMeWhatYouGot(probe.ref)
-        probe.expectMessage(Set("j2m1"))
+        j1 ! Actor.ShowMeWhatYouGot(probe.ref)
+        probe.expectMessage("j1m1")
+        j2 ! Actor.ShowMeWhatYouGot(probe.ref)
+        probe.expectMessage("j2m1")
       }
 
-      // TODO test snapshot journal
+      {
+        def assertSnapshot(journal: String, config: Config, expectedShapshot: String) = {
+          val snapshotStore = Persistence(system).snapshotStoreFor(s"$journal.snapshot", config)
+          val senderProbe = createTestProbe[SnapshotProtocol.Response]()
+          snapshotStore.tell(LoadSnapshot("id1", SnapshotSelectionCriteria.Latest, Long.MaxValue),
+            senderProbe.ref.toClassic)
+          inside(senderProbe.receiveMessage()) {
+            case LoadSnapshotResult(Some(SelectedSnapshot(_, snapshot)), _) =>
+              snapshot shouldBe expectedShapshot
+          }
+        }
+
+        assertSnapshot("journal1", config1, "j1m1")
+        assertSnapshot("journal2", config2, "j2m1")
+      }
     }
-
   }
-
 }
