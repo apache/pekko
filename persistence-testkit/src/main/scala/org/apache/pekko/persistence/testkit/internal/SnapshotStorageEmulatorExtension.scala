@@ -38,6 +38,10 @@ private[testkit] object SnapshotStorageEmulatorExtension extends ExtensionId[Sna
     SnapshotStorageEmulatorExtension
 }
 
+/**
+ * INTERNAL API
+ */
+@InternalApi
 final class SnapshotStorageEmulatorExtension(system: ExtendedActorSystem) extends Extension {
   private val stores = new ConcurrentHashMap[String, SnapshotStorage]()
 
