@@ -1,6 +1,5 @@
 package org.apache.pekko.persistence.testkit.scaladsl
 
-import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import org.apache.pekko.Done
 import org.apache.pekko.actor.testkit.typed.scaladsl.LogCapturing
@@ -8,9 +7,11 @@ import org.apache.pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import org.apache.pekko.actor.typed.ActorRef
 import org.apache.pekko.actor.typed.Behavior
 import org.apache.pekko.actor.typed.scaladsl.adapter._
+import org.apache.pekko.persistence.JournalProtocol.RecoverySuccess
+import org.apache.pekko.persistence.JournalProtocol.ReplayMessages
+import org.apache.pekko.persistence.JournalProtocol.ReplayedMessage
 import org.apache.pekko.persistence.Persistence
 import org.apache.pekko.persistence.SelectedSnapshot
-import org.apache.pekko.persistence.SnapshotProtocol
 import org.apache.pekko.persistence.SnapshotProtocol.LoadSnapshot
 import org.apache.pekko.persistence.SnapshotProtocol.LoadSnapshotResult
 import org.apache.pekko.persistence.SnapshotSelectionCriteria
@@ -25,13 +26,13 @@ import org.scalatest.wordspec.AnyWordSpecLike
 
 object RuntimeJournalsSpec {
 
-  object Actor {
+  private object Actor {
     sealed trait Command
     case class Save(text: String, replyTo: ActorRef[Done]) extends Command
     case class ShowMeWhatYouGot(replyTo: ActorRef[String]) extends Command
     case object Stop extends Command
 
-    def apply(persistenceId: String, journal: String, config: Config): Behavior[Command] =
+    def apply(persistenceId: String, journal: String): Behavior[Command] =
       EventSourcedBehavior[Command, String, String](
         PersistenceId.ofUniqueId(persistenceId),
         "",
@@ -48,26 +49,20 @@ object RuntimeJournalsSpec {
         (state, evt) => Seq(state, evt).filter(_.nonEmpty).mkString("|"))
         .withRetention(RetentionCriteria.snapshotEvery(1, Int.MaxValue))
         .withJournalPluginId(s"$journal.journal")
-        .withJournalPluginConfig(Some(config))
+        .withJournalPluginConfig(Some(config(journal)))
         .withSnapshotPluginId(s"$journal.snapshot")
-        .withSnapshotPluginConfig(Some(config))
+        .withSnapshotPluginConfig(Some(config(journal)))
 
   }
 
-  def config1 = ConfigFactory.parseString(s"""
-    journal1 {
-      journal.class = "${classOf[PersistenceTestKitPlugin].getName}"
-      snapshot.class = "${classOf[PersistenceTestKitSnapshotPlugin].getName}"
-    }
-  """)
-
-  def config2 = ConfigFactory.parseString(s"""
-    journal2 {
-      journal.class = "${classOf[PersistenceTestKitPlugin].getName}"
-      snapshot.class = "${classOf[PersistenceTestKitSnapshotPlugin].getName}"
-    }
-  """).resolve()
-
+  private def config(journal: String) = {
+    ConfigFactory.parseString(s"""
+      $journal {
+        journal.class = "${classOf[PersistenceTestKitPlugin].getName}"
+        snapshot.class = "${classOf[PersistenceTestKitSnapshotPlugin].getName}"
+      }
+    """)
+  }
 }
 
 class RuntimeJournalsSpec
@@ -85,45 +80,43 @@ class RuntimeJournalsSpec
 
       {
         // one actor in each journal with same id
-        val j1 = spawn(Actor("id1", "journal1", config1))
-        val j2 = spawn(Actor("id1", "journal2", config2))
+        val j1 = spawn(Actor("id1", "journal1"))
+        val j2 = spawn(Actor("id1", "journal2"))
         j1 ! Actor.Save("j1m1", probe.ref)
         probe.receiveMessage()
         j2 ! Actor.Save("j2m1", probe.ref)
         probe.receiveMessage()
-
-        j1 ! Actor.Stop
-        probe.expectTerminated(j1)
-        j2 ! Actor.Stop
-        probe.expectTerminated(j2)
       }
 
       {
-        // new incarnations in each journal with same id
-        val j1 = spawn(Actor("id1", "journal1", config1))
-        val j2 = spawn(Actor("id1", "journal2", config2))
+        def assertJournal(journal: String, expectedEvent: String) = {
+          val ref = Persistence(system).journalFor(s"$journal.journal", config(journal))
+          ref.tell(ReplayMessages(0, Long.MaxValue, Long.MaxValue, "id1", probe.ref.toClassic), probe.ref.toClassic)
+          inside(probe.receiveMessage()) {
+            case ReplayedMessage(persistentRepr) =>
+              persistentRepr.persistenceId shouldBe "id1"
+              persistentRepr.payload shouldBe expectedEvent
+          }
+          probe.expectMessage(RecoverySuccess(1))
+        }
 
-        // does not see each others events
-        j1 ! Actor.ShowMeWhatYouGot(probe.ref)
-        probe.expectMessage("j1m1")
-        j2 ! Actor.ShowMeWhatYouGot(probe.ref)
-        probe.expectMessage("j2m1")
+        assertJournal("journal1", "j1m1")
+        assertJournal("journal2", "j2m1")
       }
 
       {
-        def assertSnapshot(journal: String, config: Config, expectedShapshot: String) = {
-          val snapshotStore = Persistence(system).snapshotStoreFor(s"$journal.snapshot", config)
-          val senderProbe = createTestProbe[SnapshotProtocol.Response]()
-          snapshotStore.tell(LoadSnapshot("id1", SnapshotSelectionCriteria.Latest, Long.MaxValue),
-            senderProbe.ref.toClassic)
-          inside(senderProbe.receiveMessage()) {
+        def assertSnapshot(journal: String, expectedShapshot: String) = {
+          val ref = Persistence(system).snapshotStoreFor(s"$journal.snapshot", config(journal))
+          ref.tell(LoadSnapshot("id1", SnapshotSelectionCriteria.Latest, Long.MaxValue),
+            probe.ref.toClassic)
+          inside(probe.receiveMessage()) {
             case LoadSnapshotResult(Some(SelectedSnapshot(_, snapshot)), _) =>
               snapshot shouldBe expectedShapshot
           }
         }
 
-        assertSnapshot("journal1", config1, "j1m1")
-        assertSnapshot("journal2", config2, "j2m1")
+        assertSnapshot("journal1", "j1m1")
+        assertSnapshot("journal2", "j2m1")
       }
     }
   }
