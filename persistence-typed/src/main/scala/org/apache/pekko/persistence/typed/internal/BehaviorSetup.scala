@@ -16,9 +16,10 @@ package org.apache.pekko.persistence.typed.internal
 import com.typesafe.config.ConfigFactory
 
 import scala.concurrent.ExecutionContext
+import scala.concurrent.duration.FiniteDuration
 import scala.util.control.NonFatal
 import org.apache.pekko
-import org.apache.pekko.util.Helpers.ConfigOps
+import pekko.util.Helpers.ConfigOps
 import pekko.actor.Cancellable
 import pekko.actor.typed.Signal
 import pekko.actor.typed.scaladsl.ActorContext
@@ -34,8 +35,6 @@ import pekko.persistence.typed.scaladsl.RetentionCriteria
 import pekko.util.OptionVal
 import org.slf4j.Logger
 import org.slf4j.MDC
-
-import scala.concurrent.duration.FiniteDuration
 
 /**
  * INTERNAL API

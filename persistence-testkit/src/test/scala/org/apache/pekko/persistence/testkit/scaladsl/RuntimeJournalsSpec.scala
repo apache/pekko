@@ -1,26 +1,44 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.apache.pekko.persistence.testkit.scaladsl
 
 import com.typesafe.config.ConfigFactory
-import org.apache.pekko.Done
-import org.apache.pekko.actor.testkit.typed.scaladsl.LogCapturing
-import org.apache.pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import org.apache.pekko.actor.typed.ActorRef
-import org.apache.pekko.actor.typed.Behavior
-import org.apache.pekko.actor.typed.scaladsl.adapter._
-import org.apache.pekko.persistence.JournalProtocol.RecoverySuccess
-import org.apache.pekko.persistence.JournalProtocol.ReplayMessages
-import org.apache.pekko.persistence.JournalProtocol.ReplayedMessage
-import org.apache.pekko.persistence.Persistence
-import org.apache.pekko.persistence.SelectedSnapshot
-import org.apache.pekko.persistence.SnapshotProtocol.LoadSnapshot
-import org.apache.pekko.persistence.SnapshotProtocol.LoadSnapshotResult
-import org.apache.pekko.persistence.SnapshotSelectionCriteria
-import org.apache.pekko.persistence.testkit.PersistenceTestKitPlugin
-import org.apache.pekko.persistence.testkit.PersistenceTestKitSnapshotPlugin
-import org.apache.pekko.persistence.typed.PersistenceId
-import org.apache.pekko.persistence.typed.scaladsl.Effect
-import org.apache.pekko.persistence.typed.scaladsl.EventSourcedBehavior
-import org.apache.pekko.persistence.typed.scaladsl.RetentionCriteria
+import org.apache.pekko
+import pekko.Done
+import pekko.actor.testkit.typed.scaladsl.LogCapturing
+import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+import pekko.actor.typed.ActorRef
+import pekko.actor.typed.Behavior
+import pekko.actor.typed.scaladsl.adapter._
+import pekko.persistence.JournalProtocol.RecoverySuccess
+import pekko.persistence.JournalProtocol.ReplayMessages
+import pekko.persistence.JournalProtocol.ReplayedMessage
+import pekko.persistence.Persistence
+import pekko.persistence.SelectedSnapshot
+import pekko.persistence.SnapshotProtocol.LoadSnapshot
+import pekko.persistence.SnapshotProtocol.LoadSnapshotResult
+import pekko.persistence.SnapshotSelectionCriteria
+import pekko.persistence.testkit.PersistenceTestKitPlugin
+import pekko.persistence.testkit.PersistenceTestKitSnapshotPlugin
+import pekko.persistence.typed.PersistenceId
+import pekko.persistence.typed.scaladsl.Effect
+import pekko.persistence.typed.scaladsl.EventSourcedBehavior
+import pekko.persistence.typed.scaladsl.RetentionCriteria
 import org.scalatest.Inside
 import org.scalatest.wordspec.AnyWordSpecLike
 

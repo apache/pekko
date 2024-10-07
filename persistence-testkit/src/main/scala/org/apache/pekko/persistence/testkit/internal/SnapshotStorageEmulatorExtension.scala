@@ -44,12 +44,13 @@ private[testkit] object SnapshotStorageEmulatorExtension extends ExtensionId[Sna
 @InternalApi
 final class SnapshotStorageEmulatorExtension(system: ExtendedActorSystem) extends Extension {
   private val stores = new ConcurrentHashMap[String, SnapshotStorage]()
+  private lazy val shouldCreateSerializedSnapshotStorage = SnapshotTestKit.Settings(system).serialize
 
   def storageFor(key: String): SnapshotStorage =
     stores.computeIfAbsent(key,
       _ => {
         // we don't really care about the key here, we just want separate instances
-        if (SnapshotTestKit.Settings(system).serialize) {
+        if (shouldCreateSerializedSnapshotStorage) {
           new SerializedSnapshotStorageImpl(system)
         } else {
           new SimpleSnapshotStorageImpl
