@@ -16,6 +16,7 @@ package org.apache.pekko.persistence.snapshot.japi
 import scala.concurrent.Future
 
 import org.apache.pekko
+import pekko.util.FutureConverters._
 import pekko.japi.Util._
 import pekko.persistence._
 import pekko.persistence.snapshot.{ SnapshotStore => SSnapshotStore }
@@ -29,15 +30,15 @@ abstract class SnapshotStore extends SSnapshotStore with SnapshotStorePlugin {
   override final def loadAsync(
       persistenceId: String,
       criteria: SnapshotSelectionCriteria): Future[Option[SelectedSnapshot]] =
-    doLoadAsync(persistenceId, criteria).map(option)
+    doLoadAsync(persistenceId, criteria).asScala.map(option)
 
   override final def saveAsync(metadata: SnapshotMetadata, snapshot: Any): Future[Unit] =
-    doSaveAsync(metadata, snapshot).map(_ => ())
+    doSaveAsync(metadata, snapshot).asScala.map(_ => ())
 
   override final def deleteAsync(metadata: SnapshotMetadata): Future[Unit] =
-    doDeleteAsync(metadata).map(_ => ())
+    doDeleteAsync(metadata).asScala.map(_ => ())
 
   override final def deleteAsync(persistenceId: String, criteria: SnapshotSelectionCriteria): Future[Unit] =
-    doDeleteAsync(persistenceId: String, criteria: SnapshotSelectionCriteria).map(_ => ())
+    doDeleteAsync(persistenceId: String, criteria: SnapshotSelectionCriteria).asScala.map(_ => ())
 
 }
