@@ -58,7 +58,21 @@ private[pekko] object LoggerClass {
         if (!skip(name)) suitableClass = OptionVal.Some(clazz)
         idx += 1
       }
-      suitableClass.getOrElse(default)
+      suitableClass match {
+        case OptionVal.Some(cls) =>
+          // Fix start
+          val lambdaClsOwner = for {
+            nextCaller <- trace.lift(idx)
+            nextName = nextCaller.getName()
+            lambdaNameIdx = nextName.indexOf("$$Lambda$")
+            if nextName.startsWith(cls.getName()) && lambdaNameIdx > 0
+            lambdaClsOwner = nextName.substring(0, lambdaNameIdx)
+          } yield Class.forName(lambdaClsOwner)
+          // TODO: can potentially guard for ClassNotFoundException, but seems unlikely
+          lambdaClsOwner.getOrElse(cls)
+        case _ =>
+          default
+      }
     } catch {
       case NonFatal(_) => default
     }
