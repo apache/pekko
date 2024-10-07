@@ -165,11 +165,15 @@ object EventSourcedBehavior {
 
   /**
    * Change the journal plugin config that this actor should use.
+   *
+   * @since 1.1.3
    */
   def withJournalPluginConfig(id: Option[Config]): EventSourcedBehavior[Command, Event, State]
 
   /**
    * Change the snapshot store plugin config that this actor should use.
+   *
+   * @since 1.1.3
    */
   def withSnapshotPluginConfig(id: Option[Config]): EventSourcedBehavior[Command, Event, State]
 

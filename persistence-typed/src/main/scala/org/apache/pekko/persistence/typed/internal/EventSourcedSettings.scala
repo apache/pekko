@@ -18,7 +18,6 @@ import com.typesafe.config.Config
 import org.apache.pekko
 import pekko.actor.typed.ActorSystem
 import pekko.annotation.InternalApi
-import pekko.persistence.Persistence
 
 /**
  * INTERNAL API

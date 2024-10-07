@@ -13,11 +13,10 @@
 
 package org.apache.pekko.persistence.typed.internal
 
-import com.typesafe.config.ConfigFactory
-
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.FiniteDuration
 import scala.util.control.NonFatal
+import com.typesafe.config.ConfigFactory
 import org.apache.pekko
 import pekko.util.Helpers.ConfigOps
 import pekko.actor.Cancellable

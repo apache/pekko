@@ -112,7 +112,13 @@ object PersistenceTestKitPlugin {
  * Persistence testkit plugin for snapshots.
  */
 @InternalApi
-class PersistenceTestKitSnapshotPlugin(@unused cfg: Config, cfgPath: String) extends SnapshotStore {
+class PersistenceTestKitSnapshotPlugin(
+    // providing this parameter in first position as unused
+    // because Persistence extension that instantiates the plugins
+    // does not support constructors without it
+    @unused cfg: Config,
+    cfgPath: String
+) extends SnapshotStore {
 
   private final val storage = {
     log.debug("Using snapshot storage emulator extension [{}] for test kit snapshot storage", cfgPath)
