@@ -1,23 +1,27 @@
 name: Nightly Builds
 
 on:
-  schedule:
-    - cron: "0 0 * * *"
-  workflow_dispatch:
+  pull_request:
+    branches: ['**']
 
 permissions: {}
 
 jobs:
   pekko-cluster-metrics-sigar:
-    name: Pekko Cluster Metrics Test with Sigar
+    name: Pekko Cluster Metrics Test with Sigar and Pekko ${{ matrix.pekkoVersion }}
     runs-on: ubuntu-20.04
     if: github.repository == 'apache/pekko'
+    strategy:
+      fail-fast: false
+      matrix:
+        pekkoVersion: [ "main", "1.0.x" ]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           fetch-tags: true
+          ref: ${{ matrix.pekkoVersion }}
 
       - name: Setup Java 11
         uses: actions/setup-java@v4
@@ -61,7 +65,7 @@ jobs:
 #          skip_publishing: true
 
   pekko-classic-remoting-tests:
-    name: Pekko Classic Remoting Tests
+    name: Pekko Classic Remoting Tests with Pekko ${{ matrix.pekkoVersion }}
     runs-on: ubuntu-20.04
     if: github.repository == 'apache/pekko'
     strategy:
@@ -71,6 +75,7 @@ jobs:
           - cluster/test distributed-data/test cluster-tools/test cluster-metrics/test
           - cluster-sharding/test
           - cluster-typed/test cluster-sharding-typed/test
+        pekkoVersion: [ "main", "1.0.x" ]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -78,6 +83,7 @@ jobs:
           # we don't know what commit the last tag was it's safer to get entire repo so previousStableVersion resolves
           fetch-depth: 0
           fetch-tags: true
+          ref: ${{ matrix.pekkoVersion }}
 
       - name: Setup Java 11
         uses: actions/setup-java@v4
@@ -107,7 +113,7 @@ jobs:
           clean ${{ matrix.command }}
 
   jdk-nightly-build:
-    name: JDK ${{ matrix.javaVersion }} / Scala ${{ matrix.scalaVersion }}
+    name: JDK ${{ matrix.javaVersion }} / Scala ${{ matrix.scalaVersion }} / Pekko ${{ matrix.pekkoVersion }}
     runs-on: ubuntu-20.04
     if: github.repository == 'apache/pekko'
     strategy:
@@ -118,6 +124,7 @@ jobs:
         # full version from it.
         scalaVersion: ["2.12.x", "2.13.x", "3.3.x"]
         javaVersion: [8, 11, 17, 21]
+        pekkoVersion: [ "main", "1.0.x" ]
     env:
       DEVELOCITY_ACCESS_KEY: ${{ secrets.GE_ACCESS_TOKEN }}
     steps:
@@ -126,6 +133,7 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
+          ref: ${{ matrix.pekkoVersion }}
 
       - name: Setup Java ${{ matrix.javaVersion }}
         uses: actions/setup-java@v4
@@ -140,6 +148,7 @@ jobs:
         run: cp .jvmopts-ci .jvmopts
 
       - name: Check if the dependency task in the built correctly
+        if: ${{ matrix.pekkoVersion != '1.0.x' }}
         run: sbt dependWalkerCheck
 
       - name: Compile and Test
@@ -191,7 +200,7 @@ jobs:
             "++ ${{ matrix.scalaVersion }} ;publishLocal;publishM2"
 
       - name: Install scala-cli
-        if: ${{ matrix.javaVersion == 11 }}
+        if: ${{ matrix.javaVersion == 11 && matrix.pekkoVersion != '1.0.x'}}
         run: |-
           curl -sS "https://virtuslab.github.io/scala-cli-packages/KEY.gpg" | sudo gpg --dearmor  -o /etc/apt/trusted.gpg.d/scala-cli.gpg 2>/dev/null
           sudo curl -s --compressed -o /etc/apt/sources.list.d/scala_cli_packages.list "https://virtuslab.github.io/scala-cli-packages/debian/scala_cli_packages.list"
@@ -199,7 +208,7 @@ jobs:
           sudo apt install scala-cli
 
       - name: Use Scala-CLI to verify jdk 9 classes
-        if: ${{ matrix.javaVersion == 11 }}
+        if: ${{ matrix.javaVersion == 11 && matrix.pekkoVersion != '1.0.x'}}
         run: |-
           chmod +x .github/workflows/verify-jdk9-classes.sh
           .github/workflows/verify-jdk9-classes.sh

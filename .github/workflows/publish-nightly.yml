@@ -20,18 +20,21 @@
 name: Publish nightly snapshots and documentation
 
 on:
-  workflow_dispatch:
-  schedule:
-    - cron: "0 0 * * *"
+  pull_request:
+    branches: ['**']
 
 permissions:
   contents: read
 
 jobs:
   publish-nightly:
-    name: Publish nightly
+    name: Publish nightly on ${{ matrix.pekkoVersion }}
     runs-on: ubuntu-20.04
     if: github.repository == 'apache/pekko'
+    strategy:
+      fail-fast: false
+      matrix:
+        pekkoVersion: [ "main", "1.0.x" ]
     env:
       DEVELOCITY_ACCESS_KEY: ${{ secrets.GE_ACCESS_TOKEN }}
     steps:
@@ -40,6 +43,7 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
+          ref: ${{ matrix.pekkoVersion }}
 
       - name: Setup Java 11
         uses: actions/setup-java@v4
