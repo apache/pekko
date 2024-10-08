@@ -64,7 +64,7 @@ private[pekko] object LoggerClass {
           val lambdaClsOwner = for {
             nextCaller <- trace.lift(idx)
             nextName = nextCaller.getName()
-            lambdaNameIdx = nextName.indexOf("$$Lambda$")
+            lambdaNameIdx = nextName.indexOf("$$Lambda")
             if nextName.startsWith(cls.getName()) && lambdaNameIdx > 0
             lambdaClsOwner = nextName.substring(0, lambdaNameIdx)
           } yield Class.forName(lambdaClsOwner)
