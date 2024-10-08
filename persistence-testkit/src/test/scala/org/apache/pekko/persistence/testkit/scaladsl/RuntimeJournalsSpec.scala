@@ -91,7 +91,7 @@ class RuntimeJournalsSpec
 
   import RuntimeJournalsSpec._
 
-  "The testkit journal and query plugin" must {
+  "The testkit journal and snapshot store plugins" must {
 
     "be possible to configure at runtime and use in multiple isolated instances" in {
       val probe = createTestProbe[Any]()
