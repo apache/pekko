@@ -16,6 +16,8 @@ package org.apache.pekko.persistence.typed.javadsl
 import java.util.Collections
 import java.util.Optional
 
+import scala.jdk.OptionConverters._
+import com.typesafe.config.Config
 import org.apache.pekko
 import pekko.actor.typed
 import pekko.actor.typed.BackoffSupervisorStrategy
@@ -131,6 +133,16 @@ abstract class EventSourcedBehavior[Command, Event, State] private[pekko] (
   def snapshotPluginId: String = ""
 
   /**
+   * Override and define the journal plugin config that this actor should use instead of the default.
+   */
+  def journalPluginConfig: Optional[Config] = Optional.empty()
+
+  /**
+   * Override and define the snapshot store plugin config that this actor should use instead of the default.
+   */
+  def snapshotPluginConfig: Optional[Config] = Optional.empty()
+
+  /**
    * Override and define the snapshot selection criteria used by this actor instead of the default.
    * By default the most recent snapshot is used, and the remaining state updates are recovered by replaying events
    * from the sequence number up until which the snapshot reached.
@@ -225,6 +237,8 @@ abstract class EventSourcedBehavior[Command, Event, State] private[pekko] (
       .withJournalPluginId(journalPluginId)
       .withSnapshotPluginId(snapshotPluginId)
       .withRecovery(recovery.asScala)
+      .withJournalPluginConfig(journalPluginConfig.toScala)
+      .withSnapshotPluginConfig(snapshotPluginConfig.toScala)
 
     val handler = signalHandler()
     val behaviorWithSignalHandler =
