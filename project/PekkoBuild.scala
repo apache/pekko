@@ -85,14 +85,6 @@ object PekkoBuild {
     }
 
   lazy val resolverSettings = Def.settings(
-    // should we be allowed to use artifacts published to the local maven repository
-    if (System.getProperty("pekko.build.useLocalMavenResolver", "false").toBoolean)
-      resolvers += mavenLocalResolver
-    else Seq.empty,
-    // should we be allowed to use artifacts from sonatype snapshots
-    if (System.getProperty("pekko.build.useSnapshotSonatypeResolver", "false").toBoolean)
-      resolvers ++= Resolver.sonatypeOssRepos("snapshots")
-    else Seq.empty,
     pomIncludeRepository := (_ => false) // do not leak internal repositories during staging
   )
 
