@@ -16,7 +16,6 @@ package org.apache.pekko.persistence.typed.javadsl
 import java.util.Collections
 import java.util.Optional
 
-import scala.jdk.OptionConverters._
 import com.typesafe.config.Config
 import org.apache.pekko
 import pekko.actor.typed
@@ -28,6 +27,7 @@ import pekko.annotation.InternalApi
 import pekko.persistence.typed._
 import pekko.persistence.typed.EventAdapter
 import pekko.persistence.typed.internal._
+import pekko.util.OptionConverters._
 import pekko.util.unused
 
 abstract class EventSourcedBehavior[Command, Event, State] private[pekko] (
