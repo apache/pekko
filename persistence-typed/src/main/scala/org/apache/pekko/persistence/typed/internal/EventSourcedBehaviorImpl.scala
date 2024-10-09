@@ -17,6 +17,7 @@ import java.util.Optional
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicInteger
 
+import com.typesafe.config.Config
 import org.apache.pekko
 import pekko.actor.typed
 import pekko.actor.typed.ActorRef
@@ -105,6 +106,8 @@ private[pekko] final case class EventSourcedBehaviorImpl[Command, Event, State](
     loggerClass: Class[_],
     journalPluginId: Option[String] = None,
     snapshotPluginId: Option[String] = None,
+    journalPluginConfig: Option[Config] = None,
+    snapshotPluginConfig: Option[Config] = None,
     tagger: Event => Set[String] = (_: Event) => Set.empty[String],
     eventAdapter: EventAdapter[Event, Any] = NoOpEventAdapter.instance[Event],
     snapshotAdapter: SnapshotAdapter[State] = NoOpSnapshotAdapter.instance[State],
@@ -132,7 +135,8 @@ private[pekko] final case class EventSourcedBehaviorImpl[Command, Event, State](
       case _                                => false
     }
     if (!hasCustomLoggerName) ctx.setLoggerName(loggerClass)
-    val settings = EventSourcedSettings(ctx.system, journalPluginId.getOrElse(""), snapshotPluginId.getOrElse(""))
+    val settings = EventSourcedSettings(ctx.system, journalPluginId.getOrElse(""), snapshotPluginId.getOrElse(""),
+      journalPluginConfig, snapshotPluginConfig)
 
     // stashState outside supervise because StashState should survive restarts due to persist failures
     val stashState = new StashState(ctx.asInstanceOf[ActorContext[InternalProtocol]], settings)
@@ -259,6 +263,14 @@ private[pekko] final case class EventSourcedBehaviorImpl[Command, Event, State](
   override def withSnapshotPluginId(id: String): EventSourcedBehavior[Command, Event, State] = {
     require(id != null, "snapshot plugin id must not be null; use empty string for 'default' snapshot store")
     copy(snapshotPluginId = if (id != "") Some(id) else None)
+  }
+
+  override def withJournalPluginConfig(config: Option[Config]): EventSourcedBehavior[Command, Event, State] = {
+    copy(journalPluginConfig = config)
+  }
+
+  override def withSnapshotPluginConfig(config: Option[Config]): EventSourcedBehavior[Command, Event, State] = {
+    copy(snapshotPluginConfig = config)
   }
 
   override def withSnapshotSelectionCriteria(
