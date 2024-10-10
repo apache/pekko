@@ -14,7 +14,7 @@
 package org.apache.pekko.stream.scaladsl
 
 import org.apache.pekko
-import pekko.stream.{ ActorMaterializer, ActorMaterializerSettings, Materializer }
+import pekko.stream.{ ActorMaterializer, ActorMaterializerSettings, ClosedShape, Materializer, UniformFanInShape }
 import pekko.stream.testkit.{ StreamSpec, TestSubscriber }
 import scala.annotation.nowarn
 
@@ -55,6 +55,36 @@ class FlowZipWithIndexSpec extends StreamSpec {
       Source(List("apple", "orange", "banana")).zipWithIndex.runWith(Sink.foreach(println))
       // this will print ('apple', 0), ('orange', 1), ('banana', 2)
       // #zip-with-index
+    }
+
+    "support junction output ports" in {
+      // https://github.com/apache/pekko/issues/1525
+      import GraphDSL.Implicits._
+  
+      val pickMaxOfThree = GraphDSL.create() { implicit b =>
+
+        val zip1 = b.add(ZipWith[Int, Int, Int](math.max _))
+        val zip2 = b.add(ZipWith[Int, Int, Int](math.max _))
+        zip1.out ~> zip2.in0
+
+        UniformFanInShape(zip2.out, zip1.in0, zip1.in1, zip2.in1)
+      }
+
+      val resultSink = Sink.foreach(println)
+
+      val g = RunnableGraph.fromGraph(GraphDSL.createGraph(resultSink) { implicit b => sink =>
+
+        // importing the partial graph will return its shape (inlets & outlets)
+        val pm3 = b.add(pickMaxOfThree)
+
+        Source.single(1) ~> pm3.in(0)
+        Source.single(2) ~> pm3.in(1)
+        Source.single(3) ~> pm3.in(2)
+        pm3.out.zipWithIndex ~> sink.in
+        ClosedShape
+      })
+
+      g.run()
     }
 
   }
