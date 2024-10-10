@@ -60,9 +60,8 @@ class FlowZipWithIndexSpec extends StreamSpec {
     "support junction output ports" in {
       // https://github.com/apache/pekko/issues/1525
       import GraphDSL.Implicits._
-  
-      val pickMaxOfThree = GraphDSL.create() { implicit b =>
 
+      val pickMaxOfThree = GraphDSL.create() { implicit b =>
         val zip1 = b.add(ZipWith[Int, Int, Int](math.max _))
         val zip2 = b.add(ZipWith[Int, Int, Int](math.max _))
         zip1.out ~> zip2.in0
@@ -73,13 +72,12 @@ class FlowZipWithIndexSpec extends StreamSpec {
       val resultSink = Sink.foreach(println)
 
       val g = RunnableGraph.fromGraph(GraphDSL.createGraph(resultSink) { implicit b => sink =>
-
         // importing the partial graph will return its shape (inlets & outlets)
         val pm3 = b.add(pickMaxOfThree)
 
-        Source.single(1) ~> pm3.in(0)
-        Source.single(2) ~> pm3.in(1)
-        Source.single(3) ~> pm3.in(2)
+        Source.single(1)     ~> pm3.in(0)
+        Source.single(2)     ~> pm3.in(1)
+        Source.single(3)     ~> pm3.in(2)
         pm3.out.zipWithIndex ~> sink.in
         ClosedShape
       })
