@@ -30,7 +30,10 @@ import org.scalatest.Failed
 
 import com.typesafe.config.{ Config, ConfigFactory }
 
-abstract class StreamSpec(_system: ActorSystem) extends PekkoSpec(_system) {
+import java.util.concurrent.TimeUnit
+
+abstract class StreamSpec(_system: ActorSystem) extends PekkoSpec(_system) with StreamConfiguration {
+
   def this(config: Config) =
     this(
       ActorSystem(
@@ -73,7 +76,8 @@ abstract class StreamSpec(_system: ActorSystem) extends PekkoSpec(_system) {
           case impl: PhasedFusingActorMaterializer =>
             stopAllChildren(impl.system, impl.supervisor)
             val result = test.apply()
-            assertNoChildren(impl.system, impl.supervisor)
+            assertNoChildren(impl.system, impl.supervisor,
+              Some(FiniteDuration(streamConfig.allStagesStoppedTimeout.millisPart, TimeUnit.MILLISECONDS)))
             result
           case _ => other
         }
