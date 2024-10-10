@@ -69,7 +69,8 @@ class FlowZipWithIndexSpec extends StreamSpec {
         UniformFanInShape(zip2.out, zip1.in0, zip1.in1, zip2.in1)
       }
 
-      val resultSink = Sink.foreach(println)
+      val probe = TestSubscriber.manualProbe[(Int, AnyVal)]()
+      val resultSink = Sink.fromSubscriber(probe)
 
       val g = RunnableGraph.fromGraph(GraphDSL.createGraph(resultSink) { implicit b => sink =>
         // importing the partial graph will return its shape (inlets & outlets)
@@ -83,6 +84,11 @@ class FlowZipWithIndexSpec extends StreamSpec {
       })
 
       g.run()
+
+      val subscription = probe.expectSubscription()
+      subscription.request(1)
+      probe.expectNext((3, 0))
+      probe.expectComplete()
     }
 
   }
