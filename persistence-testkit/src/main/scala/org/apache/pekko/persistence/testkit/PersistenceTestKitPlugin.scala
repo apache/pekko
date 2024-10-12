@@ -57,6 +57,35 @@ class PersistenceTestKitPlugin(@unused cfg: Config, cfgPath: String) extends Asy
         messages.foreach { aw =>
           eventStream.publish(PersistenceTestKitPlugin.Write(aw.persistenceId, aw.highestSequenceNr))
         }
+        val groups = data
+          .view
+          .flatMap { aw =>
+            val tags = aw.payload match {
+              case Tagged(_, tags) =>
+                tags
+              case _ =>
+                Set.empty
+            }
+            tags.map(tag => (tag, aw))
+          }
+          .groupMapReduce {
+            case (tag, _) =>
+              tag
+          } {
+            case (_, pr) =>
+              (pr.timestamp, pr.persistenceId, pr.sequenceNr)
+          } { case (a, b) =>
+            Seq(a, b).max
+          }
+        groups
+          .foreach { case (tag, (timestamp, persistenceId, sequenceNr)) =>
+            eventStream.publish(
+              PersistenceTestKitPlugin.TagWrite(
+                tag,
+                PersistenceTestKitPlugin.TagWrite.Entry(timestamp, persistenceId, sequenceNr)
+              )
+            )
+          }
       }
       result
     })))
@@ -103,7 +132,11 @@ object PersistenceTestKitPlugin {
       s"$PluginId.class" -> s"${classOf[PersistenceTestKitPlugin].getName}").asJava)
 
   private[testkit] case class Write(persistenceId: String, toSequenceNr: Long)
-
+  // TODO cleanup API
+  private[testkit] case class TagWrite(tag: String, highestTagEntry: TagWrite.Entry)
+  object TagWrite {
+    case class Entry(timestamp: Long, persistenceId: String, sequenceNr: Long)
+  }
 }
 
 /**
