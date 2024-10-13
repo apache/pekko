@@ -17,6 +17,7 @@
 
 package org.apache.pekko.persistence.testkit.query
 
+import scala.collection.immutable.Seq
 import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
 import org.apache.pekko
@@ -183,16 +184,12 @@ class EventsByTagSpec
       val ref2 = setupEmpty("f2", Set(tag))
       ref2 ! Command(Seq("f2-1", "f2-2"), ackProbe.ref)
       ackProbe.expectMessage(Done)
-      probe.request(2)
-      probe.expectNext() shouldBe ("f2", "f2-1")
-      probe.expectNext() shouldBe ("f2", "f2-2")
+      probe.request(2).expectNextN(Seq(("f2", "f2-1"), ("f2", "f2-2")))
 
       val ref1 = setupEmpty("f1", Set(tag))
       ref1 ! Command(Seq("f1-1", "f1-2"), ackProbe.ref)
       ackProbe.expectMessage(Done)
-      probe.request(2)
-      probe.expectNext() shouldBe ("f1", "f1-1")
-      probe.expectNext() shouldBe ("f1", "f1-2")
+      probe.request(2).expectNextN(Seq(("f1", "f1-1"), ("f1", "f1-2")))
     }
 
     "find new events when persistence ID uses multiple tags" in {
