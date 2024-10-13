@@ -20,6 +20,7 @@ package org.apache.pekko.persistence.testkit.query
 import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
 import org.apache.pekko
+import org.apache.pekko.stream.testkit.TestSubscriber
 import pekko.Done
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
@@ -50,20 +51,16 @@ object EventsByTagSpec {
   }
   case class State()
 
-  def testBehaviour(persistenceId: String, maybeTag: Option[String]) = {
-    val tag = maybeTag.getOrElse(s"$persistenceId-tag")
-    (
-      EventSourcedBehavior[Command, String, State](
-        PersistenceId.ofUniqueId(persistenceId),
-        State(),
-        (_, command) =>
-          Effect.persist(command.evt).thenRun { _ =>
-            command.ack ! Done
-          },
-        (state, _) => state
-      ).withTagger(_ => Set(tag)),
-      tag
-    )
+  def testBehaviour(persistenceId: String, tags: Set[String]) = {
+    EventSourcedBehavior[Command, String, State](
+      PersistenceId.ofUniqueId(persistenceId),
+      State(),
+      (_, command) =>
+        Effect.persist(command.evt).thenRun { _ =>
+          command.ack ! Done
+        },
+      (state, _) => state
+    ).withTagger(_ => tags)
   }
 
 }
@@ -79,35 +76,35 @@ class EventsByTagSpec
   val queries =
     PersistenceQuery(system).readJournalFor[PersistenceTestKitReadJournal](PersistenceTestKitReadJournal.Identifier)
 
-  def setup(persistenceId: String, maybeTag: Option[String] = None): (ActorRef[Command], String) = {
+  def setup(persistenceId: String, tags: Set[String]): ActorRef[Command] = {
     val probe = createTestProbe[Done]()
-    val (ref, tag) = setupEmpty(persistenceId, maybeTag)
+    val ref = setupEmpty(persistenceId, tags)
     ref ! Command(s"$persistenceId-1", probe.ref)
     ref ! Command(s"$persistenceId-2", probe.ref)
     ref ! Command(s"$persistenceId-3", probe.ref)
     probe.expectMessage(Done)
     probe.expectMessage(Done)
     probe.expectMessage(Done)
-    (ref, tag)
+    ref
   }
 
-  def setupBatched(persistenceId: String, maybeTag: Option[String] = None): (ActorRef[Command], String) = {
+  def setupBatched(persistenceId: String, tags: Set[String]): ActorRef[Command] = {
     val probe = createTestProbe[Done]()
-    val (ref, tag) = setupEmpty(persistenceId, maybeTag)
+    val ref = setupEmpty(persistenceId, tags)
     ref ! Command(Seq(s"$persistenceId-1", s"$persistenceId-2", s"$persistenceId-3"), probe.ref)
     probe.expectMessage(Done)
-    (ref, tag)
+    ref
   }
 
-  def setupEmpty(persistenceId: String, maybeTag: Option[String] = None): (ActorRef[Command], String) = {
-    val (ref, tag) = testBehaviour(persistenceId, maybeTag)
-    (spawn(ref), tag)
+  def setupEmpty(persistenceId: String, tags: Set[String]): ActorRef[Command] = {
+    spawn(testBehaviour(persistenceId, tags))
   }
 
   "Persistent test kit live query EventsByTag" must {
     "find new events" in {
       val ackProbe = createTestProbe[Done]()
-      val (ref, tag) = setup("c")
+      val tag = "c-tag"
+      val ref = setup("c", Set(tag))
       val src = queries.eventsByTag(tag)
       val probe = src.map(_.event).runWith(TestSink.probe[Any]).request(5).expectNext("c-1", "c-2", "c-3")
 
@@ -119,7 +116,8 @@ class EventsByTagSpec
 
     "find new events after batched setup" in {
       val ackProbe = createTestProbe[Done]()
-      val (ref, tag) = setupBatched("d")
+      val tag = "d-tag"
+      val ref = setupBatched("d", Set(tag))
       val src = queries.eventsByTag(tag)
       val probe = src.map(_.event).runWith(TestSink.probe[Any]).request(5).expectNext("d-1", "d-2", "d-3")
 
@@ -131,7 +129,8 @@ class EventsByTagSpec
 
     "find new events after demand request" in {
       val ackProbe = createTestProbe[Done]()
-      val (ref, tag) = setup("e")
+      val tag = "e-tag"
+      val ref = setup("e", Set("e-tag"))
       val src = queries.eventsByTag(tag)
       val probe =
         src.map(_.event).runWith(TestSink.probe[Any]).request(2).expectNext("e-1", "e-2").expectNoMessage(100.millis)
@@ -143,7 +142,8 @@ class EventsByTagSpec
     }
 
     "include timestamp in EventEnvelope" in {
-      val (_, tag) = setup("n")
+      val tag = "n-tag"
+      setup("n", Set(tag))
 
       val src = queries.eventsByTag(tag)
       val probe = src.runWith(TestSink.probe[EventEnvelope])
@@ -163,14 +163,14 @@ class EventsByTagSpec
 
       probe.expectNoMessage(200.millis) // must not complete
 
-      val (ref, _) = setupEmpty("o", Some(tag))
+      val ref = setupEmpty("o", Set(tag))
       ref ! Command("o-1", ackProbe.ref)
       ackProbe.expectMessage(Done)
 
       probe.cancel()
     }
 
-    "find new events in order that they were persisted when the tag used by multiple persistence IDs" in {
+    "find new events in order that they were persisted when the tag is used by multiple persistence IDs" in {
       val tag = "f-tag"
       val ackProbe = createTestProbe[Done]()
       val src = queries.eventsByTag(tag)
@@ -180,19 +180,44 @@ class EventsByTagSpec
         }
         .runWith(TestSink.probe[(String, Any)])
 
-      val (ref2, _) = setupEmpty("f2", Some(tag))
+      val ref2 = setupEmpty("f2", Set(tag))
       ref2 ! Command(Seq("f2-1", "f2-2"), ackProbe.ref)
       ackProbe.expectMessage(Done)
       probe.request(2)
       probe.expectNext() shouldBe ("f2", "f2-1")
       probe.expectNext() shouldBe ("f2", "f2-2")
 
-      val (ref1, _) = setupEmpty("f1", Some(tag))
+      val ref1 = setupEmpty("f1", Set(tag))
       ref1 ! Command(Seq("f1-1", "f1-2"), ackProbe.ref)
       ackProbe.expectMessage(Done)
       probe.request(2)
       probe.expectNext() shouldBe ("f1", "f1-1")
       probe.expectNext() shouldBe ("f1", "f1-2")
+    }
+
+    "find new events when persistence ID uses multiple tags" in {
+      val tag1 = "g-tag"
+      val tag2 = "h-tag"
+      val ackProbe = createTestProbe[Done]()
+      def setupProbe(tag: String) = {
+        queries.eventsByTag(tag)
+          .map(_.event)
+          .runWith(TestSink.probe[Any])
+      }
+      val probe1 = setupProbe(tag1)
+      probe1.request(1).expectNoMessage(100.millis)
+      val probe2 = setupProbe(tag2)
+      probe2.request(1).expectNoMessage(100.millis)
+
+      val ref2 = setupEmpty("gh", Set(tag1, tag2))
+      ref2 ! Command(Seq("gh-1", "gh-2"), ackProbe.ref)
+      ackProbe.expectMessage(Done)
+
+      def assertProbe(probe: TestSubscriber.Probe[Any]) = {
+        probe.request(2).expectNextN(Seq("gh-1", "gh-2"))
+      }
+      assertProbe(probe1)
+      assertProbe(probe2)
     }
   }
 }
