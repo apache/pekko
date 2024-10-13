@@ -32,13 +32,13 @@ import pekko.persistence.testkit.query.internal.EventsByPersistenceIdStage
 import pekko.stream.scaladsl.Source
 import pekko.util.unused
 import com.typesafe.config.Config
-import org.apache.pekko.persistence.query.scaladsl.EventsByTagQuery
-import org.apache.pekko.persistence.testkit.query.internal.EventsByTagStage
 import org.slf4j.LoggerFactory
 import pekko.persistence.Persistence
 import pekko.persistence.query.typed
 import pekko.persistence.query.typed.scaladsl.CurrentEventsBySliceQuery
 import pekko.persistence.typed.PersistenceId
+import pekko.persistence.query.scaladsl.EventsByTagQuery
+import pekko.persistence.testkit.query.internal.EventsByTagStage
 
 import scala.collection.immutable
 
