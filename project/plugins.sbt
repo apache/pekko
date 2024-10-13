@@ -24,7 +24,7 @@ addSbtPlugin("de.heikoseeberger" % "sbt-header" % "5.10.0")
 addSbtPlugin("com.github.sbt" % "sbt-pull-request-validator" % "2.0.0")
 addSbtPlugin("net.bzzt" % "sbt-reproducible-builds" % "0.32")
 
-addSbtPlugin("com.github.sbt" % "sbt-dynver" % "5.0.1")
+addSbtPlugin("com.github.sbt" % "sbt-dynver" % "5.1.0")
 addSbtPlugin("com.github.pjfanning" % "sbt-source-dist" % "0.1.12")
 addSbtPlugin("com.github.pjfanning" % "sbt-pekko-build" % "0.4.1")
 addSbtPlugin("com.github.reibitto" % "sbt-welcome" % "0.4.0")
