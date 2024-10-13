@@ -20,7 +20,6 @@ package org.apache.pekko.persistence.testkit.query
 import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
 import org.apache.pekko
-import org.apache.pekko.stream.testkit.TestSubscriber
 import pekko.Done
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
@@ -32,6 +31,7 @@ import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.scaladsl.Effect
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior
+import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.scaladsl.TestSink
 import org.scalatest.wordspec.AnyWordSpecLike
 
