@@ -1,46 +1,56 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * license agreements; and to You under the Apache License, version 2.0:
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
- * This file is part of the Apache Pekko project, which was derived from Akka.
- */
-
-/*
- * Copyright (C) 2020-2022 Lightbend Inc. <https://www.lightbend.com>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.apache.pekko.persistence.testkit.query.internal
 
 import org.apache.pekko
-import org.apache.pekko.actor.ActorRef
-import org.apache.pekko.annotation.InternalApi
-import org.apache.pekko.persistence.PersistentRepr
-import org.apache.pekko.persistence.journal.Tagged
-import org.apache.pekko.persistence.query.EventEnvelope
-import org.apache.pekko.persistence.query.Sequence
-import org.apache.pekko.persistence.testkit.EventStorage
-import org.apache.pekko.persistence.testkit.PersistenceTestKitPlugin
-import org.apache.pekko.persistence.testkit.PersistenceTestKitPlugin.TagWrite
-import org.apache.pekko.stream.stage.GraphStage
-import org.apache.pekko.stream.stage.GraphStageLogic
-import org.apache.pekko.stream.stage.GraphStageLogicWithLogging
-import org.apache.pekko.stream.stage.OutHandler
-import org.apache.pekko.stream.Attributes
-import org.apache.pekko.stream.Outlet
-import org.apache.pekko.stream.SourceShape
+import pekko.actor.ActorRef
+import pekko.annotation.InternalApi
+import pekko.persistence.journal.Tagged
+import pekko.persistence.query.EventEnvelope
+import pekko.persistence.query.Sequence
+import pekko.persistence.testkit.EventStorage
+import pekko.persistence.testkit.PersistenceTestKitPlugin
+import pekko.persistence.testkit.PersistenceTestKitPlugin.TagWrite
+import pekko.stream.stage.GraphStage
+import pekko.stream.stage.GraphStageLogic
+import pekko.stream.stage.GraphStageLogicWithLogging
+import pekko.stream.stage.OutHandler
+import pekko.stream.Attributes
+import pekko.stream.Outlet
+import pekko.stream.SourceShape
 
 /**
  * INTERNAL API
  */
 @InternalApi
 private[pekko] object EventsByTagStage {
+  // PersistenceTestKitPlugin increments timestamp for each atomic write,
+  // which can only contain a single persistence ID,
+  // so we only need to track timestamp and sequence number within state,
+  // because same timestamp will not have multiple persistence IDs.
   case class State(
       currentTimestamp: Long,
-      lastPersistenceId: String,
       lastSequenceNr: Long
-  )
+  ) {
+    def isAfter(timestamp: Long, sequenceNr: Long): Boolean = {
+      timestamp > currentTimestamp || (timestamp == currentTimestamp && sequenceNr > lastSequenceNr)
+    }
+  }
 }
 
 /**
@@ -68,11 +78,8 @@ final private[pekko] class EventsByTagStage(
       private def receiveNotifications(in: (ActorRef, Any)): Unit = {
         val (_, msg) = in
         (msg, state) match {
-          case (TagWrite(tagOfWrite, _), None) if tagOfWrite == tag =>
-            tryPush()
-          case (TagWrite(tagOfWrite, highestEntry), Some(state))
-              if tagOfWrite == tag && (highestEntry.timestamp > state.currentTimestamp || highestEntry.persistenceId > state
-                .lastPersistenceId || highestEntry.sequenceNr > state.lastSequenceNr) =>
+          case (tagWrite @ TagWrite(_, timestamp, highestSequenceNr), maybeState)
+              if tagWrite.tag == tag && maybeState.forall(_.isAfter(timestamp, highestSequenceNr)) =>
             tryPush()
           case _ =>
         }
@@ -84,13 +91,7 @@ final private[pekko] class EventsByTagStage(
             .tryReadByTag(tag)
             .sortBy(pr => (pr.timestamp, pr.persistenceId, pr.sequenceNr))
             .find { pr =>
-              state match {
-                case None =>
-                  true
-                case Some(state) =>
-                  pr.timestamp > state.currentTimestamp || pr.persistenceId > state.lastPersistenceId || pr
-                    .sequenceNr > state.lastSequenceNr
-              }
+              state.forall(_.isAfter(pr.timestamp, pr.sequenceNr))
             }
 
           log.debug("tryPush available. State {} event {}", state, maybeNextEvent)
@@ -103,7 +104,7 @@ final private[pekko] class EventsByTagStage(
                   case payload            => payload
                 }, pr.timestamp, pr.metadata))
 
-            state = Some(State(pr.timestamp, pr.persistenceId, pr.sequenceNr))
+            state = Some(State(pr.timestamp, pr.sequenceNr))
           }
         } else {
           log.debug("tryPush, no demand")

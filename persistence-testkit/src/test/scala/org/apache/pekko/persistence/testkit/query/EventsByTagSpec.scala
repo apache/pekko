@@ -1,35 +1,38 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * license agreements; and to You under the Apache License, version 2.0:
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
- * This file is part of the Apache Pekko project, which was derived from Akka.
- */
-
-/*
- * Copyright (C) 2020-2022 Lightbend Inc. <https://www.lightbend.com>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.apache.pekko.persistence.testkit.query
 
+import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
 import org.apache.pekko
-import org.apache.pekko.Done
-import org.apache.pekko.actor.testkit.typed.scaladsl.LogCapturing
-import org.apache.pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import org.apache.pekko.actor.typed.ActorRef
-import org.apache.pekko.persistence.query.EventEnvelope
-import org.apache.pekko.persistence.query.PersistenceQuery
-import org.apache.pekko.persistence.testkit.PersistenceTestKitPlugin
-import org.apache.pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
-import org.apache.pekko.persistence.typed.PersistenceId
-import org.apache.pekko.persistence.typed.scaladsl.Effect
-import org.apache.pekko.persistence.typed.scaladsl.EventSourcedBehavior
-import org.apache.pekko.stream.testkit.scaladsl.TestSink
+import pekko.Done
+import pekko.actor.testkit.typed.scaladsl.LogCapturing
+import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+import pekko.actor.typed.ActorRef
+import pekko.persistence.query.EventEnvelope
+import pekko.persistence.query.PersistenceQuery
+import pekko.persistence.testkit.PersistenceTestKitPlugin
+import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
+import pekko.persistence.typed.PersistenceId
+import pekko.persistence.typed.scaladsl.Effect
+import pekko.persistence.typed.scaladsl.EventSourcedBehavior
+import pekko.stream.testkit.scaladsl.TestSink
 import org.scalatest.wordspec.AnyWordSpecLike
-
-import scala.concurrent.duration._
 
 object EventsByTagSpec {
   val config = PersistenceTestKitPlugin.config.withFallback(
@@ -165,6 +168,31 @@ class EventsByTagSpec
       ackProbe.expectMessage(Done)
 
       probe.cancel()
+    }
+
+    "find new events in order that they were persisted when the tag used by multiple persistence IDs" in {
+      val tag = "f-tag"
+      val ackProbe = createTestProbe[Done]()
+      val src = queries.eventsByTag(tag)
+      val probe = src
+        .map { ee =>
+          (ee.persistenceId, ee.event)
+        }
+        .runWith(TestSink.probe[(String, Any)])
+
+      val (ref2, _) = setupEmpty("f2", Some(tag))
+      ref2 ! Command(Seq("f2-1", "f2-2"), ackProbe.ref)
+      ackProbe.expectMessage(Done)
+      probe.request(2)
+      probe.expectNext() shouldBe ("f2", "f2-1")
+      probe.expectNext() shouldBe ("f2", "f2-2")
+
+      val (ref1, _) = setupEmpty("f1", Some(tag))
+      ref1 ! Command(Seq("f1-1", "f1-2"), ackProbe.ref)
+      ackProbe.expectMessage(Done)
+      probe.request(2)
+      probe.expectNext() shouldBe ("f1", "f1-1")
+      probe.expectNext() shouldBe ("f1", "f1-2")
     }
   }
 }
