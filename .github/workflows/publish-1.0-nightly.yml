@@ -30,7 +30,7 @@ permissions:
 jobs:
   publish-nightly:
     name: Publish 1.0 nightly
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: github.repository == 'apache/pekko'
     env:
       DEVELOCITY_ACCESS_KEY: ${{ secrets.GE_ACCESS_TOKEN }}
@@ -47,6 +47,9 @@ jobs:
         with:
           distribution: temurin
           java-version: 11
+
+      - name: Install sbt
+        uses: sbt/setup-sbt@v1
 
       - name: Cache Coursier cache
         uses: coursier/cache-action@v6

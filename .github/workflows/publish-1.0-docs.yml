@@ -28,7 +28,7 @@ permissions:
 jobs:
   publish:
     name: Publish 1.0 docs
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: github.repository == 'apache/pekko'
     steps:
       # TODO we will need to change to use a release tag in future
@@ -44,6 +44,9 @@ jobs:
         with:
           distribution: temurin
           java-version: 11
+
+      - name: Install sbt
+        uses: sbt/setup-sbt@v1
 
       - name: Cache Coursier cache
         uses: coursier/cache-action@v6
