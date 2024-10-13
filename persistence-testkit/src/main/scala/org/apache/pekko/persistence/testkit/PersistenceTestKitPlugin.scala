@@ -58,23 +58,27 @@ class PersistenceTestKitPlugin(@unused cfg: Config, cfgPath: String) extends Asy
           eventStream.publish(PersistenceTestKitPlugin.Write(aw.persistenceId, aw.highestSequenceNr))
         }
         data
-          .flatMap { aw =>
-            val tags = aw.payload match {
+          .flatMap { pr =>
+            val tags = pr.payload match {
               case Tagged(_, tags) =>
                 tags
               case _ =>
                 Set.empty
             }
-            tags.map(tag => (tag, aw))
+            tags.toSeq.map(tag => (tag, pr))
           }
-          .groupMapReduce {
+          .groupBy {
             case (tag, _) =>
               tag
-          } {
-            case (_, pr) =>
-              (pr.timestamp, pr.sequenceNr)
-          } { case (a, b) =>
-            Seq(a, b).max
+          }
+          .map { case (tag, pr) =>
+            (
+              tag,
+              pr.map {
+                case (_, pr) =>
+                  (pr.timestamp, pr.sequenceNr)
+              }.max
+            )
           }
           .foreach { case (tag, (timestamp, highestSequenceNr)) =>
             eventStream.publish(PersistenceTestKitPlugin.TagWrite(tag, timestamp, highestSequenceNr))
