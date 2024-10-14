@@ -89,7 +89,7 @@ final private[pekko] class EventsByTagStage(
         if (isAvailable(out)) {
           val maybeNextEvent = storage
             .tryReadByTag(tag)
-            .sortBy(pr => (pr.timestamp, pr.persistenceId, pr.sequenceNr))
+            .sortBy(pr => (pr.timestamp, pr.sequenceNr))
             .find { pr =>
               state.forall(_.isAfter(pr.timestamp, pr.sequenceNr))
             }
