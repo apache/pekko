@@ -384,7 +384,7 @@ lazy val protobufV3 = pekkoModule("protobuf-v3")
     // redefining the fullClasspath with just what we need to avoid the cyclic task dependency
     assembly / fullClasspath := (Runtime / managedClasspath).value ++ (Compile / products).value.map(Attributed.blank),
     assembly / test := {}, // assembly runs tests for unknown reason which introduces another cyclic dependency to packageBin via exportedJars
-    description := "Apache Pekko Protobuf V3 is a shaded version of the protobuf runtime. Original POM: https://github.com/protocolbuffers/protobuf/blob/v3.9.0/java/pom.xml")
+    description := s"Apache Pekko Protobuf V3 is a shaded version of the protobuf runtime. Original POM: https://github.com/protocolbuffers/protobuf/blob/v${Dependencies.Protobuf.protobufJavaVersion}/java/pom.xml")
 
 lazy val pki =
   pekkoModule("pki")
