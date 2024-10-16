@@ -116,6 +116,7 @@ class OutboundIdleShutdownSpec extends ArteryMultiNodeSpec(s"""
       val remoteUid = futureUniqueRemoteAddress(association).futureValue.uid
 
       localArtery.quarantine(remoteAddress, Some(remoteUid), "Test")
+      association.associationState.isQuarantined(remoteUid) shouldBe true
 
       eventually {
         assertStreamActive(association, Association.ControlQueueIndex, expected = false)
@@ -126,6 +127,25 @@ class OutboundIdleShutdownSpec extends ArteryMultiNodeSpec(s"""
       eventually {
         localArtery.remoteAddresses should not contain remoteAddress
       }
+    }
+
+    "eliminate quarantined association when not used (harmless=true)" in withAssociation {
+      (_, remoteAddress, _, localArtery, _) =>
+        val association = localArtery.association(remoteAddress)
+        val remoteUid = futureUniqueRemoteAddress(association).futureValue.uid
+
+        localArtery.quarantine(remoteAddress, Some(remoteUid), "HarmlessTest", harmless = true)
+        association.associationState.isQuarantined(remoteUid) shouldBe true
+
+        eventually {
+          assertStreamActive(association, Association.ControlQueueIndex, expected = false)
+          assertStreamActive(association, Association.OrdinaryQueueIndex, expected = false)
+        }
+
+        // the outbound streams are inactive and association quarantined, then it's completely removed
+        eventually {
+          localArtery.remoteAddresses should not contain remoteAddress
+        }
     }
 
     "remove inbound compression after quarantine" in withAssociation { (_, remoteAddress, _, localArtery, _) =>
