@@ -37,6 +37,8 @@ import pekko.persistence.Persistence
 import pekko.persistence.query.typed
 import pekko.persistence.query.typed.scaladsl.CurrentEventsBySliceQuery
 import pekko.persistence.typed.PersistenceId
+import pekko.persistence.query.scaladsl.EventsByTagQuery
+import pekko.persistence.testkit.query.internal.EventsByTagStage
 
 import scala.collection.immutable
 
@@ -50,7 +52,8 @@ final class PersistenceTestKitReadJournal(system: ExtendedActorSystem, @unused c
     with CurrentEventsByPersistenceIdQuery
     with CurrentEventsByTagQuery
     with CurrentEventsBySliceQuery
-    with PagedPersistenceIdsQuery {
+    with PagedPersistenceIdsQuery
+    with EventsByTagQuery {
 
   private val log = LoggerFactory.getLogger(getClass)
 
@@ -158,4 +161,10 @@ final class PersistenceTestKitReadJournal(system: ExtendedActorSystem, @unused c
   override def currentPersistenceIds(afterId: Option[String], limit: Long): Source[String, NotUsed] =
     storage.currentPersistenceIds(afterId, limit)
 
+  override def eventsByTag(tag: String, offset: Offset = NoOffset): Source[EventEnvelope, NotUsed] = {
+    if (offset != NoOffset) {
+      throw new UnsupportedOperationException("Offsets not supported for persistence test kit currentEventsByTag yet")
+    }
+    Source.fromGraph(new EventsByTagStage(tag, storage))
+  }
 }
