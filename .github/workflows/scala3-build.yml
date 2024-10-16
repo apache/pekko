@@ -16,7 +16,7 @@ concurrency:
 jobs:
   test:
     name: Test
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: github.repository == 'apache/pekko'
     strategy:
       fail-fast: true
@@ -32,6 +32,9 @@ jobs:
         with:
           distribution: temurin
           java-version: 11
+
+      - name: Install sbt
+        uses: sbt/setup-sbt@v1
 
       - name: Cache Coursier cache
         uses: coursier/cache-action@v6

@@ -10,7 +10,7 @@ permissions: {}
 jobs:
   pekko-cluster-metrics-sigar:
     name: Pekko Cluster Metrics Test with Sigar
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: github.repository == 'apache/pekko'
     steps:
       - name: Checkout
@@ -25,6 +25,9 @@ jobs:
         with:
           distribution: temurin
           java-version: 11
+
+      - name: Install sbt
+        uses: sbt/setup-sbt@v1
 
       - name: Cache Coursier cache
         uses: coursier/cache-action@v6
@@ -53,7 +56,7 @@ jobs:
 
   pekko-classic-remoting-tests:
     name: Pekko Classic Remoting Tests
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: github.repository == 'apache/pekko'
     strategy:
       fail-fast: false
@@ -76,6 +79,9 @@ jobs:
         with:
           distribution: temurin
           java-version: 11
+
+      - name: Install sbt
+        uses: sbt/setup-sbt@v1
 
       - name: Cache Coursier cache
         uses: coursier/cache-action@v6
@@ -100,7 +106,7 @@ jobs:
 
   jdk-nightly-build:
     name: JDK ${{ matrix.javaVersion }} / Scala ${{ matrix.scalaVersion }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: github.repository == 'apache/pekko'
     strategy:
       fail-fast: false
@@ -123,6 +129,9 @@ jobs:
         with:
           distribution: temurin
           java-version: ${{ matrix.javaVersion }}
+
+      - name: Install sbt
+        uses: sbt/setup-sbt@v1
 
       - name: Cache Coursier cache
         uses: coursier/cache-action@v6
