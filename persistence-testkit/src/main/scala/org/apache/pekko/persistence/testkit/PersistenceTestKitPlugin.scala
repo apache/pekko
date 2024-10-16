@@ -83,6 +83,7 @@ class PersistenceTestKitPlugin(@unused cfg: Config, cfgPath: String) extends Asy
           .foreach { case (tag, (timestamp, highestSequenceNr)) =>
             eventStream.publish(PersistenceTestKitPlugin.TagWrite(tag, timestamp, highestSequenceNr))
           }
+        eventStream.publish(PersistenceTestKitPlugin.SliceWrite(aw.persistenceId, timestamp, aw.highestSequenceNr))
       }
       result
     })))
@@ -130,6 +131,8 @@ object PersistenceTestKitPlugin {
 
   private[testkit] case class Write(persistenceId: String, toSequenceNr: Long)
   private[testkit] case class TagWrite(tag: String, timestamp: Long, highestSequenceNr: Long)
+  private[testkit] case class SliceWrite(persistenceId: String, timestamp: Long, highestSequenceNr: Long)
+
 }
 
 /**

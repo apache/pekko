@@ -36,9 +36,11 @@ import org.slf4j.LoggerFactory
 import pekko.persistence.Persistence
 import pekko.persistence.query.typed
 import pekko.persistence.query.typed.scaladsl.CurrentEventsBySliceQuery
+import pekko.persistence.query.typed.scaladsl.EventsBySliceQuery
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.query.scaladsl.EventsByTagQuery
 import pekko.persistence.testkit.query.internal.EventsByTagStage
+import pekko.persistence.testkit.query.internal.EventsBySliceStage
 
 import scala.collection.immutable
 
@@ -53,7 +55,8 @@ final class PersistenceTestKitReadJournal(system: ExtendedActorSystem, @unused c
     with CurrentEventsByTagQuery
     with CurrentEventsBySliceQuery
     with PagedPersistenceIdsQuery
-    with EventsByTagQuery {
+    with EventsByTagQuery
+    with EventsBySliceQuery {
 
   private val log = LoggerFactory.getLogger(getClass)
 
@@ -166,5 +169,17 @@ final class PersistenceTestKitReadJournal(system: ExtendedActorSystem, @unused c
       throw new UnsupportedOperationException("Offsets not supported for persistence test kit currentEventsByTag yet")
     }
     Source.fromGraph(new EventsByTagStage(tag, storage))
+  }
+
+  override def eventsBySlices[Event](
+      entityType: String,
+      minSlice: Int,
+      maxSlice: Int,
+      offset: Offset
+  ): Source[typed.EventEnvelope[Event], NotUsed] = {
+    if (offset != NoOffset) {
+      throw new UnsupportedOperationException("Offsets not supported for persistence test kit eventsBySlices yet")
+    }
+    Source.fromGraph(new EventsBySliceStage(entityType, minSlice, maxSlice, storage, persistence))
   }
 }
