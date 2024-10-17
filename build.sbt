@@ -361,7 +361,7 @@ lazy val protobufV3 = pekkoModule("protobuf-v3")
         .inProject),
     assembly / assemblyOption := (assembly / assemblyOption).value.withIncludeScala(false).withIncludeBin(true),
     autoScalaLibrary := false, // do not include scala dependency in pom
-    exportJars := true, // in dependent projects, use assembled and shaded jar
+    exportJars := false, // in dependent projects, use assembled and shaded jar
     makePomConfiguration := makePomConfiguration.value
       .withConfigurations(Vector(Compile)), // prevent original dependency to be added to pom as runtime dep
     Compile / packageBin / packagedArtifact := Scoped.mkTuple2(
