@@ -262,7 +262,7 @@ object PekkoBuild {
     JdkOptions.targetJdkSettings,
     // needed until https://github.com/siculo/sbt-bom/pull/57 has been merged
     packagedArtifacts += {
-      Artifact(artifact.value.name, "cyclonedx", "xml") -> makeBom.value
+      Artifact(artifact.value.name, "cyclonedx", "xml", "cyclonedx") -> makeBom.value
     },
     // a workaround for https://github.com/akka/akka/issues/27661
     // see also project/Protobuf.scala that introduces /../ to make "intellij happy"
