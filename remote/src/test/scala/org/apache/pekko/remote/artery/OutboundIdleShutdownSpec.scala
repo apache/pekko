@@ -117,6 +117,7 @@ class OutboundIdleShutdownSpec extends ArteryMultiNodeSpec(s"""
 
       localArtery.quarantine(remoteAddress, Some(remoteUid), "Test")
       association.associationState.isQuarantined(remoteUid) shouldBe true
+      association.associationState.quarantinedButHarmless(remoteUid) shouldBe false
 
       eventually {
         assertStreamActive(association, Association.ControlQueueIndex, expected = false)
@@ -136,6 +137,7 @@ class OutboundIdleShutdownSpec extends ArteryMultiNodeSpec(s"""
 
         localArtery.quarantine(remoteAddress, Some(remoteUid), "HarmlessTest", harmless = true)
         association.associationState.isQuarantined(remoteUid) shouldBe true
+        association.associationState.quarantinedButHarmless(remoteUid) shouldBe true
 
         eventually {
           assertStreamActive(association, Association.ControlQueueIndex, expected = false)
