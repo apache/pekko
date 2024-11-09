@@ -106,7 +106,8 @@ object Dependencies {
     val jacksonDatabind = "com.fasterxml.jackson.core" % "jackson-databind" % jacksonDatabindVersion
     val jacksonJdk8 = "com.fasterxml.jackson.datatype" % "jackson-datatype-jdk8" % jacksonCoreVersion
     val jacksonJsr310 = "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310" % jacksonCoreVersion
-    val jacksonScala = "com.fasterxml.jackson.module" %% "jackson-module-scala" % jacksonCoreVersion
+    val jacksonScala = ("com.fasterxml.jackson.module" %% "jackson-module-scala" % jacksonCoreVersion)
+      .excludeAll(ExclusionRule(organization = "org.scala-lang"))
     val jacksonParameterNames = "com.fasterxml.jackson.module" % "jackson-module-parameter-names" % jacksonCoreVersion
     val jacksonCbor = "com.fasterxml.jackson.dataformat" % "jackson-dataformat-cbor" % jacksonCoreVersion
     val lz4Java = "org.lz4" % "lz4-java" % "1.8.0"
