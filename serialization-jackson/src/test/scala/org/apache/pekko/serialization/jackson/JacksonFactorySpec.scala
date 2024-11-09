@@ -45,11 +45,13 @@ class JacksonFactorySpec extends TestKit(ActorSystem("JacksonFactorySpec"))
       val maxStringLen = 1234567
       val maxDocLen = 123456789L
       val maxNestingDepth = 5
+      val maxTokenCount = 9876543210L
       val config = ConfigFactory.parseString(
         s"""pekko.serialization.jackson.read.max-number-length=$maxNumLen
              |pekko.serialization.jackson.read.max-string-length=$maxStringLen
              |pekko.serialization.jackson.read.max-document-length=$maxDocLen
              |pekko.serialization.jackson.read.max-nesting-depth=$maxNestingDepth
+             |pekko.serialization.jackson.read.max-token-count=$maxTokenCount
              |""".stripMargin)
         .withFallback(defaultConfig)
       val jacksonConfig = JacksonObjectMapperProvider.configForBinding(bindingName, config)
@@ -60,6 +62,7 @@ class JacksonFactorySpec extends TestKit(ActorSystem("JacksonFactorySpec"))
       streamReadConstraints.getMaxStringLength shouldEqual maxStringLen
       streamReadConstraints.getMaxDocumentLength shouldEqual maxDocLen
       streamReadConstraints.getMaxNestingDepth shouldEqual maxNestingDepth
+      streamReadConstraints.getMaxTokenCount shouldEqual maxTokenCount
     }
 
     "support StreamWriteConstraints" in {
