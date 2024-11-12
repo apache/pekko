@@ -45,17 +45,25 @@ private[remote] class InboundQuarantineCheck(inboundContext: InboundContext)
         env.association match {
           case OptionVal.Some(association) =>
             if (association.associationState.isQuarantined(env.originUid)) {
-              if (log.isDebugEnabled)
-                log.debug(
-                  "Dropping message [{}] from [{}#{}] because the system is quarantined",
-                  Logging.messageClassName(env.message),
+              if (association.associationState.quarantinedButHarmless(env.originUid)) {
+                log.info(
+                  "Quarantined but harmless message from [{}#{}] was dropped. " +
+                  "The system is quarantined but the UID is known to be harmless.",
                   association.remoteAddress,
                   env.originUid)
-              // avoid starting outbound stream for heartbeats
-              if (!env.message.isInstanceOf[Quarantined] && !isHeartbeat(env.message))
-                inboundContext.sendControl(
-                  association.remoteAddress,
-                  Quarantined(inboundContext.localAddress, UniqueAddress(association.remoteAddress, env.originUid)))
+              } else {
+                if (log.isDebugEnabled)
+                  log.debug(
+                    "Dropping message [{}] from [{}#{}] because the system is quarantined",
+                    Logging.messageClassName(env.message),
+                    association.remoteAddress,
+                    env.originUid)
+                // avoid starting outbound stream for heartbeats
+                if (!env.message.isInstanceOf[Quarantined] && !isHeartbeat(env.message))
+                  inboundContext.sendControl(
+                    association.remoteAddress,
+                    Quarantined(inboundContext.localAddress, UniqueAddress(association.remoteAddress, env.originUid)))
+              }
               pull(in)
             } else
               push(out, env)

@@ -150,7 +150,34 @@ class OutboundIdleShutdownSpec extends ArteryMultiNodeSpec(s"""
         }
     }
 
-    "eliminate quarantined association when not used - SBR case (harmless=true)" in withAssociation {
+    "eliminate quarantined association when not used - echo test" in withAssociation {
+      (remoteSystem, remoteAddress, _, localArtery, localProbe) =>
+        // event to watch out for, indicator of the issue
+        remoteSystem.eventStream.subscribe(testActor, classOf[ThisActorSystemQuarantinedEvent])
+
+        val remoteEcho = remoteSystem.actorSelection("/user/echo").resolveOne(remainingOrDefault).futureValue
+
+        val localAddress = RARP(system).provider.getDefaultAddress
+
+        val localEchoRef =
+          remoteSystem.actorSelection(RootActorPath(localAddress) / localProbe.ref.path.elements).resolveOne(
+            remainingOrDefault).futureValue
+        remoteEcho.tell("ping", localEchoRef)
+        localProbe.expectMsg("ping")
+
+        val association = localArtery.association(remoteAddress)
+        val remoteUid = futureUniqueRemoteAddress(association).futureValue.uid
+        localArtery.quarantine(remoteAddress, Some(remoteUid), "Test")
+        association.associationState.isQuarantined(remoteUid) shouldBe true
+        association.associationState.quarantinedButHarmless(remoteUid) shouldBe false
+
+        eventually {
+          remoteEcho.tell("ping", localEchoRef) // trigger sending message from remote to local, which will trigger local to wrongfully notify remote that it is quarantined
+          expectMsgType[ThisActorSystemQuarantinedEvent] // this is what remote emits when it learns it is quarantined by local. This is not correct and is what (with SBR enabled) triggers killing the node.
+        }
+    }
+
+    "eliminate quarantined association when not used - echo test (harmless=true)" in withAssociation {
       (remoteSystem, remoteAddress, _, localArtery, localProbe) =>
         // event to watch out for, indicator of the issue
         remoteSystem.eventStream.subscribe(testActor, classOf[ThisActorSystemQuarantinedEvent])
@@ -169,10 +196,11 @@ class OutboundIdleShutdownSpec extends ArteryMultiNodeSpec(s"""
         val remoteUid = futureUniqueRemoteAddress(association).futureValue.uid
         localArtery.quarantine(remoteAddress, Some(remoteUid), "HarmlessTest", harmless = true)
         association.associationState.isQuarantined(remoteUid) shouldBe true
+        association.associationState.quarantinedButHarmless(remoteUid) shouldBe true
 
         eventually {
           remoteEcho.tell("ping", localEchoRef) // trigger sending message from remote to local, which will trigger local to wrongfully notify remote that it is quarantined
-          expectMsgType[ThisActorSystemQuarantinedEvent] // this is what remote emits when it learns it is quarantined by local. This is not correct and is what (with SBR enabled) triggers killing the node.
+          expectNoMessage()
         }
     }
 
