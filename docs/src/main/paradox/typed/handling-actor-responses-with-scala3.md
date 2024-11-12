@@ -5,7 +5,7 @@ Scala 2, it doesn't require the utilisation of message adapters and response wra
 
 A distinction exists between an actor's public protocol (`Command `) and its internal
 protocol (`CommandAndResponse`). The latter is the union of the public protocol and all
-the responses the actor should understand. This is union is implemented with Scala 3's
+the responses the actor should understand. This union is implemented with Scala 3's
 Union types.
 
 **Example:**
