@@ -159,7 +159,9 @@ class OutboundIdleShutdownSpec extends ArteryMultiNodeSpec(s"""
 
         val localAddress = RARP(system).provider.getDefaultAddress
 
-        val localEchoRef = remoteSystem.actorSelection(RootActorPath(localAddress) / localProbe.ref.path.elements).resolveOne(remainingOrDefault).futureValue
+        val localEchoRef =
+          remoteSystem.actorSelection(RootActorPath(localAddress) / localProbe.ref.path.elements).resolveOne(
+            remainingOrDefault).futureValue
         remoteEcho.tell("ping", localEchoRef)
         localProbe.expectMsg("ping")
 
