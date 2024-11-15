@@ -16,7 +16,6 @@ package jdocs.stream.javadsl.cookbook;
 import org.apache.pekko.Done;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
-import org.apache.pekko.dispatch.Futures;
 import org.apache.pekko.japi.pf.PFBuilder;
 import org.apache.pekko.stream.BackpressureTimeoutException;
 import org.apache.pekko.stream.javadsl.Keep;
@@ -28,10 +27,10 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import scala.concurrent.Await;
-import scala.concurrent.Promise;
 
 import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -111,12 +110,12 @@ public class RecipeAdhocSourceTest extends RecipeTest {
   public void shutdownStream() throws Exception {
     new TestKit(system) {
       {
-        Promise<Done> shutdown = Futures.promise();
+        CompletableFuture<Done> shutdown = new CompletableFuture();
         TestSubscriber.Probe<String> probe =
             adhocSource(
                     Source.repeat("a")
                         .watchTermination(
-                            (a, term) -> term.thenRun(() -> shutdown.success(Done.getInstance()))),
+                            (a, term) -> term.thenRun(() -> shutdown.complete(Done.getInstance()))),
                     duration200mills,
                     3)
                 .toMat(TestSink.probe(system), Keep.right())
@@ -124,7 +123,7 @@ public class RecipeAdhocSourceTest extends RecipeTest {
 
         probe.requestNext("a");
         Thread.sleep(300);
-        Await.result(shutdown.future(), duration("3 seconds"));
+        shutdown.get(3, TimeUnit.SECONDS);
       }
     };
   }
@@ -134,12 +133,12 @@ public class RecipeAdhocSourceTest extends RecipeTest {
   public void notShutDownStream() throws Exception {
     new TestKit(system) {
       {
-        Promise<Done> shutdown = Futures.promise();
+        CompletableFuture<Done> shutdown = new CompletableFuture();
         TestSubscriber.Probe<String> probe =
             adhocSource(
                     Source.repeat("a")
                         .watchTermination(
-                            (a, term) -> term.thenRun(() -> shutdown.success(Done.getInstance()))),
+                            (a, term) -> term.thenRun(() -> shutdown.complete(Done.getInstance()))),
                     duration200mills,
                     3)
                 .toMat(TestSink.probe(system), Keep.right())
@@ -156,7 +155,7 @@ public class RecipeAdhocSourceTest extends RecipeTest {
         probe.requestNext("a");
         Thread.sleep(100);
 
-        assertEquals(false, shutdown.isCompleted());
+        assertEquals(false, shutdown.isDone());
       }
     };
   }
@@ -166,7 +165,7 @@ public class RecipeAdhocSourceTest extends RecipeTest {
   public void restartUponDemand() throws Exception {
     new TestKit(system) {
       {
-        Promise<Done> shutdown = Futures.promise();
+        CompletableFuture<Done> shutdown = new CompletableFuture();
         AtomicInteger startedCount = new AtomicInteger(0);
 
         Source<String, ?> source =
@@ -177,7 +176,7 @@ public class RecipeAdhocSourceTest extends RecipeTest {
         TestSubscriber.Probe<String> probe =
             adhocSource(
                     source.watchTermination(
-                        (a, term) -> term.thenRun(() -> shutdown.success(Done.getInstance()))),
+                        (a, term) -> term.thenRun(() -> shutdown.complete(Done.getInstance()))),
                     duration200mills,
                     3)
                 .toMat(TestSink.probe(system), Keep.right())
@@ -186,7 +185,7 @@ public class RecipeAdhocSourceTest extends RecipeTest {
         probe.requestNext("a");
         assertEquals(1, startedCount.get());
         Thread.sleep(200);
-        Await.result(shutdown.future(), duration("3 seconds"));
+        shutdown.get(3, TimeUnit.SECONDS);
       }
     };
   }
@@ -196,7 +195,7 @@ public class RecipeAdhocSourceTest extends RecipeTest {
   public void restartUptoMaxRetries() throws Exception {
     new TestKit(system) {
       {
-        Promise<Done> shutdown = Futures.promise();
+        CompletableFuture<Done> shutdown = new CompletableFuture<>();
         AtomicInteger startedCount = new AtomicInteger(0);
 
         Source<String, ?> source =
@@ -207,7 +206,7 @@ public class RecipeAdhocSourceTest extends RecipeTest {
         TestSubscriber.Probe<String> probe =
             adhocSource(
                     source.watchTermination(
-                        (a, term) -> term.thenRun(() -> shutdown.success(Done.getInstance()))),
+                        (a, term) -> term.thenRun(() -> shutdown.complete(Done.getInstance()))),
                     duration200mills,
                     3)
                 .toMat(TestSink.probe(system), Keep.right())
@@ -217,7 +216,7 @@ public class RecipeAdhocSourceTest extends RecipeTest {
         assertEquals(1, startedCount.get());
 
         Thread.sleep(500);
-        assertEquals(true, shutdown.isCompleted());
+        assertEquals(true, shutdown.isDone());
 
         Thread.sleep(500);
         probe.requestNext("a");
