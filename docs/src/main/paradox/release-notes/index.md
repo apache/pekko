@@ -74,7 +74,7 @@ properly acknowledged, please get in touch.
 We haven't had to fix many bugs that were in Akka 2.6.20.
 
 * Optimized JsonFraming breaks existing functionality in v2.6.20 ([PR44](https://github.com/apache/pekko/pull/44))
-* Use random IDs in Async DNS Resolver. This change was made due to [CVE-2023-31442](https://akka.io/security/akka-async-dns-2023-31442.html) in Akka. ([#384](https://github.com/apache/pekko/issues/384))
+* Use random IDs in Async DNS Resolver. This change was made due to [CVE-2023-31442](https://doc.akka.io/reference/security-announcements/akka-async-dns-2023-31442.html) in Akka. ([#384](https://github.com/apache/pekko/issues/384))
 * Include critical TLS fix from Akka 2.6.21 ([#442](https://github.com/apache/pekko/issues/442))
 
 ### Dependency Upgrades
