@@ -90,6 +90,7 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
       .maxStringLength(config.getInt("read.max-string-length"))
       .maxNameLength(config.getInt("read.max-name-length"))
       .maxDocumentLength(config.getLong("read.max-document-length"))
+      .maxTokenCount(config.getLong("read.max-token-count"))
       .build()
 
     val streamWriteConstraints = StreamWriteConstraints.builder()
@@ -159,11 +160,10 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
   private def getBufferRecyclerPool(cfg: Config): RecyclerPool[BufferRecycler] = {
     cfg.getString("buffer-recycler.pool-instance") match {
       case "thread-local"            => JsonRecyclerPools.threadLocalPool()
-      case "lock-free"               => JsonRecyclerPools.newLockFreePool()
-      case "shared-lock-free"        => JsonRecyclerPools.sharedLockFreePool()
       case "concurrent-deque"        => JsonRecyclerPools.newConcurrentDequePool()
       case "shared-concurrent-deque" => JsonRecyclerPools.sharedConcurrentDequePool()
       case "bounded"                 => JsonRecyclerPools.newBoundedPool(cfg.getInt("buffer-recycler.bounded-pool-size"))
+      case "non-recycling"           => JsonRecyclerPools.nonRecyclingPool()
       case other                     => throw new IllegalArgumentException(s"Unknown recycler-pool: $other")
     }
   }
