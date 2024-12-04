@@ -106,9 +106,9 @@ private[pekko] final class ArterySettings private (config: Config) {
   val Version: Byte = ArteryTransport.HighestVersion
 
   /**
-    * If set to true, harmless quarantine events are propagated in InboundQuarantineCheck.
-    * Background is in https://github.com/apache/pekko/pull/1555
-    */
+   * If set to true, harmless quarantine events are propagated in InboundQuarantineCheck.
+   * Background is in https://github.com/apache/pekko/pull/1555
+   */
   val PropagateHarmlessQuarantineEvents: Boolean =
     getBoolean("propagate-harmless-quarantine-events")
 
