@@ -33,11 +33,14 @@ import pekko.testkit.TestProbe
 
 class OutboundIdleShutdownSpec extends ArteryMultiNodeSpec(s"""
   pekko.loglevel=INFO
-  pekko.remote.artery.advanced.stop-idle-outbound-after = 1 s
-  pekko.remote.artery.advanced.connection-timeout = 2 s
-  pekko.remote.artery.advanced.remove-quarantined-association-after = 1 s
-  pekko.remote.artery.advanced.compression {
-    actor-refs.advertisement-interval = 5 seconds
+  pekko.remote.artery.propagate-harmless-quarantine-events = off
+  pekko.remote.artery.advanced {
+    stop-idle-outbound-after = 1 s
+    connection-timeout = 2 s
+    remove-quarantined-association-after = 1 s
+    compression {
+      actor-refs.advertisement-interval = 5 seconds
+    }
   }
   """) with ImplicitSender with Eventually {
 
