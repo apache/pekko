@@ -202,7 +202,7 @@ class OutboundIdleShutdownSpec extends ArteryMultiNodeSpec("""
 
         eventually {
           remoteEcho.tell("ping", localEchoRef) // trigger sending message from remote to local, which will trigger local to wrongfully notify remote that it is quarantined
-          expectNoMessage()
+          expectMsgType[ThisActorSystemQuarantinedEvent] // this is what remote emits when it learns it is quarantined by local
         }
     }
 
