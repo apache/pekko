@@ -45,7 +45,8 @@ private[remote] class InboundQuarantineCheck(inboundContext: InboundContext)
         env.association match {
           case OptionVal.Some(association) =>
             if (association.associationState.isQuarantined(env.originUid)) {
-              if (association.associationState.quarantinedButHarmless(env.originUid)) {
+              if (!inboundContext.settings.PropagateHarmlessQuarantineEvents
+                && association.associationState.quarantinedButHarmless(env.originUid)) {
                 log.info(
                   "Message [{}] from [{}#{}] was dropped. " +
                   "The system is quarantined but the UID is known to be harmless.",
