@@ -151,6 +151,16 @@ public class ActorCompile {
             });
   }
 
+  {
+    Behavior<MyMsg> b =
+        Behaviors.withTimersSetup(
+            (timers, ctx) -> {
+              timers.startSingleTimer("key", new MyMsgB("tick"), Duration.ofSeconds(1));
+              ctx.scheduleOnce(Duration.ofSeconds(1), ctx.getSelf(), new MyMsgB("tick"));
+              return Behaviors.ignore();
+            });
+  }
+
   static class MyBehavior extends ExtensibleBehavior<MyMsg> {
 
     @Override
@@ -230,6 +240,22 @@ public class ActorCompile {
                     throw new Exception("checked");
                   });
 
+              return Behaviors.empty();
+            });
+  }
+  // stash buffer with setup
+  {
+    Behavior<String> behavior =
+        Behaviors.withStashSetup(
+            5,
+            (stash, ctx) -> {
+              stash.forEach(
+                  msg -> {
+                    // checked is ok
+                    throw new Exception("checked");
+                  });
+
+              ctx.scheduleOnce(Duration.ofSeconds(1), ctx.getSelf(), "tick");
               return Behaviors.empty();
             });
   }
