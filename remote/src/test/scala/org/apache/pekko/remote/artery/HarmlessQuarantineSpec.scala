@@ -77,8 +77,8 @@ class HarmlessQuarantineSpec extends ArteryMultiNodeSpec("""
         association.associationState.isQuarantined(remoteUid) shouldBe true
         association.associationState.quarantinedButHarmless(remoteUid) shouldBe false
 
+        remoteEcho.tell("ping", localEchoRef) // trigger sending message from remote to local, which will trigger local to wrongfully notify remote that it is quarantined
         eventually {
-          remoteEcho.tell("ping", localEchoRef) // trigger sending message from remote to local, which will trigger local to wrongfully notify remote that it is quarantined
           expectMsgType[ThisActorSystemQuarantinedEvent] // this is what remote emits when it learns it is quarantined by local
         }
     }
@@ -104,8 +104,8 @@ class HarmlessQuarantineSpec extends ArteryMultiNodeSpec("""
         association.associationState.isQuarantined(remoteUid) shouldBe true
         association.associationState.quarantinedButHarmless(remoteUid) shouldBe true
 
+        remoteEcho.tell("ping", localEchoRef) // trigger sending message from remote to local, which will trigger local to wrongfully notify remote that it is quarantined
         eventually {
-          remoteEcho.tell("ping", localEchoRef) // trigger sending message from remote to local, which will trigger local to wrongfully notify remote that it is quarantined
           expectNoMessage()
         }
     }
