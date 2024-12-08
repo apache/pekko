@@ -127,15 +127,15 @@ object PojoSRTestSupport {
  */
 class BundleDescriptorBuilder(name: String) {
 
-  import org.ops4j.pax.tinybundles.core.TinyBundles
+  import org.ops4j.pax.tinybundles.TinyBundles
 
-  val tinybundle = TinyBundles.bundle.set(Constants.BUNDLE_SYMBOLICNAME, name)
+  val tinybundle = TinyBundles.bundle.setHeader(Constants.BUNDLE_SYMBOLICNAME, name)
 
   /**
    * Add a Blueprint XML file to our test bundle
    */
   def withBlueprintFile(name: String, contents: URL): BundleDescriptorBuilder = {
-    tinybundle.add("OSGI-INF/blueprint/%s".format(name), contents)
+    tinybundle.addResource("OSGI-INF/blueprint/%s".format(name), contents)
     this
   }
 
@@ -151,7 +151,7 @@ class BundleDescriptorBuilder(name: String) {
    * Add a Bundle activator to our test bundle
    */
   def withActivator(activator: Class[_ <: BundleActivator]): BundleDescriptorBuilder = {
-    tinybundle.set(Constants.BUNDLE_ACTIVATOR, activator.getName)
+    tinybundle.setHeader(Constants.BUNDLE_ACTIVATOR, activator.getName)
     this
   }
 
