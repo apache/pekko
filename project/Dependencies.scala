@@ -145,7 +145,11 @@ object Dependencies {
       val scalatestMockito = "org.scalatestplus" %% "mockito-4-11" % "3.2.18.0" % Test
 
       val pojosr = "com.googlecode.pojosr" % "de.kalpatec.pojosr.framework" % "0.2.1" % Test
-      val tinybundles = "org.ops4j.pax.tinybundles" % "tinybundles" % "3.0.0" % Test
+      val tinybundles = "org.ops4j.pax.tinybundles" % "tinybundles" % "4.0.0" % Test
+      val bndlib = "biz.aQute.bnd" % "biz.aQute.bndlib" % "6.4.1" % Test
+      val `pax-exam` = "org.ops4j.pax.exam" % "pax-exam" % "4.13.3" % Test
+      val `pax-exam-cm` = "org.ops4j.pax.exam" % "pax-exam-cm" % "4.13.3" % Test
+      val `pax-exam-container-forked` = "org.ops4j.pax.exam" % "pax-exam-container-forked" % "4.13.3" % Test
 
       // in-memory filesystem for file related tests
       val jimfs = "com.google.jimfs" % "jimfs" % "1.3.0" % Test
@@ -342,6 +346,10 @@ object Dependencies {
     TestDependencies.commonsIo,
     TestDependencies.pojosr,
     TestDependencies.tinybundles,
+    TestDependencies.bndlib,
+    TestDependencies.`pax-exam`,
+    TestDependencies.`pax-exam-cm`,
+    TestDependencies.`pax-exam-container-forked`,
     TestDependencies.scalatest,
     TestDependencies.junit)
 
