@@ -177,6 +177,14 @@ class ClusterMessageSerializerSpec extends PekkoSpec("pekko.actor.provider = clu
         ClusterMessageSerializer.OldWelcomeManifest)
     }
 
+    "be de-serializable with class manifests from Akka nodes" in {
+      val oldAkkaJoinAckManifest = s"org.apache.pekko.cluster.InternalClusterAction$$InitJoinAck"
+      val address = Address("akka", "system", "some.host.org", 4711)
+      checkDeserializationWithManifest(
+        InternalClusterAction.InitJoinAck(address, CompatibleConfig(ConfigFactory.empty)),
+        oldAkkaJoinAckManifest)
+    }
+
     "add a default data center role to gossip if none is present" in {
       val env = roundtrip(GossipEnvelope(a1.uniqueAddress, d1.uniqueAddress, Gossip(SortedSet(a1, d1))))
       env.gossip.members.head.roles should be(Set(ClusterSettings.DcRolePrefix + "default"))
