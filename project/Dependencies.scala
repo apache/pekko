@@ -146,7 +146,7 @@ object Dependencies {
 
       val pojosr = "com.googlecode.pojosr" % "de.kalpatec.pojosr.framework" % "0.2.1" % Test
       val tinybundles = "org.ops4j.pax.tinybundles" % "tinybundles" % "4.0.0" % Test
-      val bndlib = "biz.aQute.bnd" % "biz.aQute.bndlib" % "6.4.1" % Test
+      val bndlib = "biz.aQute.bnd" % "biz.aQute.bndlib" % "7.1.0" % Test
       val `pax-exam` = "org.ops4j.pax.exam" % "pax-exam" % "4.13.3" % Test
       val `pax-exam-cm` = "org.ops4j.pax.exam" % "pax-exam-cm" % "4.13.3" % Test
       val `pax-exam-container-forked` = "org.ops4j.pax.exam" % "pax-exam-container-forked" % "4.13.3" % Test
