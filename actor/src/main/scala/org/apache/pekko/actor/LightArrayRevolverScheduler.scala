@@ -139,7 +139,7 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
       final override protected def scheduledFirst(): Cancellable =
         schedule(
           executor,
-          new AtomicLong(clock() + initialDelay.toNanos) with Runnable {
+          new AtomicLong(clock() + initialDelay.toNanos) with SchedulerTask {
             override def run(): Unit = {
               try {
                 runnable.run()
@@ -149,6 +149,11 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
               } catch {
                 case _: SchedulerException => // ignore failure to enqueue or terminated target actor
               }
+            }
+
+            override def cancelled(): Unit = runnable match {
+              case task: SchedulerTask => task.cancelled()
+              case _                   =>
             }
           },
           roundUp(initialDelay))
@@ -390,7 +395,18 @@ object LightArrayRevolverScheduler {
 
     override def cancel(): Boolean = extractTask(CancelledTask) match {
       case ExecutedTask | CancelledTask => false
-      case _                            => true
+      case task: SchedulerTask =>
+        notifyCancellation(task)
+        true
+      case _ => true
+    }
+
+    private def notifyCancellation(task: SchedulerTask): Unit = {
+      try {
+        executionContext.execute(() => task.cancelled())
+      } catch {
+        case NonFatal(e) => executionContext.reportFailure(e)
+      }
     }
 
     override def isCancelled: Boolean = task eq CancelledTask

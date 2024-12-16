@@ -85,7 +85,7 @@ trait Scheduler {
     final override protected def scheduledFirst(): Cancellable =
       scheduleOnce(
         initialDelay,
-        new Runnable {
+        new SchedulerTask {
           override def run(): Unit = {
             try {
               runnable.run()
@@ -96,6 +96,11 @@ trait Scheduler {
               case _: SchedulerException                                                                         =>
               case e: IllegalStateException if e.getCause != null && e.getCause.isInstanceOf[SchedulerException] =>
             }
+          }
+
+          override def cancelled(): Unit = runnable match {
+            case task: SchedulerTask => task.cancelled()
+            case _                   =>
           }
         })
   }
@@ -497,6 +502,20 @@ trait Scheduler {
 
 // this one is just here so we can present a nice AbstractScheduler for Java
 abstract class AbstractSchedulerBase extends Scheduler
+
+/**
+ * A Task that will be notified when it is cancelled.
+ *
+ * @since 1.2.0
+ */
+trait SchedulerTask extends Runnable {
+
+  /**
+   * Called for [[SchedulerTask]]s that are successfully canceled via [[Cancellable#cancel]].
+   * Overriding this method allows to for example run some cleanup.
+   */
+  def cancelled(): Unit = ()
+}
 
 /**
  * Signifies something that can be cancelled
