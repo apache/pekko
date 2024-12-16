@@ -19,7 +19,7 @@ object Dependencies {
   import DependencyHelpers._
 
   object Protobuf {
-    val protobufJavaVersion = "3.25.5"
+    val protobufJavaVersion = "4.29.1"
     val protocVersion = protobufJavaVersion
   }
 
