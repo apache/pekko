@@ -365,8 +365,6 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
   val statsEnabled = PublishStatsInterval.isFinite
   var gossipStats = GossipStats()
 
-  val acceptedProtocols = context.system.settings.config.getStringList("pekko.remote.accept-protocol-names")
-
   var seedNodes = SeedNodes
   var seedNodeProcess: Option[ActorRef] = None
   var seedNodeProcessCounter = 0 // for unique names
@@ -703,10 +701,10 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
    * which will reply with a `Welcome` message.
    */
   def join(address: Address): Unit = {
-    if (!acceptedProtocols.contains(address.protocol))
+    if (address.protocol != selfAddress.protocol)
       logWarning(
-        "Trying to join member with wrong protocol, but was ignored, expected any of {} but was [{}]",
-        acceptedProtocols,
+        "Trying to join member with wrong protocol, but was ignored, expected [{}] but was [{}]",
+        selfAddress.protocol,
         address.protocol)
     else if (address.system != selfAddress.system)
       logWarning(
@@ -752,10 +750,10 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
   def joining(joiningNode: UniqueAddress, roles: Set[String], appVersion: Version): Unit = {
     if (!preparingForShutdown) {
       val selfStatus = latestGossip.member(selfUniqueAddress).status
-      if (!acceptedProtocols.contains(joiningNode.address.protocol))
+      if (joiningNode.address.protocol != selfAddress.protocol)
         logWarning(
-          "Member with wrong protocol tried to join, but was ignored, expected any of {} but was [{}]",
-          acceptedProtocols,
+          "Member with wrong protocol tried to join, but was ignored, expected [{}] but was [{}]",
+          selfAddress.protocol,
           joiningNode.address.protocol)
       else if (joiningNode.address.system != selfAddress.system)
         logWarning(
