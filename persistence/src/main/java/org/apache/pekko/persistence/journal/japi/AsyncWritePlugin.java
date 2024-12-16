@@ -14,8 +14,7 @@
 package org.apache.pekko.persistence.journal.japi;
 
 import java.util.Optional;
-
-import scala.concurrent.Future;
+import java.util.concurrent.CompletionStage;
 
 import org.apache.pekko.persistence.*;
 
@@ -73,7 +72,8 @@ interface AsyncWritePlugin {
    *
    * <p>This call is protected with a circuit-breaker.
    */
-  Future<Iterable<Optional<Exception>>> doAsyncWriteMessages(Iterable<AtomicWrite> messages);
+  CompletionStage<Iterable<Optional<Exception>>> doAsyncWriteMessages(
+      Iterable<AtomicWrite> messages);
 
   /**
    * Java API, Plugin API: synchronously deletes all persistent messages up to `toSequenceNr`.
@@ -82,6 +82,6 @@ interface AsyncWritePlugin {
    *
    * @see AsyncRecoveryPlugin
    */
-  Future<Void> doAsyncDeleteMessagesTo(String persistenceId, long toSequenceNr);
+  CompletionStage<Void> doAsyncDeleteMessagesTo(String persistenceId, long toSequenceNr);
   // #async-write-plugin-api
 }

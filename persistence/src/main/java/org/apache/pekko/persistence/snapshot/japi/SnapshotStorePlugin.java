@@ -19,6 +19,7 @@ import org.apache.pekko.persistence.SnapshotSelectionCriteria;
 import scala.concurrent.Future;
 
 import java.util.Optional;
+import java.util.concurrent.CompletionStage;
 
 interface SnapshotStorePlugin {
   // #snapshot-store-plugin-api
@@ -28,7 +29,7 @@ interface SnapshotStorePlugin {
    * @param persistenceId id of the persistent actor.
    * @param criteria selection criteria for loading.
    */
-  Future<Optional<SelectedSnapshot>> doLoadAsync(
+  CompletionStage<Optional<SelectedSnapshot>> doLoadAsync(
       String persistenceId, SnapshotSelectionCriteria criteria);
 
   /**
@@ -37,14 +38,14 @@ interface SnapshotStorePlugin {
    * @param metadata snapshot metadata.
    * @param snapshot snapshot.
    */
-  Future<Void> doSaveAsync(SnapshotMetadata metadata, Object snapshot);
+  CompletionStage<Void> doSaveAsync(SnapshotMetadata metadata, Object snapshot);
 
   /**
    * Java API, Plugin API: deletes the snapshot identified by `metadata`.
    *
    * @param metadata snapshot metadata.
    */
-  Future<Void> doDeleteAsync(SnapshotMetadata metadata);
+  CompletionStage<Void> doDeleteAsync(SnapshotMetadata metadata);
 
   /**
    * Java API, Plugin API: deletes all snapshots matching `criteria`.
@@ -52,6 +53,6 @@ interface SnapshotStorePlugin {
    * @param persistenceId id of the persistent actor.
    * @param criteria selection criteria for deleting.
    */
-  Future<Void> doDeleteAsync(String persistenceId, SnapshotSelectionCriteria criteria);
+  CompletionStage<Void> doDeleteAsync(String persistenceId, SnapshotSelectionCriteria criteria);
   // #snapshot-store-plugin-api
 }
