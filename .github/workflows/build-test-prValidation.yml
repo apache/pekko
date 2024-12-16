@@ -81,7 +81,7 @@ jobs:
           -Dpekko.test.tags.exclude=gh-exclude,timing \
           -Dpekko.cluster.assert=on \
           -Dsbt.override.build.repos=false \
-          -Dpekko.test.multi-node=false \
+          -Dpekko.test.multi-node=true \
           -Dsbt.log.noformat=false \
           -Dpekko.log.timestamps=true \
           validateCompile

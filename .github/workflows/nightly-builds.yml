@@ -160,7 +160,7 @@ jobs:
             -Dpekko.test.timefactor=2 \
             -Dpekko.actor.testkit.typed.timefactor=2 \
             -Dpekko.test.tags.exclude=gh-exclude,timing \
-            -Dpekko.test.multi-in-test=false \
+            -Dpekko.test.multi-in-test=true \
             clean "++ ${{ matrix.scalaVersion }} test" checkTestsHaveRun
 
 # comment out test report until an apache or GitHub published action (action-surefire-report) can be found or added allowlist from INFRA
