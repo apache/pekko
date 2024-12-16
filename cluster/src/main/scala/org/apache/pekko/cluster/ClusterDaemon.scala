@@ -13,13 +13,13 @@
 
 package org.apache.pekko.cluster
 
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
-import scala.annotation.nowarn
 import com.typesafe.config.Config
 
 import org.apache.pekko
@@ -30,13 +30,12 @@ import pekko.annotation.InternalApi
 import pekko.cluster.ClusterEvent._
 import pekko.cluster.MemberStatus._
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
-import pekko.event.ActorWithLogClass
-import pekko.event.Logging
+import pekko.event.{ ActorWithLogClass, Logging }
 import pekko.pattern.ask
 import pekko.remote.{ QuarantinedEvent => ClassicQuarantinedEvent }
 import pekko.remote.artery.QuarantinedEvent
-import pekko.util.Timeout
-import pekko.util.Version
+import pekko.util.{ Timeout, Version }
+import pekko.util.ccompat.JavaConverters._
 
 /**
  * Base trait for all cluster messages. All ClusterMessage's are serializable.
@@ -365,7 +364,19 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
   val statsEnabled = PublishStatsInterval.isFinite
   var gossipStats = GossipStats()
 
-  val acceptedProtocols = context.system.settings.config.getStringList("pekko.remote.accept-protocol-names")
+  val acceptedProtocols: Set[String] = {
+    val initList = context.system.settings.config
+      .getStringList("pekko.remote.accept-protocol-names")
+      .asScala
+    initList.toSeq.foreach { protocol =>
+      if (!protocol.endsWith(".tcp")) {
+        val tcpProtocol = s"$protocol.tcp"
+        if (!initList.contains(tcpProtocol))
+          initList.+=(tcpProtocol)
+      }
+    }
+    initList.toSet
+  }
 
   var seedNodes = SeedNodes
   var seedNodeProcess: Option[ActorRef] = None
