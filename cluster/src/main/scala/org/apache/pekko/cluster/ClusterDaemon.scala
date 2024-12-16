@@ -705,9 +705,10 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
   def join(address: Address): Unit = {
     if (!acceptedProtocols.contains(address.protocol))
       logWarning(
-        "Trying to join member with wrong protocol, but was ignored, expected any of {} but was [{}]",
+        "Trying to join member with wrong protocol, but was ignored, expected any of {} but was [{}] - selfAddress.protocol={}",
         acceptedProtocols,
-        address.protocol)
+        address.protocol,
+        selfAddress.protocol)
     else if (address.system != selfAddress.system)
       logWarning(
         "Trying to join member with wrong ActorSystem name, but was ignored, expected [{}] but was [{}]",
