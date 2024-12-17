@@ -3,10 +3,9 @@ name: Link Validator
 permissions: {}
 
 on:
-  pull_request:
   workflow_dispatch:
   schedule:
-    - cron: '0 6 * * 1'
+    - cron: '0 6 * * *'
 
 jobs:
   validate-links:
