@@ -32,10 +32,9 @@ import pekko.cluster.MemberStatus._
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.event.{ ActorWithLogClass, Logging }
 import pekko.pattern.ask
-import pekko.remote.{ QuarantinedEvent => ClassicQuarantinedEvent }
+import pekko.remote.{ QuarantinedEvent => ClassicQuarantinedEvent, RemoteSettings }
 import pekko.remote.artery.QuarantinedEvent
 import pekko.util.{ Timeout, Version }
-import pekko.util.ccompat.JavaConverters._
 
 /**
  * Base trait for all cluster messages. All ClusterMessage's are serializable.
@@ -365,17 +364,10 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
   var gossipStats = GossipStats()
 
   val acceptedProtocols: Set[String] = {
-    val initList = context.system.settings.config
-      .getStringList("pekko.remote.accept-protocol-names")
-      .asScala
-    initList.toSeq.foreach { protocol =>
-      if (!protocol.endsWith(".tcp")) {
-        val tcpProtocol = s"$protocol.tcp"
-        if (!initList.contains(tcpProtocol))
-          initList.+=(tcpProtocol)
-      }
-    }
-    initList.toSet
+    val remoteSettings: RemoteSettings = new RemoteSettings(context.system.settings.config)
+    val initSet = remoteSettings.AcceptProtocolNames
+    val tcpSet = initSet.map(protocol => s"$protocol.tcp")
+    initSet ++ tcpSet
   }
 
   var seedNodes = SeedNodes
