@@ -225,11 +225,12 @@ private[remote] class Remoting(_system: ExtendedActorSystem, _provider: RemoteAc
             Await.result(addressesPromise.future, StartupTimeout.duration)
           if (transports.isEmpty) throw new RemoteTransportException("No transport drivers were loaded.", null)
 
-          transportMapping = transports
+          val mapping = transports
             .groupBy {
               case (transport, _) => transport.schemeIdentifier
             }
             .map { case (k, v) => k -> v.toSet }
+          transportMapping = addProtocolsToMap(mapping)
 
           defaultAddress = transports.head._2
           addresses = transports.map { _._2 }.toSet
@@ -295,6 +296,21 @@ private[remote] class Remoting(_system: ExtendedActorSystem, _provider: RemoteAc
           case (t, _) => Option(t.boundAddress)
         }
     }
+  }
+
+  private def addProtocolsToMap(
+      map: Map[String, Set[(PekkoProtocolTransport, Address)]]): Map[String, Set[(PekkoProtocolTransport, Address)]] = {
+    if (AcceptProtocolNames.size > 1) {
+      map.flatMap { case (protocol, transports) =>
+        val tcpProtocol = protocol.endsWith(".tcp")
+        AcceptProtocolNames.map { newProtocol =>
+          if (tcpProtocol)
+            s"$newProtocol.tcp" -> transports
+          else
+            newProtocol -> transports
+        }
+      }
+    } else map
   }
 }
 
@@ -567,7 +583,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
     }
 
     OneForOneStrategy(loggingEnabled = false) {
-      case InvalidAssociation(localAddress, remoteAddress, reason, disassiciationInfo) =>
+      case InvalidAssociation(localAddress, remoteAddress, reason, disassociationInfo) =>
         keepQuarantinedOr(remoteAddress) {
           val causedBy = if (reason.getCause == null) "" else s"Caused by: [${reason.getCause.getMessage}]"
           log.warning(
@@ -580,7 +596,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
             causedBy)
           endpoints.markAsFailed(sender(), Deadline.now + settings.RetryGateClosedFor)
         }
-        disassiciationInfo.foreach {
+        disassociationInfo.foreach {
           case AssociationHandle.Quarantined =>
             context.system.eventStream.publish(ThisActorSystemQuarantinedEvent(localAddress, remoteAddress))
           case _ => // do nothing
