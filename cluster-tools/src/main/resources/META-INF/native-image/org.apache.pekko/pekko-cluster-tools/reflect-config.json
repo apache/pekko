@@ -1,0 +1,41 @@
+[
+  {
+    "name": "org.apache.pekko.cluster.pubsub.DistributedPubSub$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.cluster.pubsub.protobuf.DistributedPubSubMessageSerializer",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.cluster.singleton.protobuf.ClusterSingletonMessageSerializer",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.cluster.singleton.ClusterSingletonMessage"
+  },
+  {
+    "name": "org.apache.pekko.cluster.pubsub.DistributedPubSubMediator$Internal$SendToOneSubscriber"
+  },
+  {
+    "name": "org.apache.pekko.cluster.pubsub.DistributedPubSubMessage"
+  }
+]

@@ -1,0 +1,81 @@
+[
+  {
+    "name": "org.apache.pekko.cluster.typed.internal.receptionist.ClusterReceptionist$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.cluster.typed.internal.AkkaClusterTypedSerializer",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.cluster.typed.internal.delivery.ReliableDeliverySerializer",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.cluster.typed.internal.receptionist.ClusterReceptionist$Entry"
+  },
+  {
+    "name": "org.apache.pekko.actor.typed.internal.pubsub.TopicImpl$MessagePublished"
+  },
+  {
+    "name": "org.apache.pekko.actor.typed.delivery.internal.DeliverySerializable"
+  },
+  {
+    "name": "org.apache.pekko.cluster.typed.internal.receptionist.ClusterReceptionistConfigCompatChecker",
+    "methods": [
+      {
+        "name": "<init>"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.cluster.ddata.typed.javadsl.DistributedData$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.cluster.ddata.typed.scaladsl.DistributedData$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.cluster.typed.Cluster$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.cluster.typed.ClusterSingleton$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  }
+]
