@@ -869,7 +869,7 @@ private final case class SavedIslandData(
     materializer: PhasedFusingActorMaterializer,
     islandName: String)
     extends PhaseIsland[Publisher[Any]] {
-  override def name: String = s"SourceModule phase"
+  override def name: String = "SourceModule phase"
 
   override def materializeAtomic(mod: AtomicModule[Shape, Any], attributes: Attributes): (Publisher[Any], Any) = {
     mod
@@ -899,8 +899,8 @@ private final case class SavedIslandData(
  */
 @InternalApi private[pekko] final class SinkModulePhase(materializer: PhasedFusingActorMaterializer, islandName: String)
     extends PhaseIsland[AnyRef] {
-  override def name: String = s"SinkModule phase"
-  var subscriberOrVirtualPublisher: AnyRef = _
+  override def name: String = "SinkModule phase"
+  private var subscriberOrVirtualPublisher: AnyRef = _
 
   override def materializeAtomic(mod: AtomicModule[Shape, Any], attributes: Attributes): (AnyRef, Any) = {
     val subAndMat =
@@ -971,7 +971,7 @@ private final case class SavedIslandData(
     extends PhaseIsland[NotUsed] {
   def name: String = "TlsModulePhase"
 
-  var tlsActor: ActorRef = _
+  private var tlsActor: ActorRef = _
   var publishers: Vector[ActorPublisher[Any]] = _
 
   def materializeAtomic(mod: AtomicModule[Shape, Any], attributes: Attributes): (NotUsed, Any) = {
@@ -987,7 +987,7 @@ private final case class SavedIslandData(
 
     tlsActor = materializer.actorOf(props, "TLS-for-" + islandName)
     def factory(id: Int) = new ActorPublisher[Any](tlsActor) {
-      override val wakeUpMsg = FanOut.SubstreamSubscribePending(id)
+      override val wakeUpMsg: FanOut.SubstreamSubscribePending = FanOut.SubstreamSubscribePending(id)
     }
     publishers = Vector.tabulate(2)(factory)
     tlsActor ! FanOut.ExposedPublishers(publishers)
