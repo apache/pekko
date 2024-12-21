@@ -82,6 +82,7 @@ These built-in sinks are available from @scala[`org.apache.pekko.stream.scaladsl
 |Sink|<a name="lazyinitasync"></a>@ref[lazyInitAsync](Sink/lazyInitAsync.md)|Deprecated by @ref[`Sink.lazyFutureSink`](Sink/lazyFutureSink.md).|
 |Sink|<a name="lazysink"></a>@ref[lazySink](Sink/lazySink.md)|Defers creation and materialization of a `Sink` until there is a first element.|
 |Sink|<a name="never"></a>@ref[never](Sink/never.md)|Always backpressure never cancel and never consume any elements from the stream.|
+|Sink|<a name="none"></a>@ref[none](Sink/none.md)|A `Sink` that will test the given predicate `p` for every received element and completes with the result.|
 |Sink|<a name="oncomplete"></a>@ref[onComplete](Sink/onComplete.md)|Invoke a callback when the stream has completed or failed.|
 |Sink|<a name="prematerialize"></a>@ref[preMaterialize](Sink/preMaterialize.md)|Materializes this Sink, immediately returning (1) its materialized value, and (2) a new Sink that can be consume elements 'into' the pre-materialized one.|
 |Sink|<a name="queue"></a>@ref[queue](Sink/queue.md)|Materialize a `SinkQueue` that can be pulled to trigger demand through the sink.|
@@ -555,6 +556,7 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 * [monitor](Source-or-Flow/monitor.md)
 * [never](Source/never.md)
 * [never](Sink/never.md)
+* [none](Sink/none.md)
 * [onComplete](Sink/onComplete.md)
 * [onErrorComplete](Source-or-Flow/onErrorComplete.md)
 * [onFailuresWithBackoff](RestartSource/onFailuresWithBackoff.md)
