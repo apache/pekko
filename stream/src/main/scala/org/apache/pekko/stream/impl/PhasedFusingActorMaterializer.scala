@@ -689,14 +689,21 @@ private final case class SavedIslandData(
 /**
  * INTERNAL API
  */
+@InternalApi
+private[pekko] object GraphStageIsland {
+  // used as a type hint when creating the array of logics
+  private final val emptyLogicArray = Array.empty[GraphStageLogic]
+}
+
+/**
+ * INTERNAL API
+ */
 @InternalApi private[pekko] final class GraphStageIsland(
     effectiveAttributes: Attributes,
     materializer: PhasedFusingActorMaterializer,
     islandName: String,
     subflowFuser: OptionVal[GraphInterpreterShell => ActorRef])
     extends PhaseIsland[GraphStageLogic] {
-  // TODO: remove these
-  private val logicArrayType = Array.empty[GraphStageLogic]
   private[this] val logics = new util.ArrayList[GraphStageLogic](16)
 
   private var connections = new Array[Connection](16)
@@ -815,7 +822,7 @@ private final case class SavedIslandData(
     }
 
     shell.connections = finalConnections
-    shell.logics = logics.toArray(logicArrayType)
+    shell.logics = logics.toArray(GraphStageIsland.emptyLogicArray)
 
     subflowFuser match {
       case OptionVal.Some(fuseIntoExistingInterpreter) =>
