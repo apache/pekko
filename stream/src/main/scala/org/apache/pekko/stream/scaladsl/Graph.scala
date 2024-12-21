@@ -1327,7 +1327,7 @@ object Concat {
  */
 final class Concat[T](val inputPorts: Int) extends GraphStage[UniformFanInShape[T, T]] {
   require(inputPorts > 1, "A Concat must have more than 1 input ports")
-  val in: immutable.IndexedSeq[Inlet[T]] = Vector.tabulate(inputPorts)(i => Inlet[T]("Concat.in" + i))
+  val in: immutable.IndexedSeq[Inlet[T]] = Array.tabulate(inputPorts)(i => Inlet[T]("Concat.in" + i))
   val out: Outlet[T] = Outlet[T]("Concat.out")
   override def initialAttributes = DefaultAttributes.concat
   override val shape: UniformFanInShape[T, T] = UniformFanInShape(out, in: _*)
@@ -1350,6 +1350,7 @@ final class Concat[T](val inputPorts: Int) extends GraphStage[UniformFanInShape[
 
             override def onUpstreamFinish() = {
               if (idx == activeStream) {
+                in(activeStream) = null
                 activeStream += 1
                 // Skip closed inputs
                 while (activeStream < inputPorts && isClosed(in(activeStream))) activeStream += 1
