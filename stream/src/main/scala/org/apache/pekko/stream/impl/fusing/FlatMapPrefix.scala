@@ -44,7 +44,7 @@ import pekko.util.OptionVal
         .propagateToNestedMaterialization
     val matPromise = Promise[M]()
     object logic extends GraphStageLogic(shape) with InHandler with OutHandler {
-      private val accumulated = collection.mutable.Buffer.empty[In]
+      private var accumulated = collection.mutable.Buffer.empty[In]
 
       private var subSource = OptionVal.none[SubSourceOutlet[In]]
       private var subSink = OptionVal.none[SubSinkInlet[Out]]
@@ -129,7 +129,7 @@ import pekko.util.OptionVal
       def materializeFlow(): Unit =
         try {
           val prefix = accumulated.toVector
-          accumulated.clear()
+          accumulated = null // free memory
           subSource = OptionVal.Some(new SubSourceOutlet[In]("FlatMapPrefix.subSource"))
           val theSubSource = subSource.get
           subSink = OptionVal.Some(new SubSinkInlet[Out]("FlatMapPrefix.subSink"))
