@@ -29,10 +29,10 @@ when the input stream ends, or completed with `Failure` if there is a failure si
 This example tests all elements in the stream is `<=` 100.
 
 Scala
-:   @@snip [ForAll.scala](/docs/src/test/scala/docs/stream/operators/sink/NoneMatch.scala) { #none }
+:   @@snip [NoneMatch.scala](/docs/src/test/scala/docs/stream/operators/sink/NoneMatch.scala) { #none }
 
 Java
-:   @@snip [ForAll.java](/docs/src/test/java/jdocs/stream/operators/sink/NoneMatch.java) { #none }
+:   @@snip [NoneMatch.java](/docs/src/test/java/jdocs/stream/operators/sink/NoneMatch.java) { #none }
 
 ## Reactive Streams Semantics
 
