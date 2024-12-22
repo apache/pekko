@@ -43,8 +43,8 @@ import pekko.util.OptionVal
         .mandatoryAttribute[Attributes.NestedMaterializationCancellationPolicy]
         .propagateToNestedMaterialization
     val matPromise = Promise[M]()
-    val logic = new GraphStageLogic(shape) with InHandler with OutHandler {
-      val accumulated = collection.mutable.Buffer.empty[In]
+    object logic extends GraphStageLogic(shape) with InHandler with OutHandler {
+      private val accumulated = collection.mutable.Buffer.empty[In]
 
       private var subSource = OptionVal.none[SubSourceOutlet[In]]
       private var subSink = OptionVal.none[SubSinkInlet[Out]]

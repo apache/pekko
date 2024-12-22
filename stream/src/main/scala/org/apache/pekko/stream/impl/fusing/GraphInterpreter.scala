@@ -111,6 +111,16 @@ import pekko.stream.stage._
      *  * a cancellation cause, if elem.isInstanceOf[Cancelled]
      */
     var slot: Any = Empty
+
+    /**
+     * Clean up the connection after it has been completed or cancelled
+     */
+    def cleanAfterCompleteOrCancelled(): Unit = {
+      inOwner = null
+      outOwner = null
+      inHandler = null
+      outHandler = null
+    }
   }
 
   private val _currentInterpreter = new ThreadLocal[Array[AnyRef]] {
@@ -332,6 +342,7 @@ import pekko.stream.stage._
     var i = 0
     while (i < logics.length) {
       val logic = logics(i)
+      logics(i) = null
       if (!isStageCompleted(logic)) finalizeStage(logic)
       i += 1
     }
@@ -522,6 +533,7 @@ import pekko.stream.stage._
       val cause = connection.slot.asInstanceOf[Cancelled].cause
       connection.slot = Empty
       connection.outHandler.onDownstreamFinish(cause)
+      connection.cleanAfterCompleteOrCancelled()
     } else if ((code & (OutClosed | InClosed)) == OutClosed) {
       // COMPLETIONS
 
@@ -536,6 +548,7 @@ import pekko.stream.stage._
         completeConnection(connection.inOwner.stageId)
         if ((connection.portState & InFailed) == 0) connection.inHandler.onUpstreamFinish()
         else connection.inHandler.onUpstreamFailure(connection.slot.asInstanceOf[Failed].ex)
+        connection.cleanAfterCompleteOrCancelled()
       } else {
         // Push is pending, first process push, then re-enqueue closing event
         processPush(connection)
