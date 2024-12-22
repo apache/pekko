@@ -15,5 +15,5 @@
 # specific language governing permissions and limitations
 # under the License.
 
-ProblemFilters.exclude[ReversedMissingMethodProblem]("org.apache.pekko.stream.scaladsl.FlowWithContextOps.wireTap")
-ProblemFilters.exclude[ReversedMissingMethodProblem]("org.apache.pekko.stream.scaladsl.FlowWithContextOps.wireTapContext")
+# Remove SupervisedGraphStageLogic
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.stream.impl.fusing.SupervisedGraphStageLogic")
