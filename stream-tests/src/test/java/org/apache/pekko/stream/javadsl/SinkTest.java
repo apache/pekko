@@ -247,6 +247,15 @@ public class SinkTest extends StreamTest {
   }
 
   @Test
+  public void sinkMustBeAbleToUseNoneMatch()
+      throws InterruptedException, ExecutionException, TimeoutException {
+    CompletionStage<Boolean> cs =
+        Source.from(Arrays.asList(1, 2, 3, 4)).runWith(Sink.none(param -> param < 0), system);
+    boolean noneMatch = cs.toCompletableFuture().get(100, TimeUnit.MILLISECONDS);
+    assertTrue(noneMatch);
+  }
+
+  @Test
   public void sinkMustBeAbleToUseForExists()
       throws InterruptedException, ExecutionException, TimeoutException {
     CompletionStage<Boolean> cs =

@@ -381,6 +381,46 @@ class SinkSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
 
   }
 
+  "The none sink" must {
+
+    "completes with `ture` when all elements not match" in {
+      Source(1 to 4)
+        .runWith(Sink.none(_ < 0))
+        .futureValue shouldBe true
+    }
+
+    "completes with `false` when any element match" in {
+      Source(1 to 4)
+        .runWith(Sink.none(_ > 2))
+        .futureValue shouldBe false
+    }
+
+    "completes with `true` if the stream is empty" in {
+      Source.empty[Int]
+        .runWith(Sink.none(_ > 2))
+        .futureValue shouldBe true
+    }
+
+    "completes with `Failure` if the stream failed" in {
+      Source.failed[Int](new RuntimeException("Oops"))
+        .runWith(Sink.none(_ > 2))
+        .failed.futureValue shouldBe a[RuntimeException]
+    }
+
+    "completes with `false` with restart strategy" in {
+      val sink = Sink.none[Int](elem => {
+        if (elem == 2) {
+          throw new RuntimeException("Oops")
+        }
+        elem > 1
+      }).withAttributes(supervisionStrategy(Supervision.restartingDecider))
+
+      Source(1 to 3)
+        .runWith(sink)
+        .futureValue shouldBe false
+    }
+  }
+
   "The exists sink" must {
 
     "completes with `false` when none element match" in {
