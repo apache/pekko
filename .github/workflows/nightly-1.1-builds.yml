@@ -55,6 +55,7 @@ jobs:
             -Dpekko.actor.testkit.typed.timefactor=2 \
             -Dpekko.test.tags.exclude=gh-exclude,timing \
             -Dpekko.log.timestamps=true \
+            -Dio.netty.leakDetection.level=PARANOID \
             -Dmultinode.XX:MetaspaceSize=128M \
             -Dmultinode.Xms256M \
             -Dmultinode.Xmx256M \
@@ -109,6 +110,7 @@ jobs:
           -Dpekko.actor.testkit.typed.timefactor=2 \
           -Dpekko.test.tags.exclude=gh-exclude,timing \
           -Dpekko.test.multi-in-test=false \
+          -Dio.netty.leakDetection.level=PARANOID \
           -Dpekko.cluster.assert=on \
           clean ${{ matrix.command }}
 
@@ -159,4 +161,5 @@ jobs:
             -Dpekko.actor.testkit.typed.timefactor=2 \
             -Dpekko.test.tags.exclude=gh-exclude,timing \
             -Dpekko.test.multi-in-test=false \
+            -Dio.netty.leakDetection.level=PARANOID \
             clean "++ ${{ matrix.scalaVersion }} test" checkTestsHaveRun
