@@ -487,7 +487,7 @@ object Sink {
    *
    * '''Cancels when''' predicate `p` returns `true`
    *
-   * @since 1.1.3
+   * @since 1.2.0
    */
   def none[T](p: T => Boolean): Sink[T, Future[Boolean]] =
     Flow[T].foldWhile(true)(util.ConstantFun.scalaIdentityFunction)(_ && !p(_))
