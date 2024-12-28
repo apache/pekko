@@ -95,14 +95,14 @@ class MixedProtocolClusterSpec extends PekkoSpec with ClusterTestKit {
     "be allowed to join a cluster with a node using the pekko protocol (udp)" taggedAs LongRunningTest ignore {
 
       val clusterTestUtil = new ClusterTestUtil(system.name)
-      // start the first node with the "pekko" protocol
-      clusterTestUtil.newActorSystem(configWithPekkoUdp)
-
-      // have a node using the "akka" protocol join
-      val joiningNode = clusterTestUtil.newActorSystem(configWithAkkaUdp)
-      clusterTestUtil.formCluster()
-
       try {
+        // start the first node with the "pekko" protocol
+        clusterTestUtil.newActorSystem(configWithPekkoUdp)
+
+        // have a node using the "akka" protocol join
+        val joiningNode = clusterTestUtil.newActorSystem(configWithAkkaUdp)
+        clusterTestUtil.formCluster()
+
         awaitCond(clusterTestUtil.isMemberUp(joiningNode), message = "awaiting joining node to be 'Up'")
       } finally {
         clusterTestUtil.shutdownAll()
@@ -112,14 +112,14 @@ class MixedProtocolClusterSpec extends PekkoSpec with ClusterTestKit {
     "be allowed to join a cluster with a node using the pekko protocol (tcp)" taggedAs LongRunningTest in {
 
       val clusterTestUtil = new ClusterTestUtil(system.name)
-      // start the first node with the "pekko" protocol
-      clusterTestUtil.newActorSystem(configWithPekkoTcp)
-
-      // have a node using the "akka" protocol join
-      val joiningNode = clusterTestUtil.newActorSystem(configWithAkkaTcp)
-      clusterTestUtil.formCluster()
-
       try {
+        // start the first node with the "pekko" protocol
+        clusterTestUtil.newActorSystem(configWithPekkoTcp)
+
+        // have a node using the "akka" protocol join
+        val joiningNode = clusterTestUtil.newActorSystem(configWithAkkaTcp)
+        clusterTestUtil.formCluster()
+
         awaitCond(clusterTestUtil.isMemberUp(joiningNode), message = "awaiting joining node to be 'Up'")
       } finally {
         clusterTestUtil.shutdownAll()
@@ -129,14 +129,14 @@ class MixedProtocolClusterSpec extends PekkoSpec with ClusterTestKit {
     "be allowed to join a cluster with a node using the pekko protocol (netty)" taggedAs LongRunningTest in {
 
       val clusterTestUtil = new ClusterTestUtil(system.name)
-      // start the first node with the "pekko" protocol
-      clusterTestUtil.newActorSystem(configWithPekkoNetty)
-
-      // have a node using the "akka" protocol join
-      val joiningNode = clusterTestUtil.newActorSystem(configWithAkkaNetty)
-      clusterTestUtil.formCluster()
-
       try {
+        // start the first node with the "pekko" protocol
+        clusterTestUtil.newActorSystem(configWithPekkoNetty)
+
+        // have a node using the "akka" protocol join
+        val joiningNode = clusterTestUtil.newActorSystem(configWithAkkaNetty)
+        clusterTestUtil.formCluster()
+
         awaitCond(clusterTestUtil.isMemberUp(joiningNode), message = "awaiting joining node to be 'Up'")
       } finally {
         clusterTestUtil.shutdownAll()
@@ -146,15 +146,14 @@ class MixedProtocolClusterSpec extends PekkoSpec with ClusterTestKit {
     "allow a node using the pekko protocol to join the cluster (udp)" taggedAs LongRunningTest ignore {
 
       val clusterTestUtil = new ClusterTestUtil(system.name)
-
-      // create the first node with the "akka" protocol
-      clusterTestUtil.newActorSystem(configWithAkkaUdp)
-
-      // have a node using the "pekko" protocol join
-      val joiningNode = clusterTestUtil.newActorSystem(configWithPekkoUdp)
-      clusterTestUtil.formCluster()
-
       try {
+        // create the first node with the "akka" protocol
+        clusterTestUtil.newActorSystem(configWithAkkaUdp)
+
+        // have a node using the "pekko" protocol join
+        val joiningNode = clusterTestUtil.newActorSystem(configWithPekkoUdp)
+        clusterTestUtil.formCluster()
+
         awaitCond(clusterTestUtil.isMemberUp(joiningNode), message = "awaiting joining node to be 'Up'")
       } finally {
         clusterTestUtil.shutdownAll()
@@ -164,15 +163,14 @@ class MixedProtocolClusterSpec extends PekkoSpec with ClusterTestKit {
     "allow a node using the pekko protocol to join the cluster (tcp)" taggedAs LongRunningTest in {
 
       val clusterTestUtil = new ClusterTestUtil(system.name)
-
-      // create the first node with the "akka" protocol
-      clusterTestUtil.newActorSystem(configWithAkkaTcp)
-
-      // have a node using the "pekko" protocol join
-      val joiningNode = clusterTestUtil.newActorSystem(configWithPekkoTcp)
-      clusterTestUtil.formCluster()
-
       try {
+        // create the first node with the "akka" protocol
+        clusterTestUtil.newActorSystem(configWithAkkaTcp)
+
+        // have a node using the "pekko" protocol join
+        val joiningNode = clusterTestUtil.newActorSystem(configWithPekkoTcp)
+        clusterTestUtil.formCluster()
+
         awaitCond(clusterTestUtil.isMemberUp(joiningNode), message = "awaiting joining node to be 'Up'")
       } finally {
         clusterTestUtil.shutdownAll()
@@ -182,15 +180,14 @@ class MixedProtocolClusterSpec extends PekkoSpec with ClusterTestKit {
     "allow a node using the pekko protocol to join the cluster (netty)" taggedAs LongRunningTest in {
 
       val clusterTestUtil = new ClusterTestUtil(system.name)
-
-      // create the first node with the "akka" protocol
-      clusterTestUtil.newActorSystem(configWithAkkaNetty)
-
-      // have a node using the "pekko" protocol join
-      val joiningNode = clusterTestUtil.newActorSystem(configWithPekkoNetty)
-      clusterTestUtil.formCluster()
-
       try {
+        // create the first node with the "akka" protocol
+        clusterTestUtil.newActorSystem(configWithAkkaNetty)
+
+        // have a node using the "pekko" protocol join
+        val joiningNode = clusterTestUtil.newActorSystem(configWithPekkoNetty)
+        clusterTestUtil.formCluster()
+
         awaitCond(clusterTestUtil.isMemberUp(joiningNode), message = "awaiting joining node to be 'Up'")
       } finally {
         clusterTestUtil.shutdownAll()
