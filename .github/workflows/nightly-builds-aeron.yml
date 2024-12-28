@@ -63,6 +63,7 @@ jobs:
           -Dpekko.test.tags.exclude=gh-exclude,gh-exclude-aeron,timing \
           -Dpekko.test.multi-in-test=false \
           -Dpekko.cluster.assert=on \
+          -Dio.netty.leakDetection.level=PARANOID \
           -Daeron.dir=/opt/volumes/media-driver \
           -Daeron.term.buffer.length=33554432 \
           clean ${{ matrix.command }}

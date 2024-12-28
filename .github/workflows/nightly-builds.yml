@@ -46,6 +46,7 @@ jobs:
             -Dpekko.actor.testkit.typed.timefactor=2 \
             -Dpekko.test.tags.exclude=gh-exclude,timing \
             -Dpekko.log.timestamps=true \
+            -Dio.netty.leakDetection.level=PARANOID \
             -Dmultinode.XX:MetaspaceSize=128M \
             -Dmultinode.Xms256M \
             -Dmultinode.Xmx256M \
@@ -110,6 +111,7 @@ jobs:
           -Dpekko.test.tags.exclude=gh-exclude,timing \
           -Dpekko.test.multi-in-test=false \
           -Dpekko.cluster.assert=on \
+          -Dio.netty.leakDetection.level=PARANOID \
           clean ${{ matrix.command }}
 
   jdk-nightly-build:
@@ -161,6 +163,7 @@ jobs:
             -Dpekko.actor.testkit.typed.timefactor=2 \
             -Dpekko.test.tags.exclude=gh-exclude,timing \
             -Dpekko.test.multi-in-test=false \
+            -Dio.netty.leakDetection.level=PARANOID \
             clean "++ ${{ matrix.scalaVersion }} test" checkTestsHaveRun
 
 # comment out test report until an apache or GitHub published action (action-surefire-report) can be found or added allowlist from INFRA

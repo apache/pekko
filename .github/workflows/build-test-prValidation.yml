@@ -99,6 +99,7 @@ jobs:
           -Dpekko.test.multi-node=false \
           -Dsbt.log.noformat=false \
           -Dpekko.log.timestamps=true \
+          -Dio.netty.leakDetection.level=PARANOID \
           validatePullRequest
 
   jdk-21-extra-tests:
@@ -142,4 +143,5 @@ jobs:
           -Dpekko.test.multi-node=false \
           -Dsbt.log.noformat=false \
           -Dpekko.log.timestamps=true \
+          -Dio.netty.leakDetection.level=PARANOID \
           TestJdk9/test        
