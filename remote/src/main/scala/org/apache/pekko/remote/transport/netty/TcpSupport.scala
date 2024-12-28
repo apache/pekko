@@ -14,10 +14,8 @@
 package org.apache.pekko.remote.transport.netty
 
 import java.net.InetSocketAddress
-
 import scala.annotation.nowarn
 import scala.concurrent.{ Future, Promise }
-
 import org.apache.pekko
 import pekko.actor.Address
 import pekko.event.LoggingAdapter
@@ -25,10 +23,11 @@ import pekko.remote.transport.AssociationHandle
 import pekko.remote.transport.AssociationHandle.{ Disassociated, HandleEvent, HandleEventListener, InboundPayload }
 import pekko.remote.transport.Transport.AssociationEventListener
 import pekko.util.ByteString
-
-import io.netty.buffer.{ ByteBuf, ByteBufUtil, Unpooled }
+import io.netty.buffer.{ ByteBuf, Unpooled }
 import io.netty.channel.{ Channel, ChannelHandlerContext }
 import io.netty.util.AttributeKey
+
+import scala.util.control.NonFatal
 
 private[remote] object TcpHandlers {
   private val LISTENER = AttributeKey.valueOf[HandleEventListener]("listener")
@@ -56,8 +55,15 @@ private[remote] trait TcpHandlers extends CommonHandlers {
   }
 
   override def onMessage(ctx: ChannelHandlerContext, msg: ByteBuf): Unit = {
-    val bytes: Array[Byte] = ByteBufUtil.getBytes(msg)
-    if (bytes.length > 0) notifyListener(ctx.channel(), InboundPayload(ByteString(bytes)))
+    try {
+      val bytes: Array[Byte] = new Array[Byte](msg.readableBytes())
+      msg.readBytes(bytes)
+      if (bytes.length > 0) notifyListener(ctx.channel(), InboundPayload(ByteString(bytes)))
+    } catch {
+      case NonFatal(e) =>
+        log.warning("Error while handling message from [{}]: {}", ctx.channel().remoteAddress(), e)
+        onException(ctx, e)
+    }
   }
 
   override def onException(ctx: ChannelHandlerContext, e: Throwable): Unit = {
