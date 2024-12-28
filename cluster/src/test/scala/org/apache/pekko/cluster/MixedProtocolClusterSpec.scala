@@ -87,7 +87,7 @@ class MixedProtocolClusterSpec extends PekkoSpec with ClusterTestKit {
 
   "A node using the akka protocol" must {
 
-    "be allowed to join a cluster with a node using the pekko protocol (udp)" taggedAs LongRunningTest ignore {
+    "be allowed to join a cluster with a node using the pekko protocol (udp)" taggedAs LongRunningTest in {
 
       val clusterTestUtil = new ClusterTestUtil(system.name)
       try {
@@ -138,7 +138,7 @@ class MixedProtocolClusterSpec extends PekkoSpec with ClusterTestKit {
       }
     }
 
-    "allow a node using the pekko protocol to join the cluster (udp)" taggedAs LongRunningTest ignore {
+    "allow a node using the pekko protocol to join the cluster (udp)" taggedAs LongRunningTest in {
 
       val clusterTestUtil = new ClusterTestUtil(system.name)
       try {
