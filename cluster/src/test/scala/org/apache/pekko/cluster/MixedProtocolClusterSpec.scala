@@ -29,6 +29,7 @@ object MixedProtocolClusterSpec {
      pekko.coordinated-shutdown.terminate-actor-system = on
 
      pekko.remote.artery.canonical.port = 0
+     pekko.remote.classic.netty.tcp.port = 0
      pekko.remote.artery.advanced.aeron.idle-cpu-level = 3
      pekko.remote.accept-protocol-names = ["pekko", "akka"]
 
@@ -51,27 +52,21 @@ object MixedProtocolClusterSpec {
       pekko.remote.protocol-name = "akka"
     """).withFallback(configWithUdp)
 
-  val configWithTcp: Config =
-    ConfigFactory.parseString("""
-      pekko.remote.artery.canonical.port = 0
-    """).withFallback(baseConfig)
-
   val configWithPekkoTcp: Config =
     ConfigFactory.parseString("""
       pekko.remote.protocol-name = "pekko"
-    """).withFallback(configWithTcp)
+    """).withFallback(baseConfig)
 
   val configWithAkkaTcp: Config =
     ConfigFactory.parseString("""
       pekko.remote.protocol-name = "akka"
-    """).withFallback(configWithTcp)
+    """).withFallback(baseConfig)
 
   val configWithNetty: Config =
     ConfigFactory.parseString("""
       pekko.remote.artery.enabled = false
       pekko.remote.classic {
         enabled-transports = ["pekko.remote.classic.netty.tcp"]
-        netty.tcp.port = 0
       }
     """).withFallback(baseConfig)
 
