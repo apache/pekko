@@ -56,8 +56,14 @@ private[pekko] class ProtobufEncoder extends MessageToMessageEncoder[Message] {
 private[pekko] class ProtobufDecoder(prototype: Message) extends MessageToMessageDecoder[ByteBuf] {
 
   override def decode(ctx: ChannelHandlerContext, msg: ByteBuf, out: java.util.List[AnyRef]): Unit = {
-    val bytes = ByteBufUtil.getBytes(msg)
-    out.add(prototype.getParserForType.parseFrom(bytes))
+    try {
+      val bytes = ByteBufUtil.getBytes(msg)
+      out.add(prototype.getParserForType.parseFrom(bytes))
+    } catch {
+      case NonFatal(e) => ctx.pipeline().fireExceptionCaught(e)
+    } finally {
+      msg.release()
+    }
   }
 }
 

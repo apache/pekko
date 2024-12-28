@@ -30,6 +30,8 @@ import io.netty.buffer.{ ByteBuf, ByteBufUtil, Unpooled }
 import io.netty.channel.{ Channel, ChannelHandlerContext }
 import io.netty.util.AttributeKey
 
+import scala.util.control.NonFatal
+
 private[remote] object TcpHandlers {
   private val LISTENER = AttributeKey.valueOf[HandleEventListener]("listener")
 }
@@ -56,8 +58,16 @@ private[remote] trait TcpHandlers extends CommonHandlers {
   }
 
   override def onMessage(ctx: ChannelHandlerContext, msg: ByteBuf): Unit = {
-    val bytes: Array[Byte] = ByteBufUtil.getBytes(msg)
-    if (bytes.length > 0) notifyListener(ctx.channel(), InboundPayload(ByteString(bytes)))
+    try {
+      val bytes: Array[Byte] = ByteBufUtil.getBytes(msg)
+      if (bytes.length > 0) notifyListener(ctx.channel(), InboundPayload(ByteString(bytes)))
+    } catch {
+      case NonFatal(e) =>
+        log.warning("Error while handling message from [{}]: {}", ctx.channel().remoteAddress(), e)
+        onException(ctx, e)
+    } finally {
+      msg.release()
+    }
   }
 
   override def onException(ctx: ChannelHandlerContext, e: Throwable): Unit = {
