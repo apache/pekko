@@ -118,7 +118,7 @@ object Sink {
    *
    * '''Cancels when''' predicate `p` returns `true`
    *
-   * @since 1.1.3
+   * @since 1.2.0
    */
   def none[In](p: function.Predicate[In]): javadsl.Sink[In, CompletionStage[java.lang.Boolean]] = {
     import pekko.util.FutureConverters._
