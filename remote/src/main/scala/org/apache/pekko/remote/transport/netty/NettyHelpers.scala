@@ -22,7 +22,6 @@ import org.apache.pekko
 import pekko.PekkoException
 import pekko.util.unused
 
-import io.netty.buffer.ByteBuf
 import io.netty.channel.{ ChannelHandlerContext, SimpleChannelInboundHandler }
 
 /**
@@ -36,7 +35,7 @@ private[netty] trait NettyHelpers {
 
   protected def onOpen(@unused ctx: ChannelHandlerContext): Unit = ()
 
-  protected def onMessage(@unused ctx: ChannelHandlerContext, @unused msg: ByteBuf): Unit = ()
+  protected def onMessage(@unused ctx: ChannelHandlerContext, @unused msg: Array[Byte]): Unit = ()
 
   protected def onException(@unused ctx: ChannelHandlerContext, @unused e: Throwable): Unit = ()
 
@@ -53,9 +52,9 @@ private[netty] trait NettyHelpers {
 /**
  * INTERNAL API
  */
-private[netty] abstract class NettyChannelHandlerAdapter extends SimpleChannelInboundHandler[ByteBuf]
+private[netty] abstract class NettyChannelHandlerAdapter extends SimpleChannelInboundHandler[Array[Byte]]
     with NettyHelpers {
-  final override def channelRead0(ctx: ChannelHandlerContext, msg: ByteBuf): Unit = {
+  final override def channelRead0(ctx: ChannelHandlerContext, msg: Array[Byte]): Unit = {
     onMessage(ctx, msg)
   }
 
