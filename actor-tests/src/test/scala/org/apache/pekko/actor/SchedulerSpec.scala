@@ -131,6 +131,17 @@ trait SchedulerSpec extends BeforeAndAfterEach with DefaultTimeout with Implicit
         task.isCancelled should ===(true)
       }
 
+      "notify callback if cancel is performed before execution" taggedAs TimingTest in {
+        val latch = new CountDownLatch(1)
+        val task = system.scheduler.scheduleOnce(100 millis,
+          new SchedulerTask {
+            override def run(): Unit = ()
+            override def cancelled(): Unit = latch.countDown()
+          })
+        task.cancel()
+        latch.await(100, TimeUnit.MILLISECONDS) should ===(true)
+      }
+
       "not be canceled if cancel is performed after execution" taggedAs TimingTest in {
         val latch = TestLatch(1)
         val task = collectCancellable(system.scheduler.scheduleOnce(10.millis)(latch.countDown()))
@@ -332,6 +343,23 @@ trait SchedulerSpec extends BeforeAndAfterEach with DefaultTimeout with Implicit
           Thread.sleep((delay + 100.millis.dilated).toMillis)
 
           ticks.get should ===(1)
+        }
+
+        "notify callback if cancel is performed after initial delay" taggedAs TimingTest in {
+          val latch = new CountDownLatch(1)
+          val initialDelay = 90.millis.dilated
+          val delay = 500.millis.dilated
+          val task = system.scheduler.scheduleWithFixedDelay(
+            initialDelay,
+            delay)(
+            new SchedulerTask {
+              override def run(): Unit = ()
+              override def cancelled(): Unit = latch.countDown()
+            })
+
+          Thread.sleep((initialDelay + 200.millis.dilated).toMillis)
+          task.cancel()
+          latch.await(100, TimeUnit.MILLISECONDS) should ===(true)
         }
 
         /**
