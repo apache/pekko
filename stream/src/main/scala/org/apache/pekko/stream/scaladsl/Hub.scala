@@ -605,15 +605,26 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
             else if (head != finalOffset) {
               // If our final consumer goes away, we roll forward the buffer so a subsequent consumer does not
               // see the already consumed elements. This feature is quite handy.
-              while (head != finalOffset) {
-                queue(head & Mask) = null
-                head += 1
-              }
+              cleanQueueInRange(head, finalOffset)
               head = finalOffset
               tryPull()
             }
           } else checkUnblock(previousOffset)
 
+      }
+    }
+
+    private def cleanQueueInRange(headOffset: Int, upToOffset: Int): Unit = {
+      // We need to clean the queue from headOffset to upToOffset
+      if (headOffset != upToOffset) {
+        val startIdx = headOffset & Mask
+        val endIdx = upToOffset & Mask
+        if (startIdx <= endIdx) {
+          java.util.Arrays.fill(queue, startIdx, endIdx, null)
+        } else {
+          java.util.Arrays.fill(queue, startIdx, queue.length, null)
+          java.util.Arrays.fill(queue, 0, endIdx, null)
+        }
       }
     }
 
