@@ -11,10 +11,12 @@ permissions: {}
 
 jobs:
   scala-steward:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     name: Launch Scala Steward
     if: github.repository == 'apache/pekko'
     steps:
+      - name: Install sbt
+        uses: sbt/setup-sbt@v1
       - name: Launch Scala Steward
         uses: scala-steward-org/scala-steward-action@v2
         env:
