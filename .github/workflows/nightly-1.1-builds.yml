@@ -81,7 +81,7 @@ jobs:
           # we don't know what commit the last tag was it's safer to get entire repo so previousStableVersion resolves
           fetch-depth: 0
           fetch-tags: true
-          ref: 1.0.x
+          ref: 1.1.x
 
       - name: Setup Java 11
         uses: actions/setup-java@v4
@@ -132,7 +132,7 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
-          ref: 1.0.x
+          ref: 1.1.x
 
       - name: Setup Java ${{ matrix.javaVersion }}
         uses: actions/setup-java@v4
