@@ -17,9 +17,23 @@
 
 package org.apache.pekko.stream
 
-import org.apache.pekko.actor.typed.ActorSystem
-import org.apache.pekko.actor.typed.scaladsl.Behaviors
-import org.apache.pekko.stream.scaladsl.{ Flow, FlowWithContext, Keep, Sink, Source, SourceWithContext }
+import org.apache.pekko
+import pekko.actor.typed.ActorSystem
+import pekko.actor.typed.scaladsl.Behaviors
+import pekko.stream.scaladsl.{
+  Flow,
+  FlowWithContext,
+  GraphDSL,
+  Keep,
+  RunnableGraph,
+  Sink,
+  Source,
+  SourceWithContext,
+  Unzip,
+  Zip
+}
+import pekko.stream.testkit.scaladsl.TestSink
+
 import org.scalacheck.{ Arbitrary, Gen }
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.concurrent.ScalaFutures
@@ -29,6 +43,7 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 
 import java.time.Instant
 import java.util.concurrent.Executors
+
 import scala.annotation.nowarn
 import scala.concurrent.duration.{ DurationInt, FiniteDuration }
 import scala.concurrent.{ blocking, ExecutionContext, Future }
@@ -437,6 +452,52 @@ class MapAsyncPartitionedSpec
       .via(flow)
       .runWith(Sink.seq)
       .futureValue shouldBe Seq(1 -> "A")
+  }
+
+  it should "support junction output ports with mapAsyncPartitioned" in {
+    val source = Source(List((1, 1), (2, 2)))
+    val g = RunnableGraph.fromGraph(GraphDSL.createGraph(TestSink.probe[(Int, Int)](system.classicSystem)) {
+      implicit b => sink =>
+        import GraphDSL.Implicits._
+        val unzip = b.add(Unzip[Int, Int]())
+        val zip = b.add(Zip[Int, Int]())
+        val s = b.add(source)
+        // format: OFF
+        s ~> unzip.in
+             unzip.out0 ~> zip.in0
+             unzip.out1 ~> zip.in1
+                           zip.out.mapAsyncPartitioned(1)(_ => 1)((elem, _) => Future.successful(elem)) ~> sink.in
+        // format: ON
+        ClosedShape
+    })
+    g.run()
+      .request(2)
+      .expectNext((1, 1))
+      .expectNext((2, 2))
+      .expectComplete()
+  }
+
+  it should "support junction output ports with mapAsyncPartitionedUnordered" in {
+    val source = Source(List((1, 1), (2, 2)))
+    val g = RunnableGraph.fromGraph(GraphDSL.createGraph(TestSink.probe[(Int, Int)](system.classicSystem)) {
+      implicit b => sink =>
+        import GraphDSL.Implicits._
+        val unzip = b.add(Unzip[Int, Int]())
+        val zip = b.add(Zip[Int, Int]())
+        val s = b.add(source)
+        // format: OFF
+        s ~> unzip.in
+             unzip.out0 ~> zip.in0
+             unzip.out1 ~> zip.in1
+        zip.out.mapAsyncPartitionedUnordered(1)(_ => 1)((elem, _) => Future.successful(elem)) ~> sink.in
+        // format: ON
+        ClosedShape
+    })
+    g.run()
+      .request(2)
+      .expectNext((1, 1))
+      .expectNext((2, 2))
+      .expectComplete()
   }
 
   private implicit class MapWrapper[K, V](map: Map[K, V]) {
