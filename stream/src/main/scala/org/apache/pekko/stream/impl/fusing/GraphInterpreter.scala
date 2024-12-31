@@ -239,6 +239,9 @@ import pekko.stream.stage._
     logics(i).handlers.length
   }
 
+  // Marks whether a stage has been finalized (finalizeStage been called) or not
+  private[this] val finalizedMark = Array.fill(logics.length)(false)
+
   private[this] var _subFusingMaterializer: Materializer = _
   def subFusingMaterializer: Materializer = _subFusingMaterializer
 
@@ -331,7 +334,10 @@ import pekko.stream.stage._
     var i = 0
     while (i < logics.length) {
       val logic = logics(i)
-      if (!isStageCompleted(logic)) finalizeStage(logic)
+      if (!isStageCompleted(logic) && !isStageFinalized(logic)) {
+        markStageFinalized(logic)
+        finalizeStage(logic)
+      }
       i += 1
     }
   }
@@ -589,13 +595,20 @@ import pekko.stream.stage._
   }
 
   def afterStageHasRun(logic: GraphStageLogic): Unit =
-    if (isStageCompleted(logic)) {
+    if (isStageCompleted(logic) && !isStageFinalized(logic)) {
+      markStageFinalized(logic)
       runningStages -= 1
       finalizeStage(logic)
     }
 
   // Returns true if the given stage is already completed
   def isStageCompleted(stage: GraphStageLogic): Boolean = stage != null && shutdownCounter(stage.stageId) == 0
+
+  // Returns true if the given stage is already finalized
+  private def isStageFinalized(stage: GraphStageLogic): Boolean = finalizedMark(stage.stageId)
+
+  // Mark the given stage as finalized
+  private def markStageFinalized(stage: GraphStageLogic): Unit = finalizedMark(stage.stageId) = true
 
   // Register that a connection in which the given stage participated has been completed and therefore the stage
   // itself might stop, too.
