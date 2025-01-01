@@ -1411,23 +1411,25 @@ private[stream] object Collect {
       override def preStart(): Unit = buffer = BufferImpl(parallelism, inheritedAttributes)
 
       def futureCompleted(result: Try[Out]): Unit = {
-        def isCompleted = isClosed(in) && todo == 0
         inFlight -= 1
         result match {
-          case Success(elem) if elem != null =>
-            if (isAvailable(out)) {
-              if (!hasBeenPulled(in)) tryPull(in)
-              push(out, elem)
-              if (isCompleted) completeStage()
-            } else buffer.enqueue(elem)
-          case Success(_) =>
-            if (isCompleted) completeStage()
-            else if (!hasBeenPulled(in)) tryPull(in)
+          case Success(elem) =>
+            if (elem != null) {
+              if (isAvailable(out)) {
+                push(out, elem)
+              } else buffer.enqueue(elem)
+            }
+
           case Failure(ex) =>
             if (decider(ex) == Supervision.Stop) failStage(ex)
-            else if (isCompleted) completeStage()
-            else if (!hasBeenPulled(in)) tryPull(in)
         }
+        pullIfNeeded()
+      }
+
+      private def pullIfNeeded(): Unit = {
+        val leftTodo = todo
+        if (isClosed(in) && leftTodo == 0) completeStage()
+        else if (leftTodo < parallelism && !hasBeenPulled(in)) tryPull(in)
       }
 
       override def onPush(): Unit = {
@@ -1435,13 +1437,14 @@ private[stream] object Collect {
           val future = f(grab(in))
           inFlight += 1
           future.value match {
-            case None    => future.onComplete(invokeFutureCB)(pekko.dispatch.ExecutionContexts.parasitic)
+            case None =>
+              future.onComplete(invokeFutureCB)(pekko.dispatch.ExecutionContexts.parasitic)
+              pullIfNeeded()
             case Some(v) => futureCompleted(v)
           }
         } catch {
           case NonFatal(ex) => if (decider(ex) == Supervision.Stop) failStage(ex)
         }
-        if (todo < parallelism && !hasBeenPulled(in)) tryPull(in)
       }
 
       override def onUpstreamFinish(): Unit = {
@@ -1450,10 +1453,7 @@ private[stream] object Collect {
 
       override def onPull(): Unit = {
         if (!buffer.isEmpty) push(out, buffer.dequeue())
-
-        val leftTodo = todo
-        if (isClosed(in) && leftTodo == 0) completeStage()
-        else if (leftTodo < parallelism && !hasBeenPulled(in)) tryPull(in)
+        pullIfNeeded()
       }
 
       setHandlers(in, out, this)
