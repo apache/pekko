@@ -15,8 +15,7 @@ package org.apache.pekko.serialization
 
 import java.util.concurrent.CompletionStage
 
-import scala.concurrent.{ Await, Future }
-import scala.concurrent.duration.Duration
+import scala.concurrent.Future
 
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
@@ -59,14 +58,16 @@ abstract class AsyncSerializerWithStringManifest(system: ExtendedActorSystem)
     log.warning(
       "Async serializer called synchronously. This will block. Async serializers should only be used for pekko persistence plugins that support them. Class: {}",
       o.getClass)
-    Await.result(toBinaryAsync(o), Duration.Inf)
+    import pekko.util.Helpers._
+    toBinaryAsync(o).await()
   }
 
   final override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = {
     log.warning(
       "Async serializer called synchronously. This will block. Async serializers should only be used for Pekko persistence plugins that support them. Manifest: [{}]",
       manifest)
-    Await.result(fromBinaryAsync(bytes, manifest), Duration.Inf)
+    import pekko.util.Helpers._
+    fromBinaryAsync(bytes, manifest).await()
   }
 }
 
