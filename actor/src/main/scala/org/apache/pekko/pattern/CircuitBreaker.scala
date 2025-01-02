@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.{ AtomicBoolean, AtomicInteger, AtomicLong }
 import java.util.function.BiFunction
 import java.util.function.Consumer
 import scala.annotation.nowarn
-import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
+import scala.concurrent.{ ExecutionContext, Future, Promise }
 import scala.concurrent.TimeoutException
 import scala.concurrent.duration._
 import scala.util.{ Failure, Success, Try }
@@ -446,13 +446,15 @@ class CircuitBreaker(
    * @param defineFailureFn function that define what should be consider failure and thus increase failure count
    * @return The result of the call
    */
-  def withSyncCircuitBreaker[T](body: => T, defineFailureFn: Try[T] => Boolean): T =
-    Await.result(
-      withCircuitBreaker(
-        try Future.successful(body)
-        catch { case NonFatal(t) => Future.failed(t) },
-        defineFailureFn),
-      callTimeout)
+  def withSyncCircuitBreaker[T](body: => T, defineFailureFn: Try[T] => Boolean): T = {
+    import pekko.util.Helpers._
+    withCircuitBreaker(
+      try Future.successful(body)
+      catch {
+        case NonFatal(t) => Future.failed(t)
+      },
+      defineFailureFn).await(callTimeout)
+  }
 
   /**
    * Java API for [[#withSyncCircuitBreaker]]. Throws [[java.util.concurrent.TimeoutException]] if the call timed out.

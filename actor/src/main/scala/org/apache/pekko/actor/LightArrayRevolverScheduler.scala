@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.{ AtomicLong, AtomicReference }
 
 import scala.annotation.{ nowarn, tailrec }
 import scala.collection.immutable
-import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
+import scala.concurrent.{ ExecutionContext, Future, Promise }
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
@@ -178,7 +178,8 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
       }
     }
 
-    Await.result(stop(), getShutdownTimeout).foreach {
+    import pekko.util.Helpers._
+    stop().await(getShutdownTimeout).foreach {
       case task: Scheduler.TaskRunOnClose =>
         runTask(task)
       case holder: TaskHolder => // don't run

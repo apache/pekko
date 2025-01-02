@@ -16,7 +16,6 @@ package org.apache.pekko.stream.impl.io
 import java.io.{ IOException, OutputStream }
 import java.util.concurrent.{ Semaphore, TimeUnit }
 
-import scala.concurrent.Await
 import scala.concurrent.duration.FiniteDuration
 import scala.util.control.NonFatal
 
@@ -87,7 +86,8 @@ private[pekko] class OutputStreamAdapter(
     }
 
     try {
-      Await.result(sendToStage.invokeWithFeedback(Send(data)), writeTimeout)
+      import pekko.util.Helpers._
+      sendToStage.invokeWithFeedback(Send(data)).await(writeTimeout)
     } catch {
       case NonFatal(e) => throw new IOException(e)
     }
@@ -115,7 +115,8 @@ private[pekko] class OutputStreamAdapter(
   @scala.throws(classOf[IOException])
   override def close(): Unit = {
     try {
-      Await.result(sendToStage.invokeWithFeedback(Close), writeTimeout)
+      import pekko.util.Helpers._
+      sendToStage.invokeWithFeedback(Close).await(writeTimeout)
     } catch {
       case NonFatal(e) => throw new IOException(e)
     }
