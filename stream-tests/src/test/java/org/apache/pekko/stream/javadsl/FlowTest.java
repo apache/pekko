@@ -13,6 +13,7 @@
 
 package org.apache.pekko.stream.javadsl;
 
+import com.google.common.collect.Sets;
 import org.apache.pekko.Done;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorRef;
@@ -1662,5 +1663,43 @@ public class FlowTest extends StreamTest {
     final org.apache.pekko.stream.scaladsl.Flow<Integer, Integer, NotUsed> scalaFlow =
         org.apache.pekko.stream.scaladsl.Flow.apply();
     Flow<Integer, Integer, NotUsed> javaFlow = scalaFlow.asJava();
+  }
+
+  @Test
+  public void zipWithIndex() {
+    final List<Integer> input = Arrays.asList(1, 2, 3);
+    final List<Pair<Integer, Long>> expected =
+        Arrays.asList(new Pair<>(1, 0L), new Pair<>(2, 1L), new Pair<>(3, 2L));
+
+    final List<Pair<Integer, Long>> result =
+        Source.from(input)
+            .via(Flow.of(Integer.class).zipWithIndex())
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .join();
+
+    assertEquals(expected, result);
+  }
+
+  @Test
+  public void zipWithIndexInSubFlow() {
+
+    final Set<Pair<Integer, Long>> resultSet =
+        new HashSet<>(
+            Source.range(1, 5)
+                .via(Flow.of(Integer.class).groupBy(2, i -> i % 2).zipWithIndex().mergeSubstreams())
+                .runWith(Sink.seq(), system)
+                .toCompletableFuture()
+                .join());
+
+    Assert.assertEquals(
+        new HashSet<>(
+            Arrays.asList(
+                Pair.create(1, 0L),
+                Pair.create(3, 1L),
+                Pair.create(5, 2L),
+                Pair.create(2, 0L),
+                Pair.create(4, 1L))),
+        resultSet);
   }
 }
