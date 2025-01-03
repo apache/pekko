@@ -538,7 +538,7 @@ private[remote] class Association(
         current.uniqueRemoteAddress() match {
           case Some(peer) if peer.uid == u =>
             if (!current.isQuarantined(u)) {
-              val newState = current.newQuarantined()
+              val newState = current.newQuarantined(harmless)
               if (swapState(current, newState)) {
                 // quarantine state change was performed
                 if (harmless) {

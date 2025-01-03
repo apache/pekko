@@ -31,13 +31,15 @@ import pekko.testkit.ImplicitSender
 import pekko.testkit.TestActors
 import pekko.testkit.TestProbe
 
-class OutboundIdleShutdownSpec extends ArteryMultiNodeSpec(s"""
+class OutboundIdleShutdownSpec extends ArteryMultiNodeSpec("""
   pekko.loglevel=INFO
-  pekko.remote.artery.advanced.stop-idle-outbound-after = 1 s
-  pekko.remote.artery.advanced.connection-timeout = 2 s
-  pekko.remote.artery.advanced.remove-quarantined-association-after = 1 s
-  pekko.remote.artery.advanced.compression {
-    actor-refs.advertisement-interval = 5 seconds
+  pekko.remote.artery.advanced {
+    stop-idle-outbound-after = 1 s
+    connection-timeout = 2 s
+    remove-quarantined-association-after = 1 s
+    compression {
+      actor-refs.advertisement-interval = 5 seconds
+    }
   }
   """) with ImplicitSender with Eventually {
 
@@ -116,6 +118,8 @@ class OutboundIdleShutdownSpec extends ArteryMultiNodeSpec(s"""
       val remoteUid = futureUniqueRemoteAddress(association).futureValue.uid
 
       localArtery.quarantine(remoteAddress, Some(remoteUid), "Test")
+      association.associationState.isQuarantined(remoteUid) shouldBe true
+      association.associationState.quarantinedButHarmless(remoteUid) shouldBe false
 
       eventually {
         assertStreamActive(association, Association.ControlQueueIndex, expected = false)
@@ -126,6 +130,80 @@ class OutboundIdleShutdownSpec extends ArteryMultiNodeSpec(s"""
       eventually {
         localArtery.remoteAddresses should not contain remoteAddress
       }
+    }
+
+    "eliminate quarantined association when not used (harmless=true)" in withAssociation {
+      (_, remoteAddress, _, localArtery, _) =>
+        val association = localArtery.association(remoteAddress)
+        val remoteUid = futureUniqueRemoteAddress(association).futureValue.uid
+
+        localArtery.quarantine(remoteAddress, Some(remoteUid), "HarmlessTest", harmless = true)
+        association.associationState.isQuarantined(remoteUid) shouldBe true
+        association.associationState.quarantinedButHarmless(remoteUid) shouldBe true
+
+        eventually {
+          assertStreamActive(association, Association.ControlQueueIndex, expected = false)
+          assertStreamActive(association, Association.OrdinaryQueueIndex, expected = false)
+        }
+
+        // the outbound streams are inactive and association quarantined, then it's completely removed
+        eventually {
+          localArtery.remoteAddresses should not contain remoteAddress
+        }
+    }
+
+    "eliminate quarantined association when not used - echo test" in withAssociation {
+      (remoteSystem, remoteAddress, _, localArtery, localProbe) =>
+        // event to watch out for, indicator of the issue
+        remoteSystem.eventStream.subscribe(testActor, classOf[ThisActorSystemQuarantinedEvent])
+
+        val remoteEcho = remoteSystem.actorSelection("/user/echo").resolveOne(remainingOrDefault).futureValue
+
+        val localAddress = RARP(system).provider.getDefaultAddress
+
+        val localEchoRef =
+          remoteSystem.actorSelection(RootActorPath(localAddress) / localProbe.ref.path.elements).resolveOne(
+            remainingOrDefault).futureValue
+        remoteEcho.tell("ping", localEchoRef)
+        localProbe.expectMsg("ping")
+
+        val association = localArtery.association(remoteAddress)
+        val remoteUid = futureUniqueRemoteAddress(association).futureValue.uid
+        localArtery.quarantine(remoteAddress, Some(remoteUid), "Test")
+        association.associationState.isQuarantined(remoteUid) shouldBe true
+        association.associationState.quarantinedButHarmless(remoteUid) shouldBe false
+
+        remoteEcho.tell("ping", localEchoRef) // trigger sending message from remote to local, which will trigger local to wrongfully notify remote that it is quarantined
+        eventually {
+          expectMsgType[ThisActorSystemQuarantinedEvent] // this is what remote emits when it learns it is quarantined by local
+        }
+    }
+
+    "eliminate quarantined association when not used - echo test (harmless=true)" in withAssociation {
+      (remoteSystem, remoteAddress, _, localArtery, localProbe) =>
+        // event to watch out for, indicator of the issue
+        remoteSystem.eventStream.subscribe(testActor, classOf[ThisActorSystemQuarantinedEvent])
+
+        val remoteEcho = remoteSystem.actorSelection("/user/echo").resolveOne(remainingOrDefault).futureValue
+
+        val localAddress = RARP(system).provider.getDefaultAddress
+
+        val localEchoRef =
+          remoteSystem.actorSelection(RootActorPath(localAddress) / localProbe.ref.path.elements).resolveOne(
+            remainingOrDefault).futureValue
+        remoteEcho.tell("ping", localEchoRef)
+        localProbe.expectMsg("ping")
+
+        val association = localArtery.association(remoteAddress)
+        val remoteUid = futureUniqueRemoteAddress(association).futureValue.uid
+        localArtery.quarantine(remoteAddress, Some(remoteUid), "HarmlessTest", harmless = true)
+        association.associationState.isQuarantined(remoteUid) shouldBe true
+        association.associationState.quarantinedButHarmless(remoteUid) shouldBe true
+
+        remoteEcho.tell("ping", localEchoRef) // trigger sending message from remote to local, which will trigger local to wrongfully notify remote that it is quarantined
+        eventually {
+          expectMsgType[ThisActorSystemQuarantinedEvent] // this is what remote emits when it learns it is quarantined by local
+        }
     }
 
     "remove inbound compression after quarantine" in withAssociation { (_, remoteAddress, _, localArtery, _) =>
