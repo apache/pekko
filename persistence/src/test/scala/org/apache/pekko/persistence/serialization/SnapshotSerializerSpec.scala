@@ -17,6 +17,8 @@
 
 package org.apache.pekko.persistence.serialization
 
+import annotation.nowarn
+
 import org.apache.pekko
 import pekko.persistence.fsm.PersistentFSM.PersistentFSMSnapshot
 import pekko.serialization.SerializationExtension
@@ -24,6 +26,7 @@ import pekko.testkit.PekkoSpec
 
 import java.util.Base64
 
+@nowarn("msg=deprecated")
 private[serialization] object SnapshotSerializerTestData {
   val fsmSnapshot = PersistentFSMSnapshot[String]("test-identifier", "test-data", None)
   // https://github.com/apache/pekko/pull/837#issuecomment-1847320309
