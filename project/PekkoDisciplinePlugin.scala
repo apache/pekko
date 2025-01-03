@@ -74,9 +74,10 @@ object PekkoDisciplinePlugin extends AutoPlugin {
     "pekko-stream-tests-tck",
     "pekko-testkit")
 
-  lazy val defaultScalaOptions = Def.setting(CrossVersion.partialVersion(scalaVersion.value) match {
-    case Some((2, 12)) => "-Wconf:cat=unused-nowarn:s,any:e"
-    case _             => "-Wconf:cat=unused-nowarn:s,cat=other-shadowing:s,any:e"
+  lazy val defaultScalaOptions = Def.setting(CrossVersion.partialVersion(scalaVersion.value).get match {
+    case (3, _)  => "-Wconf:cat=unused-nowarn:s,cat=other-shadowing:s,any:e"
+    case (2, 13) => "-Wconf:any:e,cat=unused-nowarn:s,cat=other-shadowing:s"
+    case (2, 12) => "-Wconf:cat=unused-nowarn:s,any:e"
   })
 
   lazy val nowarnSettings = Seq(
@@ -101,16 +102,18 @@ object PekkoDisciplinePlugin extends AutoPlugin {
   lazy val docs =
     Seq(
       Compile / scalacOptions -= defaultScalaOptions.value,
-      Compile / scalacOptions ++= (
-        if (scalaVersion.value.startsWith("3.")) Nil
-        else Seq("-Wconf:cat=unused:s,cat=deprecation:s,cat=unchecked:s,any:e")
-      ),
+      Compile / scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value).get match {
+        case (3, _)  => Nil
+        case (2, 13) => Seq("-Wconf:any:e,cat=unused:s,cat=deprecation:s,cat=unchecked:s")
+        case (2, 12) => Seq("-Wconf:cat=unused:s,cat=deprecation:s,cat=unchecked:s,any:e")
+      }),
       Test / scalacOptions --= Seq("-Xlint", "-unchecked", "-deprecation"),
       Test / scalacOptions -= defaultScalaOptions.value,
-      Test / scalacOptions ++= (
-        if (scalaVersion.value.startsWith("3.")) Nil
-        else Seq("-Wconf:cat=unused:s,cat=deprecation:s,cat=unchecked:s,any:e")
-      ),
+      Test / scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value).get match {
+        case (3, _)  => Nil
+        case (2, 13) => Seq("-Wconf:any:e,cat=unused:s,cat=deprecation:s,cat=unchecked:s")
+        case (2, 12) => Seq("-Wconf:cat=unused:s,cat=deprecation:s,cat=unchecked:s,any:e")
+      }),
       Compile / doc / scalacOptions := Seq())
 
   lazy val disciplineSettings =

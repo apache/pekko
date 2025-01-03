@@ -13,6 +13,7 @@
 
 package org.apache.pekko.actor.typed
 
+import scala.annotation.nowarn
 import scala.concurrent.duration._
 import scala.reflect.ClassTag
 
@@ -88,7 +89,9 @@ abstract class ActorContextSpec extends ScalaTestWithActorTestKit with AnyWordSp
   "An ActorContext" must {
 
     "be usable from Behavior.interpretMessage" in {
-      // compilation only
+      // false-postive 'unused' warning possibly fixed in 2.13.6 https://github.com/scala/bug/issues/13041
+      @nowarn
+      // test compilation only
       lazy val b: Behavior[String] = Behaviors.receive { (context, message) =>
         Behavior.interpretMessage(b, context, message)
       }

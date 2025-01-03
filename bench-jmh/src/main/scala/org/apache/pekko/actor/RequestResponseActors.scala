@@ -85,7 +85,7 @@ object RequestResponseActors {
     val fullPathToDispatcher = "pekko.actor." + dispatcher
     val latch = new CountDownLatch(numActors)
     val actorsPairs = for {
-      i <- (1 to (numActors / 2)).toVector
+      _ <- (1 to (numActors / 2)).toVector
       userQueryActor = system.actorOf(
         UserQueryActor.props(latch, numQueriesPerActor, numUsersInDBPerActor).withDispatcher(fullPathToDispatcher))
       userServiceActor = system.actorOf(
