@@ -24,7 +24,6 @@ import org.apache.pekko.japi.pf.PFBuilder;
 import org.apache.pekko.stream.*;
 import org.apache.pekko.stream.scaladsl.FlowSpec;
 import org.apache.pekko.stream.testkit.javadsl.TestSink;
-import org.apache.pekko.util.ConstantFun;
 import org.apache.pekko.stream.javadsl.GraphDSL.Builder;
 import org.apache.pekko.stream.stage.*;
 import org.apache.pekko.testkit.PekkoSpec;
@@ -1688,5 +1687,42 @@ public class FlowTest extends StreamTest {
             .toCompletableFuture()
             .join();
     Assert.assertEquals(Sets.newHashSet(1, 2), resultSet);
+  }
+
+  @Test
+  public void zipWithIndex() {
+    final List<Integer> input = Arrays.asList(1, 2, 3);
+    final List<Pair<Integer, Long>> expected =
+        Arrays.asList(new Pair<>(1, 0L), new Pair<>(2, 1L), new Pair<>(3, 2L));
+
+    final List<Pair<Integer, Long>> result =
+        Source.from(input)
+            .via(Flow.of(Integer.class).zipWithIndex())
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .join();
+
+    assertEquals(expected, result);
+  }
+
+  @Test
+  public void zipWithIndexInSubFlow() {
+
+    final Set<Pair<Integer, Long>> resultSet =
+        Source.range(1, 5)
+            .via(Flow.of(Integer.class).groupBy(2, i -> i % 2).zipWithIndex().mergeSubstreams())
+            .runWith(Sink.collect(Collectors.toSet()), system)
+            .toCompletableFuture()
+            .join();
+
+    Assert.assertEquals(
+        new HashSet<>(
+            Arrays.asList(
+                Pair.create(1, 0L),
+                Pair.create(3, 1L),
+                Pair.create(5, 2L),
+                Pair.create(2, 0L),
+                Pair.create(4, 1L))),
+        resultSet);
   }
 }
