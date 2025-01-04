@@ -2,9 +2,32 @@
 
 Apache Pekko 1.1.x releases support Java 8 and above.
 
+## 1.1.3
+
+Pekko 1.1.3 is a bug fix and dependency upgrade release. See [GitHub Milestone for 1.1.3](https://github.com/apache/pekko/milestone/13?closed=1) for a fuller list of changes.
+
+### Bug Fixes
+
+* Revert zipWithIndex changes ([PR1526](https://github.com/apache/pekko/pull/1526))
+* fix occasional ordering issue in result in unsafeOptionalDataVia ([PR1611](https://github.com/apache/pekko/pull/1611))
+
+### Changes
+
+* Extra changes needed for our [experimental support](https://cwiki.apache.org/confluence/display/PEKKO/Pekko+Akka+Compatibility) for mixed clusters with Pekko and Akka nodes ([PR1462](https://github.com/apache/pekko/issues/1462), [PR1594](https://github.com/apache/pekko/issues/1594))
+* Configuring persistence plugins at runtime for EventSourcedBehavior ([PR1518](https://github.com/apache/pekko/pull/1518))
+* Implement EventsByTagQuery in PersistenceTestKitReadJournal ([PR1533](https://github.com/apache/pekko/pull/1533))
+* Implement EventsBySliceQuery in PersistenceTestKitReadJournal ([PR1533](https://github.com/apache/pekko/pull/1533))
+* tidy up implementation of PhasedFusingActorMaterializer ([PR1617](https://github.com/apache/pekko/pull/1617))
+* Remove unused SupervisedGraphStageLogic ([PR1619](https://github.com/apache/pekko/pull/1619))
+
+### Dependency Changes
+
+* jackson 2.17.3
+* netty 4.1.116.Final
+
 ## 1.1.2
 
-Pekko 1.1.2 is a bug fix and dependency upgrade release.
+Pekko 1.1.2 is a bug fix and dependency upgrade release. See [GitHub Milestone for 1.1.2](https://github.com/apache/pekko/milestone/11?closed=1) for a fuller list of changes.
 
 ### Bug Fixes
 
