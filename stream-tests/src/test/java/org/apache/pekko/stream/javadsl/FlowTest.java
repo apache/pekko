@@ -13,6 +13,7 @@
 
 package org.apache.pekko.stream.javadsl;
 
+import com.google.common.collect.Sets;
 import org.apache.pekko.Done;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorRef;
@@ -1662,5 +1663,34 @@ public class FlowTest extends StreamTest {
     final org.apache.pekko.stream.scaladsl.Flow<Integer, Integer, NotUsed> scalaFlow =
         org.apache.pekko.stream.scaladsl.Flow.apply();
     Flow<Integer, Integer, NotUsed> javaFlow = scalaFlow.asJava();
+  }
+
+  @Test
+  public void useFlatMapPrefix() {
+    final List<Integer> resultList =
+        Source.range(1, 2)
+            .via(
+                Flow.of(Integer.class)
+                    .flatMapPrefix(
+                        1, prefix -> Flow.of(Integer.class).prepend(Source.from(prefix))))
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .join();
+    Assert.assertEquals(Arrays.asList(1, 2), resultList);
+  }
+
+  @Test
+  public void useFlatMapPrefixSubSource() {
+    final Set<Integer> resultSet =
+        Source.range(1, 2)
+            .via(
+                Flow.of(Integer.class)
+                    .groupBy(2, i -> i % 2)
+                    .flatMapPrefix(1, prefix -> Flow.of(Integer.class).prepend(Source.from(prefix)))
+                    .mergeSubstreams())
+            .runWith(Sink.collect(Collectors.toSet()), system)
+            .toCompletableFuture()
+            .join();
+    Assert.assertEquals(Sets.newHashSet(1, 2), resultSet);
   }
 }
