@@ -3980,7 +3980,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    */
   def flatMapPrefix[Out2, Mat2](
       n: Int,
-      f: function.Function[java.lang.Iterable[Out], javadsl.Flow[Out, Out2, Mat2]]): javadsl.Source[Out2, Mat] = {
+      f: function.Function[java.util.List[Out], javadsl.Flow[Out, Out2, Mat2]]): javadsl.Source[Out2, Mat] = {
     val newDelegate = delegate.flatMapPrefix(n)(seq => f(seq.asJava).asScala)
     new javadsl.Source(newDelegate)
   }
@@ -3991,7 +3991,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    */
   def flatMapPrefixMat[Out2, Mat2, Mat3](
       n: Int,
-      f: function.Function[java.lang.Iterable[Out], javadsl.Flow[Out, Out2, Mat2]],
+      f: function.Function[java.util.List[Out], javadsl.Flow[Out, Out2, Mat2]],
       matF: function.Function2[Mat, CompletionStage[Mat2], Mat3]): javadsl.Source[Out2, Mat3] = {
     val newDelegate = delegate.flatMapPrefixMat(n)(seq => f(seq.asJava).asScala) { (m1, fm2) =>
       matF(m1, fm2.asJava)
