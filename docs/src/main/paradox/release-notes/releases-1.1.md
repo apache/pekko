@@ -9,7 +9,7 @@ Pekko 1.1.3 is a bug fix and dependency upgrade release. See [GitHub Milestone f
 ### Bug Fixes
 
 * Revert zipWithIndex changes ([PR1526](https://github.com/apache/pekko/pull/1526))
-* fix occasional ordering issue in result in unsafeOptionalDataVia ([PR1611](https://github.com/apache/pekko/pull/1611))
+* Fix occasional ordering issue in result in unsafeOptionalDataVia ([PR1611](https://github.com/apache/pekko/pull/1611))
 
 ### Changes
 
@@ -17,7 +17,7 @@ Pekko 1.1.3 is a bug fix and dependency upgrade release. See [GitHub Milestone f
 * Configuring persistence plugins at runtime for EventSourcedBehavior ([PR1518](https://github.com/apache/pekko/pull/1518))
 * Implement EventsByTagQuery in PersistenceTestKitReadJournal ([PR1533](https://github.com/apache/pekko/pull/1533))
 * Implement EventsBySliceQuery in PersistenceTestKitReadJournal ([PR1533](https://github.com/apache/pekko/pull/1533))
-* tidy up implementation of PhasedFusingActorMaterializer ([PR1617](https://github.com/apache/pekko/pull/1617))
+* Tidy up implementation of PhasedFusingActorMaterializer ([PR1617](https://github.com/apache/pekko/pull/1617))
 * Remove unused SupervisedGraphStageLogic ([PR1619](https://github.com/apache/pekko/pull/1619))
 
 ### Dependency Changes
