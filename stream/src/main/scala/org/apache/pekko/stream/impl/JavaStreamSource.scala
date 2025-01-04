@@ -13,13 +13,13 @@
 
 package org.apache.pekko.stream.impl
 
+import java.util.Spliterator
+import java.util.function.Consumer
+
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.stream._
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, OutHandler }
-
-import java.util.Spliterator
-import java.util.function.Consumer
 
 /** INTERNAL API */
 @InternalApi private[stream] final class JavaStreamSource[T, S <: java.util.stream.BaseStream[T, S]](

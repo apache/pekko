@@ -1504,4 +1504,34 @@ public class SourceTest extends StreamTest {
             .get(3, TimeUnit.SECONDS);
     Assert.assertEquals(Arrays.asList(2, 4, 6, 8, 10), resultList);
   }
+
+  @Test
+  public void zipWithIndex() {
+    final List<Pair<Integer, Long>> resultList =
+        Source.range(1, 3).zipWithIndex().runWith(Sink.seq(), system).toCompletableFuture().join();
+    assertEquals(
+        Arrays.asList(Pair.create(1, 0L), Pair.create(2, 1L), Pair.create(3, 2L)), resultList);
+  }
+
+  @Test
+  public void zipWithIndexOnSubSource() {
+    final Set<Pair<Integer, Long>> resultSet =
+        new HashSet<>(
+            Source.range(1, 5)
+                .groupBy(2, i -> i % 2)
+                .zipWithIndex()
+                .mergeSubstreams()
+                .runWith(Sink.seq(), system)
+                .toCompletableFuture()
+                .join());
+    Assert.assertEquals(
+        new HashSet<>(
+            Arrays.asList(
+                Pair.create(1, 0L),
+                Pair.create(3, 1L),
+                Pair.create(5, 2L),
+                Pair.create(2, 0L),
+                Pair.create(4, 1L))),
+        resultSet);
+  }
 }

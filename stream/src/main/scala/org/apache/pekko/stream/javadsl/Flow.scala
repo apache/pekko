@@ -26,6 +26,7 @@ import scala.concurrent.duration.FiniteDuration
 import scala.reflect.ClassTag
 
 import org.apache.pekko
+import org.apache.pekko.stream.impl.fusing.ZipWithIndexJava
 import pekko.Done
 import pekko.NotUsed
 import pekko.actor.ActorRef
@@ -3691,7 +3692,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * '''Cancels when''' downstream cancels
    */
   def zipWithIndex: Flow[In, Pair[Out, java.lang.Long], Mat] =
-    new Flow(delegate.zipWithIndex.map { case (elem, index) => Pair[Out, java.lang.Long](elem, index) })
+    via(ZipWithIndexJava.asInstanceOf[Graph[FlowShape[Out, Pair[Out, java.lang.Long]], NotUsed]])
 
   /**
    * If the first element has not passed through this operator before the provided timeout, the stream is failed
