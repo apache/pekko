@@ -36,7 +36,7 @@ object Dependencies {
   val agronaVersion = "1.22.0"
   val bouncyCastleVersion = "1.79"
   val nettyVersion = "4.1.116.Final"
-  val logbackVersion = "1.3.14"
+  val logbackVersion = "1.3.15"
 
   val jacksonCoreVersion = "2.18.2"
   val jacksonDatabindVersion = jacksonCoreVersion
