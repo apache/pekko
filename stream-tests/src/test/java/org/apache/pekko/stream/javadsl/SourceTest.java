@@ -470,7 +470,7 @@ public class SourceTest extends StreamTest {
 
     CompletionStage<List<Integer>> future =
         Source.from(mainInputs)
-            .flatMapConcat(ConstantFun.javaIdentityFunction())
+            .flatMapConcat(Function.identity())
             .grouped(6)
             .runWith(Sink.head(), system);
 
@@ -495,7 +495,7 @@ public class SourceTest extends StreamTest {
 
     CompletionStage<List<Integer>> future =
         Source.from(mainInputs)
-            .flatMapMerge(3, ConstantFun.javaIdentityFunction())
+            .flatMapMerge(3, Function.identity())
             .grouped(60)
             .runWith(Sink.head(), system);
 

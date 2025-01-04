@@ -13,6 +13,8 @@
 
 package org.apache.pekko.japi.function
 
+import org.apache.pekko.util.ConstantFun
+
 import scala.annotation.nowarn
 
 /**
@@ -26,6 +28,15 @@ import scala.annotation.nowarn
 trait Function[-T, +R] extends java.io.Serializable {
   @throws(classOf[Exception])
   def apply(param: T): R
+}
+
+object Function {
+
+  /**
+   * Returns a `Function` that always returns its input argument.
+   * @since 1.2.0
+   */
+  def identity[T]: Function[T, T] = ConstantFun.javaIdentityFunction
 }
 
 /**
