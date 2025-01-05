@@ -74,11 +74,7 @@ import pekko.stream.stage._
             }
           })
 
-        subSink.setHandler(new InHandler {
-          override def onPush(): Unit = {
-            push(out, subSink.grab())
-          }
-        })
+        subSink.setHandler(() => push(out, subSink.grab()))
 
         try {
           val matVal = subFusingMaterializer.materialize(source.toMat(subSink.sink)(Keep.left), inheritedAttributes)
