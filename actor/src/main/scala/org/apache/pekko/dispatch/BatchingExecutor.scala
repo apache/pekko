@@ -16,7 +16,6 @@ package org.apache.pekko.dispatch
 import org.apache.pekko
 import pekko.annotation.InternalApi
 
-import java.util.ArrayDeque
 import java.util.concurrent.Executor
 import scala.annotation.tailrec
 import scala.concurrent._
@@ -67,10 +66,10 @@ private[pekko] trait BatchingExecutor extends Executor {
   // invariant: if "_tasksLocal.get ne null" then we are inside Batch.run; if it is null, we are outside
   private[this] val _tasksLocal = new ThreadLocal[AbstractBatch]()
 
-  private[this] abstract class AbstractBatch extends ArrayDeque[Runnable](4) with Runnable {
+  private[this] abstract class AbstractBatch extends java.util.ArrayDeque[Runnable](4) with Runnable {
     @tailrec final def processBatch(batch: AbstractBatch): Unit =
       if ((batch eq this) && !batch.isEmpty) {
-        batch.poll().run()
+        batch.pollFirst().run()
         processBatch(_tasksLocal.get) // If this is null, then we have been using managed blocking, so bail out
       }
 
@@ -85,7 +84,7 @@ private[pekko] trait BatchingExecutor extends Executor {
   }
 
   private[this] final class Batch extends AbstractBatch {
-    override final def run: Unit = {
+    override final def run(): Unit = {
       require(_tasksLocal.get eq null)
       _tasksLocal.set(this) // Install ourselves as the current batch
       try processBatch(this)
