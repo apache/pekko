@@ -36,9 +36,7 @@ object DelayStrategy {
    * Fixed delay strategy, always returns constant delay for any element.
    * @param delay value of the delay
    */
-  def fixedDelay(delay: FiniteDuration): DelayStrategy[Any] = new DelayStrategy[Any] {
-    override def nextDelay(elem: Any): FiniteDuration = delay
-  }
+  def fixedDelay(delay: FiniteDuration): DelayStrategy[Any] = (_: Any) => delay
 
   /**
    * Strategy with linear increasing delay.

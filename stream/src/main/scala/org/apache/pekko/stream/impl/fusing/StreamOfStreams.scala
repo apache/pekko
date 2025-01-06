@@ -199,9 +199,7 @@ import pekko.util.ccompat.JavaConverters._
         setKeepGoing(false)
         cancelTimer(SubscriptionTimer)
         pull(in)
-        tailSource.setHandler(new OutHandler {
-          override def onPull(): Unit = pull(in)
-        })
+        tailSource.setHandler(() => pull(in))
       }
     }
 

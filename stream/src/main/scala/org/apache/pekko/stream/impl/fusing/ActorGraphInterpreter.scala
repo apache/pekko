@@ -666,10 +666,7 @@ import org.reactivestreams.Subscription
         else {
           waitingForShutdown = true
           val subscriptionTimeout = attributes.mandatoryAttribute[ActorAttributes.StreamSubscriptionTimeout].timeout
-          mat.scheduleOnce(subscriptionTimeout,
-            new Runnable {
-              override def run(): Unit = self ! Abort(GraphInterpreterShell.this)
-            })
+          mat.scheduleOnce(subscriptionTimeout, () => self ! Abort(GraphInterpreterShell.this))
         }
       } else if (interpreter.isSuspended && !resumeScheduled) sendResume(!usingShellLimit)
 
