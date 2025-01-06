@@ -793,7 +793,7 @@ import org.reactivestreams.Subscription
     else if (currentLimit == 0) {
       self ! Resume
     } else {
-      shortCircuitBuffer.poll() match {
+      shortCircuitBuffer.pollFirst() match {
         case b: BoundaryEvent => processEvent(b)
         case Resume           => finishShellRegistration()
         case unexpected =>
@@ -842,7 +842,7 @@ import org.reactivestreams.Subscription
   override def postStop(): Unit = {
     if (shortCircuitBuffer ne null) {
       while (!shortCircuitBuffer.isEmpty) {
-        shortCircuitBuffer.poll() match {
+        shortCircuitBuffer.pollFirst() match {
           case b: BoundaryEvent =>
             // signal to telemetry that this event won't be processed
             b.cancel()

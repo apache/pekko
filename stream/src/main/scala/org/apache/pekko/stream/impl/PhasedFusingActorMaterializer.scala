@@ -524,7 +524,7 @@ private final case class SavedIslandData(
             if (Debug) println(s"PUSH: $matValue => $matValueStack")
 
           case Concat(first, next) =>
-            if (next ne EmptyTraversal) traversalStack.add(next)
+            if (next ne EmptyTraversal) traversalStack.addLast(next)
             nextStep = first
           case Pop =>
             val popped = matValueStack.removeLast()
