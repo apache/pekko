@@ -750,9 +750,7 @@ public class FlowTest extends StreamTest {
     mainInputs.add(Source.from(input2));
 
     final Flow<Source<Integer, NotUsed>, List<Integer>, NotUsed> flow =
-        Flow.<Source<Integer, NotUsed>>create()
-            .flatMapConcat(ConstantFun.javaIdentityFunction())
-            .grouped(6);
+        Flow.<Source<Integer, NotUsed>>create().flatMapConcat(Function.identity()).grouped(6);
     CompletionStage<List<Integer>> future =
         Source.from(mainInputs).via(flow).runWith(Sink.head(), system);
 
@@ -776,9 +774,7 @@ public class FlowTest extends StreamTest {
     mainInputs.add(Source.from(input4));
 
     final Flow<Source<Integer, NotUsed>, List<Integer>, NotUsed> flow =
-        Flow.<Source<Integer, NotUsed>>create()
-            .flatMapMerge(3, ConstantFun.javaIdentityFunction())
-            .grouped(60);
+        Flow.<Source<Integer, NotUsed>>create().flatMapMerge(3, Function.identity()).grouped(60);
     CompletionStage<List<Integer>> future =
         Source.from(mainInputs).via(flow).runWith(Sink.head(), system);
 
