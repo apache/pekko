@@ -38,4 +38,5 @@ jobs:
         uses: sbt/setup-sbt@v1
       - uses: scalacenter/sbt-dependency-submission@v3
         with:
-          configs-ignore: optional test compile-internal
+          configs-ignore: provided optional test TestJdk9 compile-internal pr-validation multi-jvm
+          modules-ignore: pekko-bench-jmh_2.12 pekko-docs_2.12 pekko-bench-jmh_2.13 pekko-docs_2.13 pekko-bench-jmh_3 pekko-docs_3
