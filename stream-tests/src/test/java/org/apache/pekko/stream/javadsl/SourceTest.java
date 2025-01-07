@@ -36,7 +36,6 @@ import org.apache.pekko.stream.testkit.javadsl.TestSink;
 import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.apache.pekko.util.ConstantFun;
 import com.google.common.collect.Iterables;
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -1528,5 +1527,34 @@ public class SourceTest extends StreamTest {
             .toCompletableFuture()
             .join();
     Assert.assertEquals(Sets.newHashSet(1, 2), resultSet);
+  }
+
+  @Test
+  public void zipWithIndex() {
+    final List<Pair<Integer, Long>> resultList =
+        Source.range(1, 3).zipWithIndex().runWith(Sink.seq(), system).toCompletableFuture().join();
+    assertEquals(
+        Arrays.asList(Pair.create(1, 0L), Pair.create(2, 1L), Pair.create(3, 2L)), resultList);
+  }
+
+  @Test
+  public void zipWithIndexOnSubSource() {
+    final Set<Pair<Integer, Long>> resultSet =
+        Source.range(1, 5)
+            .groupBy(2, i -> i % 2)
+            .zipWithIndex()
+            .mergeSubstreams()
+            .runWith(Sink.collect(Collectors.toSet()), system)
+            .toCompletableFuture()
+            .join();
+    Assert.assertEquals(
+        new HashSet<>(
+            Arrays.asList(
+                Pair.create(1, 0L),
+                Pair.create(3, 1L),
+                Pair.create(5, 2L),
+                Pair.create(2, 0L),
+                Pair.create(4, 1L))),
+        resultSet);
   }
 }

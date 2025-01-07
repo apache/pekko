@@ -29,6 +29,7 @@ import pekko.annotation.ApiMayChange
 import pekko.event.{ LogMarker, LoggingAdapter, MarkerLoggingAdapter }
 import pekko.japi.{ function, Pair }
 import pekko.stream._
+import pekko.stream.impl.fusing.ZipWithIndexJava
 import pekko.util.ConstantFun
 import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
@@ -2246,8 +2247,9 @@ class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def zipWithIndex: javadsl.SubSource[pekko.japi.Pair[Out @uncheckedVariance, Long], Mat] =
-    new SubSource(delegate.zipWithIndex.map { case (elem, index) => pekko.japi.Pair(elem, index) })
+  def zipWithIndex: javadsl.SubSource[pekko.japi.Pair[Out @uncheckedVariance, java.lang.Long], Mat] =
+    new SubSource(delegate.via(
+      ZipWithIndexJava.asInstanceOf[Graph[FlowShape[Out, Pair[Out, java.lang.Long]], NotUsed]]))
 
   /**
    * If the first element has not passed through this operator before the provided timeout, the stream is failed
