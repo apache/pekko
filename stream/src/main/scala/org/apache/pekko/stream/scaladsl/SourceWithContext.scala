@@ -87,7 +87,7 @@ object SourceWithContext {
 
         //format: off
         s ~> sequence ~> partition.in
-        partition.out(0).asInstanceOf[Outlet[(Option[FOut], IndexedCtx)]] ~> mergeSequence.in(0)
+        partition.out(0).asInstanceOf[Outlet[(Option[FOut], IndexedCtx)]]                   ~> mergeSequence.in(0)
         partition.out(1) ~> unzip.in
                             unzip.out0 ~> unwrapSome ~> viaF ~> zipper.in0
                             unzip.out1                       ~> zipper.in1
