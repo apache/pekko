@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-22.04
     if: github.repository == 'apache/pekko'
     env:
-      DEVELOCITY_ACCESS_KEY: ${{ secrets.GE_ACCESS_TOKEN }}
+      DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4

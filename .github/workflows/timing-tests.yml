@@ -46,7 +46,7 @@ jobs:
 
       - name: sbt test
         env:
-          DEVELOCITY_ACCESS_KEY: ${{ secrets.GE_ACCESS_TOKEN }}
+          DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
         run: |-
           sbt \
             -Djava.security.egd=file:/dev/./urandom \
