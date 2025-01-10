@@ -46,6 +46,7 @@ import pekko.util.ccompat.JavaConverters._
  */
 @InternalApi private[pekko] final class FlattenMerge[T, M](val breadth: Int)
     extends GraphStage[FlowShape[Graph[SourceShape[T], M], T]] {
+  require(breadth >= 1, "breadth should >= 1")
   private val in = Inlet[Graph[SourceShape[T], M]]("flatten.in")
   private val out = Outlet[T]("flatten.out")
 
