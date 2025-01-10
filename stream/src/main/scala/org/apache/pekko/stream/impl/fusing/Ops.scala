@@ -1281,6 +1281,7 @@ private[stream] object Collect {
  */
 @InternalApi private[pekko] final case class MapAsync[In, Out](parallelism: Int, f: In => Future[Out])
     extends GraphStage[FlowShape[In, Out]] {
+  require(parallelism >= 1, "parallelism must be at least 1")
 
   import MapAsync._
 
@@ -1388,6 +1389,7 @@ private[stream] object Collect {
  */
 @InternalApi private[pekko] final case class MapAsyncUnordered[In, Out](parallelism: Int, f: In => Future[Out])
     extends GraphStage[FlowShape[In, Out]] {
+  require(parallelism >= 1, "parallelism must be at least 1")
 
   private val in = Inlet[In]("MapAsyncUnordered.in")
   private val out = Outlet[Out]("MapAsyncUnordered.out")
