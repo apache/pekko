@@ -18,7 +18,6 @@ import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.{ Failure, Success, Try }
-
 import org.apache.pekko
 import pekko.{ util, Done, NotUsed }
 import pekko.actor.{ ActorRef, Status }
@@ -27,10 +26,9 @@ import pekko.dispatch.ExecutionContexts
 import pekko.stream._
 import pekko.stream.impl._
 import pekko.stream.impl.Stages.DefaultAttributes
-import pekko.stream.impl.fusing.GraphStages
+import pekko.stream.impl.fusing.{ FanoutPublisherSink, GraphStages }
 import pekko.stream.stage._
 import pekko.util.ccompat._
-
 import org.reactivestreams.{ Publisher, Subscriber }
 
 /**
@@ -300,7 +298,7 @@ object Sink {
    */
   def asPublisher[T](fanout: Boolean): Sink[T, Publisher[T]] =
     fromGraph(
-      if (fanout) new FanoutPublisherSink[T](DefaultAttributes.fanoutPublisherSink, shape("FanoutPublisherSink"))
+      if (fanout) new FanoutPublisherSink[T]()
       else new PublisherSink[T](DefaultAttributes.publisherSink, shape("PublisherSink")))
 
   /**

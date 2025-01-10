@@ -110,24 +110,6 @@ import org.reactivestreams.Subscriber
 
 /**
  * INTERNAL API
- */
-@InternalApi private[pekko] final class FanoutPublisherSink[In](val attributes: Attributes, shape: SinkShape[In])
-    extends SinkModule[In, Publisher[In]](shape) {
-
-  override def create(context: MaterializationContext): (Subscriber[In], Publisher[In]) = {
-    val impl = context.materializer.actorOf(context, FanoutProcessorImpl.props(context.effectiveAttributes))
-    val fanoutProcessor = new ActorProcessor[In, In](impl)
-    // Resolve cyclic dependency with actor. This MUST be the first message no matter what.
-    impl ! ExposedPublisher(fanoutProcessor.asInstanceOf[ActorPublisher[Any]])
-    (fanoutProcessor, fanoutProcessor)
-  }
-
-  override def withAttributes(attr: Attributes): SinkModule[In, Publisher[In]] =
-    new FanoutPublisherSink[In](attr, amendShape(attr))
-}
-
-/**
- * INTERNAL API
  * Attaches a subscriber to this stream.
  */
 @InternalApi private[pekko] final class SubscriberSink[In](

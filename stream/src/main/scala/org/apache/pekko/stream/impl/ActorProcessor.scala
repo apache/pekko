@@ -22,41 +22,7 @@ import pekko.stream.ActorAttributes
 import pekko.stream.impl.ActorSubscriberMessage.{ OnComplete, OnError, OnNext, OnSubscribe }
 import pekko.util.unused
 
-import org.reactivestreams.{ Processor, Subscriber, Subscription }
-
-/**
- * INTERNAL API
- */
-@InternalApi private[pekko] object ActorProcessor {
-
-  def apply[I, O](impl: ActorRef): ActorProcessor[I, O] = {
-    val p = new ActorProcessor[I, O](impl)
-    // Resolve cyclic dependency with actor. This MUST be the first message no matter what.
-    impl ! ExposedPublisher(p.asInstanceOf[ActorPublisher[Any]])
-    p
-  }
-}
-
-/**
- * INTERNAL API
- */
-@InternalApi private[pekko] class ActorProcessor[I, O](impl: ActorRef)
-    extends ActorPublisher[O](impl)
-    with Processor[I, O] {
-  override def onSubscribe(s: Subscription): Unit = {
-    ReactiveStreamsCompliance.requireNonNullSubscription(s)
-    impl ! OnSubscribe(s)
-  }
-  override def onError(t: Throwable): Unit = {
-    ReactiveStreamsCompliance.requireNonNullException(t)
-    impl ! OnError(t)
-  }
-  override def onComplete(): Unit = impl ! OnComplete
-  override def onNext(elem: I): Unit = {
-    ReactiveStreamsCompliance.requireNonNullElement(elem)
-    impl ! OnNext(elem)
-  }
-}
+import org.reactivestreams.{ Subscriber, Subscription }
 
 /**
  * INTERNAL API
