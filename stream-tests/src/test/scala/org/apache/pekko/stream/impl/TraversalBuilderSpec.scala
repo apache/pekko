@@ -17,8 +17,13 @@ import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream._
 import pekko.stream.impl.TraversalTestUtils._
+import pekko.stream.impl.fusing.IterableSource
+import pekko.stream.impl.fusing.GraphStages.{ FutureSource, SingleSource }
 import pekko.stream.scaladsl.{ Keep, Source }
+import pekko.util.OptionVal
 import pekko.testkit.PekkoSpec
+
+import scala.concurrent.Future
 
 class TraversalBuilderSpec extends PekkoSpec {
 
@@ -461,6 +466,97 @@ class TraversalBuilderSpec extends PekkoSpec {
   "find scaldsl Source.empty via TraversalBuilder with isEmptySource" in {
     val emptySource = Source.empty
     TraversalBuilder.isEmptySource(emptySource) should be(true)
+  }
+
+  "find Source.single via TraversalBuilder" in {
+    TraversalBuilder.getSingleSource(Source.single("a")).get.elem should ===("a")
+    TraversalBuilder.getSingleSource(Source(List("a", "b"))) should be(OptionVal.None)
+
+    val singleSourceA = new SingleSource("a")
+    TraversalBuilder.getSingleSource(singleSourceA) should be(OptionVal.Some(singleSourceA))
+
+    TraversalBuilder.getSingleSource(Source.single("c").async) should be(OptionVal.None)
+    TraversalBuilder.getSingleSource(Source.single("d").mapMaterializedValue(_ => "Mat")) should be(OptionVal.None)
+  }
+
+  "find Source.single via TraversalBuilder with getValuePresentedSource" in {
+    TraversalBuilder.getValuePresentedSource(Source.single("a")).get.asInstanceOf[SingleSource[String]].elem should ===(
+      "a")
+    val singleSourceA = new SingleSource("a")
+    TraversalBuilder.getValuePresentedSource(singleSourceA) should be(OptionVal.Some(singleSourceA))
+
+    TraversalBuilder.getValuePresentedSource(Source.single("c").async) should be(OptionVal.None)
+    TraversalBuilder.getValuePresentedSource(Source.single("d").mapMaterializedValue(_ => "Mat")) should be(
+      OptionVal.None)
+  }
+
+  "find Source.empty via TraversalBuilder with getValuePresentedSource" in {
+    val emptySource = EmptySource
+    TraversalBuilder.getValuePresentedSource(emptySource) should be(OptionVal.Some(emptySource))
+
+    TraversalBuilder.getValuePresentedSource(Source.empty.async) should be(OptionVal.None)
+    TraversalBuilder.getValuePresentedSource(Source.empty.mapMaterializedValue(_ => "Mat")) should be(OptionVal.None)
+  }
+
+  "find javadsl Source.empty via TraversalBuilder with getValuePresentedSource" in {
+    import pekko.stream.javadsl.Source
+    val emptySource = Source.empty()
+    TraversalBuilder.getValuePresentedSource(Source.empty()) should be(OptionVal.Some(emptySource))
+
+    TraversalBuilder.getValuePresentedSource(Source.empty().async) should be(OptionVal.None)
+    TraversalBuilder.getValuePresentedSource(Source.empty().mapMaterializedValue(_ => "Mat")) should be(OptionVal.None)
+  }
+
+  "find Source.future via TraversalBuilder with getValuePresentedSource" in {
+    val future = Future.successful("a")
+    TraversalBuilder.getValuePresentedSource(Source.future(future)).get.asInstanceOf[FutureSource[
+      String]].future should ===(
+      future)
+    val futureSourceA = new FutureSource(future)
+    TraversalBuilder.getValuePresentedSource(futureSourceA) should be(OptionVal.Some(futureSourceA))
+
+    TraversalBuilder.getValuePresentedSource(Source.future(future).async) should be(OptionVal.None)
+    TraversalBuilder.getValuePresentedSource(Source.future(future).mapMaterializedValue(_ => "Mat")) should be(
+      OptionVal.None)
+  }
+
+  "find Source.iterable via TraversalBuilder with getValuePresentedSource" in {
+    val iterable = List("a")
+    TraversalBuilder.getValuePresentedSource(Source(iterable)).get.asInstanceOf[IterableSource[
+      String]].elements should ===(
+      iterable)
+    val iterableSource = new IterableSource(iterable)
+    TraversalBuilder.getValuePresentedSource(iterableSource) should be(OptionVal.Some(iterableSource))
+
+    TraversalBuilder.getValuePresentedSource(Source(iterable).async) should be(OptionVal.None)
+    TraversalBuilder.getValuePresentedSource(Source(iterable).mapMaterializedValue(_ => "Mat")) should be(
+      OptionVal.None)
+  }
+
+  "find Source.javaStreamSource via TraversalBuilder with getValuePresentedSource" in {
+    val javaStream = java.util.stream.Stream.empty[String]()
+    TraversalBuilder.getValuePresentedSource(Source.fromJavaStream(() => javaStream)).get
+      .asInstanceOf[JavaStreamSource[String, _]].open() shouldEqual javaStream
+    val streamSource = new JavaStreamSource(() => javaStream)
+    TraversalBuilder.getValuePresentedSource(streamSource) should be(OptionVal.Some(streamSource))
+
+    TraversalBuilder.getValuePresentedSource(Source.fromJavaStream(() => javaStream).async) should be(OptionVal.None)
+    TraversalBuilder.getValuePresentedSource(
+      Source.fromJavaStream(() => javaStream).mapMaterializedValue(_ => "Mat")) should be(
+      OptionVal.None)
+  }
+
+  "find Source.failed via TraversalBuilder with getValuePresentedSource" in {
+    val failure = new RuntimeException("failure")
+    TraversalBuilder.getValuePresentedSource(Source.failed(failure)).get.asInstanceOf[FailedSource[String]]
+      .failure should ===(
+      failure)
+    val failedSourceA = new FailedSource(failure)
+    TraversalBuilder.getValuePresentedSource(failedSourceA) should be(OptionVal.Some(failedSourceA))
+
+    TraversalBuilder.getValuePresentedSource(Source.failed(failure).async) should be(OptionVal.None)
+    TraversalBuilder.getValuePresentedSource(Source.failed(failure).mapMaterializedValue(_ => "Mat")) should be(
+      OptionVal.None)
   }
 
 }
