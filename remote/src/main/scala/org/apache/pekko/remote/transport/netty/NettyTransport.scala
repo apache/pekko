@@ -24,6 +24,7 @@ import scala.util.Try
 import scala.util.control.{ NoStackTrace, NonFatal }
 
 import com.typesafe.config.Config
+
 import org.apache.pekko
 import pekko.ConfigurationException
 import pekko.OnlyCauseStackTrace
@@ -38,7 +39,13 @@ import pekko.util.Helpers.Requiring
 import pekko.util.{ Helpers, OptionVal }
 
 import io.netty.bootstrap.{ Bootstrap => ClientBootstrap, ServerBootstrap }
-import io.netty.buffer.Unpooled
+import io.netty.buffer.{
+  AdaptiveByteBufAllocator,
+  ByteBufAllocator,
+  PooledByteBufAllocator,
+  Unpooled,
+  UnpooledByteBufAllocator
+}
 import io.netty.channel.{
   Channel,
   ChannelFuture,
@@ -158,6 +165,17 @@ class NettyTransportSettings(config: Config) {
   val TcpReuseAddr: Boolean = getString("tcp-reuse-addr") match {
     case "off-for-windows" => !Helpers.isWindows
     case _                 => getBoolean("tcp-reuse-addr")
+  }
+
+  val ByteBufAllocator: ByteBufAllocator = getString("bytebuf-allocator-type") match {
+    case "pooled"        => PooledByteBufAllocator.DEFAULT
+    case "unpooled"      => UnpooledByteBufAllocator.DEFAULT
+    case "unpooled-heap" => new UnpooledByteBufAllocator(false)
+    case "adaptive"      => new AdaptiveByteBufAllocator()
+    case "adaptive-heap" => new AdaptiveByteBufAllocator(false)
+    case other => throw new IllegalArgumentException(
+        "Unknown 'bytebuf-allocator-type' [" + other + "]," +
+        " supported values are 'pooled', 'unpooled', 'unpooled-heap', 'adaptive', 'adaptive-heap'.")
   }
 
   val Hostname: String = getString("hostname") match {
@@ -441,6 +459,10 @@ class NettyTransport(val settings: NettyTransportSettings, val system: ExtendedA
     bootstrap.childOption[java.lang.Boolean](ChannelOption.AUTO_READ, false)
     bootstrap.childOption[java.lang.Boolean](ChannelOption.TCP_NODELAY, settings.TcpNodelay)
     bootstrap.childOption[java.lang.Boolean](ChannelOption.SO_KEEPALIVE, settings.TcpKeepalive)
+
+    // Use the same allocator for inbound and outbound buffers
+    bootstrap.option(ChannelOption.ALLOCATOR, settings.ByteBufAllocator)
+    bootstrap.childOption(ChannelOption.ALLOCATOR, settings.ByteBufAllocator)
 
     settings.ReceiveBufferSize.foreach(sz => bootstrap.childOption[java.lang.Integer](ChannelOption.SO_RCVBUF, sz))
     settings.SendBufferSize.foreach(sz => bootstrap.childOption[java.lang.Integer](ChannelOption.SO_SNDBUF, sz))

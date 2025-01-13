@@ -13,9 +13,11 @@
 
 package org.apache.pekko.remote
 
-import scala.concurrent.duration._
+import io.netty.buffer.PooledByteBufAllocator
 
+import scala.concurrent.duration._
 import scala.annotation.nowarn
+
 import language.postfixOps
 
 import org.apache.pekko
@@ -103,6 +105,7 @@ class RemoteConfigSpec extends PekkoSpec("""
       TcpNodelay should ===(true)
       TcpKeepalive should ===(true)
       TcpReuseAddr should ===(!Helpers.isWindows)
+      ByteBufAllocator should ===(PooledByteBufAllocator.DEFAULT)
       c.getString("hostname") should ===("")
       c.getString("bind-hostname") should ===("")
       c.getString("bind-port") should ===("")
