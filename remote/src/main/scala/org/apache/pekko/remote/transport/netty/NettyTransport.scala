@@ -167,16 +167,7 @@ class NettyTransportSettings(config: Config) {
     case _                 => getBoolean("tcp-reuse-addr")
   }
 
-  val ByteBufAllocator: ByteBufAllocator = getString("bytebuf-allocator-type") match {
-    case "pooled"        => PooledByteBufAllocator.DEFAULT
-    case "unpooled"      => UnpooledByteBufAllocator.DEFAULT
-    case "unpooled-heap" => new UnpooledByteBufAllocator(false)
-    case "adaptive"      => new AdaptiveByteBufAllocator()
-    case "adaptive-heap" => new AdaptiveByteBufAllocator(false)
-    case other => throw new IllegalArgumentException(
-        "Unknown 'bytebuf-allocator-type' [" + other + "]," +
-        " supported values are 'pooled', 'unpooled', 'unpooled-heap', 'adaptive', 'adaptive-heap'.")
-  }
+  val ByteBufAllocator: ByteBufAllocator = NettyTransport.deriveByteBufAllocator(getString("bytebuf-allocator-type"))
 
   val Hostname: String = getString("hostname") match {
     case ""    => InetAddress.getLocalHost.getHostAddress
@@ -336,6 +327,17 @@ private[transport] object NettyTransport {
       systemName: String,
       hostName: Option[String]): Option[Address] =
     addressFromSocketAddress(addr, schemeIdentifier, systemName, hostName, port = None)
+
+  def deriveByteBufAllocator(allocatorType: String): ByteBufAllocator = allocatorType match {
+    case "pooled"        => PooledByteBufAllocator.DEFAULT
+    case "unpooled"      => UnpooledByteBufAllocator.DEFAULT
+    case "unpooled-heap" => new UnpooledByteBufAllocator(false)
+    case "adaptive"      => new AdaptiveByteBufAllocator()
+    case "adaptive-heap" => new AdaptiveByteBufAllocator(false)
+    case other => throw new IllegalArgumentException(
+        "Unknown 'bytebuf-allocator-type' [" + other + "]," +
+        " supported values are 'pooled', 'unpooled', 'unpooled-heap', 'adaptive', 'adaptive-heap'.")
+  }
 }
 
 @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")

@@ -24,7 +24,7 @@ import org.scalatest.wordspec.AnyWordSpec
 
 import org.apache.pekko
 import pekko.actor.{ ActorSystem, Address }
-import pekko.remote.classic.transport.netty.NettyTransportSpec._
+import pekko.remote.transport.NettyTransportSpec._
 import pekko.testkit.SocketUtil
 
 trait BindCanonicalAddressBehaviors {
