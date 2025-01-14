@@ -11,7 +11,7 @@ addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "2.2.0")
 
 addSbtPlugin("com.lightbend.sbt" % "sbt-java-formatter" % "0.7.0")
 addSbtPlugin("com.lightbend.sbt" % "sbt-bill-of-materials" % "1.0.2")
-addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.5.2")
+addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.5.3")
 addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.13.0")
 addSbtPlugin("com.github.sbt" % "sbt-osgi" % "0.10.0")
 addSbtPlugin("com.typesafe" % "sbt-mima-plugin" % "1.1.4")
