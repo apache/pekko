@@ -20,6 +20,10 @@ These migration notes are designed for users migrating from Akka 2.6 to Pekko 1.
 * We have changed the default ports used by the pekko-remote module.
     * With @ref:[Classic Remoting](../remoting.md), Akka defaults to 2552, while Pekko defaults to 7355.
     * With @ref:[Artery Remoting](../remoting-artery.md), Akka defaults to 25520, while Pekko defaults to 17355.
+* We have changed the default port used by the pekko-cluster-management module.
+    * With Akka defaults to 8558, while Pekko defaults to 7626.
+
+
 
 ## Dependency Changes
 * The Scala 2.13/Scala 3 versions of Pekko no longer include [scala-java8-compat](https://github.com/scala/scala-java8-compat)
