@@ -46,7 +46,7 @@ jobs:
 
       - name: Create the Pekko site
         env:
-          DEVELOCITY_ACCESS_KEY: ${{ secrets.GE_ACCESS_TOKEN }}
+          DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
         run: |-
           cp .jvmopts-ci .jvmopts
           sbt -Dpekko.genjavadoc.enabled=true -Dpekko.genlicensereport.enabled=true "Javaunidoc/doc; Compile/unidoc; docs/paradox"

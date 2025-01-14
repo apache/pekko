@@ -61,7 +61,7 @@ jobs:
 
       - name: Compile and run tests on Scala 3
         env:
-          DEVELOCITY_ACCESS_KEY: ${{ secrets.GE_ACCESS_TOKEN }}
+          DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
         # note that this is not running any multi-jvm tests (yet) because multi-in-test=false
         run: |
           sbt \
