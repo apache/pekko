@@ -79,7 +79,7 @@ abstract class ConvergenceSpec(multiNodeConfig: ConvergenceMultiNodeConfig)
 
       runOn(first, second) {
 
-        within(28 seconds) {
+        within(28.seconds) {
           // third becomes unreachable
           awaitAssert(clusterView.unreachableMembers.size should ===(1))
           awaitSeenSameState(first, second)

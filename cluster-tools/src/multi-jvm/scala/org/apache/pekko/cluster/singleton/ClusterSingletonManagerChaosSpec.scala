@@ -122,7 +122,7 @@ class ClusterSingletonManagerChaosSpec
 
   "A ClusterSingletonManager in chaotic cluster" must {
 
-    "startup 6 node cluster" in within(60 seconds) {
+    "startup 6 node cluster" in within(60.seconds) {
       val memberProbe = TestProbe()
       Cluster(system).subscribe(memberProbe.ref, classOf[MemberUp])
       memberProbe.expectMsgClass(classOf[CurrentClusterState])
@@ -157,7 +157,7 @@ class ClusterSingletonManagerChaosSpec
 
     }
 
-    "take over when three oldest nodes crash in 6 nodes cluster" in within(90 seconds) {
+    "take over when three oldest nodes crash in 6 nodes cluster" in within(90.seconds) {
       // mute logging of deadLetters during shutdown of systems
       if (!log.isDebugEnabled)
         system.eventStream.publish(Mute(DeadLettersFilter[Any]))

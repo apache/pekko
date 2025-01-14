@@ -240,7 +240,7 @@ object SupervisorHierarchySpec {
       case (_, x) =>
         log :+= Event("unhandled exception from " + sender() + Logging.stackTraceFor(x), identityHashCode(this))
         sender() ! Dump(0)
-        context.system.scheduler.scheduleOnce(1 second, self, Dump(0))(context.dispatcher)
+        context.system.scheduler.scheduleOnce(1.second, self, Dump(0))(context.dispatcher)
         Resume
     })
 
@@ -477,7 +477,7 @@ object SupervisorHierarchySpec {
       case this.Event(Init, _) =>
         hierarchy = context.watch(
           context.actorOf(Props(new Hierarchy(size, breadth, self, 0, random)).withDispatcher("hierarchy"), "head"))
-        startSingleTimer("phase", StateTimeout, 5 seconds)
+        startSingleTimer("phase", StateTimeout, 5.seconds)
         goto(Init)
     }
 
@@ -646,7 +646,7 @@ object SupervisorHierarchySpec {
         goto(Failed)
     }
 
-    when(GC, stateTimeout = 10 seconds) {
+    when(GC, stateTimeout = 10.seconds) {
       case this.Event(GCcheck(weak), _) =>
         val next = weak.filter(_.get ne null)
         if (next.nonEmpty) {
@@ -793,7 +793,7 @@ class SupervisorHierarchySpec extends PekkoSpec(SupervisorHierarchySpec.config) 
       val countDownMax = new CountDownLatch(1)
       val boss = system.actorOf(Props(new Actor {
         override val supervisorStrategy =
-          OneForOneStrategy(maxNrOfRetries = 1, withinTimeRange = 5 seconds)(List(classOf[Throwable]))
+          OneForOneStrategy(maxNrOfRetries = 1, withinTimeRange = 5.seconds)(List(classOf[Throwable]))
 
         val crasher = context.watch(
           context.actorOf(Props(new CountDownActor(countDownMessages, SupervisorStrategy.defaultStrategy))))
@@ -853,7 +853,7 @@ class SupervisorHierarchySpec extends PekkoSpec(SupervisorHierarchySpec.config) 
         boss ! "fail"
         awaitCond(worker.asInstanceOf[LocalActorRef].underlying.mailbox.isSuspended)
         worker ! "ping"
-        expectNoMessage(2 seconds)
+        expectNoMessage(2.seconds)
         latch.countDown()
       }
       expectMsg("pong")
@@ -935,7 +935,7 @@ class SupervisorHierarchySpec extends PekkoSpec(SupervisorHierarchySpec.config) 
 
       fsm ! Init
 
-      expectMsg(110 seconds, "stressTestSuccessful")
+      expectMsg(110.seconds, "stressTestSuccessful")
       expectMsg("stressTestStopped")
     }
   }

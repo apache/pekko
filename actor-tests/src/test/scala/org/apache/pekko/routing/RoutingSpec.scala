@@ -79,7 +79,7 @@ class RoutingSpec extends PekkoSpec(RoutingSpec.config) with DefaultTimeout with
       awaitCond {
         router ! ""
         router ! ""
-        val res = receiveWhile(100 millis, messages = 2) {
+        val res = receiveWhile(100.millis, messages = 2) {
           case x: ActorRef => x
         }
         res == Seq(c1, c1)

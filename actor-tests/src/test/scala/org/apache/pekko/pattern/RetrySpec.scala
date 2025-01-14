@@ -30,9 +30,9 @@ class RetrySpec extends PekkoSpec with RetrySupport {
 
   "pattern.retry" must {
     "run a successful Future immediately" in {
-      val retried = retry(() => Future.successful(5), 5, 1 second)
+      val retried = retry(() => Future.successful(5), 5, 1.second)
 
-      within(3 seconds) {
+      within(3.seconds) {
         Await.result(retried, remaining) should ===(5)
       }
     }
@@ -46,17 +46,17 @@ class RetrySpec extends PekkoSpec with RetrySupport {
             counter
           },
         5,
-        1 second)
+        1.second)
 
-      within(3 seconds) {
+      within(3.seconds) {
         Await.result(retried, remaining) should ===(1)
       }
     }
 
     "eventually return a failure for a Future that will never succeed" in {
-      val retried = retry(() => Future.failed(new IllegalStateException("Mexico")), 5, 100 milliseconds)
+      val retried = retry(() => Future.failed(new IllegalStateException("Mexico")), 5, 100.milliseconds)
 
-      within(3 second) {
+      within(3.second) {
         intercept[IllegalStateException] { Await.result(retried, remaining) }.getMessage should ===("Mexico")
       }
     }
@@ -71,9 +71,9 @@ class RetrySpec extends PekkoSpec with RetrySupport {
         } else Future.successful(5)
       }
 
-      val retried = retry(() => attempt(), 10, 100 milliseconds)
+      val retried = retry(() => attempt(), 10, 100.milliseconds)
 
-      within(3 seconds) {
+      within(3.seconds) {
         Await.result(retried, remaining) should ===(5)
       }
     }
@@ -88,9 +88,9 @@ class RetrySpec extends PekkoSpec with RetrySupport {
         } else Future.successful(5)
       }
 
-      val retried = retry(() => attempt(), 5, 100 milliseconds)
+      val retried = retry(() => attempt(), 5, 100.milliseconds)
 
-      within(3 seconds) {
+      within(3.seconds) {
         intercept[IllegalStateException] { Await.result(retried, remaining) }.getMessage should ===("6")
       }
     }
@@ -111,7 +111,7 @@ class RetrySpec extends PekkoSpec with RetrySupport {
           attemptedCount = attempted
           Some(100.milliseconds * attempted)
         })
-      within(30000000 seconds) {
+      within(30000000.seconds) {
         intercept[IllegalStateException] { Await.result(retried, remaining) }.getMessage should ===("6")
         attemptedCount shouldBe 5
       }
@@ -129,7 +129,7 @@ class RetrySpec extends PekkoSpec with RetrySupport {
       val start = System.currentTimeMillis()
       val retried = retry(() => attempt(), 999)
 
-      within(1 seconds) {
+      within(1.seconds) {
         intercept[IllegalStateException] {
           Await.result(retried, remaining)
         }.getMessage should ===("1000")
@@ -148,9 +148,9 @@ class RetrySpec extends PekkoSpec with RetrySupport {
         } else Future.successful(5)
       }
 
-      val retried = retry(() => attempt(), 10, 100 milliseconds)
+      val retried = retry(() => attempt(), 10, 100.milliseconds)
 
-      within(3 seconds) {
+      within(3.seconds) {
         Await.result(retried, remaining) should ===(5)
       }
     }
@@ -161,9 +161,9 @@ class RetrySpec extends PekkoSpec with RetrySupport {
         Future.successful(counter.incrementAndGet())
       }
 
-      val retried = retry(() => attempt(), (t: Int, _) => t < 5, 10, 100 milliseconds)
+      val retried = retry(() => attempt(), (t: Int, _) => t < 5, 10, 100.milliseconds)
 
-      within(3 seconds) {
+      within(3.seconds) {
         Await.result(retried, remaining) should ===(5)
       }
     }
@@ -178,9 +178,9 @@ class RetrySpec extends PekkoSpec with RetrySupport {
       }
 
       val retried =
-        retry(() => attempt(), (_: Int, e) => !e.isInstanceOf[IllegalArgumentException], 10, 100 milliseconds)
+        retry(() => attempt(), (_: Int, e) => !e.isInstanceOf[IllegalArgumentException], 10, 100.milliseconds)
 
-      within(3 seconds) {
+      within(3.seconds) {
         retried.failed.futureValue shouldBe an[IllegalArgumentException]
         counter.get() should ===(1)
       }

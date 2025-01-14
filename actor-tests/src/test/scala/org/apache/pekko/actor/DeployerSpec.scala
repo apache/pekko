@@ -201,7 +201,7 @@ class DeployerSpec extends PekkoSpec(DeployerSpec.deployerConf) {
     "be able to parse 'pekko.actor.deployment._' with scatter-gather router" in {
       assertRouting(
         "/service-scatter-gather",
-        ScatterGatherFirstCompletedPool(nrOfInstances = 1, within = 2 seconds),
+        ScatterGatherFirstCompletedPool(nrOfInstances = 1, within = 2.seconds),
         "/service-scatter-gather")
     }
 
@@ -218,7 +218,7 @@ class DeployerSpec extends PekkoSpec(DeployerSpec.deployerConf) {
       assertRouting("/some/wildcardmatch", RandomPool(1), "/some/*")
       assertRouting(
         "/somewildcardmatch/some",
-        ScatterGatherFirstCompletedPool(nrOfInstances = 1, within = 2 seconds),
+        ScatterGatherFirstCompletedPool(nrOfInstances = 1, within = 2.seconds),
         "/*/some")
     }
 

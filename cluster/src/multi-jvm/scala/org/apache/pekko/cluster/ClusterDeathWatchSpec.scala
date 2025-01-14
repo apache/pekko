@@ -86,7 +86,7 @@ abstract class ClusterDeathWatchSpec
 
   "An actor watching a remote actor in the cluster" must {
 
-    "receive Terminated when watched node becomes Down/Removed" in within(20 seconds) {
+    "receive Terminated when watched node becomes Down/Removed" in within(20.seconds) {
       awaitClusterUp(first, second, third, fourth)
       enterBarrier("cluster-up")
 
@@ -163,7 +163,7 @@ abstract class ClusterDeathWatchSpec
     }
 
     "not be able to watch an actor before node joins cluster, ClusterRemoteWatcher takes over from RemoteWatcher" in within(
-      20 seconds) {
+      20.seconds) {
       runOn(fifth) {
         system.actorOf(
           Props(new Actor { def receive = Actor.emptyBehavior }).withDeploy(Deploy.local),
@@ -253,7 +253,7 @@ abstract class ClusterDeathWatchSpec
       enterBarrier("after-4")
     }
 
-    "be able to shutdown system when using remote deployed actor on node that crash" in within(20 seconds) {
+    "be able to shutdown system when using remote deployed actor on node that crash" in within(20.seconds) {
       // fourth actor system will be shutdown, not part of testConductor any more
       // so we can't use barriers to synchronize with it
       val firstAddress = address(first)
@@ -298,7 +298,7 @@ abstract class ClusterDeathWatchSpec
           endProbe.expectMsg(EndActor.EndAck)
 
         } finally {
-          shutdown(endSystem, 10 seconds)
+          shutdown(endSystem, 10.seconds)
         }
         // no barrier here, because it is not part of testConductor roles any more
 

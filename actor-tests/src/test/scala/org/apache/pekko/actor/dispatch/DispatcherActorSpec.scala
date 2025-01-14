@@ -112,7 +112,7 @@ class DispatcherActorSpec extends PekkoSpec(DispatcherActorSpec.config) with Def
     }
 
     "respect throughput deadline" in {
-      val deadline = 100 millis
+      val deadline = 100.millis
       val throughputDispatcher = "test-throughput-deadline-dispatcher"
 
       val works = new AtomicBoolean(true)

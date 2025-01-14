@@ -54,11 +54,11 @@ class ClusterMetricsExtensionSpec
 
     "collect metrics after start command" in {
       extension.supervisor ! CollectionStartMessage
-      awaitAssert(metricsNodeCount should ===(nodeCount), 15 seconds)
+      awaitAssert(metricsNodeCount should ===(nodeCount), 15.seconds)
     }
 
     "collect mock sample during a time window" in {
-      awaitAssert(metricsHistorySize should ===(sampleCount), 15 seconds)
+      awaitAssert(metricsHistorySize should ===(sampleCount), 15.seconds)
       extension.supervisor ! CollectionStopMessage
       awaitSample()
       metricsNodeCount should ===(nodeCount)

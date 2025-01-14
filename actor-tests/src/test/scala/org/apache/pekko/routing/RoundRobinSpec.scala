@@ -54,10 +54,10 @@ class RoundRobinSpec extends PekkoSpec with DefaultTimeout with ImplicitSender {
       actor ! "hello"
       actor ! "hello"
       actor ! "hello"
-      Await.ready(helloLatch, 5 seconds)
+      Await.ready(helloLatch, 5.seconds)
 
       system.stop(actor)
-      Await.ready(stopLatch, 5 seconds)
+      Await.ready(stopLatch, 5.seconds)
     }
 
     "deliver messages in a round robin fashion" in {
@@ -84,7 +84,7 @@ class RoundRobinSpec extends PekkoSpec with DefaultTimeout with ImplicitSender {
       counter.get should ===(connectionCount)
 
       actor ! pekko.routing.Broadcast("end")
-      Await.ready(doneLatch, 5 seconds)
+      Await.ready(doneLatch, 5.seconds)
 
       replies.values.foreach { _ should ===(iterationCount) }
     }
@@ -104,10 +104,10 @@ class RoundRobinSpec extends PekkoSpec with DefaultTimeout with ImplicitSender {
         })), "round-robin-broadcast")
 
       actor ! pekko.routing.Broadcast("hello")
-      Await.ready(helloLatch, 5 seconds)
+      Await.ready(helloLatch, 5.seconds)
 
       system.stop(actor)
-      Await.ready(stopLatch, 5 seconds)
+      Await.ready(stopLatch, 5.seconds)
     }
 
     "be controlled with management messages" in {
@@ -156,7 +156,7 @@ class RoundRobinSpec extends PekkoSpec with DefaultTimeout with ImplicitSender {
       }
 
       actor ! pekko.routing.Broadcast("end")
-      Await.ready(doneLatch, 5 seconds)
+      Await.ready(doneLatch, 5.seconds)
 
       replies.values.foreach { _ should ===(iterationCount) }
     }

@@ -110,7 +110,7 @@ abstract class RemoteRestartedQuarantinedSpec extends RemotingMultiNodeSpec(Remo
         enterBarrier("before-quarantined")
         enterBarrier("quarantined")
 
-        expectMsgPF(10 seconds) {
+        expectMsgPF(10.seconds) {
           case ThisActorSystemQuarantinedEvent(_, _) =>
         }
 

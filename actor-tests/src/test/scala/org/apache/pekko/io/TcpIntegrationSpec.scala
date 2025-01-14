@@ -194,7 +194,7 @@ class TcpIntegrationSpec extends PekkoSpec("""
       connectCommander.expectMsgType[Connected].remoteAddress should ===(endpoint)
       val connectionActor = connectCommander.lastSender
       connectCommander.send(connectionActor, PoisonPill)
-      failAfter(3 seconds) {
+      failAfter(3.seconds) {
         try {
           accept.getInputStream.read() should ===(-1)
         } catch {

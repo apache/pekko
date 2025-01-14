@@ -166,7 +166,7 @@ object ClusterEvent {
     /**
      * Java API: get address of current data center leader, or null if none
      */
-    def getLeader: Address = leader orNull
+    def getLeader: Address = leader.orNull
 
     /**
      * get address of current leader, if any, within the data center that has the given role
@@ -366,7 +366,7 @@ object ClusterEvent {
      * Java API
      * @return address of current leader, or null if none
      */
-    def getLeader: Address = leader orNull
+    def getLeader: Address = leader.orNull
   }
 
   /**
@@ -380,7 +380,7 @@ object ClusterEvent {
      * Java API
      * @return address of current leader, or null if none
      */
-    def getLeader: Address = leader orNull
+    def getLeader: Address = leader.orNull
   }
 
   /**

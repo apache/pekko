@@ -124,7 +124,7 @@ abstract class LeaderDowningNodeThatIsUnreachableSpec(
       runOn(third) {
         enterBarrier("down-second-node")
 
-        awaitMembersUp(numberOfMembers = 2, canNotBePartOfMemberRing = Set(secondAddress), 30 seconds)
+        awaitMembersUp(numberOfMembers = 2, canNotBePartOfMemberRing = Set(secondAddress), 30.seconds)
       }
 
       enterBarrier("await-completion-2")

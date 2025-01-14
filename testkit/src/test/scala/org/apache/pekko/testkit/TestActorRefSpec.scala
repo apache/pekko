@@ -190,7 +190,7 @@ class TestActorRefSpec extends PekkoSpec("disp1.type=Dispatcher") with BeforeAnd
           }
         }))
         a.!(PoisonPill)(testActor)
-        expectMsgPF(5 seconds) {
+        expectMsgPF(5.seconds) {
           case WrappedTerminated(Terminated(`a`)) => true
         }
         a.isTerminated should ===(true)
@@ -210,7 +210,7 @@ class TestActorRefSpec extends PekkoSpec("disp1.type=Dispatcher") with BeforeAnd
             }), self, "child")
 
           override def supervisorStrategy =
-            OneForOneStrategy(maxNrOfRetries = 5, withinTimeRange = 1 second)(List(classOf[ActorKilledException]))
+            OneForOneStrategy(maxNrOfRetries = 5, withinTimeRange = 1.second)(List(classOf[ActorKilledException]))
 
           def receiveT = { case "sendKill" => ref ! Kill }
         }))

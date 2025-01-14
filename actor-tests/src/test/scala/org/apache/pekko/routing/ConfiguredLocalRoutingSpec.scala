@@ -142,19 +142,19 @@ class ConfiguredLocalRoutingSpec
     "be picked up from Props" in {
       val actor = system.actorOf(RoundRobinPool(12).props(routeeProps = Props[EchoProps]()), "someOther")
       routerConfig(actor) should ===(RoundRobinPool(12))
-      Await.result(gracefulStop(actor, 3 seconds), 3 seconds)
+      Await.result(gracefulStop(actor, 3.seconds), 3.seconds)
     }
 
     "be overridable in config" in {
       val actor = system.actorOf(RoundRobinPool(12).props(routeeProps = Props[EchoProps]()), "config")
       routerConfig(actor) should ===(RandomPool(nrOfInstances = 4, usePoolDispatcher = true))
-      Await.result(gracefulStop(actor, 3 seconds), 3 seconds)
+      Await.result(gracefulStop(actor, 3.seconds), 3.seconds)
     }
 
     "use routees.paths from config" in {
       val actor = system.actorOf(RandomPool(12).props(routeeProps = Props[EchoProps]()), "paths")
       routerConfig(actor) should ===(RandomGroup(List("/user/service1", "/user/service2")))
-      Await.result(gracefulStop(actor, 3 seconds), 3 seconds)
+      Await.result(gracefulStop(actor, 3.seconds), 3.seconds)
     }
 
     "be overridable in explicit deployment" in {
@@ -162,7 +162,7 @@ class ConfiguredLocalRoutingSpec
         FromConfig.props(routeeProps = Props[EchoProps]()).withDeploy(Deploy(routerConfig = RoundRobinPool(12))),
         "someOther")
       routerConfig(actor) should ===(RoundRobinPool(12))
-      Await.result(gracefulStop(actor, 3 seconds), 3 seconds)
+      Await.result(gracefulStop(actor, 3.seconds), 3.seconds)
     }
 
     "be overridable in config even with explicit deployment" in {
@@ -170,7 +170,7 @@ class ConfiguredLocalRoutingSpec
         FromConfig.props(routeeProps = Props[EchoProps]()).withDeploy(Deploy(routerConfig = RoundRobinPool(12))),
         "config")
       routerConfig(actor) should ===(RandomPool(nrOfInstances = 4, usePoolDispatcher = true))
-      Await.result(gracefulStop(actor, 3 seconds), 3 seconds)
+      Await.result(gracefulStop(actor, 3.seconds), 3.seconds)
     }
 
     "fail with an exception if not correct" in {
@@ -185,7 +185,7 @@ class ConfiguredLocalRoutingSpec
       @nowarn
       val expc = Set('a', 'b', 'c').map(i => "/user/weird/$" + i)
       recv should ===(expc)
-      expectNoMessage(1 second)
+      expectNoMessage(1.second)
     }
 
     "support custom router" in {

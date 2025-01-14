@@ -224,7 +224,7 @@ class SupervisorSpec
 
   def killExpectNoRestart(pingPongActor: ActorRef) = {
     val result = pingPongActor.?(DieReply)(DilatedTimeout)
-    expectNoMessage(500 milliseconds)
+    expectNoMessage(500.milliseconds)
     intercept[RuntimeException] { Await.result(result, DilatedTimeout) }
   }
 
@@ -234,8 +234,8 @@ class SupervisorSpec
       val master = system.actorOf(Props(new Master(testActor)))
 
       master ! Die
-      expectMsg(3 seconds, "terminated")
-      expectNoMessage(1 second)
+      expectMsg(3.seconds, "terminated")
+      expectNoMessage(1.second)
     }
 
     "restart properly when same instance is returned" in {
@@ -287,7 +287,7 @@ class SupervisorSpec
         expectMsg("postStop1")
       }
 
-      expectNoMessage(1 second)
+      expectNoMessage(1.second)
     }
 
     "not restart temporary actor" in {
@@ -295,13 +295,13 @@ class SupervisorSpec
 
       intercept[RuntimeException] { Await.result(temporaryActor.?(DieReply)(DilatedTimeout), DilatedTimeout) }
 
-      expectNoMessage(1 second)
+      expectNoMessage(1.second)
     }
 
     "start server for nested supervisor hierarchy" in {
       val (actor1, _, _, _) = nestedSupervisorsAllForOne
       ping(actor1)
-      expectNoMessage(1 second)
+      expectNoMessage(1.second)
     }
 
     "kill single actor OneForOne" in {
@@ -420,7 +420,7 @@ class SupervisorSpec
     "attempt restart when exception during restart" in {
       val inits = new AtomicInteger(0)
       val supervisor = system.actorOf(Props(
-        new Supervisor(OneForOneStrategy(maxNrOfRetries = 3, withinTimeRange = 10 seconds)(classOf[Exception] :: Nil))))
+        new Supervisor(OneForOneStrategy(maxNrOfRetries = 3, withinTimeRange = 10.seconds)(classOf[Exception] :: Nil))))
 
       val dyingProps = Props(new Actor {
         val init = inits.getAndIncrement()
@@ -467,7 +467,7 @@ class SupervisorSpec
         val child = context.watch(context.actorOf(Props(new Actor {
             override def postRestart(reason: Throwable): Unit = testActor ! "child restarted"
             def receive = {
-              case l: TestLatch => { Await.ready(l, 5 seconds); throw new IllegalStateException("OHNOES") }
+              case l: TestLatch => { Await.ready(l, 5.seconds); throw new IllegalStateException("OHNOES") }
               case "test"       => sender() ! "child green"
             }
           }), "child"))
@@ -589,7 +589,7 @@ class SupervisorSpec
 
   "treats maxNrOfRetries = -1 as maxNrOfRetries = 1 if withinTimeRange is non-infinite Duration" in {
     val supervisor = system.actorOf(Props(
-      new Supervisor(OneForOneStrategy(maxNrOfRetries = -1, withinTimeRange = 10 seconds)(classOf[Exception] :: Nil))))
+      new Supervisor(OneForOneStrategy(maxNrOfRetries = -1, withinTimeRange = 10.seconds)(classOf[Exception] :: Nil))))
 
     val pingpong = child(supervisor, Props(new PingPongActor(testActor)))
 

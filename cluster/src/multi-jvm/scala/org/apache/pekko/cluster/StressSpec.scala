@@ -857,7 +857,7 @@ abstract class StressSpec extends MultiNodeClusterSpec(StressMultiJvmSpec) with 
     // note: there must be one test step before pending, otherwise afterTermination will not run
     if (isArteryEnabled && isAeronUdpTransport) pending
 
-    "join seed nodes" taggedAs LongRunningTest in within(30 seconds) {
+    "join seed nodes" taggedAs LongRunningTest in within(30.seconds) {
 
       val otherNodesJoiningSeedNodes =
         roles.slice(numberOfSeedNodes, numberOfSeedNodes + numberOfNodesJoiningToSeedNodesInitially)

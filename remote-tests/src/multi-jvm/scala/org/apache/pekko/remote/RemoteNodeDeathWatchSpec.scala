@@ -146,7 +146,7 @@ abstract class RemoteNodeDeathWatchSpec(multiNodeConfig: RemoteNodeDeathWatchCon
 
         val subject = identify(second, "subject1")
         watcher ! WatchIt(subject)
-        expectMsg(1 second, Ack)
+        expectMsg(1.second, Ack)
         subject ! "hello1"
         enterBarrier("hello1-message-sent")
         enterBarrier("watch-established-1")
@@ -160,7 +160,7 @@ abstract class RemoteNodeDeathWatchSpec(multiNodeConfig: RemoteNodeDeathWatchCon
         enterBarrier("actors-started-1")
 
         enterBarrier("hello1-message-sent")
-        expectMsg(3 seconds, "hello1")
+        expectMsg(3.seconds, "hello1")
         enterBarrier("watch-established-1")
 
         sleep()
@@ -190,12 +190,12 @@ abstract class RemoteNodeDeathWatchSpec(multiNodeConfig: RemoteNodeDeathWatchCon
 
         val subject = identify(second, "subject2")
         watcher ! WatchIt(subject)
-        expectMsg(1 second, Ack)
+        expectMsg(1.second, Ack)
         enterBarrier("watch-2")
 
         sleep()
         watcher ! UnwatchIt(subject)
-        expectMsg(1 second, Ack)
+        expectMsg(1.second, Ack)
         enterBarrier("unwatch-2")
       }
 
@@ -225,12 +225,12 @@ abstract class RemoteNodeDeathWatchSpec(multiNodeConfig: RemoteNodeDeathWatchCon
         val other = if (myself == first) second else first
         val subject = identify(other, "subject3")
         watcher ! WatchIt(subject)
-        expectMsg(1 second, Ack)
+        expectMsg(1.second, Ack)
         enterBarrier("watch-3")
 
         sleep()
         watcher ! UnwatchIt(subject)
-        expectMsg(1 second, Ack)
+        expectMsg(1.second, Ack)
         enterBarrier("unwatch-3")
       }
 
@@ -260,17 +260,17 @@ abstract class RemoteNodeDeathWatchSpec(multiNodeConfig: RemoteNodeDeathWatchCon
         val subject1 = identify(other, "s1")
         val subject2 = identify(other, "s2")
         watcher1 ! WatchIt(subject1)
-        expectMsg(1 second, Ack)
+        expectMsg(1.second, Ack)
         watcher2 ! WatchIt(subject2)
-        expectMsg(1 second, Ack)
+        expectMsg(1.second, Ack)
         enterBarrier("watch-4")
 
         sleep()
         watcher1 ! UnwatchIt(subject1)
-        expectMsg(1 second, Ack)
+        expectMsg(1.second, Ack)
         enterBarrier("unwatch-s1-4")
         system.stop(s1)
-        expectNoMessage(2 seconds)
+        expectNoMessage(2.seconds)
         enterBarrier("stop-s1-4")
 
         system.stop(s2)
@@ -308,16 +308,16 @@ abstract class RemoteNodeDeathWatchSpec(multiNodeConfig: RemoteNodeDeathWatchCon
         val b3 = identify(second, "b3")
 
         a1 ! WatchIt(b1)
-        expectMsg(1 second, Ack)
+        expectMsg(1.second, Ack)
         a1 ! WatchIt(b2)
-        expectMsg(1 second, Ack)
+        expectMsg(1.second, Ack)
         a2 ! WatchIt(b2)
-        expectMsg(1 second, Ack)
+        expectMsg(1.second, Ack)
         a3 ! WatchIt(b3)
-        expectMsg(1 second, Ack)
+        expectMsg(1.second, Ack)
         sleep()
         a2 ! UnwatchIt(b2)
-        expectMsg(1 second, Ack)
+        expectMsg(1.second, Ack)
 
         enterBarrier("watch-established-5")
 
@@ -347,33 +347,33 @@ abstract class RemoteNodeDeathWatchSpec(multiNodeConfig: RemoteNodeDeathWatchCon
         val a3 = identify(first, "a3")
 
         b1 ! WatchIt(a1)
-        expectMsg(1 second, Ack)
+        expectMsg(1.second, Ack)
         b1 ! WatchIt(a2)
-        expectMsg(1 second, Ack)
+        expectMsg(1.second, Ack)
         b2 ! WatchIt(a2)
-        expectMsg(1 second, Ack)
+        expectMsg(1.second, Ack)
         b3 ! WatchIt(a3)
-        expectMsg(1 second, Ack)
+        expectMsg(1.second, Ack)
         b3 ! WatchIt(a3)
-        expectMsg(1 second, Ack)
+        expectMsg(1.second, Ack)
         sleep()
         b2 ! UnwatchIt(a2)
-        expectMsg(1 second, Ack)
+        expectMsg(1.second, Ack)
 
         enterBarrier("watch-established-5")
         enterBarrier("stopped-5")
 
-        p1.receiveN(2, 5 seconds).collect { case WrappedTerminated(t) => t.actor }.toSet should ===(Set(a1, a2))
-        p3.expectMsgType[WrappedTerminated](5 seconds).t.actor should ===(a3)
-        p2.expectNoMessage(2 seconds)
+        p1.receiveN(2, 5.seconds).collect { case WrappedTerminated(t) => t.actor }.toSet should ===(Set(a1, a2))
+        p3.expectMsgType[WrappedTerminated](5.seconds).t.actor should ===(a3)
+        p2.expectNoMessage(2.seconds)
         enterBarrier("terminated-verified-5")
 
         // verify that things are cleaned up, and heartbeating is stopped
         assertCleanup()
         expectNoMessage(2.seconds)
-        p1.expectNoMessage(100 millis)
-        p2.expectNoMessage(100 millis)
-        p3.expectNoMessage(100 millis)
+        p1.expectNoMessage(100.millis)
+        p2.expectNoMessage(100.millis)
+        p3.expectNoMessage(100.millis)
         assertCleanup()
       }
 
@@ -395,15 +395,15 @@ abstract class RemoteNodeDeathWatchSpec(multiNodeConfig: RemoteNodeDeathWatchCon
 
         val subject = identify(second, "subject6")
         watcher ! WatchIt(subject)
-        expectMsg(1 second, Ack)
+        expectMsg(1.second, Ack)
         watcher2 ! WatchIt(subject)
-        expectMsg(1 second, Ack)
+        expectMsg(1.second, Ack)
         subject ! "hello6"
 
         // testing with this watch/unwatch of watcher2 to make sure that the unwatch doesn't
         // remove the first watch
         watcher2 ! UnwatchIt(subject)
-        expectMsg(1 second, Ack)
+        expectMsg(1.second, Ack)
 
         enterBarrier("watch-established-6")
 
@@ -411,7 +411,7 @@ abstract class RemoteNodeDeathWatchSpec(multiNodeConfig: RemoteNodeDeathWatchCon
 
         log.info("exit second")
         testConductor.exit(second, 0).await
-        expectMsgType[WrappedTerminated](15 seconds).t.actor should ===(subject)
+        expectMsgType[WrappedTerminated](15.seconds).t.actor should ===(subject)
 
         // verify that things are cleaned up, and heartbeating is stopped
         assertCleanup()
@@ -423,7 +423,7 @@ abstract class RemoteNodeDeathWatchSpec(multiNodeConfig: RemoteNodeDeathWatchCon
         system.actorOf(Props(classOf[ProbeActor], testActor), "subject6")
         enterBarrier("actors-started-6")
 
-        expectMsg(3 seconds, "hello6")
+        expectMsg(3.seconds, "hello6")
         enterBarrier("watch-established-6")
       }
 
@@ -442,7 +442,7 @@ abstract class RemoteNodeDeathWatchSpec(multiNodeConfig: RemoteNodeDeathWatchCon
 
         val subject = identify(first, "subject7")
         watcher ! WatchIt(subject)
-        expectMsg(1 second, Ack)
+        expectMsg(1.second, Ack)
         subject ! "hello7"
         enterBarrier("watch-established-7")
       }
@@ -451,7 +451,7 @@ abstract class RemoteNodeDeathWatchSpec(multiNodeConfig: RemoteNodeDeathWatchCon
         system.actorOf(Props(classOf[ProbeActor], testActor), "subject7")
         enterBarrier("actors-started-7")
 
-        expectMsg(3 seconds, "hello7")
+        expectMsg(3.seconds, "hello7")
         enterBarrier("watch-established-7")
 
         sleep()
@@ -459,7 +459,7 @@ abstract class RemoteNodeDeathWatchSpec(multiNodeConfig: RemoteNodeDeathWatchCon
         testConductor.exit(third, 0).await
 
         // verify that things are cleaned up, and heartbeating is stopped
-        assertCleanup(20 seconds)
+        assertCleanup(20.seconds)
         expectNoMessage(2.seconds)
         assertCleanup()
       }

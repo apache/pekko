@@ -307,7 +307,7 @@ class SerializeSpec extends PekkoSpec(SerializationTests.serializeConf) {
 }
 
 class VerifySerializabilitySpec extends PekkoSpec(SerializationTests.verifySerializabilityConf) {
-  implicit val timeout: Timeout = Timeout(5 seconds)
+  implicit val timeout: Timeout = Timeout(5.seconds)
 
   "verify config" in {
     system.settings.SerializeAllCreators should ===(true)

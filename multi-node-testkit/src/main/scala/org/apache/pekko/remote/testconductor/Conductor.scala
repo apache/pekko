@@ -371,7 +371,7 @@ private[pekko] class ServerFSM(val controller: ActorRef, val channel: Channel)
       channel.close()
   }
 
-  when(Initial, stateTimeout = 10 seconds) {
+  when(Initial, stateTimeout = 10.seconds) {
     case Event(Hello(name, address), _) =>
       roleName = RoleName(name)
       controller ! NodeInfo(roleName, address, self)

@@ -85,7 +85,7 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
       val timeoutLatch = TestLatch()
 
       val timeoutActor = system.actorOf(Props(new Actor {
-        context.setReceiveTimeout(500 milliseconds)
+        context.setReceiveTimeout(500.milliseconds)
 
         def receive = {
           case ReceiveTimeout => timeoutLatch.open()
@@ -100,7 +100,7 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
       val timeoutLatch = TestLatch()
 
       val timeoutActor = system.actorOf(Props(new Actor {
-        context.setReceiveTimeout(500 milliseconds)
+        context.setReceiveTimeout(500.milliseconds)
 
         def receive = {
           case Tick           => ()
@@ -119,7 +119,7 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
       val timeoutLatch = TestLatch()
 
       val timeoutActor = system.actorOf(Props(new Actor {
-        context.setReceiveTimeout(500 milliseconds)
+        context.setReceiveTimeout(500.milliseconds)
 
         def receive = {
           case Tick => ()
@@ -146,7 +146,7 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
         }
       }))
 
-      intercept[TimeoutException] { Await.ready(timeoutLatch, 1 second) }
+      intercept[TimeoutException] { Await.ready(timeoutLatch, 1.second) }
       system.stop(timeoutActor)
     }
 
@@ -154,7 +154,7 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
       val timeoutLatch = TestLatch()
 
       val timeoutActor = system.actorOf(Props(new Actor {
-        context.setReceiveTimeout(1 second)
+        context.setReceiveTimeout(1.second)
 
         def receive = {
           case ReceiveTimeout  => timeoutLatch.open()
@@ -176,7 +176,7 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
       val timeoutLatch = TestLatch(2)
 
       val timeoutActor = system.actorOf(Props(new Actor {
-        context.setReceiveTimeout(1 second)
+        context.setReceiveTimeout(1.second)
 
         def receive = {
           case ReceiveTimeout =>
@@ -198,7 +198,7 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
         timers.startTimerWithFixedDelay("transparentTick", TransparentTick, 100.millis)
         timers.startTimerWithFixedDelay("identifyTick", Identify(None), 100.millis)
 
-        context.setReceiveTimeout(1 second)
+        context.setReceiveTimeout(1.second)
         def receive: Receive = {
           case ReceiveTimeout =>
             timeoutLatch.open()
@@ -219,7 +219,7 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
 
       val timeoutActor = system.actorOf(Props(new Actor {
         def receive = {
-          case TransparentTick => context.setReceiveTimeout(500 milliseconds)
+          case TransparentTick => context.setReceiveTimeout(500.milliseconds)
           case ReceiveTimeout  => timeoutLatch.open()
         }
       }))
@@ -234,7 +234,7 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
       val timeoutLatch = TestLatch()
 
       val timeoutActor = system.actorOf(Props(new Actor {
-        context.setReceiveTimeout(500 milliseconds)
+        context.setReceiveTimeout(500.milliseconds)
 
         def receive = {
           case TransparentTick => context.setReceiveTimeout(Duration.Inf)
@@ -244,7 +244,7 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
 
       timeoutActor ! TransparentTick
 
-      intercept[TimeoutException] { Await.ready(timeoutLatch, 1 second) }
+      intercept[TimeoutException] { Await.ready(timeoutLatch, 1.second) }
       system.stop(timeoutActor)
     }
 

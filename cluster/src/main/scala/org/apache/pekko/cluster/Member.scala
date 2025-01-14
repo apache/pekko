@@ -52,7 +52,8 @@ class Member private[cluster] (
     case _         => false
   }
   override def toString: String = {
-    s"Member($address, $status${if (dataCenter == ClusterSettings.DefaultDataCenter) "" else s", $dataCenter"}${if (appVersion == Version.Zero) ""
+    s"Member($address, $status${if (dataCenter == ClusterSettings.DefaultDataCenter) ""
+      else s", $dataCenter"}${if (appVersion == Version.Zero) ""
       else s", $appVersion"})"
   }
 

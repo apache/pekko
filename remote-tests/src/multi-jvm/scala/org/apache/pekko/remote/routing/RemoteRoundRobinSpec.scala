@@ -111,7 +111,7 @@ class RemoteRoundRobinSpec(multiNodeConfig: RemoteRoundRobinConfig)
           actor ! "hit"
         }
 
-        val replies: Map[Address, Int] = receiveWhile(5 seconds, messages = connectionCount * iterationCount) {
+        val replies: Map[Address, Int] = receiveWhile(5.seconds, messages = connectionCount * iterationCount) {
           case ref: ActorRef =>
             info(s"reply from $ref")
             ref.path.address
@@ -136,7 +136,7 @@ class RemoteRoundRobinSpec(multiNodeConfig: RemoteRoundRobinConfig)
   }
 
   "A remote round robin pool with resizer" must {
-    "be locally instantiated on a remote node after several resize rounds" in within(5 seconds) {
+    "be locally instantiated on a remote node after several resize rounds" in within(5.seconds) {
 
       runOn(first, second, third) {
         enterBarrier("start", "broadcast-end", "end")
@@ -199,7 +199,7 @@ class RemoteRoundRobinSpec(multiNodeConfig: RemoteRoundRobinConfig)
           actor ! "hit"
         }
 
-        val replies: Map[Address, Int] = receiveWhile(5 seconds, messages = connectionCount * iterationCount) {
+        val replies: Map[Address, Int] = receiveWhile(5.seconds, messages = connectionCount * iterationCount) {
           case ref: ActorRef => ref.path.address
         }.foldLeft(Map(node(first).address -> 0, node(second).address -> 0, node(third).address -> 0)) {
           case (replyMap, address) => replyMap + (address -> (replyMap(address) + 1))

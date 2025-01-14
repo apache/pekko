@@ -48,12 +48,12 @@ class RandomSpec extends PekkoSpec with DefaultTimeout with ImplicitSender {
       actor ! "hello"
       actor ! "hello"
 
-      within(2 seconds) {
+      within(2.seconds) {
         for (_ <- 1 to 5) expectMsg("world")
       }
 
       system.stop(actor)
-      Await.ready(stopLatch, 5 seconds)
+      Await.ready(stopLatch, 5.seconds)
     }
 
     "deliver messages in a random fashion" in {
@@ -85,7 +85,7 @@ class RandomSpec extends PekkoSpec with DefaultTimeout with ImplicitSender {
       counter.get should ===(connectionCount)
 
       actor ! pekko.routing.Broadcast("end")
-      Await.ready(doneLatch, 5 seconds)
+      Await.ready(doneLatch, 5.seconds)
 
       replies.values.foreach { _ should be > 0 }
       replies.values.sum should ===(iterationCount * connectionCount)
@@ -106,10 +106,10 @@ class RandomSpec extends PekkoSpec with DefaultTimeout with ImplicitSender {
         })), "random-broadcast")
 
       actor ! pekko.routing.Broadcast("hello")
-      Await.ready(helloLatch, 5 seconds)
+      Await.ready(helloLatch, 5.seconds)
 
       system.stop(actor)
-      Await.ready(stopLatch, 5 seconds)
+      Await.ready(stopLatch, 5.seconds)
     }
   }
 }

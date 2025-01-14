@@ -119,7 +119,7 @@ class CircuitBreakerSpec extends PekkoSpec("""
     new Breaker(new CircuitBreaker(system.scheduler, 1, 1000.millis.dilated, shortResetTimeout))
 
   def longCallTimeoutCb()(implicit system: ActorSystem, ec: ExecutionContext): Breaker =
-    new Breaker(new CircuitBreaker(system.scheduler, 1, 5 seconds, 500.millis.dilated))
+    new Breaker(new CircuitBreaker(system.scheduler, 1, 5.seconds, 500.millis.dilated))
 
   val longResetTimeout = 5.seconds.dilated
   def longResetTimeoutCb()(implicit system: ActorSystem, ec: ExecutionContext): Breaker =

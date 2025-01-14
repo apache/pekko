@@ -70,9 +70,9 @@ class BackoffOnRestartSupervisorSpec extends PekkoSpec("""
 
   def supervisorProps(probeRef: ActorRef) = {
     val options = BackoffOpts
-      .onFailure(TestActor.props(probeRef), "someChildName", 200 millis, 10 seconds, 0.0)
+      .onFailure(TestActor.props(probeRef), "someChildName", 200.millis, 10.seconds, 0.0)
       .withMaxNrOfRetries(-1)
-      .withSupervisorStrategy(OneForOneStrategy(maxNrOfRetries = 5, withinTimeRange = 30 seconds) {
+      .withSupervisorStrategy(OneForOneStrategy(maxNrOfRetries = 5, withinTimeRange = 30.seconds) {
         case _: TestActor.StoppingException => SupervisorStrategy.Stop
       })
     BackoffSupervisor.props(options)
@@ -105,23 +105,23 @@ class BackoffOnRestartSupervisorSpec extends PekkoSpec("""
         // Exponential back off restart test
         supervisor ! "THROW"
         // numRestart = 0: expected delay ~200 millis
-        probe.expectNoMessage(200 millis)
-        probe.expectMsg(250 millis, "STARTED")
+        probe.expectNoMessage(200.millis)
+        probe.expectMsg(250.millis, "STARTED")
 
         supervisor ! "THROW"
         // numRestart = 1: expected delay ~400 millis
-        probe.expectNoMessage(400 millis)
-        probe.expectMsg(250 millis, "STARTED")
+        probe.expectNoMessage(400.millis)
+        probe.expectMsg(250.millis, "STARTED")
 
         supervisor ! "THROW"
         // numRestart = 2: expected delay ~800 millis
-        probe.expectNoMessage(800 millis)
-        probe.expectMsg(250 millis, "STARTED")
+        probe.expectNoMessage(800.millis)
+        probe.expectMsg(250.millis, "STARTED")
 
         supervisor ! "THROW"
         // numRestart = 3: expected delay ~1600 millis
-        probe.expectNoMessage(1600 millis)
-        probe.expectMsg(250 millis, "STARTED")
+        probe.expectNoMessage(1600.millis)
+        probe.expectMsg(250.millis, "STARTED")
 
         // Verify that we only have one child at this point by selecting all the children
         // under the supervisor and broadcasting to them.
@@ -166,7 +166,7 @@ class BackoffOnRestartSupervisorSpec extends PekkoSpec("""
       val postStopLatch = new CountDownLatch(1)
       @nowarn
       val options = BackoffOpts
-        .onFailure(Props(new SlowlyFailingActor(postStopLatch)), "someChildName", 1 nanos, 1 nanos, 0.0)
+        .onFailure(Props(new SlowlyFailingActor(postStopLatch)), "someChildName", 1.nanos, 1.nanos, 0.0)
         .withMaxNrOfRetries(-1)
         .withSupervisorStrategy(OneForOneStrategy(loggingEnabled = false) {
           case _: TestActor.StoppingException => SupervisorStrategy.Stop
@@ -212,7 +212,7 @@ class BackoffOnRestartSupervisorSpec extends PekkoSpec("""
           if (i < 6) {
             // Since we should've died on this throw, don't expect to be started.
             // We're not testing timing, so set a reasonably high timeout.
-            probe.expectMsg(4 seconds, "STARTED")
+            probe.expectMsg(4.seconds, "STARTED")
           }
         }
         // Supervisor should've terminated.
@@ -228,7 +228,7 @@ class BackoffOnRestartSupervisorSpec extends PekkoSpec("""
       val options = BackoffOpts
         .onFailure(TestActor.props(probe.ref), "someChildName", 300.millis, 10.seconds, 0.0)
         .withMaxNrOfRetries(-1)
-        .withSupervisorStrategy(OneForOneStrategy(withinTimeRange = 1 seconds, maxNrOfRetries = 3) {
+        .withSupervisorStrategy(OneForOneStrategy(withinTimeRange = 1.seconds, maxNrOfRetries = 3) {
           case _: TestActor.StoppingException => SupervisorStrategy.Stop
         })
       val supervisor = system.actorOf(BackoffSupervisor.props(options))

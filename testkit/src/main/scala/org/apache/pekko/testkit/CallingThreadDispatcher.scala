@@ -179,7 +179,7 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator) exte
       hasMessageHint: Boolean,
       hasSystemMessageHint: Boolean): Boolean = false
 
-  protected[pekko] override def shutdownTimeout = 1 second
+  protected[pekko] override def shutdownTimeout = 1.second
 
   protected[pekko] override def register(actor: ActorCell): Unit = {
     super.register(actor)

@@ -273,7 +273,7 @@ abstract class ActorModelSpec(config: String) extends PekkoSpec(config) with Def
     awaitCond(ref match {
         case r: RepointableRef => r.isStarted
         case _                 => true
-      }, 1 second, 10 millis)
+      }, 1.second, 10.millis)
   }
 
   protected def interceptedDispatcher(): MessageDispatcherInterceptor
@@ -322,7 +322,7 @@ abstract class ActorModelSpec(config: String) extends PekkoSpec(config) with Def
       a ! Wait(1000)
       a ! CountDown(oneAtATime)
       // in case of serialization violation, restart would happen instead of count down
-      assertCountDown(oneAtATime, (1.5 seconds).dilated.toMillis, "Processed message when allowed")
+      assertCountDown(oneAtATime, 1.5.seconds.dilated.toMillis, "Processed message when allowed")
       assertRefDefaultZero(a)(registers = 1, msgsReceived = 3, msgsProcessed = 3)
 
       system.stop(a)
@@ -389,7 +389,7 @@ abstract class ActorModelSpec(config: String) extends PekkoSpec(config) with Def
         val cachedMessage = CountDownNStop(new CountDownLatch(num))
         val stopLatch = new CountDownLatch(num)
         val keepAliveLatch = new CountDownLatch(1)
-        val waitTime = (20 seconds).dilated.toMillis
+        val waitTime = 20.seconds.dilated.toMillis
         val boss = system.actorOf(Props(new Actor {
           def receive = {
             case "run"         => for (_ <- 1 to num) context.watch(context.actorOf(props)) ! cachedMessage

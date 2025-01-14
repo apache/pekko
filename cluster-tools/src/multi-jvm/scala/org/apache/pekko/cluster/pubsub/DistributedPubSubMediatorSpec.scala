@@ -186,13 +186,13 @@ class DistributedPubSubMediatorSpec
 
   "A DistributedPubSubMediator" must {
 
-    "startup 2 node cluster" in within(15 seconds) {
+    "startup 2 node cluster" in within(15.seconds) {
       join(first, first)
       join(second, first)
       enterBarrier("after-1")
     }
 
-    "keep track of added users" in within(15 seconds) {
+    "keep track of added users" in within(15.seconds) {
       runOn(first) {
         val u1 = createChatUser("u1")
         mediator ! Put(u1)
@@ -242,7 +242,7 @@ class DistributedPubSubMediatorSpec
       enterBarrier("after-2")
     }
 
-    "replicate users to new node" in within(20 seconds) {
+    "replicate users to new node" in within(20.seconds) {
       join(third, first)
 
       runOn(third) {
@@ -265,7 +265,7 @@ class DistributedPubSubMediatorSpec
       enterBarrier("after-3")
     }
 
-    "keep track of removed users" in within(15 seconds) {
+    "keep track of removed users" in within(15.seconds) {
       runOn(first) {
         val u6 = createChatUser("u6")
         mediator ! Put(u6)
@@ -281,7 +281,7 @@ class DistributedPubSubMediatorSpec
       enterBarrier("after-4")
     }
 
-    "remove terminated users" in within(5 seconds) {
+    "remove terminated users" in within(5.seconds) {
       runOn(second) {
         chatUser("u3") ! PoisonPill
       }
@@ -290,7 +290,7 @@ class DistributedPubSubMediatorSpec
       enterBarrier("after-5")
     }
 
-    "publish" in within(15 seconds) {
+    "publish" in within(15.seconds) {
       runOn(first, second) {
         val u7 = createChatUser("u7")
         mediator ! Put(u7)
@@ -313,7 +313,7 @@ class DistributedPubSubMediatorSpec
       enterBarrier("after-6")
     }
 
-    "publish to topic" in within(15 seconds) {
+    "publish to topic" in within(15.seconds) {
       runOn(first) {
         val s8 = Subscribe("topic1", createChatUser("u8"))
         mediator ! s8
@@ -352,7 +352,7 @@ class DistributedPubSubMediatorSpec
       enterBarrier("after-7")
     }
 
-    "demonstrate usage of Publish" in within(15 seconds) {
+    "demonstrate usage of Publish" in within(15.seconds) {
       def later(): Unit = {
         awaitCount(10)
       }
@@ -379,7 +379,7 @@ class DistributedPubSubMediatorSpec
       enterBarrier("after-8")
     }
 
-    "demonstrate usage of Send" in within(15 seconds) {
+    "demonstrate usage of Send" in within(15.seconds) {
       def later(): Unit = {
         awaitCount(12)
       }
@@ -405,7 +405,7 @@ class DistributedPubSubMediatorSpec
       enterBarrier("after-8")
     }
 
-    "send-all to all other nodes" in within(15 seconds) {
+    "send-all to all other nodes" in within(15.seconds) {
       runOn(first, second, third) { // create the user on all nodes
         val u11 = createChatUser("u11")
         mediator ! Put(u11)
@@ -428,7 +428,7 @@ class DistributedPubSubMediatorSpec
       enterBarrier("after-11")
     }
 
-    "send one message to each group" in within(20 seconds) {
+    "send one message to each group" in within(20.seconds) {
       runOn(first) {
         val u12 = createChatUser("u12")
         u12 ! JoinGroup("topic2", "group1")
@@ -517,7 +517,7 @@ class DistributedPubSubMediatorSpec
       enterBarrier("after-13")
     }
 
-    "remove entries when node is removed" in within(30 seconds) {
+    "remove entries when node is removed" in within(30.seconds) {
       mediator ! Count
       val countBefore = expectMsgType[Int]
 
@@ -535,7 +535,7 @@ class DistributedPubSubMediatorSpec
       enterBarrier("after-14")
     }
 
-    "receive proper unsubscribeAck message" in within(15 seconds) {
+    "receive proper unsubscribeAck message" in within(15.seconds) {
       runOn(first) {
         val user = createChatUser("u111")
         val topic = "sample-topic1"
@@ -549,7 +549,7 @@ class DistributedPubSubMediatorSpec
       enterBarrier("after-14")
     }
 
-    "get topics after simple publish" in within(15 seconds) {
+    "get topics after simple publish" in within(15.seconds) {
       runOn(first) {
         val s1 = Subscribe("topic_a1", createChatUser("u14"))
         mediator ! s1
@@ -597,7 +597,7 @@ class DistributedPubSubMediatorSpec
 
     }
 
-    "remove topic subscribers when they terminate" in within(15 seconds) {
+    "remove topic subscribers when they terminate" in within(15.seconds) {
       runOn(first) {
         val s1 = Subscribe("topic_b1", createChatUser("u18"))
         mediator ! s1

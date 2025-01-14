@@ -44,14 +44,14 @@ class SchedulerDocSpec extends PekkoSpec(Map("pekko.loglevel" -> "INFO")) {
     import system.dispatcher
 
     // Schedules to send the "foo"-message to the testActor after 50ms
-    system.scheduler.scheduleOnce(50 milliseconds, testActor, "foo")
+    system.scheduler.scheduleOnce(50.milliseconds, testActor, "foo")
     // #schedule-one-off-message
 
-    expectMsg(1 second, "foo")
+    expectMsg(1.second, "foo")
 
     // #schedule-one-off-thunk
     // Schedules a function to be executed (send a message to the testActor) after 50ms
-    system.scheduler.scheduleOnce(50 milliseconds) {
+    system.scheduler.scheduleOnce(50.milliseconds) {
       testActor ! System.currentTimeMillis
     }
     // #schedule-one-off-thunk

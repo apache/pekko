@@ -126,7 +126,7 @@ abstract class PekkoSpec(_system: ActorSystem)
   def spawn(dispatcherId: String = Dispatchers.DefaultDispatcherId)(body: => Unit): Unit =
     Future(body)(system.dispatchers.lookup(dispatcherId))
 
-  override def expectedTestDuration: FiniteDuration = 60 seconds
+  override def expectedTestDuration: FiniteDuration = 60.seconds
 
   def muteDeadLetters(messageClasses: Class[_]*)(sys: ActorSystem = system): Unit =
     if (!sys.log.isDebugEnabled) {

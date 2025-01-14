@@ -93,7 +93,8 @@ object Flow {
       viaFlow: Flow[FOut, FViaOut, FViaMat],
       combine: function.Function2[FMat, FViaMat, Mat]
   ): Flow[FIn, Optional[FViaOut], Mat] =
-    scaladsl.Flow.optionalVia(flow.map(_.toScala).asScala, viaFlow.asScala)(combinerToScala(combine)).map(_.toJava).asJava
+    scaladsl.Flow.optionalVia(flow.map(_.toScala).asScala, viaFlow.asScala)(combinerToScala(combine)).map(
+      _.toJava).asJava
 
   /** Create a `Flow` which can process elements of type `T`. */
   def of[T](@unused clazz: Class[T]): javadsl.Flow[T, T, NotUsed] = create[T]()

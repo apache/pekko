@@ -93,8 +93,8 @@ class MapAsyncPartitionedSpec
   import MapAsyncPartitionedSpec.TestData._
 
   override implicit def patienceConfig: PatienceConfig = PatienceConfig(
-    timeout = 5 seconds,
-    interval = 100 millis)
+    timeout = 5.seconds,
+    interval = 100.millis)
 
   private implicit val system: ActorSystem[_] = ActorSystem(Behaviors.empty, "test-system")
   private implicit val ec: ExecutionContext = ExecutionContext.fromExecutor(Executors.newCachedThreadPool())
@@ -116,11 +116,11 @@ class MapAsyncPartitionedSpec
 
   it should "process elements in parallel by partition" in {
     val elements = List(
-      TestKeyValue(key = 1, delay = 1000 millis, value = "1.a"),
-      TestKeyValue(key = 2, delay = 700 millis, value = "2.a"),
-      TestKeyValue(key = 1, delay = 500 millis, value = "1.b"),
-      TestKeyValue(key = 2, delay = 900 millis, value = "2.b"),
-      TestKeyValue(key = 1, delay = 500 millis, value = "1.c"))
+      TestKeyValue(key = 1, delay = 1000.millis, value = "1.a"),
+      TestKeyValue(key = 2, delay = 700.millis, value = "2.a"),
+      TestKeyValue(key = 1, delay = 500.millis, value = "1.b"),
+      TestKeyValue(key = 2, delay = 900.millis, value = "2.b"),
+      TestKeyValue(key = 1, delay = 500.millis, value = "1.c"))
 
     val result =
       Source(elements)
@@ -222,9 +222,9 @@ class MapAsyncPartitionedSpec
 
   it should "handle nulls" in {
     val elements = List(
-      TestKeyValue(key = 1, delay = 1000 millis, value = "1.a"),
-      TestKeyValue(key = 2, delay = 700 millis, value = "2.a"),
-      TestKeyValue(key = 1, delay = 500 millis, value = null))
+      TestKeyValue(key = 1, delay = 1000.millis, value = "1.a"),
+      TestKeyValue(key = 2, delay = 700.millis, value = "2.a"),
+      TestKeyValue(key = 1, delay = 500.millis, value = null))
 
     @nowarn("msg=never used")
     def fun(v: TestKeyValue, p: Int): Future[String] = Future.successful(v.value)
@@ -254,11 +254,11 @@ class MapAsyncPartitionedSpec
 
   it should "process elements in parallel by partition" in {
     val elements = List(
-      TestKeyValue(key = 1, delay = 1000 millis, value = "1.a"),
-      TestKeyValue(key = 2, delay = 700 millis, value = "2.a"),
-      TestKeyValue(key = 1, delay = 500 millis, value = "1.b"),
-      TestKeyValue(key = 1, delay = 500 millis, value = "1.c"),
-      TestKeyValue(key = 2, delay = 900 millis, value = "2.b"))
+      TestKeyValue(key = 1, delay = 1000.millis, value = "1.a"),
+      TestKeyValue(key = 2, delay = 700.millis, value = "2.a"),
+      TestKeyValue(key = 1, delay = 500.millis, value = "1.b"),
+      TestKeyValue(key = 1, delay = 500.millis, value = "1.c"),
+      TestKeyValue(key = 2, delay = 900.millis, value = "2.b"))
 
     def processElement(e: TestKeyValue, p: Int)(implicit ec: ExecutionContext): Future[(Int, (String, Instant))] =
       Future {
@@ -374,9 +374,9 @@ class MapAsyncPartitionedSpec
 
   it should "handle nulls" in {
     val elements = List(
-      TestKeyValue(key = 1, delay = 1000 millis, value = "1.a"),
-      TestKeyValue(key = 2, delay = 700 millis, value = "2.a"),
-      TestKeyValue(key = 1, delay = 500 millis, value = null))
+      TestKeyValue(key = 1, delay = 1000.millis, value = "1.a"),
+      TestKeyValue(key = 2, delay = 700.millis, value = "2.a"),
+      TestKeyValue(key = 1, delay = 500.millis, value = null))
 
     @nowarn("msg=never used")
     def fun(v: TestKeyValue, p: Int): Future[String] = Future.successful(v.value)

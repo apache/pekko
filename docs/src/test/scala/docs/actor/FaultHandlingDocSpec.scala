@@ -39,7 +39,7 @@ object FaultHandlingDocSpec {
     import scala.concurrent.duration._
 
     override val supervisorStrategy =
-      OneForOneStrategy(maxNrOfRetries = 10, withinTimeRange = 1 minute) {
+      OneForOneStrategy(maxNrOfRetries = 10, withinTimeRange = 1.minute) {
         case _: ArithmeticException      => Resume
         case _: NullPointerException     => Restart
         case _: IllegalArgumentException => Stop
@@ -62,7 +62,7 @@ object FaultHandlingDocSpec {
     import scala.concurrent.duration._
 
     override val supervisorStrategy =
-      OneForOneStrategy(maxNrOfRetries = 10, withinTimeRange = 1 minute) {
+      OneForOneStrategy(maxNrOfRetries = 10, withinTimeRange = 1.minute) {
         case _: ArithmeticException      => Resume
         case _: NullPointerException     => Restart
         case _: IllegalArgumentException => Stop
@@ -86,7 +86,7 @@ object FaultHandlingDocSpec {
     import scala.concurrent.duration._
 
     override val supervisorStrategy =
-      OneForOneStrategy(maxNrOfRetries = 10, withinTimeRange = 1 minute) {
+      OneForOneStrategy(maxNrOfRetries = 10, withinTimeRange = 1.minute) {
         case _: ArithmeticException => Resume
         case t =>
           super.supervisorStrategy.decider.applyOrElse(t, (_: Any) => Escalate)

@@ -430,7 +430,7 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
       enterBarrier("after-1")
     }
 
-    "work in single node cluster" in within(20 seconds) {
+    "work in single node cluster" in within(20.seconds) {
       join(first, first)
 
       runOn(first) {
@@ -448,7 +448,7 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
       enterBarrier("after-2")
     }
 
-    "use second node" in within(20 seconds) {
+    "use second node" in within(20.seconds) {
       join(second, first)
 
       runOn(second) {
@@ -534,7 +534,7 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
       enterBarrier("after-5")
     }
 
-    "failover shards on crashed node" in within(30 seconds) {
+    "failover shards on crashed node" in within(30.seconds) {
       // mute logging of deadLetters during shutdown of systems
       if (!log.isDebugEnabled)
         system.eventStream.publish(Mute(DeadLettersFilter[Any]))
@@ -567,7 +567,7 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
       enterBarrier("after-6")
     }
 
-    "use third and fourth node" in within(15 seconds) {
+    "use third and fourth node" in within(15.seconds) {
       join(third, first)
 
       runOn(third) {
@@ -618,7 +618,7 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
       enterBarrier("after-7")
     }
 
-    "recover coordinator state after coordinator crash" in within(60 seconds) {
+    "recover coordinator state after coordinator crash" in within(60.seconds) {
       join(fifth, fourth)
 
       runOn(controller) {
@@ -649,7 +649,7 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
       enterBarrier("after-8")
     }
 
-    "rebalance to nodes with less shards" in within(60 seconds) {
+    "rebalance to nodes with less shards" in within(60.seconds) {
       runOn(fourth) {
         for (n <- 1 to 10) {
           rebalancingRegion ! EntityEnvelope(n, Increment)
@@ -799,26 +799,26 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
       // clean up shard cache everywhere
       runOn(third, fourth, fifth) {
         persistentEntitiesRegion ! BeginHandOff("1")
-        expectMsg(10 seconds, "ShardStopped not received", BeginHandOffAck("1"))
+        expectMsg(10.seconds, "ShardStopped not received", BeginHandOffAck("1"))
       }
       enterBarrier("everybody-hand-off-ack")
 
       runOn(third) {
         // Stop the shard cleanly
         region ! HandOff("1")
-        expectMsg(10 seconds, "ShardStopped not received", ShardStopped("1"))
+        expectMsg(10.seconds, "ShardStopped not received", ShardStopped("1"))
 
         val probe = TestProbe()
         awaitAssert({
             shard.tell(Identify(1), probe.ref)
-            probe.expectMsg(1 second, "Shard was still around", ActorIdentity(1, None))
-          }, 5 seconds, 500 millis)
+            probe.expectMsg(1.second, "Shard was still around", ActorIdentity(1, None))
+          }, 5.seconds, 500.millis)
 
         // Get the path to where the shard now resides
         awaitAssert({
             persistentEntitiesRegion ! Get(13)
             expectMsg(0)
-          }, 5 seconds, 500 millis)
+          }, 5.seconds, 500.millis)
 
         // Check that counter 1 is now alive again, even though we have
         // not sent a message to it via the ShardRegion
@@ -847,7 +847,7 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
         // Check that no counter "1" exists in this shard
         val secondCounter1 = system.actorSelection(lastSender.path.parent / "1")
         secondCounter1 ! Identify(3)
-        expectMsg(3 seconds, ActorIdentity(3, None))
+        expectMsg(3.seconds, ActorIdentity(3, None))
 
       }
       enterBarrier("after-12")
@@ -883,24 +883,24 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
         shard.tell(Passivate(Stop), counter1)
 
         // Watch for the terminated message
-        expectTerminated(counter1, 5 seconds)
+        expectTerminated(counter1, 5.seconds)
 
         val probe1 = TestProbe()
         awaitAssert({
             // Check counter 1 is dead
             counter1.tell(Identify(1), probe1.ref)
-            probe1.expectMsg(1 second, "Entity 1 was still around", ActorIdentity(1, None))
-          }, 5 second, 500 millis)
+            probe1.expectMsg(1.second, "Entity 1 was still around", ActorIdentity(1, None))
+          }, 5.second, 500.millis)
 
         // Stop the shard cleanly
         region ! HandOff("1")
-        expectMsg(10 seconds, "ShardStopped not received", ShardStopped("1"))
+        expectMsg(10.seconds, "ShardStopped not received", ShardStopped("1"))
 
         val probe2 = TestProbe()
         awaitAssert({
             shard.tell(Identify(2), probe2.ref)
-            probe2.expectMsg(1 second, "Shard was still around", ActorIdentity(2, None))
-          }, 5 seconds, 500 millis)
+            probe2.expectMsg(1.second, "Shard was still around", ActorIdentity(2, None))
+          }, 5.seconds, 500.millis)
       }
 
       enterBarrier("shard-shutdown-12")
@@ -920,8 +920,8 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
         val probe3 = TestProbe()
         awaitAssert({
             system.actorSelection(shard / "13").tell(Identify(4), probe3.ref)
-            probe3.expectMsgType[ActorIdentity](1 second).ref should not be None
-          }, 5 seconds, 500 millis)
+            probe3.expectMsgType[ActorIdentity](1.second).ref should not be None
+          }, 5.seconds, 500.millis)
       }
 
       enterBarrier("after-13")
@@ -946,7 +946,7 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
         val probe = TestProbe()
         awaitAssert({
             counter1.tell(Identify(1), probe.ref)
-            probe.expectMsgType[ActorIdentity](1 second).ref should not be None
+            probe.expectMsgType[ActorIdentity](1.second).ref should not be None
           }, 5.seconds, 500.millis)
       }
 
@@ -983,8 +983,8 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
         val probe = TestProbe()
         awaitAssert({
             counter1.tell(Identify(1), probe.ref)
-            probe.expectMsgType[ActorIdentity](1 second).ref should not be None
-          }, 5.seconds, 500 millis)
+            probe.expectMsgType[ActorIdentity](1.second).ref should not be None
+          }, 5.seconds, 500.millis)
 
         counter1 ! Get(1)
         expectMsg(2)
@@ -1017,7 +1017,7 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
           for (n <- 2 to 12) {
             val entity = system.actorSelection(rebalancingPersistentRegion.path / (n % 12).toString / n.toString)
             entity ! Identify(n)
-            receiveOne(3 seconds) match {
+            receiveOne(3.seconds) match {
               case ActorIdentity(id, Some(_)) if id == n => count = count + 1
               case ActorIdentity(_, None)                => // Not on the fifth shard
               case _                                     => fail()

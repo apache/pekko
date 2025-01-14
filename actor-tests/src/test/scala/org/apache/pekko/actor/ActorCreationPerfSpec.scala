@@ -153,10 +153,10 @@ class ActorCreationPerfSpec
     expectMsg(Alive)
 
     driver ! Create(number, propsCreator)
-    expectMsgPF(15 seconds, s"$scenarioName waiting for Created") { case Created => }
+    expectMsgPF(15.seconds, s"$scenarioName waiting for Created") { case Created => }
 
     driver ! WaitForChildren
-    expectMsgPF(15 seconds, s"$scenarioName waiting for Waited") { case Waited => }
+    expectMsgPF(15.seconds, s"$scenarioName waiting for Waited") { case Waited => }
 
     driver ! PoisonPill
     watch(driver)
@@ -175,10 +175,10 @@ class ActorCreationPerfSpec
     val before = mem.getHeapSnapshot
 
     driver ! Create(number, propsCreator)
-    expectMsgPF(15 seconds, s"$scenarioName waiting for Created") { case Created => }
+    expectMsgPF(15.seconds, s"$scenarioName waiting for Created") { case Created => }
 
     driver ! WaitForChildren
-    expectMsgPF(15 seconds, s"$scenarioName waiting for Waited") { case Waited => }
+    expectMsgPF(15.seconds, s"$scenarioName waiting for Waited") { case Waited => }
 
     gc()
     val after = mem.getHeapSnapshot
@@ -252,5 +252,5 @@ class ActorCreationPerfSpec
 
   override def afterTermination() = shutdownMetrics()
 
-  override def expectedTestDuration = 5 minutes
+  override def expectedTestDuration = 5.minutes
 }

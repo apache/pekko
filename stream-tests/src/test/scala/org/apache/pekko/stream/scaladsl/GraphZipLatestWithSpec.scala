@@ -57,7 +57,7 @@ class GraphZipLatestWithSpec extends TwoStreamsSetup {
       RunnableGraph
         .fromGraph(GraphDSL.create() { implicit b =>
           val zipLatest = b.add(ZipLatestWith((_: Int) + (_: Int)))
-          val never = Source.single(3).initialDelay(1 day)
+          val never = Source.single(3).initialDelay(1.day)
           Source(1 to 2).concat(never)        ~> zipLatest.in0
           Source.fromPublisher(upstreamProbe) ~> zipLatest.in1
           zipLatest.out                       ~> Sink.fromSubscriber(downstreamProbe)
@@ -92,7 +92,7 @@ class GraphZipLatestWithSpec extends TwoStreamsSetup {
       RunnableGraph
         .fromGraph(GraphDSL.create() { implicit b =>
           val zip = b.add(ZipLatestWith[Int, Int, Int]((_: Int) / (_: Int)))
-          val never = Source.single(2).initialDelay(1 day)
+          val never = Source.single(2).initialDelay(1.day)
           Source.single(1).concat(never) ~> zip.in0
           Source(-2 to 2)                ~> zip.in1
 

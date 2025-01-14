@@ -148,7 +148,7 @@ object TypedActorSpec {
 
     @nowarn
     def futureComposePigdogFrom(foo: Foo): Future[String] = {
-      foo.futurePigdog(500 millis).map(_.toUpperCase)
+      foo.futurePigdog(500.millis).map(_.toUpperCase)
     }
 
     def optionPigdog(): Option[String] = Some(pigdog())
@@ -360,7 +360,7 @@ class TypedActorSpec
 
     "be able to call Future-returning methods non-blockingly" in {
       val t = newFooBar
-      val f = t.futurePigdog(200 millis)
+      val f = t.futurePigdog(200.millis)
       f.isCompleted should ===(false)
       Await.result(f, timeout.duration) should ===("Pigdog")
       mustStop(t)
@@ -368,7 +368,7 @@ class TypedActorSpec
 
     "be able to call multiple Future-returning methods non-blockingly" in within(timeout.duration) {
       val t = newFooBar
-      val futures = for (i <- 1 to 20) yield (i, t.futurePigdog(20 millis, i))
+      val futures = for (i <- 1 to 20) yield (i, t.futurePigdog(20.millis, i))
       for ((i, f) <- futures) {
         Await.result(f, remaining) should ===("Pigdog" + i)
       }
@@ -376,22 +376,22 @@ class TypedActorSpec
     }
 
     "be able to call methods returning Java Options" taggedAs TimingTest in {
-      val t = newFooBar(1 second)
-      t.joptionPigdog(100 millis).get should ===("Pigdog")
-      t.joptionPigdog(2 seconds) should ===(JOption.none[String])
+      val t = newFooBar(1.second)
+      t.joptionPigdog(100.millis).get should ===("Pigdog")
+      t.joptionPigdog(2.seconds) should ===(JOption.none[String])
       mustStop(t)
     }
 
     "be able to handle AskTimeoutException as None" taggedAs TimingTest in {
-      val t = newFooBar(200 millis)
-      t.joptionPigdog(600 millis) should ===(JOption.none[String])
+      val t = newFooBar(200.millis)
+      t.joptionPigdog(600.millis) should ===(JOption.none[String])
       mustStop(t)
     }
 
     "be able to call methods returning Scala Options" taggedAs TimingTest in {
-      val t = newFooBar(1 second)
-      t.optionPigdog(100 millis).get should ===("Pigdog")
-      t.optionPigdog(2 seconds) should ===(None)
+      val t = newFooBar(1.second)
+      t.optionPigdog(100.millis).get should ===("Pigdog")
+      t.optionPigdog(2.seconds) should ===(None)
       mustStop(t)
     }
 
@@ -415,14 +415,14 @@ class TypedActorSpec
           }
         }))
         val t = Await.result(
-          (boss ? TypedProps[Bar](classOf[Foo], classOf[Bar]).withTimeout(2 seconds)).mapTo[Foo],
+          (boss ? TypedProps[Bar](classOf[Foo], classOf[Bar]).withTimeout(2.seconds)).mapTo[Foo],
           timeout.duration)
 
         t.incr()
         t.failingPigdog()
         t.read() should ===(1) // Make sure state is not reset after failure
 
-        intercept[IllegalStateException] { Await.result(t.failingFuturePigdog(), 2 seconds) }.getMessage should ===(
+        intercept[IllegalStateException] { Await.result(t.failingFuturePigdog(), 2.seconds) }.getMessage should ===(
           "expected")
         t.read() should ===(1) // Make sure state is not reset after failure
 
@@ -461,7 +461,7 @@ class TypedActorSpec
 
     "be able to support implementation only typed actors" in within(timeout.duration) {
       val t: Foo = pekko.actor.TypedActor(system).typedActorOf(TypedProps[Bar]())
-      val f = t.futurePigdog(200 millis)
+      val f = t.futurePigdog(200.millis)
       val f2 = t.futurePigdog(Duration.Zero)
       f2.isCompleted should ===(false)
       f.isCompleted should ===(false)
@@ -477,10 +477,10 @@ class TypedActorSpec
     }
 
     "be able to use balancing dispatcher" in within(timeout.duration) {
-      val thais = for (_ <- 1 to 60) yield newFooBar("pooled-dispatcher", 6 seconds)
+      val thais = for (_ <- 1 to 60) yield newFooBar("pooled-dispatcher", 6.seconds)
       val iterator = new CyclicIterator(thais)
 
-      val results = for (i <- 1 to 120) yield (i, iterator.next().futurePigdog(200 millis, i))
+      val results = for (i <- 1 to 120) yield (i, iterator.next().futurePigdog(200.millis, i))
 
       for ((i, r) <- results) Await.result(r, remaining) should ===("Pigdog" + i)
 

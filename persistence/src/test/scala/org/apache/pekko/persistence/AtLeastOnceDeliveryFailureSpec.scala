@@ -199,6 +199,6 @@ class AtLeastOnceDeliveryFailureSpec
   }
 
   def expectDone() = within(numMessages.seconds) {
-    expectMsgType[Done].ints.sorted should ===(1 to numMessages toVector)
+    expectMsgType[Done].ints.sorted should ===((1 to numMessages).toVector)
   }
 }

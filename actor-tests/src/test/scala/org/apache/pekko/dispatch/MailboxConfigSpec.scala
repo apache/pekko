@@ -51,11 +51,11 @@ abstract class MailboxSpec extends PekkoSpec with BeforeAndAfterAll with BeforeA
     }
 
     "BoundedMailbox.numberOfMessages should be consistent with queue size" in {
-      ensureSingleConsumerEnqueueDequeue(BoundedMailbox(1000, 10 milliseconds))
+      ensureSingleConsumerEnqueueDequeue(BoundedMailbox(1000, 10.milliseconds))
     }
 
     "create a bounded mailbox with 10 capacity and with push timeout" in {
-      val config = BoundedMailbox(10, 10 milliseconds)
+      val config = BoundedMailbox(10, 10.milliseconds)
       config.capacity should ===(10)
       val q = factory(config)
       ensureInitialMailboxState(config, q)
@@ -80,15 +80,15 @@ abstract class MailboxSpec extends PekkoSpec with BeforeAndAfterAll with BeforeA
     }
 
     "dequeue what was enqueued properly for bounded mailboxes" in {
-      testEnqueueDequeue(BoundedMailbox(10000, -1 millisecond))
+      testEnqueueDequeue(BoundedMailbox(10000, -1.millisecond))
     }
 
     "dequeue what was enqueued properly for bounded mailboxes with 0 pushTimeout" in {
-      testEnqueueDequeue(BoundedMailbox(10, 0 millisecond), 20, 10, false)
+      testEnqueueDequeue(BoundedMailbox(10, 0.millisecond), 20, 10, false)
     }
 
     "dequeue what was enqueued properly for bounded mailboxes with pushTimeout" in {
-      testEnqueueDequeue(BoundedMailbox(10000, 100 milliseconds))
+      testEnqueueDequeue(BoundedMailbox(10000, 100.milliseconds))
     }
   }
 
@@ -144,7 +144,7 @@ abstract class MailboxSpec extends PekkoSpec with BeforeAndAfterAll with BeforeA
       config: MailboxType,
       enqueueN: Int = 10000,
       dequeueN: Int = 10000,
-      parallel: Boolean = true): Unit = within(10 seconds) {
+      parallel: Boolean = true): Unit = within(10.seconds) {
     val q = factory(config)
     ensureInitialMailboxState(config, q)
 
@@ -260,7 +260,7 @@ class CustomMailboxSpec extends PekkoSpec(CustomMailboxSpec.config) {
       awaitCond(actor match {
           case r: RepointableRef => r.isStarted
           case _                 => true
-        }, 1 second, 10 millis)
+        }, 1.second, 10.millis)
       val queue = actor.asInstanceOf[ActorRefWithCell].underlying.asInstanceOf[ActorCell].mailbox.messageQueue
       queue.getClass should ===(classOf[CustomMailboxSpec.MyMailbox])
     }

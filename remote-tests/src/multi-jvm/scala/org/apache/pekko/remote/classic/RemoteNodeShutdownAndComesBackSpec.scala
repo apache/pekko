@@ -114,7 +114,7 @@ abstract class RemoteNodeShutdownAndComesBackSpec extends RemotingMultiNodeSpec(
           awaitAssert {
             val p = TestProbe()
             system.actorSelection(RootActorPath(secondAddress) / "user" / "subject").tell(Identify("subject"), p.ref)
-            p.expectMsgPF(1 second) {
+            p.expectMsgPF(1.second) {
               case ActorIdentity("subject", Some(_)) => true
             }
           }

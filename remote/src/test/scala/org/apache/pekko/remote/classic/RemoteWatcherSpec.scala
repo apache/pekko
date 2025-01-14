@@ -140,48 +140,48 @@ class RemoteWatcherSpec extends PekkoSpec("""
       monitorA ! Stats
       // (a1->b1), (a1->b2), (a2->b2)
       expectMsg(Stats.counts(watching = 3, watchingNodes = 1))
-      expectNoMessage(100 millis)
+      expectNoMessage(100.millis)
       monitorA ! HeartbeatTick
       expectMsg(Heartbeat)
-      expectNoMessage(100 millis)
+      expectNoMessage(100.millis)
       monitorA ! HeartbeatTick
       expectMsg(Heartbeat)
-      expectNoMessage(100 millis)
+      expectNoMessage(100.millis)
       monitorA.tell(heartbeatRspB, monitorB)
       monitorA ! HeartbeatTick
       expectMsg(Heartbeat)
-      expectNoMessage(100 millis)
+      expectNoMessage(100.millis)
 
       monitorA ! UnwatchRemote(b1, a1)
       // still (a1->b2) and (a2->b2) left
       monitorA ! Stats
       expectMsg(Stats.counts(watching = 2, watchingNodes = 1))
-      expectNoMessage(100 millis)
+      expectNoMessage(100.millis)
       monitorA ! HeartbeatTick
       expectMsg(Heartbeat)
-      expectNoMessage(100 millis)
+      expectNoMessage(100.millis)
 
       monitorA ! UnwatchRemote(b2, a2)
       // still (a1->b2) left
       monitorA ! Stats
       expectMsg(Stats.counts(watching = 1, watchingNodes = 1))
-      expectNoMessage(100 millis)
+      expectNoMessage(100.millis)
       monitorA ! HeartbeatTick
       expectMsg(Heartbeat)
-      expectNoMessage(100 millis)
+      expectNoMessage(100.millis)
 
       monitorA ! UnwatchRemote(b2, a1)
       // all unwatched
       monitorA ! Stats
       expectMsg(Stats.empty)
-      expectNoMessage(100 millis)
+      expectNoMessage(100.millis)
       monitorA ! HeartbeatTick
-      expectNoMessage(100 millis)
+      expectNoMessage(100.millis)
       monitorA ! HeartbeatTick
-      expectNoMessage(100 millis)
+      expectNoMessage(100.millis)
 
       // make sure nothing floods over to next test
-      expectNoMessage(2 seconds)
+      expectNoMessage(2.seconds)
     }
 
     "generate AddressTerminated when missing heartbeats" taggedAs LongRunningTest in {
@@ -201,24 +201,24 @@ class RemoteWatcherSpec extends PekkoSpec("""
       monitorA ! HeartbeatTick
       expectMsg(Heartbeat)
       monitorA.tell(heartbeatRspB, monitorB)
-      expectNoMessage(1 second)
+      expectNoMessage(1.second)
       monitorA ! HeartbeatTick
       expectMsg(Heartbeat)
       monitorA.tell(heartbeatRspB, monitorB)
 
-      within(10 seconds) {
+      within(10.seconds) {
         awaitAssert {
           monitorA ! HeartbeatTick
           expectMsg(Heartbeat)
           // but no HeartbeatRsp
           monitorA ! ReapUnreachableTick
-          p.expectMsg(1 second, TestRemoteWatcher.AddressTerm(b.path.address))
-          q.expectMsg(1 second, TestRemoteWatcher.Quarantined(b.path.address, Some(remoteAddressUid)))
+          p.expectMsg(1.second, TestRemoteWatcher.AddressTerm(b.path.address))
+          q.expectMsg(1.second, TestRemoteWatcher.Quarantined(b.path.address, Some(remoteAddressUid)))
         }
       }
 
       // make sure nothing floods over to next test
-      expectNoMessage(2 seconds)
+      expectNoMessage(2.seconds)
     }
 
     "generate AddressTerminated when missing first heartbeat" taggedAs LongRunningTest in {
@@ -240,20 +240,20 @@ class RemoteWatcherSpec extends PekkoSpec("""
       expectMsg(Heartbeat)
       // no HeartbeatRsp sent
 
-      within(20 seconds) {
+      within(20.seconds) {
         awaitAssert {
           monitorA ! HeartbeatTick
           expectMsg(Heartbeat)
           // but no HeartbeatRsp
           monitorA ! ReapUnreachableTick
-          p.expectMsg(1 second, TestRemoteWatcher.AddressTerm(b.path.address))
+          p.expectMsg(1.second, TestRemoteWatcher.AddressTerm(b.path.address))
           // no real quarantine when missing first heartbeat, uid unknown
-          q.expectMsg(1 second, TestRemoteWatcher.Quarantined(b.path.address, None))
+          q.expectMsg(1.second, TestRemoteWatcher.Quarantined(b.path.address, None))
         }
       }
 
       // make sure nothing floods over to next test
-      expectNoMessage(2 seconds)
+      expectNoMessage(2.seconds)
     }
 
     "generate AddressTerminated for new watch after broken connection that was re-established and broken again" taggedAs LongRunningTest in {
@@ -273,19 +273,19 @@ class RemoteWatcherSpec extends PekkoSpec("""
       monitorA ! HeartbeatTick
       expectMsg(Heartbeat)
       monitorA.tell(heartbeatRspB, monitorB)
-      expectNoMessage(1 second)
+      expectNoMessage(1.second)
       monitorA ! HeartbeatTick
       expectMsg(Heartbeat)
       monitorA.tell(heartbeatRspB, monitorB)
 
-      within(10 seconds) {
+      within(10.seconds) {
         awaitAssert {
           monitorA ! HeartbeatTick
           expectMsg(Heartbeat)
           // but no HeartbeatRsp
           monitorA ! ReapUnreachableTick
-          p.expectMsg(1 second, TestRemoteWatcher.AddressTerm(b.path.address))
-          q.expectMsg(1 second, TestRemoteWatcher.Quarantined(b.path.address, Some(remoteAddressUid)))
+          p.expectMsg(1.second, TestRemoteWatcher.AddressTerm(b.path.address))
+          q.expectMsg(1.second, TestRemoteWatcher.Quarantined(b.path.address, Some(remoteAddressUid)))
         }
       }
 
@@ -295,7 +295,7 @@ class RemoteWatcherSpec extends PekkoSpec("""
         monitorA ! Stats
         expectMsg(Stats.empty)
       }
-      expectNoMessage(2 seconds)
+      expectNoMessage(2.seconds)
 
       // assume that connection comes up again, or remote system is restarted
       val c = createRemoteActor(Props[MyActor](), "c6")
@@ -305,37 +305,37 @@ class RemoteWatcherSpec extends PekkoSpec("""
       monitorA ! HeartbeatTick
       expectMsg(Heartbeat)
       monitorA.tell(heartbeatRspB, monitorB)
-      expectNoMessage(1 second)
+      expectNoMessage(1.second)
       monitorA ! HeartbeatTick
       expectMsg(Heartbeat)
       monitorA.tell(heartbeatRspB, monitorB)
       monitorA ! HeartbeatTick
       expectMsg(Heartbeat)
       monitorA ! ReapUnreachableTick
-      p.expectNoMessage(1 second)
+      p.expectNoMessage(1.second)
       monitorA ! HeartbeatTick
       expectMsg(Heartbeat)
       monitorA.tell(heartbeatRspB, monitorB)
       monitorA ! HeartbeatTick
       expectMsg(Heartbeat)
       monitorA ! ReapUnreachableTick
-      p.expectNoMessage(1 second)
-      q.expectNoMessage(1 second)
+      p.expectNoMessage(1.second)
+      q.expectNoMessage(1.second)
 
       // then stop heartbeating again, should generate new AddressTerminated
-      within(10 seconds) {
+      within(10.seconds) {
         awaitAssert {
           monitorA ! HeartbeatTick
           expectMsg(Heartbeat)
           // but no HeartbeatRsp
           monitorA ! ReapUnreachableTick
-          p.expectMsg(1 second, TestRemoteWatcher.AddressTerm(c.path.address))
-          q.expectMsg(1 second, TestRemoteWatcher.Quarantined(c.path.address, Some(remoteAddressUid)))
+          p.expectMsg(1.second, TestRemoteWatcher.AddressTerm(c.path.address))
+          q.expectMsg(1.second, TestRemoteWatcher.Quarantined(c.path.address, Some(remoteAddressUid)))
         }
       }
 
       // make sure nothing floods over to next test
-      expectNoMessage(2 seconds)
+      expectNoMessage(2.seconds)
     }
 
   }

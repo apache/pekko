@@ -441,7 +441,7 @@ trait TestKitBase {
   /**
    * Same as calling `within(0 seconds, max)(f)`.
    */
-  def within[T](max: FiniteDuration)(f: => T): T = within(0 seconds, max)(f)
+  def within[T](max: FiniteDuration)(f: => T): T = within(0.seconds, max)(f)
 
   /**
    * Same as `expectMsg(remainingOrDefault, obj)`, but correctly treating the timeFactor.

@@ -164,7 +164,7 @@ class TestKitDocSpec extends PekkoSpec with DefaultTimeout with ImplicitSender {
     assert(fsm.stateName == 1)
 
     assert(fsm.isTimerActive("test") == false)
-    fsm.startTimerWithFixedDelay("test", 12, 10 millis)
+    fsm.startTimerWithFixedDelay("test", 12, 10.millis)
     assert(fsm.isTimerActive("test") == true)
     fsm.cancelTimer("test")
     assert(fsm.isTimerActive("test") == false)
@@ -191,7 +191,7 @@ class TestKitDocSpec extends PekkoSpec with DefaultTimeout with ImplicitSender {
     system.eventStream.subscribe(testActor, classOf[UnhandledMessage])
     val ref = TestActorRef[MyActor]
     ref.receive(Unknown)
-    expectMsg(1 second, UnhandledMessage(Unknown, system.deadLetters, ref))
+    expectMsg(1.second, UnhandledMessage(Unknown, system.deadLetters, ref))
     // #test-unhandled
   }
 
@@ -215,7 +215,7 @@ class TestKitDocSpec extends PekkoSpec with DefaultTimeout with ImplicitSender {
     import scala.concurrent.duration._
 
     val worker = system.actorOf(Props[Worker]())
-    within(200 millis) {
+    within(200.millis) {
       worker ! "some work"
       expectMsg("some result")
       expectNoMessage() // will block for the rest of the 200ms
@@ -239,8 +239,8 @@ class TestKitDocSpec extends PekkoSpec with DefaultTimeout with ImplicitSender {
     val actor = system.actorOf(Props[MyDoubleEcho]())
     actor ! ((probe1.ref, probe2.ref))
     actor ! "hello"
-    probe1.expectMsg(500 millis, "hello")
-    probe2.expectMsg(500 millis, "hello")
+    probe1.expectMsg(500.millis, "hello")
+    probe2.expectMsg(500.millis, "hello")
     // #test-probe
 
     // #test-special-probe
@@ -285,7 +285,7 @@ class TestKitDocSpec extends PekkoSpec with DefaultTimeout with ImplicitSender {
     // #test-probe-reply
     val probe = TestProbe()
     val future = probe.ref ? "hello"
-    probe.expectMsg(0 millis, "hello") // TestActor runs on CallingThreadDispatcher
+    probe.expectMsg(0.millis, "hello") // TestActor runs on CallingThreadDispatcher
     probe.reply("world")
     assert(future.isCompleted && future.value.contains(Success("world")))
     // #test-probe-reply
@@ -372,7 +372,7 @@ class TestKitDocSpec extends PekkoSpec with DefaultTimeout with ImplicitSender {
     intercept[AssertionError] {
       // #test-within-probe
       val probe = TestProbe()
-      within(1 second) {
+      within(1.second) {
         probe.expectMsg("hello")
       }
       // #test-within-probe

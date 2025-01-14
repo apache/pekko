@@ -81,7 +81,7 @@ trait SigarProvider {
     })
       .recover {
         case e: Throwable => throw new RuntimeException("Failed to load sigar:", e)
-      } get
+      }.get
   }
 
 }

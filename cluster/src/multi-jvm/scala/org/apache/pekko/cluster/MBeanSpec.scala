@@ -107,7 +107,7 @@ abstract class MBeanSpec extends MultiNodeClusterSpec(MBeanMultiJvmSpec) {
 
     val fourthAddress = address(fourth)
 
-    "format cluster status as JSON with full reachability info" taggedAs LongRunningTest in within(30 seconds) {
+    "format cluster status as JSON with full reachability info" taggedAs LongRunningTest in within(30.seconds) {
       runOn(first) {
         testConductor.exit(fourth, 0).await
       }
@@ -187,7 +187,7 @@ abstract class MBeanSpec extends MultiNodeClusterSpec(MBeanMultiJvmSpec) {
 
     }
 
-    "support down" taggedAs LongRunningTest in within(20 seconds) {
+    "support down" taggedAs LongRunningTest in within(20.seconds) {
 
       // fourth unreachable in previous step
 
@@ -205,7 +205,7 @@ abstract class MBeanSpec extends MultiNodeClusterSpec(MBeanMultiJvmSpec) {
       enterBarrier("after-6")
     }
 
-    "support leave" taggedAs LongRunningTest in within(20 seconds) {
+    "support leave" taggedAs LongRunningTest in within(20.seconds) {
       runOn(second) {
         mbeanServer.invoke(mbeanName, "leave", Array(address(third).toString), Array("java.lang.String"))
       }

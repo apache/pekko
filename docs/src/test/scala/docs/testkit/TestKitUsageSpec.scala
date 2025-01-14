@@ -61,7 +61,7 @@ class TestKitUsageSpec
 
   "An EchoActor" should {
     "Respond with the same message it receives" in {
-      within(500 millis) {
+      within(500.millis) {
         echoRef ! "test"
         expectMsg("test")
       }
@@ -69,7 +69,7 @@ class TestKitUsageSpec
   }
   "A ForwardingActor" should {
     "Forward a message it receives" in {
-      within(500 millis) {
+      within(500.millis) {
         forwardRef ! "test"
         expectMsg("test")
       }
@@ -78,7 +78,7 @@ class TestKitUsageSpec
   "A FilteringActor" should {
     "Filter all messages, except expected messagetypes it receives" in {
       var messages = Seq[String]()
-      within(500 millis) {
+      within(500.millis) {
         filterRef ! "test"
         expectMsg("test")
         filterRef ! 1
@@ -89,7 +89,7 @@ class TestKitUsageSpec
         filterRef ! "text"
         filterRef ! 1
 
-        receiveWhile(500 millis) {
+        receiveWhile(500.millis) {
           case msg: String => messages = msg +: messages
         }
       }
@@ -99,7 +99,7 @@ class TestKitUsageSpec
   }
   "A SequencingActor" should {
     "receive an interesting message at some point " in {
-      within(500 millis) {
+      within(500.millis) {
         ignoreMsg {
           case msg: String => msg != "something"
         }

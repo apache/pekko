@@ -81,7 +81,7 @@ class FSMDocSpec extends MyFavoriteTestFrameWorkPlusPekkoTestKit {
     // #transition-elided
     // #when-syntax
 
-    when(Active, stateTimeout = 1 second) {
+    when(Active, stateTimeout = 1.second) {
       case Event(Flush | StateTimeout, t: Todo) =>
         goto(Idle).using(t.copy(queue = Vector.empty))
     }
@@ -120,13 +120,13 @@ class FSMDocSpec extends MyFavoriteTestFrameWorkPlusPekkoTestKit {
       // #modifier-syntax
       when(SomeState) {
         case Event(msg, _) =>
-          goto(Processing).using(newData).forMax(5 seconds).replying(WillDo)
+          goto(Processing).using(newData).forMax(5.seconds).replying(WillDo)
       }
       // #modifier-syntax
 
       // #transition-syntax
       onTransition {
-        case Idle -> Active => startTimerWithFixedDelay("timeout", Tick, 1 second)
+        case Idle -> Active => startTimerWithFixedDelay("timeout", Tick, 1.second)
         case Active -> _    => cancelTimer("timeout")
         case x -> Idle      => log.info("entering Idle from " + x)
       }

@@ -126,7 +126,7 @@ class LocalActorRefProviderSpec extends PekkoSpec(LocalActorRefProviderSpec.conf
           val childProps2 = child.asInstanceOf[LocalActorRef].underlying.props
           childProps2 should not be theSameInstanceAs(childProps1)
           (childProps2 should be).theSameInstanceAs(ActorCell.terminatedProps)
-        }, 1 second)
+        }, 1.second)
     }
   }
 
@@ -140,7 +140,7 @@ class LocalActorRefProviderSpec extends PekkoSpec(LocalActorRefProviderSpec.conf
 
       for (i <- 0 until 100) {
         val address = "new-actor" + i
-        implicit val timeout: Timeout = Timeout(5 seconds)
+        implicit val timeout: Timeout = Timeout(5.seconds)
         val actors =
           for (_ <- 1 to 4)
             yield Future(system.actorOf(Props(new Actor { def receive = { case _ => } }), address))

@@ -121,7 +121,7 @@ class SinkForeachAsyncSpec extends StreamSpec {
       assert(!threeCalled)
       assert(!fourCalled)
 
-      probe.expectNoMessage(2 seconds)
+      probe.expectNoMessage(2.seconds)
 
       latch(2).countDown()
       probe.expectMsg(2)
@@ -129,14 +129,14 @@ class SinkForeachAsyncSpec extends StreamSpec {
       assert(!threeCalled)
       assert(!fourCalled)
 
-      probe.expectNoMessage(2 seconds)
+      probe.expectNoMessage(2.seconds)
 
       latch(3).countDown()
       probe.expectMsg(3)
 
       assert(!fourCalled)
 
-      probe.expectNoMessage(2 seconds)
+      probe.expectNoMessage(2.seconds)
 
       latch(4).countDown()
       probe.expectMsg(4)

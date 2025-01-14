@@ -96,7 +96,7 @@ abstract class UnreachableNodeJoinsAgainSpec extends MultiNodeClusterSpec(Unreac
       val allButVictim = allBut(victim, roles)
       runOn(victim) {
         allButVictim.foreach(markNodeAsUnavailable(_))
-        within(30 seconds) {
+        within(30.seconds) {
           // victim becomes all alone
           awaitAssert {
             clusterView.unreachableMembers.size should ===(roles.size - 1)
@@ -107,7 +107,7 @@ abstract class UnreachableNodeJoinsAgainSpec extends MultiNodeClusterSpec(Unreac
 
       runOn(allButVictim: _*) {
         markNodeAsUnavailable(victim)
-        within(30 seconds) {
+        within(30.seconds) {
           // victim becomes unreachable
           awaitAssert {
             clusterView.unreachableMembers.size should ===(1)
@@ -132,7 +132,7 @@ abstract class UnreachableNodeJoinsAgainSpec extends MultiNodeClusterSpec(Unreac
       runOn(allButVictim: _*) {
         // eventually removed
         awaitMembersUp(roles.size - 1, Set(victim))
-        awaitAssert(clusterView.unreachableMembers should ===(Set.empty), 15 seconds)
+        awaitAssert(clusterView.unreachableMembers should ===(Set.empty), 15.seconds)
         awaitAssert(clusterView.members.map(_.address) should ===(allButVictim.map(address).toSet))
 
       }
@@ -184,14 +184,14 @@ abstract class UnreachableNodeJoinsAgainSpec extends MultiNodeClusterSpec(Unreac
               }""")
             .withFallback(system.settings.config)
 
-        Await.ready(system.whenTerminated, 10 seconds)
+        Await.ready(system.whenTerminated, 10.seconds)
 
         // create new ActorSystem with same host:port
         val freshSystem = ActorSystem(system.name, freshConfig)
 
         try {
           Cluster(freshSystem).join(masterAddress)
-          within(30 seconds) {
+          within(30.seconds) {
             awaitAssert(Cluster(freshSystem).readView.members.map(_.address) should contain(victimAddress))
             awaitAssert(Cluster(freshSystem).readView.members.size should ===(expectedNumberOfMembers))
             awaitAssert(Cluster(freshSystem).readView.members.unsorted.map(_.status) should ===(Set(MemberStatus.Up)))
@@ -213,7 +213,7 @@ abstract class UnreachableNodeJoinsAgainSpec extends MultiNodeClusterSpec(Unreac
         awaitMembersUp(expectedNumberOfMembers)
         // don't end the test until the freshSystem is done
         runOn(master) {
-          expectMsg(20 seconds, EndActor.End)
+          expectMsg(20.seconds, EndActor.End)
         }
         endBarrier()
       }

@@ -161,7 +161,8 @@ object Source {
       viaFlow: Flow[SOut, FOut, FMat],
       combine: function.Function2[SMat, FMat, Mat]
   ): Source[Optional[FOut], Mat] =
-    scaladsl.Source.optionalVia(source.map(_.toScala).asScala, viaFlow.asScala)(combinerToScala(combine)).map(_.toJava).asJava
+    scaladsl.Source.optionalVia(source.map(_.toScala).asScala, viaFlow.asScala)(combinerToScala(combine)).map(
+      _.toJava).asJava
 
   /**
    * Helper to create [[Source]] from `Iterable`.

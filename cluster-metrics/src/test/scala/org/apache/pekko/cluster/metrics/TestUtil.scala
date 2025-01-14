@@ -80,7 +80,7 @@ case class MockitoSigarProvider(
   /** Generate monotonic array from 0 to value. */
   def increase(value: Double): Array[Double] = {
     val delta = value / steps
-    (0 to steps).map { _ * delta } toArray
+    (0 to steps).map { _ * delta }.toArray
   }
 
   /** Sigar mock instance. */

@@ -91,7 +91,7 @@ class FSMTransitionSpec extends PekkoSpec with ImplicitSender {
       import FSM.{ CurrentState, SubscribeTransitionCallBack, Transition }
 
       val fsm = system.actorOf(Props(new MyFSM(testActor)))
-      within(1 second) {
+      within(1.second) {
         fsm ! SubscribeTransitionCallBack(testActor)
         expectMsg(CurrentState(fsm, 0))
         fsm ! "tick"
@@ -105,10 +105,10 @@ class FSMTransitionSpec extends PekkoSpec with ImplicitSender {
       val forward = system.actorOf(Props(new Forwarder(testActor)))
       val fsm = system.actorOf(Props(new MyFSM(testActor)))
 
-      within(1 second) {
+      within(1.second) {
         fsm ! FSM.SubscribeTransitionCallBack(forward)
         expectMsg(FSM.CurrentState(fsm, 0))
-        pekko.pattern.gracefulStop(forward, 5 seconds)
+        pekko.pattern.gracefulStop(forward, 5.seconds)
         fsm ! "tick"
         expectNoMessage()
       }
@@ -119,7 +119,7 @@ class FSMTransitionSpec extends PekkoSpec with ImplicitSender {
 
     "make previous and next state data available in onTransition" in {
       val fsm = system.actorOf(Props(new OtherFSM(testActor)))
-      within(1 second) {
+      within(1.second) {
         fsm ! "tick"
         expectMsg((0, 1))
       }
@@ -130,7 +130,7 @@ class FSMTransitionSpec extends PekkoSpec with ImplicitSender {
       val forward = system.actorOf(Props(new Forwarder(testActor)))
       val fsm = system.actorOf(Props(new OtherFSM(testActor)))
 
-      within(1 second) {
+      within(1.second) {
         fsm ! FSM.SubscribeTransitionCallBack(forward)
         expectMsg(FSM.CurrentState(fsm, 0))
         fsm ! "tick"
@@ -146,7 +146,7 @@ class FSMTransitionSpec extends PekkoSpec with ImplicitSender {
       val forward = system.actorOf(Props(new Forwarder(testActor)))
       val fsm = system.actorOf(Props(new OtherFSM(testActor)))
 
-      within(1 second) {
+      within(1.second) {
         fsm ! FSM.SubscribeTransitionCallBack(forward)
         expectMsg(FSM.CurrentState(fsm, 0))
         fsm ! "stay"

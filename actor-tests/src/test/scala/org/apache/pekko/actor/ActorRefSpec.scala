@@ -141,7 +141,7 @@ class ActorRefSpec extends PekkoSpec("""
   def wrap[T](f: Promise[Actor] => T): T = {
     val result = Promise[Actor]()
     val r = f(result)
-    Await.result(result.future, 1 minute)
+    Await.result(result.future, 1.minute)
     r
   }
 
@@ -448,7 +448,7 @@ class ActorRefSpec extends PekkoSpec("""
         val boss = system.actorOf(Props(new Actor {
 
           override val supervisorStrategy =
-            OneForOneStrategy(maxNrOfRetries = 2, withinTimeRange = 1 second)(List(classOf[Throwable]))
+            OneForOneStrategy(maxNrOfRetries = 2, withinTimeRange = 1.second)(List(classOf[Throwable]))
 
           val ref = context.actorOf(Props(new Actor {
             def receive = { case _ => }
@@ -460,7 +460,7 @@ class ActorRefSpec extends PekkoSpec("""
         }))
 
         boss ! "sendKill"
-        Await.ready(latch, 5 seconds)
+        Await.ready(latch, 5.seconds)
       }
     }
 

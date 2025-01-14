@@ -24,7 +24,7 @@ class FSMTimingSpec extends PekkoSpec with ImplicitSender {
 
   val fsm = system.actorOf(Props(new StateMachine(testActor)))
   fsm ! SubscribeTransitionCallBack(testActor)
-  expectMsg(1 second, CurrentState(fsm, Initial))
+  expectMsg(1.second, CurrentState(fsm, Initial))
 
   ignoreMsg {
     case Transition(_, bs: FSMTimingSpec.State, _) if bs eq Initial => true // SI-5900 workaround
@@ -33,8 +33,8 @@ class FSMTimingSpec extends PekkoSpec with ImplicitSender {
   "A Finite State Machine" must {
 
     "receive StateTimeout" taggedAs TimingTest in {
-      within(2 seconds) {
-        within(500 millis, 2 seconds) {
+      within(2.seconds) {
+        within(500.millis, 2.seconds) {
           fsm ! TestStateTimeout
           expectMsg(Transition(fsm, TestStateTimeout, Initial))
         }
@@ -43,7 +43,7 @@ class FSMTimingSpec extends PekkoSpec with ImplicitSender {
     }
 
     "cancel a StateTimeout" taggedAs TimingTest in {
-      within(1 second) {
+      within(1.second) {
         fsm ! TestStateTimeout
         fsm ! Cancel
         expectMsg(Cancel)
@@ -56,18 +56,18 @@ class FSMTimingSpec extends PekkoSpec with ImplicitSender {
       val stoppingActor = system.actorOf(Props[StoppingActor]())
       system.eventStream.subscribe(testActor, classOf[DeadLetter])
       stoppingActor ! TestStoppingActorStateTimeout
-      within(400 millis) {
+      within(400.millis) {
         expectNoMessage(remainingOrDefault)
       }
     }
 
     "allow StateTimeout override" taggedAs TimingTest in {
       // the timeout in state TestStateTimeout is 800 ms, then it will change to Initial
-      within(400 millis) {
+      within(400.millis) {
         fsm ! TestStateTimeoutOverride
         expectNoMessage()
       }
-      within(1 second) {
+      within(1.second) {
         fsm ! Cancel
         expectMsg(Cancel)
         expectMsg(Transition(fsm, TestStateTimeout, Initial))
@@ -75,8 +75,8 @@ class FSMTimingSpec extends PekkoSpec with ImplicitSender {
     }
 
     "receive single-shot timer" taggedAs TimingTest in {
-      within(2 seconds) {
-        within(500 millis, 1 second) {
+      within(2.seconds) {
+        within(500.millis, 1.second) {
           fsm ! TestSingleTimer
           expectMsg(Tick)
           expectMsg(Transition(fsm, TestSingleTimer, Initial))
@@ -86,12 +86,12 @@ class FSMTimingSpec extends PekkoSpec with ImplicitSender {
     }
 
     "resubmit single-shot timer" taggedAs TimingTest in {
-      within(2.5 seconds) {
-        within(500 millis, 1 second) {
+      within(2.5.seconds) {
+        within(500.millis, 1.second) {
           fsm ! TestSingleTimerResubmit
           expectMsg(Tick)
         }
-        within(1 second) {
+        within(1.second) {
           expectMsg(Tock)
           expectMsg(Transition(fsm, TestSingleTimerResubmit, Initial))
         }
@@ -101,28 +101,28 @@ class FSMTimingSpec extends PekkoSpec with ImplicitSender {
 
     "correctly cancel a named timer" taggedAs TimingTest in {
       fsm ! TestCancelTimer
-      within(500 millis) {
+      within(500.millis) {
         fsm ! Tick
         expectMsg(Tick)
       }
-      within(300 millis, 1 second) {
+      within(300.millis, 1.second) {
         expectMsg(Tock)
       }
       fsm ! Cancel
-      expectMsg(1 second, Transition(fsm, TestCancelTimer, Initial))
+      expectMsg(1.second, Transition(fsm, TestCancelTimer, Initial))
     }
 
     "not get confused between named and state timers" taggedAs TimingTest in {
       fsm ! TestCancelStateTimerInNamedTimerMessage
       fsm ! Tick
-      expectMsg(500 millis, Tick)
+      expectMsg(500.millis, Tick)
       Thread.sleep(200) // this is ugly: need to wait for StateTimeout to be queued
       resume(fsm)
       expectMsg(
-        500 millis,
+        500.millis,
         Transition(fsm, TestCancelStateTimerInNamedTimerMessage, TestCancelStateTimerInNamedTimerMessage2))
       fsm ! Cancel
-      within(500 millis) {
+      within(500.millis) {
         expectMsg(Cancel) // if this is not received, that means StateTimeout was not properly discarded
         expectMsg(Transition(fsm, TestCancelStateTimerInNamedTimerMessage2, Initial))
       }
@@ -130,11 +130,11 @@ class FSMTimingSpec extends PekkoSpec with ImplicitSender {
 
     "receive and cancel a repeated timer" taggedAs TimingTest in {
       fsm ! TestRepeatedTimer
-      val seq = receiveWhile(2 seconds) {
+      val seq = receiveWhile(2.seconds) {
         case Tick => Tick
       }
       (seq should have).length(5)
-      within(500 millis) {
+      within(500.millis) {
         expectMsg(Transition(fsm, TestRepeatedTimer, Initial))
       }
     }
@@ -147,7 +147,7 @@ class FSMTimingSpec extends PekkoSpec with ImplicitSender {
           source = fsm.path.toString,
           occurrences = 1)) {
         fsm ! TestUnhandled
-        within(3 second) {
+        within(3.second) {
           fsm ! Tick
           fsm ! SetHandler
           fsm ! Tick
@@ -292,7 +292,7 @@ object FSMTimingSpec {
   class StoppingActor extends Actor with FSM[State, Int] {
     startWith(Initial, 0)
 
-    when(Initial, 200 millis) {
+    when(Initial, 200.millis) {
       case Event(TestStoppingActorStateTimeout, _) =>
         context.stop(self)
         stay()

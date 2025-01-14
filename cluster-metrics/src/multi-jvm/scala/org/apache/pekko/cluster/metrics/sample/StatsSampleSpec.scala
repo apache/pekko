@@ -104,7 +104,7 @@ abstract class StatsSampleSpec
   "The stats sample" must {
 
     // #startup-cluster
-    "illustrate how to startup cluster" in within(15 seconds) {
+    "illustrate how to startup cluster" in within(15.seconds) {
       Cluster(system).subscribe(testActor, classOf[MemberUp])
       expectMsgClass(classOf[CurrentClusterState])
 
@@ -131,7 +131,7 @@ abstract class StatsSampleSpec
     // #startup-cluster
 
     // #test-statsService
-    "show usage of the statsService from one node" in within(15 seconds) {
+    "show usage of the statsService from one node" in within(15.seconds) {
       runOn(second) {
         assertServiceOk()
       }
@@ -151,7 +151,7 @@ abstract class StatsSampleSpec
     }
     // #test-statsService
 
-    "show usage of the statsService from all nodes" in within(15 seconds) {
+    "show usage of the statsService from all nodes" in within(15.seconds) {
       assertServiceOk()
       testConductor.enter("done-3")
     }

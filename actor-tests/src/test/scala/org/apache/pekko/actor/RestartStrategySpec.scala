@@ -44,7 +44,7 @@ class RestartStrategySpec extends PekkoSpec with DefaultTimeout {
     "ensure that employee stays dead after max restarts within time range" in {
       val boss = system.actorOf(
         Props(
-          new Supervisor(OneForOneStrategy(maxNrOfRetries = 2, withinTimeRange = 1 second)(List(classOf[Throwable])))))
+          new Supervisor(OneForOneStrategy(maxNrOfRetries = 2, withinTimeRange = 1.second)(List(classOf[Throwable])))))
 
       val restartLatch = new TestLatch
       val secondRestartLatch = new TestLatch
@@ -76,17 +76,17 @@ class RestartStrategySpec extends PekkoSpec with DefaultTimeout {
       employee ! Ping
 
       // test restart and post restart ping
-      Await.ready(restartLatch, 10 seconds)
+      Await.ready(restartLatch, 10.seconds)
 
       // now crash again... should not restart
       employee ! Crash
       employee ! Ping
 
-      Await.ready(secondRestartLatch, 10 seconds)
-      Await.ready(countDownLatch, 10 seconds)
+      Await.ready(secondRestartLatch, 10.seconds)
+      Await.ready(countDownLatch, 10.seconds)
 
       employee ! Crash
-      Await.ready(stopLatch, 10 seconds)
+      Await.ready(stopLatch, 10.seconds)
     }
 
     "ensure that employee is immortal without max restarts and time range" in {
@@ -109,13 +109,13 @@ class RestartStrategySpec extends PekkoSpec with DefaultTimeout {
       (1 to 100).foreach { _ =>
         employee ! Crash
       }
-      Await.ready(countDownLatch, 2 minutes)
+      Await.ready(countDownLatch, 2.minutes)
       assert(!employee.isTerminated)
     }
 
     "ensure that employee restarts after number of crashes not within time range" in {
       val boss = system.actorOf(Props(
-        new Supervisor(OneForOneStrategy(maxNrOfRetries = 2, withinTimeRange = 500 millis)(List(classOf[Throwable])))))
+        new Supervisor(OneForOneStrategy(maxNrOfRetries = 2, withinTimeRange = 500.millis)(List(classOf[Throwable])))))
 
       val restartLatch = new TestLatch
       val secondRestartLatch = new TestLatch
@@ -150,14 +150,14 @@ class RestartStrategySpec extends PekkoSpec with DefaultTimeout {
       employee ! Ping
       employee ! Crash
 
-      Await.ready(restartLatch, 10 seconds)
-      Await.ready(pingLatch, 10 seconds)
+      Await.ready(restartLatch, 10.seconds)
+      Await.ready(pingLatch, 10.seconds)
 
       employee ! Ping
       employee ! Crash
 
-      Await.ready(secondRestartLatch, 10 seconds)
-      Await.ready(secondPingLatch, 10 seconds)
+      Await.ready(secondRestartLatch, 10.seconds)
+      Await.ready(secondPingLatch, 10.seconds)
 
       // sleep to go out of the restart strategy's time range
       sleep(700L)
@@ -166,7 +166,7 @@ class RestartStrategySpec extends PekkoSpec with DefaultTimeout {
       employee ! Crash
       employee ! Ping
 
-      Await.ready(thirdRestartLatch, 1 second)
+      Await.ready(thirdRestartLatch, 1.second)
 
       assert(!employee.isTerminated)
     }
@@ -203,7 +203,7 @@ class RestartStrategySpec extends PekkoSpec with DefaultTimeout {
       employee ! Ping
 
       // test restart and post restart ping
-      Await.ready(restartLatch, 10 seconds)
+      Await.ready(restartLatch, 10.seconds)
 
       assert(!employee.isTerminated)
 
@@ -211,13 +211,13 @@ class RestartStrategySpec extends PekkoSpec with DefaultTimeout {
       employee ! Crash
       employee ! Ping
 
-      Await.ready(secondRestartLatch, 10 seconds)
-      Await.ready(countDownLatch, 10 seconds)
+      Await.ready(secondRestartLatch, 10.seconds)
+      Await.ready(countDownLatch, 10.seconds)
 
       sleep(700L)
 
       employee ! Crash
-      Await.ready(stopLatch, 10 seconds)
+      Await.ready(stopLatch, 10.seconds)
       sleep(500L)
       assert(employee.isTerminated)
     }
@@ -227,7 +227,7 @@ class RestartStrategySpec extends PekkoSpec with DefaultTimeout {
       val countDownLatch = new TestLatch(2)
 
       val boss = system.actorOf(Props(new Actor {
-        override val supervisorStrategy = OneForOneStrategy(withinTimeRange = 1 second)(List(classOf[Throwable]))
+        override val supervisorStrategy = OneForOneStrategy(withinTimeRange = 1.second)(List(classOf[Throwable]))
         def receive = {
           case p: Props      => sender() ! context.watch(context.actorOf(p))
           case _: Terminated => maxNoOfRestartsLatch.open()
@@ -256,7 +256,7 @@ class RestartStrategySpec extends PekkoSpec with DefaultTimeout {
       employee ! Ping
 
       // test restart and post restart ping
-      Await.ready(restartLatch, 10 seconds)
+      Await.ready(restartLatch, 10.seconds)
 
       assert(!employee.isTerminated)
 
@@ -265,14 +265,14 @@ class RestartStrategySpec extends PekkoSpec with DefaultTimeout {
 
       // may not be running
       employee ! Ping
-      Await.ready(countDownLatch, 10 seconds)
+      Await.ready(countDownLatch, 10.seconds)
 
       // may not be running
       employee ! Crash
 
-      Await.ready(stopLatch, 10 seconds)
+      Await.ready(stopLatch, 10.seconds)
 
-      Await.ready(maxNoOfRestartsLatch, 10 seconds)
+      Await.ready(maxNoOfRestartsLatch, 10.seconds)
       sleep(500L)
       assert(employee.isTerminated)
     }

@@ -48,7 +48,7 @@ class GraphZipLatestSpec extends StreamSpec with ScalaCheckPropertyChecks with S
       bools.sendNext(true)
 
       // does not emit yet
-      probe.expectNoMessage(0 seconds)
+      probe.expectNoMessage(0.seconds)
 
       // an element pushed on the other source
       ints.sendNext(1)
@@ -94,7 +94,7 @@ class GraphZipLatestSpec extends StreamSpec with ScalaCheckPropertyChecks with S
 
       // another request does not emit a duplicate
       probe.request(1)
-      probe.expectNoMessage(0 seconds)
+      probe.expectNoMessage(0.seconds)
 
       bools.sendComplete()
       probe.expectComplete()
@@ -116,7 +116,7 @@ class GraphZipLatestSpec extends StreamSpec with ScalaCheckPropertyChecks with S
 
       // another request does not emit a duplicate
       probe.request(1)
-      probe.expectNoMessage(0 seconds)
+      probe.expectNoMessage(0.seconds)
 
       as.sendComplete()
       probe.expectComplete()

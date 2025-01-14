@@ -400,10 +400,10 @@ class ActorDocSpec extends PekkoSpec("""
     system.eventStream.subscribe(testActor, classOf[Logging.Info])
 
     myActor ! "test"
-    expectMsgPF(1 second) { case Logging.Info(_, _, "received test") => true }
+    expectMsgPF(1.second) { case Logging.Info(_, _, "received test") => true }
 
     myActor ! "unknown"
-    expectMsgPF(1 second) { case Logging.Info(_, _, "received unknown message") => true }
+    expectMsgPF(1.second) { case Logging.Info(_, _, "received unknown message") => true }
 
     system.eventStream.unsubscribe(testActor)
     system.eventStream.publish(TestEvent.UnMute(filter))
@@ -420,7 +420,7 @@ class ActorDocSpec extends PekkoSpec("""
     val ponger = system.actorOf(Props(classOf[Ponger], pinger), "ponger")
 
     import system.dispatcher
-    system.scheduler.scheduleOnce(500 millis) {
+    system.scheduler.scheduleOnce(500.millis) {
       ponger ! Ping
     }
 
@@ -546,9 +546,9 @@ class ActorDocSpec extends PekkoSpec("""
     // #using-explicit-timeout
     import scala.concurrent.duration._
     import org.apache.pekko.pattern.ask
-    val future = myActor.ask("hello")(5 seconds)
+    val future = myActor.ask("hello")(5.seconds)
     // #using-explicit-timeout
-    Await.result(future, 5 seconds) should be("hello")
+    Await.result(future, 5.seconds) should be("hello")
   }
 
   "using receiveTimeout" in {
@@ -557,11 +557,11 @@ class ActorDocSpec extends PekkoSpec("""
     import scala.concurrent.duration._
     class MyActor extends Actor {
       // To set an initial delay
-      context.setReceiveTimeout(30 milliseconds)
+      context.setReceiveTimeout(30.milliseconds)
       def receive = {
         case "Hello" =>
           // To set in a response to a message
-          context.setReceiveTimeout(100 milliseconds)
+          context.setReceiveTimeout(100.milliseconds)
         case ReceiveTimeout =>
           // To turn it off
           context.setReceiveTimeout(Duration.Undefined)
@@ -671,8 +671,8 @@ class ActorDocSpec extends PekkoSpec("""
     import scala.concurrent.Await
 
     try {
-      val stopped: Future[Boolean] = gracefulStop(actorRef, 5 seconds, Manager.Shutdown)
-      Await.result(stopped, 6 seconds)
+      val stopped: Future[Boolean] = gracefulStop(actorRef, 5.seconds, Manager.Shutdown)
+      Await.result(stopped, 6.seconds)
       // the actor has been stopped
     } catch {
       // the actor wasn't stopped within 5 seconds
