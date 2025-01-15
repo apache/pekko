@@ -19,7 +19,6 @@ import scala.concurrent.duration._
 
 import scala.annotation.nowarn
 import com.typesafe.config.Config
-import language.postfixOps
 
 import org.apache.pekko
 import pekko.ConfigurationException

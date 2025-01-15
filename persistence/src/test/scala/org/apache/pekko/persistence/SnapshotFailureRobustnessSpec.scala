@@ -19,7 +19,6 @@ import java.util.UUID
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
-import scala.language.postfixOps
 
 import com.typesafe.config.Config
 

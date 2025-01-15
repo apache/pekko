@@ -15,7 +15,6 @@ package org.apache.pekko.remote.classic
 
 import scala.collection.mutable.Set
 import scala.concurrent.duration._
-import scala.language.postfixOps
 import scala.util.control.NonFatal
 
 import com.typesafe.config.ConfigFactory

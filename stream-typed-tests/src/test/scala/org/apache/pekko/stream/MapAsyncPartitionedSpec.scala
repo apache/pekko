@@ -32,7 +32,6 @@ import java.util.concurrent.Executors
 import scala.annotation.nowarn
 import scala.concurrent.duration.{ DurationInt, FiniteDuration }
 import scala.concurrent.{ blocking, ExecutionContext, Future }
-import scala.language.postfixOps
 import scala.util.Random
 
 private object MapAsyncPartitionedSpec {

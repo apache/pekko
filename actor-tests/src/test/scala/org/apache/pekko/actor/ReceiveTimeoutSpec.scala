@@ -20,8 +20,6 @@ import java.util.concurrent.atomic.AtomicInteger
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import language.postfixOps
-
 import org.apache.pekko.testkit._
 
 object ReceiveTimeoutSpec {

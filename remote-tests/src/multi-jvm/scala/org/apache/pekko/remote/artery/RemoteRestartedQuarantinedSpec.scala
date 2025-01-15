@@ -15,7 +15,6 @@ package org.apache.pekko.remote.artery
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
-import scala.language.postfixOps
 
 import com.typesafe.config.ConfigFactory
 

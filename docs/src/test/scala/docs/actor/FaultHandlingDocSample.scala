@@ -13,8 +13,6 @@
 
 package docs.actor
 
-import language.postfixOps
-
 //#all
 //#imports
 import org.apache.pekko

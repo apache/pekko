@@ -13,8 +13,6 @@
 
 package docs.actor
 
-import language.postfixOps
-
 import org.apache.pekko.testkit.{ PekkoSpec => MyFavoriteTestFrameWorkPlusPekkoTestKit }
 import org.apache.pekko.util.ByteString
 

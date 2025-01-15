@@ -14,7 +14,6 @@
 package org.apache.pekko.cluster.metrics
 
 import scala.concurrent.duration._
-import scala.language.postfixOps
 
 import com.typesafe.config.ConfigFactory
 

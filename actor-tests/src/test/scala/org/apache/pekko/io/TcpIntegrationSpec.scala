@@ -17,7 +17,6 @@ import java.io.IOException
 import java.net.{ InetSocketAddress, ServerSocket }
 
 import scala.concurrent.duration._
-import scala.language.postfixOps
 
 import org.scalatest.concurrent.TimeLimits
 

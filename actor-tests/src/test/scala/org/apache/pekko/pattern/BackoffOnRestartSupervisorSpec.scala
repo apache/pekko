@@ -16,7 +16,6 @@ package org.apache.pekko.pattern
 import java.util.concurrent.{ CountDownLatch, TimeUnit }
 
 import scala.concurrent.duration._
-import scala.language.postfixOps
 
 import scala.annotation.nowarn
 

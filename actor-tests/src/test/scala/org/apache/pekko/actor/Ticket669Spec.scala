@@ -16,7 +16,6 @@ package org.apache.pekko.actor
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import language.postfixOps
 import org.scalatest.BeforeAndAfterAll
 
 import org.apache.pekko

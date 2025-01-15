@@ -19,7 +19,6 @@ import scala.concurrent.{ Await, ExecutionContext, Future }
 import scala.concurrent.duration._
 
 import com.typesafe.config.{ Config, ConfigFactory }
-import language.postfixOps
 import org.scalatest.{ BeforeAndAfterAll, BeforeAndAfterEach }
 
 import org.apache.pekko

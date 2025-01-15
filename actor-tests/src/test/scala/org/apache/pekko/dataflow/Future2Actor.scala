@@ -19,8 +19,6 @@ import scala.concurrent.ExecutionException
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
-import language.postfixOps
-
 import org.apache.pekko
 import pekko.actor.{ Actor, Props }
 import pekko.actor.ActorRef

@@ -13,7 +13,6 @@
 
 package docs.future
 
-import language.postfixOps
 import org.apache.pekko
 import pekko.testkit._
 import pekko.actor.{ Actor, ActorRef, Props, Status }

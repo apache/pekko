@@ -15,8 +15,6 @@ package docs.actor
 
 import docs.actor.SchedulerDocSpec.TickActor
 
-import language.postfixOps
-
 //#imports1
 import org.apache.pekko
 import pekko.actor.Actor

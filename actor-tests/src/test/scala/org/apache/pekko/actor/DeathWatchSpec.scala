@@ -17,7 +17,6 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import scala.annotation.nowarn
-import language.postfixOps
 
 import org.apache.pekko
 import pekko.actor.Props.EmptyActor

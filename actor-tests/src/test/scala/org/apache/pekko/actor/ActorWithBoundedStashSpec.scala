@@ -16,7 +16,6 @@ package org.apache.pekko.actor
 import scala.concurrent.duration._
 
 import com.typesafe.config.{ Config, ConfigFactory }
-import language.postfixOps
 import org.scalatest.BeforeAndAfterEach
 
 import org.apache.pekko

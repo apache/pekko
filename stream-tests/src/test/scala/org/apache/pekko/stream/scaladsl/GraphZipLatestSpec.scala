@@ -14,7 +14,6 @@
 package org.apache.pekko.stream.scaladsl
 
 import scala.concurrent.duration._
-import scala.language.postfixOps
 
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks

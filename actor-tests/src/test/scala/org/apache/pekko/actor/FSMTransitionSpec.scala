@@ -14,7 +14,6 @@
 package org.apache.pekko.actor
 
 import scala.concurrent.duration._
-import scala.language.postfixOps
 
 import org.apache.pekko
 import pekko.testkit._

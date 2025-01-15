@@ -18,7 +18,6 @@ import java.util.concurrent.atomic.AtomicInteger
 
 import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
-import scala.language.postfixOps
 
 import scala.annotation.nowarn
 import com.typesafe.config.{ Config, ConfigFactory }

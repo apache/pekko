@@ -18,8 +18,6 @@ import io.netty.buffer.PooledByteBufAllocator
 import scala.concurrent.duration._
 import scala.annotation.nowarn
 
-import language.postfixOps
-
 import org.apache.pekko
 import pekko.remote.transport.PekkoProtocolSettings
 import pekko.remote.transport.netty.{ NettyTransportSettings, SSLSettings }

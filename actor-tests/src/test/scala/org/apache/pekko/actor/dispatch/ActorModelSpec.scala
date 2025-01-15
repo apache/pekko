@@ -23,7 +23,6 @@ import scala.concurrent.duration._
 
 import scala.annotation.nowarn
 import com.typesafe.config.Config
-import language.postfixOps
 import org.scalatest.Assertions._
 
 import org.apache.pekko

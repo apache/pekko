@@ -13,8 +13,6 @@
 
 package docs.dispatcher
 
-import language.postfixOps
-
 import org.apache.pekko.testkit.PekkoSpec
 import org.apache.pekko.event.Logging
 import org.apache.pekko.event.LoggingAdapter

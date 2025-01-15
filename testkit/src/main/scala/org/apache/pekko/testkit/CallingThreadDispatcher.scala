@@ -23,7 +23,6 @@ import scala.concurrent.duration.Duration
 import scala.util.control.NonFatal
 
 import com.typesafe.config.Config
-import language.postfixOps
 
 import org.apache.pekko
 import pekko.actor.{

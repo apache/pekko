@@ -16,8 +16,6 @@ package org.apache.pekko.pattern
 import scala.concurrent.{ Await, ExecutionContextExecutor, Future }
 import scala.concurrent.duration._
 
-import language.postfixOps
-
 import org.apache.pekko
 import pekko.actor.Scheduler
 import pekko.testkit.PekkoSpec

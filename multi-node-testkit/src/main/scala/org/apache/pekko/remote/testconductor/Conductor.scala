@@ -26,7 +26,6 @@ import scala.util.control.NoStackTrace
 import RemoteConnection.getAddrString
 import io.netty.channel.{ Channel, ChannelHandlerContext, ChannelInboundHandlerAdapter }
 import io.netty.channel.ChannelHandler.Sharable
-import language.postfixOps
 
 import org.apache.pekko
 import pekko.ConfigurationException

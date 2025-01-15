@@ -19,7 +19,6 @@ import java.nio.charset.StandardCharsets
 import scala.concurrent.duration._
 
 import ch.qos.logback.core.OutputStreamAppender
-import language.postfixOps
 import org.scalatest.BeforeAndAfterEach
 import org.slf4j.{ Marker, MarkerFactory }
 

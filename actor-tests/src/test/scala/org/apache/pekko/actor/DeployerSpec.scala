@@ -17,7 +17,6 @@ import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
 import com.typesafe.config.ConfigParseOptions
-import language.postfixOps
 
 import org.apache.pekko
 import pekko.routing._

@@ -16,7 +16,6 @@ package org.apache.pekko.persistence.fsm
 import java.io.File
 
 import scala.concurrent.duration._
-import scala.language.postfixOps
 import scala.reflect.ClassTag
 
 import scala.annotation.nowarn

@@ -18,7 +18,6 @@ import org.apache.pekko.pattern.{ BackoffOpts, BackoffSupervisor }
 import org.apache.pekko.persistence._
 
 import scala.concurrent.duration._
-import scala.language.postfixOps
 
 object PersistenceDocSpec {
 

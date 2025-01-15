@@ -20,7 +20,6 @@ import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
 import scala.annotation.nowarn
-import language.postfixOps
 
 import org.apache.pekko
 import pekko.pattern.ask

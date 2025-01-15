@@ -15,8 +15,6 @@ package docs.actor
 
 import jdocs.actor.ImmutableMessage
 
-import language.postfixOps
-
 //#imports1
 import org.apache.pekko
 import pekko.actor.Actor
@@ -336,7 +334,6 @@ final case class Give(thing: Any)
 
 //#fiddle_code
 import org.apache.pekko.actor.{ Actor, ActorRef, ActorSystem, PoisonPill, Props }
-import language.postfixOps
 import scala.concurrent.duration._
 
 case object Ping

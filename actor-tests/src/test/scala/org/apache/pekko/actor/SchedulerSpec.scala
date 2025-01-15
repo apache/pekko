@@ -27,7 +27,6 @@ import atomic.{ AtomicInteger, AtomicReference }
 import scala.annotation.nowarn
 import com.typesafe.config.{ Config, ConfigFactory }
 
-import language.postfixOps
 import org.scalatest.BeforeAndAfterEach
 import org.apache.pekko
 import pekko.pattern.ask

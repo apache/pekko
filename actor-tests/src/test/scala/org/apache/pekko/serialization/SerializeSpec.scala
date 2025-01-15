@@ -20,7 +20,6 @@ import java.nio.charset.StandardCharsets
 import scala.annotation.nowarn
 import scala.concurrent.Await
 import scala.concurrent.duration._
-import language.postfixOps
 
 import SerializationTests._
 import com.typesafe.config._

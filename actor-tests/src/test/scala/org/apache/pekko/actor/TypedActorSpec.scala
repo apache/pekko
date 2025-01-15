@@ -20,7 +20,6 @@ import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
-import scala.language.postfixOps
 
 import scala.annotation.nowarn
 import org.scalatest.{ BeforeAndAfterAll, BeforeAndAfterEach }

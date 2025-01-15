@@ -14,7 +14,6 @@
 package org.apache.pekko.remote.classic
 
 import scala.concurrent.duration._
-import scala.language.postfixOps
 
 import scala.annotation.nowarn
 

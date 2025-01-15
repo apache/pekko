@@ -18,7 +18,6 @@ import scala.collection.immutable.{ SortedSet, VectorBuilder }
 import scala.runtime.AbstractFunction5
 
 import scala.annotation.nowarn
-import language.postfixOps
 
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorRef, Address }

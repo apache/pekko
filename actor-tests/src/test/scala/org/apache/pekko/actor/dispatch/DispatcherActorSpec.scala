@@ -19,8 +19,6 @@ import java.util.concurrent.atomic.AtomicBoolean
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import language.postfixOps
-
 import org.apache.pekko
 import pekko.actor.{ Actor, Props }
 import pekko.pattern.ask

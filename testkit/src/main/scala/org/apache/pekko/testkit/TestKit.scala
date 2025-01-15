@@ -21,7 +21,6 @@ import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.concurrent.Await
 import scala.concurrent.duration._
-import scala.language.postfixOps
 import scala.reflect.ClassTag
 import scala.util.control.NonFatal
 

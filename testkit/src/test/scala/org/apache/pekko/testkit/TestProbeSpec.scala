@@ -19,7 +19,6 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.Try
 
-import language.postfixOps
 import org.scalatest.concurrent.Eventually
 
 import org.apache.pekko

@@ -19,7 +19,6 @@ import pekko.cluster.Cluster
 import pekko.cluster.ClusterEvent.{ CurrentClusterState, MemberUp }
 
 import scala.concurrent.duration._
-import scala.language.postfixOps
 
 //#MultiNodeConfig
 import org.apache.pekko.remote.testkit.MultiNodeConfig

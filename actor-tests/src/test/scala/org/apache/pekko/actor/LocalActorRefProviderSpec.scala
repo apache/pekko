@@ -20,7 +20,6 @@ import scala.util.Failure
 import scala.util.Success
 
 import scala.annotation.nowarn
-import language.postfixOps
 
 import org.apache.pekko
 import pekko.testkit._

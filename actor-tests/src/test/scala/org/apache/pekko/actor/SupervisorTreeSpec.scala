@@ -16,8 +16,6 @@ package org.apache.pekko.actor
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import language.postfixOps
-
 import org.apache.pekko
 import pekko.pattern.ask
 import pekko.testkit.{ DefaultTimeout, EventFilter, ImplicitSender, PekkoSpec }

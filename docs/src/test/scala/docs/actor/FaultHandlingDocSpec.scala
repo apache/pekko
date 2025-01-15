@@ -13,7 +13,6 @@
 
 package docs.actor
 
-import language.postfixOps
 import org.apache.pekko.actor.{ ActorRef, ActorSystem, Props, Terminated }
 import FaultHandlingDocSpec._
 

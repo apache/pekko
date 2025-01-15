@@ -13,7 +13,6 @@
 
 package docs.testkit
 
-import language.postfixOps
 import scala.util.Success
 import org.apache.pekko.testkit._
 

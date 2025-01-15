@@ -17,8 +17,6 @@ import scala.concurrent.{ Await, Future, Promise }
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration._
 
-import language.postfixOps
-
 import org.apache.pekko
 import pekko.actor.{ Actor, Props }
 import pekko.testkit.{ PekkoSpec, TestLatch }

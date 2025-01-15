@@ -19,7 +19,6 @@ import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
-import language.postfixOps
 
 import org.apache.pekko
 import pekko.ConfigurationException

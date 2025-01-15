@@ -18,7 +18,6 @@ import java.lang.management.ManagementFactory
 import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.concurrent.duration._
-import scala.language.postfixOps
 
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory

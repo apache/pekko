@@ -16,8 +16,6 @@ package org.apache.pekko.cluster.metrics
 import java.io.Closeable
 import java.util.logging.LogManager
 
-import scala.language.postfixOps
-
 import org.scalatestplus.mockito.MockitoSugar
 import org.slf4j.bridge.SLF4JBridgeHandler
 

@@ -16,7 +16,6 @@ package org.apache.pekko.testkit
 import scala.concurrent.{ Await, Promise }
 import scala.concurrent.duration._
 
-import language.postfixOps
 import org.scalatest.BeforeAndAfterEach
 
 import org.apache.pekko
