@@ -318,7 +318,8 @@ class CircuitBreaker(
    * @return Whether the previous state matched correctly
    */
   private[this] def swapState(oldState: State, newState: State): Boolean =
-    Unsafe.instance.compareAndSwapObject(this, AbstractCircuitBreaker.stateOffset, oldState, newState)
+    Unsafe.instance.compareAndSwapObject(this, AbstractCircuitBreaker.stateOffset, oldState, newState): @nowarn(
+      "cat=deprecation")
 
   /**
    * Helper method for accessing underlying state via Unsafe
@@ -326,7 +327,8 @@ class CircuitBreaker(
    * @return Reference to current state
    */
   private[this] def currentState: State =
-    Unsafe.instance.getObjectVolatile(this, AbstractCircuitBreaker.stateOffset).asInstanceOf[State]
+    Unsafe.instance.getObjectVolatile(this, AbstractCircuitBreaker.stateOffset).asInstanceOf[State]: @nowarn(
+      "cat=deprecation")
 
   /**
    * Helper method for updating the underlying resetTimeout via Unsafe
@@ -336,13 +338,14 @@ class CircuitBreaker(
       this,
       AbstractCircuitBreaker.resetTimeoutOffset,
       oldResetTimeout,
-      newResetTimeout)
+      newResetTimeout): @nowarn("cat=deprecation")
 
   /**
    * Helper method for accessing to the underlying resetTimeout via Unsafe
    */
   private[this] def currentResetTimeout: FiniteDuration =
-    Unsafe.instance.getObjectVolatile(this, AbstractCircuitBreaker.resetTimeoutOffset).asInstanceOf[FiniteDuration]
+    Unsafe.instance.getObjectVolatile(this, AbstractCircuitBreaker.resetTimeoutOffset).asInstanceOf[
+      FiniteDuration]: @nowarn("cat=deprecation")
 
   /**
    * Wraps invocations of asynchronous calls that need to be protected.

@@ -356,7 +356,8 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
 
 object LightArrayRevolverScheduler {
   @nowarn("msg=deprecated")
-  private[this] val taskOffset = unsafe.objectFieldOffset(classOf[TaskHolder].getDeclaredField("task"))
+  private[this] val taskOffset =
+    unsafe.objectFieldOffset(classOf[TaskHolder].getDeclaredField("task")): @nowarn("cat=deprecation")
 
   private class TaskQueue extends AbstractNodeQueue[TaskHolder]
 
@@ -375,7 +376,8 @@ object LightArrayRevolverScheduler {
     private final def extractTask(replaceWith: Runnable): Runnable =
       task match {
         case t @ (ExecutedTask | CancelledTask) => t
-        case x                                  => if (unsafe.compareAndSwapObject(this, taskOffset, x, replaceWith)) x else extractTask(replaceWith)
+        case x => if (unsafe.compareAndSwapObject(this, taskOffset, x, replaceWith): @nowarn("cat=deprecation")) x
+          else extractTask(replaceWith)
       }
 
     private[pekko] final def executeTask(): Boolean = extractTask(ExecutedTask) match {

@@ -38,7 +38,8 @@ private[pekko] trait Children { this: ActorCell =>
   private var _childrenRefsDoNotCallMeDirectly: ChildrenContainer = EmptyChildrenContainer
 
   def childrenRefs: ChildrenContainer =
-    Unsafe.instance.getObjectVolatile(this, AbstractActorCell.childrenOffset).asInstanceOf[ChildrenContainer]
+    Unsafe.instance.getObjectVolatile(this, AbstractActorCell.childrenOffset).asInstanceOf[ChildrenContainer]: @nowarn(
+      "cat=deprecation")
 
   final def children: immutable.Iterable[ActorRef] = childrenRefs.children
   @nowarn("msg=deprecated")
@@ -65,7 +66,8 @@ private[pekko] trait Children { this: ActorCell =>
 
   @nowarn @volatile private var _functionRefsDoNotCallMeDirectly = Map.empty[String, FunctionRef]
   private def functionRefs: Map[String, FunctionRef] =
-    Unsafe.instance.getObjectVolatile(this, AbstractActorCell.functionRefsOffset).asInstanceOf[Map[String, FunctionRef]]
+    Unsafe.instance.getObjectVolatile(this, AbstractActorCell.functionRefsOffset).asInstanceOf[Map[String,
+      FunctionRef]]: @nowarn("cat=deprecation")
 
   private[pekko] def getFunctionRefOrNobody(name: String, uid: Int = ActorCell.undefinedUid): InternalActorRef =
     functionRefs.getOrElse(name, Children.GetNobody()) match {
@@ -84,7 +86,8 @@ private[pekko] trait Children { this: ActorCell =>
     @tailrec def rec(): Unit = {
       val old = functionRefs
       val added = old.updated(childPath.name, ref)
-      if (!Unsafe.instance.compareAndSwapObject(this, AbstractActorCell.functionRefsOffset, old, added)) rec()
+      if (!Unsafe.instance.compareAndSwapObject(this, AbstractActorCell.functionRefsOffset, old, added): @nowarn(
+          "cat=deprecation")) rec()
     }
     rec()
 
@@ -99,7 +102,8 @@ private[pekko] trait Children { this: ActorCell =>
       if (!old.contains(name)) false
       else {
         val removed = old - name
-        if (!Unsafe.instance.compareAndSwapObject(this, AbstractActorCell.functionRefsOffset, old, removed)) rec()
+        if (!Unsafe.instance.compareAndSwapObject(this, AbstractActorCell.functionRefsOffset, old, removed): @nowarn(
+            "cat=deprecation")) rec()
         else {
           ref.stop()
           true
@@ -112,17 +116,17 @@ private[pekko] trait Children { this: ActorCell =>
   protected def stopFunctionRefs(): Unit = {
     val refs = Unsafe.instance
       .getAndSetObject(this, AbstractActorCell.functionRefsOffset, Map.empty)
-      .asInstanceOf[Map[String, FunctionRef]]
+      .asInstanceOf[Map[String, FunctionRef]]: @nowarn("cat=deprecation")
     refs.valuesIterator.foreach(_.stop())
   }
 
   @nowarn @volatile private var _nextNameDoNotCallMeDirectly = 0L
   final protected def randomName(sb: java.lang.StringBuilder): String = {
-    val num = Unsafe.instance.getAndAddLong(this, AbstractActorCell.nextNameOffset, 1)
+    val num = Unsafe.instance.getAndAddLong(this, AbstractActorCell.nextNameOffset, 1): @nowarn("cat=deprecation")
     Helpers.base64(num, sb)
   }
   final protected def randomName(): String = {
-    val num = Unsafe.instance.getAndAddLong(this, AbstractActorCell.nextNameOffset, 1)
+    val num = Unsafe.instance.getAndAddLong(this, AbstractActorCell.nextNameOffset, 1): @nowarn("cat=deprecation")
     Helpers.base64(num)
   }
 
@@ -151,7 +155,8 @@ private[pekko] trait Children { this: ActorCell =>
    * low level CAS helpers
    */
   private final def swapChildrenRefs(oldChildren: ChildrenContainer, newChildren: ChildrenContainer): Boolean =
-    Unsafe.instance.compareAndSwapObject(this, AbstractActorCell.childrenOffset, oldChildren, newChildren)
+    Unsafe.instance.compareAndSwapObject(this, AbstractActorCell.childrenOffset, oldChildren, newChildren): @nowarn(
+      "cat=deprecation")
 
   @tailrec final def reserveChild(name: String): Boolean = {
     val c = childrenRefs
@@ -184,7 +189,8 @@ private[pekko] trait Children { this: ActorCell =>
   }
 
   final protected def setTerminated(): Unit =
-    Unsafe.instance.putObjectVolatile(this, AbstractActorCell.childrenOffset, TerminatedChildrenContainer)
+    Unsafe.instance.putObjectVolatile(this, AbstractActorCell.childrenOffset, TerminatedChildrenContainer): @nowarn(
+      "cat=deprecation")
 
   /*
    * ActorCell-internal API

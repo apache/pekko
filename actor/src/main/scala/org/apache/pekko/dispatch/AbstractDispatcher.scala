@@ -124,7 +124,7 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
   }
 
   private final def addInhabitants(add: Long): Long = {
-    val old = Unsafe.instance.getAndAddLong(this, inhabitantsOffset, add)
+    val old = Unsafe.instance.getAndAddLong(this, inhabitantsOffset, add): @nowarn("cat=deprecation")
     val ret = old + add
     if (ret < 0) {
       // We haven't succeeded in decreasing the inhabitants yet but the simple fact that we're trying to
@@ -136,11 +136,12 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
     ret
   }
 
-  final def inhabitants: Long = Unsafe.instance.getLongVolatile(this, inhabitantsOffset)
+  final def inhabitants: Long = Unsafe.instance.getLongVolatile(this, inhabitantsOffset): @nowarn("cat=deprecation")
 
-  private final def shutdownSchedule: Int = Unsafe.instance.getIntVolatile(this, shutdownScheduleOffset)
+  private final def shutdownSchedule: Int =
+    Unsafe.instance.getIntVolatile(this, shutdownScheduleOffset): @nowarn("cat=deprecation")
   private final def updateShutdownSchedule(expect: Int, update: Int): Boolean =
-    Unsafe.instance.compareAndSwapInt(this, shutdownScheduleOffset, expect, update)
+    Unsafe.instance.compareAndSwapInt(this, shutdownScheduleOffset, expect, update): @nowarn("cat=deprecation")
 
   /**
    *  Creates and returns a mailbox for the given actor.

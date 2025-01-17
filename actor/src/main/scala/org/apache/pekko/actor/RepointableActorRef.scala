@@ -66,17 +66,21 @@ private[pekko] class RepointableActorRef(
     _lookupDoNotCallMeDirectly
   }
 
-  def underlying: Cell = Unsafe.instance.getObjectVolatile(this, cellOffset).asInstanceOf[Cell]
-  def lookup = Unsafe.instance.getObjectVolatile(this, lookupOffset).asInstanceOf[Cell]
+  def underlying: Cell =
+    Unsafe.instance.getObjectVolatile(this, cellOffset).asInstanceOf[Cell]: @nowarn("cat=deprecation")
+  def lookup = Unsafe.instance.getObjectVolatile(this, lookupOffset).asInstanceOf[Cell]: @nowarn("cat=deprecation")
 
-  @tailrec final def swapCell(next: Cell): Cell = {
+  @tailrec
+  final def swapCell(next: Cell): Cell = {
     val old = underlying
-    if (Unsafe.instance.compareAndSwapObject(this, cellOffset, old, next)) old else swapCell(next)
+    if (Unsafe.instance.compareAndSwapObject(this, cellOffset, old, next): @nowarn("cat=deprecation")) old
+    else swapCell(next)
   }
 
   @tailrec final def swapLookup(next: Cell): Cell = {
     val old = lookup
-    if (Unsafe.instance.compareAndSwapObject(this, lookupOffset, old, next)) old else swapLookup(next)
+    if (Unsafe.instance.compareAndSwapObject(this, lookupOffset, old, next): @nowarn("cat=deprecation")) old
+    else swapLookup(next)
   }
 
   /**

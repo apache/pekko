@@ -53,11 +53,14 @@ private[pekko] trait Dispatch { this: ActorCell =>
   }
 
   final def mailbox: Mailbox =
-    Unsafe.instance.getObjectVolatile(this, AbstractActorCell.mailboxOffset).asInstanceOf[Mailbox]
+    Unsafe.instance.getObjectVolatile(this, AbstractActorCell.mailboxOffset).asInstanceOf[Mailbox]: @nowarn(
+      "cat=deprecation")
 
-  @tailrec final def swapMailbox(newMailbox: Mailbox): Mailbox = {
+  @tailrec
+  final def swapMailbox(newMailbox: Mailbox): Mailbox = {
     val oldMailbox = mailbox
-    if (!Unsafe.instance.compareAndSwapObject(this, AbstractActorCell.mailboxOffset, oldMailbox, newMailbox))
+    if (!Unsafe.instance.compareAndSwapObject(this, AbstractActorCell.mailboxOffset, oldMailbox, newMailbox): @nowarn(
+        "cat=deprecation"))
       swapMailbox(newMailbox)
     else oldMailbox
   }
