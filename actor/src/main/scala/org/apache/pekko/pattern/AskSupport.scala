@@ -550,10 +550,10 @@ private[pekko] final class PromiseActorRef(
   }
 
   private[this] def watchedBy: Set[ActorRef] =
-    Unsafe.instance.getObjectVolatile(this, watchedByOffset).asInstanceOf[Set[ActorRef]]
+    Unsafe.instance.getObjectVolatile(this, watchedByOffset).asInstanceOf[Set[ActorRef]]: @nowarn("cat=deprecation")
 
   private[this] def updateWatchedBy(oldWatchedBy: Set[ActorRef], newWatchedBy: Set[ActorRef]): Boolean =
-    Unsafe.instance.compareAndSwapObject(this, watchedByOffset, oldWatchedBy, newWatchedBy)
+    Unsafe.instance.compareAndSwapObject(this, watchedByOffset, oldWatchedBy, newWatchedBy): @nowarn("cat=deprecation")
 
   @tailrec // Returns false if the Promise is already completed
   private[this] final def addWatcher(watcher: ActorRef): Boolean = watchedBy match {
@@ -573,12 +573,13 @@ private[pekko] final class PromiseActorRef(
     case other => if (!updateWatchedBy(other, null)) clearWatchers() else other
   }
 
-  private[this] def state: AnyRef = Unsafe.instance.getObjectVolatile(this, stateOffset)
+  private[this] def state: AnyRef = Unsafe.instance.getObjectVolatile(this, stateOffset): @nowarn("cat=deprecation")
 
   private[this] def updateState(oldState: AnyRef, newState: AnyRef): Boolean =
-    Unsafe.instance.compareAndSwapObject(this, stateOffset, oldState, newState)
+    Unsafe.instance.compareAndSwapObject(this, stateOffset, oldState, newState): @nowarn("cat=deprecation")
 
-  private[this] def setState(newState: AnyRef): Unit = Unsafe.instance.putObjectVolatile(this, stateOffset, newState)
+  private[this] def setState(newState: AnyRef): Unit =
+    Unsafe.instance.putObjectVolatile(this, stateOffset, newState): @nowarn("cat=deprecation")
 
   override def getParent: InternalActorRef = provider.tempContainer
 
