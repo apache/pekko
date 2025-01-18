@@ -17,7 +17,6 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import scala.annotation.nowarn
-import language.postfixOps
 import org.scalatest.BeforeAndAfterEach
 
 import org.apache.pekko
@@ -144,13 +143,13 @@ class ActorWithStashSpec extends PekkoSpec with DefaultTimeout with BeforeAndAft
       val stasher = system.actorOf(Props[StashingTwiceActor]())
       stasher ! "hello"
       stasher ! "hello"
-      Await.ready(state.expectedException, 10 seconds)
+      Await.ready(state.expectedException, 10.seconds)
     }
 
     "process stashed messages after restart" in {
       val boss = system.actorOf(
         Props(
-          new Supervisor(OneForOneStrategy(maxNrOfRetries = 2, withinTimeRange = 1 second)(List(classOf[Throwable])))))
+          new Supervisor(OneForOneStrategy(maxNrOfRetries = 2, withinTimeRange = 1.second)(List(classOf[Throwable])))))
 
       val restartLatch = new TestLatch
       val hasMsgLatch = new TestLatch
@@ -180,8 +179,8 @@ class ActorWithStashSpec extends PekkoSpec with DefaultTimeout with BeforeAndAft
       employee ! "hello"
       employee ! "crash"
 
-      Await.ready(restartLatch, 10 seconds)
-      Await.ready(hasMsgLatch, 10 seconds)
+      Await.ready(restartLatch, 10.seconds)
+      Await.ready(hasMsgLatch, 10.seconds)
     }
 
     "re-receive unstashed Terminated messages" in {

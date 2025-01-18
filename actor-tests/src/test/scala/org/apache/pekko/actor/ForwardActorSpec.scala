@@ -16,8 +16,6 @@ package org.apache.pekko.actor
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration._
 
-import language.postfixOps
-
 import org.apache.pekko
 import pekko.pattern.{ ask, pipe }
 import pekko.testkit._
@@ -52,13 +50,13 @@ class ForwardActorSpec extends PekkoSpec {
       val chain = createForwardingChain(system)
 
       chain.tell(ExpectedMessage, replyTo)
-      expectMsg(5 seconds, ExpectedMessage)
+      expectMsg(5.seconds, ExpectedMessage)
     }
 
     "forward actor reference when invoking forward on ask" in {
       val chain = createForwardingChain(system)
-      chain.ask(ExpectedMessage)(5 seconds).pipeTo(testActor)
-      expectMsg(5 seconds, ExpectedMessage)
+      chain.ask(ExpectedMessage)(5.seconds).pipeTo(testActor)
+      expectMsg(5.seconds, ExpectedMessage)
     }
   }
 }

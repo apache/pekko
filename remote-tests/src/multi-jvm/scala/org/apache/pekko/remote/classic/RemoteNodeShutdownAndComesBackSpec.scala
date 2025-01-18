@@ -15,7 +15,6 @@ package org.apache.pekko.remote.classic
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
-import scala.language.postfixOps
 
 import com.typesafe.config.ConfigFactory
 
@@ -114,7 +113,7 @@ abstract class RemoteNodeShutdownAndComesBackSpec extends RemotingMultiNodeSpec(
           awaitAssert {
             val p = TestProbe()
             system.actorSelection(RootActorPath(secondAddress) / "user" / "subject").tell(Identify("subject"), p.ref)
-            p.expectMsgPF(1 second) {
+            p.expectMsgPF(1.second) {
               case ActorIdentity("subject", Some(_)) => true
             }
           }

@@ -13,7 +13,6 @@
 
 package docs.future
 
-import language.postfixOps
 import org.apache.pekko
 import pekko.testkit._
 import pekko.actor.{ Actor, ActorRef, Props, Status }
@@ -116,7 +115,7 @@ object FutureDocSpec {
     import org.apache.pekko.pattern.{ ask, pipe }
     implicit val ec: ExecutionContext = context.dispatcher
 
-    implicit val timeout: Timeout = Timeout(5 seconds)
+    implicit val timeout: Timeout = Timeout(5.seconds)
 
     def receive = {
       case GetUserData =>
@@ -200,7 +199,7 @@ class FutureDocSpec extends PekkoSpec {
     }
     future.foreach(println)
     // #future-eval
-    Await.result(future, 3 seconds) should be("HelloWorld")
+    Await.result(future, 3.seconds) should be("HelloWorld")
   }
 
   "demonstrate usage of map" in {
@@ -213,7 +212,7 @@ class FutureDocSpec extends PekkoSpec {
     }
     f2.foreach(println)
     // #map
-    val result = Await.result(f2, 3 seconds)
+    val result = Await.result(f2, 3.seconds)
     result should be(10)
     f1.value should be(Some(Success("HelloWorld")))
   }
@@ -231,7 +230,7 @@ class FutureDocSpec extends PekkoSpec {
     }
     f3.foreach(println)
     // #wrong-nested-map
-    Await.ready(f3, 3 seconds)
+    Await.ready(f3, 3.seconds)
   }
 
   "demonstrate usage of flatMap" in {
@@ -247,7 +246,7 @@ class FutureDocSpec extends PekkoSpec {
     }
     f3.foreach(println)
     // #flat-map
-    val result = Await.result(f3, 3 seconds)
+    val result = Await.result(f3, 3.seconds)
     result should be(30)
   }
 
@@ -265,9 +264,9 @@ class FutureDocSpec extends PekkoSpec {
 
     failedFilter.foreach(println)
     // #filter
-    val result = Await.result(future2, 3 seconds)
+    val result = Await.result(future2, 3.seconds)
     result should be(4)
-    val result2 = Await.result(failedFilter, 3 seconds)
+    val result2 = Await.result(failedFilter, 3.seconds)
     result2 should be(0) // Can only be 0 when there was a MatchError
   }
 
@@ -285,7 +284,7 @@ class FutureDocSpec extends PekkoSpec {
 
     f.foreach(println)
     // #for-comprehension
-    val result = Await.result(f, 3 seconds)
+    val result = Await.result(f, 3.seconds)
     result should be(24)
   }
 
@@ -303,12 +302,12 @@ class FutureDocSpec extends PekkoSpec {
     val f1 = ask(actor1, msg1)
     val f2 = ask(actor2, msg2)
 
-    val a = Await.result(f1, 3 seconds).asInstanceOf[Int]
-    val b = Await.result(f2, 3 seconds).asInstanceOf[Int]
+    val a = Await.result(f1, 3.seconds).asInstanceOf[Int]
+    val b = Await.result(f2, 3.seconds).asInstanceOf[Int]
 
     val f3 = ask(actor3, a + b)
 
-    val result = Await.result(f3, 3 seconds).asInstanceOf[Int]
+    val result = Await.result(f3, 3.seconds).asInstanceOf[Int]
     // #composing-wrong
     result should be(3)
   }
@@ -335,7 +334,7 @@ class FutureDocSpec extends PekkoSpec {
 
     f3.foreach(println)
     // #composing
-    val result = Await.result(f3, 3 seconds).asInstanceOf[Int]
+    val result = Await.result(f3, 3.seconds).asInstanceOf[Int]
     result should be(3)
   }
 
@@ -353,7 +352,7 @@ class FutureDocSpec extends PekkoSpec {
     val oddSum = futureList.map(_.sum)
     oddSum.foreach(println)
     // #sequence-ask
-    Await.result(oddSum, 3 seconds).asInstanceOf[Int] should be(10000)
+    Await.result(oddSum, 3.seconds).asInstanceOf[Int] should be(10000)
   }
 
   "demonstrate usage of sequence" in {
@@ -362,7 +361,7 @@ class FutureDocSpec extends PekkoSpec {
     val oddSum = futureList.map(_.sum)
     oddSum.foreach(println)
     // #sequence
-    Await.result(oddSum, 3 seconds).asInstanceOf[Int] should be(10000)
+    Await.result(oddSum, 3.seconds).asInstanceOf[Int] should be(10000)
   }
 
   "demonstrate usage of traverse" in {
@@ -371,7 +370,7 @@ class FutureDocSpec extends PekkoSpec {
     val oddSum = futureList.map(_.sum)
     oddSum.foreach(println)
     // #traverse
-    Await.result(oddSum, 3 seconds).asInstanceOf[Int] should be(10000)
+    Await.result(oddSum, 3.seconds).asInstanceOf[Int] should be(10000)
   }
 
   "demonstrate usage of fold" in {
@@ -381,7 +380,7 @@ class FutureDocSpec extends PekkoSpec {
     val futureSum = Future.foldLeft(futures)(0)(_ + _)
     futureSum.foreach(println)
     // #fold
-    Await.result(futureSum, 3 seconds) should be(1001000)
+    Await.result(futureSum, 3.seconds) should be(1001000)
   }
 
   "demonstrate usage of reduce" in {
@@ -391,7 +390,7 @@ class FutureDocSpec extends PekkoSpec {
     val futureSum = Future.reduceLeft(futures)(_ + _)
     futureSum.foreach(println)
     // #reduce
-    Await.result(futureSum, 3 seconds) should be(1001000)
+    Await.result(futureSum, 3.seconds) should be(1001000)
   }
 
   "demonstrate usage of recover" in {
@@ -419,7 +418,7 @@ class FutureDocSpec extends PekkoSpec {
     }
     future.foreach(println)
     // #try-recover
-    Await.result(future, 3 seconds) should be(0)
+    Await.result(future, 3.seconds) should be(0)
   }
 
   "demonstrate usage of zip" in {
@@ -429,7 +428,7 @@ class FutureDocSpec extends PekkoSpec {
     val future3 = future1.zip(future2).map { case (a, b) => a + " " + b }
     future3.foreach(println)
     // #zip
-    Await.result(future3, 3 seconds) should be("foo bar")
+    Await.result(future3, 3.seconds) should be("foo bar")
   }
 
   "demonstrate usage of andThen" in {
@@ -447,7 +446,7 @@ class FutureDocSpec extends PekkoSpec {
       }
     result.foreach(println)
     // #and-then
-    Await.result(result, 3 seconds) should be("foo bar")
+    Await.result(result, 3.seconds) should be("foo bar")
   }
 
   "demonstrate usage of fallbackTo" in {
@@ -458,7 +457,7 @@ class FutureDocSpec extends PekkoSpec {
     val future4 = future1.fallbackTo(future2).fallbackTo(future3)
     future4.foreach(println)
     // #fallback-to
-    Await.result(future4, 3 seconds) should be("foo")
+    Await.result(future4, 3.seconds) should be("foo")
   }
 
   "demonstrate usage of onComplete" in {
@@ -471,7 +470,7 @@ class FutureDocSpec extends PekkoSpec {
       case Failure(failure) => doSomethingOnFailure(failure)
     }
     // #onComplete
-    Await.result(future, 3 seconds) should be("foo")
+    Await.result(future, 3.seconds) should be("foo")
   }
 
   "demonstrate usage of Future.successful & Future.failed & Future.promise" in {
@@ -486,9 +485,9 @@ class FutureDocSpec extends PekkoSpec {
     val theFuture = promise.future
     promise.success("hello")
     // #promise
-    Await.result(future, 3 seconds) should be("Yay!")
-    intercept[IllegalArgumentException] { Await.result(otherFuture, 3 seconds) }
-    Await.result(theFuture, 3 seconds) should be("hello")
+    Await.result(future, 3.seconds) should be("Yay!")
+    intercept[IllegalArgumentException] { Await.result(otherFuture, 3.seconds) }
+    Await.result(theFuture, 3.seconds) should be("hello")
   }
 
   "demonstrate usage of pattern.after" in {
@@ -501,7 +500,7 @@ class FutureDocSpec extends PekkoSpec {
     val future = Future { Thread.sleep(1000); "foo" }
     val result = Future.firstCompletedOf(Seq(future, delayed))
     // #after
-    intercept[IllegalStateException] { Await.result(result, 2 second) }
+    intercept[IllegalStateException] { Await.result(result, 2.second) }
   }
 
   "demonstrate pattern.retry" in {
@@ -523,10 +522,10 @@ class FutureDocSpec extends PekkoSpec {
     }
 
     // Return a new future that will retry up to 10 times
-    val retried: Future[Int] = pekko.pattern.retry(() => futureToAttempt(), attempts = 10, 100 milliseconds)
+    val retried: Future[Int] = pekko.pattern.retry(() => futureToAttempt(), attempts = 10, 100.milliseconds)
     // #retry
 
-    Await.result(retried, 1 second) should ===(5)
+    Await.result(retried, 1.second) should ===(5)
   }
 
   "demonstrate context.dispatcher" in {

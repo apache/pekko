@@ -19,7 +19,6 @@ import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
-import language.postfixOps
 
 import org.apache.pekko
 import pekko.ConfigurationException
@@ -79,7 +78,7 @@ class RoutingSpec extends PekkoSpec(RoutingSpec.config) with DefaultTimeout with
       awaitCond {
         router ! ""
         router ! ""
-        val res = receiveWhile(100 millis, messages = 2) {
+        val res = receiveWhile(100.millis, messages = 2) {
           case x: ActorRef => x
         }
         res == Seq(c1, c1)

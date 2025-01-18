@@ -17,7 +17,6 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import com.typesafe.config.{ Config, ConfigFactory }
-import language.postfixOps
 
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorRef, ActorSystem, Props }
@@ -205,15 +204,15 @@ class ResizerSpec extends PekkoSpec(ResizerSpec.config) with DefaultTimeout with
       }
 
       // 2 more should go through without triggering more
-      loop(2, 200 millis)
+      loop(2, 200.millis)
       routeeSize(router) should ===(resizer.lowerBound)
 
       // a whole bunch should max it out
-      loop(20, 500 millis)
+      loop(20, 500.millis)
       routeeSize(router) should ===(resizer.upperBound)
     }
 
-    "backoff" in within(10 seconds) {
+    "backoff" in within(10.seconds) {
       val resizer = DefaultResizer(
         lowerBound = 2,
         upperBound = 5,
@@ -226,25 +225,25 @@ class ResizerSpec extends PekkoSpec(ResizerSpec.config) with DefaultTimeout with
       val router = system.actorOf(RoundRobinPool(nrOfInstances = 0, resizer = Some(resizer)).props(Props(new Actor {
         def receive = {
           case n: Int if n <= 0 => // done
-          case n: Int           => Thread.sleep((n millis).dilated.toMillis)
+          case n: Int           => Thread.sleep(n.millis.dilated.toMillis)
         }
       })))
 
       // put some pressure on the router
       for (_ <- 0 until 15) {
         router ! 150
-        Thread.sleep((20 millis).dilated.toMillis)
+        Thread.sleep(20.millis.dilated.toMillis)
       }
 
       val z = routeeSize(router)
       z should be > 2
 
-      Thread.sleep((300 millis).dilated.toMillis)
+      Thread.sleep(300.millis.dilated.toMillis)
 
       // let it cool down
       awaitCond({
           router ! 0 // trigger resize
-          Thread.sleep((20 millis).dilated.toMillis)
+          Thread.sleep(20.millis.dilated.toMillis)
           routeeSize(router) < z
         }, interval = 500.millis.dilated)
 

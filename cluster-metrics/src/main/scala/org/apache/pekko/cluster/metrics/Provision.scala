@@ -15,7 +15,6 @@ package org.apache.pekko.cluster.metrics
 
 import java.io.File
 
-import scala.language.postfixOps
 import scala.util.Failure
 import scala.util.Success
 import scala.util.Try
@@ -81,7 +80,7 @@ trait SigarProvider {
     })
       .recover {
         case e: Throwable => throw new RuntimeException("Failed to load sigar:", e)
-      } get
+      }.get
   }
 
 }

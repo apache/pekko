@@ -19,8 +19,6 @@ import scala.concurrent.ExecutionException
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
-import language.postfixOps
-
 import org.apache.pekko
 import pekko.actor.{ Actor, Props }
 import pekko.actor.ActorRef
@@ -33,20 +31,20 @@ class Future2ActorSpec extends PekkoSpec with DefaultTimeout {
 
     "support convenient sending to multiple destinations" in {
       Future(42).pipeTo(testActor).pipeTo(testActor)
-      expectMsgAllOf(1 second, 42, 42)
+      expectMsgAllOf(1.second, 42, 42)
     }
 
     "support convenient sending to multiple destinations with implicit sender" in {
       implicit val someActor: ActorRef = system.actorOf(Props(new Actor { def receive = Actor.emptyBehavior }))
       Future(42).pipeTo(testActor).pipeTo(testActor)
-      expectMsgAllOf(1 second, 42, 42)
+      expectMsgAllOf(1.second, 42, 42)
       lastSender should ===(someActor)
     }
 
     "support convenient sending with explicit sender" in {
       val someActor = system.actorOf(Props(new Actor { def receive = Actor.emptyBehavior }))
       Future(42).to(testActor, someActor)
-      expectMsgAllOf(1 second, 42)
+      expectMsgAllOf(1.second, 42)
       lastSender should ===(someActor)
     }
 

@@ -17,7 +17,6 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
-import language.postfixOps
 
 import org.apache.pekko
 import pekko.actor.Actor
@@ -132,7 +131,7 @@ abstract class ClusterRoundRobinSpec
 
   def receiveReplies(routeeType: RouteeType, expectedReplies: Int): Map[Address, Int] = {
     val zero = Map.empty[Address, Int] ++ roles.map(address(_) -> 0)
-    receiveWhile(5 seconds, messages = expectedReplies) {
+    receiveWhile(5.seconds, messages = expectedReplies) {
       case Reply(`routeeType`, ref) => fullAddress(ref)
     }.foldLeft(zero) {
       case (replyMap, address) => replyMap + (address -> (replyMap(address) + 1))

@@ -20,7 +20,6 @@ import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
 import scala.annotation.nowarn
-import language.postfixOps
 
 import org.apache.pekko
 import pekko.pattern.ask
@@ -49,7 +48,7 @@ class SupervisorMiscSpec extends PekkoSpec(SupervisorMiscSpec.config) with Defau
         val countDownLatch = new CountDownLatch(4)
 
         val supervisor = system.actorOf(Props(
-          new Supervisor(OneForOneStrategy(maxNrOfRetries = 3, withinTimeRange = 5 seconds)(List(classOf[Exception])))))
+          new Supervisor(OneForOneStrategy(maxNrOfRetries = 3, withinTimeRange = 5.seconds)(List(classOf[Exception])))))
 
         val workerProps = Props(new Actor {
           override def postRestart(cause: Throwable): Unit = { countDownLatch.countDown() }

@@ -13,8 +13,6 @@
 
 package docs.actor
 
-import language.postfixOps
-
 //#all
 //#imports
 import org.apache.pekko
@@ -57,7 +55,7 @@ object FaultHandlingDocSample extends App {
 class Listener extends Actor with ActorLogging {
   import Worker._
   // If we don't get any progress within 15 seconds then the service is unavailable
-  context.setReceiveTimeout(15 seconds)
+  context.setReceiveTimeout(15.seconds)
 
   def receive = {
     case Progress(percent) =>
@@ -90,7 +88,7 @@ object Worker {
 class Worker extends Actor with ActorLogging {
   import Worker._
   import CounterService._
-  implicit val askTimeout: Timeout = Timeout(5 seconds)
+  implicit val askTimeout: Timeout = Timeout(5.seconds)
 
   // Stop the CounterService child if it throws ServiceUnavailable
   override val supervisorStrategy = OneForOneStrategy() {
@@ -107,7 +105,7 @@ class Worker extends Actor with ActorLogging {
   def receive = LoggingReceive {
     case Start if progressListener.isEmpty =>
       progressListener = Some(sender())
-      context.system.scheduler.scheduleWithFixedDelay(Duration.Zero, 1 second, self, Do)
+      context.system.scheduler.scheduleWithFixedDelay(Duration.Zero, 1.second, self, Do)
 
     case Do =>
       counterService ! Increment(1)
@@ -147,7 +145,7 @@ class CounterService extends Actor {
 
   // Restart the storage child when StorageException is thrown.
   // After 3 restarts within 5 seconds it will be stopped.
-  override val supervisorStrategy = OneForOneStrategy(maxNrOfRetries = 3, withinTimeRange = 5 seconds) {
+  override val supervisorStrategy = OneForOneStrategy(maxNrOfRetries = 3, withinTimeRange = 5.seconds) {
     case _: Storage.StorageException => Restart
   }
 
@@ -200,7 +198,7 @@ class CounterService extends Actor {
       // Tell the counter that there is no storage for the moment
       counter.foreach { _ ! UseStorage(None) }
       // Try to re-establish storage after while
-      context.system.scheduler.scheduleOnce(10 seconds, self, Reconnect)
+      context.system.scheduler.scheduleOnce(10.seconds, self, Reconnect)
 
     case Reconnect =>
       // Re-establish storage after the scheduled delay

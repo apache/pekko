@@ -16,7 +16,6 @@ package org.apache.pekko.remote
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
-import language.postfixOps
 import testkit.MultiNodeConfig
 
 import org.apache.pekko
@@ -122,7 +121,7 @@ abstract class NewRemoteActorSpec(multiNodeConfig: NewRemoteActorMultiJvmSpec)
       enterBarrier("done")
     }
 
-    "be able to shutdown system when using remote deployed actor" in within(20 seconds) {
+    "be able to shutdown system when using remote deployed actor" in within(20.seconds) {
       runOn(leader) {
         val actor = system.actorOf(Props[SomeActor](), "service-hello3")
         actor.isInstanceOf[RemoteActorRef] should ===(true)

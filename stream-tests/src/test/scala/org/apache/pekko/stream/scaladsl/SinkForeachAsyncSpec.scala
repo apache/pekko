@@ -21,7 +21,6 @@ import scala.concurrent.Await
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.concurrent.duration._
-import scala.language.postfixOps
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
@@ -121,7 +120,7 @@ class SinkForeachAsyncSpec extends StreamSpec {
       assert(!threeCalled)
       assert(!fourCalled)
 
-      probe.expectNoMessage(2 seconds)
+      probe.expectNoMessage(2.seconds)
 
       latch(2).countDown()
       probe.expectMsg(2)
@@ -129,14 +128,14 @@ class SinkForeachAsyncSpec extends StreamSpec {
       assert(!threeCalled)
       assert(!fourCalled)
 
-      probe.expectNoMessage(2 seconds)
+      probe.expectNoMessage(2.seconds)
 
       latch(3).countDown()
       probe.expectMsg(3)
 
       assert(!fourCalled)
 
-      probe.expectNoMessage(2 seconds)
+      probe.expectNoMessage(2.seconds)
 
       latch(4).countDown()
       probe.expectMsg(4)

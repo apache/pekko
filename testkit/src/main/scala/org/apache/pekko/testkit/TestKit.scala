@@ -21,7 +21,6 @@ import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.concurrent.Await
 import scala.concurrent.duration._
-import scala.language.postfixOps
 import scala.reflect.ClassTag
 import scala.util.control.NonFatal
 
@@ -441,7 +440,7 @@ trait TestKitBase {
   /**
    * Same as calling `within(0 seconds, max)(f)`.
    */
-  def within[T](max: FiniteDuration)(f: => T): T = within(0 seconds, max)(f)
+  def within[T](max: FiniteDuration)(f: => T): T = within(0.seconds, max)(f)
 
   /**
    * Same as `expectMsg(remainingOrDefault, obj)`, but correctly treating the timeFactor.

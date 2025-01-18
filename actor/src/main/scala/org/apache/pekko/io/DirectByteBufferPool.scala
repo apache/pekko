@@ -100,7 +100,9 @@ private[pekko] object DirectByteBufferPool {
             val cleaner = cleanerMethod.invoke(bb)
             cleanMethod.invoke(cleaner)
           }
-        catch { case NonFatal(_) => /* ok, best effort attempt to cleanup failed */ }
+        catch {
+          case NonFatal(_) => /* ok, best effort attempt to cleanup failed */
+        }
       }
     } catch { case NonFatal(_) => _ => () /* reflection failed, use no-op fallback */ }
 

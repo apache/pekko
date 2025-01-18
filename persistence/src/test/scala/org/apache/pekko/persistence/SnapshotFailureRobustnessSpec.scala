@@ -19,7 +19,6 @@ import java.util.UUID
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
-import scala.language.postfixOps
 
 import com.typesafe.config.Config
 
@@ -146,7 +145,7 @@ class SnapshotFailureRobustnessSpec
         }
         expectMsg("kablama-2")
         expectMsg(RecoveryCompleted)
-        expectNoMessage(1 second)
+        expectNoMessage(1.second)
       } finally {
         system.eventStream.unsubscribe(testActor, classOf[Logging.Error])
         system.eventStream.publish(TestEvent.UnMute(EventFilter.error(start = "Error loading snapshot [")))

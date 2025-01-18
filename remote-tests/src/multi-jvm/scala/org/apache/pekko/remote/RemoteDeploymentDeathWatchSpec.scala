@@ -19,7 +19,6 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
-import language.postfixOps
 
 import org.apache.pekko
 import pekko.actor.Actor
@@ -92,7 +91,7 @@ abstract class RemoteDeploymentDeathWatchSpec(multiNodeConfig: RemoteDeploymentD
 
   "An actor system that deploys actors on another node" must {
 
-    "be able to shutdown when remote node crash" taggedAs LongRunningTest in within(20 seconds) {
+    "be able to shutdown when remote node crash" taggedAs LongRunningTest in within(20.seconds) {
       runOn(second) {
         // remote deployment to third
         val hello = system.actorOf(Props[Hello](), "hello")

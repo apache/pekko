@@ -14,7 +14,6 @@
 package org.apache.pekko.cluster.metrics
 
 import scala.concurrent.duration._
-import scala.language.postfixOps
 import scala.util.Try
 
 import scala.annotation.nowarn
@@ -103,7 +102,7 @@ class MetricsCollectorSpec
       c.processors.isDefined should ===(true)
     }
 
-    "collect 50 node metrics samples in an acceptable duration" taggedAs LongRunningTest in within(10 seconds) {
+    "collect 50 node metrics samples in an acceptable duration" taggedAs LongRunningTest in within(10.seconds) {
       (1 to 50).foreach { _ =>
         val sample = collector.sample()
         sample.metrics.size should be >= 3

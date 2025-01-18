@@ -23,7 +23,6 @@ import scala.concurrent.duration.Duration
 import scala.util.control.NonFatal
 
 import com.typesafe.config.Config
-import language.postfixOps
 
 import org.apache.pekko
 import pekko.actor.{
@@ -179,7 +178,7 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator) exte
       hasMessageHint: Boolean,
       hasSystemMessageHint: Boolean): Boolean = false
 
-  protected[pekko] override def shutdownTimeout = 1 second
+  protected[pekko] override def shutdownTimeout = 1.second
 
   protected[pekko] override def register(actor: ActorCell): Unit = {
     super.register(actor)

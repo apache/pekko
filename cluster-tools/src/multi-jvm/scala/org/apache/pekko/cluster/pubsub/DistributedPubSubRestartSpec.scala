@@ -17,7 +17,6 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
-import language.postfixOps
 
 import org.apache.pekko
 import pekko.actor.Actor
@@ -93,14 +92,14 @@ class DistributedPubSubRestartSpec
 
   "A Cluster with DistributedPubSub" must {
 
-    "startup 3 node cluster" in within(15 seconds) {
+    "startup 3 node cluster" in within(15.seconds) {
       join(first, first)
       join(second, first)
       join(third, first)
       enterBarrier("after-1")
     }
 
-    "handle restart of nodes with same address" in within(30 seconds) {
+    "handle restart of nodes with same address" in within(30.seconds) {
       mediator ! Subscribe("topic1", testActor)
       expectMsgType[SubscribeAck]
       awaitCount(3)

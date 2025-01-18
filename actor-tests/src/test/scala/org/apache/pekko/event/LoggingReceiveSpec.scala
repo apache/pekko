@@ -17,7 +17,6 @@ import scala.annotation.tailrec
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
-import language.postfixOps
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.wordspec.AnyWordSpec
 
@@ -29,7 +28,7 @@ import pekko.util.ccompat.JavaConverters._
 object LoggingReceiveSpec {
   class TestLogActor extends Actor {
     override val supervisorStrategy =
-      OneForOneStrategy(maxNrOfRetries = 5, withinTimeRange = 5 seconds)(List(classOf[Throwable]))
+      OneForOneStrategy(maxNrOfRetries = 5, withinTimeRange = 5.seconds)(List(classOf[Throwable]))
     def receive = { case _ => }
   }
 }
@@ -85,12 +84,12 @@ class LoggingReceiveSpec extends AnyWordSpec with BeforeAndAfterAll {
         }))
         a ! "hallo"
         expectMsg(
-          1 second,
+          1.second,
           Logging.Debug(
             "funky",
             classOf[DummyClassForStringSources],
             "received unhandled message hallo from " + system.deadLetters))
-        expectMsgType[UnhandledMessage](1 second)
+        expectMsgType[UnhandledMessage](1.second)
       }
     }
 
@@ -206,7 +205,7 @@ class LoggingReceiveSpec extends AnyWordSpec with BeforeAndAfterAll {
     "log Supervision events if requested" in {
       new TestKit(appLifecycle) {
         system.eventStream.subscribe(testActor, classOf[Logging.Debug])
-        within(3 seconds) {
+        within(3.seconds) {
           val lifecycleGuardian = appLifecycle.asInstanceOf[ActorSystemImpl].guardian
           val lname = lifecycleGuardian.path.toString
           val supervisor = TestActorRef[TestLogActor](Props[TestLogActor]())
@@ -230,7 +229,7 @@ class LoggingReceiveSpec extends AnyWordSpec with BeforeAndAfterAll {
     "log DeathWatch events if requested" in {
       new TestKit(appLifecycle) {
         system.eventStream.subscribe(testActor, classOf[Logging.Debug])
-        within(3 seconds) {
+        within(3.seconds) {
           val supervisor = TestActorRef[TestLogActor](Props[TestLogActor]())
           val sclass = classOf[TestLogActor]
           val actor = TestActorRef[TestLogActor](Props[TestLogActor](), supervisor, "none")
@@ -255,7 +254,7 @@ class LoggingReceiveSpec extends AnyWordSpec with BeforeAndAfterAll {
       new TestKit(appLifecycle) {
         system.eventStream.subscribe(testActor, classOf[Logging.Debug])
         system.eventStream.subscribe(testActor, classOf[Logging.Error])
-        within(3 seconds) {
+        within(3.seconds) {
           val supervisor = TestActorRef[TestLogActor](Props[TestLogActor]())
           val sname = supervisor.path.toString
           val sclass = classOf[TestLogActor]

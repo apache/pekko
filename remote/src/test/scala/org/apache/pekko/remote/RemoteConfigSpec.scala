@@ -18,8 +18,6 @@ import io.netty.buffer.PooledByteBufAllocator
 import scala.concurrent.duration._
 import scala.annotation.nowarn
 
-import language.postfixOps
-
 import org.apache.pekko
 import pekko.remote.transport.PekkoProtocolSettings
 import pekko.remote.transport.netty.{ NettyTransportSettings, SSLSettings }
@@ -43,21 +41,21 @@ class RemoteConfigSpec extends PekkoSpec("""
       LogSend should ===(false)
       UntrustedMode should ===(false)
       TrustedSelectionPaths should ===(Set.empty[String])
-      ShutdownTimeout.duration should ===(10 seconds)
-      FlushWait should ===(2 seconds)
-      StartupTimeout.duration should ===(10 seconds)
-      RetryGateClosedFor should ===(5 seconds)
+      ShutdownTimeout.duration should ===(10.seconds)
+      FlushWait should ===(2.seconds)
+      StartupTimeout.duration should ===(10.seconds)
+      RetryGateClosedFor should ===(5.seconds)
       Dispatcher should ===("pekko.remote.default-remote-dispatcher")
       UsePassiveConnections should ===(true)
-      BackoffPeriod should ===(5 millis)
+      BackoffPeriod should ===(5.millis)
       LogBufferSizeExceeding should ===(50000)
-      SysMsgAckTimeout should ===(0.3 seconds)
-      SysResendTimeout should ===(2 seconds)
+      SysMsgAckTimeout should ===(0.3.seconds)
+      SysResendTimeout should ===(2.seconds)
       SysResendLimit should ===(200)
       SysMsgBufferSize should ===(20000)
-      InitialSysMsgDeliveryTimeout should ===(3 minutes)
-      QuarantineDuration should ===(5 days)
-      CommandAckTimeout.duration should ===(30 seconds)
+      InitialSysMsgDeliveryTimeout should ===(3.minutes)
+      QuarantineDuration should ===(5.days)
+      CommandAckTimeout.duration should ===(30.seconds)
       Transports.size should ===(1)
       Transports.head._1 should ===(classOf[pekko.remote.transport.netty.NettyTransport].getName)
       Transports.head._2 should ===(Nil)
@@ -67,13 +65,13 @@ class RemoteConfigSpec extends PekkoSpec("""
           "trttl" -> classOf[pekko.remote.transport.ThrottlerProvider].getName))
 
       WatchFailureDetectorImplementationClass should ===(classOf[PhiAccrualFailureDetector].getName)
-      WatchHeartBeatInterval should ===(1 seconds)
-      WatchHeartbeatExpectedResponseAfter should ===(1 seconds)
-      WatchUnreachableReaperInterval should ===(1 second)
+      WatchHeartBeatInterval should ===(1.seconds)
+      WatchHeartbeatExpectedResponseAfter should ===(1.seconds)
+      WatchUnreachableReaperInterval should ===(1.second)
       WatchFailureDetectorConfig.getDouble("threshold") should ===(10.0 +- 0.0001)
       WatchFailureDetectorConfig.getInt("max-sample-size") should ===(200)
-      WatchFailureDetectorConfig.getMillisDuration("acceptable-heartbeat-pause") should ===(10 seconds)
-      WatchFailureDetectorConfig.getMillisDuration("min-std-deviation") should ===(100 millis)
+      WatchFailureDetectorConfig.getMillisDuration("acceptable-heartbeat-pause") should ===(10.seconds)
+      WatchFailureDetectorConfig.getMillisDuration("min-std-deviation") should ===(100.millis)
 
       remoteSettings.config.getString("pekko.remote.classic.log-frame-size-exceeding") should ===("off")
     }

@@ -16,7 +16,6 @@ package org.apache.pekko.dispatch
 import scala.concurrent.duration._
 
 import com.typesafe.config.Config
-import language.postfixOps
 
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorSystem, Props }
@@ -48,7 +47,7 @@ object PriorityDispatcherSpec {
           case i: Int => i // Reverse order
           case Result => Int.MaxValue
           case _      => throw new RuntimeException() // compiler exhaustiveness check pleaser
-        }: Any => Int), 1000, 10 seconds)
+        }: Any => Int), 1000, 10.seconds)
 
 }
 
@@ -68,7 +67,7 @@ class PriorityDispatcherSpec extends PekkoSpec(PriorityDispatcherSpec.config) wi
   }
 
   def testOrdering(dispatcherKey: String): Unit = {
-    val msgs = (1 to 100) toList
+    val msgs = (1 to 100).toList
 
     // It's important that the actor under test is not a top level actor
     // with RepointableActorRef, since messages might be queued in

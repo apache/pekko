@@ -16,7 +16,6 @@ package org.apache.pekko.dispatch
 import scala.concurrent.duration._
 
 import com.typesafe.config.Config
-import language.postfixOps
 
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorSystem, Props }
@@ -49,7 +48,7 @@ object StablePriorityDispatcherSpec {
           case _: Int             => 101 // Don't care for other integers
           case Result             => Int.MaxValue
           case _                  => throw new RuntimeException() // compiler exhaustiveness check pleaser
-        }: Any => Int), 1000, 10 seconds)
+        }: Any => Int), 1000, 10.seconds)
 
 }
 
@@ -70,7 +69,7 @@ class StablePriorityDispatcherSpec extends PekkoSpec(StablePriorityDispatcherSpe
     }
 
     def testOrdering(dispatcherKey: String): Unit = {
-      val msgs = (1 to 200) toList
+      val msgs = (1 to 200).toList
       val shuffled = scala.util.Random.shuffle(msgs)
 
       // It's important that the actor under test is not a top level actor
@@ -100,7 +99,7 @@ class StablePriorityDispatcherSpec extends PekkoSpec(StablePriorityDispatcherSpe
 
       // Low messages should come out first, and in priority order.  High messages follow - they are equal priority and
       // should come out in the same order in which they were sent.
-      val lo = (1 to 100) toList
+      val lo = (1 to 100).toList
       val hi = shuffled.filter { _ > 100 }
       (expectMsgType[List[Int]]: List[Int]) should ===(lo ++ hi)
     }

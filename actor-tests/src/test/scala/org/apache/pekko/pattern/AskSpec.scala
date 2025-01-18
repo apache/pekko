@@ -18,8 +18,6 @@ import scala.concurrent.duration._
 import scala.util.Failure
 import scala.annotation.nowarn
 
-import language.postfixOps
-
 import org.apache.pekko
 import pekko.actor._
 import pekko.testkit.{ PekkoSpec, TestProbe }
@@ -41,7 +39,7 @@ class AskSpec extends PekkoSpec("""
     }
 
     "return broken promises on DeadLetters" in {
-      val f = system.deadLetters.ask(42)(1 second)
+      val f = system.deadLetters.ask(42)(1.second)
       f.isCompleted should ===(true)
       f.value.get match {
         case Failure(_: AskTimeoutException) =>
@@ -50,7 +48,7 @@ class AskSpec extends PekkoSpec("""
     }
 
     "return broken promises on EmptyLocalActorRefs" in {
-      implicit val timeout: Timeout = Timeout(5 seconds)
+      implicit val timeout: Timeout = Timeout(5.seconds)
       val empty = system.asInstanceOf[ExtendedActorSystem].provider.resolveActorRef("/user/unknown")
       val f = empty ? 3.14
       f.isCompleted should ===(true)
@@ -61,7 +59,7 @@ class AskSpec extends PekkoSpec("""
     }
 
     "return broken promises on unsupported ActorRefs" in {
-      implicit val timeout: Timeout = Timeout(5 seconds)
+      implicit val timeout: Timeout = Timeout(5.seconds)
       val f = ask(null: ActorRef, 3.14)
       f.isCompleted should ===(true)
 
@@ -72,7 +70,7 @@ class AskSpec extends PekkoSpec("""
     }
 
     "return broken promises on 0 timeout" in {
-      implicit val timeout: Timeout = Timeout(0 seconds)
+      implicit val timeout: Timeout = Timeout(0.seconds)
       val echo = system.actorOf(Props(new Actor { def receive = { case x => sender() ! x } }))
       val f = echo ? "foo"
       val expectedMsg =
@@ -83,7 +81,7 @@ class AskSpec extends PekkoSpec("""
     }
 
     "return broken promises on < 0 timeout" in {
-      implicit val timeout: Timeout = Timeout(-1000 seconds)
+      implicit val timeout: Timeout = Timeout(-1000.seconds)
       val echo = system.actorOf(Props(new Actor { def receive = { case x => sender() ! x } }))
       val f = echo ? "foo"
       val expectedMsg =
@@ -94,51 +92,51 @@ class AskSpec extends PekkoSpec("""
     }
 
     "include target information in AskTimeout" in {
-      implicit val timeout: Timeout = Timeout(0.5 seconds)
+      implicit val timeout: Timeout = Timeout(0.5.seconds)
       val silentOne = system.actorOf(Props.empty, "silent")
       val f = silentOne ? "noreply"
       intercept[AskTimeoutException] {
-        Await.result(f, 1 second)
+        Await.result(f, 1.second)
       }.getMessage.contains("/user/silent") should ===(true)
     }
 
     "include timeout information in AskTimeout" in {
-      implicit val timeout: Timeout = Timeout(0.5 seconds)
+      implicit val timeout: Timeout = Timeout(0.5.seconds)
       val f = system.actorOf(Props.empty) ? "noreply"
       intercept[AskTimeoutException] {
-        Await.result(f, 1 second)
+        Await.result(f, 1.second)
       }.getMessage should include(timeout.duration.toMillis.toString)
     }
 
     "include sender information in AskTimeout" in {
-      implicit val timeout: Timeout = Timeout(0.5 seconds)
+      implicit val timeout: Timeout = Timeout(0.5.seconds)
       implicit val sender: ActorRef = system.actorOf(Props.empty)
       val f = system.actorOf(Props.empty) ? "noreply"
       intercept[AskTimeoutException] {
-        Await.result(f, 1 second)
+        Await.result(f, 1.second)
       }.getMessage.contains(sender.toString) should ===(true)
     }
 
     "include message class information in AskTimeout" in {
-      implicit val timeout: Timeout = Timeout(0.5 seconds)
+      implicit val timeout: Timeout = Timeout(0.5.seconds)
       val f = system.actorOf(Props.empty) ? Integer.valueOf(17)
       intercept[AskTimeoutException] {
-        Await.result(f, 1 second)
+        Await.result(f, 1.second)
       }.getMessage should include("[java.lang.Integer")
     }
 
     "work for ActorSelection" in {
-      implicit val timeout: Timeout = Timeout(5 seconds)
+      implicit val timeout: Timeout = Timeout(5.seconds)
       import system.dispatcher
       val echo = system.actorOf(Props(new Actor { def receive = { case x => sender() ! x } }), "select-echo")
       val identityFuture =
         (system.actorSelection("/user/select-echo") ? Identify(None)).mapTo[ActorIdentity].map(_.ref.get)
 
-      Await.result(identityFuture, 5 seconds) should ===(echo)
+      Await.result(identityFuture, 5.seconds) should ===(echo)
     }
 
     "work when reply uses actor selection" in {
-      implicit val timeout: Timeout = Timeout(5 seconds)
+      implicit val timeout: Timeout = Timeout(5.seconds)
       val deadListener = TestProbe()
       system.eventStream.subscribe(deadListener.ref, classOf[DeadLetter])
 
@@ -147,13 +145,13 @@ class AskSpec extends PekkoSpec("""
         }), "select-echo2")
       val f = echo ? "hi"
 
-      Await.result(f, 1 seconds) should ===("hi")
+      Await.result(f, 1.seconds) should ===("hi")
 
-      deadListener.expectNoMessage(200 milliseconds)
+      deadListener.expectNoMessage(200.milliseconds)
     }
 
     "throw AskTimeoutException on using *" in {
-      implicit val timeout: Timeout = Timeout(0.5 seconds)
+      implicit val timeout: Timeout = Timeout(0.5.seconds)
       val deadListener = TestProbe()
       system.eventStream.subscribe(deadListener.ref, classOf[DeadLetter])
 
@@ -162,14 +160,14 @@ class AskSpec extends PekkoSpec("""
         "select-echo3")
       val f = echo ? "hi"
       intercept[AskTimeoutException] {
-        Await.result(f, 1 seconds)
+        Await.result(f, 1.seconds)
       }
 
-      deadListener.expectMsgClass(200 milliseconds, classOf[DeadLetter])
+      deadListener.expectMsgClass(200.milliseconds, classOf[DeadLetter])
     }
 
     "throw AskTimeoutException on using .." in {
-      implicit val timeout: Timeout = Timeout(0.5 seconds)
+      implicit val timeout: Timeout = Timeout(0.5.seconds)
       val deadListener = TestProbe()
       system.eventStream.subscribe(deadListener.ref, classOf[DeadLetter])
 
@@ -183,14 +181,14 @@ class AskSpec extends PekkoSpec("""
         }), "select-echo4")
       val f = echo ? "hi"
       intercept[AskTimeoutException] {
-        Await.result(f, 1 seconds) should ===("hi")
+        Await.result(f, 1.seconds) should ===("hi")
       }
 
-      deadListener.expectMsgClass(200 milliseconds, classOf[DeadLetter])
+      deadListener.expectMsgClass(200.milliseconds, classOf[DeadLetter])
     }
 
     "send to DeadLetter when child does not exist" in {
-      implicit val timeout: Timeout = Timeout(0.5 seconds)
+      implicit val timeout: Timeout = Timeout(0.5.seconds)
       val deadListener = TestProbe()
       system.eventStream.subscribe(deadListener.ref, classOf[DeadLetter])
 
@@ -203,13 +201,13 @@ class AskSpec extends PekkoSpec("""
         }), "select-echo5")
       val f = echo ? "hi"
       intercept[AskTimeoutException] {
-        Await.result(f, 1 seconds) should ===("hi")
+        Await.result(f, 1.seconds) should ===("hi")
       }
-      deadListener.expectMsgClass(200 milliseconds, classOf[DeadLetter])
+      deadListener.expectMsgClass(200.milliseconds, classOf[DeadLetter])
     }
 
     "send DeadLetter when answering to grandchild" in {
-      implicit val timeout: Timeout = Timeout(0.5 seconds)
+      implicit val timeout: Timeout = Timeout(0.5.seconds)
       val deadListener = TestProbe()
       system.eventStream.subscribe(deadListener.ref, classOf[DeadLetter])
 
@@ -221,13 +219,13 @@ class AskSpec extends PekkoSpec("""
         }), "select-echo6")
       val f = echo ? "hi"
       intercept[AskTimeoutException] {
-        Await.result(f, 1 seconds) should ===(ActorSelectionMessage("hi", Vector(SelectChildName("missing")), false))
+        Await.result(f, 1.seconds) should ===(ActorSelectionMessage("hi", Vector(SelectChildName("missing")), false))
       }
-      deadListener.expectMsgClass(200 milliseconds, classOf[DeadLetter])
+      deadListener.expectMsgClass(200.milliseconds, classOf[DeadLetter])
     }
 
     "allow watching the promiseActor and send Terminated() when completes" in {
-      implicit val timeout: Timeout = Timeout(300 millis)
+      implicit val timeout: Timeout = Timeout(300.millis)
       val p = TestProbe()
 
       val act = system.actorOf(Props(new Actor {
@@ -248,7 +246,7 @@ class AskSpec extends PekkoSpec("""
     }
 
     "encode target name in temporary actor name" in {
-      implicit val timeout: Timeout = Timeout(300 millis)
+      implicit val timeout: Timeout = Timeout(300.millis)
       val p = TestProbe()
 
       val act = system.actorOf(Props(new Actor {
@@ -268,7 +266,7 @@ class AskSpec extends PekkoSpec("""
     }
 
     "proper path when promise actor terminated" in {
-      implicit val timeout: Timeout = Timeout(300 millis)
+      implicit val timeout: Timeout = Timeout(300.millis)
       val p = TestProbe()
 
       val act = system.actorOf(Props(new Actor {

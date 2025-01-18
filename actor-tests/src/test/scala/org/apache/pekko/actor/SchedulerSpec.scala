@@ -27,7 +27,6 @@ import atomic.{ AtomicInteger, AtomicReference }
 import scala.annotation.nowarn
 import com.typesafe.config.{ Config, ConfigFactory }
 
-import language.postfixOps
 import org.scalatest.BeforeAndAfterEach
 import org.apache.pekko
 import pekko.pattern.ask
@@ -118,13 +117,13 @@ trait SchedulerSpec extends BeforeAndAfterEach with DefaultTimeout with Implicit
        * ticket #372
        */
       "be cancellable" taggedAs TimingTest in {
-        for (_ <- 1 to 10) system.scheduler.scheduleOnce(1 second, testActor, "fail").cancel()
+        for (_ <- 1 to 10) system.scheduler.scheduleOnce(1.second, testActor, "fail").cancel()
 
-        expectNoMessage(2 seconds)
+        expectNoMessage(2.seconds)
       }
 
       "be canceled if cancel is performed before execution" taggedAs TimingTest in {
-        val task = collectCancellable(system.scheduler.scheduleOnce(10 seconds)(()))
+        val task = collectCancellable(system.scheduler.scheduleOnce(10.seconds)(()))
         task.cancel() should ===(true)
         task.isCancelled should ===(true)
         task.cancel() should ===(false)
@@ -133,7 +132,7 @@ trait SchedulerSpec extends BeforeAndAfterEach with DefaultTimeout with Implicit
 
       "notify callback if cancel is performed before execution" taggedAs TimingTest in {
         val latch = new CountDownLatch(1)
-        val task = system.scheduler.scheduleOnce(100 millis,
+        val task = system.scheduler.scheduleOnce(100.millis,
           new SchedulerTask {
             override def run(): Unit = ()
             override def cancelled(): Unit = latch.countDown()
@@ -172,7 +171,7 @@ trait SchedulerSpec extends BeforeAndAfterEach with DefaultTimeout with Implicit
           Thread.sleep(5)
         }
 
-        Await.ready(ticks, 3 seconds)
+        Await.ready(ticks, 3.seconds)
       }
 
       "handle timeouts equal to multiple of wheel period" taggedAs TimingTest in {
@@ -374,7 +373,7 @@ trait SchedulerSpec extends BeforeAndAfterEach with DefaultTimeout with Implicit
           val pingLatch = new TestLatch(6)
 
           val supervisor =
-            system.actorOf(Props(new Supervisor(AllForOneStrategy(3, 1 second)(List(classOf[Exception])))))
+            system.actorOf(Props(new Supervisor(AllForOneStrategy(3, 1.second)(List(classOf[Exception])))))
           val props = Props(new Actor {
             def receive = {
               case Ping  => pingLatch.countDown()
@@ -391,9 +390,9 @@ trait SchedulerSpec extends BeforeAndAfterEach with DefaultTimeout with Implicit
             collectCancellable(system.scheduler.scheduleOnce(1000.millis, actor, Crash))
           }
 
-          Await.ready(restartLatch, 2 seconds)
+          Await.ready(restartLatch, 2.seconds)
           // should be enough time for the ping countdown to recover and reach 6 pings
-          Await.ready(pingLatch, 5 seconds)
+          Await.ready(pingLatch, 5.seconds)
         }
 
         "schedule with different initial delay and frequency" taggedAs TimingTest in {
@@ -406,8 +405,8 @@ trait SchedulerSpec extends BeforeAndAfterEach with DefaultTimeout with Implicit
           }))
 
           val startTime = System.nanoTime()
-          collectCancellable(scheduleAdapter.schedule(1 second, 300.millis, actor, Msg))
-          Await.ready(ticks, 3 seconds)
+          collectCancellable(scheduleAdapter.schedule(1.second, 300.millis, actor, Msg))
+          Await.ready(ticks, 3.seconds)
 
           // LARS is a bit more aggressive in scheduling recurring tasks at the right
           // frequency and may execute them a little earlier; the actual expected timing
@@ -810,7 +809,7 @@ class LightArrayRevolverSchedulerSpec extends PekkoSpec(SchedulerSpec.testConfRe
         time
       }
 
-      override protected def getShutdownTimeout: FiniteDuration = (10 seconds).dilated
+      override protected def getShutdownTimeout: FiniteDuration = 10.seconds.dilated
 
       override protected def waitNanos(ns: Long): Unit = {
         // println(s"waiting $ns")

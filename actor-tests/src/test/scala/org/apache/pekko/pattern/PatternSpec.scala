@@ -17,8 +17,6 @@ import scala.concurrent.{ Await, Future, Promise }
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration._
 
-import language.postfixOps
-
 import org.apache.pekko
 import pekko.actor.{ Actor, Props }
 import pekko.testkit.{ PekkoSpec, TestLatch }
@@ -41,21 +39,21 @@ class PatternSpec extends PekkoSpec {
 
     "provide Future for stopping an actor" in {
       val target = system.actorOf(Props[TargetActor]())
-      val result = gracefulStop(target, 5 seconds)
-      Await.result(result, 6 seconds) should ===(true)
+      val result = gracefulStop(target, 5.seconds)
+      Await.result(result, 6.seconds) should ===(true)
     }
 
     "complete Future when actor already terminated" in {
       val target = system.actorOf(Props[TargetActor]())
-      Await.ready(gracefulStop(target, 5 seconds), 6 seconds)
-      Await.ready(gracefulStop(target, 1 millis), 1 second)
+      Await.ready(gracefulStop(target, 5.seconds), 6.seconds)
+      Await.ready(gracefulStop(target, 1.millis), 1.second)
     }
 
     "complete Future with AskTimeoutException when actor not terminated within timeout" in {
       val target = system.actorOf(Props[TargetActor]())
       val latch = TestLatch()
       target ! ((latch, remainingOrDefault))
-      intercept[AskTimeoutException] { Await.result(gracefulStop(target, 500 millis), remainingOrDefault) }
+      intercept[AskTimeoutException] { Await.result(gracefulStop(target, 500.millis), remainingOrDefault) }
       latch.open()
     }
   }
@@ -63,7 +61,7 @@ class PatternSpec extends PekkoSpec {
   "pattern.after" must {
     "be completed successfully eventually" in {
       // TODO after is unfortunately shadowed by ScalaTest, fix as part of #3759
-      val f = pekko.pattern.after(1 second, using = system.scheduler)(Future.successful(5))
+      val f = pekko.pattern.after(1.second, using = system.scheduler)(Future.successful(5))
 
       val r = Future.firstCompletedOf(Seq(Promise[Int]().future, f))
       Await.result(r, remainingOrDefault) should ===(5)
@@ -72,7 +70,7 @@ class PatternSpec extends PekkoSpec {
     "be completed abnormally eventually" in {
       // TODO after is unfortunately shadowed by ScalaTest, fix as part of #3759
       val f =
-        pekko.pattern.after(1 second, using = system.scheduler)(Future.failed(new IllegalStateException("Mexico")))
+        pekko.pattern.after(1.second, using = system.scheduler)(Future.failed(new IllegalStateException("Mexico")))
 
       val r = Future.firstCompletedOf(Seq(Promise[Int]().future, f))
       intercept[IllegalStateException] { Await.result(r, remainingOrDefault) }.getMessage should ===("Mexico")

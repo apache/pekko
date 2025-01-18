@@ -16,7 +16,6 @@ package org.apache.pekko.cluster
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
-import language.postfixOps
 
 import org.apache.pekko
 import pekko.remote.testkit.MultiNodeConfig
@@ -124,7 +123,7 @@ abstract class LeaderDowningNodeThatIsUnreachableSpec(
       runOn(third) {
         enterBarrier("down-second-node")
 
-        awaitMembersUp(numberOfMembers = 2, canNotBePartOfMemberRing = Set(secondAddress), 30 seconds)
+        awaitMembersUp(numberOfMembers = 2, canNotBePartOfMemberRing = Set(secondAddress), 30.seconds)
       }
 
       enterBarrier("await-completion-2")
