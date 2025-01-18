@@ -290,6 +290,7 @@ object PekkoBuild {
         UsefulTask("testQuick",
           "Runs all the tests. When run multiple times will only run previously failing tests (shell mode only)"),
         UsefulTask("testOnly *.AnySpec", "Only run a selected test"),
+        UsefulTask("TestJdk9 / testOnly *.AnySpec", "Only run a Jdk9+ selected test"),
         UsefulTask("testQuick *.AnySpec",
           "Only run a selected test. When run multiple times will only run previously failing tests (shell mode only)"),
         UsefulTask("testQuickUntilPassed", "Runs all tests in a continuous loop until all tests pass"),

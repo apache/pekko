@@ -34,7 +34,7 @@ object VirtualThreadPoolDispatcherSpec {
 
     override def receive = {
       case "ping" =>
-        sender() ! "All fine"
+        sender() ! Thread.currentThread().getName
     }
   }
 
@@ -43,14 +43,16 @@ object VirtualThreadPoolDispatcherSpec {
 class VirtualThreadPoolDispatcherSpec extends PekkoSpec(VirtualThreadPoolDispatcherSpec.config) with ImplicitSender {
   import VirtualThreadPoolDispatcherSpec._
 
-  val Iterations = 1000
-
   "VirtualThreadPool support" must {
 
     "handle simple dispatch" in {
       val innocentActor = system.actorOf(Props(new InnocentActor).withDispatcher("virtual-thread-dispatcher"))
-      innocentActor ! "ping"
-      expectMsg("All fine")
+      for (_ <- 1 to 1000) {
+        innocentActor ! "ping"
+        expectMsgPF() { case name: String =>
+          name should include("VirtualThreadPoolDispatcherSpec-virtual-thread-dispatcher-virtual-thread-")
+        }
+      }
     }
 
   }
