@@ -68,6 +68,7 @@ private[dispatch] object VirtualThreadSupport {
       newThreadPerTaskExecutorMethod.invoke(threadFactory).asInstanceOf[ExecutorService]
     } catch {
       case NonFatal(e) =>
+        // --add-opens java.base/java.lang=ALL-UNNAMED
         throw new UnsupportedOperationException("Failed to create newThreadPerTaskExecutor.", e)
     }
   }

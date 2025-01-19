@@ -417,7 +417,7 @@ final class VirtualThreadExecutorConfigurator(config: Config, prerequisites: Dis
     val tf: ThreadFactory = threadFactory match {
       case MonitorableThreadFactory(name, _, contextClassLoader, exceptionHandler, _) =>
         new ThreadFactory {
-          private val vtFactory = newVirtualThreadFactory(name)
+          private val vtFactory = newVirtualThreadFactory(name + "-" + id)
 
           override def newThread(r: Runnable): Thread = {
             val vt = vtFactory.newThread(r)
@@ -426,7 +426,7 @@ final class VirtualThreadExecutorConfigurator(config: Config, prerequisites: Dis
             vt
           }
         }
-      case _ => VirtualThreadSupport.newVirtualThreadFactory(prerequisites.settings.name);
+      case _ => VirtualThreadSupport.newVirtualThreadFactory(prerequisites.settings.name + "-" + id);
     }
     new ExecutorServiceFactory {
       import VirtualThreadSupport._
