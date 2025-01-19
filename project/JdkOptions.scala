@@ -49,6 +49,9 @@ object JdkOptions extends AutoPlugin {
 
   lazy val versionSpecificJavaOptions =
     if (isJdk17orHigher) {
+      // for virtual threads
+      "--add-opens=java.base/jdk.internal.misc=ALL-UNNAMED" ::
+      "--add-opens=java.base/java.lang=ALL-UNNAMED" ::
       // for aeron
       "--add-opens=java.base/sun.nio.ch=ALL-UNNAMED" ::
       // for LevelDB

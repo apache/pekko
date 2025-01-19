@@ -17,11 +17,12 @@
 
 package org.apache.pekko.dispatch
 
-import org.apache.pekko.annotation.InternalApi
-import org.apache.pekko.util.JavaVersion
+import org.apache.pekko
+import pekko.annotation.InternalApi
+import pekko.util.JavaVersion
 
 import java.lang.invoke.{ MethodHandles, MethodType }
-import java.util.concurrent.{ ExecutorService, ForkJoinPool, ThreadFactory }
+import java.util.concurrent.{ ExecutorService, ForkJoinPool, ForkJoinWorkerThread, ThreadFactory }
 import scala.util.control.NonFatal
 
 @InternalApi
@@ -34,8 +35,26 @@ private[dispatch] object VirtualThreadSupport {
   val isSupported: Boolean = JavaVersion.majorVersion >= 21
 
   /**
-   * Create a virtual thread factory with a executor, the executor will be used as the scheduler of
-   * virtual thread.
+   * Create a newThreadPerTaskExecutor with the specified thread factory.
+   */
+  def newThreadPerTaskExecutor(threadFactory: ThreadFactory): ExecutorService = {
+    require(threadFactory != null, "threadFactory should not be null.")
+    try {
+      val executorsClazz = ClassLoader.getSystemClassLoader.loadClass("java.util.concurrent.Executors")
+      val newThreadPerTaskExecutorMethod = lookup.findStatic(
+        executorsClazz,
+        "newThreadPerTaskExecutor",
+        MethodType.methodType(classOf[ExecutorService], classOf[ThreadFactory]))
+      newThreadPerTaskExecutorMethod.invoke(threadFactory).asInstanceOf[ExecutorService]
+    } catch {
+      case NonFatal(e) =>
+        // --add-opens java.base/java.lang=ALL-UNNAMED
+        throw new UnsupportedOperationException("Failed to create newThreadPerTaskExecutor.", e)
+    }
+  }
+
+  /**
+   * Create a virtual thread factory with the default Virtual Thread executor.
    */
   def newVirtualThreadFactory(prefix: String): ThreadFactory = {
     require(isSupported, "Virtual thread is not supported.")
@@ -57,19 +76,38 @@ private[dispatch] object VirtualThreadSupport {
     }
   }
 
-  def newThreadPerTaskExecutor(threadFactory: ThreadFactory): ExecutorService = {
-    require(threadFactory != null, "threadFactory should not be null.")
+  /**
+   * Create a virtual thread factory with the specified executor as the scheduler of virtual thread.
+   */
+  def newVirtualThreadFactory(prefix: String, executor: ExecutorService): ThreadFactory =
     try {
-      val executorsClazz = ClassLoader.getSystemClassLoader.loadClass("java.util.concurrent.Executors")
-      val newThreadPerTaskExecutorMethod = lookup.findStatic(
-        executorsClazz,
-        "newThreadPerTaskExecutor",
-        MethodType.methodType(classOf[ExecutorService], classOf[ThreadFactory]))
-      newThreadPerTaskExecutorMethod.invoke(threadFactory).asInstanceOf[ExecutorService]
+      val builderClass = ClassLoader.getSystemClassLoader.loadClass("java.lang.Thread$Builder")
+      val ofVirtualClass = ClassLoader.getSystemClassLoader.loadClass("java.lang.Thread$Builder$OfVirtual")
+      val ofVirtualMethod = classOf[Thread].getDeclaredMethod("ofVirtual")
+      var builder = ofVirtualMethod.invoke(null)
+      if (executor != null) {
+        val clazz = builder.getClass
+        val field = clazz.getDeclaredField("scheduler")
+        field.setAccessible(true)
+        field.set(builder, executor)
+      }
+      val nameMethod = ofVirtualClass.getDeclaredMethod("name", classOf[String], classOf[Long])
+      val factoryMethod = builderClass.getDeclaredMethod("factory")
+      val zero = java.lang.Long.valueOf(0L)
+      builder = nameMethod.invoke(builder, prefix + "-virtual-thread-", zero)
+      factoryMethod.invoke(builder).asInstanceOf[ThreadFactory]
     } catch {
       case NonFatal(e) =>
         // --add-opens java.base/java.lang=ALL-UNNAMED
-        throw new UnsupportedOperationException("Failed to create newThreadPerTaskExecutor.", e)
+        throw new UnsupportedOperationException("Failed to create virtual thread factory", e)
+    }
+
+  object CarrierThreadFactory extends ForkJoinPool.ForkJoinWorkerThreadFactory {
+    private val clazz = ClassLoader.getSystemClassLoader.loadClass("jdk.internal.misc.CarrierThread")
+    // TODO lookup.findClass is only available in Java 9
+    private val constructor = clazz.getDeclaredConstructor(classOf[ForkJoinPool])
+    override def newThread(pool: ForkJoinPool): ForkJoinWorkerThread = {
+      constructor.newInstance(pool).asInstanceOf[ForkJoinWorkerThread]
     }
   }
 
@@ -79,7 +117,7 @@ private[dispatch] object VirtualThreadSupport {
   def getVirtualThreadDefaultScheduler: ForkJoinPool =
     try {
       require(isSupported, "Virtual thread is not supported.")
-      val clazz = Class.forName("java.lang.VirtualThread")
+      val clazz = ClassLoader.getSystemClassLoader.loadClass("java.lang.VirtualThread")
       val fieldName = "DEFAULT_SCHEDULER"
       val field = clazz.getDeclaredField(fieldName)
       field.setAccessible(true)

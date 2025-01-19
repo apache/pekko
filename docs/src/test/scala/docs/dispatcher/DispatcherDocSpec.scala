@@ -66,6 +66,14 @@ object DispatcherDocSpec {
         parallelism-factor = 2.0
         # Max number of threads to cap factor-based parallelism number to
         parallelism-max = 10
+
+        # Requirements:
+        # 1. JDK 21+
+        # 2. add options to the JVM:
+        #   - `--add-opens=java.base/jdk.internal.misc=ALL-UNNAMED`
+        #   - `--add-opens=java.base/java.lang=ALL-UNNAMED`
+        # Virtualize this dispatcher as a virtual-thread-executor
+        virtualize = off
       }
       # Throughput defines the maximum number of messages to be
       # processed per actor before the thread jumps to the next actor.
