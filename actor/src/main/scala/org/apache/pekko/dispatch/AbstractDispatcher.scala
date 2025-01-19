@@ -27,7 +27,7 @@ import pekko.annotation.InternalStableApi
 import pekko.dispatch.affinity.AffinityPoolConfigurator
 import pekko.dispatch.sysmsg._
 import pekko.event.EventStream
-import pekko.event.Logging.{ Debug, Error, LogEventException }
+import pekko.event.Logging.{ emptyMDC, Debug, Error, LogEventException, Warning }
 import pekko.util.{ unused, Index, Unsafe }
 
 import com.typesafe.config.Config
@@ -426,11 +426,39 @@ final class VirtualThreadExecutorConfigurator(config: Config, prerequisites: Dis
             vt
           }
         }
-      case _ => VirtualThreadSupport.newVirtualThreadFactory(prerequisites.settings.name + "-" + id);
+      case _ => newVirtualThreadFactory(prerequisites.settings.name + "-" + id);
     }
     new ExecutorServiceFactory {
-      import VirtualThreadSupport._
-      override def createExecutorService: ExecutorService = newThreadPerTaskExecutor(tf)
+      override def createExecutorService: ExecutorService with LoadMetrics = {
+        // try to get the default scheduler of virtual thread
+        val pool = {
+          try {
+            getVirtualThreadDefaultScheduler
+          } catch {
+            case NonFatal(e) =>
+              prerequisites.eventStream.publish(
+                Warning(e, "VirtualThreadExecutorConfigurator", this.getClass,
+                  """
+                  |Failed to get the default scheduler of virtual thread, so the `LoadMetrics` is not available when using it with `BalancingDispatcher`.
+                  |Add `--add-opens java.base/java.lang=ALL-UNNAMED` to the JVM options to help this.
+                  |""".stripMargin, emptyMDC))
+              null
+          }
+        }
+        val loadMetricsProvider: Executor => Boolean = {
+          if (pool eq null) {
+            (_: Executor) => true
+          } else {
+            (_: Executor) => pool.getActiveThreadCount >= pool.getParallelism
+          }
+        }
+        new VirtualizedExecutorService(
+          tf,
+          pool, // the default scheduler of virtual thread
+          loadMetricsProvider,
+          cascadeShutdown = false // we don't want to cascade shutdown the default virtual thread scheduler
+        )
+      }
     }
   }
 }
