@@ -361,6 +361,15 @@ it in `application.conf` and instantiate through an
 
 ## More dispatcher configuration examples
 
+### Virtual Threads
+
+Configuring a dispatcher with virtual threads, requires Java 21 or above:
+
+@@snip [DispatcherDocSpec.scala](/docs/src/test/scala/docs/dispatcher/DispatcherDocSpec.scala) { #virtual-thread-dispatcher-config }
+
+With this, an actor will run in a virtual thread, so you may want to configure it further with :
+`jdk.virtualThreadScheduler.parallelism` ,`jdk.virtualThreadScheduler.maxPoolSize` and `jdk.unparker.maxPoolSize`.
+
 ### Fixed pool size
 
 Configuring a dispatcher with fixed thread pool size, e.g. for actors that perform blocking IO:
