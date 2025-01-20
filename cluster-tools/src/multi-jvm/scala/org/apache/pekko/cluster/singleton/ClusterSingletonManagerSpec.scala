@@ -16,7 +16,6 @@ package org.apache.pekko.cluster.singleton
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
-import language.postfixOps
 
 import org.apache.pekko
 import pekko.actor.Actor
@@ -313,13 +312,13 @@ class ClusterSingletonManagerSpec
     runOn(controller) {
       queue ! msg
       // make sure it's not terminated, which would be wrong
-      expectNoMessage(1 second)
+      expectNoMessage(1.second)
     }
     runOn(oldest) {
       expectMsg(5.seconds, msg)
     }
     runOn(roles.filterNot(r => r == oldest || r == controller || r == observer): _*) {
-      expectNoMessage(1 second)
+      expectNoMessage(1.second)
     }
     enterBarrier("after-" + msg + "-verified")
   }
@@ -337,7 +336,7 @@ class ClusterSingletonManagerSpec
 
   "A ClusterSingletonManager" must {
 
-    "startup 6 node cluster" in within(60 seconds) {
+    "startup 6 node cluster" in within(60.seconds) {
 
       val memberProbe = TestProbe()
       Cluster(system).subscribe(memberProbe.ref, classOf[MemberUp])
@@ -387,7 +386,7 @@ class ClusterSingletonManagerSpec
       enterBarrier("after-1")
     }
 
-    "let the proxy route messages to the singleton in a 6 node cluster" in within(60 seconds) {
+    "let the proxy route messages to the singleton in a 6 node cluster" in within(60.seconds) {
       verifyProxyMsg(first, first, msg = msg())
       verifyProxyMsg(first, second, msg = msg())
       verifyProxyMsg(first, third, msg = msg())
@@ -396,7 +395,7 @@ class ClusterSingletonManagerSpec
       verifyProxyMsg(first, sixth, msg = msg())
     }
 
-    "hand over when oldest leaves in 6 nodes cluster " in within(30 seconds) {
+    "hand over when oldest leaves in 6 nodes cluster " in within(30.seconds) {
       val leaveRole = first
 
       runOn(leaveRole) {
@@ -424,7 +423,7 @@ class ClusterSingletonManagerSpec
       enterBarrier("after-leave")
     }
 
-    "take over when oldest crashes in 5 nodes cluster" in within(60 seconds) {
+    "take over when oldest crashes in 5 nodes cluster" in within(60.seconds) {
       // mute logging of deadLetters during shutdown of systems
       if (!log.isDebugEnabled)
         system.eventStream.publish(Mute(DeadLettersFilter[Any]))
@@ -439,7 +438,7 @@ class ClusterSingletonManagerSpec
       verifyProxyMsg(third, sixth, msg = msg())
     }
 
-    "take over when two oldest crash in 3 nodes cluster" in within(60 seconds) {
+    "take over when two oldest crash in 3 nodes cluster" in within(60.seconds) {
       crash(third, fourth)
       verifyRegistration(fifth)
       verifyMsg(fifth, msg = msg())
@@ -447,7 +446,7 @@ class ClusterSingletonManagerSpec
       verifyProxyMsg(fifth, sixth, msg = msg())
     }
 
-    "take over when oldest crashes in 2 nodes cluster" in within(60 seconds) {
+    "take over when oldest crashes in 2 nodes cluster" in within(60.seconds) {
       crash(fifth)
       verifyRegistration(sixth)
       verifyMsg(sixth, msg = msg())

@@ -16,7 +16,6 @@ package org.apache.pekko.remote.testconductor
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
-import language.postfixOps
 
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorIdentity, Deploy, Identify, Props }
@@ -83,8 +82,8 @@ class TestConductorSpec extends RemotingMultiNodeSpec(TestConductorMultiJvmSpec)
         for (i <- 0 to 9) echo ! i
       }
 
-      within(0.5 seconds, 2 seconds) {
-        expectMsg(500 millis, 0)
+      within(0.5.seconds, 2.seconds) {
+        expectMsg(500.millis, 0)
         receiveN(9) should ===(1 to 9)
       }
 
@@ -102,11 +101,11 @@ class TestConductorSpec extends RemotingMultiNodeSpec(TestConductorMultiJvmSpec)
       }
 
       val (min, max) =
-        if (isNode(leader)) (0 seconds, 500 millis)
-        else (0.3 seconds, 3 seconds)
+        if (isNode(leader)) (0.seconds, 500.millis)
+        else (0.3.seconds, 3.seconds)
 
       within(min, max) {
-        expectMsg(500 millis, 10)
+        expectMsg(500.millis, 10)
         receiveN(9) should ===(11 to 19)
       }
 

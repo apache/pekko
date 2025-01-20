@@ -27,23 +27,23 @@ object Dependencies {
     .withRank(KeyRanks.Invisible) // avoid 'unused key' warning
 
   val junitVersion = "4.13.2"
-  val junit5Version = "5.11.3"
+  val junit5Version = "5.11.4"
   val slf4jVersion = "2.0.16"
   // check agrona version when updating this
   val aeronVersion = "1.45.1"
   // needs to be inline with the aeron version, check
   // https://github.com/real-logic/aeron/blob/1.x.y/build.gradle
   val agronaVersion = "1.22.0"
-  val bouncyCastleVersion = "1.79"
-  val nettyVersion = "4.1.115.Final"
-  val logbackVersion = "1.3.14"
+  val nettyVersion = "4.1.117.Final"
+  val logbackVersion = "1.3.15"
 
-  val jacksonCoreVersion = "2.17.3"
+  val jacksonCoreVersion = "2.18.2"
   val jacksonDatabindVersion = jacksonCoreVersion
 
   val scala212Version = "2.12.20"
-  val scala213Version = "2.13.14"
-  val scala3Version = "3.3.5-RC1"
+  val scala213Version = "2.13.16"
+  val scala3Version = "3.3.5-RC2"
+  
   val allScalaVersions = Seq(scala213Version, scala212Version, scala3Version)
 
   val reactiveStreamsVersion = "1.0.4"
@@ -106,7 +106,8 @@ object Dependencies {
     val jacksonDatabind = "com.fasterxml.jackson.core" % "jackson-databind" % jacksonDatabindVersion
     val jacksonJdk8 = "com.fasterxml.jackson.datatype" % "jackson-datatype-jdk8" % jacksonCoreVersion
     val jacksonJsr310 = "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310" % jacksonCoreVersion
-    val jacksonScala = "com.fasterxml.jackson.module" %% "jackson-module-scala" % jacksonCoreVersion
+    val jacksonScala = ("com.fasterxml.jackson.module" %% "jackson-module-scala" % jacksonCoreVersion)
+      .excludeAll(ExclusionRule(organization = "org.scala-lang"))
     val jacksonParameterNames = "com.fasterxml.jackson.module" % "jackson-module-parameter-names" % jacksonCoreVersion
     val jacksonCbor = "com.fasterxml.jackson.dataformat" % "jackson-dataformat-cbor" % jacksonCoreVersion
     val lz4Java = "org.lz4" % "lz4-java" % "1.8.0"
@@ -119,13 +120,8 @@ object Dependencies {
     }
 
     object TestDependencies {
-      val bcprov = "org.bouncycastle" % "bcprov-jdk18on" % bouncyCastleVersion % Test
-      val bcpkix = "org.bouncycastle" % "bcpkix-jdk18on" % bouncyCastleVersion % Test
-      val bcutil = "org.bouncycastle" % "bcutil-jdk18on" % bouncyCastleVersion % Test
       val commonsIo = "commons-io" % "commons-io" % "2.18.0" % Test
-      val commonsCodec = "commons-codec" % "commons-codec" % "1.17.1" % Test
-      val commonsCompress = "org.apache.commons" % "commons-compress" % "1.27.1" % Test
-      val guava = "com.google.guava" % "guava" % "33.3.1-jre" % Test
+      val commonsCodec = "commons-codec" % "commons-codec" % "1.17.2" % Test
       val junit = "junit" % "junit" % junitVersion % Test
       val junit5 = "org.junit.jupiter" % "junit-jupiter-engine" % junit5Version % Test
       val httpClient = "org.apache.httpcomponents" % "httpclient" % "4.5.14" % Test
@@ -147,23 +143,17 @@ object Dependencies {
       val pojosr = "com.googlecode.pojosr" % "de.kalpatec.pojosr.framework" % "0.2.1" % Test
       val tinybundles = "org.ops4j.pax.tinybundles" % "tinybundles" % "4.0.0" % Test
       val bndlib = "biz.aQute.bnd" % "biz.aQute.bndlib" % "6.4.1" % Test
-      val `pax-exam` = "org.ops4j.pax.exam" % "pax-exam" % "4.13.3" % Test
-      val `pax-exam-cm` = "org.ops4j.pax.exam" % "pax-exam-cm" % "4.13.3" % Test
-      val `pax-exam-container-forked` = "org.ops4j.pax.exam" % "pax-exam-container-forked" % "4.13.3" % Test
+      val `pax-exam` = "org.ops4j.pax.exam" % "pax-exam" % "4.14.0" % Test
+      val `pax-exam-cm` = "org.ops4j.pax.exam" % "pax-exam-cm" % "4.14.0" % Test
+      val `pax-exam-container-forked` = "org.ops4j.pax.exam" % "pax-exam-container-forked" % "4.14.0" % Test
 
       // in-memory filesystem for file related tests
       val jimfs = "com.google.jimfs" % "jimfs" % "1.3.0" % Test
 
-      // the extra dependency overrides for bcprov, commonsCompress and guava should be reviewed - https://github.com/apache/pekko/issues/1317
-      val dockerClientVersion = "3.4.0"
+      val dockerClientVersion = "3.4.1"
       val dockerClient = Seq(
         "com.github.docker-java" % "docker-java-core" % dockerClientVersion % Test,
-        "com.github.docker-java" % "docker-java-transport-httpclient5" % dockerClientVersion % Test,
-        TestDependencies.bcprov,
-        TestDependencies.bcpkix,
-        TestDependencies.bcutil,
-        TestDependencies.commonsCompress,
-        TestDependencies.guava)
+        "com.github.docker-java" % "docker-java-transport-httpclient5" % dockerClientVersion % Test)
 
       val jackson = Seq(
         jacksonCore % Test,
@@ -174,8 +164,8 @@ object Dependencies {
         "com.fasterxml.jackson.datatype" % "jackson-datatype-guava" % jacksonCoreVersion % Test)
 
       // metrics, measurements, perf testing
-      val metrics = "io.dropwizard.metrics" % "metrics-core" % "4.2.29" % Test
-      val metricsJvm = "io.dropwizard.metrics" % "metrics-jvm" % "4.2.29" % Test
+      val metrics = "io.dropwizard.metrics" % "metrics-core" % "4.2.30" % Test
+      val metricsJvm = "io.dropwizard.metrics" % "metrics-jvm" % "4.2.30" % Test
       val latencyUtils = "org.latencyutils" % "LatencyUtils" % "2.0.3" % Test
       val hdrHistogram = "org.hdrhistogram" % "HdrHistogram" % "2.2.2" % Test
       val metricsAll = Seq(metrics, metricsJvm, latencyUtils, hdrHistogram)

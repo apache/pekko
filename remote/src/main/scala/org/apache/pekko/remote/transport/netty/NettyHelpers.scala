@@ -23,7 +23,7 @@ import pekko.PekkoException
 import pekko.util.unused
 
 import io.netty.buffer.ByteBuf
-import io.netty.channel.{ ChannelHandlerContext, SimpleChannelInboundHandler }
+import io.netty.channel.{ ChannelHandlerContext, ChannelInboundHandlerAdapter }
 
 /**
  * INTERNAL API
@@ -53,10 +53,19 @@ private[netty] trait NettyHelpers {
 /**
  * INTERNAL API
  */
-private[netty] abstract class NettyChannelHandlerAdapter extends SimpleChannelInboundHandler[ByteBuf]
+private[netty] abstract class NettyChannelHandlerAdapter extends ChannelInboundHandlerAdapter
     with NettyHelpers {
-  final override def channelRead0(ctx: ChannelHandlerContext, msg: ByteBuf): Unit = {
-    onMessage(ctx, msg)
+
+  final override def channelRead(ctx: ChannelHandlerContext, msg: AnyRef): Unit = {
+    msg match {
+      case buf: ByteBuf =>
+        try {
+          onMessage(ctx, buf)
+        } catch {
+          case ex: Throwable => transformException(ctx, ex)
+        } finally buf.release() // ByteBuf must be released explicitly
+      case _ => ctx.fireChannelRead(msg)
+    }
   }
 
   @nowarn("msg=deprecated")

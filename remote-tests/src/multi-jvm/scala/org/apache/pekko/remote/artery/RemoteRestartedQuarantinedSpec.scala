@@ -15,7 +15,6 @@ package org.apache.pekko.remote.artery
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
-import scala.language.postfixOps
 
 import com.typesafe.config.ConfigFactory
 
@@ -110,7 +109,7 @@ abstract class RemoteRestartedQuarantinedSpec extends RemotingMultiNodeSpec(Remo
         enterBarrier("before-quarantined")
         enterBarrier("quarantined")
 
-        expectMsgPF(10 seconds) {
+        expectMsgPF(10.seconds) {
           case ThisActorSystemQuarantinedEvent(_, _) =>
         }
 

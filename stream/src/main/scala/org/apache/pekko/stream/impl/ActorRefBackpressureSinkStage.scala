@@ -45,7 +45,7 @@ import pekko.stream.stage._
       private val maxBuffer = inheritedAttributes.get[InputBuffer](InputBuffer(16, 16)).max
       require(maxBuffer > 0, "Buffer size must be greater than 0")
 
-      private val buffer: util.Deque[In] = new util.ArrayDeque[In]()
+      private val buffer: util.ArrayDeque[In] = new util.ArrayDeque[In]()
       private var acknowledgementReceived = false
       private var completeReceived = false
       private var completionSignalled = false
@@ -75,7 +75,7 @@ import pekko.stream.stage._
       }
 
       private def dequeueAndSend(): Unit = {
-        ref ! messageAdapter(self)(buffer.poll())
+        ref ! messageAdapter(self)(buffer.pollFirst())
       }
 
       private def finish(): Unit = {
@@ -85,7 +85,7 @@ import pekko.stream.stage._
       }
 
       def onPush(): Unit = {
-        buffer.offer(grab(in))
+        buffer.offerLast(grab(in))
         if (acknowledgementReceived) {
           dequeueAndSend()
           acknowledgementReceived = false

@@ -15,8 +15,6 @@ package org.apache.pekko.testkit
 
 import scala.concurrent.duration._
 
-import language.postfixOps
-
 import org.apache.pekko.actor._
 
 class TestFSMRefSpec extends PekkoSpec {
@@ -45,8 +43,8 @@ class TestFSMRefSpec extends PekkoSpec {
       fsm.setState(stateData = "buh")
       fsm.stateName should ===(1)
       fsm.stateData should ===("buh")
-      fsm.setState(timeout = 100 millis)
-      within(80 millis, 500 millis) {
+      fsm.setState(timeout = 100.millis)
+      within(80.millis, 500.millis) {
         awaitCond(fsm.stateName == 2 && fsm.stateData == "timeout")
       }
     }
@@ -59,7 +57,7 @@ class TestFSMRefSpec extends PekkoSpec {
           }
         }, "test-fsm-ref-2")
       fsm.isTimerActive("test") should ===(false)
-      fsm.startTimerWithFixedDelay("test", 12, 10 millis)
+      fsm.startTimerWithFixedDelay("test", 12, 10.millis)
       fsm.isTimerActive("test") should ===(true)
       fsm.cancelTimer("test")
       fsm.isTimerActive("test") should ===(false)

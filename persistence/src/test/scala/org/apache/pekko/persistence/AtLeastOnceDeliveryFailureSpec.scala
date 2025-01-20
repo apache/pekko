@@ -16,7 +16,6 @@ package org.apache.pekko.persistence
 import java.util.concurrent.ThreadLocalRandom
 
 import scala.concurrent.duration._
-import scala.language.postfixOps
 
 import com.typesafe.config.ConfigFactory
 
@@ -199,6 +198,6 @@ class AtLeastOnceDeliveryFailureSpec
   }
 
   def expectDone() = within(numMessages.seconds) {
-    expectMsgType[Done].ints.sorted should ===(1 to numMessages toVector)
+    expectMsgType[Done].ints.sorted should ===((1 to numMessages).toVector)
   }
 }

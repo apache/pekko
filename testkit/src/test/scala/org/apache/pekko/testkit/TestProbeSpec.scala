@@ -19,7 +19,6 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.Try
 
-import language.postfixOps
 import org.scalatest.concurrent.Eventually
 
 import org.apache.pekko
@@ -33,7 +32,7 @@ class TestProbeSpec extends PekkoSpec with DefaultTimeout with Eventually {
     "reply to futures" in {
       val tk = TestProbe()
       val future = tk.ref ? "hello"
-      tk.expectMsg(0 millis, "hello") // TestActor runs on CallingThreadDispatcher
+      tk.expectMsg(0.millis, "hello") // TestActor runs on CallingThreadDispatcher
       tk.lastMessage.sender ! "world"
       future.isCompleted should be(true)
       Await.result(future, timeout.duration) should ===("world")
@@ -43,18 +42,18 @@ class TestProbeSpec extends PekkoSpec with DefaultTimeout with Eventually {
       val tk1 = TestProbe()
       val tk2 = TestProbe()
       tk1.ref.!("hello")(tk2.ref)
-      tk1.expectMsg(0 millis, "hello")
+      tk1.expectMsg(0.millis, "hello")
       tk1.lastMessage.sender ! "world"
-      tk2.expectMsg(0 millis, "world")
+      tk2.expectMsg(0.millis, "world")
     }
 
     "properly send and reply to messages" in {
       val probe1 = TestProbe()
       val probe2 = TestProbe()
       probe1.send(probe2.ref, "hello")
-      probe2.expectMsg(0 millis, "hello")
+      probe2.expectMsg(0.millis, "hello")
       probe2.lastMessage.sender ! "world"
-      probe1.expectMsg(0 millis, "some hint here", "world")
+      probe1.expectMsg(0.millis, "some hint here", "world")
     }
 
     "create a child when invoking actorOf" in {
@@ -110,7 +109,7 @@ class TestProbeSpec extends PekkoSpec with DefaultTimeout with Eventually {
       val hint = "some hint"
 
       assertFailureMessageContains(hint) {
-        probe.expectMsg(0 millis, hint, "hello")
+        probe.expectMsg(0.millis, hint, "hello")
       }
     }
 
@@ -120,7 +119,7 @@ class TestProbeSpec extends PekkoSpec with DefaultTimeout with Eventually {
 
       assertFailureMessageContains(hint) {
         probe.ref ! "hello"
-        probe.expectMsg(0 millis, hint, "bye")
+        probe.expectMsg(0.millis, hint, "bye")
       }
     }
 
@@ -155,9 +154,9 @@ class TestProbeSpec extends PekkoSpec with DefaultTimeout with Eventually {
       expectMsgAnyClassOf(classOf[Int]) should ===(42)
       expectMsgAllClassOf(classOf[Int]) should ===(Seq(42))
       expectMsgAllConformingOf(classOf[Int]) should ===(Seq(42))
-      expectMsgAllConformingOf(5 seconds, classOf[Int]) should ===(Seq(42))
+      expectMsgAllConformingOf(5.seconds, classOf[Int]) should ===(Seq(42))
       expectMsgAllClassOf(classOf[Int]) should ===(Seq(42))
-      expectMsgAllClassOf(5 seconds, classOf[Int]) should ===(Seq(42))
+      expectMsgAllClassOf(5.seconds, classOf[Int]) should ===(Seq(42))
     }
 
     "be able to fish for messages" in {
@@ -172,7 +171,7 @@ class TestProbeSpec extends PekkoSpec with DefaultTimeout with Eventually {
         case _           => false
       }
 
-      probe.expectMsg(1 second, "done")
+      probe.expectMsg(1.second, "done")
     }
 
     "be able to fish for specific messages" in {
@@ -188,7 +187,7 @@ class TestProbeSpec extends PekkoSpec with DefaultTimeout with Eventually {
 
       msg should be("fishForMe")
 
-      probe.expectMsg(1 second, "done")
+      probe.expectMsg(1.second, "done")
     }
 
     "be able to ignore primitive types" in {

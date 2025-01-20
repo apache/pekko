@@ -27,7 +27,7 @@ import pekko.annotation.InternalStableApi
 import pekko.dispatch.affinity.AffinityPoolConfigurator
 import pekko.dispatch.sysmsg._
 import pekko.event.EventStream
-import pekko.event.Logging.{ Debug, Error, LogEventException }
+import pekko.event.Logging.{ emptyMDC, Debug, Error, LogEventException, Warning }
 import pekko.util.{ unused, Index, Unsafe }
 
 import com.typesafe.config.Config
@@ -124,7 +124,7 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
   }
 
   private final def addInhabitants(add: Long): Long = {
-    val old = Unsafe.instance.getAndAddLong(this, inhabitantsOffset, add)
+    val old = Unsafe.instance.getAndAddLong(this, inhabitantsOffset, add): @nowarn("cat=deprecation")
     val ret = old + add
     if (ret < 0) {
       // We haven't succeeded in decreasing the inhabitants yet but the simple fact that we're trying to
@@ -136,11 +136,12 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
     ret
   }
 
-  final def inhabitants: Long = Unsafe.instance.getLongVolatile(this, inhabitantsOffset)
+  final def inhabitants: Long = Unsafe.instance.getLongVolatile(this, inhabitantsOffset): @nowarn("cat=deprecation")
 
-  private final def shutdownSchedule: Int = Unsafe.instance.getIntVolatile(this, shutdownScheduleOffset)
+  private final def shutdownSchedule: Int =
+    Unsafe.instance.getIntVolatile(this, shutdownScheduleOffset): @nowarn("cat=deprecation")
   private final def updateShutdownSchedule(expect: Int, update: Int): Boolean =
-    Unsafe.instance.compareAndSwapInt(this, shutdownScheduleOffset, expect, update)
+    Unsafe.instance.compareAndSwapInt(this, shutdownScheduleOffset, expect, update): @nowarn("cat=deprecation")
 
   /**
    *  Creates and returns a mailbox for the given actor.
@@ -416,7 +417,7 @@ final class VirtualThreadExecutorConfigurator(config: Config, prerequisites: Dis
     val tf: ThreadFactory = threadFactory match {
       case MonitorableThreadFactory(name, _, contextClassLoader, exceptionHandler, _) =>
         new ThreadFactory {
-          private val vtFactory = newVirtualThreadFactory(name)
+          private val vtFactory = newVirtualThreadFactory(name + "-" + id)
 
           override def newThread(r: Runnable): Thread = {
             val vt = vtFactory.newThread(r)
@@ -425,11 +426,39 @@ final class VirtualThreadExecutorConfigurator(config: Config, prerequisites: Dis
             vt
           }
         }
-      case _ => VirtualThreadSupport.newVirtualThreadFactory(prerequisites.settings.name);
+      case _ => newVirtualThreadFactory(prerequisites.settings.name + "-" + id);
     }
     new ExecutorServiceFactory {
-      import VirtualThreadSupport._
-      override def createExecutorService: ExecutorService = newThreadPerTaskExecutor(tf)
+      override def createExecutorService: ExecutorService with LoadMetrics = {
+        // try to get the default scheduler of virtual thread
+        val pool = {
+          try {
+            getVirtualThreadDefaultScheduler
+          } catch {
+            case NonFatal(e) =>
+              prerequisites.eventStream.publish(
+                Warning(e, "VirtualThreadExecutorConfigurator", this.getClass,
+                  """
+                  |Failed to get the default scheduler of virtual thread, so the `LoadMetrics` is not available when using it with `BalancingDispatcher`.
+                  |Add `--add-opens java.base/java.lang=ALL-UNNAMED` to the JVM options to help this.
+                  |""".stripMargin, emptyMDC))
+              null
+          }
+        }
+        val loadMetricsProvider: Executor => Boolean = {
+          if (pool eq null) {
+            (_: Executor) => true
+          } else {
+            (_: Executor) => pool.getActiveThreadCount >= pool.getParallelism
+          }
+        }
+        new VirtualizedExecutorService(
+          tf,
+          pool, // the default scheduler of virtual thread
+          loadMetricsProvider,
+          cascadeShutdown = false // we don't want to cascade shutdown the default virtual thread scheduler
+        )
+      }
     }
   }
 }

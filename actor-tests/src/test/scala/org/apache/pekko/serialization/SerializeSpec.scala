@@ -20,7 +20,6 @@ import java.nio.charset.StandardCharsets
 import scala.annotation.nowarn
 import scala.concurrent.Await
 import scala.concurrent.duration._
-import language.postfixOps
 
 import SerializationTests._
 import com.typesafe.config._
@@ -307,7 +306,7 @@ class SerializeSpec extends PekkoSpec(SerializationTests.serializeConf) {
 }
 
 class VerifySerializabilitySpec extends PekkoSpec(SerializationTests.verifySerializabilityConf) {
-  implicit val timeout: Timeout = Timeout(5 seconds)
+  implicit val timeout: Timeout = Timeout(5.seconds)
 
   "verify config" in {
     system.settings.SerializeAllCreators should ===(true)

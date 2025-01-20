@@ -16,7 +16,6 @@ package org.apache.pekko.actor
 import scala.concurrent.duration._
 
 import com.typesafe.config.{ Config, ConfigFactory }
-import language.postfixOps
 import org.scalatest.BeforeAndAfterEach
 
 import org.apache.pekko
@@ -67,9 +66,9 @@ object ActorWithBoundedStashSpec {
   }
 
   // bounded deque-based mailbox with capacity 10
-  class Bounded10(@unused settings: Settings, @unused config: Config) extends BoundedDequeBasedMailbox(10, 500 millis)
+  class Bounded10(@unused settings: Settings, @unused config: Config) extends BoundedDequeBasedMailbox(10, 500.millis)
 
-  class Bounded100(@unused settings: Settings, @unused config: Config) extends BoundedDequeBasedMailbox(100, 500 millis)
+  class Bounded100(@unused settings: Settings, @unused config: Config) extends BoundedDequeBasedMailbox(100, 500.millis)
 
   val dispatcherId1 = "my-dispatcher-1"
   val dispatcherId2 = "my-dispatcher-2"

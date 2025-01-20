@@ -271,13 +271,15 @@ private[remote] class Association(
    * @return Whether the previous state matched correctly
    */
   private[artery] def swapState(oldState: AssociationState, newState: AssociationState): Boolean =
-    Unsafe.instance.compareAndSwapObject(this, AbstractAssociation.sharedStateOffset, oldState, newState)
+    Unsafe.instance.compareAndSwapObject(this, AbstractAssociation.sharedStateOffset, oldState, newState): @nowarn(
+      "cat=deprecation")
 
   /**
    * @return Reference to current shared state
    */
   def associationState: AssociationState =
-    Unsafe.instance.getObjectVolatile(this, AbstractAssociation.sharedStateOffset).asInstanceOf[AssociationState]
+    Unsafe.instance.getObjectVolatile(this, AbstractAssociation.sharedStateOffset).asInstanceOf[
+      AssociationState]: @nowarn("cat=deprecation")
 
   def setControlIdleKillSwitch(killSwitch: OptionVal[SharedKillSwitch]): Unit = {
     val current = associationState
@@ -538,7 +540,7 @@ private[remote] class Association(
         current.uniqueRemoteAddress() match {
           case Some(peer) if peer.uid == u =>
             if (!current.isQuarantined(u)) {
-              val newState = current.newQuarantined()
+              val newState = current.newQuarantined(harmless)
               if (swapState(current, newState)) {
                 // quarantine state change was performed
                 if (harmless) {

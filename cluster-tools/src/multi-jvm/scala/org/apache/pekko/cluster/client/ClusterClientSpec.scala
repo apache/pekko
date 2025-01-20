@@ -16,7 +16,6 @@ package org.apache.pekko.cluster.client
 import scala.annotation.nowarn
 import scala.concurrent.Await
 import scala.concurrent.duration._
-import scala.language.postfixOps
 
 import com.typesafe.config.ConfigFactory
 
@@ -216,7 +215,7 @@ class ClusterClientSpec extends MultiNodeSpec(ClusterClientSpec) with STMultiNod
 
   "A ClusterClient" must {
 
-    "startup cluster" in within(30 seconds) {
+    "startup cluster" in within(30.seconds) {
       join(first, first)
       join(second, first)
       join(third, first)
@@ -232,7 +231,7 @@ class ClusterClientSpec extends MultiNodeSpec(ClusterClientSpec) with STMultiNod
       enterBarrier("after-1")
     }
 
-    "communicate to actor on any node in cluster" in within(10 seconds) {
+    "communicate to actor on any node in cluster" in within(10.seconds) {
       runOn(client) {
         val c = system.actorOf(
           ClusterClient.props(ClusterClientSettings(system).withInitialContacts(initialContacts)),
@@ -248,7 +247,7 @@ class ClusterClientSpec extends MultiNodeSpec(ClusterClientSpec) with STMultiNod
       enterBarrier("after-2")
     }
 
-    "work with ask" in within(10 seconds) {
+    "work with ask" in within(10.seconds) {
       runOn(client) {
         import pekko.pattern.ask
         val c = system.actorOf(
@@ -266,7 +265,7 @@ class ClusterClientSpec extends MultiNodeSpec(ClusterClientSpec) with STMultiNod
       enterBarrier("after-3")
     }
 
-    "demonstrate usage" in within(15 seconds) {
+    "demonstrate usage" in within(15.seconds) {
       def host1 = first
       def host2 = second
       def host3 = third
@@ -308,7 +307,7 @@ class ClusterClientSpec extends MultiNodeSpec(ClusterClientSpec) with STMultiNod
       enterBarrier("after-4")
     }
 
-    "report events" in within(15 seconds) {
+    "report events" in within(15.seconds) {
       runOn(client) {
         implicit val timeout: Timeout = Timeout(1.second.dilated)
         val client = Await.result(system.actorSelection("/user/client").resolveOne(), timeout.duration)
@@ -348,7 +347,7 @@ class ClusterClientSpec extends MultiNodeSpec(ClusterClientSpec) with STMultiNod
       enterBarrier("after-5")
     }
 
-    "report a removal of a receptionist" in within(10 seconds) {
+    "report a removal of a receptionist" in within(10.seconds) {
       runOn(client) {
         val unreachableContact = node(client) / "system" / "receptionist"
         val expectedRoles = Set(first, second, third, fourth)

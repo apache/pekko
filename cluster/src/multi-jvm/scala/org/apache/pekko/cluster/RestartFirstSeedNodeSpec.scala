@@ -17,7 +17,6 @@ import scala.collection.immutable
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
-import language.postfixOps
 
 import org.apache.pekko
 import pekko.actor.Actor
@@ -84,7 +83,7 @@ abstract class RestartFirstSeedNodeSpec
   }
 
   "Cluster seed nodes" must {
-    "be able to restart first seed node and join other seed nodes" taggedAs LongRunningTest in within(40 seconds) {
+    "be able to restart first seed node and join other seed nodes" taggedAs LongRunningTest in within(40.seconds) {
       // seed1System is a separate ActorSystem, to be able to simulate restart
       // we must transfer its address to seed2 and seed3
       runOn(seed2, seed3) {
@@ -103,7 +102,7 @@ abstract class RestartFirstSeedNodeSpec
         seedNode1Address = Cluster(seed1System).selfAddress
         List(seed2, seed3).foreach { r =>
           system.actorSelection(RootActorPath(r) / "user" / "address-receiver") ! seedNode1Address
-          expectMsg(5 seconds, "ok")
+          expectMsg(5.seconds, "ok")
         }
       }
       enterBarrier("seed1-address-transferred")

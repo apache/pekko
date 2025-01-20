@@ -561,7 +561,8 @@ object MultiJvmPlugin extends AutoPlugin {
       "-Dmultinode.max-nodes=" + maxNodes,
       "-Dmultinode.server-host=" + hosts.head.split("@").last,
       "-Dmultinode.host=" + hosts(index).split("@").last,
-      "-Dmultinode.index=" + index)
+      "-Dmultinode.index=" + index,
+      "-Dio.netty.leakDetection.level=PARANOID")
   }
 
   private def processMultiNodeHosts(

@@ -13,7 +13,6 @@
 
 package scala.docs.cluster
 
-import language.postfixOps
 import scala.concurrent.duration._
 import org.apache.pekko.actor.Actor
 import org.apache.pekko.actor.ActorRef

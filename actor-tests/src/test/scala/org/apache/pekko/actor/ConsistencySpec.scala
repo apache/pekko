@@ -15,8 +15,6 @@ package org.apache.pekko.actor
 
 import scala.concurrent.duration._
 
-import language.postfixOps
-
 import org.apache.pekko
 import pekko.dispatch.ThreadPoolConfig
 import pekko.testkit.PekkoSpec
@@ -80,7 +78,7 @@ class ConsistencySpec extends PekkoSpec(ConsistencySpec.config) {
 
       for (a <- actors) { a.tell("done", testActor) }
 
-      for (_ <- actors) expectMsg(5 minutes, "done")
+      for (_ <- actors) expectMsg(5.minutes, "done")
     }
   }
 }

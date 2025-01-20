@@ -484,7 +484,8 @@ import pekko.remote.artery.ThisActorSystemQuarantinedEvent
 
     log.warning(
       ClusterLogMarker.sbrDowning(decision),
-      s"SBR took decision $decision and is downing [${nodesToDown.map(_.address).mkString(", ")}]${if (downMyself) " including myself"
+      s"SBR took decision $decision and is downing [${nodesToDown.map(_.address).mkString(", ")}]${if (downMyself)
+          " including myself"
         else ""}, " +
       s"[${strategy.unreachable.size}] unreachable of [${strategy.members.size}] members" +
       indirectlyConnectedLogMessage +

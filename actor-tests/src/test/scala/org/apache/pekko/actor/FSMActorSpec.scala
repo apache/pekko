@@ -17,7 +17,6 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
-import language.postfixOps
 
 import org.apache.pekko
 import pekko.event._
@@ -113,7 +112,7 @@ object FSMActorSpec {
 class FSMActorSpec extends PekkoSpec(Map("pekko.actor.debug.fsm" -> true)) with ImplicitSender {
   import FSMActorSpec._
 
-  val timeout = Timeout(2 seconds)
+  val timeout = Timeout(2.seconds)
 
   "An FSM Actor" must {
 
@@ -125,7 +124,7 @@ class FSMActorSpec extends PekkoSpec(Map("pekko.actor.debug.fsm" -> true)) with 
       import latches._
 
       // lock that locked after being open for 1 sec
-      val lock = system.actorOf(Props(new Lock("33221", 1 second, latches)))
+      val lock = system.actorOf(Props(new Lock("33221", 1.second, latches)))
 
       val transitionTester = system.actorOf(Props(new Actor {
         def receive = {
@@ -179,7 +178,7 @@ class FSMActorSpec extends PekkoSpec(Map("pekko.actor.debug.fsm" -> true)) with 
       EventFilter.error("Next state 2 does not exist", occurrences = 1).intercept {
         system.eventStream.subscribe(testActor, classOf[Logging.Error])
         fsm ! "go"
-        expectMsgPF(1 second, hint = "Next state 2 does not exist") {
+        expectMsgPF(1.second, hint = "Next state 2 does not exist") {
           case Logging.Error(_, `name`, _, "Next state 2 does not exist") => true
         }
         system.eventStream.unsubscribe(testActor)
@@ -203,7 +202,7 @@ class FSMActorSpec extends PekkoSpec(Map("pekko.actor.debug.fsm" -> true)) with 
       val ref = system.actorOf(Props(fsm))
       Await.ready(started, timeout.duration)
       system.stop(ref)
-      expectMsg(1 second, fsm.StopEvent(FSM.Shutdown, 1, null))
+      expectMsg(1.second, fsm.StopEvent(FSM.Shutdown, 1, null))
     }
 
     "run onTermination with updated state upon stop(reason, stateData)" in {
@@ -230,12 +229,12 @@ class FSMActorSpec extends PekkoSpec(Map("pekko.actor.debug.fsm" -> true)) with 
         when("not-started") {
           case Event("start", _) => goto("started").replying("starting")
         }
-        when("started", stateTimeout = 10 seconds) {
+        when("started", stateTimeout = 10.seconds) {
           case Event("stop", _) => stop()
         }
         onTransition {
           case "not-started" -> "started" =>
-            for (timerName <- timerNames) startSingleTimer(timerName, (), 10 seconds)
+            for (timerName <- timerNames) startSingleTimer(timerName, (), 10.seconds)
         }
         onTermination {
           case _ => {
@@ -253,11 +252,11 @@ class FSMActorSpec extends PekkoSpec(Map("pekko.actor.debug.fsm" -> true)) with 
       checkTimersActive(false)
 
       fsmref ! "start"
-      expectMsg(1 second, "starting")
+      expectMsg(1.second, "starting")
       checkTimersActive(true)
 
       fsmref ! "stop"
-      expectMsg(1 second, "stopped")
+      expectMsg(1.second, "stopped")
     }
 
     "log events and transitions if asked to do so" in {
@@ -273,7 +272,7 @@ class FSMActorSpec extends PekkoSpec(Map("pekko.actor.debug.fsm" -> true)) with 
               startWith(1, null)
               when(1) {
                 case Event("go", _) =>
-                  startSingleTimer("t", FSM.Shutdown, 1.5 seconds)
+                  startSingleTimer("t", FSM.Shutdown, 1.5.seconds)
                   goto(2)
               }
               when(2) {
@@ -289,21 +288,21 @@ class FSMActorSpec extends PekkoSpec(Map("pekko.actor.debug.fsm" -> true)) with 
             val fsmClass = fsm.underlyingActor.getClass
             system.eventStream.subscribe(testActor, classOf[Logging.Debug])
             fsm ! "go"
-            expectMsgPF(1 second, hint = "processing Event(go,null)") {
+            expectMsgPF(1.second, hint = "processing Event(go,null)") {
               case Logging.Debug(`name`, `fsmClass`, s: String)
                   if s.startsWith("processing Event(go,null) from Actor[") =>
                 true
             }
-            expectMsg(1 second, Logging.Debug(name, fsmClass, "setting timer 't'/1500 milliseconds: Shutdown"))
-            expectMsg(1 second, Logging.Debug(name, fsmClass, "transition 1 -> 2"))
+            expectMsg(1.second, Logging.Debug(name, fsmClass, "setting timer 't'/1500 milliseconds: Shutdown"))
+            expectMsg(1.second, Logging.Debug(name, fsmClass, "transition 1 -> 2"))
             fsm ! "stop"
-            expectMsgPF(1 second, hint = "processing Event(stop,null)") {
+            expectMsgPF(1.second, hint = "processing Event(stop,null)") {
               case Logging.Debug(`name`, `fsmClass`, s: String)
                   if s.startsWith("processing Event(stop,null) from Actor[") =>
                 true
             }
-            expectMsgAllOf(1 second, Logging.Debug(name, fsmClass, "canceling timer 't'"), FSM.Normal)
-            expectNoMessage(1 second)
+            expectMsgAllOf(1.second, Logging.Debug(name, fsmClass, "canceling timer 't'"), FSM.Normal)
+            expectNoMessage(1.second)
             system.eventStream.unsubscribe(testActor)
           }
         }
@@ -323,13 +322,13 @@ class FSMActorSpec extends PekkoSpec(Map("pekko.actor.debug.fsm" -> true)) with 
       })
       fsmref ! "log"
       import FSM.LogEntry
-      expectMsg(1 second, IndexedSeq(LogEntry(1, 0, "log")))
+      expectMsg(1.second, IndexedSeq(LogEntry(1, 0, "log")))
       fsmref ! "count"
       fsmref ! "log"
-      expectMsg(1 second, IndexedSeq(LogEntry(1, 0, "log"), LogEntry(1, 0, "count"), LogEntry(1, 1, "log")))
+      expectMsg(1.second, IndexedSeq(LogEntry(1, 0, "log"), LogEntry(1, 0, "count"), LogEntry(1, 1, "log")))
       fsmref ! "count"
       fsmref ! "log"
-      expectMsg(1 second, IndexedSeq(LogEntry(1, 1, "log"), LogEntry(1, 1, "count"), LogEntry(1, 2, "log")))
+      expectMsg(1.second, IndexedSeq(LogEntry(1, 1, "log"), LogEntry(1, 1, "count"), LogEntry(1, 2, "log")))
     }
 
     "allow transforming of state results" in {

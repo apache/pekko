@@ -27,7 +27,7 @@ class SerialVersionRemoverPlugin extends StandardPlugin {
   val name = "serialversion-remover-plugin"
   val description = "Remove SerialVersionUid annotation from traits"
 
-  def init(options: List[String]): List[PluginPhase] = {
+  override def init(options: List[String]): List[PluginPhase] = {
     (new SerialVersionRemoverPhase()) :: Nil
   }
 }

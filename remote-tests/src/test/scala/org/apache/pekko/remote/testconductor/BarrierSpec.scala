@@ -17,8 +17,6 @@ import java.net.{ InetAddress, InetSocketAddress }
 
 import scala.concurrent.duration._
 
-import language.postfixOps
-
 import org.apache.pekko
 import pekko.actor._
 import pekko.testkit.{ EventFilter, ImplicitSender, PekkoSpec, TestProbe, TimingTest }
@@ -60,9 +58,9 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
       val b = getBarrier()
       b ! NodeInfo(A, AddressFromURIString("pekko://sys"), system.deadLetters)
       b ! ClientDisconnected(B)
-      expectNoMessage(1 second)
+      expectNoMessage(1.second)
       b ! ClientDisconnected(A)
-      expectNoMessage(1 second)
+      expectNoMessage(1.second)
     }
 
     "fail entering barrier when nobody registered" taggedAs TimingTest in {
@@ -78,7 +76,7 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
       barrier ! NodeInfo(B, AddressFromURIString("pekko://sys"), b.ref)
       a.send(barrier, EnterBarrier("bar2", None))
       noMsg(a, b)
-      within(2 seconds) {
+      within(2.seconds) {
         b.send(barrier, EnterBarrier("bar2", None))
         a.expectMsg(ToClient(BarrierResult("bar2", true)))
         b.expectMsg(ToClient(BarrierResult("bar2", true)))
@@ -94,7 +92,7 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
       barrier ! NodeInfo(C, AddressFromURIString("pekko://sys"), c.ref)
       b.send(barrier, EnterBarrier("bar3", None))
       noMsg(a, b, c)
-      within(2 seconds) {
+      within(2.seconds) {
         c.send(barrier, EnterBarrier("bar3", None))
         a.expectMsg(ToClient(BarrierResult("bar3", true)))
         b.expectMsg(ToClient(BarrierResult("bar3", true)))
@@ -113,12 +111,12 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
       barrier ! RemoveClient(A)
       barrier ! ClientDisconnected(A)
       noMsg(a, b, c)
-      b.within(2 seconds) {
+      b.within(2.seconds) {
         barrier ! RemoveClient(C)
         b.expectMsg(ToClient(BarrierResult("bar4", true)))
       }
       barrier ! ClientDisconnected(C)
-      expectNoMessage(1 second)
+      expectNoMessage(1.second)
     }
 
     "leave barrier when last “arrived” is removed" taggedAs TimingTest in {
@@ -232,7 +230,7 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
       barrier ! nodeB
       a.send(barrier, EnterBarrier("bar10", None))
       EventFilter[BarrierTimeout](occurrences = 1).intercept {
-        val msg = expectMsgType[Failed](7 seconds)
+        val msg = expectMsgType[Failed](7.seconds)
         msg match {
           case Failed(_, thr: BarrierTimeout)
               if thr == BarrierTimeout(Data(Set(nodeA, nodeB), "bar10", a.ref :: Nil, thr.data.deadline)) =>
@@ -263,7 +261,7 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
     }
 
     "finally have no failure messages left" taggedAs TimingTest in {
-      expectNoMessage(1 second)
+      expectNoMessage(1.second)
     }
 
   }
@@ -288,9 +286,9 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
         b ! NodeInfo(A, AddressFromURIString("pekko://sys"), testActor)
         expectMsg(ToClient(Done))
         b ! ClientDisconnected(B)
-        expectNoMessage(1 second)
+        expectNoMessage(1.second)
         b ! ClientDisconnected(A)
-        expectNoMessage(1 second)
+        expectNoMessage(1.second)
       }
     }
 
@@ -310,7 +308,7 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
         b.expectMsg(ToClient(Done))
         a.send(barrier, EnterBarrier("bar11", None))
         noMsg(a, b)
-        within(2 seconds) {
+        within(2.seconds) {
           b.send(barrier, EnterBarrier("bar11", None))
           a.expectMsg(ToClient(BarrierResult("bar11", true)))
           b.expectMsg(ToClient(BarrierResult("bar11", true)))
@@ -330,7 +328,7 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
         c.expectMsg(ToClient(Done))
         b.send(barrier, EnterBarrier("bar12", None))
         noMsg(a, b, c)
-        within(2 seconds) {
+        within(2.seconds) {
           c.send(barrier, EnterBarrier("bar12", None))
           a.expectMsg(ToClient(BarrierResult("bar12", true)))
           b.expectMsg(ToClient(BarrierResult("bar12", true)))
@@ -353,12 +351,12 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
         barrier ! Remove(A)
         barrier ! ClientDisconnected(A)
         noMsg(a, b, c)
-        b.within(2 seconds) {
+        b.within(2.seconds) {
           barrier ! Remove(C)
           b.expectMsg(ToClient(BarrierResult("bar13", true)))
         }
         barrier ! ClientDisconnected(C)
-        expectNoMessage(1 second)
+        expectNoMessage(1.second)
       }
     }
 
@@ -441,7 +439,7 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
         barrier ! nodeB
         a.expectMsg(ToClient(Done))
         b.expectMsg(ToClient(Done))
-        a.send(barrier, EnterBarrier("bar18", Option(2 seconds)))
+        a.send(barrier, EnterBarrier("bar18", Option(2.seconds)))
         EventFilter[BarrierTimeout](occurrences = 1).intercept {
           Thread.sleep(4000)
         }
@@ -490,11 +488,11 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
         barrier ! nodeB
         a.expectMsg(ToClient(Done))
         b.expectMsg(ToClient(Done))
-        a.send(barrier, EnterBarrier("bar20", Option(2 seconds)))
+        a.send(barrier, EnterBarrier("bar20", Option(2.seconds)))
         EventFilter[FailedBarrier](occurrences = 1).intercept {
           b.send(barrier, FailBarrier("bar20"))
           a.expectMsg(ToClient(BarrierResult("bar20", false)))
-          b.expectNoMessage(1 second)
+          b.expectNoMessage(1.second)
         }
         a.send(barrier, EnterBarrier("bar21", None))
         b.send(barrier, EnterBarrier("bar21", None))
@@ -515,8 +513,8 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
         a.expectMsg(ToClient(Done))
         b.expectMsg(ToClient(Done))
         c.expectMsg(ToClient(Done))
-        a.send(barrier, EnterBarrier("bar22", Option(10 seconds)))
-        b.send(barrier, EnterBarrier("bar22", Option(2 seconds)))
+        a.send(barrier, EnterBarrier("bar22", Option(10.seconds)))
+        b.send(barrier, EnterBarrier("bar22", Option(2.seconds)))
         EventFilter[BarrierTimeout](occurrences = 1).intercept {
           Thread.sleep(4000)
         }
@@ -539,8 +537,8 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
         a.expectMsg(ToClient(Done))
         b.expectMsg(ToClient(Done))
         c.expectMsg(ToClient(Done))
-        a.send(barrier, EnterBarrier("bar23", Option(2 seconds)))
-        b.send(barrier, EnterBarrier("bar23", Option(10 seconds)))
+        a.send(barrier, EnterBarrier("bar23", Option(2.seconds)))
+        b.send(barrier, EnterBarrier("bar23", Option(10.seconds)))
         EventFilter[BarrierTimeout](occurrences = 1).intercept {
           Thread.sleep(4000)
         }
@@ -552,7 +550,7 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
     }
 
     "finally have no failure messages left" taggedAs TimingTest in {
-      expectNoMessage(1 second)
+      expectNoMessage(1.second)
     }
 
   }
@@ -592,7 +590,7 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
   }
 
   private def noMsg(probes: TestProbe*): Unit = {
-    expectNoMessage(1 second)
+    expectNoMessage(1.second)
     probes.foreach(_.msgAvailable should ===(false))
   }
 

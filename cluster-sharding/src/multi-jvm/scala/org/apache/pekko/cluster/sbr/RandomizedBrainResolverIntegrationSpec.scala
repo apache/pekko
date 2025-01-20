@@ -312,7 +312,9 @@ class RandomizedSplitBrainResolverIntegrationSpec
             (if (cleanSplit)
                s"side1 [${side1.map(_.name).mkString(", ")}], side2 [${side2.map(_.name).mkString(", ")}] "
              else " ") +
-            s", flaky [${flaky.map { case (_, (from, to)) => from.name -> to.map(_.name).mkString("(", ", ", ")") }.mkString("; ")}] " +
+            s", flaky [${flaky.map { case (_, (from, to)) =>
+                from.name -> to.map(_.name).mkString("(", ", ", ")")
+              }.mkString("; ")}] " +
             s", healLastFlaky [$healLastFlaky] " +
             s", delays [${delays.mkString(", ")}]")
 

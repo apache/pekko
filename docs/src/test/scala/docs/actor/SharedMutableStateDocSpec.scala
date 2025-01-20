@@ -21,7 +21,6 @@ class SharedMutableStateDocSpec {
   import org.apache.pekko.util.Timeout
   import scala.concurrent.Future
   import scala.concurrent.duration._
-  import scala.language.postfixOps
   import scala.collection.mutable
 
   case class Message(msg: String)

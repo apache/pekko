@@ -16,7 +16,6 @@ package org.apache.pekko.persistence.fsm
 import java.io.File
 
 import scala.concurrent.duration._
-import scala.language.postfixOps
 import scala.reflect.ClassTag
 
 import scala.annotation.nowarn
@@ -62,7 +61,7 @@ abstract class PersistentFSMSpec(config: Config) extends PersistenceSpec(config)
       expectMsg(CurrentState(fsmRef, LookingAround, None))
       expectMsg(EmptyShoppingCart)
 
-      expectMsg(Transition(fsmRef, LookingAround, Shopping, Some(1 second)))
+      expectMsg(Transition(fsmRef, LookingAround, Shopping, Some(1.second)))
       expectMsg(NonEmptyShoppingCart(List(shirt)))
       expectMsg(NonEmptyShoppingCart(List(shirt, shoes)))
       expectMsg(NonEmptyShoppingCart(List(shirt, shoes, coat)))
@@ -88,11 +87,11 @@ abstract class PersistentFSMSpec(config: Config) extends PersistenceSpec(config)
 
       expectMsg(CurrentState(fsmRef, LookingAround, None))
 
-      expectMsg(Transition(fsmRef, LookingAround, Shopping, Some(1 second)))
+      expectMsg(Transition(fsmRef, LookingAround, Shopping, Some(1.second)))
 
       val adjustedMin = 1.second - (System.nanoTime - before).nanos
       within(min = adjustedMin, max = remainingOrDefault) {
-        expectMsg(Transition(fsmRef, Shopping, Inactive, Some(2 seconds)))
+        expectMsg(Transition(fsmRef, Shopping, Inactive, Some(2.seconds)))
       }
 
       expectTerminated(fsmRef)
@@ -118,7 +117,7 @@ abstract class PersistentFSMSpec(config: Config) extends PersistenceSpec(config)
       expectMsg(CurrentState(fsmRef, LookingAround, None))
       expectMsg(EmptyShoppingCart)
 
-      expectMsg(Transition(fsmRef, LookingAround, Shopping, Some(1 second)))
+      expectMsg(Transition(fsmRef, LookingAround, Shopping, Some(1.second)))
       expectMsg(NonEmptyShoppingCart(List(shirt)))
       expectMsg(NonEmptyShoppingCart(List(shirt, shoes)))
 
@@ -138,7 +137,7 @@ abstract class PersistentFSMSpec(config: Config) extends PersistenceSpec(config)
       recoveredFsmRef ! GetCurrentCart
       recoveredFsmRef ! Leave
 
-      expectMsg(CurrentState(recoveredFsmRef, Shopping, Some(1 second)))
+      expectMsg(CurrentState(recoveredFsmRef, Shopping, Some(1.second)))
       expectMsg(NonEmptyShoppingCart(List(shirt, shoes)))
 
       expectMsg(NonEmptyShoppingCart(List(shirt, shoes, coat)))
@@ -168,7 +167,7 @@ abstract class PersistentFSMSpec(config: Config) extends PersistenceSpec(config)
       fsmRef ! Leave
 
       expectMsg(CurrentState(fsmRef, LookingAround, None))
-      expectMsg(Transition(fsmRef, LookingAround, Shopping, Some(1 second)))
+      expectMsg(Transition(fsmRef, LookingAround, Shopping, Some(1.second)))
       expectMsg(Transition(fsmRef, Shopping, Paid, None))
       reportActorProbe.expectMsg(PurchaseWasMade(List(shirt, shoes, coat)))
       expectTerminated(fsmRef)
@@ -192,7 +191,7 @@ abstract class PersistentFSMSpec(config: Config) extends PersistenceSpec(config)
       fsmRef ! Leave
 
       expectMsg(CurrentState(fsmRef, LookingAround, None))
-      expectMsg(Transition(fsmRef, LookingAround, Shopping, Some(1 second)))
+      expectMsg(Transition(fsmRef, LookingAround, Shopping, Some(1.second)))
       reportActorProbe.expectMsg(ShoppingCardDiscarded)
       expectTerminated(fsmRef)
     }
@@ -209,9 +208,9 @@ abstract class PersistentFSMSpec(config: Config) extends PersistenceSpec(config)
       fsmRef ! AddItem(shirt)
 
       expectMsg(CurrentState(fsmRef, LookingAround, None))
-      expectMsg(Transition(fsmRef, LookingAround, Shopping, Some(1 second)))
+      expectMsg(Transition(fsmRef, LookingAround, Shopping, Some(1.second)))
 
-      expectNoMessage(0.6 seconds) // arbitrarily chosen delay, less than the timeout, before stopping the FSM
+      expectNoMessage(0.6.seconds) // arbitrarily chosen delay, less than the timeout, before stopping the FSM
       fsmRef ! PoisonPill
       expectTerminated(fsmRef)
 
@@ -221,14 +220,14 @@ abstract class PersistentFSMSpec(config: Config) extends PersistenceSpec(config)
 
       // this isn't when it got into that state, but close enough
       val before = System.nanoTime
-      expectMsg(CurrentState(recoveredFsmRef, Shopping, Some(1 second)))
+      expectMsg(CurrentState(recoveredFsmRef, Shopping, Some(1.second)))
 
       val adjustedMin = 1.second - (System.nanoTime - before).nanos
       within(min = adjustedMin, max = remainingOrDefault) {
-        expectMsg(Transition(recoveredFsmRef, Shopping, Inactive, Some(2 seconds)))
+        expectMsg(Transition(recoveredFsmRef, Shopping, Inactive, Some(2.seconds)))
       }
 
-      expectNoMessage(0.6 seconds) // arbitrarily chosen delay, less than the timeout, before stopping the FSM
+      expectNoMessage(0.6.seconds) // arbitrarily chosen delay, less than the timeout, before stopping the FSM
       recoveredFsmRef ! PoisonPill
       expectTerminated(recoveredFsmRef)
 
@@ -236,7 +235,7 @@ abstract class PersistentFSMSpec(config: Config) extends PersistenceSpec(config)
       watch(recoveredFsmRef)
       recoveredFsmRef ! SubscribeTransitionCallBack(testActor)
 
-      expectMsg(CurrentState(recoveredFsmRef, Inactive, Some(2 seconds)))
+      expectMsg(CurrentState(recoveredFsmRef, Inactive, Some(2.seconds)))
       expectTerminated(recoveredFsmRef)
     }
 
@@ -330,7 +329,7 @@ abstract class PersistentFSMSpec(config: Config) extends PersistenceSpec(config)
       expectMsg(NonEmptyShoppingCart(List(shirt, shoes, coat)))
 
       expectMsg(NonEmptyShoppingCart(List(shirt, shoes, coat)))
-      expectNoMessage(1 second)
+      expectNoMessage(1.second)
 
       fsmRef ! PoisonPill
       expectTerminated(fsmRef)
@@ -499,14 +498,14 @@ object PersistentFSMSpec {
 
     when(LookingAround) {
       case Event(AddItem(item), _) =>
-        goto(Shopping).applying(ItemAdded(item)).forMax(1 seconds)
+        goto(Shopping).applying(ItemAdded(item)).forMax(1.seconds)
       case Event(GetCurrentCart, data) =>
         stay().replying(data)
     }
 
     when(Shopping) {
       case Event(AddItem(item), _) =>
-        stay().applying(ItemAdded(item)).forMax(1 seconds)
+        stay().applying(ItemAdded(item)).forMax(1.seconds)
       case Event(Buy, _) =>
         // #customer-andthen-example
         goto(Paid).applying(OrderExecuted).andThen {
@@ -529,12 +528,12 @@ object PersistentFSMSpec {
       case Event(GetCurrentCart, data) =>
         stay().replying(data)
       case Event(StateTimeout, _) =>
-        goto(Inactive).forMax(2 seconds)
+        goto(Inactive).forMax(2.seconds)
     }
 
     when(Inactive) {
       case Event(AddItem(item), _) =>
-        goto(Shopping).applying(ItemAdded(item)).forMax(1 seconds)
+        goto(Shopping).applying(ItemAdded(item)).forMax(1.seconds)
       case Event(StateTimeout, _) =>
         stop().applying(OrderDiscarded).andThen {
           case _ => reportActor ! ShoppingCardDiscarded

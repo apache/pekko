@@ -524,7 +524,7 @@ private final case class SavedIslandData(
             if (Debug) println(s"PUSH: $matValue => $matValueStack")
 
           case Concat(first, next) =>
-            if (next ne EmptyTraversal) traversalStack.add(next)
+            if (next ne EmptyTraversal) traversalStack.addLast(next)
             nextStep = first
           case Pop =>
             val popped = matValueStack.removeLast()
@@ -689,14 +689,21 @@ private final case class SavedIslandData(
 /**
  * INTERNAL API
  */
+@InternalApi
+private[pekko] object GraphStageIsland {
+  // used as a type hint when creating the array of logics
+  private final val emptyLogicArray = Array.empty[GraphStageLogic]
+}
+
+/**
+ * INTERNAL API
+ */
 @InternalApi private[pekko] final class GraphStageIsland(
     effectiveAttributes: Attributes,
     materializer: PhasedFusingActorMaterializer,
     islandName: String,
     subflowFuser: OptionVal[GraphInterpreterShell => ActorRef])
     extends PhaseIsland[GraphStageLogic] {
-  // TODO: remove these
-  private val logicArrayType = Array.empty[GraphStageLogic]
   private[this] val logics = new util.ArrayList[GraphStageLogic](16)
 
   private var connections = new Array[Connection](16)
@@ -815,7 +822,7 @@ private final case class SavedIslandData(
     }
 
     shell.connections = finalConnections
-    shell.logics = logics.toArray(logicArrayType)
+    shell.logics = logics.toArray(GraphStageIsland.emptyLogicArray)
 
     subflowFuser match {
       case OptionVal.Some(fuseIntoExistingInterpreter) =>
@@ -869,7 +876,7 @@ private final case class SavedIslandData(
     materializer: PhasedFusingActorMaterializer,
     islandName: String)
     extends PhaseIsland[Publisher[Any]] {
-  override def name: String = s"SourceModule phase"
+  override def name: String = "SourceModule phase"
 
   override def materializeAtomic(mod: AtomicModule[Shape, Any], attributes: Attributes): (Publisher[Any], Any) = {
     mod
@@ -899,8 +906,8 @@ private final case class SavedIslandData(
  */
 @InternalApi private[pekko] final class SinkModulePhase(materializer: PhasedFusingActorMaterializer, islandName: String)
     extends PhaseIsland[AnyRef] {
-  override def name: String = s"SinkModule phase"
-  var subscriberOrVirtualPublisher: AnyRef = _
+  override def name: String = "SinkModule phase"
+  private var subscriberOrVirtualPublisher: AnyRef = _
 
   override def materializeAtomic(mod: AtomicModule[Shape, Any], attributes: Attributes): (AnyRef, Any) = {
     val subAndMat =
@@ -971,7 +978,7 @@ private final case class SavedIslandData(
     extends PhaseIsland[NotUsed] {
   def name: String = "TlsModulePhase"
 
-  var tlsActor: ActorRef = _
+  private var tlsActor: ActorRef = _
   var publishers: Vector[ActorPublisher[Any]] = _
 
   def materializeAtomic(mod: AtomicModule[Shape, Any], attributes: Attributes): (NotUsed, Any) = {
@@ -987,7 +994,7 @@ private final case class SavedIslandData(
 
     tlsActor = materializer.actorOf(props, "TLS-for-" + islandName)
     def factory(id: Int) = new ActorPublisher[Any](tlsActor) {
-      override val wakeUpMsg = FanOut.SubstreamSubscribePending(id)
+      override val wakeUpMsg: FanOut.SubstreamSubscribePending = FanOut.SubstreamSubscribePending(id)
     }
     publishers = Vector.tabulate(2)(factory)
     tlsActor ! FanOut.ExposedPublishers(publishers)

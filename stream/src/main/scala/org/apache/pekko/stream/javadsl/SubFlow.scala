@@ -29,6 +29,7 @@ import pekko.annotation.ApiMayChange
 import pekko.event.{ LogMarker, LoggingAdapter, MarkerLoggingAdapter }
 import pekko.japi.{ function, Pair }
 import pekko.stream._
+import pekko.stream.impl.fusing.ZipWithIndexJava
 import pekko.util.ConstantFun
 import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
@@ -1761,7 +1762,7 @@ class SubFlow[In, Out, Mat](
    */
   def flatMapPrefix[Out2, Mat2](
       n: Int,
-      f: function.Function[java.lang.Iterable[Out], javadsl.Flow[Out, Out2, Mat2]]): SubFlow[In, Out2, Mat] = {
+      f: function.Function[java.util.List[Out], javadsl.Flow[Out, Out2, Mat2]]): SubFlow[In, Out2, Mat] = {
     val newDelegate = delegate.flatMapPrefix(n)(seq => f(seq.asJava).asScala)
     new javadsl.SubFlow(newDelegate)
   }
@@ -2272,7 +2273,8 @@ class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def zipWithIndex: SubFlow[In, pekko.japi.Pair[Out @uncheckedVariance, java.lang.Long], Mat] =
-    new SubFlow(delegate.zipWithIndex.map { case (elem, index) => pekko.japi.Pair[Out, java.lang.Long](elem, index) })
+    new SubFlow(delegate.via(
+      ZipWithIndexJava.asInstanceOf[Graph[FlowShape[Out, Pair[Out, java.lang.Long]], NotUsed]]))
 
   /**
    * If the first element has not passed through this operator before the provided timeout, the stream is failed

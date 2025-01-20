@@ -13,6 +13,7 @@
 
 package org.apache.pekko.stream.javadsl;
 
+import com.google.common.collect.Sets;
 import org.apache.pekko.Done;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorRef;
@@ -35,7 +36,6 @@ import org.apache.pekko.stream.testkit.javadsl.TestSink;
 import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.apache.pekko.util.ConstantFun;
 import com.google.common.collect.Iterables;
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -470,7 +470,7 @@ public class SourceTest extends StreamTest {
 
     CompletionStage<List<Integer>> future =
         Source.from(mainInputs)
-            .flatMapConcat(ConstantFun.javaIdentityFunction())
+            .flatMapConcat(Function.identity())
             .grouped(6)
             .runWith(Sink.head(), system);
 
@@ -495,7 +495,7 @@ public class SourceTest extends StreamTest {
 
     CompletionStage<List<Integer>> future =
         Source.from(mainInputs)
-            .flatMapMerge(3, ConstantFun.javaIdentityFunction())
+            .flatMapMerge(3, Function.identity())
             .grouped(60)
             .runWith(Sink.head(), system);
 
@@ -1503,5 +1503,58 @@ public class SourceTest extends StreamTest {
             .toCompletableFuture()
             .get(3, TimeUnit.SECONDS);
     Assert.assertEquals(Arrays.asList(2, 4, 6, 8, 10), resultList);
+  }
+
+  @Test
+  public void useFlatMapPrefix() {
+    final List<Integer> resultList =
+        Source.range(1, 2)
+            .flatMapPrefix(1, prefix -> Flow.of(Integer.class).prepend(Source.from(prefix)))
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .join();
+    Assert.assertEquals(Arrays.asList(1, 2), resultList);
+  }
+
+  @Test
+  public void useFlatMapPrefixSubSource() {
+    final Set<Integer> resultSet =
+        Source.range(1, 2)
+            .groupBy(2, i -> i % 2)
+            .flatMapPrefix(1, prefix -> Flow.of(Integer.class).prepend(Source.from(prefix)))
+            .mergeSubstreams()
+            .runWith(Sink.collect(Collectors.toSet()), system)
+            .toCompletableFuture()
+            .join();
+    Assert.assertEquals(Sets.newHashSet(1, 2), resultSet);
+  }
+
+  @Test
+  public void zipWithIndex() {
+    final List<Pair<Integer, Long>> resultList =
+        Source.range(1, 3).zipWithIndex().runWith(Sink.seq(), system).toCompletableFuture().join();
+    assertEquals(
+        Arrays.asList(Pair.create(1, 0L), Pair.create(2, 1L), Pair.create(3, 2L)), resultList);
+  }
+
+  @Test
+  public void zipWithIndexOnSubSource() {
+    final Set<Pair<Integer, Long>> resultSet =
+        Source.range(1, 5)
+            .groupBy(2, i -> i % 2)
+            .zipWithIndex()
+            .mergeSubstreams()
+            .runWith(Sink.collect(Collectors.toSet()), system)
+            .toCompletableFuture()
+            .join();
+    Assert.assertEquals(
+        new HashSet<>(
+            Arrays.asList(
+                Pair.create(1, 0L),
+                Pair.create(3, 1L),
+                Pair.create(5, 2L),
+                Pair.create(2, 0L),
+                Pair.create(4, 1L))),
+        resultSet);
   }
 }

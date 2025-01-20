@@ -27,7 +27,7 @@ import scala.util.control.Exception.Catcher
 
 import org.apache.pekko
 import pekko.actor.{ ActorRef, Terminated }
-import pekko.annotation.{ DoNotInherit, InternalApi }
+import pekko.annotation.InternalApi
 import pekko.event._
 import pekko.event.Logging.LogLevel
 import pekko.stream.{ Supervision, _ }
@@ -204,33 +204,6 @@ import pekko.util.ccompat._
     }
 
   override def toString = "DropWhile"
-}
-
-/**
- * INTERNAL API
- */
-@DoNotInherit private[pekko] abstract class SupervisedGraphStageLogic(inheritedAttributes: Attributes, shape: Shape)
-    extends GraphStageLogic(shape) {
-  private lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
-
-  def withSupervision[T](f: () => T): Option[T] =
-    try {
-      Some(f())
-    } catch {
-      case NonFatal(ex) =>
-        decider(ex) match {
-          case Supervision.Stop    => onStop(ex)
-          case Supervision.Resume  => onResume(ex)
-          case Supervision.Restart => onRestart(ex)
-        }
-        None
-    }
-
-  def onResume(t: Throwable): Unit
-
-  def onStop(t: Throwable): Unit = failStage(t)
-
-  def onRestart(t: Throwable): Unit = onResume(t)
 }
 
 private[stream] object Collect {
@@ -1308,6 +1281,7 @@ private[stream] object Collect {
  */
 @InternalApi private[pekko] final case class MapAsync[In, Out](parallelism: Int, f: In => Future[Out])
     extends GraphStage[FlowShape[In, Out]] {
+  require(parallelism >= 1, "parallelism must be at least 1")
 
   import MapAsync._
 
@@ -1415,6 +1389,7 @@ private[stream] object Collect {
  */
 @InternalApi private[pekko] final case class MapAsyncUnordered[In, Out](parallelism: Int, f: In => Future[Out])
     extends GraphStage[FlowShape[In, Out]] {
+  require(parallelism >= 1, "parallelism must be at least 1")
 
   private val in = Inlet[In]("MapAsyncUnordered.in")
   private val out = Outlet[Out]("MapAsyncUnordered.out")

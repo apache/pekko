@@ -14,7 +14,6 @@
 package org.apache.pekko.cluster
 
 import scala.concurrent.duration._
-import scala.language.postfixOps
 
 import com.typesafe.config.ConfigFactory
 
@@ -63,7 +62,7 @@ abstract class MemberWeaklyUpSpec extends MultiNodeClusterSpec(MemberWeaklyUpSpe
     }
 
     "detect network partition and mark nodes on other side as unreachable" taggedAs LongRunningTest in within(
-      20 seconds) {
+      20.seconds) {
       runOn(first) {
         // split the cluster in two parts (first, second) / (third, fourth, fifth)
         for (role1 <- side1; role2 <- side2) {
@@ -83,7 +82,7 @@ abstract class MemberWeaklyUpSpec extends MultiNodeClusterSpec(MemberWeaklyUpSpe
       enterBarrier("after-2")
     }
 
-    "accept joining on each side and set status to WeaklyUp" taggedAs LongRunningTest in within(20 seconds) {
+    "accept joining on each side and set status to WeaklyUp" taggedAs LongRunningTest in within(20.seconds) {
       runOn(second) {
         Cluster(system).join(first)
       }
@@ -113,7 +112,7 @@ abstract class MemberWeaklyUpSpec extends MultiNodeClusterSpec(MemberWeaklyUpSpe
       enterBarrier("after-3")
     }
 
-    "change status to Up after healed network partition" taggedAs LongRunningTest in within(20 seconds) {
+    "change status to Up after healed network partition" taggedAs LongRunningTest in within(20.seconds) {
       runOn(first) {
         for (role1 <- side1; role2 <- side2) {
           testConductor.passThrough(role1, role2, Direction.Both).await

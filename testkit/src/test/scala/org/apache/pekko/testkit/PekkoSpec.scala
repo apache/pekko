@@ -15,7 +15,6 @@ package org.apache.pekko.testkit
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
-import scala.language.postfixOps
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import org.scalactic.CanEqual
@@ -126,7 +125,7 @@ abstract class PekkoSpec(_system: ActorSystem)
   def spawn(dispatcherId: String = Dispatchers.DefaultDispatcherId)(body: => Unit): Unit =
     Future(body)(system.dispatchers.lookup(dispatcherId))
 
-  override def expectedTestDuration: FiniteDuration = 60 seconds
+  override def expectedTestDuration: FiniteDuration = 60.seconds
 
   def muteDeadLetters(messageClasses: Class[_]*)(sys: ActorSystem = system): Unit =
     if (!sys.log.isDebugEnabled) {

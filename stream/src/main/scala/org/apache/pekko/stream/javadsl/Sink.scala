@@ -103,6 +103,31 @@ object Sink {
 
   /**
    * A `Sink` that will test the given predicate `p` for every received element and
+   *  1. completes and returns [[java.util.concurrent.CompletionStage]]  of `true` if the predicate is false for all elements;
+   *  2. completes and returns [[java.util.concurrent.CompletionStage]] of `true` if the stream is empty (i.e. completes before signalling any elements);
+   *  3. completes and returns [[java.util.concurrent.CompletionStage]]  of `false` if the predicate is true for any element.
+   *
+   * The materialized value [[java.util.concurrent.CompletionStage]]  will be completed with the value `true` or `false`
+   * when the input stream ends, or completed with `Failure` if there is a failure signaled in the stream.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * '''Completes when''' upstream completes or the predicate `p` returns `true`
+   *
+   * '''Backpressures when''' the invocation of predicate `p` has not yet completed
+   *
+   * '''Cancels when''' predicate `p` returns `true`
+   *
+   * @since 1.2.0
+   */
+  def none[In](p: function.Predicate[In]): javadsl.Sink[In, CompletionStage[java.lang.Boolean]] = {
+    import pekko.util.FutureConverters._
+    new Sink(scaladsl.Sink.none[In](p.test)
+      .mapMaterializedValue(_.map(Boolean.box)(ExecutionContexts.parasitic).asJava))
+  }
+
+  /**
+   * A `Sink` that will test the given predicate `p` for every received element and
    *  1. completes and returns [[java.util.concurrent.CompletionStage]] of `true` if the predicate is true for any element;
    *  2. completes and returns [[java.util.concurrent.CompletionStage]] of `false` if the stream is empty (i.e. completes before signalling any elements);
    *  3. completes and returns [[java.util.concurrent.CompletionStage]] of `false` if the predicate is false for all elements.

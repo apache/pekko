@@ -16,8 +16,6 @@ package org.apache.pekko.cluster.metrics
 import java.io.Closeable
 import java.util.logging.LogManager
 
-import scala.language.postfixOps
-
 import org.scalatestplus.mockito.MockitoSugar
 import org.slf4j.bridge.SLF4JBridgeHandler
 
@@ -80,7 +78,7 @@ case class MockitoSigarProvider(
   /** Generate monotonic array from 0 to value. */
   def increase(value: Double): Array[Double] = {
     val delta = value / steps
-    (0 to steps).map { _ * delta } toArray
+    (0 to steps).map { _ * delta }.toArray
   }
 
   /** Sigar mock instance. */

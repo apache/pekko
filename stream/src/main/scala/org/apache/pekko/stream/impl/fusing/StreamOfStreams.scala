@@ -46,6 +46,7 @@ import pekko.util.ccompat.JavaConverters._
  */
 @InternalApi private[pekko] final class FlattenMerge[T, M](val breadth: Int)
     extends GraphStage[FlowShape[Graph[SourceShape[T], M], T]] {
+  require(breadth >= 1, "breadth should >= 1")
   private val in = Inlet[Graph[SourceShape[T], M]]("flatten.in")
   private val out = Outlet[T]("flatten.out")
 
@@ -199,9 +200,7 @@ import pekko.util.ccompat.JavaConverters._
         setKeepGoing(false)
         cancelTimer(SubscriptionTimer)
         pull(in)
-        tailSource.setHandler(new OutHandler {
-          override def onPull(): Unit = pull(in)
-        })
+        tailSource.setHandler(() => pull(in))
       }
     }
 
@@ -237,7 +236,9 @@ import pekko.util.ccompat.JavaConverters._
     override def onUpstreamFinish(): Unit = {
       if (!prefixComplete) {
         // This handles the unpulled out case as well
-        emit(out, (builder.result(), Source.empty), () => completeStage())
+        val prefix = builder.result();
+        builder = null // free for GC
+        emit(out, (prefix, Source.empty), () => completeStage())
       } else {
         if (!tailSource.isClosed) tailSource.complete()
         completeStage()

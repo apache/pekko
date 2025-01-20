@@ -15,8 +15,6 @@ package org.apache.pekko.cluster
 
 import scala.concurrent.duration._
 
-import language.postfixOps
-
 import org.apache.pekko
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.testkit._
@@ -121,13 +119,13 @@ abstract class LeaderElectionSpec(multiNodeConfig: LeaderElectionMultiNodeConfig
       }
     }
 
-    "be able to 're-elect' a single leader after leader has left" taggedAs LongRunningTest in within(30 seconds) {
+    "be able to 're-elect' a single leader after leader has left" taggedAs LongRunningTest in within(30.seconds) {
       shutdownLeaderAndVerifyNewLeader(alreadyShutdown = 0)
       enterBarrier("after-2")
     }
 
     "be able to 're-elect' a single leader after leader has left (again)" taggedAs LongRunningTest in within(
-      30 seconds) {
+      30.seconds) {
       shutdownLeaderAndVerifyNewLeader(alreadyShutdown = 1)
       enterBarrier("after-3")
     }

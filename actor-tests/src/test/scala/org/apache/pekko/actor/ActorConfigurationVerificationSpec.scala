@@ -15,7 +15,6 @@ package org.apache.pekko.actor
 
 import scala.concurrent.duration._
 
-import language.postfixOps
 import org.scalatest.BeforeAndAfterEach
 
 import org.apache.pekko
@@ -79,7 +78,7 @@ class ActorConfigurationVerificationSpec
     "fail verification with a ConfigurationException if also configured with a ScatterGatherFirstCompletedPool" in {
       intercept[ConfigurationException] {
         system.actorOf(
-          ScatterGatherFirstCompletedPool(nrOfInstances = 2, within = 2 seconds)
+          ScatterGatherFirstCompletedPool(nrOfInstances = 2, within = 2.seconds)
             .withDispatcher("balancing-dispatcher")
             .props(Props[TestActor]()))
       }

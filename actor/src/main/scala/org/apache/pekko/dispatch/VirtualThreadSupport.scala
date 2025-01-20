@@ -21,7 +21,7 @@ import org.apache.pekko.annotation.InternalApi
 import org.apache.pekko.util.JavaVersion
 
 import java.lang.invoke.{ MethodHandles, MethodType }
-import java.util.concurrent.{ ExecutorService, ThreadFactory }
+import java.util.concurrent.{ ExecutorService, ForkJoinPool, ThreadFactory }
 import scala.util.control.NonFatal
 
 @InternalApi
@@ -68,8 +68,26 @@ private[dispatch] object VirtualThreadSupport {
       newThreadPerTaskExecutorMethod.invoke(threadFactory).asInstanceOf[ExecutorService]
     } catch {
       case NonFatal(e) =>
+        // --add-opens java.base/java.lang=ALL-UNNAMED
         throw new UnsupportedOperationException("Failed to create newThreadPerTaskExecutor.", e)
     }
   }
+
+  /**
+   * Try to get the default scheduler of virtual thread.
+   */
+  def getVirtualThreadDefaultScheduler: ForkJoinPool =
+    try {
+      require(isSupported, "Virtual thread is not supported.")
+      val clazz = Class.forName("java.lang.VirtualThread")
+      val fieldName = "DEFAULT_SCHEDULER"
+      val field = clazz.getDeclaredField(fieldName)
+      field.setAccessible(true)
+      field.get(null).asInstanceOf[ForkJoinPool]
+    } catch {
+      case NonFatal(e) =>
+        // --add-opens java.base/java.lang=ALL-UNNAMED
+        throw new UnsupportedOperationException("Failed to get default scheduler of virtual thread.", e)
+    }
 
 }

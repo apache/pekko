@@ -22,6 +22,7 @@ import java.util.stream.BaseStream
 import java.util.stream.Collector
 import java.util.stream.Collector.Characteristics
 import java.util.stream.Collectors
+import java.util.{ Spliterator, Spliterators }
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -111,7 +112,7 @@ class StreamConvertersSpec extends StreamSpec with DefaultTimeout {
         override def parallel(): EmptyStream = this
         override def isParallel: Boolean = false
 
-        override def spliterator(): util.Spliterator[Unit] = ???
+        override def spliterator(): util.Spliterator[Unit] = Spliterators.emptySpliterator()
         override def onClose(closeHandler: Runnable): EmptyStream = ???
 
         override def iterator(): util.Iterator[Unit] = new util.Iterator[Unit] {
@@ -136,7 +137,10 @@ class StreamConvertersSpec extends StreamSpec with DefaultTimeout {
         override def parallel(): FailingStream = this
         override def isParallel: Boolean = false
 
-        override def spliterator(): util.Spliterator[Unit] = ???
+        override def spliterator(): util.Spliterator[Unit] = Spliterators.spliteratorUnknownSize(
+          iterator(),
+          Spliterator.NONNULL
+        )
         override def onClose(closeHandler: Runnable): FailingStream = ???
 
         override def iterator(): util.Iterator[Unit] = new util.Iterator[Unit] {

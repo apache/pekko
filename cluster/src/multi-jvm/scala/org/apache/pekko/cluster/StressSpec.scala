@@ -18,7 +18,6 @@ import java.lang.management.ManagementFactory
 import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.concurrent.duration._
-import scala.language.postfixOps
 
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
@@ -857,7 +856,7 @@ abstract class StressSpec extends MultiNodeClusterSpec(StressMultiJvmSpec) with 
     // note: there must be one test step before pending, otherwise afterTermination will not run
     if (isArteryEnabled && isAeronUdpTransport) pending
 
-    "join seed nodes" taggedAs LongRunningTest in within(30 seconds) {
+    "join seed nodes" taggedAs LongRunningTest in within(30.seconds) {
 
       val otherNodesJoiningSeedNodes =
         roles.slice(numberOfSeedNodes, numberOfSeedNodes + numberOfNodesJoiningToSeedNodesInitially)

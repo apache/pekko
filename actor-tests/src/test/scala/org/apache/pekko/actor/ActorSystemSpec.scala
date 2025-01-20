@@ -18,7 +18,6 @@ import java.util.concurrent.atomic.AtomicInteger
 
 import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
-import scala.language.postfixOps
 
 import scala.annotation.nowarn
 import com.typesafe.config.{ Config, ConfigFactory }
@@ -224,7 +223,7 @@ class ActorSystemSpec extends PekkoSpec(ActorSystemSpec.config) with ImplicitSen
       }
 
       system2.terminate()
-      Await.ready(latch, 5 seconds)
+      Await.ready(latch, 5.seconds)
 
       val expected = (for (i <- 1 to count) yield i).reverse
 
@@ -243,7 +242,7 @@ class ActorSystemSpec extends PekkoSpec(ActorSystemSpec.config) with ImplicitSen
       import system.dispatcher
       system2.scheduler.scheduleOnce(200.millis.dilated) { system2.terminate() }
 
-      Await.ready(system2.whenTerminated, 5 seconds)
+      Await.ready(system2.whenTerminated, 5.seconds)
       callbackWasRun should ===(true)
     }
 
@@ -252,17 +251,17 @@ class ActorSystemSpec extends PekkoSpec(ActorSystemSpec.config) with ImplicitSen
       val wt = system.whenTerminated
       wt.isCompleted should ===(false)
       val f = system.terminate()
-      val terminated = Await.result(wt, 10 seconds)
+      val terminated = Await.result(wt, 10.seconds)
       system.whenTerminated.isCompleted should ===(true)
       terminated.actor should ===(system.provider.rootGuardian)
       terminated.addressTerminated should ===(true)
       terminated.existenceConfirmed should ===(true)
-      (terminated should be).theSameInstanceAs(Await.result(f, 10 seconds))
+      (terminated should be).theSameInstanceAs(Await.result(f, 10.seconds))
     }
 
     "throw RejectedExecutionException when shutdown" in {
       val system2 = ActorSystem("RejectedExecution-1", PekkoSpec.testConf)
-      Await.ready(system2.terminate(), 10 seconds)
+      Await.ready(system2.terminate(), 10.seconds)
 
       intercept[RejectedExecutionException] {
         system2.registerOnTermination { println("IF YOU SEE THIS THEN THERE'S A BUG HERE") }
@@ -287,7 +286,7 @@ class ActorSystemSpec extends PekkoSpec(ActorSystemSpec.config) with ImplicitSen
 
     "reliably create waves of actors" in {
       import system.dispatcher
-      implicit val timeout: Timeout = Timeout((20 seconds).dilated)
+      implicit val timeout: Timeout = Timeout(20.seconds.dilated)
       val waves = for (_ <- 1 to 3) yield system.actorOf(Props[ActorSystemSpec.Waves]()) ? 50000
       Await.result(Future.sequence(waves), timeout.duration + 5.seconds) should ===(Vector("done", "done", "done"))
     }
@@ -300,7 +299,7 @@ class ActorSystemSpec extends PekkoSpec(ActorSystemSpec.config) with ImplicitSen
     "reliable deny creation of actors while shutting down" in {
       val system = ActorSystem()
       import system.dispatcher
-      system.scheduler.scheduleOnce(100 millis) { system.terminate() }
+      system.scheduler.scheduleOnce(100.millis) { system.terminate() }
       var failing = false
       var created = Vector.empty[ActorRef]
       while (!system.whenTerminated.isCompleted) {

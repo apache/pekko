@@ -21,7 +21,6 @@ import scala.concurrent.duration._
 
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
-import language.postfixOps
 
 import org.apache.pekko
 import pekko.actor._
@@ -143,7 +142,7 @@ abstract class AdaptiveLoadBalancingRouterSpec
 
   def receiveReplies(expectedReplies: Int): Map[Address, Int] = {
     val zero = Map.empty[Address, Int] ++ roles.map(address(_) -> 0)
-    receiveWhile(5 seconds, messages = expectedReplies) {
+    receiveWhile(5.seconds, messages = expectedReplies) {
       case Reply(address) => address
     }.foldLeft(zero) {
       case (replyMap, address) => replyMap + (address -> (replyMap(address) + 1))

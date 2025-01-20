@@ -149,6 +149,7 @@ class MessageSerializer(val system: ExtendedActorSystem) extends BaseSerializer 
       else None)
   }
 
+  @nowarn("msg=deprecated")
   def persistentFSMSnapshot(persistentFSMSnapshot: mf.PersistentFSMSnapshot): PersistentFSMSnapshot[Any] = {
     PersistentFSMSnapshot(
       persistentFSMSnapshot.getStateIdentifier,

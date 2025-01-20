@@ -16,7 +16,6 @@ package org.apache.pekko.cluster
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
-import language.postfixOps
 
 import org.apache.pekko
 import pekko.cluster.ClusterEvent.CurrentClusterState
@@ -54,7 +53,7 @@ abstract class InitialHeartbeatSpec extends MultiNodeClusterSpec(InitialHeartbea
       awaitClusterUp(first)
 
       runOn(first) {
-        within(10 seconds) {
+        within(10.seconds) {
           awaitAssert({
               cluster.sendCurrentClusterState(testActor)
               expectMsgType[CurrentClusterState].members.map(_.address) should contain(secondAddress)
@@ -63,7 +62,7 @@ abstract class InitialHeartbeatSpec extends MultiNodeClusterSpec(InitialHeartbea
       }
       runOn(second) {
         cluster.join(first)
-        within(10 seconds) {
+        within(10.seconds) {
           awaitAssert({
               cluster.sendCurrentClusterState(testActor)
               expectMsgType[CurrentClusterState].members.map(_.address) should contain(firstAddress)
@@ -81,7 +80,7 @@ abstract class InitialHeartbeatSpec extends MultiNodeClusterSpec(InitialHeartbea
       }
 
       runOn(second) {
-        within(15 seconds) {
+        within(15.seconds) {
           awaitCond(!cluster.failureDetector.isAvailable(first))
         }
       }

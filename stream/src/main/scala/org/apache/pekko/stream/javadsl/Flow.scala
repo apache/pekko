@@ -37,6 +37,7 @@ import pekko.japi.Pair
 import pekko.japi.function
 import pekko.japi.function.Creator
 import pekko.stream.{ javadsl, _ }
+import pekko.stream.impl.fusing.ZipWithIndexJava
 import pekko.util.ConstantFun
 import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
@@ -92,7 +93,8 @@ object Flow {
       viaFlow: Flow[FOut, FViaOut, FViaMat],
       combine: function.Function2[FMat, FViaMat, Mat]
   ): Flow[FIn, Optional[FViaOut], Mat] =
-    scaladsl.Flow.optionalVia(flow.map(_.toScala).asScala, viaFlow.asScala)(combinerToScala(combine)).map(_.toJava).asJava
+    scaladsl.Flow.optionalVia(flow.map(_.toScala).asScala, viaFlow.asScala)(combinerToScala(combine)).map(
+      _.toJava).asJava
 
   /** Create a `Flow` which can process elements of type `T`. */
   def of[T](@unused clazz: Class[T]): javadsl.Flow[T, T, NotUsed] = create[T]()
@@ -2500,7 +2502,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    */
   def flatMapPrefix[Out2, Mat2](
       n: Int,
-      f: function.Function[java.lang.Iterable[Out], javadsl.Flow[Out, Out2, Mat2]]): javadsl.Flow[In, Out2, Mat] = {
+      f: function.Function[java.util.List[Out], javadsl.Flow[Out, Out2, Mat2]]): javadsl.Flow[In, Out2, Mat] = {
     val newDelegate = delegate.flatMapPrefix(n)(seq => f(seq.asJava).asScala)
     new javadsl.Flow(newDelegate)
   }
@@ -2511,7 +2513,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    */
   def flatMapPrefixMat[Out2, Mat2, Mat3](
       n: Int,
-      f: function.Function[java.lang.Iterable[Out], javadsl.Flow[Out, Out2, Mat2]],
+      f: function.Function[java.util.List[Out], javadsl.Flow[Out, Out2, Mat2]],
       matF: function.Function2[Mat, CompletionStage[Mat2], Mat3]): javadsl.Flow[In, Out2, Mat3] = {
     val newDelegate = delegate.flatMapPrefixMat(n)(seq => f(seq.asJava).asScala) { (m1, fm2) =>
       matF(m1, fm2.asJava)
@@ -3691,7 +3693,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * '''Cancels when''' downstream cancels
    */
   def zipWithIndex: Flow[In, Pair[Out, java.lang.Long], Mat] =
-    new Flow(delegate.zipWithIndex.map { case (elem, index) => Pair[Out, java.lang.Long](elem, index) })
+    via(ZipWithIndexJava.asInstanceOf[Graph[FlowShape[Out, Pair[Out, java.lang.Long]], NotUsed]])
 
   /**
    * If the first element has not passed through this operator before the provided timeout, the stream is failed

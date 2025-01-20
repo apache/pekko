@@ -13,6 +13,7 @@
 
 package org.apache.pekko.stream.javadsl;
 
+import com.google.common.collect.Sets;
 import org.apache.pekko.Done;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorRef;
@@ -23,7 +24,6 @@ import org.apache.pekko.japi.pf.PFBuilder;
 import org.apache.pekko.stream.*;
 import org.apache.pekko.stream.scaladsl.FlowSpec;
 import org.apache.pekko.stream.testkit.javadsl.TestSink;
-import org.apache.pekko.util.ConstantFun;
 import org.apache.pekko.stream.javadsl.GraphDSL.Builder;
 import org.apache.pekko.stream.stage.*;
 import org.apache.pekko.testkit.PekkoSpec;
@@ -749,9 +749,7 @@ public class FlowTest extends StreamTest {
     mainInputs.add(Source.from(input2));
 
     final Flow<Source<Integer, NotUsed>, List<Integer>, NotUsed> flow =
-        Flow.<Source<Integer, NotUsed>>create()
-            .flatMapConcat(ConstantFun.javaIdentityFunction())
-            .grouped(6);
+        Flow.<Source<Integer, NotUsed>>create().flatMapConcat(Function.identity()).grouped(6);
     CompletionStage<List<Integer>> future =
         Source.from(mainInputs).via(flow).runWith(Sink.head(), system);
 
@@ -775,9 +773,7 @@ public class FlowTest extends StreamTest {
     mainInputs.add(Source.from(input4));
 
     final Flow<Source<Integer, NotUsed>, List<Integer>, NotUsed> flow =
-        Flow.<Source<Integer, NotUsed>>create()
-            .flatMapMerge(3, ConstantFun.javaIdentityFunction())
-            .grouped(60);
+        Flow.<Source<Integer, NotUsed>>create().flatMapMerge(3, Function.identity()).grouped(60);
     CompletionStage<List<Integer>> future =
         Source.from(mainInputs).via(flow).runWith(Sink.head(), system);
 
@@ -1662,5 +1658,71 @@ public class FlowTest extends StreamTest {
     final org.apache.pekko.stream.scaladsl.Flow<Integer, Integer, NotUsed> scalaFlow =
         org.apache.pekko.stream.scaladsl.Flow.apply();
     Flow<Integer, Integer, NotUsed> javaFlow = scalaFlow.asJava();
+  }
+
+  @Test
+  public void useFlatMapPrefix() {
+    final List<Integer> resultList =
+        Source.range(1, 2)
+            .via(
+                Flow.of(Integer.class)
+                    .flatMapPrefix(
+                        1, prefix -> Flow.of(Integer.class).prepend(Source.from(prefix))))
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .join();
+    Assert.assertEquals(Arrays.asList(1, 2), resultList);
+  }
+
+  @Test
+  public void useFlatMapPrefixSubSource() {
+    final Set<Integer> resultSet =
+        Source.range(1, 2)
+            .via(
+                Flow.of(Integer.class)
+                    .groupBy(2, i -> i % 2)
+                    .flatMapPrefix(1, prefix -> Flow.of(Integer.class).prepend(Source.from(prefix)))
+                    .mergeSubstreams())
+            .runWith(Sink.collect(Collectors.toSet()), system)
+            .toCompletableFuture()
+            .join();
+    Assert.assertEquals(Sets.newHashSet(1, 2), resultSet);
+  }
+
+  @Test
+  public void zipWithIndex() {
+    final List<Integer> input = Arrays.asList(1, 2, 3);
+    final List<Pair<Integer, Long>> expected =
+        Arrays.asList(new Pair<>(1, 0L), new Pair<>(2, 1L), new Pair<>(3, 2L));
+
+    final List<Pair<Integer, Long>> result =
+        Source.from(input)
+            .via(Flow.of(Integer.class).zipWithIndex())
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .join();
+
+    assertEquals(expected, result);
+  }
+
+  @Test
+  public void zipWithIndexInSubFlow() {
+
+    final Set<Pair<Integer, Long>> resultSet =
+        Source.range(1, 5)
+            .via(Flow.of(Integer.class).groupBy(2, i -> i % 2).zipWithIndex().mergeSubstreams())
+            .runWith(Sink.collect(Collectors.toSet()), system)
+            .toCompletableFuture()
+            .join();
+
+    Assert.assertEquals(
+        new HashSet<>(
+            Arrays.asList(
+                Pair.create(1, 0L),
+                Pair.create(3, 1L),
+                Pair.create(5, 2L),
+                Pair.create(2, 0L),
+                Pair.create(4, 1L))),
+        resultSet);
   }
 }

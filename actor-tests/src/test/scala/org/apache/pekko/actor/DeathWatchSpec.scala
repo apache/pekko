@@ -17,7 +17,6 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import scala.annotation.nowarn
-import language.postfixOps
 
 import org.apache.pekko
 import pekko.actor.Props.EmptyActor
@@ -125,11 +124,11 @@ trait DeathWatchSpec { this: PekkoSpec with ImplicitSender with DefaultTimeout =
   lazy val supervisor = system.actorOf(Props(classOf[Supervisor], SupervisorStrategy.defaultStrategy), "watchers")
 
   def startWatching(target: ActorRef) =
-    Await.result((supervisor ? Watcher.props(target, testActor)).mapTo[ActorRef], 3 seconds)
+    Await.result((supervisor ? Watcher.props(target, testActor)).mapTo[ActorRef], 3.seconds)
 
   "The Death Watch" must {
     def expectTerminationOf(actorRef: ActorRef) =
-      expectMsgPF(5 seconds, "" + actorRef + ": Stopped or Already terminated when linking") {
+      expectMsgPF(5.seconds, "" + actorRef + ": Stopped or Already terminated when linking") {
         case WrappedTerminated(Terminated(`actorRef`)) => true
       }
 
@@ -236,7 +235,7 @@ trait DeathWatchSpec { this: PekkoSpec with ImplicitSender with DefaultTimeout =
         startWatching(brother)
 
         failed ! Kill
-        val result = receiveWhile(3 seconds, messages = 3) {
+        val result = receiveWhile(3.seconds, messages = 3) {
           case FF(Failed(_, _: ActorKilledException, _)) if lastSender eq failed       => 1
           case FF(Failed(_, DeathPactException(`failed`), _)) if lastSender eq brother => 2
           case WrappedTerminated(Terminated(`brother`))                                => 3

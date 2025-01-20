@@ -26,7 +26,6 @@ import scala.util.control.NoStackTrace
 import RemoteConnection.getAddrString
 import io.netty.channel.{ Channel, ChannelHandlerContext, ChannelInboundHandlerAdapter }
 import io.netty.channel.ChannelHandler.Sharable
-import language.postfixOps
 
 import org.apache.pekko
 import pekko.ConfigurationException
@@ -371,7 +370,7 @@ private[pekko] class ServerFSM(val controller: ActorRef, val channel: Channel)
       channel.close()
   }
 
-  when(Initial, stateTimeout = 10 seconds) {
+  when(Initial, stateTimeout = 10.seconds) {
     case Event(Hello(name, address), _) =>
       roleName = RoleName(name)
       controller ! NodeInfo(roleName, address, self)

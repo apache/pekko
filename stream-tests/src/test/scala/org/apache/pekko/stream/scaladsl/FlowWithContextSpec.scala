@@ -194,17 +194,19 @@ class FlowWithContextSpec extends StreamSpec {
         .asFlowWithContext[Option[String], Int, Int](collapseContext = Tuple2.apply)(extractContext = _._2)
         .map(_._1)
 
-      SourceWithContext
-        .fromTuples(Source(data)).via(
-          FlowWithContext.unsafeOptionalDataVia(
-            flow,
-            Flow.fromFunction { (string: String) => string.toInt }
-          )(Keep.none)
-        )
-        .runWith(TestSink.probe[(Option[Int], Int)])
-        .request(4)
-        .expectNext((Some(1), 1), (None, 2), (None, 3), (Some(4), 4))
-        .expectComplete()
+      for (_ <- 0 until 64) {
+        SourceWithContext
+          .fromTuples(Source(data)).via(
+            FlowWithContext.unsafeOptionalDataVia(
+              flow,
+              Flow.fromFunction { (string: String) => string.toInt }
+            )(Keep.none)
+          )
+          .runWith(TestSink.probe[(Option[Int], Int)])
+          .request(4)
+          .expectNext((Some(1), 1), (None, 2), (None, 3), (Some(4), 4))
+          .expectComplete()
+      }
     }
   }
 }

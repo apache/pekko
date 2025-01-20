@@ -17,7 +17,6 @@ import java.io.IOException
 import java.net.{ InetSocketAddress, ServerSocket }
 
 import scala.concurrent.duration._
-import scala.language.postfixOps
 
 import org.scalatest.concurrent.TimeLimits
 
@@ -194,7 +193,7 @@ class TcpIntegrationSpec extends PekkoSpec("""
       connectCommander.expectMsgType[Connected].remoteAddress should ===(endpoint)
       val connectionActor = connectCommander.lastSender
       connectCommander.send(connectionActor, PoisonPill)
-      failAfter(3 seconds) {
+      failAfter(3.seconds) {
         try {
           accept.getInputStream.read() should ===(-1)
         } catch {

@@ -16,7 +16,6 @@ package org.apache.pekko.cluster
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
-import language.postfixOps
 
 import org.apache.pekko
 import pekko.actor.Address
@@ -79,7 +78,7 @@ abstract class ConvergenceSpec(multiNodeConfig: ConvergenceMultiNodeConfig)
 
       runOn(first, second) {
 
-        within(28 seconds) {
+        within(28.seconds) {
           // third becomes unreachable
           awaitAssert(clusterView.unreachableMembers.size should ===(1))
           awaitSeenSameState(first, second)

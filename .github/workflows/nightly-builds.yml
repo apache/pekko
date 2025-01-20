@@ -36,7 +36,7 @@ jobs:
 
       - name: sbt cluster-metrics/test
         env:
-          DEVELOCITY_ACCESS_KEY: ${{ secrets.GE_ACCESS_TOKEN }}
+          DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
         run: |-
           sbt \
             -Djava.security.egd=file:/dev/./urandom \
@@ -46,6 +46,7 @@ jobs:
             -Dpekko.actor.testkit.typed.timefactor=2 \
             -Dpekko.test.tags.exclude=gh-exclude,timing \
             -Dpekko.log.timestamps=true \
+            -Dio.netty.leakDetection.level=PARANOID \
             -Dmultinode.XX:MetaspaceSize=128M \
             -Dmultinode.Xms256M \
             -Dmultinode.Xmx256M \
@@ -99,7 +100,7 @@ jobs:
 
       - name: sbt ${{ matrix.command }}
         env:
-          DEVELOCITY_ACCESS_KEY: ${{ secrets.GE_ACCESS_TOKEN }}
+          DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
         # note that this is not running any multi-jvm tests because multi-in-test=false
         run: |-
           sbt \
@@ -110,6 +111,7 @@ jobs:
           -Dpekko.test.tags.exclude=gh-exclude,timing \
           -Dpekko.test.multi-in-test=false \
           -Dpekko.cluster.assert=on \
+          -Dio.netty.leakDetection.level=PARANOID \
           clean ${{ matrix.command }}
 
   jdk-nightly-build:
@@ -125,7 +127,7 @@ jobs:
         scalaVersion: ["2.12.x", "2.13.x", "3.3.x"]
         javaVersion: [8, 11, 17, 21]
     env:
-      DEVELOCITY_ACCESS_KEY: ${{ secrets.GE_ACCESS_TOKEN }}
+      DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -161,6 +163,7 @@ jobs:
             -Dpekko.actor.testkit.typed.timefactor=2 \
             -Dpekko.test.tags.exclude=gh-exclude,timing \
             -Dpekko.test.multi-in-test=false \
+            -Dio.netty.leakDetection.level=PARANOID \
             clean "++ ${{ matrix.scalaVersion }} test" checkTestsHaveRun
 
 # comment out test report until an apache or GitHub published action (action-surefire-report) can be found or added allowlist from INFRA

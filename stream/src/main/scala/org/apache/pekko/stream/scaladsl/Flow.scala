@@ -3304,16 +3304,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream cancels
    */
-  def zipWithIndex: Repr[(Out, Long)] = {
-    statefulMapConcat[(Out, Long)] { () =>
-      var index: Long = 0L
-      elem => {
-        val zipped = (elem, index)
-        index += 1
-        immutable.Iterable[(Out, Long)](zipped)
-      }
-    }
-  }
+  def zipWithIndex: Repr[(Out, Long)] = via(ZipWithIndex.asInstanceOf[Graph[FlowShape[Out, (Out, Long)], NotUsed]])
 
   /**
    * Interleave is a deterministic merge of the given [[Source]] with elements of this [[Flow]].

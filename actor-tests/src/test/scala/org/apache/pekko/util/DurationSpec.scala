@@ -15,8 +15,6 @@ package org.apache.pekko.util
 
 import scala.concurrent.duration._
 
-import language.postfixOps
-
 import org.apache.pekko.testkit.PekkoSpec
 
 class DurationSpec extends PekkoSpec {
@@ -24,8 +22,8 @@ class DurationSpec extends PekkoSpec {
   "Duration" must {
 
     "form a one-dimensional vector field" in {
-      val zero = 0 seconds
-      val one = 1 second
+      val zero = 0.seconds
+      val one = 1.second
       val two = one + one
       val three = 3 * one
       (0 * one) should ===(zero)
@@ -96,11 +94,11 @@ class DurationSpec extends PekkoSpec {
       val dead = 2.seconds.fromNow
       val dead2 = 2.seconds(fromNow)
       // view bounds vs. very local type inference vs. operator precedence: sigh
-      dead.timeLeft should be > (1 second: Duration)
-      dead2.timeLeft should be > (1 second: Duration)
+      dead.timeLeft should be > (1.second: Duration)
+      dead2.timeLeft should be > (1.second: Duration)
       Thread.sleep(1.second.toMillis)
-      dead.timeLeft should be < (1 second: Duration)
-      dead2.timeLeft should be < (1 second: Duration)
+      dead.timeLeft should be < (1.second: Duration)
+      dead2.timeLeft should be < (1.second: Duration)
     }
 
   }

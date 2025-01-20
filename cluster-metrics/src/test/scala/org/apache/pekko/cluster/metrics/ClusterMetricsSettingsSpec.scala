@@ -16,7 +16,6 @@ package org.apache.pekko.cluster.metrics
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
-import language.postfixOps
 
 import org.apache.pekko
 import pekko.dispatch.Dispatchers
@@ -32,7 +31,7 @@ class ClusterMetricsSettingsSpec extends PekkoSpec {
 
       // Extension.
       MetricsDispatcher should ===(Dispatchers.DefaultDispatcherId)
-      PeriodicTasksInitialDelay should ===(1 second)
+      PeriodicTasksInitialDelay should ===(1.second)
       NativeLibraryExtractFolder should ===(System.getProperty("user.dir") + "/native")
 
       // Supervisor.
@@ -44,9 +43,9 @@ class ClusterMetricsSettingsSpec extends PekkoSpec {
       // Collector.
       CollectorEnabled should ===(true)
       CollectorProvider should ===("")
-      CollectorSampleInterval should ===(3 seconds)
-      CollectorGossipInterval should ===(3 seconds)
-      CollectorMovingAverageHalfLife should ===(12 seconds)
+      CollectorSampleInterval should ===(3.seconds)
+      CollectorGossipInterval should ===(3.seconds)
+      CollectorMovingAverageHalfLife should ===(12.seconds)
     }
   }
 }

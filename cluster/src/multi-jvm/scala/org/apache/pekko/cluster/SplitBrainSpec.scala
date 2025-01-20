@@ -16,7 +16,6 @@ package org.apache.pekko.cluster
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
-import language.postfixOps
 
 import org.apache.pekko
 import pekko.remote.testkit.MultiNodeConfig
@@ -77,7 +76,7 @@ abstract class SplitBrainSpec(multiNodeConfig: SplitBrainMultiNodeConfig)
     }
 
     "detect network partition and mark nodes on other side as unreachable and form new cluster" taggedAs LongRunningTest in within(
-      30 seconds) {
+      30.seconds) {
       enterBarrier("before-split")
 
       runOn(first) {
