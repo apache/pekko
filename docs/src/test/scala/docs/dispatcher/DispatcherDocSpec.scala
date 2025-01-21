@@ -132,7 +132,13 @@ object DispatcherDocSpec {
       # Set to 1 for as fair as possible.
       throughput = 100
     }
-    //#affinity-pool-dispatcher-config    
+    //#affinity-pool-dispatcher-config
+
+    //#virtual-thread-dispatcher-config
+    virtual-thread-dispatcher {
+      executor = virtual-thread-executor
+    }
+    //#virtual-thread-dispatcher-config
 
     //#fixed-pool-size-dispatcher-config
     blocking-io-dispatcher {
