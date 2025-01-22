@@ -14,12 +14,13 @@
 package org.apache.pekko.dispatch
 
 import com.typesafe.config.Config
+import org.apache.pekko
+import pekko.dispatch.VirtualThreadSupport.newVirtualThreadFactory
+import pekko.util.JavaVersion
 
 import java.lang.invoke.{ MethodHandle, MethodHandles, MethodType }
-import java.util.concurrent.{ ExecutorService, ForkJoinPool, ForkJoinTask, ThreadFactory }
+import java.util.concurrent.{ Executor, ExecutorService, ForkJoinPool, ForkJoinTask, ThreadFactory }
 import scala.util.Try
-
-import org.apache.pekko.util.JavaVersion
 
 object ForkJoinExecutorConfigurator {
 
@@ -86,15 +87,28 @@ class ForkJoinExecutorConfigurator(config: Config, prerequisites: DispatcherPrer
   }
 
   class ForkJoinExecutorServiceFactory(
+      val id: String,
       val threadFactory: ForkJoinPool.ForkJoinWorkerThreadFactory,
       val parallelism: Int,
       val asyncMode: Boolean,
-      val maxPoolSize: Int)
+      val maxPoolSize: Int,
+      val virtualize: Boolean)
       extends ExecutorServiceFactory {
+    def this(threadFactory: ForkJoinPool.ForkJoinWorkerThreadFactory,
+        parallelism: Int,
+        asyncMode: Boolean,
+        maxPoolSize: Int,
+        virtualize: Boolean) =
+      this(null, threadFactory, parallelism, asyncMode, maxPoolSize, virtualize)
 
     def this(threadFactory: ForkJoinPool.ForkJoinWorkerThreadFactory,
         parallelism: Int,
-        asyncMode: Boolean) = this(threadFactory, parallelism, asyncMode, ForkJoinPoolConstants.MaxCap)
+        asyncMode: Boolean) = this(threadFactory, parallelism, asyncMode, ForkJoinPoolConstants.MaxCap, false)
+
+    def this(threadFactory: ForkJoinPool.ForkJoinWorkerThreadFactory,
+        parallelism: Int,
+        asyncMode: Boolean,
+        maxPoolSize: Int) = this(threadFactory, parallelism, asyncMode, maxPoolSize, false)
 
     private def pekkoJdk9ForkJoinPoolClassOpt: Option[Class[_]] =
       Try(Class.forName("org.apache.pekko.dispatch.PekkoJdk9ForkJoinPool")).toOption
@@ -116,12 +130,50 @@ class ForkJoinExecutorConfigurator(config: Config, prerequisites: DispatcherPrer
     def this(threadFactory: ForkJoinPool.ForkJoinWorkerThreadFactory, parallelism: Int) =
       this(threadFactory, parallelism, asyncMode = true)
 
-    def createExecutorService: ExecutorService = pekkoJdk9ForkJoinPoolHandleOpt match {
-      case Some(handle) =>
-        handle.invoke(parallelism, threadFactory, maxPoolSize,
-          MonitorableThreadFactory.doNothing, asyncMode).asInstanceOf[ExecutorService]
-      case _ =>
-        new PekkoForkJoinPool(parallelism, threadFactory, MonitorableThreadFactory.doNothing, asyncMode)
+    def createExecutorService: ExecutorService = {
+      val tf = if (virtualize && JavaVersion.majorVersion >= 21) {
+        threadFactory match {
+          // we need to use the thread factory to create carrier thread
+          case m: MonitorableThreadFactory => new MonitorableCarrierThreadFactory(m.name)
+          case _                           => threadFactory
+        }
+      } else threadFactory
+
+      val pool = pekkoJdk9ForkJoinPoolHandleOpt match {
+        case Some(handle) =>
+          // carrier Thread only exists in JDK 17+
+          handle.invoke(parallelism, tf, maxPoolSize, MonitorableThreadFactory.doNothing, asyncMode)
+            .asInstanceOf[ExecutorService with LoadMetrics]
+        case _ =>
+          new PekkoForkJoinPool(parallelism, tf, MonitorableThreadFactory.doNothing, asyncMode)
+      }
+
+      if (virtualize && JavaVersion.majorVersion >= 21) {
+        // when virtualized, we need enhanced thread factory
+        val factory: ThreadFactory = threadFactory match {
+          case MonitorableThreadFactory(name, _, contextClassLoader, exceptionHandler, _) =>
+            new ThreadFactory {
+              private val vtFactory = newVirtualThreadFactory(name, pool) // use the pool as the scheduler
+
+              override def newThread(r: Runnable): Thread = {
+                val vt = vtFactory.newThread(r)
+                vt.setUncaughtExceptionHandler(exceptionHandler)
+                contextClassLoader.foreach(vt.setContextClassLoader)
+                vt
+              }
+            }
+          case _ => newVirtualThreadFactory(prerequisites.settings.name, pool); // use the pool as the scheduler
+        }
+        // wrap the pool with virtualized executor service
+        new VirtualizedExecutorService(
+          factory, // the virtual thread factory
+          pool, // the underlying pool
+          (_: Executor) => pool.atFullThrottle(), // the load metrics provider, we use the pool itself
+          cascadeShutdown = true // cascade shutdown
+        )
+      } else {
+        pool
+      }
     }
   }
 
@@ -143,12 +195,14 @@ class ForkJoinExecutorConfigurator(config: Config, prerequisites: DispatcherPrer
     }
 
     new ForkJoinExecutorServiceFactory(
+      id,
       validate(tf),
       ThreadPoolConfig.scaledPoolSize(
         config.getInt("parallelism-min"),
         config.getDouble("parallelism-factor"),
         config.getInt("parallelism-max")),
       asyncMode,
-      config.getInt("maximum-pool-size"))
+      config.getInt("maximum-pool-size"),
+      config.getBoolean("virtualize"))
   }
 }

@@ -453,7 +453,7 @@ final class VirtualThreadExecutorConfigurator(config: Config, prerequisites: Dis
           }
         }
         new VirtualizedExecutorService(
-          tf,
+          tf, // the virtual thread factory
           pool, // the default scheduler of virtual thread
           loadMetricsProvider,
           cascadeShutdown = false // we don't want to cascade shutdown the default virtual thread scheduler

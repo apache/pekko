@@ -235,6 +235,18 @@ final case class MonitorableThreadFactory(
   }
 }
 
+class MonitorableCarrierThreadFactory(name: String)
+    extends ForkJoinPool.ForkJoinWorkerThreadFactory {
+  private val counter = new AtomicLong(0L)
+
+  def newThread(pool: ForkJoinPool): ForkJoinWorkerThread = {
+    val thread = VirtualThreadSupport.CarrierThreadFactory.newThread(pool)
+    // Name of the threads for the ForkJoinPool are not customizable. Change it here.
+    thread.setName(name + "-" + "CarrierThread" + "-" + counter.incrementAndGet())
+    thread
+  }
+}
+
 /**
  * As the name says
  */

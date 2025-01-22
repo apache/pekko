@@ -44,6 +44,16 @@ You can read more about parallelism in the JDK's [ForkJoinPool documentation](ht
 
 When Running on Java 9+, you can use `maximum-pool-size` to set the upper bound on the total number of threads allocated by the ForkJoinPool.
 
+**Experimental**: When Running on Java 21+, you can use `virtualize=on` to enable the virtual threads feature.
+When using virtual threads, all virtual threads will use the same `unparker`, so you may want to 
+increase the number of `jdk.unparker.maxPoolSize`. 
+
+#### Requirements
+
+1. JDK 21+
+2. add options to the JVM:
+ - `--add-opens=java.base/jdk.internal.misc=ALL-UNNAMED`
+ - `--add-opens=java.base/java.lang=ALL-UNNAMED`
 @@@
 
 Another example that uses the "thread-pool-executor":

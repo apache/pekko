@@ -39,13 +39,6 @@ final class VirtualizedExecutorService(
   require(vtFactory != null, "Virtual thread factory must not be null")
   require(loadMetricsProvider != null, "Load metrics provider must not be null")
 
-  def this(prefix: String,
-      underlying: ExecutorService,
-      loadMetricsProvider: Executor => Boolean,
-      cascadeShutdown: Boolean) = {
-    this(VirtualThreadSupport.newVirtualThreadFactory(prefix), underlying, loadMetricsProvider, cascadeShutdown)
-  }
-
   private val executor = VirtualThreadSupport.newThreadPerTaskExecutor(vtFactory)
 
   override def atFullThrottle(): Boolean = loadMetricsProvider(this)
