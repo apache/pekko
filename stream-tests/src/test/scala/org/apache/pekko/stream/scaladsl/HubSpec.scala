@@ -21,6 +21,7 @@ import org.apache.pekko
 import pekko.Done
 import pekko.stream.KillSwitches
 import pekko.stream.ThrottleMode
+import pekko.stream.impl.ActorPublisher
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.TestPublisher
 import pekko.stream.testkit.TestSubscriber
@@ -49,6 +50,16 @@ class HubSpec extends StreamSpec {
       Source.fromPublisher(upstream).runWith(sink)
 
       upstream.expectCancellation()
+    }
+
+    "do not throw exceptions when upstream completes normally" in {
+      EventFilter.error("Upstream producer failed with exception, removing from MergeHub now",
+        occurrences = 0).intercept {
+        val (sink, result) = MergeHub.source[Int](16).take(10).toMat(Sink.seq)(Keep.both).run()
+        Source.failed(ActorPublisher.NormalShutdownReason).runWith(sink)
+        Source(1 to 10).runWith(sink)
+        result.futureValue.sorted should ===(1 to 10)
+      }
     }
 
     "notify existing producers if consumer cancels after a few elements" in {
