@@ -386,7 +386,6 @@ import pekko.util.unused
   def isEmptySource(graph: Graph[SourceShape[_], _]): Boolean = graph match {
     case source: scaladsl.Source[_, _] if source eq scaladsl.Source.empty => true
     case source: javadsl.Source[_, _] if source eq javadsl.Source.empty() => true
-    case EmptySource                                                      => true
     case _                                                                => false
   }
 
