@@ -17,7 +17,7 @@ import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream._
 import pekko.stream.impl.TraversalTestUtils._
-import pekko.stream.scaladsl.Keep
+import pekko.stream.scaladsl.{ Keep, Source }
 import pekko.testkit.PekkoSpec
 
 class TraversalBuilderSpec extends PekkoSpec {
@@ -445,6 +445,22 @@ class TraversalBuilderSpec extends PekkoSpec {
           (flow1, Attributes.name("test") and Attributes.name("flow"), TestIsland1),
           (sink, Attributes.none, TestDefaultIsland)))
     }
+  }
+
+  "find Source.empty via TraversalBuilder with isEmptySource" in {
+    val emptySource = EmptySource
+    TraversalBuilder.isEmptySource(emptySource) should be(true)
+  }
+
+  "find javadsl Source.empty via TraversalBuilder with isEmptySource" in {
+    import pekko.stream.javadsl.Source
+    val emptySource = Source.empty()
+    TraversalBuilder.isEmptySource(emptySource) should be(true)
+  }
+
+  "find scaldsl Source.empty via TraversalBuilder with isEmptySource" in {
+    val emptySource = Source.empty
+    TraversalBuilder.isEmptySource(emptySource) should be(true)
   }
 
 }
