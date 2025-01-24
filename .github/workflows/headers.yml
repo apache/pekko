@@ -18,7 +18,7 @@
 name: Headers
 
 on:
-  pull_request:
+  workflow_dispatch:
 
 permissions: {}
 

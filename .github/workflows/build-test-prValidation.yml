@@ -9,7 +9,7 @@
 name: Pull Requests
 
 on:
-  pull_request:
+  workflow_dispatch:
 
 permissions: {}
 
