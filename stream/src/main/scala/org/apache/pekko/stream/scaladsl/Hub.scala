@@ -33,6 +33,7 @@ import pekko.annotation.InternalApi
 import pekko.dispatch.AbstractNodeQueue
 import pekko.stream._
 import pekko.stream.Attributes.LogLevels
+import pekko.stream.impl.ActorPublisher
 import pekko.stream.stage._
 
 /**
@@ -356,7 +357,8 @@ private[pekko] class MergeHub[T](perProducerBufferSize: Int, drainingEnabled: Bo
 
           // Make some noise
           override def onUpstreamFailure(ex: Throwable): Unit = {
-            throw new MergeHub.ProducerFailed(
+            if (ex eq ActorPublisher.NormalShutdownReason) completeStage()
+            else throw new MergeHub.ProducerFailed(
               "Upstream producer failed with exception, " +
               "removing from MergeHub now",
               ex)
