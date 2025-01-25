@@ -15,5 +15,5 @@
 # specific language governing permissions and limitations
 # under the License.
 
-# Add overridden duration timeout to StreamTestKit
+# StreamTestKit.assertNoChildren is an internal API and can be changed
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.testkit.scaladsl.StreamTestKit.assertNoChildren")
