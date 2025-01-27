@@ -31,7 +31,7 @@ object Protobuf {
     "The path that contain additional *.proto files that can be imported.")
   lazy val protoc = SettingKey[String]("protobuf-protoc", "The path and name of the protoc executable.")
   lazy val protocVersion = SettingKey[String]("protobuf-protoc-version", "The version of the protoc executable.")
-  lazy val generate = TaskKey[Unit]("protobuf-generate", "Compile the protobuf sources and do all processing.")
+  lazy val protobufGenerate = TaskKey[Unit]("protobufGenerate", "Compile the protobuf sources and do all processing.")
 
   lazy val settings: Seq[Setting[_]] = Seq(
     paths := Seq((Compile / sourceDirectory).value, (Test / sourceDirectory).value).map(_ / "protobuf"),
@@ -41,7 +41,7 @@ object Protobuf {
     Compile / unmanagedJars += (LocalProject("protobuf-v3") / Compile / packageBin).value,
     protoc := "protoc",
     protocVersion := Dependencies.Protobuf.protocVersion,
-    generate := {
+    protobufGenerate := {
       val sourceDirs = paths.value
       val targetDirs = outputPaths.value
       val log = streams.value.log
@@ -73,7 +73,20 @@ object Protobuf {
               tmp,
               dst,
               _ => true,
-              transformFile(
+              transformFile("""/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * license agreements; and to You under the Apache License, version 2.0:
+ *
+ *   https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * This file is part of the Apache Pekko project, which was derived from Akka.
+ */
+
+/*
+ * Copyright (C) 2019-2022 Lightbend Inc. <https://www.lightbend.com>
+ */
+
+""",
                 _.replace("com.google.protobuf", "org.apache.pekko.protobufv3.internal")
                   // this is the one thing that protobufGenerate doesn't fully qualify and causes
                   // api doc generation to fail
@@ -174,10 +187,11 @@ object Protobuf {
   /**
    * Transform a file, line by line.
    */
-  def transformFile(transform: String => String)(source: File, target: File): Unit = {
+  def transformFile(header: String, transform: String => String)(source: File, target: File): Unit = {
     IO.reader(source) { reader =>
       IO.writer(target, "", IO.defaultCharset) { writer =>
         val pw = new PrintWriter(writer)
+        pw.print(header)
         IO.foreachLine(reader) { line =>
           pw.println(transform(line))
         }

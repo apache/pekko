@@ -240,6 +240,7 @@ lazy val docs = pekkoModule("docs")
   .settings(Dependencies.docs)
   .settings(PekkoDisciplinePlugin.docs)
   .settings(Paradox.settings)
+  .settings(Protobuf.settings)
   .settings(javacOptions += "-parameters") // for Jackson
   .enablePlugins(
     ParadoxPlugin,

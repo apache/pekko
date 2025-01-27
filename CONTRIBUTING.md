@@ -269,11 +269,13 @@ All wire protocol changes that may concern rolling upgrades should be documented
 
 Pekko includes a shaded version of protobuf `3` that is used for internal communication. To generate files,
 run `protobufGenerate`. The generated files are put in each project's `src/main/java` and need to be committed.
-The generated files are automatically transformed to use the shaded version of protobuf.
+The generated files are automatically transformed to use the shaded version of protobuf and add copyright headers.
 
-Generation depends on protoc `3.11.4` being on the path. See [protobuf project](https://github.com/protocolbuffers/protobuf#protocol-compiler-installation) for installation instructions, and
+Generation depends on the protoc version specified in `project/Dependencies.scala` being on the path. See [protobuf project](https://github.com/protocolbuffers/protobuf#protocol-compiler-installation) for installation instructions, and
 [Protobuf.scala](https://github.com/apache/pekko/blob/main/project/Protobuf.scala) for details of how to override
 the settings for generation.
+
+After generation, run `sbt javafmt Test/javafmt`.
 
 ### Pull request requirements
 
