@@ -19,8 +19,6 @@ import scala.concurrent.duration._
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream._
-import pekko.stream.impl.TraversalBuilder
-import pekko.stream.impl.fusing.GraphStages.SingleSource
 import pekko.stream.stage.GraphStage
 import pekko.stream.stage.GraphStageLogic
 import pekko.stream.stage.OutHandler
@@ -29,7 +27,6 @@ import pekko.stream.testkit.TestPublisher
 import pekko.stream.testkit.Utils.TE
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.testkit.TestLatch
-import pekko.util.OptionVal
 
 import org.scalatest.exceptions.TestFailedException
 
@@ -281,17 +278,6 @@ class FlowFlattenMergeSpec extends StreamSpec {
       probe.expectNext(10)
       probe.expectNext(11)
       probe.expectComplete()
-    }
-
-    "find Source.single via TraversalBuilder" in {
-      TraversalBuilder.getSingleSource(Source.single("a")).get.elem should ===("a")
-      TraversalBuilder.getSingleSource(Source(List("a", "b"))) should be(OptionVal.None)
-
-      val singleSourceA = new SingleSource("a")
-      TraversalBuilder.getSingleSource(singleSourceA) should be(OptionVal.Some(singleSourceA))
-
-      TraversalBuilder.getSingleSource(Source.single("c").async) should be(OptionVal.None)
-      TraversalBuilder.getSingleSource(Source.single("d").mapMaterializedValue(_ => "Mat")) should be(OptionVal.None)
     }
 
   }
