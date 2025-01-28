@@ -54,16 +54,6 @@ jobs:
             -Dmultinode.XX:+AlwaysActAsServerClassMachine \
             clean cluster-metrics/test
 
-# comment out test report until an apache or GitHub published action (action-surefire-report) can be found or added allowlist from INFRA
-#      - name: Test Reports
-#        # Makes it easier to spot failures instead of looking at the logs.
-#        if: ${{ failure() }}
-#        uses: marcospereira/action-surefire-report@v1
-#        with:
-#          report_paths: '**/target/test-reports/TEST-*.xml'
-#          fail_if_no_tests: false
-#          skip_publishing: true
-
   pekko-classic-remoting-tests:
     name: Pekko Classic Remoting Tests
     runs-on: ubuntu-22.04
@@ -166,23 +156,6 @@ jobs:
             -Dio.netty.leakDetection.level=PARANOID \
             clean "++ ${{ matrix.scalaVersion }} test" checkTestsHaveRun
 
-# comment out test report until an apache or GitHub published action (action-surefire-report) can be found or added allowlist from INFRA
-#      - name: Test Reports
-#        # Makes it easier to spot failures instead of looking at the logs.
-#        if: ${{ failure() }}
-#        uses: marcospereira/action-surefire-report@v1
-#        with:
-#          report_paths: '**/target/test-reports/TEST-*.xml'
-#          fail_if_no_tests: false
-
-#      # Archive test results so we can do some diagnostics later
-#      - name: Upload test results
-#        uses: actions/upload-artifact@v2
-#        if: success() || failure()        # run this step even if previous step failed
-#        with:
-#          name: test-results-${{ matrix.javaVersion }}-${{ matrix.scalaVersion }}
-#          path: '**/target/test-reports/TEST-*.xml'
-
       - name: Docs
         # Docs generation requires JDK 11.
         if: ${{ matrix.javaVersion == 11 }}
@@ -204,6 +177,7 @@ jobs:
 
       - name: Install scala-cli
         if: ${{ matrix.javaVersion == 11 }}
+        # uses: VirtusLab/scala-cli-setup@v1
         run: |-
           curl -sS "https://virtuslab.github.io/scala-cli-packages/KEY.gpg" | sudo gpg --dearmor  -o /etc/apt/trusted.gpg.d/scala-cli.gpg 2>/dev/null
           sudo curl -s --compressed -o /etc/apt/sources.list.d/scala_cli_packages.list "https://virtuslab.github.io/scala-cli-packages/debian/scala_cli_packages.list"

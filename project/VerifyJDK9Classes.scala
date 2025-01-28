@@ -29,9 +29,9 @@ object VerifyJDK9Classes {
 
   def generateAndWriteScalaCLIScript(dir: SettingKey[File]): Def.Initialize[Task[Seq[sbt.File]]] =
     Def.task[Seq[File]] {
-      val binaryVersion = scalaBinaryVersion.value
-      val script = generateScalaCLIScript(version.value, binaryVersion)
-      val file = dir.value / "scala-cli" / s"VerifyJDK9Classes-${binaryVersion}.sc"
+      val scalaVer = scalaVersion.value
+      val script = generateScalaCLIScript(version.value, scalaVer)
+      val file = dir.value / "scala-cli" / s"VerifyJDK9Classes-${scalaVer}.sc"
       val content = script.stripMargin.format(version.value)
       if (!file.exists || IO.read(file) != content) IO.write(file, content)
       // the generated file is not used.
@@ -40,6 +40,9 @@ object VerifyJDK9Classes {
 
   private def generateScalaCLIScript(version: String, scalaBinaryVersion: String): String =
     s"""
+      |//> using scala ${scalaBinaryVersion}
+      |//> using dep "org.apache.pekko::pekko-stream:${version}"
+      |
       |/*
       | * Licensed to the Apache Software Foundation (ASF) under one or more
       | * contributor license agreements. See the NOTICE file distributed with
@@ -56,8 +59,7 @@ object VerifyJDK9Classes {
       | * See the License for the specific language governing permissions and
       | * limitations under the License.
       | */
-      |//> using scala ${scalaBinaryVersion}
-      |//> using dep "org.apache.pekko::pekko-stream:${version}"
+      |
       |object VerifyJDK9Classes {
       |  def main(args: Array[String]): Unit = {
       |    import org.apache.pekko.actor.ActorSystem
