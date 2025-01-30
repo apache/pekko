@@ -14,7 +14,6 @@
 package org.apache.pekko.cluster.metrics
 
 import java.util.Arrays
-import java.util.concurrent.ThreadLocalRandom
 import java.util.concurrent.atomic.AtomicReference
 
 import scala.annotation.tailrec
@@ -36,6 +35,7 @@ import pekko.cluster.routing.ClusterRouterSettingsBase
 import pekko.dispatch.Dispatchers
 import pekko.japi.Util.immutableSeq
 import pekko.routing._
+import pekko.util.RandomNumberGenerator
 
 /**
  * Load balancing of messages to cluster nodes based on cluster metric data.
@@ -93,9 +93,9 @@ final case class AdaptiveLoadBalancingRoutingLogic(
       updateWeightedRoutees() match {
         case Some(weighted) =>
           if (weighted.isEmpty) NoRoutee
-          else weighted(ThreadLocalRandom.current.nextInt(weighted.total) + 1)
+          else weighted(RandomNumberGenerator.get().nextInt(weighted.total) + 1)
         case None =>
-          routees(ThreadLocalRandom.current.nextInt(routees.size))
+          routees(RandomNumberGenerator.get().nextInt(routees.size))
       }
 
     }

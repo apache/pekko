@@ -812,7 +812,7 @@ private[pekko] class ActorSystemImpl(
     setup: ActorSystemSetup)
     extends ExtendedActorSystem {
 
-  val uid: Long = ThreadLocalRandom.current.nextLong()
+  val uid: Long = RandomNumberGenerator.get().nextLong()
 
   if (!name.matches("""^[a-zA-Z0-9][a-zA-Z0-9-_]*$"""))
     throw new IllegalArgumentException(

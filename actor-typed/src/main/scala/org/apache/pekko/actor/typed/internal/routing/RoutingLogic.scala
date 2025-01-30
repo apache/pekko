@@ -13,13 +13,12 @@
 
 package org.apache.pekko.actor.typed.internal.routing
 
-import java.util.concurrent.ThreadLocalRandom
-
 import org.apache.pekko
 import pekko.actor.Address
 import pekko.actor.typed.ActorRef
 import pekko.annotation.InternalApi
 import pekko.routing.ConsistentHash
+import pekko.util.RandomNumberGenerator
 
 /**
  * Kept in the behavior, not shared between instances, meant to be stateful.
@@ -89,7 +88,7 @@ private[pekko] object RoutingLogics {
     private var currentRoutees: Array[ActorRef[T]] = _
 
     override def selectRoutee(msg: T): ActorRef[T] = {
-      val selectedIdx = ThreadLocalRandom.current().nextInt(currentRoutees.length)
+      val selectedIdx = RandomNumberGenerator.get().nextInt(currentRoutees.length)
       currentRoutees(selectedIdx)
     }
 

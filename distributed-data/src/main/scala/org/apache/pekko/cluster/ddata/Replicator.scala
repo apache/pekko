@@ -15,7 +15,6 @@ package org.apache.pekko.cluster.ddata
 
 import java.security.MessageDigest
 import java.util.Optional
-import java.util.concurrent.ThreadLocalRandom
 import java.util.concurrent.TimeUnit
 import java.util.function.{ Function => JFunction }
 
@@ -66,7 +65,7 @@ import pekko.dispatch.Dispatchers
 import pekko.event.Logging
 import pekko.remote.RARP
 import pekko.serialization.SerializationExtension
-import pekko.util.ByteString
+import pekko.util.{ ByteString, RandomNumberGenerator }
 import pekko.util.Helpers.toRootLowerCase
 import pekko.util.JavaDurationConverters._
 import pekko.util.ccompat._
@@ -1975,7 +1974,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
         if (totChunks == statusTotChunks)
           statusCount += 1
         else {
-          statusCount = ThreadLocalRandom.current.nextInt(0, totChunks)
+          statusCount = RandomNumberGenerator.get().nextInt(0, totChunks)
           statusTotChunks = totChunks
         }
         val chunk = (statusCount % totChunks).toInt
@@ -1988,7 +1987,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
   }
 
   def selectRandomNode(addresses: immutable.IndexedSeq[UniqueAddress]): Option[UniqueAddress] =
-    if (addresses.isEmpty) None else Some(addresses(ThreadLocalRandom.current.nextInt(addresses.size)))
+    if (addresses.isEmpty) None else Some(addresses(RandomNumberGenerator.get().nextInt(addresses.size)))
 
   def replica(node: UniqueAddress): ActorSelection =
     context.actorSelection(self.path.toStringWithAddress(node.address))

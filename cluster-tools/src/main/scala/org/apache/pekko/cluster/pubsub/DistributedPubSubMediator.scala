@@ -15,7 +15,6 @@ package org.apache.pekko.cluster.pubsub
 
 import java.net.URLDecoder
 import java.net.URLEncoder
-import java.util.concurrent.ThreadLocalRandom
 
 import scala.collection.immutable
 import scala.collection.immutable.Set
@@ -40,6 +39,7 @@ import pekko.routing.Routee
 import pekko.routing.Router
 import pekko.routing.RouterEnvelope
 import pekko.routing.RoutingLogic
+import pekko.util.RandomNumberGenerator
 
 object DistributedPubSubSettings {
 
@@ -896,7 +896,7 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
   }
 
   def selectRandomNode(addresses: immutable.IndexedSeq[Address]): Option[Address] =
-    if (addresses.isEmpty) None else Some(addresses(ThreadLocalRandom.current.nextInt(addresses.size)))
+    if (addresses.isEmpty) None else Some(addresses(RandomNumberGenerator.get().nextInt(addresses.size)))
 
   def prune(): Unit = {
     registry.foreach {

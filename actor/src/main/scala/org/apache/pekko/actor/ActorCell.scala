@@ -14,7 +14,6 @@
 package org.apache.pekko.actor
 
 import java.io.{ NotSerializableException, ObjectOutputStream }
-import java.util.concurrent.ThreadLocalRandom
 
 import scala.annotation.{ switch, tailrec }
 import scala.annotation.nowarn
@@ -31,6 +30,7 @@ import pekko.dispatch.sysmsg._
 import pekko.event.Logging.{ Debug, Error, LogEvent }
 import pekko.japi.function.Procedure
 import pekko.util.unused
+import pekko.util.RandomNumberGenerator
 
 /**
  * The actor context - the view of the actor cell from the actor.
@@ -392,7 +392,7 @@ private[pekko] object ActorCell {
   @tailrec final def newUid(): Int = {
     // Note that this uid is also used as hashCode in ActorRef, so be careful
     // to not break hashing if you change the way uid is generated
-    val uid = ThreadLocalRandom.current.nextInt()
+    val uid = RandomNumberGenerator.get().nextInt()
     if (uid == undefinedUid) newUid()
     else uid
   }

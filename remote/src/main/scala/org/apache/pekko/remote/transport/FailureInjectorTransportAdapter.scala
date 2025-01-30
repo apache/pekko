@@ -14,7 +14,6 @@
 package org.apache.pekko.remote.transport
 
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ThreadLocalRandom
 
 import scala.concurrent.{ Future, Promise }
 import scala.util.control.NoStackTrace
@@ -28,7 +27,7 @@ import pekko.actor.{ Address, ExtendedActorSystem }
 import pekko.event.{ Logging, LoggingAdapter }
 import pekko.remote.transport.AssociationHandle.{ HandleEvent, HandleEventListener }
 import pekko.remote.transport.Transport._
-import pekko.util.ByteString
+import pekko.util.{ ByteString, RandomNumberGenerator }
 
 @SerialVersionUID(1L)
 @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
@@ -75,7 +74,7 @@ private[remote] class FailureInjectorTransportAdapter(
     extends AbstractTransportAdapter(wrappedTransport)(extendedSystem.dispatchers.internalDispatcher)
     with AssociationEventListener {
 
-  private def rng = ThreadLocalRandom.current()
+  private def rng = RandomNumberGenerator.get()
   private val log = Logging(extendedSystem, classOf[FailureInjectorTransportAdapter])
   private val shouldDebugLog: Boolean = extendedSystem.settings.config.getBoolean("pekko.remote.classic.gremlin.debug")
 

@@ -19,12 +19,11 @@ import pekko.actor.typed._
 import pekko.actor.typed.internal._
 import pekko.actor.{ ActorPath, ActorRefProvider, InvalidMessageException }
 import pekko.annotation.InternalApi
-import pekko.util.Helpers
+import pekko.util.{ Helpers, RandomNumberGenerator }
 import pekko.{ actor => classic }
 import org.slf4j.{ Logger, Marker }
 import org.slf4j.helpers.{ MessageFormatter, SubstituteLoggerFactory }
 
-import java.util.concurrent.ThreadLocalRandom.{ current => rnd }
 import scala.collection.immutable.TreeMap
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration.FiniteDuration
@@ -75,7 +74,7 @@ private[pekko] final class FunctionRef[-T](override val path: ActorPath, send: (
     extends ActorContextImpl[T] {
 
   def this(system: ActorSystemStub, name: String, currentBehaviorProvider: () => Behavior[T]) = {
-    this(system, (system.path / name).withUid(rnd().nextInt()), currentBehaviorProvider)
+    this(system, (system.path / name).withUid(RandomNumberGenerator.get().nextInt()), currentBehaviorProvider)
   }
 
   def this(name: String, currentBehaviorProvider: () => Behavior[T]) = {
@@ -111,7 +110,8 @@ private[pekko] final class FunctionRef[-T](override val path: ActorPath, send: (
 
   override def spawnAnonymous[U](behavior: Behavior[U], props: Props = Props.empty): ActorRef[U] = {
     checkCurrentActorThread()
-    val btk = new BehaviorTestKitImpl[U](system, (path / childName.next()).withUid(rnd().nextInt()), behavior)
+    val btk = new BehaviorTestKitImpl[U](system,
+      (path / childName.next()).withUid(RandomNumberGenerator.get().nextInt()), behavior)
     _children += btk.context.self.path.name -> btk
     btk.context.self
   }
@@ -120,7 +120,8 @@ private[pekko] final class FunctionRef[-T](override val path: ActorPath, send: (
     _children.get(name) match {
       case Some(_) => throw classic.InvalidActorNameException(s"actor name $name is already taken")
       case None    =>
-        val btk = new BehaviorTestKitImpl[U](system, (path / name).withUid(rnd().nextInt()), behavior)
+        val btk =
+          new BehaviorTestKitImpl[U](system, (path / name).withUid(RandomNumberGenerator.get().nextInt()), behavior)
         _children += name -> btk
         btk.context.self
     }
@@ -172,7 +173,7 @@ private[pekko] final class FunctionRef[-T](override val path: ActorPath, send: (
   @InternalApi private[pekko] def internalSpawnMessageAdapter[U](f: U => T, name: String): ActorRef[U] = {
 
     val n = if (name != "") s"${childName.next()}-$name" else childName.next()
-    val p = (path / n).withUid(rnd().nextInt())
+    val p = (path / n).withUid(RandomNumberGenerator.get().nextInt())
     val i = new BehaviorTestKitImpl[U](system, p, BehaviorImpl.ignore)
     _children += p.name -> i
 
