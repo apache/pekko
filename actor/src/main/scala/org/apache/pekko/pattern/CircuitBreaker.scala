@@ -1107,7 +1107,7 @@ class CircuitBreaker(
       scheduler.scheduleOnce(currentResetTimeout) {
         attemptReset()
       }
-      val rnd = 1.0 + ThreadLocalRandom.current().nextDouble() * randomFactor
+      val rnd = 1.0 + RandomNumberGenerator.get().nextDouble() * randomFactor
       val nextResetTimeout = currentResetTimeout * exponentialBackoffFactor * rnd match {
         case f: FiniteDuration => f
         case _                 => currentResetTimeout

@@ -13,8 +13,6 @@
 
 package org.apache.pekko.cluster.metrics
 
-import java.util.concurrent.ThreadLocalRandom
-
 import scala.collection.immutable
 
 import scala.annotation.nowarn
@@ -29,6 +27,7 @@ import pekko.cluster.Cluster
 import pekko.cluster.ClusterEvent
 import pekko.cluster.Member
 import pekko.cluster.MemberStatus
+import pekko.util.RandomNumberGenerator
 
 /**
  *  Runtime collection management commands.
@@ -280,7 +279,7 @@ private[metrics] class ClusterMetricsCollector extends Actor with ActorLogging {
     context.actorSelection(self.path.toStringWithAddress(address)) ! envelope
 
   def selectRandomNode(addresses: immutable.IndexedSeq[Address]): Option[Address] =
-    if (addresses.isEmpty) None else Some(addresses(ThreadLocalRandom.current.nextInt(addresses.size)))
+    if (addresses.isEmpty) None else Some(addresses(RandomNumberGenerator.get().nextInt(addresses.size)))
 
   /**
    * Publishes to the event stream.
