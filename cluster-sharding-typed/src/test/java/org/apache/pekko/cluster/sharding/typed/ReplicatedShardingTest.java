@@ -201,7 +201,7 @@ public class ReplicatedShardingTest extends JUnitSuite {
     private Behavior<Command> onForwardToRandom(ForwardToRandom forwardToRandom) {
       Map<ReplicaId, EntityRef<MyReplicatedStringSet.Command>> refs =
           replicatedSharding.getEntityRefsFor(forwardToRandom.entityId);
-      int chosenIdx = RandomNumberGenerator.get().nextInt(refs.size());
+      int chosenIdx = ThreadLocalRandom.current().nextInt(refs.size());
       new ArrayList<>(refs.values()).get(chosenIdx).tell(forwardToRandom.message);
       return this;
     }
