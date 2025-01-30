@@ -20,6 +20,9 @@ package org.apache.pekko.util
 import org.apache.pekko
 import pekko.annotation.InternalApi
 
+import com.typesafe.config.ConfigFactory
+
+import java.lang.invoke.{ MethodHandles, MethodType }
 import java.util.concurrent.ThreadLocalRandom
 
 @InternalApi
@@ -40,7 +43,41 @@ private[pekko] object ThreadLocalRandomNumberGenerator extends RandomNumberGener
   override def nextDouble(): Double = ThreadLocalRandom.current().nextDouble()
 }
 
+// https://openjdk.org/jeps/356
+@InternalApi
+private[pekko] class Jep356RandomNumberGenerator(impl: String) extends RandomNumberGenerator {
+
+  private val rngClass = Class.forName("java.util.random.RandomGenerator")
+  private val lookup = MethodHandles.publicLookup()
+  private val createHandle = lookup.findStatic(rngClass, "of", MethodType.methodType(rngClass, classOf[String]))
+  private val intHandle = lookup.findVirtual(rngClass, "nextInt", MethodType.methodType(classOf[Int]))
+  private val intBoundHandle =
+    lookup.findVirtual(rngClass, "nextInt", MethodType.methodType(classOf[Int], classOf[Int]))
+  private val longHandle = lookup.findVirtual(rngClass, "nextLong", MethodType.methodType(classOf[Long]))
+  private val doubleHandle = lookup.findVirtual(rngClass, "nextDouble", MethodType.methodType(classOf[Double]))
+  private val rng = createHandle.invoke(impl)
+
+  override def nextInt(): Int = intHandle.invoke(rng)
+  override def nextInt(bound: Int): Int = intBoundHandle.invoke(rng, bound)
+  override def nextInt(origin: Int, bound: Int): Int = {
+    if (origin >= bound)
+      throw new IllegalArgumentException("origin must be less than bound")
+    nextInt(bound - origin) + origin
+  }
+  override def nextLong(): Long = longHandle.invoke(rng)
+  override def nextDouble(): Double = doubleHandle.invoke(rng)
+}
+
 @InternalApi
 private[pekko] object RandomNumberGenerator {
-  def get(): RandomNumberGenerator = ThreadLocalRandomNumberGenerator
+
+  private val generator = {
+    val cfg = ConfigFactory.load()
+    cfg.getString("pekko.random.generator-implementation") match {
+      case "ThreadLocalRandom" => ThreadLocalRandomNumberGenerator
+      case impl => new Jep356RandomNumberGenerator(impl)
+    }
+  }
+
+  def get(): RandomNumberGenerator = generator
 }
