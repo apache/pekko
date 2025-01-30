@@ -71,12 +71,14 @@ private[pekko] class Jep356RandomNumberGenerator(impl: String) extends RandomNum
 @InternalApi
 private[pekko] object RandomNumberGenerator {
 
-  private val generator = {
+  private val generator = if (JavaVersion.majorVersion >= 17) {
     val cfg = ConfigFactory.load()
     cfg.getString("pekko.random.generator-implementation") match {
       case "ThreadLocalRandom" => ThreadLocalRandomNumberGenerator
       case impl                => new Jep356RandomNumberGenerator(impl)
     }
+  } else {
+    ThreadLocalRandomNumberGenerator
   }
 
   def get(): RandomNumberGenerator = generator
