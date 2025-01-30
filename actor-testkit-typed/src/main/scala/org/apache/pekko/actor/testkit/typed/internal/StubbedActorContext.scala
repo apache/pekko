@@ -19,7 +19,7 @@ import pekko.actor.typed._
 import pekko.actor.typed.internal._
 import pekko.actor.{ ActorPath, ActorRefProvider, InvalidMessageException }
 import pekko.annotation.InternalApi
-import pekko.util.{ Helpers, RandomNumberGenerator}
+import pekko.util.{ Helpers, RandomNumberGenerator }
 import pekko.{ actor => classic }
 import org.slf4j.{ Logger, Marker }
 import org.slf4j.helpers.{ MessageFormatter, SubstituteLoggerFactory }
@@ -110,7 +110,8 @@ private[pekko] final class FunctionRef[-T](override val path: ActorPath, send: (
 
   override def spawnAnonymous[U](behavior: Behavior[U], props: Props = Props.empty): ActorRef[U] = {
     checkCurrentActorThread()
-    val btk = new BehaviorTestKitImpl[U](system, (path / childName.next()).withUid(RandomNumberGenerator.get().nextInt()), behavior)
+    val btk = new BehaviorTestKitImpl[U](system,
+      (path / childName.next()).withUid(RandomNumberGenerator.get().nextInt()), behavior)
     _children += btk.context.self.path.name -> btk
     btk.context.self
   }
@@ -119,7 +120,8 @@ private[pekko] final class FunctionRef[-T](override val path: ActorPath, send: (
     _children.get(name) match {
       case Some(_) => throw classic.InvalidActorNameException(s"actor name $name is already taken")
       case None =>
-        val btk = new BehaviorTestKitImpl[U](system, (path / name).withUid(RandomNumberGenerator.get().nextInt()), behavior)
+        val btk =
+          new BehaviorTestKitImpl[U](system, (path / name).withUid(RandomNumberGenerator.get().nextInt()), behavior)
         _children += name -> btk
         btk.context.self
     }

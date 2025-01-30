@@ -77,7 +77,7 @@ private[remote] class FailureInjectorTransportAdapter(
     extends AbstractTransportAdapter(wrappedTransport)(extendedSystem.dispatchers.internalDispatcher)
     with AssociationEventListener {
 
-  private val rng = RandomNumberGenerator.get()
+  private def rng = RandomNumberGenerator.get()
   private val log = Logging(extendedSystem, classOf[FailureInjectorTransportAdapter])
   private val shouldDebugLog: Boolean = extendedSystem.settings.config.getBoolean("pekko.remote.classic.gremlin.debug")
 
