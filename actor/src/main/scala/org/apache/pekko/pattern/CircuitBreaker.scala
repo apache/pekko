@@ -14,7 +14,7 @@
 package org.apache.pekko.pattern
 
 import java.util.Optional
-import java.util.concurrent.{ Callable, CompletionException, CompletionStage, CopyOnWriteArrayList, ThreadLocalRandom }
+import java.util.concurrent.{ Callable, CompletionException, CompletionStage, CopyOnWriteArrayList }
 import java.util.concurrent.atomic.{ AtomicBoolean, AtomicInteger, AtomicLong }
 import java.util.function.BiFunction
 import java.util.function.Consumer
@@ -32,7 +32,7 @@ import pekko.dispatch.ExecutionContexts.parasitic
 import pekko.pattern.internal.{ CircuitBreakerNoopTelemetry, CircuitBreakerTelemetry }
 import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
-import pekko.util.Unsafe
+import pekko.util.{ RandomNumberGenerator, Unsafe }
 
 /**
  * Companion object providing factory methods for Circuit Breaker which runs callbacks in caller's thread

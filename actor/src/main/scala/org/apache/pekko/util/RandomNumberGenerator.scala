@@ -26,6 +26,7 @@ import java.util.concurrent.ThreadLocalRandom
 private[pekko] trait RandomNumberGenerator {
   def nextInt(): Int
   def nextInt(n: Int): Int
+  def nextInt(origin: Int, n: Int): Int
   def nextLong(): Long
   def nextDouble(): Double
 }
@@ -34,6 +35,7 @@ private[pekko] trait RandomNumberGenerator {
 private[pekko] object ThreadLocalRandomNumberGenerator extends RandomNumberGenerator {
   override def nextInt(): Int = ThreadLocalRandom.current().nextInt()
   override def nextInt(bound: Int): Int = ThreadLocalRandom.current().nextInt(bound)
+  override def nextInt(origin: Int, bound: Int): Int = ThreadLocalRandom.current().nextInt(origin, bound)
   override def nextLong(): Long = ThreadLocalRandom.current().nextLong()
   override def nextDouble(): Double = ThreadLocalRandom.current().nextDouble()
 }

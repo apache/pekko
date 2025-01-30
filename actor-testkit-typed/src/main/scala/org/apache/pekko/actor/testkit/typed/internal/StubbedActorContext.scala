@@ -173,7 +173,7 @@ private[pekko] final class FunctionRef[-T](override val path: ActorPath, send: (
   @InternalApi private[pekko] def internalSpawnMessageAdapter[U](f: U => T, name: String): ActorRef[U] = {
 
     val n = if (name != "") s"${childName.next()}-$name" else childName.next()
-    val p = (path / n).withUid(rnd().nextInt())
+    val p = (path / n).withUid(RandomNumberGenerator.get().nextInt())
     val i = new BehaviorTestKitImpl[U](system, p, BehaviorImpl.ignore)
     _children += p.name -> i
 
