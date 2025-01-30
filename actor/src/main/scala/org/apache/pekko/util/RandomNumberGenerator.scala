@@ -75,7 +75,7 @@ private[pekko] object RandomNumberGenerator {
     val cfg = ConfigFactory.load()
     cfg.getString("pekko.random.generator-implementation") match {
       case "ThreadLocalRandom" => ThreadLocalRandomNumberGenerator
-      case impl => new Jep356RandomNumberGenerator(impl)
+      case impl                => new Jep356RandomNumberGenerator(impl)
     }
   }
 
