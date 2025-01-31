@@ -20,11 +20,14 @@ package org.apache.pekko.util
 import org.apache.pekko
 import pekko.annotation.InternalApi
 
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{ Config, ConfigFactory }
 
 import java.lang.invoke.{ MethodHandles, MethodType }
 import java.util.concurrent.ThreadLocalRandom
 
+/**
+ * INTERNAL API
+ */
 @InternalApi
 private[pekko] trait RandomNumberGenerator {
   def nextInt(): Int
@@ -34,6 +37,9 @@ private[pekko] trait RandomNumberGenerator {
   def nextDouble(): Double
 }
 
+/**
+ * INTERNAL API
+ */
 @InternalApi
 private[pekko] object ThreadLocalRandomNumberGenerator extends RandomNumberGenerator {
   override def nextInt(): Int = ThreadLocalRandom.current().nextInt()
@@ -43,9 +49,13 @@ private[pekko] object ThreadLocalRandomNumberGenerator extends RandomNumberGener
   override def nextDouble(): Double = ThreadLocalRandom.current().nextDouble()
 }
 
-// https://openjdk.org/jeps/356
+/**
+ * INTERNAL API
+ */ 
 @InternalApi
 private[pekko] class Jep356RandomNumberGenerator(impl: String) extends RandomNumberGenerator {
+
+  // https://openjdk.org/jeps/356
 
   private val rngClass = Class.forName("java.util.random.RandomGenerator")
   private val lookup = MethodHandles.publicLookup()
@@ -68,18 +78,26 @@ private[pekko] class Jep356RandomNumberGenerator(impl: String) extends RandomNum
   override def nextDouble(): Double = doubleHandle.invoke(rng)
 }
 
+/**
+ * INTERNAL API
+ */ 
 @InternalApi
 private[pekko] object RandomNumberGenerator {
 
-  private val generator = if (JavaVersion.majorVersion >= 17) {
-    val cfg = ConfigFactory.load()
-    cfg.getString("pekko.random.generator-implementation") match {
-      case "ThreadLocalRandom" => ThreadLocalRandomNumberGenerator
-      case impl                => new Jep356RandomNumberGenerator(impl)
+  /**
+   * INTERNAL API. Open for testing.
+   */  
+  def createGenerator(cfg: Config) =
+    if (JavaVersion.majorVersion >= 17) {
+      cfg.getString("pekko.random.generator-implementation") match {
+        case "ThreadLocalRandom" => ThreadLocalRandomNumberGenerator
+        case impl                => new Jep356RandomNumberGenerator(impl)
+      }
+    } else {
+      ThreadLocalRandomNumberGenerator
     }
-  } else {
-    ThreadLocalRandomNumberGenerator
-  }
+
+  private val generator = createGenerator(ConfigFactory.load())
 
   def get(): RandomNumberGenerator = generator
 }
