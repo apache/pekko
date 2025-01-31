@@ -13,8 +13,6 @@
 
 package org.apache.pekko.routing
 
-import java.util.concurrent.ThreadLocalRandom
-
 import scala.collection.immutable
 
 import scala.annotation.nowarn
@@ -25,6 +23,7 @@ import pekko.actor.ActorSystem
 import pekko.actor.SupervisorStrategy
 import pekko.dispatch.Dispatchers
 import pekko.japi.Util.immutableSeq
+import pekko.util.RandomNumberGenerator
 
 object RandomRoutingLogic {
   def apply(): RandomRoutingLogic = new RandomRoutingLogic
@@ -38,7 +37,7 @@ object RandomRoutingLogic {
 final class RandomRoutingLogic extends RoutingLogic {
   override def select(message: Any, routees: immutable.IndexedSeq[Routee]): Routee =
     if (routees.isEmpty) NoRoutee
-    else routees(ThreadLocalRandom.current.nextInt(routees.size))
+    else routees(RandomNumberGenerator.get().nextInt(routees.size))
 }
 
 /**

@@ -13,8 +13,6 @@
 
 package org.apache.pekko.routing
 
-import java.util.concurrent.ThreadLocalRandom
-
 import scala.annotation.tailrec
 import scala.collection.immutable
 
@@ -27,6 +25,7 @@ import pekko.actor.ActorRefWithCell
 import pekko.actor.ActorSystem
 import pekko.actor.SupervisorStrategy
 import pekko.dispatch.Dispatchers
+import pekko.util.RandomNumberGenerator
 
 object SmallestMailboxRoutingLogic {
   def apply(): SmallestMailboxRoutingLogic = new SmallestMailboxRoutingLogic
@@ -71,7 +70,7 @@ class SmallestMailboxRoutingLogic extends RoutingLogic {
       NoRoutee
     else if (at >= targets.size) {
       if (deep) {
-        if (isTerminated(proposedTarget)) targets(ThreadLocalRandom.current.nextInt(targets.size)) else proposedTarget
+        if (isTerminated(proposedTarget)) targets(RandomNumberGenerator.get().nextInt(targets.size)) else proposedTarget
       } else selectNext(targets, proposedTarget, currentScore, 0, deep = true)
     } else {
       val target = targets(at)

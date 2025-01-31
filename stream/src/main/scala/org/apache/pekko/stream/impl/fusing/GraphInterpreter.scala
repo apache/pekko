@@ -13,8 +13,6 @@
 
 package org.apache.pekko.stream.impl.fusing
 
-import java.util.concurrent.ThreadLocalRandom
-
 import scala.concurrent.Promise
 import scala.util.control.NonFatal
 
@@ -27,6 +25,7 @@ import pekko.stream._
 import pekko.stream.Attributes.LogLevels
 import pekko.stream.snapshot._
 import pekko.stream.stage._
+import pekko.util.RandomNumberGenerator
 
 /**
  * INTERNAL API
@@ -576,7 +575,7 @@ import pekko.stream.stage._
   private def dequeue(): Connection = {
     val idx = queueHead & mask
     if (fuzzingMode) {
-      val swapWith = (ThreadLocalRandom.current.nextInt(queueTail - queueHead) + queueHead) & mask
+      val swapWith = (RandomNumberGenerator.get().nextInt(queueTail - queueHead) + queueHead) & mask
       val ev = eventQueue(swapWith)
       eventQueue(swapWith) = eventQueue(idx)
       eventQueue(idx) = ev

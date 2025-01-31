@@ -14,7 +14,6 @@
 package org.apache.pekko.pattern
 
 import java.util.Optional
-import java.util.concurrent.ThreadLocalRandom
 
 import scala.concurrent.duration.{ Duration, FiniteDuration }
 import scala.util.Try
@@ -24,6 +23,7 @@ import pekko.actor.{ ActorRef, DeadLetterSuppression, OneForOneStrategy, Props, 
 import pekko.annotation.InternalApi
 import pekko.pattern.internal.BackoffOnStopSupervisor
 import pekko.util.JavaDurationConverters._
+import pekko.util.RandomNumberGenerator
 
 object BackoffSupervisor {
 
@@ -324,7 +324,7 @@ object BackoffSupervisor {
       minBackoff: FiniteDuration,
       maxBackoff: FiniteDuration,
       randomFactor: Double): FiniteDuration = {
-    val rnd = 1.0 + ThreadLocalRandom.current().nextDouble() * randomFactor
+    val rnd = 1.0 + RandomNumberGenerator.get().nextDouble() * randomFactor
     val calculatedDuration = Try(maxBackoff.min(minBackoff * math.pow(2, restartCount)) * rnd).getOrElse(maxBackoff)
     calculatedDuration match {
       case f: FiniteDuration => f
