@@ -51,7 +51,7 @@ private[pekko] object ThreadLocalRandomNumberGenerator extends RandomNumberGener
 
 /**
  * INTERNAL API
- */ 
+ */
 @InternalApi
 private[pekko] class Jep356RandomNumberGenerator(impl: String) extends RandomNumberGenerator {
 
@@ -80,13 +80,13 @@ private[pekko] class Jep356RandomNumberGenerator(impl: String) extends RandomNum
 
 /**
  * INTERNAL API
- */ 
+ */
 @InternalApi
 private[pekko] object RandomNumberGenerator {
 
   /**
    * INTERNAL API. Open for testing.
-   */  
+   */
   def createGenerator(cfg: Config) =
     if (JavaVersion.majorVersion >= 17) {
       cfg.getString("pekko.random.generator-implementation") match {
