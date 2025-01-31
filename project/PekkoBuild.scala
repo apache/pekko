@@ -235,7 +235,7 @@ object PekkoBuild {
       base ++ pekkoSysProps
     },
     // with forked tests the working directory is set to each module's home directory
-    // rather than the Akka root, some tests depend on Akka root being working dir, so reset
+    // rather than the Pekko root, some tests depend on Pekko root being working dir, so reset
     Test / testGrouping := {
       val original: Seq[Tests.Group] = (Test / testGrouping).value
 
