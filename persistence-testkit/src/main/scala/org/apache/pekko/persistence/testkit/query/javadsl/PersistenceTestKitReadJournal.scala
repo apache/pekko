@@ -66,7 +66,7 @@ final class PersistenceTestKitReadJournal(delegate: scaladsl.PersistenceTestKitR
 
   override def eventsByTag(tag: String, offset: Offset): Source[EventEnvelope, NotUsed] =
     delegate.eventsByTag(tag, offset).asJava
-  
+
   override def sliceForPersistenceId(persistenceId: String): Int =
     delegate.sliceForPersistenceId(persistenceId)
 
