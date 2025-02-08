@@ -17,8 +17,6 @@
 
 package org.apache.pekko.persistence.testkit.query
 
-import scala.collection.immutable.Seq
-import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
 import org.apache.pekko
 import pekko.Done
@@ -27,7 +25,9 @@ import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.typed.ActorRef
 import pekko.persistence.query.EventEnvelope
 import pekko.persistence.query.PersistenceQuery
+import pekko.persistence.query.NoOffset
 import pekko.persistence.testkit.PersistenceTestKitPlugin
+import pekko.persistence.testkit.query.javadsl.{ PersistenceTestKitReadJournal => JavaPersistenceTestKitReadJournal }
 import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.scaladsl.Effect
@@ -35,6 +35,9 @@ import pekko.persistence.typed.scaladsl.EventSourcedBehavior
 import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.scaladsl.TestSink
 import org.scalatest.wordspec.AnyWordSpecLike
+
+import scala.collection.immutable.Seq
+import scala.concurrent.duration._
 
 object EventsByTagSpec {
   val config = PersistenceTestKitPlugin.config.withFallback(
@@ -74,8 +77,16 @@ class EventsByTagSpec
 
   implicit val classic: pekko.actor.ActorSystem = system.classicSystem
 
-  val queries =
-    PersistenceQuery(system).readJournalFor[PersistenceTestKitReadJournal](PersistenceTestKitReadJournal.Identifier)
+  private val persistenceQuery = PersistenceQuery(system)
+
+  private val queries =
+    persistenceQuery.readJournalFor[PersistenceTestKitReadJournal](
+      PersistenceTestKitReadJournal.Identifier)
+
+  private val queriesJava =
+    persistenceQuery.getReadJournalFor(
+      classOf[JavaPersistenceTestKitReadJournal],
+      JavaPersistenceTestKitReadJournal.Identifier)
 
   def setup(persistenceId: String, tags: Set[String]): ActorRef[Command] = {
     val probe = createTestProbe[Done]()
@@ -107,6 +118,19 @@ class EventsByTagSpec
       val tag = "c-tag"
       val ref = setup("c", Set(tag))
       val src = queries.eventsByTag(tag)
+      val probe = src.map(_.event).runWith(TestSink.probe[Any]).request(5).expectNext("c-1", "c-2", "c-3")
+
+      ref ! Command("c-4", ackProbe.ref)
+      ackProbe.expectMessage(Done)
+
+      probe.expectNext("c-4")
+    }
+
+    "find new events (Java DSL)" in {
+      val ackProbe = createTestProbe[Done]()
+      val tag = "c-tag"
+      val ref = setup("c", Set(tag))
+      val src = queriesJava.eventsByTag(tag, NoOffset).asScala
       val probe = src.map(_.event).runWith(TestSink.probe[Any]).request(5).expectNext("c-1", "c-2", "c-3")
 
       ref ! Command("c-4", ackProbe.ref)

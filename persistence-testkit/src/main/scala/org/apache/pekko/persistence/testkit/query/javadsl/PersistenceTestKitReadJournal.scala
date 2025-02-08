@@ -22,6 +22,7 @@ import pekko.persistence.query.javadsl.{
   CurrentEventsByPersistenceIdQuery,
   CurrentEventsByTagQuery,
   EventsByPersistenceIdQuery,
+  EventsByTagQuery,
   ReadJournal
 }
 import pekko.persistence.query.typed
@@ -38,7 +39,8 @@ final class PersistenceTestKitReadJournal(delegate: scaladsl.PersistenceTestKitR
     with EventsByPersistenceIdQuery
     with CurrentEventsByPersistenceIdQuery
     with CurrentEventsByTagQuery
-    with CurrentEventsBySliceQuery {
+    with CurrentEventsBySliceQuery
+    with EventsByTagQuery {
 
   override def eventsByPersistenceId(
       persistenceId: String,
@@ -61,6 +63,9 @@ final class PersistenceTestKitReadJournal(delegate: scaladsl.PersistenceTestKitR
       maxSlice: Int,
       offset: Offset): Source[typed.EventEnvelope[Event], NotUsed] =
     delegate.currentEventsBySlices(entityType, minSlice, maxSlice, offset).asJava
+
+  override def eventsByTag(tag: String, offset: Offset): Source[EventEnvelope, NotUsed] =
+    delegate.eventsByTag(tag, offset).asJava
 
   override def sliceForPersistenceId(persistenceId: String): Int =
     delegate.sliceForPersistenceId(persistenceId)
