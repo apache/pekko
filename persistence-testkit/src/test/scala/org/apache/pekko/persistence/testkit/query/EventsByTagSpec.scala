@@ -27,8 +27,8 @@ import pekko.persistence.query.EventEnvelope
 import pekko.persistence.query.PersistenceQuery
 import pekko.persistence.query.NoOffset
 import pekko.persistence.testkit.PersistenceTestKitPlugin
-import pekko.persistence.testkit.query.javadsl
-import pekko.persistence.testkit.query.scaladsl
+import pekko.persistence.testkit.query.javadsl.{ PersistenceTestKitReadJournal => JavaPersistenceTestKitReadJournal }
+import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.scaladsl.Effect
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior
@@ -80,13 +80,13 @@ class EventsByTagSpec
   private val persistenceQuery = PersistenceQuery(system)
 
   private val queries =
-    persistenceQuery.readJournalFor[scaladsl.PersistenceTestKitReadJournal](
-      scaladsl.PersistenceTestKitReadJournal.Identifier)
+    persistenceQuery.readJournalFor[PersistenceTestKitReadJournal](
+      PersistenceTestKitReadJournal.Identifier)
 
   private val queriesJava =
     persistenceQuery.getReadJournalFor(
-      classOf[javadsl.PersistenceTestKitReadJournal],
-      javadsl.PersistenceTestKitReadJournal.Identifier)
+      classOf[JavaPersistenceTestKitReadJournal],
+      JavaPersistenceTestKitReadJournal.Identifier)
 
   def setup(persistenceId: String, tags: Set[String]): ActorRef[Command] = {
     val probe = createTestProbe[Done]()
