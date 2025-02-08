@@ -29,7 +29,7 @@ package org.apache.pekko.persistence.query.javadsl
  * Usage:
  * {{{
  * SomeCoolReadJournal journal =
- *   PersistenceQuery.get(system).getReadJournalFor(SomeCoolReadJournal.class, queryPluginConfigPath);
+ *   PersistenceQuery.get(system).getReadJournalFor(queryPluginConfigPath);
  * Source<EventEnvolope, Unit> events = journal.eventsByTag("mytag", 0L);
  * }}}
  *

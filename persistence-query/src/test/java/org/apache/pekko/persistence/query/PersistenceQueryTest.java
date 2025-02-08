@@ -30,7 +30,7 @@ public class PersistenceQueryTest {
   @SuppressWarnings("unused")
   public void shouldExposeJavaDSLFriendlyQueryJournal() throws Exception {
     final DummyJavaReadJournal readJournal =
-        PersistenceQuery.get(system).getReadJournalFor(DummyJavaReadJournal.class, "noop-journal");
+        PersistenceQuery.get(system).getReadJournalFor("noop-journal");
     final org.apache.pekko.stream.javadsl.Source<String, NotUsed> ids =
         readJournal.persistenceIds();
   }

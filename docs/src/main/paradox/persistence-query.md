@@ -59,7 +59,7 @@ Java
 :  @@snip [PersistenceQueryDocTest.java](/docs/src/test/java/jdocs/persistence/PersistenceQueryDocTest.java) { #basic-usage }
 
 Journal implementers are encouraged to put this identifier in a variable known to the user, such that one can access it via
-@scala[@scaladoc[readJournalFor[NoopJournal](NoopJournal.identifier)](pekko.persistence.query.PersistenceQuery#readJournalFor[T%3C:org.apache.pekko.persistence.query.scaladsl.ReadJournal](readJournalPluginId:String):T)]@java[@javadoc[getJournalFor(NoopJournal.class, NoopJournal.identifier)](pekko.persistence.query.PersistenceQuery#getReadJournalFor(java.lang.Class,java.lang.String))], however this is not enforced.
+@scala[@scaladoc[readJournalFor[NoopJournal](NoopJournal.identifier)](pekko.persistence.query.PersistenceQuery#readJournalFor[T%3C:org.apache.pekko.persistence.query.scaladsl.ReadJournal](readJournalPluginId:String):T)]@java[@javadoc[getJournalFor(NoopJournal.class, NoopJournal.identifier)](pekko.persistence.query.PersistenceQuery#getReadJournalFor(java.lang.String))], however this is not enforced.
 
 ### Predefined queries
 

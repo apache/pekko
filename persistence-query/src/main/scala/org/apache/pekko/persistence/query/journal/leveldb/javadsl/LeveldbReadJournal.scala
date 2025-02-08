@@ -25,7 +25,7 @@ import pekko.stream.javadsl.Source
  * It is retrieved with:
  * {{{
  * LeveldbReadJournal queries =
- *   PersistenceQuery.get(system).getReadJournalFor(LeveldbReadJournal.class, LeveldbReadJournal.Identifier());
+ *   PersistenceQuery.get(system).getReadJournalFor(LeveldbReadJournal.Identifier());
  * }}}
  *
  * Corresponding Scala API is in [[pekko.persistence.query.journal.leveldb.scaladsl.LeveldbReadJournal]].

@@ -71,13 +71,37 @@ class PersistenceQuery(system: ExtendedActorSystem)
   /**
    * Java API: Returns the [[pekko.persistence.query.javadsl.ReadJournal]] specified by the given
    * read journal configuration entry.
+   * @since 1.2.0
    */
+  final def getReadJournalFor[T <: javadsl.ReadJournal](
+      readJournalPluginId: String,
+      readJournalPluginConfig: Config): T =
+    pluginFor(readJournalPluginId, readJournalPluginConfig).javadslPlugin.asInstanceOf[T]
+
+  /**
+   * Java API: Returns the [[pekko.persistence.query.javadsl.ReadJournal]] specified by the given
+   * read journal configuration entry.
+   * @since 1.2.0
+   */
+  final def getReadJournalFor[T <: javadsl.ReadJournal](readJournalPluginId: String): T =
+    getReadJournalFor[T](readJournalPluginId, ConfigFactory.empty())
+
+  /**
+   * Java API: Returns the [[pekko.persistence.query.javadsl.ReadJournal]] specified by the given
+   * read journal configuration entry.
+   */
+  @deprecated("Use getReadJournalFor without passing the class param instead", "1.2.0")
   final def getReadJournalFor[T <: javadsl.ReadJournal](
       @unused clazz: Class[T],
       readJournalPluginId: String,
       readJournalPluginConfig: Config): T =
     pluginFor(readJournalPluginId, readJournalPluginConfig).javadslPlugin.asInstanceOf[T]
 
+  /**
+   * Java API: Returns the [[pekko.persistence.query.javadsl.ReadJournal]] specified by the given
+   * read journal configuration entry.
+   */
+  @deprecated("Use getReadJournalFor without passing the class param instead", "1.2.0")
   final def getReadJournalFor[T <: javadsl.ReadJournal](clazz: Class[T], readJournalPluginId: String): T =
     getReadJournalFor[T](clazz, readJournalPluginId, ConfigFactory.empty())
 

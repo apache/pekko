@@ -66,8 +66,7 @@ public class EventSourcedBehaviorJavaDslTest extends JUnitSuite {
 
   private PersistenceTestKitReadJournal queries =
       PersistenceQuery.get(Adapter.toClassic(testKit.system()))
-          .getReadJournalFor(
-              PersistenceTestKitReadJournal.class, PersistenceTestKitReadJournal.Identifier());
+          .getReadJournalFor(PersistenceTestKitReadJournal.Identifier());
 
   interface Command extends CborSerializable {}
 

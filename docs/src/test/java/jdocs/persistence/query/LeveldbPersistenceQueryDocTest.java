@@ -34,7 +34,7 @@ public class LeveldbPersistenceQueryDocTest {
     // #get-read-journal
     LeveldbReadJournal queries =
         PersistenceQuery.get(system)
-            .getReadJournalFor(LeveldbReadJournal.class, LeveldbReadJournal.Identifier());
+            .getReadJournalFor(LeveldbReadJournal.Identifier());
     // #get-read-journal
   }
 
@@ -42,7 +42,7 @@ public class LeveldbPersistenceQueryDocTest {
     // #EventsByPersistenceId
     LeveldbReadJournal queries =
         PersistenceQuery.get(system)
-            .getReadJournalFor(LeveldbReadJournal.class, LeveldbReadJournal.Identifier());
+            .getReadJournalFor(LeveldbReadJournal.Identifier());
 
     Source<EventEnvelope, NotUsed> source =
         queries.eventsByPersistenceId("some-persistence-id", 0, Long.MAX_VALUE);
@@ -53,7 +53,7 @@ public class LeveldbPersistenceQueryDocTest {
     // #AllPersistenceIds
     LeveldbReadJournal queries =
         PersistenceQuery.get(system)
-            .getReadJournalFor(LeveldbReadJournal.class, LeveldbReadJournal.Identifier());
+            .getReadJournalFor(LeveldbReadJournal.Identifier());
 
     Source<String, NotUsed> source = queries.persistenceIds();
     // #AllPersistenceIds
@@ -63,7 +63,7 @@ public class LeveldbPersistenceQueryDocTest {
     // #EventsByTag
     LeveldbReadJournal queries =
         PersistenceQuery.get(system)
-            .getReadJournalFor(LeveldbReadJournal.class, LeveldbReadJournal.Identifier());
+            .getReadJournalFor(LeveldbReadJournal.Identifier());
 
     Source<EventEnvelope, NotUsed> source = queries.eventsByTag("green", new Sequence(0L));
     // #EventsByTag
