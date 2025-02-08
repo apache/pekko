@@ -53,7 +53,7 @@ private[pekko] object ThreadLocalRandomNumberGenerator extends RandomNumberGener
  * INTERNAL API
  */
 @InternalApi
-private[pekko] class Jep356RandomNumberGenerator(impl: String) extends RandomNumberGenerator {
+private[pekko] final class Jep356RandomNumberGenerator(impl: String) extends RandomNumberGenerator {
 
   // https://openjdk.org/jeps/356
 

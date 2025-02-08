@@ -17,16 +17,19 @@
 
 package org.apache.pekko.util
 
+import com.typesafe.config.ConfigFactory
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-class RandomNumberGeneratorSpec extends AnyWordSpec with Matchers {
+class RandomNumberGeneratorJava21Spec extends AnyWordSpec with Matchers {
 
-  "RandomNumberGenerator" should {
+  "RandomNumberGenerator (Java 21+)" should {
 
-    "default to ThreadLocalRandom" in {
-      val rng = RandomNumberGenerator.get()
-      rng shouldEqual ThreadLocalRandomNumberGenerator
+    "support config" in {
+      val config = ConfigFactory.parseString(
+        """pekko.random.generator.generator-implementation = "Xoroshiro128PlusPlus"""")
+      val rng = RandomNumberGenerator.createGenerator(config)
+      rng shouldBe a[Jep356RandomNumberGenerator]
       rng.nextInt(10) should (be >= 0 and be < 10)
     }
 
