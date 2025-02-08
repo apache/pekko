@@ -17,20 +17,19 @@
 
 package org.apache.pekko.persistence.testkit.query
 
-import scala.collection.immutable.Seq
-import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
 import org.apache.pekko
-import pekko.persistence.Persistence
-import pekko.persistence.query.NoOffset
-import pekko.persistence.testkit.internal.InMemStorageExtension
 import pekko.Done
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.typed.ActorRef
-import pekko.persistence.query.typed.EventEnvelope
+import pekko.persistence.Persistence
 import pekko.persistence.query.PersistenceQuery
+import pekko.persistence.query.NoOffset
+import pekko.persistence.query.typed.EventEnvelope
 import pekko.persistence.testkit.PersistenceTestKitPlugin
+import pekko.persistence.testkit.internal.InMemStorageExtension
+import pekko.persistence.testkit.query.javadsl.{ PersistenceTestKitReadJournal => JavaPersistenceTestKitReadJournal }
 import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.scaladsl.Effect
@@ -38,6 +37,9 @@ import pekko.persistence.typed.scaladsl.EventSourcedBehavior
 import pekko.stream.testkit.scaladsl.TestSink
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.wordspec.AnyWordSpecLike
+
+import scala.collection.immutable.Seq
+import scala.concurrent.duration._
 
 object EventsBySliceSpec {
   val config = PersistenceTestKitPlugin.config.withFallback(
@@ -81,8 +83,16 @@ class EventsBySliceSpec
 
   implicit val classic: pekko.actor.ActorSystem = system.classicSystem
 
-  val queries =
-    PersistenceQuery(system).readJournalFor[PersistenceTestKitReadJournal](PersistenceTestKitReadJournal.Identifier)
+  private val persistenceQuery = PersistenceQuery(system)
+
+  private val queries =
+    persistenceQuery.readJournalFor[PersistenceTestKitReadJournal](
+      PersistenceTestKitReadJournal.Identifier)
+
+  private val queriesJava =
+    persistenceQuery.getReadJournalFor(
+      classOf[JavaPersistenceTestKitReadJournal],
+      JavaPersistenceTestKitReadJournal.Identifier)
 
   def setup(persistenceId: String): ActorRef[Command] = {
     val probe = createTestProbe[Done]()
@@ -123,6 +133,18 @@ class EventsBySliceSpec
       val ackProbe = createTestProbe[Done]()
       val ref = setup("c")
       val src = queries.eventsBySlices[String]("Test", 0, numberOfSlices - 1, NoOffset)
+      val probe = src.map(_.event).runWith(TestSink.probe[String]).request(5).expectNext("c-1", "c-2", "c-3")
+
+      ref ! Command("c-4", ackProbe.ref)
+      ackProbe.expectMessage(Done)
+
+      probe.expectNext("c-4")
+    }
+
+    "find new events (Java DSL)" in {
+      val ackProbe = createTestProbe[Done]()
+      val ref = setup("c")
+      val src = queriesJava.eventsBySlices[String]("Test", 0, numberOfSlices - 1, NoOffset).asScala
       val probe = src.map(_.event).runWith(TestSink.probe[String]).request(5).expectNext("c-1", "c-2", "c-3")
 
       ref ! Command("c-4", ackProbe.ref)
