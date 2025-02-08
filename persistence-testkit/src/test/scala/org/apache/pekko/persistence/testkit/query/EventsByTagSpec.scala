@@ -80,7 +80,8 @@ class EventsByTagSpec
   private val persistenceQuery = PersistenceQuery(system)
 
   private val queries =
-    persistenceQuery.readJournalFor[scaladsl.PersistenceTestKitReadJournal](scaladsl.PersistenceTestKitReadJournal.Identifier)
+    persistenceQuery.readJournalFor[scaladsl.PersistenceTestKitReadJournal](
+      scaladsl.PersistenceTestKitReadJournal.Identifier)
 
   private val queriesJava =
     persistenceQuery.getReadJournalFor(
