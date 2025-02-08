@@ -27,7 +27,7 @@ class RandomNumberGeneratorJava21Spec extends AnyWordSpec with Matchers {
 
     "support config" in {
       val config = ConfigFactory.parseString(
-        """pekko.random.generator.generator-implementation = "Xoroshiro128PlusPlus"""")
+        """pekko.random.generator-implementation = "Xoroshiro128PlusPlus"""")
       val rng = RandomNumberGenerator.createGenerator(config)
       rng shouldBe a[Jep356RandomNumberGenerator]
       rng.nextInt(10) should (be >= 0 and be < 10)
