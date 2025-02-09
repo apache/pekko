@@ -84,7 +84,8 @@ class EventsByTagSpec
       PersistenceTestKitReadJournal.Identifier)
 
   private val queriesJava =
-    persistenceQuery.getReadJournalFor(JavaPersistenceTestKitReadJournal.Identifier)
+    persistenceQuery.getReadJournalFor[JavaPersistenceTestKitReadJournal](
+      JavaPersistenceTestKitReadJournal.Identifier)
 
   def setup(persistenceId: String, tags: Set[String]): ActorRef[Command] = {
     val probe = createTestProbe[Done]()
