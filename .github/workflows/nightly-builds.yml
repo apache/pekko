@@ -4,6 +4,7 @@ on:
   schedule:
     - cron: "0 0 * * *"
   workflow_dispatch:
+  pull_request:
 
 permissions: {}
 
@@ -177,12 +178,12 @@ jobs:
 
       - name: Install scala-cli
         if: ${{ matrix.javaVersion == 11 }}
-        # uses: VirtusLab/scala-cli-setup@v1
-        run: |-
-          curl -sS "https://virtuslab.github.io/scala-cli-packages/KEY.gpg" | sudo gpg --dearmor  -o /etc/apt/trusted.gpg.d/scala-cli.gpg 2>/dev/null
-          sudo curl -s --compressed -o /etc/apt/sources.list.d/scala_cli_packages.list "https://virtuslab.github.io/scala-cli-packages/debian/scala_cli_packages.list"
-          sudo apt update
-          sudo apt install scala-cli
+        uses: VirtusLab/scala-cli-setup@ebb311c7c5c3a4e7b93d16ef6144e71cc737e42c
+        # run: |-
+        #   curl -sS "https://virtuslab.github.io/scala-cli-packages/KEY.gpg" | sudo gpg --dearmor  -o /etc/apt/trusted.gpg.d/scala-cli.gpg 2>/dev/null
+        #   sudo curl -s --compressed -o /etc/apt/sources.list.d/scala_cli_packages.list "https://virtuslab.github.io/scala-cli-packages/debian/scala_cli_packages.list"
+        #   sudo apt update
+        #   sudo apt install scala-cli
 
       - name: Use Scala-CLI to verify jdk 9 classes
         if: ${{ matrix.javaVersion == 11 }}
