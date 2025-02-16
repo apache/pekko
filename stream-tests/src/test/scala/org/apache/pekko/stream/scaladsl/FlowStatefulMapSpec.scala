@@ -24,10 +24,7 @@ import scala.util.control.NoStackTrace
 
 import org.apache.pekko
 import pekko.Done
-import pekko.stream.AbruptStageTerminationException
-import pekko.stream.ActorAttributes
-import pekko.stream.ActorMaterializer
-import pekko.stream.Supervision
+import pekko.stream.{ AbruptStageTerminationException, ActorAttributes, ActorMaterializer, ClosedShape, Supervision }
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.Utils.TE
@@ -434,4 +431,28 @@ class FlowStatefulMapSpec extends StreamSpec {
       closedCounter.get() shouldBe 1
     }
   }
+
+  "support junction output ports" in {
+    val source = Source(List((1, 1), (2, 2)))
+    val g = RunnableGraph.fromGraph(GraphDSL.createGraph(TestSink.probe[(Int, Int)]) { implicit b => sink =>
+      import GraphDSL.Implicits._
+      val unzip = b.add(Unzip[Int, Int]())
+      val zip = b.add(Zip[Int, Int]())
+      val s = b.add(source)
+      // format: OFF
+      s ~> unzip.in
+           unzip.out0 ~> zip.in0
+           unzip.out1 ~> zip.in1
+                         zip.out.statefulMap(() => None)((_, elem) => (None, elem), _ => None) ~> sink.in
+      // format: ON
+
+      ClosedShape
+    })
+    g.run()
+      .request(2)
+      .expectNext((1, 1))
+      .expectNext((2, 2))
+      .expectComplete()
+  }
+
 }
