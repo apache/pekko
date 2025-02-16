@@ -23,7 +23,7 @@ package org.apache.pekko.persistence.query.scaladsl
  */
 trait CurrentLastKnownSequenceNumberByPersistenceIdQuery extends ReadJournal {
 
-/**
+  /**
    * Returns the last known sequence number for the given `persistenceId`. Empty if the `persistenceId` is unknown.
    *
    * @param persistenceId The `persistenceId` for which the last known sequence number should be returned.

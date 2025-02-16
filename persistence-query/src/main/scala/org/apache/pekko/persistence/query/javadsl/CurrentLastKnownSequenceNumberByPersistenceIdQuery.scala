@@ -26,11 +26,11 @@ import java.util.concurrent.CompletionStage
  */
 trait CurrentLastKnownSequenceNumberByPersistenceIdQuery extends ReadJournal {
 
-/**
+  /**
    * Returns the last known sequence number for the given `persistenceId`. Empty if the `persistenceId` is unknown.
    *
    * @param persistenceId The `persistenceId` for which the last known sequence number should be returned.
    * @return Some sequence number or None if the `persistenceId` is unknown.
    */
-  def currentLastKnownSequenceNumberByPersistenceId(persistenceId: String): CompletionStage[Optional[Long]]
+  def currentLastKnownSequenceNumberByPersistenceId(persistenceId: String): CompletionStage[Optional[java.lang.Long]]
 }
