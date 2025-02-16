@@ -17,6 +17,8 @@
 
 package org.apache.pekko.persistence.query.scaladsl
 
+import scala.concurrent.Future
+
 /**
  * A trait that enables querying the current last known sequence number for a given `persistenceId`.
  * @since 1.2.0
