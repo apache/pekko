@@ -14,6 +14,7 @@
 package org.apache.pekko.stream.scaladsl
 
 import org.apache.pekko
+import org.apache.pekko.stream.impl.fusing.GraphInterpreter
 import pekko.NotUsed
 import pekko.stream.Attributes
 import pekko.stream.Attributes.Attribute
@@ -141,6 +142,14 @@ class FromMaterializerSpec extends StreamSpec {
       }
 
       Source.empty.via(flow).runWith(Sink.head).futureValue should not be empty
+    }
+
+    "expose interpreter" in {
+      val flow = Flow.fromMaterializer { (_, _) =>
+        Flow.fromSinkAndSource(Sink.ignore, Source.single(GraphInterpreter.currentInterpreter))
+      }
+
+      Source.empty.via(flow).runWith(Sink.head).futureValue should not be null
     }
 
     "propagate materialized value" in {
