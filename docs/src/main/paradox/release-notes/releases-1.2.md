@@ -6,7 +6,7 @@ Apache Pekko 1.2.x releases support Java 8 and above.
 
 Pekko 1.2.0-M1 has some new features, performance updates and dependency upgrades. See the [GitHub Milestone](https://github.com/apache/pekko/milestone/6?closed=1) for a fuller list of changes.
 
-This is milestone release and is aimed at testing some new changes. It is expected that there will be at least one more milestone before a full release. This release should ideally be used in production.
+This is milestone release and is aimed at testing some new changes. It is expected that there will be at least one more milestone before a full release. This release should ideally not be used in production.
 
 ### Bug Fixes
 
