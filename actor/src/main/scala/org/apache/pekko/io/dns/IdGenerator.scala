@@ -17,11 +17,12 @@
 
 package org.apache.pekko.io.dns
 
-import org.apache.pekko.annotation.InternalApi
+import org.apache.pekko
+import pekko.annotation.InternalApi
+import pekko.util.RandomNumberGenerator
 
 import java.security.SecureRandom
 import java.util.Random
-import java.util.concurrent.ThreadLocalRandom
 
 /**
  * INTERNAL API
@@ -52,17 +53,23 @@ private[pekko] object IdGenerator {
   }
 
   def apply(policy: Policy): IdGenerator = policy match {
-    case Policy.ThreadLocalRandom        => random(ThreadLocalRandom.current())
+    case Policy.ThreadLocalRandom        => random(RandomNumberGenerator.get())
     case Policy.SecureRandom             => random(new SecureRandom())
     case Policy.EnhancedDoubleHashRandom => new EnhancedDoubleHashGenerator(new SecureRandom())
   }
 
-  def apply(): IdGenerator = random(ThreadLocalRandom.current())
+  def apply(): IdGenerator = random(RandomNumberGenerator.get())
 
   /**
    * @return a random sequence of ids for production
    */
   def random(rand: java.util.Random): IdGenerator =
+    () => (rand.nextInt(UnsignedShortBound) + Short.MinValue).toShort
+
+  /**
+   * @return a random sequence of ids for production
+   */
+  private def random(rand: RandomNumberGenerator): IdGenerator =
     () => (rand.nextInt(UnsignedShortBound) + Short.MinValue).toShort
 
   private[pekko] class EnhancedDoubleHashGenerator(seed: Random) extends IdGenerator {
