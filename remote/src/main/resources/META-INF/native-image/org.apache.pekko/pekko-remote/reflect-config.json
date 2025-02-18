@@ -1,0 +1,352 @@
+[
+  {
+    "name": "org.apache.pekko.remote.PhiAccrualFailureDetector",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "com.typesafe.config.Config",
+          "org.apache.pekko.event.EventStream"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.remote.artery.tcp.ConfigSSLEngineProvider",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.remote.DeadlineFailureDetector",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "com.typesafe.config.Config",
+          "org.apache.pekko.event.EventStream"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.remote.RemoteActorRefProvider",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.lang.String",
+          "org.apache.pekko.actor.ActorSystem$Settings",
+          "org.apache.pekko.event.EventStream",
+          "org.apache.pekko.actor.DynamicAccess"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.remote.AddressUidExtension$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.remote.BoundAddressesExtension$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.remote.RARP$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.remote.serialization.ActorRefResolveThreadLocalCache$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.remote.serialization.ArteryMessageSerializer",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.remote.serialization.ByteStringSerializer",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.remote.serialization.DaemonMsgCreateSerializer",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.remote.serialization.IntSerializer",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.remote.serialization.LongSerializer",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.remote.serialization.MessageContainerSerializer",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.remote.serialization.MiscMessageSerializer",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.remote.serialization.ProtobufSerializer",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.remote.serialization.StringSerializer",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.remote.serialization.SystemMessageSerializer",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.actor.ActorRef"
+  },
+  {
+    "name": "org.apache.pekko.dispatch.sysmsg.SystemMessage"
+  },
+  {
+    "name": "org.apache.pekko.actor.Identify"
+  },
+  {
+    "name": "org.apache.pekko.remote.RemoteWatcher$Heartbeat$"
+  },
+  {
+    "name": "com.google.protobuf.GeneratedMessageV3"
+  },
+  {
+    "name": "org.apache.pekko.routing.BroadcastGroup"
+  },
+  {
+    "name": "org.apache.pekko.actor.ActorSelectionMessage"
+  },
+  {
+    "name": "org.apache.pekko.actor.Kill$"
+  },
+  {
+    "name": "org.apache.pekko.actor.PoisonPill$"
+  },
+  {
+    "name": "org.apache.pekko.protobufv3.internal.GeneratedMessageV3"
+  },
+  {
+    "name": "java.lang.Throwable"
+  },
+  {
+    "name": "org.apache.pekko.actor.ActorKilledException"
+  },
+  {
+    "name": "org.apache.pekko.routing.RandomPool"
+  },
+  {
+    "name": "org.apache.pekko.actor.InvalidMessageException"
+  },
+  {
+    "name": "java.util.concurrent.TimeoutException"
+  },
+  {
+    "name": "org.apache.pekko.routing.ScatterGatherFirstCompletedPool"
+  },
+  {
+    "name": "org.apache.pekko.routing.ScatterGatherFirstCompletedGroup"
+  },
+  {
+    "name": "org.apache.pekko.routing.RandomGroup"
+  },
+  {
+    "name": "org.apache.pekko.actor.Address"
+  },
+  {
+    "name": "org.apache.pekko.routing.DefaultResizer"
+  },
+  {
+    "name": "org.apache.pekko.remote.RemoteScope"
+  },
+  {
+    "name": "org.apache.pekko.actor.ActorIdentity"
+  },
+  {
+    "name": "org.apache.pekko.actor.Status$Success"
+  },
+  {
+    "name": "org.apache.pekko.actor.IllegalActorStateException"
+  },
+  {
+    "name": "org.apache.pekko.remote.DaemonMsgCreate"
+  },
+  {
+    "name": "org.apache.pekko.routing.FromConfig"
+  },
+  {
+    "name": "org.apache.pekko.routing.SmallestMailboxPool"
+  },
+  {
+    "name": "org.apache.pekko.remote.RemoteWatcher$HeartbeatRsp"
+  },
+  {
+    "name": "org.apache.pekko.actor.ActorInitializationException"
+  },
+  {
+    "name": "org.apache.pekko.remote.artery.ArteryMessage"
+  },
+  {
+    "name": "org.apache.pekko.routing.BroadcastPool"
+  },
+  {
+    "name": "scala.Some"
+  },
+  {
+    "name": "java.util.Optional"
+  },
+  {
+    "name": "org.apache.pekko.Done"
+  },
+  {
+    "name": "org.apache.pekko.NotUsed"
+  },
+  {
+    "name": "com.typesafe.config.impl.SimpleConfig"
+  },
+  {
+    "name": "org.apache.pekko.actor.Status$Failure"
+  },
+  {
+    "name": "org.apache.pekko.remote.UniqueAddress"
+  },
+  {
+    "name": "org.apache.pekko.routing.TailChoppingGroup"
+  },
+  {
+    "name": "org.apache.pekko.pattern.StatusReply"
+  },
+  {
+    "name": "org.apache.pekko.routing.TailChoppingPool"
+  },
+  {
+    "name": "org.apache.pekko.remote.routing.RemoteRouterConfig"
+  },
+  {
+    "name": "com.google.protobuf.GeneratedMessage"
+  },
+  {
+    "name": "org.apache.pekko.routing.RoundRobinGroup"
+  },
+  {
+    "name": "scalapb.GeneratedMessage"
+  },
+  {
+    "name": "org.apache.pekko.routing.BalancingPool"
+  },
+  {
+    "name": "org.apache.pekko.routing.RoundRobinPool"
+  },
+  {
+    "name": "com.typesafe.config.Config"
+  },
+  {
+    "name": "org.apache.pekko.remote.serialization.ThrowableNotSerializableException"
+  },
+  {
+    "name": "org.apache.pekko.actor.LocalScope$"
+  },
+  {
+    "name": "scala.None$"
+  },
+  {
+    "name": "org.apache.pekko.actor.InvalidActorNameException"
+  },
+  {
+    "name": "org.apache.pekko.remote.routing.RemoteRouterConfig"
+  }
+]
