@@ -31,9 +31,13 @@ import java.time.format.DateTimeFormatter
 import java.util.{ Comparator, Locale }
 import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
+
 import scala.annotation.tailrec
 import scala.concurrent.duration.{ Duration, FiniteDuration }
+
 import com.typesafe.config.{ Config, ConfigRenderOptions }
+
+import scala.concurrent.{ blocking, Future }
 
 object Helpers {
 
@@ -195,4 +199,19 @@ object Helpers {
       Duration(config.getDuration(path, unit), unit)
   }
 
+  /**
+   * INTERNAL API
+   */
+  private[pekko] final implicit class FutureOps[T](val future: Future[T]) extends AnyVal {
+
+    /**
+     * Wait for the future to complete and return the result, or throw an exception if the future failed.
+     * Optimize for the case when the future is already completed.
+     * @since 1.2.0
+     */
+    def await(atMost: Duration = Duration.Inf): T = future.value match {
+      case Some(value) => value.get
+      case None        => blocking(future.result(atMost)(null))
+    }
+  }
 }
