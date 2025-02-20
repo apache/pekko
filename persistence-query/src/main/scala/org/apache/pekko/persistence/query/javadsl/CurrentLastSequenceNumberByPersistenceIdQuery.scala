@@ -15,15 +15,16 @@
  * limitations under the License.
  */
 
-package org.apache.pekko.persistence.query.scaladsl
+package org.apache.pekko.persistence.query.javadsl
 
-import scala.concurrent.Future
+import java.util.Optional
+import java.util.concurrent.CompletionStage
 
 /**
- * A trait that enables querying the current last known sequence number for a given `persistenceId`.
+ * A trait that enables querying the current last sequence number for a given `persistenceId`.
  * @since 1.2.0
  */
-trait CurrentLastKnownSequenceNumberByPersistenceIdQuery extends ReadJournal {
+trait CurrentLastSequenceNumberByPersistenceIdQuery extends ReadJournal {
 
   /**
    * Returns the last known sequence number for the given `persistenceId`. Empty if the `persistenceId` is unknown.
@@ -31,5 +32,5 @@ trait CurrentLastKnownSequenceNumberByPersistenceIdQuery extends ReadJournal {
    * @param persistenceId The `persistenceId` for which the last known sequence number should be returned.
    * @return Some sequence number or None if the `persistenceId` is unknown.
    */
-  def currentLastKnownSequenceNumberByPersistenceId(persistenceId: String): Future[Option[Long]]
+  def currentLastSequenceNumberByPersistenceId(persistenceId: String): CompletionStage[Optional[java.lang.Long]]
 }
