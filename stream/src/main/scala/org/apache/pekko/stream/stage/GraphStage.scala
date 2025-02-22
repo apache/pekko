@@ -21,7 +21,6 @@ import scala.annotation.tailrec
 import scala.collection.{ immutable, mutable }
 import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration.FiniteDuration
-
 import org.apache.pekko
 import pekko.{ Done, NotUsed }
 import pekko.actor._
@@ -36,6 +35,8 @@ import pekko.stream.scaladsl.GenericGraphWithChangedAttributes
 import pekko.stream.stage.ConcurrentAsyncCallbackState.{ NoPendingEvents, State }
 import pekko.util.OptionVal
 import pekko.util.unused
+
+import java.util.Spliterator
 
 /**
  * Scala API: A GraphStage represents a reusable graph stream processing operator.
@@ -980,6 +981,26 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
     } else andThen()
 
   /**
+   * Emit a sequence of elements through the given outlet and continue with the given thunk
+   * afterwards, suspending execution if necessary.
+   * This action replaces the [[OutHandler]] for the given outlet if suspension
+   * is needed and reinstalls the current handler upon receiving an `onPull()`
+   * signal (before invoking the `andThen` function).
+   */
+  final protected def emitMultiple[T](out: Outlet[T], elems: Spliterator[T], andThen: () => Unit): Unit = {
+    val iter = new EmittingSpliterator[T](out, elems, getNonEmittingHandler(out), andThen)
+    if (isAvailable(out)) {
+      if (!iter.tryPush()) {
+        andThen()
+      } else {
+        setOrAddEmitting(out, iter)
+      }
+    } else {
+      setOrAddEmitting(out, iter)
+    }
+  }
+
+  /**
    * Emit a sequence of elements through the given outlet, suspending execution if necessary.
    * This action replaces the [[OutHandler]] for the given outlet if suspension
    * is needed and reinstalls the current handler upon receiving an `onPull()`
@@ -1116,6 +1137,19 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
         followUp()
       }
     }
+  }
+
+  private final class EmittingSpliterator[T](_out: Outlet[T], elems: Spliterator[T], _previous: OutHandler,
+      _andThen: () => Unit)
+      extends Emitting[T](_out, _previous, _andThen) with java.util.function.Consumer[T] {
+
+    override def onPull(): Unit = if (!elems.tryAdvance(this)) {
+      followUp()
+    }
+
+    def tryPush(): Boolean = elems.tryAdvance(this)
+
+    override def accept(elem: T): Unit = push(out, elem)
   }
 
   private class EmittingCompletion[T](_out: Outlet[T], _previous: OutHandler)
