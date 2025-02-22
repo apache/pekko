@@ -23,6 +23,8 @@ import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.Utils._
 import pekko.stream.testkit.scaladsl.TestSink
 
+import scala.concurrent.Future
+
 @nowarn // tests deprecated APIs
 class FlowRecoverWithSpec extends StreamSpec {
 
@@ -59,6 +61,32 @@ class FlowRecoverWithSpec extends StreamSpec {
         .request(2)
         .expectNextN(1 to 2)
         .request(1)
+        .expectComplete()
+    }
+
+    "recover with a completed future source" in {
+      Source.failed(ex)
+        .recoverWith { case _: Throwable => Source.future(Future.successful(3)) }
+        .runWith(TestSink[Int]())
+        .request(1)
+        .expectNext(3)
+        .expectComplete()
+    }
+
+    "recover with a failed future source" in {
+      Source.failed(ex)
+        .recoverWith { case _: Throwable => Source.future(Future.failed(ex)) }
+        .runWith(TestSink[Int]())
+        .request(1)
+        .expectError(ex)
+    }
+
+    "recover with a java stream source" in {
+      Source.failed(ex)
+        .recoverWith { case _: Throwable => Source.fromJavaStream(() => java.util.stream.Stream.of(1, 2, 3)) }
+        .runWith(TestSink[Int]())
+        .request(3)
+        .expectNextN(1 to 3)
         .expectComplete()
     }
 
