@@ -14,6 +14,7 @@
 package org.apache.pekko.stream.scaladsl
 
 import scala.annotation.nowarn
+import scala.concurrent.Future
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
@@ -59,6 +60,32 @@ class FlowRecoverWithSpec extends StreamSpec {
         .request(2)
         .expectNextN(1 to 2)
         .request(1)
+        .expectComplete()
+    }
+
+    "recover with a completed future source" in {
+      Source.failed(ex)
+        .recoverWith { case _: Throwable => Source.future(Future.successful(3)) }
+        .runWith(TestSink[Int]())
+        .request(1)
+        .expectNext(3)
+        .expectComplete()
+    }
+
+    "recover with a failed future source" in {
+      Source.failed(ex)
+        .recoverWith { case _: Throwable => Source.future(Future.failed(ex)) }
+        .runWith(TestSink[Int]())
+        .request(1)
+        .expectError(ex)
+    }
+
+    "recover with a java stream source" in {
+      Source.failed(ex)
+        .recoverWith { case _: Throwable => Source.fromJavaStream(() => java.util.stream.Stream.of(1, 2, 3)) }
+        .runWith(TestSink[Int]())
+        .request(4)
+        .expectNextN(1 to 3)
         .expectComplete()
     }
 
