@@ -85,7 +85,7 @@ object Dependencies {
     // ssl-config
     val sslConfigCore = "com.typesafe" %% "ssl-config-core" % sslConfigVersion
 
-    val lmdb = "org.lmdbjava" % "lmdbjava" % "0.9.0"
+    val lmdb = "org.lmdbjava" % "lmdbjava" % "0.9.1"
 
     val junit = "junit" % "junit" % junitVersion
     val junit5 = "org.junit.jupiter" % "junit-jupiter-engine" % junit5Version
