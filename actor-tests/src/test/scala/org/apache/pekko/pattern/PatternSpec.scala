@@ -13,10 +13,8 @@
 
 package org.apache.pekko.pattern
 
-import scala.concurrent.{ Await, Future, Promise }
-import scala.concurrent.ExecutionContextExecutor
+import scala.concurrent.{ Await, ExecutionContextExecutor, Future, Promise, TimeoutException }
 import scala.concurrent.duration._
-
 import org.apache.pekko
 import pekko.actor.{ Actor, Props }
 import pekko.testkit.{ PekkoSpec, TestLatch }
@@ -76,4 +74,23 @@ class PatternSpec extends PekkoSpec {
       intercept[IllegalStateException] { Await.result(r, remainingOrDefault) }.getMessage should ===("Mexico")
     }
   }
+
+  "pattern.timeout" must {
+    "be completed successfully eventually" in {
+      val f = pekko.pattern.timeout(100.millis, using = system.scheduler)(Future.successful(5))
+      Await.result(f, remainingOrDefault) should ===(5)
+    }
+
+    "be completed abnormally eventually" in {
+      val f =
+        pekko.pattern.timeout(100.millis, using = system.scheduler)(Future.failed(new IllegalStateException("ABC")))
+      intercept[IllegalStateException] { Await.result(f, remainingOrDefault) }.getMessage should ===("ABC")
+    }
+
+    "be completed with a TimeoutException if not completed within the specified time" in {
+      val f = pekko.pattern.timeout(100.millis, using = system.scheduler)(Future.never)
+      intercept[TimeoutException] { Await.result(f, remainingOrDefault) }
+    }
+  }
+
 }
