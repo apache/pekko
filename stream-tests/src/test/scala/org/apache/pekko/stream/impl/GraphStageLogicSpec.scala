@@ -121,6 +121,20 @@ class GraphStageLogicSpec extends StreamSpec with GraphInterpreterSpecKit with S
     override def toString = "GraphStageLogicSpec.emitEmptyIterable"
   }
 
+  object EmitSplitIterator extends GraphStage[SourceShape[Int]] {
+    val out = Outlet[Int]("out")
+    override val shape = SourceShape(out)
+    override def createLogic(inheritedAttributes: Attributes): GraphStageLogic = new GraphStageLogic(shape) {
+      setHandler(out,
+        new OutHandler {
+          override def onPull(): Unit = emitMultiple(
+            out,
+            java.util.stream.Stream.of(1, 2, 3).spliterator(), () => emit(out, 42, () => completeStage()))
+        })
+    }
+    override def toString = "GraphStageLogicSpec.emitEmptyIterable"
+  }
+
   private case class ReadNEmitN(n: Int) extends GraphStage[FlowShape[Int, Int]] {
     override val shape = FlowShape(Inlet[Int]("readN.in"), Outlet[Int]("readN.out"))
 
@@ -193,6 +207,12 @@ class GraphStageLogicSpec extends StreamSpec with GraphInterpreterSpecKit with S
     "emit properly after empty iterable" in {
 
       Source.fromGraph(emitEmptyIterable).runWith(Sink.seq).futureValue should ===(List(42))
+
+    }
+
+    "emit properly when using split iterator" in {
+
+      Source.fromGraph(EmitSplitIterator).runWith(Sink.seq).futureValue should ===(List(1, 2, 3, 42))
 
     }
 
