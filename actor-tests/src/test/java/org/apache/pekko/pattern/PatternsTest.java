@@ -19,6 +19,7 @@ import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.testkit.TestProbe;
 import org.apache.pekko.util.Timeout;
+import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
@@ -36,6 +37,7 @@ import static org.apache.pekko.pattern.Patterns.ask;
 import static org.apache.pekko.pattern.Patterns.pipe;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /** Copyright (C) 2009-2018 Lightbend Inc. <https://www.lightbend.com> */
 public class PatternsTest extends JUnitSuite {
@@ -483,6 +485,51 @@ public class PatternsTest extends JUnitSuite {
 
     final String actual = (String) resultStage.get(3, SECONDS);
     assertEquals(expected, actual);
+  }
+
+  @Test
+  public void testCompletedStageWithTimeout() throws Exception {
+    final String expected = "Hello";
+    final CompletionStage<String> delayedStage =
+        Patterns.timeout(
+            Duration.ofMillis(200),
+            system.scheduler(),
+            ec,
+            () -> CompletableFuture.completedFuture(expected));
+    final String actual = delayedStage.toCompletableFuture().get(3, SECONDS);
+    assertEquals(expected, actual);
+  }
+
+  @Test
+  public void testFailedCompletedStageWithTimeout() throws Exception {
+    final CompletionStage<String> delayedStage =
+        Patterns.timeout(
+            Duration.ofMillis(200),
+            system.scheduler(),
+            ec,
+            () -> {
+              CompletableFuture<String> f = new CompletableFuture<>();
+              f.completeExceptionally(new IllegalStateException("Illegal!"));
+              return f;
+            });
+    try {
+      delayedStage.toCompletableFuture().get(3, SECONDS);
+    } catch (ExecutionException e) {
+      assertTrue(e.getCause() instanceof IllegalStateException);
+      assertEquals("Illegal!", e.getCause().getMessage());
+    }
+  }
+
+  @Test
+  public void testCompletedWithTimeout() throws Exception {
+    final CompletionStage<String> delayedStage =
+        Patterns.timeout(Duration.ofMillis(200), system.scheduler(), ec, CompletableFuture::new);
+    try {
+      delayedStage.toCompletableFuture().get(3, SECONDS);
+    } catch (ExecutionException e) {
+      assertTrue(e.getCause() instanceof TimeoutException);
+      assertEquals("Timeout of 200 milliseconds expired", e.getCause().getMessage());
+    }
   }
 
   @Test
