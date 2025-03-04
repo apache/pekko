@@ -16,7 +16,7 @@ package org.apache.pekko.stream
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
-import scala.concurrent.Await
+import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
@@ -78,6 +78,16 @@ class FlatMapConcatBenchmark {
 
   @Benchmark
   @OperationsPerInvocation(OperationsPerInvocation)
+  def sourceDotSingleP1(): Unit = {
+    val latch = new CountDownLatch(1)
+
+    testSource.flatMapConcat(1, Source.single).runWith(new LatchSink(OperationsPerInvocation, latch))
+
+    awaitLatch(latch)
+  }
+
+  @Benchmark
+  @OperationsPerInvocation(OperationsPerInvocation)
   def internalSingleSource(): Unit = {
     val latch = new CountDownLatch(1)
 
@@ -90,10 +100,80 @@ class FlatMapConcatBenchmark {
 
   @Benchmark
   @OperationsPerInvocation(OperationsPerInvocation)
+  def internalSingleSourceP1(): Unit = {
+    val latch = new CountDownLatch(1)
+
+    testSource
+      .flatMapConcat(1, elem => new GraphStages.SingleSource(elem))
+      .runWith(new LatchSink(OperationsPerInvocation, latch))
+
+    awaitLatch(latch)
+  }
+
+  @Benchmark
+  @OperationsPerInvocation(OperationsPerInvocation)
   def oneElementList(): Unit = {
     val latch = new CountDownLatch(1)
 
     testSource.flatMapConcat(n => Source(n :: Nil)).runWith(new LatchSink(OperationsPerInvocation, latch))
+
+    awaitLatch(latch)
+  }
+
+  @Benchmark
+  @OperationsPerInvocation(OperationsPerInvocation)
+  def oneElementListP1(): Unit = {
+    val latch = new CountDownLatch(1)
+
+    testSource.flatMapConcat(1, n => Source(n :: Nil)).runWith(new LatchSink(OperationsPerInvocation, latch))
+
+    awaitLatch(latch)
+  }
+
+  @Benchmark
+  @OperationsPerInvocation(OperationsPerInvocation)
+  def completedFuture(): Unit = {
+    val latch = new CountDownLatch(1)
+
+    testSource
+      .flatMapConcat(n => Source.future(Future.successful(n)))
+      .runWith(new LatchSink(OperationsPerInvocation, latch))
+
+    awaitLatch(latch)
+  }
+
+  @Benchmark
+  @OperationsPerInvocation(OperationsPerInvocation)
+  def completedFutureP1(): Unit = {
+    val latch = new CountDownLatch(1)
+
+    testSource
+      .flatMapConcat(1, n => Source.future(Future.successful(n)))
+      .runWith(new LatchSink(OperationsPerInvocation, latch))
+
+    awaitLatch(latch)
+  }
+
+  @Benchmark
+  @OperationsPerInvocation(OperationsPerInvocation)
+  def normalFuture(): Unit = {
+    val latch = new CountDownLatch(1)
+
+    testSource
+      .flatMapConcat(n => Source.future(Future(n)(system.dispatcher)))
+      .runWith(new LatchSink(OperationsPerInvocation, latch))
+
+    awaitLatch(latch)
+  }
+
+  @Benchmark
+  @OperationsPerInvocation(OperationsPerInvocation)
+  def normalFutureP1(): Unit = {
+    val latch = new CountDownLatch(1)
+
+    testSource
+      .flatMapConcat(1, n => Source.future(Future(n)(system.dispatcher)))
+      .runWith(new LatchSink(OperationsPerInvocation, latch))
 
     awaitLatch(latch)
   }
