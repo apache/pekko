@@ -788,6 +788,28 @@ public class FlowTest extends StreamTest {
   }
 
   @Test
+  public void mustBeAbleToUseSwitchMap() throws Exception {
+    final TestKit probe = new TestKit(system);
+    final Iterable<Integer> mainInputs = Arrays.asList(-1, 0, 1);
+    final Iterable<Integer> substreamInputs = Arrays.asList(10, 11, 12, 13, 14, 15, 16, 17, 18, 19);
+
+    final Flow<Integer, Integer, NotUsed> flow =
+            Flow.<Integer>create().switchMap(new Function<Integer, Source<Integer, NotUsed>>() {
+              @Override
+              public Source<Integer, NotUsed> apply(Integer param) throws Exception {
+                return param > 0 ? Source.fromIterator(substreamInputs::iterator) : Source.never();
+              }
+            });
+
+    CompletionStage<List<Integer>> future =
+            Source.from(mainInputs).via(flow).runWith(Sink.seq(), system);
+
+    List<Integer> result = future.toCompletableFuture().get(3, TimeUnit.SECONDS);
+
+    assertEquals(substreamInputs, result);
+  }
+
+  @Test
   public void mustBeAbleToUseBuffer() throws Exception {
     final TestKit probe = new TestKit(system);
     final List<String> input = Arrays.asList("A", "B", "C");

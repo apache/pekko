@@ -80,6 +80,7 @@ import pekko.stream.Attributes._
     val processor = name("processor")
     val identityOp = name("identityOp")
     val delimiterFraming = name("delimiterFraming")
+    val switch = name("switch")
 
     val initial = name("initial")
     val completion = name("completion")

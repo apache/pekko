@@ -258,6 +258,7 @@ See the @ref:[Substreams](../stream-substream.md) page for more detail and code 
 |Source/Flow|<a name="flatmapmerge"></a>@ref[flatMapMerge](Source-or-Flow/flatMapMerge.md)|Transform each input element into a `Source` whose elements are then flattened into the output stream through merging.|
 |Source/Flow|<a name="flatmapprefix"></a>@ref[flatMapPrefix](Source-or-Flow/flatMapPrefix.md)|Use the first `n` elements from the stream to determine how to process the rest.|
 |Flow|<a name="flattenmerge"></a>@ref[flattenMerge](Flow/flattenMerge.md)|Flattens a stream of Source into a single output stream by merging.|
+|Source/Flow|<a name="switchMap"></a>@ref[switchMap](Source-or-Flow/switchMap.md)|Transforms each input element into a `Source` of output elements that is then flattened into the output stream until a new input element is received.|
 |Source/Flow|<a name="groupby"></a>@ref[groupBy](Source-or-Flow/groupBy.md)|Demultiplex the incoming stream into separate output streams.|
 |Source/Flow|<a name="prefixandtail"></a>@ref[prefixAndTail](Source-or-Flow/prefixAndTail.md)|Take up to *n* elements from the stream (less than *n* only if the upstream completes before emitting *n* elements) and returns a pair containing a strict sequence of the taken element and a stream representing the remaining elements.|
 |Source/Flow|<a name="splitafter"></a>@ref[splitAfter](Source-or-Flow/splitAfter.md)|End the current substream whenever a predicate returns `true`, starting a new substream for the next element.|
