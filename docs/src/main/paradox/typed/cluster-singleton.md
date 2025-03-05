@@ -179,11 +179,7 @@ of the lease to use. A lease with with the name `<actor system name>-singleton-<
 the owner is set to the @scala[`Cluster(system).selfAddress.hostPort`]@java[`Cluster.get(system).selfAddress().hostPort()`].
 
 If the cluster singleton manager can't acquire the lease it will keep retrying while it is the oldest node in the cluster.
-If the lease is lost then the singleton actor will be terminated then the lease will be re-tried.
-
-## Accessing singleton of another data centre
-
-TODO @github[#27705](#27705)
+If the lease is lost then the singleton actor will be terminated then the lease will be retried.
 
 ## Configuration
 
