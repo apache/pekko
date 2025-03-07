@@ -1,6 +1,6 @@
 # switchMap
 
-Transforms each input element into a `Source` of output elements that is then flattened into the output stream until a new input element is received (at which point the current (now previous) substream is cancelled and the new one is flattend into the output stream).
+Transforms each input element into a `Source` of output elements that is then flattened into the output stream until a new input element is received (at which point the current (now previous) substream is cancelled and the new one is flattened into the output stream).
 
 @ref[Nesting and flattening operators](../index.md#nesting-and-flattening-operators)
 
