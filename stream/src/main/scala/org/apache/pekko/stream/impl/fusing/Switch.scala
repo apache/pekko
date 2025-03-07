@@ -57,7 +57,7 @@ import pekko.util.OptionVal
 
       override def onPush(): Unit = {
         val source = grab(in)
-        setSource(source)
+        setupCurrentSource(source)
         tryPull(in)
       }
 
@@ -67,21 +67,21 @@ import pekko.util.OptionVal
         if (isAvailable(out)) tryPushOut()
       }
 
-      setHandler(in, this)
-      setHandler(out, this)
+      setHandlers(in, out, this)
 
       def tryPushOut(): Unit = {
-        if (source.isDefined) {
-          val src = source.get
-          if (src.isAvailable) {
-            push(out, src.grab())
-            if (!src.isClosed) src.pull()
-            else removeCurrentSource(completeIfClosed = true)
-          }
+        source match {
+          case OptionVal.Some(src) =>
+            if (src.isAvailable) {
+              push(out, src.grab())
+              if (!src.isClosed) src.pull()
+              else removeCurrentSource(completeIfClosed = true)
+            }
+          case OptionVal.None =>
         }
       }
 
-      def setSource(source: Graph[SourceShape[T], M]): Unit = {
+      def setupCurrentSource(source: Graph[SourceShape[T], M]): Unit = {
         cancelCurrentSource()
         removeCurrentSource(completeIfClosed = false)
         val sinkIn = new SubSinkInlet[T]("SwitchSink")
@@ -109,8 +109,10 @@ import pekko.util.OptionVal
       }
 
       private def cancelCurrentSource(): Unit = {
-        if (source.isDefined) {
-          source.get.cancel()
+        source match {
+          case OptionVal.Some(src) =>
+            src.cancel()
+          case OptionVal.None =>
         }
       }
 
