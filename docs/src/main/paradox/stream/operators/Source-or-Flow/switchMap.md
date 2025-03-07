@@ -13,7 +13,7 @@ Transforms each input element into a `Source` of output elements that is then fl
 Transforms each input element into a `Source` of output elements that is then flattened into the output stream until a 
 new input element is received at which point the current (now previous) substream is cancelled while the `Source` resulting
 from the input element is subscribed to and flattened into the output stream. So effectively, only the "latest" `Source`
-is flattened into the output stream (which is why this  operator is sometimes also called "flatMapLatest").
+is flattened into the output stream (which is why this operator is sometimes also called "flatMapLatest").
 
 ## Reactive Streams semantics
 
