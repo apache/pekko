@@ -31,6 +31,7 @@ import pekko.stream.stage.GraphStage
 import pekko.stream.stage.GraphStageLogic
 import pekko.stream.stage.InHandler
 import pekko.stream.stage.OutHandler
+import pekko.util.OptionVal
 
 /**
  * INTERNAL API
@@ -45,35 +46,33 @@ import pekko.stream.stage.OutHandler
   override val shape = FlowShape(in, out)
 
   override def createLogic(enclosingAttributes: Attributes) =
-    new GraphStageLogic(shape) {
+    new GraphStageLogic(shape) with InHandler with OutHandler {
 
-      var source = Option.empty[SubSinkInlet[T]]
+      var source = OptionVal.none[SubSinkInlet[T]]
 
       override def preStart(): Unit = {
         pull(in)
         super.preStart()
       }
 
-      setHandler(in,
-        new InHandler {
-          override def onPush(): Unit = {
-            val source = grab(in)
-            setSource(source)
-            tryPull(in)
-          }
+      override def onPush(): Unit = {
+        val source = grab(in)
+        setSource(source)
+        tryPull(in)
+      }
 
-          override def onUpstreamFinish(): Unit = if (source.isEmpty) completeStage()
-        })
+      override def onUpstreamFinish(): Unit = if (source.isEmpty) completeStage()
 
-      setHandler(out,
-        new OutHandler {
-          override def onPull(): Unit = {
-            if (isAvailable(out)) tryPushOut()
-          }
-        })
+      override def onPull(): Unit = {
+        if (isAvailable(out)) tryPushOut()
+      }
+
+      setHandler(in, this)
+      setHandler(out, this)
 
       def tryPushOut(): Unit = {
-        source.foreach { src =>
+        if (source.isDefined) {
+          val src = source.get
           if (src.isAvailable) {
             push(out, src.grab())
             if (!src.isClosed) src.pull()
@@ -99,17 +98,21 @@ import pekko.stream.stage.OutHandler
           }
         })
         sinkIn.pull()
-        this.source = Some(sinkIn)
+        this.source = OptionVal.Some(sinkIn)
         val graph = Source.fromGraph(source).to(sinkIn.sink)
         subFusingMaterializer.materialize(graph, defaultAttributes = enclosingAttributes)
       }
 
       def removeCurrentSource(completeIfClosed: Boolean): Unit = {
-        source = None
+        source = OptionVal.none
         if (completeIfClosed && isClosed(in)) completeStage()
       }
 
-      private def cancelCurrentSource(): Unit = source.foreach(_.cancel())
+      private def cancelCurrentSource(): Unit = {
+        if (source.isDefined) {
+          source.get.cancel()
+        }
+      }
 
       override def postStop(): Unit = cancelCurrentSource()
 

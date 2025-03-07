@@ -2821,7 +2821,7 @@ trait FlowOps[+Out, +Mat] {
    * @since 1.2.0
    */
   def switchMap[T, M](f: Out => Graph[SourceShape[T], M]): Repr[T] =
-    map(f).via(new Switch[T, M])
+    map(f).via(new Switch[T, M].addAttributes(Attributes(SourceLocation.forLambda(f))))
 
   /**
    * If the first element has not passed through this operator before the provided timeout, the stream is failed
