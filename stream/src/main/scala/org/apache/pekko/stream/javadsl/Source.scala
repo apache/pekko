@@ -4264,6 +4264,25 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
     new Source(delegate.flatMapMerge(breadth, o => f(o)))
 
   /**
+   * Transforms each input element into a `Source` of output elements that is
+   * then flattened into the output stream until a new input element is received
+   * at which point the current (now previous) substream is cancelled (which is why
+   * this operator is sometimes also called "flatMapLatest").
+   *
+   * '''Emits when''' the current substream has an element available
+   *
+   * '''Backpressures when''' never
+   *
+   * '''Completes when''' upstream completes and the current substream completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @since 1.2.0
+   */
+  def switchMap[T, M](f: function.Function[Out, _ <: Graph[SourceShape[T], M]]): Source[T, Mat] =
+    new Source(delegate.switchMap(o => f(o)))
+
+  /**
    * If the first element has not passed through this operator before the provided timeout, the stream is failed
    * with a [[org.apache.pekko.stream.InitialTimeoutException]].
    *

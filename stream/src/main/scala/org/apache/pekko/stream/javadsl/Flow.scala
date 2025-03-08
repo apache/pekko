@@ -2760,6 +2760,25 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
     new Flow(delegate.flatMapMerge(breadth, o => f(o)))
 
   /**
+   * Transforms each input element into a `Source` of output elements that is
+   * then flattened into the output stream until a new input element is received
+   * at which point the current (now previous) substream is cancelled (which is why
+   * this operator is sometimes also called "flatMapLatest").
+   *
+   * '''Emits when''' the current substream has an element available
+   *
+   * '''Backpressures when''' never
+   *
+   * '''Completes when''' upstream completes and the current substream completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @since 1.2.0
+   */
+  def switchMap[T, M](f: function.Function[Out, _ <: Graph[SourceShape[T], M]]): Flow[In, T, Mat] =
+    new Flow(delegate.switchMap(o => f(o)))
+
+  /**
    * Concatenate the given [[Source]] to this [[Flow]], meaning that once this
    * Flow’s input is exhausted and all result elements have been generated,
    * the Source’s elements will be produced.
