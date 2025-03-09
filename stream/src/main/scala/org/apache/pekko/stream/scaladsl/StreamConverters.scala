@@ -17,9 +17,8 @@ import java.io.{ InputStream, OutputStream }
 import java.util.Spliterators
 import java.util.stream.{ Collector, StreamSupport }
 
-import scala.concurrent.{ Await, Future }
+import scala.concurrent.Future
 import scala.concurrent.duration._
-import scala.concurrent.duration.Duration._
 
 import org.apache.pekko
 import pekko.NotUsed
@@ -197,7 +196,8 @@ object StreamConverters {
                 var nextElement: Option[T] = _
 
                 override def hasNext: Boolean = {
-                  nextElement = Await.result(nextElementFuture, Inf)
+                  import pekko.util.Helpers._
+                  nextElement = nextElementFuture.await()
                   nextElement.isDefined
                 }
 
