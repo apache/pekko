@@ -20,95 +20,106 @@ package org.apache.pekko.remote.protobuf.v3;
 
 public final class ProtobufProtocolV3 {
   private ProtobufProtocolV3() {}
+
   static {
     org.apache.pekko.protobufv3.internal.RuntimeVersion.validateProtobufGencodeVersion(
-      org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
-      /* major= */ 4,
-      /* minor= */ 29,
-      /* patch= */ 3,
-      /* suffix= */ "",
-      ProtobufProtocolV3.class.getName());
-  }
-  public static void registerAllExtensions(
-      org.apache.pekko.protobufv3.internal.ExtensionRegistryLite registry) {
+        org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 29,
+        /* patch= */ 3,
+        /* suffix= */ "",
+        ProtobufProtocolV3.class.getName());
   }
 
   public static void registerAllExtensions(
+      org.apache.pekko.protobufv3.internal.ExtensionRegistryLite registry) {}
+
+  public static void registerAllExtensions(
       org.apache.pekko.protobufv3.internal.ExtensionRegistry registry) {
-    registerAllExtensions(
-        (org.apache.pekko.protobufv3.internal.ExtensionRegistryLite) registry);
+    registerAllExtensions((org.apache.pekko.protobufv3.internal.ExtensionRegistryLite) registry);
   }
-  public interface MyMessageV3OrBuilder extends
+
+  public interface MyMessageV3OrBuilder
+      extends
       // @@protoc_insertion_point(interface_extends:MyMessageV3)
       org.apache.pekko.protobufv3.internal.MessageOrBuilder {
 
     /**
      * <code>string query = 1;</code>
+     *
      * @return The query.
      */
     java.lang.String getQuery();
     /**
      * <code>string query = 1;</code>
+     *
      * @return The bytes for query.
      */
-    org.apache.pekko.protobufv3.internal.ByteString
-        getQueryBytes();
+    org.apache.pekko.protobufv3.internal.ByteString getQueryBytes();
 
     /**
      * <code>int32 page_number = 2;</code>
+     *
      * @return The pageNumber.
      */
     int getPageNumber();
 
     /**
      * <code>int32 result_per_page = 3;</code>
+     *
      * @return The resultPerPage.
      */
     int getResultPerPage();
   }
-  /**
-   * Protobuf type {@code MyMessageV3}
-   */
-  public static final class MyMessageV3 extends
-      org.apache.pekko.protobufv3.internal.GeneratedMessage implements
+  /** Protobuf type {@code MyMessageV3} */
+  public static final class MyMessageV3
+      extends org.apache.pekko.protobufv3.internal.GeneratedMessage
+      implements
       // @@protoc_insertion_point(message_implements:MyMessageV3)
       MyMessageV3OrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
+
     static {
       org.apache.pekko.protobufv3.internal.RuntimeVersion.validateProtobufGencodeVersion(
-        org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
-        /* major= */ 4,
-        /* minor= */ 29,
-        /* patch= */ 3,
-        /* suffix= */ "",
-        MyMessageV3.class.getName());
+          org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
+          /* major= */ 4,
+          /* minor= */ 29,
+          /* patch= */ 3,
+          /* suffix= */ "",
+          MyMessageV3.class.getName());
     }
     // Use MyMessageV3.newBuilder() to construct.
     private MyMessageV3(org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
       super(builder);
     }
+
     private MyMessageV3() {
       query_ = "";
     }
 
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.internal_static_MyMessageV3_descriptor;
+      return org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3
+          .internal_static_MyMessageV3_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.internal_static_MyMessageV3_fieldAccessorTable
+      return org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3
+          .internal_static_MyMessageV3_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3.class, org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3.Builder.class);
+              org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3.class,
+              org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3.Builder.class);
     }
 
     public static final int QUERY_FIELD_NUMBER = 1;
+
     @SuppressWarnings("serial")
     private volatile java.lang.Object query_ = "";
     /**
      * <code>string query = 1;</code>
+     *
      * @return The query.
      */
     @java.lang.Override
@@ -117,7 +128,7 @@ public final class ProtobufProtocolV3 {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        org.apache.pekko.protobufv3.internal.ByteString bs = 
+        org.apache.pekko.protobufv3.internal.ByteString bs =
             (org.apache.pekko.protobufv3.internal.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         query_ = s;
@@ -126,16 +137,15 @@ public final class ProtobufProtocolV3 {
     }
     /**
      * <code>string query = 1;</code>
+     *
      * @return The bytes for query.
      */
     @java.lang.Override
-    public org.apache.pekko.protobufv3.internal.ByteString
-        getQueryBytes() {
+    public org.apache.pekko.protobufv3.internal.ByteString getQueryBytes() {
       java.lang.Object ref = query_;
       if (ref instanceof java.lang.String) {
-        org.apache.pekko.protobufv3.internal.ByteString b = 
-            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        org.apache.pekko.protobufv3.internal.ByteString b =
+            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
         query_ = b;
         return b;
       } else {
@@ -147,6 +157,7 @@ public final class ProtobufProtocolV3 {
     private int pageNumber_ = 0;
     /**
      * <code>int32 page_number = 2;</code>
+     *
      * @return The pageNumber.
      */
     @java.lang.Override
@@ -158,6 +169,7 @@ public final class ProtobufProtocolV3 {
     private int resultPerPage_ = 0;
     /**
      * <code>int32 result_per_page = 3;</code>
+     *
      * @return The resultPerPage.
      */
     @java.lang.Override
@@ -166,6 +178,7 @@ public final class ProtobufProtocolV3 {
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -178,7 +191,7 @@ public final class ProtobufProtocolV3 {
 
     @java.lang.Override
     public void writeTo(org.apache.pekko.protobufv3.internal.CodedOutputStream output)
-                        throws java.io.IOException {
+        throws java.io.IOException {
       if (!org.apache.pekko.protobufv3.internal.GeneratedMessage.isStringEmpty(query_)) {
         org.apache.pekko.protobufv3.internal.GeneratedMessage.writeString(output, 1, query_);
       }
@@ -201,12 +214,13 @@ public final class ProtobufProtocolV3 {
         size += org.apache.pekko.protobufv3.internal.GeneratedMessage.computeStringSize(1, query_);
       }
       if (pageNumber_ != 0) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeInt32Size(2, pageNumber_);
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeInt32Size(2, pageNumber_);
       }
       if (resultPerPage_ != 0) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeInt32Size(3, resultPerPage_);
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeInt32Size(
+                3, resultPerPage_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -216,19 +230,17 @@ public final class ProtobufProtocolV3 {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
       if (!(obj instanceof org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3)) {
         return super.equals(obj);
       }
-      org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3 other = (org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3) obj;
+      org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3 other =
+          (org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3) obj;
 
-      if (!getQuery()
-          .equals(other.getQuery())) return false;
-      if (getPageNumber()
-          != other.getPageNumber()) return false;
-      if (getResultPerPage()
-          != other.getResultPerPage()) return false;
+      if (!getQuery().equals(other.getQuery())) return false;
+      if (getPageNumber() != other.getPageNumber()) return false;
+      if (getResultPerPage() != other.getResultPerPage()) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -256,85 +268,98 @@ public final class ProtobufProtocolV3 {
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
+
     public static org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3 parseFrom(
         java.nio.ByteBuffer data,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3 parseFrom(
         org.apache.pekko.protobufv3.internal.ByteString data)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
+
     public static org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3 parseFrom(
         org.apache.pekko.protobufv3.internal.ByteString data,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3 parseFrom(byte[] data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+    public static org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3 parseFrom(
+        byte[] data) throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
+
     public static org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3 parseFrom(
-        byte[] data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        byte[] data, org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3 parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input);
+
+    public static org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3 parseFrom(
+        java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input);
     }
+
     public static org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3 parseFrom(
         java.io.InputStream input,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input, extensionRegistry);
     }
 
-    public static org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3 parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseDelimitedWithIOException(PARSER, input);
+    public static org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3
+        parseDelimitedFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseDelimitedWithIOException(
+          PARSER, input);
     }
 
-    public static org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3 parseDelimitedFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    public static org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3
+        parseDelimitedFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseDelimitedWithIOException(
+          PARSER, input, extensionRegistry);
     }
+
     public static org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3 parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input);
+        org.apache.pekko.protobufv3.internal.CodedInputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input);
     }
+
     public static org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3 parseFrom(
         org.apache.pekko.protobufv3.internal.CodedInputStream input,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3 prototype) {
+
+    public static Builder newBuilder(
+        org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3 prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
@@ -343,36 +368,36 @@ public final class ProtobufProtocolV3 {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
-     * Protobuf type {@code MyMessageV3}
-     */
-    public static final class Builder extends
-        org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder> implements
+    /** Protobuf type {@code MyMessageV3} */
+    public static final class Builder
+        extends org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder>
+        implements
         // @@protoc_insertion_point(builder_implements:MyMessageV3)
         org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3OrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.internal_static_MyMessageV3_descriptor;
+        return org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3
+            .internal_static_MyMessageV3_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.internal_static_MyMessageV3_fieldAccessorTable
+        return org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3
+            .internal_static_MyMessageV3_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3.class, org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3.Builder.class);
+                org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3.class,
+                org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3.Builder.class);
       }
 
-      // Construct using org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3.newBuilder()
-      private Builder() {
+      // Construct using
+      // org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3.newBuilder()
+      private Builder() {}
 
-      }
-
-      private Builder(
-          org.apache.pekko.protobufv3.internal.GeneratedMessage.BuilderParent parent) {
+      private Builder(org.apache.pekko.protobufv3.internal.GeneratedMessage.BuilderParent parent) {
         super(parent);
-
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -384,14 +409,16 @@ public final class ProtobufProtocolV3 {
       }
 
       @java.lang.Override
-      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-          getDescriptorForType() {
-        return org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.internal_static_MyMessageV3_descriptor;
+      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor getDescriptorForType() {
+        return org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3
+            .internal_static_MyMessageV3_descriptor;
       }
 
       @java.lang.Override
-      public org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3 getDefaultInstanceForType() {
-        return org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3.getDefaultInstance();
+      public org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3
+          getDefaultInstanceForType() {
+        return org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3
+            .getDefaultInstance();
       }
 
       @java.lang.Override
@@ -405,13 +432,17 @@ public final class ProtobufProtocolV3 {
 
       @java.lang.Override
       public org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3 buildPartial() {
-        org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3 result = new org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3(this);
-        if (bitField0_ != 0) { buildPartial0(result); }
+        org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3 result =
+            new org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3(this);
+        if (bitField0_ != 0) {
+          buildPartial0(result);
+        }
         onBuilt();
         return result;
       }
 
-      private void buildPartial0(org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3 result) {
+      private void buildPartial0(
+          org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3 result) {
         int from_bitField0_ = bitField0_;
         if (((from_bitField0_ & 0x00000001) != 0)) {
           result.query_ = query_;
@@ -427,15 +458,19 @@ public final class ProtobufProtocolV3 {
       @java.lang.Override
       public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
         if (other instanceof org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3) {
-          return mergeFrom((org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3)other);
+          return mergeFrom(
+              (org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3) other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3 other) {
-        if (other == org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3.getDefaultInstance()) return this;
+      public Builder mergeFrom(
+          org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3 other) {
+        if (other
+            == org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3
+                .getDefaultInstance()) return this;
         if (!other.getQuery().isEmpty()) {
           query_ = other.query_;
           bitField0_ |= 0x00000001;
@@ -473,27 +508,31 @@ public final class ProtobufProtocolV3 {
               case 0:
                 done = true;
                 break;
-              case 10: {
-                query_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00000001;
-                break;
-              } // case 10
-              case 16: {
-                pageNumber_ = input.readInt32();
-                bitField0_ |= 0x00000002;
-                break;
-              } // case 16
-              case 24: {
-                resultPerPage_ = input.readInt32();
-                bitField0_ |= 0x00000004;
-                break;
-              } // case 24
-              default: {
-                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                  done = true; // was an endgroup tag
-                }
-                break;
-              } // default:
+              case 10:
+                {
+                  query_ = input.readStringRequireUtf8();
+                  bitField0_ |= 0x00000001;
+                  break;
+                } // case 10
+              case 16:
+                {
+                  pageNumber_ = input.readInt32();
+                  bitField0_ |= 0x00000002;
+                  break;
+                } // case 16
+              case 24:
+                {
+                  resultPerPage_ = input.readInt32();
+                  bitField0_ |= 0x00000004;
+                  break;
+                } // case 24
+              default:
+                {
+                  if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                    done = true; // was an endgroup tag
+                  }
+                  break;
+                } // default:
             } // switch (tag)
           } // while (!done)
         } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
@@ -503,11 +542,13 @@ public final class ProtobufProtocolV3 {
         } // finally
         return this;
       }
+
       private int bitField0_;
 
       private java.lang.Object query_ = "";
       /**
        * <code>string query = 1;</code>
+       *
        * @return The query.
        */
       public java.lang.String getQuery() {
@@ -524,15 +565,14 @@ public final class ProtobufProtocolV3 {
       }
       /**
        * <code>string query = 1;</code>
+       *
        * @return The bytes for query.
        */
-      public org.apache.pekko.protobufv3.internal.ByteString
-          getQueryBytes() {
+      public org.apache.pekko.protobufv3.internal.ByteString getQueryBytes() {
         java.lang.Object ref = query_;
         if (ref instanceof String) {
-          org.apache.pekko.protobufv3.internal.ByteString b = 
-              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          org.apache.pekko.protobufv3.internal.ByteString b =
+              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
           query_ = b;
           return b;
         } else {
@@ -541,12 +581,14 @@ public final class ProtobufProtocolV3 {
       }
       /**
        * <code>string query = 1;</code>
+       *
        * @param value The query to set.
        * @return This builder for chaining.
        */
-      public Builder setQuery(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
+      public Builder setQuery(java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
         query_ = value;
         bitField0_ |= 0x00000001;
         onChanged();
@@ -554,6 +596,7 @@ public final class ProtobufProtocolV3 {
       }
       /**
        * <code>string query = 1;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearQuery() {
@@ -564,12 +607,14 @@ public final class ProtobufProtocolV3 {
       }
       /**
        * <code>string query = 1;</code>
+       *
        * @param value The bytes for query to set.
        * @return This builder for chaining.
        */
-      public Builder setQueryBytes(
-          org.apache.pekko.protobufv3.internal.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
+      public Builder setQueryBytes(org.apache.pekko.protobufv3.internal.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
         checkByteStringIsUtf8(value);
         query_ = value;
         bitField0_ |= 0x00000001;
@@ -577,9 +622,10 @@ public final class ProtobufProtocolV3 {
         return this;
       }
 
-      private int pageNumber_ ;
+      private int pageNumber_;
       /**
        * <code>int32 page_number = 2;</code>
+       *
        * @return The pageNumber.
        */
       @java.lang.Override
@@ -588,6 +634,7 @@ public final class ProtobufProtocolV3 {
       }
       /**
        * <code>int32 page_number = 2;</code>
+       *
        * @param value The pageNumber to set.
        * @return This builder for chaining.
        */
@@ -600,6 +647,7 @@ public final class ProtobufProtocolV3 {
       }
       /**
        * <code>int32 page_number = 2;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearPageNumber() {
@@ -609,9 +657,10 @@ public final class ProtobufProtocolV3 {
         return this;
       }
 
-      private int resultPerPage_ ;
+      private int resultPerPage_;
       /**
        * <code>int32 result_per_page = 3;</code>
+       *
        * @return The resultPerPage.
        */
       @java.lang.Override
@@ -620,6 +669,7 @@ public final class ProtobufProtocolV3 {
       }
       /**
        * <code>int32 result_per_page = 3;</code>
+       *
        * @param value The resultPerPage to set.
        * @return This builder for chaining.
        */
@@ -632,6 +682,7 @@ public final class ProtobufProtocolV3 {
       }
       /**
        * <code>int32 result_per_page = 3;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearResultPerPage() {
@@ -645,36 +696,40 @@ public final class ProtobufProtocolV3 {
     }
 
     // @@protoc_insertion_point(class_scope:MyMessageV3)
-    private static final org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3 DEFAULT_INSTANCE;
+    private static final org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3
+        DEFAULT_INSTANCE;
+
     static {
       DEFAULT_INSTANCE = new org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3();
     }
 
-    public static org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3 getDefaultInstance() {
+    public static org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3
+        getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final org.apache.pekko.protobufv3.internal.Parser<MyMessageV3>
-        PARSER = new org.apache.pekko.protobufv3.internal.AbstractParser<MyMessageV3>() {
-      @java.lang.Override
-      public MyMessageV3 parsePartialFrom(
-          org.apache.pekko.protobufv3.internal.CodedInputStream input,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        Builder builder = newBuilder();
-        try {
-          builder.mergeFrom(input, extensionRegistry);
-        } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(builder.buildPartial());
-        } catch (org.apache.pekko.protobufv3.internal.UninitializedMessageException e) {
-          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-        } catch (java.io.IOException e) {
-          throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
-              .setUnfinishedMessage(builder.buildPartial());
-        }
-        return builder.buildPartial();
-      }
-    };
+    private static final org.apache.pekko.protobufv3.internal.Parser<MyMessageV3> PARSER =
+        new org.apache.pekko.protobufv3.internal.AbstractParser<MyMessageV3>() {
+          @java.lang.Override
+          public MyMessageV3 parsePartialFrom(
+              org.apache.pekko.protobufv3.internal.CodedInputStream input,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+            Builder builder = newBuilder();
+            try {
+              builder.mergeFrom(input, extensionRegistry);
+            } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
+              throw e.setUnfinishedMessage(builder.buildPartial());
+            } catch (org.apache.pekko.protobufv3.internal.UninitializedMessageException e) {
+              throw e.asInvalidProtocolBufferException()
+                  .setUnfinishedMessage(builder.buildPartial());
+            } catch (java.io.IOException e) {
+              throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
+                  .setUnfinishedMessage(builder.buildPartial());
+            }
+            return builder.buildPartial();
+          }
+        };
 
     public static org.apache.pekko.protobufv3.internal.Parser<MyMessageV3> parser() {
       return PARSER;
@@ -686,41 +741,42 @@ public final class ProtobufProtocolV3 {
     }
 
     @java.lang.Override
-    public org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3 getDefaultInstanceForType() {
+    public org.apache.pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3
+        getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
-
   }
 
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_MyMessageV3_descriptor;
-  private static final 
-    org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
+      internal_static_MyMessageV3_descriptor;
+  private static final org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
       internal_static_MyMessageV3_fieldAccessorTable;
 
-  public static org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
-      getDescriptor() {
+  public static org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor getDescriptor() {
     return descriptor;
   }
-  private static  org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
-      descriptor;
+
+  private static org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor descriptor;
+
   static {
     java.lang.String[] descriptorData = {
-      "\n\030ProtobufProtocolV3.proto\"J\n\013MyMessageV" +
-      "3\022\r\n\005query\030\001 \001(\t\022\023\n\013page_number\030\002 \001(\005\022\027\n" +
-      "\017result_per_page\030\003 \001(\005B%\n#org.apache.pek" +
-      "ko.remote.protobuf.v3b\006proto3"
+      "\n\030ProtobufProtocolV3.proto\"J\n\013MyMessageV"
+          + "3\022\r\n\005query\030\001 \001(\t\022\023\n\013page_number\030\002 \001(\005\022\027\n"
+          + "\017result_per_page\030\003 \001(\005B%\n#org.apache.pek"
+          + "ko.remote.protobuf.v3b\006proto3"
     };
-    descriptor = org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
-      .internalBuildGeneratedFileFrom(descriptorData,
-        new org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor[] {
-        });
-    internal_static_MyMessageV3_descriptor =
-      getDescriptor().getMessageTypes().get(0);
-    internal_static_MyMessageV3_fieldAccessorTable = new
-      org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
-        internal_static_MyMessageV3_descriptor,
-        new java.lang.String[] { "Query", "PageNumber", "ResultPerPage", });
+    descriptor =
+        org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
+            .internalBuildGeneratedFileFrom(
+                descriptorData,
+                new org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor[] {});
+    internal_static_MyMessageV3_descriptor = getDescriptor().getMessageTypes().get(0);
+    internal_static_MyMessageV3_fieldAccessorTable =
+        new org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
+            internal_static_MyMessageV3_descriptor,
+            new java.lang.String[] {
+              "Query", "PageNumber", "ResultPerPage",
+            });
     descriptor.resolveAllFeaturesImmutable();
   }
 

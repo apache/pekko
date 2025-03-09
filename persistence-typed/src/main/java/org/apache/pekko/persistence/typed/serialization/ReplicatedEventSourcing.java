@@ -20,65 +20,49 @@ package org.apache.pekko.persistence.typed.serialization;
 
 public final class ReplicatedEventSourcing {
   private ReplicatedEventSourcing() {}
+
   static {
     org.apache.pekko.protobufv3.internal.RuntimeVersion.validateProtobufGencodeVersion(
-      org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
-      /* major= */ 4,
-      /* minor= */ 29,
-      /* patch= */ 3,
-      /* suffix= */ "",
-      ReplicatedEventSourcing.class.getName());
-  }
-  public static void registerAllExtensions(
-      org.apache.pekko.protobufv3.internal.ExtensionRegistryLite registry) {
-  }
-
-  public static void registerAllExtensions(
-      org.apache.pekko.protobufv3.internal.ExtensionRegistry registry) {
-    registerAllExtensions(
-        (org.apache.pekko.protobufv3.internal.ExtensionRegistryLite) registry);
-  }
-  /**
-   * Protobuf enum {@code ORSetDeltaOp}
-   */
-  public enum ORSetDeltaOp
-      implements org.apache.pekko.protobufv3.internal.ProtocolMessageEnum {
-    /**
-     * <code>Add = 0;</code>
-     */
-    Add(0),
-    /**
-     * <code>Remove = 1;</code>
-     */
-    Remove(1),
-    /**
-     * <code>Full = 2;</code>
-     */
-    Full(2),
-    ;
-
-    static {
-      org.apache.pekko.protobufv3.internal.RuntimeVersion.validateProtobufGencodeVersion(
         org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
         /* major= */ 4,
         /* minor= */ 29,
         /* patch= */ 3,
         /* suffix= */ "",
-        ORSetDeltaOp.class.getName());
-    }
-    /**
-     * <code>Add = 0;</code>
-     */
-    public static final int Add_VALUE = 0;
-    /**
-     * <code>Remove = 1;</code>
-     */
-    public static final int Remove_VALUE = 1;
-    /**
-     * <code>Full = 2;</code>
-     */
-    public static final int Full_VALUE = 2;
+        ReplicatedEventSourcing.class.getName());
+  }
 
+  public static void registerAllExtensions(
+      org.apache.pekko.protobufv3.internal.ExtensionRegistryLite registry) {}
+
+  public static void registerAllExtensions(
+      org.apache.pekko.protobufv3.internal.ExtensionRegistry registry) {
+    registerAllExtensions((org.apache.pekko.protobufv3.internal.ExtensionRegistryLite) registry);
+  }
+  /** Protobuf enum {@code ORSetDeltaOp} */
+  public enum ORSetDeltaOp implements org.apache.pekko.protobufv3.internal.ProtocolMessageEnum {
+    /** <code>Add = 0;</code> */
+    Add(0),
+    /** <code>Remove = 1;</code> */
+    Remove(1),
+    /** <code>Full = 2;</code> */
+    Full(2),
+    ;
+
+    static {
+      org.apache.pekko.protobufv3.internal.RuntimeVersion.validateProtobufGencodeVersion(
+          org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
+          /* major= */ 4,
+          /* minor= */ 29,
+          /* patch= */ 3,
+          /* suffix= */ "",
+          ORSetDeltaOp.class.getName());
+    }
+    /** <code>Add = 0;</code> */
+    public static final int Add_VALUE = 0;
+    /** <code>Remove = 1;</code> */
+    public static final int Remove_VALUE = 1;
+    /** <code>Full = 2;</code> */
+    public static final int Full_VALUE = 2;
 
     public final int getNumber() {
       return value;
@@ -100,10 +84,14 @@ public final class ReplicatedEventSourcing {
      */
     public static ORSetDeltaOp forNumber(int value) {
       switch (value) {
-        case 0: return Add;
-        case 1: return Remove;
-        case 2: return Full;
-        default: return null;
+        case 0:
+          return Add;
+        case 1:
+          return Remove;
+        case 2:
+          return Full;
+        default:
+          return null;
       }
     }
 
@@ -111,25 +99,31 @@ public final class ReplicatedEventSourcing {
         internalGetValueMap() {
       return internalValueMap;
     }
-    private static final org.apache.pekko.protobufv3.internal.Internal.EnumLiteMap<
-        ORSetDeltaOp> internalValueMap =
-          new org.apache.pekko.protobufv3.internal.Internal.EnumLiteMap<ORSetDeltaOp>() {
-            public ORSetDeltaOp findValueByNumber(int number) {
-              return ORSetDeltaOp.forNumber(number);
-            }
-          };
+
+    private static final org.apache.pekko.protobufv3.internal.Internal.EnumLiteMap<ORSetDeltaOp>
+        internalValueMap =
+            new org.apache.pekko.protobufv3.internal.Internal.EnumLiteMap<ORSetDeltaOp>() {
+              public ORSetDeltaOp findValueByNumber(int number) {
+                return ORSetDeltaOp.forNumber(number);
+              }
+            };
 
     public final org.apache.pekko.protobufv3.internal.Descriptors.EnumValueDescriptor
         getValueDescriptor() {
       return getDescriptor().getValues().get(ordinal());
     }
+
     public final org.apache.pekko.protobufv3.internal.Descriptors.EnumDescriptor
         getDescriptorForType() {
       return getDescriptor();
     }
+
     public static final org.apache.pekko.protobufv3.internal.Descriptors.EnumDescriptor
         getDescriptor() {
-      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.getDescriptor().getEnumTypes().get(0);
+      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+          .getDescriptor()
+          .getEnumTypes()
+          .get(0);
     }
 
     private static final ORSetDeltaOp[] VALUES = values();
@@ -137,8 +131,7 @@ public final class ReplicatedEventSourcing {
     public static ORSetDeltaOp valueOf(
         org.apache.pekko.protobufv3.internal.Descriptors.EnumValueDescriptor desc) {
       if (desc.getType() != getDescriptor()) {
-        throw new java.lang.IllegalArgumentException(
-          "EnumValueDescriptor is not for this type.");
+        throw new java.lang.IllegalArgumentException("EnumValueDescriptor is not for this type.");
       }
       return VALUES[desc.getIndex()];
     }
@@ -152,64 +145,74 @@ public final class ReplicatedEventSourcing {
     // @@protoc_insertion_point(enum_scope:ORSetDeltaOp)
   }
 
-  public interface CounterOrBuilder extends
+  public interface CounterOrBuilder
+      extends
       // @@protoc_insertion_point(interface_extends:Counter)
       org.apache.pekko.protobufv3.internal.MessageOrBuilder {
 
     /**
      * <code>required bytes value = 1;</code>
+     *
      * @return Whether the value field is set.
      */
     boolean hasValue();
     /**
      * <code>required bytes value = 1;</code>
+     *
      * @return The value.
      */
     org.apache.pekko.protobufv3.internal.ByteString getValue();
   }
-  /**
-   * Protobuf type {@code Counter}
-   */
-  public static final class Counter extends
-      org.apache.pekko.protobufv3.internal.GeneratedMessage implements
+  /** Protobuf type {@code Counter} */
+  public static final class Counter extends org.apache.pekko.protobufv3.internal.GeneratedMessage
+      implements
       // @@protoc_insertion_point(message_implements:Counter)
       CounterOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
+
     static {
       org.apache.pekko.protobufv3.internal.RuntimeVersion.validateProtobufGencodeVersion(
-        org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
-        /* major= */ 4,
-        /* minor= */ 29,
-        /* patch= */ 3,
-        /* suffix= */ "",
-        Counter.class.getName());
+          org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
+          /* major= */ 4,
+          /* minor= */ 29,
+          /* patch= */ 3,
+          /* suffix= */ "",
+          Counter.class.getName());
     }
     // Use Counter.newBuilder() to construct.
     private Counter(org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
       super(builder);
     }
+
     private Counter() {
       value_ = org.apache.pekko.protobufv3.internal.ByteString.EMPTY;
     }
 
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_Counter_descriptor;
+      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+          .internal_static_Counter_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_Counter_fieldAccessorTable
+      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+          .internal_static_Counter_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter.class, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter.Builder.class);
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter
+                  .class,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter
+                  .Builder.class);
     }
 
     private int bitField0_;
     public static final int VALUE_FIELD_NUMBER = 1;
-    private org.apache.pekko.protobufv3.internal.ByteString value_ = org.apache.pekko.protobufv3.internal.ByteString.EMPTY;
+    private org.apache.pekko.protobufv3.internal.ByteString value_ =
+        org.apache.pekko.protobufv3.internal.ByteString.EMPTY;
     /**
      * <code>required bytes value = 1;</code>
+     *
      * @return Whether the value field is set.
      */
     @java.lang.Override
@@ -218,6 +221,7 @@ public final class ReplicatedEventSourcing {
     }
     /**
      * <code>required bytes value = 1;</code>
+     *
      * @return The value.
      */
     @java.lang.Override
@@ -226,6 +230,7 @@ public final class ReplicatedEventSourcing {
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -242,7 +247,7 @@ public final class ReplicatedEventSourcing {
 
     @java.lang.Override
     public void writeTo(org.apache.pekko.protobufv3.internal.CodedOutputStream output)
-                        throws java.io.IOException {
+        throws java.io.IOException {
       if (((bitField0_ & 0x00000001) != 0)) {
         output.writeBytes(1, value_);
       }
@@ -256,8 +261,7 @@ public final class ReplicatedEventSourcing {
 
       size = 0;
       if (((bitField0_ & 0x00000001) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeBytesSize(1, value_);
+        size += org.apache.pekko.protobufv3.internal.CodedOutputStream.computeBytesSize(1, value_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -267,17 +271,19 @@ public final class ReplicatedEventSourcing {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
-      if (!(obj instanceof org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter)) {
+      if (!(obj
+          instanceof
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter)) {
         return super.equals(obj);
       }
-      org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter other = (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter) obj;
+      org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter other =
+          (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter) obj;
 
       if (hasValue() != other.hasValue()) return false;
       if (hasValue()) {
-        if (!getValue()
-            .equals(other.getValue())) return false;
+        if (!getValue().equals(other.getValue())) return false;
       }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
@@ -299,90 +305,112 @@ public final class ReplicatedEventSourcing {
       return hash;
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter parseFrom(
-        java.nio.ByteBuffer data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter
+        parseFrom(java.nio.ByteBuffer data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter parseFrom(
-        java.nio.ByteBuffer data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter parseFrom(
-        org.apache.pekko.protobufv3.internal.ByteString data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter parseFrom(
-        org.apache.pekko.protobufv3.internal.ByteString data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter parseFrom(byte[] data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter parseFrom(
-        byte[] data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter parseFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseDelimitedWithIOException(PARSER, input);
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter
+        parseFrom(
+            java.nio.ByteBuffer data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter parseDelimitedFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter
+        parseFrom(org.apache.pekko.protobufv3.internal.ByteString data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
     }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input);
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter
+        parseFrom(
+            org.apache.pekko.protobufv3.internal.ByteString data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter
+        parseFrom(byte[] data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter
+        parseFrom(
+            byte[] data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter
+        parseFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter
+        parseFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input, extensionRegistry);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter
+        parseDelimitedFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseDelimitedWithIOException(
+          PARSER, input);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter
+        parseDelimitedFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseDelimitedWithIOException(
+          PARSER, input, extensionRegistry);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter
+        parseFrom(org.apache.pekko.protobufv3.internal.CodedInputStream input)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter
+        parseFrom(
+            org.apache.pekko.protobufv3.internal.CodedInputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter prototype) {
+
+    public static Builder newBuilder(
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter
+            prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
@@ -391,36 +419,38 @@ public final class ReplicatedEventSourcing {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
-     * Protobuf type {@code Counter}
-     */
-    public static final class Builder extends
-        org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder> implements
+    /** Protobuf type {@code Counter} */
+    public static final class Builder
+        extends org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder>
+        implements
         // @@protoc_insertion_point(builder_implements:Counter)
         org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_Counter_descriptor;
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .internal_static_Counter_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_Counter_fieldAccessorTable
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .internal_static_Counter_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter.class, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter.Builder.class);
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter
+                    .class,
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter
+                    .Builder.class);
       }
 
-      // Construct using org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter.newBuilder()
-      private Builder() {
+      // Construct using
+      // org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter.newBuilder()
+      private Builder() {}
 
-      }
-
-      private Builder(
-          org.apache.pekko.protobufv3.internal.GeneratedMessage.BuilderParent parent) {
+      private Builder(org.apache.pekko.protobufv3.internal.GeneratedMessage.BuilderParent parent) {
         super(parent);
-
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -430,19 +460,23 @@ public final class ReplicatedEventSourcing {
       }
 
       @java.lang.Override
-      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-          getDescriptorForType() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_Counter_descriptor;
+      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor getDescriptorForType() {
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .internal_static_Counter_descriptor;
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter getDefaultInstanceForType() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter.getDefaultInstance();
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter
+          getDefaultInstanceForType() {
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter
+            .getDefaultInstance();
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter build() {
-        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter result = buildPartial();
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter
+          build() {
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter result =
+            buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -450,14 +484,20 @@ public final class ReplicatedEventSourcing {
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter buildPartial() {
-        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter result = new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter(this);
-        if (bitField0_ != 0) { buildPartial0(result); }
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter
+          buildPartial() {
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter result =
+            new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter(
+                this);
+        if (bitField0_ != 0) {
+          buildPartial0(result);
+        }
         onBuilt();
         return result;
       }
 
-      private void buildPartial0(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter result) {
+      private void buildPartial0(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter result) {
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -469,16 +509,23 @@ public final class ReplicatedEventSourcing {
 
       @java.lang.Override
       public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
-        if (other instanceof org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter) {
-          return mergeFrom((org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter)other);
+        if (other
+            instanceof
+            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter) {
+          return mergeFrom(
+              (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter)
+                  other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter other) {
-        if (other == org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter.getDefaultInstance()) return this;
+      public Builder mergeFrom(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter other) {
+        if (other
+            == org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter
+                .getDefaultInstance()) return this;
         if (other.hasValue()) {
           setValue(other.getValue());
         }
@@ -511,17 +558,19 @@ public final class ReplicatedEventSourcing {
               case 0:
                 done = true;
                 break;
-              case 10: {
-                value_ = input.readBytes();
-                bitField0_ |= 0x00000001;
-                break;
-              } // case 10
-              default: {
-                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                  done = true; // was an endgroup tag
-                }
-                break;
-              } // default:
+              case 10:
+                {
+                  value_ = input.readBytes();
+                  bitField0_ |= 0x00000001;
+                  break;
+                } // case 10
+              default:
+                {
+                  if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                    done = true; // was an endgroup tag
+                  }
+                  break;
+                } // default:
             } // switch (tag)
           } // while (!done)
         } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
@@ -531,11 +580,14 @@ public final class ReplicatedEventSourcing {
         } // finally
         return this;
       }
+
       private int bitField0_;
 
-      private org.apache.pekko.protobufv3.internal.ByteString value_ = org.apache.pekko.protobufv3.internal.ByteString.EMPTY;
+      private org.apache.pekko.protobufv3.internal.ByteString value_ =
+          org.apache.pekko.protobufv3.internal.ByteString.EMPTY;
       /**
        * <code>required bytes value = 1;</code>
+       *
        * @return Whether the value field is set.
        */
       @java.lang.Override
@@ -544,6 +596,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>required bytes value = 1;</code>
+       *
        * @return The value.
        */
       @java.lang.Override
@@ -552,11 +605,14 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>required bytes value = 1;</code>
+       *
        * @param value The value to set.
        * @return This builder for chaining.
        */
       public Builder setValue(org.apache.pekko.protobufv3.internal.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
+        if (value == null) {
+          throw new NullPointerException();
+        }
         value_ = value;
         bitField0_ |= 0x00000001;
         onChanged();
@@ -564,6 +620,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>required bytes value = 1;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearValue() {
@@ -577,36 +634,42 @@ public final class ReplicatedEventSourcing {
     }
 
     // @@protoc_insertion_point(class_scope:Counter)
-    private static final org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter DEFAULT_INSTANCE;
+    private static final org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .Counter
+        DEFAULT_INSTANCE;
+
     static {
-      DEFAULT_INSTANCE = new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter();
+      DEFAULT_INSTANCE =
+          new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter();
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter getDefaultInstance() {
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter
+        getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final org.apache.pekko.protobufv3.internal.Parser<Counter>
-        PARSER = new org.apache.pekko.protobufv3.internal.AbstractParser<Counter>() {
-      @java.lang.Override
-      public Counter parsePartialFrom(
-          org.apache.pekko.protobufv3.internal.CodedInputStream input,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        Builder builder = newBuilder();
-        try {
-          builder.mergeFrom(input, extensionRegistry);
-        } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(builder.buildPartial());
-        } catch (org.apache.pekko.protobufv3.internal.UninitializedMessageException e) {
-          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-        } catch (java.io.IOException e) {
-          throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
-              .setUnfinishedMessage(builder.buildPartial());
-        }
-        return builder.buildPartial();
-      }
-    };
+    private static final org.apache.pekko.protobufv3.internal.Parser<Counter> PARSER =
+        new org.apache.pekko.protobufv3.internal.AbstractParser<Counter>() {
+          @java.lang.Override
+          public Counter parsePartialFrom(
+              org.apache.pekko.protobufv3.internal.CodedInputStream input,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+            Builder builder = newBuilder();
+            try {
+              builder.mergeFrom(input, extensionRegistry);
+            } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
+              throw e.setUnfinishedMessage(builder.buildPartial());
+            } catch (org.apache.pekko.protobufv3.internal.UninitializedMessageException e) {
+              throw e.asInvalidProtocolBufferException()
+                  .setUnfinishedMessage(builder.buildPartial());
+            } catch (java.io.IOException e) {
+              throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
+                  .setUnfinishedMessage(builder.buildPartial());
+            }
+            return builder.buildPartial();
+          }
+        };
 
     public static org.apache.pekko.protobufv3.internal.Parser<Counter> parser() {
       return PARSER;
@@ -618,70 +681,82 @@ public final class ReplicatedEventSourcing {
     }
 
     @java.lang.Override
-    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter getDefaultInstanceForType() {
+    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.Counter
+        getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
-
   }
 
-  public interface CounterUpdateOrBuilder extends
+  public interface CounterUpdateOrBuilder
+      extends
       // @@protoc_insertion_point(interface_extends:CounterUpdate)
       org.apache.pekko.protobufv3.internal.MessageOrBuilder {
 
     /**
      * <code>required bytes delta = 1;</code>
+     *
      * @return Whether the delta field is set.
      */
     boolean hasDelta();
     /**
      * <code>required bytes delta = 1;</code>
+     *
      * @return The delta.
      */
     org.apache.pekko.protobufv3.internal.ByteString getDelta();
   }
-  /**
-   * Protobuf type {@code CounterUpdate}
-   */
-  public static final class CounterUpdate extends
-      org.apache.pekko.protobufv3.internal.GeneratedMessage implements
+  /** Protobuf type {@code CounterUpdate} */
+  public static final class CounterUpdate
+      extends org.apache.pekko.protobufv3.internal.GeneratedMessage
+      implements
       // @@protoc_insertion_point(message_implements:CounterUpdate)
       CounterUpdateOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
+
     static {
       org.apache.pekko.protobufv3.internal.RuntimeVersion.validateProtobufGencodeVersion(
-        org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
-        /* major= */ 4,
-        /* minor= */ 29,
-        /* patch= */ 3,
-        /* suffix= */ "",
-        CounterUpdate.class.getName());
+          org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
+          /* major= */ 4,
+          /* minor= */ 29,
+          /* patch= */ 3,
+          /* suffix= */ "",
+          CounterUpdate.class.getName());
     }
     // Use CounterUpdate.newBuilder() to construct.
-    private CounterUpdate(org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
+    private CounterUpdate(
+        org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
       super(builder);
     }
+
     private CounterUpdate() {
       delta_ = org.apache.pekko.protobufv3.internal.ByteString.EMPTY;
     }
 
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_CounterUpdate_descriptor;
+      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+          .internal_static_CounterUpdate_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_CounterUpdate_fieldAccessorTable
+      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+          .internal_static_CounterUpdate_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate.class, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate.Builder.class);
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate
+                  .class,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate
+                  .Builder.class);
     }
 
     private int bitField0_;
     public static final int DELTA_FIELD_NUMBER = 1;
-    private org.apache.pekko.protobufv3.internal.ByteString delta_ = org.apache.pekko.protobufv3.internal.ByteString.EMPTY;
+    private org.apache.pekko.protobufv3.internal.ByteString delta_ =
+        org.apache.pekko.protobufv3.internal.ByteString.EMPTY;
     /**
      * <code>required bytes delta = 1;</code>
+     *
      * @return Whether the delta field is set.
      */
     @java.lang.Override
@@ -690,6 +765,7 @@ public final class ReplicatedEventSourcing {
     }
     /**
      * <code>required bytes delta = 1;</code>
+     *
      * @return The delta.
      */
     @java.lang.Override
@@ -698,6 +774,7 @@ public final class ReplicatedEventSourcing {
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -714,7 +791,7 @@ public final class ReplicatedEventSourcing {
 
     @java.lang.Override
     public void writeTo(org.apache.pekko.protobufv3.internal.CodedOutputStream output)
-                        throws java.io.IOException {
+        throws java.io.IOException {
       if (((bitField0_ & 0x00000001) != 0)) {
         output.writeBytes(1, delta_);
       }
@@ -728,8 +805,7 @@ public final class ReplicatedEventSourcing {
 
       size = 0;
       if (((bitField0_ & 0x00000001) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeBytesSize(1, delta_);
+        size += org.apache.pekko.protobufv3.internal.CodedOutputStream.computeBytesSize(1, delta_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -739,17 +815,20 @@ public final class ReplicatedEventSourcing {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
-      if (!(obj instanceof org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate)) {
+      if (!(obj
+          instanceof
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate)) {
         return super.equals(obj);
       }
-      org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate other = (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate) obj;
+      org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate other =
+          (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate)
+              obj;
 
       if (hasDelta() != other.hasDelta()) return false;
       if (hasDelta()) {
-        if (!getDelta()
-            .equals(other.getDelta())) return false;
+        if (!getDelta().equals(other.getDelta())) return false;
       }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
@@ -771,90 +850,124 @@ public final class ReplicatedEventSourcing {
       return hash;
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate parseFrom(
-        java.nio.ByteBuffer data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .CounterUpdate
+        parseFrom(java.nio.ByteBuffer data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate parseFrom(
-        java.nio.ByteBuffer data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate parseFrom(
-        org.apache.pekko.protobufv3.internal.ByteString data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate parseFrom(
-        org.apache.pekko.protobufv3.internal.ByteString data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate parseFrom(byte[] data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate parseFrom(
-        byte[] data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate parseFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseDelimitedWithIOException(PARSER, input);
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .CounterUpdate
+        parseFrom(
+            java.nio.ByteBuffer data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate parseDelimitedFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .CounterUpdate
+        parseFrom(org.apache.pekko.protobufv3.internal.ByteString data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
     }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input);
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .CounterUpdate
+        parseFrom(
+            org.apache.pekko.protobufv3.internal.ByteString data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .CounterUpdate
+        parseFrom(byte[] data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .CounterUpdate
+        parseFrom(
+            byte[] data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .CounterUpdate
+        parseFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .CounterUpdate
+        parseFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input, extensionRegistry);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .CounterUpdate
+        parseDelimitedFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseDelimitedWithIOException(
+          PARSER, input);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .CounterUpdate
+        parseDelimitedFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseDelimitedWithIOException(
+          PARSER, input, extensionRegistry);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .CounterUpdate
+        parseFrom(org.apache.pekko.protobufv3.internal.CodedInputStream input)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .CounterUpdate
+        parseFrom(
+            org.apache.pekko.protobufv3.internal.CodedInputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate prototype) {
+
+    public static Builder newBuilder(
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate
+            prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
@@ -863,36 +976,39 @@ public final class ReplicatedEventSourcing {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
-     * Protobuf type {@code CounterUpdate}
-     */
-    public static final class Builder extends
-        org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder> implements
+    /** Protobuf type {@code CounterUpdate} */
+    public static final class Builder
+        extends org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder>
+        implements
         // @@protoc_insertion_point(builder_implements:CounterUpdate)
-        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdateOrBuilder {
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .CounterUpdateOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_CounterUpdate_descriptor;
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .internal_static_CounterUpdate_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_CounterUpdate_fieldAccessorTable
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .internal_static_CounterUpdate_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate.class, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate.Builder.class);
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .CounterUpdate.class,
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .CounterUpdate.Builder.class);
       }
 
-      // Construct using org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate.newBuilder()
-      private Builder() {
+      // Construct using
+      // org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate.newBuilder()
+      private Builder() {}
 
-      }
-
-      private Builder(
-          org.apache.pekko.protobufv3.internal.GeneratedMessage.BuilderParent parent) {
+      private Builder(org.apache.pekko.protobufv3.internal.GeneratedMessage.BuilderParent parent) {
         super(parent);
-
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -902,19 +1018,23 @@ public final class ReplicatedEventSourcing {
       }
 
       @java.lang.Override
-      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-          getDescriptorForType() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_CounterUpdate_descriptor;
+      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor getDescriptorForType() {
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .internal_static_CounterUpdate_descriptor;
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate getDefaultInstanceForType() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate.getDefaultInstance();
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate
+          getDefaultInstanceForType() {
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .CounterUpdate.getDefaultInstance();
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate build() {
-        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate result = buildPartial();
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate
+          build() {
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate
+            result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -922,14 +1042,22 @@ public final class ReplicatedEventSourcing {
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate buildPartial() {
-        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate result = new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate(this);
-        if (bitField0_ != 0) { buildPartial0(result); }
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate
+          buildPartial() {
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate
+            result =
+                new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .CounterUpdate(this);
+        if (bitField0_ != 0) {
+          buildPartial0(result);
+        }
         onBuilt();
         return result;
       }
 
-      private void buildPartial0(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate result) {
+      private void buildPartial0(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate
+              result) {
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -941,16 +1069,26 @@ public final class ReplicatedEventSourcing {
 
       @java.lang.Override
       public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
-        if (other instanceof org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate) {
-          return mergeFrom((org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate)other);
+        if (other
+            instanceof
+            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .CounterUpdate) {
+          return mergeFrom(
+              (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .CounterUpdate)
+                  other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate other) {
-        if (other == org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate.getDefaultInstance()) return this;
+      public Builder mergeFrom(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate
+              other) {
+        if (other
+            == org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .CounterUpdate.getDefaultInstance()) return this;
         if (other.hasDelta()) {
           setDelta(other.getDelta());
         }
@@ -983,17 +1121,19 @@ public final class ReplicatedEventSourcing {
               case 0:
                 done = true;
                 break;
-              case 10: {
-                delta_ = input.readBytes();
-                bitField0_ |= 0x00000001;
-                break;
-              } // case 10
-              default: {
-                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                  done = true; // was an endgroup tag
-                }
-                break;
-              } // default:
+              case 10:
+                {
+                  delta_ = input.readBytes();
+                  bitField0_ |= 0x00000001;
+                  break;
+                } // case 10
+              default:
+                {
+                  if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                    done = true; // was an endgroup tag
+                  }
+                  break;
+                } // default:
             } // switch (tag)
           } // while (!done)
         } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
@@ -1003,11 +1143,14 @@ public final class ReplicatedEventSourcing {
         } // finally
         return this;
       }
+
       private int bitField0_;
 
-      private org.apache.pekko.protobufv3.internal.ByteString delta_ = org.apache.pekko.protobufv3.internal.ByteString.EMPTY;
+      private org.apache.pekko.protobufv3.internal.ByteString delta_ =
+          org.apache.pekko.protobufv3.internal.ByteString.EMPTY;
       /**
        * <code>required bytes delta = 1;</code>
+       *
        * @return Whether the delta field is set.
        */
       @java.lang.Override
@@ -1016,6 +1159,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>required bytes delta = 1;</code>
+       *
        * @return The delta.
        */
       @java.lang.Override
@@ -1024,11 +1168,14 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>required bytes delta = 1;</code>
+       *
        * @param value The delta to set.
        * @return This builder for chaining.
        */
       public Builder setDelta(org.apache.pekko.protobufv3.internal.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
+        if (value == null) {
+          throw new NullPointerException();
+        }
         delta_ = value;
         bitField0_ |= 0x00000001;
         onChanged();
@@ -1036,6 +1183,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>required bytes delta = 1;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearDelta() {
@@ -1049,36 +1197,44 @@ public final class ReplicatedEventSourcing {
     }
 
     // @@protoc_insertion_point(class_scope:CounterUpdate)
-    private static final org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate DEFAULT_INSTANCE;
+    private static final org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .CounterUpdate
+        DEFAULT_INSTANCE;
+
     static {
-      DEFAULT_INSTANCE = new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate();
+      DEFAULT_INSTANCE =
+          new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .CounterUpdate();
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate getDefaultInstance() {
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .CounterUpdate
+        getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final org.apache.pekko.protobufv3.internal.Parser<CounterUpdate>
-        PARSER = new org.apache.pekko.protobufv3.internal.AbstractParser<CounterUpdate>() {
-      @java.lang.Override
-      public CounterUpdate parsePartialFrom(
-          org.apache.pekko.protobufv3.internal.CodedInputStream input,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        Builder builder = newBuilder();
-        try {
-          builder.mergeFrom(input, extensionRegistry);
-        } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(builder.buildPartial());
-        } catch (org.apache.pekko.protobufv3.internal.UninitializedMessageException e) {
-          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-        } catch (java.io.IOException e) {
-          throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
-              .setUnfinishedMessage(builder.buildPartial());
-        }
-        return builder.buildPartial();
-      }
-    };
+    private static final org.apache.pekko.protobufv3.internal.Parser<CounterUpdate> PARSER =
+        new org.apache.pekko.protobufv3.internal.AbstractParser<CounterUpdate>() {
+          @java.lang.Override
+          public CounterUpdate parsePartialFrom(
+              org.apache.pekko.protobufv3.internal.CodedInputStream input,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+            Builder builder = newBuilder();
+            try {
+              builder.mergeFrom(input, extensionRegistry);
+            } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
+              throw e.setUnfinishedMessage(builder.buildPartial());
+            } catch (org.apache.pekko.protobufv3.internal.UninitializedMessageException e) {
+              throw e.asInvalidProtocolBufferException()
+                  .setUnfinishedMessage(builder.buildPartial());
+            } catch (java.io.IOException e) {
+              throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
+                  .setUnfinishedMessage(builder.buildPartial());
+            }
+            return builder.buildPartial();
+          }
+        };
 
     public static org.apache.pekko.protobufv3.internal.Parser<CounterUpdate> parser() {
       return PARSER;
@@ -1090,109 +1246,114 @@ public final class ReplicatedEventSourcing {
     }
 
     @java.lang.Override
-    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate getDefaultInstanceForType() {
+    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.CounterUpdate
+        getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
-
   }
 
-  public interface ORSetOrBuilder extends
+  public interface ORSetOrBuilder
+      extends
       // @@protoc_insertion_point(interface_extends:ORSet)
       org.apache.pekko.protobufv3.internal.MessageOrBuilder {
 
     /**
      * <code>required string originDc = 1;</code>
+     *
      * @return Whether the originDc field is set.
      */
     boolean hasOriginDc();
     /**
      * <code>required string originDc = 1;</code>
+     *
      * @return The originDc.
      */
     java.lang.String getOriginDc();
     /**
      * <code>required string originDc = 1;</code>
+     *
      * @return The bytes for originDc.
      */
-    org.apache.pekko.protobufv3.internal.ByteString
-        getOriginDcBytes();
+    org.apache.pekko.protobufv3.internal.ByteString getOriginDcBytes();
 
     /**
      * <code>required .VersionVector vvector = 2;</code>
+     *
      * @return Whether the vvector field is set.
      */
     boolean hasVvector();
     /**
      * <code>required .VersionVector vvector = 2;</code>
+     *
      * @return The vvector.
      */
-    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector getVvector();
-    /**
-     * <code>required .VersionVector vvector = 2;</code>
-     */
-    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder getVvectorOrBuilder();
+    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+        getVvector();
+    /** <code>required .VersionVector vvector = 2;</code> */
+    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder
+        getVvectorOrBuilder();
 
-    /**
-     * <code>repeated .VersionVector dots = 3;</code>
-     */
-    java.util.List<org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector> 
+    /** <code>repeated .VersionVector dots = 3;</code> */
+    java.util.List<
+            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector>
         getDotsList();
-    /**
-     * <code>repeated .VersionVector dots = 3;</code>
-     */
-    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector getDots(int index);
-    /**
-     * <code>repeated .VersionVector dots = 3;</code>
-     */
-    int getDotsCount();
-    /**
-     * <code>repeated .VersionVector dots = 3;</code>
-     */
-    java.util.List<? extends org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder> 
-        getDotsOrBuilderList();
-    /**
-     * <code>repeated .VersionVector dots = 3;</code>
-     */
-    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder getDotsOrBuilder(
+    /** <code>repeated .VersionVector dots = 3;</code> */
+    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector getDots(
         int index);
+    /** <code>repeated .VersionVector dots = 3;</code> */
+    int getDotsCount();
+    /** <code>repeated .VersionVector dots = 3;</code> */
+    java.util.List<
+            ? extends
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .VersionVectorOrBuilder>
+        getDotsOrBuilderList();
+    /** <code>repeated .VersionVector dots = 3;</code> */
+    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder
+        getDotsOrBuilder(int index);
 
     /**
      * <code>repeated string stringElements = 4;</code>
+     *
      * @return A list containing the stringElements.
      */
-    java.util.List<java.lang.String>
-        getStringElementsList();
+    java.util.List<java.lang.String> getStringElementsList();
     /**
      * <code>repeated string stringElements = 4;</code>
+     *
      * @return The count of stringElements.
      */
     int getStringElementsCount();
     /**
      * <code>repeated string stringElements = 4;</code>
+     *
      * @param index The index of the element to return.
      * @return The stringElements at the given index.
      */
     java.lang.String getStringElements(int index);
     /**
      * <code>repeated string stringElements = 4;</code>
+     *
      * @param index The index of the value to return.
      * @return The bytes of the stringElements at the given index.
      */
-    org.apache.pekko.protobufv3.internal.ByteString
-        getStringElementsBytes(int index);
+    org.apache.pekko.protobufv3.internal.ByteString getStringElementsBytes(int index);
 
     /**
      * <code>repeated sint32 intElements = 5 [packed = true];</code>
+     *
      * @return A list containing the intElements.
      */
     java.util.List<java.lang.Integer> getIntElementsList();
     /**
      * <code>repeated sint32 intElements = 5 [packed = true];</code>
+     *
      * @return The count of intElements.
      */
     int getIntElementsCount();
     /**
      * <code>repeated sint32 intElements = 5 [packed = true];</code>
+     *
      * @param index The index of the element to return.
      * @return The intElements at the given index.
      */
@@ -1200,71 +1361,61 @@ public final class ReplicatedEventSourcing {
 
     /**
      * <code>repeated sint64 longElements = 6 [packed = true];</code>
+     *
      * @return A list containing the longElements.
      */
     java.util.List<java.lang.Long> getLongElementsList();
     /**
      * <code>repeated sint64 longElements = 6 [packed = true];</code>
+     *
      * @return The count of longElements.
      */
     int getLongElementsCount();
     /**
      * <code>repeated sint64 longElements = 6 [packed = true];</code>
+     *
      * @param index The index of the element to return.
      * @return The longElements at the given index.
      */
     long getLongElements(int index);
 
-    /**
-     * <code>repeated .Payload otherElements = 7;</code>
-     */
-    java.util.List<org.apache.pekko.remote.ContainerFormats.Payload> 
-        getOtherElementsList();
-    /**
-     * <code>repeated .Payload otherElements = 7;</code>
-     */
+    /** <code>repeated .Payload otherElements = 7;</code> */
+    java.util.List<org.apache.pekko.remote.ContainerFormats.Payload> getOtherElementsList();
+    /** <code>repeated .Payload otherElements = 7;</code> */
     org.apache.pekko.remote.ContainerFormats.Payload getOtherElements(int index);
-    /**
-     * <code>repeated .Payload otherElements = 7;</code>
-     */
+    /** <code>repeated .Payload otherElements = 7;</code> */
     int getOtherElementsCount();
-    /**
-     * <code>repeated .Payload otherElements = 7;</code>
-     */
-    java.util.List<? extends org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder> 
+    /** <code>repeated .Payload otherElements = 7;</code> */
+    java.util.List<? extends org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder>
         getOtherElementsOrBuilderList();
-    /**
-     * <code>repeated .Payload otherElements = 7;</code>
-     */
-    org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder getOtherElementsOrBuilder(
-        int index);
+    /** <code>repeated .Payload otherElements = 7;</code> */
+    org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder getOtherElementsOrBuilder(int index);
   }
-  /**
-   * Protobuf type {@code ORSet}
-   */
-  public static final class ORSet extends
-      org.apache.pekko.protobufv3.internal.GeneratedMessage implements
+  /** Protobuf type {@code ORSet} */
+  public static final class ORSet extends org.apache.pekko.protobufv3.internal.GeneratedMessage
+      implements
       // @@protoc_insertion_point(message_implements:ORSet)
       ORSetOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
+
     static {
       org.apache.pekko.protobufv3.internal.RuntimeVersion.validateProtobufGencodeVersion(
-        org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
-        /* major= */ 4,
-        /* minor= */ 29,
-        /* patch= */ 3,
-        /* suffix= */ "",
-        ORSet.class.getName());
+          org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
+          /* major= */ 4,
+          /* minor= */ 29,
+          /* patch= */ 3,
+          /* suffix= */ "",
+          ORSet.class.getName());
     }
     // Use ORSet.newBuilder() to construct.
     private ORSet(org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
       super(builder);
     }
+
     private ORSet() {
       originDc_ = "";
       dots_ = java.util.Collections.emptyList();
-      stringElements_ =
-          org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
+      stringElements_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       intElements_ = emptyIntList();
       longElements_ = emptyLongList();
       otherElements_ = java.util.Collections.emptyList();
@@ -1272,23 +1423,29 @@ public final class ReplicatedEventSourcing {
 
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ORSet_descriptor;
+      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+          .internal_static_ORSet_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ORSet_fieldAccessorTable
+      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+          .internal_static_ORSet_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet.class, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet.Builder.class);
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet.class,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet.Builder
+                  .class);
     }
 
     private int bitField0_;
     public static final int ORIGINDC_FIELD_NUMBER = 1;
+
     @SuppressWarnings("serial")
     private volatile java.lang.Object originDc_ = "";
     /**
      * <code>required string originDc = 1;</code>
+     *
      * @return Whether the originDc field is set.
      */
     @java.lang.Override
@@ -1297,6 +1454,7 @@ public final class ReplicatedEventSourcing {
     }
     /**
      * <code>required string originDc = 1;</code>
+     *
      * @return The originDc.
      */
     @java.lang.Override
@@ -1305,7 +1463,7 @@ public final class ReplicatedEventSourcing {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        org.apache.pekko.protobufv3.internal.ByteString bs = 
+        org.apache.pekko.protobufv3.internal.ByteString bs =
             (org.apache.pekko.protobufv3.internal.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
@@ -1316,16 +1474,15 @@ public final class ReplicatedEventSourcing {
     }
     /**
      * <code>required string originDc = 1;</code>
+     *
      * @return The bytes for originDc.
      */
     @java.lang.Override
-    public org.apache.pekko.protobufv3.internal.ByteString
-        getOriginDcBytes() {
+    public org.apache.pekko.protobufv3.internal.ByteString getOriginDcBytes() {
       java.lang.Object ref = originDc_;
       if (ref instanceof java.lang.String) {
-        org.apache.pekko.protobufv3.internal.ByteString b = 
-            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        org.apache.pekko.protobufv3.internal.ByteString b =
+            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
         originDc_ = b;
         return b;
       } else {
@@ -1334,9 +1491,11 @@ public final class ReplicatedEventSourcing {
     }
 
     public static final int VVECTOR_FIELD_NUMBER = 2;
-    private org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector vvector_;
+    private org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+        vvector_;
     /**
      * <code>required .VersionVector vvector = 2;</code>
+     *
      * @return Whether the vvector field is set.
      */
     @java.lang.Override
@@ -1345,75 +1504,85 @@ public final class ReplicatedEventSourcing {
     }
     /**
      * <code>required .VersionVector vvector = 2;</code>
+     *
      * @return The vvector.
      */
     @java.lang.Override
-    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector getVvector() {
-      return vvector_ == null ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.getDefaultInstance() : vvector_;
+    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+        getVvector() {
+      return vvector_ == null
+          ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              .getDefaultInstance()
+          : vvector_;
     }
-    /**
-     * <code>required .VersionVector vvector = 2;</code>
-     */
+    /** <code>required .VersionVector vvector = 2;</code> */
     @java.lang.Override
-    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder getVvectorOrBuilder() {
-      return vvector_ == null ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.getDefaultInstance() : vvector_;
+    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .VersionVectorOrBuilder
+        getVvectorOrBuilder() {
+      return vvector_ == null
+          ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              .getDefaultInstance()
+          : vvector_;
     }
 
     public static final int DOTS_FIELD_NUMBER = 3;
+
     @SuppressWarnings("serial")
-    private java.util.List<org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector> dots_;
-    /**
-     * <code>repeated .VersionVector dots = 3;</code>
-     */
+    private java.util.List<
+            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector>
+        dots_;
+    /** <code>repeated .VersionVector dots = 3;</code> */
     @java.lang.Override
-    public java.util.List<org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector> getDotsList() {
+    public java.util.List<
+            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector>
+        getDotsList() {
       return dots_;
     }
-    /**
-     * <code>repeated .VersionVector dots = 3;</code>
-     */
+    /** <code>repeated .VersionVector dots = 3;</code> */
     @java.lang.Override
-    public java.util.List<? extends org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder> 
+    public java.util.List<
+            ? extends
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .VersionVectorOrBuilder>
         getDotsOrBuilderList() {
       return dots_;
     }
-    /**
-     * <code>repeated .VersionVector dots = 3;</code>
-     */
+    /** <code>repeated .VersionVector dots = 3;</code> */
     @java.lang.Override
     public int getDotsCount() {
       return dots_.size();
     }
-    /**
-     * <code>repeated .VersionVector dots = 3;</code>
-     */
+    /** <code>repeated .VersionVector dots = 3;</code> */
     @java.lang.Override
-    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector getDots(int index) {
+    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+        getDots(int index) {
       return dots_.get(index);
     }
-    /**
-     * <code>repeated .VersionVector dots = 3;</code>
-     */
+    /** <code>repeated .VersionVector dots = 3;</code> */
     @java.lang.Override
-    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder getDotsOrBuilder(
-        int index) {
+    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .VersionVectorOrBuilder
+        getDotsOrBuilder(int index) {
       return dots_.get(index);
     }
 
     public static final int STRINGELEMENTS_FIELD_NUMBER = 4;
+
     @SuppressWarnings("serial")
     private org.apache.pekko.protobufv3.internal.LazyStringArrayList stringElements_ =
         org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
     /**
      * <code>repeated string stringElements = 4;</code>
+     *
      * @return A list containing the stringElements.
      */
-    public org.apache.pekko.protobufv3.internal.ProtocolStringList
-        getStringElementsList() {
+    public org.apache.pekko.protobufv3.internal.ProtocolStringList getStringElementsList() {
       return stringElements_;
     }
     /**
      * <code>repeated string stringElements = 4;</code>
+     *
      * @return The count of stringElements.
      */
     public int getStringElementsCount() {
@@ -1421,6 +1590,7 @@ public final class ReplicatedEventSourcing {
     }
     /**
      * <code>repeated string stringElements = 4;</code>
+     *
      * @param index The index of the element to return.
      * @return The stringElements at the given index.
      */
@@ -1429,29 +1599,30 @@ public final class ReplicatedEventSourcing {
     }
     /**
      * <code>repeated string stringElements = 4;</code>
+     *
      * @param index The index of the value to return.
      * @return The bytes of the stringElements at the given index.
      */
-    public org.apache.pekko.protobufv3.internal.ByteString
-        getStringElementsBytes(int index) {
+    public org.apache.pekko.protobufv3.internal.ByteString getStringElementsBytes(int index) {
       return stringElements_.getByteString(index);
     }
 
     public static final int INTELEMENTS_FIELD_NUMBER = 5;
+
     @SuppressWarnings("serial")
-    private org.apache.pekko.protobufv3.internal.Internal.IntList intElements_ =
-        emptyIntList();
+    private org.apache.pekko.protobufv3.internal.Internal.IntList intElements_ = emptyIntList();
     /**
      * <code>repeated sint32 intElements = 5 [packed = true];</code>
+     *
      * @return A list containing the intElements.
      */
     @java.lang.Override
-    public java.util.List<java.lang.Integer>
-        getIntElementsList() {
+    public java.util.List<java.lang.Integer> getIntElementsList() {
       return intElements_;
     }
     /**
      * <code>repeated sint32 intElements = 5 [packed = true];</code>
+     *
      * @return The count of intElements.
      */
     public int getIntElementsCount() {
@@ -1459,29 +1630,32 @@ public final class ReplicatedEventSourcing {
     }
     /**
      * <code>repeated sint32 intElements = 5 [packed = true];</code>
+     *
      * @param index The index of the element to return.
      * @return The intElements at the given index.
      */
     public int getIntElements(int index) {
       return intElements_.getInt(index);
     }
+
     private int intElementsMemoizedSerializedSize = -1;
 
     public static final int LONGELEMENTS_FIELD_NUMBER = 6;
+
     @SuppressWarnings("serial")
-    private org.apache.pekko.protobufv3.internal.Internal.LongList longElements_ =
-        emptyLongList();
+    private org.apache.pekko.protobufv3.internal.Internal.LongList longElements_ = emptyLongList();
     /**
      * <code>repeated sint64 longElements = 6 [packed = true];</code>
+     *
      * @return A list containing the longElements.
      */
     @java.lang.Override
-    public java.util.List<java.lang.Long>
-        getLongElementsList() {
+    public java.util.List<java.lang.Long> getLongElementsList() {
       return longElements_;
     }
     /**
      * <code>repeated sint64 longElements = 6 [packed = true];</code>
+     *
      * @return The count of longElements.
      */
     public int getLongElementsCount() {
@@ -1489,49 +1663,42 @@ public final class ReplicatedEventSourcing {
     }
     /**
      * <code>repeated sint64 longElements = 6 [packed = true];</code>
+     *
      * @param index The index of the element to return.
      * @return The longElements at the given index.
      */
     public long getLongElements(int index) {
       return longElements_.getLong(index);
     }
+
     private int longElementsMemoizedSerializedSize = -1;
 
     public static final int OTHERELEMENTS_FIELD_NUMBER = 7;
+
     @SuppressWarnings("serial")
     private java.util.List<org.apache.pekko.remote.ContainerFormats.Payload> otherElements_;
-    /**
-     * <code>repeated .Payload otherElements = 7;</code>
-     */
+    /** <code>repeated .Payload otherElements = 7;</code> */
     @java.lang.Override
     public java.util.List<org.apache.pekko.remote.ContainerFormats.Payload> getOtherElementsList() {
       return otherElements_;
     }
-    /**
-     * <code>repeated .Payload otherElements = 7;</code>
-     */
+    /** <code>repeated .Payload otherElements = 7;</code> */
     @java.lang.Override
-    public java.util.List<? extends org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder> 
+    public java.util.List<? extends org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder>
         getOtherElementsOrBuilderList() {
       return otherElements_;
     }
-    /**
-     * <code>repeated .Payload otherElements = 7;</code>
-     */
+    /** <code>repeated .Payload otherElements = 7;</code> */
     @java.lang.Override
     public int getOtherElementsCount() {
       return otherElements_.size();
     }
-    /**
-     * <code>repeated .Payload otherElements = 7;</code>
-     */
+    /** <code>repeated .Payload otherElements = 7;</code> */
     @java.lang.Override
     public org.apache.pekko.remote.ContainerFormats.Payload getOtherElements(int index) {
       return otherElements_.get(index);
     }
-    /**
-     * <code>repeated .Payload otherElements = 7;</code>
-     */
+    /** <code>repeated .Payload otherElements = 7;</code> */
     @java.lang.Override
     public org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder getOtherElementsOrBuilder(
         int index) {
@@ -1539,6 +1706,7 @@ public final class ReplicatedEventSourcing {
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -1575,7 +1743,7 @@ public final class ReplicatedEventSourcing {
 
     @java.lang.Override
     public void writeTo(org.apache.pekko.protobufv3.internal.CodedOutputStream output)
-                        throws java.io.IOException {
+        throws java.io.IOException {
       getSerializedSize();
       if (((bitField0_ & 0x00000001) != 0)) {
         org.apache.pekko.protobufv3.internal.GeneratedMessage.writeString(output, 1, originDc_);
@@ -1587,7 +1755,8 @@ public final class ReplicatedEventSourcing {
         output.writeMessage(3, dots_.get(i));
       }
       for (int i = 0; i < stringElements_.size(); i++) {
-        org.apache.pekko.protobufv3.internal.GeneratedMessage.writeString(output, 4, stringElements_.getRaw(i));
+        org.apache.pekko.protobufv3.internal.GeneratedMessage.writeString(
+            output, 4, stringElements_.getRaw(i));
       }
       if (getIntElementsList().size() > 0) {
         output.writeUInt32NoTag(42);
@@ -1616,15 +1785,18 @@ public final class ReplicatedEventSourcing {
 
       size = 0;
       if (((bitField0_ & 0x00000001) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.GeneratedMessage.computeStringSize(1, originDc_);
+        size +=
+            org.apache.pekko.protobufv3.internal.GeneratedMessage.computeStringSize(1, originDc_);
       }
       if (((bitField0_ & 0x00000002) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeMessageSize(2, getVvector());
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeMessageSize(
+                2, getVvector());
       }
       for (int i = 0; i < dots_.size(); i++) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeMessageSize(3, dots_.get(i));
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeMessageSize(
+                3, dots_.get(i));
       }
       {
         int dataSize = 0;
@@ -1637,34 +1809,39 @@ public final class ReplicatedEventSourcing {
       {
         int dataSize = 0;
         for (int i = 0; i < intElements_.size(); i++) {
-          dataSize += org.apache.pekko.protobufv3.internal.CodedOutputStream
-            .computeSInt32SizeNoTag(intElements_.getInt(i));
+          dataSize +=
+              org.apache.pekko.protobufv3.internal.CodedOutputStream.computeSInt32SizeNoTag(
+                  intElements_.getInt(i));
         }
         size += dataSize;
         if (!getIntElementsList().isEmpty()) {
           size += 1;
-          size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-              .computeInt32SizeNoTag(dataSize);
+          size +=
+              org.apache.pekko.protobufv3.internal.CodedOutputStream.computeInt32SizeNoTag(
+                  dataSize);
         }
         intElementsMemoizedSerializedSize = dataSize;
       }
       {
         int dataSize = 0;
         for (int i = 0; i < longElements_.size(); i++) {
-          dataSize += org.apache.pekko.protobufv3.internal.CodedOutputStream
-            .computeSInt64SizeNoTag(longElements_.getLong(i));
+          dataSize +=
+              org.apache.pekko.protobufv3.internal.CodedOutputStream.computeSInt64SizeNoTag(
+                  longElements_.getLong(i));
         }
         size += dataSize;
         if (!getLongElementsList().isEmpty()) {
           size += 1;
-          size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-              .computeInt32SizeNoTag(dataSize);
+          size +=
+              org.apache.pekko.protobufv3.internal.CodedOutputStream.computeInt32SizeNoTag(
+                  dataSize);
         }
         longElementsMemoizedSerializedSize = dataSize;
       }
       for (int i = 0; i < otherElements_.size(); i++) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeMessageSize(7, otherElements_.get(i));
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeMessageSize(
+                7, otherElements_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -1674,33 +1851,29 @@ public final class ReplicatedEventSourcing {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
-      if (!(obj instanceof org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet)) {
+      if (!(obj
+          instanceof
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet)) {
         return super.equals(obj);
       }
-      org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet other = (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet) obj;
+      org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet other =
+          (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet) obj;
 
       if (hasOriginDc() != other.hasOriginDc()) return false;
       if (hasOriginDc()) {
-        if (!getOriginDc()
-            .equals(other.getOriginDc())) return false;
+        if (!getOriginDc().equals(other.getOriginDc())) return false;
       }
       if (hasVvector() != other.hasVvector()) return false;
       if (hasVvector()) {
-        if (!getVvector()
-            .equals(other.getVvector())) return false;
+        if (!getVvector().equals(other.getVvector())) return false;
       }
-      if (!getDotsList()
-          .equals(other.getDotsList())) return false;
-      if (!getStringElementsList()
-          .equals(other.getStringElementsList())) return false;
-      if (!getIntElementsList()
-          .equals(other.getIntElementsList())) return false;
-      if (!getLongElementsList()
-          .equals(other.getLongElementsList())) return false;
-      if (!getOtherElementsList()
-          .equals(other.getOtherElementsList())) return false;
+      if (!getDotsList().equals(other.getDotsList())) return false;
+      if (!getStringElementsList().equals(other.getStringElementsList())) return false;
+      if (!getIntElementsList().equals(other.getIntElementsList())) return false;
+      if (!getLongElementsList().equals(other.getLongElementsList())) return false;
+      if (!getOtherElementsList().equals(other.getOtherElementsList())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -1745,90 +1918,111 @@ public final class ReplicatedEventSourcing {
       return hash;
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet parseFrom(
-        java.nio.ByteBuffer data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
+        parseFrom(java.nio.ByteBuffer data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet parseFrom(
-        java.nio.ByteBuffer data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet parseFrom(
-        org.apache.pekko.protobufv3.internal.ByteString data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet parseFrom(
-        org.apache.pekko.protobufv3.internal.ByteString data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet parseFrom(byte[] data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet parseFrom(
-        byte[] data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet parseFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseDelimitedWithIOException(PARSER, input);
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
+        parseFrom(
+            java.nio.ByteBuffer data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet parseDelimitedFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
+        parseFrom(org.apache.pekko.protobufv3.internal.ByteString data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
     }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input);
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
+        parseFrom(
+            org.apache.pekko.protobufv3.internal.ByteString data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
+        parseFrom(byte[] data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
+        parseFrom(
+            byte[] data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
+        parseFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
+        parseFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input, extensionRegistry);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
+        parseDelimitedFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseDelimitedWithIOException(
+          PARSER, input);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
+        parseDelimitedFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseDelimitedWithIOException(
+          PARSER, input, extensionRegistry);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
+        parseFrom(org.apache.pekko.protobufv3.internal.CodedInputStream input)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
+        parseFrom(
+            org.apache.pekko.protobufv3.internal.CodedInputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet prototype) {
+
+    public static Builder newBuilder(
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
@@ -1837,44 +2031,49 @@ public final class ReplicatedEventSourcing {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
-     * Protobuf type {@code ORSet}
-     */
-    public static final class Builder extends
-        org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder> implements
+    /** Protobuf type {@code ORSet} */
+    public static final class Builder
+        extends org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder>
+        implements
         // @@protoc_insertion_point(builder_implements:ORSet)
         org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ORSet_descriptor;
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .internal_static_ORSet_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ORSet_fieldAccessorTable
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .internal_static_ORSet_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet.class, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet.Builder.class);
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
+                    .class,
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
+                    .Builder.class);
       }
 
-      // Construct using org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet.newBuilder()
+      // Construct using
+      // org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(
-          org.apache.pekko.protobufv3.internal.GeneratedMessage.BuilderParent parent) {
+      private Builder(org.apache.pekko.protobufv3.internal.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
+
       private void maybeForceBuilderInitialization() {
-        if (org.apache.pekko.protobufv3.internal.GeneratedMessage
-                .alwaysUseFieldBuilders) {
+        if (org.apache.pekko.protobufv3.internal.GeneratedMessage.alwaysUseFieldBuilders) {
           getVvectorFieldBuilder();
           getDotsFieldBuilder();
           getOtherElementsFieldBuilder();
         }
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -1892,8 +2091,7 @@ public final class ReplicatedEventSourcing {
           dotsBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000004);
-        stringElements_ =
-            org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
+        stringElements_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         intElements_ = emptyIntList();
         longElements_ = emptyLongList();
         if (otherElementsBuilder_ == null) {
@@ -1907,19 +2105,23 @@ public final class ReplicatedEventSourcing {
       }
 
       @java.lang.Override
-      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-          getDescriptorForType() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ORSet_descriptor;
+      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor getDescriptorForType() {
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .internal_static_ORSet_descriptor;
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet getDefaultInstanceForType() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet.getDefaultInstance();
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
+          getDefaultInstanceForType() {
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
+            .getDefaultInstance();
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet build() {
-        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet result = buildPartial();
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
+          build() {
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet result =
+            buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -1927,15 +2129,21 @@ public final class ReplicatedEventSourcing {
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet buildPartial() {
-        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet result = new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet(this);
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
+          buildPartial() {
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet result =
+            new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet(
+                this);
         buildPartialRepeatedFields(result);
-        if (bitField0_ != 0) { buildPartial0(result); }
+        if (bitField0_ != 0) {
+          buildPartial0(result);
+        }
         onBuilt();
         return result;
       }
 
-      private void buildPartialRepeatedFields(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet result) {
+      private void buildPartialRepeatedFields(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet result) {
         if (dotsBuilder_ == null) {
           if (((bitField0_ & 0x00000004) != 0)) {
             dots_ = java.util.Collections.unmodifiableList(dots_);
@@ -1956,7 +2164,8 @@ public final class ReplicatedEventSourcing {
         }
       }
 
-      private void buildPartial0(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet result) {
+      private void buildPartial0(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet result) {
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -1964,9 +2173,7 @@ public final class ReplicatedEventSourcing {
           to_bitField0_ |= 0x00000001;
         }
         if (((from_bitField0_ & 0x00000002) != 0)) {
-          result.vvector_ = vvectorBuilder_ == null
-              ? vvector_
-              : vvectorBuilder_.build();
+          result.vvector_ = vvectorBuilder_ == null ? vvector_ : vvectorBuilder_.build();
           to_bitField0_ |= 0x00000002;
         }
         if (((from_bitField0_ & 0x00000008) != 0)) {
@@ -1986,16 +2193,23 @@ public final class ReplicatedEventSourcing {
 
       @java.lang.Override
       public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
-        if (other instanceof org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet) {
-          return mergeFrom((org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet)other);
+        if (other
+            instanceof
+            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet) {
+          return mergeFrom(
+              (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet)
+                  other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet other) {
-        if (other == org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet.getDefaultInstance()) return this;
+      public Builder mergeFrom(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet other) {
+        if (other
+            == org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
+                .getDefaultInstance()) return this;
         if (other.hasOriginDc()) {
           originDc_ = other.originDc_;
           bitField0_ |= 0x00000001;
@@ -2022,9 +2236,10 @@ public final class ReplicatedEventSourcing {
               dotsBuilder_ = null;
               dots_ = other.dots_;
               bitField0_ = (bitField0_ & ~0x00000004);
-              dotsBuilder_ = 
-                org.apache.pekko.protobufv3.internal.GeneratedMessage.alwaysUseFieldBuilders ?
-                   getDotsFieldBuilder() : null;
+              dotsBuilder_ =
+                  org.apache.pekko.protobufv3.internal.GeneratedMessage.alwaysUseFieldBuilders
+                      ? getDotsFieldBuilder()
+                      : null;
             } else {
               dotsBuilder_.addAllMessages(other.dots_);
             }
@@ -2080,9 +2295,10 @@ public final class ReplicatedEventSourcing {
               otherElementsBuilder_ = null;
               otherElements_ = other.otherElements_;
               bitField0_ = (bitField0_ & ~0x00000040);
-              otherElementsBuilder_ = 
-                org.apache.pekko.protobufv3.internal.GeneratedMessage.alwaysUseFieldBuilders ?
-                   getOtherElementsFieldBuilder() : null;
+              otherElementsBuilder_ =
+                  org.apache.pekko.protobufv3.internal.GeneratedMessage.alwaysUseFieldBuilders
+                      ? getOtherElementsFieldBuilder()
+                      : null;
             } else {
               otherElementsBuilder_.addAllMessages(other.otherElements_);
             }
@@ -2133,88 +2349,99 @@ public final class ReplicatedEventSourcing {
               case 0:
                 done = true;
                 break;
-              case 10: {
-                originDc_ = input.readBytes();
-                bitField0_ |= 0x00000001;
-                break;
-              } // case 10
-              case 18: {
-                input.readMessage(
-                    getVvectorFieldBuilder().getBuilder(),
-                    extensionRegistry);
-                bitField0_ |= 0x00000002;
-                break;
-              } // case 18
-              case 26: {
-                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector m =
-                    input.readMessage(
-                        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.parser(),
-                        extensionRegistry);
-                if (dotsBuilder_ == null) {
-                  ensureDotsIsMutable();
-                  dots_.add(m);
-                } else {
-                  dotsBuilder_.addMessage(m);
-                }
-                break;
-              } // case 26
-              case 34: {
-                org.apache.pekko.protobufv3.internal.ByteString bs = input.readBytes();
-                ensureStringElementsIsMutable();
-                stringElements_.add(bs);
-                break;
-              } // case 34
-              case 40: {
-                int v = input.readSInt32();
-                ensureIntElementsIsMutable();
-                intElements_.addInt(v);
-                break;
-              } // case 40
-              case 42: {
-                int length = input.readRawVarint32();
-                int limit = input.pushLimit(length);
-                ensureIntElementsIsMutable();
-                while (input.getBytesUntilLimit() > 0) {
-                  intElements_.addInt(input.readSInt32());
-                }
-                input.popLimit(limit);
-                break;
-              } // case 42
-              case 48: {
-                long v = input.readSInt64();
-                ensureLongElementsIsMutable();
-                longElements_.addLong(v);
-                break;
-              } // case 48
-              case 50: {
-                int length = input.readRawVarint32();
-                int limit = input.pushLimit(length);
-                ensureLongElementsIsMutable();
-                while (input.getBytesUntilLimit() > 0) {
-                  longElements_.addLong(input.readSInt64());
-                }
-                input.popLimit(limit);
-                break;
-              } // case 50
-              case 58: {
-                org.apache.pekko.remote.ContainerFormats.Payload m =
-                    input.readMessage(
-                        org.apache.pekko.remote.ContainerFormats.Payload.parser(),
-                        extensionRegistry);
-                if (otherElementsBuilder_ == null) {
-                  ensureOtherElementsIsMutable();
-                  otherElements_.add(m);
-                } else {
-                  otherElementsBuilder_.addMessage(m);
-                }
-                break;
-              } // case 58
-              default: {
-                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                  done = true; // was an endgroup tag
-                }
-                break;
-              } // default:
+              case 10:
+                {
+                  originDc_ = input.readBytes();
+                  bitField0_ |= 0x00000001;
+                  break;
+                } // case 10
+              case 18:
+                {
+                  input.readMessage(getVvectorFieldBuilder().getBuilder(), extensionRegistry);
+                  bitField0_ |= 0x00000002;
+                  break;
+                } // case 18
+              case 26:
+                {
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                          .VersionVector
+                      m =
+                          input.readMessage(
+                              org.apache.pekko.persistence.typed.serialization
+                                  .ReplicatedEventSourcing.VersionVector.parser(),
+                              extensionRegistry);
+                  if (dotsBuilder_ == null) {
+                    ensureDotsIsMutable();
+                    dots_.add(m);
+                  } else {
+                    dotsBuilder_.addMessage(m);
+                  }
+                  break;
+                } // case 26
+              case 34:
+                {
+                  org.apache.pekko.protobufv3.internal.ByteString bs = input.readBytes();
+                  ensureStringElementsIsMutable();
+                  stringElements_.add(bs);
+                  break;
+                } // case 34
+              case 40:
+                {
+                  int v = input.readSInt32();
+                  ensureIntElementsIsMutable();
+                  intElements_.addInt(v);
+                  break;
+                } // case 40
+              case 42:
+                {
+                  int length = input.readRawVarint32();
+                  int limit = input.pushLimit(length);
+                  ensureIntElementsIsMutable();
+                  while (input.getBytesUntilLimit() > 0) {
+                    intElements_.addInt(input.readSInt32());
+                  }
+                  input.popLimit(limit);
+                  break;
+                } // case 42
+              case 48:
+                {
+                  long v = input.readSInt64();
+                  ensureLongElementsIsMutable();
+                  longElements_.addLong(v);
+                  break;
+                } // case 48
+              case 50:
+                {
+                  int length = input.readRawVarint32();
+                  int limit = input.pushLimit(length);
+                  ensureLongElementsIsMutable();
+                  while (input.getBytesUntilLimit() > 0) {
+                    longElements_.addLong(input.readSInt64());
+                  }
+                  input.popLimit(limit);
+                  break;
+                } // case 50
+              case 58:
+                {
+                  org.apache.pekko.remote.ContainerFormats.Payload m =
+                      input.readMessage(
+                          org.apache.pekko.remote.ContainerFormats.Payload.parser(),
+                          extensionRegistry);
+                  if (otherElementsBuilder_ == null) {
+                    ensureOtherElementsIsMutable();
+                    otherElements_.add(m);
+                  } else {
+                    otherElementsBuilder_.addMessage(m);
+                  }
+                  break;
+                } // case 58
+              default:
+                {
+                  if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                    done = true; // was an endgroup tag
+                  }
+                  break;
+                } // default:
             } // switch (tag)
           } // while (!done)
         } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
@@ -2224,11 +2451,13 @@ public final class ReplicatedEventSourcing {
         } // finally
         return this;
       }
+
       private int bitField0_;
 
       private java.lang.Object originDc_ = "";
       /**
        * <code>required string originDc = 1;</code>
+       *
        * @return Whether the originDc field is set.
        */
       public boolean hasOriginDc() {
@@ -2236,6 +2465,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>required string originDc = 1;</code>
+       *
        * @return The originDc.
        */
       public java.lang.String getOriginDc() {
@@ -2254,15 +2484,14 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>required string originDc = 1;</code>
+       *
        * @return The bytes for originDc.
        */
-      public org.apache.pekko.protobufv3.internal.ByteString
-          getOriginDcBytes() {
+      public org.apache.pekko.protobufv3.internal.ByteString getOriginDcBytes() {
         java.lang.Object ref = originDc_;
         if (ref instanceof String) {
-          org.apache.pekko.protobufv3.internal.ByteString b = 
-              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          org.apache.pekko.protobufv3.internal.ByteString b =
+              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
           originDc_ = b;
           return b;
         } else {
@@ -2271,12 +2500,14 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>required string originDc = 1;</code>
+       *
        * @param value The originDc to set.
        * @return This builder for chaining.
        */
-      public Builder setOriginDc(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
+      public Builder setOriginDc(java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
         originDc_ = value;
         bitField0_ |= 0x00000001;
         onChanged();
@@ -2284,6 +2515,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>required string originDc = 1;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearOriginDc() {
@@ -2294,23 +2526,33 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>required string originDc = 1;</code>
+       *
        * @param value The bytes for originDc to set.
        * @return This builder for chaining.
        */
-      public Builder setOriginDcBytes(
-          org.apache.pekko.protobufv3.internal.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
+      public Builder setOriginDcBytes(org.apache.pekko.protobufv3.internal.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
         originDc_ = value;
         bitField0_ |= 0x00000001;
         onChanged();
         return this;
       }
 
-      private org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector vvector_;
+      private org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+          vvector_;
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Builder, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder> vvectorBuilder_;
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .VersionVector,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Builder,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .VersionVectorOrBuilder>
+          vvectorBuilder_;
       /**
        * <code>required .VersionVector vvector = 2;</code>
+       *
        * @return Whether the vvector field is set.
        */
       public boolean hasVvector() {
@@ -2318,19 +2560,24 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>required .VersionVector vvector = 2;</code>
+       *
        * @return The vvector.
        */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector getVvector() {
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+          getVvector() {
         if (vvectorBuilder_ == null) {
-          return vvector_ == null ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.getDefaultInstance() : vvector_;
+          return vvector_ == null
+              ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .VersionVector.getDefaultInstance()
+              : vvector_;
         } else {
           return vvectorBuilder_.getMessage();
         }
       }
-      /**
-       * <code>required .VersionVector vvector = 2;</code>
-       */
-      public Builder setVvector(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector value) {
+      /** <code>required .VersionVector vvector = 2;</code> */
+      public Builder setVvector(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              value) {
         if (vvectorBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -2343,11 +2590,11 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
-      /**
-       * <code>required .VersionVector vvector = 2;</code>
-       */
+      /** <code>required .VersionVector vvector = 2;</code> */
       public Builder setVvector(
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Builder builderForValue) {
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Builder
+              builderForValue) {
         if (vvectorBuilder_ == null) {
           vvector_ = builderForValue.build();
         } else {
@@ -2357,14 +2604,16 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
-      /**
-       * <code>required .VersionVector vvector = 2;</code>
-       */
-      public Builder mergeVvector(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector value) {
+      /** <code>required .VersionVector vvector = 2;</code> */
+      public Builder mergeVvector(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              value) {
         if (vvectorBuilder_ == null) {
-          if (((bitField0_ & 0x00000002) != 0) &&
-            vvector_ != null &&
-            vvector_ != org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.getDefaultInstance()) {
+          if (((bitField0_ & 0x00000002) != 0)
+              && vvector_ != null
+              && vvector_
+                  != org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .VersionVector.getDefaultInstance()) {
             getVvectorBuilder().mergeFrom(value);
           } else {
             vvector_ = value;
@@ -2378,9 +2627,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>required .VersionVector vvector = 2;</code>
-       */
+      /** <code>required .VersionVector vvector = 2;</code> */
       public Builder clearVvector() {
         bitField0_ = (bitField0_ & ~0x00000002);
         vvector_ = null;
@@ -2391,67 +2638,86 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
-      /**
-       * <code>required .VersionVector vvector = 2;</code>
-       */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Builder getVvectorBuilder() {
+      /** <code>required .VersionVector vvector = 2;</code> */
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              .Builder
+          getVvectorBuilder() {
         bitField0_ |= 0x00000002;
         onChanged();
         return getVvectorFieldBuilder().getBuilder();
       }
-      /**
-       * <code>required .VersionVector vvector = 2;</code>
-       */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder getVvectorOrBuilder() {
+      /** <code>required .VersionVector vvector = 2;</code> */
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .VersionVectorOrBuilder
+          getVvectorOrBuilder() {
         if (vvectorBuilder_ != null) {
           return vvectorBuilder_.getMessageOrBuilder();
         } else {
-          return vvector_ == null ?
-              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.getDefaultInstance() : vvector_;
+          return vvector_ == null
+              ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .VersionVector.getDefaultInstance()
+              : vvector_;
         }
       }
-      /**
-       * <code>required .VersionVector vvector = 2;</code>
-       */
+      /** <code>required .VersionVector vvector = 2;</code> */
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Builder, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder> 
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .VersionVector,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Builder,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .VersionVectorOrBuilder>
           getVvectorFieldBuilder() {
         if (vvectorBuilder_ == null) {
-          vvectorBuilder_ = new org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
-              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Builder, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder>(
-                  getVvector(),
-                  getParentForChildren(),
-                  isClean());
+          vvectorBuilder_ =
+              new org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .VersionVector,
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .VersionVector.Builder,
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .VersionVectorOrBuilder>(getVvector(), getParentForChildren(), isClean());
           vvector_ = null;
         }
         return vvectorBuilder_;
       }
 
-      private java.util.List<org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector> dots_ =
-        java.util.Collections.emptyList();
+      private java.util.List<
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .VersionVector>
+          dots_ = java.util.Collections.emptyList();
+
       private void ensureDotsIsMutable() {
         if (!((bitField0_ & 0x00000004) != 0)) {
-          dots_ = new java.util.ArrayList<org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector>(dots_);
+          dots_ =
+              new java.util.ArrayList<
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .VersionVector>(dots_);
           bitField0_ |= 0x00000004;
-         }
+        }
       }
 
       private org.apache.pekko.protobufv3.internal.RepeatedFieldBuilder<
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Builder, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder> dotsBuilder_;
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .VersionVector,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Builder,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .VersionVectorOrBuilder>
+          dotsBuilder_;
 
-      /**
-       * <code>repeated .VersionVector dots = 3;</code>
-       */
-      public java.util.List<org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector> getDotsList() {
+      /** <code>repeated .VersionVector dots = 3;</code> */
+      public java.util.List<
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .VersionVector>
+          getDotsList() {
         if (dotsBuilder_ == null) {
           return java.util.Collections.unmodifiableList(dots_);
         } else {
           return dotsBuilder_.getMessageList();
         }
       }
-      /**
-       * <code>repeated .VersionVector dots = 3;</code>
-       */
+      /** <code>repeated .VersionVector dots = 3;</code> */
       public int getDotsCount() {
         if (dotsBuilder_ == null) {
           return dots_.size();
@@ -2459,21 +2725,20 @@ public final class ReplicatedEventSourcing {
           return dotsBuilder_.getCount();
         }
       }
-      /**
-       * <code>repeated .VersionVector dots = 3;</code>
-       */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector getDots(int index) {
+      /** <code>repeated .VersionVector dots = 3;</code> */
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+          getDots(int index) {
         if (dotsBuilder_ == null) {
           return dots_.get(index);
         } else {
           return dotsBuilder_.getMessage(index);
         }
       }
-      /**
-       * <code>repeated .VersionVector dots = 3;</code>
-       */
+      /** <code>repeated .VersionVector dots = 3;</code> */
       public Builder setDots(
-          int index, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector value) {
+          int index,
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              value) {
         if (dotsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -2486,11 +2751,12 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .VersionVector dots = 3;</code>
-       */
+      /** <code>repeated .VersionVector dots = 3;</code> */
       public Builder setDots(
-          int index, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Builder builderForValue) {
+          int index,
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Builder
+              builderForValue) {
         if (dotsBuilder_ == null) {
           ensureDotsIsMutable();
           dots_.set(index, builderForValue.build());
@@ -2500,10 +2766,10 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .VersionVector dots = 3;</code>
-       */
-      public Builder addDots(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector value) {
+      /** <code>repeated .VersionVector dots = 3;</code> */
+      public Builder addDots(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              value) {
         if (dotsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -2516,11 +2782,11 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .VersionVector dots = 3;</code>
-       */
+      /** <code>repeated .VersionVector dots = 3;</code> */
       public Builder addDots(
-          int index, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector value) {
+          int index,
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              value) {
         if (dotsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -2533,11 +2799,11 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .VersionVector dots = 3;</code>
-       */
+      /** <code>repeated .VersionVector dots = 3;</code> */
       public Builder addDots(
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Builder builderForValue) {
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Builder
+              builderForValue) {
         if (dotsBuilder_ == null) {
           ensureDotsIsMutable();
           dots_.add(builderForValue.build());
@@ -2547,11 +2813,12 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .VersionVector dots = 3;</code>
-       */
+      /** <code>repeated .VersionVector dots = 3;</code> */
       public Builder addDots(
-          int index, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Builder builderForValue) {
+          int index,
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Builder
+              builderForValue) {
         if (dotsBuilder_ == null) {
           ensureDotsIsMutable();
           dots_.add(index, builderForValue.build());
@@ -2561,24 +2828,23 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .VersionVector dots = 3;</code>
-       */
+      /** <code>repeated .VersionVector dots = 3;</code> */
       public Builder addAllDots(
-          java.lang.Iterable<? extends org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector> values) {
+          java.lang.Iterable<
+                  ? extends
+                      org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                          .VersionVector>
+              values) {
         if (dotsBuilder_ == null) {
           ensureDotsIsMutable();
-          org.apache.pekko.protobufv3.internal.AbstractMessageLite.Builder.addAll(
-              values, dots_);
+          org.apache.pekko.protobufv3.internal.AbstractMessageLite.Builder.addAll(values, dots_);
           onChanged();
         } else {
           dotsBuilder_.addAllMessages(values);
         }
         return this;
       }
-      /**
-       * <code>repeated .VersionVector dots = 3;</code>
-       */
+      /** <code>repeated .VersionVector dots = 3;</code> */
       public Builder clearDots() {
         if (dotsBuilder_ == null) {
           dots_ = java.util.Collections.emptyList();
@@ -2589,9 +2855,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .VersionVector dots = 3;</code>
-       */
+      /** <code>repeated .VersionVector dots = 3;</code> */
       public Builder removeDots(int index) {
         if (dotsBuilder_ == null) {
           ensureDotsIsMutable();
@@ -2602,66 +2866,79 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .VersionVector dots = 3;</code>
-       */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Builder getDotsBuilder(
-          int index) {
+      /** <code>repeated .VersionVector dots = 3;</code> */
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              .Builder
+          getDotsBuilder(int index) {
         return getDotsFieldBuilder().getBuilder(index);
       }
-      /**
-       * <code>repeated .VersionVector dots = 3;</code>
-       */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder getDotsOrBuilder(
-          int index) {
+      /** <code>repeated .VersionVector dots = 3;</code> */
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .VersionVectorOrBuilder
+          getDotsOrBuilder(int index) {
         if (dotsBuilder_ == null) {
-          return dots_.get(index);  } else {
+          return dots_.get(index);
+        } else {
           return dotsBuilder_.getMessageOrBuilder(index);
         }
       }
-      /**
-       * <code>repeated .VersionVector dots = 3;</code>
-       */
-      public java.util.List<? extends org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder> 
-           getDotsOrBuilderList() {
+      /** <code>repeated .VersionVector dots = 3;</code> */
+      public java.util.List<
+              ? extends
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .VersionVectorOrBuilder>
+          getDotsOrBuilderList() {
         if (dotsBuilder_ != null) {
           return dotsBuilder_.getMessageOrBuilderList();
         } else {
           return java.util.Collections.unmodifiableList(dots_);
         }
       }
-      /**
-       * <code>repeated .VersionVector dots = 3;</code>
-       */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Builder addDotsBuilder() {
-        return getDotsFieldBuilder().addBuilder(
-            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.getDefaultInstance());
+      /** <code>repeated .VersionVector dots = 3;</code> */
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              .Builder
+          addDotsBuilder() {
+        return getDotsFieldBuilder()
+            .addBuilder(
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .VersionVector.getDefaultInstance());
       }
-      /**
-       * <code>repeated .VersionVector dots = 3;</code>
-       */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Builder addDotsBuilder(
-          int index) {
-        return getDotsFieldBuilder().addBuilder(
-            index, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.getDefaultInstance());
+      /** <code>repeated .VersionVector dots = 3;</code> */
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              .Builder
+          addDotsBuilder(int index) {
+        return getDotsFieldBuilder()
+            .addBuilder(
+                index,
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .VersionVector.getDefaultInstance());
       }
-      /**
-       * <code>repeated .VersionVector dots = 3;</code>
-       */
-      public java.util.List<org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Builder> 
-           getDotsBuilderList() {
+      /** <code>repeated .VersionVector dots = 3;</code> */
+      public java.util.List<
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Builder>
+          getDotsBuilderList() {
         return getDotsFieldBuilder().getBuilderList();
       }
+
       private org.apache.pekko.protobufv3.internal.RepeatedFieldBuilder<
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Builder, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder> 
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .VersionVector,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Builder,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .VersionVectorOrBuilder>
           getDotsFieldBuilder() {
         if (dotsBuilder_ == null) {
-          dotsBuilder_ = new org.apache.pekko.protobufv3.internal.RepeatedFieldBuilder<
-              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Builder, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder>(
-                  dots_,
-                  ((bitField0_ & 0x00000004) != 0),
-                  getParentForChildren(),
-                  isClean());
+          dotsBuilder_ =
+              new org.apache.pekko.protobufv3.internal.RepeatedFieldBuilder<
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .VersionVector,
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .VersionVector.Builder,
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .VersionVectorOrBuilder>(
+                  dots_, ((bitField0_ & 0x00000004) != 0), getParentForChildren(), isClean());
           dots_ = null;
         }
         return dotsBuilder_;
@@ -2669,23 +2946,26 @@ public final class ReplicatedEventSourcing {
 
       private org.apache.pekko.protobufv3.internal.LazyStringArrayList stringElements_ =
           org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
+
       private void ensureStringElementsIsMutable() {
         if (!stringElements_.isModifiable()) {
-          stringElements_ = new org.apache.pekko.protobufv3.internal.LazyStringArrayList(stringElements_);
+          stringElements_ =
+              new org.apache.pekko.protobufv3.internal.LazyStringArrayList(stringElements_);
         }
         bitField0_ |= 0x00000008;
       }
       /**
        * <code>repeated string stringElements = 4;</code>
+       *
        * @return A list containing the stringElements.
        */
-      public org.apache.pekko.protobufv3.internal.ProtocolStringList
-          getStringElementsList() {
+      public org.apache.pekko.protobufv3.internal.ProtocolStringList getStringElementsList() {
         stringElements_.makeImmutable();
         return stringElements_;
       }
       /**
        * <code>repeated string stringElements = 4;</code>
+       *
        * @return The count of stringElements.
        */
       public int getStringElementsCount() {
@@ -2693,6 +2973,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>repeated string stringElements = 4;</code>
+       *
        * @param index The index of the element to return.
        * @return The stringElements at the given index.
        */
@@ -2701,22 +2982,24 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>repeated string stringElements = 4;</code>
+       *
        * @param index The index of the value to return.
        * @return The bytes of the stringElements at the given index.
        */
-      public org.apache.pekko.protobufv3.internal.ByteString
-          getStringElementsBytes(int index) {
+      public org.apache.pekko.protobufv3.internal.ByteString getStringElementsBytes(int index) {
         return stringElements_.getByteString(index);
       }
       /**
        * <code>repeated string stringElements = 4;</code>
+       *
        * @param index The index to set the value at.
        * @param value The stringElements to set.
        * @return This builder for chaining.
        */
-      public Builder setStringElements(
-          int index, java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
+      public Builder setStringElements(int index, java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
         ensureStringElementsIsMutable();
         stringElements_.set(index, value);
         bitField0_ |= 0x00000008;
@@ -2725,12 +3008,14 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>repeated string stringElements = 4;</code>
+       *
        * @param value The stringElements to add.
        * @return This builder for chaining.
        */
-      public Builder addStringElements(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
+      public Builder addStringElements(java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
         ensureStringElementsIsMutable();
         stringElements_.add(value);
         bitField0_ |= 0x00000008;
@@ -2739,11 +3024,11 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>repeated string stringElements = 4;</code>
+       *
        * @param values The stringElements to add.
        * @return This builder for chaining.
        */
-      public Builder addAllStringElements(
-          java.lang.Iterable<java.lang.String> values) {
+      public Builder addAllStringElements(java.lang.Iterable<java.lang.String> values) {
         ensureStringElementsIsMutable();
         org.apache.pekko.protobufv3.internal.AbstractMessageLite.Builder.addAll(
             values, stringElements_);
@@ -2753,23 +3038,26 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>repeated string stringElements = 4;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearStringElements() {
-        stringElements_ =
-          org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000008);;
+        stringElements_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        ;
         onChanged();
         return this;
       }
       /**
        * <code>repeated string stringElements = 4;</code>
+       *
        * @param value The bytes of the stringElements to add.
        * @return This builder for chaining.
        */
-      public Builder addStringElementsBytes(
-          org.apache.pekko.protobufv3.internal.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
+      public Builder addStringElementsBytes(org.apache.pekko.protobufv3.internal.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
         ensureStringElementsIsMutable();
         stringElements_.add(value);
         bitField0_ |= 0x00000008;
@@ -2778,6 +3066,7 @@ public final class ReplicatedEventSourcing {
       }
 
       private org.apache.pekko.protobufv3.internal.Internal.IntList intElements_ = emptyIntList();
+
       private void ensureIntElementsIsMutable() {
         if (!intElements_.isModifiable()) {
           intElements_ = makeMutableCopy(intElements_);
@@ -2786,15 +3075,16 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>repeated sint32 intElements = 5 [packed = true];</code>
+       *
        * @return A list containing the intElements.
        */
-      public java.util.List<java.lang.Integer>
-          getIntElementsList() {
+      public java.util.List<java.lang.Integer> getIntElementsList() {
         intElements_.makeImmutable();
         return intElements_;
       }
       /**
        * <code>repeated sint32 intElements = 5 [packed = true];</code>
+       *
        * @return The count of intElements.
        */
       public int getIntElementsCount() {
@@ -2802,6 +3092,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>repeated sint32 intElements = 5 [packed = true];</code>
+       *
        * @param index The index of the element to return.
        * @return The intElements at the given index.
        */
@@ -2810,12 +3101,12 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>repeated sint32 intElements = 5 [packed = true];</code>
+       *
        * @param index The index to set the value at.
        * @param value The intElements to set.
        * @return This builder for chaining.
        */
-      public Builder setIntElements(
-          int index, int value) {
+      public Builder setIntElements(int index, int value) {
 
         ensureIntElementsIsMutable();
         intElements_.setInt(index, value);
@@ -2825,6 +3116,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>repeated sint32 intElements = 5 [packed = true];</code>
+       *
        * @param value The intElements to add.
        * @return This builder for chaining.
        */
@@ -2838,11 +3130,11 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>repeated sint32 intElements = 5 [packed = true];</code>
+       *
        * @param values The intElements to add.
        * @return This builder for chaining.
        */
-      public Builder addAllIntElements(
-          java.lang.Iterable<? extends java.lang.Integer> values) {
+      public Builder addAllIntElements(java.lang.Iterable<? extends java.lang.Integer> values) {
         ensureIntElementsIsMutable();
         org.apache.pekko.protobufv3.internal.AbstractMessageLite.Builder.addAll(
             values, intElements_);
@@ -2852,6 +3144,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>repeated sint32 intElements = 5 [packed = true];</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearIntElements() {
@@ -2861,7 +3154,9 @@ public final class ReplicatedEventSourcing {
         return this;
       }
 
-      private org.apache.pekko.protobufv3.internal.Internal.LongList longElements_ = emptyLongList();
+      private org.apache.pekko.protobufv3.internal.Internal.LongList longElements_ =
+          emptyLongList();
+
       private void ensureLongElementsIsMutable() {
         if (!longElements_.isModifiable()) {
           longElements_ = makeMutableCopy(longElements_);
@@ -2870,15 +3165,16 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>repeated sint64 longElements = 6 [packed = true];</code>
+       *
        * @return A list containing the longElements.
        */
-      public java.util.List<java.lang.Long>
-          getLongElementsList() {
+      public java.util.List<java.lang.Long> getLongElementsList() {
         longElements_.makeImmutable();
         return longElements_;
       }
       /**
        * <code>repeated sint64 longElements = 6 [packed = true];</code>
+       *
        * @return The count of longElements.
        */
       public int getLongElementsCount() {
@@ -2886,6 +3182,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>repeated sint64 longElements = 6 [packed = true];</code>
+       *
        * @param index The index of the element to return.
        * @return The longElements at the given index.
        */
@@ -2894,12 +3191,12 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>repeated sint64 longElements = 6 [packed = true];</code>
+       *
        * @param index The index to set the value at.
        * @param value The longElements to set.
        * @return This builder for chaining.
        */
-      public Builder setLongElements(
-          int index, long value) {
+      public Builder setLongElements(int index, long value) {
 
         ensureLongElementsIsMutable();
         longElements_.setLong(index, value);
@@ -2909,6 +3206,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>repeated sint64 longElements = 6 [packed = true];</code>
+       *
        * @param value The longElements to add.
        * @return This builder for chaining.
        */
@@ -2922,11 +3220,11 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>repeated sint64 longElements = 6 [packed = true];</code>
+       *
        * @param values The longElements to add.
        * @return This builder for chaining.
        */
-      public Builder addAllLongElements(
-          java.lang.Iterable<? extends java.lang.Long> values) {
+      public Builder addAllLongElements(java.lang.Iterable<? extends java.lang.Long> values) {
         ensureLongElementsIsMutable();
         org.apache.pekko.protobufv3.internal.AbstractMessageLite.Builder.addAll(
             values, longElements_);
@@ -2936,6 +3234,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>repeated sint64 longElements = 6 [packed = true];</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearLongElements() {
@@ -2946,30 +3245,33 @@ public final class ReplicatedEventSourcing {
       }
 
       private java.util.List<org.apache.pekko.remote.ContainerFormats.Payload> otherElements_ =
-        java.util.Collections.emptyList();
+          java.util.Collections.emptyList();
+
       private void ensureOtherElementsIsMutable() {
         if (!((bitField0_ & 0x00000040) != 0)) {
-          otherElements_ = new java.util.ArrayList<org.apache.pekko.remote.ContainerFormats.Payload>(otherElements_);
+          otherElements_ =
+              new java.util.ArrayList<org.apache.pekko.remote.ContainerFormats.Payload>(
+                  otherElements_);
           bitField0_ |= 0x00000040;
-         }
+        }
       }
 
       private org.apache.pekko.protobufv3.internal.RepeatedFieldBuilder<
-          org.apache.pekko.remote.ContainerFormats.Payload, org.apache.pekko.remote.ContainerFormats.Payload.Builder, org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder> otherElementsBuilder_;
+              org.apache.pekko.remote.ContainerFormats.Payload,
+              org.apache.pekko.remote.ContainerFormats.Payload.Builder,
+              org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder>
+          otherElementsBuilder_;
 
-      /**
-       * <code>repeated .Payload otherElements = 7;</code>
-       */
-      public java.util.List<org.apache.pekko.remote.ContainerFormats.Payload> getOtherElementsList() {
+      /** <code>repeated .Payload otherElements = 7;</code> */
+      public java.util.List<org.apache.pekko.remote.ContainerFormats.Payload>
+          getOtherElementsList() {
         if (otherElementsBuilder_ == null) {
           return java.util.Collections.unmodifiableList(otherElements_);
         } else {
           return otherElementsBuilder_.getMessageList();
         }
       }
-      /**
-       * <code>repeated .Payload otherElements = 7;</code>
-       */
+      /** <code>repeated .Payload otherElements = 7;</code> */
       public int getOtherElementsCount() {
         if (otherElementsBuilder_ == null) {
           return otherElements_.size();
@@ -2977,9 +3279,7 @@ public final class ReplicatedEventSourcing {
           return otherElementsBuilder_.getCount();
         }
       }
-      /**
-       * <code>repeated .Payload otherElements = 7;</code>
-       */
+      /** <code>repeated .Payload otherElements = 7;</code> */
       public org.apache.pekko.remote.ContainerFormats.Payload getOtherElements(int index) {
         if (otherElementsBuilder_ == null) {
           return otherElements_.get(index);
@@ -2987,9 +3287,7 @@ public final class ReplicatedEventSourcing {
           return otherElementsBuilder_.getMessage(index);
         }
       }
-      /**
-       * <code>repeated .Payload otherElements = 7;</code>
-       */
+      /** <code>repeated .Payload otherElements = 7;</code> */
       public Builder setOtherElements(
           int index, org.apache.pekko.remote.ContainerFormats.Payload value) {
         if (otherElementsBuilder_ == null) {
@@ -3004,9 +3302,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .Payload otherElements = 7;</code>
-       */
+      /** <code>repeated .Payload otherElements = 7;</code> */
       public Builder setOtherElements(
           int index, org.apache.pekko.remote.ContainerFormats.Payload.Builder builderForValue) {
         if (otherElementsBuilder_ == null) {
@@ -3018,9 +3314,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .Payload otherElements = 7;</code>
-       */
+      /** <code>repeated .Payload otherElements = 7;</code> */
       public Builder addOtherElements(org.apache.pekko.remote.ContainerFormats.Payload value) {
         if (otherElementsBuilder_ == null) {
           if (value == null) {
@@ -3034,9 +3328,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .Payload otherElements = 7;</code>
-       */
+      /** <code>repeated .Payload otherElements = 7;</code> */
       public Builder addOtherElements(
           int index, org.apache.pekko.remote.ContainerFormats.Payload value) {
         if (otherElementsBuilder_ == null) {
@@ -3051,9 +3343,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .Payload otherElements = 7;</code>
-       */
+      /** <code>repeated .Payload otherElements = 7;</code> */
       public Builder addOtherElements(
           org.apache.pekko.remote.ContainerFormats.Payload.Builder builderForValue) {
         if (otherElementsBuilder_ == null) {
@@ -3065,9 +3355,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .Payload otherElements = 7;</code>
-       */
+      /** <code>repeated .Payload otherElements = 7;</code> */
       public Builder addOtherElements(
           int index, org.apache.pekko.remote.ContainerFormats.Payload.Builder builderForValue) {
         if (otherElementsBuilder_ == null) {
@@ -3079,9 +3367,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .Payload otherElements = 7;</code>
-       */
+      /** <code>repeated .Payload otherElements = 7;</code> */
       public Builder addAllOtherElements(
           java.lang.Iterable<? extends org.apache.pekko.remote.ContainerFormats.Payload> values) {
         if (otherElementsBuilder_ == null) {
@@ -3094,9 +3380,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .Payload otherElements = 7;</code>
-       */
+      /** <code>repeated .Payload otherElements = 7;</code> */
       public Builder clearOtherElements() {
         if (otherElementsBuilder_ == null) {
           otherElements_ = java.util.Collections.emptyList();
@@ -3107,9 +3391,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .Payload otherElements = 7;</code>
-       */
+      /** <code>repeated .Payload otherElements = 7;</code> */
       public Builder removeOtherElements(int index) {
         if (otherElementsBuilder_ == null) {
           ensureOtherElementsIsMutable();
@@ -3120,62 +3402,58 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .Payload otherElements = 7;</code>
-       */
+      /** <code>repeated .Payload otherElements = 7;</code> */
       public org.apache.pekko.remote.ContainerFormats.Payload.Builder getOtherElementsBuilder(
           int index) {
         return getOtherElementsFieldBuilder().getBuilder(index);
       }
-      /**
-       * <code>repeated .Payload otherElements = 7;</code>
-       */
+      /** <code>repeated .Payload otherElements = 7;</code> */
       public org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder getOtherElementsOrBuilder(
           int index) {
         if (otherElementsBuilder_ == null) {
-          return otherElements_.get(index);  } else {
+          return otherElements_.get(index);
+        } else {
           return otherElementsBuilder_.getMessageOrBuilder(index);
         }
       }
-      /**
-       * <code>repeated .Payload otherElements = 7;</code>
-       */
-      public java.util.List<? extends org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder> 
-           getOtherElementsOrBuilderList() {
+      /** <code>repeated .Payload otherElements = 7;</code> */
+      public java.util.List<? extends org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder>
+          getOtherElementsOrBuilderList() {
         if (otherElementsBuilder_ != null) {
           return otherElementsBuilder_.getMessageOrBuilderList();
         } else {
           return java.util.Collections.unmodifiableList(otherElements_);
         }
       }
-      /**
-       * <code>repeated .Payload otherElements = 7;</code>
-       */
+      /** <code>repeated .Payload otherElements = 7;</code> */
       public org.apache.pekko.remote.ContainerFormats.Payload.Builder addOtherElementsBuilder() {
-        return getOtherElementsFieldBuilder().addBuilder(
-            org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance());
+        return getOtherElementsFieldBuilder()
+            .addBuilder(org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance());
       }
-      /**
-       * <code>repeated .Payload otherElements = 7;</code>
-       */
+      /** <code>repeated .Payload otherElements = 7;</code> */
       public org.apache.pekko.remote.ContainerFormats.Payload.Builder addOtherElementsBuilder(
           int index) {
-        return getOtherElementsFieldBuilder().addBuilder(
-            index, org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance());
+        return getOtherElementsFieldBuilder()
+            .addBuilder(
+                index, org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance());
       }
-      /**
-       * <code>repeated .Payload otherElements = 7;</code>
-       */
-      public java.util.List<org.apache.pekko.remote.ContainerFormats.Payload.Builder> 
-           getOtherElementsBuilderList() {
+      /** <code>repeated .Payload otherElements = 7;</code> */
+      public java.util.List<org.apache.pekko.remote.ContainerFormats.Payload.Builder>
+          getOtherElementsBuilderList() {
         return getOtherElementsFieldBuilder().getBuilderList();
       }
+
       private org.apache.pekko.protobufv3.internal.RepeatedFieldBuilder<
-          org.apache.pekko.remote.ContainerFormats.Payload, org.apache.pekko.remote.ContainerFormats.Payload.Builder, org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder> 
+              org.apache.pekko.remote.ContainerFormats.Payload,
+              org.apache.pekko.remote.ContainerFormats.Payload.Builder,
+              org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder>
           getOtherElementsFieldBuilder() {
         if (otherElementsBuilder_ == null) {
-          otherElementsBuilder_ = new org.apache.pekko.protobufv3.internal.RepeatedFieldBuilder<
-              org.apache.pekko.remote.ContainerFormats.Payload, org.apache.pekko.remote.ContainerFormats.Payload.Builder, org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder>(
+          otherElementsBuilder_ =
+              new org.apache.pekko.protobufv3.internal.RepeatedFieldBuilder<
+                  org.apache.pekko.remote.ContainerFormats.Payload,
+                  org.apache.pekko.remote.ContainerFormats.Payload.Builder,
+                  org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder>(
                   otherElements_,
                   ((bitField0_ & 0x00000040) != 0),
                   getParentForChildren(),
@@ -3189,36 +3467,42 @@ public final class ReplicatedEventSourcing {
     }
 
     // @@protoc_insertion_point(class_scope:ORSet)
-    private static final org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet DEFAULT_INSTANCE;
+    private static final org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ORSet
+        DEFAULT_INSTANCE;
+
     static {
-      DEFAULT_INSTANCE = new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet();
+      DEFAULT_INSTANCE =
+          new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet();
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet getDefaultInstance() {
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
+        getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final org.apache.pekko.protobufv3.internal.Parser<ORSet>
-        PARSER = new org.apache.pekko.protobufv3.internal.AbstractParser<ORSet>() {
-      @java.lang.Override
-      public ORSet parsePartialFrom(
-          org.apache.pekko.protobufv3.internal.CodedInputStream input,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        Builder builder = newBuilder();
-        try {
-          builder.mergeFrom(input, extensionRegistry);
-        } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(builder.buildPartial());
-        } catch (org.apache.pekko.protobufv3.internal.UninitializedMessageException e) {
-          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-        } catch (java.io.IOException e) {
-          throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
-              .setUnfinishedMessage(builder.buildPartial());
-        }
-        return builder.buildPartial();
-      }
-    };
+    private static final org.apache.pekko.protobufv3.internal.Parser<ORSet> PARSER =
+        new org.apache.pekko.protobufv3.internal.AbstractParser<ORSet>() {
+          @java.lang.Override
+          public ORSet parsePartialFrom(
+              org.apache.pekko.protobufv3.internal.CodedInputStream input,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+            Builder builder = newBuilder();
+            try {
+              builder.mergeFrom(input, extensionRegistry);
+            } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
+              throw e.setUnfinishedMessage(builder.buildPartial());
+            } catch (org.apache.pekko.protobufv3.internal.UninitializedMessageException e) {
+              throw e.asInvalidProtocolBufferException()
+                  .setUnfinishedMessage(builder.buildPartial());
+            } catch (java.io.IOException e) {
+              throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
+                  .setUnfinishedMessage(builder.buildPartial());
+            }
+            return builder.buildPartial();
+          }
+        };
 
     public static org.apache.pekko.protobufv3.internal.Parser<ORSet> parser() {
       return PARSER;
@@ -3230,144 +3514,160 @@ public final class ReplicatedEventSourcing {
     }
 
     @java.lang.Override
-    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet getDefaultInstanceForType() {
+    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
+        getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
-
   }
 
-  public interface ORSetDeltaGroupOrBuilder extends
+  public interface ORSetDeltaGroupOrBuilder
+      extends
       // @@protoc_insertion_point(interface_extends:ORSetDeltaGroup)
       org.apache.pekko.protobufv3.internal.MessageOrBuilder {
 
-    /**
-     * <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code>
-     */
-    java.util.List<org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry> 
+    /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
+    java.util.List<
+            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
+                .Entry>
         getEntriesList();
-    /**
-     * <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code>
-     */
-    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry getEntries(int index);
-    /**
-     * <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code>
-     */
+    /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
+    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry
+        getEntries(int index);
+    /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
     int getEntriesCount();
-    /**
-     * <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code>
-     */
-    java.util.List<? extends org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.EntryOrBuilder> 
+    /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
+    java.util.List<
+            ? extends
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .ORSetDeltaGroup.EntryOrBuilder>
         getEntriesOrBuilderList();
-    /**
-     * <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code>
-     */
-    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.EntryOrBuilder getEntriesOrBuilder(
-        int index);
+    /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
+    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
+            .EntryOrBuilder
+        getEntriesOrBuilder(int index);
   }
-  /**
-   * Protobuf type {@code ORSetDeltaGroup}
-   */
-  public static final class ORSetDeltaGroup extends
-      org.apache.pekko.protobufv3.internal.GeneratedMessage implements
+  /** Protobuf type {@code ORSetDeltaGroup} */
+  public static final class ORSetDeltaGroup
+      extends org.apache.pekko.protobufv3.internal.GeneratedMessage
+      implements
       // @@protoc_insertion_point(message_implements:ORSetDeltaGroup)
       ORSetDeltaGroupOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
+
     static {
       org.apache.pekko.protobufv3.internal.RuntimeVersion.validateProtobufGencodeVersion(
-        org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
-        /* major= */ 4,
-        /* minor= */ 29,
-        /* patch= */ 3,
-        /* suffix= */ "",
-        ORSetDeltaGroup.class.getName());
+          org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
+          /* major= */ 4,
+          /* minor= */ 29,
+          /* patch= */ 3,
+          /* suffix= */ "",
+          ORSetDeltaGroup.class.getName());
     }
     // Use ORSetDeltaGroup.newBuilder() to construct.
-    private ORSetDeltaGroup(org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
+    private ORSetDeltaGroup(
+        org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
       super(builder);
     }
+
     private ORSetDeltaGroup() {
       entries_ = java.util.Collections.emptyList();
     }
 
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ORSetDeltaGroup_descriptor;
+      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+          .internal_static_ORSetDeltaGroup_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ORSetDeltaGroup_fieldAccessorTable
+      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+          .internal_static_ORSetDeltaGroup_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.class, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Builder.class);
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ORSetDeltaGroup.class,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ORSetDeltaGroup.Builder.class);
     }
 
-    public interface EntryOrBuilder extends
+    public interface EntryOrBuilder
+        extends
         // @@protoc_insertion_point(interface_extends:ORSetDeltaGroup.Entry)
         org.apache.pekko.protobufv3.internal.MessageOrBuilder {
 
       /**
        * <code>required .ORSetDeltaOp operation = 1;</code>
+       *
        * @return Whether the operation field is set.
        */
       boolean hasOperation();
       /**
        * <code>required .ORSetDeltaOp operation = 1;</code>
+       *
        * @return The operation.
        */
-      org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaOp getOperation();
+      org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaOp
+          getOperation();
 
       /**
        * <code>required .ORSet underlying = 2;</code>
+       *
        * @return Whether the underlying field is set.
        */
       boolean hasUnderlying();
       /**
        * <code>required .ORSet underlying = 2;</code>
+       *
        * @return The underlying.
        */
-      org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet getUnderlying();
-      /**
-       * <code>required .ORSet underlying = 2;</code>
-       */
-      org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetOrBuilder getUnderlyingOrBuilder();
+      org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
+          getUnderlying();
+      /** <code>required .ORSet underlying = 2;</code> */
+      org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetOrBuilder
+          getUnderlyingOrBuilder();
     }
-    /**
-     * Protobuf type {@code ORSetDeltaGroup.Entry}
-     */
-    public static final class Entry extends
-        org.apache.pekko.protobufv3.internal.GeneratedMessage implements
+    /** Protobuf type {@code ORSetDeltaGroup.Entry} */
+    public static final class Entry extends org.apache.pekko.protobufv3.internal.GeneratedMessage
+        implements
         // @@protoc_insertion_point(message_implements:ORSetDeltaGroup.Entry)
         EntryOrBuilder {
-    private static final long serialVersionUID = 0L;
+      private static final long serialVersionUID = 0L;
+
       static {
         org.apache.pekko.protobufv3.internal.RuntimeVersion.validateProtobufGencodeVersion(
-          org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
-          /* major= */ 4,
-          /* minor= */ 29,
-          /* patch= */ 3,
-          /* suffix= */ "",
-          Entry.class.getName());
+            org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
+            /* major= */ 4,
+            /* minor= */ 29,
+            /* patch= */ 3,
+            /* suffix= */ "",
+            Entry.class.getName());
       }
       // Use Entry.newBuilder() to construct.
       private Entry(org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
         super(builder);
       }
+
       private Entry() {
         operation_ = 0;
       }
 
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ORSetDeltaGroup_Entry_descriptor;
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .internal_static_ORSetDeltaGroup_Entry_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ORSetDeltaGroup_Entry_fieldAccessorTable
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .internal_static_ORSetDeltaGroup_Entry_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry.class, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry.Builder.class);
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .ORSetDeltaGroup.Entry.class,
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .ORSetDeltaGroup.Entry.Builder.class);
       }
 
       private int bitField0_;
@@ -3375,24 +3675,37 @@ public final class ReplicatedEventSourcing {
       private int operation_ = 0;
       /**
        * <code>required .ORSetDeltaOp operation = 1;</code>
+       *
        * @return Whether the operation field is set.
        */
-      @java.lang.Override public boolean hasOperation() {
+      @java.lang.Override
+      public boolean hasOperation() {
         return ((bitField0_ & 0x00000001) != 0);
       }
       /**
        * <code>required .ORSetDeltaOp operation = 1;</code>
+       *
        * @return The operation.
        */
-      @java.lang.Override public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaOp getOperation() {
-        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaOp result = org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaOp.forNumber(operation_);
-        return result == null ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaOp.Add : result;
+      @java.lang.Override
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaOp
+          getOperation() {
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaOp
+            result =
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .ORSetDeltaOp.forNumber(operation_);
+        return result == null
+            ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaOp
+                .Add
+            : result;
       }
 
       public static final int UNDERLYING_FIELD_NUMBER = 2;
-      private org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet underlying_;
+      private org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
+          underlying_;
       /**
        * <code>required .ORSet underlying = 2;</code>
+       *
        * @return Whether the underlying field is set.
        */
       @java.lang.Override
@@ -3401,21 +3714,29 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>required .ORSet underlying = 2;</code>
+       *
        * @return The underlying.
        */
       @java.lang.Override
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet getUnderlying() {
-        return underlying_ == null ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet.getDefaultInstance() : underlying_;
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
+          getUnderlying() {
+        return underlying_ == null
+            ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
+                .getDefaultInstance()
+            : underlying_;
       }
-      /**
-       * <code>required .ORSet underlying = 2;</code>
-       */
+      /** <code>required .ORSet underlying = 2;</code> */
       @java.lang.Override
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetOrBuilder getUnderlyingOrBuilder() {
-        return underlying_ == null ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet.getDefaultInstance() : underlying_;
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetOrBuilder
+          getUnderlyingOrBuilder() {
+        return underlying_ == null
+            ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
+                .getDefaultInstance()
+            : underlying_;
       }
 
       private byte memoizedIsInitialized = -1;
+
       @java.lang.Override
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
@@ -3440,7 +3761,7 @@ public final class ReplicatedEventSourcing {
 
       @java.lang.Override
       public void writeTo(org.apache.pekko.protobufv3.internal.CodedOutputStream output)
-                          throws java.io.IOException {
+          throws java.io.IOException {
         if (((bitField0_ & 0x00000001) != 0)) {
           output.writeEnum(1, operation_);
         }
@@ -3457,12 +3778,13 @@ public final class ReplicatedEventSourcing {
 
         size = 0;
         if (((bitField0_ & 0x00000001) != 0)) {
-          size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-            .computeEnumSize(1, operation_);
+          size +=
+              org.apache.pekko.protobufv3.internal.CodedOutputStream.computeEnumSize(1, operation_);
         }
         if (((bitField0_ & 0x00000002) != 0)) {
-          size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-            .computeMessageSize(2, getUnderlying());
+          size +=
+              org.apache.pekko.protobufv3.internal.CodedOutputStream.computeMessageSize(
+                  2, getUnderlying());
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSize = size;
@@ -3472,12 +3794,20 @@ public final class ReplicatedEventSourcing {
       @java.lang.Override
       public boolean equals(final java.lang.Object obj) {
         if (obj == this) {
-         return true;
+          return true;
         }
-        if (!(obj instanceof org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry)) {
+        if (!(obj
+            instanceof
+            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
+                .Entry)) {
           return super.equals(obj);
         }
-        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry other = (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry) obj;
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
+                .Entry
+            other =
+                (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                        .ORSetDeltaGroup.Entry)
+                    obj;
 
         if (hasOperation() != other.hasOperation()) return false;
         if (hasOperation()) {
@@ -3485,8 +3815,7 @@ public final class ReplicatedEventSourcing {
         }
         if (hasUnderlying() != other.hasUnderlying()) return false;
         if (hasUnderlying()) {
-          if (!getUnderlying()
-              .equals(other.getUnderlying())) return false;
+          if (!getUnderlying().equals(other.getUnderlying())) return false;
         }
         if (!getUnknownFields().equals(other.getUnknownFields())) return false;
         return true;
@@ -3512,90 +3841,125 @@ public final class ReplicatedEventSourcing {
         return hash;
       }
 
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry parseFrom(
-          java.nio.ByteBuffer data)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ORSetDeltaGroup.Entry
+          parseFrom(java.nio.ByteBuffer data)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
-      }
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry parseFrom(
-          java.nio.ByteBuffer data,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry parseFrom(
-          org.apache.pekko.protobufv3.internal.ByteString data)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry parseFrom(
-          org.apache.pekko.protobufv3.internal.ByteString data,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry parseFrom(byte[] data)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry parseFrom(
-          byte[] data,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry parseFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        return org.apache.pekko.protobufv3.internal.GeneratedMessage
-            .parseWithIOException(PARSER, input);
-      }
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry parseFrom(
-          java.io.InputStream input,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return org.apache.pekko.protobufv3.internal.GeneratedMessage
-            .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry parseDelimitedFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        return org.apache.pekko.protobufv3.internal.GeneratedMessage
-            .parseDelimitedWithIOException(PARSER, input);
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ORSetDeltaGroup.Entry
+          parseFrom(
+              java.nio.ByteBuffer data,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
       }
 
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry parseDelimitedFrom(
-          java.io.InputStream input,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return org.apache.pekko.protobufv3.internal.GeneratedMessage
-            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ORSetDeltaGroup.Entry
+          parseFrom(org.apache.pekko.protobufv3.internal.ByteString data)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
       }
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry parseFrom(
-          org.apache.pekko.protobufv3.internal.CodedInputStream input)
-          throws java.io.IOException {
-        return org.apache.pekko.protobufv3.internal.GeneratedMessage
-            .parseWithIOException(PARSER, input);
+
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ORSetDeltaGroup.Entry
+          parseFrom(
+              org.apache.pekko.protobufv3.internal.ByteString data,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry parseFrom(
-          org.apache.pekko.protobufv3.internal.CodedInputStream input,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return org.apache.pekko.protobufv3.internal.GeneratedMessage
-            .parseWithIOException(PARSER, input, extensionRegistry);
+
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ORSetDeltaGroup.Entry
+          parseFrom(byte[] data)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ORSetDeltaGroup.Entry
+          parseFrom(
+              byte[] data,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ORSetDeltaGroup.Entry
+          parseFrom(java.io.InputStream input) throws java.io.IOException {
+        return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+            PARSER, input);
+      }
+
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ORSetDeltaGroup.Entry
+          parseFrom(
+              java.io.InputStream input,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+        return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+            PARSER, input, extensionRegistry);
+      }
+
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ORSetDeltaGroup.Entry
+          parseDelimitedFrom(java.io.InputStream input) throws java.io.IOException {
+        return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseDelimitedWithIOException(
+            PARSER, input);
+      }
+
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ORSetDeltaGroup.Entry
+          parseDelimitedFrom(
+              java.io.InputStream input,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+        return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseDelimitedWithIOException(
+            PARSER, input, extensionRegistry);
+      }
+
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ORSetDeltaGroup.Entry
+          parseFrom(org.apache.pekko.protobufv3.internal.CodedInputStream input)
+              throws java.io.IOException {
+        return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+            PARSER, input);
+      }
+
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ORSetDeltaGroup.Entry
+          parseFrom(
+              org.apache.pekko.protobufv3.internal.CodedInputStream input,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+        return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+            PARSER, input, extensionRegistry);
       }
 
       @java.lang.Override
-      public Builder newBuilderForType() { return newBuilder(); }
+      public Builder newBuilderForType() {
+        return newBuilder();
+      }
+
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
       }
-      public static Builder newBuilder(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry prototype) {
+
+      public static Builder newBuilder(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
+                  .Entry
+              prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
+
       @java.lang.Override
       public Builder toBuilder() {
-        return this == DEFAULT_INSTANCE
-            ? new Builder() : new Builder().mergeFrom(this);
+        return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
       }
 
       @java.lang.Override
@@ -3604,27 +3968,33 @@ public final class ReplicatedEventSourcing {
         Builder builder = new Builder(parent);
         return builder;
       }
-      /**
-       * Protobuf type {@code ORSetDeltaGroup.Entry}
-       */
-      public static final class Builder extends
-          org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder> implements
+      /** Protobuf type {@code ORSetDeltaGroup.Entry} */
+      public static final class Builder
+          extends org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder>
+          implements
           // @@protoc_insertion_point(builder_implements:ORSetDeltaGroup.Entry)
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.EntryOrBuilder {
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
+              .EntryOrBuilder {
         public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
             getDescriptor() {
-          return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ORSetDeltaGroup_Entry_descriptor;
+          return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .internal_static_ORSetDeltaGroup_Entry_descriptor;
         }
 
         @java.lang.Override
         protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ORSetDeltaGroup_Entry_fieldAccessorTable
+          return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .internal_static_ORSetDeltaGroup_Entry_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry.class, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry.Builder.class);
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .ORSetDeltaGroup.Entry.class,
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .ORSetDeltaGroup.Entry.Builder.class);
         }
 
-        // Construct using org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry.newBuilder()
+        // Construct using
+        // org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry.newBuilder()
         private Builder() {
           maybeForceBuilderInitialization();
         }
@@ -3634,12 +4004,13 @@ public final class ReplicatedEventSourcing {
           super(parent);
           maybeForceBuilderInitialization();
         }
+
         private void maybeForceBuilderInitialization() {
-          if (org.apache.pekko.protobufv3.internal.GeneratedMessage
-                  .alwaysUseFieldBuilders) {
+          if (org.apache.pekko.protobufv3.internal.GeneratedMessage.alwaysUseFieldBuilders) {
             getUnderlyingFieldBuilder();
           }
         }
+
         @java.lang.Override
         public Builder clear() {
           super.clear();
@@ -3654,19 +4025,26 @@ public final class ReplicatedEventSourcing {
         }
 
         @java.lang.Override
-        public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-            getDescriptorForType() {
-          return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ORSetDeltaGroup_Entry_descriptor;
+        public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor getDescriptorForType() {
+          return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .internal_static_ORSetDeltaGroup_Entry_descriptor;
         }
 
         @java.lang.Override
-        public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry getDefaultInstanceForType() {
-          return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry.getDefaultInstance();
+        public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .ORSetDeltaGroup.Entry
+            getDefaultInstanceForType() {
+          return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ORSetDeltaGroup.Entry.getDefaultInstance();
         }
 
         @java.lang.Override
-        public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry build() {
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry result = buildPartial();
+        public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .ORSetDeltaGroup.Entry
+            build() {
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
+                  .Entry
+              result = buildPartial();
           if (!result.isInitialized()) {
             throw newUninitializedMessageException(result);
           }
@@ -3674,14 +4052,25 @@ public final class ReplicatedEventSourcing {
         }
 
         @java.lang.Override
-        public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry buildPartial() {
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry result = new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry(this);
-          if (bitField0_ != 0) { buildPartial0(result); }
+        public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .ORSetDeltaGroup.Entry
+            buildPartial() {
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
+                  .Entry
+              result =
+                  new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .ORSetDeltaGroup.Entry(this);
+          if (bitField0_ != 0) {
+            buildPartial0(result);
+          }
           onBuilt();
           return result;
         }
 
-        private void buildPartial0(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry result) {
+        private void buildPartial0(
+            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
+                    .Entry
+                result) {
           int from_bitField0_ = bitField0_;
           int to_bitField0_ = 0;
           if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -3689,9 +4078,8 @@ public final class ReplicatedEventSourcing {
             to_bitField0_ |= 0x00000001;
           }
           if (((from_bitField0_ & 0x00000002) != 0)) {
-            result.underlying_ = underlyingBuilder_ == null
-                ? underlying_
-                : underlyingBuilder_.build();
+            result.underlying_ =
+                underlyingBuilder_ == null ? underlying_ : underlyingBuilder_.build();
             to_bitField0_ |= 0x00000002;
           }
           result.bitField0_ |= to_bitField0_;
@@ -3699,16 +4087,27 @@ public final class ReplicatedEventSourcing {
 
         @java.lang.Override
         public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
-          if (other instanceof org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry) {
-            return mergeFrom((org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry)other);
+          if (other
+              instanceof
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ORSetDeltaGroup.Entry) {
+            return mergeFrom(
+                (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                        .ORSetDeltaGroup.Entry)
+                    other);
           } else {
             super.mergeFrom(other);
             return this;
           }
         }
 
-        public Builder mergeFrom(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry other) {
-          if (other == org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry.getDefaultInstance()) return this;
+        public Builder mergeFrom(
+            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
+                    .Entry
+                other) {
+          if (other
+              == org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ORSetDeltaGroup.Entry.getDefaultInstance()) return this;
           if (other.hasOperation()) {
             setOperation(other.getOperation());
           }
@@ -3750,31 +4149,35 @@ public final class ReplicatedEventSourcing {
                 case 0:
                   done = true;
                   break;
-                case 8: {
-                  int tmpRaw = input.readEnum();
-                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaOp tmpValue =
-                      org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaOp.forNumber(tmpRaw);
-                  if (tmpValue == null) {
-                    mergeUnknownVarintField(1, tmpRaw);
-                  } else {
-                    operation_ = tmpRaw;
-                    bitField0_ |= 0x00000001;
-                  }
-                  break;
-                } // case 8
-                case 18: {
-                  input.readMessage(
-                      getUnderlyingFieldBuilder().getBuilder(),
-                      extensionRegistry);
-                  bitField0_ |= 0x00000002;
-                  break;
-                } // case 18
-                default: {
-                  if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                    done = true; // was an endgroup tag
-                  }
-                  break;
-                } // default:
+                case 8:
+                  {
+                    int tmpRaw = input.readEnum();
+                    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                            .ORSetDeltaOp
+                        tmpValue =
+                            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                                .ORSetDeltaOp.forNumber(tmpRaw);
+                    if (tmpValue == null) {
+                      mergeUnknownVarintField(1, tmpRaw);
+                    } else {
+                      operation_ = tmpRaw;
+                      bitField0_ |= 0x00000001;
+                    }
+                    break;
+                  } // case 8
+                case 18:
+                  {
+                    input.readMessage(getUnderlyingFieldBuilder().getBuilder(), extensionRegistry);
+                    bitField0_ |= 0x00000002;
+                    break;
+                  } // case 18
+                default:
+                  {
+                    if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                      done = true; // was an endgroup tag
+                    }
+                    break;
+                  } // default:
               } // switch (tag)
             } // while (!done)
           } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
@@ -3784,31 +4187,45 @@ public final class ReplicatedEventSourcing {
           } // finally
           return this;
         }
+
         private int bitField0_;
 
         private int operation_ = 0;
         /**
          * <code>required .ORSetDeltaOp operation = 1;</code>
+         *
          * @return Whether the operation field is set.
          */
-        @java.lang.Override public boolean hasOperation() {
+        @java.lang.Override
+        public boolean hasOperation() {
           return ((bitField0_ & 0x00000001) != 0);
         }
         /**
          * <code>required .ORSetDeltaOp operation = 1;</code>
+         *
          * @return The operation.
          */
         @java.lang.Override
-        public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaOp getOperation() {
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaOp result = org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaOp.forNumber(operation_);
-          return result == null ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaOp.Add : result;
+        public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaOp
+            getOperation() {
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaOp
+              result =
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .ORSetDeltaOp.forNumber(operation_);
+          return result == null
+              ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ORSetDeltaOp.Add
+              : result;
         }
         /**
          * <code>required .ORSetDeltaOp operation = 1;</code>
+         *
          * @param value The operation to set.
          * @return This builder for chaining.
          */
-        public Builder setOperation(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaOp value) {
+        public Builder setOperation(
+            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaOp
+                value) {
           if (value == null) {
             throw new NullPointerException();
           }
@@ -3819,6 +4236,7 @@ public final class ReplicatedEventSourcing {
         }
         /**
          * <code>required .ORSetDeltaOp operation = 1;</code>
+         *
          * @return This builder for chaining.
          */
         public Builder clearOperation() {
@@ -3828,11 +4246,18 @@ public final class ReplicatedEventSourcing {
           return this;
         }
 
-        private org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet underlying_;
+        private org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
+            underlying_;
         private org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
-            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet.Builder, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetOrBuilder> underlyingBuilder_;
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet,
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
+                    .Builder,
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .ORSetOrBuilder>
+            underlyingBuilder_;
         /**
          * <code>required .ORSet underlying = 2;</code>
+         *
          * @return Whether the underlying field is set.
          */
         public boolean hasUnderlying() {
@@ -3840,19 +4265,23 @@ public final class ReplicatedEventSourcing {
         }
         /**
          * <code>required .ORSet underlying = 2;</code>
+         *
          * @return The underlying.
          */
-        public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet getUnderlying() {
+        public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
+            getUnderlying() {
           if (underlyingBuilder_ == null) {
-            return underlying_ == null ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet.getDefaultInstance() : underlying_;
+            return underlying_ == null
+                ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
+                    .getDefaultInstance()
+                : underlying_;
           } else {
             return underlyingBuilder_.getMessage();
           }
         }
-        /**
-         * <code>required .ORSet underlying = 2;</code>
-         */
-        public Builder setUnderlying(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet value) {
+        /** <code>required .ORSet underlying = 2;</code> */
+        public Builder setUnderlying(
+            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet value) {
           if (underlyingBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
@@ -3865,11 +4294,10 @@ public final class ReplicatedEventSourcing {
           onChanged();
           return this;
         }
-        /**
-         * <code>required .ORSet underlying = 2;</code>
-         */
+        /** <code>required .ORSet underlying = 2;</code> */
         public Builder setUnderlying(
-            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet.Builder builderForValue) {
+            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet.Builder
+                builderForValue) {
           if (underlyingBuilder_ == null) {
             underlying_ = builderForValue.build();
           } else {
@@ -3879,14 +4307,15 @@ public final class ReplicatedEventSourcing {
           onChanged();
           return this;
         }
-        /**
-         * <code>required .ORSet underlying = 2;</code>
-         */
-        public Builder mergeUnderlying(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet value) {
+        /** <code>required .ORSet underlying = 2;</code> */
+        public Builder mergeUnderlying(
+            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet value) {
           if (underlyingBuilder_ == null) {
-            if (((bitField0_ & 0x00000002) != 0) &&
-              underlying_ != null &&
-              underlying_ != org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet.getDefaultInstance()) {
+            if (((bitField0_ & 0x00000002) != 0)
+                && underlying_ != null
+                && underlying_
+                    != org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                        .ORSet.getDefaultInstance()) {
               getUnderlyingBuilder().mergeFrom(value);
             } else {
               underlying_ = value;
@@ -3900,9 +4329,7 @@ public final class ReplicatedEventSourcing {
           }
           return this;
         }
-        /**
-         * <code>required .ORSet underlying = 2;</code>
-         */
+        /** <code>required .ORSet underlying = 2;</code> */
         public Builder clearUnderlying() {
           bitField0_ = (bitField0_ & ~0x00000002);
           underlying_ = null;
@@ -3913,37 +4340,43 @@ public final class ReplicatedEventSourcing {
           onChanged();
           return this;
         }
-        /**
-         * <code>required .ORSet underlying = 2;</code>
-         */
-        public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet.Builder getUnderlyingBuilder() {
+        /** <code>required .ORSet underlying = 2;</code> */
+        public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
+                .Builder
+            getUnderlyingBuilder() {
           bitField0_ |= 0x00000002;
           onChanged();
           return getUnderlyingFieldBuilder().getBuilder();
         }
-        /**
-         * <code>required .ORSet underlying = 2;</code>
-         */
-        public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetOrBuilder getUnderlyingOrBuilder() {
+        /** <code>required .ORSet underlying = 2;</code> */
+        public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .ORSetOrBuilder
+            getUnderlyingOrBuilder() {
           if (underlyingBuilder_ != null) {
             return underlyingBuilder_.getMessageOrBuilder();
           } else {
-            return underlying_ == null ?
-                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet.getDefaultInstance() : underlying_;
+            return underlying_ == null
+                ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
+                    .getDefaultInstance()
+                : underlying_;
           }
         }
-        /**
-         * <code>required .ORSet underlying = 2;</code>
-         */
+        /** <code>required .ORSet underlying = 2;</code> */
         private org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
-            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet.Builder, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetOrBuilder> 
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet,
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
+                    .Builder,
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .ORSetOrBuilder>
             getUnderlyingFieldBuilder() {
           if (underlyingBuilder_ == null) {
-            underlyingBuilder_ = new org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
-                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet.Builder, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetOrBuilder>(
-                    getUnderlying(),
-                    getParentForChildren(),
-                    isClean());
+            underlyingBuilder_ =
+                new org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
+                    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet,
+                    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
+                        .Builder,
+                    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                        .ORSetOrBuilder>(getUnderlying(), getParentForChildren(), isClean());
             underlying_ = null;
           }
           return underlyingBuilder_;
@@ -3953,36 +4386,44 @@ public final class ReplicatedEventSourcing {
       }
 
       // @@protoc_insertion_point(class_scope:ORSetDeltaGroup.Entry)
-      private static final org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry DEFAULT_INSTANCE;
+      private static final org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ORSetDeltaGroup.Entry
+          DEFAULT_INSTANCE;
+
       static {
-        DEFAULT_INSTANCE = new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry();
+        DEFAULT_INSTANCE =
+            new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .ORSetDeltaGroup.Entry();
       }
 
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry getDefaultInstance() {
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ORSetDeltaGroup.Entry
+          getDefaultInstance() {
         return DEFAULT_INSTANCE;
       }
 
-      private static final org.apache.pekko.protobufv3.internal.Parser<Entry>
-          PARSER = new org.apache.pekko.protobufv3.internal.AbstractParser<Entry>() {
-        @java.lang.Override
-        public Entry parsePartialFrom(
-            org.apache.pekko.protobufv3.internal.CodedInputStream input,
-            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-          Builder builder = newBuilder();
-          try {
-            builder.mergeFrom(input, extensionRegistry);
-          } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
-            throw e.setUnfinishedMessage(builder.buildPartial());
-          } catch (org.apache.pekko.protobufv3.internal.UninitializedMessageException e) {
-            throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-          } catch (java.io.IOException e) {
-            throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
-                .setUnfinishedMessage(builder.buildPartial());
-          }
-          return builder.buildPartial();
-        }
-      };
+      private static final org.apache.pekko.protobufv3.internal.Parser<Entry> PARSER =
+          new org.apache.pekko.protobufv3.internal.AbstractParser<Entry>() {
+            @java.lang.Override
+            public Entry parsePartialFrom(
+                org.apache.pekko.protobufv3.internal.CodedInputStream input,
+                org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+                throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+              Builder builder = newBuilder();
+              try {
+                builder.mergeFrom(input, extensionRegistry);
+              } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
+                throw e.setUnfinishedMessage(builder.buildPartial());
+              } catch (org.apache.pekko.protobufv3.internal.UninitializedMessageException e) {
+                throw e.asInvalidProtocolBufferException()
+                    .setUnfinishedMessage(builder.buildPartial());
+              } catch (java.io.IOException e) {
+                throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
+                    .setUnfinishedMessage(builder.buildPartial());
+              }
+              return builder.buildPartial();
+            }
+          };
 
       public static org.apache.pekko.protobufv3.internal.Parser<Entry> parser() {
         return PARSER;
@@ -3994,54 +4435,59 @@ public final class ReplicatedEventSourcing {
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry getDefaultInstanceForType() {
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ORSetDeltaGroup.Entry
+          getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
-
     }
 
     public static final int ENTRIES_FIELD_NUMBER = 1;
+
     @SuppressWarnings("serial")
-    private java.util.List<org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry> entries_;
-    /**
-     * <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code>
-     */
+    private java.util.List<
+            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
+                .Entry>
+        entries_;
+    /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
     @java.lang.Override
-    public java.util.List<org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry> getEntriesList() {
+    public java.util.List<
+            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
+                .Entry>
+        getEntriesList() {
       return entries_;
     }
-    /**
-     * <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code>
-     */
+    /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
     @java.lang.Override
-    public java.util.List<? extends org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.EntryOrBuilder> 
+    public java.util.List<
+            ? extends
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .ORSetDeltaGroup.EntryOrBuilder>
         getEntriesOrBuilderList() {
       return entries_;
     }
-    /**
-     * <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code>
-     */
+    /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
     @java.lang.Override
     public int getEntriesCount() {
       return entries_.size();
     }
-    /**
-     * <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code>
-     */
+    /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
     @java.lang.Override
-    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry getEntries(int index) {
+    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
+            .Entry
+        getEntries(int index) {
       return entries_.get(index);
     }
-    /**
-     * <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code>
-     */
+    /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
     @java.lang.Override
-    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.EntryOrBuilder getEntriesOrBuilder(
-        int index) {
+    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
+            .EntryOrBuilder
+        getEntriesOrBuilder(int index) {
       return entries_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -4060,7 +4506,7 @@ public final class ReplicatedEventSourcing {
 
     @java.lang.Override
     public void writeTo(org.apache.pekko.protobufv3.internal.CodedOutputStream output)
-                        throws java.io.IOException {
+        throws java.io.IOException {
       for (int i = 0; i < entries_.size(); i++) {
         output.writeMessage(1, entries_.get(i));
       }
@@ -4074,8 +4520,9 @@ public final class ReplicatedEventSourcing {
 
       size = 0;
       for (int i = 0; i < entries_.size(); i++) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeMessageSize(1, entries_.get(i));
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeMessageSize(
+                1, entries_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -4085,15 +4532,21 @@ public final class ReplicatedEventSourcing {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
-      if (!(obj instanceof org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup)) {
+      if (!(obj
+          instanceof
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ORSetDeltaGroup)) {
         return super.equals(obj);
       }
-      org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup other = (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup) obj;
+      org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
+          other =
+              (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .ORSetDeltaGroup)
+                  obj;
 
-      if (!getEntriesList()
-          .equals(other.getEntriesList())) return false;
+      if (!getEntriesList().equals(other.getEntriesList())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -4114,90 +4567,124 @@ public final class ReplicatedEventSourcing {
       return hash;
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup parseFrom(
-        java.nio.ByteBuffer data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ORSetDeltaGroup
+        parseFrom(java.nio.ByteBuffer data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup parseFrom(
-        java.nio.ByteBuffer data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup parseFrom(
-        org.apache.pekko.protobufv3.internal.ByteString data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup parseFrom(
-        org.apache.pekko.protobufv3.internal.ByteString data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup parseFrom(byte[] data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup parseFrom(
-        byte[] data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup parseFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseDelimitedWithIOException(PARSER, input);
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ORSetDeltaGroup
+        parseFrom(
+            java.nio.ByteBuffer data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup parseDelimitedFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ORSetDeltaGroup
+        parseFrom(org.apache.pekko.protobufv3.internal.ByteString data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
     }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input);
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ORSetDeltaGroup
+        parseFrom(
+            org.apache.pekko.protobufv3.internal.ByteString data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ORSetDeltaGroup
+        parseFrom(byte[] data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ORSetDeltaGroup
+        parseFrom(
+            byte[] data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ORSetDeltaGroup
+        parseFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ORSetDeltaGroup
+        parseFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input, extensionRegistry);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ORSetDeltaGroup
+        parseDelimitedFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseDelimitedWithIOException(
+          PARSER, input);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ORSetDeltaGroup
+        parseDelimitedFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseDelimitedWithIOException(
+          PARSER, input, extensionRegistry);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ORSetDeltaGroup
+        parseFrom(org.apache.pekko.protobufv3.internal.CodedInputStream input)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ORSetDeltaGroup
+        parseFrom(
+            org.apache.pekko.protobufv3.internal.CodedInputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup prototype) {
+
+    public static Builder newBuilder(
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
+            prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
@@ -4206,36 +4693,39 @@ public final class ReplicatedEventSourcing {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
-     * Protobuf type {@code ORSetDeltaGroup}
-     */
-    public static final class Builder extends
-        org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder> implements
+    /** Protobuf type {@code ORSetDeltaGroup} */
+    public static final class Builder
+        extends org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder>
+        implements
         // @@protoc_insertion_point(builder_implements:ORSetDeltaGroup)
-        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroupOrBuilder {
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ORSetDeltaGroupOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ORSetDeltaGroup_descriptor;
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .internal_static_ORSetDeltaGroup_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ORSetDeltaGroup_fieldAccessorTable
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .internal_static_ORSetDeltaGroup_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.class, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Builder.class);
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .ORSetDeltaGroup.class,
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .ORSetDeltaGroup.Builder.class);
       }
 
-      // Construct using org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.newBuilder()
-      private Builder() {
+      // Construct using
+      // org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.newBuilder()
+      private Builder() {}
 
-      }
-
-      private Builder(
-          org.apache.pekko.protobufv3.internal.GeneratedMessage.BuilderParent parent) {
+      private Builder(org.apache.pekko.protobufv3.internal.GeneratedMessage.BuilderParent parent) {
         super(parent);
-
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -4251,19 +4741,25 @@ public final class ReplicatedEventSourcing {
       }
 
       @java.lang.Override
-      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-          getDescriptorForType() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ORSetDeltaGroup_descriptor;
+      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor getDescriptorForType() {
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .internal_static_ORSetDeltaGroup_descriptor;
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup getDefaultInstanceForType() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.getDefaultInstance();
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ORSetDeltaGroup
+          getDefaultInstanceForType() {
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ORSetDeltaGroup.getDefaultInstance();
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup build() {
-        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup result = buildPartial();
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ORSetDeltaGroup
+          build() {
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
+            result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -4271,15 +4767,24 @@ public final class ReplicatedEventSourcing {
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup buildPartial() {
-        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup result = new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup(this);
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ORSetDeltaGroup
+          buildPartial() {
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
+            result =
+                new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .ORSetDeltaGroup(this);
         buildPartialRepeatedFields(result);
-        if (bitField0_ != 0) { buildPartial0(result); }
+        if (bitField0_ != 0) {
+          buildPartial0(result);
+        }
         onBuilt();
         return result;
       }
 
-      private void buildPartialRepeatedFields(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup result) {
+      private void buildPartialRepeatedFields(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
+              result) {
         if (entriesBuilder_ == null) {
           if (((bitField0_ & 0x00000001) != 0)) {
             entries_ = java.util.Collections.unmodifiableList(entries_);
@@ -4291,22 +4796,34 @@ public final class ReplicatedEventSourcing {
         }
       }
 
-      private void buildPartial0(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup result) {
+      private void buildPartial0(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
+              result) {
         int from_bitField0_ = bitField0_;
       }
 
       @java.lang.Override
       public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
-        if (other instanceof org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup) {
-          return mergeFrom((org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup)other);
+        if (other
+            instanceof
+            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .ORSetDeltaGroup) {
+          return mergeFrom(
+              (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .ORSetDeltaGroup)
+                  other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup other) {
-        if (other == org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.getDefaultInstance()) return this;
+      public Builder mergeFrom(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
+              other) {
+        if (other
+            == org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .ORSetDeltaGroup.getDefaultInstance()) return this;
         if (entriesBuilder_ == null) {
           if (!other.entries_.isEmpty()) {
             if (entries_.isEmpty()) {
@@ -4325,9 +4842,10 @@ public final class ReplicatedEventSourcing {
               entriesBuilder_ = null;
               entries_ = other.entries_;
               bitField0_ = (bitField0_ & ~0x00000001);
-              entriesBuilder_ = 
-                org.apache.pekko.protobufv3.internal.GeneratedMessage.alwaysUseFieldBuilders ?
-                   getEntriesFieldBuilder() : null;
+              entriesBuilder_ =
+                  org.apache.pekko.protobufv3.internal.GeneratedMessage.alwaysUseFieldBuilders
+                      ? getEntriesFieldBuilder()
+                      : null;
             } else {
               entriesBuilder_.addAllMessages(other.entries_);
             }
@@ -4364,25 +4882,30 @@ public final class ReplicatedEventSourcing {
               case 0:
                 done = true;
                 break;
-              case 10: {
-                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry m =
-                    input.readMessage(
-                        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry.parser(),
-                        extensionRegistry);
-                if (entriesBuilder_ == null) {
-                  ensureEntriesIsMutable();
-                  entries_.add(m);
-                } else {
-                  entriesBuilder_.addMessage(m);
-                }
-                break;
-              } // case 10
-              default: {
-                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                  done = true; // was an endgroup tag
-                }
-                break;
-              } // default:
+              case 10:
+                {
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                          .ORSetDeltaGroup.Entry
+                      m =
+                          input.readMessage(
+                              org.apache.pekko.persistence.typed.serialization
+                                  .ReplicatedEventSourcing.ORSetDeltaGroup.Entry.parser(),
+                              extensionRegistry);
+                  if (entriesBuilder_ == null) {
+                    ensureEntriesIsMutable();
+                    entries_.add(m);
+                  } else {
+                    entriesBuilder_.addMessage(m);
+                  }
+                  break;
+                } // case 10
+              default:
+                {
+                  if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                    done = true; // was an endgroup tag
+                  }
+                  break;
+                } // default:
             } // switch (tag)
           } // while (!done)
         } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
@@ -4392,33 +4915,45 @@ public final class ReplicatedEventSourcing {
         } // finally
         return this;
       }
+
       private int bitField0_;
 
-      private java.util.List<org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry> entries_ =
-        java.util.Collections.emptyList();
+      private java.util.List<
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ORSetDeltaGroup.Entry>
+          entries_ = java.util.Collections.emptyList();
+
       private void ensureEntriesIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
-          entries_ = new java.util.ArrayList<org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry>(entries_);
+          entries_ =
+              new java.util.ArrayList<
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .ORSetDeltaGroup.Entry>(entries_);
           bitField0_ |= 0x00000001;
-         }
+        }
       }
 
       private org.apache.pekko.protobufv3.internal.RepeatedFieldBuilder<
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry.Builder, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.EntryOrBuilder> entriesBuilder_;
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ORSetDeltaGroup.Entry,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ORSetDeltaGroup.Entry.Builder,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ORSetDeltaGroup.EntryOrBuilder>
+          entriesBuilder_;
 
-      /**
-       * <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code>
-       */
-      public java.util.List<org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry> getEntriesList() {
+      /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
+      public java.util.List<
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ORSetDeltaGroup.Entry>
+          getEntriesList() {
         if (entriesBuilder_ == null) {
           return java.util.Collections.unmodifiableList(entries_);
         } else {
           return entriesBuilder_.getMessageList();
         }
       }
-      /**
-       * <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code>
-       */
+      /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
       public int getEntriesCount() {
         if (entriesBuilder_ == null) {
           return entries_.size();
@@ -4426,21 +4961,22 @@ public final class ReplicatedEventSourcing {
           return entriesBuilder_.getCount();
         }
       }
-      /**
-       * <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code>
-       */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry getEntries(int index) {
+      /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ORSetDeltaGroup.Entry
+          getEntries(int index) {
         if (entriesBuilder_ == null) {
           return entries_.get(index);
         } else {
           return entriesBuilder_.getMessage(index);
         }
       }
-      /**
-       * <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code>
-       */
+      /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
       public Builder setEntries(
-          int index, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry value) {
+          int index,
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
+                  .Entry
+              value) {
         if (entriesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -4453,11 +4989,12 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code>
-       */
+      /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
       public Builder setEntries(
-          int index, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry.Builder builderForValue) {
+          int index,
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
+                  .Entry.Builder
+              builderForValue) {
         if (entriesBuilder_ == null) {
           ensureEntriesIsMutable();
           entries_.set(index, builderForValue.build());
@@ -4467,10 +5004,11 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code>
-       */
-      public Builder addEntries(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry value) {
+      /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
+      public Builder addEntries(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
+                  .Entry
+              value) {
         if (entriesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -4483,11 +5021,12 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code>
-       */
+      /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
       public Builder addEntries(
-          int index, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry value) {
+          int index,
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
+                  .Entry
+              value) {
         if (entriesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -4500,11 +5039,11 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code>
-       */
+      /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
       public Builder addEntries(
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry.Builder builderForValue) {
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
+                  .Entry.Builder
+              builderForValue) {
         if (entriesBuilder_ == null) {
           ensureEntriesIsMutable();
           entries_.add(builderForValue.build());
@@ -4514,11 +5053,12 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code>
-       */
+      /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
       public Builder addEntries(
-          int index, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry.Builder builderForValue) {
+          int index,
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
+                  .Entry.Builder
+              builderForValue) {
         if (entriesBuilder_ == null) {
           ensureEntriesIsMutable();
           entries_.add(index, builderForValue.build());
@@ -4528,24 +5068,23 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code>
-       */
+      /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
       public Builder addAllEntries(
-          java.lang.Iterable<? extends org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry> values) {
+          java.lang.Iterable<
+                  ? extends
+                      org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                          .ORSetDeltaGroup.Entry>
+              values) {
         if (entriesBuilder_ == null) {
           ensureEntriesIsMutable();
-          org.apache.pekko.protobufv3.internal.AbstractMessageLite.Builder.addAll(
-              values, entries_);
+          org.apache.pekko.protobufv3.internal.AbstractMessageLite.Builder.addAll(values, entries_);
           onChanged();
         } else {
           entriesBuilder_.addAllMessages(values);
         }
         return this;
       }
-      /**
-       * <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code>
-       */
+      /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
       public Builder clearEntries() {
         if (entriesBuilder_ == null) {
           entries_ = java.util.Collections.emptyList();
@@ -4556,9 +5095,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code>
-       */
+      /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
       public Builder removeEntries(int index) {
         if (entriesBuilder_ == null) {
           ensureEntriesIsMutable();
@@ -4569,66 +5106,79 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code>
-       */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry.Builder getEntriesBuilder(
-          int index) {
+      /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ORSetDeltaGroup.Entry.Builder
+          getEntriesBuilder(int index) {
         return getEntriesFieldBuilder().getBuilder(index);
       }
-      /**
-       * <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code>
-       */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.EntryOrBuilder getEntriesOrBuilder(
-          int index) {
+      /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ORSetDeltaGroup.EntryOrBuilder
+          getEntriesOrBuilder(int index) {
         if (entriesBuilder_ == null) {
-          return entries_.get(index);  } else {
+          return entries_.get(index);
+        } else {
           return entriesBuilder_.getMessageOrBuilder(index);
         }
       }
-      /**
-       * <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code>
-       */
-      public java.util.List<? extends org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.EntryOrBuilder> 
-           getEntriesOrBuilderList() {
+      /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
+      public java.util.List<
+              ? extends
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .ORSetDeltaGroup.EntryOrBuilder>
+          getEntriesOrBuilderList() {
         if (entriesBuilder_ != null) {
           return entriesBuilder_.getMessageOrBuilderList();
         } else {
           return java.util.Collections.unmodifiableList(entries_);
         }
       }
-      /**
-       * <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code>
-       */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry.Builder addEntriesBuilder() {
-        return getEntriesFieldBuilder().addBuilder(
-            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry.getDefaultInstance());
+      /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ORSetDeltaGroup.Entry.Builder
+          addEntriesBuilder() {
+        return getEntriesFieldBuilder()
+            .addBuilder(
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .ORSetDeltaGroup.Entry.getDefaultInstance());
       }
-      /**
-       * <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code>
-       */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry.Builder addEntriesBuilder(
-          int index) {
-        return getEntriesFieldBuilder().addBuilder(
-            index, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry.getDefaultInstance());
+      /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ORSetDeltaGroup.Entry.Builder
+          addEntriesBuilder(int index) {
+        return getEntriesFieldBuilder()
+            .addBuilder(
+                index,
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .ORSetDeltaGroup.Entry.getDefaultInstance());
       }
-      /**
-       * <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code>
-       */
-      public java.util.List<org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry.Builder> 
-           getEntriesBuilderList() {
+      /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
+      public java.util.List<
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ORSetDeltaGroup.Entry.Builder>
+          getEntriesBuilderList() {
         return getEntriesFieldBuilder().getBuilderList();
       }
+
       private org.apache.pekko.protobufv3.internal.RepeatedFieldBuilder<
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry.Builder, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.EntryOrBuilder> 
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ORSetDeltaGroup.Entry,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ORSetDeltaGroup.Entry.Builder,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ORSetDeltaGroup.EntryOrBuilder>
           getEntriesFieldBuilder() {
         if (entriesBuilder_ == null) {
-          entriesBuilder_ = new org.apache.pekko.protobufv3.internal.RepeatedFieldBuilder<
-              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry.Builder, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.EntryOrBuilder>(
-                  entries_,
-                  ((bitField0_ & 0x00000001) != 0),
-                  getParentForChildren(),
-                  isClean());
+          entriesBuilder_ =
+              new org.apache.pekko.protobufv3.internal.RepeatedFieldBuilder<
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .ORSetDeltaGroup.Entry,
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .ORSetDeltaGroup.Entry.Builder,
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .ORSetDeltaGroup.EntryOrBuilder>(
+                  entries_, ((bitField0_ & 0x00000001) != 0), getParentForChildren(), isClean());
           entries_ = null;
         }
         return entriesBuilder_;
@@ -4638,36 +5188,44 @@ public final class ReplicatedEventSourcing {
     }
 
     // @@protoc_insertion_point(class_scope:ORSetDeltaGroup)
-    private static final org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup DEFAULT_INSTANCE;
+    private static final org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ORSetDeltaGroup
+        DEFAULT_INSTANCE;
+
     static {
-      DEFAULT_INSTANCE = new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup();
+      DEFAULT_INSTANCE =
+          new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ORSetDeltaGroup();
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup getDefaultInstance() {
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ORSetDeltaGroup
+        getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final org.apache.pekko.protobufv3.internal.Parser<ORSetDeltaGroup>
-        PARSER = new org.apache.pekko.protobufv3.internal.AbstractParser<ORSetDeltaGroup>() {
-      @java.lang.Override
-      public ORSetDeltaGroup parsePartialFrom(
-          org.apache.pekko.protobufv3.internal.CodedInputStream input,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        Builder builder = newBuilder();
-        try {
-          builder.mergeFrom(input, extensionRegistry);
-        } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(builder.buildPartial());
-        } catch (org.apache.pekko.protobufv3.internal.UninitializedMessageException e) {
-          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-        } catch (java.io.IOException e) {
-          throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
-              .setUnfinishedMessage(builder.buildPartial());
-        }
-        return builder.buildPartial();
-      }
-    };
+    private static final org.apache.pekko.protobufv3.internal.Parser<ORSetDeltaGroup> PARSER =
+        new org.apache.pekko.protobufv3.internal.AbstractParser<ORSetDeltaGroup>() {
+          @java.lang.Override
+          public ORSetDeltaGroup parsePartialFrom(
+              org.apache.pekko.protobufv3.internal.CodedInputStream input,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+            Builder builder = newBuilder();
+            try {
+              builder.mergeFrom(input, extensionRegistry);
+            } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
+              throw e.setUnfinishedMessage(builder.buildPartial());
+            } catch (org.apache.pekko.protobufv3.internal.UninitializedMessageException e) {
+              throw e.asInvalidProtocolBufferException()
+                  .setUnfinishedMessage(builder.buildPartial());
+            } catch (java.io.IOException e) {
+              throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
+                  .setUnfinishedMessage(builder.buildPartial());
+            }
+            return builder.buildPartial();
+          }
+        };
 
     public static org.apache.pekko.protobufv3.internal.Parser<ORSetDeltaGroup> parser() {
       return PARSER;
@@ -4679,154 +5237,171 @@ public final class ReplicatedEventSourcing {
     }
 
     @java.lang.Override
-    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup getDefaultInstanceForType() {
+    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
+        getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
-
   }
 
-  public interface VersionVectorOrBuilder extends
+  public interface VersionVectorOrBuilder
+      extends
       // @@protoc_insertion_point(interface_extends:VersionVector)
       org.apache.pekko.protobufv3.internal.MessageOrBuilder {
 
-    /**
-     * <code>repeated .VersionVector.Entry entries = 1;</code>
-     */
-    java.util.List<org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry> 
+    /** <code>repeated .VersionVector.Entry entries = 1;</code> */
+    java.util.List<
+            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                .Entry>
         getEntriesList();
-    /**
-     * <code>repeated .VersionVector.Entry entries = 1;</code>
-     */
-    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry getEntries(int index);
-    /**
-     * <code>repeated .VersionVector.Entry entries = 1;</code>
-     */
+    /** <code>repeated .VersionVector.Entry entries = 1;</code> */
+    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry
+        getEntries(int index);
+    /** <code>repeated .VersionVector.Entry entries = 1;</code> */
     int getEntriesCount();
-    /**
-     * <code>repeated .VersionVector.Entry entries = 1;</code>
-     */
-    java.util.List<? extends org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.EntryOrBuilder> 
+    /** <code>repeated .VersionVector.Entry entries = 1;</code> */
+    java.util.List<
+            ? extends
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .VersionVector.EntryOrBuilder>
         getEntriesOrBuilderList();
-    /**
-     * <code>repeated .VersionVector.Entry entries = 1;</code>
-     */
-    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.EntryOrBuilder getEntriesOrBuilder(
-        int index);
+    /** <code>repeated .VersionVector.Entry entries = 1;</code> */
+    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+            .EntryOrBuilder
+        getEntriesOrBuilder(int index);
   }
-  /**
-   * Protobuf type {@code VersionVector}
-   */
-  public static final class VersionVector extends
-      org.apache.pekko.protobufv3.internal.GeneratedMessage implements
+  /** Protobuf type {@code VersionVector} */
+  public static final class VersionVector
+      extends org.apache.pekko.protobufv3.internal.GeneratedMessage
+      implements
       // @@protoc_insertion_point(message_implements:VersionVector)
       VersionVectorOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
+
     static {
       org.apache.pekko.protobufv3.internal.RuntimeVersion.validateProtobufGencodeVersion(
-        org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
-        /* major= */ 4,
-        /* minor= */ 29,
-        /* patch= */ 3,
-        /* suffix= */ "",
-        VersionVector.class.getName());
+          org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
+          /* major= */ 4,
+          /* minor= */ 29,
+          /* patch= */ 3,
+          /* suffix= */ "",
+          VersionVector.class.getName());
     }
     // Use VersionVector.newBuilder() to construct.
-    private VersionVector(org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
+    private VersionVector(
+        org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
       super(builder);
     }
+
     private VersionVector() {
       entries_ = java.util.Collections.emptyList();
     }
 
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_VersionVector_descriptor;
+      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+          .internal_static_VersionVector_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_VersionVector_fieldAccessorTable
+      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+          .internal_static_VersionVector_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.class, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Builder.class);
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .class,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Builder.class);
     }
 
-    public interface EntryOrBuilder extends
+    public interface EntryOrBuilder
+        extends
         // @@protoc_insertion_point(interface_extends:VersionVector.Entry)
         org.apache.pekko.protobufv3.internal.MessageOrBuilder {
 
       /**
        * <code>required string key = 1;</code>
+       *
        * @return Whether the key field is set.
        */
       boolean hasKey();
       /**
        * <code>required string key = 1;</code>
+       *
        * @return The key.
        */
       java.lang.String getKey();
       /**
        * <code>required string key = 1;</code>
+       *
        * @return The bytes for key.
        */
-      org.apache.pekko.protobufv3.internal.ByteString
-          getKeyBytes();
+      org.apache.pekko.protobufv3.internal.ByteString getKeyBytes();
 
       /**
        * <code>required int64 version = 2;</code>
+       *
        * @return Whether the version field is set.
        */
       boolean hasVersion();
       /**
        * <code>required int64 version = 2;</code>
+       *
        * @return The version.
        */
       long getVersion();
     }
-    /**
-     * Protobuf type {@code VersionVector.Entry}
-     */
-    public static final class Entry extends
-        org.apache.pekko.protobufv3.internal.GeneratedMessage implements
+    /** Protobuf type {@code VersionVector.Entry} */
+    public static final class Entry extends org.apache.pekko.protobufv3.internal.GeneratedMessage
+        implements
         // @@protoc_insertion_point(message_implements:VersionVector.Entry)
         EntryOrBuilder {
-    private static final long serialVersionUID = 0L;
+      private static final long serialVersionUID = 0L;
+
       static {
         org.apache.pekko.protobufv3.internal.RuntimeVersion.validateProtobufGencodeVersion(
-          org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
-          /* major= */ 4,
-          /* minor= */ 29,
-          /* patch= */ 3,
-          /* suffix= */ "",
-          Entry.class.getName());
+            org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
+            /* major= */ 4,
+            /* minor= */ 29,
+            /* patch= */ 3,
+            /* suffix= */ "",
+            Entry.class.getName());
       }
       // Use Entry.newBuilder() to construct.
       private Entry(org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
         super(builder);
       }
+
       private Entry() {
         key_ = "";
       }
 
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_VersionVector_Entry_descriptor;
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .internal_static_VersionVector_Entry_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_VersionVector_Entry_fieldAccessorTable
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .internal_static_VersionVector_Entry_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry.class, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry.Builder.class);
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .VersionVector.Entry.class,
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .VersionVector.Entry.Builder.class);
       }
 
       private int bitField0_;
       public static final int KEY_FIELD_NUMBER = 1;
+
       @SuppressWarnings("serial")
       private volatile java.lang.Object key_ = "";
       /**
        * <code>required string key = 1;</code>
+       *
        * @return Whether the key field is set.
        */
       @java.lang.Override
@@ -4835,6 +5410,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>required string key = 1;</code>
+       *
        * @return The key.
        */
       @java.lang.Override
@@ -4843,7 +5419,7 @@ public final class ReplicatedEventSourcing {
         if (ref instanceof java.lang.String) {
           return (java.lang.String) ref;
         } else {
-          org.apache.pekko.protobufv3.internal.ByteString bs = 
+          org.apache.pekko.protobufv3.internal.ByteString bs =
               (org.apache.pekko.protobufv3.internal.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           if (bs.isValidUtf8()) {
@@ -4854,16 +5430,15 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>required string key = 1;</code>
+       *
        * @return The bytes for key.
        */
       @java.lang.Override
-      public org.apache.pekko.protobufv3.internal.ByteString
-          getKeyBytes() {
+      public org.apache.pekko.protobufv3.internal.ByteString getKeyBytes() {
         java.lang.Object ref = key_;
         if (ref instanceof java.lang.String) {
-          org.apache.pekko.protobufv3.internal.ByteString b = 
-              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          org.apache.pekko.protobufv3.internal.ByteString b =
+              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
           key_ = b;
           return b;
         } else {
@@ -4875,6 +5450,7 @@ public final class ReplicatedEventSourcing {
       private long version_ = 0L;
       /**
        * <code>required int64 version = 2;</code>
+       *
        * @return Whether the version field is set.
        */
       @java.lang.Override
@@ -4883,6 +5459,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>required int64 version = 2;</code>
+       *
        * @return The version.
        */
       @java.lang.Override
@@ -4891,6 +5468,7 @@ public final class ReplicatedEventSourcing {
       }
 
       private byte memoizedIsInitialized = -1;
+
       @java.lang.Override
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
@@ -4911,7 +5489,7 @@ public final class ReplicatedEventSourcing {
 
       @java.lang.Override
       public void writeTo(org.apache.pekko.protobufv3.internal.CodedOutputStream output)
-                          throws java.io.IOException {
+          throws java.io.IOException {
         if (((bitField0_ & 0x00000001) != 0)) {
           org.apache.pekko.protobufv3.internal.GeneratedMessage.writeString(output, 1, key_);
         }
@@ -4931,8 +5509,8 @@ public final class ReplicatedEventSourcing {
           size += org.apache.pekko.protobufv3.internal.GeneratedMessage.computeStringSize(1, key_);
         }
         if (((bitField0_ & 0x00000002) != 0)) {
-          size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-            .computeInt64Size(2, version_);
+          size +=
+              org.apache.pekko.protobufv3.internal.CodedOutputStream.computeInt64Size(2, version_);
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSize = size;
@@ -4942,22 +5520,27 @@ public final class ReplicatedEventSourcing {
       @java.lang.Override
       public boolean equals(final java.lang.Object obj) {
         if (obj == this) {
-         return true;
+          return true;
         }
-        if (!(obj instanceof org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry)) {
+        if (!(obj
+            instanceof
+            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                .Entry)) {
           return super.equals(obj);
         }
-        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry other = (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry) obj;
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry
+            other =
+                (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                        .VersionVector.Entry)
+                    obj;
 
         if (hasKey() != other.hasKey()) return false;
         if (hasKey()) {
-          if (!getKey()
-              .equals(other.getKey())) return false;
+          if (!getKey().equals(other.getKey())) return false;
         }
         if (hasVersion() != other.hasVersion()) return false;
         if (hasVersion()) {
-          if (getVersion()
-              != other.getVersion()) return false;
+          if (getVersion() != other.getVersion()) return false;
         }
         if (!getUnknownFields().equals(other.getUnknownFields())) return false;
         return true;
@@ -4976,98 +5559,132 @@ public final class ReplicatedEventSourcing {
         }
         if (hasVersion()) {
           hash = (37 * hash) + VERSION_FIELD_NUMBER;
-          hash = (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashLong(
-              getVersion());
+          hash = (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashLong(getVersion());
         }
         hash = (29 * hash) + getUnknownFields().hashCode();
         memoizedHashCode = hash;
         return hash;
       }
 
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry parseFrom(
-          java.nio.ByteBuffer data)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .VersionVector.Entry
+          parseFrom(java.nio.ByteBuffer data)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
-      }
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry parseFrom(
-          java.nio.ByteBuffer data,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry parseFrom(
-          org.apache.pekko.protobufv3.internal.ByteString data)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry parseFrom(
-          org.apache.pekko.protobufv3.internal.ByteString data,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry parseFrom(byte[] data)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry parseFrom(
-          byte[] data,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry parseFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        return org.apache.pekko.protobufv3.internal.GeneratedMessage
-            .parseWithIOException(PARSER, input);
-      }
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry parseFrom(
-          java.io.InputStream input,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return org.apache.pekko.protobufv3.internal.GeneratedMessage
-            .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry parseDelimitedFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        return org.apache.pekko.protobufv3.internal.GeneratedMessage
-            .parseDelimitedWithIOException(PARSER, input);
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .VersionVector.Entry
+          parseFrom(
+              java.nio.ByteBuffer data,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
       }
 
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry parseDelimitedFrom(
-          java.io.InputStream input,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return org.apache.pekko.protobufv3.internal.GeneratedMessage
-            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .VersionVector.Entry
+          parseFrom(org.apache.pekko.protobufv3.internal.ByteString data)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
       }
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry parseFrom(
-          org.apache.pekko.protobufv3.internal.CodedInputStream input)
-          throws java.io.IOException {
-        return org.apache.pekko.protobufv3.internal.GeneratedMessage
-            .parseWithIOException(PARSER, input);
+
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .VersionVector.Entry
+          parseFrom(
+              org.apache.pekko.protobufv3.internal.ByteString data,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry parseFrom(
-          org.apache.pekko.protobufv3.internal.CodedInputStream input,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return org.apache.pekko.protobufv3.internal.GeneratedMessage
-            .parseWithIOException(PARSER, input, extensionRegistry);
+
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .VersionVector.Entry
+          parseFrom(byte[] data)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .VersionVector.Entry
+          parseFrom(
+              byte[] data,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .VersionVector.Entry
+          parseFrom(java.io.InputStream input) throws java.io.IOException {
+        return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+            PARSER, input);
+      }
+
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .VersionVector.Entry
+          parseFrom(
+              java.io.InputStream input,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+        return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+            PARSER, input, extensionRegistry);
+      }
+
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .VersionVector.Entry
+          parseDelimitedFrom(java.io.InputStream input) throws java.io.IOException {
+        return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseDelimitedWithIOException(
+            PARSER, input);
+      }
+
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .VersionVector.Entry
+          parseDelimitedFrom(
+              java.io.InputStream input,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+        return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseDelimitedWithIOException(
+            PARSER, input, extensionRegistry);
+      }
+
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .VersionVector.Entry
+          parseFrom(org.apache.pekko.protobufv3.internal.CodedInputStream input)
+              throws java.io.IOException {
+        return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+            PARSER, input);
+      }
+
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .VersionVector.Entry
+          parseFrom(
+              org.apache.pekko.protobufv3.internal.CodedInputStream input,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+        return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+            PARSER, input, extensionRegistry);
       }
 
       @java.lang.Override
-      public Builder newBuilderForType() { return newBuilder(); }
+      public Builder newBuilderForType() {
+        return newBuilder();
+      }
+
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
       }
-      public static Builder newBuilder(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry prototype) {
+
+      public static Builder newBuilder(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Entry
+              prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
+
       @java.lang.Override
       public Builder toBuilder() {
-        return this == DEFAULT_INSTANCE
-            ? new Builder() : new Builder().mergeFrom(this);
+        return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
       }
 
       @java.lang.Override
@@ -5076,36 +5693,40 @@ public final class ReplicatedEventSourcing {
         Builder builder = new Builder(parent);
         return builder;
       }
-      /**
-       * Protobuf type {@code VersionVector.Entry}
-       */
-      public static final class Builder extends
-          org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder> implements
+      /** Protobuf type {@code VersionVector.Entry} */
+      public static final class Builder
+          extends org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder>
+          implements
           // @@protoc_insertion_point(builder_implements:VersionVector.Entry)
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.EntryOrBuilder {
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              .EntryOrBuilder {
         public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
             getDescriptor() {
-          return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_VersionVector_Entry_descriptor;
+          return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .internal_static_VersionVector_Entry_descriptor;
         }
 
         @java.lang.Override
         protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_VersionVector_Entry_fieldAccessorTable
+          return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .internal_static_VersionVector_Entry_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry.class, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry.Builder.class);
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .VersionVector.Entry.class,
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .VersionVector.Entry.Builder.class);
         }
 
-        // Construct using org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry.newBuilder()
-        private Builder() {
-
-        }
+        // Construct using
+        // org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry.newBuilder()
+        private Builder() {}
 
         private Builder(
             org.apache.pekko.protobufv3.internal.GeneratedMessage.BuilderParent parent) {
           super(parent);
-
         }
+
         @java.lang.Override
         public Builder clear() {
           super.clear();
@@ -5116,19 +5737,26 @@ public final class ReplicatedEventSourcing {
         }
 
         @java.lang.Override
-        public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-            getDescriptorForType() {
-          return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_VersionVector_Entry_descriptor;
+        public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor getDescriptorForType() {
+          return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .internal_static_VersionVector_Entry_descriptor;
         }
 
         @java.lang.Override
-        public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry getDefaultInstanceForType() {
-          return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry.getDefaultInstance();
+        public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .VersionVector.Entry
+            getDefaultInstanceForType() {
+          return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .VersionVector.Entry.getDefaultInstance();
         }
 
         @java.lang.Override
-        public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry build() {
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry result = buildPartial();
+        public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .VersionVector.Entry
+            build() {
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Entry
+              result = buildPartial();
           if (!result.isInitialized()) {
             throw newUninitializedMessageException(result);
           }
@@ -5136,14 +5764,25 @@ public final class ReplicatedEventSourcing {
         }
 
         @java.lang.Override
-        public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry buildPartial() {
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry result = new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry(this);
-          if (bitField0_ != 0) { buildPartial0(result); }
+        public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .VersionVector.Entry
+            buildPartial() {
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Entry
+              result =
+                  new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .VersionVector.Entry(this);
+          if (bitField0_ != 0) {
+            buildPartial0(result);
+          }
           onBuilt();
           return result;
         }
 
-        private void buildPartial0(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry result) {
+        private void buildPartial0(
+            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                    .Entry
+                result) {
           int from_bitField0_ = bitField0_;
           int to_bitField0_ = 0;
           if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -5159,16 +5798,27 @@ public final class ReplicatedEventSourcing {
 
         @java.lang.Override
         public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
-          if (other instanceof org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry) {
-            return mergeFrom((org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry)other);
+          if (other
+              instanceof
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Entry) {
+            return mergeFrom(
+                (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                        .VersionVector.Entry)
+                    other);
           } else {
             super.mergeFrom(other);
             return this;
           }
         }
 
-        public Builder mergeFrom(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry other) {
-          if (other == org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry.getDefaultInstance()) return this;
+        public Builder mergeFrom(
+            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                    .Entry
+                other) {
+          if (other
+              == org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .VersionVector.Entry.getDefaultInstance()) return this;
           if (other.hasKey()) {
             key_ = other.key_;
             bitField0_ |= 0x00000001;
@@ -5209,22 +5859,25 @@ public final class ReplicatedEventSourcing {
                 case 0:
                   done = true;
                   break;
-                case 10: {
-                  key_ = input.readBytes();
-                  bitField0_ |= 0x00000001;
-                  break;
-                } // case 10
-                case 16: {
-                  version_ = input.readInt64();
-                  bitField0_ |= 0x00000002;
-                  break;
-                } // case 16
-                default: {
-                  if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                    done = true; // was an endgroup tag
-                  }
-                  break;
-                } // default:
+                case 10:
+                  {
+                    key_ = input.readBytes();
+                    bitField0_ |= 0x00000001;
+                    break;
+                  } // case 10
+                case 16:
+                  {
+                    version_ = input.readInt64();
+                    bitField0_ |= 0x00000002;
+                    break;
+                  } // case 16
+                default:
+                  {
+                    if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                      done = true; // was an endgroup tag
+                    }
+                    break;
+                  } // default:
               } // switch (tag)
             } // while (!done)
           } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
@@ -5234,11 +5887,13 @@ public final class ReplicatedEventSourcing {
           } // finally
           return this;
         }
+
         private int bitField0_;
 
         private java.lang.Object key_ = "";
         /**
          * <code>required string key = 1;</code>
+         *
          * @return Whether the key field is set.
          */
         public boolean hasKey() {
@@ -5246,6 +5901,7 @@ public final class ReplicatedEventSourcing {
         }
         /**
          * <code>required string key = 1;</code>
+         *
          * @return The key.
          */
         public java.lang.String getKey() {
@@ -5264,13 +5920,13 @@ public final class ReplicatedEventSourcing {
         }
         /**
          * <code>required string key = 1;</code>
+         *
          * @return The bytes for key.
          */
-        public org.apache.pekko.protobufv3.internal.ByteString
-            getKeyBytes() {
+        public org.apache.pekko.protobufv3.internal.ByteString getKeyBytes() {
           java.lang.Object ref = key_;
           if (ref instanceof String) {
-            org.apache.pekko.protobufv3.internal.ByteString b = 
+            org.apache.pekko.protobufv3.internal.ByteString b =
                 org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
                     (java.lang.String) ref);
             key_ = b;
@@ -5281,12 +5937,14 @@ public final class ReplicatedEventSourcing {
         }
         /**
          * <code>required string key = 1;</code>
+         *
          * @param value The key to set.
          * @return This builder for chaining.
          */
-        public Builder setKey(
-            java.lang.String value) {
-          if (value == null) { throw new NullPointerException(); }
+        public Builder setKey(java.lang.String value) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
           key_ = value;
           bitField0_ |= 0x00000001;
           onChanged();
@@ -5294,6 +5952,7 @@ public final class ReplicatedEventSourcing {
         }
         /**
          * <code>required string key = 1;</code>
+         *
          * @return This builder for chaining.
          */
         public Builder clearKey() {
@@ -5304,21 +5963,24 @@ public final class ReplicatedEventSourcing {
         }
         /**
          * <code>required string key = 1;</code>
+         *
          * @param value The bytes for key to set.
          * @return This builder for chaining.
          */
-        public Builder setKeyBytes(
-            org.apache.pekko.protobufv3.internal.ByteString value) {
-          if (value == null) { throw new NullPointerException(); }
+        public Builder setKeyBytes(org.apache.pekko.protobufv3.internal.ByteString value) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
           key_ = value;
           bitField0_ |= 0x00000001;
           onChanged();
           return this;
         }
 
-        private long version_ ;
+        private long version_;
         /**
          * <code>required int64 version = 2;</code>
+         *
          * @return Whether the version field is set.
          */
         @java.lang.Override
@@ -5327,6 +5989,7 @@ public final class ReplicatedEventSourcing {
         }
         /**
          * <code>required int64 version = 2;</code>
+         *
          * @return The version.
          */
         @java.lang.Override
@@ -5335,6 +5998,7 @@ public final class ReplicatedEventSourcing {
         }
         /**
          * <code>required int64 version = 2;</code>
+         *
          * @param value The version to set.
          * @return This builder for chaining.
          */
@@ -5347,6 +6011,7 @@ public final class ReplicatedEventSourcing {
         }
         /**
          * <code>required int64 version = 2;</code>
+         *
          * @return This builder for chaining.
          */
         public Builder clearVersion() {
@@ -5360,36 +6025,44 @@ public final class ReplicatedEventSourcing {
       }
 
       // @@protoc_insertion_point(class_scope:VersionVector.Entry)
-      private static final org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry DEFAULT_INSTANCE;
+      private static final org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .VersionVector.Entry
+          DEFAULT_INSTANCE;
+
       static {
-        DEFAULT_INSTANCE = new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry();
+        DEFAULT_INSTANCE =
+            new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .VersionVector.Entry();
       }
 
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry getDefaultInstance() {
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .VersionVector.Entry
+          getDefaultInstance() {
         return DEFAULT_INSTANCE;
       }
 
-      private static final org.apache.pekko.protobufv3.internal.Parser<Entry>
-          PARSER = new org.apache.pekko.protobufv3.internal.AbstractParser<Entry>() {
-        @java.lang.Override
-        public Entry parsePartialFrom(
-            org.apache.pekko.protobufv3.internal.CodedInputStream input,
-            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-          Builder builder = newBuilder();
-          try {
-            builder.mergeFrom(input, extensionRegistry);
-          } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
-            throw e.setUnfinishedMessage(builder.buildPartial());
-          } catch (org.apache.pekko.protobufv3.internal.UninitializedMessageException e) {
-            throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-          } catch (java.io.IOException e) {
-            throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
-                .setUnfinishedMessage(builder.buildPartial());
-          }
-          return builder.buildPartial();
-        }
-      };
+      private static final org.apache.pekko.protobufv3.internal.Parser<Entry> PARSER =
+          new org.apache.pekko.protobufv3.internal.AbstractParser<Entry>() {
+            @java.lang.Override
+            public Entry parsePartialFrom(
+                org.apache.pekko.protobufv3.internal.CodedInputStream input,
+                org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+                throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+              Builder builder = newBuilder();
+              try {
+                builder.mergeFrom(input, extensionRegistry);
+              } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
+                throw e.setUnfinishedMessage(builder.buildPartial());
+              } catch (org.apache.pekko.protobufv3.internal.UninitializedMessageException e) {
+                throw e.asInvalidProtocolBufferException()
+                    .setUnfinishedMessage(builder.buildPartial());
+              } catch (java.io.IOException e) {
+                throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
+                    .setUnfinishedMessage(builder.buildPartial());
+              }
+              return builder.buildPartial();
+            }
+          };
 
       public static org.apache.pekko.protobufv3.internal.Parser<Entry> parser() {
         return PARSER;
@@ -5401,54 +6074,59 @@ public final class ReplicatedEventSourcing {
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry getDefaultInstanceForType() {
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              .Entry
+          getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
-
     }
 
     public static final int ENTRIES_FIELD_NUMBER = 1;
+
     @SuppressWarnings("serial")
-    private java.util.List<org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry> entries_;
-    /**
-     * <code>repeated .VersionVector.Entry entries = 1;</code>
-     */
+    private java.util.List<
+            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                .Entry>
+        entries_;
+    /** <code>repeated .VersionVector.Entry entries = 1;</code> */
     @java.lang.Override
-    public java.util.List<org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry> getEntriesList() {
+    public java.util.List<
+            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                .Entry>
+        getEntriesList() {
       return entries_;
     }
-    /**
-     * <code>repeated .VersionVector.Entry entries = 1;</code>
-     */
+    /** <code>repeated .VersionVector.Entry entries = 1;</code> */
     @java.lang.Override
-    public java.util.List<? extends org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.EntryOrBuilder> 
+    public java.util.List<
+            ? extends
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .VersionVector.EntryOrBuilder>
         getEntriesOrBuilderList() {
       return entries_;
     }
-    /**
-     * <code>repeated .VersionVector.Entry entries = 1;</code>
-     */
+    /** <code>repeated .VersionVector.Entry entries = 1;</code> */
     @java.lang.Override
     public int getEntriesCount() {
       return entries_.size();
     }
-    /**
-     * <code>repeated .VersionVector.Entry entries = 1;</code>
-     */
+    /** <code>repeated .VersionVector.Entry entries = 1;</code> */
     @java.lang.Override
-    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry getEntries(int index) {
+    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+            .Entry
+        getEntries(int index) {
       return entries_.get(index);
     }
-    /**
-     * <code>repeated .VersionVector.Entry entries = 1;</code>
-     */
+    /** <code>repeated .VersionVector.Entry entries = 1;</code> */
     @java.lang.Override
-    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.EntryOrBuilder getEntriesOrBuilder(
-        int index) {
+    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+            .EntryOrBuilder
+        getEntriesOrBuilder(int index) {
       return entries_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -5467,7 +6145,7 @@ public final class ReplicatedEventSourcing {
 
     @java.lang.Override
     public void writeTo(org.apache.pekko.protobufv3.internal.CodedOutputStream output)
-                        throws java.io.IOException {
+        throws java.io.IOException {
       for (int i = 0; i < entries_.size(); i++) {
         output.writeMessage(1, entries_.get(i));
       }
@@ -5481,8 +6159,9 @@ public final class ReplicatedEventSourcing {
 
       size = 0;
       for (int i = 0; i < entries_.size(); i++) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeMessageSize(1, entries_.get(i));
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeMessageSize(
+                1, entries_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -5492,15 +6171,18 @@ public final class ReplicatedEventSourcing {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
-      if (!(obj instanceof org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector)) {
+      if (!(obj
+          instanceof
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector)) {
         return super.equals(obj);
       }
-      org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector other = (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector) obj;
+      org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector other =
+          (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector)
+              obj;
 
-      if (!getEntriesList()
-          .equals(other.getEntriesList())) return false;
+      if (!getEntriesList().equals(other.getEntriesList())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -5521,90 +6203,124 @@ public final class ReplicatedEventSourcing {
       return hash;
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector parseFrom(
-        java.nio.ByteBuffer data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .VersionVector
+        parseFrom(java.nio.ByteBuffer data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector parseFrom(
-        java.nio.ByteBuffer data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector parseFrom(
-        org.apache.pekko.protobufv3.internal.ByteString data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector parseFrom(
-        org.apache.pekko.protobufv3.internal.ByteString data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector parseFrom(byte[] data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector parseFrom(
-        byte[] data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector parseFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseDelimitedWithIOException(PARSER, input);
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .VersionVector
+        parseFrom(
+            java.nio.ByteBuffer data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector parseDelimitedFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .VersionVector
+        parseFrom(org.apache.pekko.protobufv3.internal.ByteString data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
     }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input);
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .VersionVector
+        parseFrom(
+            org.apache.pekko.protobufv3.internal.ByteString data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .VersionVector
+        parseFrom(byte[] data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .VersionVector
+        parseFrom(
+            byte[] data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .VersionVector
+        parseFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .VersionVector
+        parseFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input, extensionRegistry);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .VersionVector
+        parseDelimitedFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseDelimitedWithIOException(
+          PARSER, input);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .VersionVector
+        parseDelimitedFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseDelimitedWithIOException(
+          PARSER, input, extensionRegistry);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .VersionVector
+        parseFrom(org.apache.pekko.protobufv3.internal.CodedInputStream input)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .VersionVector
+        parseFrom(
+            org.apache.pekko.protobufv3.internal.CodedInputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector prototype) {
+
+    public static Builder newBuilder(
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+            prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
@@ -5613,36 +6329,39 @@ public final class ReplicatedEventSourcing {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
-     * Protobuf type {@code VersionVector}
-     */
-    public static final class Builder extends
-        org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder> implements
+    /** Protobuf type {@code VersionVector} */
+    public static final class Builder
+        extends org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder>
+        implements
         // @@protoc_insertion_point(builder_implements:VersionVector)
-        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder {
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .VersionVectorOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_VersionVector_descriptor;
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .internal_static_VersionVector_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_VersionVector_fieldAccessorTable
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .internal_static_VersionVector_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.class, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Builder.class);
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .VersionVector.class,
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .VersionVector.Builder.class);
       }
 
-      // Construct using org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.newBuilder()
-      private Builder() {
+      // Construct using
+      // org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.newBuilder()
+      private Builder() {}
 
-      }
-
-      private Builder(
-          org.apache.pekko.protobufv3.internal.GeneratedMessage.BuilderParent parent) {
+      private Builder(org.apache.pekko.protobufv3.internal.GeneratedMessage.BuilderParent parent) {
         super(parent);
-
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -5658,19 +6377,23 @@ public final class ReplicatedEventSourcing {
       }
 
       @java.lang.Override
-      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-          getDescriptorForType() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_VersionVector_descriptor;
+      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor getDescriptorForType() {
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .internal_static_VersionVector_descriptor;
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector getDefaultInstanceForType() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.getDefaultInstance();
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+          getDefaultInstanceForType() {
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .VersionVector.getDefaultInstance();
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector build() {
-        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector result = buildPartial();
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+          build() {
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+            result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -5678,15 +6401,23 @@ public final class ReplicatedEventSourcing {
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector buildPartial() {
-        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector result = new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector(this);
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+          buildPartial() {
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+            result =
+                new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .VersionVector(this);
         buildPartialRepeatedFields(result);
-        if (bitField0_ != 0) { buildPartial0(result); }
+        if (bitField0_ != 0) {
+          buildPartial0(result);
+        }
         onBuilt();
         return result;
       }
 
-      private void buildPartialRepeatedFields(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector result) {
+      private void buildPartialRepeatedFields(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              result) {
         if (entriesBuilder_ == null) {
           if (((bitField0_ & 0x00000001) != 0)) {
             entries_ = java.util.Collections.unmodifiableList(entries_);
@@ -5698,22 +6429,34 @@ public final class ReplicatedEventSourcing {
         }
       }
 
-      private void buildPartial0(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector result) {
+      private void buildPartial0(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              result) {
         int from_bitField0_ = bitField0_;
       }
 
       @java.lang.Override
       public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
-        if (other instanceof org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector) {
-          return mergeFrom((org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector)other);
+        if (other
+            instanceof
+            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .VersionVector) {
+          return mergeFrom(
+              (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .VersionVector)
+                  other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector other) {
-        if (other == org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.getDefaultInstance()) return this;
+      public Builder mergeFrom(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              other) {
+        if (other
+            == org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .VersionVector.getDefaultInstance()) return this;
         if (entriesBuilder_ == null) {
           if (!other.entries_.isEmpty()) {
             if (entries_.isEmpty()) {
@@ -5732,9 +6475,10 @@ public final class ReplicatedEventSourcing {
               entriesBuilder_ = null;
               entries_ = other.entries_;
               bitField0_ = (bitField0_ & ~0x00000001);
-              entriesBuilder_ = 
-                org.apache.pekko.protobufv3.internal.GeneratedMessage.alwaysUseFieldBuilders ?
-                   getEntriesFieldBuilder() : null;
+              entriesBuilder_ =
+                  org.apache.pekko.protobufv3.internal.GeneratedMessage.alwaysUseFieldBuilders
+                      ? getEntriesFieldBuilder()
+                      : null;
             } else {
               entriesBuilder_.addAllMessages(other.entries_);
             }
@@ -5771,25 +6515,30 @@ public final class ReplicatedEventSourcing {
               case 0:
                 done = true;
                 break;
-              case 10: {
-                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry m =
-                    input.readMessage(
-                        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry.parser(),
-                        extensionRegistry);
-                if (entriesBuilder_ == null) {
-                  ensureEntriesIsMutable();
-                  entries_.add(m);
-                } else {
-                  entriesBuilder_.addMessage(m);
-                }
-                break;
-              } // case 10
-              default: {
-                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                  done = true; // was an endgroup tag
-                }
-                break;
-              } // default:
+              case 10:
+                {
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                          .VersionVector.Entry
+                      m =
+                          input.readMessage(
+                              org.apache.pekko.persistence.typed.serialization
+                                  .ReplicatedEventSourcing.VersionVector.Entry.parser(),
+                              extensionRegistry);
+                  if (entriesBuilder_ == null) {
+                    ensureEntriesIsMutable();
+                    entries_.add(m);
+                  } else {
+                    entriesBuilder_.addMessage(m);
+                  }
+                  break;
+                } // case 10
+              default:
+                {
+                  if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                    done = true; // was an endgroup tag
+                  }
+                  break;
+                } // default:
             } // switch (tag)
           } // while (!done)
         } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
@@ -5799,33 +6548,45 @@ public final class ReplicatedEventSourcing {
         } // finally
         return this;
       }
+
       private int bitField0_;
 
-      private java.util.List<org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry> entries_ =
-        java.util.Collections.emptyList();
+      private java.util.List<
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Entry>
+          entries_ = java.util.Collections.emptyList();
+
       private void ensureEntriesIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
-          entries_ = new java.util.ArrayList<org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry>(entries_);
+          entries_ =
+              new java.util.ArrayList<
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .VersionVector.Entry>(entries_);
           bitField0_ |= 0x00000001;
-         }
+        }
       }
 
       private org.apache.pekko.protobufv3.internal.RepeatedFieldBuilder<
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry.Builder, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.EntryOrBuilder> entriesBuilder_;
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Entry,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Entry.Builder,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .EntryOrBuilder>
+          entriesBuilder_;
 
-      /**
-       * <code>repeated .VersionVector.Entry entries = 1;</code>
-       */
-      public java.util.List<org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry> getEntriesList() {
+      /** <code>repeated .VersionVector.Entry entries = 1;</code> */
+      public java.util.List<
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Entry>
+          getEntriesList() {
         if (entriesBuilder_ == null) {
           return java.util.Collections.unmodifiableList(entries_);
         } else {
           return entriesBuilder_.getMessageList();
         }
       }
-      /**
-       * <code>repeated .VersionVector.Entry entries = 1;</code>
-       */
+      /** <code>repeated .VersionVector.Entry entries = 1;</code> */
       public int getEntriesCount() {
         if (entriesBuilder_ == null) {
           return entries_.size();
@@ -5833,21 +6594,22 @@ public final class ReplicatedEventSourcing {
           return entriesBuilder_.getCount();
         }
       }
-      /**
-       * <code>repeated .VersionVector.Entry entries = 1;</code>
-       */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry getEntries(int index) {
+      /** <code>repeated .VersionVector.Entry entries = 1;</code> */
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              .Entry
+          getEntries(int index) {
         if (entriesBuilder_ == null) {
           return entries_.get(index);
         } else {
           return entriesBuilder_.getMessage(index);
         }
       }
-      /**
-       * <code>repeated .VersionVector.Entry entries = 1;</code>
-       */
+      /** <code>repeated .VersionVector.Entry entries = 1;</code> */
       public Builder setEntries(
-          int index, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry value) {
+          int index,
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Entry
+              value) {
         if (entriesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -5860,11 +6622,12 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .VersionVector.Entry entries = 1;</code>
-       */
+      /** <code>repeated .VersionVector.Entry entries = 1;</code> */
       public Builder setEntries(
-          int index, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry.Builder builderForValue) {
+          int index,
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Entry.Builder
+              builderForValue) {
         if (entriesBuilder_ == null) {
           ensureEntriesIsMutable();
           entries_.set(index, builderForValue.build());
@@ -5874,10 +6637,11 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .VersionVector.Entry entries = 1;</code>
-       */
-      public Builder addEntries(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry value) {
+      /** <code>repeated .VersionVector.Entry entries = 1;</code> */
+      public Builder addEntries(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Entry
+              value) {
         if (entriesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -5890,11 +6654,12 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .VersionVector.Entry entries = 1;</code>
-       */
+      /** <code>repeated .VersionVector.Entry entries = 1;</code> */
       public Builder addEntries(
-          int index, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry value) {
+          int index,
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Entry
+              value) {
         if (entriesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -5907,11 +6672,11 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .VersionVector.Entry entries = 1;</code>
-       */
+      /** <code>repeated .VersionVector.Entry entries = 1;</code> */
       public Builder addEntries(
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry.Builder builderForValue) {
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Entry.Builder
+              builderForValue) {
         if (entriesBuilder_ == null) {
           ensureEntriesIsMutable();
           entries_.add(builderForValue.build());
@@ -5921,11 +6686,12 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .VersionVector.Entry entries = 1;</code>
-       */
+      /** <code>repeated .VersionVector.Entry entries = 1;</code> */
       public Builder addEntries(
-          int index, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry.Builder builderForValue) {
+          int index,
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Entry.Builder
+              builderForValue) {
         if (entriesBuilder_ == null) {
           ensureEntriesIsMutable();
           entries_.add(index, builderForValue.build());
@@ -5935,24 +6701,23 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .VersionVector.Entry entries = 1;</code>
-       */
+      /** <code>repeated .VersionVector.Entry entries = 1;</code> */
       public Builder addAllEntries(
-          java.lang.Iterable<? extends org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry> values) {
+          java.lang.Iterable<
+                  ? extends
+                      org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                          .VersionVector.Entry>
+              values) {
         if (entriesBuilder_ == null) {
           ensureEntriesIsMutable();
-          org.apache.pekko.protobufv3.internal.AbstractMessageLite.Builder.addAll(
-              values, entries_);
+          org.apache.pekko.protobufv3.internal.AbstractMessageLite.Builder.addAll(values, entries_);
           onChanged();
         } else {
           entriesBuilder_.addAllMessages(values);
         }
         return this;
       }
-      /**
-       * <code>repeated .VersionVector.Entry entries = 1;</code>
-       */
+      /** <code>repeated .VersionVector.Entry entries = 1;</code> */
       public Builder clearEntries() {
         if (entriesBuilder_ == null) {
           entries_ = java.util.Collections.emptyList();
@@ -5963,9 +6728,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .VersionVector.Entry entries = 1;</code>
-       */
+      /** <code>repeated .VersionVector.Entry entries = 1;</code> */
       public Builder removeEntries(int index) {
         if (entriesBuilder_ == null) {
           ensureEntriesIsMutable();
@@ -5976,66 +6739,79 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .VersionVector.Entry entries = 1;</code>
-       */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry.Builder getEntriesBuilder(
-          int index) {
+      /** <code>repeated .VersionVector.Entry entries = 1;</code> */
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              .Entry.Builder
+          getEntriesBuilder(int index) {
         return getEntriesFieldBuilder().getBuilder(index);
       }
-      /**
-       * <code>repeated .VersionVector.Entry entries = 1;</code>
-       */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.EntryOrBuilder getEntriesOrBuilder(
-          int index) {
+      /** <code>repeated .VersionVector.Entry entries = 1;</code> */
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              .EntryOrBuilder
+          getEntriesOrBuilder(int index) {
         if (entriesBuilder_ == null) {
-          return entries_.get(index);  } else {
+          return entries_.get(index);
+        } else {
           return entriesBuilder_.getMessageOrBuilder(index);
         }
       }
-      /**
-       * <code>repeated .VersionVector.Entry entries = 1;</code>
-       */
-      public java.util.List<? extends org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.EntryOrBuilder> 
-           getEntriesOrBuilderList() {
+      /** <code>repeated .VersionVector.Entry entries = 1;</code> */
+      public java.util.List<
+              ? extends
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .VersionVector.EntryOrBuilder>
+          getEntriesOrBuilderList() {
         if (entriesBuilder_ != null) {
           return entriesBuilder_.getMessageOrBuilderList();
         } else {
           return java.util.Collections.unmodifiableList(entries_);
         }
       }
-      /**
-       * <code>repeated .VersionVector.Entry entries = 1;</code>
-       */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry.Builder addEntriesBuilder() {
-        return getEntriesFieldBuilder().addBuilder(
-            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry.getDefaultInstance());
+      /** <code>repeated .VersionVector.Entry entries = 1;</code> */
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              .Entry.Builder
+          addEntriesBuilder() {
+        return getEntriesFieldBuilder()
+            .addBuilder(
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .VersionVector.Entry.getDefaultInstance());
       }
-      /**
-       * <code>repeated .VersionVector.Entry entries = 1;</code>
-       */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry.Builder addEntriesBuilder(
-          int index) {
-        return getEntriesFieldBuilder().addBuilder(
-            index, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry.getDefaultInstance());
+      /** <code>repeated .VersionVector.Entry entries = 1;</code> */
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              .Entry.Builder
+          addEntriesBuilder(int index) {
+        return getEntriesFieldBuilder()
+            .addBuilder(
+                index,
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .VersionVector.Entry.getDefaultInstance());
       }
-      /**
-       * <code>repeated .VersionVector.Entry entries = 1;</code>
-       */
-      public java.util.List<org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry.Builder> 
-           getEntriesBuilderList() {
+      /** <code>repeated .VersionVector.Entry entries = 1;</code> */
+      public java.util.List<
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Entry.Builder>
+          getEntriesBuilderList() {
         return getEntriesFieldBuilder().getBuilderList();
       }
+
       private org.apache.pekko.protobufv3.internal.RepeatedFieldBuilder<
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry.Builder, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.EntryOrBuilder> 
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Entry,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Entry.Builder,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .EntryOrBuilder>
           getEntriesFieldBuilder() {
         if (entriesBuilder_ == null) {
-          entriesBuilder_ = new org.apache.pekko.protobufv3.internal.RepeatedFieldBuilder<
-              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry.Builder, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.EntryOrBuilder>(
-                  entries_,
-                  ((bitField0_ & 0x00000001) != 0),
-                  getParentForChildren(),
-                  isClean());
+          entriesBuilder_ =
+              new org.apache.pekko.protobufv3.internal.RepeatedFieldBuilder<
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .VersionVector.Entry,
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .VersionVector.Entry.Builder,
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .VersionVector.EntryOrBuilder>(
+                  entries_, ((bitField0_ & 0x00000001) != 0), getParentForChildren(), isClean());
           entries_ = null;
         }
         return entriesBuilder_;
@@ -6045,36 +6821,44 @@ public final class ReplicatedEventSourcing {
     }
 
     // @@protoc_insertion_point(class_scope:VersionVector)
-    private static final org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector DEFAULT_INSTANCE;
+    private static final org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .VersionVector
+        DEFAULT_INSTANCE;
+
     static {
-      DEFAULT_INSTANCE = new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector();
+      DEFAULT_INSTANCE =
+          new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .VersionVector();
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector getDefaultInstance() {
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .VersionVector
+        getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final org.apache.pekko.protobufv3.internal.Parser<VersionVector>
-        PARSER = new org.apache.pekko.protobufv3.internal.AbstractParser<VersionVector>() {
-      @java.lang.Override
-      public VersionVector parsePartialFrom(
-          org.apache.pekko.protobufv3.internal.CodedInputStream input,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        Builder builder = newBuilder();
-        try {
-          builder.mergeFrom(input, extensionRegistry);
-        } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(builder.buildPartial());
-        } catch (org.apache.pekko.protobufv3.internal.UninitializedMessageException e) {
-          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-        } catch (java.io.IOException e) {
-          throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
-              .setUnfinishedMessage(builder.buildPartial());
-        }
-        return builder.buildPartial();
-      }
-    };
+    private static final org.apache.pekko.protobufv3.internal.Parser<VersionVector> PARSER =
+        new org.apache.pekko.protobufv3.internal.AbstractParser<VersionVector>() {
+          @java.lang.Override
+          public VersionVector parsePartialFrom(
+              org.apache.pekko.protobufv3.internal.CodedInputStream input,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+            Builder builder = newBuilder();
+            try {
+              builder.mergeFrom(input, extensionRegistry);
+            } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
+              throw e.setUnfinishedMessage(builder.buildPartial());
+            } catch (org.apache.pekko.protobufv3.internal.UninitializedMessageException e) {
+              throw e.asInvalidProtocolBufferException()
+                  .setUnfinishedMessage(builder.buildPartial());
+            } catch (java.io.IOException e) {
+              throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
+                  .setUnfinishedMessage(builder.buildPartial());
+            }
+            return builder.buildPartial();
+          }
+        };
 
     public static org.apache.pekko.protobufv3.internal.Parser<VersionVector> parser() {
       return PARSER;
@@ -6086,114 +6870,132 @@ public final class ReplicatedEventSourcing {
     }
 
     @java.lang.Override
-    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector getDefaultInstanceForType() {
+    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+        getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
-
   }
 
-  public interface ReplicatedEventMetadataOrBuilder extends
+  public interface ReplicatedEventMetadataOrBuilder
+      extends
       // @@protoc_insertion_point(interface_extends:ReplicatedEventMetadata)
       org.apache.pekko.protobufv3.internal.MessageOrBuilder {
 
     /**
      * <code>required string originReplica = 1;</code>
+     *
      * @return Whether the originReplica field is set.
      */
     boolean hasOriginReplica();
     /**
      * <code>required string originReplica = 1;</code>
+     *
      * @return The originReplica.
      */
     java.lang.String getOriginReplica();
     /**
      * <code>required string originReplica = 1;</code>
+     *
      * @return The bytes for originReplica.
      */
-    org.apache.pekko.protobufv3.internal.ByteString
-        getOriginReplicaBytes();
+    org.apache.pekko.protobufv3.internal.ByteString getOriginReplicaBytes();
 
     /**
      * <code>required int64 originSequenceNr = 2;</code>
+     *
      * @return Whether the originSequenceNr field is set.
      */
     boolean hasOriginSequenceNr();
     /**
      * <code>required int64 originSequenceNr = 2;</code>
+     *
      * @return The originSequenceNr.
      */
     long getOriginSequenceNr();
 
     /**
      * <code>required .VersionVector versionVector = 3;</code>
+     *
      * @return Whether the versionVector field is set.
      */
     boolean hasVersionVector();
     /**
      * <code>required .VersionVector versionVector = 3;</code>
+     *
      * @return The versionVector.
      */
-    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector getVersionVector();
-    /**
-     * <code>required .VersionVector versionVector = 3;</code>
-     */
-    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder getVersionVectorOrBuilder();
+    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+        getVersionVector();
+    /** <code>required .VersionVector versionVector = 3;</code> */
+    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder
+        getVersionVectorOrBuilder();
 
     /**
      * <code>required bool concurrent = 4;</code>
+     *
      * @return Whether the concurrent field is set.
      */
     boolean hasConcurrent();
     /**
      * <code>required bool concurrent = 4;</code>
+     *
      * @return The concurrent.
      */
     boolean getConcurrent();
   }
-  /**
-   * Protobuf type {@code ReplicatedEventMetadata}
-   */
-  public static final class ReplicatedEventMetadata extends
-      org.apache.pekko.protobufv3.internal.GeneratedMessage implements
+  /** Protobuf type {@code ReplicatedEventMetadata} */
+  public static final class ReplicatedEventMetadata
+      extends org.apache.pekko.protobufv3.internal.GeneratedMessage
+      implements
       // @@protoc_insertion_point(message_implements:ReplicatedEventMetadata)
       ReplicatedEventMetadataOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
+
     static {
       org.apache.pekko.protobufv3.internal.RuntimeVersion.validateProtobufGencodeVersion(
-        org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
-        /* major= */ 4,
-        /* minor= */ 29,
-        /* patch= */ 3,
-        /* suffix= */ "",
-        ReplicatedEventMetadata.class.getName());
+          org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
+          /* major= */ 4,
+          /* minor= */ 29,
+          /* patch= */ 3,
+          /* suffix= */ "",
+          ReplicatedEventMetadata.class.getName());
     }
     // Use ReplicatedEventMetadata.newBuilder() to construct.
-    private ReplicatedEventMetadata(org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
+    private ReplicatedEventMetadata(
+        org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
       super(builder);
     }
+
     private ReplicatedEventMetadata() {
       originReplica_ = "";
     }
 
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ReplicatedEventMetadata_descriptor;
+      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+          .internal_static_ReplicatedEventMetadata_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ReplicatedEventMetadata_fieldAccessorTable
+      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+          .internal_static_ReplicatedEventMetadata_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata.class, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata.Builder.class);
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedEventMetadata.class,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedEventMetadata.Builder.class);
     }
 
     private int bitField0_;
     public static final int ORIGINREPLICA_FIELD_NUMBER = 1;
+
     @SuppressWarnings("serial")
     private volatile java.lang.Object originReplica_ = "";
     /**
      * <code>required string originReplica = 1;</code>
+     *
      * @return Whether the originReplica field is set.
      */
     @java.lang.Override
@@ -6202,6 +7004,7 @@ public final class ReplicatedEventSourcing {
     }
     /**
      * <code>required string originReplica = 1;</code>
+     *
      * @return The originReplica.
      */
     @java.lang.Override
@@ -6210,7 +7013,7 @@ public final class ReplicatedEventSourcing {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        org.apache.pekko.protobufv3.internal.ByteString bs = 
+        org.apache.pekko.protobufv3.internal.ByteString bs =
             (org.apache.pekko.protobufv3.internal.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
@@ -6221,16 +7024,15 @@ public final class ReplicatedEventSourcing {
     }
     /**
      * <code>required string originReplica = 1;</code>
+     *
      * @return The bytes for originReplica.
      */
     @java.lang.Override
-    public org.apache.pekko.protobufv3.internal.ByteString
-        getOriginReplicaBytes() {
+    public org.apache.pekko.protobufv3.internal.ByteString getOriginReplicaBytes() {
       java.lang.Object ref = originReplica_;
       if (ref instanceof java.lang.String) {
-        org.apache.pekko.protobufv3.internal.ByteString b = 
-            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        org.apache.pekko.protobufv3.internal.ByteString b =
+            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
         originReplica_ = b;
         return b;
       } else {
@@ -6242,6 +7044,7 @@ public final class ReplicatedEventSourcing {
     private long originSequenceNr_ = 0L;
     /**
      * <code>required int64 originSequenceNr = 2;</code>
+     *
      * @return Whether the originSequenceNr field is set.
      */
     @java.lang.Override
@@ -6250,6 +7053,7 @@ public final class ReplicatedEventSourcing {
     }
     /**
      * <code>required int64 originSequenceNr = 2;</code>
+     *
      * @return The originSequenceNr.
      */
     @java.lang.Override
@@ -6258,9 +7062,11 @@ public final class ReplicatedEventSourcing {
     }
 
     public static final int VERSIONVECTOR_FIELD_NUMBER = 3;
-    private org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector versionVector_;
+    private org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+        versionVector_;
     /**
      * <code>required .VersionVector versionVector = 3;</code>
+     *
      * @return Whether the versionVector field is set.
      */
     @java.lang.Override
@@ -6269,24 +7075,33 @@ public final class ReplicatedEventSourcing {
     }
     /**
      * <code>required .VersionVector versionVector = 3;</code>
+     *
      * @return The versionVector.
      */
     @java.lang.Override
-    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector getVersionVector() {
-      return versionVector_ == null ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.getDefaultInstance() : versionVector_;
+    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+        getVersionVector() {
+      return versionVector_ == null
+          ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              .getDefaultInstance()
+          : versionVector_;
     }
-    /**
-     * <code>required .VersionVector versionVector = 3;</code>
-     */
+    /** <code>required .VersionVector versionVector = 3;</code> */
     @java.lang.Override
-    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder getVersionVectorOrBuilder() {
-      return versionVector_ == null ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.getDefaultInstance() : versionVector_;
+    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .VersionVectorOrBuilder
+        getVersionVectorOrBuilder() {
+      return versionVector_ == null
+          ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              .getDefaultInstance()
+          : versionVector_;
     }
 
     public static final int CONCURRENT_FIELD_NUMBER = 4;
     private boolean concurrent_ = false;
     /**
      * <code>required bool concurrent = 4;</code>
+     *
      * @return Whether the concurrent field is set.
      */
     @java.lang.Override
@@ -6295,6 +7110,7 @@ public final class ReplicatedEventSourcing {
     }
     /**
      * <code>required bool concurrent = 4;</code>
+     *
      * @return The concurrent.
      */
     @java.lang.Override
@@ -6303,6 +7119,7 @@ public final class ReplicatedEventSourcing {
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -6335,9 +7152,10 @@ public final class ReplicatedEventSourcing {
 
     @java.lang.Override
     public void writeTo(org.apache.pekko.protobufv3.internal.CodedOutputStream output)
-                        throws java.io.IOException {
+        throws java.io.IOException {
       if (((bitField0_ & 0x00000001) != 0)) {
-        org.apache.pekko.protobufv3.internal.GeneratedMessage.writeString(output, 1, originReplica_);
+        org.apache.pekko.protobufv3.internal.GeneratedMessage.writeString(
+            output, 1, originReplica_);
       }
       if (((bitField0_ & 0x00000002) != 0)) {
         output.writeInt64(2, originSequenceNr_);
@@ -6358,19 +7176,23 @@ public final class ReplicatedEventSourcing {
 
       size = 0;
       if (((bitField0_ & 0x00000001) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.GeneratedMessage.computeStringSize(1, originReplica_);
+        size +=
+            org.apache.pekko.protobufv3.internal.GeneratedMessage.computeStringSize(
+                1, originReplica_);
       }
       if (((bitField0_ & 0x00000002) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeInt64Size(2, originSequenceNr_);
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeInt64Size(
+                2, originSequenceNr_);
       }
       if (((bitField0_ & 0x00000004) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeMessageSize(3, getVersionVector());
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeMessageSize(
+                3, getVersionVector());
       }
       if (((bitField0_ & 0x00000008) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeBoolSize(4, concurrent_);
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeBoolSize(4, concurrent_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -6380,32 +7202,36 @@ public final class ReplicatedEventSourcing {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
-      if (!(obj instanceof org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata)) {
+      if (!(obj
+          instanceof
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedEventMetadata)) {
         return super.equals(obj);
       }
-      org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata other = (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata) obj;
+      org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedEventMetadata
+          other =
+              (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .ReplicatedEventMetadata)
+                  obj;
 
       if (hasOriginReplica() != other.hasOriginReplica()) return false;
       if (hasOriginReplica()) {
-        if (!getOriginReplica()
-            .equals(other.getOriginReplica())) return false;
+        if (!getOriginReplica().equals(other.getOriginReplica())) return false;
       }
       if (hasOriginSequenceNr() != other.hasOriginSequenceNr()) return false;
       if (hasOriginSequenceNr()) {
-        if (getOriginSequenceNr()
-            != other.getOriginSequenceNr()) return false;
+        if (getOriginSequenceNr() != other.getOriginSequenceNr()) return false;
       }
       if (hasVersionVector() != other.hasVersionVector()) return false;
       if (hasVersionVector()) {
-        if (!getVersionVector()
-            .equals(other.getVersionVector())) return false;
+        if (!getVersionVector().equals(other.getVersionVector())) return false;
       }
       if (hasConcurrent() != other.hasConcurrent()) return false;
       if (hasConcurrent()) {
-        if (getConcurrent()
-            != other.getConcurrent()) return false;
+        if (getConcurrent() != other.getConcurrent()) return false;
       }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
@@ -6424,8 +7250,9 @@ public final class ReplicatedEventSourcing {
       }
       if (hasOriginSequenceNr()) {
         hash = (37 * hash) + ORIGINSEQUENCENR_FIELD_NUMBER;
-        hash = (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashLong(
-            getOriginSequenceNr());
+        hash =
+            (53 * hash)
+                + org.apache.pekko.protobufv3.internal.Internal.hashLong(getOriginSequenceNr());
       }
       if (hasVersionVector()) {
         hash = (37 * hash) + VERSIONVECTOR_FIELD_NUMBER;
@@ -6433,98 +7260,134 @@ public final class ReplicatedEventSourcing {
       }
       if (hasConcurrent()) {
         hash = (37 * hash) + CONCURRENT_FIELD_NUMBER;
-        hash = (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashBoolean(
-            getConcurrent());
+        hash =
+            (53 * hash)
+                + org.apache.pekko.protobufv3.internal.Internal.hashBoolean(getConcurrent());
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata parseFrom(
-        java.nio.ByteBuffer data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedEventMetadata
+        parseFrom(java.nio.ByteBuffer data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata parseFrom(
-        java.nio.ByteBuffer data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata parseFrom(
-        org.apache.pekko.protobufv3.internal.ByteString data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata parseFrom(
-        org.apache.pekko.protobufv3.internal.ByteString data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata parseFrom(byte[] data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata parseFrom(
-        byte[] data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata parseFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseDelimitedWithIOException(PARSER, input);
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedEventMetadata
+        parseFrom(
+            java.nio.ByteBuffer data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata parseDelimitedFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedEventMetadata
+        parseFrom(org.apache.pekko.protobufv3.internal.ByteString data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
     }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input);
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedEventMetadata
+        parseFrom(
+            org.apache.pekko.protobufv3.internal.ByteString data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedEventMetadata
+        parseFrom(byte[] data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedEventMetadata
+        parseFrom(
+            byte[] data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedEventMetadata
+        parseFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedEventMetadata
+        parseFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input, extensionRegistry);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedEventMetadata
+        parseDelimitedFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseDelimitedWithIOException(
+          PARSER, input);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedEventMetadata
+        parseDelimitedFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseDelimitedWithIOException(
+          PARSER, input, extensionRegistry);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedEventMetadata
+        parseFrom(org.apache.pekko.protobufv3.internal.CodedInputStream input)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedEventMetadata
+        parseFrom(
+            org.apache.pekko.protobufv3.internal.CodedInputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata prototype) {
+
+    public static Builder newBuilder(
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .ReplicatedEventMetadata
+            prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
@@ -6533,42 +7396,48 @@ public final class ReplicatedEventSourcing {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
-     * Protobuf type {@code ReplicatedEventMetadata}
-     */
-    public static final class Builder extends
-        org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder> implements
+    /** Protobuf type {@code ReplicatedEventMetadata} */
+    public static final class Builder
+        extends org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder>
+        implements
         // @@protoc_insertion_point(builder_implements:ReplicatedEventMetadata)
-        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadataOrBuilder {
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedEventMetadataOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ReplicatedEventMetadata_descriptor;
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .internal_static_ReplicatedEventMetadata_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ReplicatedEventMetadata_fieldAccessorTable
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .internal_static_ReplicatedEventMetadata_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata.class, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata.Builder.class);
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .ReplicatedEventMetadata.class,
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .ReplicatedEventMetadata.Builder.class);
       }
 
-      // Construct using org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata.newBuilder()
+      // Construct using
+      // org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(
-          org.apache.pekko.protobufv3.internal.GeneratedMessage.BuilderParent parent) {
+      private Builder(org.apache.pekko.protobufv3.internal.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
+
       private void maybeForceBuilderInitialization() {
-        if (org.apache.pekko.protobufv3.internal.GeneratedMessage
-                .alwaysUseFieldBuilders) {
+        if (org.apache.pekko.protobufv3.internal.GeneratedMessage.alwaysUseFieldBuilders) {
           getVersionVectorFieldBuilder();
         }
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -6585,19 +7454,26 @@ public final class ReplicatedEventSourcing {
       }
 
       @java.lang.Override
-      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-          getDescriptorForType() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ReplicatedEventMetadata_descriptor;
+      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor getDescriptorForType() {
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .internal_static_ReplicatedEventMetadata_descriptor;
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata getDefaultInstanceForType() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata.getDefaultInstance();
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedEventMetadata
+          getDefaultInstanceForType() {
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedEventMetadata.getDefaultInstance();
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata build() {
-        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata result = buildPartial();
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedEventMetadata
+          build() {
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .ReplicatedEventMetadata
+            result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -6605,14 +7481,25 @@ public final class ReplicatedEventSourcing {
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata buildPartial() {
-        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata result = new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata(this);
-        if (bitField0_ != 0) { buildPartial0(result); }
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedEventMetadata
+          buildPartial() {
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .ReplicatedEventMetadata
+            result =
+                new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .ReplicatedEventMetadata(this);
+        if (bitField0_ != 0) {
+          buildPartial0(result);
+        }
         onBuilt();
         return result;
       }
 
-      private void buildPartial0(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata result) {
+      private void buildPartial0(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedEventMetadata
+              result) {
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -6624,9 +7511,8 @@ public final class ReplicatedEventSourcing {
           to_bitField0_ |= 0x00000002;
         }
         if (((from_bitField0_ & 0x00000004) != 0)) {
-          result.versionVector_ = versionVectorBuilder_ == null
-              ? versionVector_
-              : versionVectorBuilder_.build();
+          result.versionVector_ =
+              versionVectorBuilder_ == null ? versionVector_ : versionVectorBuilder_.build();
           to_bitField0_ |= 0x00000004;
         }
         if (((from_bitField0_ & 0x00000008) != 0)) {
@@ -6638,16 +7524,27 @@ public final class ReplicatedEventSourcing {
 
       @java.lang.Override
       public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
-        if (other instanceof org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata) {
-          return mergeFrom((org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata)other);
+        if (other
+            instanceof
+            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .ReplicatedEventMetadata) {
+          return mergeFrom(
+              (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .ReplicatedEventMetadata)
+                  other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata other) {
-        if (other == org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata.getDefaultInstance()) return this;
+      public Builder mergeFrom(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedEventMetadata
+              other) {
+        if (other
+            == org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .ReplicatedEventMetadata.getDefaultInstance()) return this;
         if (other.hasOriginReplica()) {
           originReplica_ = other.originReplica_;
           bitField0_ |= 0x00000001;
@@ -6703,34 +7600,37 @@ public final class ReplicatedEventSourcing {
               case 0:
                 done = true;
                 break;
-              case 10: {
-                originReplica_ = input.readBytes();
-                bitField0_ |= 0x00000001;
-                break;
-              } // case 10
-              case 16: {
-                originSequenceNr_ = input.readInt64();
-                bitField0_ |= 0x00000002;
-                break;
-              } // case 16
-              case 26: {
-                input.readMessage(
-                    getVersionVectorFieldBuilder().getBuilder(),
-                    extensionRegistry);
-                bitField0_ |= 0x00000004;
-                break;
-              } // case 26
-              case 32: {
-                concurrent_ = input.readBool();
-                bitField0_ |= 0x00000008;
-                break;
-              } // case 32
-              default: {
-                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                  done = true; // was an endgroup tag
-                }
-                break;
-              } // default:
+              case 10:
+                {
+                  originReplica_ = input.readBytes();
+                  bitField0_ |= 0x00000001;
+                  break;
+                } // case 10
+              case 16:
+                {
+                  originSequenceNr_ = input.readInt64();
+                  bitField0_ |= 0x00000002;
+                  break;
+                } // case 16
+              case 26:
+                {
+                  input.readMessage(getVersionVectorFieldBuilder().getBuilder(), extensionRegistry);
+                  bitField0_ |= 0x00000004;
+                  break;
+                } // case 26
+              case 32:
+                {
+                  concurrent_ = input.readBool();
+                  bitField0_ |= 0x00000008;
+                  break;
+                } // case 32
+              default:
+                {
+                  if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                    done = true; // was an endgroup tag
+                  }
+                  break;
+                } // default:
             } // switch (tag)
           } // while (!done)
         } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
@@ -6740,11 +7640,13 @@ public final class ReplicatedEventSourcing {
         } // finally
         return this;
       }
+
       private int bitField0_;
 
       private java.lang.Object originReplica_ = "";
       /**
        * <code>required string originReplica = 1;</code>
+       *
        * @return Whether the originReplica field is set.
        */
       public boolean hasOriginReplica() {
@@ -6752,6 +7654,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>required string originReplica = 1;</code>
+       *
        * @return The originReplica.
        */
       public java.lang.String getOriginReplica() {
@@ -6770,15 +7673,14 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>required string originReplica = 1;</code>
+       *
        * @return The bytes for originReplica.
        */
-      public org.apache.pekko.protobufv3.internal.ByteString
-          getOriginReplicaBytes() {
+      public org.apache.pekko.protobufv3.internal.ByteString getOriginReplicaBytes() {
         java.lang.Object ref = originReplica_;
         if (ref instanceof String) {
-          org.apache.pekko.protobufv3.internal.ByteString b = 
-              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          org.apache.pekko.protobufv3.internal.ByteString b =
+              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
           originReplica_ = b;
           return b;
         } else {
@@ -6787,12 +7689,14 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>required string originReplica = 1;</code>
+       *
        * @param value The originReplica to set.
        * @return This builder for chaining.
        */
-      public Builder setOriginReplica(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
+      public Builder setOriginReplica(java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
         originReplica_ = value;
         bitField0_ |= 0x00000001;
         onChanged();
@@ -6800,6 +7704,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>required string originReplica = 1;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearOriginReplica() {
@@ -6810,21 +7715,24 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>required string originReplica = 1;</code>
+       *
        * @param value The bytes for originReplica to set.
        * @return This builder for chaining.
        */
-      public Builder setOriginReplicaBytes(
-          org.apache.pekko.protobufv3.internal.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
+      public Builder setOriginReplicaBytes(org.apache.pekko.protobufv3.internal.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
         originReplica_ = value;
         bitField0_ |= 0x00000001;
         onChanged();
         return this;
       }
 
-      private long originSequenceNr_ ;
+      private long originSequenceNr_;
       /**
        * <code>required int64 originSequenceNr = 2;</code>
+       *
        * @return Whether the originSequenceNr field is set.
        */
       @java.lang.Override
@@ -6833,6 +7741,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>required int64 originSequenceNr = 2;</code>
+       *
        * @return The originSequenceNr.
        */
       @java.lang.Override
@@ -6841,6 +7750,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>required int64 originSequenceNr = 2;</code>
+       *
        * @param value The originSequenceNr to set.
        * @return This builder for chaining.
        */
@@ -6853,6 +7763,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>required int64 originSequenceNr = 2;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearOriginSequenceNr() {
@@ -6862,11 +7773,19 @@ public final class ReplicatedEventSourcing {
         return this;
       }
 
-      private org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector versionVector_;
+      private org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+          versionVector_;
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Builder, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder> versionVectorBuilder_;
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .VersionVector,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Builder,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .VersionVectorOrBuilder>
+          versionVectorBuilder_;
       /**
        * <code>required .VersionVector versionVector = 3;</code>
+       *
        * @return Whether the versionVector field is set.
        */
       public boolean hasVersionVector() {
@@ -6874,19 +7793,24 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>required .VersionVector versionVector = 3;</code>
+       *
        * @return The versionVector.
        */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector getVersionVector() {
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+          getVersionVector() {
         if (versionVectorBuilder_ == null) {
-          return versionVector_ == null ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.getDefaultInstance() : versionVector_;
+          return versionVector_ == null
+              ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .VersionVector.getDefaultInstance()
+              : versionVector_;
         } else {
           return versionVectorBuilder_.getMessage();
         }
       }
-      /**
-       * <code>required .VersionVector versionVector = 3;</code>
-       */
-      public Builder setVersionVector(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector value) {
+      /** <code>required .VersionVector versionVector = 3;</code> */
+      public Builder setVersionVector(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              value) {
         if (versionVectorBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -6899,11 +7823,11 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
-      /**
-       * <code>required .VersionVector versionVector = 3;</code>
-       */
+      /** <code>required .VersionVector versionVector = 3;</code> */
       public Builder setVersionVector(
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Builder builderForValue) {
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Builder
+              builderForValue) {
         if (versionVectorBuilder_ == null) {
           versionVector_ = builderForValue.build();
         } else {
@@ -6913,14 +7837,16 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
-      /**
-       * <code>required .VersionVector versionVector = 3;</code>
-       */
-      public Builder mergeVersionVector(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector value) {
+      /** <code>required .VersionVector versionVector = 3;</code> */
+      public Builder mergeVersionVector(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              value) {
         if (versionVectorBuilder_ == null) {
-          if (((bitField0_ & 0x00000004) != 0) &&
-            versionVector_ != null &&
-            versionVector_ != org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.getDefaultInstance()) {
+          if (((bitField0_ & 0x00000004) != 0)
+              && versionVector_ != null
+              && versionVector_
+                  != org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .VersionVector.getDefaultInstance()) {
             getVersionVectorBuilder().mergeFrom(value);
           } else {
             versionVector_ = value;
@@ -6934,9 +7860,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>required .VersionVector versionVector = 3;</code>
-       */
+      /** <code>required .VersionVector versionVector = 3;</code> */
       public Builder clearVersionVector() {
         bitField0_ = (bitField0_ & ~0x00000004);
         versionVector_ = null;
@@ -6947,45 +7871,55 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
-      /**
-       * <code>required .VersionVector versionVector = 3;</code>
-       */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Builder getVersionVectorBuilder() {
+      /** <code>required .VersionVector versionVector = 3;</code> */
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              .Builder
+          getVersionVectorBuilder() {
         bitField0_ |= 0x00000004;
         onChanged();
         return getVersionVectorFieldBuilder().getBuilder();
       }
-      /**
-       * <code>required .VersionVector versionVector = 3;</code>
-       */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder getVersionVectorOrBuilder() {
+      /** <code>required .VersionVector versionVector = 3;</code> */
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .VersionVectorOrBuilder
+          getVersionVectorOrBuilder() {
         if (versionVectorBuilder_ != null) {
           return versionVectorBuilder_.getMessageOrBuilder();
         } else {
-          return versionVector_ == null ?
-              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.getDefaultInstance() : versionVector_;
+          return versionVector_ == null
+              ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .VersionVector.getDefaultInstance()
+              : versionVector_;
         }
       }
-      /**
-       * <code>required .VersionVector versionVector = 3;</code>
-       */
+      /** <code>required .VersionVector versionVector = 3;</code> */
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Builder, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder> 
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .VersionVector,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Builder,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .VersionVectorOrBuilder>
           getVersionVectorFieldBuilder() {
         if (versionVectorBuilder_ == null) {
-          versionVectorBuilder_ = new org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
-              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Builder, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder>(
-                  getVersionVector(),
-                  getParentForChildren(),
-                  isClean());
+          versionVectorBuilder_ =
+              new org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .VersionVector,
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .VersionVector.Builder,
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .VersionVectorOrBuilder>(
+                  getVersionVector(), getParentForChildren(), isClean());
           versionVector_ = null;
         }
         return versionVectorBuilder_;
       }
 
-      private boolean concurrent_ ;
+      private boolean concurrent_;
       /**
        * <code>required bool concurrent = 4;</code>
+       *
        * @return Whether the concurrent field is set.
        */
       @java.lang.Override
@@ -6994,6 +7928,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>required bool concurrent = 4;</code>
+       *
        * @return The concurrent.
        */
       @java.lang.Override
@@ -7002,6 +7937,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>required bool concurrent = 4;</code>
+       *
        * @param value The concurrent to set.
        * @return This builder for chaining.
        */
@@ -7014,6 +7950,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>required bool concurrent = 4;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearConcurrent() {
@@ -7027,36 +7964,45 @@ public final class ReplicatedEventSourcing {
     }
 
     // @@protoc_insertion_point(class_scope:ReplicatedEventMetadata)
-    private static final org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata DEFAULT_INSTANCE;
+    private static final org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedEventMetadata
+        DEFAULT_INSTANCE;
+
     static {
-      DEFAULT_INSTANCE = new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata();
+      DEFAULT_INSTANCE =
+          new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedEventMetadata();
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata getDefaultInstance() {
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedEventMetadata
+        getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
     private static final org.apache.pekko.protobufv3.internal.Parser<ReplicatedEventMetadata>
-        PARSER = new org.apache.pekko.protobufv3.internal.AbstractParser<ReplicatedEventMetadata>() {
-      @java.lang.Override
-      public ReplicatedEventMetadata parsePartialFrom(
-          org.apache.pekko.protobufv3.internal.CodedInputStream input,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        Builder builder = newBuilder();
-        try {
-          builder.mergeFrom(input, extensionRegistry);
-        } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(builder.buildPartial());
-        } catch (org.apache.pekko.protobufv3.internal.UninitializedMessageException e) {
-          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-        } catch (java.io.IOException e) {
-          throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
-              .setUnfinishedMessage(builder.buildPartial());
-        }
-        return builder.buildPartial();
-      }
-    };
+        PARSER =
+            new org.apache.pekko.protobufv3.internal.AbstractParser<ReplicatedEventMetadata>() {
+              @java.lang.Override
+              public ReplicatedEventMetadata parsePartialFrom(
+                  org.apache.pekko.protobufv3.internal.CodedInputStream input,
+                  org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+                  throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+                Builder builder = newBuilder();
+                try {
+                  builder.mergeFrom(input, extensionRegistry);
+                } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
+                  throw e.setUnfinishedMessage(builder.buildPartial());
+                } catch (org.apache.pekko.protobufv3.internal.UninitializedMessageException e) {
+                  throw e.asInvalidProtocolBufferException()
+                      .setUnfinishedMessage(builder.buildPartial());
+                } catch (java.io.IOException e) {
+                  throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
+                      .setUnfinishedMessage(builder.buildPartial());
+                }
+                return builder.buildPartial();
+              }
+            };
 
     public static org.apache.pekko.protobufv3.internal.Parser<ReplicatedEventMetadata> parser() {
       return PARSER;
@@ -7068,169 +8014,190 @@ public final class ReplicatedEventSourcing {
     }
 
     @java.lang.Override
-    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedEventMetadata getDefaultInstanceForType() {
+    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedEventMetadata
+        getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
-
   }
 
-  public interface ReplicatedSnapshotMetadataOrBuilder extends
+  public interface ReplicatedSnapshotMetadataOrBuilder
+      extends
       // @@protoc_insertion_point(interface_extends:ReplicatedSnapshotMetadata)
       org.apache.pekko.protobufv3.internal.MessageOrBuilder {
 
     /**
      * <code>required .VersionVector version = 1;</code>
+     *
      * @return Whether the version field is set.
      */
     boolean hasVersion();
     /**
      * <code>required .VersionVector version = 1;</code>
+     *
      * @return The version.
      */
-    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector getVersion();
-    /**
-     * <code>required .VersionVector version = 1;</code>
-     */
-    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder getVersionOrBuilder();
+    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+        getVersion();
+    /** <code>required .VersionVector version = 1;</code> */
+    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder
+        getVersionOrBuilder();
 
-    /**
-     * <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code>
-     */
-    java.util.List<org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen> 
+    /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
+    java.util.List<
+            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .ReplicatedSnapshotMetadata.Seen>
         getSeenPerReplicaList();
-    /**
-     * <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code>
-     */
-    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen getSeenPerReplica(int index);
-    /**
-     * <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code>
-     */
+    /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
+    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedSnapshotMetadata.Seen
+        getSeenPerReplica(int index);
+    /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
     int getSeenPerReplicaCount();
-    /**
-     * <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code>
-     */
-    java.util.List<? extends org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.SeenOrBuilder> 
+    /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
+    java.util.List<
+            ? extends
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .ReplicatedSnapshotMetadata.SeenOrBuilder>
         getSeenPerReplicaOrBuilderList();
-    /**
-     * <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code>
-     */
-    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.SeenOrBuilder getSeenPerReplicaOrBuilder(
-        int index);
+    /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
+    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedSnapshotMetadata.SeenOrBuilder
+        getSeenPerReplicaOrBuilder(int index);
   }
-  /**
-   * Protobuf type {@code ReplicatedSnapshotMetadata}
-   */
-  public static final class ReplicatedSnapshotMetadata extends
-      org.apache.pekko.protobufv3.internal.GeneratedMessage implements
+  /** Protobuf type {@code ReplicatedSnapshotMetadata} */
+  public static final class ReplicatedSnapshotMetadata
+      extends org.apache.pekko.protobufv3.internal.GeneratedMessage
+      implements
       // @@protoc_insertion_point(message_implements:ReplicatedSnapshotMetadata)
       ReplicatedSnapshotMetadataOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
+
     static {
       org.apache.pekko.protobufv3.internal.RuntimeVersion.validateProtobufGencodeVersion(
-        org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
-        /* major= */ 4,
-        /* minor= */ 29,
-        /* patch= */ 3,
-        /* suffix= */ "",
-        ReplicatedSnapshotMetadata.class.getName());
+          org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
+          /* major= */ 4,
+          /* minor= */ 29,
+          /* patch= */ 3,
+          /* suffix= */ "",
+          ReplicatedSnapshotMetadata.class.getName());
     }
     // Use ReplicatedSnapshotMetadata.newBuilder() to construct.
-    private ReplicatedSnapshotMetadata(org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
+    private ReplicatedSnapshotMetadata(
+        org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
       super(builder);
     }
+
     private ReplicatedSnapshotMetadata() {
       seenPerReplica_ = java.util.Collections.emptyList();
     }
 
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ReplicatedSnapshotMetadata_descriptor;
+      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+          .internal_static_ReplicatedSnapshotMetadata_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ReplicatedSnapshotMetadata_fieldAccessorTable
+      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+          .internal_static_ReplicatedSnapshotMetadata_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.class, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Builder.class);
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedSnapshotMetadata.class,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedSnapshotMetadata.Builder.class);
     }
 
-    public interface SeenOrBuilder extends
+    public interface SeenOrBuilder
+        extends
         // @@protoc_insertion_point(interface_extends:ReplicatedSnapshotMetadata.Seen)
         org.apache.pekko.protobufv3.internal.MessageOrBuilder {
 
       /**
        * <code>required string replicaId = 1;</code>
+       *
        * @return Whether the replicaId field is set.
        */
       boolean hasReplicaId();
       /**
        * <code>required string replicaId = 1;</code>
+       *
        * @return The replicaId.
        */
       java.lang.String getReplicaId();
       /**
        * <code>required string replicaId = 1;</code>
+       *
        * @return The bytes for replicaId.
        */
-      org.apache.pekko.protobufv3.internal.ByteString
-          getReplicaIdBytes();
+      org.apache.pekko.protobufv3.internal.ByteString getReplicaIdBytes();
 
       /**
        * <code>required int64 sequenceNr = 2;</code>
+       *
        * @return Whether the sequenceNr field is set.
        */
       boolean hasSequenceNr();
       /**
        * <code>required int64 sequenceNr = 2;</code>
+       *
        * @return The sequenceNr.
        */
       long getSequenceNr();
     }
-    /**
-     * Protobuf type {@code ReplicatedSnapshotMetadata.Seen}
-     */
-    public static final class Seen extends
-        org.apache.pekko.protobufv3.internal.GeneratedMessage implements
+    /** Protobuf type {@code ReplicatedSnapshotMetadata.Seen} */
+    public static final class Seen extends org.apache.pekko.protobufv3.internal.GeneratedMessage
+        implements
         // @@protoc_insertion_point(message_implements:ReplicatedSnapshotMetadata.Seen)
         SeenOrBuilder {
-    private static final long serialVersionUID = 0L;
+      private static final long serialVersionUID = 0L;
+
       static {
         org.apache.pekko.protobufv3.internal.RuntimeVersion.validateProtobufGencodeVersion(
-          org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
-          /* major= */ 4,
-          /* minor= */ 29,
-          /* patch= */ 3,
-          /* suffix= */ "",
-          Seen.class.getName());
+            org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
+            /* major= */ 4,
+            /* minor= */ 29,
+            /* patch= */ 3,
+            /* suffix= */ "",
+            Seen.class.getName());
       }
       // Use Seen.newBuilder() to construct.
       private Seen(org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
         super(builder);
       }
+
       private Seen() {
         replicaId_ = "";
       }
 
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ReplicatedSnapshotMetadata_Seen_descriptor;
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .internal_static_ReplicatedSnapshotMetadata_Seen_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ReplicatedSnapshotMetadata_Seen_fieldAccessorTable
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .internal_static_ReplicatedSnapshotMetadata_Seen_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen.class, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen.Builder.class);
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .ReplicatedSnapshotMetadata.Seen.class,
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .ReplicatedSnapshotMetadata.Seen.Builder.class);
       }
 
       private int bitField0_;
       public static final int REPLICAID_FIELD_NUMBER = 1;
+
       @SuppressWarnings("serial")
       private volatile java.lang.Object replicaId_ = "";
       /**
        * <code>required string replicaId = 1;</code>
+       *
        * @return Whether the replicaId field is set.
        */
       @java.lang.Override
@@ -7239,6 +8206,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>required string replicaId = 1;</code>
+       *
        * @return The replicaId.
        */
       @java.lang.Override
@@ -7247,7 +8215,7 @@ public final class ReplicatedEventSourcing {
         if (ref instanceof java.lang.String) {
           return (java.lang.String) ref;
         } else {
-          org.apache.pekko.protobufv3.internal.ByteString bs = 
+          org.apache.pekko.protobufv3.internal.ByteString bs =
               (org.apache.pekko.protobufv3.internal.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           if (bs.isValidUtf8()) {
@@ -7258,16 +8226,15 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>required string replicaId = 1;</code>
+       *
        * @return The bytes for replicaId.
        */
       @java.lang.Override
-      public org.apache.pekko.protobufv3.internal.ByteString
-          getReplicaIdBytes() {
+      public org.apache.pekko.protobufv3.internal.ByteString getReplicaIdBytes() {
         java.lang.Object ref = replicaId_;
         if (ref instanceof java.lang.String) {
-          org.apache.pekko.protobufv3.internal.ByteString b = 
-              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          org.apache.pekko.protobufv3.internal.ByteString b =
+              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
           replicaId_ = b;
           return b;
         } else {
@@ -7279,6 +8246,7 @@ public final class ReplicatedEventSourcing {
       private long sequenceNr_ = 0L;
       /**
        * <code>required int64 sequenceNr = 2;</code>
+       *
        * @return Whether the sequenceNr field is set.
        */
       @java.lang.Override
@@ -7287,6 +8255,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>required int64 sequenceNr = 2;</code>
+       *
        * @return The sequenceNr.
        */
       @java.lang.Override
@@ -7295,6 +8264,7 @@ public final class ReplicatedEventSourcing {
       }
 
       private byte memoizedIsInitialized = -1;
+
       @java.lang.Override
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
@@ -7315,7 +8285,7 @@ public final class ReplicatedEventSourcing {
 
       @java.lang.Override
       public void writeTo(org.apache.pekko.protobufv3.internal.CodedOutputStream output)
-                          throws java.io.IOException {
+          throws java.io.IOException {
         if (((bitField0_ & 0x00000001) != 0)) {
           org.apache.pekko.protobufv3.internal.GeneratedMessage.writeString(output, 1, replicaId_);
         }
@@ -7332,11 +8302,14 @@ public final class ReplicatedEventSourcing {
 
         size = 0;
         if (((bitField0_ & 0x00000001) != 0)) {
-          size += org.apache.pekko.protobufv3.internal.GeneratedMessage.computeStringSize(1, replicaId_);
+          size +=
+              org.apache.pekko.protobufv3.internal.GeneratedMessage.computeStringSize(
+                  1, replicaId_);
         }
         if (((bitField0_ & 0x00000002) != 0)) {
-          size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-            .computeInt64Size(2, sequenceNr_);
+          size +=
+              org.apache.pekko.protobufv3.internal.CodedOutputStream.computeInt64Size(
+                  2, sequenceNr_);
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSize = size;
@@ -7346,22 +8319,28 @@ public final class ReplicatedEventSourcing {
       @java.lang.Override
       public boolean equals(final java.lang.Object obj) {
         if (obj == this) {
-         return true;
+          return true;
         }
-        if (!(obj instanceof org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen)) {
+        if (!(obj
+            instanceof
+            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .ReplicatedSnapshotMetadata.Seen)) {
           return super.equals(obj);
         }
-        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen other = (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen) obj;
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .ReplicatedSnapshotMetadata.Seen
+            other =
+                (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                        .ReplicatedSnapshotMetadata.Seen)
+                    obj;
 
         if (hasReplicaId() != other.hasReplicaId()) return false;
         if (hasReplicaId()) {
-          if (!getReplicaId()
-              .equals(other.getReplicaId())) return false;
+          if (!getReplicaId().equals(other.getReplicaId())) return false;
         }
         if (hasSequenceNr() != other.hasSequenceNr()) return false;
         if (hasSequenceNr()) {
-          if (getSequenceNr()
-              != other.getSequenceNr()) return false;
+          if (getSequenceNr() != other.getSequenceNr()) return false;
         }
         if (!getUnknownFields().equals(other.getUnknownFields())) return false;
         return true;
@@ -7380,98 +8359,133 @@ public final class ReplicatedEventSourcing {
         }
         if (hasSequenceNr()) {
           hash = (37 * hash) + SEQUENCENR_FIELD_NUMBER;
-          hash = (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashLong(
-              getSequenceNr());
+          hash =
+              (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashLong(getSequenceNr());
         }
         hash = (29 * hash) + getUnknownFields().hashCode();
         memoizedHashCode = hash;
         return hash;
       }
 
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen parseFrom(
-          java.nio.ByteBuffer data)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedSnapshotMetadata.Seen
+          parseFrom(java.nio.ByteBuffer data)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
-      }
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen parseFrom(
-          java.nio.ByteBuffer data,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen parseFrom(
-          org.apache.pekko.protobufv3.internal.ByteString data)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen parseFrom(
-          org.apache.pekko.protobufv3.internal.ByteString data,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen parseFrom(byte[] data)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen parseFrom(
-          byte[] data,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen parseFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        return org.apache.pekko.protobufv3.internal.GeneratedMessage
-            .parseWithIOException(PARSER, input);
-      }
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen parseFrom(
-          java.io.InputStream input,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return org.apache.pekko.protobufv3.internal.GeneratedMessage
-            .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen parseDelimitedFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        return org.apache.pekko.protobufv3.internal.GeneratedMessage
-            .parseDelimitedWithIOException(PARSER, input);
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedSnapshotMetadata.Seen
+          parseFrom(
+              java.nio.ByteBuffer data,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
       }
 
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen parseDelimitedFrom(
-          java.io.InputStream input,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return org.apache.pekko.protobufv3.internal.GeneratedMessage
-            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedSnapshotMetadata.Seen
+          parseFrom(org.apache.pekko.protobufv3.internal.ByteString data)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
       }
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen parseFrom(
-          org.apache.pekko.protobufv3.internal.CodedInputStream input)
-          throws java.io.IOException {
-        return org.apache.pekko.protobufv3.internal.GeneratedMessage
-            .parseWithIOException(PARSER, input);
+
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedSnapshotMetadata.Seen
+          parseFrom(
+              org.apache.pekko.protobufv3.internal.ByteString data,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen parseFrom(
-          org.apache.pekko.protobufv3.internal.CodedInputStream input,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return org.apache.pekko.protobufv3.internal.GeneratedMessage
-            .parseWithIOException(PARSER, input, extensionRegistry);
+
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedSnapshotMetadata.Seen
+          parseFrom(byte[] data)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedSnapshotMetadata.Seen
+          parseFrom(
+              byte[] data,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedSnapshotMetadata.Seen
+          parseFrom(java.io.InputStream input) throws java.io.IOException {
+        return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+            PARSER, input);
+      }
+
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedSnapshotMetadata.Seen
+          parseFrom(
+              java.io.InputStream input,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+        return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+            PARSER, input, extensionRegistry);
+      }
+
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedSnapshotMetadata.Seen
+          parseDelimitedFrom(java.io.InputStream input) throws java.io.IOException {
+        return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseDelimitedWithIOException(
+            PARSER, input);
+      }
+
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedSnapshotMetadata.Seen
+          parseDelimitedFrom(
+              java.io.InputStream input,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+        return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseDelimitedWithIOException(
+            PARSER, input, extensionRegistry);
+      }
+
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedSnapshotMetadata.Seen
+          parseFrom(org.apache.pekko.protobufv3.internal.CodedInputStream input)
+              throws java.io.IOException {
+        return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+            PARSER, input);
+      }
+
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedSnapshotMetadata.Seen
+          parseFrom(
+              org.apache.pekko.protobufv3.internal.CodedInputStream input,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+        return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+            PARSER, input, extensionRegistry);
       }
 
       @java.lang.Override
-      public Builder newBuilderForType() { return newBuilder(); }
+      public Builder newBuilderForType() {
+        return newBuilder();
+      }
+
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
       }
-      public static Builder newBuilder(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen prototype) {
+
+      public static Builder newBuilder(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedSnapshotMetadata.Seen
+              prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
+
       @java.lang.Override
       public Builder toBuilder() {
-        return this == DEFAULT_INSTANCE
-            ? new Builder() : new Builder().mergeFrom(this);
+        return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
       }
 
       @java.lang.Override
@@ -7480,36 +8494,40 @@ public final class ReplicatedEventSourcing {
         Builder builder = new Builder(parent);
         return builder;
       }
-      /**
-       * Protobuf type {@code ReplicatedSnapshotMetadata.Seen}
-       */
-      public static final class Builder extends
-          org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder> implements
+      /** Protobuf type {@code ReplicatedSnapshotMetadata.Seen} */
+      public static final class Builder
+          extends org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder>
+          implements
           // @@protoc_insertion_point(builder_implements:ReplicatedSnapshotMetadata.Seen)
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.SeenOrBuilder {
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedSnapshotMetadata.SeenOrBuilder {
         public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
             getDescriptor() {
-          return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ReplicatedSnapshotMetadata_Seen_descriptor;
+          return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .internal_static_ReplicatedSnapshotMetadata_Seen_descriptor;
         }
 
         @java.lang.Override
         protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ReplicatedSnapshotMetadata_Seen_fieldAccessorTable
+          return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .internal_static_ReplicatedSnapshotMetadata_Seen_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen.class, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen.Builder.class);
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .ReplicatedSnapshotMetadata.Seen.class,
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .ReplicatedSnapshotMetadata.Seen.Builder.class);
         }
 
-        // Construct using org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen.newBuilder()
-        private Builder() {
-
-        }
+        // Construct using
+        // org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen.newBuilder()
+        private Builder() {}
 
         private Builder(
             org.apache.pekko.protobufv3.internal.GeneratedMessage.BuilderParent parent) {
           super(parent);
-
         }
+
         @java.lang.Override
         public Builder clear() {
           super.clear();
@@ -7520,19 +8538,26 @@ public final class ReplicatedEventSourcing {
         }
 
         @java.lang.Override
-        public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-            getDescriptorForType() {
-          return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ReplicatedSnapshotMetadata_Seen_descriptor;
+        public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor getDescriptorForType() {
+          return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .internal_static_ReplicatedSnapshotMetadata_Seen_descriptor;
         }
 
         @java.lang.Override
-        public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen getDefaultInstanceForType() {
-          return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen.getDefaultInstance();
+        public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .ReplicatedSnapshotMetadata.Seen
+            getDefaultInstanceForType() {
+          return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedSnapshotMetadata.Seen.getDefaultInstance();
         }
 
         @java.lang.Override
-        public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen build() {
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen result = buildPartial();
+        public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .ReplicatedSnapshotMetadata.Seen
+            build() {
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedSnapshotMetadata.Seen
+              result = buildPartial();
           if (!result.isInitialized()) {
             throw newUninitializedMessageException(result);
           }
@@ -7540,14 +8565,25 @@ public final class ReplicatedEventSourcing {
         }
 
         @java.lang.Override
-        public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen buildPartial() {
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen result = new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen(this);
-          if (bitField0_ != 0) { buildPartial0(result); }
+        public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .ReplicatedSnapshotMetadata.Seen
+            buildPartial() {
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedSnapshotMetadata.Seen
+              result =
+                  new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .ReplicatedSnapshotMetadata.Seen(this);
+          if (bitField0_ != 0) {
+            buildPartial0(result);
+          }
           onBuilt();
           return result;
         }
 
-        private void buildPartial0(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen result) {
+        private void buildPartial0(
+            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .ReplicatedSnapshotMetadata.Seen
+                result) {
           int from_bitField0_ = bitField0_;
           int to_bitField0_ = 0;
           if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -7563,16 +8599,27 @@ public final class ReplicatedEventSourcing {
 
         @java.lang.Override
         public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
-          if (other instanceof org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen) {
-            return mergeFrom((org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen)other);
+          if (other
+              instanceof
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedSnapshotMetadata.Seen) {
+            return mergeFrom(
+                (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                        .ReplicatedSnapshotMetadata.Seen)
+                    other);
           } else {
             super.mergeFrom(other);
             return this;
           }
         }
 
-        public Builder mergeFrom(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen other) {
-          if (other == org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen.getDefaultInstance()) return this;
+        public Builder mergeFrom(
+            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .ReplicatedSnapshotMetadata.Seen
+                other) {
+          if (other
+              == org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedSnapshotMetadata.Seen.getDefaultInstance()) return this;
           if (other.hasReplicaId()) {
             replicaId_ = other.replicaId_;
             bitField0_ |= 0x00000001;
@@ -7613,22 +8660,25 @@ public final class ReplicatedEventSourcing {
                 case 0:
                   done = true;
                   break;
-                case 10: {
-                  replicaId_ = input.readBytes();
-                  bitField0_ |= 0x00000001;
-                  break;
-                } // case 10
-                case 16: {
-                  sequenceNr_ = input.readInt64();
-                  bitField0_ |= 0x00000002;
-                  break;
-                } // case 16
-                default: {
-                  if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                    done = true; // was an endgroup tag
-                  }
-                  break;
-                } // default:
+                case 10:
+                  {
+                    replicaId_ = input.readBytes();
+                    bitField0_ |= 0x00000001;
+                    break;
+                  } // case 10
+                case 16:
+                  {
+                    sequenceNr_ = input.readInt64();
+                    bitField0_ |= 0x00000002;
+                    break;
+                  } // case 16
+                default:
+                  {
+                    if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                      done = true; // was an endgroup tag
+                    }
+                    break;
+                  } // default:
               } // switch (tag)
             } // while (!done)
           } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
@@ -7638,11 +8688,13 @@ public final class ReplicatedEventSourcing {
           } // finally
           return this;
         }
+
         private int bitField0_;
 
         private java.lang.Object replicaId_ = "";
         /**
          * <code>required string replicaId = 1;</code>
+         *
          * @return Whether the replicaId field is set.
          */
         public boolean hasReplicaId() {
@@ -7650,6 +8702,7 @@ public final class ReplicatedEventSourcing {
         }
         /**
          * <code>required string replicaId = 1;</code>
+         *
          * @return The replicaId.
          */
         public java.lang.String getReplicaId() {
@@ -7668,13 +8721,13 @@ public final class ReplicatedEventSourcing {
         }
         /**
          * <code>required string replicaId = 1;</code>
+         *
          * @return The bytes for replicaId.
          */
-        public org.apache.pekko.protobufv3.internal.ByteString
-            getReplicaIdBytes() {
+        public org.apache.pekko.protobufv3.internal.ByteString getReplicaIdBytes() {
           java.lang.Object ref = replicaId_;
           if (ref instanceof String) {
-            org.apache.pekko.protobufv3.internal.ByteString b = 
+            org.apache.pekko.protobufv3.internal.ByteString b =
                 org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
                     (java.lang.String) ref);
             replicaId_ = b;
@@ -7685,12 +8738,14 @@ public final class ReplicatedEventSourcing {
         }
         /**
          * <code>required string replicaId = 1;</code>
+         *
          * @param value The replicaId to set.
          * @return This builder for chaining.
          */
-        public Builder setReplicaId(
-            java.lang.String value) {
-          if (value == null) { throw new NullPointerException(); }
+        public Builder setReplicaId(java.lang.String value) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
           replicaId_ = value;
           bitField0_ |= 0x00000001;
           onChanged();
@@ -7698,6 +8753,7 @@ public final class ReplicatedEventSourcing {
         }
         /**
          * <code>required string replicaId = 1;</code>
+         *
          * @return This builder for chaining.
          */
         public Builder clearReplicaId() {
@@ -7708,21 +8764,24 @@ public final class ReplicatedEventSourcing {
         }
         /**
          * <code>required string replicaId = 1;</code>
+         *
          * @param value The bytes for replicaId to set.
          * @return This builder for chaining.
          */
-        public Builder setReplicaIdBytes(
-            org.apache.pekko.protobufv3.internal.ByteString value) {
-          if (value == null) { throw new NullPointerException(); }
+        public Builder setReplicaIdBytes(org.apache.pekko.protobufv3.internal.ByteString value) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
           replicaId_ = value;
           bitField0_ |= 0x00000001;
           onChanged();
           return this;
         }
 
-        private long sequenceNr_ ;
+        private long sequenceNr_;
         /**
          * <code>required int64 sequenceNr = 2;</code>
+         *
          * @return Whether the sequenceNr field is set.
          */
         @java.lang.Override
@@ -7731,6 +8790,7 @@ public final class ReplicatedEventSourcing {
         }
         /**
          * <code>required int64 sequenceNr = 2;</code>
+         *
          * @return The sequenceNr.
          */
         @java.lang.Override
@@ -7739,6 +8799,7 @@ public final class ReplicatedEventSourcing {
         }
         /**
          * <code>required int64 sequenceNr = 2;</code>
+         *
          * @param value The sequenceNr to set.
          * @return This builder for chaining.
          */
@@ -7751,6 +8812,7 @@ public final class ReplicatedEventSourcing {
         }
         /**
          * <code>required int64 sequenceNr = 2;</code>
+         *
          * @return This builder for chaining.
          */
         public Builder clearSequenceNr() {
@@ -7764,36 +8826,44 @@ public final class ReplicatedEventSourcing {
       }
 
       // @@protoc_insertion_point(class_scope:ReplicatedSnapshotMetadata.Seen)
-      private static final org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen DEFAULT_INSTANCE;
+      private static final org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedSnapshotMetadata.Seen
+          DEFAULT_INSTANCE;
+
       static {
-        DEFAULT_INSTANCE = new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen();
+        DEFAULT_INSTANCE =
+            new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .ReplicatedSnapshotMetadata.Seen();
       }
 
-      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen getDefaultInstance() {
+      public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedSnapshotMetadata.Seen
+          getDefaultInstance() {
         return DEFAULT_INSTANCE;
       }
 
-      private static final org.apache.pekko.protobufv3.internal.Parser<Seen>
-          PARSER = new org.apache.pekko.protobufv3.internal.AbstractParser<Seen>() {
-        @java.lang.Override
-        public Seen parsePartialFrom(
-            org.apache.pekko.protobufv3.internal.CodedInputStream input,
-            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-          Builder builder = newBuilder();
-          try {
-            builder.mergeFrom(input, extensionRegistry);
-          } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
-            throw e.setUnfinishedMessage(builder.buildPartial());
-          } catch (org.apache.pekko.protobufv3.internal.UninitializedMessageException e) {
-            throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-          } catch (java.io.IOException e) {
-            throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
-                .setUnfinishedMessage(builder.buildPartial());
-          }
-          return builder.buildPartial();
-        }
-      };
+      private static final org.apache.pekko.protobufv3.internal.Parser<Seen> PARSER =
+          new org.apache.pekko.protobufv3.internal.AbstractParser<Seen>() {
+            @java.lang.Override
+            public Seen parsePartialFrom(
+                org.apache.pekko.protobufv3.internal.CodedInputStream input,
+                org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+                throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+              Builder builder = newBuilder();
+              try {
+                builder.mergeFrom(input, extensionRegistry);
+              } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
+                throw e.setUnfinishedMessage(builder.buildPartial());
+              } catch (org.apache.pekko.protobufv3.internal.UninitializedMessageException e) {
+                throw e.asInvalidProtocolBufferException()
+                    .setUnfinishedMessage(builder.buildPartial());
+              } catch (java.io.IOException e) {
+                throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
+                    .setUnfinishedMessage(builder.buildPartial());
+              }
+              return builder.buildPartial();
+            }
+          };
 
       public static org.apache.pekko.protobufv3.internal.Parser<Seen> parser() {
         return PARSER;
@@ -7805,17 +8875,20 @@ public final class ReplicatedEventSourcing {
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen getDefaultInstanceForType() {
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedSnapshotMetadata.Seen
+          getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
-
     }
 
     private int bitField0_;
     public static final int VERSION_FIELD_NUMBER = 1;
-    private org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector version_;
+    private org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+        version_;
     /**
      * <code>required .VersionVector version = 1;</code>
+     *
      * @return Whether the version field is set.
      */
     @java.lang.Override
@@ -7824,62 +8897,74 @@ public final class ReplicatedEventSourcing {
     }
     /**
      * <code>required .VersionVector version = 1;</code>
+     *
      * @return The version.
      */
     @java.lang.Override
-    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector getVersion() {
-      return version_ == null ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.getDefaultInstance() : version_;
+    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+        getVersion() {
+      return version_ == null
+          ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              .getDefaultInstance()
+          : version_;
     }
-    /**
-     * <code>required .VersionVector version = 1;</code>
-     */
+    /** <code>required .VersionVector version = 1;</code> */
     @java.lang.Override
-    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder getVersionOrBuilder() {
-      return version_ == null ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.getDefaultInstance() : version_;
+    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .VersionVectorOrBuilder
+        getVersionOrBuilder() {
+      return version_ == null
+          ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              .getDefaultInstance()
+          : version_;
     }
 
     public static final int SEENPERREPLICA_FIELD_NUMBER = 2;
+
     @SuppressWarnings("serial")
-    private java.util.List<org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen> seenPerReplica_;
-    /**
-     * <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code>
-     */
+    private java.util.List<
+            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .ReplicatedSnapshotMetadata.Seen>
+        seenPerReplica_;
+    /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
     @java.lang.Override
-    public java.util.List<org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen> getSeenPerReplicaList() {
+    public java.util.List<
+            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .ReplicatedSnapshotMetadata.Seen>
+        getSeenPerReplicaList() {
       return seenPerReplica_;
     }
-    /**
-     * <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code>
-     */
+    /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
     @java.lang.Override
-    public java.util.List<? extends org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.SeenOrBuilder> 
+    public java.util.List<
+            ? extends
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .ReplicatedSnapshotMetadata.SeenOrBuilder>
         getSeenPerReplicaOrBuilderList() {
       return seenPerReplica_;
     }
-    /**
-     * <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code>
-     */
+    /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
     @java.lang.Override
     public int getSeenPerReplicaCount() {
       return seenPerReplica_.size();
     }
-    /**
-     * <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code>
-     */
+    /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
     @java.lang.Override
-    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen getSeenPerReplica(int index) {
+    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedSnapshotMetadata.Seen
+        getSeenPerReplica(int index) {
       return seenPerReplica_.get(index);
     }
-    /**
-     * <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code>
-     */
+    /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
     @java.lang.Override
-    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.SeenOrBuilder getSeenPerReplicaOrBuilder(
-        int index) {
+    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedSnapshotMetadata.SeenOrBuilder
+        getSeenPerReplicaOrBuilder(int index) {
       return seenPerReplica_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -7906,7 +8991,7 @@ public final class ReplicatedEventSourcing {
 
     @java.lang.Override
     public void writeTo(org.apache.pekko.protobufv3.internal.CodedOutputStream output)
-                        throws java.io.IOException {
+        throws java.io.IOException {
       if (((bitField0_ & 0x00000001) != 0)) {
         output.writeMessage(1, getVersion());
       }
@@ -7923,12 +9008,14 @@ public final class ReplicatedEventSourcing {
 
       size = 0;
       if (((bitField0_ & 0x00000001) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeMessageSize(1, getVersion());
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeMessageSize(
+                1, getVersion());
       }
       for (int i = 0; i < seenPerReplica_.size(); i++) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeMessageSize(2, seenPerReplica_.get(i));
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeMessageSize(
+                2, seenPerReplica_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -7938,20 +9025,26 @@ public final class ReplicatedEventSourcing {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
-      if (!(obj instanceof org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata)) {
+      if (!(obj
+          instanceof
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedSnapshotMetadata)) {
         return super.equals(obj);
       }
-      org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata other = (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata) obj;
+      org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedSnapshotMetadata
+          other =
+              (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .ReplicatedSnapshotMetadata)
+                  obj;
 
       if (hasVersion() != other.hasVersion()) return false;
       if (hasVersion()) {
-        if (!getVersion()
-            .equals(other.getVersion())) return false;
+        if (!getVersion().equals(other.getVersion())) return false;
       }
-      if (!getSeenPerReplicaList()
-          .equals(other.getSeenPerReplicaList())) return false;
+      if (!getSeenPerReplicaList().equals(other.getSeenPerReplicaList())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -7976,90 +9069,125 @@ public final class ReplicatedEventSourcing {
       return hash;
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata parseFrom(
-        java.nio.ByteBuffer data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedSnapshotMetadata
+        parseFrom(java.nio.ByteBuffer data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata parseFrom(
-        java.nio.ByteBuffer data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata parseFrom(
-        org.apache.pekko.protobufv3.internal.ByteString data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata parseFrom(
-        org.apache.pekko.protobufv3.internal.ByteString data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata parseFrom(byte[] data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata parseFrom(
-        byte[] data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata parseFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseDelimitedWithIOException(PARSER, input);
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedSnapshotMetadata
+        parseFrom(
+            java.nio.ByteBuffer data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata parseDelimitedFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedSnapshotMetadata
+        parseFrom(org.apache.pekko.protobufv3.internal.ByteString data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
     }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input);
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedSnapshotMetadata
+        parseFrom(
+            org.apache.pekko.protobufv3.internal.ByteString data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedSnapshotMetadata
+        parseFrom(byte[] data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedSnapshotMetadata
+        parseFrom(
+            byte[] data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedSnapshotMetadata
+        parseFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedSnapshotMetadata
+        parseFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input, extensionRegistry);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedSnapshotMetadata
+        parseDelimitedFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseDelimitedWithIOException(
+          PARSER, input);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedSnapshotMetadata
+        parseDelimitedFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseDelimitedWithIOException(
+          PARSER, input, extensionRegistry);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedSnapshotMetadata
+        parseFrom(org.apache.pekko.protobufv3.internal.CodedInputStream input)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedSnapshotMetadata
+        parseFrom(
+            org.apache.pekko.protobufv3.internal.CodedInputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata prototype) {
+
+    public static Builder newBuilder(
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .ReplicatedSnapshotMetadata
+            prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
@@ -8068,43 +9196,49 @@ public final class ReplicatedEventSourcing {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
-     * Protobuf type {@code ReplicatedSnapshotMetadata}
-     */
-    public static final class Builder extends
-        org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder> implements
+    /** Protobuf type {@code ReplicatedSnapshotMetadata} */
+    public static final class Builder
+        extends org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder>
+        implements
         // @@protoc_insertion_point(builder_implements:ReplicatedSnapshotMetadata)
-        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadataOrBuilder {
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedSnapshotMetadataOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ReplicatedSnapshotMetadata_descriptor;
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .internal_static_ReplicatedSnapshotMetadata_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ReplicatedSnapshotMetadata_fieldAccessorTable
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .internal_static_ReplicatedSnapshotMetadata_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.class, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Builder.class);
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .ReplicatedSnapshotMetadata.class,
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .ReplicatedSnapshotMetadata.Builder.class);
       }
 
-      // Construct using org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.newBuilder()
+      // Construct using
+      // org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(
-          org.apache.pekko.protobufv3.internal.GeneratedMessage.BuilderParent parent) {
+      private Builder(org.apache.pekko.protobufv3.internal.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
+
       private void maybeForceBuilderInitialization() {
-        if (org.apache.pekko.protobufv3.internal.GeneratedMessage
-                .alwaysUseFieldBuilders) {
+        if (org.apache.pekko.protobufv3.internal.GeneratedMessage.alwaysUseFieldBuilders) {
           getVersionFieldBuilder();
           getSeenPerReplicaFieldBuilder();
         }
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -8125,19 +9259,26 @@ public final class ReplicatedEventSourcing {
       }
 
       @java.lang.Override
-      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-          getDescriptorForType() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ReplicatedSnapshotMetadata_descriptor;
+      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor getDescriptorForType() {
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .internal_static_ReplicatedSnapshotMetadata_descriptor;
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata getDefaultInstanceForType() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.getDefaultInstance();
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedSnapshotMetadata
+          getDefaultInstanceForType() {
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedSnapshotMetadata.getDefaultInstance();
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata build() {
-        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata result = buildPartial();
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedSnapshotMetadata
+          build() {
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .ReplicatedSnapshotMetadata
+            result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -8145,15 +9286,26 @@ public final class ReplicatedEventSourcing {
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata buildPartial() {
-        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata result = new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata(this);
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedSnapshotMetadata
+          buildPartial() {
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .ReplicatedSnapshotMetadata
+            result =
+                new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .ReplicatedSnapshotMetadata(this);
         buildPartialRepeatedFields(result);
-        if (bitField0_ != 0) { buildPartial0(result); }
+        if (bitField0_ != 0) {
+          buildPartial0(result);
+        }
         onBuilt();
         return result;
       }
 
-      private void buildPartialRepeatedFields(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata result) {
+      private void buildPartialRepeatedFields(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedSnapshotMetadata
+              result) {
         if (seenPerReplicaBuilder_ == null) {
           if (((bitField0_ & 0x00000002) != 0)) {
             seenPerReplica_ = java.util.Collections.unmodifiableList(seenPerReplica_);
@@ -8165,13 +9317,14 @@ public final class ReplicatedEventSourcing {
         }
       }
 
-      private void buildPartial0(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata result) {
+      private void buildPartial0(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedSnapshotMetadata
+              result) {
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) != 0)) {
-          result.version_ = versionBuilder_ == null
-              ? version_
-              : versionBuilder_.build();
+          result.version_ = versionBuilder_ == null ? version_ : versionBuilder_.build();
           to_bitField0_ |= 0x00000001;
         }
         result.bitField0_ |= to_bitField0_;
@@ -8179,16 +9332,27 @@ public final class ReplicatedEventSourcing {
 
       @java.lang.Override
       public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
-        if (other instanceof org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata) {
-          return mergeFrom((org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata)other);
+        if (other
+            instanceof
+            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .ReplicatedSnapshotMetadata) {
+          return mergeFrom(
+              (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .ReplicatedSnapshotMetadata)
+                  other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata other) {
-        if (other == org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.getDefaultInstance()) return this;
+      public Builder mergeFrom(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedSnapshotMetadata
+              other) {
+        if (other
+            == org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .ReplicatedSnapshotMetadata.getDefaultInstance()) return this;
         if (other.hasVersion()) {
           mergeVersion(other.getVersion());
         }
@@ -8210,9 +9374,10 @@ public final class ReplicatedEventSourcing {
               seenPerReplicaBuilder_ = null;
               seenPerReplica_ = other.seenPerReplica_;
               bitField0_ = (bitField0_ & ~0x00000002);
-              seenPerReplicaBuilder_ = 
-                org.apache.pekko.protobufv3.internal.GeneratedMessage.alwaysUseFieldBuilders ?
-                   getSeenPerReplicaFieldBuilder() : null;
+              seenPerReplicaBuilder_ =
+                  org.apache.pekko.protobufv3.internal.GeneratedMessage.alwaysUseFieldBuilders
+                      ? getSeenPerReplicaFieldBuilder()
+                      : null;
             } else {
               seenPerReplicaBuilder_.addAllMessages(other.seenPerReplica_);
             }
@@ -8255,32 +9420,36 @@ public final class ReplicatedEventSourcing {
               case 0:
                 done = true;
                 break;
-              case 10: {
-                input.readMessage(
-                    getVersionFieldBuilder().getBuilder(),
-                    extensionRegistry);
-                bitField0_ |= 0x00000001;
-                break;
-              } // case 10
-              case 18: {
-                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen m =
-                    input.readMessage(
-                        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen.parser(),
-                        extensionRegistry);
-                if (seenPerReplicaBuilder_ == null) {
-                  ensureSeenPerReplicaIsMutable();
-                  seenPerReplica_.add(m);
-                } else {
-                  seenPerReplicaBuilder_.addMessage(m);
-                }
-                break;
-              } // case 18
-              default: {
-                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                  done = true; // was an endgroup tag
-                }
-                break;
-              } // default:
+              case 10:
+                {
+                  input.readMessage(getVersionFieldBuilder().getBuilder(), extensionRegistry);
+                  bitField0_ |= 0x00000001;
+                  break;
+                } // case 10
+              case 18:
+                {
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                          .ReplicatedSnapshotMetadata.Seen
+                      m =
+                          input.readMessage(
+                              org.apache.pekko.persistence.typed.serialization
+                                  .ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen.parser(),
+                              extensionRegistry);
+                  if (seenPerReplicaBuilder_ == null) {
+                    ensureSeenPerReplicaIsMutable();
+                    seenPerReplica_.add(m);
+                  } else {
+                    seenPerReplicaBuilder_.addMessage(m);
+                  }
+                  break;
+                } // case 18
+              default:
+                {
+                  if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                    done = true; // was an endgroup tag
+                  }
+                  break;
+                } // default:
             } // switch (tag)
           } // while (!done)
         } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
@@ -8290,13 +9459,22 @@ public final class ReplicatedEventSourcing {
         } // finally
         return this;
       }
+
       private int bitField0_;
 
-      private org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector version_;
+      private org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+          version_;
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Builder, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder> versionBuilder_;
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .VersionVector,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Builder,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .VersionVectorOrBuilder>
+          versionBuilder_;
       /**
        * <code>required .VersionVector version = 1;</code>
+       *
        * @return Whether the version field is set.
        */
       public boolean hasVersion() {
@@ -8304,19 +9482,24 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>required .VersionVector version = 1;</code>
+       *
        * @return The version.
        */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector getVersion() {
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+          getVersion() {
         if (versionBuilder_ == null) {
-          return version_ == null ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.getDefaultInstance() : version_;
+          return version_ == null
+              ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .VersionVector.getDefaultInstance()
+              : version_;
         } else {
           return versionBuilder_.getMessage();
         }
       }
-      /**
-       * <code>required .VersionVector version = 1;</code>
-       */
-      public Builder setVersion(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector value) {
+      /** <code>required .VersionVector version = 1;</code> */
+      public Builder setVersion(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              value) {
         if (versionBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -8329,11 +9512,11 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
-      /**
-       * <code>required .VersionVector version = 1;</code>
-       */
+      /** <code>required .VersionVector version = 1;</code> */
       public Builder setVersion(
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Builder builderForValue) {
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Builder
+              builderForValue) {
         if (versionBuilder_ == null) {
           version_ = builderForValue.build();
         } else {
@@ -8343,14 +9526,16 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
-      /**
-       * <code>required .VersionVector version = 1;</code>
-       */
-      public Builder mergeVersion(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector value) {
+      /** <code>required .VersionVector version = 1;</code> */
+      public Builder mergeVersion(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              value) {
         if (versionBuilder_ == null) {
-          if (((bitField0_ & 0x00000001) != 0) &&
-            version_ != null &&
-            version_ != org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.getDefaultInstance()) {
+          if (((bitField0_ & 0x00000001) != 0)
+              && version_ != null
+              && version_
+                  != org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .VersionVector.getDefaultInstance()) {
             getVersionBuilder().mergeFrom(value);
           } else {
             version_ = value;
@@ -8364,9 +9549,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>required .VersionVector version = 1;</code>
-       */
+      /** <code>required .VersionVector version = 1;</code> */
       public Builder clearVersion() {
         bitField0_ = (bitField0_ & ~0x00000001);
         version_ = null;
@@ -8377,67 +9560,86 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
-      /**
-       * <code>required .VersionVector version = 1;</code>
-       */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Builder getVersionBuilder() {
+      /** <code>required .VersionVector version = 1;</code> */
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              .Builder
+          getVersionBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getVersionFieldBuilder().getBuilder();
       }
-      /**
-       * <code>required .VersionVector version = 1;</code>
-       */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder getVersionOrBuilder() {
+      /** <code>required .VersionVector version = 1;</code> */
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .VersionVectorOrBuilder
+          getVersionOrBuilder() {
         if (versionBuilder_ != null) {
           return versionBuilder_.getMessageOrBuilder();
         } else {
-          return version_ == null ?
-              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.getDefaultInstance() : version_;
+          return version_ == null
+              ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .VersionVector.getDefaultInstance()
+              : version_;
         }
       }
-      /**
-       * <code>required .VersionVector version = 1;</code>
-       */
+      /** <code>required .VersionVector version = 1;</code> */
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Builder, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder> 
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .VersionVector,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Builder,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .VersionVectorOrBuilder>
           getVersionFieldBuilder() {
         if (versionBuilder_ == null) {
-          versionBuilder_ = new org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
-              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Builder, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder>(
-                  getVersion(),
-                  getParentForChildren(),
-                  isClean());
+          versionBuilder_ =
+              new org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .VersionVector,
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .VersionVector.Builder,
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .VersionVectorOrBuilder>(getVersion(), getParentForChildren(), isClean());
           version_ = null;
         }
         return versionBuilder_;
       }
 
-      private java.util.List<org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen> seenPerReplica_ =
-        java.util.Collections.emptyList();
+      private java.util.List<
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedSnapshotMetadata.Seen>
+          seenPerReplica_ = java.util.Collections.emptyList();
+
       private void ensureSeenPerReplicaIsMutable() {
         if (!((bitField0_ & 0x00000002) != 0)) {
-          seenPerReplica_ = new java.util.ArrayList<org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen>(seenPerReplica_);
+          seenPerReplica_ =
+              new java.util.ArrayList<
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .ReplicatedSnapshotMetadata.Seen>(seenPerReplica_);
           bitField0_ |= 0x00000002;
-         }
+        }
       }
 
       private org.apache.pekko.protobufv3.internal.RepeatedFieldBuilder<
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen.Builder, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.SeenOrBuilder> seenPerReplicaBuilder_;
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedSnapshotMetadata.Seen,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedSnapshotMetadata.Seen.Builder,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedSnapshotMetadata.SeenOrBuilder>
+          seenPerReplicaBuilder_;
 
-      /**
-       * <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code>
-       */
-      public java.util.List<org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen> getSeenPerReplicaList() {
+      /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
+      public java.util.List<
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedSnapshotMetadata.Seen>
+          getSeenPerReplicaList() {
         if (seenPerReplicaBuilder_ == null) {
           return java.util.Collections.unmodifiableList(seenPerReplica_);
         } else {
           return seenPerReplicaBuilder_.getMessageList();
         }
       }
-      /**
-       * <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code>
-       */
+      /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
       public int getSeenPerReplicaCount() {
         if (seenPerReplicaBuilder_ == null) {
           return seenPerReplica_.size();
@@ -8445,21 +9647,22 @@ public final class ReplicatedEventSourcing {
           return seenPerReplicaBuilder_.getCount();
         }
       }
-      /**
-       * <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code>
-       */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen getSeenPerReplica(int index) {
+      /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedSnapshotMetadata.Seen
+          getSeenPerReplica(int index) {
         if (seenPerReplicaBuilder_ == null) {
           return seenPerReplica_.get(index);
         } else {
           return seenPerReplicaBuilder_.getMessage(index);
         }
       }
-      /**
-       * <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code>
-       */
+      /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
       public Builder setSeenPerReplica(
-          int index, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen value) {
+          int index,
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedSnapshotMetadata.Seen
+              value) {
         if (seenPerReplicaBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -8472,11 +9675,12 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code>
-       */
+      /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
       public Builder setSeenPerReplica(
-          int index, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen.Builder builderForValue) {
+          int index,
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedSnapshotMetadata.Seen.Builder
+              builderForValue) {
         if (seenPerReplicaBuilder_ == null) {
           ensureSeenPerReplicaIsMutable();
           seenPerReplica_.set(index, builderForValue.build());
@@ -8486,10 +9690,11 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code>
-       */
-      public Builder addSeenPerReplica(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen value) {
+      /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
+      public Builder addSeenPerReplica(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedSnapshotMetadata.Seen
+              value) {
         if (seenPerReplicaBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -8502,11 +9707,12 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code>
-       */
+      /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
       public Builder addSeenPerReplica(
-          int index, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen value) {
+          int index,
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedSnapshotMetadata.Seen
+              value) {
         if (seenPerReplicaBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -8519,11 +9725,11 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code>
-       */
+      /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
       public Builder addSeenPerReplica(
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen.Builder builderForValue) {
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedSnapshotMetadata.Seen.Builder
+              builderForValue) {
         if (seenPerReplicaBuilder_ == null) {
           ensureSeenPerReplicaIsMutable();
           seenPerReplica_.add(builderForValue.build());
@@ -8533,11 +9739,12 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code>
-       */
+      /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
       public Builder addSeenPerReplica(
-          int index, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen.Builder builderForValue) {
+          int index,
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedSnapshotMetadata.Seen.Builder
+              builderForValue) {
         if (seenPerReplicaBuilder_ == null) {
           ensureSeenPerReplicaIsMutable();
           seenPerReplica_.add(index, builderForValue.build());
@@ -8547,11 +9754,13 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code>
-       */
+      /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
       public Builder addAllSeenPerReplica(
-          java.lang.Iterable<? extends org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen> values) {
+          java.lang.Iterable<
+                  ? extends
+                      org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                          .ReplicatedSnapshotMetadata.Seen>
+              values) {
         if (seenPerReplicaBuilder_ == null) {
           ensureSeenPerReplicaIsMutable();
           org.apache.pekko.protobufv3.internal.AbstractMessageLite.Builder.addAll(
@@ -8562,9 +9771,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code>
-       */
+      /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
       public Builder clearSeenPerReplica() {
         if (seenPerReplicaBuilder_ == null) {
           seenPerReplica_ = java.util.Collections.emptyList();
@@ -8575,9 +9782,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code>
-       */
+      /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
       public Builder removeSeenPerReplica(int index) {
         if (seenPerReplicaBuilder_ == null) {
           ensureSeenPerReplicaIsMutable();
@@ -8588,62 +9793,78 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code>
-       */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen.Builder getSeenPerReplicaBuilder(
-          int index) {
+      /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedSnapshotMetadata.Seen.Builder
+          getSeenPerReplicaBuilder(int index) {
         return getSeenPerReplicaFieldBuilder().getBuilder(index);
       }
-      /**
-       * <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code>
-       */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.SeenOrBuilder getSeenPerReplicaOrBuilder(
-          int index) {
+      /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedSnapshotMetadata.SeenOrBuilder
+          getSeenPerReplicaOrBuilder(int index) {
         if (seenPerReplicaBuilder_ == null) {
-          return seenPerReplica_.get(index);  } else {
+          return seenPerReplica_.get(index);
+        } else {
           return seenPerReplicaBuilder_.getMessageOrBuilder(index);
         }
       }
-      /**
-       * <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code>
-       */
-      public java.util.List<? extends org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.SeenOrBuilder> 
-           getSeenPerReplicaOrBuilderList() {
+      /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
+      public java.util.List<
+              ? extends
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .ReplicatedSnapshotMetadata.SeenOrBuilder>
+          getSeenPerReplicaOrBuilderList() {
         if (seenPerReplicaBuilder_ != null) {
           return seenPerReplicaBuilder_.getMessageOrBuilderList();
         } else {
           return java.util.Collections.unmodifiableList(seenPerReplica_);
         }
       }
-      /**
-       * <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code>
-       */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen.Builder addSeenPerReplicaBuilder() {
-        return getSeenPerReplicaFieldBuilder().addBuilder(
-            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen.getDefaultInstance());
+      /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedSnapshotMetadata.Seen.Builder
+          addSeenPerReplicaBuilder() {
+        return getSeenPerReplicaFieldBuilder()
+            .addBuilder(
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .ReplicatedSnapshotMetadata.Seen.getDefaultInstance());
       }
-      /**
-       * <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code>
-       */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen.Builder addSeenPerReplicaBuilder(
-          int index) {
-        return getSeenPerReplicaFieldBuilder().addBuilder(
-            index, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen.getDefaultInstance());
+      /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedSnapshotMetadata.Seen.Builder
+          addSeenPerReplicaBuilder(int index) {
+        return getSeenPerReplicaFieldBuilder()
+            .addBuilder(
+                index,
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .ReplicatedSnapshotMetadata.Seen.getDefaultInstance());
       }
-      /**
-       * <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code>
-       */
-      public java.util.List<org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen.Builder> 
-           getSeenPerReplicaBuilderList() {
+      /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
+      public java.util.List<
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedSnapshotMetadata.Seen.Builder>
+          getSeenPerReplicaBuilderList() {
         return getSeenPerReplicaFieldBuilder().getBuilderList();
       }
+
       private org.apache.pekko.protobufv3.internal.RepeatedFieldBuilder<
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen.Builder, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.SeenOrBuilder> 
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedSnapshotMetadata.Seen,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedSnapshotMetadata.Seen.Builder,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedSnapshotMetadata.SeenOrBuilder>
           getSeenPerReplicaFieldBuilder() {
         if (seenPerReplicaBuilder_ == null) {
-          seenPerReplicaBuilder_ = new org.apache.pekko.protobufv3.internal.RepeatedFieldBuilder<
-              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen.Builder, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata.SeenOrBuilder>(
+          seenPerReplicaBuilder_ =
+              new org.apache.pekko.protobufv3.internal.RepeatedFieldBuilder<
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .ReplicatedSnapshotMetadata.Seen,
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .ReplicatedSnapshotMetadata.Seen.Builder,
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .ReplicatedSnapshotMetadata.SeenOrBuilder>(
                   seenPerReplica_,
                   ((bitField0_ & 0x00000002) != 0),
                   getParentForChildren(),
@@ -8657,133 +9878,158 @@ public final class ReplicatedEventSourcing {
     }
 
     // @@protoc_insertion_point(class_scope:ReplicatedSnapshotMetadata)
-    private static final org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata DEFAULT_INSTANCE;
+    private static final org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedSnapshotMetadata
+        DEFAULT_INSTANCE;
+
     static {
-      DEFAULT_INSTANCE = new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata();
+      DEFAULT_INSTANCE =
+          new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedSnapshotMetadata();
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata getDefaultInstance() {
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedSnapshotMetadata
+        getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
     private static final org.apache.pekko.protobufv3.internal.Parser<ReplicatedSnapshotMetadata>
-        PARSER = new org.apache.pekko.protobufv3.internal.AbstractParser<ReplicatedSnapshotMetadata>() {
-      @java.lang.Override
-      public ReplicatedSnapshotMetadata parsePartialFrom(
-          org.apache.pekko.protobufv3.internal.CodedInputStream input,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        Builder builder = newBuilder();
-        try {
-          builder.mergeFrom(input, extensionRegistry);
-        } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(builder.buildPartial());
-        } catch (org.apache.pekko.protobufv3.internal.UninitializedMessageException e) {
-          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-        } catch (java.io.IOException e) {
-          throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
-              .setUnfinishedMessage(builder.buildPartial());
-        }
-        return builder.buildPartial();
-      }
-    };
+        PARSER =
+            new org.apache.pekko.protobufv3.internal.AbstractParser<ReplicatedSnapshotMetadata>() {
+              @java.lang.Override
+              public ReplicatedSnapshotMetadata parsePartialFrom(
+                  org.apache.pekko.protobufv3.internal.CodedInputStream input,
+                  org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+                  throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+                Builder builder = newBuilder();
+                try {
+                  builder.mergeFrom(input, extensionRegistry);
+                } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
+                  throw e.setUnfinishedMessage(builder.buildPartial());
+                } catch (org.apache.pekko.protobufv3.internal.UninitializedMessageException e) {
+                  throw e.asInvalidProtocolBufferException()
+                      .setUnfinishedMessage(builder.buildPartial());
+                } catch (java.io.IOException e) {
+                  throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
+                      .setUnfinishedMessage(builder.buildPartial());
+                }
+                return builder.buildPartial();
+              }
+            };
 
     public static org.apache.pekko.protobufv3.internal.Parser<ReplicatedSnapshotMetadata> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public org.apache.pekko.protobufv3.internal.Parser<ReplicatedSnapshotMetadata> getParserForType() {
+    public org.apache.pekko.protobufv3.internal.Parser<ReplicatedSnapshotMetadata>
+        getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedSnapshotMetadata getDefaultInstanceForType() {
+    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedSnapshotMetadata
+        getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
-
   }
 
-  public interface ReplicatedPublishedEventMetaDataOrBuilder extends
+  public interface ReplicatedPublishedEventMetaDataOrBuilder
+      extends
       // @@protoc_insertion_point(interface_extends:ReplicatedPublishedEventMetaData)
       org.apache.pekko.protobufv3.internal.MessageOrBuilder {
 
     /**
      * <code>optional string replicaId = 1;</code>
+     *
      * @return Whether the replicaId field is set.
      */
     boolean hasReplicaId();
     /**
      * <code>optional string replicaId = 1;</code>
+     *
      * @return The replicaId.
      */
     java.lang.String getReplicaId();
     /**
      * <code>optional string replicaId = 1;</code>
+     *
      * @return The bytes for replicaId.
      */
-    org.apache.pekko.protobufv3.internal.ByteString
-        getReplicaIdBytes();
+    org.apache.pekko.protobufv3.internal.ByteString getReplicaIdBytes();
 
     /**
      * <code>optional .VersionVector versionVector = 2;</code>
+     *
      * @return Whether the versionVector field is set.
      */
     boolean hasVersionVector();
     /**
      * <code>optional .VersionVector versionVector = 2;</code>
+     *
      * @return The versionVector.
      */
-    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector getVersionVector();
-    /**
-     * <code>optional .VersionVector versionVector = 2;</code>
-     */
-    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder getVersionVectorOrBuilder();
+    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+        getVersionVector();
+    /** <code>optional .VersionVector versionVector = 2;</code> */
+    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder
+        getVersionVectorOrBuilder();
   }
-  /**
-   * Protobuf type {@code ReplicatedPublishedEventMetaData}
-   */
-  public static final class ReplicatedPublishedEventMetaData extends
-      org.apache.pekko.protobufv3.internal.GeneratedMessage implements
+  /** Protobuf type {@code ReplicatedPublishedEventMetaData} */
+  public static final class ReplicatedPublishedEventMetaData
+      extends org.apache.pekko.protobufv3.internal.GeneratedMessage
+      implements
       // @@protoc_insertion_point(message_implements:ReplicatedPublishedEventMetaData)
       ReplicatedPublishedEventMetaDataOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
+
     static {
       org.apache.pekko.protobufv3.internal.RuntimeVersion.validateProtobufGencodeVersion(
-        org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
-        /* major= */ 4,
-        /* minor= */ 29,
-        /* patch= */ 3,
-        /* suffix= */ "",
-        ReplicatedPublishedEventMetaData.class.getName());
+          org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
+          /* major= */ 4,
+          /* minor= */ 29,
+          /* patch= */ 3,
+          /* suffix= */ "",
+          ReplicatedPublishedEventMetaData.class.getName());
     }
     // Use ReplicatedPublishedEventMetaData.newBuilder() to construct.
-    private ReplicatedPublishedEventMetaData(org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
+    private ReplicatedPublishedEventMetaData(
+        org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
       super(builder);
     }
+
     private ReplicatedPublishedEventMetaData() {
       replicaId_ = "";
     }
 
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ReplicatedPublishedEventMetaData_descriptor;
+      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+          .internal_static_ReplicatedPublishedEventMetaData_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ReplicatedPublishedEventMetaData_fieldAccessorTable
+      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+          .internal_static_ReplicatedPublishedEventMetaData_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData.class, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData.Builder.class);
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedPublishedEventMetaData.class,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedPublishedEventMetaData.Builder.class);
     }
 
     private int bitField0_;
     public static final int REPLICAID_FIELD_NUMBER = 1;
+
     @SuppressWarnings("serial")
     private volatile java.lang.Object replicaId_ = "";
     /**
      * <code>optional string replicaId = 1;</code>
+     *
      * @return Whether the replicaId field is set.
      */
     @java.lang.Override
@@ -8792,6 +10038,7 @@ public final class ReplicatedEventSourcing {
     }
     /**
      * <code>optional string replicaId = 1;</code>
+     *
      * @return The replicaId.
      */
     @java.lang.Override
@@ -8800,7 +10047,7 @@ public final class ReplicatedEventSourcing {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        org.apache.pekko.protobufv3.internal.ByteString bs = 
+        org.apache.pekko.protobufv3.internal.ByteString bs =
             (org.apache.pekko.protobufv3.internal.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
@@ -8811,16 +10058,15 @@ public final class ReplicatedEventSourcing {
     }
     /**
      * <code>optional string replicaId = 1;</code>
+     *
      * @return The bytes for replicaId.
      */
     @java.lang.Override
-    public org.apache.pekko.protobufv3.internal.ByteString
-        getReplicaIdBytes() {
+    public org.apache.pekko.protobufv3.internal.ByteString getReplicaIdBytes() {
       java.lang.Object ref = replicaId_;
       if (ref instanceof java.lang.String) {
-        org.apache.pekko.protobufv3.internal.ByteString b = 
-            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        org.apache.pekko.protobufv3.internal.ByteString b =
+            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
         replicaId_ = b;
         return b;
       } else {
@@ -8829,9 +10075,11 @@ public final class ReplicatedEventSourcing {
     }
 
     public static final int VERSIONVECTOR_FIELD_NUMBER = 2;
-    private org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector versionVector_;
+    private org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+        versionVector_;
     /**
      * <code>optional .VersionVector versionVector = 2;</code>
+     *
      * @return Whether the versionVector field is set.
      */
     @java.lang.Override
@@ -8840,21 +10088,30 @@ public final class ReplicatedEventSourcing {
     }
     /**
      * <code>optional .VersionVector versionVector = 2;</code>
+     *
      * @return The versionVector.
      */
     @java.lang.Override
-    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector getVersionVector() {
-      return versionVector_ == null ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.getDefaultInstance() : versionVector_;
+    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+        getVersionVector() {
+      return versionVector_ == null
+          ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              .getDefaultInstance()
+          : versionVector_;
     }
-    /**
-     * <code>optional .VersionVector versionVector = 2;</code>
-     */
+    /** <code>optional .VersionVector versionVector = 2;</code> */
     @java.lang.Override
-    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder getVersionVectorOrBuilder() {
-      return versionVector_ == null ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.getDefaultInstance() : versionVector_;
+    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .VersionVectorOrBuilder
+        getVersionVectorOrBuilder() {
+      return versionVector_ == null
+          ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              .getDefaultInstance()
+          : versionVector_;
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -8873,7 +10130,7 @@ public final class ReplicatedEventSourcing {
 
     @java.lang.Override
     public void writeTo(org.apache.pekko.protobufv3.internal.CodedOutputStream output)
-                        throws java.io.IOException {
+        throws java.io.IOException {
       if (((bitField0_ & 0x00000001) != 0)) {
         org.apache.pekko.protobufv3.internal.GeneratedMessage.writeString(output, 1, replicaId_);
       }
@@ -8890,11 +10147,13 @@ public final class ReplicatedEventSourcing {
 
       size = 0;
       if (((bitField0_ & 0x00000001) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.GeneratedMessage.computeStringSize(1, replicaId_);
+        size +=
+            org.apache.pekko.protobufv3.internal.GeneratedMessage.computeStringSize(1, replicaId_);
       }
       if (((bitField0_ & 0x00000002) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeMessageSize(2, getVersionVector());
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeMessageSize(
+                2, getVersionVector());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -8904,22 +10163,28 @@ public final class ReplicatedEventSourcing {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
-      if (!(obj instanceof org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData)) {
+      if (!(obj
+          instanceof
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedPublishedEventMetaData)) {
         return super.equals(obj);
       }
-      org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData other = (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData) obj;
+      org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedPublishedEventMetaData
+          other =
+              (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .ReplicatedPublishedEventMetaData)
+                  obj;
 
       if (hasReplicaId() != other.hasReplicaId()) return false;
       if (hasReplicaId()) {
-        if (!getReplicaId()
-            .equals(other.getReplicaId())) return false;
+        if (!getReplicaId().equals(other.getReplicaId())) return false;
       }
       if (hasVersionVector() != other.hasVersionVector()) return false;
       if (hasVersionVector()) {
-        if (!getVersionVector()
-            .equals(other.getVersionVector())) return false;
+        if (!getVersionVector().equals(other.getVersionVector())) return false;
       }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
@@ -8945,90 +10210,125 @@ public final class ReplicatedEventSourcing {
       return hash;
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData parseFrom(
-        java.nio.ByteBuffer data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedPublishedEventMetaData
+        parseFrom(java.nio.ByteBuffer data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData parseFrom(
-        java.nio.ByteBuffer data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData parseFrom(
-        org.apache.pekko.protobufv3.internal.ByteString data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData parseFrom(
-        org.apache.pekko.protobufv3.internal.ByteString data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData parseFrom(byte[] data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData parseFrom(
-        byte[] data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData parseFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseDelimitedWithIOException(PARSER, input);
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedPublishedEventMetaData
+        parseFrom(
+            java.nio.ByteBuffer data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData parseDelimitedFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedPublishedEventMetaData
+        parseFrom(org.apache.pekko.protobufv3.internal.ByteString data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
     }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input);
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedPublishedEventMetaData
+        parseFrom(
+            org.apache.pekko.protobufv3.internal.ByteString data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedPublishedEventMetaData
+        parseFrom(byte[] data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedPublishedEventMetaData
+        parseFrom(
+            byte[] data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedPublishedEventMetaData
+        parseFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedPublishedEventMetaData
+        parseFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input, extensionRegistry);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedPublishedEventMetaData
+        parseDelimitedFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseDelimitedWithIOException(
+          PARSER, input);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedPublishedEventMetaData
+        parseDelimitedFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseDelimitedWithIOException(
+          PARSER, input, extensionRegistry);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedPublishedEventMetaData
+        parseFrom(org.apache.pekko.protobufv3.internal.CodedInputStream input)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedPublishedEventMetaData
+        parseFrom(
+            org.apache.pekko.protobufv3.internal.CodedInputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData prototype) {
+
+    public static Builder newBuilder(
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .ReplicatedPublishedEventMetaData
+            prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
@@ -9037,42 +10337,48 @@ public final class ReplicatedEventSourcing {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
-     * Protobuf type {@code ReplicatedPublishedEventMetaData}
-     */
-    public static final class Builder extends
-        org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder> implements
+    /** Protobuf type {@code ReplicatedPublishedEventMetaData} */
+    public static final class Builder
+        extends org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder>
+        implements
         // @@protoc_insertion_point(builder_implements:ReplicatedPublishedEventMetaData)
-        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaDataOrBuilder {
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedPublishedEventMetaDataOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ReplicatedPublishedEventMetaData_descriptor;
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .internal_static_ReplicatedPublishedEventMetaData_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ReplicatedPublishedEventMetaData_fieldAccessorTable
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .internal_static_ReplicatedPublishedEventMetaData_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData.class, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData.Builder.class);
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .ReplicatedPublishedEventMetaData.class,
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .ReplicatedPublishedEventMetaData.Builder.class);
       }
 
-      // Construct using org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData.newBuilder()
+      // Construct using
+      // org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(
-          org.apache.pekko.protobufv3.internal.GeneratedMessage.BuilderParent parent) {
+      private Builder(org.apache.pekko.protobufv3.internal.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
+
       private void maybeForceBuilderInitialization() {
-        if (org.apache.pekko.protobufv3.internal.GeneratedMessage
-                .alwaysUseFieldBuilders) {
+        if (org.apache.pekko.protobufv3.internal.GeneratedMessage.alwaysUseFieldBuilders) {
           getVersionVectorFieldBuilder();
         }
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -9087,19 +10393,26 @@ public final class ReplicatedEventSourcing {
       }
 
       @java.lang.Override
-      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-          getDescriptorForType() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_ReplicatedPublishedEventMetaData_descriptor;
+      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor getDescriptorForType() {
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .internal_static_ReplicatedPublishedEventMetaData_descriptor;
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData getDefaultInstanceForType() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData.getDefaultInstance();
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedPublishedEventMetaData
+          getDefaultInstanceForType() {
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedPublishedEventMetaData.getDefaultInstance();
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData build() {
-        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData result = buildPartial();
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedPublishedEventMetaData
+          build() {
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .ReplicatedPublishedEventMetaData
+            result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -9107,14 +10420,25 @@ public final class ReplicatedEventSourcing {
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData buildPartial() {
-        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData result = new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData(this);
-        if (bitField0_ != 0) { buildPartial0(result); }
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedPublishedEventMetaData
+          buildPartial() {
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .ReplicatedPublishedEventMetaData
+            result =
+                new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .ReplicatedPublishedEventMetaData(this);
+        if (bitField0_ != 0) {
+          buildPartial0(result);
+        }
         onBuilt();
         return result;
       }
 
-      private void buildPartial0(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData result) {
+      private void buildPartial0(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedPublishedEventMetaData
+              result) {
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -9122,9 +10446,8 @@ public final class ReplicatedEventSourcing {
           to_bitField0_ |= 0x00000001;
         }
         if (((from_bitField0_ & 0x00000002) != 0)) {
-          result.versionVector_ = versionVectorBuilder_ == null
-              ? versionVector_
-              : versionVectorBuilder_.build();
+          result.versionVector_ =
+              versionVectorBuilder_ == null ? versionVector_ : versionVectorBuilder_.build();
           to_bitField0_ |= 0x00000002;
         }
         result.bitField0_ |= to_bitField0_;
@@ -9132,16 +10455,27 @@ public final class ReplicatedEventSourcing {
 
       @java.lang.Override
       public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
-        if (other instanceof org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData) {
-          return mergeFrom((org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData)other);
+        if (other
+            instanceof
+            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .ReplicatedPublishedEventMetaData) {
+          return mergeFrom(
+              (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .ReplicatedPublishedEventMetaData)
+                  other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData other) {
-        if (other == org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData.getDefaultInstance()) return this;
+      public Builder mergeFrom(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedPublishedEventMetaData
+              other) {
+        if (other
+            == org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .ReplicatedPublishedEventMetaData.getDefaultInstance()) return this;
         if (other.hasReplicaId()) {
           replicaId_ = other.replicaId_;
           bitField0_ |= 0x00000001;
@@ -9181,24 +10515,25 @@ public final class ReplicatedEventSourcing {
               case 0:
                 done = true;
                 break;
-              case 10: {
-                replicaId_ = input.readBytes();
-                bitField0_ |= 0x00000001;
-                break;
-              } // case 10
-              case 18: {
-                input.readMessage(
-                    getVersionVectorFieldBuilder().getBuilder(),
-                    extensionRegistry);
-                bitField0_ |= 0x00000002;
-                break;
-              } // case 18
-              default: {
-                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                  done = true; // was an endgroup tag
-                }
-                break;
-              } // default:
+              case 10:
+                {
+                  replicaId_ = input.readBytes();
+                  bitField0_ |= 0x00000001;
+                  break;
+                } // case 10
+              case 18:
+                {
+                  input.readMessage(getVersionVectorFieldBuilder().getBuilder(), extensionRegistry);
+                  bitField0_ |= 0x00000002;
+                  break;
+                } // case 18
+              default:
+                {
+                  if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                    done = true; // was an endgroup tag
+                  }
+                  break;
+                } // default:
             } // switch (tag)
           } // while (!done)
         } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
@@ -9208,11 +10543,13 @@ public final class ReplicatedEventSourcing {
         } // finally
         return this;
       }
+
       private int bitField0_;
 
       private java.lang.Object replicaId_ = "";
       /**
        * <code>optional string replicaId = 1;</code>
+       *
        * @return Whether the replicaId field is set.
        */
       public boolean hasReplicaId() {
@@ -9220,6 +10557,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>optional string replicaId = 1;</code>
+       *
        * @return The replicaId.
        */
       public java.lang.String getReplicaId() {
@@ -9238,15 +10576,14 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>optional string replicaId = 1;</code>
+       *
        * @return The bytes for replicaId.
        */
-      public org.apache.pekko.protobufv3.internal.ByteString
-          getReplicaIdBytes() {
+      public org.apache.pekko.protobufv3.internal.ByteString getReplicaIdBytes() {
         java.lang.Object ref = replicaId_;
         if (ref instanceof String) {
-          org.apache.pekko.protobufv3.internal.ByteString b = 
-              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          org.apache.pekko.protobufv3.internal.ByteString b =
+              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
           replicaId_ = b;
           return b;
         } else {
@@ -9255,12 +10592,14 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>optional string replicaId = 1;</code>
+       *
        * @param value The replicaId to set.
        * @return This builder for chaining.
        */
-      public Builder setReplicaId(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
+      public Builder setReplicaId(java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
         replicaId_ = value;
         bitField0_ |= 0x00000001;
         onChanged();
@@ -9268,6 +10607,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>optional string replicaId = 1;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearReplicaId() {
@@ -9278,23 +10618,33 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>optional string replicaId = 1;</code>
+       *
        * @param value The bytes for replicaId to set.
        * @return This builder for chaining.
        */
-      public Builder setReplicaIdBytes(
-          org.apache.pekko.protobufv3.internal.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
+      public Builder setReplicaIdBytes(org.apache.pekko.protobufv3.internal.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
         replicaId_ = value;
         bitField0_ |= 0x00000001;
         onChanged();
         return this;
       }
 
-      private org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector versionVector_;
+      private org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+          versionVector_;
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Builder, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder> versionVectorBuilder_;
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .VersionVector,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Builder,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .VersionVectorOrBuilder>
+          versionVectorBuilder_;
       /**
        * <code>optional .VersionVector versionVector = 2;</code>
+       *
        * @return Whether the versionVector field is set.
        */
       public boolean hasVersionVector() {
@@ -9302,19 +10652,24 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>optional .VersionVector versionVector = 2;</code>
+       *
        * @return The versionVector.
        */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector getVersionVector() {
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+          getVersionVector() {
         if (versionVectorBuilder_ == null) {
-          return versionVector_ == null ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.getDefaultInstance() : versionVector_;
+          return versionVector_ == null
+              ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .VersionVector.getDefaultInstance()
+              : versionVector_;
         } else {
           return versionVectorBuilder_.getMessage();
         }
       }
-      /**
-       * <code>optional .VersionVector versionVector = 2;</code>
-       */
-      public Builder setVersionVector(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector value) {
+      /** <code>optional .VersionVector versionVector = 2;</code> */
+      public Builder setVersionVector(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              value) {
         if (versionVectorBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -9327,11 +10682,11 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
-      /**
-       * <code>optional .VersionVector versionVector = 2;</code>
-       */
+      /** <code>optional .VersionVector versionVector = 2;</code> */
       public Builder setVersionVector(
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Builder builderForValue) {
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Builder
+              builderForValue) {
         if (versionVectorBuilder_ == null) {
           versionVector_ = builderForValue.build();
         } else {
@@ -9341,14 +10696,16 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
-      /**
-       * <code>optional .VersionVector versionVector = 2;</code>
-       */
-      public Builder mergeVersionVector(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector value) {
+      /** <code>optional .VersionVector versionVector = 2;</code> */
+      public Builder mergeVersionVector(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              value) {
         if (versionVectorBuilder_ == null) {
-          if (((bitField0_ & 0x00000002) != 0) &&
-            versionVector_ != null &&
-            versionVector_ != org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.getDefaultInstance()) {
+          if (((bitField0_ & 0x00000002) != 0)
+              && versionVector_ != null
+              && versionVector_
+                  != org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .VersionVector.getDefaultInstance()) {
             getVersionVectorBuilder().mergeFrom(value);
           } else {
             versionVector_ = value;
@@ -9362,9 +10719,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>optional .VersionVector versionVector = 2;</code>
-       */
+      /** <code>optional .VersionVector versionVector = 2;</code> */
       public Builder clearVersionVector() {
         bitField0_ = (bitField0_ & ~0x00000002);
         versionVector_ = null;
@@ -9375,37 +10730,46 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
-      /**
-       * <code>optional .VersionVector versionVector = 2;</code>
-       */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Builder getVersionVectorBuilder() {
+      /** <code>optional .VersionVector versionVector = 2;</code> */
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+              .Builder
+          getVersionVectorBuilder() {
         bitField0_ |= 0x00000002;
         onChanged();
         return getVersionVectorFieldBuilder().getBuilder();
       }
-      /**
-       * <code>optional .VersionVector versionVector = 2;</code>
-       */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder getVersionVectorOrBuilder() {
+      /** <code>optional .VersionVector versionVector = 2;</code> */
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .VersionVectorOrBuilder
+          getVersionVectorOrBuilder() {
         if (versionVectorBuilder_ != null) {
           return versionVectorBuilder_.getMessageOrBuilder();
         } else {
-          return versionVector_ == null ?
-              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.getDefaultInstance() : versionVector_;
+          return versionVector_ == null
+              ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .VersionVector.getDefaultInstance()
+              : versionVector_;
         }
       }
-      /**
-       * <code>optional .VersionVector versionVector = 2;</code>
-       */
+      /** <code>optional .VersionVector versionVector = 2;</code> */
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Builder, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder> 
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .VersionVector,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
+                  .Builder,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .VersionVectorOrBuilder>
           getVersionVectorFieldBuilder() {
         if (versionVectorBuilder_ == null) {
-          versionVectorBuilder_ = new org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
-              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Builder, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder>(
-                  getVersionVector(),
-                  getParentForChildren(),
-                  isClean());
+          versionVectorBuilder_ =
+              new org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .VersionVector,
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .VersionVector.Builder,
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .VersionVectorOrBuilder>(
+                  getVersionVector(), getParentForChildren(), isClean());
           versionVector_ = null;
         }
         return versionVectorBuilder_;
@@ -9415,170 +10779,204 @@ public final class ReplicatedEventSourcing {
     }
 
     // @@protoc_insertion_point(class_scope:ReplicatedPublishedEventMetaData)
-    private static final org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData DEFAULT_INSTANCE;
+    private static final org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedPublishedEventMetaData
+        DEFAULT_INSTANCE;
+
     static {
-      DEFAULT_INSTANCE = new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData();
+      DEFAULT_INSTANCE =
+          new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedPublishedEventMetaData();
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData getDefaultInstance() {
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedPublishedEventMetaData
+        getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final org.apache.pekko.protobufv3.internal.Parser<ReplicatedPublishedEventMetaData>
-        PARSER = new org.apache.pekko.protobufv3.internal.AbstractParser<ReplicatedPublishedEventMetaData>() {
-      @java.lang.Override
-      public ReplicatedPublishedEventMetaData parsePartialFrom(
-          org.apache.pekko.protobufv3.internal.CodedInputStream input,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        Builder builder = newBuilder();
-        try {
-          builder.mergeFrom(input, extensionRegistry);
-        } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(builder.buildPartial());
-        } catch (org.apache.pekko.protobufv3.internal.UninitializedMessageException e) {
-          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-        } catch (java.io.IOException e) {
-          throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
-              .setUnfinishedMessage(builder.buildPartial());
-        }
-        return builder.buildPartial();
-      }
-    };
+    private static final org.apache.pekko.protobufv3.internal.Parser<
+            ReplicatedPublishedEventMetaData>
+        PARSER =
+            new org.apache.pekko.protobufv3.internal.AbstractParser<
+                ReplicatedPublishedEventMetaData>() {
+              @java.lang.Override
+              public ReplicatedPublishedEventMetaData parsePartialFrom(
+                  org.apache.pekko.protobufv3.internal.CodedInputStream input,
+                  org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+                  throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+                Builder builder = newBuilder();
+                try {
+                  builder.mergeFrom(input, extensionRegistry);
+                } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
+                  throw e.setUnfinishedMessage(builder.buildPartial());
+                } catch (org.apache.pekko.protobufv3.internal.UninitializedMessageException e) {
+                  throw e.asInvalidProtocolBufferException()
+                      .setUnfinishedMessage(builder.buildPartial());
+                } catch (java.io.IOException e) {
+                  throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
+                      .setUnfinishedMessage(builder.buildPartial());
+                }
+                return builder.buildPartial();
+              }
+            };
 
-    public static org.apache.pekko.protobufv3.internal.Parser<ReplicatedPublishedEventMetaData> parser() {
+    public static org.apache.pekko.protobufv3.internal.Parser<ReplicatedPublishedEventMetaData>
+        parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public org.apache.pekko.protobufv3.internal.Parser<ReplicatedPublishedEventMetaData> getParserForType() {
+    public org.apache.pekko.protobufv3.internal.Parser<ReplicatedPublishedEventMetaData>
+        getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData getDefaultInstanceForType() {
+    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedPublishedEventMetaData
+        getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
-
   }
 
-  public interface PublishedEventOrBuilder extends
+  public interface PublishedEventOrBuilder
+      extends
       // @@protoc_insertion_point(interface_extends:PublishedEvent)
       org.apache.pekko.protobufv3.internal.MessageOrBuilder {
 
     /**
      * <code>optional string persistenceId = 1;</code>
+     *
      * @return Whether the persistenceId field is set.
      */
     boolean hasPersistenceId();
     /**
      * <code>optional string persistenceId = 1;</code>
+     *
      * @return The persistenceId.
      */
     java.lang.String getPersistenceId();
     /**
      * <code>optional string persistenceId = 1;</code>
+     *
      * @return The bytes for persistenceId.
      */
-    org.apache.pekko.protobufv3.internal.ByteString
-        getPersistenceIdBytes();
+    org.apache.pekko.protobufv3.internal.ByteString getPersistenceIdBytes();
 
     /**
      * <code>optional int64 sequenceNr = 2;</code>
+     *
      * @return Whether the sequenceNr field is set.
      */
     boolean hasSequenceNr();
     /**
      * <code>optional int64 sequenceNr = 2;</code>
+     *
      * @return The sequenceNr.
      */
     long getSequenceNr();
 
     /**
      * <code>optional .Payload payload = 3;</code>
+     *
      * @return Whether the payload field is set.
      */
     boolean hasPayload();
     /**
      * <code>optional .Payload payload = 3;</code>
+     *
      * @return The payload.
      */
     org.apache.pekko.remote.ContainerFormats.Payload getPayload();
-    /**
-     * <code>optional .Payload payload = 3;</code>
-     */
+    /** <code>optional .Payload payload = 3;</code> */
     org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder getPayloadOrBuilder();
 
     /**
      * <code>optional int64 timestamp = 4;</code>
+     *
      * @return Whether the timestamp field is set.
      */
     boolean hasTimestamp();
     /**
      * <code>optional int64 timestamp = 4;</code>
+     *
      * @return The timestamp.
      */
     long getTimestamp();
 
     /**
      * <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code>
+     *
      * @return Whether the metadata field is set.
      */
     boolean hasMetadata();
     /**
      * <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code>
+     *
      * @return The metadata.
      */
-    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData getMetadata();
-    /**
-     * <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code>
-     */
-    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaDataOrBuilder getMetadataOrBuilder();
+    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedPublishedEventMetaData
+        getMetadata();
+    /** <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code> */
+    org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedPublishedEventMetaDataOrBuilder
+        getMetadataOrBuilder();
   }
-  /**
-   * Protobuf type {@code PublishedEvent}
-   */
-  public static final class PublishedEvent extends
-      org.apache.pekko.protobufv3.internal.GeneratedMessage implements
+  /** Protobuf type {@code PublishedEvent} */
+  public static final class PublishedEvent
+      extends org.apache.pekko.protobufv3.internal.GeneratedMessage
+      implements
       // @@protoc_insertion_point(message_implements:PublishedEvent)
       PublishedEventOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
+
     static {
       org.apache.pekko.protobufv3.internal.RuntimeVersion.validateProtobufGencodeVersion(
-        org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
-        /* major= */ 4,
-        /* minor= */ 29,
-        /* patch= */ 3,
-        /* suffix= */ "",
-        PublishedEvent.class.getName());
+          org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
+          /* major= */ 4,
+          /* minor= */ 29,
+          /* patch= */ 3,
+          /* suffix= */ "",
+          PublishedEvent.class.getName());
     }
     // Use PublishedEvent.newBuilder() to construct.
-    private PublishedEvent(org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
+    private PublishedEvent(
+        org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
       super(builder);
     }
+
     private PublishedEvent() {
       persistenceId_ = "";
     }
 
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_PublishedEvent_descriptor;
+      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+          .internal_static_PublishedEvent_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_PublishedEvent_fieldAccessorTable
+      return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+          .internal_static_PublishedEvent_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent.class, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent.Builder.class);
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .PublishedEvent.class,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .PublishedEvent.Builder.class);
     }
 
     private int bitField0_;
     public static final int PERSISTENCEID_FIELD_NUMBER = 1;
+
     @SuppressWarnings("serial")
     private volatile java.lang.Object persistenceId_ = "";
     /**
      * <code>optional string persistenceId = 1;</code>
+     *
      * @return Whether the persistenceId field is set.
      */
     @java.lang.Override
@@ -9587,6 +10985,7 @@ public final class ReplicatedEventSourcing {
     }
     /**
      * <code>optional string persistenceId = 1;</code>
+     *
      * @return The persistenceId.
      */
     @java.lang.Override
@@ -9595,7 +10994,7 @@ public final class ReplicatedEventSourcing {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        org.apache.pekko.protobufv3.internal.ByteString bs = 
+        org.apache.pekko.protobufv3.internal.ByteString bs =
             (org.apache.pekko.protobufv3.internal.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
@@ -9606,16 +11005,15 @@ public final class ReplicatedEventSourcing {
     }
     /**
      * <code>optional string persistenceId = 1;</code>
+     *
      * @return The bytes for persistenceId.
      */
     @java.lang.Override
-    public org.apache.pekko.protobufv3.internal.ByteString
-        getPersistenceIdBytes() {
+    public org.apache.pekko.protobufv3.internal.ByteString getPersistenceIdBytes() {
       java.lang.Object ref = persistenceId_;
       if (ref instanceof java.lang.String) {
-        org.apache.pekko.protobufv3.internal.ByteString b = 
-            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        org.apache.pekko.protobufv3.internal.ByteString b =
+            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
         persistenceId_ = b;
         return b;
       } else {
@@ -9627,6 +11025,7 @@ public final class ReplicatedEventSourcing {
     private long sequenceNr_ = 0L;
     /**
      * <code>optional int64 sequenceNr = 2;</code>
+     *
      * @return Whether the sequenceNr field is set.
      */
     @java.lang.Override
@@ -9635,6 +11034,7 @@ public final class ReplicatedEventSourcing {
     }
     /**
      * <code>optional int64 sequenceNr = 2;</code>
+     *
      * @return The sequenceNr.
      */
     @java.lang.Override
@@ -9646,6 +11046,7 @@ public final class ReplicatedEventSourcing {
     private org.apache.pekko.remote.ContainerFormats.Payload payload_;
     /**
      * <code>optional .Payload payload = 3;</code>
+     *
      * @return Whether the payload field is set.
      */
     @java.lang.Override
@@ -9654,24 +11055,28 @@ public final class ReplicatedEventSourcing {
     }
     /**
      * <code>optional .Payload payload = 3;</code>
+     *
      * @return The payload.
      */
     @java.lang.Override
     public org.apache.pekko.remote.ContainerFormats.Payload getPayload() {
-      return payload_ == null ? org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance() : payload_;
+      return payload_ == null
+          ? org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance()
+          : payload_;
     }
-    /**
-     * <code>optional .Payload payload = 3;</code>
-     */
+    /** <code>optional .Payload payload = 3;</code> */
     @java.lang.Override
     public org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder getPayloadOrBuilder() {
-      return payload_ == null ? org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance() : payload_;
+      return payload_ == null
+          ? org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance()
+          : payload_;
     }
 
     public static final int TIMESTAMP_FIELD_NUMBER = 4;
     private long timestamp_ = 0L;
     /**
      * <code>optional int64 timestamp = 4;</code>
+     *
      * @return Whether the timestamp field is set.
      */
     @java.lang.Override
@@ -9680,6 +11085,7 @@ public final class ReplicatedEventSourcing {
     }
     /**
      * <code>optional int64 timestamp = 4;</code>
+     *
      * @return The timestamp.
      */
     @java.lang.Override
@@ -9688,9 +11094,12 @@ public final class ReplicatedEventSourcing {
     }
 
     public static final int METADATA_FIELD_NUMBER = 5;
-    private org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData metadata_;
+    private org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedPublishedEventMetaData
+        metadata_;
     /**
      * <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code>
+     *
      * @return Whether the metadata field is set.
      */
     @java.lang.Override
@@ -9699,21 +11108,31 @@ public final class ReplicatedEventSourcing {
     }
     /**
      * <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code>
+     *
      * @return The metadata.
      */
     @java.lang.Override
-    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData getMetadata() {
-      return metadata_ == null ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData.getDefaultInstance() : metadata_;
+    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedPublishedEventMetaData
+        getMetadata() {
+      return metadata_ == null
+          ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedPublishedEventMetaData.getDefaultInstance()
+          : metadata_;
     }
-    /**
-     * <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code>
-     */
+    /** <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code> */
     @java.lang.Override
-    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaDataOrBuilder getMetadataOrBuilder() {
-      return metadata_ == null ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData.getDefaultInstance() : metadata_;
+    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .ReplicatedPublishedEventMetaDataOrBuilder
+        getMetadataOrBuilder() {
+      return metadata_ == null
+          ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedPublishedEventMetaData.getDefaultInstance()
+          : metadata_;
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -9738,9 +11157,10 @@ public final class ReplicatedEventSourcing {
 
     @java.lang.Override
     public void writeTo(org.apache.pekko.protobufv3.internal.CodedOutputStream output)
-                        throws java.io.IOException {
+        throws java.io.IOException {
       if (((bitField0_ & 0x00000001) != 0)) {
-        org.apache.pekko.protobufv3.internal.GeneratedMessage.writeString(output, 1, persistenceId_);
+        org.apache.pekko.protobufv3.internal.GeneratedMessage.writeString(
+            output, 1, persistenceId_);
       }
       if (((bitField0_ & 0x00000002) != 0)) {
         output.writeInt64(2, sequenceNr_);
@@ -9764,23 +11184,27 @@ public final class ReplicatedEventSourcing {
 
       size = 0;
       if (((bitField0_ & 0x00000001) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.GeneratedMessage.computeStringSize(1, persistenceId_);
+        size +=
+            org.apache.pekko.protobufv3.internal.GeneratedMessage.computeStringSize(
+                1, persistenceId_);
       }
       if (((bitField0_ & 0x00000002) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeInt64Size(2, sequenceNr_);
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeInt64Size(2, sequenceNr_);
       }
       if (((bitField0_ & 0x00000004) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeMessageSize(3, getPayload());
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeMessageSize(
+                3, getPayload());
       }
       if (((bitField0_ & 0x00000008) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeInt64Size(4, timestamp_);
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeInt64Size(4, timestamp_);
       }
       if (((bitField0_ & 0x00000010) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeMessageSize(5, getMetadata());
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeMessageSize(
+                5, getMetadata());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -9790,37 +11214,39 @@ public final class ReplicatedEventSourcing {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
-      if (!(obj instanceof org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent)) {
+      if (!(obj
+          instanceof
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .PublishedEvent)) {
         return super.equals(obj);
       }
-      org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent other = (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent) obj;
+      org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent
+          other =
+              (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .PublishedEvent)
+                  obj;
 
       if (hasPersistenceId() != other.hasPersistenceId()) return false;
       if (hasPersistenceId()) {
-        if (!getPersistenceId()
-            .equals(other.getPersistenceId())) return false;
+        if (!getPersistenceId().equals(other.getPersistenceId())) return false;
       }
       if (hasSequenceNr() != other.hasSequenceNr()) return false;
       if (hasSequenceNr()) {
-        if (getSequenceNr()
-            != other.getSequenceNr()) return false;
+        if (getSequenceNr() != other.getSequenceNr()) return false;
       }
       if (hasPayload() != other.hasPayload()) return false;
       if (hasPayload()) {
-        if (!getPayload()
-            .equals(other.getPayload())) return false;
+        if (!getPayload().equals(other.getPayload())) return false;
       }
       if (hasTimestamp() != other.hasTimestamp()) return false;
       if (hasTimestamp()) {
-        if (getTimestamp()
-            != other.getTimestamp()) return false;
+        if (getTimestamp() != other.getTimestamp()) return false;
       }
       if (hasMetadata() != other.hasMetadata()) return false;
       if (hasMetadata()) {
-        if (!getMetadata()
-            .equals(other.getMetadata())) return false;
+        if (!getMetadata().equals(other.getMetadata())) return false;
       }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
@@ -9839,8 +11265,8 @@ public final class ReplicatedEventSourcing {
       }
       if (hasSequenceNr()) {
         hash = (37 * hash) + SEQUENCENR_FIELD_NUMBER;
-        hash = (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashLong(
-            getSequenceNr());
+        hash =
+            (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashLong(getSequenceNr());
       }
       if (hasPayload()) {
         hash = (37 * hash) + PAYLOAD_FIELD_NUMBER;
@@ -9848,8 +11274,7 @@ public final class ReplicatedEventSourcing {
       }
       if (hasTimestamp()) {
         hash = (37 * hash) + TIMESTAMP_FIELD_NUMBER;
-        hash = (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashLong(
-            getTimestamp());
+        hash = (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashLong(getTimestamp());
       }
       if (hasMetadata()) {
         hash = (37 * hash) + METADATA_FIELD_NUMBER;
@@ -9860,90 +11285,124 @@ public final class ReplicatedEventSourcing {
       return hash;
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent parseFrom(
-        java.nio.ByteBuffer data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .PublishedEvent
+        parseFrom(java.nio.ByteBuffer data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent parseFrom(
-        java.nio.ByteBuffer data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent parseFrom(
-        org.apache.pekko.protobufv3.internal.ByteString data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent parseFrom(
-        org.apache.pekko.protobufv3.internal.ByteString data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent parseFrom(byte[] data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent parseFrom(
-        byte[] data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input);
-    }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent parseFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseDelimitedWithIOException(PARSER, input);
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .PublishedEvent
+        parseFrom(
+            java.nio.ByteBuffer data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent parseDelimitedFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .PublishedEvent
+        parseFrom(org.apache.pekko.protobufv3.internal.ByteString data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
     }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input);
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .PublishedEvent
+        parseFrom(
+            org.apache.pekko.protobufv3.internal.ByteString data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .PublishedEvent
+        parseFrom(byte[] data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .PublishedEvent
+        parseFrom(
+            byte[] data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .PublishedEvent
+        parseFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .PublishedEvent
+        parseFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input, extensionRegistry);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .PublishedEvent
+        parseDelimitedFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseDelimitedWithIOException(
+          PARSER, input);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .PublishedEvent
+        parseDelimitedFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseDelimitedWithIOException(
+          PARSER, input, extensionRegistry);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .PublishedEvent
+        parseFrom(org.apache.pekko.protobufv3.internal.CodedInputStream input)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input);
+    }
+
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .PublishedEvent
+        parseFrom(
+            org.apache.pekko.protobufv3.internal.CodedInputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent prototype) {
+
+    public static Builder newBuilder(
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent
+            prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
@@ -9952,43 +11411,49 @@ public final class ReplicatedEventSourcing {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
-     * Protobuf type {@code PublishedEvent}
-     */
-    public static final class Builder extends
-        org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder> implements
+    /** Protobuf type {@code PublishedEvent} */
+    public static final class Builder
+        extends org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder>
+        implements
         // @@protoc_insertion_point(builder_implements:PublishedEvent)
-        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEventOrBuilder {
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .PublishedEventOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_PublishedEvent_descriptor;
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .internal_static_PublishedEvent_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_PublishedEvent_fieldAccessorTable
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .internal_static_PublishedEvent_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent.class, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent.Builder.class);
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .PublishedEvent.class,
+                org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .PublishedEvent.Builder.class);
       }
 
-      // Construct using org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent.newBuilder()
+      // Construct using
+      // org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(
-          org.apache.pekko.protobufv3.internal.GeneratedMessage.BuilderParent parent) {
+      private Builder(org.apache.pekko.protobufv3.internal.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
+
       private void maybeForceBuilderInitialization() {
-        if (org.apache.pekko.protobufv3.internal.GeneratedMessage
-                .alwaysUseFieldBuilders) {
+        if (org.apache.pekko.protobufv3.internal.GeneratedMessage.alwaysUseFieldBuilders) {
           getPayloadFieldBuilder();
           getMetadataFieldBuilder();
         }
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -10010,19 +11475,23 @@ public final class ReplicatedEventSourcing {
       }
 
       @java.lang.Override
-      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-          getDescriptorForType() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.internal_static_PublishedEvent_descriptor;
+      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor getDescriptorForType() {
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .internal_static_PublishedEvent_descriptor;
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent getDefaultInstanceForType() {
-        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent.getDefaultInstance();
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent
+          getDefaultInstanceForType() {
+        return org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .PublishedEvent.getDefaultInstance();
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent build() {
-        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent result = buildPartial();
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent
+          build() {
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent
+            result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -10030,14 +11499,22 @@ public final class ReplicatedEventSourcing {
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent buildPartial() {
-        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent result = new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent(this);
-        if (bitField0_ != 0) { buildPartial0(result); }
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent
+          buildPartial() {
+        org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent
+            result =
+                new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                    .PublishedEvent(this);
+        if (bitField0_ != 0) {
+          buildPartial0(result);
+        }
         onBuilt();
         return result;
       }
 
-      private void buildPartial0(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent result) {
+      private void buildPartial0(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent
+              result) {
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -10049,9 +11526,7 @@ public final class ReplicatedEventSourcing {
           to_bitField0_ |= 0x00000002;
         }
         if (((from_bitField0_ & 0x00000004) != 0)) {
-          result.payload_ = payloadBuilder_ == null
-              ? payload_
-              : payloadBuilder_.build();
+          result.payload_ = payloadBuilder_ == null ? payload_ : payloadBuilder_.build();
           to_bitField0_ |= 0x00000004;
         }
         if (((from_bitField0_ & 0x00000008) != 0)) {
@@ -10059,9 +11534,7 @@ public final class ReplicatedEventSourcing {
           to_bitField0_ |= 0x00000008;
         }
         if (((from_bitField0_ & 0x00000010) != 0)) {
-          result.metadata_ = metadataBuilder_ == null
-              ? metadata_
-              : metadataBuilder_.build();
+          result.metadata_ = metadataBuilder_ == null ? metadata_ : metadataBuilder_.build();
           to_bitField0_ |= 0x00000010;
         }
         result.bitField0_ |= to_bitField0_;
@@ -10069,16 +11542,26 @@ public final class ReplicatedEventSourcing {
 
       @java.lang.Override
       public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
-        if (other instanceof org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent) {
-          return mergeFrom((org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent)other);
+        if (other
+            instanceof
+            org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .PublishedEvent) {
+          return mergeFrom(
+              (org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .PublishedEvent)
+                  other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent other) {
-        if (other == org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent.getDefaultInstance()) return this;
+      public Builder mergeFrom(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent
+              other) {
+        if (other
+            == org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                .PublishedEvent.getDefaultInstance()) return this;
         if (other.hasPersistenceId()) {
           persistenceId_ = other.persistenceId_;
           bitField0_ |= 0x00000001;
@@ -10132,41 +11615,43 @@ public final class ReplicatedEventSourcing {
               case 0:
                 done = true;
                 break;
-              case 10: {
-                persistenceId_ = input.readBytes();
-                bitField0_ |= 0x00000001;
-                break;
-              } // case 10
-              case 16: {
-                sequenceNr_ = input.readInt64();
-                bitField0_ |= 0x00000002;
-                break;
-              } // case 16
-              case 26: {
-                input.readMessage(
-                    getPayloadFieldBuilder().getBuilder(),
-                    extensionRegistry);
-                bitField0_ |= 0x00000004;
-                break;
-              } // case 26
-              case 32: {
-                timestamp_ = input.readInt64();
-                bitField0_ |= 0x00000008;
-                break;
-              } // case 32
-              case 42: {
-                input.readMessage(
-                    getMetadataFieldBuilder().getBuilder(),
-                    extensionRegistry);
-                bitField0_ |= 0x00000010;
-                break;
-              } // case 42
-              default: {
-                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                  done = true; // was an endgroup tag
-                }
-                break;
-              } // default:
+              case 10:
+                {
+                  persistenceId_ = input.readBytes();
+                  bitField0_ |= 0x00000001;
+                  break;
+                } // case 10
+              case 16:
+                {
+                  sequenceNr_ = input.readInt64();
+                  bitField0_ |= 0x00000002;
+                  break;
+                } // case 16
+              case 26:
+                {
+                  input.readMessage(getPayloadFieldBuilder().getBuilder(), extensionRegistry);
+                  bitField0_ |= 0x00000004;
+                  break;
+                } // case 26
+              case 32:
+                {
+                  timestamp_ = input.readInt64();
+                  bitField0_ |= 0x00000008;
+                  break;
+                } // case 32
+              case 42:
+                {
+                  input.readMessage(getMetadataFieldBuilder().getBuilder(), extensionRegistry);
+                  bitField0_ |= 0x00000010;
+                  break;
+                } // case 42
+              default:
+                {
+                  if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                    done = true; // was an endgroup tag
+                  }
+                  break;
+                } // default:
             } // switch (tag)
           } // while (!done)
         } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
@@ -10176,11 +11661,13 @@ public final class ReplicatedEventSourcing {
         } // finally
         return this;
       }
+
       private int bitField0_;
 
       private java.lang.Object persistenceId_ = "";
       /**
        * <code>optional string persistenceId = 1;</code>
+       *
        * @return Whether the persistenceId field is set.
        */
       public boolean hasPersistenceId() {
@@ -10188,6 +11675,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>optional string persistenceId = 1;</code>
+       *
        * @return The persistenceId.
        */
       public java.lang.String getPersistenceId() {
@@ -10206,15 +11694,14 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>optional string persistenceId = 1;</code>
+       *
        * @return The bytes for persistenceId.
        */
-      public org.apache.pekko.protobufv3.internal.ByteString
-          getPersistenceIdBytes() {
+      public org.apache.pekko.protobufv3.internal.ByteString getPersistenceIdBytes() {
         java.lang.Object ref = persistenceId_;
         if (ref instanceof String) {
-          org.apache.pekko.protobufv3.internal.ByteString b = 
-              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          org.apache.pekko.protobufv3.internal.ByteString b =
+              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
           persistenceId_ = b;
           return b;
         } else {
@@ -10223,12 +11710,14 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>optional string persistenceId = 1;</code>
+       *
        * @param value The persistenceId to set.
        * @return This builder for chaining.
        */
-      public Builder setPersistenceId(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
+      public Builder setPersistenceId(java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
         persistenceId_ = value;
         bitField0_ |= 0x00000001;
         onChanged();
@@ -10236,6 +11725,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>optional string persistenceId = 1;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearPersistenceId() {
@@ -10246,21 +11736,24 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>optional string persistenceId = 1;</code>
+       *
        * @param value The bytes for persistenceId to set.
        * @return This builder for chaining.
        */
-      public Builder setPersistenceIdBytes(
-          org.apache.pekko.protobufv3.internal.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
+      public Builder setPersistenceIdBytes(org.apache.pekko.protobufv3.internal.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
         persistenceId_ = value;
         bitField0_ |= 0x00000001;
         onChanged();
         return this;
       }
 
-      private long sequenceNr_ ;
+      private long sequenceNr_;
       /**
        * <code>optional int64 sequenceNr = 2;</code>
+       *
        * @return Whether the sequenceNr field is set.
        */
       @java.lang.Override
@@ -10269,6 +11762,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>optional int64 sequenceNr = 2;</code>
+       *
        * @return The sequenceNr.
        */
       @java.lang.Override
@@ -10277,6 +11771,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>optional int64 sequenceNr = 2;</code>
+       *
        * @param value The sequenceNr to set.
        * @return This builder for chaining.
        */
@@ -10289,6 +11784,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>optional int64 sequenceNr = 2;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearSequenceNr() {
@@ -10300,9 +11796,13 @@ public final class ReplicatedEventSourcing {
 
       private org.apache.pekko.remote.ContainerFormats.Payload payload_;
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
-          org.apache.pekko.remote.ContainerFormats.Payload, org.apache.pekko.remote.ContainerFormats.Payload.Builder, org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder> payloadBuilder_;
+              org.apache.pekko.remote.ContainerFormats.Payload,
+              org.apache.pekko.remote.ContainerFormats.Payload.Builder,
+              org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder>
+          payloadBuilder_;
       /**
        * <code>optional .Payload payload = 3;</code>
+       *
        * @return Whether the payload field is set.
        */
       public boolean hasPayload() {
@@ -10310,18 +11810,19 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>optional .Payload payload = 3;</code>
+       *
        * @return The payload.
        */
       public org.apache.pekko.remote.ContainerFormats.Payload getPayload() {
         if (payloadBuilder_ == null) {
-          return payload_ == null ? org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance() : payload_;
+          return payload_ == null
+              ? org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance()
+              : payload_;
         } else {
           return payloadBuilder_.getMessage();
         }
       }
-      /**
-       * <code>optional .Payload payload = 3;</code>
-       */
+      /** <code>optional .Payload payload = 3;</code> */
       public Builder setPayload(org.apache.pekko.remote.ContainerFormats.Payload value) {
         if (payloadBuilder_ == null) {
           if (value == null) {
@@ -10335,9 +11836,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
-      /**
-       * <code>optional .Payload payload = 3;</code>
-       */
+      /** <code>optional .Payload payload = 3;</code> */
       public Builder setPayload(
           org.apache.pekko.remote.ContainerFormats.Payload.Builder builderForValue) {
         if (payloadBuilder_ == null) {
@@ -10349,14 +11848,13 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
-      /**
-       * <code>optional .Payload payload = 3;</code>
-       */
+      /** <code>optional .Payload payload = 3;</code> */
       public Builder mergePayload(org.apache.pekko.remote.ContainerFormats.Payload value) {
         if (payloadBuilder_ == null) {
-          if (((bitField0_ & 0x00000004) != 0) &&
-            payload_ != null &&
-            payload_ != org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance()) {
+          if (((bitField0_ & 0x00000004) != 0)
+              && payload_ != null
+              && payload_
+                  != org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance()) {
             getPayloadBuilder().mergeFrom(value);
           } else {
             payload_ = value;
@@ -10370,9 +11868,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>optional .Payload payload = 3;</code>
-       */
+      /** <code>optional .Payload payload = 3;</code> */
       public Builder clearPayload() {
         bitField0_ = (bitField0_ & ~0x00000004);
         payload_ = null;
@@ -10383,45 +11879,44 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
-      /**
-       * <code>optional .Payload payload = 3;</code>
-       */
+      /** <code>optional .Payload payload = 3;</code> */
       public org.apache.pekko.remote.ContainerFormats.Payload.Builder getPayloadBuilder() {
         bitField0_ |= 0x00000004;
         onChanged();
         return getPayloadFieldBuilder().getBuilder();
       }
-      /**
-       * <code>optional .Payload payload = 3;</code>
-       */
+      /** <code>optional .Payload payload = 3;</code> */
       public org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder getPayloadOrBuilder() {
         if (payloadBuilder_ != null) {
           return payloadBuilder_.getMessageOrBuilder();
         } else {
-          return payload_ == null ?
-              org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance() : payload_;
+          return payload_ == null
+              ? org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance()
+              : payload_;
         }
       }
-      /**
-       * <code>optional .Payload payload = 3;</code>
-       */
+      /** <code>optional .Payload payload = 3;</code> */
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
-          org.apache.pekko.remote.ContainerFormats.Payload, org.apache.pekko.remote.ContainerFormats.Payload.Builder, org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder> 
+              org.apache.pekko.remote.ContainerFormats.Payload,
+              org.apache.pekko.remote.ContainerFormats.Payload.Builder,
+              org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder>
           getPayloadFieldBuilder() {
         if (payloadBuilder_ == null) {
-          payloadBuilder_ = new org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
-              org.apache.pekko.remote.ContainerFormats.Payload, org.apache.pekko.remote.ContainerFormats.Payload.Builder, org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder>(
-                  getPayload(),
-                  getParentForChildren(),
-                  isClean());
+          payloadBuilder_ =
+              new org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
+                  org.apache.pekko.remote.ContainerFormats.Payload,
+                  org.apache.pekko.remote.ContainerFormats.Payload.Builder,
+                  org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder>(
+                  getPayload(), getParentForChildren(), isClean());
           payload_ = null;
         }
         return payloadBuilder_;
       }
 
-      private long timestamp_ ;
+      private long timestamp_;
       /**
        * <code>optional int64 timestamp = 4;</code>
+       *
        * @return Whether the timestamp field is set.
        */
       @java.lang.Override
@@ -10430,6 +11925,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>optional int64 timestamp = 4;</code>
+       *
        * @return The timestamp.
        */
       @java.lang.Override
@@ -10438,6 +11934,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>optional int64 timestamp = 4;</code>
+       *
        * @param value The timestamp to set.
        * @return This builder for chaining.
        */
@@ -10450,6 +11947,7 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>optional int64 timestamp = 4;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearTimestamp() {
@@ -10459,11 +11957,20 @@ public final class ReplicatedEventSourcing {
         return this;
       }
 
-      private org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData metadata_;
+      private org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedPublishedEventMetaData
+          metadata_;
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData.Builder, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaDataOrBuilder> metadataBuilder_;
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedPublishedEventMetaData,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedPublishedEventMetaData.Builder,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedPublishedEventMetaDataOrBuilder>
+          metadataBuilder_;
       /**
        * <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code>
+       *
        * @return Whether the metadata field is set.
        */
       public boolean hasMetadata() {
@@ -10471,19 +11978,26 @@ public final class ReplicatedEventSourcing {
       }
       /**
        * <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code>
+       *
        * @return The metadata.
        */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData getMetadata() {
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedPublishedEventMetaData
+          getMetadata() {
         if (metadataBuilder_ == null) {
-          return metadata_ == null ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData.getDefaultInstance() : metadata_;
+          return metadata_ == null
+              ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedPublishedEventMetaData.getDefaultInstance()
+              : metadata_;
         } else {
           return metadataBuilder_.getMessage();
         }
       }
-      /**
-       * <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code>
-       */
-      public Builder setMetadata(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData value) {
+      /** <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code> */
+      public Builder setMetadata(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedPublishedEventMetaData
+              value) {
         if (metadataBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -10496,11 +12010,11 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
-      /**
-       * <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code>
-       */
+      /** <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code> */
       public Builder setMetadata(
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData.Builder builderForValue) {
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedPublishedEventMetaData.Builder
+              builderForValue) {
         if (metadataBuilder_ == null) {
           metadata_ = builderForValue.build();
         } else {
@@ -10510,14 +12024,17 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
-      /**
-       * <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code>
-       */
-      public Builder mergeMetadata(org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData value) {
+      /** <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code> */
+      public Builder mergeMetadata(
+          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedPublishedEventMetaData
+              value) {
         if (metadataBuilder_ == null) {
-          if (((bitField0_ & 0x00000010) != 0) &&
-            metadata_ != null &&
-            metadata_ != org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData.getDefaultInstance()) {
+          if (((bitField0_ & 0x00000010) != 0)
+              && metadata_ != null
+              && metadata_
+                  != org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .ReplicatedPublishedEventMetaData.getDefaultInstance()) {
             getMetadataBuilder().mergeFrom(value);
           } else {
             metadata_ = value;
@@ -10531,9 +12048,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
-      /**
-       * <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code>
-       */
+      /** <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code> */
       public Builder clearMetadata() {
         bitField0_ = (bitField0_ & ~0x00000010);
         metadata_ = null;
@@ -10544,37 +12059,46 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
-      /**
-       * <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code>
-       */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData.Builder getMetadataBuilder() {
+      /** <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code> */
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedPublishedEventMetaData.Builder
+          getMetadataBuilder() {
         bitField0_ |= 0x00000010;
         onChanged();
         return getMetadataFieldBuilder().getBuilder();
       }
-      /**
-       * <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code>
-       */
-      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaDataOrBuilder getMetadataOrBuilder() {
+      /** <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code> */
+      public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .ReplicatedPublishedEventMetaDataOrBuilder
+          getMetadataOrBuilder() {
         if (metadataBuilder_ != null) {
           return metadataBuilder_.getMessageOrBuilder();
         } else {
-          return metadata_ == null ?
-              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData.getDefaultInstance() : metadata_;
+          return metadata_ == null
+              ? org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedPublishedEventMetaData.getDefaultInstance()
+              : metadata_;
         }
       }
-      /**
-       * <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code>
-       */
+      /** <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code> */
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
-          org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData.Builder, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaDataOrBuilder> 
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedPublishedEventMetaData,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedPublishedEventMetaData.Builder,
+              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                  .ReplicatedPublishedEventMetaDataOrBuilder>
           getMetadataFieldBuilder() {
         if (metadataBuilder_ == null) {
-          metadataBuilder_ = new org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
-              org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaData.Builder, org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ReplicatedPublishedEventMetaDataOrBuilder>(
-                  getMetadata(),
-                  getParentForChildren(),
-                  isClean());
+          metadataBuilder_ =
+              new org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .ReplicatedPublishedEventMetaData,
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .ReplicatedPublishedEventMetaData.Builder,
+                  org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+                      .ReplicatedPublishedEventMetaDataOrBuilder>(
+                  getMetadata(), getParentForChildren(), isClean());
           metadata_ = null;
         }
         return metadataBuilder_;
@@ -10584,36 +12108,44 @@ public final class ReplicatedEventSourcing {
     }
 
     // @@protoc_insertion_point(class_scope:PublishedEvent)
-    private static final org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent DEFAULT_INSTANCE;
+    private static final org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .PublishedEvent
+        DEFAULT_INSTANCE;
+
     static {
-      DEFAULT_INSTANCE = new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent();
+      DEFAULT_INSTANCE =
+          new org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+              .PublishedEvent();
     }
 
-    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent getDefaultInstance() {
+    public static org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
+            .PublishedEvent
+        getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final org.apache.pekko.protobufv3.internal.Parser<PublishedEvent>
-        PARSER = new org.apache.pekko.protobufv3.internal.AbstractParser<PublishedEvent>() {
-      @java.lang.Override
-      public PublishedEvent parsePartialFrom(
-          org.apache.pekko.protobufv3.internal.CodedInputStream input,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        Builder builder = newBuilder();
-        try {
-          builder.mergeFrom(input, extensionRegistry);
-        } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(builder.buildPartial());
-        } catch (org.apache.pekko.protobufv3.internal.UninitializedMessageException e) {
-          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-        } catch (java.io.IOException e) {
-          throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
-              .setUnfinishedMessage(builder.buildPartial());
-        }
-        return builder.buildPartial();
-      }
-    };
+    private static final org.apache.pekko.protobufv3.internal.Parser<PublishedEvent> PARSER =
+        new org.apache.pekko.protobufv3.internal.AbstractParser<PublishedEvent>() {
+          @java.lang.Override
+          public PublishedEvent parsePartialFrom(
+              org.apache.pekko.protobufv3.internal.CodedInputStream input,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+            Builder builder = newBuilder();
+            try {
+              builder.mergeFrom(input, extensionRegistry);
+            } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
+              throw e.setUnfinishedMessage(builder.buildPartial());
+            } catch (org.apache.pekko.protobufv3.internal.UninitializedMessageException e) {
+              throw e.asInvalidProtocolBufferException()
+                  .setUnfinishedMessage(builder.buildPartial());
+            } catch (java.io.IOException e) {
+              throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
+                  .setUnfinishedMessage(builder.buildPartial());
+            }
+            return builder.buildPartial();
+          }
+        };
 
     public static org.apache.pekko.protobufv3.internal.Parser<PublishedEvent> parser() {
       return PARSER;
@@ -10625,189 +12157,202 @@ public final class ReplicatedEventSourcing {
     }
 
     @java.lang.Override
-    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent getDefaultInstanceForType() {
+    public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.PublishedEvent
+        getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
-
   }
 
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_Counter_descriptor;
-  private static final 
-    org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
+      internal_static_Counter_descriptor;
+  private static final org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
       internal_static_Counter_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_CounterUpdate_descriptor;
-  private static final 
-    org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
+      internal_static_CounterUpdate_descriptor;
+  private static final org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
       internal_static_CounterUpdate_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_ORSet_descriptor;
-  private static final 
-    org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
+      internal_static_ORSet_descriptor;
+  private static final org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
       internal_static_ORSet_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_ORSetDeltaGroup_descriptor;
-  private static final 
-    org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
+      internal_static_ORSetDeltaGroup_descriptor;
+  private static final org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
       internal_static_ORSetDeltaGroup_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_ORSetDeltaGroup_Entry_descriptor;
-  private static final 
-    org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
+      internal_static_ORSetDeltaGroup_Entry_descriptor;
+  private static final org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
       internal_static_ORSetDeltaGroup_Entry_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_VersionVector_descriptor;
-  private static final 
-    org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
+      internal_static_VersionVector_descriptor;
+  private static final org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
       internal_static_VersionVector_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_VersionVector_Entry_descriptor;
-  private static final 
-    org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
+      internal_static_VersionVector_Entry_descriptor;
+  private static final org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
       internal_static_VersionVector_Entry_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_ReplicatedEventMetadata_descriptor;
-  private static final 
-    org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
+      internal_static_ReplicatedEventMetadata_descriptor;
+  private static final org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
       internal_static_ReplicatedEventMetadata_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_ReplicatedSnapshotMetadata_descriptor;
-  private static final 
-    org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
+      internal_static_ReplicatedSnapshotMetadata_descriptor;
+  private static final org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
       internal_static_ReplicatedSnapshotMetadata_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_ReplicatedSnapshotMetadata_Seen_descriptor;
-  private static final 
-    org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
+      internal_static_ReplicatedSnapshotMetadata_Seen_descriptor;
+  private static final org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
       internal_static_ReplicatedSnapshotMetadata_Seen_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_ReplicatedPublishedEventMetaData_descriptor;
-  private static final 
-    org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
+      internal_static_ReplicatedPublishedEventMetaData_descriptor;
+  private static final org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
       internal_static_ReplicatedPublishedEventMetaData_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_PublishedEvent_descriptor;
-  private static final 
-    org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
+      internal_static_PublishedEvent_descriptor;
+  private static final org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
       internal_static_PublishedEvent_fieldAccessorTable;
 
-  public static org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
-      getDescriptor() {
+  public static org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor getDescriptor() {
     return descriptor;
   }
-  private static  org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
-      descriptor;
+
+  private static org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor descriptor;
+
   static {
     java.lang.String[] descriptorData = {
-      "\n\035ReplicatedEventSourcing.proto\032\026Contain" +
-      "erFormats.proto\"\030\n\007Counter\022\r\n\005value\030\001 \002(" +
-      "\014\"\036\n\rCounterUpdate\022\r\n\005delta\030\001 \002(\014\"\304\001\n\005OR" +
-      "Set\022\020\n\010originDc\030\001 \002(\t\022\037\n\007vvector\030\002 \002(\0132\016" +
-      ".VersionVector\022\034\n\004dots\030\003 \003(\0132\016.VersionVe" +
-      "ctor\022\026\n\016stringElements\030\004 \003(\t\022\027\n\013intEleme" +
-      "nts\030\005 \003(\021B\002\020\001\022\030\n\014longElements\030\006 \003(\022B\002\020\001\022" +
-      "\037\n\rotherElements\030\007 \003(\0132\010.Payload\"\201\001\n\017ORS" +
-      "etDeltaGroup\022\'\n\007entries\030\001 \003(\0132\026.ORSetDel" +
-      "taGroup.Entry\032E\n\005Entry\022 \n\toperation\030\001 \002(" +
-      "\0162\r.ORSetDeltaOp\022\032\n\nunderlying\030\002 \002(\0132\006.O" +
-      "RSet\"]\n\rVersionVector\022%\n\007entries\030\001 \003(\0132\024" +
-      ".VersionVector.Entry\032%\n\005Entry\022\013\n\003key\030\001 \002" +
-      "(\t\022\017\n\007version\030\002 \002(\003\"\205\001\n\027ReplicatedEventM" +
-      "etadata\022\025\n\roriginReplica\030\001 \002(\t\022\030\n\020origin" +
-      "SequenceNr\030\002 \002(\003\022%\n\rversionVector\030\003 \002(\0132" +
-      "\016.VersionVector\022\022\n\nconcurrent\030\004 \002(\010\"\246\001\n\032" +
-      "ReplicatedSnapshotMetadata\022\037\n\007version\030\001 " +
-      "\002(\0132\016.VersionVector\0228\n\016seenPerReplica\030\002 " +
-      "\003(\0132 .ReplicatedSnapshotMetadata.Seen\032-\n" +
-      "\004Seen\022\021\n\treplicaId\030\001 \002(\t\022\022\n\nsequenceNr\030\002" +
-      " \002(\003\"\\\n ReplicatedPublishedEventMetaData" +
-      "\022\021\n\treplicaId\030\001 \001(\t\022%\n\rversionVector\030\002 \001" +
-      "(\0132\016.VersionVector\"\236\001\n\016PublishedEvent\022\025\n" +
-      "\rpersistenceId\030\001 \001(\t\022\022\n\nsequenceNr\030\002 \001(\003" +
-      "\022\031\n\007payload\030\003 \001(\0132\010.Payload\022\021\n\ttimestamp" +
-      "\030\004 \001(\003\0223\n\010metadata\030\005 \001(\0132!.ReplicatedPub" +
-      "lishedEventMetaData*-\n\014ORSetDeltaOp\022\007\n\003A" +
-      "dd\020\000\022\n\n\006Remove\020\001\022\010\n\004Full\020\002B4\n0org.apache" +
-      ".pekko.persistence.typed.serializationH\001"
+      "\n\035ReplicatedEventSourcing.proto\032\026Contain"
+          + "erFormats.proto\"\030\n\007Counter\022\r\n\005value\030\001 \002("
+          + "\014\"\036\n\rCounterUpdate\022\r\n\005delta\030\001 \002(\014\"\304\001\n\005OR"
+          + "Set\022\020\n\010originDc\030\001 \002(\t\022\037\n\007vvector\030\002 \002(\0132\016"
+          + ".VersionVector\022\034\n\004dots\030\003 \003(\0132\016.VersionVe"
+          + "ctor\022\026\n\016stringElements\030\004 \003(\t\022\027\n\013intEleme"
+          + "nts\030\005 \003(\021B\002\020\001\022\030\n\014longElements\030\006 \003(\022B\002\020\001\022"
+          + "\037\n\rotherElements\030\007 \003(\0132\010.Payload\"\201\001\n\017ORS"
+          + "etDeltaGroup\022\'\n\007entries\030\001 \003(\0132\026.ORSetDel"
+          + "taGroup.Entry\032E\n\005Entry\022 \n\toperation\030\001 \002("
+          + "\0162\r.ORSetDeltaOp\022\032\n\nunderlying\030\002 \002(\0132\006.O"
+          + "RSet\"]\n\rVersionVector\022%\n\007entries\030\001 \003(\0132\024"
+          + ".VersionVector.Entry\032%\n\005Entry\022\013\n\003key\030\001 \002"
+          + "(\t\022\017\n\007version\030\002 \002(\003\"\205\001\n\027ReplicatedEventM"
+          + "etadata\022\025\n\roriginReplica\030\001 \002(\t\022\030\n\020origin"
+          + "SequenceNr\030\002 \002(\003\022%\n\rversionVector\030\003 \002(\0132"
+          + "\016.VersionVector\022\022\n\nconcurrent\030\004 \002(\010\"\246\001\n\032"
+          + "ReplicatedSnapshotMetadata\022\037\n\007version\030\001 "
+          + "\002(\0132\016.VersionVector\0228\n\016seenPerReplica\030\002 "
+          + "\003(\0132 .ReplicatedSnapshotMetadata.Seen\032-\n"
+          + "\004Seen\022\021\n\treplicaId\030\001 \002(\t\022\022\n\nsequenceNr\030\002"
+          + " \002(\003\"\\\n ReplicatedPublishedEventMetaData"
+          + "\022\021\n\treplicaId\030\001 \001(\t\022%\n\rversionVector\030\002 \001"
+          + "(\0132\016.VersionVector\"\236\001\n\016PublishedEvent\022\025\n"
+          + "\rpersistenceId\030\001 \001(\t\022\022\n\nsequenceNr\030\002 \001(\003"
+          + "\022\031\n\007payload\030\003 \001(\0132\010.Payload\022\021\n\ttimestamp"
+          + "\030\004 \001(\003\0223\n\010metadata\030\005 \001(\0132!.ReplicatedPub"
+          + "lishedEventMetaData*-\n\014ORSetDeltaOp\022\007\n\003A"
+          + "dd\020\000\022\n\n\006Remove\020\001\022\010\n\004Full\020\002B4\n0org.apache"
+          + ".pekko.persistence.typed.serializationH\001"
     };
-    descriptor = org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
-      .internalBuildGeneratedFileFrom(descriptorData,
-        new org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor[] {
-          org.apache.pekko.remote.ContainerFormats.getDescriptor(),
-        });
-    internal_static_Counter_descriptor =
-      getDescriptor().getMessageTypes().get(0);
-    internal_static_Counter_fieldAccessorTable = new
-      org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
-        internal_static_Counter_descriptor,
-        new java.lang.String[] { "Value", });
-    internal_static_CounterUpdate_descriptor =
-      getDescriptor().getMessageTypes().get(1);
-    internal_static_CounterUpdate_fieldAccessorTable = new
-      org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
-        internal_static_CounterUpdate_descriptor,
-        new java.lang.String[] { "Delta", });
-    internal_static_ORSet_descriptor =
-      getDescriptor().getMessageTypes().get(2);
-    internal_static_ORSet_fieldAccessorTable = new
-      org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
-        internal_static_ORSet_descriptor,
-        new java.lang.String[] { "OriginDc", "Vvector", "Dots", "StringElements", "IntElements", "LongElements", "OtherElements", });
-    internal_static_ORSetDeltaGroup_descriptor =
-      getDescriptor().getMessageTypes().get(3);
-    internal_static_ORSetDeltaGroup_fieldAccessorTable = new
-      org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
-        internal_static_ORSetDeltaGroup_descriptor,
-        new java.lang.String[] { "Entries", });
+    descriptor =
+        org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
+            .internalBuildGeneratedFileFrom(
+                descriptorData,
+                new org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor[] {
+                  org.apache.pekko.remote.ContainerFormats.getDescriptor(),
+                });
+    internal_static_Counter_descriptor = getDescriptor().getMessageTypes().get(0);
+    internal_static_Counter_fieldAccessorTable =
+        new org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
+            internal_static_Counter_descriptor,
+            new java.lang.String[] {
+              "Value",
+            });
+    internal_static_CounterUpdate_descriptor = getDescriptor().getMessageTypes().get(1);
+    internal_static_CounterUpdate_fieldAccessorTable =
+        new org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
+            internal_static_CounterUpdate_descriptor,
+            new java.lang.String[] {
+              "Delta",
+            });
+    internal_static_ORSet_descriptor = getDescriptor().getMessageTypes().get(2);
+    internal_static_ORSet_fieldAccessorTable =
+        new org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
+            internal_static_ORSet_descriptor,
+            new java.lang.String[] {
+              "OriginDc",
+              "Vvector",
+              "Dots",
+              "StringElements",
+              "IntElements",
+              "LongElements",
+              "OtherElements",
+            });
+    internal_static_ORSetDeltaGroup_descriptor = getDescriptor().getMessageTypes().get(3);
+    internal_static_ORSetDeltaGroup_fieldAccessorTable =
+        new org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
+            internal_static_ORSetDeltaGroup_descriptor,
+            new java.lang.String[] {
+              "Entries",
+            });
     internal_static_ORSetDeltaGroup_Entry_descriptor =
-      internal_static_ORSetDeltaGroup_descriptor.getNestedTypes().get(0);
-    internal_static_ORSetDeltaGroup_Entry_fieldAccessorTable = new
-      org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
-        internal_static_ORSetDeltaGroup_Entry_descriptor,
-        new java.lang.String[] { "Operation", "Underlying", });
-    internal_static_VersionVector_descriptor =
-      getDescriptor().getMessageTypes().get(4);
-    internal_static_VersionVector_fieldAccessorTable = new
-      org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
-        internal_static_VersionVector_descriptor,
-        new java.lang.String[] { "Entries", });
+        internal_static_ORSetDeltaGroup_descriptor.getNestedTypes().get(0);
+    internal_static_ORSetDeltaGroup_Entry_fieldAccessorTable =
+        new org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
+            internal_static_ORSetDeltaGroup_Entry_descriptor,
+            new java.lang.String[] {
+              "Operation", "Underlying",
+            });
+    internal_static_VersionVector_descriptor = getDescriptor().getMessageTypes().get(4);
+    internal_static_VersionVector_fieldAccessorTable =
+        new org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
+            internal_static_VersionVector_descriptor,
+            new java.lang.String[] {
+              "Entries",
+            });
     internal_static_VersionVector_Entry_descriptor =
-      internal_static_VersionVector_descriptor.getNestedTypes().get(0);
-    internal_static_VersionVector_Entry_fieldAccessorTable = new
-      org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
-        internal_static_VersionVector_Entry_descriptor,
-        new java.lang.String[] { "Key", "Version", });
-    internal_static_ReplicatedEventMetadata_descriptor =
-      getDescriptor().getMessageTypes().get(5);
-    internal_static_ReplicatedEventMetadata_fieldAccessorTable = new
-      org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
-        internal_static_ReplicatedEventMetadata_descriptor,
-        new java.lang.String[] { "OriginReplica", "OriginSequenceNr", "VersionVector", "Concurrent", });
+        internal_static_VersionVector_descriptor.getNestedTypes().get(0);
+    internal_static_VersionVector_Entry_fieldAccessorTable =
+        new org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
+            internal_static_VersionVector_Entry_descriptor,
+            new java.lang.String[] {
+              "Key", "Version",
+            });
+    internal_static_ReplicatedEventMetadata_descriptor = getDescriptor().getMessageTypes().get(5);
+    internal_static_ReplicatedEventMetadata_fieldAccessorTable =
+        new org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
+            internal_static_ReplicatedEventMetadata_descriptor,
+            new java.lang.String[] {
+              "OriginReplica", "OriginSequenceNr", "VersionVector", "Concurrent",
+            });
     internal_static_ReplicatedSnapshotMetadata_descriptor =
-      getDescriptor().getMessageTypes().get(6);
-    internal_static_ReplicatedSnapshotMetadata_fieldAccessorTable = new
-      org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
-        internal_static_ReplicatedSnapshotMetadata_descriptor,
-        new java.lang.String[] { "Version", "SeenPerReplica", });
+        getDescriptor().getMessageTypes().get(6);
+    internal_static_ReplicatedSnapshotMetadata_fieldAccessorTable =
+        new org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
+            internal_static_ReplicatedSnapshotMetadata_descriptor,
+            new java.lang.String[] {
+              "Version", "SeenPerReplica",
+            });
     internal_static_ReplicatedSnapshotMetadata_Seen_descriptor =
-      internal_static_ReplicatedSnapshotMetadata_descriptor.getNestedTypes().get(0);
-    internal_static_ReplicatedSnapshotMetadata_Seen_fieldAccessorTable = new
-      org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
-        internal_static_ReplicatedSnapshotMetadata_Seen_descriptor,
-        new java.lang.String[] { "ReplicaId", "SequenceNr", });
+        internal_static_ReplicatedSnapshotMetadata_descriptor.getNestedTypes().get(0);
+    internal_static_ReplicatedSnapshotMetadata_Seen_fieldAccessorTable =
+        new org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
+            internal_static_ReplicatedSnapshotMetadata_Seen_descriptor,
+            new java.lang.String[] {
+              "ReplicaId", "SequenceNr",
+            });
     internal_static_ReplicatedPublishedEventMetaData_descriptor =
-      getDescriptor().getMessageTypes().get(7);
-    internal_static_ReplicatedPublishedEventMetaData_fieldAccessorTable = new
-      org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
-        internal_static_ReplicatedPublishedEventMetaData_descriptor,
-        new java.lang.String[] { "ReplicaId", "VersionVector", });
-    internal_static_PublishedEvent_descriptor =
-      getDescriptor().getMessageTypes().get(8);
-    internal_static_PublishedEvent_fieldAccessorTable = new
-      org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
-        internal_static_PublishedEvent_descriptor,
-        new java.lang.String[] { "PersistenceId", "SequenceNr", "Payload", "Timestamp", "Metadata", });
+        getDescriptor().getMessageTypes().get(7);
+    internal_static_ReplicatedPublishedEventMetaData_fieldAccessorTable =
+        new org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
+            internal_static_ReplicatedPublishedEventMetaData_descriptor,
+            new java.lang.String[] {
+              "ReplicaId", "VersionVector",
+            });
+    internal_static_PublishedEvent_descriptor = getDescriptor().getMessageTypes().get(8);
+    internal_static_PublishedEvent_fieldAccessorTable =
+        new org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
+            internal_static_PublishedEvent_descriptor,
+            new java.lang.String[] {
+              "PersistenceId", "SequenceNr", "Payload", "Timestamp", "Metadata",
+            });
     descriptor.resolveAllFeaturesImmutable();
     org.apache.pekko.remote.ContainerFormats.getDescriptor();
   }
