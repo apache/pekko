@@ -52,7 +52,8 @@ import io.netty.channel.{
   ChannelHandlerContext,
   ChannelInitializer,
   ChannelOption,
-  ChannelPipeline
+  ChannelPipeline,
+  EventLoopGroup
 }
 import io.netty.channel.group.{ ChannelGroup, ChannelGroupFuture, ChannelMatchers, DefaultChannelGroup }
 import io.netty.channel.nio.NioEventLoopGroup
@@ -365,7 +366,8 @@ class NettyTransport(val settings: NettyTransportSettings, val system: ExtendedA
 
   private val log = Logging.withMarker(system, classOf[NettyTransport])
 
-  private def createEventLoopGroup(nThreadCount: Int): NioEventLoopGroup =
+  @nowarn("msg=deprecated")
+  private def createEventLoopGroup(nThreadCount: Int): EventLoopGroup =
     UseDispatcherForIo.map(system.dispatchers.lookup)
       .map(executor => new NioEventLoopGroup(0, executor))
       .getOrElse(new NioEventLoopGroup(nThreadCount, system.threadFactory))

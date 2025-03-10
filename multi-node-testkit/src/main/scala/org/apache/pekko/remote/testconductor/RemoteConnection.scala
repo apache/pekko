@@ -16,6 +16,7 @@ package org.apache.pekko.remote.testconductor
 import java.net.InetSocketAddress
 import java.util.concurrent.TimeUnit
 
+import scala.annotation.nowarn
 import scala.util.control.NonFatal
 
 import io.netty.bootstrap.{ Bootstrap, ServerBootstrap }
@@ -114,6 +115,7 @@ private[pekko] trait RemoteConnection {
 /**
  * INTERNAL API.
  */
+@nowarn("msg=deprecated")
 private[pekko] object RemoteConnection {
   def apply(
       role: Role,
