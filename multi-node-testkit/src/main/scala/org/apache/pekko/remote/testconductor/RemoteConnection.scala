@@ -16,14 +16,13 @@ package org.apache.pekko.remote.testconductor
 import java.net.InetSocketAddress
 import java.util.concurrent.TimeUnit
 
-import scala.annotation.nowarn
 import scala.util.control.NonFatal
 
 import io.netty.bootstrap.{ Bootstrap, ServerBootstrap }
 import io.netty.buffer.{ ByteBuf, ByteBufUtil }
 import io.netty.channel._
 import io.netty.channel.ChannelHandler.Sharable
-import io.netty.channel.nio.NioEventLoopGroup
+import io.netty.channel.nio.NioIoHandler
 import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.{ NioServerSocketChannel, NioSocketChannel }
 import io.netty.handler.codec.{
@@ -115,7 +114,6 @@ private[pekko] trait RemoteConnection {
 /**
  * INTERNAL API.
  */
-@nowarn("msg=deprecated")
 private[pekko] object RemoteConnection {
   def apply(
       role: Role,
@@ -125,7 +123,7 @@ private[pekko] object RemoteConnection {
     role match {
       case Client =>
         val bootstrap = new Bootstrap()
-        val eventLoopGroup = new NioEventLoopGroup(poolSize)
+        val eventLoopGroup = new MultiThreadIoEventLoopGroup(poolSize, NioIoHandler.newFactory())
         val cf = bootstrap
           .group(eventLoopGroup)
           .channel(classOf[NioSocketChannel])
@@ -150,8 +148,9 @@ private[pekko] object RemoteConnection {
 
       case Server =>
         val bootstrap = new ServerBootstrap()
-        val parentEventLoopGroup = new NioEventLoopGroup(poolSize)
-        val childEventLoopGroup = new NioEventLoopGroup(poolSize)
+        val ioHandlerFactory = NioIoHandler.newFactory()
+        val parentEventLoopGroup = new MultiThreadIoEventLoopGroup(poolSize, ioHandlerFactory)
+        val childEventLoopGroup = new MultiThreadIoEventLoopGroup(poolSize, ioHandlerFactory)
         val cf = bootstrap
           .group(parentEventLoopGroup, childEventLoopGroup)
           .channel(classOf[NioServerSocketChannel])
