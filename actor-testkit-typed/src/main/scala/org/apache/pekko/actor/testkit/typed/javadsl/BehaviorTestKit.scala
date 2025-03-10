@@ -19,9 +19,9 @@ import pekko.actor.testkit.typed.{ CapturedLogEvent, Effect }
 import pekko.actor.typed.receptionist.Receptionist
 import pekko.actor.typed.{ ActorRef, Behavior, Signal }
 import pekko.annotation.{ ApiMayChange, DoNotInherit }
-import com.typesafe.config.Config
+import pekko.util.RandomNumberGenerator
 
-import java.util.concurrent.ThreadLocalRandom
+import com.typesafe.config.Config
 
 object BehaviorTestKit {
 
@@ -37,7 +37,7 @@ object BehaviorTestKit {
   @ApiMayChange
   def create[T](initialBehavior: Behavior[T], name: String, config: Config): BehaviorTestKit[T] = {
     val system = new ActorSystemStub("StubbedActorContext", config)
-    val uid = ThreadLocalRandom.current().nextInt()
+    val uid = RandomNumberGenerator.get().nextInt()
     new BehaviorTestKitImpl(system, (system.path / name).withUid(uid), initialBehavior)
   }
 
