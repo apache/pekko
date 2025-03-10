@@ -2745,6 +2745,24 @@ trait FlowOps[+Out, +Mat] {
   def flatMapConcat[T, M](f: Out => Graph[SourceShape[T], M]): Repr[T] = map(f).via(new FlattenMerge[T, M](1))
 
   /**
+   * Transform each input element into a `Source` of output elements that is
+   * then flattened into the output stream by concatenation,
+   * fully consuming one Source after the other.
+   * `parallelism` can be used to config the max inflight sources, which will be materialized at the same time.
+   *
+   * '''Emits when''' a currently consumed substream has an element available
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' upstream completes and all consumed substreams complete
+   *
+   * '''Cancels when''' downstream cancels
+   * @since 1.2.0
+   */
+  def flatMapConcat[T, M](parallelism: Int, f: Out => Graph[SourceShape[T], M]): Repr[T] =
+    map(f).via(new FlattenConcat[T, M](parallelism))
+
+  /**
    * Alias for [[flatMapConcat]], added to enable for comprehensions.
    *
    * NOTE: Support for `for` comprehensions is still experimental and it's possible that we might need to change
