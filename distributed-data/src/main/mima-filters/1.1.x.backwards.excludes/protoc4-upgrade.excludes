@@ -17,3 +17,4 @@
 
 # Issues caused by upgrading protoc to 4.29.3
 ProblemFilters.exclude[Problem]("org.apache.pekko.cluster.ddata.protobuf.msg.*")
+ProblemFilters.exclude[Problem]("org.apache.pekko.cluster.ddata.protobuf.ReplicatedDataSerializer*")
