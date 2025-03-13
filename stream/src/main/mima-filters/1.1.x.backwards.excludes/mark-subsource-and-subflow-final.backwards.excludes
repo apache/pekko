@@ -1,0 +1,3 @@
+# Mark SubSource and SubFlow final class
+ProblemFilters.exclude[FinalClassProblem]("org.apache.pekko.stream.javadsl.SubSource")
+ProblemFilters.exclude[FinalClassProblem]("org.apache.pekko.stream.javadsl.SubFlow")
