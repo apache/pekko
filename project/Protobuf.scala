@@ -92,7 +92,7 @@ object Protobuf {
                   // api doc generation to fail
                   .replace(
                     "UnusedPrivateParameter",
-                    "org.apache.pekko.protobufv3.internal.GeneratedMessageV3.UnusedPrivateParameter")),
+                    "org.apache.pekko.protobufv3.internal.GeneratedMessage.UnusedPrivateParameter")),
               cache,
               log)
         }

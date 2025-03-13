@@ -30,7 +30,7 @@ import pekko.cluster.ddata.Replicator.Internal._
 import pekko.cluster.ddata.protobuf.msg.{ ReplicatedDataMessages => rd }
 import pekko.cluster.ddata.protobuf.msg.{ ReplicatorMessages => dm }
 import pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.OtherMessage
-import pekko.protobufv3.internal.GeneratedMessageV3
+import pekko.protobufv3.internal.GeneratedMessage
 import pekko.remote.ByteStringUtils
 import pekko.serialization.BaseSerializer
 import pekko.serialization.Serialization
@@ -44,7 +44,7 @@ private object ReplicatedDataSerializer {
   /*
    * Generic superclass to allow to compare Entry types used in protobuf.
    */
-  abstract class KeyComparator[A <: GeneratedMessageV3] extends Comparator[A] {
+  abstract class KeyComparator[A <: GeneratedMessage] extends Comparator[A] {
 
     /**
      * Get the key from the entry. The key may be a String, Int, Long, or OtherMessage
@@ -102,15 +102,15 @@ private object ReplicatedDataSerializer {
   }
 
   sealed trait ProtoMapEntryWriter[
-      Entry <: GeneratedMessageV3, EntryBuilder <: GeneratedMessageV3.Builder[EntryBuilder],
-      Value <: GeneratedMessageV3] {
+      Entry <: GeneratedMessage, EntryBuilder <: GeneratedMessage.Builder[EntryBuilder],
+      Value <: GeneratedMessage] {
     def setStringKey(builder: EntryBuilder, key: String, value: Value): Entry
     def setLongKey(builder: EntryBuilder, key: Long, value: Value): Entry
     def setIntKey(builder: EntryBuilder, key: Int, value: Value): Entry
     def setOtherKey(builder: EntryBuilder, key: dm.OtherMessage, value: Value): Entry
   }
 
-  sealed trait ProtoMapEntryReader[Entry <: GeneratedMessageV3, A <: GeneratedMessageV3] {
+  sealed trait ProtoMapEntryReader[Entry <: GeneratedMessage, A <: GeneratedMessage] {
     def hasStringKey(entry: Entry): Boolean
     def getStringKey(entry: Entry): String
     def hasIntKey(entry: Entry): Boolean
@@ -665,8 +665,8 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
    * Convert a Map[A, B] to an Iterable[Entry] where Entry is the protobuf map entry.
    */
   private def getEntries[
-      IKey, IValue, EntryBuilder <: GeneratedMessageV3.Builder[EntryBuilder], PEntry <: GeneratedMessageV3,
-      PValue <: GeneratedMessageV3](
+      IKey, IValue, EntryBuilder <: GeneratedMessage.Builder[EntryBuilder], PEntry <: GeneratedMessage,
+      PValue <: GeneratedMessage](
       input: Map[IKey, IValue],
       createBuilder: () => EntryBuilder,
       valueConverter: IValue => PValue)(
@@ -694,7 +694,7 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
   def ormapFromBinary(bytes: Array[Byte]): ORMap[Any, ReplicatedData] =
     ormapFromProto(rd.ORMap.parseFrom(decompress(bytes)))
 
-  def mapTypeFromProto[PEntry <: GeneratedMessageV3, A <: GeneratedMessageV3, B <: ReplicatedData](
+  def mapTypeFromProto[PEntry <: GeneratedMessage, A <: GeneratedMessage, B <: ReplicatedData](
       input: util.List[PEntry],
       valueCreator: A => B)(implicit eh: ProtoMapEntryReader[PEntry, A]): Map[Any, B] = {
     input.asScala.map { entry =>
@@ -715,7 +715,7 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
     new ORMap(keys = orsetFromProto(ormap.getKeys), entries, ORMap.VanillaORMapTag)
   }
 
-  def singleMapEntryFromProto[PEntry <: GeneratedMessageV3, A <: GeneratedMessageV3, B <: ReplicatedData](
+  def singleMapEntryFromProto[PEntry <: GeneratedMessage, A <: GeneratedMessage, B <: ReplicatedData](
       input: util.List[PEntry],
       valueCreator: A => B)(implicit eh: ProtoMapEntryReader[PEntry, A]): Map[Any, B] = {
     val map = mapTypeFromProto(input, valueCreator)
@@ -726,7 +726,7 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
       map
   }
 
-  def singleKeyEntryFromProto[PEntry <: GeneratedMessageV3, A <: GeneratedMessageV3](entryOption: Option[PEntry])(
+  def singleKeyEntryFromProto[PEntry <: GeneratedMessage, A <: GeneratedMessage](entryOption: Option[PEntry])(
       implicit eh: ProtoMapEntryReader[PEntry, A]): Any =
     entryOption match {
       case Some(entry) =>
