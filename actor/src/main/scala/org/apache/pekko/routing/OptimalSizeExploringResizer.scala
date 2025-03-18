@@ -14,7 +14,6 @@
 package org.apache.pekko.routing
 
 import java.time.LocalDateTime
-import java.util.concurrent.ThreadLocalRandom
 
 import scala.collection.immutable
 import scala.concurrent.duration._
@@ -26,6 +25,7 @@ import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.InternalApi
 import pekko.util.JavaDurationConverters._
+import pekko.util.RandomNumberGenerator
 
 trait OptimalSizeExploringResizer extends Resizer {
 
@@ -163,7 +163,7 @@ case class DefaultOptimalSizeExploringResizer(
   @InternalApi
   private[routing] var stopExploring = false
 
-  private def random = ThreadLocalRandom.current()
+  private def random = RandomNumberGenerator.get()
 
   private def checkParamAsProbability(value: Double, paramName: String): Unit =
     if (value < 0 || value > 1)
