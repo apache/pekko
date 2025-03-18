@@ -52,10 +52,12 @@ import io.netty.channel.{
   ChannelHandlerContext,
   ChannelInitializer,
   ChannelOption,
-  ChannelPipeline
+  ChannelPipeline,
+  EventLoopGroup,
+  MultiThreadIoEventLoopGroup
 }
 import io.netty.channel.group.{ ChannelGroup, ChannelGroupFuture, ChannelMatchers, DefaultChannelGroup }
-import io.netty.channel.nio.NioEventLoopGroup
+import io.netty.channel.nio.NioIoHandler
 import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.{ NioServerSocketChannel, NioSocketChannel }
 import io.netty.handler.codec.{ LengthFieldBasedFrameDecoder, LengthFieldPrepender }
@@ -365,10 +367,10 @@ class NettyTransport(val settings: NettyTransportSettings, val system: ExtendedA
 
   private val log = Logging.withMarker(system, classOf[NettyTransport])
 
-  private def createEventLoopGroup(nThreadCount: Int): NioEventLoopGroup =
+  private def createEventLoopGroup(nThreadCount: Int): EventLoopGroup =
     UseDispatcherForIo.map(system.dispatchers.lookup)
-      .map(executor => new NioEventLoopGroup(0, executor))
-      .getOrElse(new NioEventLoopGroup(nThreadCount, system.threadFactory))
+      .map(executor => new MultiThreadIoEventLoopGroup(0, executor, NioIoHandler.newFactory()))
+      .getOrElse(new MultiThreadIoEventLoopGroup(nThreadCount, system.threadFactory, NioIoHandler.newFactory()))
 
   /*
    * Be aware, that the close() method of DefaultChannelGroup is racy, because it uses an iterator over a ConcurrentHashMap.
