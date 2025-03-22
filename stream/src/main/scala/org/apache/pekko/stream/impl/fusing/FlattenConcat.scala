@@ -267,12 +267,12 @@ private[pekko] final class FlattenConcat[T, M](parallelism: Int)
           final override def next(): T = sinkIn.grab()
           final override def tryPull(): Unit = if (!sinkIn.isClosed && !sinkIn.hasBeenPulled) sinkIn.pull()
         }
+        queue.enqueue(inflightSource)
+        inflightSource.materialize()
         if (isAvailable(out) && queue.isEmpty) {
           // this is the first one, pull
           inflightSource.tryPull()
         }
-        queue.enqueue(inflightSource)
-        inflightSource.materialize()
       }
 
       private def addSource(source: Graph[SourceShape[T], M]): Unit = {
