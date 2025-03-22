@@ -262,7 +262,7 @@ See the @ref:[Substreams](../stream-substream.md) page for more detail and code 
 |Source/Flow|<a name="prefixandtail"></a>@ref[prefixAndTail](Source-or-Flow/prefixAndTail.md)|Take up to *n* elements from the stream (less than *n* only if the upstream completes before emitting *n* elements) and returns a pair containing a strict sequence of the taken element and a stream representing the remaining elements.|
 |Source/Flow|<a name="splitafter"></a>@ref[splitAfter](Source-or-Flow/splitAfter.md)|End the current substream whenever a predicate returns `true`, starting a new substream for the next element.|
 |Source/Flow|<a name="splitwhen"></a>@ref[splitWhen](Source-or-Flow/splitWhen.md)|Split off elements into a new substream whenever a predicate function return `true`.|
-|Source/Flow|<a name="switchmap"></a>@ref[switchMap](Source-or-Flow/switchMap.md)|Transforms each input element into a `Source` of output elements that is then flattened into the output stream until a new input element is received.|
+|Source/Flow|<a name="switchmap"></a>@ref[switchMap](Source-or-Flow/switchMap.md)|Transforms each input element into a `Source` of output elements that is then flattened into the output stream until a new input element is received (at which point the current (now previous) substream is cancelled and the new one is flattened into the output stream).|
 
 ## Time aware operators
 
