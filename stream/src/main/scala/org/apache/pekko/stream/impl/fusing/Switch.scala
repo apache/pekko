@@ -18,6 +18,7 @@
 package org.apache.pekko.stream.impl.fusing
 
 import org.apache.pekko
+import pekko.stream.impl.TraversalBuilder
 import pekko.annotation.InternalApi
 import pekko.stream.Attributes
 import pekko.stream.FlowShape
@@ -48,7 +49,7 @@ import pekko.util.OptionVal
   override def createLogic(enclosingAttributes: Attributes) =
     new GraphStageLogic(shape) with InHandler with OutHandler {
 
-      var source = OptionVal.none[SubSinkInlet[T]]
+      private var source = OptionVal.none[SubSinkInlet[T]]
 
       override def preStart(): Unit = {
         pull(in)
@@ -84,6 +85,15 @@ import pekko.util.OptionVal
       def setupCurrentSource(source: Graph[SourceShape[T], M]): Unit = {
         cancelCurrentSource()
         removeCurrentSource(completeIfClosed = false)
+        source match {
+          case _: Graph[SourceShape[T] @unchecked, M @unchecked] if TraversalBuilder.isEmptySource(source) =>
+          // ignore empty
+          case _ =>
+            switchTo(source)
+        }
+      }
+
+      private def switchTo(source: Graph[SourceShape[T], M]): Unit = {
         val sinkIn = new SubSinkInlet[T]("SwitchSink")
         sinkIn.setHandler(new InHandler {
           override def onPush(): Unit = {
@@ -117,7 +127,6 @@ import pekko.util.OptionVal
       }
 
       override def postStop(): Unit = cancelCurrentSource()
-
     }
 
   override def toString: String = s"Switch"
