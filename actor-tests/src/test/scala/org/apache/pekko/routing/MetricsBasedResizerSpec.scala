@@ -29,6 +29,9 @@ import pekko.testkit._
 import pekko.testkit.TestEvent._
 import pekko.util.Timeout
 
+import org.scalatest.concurrent.Eventually
+import org.scalatest.time.{ Millis, Seconds, Span }
+
 object MetricsBasedResizerSpec {
 
   case class Latches(first: TestLatch, second: TestLatch)
@@ -79,7 +82,11 @@ object MetricsBasedResizerSpec {
 
 }
 
-class MetricsBasedResizerSpec extends PekkoSpec(ResizerSpec.config) with DefaultTimeout with ImplicitSender {
+class MetricsBasedResizerSpec extends PekkoSpec(ResizerSpec.config)
+    with DefaultTimeout with ImplicitSender with Eventually {
+
+  implicit override val patienceConfig: PatienceConfig =
+    PatienceConfig(timeout = Span(5, Seconds), interval = Span(20, Millis))
 
   override def atStartup(): Unit = {
     // when shutting down some Resize messages might hang around
@@ -191,8 +198,9 @@ class MetricsBasedResizerSpec extends PekkoSpec(ResizerSpec.config) with Default
       router.mockSend(await = true, routeeIdx = 1)
 
       resizer.reportMessageCount(router.routees, router.msgs.size)
-      resizer.record.underutilizationStreak.get.highestUtilization shouldBe 2
-
+      eventually {
+        resizer.record.underutilizationStreak.get.highestUtilization shouldBe 2
+      }
       router.close()
     }
 
@@ -233,7 +241,9 @@ class MetricsBasedResizerSpec extends PekkoSpec(ResizerSpec.config) with Default
       router.mockSend(await = true, routeeIdx = 0)
       router.mockSend(await = false, routeeIdx = 1)
       resizer.reportMessageCount(router.routees, router.msgs.size)
-      resizer.performanceLog.get(2) should not be empty
+      eventually {
+        resizer.performanceLog.get(2) should not be empty
+      }
 
       router.close()
     }
