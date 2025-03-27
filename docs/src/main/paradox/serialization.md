@@ -63,8 +63,7 @@ you would need to reference it as `Wrapper$Message` instead of `Wrapper.Message`
 @@@
 
 Pekko provides serializers for several primitive types and [protobuf](https://github.com/protocolbuffers/protobuf)
-@javadoc[com.google.protobuf.GeneratedMessage](com.google.protobuf.GeneratedMessage) (protobuf2) and @javadoc[com.google.protobuf.GeneratedMessageV3](com.google.protobuf.GeneratedMessageV3) (protobuf3) by default (the latter only if
-depending on the pekko-remote module), so normally you don't need to add
+@javadoc[com.google.protobuf.GeneratedMessage](com.google.protobuf.GeneratedMessage) by default, so normally you don't need to add
 configuration for that if you send raw protobuf messages as actor messages.
 
 ### Programmatic
