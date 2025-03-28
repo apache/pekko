@@ -25,9 +25,17 @@ import scala.annotation.nowarn
 @nowarn("msg=@SerialVersionUID has no effect")
 @SerialVersionUID(1L)
 @FunctionalInterface
-trait Function[-T, +R] extends java.io.Serializable {
+trait Function[-T, +R] extends java.io.Serializable { outer =>
   @throws(classOf[Exception])
   def apply(param: T): R
+
+  /** Returns a function that applies [fn] to the result of this function. */
+  def andThen[U](fn: Function[R, U]): Function[T, U] = new Function[T,U] {
+    override def apply(param: T) = fn(outer.apply(param))
+  }
+
+  /** Returns a Scala function representation for this function. */
+  def toScala[T1 <: T, R1 >: R]: T1 => R1 = t => apply(t)
 }
 
 object Function {
@@ -98,11 +106,19 @@ trait Predicate[-T] extends java.io.Serializable {
 @nowarn("msg=@SerialVersionUID has no effect")
 @SerialVersionUID(1L)
 @FunctionalInterface
-trait Creator[+T] extends Serializable {
+trait Creator[+T] extends Serializable { outer =>
 
   /**
    * This method must return a different instance upon every call.
    */
   @throws(classOf[Exception])
   def create(): T
+
+  /** Returns a function that applies [fn] to the result of this function. */
+  def andThen[U](fn: Function[T, U]): Creator[U] = new Creator[U] {
+    override def create() = fn(outer.create())
+  }
+
+  /** Returns a Scala function representation for this function. */
+  def toScala[T1 >: T]: () => T1 = () => create()
 }
