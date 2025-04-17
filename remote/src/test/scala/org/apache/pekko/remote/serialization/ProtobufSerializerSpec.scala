@@ -57,9 +57,9 @@ object MaliciousMessage {
 class ProtobufSerializerSpec extends PekkoSpec(s"""
   pekko.serialization.protobuf.allowed-classes = [
       "com.google.protobuf.GeneratedMessage",
-      "com.google.protobuf.GeneratedMessageV3",
+      "com.google.protobuf.GeneratedMessage",
       "scalapb.GeneratedMessageCompanion",
-      "org.apache.pekko.protobufv3.internal.GeneratedMessageV3",
+      "org.apache.pekko.protobufv3.internal.GeneratedMessage",
       "${classOf[AnotherMessage].getName}",
       "${classOf[ProtobufSerializerSpec.AnotherInterface].getName}",
       "${classOf[ProtobufSerializerSpec.AnotherBase].getName}"

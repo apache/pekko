@@ -20,9 +20,9 @@ object Dependencies {
 
   object Protobuf {
     // https://protobuf.dev/support/version-support/
-    // protobuf-java 3.25 corresponds with protoc 22.x-25.x
-    val protobufJavaVersion = "3.25.6"
-    val protocVersion = "25.6"
+    // protobuf-java 4.29 corresponds with protoc 29.x
+    val protobufJavaVersion = "4.29.3"
+    val protocVersion = "29.3"
   }
 
   lazy val java8CompatVersion = settingKey[String]("The version of scala-java8-compat to use.")
