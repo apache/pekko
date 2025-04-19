@@ -3591,7 +3591,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * '''Backpressures when''' downstream backpressures
    *
-   * '''Completes when''' predicate returned false (or 1 after predicate returns false if `inclusive` or upstream completes
+   * '''Completes when''' predicate returned false (or 1 after predicate returns false if `inclusive`) or upstream completes
    *
    * '''Cancels when''' predicate returned false or downstream cancels
    *
@@ -3620,6 +3620,24 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * See also [[Source.limit]], [[Source.limitWeighted]]
    */
   def takeWhile(p: function.Predicate[Out]): javadsl.Source[Out, Mat] = new Source(delegate.takeWhile(p.test))
+
+  /**
+   * Terminate processing (and cancel the upstream publisher) after predicate
+   * returns true for the first time,
+   * Due to input buffering some elements may have been requested from upstream publishers
+   * that will then not be processed downstream of this step.
+   *
+   * '''Emits when''' the predicate is false or the first time the predicate is true
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' after predicate returned true or upstream completes
+   *
+   * '''Cancels when''' after predicate returned true or downstream cancels
+   *
+   * See also [[Source.limit]], [[Source.limitWeighted]], [[Source.takeWhile]]
+   */
+  def takeUntil(p: function.Predicate[Out]): javadsl.Source[Out, Mat] = new Source(delegate.takeUntil(p.test))
 
   /**
    * Discard elements at the beginning of the stream while predicate is true.

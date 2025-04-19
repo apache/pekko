@@ -1882,7 +1882,25 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * See also [[Flow.limit]], [[Flow.limitWeighted]]
    */
-  def takeWhile(p: function.Predicate[Out]): javadsl.Flow[In, Out, Mat] = takeWhile(p, false)
+  def takeWhile(p: function.Predicate[Out]): javadsl.Flow[In, Out, Mat] = takeWhile(p, inclusive = false)
+
+  /**
+   * Terminate processing (and cancel the upstream publisher) after predicate
+   * returns true for the first time,
+   * Due to input buffering some elements may have been requested from upstream publishers
+   * that will then not be processed downstream of this step.
+   *
+   * '''Emits when''' the predicate is false or the first time the predicate is true
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' after predicate returned true or upstream completes
+   *
+   * '''Cancels when''' after predicate returned true or downstream cancels
+   *
+   * See also [[Flow.limit]], [[Flow.limitWeighted]], [[Flow.takeWhile]]
+   */
+  def takeUntil(p: function.Predicate[Out]): javadsl.Flow[In, Out, Mat] = new Flow(delegate.takeUntil(p.test))
 
   /**
    * Discard elements at the beginning of the stream while predicate is true.

@@ -191,6 +191,7 @@ depending on being backpressured by downstream or not.
 |Source/Flow|<a name="statefulmap"></a>@ref[statefulMap](Source-or-Flow/statefulMap.md)|Transform each stream element with the help of a state.|
 |Source/Flow|<a name="statefulmapconcat"></a>@ref[statefulMapConcat](Source-or-Flow/statefulMapConcat.md)|Transform each element into zero or more elements that are individually passed downstream.|
 |Source/Flow|<a name="take"></a>@ref[take](Source-or-Flow/take.md)|Pass `n` incoming elements downstream and then complete|
+|Source/Flow|<a name="takeuntil"></a>@ref[takeUntil](Source-or-Flow/takeUntil.md)|Pass elements downstream until the predicate function returns true. The first element for which the predicate returns true is also emitted before the stream completes.|
 |Source/Flow|<a name="takewhile"></a>@ref[takeWhile](Source-or-Flow/takeWhile.md)|Pass elements downstream as long as a predicate function returns true and then complete. |
 |Source/Flow|<a name="throttle"></a>@ref[throttle](Source-or-Flow/throttle.md)|Limit the throughput to a specific number of elements per time unit, or a specific total cost per time unit, where a function has to be provided to calculate the individual cost of each element.|
 
@@ -595,6 +596,7 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 * [switchMap](Source-or-Flow/switchMap.md)
 * [take](Source-or-Flow/take.md)
 * [takeLast](Sink/takeLast.md)
+* [takeUntil](Source-or-Flow/takeUntil.md)
 * [takeWhile](Source-or-Flow/takeWhile.md)
 * [takeWithin](Source-or-Flow/takeWithin.md)
 * [throttle](Source-or-Flow/throttle.md)

@@ -1567,13 +1567,31 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Backpressures when''' downstream backpressures
    *
-   * '''Completes when''' predicate returned false (or 1 after predicate returns false if `inclusive` or upstream completes
+   * '''Completes when''' predicate returned false (or 1 after predicate returns false if `inclusive`) or upstream completes
    *
    * '''Cancels when''' predicate returned false or downstream cancels
    *
    * See also [[FlowOps.limit]], [[FlowOps.limitWeighted]]
    */
-  def takeWhile(p: Out => Boolean): Repr[Out] = takeWhile(p, false)
+  def takeWhile(p: Out => Boolean): Repr[Out] = takeWhile(p, inclusive = false)
+
+  /**
+   * Terminate processing (and cancel the upstream publisher) after predicate
+   * returns true for the first time,
+   * Due to input buffering some elements may have been requested from upstream publishers
+   * that will then not be processed downstream of this step.
+   *
+   * '''Emits when''' the predicate is false or the first time the predicate is true
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' after predicate returned true or upstream completes
+   *
+   * '''Cancels when''' after predicate returned true or downstream cancels
+   *
+   * See also [[FlowOps.limit]], [[FlowOps.limitWeighted]], [[FlowOps.takeWhile]]
+   */
+  def takeUntil(p: Out => Boolean): Repr[Out] = takeWhile(!p(_), inclusive = true)
 
   /**
    * Terminate processing (and cancel the upstream publisher) after predicate
