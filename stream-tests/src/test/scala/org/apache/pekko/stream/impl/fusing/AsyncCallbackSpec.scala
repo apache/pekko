@@ -13,23 +13,17 @@
 
 package org.apache.pekko.stream.impl.fusing
 
-import scala.concurrent.Await
-import scala.concurrent.Future
-import scala.concurrent.Promise
-
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.ActorRef
 import pekko.stream._
-import pekko.stream.scaladsl.Keep
-import pekko.stream.scaladsl.Sink
-import pekko.stream.scaladsl.Source
+import pekko.stream.scaladsl.{ Keep, Sink, Source }
 import pekko.stream.stage._
-import pekko.stream.testkit.TestPublisher
-import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.Utils.TE
-import pekko.testkit.PekkoSpec
-import pekko.testkit.TestProbe
+import pekko.stream.testkit.{ TestPublisher, TestSubscriber }
+import pekko.testkit.{ PekkoSpec, TestProbe }
+
+import scala.concurrent.{ Await, Future, Promise }
 
 class AsyncCallbackSpec extends PekkoSpec("""
     pekko.stream.materializer.debug.fuzzing-mode = off
@@ -135,6 +129,13 @@ class AsyncCallbackSpec extends PekkoSpec("""
         probe.expectMsg(msg)
         feedbackF.futureValue should ===(Done)
       }
+
+      // test it can be used from Java too
+      val completionStage = callback.invokeWithFeedbackCompletionStage("whatever")
+      probe.expectMsg("whatever")
+      import pekko.util.FutureConverters._
+      completionStage.asScala.futureValue should ===(Done)
+
       in.sendComplete()
       out.expectComplete()
 

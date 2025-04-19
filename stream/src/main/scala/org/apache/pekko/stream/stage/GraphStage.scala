@@ -13,7 +13,7 @@
 
 package org.apache.pekko.stream.stage
 
-import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.{ CompletionStage, ConcurrentHashMap }
 import java.util.concurrent.atomic.AtomicReference
 
 import scala.annotation.nowarn
@@ -21,6 +21,7 @@ import scala.annotation.tailrec
 import scala.collection.{ immutable, mutable }
 import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration.FiniteDuration
+
 import org.apache.pekko
 import pekko.{ Done, NotUsed }
 import pekko.actor._
@@ -1668,6 +1669,25 @@ trait AsyncCallback[T] {
    * to the invoking logic see [[AsyncCallback#invoke]]
    */
   def invokeWithFeedback(t: T): Future[Done]
+
+  /**
+   * Java API
+   *
+   * Dispatch an asynchronous notification. This method is thread-safe and
+   * may be invoked from external execution contexts.
+   *
+   * The method returns directly and the returned future is then completed once the event
+   * has been handled by the operator, if the event triggers an exception from the handler the future
+   * is failed with that exception and finally if the operator was stopped before the event has been
+   * handled the future is failed with `StreamDetachedException`.
+   *
+   * The handling of the returned future incurs a slight overhead, so for cases where it does not matter
+   * to the invoking logic see [[AsyncCallback#invoke]]
+   */
+  def invokeWithFeedbackCompletionStage(t: T): CompletionStage[Done] = {
+    import pekko.util.FutureConverters._
+    invokeWithFeedback(t).asJava
+  }
 }
 
 /**
