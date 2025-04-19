@@ -47,6 +47,8 @@ object SchedulerSpec {
     pekko.scheduler.error-on-tick-duration-verification-failed = off
   """).withFallback(PekkoSpec.testConf)
 
+  final case class Msg(ts: Long)
+
 }
 
 trait SchedulerSpec extends BeforeAndAfterEach with DefaultTimeout with ImplicitSender { this: PekkoSpec =>
@@ -153,8 +155,7 @@ trait SchedulerSpec extends BeforeAndAfterEach with DefaultTimeout with Implicit
 
       "never fire prematurely" taggedAs TimingTest in {
         val ticks = new TestLatch(300)
-
-        final case class Msg(ts: Long)
+        import SchedulerSpec._
 
         val actor = system.actorOf(Props(new Actor {
           def receive = {

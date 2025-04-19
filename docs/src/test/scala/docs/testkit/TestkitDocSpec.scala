@@ -106,6 +106,11 @@ object TestKitDocSpec {
     }
     // #logging-receive
   }
+
+  // #test-special-probe
+  final case class Update(id: Int, value: String)
+  // #test-special-probe
+
 }
 
 class TestKitDocSpec extends PekkoSpec with DefaultTimeout with ImplicitSender {
@@ -243,7 +248,6 @@ class TestKitDocSpec extends PekkoSpec with DefaultTimeout with ImplicitSender {
     // #test-probe
 
     // #test-special-probe
-    final case class Update(id: Int, value: String)
 
     val probe = new TestProbe(system) {
       def expectUpdate(x: Int) = {
