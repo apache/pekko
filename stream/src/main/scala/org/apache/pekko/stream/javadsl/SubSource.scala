@@ -1098,7 +1098,7 @@ class SubSource[Out, Mat](
    *
    * '''Cancels when''' predicate returned false or downstream cancels
    */
-  def takeWhile(p: function.Predicate[Out]): SubSource[Out, Mat] = takeWhile(p, false)
+  def takeWhile(p: function.Predicate[Out]): SubSource[Out, Mat] = takeWhile(p, inclusive = false)
 
   /**
    * Terminate processing (and cancel the upstream publisher) after predicate
@@ -1115,12 +1115,30 @@ class SubSource[Out, Mat](
    *
    * '''Backpressures when''' downstream backpressures
    *
-   * '''Completes when''' predicate returned false (or 1 after predicate returns false if `inclusive` or upstream completes
+   * '''Completes when''' predicate returned false (or 1 after predicate returns false if `inclusive`) or upstream completes
    *
    * '''Cancels when''' predicate returned false or downstream cancels
    */
   def takeWhile(p: function.Predicate[Out], inclusive: Boolean): SubSource[Out, Mat] =
     new SubSource(delegate.takeWhile(p.test, inclusive))
+
+  /**
+   * Terminate processing (and cancel the upstream publisher) after predicate
+   * returns true for the first time,
+   * Due to input buffering some elements may have been requested from upstream publishers
+   * that will then not be processed downstream of this step.
+   *
+   * '''Emits when''' the predicate is false or the first time the predicate is true
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' after predicate returned true or upstream completes
+   *
+   * '''Cancels when''' after predicate returned true or downstream cancels
+   *
+   * See also [[SubSource.limit]], [[SubSource.limitWeighted]], [[SubSource.takeWhile]]
+   */
+  def takeUntil(p: function.Predicate[Out]): SubSource[Out, Mat] = new SubSource(delegate.takeUntil(p.test))
 
   /**
    * Discard elements at the beginning of the stream while predicate is true.

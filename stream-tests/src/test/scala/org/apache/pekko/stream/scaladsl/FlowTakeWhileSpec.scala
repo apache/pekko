@@ -33,6 +33,13 @@ class FlowTakeWhileSpec extends StreamSpec {
       Source.empty[Int].takeWhile(_ < 2).runWith(TestSink.probe[Int]).request(1).expectComplete()
     }
 
+    "can be used to implemented takeUntil" in {
+      Source(List("message", "message", "DONE", "unexpected"))
+        .takeUntil(_ == "DONE")
+        .toMat(Sink.seq)(Keep.right)
+        .run().futureValue should be(Seq("message", "message", "DONE"))
+    }
+
     "continue if error" in {
       val testException = new Exception("test") with NoStackTrace
 
