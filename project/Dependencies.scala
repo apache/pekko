@@ -21,7 +21,7 @@ object Dependencies {
   object Protobuf {
     // https://protobuf.dev/support/version-support/
     // protobuf-java 4.29 corresponds with protoc 29.x
-    val protobufJavaVersion = "4.29.3"
+    val protobufJavaVersion = "4.29.4"
     val protocVersion = "29.3"
   }
 
