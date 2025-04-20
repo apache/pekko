@@ -928,6 +928,84 @@ trait FlowOps[+Out, +Mat] {
   def via[T, Mat2](flow: Graph[FlowShape[Out, T], Mat2]): Repr[T]
 
   /**
+   * Collect subsequent repetitions of an element (that is, if they arrive right after one another) into multiple
+   * `Seq` buffers that will be emitted by the resulting Flow.
+   *
+   * @return a Flow that buffers elements until they change
+   */
+  def bufferUntilChanged: Repr[immutable.Seq[Out]] = {
+    statefulMap(() => (Option.empty[Out], new scala.collection.immutable.VectorBuilder[Out]))({
+      (state, element) => {
+        val (lastElementOpt, buffer) = state
+        lastElementOpt match {
+          case Some(lastElement) if lastElement != element =>
+            val result = buffer.result()
+            ((Some(element), new scala.collection.immutable.VectorBuilder[Out]().+=(element)), result)
+          case _ =>
+            ((Some(element), buffer.+=(element)), immutable.Seq.empty[Out])
+        }
+      }
+    },
+      state => Some(state._2.result()))
+      .filter(_.nonEmpty)
+  }
+
+  /**
+   * Collect subsequent repetitions of an element (that is, if they arrive right after one another), as compared by a key
+   * extracted through the user provided `keySelector` function, into multiple `Seq` buffers that will be emitted by the
+   * resulting Flow.
+   *
+   * @param keySelector function to compute comparison key for each element
+   * @tparam K the key type
+   * @return a Flow that buffers elements until they change based on the key
+   */
+  def bufferUntilChanged[K](keySelector: Out => K): Repr[immutable.Seq[Out]] = {
+    statefulMap(() => (Option.empty[K], new scala.collection.immutable.VectorBuilder[Out]))({
+      (state, element) => {
+        val (lastKeyOpt, buffer) = state
+        val key = keySelector(element)
+        lastKeyOpt match {
+          case Some(lastKey) if lastKey != key =>
+            val result = buffer.result()
+            ((Some(key), new scala.collection.immutable.VectorBuilder[Out]().+=(element)), result)
+          case _ =>
+            ((Some(key), buffer.+=(element)), immutable.Seq.empty[Out])
+        }
+      }
+    },
+      state => Some(state._2.result()))
+      .filter(_.nonEmpty)
+  }
+
+  /**
+   * Collect subsequent repetitions of an element (that is, if they arrive right after one another), as compared by a key
+   * extracted through the user provided `keySelector` function and compared using a supplied `keyComparator`, into multiple
+   * `Seq` buffers that will be emitted by the resulting Flow.
+   *
+   * @param keySelector function to compute comparison key for each element
+   * @param keyComparator predicate used to compare keys
+   * @tparam K the key type
+   * @return a Flow that buffers elements until they change based on the key and comparator
+   */
+  def bufferUntilChanged[K](keySelector: Out => K, keyComparator: (K, K) => Boolean): Repr[immutable.Seq[Out]] = {
+    statefulMap(() => (Option.empty[K], new scala.collection.immutable.VectorBuilder[Out]))({
+      (state, element) => {
+        val (lastKeyOpt, buffer) = state
+        val key = keySelector(element)
+        lastKeyOpt match {
+          case Some(lastKey) if !keyComparator(lastKey, key) =>
+            val result = buffer.result()
+            ((Some(key), new scala.collection.immutable.VectorBuilder[Out]().+=(element)), result)
+          case _ =>
+            ((Some(key), buffer.+=(element)), immutable.Seq.empty[Out])
+        }
+      }
+    },
+      state => Some(state._2.result()))
+      .filter(_.nonEmpty)
+  }
+
+  /**
    * Recover allows to send last element on failure and gracefully complete the stream
    * Since the underlying failure signal onError arrives out-of-band, it might jump over existing elements.
    * This operator can recover the failure signal, but not the skipped elements, which will be dropped.

@@ -11,14 +11,10 @@ import org.apache.pekko.NotUsed;
 import org.apache.pekko.annotation.ApiMayChange;
 import org.apache.pekko.japi.function.Function;
 import org.apache.pekko.japi.function.Function2;
-import org.apache.pekko.japi.Pair;
 import org.apache.pekko.stream.javadsl.Flow;
 import org.apache.pekko.stream.javadsl.Source;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Java API: Additional buffer operations for Flow and Source.
@@ -36,32 +32,7 @@ public final class BufferUntilChanged {
      */
     @ApiMayChange
     public static <T> Flow<T, List<T>, NotUsed> flow() {
-        return Flow.<T>create()
-                .statefulMapConcat(() -> {
-                    List<T> buffer = new ArrayList<>();
-                    return element -> {
-                        if (!buffer.isEmpty() && !buffer.get(0).equals(element)) {
-                            List<T> result = new ArrayList<>(buffer);
-                            buffer.clear();
-                            buffer.add(element);
-                            return Collections.singletonList(result);
-                        } else {
-                            buffer.add(element);
-                            return Collections.emptyList();
-                        }
-                    };
-                })
-                .concat(
-                    Flow.<T>create()
-                        .statefulMapConcat(() -> {
-                            List<T> buffer = new ArrayList<>();
-                            return element -> {
-                                buffer.add(element);
-                                List<T> result = buffer.isEmpty() ? Collections.emptyList() : Collections.singletonList(new ArrayList<>(buffer));
-                                return result;
-                            };
-                        })
-                        .take(1));
+        return Flow.<T>create().asScala().bufferUntilChanged().asJava();
     }
 
     /**
@@ -76,36 +47,7 @@ public final class BufferUntilChanged {
      */
     @ApiMayChange
     public static <T, K> Flow<T, List<T>, NotUsed> flow(Function<T, K> keySelector) {
-        return Flow.<T>create()
-                .statefulMapConcat(() -> {
-                    List<T> buffer = new ArrayList<>();
-                    Optional<K> lastKey = Optional.empty();
-                    return element -> {
-                        K key = keySelector.apply(element);
-                        if (lastKey.isPresent() && !lastKey.get().equals(key)) {
-                            List<T> result = new ArrayList<>(buffer);
-                            buffer.clear();
-                            buffer.add(element);
-                            lastKey = Optional.of(key);
-                            return Collections.singletonList(result);
-                        } else {
-                            buffer.add(element);
-                            lastKey = Optional.of(key);
-                            return Collections.emptyList();
-                        }
-                    };
-                })
-                .concat(
-                    Flow.<T>create()
-                        .statefulMapConcat(() -> {
-                            List<T> buffer = new ArrayList<>();
-                            return element -> {
-                                buffer.add(element);
-                                List<T> result = buffer.isEmpty() ? Collections.emptyList() : Collections.singletonList(new ArrayList<>(buffer));
-                                return result;
-                            };
-                        })
-                        .take(1));
+        return Flow.<T>create().asScala().<K>bufferUntilChanged(keySelector::apply).asJava();
     }
 
     /**
@@ -121,36 +63,7 @@ public final class BufferUntilChanged {
      */
     @ApiMayChange
     public static <T, K> Flow<T, List<T>, NotUsed> flow(Function<T, K> keySelector, Function2<K, K, Boolean> keyComparator) {
-        return Flow.<T>create()
-                .statefulMapConcat(() -> {
-                    List<T> buffer = new ArrayList<>();
-                    Optional<K> lastKey = Optional.empty();
-                    return element -> {
-                        K key = keySelector.apply(element);
-                        if (lastKey.isPresent() && !keyComparator.apply(lastKey.get(), key)) {
-                            List<T> result = new ArrayList<>(buffer);
-                            buffer.clear();
-                            buffer.add(element);
-                            lastKey = Optional.of(key);
-                            return Collections.singletonList(result);
-                        } else {
-                            buffer.add(element);
-                            lastKey = Optional.of(key);
-                            return Collections.emptyList();
-                        }
-                    };
-                })
-                .concat(
-                    Flow.<T>create()
-                        .statefulMapConcat(() -> {
-                            List<T> buffer = new ArrayList<>();
-                            return element -> {
-                                buffer.add(element);
-                                List<T> result = buffer.isEmpty() ? Collections.emptyList() : Collections.singletonList(new ArrayList<>(buffer));
-                                return result;
-                            };
-                        })
-                        .take(1));
+        return Flow.<T>create().asScala().<K>bufferUntilChanged(keySelector::apply, keyComparator::apply).asJava();
     }
 
     /**

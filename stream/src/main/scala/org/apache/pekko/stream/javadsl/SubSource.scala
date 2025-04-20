@@ -706,6 +706,40 @@ class SubSource[Out, Mat](
     new SubSource(delegate.sliding(n, step).map(_.asJava)) // TODO optimize to one step
 
   /**
+   * Collect subsequent repetitions of an element (that is, if they arrive right after one another) into multiple
+   * `List` buffers that will be emitted by the resulting SubSource.
+   *
+   * @return a SubSource that buffers elements until they change
+   */
+  def bufferUntilChanged: SubSource[java.util.List[Out @uncheckedVariance], Mat] =
+    new SubSource(delegate.bufferUntilChanged.map(_.asJava))
+
+  /**
+   * Collect subsequent repetitions of an element (that is, if they arrive right after one another), as compared by a key
+   * extracted through the user provided `keySelector` function, into multiple `List` buffers that will be emitted by the
+   * resulting SubSource.
+   *
+   * @param keySelector function to compute comparison key for each element
+   * @tparam K the key type
+   * @return a SubSource that buffers elements until they change based on the key
+   */
+  def bufferUntilChanged[K](keySelector: function.Function[Out, K]): SubSource[java.util.List[Out @uncheckedVariance], Mat] =
+    new SubSource(delegate.bufferUntilChanged(keySelector.apply).map(_.asJava))
+
+  /**
+   * Collect subsequent repetitions of an element (that is, if they arrive right after one another), as compared by a key
+   * extracted through the user provided `keySelector` function and compared using a supplied `keyComparator`, into multiple
+   * `List` buffers that will be emitted by the resulting SubSource.
+   *
+   * @param keySelector function to compute comparison key for each element
+   * @param keyComparator predicate used to compare keys
+   * @tparam K the key type
+   * @return a SubSource that buffers elements until they change based on the key and comparator
+   */
+  def bufferUntilChanged[K](keySelector: function.Function[Out, K], keyComparator: function.Function2[K, K, java.lang.Boolean]): SubSource[java.util.List[Out @uncheckedVariance], Mat] =
+    new SubSource(delegate.bufferUntilChanged(keySelector.apply, (a, b) => keyComparator.apply(a, b)).map(_.asJava))
+
+  /**
    * Similar to `fold` but is not a terminal operation,
    * emits its current value which starts at `zero` and then
    * applies the current and next value to the given function `f`,
