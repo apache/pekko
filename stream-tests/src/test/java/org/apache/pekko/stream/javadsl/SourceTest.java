@@ -1589,4 +1589,20 @@ public class SourceTest extends StreamTest {
                 Pair.create(4, 1L))),
         resultSet);
   }
+
+  @Test
+  public void createSourceWithCreateMethod() throws Exception {
+    Source.<String>create(
+            100,
+            queue -> {
+              queue.offer("Message1");
+              queue.offer("Message2");
+              queue.complete();
+            })
+        .runWith(TestSink.probe(system), system)
+        .ensureSubscription()
+        .request(2)
+        .expectNext("Message1", "Message2")
+        .expectComplete();
+  }
 }
