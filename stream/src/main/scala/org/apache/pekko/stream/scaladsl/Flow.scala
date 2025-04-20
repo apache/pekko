@@ -940,13 +940,20 @@ trait FlowOps[+Out, +Mat] {
         lastElementOpt match {
           case Some(lastElement) if lastElement != element =>
             val result = buffer.result()
-            ((Some(element), new scala.collection.immutable.VectorBuilder[Out]().+=(element)), result)
+            val newBuffer = new scala.collection.immutable.VectorBuilder[Out]()
+            newBuffer += element
+            ((Some(element), newBuffer), result)
           case _ =>
-            ((Some(element), buffer.+=(element)), immutable.Seq.empty[Out])
+            ((Some(element), buffer += element), immutable.Seq.empty[Out])
         }
       }
     },
-      state => Some(state._2.result()))
+      state => {
+        val result = state._2.result()
+        // Clear the builder to prevent memory leaks
+        state._2.clear()
+        Some(result)
+      })
       .filter(_.nonEmpty)
   }
 
@@ -967,13 +974,20 @@ trait FlowOps[+Out, +Mat] {
         lastKeyOpt match {
           case Some(lastKey) if lastKey != key =>
             val result = buffer.result()
-            ((Some(key), new scala.collection.immutable.VectorBuilder[Out]().+=(element)), result)
+            val newBuffer = new scala.collection.immutable.VectorBuilder[Out]()
+            newBuffer += element
+            ((Some(key), newBuffer), result)
           case _ =>
-            ((Some(key), buffer.+=(element)), immutable.Seq.empty[Out])
+            ((Some(key), buffer += element), immutable.Seq.empty[Out])
         }
       }
     },
-      state => Some(state._2.result()))
+      state => {
+        val result = state._2.result()
+        // Clear the builder to prevent memory leaks
+        state._2.clear()
+        Some(result)
+      })
       .filter(_.nonEmpty)
   }
 
@@ -995,13 +1009,20 @@ trait FlowOps[+Out, +Mat] {
         lastKeyOpt match {
           case Some(lastKey) if !keyComparator(lastKey, key) =>
             val result = buffer.result()
-            ((Some(key), new scala.collection.immutable.VectorBuilder[Out]().+=(element)), result)
+            val newBuffer = new scala.collection.immutable.VectorBuilder[Out]()
+            newBuffer += element
+            ((Some(key), newBuffer), result)
           case _ =>
-            ((Some(key), buffer.+=(element)), immutable.Seq.empty[Out])
+            ((Some(key), buffer += element), immutable.Seq.empty[Out])
         }
       }
     },
-      state => Some(state._2.result()))
+      state => {
+        val result = state._2.result()
+        // Clear the builder to prevent memory leaks
+        state._2.clear()
+        Some(result)
+      })
       .filter(_.nonEmpty)
   }
 
