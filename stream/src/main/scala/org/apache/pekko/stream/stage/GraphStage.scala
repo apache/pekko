@@ -1683,6 +1683,7 @@ trait AsyncCallback[T] {
    *
    * The handling of the returned future incurs a slight overhead, so for cases where it does not matter
    * to the invoking logic see [[AsyncCallback#invoke]]
+   * @since 1.2.0
    */
   def invokeWithFeedbackCompletionStage(t: T): CompletionStage[Done] = {
     import pekko.util.FutureConverters._
