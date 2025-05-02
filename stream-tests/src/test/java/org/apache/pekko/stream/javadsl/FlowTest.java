@@ -1693,6 +1693,18 @@ public class FlowTest extends StreamTest {
   }
 
   @Test
+  public void mustBeAbleToUseMaterializeIntoSource() throws Exception {
+    final Flow<Integer, Integer, NotUsed> flow = Flow.create();
+
+    final Source<List<Integer>, CompletionStage<NotUsed>> source =
+        flow.map(i -> i * 2).materializeIntoSource(Source.from(Arrays.asList(1, 2, 3)), Sink.seq());
+
+    final CompletionStage<List<Integer>> resultList = source.runWith(Sink.head(), system);
+
+    assertEquals(Arrays.asList(2, 4, 6), resultList.toCompletableFuture().get(1, TimeUnit.SECONDS));
+  }
+
+  @Test
   public void mustBeAbleToUseLazyInit() throws Exception {
     final CompletionStage<Flow<Integer, Integer, NotUsed>> future = new CompletableFuture<>();
     future.toCompletableFuture().complete(Flow.fromFunction((id) -> id));
