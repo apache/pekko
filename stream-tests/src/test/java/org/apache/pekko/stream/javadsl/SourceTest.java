@@ -1442,6 +1442,16 @@ public class SourceTest extends StreamTest {
   }
 
   @Test
+  public void mustBeAbleToUseMaterializeIntoSource() throws Exception {
+    final List<Integer> input = Arrays.asList(1, 2, 3);
+    final Source<List<Integer>, CompletionStage<NotUsed>> source =
+        Source.from(input).materializeIntoSource(Sink.seq());
+    final CompletionStage<List<Integer>> resultList = source.runWith(Sink.head(), system);
+
+    assertEquals(input, resultList.toCompletableFuture().get(1, TimeUnit.SECONDS));
+  }
+
+  @Test
   public void mustBeAbleToConvertToJavaInJava() {
     final org.apache.pekko.stream.scaladsl.Source<Integer, NotUsed> scalaSource =
         org.apache.pekko.stream.scaladsl.Source.empty();

@@ -526,6 +526,13 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
 
       a[RuntimeException] shouldBe thrownBy(matValPoweredSource.preMaterialize())
     }
+
+    "materialize into source" in {
+      val input = List(1, 2, 3)
+      val source = Source(input).materializeIntoSource(Sink.seq)
+
+      source.runWith(Sink.head).futureValue should ===(input)
+    }
   }
 
   "Source.futureSource" must {

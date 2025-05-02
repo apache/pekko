@@ -110,6 +110,21 @@ final class Source[+Out, +Mat](
   }
 
   /**
+   * Materializes this [[Source]] using the [[Sink]], immediately returning the values via the
+   * provided [[Sink]] as a new [[Source]].
+   *
+   * @param sink A sink which needs to materialize into a [[Future]], typically one
+   *             that collects values such as [[Sink.head]] or [[Sink.seq]]
+   * @return A new [[Source]] that contains the results of the provided [[Source]]'s
+   *         elements run with the [[Sink]]
+   * @since 1.2.0
+   */
+  def materializeIntoSource[Mat2](sink: Graph[SinkShape[Out], Future[Mat2]]): Source[Mat2, Future[NotUsed]] =
+    Source.fromMaterializer { (mat, attr) =>
+      Source.future(this.withAttributes(attr).toMat(sink)(Keep.right).run()(mat))
+    }
+
+  /**
    * Connect this `Source` to the `Sink.ignore` and run it. Elements from the stream will be consumed and discarded.
    *
    * Note that the `ActorSystem` can be used as the implicit `materializer` parameter to use the
