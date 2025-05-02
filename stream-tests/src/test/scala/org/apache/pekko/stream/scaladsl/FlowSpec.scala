@@ -639,6 +639,12 @@ class FlowSpec extends StreamSpec(ConfigFactory.parseString("pekko.actor.debug.r
       counter.get() should (be(0))
     }
 
+    "materialize into source" in {
+      val source = Flow[Int].map(_ * 2)
+        .materializeIntoSource(Source(List(1, 2, 3)), Sink.seq)
+
+      source.runWith(Sink.head).futureValue should ===(List(2, 4, 6))
+    }
   }
 
   object TestException extends RuntimeException with NoStackTrace

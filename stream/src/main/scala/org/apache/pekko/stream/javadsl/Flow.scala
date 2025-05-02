@@ -623,6 +623,28 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
   }
 
   /**
+   * Connects the [[Source]] to this [[Flow]] and materializes it using the [[Sink]], immediately returning the values
+   * via the provided [[Sink]] as a new [[Source]].
+   *
+   * @param source A source that connects to this flow
+   * @param sink A sink which needs to materialize into a [[CompletionStage]], typically one
+   *             that collects values such as [[Sink.head]] or [[Sink.seq]]
+   * @return A new [[Source]] that contains the results of the [[Flow]] with the provided
+   *         [[Source]]'s elements run with the [[Sink]]
+   * @since 1.2.0
+   */
+  def materializeIntoSource[Mat1, Mat2](source: Graph[SourceShape[In], Mat1],
+      sink: Graph[SinkShape[Out], CompletionStage[Mat2]])
+      : Source[Mat2, CompletionStage[NotUsed]] = {
+    Source.fromMaterializer { (mat, attr) =>
+      Source.completionStage(
+        Source.fromGraph(source).via(this).withAttributes(attr).toMat(sink,
+          Keep.right[Mat1, CompletionStage[Mat2]]).run(mat)
+      )
+    }
+  }
+
+  /**
    * Connect the `Source` to this `Flow` and then connect it to the `Sink` and run it.
    *
    * The returned tuple contains the materialized values of the `Source` and `Sink`,
