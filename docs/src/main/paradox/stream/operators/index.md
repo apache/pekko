@@ -183,6 +183,7 @@ depending on being backpressured by downstream or not.
 |Source/Flow|<a name="mapwithresource"></a>@ref[mapWithResource](Source-or-Flow/mapWithResource.md)|Map elements with the help of a resource that can be opened, transform each element (in a blocking way) and closed.|
 |Source/Flow|<a name="optionalvia"></a>@ref[optionalVia](Source-or-Flow/optionalVia.md)|For a stream containing optional elements, transforms each element by applying the given `viaFlow` and passing the value downstream as an optional value.|
 |Source/Flow|<a name="prematerialize"></a>@ref[preMaterialize](Source-or-Flow/preMaterialize.md)|Materializes this Graph, immediately returning (1) its materialized value, and (2) a new pre-materialized Graph.|
+|Source/Flow|<a name="prematerializeintosource"></a>@ref[preMaterializeIntoSource](Source-or-Flow/preMaterializeIntoSource.md)|Materializes this Graph, immediately returning its materialized values into a new Source.|
 |Source/Flow|<a name="reduce"></a>@ref[reduce](Source-or-Flow/reduce.md)|Start with first element and then apply the current and next value to the given function, when upstream complete the current value is emitted downstream.|
 |Source/Flow|<a name="scan"></a>@ref[scan](Source-or-Flow/scan.md)|Emit its current value, which starts at `zero`, and then apply the current and next value to the given function, emitting the next current value.|
 |Source/Flow|<a name="scanasync"></a>@ref[scanAsync](Source-or-Flow/scanAsync.md)|Just like @ref[`scan`](Source-or-Flow/./scan.md) but receives a function that results in a @scala[`Future`] @java[`CompletionStage`] to the next value.|
@@ -569,6 +570,7 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 * [prefixAndTail](Source-or-Flow/prefixAndTail.md)
 * [preMaterialize](Source-or-Flow/preMaterialize.md)
 * [preMaterialize](Sink/preMaterialize.md)
+* [preMaterializeIntoSource](Source-or-Flow/preMaterializeIntoSource.md)
 * [prepend](Source-or-Flow/prepend.md)
 * [prependLazy](Source-or-Flow/prependLazy.md)
 * [queue](Source/queue.md)
