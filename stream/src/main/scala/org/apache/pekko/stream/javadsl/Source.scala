@@ -3636,6 +3636,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Cancels when''' after predicate returned true or downstream cancels
    *
    * See also [[Source.limit]], [[Source.limitWeighted]], [[Source.takeWhile]]
+   * @since 1.2.0
    */
   def takeUntil(p: function.Predicate[Out]): javadsl.Source[Out, Mat] = new Source(delegate.takeUntil(p.test))
 

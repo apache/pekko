@@ -1248,6 +1248,7 @@ class SubFlow[In, Out, Mat](
    * '''Cancels when''' after predicate returned true or downstream cancels
    *
    * See also [[FlowOps.limit]], [[FlowOps.limitWeighted]], [[FlowOps.takeWhile]]
+   * @since 1.2.0
    */
   def takeUntil(p: function.Predicate[Out]): SubFlow[In, Out, Mat] = new SubFlow(delegate.takeUntil(p.test))
 
