@@ -174,6 +174,26 @@ final class Flow[-In, +Out, +Mat](
   }
 
   /**
+   * Connects the [[Source]] to this [[Flow]] and materializes it using the [[Sink]], immediately returning the values
+   * via the provided [[Sink]] as a new [[Source]].
+   *
+   * @param source A source that connects to this flow
+   * @param sink A sink which needs to materialize into a [[Future]], typically one
+   *             that collects values such as [[Sink.head]] or [[Sink.seq]]
+   * @return A new [[Source]] that contains the results of the [[Flow]] with the provided
+   *         [[Source]]'s elements run with the [[Sink]]
+   * @since 1.2.0
+   */
+  def materializeIntoSource[Mat1, Mat2](source: Graph[SourceShape[In], Mat1],
+      sink: Graph[SinkShape[Out], Future[Mat2]])
+      : Source[Mat2, Future[NotUsed]] =
+    Source.fromMaterializer { (mat, attr) =>
+      Source.future(
+        Source.fromGraph(source).via(this).withAttributes(attr).toMat(sink)(Keep.right).run()(mat)
+      )
+    }
+
+  /**
    * Transform this Flow by applying a function to each *incoming* upstream element before
    * it is passed to the [[Flow]]
    *

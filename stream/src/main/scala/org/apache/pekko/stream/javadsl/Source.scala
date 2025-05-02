@@ -1073,6 +1073,22 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
   }
 
   /**
+   * Materializes this [[Source]] using the [[Sink]], immediately returning the values via the
+   * provided [[Sink]] as a new [[Source]].
+   *
+   * @param sink A sink which needs to materialize into a [[CompletionStage]], typically one
+   *             that collects values such as [[Sink.head]] or [[Sink.seq]]
+   * @return A new [[Source]] that contains the results of the provided [[Source]]'s
+   *         elements run with the [[Sink]]
+   * @since 1.2.0
+   */
+  def materializeIntoSource[Mat2](
+      sink: Graph[SinkShape[Out], CompletionStage[Mat2]]): Source[Mat2, CompletionStage[NotUsed]] =
+    Source.fromMaterializer { (mat, attr) =>
+      Source.completionStage(this.withAttributes(attr).toMat(sink, Keep.right[Mat, CompletionStage[Mat2]]).run(mat))
+    }
+
+  /**
    * Transform this [[Source]] by appending the given processing operators.
    * {{{
    *     +----------------------------+
