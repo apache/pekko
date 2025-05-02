@@ -1137,6 +1137,7 @@ class SubSource[Out, Mat](
    * '''Cancels when''' after predicate returned true or downstream cancels
    *
    * See also [[SubSource.limit]], [[SubSource.limitWeighted]], [[SubSource.takeWhile]]
+   * @since 1.2.0
    */
   def takeUntil(p: function.Predicate[Out]): SubSource[Out, Mat] = new SubSource(delegate.takeUntil(p.test))
 

@@ -1899,6 +1899,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * '''Cancels when''' after predicate returned true or downstream cancels
    *
    * See also [[Flow.limit]], [[Flow.limitWeighted]], [[Flow.takeWhile]]
+   * @since 1.2.0
    */
   def takeUntil(p: function.Predicate[Out]): javadsl.Flow[In, Out, Mat] = new Flow(delegate.takeUntil(p.test))
 

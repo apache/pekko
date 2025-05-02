@@ -1590,6 +1590,7 @@ trait FlowOps[+Out, +Mat] {
    * '''Cancels when''' after predicate returned true or downstream cancels
    *
    * See also [[FlowOps.limit]], [[FlowOps.limitWeighted]], [[FlowOps.takeWhile]]
+   * @since 1.2.0
    */
   def takeUntil(p: Out => Boolean): Repr[Out] = takeWhile(!p(_), inclusive = true)
 

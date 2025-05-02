@@ -987,6 +987,8 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
    * This action replaces the [[OutHandler]] for the given outlet if suspension
    * is needed and reinstalls the current handler upon receiving an `onPull()`
    * signal (before invoking the `andThen` function).
+   *
+   * @since 1.2.0
    */
   final protected def emitMultiple[T](out: Outlet[T], elems: Spliterator[T], andThen: () => Unit): Unit = {
     val iter = new EmittingSpliterator[T](out, elems, getNonEmittingHandler(out), andThen)
