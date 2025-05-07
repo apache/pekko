@@ -14,7 +14,6 @@
 package org.apache.pekko.actor.typed.delivery.internal
 
 import java.util.UUID
-import java.util.concurrent.ThreadLocalRandom
 import java.util.concurrent.TimeoutException
 
 import scala.reflect.ClassTag
@@ -39,7 +38,7 @@ import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.LoggerOps
 import pekko.actor.typed.scaladsl.StashBuffer
 import pekko.annotation.InternalApi
-import pekko.util.Timeout
+import pekko.util.{ RandomNumberGenerator, Timeout }
 
 /**
  * INTERNAL API
@@ -404,7 +403,7 @@ private class WorkPullingProducerControllerImpl[A: ClassTag](
       if (workers.isEmpty) {
         None
       } else {
-        val i = ThreadLocalRandom.current().nextInt(workers.size)
+        val i = RandomNumberGenerator.get().nextInt(workers.size)
         Some(workers(i))
       }
     }

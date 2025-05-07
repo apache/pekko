@@ -13,8 +13,6 @@
 
 package org.apache.pekko.cluster
 
-import java.util.concurrent.ThreadLocalRandom
-
 import scala.annotation.tailrec
 import scala.collection.SortedSet
 import scala.collection.immutable
@@ -25,6 +23,7 @@ import pekko.annotation.InternalApi
 import pekko.cluster.ClusterSettings.DataCenter
 import pekko.cluster.MemberStatus._
 import pekko.util.ccompat._
+import pekko.util.RandomNumberGenerator
 
 /**
  * INTERNAL API
@@ -405,16 +404,16 @@ import pekko.util.ccompat._
         // don't go below the configured probability
         math.max((5 - localMembers) * 0.25, crossDcGossipProbability)
       }
-    ThreadLocalRandom.current.nextDouble() > probability
+    RandomNumberGenerator.get().nextDouble() > probability
   }
 
   protected def preferNodesWithDifferentView(state: MembershipState): Boolean =
-    ThreadLocalRandom.current.nextDouble() < adjustedGossipDifferentViewProbability(state.latestGossip.members.size)
+    RandomNumberGenerator.get().nextDouble() < adjustedGossipDifferentViewProbability(state.latestGossip.members.size)
 
   protected def dcsInRandomOrder(dcs: List[DataCenter]): List[DataCenter] =
     Random.shuffle(dcs)
 
   protected def selectRandomNode(nodes: IndexedSeq[UniqueAddress]): Option[UniqueAddress] =
     if (nodes.isEmpty) None
-    else Some(nodes(ThreadLocalRandom.current.nextInt(nodes.size)))
+    else Some(nodes(RandomNumberGenerator.get().nextInt(nodes.size)))
 }
