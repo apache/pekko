@@ -13,26 +13,36 @@
 
 package docs.stream
 
+import docs.CompileOnlySpec
 import org.apache.pekko.NotUsed
 import org.apache.pekko.actor.{ Actor, Props }
 import org.apache.pekko.stream.scaladsl._
 import org.apache.pekko.testkit.PekkoSpec
-import docs.CompileOnlySpec
+
+object FlowStreamRefsDocSpec {
+  // #offer-source
+  case class RequestLogs(streamId: Int)
+  // #offer-source
+
+  // #offer-sink
+  case class PrepareUpload(id: String)
+  // #offer-sink
+
+}
 
 class FlowStreamRefsDocSpec extends PekkoSpec with CompileOnlySpec {
 
   "offer a source ref" in compileOnlySpec {
     // #offer-source
+    import FlowStreamRefsDocSpec._
     import org.apache.pekko
     import pekko.stream.SourceRef
-    import pekko.pattern.pipe
 
-    case class RequestLogs(streamId: Int)
     case class LogsOffer(streamId: Int, sourceRef: SourceRef[String])
 
     class DataSource extends Actor {
 
-      def receive = {
+      def receive: Receive = {
         case RequestLogs(streamId) =>
           // obtain the source you want to offer:
           val source: Source[String, NotUsed] = streamLogs(streamId)
@@ -67,14 +77,14 @@ class FlowStreamRefsDocSpec extends PekkoSpec with CompileOnlySpec {
 
   "offer a sink ref" in compileOnlySpec {
     // #offer-sink
+    import FlowStreamRefsDocSpec._
     import org.apache.pekko.stream.SinkRef
 
-    case class PrepareUpload(id: String)
     case class MeasurementsSinkReady(id: String, sinkRef: SinkRef[String])
 
     class DataReceiver extends Actor {
 
-      def receive = {
+      def receive: Receive = {
         case PrepareUpload(nodeId) =>
           // obtain the source you want to offer:
           val sink: Sink[String, NotUsed] = logsSinkFor(nodeId)
@@ -110,8 +120,9 @@ class FlowStreamRefsDocSpec extends PekkoSpec with CompileOnlySpec {
   "show how to configure timeouts with attrs" in compileOnlySpec {
     // #attr-sub-timeout
     // configure the timeout for source
-    import scala.concurrent.duration._
     import org.apache.pekko.stream.StreamRefAttributes
+
+    import scala.concurrent.duration._
 
     // configuring Sink.sourceRef (notice that we apply the attributes to the Sink!):
     Source

@@ -37,6 +37,8 @@ object ActorLifeCycleSpec {
     def receive = { case "status" => sender() ! message("OK") }
   }
 
+  final case class Become(recv: ActorContext => Receive)
+
 }
 
 class ActorLifeCycleSpec extends PekkoSpec with BeforeAndAfterEach with ImplicitSender with DefaultTimeout {
@@ -138,9 +140,8 @@ class ActorLifeCycleSpec extends PekkoSpec with BeforeAndAfterEach with Implicit
     }
 
     "clear the behavior stack upon restart" in {
-      final case class Become(recv: ActorContext => Receive)
       val a = system.actorOf(Props(new Actor {
-        def receive = {
+        def receive: Receive = {
           case Become(beh) => { context.become(beh(context), discardOld = false); sender() ! "ok" }
           case _           => sender() ! 42
         }

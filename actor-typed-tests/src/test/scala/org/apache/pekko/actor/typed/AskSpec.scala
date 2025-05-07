@@ -42,6 +42,7 @@ object AskSpec {
   sealed trait Proxy
   final case class ProxyMsg(s: String) extends Proxy
   final case class ProxyReply(s: String) extends Proxy
+  case class Ping(respondTo: ActorRef[AnyRef])
 }
 
 class AskSpec extends ScalaTestWithActorTestKit("""
@@ -193,7 +194,6 @@ class AskSpec extends ScalaTestWithActorTestKit("""
       // For completeness sake though
       implicit val classicSystem = pekko.actor.ActorSystem("AskSpec-classic-1")
       try {
-        case class Ping(respondTo: ActorRef[AnyRef])
         val ex = new RuntimeException("not good!")
 
         class LegacyActor extends pekko.actor.Actor {
