@@ -475,14 +475,18 @@ object BroadcastHub {
 
 /**
  * INTERNAL API
+ *
+ * @param registrationPendingCallback Called during the `RegistrationPending` event of a consumer with the consumer's internal ID.
+ *                                    This is useful for controlling the interleaving in tests.
  */
 private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: Int,
-    registrationPendingCallback: Long => Unit = _ => ())
+    registrationPendingCallback: Long => Unit)
     extends GraphStageWithMaterializedValue[SinkShape[T], Source[T, NotUsed]] {
   require(startAfterNrOfConsumers >= 0, "startAfterNrOfConsumers must >= 0")
   require(bufferSize > 0, "Buffer size must be positive")
   require(bufferSize < 4096, "Buffer size larger then 4095 is not allowed")
   require((bufferSize & bufferSize - 1) == 0, "Buffer size must be a power of two")
+  def this(startAfterNrOfConsumers: Int, bufferSize: Int) = this(startAfterNrOfConsumers, bufferSize, _ => ())
   def this(bufferSize: Int) = this(0, bufferSize)
 
   private val Mask = bufferSize - 1
