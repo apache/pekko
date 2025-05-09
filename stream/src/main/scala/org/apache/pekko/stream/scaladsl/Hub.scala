@@ -476,7 +476,8 @@ object BroadcastHub {
 /**
  * INTERNAL API
  */
-private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: Int)
+private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: Int,
+    registrationPendingCallback: Long => Unit = _ => ())
     extends GraphStageWithMaterializedValue[SinkShape[T], Source[T, NotUsed]] {
   require(startAfterNrOfConsumers >= 0, "startAfterNrOfConsumers must >= 0")
   require(bufferSize > 0, "Buffer size must be positive")
@@ -585,6 +586,8 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
             val startFrom = head
             activeConsumers += 1
             addConsumer(consumer, startFrom)
+            // add a callback hook so that we can control the interleaving in tests
+            registrationPendingCallback(consumer.id)
             // in case the consumer is already stopped we need to undo registration
             implicit val ec = materializer.executionContext
             consumer.callback.invokeWithFeedback(Initialize(startFrom)).failed.foreach {
