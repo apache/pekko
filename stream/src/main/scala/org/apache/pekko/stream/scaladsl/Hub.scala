@@ -857,7 +857,12 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
           }
 
           override def postStop(): Unit = {
-            if (hubCallback ne null)
+            // If `postStop` is called before the consumer has processed the `RegistrationPending`'s `Initialize` event,
+            // then the `Initialize` message will fail with a `StreamDetachedException`,
+            // upon which the `RegistrationPending` logic itself unregisters this consumer.
+            // In particular, this client must not send the `Unregister` event itself because the values in
+            // `previousPublishedOffset` and `offset` are wrong.
+            if ((hubCallback ne null) && offsetInitialized)
               hubCallback.invoke(UnRegister(id, previousPublishedOffset, offset))
           }
 
