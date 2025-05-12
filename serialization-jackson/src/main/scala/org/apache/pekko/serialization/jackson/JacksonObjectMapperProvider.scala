@@ -534,11 +534,11 @@ class JacksonObjectMapperFactory {
    *                           `pekko.serialization.jackson3.enum-features`
    */
   def overrideConfiguredEnumFeatures(
-                                      @unused bindingName: String,
-                                      configuredFeatures: immutable.Seq[(EnumFeature, Boolean)])
-  : immutable.Seq[(EnumFeature, Boolean)] =
+      @unused bindingName: String,
+      configuredFeatures: immutable.Seq[(EnumFeature, Boolean)])
+      : immutable.Seq[(EnumFeature, Boolean)] =
     configuredFeatures
-    
+
   /**
    * After construction of the `ObjectMapper` the configured mapper features are applied to
    * the mapper. These features can be amended programmatically by overriding this method and
