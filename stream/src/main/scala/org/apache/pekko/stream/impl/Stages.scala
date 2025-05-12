@@ -135,6 +135,7 @@ import pekko.stream.Attributes._
     val actorRefSource = name("actorRefSource")
     val actorRefWithBackpressureSource = name("actorRefWithBackpressureSource")
     val queueSource = name("queueSource")
+    val create = name("create")
     val inputStreamSource = name("inputStreamSource") and IODispatcher
     val outputStreamSource = name("outputStreamSource")
     val fileSource = name("fileSource") and IODispatcher
