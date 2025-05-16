@@ -18,6 +18,14 @@ See https://pekko.apache.org for the documentation including the API docs. The d
 
 The CI build is Linux based (Ubuntu) and most Pekko developers use Macs or Linux machines. There have been reports of issues when building with Windows ([#829](https://github.com/apache/pekko/issues/829)).
 
+## Using IntelliJ IDEA
+
+To use IntelliJ IDEA, you need to configure your project to use JDK 8. For a visual guide, refer to this [Q&A](https://github.com/apache/pekko/discussions/1847#discussioncomment-13166066).
+
+- File > Project Structure > Project Settings > Project > Set your JDK to version 8
+- Settings > ... > Scala Compiler Server > Set your JDK to version 8 
+- Settings > ... > sbt > Set your JRE to version 8
+
 ### Prerequisites
 - Make sure you have installed a Java Development Kit (JDK) version 11 or later.
 - Make sure you have [sbt](https://www.scala-sbt.org/) installed and using this JDK.
