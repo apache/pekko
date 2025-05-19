@@ -9,6 +9,7 @@
 name: Timing sensitive tests
 
 on:
+  pull_request:
   schedule:
     - cron: "0 0 * * *"
   workflow_dispatch:
@@ -65,7 +66,7 @@ jobs:
       - name: Test Reports
         # Makes it easier to spot failures instead of looking at the logs.
         if: ${{ failure() }}
-        uses: marcospereira/action-surefire-report@v1
+        uses: scacap/action-surefire-report@v1
         with:
           report_paths: '**/target/test-reports/TEST-*.xml'
           fail_if_no_tests: false
