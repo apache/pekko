@@ -366,8 +366,9 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
   val acceptedProtocols: Set[String] = {
     val remoteSettings: RemoteSettings = new RemoteSettings(context.system.settings.config)
     val initSet = remoteSettings.AcceptProtocolNames
-    val tcpSet = initSet.map(protocol => s"$protocol.tcp")
-    initSet ++ tcpSet
+    val tcpSet = initSet.map(protocol => s"$protocol.tcp") // classic remoting
+    val tcpSslSet = initSet.map(protocol => s"$protocol.ssl.tcp") // classic remoting with SSL
+    initSet ++ tcpSet ++ tcpSslSet
   }
 
   var seedNodes = SeedNodes

@@ -19,7 +19,8 @@ package org.apache.pekko.cluster
 
 import com.typesafe.config.{ Config, ConfigFactory }
 
-import org.apache.pekko.testkit.{ LongRunningTest, PekkoSpec }
+import org.apache.pekko
+import pekko.testkit.{ LongRunningTest, PekkoSpec }
 
 object MixedProtocolClusterSpec {
 
@@ -84,6 +85,7 @@ object MixedProtocolClusterSpec {
     ConfigFactory.parseString("""
       pekko.remote.classic {
         enabled-transports = ["pekko.remote.classic.netty.ssl"]
+        netty.ssl.port = 0
       }
     """).withFallback(configWithNetty)
 
@@ -222,5 +224,23 @@ class MixedProtocolClusterSpec extends PekkoSpec with ClusterTestKit {
         clusterTestUtil.shutdownAll()
       }
     }
+
+    "allow a node using the pekko protocol to join the cluster (netty ssl)" taggedAs LongRunningTest in {
+
+      val clusterTestUtil = new ClusterTestUtil(system.name)
+      try {
+        // create the first node with the "akka" protocol
+        clusterTestUtil.newActorSystem(configWithAkkaNettySsl)
+
+        // have a node using the "pekko" protocol join
+        val joiningNode = clusterTestUtil.newActorSystem(configWithPekkoNettySsl)
+        clusterTestUtil.formCluster()
+
+        awaitCond(clusterTestUtil.isMemberUp(joiningNode), message = "awaiting joining node to be 'Up'")
+      } finally {
+        clusterTestUtil.shutdownAll()
+      }
+    }
+
   }
 }
