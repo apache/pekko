@@ -24,6 +24,8 @@ import pekko.testkit.{ LongRunningTest, PekkoSpec }
 
 object MixedProtocolClusterSpec {
 
+  import PekkoSpec._
+
   val baseConfig: Config =
     ConfigFactory.parseString("""
      pekko.actor.provider = "cluster"
@@ -82,10 +84,20 @@ object MixedProtocolClusterSpec {
     """).withFallback(configWithNetty)
 
   val configWithNettySsl: Config =
-    ConfigFactory.parseString("""
+    ConfigFactory.parseString(s"""
       pekko.remote.classic {
         enabled-transports = ["pekko.remote.classic.netty.ssl"]
+        netty.ssl.hostname = "localhost"
         netty.ssl.port = 0
+        netty.ssl.security = {
+          key-store = "${resourcePath("keystore")}"
+          trust-store = "${resourcePath("truststore")}"
+          key-store-password = "changeme"
+          key-password = "changeme"
+          trust-store-password = "changeme"
+          protocol = "TLSv1.2"
+          enabled-algorithms = [TLS_RSA_WITH_AES_128_CBC_SHA, TLS_DHE_RSA_WITH_AES_256_GCM_SHA384]
+        }
       }
     """).withFallback(configWithNetty)
 
