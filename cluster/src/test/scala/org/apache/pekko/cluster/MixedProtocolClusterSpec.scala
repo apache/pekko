@@ -274,6 +274,5 @@ class MixedProtocolClusterSpec extends PekkoSpec with ClusterTestKit {
       }
     }
 
-
   }
 }
