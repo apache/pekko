@@ -333,11 +333,14 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
         }
 
         "support enum features" in {
-          identifiedObjectMapper.isEnabled(EnumFeature.READ_ENUM_KEYS_USING_INDEX) should ===(true)
-          namedObjectMapper.isEnabled(EnumFeature.READ_ENUM_KEYS_USING_INDEX) should ===(true)
+          identifiedObjectMapper.getDeserializationConfig().isEnabled(
+            EnumFeature.READ_ENUM_KEYS_USING_INDEX) should ===(true)
+          namedObjectMapper.getDeserializationConfig().isEnabled(EnumFeature.READ_ENUM_KEYS_USING_INDEX) should ===(
+            true)
 
           // Default mapper follows Jackson and reference.conf default configuration
-          defaultObjectMapper.isEnabled(EnumFeature.READ_ENUM_KEYS_USING_INDEX) should ===(false)
+          defaultObjectMapper.getDeserializationConfig().isEnabled(EnumFeature.READ_ENUM_KEYS_USING_INDEX) should ===(
+            false)
         }
 
         "fallback to defaults when object mapper is not configured" in {
