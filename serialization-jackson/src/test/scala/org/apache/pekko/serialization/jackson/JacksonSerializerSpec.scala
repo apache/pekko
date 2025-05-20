@@ -24,6 +24,7 @@ import java.util.Locale
 import java.util.Optional
 import java.util.UUID
 import java.util.logging.FileHandler
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent.duration.FiniteDuration
 import scala.concurrent.duration._
@@ -44,13 +45,13 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.fasterxml.jackson.databind.cfg.EnumFeature
 import com.fasterxml.jackson.databind.exc.InvalidTypeIdException
 import com.fasterxml.jackson.databind.json.JsonMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.module.scala.JsonScalaEnumeration
 
-import scala.annotation.nowarn
 import com.typesafe.config.ConfigFactory
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.matchers.should.Matchers
@@ -240,6 +241,9 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
 
           # off is Jackson's default
           json-write-features.ESCAPE_NON_ASCII = on
+
+          # off is Jackson's default
+          enum-features.READ_ENUM_KEYS_USING_INDEX = on
         }
       """) { sys =>
         val identifiedObjectMapper =
@@ -328,6 +332,14 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
           defaultObjectMapper.isEnabled(JsonGenerator.Feature.ESCAPE_NON_ASCII) should ===(false)
         }
 
+        "support enum features" in {
+          identifiedObjectMapper.isEnabled(EnumFeature.READ_ENUM_KEYS_USING_INDEX) should ===(true)
+          namedObjectMapper.isEnabled(EnumFeature.READ_ENUM_KEYS_USING_INDEX) should ===(true)
+
+          // Default mapper follows Jackson and reference.conf default configuration
+          defaultObjectMapper.isEnabled(EnumFeature.READ_ENUM_KEYS_USING_INDEX) should ===(false)
+        }
+
         "fallback to defaults when object mapper is not configured" in {
           val notConfigured = JacksonObjectMapperProvider(sys).getOrCreate("jackson-not-configured", None)
           // Use Jacksons and Pekko defaults
@@ -341,6 +353,7 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
           notConfigured.isEnabled(StreamWriteFeature.WRITE_BIGDECIMAL_AS_PLAIN) should ===(false)
           notConfigured.isEnabled(JsonParser.Feature.ALLOW_YAML_COMMENTS) should ===(false)
           notConfigured.isEnabled(JsonGenerator.Feature.ESCAPE_NON_ASCII) should ===(false)
+          notConfigured.isEnabled(EnumFeature.READ_ENUM_KEYS_USING_INDEX) should ===(false)
         }
       }
     }
