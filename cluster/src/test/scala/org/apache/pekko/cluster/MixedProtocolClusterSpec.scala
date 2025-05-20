@@ -28,17 +28,16 @@ object MixedProtocolClusterSpec {
 
   val baseConfig: Config =
     ConfigFactory.parseString("""
-     pekko.actor.provider = "cluster"
-     pekko.coordinated-shutdown.terminate-actor-system = on
+      pekko.actor.provider = "cluster"
+      pekko.coordinated-shutdown.terminate-actor-system = on
 
-     pekko.remote.artery.canonical.port = 0
-     pekko.remote.classic.netty.tcp.port = 0
-     pekko.remote.artery.advanced.aeron.idle-cpu-level = 3
-     pekko.remote.accept-protocol-names = ["pekko", "akka"]
+      pekko.remote.artery.canonical.port = 0
+      pekko.remote.classic.netty.tcp.port = 0
+      pekko.remote.artery.advanced.aeron.idle-cpu-level = 3
+      pekko.remote.accept-protocol-names = ["pekko", "akka"]
 
-     pekko.cluster.jmx.multi-mbeans-in-same-jvm = on
-     pekko.cluster.configuration-compatibility-check.enforce-on-join = off
-     """)
+      pekko.cluster.jmx.multi-mbeans-in-same-jvm = on
+      pekko.cluster.configuration-compatibility-check.enforce-on-join = off""")
 
   val configWithUdp: Config =
     ConfigFactory.parseString("""
@@ -253,6 +252,28 @@ class MixedProtocolClusterSpec extends PekkoSpec with ClusterTestKit {
         clusterTestUtil.shutdownAll()
       }
     }
+
+    "allow a cluster with just pekko nodes (netty ssl)" taggedAs LongRunningTest in {
+      // this is not a mixed protocol test, but the netty ssl transport seems not to have many tests
+
+      val cfg = ConfigFactory.parseString("""
+        pekko.remote.accept-protocol-names = ["pekko"]""")
+        .withFallback(configWithPekkoNettySsl)
+      val clusterTestUtil = new ClusterTestUtil(system.name)
+      try {
+        // create the first node with the "pekko" protocol
+        clusterTestUtil.newActorSystem(cfg)
+
+        // have a node using the "pekko" protocol join
+        val joiningNode = clusterTestUtil.newActorSystem(cfg)
+        clusterTestUtil.formCluster()
+
+        awaitCond(clusterTestUtil.isMemberUp(joiningNode), message = "awaiting joining node to be 'Up'")
+      } finally {
+        clusterTestUtil.shutdownAll()
+      }
+    }
+
 
   }
 }
