@@ -79,6 +79,23 @@ object MixedProtocolClusterSpec {
     ConfigFactory.parseString("""
       pekko.remote.protocol-name = "akka"
     """).withFallback(configWithNetty)
+
+  val configWithNettySsl: Config =
+    ConfigFactory.parseString("""
+      pekko.remote.classic {
+        enabled-transports = ["pekko.remote.classic.netty.ssl"]
+      }
+    """).withFallback(configWithNetty)
+
+  val configWithPekkoNettySsl: Config =
+    ConfigFactory.parseString("""
+      pekko.remote.protocol-name = "pekko"
+    """).withFallback(configWithNettySsl)
+
+  val configWithAkkaNettySsl: Config =
+    ConfigFactory.parseString("""
+      pekko.remote.protocol-name = "akka"
+    """).withFallback(configWithNettySsl)
 }
 
 class MixedProtocolClusterSpec extends PekkoSpec with ClusterTestKit {
@@ -130,6 +147,23 @@ class MixedProtocolClusterSpec extends PekkoSpec with ClusterTestKit {
 
         // have a node using the "akka" protocol join
         val joiningNode = clusterTestUtil.newActorSystem(configWithAkkaNetty)
+        clusterTestUtil.formCluster()
+
+        awaitCond(clusterTestUtil.isMemberUp(joiningNode), message = "awaiting joining node to be 'Up'")
+      } finally {
+        clusterTestUtil.shutdownAll()
+      }
+    }
+
+    "be allowed to join a cluster with a node using the pekko protocol (netty ssl)" taggedAs LongRunningTest in {
+
+      val clusterTestUtil = new ClusterTestUtil(system.name)
+      try {
+        // start the first node with the "pekko" protocol
+        clusterTestUtil.newActorSystem(configWithPekkoNettySsl)
+
+        // have a node using the "akka" protocol join
+        val joiningNode = clusterTestUtil.newActorSystem(configWithAkkaNettySsl)
         clusterTestUtil.formCluster()
 
         awaitCond(clusterTestUtil.isMemberUp(joiningNode), message = "awaiting joining node to be 'Up'")
