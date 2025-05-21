@@ -11,22 +11,24 @@
  * Copyright (C) 2018-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package org.apache.pekko.remote.classic.transport.netty
-
-import java.net.{ InetAddress, InetSocketAddress }
-import java.nio.channels.ServerSocketChannel
-
-import scala.concurrent.Await
-import scala.concurrent.duration.Duration
+package org.apache.pekko.remote.transport
 
 import com.typesafe.config.ConfigFactory
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
+import io.netty.buffer.{ AdaptiveByteBufAllocator, PooledByteBufAllocator, UnpooledByteBufAllocator }
 
 import org.apache.pekko
 import pekko.actor.{ ActorSystem, Address, ExtendedActorSystem }
 import pekko.remote.BoundAddressesExtension
+import pekko.remote.transport.netty.NettyTransport.deriveByteBufAllocator
 import pekko.testkit.SocketUtil
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+
+import java.net.{ InetAddress, InetSocketAddress }
+import java.nio.channels.ServerSocketChannel
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
 
 object NettyTransportSpec {
   val commonConfig = ConfigFactory.parseString("""
@@ -131,6 +133,30 @@ class NettyTransportSpec extends AnyWordSpec with Matchers with BindBehavior {
       getInternal().map(x => (x.host.get should include).regex("0.0.0.0".r)) // regexp dot is intentional to match IPv4 and 6 addresses
 
       Await.result(sys.terminate(), Duration.Inf)
+    }
+
+    "be able to specify byte buffer allocator" in {
+      deriveByteBufAllocator("pooled") should ===(PooledByteBufAllocator.DEFAULT)
+      deriveByteBufAllocator("unpooled") should ===(UnpooledByteBufAllocator.DEFAULT)
+
+      {
+        val allocator = deriveByteBufAllocator("unpooled-heap")
+        allocator shouldBe a[UnpooledByteBufAllocator]
+        allocator.toString.contains("directByDefault: false") should ===(true)
+      }
+
+      {
+        val allocator = deriveByteBufAllocator("adaptive")
+        allocator shouldBe a[AdaptiveByteBufAllocator]
+        allocator.toString.contains("directByDefault: true") should ===(true)
+      }
+
+      {
+        val allocator = deriveByteBufAllocator("adaptive-heap")
+        allocator shouldBe a[AdaptiveByteBufAllocator]
+        allocator.toString.contains("directByDefault: false") should ===(true)
+      }
+
     }
   }
 }
