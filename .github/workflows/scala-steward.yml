@@ -33,7 +33,7 @@ jobs:
     if: github.repository == 'apache/pekko'
     steps:
       - name: Install sbt
-        uses: sbt/setup-sbt@v1
+        uses: sbt/setup-sbt@26ab4b0fa1c47fa62fc1f6e51823a658fb6c760c # v1.1.7
       - name: Launch Scala Steward
         uses: scala-steward-org/scala-steward-action@v2
         env:
