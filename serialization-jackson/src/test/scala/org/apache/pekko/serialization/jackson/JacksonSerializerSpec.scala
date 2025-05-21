@@ -356,7 +356,7 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
           notConfigured.isEnabled(StreamWriteFeature.WRITE_BIGDECIMAL_AS_PLAIN) should ===(false)
           notConfigured.isEnabled(JsonParser.Feature.ALLOW_YAML_COMMENTS) should ===(false)
           notConfigured.isEnabled(JsonGenerator.Feature.ESCAPE_NON_ASCII) should ===(false)
-          notConfigured.isEnabled(EnumFeature.READ_ENUM_KEYS_USING_INDEX) should ===(false)
+          notConfigured.getDeserializationConfig().isEnabled(EnumFeature.READ_ENUM_KEYS_USING_INDEX) should ===(false)
         }
       }
     }
