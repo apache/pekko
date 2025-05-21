@@ -48,10 +48,10 @@ jobs:
           java-version: 11
 
       - name: Install sbt
-        uses: sbt/setup-sbt@v1
+        uses: sbt/setup-sbt@26ab4b0fa1c47fa62fc1f6e51823a658fb6c760c # v1.1.7
 
       - name: Cache Coursier cache
-        uses: coursier/cache-action@v6
+        uses: coursier/cache-action@4e2615869d13561d626ed48655e1a39e5b192b3c # v6.4.7
 
       - name: Install Graphviz
         run: |-
