@@ -303,11 +303,14 @@ private[remote] class Remoting(_system: ExtendedActorSystem, _provider: RemoteAc
     if (AcceptProtocolNames.size > 1) {
       map.flatMap { case (protocol, transports) =>
         val tcpProtocol = protocol.endsWith(".tcp")
-        AcceptProtocolNames.map { newProtocol =>
+        AcceptProtocolNames.flatMap { newProtocol =>
           if (tcpProtocol)
-            s"$newProtocol.tcp" -> transports
+            Seq(
+              s"$newProtocol.tcp" -> transports,
+              s"$newProtocol.ssl.tcp" -> transports
+            )
           else
-            newProtocol -> transports
+            Seq(newProtocol -> transports)
         }
       }
     } else map
