@@ -17,6 +17,7 @@ These migration notes are designed for users migrating from Akka 2.6 to Pekko 1.
 * The Pekko node URLs use different URL schemes.
     * `pekko://` instead of `akka://`
     * `pekko.tcp://` instead of `akka.tcp://`
+    * `pekko.ssl.tcp://` instead of `akka.ssl.tcp://`
 * We have changed the default ports used by the pekko-remote module.
     * With @ref:[Classic Remoting](../remoting.md), Akka defaults to 2552, while Pekko defaults to 7355.
     * With @ref:[Artery Remoting](../remoting-artery.md), Akka defaults to 25520, while Pekko defaults to 17355.
