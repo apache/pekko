@@ -30,7 +30,7 @@ permissions:
 jobs:
   publish-nightly:
     name: Publish nightly
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: github.repository == 'apache/pekko'
     steps:
       - name: Checkout
