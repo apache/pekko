@@ -38,6 +38,7 @@ import com.fasterxml.jackson.databind.{
   ObjectMapper,
   SerializationFeature
 }
+import com.fasterxml.jackson.databind.cfg.EnumFeature
 import com.fasterxml.jackson.databind.json.JsonMapper
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule
 import com.typesafe.config.Config
@@ -192,6 +193,14 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
     val deserializationFeatures =
       objectMapperFactory.overrideConfiguredDeserializationFeatures(bindingName, configuredDeserializationFeatures)
     deserializationFeatures.foreach {
+      case (feature, value) => objectMapper.configure(feature, value)
+    }
+
+    val configuredEnumFeatures = features(config, "enum-features").map {
+      case (enumName, value) => EnumFeature.valueOf(enumName) -> value
+    }
+    val enumFeatures = objectMapperFactory.overrideConfiguredEnumFeatures(bindingName, configuredEnumFeatures)
+    enumFeatures.foreach {
       case (feature, value) => objectMapper.configure(feature, value)
     }
 
@@ -510,6 +519,24 @@ class JacksonObjectMapperFactory {
       @unused bindingName: String,
       configuredFeatures: immutable.Seq[(DeserializationFeature, Boolean)])
       : immutable.Seq[(DeserializationFeature, Boolean)] =
+    configuredFeatures
+
+  /**
+   * After construction of the `ObjectMapper` the configured enum features are applied to
+   * the mapper. These features can be amended programatically by overriding this method and
+   * return the features that are to be applied to the `ObjectMapper`.
+   *
+   * When implementing a `JacksonObjectMapperFactory` with Java the `immutable.Seq` can be
+   * created with [[pekko.japi.Util.immutableSeq]].
+   *
+   * @param bindingName bindingName name of this `ObjectMapper`
+   * @param configuredFeatures the list of `DateTimeFeature` that were configured in
+   *                           `pekko.serialization.jackson3.enum-features`
+   */
+  def overrideConfiguredEnumFeatures(
+      @unused bindingName: String,
+      configuredFeatures: immutable.Seq[(EnumFeature, Boolean)])
+      : immutable.Seq[(EnumFeature, Boolean)] =
     configuredFeatures
 
   /**
