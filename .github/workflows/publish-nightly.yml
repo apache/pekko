@@ -65,7 +65,7 @@ jobs:
         env:
           NEXUS_USER: ${{ secrets.NEXUS_USER }}
           NEXUS_PW: ${{ secrets.NEXUS_PW }}
-        run: sbt +publish
+        run: sbt -Dsbt.repository.publish.attempts=10 +publish
 
       - name: Build Documentation
         run: |-
