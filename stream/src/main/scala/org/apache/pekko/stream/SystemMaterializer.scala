@@ -14,7 +14,6 @@
 package org.apache.pekko.stream
 
 import scala.annotation.nowarn
-import scala.concurrent.Await
 import scala.concurrent.Promise
 
 import org.apache.pekko
@@ -77,7 +76,8 @@ final class SystemMaterializer(system: ExtendedActorSystem) extends Extension {
   private[pekko] def createAdditionalSystemMaterializer(): Materializer = {
     val started =
       (materializerGuardian ? MaterializerGuardian.StartMaterializer).mapTo[MaterializerGuardian.MaterializerStarted]
-    Await.result(started, materializerTimeout.duration).materializer
+    import pekko.util.Helpers._
+    started.await(materializerTimeout.duration).materializer
   }
 
   /**
@@ -91,12 +91,14 @@ final class SystemMaterializer(system: ExtendedActorSystem) extends Extension {
     val started =
       (materializerGuardian ? MaterializerGuardian.LegacyStartMaterializer(namePrefix, settings))
         .mapTo[MaterializerGuardian.MaterializerStarted]
-    Await.result(started, materializerTimeout.duration).materializer
+    import pekko.util.Helpers._
+    started.await(materializerTimeout.duration).materializer
   }
 
   val materializer: Materializer = {
     // block on async creation to make it effectively final
-    Await.result(systemMaterializerPromise.future, materializerTimeout.duration)
+    import pekko.util.Helpers._
+    systemMaterializerPromise.future.await(materializerTimeout.duration)
   }
 
 }
