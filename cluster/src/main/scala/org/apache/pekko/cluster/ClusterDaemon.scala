@@ -607,11 +607,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
     case other               => super.unhandled(other)
   }
 
-  private lazy val supportsAkkaConfig: Boolean = {
-    context.system.settings.config
-      .getStringList("pekko.remote.accept-protocol-names")
-      .contains("akka")
-  }
+  private lazy val supportsAkkaConfig: Boolean = ConfigUtil.supportsAkkaConfig(
+    context.system.settings.config)
 
   def initJoin(inputConfig: Config): Unit = {
     val joiningNodeConfig = if (supportsAkkaConfig && !inputConfig.hasPath("pekko")) {
