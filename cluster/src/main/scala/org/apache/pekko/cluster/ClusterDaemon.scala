@@ -607,7 +607,18 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
     case other               => super.unhandled(other)
   }
 
-  def initJoin(joiningNodeConfig: Config): Unit = {
+  private lazy val supportsAkkaConfig: Boolean = {
+    context.system.settings.config
+      .getStringList("pekko.remote.accept-protocol-names")
+      .contains("akka")
+  }
+
+  def initJoin(inputConfig: Config): Unit = {
+    val joiningNodeConfig = if (supportsAkkaConfig && !inputConfig.hasPath("pekko")) {
+      ConfigUtil.changeAkkaToPekkoConfig(inputConfig)
+    } else {
+      inputConfig
+    }
     val joiningNodeVersion =
       if (joiningNodeConfig.hasPath("pekko.version")) joiningNodeConfig.getString("pekko.version")
       else "unknown"

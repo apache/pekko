@@ -23,13 +23,16 @@ import scala.annotation.nowarn
 
 private[cluster] object ConfigUtil {
 
+  private val PekkoPrefix = "org.apache.pekko"
+  private val AkkaPrefix = "akka"
+
   @nowarn("msg=deprecated")
   def addAkkaConfig(cfg: Config, akkaVersion: String): Config = {
     import org.apache.pekko.util.ccompat.JavaConverters._
     val innerSet = cfg.entrySet().asScala
       .filter(e => e.getKey.startsWith("pekko.") && e.getValue.valueType() != ConfigValueType.OBJECT)
       .map { entry =>
-        entry.getKey.replace("pekko", "akka") -> adjustPackageNameIfNecessary(entry.getValue)
+        entry.getKey.replace("pekko", "akka") -> adjustPackageNameToAkkaIfNecessary(entry.getValue)
       }
     var newConfig = cfg
     innerSet.foreach { case (key, value) =>
@@ -38,11 +41,39 @@ private[cluster] object ConfigUtil {
     newConfig.withValue("akka.version", ConfigValueFactory.fromAnyRef(akkaVersion))
   }
 
-  private def adjustPackageNameIfNecessary(cv: ConfigValue): ConfigValue = {
+  @nowarn("msg=deprecated")
+  def changeAkkaToPekkoConfig(cfg: Config): Config = {
+    import org.apache.pekko.util.ccompat.JavaConverters._
+    val innerSet = cfg.entrySet().asScala
+      .filter(e => e.getKey.startsWith("akka.") && e.getValue.valueType() != ConfigValueType.OBJECT)
+      .map { entry =>
+        entry.getKey.replace("akka", "pekko") -> adjustPackageNameToPekkoIfNecessary(entry.getValue)
+      }
+    var newConfig = cfg
+    innerSet.foreach { case (key, value) =>
+      newConfig = newConfig.withValue(key, value)
+    }
+    newConfig
+  }
+
+  private def adjustPackageNameToAkkaIfNecessary(cv: ConfigValue): ConfigValue = {
     if (cv.valueType() == ConfigValueType.STRING) {
       val str = cv.unwrapped().toString
-      if (str.startsWith("org.apache.pekko")) {
-        ConfigValueFactory.fromAnyRef(str.replace("org.apache.pekko", "akka"))
+      if (str.startsWith(PekkoPrefix)) {
+        ConfigValueFactory.fromAnyRef(str.replace(PekkoPrefix, AkkaPrefix))
+      } else {
+        cv
+      }
+    } else {
+      cv
+    }
+  }
+
+  private def adjustPackageNameToPekkoIfNecessary(cv: ConfigValue): ConfigValue = {
+    if (cv.valueType() == ConfigValueType.STRING) {
+      val str = cv.unwrapped().toString
+      if (str.startsWith(AkkaPrefix)) {
+        ConfigValueFactory.fromAnyRef(str.replace(AkkaPrefix, PekkoPrefix))
       } else {
         cv
       }
