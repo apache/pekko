@@ -56,6 +56,12 @@ private[cluster] object ConfigUtil {
     newConfig
   }
 
+  def supportsAkkaConfig(cfg: Config): Boolean = {
+    cfg
+      .getStringList("pekko.remote.accept-protocol-names")
+      .contains("akka")
+  }
+
   private def adjustPackageNameToAkkaIfNecessary(cv: ConfigValue): ConfigValue = {
     if (cv.valueType() == ConfigValueType.STRING) {
       val str = cv.unwrapped().toString
