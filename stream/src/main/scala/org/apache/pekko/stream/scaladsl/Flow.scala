@@ -1402,7 +1402,7 @@ trait FlowOps[+Out, +Mat] {
     } else {
       new MapAsyncPartitioned(parallelism, orderedOutput = false, partitioner, f)
     }
-    via(graph.withAttributes(DefaultAttributes.mapAsyncPartition and SourceLocation.forLambda(f)))
+    via(graph.withAttributes(DefaultAttributes.mapAsyncPartitionUnordered and SourceLocation.forLambda(f)))
   }
 
   /**
