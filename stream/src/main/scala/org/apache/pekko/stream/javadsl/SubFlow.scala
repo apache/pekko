@@ -29,12 +29,13 @@ import pekko.annotation.ApiMayChange
 import pekko.event.{ LogMarker, LoggingAdapter, MarkerLoggingAdapter }
 import pekko.japi.{ function, Pair }
 import pekko.stream._
-import pekko.stream.impl.fusing.ZipWithIndexJava
+import pekko.stream.impl.fusing.{ StatefulMapConcat, ZipWithIndexJava }
 import pekko.util.ConstantFun
 import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
 import pekko.util.OptionConverters._
 import pekko.util.ccompat.JavaConverters._
+import pekko.util.ccompat._
 
 object SubFlow {
 
@@ -54,6 +55,7 @@ object SubFlow {
  * SubFlows cannot contribute to the super-flow’s materialized value since they
  * are materialized later, during the runtime of the flow graph processing.
  */
+@ccompatUsedUntil213
 class SubFlow[In, Out, Mat](
     delegate: scaladsl.SubFlow[Out, Mat, scaladsl.Flow[In, Out, Mat]#Repr, scaladsl.Sink[In, Mat]]) {
 
@@ -340,7 +342,7 @@ class SubFlow[In, Out, Mat](
    * as they are illegal as stream elements - according to the Reactive Streams specification.
    *
    * This operator doesn't handle upstream's completion signal since the state kept in the closure can be lost.
-   * Use [[FlowOps.statefulMap]] instead.
+   * Use [[FlowOps.statefulMap]], or return an [[StatefulMapConcatAccumulator]] instead.
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *
@@ -354,11 +356,10 @@ class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def statefulMapConcat[T](f: function.Creator[function.Function[Out, java.lang.Iterable[T]]]): SubFlow[In, T, Mat] =
-    new SubFlow(delegate.statefulMapConcat { () =>
-      val fun = f.create()
-      elem => fun(elem).asScala
-    })
+  def statefulMapConcat[T](f: function.Creator[function.Function[Out, java.lang.Iterable[T]]]): SubFlow[In, T, Mat] = {
+    import scaladsl.StatefulMapConcatAccumulatorFactory._
+    new SubFlow(delegate.via(new StatefulMapConcat(f.asFactory)))
+  }
 
   /**
    * Transform this stream by applying the given function to each of the elements

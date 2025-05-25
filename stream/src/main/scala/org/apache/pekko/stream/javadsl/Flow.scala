@@ -37,14 +37,14 @@ import pekko.japi.Pair
 import pekko.japi.function
 import pekko.japi.function.Creator
 import pekko.stream.{ javadsl, _ }
-import pekko.stream.impl.fusing.ZipWithIndexJava
+import pekko.stream.impl.fusing.{ StatefulMapConcat, ZipWithIndexJava }
 import pekko.util.ConstantFun
 import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
 import pekko.util.OptionConverters._
 import pekko.util.Timeout
 import pekko.util.unused
-
+import pekko.util.ccompat._
 import org.reactivestreams.Processor
 
 object Flow {
@@ -435,6 +435,7 @@ object Flow {
 /**
  * A `Flow` is a set of stream processing steps that has one open input and one open output.
  */
+@ccompatUsedUntil213
 final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Graph[FlowShape[In, Out], Mat] {
   import org.apache.pekko.util.ccompat.JavaConverters._
 
@@ -907,7 +908,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * as they are illegal as stream elements - according to the Reactive Streams specification.
    *
    * This operator doesn't handle upstream's completion signal since the state kept in the closure can be lost.
-   * Use [[FlowOps.statefulMap]] instead.
+   * Use [[FlowOps.statefulMap]], or return an [[StatefulMapConcatAccumulator]] instead.
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *
@@ -922,11 +923,10 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * '''Cancels when''' downstream cancels
    */
   def statefulMapConcat[T](
-      f: function.Creator[function.Function[Out, java.lang.Iterable[T]]]): javadsl.Flow[In, T, Mat] =
-    new Flow(delegate.statefulMapConcat { () =>
-      val fun = f.create()
-      elem => fun(elem).asScala
-    })
+      f: function.Creator[function.Function[Out, java.lang.Iterable[T]]]): javadsl.Flow[In, T, Mat] = {
+    import scaladsl.StatefulMapConcatAccumulatorFactory._
+    new Flow(delegate.via(new StatefulMapConcat(f.asFactory)))
+  }
 
   /**
    * Transform this stream by applying the given function to each of the elements

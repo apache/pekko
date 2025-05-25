@@ -35,13 +35,13 @@ import pekko.japi.{ function, JavaPartialFunction, Pair }
 import pekko.japi.function.Creator
 import pekko.stream._
 import pekko.stream.impl.{ LinearTraversalBuilder, UnfoldAsyncJava, UnfoldJava }
-import pekko.stream.impl.fusing.{ ArraySource, ZipWithIndexJava }
+import pekko.stream.impl.fusing.{ ArraySource, StatefulMapConcat, ZipWithIndexJava }
 import pekko.util.{ unused, _ }
 import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
 import pekko.util.OptionConverters._
 import pekko.util.ccompat.JavaConverters._
-
+import pekko.util.ccompat._
 import org.reactivestreams.{ Publisher, Subscriber }
 
 /** Java API */
@@ -993,6 +993,7 @@ object Source {
  * A `Source` is a set of stream processing steps that has one open output and an attached input.
  * Can be used as a `Publisher`
  */
+@ccompatUsedUntil213
 final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[SourceShape[Out], Mat] {
 
   import org.apache.pekko.util.ccompat.JavaConverters._
@@ -2654,7 +2655,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * as they are illegal as stream elements - according to the Reactive Streams specification.
    *
    * This operator doesn't handle upstream's completion signal since the state kept in the closure can be lost.
-   * Use [[FlowOps.statefulMap]] instead.
+   * Use [[FlowOps.statefulMap]], or return an [[StatefulMapConcatAccumulator]] instead.
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *
@@ -2668,11 +2669,11 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * '''Cancels when''' downstream cancels
    */
-  def statefulMapConcat[T](f: function.Creator[function.Function[Out, java.lang.Iterable[T]]]): javadsl.Source[T, Mat] =
-    new Source(delegate.statefulMapConcat { () =>
-      val fun = f.create()
-      elem => fun(elem).asScala
-    })
+  def statefulMapConcat[T](
+      f: function.Creator[function.Function[Out, java.lang.Iterable[T]]]): javadsl.Source[T, Mat] = {
+    import scaladsl.StatefulMapConcatAccumulatorFactory._
+    new Source(delegate.via(new StatefulMapConcat(f.asFactory)))
+  }
 
   /**
    * Transform this stream by applying the given function to each of the elements
