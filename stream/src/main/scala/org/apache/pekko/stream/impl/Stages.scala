@@ -170,6 +170,7 @@ import pekko.stream.Attributes._
 
     val inputBoundary = name("input-boundary")
     val outputBoundary = name("output-boundary")
+    val dropRepeated = name("dropRepeated")
   }
 
 }

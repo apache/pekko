@@ -817,7 +817,15 @@ public class SourceTest extends StreamTest {
   }
 
   @Test
-  public void mustBeAbleToUseStatefulMapAsDistinctUntilChanged() throws Exception {
+  public void mustBeAbleToUseDropRepeated() throws Exception {
+    final java.lang.Iterable<Integer> input = Arrays.asList(1, 1, 1, 2, 3, 3, 3, 4, 1, 5, 5, 5);
+    final CompletionStage<String> result =
+        Source.from(input).dropRepeated().runFold("", (acc, elem) -> acc + elem, system);
+    Assert.assertEquals("123415", result.toCompletableFuture().get(3, TimeUnit.SECONDS));
+  }
+
+  @Test
+  public void mustBeAbleToUseStatefulMapAsDropRepeated() throws Exception {
     final java.lang.Iterable<Integer> input = Arrays.asList(1, 1, 1, 2, 3, 3, 3, 4, 5, 5, 5);
     final CompletionStage<String> result =
         Source.from(input)

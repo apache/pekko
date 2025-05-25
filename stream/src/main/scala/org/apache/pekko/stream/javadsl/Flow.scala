@@ -1171,6 +1171,42 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
     new Flow(delegate.filterNot(p.test))
 
   /**
+   * Only pass on those elements that are distinct from the previous element.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * '''Emits when''' the element is distinct from the previous element
+   *
+   * '''Backpressures when''' the element is distinct from the previous element and downstream backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @since 1.2.0
+   */
+  def dropRepeated(): javadsl.Flow[In, Out, Mat] =
+    new Flow(delegate.dropRepeated())
+
+  /**
+   * Only pass on those elements that are distinct from the previous element according to the given predicate.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * '''Emits when''' the element is distinct from the previous element
+   *
+   * '''Backpressures when''' the element is distinct from the previous element and downstream backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @since 1.2.0
+   */
+  def dropRepeated(p: function.Function2[Out, Out, Boolean]): javadsl.Flow[In, Out, Mat] =
+    new Flow(delegate.dropRepeated(p.apply))
+
+  /**
    * Transform this stream by applying the given partial function to each of the elements
    * on which the function is defined as they pass through this processing step.
    * Non-matching elements are filtered out.

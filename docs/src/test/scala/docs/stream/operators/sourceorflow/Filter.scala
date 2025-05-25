@@ -54,4 +54,18 @@ object Filter {
     // incididunt
     // #filterNot
   }
+
+  def dropRepeated(): Unit = {
+    // #dropRepeated
+    Source(List(1, 2, 2, 3, 3, 1, 4))
+      .dropRepeated()
+      .runForeach(println)
+    // prints:
+    // 1
+    // 2
+    // 3
+    // 1
+    // 4
+    // #dropRepeated
+  }
 }

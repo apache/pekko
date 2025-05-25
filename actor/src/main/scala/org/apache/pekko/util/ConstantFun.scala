@@ -18,6 +18,8 @@ import pekko.annotation.InternalApi
 import pekko.japi.{ Pair => JPair }
 import pekko.japi.function.{ Function => JFun, Function2 => JFun2 }
 
+import java.lang
+
 /**
  * INTERNAL API
  */
@@ -48,6 +50,12 @@ import pekko.japi.function.{ Function => JFun, Function2 => JFun2 }
 
   def javaAnyToNone[A, B]: A => Option[B] = none
   def nullFun[T] = _nullFun.asInstanceOf[Any => T]
+
+  def scalaAnyTwoEquals[T]: (T, T) => Boolean = _ == _
+
+  def javaAnyTwoEquals[T]: JFun2[T, T, java.lang.Boolean] = new JFun2[T, T, java.lang.Boolean] {
+    override def apply(a: T, b: T): lang.Boolean = a == b
+  }
 
   val zeroLong = (_: Any) => 0L
 
