@@ -36,8 +36,7 @@ object MixedProtocolClusterSpec {
       pekko.remote.artery.advanced.aeron.idle-cpu-level = 3
       pekko.remote.accept-protocol-names = ["pekko", "akka"]
 
-      pekko.cluster.jmx.multi-mbeans-in-same-jvm = on
-      pekko.cluster.configuration-compatibility-check.enforce-on-join = off""")
+      pekko.cluster.jmx.multi-mbeans-in-same-jvm = on""")
 
   val configWithUdp: Config =
     ConfigFactory.parseString("""
@@ -253,7 +252,10 @@ class MixedProtocolClusterSpec extends PekkoSpec with ClusterTestKit {
       }
     }
 
-    "allow a cluster with just pekko nodes (netty ssl)" taggedAs LongRunningTest in {
+  }
+
+  "A node using the pekko protocol" must {
+    "allow a plain pekko node to join (netty ssl)" taggedAs LongRunningTest in {
       // this is not a mixed protocol test, but the netty ssl transport seems not to have many tests
 
       val cfg = ConfigFactory.parseString("""
@@ -273,6 +275,5 @@ class MixedProtocolClusterSpec extends PekkoSpec with ClusterTestKit {
         clusterTestUtil.shutdownAll()
       }
     }
-
   }
 }
