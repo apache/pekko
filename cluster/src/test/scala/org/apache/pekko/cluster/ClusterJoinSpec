@@ -35,8 +35,7 @@ object ClusterJoinSpec {
       pekko.remote.classic.netty.tcp.port = 0
       pekko.remote.artery.advanced.aeron.idle-cpu-level = 3
 
-      pekko.cluster.jmx.multi-mbeans-in-same-jvm = on
-      pekko.cluster.configuration-compatibility-check.enforce-on-join = off""")
+      pekko.cluster.jmx.multi-mbeans-in-same-jvm = on""")
 
 
   val configWithNetty: Config =
