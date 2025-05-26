@@ -123,5 +123,18 @@ class JoinConfigCompatCheckClusterSpec extends PekkoSpec {
       checkInitJoin(oldConfig, ConfigUtil.changeAkkaToPekkoConfig(newConfig)) should ===(Valid)
     }
 
+    "be invalid when not equivalent downing-provider (akka/pekko mixed cluster)" in {
+      val oldConfig =
+        ConfigFactory.parseString("""
+        pekko.cluster.downing-provider-class = "org.apache.pekko.cluster.testkit.AutoDowning"
+        """).withFallback(system.settings.config)
+      val newConfig =
+        ConfigFactory.parseString("""
+        akka.cluster.downing-provider-class = "akka.cluster.sbr.SplitBrainResolverProvider"
+        akka.version = "2.6.21"
+        """)
+      checkInitJoin(oldConfig, ConfigUtil.changeAkkaToPekkoConfig(newConfig)).getClass should ===(classOf[Invalid])
+    }
+
   }
 }
