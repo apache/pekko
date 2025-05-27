@@ -21,8 +21,10 @@ import pekko.stream.ActorAttributes
 import pekko.stream.Supervision
 import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.TestSink
+import pekko.util.ccompat._
 
 @nowarn("msg=deprecated")
+@ccompatUsedUntil213
 class FlowStatefulMapConcatSpec extends StreamSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 2
   """) with ScriptedTest {
@@ -96,6 +98,37 @@ class FlowStatefulMapConcatSpec extends StreamSpec("""
         .requestNext(4)
         .request(4)
         .expectNext(1, 1, 1, 1)
+        .expectComplete()
+    }
+
+    "be able to handle onComplete signal" in {
+      Source(List(1, 2, 3, 4, 5))
+        // grouped 2
+        .statefulMapConcat(() =>
+          new StatefulMapConcatAccumulator[Int, Int] {
+            private var count = 0
+            private val buffer = Vector.newBuilder[Int]
+            override def apply(elem: Int): IterableOnce[Int] = {
+              buffer += elem
+              count += 1
+              if (count < 2) {
+                Nil
+              } else {
+                val result = buffer.result()
+                buffer.clear()
+                count = 0
+                result
+              }
+            }
+            override def onComplete(): IterableOnce[Int] = {
+              val result = buffer.result()
+              buffer.clear()
+              result
+            }
+          })
+        .runWith(TestSink.probe[Int])
+        .request(5)
+        .expectNext(1, 2, 3, 4, 5)
         .expectComplete()
     }
 

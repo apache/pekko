@@ -45,7 +45,12 @@ import pekko.stream.impl.{
 }
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.fusing.GraphStages.{ FutureSource, SimpleLinearGraphStage, SingleSource }
-import pekko.stream.scaladsl.{ DelayStrategy, Source }
+import pekko.stream.scaladsl.{
+  DelayStrategy,
+  Source,
+  StatefulMapConcatAccumulator,
+  StatefulMapConcatAccumulatorFactory
+}
 import pekko.stream.stage._
 import pekko.util.{ unused, ConstantFun, OptionVal }
 import pekko.util.ccompat._
@@ -2329,21 +2334,29 @@ private[pekko] final class StatefulMap[S, In, Out](create: () => S, f: (S, In) =
  */
 @InternalApi
 @ccompatUsedUntil213
-private[pekko] final class StatefulMapConcat[In, Out](val f: () => In => IterableOnce[Out])
+private[pekko] final class StatefulMapConcat[In, Out](val factory: StatefulMapConcatAccumulatorFactory[In, Out])
     extends GraphStage[FlowShape[In, Out]] {
   val in = Inlet[In]("StatefulMapConcat.in")
   val out = Outlet[Out]("StatefulMapConcat.out")
   override val shape = FlowShape(in, out)
 
-  override def initialAttributes: Attributes = DefaultAttributes.statefulMapConcat and SourceLocation.forLambda(f)
+  def this(f: () => In => IterableOnce[Out]) = this {
+    import StatefulMapConcatAccumulatorFactory._
+    f match {
+      case factory: StatefulMapConcatAccumulatorFactory[In, Out] @unchecked => factory
+      case _                                                                => f.asFactory
+    }
+  }
+
+  override def initialAttributes: Attributes = DefaultAttributes.statefulMapConcat and SourceLocation.forLambda(factory)
 
   def createLogic(inheritedAttributes: Attributes) = new GraphStageLogic(shape) with InHandler with OutHandler {
-    lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
-    var currentIterator: Iterator[Out] = _
-    var plainFun = f()
-    val contextPropagation = ContextPropagation()
+    private lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
+    private var currentIterator: Iterator[Out] = _
+    private var accumulator: StatefulMapConcatAccumulator[In, Out] = factory.accumulator()
+    private val contextPropagation = ContextPropagation()
 
-    def hasNext = if (currentIterator != null) currentIterator.hasNext else false
+    private def hasNext = if (currentIterator != null) currentIterator.hasNext else false
 
     setHandlers(in, out, this)
 
@@ -2354,20 +2367,28 @@ private[pekko] final class StatefulMapConcat[In, Out](val f: () => In => Iterabl
         if (hasNext) {
           // suspend context for the next element
           contextPropagation.suspendContext()
-        } else if (isClosed(in)) completeStage()
+        } else if (isClosed(in)) emitMaybeLastElementsAndComplete()
       } else if (!isClosed(in))
         pull(in)
-      else completeStage()
+      else emitMaybeLastElementsAndComplete()
 
-    def onFinish(): Unit = if (!hasNext) completeStage()
+    private def emitMaybeLastElementsAndComplete(): Unit = {
+      val maybeElements = accumulator.onComplete()
+      val maybeElementsItr = maybeElements.iterator
+      if (maybeElementsItr.hasNext) {
+        emitMultiple(out, maybeElementsItr, () => completeStage())
+      } else {
+        completeStage()
+      }
+    }
 
     override def onPush(): Unit =
       try {
-        currentIterator = plainFun(grab(in)).iterator
+        currentIterator = accumulator(grab(in)).iterator
         pushPull(shouldResumeContext = false)
       } catch handleException
 
-    override def onUpstreamFinish(): Unit = onFinish()
+    override def onUpstreamFinish(): Unit = if (!hasNext) emitMaybeLastElementsAndComplete()
 
     override def onPull(): Unit =
       try pushPull(shouldResumeContext = true)
@@ -2378,10 +2399,10 @@ private[pekko] final class StatefulMapConcat[In, Out](val f: () => In => Iterabl
         decider(ex) match {
           case Supervision.Stop => failStage(ex)
           case Supervision.Resume =>
-            if (isClosed(in)) completeStage()
+            if (isClosed(in)) emitMaybeLastElementsAndComplete()
             else if (!hasBeenPulled(in)) pull(in)
           case Supervision.Restart =>
-            if (isClosed(in)) completeStage()
+            if (isClosed(in)) emitMaybeLastElementsAndComplete()
             else {
               restartState()
               if (!hasBeenPulled(in)) pull(in)
@@ -2390,7 +2411,7 @@ private[pekko] final class StatefulMapConcat[In, Out](val f: () => In => Iterabl
     }
 
     private def restartState(): Unit = {
-      plainFun = f()
+      accumulator = factory.accumulator()
       currentIterator = null
     }
   }
