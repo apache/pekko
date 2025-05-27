@@ -47,11 +47,8 @@ private[cluster] abstract class SeedNodeProcess(joinConfigCompatChecker: JoinCon
     "Note that disabling it will allow the formation of a cluster with nodes having incompatible configuration settings. " +
     "This node will be shutdown!"
 
-  private lazy val needsAkkaConfig: Boolean = {
-    context.system.settings.config
-      .getStringList("pekko.remote.accept-protocol-names")
-      .contains("akka")
-  }
+  private lazy val needsAkkaConfig: Boolean = ConfigUtil.supportsAkkaConfig(
+    context.system.settings.config)
 
   private lazy val akkaVersion: String = {
     val cfg = context.system.settings.config
