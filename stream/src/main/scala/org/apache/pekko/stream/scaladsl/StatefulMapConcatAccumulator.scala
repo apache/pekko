@@ -32,7 +32,7 @@ import pekko.util.ccompat._
 trait StatefulMapConcatAccumulator[-In, +Out] extends (In => IterableOnce[Out]) {
 
   /**
-   * Been called once the upstream has been completed, optional elements can be emitted, by default none.
+   * Called once the upstream has been completed, optional elements can be emitted, by default none.
    */
   def onComplete(): IterableOnce[Out] = Nil
 }
