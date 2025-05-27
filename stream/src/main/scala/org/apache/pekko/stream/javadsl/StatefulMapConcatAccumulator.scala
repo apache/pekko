@@ -34,7 +34,7 @@ import scala.annotation.unchecked.uncheckedVariance
 trait StatefulMapConcatAccumulator[-In, Out] extends function.Function[In, java.lang.Iterable[Out]] {
 
   /**
-   * Been called once the upstream has been completed, optional elements can be emitted, by default none.
+   * Called once the upstream has been completed, optional elements can be emitted, by default none.
    */
   def onComplete(): java.lang.Iterable[Out @uncheckedVariance] = Collections.emptyList[Out]()
 }
