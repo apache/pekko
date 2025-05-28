@@ -14,8 +14,6 @@
 package org.apache.pekko.actor.typed
 package internal
 
-import java.util.concurrent.ThreadLocalRandom
-
 import scala.concurrent.duration.Deadline
 import scala.concurrent.duration.FiniteDuration
 import scala.reflect.ClassTag
@@ -33,7 +31,7 @@ import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.StashBuffer
 import pekko.annotation.InternalApi
 import pekko.event.Logging
-import pekko.util.OptionVal
+import pekko.util.{ OptionVal, RandomNumberGenerator }
 import pekko.util.unused
 
 import scala.util.Try
@@ -187,7 +185,7 @@ private object RestartSupervisor {
       minBackoff: FiniteDuration,
       maxBackoff: FiniteDuration,
       randomFactor: Double): FiniteDuration = {
-    val rnd = 1.0 + ThreadLocalRandom.current().nextDouble() * randomFactor
+    val rnd = 1.0 + RandomNumberGenerator.get().nextDouble() * randomFactor
     val calculatedDuration = Try(maxBackoff.min(minBackoff * math.pow(2, restartCount)) * rnd).getOrElse(maxBackoff)
     calculatedDuration match {
       case f: FiniteDuration => f
