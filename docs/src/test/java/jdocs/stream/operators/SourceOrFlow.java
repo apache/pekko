@@ -58,16 +58,12 @@ import java.util.*;
 // #zip
 
 // #log
-import org.apache.pekko.event.LogMarker;
-import org.apache.pekko.stream.Attributes;
 
 // #log
 
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 class SourceOrFlow {
   private static ActorSystem system = null;
@@ -606,6 +602,21 @@ class SourceOrFlow {
     // eiusmod
     // incididunt
     // #filterNot
+  }
+
+  void dropRepeatedExample() {
+    // #dropRepeated
+    Source.from(Arrays.asList(1, 2, 2, 3, 3, 1, 4))
+        .dropRepeated()
+        .runForeach(System.out::println, system);
+    // prints:
+    // 1
+    // 2
+    // 3
+    // 1
+    // 4
+
+    // #dropRepeated
   }
 
   void dropExample() {

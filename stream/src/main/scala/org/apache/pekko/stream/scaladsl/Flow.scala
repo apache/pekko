@@ -1555,6 +1555,40 @@ trait FlowOps[+Out, +Mat] {
     via(Flow[Out].filter(!p(_)).withAttributes(DefaultAttributes.filterNot and SourceLocation.forLambda(p)))
 
   /**
+   * Only pass on those elements that are distinct from the previous element.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * '''Emits when''' the element is distinct from the previous element
+   *
+   * '''Backpressures when''' the element is distinct from the previous element and downstream backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @since 1.2.0
+   */
+  def dropRepeated(): Repr[Out] = dropRepeated(ConstantFun.scalaAnyTwoEquals)
+
+  /**
+   * Only pass on those elements that are distinct from the previous element according to the given predicate.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * '''Emits when''' the element is distinct from the previous element
+   *
+   * '''Backpressures when''' the element is distinct from the previous element and downstream backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @since 1.2.0
+   */
+  def dropRepeated(p: (Out, Out) => Boolean): Repr[Out] = via(new DropRepeated(p))
+
+  /**
    * Terminate processing (and cancel the upstream publisher) after predicate
    * returns false for the first time,
    * Due to input buffering some elements may have been requested from upstream publishers

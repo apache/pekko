@@ -530,6 +530,42 @@ class SubFlow[In, Out, Mat](
     new SubFlow(delegate.filterNot(p.test))
 
   /**
+   * Only pass on those elements that are distinct from the previous element.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * '''Emits when''' the element is distinct from the previous element
+   *
+   * '''Backpressures when''' the element is distinct from the previous element and downstream backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @since 1.2.0
+   */
+  def dropRepeated(): SubFlow[In, Out, Mat] =
+    new SubFlow(delegate.dropRepeated())
+
+  /**
+   * Only pass on those elements that are distinct from the previous element according to the given predicate.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * '''Emits when''' the element is distinct from the previous element
+   *
+   * '''Backpressures when''' the element is distinct from the previous element and downstream backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @since 1.2.0
+   */
+  def dropRepeated(p: function.Function2[Out, Out, Boolean]): SubFlow[In, Out, Mat] =
+    new SubFlow(delegate.dropRepeated(p.apply))
+
+  /**
    * Transform this stream by applying the given partial function to each of the elements
    * on which the function is defined as they pass through this processing step.
    * Non-matching elements are filtered out.

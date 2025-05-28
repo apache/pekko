@@ -158,6 +158,7 @@ depending on being backpressured by downstream or not.
 |Source/Flow|<a name="detach"></a>@ref[detach](Source-or-Flow/detach.md)|Detach upstream demand from downstream demand without detaching the stream rates.|
 |Flow|<a name="dimap"></a>@ref[dimap](Flow/dimap.md)|Transform this Flow by applying a function `f` to each *incoming* upstream element before it is passed to the Flow, and a function `g` to each *outgoing* downstream element.|
 |Source/Flow|<a name="drop"></a>@ref[drop](Source-or-Flow/drop.md)|Drop `n` elements and then pass any subsequent element downstream.|
+|Source/Flow|<a name="droprepeated"></a>@ref[dropRepeated](Source-or-Flow/dropRepeated.md)|Only pass on those elements that are distinct from the previous element.|
 |Source/Flow|<a name="dropwhile"></a>@ref[dropWhile](Source-or-Flow/dropWhile.md)|Drop elements as long as a predicate function return true for the element|
 |Source/Flow|<a name="filter"></a>@ref[filter](Source-or-Flow/filter.md)|Filter the incoming elements using a predicate.|
 |Source/Flow|<a name="filternot"></a>@ref[filterNot](Source-or-Flow/filterNot.md)|Filter the incoming elements using a predicate.|
@@ -449,6 +450,7 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 * [dimap](Flow/dimap.md)
 * [divertTo](Source-or-Flow/divertTo.md)
 * [drop](Source-or-Flow/drop.md)
+* [dropRepeated](Source-or-Flow/dropRepeated.md)
 * [dropWhile](Source-or-Flow/dropWhile.md)
 * [dropWithin](Source-or-Flow/dropWithin.md)
 * [empty](Source/empty.md)
