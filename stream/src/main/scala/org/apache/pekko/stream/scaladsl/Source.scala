@@ -527,7 +527,7 @@ object Source {
           }
           acc
         }
-      }).withAttributes(DefaultAttributes.iterableSource)
+      }).withAttributes(DefaultAttributes.iterateSource)
 
   /**
    * A `Source` with no elements, i.e. an empty stream that is completed immediately for every connected `Sink`.
