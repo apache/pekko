@@ -825,6 +825,37 @@ public class SourceTest extends StreamTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
+  public void mustBeAbleToUseAggregateWithBoundary() {
+    final java.lang.Iterable<Integer> input = Arrays.asList(1, 1, 2, 3, 3, 4, 5, 5, 6);
+    // used to implement grouped(2)
+    Source.from(input)
+        .aggregateWithBoundary(
+            () -> (List<Integer>) new ArrayList<Integer>(2),
+            (agg, elem) -> {
+              if (agg.size() == 1) {
+                agg.add(elem);
+                return Pair.create(agg, true);
+              } else {
+                agg.add(elem);
+                return Pair.create(agg, false);
+              }
+            },
+            Function.identity(),
+            Optional.empty())
+        .runWith(TestSink.create(system), system)
+        .ensureSubscription()
+        .request(6)
+        .expectNext(
+            Arrays.asList(1, 1),
+            Arrays.asList(2, 3),
+            Arrays.asList(3, 4),
+            Arrays.asList(5, 5),
+            Arrays.asList(6))
+        .expectComplete();
+  }
+
+  @Test
   public void mustBeAbleToUseStatefulMapAsDropRepeated() throws Exception {
     final java.lang.Iterable<Integer> input = Arrays.asList(1, 1, 1, 2, 3, 3, 3, 4, 5, 5, 5);
     final CompletionStage<String> result =
