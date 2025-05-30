@@ -18,15 +18,14 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.{ AtomicLong, AtomicReference }
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicReferenceArray
-
 import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.collection.immutable.Queue
 import scala.collection.mutable.LongMap
 import scala.concurrent.{ Future, Promise }
 import scala.util.{ Failure, Success, Try }
-
 import org.apache.pekko
+import org.apache.pekko.util.ConstantFun
 import pekko.NotUsed
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
@@ -486,7 +485,8 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
   require(bufferSize > 0, "Buffer size must be positive")
   require(bufferSize < 4096, "Buffer size larger then 4095 is not allowed")
   require((bufferSize & bufferSize - 1) == 0, "Buffer size must be a power of two")
-  def this(startAfterNrOfConsumers: Int, bufferSize: Int) = this(startAfterNrOfConsumers, bufferSize, _ => ())
+  def this(startAfterNrOfConsumers: Int, bufferSize: Int) =
+    this(startAfterNrOfConsumers, bufferSize, ConstantFun.scalaAnyToUnit)
   def this(bufferSize: Int) = this(0, bufferSize)
 
   private val Mask = bufferSize - 1

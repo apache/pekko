@@ -568,7 +568,6 @@ class HubSpec extends StreamSpec {
       def registerConsumerCallback(id: Long): Unit = {
         if (id == 1) {
           sinkProbe1.cancel()
-          Thread.sleep(10)
         }
       }
 
