@@ -75,6 +75,11 @@ private[cluster] object ConfigUtil {
     }
   }
 
+  def isStrictAkkaConfig(cfg: Config): Boolean = {
+    cfg.getString("pekko.remote.protocol-name") == "akka" &&
+    cfg.getBoolean("pekko.remote.enforce-strict-config-prefix-check-on-join")
+  }
+
   private def adjustPackageNameToAkkaIfNecessary(cv: ConfigValue): ConfigValue = {
     if (cv.valueType() == ConfigValueType.STRING) {
       val str = cv.unwrapped().toString

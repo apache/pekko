@@ -35,6 +35,7 @@ object MixedProtocolClusterSpec {
       pekko.remote.classic.netty.tcp.port = 0
       pekko.remote.artery.advanced.aeron.idle-cpu-level = 3
       pekko.remote.accept-protocol-names = ["pekko", "akka"]
+      pekko.remote.enforce-strict-config-prefix-check-on-join = on
 
       pekko.cluster.downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
       pekko.cluster.split-brain-resolver.active-strategy = keep-majority
