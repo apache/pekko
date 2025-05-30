@@ -36,6 +36,8 @@ object MixedProtocolClusterSpec {
       pekko.remote.artery.advanced.aeron.idle-cpu-level = 3
       pekko.remote.accept-protocol-names = ["pekko", "akka"]
 
+      pekko.cluster.downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
+      pekko.cluster.split-brain-resolver.active-strategy = keep-majority
       pekko.cluster.jmx.multi-mbeans-in-same-jvm = on""")
 
   val configWithUdp: Config =
