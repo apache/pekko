@@ -661,7 +661,10 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
               // any sensitive keys as defined by this node configuration
               val clusterConfig =
                 JoinConfigCompatChecker.filterWithKeys(nonSensitiveKeys, context.system.settings.config)
-              CompatibleConfig(clusterConfig)
+              val adjustedConfig = if (supportsAkkaConfig) {
+                ConfigUtil.changePekkoToAkkaConfig(clusterConfig)
+              } else clusterConfig
+              CompatibleConfig(adjustedConfig)
             }
           case Invalid(messages) =>
             // messages are only logged on the cluster side

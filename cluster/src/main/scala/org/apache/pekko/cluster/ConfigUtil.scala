@@ -19,15 +19,17 @@ package org.apache.pekko.cluster
 
 import com.typesafe.config.{ Config, ConfigValue, ConfigValueFactory, ConfigValueType }
 
-import scala.annotation.nowarn
-
 private[cluster] object ConfigUtil {
 
   private val PekkoPrefix = "org.apache.pekko"
   private val AkkaPrefix = "akka"
 
-  @nowarn("msg=deprecated")
   def addAkkaConfig(cfg: Config, akkaVersion: String): Config = {
+    val newConfig = changePekkoToAkkaConfig(cfg)
+    newConfig.withValue("akka.version", ConfigValueFactory.fromAnyRef(akkaVersion))
+  }
+
+  def changePekkoToAkkaConfig(cfg: Config): Config = {
     import org.apache.pekko.util.ccompat.JavaConverters._
     val innerSet = cfg.entrySet().asScala
       .filter(e => e.getKey.startsWith("pekko.") && e.getValue.valueType() != ConfigValueType.OBJECT)
@@ -38,10 +40,9 @@ private[cluster] object ConfigUtil {
     innerSet.foreach { case (key, value) =>
       newConfig = newConfig.withValue(key, value)
     }
-    newConfig.withValue("akka.version", ConfigValueFactory.fromAnyRef(akkaVersion))
+    newConfig
   }
 
-  @nowarn("msg=deprecated")
   def changeAkkaToPekkoConfig(cfg: Config): Config = {
     import org.apache.pekko.util.ccompat.JavaConverters._
     val innerSet = cfg.entrySet().asScala
