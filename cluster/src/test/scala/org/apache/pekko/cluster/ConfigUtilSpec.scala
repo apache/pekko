@@ -50,5 +50,16 @@ class ConfigUtilSpec extends PekkoSpec {
       pekkoConfig.getString("akka.cluster.split-brain-resolver.active-strategy") should ===("keep-majority")
       pekkoConfig.getString("akka.version") should ===("1.2.3")
     }
+    "support addAkkaConfig" in {
+      val akkaConfig = ConfigFactory.parseString(s"""
+        pekko.cluster.downing-provider-class = "$pekkoSbrClass"
+        pekko.cluster.split-brain-resolver.active-strategy = keep-majority
+        pekko.version = "1.2.3"
+        """)
+      val pekkoConfig = ConfigUtil.addAkkaConfig(akkaConfig, "2.6.21")
+      pekkoConfig.getString("akka.cluster.downing-provider-class") should ===(akkaSbrClass)
+      pekkoConfig.getString("akka.cluster.split-brain-resolver.active-strategy") should ===("keep-majority")
+      pekkoConfig.getString("akka.version") should ===("2.6.21")
+    }
   }
 }

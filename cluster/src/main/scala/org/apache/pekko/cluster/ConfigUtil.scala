@@ -19,6 +19,10 @@ package org.apache.pekko.cluster
 
 import com.typesafe.config.{ Config, ConfigValue, ConfigValueFactory, ConfigValueType }
 
+import org.apache.pekko
+import pekko.annotation.InternalApi
+
+@InternalApi
 private[cluster] object ConfigUtil {
 
   private val PekkoPrefix = "org.apache.pekko"
@@ -61,6 +65,14 @@ private[cluster] object ConfigUtil {
     cfg
       .getStringList("pekko.remote.accept-protocol-names")
       .contains("akka")
+  }
+
+  def getAkkaVersion(cfg: Config): String = {
+    if (cfg.hasPath("akka.version")) {
+      cfg.getString("akka.version")
+    } else {
+      cfg.getString("pekko.remote.akka.version")
+    }
   }
 
   private def adjustPackageNameToAkkaIfNecessary(cv: ConfigValue): ConfigValue = {

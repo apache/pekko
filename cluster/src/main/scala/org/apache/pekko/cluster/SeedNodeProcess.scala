@@ -50,14 +50,7 @@ private[cluster] abstract class SeedNodeProcess(joinConfigCompatChecker: JoinCon
   private lazy val supportsAkkaConfig: Boolean = ConfigUtil.supportsAkkaConfig(
     context.system.settings.config)
 
-  private lazy val akkaVersion: String = {
-    val cfg = context.system.settings.config
-    if (cfg.hasPath("akka.version")) {
-      cfg.getString("akka.version")
-    } else {
-      cfg.getString("pekko.remote.akka.version")
-    }
-  }
+  private lazy val akkaVersion: String = ConfigUtil.getAkkaVersion(context.system.settings.config)
 
   private def stopOrBecome(behavior: Option[Actor.Receive]): Unit =
     behavior match {

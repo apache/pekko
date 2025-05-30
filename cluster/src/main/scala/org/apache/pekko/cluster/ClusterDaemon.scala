@@ -610,6 +610,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
   private lazy val supportsAkkaConfig: Boolean = ConfigUtil.supportsAkkaConfig(
     context.system.settings.config)
 
+  private lazy val akkaVersion: String = ConfigUtil.getAkkaVersion(context.system.settings.config)
+
   def initJoin(inputConfig: Config): Unit = {
     val joiningNodeConfig = if (supportsAkkaConfig && !inputConfig.hasPath("pekko")) {
       ConfigUtil.changeAkkaToPekkoConfig(inputConfig)
@@ -662,7 +664,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
               val clusterConfig =
                 JoinConfigCompatChecker.filterWithKeys(nonSensitiveKeys, context.system.settings.config)
               val adjustedConfig = if (supportsAkkaConfig) {
-                ConfigUtil.changePekkoToAkkaConfig(clusterConfig)
+                ConfigUtil.addAkkaConfig(clusterConfig, akkaVersion)
               } else clusterConfig
               CompatibleConfig(adjustedConfig)
             }
