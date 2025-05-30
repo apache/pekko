@@ -25,11 +25,11 @@ import scala.collection.mutable.LongMap
 import scala.concurrent.{ Future, Promise }
 import scala.util.{ Failure, Success, Try }
 import org.apache.pekko
-import org.apache.pekko.util.ConstantFun
 import pekko.NotUsed
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 import pekko.dispatch.AbstractNodeQueue
+import pekko.util.ConstantFun
 import pekko.stream._
 import pekko.stream.Attributes.LogLevels
 import pekko.stream.impl.ActorPublisher
