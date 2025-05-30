@@ -18,19 +18,18 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.{ AtomicLong, AtomicReference }
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicReferenceArray
-
 import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.collection.immutable.Queue
 import scala.collection.mutable.LongMap
 import scala.concurrent.{ Future, Promise }
 import scala.util.{ Failure, Success, Try }
-
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 import pekko.dispatch.AbstractNodeQueue
+import pekko.util.ConstantFun
 import pekko.stream._
 import pekko.stream.Attributes.LogLevels
 import pekko.stream.impl.ActorPublisher
@@ -475,13 +474,19 @@ object BroadcastHub {
 
 /**
  * INTERNAL API
+ *
+ * @param registrationPendingCallback Called during the `RegistrationPending` event of a consumer with the consumer's internal ID.
+ *                                    This is useful for controlling the interleaving in tests.
  */
-private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: Int)
+private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: Int,
+    registrationPendingCallback: Long => Unit)
     extends GraphStageWithMaterializedValue[SinkShape[T], Source[T, NotUsed]] {
   require(startAfterNrOfConsumers >= 0, "startAfterNrOfConsumers must >= 0")
   require(bufferSize > 0, "Buffer size must be positive")
   require(bufferSize < 4096, "Buffer size larger then 4095 is not allowed")
   require((bufferSize & bufferSize - 1) == 0, "Buffer size must be a power of two")
+  def this(startAfterNrOfConsumers: Int, bufferSize: Int) =
+    this(startAfterNrOfConsumers, bufferSize, ConstantFun.scalaAnyToUnit)
   def this(bufferSize: Int) = this(0, bufferSize)
 
   private val Mask = bufferSize - 1
@@ -585,6 +590,8 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
             val startFrom = head
             activeConsumers += 1
             addConsumer(consumer, startFrom)
+            // add a callback hook so that we can control the interleaving in tests
+            registrationPendingCallback(consumer.id)
             // in case the consumer is already stopped we need to undo registration
             implicit val ec = materializer.executionContext
             consumer.callback.invokeWithFeedback(Initialize(startFrom)).failed.foreach {
@@ -854,7 +861,12 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
           }
 
           override def postStop(): Unit = {
-            if (hubCallback ne null)
+            // If `postStop` is called before the consumer has processed the `RegistrationPending`'s `Initialize` event,
+            // then the `Initialize` message will fail with a `StreamDetachedException`,
+            // upon which the `RegistrationPending` logic itself unregisters this consumer.
+            // In particular, this client must not send the `Unregister` event itself because the values in
+            // `previousPublishedOffset` and `offset` are wrong.
+            if ((hubCallback ne null) && offsetInitialized)
               hubCallback.invoke(UnRegister(id, previousPublishedOffset, offset))
           }
 
