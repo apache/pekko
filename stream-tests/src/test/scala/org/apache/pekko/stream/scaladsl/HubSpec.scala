@@ -561,6 +561,48 @@ class HubSpec extends StreamSpec {
       out.expectComplete()
     }
 
+    "handle unregistration concurrent with registration" in {
+
+      var sinkProbe1: TestSubscriber.Probe[Int] = null
+
+      def registerConsumerCallback(id: Long): Unit = {
+        if (id == 1) {
+          sinkProbe1.cancel()
+        }
+      }
+
+      val in = TestPublisher.probe[Int]()
+      val hubSource = Source
+        .fromPublisher(in)
+        .runWith(Sink.fromGraph(new BroadcastHub[Int](0, 2, registerConsumerCallback)))
+
+      // Put one element into the buffer
+      in.sendNext(15)
+
+      // add a consumer to receive the first element
+      val sinkProbe0 = hubSource.runWith(TestSink.probe[Int])
+      sinkProbe0.request(1)
+      sinkProbe0.expectNext(15)
+      sinkProbe0.cancel()
+
+      // put more elements into the buffer
+      in.sendNext(16)
+      in.sendNext(17)
+      in.sendNext(18)
+
+      // Add another consumer and kill it during registration
+
+      sinkProbe1 = hubSource.runWith(TestSink.probe[Int])
+      Thread.sleep(100)
+
+      // Make sure that the element 16 isn't lost by reading it with a third consumer
+      val sinkProbe2 = hubSource.runWith(TestSink.probe[Int])
+      sinkProbe2.request(1)
+      sinkProbe2.expectNext(16)
+
+      in.sendComplete()
+      sinkProbe2.cancel()
+    }
   }
 
   "PartitionHub" must {
