@@ -2,6 +2,25 @@
 
 Apache Pekko 1.1.x releases support Java 8 and above.
 
+## 1.1.4
+
+Pekko 1.1.4 is a bug fix and dependency upgrade release. See [GitHub Milestone for 1.1.4](https://github.com/apache/pekko/milestone/14?closed=1) for a fuller list of changes.
+
+### Bug Fixes
+
+* Fix occasional ordering issue in FlowWithContext#unsafeOptionalDataVia ([PR1681](https://github.com/apache/pekko/pull/1681))
+* Issue forming mixed Akka/Pekko cluster when classic remoting with SSL/TLS is used ([PR1851](https://github.com/apache/pekko/pull/1851))
+* Join cluster check adjusted to support Akka nodes ([PR1866](https://github.com/apache/pekko/pull/1866), [PR1877](https://github.com/apache/pekko/pull/1877))
+    * If you are attempting to mix Akka and Pekko nodes in a cluster, it is still recommended to disable the join cluster check but these changes may be enough to get it work ([docs](https://cwiki.apache.org/confluence/display/PEKKO/Pekko+Akka+Compatibility)). 
+
+### Changes
+
+* Add the missing EmptySource case to TraversalBuilder ([PR1743](https://github.com/apache/pekko/issues/1743))
+
+### Dependency Changes
+
+* netty 4.1.121.Final
+
 ## 1.1.3
 
 Pekko 1.1.3 is a bug fix and dependency upgrade release. See [GitHub Milestone for 1.1.3](https://github.com/apache/pekko/milestone/13?closed=1) for a fuller list of changes.
