@@ -29,11 +29,11 @@ private[cluster] object ConfigUtil {
   private val AkkaPrefix = "akka"
 
   def addAkkaConfig(cfg: Config, akkaVersion: String): Config = {
-    val newConfig = changePekkoToAkkaConfig(cfg)
+    val newConfig = adaptPekkoToAkkaConfig(cfg)
     newConfig.withValue("akka.version", ConfigValueFactory.fromAnyRef(akkaVersion))
   }
 
-  def changePekkoToAkkaConfig(cfg: Config): Config = {
+  def adaptPekkoToAkkaConfig(cfg: Config): Config = {
     import org.apache.pekko.util.ccompat.JavaConverters._
     val innerSet = cfg.entrySet().asScala
       .filter(e => e.getKey.startsWith("pekko.") && e.getValue.valueType() != ConfigValueType.OBJECT)
@@ -47,7 +47,7 @@ private[cluster] object ConfigUtil {
     newConfig
   }
 
-  def changeAkkaToPekkoConfig(cfg: Config): Config = {
+  def adaptAkkaToPekkoConfig(cfg: Config): Config = {
     import org.apache.pekko.util.ccompat.JavaConverters._
     val innerSet = cfg.entrySet().asScala
       .filter(e => e.getKey.startsWith("akka.") && e.getValue.valueType() != ConfigValueType.OBJECT)

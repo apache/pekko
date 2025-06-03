@@ -127,11 +127,11 @@ private[cluster] abstract class SeedNodeProcess(joinConfigCompatChecker: JoinCon
     val toCheck = if (supportsAkkaConfig) {
       if (configCheck.clusterConfig.hasPath("pekko")) {
         if (strictAkkaConfig)
-          ConfigUtil.changeAkkaToPekkoConfig(configCheck.clusterConfig.withoutPath("pekko"))
+          ConfigUtil.adaptAkkaToPekkoConfig(configCheck.clusterConfig.withoutPath("pekko"))
         else
           configCheck.clusterConfig
       } else {
-        ConfigUtil.changeAkkaToPekkoConfig(configCheck.clusterConfig)
+        ConfigUtil.adaptAkkaToPekkoConfig(configCheck.clusterConfig)
       }
     } else {
       configCheck.clusterConfig

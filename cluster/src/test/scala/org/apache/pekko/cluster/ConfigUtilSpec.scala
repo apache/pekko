@@ -28,24 +28,24 @@ class ConfigUtilSpec extends PekkoSpec {
   val akkaSbrClass = "akka.cluster.sbr.SplitBrainResolverProvider"
 
   "ConfigUtil" must {
-    "support changeAkkaToPekkoConfig" in {
+    "support adaptAkkaToPekkoConfig" in {
       val akkaConfig = ConfigFactory.parseString(s"""
         akka.cluster.downing-provider-class = "$akkaSbrClass"
         akka.cluster.split-brain-resolver.active-strategy = keep-majority
         akka.version = "2.6.21"
         """)
-      val pekkoConfig = ConfigUtil.changeAkkaToPekkoConfig(akkaConfig)
+      val pekkoConfig = ConfigUtil.adaptAkkaToPekkoConfig(akkaConfig)
       pekkoConfig.getString("pekko.cluster.downing-provider-class") should ===(pekkoSbrClass)
       pekkoConfig.getString("pekko.cluster.split-brain-resolver.active-strategy") should ===("keep-majority")
       pekkoConfig.getString("pekko.version") should ===("2.6.21")
     }
-    "support changePekkoToAkkaConfig" in {
+    "support adaptPekkoToAkkaConfig" in {
       val akkaConfig = ConfigFactory.parseString(s"""
         pekko.cluster.downing-provider-class = "$pekkoSbrClass"
         pekko.cluster.split-brain-resolver.active-strategy = keep-majority
         pekko.version = "1.2.3"
         """)
-      val pekkoConfig = ConfigUtil.changePekkoToAkkaConfig(akkaConfig)
+      val pekkoConfig = ConfigUtil.adaptPekkoToAkkaConfig(akkaConfig)
       pekkoConfig.getString("akka.cluster.downing-provider-class") should ===(akkaSbrClass)
       pekkoConfig.getString("akka.cluster.split-brain-resolver.active-strategy") should ===("keep-majority")
       pekkoConfig.getString("akka.version") should ===("1.2.3")

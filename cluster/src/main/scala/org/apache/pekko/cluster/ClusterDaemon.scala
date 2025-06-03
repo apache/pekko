@@ -619,11 +619,11 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
     val joiningNodeConfig = if (supportsAkkaConfig) {
       if (inputConfig.hasPath("pekko")) {
         if (strictAkkaConfig)
-          ConfigUtil.changeAkkaToPekkoConfig(inputConfig.withoutPath("pekko"))
+          ConfigUtil.adaptAkkaToPekkoConfig(inputConfig.withoutPath("pekko"))
         else
           inputConfig
       } else {
-        ConfigUtil.changeAkkaToPekkoConfig(inputConfig)
+        ConfigUtil.adaptAkkaToPekkoConfig(inputConfig)
       }
     } else {
       inputConfig
