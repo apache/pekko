@@ -47,17 +47,13 @@ private[cluster] abstract class SeedNodeProcess(joinConfigCompatChecker: JoinCon
     "Note that disabling it will allow the formation of a cluster with nodes having incompatible configuration settings. " +
     "This node will be shutdown!"
 
-  private lazy val needsAkkaConfig: Boolean = ConfigUtil.supportsAkkaConfig(
+  private lazy val supportsAkkaConfig: Boolean = ConfigUtil.supportsAkkaConfig(
     context.system.settings.config)
 
-  private lazy val akkaVersion: String = {
-    val cfg = context.system.settings.config
-    if (cfg.hasPath("akka.version")) {
-      cfg.getString("akka.version")
-    } else {
-      cfg.getString("pekko.remote.akka.version")
-    }
-  }
+  private lazy val strictAkkaConfig: Boolean = ConfigUtil.isStrictAkkaConfig(
+    context.system.settings.config)
+
+  private lazy val akkaVersion: String = ConfigUtil.getAkkaVersion(context.system.settings.config)
 
   private def stopOrBecome(behavior: Option[Actor.Receive]): Unit =
     behavior match {
@@ -77,7 +73,7 @@ private[cluster] abstract class SeedNodeProcess(joinConfigCompatChecker: JoinCon
     val configToValidate =
       JoinConfigCompatChecker.filterWithKeys(requiredNonSensitiveKeys, context.system.settings.config)
 
-    val adjustedConfig = if (needsAkkaConfig)
+    val adjustedConfig = if (supportsAkkaConfig)
       ConfigUtil.addAkkaConfig(configToValidate, akkaVersion)
     else configToValidate
 
@@ -128,7 +124,19 @@ private[cluster] abstract class SeedNodeProcess(joinConfigCompatChecker: JoinCon
     logInitJoinAckReceived(origin)
 
     // validates config coming from cluster against this node config
-    joinConfigCompatChecker.check(configCheck.clusterConfig, context.system.settings.config) match {
+    val toCheck = if (supportsAkkaConfig) {
+      if (configCheck.clusterConfig.hasPath("pekko")) {
+        if (strictAkkaConfig)
+          ConfigUtil.adaptAkkaToPekkoConfig(configCheck.clusterConfig.withoutPath("pekko"))
+        else
+          configCheck.clusterConfig
+      } else {
+        ConfigUtil.adaptAkkaToPekkoConfig(configCheck.clusterConfig)
+      }
+    } else {
+      configCheck.clusterConfig
+    }
+    joinConfigCompatChecker.check(toCheck, context.system.settings.config) match {
       case Valid =>
         // first InitJoinAck reply
         context.parent ! JoinTo(joinTo)
