@@ -610,9 +610,21 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
   private lazy val supportsAkkaConfig: Boolean = ConfigUtil.supportsAkkaConfig(
     context.system.settings.config)
 
+  private lazy val strictAkkaConfig: Boolean = ConfigUtil.isStrictAkkaConfig(
+    context.system.settings.config)
+
+  private lazy val akkaVersion: String = ConfigUtil.getAkkaVersion(context.system.settings.config)
+
   def initJoin(inputConfig: Config): Unit = {
-    val joiningNodeConfig = if (supportsAkkaConfig && !inputConfig.hasPath("pekko")) {
-      ConfigUtil.changeAkkaToPekkoConfig(inputConfig)
+    val joiningNodeConfig = if (supportsAkkaConfig) {
+      if (inputConfig.hasPath("pekko")) {
+        if (strictAkkaConfig)
+          ConfigUtil.adaptAkkaToPekkoConfig(inputConfig.withoutPath("pekko"))
+        else
+          inputConfig
+      } else {
+        ConfigUtil.adaptAkkaToPekkoConfig(inputConfig)
+      }
     } else {
       inputConfig
     }
@@ -661,7 +673,10 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
               // any sensitive keys as defined by this node configuration
               val clusterConfig =
                 JoinConfigCompatChecker.filterWithKeys(nonSensitiveKeys, context.system.settings.config)
-              CompatibleConfig(clusterConfig)
+              val adjustedConfig = if (supportsAkkaConfig) {
+                ConfigUtil.addAkkaConfig(clusterConfig, akkaVersion)
+              } else clusterConfig
+              CompatibleConfig(adjustedConfig)
             }
           case Invalid(messages) =>
             // messages are only logged on the cluster side
