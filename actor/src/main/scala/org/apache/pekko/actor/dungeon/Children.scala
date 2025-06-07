@@ -122,11 +122,11 @@ private[pekko] trait Children { this: ActorCell =>
 
   @nowarn @volatile private var _nextNameDoNotCallMeDirectly = 0L
   final protected def randomName(sb: java.lang.StringBuilder): String = {
-    val num = AbstractActorCell.nextNameHandle.getAndAdd(this, 1)
+    val num = AbstractActorCell.nextNameHandle.getAndAdd(this, 1).asInstanceOf[Long]
     Helpers.base64(num, sb)
   }
   final protected def randomName(): String = {
-    val num = AbstractActorCell.nextNameHandle.getAndAdd(this, 1)
+    val num = AbstractActorCell.nextNameHandle.getAndAdd(this, 1).asInstanceOf[Long]
     Helpers.base64(num)
   }
 
