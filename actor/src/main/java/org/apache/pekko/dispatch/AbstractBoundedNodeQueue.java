@@ -13,6 +13,9 @@
 
 package org.apache.pekko.dispatch;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
+
 import org.apache.pekko.util.Unsafe;
 
 /**
@@ -45,29 +48,27 @@ public abstract class AbstractBoundedNodeQueue<T> {
     }
 
     private void setEnq(Node<T> n) {
-        Unsafe.instance.putObjectVolatile(this, enqOffset, n);
+        enqHandle.set(this, n);
     }
 
-    @SuppressWarnings("unchecked")
     private Node<T> getEnq() {
-        return (Node<T>)Unsafe.instance.getObjectVolatile(this, enqOffset);
+        return (Node<T>) enqHandle.get(this);
     }
 
     private boolean casEnq(Node<T> old, Node<T> nju) {
-        return Unsafe.instance.compareAndSwapObject(this, enqOffset, old, nju);
+        return enqHandle.compareAndSet(this, old, nju);
     }
 
     private void setDeq(Node<T> n) {
-        Unsafe.instance.putObjectVolatile(this, deqOffset, n);
+        deqHandle.set(this, n);
     }
 
-    @SuppressWarnings("unchecked")
     private Node<T> getDeq() {
-        return (Node<T>)Unsafe.instance.getObjectVolatile(this, deqOffset);
+        return (Node<T>) deqHandle.get(this);
     }
 
     private boolean casDeq(Node<T> old, Node<T> nju) {
-        return Unsafe.instance.compareAndSwapObject(this, deqOffset, old, nju);
+        return deqHandle.compareAndSet(this, old, nju);
     }
 
     protected final Node<T> peekNode() {
@@ -183,12 +184,15 @@ public abstract class AbstractBoundedNodeQueue<T> {
         }
     }
 
-    private final static long enqOffset, deqOffset;
+    private final static VarHandle enqHandle, deqHandle;
 
     static {
         try {
-          enqOffset = Unsafe.instance.objectFieldOffset(AbstractBoundedNodeQueue.class.getDeclaredField("_enqDoNotCallMeDirectly"));
-          deqOffset = Unsafe.instance.objectFieldOffset(AbstractBoundedNodeQueue.class.getDeclaredField("_deqDoNotCallMeDirectly"));
+          MethodHandles.Lookup lookup =
+            MethodHandles.privateLookupIn(AbstractBoundedNodeQueue.class, MethodHandles.lookup());
+
+          enqHandle = lookup.findVarHandle(AbstractBoundedNodeQueue.class, "_enqDoNotCallMeDirectly", Node.class);
+          deqHandle = lookup.findVarHandle(AbstractBoundedNodeQueue.class, "_deqDoNotCallMeDirectly", Node.class);
         } catch(Throwable t){
             throw new ExceptionInInitializerError(t);
         }
@@ -202,18 +206,21 @@ public abstract class AbstractBoundedNodeQueue<T> {
 
         @SuppressWarnings("unchecked")
         public final Node<T> next() {
-            return (Node<T>)Unsafe.instance.getObjectVolatile(this, nextOffset);
+            return (Node<T>) nextHandle.get(this);
         }
 
         protected final void setNext(final Node<T> newNext) {
-          Unsafe.instance.putOrderedObject(this, nextOffset, newNext);
+          nextHandle.setRelease(this, newNext);
         }
         
-        private final static long nextOffset;
+        private final static VarHandle nextHandle;
         
         static {
             try {
-                nextOffset = Unsafe.instance.objectFieldOffset(Node.class.getDeclaredField("_nextDoNotCallMeDirectly"));
+                MethodHandles.Lookup lookup =
+                  MethodHandles.privateLookupIn(Node.class, MethodHandles.lookup());
+
+                nextHandle = lookup.findVarHandle(Node.class, "_nextDoNotCallMeDirectly", Node.class);
             } catch(Throwable t){
                 throw new ExceptionInInitializerError(t);
             } 

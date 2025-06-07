@@ -16,11 +16,10 @@ package org.apache.pekko.pattern
 import java.net.URLEncoder
 import java.util.concurrent.TimeoutException
 
-import scala.annotation.tailrec
+import scala.annotation.{ nowarn, tailrec }
 import scala.concurrent.{ Future, Promise }
 import scala.language.implicitConversions
 import scala.util.{ Failure, Success }
-import scala.annotation.nowarn
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
@@ -28,9 +27,7 @@ import pekko.actor._
 import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.dispatch.ExecutionContexts
 import pekko.dispatch.sysmsg._
-import pekko.util.{ Timeout, Unsafe }
-import pekko.util.ByteString
-import pekko.util.unused
+import pekko.util.{ unused, ByteString, Timeout, Unsafe }
 
 /**
  * This is what is used to complete a Future that is returned from an ask/? call,
@@ -518,7 +515,7 @@ private[pekko] final class PromiseActorRef(
     _mcn: String,
     refPathPrefix: String)
     extends MinimalActorRef {
-  import AbstractPromiseActorRef.{ stateOffset, watchedByOffset }
+  import AbstractPromiseActorRef.{ stateHandle, watchedByOffset }
   import PromiseActorRef._
 
   // This is necessary for weaving the PromiseActorRef into the asked message, i.e. the replyTo pattern.
@@ -573,13 +570,12 @@ private[pekko] final class PromiseActorRef(
     case other => if (!updateWatchedBy(other, null)) clearWatchers() else other
   }
 
-  private[this] def state: AnyRef = Unsafe.instance.getObjectVolatile(this, stateOffset): @nowarn("cat=deprecation")
+  private[this] def state: AnyRef = stateHandle.get(this)
 
   private[this] def updateState(oldState: AnyRef, newState: AnyRef): Boolean =
-    Unsafe.instance.compareAndSwapObject(this, stateOffset, oldState, newState): @nowarn("cat=deprecation")
+    stateHandle.compareAndSet(this, oldState, newState)
 
-  private[this] def setState(newState: AnyRef): Unit =
-    Unsafe.instance.putObjectVolatile(this, stateOffset, newState): @nowarn("cat=deprecation")
+  private[this] def setState(newState: AnyRef): Unit = stateHandle.set(this, newState)
 
   override def getParent: InternalActorRef = provider.tempContainer
 

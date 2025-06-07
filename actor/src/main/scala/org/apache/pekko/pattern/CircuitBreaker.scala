@@ -32,7 +32,6 @@ import pekko.dispatch.ExecutionContexts.parasitic
 import pekko.pattern.internal.{ CircuitBreakerNoopTelemetry, CircuitBreakerTelemetry }
 import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
-import pekko.util.Unsafe
 
 /**
  * Companion object providing factory methods for Circuit Breaker which runs callbacks in caller's thread
@@ -274,41 +273,34 @@ class CircuitBreaker(
   }
 
   /**
-   * Helper method for access to underlying state via Unsafe
+   * Helper method for access to underlying state via VarHandle
    *
    * @param oldState Previous state on transition
    * @param newState Next state on transition
    * @return Whether the previous state matched correctly
    */
   private[this] def swapState(oldState: State, newState: State): Boolean =
-    Unsafe.instance.compareAndSwapObject(this, AbstractCircuitBreaker.stateOffset, oldState, newState): @nowarn(
-      "cat=deprecation")
+    AbstractCircuitBreaker.stateHandle.compareAndSet(this, oldState, newState)
 
   /**
-   * Helper method for accessing underlying state via Unsafe
+   * Helper method for accessing underlying state via VarHandle
    *
    * @return Reference to current state
    */
   private[this] def currentState: State =
-    Unsafe.instance.getObjectVolatile(this, AbstractCircuitBreaker.stateOffset).asInstanceOf[State]: @nowarn(
-      "cat=deprecation")
+    AbstractCircuitBreaker.stateHandle.get(this)
 
   /**
-   * Helper method for updating the underlying resetTimeout via Unsafe
+   * Helper method for updating the underlying resetTimeout via VarHandle
    */
   private[this] def swapResetTimeout(oldResetTimeout: FiniteDuration, newResetTimeout: FiniteDuration): Boolean =
-    Unsafe.instance.compareAndSwapObject(
-      this,
-      AbstractCircuitBreaker.resetTimeoutOffset,
-      oldResetTimeout,
-      newResetTimeout): @nowarn("cat=deprecation")
+    AbstractCircuitBreaker.resetTimeoutHandle.compareAndSet(this, oldResetTimeout, newResetTimeout)
 
   /**
-   * Helper method for accessing to the underlying resetTimeout via Unsafe
+   * Helper method for accessing to the underlying resetTimeout via VarHandle
    */
   private[this] def currentResetTimeout: FiniteDuration =
-    Unsafe.instance.getObjectVolatile(this, AbstractCircuitBreaker.resetTimeoutOffset).asInstanceOf[
-      FiniteDuration]: @nowarn("cat=deprecation")
+    AbstractCircuitBreaker.resetTimeoutHandle.get(this)
 
   /**
    * Wraps invocations of asynchronous calls that need to be protected.
@@ -777,7 +769,7 @@ class CircuitBreaker(
   /**
    * Internal state abstraction
    */
-  private sealed trait State {
+  private[pattern] sealed trait State {
     private val listeners = new CopyOnWriteArrayList[Runnable]
 
     /**

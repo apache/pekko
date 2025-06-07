@@ -38,11 +38,9 @@ private[pekko] trait Children { this: ActorCell =>
   private var _childrenRefsDoNotCallMeDirectly: ChildrenContainer = EmptyChildrenContainer
 
   def childrenRefs: ChildrenContainer =
-    Unsafe.instance.getObjectVolatile(this, AbstractActorCell.childrenOffset).asInstanceOf[ChildrenContainer]: @nowarn(
-      "cat=deprecation")
+    AbstractActorCell.childrenHandle.get(this)
 
   final def children: immutable.Iterable[ActorRef] = childrenRefs.children
-  @nowarn("msg=deprecated")
   final def getChildren(): java.lang.Iterable[ActorRef] = {
     import pekko.util.ccompat.JavaConverters._
     children.asJava
@@ -155,8 +153,7 @@ private[pekko] trait Children { this: ActorCell =>
    * low level CAS helpers
    */
   private final def swapChildrenRefs(oldChildren: ChildrenContainer, newChildren: ChildrenContainer): Boolean =
-    Unsafe.instance.compareAndSwapObject(this, AbstractActorCell.childrenOffset, oldChildren, newChildren): @nowarn(
-      "cat=deprecation")
+    AbstractActorCell.childrenHandle.compareAndSet(this, oldChildren, newChildren)
 
   @tailrec final def reserveChild(name: String): Boolean = {
     val c = childrenRefs
@@ -189,8 +186,7 @@ private[pekko] trait Children { this: ActorCell =>
   }
 
   final protected def setTerminated(): Unit =
-    Unsafe.instance.putObjectVolatile(this, AbstractActorCell.childrenOffset, TerminatedChildrenContainer): @nowarn(
-      "cat=deprecation")
+    AbstractActorCell.childrenHandle.set(this, TerminatedChildrenContainer)
 
   /*
    * ActorCell-internal API

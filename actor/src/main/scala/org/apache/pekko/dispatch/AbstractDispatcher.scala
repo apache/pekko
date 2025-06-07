@@ -28,7 +28,7 @@ import pekko.dispatch.affinity.AffinityPoolConfigurator
 import pekko.dispatch.sysmsg._
 import pekko.event.EventStream
 import pekko.event.Logging.{ emptyMDC, Debug, Error, LogEventException, Warning }
-import pekko.util.{ unused, Index, Unsafe }
+import pekko.util.{ unused, Index }
 
 import com.typesafe.config.Config
 
@@ -109,7 +109,7 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
     with BatchingExecutor
     with ExecutionContextExecutor {
 
-  import AbstractMessageDispatcher.{ inhabitantsOffset, shutdownScheduleOffset }
+  import AbstractMessageDispatcher.{ inhabitantsHandle, shutdownScheduleHandle }
   import MessageDispatcher._
   import configurator.prerequisites
 
@@ -124,7 +124,7 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
   }
 
   private final def addInhabitants(add: Long): Long = {
-    val old = Unsafe.instance.getAndAddLong(this, inhabitantsOffset, add): @nowarn("cat=deprecation")
+    val old: Long = inhabitantsHandle.getAndAdd(this, add)
     val ret = old + add
     if (ret < 0) {
       // We haven't succeeded in decreasing the inhabitants yet but the simple fact that we're trying to
@@ -136,12 +136,12 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
     ret
   }
 
-  final def inhabitants: Long = Unsafe.instance.getLongVolatile(this, inhabitantsOffset): @nowarn("cat=deprecation")
+  final def inhabitants: Long = inhabitantsHandle.get(this)
 
   private final def shutdownSchedule: Int =
-    Unsafe.instance.getIntVolatile(this, shutdownScheduleOffset): @nowarn("cat=deprecation")
+    shutdownScheduleHandle.get(this)
   private final def updateShutdownSchedule(expect: Int, update: Int): Boolean =
-    Unsafe.instance.compareAndSwapInt(this, shutdownScheduleOffset, expect, update): @nowarn("cat=deprecation")
+    shutdownScheduleHandle.compareAndSet(this, expect, update)
 
   /**
    *  Creates and returns a mailbox for the given actor.
