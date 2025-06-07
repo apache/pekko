@@ -1,6 +1,7 @@
 name: Nightly Builds
 
 on:
+  pull_request:
   schedule:
     - cron: "0 0 * * *"
   workflow_dispatch:
@@ -22,7 +23,7 @@ jobs:
       - name: Setup Java 11
         uses: actions/setup-java@v4
         with:
-          distribution: temurin
+          distribution: oracle
           java-version: 11
 
       - name: Install sbt
@@ -76,7 +77,7 @@ jobs:
       - name: Setup Java 11
         uses: actions/setup-java@v4
         with:
-          distribution: temurin
+          distribution: oracle
           java-version: 11
 
       - name: Install sbt
@@ -115,7 +116,8 @@ jobs:
         # binary version is required and Pekko build will set the right
         # full version from it.
         scalaVersion: ["2.12.x", "2.13.x", "3.3.x"]
-        javaVersion: [8, 11, 17, 21]
+        # temp remove 8, 11, 17, 21
+        javaVersion: [25-ea]
     env:
       DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
     steps:
@@ -128,7 +130,7 @@ jobs:
       - name: Setup Java ${{ matrix.javaVersion }}
         uses: actions/setup-java@v4
         with:
-          distribution: temurin
+          distribution: oracle
           java-version: ${{ matrix.javaVersion }}
 
       - name: Install sbt
