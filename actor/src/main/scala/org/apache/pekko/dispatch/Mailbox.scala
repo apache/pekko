@@ -17,7 +17,7 @@ import java.util.{ Comparator, Deque, PriorityQueue, Queue }
 import java.util.concurrent._
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.locks.ReentrantLock
-import scala.annotation.{ nowarn, tailrec }
+import scala.annotation.tailrec
 import scala.concurrent.duration.{ Duration, FiniteDuration }
 import scala.util.control.NonFatal
 import com.typesafe.config.Config
@@ -26,7 +26,7 @@ import pekko.actor.{ ActorCell, ActorRef, ActorSystem, DeadLetter, InternalActor
 import pekko.annotation.InternalStableApi
 import pekko.dispatch.sysmsg._
 import pekko.event.Logging.Error
-import pekko.util.{ BoundedBlockingQueue, StablePriorityBlockingQueue, StablePriorityQueue, Unsafe }
+import pekko.util.{ BoundedBlockingQueue, StablePriorityBlockingQueue, StablePriorityQueue }
 import pekko.util.Helpers.ConfigOps
 
 /**
@@ -41,7 +41,7 @@ private[pekko] object Mailbox {
    */
 
   // Primary status
-  final val Open = 0 // _status is not initialized in AbstractMailbox, so default must be zero! Deliberately without type ascription to make it a compile-time constant
+  final val Open = 0 // _status defaults to this value, so it must be 0
   final val Closed = 1 // Deliberately without type ascription to make it a compile-time constant
   // Secondary status: Scheduled bit may be added to Open/Suspended
   final val Scheduled = 2 // Deliberately without type ascription to make it a compile-time constant
@@ -112,14 +112,12 @@ private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
    */
   def numberOfMessages: Int = messageQueue.numberOfMessages
 
-  @volatile
-  protected var _statusDoNotCallMeDirectly: Status = _ // 0 by default
+  private val _status = new java.util.concurrent.atomic.AtomicInteger() 
 
   @volatile
-  protected var _systemQueueDoNotCallMeDirectly: SystemMessage = _ // null by default
+  protected var _systemQueue = new java.util.concurrent.atomic.AtomicReference[SystemMessage]() 
 
-  final def currentStatus: Mailbox.Status =
-    Unsafe.instance.getIntVolatile(this, AbstractMailbox.mailboxStatusOffset): @nowarn("cat=deprecation")
+  final def currentStatus: Mailbox.Status = _status.get()
 
   final def shouldProcessMessage: Boolean = (currentStatus & shouldNotProcessMask) == 0
 
@@ -132,11 +130,10 @@ private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
   final def isScheduled: Boolean = (currentStatus & Scheduled) != 0
 
   protected final def updateStatus(oldStatus: Status, newStatus: Status): Boolean =
-    Unsafe.instance.compareAndSwapInt(this, AbstractMailbox.mailboxStatusOffset, oldStatus, newStatus): @nowarn(
-      "cat=deprecation")
+    _status.compareAndSet(oldStatus, newStatus)
 
   protected final def setStatus(newStatus: Status): Unit =
-    Unsafe.instance.putIntVolatile(this, AbstractMailbox.mailboxStatusOffset, newStatus): @nowarn("cat=deprecation")
+    _status.set(newStatus)
 
   /**
    * Reduce the suspend count by one. Caller does not need to worry about whether
@@ -208,17 +205,14 @@ private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
   protected final def systemQueueGet: LatestFirstSystemMessageList =
     // Note: contrary how it looks, there is no allocation here, as SystemMessageList is a value class and as such
     // it just exists as a typed view during compile-time. The actual return type is still SystemMessage.
-    new LatestFirstSystemMessageList(
-      Unsafe.instance.getObjectVolatile(this, AbstractMailbox.systemMessageOffset).asInstanceOf[
-        SystemMessage]): @nowarn("cat=deprecation")
+    new LatestFirstSystemMessageList(_systemQueue.get())
 
   protected final def systemQueuePut(_old: LatestFirstSystemMessageList, _new: LatestFirstSystemMessageList): Boolean =
     (_old.head eq _new.head) ||
       // Note: calling .head is not actually existing on the bytecode level as the parameters _old and _new
       // are SystemMessage instances hidden during compile time behind the SystemMessageList value class.
       // Without calling .head the parameters would be boxed in SystemMessageList wrapper.
-      Unsafe.instance.compareAndSwapObject(this, AbstractMailbox.systemMessageOffset, _old.head, _new.head): @nowarn(
-      "cat=deprecation")
+      _systemQueue.compareAndSet(_old.head, _new.head)
 
   final def canBeScheduledForExecution(hasMessageHint: Boolean, hasSystemMessageHint: Boolean): Boolean =
     currentStatus match {
