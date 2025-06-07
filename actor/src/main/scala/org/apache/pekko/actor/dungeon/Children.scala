@@ -122,11 +122,11 @@ private[pekko] trait Children { this: ActorCell =>
 
   private val _nextName = new java.util.concurrent.AtomicLong()
   final protected def randomName(sb: java.lang.StringBuilder): String = {
-    val num = _nextName.incrementAndGet()
+    val num = _nextName.getAndIncrement()
     Helpers.base64(num, sb)
   }
   final protected def randomName(): String = {
-    val num = _nextName.incrementAndGet()
+    val num = _nextName.getAndIncrement()
     Helpers.base64(num)
   }
 
