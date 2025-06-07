@@ -15,11 +15,13 @@ package org.apache.pekko.actor.dungeon;
 
 import org.apache.pekko.actor.ActorCell;
 import org.apache.pekko.util.Unsafe;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 
 final class AbstractActorCell {
   static final long mailboxOffset;
   static final long childrenOffset;
-  static final long nextNameOffset;
+  static final VarHandle nextNameHandle;
   static final long functionRefsOffset;
 
   static {
@@ -32,10 +34,11 @@ final class AbstractActorCell {
           Unsafe.instance.objectFieldOffset(
               ActorCell.class.getDeclaredField(
                   "org$apache$pekko$actor$dungeon$Children$$_childrenRefsDoNotCallMeDirectly"));
-      nextNameOffset =
-          Unsafe.instance.objectFieldOffset(
-              ActorCell.class.getDeclaredField(
-                  "org$apache$pekko$actor$dungeon$Children$$_nextNameDoNotCallMeDirectly"));
+      nextNameHandle = MethodHandles
+        .privateLookupIn(ActorCell.class, MethodHandles.lookup())
+        .findVarHandle(ActorCell.class,
+          "org$apache$pekko$actor$dungeon$Children$$_nextNameDoNotCallMeDirectly",
+          long.class);
       functionRefsOffset =
           Unsafe.instance.objectFieldOffset(
               ActorCell.class.getDeclaredField(
