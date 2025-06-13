@@ -142,7 +142,7 @@ class RemoteConfigSpec extends PekkoSpec("""
       sslSettings.SSLTrustStorePassword should ===("changeme")
       sslSettings.SSLProtocol should ===("TLSv1.3")
       sslSettings.SSLEnabledAlgorithms should ===(
-        Set("TLS_RSA_WITH_AES_128_CBC_SHA", "TLS_DHE_RSA_WITH_AES_256_GCM_SHA384"))
+        Set("TLS_AES_128_GCM_SHA256", "TLS_AES_256_GCM_SHA384"))
       sslSettings.SSLRandomNumberGenerator should ===("")
     }
 
