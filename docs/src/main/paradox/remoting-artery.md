@@ -292,7 +292,7 @@ pekko.remote.artery {
     key-password = ${SSL_KEY_PASSWORD}
     trust-store-password = ${SSL_TRUST_STORE_PASSWORD}
 
-    protocol = "TLSv1.2"
+    protocol = "TLSv1.3"
 
     enabled-algorithms = [TLS_DHE_RSA_WITH_AES_128_GCM_SHA256]
   }

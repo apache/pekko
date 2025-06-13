@@ -203,7 +203,7 @@ public class TcpTest extends StreamTest {
       keyManagerFactory.init(keyStore, password);
 
       // init ssl context
-      SSLContext context = SSLContext.getInstance("TLSv1.2");
+      SSLContext context = SSLContext.getInstance("TLSv1.3");
       context.init(
           keyManagerFactory.getKeyManagers(),
           trustManagerFactory.getTrustManagers(),
