@@ -44,6 +44,7 @@ class NumberInputStreamSpec extends AnyWordSpec with Matchers {
       val numberInputStream = new NumberInputStream(inputStream)
 
       val result = numberInputStream.readObject()
+      numberInputStream.close()
       result shouldBe an[Integer]
       result.asInstanceOf[Integer].intValue() shouldEqual i
     }
@@ -60,6 +61,7 @@ class NumberInputStreamSpec extends AnyWordSpec with Matchers {
       val numberInputStream = new NumberInputStream(inputStream)
 
       val result = numberInputStream.readObject()
+      numberInputStream.close()
       result shouldBe an[Int]
       result.asInstanceOf[Int] shouldEqual i
     }
@@ -76,6 +78,7 @@ class NumberInputStreamSpec extends AnyWordSpec with Matchers {
       a[ClassNotFoundException] should be thrownBy {
         numberInputStream.readObject()
       }
+      numberInputStream.close()
     }
   }
 }
