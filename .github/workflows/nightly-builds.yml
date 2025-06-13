@@ -130,6 +130,7 @@ jobs:
       - name: Setup Java ${{ matrix.javaVersion }}
         uses: actions/setup-java@v4
         with:
+          distribution: temurin
           java-version: ${{ matrix.javaVersion }}
 
       - name: Install sbt
