@@ -23,7 +23,7 @@ import org.apache.pekko
 import pekko.annotation.InternalApi
 
 /**
- * A special ObjectInputStream that loads will only load built-in primitives or
+ * A special ObjectInputStream that will only load built-in primitives or
  * Number classes.
  * <p>
  * This is for internal Pekko use only, and is not intended for public use.
@@ -35,10 +35,9 @@ private[protobuf] class NumberInputStream(
     inputStream: InputStream) extends ObjectInputStream(inputStream) {
 
   /**
-   * Resolve a class specified by the descriptor using the
-   * classloader that loaded NumberInputStream and that treats
-   * any class that is not a primitive or a subclass of <code>java.lang.Number</code>
-   * as not found.
+   * Resolve a class specified by the descriptor using the provided classloader
+   * and that treats any class that is not a primitive or a subclass of
+   * <code>java.lang.Number</code> as not found.
    *
    * @param objectStreamClass  descriptor of the class
    * @return the Class object described by the ObjectStreamClass
