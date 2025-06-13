@@ -27,7 +27,6 @@ import pekko.dispatch.Dispatchers
 import pekko.protobufv3.internal.MessageLite
 import pekko.remote.ByteStringUtils
 import pekko.serialization.{ BaseSerializer, SerializationExtension, SerializerWithStringManifest, Serializers }
-import pekko.util.ClassLoaderObjectInputStream
 import pekko.util.ccompat._
 import pekko.util.ccompat.JavaConverters._
 
@@ -263,8 +262,7 @@ class MessageSerializer(val system: ExtendedActorSystem) extends SerializerWithS
         case NumberType.Float_VALUE   => jl.Float.intBitsToFloat(number.getValue32)
         case NumberType.Integer_VALUE => number.getValue32
         case NumberType.Serialized_VALUE =>
-          val in = new ClassLoaderObjectInputStream(
-            system.dynamicAccess.classLoader,
+          val in = new NumberInputStream(
             new ByteArrayInputStream(number.getSerialized.toByteArray))
           val obj = in.readObject
           in.close()
