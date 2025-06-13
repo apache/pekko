@@ -954,7 +954,7 @@ class TcpSpec extends StreamSpec("""
       keyManagerFactory.init(keyStore, password)
 
       // init ssl context
-      val context = SSLContext.getInstance("TLSv1.2")
+      val context = SSLContext.getInstance("TLSv1.3")
       context.init(keyManagerFactory.getKeyManagers, trustManagerFactory.getTrustManagers, new SecureRandom)
       context
     }
@@ -965,7 +965,7 @@ class TcpSpec extends StreamSpec("""
 
       engine.setUseClientMode(role == pekko.stream.Client)
       engine.setEnabledCipherSuites(Array("TLS_RSA_WITH_AES_128_CBC_SHA"))
-      engine.setEnabledProtocols(Array("TLSv1.2"))
+      engine.setEnabledProtocols(Array("TLSv1.3"))
 
       engine
     }
