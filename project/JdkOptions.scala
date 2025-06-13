@@ -69,8 +69,8 @@ object JdkOptions extends AutoPlugin {
       targetSystemJdk,
       jdk8home,
       fullJavaHomes,
-      Seq(if (scalaVersion.startsWith("3.")) "-Xtarget:8" else "release:8"),
-      (java8home: File) => Seq("-release", "8"))
+      Seq(if (scalaVersion.startsWith("3.")) "-Xtarget:11" else "release:11"),
+      (java8home: File) => Seq("-release", "11"))
   def targetJdkJavacOptions(
       targetSystemJdk: Boolean,
       jdk8home: Option[File],
@@ -82,7 +82,7 @@ object JdkOptions extends AutoPlugin {
       Nil,
       // '-release 8' would be a neater option here, but is currently not an
       // option because it doesn't provide access to `sun.misc.Unsafe` https://github.com/akka/akka/issues/27079
-      (java8home: File) => Seq("-source", "8", "-target", "8", "-bootclasspath", java8home + "/jre/lib/rt.jar"))
+      (java8home: File) => Seq("-source", "11", "-target", "11", "-bootclasspath", java8home + "/jre/lib/rt.jar"))
 
   private def selectOptions(
       targetSystemJdk: Boolean,
