@@ -263,6 +263,7 @@ class MessageSerializer(val system: ExtendedActorSystem) extends SerializerWithS
         case NumberType.Integer_VALUE => number.getValue32
         case NumberType.Serialized_VALUE =>
           val in = new NumberInputStream(
+            system.dynamicAccess.classLoader,
             new ByteArrayInputStream(number.getSerialized.toByteArray))
           val obj = in.readObject
           in.close()

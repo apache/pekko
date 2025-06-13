@@ -30,9 +30,9 @@ import pekko.annotation.InternalApi
  * </p>
  */
 @InternalApi
-private[protobuf] class NumberInputStream(inputStream: InputStream) extends ObjectInputStream(inputStream) {
-
-  private val Loader = classOf[NumberInputStream].getClassLoader()
+private[protobuf] class NumberInputStream(
+  classLoader: ClassLoader,
+  inputStream: InputStream) extends ObjectInputStream(inputStream) {
 
   /**
    * Resolve a class specified by the descriptor using the
@@ -45,7 +45,7 @@ private[protobuf] class NumberInputStream(inputStream: InputStream) extends Obje
    * @throws ClassNotFoundException if the Class cannot be found (or is rejected)
    */
   override protected def resolveClass(objectStreamClass: ObjectStreamClass): Class[_] = {
-    val clazz = Class.forName(objectStreamClass.getName(), false, Loader)
+    val clazz = Class.forName(objectStreamClass.getName(), false, classLoader)
     if (clazz.isPrimitive() || classOf[Number].isAssignableFrom(clazz)) {
       clazz
     } else {

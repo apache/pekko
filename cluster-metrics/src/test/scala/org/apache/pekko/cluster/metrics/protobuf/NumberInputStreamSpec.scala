@@ -29,6 +29,7 @@ object NumberInputStreamSpec {
 class NumberInputStreamSpec extends AnyWordSpec with Matchers {
 
   import NumberInputStreamSpec._
+  val classLoader = classOf[NumberInputStreamSpec].getClassLoader
 
   "NumberInputStream" must {
 
@@ -41,7 +42,7 @@ class NumberInputStreamSpec extends AnyWordSpec with Matchers {
       oos.close()
 
       val inputStream = new ByteArrayInputStream(bos.toByteArray)
-      val numberInputStream = new NumberInputStream(inputStream)
+      val numberInputStream = new NumberInputStream(classLoader, inputStream)
 
       val result = numberInputStream.readObject()
       numberInputStream.close()
@@ -58,7 +59,7 @@ class NumberInputStreamSpec extends AnyWordSpec with Matchers {
       oos.close()
 
       val inputStream = new ByteArrayInputStream(bos.toByteArray)
-      val numberInputStream = new NumberInputStream(inputStream)
+      val numberInputStream = new NumberInputStream(classLoader, inputStream)
 
       val result = numberInputStream.readObject()
       numberInputStream.close()
@@ -73,7 +74,7 @@ class NumberInputStreamSpec extends AnyWordSpec with Matchers {
       oos.close()
 
       val inputStream = new ByteArrayInputStream(bos.toByteArray)
-      val numberInputStream = new NumberInputStream(inputStream)
+      val numberInputStream = new NumberInputStream(classLoader, inputStream)
 
       a[ClassNotFoundException] should be thrownBy {
         numberInputStream.readObject()
