@@ -31,8 +31,8 @@ import pekko.annotation.InternalApi
  */
 @InternalApi
 private[protobuf] class NumberInputStream(
-  classLoader: ClassLoader,
-  inputStream: InputStream) extends ObjectInputStream(inputStream) {
+    classLoader: ClassLoader,
+    inputStream: InputStream) extends ObjectInputStream(inputStream) {
 
   /**
    * Resolve a class specified by the descriptor using the
