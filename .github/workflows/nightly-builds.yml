@@ -130,7 +130,6 @@ jobs:
       - name: Setup Java ${{ matrix.javaVersion }}
         uses: actions/setup-java@v4
         with:
-          distribution: oracle
           java-version: ${{ matrix.javaVersion }}
 
       - name: Install sbt
