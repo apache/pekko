@@ -39,7 +39,7 @@ class TlsTcpWithSHA1PRNGSpec
     extends TlsTcpSpec(ConfigFactory.parseString("""
     pekko.remote.artery.ssl.config-ssl-engine {
       random-number-generator = "SHA1PRNG"
-      enabled-algorithms = ["TLS_DHE_RSA_WITH_AES_256_GCM_SHA384"]
+      enabled-algorithms = ["TLS_AES_256_GCM_SHA384"]
     }
     """))
 
@@ -47,7 +47,7 @@ class TlsTcpWithDefaultRNGSecureSpec
     extends TlsTcpSpec(ConfigFactory.parseString("""
     pekko.remote.artery.ssl.config-ssl-engine {
       random-number-generator = ""
-      enabled-algorithms = ["TLS_DHE_RSA_WITH_AES_256_GCM_SHA384"]
+      enabled-algorithms = ["TLS_AES_256_GCM_SHA384"]
     }
     """))
 

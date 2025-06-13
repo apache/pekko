@@ -469,7 +469,7 @@ pekko {
 
         protocol = "TLSv1.3"
 
-        enabled-algorithms = [TLS_DHE_RSA_WITH_AES_128_GCM_SHA256]
+        enabled-algorithms = [TLS_AES_256_GCM_SHA384]
       }
     }
   }
