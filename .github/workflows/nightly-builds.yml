@@ -1,7 +1,6 @@
 name: Nightly Builds
 
 on:
-  pull_request:
   schedule:
     - cron: "0 0 * * *"
   workflow_dispatch:
@@ -58,7 +57,7 @@ jobs:
   pekko-classic-remoting-tests:
     name: Pekko Classic Remoting Tests
     runs-on: ubuntu-22.04
-    if: github.repository == 'apache/xpekko'
+    if: github.repository == 'apache/pekko'
     strategy:
       fail-fast: false
       matrix:
@@ -115,8 +114,8 @@ jobs:
         # No need to specify the full Scala version. Only the Scala
         # binary version is required and Pekko build will set the right
         # full version from it.
-        scalaVersion: ["2.12.x"]
-        javaVersion: [8]
+        scalaVersion: ["2.12.x", "2.13.x", "3.3.x"]
+        javaVersion: [8, 11, 17, 21]
     env:
       DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
     steps:
