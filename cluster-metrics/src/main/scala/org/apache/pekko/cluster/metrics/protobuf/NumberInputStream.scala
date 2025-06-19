@@ -17,10 +17,11 @@
 
 package org.apache.pekko.cluster.metrics.protobuf
 
-import java.io.{ InputStream, ObjectInputStream, ObjectStreamClass }
+import java.io.{ InputStream, ObjectStreamClass }
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
+import pekko.util.ClassLoaderObjectInputStream
 
 /**
  * A special ObjectInputStream that will only load built-in primitives or
@@ -32,7 +33,7 @@ import pekko.annotation.InternalApi
 @InternalApi
 private[protobuf] class NumberInputStream(
     classLoader: ClassLoader,
-    inputStream: InputStream) extends ObjectInputStream(inputStream) {
+    inputStream: InputStream) extends ClassLoaderObjectInputStream(classLoader, inputStream) {
 
   /**
    * Resolve a class specified by the descriptor using the provided classloader
@@ -44,7 +45,7 @@ private[protobuf] class NumberInputStream(
    * @throws ClassNotFoundException if the Class cannot be found (or is rejected)
    */
   override protected def resolveClass(objectStreamClass: ObjectStreamClass): Class[_] = {
-    val clazz = Class.forName(objectStreamClass.getName(), false, classLoader)
+    val clazz = super.resolveClass(objectStreamClass)
     if (clazz.isPrimitive() || classOf[Number].isAssignableFrom(clazz)) {
       clazz
     } else {
