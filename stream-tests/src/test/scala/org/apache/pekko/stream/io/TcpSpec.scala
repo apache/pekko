@@ -964,7 +964,7 @@ class TcpSpec extends StreamSpec("""
       val engine = sslContext.createSSLEngine()
 
       engine.setUseClientMode(role == pekko.stream.Client)
-      engine.setEnabledCipherSuites(Array("TLS_RSA_WITH_AES_128_CBC_SHA"))
+      engine.setEnabledCipherSuites(Array("TLS_AES_256_GCM_SHA384"))
       engine.setEnabledProtocols(Array("TLSv1.3"))
 
       engine
