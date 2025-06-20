@@ -32,9 +32,9 @@ class Ticket1978ConfigSpec extends PekkoSpec("""
       settings.SSLKeyPassword should ===("changeme")
       settings.SSLTrustStore should ===("truststore")
       settings.SSLTrustStorePassword should ===("changeme")
-      settings.SSLProtocol should ===("TLSv1.2")
+      settings.SSLProtocol should ===("TLSv1.3")
       settings.SSLEnabledAlgorithms should ===(
-        Set("TLS_RSA_WITH_AES_128_CBC_SHA", "TLS_DHE_RSA_WITH_AES_256_GCM_SHA384"))
+        Set("TLS_AES_128_GCM_SHA256", "TLS_AES_256_GCM_SHA384"))
       settings.SSLRandomNumberGenerator should ===("SecureRandom")
     }
   }
