@@ -14,6 +14,7 @@
 package org.apache.pekko.actor.dungeon
 
 import java.util.Optional
+import java.util.concurrent.atomic.AtomicLongFieldUpdater
 
 import scala.annotation.tailrec
 import scala.collection.immutable
@@ -27,6 +28,8 @@ import pekko.util.{ Helpers, Unsafe }
 
 private[pekko] object Children {
   val GetNobody = () => Nobody
+  val nextNameUpdater = AtomicLongFieldUpdater.newUpdater(
+    classOf[ActorCell], "_nextNameDoNotCallMeDirectly")
 }
 
 private[pekko] trait Children { this: ActorCell =>
@@ -121,12 +124,13 @@ private[pekko] trait Children { this: ActorCell =>
   }
 
   @nowarn @volatile private var _nextNameDoNotCallMeDirectly = 0L
+
   final protected def randomName(sb: java.lang.StringBuilder): String = {
-    val num = Unsafe.instance.getAndAddLong(this, AbstractActorCell.nextNameOffset, 1): @nowarn("cat=deprecation")
+    val num = Children.nextNameUpdater.getAndIncrement(this).asInstanceOf[Long]
     Helpers.base64(num, sb)
   }
   final protected def randomName(): String = {
-    val num = Unsafe.instance.getAndAddLong(this, AbstractActorCell.nextNameOffset, 1): @nowarn("cat=deprecation")
+    val num = Children.nextNameUpdater.getAndIncrement(this).asInstanceOf[Long]
     Helpers.base64(num)
   }
 
