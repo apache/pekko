@@ -53,8 +53,8 @@ private[protobuf] class NumberInputStream(
     } else {
       throw new ClassNotFoundException(
         s"Class rejected: ${objectStreamClass.getName()} " +
-          "(only primitive types, arrays of primitive types, subclasses of java.lang.Number " +
-          "and java.math classes are allowed)")
+        "(only primitive types, arrays of primitive types, subclasses of java.lang.Number " +
+        "and java.math classes are allowed)")
     }
   }
 
