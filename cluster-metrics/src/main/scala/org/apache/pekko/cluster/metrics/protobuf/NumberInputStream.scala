@@ -38,7 +38,8 @@ private[protobuf] class NumberInputStream(
   /**
    * Resolve a class specified by the descriptor using the provided classloader
    * and that treats any class that is not a primitive, an array of primitives
-   * or a subclass of <code>java.lang.Number</code> as not found.
+   * or a subclass of <code>java.lang.Number</code>
+   * or <code>java.math</code> classes as not found.
    *
    * @param objectStreamClass  descriptor of the class
    * @return the Class object described by the ObjectStreamClass
@@ -47,11 +48,13 @@ private[protobuf] class NumberInputStream(
   override protected def resolveClass(objectStreamClass: ObjectStreamClass): Class[_] = {
     val clazz = super.resolveClass(objectStreamClass)
     if (clazz.isPrimitive() || (clazz.isArray() && clazz.getComponentType.isPrimitive) ||
-      classOf[Number].isAssignableFrom(clazz)) {
+      classOf[Number].isAssignableFrom(clazz) || clazz.getPackage.getName == "java.math") {
       clazz
     } else {
       throw new ClassNotFoundException(
-        s"Class rejected: ${objectStreamClass.getName()} (only primitive types and subclasses of java.lang.Number are allowed)")
+        s"Class rejected: ${objectStreamClass.getName()} " +
+          "(only primitive types, arrays of primitive types, subclasses of java.lang.Number " +
+          "and java.math classes are allowed)")
     }
   }
 
