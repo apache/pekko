@@ -1321,6 +1321,50 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
     new Flow(delegate.groupedWeighted(minWeight)(costFn.apply).map(_.asJava)) // TODO optimize to one step
 
   /**
+   * Partitions this stream into chunks by a delimiter function, which is applied to each incoming element,
+   * when the result of the function is not the same as the previous element's result, a chunk is emitted.
+   *
+   * The `f` function must return a non-null value for all elements, otherwise the stage will fail.
+   *
+   * '''Emits when''' the delimiter function returns a different value than the previous element's result
+   *
+   * '''Backpressures when''' a chunk has been assembled and downstream backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @since 1.2.0
+   */
+  def groupedAdjacentBy[R](
+      f: function.Function[Out, R]): javadsl.Flow[In, java.util.List[Out @uncheckedVariance], Mat] =
+    new Flow(delegate.groupedAdjacentBy(f.apply).map(_.asJava))
+
+  /**
+   * Partitions this stream into chunks by a delimiter function, which is applied to each incoming element,
+   * when the result of the function is not the same as the previous element's result, or the accumulated weight exceeds
+   * the `maxWeight`, a chunk is emitted.
+   *
+   * The `f` function must return a non-null value , and the `costFn` must return a non-negative result for all inputs,
+   * otherwise the stage will fail.
+   *
+   * '''Emits when''' the delimiter function returns a different value than the previous element's result, or exceeds the `maxWeight`.
+   *
+   * '''Backpressures when''' a chunk has been assembled and downstream backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @since 1.2.0
+   */
+  def groupedAdjacentByWeighted[R](f: function.Function[Out, R],
+      maxWeight: Long,
+      costFn: java.util.function.Function[Out, java.lang.Long])
+      : javadsl.Flow[In, java.util.List[Out @uncheckedVariance], Mat] =
+    new Flow(delegate.groupedAdjacentByWeighted(f.apply, maxWeight)(costFn.apply).map(_.asJava))
+
+  /**
    * Ensure stream boundedness by limiting the number of elements from upstream.
    * If the number of incoming elements exceeds max, it will signal
    * upstream failure `StreamLimitException` downstream.

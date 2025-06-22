@@ -467,6 +467,32 @@ class SourceOrFlow {
     // #groupedWeighted
   }
 
+  void groupedAdjacentByExample() {
+    // #groupedAdjacentBy
+    Source.from(Arrays.asList("Hello", "Hi", "Greetings", "Hey"))
+        .groupedAdjacentBy(str -> str.charAt(0))
+        .runForeach(System.out::println, system);
+    // prints:
+    // [Hello, Hi]
+    // [Greetings]
+    // [Hey]
+    // #groupedAdjacentBy
+  }
+
+  void groupedAdjacentByWeightedExample() {
+    // #groupedAdjacentByWeighted
+    Source.from(Arrays.asList("Hello", "HiHi", "Hi", "Hi", "Greetings", "Hey"))
+        .groupedAdjacentByWeighted(str -> str.charAt(0), 4, str -> (long) str.length())
+        .runForeach(System.out::println, system);
+    // prints:
+    // [Hello]
+    // [HiHi]
+    // [Hi, Hi]
+    // [Greetings]
+    // [Hey]
+    // #groupedAdjacentByWeighted
+  }
+
   static
   // #fold // #foldAsync
   class Histogram {
