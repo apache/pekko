@@ -111,7 +111,7 @@ class SnapshotSerializer(val system: ExtendedActorSystem) extends BaseSerializer
   private def migrateManifestIfNecessary(manifest: String): String = {
     migrationStrategy match {
       case NoMigration => manifest
-      case Pekko =>
+      case Pekko       =>
         if (manifest.startsWith("akka")) {
           manifest.replaceFirst("akka", "org.apache.pekko")
         } else {
@@ -130,7 +130,7 @@ class SnapshotSerializer(val system: ExtendedActorSystem) extends BaseSerializer
   private def migrateManifestToPekkoIfNecessary(manifest: String): String = {
     migrationStrategy match {
       case NoMigration => manifest
-      case _ =>
+      case _           =>
         if (manifest.startsWith("akka")) {
           manifest.replaceFirst("akka", "org.apache.pekko")
         } else {

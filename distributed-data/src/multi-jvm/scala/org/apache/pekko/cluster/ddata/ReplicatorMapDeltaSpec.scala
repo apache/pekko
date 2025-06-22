@@ -353,7 +353,7 @@ class ReplicatorMapDeltaSpec extends MultiNodeSpec(ReplicatorMapDeltaSpec) with 
         for (op <- operations) {
           log.debug("operation: {}", op)
           op match {
-            case Delay(d) => Thread.sleep(d)
+            case Delay(d)        => Thread.sleep(d)
             case Incr(key, n, _) =>
               fullStateReplicator ! Update(key._1, PNCounterMap.empty[String], WriteLocal)(_.incrementBy(key._2, n))
               deltaReplicator ! Update(key._1, PNCounterMap.empty[String], WriteLocal)(_.incrementBy(key._2, n))

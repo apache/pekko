@@ -151,7 +151,7 @@ class ActorLoggingSpec extends ScalaTestWithActorTestKit("""
     "contain the object class name where the first log was called" in {
       val eventFilter = LoggingTestKit.custom {
         case event if event.loggerName == WhereTheBehaviorIsDefined.getClass.getName => true
-        case other =>
+        case other                                                                   =>
           println(other.loggerName)
           false
       }
@@ -162,7 +162,7 @@ class ActorLoggingSpec extends ScalaTestWithActorTestKit("""
     "contain the abstract behavior class name where the first log was called" in {
       val eventFilter = LoggingTestKit.custom {
         case event if event.loggerName == classOf[BehaviorWhereTheLoggerIsUsed].getName => true
-        case other =>
+        case other                                                                      =>
           println(other.loggerName)
           false
       }

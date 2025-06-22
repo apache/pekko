@@ -65,7 +65,7 @@ object MultiNodeClusterShardingSpec {
 
   class ShardedEntity extends Actor {
     def receive: Receive = {
-      case id: Int => sender() ! id
+      case id: Int            => sender() ! id
       case ShardedEntity.Stop =>
         context.stop(self)
     }

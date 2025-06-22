@@ -67,11 +67,11 @@ final class RemoteSettings(val config: Config) {
   @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
   val RemoteLifecycleEventsLogLevel: LogLevel = toRootLowerCase(
     getString("pekko.remote.classic.log-remote-lifecycle-events")) match {
-    case "on" => Logging.DebugLevel
+    case "on"  => Logging.DebugLevel
     case other =>
       Logging.levelFor(other) match {
         case Some(level) => level
-        case None =>
+        case None        =>
           throw new ConfigurationException("Logging level must be one of (on, off, debug, info, warning, error)")
       }
   }
@@ -154,7 +154,7 @@ final class RemoteSettings(val config: Config) {
     val key = "pekko.remote.classic.quarantine-after-silence"
     config.getString(key).toLowerCase match {
       case "off" | "false" => Duration.Zero
-      case _ =>
+      case _               =>
         config.getMillisDuration(key).requiring(_ > Duration.Zero, "quarantine-after-silence must be > 0")
     }
   }

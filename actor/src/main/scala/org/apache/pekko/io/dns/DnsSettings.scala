@@ -89,7 +89,7 @@ private[dns] final class DnsSettings(system: ExtendedActorSystem, c: Config) {
       case "thread-local-random"                               => Policy.ThreadLocalRandom
       case "secure-random"                                     => Policy.SecureRandom
       case s if s.isEmpty | s == "enhanced-double-hash-random" => Policy.EnhancedDoubleHashRandom
-      case _ =>
+      case _                                                   =>
         throw new IllegalArgumentException(
           "Invalid value for id-generator-policy, id-generator-policy must be 'thread-local-random', 'secure-random' or" +
           s"`enhanced-double-hash-random`")
@@ -100,7 +100,7 @@ private[dns] final class DnsSettings(system: ExtendedActorSystem, c: Config) {
     c.getString(path) match {
       case "forever" => Forever
       case "never"   => Never
-      case _ =>
+      case _         =>
         val finiteTtl = c
           .getDuration(path)
           .requiring(!_.isNegative, s"pekko.io.dns.$path must be 'default', 'forever', 'never' or positive duration")
@@ -115,7 +115,7 @@ private[dns] final class DnsSettings(system: ExtendedActorSystem, c: Config) {
     } else if (etcResolvConf.exists()) {
       val parsed = ResolvConfParser.parseFile(etcResolvConf)
       parsed match {
-        case Success(value) => Some(value)
+        case Success(value)     => Some(value)
         case Failure(exception) =>
           val log = Logging(system, classOf[DnsSettings])
           if (log.isWarningEnabled) {
@@ -144,7 +144,7 @@ private[dns] final class DnsSettings(system: ExtendedActorSystem, c: Config) {
       case ConfigValueType.STRING =>
         c.getString("ndots") match {
           case "default" => resolvConf.map(_.ndots).getOrElse(1)
-          case _ =>
+          case _         =>
             throw new IllegalArgumentException("Invalid value for ndots. Must be the string 'default' or an integer.")
         }
       case ConfigValueType.NUMBER =>

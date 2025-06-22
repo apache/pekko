@@ -59,7 +59,7 @@ object SnapshotRecoveryWithEmptyJournalSpec {
     }
 
     override def receiveCommand: PartialFunction[Any, Unit] = {
-      case "done" => probe ! "done"
+      case "done"          => probe ! "done"
       case payload: String =>
         persist(payload) { _ =>
           probe ! s"$payload-$lastSequenceNr"

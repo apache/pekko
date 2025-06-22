@@ -99,7 +99,7 @@ class InetAddressDnsResolver(cache: SimpleDnsCache, config: Config) extends Acto
       case "default" => if (positive) defaultCachePolicy else defaultNegativeCachePolicy
       case "forever" => Forever
       case "never"   => Never
-      case _ => {
+      case _         => {
         val finiteTtl = config
           .getDuration(path, TimeUnit.SECONDS)
           .requiring(_ > 0, s"pekko.io.dns.$path must be 'default', 'forever', 'never' or positive duration")
@@ -131,7 +131,7 @@ class InetAddressDnsResolver(cache: SimpleDnsCache, config: Config) extends Acto
     case r @ DnsProtocol.Resolve(name, ip @ Ip(ipv4, ipv6)) =>
       val answer = cache.cached(r) match {
         case Some(a) => a
-        case None =>
+        case None    =>
           log.debug("Request for [{}] was not yet cached", name)
           try {
             val addresses: Array[InetAddress] = InetAddress.getAllByName(name)
@@ -153,7 +153,7 @@ class InetAddressDnsResolver(cache: SimpleDnsCache, config: Config) extends Acto
       // no where in pekko now sends this message, but supported until Dns.Resolve/Resolved have been removed
       val answer: Dns.Resolved = cache.cached(name) match {
         case Some(a) => a
-        case None =>
+        case None    =>
           try {
             val addresses = InetAddress.getAllByName(name)
             // respond with the old protocol as the request was the new protocol

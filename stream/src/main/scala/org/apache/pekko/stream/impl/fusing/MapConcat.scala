@@ -73,7 +73,7 @@ private[pekko] final class MapConcat[In, Out](f: In => IterableOnce[Out])
         case NonFatal(ex) =>
           decider(ex) match {
             case Supervision.Stop => failStage(ex)
-            case _ =>
+            case _                =>
               if (isClosed(in)) completeStage()
               else if (!hasBeenPulled(in)) pull(in)
           }

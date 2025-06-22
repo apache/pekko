@@ -52,7 +52,7 @@ import pekko.stream.stage._
 
       private def receive(evt: (ActorRef, Any)): Unit = {
         evt._2 match {
-          case Terminated(`ref`) => completeStage()
+          case Terminated(`ref`)                                           => completeStage()
           case ackMsg if ackMessage.isEmpty || ackMessage.contains(ackMsg) =>
             if (buffer.isEmpty) {
               acknowledgementReceived = true

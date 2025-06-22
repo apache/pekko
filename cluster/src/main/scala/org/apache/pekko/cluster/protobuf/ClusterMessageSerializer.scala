@@ -103,7 +103,7 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
     case _: GossipEnvelope                      => GossipEnvelopeManifest
     case _: ClusterRouterPool                   => ClusterRouterPoolManifest
     case ClusterUserAction.PrepareForShutdown   => PrepareForShutdownManifest
-    case _ =>
+    case _                                      =>
       throw new IllegalArgumentException(s"Can't serialize object of type ${o.getClass} in [${getClass.getName}]")
   }
 
@@ -121,7 +121,7 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
     case InternalClusterAction.InitJoinNack(address)             => addressToProtoByteArray(address)
     case InternalClusterAction.ExitingConfirmed(node)            => uniqueAddressToProtoByteArray(node)
     case rp: ClusterRouterPool                                   => clusterRouterPoolToProtoByteArray(rp)
-    case _ =>
+    case _                                                       =>
       throw new IllegalArgumentException(s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
   }
 
@@ -171,7 +171,7 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
 
     @tailrec def readChunk(): Unit = in.read(buffer) match {
       case -1 => ()
-      case n =>
+      case n  =>
         out.write(buffer, 0, n)
         readChunk()
     }

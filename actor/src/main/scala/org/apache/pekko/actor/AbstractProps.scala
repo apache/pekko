@@ -67,7 +67,7 @@ private[pekko] trait AbstractProps {
     val actorClass = Reflect.findMarker(cc, coc) match {
       case t: ParameterizedType =>
         t.getActualTypeArguments.head match {
-          case c: Class[_] => c // since T <: Actor
+          case c: Class[_]        => c // since T <: Actor
           case v: TypeVariable[_] =>
             v.getBounds.collectFirst { case c: Class[_] if ac.isAssignableFrom(c) && c != ac => c }.getOrElse(ac)
           case x => throw new IllegalArgumentException(s"unsupported type found in Creator argument [$x]")

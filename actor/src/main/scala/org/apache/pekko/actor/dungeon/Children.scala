@@ -172,7 +172,7 @@ private[pekko] trait Children { this: ActorCell =>
     val cc = childrenRefs
     cc.getByName(ref.path.name) match {
       case old @ Some(_: ChildRestartStats) => old.asInstanceOf[Option[ChildRestartStats]]
-      case Some(ChildNameReserved) =>
+      case Some(ChildNameReserved)          =>
         val crs = ChildRestartStats(ref)
         val name = ref.path.name
         if (swapChildrenRefs(cc, cc.add(name, crs))) Some(crs) else initChild(ref)
@@ -270,7 +270,7 @@ private[pekko] trait Children { this: ActorCell =>
     name match {
       case null => throw InvalidActorNameException("actor name must not be null")
       case ""   => throw InvalidActorNameException("actor name must not be empty")
-      case _ =>
+      case _    =>
         ActorPath.validatePathElement(name)
         name
     }

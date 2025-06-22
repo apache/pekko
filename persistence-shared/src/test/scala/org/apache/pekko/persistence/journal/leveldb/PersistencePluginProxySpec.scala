@@ -83,7 +83,7 @@ object PersistencePluginProxySpec {
   class ExamplePersistentActor(probe: ActorRef, name: String) extends NamedPersistentActor(name) {
     override def receiveRecover = {
       case RecoveryCompleted => // ignore
-      case payload =>
+      case payload           =>
         probe ! payload
     }
     override def receiveCommand = {

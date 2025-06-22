@@ -113,7 +113,7 @@ private[persistence] class LocalSnapshotStore(config: Config) extends SnapshotSt
   @scala.annotation.tailrec
   private def load(metadata: immutable.Seq[SnapshotMetadata]): Try[Option[SelectedSnapshot]] =
     metadata.lastOption match {
-      case None => Success(None) // no snapshots stored
+      case None     => Success(None) // no snapshots stored
       case Some(md) =>
         Try(withInputStream(md)(deserialize)) match {
           case Success(s) =>

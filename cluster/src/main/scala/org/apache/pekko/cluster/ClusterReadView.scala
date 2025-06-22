@@ -132,7 +132,7 @@ import pekko.dispatch.UnboundedMessageQueueSemantics
                       oldClusterState.copy(roleLeaderMap = oldClusterState.roleLeaderMap + (role -> leader))))
                 case stats: CurrentInternalStats =>
                   _state.set(oldState.copy(latestStats = stats))
-                case ClusterShuttingDown =>
+                case ClusterShuttingDown    =>
                 case r: ReachableDataCenter =>
                   _state.set(
                     oldState.copy(clusterState =
@@ -232,7 +232,7 @@ import pekko.dispatch.UnboundedMessageQueueSemantics
     if (cluster.settings.LogInfoVerbose) {
       event match {
         case _: SeenChanged | _: CurrentInternalStats => // ignore
-        case _: UnreachableMember =>
+        case _: UnreachableMember                     =>
           val s = state
           logInfo("event {}, {} unreachable members [{}]", event, s.unreachable.size, s.unreachable.mkString(", "))
         case _: ReachableMember =>

@@ -43,7 +43,7 @@ object OptimizedRecoverySpec {
       case TakeSnapshot           => saveSnapshot(state)
       case s: SaveSnapshotSuccess => probe ! s
       case GetState               => probe ! state
-      case Save(s) =>
+      case Save(s)                =>
         persist(Saved(s, lastSequenceNr + 1)) { evt =>
           state += evt.s
           probe ! evt

@@ -585,7 +585,7 @@ object Scheduler {
     @tailrec final protected def swap(c: Cancellable): Unit = {
       get match {
         case null => if (c != null) c.cancel()
-        case old =>
+        case old  =>
           if (!compareAndSet(old, c))
             swap(c)
       }
@@ -595,7 +595,7 @@ object Scheduler {
       @tailrec def tailrecCancel(): Boolean = {
         get match {
           case null => false
-          case c =>
+          case c    =>
             if (c.cancel()) compareAndSet(c, null)
             else compareAndSet(c, null) || tailrecCancel()
         }

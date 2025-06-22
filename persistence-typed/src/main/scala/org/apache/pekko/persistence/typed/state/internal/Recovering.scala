@@ -84,9 +84,9 @@ private[pekko] class Recovering[C, S](
 
   override def onMessage(msg: InternalProtocol): Behavior[InternalProtocol] = {
     msg match {
-      case success: GetSuccess[S @unchecked] => onGetSuccess(success.result)
-      case GetFailure(exc)                   => onGetFailure(exc)
-      case RecoveryTimeout                   => onRecoveryTimeout()
+      case success: GetSuccess[S @unchecked]  => onGetSuccess(success.result)
+      case GetFailure(exc)                    => onGetFailure(exc)
+      case RecoveryTimeout                    => onRecoveryTimeout()
       case cmd: IncomingCommand[C @unchecked] =>
         if (recoveryState.receivedPoisonPill) {
           if (setup.settings.logOnStashing)

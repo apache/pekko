@@ -133,11 +133,11 @@ object BehaviorTestKitSpec {
               Behaviors.same
             case ScheduleCommand(key, delay, mode, cmd) =>
               mode match {
-                case Effect.TimerScheduled.SingleMode     => timers.startSingleTimer(key, cmd, delay)
-                case Effect.TimerScheduled.FixedDelayMode => timers.startTimerWithFixedDelay(key, cmd, delay, delay)
+                case Effect.TimerScheduled.SingleMode                        => timers.startSingleTimer(key, cmd, delay)
+                case Effect.TimerScheduled.FixedDelayMode                    => timers.startTimerWithFixedDelay(key, cmd, delay, delay)
                 case m: Effect.TimerScheduled.FixedDelayModeWithInitialDelay =>
                   timers.startTimerWithFixedDelay(key, cmd, m.initialDelay, delay)
-                case Effect.TimerScheduled.FixedRateMode => timers.startTimerAtFixedRate(key, cmd, delay, delay)
+                case Effect.TimerScheduled.FixedRateMode                    => timers.startTimerAtFixedRate(key, cmd, delay, delay)
                 case m: Effect.TimerScheduled.FixedRateModeWithInitialDelay =>
                   timers.startTimerAtFixedRate(key, cmd, m.initialDelay, delay)
               }

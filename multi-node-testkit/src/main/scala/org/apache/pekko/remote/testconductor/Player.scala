@@ -279,7 +279,7 @@ private[pekko] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress
 
           cmdFuture.foreach {
             case true => self ! ToServer(Done)
-            case _ =>
+            case _    =>
               throw new RuntimeException("Throttle was requested from the TestConductor, but no transport " +
                 "adapters available that support throttling. Specify `testTransport(on = true)` in your MultiNodeConfig")
           }
@@ -359,7 +359,7 @@ private[pekko] class PlayerHandler(
 
   private def tryConnectToController(): Unit = {
     Try(reconnect()) match {
-      case Success(r) => connectionRef.set(r)
+      case Success(r)  => connectionRef.set(r)
       case Failure(ex) =>
         log.error("Error when trying to connect to remote addr:[{}] will retry, time left:[{}], cause:[{}].",
           server, nextAttempt.timeLeft, ex.getMessage)

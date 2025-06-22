@@ -63,7 +63,7 @@ private[pekko] class ClusterClientMessageSerializer(val system: ExtendedActorSys
     case Heartbeat            => HeartbeatManifest
     case HeartbeatRsp         => HeartbeatRspManifest
     case ReceptionistShutdown => ReceptionistShutdownManifest
-    case _ =>
+    case _                    =>
       throw new IllegalArgumentException(s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
   }
 
@@ -73,14 +73,14 @@ private[pekko] class ClusterClientMessageSerializer(val system: ExtendedActorSys
     case Heartbeat            => emptyByteArray
     case HeartbeatRsp         => emptyByteArray
     case ReceptionistShutdown => emptyByteArray
-    case _ =>
+    case _                    =>
       throw new IllegalArgumentException(s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
   }
 
   override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef =
     fromBinaryMap.get(manifest) match {
       case Some(f) => f(bytes)
-      case None =>
+      case None    =>
         throw new NotSerializableException(
           s"Unimplemented deserialization of message with manifest [$manifest] in [${getClass.getName}]")
     }

@@ -63,7 +63,7 @@ private[pekko] class CachingConfig(_config: Config) extends Config {
       val ne = Try { config.hasPath(path) } match {
         case Failure(_)     => invalidPathEntry
         case Success(false) => nonExistingPathEntry
-        case _ =>
+        case _              =>
           Try { config.getValue(path) } match {
             case Failure(_) =>
               emptyPathEntry

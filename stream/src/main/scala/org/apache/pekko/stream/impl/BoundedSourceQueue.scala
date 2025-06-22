@@ -154,7 +154,7 @@ import pekko.stream.stage.{ GraphStageLogic, GraphStageWithMaterializedValue, Ou
     def setDone(done: Done): Boolean =
       state.get() match {
         case _: Done => false
-        case x =>
+        case x       =>
           if (!state.compareAndSet(x, done)) setDone(done)
           else true
       }

@@ -160,7 +160,7 @@ private[pekko] trait StashSupport {
   private[pekko] val mailbox: DequeBasedMessageQueueSemantics = {
     actorCell.mailbox.messageQueue match {
       case queue: DequeBasedMessageQueueSemantics => queue
-      case other =>
+      case other                                  =>
         throw ActorInitializationException(
           self,
           s"DequeBasedMailbox required, got: ${other.getClass.getName}\n" +

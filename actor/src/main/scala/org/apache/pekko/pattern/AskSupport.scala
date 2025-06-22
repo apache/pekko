@@ -631,7 +631,7 @@ private[pekko] final class PromiseActorRef(
   override def sendSystemMessage(message: SystemMessage): Unit = message match {
     case _: Terminate                      => stop()
     case DeathWatchNotification(a, ec, at) => this.!(Terminated(a)(existenceConfirmed = ec, addressTerminated = at))
-    case Watch(watchee, watcher) =>
+    case Watch(watchee, watcher)           =>
       if (watchee == this && watcher != this) {
         if (!addWatcher(watcher))
           // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅

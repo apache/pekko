@@ -71,7 +71,7 @@ class TestKit(system: ActorSystem) {
   def duration(s: String): FiniteDuration = {
     Duration.apply(s) match {
       case fd: FiniteDuration => fd
-      case _ =>
+      case _                  =>
         throw new IllegalArgumentException("duration() is only for finite durations, use Duration.Inf() and friends")
     }
   }

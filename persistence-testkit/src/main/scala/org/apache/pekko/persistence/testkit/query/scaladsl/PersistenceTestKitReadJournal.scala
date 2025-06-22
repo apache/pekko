@@ -99,7 +99,7 @@ final class PersistenceTestKitReadJournal(system: ExtendedActorSystem, @unused c
   override def currentEventsByTag(tag: String, offset: Offset = NoOffset): Source[EventEnvelope, NotUsed] = {
     offset match {
       case NoOffset =>
-      case _ =>
+      case _        =>
         throw new UnsupportedOperationException("Offsets not supported for persistence test kit currentEventsByTag yet")
     }
     Source(storage.tryReadByTag(tag)).map { pr =>
@@ -120,7 +120,7 @@ final class PersistenceTestKitReadJournal(system: ExtendedActorSystem, @unused c
       offset: Offset): Source[typed.EventEnvelope[Event], NotUsed] = {
     offset match {
       case NoOffset =>
-      case _ =>
+      case _        =>
         throw new UnsupportedOperationException("Offsets not supported for persistence test kit currentEventsByTag yet")
     }
     val prs = storage.tryRead(entityType,

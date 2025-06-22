@@ -135,8 +135,8 @@ trait PersistentFSM[S <: FSMState, D, E] extends PersistentActor with Persistent
    */
   @nowarn("msg=deprecated")
   override def receiveRecover: Receive = {
-    case domainEventTag(event)                      => startWith(stateName, applyEvent(event, stateData))
-    case StateChangeEvent(stateIdentifier, timeout) => startWith(statesMap(stateIdentifier), stateData, timeout)
+    case domainEventTag(event)                                                                 => startWith(stateName, applyEvent(event, stateData))
+    case StateChangeEvent(stateIdentifier, timeout)                                            => startWith(statesMap(stateIdentifier), stateData, timeout)
     case SnapshotOffer(_, PersistentFSMSnapshot(stateIdentifier, data: D @unchecked, timeout)) =>
       startWith(statesMap(stateIdentifier), data, timeout)
     case RecoveryCompleted =>

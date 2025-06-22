@@ -153,7 +153,7 @@ object RemoveInternalClusterShardingData {
 
     override def receiveRecover: Receive = {
       case _: ShardCoordinator.Internal.DomainEvent =>
-      case SnapshotOffer(_, _) =>
+      case SnapshotOffer(_, _)                      =>
         hasSnapshots = true
 
       case RecoveryCompleted =>

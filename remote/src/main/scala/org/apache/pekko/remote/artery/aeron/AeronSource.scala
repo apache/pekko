@@ -199,7 +199,7 @@ private[remote] class AeronSource(
         if (!delegatingToTaskRunner) {
           def loop(remaining: List[Int]): Unit = {
             remaining match {
-              case Nil =>
+              case Nil               =>
               case sessionId :: tail =>
                 messageHandler.fragmentsHandler.freeSessionBuffer(sessionId)
                 loop(tail)

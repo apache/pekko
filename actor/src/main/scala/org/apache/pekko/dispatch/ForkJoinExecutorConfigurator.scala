@@ -81,7 +81,7 @@ class ForkJoinExecutorConfigurator(config: Config, prerequisites: DispatcherPrer
 
   def validate(t: ThreadFactory): ForkJoinPool.ForkJoinWorkerThreadFactory = t match {
     case correct: ForkJoinPool.ForkJoinWorkerThreadFactory => correct
-    case _ =>
+    case _                                                 =>
       throw new IllegalStateException(
         "The prerequisites for the ForkJoinExecutorConfigurator is a ForkJoinPool.ForkJoinWorkerThreadFactory!")
   }
@@ -188,7 +188,7 @@ class ForkJoinExecutorConfigurator(config: Config, prerequisites: DispatcherPrer
     val asyncMode = config.getString("task-peeking-mode") match {
       case "FIFO" => true
       case "LIFO" => false
-      case _ =>
+      case _      =>
         throw new IllegalArgumentException(
           "Cannot instantiate ForkJoinExecutorServiceFactory. " +
           """"task-peeking-mode" in "fork-join-executor" section could only set to "FIFO" or "LIFO".""")

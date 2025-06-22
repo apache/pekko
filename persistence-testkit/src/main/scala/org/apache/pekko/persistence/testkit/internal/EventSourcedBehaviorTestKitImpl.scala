@@ -71,7 +71,7 @@ import pekko.stream.scaladsl.Sink
     // cast with nice error message
     private def ofType[A: ClassTag](obj: Any, errorParam: String): A = {
       obj match {
-        case a: A => a
+        case a: A  => a
         case other =>
           val expectedClass = implicitly[ClassTag[A]].runtimeClass
           throw new AssertionError(

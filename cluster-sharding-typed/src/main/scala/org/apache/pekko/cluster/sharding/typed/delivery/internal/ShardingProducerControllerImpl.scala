@@ -372,7 +372,7 @@ private class ShardingProducerControllerImpl[A: ClassTag](
 
       if (confirmed.nonEmpty) {
         confirmed.foreach {
-          case Unconfirmed(_, _, None) => // no reply
+          case Unconfirmed(_, _, None)          => // no reply
           case Unconfirmed(_, _, Some(replyTo)) =>
             replyTo ! Done
         }

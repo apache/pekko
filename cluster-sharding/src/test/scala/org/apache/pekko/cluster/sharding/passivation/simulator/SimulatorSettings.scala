@@ -94,19 +94,19 @@ object SimulatorSettings {
     private def settings(strategyConfig: Config, fallbackConfig: Config): StrategySettings = {
       val config = strategyConfig.withFallback(fallbackConfig)
       lowerCase(config.getString("strategy")) match {
-        case "optimal" => Optimal(config.getInt("optimal.per-region-limit"))
+        case "optimal"             => Optimal(config.getInt("optimal.per-region-limit"))
         case "least-recently-used" =>
           val limit = config.getInt("least-recently-used.per-region-limit")
           val segmented = lowerCase(config.getString("least-recently-used.segmented.levels")) match {
             case "off" | "none" => Nil
-            case _ =>
+            case _              =>
               val levels = config.getInt("least-recently-used.segmented.levels")
               val proportions =
                 config.getDoubleList("least-recently-used.segmented.proportions").asScala.map(_.toDouble).toList
               if (proportions.isEmpty) List.fill(levels)(1.0 / levels) else proportions
           }
           LeastRecentlyUsed(limit, segmented)
-        case "most-recently-used" => MostRecentlyUsed(config.getInt("most-recently-used.per-region-limit"))
+        case "most-recently-used"    => MostRecentlyUsed(config.getInt("most-recently-used.per-region-limit"))
         case "least-frequently-used" =>
           LeastFrequentlyUsed(
             config.getInt("least-frequently-used.per-region-limit"),

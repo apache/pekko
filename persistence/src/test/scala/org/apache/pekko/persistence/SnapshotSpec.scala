@@ -50,7 +50,7 @@ object SnapshotSpec {
     }
 
     override def receiveCommand = {
-      case "done" => probe ! "done"
+      case "done"          => probe ! "done"
       case payload: String =>
         persist(payload) { _ =>
           probe ! s"$payload-$lastSequenceNr"
@@ -70,7 +70,7 @@ object SnapshotSpec {
     }
 
     override def receiveCommand = {
-      case "done" => probe ! "done"
+      case "done"          => probe ! "done"
       case payload: String =>
         persist(payload) { _ =>
           probe ! s"$payload-$lastSequenceNr"

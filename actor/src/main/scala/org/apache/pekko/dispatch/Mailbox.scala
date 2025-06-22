@@ -316,7 +316,7 @@ private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
       try dlm.systemEnqueue(actor.self, msg)
       catch {
         case e: InterruptedException => interruption = e
-        case NonFatal(e) =>
+        case NonFatal(e)             =>
           actor.system.eventStream.publish(
             Error(
               e,

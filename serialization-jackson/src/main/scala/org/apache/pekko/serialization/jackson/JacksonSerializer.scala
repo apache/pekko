@@ -193,7 +193,7 @@ import pekko.util.OptionVal
   private final val BufferSize = 1024 * 4
   private val compressionAlgorithm: Compression.Algoritm = {
     toRootLowerCase(conf.getString("compression.algorithm")) match {
-      case "off" => Compression.Off
+      case "off"  => Compression.Off
       case "gzip" =>
         val compressLargerThan = conf.getBytes("compression.compress-larger-than")
         Compression.GZip(compressLargerThan)
@@ -222,7 +222,7 @@ import pekko.util.OptionVal
   private val typeInManifest: Boolean = conf.getBoolean("type-in-manifest")
   // Calculated eagerly so as to fail fast
   private val configuredDeserializationType: Option[Class[_ <: AnyRef]] = conf.getString("deserialization-type") match {
-    case "" => None
+    case ""        => None
     case className =>
       system.dynamicAccess.getClassFor[AnyRef](className) match {
         case Success(c) => Some(c)
@@ -347,7 +347,7 @@ import pekko.util.OptionVal
     if (isCaseObject(className)) {
       val result = system.dynamicAccess.getObjectFor[AnyRef](className) match {
         case Success(obj) => obj
-        case Failure(_) =>
+        case Failure(_)   =>
           throw new NotSerializableException(
             s"Cannot find manifest case object [$className] for serializer [${getClass.getName}].")
       }
@@ -516,14 +516,14 @@ import pekko.util.OptionVal
     compressionAlgorithm match {
       case Compression.Off                                            => bytes
       case Compression.GZip(largerThan) if bytes.length <= largerThan => bytes
-      case Compression.GZip(_) =>
+      case Compression.GZip(_)                                        =>
         val bos = new ByteArrayOutputStream(BufferSize)
         val zip = new GZIPOutputStream(bos)
         try zip.write(bytes)
         finally zip.close()
         bos.toByteArray
       case Compression.LZ4(largerThan) if bytes.length <= largerThan => bytes
-      case Compression.LZ4(_) => {
+      case Compression.LZ4(_)                                        => {
         val meta = LZ4Meta(bytes)
         val compressed = lz4Compressor.compress(bytes)
         meta.prependTo(compressed)
@@ -539,7 +539,7 @@ import pekko.util.OptionVal
 
       @tailrec def readChunk(): Unit = in.read(buffer) match {
         case -1 => ()
-        case n =>
+        case n  =>
           out.write(buffer, 0, n)
           readChunk()
       }

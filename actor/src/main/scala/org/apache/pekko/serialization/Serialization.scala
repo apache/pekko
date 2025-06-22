@@ -77,7 +77,7 @@ object Serialization {
     Serialization.currentTransportInformation.value match {
       case null =>
         originalSystem match {
-          case null => path.toSerializationFormat
+          case null   => path.toSerializationFormat
           case system =>
             try path.toSerializationFormatWithAddress(system.provider.getDefaultAddress)
             catch { case NonFatal(_) => path.toSerializationFormat }
@@ -228,14 +228,14 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
     withTransportInformation { () =>
       serializer match {
         case s2: SerializerWithStringManifest => s2.fromBinary(bytes, manifest)
-        case s1 =>
+        case s1                               =>
           if (manifest == "")
             s1.fromBinary(bytes, None)
           else {
             val cache = manifestCache.get
             cache.get(manifest) match {
               case Some(cachedClassManifest) => s1.fromBinary(bytes, cachedClassManifest)
-              case None =>
+              case None                      =>
                 system.dynamicAccess.getClassFor[AnyRef](manifest) match {
                   case Success(classManifest) =>
                     val classManifestOption: Option[Class[_]] = Some(classManifest)

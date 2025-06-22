@@ -52,7 +52,7 @@ class TransportAdapters(system: ExtendedActorSystem) extends Extension {
 
   def getAdapterProvider(name: String): TransportAdapterProvider = adaptersTable.get(name) match {
     case Some(provider) => provider
-    case None =>
+    case None           =>
       throw new IllegalArgumentException(s"There is no registered transport adapter provider with name: [$name]")
   }
 }

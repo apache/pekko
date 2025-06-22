@@ -79,7 +79,7 @@ class SubInletOutletSpec extends StreamSpec {
                 case "completeStage" => completeStage()
                 case "cancelStage"   => cancelStage(NoMoreElementsNeeded)
                 case "failStage"     => failStage(TE("boom"))
-                case "closeAll" =>
+                case "closeAll"      =>
                   cancel(in)
                   complete(out)
                 case _ => // ignore

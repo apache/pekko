@@ -52,7 +52,7 @@ import scala.annotation.tailrec
       case ch.qos.logback.classic.Level.INFO_INT  => Level.INFO
       case ch.qos.logback.classic.Level.WARN_INT  => Level.WARN
       case ch.qos.logback.classic.Level.ERROR_INT => Level.ERROR
-      case _ =>
+      case _                                      =>
         throw new IllegalArgumentException("Level " + level.levelStr + ", " + level.levelInt + " is unknown.")
     }
   }

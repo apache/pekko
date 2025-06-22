@@ -114,7 +114,7 @@ import scala.util.Success
   // context-shared timer needed to allow for nested timer usage
   def timer: TimerSchedulerCrossDslSupport[T] = _timer match {
     case OptionVal.Some(timer) => timer
-    case _ =>
+    case _                     =>
       checkCurrentActorThread()
       val timer = mkTimer()
       _timer = OptionVal.Some(timer)
@@ -161,7 +161,7 @@ import scala.util.Success
     // lazy init of logging setup
     _logging match {
       case OptionVal.Some(l) => l
-      case _ =>
+      case _                 =>
         val logClass = LoggerClass.detectLoggerClassFromStack(classOf[Behavior[_]])
         val logger = LoggerFactory.getLogger(logClass.getName)
         val l = LoggingContext(logger, classicActorContext.props.deploy.tags, this)

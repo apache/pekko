@@ -102,7 +102,7 @@ private[pekko] final class BehaviorTestKitImpl[T](
   def expectEffectClass[E <: Effect](effectClass: Class[E]): E = {
     context.effectQueue.poll() match {
       case null if effectClass.isAssignableFrom(NoEffects.getClass) => effectClass.cast(NoEffects)
-      case null =>
+      case null                                                     =>
         throw new AssertionError(s"expected: effect type ${effectClass.getName} but no effects were recorded")
       case effect if effectClass.isAssignableFrom(effect.getClass) => effect.asInstanceOf[E]
       case other                                                   => throw new AssertionError(s"expected: effect class ${effectClass.getName} but found $other")

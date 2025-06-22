@@ -583,7 +583,7 @@ private[remote] class ProtocolStateActor(
       val handle = stateData match {
         case ListenerReady(_, wrappedHandle)            => wrappedHandle
         case AssociatedWaitHandler(_, wrappedHandle, _) => wrappedHandle
-        case msg =>
+        case msg                                        =>
           throw new PekkoProtocolException(
             s"unhandled message in state Open(DisassociateUnderlying) with type [${safeClassName(msg)}]")
       }
@@ -692,8 +692,8 @@ private[remote] class ProtocolStateActor(
   }
 
   override protected def logTermination(reason: FSM.Reason): Unit = reason match {
-    case FSM.Failure(_: DisassociateInfo) => // no logging
-    case FSM.Failure(ForbiddenUidReason)  => // no logging
+    case FSM.Failure(_: DisassociateInfo)         => // no logging
+    case FSM.Failure(ForbiddenUidReason)          => // no logging
     case FSM.Failure(TimeoutReason(errorMessage)) =>
       log.info(errorMessage)
     case _ => super.logTermination(reason)

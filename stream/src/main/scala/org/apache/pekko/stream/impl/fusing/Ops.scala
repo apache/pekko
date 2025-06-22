@@ -299,7 +299,7 @@ private[stream] object Collect {
       @nowarn("msg=Any")
       override def onUpstreamFailure(ex: Throwable): Unit =
         try pf.applyOrElse(ex, NotApplied) match {
-            case _: NotApplied.type => failStage(ex)
+            case _: NotApplied.type   => failStage(ex)
             case result: T @unchecked => {
               if (isAvailable(out)) {
                 push(out, result)
@@ -452,8 +452,8 @@ private[stream] object Collect {
         } catch {
           case NonFatal(ex) =>
             decider(ex) match {
-              case Resume => if (!hasBeenPulled(in)) pull(in)
-              case Stop   => failStage(ex)
+              case Resume  => if (!hasBeenPulled(in)) pull(in)
+              case Stop    => failStage(ex)
               case Restart =>
                 aggregator = zero
                 push(out, aggregator)
@@ -528,8 +528,8 @@ private[stream] object Collect {
 
       private def doSupervision(t: Throwable): Unit = {
         decider(t) match {
-          case Supervision.Stop   => failStage(t)
-          case Supervision.Resume => safePull()
+          case Supervision.Stop    => failStage(t)
+          case Supervision.Resume  => safePull()
           case Supervision.Restart =>
             onRestart()
             safePull()
@@ -693,7 +693,7 @@ private[stream] object Collect {
 
         case other =>
           val ex = other match {
-            case Failure(t) => t
+            case Failure(t)    => t
             case Success(null) =>
               ReactiveStreamsCompliance.elementMustNotBeNullException
             case Success(_) =>
@@ -720,7 +720,7 @@ private[stream] object Collect {
           case NonFatal(ex) =>
             decider(ex) match {
               case Supervision.Stop => failStage(ex)
-              case supervision => {
+              case supervision      => {
                 supervision match {
                   case Supervision.Restart => onRestart(ex)
                   case _                   => () // just ignore on Resume
@@ -869,8 +869,8 @@ private[stream] object Collect {
           if (left >= 0) push(out, elem) else failStage(new StreamLimitReachedException(n))
         } catch {
           case NonFatal(ex) => decider(ex) match {
-              case Supervision.Stop   => failStage(ex)
-              case Supervision.Resume => if (!hasBeenPulled(in)) pull(in)
+              case Supervision.Stop    => failStage(ex)
+              case Supervision.Resume  => if (!hasBeenPulled(in)) pull(in)
               case Supervision.Restart =>
                 left = n
                 if (!hasBeenPulled(in)) pull(in)
@@ -1100,7 +1100,7 @@ private[stream] object Collect {
               decider(ex) match {
                 case Supervision.Stop    => failStage(ex)
                 case Supervision.Restart => restartState()
-                case Supervision.Resume =>
+                case Supervision.Resume  =>
                   pending = null.asInstanceOf[In]
               }
           }
@@ -1123,7 +1123,7 @@ private[stream] object Collect {
           } catch {
             case NonFatal(ex) =>
               decider(ex) match {
-                case Supervision.Stop => failStage(ex)
+                case Supervision.Stop    => failStage(ex)
                 case Supervision.Restart =>
                   restartState()
                 case Supervision.Resume =>
@@ -1138,7 +1138,7 @@ private[stream] object Collect {
           } catch {
             case NonFatal(ex) =>
               decider(ex) match {
-                case Supervision.Stop => failStage(ex)
+                case Supervision.Stop    => failStage(ex)
                 case Supervision.Restart =>
                   restartState()
                 case Supervision.Resume =>
@@ -1168,8 +1168,8 @@ private[stream] object Collect {
             } catch {
               case NonFatal(ex) =>
                 decider(ex) match {
-                  case Supervision.Stop   => failStage(ex)
-                  case Supervision.Resume =>
+                  case Supervision.Stop    => failStage(ex)
+                  case Supervision.Resume  =>
                   case Supervision.Restart =>
                     restartState()
                     if (!hasBeenPulled(in)) pull(in)
@@ -1267,7 +1267,7 @@ private[stream] object Collect {
     def supervisionDirectiveFor(decider: Supervision.Decider, ex: Throwable): Supervision.Directive = {
       cachedSupervisionDirective match {
         case OptionVal.Some(d) => d
-        case _ =>
+        case _                 =>
           val d = decider(ex)
           cachedSupervisionDirective = OptionVal.Some(d)
           d
@@ -1311,7 +1311,7 @@ private[stream] object Collect {
 
       private val futureCB = getAsyncCallback[Holder[Out]](holder =>
         holder.elem match {
-          case Success(_) => pushNextIfPossible()
+          case Success(_)  => pushNextIfPossible()
           case Failure(ex) =>
             holder.supervisionDirectiveFor(decider, ex) match {
               // fail fast as if supervision says so
@@ -1523,7 +1523,7 @@ private[stream] object Collect {
         logLevels = inheritedAttributes.get[LogLevels](DefaultLogLevels)
         log = logAdapter match {
           case Some(l) => l
-          case _ =>
+          case _       =>
             Logging(materializer.system, materializer)(fromMaterializer)
         }
       }
@@ -1550,7 +1550,7 @@ private[stream] object Collect {
         if (isEnabled(logLevels.onFailure))
           logLevels.onFailure match {
             case Logging.ErrorLevel => log.error(cause, "[{}] Upstream failed.", name)
-            case level =>
+            case level              =>
               log.log(
                 level,
                 "[{}] Upstream failed, cause: {}: {}",
@@ -1643,7 +1643,7 @@ private[stream] object Collect {
         logLevels = inheritedAttributes.get[LogLevels](DefaultLogLevels)
         log = logAdapter match {
           case Some(l) => l
-          case _ =>
+          case _       =>
             Logging.withMarker(materializer.system, materializer)(fromMaterializer)
         }
       }
@@ -1670,7 +1670,7 @@ private[stream] object Collect {
         if (isEnabled(logLevels.onFailure))
           logLevels.onFailure match {
             case Logging.ErrorLevel => log.error(cause, "[{}] Upstream failed.", name)
-            case level =>
+            case level              =>
               log.log(
                 level,
                 "[{}] Upstream failed, cause: {}: {}",
@@ -2135,7 +2135,7 @@ private[pekko] object TakeWithin {
         } catch {
           case NonFatal(ex) =>
             decider(ex) match {
-              case Supervision.Stop => failStage(ex)
+              case Supervision.Stop    => failStage(ex)
               case Supervision.Restart =>
                 aggregator = empty
                 setInitialInHandler()
@@ -2187,7 +2187,7 @@ private[pekko] object TakeWithin {
         import Collect.NotApplied
         if (maximumRetries < 0 || attempt < maximumRetries) {
           pf.applyOrElse(ex, NotApplied) match {
-            case _: NotApplied.type => failStage(ex)
+            case _: NotApplied.type                                                                               => failStage(ex)
             case source: Graph[SourceShape[T] @unchecked, M @unchecked] if TraversalBuilder.isEmptySource(source) =>
               completeStage()
             case source: Graph[SourceShape[T] @unchecked, M @unchecked] =>
@@ -2198,7 +2198,7 @@ private[pekko] object TakeWithin {
                     case futureSource: FutureSource[T @unchecked] => futureSource.future.value match {
                         case Some(Success(elem)) => emit(out, elem, () => completeStage())
                         case Some(Failure(ex))   => failStage(ex)
-                        case None =>
+                        case None                =>
                           switchTo(source)
                           attempt += 1
                       }
@@ -2403,7 +2403,7 @@ private[pekko] final class StatefulMapConcat[In, Out](val factory: StatefulMapCo
     private def handleException: Catcher[Unit] = {
       case NonFatal(ex) =>
         decider(ex) match {
-          case Supervision.Stop => failStage(ex)
+          case Supervision.Stop   => failStage(ex)
           case Supervision.Resume =>
             if (isClosed(in)) emitMaybeLastElementsAndComplete()
             else if (!hasBeenPulled(in)) pull(in)

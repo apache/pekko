@@ -637,7 +637,7 @@ private[transport] final case class ThrottlerHandle(_wrappedHandle: AssociationH
     }
 
     outboundThrottleMode.get match {
-      case Blackhole => true
+      case Blackhole  => true
       case bucket @ _ =>
         val success = tryConsume(outboundThrottleMode.get())
         if (success) wrappedHandle.write(payload) else false

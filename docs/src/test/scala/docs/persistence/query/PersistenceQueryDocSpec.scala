@@ -82,7 +82,7 @@ object PersistenceQueryDocSpec {
       case Sequence(offsetValue) =>
         Source.fromGraph(new MyEventsByTagSource(tag, offsetValue, refreshInterval))
       case NoOffset => eventsByTag(tag, Sequence(0L)) // recursive
-      case _ =>
+      case _        =>
         throw new IllegalArgumentException("MyJournal does not support " + offset.getClass.getName + " offsets")
     }
 

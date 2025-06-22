@@ -192,7 +192,7 @@ final case class AdaptiveLoadBalancingPool(
     if (this.supervisorStrategy ne Pool.defaultSupervisorStrategy) this
     else
       other match {
-        case _: FromConfig | _: NoRouter => this // NoRouter is the default, hence “neutral”
+        case _: FromConfig | _: NoRouter            => this // NoRouter is the default, hence “neutral”
         case otherRouter: AdaptiveLoadBalancingPool =>
           if (otherRouter.supervisorStrategy eq Pool.defaultSupervisorStrategy) this
           else this.withSupervisorStrategy(otherRouter.supervisorStrategy)
@@ -411,7 +411,7 @@ object MetricsSelector {
       case "heap" => HeapMetricsSelector
       case "cpu"  => CpuMetricsSelector
       case "load" => SystemLoadAverageMetricsSelector
-      case fqn =>
+      case fqn    =>
         val args = List(classOf[Config] -> config)
         dynamicAccess
           .createInstanceFor[MetricsSelector](fqn, args)

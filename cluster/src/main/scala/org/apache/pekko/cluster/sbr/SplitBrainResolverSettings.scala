@@ -57,7 +57,7 @@ import pekko.util.Helpers.Requiring
   val DowningStrategy: String =
     cc.getString("active-strategy").toLowerCase(Locale.ROOT) match {
       case strategyName if allStrategyNames(strategyName) => strategyName
-      case unknown =>
+      case unknown                                        =>
         throw new ConfigurationException(
           s"Unknown downing strategy [$unknown]. Select one of [${allStrategyNames.mkString(",")}]")
     }

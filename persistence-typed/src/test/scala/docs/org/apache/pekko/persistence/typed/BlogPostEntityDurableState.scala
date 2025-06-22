@@ -79,16 +79,16 @@ object BlogPostEntityDurableState {
 
       case draftState: DraftState =>
         command match {
-          case cmd: ChangeBody  => changeBody(draftState, cmd)
-          case Publish(replyTo) => publish(draftState, replyTo)
-          case GetPost(replyTo) => getPost(draftState, replyTo)
+          case cmd: ChangeBody     => changeBody(draftState, cmd)
+          case Publish(replyTo)    => publish(draftState, replyTo)
+          case GetPost(replyTo)    => getPost(draftState, replyTo)
           case AddPost(_, replyTo) =>
             Effect.unhandled[State].thenRun(_ => replyTo ! StatusReply.Error("Cannot add post while in draft state"))
         }
 
       case publishedState: PublishedState =>
         command match {
-          case GetPost(replyTo) => getPost(publishedState, replyTo)
+          case GetPost(replyTo)    => getPost(publishedState, replyTo)
           case AddPost(_, replyTo) =>
             Effect.unhandled[State].thenRun(_ => replyTo ! StatusReply.Error("Cannot add post, already published"))
           case _ => Effect.unhandled

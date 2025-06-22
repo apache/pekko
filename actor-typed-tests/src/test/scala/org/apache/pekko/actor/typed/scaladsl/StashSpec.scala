@@ -647,7 +647,7 @@ class UnstashingSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with
         def unstashing(n: Int): Behavior[String] =
           Behaviors.receiveMessagePartial {
             case "unhandled" => Behaviors.unhandled
-            case "handled" =>
+            case "handled"   =>
               probe.ref ! s"handled $n"
               unstashing(n + 1)
           }

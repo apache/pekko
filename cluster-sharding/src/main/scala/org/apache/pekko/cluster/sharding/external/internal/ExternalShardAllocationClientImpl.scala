@@ -78,7 +78,7 @@ final private[external] class ExternalShardAllocationClientImpl(system: ActorSys
       existing.put(self, shard, location.toString)
     }).flatMap {
       case UpdateSuccess(_, _) => Future.successful(Done)
-      case UpdateTimeout =>
+      case UpdateTimeout       =>
         Future.failed(new ClientTimeoutException(s"Unable to update shard location after ${timeout.duration.pretty}"))
       case _ => throw new IllegalArgumentException() // compiler exhaustiveness check pleaser
     }
@@ -114,7 +114,7 @@ final private[external] class ExternalShardAllocationClientImpl(system: ActorSys
       }
     }).flatMap {
       case UpdateSuccess(_, _) => Future.successful(Done)
-      case UpdateTimeout =>
+      case UpdateTimeout       =>
         Future.failed(new ClientTimeoutException(s"Unable to update shard location after ${timeout.duration.pretty}"))
       case _ => throw new IllegalArgumentException() // compiler exhaustiveness check pleaser
     }

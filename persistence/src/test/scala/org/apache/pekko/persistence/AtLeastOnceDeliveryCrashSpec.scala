@@ -49,7 +49,7 @@ object AtLeastOnceDeliveryCrashSpec {
     override def persistenceId = self.path.name
 
     override def receiveRecover: Receive = {
-      case Message => send()
+      case Message      => send()
       case CrashMessage =>
         log.debug("Crash it")
         throw new IllegalStateException("Intentionally crashed") with NoStackTrace
@@ -57,7 +57,7 @@ object AtLeastOnceDeliveryCrashSpec {
     }
 
     override def receiveCommand: Receive = {
-      case Message => persist(Message)(_ => send())
+      case Message      => persist(Message)(_ => send())
       case CrashMessage =>
         persist(CrashMessage) { _ =>
           testProbe ! ConfirmCrashMessage

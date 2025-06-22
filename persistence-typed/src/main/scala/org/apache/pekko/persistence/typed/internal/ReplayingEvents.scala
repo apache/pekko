@@ -143,7 +143,7 @@ private[pekko] final class ReplayingEvents[C, E, S](
                   case Some(replication) =>
                     val meta = repr.metadata match {
                       case Some(m) => m.asInstanceOf[ReplicatedEventMetadata]
-                      case None =>
+                      case None    =>
                         throw new IllegalStateException(
                           s"Replicated Event Sourcing enabled but existing event has no metadata. Migration isn't supported yet.")
 

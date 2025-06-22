@@ -151,7 +151,7 @@ final class EventHandlerBuilder[State, Event]() {
 
     val combined =
       builders.reverse match {
-        case head :: Nil => head
+        case head :: Nil  => head
         case head :: tail =>
           tail.foldLeft(head) { (acc, builder) =>
             acc.orElse(builder)
@@ -338,7 +338,7 @@ final class EventHandlerBuilderByState[S <: State, State, Event](
 
         result match {
           case OptionVal.Some(s) => s
-          case _ =>
+          case _                 =>
             val stateClass = if (state == null) "null" else state.getClass.getName
             throw new MatchError(
               s"No match found for event [${event.getClass}] and state [$stateClass]. Has this event been stored using an EventAdapter?")

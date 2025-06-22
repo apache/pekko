@@ -167,7 +167,7 @@ final class ClusterRouterGroupSettings(
 
   routeesPaths.foreach {
     case RelativeActorPath(_) => // good
-    case p =>
+    case p                    =>
       throw new IllegalArgumentException(s"routeesPaths [$p] is not a valid actor path without address information")
   }
 
@@ -481,7 +481,7 @@ private[pekko] class ClusterRouterPoolActor(
   override def addRoutees(): Unit = {
     @tailrec
     def doAddRoutees(): Unit = selectDeploymentTarget match {
-      case None => // done
+      case None         => // done
       case Some(target) =>
         val routeeProps = cell.routeeProps
         val deploy =
@@ -528,7 +528,7 @@ private[pekko] class ClusterRouterGroupActor(val settings: ClusterRouterGroupSet
 
   val group = cell.routerConfig match {
     case x: Group => x
-    case other =>
+    case other    =>
       throw ActorInitializationException("ClusterRouterGroupActor can only be used with group, not " + other.getClass)
   }
 
@@ -546,7 +546,7 @@ private[pekko] class ClusterRouterGroupActor(val settings: ClusterRouterGroupSet
   override def addRoutees(): Unit = {
     @tailrec
     def doAddRoutees(): Unit = selectDeploymentTarget match {
-      case None => // done
+      case None                  => // done
       case Some((address, path)) =>
         val routee = group.routeeFor(address.toString + path, context)
         usedRouteePaths = usedRouteePaths.updated(address, usedRouteePaths.getOrElse(address, Set.empty) + path)

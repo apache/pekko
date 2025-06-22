@@ -75,7 +75,7 @@ class MetricsCollectorSpec
         case (Processors, b)          => b.intValue should be >= 0
         case (HeapMemoryUsed, b)      => b.longValue should be >= 0L
         case (HeapMemoryCommitted, b) => b.longValue should be > 0L
-        case (HeapMemoryMax, b) =>
+        case (HeapMemoryMax, b)       =>
           b.longValue should be > 0L
           used.get.longValue should be <= b.longValue
           committed.get.longValue should be <= b.longValue

@@ -56,7 +56,7 @@ object ActorSystemSpec {
 
     def toBinary(o: AnyRef): Array[Byte] = o match {
       case TestMessage(ref) => actorRefResolver.toSerializationFormat(ref).getBytes(StandardCharsets.UTF_8)
-      case _ =>
+      case _                =>
         throw new IllegalArgumentException(s"Can't serialize object of type ${o.getClass} in [${getClass.getName}]")
     }
 

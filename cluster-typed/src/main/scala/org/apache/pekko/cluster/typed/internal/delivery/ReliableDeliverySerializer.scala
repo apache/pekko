@@ -67,7 +67,7 @@ import pekko.remote.ByteStringUtils
     case _: DurableProducerQueue.Confirmed         => DurableQueueConfirmedManifest
     case _: DurableProducerQueue.State[_]          => DurableQueueStateManifest
     case _: DurableProducerQueue.Cleanup           => DurableQueueCleanupManifest
-    case _ =>
+    case _                                         =>
       throw new IllegalArgumentException(s"Can't serialize object of type ${o.getClass} in [${getClass.getName}]")
   }
 
@@ -81,7 +81,7 @@ import pekko.remote.ByteStringUtils
     case m: DurableProducerQueue.Confirmed         => durableQueueConfirmedToBinary(m)
     case m: DurableProducerQueue.State[_]          => durableQueueStateToBinary(m)
     case m: DurableProducerQueue.Cleanup           => durableQueueCleanupToBinary(m)
-    case _ =>
+    case _                                         =>
       throw new IllegalArgumentException(s"Cannot serialize object of type [${o.getClass.getName}]")
   }
 
@@ -205,7 +205,7 @@ import pekko.remote.ByteStringUtils
     case DurableQueueConfirmedManifest   => durableQueueConfirmedFromBinary(bytes)
     case DurableQueueStateManifest       => durableQueueStateFromBinary(bytes)
     case DurableQueueCleanupManifest     => durableQueueCleanupFromBinary(bytes)
-    case _ =>
+    case _                               =>
       throw new NotSerializableException(
         s"Unimplemented deserialization of message with manifest [$manifest] in [${getClass.getName}]")
   }

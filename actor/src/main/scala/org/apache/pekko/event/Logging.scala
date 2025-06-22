@@ -1002,7 +1002,7 @@ object Logging {
       case e: Warning => warning(e)
       case e: Info    => info(e)
       case e: Debug   => debug(e)
-      case e =>
+      case e          =>
         warning(Warning(simpleName(this), this.getClass, "received unexpected event of class " + e.getClass + ": " + e))
     }
 
@@ -1154,7 +1154,7 @@ object Logging {
   def stackTraceFor(e: Throwable): String = e match {
     case null | Error.NoCause => ""
     case _: NoStackTrace      => s" (${e.getClass.getName}: ${e.getMessage})"
-    case other =>
+    case other                =>
       val sw = new java.io.StringWriter
       val pw = new java.io.PrintWriter(sw)
       pw.append('\n')

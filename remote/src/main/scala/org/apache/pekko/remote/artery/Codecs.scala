@@ -94,7 +94,7 @@ private[remote] class Encoder(
       private var _serialization: OptionVal[Serialization] = OptionVal.None
       private def serialization: Serialization = _serialization match {
         case OptionVal.Some(s) => s
-        case _ =>
+        case _                 =>
           val s = SerializationExtension(system)
           _serialization = OptionVal.Some(s)
           s
@@ -660,7 +660,7 @@ private[remote] class Deserializer(
       private var _serialization: OptionVal[Serialization] = OptionVal.None
       private def serialization: Serialization = _serialization match {
         case OptionVal.Some(s) => s
-        case _ =>
+        case _                 =>
           val s = SerializationExtension(system)
           _serialization = OptionVal.Some(s)
           s

@@ -541,7 +541,7 @@ object PersistentFSMSpec {
     }
 
     when(Paid) {
-      case Event(Leave, _) => stop()
+      case Event(Leave, _)             => stop()
       case Event(GetCurrentCart, data) =>
         stay().replying(data)
     }

@@ -147,7 +147,7 @@ final class LmdbDurableStore(config: Config) extends Actor with ActorLogging {
 
   private def lmdb(): Lmdb = _lmdb match {
     case OptionVal.Some(l) => l
-    case _ =>
+    case _                 =>
       val t0 = System.nanoTime()
       log.info("Using durable data in LMDB directory [{}]", dir.getCanonicalPath)
       val env = {

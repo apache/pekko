@@ -192,10 +192,10 @@ class FlowMapAsyncSpec extends StreamSpec {
       pf.success("f")
 
       probe.expectNextOrError() match {
-        case Left(ex) => ex.getMessage should ===("Boom at C") // fine, error can over-take elements
+        case Left(ex)   => ex.getMessage should ===("Boom at C") // fine, error can over-take elements
         case Right("A") =>
           probe.expectNextOrError() match {
-            case Left(ex) => ex.getMessage should ===("Boom at C") // fine, error can over-take elements
+            case Left(ex)   => ex.getMessage should ===("Boom at C") // fine, error can over-take elements
             case Right("B") =>
               probe.expectNextOrError() match {
                 case Left(ex)       => ex.getMessage should ===("Boom at C") // fine, error can over-take elements

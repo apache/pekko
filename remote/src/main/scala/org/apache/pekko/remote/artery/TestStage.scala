@@ -55,7 +55,7 @@ private[remote] class SharedTestState {
     direction match {
       case Direction.Send    => addBlackhole(a, b)
       case Direction.Receive => addBlackhole(b, a)
-      case Direction.Both =>
+      case Direction.Both    =>
         addBlackhole(a, b)
         addBlackhole(b, a)
     }
@@ -94,7 +94,7 @@ private[remote] class SharedTestState {
     direction match {
       case Direction.Send    => removeBlackhole(a, b)
       case Direction.Receive => removeBlackhole(b, a)
-      case Direction.Both =>
+      case Direction.Both    =>
         removeBlackhole(a, b)
         removeBlackhole(b, a)
     }

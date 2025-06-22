@@ -43,7 +43,7 @@ object HashCode {
     case value: Float   => hash(seed, value)
     case value: Double  => hash(seed, value)
     case value: Byte    => hash(seed, value)
-    case value: AnyRef =>
+    case value: AnyRef  =>
       var result = seed
       if (value eq null) result = hash(result, 0)
       else if (!isArray(value)) result = hash(result, value.hashCode())

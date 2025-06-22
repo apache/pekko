@@ -91,7 +91,7 @@ final class PersistencePluginProxy(config: Config) extends Actor with Stash with
   private val pluginType: PluginType = pluginId match {
     case "pekko.persistence.journal.proxy"        => Journal
     case "pekko.persistence.snapshot-store.proxy" => SnapshotStore
-    case other =>
+    case other                                    =>
       throw new IllegalArgumentException("Unknown plugin type: " + other)
   }
 
@@ -152,7 +152,7 @@ final class PersistencePluginProxy(config: Config) extends Actor with Stash with
       context.become(initTimedOut)
       unstashAll() // will trigger appropriate failures
     case Terminated(_) =>
-    case _ =>
+    case _             =>
       stash()
   }
 
@@ -178,7 +178,7 @@ final class PersistencePluginProxy(config: Config) extends Actor with Stash with
         context.become(active(target, address == selfAddress))
       case _: ActorIdentity => // will retry after ReceiveTimeout
       case Terminated(_)    =>
-      case ReceiveTimeout =>
+      case ReceiveTimeout   =>
         sendIdentify(address)
     }: Receive).orElse(init)
 
@@ -191,7 +191,7 @@ final class PersistencePluginProxy(config: Config) extends Actor with Stash with
       context.become(initTimedOut)
     case Terminated(_) =>
     case InitTimeout   =>
-    case msg =>
+    case msg           =>
       targetJournal.forward(msg)
   }
 
@@ -232,7 +232,7 @@ final class PersistencePluginProxy(config: Config) extends Actor with Stash with
       becomeIdentifying(address)
 
     case Terminated(_) =>
-    case _ =>
+    case _             =>
       val e = timeoutException()
       log.error(e, "Failed PersistencePluginProxy request: {}", e.getMessage)
   }

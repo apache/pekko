@@ -425,7 +425,7 @@ class MiscMessageSerializer(val system: ExtendedActorSystem) extends SerializerW
   override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef =
     fromBinaryMap.get(manifest) match {
       case Some(deserializer) => deserializer(bytes)
-      case None =>
+      case None               =>
         throw new NotSerializableException(
           s"Unimplemented deserialization of message with manifest [$manifest] in [${getClass.getName}]")
     }

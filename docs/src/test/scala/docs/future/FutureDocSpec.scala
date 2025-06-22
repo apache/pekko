@@ -412,7 +412,7 @@ class FutureDocSpec extends PekkoSpec {
     val msg1 = -1
     // #try-recover
     val future = pekko.pattern.ask(actor, msg1).recoverWith {
-      case e: ArithmeticException => Future.successful(0)
+      case e: ArithmeticException        => Future.successful(0)
       case foo: IllegalArgumentException =>
         Future.failed[Int](new IllegalStateException("All br0ken!"))
     }

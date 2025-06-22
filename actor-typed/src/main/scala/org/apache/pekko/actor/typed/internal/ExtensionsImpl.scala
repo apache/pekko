@@ -55,7 +55,7 @@ private[pekko] trait ExtensionsImpl extends Extensions { self: ActorSystem[_] wi
 
       idTry match {
         case Success(id: ExtensionId[_]) => registerExtension(id)
-        case Success(_) =>
+        case Success(_)                  =>
           if (!throwOnLoadFail) log.error("[{}] is not an 'ExtensionId', skipping...", extensionIdFQCN)
           else throw new RuntimeException(s"[$extensionIdFQCN] is not an 'ExtensionId'")
         case Failure(problem) =>
@@ -100,7 +100,7 @@ private[pekko] trait ExtensionsImpl extends Extensions { self: ActorSystem[_] wi
             }
             .getOrElse(ext.createExtension(self))
           instance match {
-            case null => throw new IllegalStateException(s"Extension instance created as 'null' for extension [$ext]")
+            case null    => throw new IllegalStateException(s"Extension instance created as 'null' for extension [$ext]")
             case nonNull =>
               val instance = nonNull.asInstanceOf[T]
               // Replace our in process signal with the initialized extension

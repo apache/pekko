@@ -167,7 +167,7 @@ object TypedActor extends ExtensionId[TypedActorExtension] with ExtensionIdProvi
       } catch { case i: InvocationTargetException => throw i.getTargetException }
 
     @throws(classOf[ObjectStreamException]) private def writeReplace(): AnyRef = parameters match {
-      case null => SerializedMethodCall(method.getDeclaringClass, method.getName, method.getParameterTypes, null)
+      case null                 => SerializedMethodCall(method.getDeclaringClass, method.getName, method.getParameterTypes, null)
       case ps if ps.length == 0 =>
         SerializedMethodCall(method.getDeclaringClass, method.getName, method.getParameterTypes, Array())
       case ps =>
@@ -209,7 +209,7 @@ object TypedActor extends ExtensionId[TypedActorExtension] with ExtensionIdProvi
         serializedParameters match {
           case null               => null
           case a if a.length == 0 => Array[AnyRef]()
-          case a =>
+          case a                  =>
             val deserializedParameters: Array[AnyRef] = new Array[AnyRef](a.length) // Mutable for the sake of sanity
             for (i <- 0 until a.length) {
               val (sId, manifest, bytes) = a(i)
@@ -318,7 +318,7 @@ object TypedActor extends ExtensionId[TypedActorExtension] with ExtensionIdProvi
     override def preRestart(reason: Throwable, message: Option[Any]): Unit = withContext {
       me match {
         case l: PreRestart => l.preRestart(reason, message)
-        case _ =>
+        case _             =>
           self.context.children
             .foreach(self.context.stop) // Can't be super.preRestart(reason, message) since that would invoke postStop which would set the actorVar to DL and proxyVar to null
       }
@@ -465,11 +465,11 @@ object TypedActor extends ExtensionId[TypedActorExtension] with ExtensionIdProvi
     @throws(classOf[Throwable])
     def invoke(proxy: AnyRef, method: Method, args: Array[AnyRef]): AnyRef = method.getName match {
       case "toString" => actor.toString
-      case "equals" =>
+      case "equals"   =>
         (args.length == 1 && (proxy eq args(0)) || actor == extension.getActorRefFor(args(0)))
           .asInstanceOf[AnyRef] // Force boxing of the boolean
       case "hashCode" => actor.hashCode.asInstanceOf[AnyRef]
-      case _ =>
+      case _          =>
         implicit val dispatcher = extension.system.dispatcher
         import pekko.pattern.ask
         MethodCall(method, args) match {
@@ -761,7 +761,7 @@ class TypedActorExtension(val system: ExtendedActorSystem) extends TypedActorFac
   private[pekko] def invocationHandlerFor(typedActor: AnyRef): TypedActorInvocationHandler =
     if ((typedActor ne null) && classOf[Proxy].isAssignableFrom(typedActor.getClass) && Proxy.isProxyClass(
         typedActor.getClass)) typedActor match {
-      case null => null
+      case null  => null
       case other =>
         Proxy.getInvocationHandler(other) match {
           case null                                 => null

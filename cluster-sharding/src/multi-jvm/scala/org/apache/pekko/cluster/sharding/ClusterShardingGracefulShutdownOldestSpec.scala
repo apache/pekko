@@ -42,7 +42,7 @@ object ClusterShardingGracefulShutdownOldestSpec {
     import SlowStopShardedEntity._
 
     def receive: Receive = {
-      case id: Int => sender() ! id
+      case id: Int                    => sender() ! id
       case SlowStopShardedEntity.Stop =>
         timers.startSingleTimer(ActualStop, ActualStop, 50.millis)
       case SlowStopShardedEntity.ActualStop =>

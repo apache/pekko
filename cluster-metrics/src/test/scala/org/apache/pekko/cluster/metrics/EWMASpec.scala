@@ -95,7 +95,7 @@ class EWMASpec extends PekkoSpec(MetricsConfig.defaultEnabled) with MetricsColle
         usedMemory = usedMemory ++ Array.fill(1024)(ThreadLocalRandom.current.nextInt(127).toByte)
         val changes = collector.sample().metrics.flatMap { latest =>
           streamingDataSet.get(latest.name) match {
-            case None => Some(latest)
+            case None           => Some(latest)
             case Some(previous) =>
               if (latest.isSmooth && latest.value != previous.value) {
                 val updated = previous :+ latest

@@ -73,7 +73,7 @@ private[pekko] class ReplayingSnapshot[C, E, S](override val setup: BehaviorSetu
           case RecoveryTickEvent(snapshot)                => onRecoveryTick(snapshot)
           case evt: ReplicatedEventEnvelope[E @unchecked] => onReplicatedEvent(evt)
           case pe: PublishedEventImpl                     => onPublishedEvent(pe)
-          case cmd: IncomingCommand[C @unchecked] =>
+          case cmd: IncomingCommand[C @unchecked]         =>
             if (receivedPoisonPill) {
               if (setup.settings.logOnStashing)
                 setup.internalLogger.debug("Discarding message [{}], because actor is to be stopped.", cmd)

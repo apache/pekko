@@ -325,7 +325,7 @@ object SupervisorHierarchySpec {
             // an indication of duplicate Terminate messages
             log :+= Event(s"${sender()} terminated while pongOfDeath", identityHashCode(Hierarchy.this))
           }
-        case Abort => abort("terminating")
+        case Abort       => abort("terminating")
         case PingOfDeath =>
           if (size > 1) {
             pongsToGo = context.children.size
@@ -528,7 +528,7 @@ object SupervisorHierarchySpec {
         stay()
       case this.Event(Work, x) if x > 0 =>
         nextJob.next() match {
-          case Ping(ref) => ref ! "ping"
+          case Ping(ref)      => ref ! "ping"
           case Fail(ref, dir) =>
             val f = Failure(
               dir,
@@ -547,7 +547,7 @@ object SupervisorHierarchySpec {
         if (idleChildren.nonEmpty) self ! Work
         else context.system.scheduler.scheduleOnce(workSchedule, self, Work)(context.dispatcher)
         stay().using(x - 1)
-      case this.Event(Work, _) => if (pingChildren.isEmpty) goto(LastPing) else goto(Finishing)
+      case this.Event(Work, _)       => if (pingChildren.isEmpty) goto(LastPing) else goto(Finishing)
       case this.Event(Died(path), _) =>
         bury(path)
         stay()
@@ -605,7 +605,7 @@ object SupervisorHierarchySpec {
     }
 
     when(Stopping, stateTimeout = 5.seconds.dilated) {
-      case this.Event(PongOfDeath, _) => stay()
+      case this.Event(PongOfDeath, _)                     => stay()
       case this.Event(Terminated(r), _) if r == hierarchy =>
         @nowarn
         val undead = children.filterNot(_.isTerminated)

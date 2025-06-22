@@ -328,7 +328,7 @@ private class WorkPullingProducerControllerImpl[A: ClassTag](
         } else {
           selectWorker() match {
             case Some(w) => Right(w)
-            case None =>
+            case None    =>
               checkStashFull(stashBuffer)
               context.log.debug("Stashing message, seqNr [{}]", totalSeqNr)
               stashBuffer.stash(Msg(msg, wasStashed = true, replyTo))
@@ -507,7 +507,7 @@ private class WorkPullingProducerControllerImpl[A: ClassTag](
         if (traceEnabled)
           context.log.trace("Received Ack seqNr [{}] from worker [{}].", confirmedSeqNr, outState.confirmationQualifier)
         confirmed.foreach {
-          case Unconfirmed(_, _, _, None) => // no reply
+          case Unconfirmed(_, _, _, None)          => // no reply
           case Unconfirmed(_, _, _, Some(replyTo)) =>
             replyTo ! Done
         }

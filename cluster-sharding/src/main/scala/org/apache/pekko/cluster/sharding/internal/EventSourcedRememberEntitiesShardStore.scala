@@ -95,7 +95,7 @@ private[pekko] final class EventSourcedRememberEntitiesShardStore(
     case EntitiesStarted(ids)              => state = state.copy(state.entities.union(ids))
     case EntitiesStopped(ids)              => state = state.copy(state.entities.diff(ids))
     case SnapshotOffer(_, snapshot: State) => state = snapshot
-    case RecoveryCompleted =>
+    case RecoveryCompleted                 =>
       log.debug("Recovery completed for shard [{}] with [{}] entities", shardId, state.entities.size)
   }
 

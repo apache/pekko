@@ -30,7 +30,7 @@ import pekko.annotation.InternalApi
   def toClassic(scheduler: Scheduler): pekko.actor.Scheduler =
     scheduler match {
       case s: SchedulerAdapter => s.classicScheduler
-      case _ =>
+      case _                   =>
         throw new UnsupportedOperationException(
           "unknown Scheduler type " +
           s"($scheduler of class ${scheduler.getClass.getName})")

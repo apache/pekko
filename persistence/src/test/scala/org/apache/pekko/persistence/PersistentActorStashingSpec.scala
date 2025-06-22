@@ -145,7 +145,7 @@ object PersistentActorStashingSpec {
     var stashed = false
 
     val receiveCommand: Receive = commonBehavior.orElse(unstashBehavior).orElse {
-      case Cmd("a") => persistAsync(Evt("a"))(updateState)
+      case Cmd("a")             => persistAsync(Evt("a"))(updateState)
       case Cmd("b") if !stashed =>
         stash(); stashed = true
       case Cmd("b") => persistAsync(Evt("b"))(updateState)

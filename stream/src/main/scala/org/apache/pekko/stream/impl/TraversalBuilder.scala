@@ -296,15 +296,15 @@ import pekko.util.unused
       var nextStep: Traversal = EmptyTraversal
 
       current match {
-        case PushNotUsed          => prindent("push NotUsed")
-        case Pop                  => prindent("pop mat")
-        case _: Transform         => prindent("transform mat")
-        case Compose(_, false)    => prindent("compose mat")
-        case Compose(_, true)     => prindent("compose reversed mat")
-        case PushAttributes(attr) => prindent("push attr " + attr)
-        case PopAttributes        => prindent("pop attr")
-        case EnterIsland(tag)     => prindent("enter island " + tag)
-        case ExitIsland           => prindent("exit island")
+        case PushNotUsed                        => prindent("push NotUsed")
+        case Pop                                => prindent("pop mat")
+        case _: Transform                       => prindent("transform mat")
+        case Compose(_, false)                  => prindent("compose mat")
+        case Compose(_, true)                   => prindent("compose reversed mat")
+        case PushAttributes(attr)               => prindent("push attr " + attr)
+        case PopAttributes                      => prindent("pop attr")
+        case EnterIsland(tag)                   => prindent("enter island " + tag)
+        case ExitIsland                         => prindent("exit island")
         case MaterializeAtomic(mod, outToSlots) =>
           prindent("materialize " + mod + " " + outToSlots.mkString("[", ", ", "]"))
         case Concat(first, next) =>
@@ -356,7 +356,7 @@ import pekko.util.unused
   def getSingleSource[A >: Null](graph: Graph[SourceShape[A], _]): OptionVal[SingleSource[A]] = {
     graph match {
       case single: SingleSource[A] @unchecked => OptionVal.Some(single)
-      case _ =>
+      case _                                  =>
         graph.traversalBuilder match {
           case l: LinearTraversalBuilder =>
             l.pendingBuilder match {
@@ -396,7 +396,7 @@ import pekko.util.unused
     }
     graph match {
       case _ if isValuePresentedSource(graph) => OptionVal.Some(graph)
-      case _ =>
+      case _                                  =>
         graph.traversalBuilder match {
           case l: LinearTraversalBuilder =>
             l.pendingBuilder match {
@@ -1406,7 +1406,7 @@ import pekko.util.unused
   override def makeIsland(islandTag: IslandTag): TraversalBuilder = {
     this.islandTag match {
       case OptionVal.None => copy(islandTag = OptionVal(islandTag))
-      case _ =>
+      case _              =>
         this // Wrapping with an island, then immediately re-wrapping makes the second island empty, so can be omitted
     }
   }

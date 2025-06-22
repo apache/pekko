@@ -294,7 +294,7 @@ private[remote] object InboundCompression {
       } else {
         @tailrec def find(tables: List[DecompressionTable[T]]): OptionVal[DecompressionTable[T]] = {
           tables match {
-            case Nil => OptionVal.None
+            case Nil       => OptionVal.None
             case t :: tail =>
               if (t.version == version) OptionVal.Some(t)
               else find(tail)

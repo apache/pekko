@@ -58,8 +58,8 @@ object DistributedPubSubSettings {
     new DistributedPubSubSettings(
       role = roleOption(config.getString("role")),
       routingLogic = config.getString("routing-logic") match {
-        case "random"      => RandomRoutingLogic()
-        case "round-robin" => RoundRobinRoutingLogic()
+        case "random"             => RandomRoutingLogic()
+        case "round-robin"        => RoundRobinRoutingLogic()
         case "consistent-hashing" =>
           throw new IllegalArgumentException(
             s"'consistent-hashing' routing logic can't be used by the pub-sub mediator")
@@ -784,7 +784,7 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
       }
 
     case _: MemberEvent => // not of interest
-    case Count =>
+    case Count          =>
       val count = registry.map {
         case (_, bucket) =>
           bucket.content.count {

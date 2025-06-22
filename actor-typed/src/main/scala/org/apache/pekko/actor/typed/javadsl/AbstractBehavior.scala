@@ -52,7 +52,7 @@ abstract class AbstractBehavior[T](context: ActorContext[T]) extends ExtensibleB
   private var _receive: OptionVal[Receive[T]] = OptionVal.None
   private def receive: Receive[T] = _receive match {
     case OptionVal.Some(r) => r
-    case _ =>
+    case _                 =>
       val receive = createReceive
       _receive = OptionVal.Some(receive)
       receive

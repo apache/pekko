@@ -183,7 +183,7 @@ private[pekko] class ReplayFilter(
     buffer.clear()
     persistentActor.tell(ReplayMessagesFailure(cause), Actor.noSender)
     context.become {
-      case _: ReplayedMessage => // discard
+      case _: ReplayedMessage                            => // discard
       case _: RecoverySuccess | _: ReplayMessagesFailure =>
         context.stop(self)
     }

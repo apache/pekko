@@ -174,7 +174,7 @@ import pekko.remote.artery.ThisActorSystemQuarantinedEvent
 
   private def releaseLeaseAfter: FiniteDuration = strategy match {
     case lm: LeaseMajority => lm.releaseAfter
-    case other =>
+    case other             =>
       throw new IllegalStateException(s"Unexpected use of releaseLeaseAfter for strategy [${other.getClass.getName}]")
   }
 
@@ -421,7 +421,7 @@ import pekko.remote.artery.ThisActorSystemQuarantinedEvent
 
     case ReleaseLeaseResult(_) => // superseded by new acquire release request
     case Tick                  => // ignore ticks while waiting
-    case _ =>
+    case _                     =>
       stash()
   }
 

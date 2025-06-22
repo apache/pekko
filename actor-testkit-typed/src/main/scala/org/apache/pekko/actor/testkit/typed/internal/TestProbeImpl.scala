@@ -313,8 +313,8 @@ private[pekko] final class TestProbeImpl[M](name: String, system: ActorSystem[_]
                   ex)
             }
           outcome match {
-            case FishingOutcome.Complete    => (message :: seen).reverse
-            case FishingOutcome.Fail(error) => assertFail(s"$error, hint: $hint")
+            case FishingOutcome.Complete                  => (message :: seen).reverse
+            case FishingOutcome.Fail(error)               => assertFail(s"$error, hint: $hint")
             case continue: FishingOutcome.ContinueOutcome =>
               val newTimeout = timeout - (System.nanoTime() - start).nanos
               continue match {

@@ -80,10 +80,10 @@ private[pekko] final case class WildcardTree[T](
       val nextElement = elems.next()
       children.get(nextElement) match {
         case Some(branch) => branch.findWithSingleWildcard(elems)
-        case None =>
+        case None         =>
           children.get("*") match {
             case Some(branch) => branch.findWithSingleWildcard(elems)
-            case None =>
+            case None         =>
               val maybeWildcardSuffixMatchingBranch = wildcardSuffixChildren.collectFirst {
                 case (key, branch) if nextElement.startsWith(key) => branch
               }
@@ -103,7 +103,7 @@ private[pekko] final case class WildcardTree[T](
       val newAlt = children.getOrElse("**", alt)
       children.get(elems.next()) match {
         case Some(branch) => branch.findWithTerminalDoubleWildcard(elems, newAlt)
-        case None =>
+        case None         =>
           children.get("*") match {
             case Some(branch) => branch.findWithTerminalDoubleWildcard(elems, newAlt)
             case None         => newAlt

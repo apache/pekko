@@ -29,13 +29,13 @@ final class ServiceKeySerializer(val system: pekko.actor.ExtendedActorSystem)
     with BaseSerializer {
   def manifest(o: AnyRef): String = o match {
     case key: DefaultServiceKey[_] => key.typeName
-    case _ =>
+    case _                         =>
       throw new IllegalArgumentException(s"Can't serialize object of type ${o.getClass} in [${getClass.getName}]")
   }
 
   def toBinary(o: AnyRef): Array[Byte] = o match {
     case serviceKey: DefaultServiceKey[_] => serviceKey.id.getBytes(StandardCharsets.UTF_8)
-    case _ =>
+    case _                                =>
       throw new IllegalArgumentException(s"Cannot serialize object of type [${o.getClass.getName}]")
   }
 

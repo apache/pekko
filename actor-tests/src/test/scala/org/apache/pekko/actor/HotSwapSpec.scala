@@ -111,7 +111,7 @@ class HotSwapSpec extends PekkoSpec with ImplicitSender {
       val a = system.actorOf(Props(new Actor {
         def receive = {
           case "state" => sender() ! "0"
-          case "swap" =>
+          case "swap"  =>
             context.become {
               case "state"   => sender() ! "1"
               case "swapped" => sender() ! "swapped"

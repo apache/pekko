@@ -107,7 +107,7 @@ import scala.collection.immutable.TreeMap
     case _: ReplicatedSnapshotMetadata => ReplicatedSnapshotMetadataManifest
 
     case _: PublishedEventImpl => PublishedEventManifest
-    case _ =>
+    case _                     =>
       throw new IllegalArgumentException(s"Can't serialize object of type ${o.getClass} in [${getClass.getName}]")
   }
 
@@ -231,7 +231,7 @@ import scala.collection.immutable.TreeMap
       case s: String => stringElements.add(s)
       case i: Int    => intElements.add(i)
       case l: Long   => longElements.add(l)
-      case other =>
+      case other     =>
         val enclosedMsg = wrappedSupport.payloadBuilder(other).build()
         otherElements.add(enclosedMsg)
         // need the mapping back to the `other` when adding dots

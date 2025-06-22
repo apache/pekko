@@ -101,7 +101,7 @@ private[pekko] trait DeathWatch { this: ActorCell =>
       existenceConfirmed: Boolean,
       addressTerminated: Boolean): Unit = {
     watching.get(actor) match {
-      case None => // We're apparently no longer watching this actor.
+      case None                  => // We're apparently no longer watching this actor.
       case Some(optionalMessage) =>
         maintainAddressTerminatedSubscription(actor) {
           watching -= actor

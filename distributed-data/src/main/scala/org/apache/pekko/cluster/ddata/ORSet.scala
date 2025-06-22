@@ -158,7 +158,7 @@ object ORSet {
         remaining: List[(UniqueAddress, Long)],
         acc: List[(UniqueAddress, Long)]): List[(UniqueAddress, Long)] =
       remaining match {
-        case Nil => acc
+        case Nil                      => acc
         case (d @ (node, v1)) :: rest =>
           val v2 = vvector.versionAt(node)
           if (v2 >= v1)
@@ -482,15 +482,15 @@ final class ORSet[A] private[pekko] (
 
   override def mergeDelta(thatDelta: ORSet.DeltaOp): ORSet[A] = {
     thatDelta match {
-      case d: ORSet.AddDeltaOp[_]    => dryMerge(d.asInstanceOf[ORSet.AddDeltaOp[A]].underlying, addDeltaOp = true)
-      case d: ORSet.RemoveDeltaOp[_] => mergeRemoveDelta(d.asInstanceOf[ORSet.RemoveDeltaOp[A]])
+      case d: ORSet.AddDeltaOp[_]       => dryMerge(d.asInstanceOf[ORSet.AddDeltaOp[A]].underlying, addDeltaOp = true)
+      case d: ORSet.RemoveDeltaOp[_]    => mergeRemoveDelta(d.asInstanceOf[ORSet.RemoveDeltaOp[A]])
       case d: ORSet.FullStateDeltaOp[_] =>
         dryMerge(d.asInstanceOf[ORSet.FullStateDeltaOp[A]].underlying, addDeltaOp = false)
       case ORSet.DeltaGroup(ops) =>
         ops.foldLeft(this) {
           case (acc, op: ORSet.AddDeltaOp[_]) =>
             acc.dryMerge(op.asInstanceOf[ORSet.AddDeltaOp[A]].underlying, addDeltaOp = true)
-          case (acc, op: ORSet.RemoveDeltaOp[_]) => acc.mergeRemoveDelta(op.asInstanceOf[ORSet.RemoveDeltaOp[A]])
+          case (acc, op: ORSet.RemoveDeltaOp[_])    => acc.mergeRemoveDelta(op.asInstanceOf[ORSet.RemoveDeltaOp[A]])
           case (acc, op: ORSet.FullStateDeltaOp[_]) =>
             acc.dryMerge(op.asInstanceOf[ORSet.FullStateDeltaOp[A]].underlying, addDeltaOp = false)
           case (_, _: ORSet.DeltaGroup[_]) =>

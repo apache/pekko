@@ -87,7 +87,7 @@ object FaultHandlingDocSpec {
     override val supervisorStrategy =
       OneForOneStrategy(maxNrOfRetries = 10, withinTimeRange = 1.minute) {
         case _: ArithmeticException => Resume
-        case t =>
+        case t                      =>
           super.supervisorStrategy.decider.applyOrElse(t, (_: Any) => Escalate)
       }
     // #default-strategy-fallback

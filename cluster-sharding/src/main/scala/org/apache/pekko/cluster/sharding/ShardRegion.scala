@@ -764,7 +764,7 @@ private[pekko] class ShardRegion(
     case msg: StartEntity                        => deliverStartEntity(msg, sender())
     case msg: SetActiveEntityLimit               => deliverToAllShards(msg, sender())
     case msg if extractEntityId.isDefinedAt(msg) => deliverMessage(msg, sender())
-    case unknownMsg =>
+    case unknownMsg                              =>
       log.warning("{}: Message does not have an extractor defined in shard so it was ignored: {}", typeName, unknownMsg)
   }
 

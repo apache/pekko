@@ -182,7 +182,7 @@ object PersistentActorCompileOnlyTest {
       eventHandler = (state, evt) =>
         evt match {
           case TaskRegistered(task) => State(task :: state.tasksInFlight)
-          case TaskRemoved(task) =>
+          case TaskRemoved(task)    =>
             State(state.tasksInFlight.filter(_ != task))
         }).snapshotWhen { (state, e, seqNr) =>
       state.tasksInFlight.isEmpty
@@ -220,7 +220,7 @@ object PersistentActorCompileOnlyTest {
         eventHandler = (state, evt) =>
           evt match {
             case TaskRegistered(task) => State(task :: state.tasksInFlight)
-            case TaskRemoved(task) =>
+            case TaskRemoved(task)    =>
               State(state.tasksInFlight.filter(_ != task))
           }))
 

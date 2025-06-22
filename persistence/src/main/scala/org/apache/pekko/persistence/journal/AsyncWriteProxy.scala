@@ -150,7 +150,7 @@ private class ReplayMediator(
 
   def receive = {
     case p: PersistentRepr => replayCallback(p)
-    case _: ReplaySuccess =>
+    case _: ReplaySuccess  =>
       replayCompletionPromise.success(())
       context.stop(self)
     case ReplayFailure(cause) =>

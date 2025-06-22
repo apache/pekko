@@ -159,7 +159,7 @@ private[pekko] class RoutedActorCell(
 private[pekko] class RouterActor extends Actor {
   val cell = context match {
     case x: RoutedActorCell => x
-    case _ =>
+    case _                  =>
       throw ActorInitializationException("Router actor can only be used in RoutedActorRef, not in " + context.getClass)
   }
 
@@ -198,7 +198,7 @@ private[pekko] class RouterPoolActor(override val supervisorStrategy: Supervisor
 
   val pool = cell.routerConfig match {
     case x: Pool => x
-    case other =>
+    case other   =>
       throw ActorInitializationException("RouterPoolActor can only be used with Pool, not " + other.getClass)
   }
 

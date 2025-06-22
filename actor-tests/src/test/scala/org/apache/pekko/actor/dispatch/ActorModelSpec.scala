@@ -99,7 +99,7 @@ object ActorModelSpec {
       case Increment(count)  => { ack(); count.incrementAndGet(); busy.switchOff(()) }
       case CountDownNStop(l) => { ack(); l.countDown(); context.stop(self); busy.switchOff(()) }
       case Restart           => { ack(); busy.switchOff(()); throw new Exception("Restart requested") }
-      case Interrupt => {
+      case Interrupt         => {
         ack(); sender() ! Status.Failure(new ActorInterruptedException(new InterruptedException("Ping!")));
         busy.switchOff(()); throw new InterruptedException("Ping!")
       }

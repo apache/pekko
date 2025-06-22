@@ -204,7 +204,7 @@ private[pekko] object ChildrenContainer {
 
     override def reserve(name: String): ChildrenContainer = reason match {
       case Termination => throw new IllegalStateException("cannot reserve actor name '" + name + "': terminating")
-      case _ =>
+      case _           =>
         if (c contains name)
           throw InvalidActorNameException(s"actor name [$name] is not unique!")
         else copy(c = c.updated(name, ChildNameReserved))

@@ -564,9 +564,9 @@ class TestEventListener extends Logging.DefaultLogger {
       Seq(classOf[Mute], classOf[UnMute], classOf[DeadLetter], classOf[UnhandledMessage], classOf[Dropped])
         .foreach(bus.subscribe(context.self, _))
       sender() ! LoggerInitialized
-    case Mute(filters)   => filters.foreach(addFilter)
-    case UnMute(filters) => filters.foreach(removeFilter)
-    case event: LogEvent => if (!filter(event)) print(event)
+    case Mute(filters)             => filters.foreach(addFilter)
+    case UnMute(filters)           => filters.foreach(removeFilter)
+    case event: LogEvent           => if (!filter(event)) print(event)
     case DeadLetter(msg, snd, rcp) =>
       if (!msg.isInstanceOf[Terminate]) {
         val event = Warning(rcp.path.toString, rcp.getClass, msg)

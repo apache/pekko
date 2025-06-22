@@ -61,8 +61,8 @@ object DeathWatchSpec {
 
   class WUWatcher extends Actor {
     def receive = {
-      case W(ref) => context.watch(ref)
-      case U(ref) => context.unwatch(ref)
+      case W(ref)                                => context.watch(ref)
+      case U(ref)                                => context.unwatch(ref)
       case Latches(t1: TestLatch, t2: TestLatch) =>
         t1.countDown()
         Await.ready(t2, 3.seconds)

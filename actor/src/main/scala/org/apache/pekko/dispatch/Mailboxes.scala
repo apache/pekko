@@ -119,7 +119,7 @@ private[pekko] class Mailboxes(
       case t: ParameterizedType =>
         t.getActualTypeArguments.head match {
           case c: Class[_] => c
-          case x =>
+          case x           =>
             throw new IllegalArgumentException(s"no wildcard type allowed in RequireMessageQueue argument (was [$x])")
         }
       case unexpected =>
@@ -143,7 +143,7 @@ private[pekko] class Mailboxes(
         case t: ParameterizedType =>
           t.getActualTypeArguments.head match {
             case c: Class[_] => c
-            case x =>
+            case x           =>
               throw new IllegalArgumentException(
                 s"no wildcard type allowed in ProducesMessageQueue argument (was [$x])")
           }
@@ -239,7 +239,7 @@ private[pekko] class Mailboxes(
             val conf = config(id)
 
             val mailboxType = conf.getString("mailbox-type") match {
-              case "" => throw new ConfigurationException(s"The setting mailbox-type, defined in [$id] is empty")
+              case ""   => throw new ConfigurationException(s"The setting mailbox-type, defined in [$id] is empty")
               case fqcn =>
                 val args = List(classOf[ActorSystem.Settings] -> settings, classOf[Config] -> conf)
                 dynamicAccess
@@ -313,7 +313,7 @@ private[pekko] class Mailboxes(
       val key = dispatcher + "-" + mailbox
       cache.get(key) match {
         case Some(value) => value
-        case None =>
+        case None        =>
           val value = stashCapacityFromConfig(dispatcher, mailbox)
           updateCache(cache, key, value)
           value

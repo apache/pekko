@@ -46,9 +46,9 @@ import pekko.util.unused
 
   def merge(that: PruningState): PruningState =
     (this, that) match {
-      case (p1: PruningPerformed, p2: PruningPerformed) => if (p1.obsoleteTime >= p2.obsoleteTime) this else that
-      case (_: PruningPerformed, _)                     => this
-      case (_, _: PruningPerformed)                     => that
+      case (p1: PruningPerformed, p2: PruningPerformed)                                       => if (p1.obsoleteTime >= p2.obsoleteTime) this else that
+      case (_: PruningPerformed, _)                                                           => this
+      case (_, _: PruningPerformed)                                                           => that
       case (PruningInitialized(thisOwner, thisSeen), PruningInitialized(thatOwner, thatSeen)) =>
         if (thisOwner == thatOwner)
           PruningInitialized(thisOwner, thisSeen.union(thatSeen))

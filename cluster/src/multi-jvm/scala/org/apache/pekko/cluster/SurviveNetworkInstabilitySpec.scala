@@ -329,7 +329,7 @@ abstract class SurviveNetworkInstabilitySpec
         // not be downed, see issue #25632
         Thread.sleep(2000)
         val secondUniqueAddress = cluster.state.members.find(_.address == address(second)) match {
-          case None => fail("Unexpected removal of quarantined node")
+          case None    => fail("Unexpected removal of quarantined node")
           case Some(m) =>
             m.status should ===(MemberStatus.Up) // not Down
             m.uniqueAddress

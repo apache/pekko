@@ -148,7 +148,7 @@ private[persistence] class SharedLeveldbJournal extends AsyncWriteProxy {
       // forward subscriptions, they are used by query-side
       store match {
         case Some(s) => s.forward(cmd)
-        case None =>
+        case None    =>
           log.error(
             "Failed {} request. " +
             "Store not initialized. Use `SharedLeveldbJournal.setStore(sharedStore, system)`",

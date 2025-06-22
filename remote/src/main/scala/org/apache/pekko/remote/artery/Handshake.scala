@@ -273,7 +273,7 @@ private[remote] class InboundHandshake(inboundContext: InboundContext, inControl
               val env = grab(in)
               env.message match {
                 case HandshakeReq(from, to) => onHandshakeReq(from, to)
-                case _ =>
+                case _                      =>
                   onMessage(env)
               }
             }

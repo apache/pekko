@@ -117,10 +117,10 @@ object AccountExampleWithEventHandlersInState {
 
           case acc @ OpenedAccount(_) =>
             cmd match {
-              case c: Deposit      => deposit(c)
-              case c: Withdraw     => withdraw(acc, c)
-              case c: GetBalance   => getBalance(acc, c)
-              case c: CloseAccount => closeAccount(acc, c)
+              case c: Deposit       => deposit(c)
+              case c: Withdraw      => withdraw(acc, c)
+              case c: GetBalance    => getBalance(acc, c)
+              case c: CloseAccount  => closeAccount(acc, c)
               case c: CreateAccount =>
                 Effect.reply(c.replyTo)(StatusReply.Error(s"Account $accountNumber is already created"))
             }

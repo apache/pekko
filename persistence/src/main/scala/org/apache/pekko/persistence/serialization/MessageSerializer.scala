@@ -72,12 +72,12 @@ class MessageSerializer(val system: ExtendedActorSystem) extends BaseSerializer 
    * message's payload to a matching `org.apache.pekko.serialization.Serializer`.
    */
   def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): Message = manifest match {
-    case None => persistent(mf.PersistentMessage.parseFrom(bytes))
+    case None    => persistent(mf.PersistentMessage.parseFrom(bytes))
     case Some(c) =>
       c match {
-        case PersistentImplClass => persistent(mf.PersistentMessage.parseFrom(bytes))
-        case PersistentReprClass => persistent(mf.PersistentMessage.parseFrom(bytes))
-        case AtomicWriteClass    => atomicWrite(mf.AtomicWrite.parseFrom(bytes))
+        case PersistentImplClass              => persistent(mf.PersistentMessage.parseFrom(bytes))
+        case PersistentReprClass              => persistent(mf.PersistentMessage.parseFrom(bytes))
+        case AtomicWriteClass                 => atomicWrite(mf.AtomicWrite.parseFrom(bytes))
         case AtLeastOnceDeliverySnapshotClass =>
           atLeastOnceDeliverySnapshot(mf.AtLeastOnceDeliverySnapshot.parseFrom(bytes))
         case PersistentStateChangeEventClass => stateChange(mf.PersistentStateChangeEvent.parseFrom(bytes))

@@ -579,7 +579,7 @@ object ClusterShardingSettings {
     def apply(config: Config): PassivationStrategySettings = {
       toRootLowerCase(config.getString("strategy")) match {
         case "off" | "none" => PassivationStrategySettings.disabled
-        case strategyName =>
+        case strategyName   =>
           val strategyDefaults = config.getConfig("strategy-defaults")
           val strategyConfig = config.getConfig(strategyName).withFallback(strategyDefaults)
           val idleEntitySettings = IdleSettings.optional(strategyConfig.getConfig("idle-entity"))
@@ -873,7 +873,7 @@ object ClusterShardingSettings {
               idle) =>
           val describeWindow = windowStrategy match {
             case NoPassivationStrategy => "no admission window"
-            case _ =>
+            case _                     =>
               s"admission window (${describe(windowStrategy)})" +
               (windowOptimizer match {
                 case CompositePassivationStrategy.NoAdmissionOptimizer =>

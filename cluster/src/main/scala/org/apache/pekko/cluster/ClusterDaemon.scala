@@ -429,7 +429,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
   // start periodic publish of current stats
   val publishStatsTask: Option[Cancellable] = PublishStatsInterval match {
     case Duration.Zero | _: Duration.Infinite => None
-    case d: FiniteDuration =>
+    case d: FiniteDuration                    =>
       Some(scheduler.scheduleWithFixedDelay(PeriodicTasksInitialDelay.max(d), d, self, PublishStatsTick))
   }
 
@@ -513,7 +513,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
         becomeUninitialized()
         joinSeedNodes(newSeedNodes)
       case msg: SubscriptionMessage => publisher.forward(msg)
-      case _: Tick =>
+      case _: Tick                  =>
         if (joinSeedNodesDeadline.exists(_.isOverdue()))
           joinSeedNodesWasUnsuccessful()
         else if (deadline.exists(_.isOverdue())) {
@@ -566,13 +566,13 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
   @nowarn("msg=Classic remoting is deprecated, use Artery")
   def initialized: Actor.Receive =
     ({
-      case msg: GossipEnvelope => receiveGossip(msg)
-      case msg: GossipStatus   => receiveGossipStatus(msg)
-      case GossipTick          => gossipTick()
-      case GossipSpeedupTick   => gossipSpeedupTick()
-      case ReapUnreachableTick => reapUnreachableMembers()
-      case LeaderActionsTick   => leaderActions()
-      case PublishStatsTick    => publishInternalStats()
+      case msg: GossipEnvelope         => receiveGossip(msg)
+      case msg: GossipStatus           => receiveGossipStatus(msg)
+      case GossipTick                  => gossipTick()
+      case GossipSpeedupTick           => gossipSpeedupTick()
+      case ReapUnreachableTick         => reapUnreachableMembers()
+      case LeaderActionsTick           => leaderActions()
+      case PublishStatsTick            => publishInternalStats()
       case InitJoin(joiningNodeConfig) =>
         logInfo("Received InitJoin message from [{}] to [{}]", sender(), selfAddress)
         initJoin(joiningNodeConfig)
@@ -584,7 +584,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
       case msg: SubscriptionMessage              => publisher.forward(msg)
       case QuarantinedEvent(ua)                  => quarantined(UniqueAddress(ua))
       case ClassicQuarantinedEvent(address, uid) => quarantined(UniqueAddress(address, uid))
-      case ClusterUserAction.JoinTo(address) =>
+      case ClusterUserAction.JoinTo(address)     =>
         logInfo("Trying to join [{}] when already part of a cluster, ignoring", address)
       case JoinSeedNodes(nodes) =>
         logInfo("Trying to join seed nodes [{}] when already part of a cluster, ignoring", nodes.mkString(", "))
@@ -1025,7 +1025,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
           gossipTo(m.uniqueAddress)
         }
       case Some(_) => // already down
-      case None =>
+      case None    =>
         logInfo("Ignoring down of unknown node [{}]", address)
     }
 
@@ -1063,7 +1063,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
         gossipTo(from, sender())
       } else {
         status.version.compareTo(latestGossip.version) match {
-          case VectorClock.Same => // same version
+          case VectorClock.Same  => // same version
           case VectorClock.After =>
             gossipStatusTo(from, sender()) // remote is newer
           case _ =>
@@ -1678,7 +1678,7 @@ private[cluster] class OnMemberStatusChangedListener(callback: Runnable, status:
   private val to = status match {
     case Up      => classOf[MemberUp]
     case Removed => classOf[MemberRemoved]
-    case other =>
+    case other   =>
       throw new IllegalArgumentException(s"Expected Up or Removed in OnMemberStatusChangedListener, got [$other]")
   }
 

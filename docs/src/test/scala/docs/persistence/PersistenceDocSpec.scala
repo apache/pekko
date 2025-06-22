@@ -169,7 +169,7 @@ object PersistenceDocSpec {
       override def receiveCommand: Receive = {
         case SaveSnapshotSuccess(metadata)         => // ...
         case SaveSnapshotFailure(metadata, reason) => // ...
-        case cmd: String =>
+        case cmd: String                           =>
           persist(s"evt-$cmd") { e =>
             updateState(e)
             if (lastSequenceNr % snapShotInterval == 0 && lastSequenceNr != 0)

@@ -51,7 +51,7 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
       case "repair-by-discard-old" => ReplayFilter.RepairByDiscardOld
       case "fail"                  => ReplayFilter.Fail
       case "warn"                  => ReplayFilter.Warn
-      case other =>
+      case other                   =>
         throw new IllegalArgumentException(
           s"invalid replay-filter.mode [$other], supported values [off, repair-by-discard-old, fail, warn]")
     }

@@ -129,7 +129,7 @@ class TestActor(queue: BlockingDeque[TestActor.Message]) extends Actor {
     case Watch(ref)          => context.watch(ref)
     case UnWatch(ref)        => context.unwatch(ref)
     case SetAutoPilot(pilot) => autopilot = pilot
-    case spawn: Spawn =>
+    case spawn: Spawn        =>
       val actor = spawn(context)
       for (s <- spawn.strategy) supervisorStrategy(actor) = s
       queue.offerLast(RealMessage(actor, self))

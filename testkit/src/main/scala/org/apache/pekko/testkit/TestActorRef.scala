@@ -34,14 +34,14 @@ import pekko.pattern.ask
 class TestActorRef[T <: Actor](_system: ActorSystem, _props: Props, _supervisor: ActorRef, name: String)
     extends LocalActorRef({
         val disregard = _supervisor match {
-          case l: LocalActorRef => l.underlying.reserveChild(name)
+          case l: LocalActorRef       => l.underlying.reserveChild(name)
           case r: RepointableActorRef =>
             r.underlying match {
               case _: UnstartedCell =>
                 throw new IllegalStateException(
                   "cannot attach a TestActor to an unstarted top-level actor, ensure that it is started by sending a message and observing the reply")
               case c: ActorCell => c.reserveChild(name)
-              case o =>
+              case o            =>
                 _system.log.error(
                   "trying to attach child {} to unknown type of supervisor cell {}, this is not going to end well",
                   name,

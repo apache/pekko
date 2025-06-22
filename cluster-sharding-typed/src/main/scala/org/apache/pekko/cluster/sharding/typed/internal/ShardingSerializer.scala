@@ -40,7 +40,7 @@ import java.nio.ByteBuffer
 
   override def manifest(o: AnyRef): String = o match {
     case _: ShardingEnvelope[_] => ShardingEnvelopeManifest
-    case _ =>
+    case _                      =>
       throw new IllegalArgumentException(s"Can't serialize object of type ${o.getClass} in [${getClass.getName}]")
   }
 

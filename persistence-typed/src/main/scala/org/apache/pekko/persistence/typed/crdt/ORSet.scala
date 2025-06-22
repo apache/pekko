@@ -125,7 +125,7 @@ object ORSet {
 
     @tailrec def dropDots(remaining: List[(String, Long)], acc: List[(String, Long)]): List[(String, Long)] =
       remaining match {
-        case Nil => acc
+        case Nil                      => acc
         case (d @ (node, v1)) :: rest =>
           val v2 = vvector.versionAt(node)
           if (v2 >= v1)
@@ -448,12 +448,12 @@ final class ORSet[A] private[pekko] (
       case d: ORSet.AddDeltaOp[A @unchecked]       => merge(d.underlying, addDeltaOp = true)
       case d: ORSet.RemoveDeltaOp[A @unchecked]    => mergeRemoveDelta(d)
       case d: ORSet.FullStateDeltaOp[A @unchecked] => merge(d.underlying, addDeltaOp = false)
-      case ORSet.DeltaGroup(ops) =>
+      case ORSet.DeltaGroup(ops)                   =>
         ops.foldLeft(this) {
           case (acc, op: ORSet.AddDeltaOp[A @unchecked])       => acc.merge(op.underlying, addDeltaOp = true)
           case (acc, op: ORSet.RemoveDeltaOp[A @unchecked])    => acc.mergeRemoveDelta(op)
           case (acc, op: ORSet.FullStateDeltaOp[A @unchecked]) => acc.merge(op.underlying, addDeltaOp = false)
-          case (_, _: ORSet.DeltaGroup[A @unchecked]) =>
+          case (_, _: ORSet.DeltaGroup[A @unchecked])          =>
             throw new IllegalArgumentException("ORSet.DeltaGroup should not be nested")
         }
     }

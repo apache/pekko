@@ -53,7 +53,7 @@ private[pekko] final class CollectFirst[In, Out](pf: PartialFunction[In, Out]) e
           //   If you interest, you can check the associated PR for this change and the
           //   current implementation of `scala.collection.IterableOnceOps.collectFirst`.
           pf.applyOrElse(grab(in), NotApplied) match {
-            case _: NotApplied.type => pull(in)
+            case _: NotApplied.type   => pull(in)
             case elem: Out @unchecked =>
               push(out, elem)
               completeStage()

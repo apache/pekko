@@ -382,7 +382,7 @@ object TestPublisher {
     }
 
     def expectCancellationWithCause[E <: Throwable: ClassTag](): E = subscription.expectCancellation() match {
-      case e: E => e
+      case e: E  => e
       case cause =>
         throw new AssertionError(
           s"Expected cancellation cause to be of type ${scala.reflect.classTag[E]} but was ${cause.getClass}: $cause")
@@ -604,7 +604,7 @@ object TestSubscriber {
       @annotation.tailrec
       def expectOneOf(all: immutable.Seq[I]): Unit = all match {
         case Nil =>
-        case _ =>
+        case _   =>
           val next = expectNext()
           assert(all.contains(next), s"expected one of $all, but received $next")
           expectOneOf(all.diff(Seq(next)))

@@ -73,7 +73,7 @@ object Resizer {
       case (true, false)  => Some(DefaultResizer(defaultResizerConfig))
       case (false, true)  => Some(OptimalSizeExploringResizer(metricsBasedResizerConfig))
       case (false, false) => None
-      case (true, true) =>
+      case (true, true)   =>
         throw new ResizerInitializationException(s"cannot enable both resizer and optimal-size-exploring-resizer", null)
     }
   }
@@ -336,7 +336,7 @@ private[pekko] class ResizablePoolActor(supervisorStrategy: SupervisorStrategy)
 
   val resizerCell = context match {
     case x: ResizablePoolCell => x
-    case _ =>
+    case _                    =>
       throw ActorInitializationException(
         "Resizable router actor can only be used when resizer is defined, not in " + context.getClass)
   }

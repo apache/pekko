@@ -181,7 +181,7 @@ private[remote] final class AssociationState private (
     val current = _uniqueRemoteAddress.get
     current.uniqueRemoteAddress match {
       case Some(peer) => callback(peer)
-      case None =>
+      case None       =>
         val newValue = UniqueRemoteAddressValue(None, callback :: current.listeners)
         if (!_uniqueRemoteAddress.compareAndSet(current, newValue))
           addUniqueRemoteAddressListener(callback) // cas failed, retry
@@ -528,7 +528,7 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
                 case ack: ActorRefCompressionAdvertisementAck =>
                   inboundCompressionAccess match {
                     case OptionVal.Some(access) => access.confirmActorRefCompressionAdvertisementAck(ack)
-                    case _ =>
+                    case _                      =>
                       log.debug(
                         s"Received {} version: [{}] however no inbound compression access was present. " +
                         s"ACK will not take effect, however it will be redelivered and likely to apply then.",
@@ -559,7 +559,7 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
                 case ack: ClassManifestCompressionAdvertisementAck =>
                   inboundCompressionAccess match {
                     case OptionVal.Some(access) => access.confirmClassManifestCompressionAdvertisementAck(ack)
-                    case _ =>
+                    case _                      =>
                       log.debug(
                         s"Received {} version: [{}] however no inbound compression access was present. " +
                         s"ACK will not take effect, however it will be redelivered and likely to apply then.",
@@ -602,7 +602,7 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
         // don't restart after shutdown, but log some details so we notice
         log.warning(s"{} failed after shutdown. {}: {}", streamName, cause.getClass.getName, cause.getMessage)
       case _: AbruptTerminationException => // ActorSystem shutdown
-      case cause =>
+      case cause                         =>
         if (restartCounter.restart()) {
           log.warning("{} failed. Restarting it. {}: {}", streamName, cause.getClass.getName, cause.getMessage)
           flightRecorder.transportRestartInbound(localAddress, streamName)

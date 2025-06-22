@@ -278,7 +278,7 @@ private[remote] class ReliableDeliverySupervisor(
 
   override val supervisorStrategy = OneForOneStrategy(loggingEnabled = false) {
     case _: AssociationProblem => Escalate
-    case NonFatal(e) =>
+    case NonFatal(e)           =>
       val causedBy = if (e.getCause == null) "" else s"Caused by: [${e.getCause.getMessage}]"
       log.warning(
         "Association with remote system [{}] has failed, address is now gated for [{}] ms. Reason: [{}] {}",
@@ -360,7 +360,7 @@ private[remote] class ReliableDeliverySupervisor(
       resendAll()
       writer ! FlushAndStop
       context.become(flushWait)
-    case IsIdle => // Do not reply, we will Terminate soon, or send a GotUid
+    case IsIdle  => // Do not reply, we will Terminate soon, or send a GotUid
     case s: Send =>
       handleSend(s)
     case ack: Ack =>
@@ -432,17 +432,17 @@ private[remote] class ReliableDeliverySupervisor(
         // Resending will be triggered by the incoming GotUid message after the connection finished
         goToActive()
       } else goToIdle()
-    case AttemptSysMsgRedelivery             => // Ignore
-    case s @ Send(_: SystemMessage, _, _, _) => tryBuffer(s.copy(seqOpt = Some(nextSeq())))
-    case s: Send                             => context.system.deadLetters ! s
-    case EndpointWriter.FlushAndStop         => context.stop(self)
+    case AttemptSysMsgRedelivery                => // Ignore
+    case s @ Send(_: SystemMessage, _, _, _)    => tryBuffer(s.copy(seqOpt = Some(nextSeq())))
+    case s: Send                                => context.system.deadLetters ! s
+    case EndpointWriter.FlushAndStop            => context.stop(self)
     case EndpointWriter.StopReading(w, replyTo) =>
       replyTo ! EndpointWriter.StoppedReading(w)
       sender() ! EndpointWriter.StoppedReading(w)
   }
 
   def idle: Receive = {
-    case IsIdle => sender() ! Idle
+    case IsIdle  => sender() ! Idle
     case s: Send =>
       writer = createWriter()
       // Resending will be triggered by the incoming GotUid message after the connection finished
@@ -462,7 +462,7 @@ private[remote] class ReliableDeliverySupervisor(
         new TimeoutException(
           "Remote system has been silent for too long. " +
           s"(more than ${settings.QuarantineSilentSystemTimeout.toCoarsest})"))
-    case EndpointWriter.FlushAndStop => context.stop(self)
+    case EndpointWriter.FlushAndStop            => context.stop(self)
     case EndpointWriter.StopReading(w, replyTo) =>
       replyTo ! EndpointWriter.StoppedReading(w)
     case Ungate => // ok, not gated
@@ -1107,7 +1107,7 @@ private[remote] class EndpointReader(
 
   override def preStart(): Unit = {
     receiveBuffers.get(Link(localAddress, remoteAddress)) match {
-      case null =>
+      case null                       =>
       case ResendState(`uid`, buffer) =>
         ackedReceiveBuffer = buffer
         deliverAndAck()
