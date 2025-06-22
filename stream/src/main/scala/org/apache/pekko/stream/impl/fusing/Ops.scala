@@ -807,8 +807,8 @@ private[stream] object Collect {
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new GraphStageLogic(shape) with InHandler with OutHandler {
-      private val buf = Vector.newBuilder[T]
-      var left: Long = minWeight
+      private var builder = Vector.newBuilder[T]
+      private var left: Long = minWeight
 
       override def onPush(): Unit = {
         val elem = grab(in)
@@ -816,11 +816,11 @@ private[stream] object Collect {
         if (cost < 0L)
           failStage(new IllegalArgumentException(s"Negative weight [$cost] for element [$elem] is not allowed"))
         else {
-          buf += elem
+          builder += elem
           left -= cost
           if (left <= 0) {
-            val elements = buf.result()
-            buf.clear()
+            val elements = builder.result()
+            builder.clear()
             left = minWeight
             push(out, elements)
           } else {
@@ -835,12 +835,12 @@ private[stream] object Collect {
 
       override def onUpstreamFinish(): Unit = {
         // Since the upstream has finished we have to push any buffered elements downstream.
-        val elements = buf.result()
+        val elements = builder.result()
         if (elements.nonEmpty) {
-          buf.clear()
           left = minWeight
           push(out, elements)
         }
+        builder = null // free for GC
         completeStage()
       }
 
@@ -1763,7 +1763,7 @@ private[stream] object Collect {
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new TimerGraphStageLogic(shape) with InHandler with OutHandler {
 
-      private val buf: VectorBuilder[T] = new VectorBuilder
+      private var builder: VectorBuilder[T] = new VectorBuilder
       private var pending: T = null.asInstanceOf[T]
       private var pendingWeight: Long = 0L
       // True if:
@@ -1798,7 +1798,7 @@ private[stream] object Collect {
           hasElements = true
           // if there is place (both weight and number) for `elem` in the current group
           if (totalWeight + cost <= maxWeight && totalNumber + 1 <= maxNumber) {
-            buf += elem
+            builder += elem
             totalWeight += cost
             totalNumber += 1;
 
@@ -1820,7 +1820,7 @@ private[stream] object Collect {
           } else {
             // if there is a single heavy element that weighs more than the limit
             if (totalWeight == 0L && totalNumber == 0) {
-              buf += elem
+              builder += elem
               totalWeight += cost
               totalNumber += 1;
               pushEagerly = true
@@ -1842,11 +1842,15 @@ private[stream] object Collect {
       private def emitGroup(): Unit = {
         groupEmitted = true
         contextPropagation.resumeContext()
-        push(out, buf.result())
-        buf.clear()
-        if (!finished) startNewGroup()
-        else if (pending != null) emit(out, Vector(pending), () => completeStage())
-        else completeStage()
+        push(out, builder.result())
+        if (finished) {
+          builder = null // free for GC
+          if (pending != null) emit(out, Vector(pending), () => completeStage())
+          else completeStage()
+        } else {
+          builder.clear()
+          startNewGroup()
+        }
       }
 
       private def startNewGroup(): Unit = {
@@ -1854,7 +1858,7 @@ private[stream] object Collect {
           totalWeight = pendingWeight
           totalNumber = 1
           pendingWeight = 0L
-          buf += pending
+          builder += pending
           pending = null.asInstanceOf[T]
           groupEmitted = false
         } else {
@@ -1876,8 +1880,10 @@ private[stream] object Collect {
 
       override def onUpstreamFinish(): Unit = {
         finished = true
-        if (groupEmitted) completeStage()
-        else tryCloseGroup()
+        if (groupEmitted) {
+          builder = null // free for GC
+          completeStage()
+        } else tryCloseGroup()
       }
 
       override protected def onTimer(timerKey: Any) = if (hasElements) {
