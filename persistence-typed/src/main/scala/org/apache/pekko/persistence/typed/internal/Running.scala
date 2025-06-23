@@ -263,7 +263,7 @@ private[pekko] object Running {
     }
 
     def onMessage(msg: InternalProtocol): Behavior[InternalProtocol] = msg match {
-      case IncomingCommand(c: C @unchecked)          =>
+      case IncomingCommand(c: C @unchecked) =>
         if (state.unstashRecurrenceState.inOnCommandCall) {
           state.unstashRecurrenceState.recOnCommandParams = Some((state, c))
           this // This will be ignored in onCommand
