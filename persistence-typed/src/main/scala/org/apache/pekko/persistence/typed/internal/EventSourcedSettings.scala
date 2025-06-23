@@ -63,6 +63,9 @@ import pekko.annotation.InternalApi
 
     val useContextLoggerForInternalLogging = typedConfig.getBoolean("use-context-logger-for-internal-logging")
 
+    val breakRecursiveCallsWhenUnstashingReadOnlyCommands =
+      typedConfig.getBoolean("break-recursive-calls-when-unstashing-read-only-commands")
+
     EventSourcedSettings(
       stashCapacity = stashCapacity,
       stashOverflowStrategy,
@@ -71,7 +74,8 @@ import pekko.annotation.InternalApi
       snapshotPluginId,
       journalPluginConfig,
       snapshotPluginConfig,
-      useContextLoggerForInternalLogging)
+      useContextLoggerForInternalLogging,
+      breakRecursiveCallsWhenUnstashingReadOnlyCommands)
   }
 }
 
@@ -87,7 +91,8 @@ private[pekko] final case class EventSourcedSettings(
     snapshotPluginId: String,
     journalPluginConfig: Option[Config],
     snapshotPluginConfig: Option[Config],
-    useContextLoggerForInternalLogging: Boolean) {
+    useContextLoggerForInternalLogging: Boolean,
+    breakRecursiveCallsWhenUnstashingReadOnlyCommands: Boolean) {
 
   require(journalPluginId != null, "journal plugin id must not be null; use empty string for 'default' journal")
   require(

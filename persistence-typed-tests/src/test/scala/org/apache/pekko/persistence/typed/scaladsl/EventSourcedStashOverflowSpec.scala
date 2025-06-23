@@ -55,8 +55,9 @@ object EventSourcedStashOverflowSpec {
     SteppingInmemJournal.config("EventSourcedStashOverflow").withFallback(ConfigFactory.parseString(s"""
        pekko.persistence {
          typed {
-           stash-capacity = 2000 # enough to fail on stack size
+           stash-capacity = 20000 # enough to fail on stack size
            stash-overflow-strategy = "drop"
+           break-recursive-calls-when-unstashing-read-only-commands = true # Necessary to enable the fix
          }
        }
        pekko.jvm-exit-on-fatal-error = off
@@ -86,8 +87,8 @@ class EventSourcedStashOverflowSpec
       for (_ <- 0 to (stashCapacity * 2)) {
         es.tell(EventSourcedStringList.DoNothing(probe.ref))
       }
-      // capacity + 1 should mean that we get a dropped last message when all stash is filled
-      // while the actor is stuck in replay because journal isn't responding
+      // capacity * 2 should mean that we get many dropped messages when all stash is filled
+      // while the actor is stuck in replay because journal isn't responding (checking only one)
       droppedMessageProbe.receiveMessage()
       implicit val classicSystem: pekko.actor.ActorSystem =
         testKit.system.toClassic
