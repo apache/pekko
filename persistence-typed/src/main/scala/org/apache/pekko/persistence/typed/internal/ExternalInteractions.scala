@@ -54,10 +54,10 @@ private[pekko] trait JournalInteractions[C, E, S] {
   protected def internalPersist(
       ctx: ActorContext[_],
       cmd: Any,
-      state: Running.RunningState[S],
+      state: Running.RunningState[S, C],
       event: EventOrTaggedOrReplicated,
       eventAdapterManifest: String,
-      metadata: OptionVal[Any]): Running.RunningState[S] = {
+      metadata: OptionVal[Any]): Running.RunningState[S, C] = {
 
     val newRunningState = state.nextSequenceNr()
 
@@ -93,8 +93,8 @@ private[pekko] trait JournalInteractions[C, E, S] {
   protected def internalPersistAll(
       ctx: ActorContext[_],
       cmd: Any,
-      state: Running.RunningState[S],
-      events: immutable.Seq[EventToPersist]): Running.RunningState[S] = {
+      state: Running.RunningState[S, C],
+      events: immutable.Seq[EventToPersist]): Running.RunningState[S, C] = {
     if (events.nonEmpty) {
       var newState = state
 
@@ -202,7 +202,7 @@ private[pekko] trait SnapshotInteractions[C, E, S] {
     setup.snapshotStore.tell(LoadSnapshot(setup.persistenceId.id, criteria, toSequenceNr), setup.selfClassic)
   }
 
-  protected def internalSaveSnapshot(state: Running.RunningState[S]): Unit = {
+  protected def internalSaveSnapshot(state: Running.RunningState[S, C]): Unit = {
     setup.internalLogger.debug("Saving snapshot sequenceNr [{}]", state.seqNr)
     if (state.state == null)
       throw new IllegalStateException("A snapshot must not be a null state.")

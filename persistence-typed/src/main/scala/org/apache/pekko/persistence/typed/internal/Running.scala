@@ -97,21 +97,35 @@ private[pekko] object Running {
     def currentSequenceNumber: Long
   }
 
-  final case class RunningState[State](
+  // This is part of the fix for https://github.com/apache/pekko/issues/1327 and it's necessary to break
+  // recursion between the `onCommand` and `onMessage` functions in Running[C, E, S]#HandlingCommands. We
+  // set the flag `inOnCommandCall` to true in `onCommand` before calling functions that will in turn call
+  // `onMessage`. In `onMessage`, if the flag is set and we would recursively call `onCommand`, we instead
+  // save the parameters we would use to call `onCommand` and return. When back in `onCommand`, we check if
+  // `recOnCommandParams` is not empty and, if not, act as if `onMessage` called us directly. In function
+  // `onCommand` we have a while loop replacing recursive calls so that we don't use all the stack space in
+  // case a lot of read-only message are stashed
+  final class UnstashRecurrenceState[State, Command] {
+    var inOnCommandCall: Boolean = false
+    var recOnCommandParams: Option[(RunningState[State, Command], Command)] = None
+  }
+
+  final case class RunningState[State, Command](
       seqNr: Long,
       state: State,
       receivedPoisonPill: Boolean,
       version: VersionVector,
       seenPerReplica: Map[ReplicaId, Long],
-      replicationControl: Map[ReplicaId, ReplicationStreamControl]) {
+      replicationControl: Map[ReplicaId, ReplicationStreamControl],
+      unstashRecurrenceState: UnstashRecurrenceState[State, Command] = new UnstashRecurrenceState[State, Command]) {
 
-    def nextSequenceNr(): RunningState[State] =
+    def nextSequenceNr(): RunningState[State, Command] =
       copy(seqNr = seqNr + 1)
 
-    def updateLastSequenceNr(persistent: PersistentRepr): RunningState[State] =
+    def updateLastSequenceNr(persistent: PersistentRepr): RunningState[State, Command] =
       if (persistent.sequenceNr > seqNr) copy(seqNr = persistent.sequenceNr) else this
 
-    def applyEvent[C, E](setup: BehaviorSetup[C, E, State], event: E): RunningState[State] = {
+    def applyEvent[E](setup: BehaviorSetup[Command, E, State], event: E): RunningState[State, Command] = {
       val updated = setup.eventHandler(state, event)
       copy(state = updated)
     }
@@ -119,8 +133,8 @@ private[pekko] object Running {
 
   def startReplicationStream[C, E, S](
       setup: BehaviorSetup[C, E, S],
-      state: RunningState[S],
-      replicationSetup: ReplicationSetup): RunningState[S] = {
+      state: RunningState[S, C],
+      replicationSetup: ReplicationSetup): RunningState[S, C] = {
     import scala.concurrent.duration._
     val system = setup.context.system
     val ref = setup.context.self
@@ -238,7 +252,7 @@ private[pekko] object Running {
   // Needed for WithSeqNrAccessible, when unstashing
   private var _currentSequenceNumber = 0L
 
-  final class HandlingCommands(state: RunningState[S])
+  final class HandlingCommands(state: RunningState[S, C])
       extends AbstractBehavior[InternalProtocol](setup.context)
       with WithSeqNrAccessible {
 
@@ -249,7 +263,16 @@ private[pekko] object Running {
     }
 
     def onMessage(msg: InternalProtocol): Behavior[InternalProtocol] = msg match {
-      case IncomingCommand(c: C @unchecked)          => onCommand(state, c)
+      case IncomingCommand(c: C @unchecked) =>
+        // The configuration flag is only checked here: if it is false, we don't set
+        // state.unstashRecurrenceState.recOnCommandParams and onCommand will behave as if
+        // the fix was not implemented at all
+        if (setup.settings.breakRecursiveCallsWhenUnstashingReadOnlyCommands && state.unstashRecurrenceState.inOnCommandCall) {
+          state.unstashRecurrenceState.recOnCommandParams = Some((state, c))
+          this // This will be ignored in onCommand
+        } else {
+          onCommand(state, c)
+        }
       case re: ReplicatedEventEnvelope[E @unchecked] => onReplicatedEvent(state, re, setup.replication.get)
       case pe: PublishedEventImpl                    => onPublishedEvent(state, pe)
       case JournalResponse(r)                        => onDeleteEventsJournalResponse(r, state.state)
@@ -268,15 +291,41 @@ private[pekko] object Running {
         else Behaviors.unhandled
     }
 
-    def onCommand(state: RunningState[S], cmd: C): Behavior[InternalProtocol] = {
-      val effect = setup.commandHandler(state.state, cmd)
-      val (next, doUnstash) = applyEffects(cmd, state, effect.asInstanceOf[EffectImpl[E, S]]) // TODO can we avoid the cast?
-      if (doUnstash) tryUnstashOne(next)
-      else next
+    def onCommand(state: RunningState[S, C], cmd: C): Behavior[InternalProtocol] = {
+      def callApplyEffects(rs: RunningState[S, C], c: C) = {
+        val effect = setup.commandHandler(rs.state, c)
+
+        applyEffects(c, rs, effect.asInstanceOf[EffectImpl[E, S]]) // TODO can we avoid the cast?
+      }
+
+      var applyEffectsRetval: (Behavior[InternalProtocol], Boolean) = callApplyEffects(state, cmd)
+
+      var retVal: Option[Behavior[InternalProtocol]] = None
+
+      while (retVal.isEmpty) {
+        val (next, doUnstash) = applyEffectsRetval
+
+        if (doUnstash) {
+          state.unstashRecurrenceState.inOnCommandCall = true
+          val r = tryUnstashOne(next)
+          state.unstashRecurrenceState.inOnCommandCall = false
+
+          state.unstashRecurrenceState.recOnCommandParams match {
+            case None          => retVal = Some(r)
+            case Some((rs, c)) => applyEffectsRetval = callApplyEffects(rs, c)
+          }
+
+          state.unstashRecurrenceState.recOnCommandParams = None
+        } else {
+          retVal = Some(next)
+        }
+      }
+
+      retVal.get
     }
 
     def onReplicatedEvent(
-        state: Running.RunningState[S],
+        state: Running.RunningState[S, C],
         envelope: ReplicatedEventEnvelope[E],
         replication: ReplicationSetup): Behavior[InternalProtocol] = {
       setup.internalLogger.debugN(
@@ -300,7 +349,7 @@ private[pekko] object Running {
       }
     }
 
-    def onPublishedEvent(state: Running.RunningState[S], event: PublishedEventImpl): Behavior[InternalProtocol] = {
+    def onPublishedEvent(state: Running.RunningState[S, C], event: PublishedEventImpl): Behavior[InternalProtocol] = {
       val newBehavior: Behavior[InternalProtocol] = setup.replication match {
         case None =>
           setup.internalLogger.warn(
@@ -321,7 +370,7 @@ private[pekko] object Running {
     }
 
     private def onPublishedEvent(
-        state: Running.RunningState[S],
+        state: Running.RunningState[S, C],
         replication: ReplicationSetup,
         replicatedMetadata: ReplicatedPublishedEventMetaData,
         event: PublishedEventImpl): Behavior[InternalProtocol] = {
@@ -428,7 +477,7 @@ private[pekko] object Running {
 
       replication.clearContext()
 
-      val newState2: RunningState[S] = internalPersist(
+      val newState2: RunningState[S, C] = internalPersist(
         setup.context,
         null,
         stateAfterApply,
@@ -464,10 +513,10 @@ private[pekko] object Running {
         val eventToPersist = adaptEvent(event)
         val eventAdapterManifest = setup.eventAdapter.manifest(event)
 
-        val newState2 = setup.replication match {
+        val newState2: RunningState[S, C] = setup.replication match {
           case Some(replication) =>
             val updatedVersion = stateAfterApply.version.updated(replication.replicaId.id, _currentSequenceNumber)
-            val r = internalPersist(
+            val r: RunningState[S, C] = internalPersist(
               setup.context,
               cmd,
               stateAfterApply,
@@ -572,9 +621,10 @@ private[pekko] object Running {
         (applySideEffects(sideEffects, state), true)
       }
     }
+
     @tailrec def applyEffects(
         msg: Any,
-        state: RunningState[S],
+        state: RunningState[S, C],
         effect: Effect[E, S],
         sideEffects: immutable.Seq[SideEffect[S]] = Nil): (Behavior[InternalProtocol], Boolean) = {
       if (setup.internalLogger.isDebugEnabled && !effect.isInstanceOf[CompositeEffect[_, _]])
@@ -630,8 +680,8 @@ private[pekko] object Running {
   // ===============================================
 
   def persistingEvents(
-      state: RunningState[S],
-      visibleState: RunningState[S], // previous state until write success
+      state: RunningState[S, C],
+      visibleState: RunningState[S, C], // previous state until write success
       numberOfEvents: Int,
       shouldSnapshotAfterPersist: SnapshotAfterPersist,
       shouldPublish: Boolean,
@@ -642,8 +692,8 @@ private[pekko] object Running {
 
   /** INTERNAL API */
   @InternalApi private[pekko] class PersistingEvents(
-      var state: RunningState[S],
-      var visibleState: RunningState[S], // previous state until write success
+      var state: RunningState[S, C],
+      var visibleState: RunningState[S, C], // previous state until write success
       numberOfEvents: Int,
       shouldSnapshotAfterPersist: SnapshotAfterPersist,
       shouldPublish: Boolean,
@@ -789,7 +839,7 @@ private[pekko] object Running {
 
   /** INTERNAL API */
   @InternalApi private[pekko] class StoringSnapshot(
-      state: RunningState[S],
+      state: RunningState[S, C],
       sideEffects: immutable.Seq[SideEffect[S]],
       snapshotReason: SnapshotAfterPersist)
       extends AbstractBehavior[InternalProtocol](setup.context)
@@ -886,7 +936,7 @@ private[pekko] object Running {
 
   // --------------------------
 
-  def applySideEffects(effects: immutable.Seq[SideEffect[S]], state: RunningState[S]): Behavior[InternalProtocol] = {
+  def applySideEffects(effects: immutable.Seq[SideEffect[S]], state: RunningState[S, C]): Behavior[InternalProtocol] = {
     var behavior: Behavior[InternalProtocol] = new HandlingCommands(state)
     val it = effects.iterator
 
@@ -905,7 +955,7 @@ private[pekko] object Running {
 
   def applySideEffect(
       effect: SideEffect[S],
-      state: RunningState[S],
+      state: RunningState[S, C],
       behavior: Behavior[InternalProtocol]): Behavior[InternalProtocol] = {
     effect match {
       case _: Stop.type @unchecked =>
