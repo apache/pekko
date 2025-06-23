@@ -294,7 +294,7 @@ private[pekko] final class ReplayingEvents[C, E, S](
       if (state.receivedPoisonPill && isInternalStashEmpty && !isUnstashAllInProgress)
         Behaviors.stopped
       else {
-        val runningState = Running.RunningState[S](
+        val runningState = Running.RunningState[S, C](
           seqNr = state.seqNr,
           state = state.state,
           receivedPoisonPill = state.receivedPoisonPill,
