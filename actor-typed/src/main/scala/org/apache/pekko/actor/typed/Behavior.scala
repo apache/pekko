@@ -185,7 +185,7 @@ object Behavior {
     (behavior._tag: @switch) match {
       case BehaviorTags.SameBehavior      => current
       case BehaviorTags.UnhandledBehavior => current
-      case BehaviorTags.DeferredBehavior =>
+      case BehaviorTags.DeferredBehavior  =>
         val deferred = behavior.asInstanceOf[DeferredBehavior[T]]
         canonicalize(deferred(ctx), deferred, ctx)
       case _ => behavior
@@ -219,7 +219,7 @@ object Behavior {
     @tailrec
     def loop(b: Behavior[T]): Boolean =
       b match {
-        case _ if p(b) => true
+        case _ if p(b)                                          => true
         case wrappingBehavior: InterceptorImpl[T, T] @unchecked =>
           loop(wrappingBehavior.nestedBehavior)
         case d: DeferredBehavior[T] =>

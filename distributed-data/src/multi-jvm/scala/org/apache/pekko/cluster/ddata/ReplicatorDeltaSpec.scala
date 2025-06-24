@@ -381,7 +381,7 @@ class ReplicatorDeltaSpec extends MultiNodeSpec(ReplicatorDeltaSpec) with STMult
         for (op <- operations) {
           log.debug("operation: {}", op)
           op match {
-            case Delay(d) => Thread.sleep(d)
+            case Delay(d)                  => Thread.sleep(d)
             case Incr(key, n, consistency) =>
               fullStateReplicator ! Update(key, PNCounter.empty, consistency)(_ :+ n)
               deltaReplicator ! Update(key, PNCounter.empty, consistency)(_ :+ n)

@@ -109,7 +109,7 @@ import pekko.util.OptionVal
           val result = grab(internalIn)
           elementInProgress match {
             case OptionVal.Some(_) if retryNo == maxRetries => pushExternal(result)
-            case OptionVal.Some(in) =>
+            case OptionVal.Some(in)                         =>
               decideRetry(in, result) match {
                 case None          => pushExternal(result)
                 case Some(element) => planRetry(element)

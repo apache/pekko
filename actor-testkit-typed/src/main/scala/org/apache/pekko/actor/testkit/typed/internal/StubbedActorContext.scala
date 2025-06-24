@@ -119,7 +119,7 @@ private[pekko] final class FunctionRef[-T](override val path: ActorPath, send: (
     checkCurrentActorThread()
     _children.get(name) match {
       case Some(_) => throw classic.InvalidActorNameException(s"actor name $name is already taken")
-      case None =>
+      case None    =>
         val btk = new BehaviorTestKitImpl[U](system, (path / name).withUid(rnd().nextInt()), behavior)
         _children += name -> btk
         btk.context.self

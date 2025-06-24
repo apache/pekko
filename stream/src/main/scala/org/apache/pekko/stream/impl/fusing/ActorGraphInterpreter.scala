@@ -368,7 +368,7 @@ import org.reactivestreams.Subscription
     private def reportSubscribeFailure(subscriber: Subscriber[Any]): Unit =
       try shutdownReason match {
           case OptionVal.Some(_: SpecViolation) => // ok, not allowed to call onError
-          case OptionVal.Some(e) =>
+          case OptionVal.Some(e)                =>
             tryOnSubscribe(subscriber, CancelledSubscription)
             tryOnError(subscriber, e)
           case _ =>
@@ -771,7 +771,7 @@ import org.reactivestreams.Subscription
    */
   @tailrec private def finishShellRegistration(): Unit =
     newShells match {
-      case Nil => if (activeInterpreters.isEmpty) context.stop(self)
+      case Nil           => if (activeInterpreters.isEmpty) context.stop(self)
       case shell :: tail =>
         newShells = tail
         if (shell.isInitialized) {
@@ -796,7 +796,7 @@ import org.reactivestreams.Subscription
       shortCircuitBuffer.pollFirst() match {
         case b: BoundaryEvent => processEvent(b)
         case Resume           => finishShellRegistration()
-        case unexpected =>
+        case unexpected       =>
           throw new IllegalStateException(s"Unexpected element in short circuit buffer: '${unexpected.getClass}'")
       }
       shortCircuitBatch()

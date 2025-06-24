@@ -222,7 +222,7 @@ private[pekko] object Shard {
    */
   final case class RememberingStart(ackTo: Set[ActorRef]) extends EntityState {
     override def transition(newState: EntityState, entities: Entities): EntityState = newState match {
-      case active: Active => active
+      case active: Active      => active
       case r: RememberingStart =>
         if (ackTo.isEmpty) {
           if (r.ackTo.isEmpty) RememberingStart.empty
@@ -692,13 +692,13 @@ private[pekko] class Shard(
       log.error("{}: Remember entity store did not respond, restarting shard", typeName)
       throw new RuntimeException(
         s"Async write timed out after ${settings.tuningParameters.updatingStateTimeout.pretty}")
-    case ShardRegion.StartEntity(entityId) => startEntity(entityId, Some(sender()))
-    case me: MemberEvent                   => receiveMemberEvent(me)
-    case Terminated(ref)                   => receiveTerminated(ref)
-    case EntityTerminated(ref)             => entityTerminated(ref)
-    case _: CoordinatorMessage             => stash()
-    case cmd: RememberEntityCommand        => receiveRememberEntityCommand(cmd)
-    case l: LeaseLost                      => receiveLeaseLost(l)
+    case ShardRegion.StartEntity(entityId)  => startEntity(entityId, Some(sender()))
+    case me: MemberEvent                    => receiveMemberEvent(me)
+    case Terminated(ref)                    => receiveTerminated(ref)
+    case EntityTerminated(ref)              => entityTerminated(ref)
+    case _: CoordinatorMessage              => stash()
+    case cmd: RememberEntityCommand         => receiveRememberEntityCommand(cmd)
+    case l: LeaseLost                       => receiveLeaseLost(l)
     case ShardRegion.Passivate(stopMessage) =>
       if (verboseDebug)
         log.debug(
@@ -706,10 +706,10 @@ private[pekko] class Shard(
           typeName,
           entities.entityId(sender()).getOrElse(s"Unknown actor ${sender()}"))
       passivate(sender(), stopMessage)
-    case msg: ShardQuery                 => receiveShardQuery(msg)
-    case PassivateIntervalTick           => stash()
-    case msg: RememberEntityStoreCrashed => rememberEntityStoreCrashed(msg)
-    case msg: ShardsUpdated              => shardsUpdated(msg)
+    case msg: ShardQuery                         => receiveShardQuery(msg)
+    case PassivateIntervalTick                   => stash()
+    case msg: RememberEntityStoreCrashed         => rememberEntityStoreCrashed(msg)
+    case msg: ShardsUpdated                      => shardsUpdated(msg)
     case msg if extractEntityId.isDefinedAt(msg) =>
       deliverMessage(msg, sender())
     case msg =>
@@ -868,7 +868,7 @@ private[pekko] class Shard(
 
   private def handOff(replyTo: ActorRef): Unit = handOffStopper match {
     case Some(_) => log.warning("{}: HandOff shard [{}] received during existing handOff", typeName, shardId)
-    case None =>
+    case None    =>
       log.debug("{}: HandOff shard [{}]", typeName, shardId)
 
       // does conversion so only do once
@@ -1124,7 +1124,7 @@ private[pekko] class Shard(
   def getOrCreateEntity(id: EntityId): ActorRef = {
     entities.entity(id) match {
       case OptionVal.Some(child) => child
-      case _ =>
+      case _                     =>
         val name = URLEncoder.encode(id, "utf-8")
         val a = context.actorOf(entityProps(id), name)
         context.watchWith(a, EntityTerminated(a))

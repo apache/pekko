@@ -268,7 +268,7 @@ import pekko.util.ccompat._
       @tailrec
       def selectOtherDcNode(randomizedDcs: List[DataCenter]): Option[UniqueAddress] =
         randomizedDcs match {
-          case Nil => None // couldn't find a single cross-dc-node to talk to
+          case Nil        => None // couldn't find a single cross-dc-node to talk to
           case dc :: tail =>
             state.ageSortedTopOldestMembersPerDc(dc).collectFirst {
               case m if state.validNodeForGossip(m.uniqueAddress) => m.uniqueAddress

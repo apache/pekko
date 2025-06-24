@@ -34,7 +34,7 @@ class PingSerializer(system: ExtendedActorSystem) extends SerializerWithStringMa
   override def manifest(msg: AnyRef) = msg match {
     case _: PingService.Ping => PingManifest
     case PingService.Pong    => PongManifest
-    case _ =>
+    case _                   =>
       throw new IllegalArgumentException(s"Can't serialize object of type ${msg.getClass} in [${getClass.getName}]")
   }
 

@@ -658,7 +658,7 @@ private class ConsumerControllerImpl[A] private (
     if (retryTimer.interval() != retryTimer.minBackoff)
       context.log.debug("Schedule next retry in [{} ms]", retryTimer.interval().toMillis)
     s.registering match {
-      case None => nextBehavior()
+      case None      => nextBehavior()
       case Some(reg) =>
         reg ! ProducerController.RegisterConsumer(context.self)
         Behaviors.same

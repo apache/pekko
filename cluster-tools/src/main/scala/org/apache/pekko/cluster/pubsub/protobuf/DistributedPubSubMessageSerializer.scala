@@ -65,7 +65,7 @@ private[pekko] class DistributedPubSubMessageSerializer(val system: ExtendedActo
     case _: SendToAll           => SendToAllManifest
     case _: Publish             => PublishManifest
     case _: SendToOneSubscriber => SendToOneSubscriberManifest
-    case _ =>
+    case _                      =>
       throw new IllegalArgumentException(s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
   }
 
@@ -76,14 +76,14 @@ private[pekko] class DistributedPubSubMessageSerializer(val system: ExtendedActo
     case m: SendToAll           => sendToAllToProto(m).toByteArray
     case m: Publish             => publishToProto(m).toByteArray
     case m: SendToOneSubscriber => sendToOneSubscriberToProto(m).toByteArray
-    case _ =>
+    case _                      =>
       throw new IllegalArgumentException(s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
   }
 
   override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef =
     fromBinaryMap.get(manifest) match {
       case Some(f) => f(bytes)
-      case None =>
+      case None    =>
         throw new NotSerializableException(
           s"Unimplemented deserialization of message with manifest [$manifest] in [${getClass.getName}]")
     }
@@ -103,7 +103,7 @@ private[pekko] class DistributedPubSubMessageSerializer(val system: ExtendedActo
 
     @tailrec def readChunk(): Unit = in.read(buffer) match {
       case -1 => ()
-      case n =>
+      case n  =>
         out.write(buffer, 0, n)
         readChunk()
     }

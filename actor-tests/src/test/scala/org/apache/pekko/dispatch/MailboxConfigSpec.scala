@@ -205,7 +205,7 @@ class PriorityMailboxSpec extends MailboxSpec {
   val comparator = PriorityGenerator(_.##)
   lazy val name = "The priority mailbox implementation"
   def factory = {
-    case UnboundedMailbox() => new UnboundedPriorityMailbox(comparator).create(None, None)
+    case UnboundedMailbox()                    => new UnboundedPriorityMailbox(comparator).create(None, None)
     case BoundedMailbox(capacity, pushTimeOut) =>
       new BoundedPriorityMailbox(comparator, capacity, pushTimeOut).create(None, None)
     case _ => throw new RuntimeException() // compiler exhaustiveness check pleaser
@@ -216,7 +216,7 @@ class StablePriorityMailboxSpec extends MailboxSpec {
   val comparator = PriorityGenerator(_.##)
   lazy val name = "The stable priority mailbox implementation"
   def factory = {
-    case UnboundedMailbox() => new UnboundedStablePriorityMailbox(comparator).create(None, None)
+    case UnboundedMailbox()                    => new UnboundedStablePriorityMailbox(comparator).create(None, None)
     case BoundedMailbox(capacity, pushTimeOut) =>
       new BoundedStablePriorityMailbox(comparator, capacity, pushTimeOut).create(None, None)
     case _ => throw new RuntimeException() // compiler exhaustiveness check pleaser
@@ -226,7 +226,7 @@ class StablePriorityMailboxSpec extends MailboxSpec {
 class ControlAwareMailboxSpec extends MailboxSpec {
   lazy val name = "The control aware mailbox implementation"
   def factory = {
-    case UnboundedMailbox() => new UnboundedControlAwareMailbox().create(None, None)
+    case UnboundedMailbox()                    => new UnboundedControlAwareMailbox().create(None, None)
     case BoundedMailbox(capacity, pushTimeOut) =>
       new BoundedControlAwareMailbox(capacity, pushTimeOut).create(None, None)
     case _ => throw new RuntimeException() // compiler exhaustiveness check pleaser

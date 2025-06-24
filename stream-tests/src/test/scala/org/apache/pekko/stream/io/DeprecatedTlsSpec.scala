@@ -205,7 +205,7 @@ class DeprecatedTlsSpec extends StreamSpec(DeprecatedTlsSpec.configOverrides) wi
           }
 
           {
-            case SessionTruncated => SendBytes(ByteString("TRUNCATED"))
+            case SessionTruncated                      => SendBytes(ByteString("TRUNCATED"))
             case SessionBytes(s, b) if session == null =>
               setSession(s)
               SendBytes(b)
@@ -337,7 +337,7 @@ class DeprecatedTlsSpec extends StreamSpec(DeprecatedTlsSpec.configOverrides) wi
       }
 
       {
-        case SessionTruncated => SendBytes(ByteString("TRUNCATED"))
+        case SessionTruncated                   => SendBytes(ByteString("TRUNCATED"))
         case SessionBytes(s, b) if s != session =>
           setSession(s)
           SendBytes(ByteString(s.getCipherSuite) ++ b)

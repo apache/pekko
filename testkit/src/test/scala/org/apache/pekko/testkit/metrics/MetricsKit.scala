@@ -164,7 +164,7 @@ private[pekko] trait MetricsKit extends MetricsKitOps {
     import pekko.util.ccompat.JavaConverters._
     registry.getMetrics.asScala.find(_._1 == key).map(_._2) match {
       case Some(existing: M) => existing
-      case Some(_) =>
+      case Some(_)           =>
         throw new IllegalArgumentException(
           "Key: [%s] is already for different kind of metric! Was [%s], expected [%s]"
             .format(key, metric.getClass.getSimpleName, tag.runtimeClass.getSimpleName))

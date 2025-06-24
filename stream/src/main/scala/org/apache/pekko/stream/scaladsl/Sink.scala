@@ -379,7 +379,7 @@ object Sink {
     sinks match {
       case immutable.Seq()     => Sink.cancelled.mapMaterializedValue(_ => Nil)
       case immutable.Seq(sink) => sink.asInstanceOf[Sink[T, M]].mapMaterializedValue(_ :: Nil)
-      case _ =>
+      case _                   =>
         Sink.fromGraph(GraphDSL.create(sinks) { implicit b => shapes =>
           import GraphDSL.Implicits._
           val c = b.add(fanOutStrategy(sinks.size))

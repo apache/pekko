@@ -1160,7 +1160,7 @@ private[pekko] class ActorSystemImpl(
       }
       findExtension(ext) // Registration in process, await completion and retry
     case t: Throwable => throw t // Initialization failed, throw same again
-    case other =>
+    case other        =>
       other.asInstanceOf[T] // could be a T or null, in which case we return the null as T
   }
 

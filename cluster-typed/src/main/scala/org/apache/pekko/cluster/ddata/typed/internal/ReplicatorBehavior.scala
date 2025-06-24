@@ -186,7 +186,7 @@ import pekko.util.Timeout
                   (classicReplicator ? dd.Replicator.Delete(cmd.key, cmd.consistency.toClassic))
                     .mapTo[dd.Replicator.DeleteResponse[d]]
                     .map {
-                      case rsp: dd.Replicator.DeleteSuccess[d] => JReplicator.DeleteSuccess(rsp.key)
+                      case rsp: dd.Replicator.DeleteSuccess[d]            => JReplicator.DeleteSuccess(rsp.key)
                       case rsp: dd.Replicator.ReplicationDeleteFailure[d] =>
                         JReplicator.DeleteFailure(rsp.key)
                       case rsp: dd.Replicator.DataDeleted[d]  => JReplicator.DataDeleted(rsp.key)

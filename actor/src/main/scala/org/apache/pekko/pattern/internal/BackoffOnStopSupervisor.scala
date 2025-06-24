@@ -107,7 +107,7 @@ import pekko.pattern.{
     case None =>
       finalStopMessage match {
         case Some(fsm) if fsm(msg) => context.stop(self)
-        case _ =>
+        case _                     =>
           handlingWhileStopped match {
             case ForwardDeathLetters => context.system.deadLetters.forward(msg)
             case ForwardTo(h)        => h.forward(msg)

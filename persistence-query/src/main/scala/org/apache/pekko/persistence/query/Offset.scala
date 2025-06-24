@@ -76,7 +76,7 @@ object TimestampOffset {
       case t: TimestampOffset => t
       case NoOffset           => TimestampOffset.Zero
       case null               => throw new IllegalArgumentException("Offset must not be null")
-      case other =>
+      case other              =>
         throw new IllegalArgumentException(
           s"Supported offset types are TimestampOffset and NoOffset, " +
           s"received ${other.getClass.getName}")

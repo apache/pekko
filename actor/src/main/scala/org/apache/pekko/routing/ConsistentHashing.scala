@@ -232,7 +232,7 @@ final case class ConsistentHashingRoutingLogic(
               case bytes: Array[Byte] => currentConsistenHash.nodeFor(bytes).routee
               case str: String        => currentConsistenHash.nodeFor(str).routee
               case x: AnyRef          => currentConsistenHash.nodeFor(SerializationExtension(system).serialize(x).get).routee
-              case unexpected =>
+              case unexpected         =>
                 throw new IllegalArgumentException(s"Unexpected hashdata: $unexpected") // will not happen, for exhaustiveness check
             }
         } catch {
@@ -244,7 +244,7 @@ final case class ConsistentHashingRoutingLogic(
       message match {
         case _ if hashMapping.isDefinedAt(message) => target(hashMapping(message))
         case hashable: ConsistentHashable          => target(hashable.consistentHashKey)
-        case _ =>
+        case _                                     =>
           log.warning(
             "Message [{}] must be handled by hashMapping, or implement [{}] or be wrapped in [{}]",
             message.getClass.getName,

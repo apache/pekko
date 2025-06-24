@@ -320,7 +320,7 @@ object MessageSerializerRemotingSpec {
   class RemoteActor extends Actor {
     def receive = {
       case p @ PersistentRepr(MyPayload(data), _) => p.sender ! s"p$data"
-      case a: AtomicWrite =>
+      case a: AtomicWrite                         =>
         a.payload.foreach {
           case p @ PersistentRepr(MyPayload(data), _) => p.sender ! s"p$data"
           case x                                      => throw new RuntimeException(s"Unexpected payload: $x")
@@ -478,7 +478,7 @@ class OldPayloadSerializer extends SerializerWithStringManifest {
   def manifest(o: AnyRef): String = o.getClass.getName
 
   def toBinary(o: AnyRef): Array[Byte] = o match {
-    case MyPayload(data) => s".$data".getBytes(UTF_8)
+    case MyPayload(data)                                    => s".$data".getBytes(UTF_8)
     case old if old.getClass.getName == OldPayloadClassName =>
       o.toString.getBytes(UTF_8)
     case x => throw new NotSerializableException(s"Unexpected object: $x")
@@ -488,7 +488,7 @@ class OldPayloadSerializer extends SerializerWithStringManifest {
     case OldPayloadClassName =>
       MyPayload(new String(bytes, UTF_8))
     case MyPayloadClassName => MyPayload(s"${new String(bytes, UTF_8)}.")
-    case other =>
+    case other              =>
       throw new Exception(s"unexpected manifest [$other]")
   }
 }

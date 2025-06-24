@@ -742,7 +742,7 @@ private[pekko] class ClusterShardingGuardian extends Actor {
       // one Replicator per role
       replicatorByRole.get(settings.role) match {
         case Some(ref) => ref
-        case None =>
+        case None      =>
           val name = settings.role match {
             case Some(r) => URLEncoder.encode(r, ByteString.UTF_8) + "Replicator"
             case None    => "replicator"

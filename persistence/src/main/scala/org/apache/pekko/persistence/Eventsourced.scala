@@ -310,7 +310,7 @@ private[persistence] trait Eventsourced
 
   override def unhandled(message: Any): Unit = {
     message match {
-      case RecoveryCompleted => // mute
+      case RecoveryCompleted         => // mute
       case SaveSnapshotFailure(m, e) =>
         log.warning(
           "Failed to saveSnapshot given metadata [{}] due to: [{}: {}]",

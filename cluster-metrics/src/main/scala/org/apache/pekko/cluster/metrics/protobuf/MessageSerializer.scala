@@ -54,7 +54,7 @@ class MessageSerializer(val system: ExtendedActorSystem) extends SerializerWithS
     case CpuMetricsSelector               => CpuMetricsSelectorManifest
     case HeapMetricsSelector              => HeapMetricsSelectorManifest
     case SystemLoadAverageMetricsSelector => SystemLoadAverageMetricsSelectorManifest
-    case _ =>
+    case _                                =>
       throw new IllegalArgumentException(s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
   }
 
@@ -65,7 +65,7 @@ class MessageSerializer(val system: ExtendedActorSystem) extends SerializerWithS
     case CpuMetricsSelector               => Array.emptyByteArray
     case HeapMetricsSelector              => Array.emptyByteArray
     case SystemLoadAverageMetricsSelector => Array.emptyByteArray
-    case _ =>
+    case _                                =>
       throw new IllegalArgumentException(s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
   }
 
@@ -84,7 +84,7 @@ class MessageSerializer(val system: ExtendedActorSystem) extends SerializerWithS
 
     @tailrec def readChunk(): Unit = in.read(buffer) match {
       case -1 => ()
-      case n =>
+      case n  =>
         out.write(buffer, 0, n)
         readChunk()
     }
@@ -101,7 +101,7 @@ class MessageSerializer(val system: ExtendedActorSystem) extends SerializerWithS
     case CpuMetricsSelectorManifest               => CpuMetricsSelector
     case HeapMetricsSelectorManifest              => HeapMetricsSelector
     case SystemLoadAverageMetricsSelectorManifest => SystemLoadAverageMetricsSelector
-    case _ =>
+    case _                                        =>
       throw new NotSerializableException(
         s"Unimplemented deserialization of message with manifest [$manifest] in [${getClass.getName}")
   }
@@ -203,7 +203,7 @@ class MessageSerializer(val system: ExtendedActorSystem) extends SerializerWithS
         case n: jl.Long    => Number.newBuilder().setType(NumberType.Long).setValue64(n)
         case n: jl.Float   => Number.newBuilder().setType(NumberType.Float).setValue32(jl.Float.floatToIntBits(n))
         case n: jl.Integer => Number.newBuilder().setType(NumberType.Integer).setValue32(n)
-        case _ =>
+        case _             =>
           val bos = new ByteArrayOutputStream
           val out = new ObjectOutputStream(bos)
           out.writeObject(number)
@@ -257,10 +257,10 @@ class MessageSerializer(val system: ExtendedActorSystem) extends SerializerWithS
     def numberFromProto(number: cm.NodeMetrics.Number): Number = {
       import cm.NodeMetrics.NumberType
       number.getType.getNumber match {
-        case NumberType.Double_VALUE  => jl.Double.longBitsToDouble(number.getValue64)
-        case NumberType.Long_VALUE    => number.getValue64
-        case NumberType.Float_VALUE   => jl.Float.intBitsToFloat(number.getValue32)
-        case NumberType.Integer_VALUE => number.getValue32
+        case NumberType.Double_VALUE     => jl.Double.longBitsToDouble(number.getValue64)
+        case NumberType.Long_VALUE       => number.getValue64
+        case NumberType.Float_VALUE      => jl.Float.intBitsToFloat(number.getValue32)
+        case NumberType.Integer_VALUE    => number.getValue32
         case NumberType.Serialized_VALUE =>
           val in = new NumberInputStream(
             system.dynamicAccess.classLoader,

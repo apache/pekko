@@ -550,7 +550,7 @@ trait PersistentFSMBase[S, D, E] extends Actor with Listeners with ActorLogging 
   private[pekko] def applyState(nextState: State): Unit = {
     nextState.stopReason match {
       case None => makeTransition(nextState)
-      case _ =>
+      case _    =>
         nextState.replies.reverse.foreach { r =>
           sender() ! r
         }

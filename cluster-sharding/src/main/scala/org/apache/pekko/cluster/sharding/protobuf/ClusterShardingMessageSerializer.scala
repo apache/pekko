@@ -326,7 +326,7 @@ private[pekko] class ClusterShardingMessageSerializer(val system: ExtendedActorS
   override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef =
     fromBinaryMap.get(manifest) match {
       case Some(f) => f(bytes)
-      case None =>
+      case None    =>
         throw new NotSerializableException(
           s"Unimplemented deserialization of message with manifest [$manifest] in [${getClass.getName}]")
     }
@@ -631,7 +631,7 @@ private[pekko] class ClusterShardingMessageSerializer(val system: ExtendedActorS
 
     @tailrec def readChunk(): Unit = in.read(buffer) match {
       case -1 => ()
-      case n =>
+      case n  =>
         out.write(buffer, 0, n)
         readChunk()
     }

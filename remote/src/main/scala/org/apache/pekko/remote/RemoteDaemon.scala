@@ -103,7 +103,7 @@ private[pekko] class RemoteSystemDaemon(
 
   @tailrec private def removeChildParentNeedsUnwatch(parent: ActorRef, child: ActorRef): Boolean = {
     parent2children.get(parent) match {
-      case null => false // no-op
+      case null     => false // no-op
       case children =>
         val next = children - child
         if (next.isEmpty) {
@@ -155,7 +155,7 @@ private[pekko] class RemoteSystemDaemon(
     case DeathWatchNotification(parent: ActorRef with ActorRefScope, _, _) if !parent.isLocal =>
       terminating.locked {
         parent2children.remove(parent) match {
-          case null =>
+          case null     =>
           case children =>
             for (c <- children) {
               system.stop(c)

@@ -188,7 +188,7 @@ object ActorMaterializer {
       case s: ExtendedActorSystem => s
       case c: ActorContext        => c.system
       case null                   => throw new IllegalArgumentException("ActorRefFactory context must be defined")
-      case _ =>
+      case _                      =>
         throw new IllegalArgumentException(
           s"ActorRefFactory context must be an ActorSystem or ActorContext, got [${context.getClass.getName}]")
     }
@@ -209,7 +209,7 @@ private[pekko] object ActorMaterializerHelper {
   private[pekko] def downcast(materializer: Materializer): ActorMaterializer =
     materializer match {
       case m: ActorMaterializer => m
-      case _ =>
+      case _                    =>
         throw new IllegalArgumentException(
           s"required [${classOf[ActorMaterializer].getName}] " +
           s"but got [${materializer.getClass.getName}]")

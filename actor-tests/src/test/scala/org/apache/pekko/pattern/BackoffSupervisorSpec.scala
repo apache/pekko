@@ -47,7 +47,7 @@ object BackoffSupervisorSpec {
   class ManualChild(probe: ActorRef) extends Actor {
     def receive: Receive = {
       case "boom" => throw new TestException
-      case msg =>
+      case msg    =>
         probe ! msg
         context.parent ! BackoffSupervisor.Reset
     }

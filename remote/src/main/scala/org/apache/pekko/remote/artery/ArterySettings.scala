@@ -92,7 +92,7 @@ private[pekko] final class ArterySettings private (config: Config) {
     case AeronUpd.configName => AeronUpd
     case Tcp.configName      => Tcp
     case TlsTcp.configName   => TlsTcp
-    case other =>
+    case other               =>
       throw new IllegalArgumentException(
         s"Unknown transport [$other], possible values: " +
         s""""${AeronUpd.configName}", "${Tcp.configName}", or "${TlsTcp.configName}"""")
@@ -178,7 +178,7 @@ private[pekko] final class ArterySettings private (config: Config) {
     val DeathWatchNotificationFlushTimeout: FiniteDuration = {
       toRootLowerCase(config.getString("death-watch-notification-flush-timeout")) match {
         case "off" => Duration.Zero
-        case _ =>
+        case _     =>
           config
             .getMillisDuration("death-watch-notification-flush-timeout")
             .requiring(
@@ -309,7 +309,7 @@ private[pekko] object ArterySettings {
   def getHostname(key: String, config: Config): String = config.getString(key) match {
     case "<getHostAddress>" => InetAddress.getLocalHost.getHostAddress
     case "<getHostName>"    => InetAddress.getLocalHost.getHostName
-    case other =>
+    case other              =>
       if (other.startsWith("[") && other.endsWith("]")) other
       else if (AsyncDnsResolver.isIpv6Address(other)) {
         "[" + other + "]"

@@ -54,7 +54,7 @@ private[pekko] class ActorRefResolveThreadLocalCache(val system: ExtendedActorSy
 
   private val provider = system.provider match {
     case r: RemoteActorRefProvider => r
-    case _ =>
+    case _                         =>
       throw new IllegalArgumentException(
         "ActorRefResolveThreadLocalCache can only be used with RemoteActorRefProvider, " +
         s"not with ${system.provider.getClass}")

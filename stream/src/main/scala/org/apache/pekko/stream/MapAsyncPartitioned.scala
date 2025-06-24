@@ -43,7 +43,7 @@ private[stream] object MapAsyncPartitioned {
     def supervisionDirectiveFor(decider: Supervision.Decider, ex: Throwable): Supervision.Directive = {
       cachedSupervisionDirective match {
         case OptionVal.Some(d) => d
-        case _ =>
+        case _                 =>
           val d = decider(ex)
           cachedSupervisionDirective = OptionVal.Some(d)
           d
@@ -109,7 +109,7 @@ private[stream] final class MapAsyncPartitioned[In, Out, Partition](
 
       private val futureCB = getAsyncCallback[Holder[In, Out]](holder =>
         holder.out match {
-          case Success(_) => pushNextIfPossible()
+          case Success(_)  => pushNextIfPossible()
           case Failure(ex) =>
             holder.supervisionDirectiveFor(decider, ex) match {
               // fail fast as if supervision says so

@@ -38,7 +38,7 @@ class JavaLogger extends Actor with RequiresMessageQueue[LoggerMessageQueueSeman
     case event: Warning                => log(mapLevel(event.level), null, event)
     case event: Info                   => log(mapLevel(event.level), null, event)
     case event: Debug                  => log(mapLevel(event.level), null, event)
-    case InitializeLogger(_) =>
+    case InitializeLogger(_)           =>
       Logger(this.getClass.getName)
         .warning(s"${getClass.getName} has been deprecated since Akka 2.6.0. Use SLF4J instead.")
       sender() ! LoggerInitialized

@@ -508,7 +508,7 @@ abstract class MultiNodeSpec(
         case (base, r @ Replacement(tag, _)) =>
           base.indexOf(tag) match {
             case -1 => base
-            case _ =>
+            case _  =>
               val replaceWith =
                 try r.addr
                 catch {
@@ -526,7 +526,7 @@ abstract class MultiNodeSpec(
       import pekko.util.ccompat.JavaConverters._
       ConfigFactory.parseString(deployString).root.asScala.foreach {
         case (key, value: ConfigObject) => deployer.parseConfig(key, value.toConfig).foreach(deployer.deploy)
-        case (key, x) =>
+        case (key, x)                   =>
           throw new IllegalArgumentException(s"key $key must map to deployment section, not simple value $x")
       }
     }

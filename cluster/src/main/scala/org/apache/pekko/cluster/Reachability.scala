@@ -225,7 +225,7 @@ private[cluster] class Reachability private (
 
   def status(observer: UniqueAddress, subject: UniqueAddress): ReachabilityStatus =
     observerRows(observer) match {
-      case None => Reachable
+      case None               => Reachable
       case Some(observerRows) =>
         observerRows.get(subject) match {
           case None         => Reachable
@@ -274,7 +274,7 @@ private[cluster] class Reachability private (
    */
   def allUnreachableFrom(observer: UniqueAddress): Set[UniqueAddress] =
     observerRows(observer) match {
-      case None => Set.empty
+      case None               => Set.empty
       case Some(observerRows) =>
         observerRows.iterator
           .collect {

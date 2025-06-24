@@ -153,7 +153,7 @@ private[pekko] object Running {
                   .filter(event =>
                     event.eventMetadata match {
                       case Some(replicatedMeta: ReplicatedEventMetadata) => replicatedMeta.originReplica == replicaId
-                      case _ =>
+                      case _                                             =>
                         throw new IllegalArgumentException(
                           s"Replication stream from replica $replicaId for ${setup.persistenceId} contains event " +
                           s"(sequence nr ${event.sequenceNr}) without replication metadata. " +

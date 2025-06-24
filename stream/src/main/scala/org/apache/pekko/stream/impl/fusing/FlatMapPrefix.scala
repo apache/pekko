@@ -66,7 +66,7 @@ import pekko.util.OptionVal
       override def onPush(): Unit = {
         subSource match {
           case OptionVal.Some(s) => s.push(grab(in))
-          case _ =>
+          case _                 =>
             builder += grab(in)
             left -= 1
             if (left == 0) {
@@ -114,7 +114,7 @@ import pekko.util.OptionVal
       override def onDownstreamFinish(cause: Throwable): Unit =
         subSink match {
           case OptionVal.Some(s) => s.cancel(cause)
-          case _ =>
+          case _                 =>
             if (propagateToNestedMaterialization) {
               downstreamCause = OptionVal.Some(cause)
               if (left == 0) {

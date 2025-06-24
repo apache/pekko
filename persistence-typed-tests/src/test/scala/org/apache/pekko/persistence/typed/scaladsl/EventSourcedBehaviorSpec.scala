@@ -278,7 +278,7 @@ object EventSourcedBehaviorSpec {
             probe ! ((state, evt))
             State(state.value + delta, state.history :+ state.value)
         }).receiveSignal {
-      case (_, RecoveryCompleted) => ()
+      case (_, RecoveryCompleted)           => ()
       case (_, SnapshotCompleted(metadata)) =>
         snapshotProbe ! Success(metadata)
       case (_, SnapshotFailed(_, failure)) =>

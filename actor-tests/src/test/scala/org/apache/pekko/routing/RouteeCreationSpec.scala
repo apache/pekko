@@ -34,8 +34,9 @@ class RouteeCreationSpec extends PekkoSpec {
       })))
       for (i <- 1 to N) {
         expectMsgType[ActorIdentity] match {
-          case ActorIdentity(_, Some(_)) => // fine
-          case x                         => fail(s"routee $i was not found $x")
+          case ActorIdentity(_,
+                Some(_)) => // fine
+          case x => fail(s"routee $i was not found $x")
         }
       }
     }

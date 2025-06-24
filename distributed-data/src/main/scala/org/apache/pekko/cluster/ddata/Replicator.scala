@@ -1414,7 +1414,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
   val durableStore: ActorRef =
     if (hasDurableKeys) {
       val props = settings.durableStoreProps match {
-        case Right(p) => p
+        case Right(p)     => p
         case Left((s, c)) =>
           val clazz = context.system.asInstanceOf[ExtendedActorSystem].dynamicAccess.getClassFor[Actor](s).get
           Props(clazz, c).withDispatcher(c.getString("use-dispatcher"))
@@ -1622,7 +1622,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
         // ignore gossip and replication when loading durable data
         log.debug("ignoring message [{}] when loading durable data", m.getClass.getName)
       case msg: ClusterDomainEvent => normalReceive.applyOrElse(msg, unhandled)
-      case msg =>
+      case msg                     =>
         stash :+= (msg -> replyTo)
     }
   }
@@ -1796,7 +1796,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
             replyTo ! UpdateSuccess(key, req)
         } else {
           val (writeEnvelope, writeDelta) = delta match {
-            case Some(NoDeltaPlaceholder) => (newEnvelope, None)
+            case Some(NoDeltaPlaceholder)                => (newEnvelope, None)
             case Some(d: RequiresCausalDeliveryOfDeltas) =>
               val v = deltaPropagationSelector.currentVersion(key.id)
               (newEnvelope, Some(Delta(newEnvelope.copy(data = d), v, v)))
@@ -1871,7 +1871,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
     getData(key) match {
       case someEnvelope @ Some(envelope) if envelope eq writeEnvelope => someEnvelope
       case Some(DataEnvelope(DeletedData, _, _))                      => Some(DeletedEnvelope) // already deleted
-      case Some(envelope @ DataEnvelope(existingData @ _, _, _)) =>
+      case Some(envelope @ DataEnvelope(existingData @ _, _, _))      =>
         try {
           // DataEnvelope will mergeDelta when needed
           val merged = envelope.merge(writeEnvelope).addSeen(selfAddress)

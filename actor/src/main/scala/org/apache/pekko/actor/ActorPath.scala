@@ -137,7 +137,7 @@ object ActorPath {
       def validate(pos: Int): Int =
         if (pos < len)
           s.charAt(pos) match {
-            case c if isValidChar(c) => validate(pos + 1)
+            case c if isValidChar(c)                                                                  => validate(pos + 1)
             case '%' if pos + 2 < len && isHexChar(s.charAt(pos + 1)) && isHexChar(s.charAt(pos + 2)) =>
               validate(pos + 3)
             case _ => pos

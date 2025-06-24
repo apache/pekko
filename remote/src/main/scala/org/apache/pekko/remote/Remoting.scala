@@ -447,7 +447,7 @@ private[remote] object EndpointManager {
       // timeOfRelease is only used for garbage collection. If an address is still probed, we should report the
       // known fact that it is quarantined.
       case Some(Quarantined(`uid`, _)) => true
-      case _ =>
+      case _                           =>
         addressToRefuseUid.get(address).exists { case (refuseUid, _) => refuseUid == uid }
     }
 
@@ -467,11 +467,11 @@ private[remote] object EndpointManager {
         val address = writableToAddress(endpoint)
         addressToWritable.get(address) match {
           case Some(Quarantined(_, _)) => // don't overwrite Quarantined with Gated
-          case Some(Pass(_, _)) =>
+          case Some(Pass(_, _))        =>
             addressToWritable += address -> Gated(timeOfRelease)
             writableToAddress -= endpoint
           case Some(Gated(_)) => // already gated
-          case None =>
+          case None           =>
             addressToWritable += address -> Gated(timeOfRelease)
             writableToAddress -= endpoint
         }
@@ -718,7 +718,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
 
       // Stop inbound read-only associations
       (endpoints.readOnlyEndpointFor(address), uidToQuarantineOption) match {
-        case (Some((endpoint, _)), None) => context.stop(endpoint)
+        case (Some((endpoint, _)), None)                                                        => context.stop(endpoint)
         case (Some((endpoint, currentUid)), Some(quarantineUid)) if currentUid == quarantineUid =>
           context.stop(endpoint)
         case _ => // nothing to stop

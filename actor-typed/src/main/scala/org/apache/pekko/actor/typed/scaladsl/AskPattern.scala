@@ -119,7 +119,7 @@ object AskPattern {
       // because it might be needed when we move to a 'native' typed runtime, see #24219
       ref match {
         case a: InternalRecipientRef[Req] => askClassic[Req, Res](a, timeout, replyTo)
-        case a =>
+        case a                            =>
           throw new IllegalStateException(
             "Only expect references to be RecipientRef, ActorRefAdapter or ActorSystemAdapter until " +
             "native system is implemented: " + a.getClass)

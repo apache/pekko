@@ -40,7 +40,7 @@ private[pekko] object LoggerClass {
     try {
       def skip(name: String): Boolean = {
         def loop(skipList: List[String]): Boolean = skipList match {
-          case Nil => false
+          case Nil          => false
           case head :: tail =>
             if (name.startsWith(head)) true
             else loop(tail)

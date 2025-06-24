@@ -101,7 +101,7 @@ trait FutureTimeoutSupport {
       }
     future.value match {
       case Some(_) => future
-      case None => // not completed yet
+      case None    => // not completed yet
         val p = Promise[T]()
         val timeout = using.scheduleOnce(duration) {
           p.tryFailure(new TimeoutException(s"Timeout of $duration expired"))

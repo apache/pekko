@@ -167,7 +167,7 @@ object ProducerController {
     def apply(config: Config): Settings = {
       val chunkLargeMessagesBytes = toRootLowerCase(config.getString("chunk-large-messages")) match {
         case "off" => 0
-        case _ =>
+        case _     =>
           config.getBytes("chunk-large-messages").requiring(_ <= Int.MaxValue, "Too large chunk-large-messages.").toInt
       }
       new Settings(

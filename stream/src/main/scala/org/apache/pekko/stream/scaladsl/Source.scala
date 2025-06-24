@@ -857,7 +857,7 @@ object Source {
     sources match {
       case immutable.Seq()       => Source.empty.mapMaterializedValue(_ => Nil)
       case immutable.Seq(source) => source.asInstanceOf[Source[U, M]].mapMaterializedValue(_ :: Nil)
-      case _ =>
+      case _                     =>
         Source.fromGraph(GraphDSL.create(sources) { implicit b => shapes =>
           import GraphDSL.Implicits._
           val c = b.add(fanInStrategy(sources.size))
@@ -1083,7 +1083,7 @@ object Source {
     sourcesAndPriorities match {
       case immutable.Seq()            => Source.empty
       case immutable.Seq((source, _)) => source.mapMaterializedValue(_ => NotUsed)
-      case sourcesAndPriorities =>
+      case sourcesAndPriorities       =>
         val (sources, priorities) = sourcesAndPriorities.unzip
         combine(sources.head, sources(1), sources.drop(2): _*)(_ => MergePrioritized(priorities, eagerComplete))
     }

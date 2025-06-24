@@ -198,7 +198,7 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
         if (updateShutdownSchedule(SCHEDULED, RESCHEDULED)) ()
         else ifSensibleToDoSoThenScheduleShutdown()
       case RESCHEDULED =>
-      case unexpected =>
+      case unexpected  =>
         throw new IllegalArgumentException(s"Unexpected actor class marker: $unexpected") // will not happen, for exhaustiveness check
     }
   }
@@ -259,7 +259,7 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
           if (updateShutdownSchedule(RESCHEDULED, SCHEDULED)) scheduleShutdownAction()
           else run()
         case UNSCHEDULED =>
-        case unexpected =>
+        case unexpected  =>
           throw new IllegalArgumentException(s"Unexpected actor class marker: $unexpected") // will not happen, for exhaustiveness check
       }
     }
@@ -482,7 +482,7 @@ class ThreadPoolExecutorConfigurator(config: Config, prerequisites: DispatcherPr
               .map {
                 case "array"       => ThreadPoolConfig.arrayBlockingQueue(size, false) // TODO config fairness?
                 case "" | "linked" => ThreadPoolConfig.linkedBlockingQueue(size)
-                case x =>
+                case x             =>
                   throw new IllegalArgumentException("[%s] is not a valid task-queue-type [array|linked]!".format(x))
               }
               .map { qf => (q: ThreadPoolConfigBuilder) =>

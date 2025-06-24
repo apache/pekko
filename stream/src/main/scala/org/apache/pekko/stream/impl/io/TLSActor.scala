@@ -109,8 +109,8 @@ import pekko.util.ByteString
       if (buffer.isEmpty) {
         buffer = inputBunch.dequeue(idx) match {
           // this class handles both UserIn and TransportIn
-          case bs: ByteString => bs
-          case SendBytes(bs)  => bs
+          case bs: ByteString         => bs
+          case SendBytes(bs)          => bs
           case n: NegotiateNewSession =>
             setNewSessionParameters(n)
             ByteString.empty

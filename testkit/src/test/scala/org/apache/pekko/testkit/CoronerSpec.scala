@@ -88,7 +88,7 @@ class CoronerSpec extends AnyWordSpec with Matchers {
 
             def recursiveLock(locks: List[ReentrantLock]): Unit = {
               locks match {
-                case Nil => ()
+                case Nil          => ()
                 case lock :: rest => {
                   ready.release()
                   proceed.acquire()

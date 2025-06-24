@@ -276,7 +276,7 @@ final class ClusterSingletonProxy(singletonManagerPath: String, settings: Cluste
     case state: CurrentClusterState => handleInitial(state)
     case MemberUp(m)                => add(m)
     case MemberExited(m)            => remove(m)
-    case MemberRemoved(m, _) =>
+    case MemberRemoved(m, _)        =>
       if (m.uniqueAddress == cluster.selfUniqueAddress)
         context.stop(self)
       else
@@ -290,7 +290,7 @@ final class ClusterSingletonProxy(singletonManagerPath: String, settings: Cluste
       context.watch(s)
       cancelTimer()
       sendBuffered()
-    case _: ActorIdentity => // do nothing
+    case _: ActorIdentity                             => // do nothing
     case ClusterSingletonProxy.TryToIdentifySingleton =>
       identifyTimer match {
         case Some(_) =>

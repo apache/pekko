@@ -439,7 +439,7 @@ class ByteArraySerializer(val system: ExtendedActorSystem) extends BaseSerialize
   def toBinary(o: AnyRef): Array[Byte] = o match {
     case null           => null
     case o: Array[Byte] => o
-    case other =>
+    case other          =>
       throw new IllegalArgumentException(
         s"${getClass.getName} only serializes byte arrays, not [${other.getClass.getName}]")
   }
@@ -451,7 +451,7 @@ class ByteArraySerializer(val system: ExtendedActorSystem) extends BaseSerialize
     o match {
       case null               =>
       case bytes: Array[Byte] => buf.put(bytes)
-      case other =>
+      case other              =>
         throw new IllegalArgumentException(
           s"${getClass.getName} only serializes byte arrays, not [${other.getClass.getName}]")
     }

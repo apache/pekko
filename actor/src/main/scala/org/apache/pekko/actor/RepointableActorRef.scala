@@ -169,8 +169,8 @@ private[pekko] class RepointableActorRef(
   def getChild(name: Iterator[String]): InternalActorRef =
     if (name.hasNext) {
       name.next() match {
-        case ".." => getParent.getChild(name)
-        case ""   => getChild(name)
+        case ".."  => getParent.getChild(name)
+        case ""    => getChild(name)
         case other =>
           val (childName, uid) = ActorCell.splitNameAndUid(other)
           lookup.getChildByName(childName) match {

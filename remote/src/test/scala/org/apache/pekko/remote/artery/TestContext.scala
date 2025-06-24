@@ -96,7 +96,7 @@ private[remote] class TestOutboundContext(
     _associationState.completeUniqueRemoteAddress(peer)
     _associationState.uniqueRemoteAddress() match {
       case Some(`peer`) => // our value
-      case _ =>
+      case _            =>
         _associationState = _associationState.newIncarnation(peer)
     }
     Future.successful(Done)

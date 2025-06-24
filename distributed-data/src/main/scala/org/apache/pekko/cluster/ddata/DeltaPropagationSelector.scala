@@ -172,7 +172,7 @@ private[pekko] trait DeltaPropagationSelector {
 
   private def findSmallestVersionPropagatedToAllNodes(key: KeyId, all: Vector[UniqueAddress]): Long = {
     deltaSentToNode.get(key) match {
-      case None => 0L
+      case None                        => 0L
       case Some(deltaSentToNodeForKey) =>
         if (deltaSentToNodeForKey.isEmpty) 0L
         else if (all.exists(node => !deltaSentToNodeForKey.contains(node))) 0L

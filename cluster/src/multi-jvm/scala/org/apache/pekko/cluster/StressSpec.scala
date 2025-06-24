@@ -215,7 +215,7 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
     def receive = {
       case PhiResult(from, phiValues) => phiValuesObservedByNode += from -> phiValues
       case StatsResult(from, stats)   => clusterStatsObservedByNode += from -> stats
-      case ReportTick =>
+      case ReportTick                 =>
         if (infolog)
           log.info(s"[$title] in progress\n\n$formatPhi\n\n$formatStats")
       case r: ClusterResult =>
@@ -346,7 +346,7 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
         reportTo.foreach { _ ! PhiResult(cluster.selfAddress, phiSet) }
       case state: CurrentClusterState => nodes = state.members.map(_.address)
       case memberEvent: MemberEvent   => nodes += memberEvent.member.address
-      case ReportTo(ref) =>
+      case ReportTo(ref)              =>
         reportTo.foreach(context.unwatch)
         reportTo = ref
         reportTo.foreach(context.watch)

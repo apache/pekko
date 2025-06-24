@@ -84,7 +84,7 @@ final class SteppingInmemJournal extends InmemJournal {
 
   override def receivePluginInternal = super.receivePluginInternal.orElse {
     case Token if queuedOps.isEmpty => queuedTokenRecipients = queuedTokenRecipients :+ sender()
-    case Token =>
+    case Token                      =>
       val op = queuedOps.head
       queuedOps = queuedOps.tail
       val tokenConsumer = sender()

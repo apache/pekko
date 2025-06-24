@@ -41,7 +41,7 @@ object ScatterGatherFirstCompletedSpec {
           case Stop(None)                   => context.stop(self)
           case Stop(Some(_id)) if _id == id => context.stop(self)
           case _id: Int if _id == id        =>
-          case _ => {
+          case _                            => {
             Thread.sleep(100 * id)
             sender() ! id
           }

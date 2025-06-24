@@ -509,7 +509,7 @@ abstract class ActorContextSpec extends ScalaTestWithActorTestKit with AnyWordSp
                     }
                     .receiveSignal {
                       case (_, Terminated(_)) => Behaviors.unhandled
-                      case (_, signal) =>
+                      case (_, signal)        =>
                         probe.ref ! ReceivedSignal(signal)
                         Behaviors.same
                     }

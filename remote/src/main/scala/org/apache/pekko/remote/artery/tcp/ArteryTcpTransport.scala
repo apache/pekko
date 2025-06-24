@@ -195,7 +195,7 @@ private[remote] class ArteryTcpTransport(
             }))
             .mapError {
               case ArteryTransport.ShutdownSignal => ArteryTransport.ShutdownSignal
-              case e =>
+              case e                              =>
                 logDisconnected()
                 e
             }

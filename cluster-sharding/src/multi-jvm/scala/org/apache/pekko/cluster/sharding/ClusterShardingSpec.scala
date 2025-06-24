@@ -381,7 +381,7 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
       if (!rememberEntities) None
       else
         settings.rememberEntitiesStore match {
-          case ClusterShardingSettings.RememberEntitiesStoreDData => Some(ddataRememberEntitiesProvider(typeName))
+          case ClusterShardingSettings.RememberEntitiesStoreDData        => Some(ddataRememberEntitiesProvider(typeName))
           case ClusterShardingSettings.RememberEntitiesStoreEventsourced =>
             Some(eventSourcedRememberEntitiesProvider(typeName, settings))
           case _ => fail()

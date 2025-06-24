@@ -29,7 +29,7 @@ class BoundedBlockingQueue[E <: AnyRef](val maxCapacity: Int, private val backin
     with BlockingQueue[E] {
 
   backing match {
-    case null => throw new IllegalArgumentException("Backing Queue may not be null")
+    case null                => throw new IllegalArgumentException("Backing Queue may not be null")
     case b: BlockingQueue[_] =>
       require(maxCapacity > 0)
       require(b.size() == 0)
@@ -119,7 +119,7 @@ class BoundedBlockingQueue[E <: AnyRef](val maxCapacity: Int, private val backin
         backing.poll() match {
           case null if remainingNanos <= 0 => null.asInstanceOf[E]
           case null                        => pollElement(notEmpty.awaitNanos(remainingNanos))
-          case e => {
+          case e                           => {
             notFull.signal()
             e
           }
@@ -134,7 +134,7 @@ class BoundedBlockingQueue[E <: AnyRef](val maxCapacity: Int, private val backin
     try {
       backing.poll() match {
         case null => null.asInstanceOf[E]
-        case e =>
+        case e    =>
           notFull.signal()
           e
       }

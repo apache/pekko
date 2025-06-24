@@ -869,7 +869,7 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
   private[pekko] def applyState(nextState: State): Unit = {
     nextState.stopReason match {
       case None => makeTransition(nextState)
-      case _ =>
+      case _    =>
         nextState.replies.reverse.foreach { r =>
           sender() ! r
         }
@@ -901,7 +901,7 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
       currentState.timeout match {
         case SomeMaxFiniteDuration                    => // effectively disable stateTimeout
         case Some(d: FiniteDuration) if d.length >= 0 => timeoutFuture = scheduleTimeout(d)
-        case _ =>
+        case _                                        =>
           val timeout = stateTimeouts(currentState.stateName)
           if (timeout.isDefined) timeoutFuture = scheduleTimeout(timeout.get)
       }

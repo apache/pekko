@@ -412,7 +412,7 @@ abstract class SupervisorStrategy {
       }
       decision match {
         case Escalate => // don't log here
-        case d =>
+        case d        =>
           if (d.logLevel == Logging.ErrorLevel)
             publish(context, Error(cause, child.path.toString, getClass, logMessage))
           else

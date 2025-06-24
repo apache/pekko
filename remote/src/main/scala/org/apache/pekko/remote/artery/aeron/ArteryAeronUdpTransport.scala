@@ -216,7 +216,7 @@ private[remote] class ArteryAeronUdpTransport(_system: ExtendedActorSystem, _pro
           case e: ConductorServiceTimeoutException => handleFatalError(e)
           case e: DriverTimeoutException           => handleFatalError(e)
           case _: AeronTerminated                  => // already handled, via handleFatalError
-          case _ =>
+          case _                                   =>
             log.error(cause, s"Aeron error, $cause")
         }
       }

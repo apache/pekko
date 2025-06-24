@@ -476,7 +476,7 @@ class FlowFlatMapPrefixSpec extends StreamSpec("pekko.loglevel = debug") {
         mat.shutdown()
 
         prefixF.failed.futureValue match {
-          case _: AbruptTerminationException =>
+          case _: AbruptTerminationException  =>
           case ex: NeverMaterializedException =>
             ex.getCause should not be null
             ex.getCause should be(a[AbruptTerminationException])

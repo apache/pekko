@@ -56,7 +56,7 @@ object TestProducerWithAsk {
     Behaviors.receivePartial {
       case (_, Tick)                => Behaviors.same
       case (_, RequestNext(sendTo)) => active(n + 1, replyProbe, sendTo)
-      case (_, Confirmed(seqNr)) =>
+      case (_, Confirmed(seqNr))    =>
         replyProbe ! seqNr
         Behaviors.same
       case (ctx, AskTimeout) =>

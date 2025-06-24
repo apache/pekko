@@ -120,7 +120,7 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
         context.setReceiveTimeout(500.milliseconds)
 
         def receive = {
-          case Tick => ()
+          case Tick           => ()
           case ReceiveTimeout =>
             count.incrementAndGet
             timeoutLatch.open()

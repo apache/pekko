@@ -110,7 +110,7 @@ object DurableStateBehavior {
 
     extractConcreteBehavior(context.currentBehavior) match {
       case w: Running.WithRevisionAccessible => w.currentRevision
-      case s =>
+      case s                                 =>
         throw new IllegalStateException(s"Cannot extract the lastSequenceNumber in state ${s.getClass.getName}")
     }
   }

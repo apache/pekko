@@ -46,7 +46,7 @@ object ManualTime {
       case adapter: SchedulerAdapter =>
         adapter.classicScheduler match {
           case sc: pekko.testkit.ExplicitlyTriggeredScheduler => new ManualTime(sc)
-          case _ =>
+          case _                                              =>
             throw new IllegalArgumentException(
               "ActorSystem not configured with explicitly triggered scheduler, " +
               "make sure to include org.apache.pekko.actor.testkit.typed.scaladsl.ManualTime.config() when setting up the test")

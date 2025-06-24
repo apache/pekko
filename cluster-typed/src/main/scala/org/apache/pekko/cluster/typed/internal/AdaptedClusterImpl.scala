@@ -71,7 +71,7 @@ private[pekko] object AdapterClusterImpl {
         .receiveMessage[AnyRef] {
           case Subscribe(subscriber: ActorRef[SelfUp] @unchecked, clazz) if clazz == classOf[SelfUp] =>
             seenState match {
-              case Up => subscriber ! SelfUp(adaptedCluster.state)
+              case Up       => subscriber ! SelfUp(adaptedCluster.state)
               case BeforeUp =>
                 ctx.watch(subscriber)
                 upSubscribers = subscriber :: upSubscribers

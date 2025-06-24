@@ -78,7 +78,7 @@ class DynamicAccessSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll
       // recoverWith doesn't work with scala 2.13.0-M5
       // https://github.com/scala/bug/issues/11242
       dynamicAccess.createInstanceFor[TestSuperclass](fqcn, Nil) match {
-        case s: Success[TestSuperclass] => s
+        case s: Success[TestSuperclass]        => s
         case Failure(_: NoSuchMethodException) =>
           dynamicAccess
             .createInstanceFor[TestSuperclass](fqcn, immutable.Seq((classOf[String], "string ctor argument")))

@@ -217,7 +217,7 @@ object GraphStageLogic {
 
     private def cell = materializer.supervisor match {
       case ref: LocalActorRef => ref.underlying
-      case unknown =>
+      case unknown            =>
         throw new IllegalStateException(s"Stream supervisor must be a local actor, was [${unknown.getClass.getName}]")
     }
     private val functionRef: FunctionRef = {
@@ -716,8 +716,8 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
     import Attributes.CancellationStrategy._
     import SubscriptionWithCancelException._
     strategy match {
-      case CompleteStage => internalCompleteStage(cause, OptionVal.None)
-      case FailStage     => internalCompleteStage(cause, OptionVal.Some(cause))
+      case CompleteStage    => internalCompleteStage(cause, OptionVal.None)
+      case FailStage        => internalCompleteStage(cause, OptionVal.Some(cause))
       case PropagateFailure =>
         cause match {
           case NoMoreElementsNeeded | StageWasCompleted => internalCompleteStage(cause, OptionVal.None)

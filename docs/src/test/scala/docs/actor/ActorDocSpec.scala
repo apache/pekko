@@ -241,14 +241,14 @@ class Manager extends Actor {
   val worker = context.watch(context.actorOf(Props[Cruncher](), "worker"))
 
   def receive = {
-    case "job" => worker ! "crunch"
+    case "job"    => worker ! "crunch"
     case Shutdown =>
       worker ! PoisonPill
       context.become(shuttingDown)
   }
 
   def shuttingDown: Receive = {
-    case "job" => sender() ! "service unavailable, shutting down"
+    case "job"                => sender() ! "service unavailable, shutting down"
     case Terminated(`worker`) =>
       context.stop(self)
   }
@@ -481,7 +481,7 @@ class ActorDocSpec extends PekkoSpec("""
   "creating actor with IndirectActorProducer" in {
     class Echo(name: String) extends Actor {
       def receive = {
-        case n: Int => sender() ! name
+        case n: Int  => sender() ! name
         case message =>
           val target = testActor
           // #forward

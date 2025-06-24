@@ -143,8 +143,8 @@ object AdapterSpec {
     }
 
     def receive = {
-      case "send" => ref ! Ping(self) // implicit conversion
-      case "pong" => probe ! "ok"
+      case "send"  => ref ! Ping(self) // implicit conversion
+      case "pong"  => probe ! "ok"
       case "spawn" =>
         val child = context.spawnAnonymous(typed2)
         child ! Ping(self)

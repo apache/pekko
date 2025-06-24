@@ -87,7 +87,7 @@ class SampleEventStoragePolicy extends EventStorage.JournalPolicies.PolicyType {
       // check the type of operation and react with success or with reject or with failure.
       // if you return ProcessingSuccess the operation will be performed, otherwise not.
       processingUnit match {
-        case ReadEvents(batch) if batch.nonEmpty => ProcessingSuccess
+        case ReadEvents(batch) if batch.nonEmpty  => ProcessingSuccess
         case WriteEvents(batch) if batch.size > 1 =>
           ProcessingSuccess
         case ReadSeqNum      => StorageFailure()
@@ -117,7 +117,7 @@ class SampleSnapshotStoragePolicy extends SnapshotStorage.SnapshotPolicies.Polic
           ProcessingSuccess
         case WriteSnapshot(meta, payload) if meta.sequenceNr > 10 =>
           ProcessingSuccess
-        case DeleteSnapshotsByCriteria(_) => StorageFailure()
+        case DeleteSnapshotsByCriteria(_)                       => StorageFailure()
         case DeleteSnapshotByMeta(meta) if meta.sequenceNr < 10 =>
           ProcessingSuccess
         case _ => StorageFailure()

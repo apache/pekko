@@ -413,7 +413,7 @@ class ClusterSingletonManagerSpec
       runOn(leaveRole) {
         system.actorSelection("/user/consumer").tell(Identify("singleton"), identifyProbe.ref)
         identifyProbe.expectMsgPF() {
-          case ActorIdentity("singleton", None) => // already terminated
+          case ActorIdentity("singleton", None)            => // already terminated
           case ActorIdentity("singleton", Some(singleton)) =>
             watch(singleton)
             expectTerminated(singleton)

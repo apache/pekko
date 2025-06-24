@@ -67,7 +67,7 @@ object PekkoProtocolStressTest {
     var losses = 0
 
     def receive = {
-      case "start" => self ! "sendNext"
+      case "start"    => self ! "sendNext"
       case "sendNext" =>
         if (nextSeq < limit) {
           remote ! nextSeq

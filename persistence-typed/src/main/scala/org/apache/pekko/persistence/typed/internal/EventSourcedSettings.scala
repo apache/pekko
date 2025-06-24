@@ -50,8 +50,8 @@ import pekko.annotation.InternalApi
     val typedConfig = config.getConfig("pekko.persistence.typed")
 
     val stashOverflowStrategy = typedConfig.getString("stash-overflow-strategy").toLowerCase match {
-      case "drop" => StashOverflowStrategy.Drop
-      case "fail" => StashOverflowStrategy.Fail
+      case "drop"  => StashOverflowStrategy.Drop
+      case "fail"  => StashOverflowStrategy.Fail
       case unknown =>
         throw new IllegalArgumentException(s"Unknown value for stash-overflow-strategy: [$unknown]")
     }

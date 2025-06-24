@@ -118,7 +118,7 @@ object DERPrivateKeyLoader {
   private def getInteger(sequence: ASN1Sequence, index: Int, name: String): BigInteger = {
     sequence.get(index) match {
       case integer: ASN1Integer => integer.getValue
-      case other =>
+      case other                =>
         throw new IllegalArgumentException(s"Expected integer tag for $name at index $index, but got: ${other.getTag}")
     }
   }
@@ -126,7 +126,7 @@ object DERPrivateKeyLoader {
   private def getSequence(sequence: ASN1Sequence, index: Int, name: String): ASN1Sequence = {
     sequence.get(index) match {
       case seq: ASN1Sequence => seq
-      case other =>
+      case other             =>
         throw new IllegalArgumentException(s"Expected sequence tag for $name at index $index, but got: ${other.getTag}")
     }
   }

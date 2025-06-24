@@ -34,7 +34,7 @@ import pekko.annotation.InternalApi
         throw new IllegalStateException(
           s"$CapturingAppenderName not defined for [${loggerNameOrRoot(loggerName)}] in logback-test.xml")
       case appender: CapturingAppender => appender
-      case other =>
+      case other                       =>
         throw new IllegalStateException(s"Unexpected $CapturingAppender: $other")
     }
   }

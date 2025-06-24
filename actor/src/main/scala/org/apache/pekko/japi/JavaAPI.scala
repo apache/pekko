@@ -269,7 +269,7 @@ object Util {
   def immutableSeq[T](iterable: java.lang.Iterable[T]): immutable.Seq[T] =
     iterable match {
       case imm: immutable.Seq[_] => imm.asInstanceOf[immutable.Seq[T]]
-      case other =>
+      case other                 =>
         val i = other.iterator()
         if (i.hasNext) {
           val builder = new immutable.VectorBuilder[T]

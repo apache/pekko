@@ -268,7 +268,7 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
       case null => ()
       case node =>
         node.value.ticks match {
-          case 0 => node.value.executeTask()
+          case 0     => node.value.executeTask()
           case ticks =>
             val futureTick = ((
               time - start + // calculate the nanos since timer start
@@ -344,7 +344,7 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
       }
       stopped.get match {
         case null => nextTick()
-        case p =>
+        case p    =>
           assert(stopped.compareAndSet(p, Promise.successful(Nil)), "Stop signal violated in LARS")
           p.success(clearAll())
       }
@@ -376,13 +376,13 @@ object LightArrayRevolverScheduler {
     private final def extractTask(replaceWith: Runnable): Runnable =
       task match {
         case t @ (ExecutedTask | CancelledTask) => t
-        case x => if (unsafe.compareAndSwapObject(this, taskOffset, x, replaceWith): @nowarn("cat=deprecation")) x
+        case x                                  => if (unsafe.compareAndSwapObject(this, taskOffset, x, replaceWith): @nowarn("cat=deprecation")) x
           else extractTask(replaceWith)
       }
 
     private[pekko] final def executeTask(): Boolean = extractTask(ExecutedTask) match {
       case ExecutedTask | CancelledTask => false
-      case other =>
+      case other                        =>
         try {
           executionContext.execute(other)
           true
@@ -397,7 +397,7 @@ object LightArrayRevolverScheduler {
 
     override def cancel(): Boolean = extractTask(CancelledTask) match {
       case ExecutedTask | CancelledTask => false
-      case task: SchedulerTask =>
+      case task: SchedulerTask          =>
         notifyCancellation(task)
         true
       case _ => true

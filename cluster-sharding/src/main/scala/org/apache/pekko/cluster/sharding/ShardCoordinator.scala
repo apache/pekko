@@ -624,8 +624,8 @@ object ShardCoordinator {
     }
 
     def stoppingShard: Receive = {
-      case ShardStopped(`shard`) => done(ok = true)
-      case ReceiveTimeout        => done(ok = false)
+      case ShardStopped(`shard`)                                    => done(ok = true)
+      case ReceiveTimeout                                           => done(ok = false)
       case RebalanceWorker.ShardRegionTerminated(`shardRegionFrom`) =>
         log.debug(
           "{}: ShardRegion [{}] terminated while waiting for ShardStopped for shard [{}].",
@@ -1203,7 +1203,7 @@ abstract class ShardCoordinator(
     } else {
       state.shards.get(shard) match {
         case Some(ref) => getShardHomeSender ! ShardHome(shard, ref)
-        case None =>
+        case None      =>
           if (state.regions.contains(region) && !gracefulShutdownInProgress(region) && !regionTerminationInProgress
               .contains(region)) {
             update(ShardHomeAllocated(shard, region)) { evt =>

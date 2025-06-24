@@ -117,7 +117,7 @@ class EchoHandler(connection: ActorRef, remote: InetSocketAddress) extends Actor
       case WritingResumed         => writeFirst()
       case PeerClosed             => peerClosed = true
       case Ack(ack) if ack < nack => acknowledge(ack)
-      case Ack(ack) =>
+      case Ack(ack)               =>
         acknowledge(ack)
         if (storage.nonEmpty) {
           if (toAck > 0) {

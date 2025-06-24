@@ -237,7 +237,7 @@ private[remote] class Association(
   def outboundControlIngress: OutboundControlIngress = {
     _outboundControlIngress match {
       case OptionVal.Some(o) => o
-      case _ =>
+      case _                 =>
         controlQueue match {
           case w: LazyQueueWrapper => w.runMaterialize()
           case _                   =>
@@ -247,7 +247,7 @@ private[remote] class Association(
         materializing.await(10, TimeUnit.SECONDS)
         _outboundControlIngress match {
           case OptionVal.Some(o) => o
-          case _ =>
+          case _                 =>
             if (transport.isShutdown || isRemovedAfterQuarantined()) throw ShuttingDown
             else throw new IllegalStateException(s"outboundControlIngress for [$remoteAddress] not initialized yet")
         }
@@ -681,7 +681,7 @@ private[remote] class Association(
             associationState.uniqueRemoteAddressState() match {
               case AssociationState.UidQuarantined => // quarantined as expected
               case AssociationState.UidKnown       => // must be new uid, keep as is
-              case AssociationState.UidUnknown =>
+              case AssociationState.UidUnknown     =>
                 val newLastUsedDurationNanos = System.nanoTime() - associationState.lastUsedTimestamp.get
                 // quarantine ignored due to unknown UID, have to stop this task anyway
                 if (newLastUsedDurationNanos >= QuarantineIdleOutboundAfter.toNanos)
@@ -1144,7 +1144,7 @@ private[remote] class AssociationRegistry(createAssociation: Address => Associat
     val currentMap = associationsByAddress.get
     currentMap.get(remoteAddress) match {
       case Some(existing) => existing
-      case None =>
+      case None           =>
         val newAssociation = createAssociation(remoteAddress)
         val newMap = currentMap.updated(remoteAddress, newAssociation)
         if (associationsByAddress.compareAndSet(currentMap, newMap)) {

@@ -33,7 +33,7 @@ object TailChoppingSpec {
         def receive = {
           case "stop"  => context.stop(self)
           case "times" => sender() ! times
-          case _ =>
+          case _       =>
             times += 1
             Thread.sleep(sleepTime.toMillis)
             sender() ! "ack"

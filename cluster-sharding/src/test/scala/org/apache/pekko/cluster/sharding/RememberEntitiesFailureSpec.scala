@@ -119,20 +119,20 @@ object RememberEntitiesFailureSpec {
     override def receive: Receive = {
       case RememberEntitiesShardStore.GetEntities =>
         failShardGetEntities.get(shardId) match {
-          case None             => sender() ! RememberEntitiesShardStore.RememberedEntities(Set.empty)
-          case Some(NoResponse) => log.debug("Sending no response for GetEntities")
-          case Some(CrashStore) => throw TestException("store crash on GetEntities")
-          case Some(StopStore)  => context.stop(self)
+          case None                 => sender() ! RememberEntitiesShardStore.RememberedEntities(Set.empty)
+          case Some(NoResponse)     => log.debug("Sending no response for GetEntities")
+          case Some(CrashStore)     => throw TestException("store crash on GetEntities")
+          case Some(StopStore)      => context.stop(self)
           case Some(Delay(howLong)) =>
             log.debug("Delaying initial entities listing with {}", howLong)
             timers.startSingleTimer("get-entities-delay", Delayed(sender(), Set.empty), howLong)
         }
       case RememberEntitiesShardStore.Update(started, stopped) =>
         failUpdate match {
-          case None             => sender() ! RememberEntitiesShardStore.UpdateDone(started, stopped)
-          case Some(NoResponse) => log.debug("Sending no response for AddEntity")
-          case Some(CrashStore) => throw TestException("store crash on AddEntity")
-          case Some(StopStore)  => context.stop(self)
+          case None                 => sender() ! RememberEntitiesShardStore.UpdateDone(started, stopped)
+          case Some(NoResponse)     => log.debug("Sending no response for AddEntity")
+          case Some(CrashStore)     => throw TestException("store crash on AddEntity")
+          case Some(StopStore)      => context.stop(self)
           case Some(Delay(howLong)) =>
             log.debug("Delaying response for AddEntity with {}", howLong)
             timers.startSingleTimer("add-entity-delay", Delayed(sender(), Set.empty), howLong)
@@ -165,20 +165,20 @@ object RememberEntitiesFailureSpec {
     override def receive: Receive = {
       case RememberEntitiesCoordinatorStore.GetShards =>
         failCoordinatorGetShards match {
-          case None             => sender() ! RememberEntitiesCoordinatorStore.RememberedShards(Set.empty)
-          case Some(NoResponse) =>
-          case Some(CrashStore) => throw TestException("store crash on load")
-          case Some(StopStore)  => context.stop(self)
+          case None                 => sender() ! RememberEntitiesCoordinatorStore.RememberedShards(Set.empty)
+          case Some(NoResponse)     =>
+          case Some(CrashStore)     => throw TestException("store crash on load")
+          case Some(StopStore)      => context.stop(self)
           case Some(Delay(howLong)) =>
             log.debug("Delaying initial shard listing with {}", howLong)
             timers.startSingleTimer("list-shards-delay", Delayed(sender(), Set.empty), howLong)
         }
       case RememberEntitiesCoordinatorStore.AddShard(shardId) =>
         failAddShard.get(shardId) match {
-          case None             => sender() ! RememberEntitiesCoordinatorStore.UpdateDone(shardId)
-          case Some(NoResponse) =>
-          case Some(CrashStore) => throw TestException("store crash on add")
-          case Some(StopStore)  => context.stop(self)
+          case None                 => sender() ! RememberEntitiesCoordinatorStore.UpdateDone(shardId)
+          case Some(NoResponse)     =>
+          case Some(CrashStore)     => throw TestException("store crash on add")
+          case Some(StopStore)      => context.stop(self)
           case Some(Delay(howLong)) =>
             log.debug("Delaying adding shard with {}", howLong)
             timers.startSingleTimer("add-shard-delay", Delayed(sender(), Set.empty), howLong)

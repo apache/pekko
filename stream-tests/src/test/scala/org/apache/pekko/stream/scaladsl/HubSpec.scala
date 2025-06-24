@@ -647,7 +647,7 @@ class HubSpec extends StreamSpec {
           (info, elem) => {
             sessions.get(elem) match {
               case Some(id) if info.consumerIds.exists(_ == id) => id
-              case _ =>
+              case _                                            =>
                 n += 1
                 val id = info.consumerIdByIdx((n % info.size).toInt)
                 sessions = sessions.updated(elem, id)

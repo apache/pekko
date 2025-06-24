@@ -42,7 +42,7 @@ private[pekko] object X509Readers {
       case list if list.size() == 2 && list.get(0) == 2 =>
         list.get(1) match {
           case dnsName: String => dnsName
-          case other =>
+          case other           =>
             throw new IllegalArgumentException(
               s"Error reading Subject Alternative Name, expected dns name to be a String, but instead got a ${other.getClass}")
         }

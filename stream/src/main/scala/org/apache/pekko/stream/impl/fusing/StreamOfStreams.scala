@@ -716,7 +716,7 @@ import pekko.util.ccompat.JavaConverters._
   private def dispatchCommand(newState: CommandScheduledBeforeMaterialization): Unit =
     status.get match {
       case /* Materialized */ callback: AsyncCallback[Command @unchecked] => callback.invoke(newState.command)
-      case Uninitialized =>
+      case Uninitialized                                                  =>
         if (!status.compareAndSet(Uninitialized, newState))
           dispatchCommand(newState) // changed to materialized in the meantime
 
@@ -805,7 +805,7 @@ import pekko.util.ccompat.JavaConverters._
 
   def completeSubstream(): Unit = status.get match {
     case f: AsyncCallback[Any] @unchecked => f.invoke(ActorSubscriberMessage.OnComplete)
-    case null =>
+    case null                             =>
       if (!status.compareAndSet(null, ActorSubscriberMessage.OnComplete))
         status.get.asInstanceOf[AsyncCallback[Any]].invoke(ActorSubscriberMessage.OnComplete)
     case OnError(_)                        => // already failed out, keep the exception as that happened first
@@ -815,7 +815,7 @@ import pekko.util.ccompat.JavaConverters._
 
   def failSubstream(ex: Throwable): Unit = status.get match {
     case f: AsyncCallback[Any] @unchecked => f.invoke(ActorSubscriberMessage.OnError(ex))
-    case null =>
+    case null                             =>
       val failure = ActorSubscriberMessage.OnError(ex)
       if (!status.compareAndSet(null, failure))
         status.get.asInstanceOf[AsyncCallback[Any]].invoke(failure)
@@ -845,7 +845,7 @@ import pekko.util.ccompat.JavaConverters._
         case null                               => if (!status.compareAndSet(null, cb)) setCB(cb)
         case ActorSubscriberMessage.OnComplete  => completeStage()
         case ActorSubscriberMessage.OnError(ex) => failStage(ex)
-        case _: AsyncCallback[_] =>
+        case _: AsyncCallback[_]                =>
           failStage(materializationException.getOrElse(createMaterializedTwiceException()))
         case _ => throw new RuntimeException() // won't happen, compiler exhaustiveness check pleaser
       }

@@ -187,7 +187,7 @@ private[pekko] trait Dispatch { this: ActorCell =>
 
     unwrappedMessage match {
       case _: NoSerializationVerificationNeeded => envelope
-      case msg =>
+      case msg                                  =>
         if (system.settings.NoSerializationVerificationNeededClassPrefix.exists(msg.getClass.getName.startsWith))
           envelope
         else {

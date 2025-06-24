@@ -49,8 +49,8 @@ object PersistentActorSpec {
     }
 
     val commonBehavior: Receive = {
-      case "boom"   => throw new TestException("boom")
-      case GetState => sender() ! events.reverse
+      case "boom"               => throw new TestException("boom")
+      case GetState             => sender() ! events.reverse
       case Delete(toSequenceNr) =>
         persist(Some(sender())) { s =>
           askedForDelete = s
@@ -931,7 +931,7 @@ object PersistentActorSpec {
     override def receiveRecover = {
       case Evt("invalid") =>
         persist(Evt("invalid-recovery"))(updateState)
-      case e: Evt => updateState(e)
+      case e: Evt            => updateState(e)
       case RecoveryCompleted =>
         persistAsync(Evt("rc-1"))(updateState)
         persist(Evt("rc-2"))(updateState)

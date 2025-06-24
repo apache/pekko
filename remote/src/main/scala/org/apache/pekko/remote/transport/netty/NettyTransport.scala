@@ -336,7 +336,7 @@ private[transport] object NettyTransport {
     case "unpooled-heap" => new UnpooledByteBufAllocator(false)
     case "adaptive"      => new AdaptiveByteBufAllocator()
     case "adaptive-heap" => new AdaptiveByteBufAllocator(false)
-    case other => throw new IllegalArgumentException(
+    case other           => throw new IllegalArgumentException(
         "Unknown 'bytebuf-allocator-type' [" + other + "]," +
         " supported values are 'pooled', 'unpooled', 'unpooled-heap', 'adaptive', 'adaptive-heap'.")
   }
@@ -540,7 +540,7 @@ class NettyTransport(val settings: NettyTransportSettings, val system: ExtendedA
             addressFromSocketAddress(newServerChannel.localAddress(), schemeIdentifier, system.name, None,
               None) match {
               case Some(address) => boundTo = address
-              case None =>
+              case None          =>
                 throw new NettyTransportException(
                   s"Unknown local address type [${newServerChannel.localAddress().getClass.getName}]")
             }
@@ -587,7 +587,7 @@ class NettyTransport(val settings: NettyTransportSettings, val system: ExtendedA
         handle <- readyChannel.pipeline().get(classOf[ClientHandler]).statusFuture
       } yield handle).recover {
         case _: CancellationException => throw new NettyTransportExceptionNoStack("Connection was cancelled")
-        case NonFatal(t) =>
+        case NonFatal(t)              =>
           val msg =
             if (t.getCause == null)
               t.getMessage

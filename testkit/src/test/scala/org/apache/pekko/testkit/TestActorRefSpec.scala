@@ -80,9 +80,9 @@ object TestActorRefSpec {
   class SenderActor(replyActor: ActorRef) extends TActor {
 
     def receiveT = {
-      case "complex"  => replyActor ! "complexRequest"
-      case "complex2" => replyActor ! "complexRequest2"
-      case "simple"   => replyActor ! "simpleRequest"
+      case "complex"      => replyActor ! "complexRequest"
+      case "complex2"     => replyActor ! "complexRequest2"
+      case "simple"       => replyActor ! "simpleRequest"
       case "complexReply" => {
         counter -= 1
       }

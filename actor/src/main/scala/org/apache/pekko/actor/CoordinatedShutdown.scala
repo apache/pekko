@@ -726,7 +726,7 @@ final class CoordinatedShutdown private[pekko] (
       log.info("Running CoordinatedShutdown with reason [{}]", reason)
       def loop(remainingPhases: List[String]): Future[Done] = {
         remainingPhases match {
-          case Nil => Future.successful(Done)
+          case Nil                                                  => Future.successful(Done)
           case phaseName :: remaining if !phases(phaseName).enabled =>
             tasks.get(phaseName).foreach { phaseDef =>
               log.info(s"Phase [{}] disabled through configuration, skipping [{}] tasks.", phaseName, phaseDef.size)
@@ -810,7 +810,7 @@ final class CoordinatedShutdown private[pekko] (
   def timeout(phase: String): FiniteDuration =
     phases.get(phase) match {
       case Some(p) => p.timeout
-      case None =>
+      case None    =>
         throw new IllegalArgumentException(s"Unknown phase [$phase]. All phases must be defined in configuration")
     }
 

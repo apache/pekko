@@ -289,14 +289,14 @@ private[io] abstract class TcpConnection(val tcp: TcpExt, val channel: SocketCha
 
               AllRead
             case -1 => EndOfStream
-            case _ =>
+            case _  =>
               throw new IllegalStateException("Unexpected value returned from read: " + readBytes)
           }
         } else MoreDataWaiting
 
       val buffer = bufferPool.acquire()
       try innerRead(buffer, ReceivedMessageSizeLimit) match {
-          case AllRead => // nothing to do
+          case AllRead         => // nothing to do
           case MoreDataWaiting =>
             if (!pullMode) self ! ChannelReadable
           case EndOfStream if channel.socket.isOutputShutdown =>
@@ -438,14 +438,14 @@ private[io] abstract class TcpConnection(val tcp: TcpExt, val channel: SocketCha
   def PendingWrite(commander: ActorRef, write: WriteCommand): PendingWrite = {
     @tailrec def create(head: WriteCommand, tail: WriteCommand): PendingWrite =
       head match {
-        case Write.empty                       => if (tail eq Write.empty) EmptyPendingWrite else create(tail, Write.empty)
-        case Write(data, ack) if data.nonEmpty => PendingBufferWrite(commander, data, ack, tail)
+        case Write.empty                         => if (tail eq Write.empty) EmptyPendingWrite else create(tail, Write.empty)
+        case Write(data, ack) if data.nonEmpty   => PendingBufferWrite(commander, data, ack, tail)
         case WriteFile(path, offset, count, ack) =>
           PendingWriteFile(commander, Paths.get(path), offset, count, ack, tail)
         case WritePath(path, offset, count, ack) =>
           PendingWriteFile(commander, path, offset, count, ack, tail)
         case CompoundWrite(h, t) => create(h, t)
-        case x @ Write(_, ack) => // empty write with either an ACK or a non-standard NoACK
+        case x @ Write(_, ack)   => // empty write with either an ACK or a non-standard NoACK
           if (x.wantsAck) commander ! ack
           create(tail, Write.empty)
       }

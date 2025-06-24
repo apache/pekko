@@ -59,7 +59,7 @@ private[pekko] class ClusterSingletonMessageSerializer(val system: ExtendedActor
     case HandOverInProgress => HandOverInProgressManifest
     case HandOverDone       => HandOverDoneManifest
     case TakeOverFromMe     => TakeOverFromMeManifest
-    case _ =>
+    case _                  =>
       throw new IllegalArgumentException(s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
   }
 
@@ -68,14 +68,14 @@ private[pekko] class ClusterSingletonMessageSerializer(val system: ExtendedActor
     case HandOverInProgress => emptyByteArray
     case HandOverDone       => emptyByteArray
     case TakeOverFromMe     => emptyByteArray
-    case _ =>
+    case _                  =>
       throw new IllegalArgumentException(s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
   }
 
   override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef =
     fromBinaryMap.get(manifest) match {
       case Some(f) => f(bytes)
-      case None =>
+      case None    =>
         throw new NotSerializableException(
           s"Unimplemented deserialization of message with manifest [$manifest] in [${getClass.getName}]")
     }

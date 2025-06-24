@@ -51,7 +51,7 @@ abstract class MembershipChangeListenerUpSpec extends MultiNodeClusterSpec(Membe
             var members = Set.empty[Member]
             def receive = {
               case state: CurrentClusterState => members = state.members
-              case MemberUp(m) =>
+              case MemberUp(m)                =>
                 members = members - m + m
                 if (members.map(_.address) == expectedAddresses)
                   latch.countDown()
@@ -79,7 +79,7 @@ abstract class MembershipChangeListenerUpSpec extends MultiNodeClusterSpec(Membe
           var members = Set.empty[Member]
           def receive = {
             case state: CurrentClusterState => members = state.members
-            case MemberUp(m) =>
+            case MemberUp(m)                =>
               members = members - m + m
               if (members.map(_.address) == expectedAddresses)
                 latch.countDown()

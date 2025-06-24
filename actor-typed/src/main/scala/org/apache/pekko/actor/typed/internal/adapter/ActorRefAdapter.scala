@@ -61,7 +61,7 @@ private[pekko] object ActorRefAdapter {
     ref match {
       case adapter: ActorRefAdapter[_]    => adapter.classicRef
       case adapter: ActorSystemAdapter[_] => adapter.system.guardian
-      case _ =>
+      case _                              =>
         throw new UnsupportedOperationException(
           "Only adapted classic ActorRefs permissible " +
           s"($ref of class ${ref.getClass.getName})")
@@ -69,8 +69,8 @@ private[pekko] object ActorRefAdapter {
 
   def sendSystemMessage(classicRef: pekko.actor.InternalActorRef, signal: internal.SystemMessage): Unit =
     signal match {
-      case internal.Create()    => throw new IllegalStateException("WAT? No, seriously.")
-      case internal.Terminate() => classicRef.stop()
+      case internal.Create()                => throw new IllegalStateException("WAT? No, seriously.")
+      case internal.Terminate()             => classicRef.stop()
       case internal.Watch(watchee, watcher) =>
         classicRef.sendSystemMessage(sysmsg.Watch(toClassic(watchee), toClassic(watcher)))
       case internal.Unwatch(watchee, watcher) =>

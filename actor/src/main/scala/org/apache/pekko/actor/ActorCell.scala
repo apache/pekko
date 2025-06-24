@@ -576,7 +576,7 @@ private[pekko] class ActorCell(
       case PoisonPill                 => self.stop()
       case sel: ActorSelectionMessage => receiveSelection(sel)
       case Identify(messageId)        => sender() ! ActorIdentity(messageId, Some(self))
-      case unexpected =>
+      case unexpected                 =>
         throw new RuntimeException(s"Unexpected message for autoreceive: $unexpected") // for exhaustiveness check, will not happen
     }
   }

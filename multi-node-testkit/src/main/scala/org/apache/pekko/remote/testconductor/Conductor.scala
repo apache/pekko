@@ -504,8 +504,8 @@ private[pekko] class Controller(private var initialParticipants: Int, controller
       barrier.forward(c)
     case op: ServerOp =>
       op match {
-        case _: EnterBarrier => barrier.forward(op)
-        case _: FailBarrier  => barrier.forward(op)
+        case _: EnterBarrier  => barrier.forward(op)
+        case _: FailBarrier   => barrier.forward(op)
         case GetAddress(node) =>
           if (nodes contains node) sender() ! ToClient(AddressReply(node, nodes(node).addr))
           else addrInterest += node -> ((addrInterest.get(node).getOrElse(Set())) + sender())
@@ -526,7 +526,7 @@ private[pekko] class Controller(private var initialParticipants: Int, controller
         case Remove(node) =>
           barrier ! BarrierCoordinator.RemoveClient(node)
       }
-    case GetNodes => sender() ! nodes.keys
+    case GetNodes    => sender() ! nodes.keys
     case GetSockAddr =>
       sender() ! connection.channelFuture.sync().channel().localAddress()
   }
@@ -654,7 +654,7 @@ private[pekko] class BarrierCoordinator
         handleBarrier(d.copy(arrived = together))
     case Event(RemoveClient(name), d @ Data(clients, _, arrived, _)) =>
       clients.find(_.name == name) match {
-        case None => stay()
+        case None         => stay()
         case Some(client) =>
           handleBarrier(d.copy(clients = clients - client, arrived = arrived.filterNot(_ == client.fsm)))
       }

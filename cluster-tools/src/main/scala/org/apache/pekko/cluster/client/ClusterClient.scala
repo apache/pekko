@@ -447,9 +447,9 @@ final class ClusterClient(settings: ClusterClientSettings) extends Actor with Ac
         failureDetector.heartbeat()
         self ! HeartbeatTick // will register us as active client of the selected receptionist
       case ActorIdentity(_, None) => // ok, use another instead
-      case HeartbeatTick =>
+      case HeartbeatTick          =>
         failureDetector.heartbeat()
-      case RefreshContactsTick => sendGetContacts()
+      case RefreshContactsTick            => sendGetContacts()
       case Send(path, msg, localAffinity) =>
         buffer(DistributedPubSubMediator.Send(path, msg, localAffinity))
       case SendToAll(path, msg) =>
@@ -489,7 +489,7 @@ final class ClusterClient(settings: ClusterClientSettings) extends Actor with Ac
         contacts = contactPaths.map(context.actorSelection)
       }
       publishContactPoints()
-    case _: ActorIdentity => // ok, from previous establish, already handled
+    case _: ActorIdentity     => // ok, from previous establish, already handled
     case ReceptionistShutdown =>
       if (receptionist == sender()) {
         log.info("Receptionist [{}] is shutting down, reestablishing connection", receptionist)
@@ -912,7 +912,7 @@ object ClusterReceptionist {
       }
 
       def receive = {
-        case Ping => // keep alive from client
+        case Ping           => // keep alive from client
         case ReceiveTimeout =>
           log.debug("ClientResponseTunnel for client [{}] stopped due to inactivity", client.path)
           context.stop(self)
@@ -968,7 +968,7 @@ final class ClusterReceptionist(pubSubMediator: ActorRef, settings: ClusterRecep
     def hashFor(node: Address): Int = node match {
       // cluster node identifier is the host and port of the address; protocol and system is assumed to be the same
       case Address(_, _, Some(host), Some(port)) => MurmurHash.stringHash(s"$host:$port")
-      case _ =>
+      case _                                     =>
         throw new IllegalStateException(s"Unexpected address without host/port: [$node]")
     }
     implicit val ringOrdering: Ordering[Address] = Ordering.fromLessThan[Address] { (a, b) =>
@@ -1012,7 +1012,7 @@ final class ClusterReceptionist(pubSubMediator: ActorRef, settings: ClusterRecep
     val encName = URLEncoder.encode(client.path.toSerializationFormat, "utf-8")
     context.child(encName) match {
       case Some(tunnel) => tunnel
-      case None =>
+      case None         =>
         context.actorOf(Props(classOf[ClientResponseTunnel], client, responseTunnelReceiveTimeout), encName)
     }
   }
@@ -1075,7 +1075,7 @@ final class ClusterReceptionist(pubSubMediator: ActorRef, settings: ClusterRecep
         consistentHash = ConsistentHash(nodes, virtualNodesFactor)
       }
 
-    case _: MemberEvent => // not of interest
+    case _: MemberEvent          => // not of interest
     case SubscribeClusterClients =>
       val subscriber = sender()
       subscriber ! ClusterClients(clientInteractions.keySet.to(HashSet))

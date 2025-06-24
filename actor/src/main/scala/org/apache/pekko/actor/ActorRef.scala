@@ -682,7 +682,7 @@ private[pekko] class EmptyLocalActorRef(
   }
 
   override def !(message: Any)(implicit sender: ActorRef = Actor.noSender): Unit = message match {
-    case null => throw InvalidMessageException("Message is null")
+    case null          => throw InvalidMessageException("Message is null")
     case d: DeadLetter =>
       specialHandle(d.message, d.sender) // do NOT form endless loops, since deadLetters will resend!
     case _ if !specialHandle(message, sender) =>
@@ -696,7 +696,7 @@ private[pekko] class EmptyLocalActorRef(
         w.watcher.sendSystemMessage(
           DeathWatchNotification(w.watchee, existenceConfirmed = false, addressTerminated = false))
       true
-    case _: Unwatch => true // Just ignore
+    case _: Unwatch          => true // Just ignore
     case Identify(messageId) =>
       sender ! ActorIdentity(messageId, None)
       true
@@ -707,7 +707,7 @@ private[pekko] class EmptyLocalActorRef(
         case None =>
           sel.msg match {
             case m: DeadLetterSuppression => publishSupressedDeadLetter(m, sender)
-            case _ =>
+            case _                        =>
               eventStream.publish(
                 DeadLetter(sel.msg, if (sender eq Actor.noSender) provider.deadLetters else sender, this))
           }
@@ -737,7 +737,7 @@ private[pekko] class DeadLetterActorRef(_provider: ActorRefProvider, _path: Acto
     case null                => throw InvalidMessageException("Message is null")
     case Identify(messageId) => sender ! ActorIdentity(messageId, None)
     case d: DeadLetter       => if (!specialHandle(d.message, d.sender)) eventStream.publish(d)
-    case _ =>
+    case _                   =>
       if (!specialHandle(message, sender))
         eventStream.publish(DeadLetter(message, if (sender eq Actor.noSender) provider.deadLetters else sender, this))
   }
@@ -902,8 +902,8 @@ private[pekko] class VirtualPathContainer(
 
   override def sendSystemMessage(message: SystemMessage): Unit = {
     message match {
-      case w: Watch   => addWatcher(w.watchee, w.watcher)
-      case u: Unwatch => remWatcher(u.watchee, u.watcher)
+      case w: Watch                               => addWatcher(w.watchee, w.watcher)
+      case u: Unwatch                             => remWatcher(u.watchee, u.watcher)
       case DeathWatchNotification(actorRef, _, _) =>
         this.!(Terminated(actorRef)(existenceConfirmed = true, addressTerminated = false))(actorRef)
       case _ => // ignore all other messages

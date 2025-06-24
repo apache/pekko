@@ -274,13 +274,13 @@ object ProducerControllerImpl {
       case RegisterConsumer(c: ActorRef[ConsumerController.Command[A]] @unchecked) =>
         (producer, initialState) match {
           case (Some(p), Some(s)) => thenBecomeActive(p, c, s)
-          case (_, _) =>
+          case (_, _)             =>
             waitingForInitialization(context, producer, Some(c), durableQueue, settings, initialState)(thenBecomeActive)
         }
       case start: Start[A] @unchecked =>
         (consumerController, initialState) match {
           case (Some(c), Some(s)) => thenBecomeActive(start.producer, c, s)
-          case (_, _) =>
+          case (_, _)             =>
             waitingForInitialization(
               context,
               Some(start.producer),
@@ -292,7 +292,7 @@ object ProducerControllerImpl {
       case load: LoadStateReply[A] @unchecked =>
         (producer, consumerController) match {
           case (Some(p), Some(c)) => thenBecomeActive(p, c, load.state)
-          case (_, _) =>
+          case (_, _)             =>
             waitingForInitialization(context, producer, consumerController, durableQueue, settings, Some(load.state))(
               thenBecomeActive)
         }

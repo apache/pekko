@@ -523,7 +523,7 @@ import org.reactivestreams.Subscription
       case null | _: Publisher[_] =>
         mode match {
           case CancelTermination => subscribe(new CancellingSubscriber[T])
-          case WarnTermination =>
+          case WarnTermination   =>
             am.logger.warning("Subscription timeout for {}", this)
           case NoopTermination => // never happens
         }

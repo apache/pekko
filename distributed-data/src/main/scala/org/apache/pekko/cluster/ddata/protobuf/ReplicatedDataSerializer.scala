@@ -66,7 +66,7 @@ private object ReplicatedDataSerializer {
       case (_: Long, _)                         => -1
       case (_, _: Long)                         => 1
       case (k1: OtherMessage, k2: OtherMessage) => OtherMessageComparator.compare(k1, k2)
-      case (k1, k2) =>
+      case (k1, k2)                             =>
         throw new IllegalStateException(
           s"Invalid keys (${k1.getClass}, ${k2.getClass}): must be of type String, Int, Long or OtherMessage")
     }
@@ -400,14 +400,14 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
     case m: ORSet.DeltaGroup[_]          => orsetDeltaGroupToProto(m).toByteArray
     case m: ORMap.DeltaGroup[_, _]       => ormapDeltaGroupToProto(m).toByteArray
     case m: ORSet.FullStateDeltaOp[_]    => orsetToProto(m.underlying).toByteArray
-    case _ =>
+    case _                               =>
       throw new IllegalArgumentException(s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
   }
 
   override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef =
     fromBinaryMap.get(manifest) match {
       case Some(f) => f(bytes)
-      case None =>
+      case None    =>
         throw new NotSerializableException(
           s"Unimplemented deserialization of message with manifest [$manifest] in [${getClass.getName}]")
     }
@@ -481,7 +481,7 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
       case i: Int        => intElements.add(i)
       case l: Long       => longElements.add(l)
       case ref: ActorRef => actorRefElements.add(ref)
-      case other =>
+      case other         =>
         val enclosedMsg = otherMessageToProto(other)
         otherElements.add(enclosedMsg)
         // need the mapping back to the `other` when adding dots
@@ -678,7 +678,7 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
       case (key: String, value) => protoEntries.add(eh.setStringKey(createBuilder(), key, valueConverter(value)))
       case (key: Int, value)    => protoEntries.add(eh.setIntKey(createBuilder(), key, valueConverter(value)))
       case (key: Long, value)   => protoEntries.add(eh.setLongKey(createBuilder(), key, valueConverter(value)))
-      case (key, value) =>
+      case (key, value)         =>
         protoEntries.add(eh.setOtherKey(createBuilder(), otherMessageToProto(key), valueConverter(value)))
     }
     protoEntries

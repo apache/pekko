@@ -28,7 +28,7 @@ private[pekko] object ActorContextAdapter {
   private def toClassicImp[U](context: TypedActorContext[_]): classic.ActorContext =
     context match {
       case adapter: ActorContextAdapter[_] => adapter.classicContext
-      case _ =>
+      case _                               =>
         throw new UnsupportedOperationException(
           "Only adapted classic ActorContext permissible " +
           s"($context of class ${context.getClass.getName})")

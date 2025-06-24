@@ -73,7 +73,7 @@ final class EventEnvelope[Event](
   def event: Event =
     eventOption match {
       case Some(evt) => evt
-      case None =>
+      case None      =>
         throw new IllegalStateException(
           "Event was not loaded. Use eventOption and load the event on demand with LoadEventQuery.")
     }
@@ -84,7 +84,7 @@ final class EventEnvelope[Event](
   def getEvent(): Event =
     eventOption match {
       case Some(evt) => evt
-      case None =>
+      case None      =>
         throw new IllegalStateException(
           "Event was not loaded. Use getOptionalEvent and load the event on demand with LoadEventQuery.")
     }

@@ -129,7 +129,7 @@ object StreamRefSpec extends MultiNodeConfig {
             .run()
 
         done.onComplete {
-          case Success(_) => streamLifecycleProbe ! s"completed-$nodeId"
+          case Success(_)  => streamLifecycleProbe ! s"completed-$nodeId"
           case Failure(ex) =>
             log.info("Sink stream completed with failure: {}", ex)
             streamLifecycleProbe ! s"failed-$nodeId"

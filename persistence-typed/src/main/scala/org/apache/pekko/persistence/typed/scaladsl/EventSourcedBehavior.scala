@@ -123,7 +123,7 @@ object EventSourcedBehavior {
 
     extractConcreteBehavior(context.currentBehavior) match {
       case w: Running.WithSeqNrAccessible => w.currentSequenceNumber
-      case s =>
+      case s                              =>
         throw new IllegalStateException(s"Cannot extract the lastSequenceNumber in state ${s.getClass.getName}")
     }
   }

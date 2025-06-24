@@ -99,7 +99,7 @@ import pekko.util.ByteString
       else
         (pos: @switch) match {
           case -1 | 0 => None
-          case _ =>
+          case _      =>
             if (start == pos) None
             else {
               val res = ByteString.fromArrayUnsafe(buffer, start, pos - start)

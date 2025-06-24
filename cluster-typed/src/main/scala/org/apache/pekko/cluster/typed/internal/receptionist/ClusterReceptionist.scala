@@ -239,7 +239,7 @@ private[typed] object ClusterReceptionist extends ReceptionistBehaviorProvider {
             case UnreachableMember(member) => NodeUnreachable(member.uniqueAddress)
             case ReachableMember(member)   => NodeReachable(member.uniqueAddress)
             case ClusterShuttingDown       => NodeRemoved(setup.cluster.selfUniqueAddress)
-            case other =>
+            case other                     =>
               throw new IllegalStateException(s"Unexpected ClusterDomainEvent $other. Please report bug.")
           }
         setup.cluster.subscribe(

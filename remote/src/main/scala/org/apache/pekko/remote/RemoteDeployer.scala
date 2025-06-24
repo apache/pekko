@@ -40,7 +40,7 @@ private[pekko] class RemoteDeployer(_settings: ActorSystem.Settings, _pm: Dynami
         deploy.config.getString("remote") match {
           case AddressFromURIString(r) => Some(deploy.copy(scope = RemoteScope(r)))
           case str if !str.isEmpty     => throw new ConfigurationException(s"unparseable remote node name [$str]")
-          case _ =>
+          case _                       =>
             val nodes = deploy.config.getStringList("target.nodes").asScala.map(AddressFromURIString(_))
             if (nodes.isEmpty || deploy.routerConfig == NoRouter) d
             else

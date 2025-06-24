@@ -97,7 +97,7 @@ import org.reactivestreams.Subscription
   private def reportSubscribeFailure(subscriber: Subscriber[_ >: T]): Unit =
     try shutdownReason match {
         case Some(_: SpecViolation) => // ok, not allowed to call onError
-        case Some(e) =>
+        case Some(e)                =>
           tryOnSubscribe(subscriber, CancelledSubscription)
           tryOnError(subscriber, e)
         case None =>

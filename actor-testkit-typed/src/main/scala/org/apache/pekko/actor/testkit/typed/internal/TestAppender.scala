@@ -63,7 +63,7 @@ import java.util.Collections
     val logger = getLogbackLogger(loggerName)
     logger.getAppender(TestAppenderName) match {
       case testAppender: TestAppender => testAppender
-      case null =>
+      case null                       =>
         throw new IllegalStateException(s"No $TestAppenderName was setup for logger [${logger.getName}]")
       case other =>
         throw new IllegalStateException(

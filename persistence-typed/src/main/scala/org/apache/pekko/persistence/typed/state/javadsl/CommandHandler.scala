@@ -153,7 +153,7 @@ final class CommandHandlerBuilder[Command, State]() {
 
     val combined =
       builders.reverse match {
-        case head :: Nil => head
+        case head :: Nil  => head
         case head :: tail =>
           tail.foldLeft(head) { (acc, builder) =>
             acc.orElse(builder)
@@ -408,7 +408,7 @@ final class CommandHandlerBuilderByState[Command, S <: State, State] @InternalAp
 
         effect match {
           case OptionVal.Some(e) => e.asInstanceOf[EffectImpl[State]]
-          case _ =>
+          case _                 =>
             throw new MatchError(s"No match found for command of type [${command.getClass.getName}]")
         }
       }

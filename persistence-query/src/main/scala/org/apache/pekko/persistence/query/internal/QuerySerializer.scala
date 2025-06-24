@@ -62,7 +62,7 @@ import pekko.serialization.Serializers
   override def manifest(o: AnyRef): String = o match {
     case _: EventEnvelope[_] => EventEnvelopeManifest
     case offset: Offset      => toStorageRepresentation(offset)._2
-    case _ =>
+    case _                   =>
       throw new IllegalArgumentException(s"Can't serialize object of type ${o.getClass} in [${getClass.getName}]")
   }
 
@@ -130,14 +130,14 @@ import pekko.serialization.Serializers
       case SequenceOffsetManifest      => Offset.sequence(offsetStr.toLong)
       case TimeBasedUUIDOffsetManifest => Offset.timeBasedUUID(UUID.fromString(offsetStr))
       case NoOffsetManifest            => NoOffset
-      case _ =>
+      case _                           =>
         manifest.split(manifestSeparator) match {
           case Array(serializerIdStr, serializerManifest) =>
             val serializerId = serializerIdStr.toInt
             val bytes = Base64.getDecoder.decode(offsetStr)
             serialization.deserialize(bytes, serializerId, serializerManifest).get match {
               case offset: Offset => offset
-              case other =>
+              case other          =>
                 throw new NotSerializableException(
                   s"Unimplemented deserialization of offset with serializerId [$serializerId] and manifest [$manifest] " +
                   s"in [${getClass.getName}]. [${other.getClass.getName}] is not an Offset.")
@@ -160,7 +160,7 @@ import pekko.serialization.Serializers
       case seq: Sequence      => (seq.value.toString, SequenceOffsetManifest)
       case tbu: TimeBasedUUID => (tbu.value.toString, TimeBasedUUIDOffsetManifest)
       case NoOffset           => ("", NoOffsetManifest)
-      case _ =>
+      case _                  =>
         val obj = offset.asInstanceOf[AnyRef]
         val serializer = serialization.findSerializerFor(obj)
         val serializerId = serializer.identifier
@@ -191,7 +191,7 @@ import pekko.serialization.Serializers
             .grouped(2)
             .map {
               case pid :: seqNr :: Nil => pid -> seqNr.toLong
-              case _ =>
+              case _                   =>
                 throw new IllegalArgumentException(
                   s"Invalid representation of Map(pid -> seqNr) [${parts.toList.drop(1).mkString(",")}]")
             }

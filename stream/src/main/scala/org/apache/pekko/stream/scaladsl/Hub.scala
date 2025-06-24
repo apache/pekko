@@ -736,7 +736,7 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
       // Notify pending consumers and set tombstone
 
       @tailrec def tryClose(): Unit = state.get() match {
-        case Closed(_) => // Already closed, ignore
+        case Closed(_)  => // Already closed, ignore
         case open: Open =>
           if (state.compareAndSet(open, Closed(None))) {
             val completedMessage = HubCompleted(None)
@@ -814,8 +814,8 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
 
             @tailrec def register(): Unit = {
               logic.state.get() match {
-                case Closed(Some(ex)) => failStage(ex)
-                case Closed(None)     => completeStage()
+                case Closed(Some(ex))                                    => failStage(ex)
+                case Closed(None)                                        => completeStage()
                 case previousState @ Open(callbackFuture, registrations) =>
                   val newRegistrations = Consumer(id, callback) :: registrations
                   if (logic.state.compareAndSet(previousState, Open(callbackFuture, newRegistrations))) {
@@ -873,7 +873,7 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
           private def onCommand(cmd: ConsumerEvent): Unit = cmd match {
             case HubCompleted(Some(ex)) => failStage(ex)
             case HubCompleted(None)     => completeStage()
-            case Wakeup =>
+            case Wakeup                 =>
               if (isAvailable(out)) onPull()
             case Initialize(initialOffset) =>
               offsetInitialized = true
@@ -1258,7 +1258,7 @@ object PartitionHub {
 
     private def wakeup(id: Long): Unit = {
       needWakeup.get(id) match {
-        case None => // ignore
+        case None           => // ignore
         case Some(consumer) =>
           needWakeup -= id
           consumer.callback.invoke(Wakeup)
@@ -1347,7 +1347,7 @@ object PartitionHub {
       // Notify pending consumers and set tombstone
 
       @tailrec def tryClose(): Unit = state.get() match {
-        case Closed(_) => // Already closed, ignore
+        case Closed(_)  => // Already closed, ignore
         case open: Open =>
           if (state.compareAndSet(open, Closed(None))) {
             val completedMessage = HubCompleted(None)
@@ -1404,8 +1404,8 @@ object PartitionHub {
 
             @tailrec def register(): Unit = {
               logic.state.get() match {
-                case Closed(Some(ex)) => failStage(ex)
-                case Closed(None)     => completeStage()
+                case Closed(Some(ex))                                    => failStage(ex)
+                case Closed(None)                                        => completeStage()
                 case previousState @ Open(callbackFuture, registrations) =>
                   val newRegistrations = consumer :: registrations
                   if (logic.state.compareAndSet(previousState, Open(callbackFuture, newRegistrations))) {
@@ -1443,7 +1443,7 @@ object PartitionHub {
             cmd match {
               case HubCompleted(Some(ex)) => failStage(ex)
               case HubCompleted(None)     => completeStage()
-              case Wakeup =>
+              case Wakeup                 =>
                 if (isAvailable(out)) onPull()
               case Initialize =>
                 if (isAvailable(out) && (hubCallback ne null)) onPull()

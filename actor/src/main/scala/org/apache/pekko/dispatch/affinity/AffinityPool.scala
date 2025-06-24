@@ -275,7 +275,7 @@ private[pekko] class AffinityPool(
       @tailrec def runLoop(): Unit =
         if (!Thread.interrupted()) {
           (poolState: @switch) match {
-            case Uninitialized => ()
+            case Uninitialized          => ()
             case Initializing | Running =>
               executeNext()
               runLoop()

@@ -70,7 +70,7 @@ object OrElseSpec {
       // this could be provided as a general purpose utility
       @tailrec def handle(command: Ping, handlers: List[Ping => Behavior[Ping]]): Behavior[Ping] = {
         handlers match {
-          case Nil => Behaviors.unhandled
+          case Nil          => Behaviors.unhandled
           case head :: tail =>
             val next = head(command)
             if (Behavior.isUnhandled(next)) handle(command, tail)

@@ -51,8 +51,8 @@ private[pekko] final class IterableSource[T](val elements: immutable.Iterable[T]
         } catch {
           case NonFatal(ex) =>
             decider(ex) match {
-              case Supervision.Stop   => failStage(ex)
-              case Supervision.Resume => tryPushNextOrComplete()
+              case Supervision.Stop    => failStage(ex)
+              case Supervision.Resume  => tryPushNextOrComplete()
               case Supervision.Restart =>
                 currentIterator = elements.iterator
                 tryPushNextOrComplete()

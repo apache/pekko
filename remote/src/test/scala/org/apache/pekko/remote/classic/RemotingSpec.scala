@@ -586,7 +586,7 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
         awaitCond(registry.transportsReady(rawLocalAddress))
         awaitCond {
           registry.transportFor(rawLocalAddress) match {
-            case None => false
+            case None                     => false
             case Some((testTransport, _)) =>
               testTransport.associateBehavior.pushError(new InvalidAssociationException("Test connection error"))
               true

@@ -255,7 +255,7 @@ private[remote] object PekkoPduProtobufCodec extends PekkoPduCodec {
       case CommandType.DISASSOCIATE_SHUTTING_DOWN => Disassociate(AssociationHandle.Shutdown)
       case CommandType.DISASSOCIATE_QUARANTINED   => Disassociate(AssociationHandle.Quarantined)
       case CommandType.HEARTBEAT                  => Heartbeat
-      case x =>
+      case x                                      =>
         throw new PduCodecException(s"Decoding of control PDU failed, invalid format, unexpected: [$x]", null)
     }
   }

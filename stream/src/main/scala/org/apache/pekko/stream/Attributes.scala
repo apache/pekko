@@ -134,7 +134,7 @@ final case class Attributes(attributeList: List[Attributes.Attribute] = Nil) {
   def getMandatoryAttribute[T <: MandatoryAttribute](c: Class[T]): T = {
     @tailrec
     def find(list: List[Attribute]): OptionVal[Attribute] = list match {
-      case Nil => OptionVal.None
+      case Nil          => OptionVal.None
       case head :: tail =>
         if (c.isInstance(head)) OptionVal.Some(head)
         else find(tail)
@@ -325,9 +325,9 @@ object Attributes {
     lazy val locationName: String =
       try {
         val locationName = LineNumbers(lambda) match {
-          case LineNumbers.NoSourceInfo           => "unknown"
-          case LineNumbers.UnknownSourceFormat(_) => "unknown"
-          case LineNumbers.SourceFile(filename)   => filename
+          case LineNumbers.NoSourceInfo                       => "unknown"
+          case LineNumbers.UnknownSourceFormat(_)             => "unknown"
+          case LineNumbers.SourceFile(filename)               => filename
           case LineNumbers.SourceFileLines(filename, from, _) =>
             s"$filename:$from"
         }

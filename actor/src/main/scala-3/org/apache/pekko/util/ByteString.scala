@@ -427,7 +427,7 @@ object ByteString {
       else
         that match {
           case b: ByteString1C => ByteStrings(this, b.toByteString1)
-          case b: ByteString1 =>
+          case b: ByteString1  =>
             if ((bytes eq b.bytes) && (startIndex + length == b.startIndex))
               new ByteString1(bytes, startIndex, length + b.length)
             else ByteStrings(this, b)
@@ -1262,7 +1262,7 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
 
   override def addAll(xs: IterableOnce[Byte]): this.type = {
     xs match {
-      case bs: ByteString => addAll(bs)
+      case bs: ByteString          => addAll(bs)
       case xs: WrappedArray.ofByte =>
         if (xs.nonEmpty) putByteArrayUnsafe(xs.array.clone)
       case seq: collection.IndexedSeq[Byte] if shouldResizeTempFor(seq.length) =>

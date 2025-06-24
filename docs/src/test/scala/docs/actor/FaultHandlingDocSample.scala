@@ -211,7 +211,7 @@ class CounterService extends Actor {
     // to the counter when it is initialized.
     counter match {
       case Some(c) => c.forward(msg)
-      case None =>
+      case None    =>
         if (backlog.size >= MaxBacklog)
           throw new ServiceUnavailable("CounterService not available, lack of initial value")
         backlog :+= (sender() -> msg)

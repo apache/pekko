@@ -99,7 +99,7 @@ class PersistenceTestKitDurableStateStore[A](val system: ExtendedActorSystem)
     val fromOffset = offset match {
       case NoOffset             => EarliestOffset
       case Sequence(fromOffset) => fromOffset
-      case offset =>
+      case offset               =>
         throw new UnsupportedOperationException(s"$offset not supported in PersistenceTestKitDurableStateStore.")
     }
     def byTagFromOffset(rec: Record[A]) = rec.tag == tag && rec.globalOffset > fromOffset
@@ -156,7 +156,7 @@ class PersistenceTestKitDurableStateStore[A](val system: ExtendedActorSystem)
       val fromOffset = offset match {
         case NoOffset             => EarliestOffset
         case Sequence(fromOffset) => fromOffset
-        case offset =>
+        case offset               =>
           throw new UnsupportedOperationException(s"$offset not supported in PersistenceTestKitDurableStateStore.")
       }
       def bySliceFromOffset(rec: Record[A]) = {

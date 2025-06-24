@@ -347,7 +347,7 @@ private[pekko] object LocalActorRefProvider {
         // a registered, and watched termination hook terminated before
         // termination process of guardian has started
         terminationHooks -= a
-      case StopChild(child) => context.stop(child)
+      case StopChild(child)                                                  => context.stop(child)
       case RegisterTerminationHook if sender() != context.system.deadLetters =>
         terminationHooks += sender()
         context.watch(sender())
@@ -561,7 +561,7 @@ private[pekko] class LocalActorRefProvider private[pekko] (
     // make user provided guardians not run on internal dispatcher
     val dispatcher =
       system.guardianProps match {
-        case None => internalDispatcher
+        case None        => internalDispatcher
         case Some(props) =>
           val dispatcherId =
             if (props.deploy.dispatcher == Deploy.DispatcherSameAsParent) Dispatchers.DefaultDispatcherId
@@ -621,7 +621,7 @@ private[pekko] class LocalActorRefProvider private[pekko] (
 
   def resolveActorRef(path: String): ActorRef = path match {
     case ActorPathExtractor(address, elems) if address == rootPath.address => resolveActorRef(rootGuardian, elems)
-    case _ =>
+    case _                                                                 =>
       logDeser.debug("Resolve (deserialization) of unknown (invalid) path [{}], using deadLetters.", path)
       deadLetters
   }
@@ -766,7 +766,7 @@ private[pekko] class LocalActorRefProvider private[pekko] (
     Serialization.Information(getDefaultAddress, system)
     serializationInformationCache match {
       case OptionVal.Some(info) => info
-      case _ =>
+      case _                    =>
         if (system eq null)
           throw new IllegalStateException("Too early access of serializationInformation")
         else {
@@ -783,7 +783,7 @@ private[pekko] class LocalActorRefProvider private[pekko] (
   override private[pekko] def addressString: String = {
     _addressString match {
       case OptionVal.Some(addr) => addr
-      case _ =>
+      case _                    =>
         val addr = getDefaultAddress.toString
         _addressString = OptionVal.Some(addr)
         addr

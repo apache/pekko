@@ -219,7 +219,7 @@ object StageActorRefSpec {
             case (_, Add(n))                     => sum += n
             case (_, PullNow)                    => pull(in)
             case (sender, CallInitStageActorRef) => sender ! getStageActor(behavior).ref
-            case (_, BecomeStringEcho) =>
+            case (_, BecomeStringEcho)           =>
               getStageActor {
                 case (theSender, msg) => theSender ! msg.toString
               }

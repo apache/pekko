@@ -1270,7 +1270,7 @@ class SupervisionSpec extends ScalaTestWithActorTestKit("""
     "replace supervision when new returned behavior catches same exception" in {
       val probe = TestProbe[AnyRef]("probeMcProbeFace")
       val behv = supervise[String](Behaviors.receiveMessage {
-        case "boom" => throw TestException("boom indeed")
+        case "boom"   => throw TestException("boom indeed")
         case "switch" =>
           supervise[String](
             supervise[String](supervise[String](supervise[String](supervise[String](Behaviors.receiveMessage {
@@ -1320,7 +1320,7 @@ class SupervisionSpec extends ScalaTestWithActorTestKit("""
       }
 
       val behv = supervise[String](Behaviors.receiveMessage {
-        case "boom" => throw TestException("boom indeed")
+        case "boom"   => throw TestException("boom indeed")
         case "switch" =>
           supervise[String](setup(_ =>
             supervise[String](

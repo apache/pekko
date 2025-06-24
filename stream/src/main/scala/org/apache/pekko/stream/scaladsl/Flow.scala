@@ -1482,7 +1482,7 @@ trait FlowOps[+Out, +Mat] {
       }
       .map {
         case e: S => e
-        case o =>
+        case o    =>
           throw new ClassCastException(
             s"'Flow.ask' failed: expected response of type [${tag.runtimeClass}], got [${o.getClass}]")
       }
@@ -3482,7 +3482,7 @@ trait FlowOps[+Out, +Mat] {
       segmentSize: Int,
       eagerClose: Boolean): Repr[U] = those match {
     case those if those.isEmpty => this.asInstanceOf[Repr[U]]
-    case _ =>
+    case _                      =>
       via(GraphDSL.create() { implicit b =>
         import GraphDSL.Implicits._
         val interleave = b.add(Interleave[U](those.size + 1, segmentSize, eagerClose))
@@ -3531,7 +3531,7 @@ trait FlowOps[+Out, +Mat] {
   def mergeAll[U >: Out](those: immutable.Seq[Graph[SourceShape[U], _]], eagerComplete: Boolean): Repr[U] =
     those match {
       case those if those.isEmpty => this.asInstanceOf[Repr[U]]
-      case _ =>
+      case _                      =>
         via(GraphDSL.create() { implicit b =>
           import GraphDSL.Implicits._
           val merge = b.add(Merge[U](those.size + 1, eagerComplete))
@@ -3735,7 +3735,7 @@ trait FlowOps[+Out, +Mat] {
   private def internalConcat[U >: Out, Mat2](that: Graph[SourceShape[U], Mat2], detached: Boolean): Repr[U] =
     that match {
       case source if TraversalBuilder.isEmptySource(source) => this.asInstanceOf[Repr[U]]
-      case other =>
+      case other                                            =>
         TraversalBuilder.getSingleSource(other) match {
           case OptionVal.Some(singleSource) =>
             via(new SingleConcat(singleSource.elem.asInstanceOf[U]))
@@ -3747,7 +3747,7 @@ trait FlowOps[+Out, +Mat] {
     those match {
       case those if those.isEmpty     => this.asInstanceOf[Repr[U]]
       case those if those.length == 1 => internalConcat(those.head, detached)
-      case _ =>
+      case _                          =>
         via(GraphDSL.create() { implicit b =>
           import GraphDSL.Implicits._
           val concat = b.add(Concat[U](those.length + 1, detached))
@@ -3919,7 +3919,7 @@ trait FlowOps[+Out, +Mat] {
    */
   def alsoToAll(those: Graph[SinkShape[Out], _]*): Repr[Out] = those match {
     case those if those.isEmpty => this.asInstanceOf[Repr[Out]]
-    case _ =>
+    case _                      =>
       via(GraphDSL.create() { implicit b =>
         import GraphDSL.Implicits._
         val bcast = b.add(Broadcast[Out](those.size + 1, eagerCancel = true))

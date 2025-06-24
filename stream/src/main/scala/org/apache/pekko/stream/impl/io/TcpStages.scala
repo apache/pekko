@@ -309,7 +309,7 @@ private[stream] object ConnectionSourceStage {
       val sender = evt._1
       val msg = evt._2
       msg match {
-        case Terminated(_) => fail(new StreamTcpException("The IO manager actor (TCP) has terminated. Stopping now."))
+        case Terminated(_)          => fail(new StreamTcpException("The IO manager actor (TCP) has terminated. Stopping now."))
         case f @ CommandFailed(cmd) =>
           fail(new StreamTcpException(s"Tcp command [$cmd] failed${f.causedByString}").initCause(f.cause.orNull))
         case c: Connected =>
@@ -380,7 +380,7 @@ private[stream] object ConnectionSourceStage {
           if (!isClosed(bytesIn) && !hasBeenPulled(bytesIn))
             pull(bytesIn)
 
-        case Terminated(_) => fail(new StreamTcpException("The connection actor has terminated. Stopping now."))
+        case Terminated(_)          => fail(new StreamTcpException("The connection actor has terminated. Stopping now."))
         case f @ CommandFailed(cmd) =>
           fail(new StreamTcpException(s"Tcp command [$cmd] failed${f.causedByString}").initCause(f.cause.orNull))
         case ErrorClosed(cause) => fail(new StreamTcpException(s"The connection closed with error: $cause"))
@@ -388,7 +388,7 @@ private[stream] object ConnectionSourceStage {
         case Closed             => completeStage()
         case ConfirmedClosed    => completeStage()
         case PeerClosed         => complete(bytesOut)
-        case other =>
+        case other              =>
           log.warning("Unexpected message to connected TcpStage: [{}]", other.getClass)
       }
     }

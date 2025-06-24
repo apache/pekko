@@ -51,7 +51,7 @@ class AffinityPoolComparativeBenchmark {
     requireRightNumberOfCores(cores)
 
     val mailboxConf = mailbox match {
-      case "default" => ""
+      case "default"                            => ""
       case "SingleConsumerOnlyUnboundedMailbox" =>
         s"""default-mailbox.mailbox-type = "${classOf[pekko.dispatch.SingleConsumerOnlyUnboundedMailbox].getName}""""
     }

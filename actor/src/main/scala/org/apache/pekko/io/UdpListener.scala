@@ -109,7 +109,7 @@ private[io] class UdpListener(val udp: UdpExt, channelRegistry: ChannelRegistry,
           buffer.flip()
           handler ! Received(ByteString(buffer), sender)
           if (readsLeft > 0) innerReceive(readsLeft - 1, buffer)
-        case null => // null means no data was available
+        case null       => // null means no data was available
         case unexpected =>
           throw new RuntimeException(s"Unexpected address in buffer: $unexpected") // will not happen, for exhaustiveness check
       }

@@ -86,7 +86,7 @@ class TypedMultiMap[T <: AnyRef, K[_ <: T]] private (private val map: Map[T, Set
    */
   def removed(key: T)(value: K[key.type]): TypedMultiMap[T, K] = {
     map.get(key) match {
-      case None => this
+      case None      => this
       case Some(set) =>
         if (set(value)) {
           val newset = set - value

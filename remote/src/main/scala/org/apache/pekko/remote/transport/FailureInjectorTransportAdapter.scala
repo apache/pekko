@@ -128,7 +128,7 @@ private[remote] class FailureInjectorTransportAdapter(
 
   def notify(ev: AssociationEvent): Unit = ev match {
     case InboundAssociation(handle) if shouldDropInbound(handle.remoteAddress, ev, "notify") => // Ignore
-    case _ =>
+    case _                                                                                   =>
       upstreamListener match {
         case Some(listener) => listener.notify(interceptInboundAssociation(ev))
         case None           =>
@@ -142,7 +142,7 @@ private[remote] class FailureInjectorTransportAdapter(
 
   def shouldDropInbound(remoteAddress: Address, instance: Any, debugMessage: String): Boolean =
     chaosMode(remoteAddress) match {
-      case PassThru => false
+      case PassThru              => false
       case Drop(_, inboundDropP) =>
         if (rng.nextDouble() <= inboundDropP) {
           if (shouldDebugLog)
@@ -153,7 +153,7 @@ private[remote] class FailureInjectorTransportAdapter(
 
   def shouldDropOutbound(remoteAddress: Address, instance: Any, debugMessage: String): Boolean =
     chaosMode(remoteAddress) match {
-      case PassThru => false
+      case PassThru               => false
       case Drop(outboundDropP, _) =>
         if (rng.nextDouble() <= outboundDropP) {
           if (shouldDebugLog)

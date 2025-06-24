@@ -272,7 +272,7 @@ class Dispatchers @InternalApi private[pekko] (
           "During a migration period you can still use BalancingDispatcher by specifying the full class name: " +
           classOf[BalancingDispatcherConfigurator].getName)
       case "PinnedDispatcher" => new PinnedDispatcherConfigurator(cfg, prerequisites)
-      case fqn =>
+      case fqn                =>
         val args = List(classOf[Config] -> cfg, classOf[DispatcherPrerequisites] -> prerequisites)
         prerequisites.dynamicAccess
           .createInstanceFor[MessageDispatcherConfigurator](fqn, args)
@@ -383,7 +383,7 @@ class PinnedDispatcherConfigurator(config: Config, prerequisites: DispatcherPrer
 
   private val threadPoolConfig: ThreadPoolConfig = configureExecutor() match {
     case e: ThreadPoolExecutorConfigurator => e.threadPoolConfig
-    case _ =>
+    case _                                 =>
       prerequisites.eventStream.publish(
         Warning(
           "PinnedDispatcherConfigurator",

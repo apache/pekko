@@ -373,7 +373,7 @@ trait ManagedActorClassification { this: ActorEventBus with ActorClassifier =>
     val current = mappings.get
 
     current.backing.get(monitored) match {
-      case None => false
+      case None           => false
       case Some(monitors) =>
         val removed = current.remove(monitored, monitor)
         val removedMonitors = removed.get(monitored)

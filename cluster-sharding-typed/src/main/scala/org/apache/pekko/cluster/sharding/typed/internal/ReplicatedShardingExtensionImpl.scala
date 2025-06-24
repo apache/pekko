@@ -100,7 +100,7 @@ private[pekko] final class ReplicatedShardingImpl[M](
     replicaTypeKeys.map {
       case (replicaId, (typeKey, dc, typeName)) =>
         replicaId -> (dc match {
-          case None => sharding.entityRefFor(typeKey, ReplicationId(typeName, entityId, replicaId).persistenceId.id)
+          case None     => sharding.entityRefFor(typeKey, ReplicationId(typeName, entityId, replicaId).persistenceId.id)
           case Some(dc) =>
             sharding.entityRefFor(typeKey, ReplicationId(typeName, entityId, replicaId).persistenceId.id, dc)
         })

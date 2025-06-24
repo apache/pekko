@@ -235,7 +235,7 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
     case _: Gossip              => GossipManifest
     case WriteNack              => WriteNackManifest
     case DeltaNack              => DeltaNackManifest
-    case _ =>
+    case _                      =>
       throw new IllegalArgumentException(s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
   }
 
@@ -258,14 +258,14 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
     case m: Gossip              => compress(gossipToProto(m))
     case WriteNack              => dm.Empty.getDefaultInstance.toByteArray
     case DeltaNack              => dm.Empty.getDefaultInstance.toByteArray
-    case _ =>
+    case _                      =>
       throw new IllegalArgumentException(s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
   }
 
   override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef =
     fromBinaryMap.get(manifest) match {
       case Some(f) => f(bytes)
-      case None =>
+      case None    =>
         throw new NotSerializableException(
           s"Unimplemented deserialization of message with manifest [$manifest] in [${getClass.getName}]")
     }
@@ -360,8 +360,8 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
     val b = dm.Get.newBuilder().setKey(otherMessageToProto(get.key)).setTimeout(timoutInMillis.toInt)
 
     get.consistency match {
-      case ReadLocal      => b.setConsistency(1)
-      case ReadFrom(n, _) => b.setConsistency(n)
+      case ReadLocal               => b.setConsistency(1)
+      case ReadFrom(n, _)          => b.setConsistency(n)
       case ReadMajority(_, minCap) =>
         b.setConsistency(0)
         if (minCap != 0)

@@ -22,7 +22,7 @@ class StatsWorker extends Actor {
     case word: String =>
       val length = cache.get(word) match {
         case Some(x) => x
-        case None =>
+        case None    =>
           val x = word.length
           cache += (word -> x)
           x

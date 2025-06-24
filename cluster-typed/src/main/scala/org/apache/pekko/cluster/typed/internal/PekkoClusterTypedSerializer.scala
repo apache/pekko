@@ -44,21 +44,21 @@ private[pekko] final class PekkoClusterTypedSerializer(override val system: Exte
   override def manifest(o: AnyRef): String = o match {
     case _: Entry                         => ReceptionistEntryManifest
     case _: TopicImpl.MessagePublished[_] => PubSubPublishManifest
-    case _ =>
+    case _                                =>
       throw new IllegalArgumentException(s"Can't serialize object of type ${o.getClass} in [${getClass.getName}]")
   }
 
   override def toBinary(o: AnyRef): Array[Byte] = o match {
     case e: Entry                         => receptionistEntryToBinary(e)
     case m: TopicImpl.MessagePublished[_] => pubSubPublishToBinary(m)
-    case _ =>
+    case _                                =>
       throw new IllegalArgumentException(s"Cannot serialize object of type [${o.getClass.getName}]")
   }
 
   override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = manifest match {
     case ReceptionistEntryManifest => receptionistEntryFromBinary(bytes)
     case PubSubPublishManifest     => pubSubMessageFromBinary(bytes)
-    case _ =>
+    case _                         =>
       throw new NotSerializableException(
         s"Unimplemented deserialization of message with manifest [$manifest] in [${getClass.getName}]")
   }

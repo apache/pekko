@@ -152,7 +152,7 @@ private[pekko] final class FlattenConcat[T, M](parallelism: Int)
             push(out, src.elem)
             removeSource()
           case src: InflightSource[T] @unchecked => pushOut(src)
-          case null => // queue is empty
+          case null                              => // queue is empty
             if (!hasBeenPulled(in)) {
               tryPull(in)
             } else if (isClosed(in)) {
@@ -279,14 +279,14 @@ private[pekko] final class FlattenConcat[T, M](parallelism: Int)
         TraversalBuilder.getValuePresentedSource(source) match {
           case OptionVal.Some(graph) =>
             graph match {
-              case single: SingleSource[T] @unchecked => addSource(single)
+              case single: SingleSource[T] @unchecked       => addSource(single)
               case futureSource: FutureSource[T] @unchecked =>
                 val future = futureSource.future
                 future.value match {
                   case Some(elem) => addCompletedFutureElem(elem)
                   case None       => addPendingFutureElem(future)
                 }
-              case iterable: IterableSource[T] @unchecked => addSourceElements(iterable.elements.iterator)
+              case iterable: IterableSource[T] @unchecked        => addSourceElements(iterable.elements.iterator)
               case javaStream: JavaStreamSource[T, _] @unchecked =>
                 import pekko.util.ccompat.JavaConverters._
                 addSourceElements(javaStream.open().iterator.asScala)

@@ -48,7 +48,7 @@ private[pekko] final class LazyFutureSource[T](f: () => Future[T]) extends Graph
         ReactiveStreamsCompliance.requireNonNullElement(future)
         future.value match {
           case Some(result) => handle(result)
-          case None =>
+          case None         =>
             val cb = getAsyncCallback[Try[T]](handle).invoke _
             future.onComplete(cb)(ExecutionContexts.parasitic)
         }

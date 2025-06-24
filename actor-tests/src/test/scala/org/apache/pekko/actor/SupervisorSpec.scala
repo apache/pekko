@@ -430,7 +430,7 @@ class SupervisorSpec
         }
 
         def receive = {
-          case Ping => sender() ! PongMessage
+          case Ping     => sender() ! PongMessage
           case DieReply =>
             val e = new RuntimeException("Expected")
             sender() ! Status.Failure(e)

@@ -611,7 +611,7 @@ private[pekko] class RemoteActorRefProvider(
 
   def getExternalAddressFor(addr: Address): Option[Address] = {
     addr match {
-      case _ if hasAddress(addr) => Some(local.rootPath.address)
+      case _ if hasAddress(addr)           => Some(local.rootPath.address)
       case Address(_, _, Some(_), Some(_)) =>
         try Some(transport.localAddressForRemote(addr))
         catch { case NonFatal(_) => None }
@@ -626,7 +626,7 @@ private[pekko] class RemoteActorRefProvider(
   @InternalApi override private[pekko] def serializationInformation: Serialization.Information =
     serializationInformationCache match {
       case OptionVal.Some(info) => info
-      case _ =>
+      case _                    =>
         if ((transport eq null) || (transport.defaultAddress eq null))
           local.serializationInformation // address not know yet, access before complete init and binding
         else {
@@ -710,7 +710,7 @@ private[pekko] class RemoteActorRef private[pekko] (
     s.headOption match {
       case None       => this
       case Some("..") => getParent.getChild(name)
-      case _ => new RemoteActorRef(remote, localAddressToUse, path / s, Nobody, props = None, deploy = None,
+      case _          => new RemoteActorRef(remote, localAddressToUse, path / s, Nobody, props = None, deploy = None,
           acceptProtocolNames = acceptProtocolNames)
     }
   }

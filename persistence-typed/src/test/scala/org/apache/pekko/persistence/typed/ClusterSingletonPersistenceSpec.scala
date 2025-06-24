@@ -53,7 +53,7 @@ object ClusterSingletonPersistenceSpec {
       emptyState = "",
       commandHandler = (state, cmd) =>
         cmd match {
-          case Add(s) => Effect.persist(s)
+          case Add(s)       => Effect.persist(s)
           case Get(replyTo) =>
             replyTo ! state
             Effect.none
