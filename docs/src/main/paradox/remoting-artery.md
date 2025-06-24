@@ -292,9 +292,9 @@ pekko.remote.artery {
     key-password = ${SSL_KEY_PASSWORD}
     trust-store-password = ${SSL_TRUST_STORE_PASSWORD}
 
-    protocol = "TLSv1.2"
+    protocol = "TLSv1.3"
 
-    enabled-algorithms = [TLS_DHE_RSA_WITH_AES_128_GCM_SHA256]
+    enabled-algorithms = [TLS_AES_256_GCM_SHA384]
   }
 }
 ```
@@ -308,6 +308,12 @@ According to [RFC 7525](https://www.rfc-editor.org/rfc/rfc7525.html) the recomme
  * TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
  * TLS_DHE_RSA_WITH_AES_256_GCM_SHA384
  * TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+
+For TLS 1.3, these are good options:
+
+ * TLS_AES_128_GCM_SHA256
+ * TLS_AES_256_GCM_SHA384
+ * TLS_CHACHA20_POLY1305_SHA256 (may not be supported on Java 8 runtimes)
 
 You should always check the latest information about security and algorithm recommendations though before you configure your system.
 
