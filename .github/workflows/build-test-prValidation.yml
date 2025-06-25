@@ -25,6 +25,8 @@ jobs:
     env:
       DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
     steps:
+      - name: test
+        uses: aquasecurity/trivy@c3f85e28fa7b38f6ec5b5b59fcebf54b45154ab3
       - name: Checkout
         uses: actions/checkout@v4
         with:
