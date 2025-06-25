@@ -35,7 +35,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install sbt
-        uses: sbt/setup-sbt@6c68d2fe8dfbc0a0534d70101baa2e0420e1a506 # v1.1.9
+        uses: sbt/setup-sbt@a9d38be6cfa0c7bfb8be93b4cc4e1edaa6351728 # v1.1.10
       - uses: scalacenter/sbt-dependency-submission@64084844d2b0a9b6c3765f33acde2fbe3f5ae7d3 # v3.1.0
         with:
           configs-ignore: provided optional test TestJdk9 compile-internal runtime-internal pr-validation multi-jvm scala-tool scala-doc-tool
