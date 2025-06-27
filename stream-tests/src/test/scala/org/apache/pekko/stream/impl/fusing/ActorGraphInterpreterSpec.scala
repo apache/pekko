@@ -412,21 +412,23 @@ class ActorGraphInterpreterSpec extends StreamSpec {
       val upstream = TestPublisher.probe[Int]()
       val downstream = TestSubscriber.probe[Int]()
 
-      Source
-        .fromPublisher(upstream)
-        .alsoTo(Sink.fromSubscriber(downstream))
-        .runWith(Sink.fromSubscriber(filthySubscriber))
+      EventFilter[NullPointerException](occurrences = 0).intercept {
+        Source
+          .fromPublisher(upstream)
+          .alsoTo(Sink.fromSubscriber(downstream))
+          .runWith(Sink.fromSubscriber(filthySubscriber))
 
-      upstream.sendNext(0)
+        upstream.sendNext(0)
 
-      downstream.requestNext(0)
-      val ise = downstream.expectError()
-      ise shouldBe an[IllegalStateException]
-      ise.getCause shouldBe a[SpecViolation]
-      ise.getCause.getCause shouldBe a[TE]
-      ise.getCause.getCause should (have.message("violating your spec"))
+        downstream.requestNext(0)
+        val ise = downstream.expectError()
+        ise shouldBe an[IllegalStateException]
+        ise.getCause shouldBe a[SpecViolation]
+        ise.getCause.getCause shouldBe a[TE]
+        ise.getCause.getCause should (have.message("violating your spec"))
 
-      upstream.expectCancellation()
+        upstream.expectCancellation()
+      }
     }
 
     "trigger postStop in all stages when abruptly terminated (and no upstream boundaries)" in {
