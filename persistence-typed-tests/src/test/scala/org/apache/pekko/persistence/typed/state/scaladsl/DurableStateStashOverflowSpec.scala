@@ -11,7 +11,7 @@
  * Copyright (C) 2020-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package org.apache.pekko.persistence.typed.scaladsl
+package org.apache.pekko.persistence.typed.state.scaladsl
 
 import org.apache.pekko
 import pekko.Done
@@ -27,15 +27,15 @@ import org.scalatest.wordspec.AnyWordSpecLike
 
 import scala.concurrent.duration._
 
-// Reproducer for #29401
-object EventSourcedStashOverflowSpec {
+// Reproducer for #1327
+object DurableStateStashOverflowSpec {
 
-  object EventSourcedStringList {
+  object DurableStateStringList {
     sealed trait Command
     case class DoNothing(replyTo: ActorRef[Done]) extends Command
 
     def apply(persistenceId: PersistenceId): Behavior[Command] =
-      EventSourcedBehavior[Command, String, List[String]](
+      DurableStateBehavior[Command, List[String]](
         persistenceId,
         Nil,
         { (_, command) =>
@@ -43,17 +43,13 @@ object EventSourcedStashOverflowSpec {
             case DoNothing(replyTo) =>
               Effect.persist(List.empty[String]).thenRun(_ => replyTo ! Done)
           }
-        },
-        { (state, event) =>
-          // original reproducer slept 2 seconds here but a pure application of an event seems unlikely to take that long
-          // so instead we delay recovery using a special journal
-          event :: state
         })
   }
 
   def conf =
-    SteppingInmemJournal.config("EventSourcedStashOverflow").withFallback(ConfigFactory.parseString(s"""
+    SteppingInmemJournal.config("DurableStateStashOverflow").withFallback(ConfigFactory.parseString(s"""
        pekko.persistence {
+         state.plugin = "pekko.persistence.journal.stepping-inmem"
          typed {
            stash-capacity = 20000 # enough to fail on stack size
            stash-overflow-strategy = "drop"
@@ -63,28 +59,28 @@ object EventSourcedStashOverflowSpec {
    """))
 }
 
-class EventSourcedStashOverflowSpec
-    extends ScalaTestWithActorTestKit(EventSourcedStashOverflowSpec.conf)
+class DurableStateStashOverflowSpec
+    extends ScalaTestWithActorTestKit(DurableStateStashOverflowSpec.conf)
     with AnyWordSpecLike
     with LogCapturing {
 
-  import EventSourcedStashOverflowSpec.EventSourcedStringList
+  import DurableStateStashOverflowSpec.DurableStateStringList
 
-  "Stashing in a busy event sourced behavior" must {
+  "Stashing in a busy durable state behavior" must {
 
     "not cause stack overflow" in {
-      val es = spawn(EventSourcedStringList(PersistenceId.ofUniqueId("id-1")))
+      val es = spawn(DurableStateStringList(PersistenceId.ofUniqueId("id-1")))
 
       // wait for journal to start
       val probe = testKit.createTestProbe[Done]()
-      probe.awaitAssert(SteppingInmemJournal.getRef("EventSourcedStashOverflow"), 3.seconds)
-      val journal = SteppingInmemJournal.getRef("EventSourcedStashOverflow")
+      probe.awaitAssert(SteppingInmemJournal.getRef("DurableStateStashOverflow"), 3.seconds)
+      val journal = SteppingInmemJournal.getRef("DurableStateStashOverflow")
 
       val droppedMessageProbe = testKit.createDroppedMessageProbe()
       val stashCapacity = testKit.config.getInt("pekko.persistence.typed.stash-capacity")
 
       for (_ <- 0 to (stashCapacity * 2)) {
-        es.tell(EventSourcedStringList.DoNothing(probe.ref))
+        es.tell(DurableStateStringList.DoNothing(probe.ref))
       }
       // capacity + 1 should mean that we get a dropped last message when all stash is filled
       // while the actor is stuck in replay because journal isn't responding
