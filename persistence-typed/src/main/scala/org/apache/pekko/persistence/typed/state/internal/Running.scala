@@ -55,12 +55,25 @@ private[pekko] object Running {
     def currentRevision: Long
   }
 
-  final case class RunningState[State](revision: Long, state: State, receivedPoisonPill: Boolean) {
+  // This is part of the fix for https://github.com/apache/pekko/issues/1327 and it's necessary to break
+  // recursion between the `onCommand` and `onMessage` functions in Running[C, E, S]#HandlingCommands.
+  // See comment in org.apache.pekko.persistence.typed.internal.Running#UnstashRecurrenceState for more
+  // information
+  final class UnstashRecurrenceState[State, Command] {
+    var inOnCommandCall: Boolean = false
+    var recOnCommandParams: Option[(RunningState[State, Command], Command)] = None
+  }
 
-    def nextRevision(): RunningState[State] =
+  final case class RunningState[State, Command](
+      revision: Long,
+      state: State,
+      receivedPoisonPill: Boolean,
+      unstashRecurrenceState: UnstashRecurrenceState[State, Command] = new UnstashRecurrenceState[State, Command]) {
+
+    def nextRevision(): RunningState[State, Command] =
       copy(revision = revision + 1)
 
-    def applyState[C, E](@unused setup: BehaviorSetup[C, State], updated: State): RunningState[State] = {
+    def applyState(@unused setup: BehaviorSetup[Command, State], updated: State): RunningState[State, Command] = {
       copy(state = updated)
     }
   }
@@ -79,16 +92,25 @@ private[pekko] object Running {
   // Needed for WithSeqNrAccessible, when unstashing
   private var _currentRevision = 0L
 
-  final class HandlingCommands(state: RunningState[S])
+  final class HandlingCommands(state: RunningState[S, C])
       extends AbstractBehavior[InternalProtocol](setup.context)
       with WithRevisionAccessible {
 
     _currentRevision = state.revision
 
     def onMessage(msg: InternalProtocol): Behavior[InternalProtocol] = msg match {
-      case IncomingCommand(c: C @unchecked) => onCommand(state, c)
-      case get: GetState[S @unchecked]      => onGetState(get)
-      case _                                => Behaviors.unhandled
+      case IncomingCommand(c: C @unchecked) =>
+        // The configuration flag is only checked here: if it is false, we don't set
+        // state.unstashRecurrenceState.recOnCommandParams and onCommand will behave as if
+        // the fix was not implemented at all
+        if (setup.settings.breakRecursiveCallsWhenUnstashingReadOnlyCommands && state.unstashRecurrenceState.inOnCommandCall) {
+          state.unstashRecurrenceState.recOnCommandParams = Some((state, c))
+          this // This will be ignored in onCommand
+        } else {
+          onCommand(state, c)
+        }
+      case get: GetState[S @unchecked] => onGetState(get)
+      case _                           => Behaviors.unhandled
     }
 
     override def onSignal: PartialFunction[Signal, Behavior[InternalProtocol]] = {
@@ -100,11 +122,37 @@ private[pekko] object Running {
         else Behaviors.unhandled
     }
 
-    def onCommand(state: RunningState[S], cmd: C): Behavior[InternalProtocol] = {
-      val effect = setup.commandHandler(state.state, cmd)
-      val (next, doUnstash) = applyEffects(cmd, state, effect.asInstanceOf[EffectImpl[S]]) // TODO can we avoid the cast?
-      if (doUnstash) tryUnstashOne(next)
-      else next
+    def onCommand(state: RunningState[S, C], cmd: C): Behavior[InternalProtocol] = {
+      def callApplyEffects(rs: RunningState[S, C], c: C) = {
+        val effect = setup.commandHandler(rs.state, c)
+
+        applyEffects(c, rs, effect.asInstanceOf[EffectImpl[S]]) // TODO can we avoid the cast?
+      }
+
+      var applyEffectsRetval: (Behavior[InternalProtocol], Boolean) = callApplyEffects(state, cmd)
+
+      var retVal: Option[Behavior[InternalProtocol]] = None
+
+      while (retVal.isEmpty) {
+        val (next, doUnstash) = applyEffectsRetval
+
+        if (doUnstash) {
+          state.unstashRecurrenceState.inOnCommandCall = true
+          val r = tryUnstashOne(next)
+          state.unstashRecurrenceState.inOnCommandCall = false
+
+          state.unstashRecurrenceState.recOnCommandParams match {
+            case None          => retVal = Some(r)
+            case Some((rs, c)) => applyEffectsRetval = callApplyEffects(rs, c)
+          }
+
+          state.unstashRecurrenceState.recOnCommandParams = None
+        } else {
+          retVal = Some(next)
+        }
+      }
+
+      retVal.get
     }
 
     // Used by DurableStateBehaviorTestKit to retrieve the state.
@@ -130,7 +178,7 @@ private[pekko] object Running {
 
     @tailrec def applyEffects(
         msg: Any,
-        state: RunningState[S],
+        state: RunningState[S, C],
         effect: Effect[S],
         sideEffects: immutable.Seq[SideEffect[S]] = Nil): (Behavior[InternalProtocol], Boolean) = {
       if (setup.internalLogger.isDebugEnabled && !effect.isInstanceOf[CompositeEffect[_]])
@@ -182,8 +230,8 @@ private[pekko] object Running {
   // ===============================================
 
   def persistingState(
-      state: RunningState[S],
-      visibleState: RunningState[S], // previous state until write success
+      state: RunningState[S, C],
+      visibleState: RunningState[S, C], // previous state until write success
       sideEffects: immutable.Seq[SideEffect[S]]): Behavior[InternalProtocol] = {
     setup.setMdcPhase(PersistenceMdc.PersistingState)
     new PersistingState(state, visibleState, sideEffects)
@@ -191,8 +239,8 @@ private[pekko] object Running {
 
   /** INTERNAL API */
   @InternalApi private[pekko] class PersistingState(
-      var state: RunningState[S],
-      var visibleState: RunningState[S], // previous state until write success
+      var state: RunningState[S, C],
+      var visibleState: RunningState[S, C], // previous state until write success
       var sideEffects: immutable.Seq[SideEffect[S]],
       persistStartTime: Long = System.nanoTime())
       extends AbstractBehavior[InternalProtocol](setup.context)
@@ -258,7 +306,7 @@ private[pekko] object Running {
 
   // ===============================================
 
-  def applySideEffects(effects: immutable.Seq[SideEffect[S]], state: RunningState[S]): Behavior[InternalProtocol] = {
+  def applySideEffects(effects: immutable.Seq[SideEffect[S]], state: RunningState[S, C]): Behavior[InternalProtocol] = {
     var behavior: Behavior[InternalProtocol] = new HandlingCommands(state)
     val it = effects.iterator
 
@@ -277,7 +325,7 @@ private[pekko] object Running {
 
   def applySideEffect(
       effect: SideEffect[S],
-      state: RunningState[S],
+      state: RunningState[S, C],
       behavior: Behavior[InternalProtocol]): Behavior[InternalProtocol] = {
     effect match {
       case _: Stop.type @unchecked =>
