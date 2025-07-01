@@ -18,3 +18,5 @@
 # EventSourcedBehavior/DurableState Read-Only Events Stackoverflow
 ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.persistence.typed.internal.Running#*")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.persistence.typed.internal.Running#*")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.persistence.typed.state.internal.Running#*")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.persistence.typed.state.internal.Running#*")

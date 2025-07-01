@@ -49,8 +49,8 @@ private[pekko] trait DurableStateStoreInteractions[C, S] {
   protected def internalUpsert(
       ctx: ActorContext[InternalProtocol],
       cmd: Any,
-      state: Running.RunningState[S],
-      value: Any): Running.RunningState[S] = {
+      state: Running.RunningState[S, C],
+      value: Any): Running.RunningState[S, C] = {
 
     val newRunningState = state.nextRevision()
     val persistenceId = setup.persistenceId.id
@@ -69,9 +69,9 @@ private[pekko] trait DurableStateStoreInteractions[C, S] {
   protected def internalDelete(
       ctx: ActorContext[InternalProtocol],
       cmd: Any,
-      state: Running.RunningState[S]): Running.RunningState[S] = {
+      state: Running.RunningState[S, C]): Running.RunningState[S, C] = {
 
-    val newRunningState = state.nextRevision().copy(state = setup.emptyState)
+    val newRunningState: Running.RunningState[S, C] = state.nextRevision().copy(state = setup.emptyState)
     val persistenceId = setup.persistenceId.id
 
     onDeleteInitiated(ctx, cmd)
