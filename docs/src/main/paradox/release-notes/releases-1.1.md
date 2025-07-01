@@ -2,6 +2,14 @@
 
 Apache Pekko 1.1.x releases support Java 8 and above.
 
+## 1.1.5
+
+Pekko 1.1.5 is a bug fix release. See [GitHub Milestone for 1.1.5](https://github.com/apache/pekko/milestone/17?closed=1) for a fuller list of changes.
+
+### Bug Fixes
+
+* Fix issue with number deserialization in pekko-cluster-metrics ([PR1899](https://github.com/apache/pekko/pull/1899))
+
 ## 1.1.4
 
 Pekko 1.1.4 is a bug fix and dependency upgrade release. See [GitHub Milestone for 1.1.4](https://github.com/apache/pekko/milestone/14?closed=1) for a fuller list of changes.
