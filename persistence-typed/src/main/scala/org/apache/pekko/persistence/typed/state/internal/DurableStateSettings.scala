@@ -54,8 +54,8 @@ import pekko.persistence.Persistence
 
     val useContextLoggerForInternalLogging = typedConfig.getBoolean("use-context-logger-for-internal-logging")
 
-    val breakRecursiveCallsWhenUnstashingReadOnlyCommands =
-      typedConfig.getBoolean("break-recursive-calls-when-unstashing-read-only-commands")
+    val recurseWhenUnstashingReadOnlyCommands =
+      typedConfig.getBoolean("recurse-when-unstashing-read-only-commands")
 
     DurableStateSettings(
       stashCapacity = stashCapacity,
@@ -64,7 +64,7 @@ import pekko.persistence.Persistence
       recoveryTimeout,
       durableStateStorePluginId,
       useContextLoggerForInternalLogging,
-      breakRecursiveCallsWhenUnstashingReadOnlyCommands)
+      recurseWhenUnstashingReadOnlyCommands)
   }
 
   private def durableStateStoreConfigFor(config: Config, pluginId: String): Config = {
@@ -92,7 +92,7 @@ private[pekko] final case class DurableStateSettings(
     recoveryTimeout: FiniteDuration,
     durableStateStorePluginId: String,
     useContextLoggerForInternalLogging: Boolean,
-    breakRecursiveCallsWhenUnstashingReadOnlyCommands: Boolean) {
+    recurseWhenUnstashingReadOnlyCommands: Boolean) {
 
   require(
     durableStateStorePluginId != null,

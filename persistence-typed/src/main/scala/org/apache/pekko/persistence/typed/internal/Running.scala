@@ -264,10 +264,10 @@ private[pekko] object Running {
 
     def onMessage(msg: InternalProtocol): Behavior[InternalProtocol] = msg match {
       case IncomingCommand(c: C @unchecked) =>
-        // The configuration flag is only checked here: if it is false, we don't set
+        // The configuration flag is only checked here: if it is true, we don't set
         // state.unstashRecurrenceState.recOnCommandParams and onCommand will behave as if
         // the fix was not implemented at all
-        if (setup.settings.breakRecursiveCallsWhenUnstashingReadOnlyCommands && state.unstashRecurrenceState.inOnCommandCall) {
+        if (!setup.settings.recurseWhenUnstashingReadOnlyCommands && state.unstashRecurrenceState.inOnCommandCall) {
           state.unstashRecurrenceState.recOnCommandParams = Some((state, c))
           this // This will be ignored in onCommand
         } else {

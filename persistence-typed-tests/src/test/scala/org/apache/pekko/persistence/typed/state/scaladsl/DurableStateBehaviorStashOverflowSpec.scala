@@ -89,7 +89,7 @@ object DurableStateBehaviorStashOverflowSpec {
          typed {
            stash-capacity = 20000 # enough to fail on stack size
            stash-overflow-strategy = "drop"
-           break-recursive-calls-when-unstashing-read-only-commands = true # Necessary to enable the fix
+           recurse-when-unstashing-read-only-commands = false
          }
        }
        pekko.jvm-exit-on-fatal-error = off
