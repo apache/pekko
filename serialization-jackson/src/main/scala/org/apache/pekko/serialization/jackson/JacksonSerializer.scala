@@ -162,10 +162,10 @@ import pekko.util.OptionVal
       JacksonObjectMapperProvider(system).getOrCreate(bindingName, Some(new CBORFactory)))
 
 @InternalApi object Compression {
-  sealed trait Algoritm
-  object Off extends Algoritm
-  final case class GZip(largerThan: Long) extends Algoritm
-  final case class LZ4(largerThan: Long) extends Algoritm
+  sealed trait Algorithm
+  object Off extends Algorithm
+  final case class GZip(largerThan: Long) extends Algorithm
+  final case class LZ4(largerThan: Long) extends Algorithm
 }
 
 /**
@@ -191,7 +191,7 @@ import pekko.util.OptionVal
   private val conf = JacksonObjectMapperProvider.configForBinding(bindingName, system.settings.config)
   private val isDebugEnabled = conf.getBoolean("verbose-debug-logging") && log.isDebugEnabled
   private final val BufferSize = 1024 * 4
-  private val compressionAlgorithm: Compression.Algoritm = {
+  private val compressionAlgorithm: Compression.Algorithm = {
     toRootLowerCase(conf.getString("compression.algorithm")) match {
       case "off"  => Compression.Off
       case "gzip" =>
@@ -298,7 +298,7 @@ import pekko.util.OptionVal
     result
   }
 
-  private def logToBinaryDuration(obj: AnyRef, startTime: Long, bytes: Array[Byte], result: Array[Byte]) = {
+  private def logToBinaryDuration(obj: AnyRef, startTime: Long, bytes: Array[Byte], result: Array[Byte]): Unit = {
     if (isDebugEnabled) {
       val durationMicros = (System.nanoTime - startTime) / 1000
       if (bytes.length == result.length)
@@ -395,7 +395,7 @@ import pekko.util.OptionVal
       bytes: Array[Byte],
       decompressBytes: Array[Byte],
       startTime: Long,
-      clazz: Class[_ <: AnyRef]) = {
+      clazz: Class[_ <: AnyRef]): Unit = {
     if (isDebugEnabled) {
       val durationMicros = (System.nanoTime - startTime) / 1000
       if (bytes.length == decompressBytes.length)
