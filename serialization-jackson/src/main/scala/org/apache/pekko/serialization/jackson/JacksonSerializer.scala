@@ -298,7 +298,7 @@ import pekko.util.OptionVal
     result
   }
 
-  private def logToBinaryDuration(obj: AnyRef, startTime: Long, bytes: Array[Byte], result: Array[Byte]) = {
+  private def logToBinaryDuration(obj: AnyRef, startTime: Long, bytes: Array[Byte], result: Array[Byte]): Unit = {
     if (isDebugEnabled) {
       val durationMicros = (System.nanoTime - startTime) / 1000
       if (bytes.length == result.length)
@@ -395,7 +395,7 @@ import pekko.util.OptionVal
       bytes: Array[Byte],
       decompressBytes: Array[Byte],
       startTime: Long,
-      clazz: Class[_ <: AnyRef]) = {
+      clazz: Class[_ <: AnyRef]): Unit = {
     if (isDebugEnabled) {
       val durationMicros = (System.nanoTime - startTime) / 1000
       if (bytes.length == decompressBytes.length)
