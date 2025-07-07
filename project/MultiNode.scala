@@ -73,7 +73,7 @@ object MultiNode extends AutoPlugin {
 
   private lazy val multiJvmSettings =
     MultiJvmPlugin.multiJvmSettings ++
-    inConfig(MultiJvm)(scalafmtConfigSettings) ++
+    scalafmtConfigSettings(MultiJvm) ++
     Seq(
       // Hack because 'provided' dependencies by default are not picked up by the multi-jvm plugin:
       MultiJvm / managedClasspath ++= (Compile / managedClasspath).value.filter(_.data.name.contains("silencer-lib")),
