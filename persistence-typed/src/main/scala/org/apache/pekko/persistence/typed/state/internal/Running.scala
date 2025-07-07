@@ -99,11 +99,10 @@ private[pekko] object Running {
     _currentRevision = state.revision
 
     def onMessage(msg: InternalProtocol): Behavior[InternalProtocol] = msg match {
+      case IncomingCommand(c: C @unchecked) if setup.settings.recurseWhenUnstashingReadOnlyCommands =>
+        onCommand(state, c)
       case IncomingCommand(c: C @unchecked) =>
-        // The configuration flag is only checked here: if it is true, we don't set
-        // state.unstashRecurrenceState.recOnCommandParams and onCommand will behave as if
-        // the fix was not implemented at all
-        if (!setup.settings.recurseWhenUnstashingReadOnlyCommands && state.unstashRecurrenceState.inOnCommandCall) {
+        if (state.unstashRecurrenceState.inOnCommandCall) {
           state.unstashRecurrenceState.recOnCommandParams = Some((state, c))
           this // This will be ignored in onCommand
         } else {
@@ -123,36 +122,55 @@ private[pekko] object Running {
     }
 
     def onCommand(state: RunningState[S, C], cmd: C): Behavior[InternalProtocol] = {
-      def callApplyEffects(rs: RunningState[S, C], c: C) = {
+      def callApplyEffects(rs: RunningState[S, C], c: C): (Behavior[InternalProtocol], Boolean) = {
         val effect = setup.commandHandler(rs.state, c)
 
         applyEffects(c, rs, effect.asInstanceOf[EffectImpl[S]]) // TODO can we avoid the cast?
       }
 
-      var applyEffectsRetval: (Behavior[InternalProtocol], Boolean) = callApplyEffects(state, cmd)
-
-      var retVal: Option[Behavior[InternalProtocol]] = None
-
-      while (retVal.isEmpty) {
+      def recursiveUnstashImpl(
+          applyEffectsRetval: (Behavior[InternalProtocol], Boolean)
+      ): Behavior[InternalProtocol] = {
         val (next, doUnstash) = applyEffectsRetval
 
-        if (doUnstash) {
-          state.unstashRecurrenceState.inOnCommandCall = true
-          val r = tryUnstashOne(next)
-          state.unstashRecurrenceState.inOnCommandCall = false
-
-          state.unstashRecurrenceState.recOnCommandParams match {
-            case None          => retVal = Some(r)
-            case Some((rs, c)) => applyEffectsRetval = callApplyEffects(rs, c)
-          }
-
-          state.unstashRecurrenceState.recOnCommandParams = None
-        } else {
-          retVal = Some(next)
-        }
+        if (doUnstash) tryUnstashOne(next)
+        else next
       }
 
-      retVal.get
+      def nonRecursiveUnstashImpl(
+          applyEffectsRetval: (Behavior[InternalProtocol], Boolean)
+      ): Behavior[InternalProtocol] = {
+        @tailrec
+        def loop(applyEffectsRetval: (Behavior[InternalProtocol], Boolean)): Behavior[InternalProtocol] = {
+          val (next, doUnstash) = applyEffectsRetval
+
+          if (doUnstash) {
+            state.unstashRecurrenceState.inOnCommandCall = true
+            val r = tryUnstashOne(next)
+            state.unstashRecurrenceState.inOnCommandCall = false
+
+            val recOnCommandParams = state.unstashRecurrenceState.recOnCommandParams
+            state.unstashRecurrenceState.recOnCommandParams = None
+
+            recOnCommandParams match {
+              case None          => r
+              case Some((rs, c)) => loop(callApplyEffects(rs, c))
+            }
+          } else {
+            next
+          }
+        }
+
+        loop(applyEffectsRetval)
+      }
+
+      val r = callApplyEffects(state, cmd)
+
+      if (setup.settings.recurseWhenUnstashingReadOnlyCommands) {
+        recursiveUnstashImpl(r)
+      } else {
+        nonRecursiveUnstashImpl(r)
+      }
     }
 
     // Used by DurableStateBehaviorTestKit to retrieve the state.
