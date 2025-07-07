@@ -223,5 +223,19 @@ class BoundedSourceQueueSpec extends StreamSpec("""pekko.loglevel = debug
       }
       queue.size() shouldBe 100
     }
+
+    "can be used to create create method" in {
+      Source.create[String](1024)(queue => {
+        queue.offer("a")
+        queue.offer("b")
+        queue.complete()
+      })
+        .toMat(TestSink.probe[String])(Keep.right)
+        .run()
+        .ensureSubscription()
+        .request(2)
+        .expectNext("a", "b")
+        .expectComplete()
+    }
   }
 }

@@ -799,6 +799,40 @@ object Source {
     scaladsl.Source.queue(bufferSize).asJava
 
   /**
+   * Creates a Source that will immediately execute the provided function `producer` with a [[BoundedSourceQueue]] when materialized.
+   * This allows defining element production logic at Source creation time.
+   *
+   * The function `producer` can push elements to the stream using the provided queue. The queue behaves the same as in [[Source.queue]]:
+   * <br>
+   * - Elements are emitted when there is downstream demand, buffered otherwise
+   * <br>
+   * - Elements are dropped if the buffer is full
+   * <br>
+   * - Buffered elements are discarded if downstream terminates
+   * <br>
+   * You should never block the producer thread, as it will block the stream from processing elements.
+   * If the function `producer` throws an exception, the queue will be failed and the exception will be propagated to the stream.
+   *
+   * Example usage:
+   * {{{
+   * Source.create[Int](10) { queue =>
+   *   // This code is executed when the source is materialized
+   *   queue.offer(1)
+   *   queue.offer(2)
+   *   queue.offer(3)
+   *   queue.complete()
+   * }
+   * }}}
+   *
+   * @param bufferSize the size of the buffer (number of elements)
+   * @param producer function that receives the queue and defines how to produce data
+   * @return a Source that emits elements pushed to the queue
+   * @since 1.2.0
+   */
+  def create[T](bufferSize: Int, producer: function.Procedure[BoundedSourceQueue[T]]): Source[T, NotUsed] =
+    scaladsl.Source.create(bufferSize)(producer(_)).asJava
+
+  /**
    * Creates a `Source` that is materialized as an [[pekko.stream.javadsl.SourceQueueWithComplete]].
    * You can push elements to the queue and they will be emitted to the stream if there is demand from downstream,
    * otherwise they will be buffered until request for demand is received. Elements in the buffer will be discarded
