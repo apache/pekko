@@ -13,6 +13,7 @@
 
 package org.apache.pekko.stream.javadsl;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.apache.pekko.Done;
 import org.apache.pekko.NotUsed;
@@ -120,6 +121,32 @@ public class FlowTest extends StreamTest {
         .thenAccept(elem -> probe.getRef().tell(elem, ActorRef.noSender()));
 
     probe.expectMsgEquals("de");
+  }
+
+  @Test
+  public void mustBeAbleToUseGroupedAdjacentBy() {
+    Source.from(Arrays.asList("Hello", "Hi", "Greetings", "Hey"))
+        .groupedAdjacentBy(str -> str.charAt(0))
+        .runWith(TestSink.probe(system), system)
+        .request(4)
+        .expectNext(Lists.newArrayList("Hello", "Hi"))
+        .expectNext(Lists.newArrayList("Greetings"))
+        .expectNext(Lists.newArrayList("Hey"))
+        .expectComplete();
+  }
+
+  @Test
+  public void mustBeAbleToUseGroupedAdjacentByWeighted() {
+    Source.from(Arrays.asList("Hello", "HiHi", "Hi", "Hi", "Greetings", "Hey"))
+        .groupedAdjacentByWeighted(str -> str.charAt(0), 4, str -> (long) str.length())
+        .runWith(TestSink.probe(system), system)
+        .request(6)
+        .expectNext(Lists.newArrayList("Hello"))
+        .expectNext(Lists.newArrayList("HiHi"))
+        .expectNext(Lists.newArrayList("Hi", "Hi"))
+        .expectNext(Lists.newArrayList("Greetings"))
+        .expectNext(Lists.newArrayList("Hey"))
+        .expectComplete();
   }
 
   @Test

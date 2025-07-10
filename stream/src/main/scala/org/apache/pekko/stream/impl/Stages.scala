@@ -47,6 +47,7 @@ import pekko.stream.Attributes._
     val mapWithResource = name("mapWithResource") and IODispatcher
     val ask = name("ask")
     val grouped = name("grouped")
+    val groupedAdjacentByWeighted = name("groupedAdjacentByWeighted")
     val groupedWithin = name("groupedWithin")
     val groupedWeighted = name("groupedWeighted")
     val groupedWeightedWithin = name("groupedWeightedWithin")

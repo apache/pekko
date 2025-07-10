@@ -670,6 +670,49 @@ class SubSource[Out, Mat](
     new SubSource(delegate.groupedWeighted(minWeight)(costFn.apply).map(_.asJava)) // TODO optimize to one step
 
   /**
+   * Partitions this stream into chunks by a delimiter function, which is applied to each incoming element,
+   * when the result of the function is not the same as the previous element's result, a chunk is emitted.
+   *
+   * The `f` function must return a non-null value for all elements, otherwise the stage will fail.
+   *
+   * '''Emits when''' the delimiter function returns a different value than the previous element's result
+   *
+   * '''Backpressures when''' a chunk has been assembled and downstream backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @since 1.2.0
+   */
+  def groupedAdjacentBy[R](f: function.Function[Out, R]): SubSource[java.util.List[Out @uncheckedVariance], Mat] =
+    new SubSource(delegate.groupedAdjacentBy(f.apply).map(_.asJava))
+
+  /**
+   * Partitions this stream into chunks by a delimiter function, which is applied to each incoming element,
+   * when the result of the function is not the same as the previous element's result, or the accumulated weight exceeds
+   * the `maxWeight`, a chunk is emitted.
+   *
+   * The `f` function must return a non-null value , and the `costFn` must return a non-negative result for all inputs,
+   * otherwise the stage will fail.
+   *
+   * '''Emits when''' the delimiter function returns a different value than the previous element's result, or exceeds the `maxWeight`.
+   *
+   * '''Backpressures when''' a chunk has been assembled and downstream backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @since 1.2.0
+   */
+  def groupedAdjacentByWeighted[R](f: function.Function[Out, R],
+      maxWeight: Long,
+      costFn: java.util.function.Function[Out, java.lang.Long])
+      : SubSource[java.util.List[Out @uncheckedVariance], Mat] =
+    new SubSource(delegate.groupedAdjacentByWeighted(f.apply, maxWeight)(costFn.apply).map(_.asJava))
+
+  /**
    * Apply a sliding window over the stream and return the windows as groups of elements, with the last group
    * possibly smaller than requested due to end-of-stream.
    *
