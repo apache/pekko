@@ -26,7 +26,8 @@ import pekko.pattern.{
   ForwardTo,
   HandleBackoff,
   HandlingWhileStopped,
-  ReplyWith
+  ReplyWith,
+  RetrySupport
 }
 
 /**
@@ -81,7 +82,7 @@ import pekko.pattern.{
         val nextRestartCount = restartCount + 1
 
         if (maxNrOfRetries == -1 || nextRestartCount <= maxNrOfRetries) {
-          val restartDelay = calculateDelay(restartCount, minBackoff, maxBackoff, randomFactor)
+          val restartDelay = RetrySupport.calculateDelay(restartCount, minBackoff, maxBackoff, randomFactor)
           context.system.scheduler.scheduleOnce(restartDelay, self, StartChild)
           restartCount = nextRestartCount
         } else {

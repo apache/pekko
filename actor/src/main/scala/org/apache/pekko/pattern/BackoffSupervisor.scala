@@ -14,10 +14,8 @@
 package org.apache.pekko.pattern
 
 import java.util.Optional
-import java.util.concurrent.ThreadLocalRandom
 
 import scala.concurrent.duration.{ Duration, FiniteDuration }
-import scala.util.Try
 
 import org.apache.pekko
 import pekko.actor.{ ActorRef, DeadLetterSuppression, OneForOneStrategy, Props, SupervisorStrategy }
@@ -313,24 +311,6 @@ object BackoffSupervisor {
    */
   @InternalApi
   private[pekko] case class ResetRestartCount(current: Int) extends DeadLetterSuppression
-
-  /**
-   * INTERNAL API
-   *
-   * Calculates an exponential back off delay.
-   */
-  private[pekko] def calculateDelay(
-      restartCount: Int,
-      minBackoff: FiniteDuration,
-      maxBackoff: FiniteDuration,
-      randomFactor: Double): FiniteDuration = {
-    val rnd = 1.0 + ThreadLocalRandom.current().nextDouble() * randomFactor
-    val calculatedDuration = Try(maxBackoff.min(minBackoff * math.pow(2, restartCount)) * rnd).getOrElse(maxBackoff)
-    calculatedDuration match {
-      case f: FiniteDuration => f
-      case _                 => maxBackoff
-    }
-  }
 }
 
 final class BackoffSupervisor @deprecated("Use `BackoffSupervisor.props` method instead", since = "Akka 2.5.22") (
