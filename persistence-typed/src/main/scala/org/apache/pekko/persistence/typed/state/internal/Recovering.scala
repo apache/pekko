@@ -183,7 +183,7 @@ private[pekko] class Recovering[C, S](
       if (state.receivedPoisonPill && isInternalStashEmpty && !isUnstashAllInProgress)
         Behaviors.stopped
       else {
-        val runningState = Running.RunningState[S](
+        val runningState = Running.RunningState[S, C](
           revision = state.revision,
           state = state.state,
           receivedPoisonPill = state.receivedPoisonPill)
