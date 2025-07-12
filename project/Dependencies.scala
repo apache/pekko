@@ -149,7 +149,7 @@ object Dependencies {
       val `pax-exam-container-forked` = "org.ops4j.pax.exam" % "pax-exam-container-forked" % "4.14.0" % Test
 
       // in-memory filesystem for file related tests
-      val jimfs = "com.google.jimfs" % "jimfs" % "1.3.0" % Test
+      val jimfs = "com.google.jimfs" % "jimfs" % "1.3.1" % Test
 
       val dockerClientVersion = "3.5.3"
       val dockerClient = Seq(
