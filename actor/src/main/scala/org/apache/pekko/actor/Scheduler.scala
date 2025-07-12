@@ -231,6 +231,7 @@ trait Scheduler {
     schedule(initialDelay, interval, runnable)(executor)
 
   /**
+   * Deprecated API: See [[Scheduler#scheduleWithFixedDelay]] or [[Scheduler#scheduleAtFixedRate]].
    */
   @deprecated(
     "Use scheduleWithFixedDelay or scheduleAtFixedRate instead. This has the same semantics as " +
