@@ -20,11 +20,15 @@ This is milestone release and is aimed at testing some new changes. This release
 
 ### Additions
 
+* Add Pattern timeout support ([PR1424](https://github.com/apache/pekko/pull/1424))
 * Add TraversalBuilder.getValuePresentedSource method for further optimization ([PR1701](https://github.com/apache/pekko/pull/1701))
 * Add flatmapConcat with parallelism support ([PR1702](https://github.com/apache/pekko/pull/1702))
 * add EventsByTagQuery to JavaDSL PersistenceTestKitReadJournal ([PR1763](https://github.com/apache/pekko/pull/1763))
 * Implement EventsBySliceQuery in JavaDSL PersistenceTestKitReadJournal ([PR1767](https://github.com/apache/pekko/pull/1767))
+* Persistence API: add CurrentLastSequenceNumberByPersistenceIdQuery ([PR1773](https://github.com/apache/pekko/pull/1773))
 * Add emitMulti with Spliterator support ([PR1776](https://github.com/apache/pekko/pull/1776))
+* Add switchMap stream operator ([PR1787](https://github.com/apache/pekko/pull/1787))
+* Add invokeWithFeedbackCompletionStage for javadsl ([PR1819](https://github.com/apache/pekko/pull/1819))
 * Add takeUntil stream operator ([PR1820](https://github.com/apache/pekko/pull/1820))
 * Add Source#create method ([PR1823](https://github.com/apache/pekko/pull/1823))
 * Support Jackson Enum Features ([PR1845](https://github.com/apache/pekko/pull/1845))
