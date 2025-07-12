@@ -284,7 +284,7 @@ class BackoffSupervisorSpec extends PekkoSpec with ImplicitSender with Eventuall
             maxBackoff: FiniteDuration,
             randomFactor: Double,
             expectedResult: FiniteDuration) =>
-          val calculatedValue = BackoffSupervisor.calculateDelay(restartCount, minBackoff, maxBackoff, randomFactor)
+          val calculatedValue = RetrySupport.calculateDelay(restartCount, minBackoff, maxBackoff, randomFactor)
           assert(calculatedValue === expectedResult)
       }
     }

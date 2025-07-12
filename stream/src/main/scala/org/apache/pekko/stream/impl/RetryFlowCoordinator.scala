@@ -17,7 +17,7 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.pattern.BackoffSupervisor
+import pekko.pattern.RetrySupport
 import pekko.stream.{ Attributes, BidiShape, Inlet, Outlet }
 import pekko.stream.SubscriptionWithCancelException.NonFailureCancellation
 import pekko.stream.stage._
@@ -144,7 +144,7 @@ import pekko.util.OptionVal
     }
 
     private def planRetry(element: In): Unit = {
-      val delay = BackoffSupervisor.calculateDelay(retryNo, minBackoff, maxBackoff, randomFactor)
+      val delay = RetrySupport.calculateDelay(retryNo, minBackoff, maxBackoff, randomFactor)
       elementInProgress = OptionVal.Some(element)
       retryNo += 1
       pull(internalIn)

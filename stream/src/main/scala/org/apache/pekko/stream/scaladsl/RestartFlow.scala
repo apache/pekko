@@ -19,7 +19,7 @@ import scala.util.control.NoStackTrace
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.event.Logging
-import pekko.pattern.BackoffSupervisor
+import pekko.pattern.RetrySupport
 import pekko.stream._
 import pekko.stream.Attributes.Attribute
 import pekko.stream.Attributes.LogLevels
@@ -415,7 +415,7 @@ private abstract class RestartWithBackoffLogic[S <: Shape](
 
   // Set a timer to restart after the calculated delay
   protected final def scheduleRestartTimer(): Unit = {
-    val restartDelay = BackoffSupervisor.calculateDelay(restartCount, minBackoff, maxBackoff, randomFactor)
+    val restartDelay = RetrySupport.calculateDelay(restartCount, minBackoff, maxBackoff, randomFactor)
     log.debug("Restarting graph in {}", restartDelay.toCoarsest)
     scheduleOnce("RestartTimer", restartDelay)
     restartCount += 1

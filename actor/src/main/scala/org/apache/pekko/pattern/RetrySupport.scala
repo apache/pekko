@@ -15,12 +15,14 @@ package org.apache.pekko.pattern
 
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.concurrent.duration.{ Duration, FiniteDuration }
-import scala.util.{ Failure, Success }
+import scala.util.{ Failure, Success, Try }
 import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.actor.Scheduler
 import pekko.util.ConstantFun
+
+import java.util.concurrent.ThreadLocalRandom
 
 /**
  * This trait provides the retry utility function
@@ -183,7 +185,7 @@ trait RetrySupport {
       attempt,
       shouldRetry,
       attempts,
-      attempted => Some(BackoffSupervisor.calculateDelay(attempted, minBackoff, maxBackoff, randomFactor)))
+      attempted => Some(RetrySupport.calculateDelay(attempted, minBackoff, maxBackoff, randomFactor)))
   }
 
   /**
@@ -391,6 +393,24 @@ object RetrySupport extends RetrySupport {
 
     } else {
       tryAttempt()
+    }
+  }
+
+  /**
+   * Calculates an exponential back off delay.
+   *
+   * @since 1.2.0
+   */
+  def calculateDelay(
+      restartCount: Int,
+      minBackoff: FiniteDuration,
+      maxBackoff: FiniteDuration,
+      randomFactor: Double): FiniteDuration = {
+    val rnd = 1.0 + ThreadLocalRandom.current().nextDouble() * randomFactor
+    val calculatedDuration = Try(maxBackoff.min(minBackoff * math.pow(2, restartCount)) * rnd).getOrElse(maxBackoff)
+    calculatedDuration match {
+      case f: FiniteDuration => f
+      case _                 => maxBackoff
     }
   }
 }

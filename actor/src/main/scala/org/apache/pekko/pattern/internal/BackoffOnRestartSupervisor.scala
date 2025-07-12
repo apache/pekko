@@ -26,7 +26,8 @@ import pekko.pattern.{
   ForwardTo,
   HandleBackoff,
   HandlingWhileStopped,
-  ReplyWith
+  ReplyWith,
+  RetrySupport
 }
 
 /**
@@ -95,7 +96,7 @@ import pekko.pattern.{
     case Terminated(`childRef`) =>
       become(receive)
       child = None
-      val restartDelay = BackoffSupervisor.calculateDelay(restartCount, minBackoff, maxBackoff, randomFactor)
+      val restartDelay = RetrySupport.calculateDelay(restartCount, minBackoff, maxBackoff, randomFactor)
       context.system.scheduler.scheduleOnce(restartDelay, self, BackoffSupervisor.StartChild)
       restartCount += 1
 
