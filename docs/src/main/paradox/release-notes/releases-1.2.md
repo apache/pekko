@@ -35,6 +35,7 @@ This is milestone release and is aimed at testing some new changes. This release
 * Add dropRepeated stream operator ([PR1868](https://github.com/apache/pekko/pull/1868))
 * Add onComplete support for statefulMapConcat operator ([PR1870](https://github.com/apache/pekko/pull/1870))
 * Add groupedAdjacentBy and GroupedAdjacentByWeighted stream operators ([PR1937](https://github.com/apache/pekko/pull/1937))
+* Make calculateDelay a public method ([PR1940](https://github.com/apache/pekko/pull/1940))
 
 ### Changes
 
