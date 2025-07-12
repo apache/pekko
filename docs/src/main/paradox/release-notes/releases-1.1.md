@@ -17,7 +17,7 @@ Pekko 1.1.4 is a bug fix and dependency upgrade release. See [GitHub Milestone f
 ### Bug Fixes
 
 * Fix occasional ordering issue in FlowWithContext#unsafeOptionalDataVia ([PR1681](https://github.com/apache/pekko/pull/1681))
-* Issue forming mixed Akka/Pekko cluster when classic remoting with SSL/TLS is used ([PR1851](https://github.com/apache/pekko/pull/1851))
+* Issue forming mixed Akka/Pekko cluster when classic remoting with SSL/TLS is used ([PR1857](https://github.com/apache/pekko/pull/1857))
 * Join cluster check adjusted to support Akka nodes ([PR1866](https://github.com/apache/pekko/pull/1866), [PR1877](https://github.com/apache/pekko/pull/1877))
     * If you are attempting to mix Akka and Pekko nodes in a cluster, it is still recommended to disable the join cluster check but these changes may be enough to get it work ([docs](https://cwiki.apache.org/confluence/display/PEKKO/Pekko+Akka+Compatibility)). 
 
