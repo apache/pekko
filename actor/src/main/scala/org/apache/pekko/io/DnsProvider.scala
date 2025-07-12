@@ -19,7 +19,7 @@ import pekko.annotation.InternalApi
 
 /**
  * Where as it is possible to plug in alternative DNS implementations it is not recommended.
- * 
+ *
  * Internal API
  */
 @InternalApi
