@@ -19,8 +19,6 @@ import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration.Duration
 import scala.runtime.BoxedUnit
 
-import scala.annotation.nowarn
-
 import org.apache.pekko
 import pekko.annotation.DoNotInherit
 import pekko.japi.pf.ReceiveBuilder
@@ -278,15 +276,6 @@ abstract class AbstractActor extends Actor {
    */
   @throws(classOf[Exception])
   override def postStop(): Unit = super.postStop()
-
-  // TODO In Pekko 1.1.0, we can remove deprecation and make the method final
-  @deprecated("Override preRestart with message parameter with Optional type instead", "Akka 2.5.0")
-  @throws(classOf[Exception])
-  @nowarn("msg=deprecated")
-  override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
-    import pekko.util.OptionConverters._
-    preRestart(reason, message.toJava)
-  }
 
   /**
    * User overridable callback: '''By default it disposes of all children and then calls `postStop()`.'''

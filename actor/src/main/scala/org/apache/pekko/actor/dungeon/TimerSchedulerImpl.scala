@@ -79,9 +79,6 @@ import pekko.util.OptionVal
   override def startTimerWithFixedDelay(key: Any, msg: Any, initialDelay: FiniteDuration, delay: FiniteDuration): Unit =
     startTimer(key, msg, delay, FixedDelayMode(initialDelay))
 
-  override def startPeriodicTimer(key: Any, msg: Any, interval: FiniteDuration): Unit =
-    startTimerAtFixedRate(key, msg, interval)
-
   override def startSingleTimer(key: Any, msg: Any, timeout: FiniteDuration): Unit =
     startTimer(key, msg, timeout, SingleMode)
 

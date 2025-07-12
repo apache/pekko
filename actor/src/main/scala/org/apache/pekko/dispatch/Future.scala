@@ -23,10 +23,7 @@ import scala.concurrent.{ ExecutionContext, ExecutionContextExecutor, ExecutionC
 import scala.runtime.{ AbstractPartialFunction, BoxedUnit }
 import scala.util.{ Failure, Success, Try }
 
-import scala.annotation.nowarn
-
 import org.apache.pekko
-import pekko.annotation.InternalApi
 import pekko.annotation.InternalStableApi
 import pekko.compat
 import pekko.dispatch.internal.SameThreadExecutionContext
@@ -100,18 +97,6 @@ object ExecutionContexts {
    */
   @InternalStableApi
   private[pekko] val parasitic: ExecutionContext = SameThreadExecutionContext()
-
-  /**
-   * INTERNAL API
-   */
-  @InternalApi
-  @deprecated("Use ExecutionContexts.parasitic instead", "Akka 2.6.4")
-  private[pekko] object sameThreadExecutionContext extends ExecutionContext with BatchingExecutor {
-    override protected def unbatchedExecute(runnable: Runnable): Unit = parasitic.execute(runnable)
-    override protected def resubmitOnBlock: Boolean = false // No point since we execute on same thread
-    override def reportFailure(t: Throwable): Unit =
-      parasitic.reportFailure(t)
-  }
 
 }
 
@@ -226,8 +211,7 @@ object Futures {
  * This class contains bridge classes between Scala and Java.
  * Internal use only.
  */
-object japi {
-  @deprecated("Do not use this directly, use subclasses of this", "Akka 2.0")
+private[dispatch] object japi {
   class CallbackBridge[-T] extends AbstractPartialFunction[T, BoxedUnit] {
     override final def isDefinedAt(t: T): Boolean = true
     override final def apply(t: T): BoxedUnit = {
@@ -237,20 +221,17 @@ object japi {
     protected def internal(@unused result: T): Unit = ()
   }
 
-  @deprecated("Do not use this directly, use 'Recover'", "Akka 2.0")
   class RecoverBridge[+T] extends AbstractPartialFunction[Throwable, T] {
     override final def isDefinedAt(t: Throwable): Boolean = true
     override final def apply(t: Throwable): T = internal(t)
     protected def internal(@unused result: Throwable): T = null.asInstanceOf[T]
   }
 
-  @deprecated("Do not use this directly, use subclasses of this", "Akka 2.0")
   class BooleanFunctionBridge[-T] extends scala.Function1[T, Boolean] {
     override final def apply(t: T): Boolean = internal(t)
     protected def internal(@unused result: T): Boolean = false
   }
 
-  @deprecated("Do not use this directly, use subclasses of this", "Akka 2.0")
   class UnitFunctionBridge[-T] extends (T => BoxedUnit) {
     final def apply$mcLJ$sp(l: Long): BoxedUnit = { internal(l.asInstanceOf[T]); BoxedUnit.UNIT }
     final def apply$mcLI$sp(i: Int): BoxedUnit = { internal(i.asInstanceOf[T]); BoxedUnit.UNIT }
@@ -267,7 +248,6 @@ object japi {
  *
  * Java API
  */
-@nowarn("msg=deprecated")
 abstract class OnSuccess[-T] extends japi.CallbackBridge[T] {
   protected final override def internal(result: T) = onSuccess(result)
 
@@ -285,7 +265,6 @@ abstract class OnSuccess[-T] extends japi.CallbackBridge[T] {
  *
  * Java API
  */
-@nowarn("msg=deprecated")
 abstract class OnFailure extends japi.CallbackBridge[Throwable] {
   protected final override def internal(failure: Throwable) = onFailure(failure)
 
@@ -303,7 +282,6 @@ abstract class OnFailure extends japi.CallbackBridge[Throwable] {
  *
  * Java API
  */
-@nowarn("msg=deprecated")
 abstract class OnComplete[-T] extends japi.CallbackBridge[Try[T]] {
   protected final override def internal(value: Try[T]): Unit = value match {
     case Failure(t) => onComplete(t, null.asInstanceOf[T])
@@ -326,7 +304,6 @@ abstract class OnComplete[-T] extends japi.CallbackBridge[Try[T]] {
  *
  * Java API
  */
-@nowarn("msg=deprecated")
 abstract class Recover[+T] extends japi.RecoverBridge[T] {
   protected final override def internal(result: Throwable): T = recover(result)
 
@@ -380,7 +357,6 @@ object Filter {
  * SAM (Single Abstract Method) class
  * Java API
  */
-@nowarn("msg=deprecated")
 abstract class Foreach[-T] extends japi.UnitFunctionBridge[T] {
   override final def internal(t: T): Unit = each(t)
 
