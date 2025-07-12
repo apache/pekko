@@ -109,18 +109,6 @@ class InetAddressDnsResolver(cache: SimpleDnsCache, config: Config) extends Acto
 
   val positiveCachePolicy: CachePolicy = getTtl("positive-ttl", positive = true)
   val negativeCachePolicy: CachePolicy = getTtl("negative-ttl", positive = false)
-  @deprecated("Use positiveCacheDuration instead", "Akka 2.5.17")
-  val positiveTtl: Long = toLongTtl(positiveCachePolicy)
-  @deprecated("Use negativeCacheDuration instead", "Akka 2.5.17")
-  val negativeTtl: Long = toLongTtl(negativeCachePolicy)
-
-  private def toLongTtl(cp: CachePolicy): Long = {
-    cp match {
-      case Forever  => Long.MaxValue
-      case Never    => 0
-      case ttl: Ttl => ttl.value.toMillis
-    }
-  }
 
   override def receive: Receive = {
     case DnsProtocol.Resolve(_, Srv) =>
