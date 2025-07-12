@@ -2,6 +2,41 @@
 
 Apache Pekko 1.2.x releases support Java 8 and above.
 
+# 1.2.0-M2
+
+Pekko 1.2.0-M2 has some new features, performance updates and dependency upgrades. See the [GitHub Milestone](https://github.com/apache/pekko/milestone/15?closed=1) for a fuller list of changes.
+
+This is milestone release and is aimed at testing some new changes. This release should ideally not be used in production.
+
+### Bug Fixes
+
+* Issue forming mixed Akka/Pekko cluster when classic remoting with SSL/TLS is used ([PR1857](https://github.com/apache/pekko/pull/1857))
+* Join cluster check adjusted to support Akka nodes ([PR1866](https://github.com/apache/pekko/pull/1866), [PR1877](https://github.com/apache/pekko/pull/1877))
+    * If you are attempting to mix Akka and Pekko nodes in a cluster, it is still recommended to disable the join cluster check but these changes may be enough to get it work ([docs](https://cwiki.apache.org/confluence/display/PEKKO/Pekko+Akka+Compatibility)).
+* BroadcastHub drops elements due to register/unregister race ([PR1836](https://github.com/apache/pekko/pull/1836))
+* Fix issue with number deserialization in pekko-cluster-metrics ([PR1899](https://github.com/apache/pekko/pull/1899))
+* Fix typed persistence stack overflow with many read only commands ([PR1919](https://github.com/apache/pekko/pull/1919))
+
+
+### Additions
+
+* Add Source#create method ([PR1823](https://github.com/apache/pekko/pull/1823))
+* Add groupedAdjacentBy and GroupedAdjacentByWeighted stream operators ([PR1937](https://github.com/apache/pekko/pull/1937))
+
+### Changes
+
+* Regenerated all the source code for Protobuf using 4.29.3 ([PR1795](https://github.com/apache/pekko/pull/1795))
+* TLS v1.3 is now the default ([PR1901](https://github.com/apache/pekko/pull/1901))
+* Set vector builder to null after stage completed to avoid leak ([PR1917](https://github.com/apache/pekko/pull/1917))
+* Renamed internal Alogithm class (pekko-serialization-jackson) ([PR1932](https://github.com/apache/pekko/pull/1932))
+
+### Dependency Changes
+
+* netty 4.2.2.Final
+* jackson 2.19.1
+* lightbend/config 1.4.4
+* protobuf-java 4.31.1
+
 ## 1.2.0-M1
 
 Pekko 1.2.0-M1 has some new features, performance updates and dependency upgrades. See the [GitHub Milestone](https://github.com/apache/pekko/milestone/6?closed=1) for a fuller list of changes.
