@@ -423,8 +423,6 @@ object ActorSystem {
     final val UnstartedPushTimeout: Timeout = Timeout(config.getMillisDuration("pekko.actor.unstarted-push-timeout"))
 
     final val AllowJavaSerialization: Boolean = getBoolean("pekko.actor.allow-java-serialization")
-    @deprecated("Always enabled from Akka 2.6.0", "Akka 2.6.0")
-    final val EnableAdditionalSerializationBindings: Boolean = true
     final val SerializeAllMessages: Boolean = getBoolean("pekko.actor.serialize-messages")
     final val SerializeAllCreators: Boolean = getBoolean("pekko.actor.serialize-creators")
     final val NoSerializationVerificationNeededClassPrefix: Set[String] =

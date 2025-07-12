@@ -13,8 +13,6 @@
 
 package org.apache.pekko.actor
 
-import scala.annotation.nowarn
-
 import org.apache.pekko
 import pekko.testkit.PekkoSpec
 import pekko.util.unused
@@ -69,11 +67,6 @@ class PropsCreationSpec extends PekkoSpec("""
   }
 
   "Props Java API" must {
-    "work with create(creator)" in {
-      @nowarn
-      val p = Props.create(OneParamActorCreator)
-      system.actorOf(p)
-    }
     "work with create(class, creator)" in {
       val p = Props.create(classOf[Actor], OneParamActorCreator)
       system.actorOf(p)
