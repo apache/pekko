@@ -15,11 +15,15 @@ package org.apache.pekko.io
 
 import org.apache.pekko
 import pekko.actor.Actor
+import pekko.annotation.InternalApi
 
 /**
  * Where as it is possible to plug in alternative DNS implementations it is not recommended.
+ * 
+ * Internal API
  */
-private[io] trait DnsProvider {
+@InternalApi
+private[pekko] trait DnsProvider {
 
   /**
    * Cache implementation that can be accessed via Dns(system) to avoid asks to the resolver actors.
