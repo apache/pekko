@@ -1190,7 +1190,7 @@ trait FlowOps[+Out, +Mat] {
         create,
         (resource, out) => (resource, f(resource, out)),
         resource => close(resource))
-        .withAttributes(DefaultAttributes.mapWithResource))
+        ).withAttributes(DefaultAttributes.mapWithResource)
 
   /**
    * Transform each stream element with the help of an [[AutoCloseable]] resource and close it when the stream finishes or fails.

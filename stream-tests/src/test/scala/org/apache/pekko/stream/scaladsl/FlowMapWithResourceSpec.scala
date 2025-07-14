@@ -21,26 +21,23 @@ import java.io.BufferedReader
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.util.concurrent.atomic.AtomicInteger
-
-import scala.annotation.{ nowarn, tailrec }
+import scala.annotation.{nowarn, tailrec}
 import scala.collection.mutable.ListBuffer
-import scala.concurrent.{ Await, Promise }
+import scala.concurrent.{Await, Promise}
 import scala.concurrent.duration.DurationInt
 import scala.util.Success
 import scala.util.control.NoStackTrace
-
-import com.google.common.jimfs.{ Configuration, Jimfs }
-
+import com.google.common.jimfs.{Configuration, Jimfs}
 import org.apache.pekko
 import pekko.Done
-import pekko.stream.{ AbruptTerminationException, ActorAttributes, ActorMaterializer, SystemMaterializer }
+import pekko.stream.{AbruptTerminationException, ActorAttributes, ActorMaterializer, Attributes, SystemMaterializer}
 import pekko.stream.ActorAttributes.supervisionStrategy
-import pekko.stream.Supervision.{ restartingDecider, resumingDecider, stoppingDecider }
-import pekko.stream.impl.{ PhasedFusingActorMaterializer, StreamSupervisor }
+import pekko.stream.Supervision.{restartingDecider, resumingDecider, stoppingDecider}
+import pekko.stream.impl.{PhasedFusingActorMaterializer, StreamSupervisor}
 import pekko.stream.impl.StreamSupervisor.Children
-import pekko.stream.testkit.{ StreamSpec, TestSubscriber }
-import pekko.stream.testkit.Utils.{ assertDispatcher, TE, UnboundedMailboxConfig }
-import pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
+import pekko.stream.testkit.{StreamSpec, TestSubscriber}
+import pekko.stream.testkit.Utils.{TE, UnboundedMailboxConfig, assertDispatcher}
+import pekko.stream.testkit.scaladsl.{TestSink, TestSource}
 import pekko.testkit.EventFilter
 import pekko.util.ByteString
 
@@ -228,6 +225,31 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
         .tell(StreamSupervisor.GetChildren, testActor)
       val ref = expectMsgType[Children].children.find(_.path.toString contains "mapWithResource").get
       try assertDispatcher(ref, ActorAttributes.IODispatcher.dispatcher)
+      finally p.cancel()
+    }
+
+    "allow overriding the default dispatcher" in {
+      val p = Source
+        .single(1)
+        .mapWithResource(() => newBufferedReader())(
+          (reader, _) => Option(reader.readLine()),
+          reader => {
+            reader.close()
+            None
+          })
+        .withAttributes(
+          Attributes.name("mapWithResourceCustomDispatcher") and
+          ActorAttributes.dispatcher("pekko.actor.default-dispatcher")
+        )
+        .runWith(TestSink.probe)
+
+      SystemMaterializer(system).materializer
+        .asInstanceOf[PhasedFusingActorMaterializer]
+        .supervisor
+        .tell(StreamSupervisor.GetChildren, testActor)
+      val ref = expectMsgType[Children].children
+        .find(_.path.toString contains "mapWithResourceCustomDispatcher").get
+      try assertDispatcher(ref, "pekko.actor.default-dispatcher")
       finally p.cancel()
     }
 
