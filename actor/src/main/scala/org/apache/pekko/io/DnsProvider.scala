@@ -15,16 +15,15 @@ package org.apache.pekko.io
 
 import org.apache.pekko
 import pekko.actor.Actor
+import pekko.annotation.InternalApi
 
 /**
  * Where as it is possible to plug in alternative DNS implementations it is not recommended.
  *
- * It is expected that this will be deprecated/removed in future Apache Pekko versions
- *
- *  TODO make private and remove deprecated in v1.1.0
+ * Internal API
  */
-@deprecated("Overriding the DNS implementation will be removed in future versions of Apache Pekko", "Akka 2.6.0")
-trait DnsProvider {
+@InternalApi
+private[pekko] trait DnsProvider {
 
   /**
    * Cache implementation that can be accessed via Dns(system) to avoid asks to the resolver actors.

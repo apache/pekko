@@ -593,25 +593,6 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
   def startSingleTimer(name: String, msg: Any, delay: FiniteDuration): Unit =
     startTimer(name, msg, delay, SingleMode)
 
-  /**
-   * Schedule named timer to deliver message after given delay, possibly repeating.
-   * Any existing timer with the same name will automatically be canceled before
-   * adding the new timer.
-   * @param name identifier to be used with cancelTimer()
-   * @param msg message to be delivered
-   * @param timeout delay of first message delivery and between subsequent messages
-   * @param repeat send once if false, scheduleAtFixedRate if true
-   */
-  @deprecated(
-    "Use startSingleTimer, startTimerWithFixedDelay or startTimerAtFixedRate instead. This has the same semantics as " +
-    "startTimerAtFixedRate, but startTimerWithFixedDelay is often preferred.",
-    since = "Akka 2.6.0")
-  final def setTimer(name: String, msg: Any, timeout: FiniteDuration, repeat: Boolean = false): Unit = {
-    // repeat => FixedRateMode for compatibility
-    val mode = if (repeat) FixedRateMode else SingleMode
-    startTimer(name, msg, timeout, mode)
-  }
-
   private def startTimer(name: String, msg: Any, timeout: FiniteDuration, mode: TimerMode): Unit = {
     if (debugEvent)
       log.debug("setting " + (if (mode.repeat) "repeating " else "") + "timer '" + name + "'/" + timeout + ": " + msg)
