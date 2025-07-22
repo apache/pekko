@@ -15,11 +15,10 @@ package org.apache.pekko.actor
 
 import java.util.Optional
 
+import scala.annotation.nowarn
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration.Duration
 import scala.runtime.BoxedUnit
-
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.annotation.DoNotInherit

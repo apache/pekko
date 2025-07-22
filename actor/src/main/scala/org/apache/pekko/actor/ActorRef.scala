@@ -16,7 +16,6 @@ package org.apache.pekko.actor
 import java.util.concurrent.ConcurrentHashMap
 
 import scala.annotation.tailrec
-import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.util.control.NonFatal
 
@@ -114,7 +113,6 @@ object ActorRef {
  * about the exact actor incarnation you can use the ``ActorPath`` as key because
  * the unique id of the actor is not taken into account when comparing actor paths.
  */
-@nowarn("msg=deprecated")
 abstract class ActorRef extends java.lang.Comparable[ActorRef] with Serializable {
   scalaRef: InternalActorRef with ActorRefScope =>
 
@@ -191,31 +189,6 @@ abstract class ActorRef extends java.lang.Comparable[ActorRef] with Serializable
 }
 
 /**
- * This trait represents the Scala Actor API
- * There are implicit conversions in package.scala
- * from ActorRef -&gt; ScalaActorRef and back
- */
-@deprecated("tell method is now provided by ActorRef trait", "Akka 2.6.13")
-trait ScalaActorRef { ref: ActorRef with InternalActorRef with ActorRefScope =>
-
-  /**
-   * Sends a one-way asynchronous message. E.g. fire-and-forget semantics.
-   * <p/>
-   *
-   * If invoked from within an actor then the actor reference is implicitly passed on as the implicit 'sender' argument.
-   * <p/>
-   *
-   * This actor 'sender' reference is then available in the receiving actor in the 'sender()' member variable,
-   * if invoked from within an Actor. If not then no sender is available.
-   * <pre>
-   *   actor ! message
-   * </pre>
-   * <p/>
-   */
-  def !(message: Any)(implicit sender: ActorRef = Actor.noSender): Unit
-}
-
-/**
  * All ActorRefs have a scope which describes where they live. Since it is
  * often necessary to distinguish between local and non-local references, this
  * is the only method provided on the scope.
@@ -263,8 +236,7 @@ private[pekko] trait RepointableRef extends ActorRefScope {
  *
  * DO NOT USE THIS UNLESS INTERNALLY WITHIN AKKA!
  */
-@nowarn("msg=deprecated")
-@InternalApi private[pekko] abstract class InternalActorRef extends ActorRef with ScalaActorRef { this: ActorRefScope =>
+@InternalApi private[pekko] abstract class InternalActorRef extends ActorRef { this: ActorRefScope =>
   /*
    * Actor life-cycle management, invoked only internally (in response to user requests via ActorContext).
    */
