@@ -18,7 +18,6 @@ import java.util.zip.{ GZIPInputStream, GZIPOutputStream }
 import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.concurrent.duration.Deadline
-import scala.annotation.nowarn
 import com.typesafe.config.{ Config, ConfigFactory, ConfigRenderOptions }
 import org.apache.pekko
 import pekko.actor.{ Address, ExtendedActorSystem }
@@ -244,7 +243,6 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
     builder.build()
   }
 
-  @nowarn("msg=deprecated")
   private def clusterRouterPoolSettingsToProto(settings: ClusterRouterPoolSettings): cm.ClusterRouterPoolSettings = {
     val builder = cm.ClusterRouterPoolSettings.newBuilder()
     builder
@@ -252,11 +250,7 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
       .setMaxInstancesPerNode(settings.maxInstancesPerNode)
       .setTotalInstances(settings.totalInstances)
       .addAllUseRoles(settings.useRoles.asJava)
-
-    // for backwards compatibility
-    settings.useRole.foreach(builder.setUseRole)
-
-    builder.build()
+      .build()
   }
 
   // we don't care about races here since it's just a cache

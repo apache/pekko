@@ -16,7 +16,6 @@ package org.apache.pekko.cluster.routing
 import java.util.concurrent.atomic.AtomicInteger
 import scala.annotation.{ tailrec, varargs }
 import scala.collection.immutable
-import scala.annotation.nowarn
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import org.apache.pekko
