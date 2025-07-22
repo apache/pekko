@@ -114,27 +114,6 @@ object ClusterEvent {
         immutable.SortedSet[Member], Set[Member], Set[Address], Option[Address], Map[String, Option[Address]]]
       with Serializable {
 
-    // for binary compatibility
-    @deprecated("use main constructor", since = "Akka 2.6.10")
-    def this(
-        members: immutable.SortedSet[Member],
-        unreachable: Set[Member],
-        seenBy: Set[Address],
-        leader: Option[Address],
-        roleLeaderMap: Map[String, Option[Address]],
-        unreachableDataCenters: Set[DataCenter]) =
-      this(members, unreachable, seenBy, leader, roleLeaderMap, unreachableDataCenters, Set.empty)
-
-    // for binary compatibility
-    @deprecated("use main constructor", since = "Akka 2.6.10")
-    def this(
-        members: immutable.SortedSet[Member] = immutable.SortedSet.empty,
-        unreachable: Set[Member] = Set.empty,
-        seenBy: Set[Address] = Set.empty,
-        leader: Option[Address] = None,
-        roleLeaderMap: Map[String, Option[Address]] = Map.empty) =
-      this(members, unreachable, seenBy, leader, roleLeaderMap, Set.empty, Set.empty)
-
     /**
      * Java API: get current member list.
      */
