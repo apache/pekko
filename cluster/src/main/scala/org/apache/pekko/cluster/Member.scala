@@ -313,7 +313,7 @@ object MemberStatus {
       Removed -> Set.empty[MemberStatus])
 }
 
-object UniqueAddress extends AbstractFunction2[Address, Int, UniqueAddress] {
+object UniqueAddress extends AbstractFunction2[Address, Long, UniqueAddress] {
 
   def apply(remoteUniqueAddress: pekko.remote.UniqueAddress): UniqueAddress =
     new UniqueAddress(remoteUniqueAddress.address, remoteUniqueAddress.uid)
