@@ -1,0 +1,48 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# Remove deprecated methods
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.actor.AbstractFSM.setTimer*")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.actor.AbstractSchedulerBase.schedule")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.actor.CoordinatedShutdown.run")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.actor.CoordinatedShutdown.runAll")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.actor.FSM.setTimer*")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.actor.LightArrayRevolverScheduler.schedule")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.actor.Props.create")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.actor.ScalaActorRef")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.actor.Scheduler.schedule")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.actor.TimerScheduler.startPeriodicTimer")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.actor.package")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.actor.package$")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.dispatch.ExecutionContexts$sameThreadExecutionContext$")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.event.LogMarker.extractFromMDC")
+ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.event.Logging$StandardOutLogger")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.event.jul.*")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.io.Tcp$WriteFile")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.io.Tcp$WriteFile$")
+ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.pattern.BackoffSupervisor")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.pattern.BackoffSupervisor.props")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.pattern.BackoffSupervisor.propsWithSupervisorStrategy")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.pattern.BackoffSupervisor.childProps")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.pattern.BackoffSupervisor.childName")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.pattern.BackoffSupervisor.reset")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.pattern.BackoffSupervisor.replyWhileStopped")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.pattern.BackoffSupervisor.finalStopMessage")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.pattern.BackoffSupervisor.this")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.pattern.CircuitBreaker.create")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.pattern.CircuitBreaker.this")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.serialization.Serialization.deserialize")
