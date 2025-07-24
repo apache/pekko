@@ -39,6 +39,22 @@ final case class RecoveryFailed(failure: Throwable) extends EventSourcedSignal {
   def getFailure(): Throwable = failure
 }
 
+final case class JournalPersistFailed(failure: Throwable) extends EventSourcedSignal {
+
+  /**
+    * Java API
+    */
+  def getFailure(): Throwable = failure
+}
+
+final case class JournalPersistRejected(failure: Throwable) extends EventSourcedSignal {
+
+  /**
+    * Java API
+    */
+  def getFailure(): Throwable = failure
+}
+
 final case class SnapshotCompleted(metadata: SnapshotMetadata) extends EventSourcedSignal {
 
   /**
