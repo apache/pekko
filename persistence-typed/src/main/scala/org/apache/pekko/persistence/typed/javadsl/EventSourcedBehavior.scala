@@ -143,17 +143,6 @@ abstract class EventSourcedBehavior[Command, Event, State] private[pekko] (
   def snapshotPluginConfig: Optional[Config] = Optional.empty()
 
   /**
-   * Override and define the snapshot selection criteria used by this actor instead of the default.
-   * By default the most recent snapshot is used, and the remaining state updates are recovered by replaying events
-   * from the sequence number up until which the snapshot reached.
-   *
-   * You may configure the behavior to skip replaying snapshots completely, in which case the recovery will be
-   * performed by replaying all events -- which may take a long time.
-   */
-  @deprecated("override recovery instead", "Akka 2.6.5")
-  def snapshotSelectionCriteria: SnapshotSelectionCriteria = SnapshotSelectionCriteria.latest
-
-  /**
    * Initiates a snapshot if the given predicate evaluates to true.
    *
    * Decide to store a snapshot based on the State, Event and sequenceNr when the event has
