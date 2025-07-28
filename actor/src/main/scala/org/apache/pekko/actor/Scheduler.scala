@@ -231,29 +231,6 @@ trait Scheduler {
     schedule(initialDelay, interval, runnable)(executor)
 
   /**
-   * Deprecated API: See [[Scheduler#scheduleWithFixedDelay]] or [[Scheduler#scheduleAtFixedRate]].
-   */
-  @deprecated(
-    "Use scheduleWithFixedDelay or scheduleAtFixedRate instead. This has the same semantics as " +
-    "scheduleAtFixedRate, but scheduleWithFixedDelay is often preferred.",
-    since = "Akka 2.6.0")
-  @nowarn("msg=deprecated")
-  final def schedule(initialDelay: FiniteDuration, interval: FiniteDuration, receiver: ActorRef, message: Any)(
-      implicit
-      executor: ExecutionContext,
-      sender: ActorRef = Actor.noSender): Cancellable =
-    schedule(
-      initialDelay,
-      interval,
-      new Runnable {
-        def run(): Unit = {
-          receiver ! message
-          if (receiver.isTerminated)
-            throw SchedulerException("timer active for terminated actor")
-        }
-      })
-
-  /**
    * Java API: Schedules a `Runnable` to be run repeatedly with an initial delay and
    * a frequency. E.g. if you would like the function to be run after 2
    * seconds and thereafter every 100ms you would set delay to `Duration.ofSeconds(2)`,
@@ -362,6 +339,29 @@ trait Scheduler {
     import JavaDurationConverters._
     scheduleAtFixedRate(initialDelay.asScala, interval.asScala, receiver, message)(executor, sender)
   }
+
+  /**
+   * Deprecated API: See [[Scheduler#scheduleWithFixedDelay]] or [[Scheduler#scheduleAtFixedRate]].
+   */
+  @deprecated(
+    "Use scheduleWithFixedDelay or scheduleAtFixedRate instead. This has the same semantics as " +
+    "scheduleAtFixedRate, but scheduleWithFixedDelay is often preferred.",
+    since = "Akka 2.6.0")
+  @nowarn("msg=deprecated")
+  final def schedule(initialDelay: FiniteDuration, interval: FiniteDuration, receiver: ActorRef, message: Any)(
+      implicit
+      executor: ExecutionContext,
+      sender: ActorRef = Actor.noSender): Cancellable =
+    schedule(
+      initialDelay,
+      interval,
+      new Runnable {
+        def run(): Unit = {
+          receiver ! message
+          if (receiver.isTerminated)
+            throw SchedulerException("timer active for terminated actor")
+        }
+      })
 
   /**
    * Deprecated API: See [[Scheduler#scheduleWithFixedDelay]] or [[Scheduler#scheduleAtFixedRate]].
