@@ -13,6 +13,7 @@
 
 package org.apache.pekko.remote.classic
 
+import scala.annotation.nowarn
 import scala.collection.mutable.Set
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
@@ -48,6 +49,7 @@ class RemoteInitErrorSpec extends AnyWordSpec with Matchers {
       }
     """).resolve()
 
+  @nowarn("msg=deprecated")
   def currentThreadIds(): Set[Long] = {
     val threads = Thread.getAllStackTraces().keySet()
     threads.asScala.collect { case t: Thread if !t.isDaemon() => t.getId() }
