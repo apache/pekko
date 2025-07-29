@@ -11,7 +11,6 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import JdkOptions.autoImport._
 import MultiJvmPlugin.autoImport.MultiJvm
 
 import com.lightbend.paradox.projectinfo.ParadoxProjectInfoPluginKeys._
@@ -122,20 +121,12 @@ object PekkoBuild {
     TestExtras.Filter.settings,
     // compile options
     Compile / scalacOptions ++= DefaultScalacOptions.value,
-    Compile / scalacOptions ++=
-      JdkOptions.targetJdkScalacOptions(
-        targetSystemJdk.value,
-        fullJavaHomes.value,
-        scalaVersion.value),
+    Compile / scalacOptions ++= JdkOptions.targetJdkScalacOptions(scalaVersion.value),
     Compile / scalacOptions ++= (if (allWarnings) Seq("-deprecation") else Nil),
     Test / scalacOptions := (Test / scalacOptions).value.filterNot(opt =>
       opt == "-Xlog-reflective-calls" || opt.contains("genjavadoc")),
-    Compile / javacOptions ++= {
-      DefaultJavacOptions ++
-      JdkOptions.targetJdkJavacOptions(targetSystemJdk.value, fullJavaHomes.value)
-    },
-    Test / javacOptions ++= DefaultJavacOptions ++
-    JdkOptions.targetJdkJavacOptions(targetSystemJdk.value, fullJavaHomes.value),
+    Compile / javacOptions ++= JdkOptions.targetJdkJavacOptions,
+    Test / javacOptions ++= DefaultJavacOptions ++ JdkOptions.targetJdkJavacOptions,
     Compile / javacOptions ++= (if (allWarnings) Seq("-Xlint:deprecation") else Nil),
     doc / javacOptions := Seq(),
     crossVersion := CrossVersion.binary,
@@ -250,7 +241,6 @@ object PekkoBuild {
     Test / testOptions += Tests.Argument("-oDF"),
     mavenLocalResolverSettings,
     docLintingSettings,
-    JdkOptions.targetJdkSettings,
     // a workaround for https://github.com/akka/akka/issues/27661
     // see also project/Protobuf.scala that introduces /../ to make "intellij happy"
     MultiJvm / assembly / fullClasspath := {

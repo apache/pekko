@@ -18,11 +18,6 @@ import sbt.librarymanagement.SemanticSelector
 import sbt.librarymanagement.VersionNumber
 
 object JdkOptions extends AutoPlugin {
-  object autoImport {
-    lazy val targetSystemJdk = settingKey[Boolean](
-      "Target the system JDK instead of building against JDK 17. When this is enabled resulting artifacts may not work on JDK 17!")
-  }
-  import autoImport._
 
   lazy val specificationVersion: String = sys.props("java.specification.version")
 
@@ -39,30 +34,8 @@ object JdkOptions extends AutoPlugin {
     // for LevelDB
     "--add-opens=java.base/java.nio=ALL-UNNAMED" :: Nil
 
-  def targetJdkScalacOptions(
-      targetSystemJdk: Boolean,
-      fullJavaHomes: Map[String, File],
-      scalaVersion: String): Seq[String] =
-    selectOptions(
-      targetSystemJdk,
-      fullJavaHomes,
-      Seq(if (scalaVersion.startsWith("3.")) "-Xtarget:17" else "release:17"))
-  def targetJdkJavacOptions(
-      targetSystemJdk: Boolean,
-      fullJavaHomes: Map[String, File]): Seq[String] =
-    selectOptions(
-      targetSystemJdk,
-      fullJavaHomes,
-      Seq("-source", "17", "-target", "17"))
+  def targetJdkScalacOptions(scalaVersion: String): Seq[String] =
+    Seq(if (scalaVersion.startsWith("3.")) "-Xtarget:17" else "release:17")
 
-  private def selectOptions(
-      targetSystemJdk: Boolean,
-      fullJavaHomes: Map[String, File],
-      jdkOptions: Seq[String]): Seq[String] =
-    if (targetSystemJdk)
-      Nil
-    else
-      jdkOptions
-
-  lazy val targetJdkSettings = Seq(targetSystemJdk := false)
+  val targetJdkJavacOptions = Seq("-source", "17", "-target", "17")    
 }
