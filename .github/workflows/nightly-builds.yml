@@ -19,11 +19,11 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
 
-      - name: Setup Java 11
+      - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 11
+          java-version: 17
 
       - name: Install sbt
         uses: sbt/setup-sbt@234370af1319038bf8dc432f8a7e4b83078a1781 # v1.1.11
@@ -73,11 +73,11 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
 
-      - name: Setup Java 11
+      - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 11
+          java-version: 17
 
       - name: Install sbt
         uses: sbt/setup-sbt@234370af1319038bf8dc432f8a7e4b83078a1781 # v1.1.11
@@ -115,7 +115,7 @@ jobs:
         # binary version is required and Pekko build will set the right
         # full version from it.
         scalaVersion: ["2.12.x", "2.13.x", "3.3.x"]
-        javaVersion: [8, 11, 17, 21]
+        javaVersion: [17, 21]
     env:
       DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
     steps:
