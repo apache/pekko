@@ -16,9 +16,11 @@
 # under the License.
 
 # Remove deprecated methods
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.Main*")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.actor.AbstractFSM.setTimer*")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.actor.AbstractSchedulerBase.schedule")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.actor.ActorSelection.resolveOneCS")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.actor.ContextualTypedActorFactory*")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.actor.CoordinatedShutdown.run")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.actor.CoordinatedShutdown.runAll")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.actor.FSM.setTimer*")
@@ -27,6 +29,8 @@ ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.actor.Props
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.actor.ScalaActorRef")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.actor.Scheduler.schedule")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.actor.TimerScheduler.startPeriodicTimer")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.actor.TypedActor*")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.actor.TypedProps*")
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.actor.package")
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.actor.package$")
 ProblemFilters.exclude[MissingFieldProblem]("org.apache.pekko.dispatch.ExecutionContexts.sameThreadExecutionContext")
@@ -34,6 +38,8 @@ ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.dispatch.Execution
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.event.LogMarker.extractFromMDC")
 ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.event.Logging$StandardOutLogger")
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.event.jul.*")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.io.InetAddressDnsResolver.positiveTtl")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.io.InetAddressDnsResolver.negativeTtl")
 ProblemFilters.exclude[MissingFieldProblem]("org.apache.pekko.io.Tcp.WriteFile")
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.io.Tcp$WriteFile*")
 ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.pattern.BackoffSupervisor")
