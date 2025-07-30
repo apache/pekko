@@ -136,7 +136,6 @@ lazy val pekkoScalaNightly = pekkoModule("scala-nightly")
   .disablePlugins(ValidatePullRequest, MimaPlugin)
 
 lazy val benchJmh = pekkoModule("bench-jmh")
-  .enablePlugins(Jdk9)
   .dependsOn(Seq(actor, actorTyped, stream, streamTestkit, persistence, distributedData, jackson, testkit).map(
     _ % "compile->compile;compile->test"): _*)
   .settings(Dependencies.benchJmh)
@@ -210,7 +209,6 @@ lazy val distributedData = pekkoModule("distributed-data")
   .enablePlugins(MultiNodeScalaTest, SbtOsgi)
 
 lazy val docs = pekkoModule("docs")
-  .configs(Jdk9.TestJdk9)
   .dependsOn(
     actor,
     cluster,
@@ -247,8 +245,7 @@ lazy val docs = pekkoModule("docs")
     ParadoxBrowse,
     ProjectIndexGenerator,
     ScaladocNoVerificationOfDiagrams,
-    StreamOperatorsIndexGenerator,
-    Jdk9)
+    StreamOperatorsIndexGenerator)
   .disablePlugins(MimaPlugin)
   .disablePlugins((if (ScalafixSupport.fixTestScope) Nil else Seq(ScalafixPlugin)): _*)
 
