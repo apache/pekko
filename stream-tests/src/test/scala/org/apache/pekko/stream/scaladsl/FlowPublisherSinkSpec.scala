@@ -17,10 +17,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.stream.ClosedShape
 import pekko.stream.testkit.StreamSpec
-import pekko.stream.testkit.Utils._
-import pekko.stream.testkit.scaladsl.StreamTestKit._
 
 class FlowPublisherSinkSpec extends StreamSpec {
 
