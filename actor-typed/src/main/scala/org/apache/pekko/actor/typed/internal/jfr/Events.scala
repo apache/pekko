@@ -96,7 +96,7 @@ final class DeliveryProducerReceived(val producerId: String, val currentSeqNr: L
 @StackTrace(false)
 @Category(Array("Pekko", "Delivery", "ProducerController")) @Label(
   "Delivery ProducerController received demand request")
-final class DeliveryProducerReceivedRequest(val producerId: String, val requestedSeqNr: Long, confirmedSeqNr: Long)
+final class DeliveryProducerReceivedRequest(val producerId: String, val requestedSeqNr: Long, val confirmedSeqNr: Long)
     extends Event
 
 /** INTERNAL API */
