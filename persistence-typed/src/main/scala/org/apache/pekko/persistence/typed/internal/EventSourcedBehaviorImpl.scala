@@ -50,7 +50,6 @@ import pekko.persistence.typed.ReplicaId
 import pekko.persistence.typed.SnapshotAdapter
 import pekko.persistence.typed.SnapshotCompleted
 import pekko.persistence.typed.SnapshotFailed
-import pekko.persistence.typed.SnapshotSelectionCriteria
 import pekko.persistence.typed.scaladsl.RetentionCriteria
 import pekko.persistence.typed.scaladsl._
 import pekko.persistence.typed.scaladsl.{ Recovery => TypedRecovery }
@@ -271,11 +270,6 @@ private[pekko] final case class EventSourcedBehaviorImpl[Command, Event, State](
 
   override def withSnapshotPluginConfig(config: Option[Config]): EventSourcedBehavior[Command, Event, State] = {
     copy(snapshotPluginConfig = config)
-  }
-
-  override def withSnapshotSelectionCriteria(
-      selection: SnapshotSelectionCriteria): EventSourcedBehavior[Command, Event, State] = {
-    copy(recovery = Recovery(selection.toClassic))
   }
 
   override def snapshotWhen(predicate: (State, Event, Long) => Boolean): EventSourcedBehavior[Command, Event, State] =

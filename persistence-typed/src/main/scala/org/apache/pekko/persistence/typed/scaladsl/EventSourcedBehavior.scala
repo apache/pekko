@@ -28,7 +28,6 @@ import pekko.annotation.InternalApi
 import pekko.persistence.typed.EventAdapter
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.SnapshotAdapter
-import pekko.persistence.typed.SnapshotSelectionCriteria
 import pekko.persistence.typed.internal._
 
 import scala.annotation.tailrec
@@ -176,17 +175,6 @@ object EventSourcedBehavior {
    * @since 1.1.3
    */
   def withSnapshotPluginConfig(id: Option[Config]): EventSourcedBehavior[Command, Event, State]
-
-  /**
-   * Changes the snapshot selection criteria used by this behavior.
-   * By default the most recent snapshot is used, and the remaining state updates are recovered by replaying events
-   * from the sequence number up until which the snapshot reached.
-   *
-   * You may configure the behavior to skip replaying snapshots completely, in which case the recovery will be
-   * performed by replaying all events -- which may take a long time.
-   */
-  @deprecated("use withRecovery(Recovery.withSnapshotSelectionCriteria(...))", "Akka 2.6.5")
-  def withSnapshotSelectionCriteria(selection: SnapshotSelectionCriteria): EventSourcedBehavior[Command, Event, State]
 
   /**
    * Initiates a snapshot if the given `predicate` evaluates to true.
