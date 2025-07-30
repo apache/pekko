@@ -14,7 +14,7 @@
 package org.apache.pekko.cluster.sharding.internal.jfr
 
 import org.apache.pekko.annotation.InternalApi
-import jdk.jfr.{ Category, Enabled, Event, Label, StackTrace, Timespan }
+import jdk.jfr.{ Category, Event, Label, StackTrace, Timespan }
 
 // requires jdk9+ to compile
 // for editing these in IntelliJ, open module settings, change JDK dependency to 11 for only this module
