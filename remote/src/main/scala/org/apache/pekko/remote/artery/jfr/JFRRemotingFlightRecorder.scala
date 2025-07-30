@@ -17,7 +17,6 @@ import java.net.InetSocketAddress
 
 import org.apache.pekko
 import pekko.actor.Address
-import pekko.actor.ExtendedActorSystem
 import pekko.annotation.InternalApi
 import pekko.remote.UniqueAddress
 import pekko.remote.artery.RemotingFlightRecorder
