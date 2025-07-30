@@ -26,7 +26,6 @@ import scala.util.control.NoStackTrace
 import io.aeron.Aeron
 import io.aeron.Publication
 import org.agrona.concurrent.UnsafeBuffer
-import org.agrona.hints.ThreadHints
 
 import org.apache.pekko
 import pekko.Done
@@ -178,7 +177,7 @@ private[remote] class AeronSink(
           else {
             backoffCount -= 1
             if (backoffCount > 0) {
-              ThreadHints.onSpinWait()
+              Thread.onSpinWait()
               publish() // recursive
             } else
               delegateBackoff()

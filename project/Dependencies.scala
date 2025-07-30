@@ -34,8 +34,8 @@ object Dependencies {
   // check agrona version when updating this
   val aeronVersion = "1.48.5"
   // needs to be inline with the aeron version, check
-  // https://github.com/real-logic/aeron/blob/1.x.y/build.gradle
-  val agronaVersion = "1.22.0"
+  // https://github.com/aeron-io/aeron/blob/master/gradle/libs.versions.toml
+  val agronaVersion = "1.22.4"
   val nettyVersion = "4.2.3.Final"
   val logbackVersion = "1.3.15"
 
