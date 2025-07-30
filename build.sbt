@@ -435,7 +435,6 @@ lazy val stream = pekkoModule("stream")
   .settings(OSGi.stream)
   .settings(Protobuf.settings)
   .settings(VerifyJDK9Classes.settings)
-  .settings(PekkoDependWalker.jdk9CompileCheckSetting)
   .enablePlugins(BoilerplatePlugin, DependWalkerPlugin, SbtOsgi)
 
 lazy val streamTestkit = pekkoModule("stream-testkit")
