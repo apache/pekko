@@ -13,6 +13,7 @@
 
 package org.apache.pekko.actor.typed.internal
 
+import scala.annotation.nowarn
 import scala.util.control.NonFatal
 
 import org.apache.pekko
@@ -26,6 +27,7 @@ import pekko.util.OptionVal
 private[pekko] object LoggerClass {
 
   // just to get access to the class context
+  @nowarn("msg=deprecated")
   private final class TrickySecurityManager extends SecurityManager {
     def getClassStack: Array[Class[_]] = getClassContext
   }

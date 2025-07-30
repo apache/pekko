@@ -15,14 +15,11 @@ import sbt.Keys._
 import sbt._
 
 object Jdk9 extends AutoPlugin {
-  import JdkOptions.notOnJdk8
   import JdkOptions.JavaVersion._
 
-  // The version 9 is special for any Java versions >= 9
-  // and the version 11 is special for any Java versions >= 11
-  // and the version 17 is special for any Java versions >= 17
+  // The version 17 is special for any Java versions >= 17
   // and the version 21 is special for any Java versions >= 21
-  private val supportedJavaLTSVersions = List("9", "11", "17", "21")
+  private val supportedJavaLTSVersions = List("17", "21")
 
   lazy val CompileJdk9 = config("CompileJdk9").extend(Compile)
 
@@ -59,15 +56,15 @@ object Jdk9 extends AutoPlugin {
 
   lazy val compileJdk9Settings = Seq(
     // following the scala-2.12, scala-sbt-1.0, ... convention
-    unmanagedSourceDirectories := notOnJdk8(additionalSourceDirectories.value),
-    scalacOptions := PekkoBuild.DefaultScalacOptions.value ++ notOnJdk8(Seq("-release", majorVersion.toString)),
-    javacOptions := PekkoBuild.DefaultJavacOptions ++ notOnJdk8(Seq("--release", majorVersion.toString)))
+    unmanagedSourceDirectories := additionalSourceDirectories.value,
+    scalacOptions := PekkoBuild.DefaultScalacOptions.value ++ Seq("-release", majorVersion.toString),
+    javacOptions := PekkoBuild.DefaultJavacOptions ++ Seq("--release", majorVersion.toString))
 
   lazy val testJdk9Settings = Seq(
     // following the scala-2.12, scala-sbt-1.0, ... convention
-    unmanagedSourceDirectories := notOnJdk8(additionalTestSourceDirectories.value),
-    scalacOptions := PekkoBuild.DefaultScalacOptions.value ++ notOnJdk8(Seq("-release", majorVersion.toString)),
-    javacOptions := PekkoBuild.DefaultJavacOptions ++ notOnJdk8(Seq("--release", majorVersion.toString)),
+    unmanagedSourceDirectories := additionalTestSourceDirectories.value,
+    scalacOptions := PekkoBuild.DefaultScalacOptions.value ++ Seq("-release", majorVersion.toString),
+    javacOptions := PekkoBuild.DefaultJavacOptions ++ Seq("--release", majorVersion.toString),
     compile := compile.dependsOn(CompileJdk9 / compile).value,
     classpathConfiguration := TestJdk9,
     externalDependencyClasspath := (Test / externalDependencyClasspath).value)
@@ -80,7 +77,7 @@ object Jdk9 extends AutoPlugin {
     // Since sbt-osgi upgrade to 0.9.5, the fullClasspath is no longer used on packaging when use sbt-osgi, so we have to
     // add jdk9 products to dependencyClasspathAsJars instead.
     //    Compile / fullClasspath ++= (CompileJdk9 / exportedProducts).value)
-    Compile / dependencyClasspathAsJars ++= notOnJdk8((CompileJdk9 / exportedProducts).value))
+    Compile / dependencyClasspathAsJars ++= (CompileJdk9 / exportedProducts).value)
 
   lazy val testSettings = Seq((Test / test) := {
     (Test / test).value

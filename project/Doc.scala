@@ -140,10 +140,9 @@ object UnidocRoot extends AutoPlugin {
 
   lazy val pekkoSettings = UnidocRoot.CliOptions.genjavadocEnabled
     .ifTrue(Seq(
-      JavaUnidoc / unidoc / javacOptions := {
-        if (JdkOptions.isJdk8) Seq("-Xdoclint:none")
-        else Seq("-Xdoclint:none", "--ignore-source-errors", "--no-module-directories")
-      }))
+      JavaUnidoc / unidoc / javacOptions :=
+        Seq("-Xdoclint:none", "--ignore-source-errors", "--no-module-directories")
+    ))
     .getOrElse(Nil)
 
   override lazy val projectSettings = {
@@ -214,8 +213,6 @@ object BootstrapGenjavadoc extends AutoPlugin {
   override lazy val requires =
     UnidocRoot.CliOptions.genjavadocEnabled
       .ifTrue {
-        // require 11, fail fast for 8, 9, 10
-        require(JdkOptions.isJdk11orHigher, "Javadoc generation requires at least jdk 11")
         sbtunidoc.GenJavadocPlugin
       }
       .getOrElse(plugins.JvmPlugin)

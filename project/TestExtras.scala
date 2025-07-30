@@ -15,7 +15,6 @@ import sbt.Keys._
 import sbt._
 
 object TestExtras {
-  import JdkOptions.isJdk8
   object Filter {
     object Keys {
       lazy val excludeTestNames = settingKey[Set[String]](
@@ -69,8 +68,7 @@ object TestExtras {
             "The jdk9-only JavaFlowSupportCompileTest.java" -> "stream-tests/target/test-reports/TEST-org.apache.pekko.stream.javadsl.JavaFlowSupportCompileTest.xml")
 
           val testsToCheck =
-            if (isJdk8) baseList
-            else baseList ::: jdk9Only
+            baseList ::: jdk9Only
 
           testsToCheck.foreach((shouldExist _).tupled)
         })
