@@ -18,9 +18,7 @@ import org.apache.pekko
 import pekko.dispatch.VirtualThreadSupport.newVirtualThreadFactory
 import pekko.util.JavaVersion
 
-import java.lang.invoke.{ MethodHandle, MethodHandles, MethodType }
-import java.util.concurrent.{ Executor, ExecutorService, ForkJoinPool, ForkJoinTask, ThreadFactory }
-import scala.util.Try
+import java.util.concurrent.{ Executor, ExecutorService, ForkJoinPool, ForkJoinTask, ThreadFactory, TimeUnit }
 
 object ForkJoinExecutorConfigurator {
 
@@ -30,15 +28,12 @@ object ForkJoinExecutorConfigurator {
   final class PekkoForkJoinPool(
       parallelism: Int,
       threadFactory: ForkJoinPool.ForkJoinWorkerThreadFactory,
+      maximumPoolSize: Int,
       unhandledExceptionHandler: Thread.UncaughtExceptionHandler,
       asyncMode: Boolean)
-      extends ForkJoinPool(parallelism, threadFactory, unhandledExceptionHandler, asyncMode)
+      extends ForkJoinPool(parallelism, threadFactory, unhandledExceptionHandler, asyncMode,
+        0, maximumPoolSize, 1, null, ForkJoinPoolConstants.DefaultKeepAliveMillis, TimeUnit.MILLISECONDS)
       with LoadMetrics {
-    def this(
-        parallelism: Int,
-        threadFactory: ForkJoinPool.ForkJoinWorkerThreadFactory,
-        unhandledExceptionHandler: Thread.UncaughtExceptionHandler) =
-      this(parallelism, threadFactory, unhandledExceptionHandler, asyncMode = true)
 
     override def execute(r: Runnable): Unit =
       if (r ne null)
@@ -110,23 +105,6 @@ class ForkJoinExecutorConfigurator(config: Config, prerequisites: DispatcherPrer
         asyncMode: Boolean,
         maxPoolSize: Int) = this(threadFactory, parallelism, asyncMode, maxPoolSize, false)
 
-    private def pekkoJdk9ForkJoinPoolClassOpt: Option[Class[_]] =
-      Try(Class.forName("org.apache.pekko.dispatch.PekkoJdk9ForkJoinPool")).toOption
-
-    private lazy val pekkoJdk9ForkJoinPoolHandleOpt: Option[MethodHandle] = {
-      if (JavaVersion.majorVersion == 8) {
-        None
-      } else {
-        pekkoJdk9ForkJoinPoolClassOpt.map { clz =>
-          val methodHandleLookup = MethodHandles.lookup()
-          val mt = MethodType.methodType(classOf[Unit], classOf[Int],
-            classOf[ForkJoinPool.ForkJoinWorkerThreadFactory],
-            classOf[Int], classOf[Thread.UncaughtExceptionHandler], classOf[Boolean])
-          methodHandleLookup.findConstructor(clz, mt)
-        }
-      }
-    }
-
     def this(threadFactory: ForkJoinPool.ForkJoinWorkerThreadFactory, parallelism: Int) =
       this(threadFactory, parallelism, asyncMode = true)
 
@@ -139,14 +117,7 @@ class ForkJoinExecutorConfigurator(config: Config, prerequisites: DispatcherPrer
         }
       } else threadFactory
 
-      val pool = pekkoJdk9ForkJoinPoolHandleOpt match {
-        case Some(handle) =>
-          // carrier Thread only exists in JDK 17+
-          handle.invoke(parallelism, tf, maxPoolSize, MonitorableThreadFactory.doNothing, asyncMode)
-            .asInstanceOf[ExecutorService with LoadMetrics]
-        case _ =>
-          new PekkoForkJoinPool(parallelism, tf, MonitorableThreadFactory.doNothing, asyncMode)
-      }
+      val pool = new PekkoForkJoinPool(parallelism, tf, maxPoolSize, MonitorableThreadFactory.doNothing, asyncMode)
 
       if (virtualize && JavaVersion.majorVersion >= 21) {
         // when virtualized, we need enhanced thread factory
