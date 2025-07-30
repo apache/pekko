@@ -121,7 +121,7 @@ lazy val actor = pekkoModule("actor")
   .settings(AddMetaInfLicenseFiles.actorSettings)
   .settings(VersionGenerator.settings)
   .settings(serialversionRemoverPluginSettings)
-  .enablePlugins(BoilerplatePlugin, SbtOsgi, Jdk9)
+  .enablePlugins(BoilerplatePlugin, SbtOsgi)
 
 lazy val actorTests = pekkoModule("actor-tests")
   .configs(Jdk9.TestJdk9)
