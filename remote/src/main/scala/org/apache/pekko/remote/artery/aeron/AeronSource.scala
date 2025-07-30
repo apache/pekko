@@ -23,7 +23,6 @@ import io.aeron.exceptions.DriverTimeoutException
 import io.aeron.logbuffer.FragmentHandler
 import io.aeron.logbuffer.Header
 import org.agrona.DirectBuffer
-import org.agrona.hints.ThreadHints
 
 import org.apache.pekko
 import pekko.stream.Attributes
@@ -163,7 +162,7 @@ private[remote] class AeronSource(
         } else {
           backoffCount -= 1
           if (backoffCount > 0) {
-            ThreadHints.onSpinWait()
+            Thread.onSpinWait()
             subscriberLoop() // recursive
           } else {
             // delegate backoff to shared TaskRunner
