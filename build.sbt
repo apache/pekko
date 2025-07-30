@@ -449,10 +449,9 @@ lazy val streamTestkit = pekkoModule("stream-testkit")
   .enablePlugins(SbtOsgi)
 
 lazy val streamTests = pekkoModule("stream-tests")
-  .configs(Jdk9.TestJdk9)
   .dependsOn(streamTestkit % "test->test", remote % "test->test", stream)
   .settings(Dependencies.streamTests)
-  .enablePlugins(NoPublish, Jdk9)
+  .enablePlugins(NoPublish)
   .disablePlugins(MimaPlugin)
 
 lazy val streamTestsTck = pekkoModule("stream-tests-tck")
@@ -494,7 +493,6 @@ lazy val actorTyped = pekkoModule("actor-typed")
 
       implicit val timeout = Timeout(5 seconds)
     """)
-  .settings(PekkoDependWalker.jdk9CompileCheckSetting)
   .enablePlugins(DependWalkerPlugin, SbtOsgi)
 
 lazy val persistenceTyped = pekkoModule("persistence-typed")
