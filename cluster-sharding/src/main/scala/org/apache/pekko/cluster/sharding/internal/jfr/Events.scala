@@ -12,6 +12,7 @@
  */
 
 package org.apache.pekko.cluster.sharding.internal.jfr
+
 import org.apache.pekko.annotation.InternalApi
 import jdk.jfr.{ Category, Enabled, Event, Label, StackTrace, Timespan }
 
