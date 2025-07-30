@@ -141,7 +141,7 @@ object UnidocRoot extends AutoPlugin {
   lazy val pekkoSettings = UnidocRoot.CliOptions.genjavadocEnabled
     .ifTrue(Seq(
       JavaUnidoc / unidoc / javacOptions :=
-        Seq("-Xdoclint:none", "--ignore-source-errors", "--no-module-directories")
+        Seq("-Xdoclint:none", "--ignore-source-errors")
     ))
     .getOrElse(Nil)
 
