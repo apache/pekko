@@ -30,28 +30,29 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 public class FlowUnfoldAsyncTest extends StreamTest {
-    @ClassRule
-    public static PekkoJUnitActorSystemResource actorSystemResource =
-        new PekkoJUnitActorSystemResource("SourceTest", PekkoSpec.testConf());
+  @ClassRule
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource("SourceTest", PekkoSpec.testConf());
 
-    public FlowUnfoldAsyncTest() {
-        super(actorSystemResource);
-    }
+  public FlowUnfoldAsyncTest() {
+    super(actorSystemResource);
+  }
 
-    @Test
-    public void testFoldAsync() throws Exception {
-        final Integer result = Source.unfoldAsync(
+  @Test
+  public void testFoldAsync() throws Exception {
+    final Integer result =
+        Source.unfoldAsync(
                 0,
                 idx -> {
-                    if (idx >= 10) {
-                        return CompletableFuture.completedStage(Optional.empty());
-                    } else {
-                        return CompletableFuture.completedStage(Optional.of(Pair.create(idx + 1, idx)));
-                    }
+                  if (idx >= 10) {
+                    return CompletableFuture.completedStage(Optional.empty());
+                  } else {
+                    return CompletableFuture.completedStage(Optional.of(Pair.create(idx + 1, idx)));
+                  }
                 })
             .runFold(0, Integer::sum, system)
             .toCompletableFuture()
             .get(3, TimeUnit.SECONDS);
-        Assert.assertEquals(45, result.intValue());
-    }
+    Assert.assertEquals(45, result.intValue());
+  }
 }
