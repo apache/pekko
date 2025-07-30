@@ -28,9 +28,6 @@ import pekko.actor.Address
 import pekko.annotation.InternalApi
 import pekko.remote.UniqueAddress
 
-// requires jdk9+ to compile
-// for editing these in IntelliJ, open module settings, change JDK dependency to 11 for only this module
-
 /**
  * INTERNAL API
  */
