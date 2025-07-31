@@ -136,7 +136,6 @@ lazy val pekkoScalaNightly = pekkoModule("scala-nightly")
   .disablePlugins(ValidatePullRequest, MimaPlugin)
 
 lazy val benchJmh = pekkoModule("bench-jmh")
-  .enablePlugins(Jdk9)
   .dependsOn(Seq(actor, actorTyped, stream, streamTestkit, persistence, distributedData, jackson, testkit).map(
     _ % "compile->compile;compile->test"): _*)
   .settings(Dependencies.benchJmh)
@@ -187,8 +186,7 @@ lazy val clusterSharding = pekkoModule("cluster-sharding")
   .settings(AutomaticModuleName.settings("pekko.cluster.sharding"))
   .settings(OSGi.clusterSharding)
   .settings(Protobuf.settings)
-  .settings(PekkoDependWalker.jdk9CompileCheckSetting)
-  .enablePlugins(MultiNode, ScaladocNoVerificationOfDiagrams, Jdk9, DependWalkerPlugin, SbtOsgi)
+  .enablePlugins(MultiNode, ScaladocNoVerificationOfDiagrams, DependWalkerPlugin, SbtOsgi)
 
 lazy val clusterTools = pekkoModule("cluster-tools")
   .dependsOn(
@@ -211,7 +209,6 @@ lazy val distributedData = pekkoModule("distributed-data")
   .enablePlugins(MultiNodeScalaTest, SbtOsgi)
 
 lazy val docs = pekkoModule("docs")
-  .configs(Jdk9.TestJdk9)
   .dependsOn(
     actor,
     cluster,
@@ -222,7 +219,6 @@ lazy val docs = pekkoModule("docs")
     persistenceQuery,
     distributedData,
     stream,
-    stream % "TestJdk9->CompileJdk9",
     actorTyped,
     clusterTools % "compile->compile;test->test",
     clusterSharding % "compile->compile;test->test",
@@ -249,8 +245,7 @@ lazy val docs = pekkoModule("docs")
     ParadoxBrowse,
     ProjectIndexGenerator,
     ScaladocNoVerificationOfDiagrams,
-    StreamOperatorsIndexGenerator,
-    Jdk9)
+    StreamOperatorsIndexGenerator)
   .disablePlugins(MimaPlugin)
   .disablePlugins((if (ScalafixSupport.fixTestScope) Nil else Seq(ScalafixPlugin)): _*)
 
@@ -411,13 +406,12 @@ lazy val remote =
     .settings(Protobuf.settings)
     .settings(Test / parallelExecution := false)
     .settings(serialversionRemoverPluginSettings)
-    .settings(PekkoDependWalker.jdk9CompileCheckSetting)
-    .enablePlugins(Jdk9, DependWalkerPlugin, SbtOsgi)
+    .enablePlugins(DependWalkerPlugin, SbtOsgi)
 
 lazy val remoteTests = pekkoModule("remote-tests")
   .dependsOn(
     actorTests % "test->test",
-    remote % "compile->CompileJdk9;test->test",
+    remote % "test->test",
     streamTestkit % Test,
     multiNodeTestkit,
     jackson % "test->test")
@@ -441,8 +435,7 @@ lazy val stream = pekkoModule("stream")
   .settings(OSGi.stream)
   .settings(Protobuf.settings)
   .settings(VerifyJDK9Classes.settings)
-  .settings(PekkoDependWalker.jdk9CompileCheckSetting)
-  .enablePlugins(BoilerplatePlugin, Jdk9, DependWalkerPlugin, SbtOsgi)
+  .enablePlugins(BoilerplatePlugin, DependWalkerPlugin, SbtOsgi)
 
 lazy val streamTestkit = pekkoModule("stream-testkit")
   .dependsOn(stream, testkit % "compile->compile;test->test")
@@ -452,10 +445,9 @@ lazy val streamTestkit = pekkoModule("stream-testkit")
   .enablePlugins(SbtOsgi)
 
 lazy val streamTests = pekkoModule("stream-tests")
-  .configs(Jdk9.TestJdk9)
-  .dependsOn(streamTestkit % "test->test", remote % "test->test", stream % "TestJdk9->CompileJdk9")
+  .dependsOn(streamTestkit % "test->test", remote % "test->test", stream)
   .settings(Dependencies.streamTests)
-  .enablePlugins(NoPublish, Jdk9)
+  .enablePlugins(NoPublish)
   .disablePlugins(MimaPlugin)
 
 lazy val streamTestsTck = pekkoModule("stream-tests-tck")
@@ -497,8 +489,7 @@ lazy val actorTyped = pekkoModule("actor-typed")
 
       implicit val timeout = Timeout(5 seconds)
     """)
-  .settings(PekkoDependWalker.jdk9CompileCheckSetting)
-  .enablePlugins(Jdk9, DependWalkerPlugin, SbtOsgi)
+  .enablePlugins(DependWalkerPlugin, SbtOsgi)
 
 lazy val persistenceTyped = pekkoModule("persistence-typed")
   .dependsOn(
@@ -542,14 +533,13 @@ lazy val clusterTyped = pekkoModule("cluster-typed")
 
 lazy val clusterShardingTyped = pekkoModule("cluster-sharding-typed")
   .dependsOn(
-    actorTyped % "compile->CompileJdk9",
     clusterTyped % "compile->compile;test->test;multi-jvm->multi-jvm",
-    clusterSharding % "compile->compile;compile->CompileJdk9;multi-jvm->multi-jvm",
+    clusterSharding % "compile->compile;multi-jvm->multi-jvm",
     actorTestkitTyped % "test->test",
     actorTypedTests % "test->test",
     persistenceTyped % "optional->compile;test->test",
     persistenceTestkit % "test->test",
-    remote % "compile->CompileJdk9;test->test",
+    remote % "test->test",
     remoteTests % "test->test",
     remoteTests % "test->test;multi-jvm->multi-jvm",
     jackson % "test->test")
@@ -582,7 +572,7 @@ lazy val actorTestkitTyped = pekkoModule("actor-testkit-typed")
   .settings(Dependencies.actorTestkitTyped)
 
 lazy val actorTypedTests = pekkoModule("actor-typed-tests")
-  .dependsOn(actorTyped % "compile->CompileJdk9", actorTestkitTyped % "compile->compile;test->test", actor)
+  .dependsOn(actorTyped, actorTestkitTyped % "compile->compile;test->test", actor)
   .settings(PekkoBuild.mayChangeSettings)
   .disablePlugins(MimaPlugin)
   .enablePlugins(NoPublish)

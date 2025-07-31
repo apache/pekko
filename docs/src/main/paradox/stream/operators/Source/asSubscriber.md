@@ -7,10 +7,10 @@ Integration with Reactive Streams, materializes into a @javadoc[Subscriber](java
 ## Signature
 
 Scala
-:   @@snip[JavaFlowSupport.scala](/stream/src/main/scala-jdk-9/org/apache/pekko/stream/scaladsl/JavaFlowSupport.scala) { #asSubscriber }
+:   @@snip[JavaFlowSupport.scala](/stream/src/main/scala/org/apache/pekko/stream/scaladsl/JavaFlowSupport.scala) { #asSubscriber }
 
 Java
-:   @@snip[JavaFlowSupport.java](/docs/src/test/java-jdk9-only/jdocs/stream/operators/source/AsSubscriber.java) { #api }
+:   @@snip[JavaFlowSupport.java](/docs/src/test/java/jdocs/stream/operators/source/AsSubscriber.java) { #api }
 
 ## Description
 
@@ -44,7 +44,7 @@ backpressure is applied throughout the stream, preventing us from running out of
 rows are consumed slower than they are produced by the database.
 
 Scala
-:  @@snip [AsSubscriber.scala](/docs/src/test/scala-jdk9-only/docs/stream/operators/source/AsSubscriber.scala) { #imports #example }
+:  @@snip [AsSubscriber.scala](/docs/src/test/scala/docs/stream/operators/source/AsSubscriber.scala) { #imports #example }
 
 Java
-:  @@snip [AsSubscriber.java](/docs/src/test/java-jdk9-only/jdocs/stream/operators/source/AsSubscriber.java) { #imports #example }
+:  @@snip [AsSubscriber.java](/docs/src/test/java/jdocs/stream/operators/source/AsSubscriber.java) { #imports #example }
