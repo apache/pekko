@@ -13,9 +13,6 @@
 
 package org.apache.pekko.stream.javadsl
 
-import scala.annotation.nowarn
-import scala.concurrent.duration.FiniteDuration
-
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.japi.function
@@ -103,23 +100,9 @@ object BidiFlow {
    * every second in one direction, but no elements are flowing in the other direction. I.e. this operator considers
    * the *joint* frequencies of the elements in both directions.
    */
-  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
-  def bidirectionalIdleTimeout[I, O](timeout: FiniteDuration): BidiFlow[I, I, O, O, NotUsed] =
-    new BidiFlow(scaladsl.BidiFlow.bidirectionalIdleTimeout(timeout))
-
-  /**
-   * If the time between two processed elements *in any direction* exceed the provided timeout, the stream is failed
-   * with a [[org.apache.pekko.stream.BackpressureTimeoutException]].
-   *
-   * There is a difference between this operator and having two idleTimeout Flows assembled into a BidiStage.
-   * If the timeout is configured to be 1 seconds, then this operator will not fail even though there are elements flowing
-   * every second in one direction, but no elements are flowing in the other direction. I.e. this operator considers
-   * the *joint* frequencies of the elements in both directions.
-   */
-  @nowarn("msg=deprecated")
   def bidirectionalIdleTimeout[I, O](timeout: java.time.Duration): BidiFlow[I, I, O, O, NotUsed] = {
     import pekko.util.JavaDurationConverters._
-    bidirectionalIdleTimeout(timeout.asScala)
+    new BidiFlow(scaladsl.BidiFlow.bidirectionalIdleTimeout(timeout.asScala))
   }
 }
 
