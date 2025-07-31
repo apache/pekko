@@ -19,8 +19,6 @@ import pekko.actor.typed.internal.routing.{ GroupRouterBuilder, PoolRouterBuilde
 import pekko.actor.typed.receptionist.ServiceKey
 import pekko.annotation.DoNotInherit
 
-import scala.annotation.nowarn
-
 object Routers {
 
   /**
@@ -188,6 +186,5 @@ trait PoolRouter[T] extends Behavior[T] {
   /**
    * Any message that the predicate returns true for will be broadcast to all routees.
    */
-  @nowarn("msg=deprecated")
-  def withBroadcastPredicate(@deprecatedName(Symbol("pred")) predicate: T => Boolean): PoolRouter[T]
+  def withBroadcastPredicate(predicate: T => Boolean): PoolRouter[T]
 }

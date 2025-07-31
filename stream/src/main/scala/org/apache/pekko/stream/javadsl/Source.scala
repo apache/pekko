@@ -714,8 +714,6 @@ object Source {
       first: Source[T, _ <: Any],
       second: Source[T, _ <: Any],
       rest: java.util.List[Source[T, _ <: Any]],
-      @nowarn
-      @deprecatedName(Symbol("strategy"))
       fanInStrategy: function.Function[java.lang.Integer, _ <: Graph[UniformFanInShape[T, U], NotUsed]])
       : Source[U, NotUsed] = {
     val seq = if (rest != null) CollectionUtil.toSeq(rest).map(_.asScala) else immutable.Seq()
@@ -728,8 +726,6 @@ object Source {
   def combineMat[T, U, M1, M2, M](
       first: Source[T, M1],
       second: Source[T, M2],
-      @nowarn
-      @deprecatedName(Symbol("strategy"))
       fanInStrategy: function.Function[java.lang.Integer, _ <: Graph[UniformFanInShape[T, U], NotUsed]],
       combine: function.Function2[M1, M2, M]): Source[U, M] = {
     new Source(

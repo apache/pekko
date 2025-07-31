@@ -18,7 +18,6 @@ import java.util.concurrent.{ CompletableFuture, CompletionStage }
 import java.util.function.BiFunction
 import java.util.stream.Collector
 
-import scala.annotation.nowarn
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable
 import scala.concurrent.ExecutionContext
@@ -455,8 +454,6 @@ object Sink {
       output1: Sink[U, _],
       output2: Sink[U, _],
       rest: java.util.List[Sink[U, _]],
-      @nowarn
-      @deprecatedName(Symbol("strategy"))
       fanOutStrategy: function.Function[java.lang.Integer, Graph[UniformFanOutShape[T, U], NotUsed]])
       : Sink[T, NotUsed] = {
     import pekko.util.ccompat.JavaConverters._

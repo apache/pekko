@@ -19,7 +19,6 @@ import scala.concurrent.duration._
 import scala.concurrent.duration.Duration
 import scala.concurrent.duration.FiniteDuration
 
-import scala.annotation.nowarn
 import language.implicitConversions
 
 import org.apache.pekko
@@ -311,8 +310,7 @@ object FSM {
      * Modify state transition descriptor with new state data. The data will be
      * set when transitioning to the new state.
      */
-    @nowarn("msg=deprecated")
-    def using(@deprecatedName(Symbol("nextStateDate")) nextStateData: D): State[S, D] = {
+    def using(nextStateData: D): State[S, D] = {
       copy(stateData = nextStateData)
     }
 
