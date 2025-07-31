@@ -147,8 +147,8 @@ private[pekko] trait Children { this: ActorCell =>
 
   @nowarn private def _preventPrivateUnusedErasure = {
     _childrenRefsDoNotCallMeDirectly
-    _nextNameDoNotCallMeDirectly
     _functionRefsDoNotCallMeDirectly
+    _nextNameDoNotCallMeDirectly
   }
 
   /**
