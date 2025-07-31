@@ -16,5 +16,5 @@
 # under the License.
 
 # Remove deprecated methods
-ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.singleton.ClusterSingletonManager.setTimer*")
-ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.pubsub.DistributedPubSubSettings.this")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.typed.ClusterSingletonManagerSettings.this")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.typed.ClusterSingletonSettings.this")
