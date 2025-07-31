@@ -15,7 +15,7 @@ package org.apache.pekko.cluster.ddata
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.cluster.{ Cluster, UniqueAddress }
+import pekko.cluster.UniqueAddress
 import pekko.cluster.ddata.ORMap._
 
 object ORMultiMap {
@@ -155,22 +155,12 @@ final class ORMultiMap[A, B] private[pekko] (
     put(node.uniqueAddress, key, value)
   }
 
-  @deprecated("Use `:+` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
-  def +(entry: (A, Set[B]))(implicit node: Cluster): ORMultiMap[A, B] = {
-    val (key, value) = entry
-    put(node.selfUniqueAddress, key, value)
-  }
-
   /**
    * Scala API: Associate an entire set with the key while retaining the history of the previous
    * replicated data set.
    */
   def put(node: SelfUniqueAddress, key: A, value: Set[B]): ORMultiMap[A, B] =
     put(node.uniqueAddress, key, value)
-
-  @deprecated("Use `put` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
-  def put(node: Cluster, key: A, value: Set[B]): ORMultiMap[A, B] =
-    put(node.selfUniqueAddress, key, value)
 
   /**
    * Java API: Associate an entire set with the key while retaining the history of the previous
@@ -179,12 +169,6 @@ final class ORMultiMap[A, B] private[pekko] (
   def put(node: SelfUniqueAddress, key: A, value: java.util.Set[B]): ORMultiMap[A, B] = {
     import pekko.util.ccompat.JavaConverters._
     put(node.uniqueAddress, key, value.asScala.toSet)
-  }
-
-  @deprecated("Use `put` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
-  def put(node: Cluster, key: A, value: java.util.Set[B]): ORMultiMap[A, B] = {
-    import pekko.util.ccompat.JavaConverters._
-    put(node.selfUniqueAddress, key, value.asScala.toSet)
   }
 
   /**
@@ -206,20 +190,10 @@ final class ORMultiMap[A, B] private[pekko] (
   def remove(key: A)(implicit node: SelfUniqueAddress): ORMultiMap[A, B] = remove(node.uniqueAddress, key)
 
   /**
-   * Convenience for remove. Requires an implicit Cluster.
-   * @see [[ORMultiMap#remove(node:org\.apache\.pekko\.cluster\.ddata\.SelfUniqueAddress*]]
-   */
-  @deprecated("Use `remove` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
-  def -(key: A)(implicit node: Cluster): ORMultiMap[A, B] = remove(node.selfUniqueAddress, key)
-
-  /**
    * Java API
    * Remove an entire set associated with the key.
    */
   def remove(node: SelfUniqueAddress, key: A): ORMultiMap[A, B] = remove(node.uniqueAddress, key)
-
-  @deprecated("Use `remove` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
-  def remove(node: Cluster, key: A): ORMultiMap[A, B] = remove(node.selfUniqueAddress, key)
 
   /**
    * INTERNAL API
@@ -245,14 +219,6 @@ final class ORMultiMap[A, B] private[pekko] (
   def addBindingBy(key: A, element: B)(implicit node: SelfUniqueAddress): ORMultiMap[A, B] =
     addBinding(node, key, element)
 
-  @deprecated("Use `addBinding` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
-  def addBinding(key: A, element: B)(implicit node: Cluster): ORMultiMap[A, B] =
-    addBinding(node.selfUniqueAddress, key, element)
-
-  @deprecated("Use `addBinding` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
-  def addBinding(node: Cluster, key: A, element: B): ORMultiMap[A, B] =
-    addBinding(node.selfUniqueAddress, key, element)
-
   /**
    * INTERNAL API
    */
@@ -272,14 +238,6 @@ final class ORMultiMap[A, B] private[pekko] (
 
   def removeBindingBy(key: A, element: B)(implicit node: SelfUniqueAddress): ORMultiMap[A, B] =
     removeBinding(node, key, element)
-
-  @deprecated("Use `removeBinding` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
-  def removeBinding(key: A, element: B)(implicit node: Cluster): ORMultiMap[A, B] =
-    removeBinding(node.selfUniqueAddress, key, element)
-
-  @deprecated("Use `removeBinding` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
-  def removeBinding(node: Cluster, key: A, element: B): ORMultiMap[A, B] =
-    removeBinding(node.selfUniqueAddress, key, element)
 
   /**
    * INTERNAL API
@@ -309,10 +267,6 @@ final class ORMultiMap[A, B] private[pekko] (
 
   def replaceBindingBy(key: A, oldElement: B, newElement: B)(implicit node: SelfUniqueAddress): ORMultiMap[A, B] =
     replaceBinding(node, key, oldElement, newElement)
-
-  @deprecated("Use `replaceBinding` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
-  def replaceBinding(key: A, oldElement: B, newElement: B)(implicit node: Cluster): ORMultiMap[A, B] =
-    replaceBinding(node.selfUniqueAddress, key, oldElement, newElement)
 
   /**
    * INTERNAL API

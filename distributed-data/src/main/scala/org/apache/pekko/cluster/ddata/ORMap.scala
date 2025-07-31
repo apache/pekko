@@ -17,7 +17,6 @@ import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.cluster.Cluster
 import pekko.cluster.UniqueAddress
 import pekko.cluster.ddata.ORMap.ZeroTag
 import pekko.util.HashCode
@@ -237,12 +236,6 @@ final class ORMap[A, B <: ReplicatedData] private[pekko] (
     put(node.uniqueAddress, key, value)
   }
 
-  @deprecated("Use `:+` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
-  def +(entry: (A, B))(implicit node: Cluster): ORMap[A, B] = {
-    val (key, value) = entry
-    put(node.selfUniqueAddress, key, value)
-  }
-
   /**
    * Adds an entry to the map.
    * Note that the new `value` will be merged with existing values
@@ -258,9 +251,6 @@ final class ORMap[A, B <: ReplicatedData] private[pekko] (
    * [[ORMap#updated(node:org\.apache\.pekko\.cluster\.ddata\.SelfUniqueAddress*]] instead.
    */
   def put(node: SelfUniqueAddress, key: A, value: B): ORMap[A, B] = put(node.uniqueAddress, key, value)
-
-  @deprecated("Use `put` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
-  def put(node: Cluster, key: A, value: B): ORMap[A, B] = put(node.selfUniqueAddress, key, value)
 
   /**
    * INTERNAL API
@@ -287,20 +277,6 @@ final class ORMap[A, B <: ReplicatedData] private[pekko] (
   def updated(node: SelfUniqueAddress, key: A, initial: B)(modify: B => B): ORMap[A, B] =
     updated(node.uniqueAddress, key, initial)(modify)
 
-  @deprecated("Use `updated` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
-  def updated(node: Cluster, key: A, initial: B)(modify: B => B): ORMap[A, B] =
-    updated(node.selfUniqueAddress, key, initial)(modify)
-
-  /**
-   * Java API: Replace a value by applying the `modify` function on the existing value.
-   *
-   * If there is no current value for the `key` the `initial` value will be
-   * passed to the `modify` function.
-   */
-  @deprecated("use update for the Java API as updated is ambiguous with the Scala API", "Akka 2.5.20")
-  def updated(node: Cluster, key: A, initial: B, modify: java.util.function.Function[B, B]): ORMap[A, B] =
-    updated(node.selfUniqueAddress, key, initial)(value => modify.apply(value))
-
   /**
    * Java API: Replace a value by applying the `modify` function on the existing value.
    *
@@ -309,10 +285,6 @@ final class ORMap[A, B <: ReplicatedData] private[pekko] (
    */
   def update(node: SelfUniqueAddress, key: A, initial: B, modify: java.util.function.Function[B, B]): ORMap[A, B] =
     updated(node.uniqueAddress, key, initial)(value => modify.apply(value))
-
-  @deprecated("Use `update` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
-  def update(node: Cluster, key: A, initial: B, modify: java.util.function.Function[B, B]): ORMap[A, B] =
-    updated(node, key, initial)(value => modify.apply(value))
 
   /**
    * INTERNAL API
@@ -360,12 +332,6 @@ final class ORMap[A, B <: ReplicatedData] private[pekko] (
    * not be removed after merge.
    */
   def remove(node: SelfUniqueAddress, key: A): ORMap[A, B] = remove(node.uniqueAddress, key)
-
-  @deprecated("Use `remove` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
-  def -(key: A)(implicit node: Cluster): ORMap[A, B] = remove(node.selfUniqueAddress, key)
-
-  @deprecated("Use `remove` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
-  def remove(node: Cluster, key: A): ORMap[A, B] = remove(node.selfUniqueAddress, key)
 
   /**
    * INTERNAL API

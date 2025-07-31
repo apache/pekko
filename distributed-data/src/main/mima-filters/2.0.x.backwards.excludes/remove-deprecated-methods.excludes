@@ -1,0 +1,57 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# Remove deprecated methods
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.GCounter.+")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.GCounter.increment")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.GCounter.increment$default$2")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.LWWMap.+")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.LWWMap.put*")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.LWWMap.-")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.LWWMap.remove")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.LWWRegister.create")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.LWWRegister.apply*")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.LWWRegister.withValue*")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.ORMap.+")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.ORMap.put")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.ORMap.updated")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.ORMap.update")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.ORMap.-")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.ORMap.remove")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.ORMultiMap.+")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.ORMultiMap.put")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.ORMultiMap.-")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.ORMultiMap.remove")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.ORMultiMap.addBinding")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.ORMultiMap.removeBinding")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.ORMultiMap.replaceBinding")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.ORSet.+")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.ORSet.add")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.ORSet.-")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.ORSet.remove")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.ORSet.clear")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.PNCounter.+")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.PNCounter.increment*")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.PNCounter.-")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.PNCounter.decrement*")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.PNCounterMap.increment")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.PNCounterMap.decrement*")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.PNCounterMap.remove")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.PNCounterMap.-")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.ReplicatorSettings.this")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.VersionVector.+")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.ddata.VersionVector.increment")

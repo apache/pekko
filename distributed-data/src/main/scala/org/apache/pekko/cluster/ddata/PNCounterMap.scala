@@ -105,10 +105,6 @@ final class PNCounterMap[A] private[pekko] (private[pekko] val underlying: ORMap
   def increment(node: SelfUniqueAddress, key: A, delta: Long): PNCounterMap[A] =
     increment(node.uniqueAddress, key, delta)
 
-  @deprecated("Use `increment` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
-  def increment(node: Cluster, key: A, delta: Long): PNCounterMap[A] =
-    increment(node.selfUniqueAddress, key, delta)
-
   /**
    * INTERNAL API
    */
@@ -131,18 +127,6 @@ final class PNCounterMap[A] private[pekko] (private[pekko] val underlying: ORMap
   def decrement(node: SelfUniqueAddress, key: A, delta: Long): PNCounterMap[A] =
     decrement(node.uniqueAddress, key, delta)
 
-  @deprecated("Use `decrement` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
-  def decrement(key: A, delta: Long = 1)(implicit node: Cluster): PNCounterMap[A] =
-    decrement(node.selfUniqueAddress, key, delta)
-
-  /**
-   * Decrement the counter with the delta specified.
-   * If the delta is negative then it will increment instead of decrement.
-   */
-  @deprecated("Use `decrement` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
-  def decrement(node: Cluster, key: A, delta: Long): PNCounterMap[A] =
-    decrement(node.selfUniqueAddress, key, delta)
-
   /**
    * INTERNAL API
    */
@@ -157,13 +141,6 @@ final class PNCounterMap[A] private[pekko] (private[pekko] val underlying: ORMap
    */
   def remove(key: A)(implicit node: SelfUniqueAddress): PNCounterMap[A] =
     remove(node.uniqueAddress, key)
-
-  @deprecated("Use `remove` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
-  def remove(node: Cluster, key: A): PNCounterMap[A] =
-    remove(node.selfUniqueAddress, key)
-
-  @deprecated("Use `remove` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
-  def -(key: A)(implicit node: Cluster): PNCounterMap[A] = remove(node, key)
 
   /**
    * INTERNAL API
