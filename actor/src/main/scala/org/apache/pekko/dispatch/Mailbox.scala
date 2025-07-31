@@ -118,7 +118,7 @@ private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
   @volatile
   protected var _systemQueueDoNotCallMeDirectly: SystemMessage = _ // null by default
 
-  final def currentStatus: Mailbox.Status = AbstractMailbox.mailboxStatusHandle.get(this).asInstanceOf[Mailbox.Status]
+  final def currentStatus: Mailbox.Status = AbstractMailbox.mailboxStatusHandle.get(this)
 
   final def shouldProcessMessage: Boolean = (currentStatus & shouldNotProcessMask) == 0
 
