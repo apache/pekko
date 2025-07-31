@@ -19,8 +19,8 @@ import org.apache.pekko.japi.Creator;
 import org.apache.pekko.stream.impl.JavaFlowAndRsConverters;
 
 /**
- * Provides support for `java.util.concurrent.Flow.*` interfaces which mirror the Reactive
- * Streams interfaces from `org.reactivestreams`. See <a
+ * Provides support for `java.util.concurrent.Flow.*` interfaces which mirror the Reactive Streams
+ * interfaces from `org.reactivestreams`. See <a
  * href="http//www.reactive-streams.org/">reactive-streams.org</a>.
  */
 public final class JavaFlowSupport {
