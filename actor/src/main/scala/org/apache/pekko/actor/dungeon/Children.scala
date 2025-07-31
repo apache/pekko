@@ -120,13 +120,13 @@ private[pekko] trait Children { this: ActorCell =>
     refs.valuesIterator.foreach(_.stop())
   }
 
-  private val _nextName = new java.util.concurrent.atomic.AtomicLong()
+  @nowarn @volatile private var _nextNameDoNotCallMeDirectly = 0L
   final protected def randomName(sb: java.lang.StringBuilder): String = {
-    val num = _nextName.getAndIncrement()
+    val num = AbstractActorCell.nextNameHandle.getAndAdd(this, 1L).asInstanceOf[Long]
     Helpers.base64(num, sb)
   }
   final protected def randomName(): String = {
-    val num = _nextName.getAndIncrement()
+    val num = AbstractActorCell.nextNameHandle.getAndAdd(this, 1L).asInstanceOf[Long]
     Helpers.base64(num)
   }
 
@@ -147,6 +147,7 @@ private[pekko] trait Children { this: ActorCell =>
 
   @nowarn private def _preventPrivateUnusedErasure = {
     _childrenRefsDoNotCallMeDirectly
+    _nextNameDoNotCallMeDirectly
     _functionRefsDoNotCallMeDirectly
   }
 
