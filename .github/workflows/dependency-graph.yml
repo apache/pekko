@@ -39,4 +39,4 @@ jobs:
       - uses: scalacenter/sbt-dependency-submission@64084844d2b0a9b6c3765f33acde2fbe3f5ae7d3 # v3.1.0
         with:
           configs-ignore: provided optional test TestJdk9 compile-internal runtime-internal pr-validation multi-jvm scala-tool scala-doc-tool
-          modules-ignore: pekko-bench-jmh_2.12 pekko-docs_2.12 pekko-bench-jmh_2.13 pekko-docs_2.13 pekko-bench-jmh_3 pekko-docs_3
+          modules-ignore: pekko-bench-jmh_2.13 pekko-docs_2.13 pekko-bench-jmh_3 pekko-docs_3
