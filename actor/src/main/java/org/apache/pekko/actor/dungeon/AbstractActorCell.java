@@ -39,12 +39,13 @@ final class AbstractActorCell {
           Unsafe.instance.objectFieldOffset(
               ActorCell.class.getDeclaredField(
                   "org$apache$pekko$actor$dungeon$Children$$_functionRefsDoNotCallMeDirectly"));
-      MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(
-        ActorCell.class, MethodHandles.lookup());
-      nextNameHandle = lookup.findVarHandle(
-                        ActorCell.class,
-                        "org$apache$pekko$actor$dungeon$Children$$_nextNameDoNotCallMeDirectly",
-                        long.class);
+      MethodHandles.Lookup lookup =
+          MethodHandles.privateLookupIn(ActorCell.class, MethodHandles.lookup());
+      nextNameHandle =
+          lookup.findVarHandle(
+              ActorCell.class,
+              "org$apache$pekko$actor$dungeon$Children$$_nextNameDoNotCallMeDirectly",
+              long.class);
     } catch (Throwable t) {
       throw new ExceptionInInitializerError(t);
     }
