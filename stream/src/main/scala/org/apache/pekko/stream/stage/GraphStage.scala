@@ -1834,66 +1834,6 @@ abstract class TimerGraphStageLogic(_shape: Shape) extends GraphStageLogic(_shap
   }
 
   /**
-   * Schedule timer to call [[#onTimer]] periodically with the given interval after the specified
-   * initial delay.
-   * Any existing timer with the same key will automatically be canceled before
-   * adding the new timer.
-   */
-  @deprecated(
-    "Use scheduleWithFixedDelay or scheduleAtFixedRate instead. This has the same semantics as " +
-    "scheduleAtFixedRate, but scheduleWithFixedDelay is often preferred.",
-    since = "Akka 2.6.0")
-  final protected def schedulePeriodicallyWithInitialDelay(
-      timerKey: Any,
-      initialDelay: FiniteDuration,
-      interval: FiniteDuration): Unit =
-    scheduleAtFixedRate(timerKey, initialDelay, interval)
-
-  /**
-   * Schedule timer to call [[#onTimer]] periodically with the given interval after the specified
-   * initial delay.
-   * Any existing timer with the same key will automatically be canceled before
-   * adding the new timer.
-   */
-  @deprecated(
-    "Use scheduleWithFixedDelay or scheduleAtFixedRate instead. This has the same semantics as " +
-    "scheduleAtFixedRate, but scheduleWithFixedDelay is often preferred.",
-    since = "Akka 2.6.0")
-  final protected def schedulePeriodicallyWithInitialDelay(
-      timerKey: Any,
-      initialDelay: java.time.Duration,
-      interval: java.time.Duration): Unit = {
-    import pekko.util.JavaDurationConverters._
-    schedulePeriodicallyWithInitialDelay(timerKey, initialDelay.asScala, interval.asScala)
-  }
-
-  /**
-   * Schedule timer to call [[#onTimer]] periodically with the given interval.
-   * Any existing timer with the same key will automatically be canceled before
-   * adding the new timer.
-   */
-  @deprecated(
-    "Use scheduleWithFixedDelay or scheduleAtFixedRate instead. This has the same semantics as " +
-    "scheduleAtFixedRate, but scheduleWithFixedDelay is often preferred.",
-    since = "Akka 2.6.0")
-  final protected def schedulePeriodically(timerKey: Any, interval: FiniteDuration): Unit =
-    schedulePeriodicallyWithInitialDelay(timerKey, interval, interval)
-
-  /**
-   * Schedule timer to call [[#onTimer]] periodically with the given interval.
-   * Any existing timer with the same key will automatically be canceled before
-   * adding the new timer.
-   */
-  @deprecated(
-    "Use scheduleWithFixedDelay or scheduleAtFixedRate instead. This has the same semantics as " +
-    "scheduleAtFixedRate, but scheduleWithFixedDelay is often preferred.",
-    since = "Akka 2.6.0")
-  final protected def schedulePeriodically(timerKey: Any, interval: java.time.Duration): Unit = {
-    import pekko.util.JavaDurationConverters._
-    schedulePeriodically(timerKey, interval.asScala)
-  }
-
-  /**
    * Cancel timer, ensuring that the [[#onTimer]] is not subsequently called.
    *
    * @param timerKey key of the timer to cancel
@@ -1956,14 +1896,7 @@ trait OutHandler {
   @throws(classOf[Exception])
   def onPull(): Unit
 
-  /**
-   * Called when the output port will no longer accept any new elements. After this callback no other callbacks will
-   * be called for this port.
-   */
-  @throws(classOf[Exception])
-  @deprecatedOverriding("Override `def onDownstreamFinish(cause: Throwable)`, instead.", since = "Akka 2.6.0") // warns when overriding
-  @deprecated("Call onDownstreamFinish with a cancellation cause.", since = "Akka 2.6.0") // warns when calling
-  def onDownstreamFinish(): Unit = {
+  private def onDownstreamFinish(): Unit = {
     val thisStage = GraphInterpreter.currentInterpreter.activeStage
     require(
       thisStage.lastCancellationCause ne null,
