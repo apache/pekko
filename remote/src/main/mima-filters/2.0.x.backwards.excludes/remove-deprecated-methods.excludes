@@ -17,3 +17,11 @@
 
 # Remove deprecated methods
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.remote.RemoteActorRefProvider#RemotingTerminator.setTimer*")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.remote.QuarantinedEvent.apply")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.remote.QuarantinedEvent.uid")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.remote.QuarantinedEvent.this")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.remote.serialization.ByteStringSerializer")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.remote.serialization.IntSerializer")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.remote.serialization.LongSerializer")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.remote.serialization.StringSerializer")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.remote.transport.FailureInjectorTransportAdapter$All*")
