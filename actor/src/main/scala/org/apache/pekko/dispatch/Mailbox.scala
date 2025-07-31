@@ -206,7 +206,7 @@ private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
   protected final def systemQueueGet: LatestFirstSystemMessageList =
     // Note: contrary how it looks, there is no allocation here, as SystemMessageList is a value class and as such
     // it just exists as a typed view during compile-time. The actual return type is still SystemMessage.
-    new LatestFirstSystemMessageList(AbstractMailbox.systemMessageHandle.get(this).asInstanceOf[SystemMessage])
+    new LatestFirstSystemMessageList(AbstractMailbox.systemMessageHandle.get(this))
 
   protected final def systemQueuePut(_old: LatestFirstSystemMessageList, _new: LatestFirstSystemMessageList): Boolean =
     (_old.head eq _new.head) ||
