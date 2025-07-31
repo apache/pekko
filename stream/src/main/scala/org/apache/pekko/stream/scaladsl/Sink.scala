@@ -13,7 +13,7 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import scala.annotation.{ nowarn, tailrec }
+import scala.annotation.tailrec
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable
 import scala.concurrent.{ ExecutionContext, Future }
@@ -336,8 +336,6 @@ object Sink {
    * Combine several sinks with fan-out strategy like `Broadcast` or `Balance` and returns `Sink`.
    */
   def combine[T, U](first: Sink[U, _], second: Sink[U, _], rest: Sink[U, _]*)(
-      @nowarn
-      @deprecatedName(Symbol("strategy"))
       fanOutStrategy: Int => Graph[UniformFanOutShape[T, U], NotUsed]): Sink[T, NotUsed] =
     Sink.fromGraph(GraphDSL.create() { implicit b =>
       import GraphDSL.Implicits._

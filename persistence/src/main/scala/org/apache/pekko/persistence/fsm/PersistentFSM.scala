@@ -447,7 +447,7 @@ object PersistentFSM {
     @deprecated(
       "Internal API easily to be confused with regular FSM's using. Use regular events (`applying`). Internally, `copy` can be used instead.",
       "Akka 2.5.5")
-    private[pekko] def using(@deprecatedName(Symbol("nextStateDate")) nextStateData: D): State[S, D, E] = {
+    private[pekko] def using(nextStateData: D): State[S, D, E] = {
       copy0(stateData = nextStateData)
     }
 

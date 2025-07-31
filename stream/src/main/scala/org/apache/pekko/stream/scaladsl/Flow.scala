@@ -14,7 +14,6 @@
 package org.apache.pekko.stream.scaladsl
 
 import scala.annotation.implicitNotFound
-import scala.annotation.nowarn
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable
 import scala.concurrent.Future
@@ -3612,18 +3611,14 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''completes''' when all upstreams complete (This behavior is changeable to completing when any upstream completes by setting `eagerComplete=true`.)
    */
-  @nowarn
   def mergePreferred[U >: Out, M](
       that: Graph[SourceShape[U], M],
-      @deprecatedName(Symbol("priority"))
       preferred: Boolean,
       eagerComplete: Boolean = false): Repr[U] =
     via(mergePreferredGraph(that, preferred, eagerComplete))
 
-  @nowarn
   protected def mergePreferredGraph[U >: Out, M](
       that: Graph[SourceShape[U], M],
-      @deprecatedName(Symbol("priority"))
       preferred: Boolean,
       eagerComplete: Boolean): Graph[FlowShape[Out @uncheckedVariance, U], M] =
     GraphDSL.createGraph(that) { implicit b => r =>
@@ -4254,10 +4249,8 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    * It is recommended to use the internally optimized `Keep.left` and `Keep.right` combiners
    * where appropriate instead of manually writing functions that pass through one of the values.
    */
-  @nowarn("msg=deprecated")
   def interleaveMat[U >: Out, Mat2, Mat3](
       that: Graph[SourceShape[U], Mat2],
-      @deprecatedName(Symbol("request"))
       segmentSize: Int)(matF: (Mat, Mat2) => Mat3): ReprMat[U, Mat3] =
     interleaveMat(that, segmentSize, eagerClose = false)(matF)
 
@@ -4277,10 +4270,8 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    * It is recommended to use the internally optimized `Keep.left` and `Keep.right` combiners
    * where appropriate instead of manually writing functions that pass through one of the values.
    */
-  @nowarn("msg=deprecated")
   def interleaveMat[U >: Out, Mat2, Mat3](
       that: Graph[SourceShape[U], Mat2],
-      @deprecatedName(Symbol("request"))
       segmentSize: Int,
       eagerClose: Boolean)(matF: (Mat, Mat2) => Mat3): ReprMat[U, Mat3] =
     viaMat(interleaveGraph(that, segmentSize, eagerClose))(matF)

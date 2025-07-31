@@ -15,7 +15,7 @@ package org.apache.pekko.stream.scaladsl
 
 import java.util.concurrent.CompletionStage
 
-import scala.annotation.{ nowarn, tailrec }
+import scala.annotation.tailrec
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.{ immutable, AbstractIterator }
 import scala.concurrent.{ Future, Promise }
@@ -831,8 +831,6 @@ object Source {
    * Combines several sources with fan-in strategy like [[Merge]] or [[Concat]] into a single [[Source]].
    */
   def combine[T, U](first: Source[T, _], second: Source[T, _], rest: Source[T, _]*)(
-      @nowarn
-      @deprecatedName(Symbol("strategy"))
       fanInStrategy: Int => Graph[UniformFanInShape[T, U], NotUsed]): Source[U, NotUsed] =
     Source.fromGraph(GraphDSL.create() { implicit b =>
       import GraphDSL.Implicits._
@@ -873,8 +871,6 @@ object Source {
    * Combines several sources with fan-in strategy like [[Merge]] or [[Concat]] into a single [[Source]] with a materialized value.
    */
   def combineMat[T, U, M1, M2, M](first: Source[T, M1], second: Source[T, M2])(
-      @nowarn
-      @deprecatedName(Symbol("strategy"))
       fanInStrategy: Int => Graph[UniformFanInShape[T, U], NotUsed])(matF: (M1, M2) => M): Source[U, M] =
     Source.fromGraph(GraphDSL.createGraph(first, second)(matF) { implicit b => (shape1, shape2) =>
       import GraphDSL.Implicits._
