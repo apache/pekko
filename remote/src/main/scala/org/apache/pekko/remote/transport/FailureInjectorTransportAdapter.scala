@@ -50,9 +50,6 @@ private[remote] object FailureInjectorTransportAdapter {
 
   trait FailureInjectorCommand
   @SerialVersionUID(1L)
-  @deprecated("Not implemented", "Akka 2.5.22")
-  final case class All(mode: GremlinMode)
-  @SerialVersionUID(1L)
   final case class One(remoteAddress: Address, mode: GremlinMode)
 
   sealed trait GremlinMode
@@ -89,9 +86,6 @@ private[remote] class FailureInjectorTransportAdapter(
   protected def maximumOverhead = 0
 
   override def managementCommand(cmd: Any): Future[Boolean] = cmd match {
-    case All(_) =>
-      Future.failed(
-        new IllegalArgumentException("Setting the mode for all addresses at once is not currently implemented"))
     case One(address, mode) =>
       //  don't care about the protocol part - we are injected in the stack anyway!
       addressChaosTable.put(address.copy(protocol = "", system = ""), mode)
@@ -194,13 +188,6 @@ private[remote] final case class FailureInjectorHandle(
 
   override def disassociate(reason: String, log: LoggingAdapter): Unit =
     wrappedHandle.disassociate(reason, log)
-
-  @deprecated(
-    message = "Use method that states reasons to make sure disassociation reasons are logged.",
-    since = "Akka 2.5.3")
-  @nowarn("msg=deprecated")
-  override def disassociate(): Unit =
-    wrappedHandle.disassociate()
 
   override def notify(ev: HandleEvent): Unit =
     if (!gremlinAdapter.shouldDropInbound(wrappedHandle.remoteAddress, ev, "handler.notify"))

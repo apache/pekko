@@ -37,7 +37,7 @@ object SystemMessageSerializationSpec {
   }
 }
 
-class SystemMessageSerializationSpec extends PekkoSpec(PrimitivesSerializationSpec.testConfig) {
+class SystemMessageSerializationSpec extends PekkoSpec(SystemMessageSerializationSpec.testConfig) {
   import SystemMessageSerializationSpec._
 
   val testRef = TestProbe().ref.asInstanceOf[InternalActorRef]

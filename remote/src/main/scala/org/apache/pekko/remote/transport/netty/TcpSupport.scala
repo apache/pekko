@@ -123,5 +123,5 @@ private[remote] class TcpAssociationHandle(
       true
     } else false
 
-  override def disassociate(): Unit = NettyTransport.gracefulClose(channel)
+  override protected def disassociate(): Unit = NettyTransport.gracefulClose(channel)
 }

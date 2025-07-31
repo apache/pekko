@@ -16,8 +16,6 @@ package org.apache.pekko.remote.transport
 import scala.concurrent.{ Future, Promise }
 import scala.util.control.NoStackTrace
 
-import scala.annotation.nowarn
-
 import org.apache.pekko
 import pekko.PekkoException
 import pekko.actor.{ ActorRef, Address, NoSerializationVerificationNeeded }
@@ -276,16 +274,9 @@ trait AssociationHandle {
    */
   def write(payload: ByteString): Boolean
 
-  /**
-   * Closes the underlying transport link, if needed. Some transports might not need an explicit teardown (UDP) and
-   * some transports may not support it (hardware connections). Remote endpoint of the channel or connection MAY
-   * be notified, but this is not guaranteed. The Transport that provides the handle MUST guarantee that disassociate()
-   * could be called arbitrarily many times.
-   */
-  @deprecated(
-    message = "Use method that states reasons to make sure disassociation reasons are logged.",
-    since = "Akka 2.5.3")
-  def disassociate(): Unit
+  protected def disassociate(): Unit = {
+    // default implementation does nothing, but some transports may override it
+  }
 
   /**
    * Closes the underlying transport link, if needed. Some transports might not need an explicit teardown (UDP) and
@@ -293,7 +284,6 @@ trait AssociationHandle {
    * be notified, but this is not guaranteed. The Transport that provides the handle MUST guarantee that disassociate()
    * could be called arbitrarily many times.
    */
-  @nowarn("msg=deprecated")
   def disassociate(reason: String, log: LoggingAdapter): Unit = {
     if (log.isDebugEnabled)
       log.debug(
