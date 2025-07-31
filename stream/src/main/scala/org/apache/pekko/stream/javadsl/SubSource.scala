@@ -50,7 +50,7 @@ object SubSource {
  * are materialized later, during the runtime of the flow graph processing.
  */
 @ccompatUsedUntil213
-class SubSource[Out, Mat](
+final class SubSource[Out, Mat](
     delegate: scaladsl.SubFlow[Out, Mat, scaladsl.Source[Out, Mat]#Repr, scaladsl.RunnableGraph[Mat]]) {
 
   /** Converts this Flow to its Scala DSL counterpart */
