@@ -646,7 +646,7 @@ private[transport] final case class ThrottlerHandle(_wrappedHandle: AssociationH
 
   }
 
-  override protected def disassociate(): Unit = throttlerActor ! PoisonPill
+  override def disassociate(): Unit = throttlerActor ! PoisonPill
 
   def disassociateWithFailure(reason: DisassociateInfo): Unit = {
     throttlerActor ! ThrottledAssociation.FailWith(reason)

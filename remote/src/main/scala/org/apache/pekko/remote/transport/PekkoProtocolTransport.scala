@@ -238,6 +238,8 @@ private[remote] class PekkoProtocolHandle(
 
   override def write(payload: ByteString): Boolean = wrappedHandle.write(codec.constructPayload(payload))
 
+  override def disassociate(): Unit = disassociate(Unknown)
+
   def disassociate(info: DisassociateInfo): Unit = stateActor ! DisassociateUnderlying(info)
 }
 

@@ -484,7 +484,7 @@ final case class TestAssociationHandle(
   override def write(payload: ByteString): Boolean =
     if (writable) transport.write(this, payload) else false
 
-  override protected def disassociate(): Unit = transport.disassociate(this)
+  override def disassociate(): Unit = transport.disassociate(this)
 
   /**
    * Key used in [[pekko.remote.transport.TestTransport.AssociationRegistry]] to identify associations. Contains an
