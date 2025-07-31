@@ -16,6 +16,8 @@ package org.apache.pekko.remote.transport
 import scala.concurrent.{ Future, Promise }
 import scala.util.control.NoStackTrace
 
+import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.PekkoException
 import pekko.actor.{ ActorRef, Address, NoSerializationVerificationNeeded }
@@ -291,6 +293,7 @@ trait AssociationHandle {
    * be notified, but this is not guaranteed. The Transport that provides the handle MUST guarantee that disassociate()
    * could be called arbitrarily many times.
    */
+  @nowarn("msg=deprecated")
   def disassociate(reason: String, log: LoggingAdapter): Unit = {
     if (log.isDebugEnabled)
       log.debug(
