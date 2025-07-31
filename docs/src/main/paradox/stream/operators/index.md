@@ -133,9 +133,7 @@ Sources and sinks for reading and writing files can be found on `FileIO`.
 
 | |Operator|Description|
 |--|--|--|
-|FileIO|<a name="fromfile"></a>@ref[fromFile](FileIO/fromFile.md)|Emits the contents of a file.|
 |FileIO|<a name="frompath"></a>@ref[fromPath](FileIO/fromPath.md)|Emits the contents of a file from the given path.|
-|FileIO|<a name="tofile"></a>@ref[toFile](FileIO/toFile.md)|Create a sink which will write incoming `ByteString` s to a given file.|
 |FileIO|<a name="topath"></a>@ref[toPath](FileIO/toPath.md)|Create a sink which will write incoming `ByteString` s to a given file path.|
 
 ## Simple operators
@@ -479,7 +477,6 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 * [from](Source/from.md)
 * [fromArray](Source/fromArray.md)
 * [fromCompletionStage](Source/fromCompletionStage.md)
-* [fromFile](FileIO/fromFile.md)
 * [fromFuture](Source/fromFuture.md)
 * [fromFutureSource](Source/fromFutureSource.md)
 * [fromInputStream](StreamConverters/fromInputStream.md)
@@ -607,7 +604,6 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 * [takeWithin](Source-or-Flow/takeWithin.md)
 * [throttle](Source-or-Flow/throttle.md)
 * [tick](Source/tick.md)
-* [toFile](FileIO/toFile.md)
 * [toPath](FileIO/toPath.md)
 * [unfold](Source/unfold.md)
 * [unfoldAsync](Source/unfoldAsync.md)
