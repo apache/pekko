@@ -23,8 +23,6 @@ import pekko.stream.impl.JavaFlowAndRsConverters
 import pekko.stream.scaladsl
 
 /**
- * For use only with `JDK 9+`.
- *
  * Provides support for `java.util.concurrent.Flow.*` interfaces which mirror the Reactive Streams
  * interfaces from `org.reactivestreams`. See: [http://www.reactive-streams.org/](reactive-streams.org).
  */
