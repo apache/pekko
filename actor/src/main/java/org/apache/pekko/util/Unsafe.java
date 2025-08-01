@@ -54,8 +54,7 @@ public final class Unsafe {
         // For example algorithm 1 will fail with JDK 11 on ARM32 (Raspberry Pi),
         // and therefore algorithm 0 is selected on that architecture.
         String testStr = "abc";
-        if (testUSAsciiStrToBytesAlgorithm1(testStr))
-          copyUSAsciiStrToBytesAlgorithm = 1;
+        if (testUSAsciiStrToBytesAlgorithm1(testStr)) copyUSAsciiStrToBytesAlgorithm = 1;
         else if (testUSAsciiStrToBytesAlgorithm2(testStr)) copyUSAsciiStrToBytesAlgorithm = 2;
         else copyUSAsciiStrToBytesAlgorithm = 0;
       } else
