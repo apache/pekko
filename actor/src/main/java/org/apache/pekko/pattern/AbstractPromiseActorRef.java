@@ -29,7 +29,9 @@ final class AbstractPromiseActorRef {
           lookup.findVarHandle(PromiseActorRef.class, "_stateDoNotCallMeDirectly", Object.class);
       watchedByHandle =
           lookup.findVarHandle(
-              PromiseActorRef.class, "_watchedByDoNotCallMeDirectly", scala.collection.immutable.Set.class);
+              PromiseActorRef.class,
+              "_watchedByDoNotCallMeDirectly",
+              scala.collection.immutable.Set.class);
     } catch (Throwable t) {
       throw new ExceptionInInitializerError(t);
     }
