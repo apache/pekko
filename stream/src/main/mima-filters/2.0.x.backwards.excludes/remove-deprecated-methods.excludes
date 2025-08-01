@@ -34,7 +34,7 @@ ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.java
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.javadsl.RestartSink.withBackoff")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.javadsl.RestartSource.onFailuresWithBackoff")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.javadsl.RestartSource.withBackoff")
-ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.javadsl.Source.actorRefWithAck")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.javadsl.Sink.actorRefWithAck")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.javadsl.Sink.foreachParallel")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.javadsl.Source.actorRefWithAck")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.scaladsl.Balance.this")
