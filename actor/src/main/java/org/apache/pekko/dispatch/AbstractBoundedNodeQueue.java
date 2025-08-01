@@ -16,8 +16,6 @@ package org.apache.pekko.dispatch;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 
-import org.apache.pekko.util.Unsafe;
-
 /**
  * Lock-free bounded non-blocking multiple-producer single-consumer queue based on the works of:
  *

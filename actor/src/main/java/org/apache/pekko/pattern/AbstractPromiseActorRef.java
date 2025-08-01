@@ -16,8 +16,6 @@ package org.apache.pekko.pattern;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 
-import org.apache.pekko.util.Unsafe;
-
 final class AbstractPromiseActorRef {
   static final VarHandle stateHandle;
   static final VarHandle watchedByHandle;
