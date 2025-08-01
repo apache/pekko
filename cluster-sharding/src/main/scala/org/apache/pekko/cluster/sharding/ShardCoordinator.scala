@@ -1305,8 +1305,7 @@ abstract class ShardCoordinator(
  *
  * @see [[ClusterSharding$ ClusterSharding extension]]
  */
-@deprecated("Use `ddata` mode, persistence mode is deprecated.", "Akka 2.6.0")
-class PersistentShardCoordinator(
+private class PersistentShardCoordinator(
     override val typeName: String,
     settings: ClusterShardingSettings,
     allocationStrategy: ShardCoordinator.ShardAllocationStrategy)
