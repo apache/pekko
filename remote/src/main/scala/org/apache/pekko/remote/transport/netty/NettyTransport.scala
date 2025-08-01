@@ -181,12 +181,9 @@ class NettyTransportSettings(config: Config) {
     case value => value
   }
 
-  @deprecated("WARNING: This should only be used by professionals.", "Akka 2.0")
-  val PortSelector: Int = getInt("port")
+  private[netty] val PortSelector: Int = getInt("port")
 
-  @deprecated("WARNING: This should only be used by professionals.", "Akka 2.4")
-  @nowarn("msg=deprecated")
-  val BindPortSelector: Int = getString("bind-port") match {
+  private[netty] val BindPortSelector: Int = getString("bind-port") match {
     case ""    => PortSelector
     case value => value.toInt
   }
@@ -516,7 +513,6 @@ class NettyTransport(val settings: NettyTransportSettings, val system: ExtendedA
   }
 
   override def listen: Future[(Address, Promise[AssociationEventListener])] = {
-    @nowarn("msg=deprecated")
     val bindPort = settings.BindPortSelector
     Future.fromTry(Try {
       try {
@@ -527,7 +523,6 @@ class NettyTransport(val settings: NettyTransportSettings, val system: ExtendedA
 
         serverChannel = newServerChannel
 
-        @nowarn("msg=deprecated")
         val port = if (settings.PortSelector == 0) None else Some(settings.PortSelector)
 
         addressFromSocketAddress(

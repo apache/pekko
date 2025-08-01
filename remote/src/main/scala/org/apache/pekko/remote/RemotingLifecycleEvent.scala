@@ -13,8 +13,6 @@
 
 package org.apache.pekko.remote
 
-import scala.runtime.AbstractFunction2
-
 import scala.annotation.nowarn
 
 import org.apache.pekko
@@ -101,14 +99,6 @@ final case class RemotingErrorEvent(cause: Throwable) extends RemotingLifecycleE
   override def toString: String = s"Remoting error: [${cause.getMessage}] [${Logging.stackTraceFor(cause)}]"
 }
 
-// For binary compatibility
-@deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
-object QuarantinedEvent extends AbstractFunction2[Address, Int, QuarantinedEvent] {
-
-  @deprecated("Use long uid apply", "Akka 2.4.x")
-  def apply(address: Address, uid: Int) = new QuarantinedEvent(address, uid)
-}
-
 @SerialVersionUID(1L)
 @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 final case class QuarantinedEvent(address: Address, longUid: Long) extends RemotingLifecycleEvent {
@@ -118,15 +108,6 @@ final case class QuarantinedEvent(address: Address, longUid: Long) extends Remot
     s"Association to [$address] having UID [$longUid] is irrecoverably failed. UID is now quarantined and all " +
     "messages to this UID will be delivered to dead letters. Remote ActorSystem must be restarted to recover " +
     "from this situation."
-
-  // For binary compatibility
-
-  @deprecated("Use long uid constructor", "Akka 2.4.x")
-  def this(address: Address, uid: Int) = this(address, uid.toLong)
-
-  @deprecated("Use long uid", "Akka 2.4.x")
-  def uid: Int = longUid.toInt
-
 }
 
 /**
