@@ -17,7 +17,6 @@ import org.apache.pekko.annotation.InternalApi;
 
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 /** INTERNAL API */
 @InternalApi
