@@ -20,18 +20,18 @@ import org.apache.pekko.util.Unsafe;
 
 final class AbstractPromiseActorRef {
   static final VarHandle stateHandle;
-  static final long watchedByOffset;
+  static final VarHandle watchedByHandle;
 
   static {
     try {
-      watchedByOffset =
-          Unsafe.instance.objectFieldOffset(
-              PromiseActorRef.class.getDeclaredField("_watchedByDoNotCallMeDirectly"));
-
       MethodHandles.Lookup lookup =
           MethodHandles.privateLookupIn(PromiseActorRef.class, MethodHandles.lookup());
+
       stateHandle =
           lookup.findVarHandle(PromiseActorRef.class, "_stateDoNotCallMeDirectly", Object.class);
+      watchedByHandle =
+          lookup.findVarHandle(
+              PromiseActorRef.class, "_watchedByDoNotCallMeDirectly", scala.collection.immutable.Set.class);
     } catch (Throwable t) {
       throw new ExceptionInInitializerError(t);
     }

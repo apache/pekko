@@ -17,6 +17,7 @@ import java.net.URLEncoder
 import java.util.concurrent.TimeoutException
 
 import scala.annotation.{ nowarn, tailrec }
+import scala.collection.immutable
 import scala.concurrent.{ Future, Promise }
 import scala.language.implicitConversions
 import scala.util.{ Failure, Success }
@@ -27,7 +28,7 @@ import pekko.actor._
 import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.dispatch.ExecutionContexts
 import pekko.dispatch.sysmsg._
-import pekko.util.{ unused, ByteString, Timeout, Unsafe }
+import pekko.util.{ unused, ByteString, Timeout }
 
 /**
  * This is what is used to complete a Future that is returned from an ask/? call,
@@ -515,7 +516,7 @@ private[pekko] final class PromiseActorRef(
     _mcn: String,
     refPathPrefix: String)
     extends MinimalActorRef {
-  import AbstractPromiseActorRef.{ stateHandle, watchedByOffset }
+  import AbstractPromiseActorRef.{ stateHandle, watchedByHandle }
   import PromiseActorRef._
 
   // This is necessary for weaving the PromiseActorRef into the asked message, i.e. the replyTo pattern.
@@ -539,18 +540,17 @@ private[pekko] final class PromiseActorRef(
 
   @volatile
   @nowarn("msg=is never updated")
-  private[this] var _watchedByDoNotCallMeDirectly: Set[ActorRef] = ActorCell.emptyActorRefSet
+  private[this] var _watchedByDoNotCallMeDirectly: immutable.Set[ActorRef] = ActorCell.emptyActorRefSet
 
   @nowarn private def _preventPrivateUnusedErasure = {
     _stateDoNotCallMeDirectly
     _watchedByDoNotCallMeDirectly
   }
 
-  private[this] def watchedBy: Set[ActorRef] =
-    Unsafe.instance.getObjectVolatile(this, watchedByOffset).asInstanceOf[Set[ActorRef]]: @nowarn("cat=deprecation")
+  private[this] def watchedBy: Set[ActorRef] = watchedByHandle.get(this)
 
   private[this] def updateWatchedBy(oldWatchedBy: Set[ActorRef], newWatchedBy: Set[ActorRef]): Boolean =
-    Unsafe.instance.compareAndSwapObject(this, watchedByOffset, oldWatchedBy, newWatchedBy): @nowarn("cat=deprecation")
+    watchedByHandle.compareAndSet(this, oldWatchedBy, newWatchedBy)
 
   @tailrec // Returns false if the Promise is already completed
   private[this] final def addWatcher(watcher: ActorRef): Boolean = watchedBy match {
