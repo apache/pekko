@@ -53,4 +53,6 @@ ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.pattern.Bac
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.pattern.BackoffSupervisor.this")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.pattern.CircuitBreaker.create")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.pattern.CircuitBreaker.this")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.pattern.Patterns.after")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.pattern.PatternsCS*")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.serialization.Serialization.deserialize")
