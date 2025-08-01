@@ -13,13 +13,16 @@
 
 package org.apache.pekko.actor.dungeon;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
+
 import org.apache.pekko.actor.ActorCell;
 import org.apache.pekko.util.Unsafe;
 
 final class AbstractActorCell {
   static final long mailboxOffset;
   static final long childrenOffset;
-  static final long nextNameOffset;
+  static final VarHandle nextNameHandle;
   static final long functionRefsOffset;
 
   static {
@@ -32,14 +35,17 @@ final class AbstractActorCell {
           Unsafe.instance.objectFieldOffset(
               ActorCell.class.getDeclaredField(
                   "org$apache$pekko$actor$dungeon$Children$$_childrenRefsDoNotCallMeDirectly"));
-      nextNameOffset =
-          Unsafe.instance.objectFieldOffset(
-              ActorCell.class.getDeclaredField(
-                  "org$apache$pekko$actor$dungeon$Children$$_nextNameDoNotCallMeDirectly"));
       functionRefsOffset =
           Unsafe.instance.objectFieldOffset(
               ActorCell.class.getDeclaredField(
                   "org$apache$pekko$actor$dungeon$Children$$_functionRefsDoNotCallMeDirectly"));
+      MethodHandles.Lookup lookup =
+          MethodHandles.privateLookupIn(ActorCell.class, MethodHandles.lookup());
+      nextNameHandle =
+          lookup.findVarHandle(
+              ActorCell.class,
+              "org$apache$pekko$actor$dungeon$Children$$_nextNameDoNotCallMeDirectly",
+              long.class);
     } catch (Throwable t) {
       throw new ExceptionInInitializerError(t);
     }
