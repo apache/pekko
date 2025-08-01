@@ -54,9 +54,6 @@ private[pekko] object NoMaterializer extends Materializer {
   def scheduleOnce(delay: FiniteDuration, task: Runnable): Cancellable =
     throw new UnsupportedOperationException("NoMaterializer cannot schedule a single event")
 
-  def schedulePeriodically(initialDelay: FiniteDuration, interval: FiniteDuration, task: Runnable): Cancellable =
-    throw new UnsupportedOperationException("NoMaterializer cannot schedule a repeated event")
-
   override def scheduleWithFixedDelay(
       initialDelay: FiniteDuration,
       delay: FiniteDuration,

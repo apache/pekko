@@ -20,7 +20,6 @@ import java.util.stream.Collector
 
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable
-import scala.concurrent.ExecutionContext
 import scala.util.Try
 
 import org.apache.pekko

@@ -16,7 +16,7 @@ package org.apache.pekko.stream.scaladsl
 import scala.annotation.tailrec
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.Future
 import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
