@@ -56,7 +56,9 @@ import pekko.persistence.typed.{
   SnapshotCompleted,
   SnapshotFailed,
   SnapshotMetadata,
-  SnapshotSelectionCriteria
+  SnapshotSelectionCriteria,
+  JournalPersistFailed,
+  JournalPersistRejected,
 }
 import pekko.persistence.typed.internal.EventSourcedBehaviorImpl.{ GetSeenSequenceNr, GetState, GetStateReply }
 import pekko.persistence.typed.internal.InternalProtocol.ReplicatedEventEnvelope
@@ -816,12 +818,20 @@ private[pekko] object Running {
         case WriteMessageRejected(p, cause, id) =>
           if (id == setup.writerIdentity.instanceId) {
             onWriteRejected(setup.context, cause, p)
+            val signal = JournalPersistRejected(cause)
+            if (setup.onSignal(state.state, signal, catchAndLog = false)) {
+              setup.internalLogger.debug("Emitted signal [{}].", signal)
+            }
             throw new EventRejectedException(setup.persistenceId, p.sequenceNr, cause)
           } else this
 
         case WriteMessageFailure(p, cause, id) =>
           if (id == setup.writerIdentity.instanceId) {
             onWriteFailed(setup.context, cause, p)
+            val signal = JournalPersistFailed(cause)
+            if (setup.onSignal(state.state, signal, catchAndLog = false)) {
+              setup.internalLogger.debug("Emitted signal [{}].", signal)
+            }
             throw new JournalFailureException(setup.persistenceId, p.sequenceNr, p.payload.getClass.getName, cause)
           } else this
 
