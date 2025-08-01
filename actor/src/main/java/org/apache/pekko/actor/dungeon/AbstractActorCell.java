@@ -18,20 +18,15 @@ import java.lang.invoke.VarHandle;
 
 import org.apache.pekko.actor.ActorCell;
 import org.apache.pekko.dispatch.Mailbox;
-import org.apache.pekko.util.Unsafe;
 
 final class AbstractActorCell {
   static final VarHandle mailboxHandle;
   static final VarHandle childrenHandle;
   static final VarHandle nextNameHandle;
-  static final long functionRefsOffset;
+  static final VarHandle functionRefsHandle;
 
   static {
     try {
-      functionRefsOffset =
-          Unsafe.instance.objectFieldOffset(
-              ActorCell.class.getDeclaredField(
-                  "org$apache$pekko$actor$dungeon$Children$$_functionRefsDoNotCallMeDirectly"));
       MethodHandles.Lookup lookup =
           MethodHandles.privateLookupIn(ActorCell.class, MethodHandles.lookup());
       mailboxHandle =
@@ -49,6 +44,12 @@ final class AbstractActorCell {
               ActorCell.class,
               "org$apache$pekko$actor$dungeon$Children$$_nextNameDoNotCallMeDirectly",
               long.class);
+      functionRefsHandle =
+          lookup.findVarHandle(
+              ActorCell.class,
+              "org$apache$pekko$actor$dungeon$Children$$_functionRefsDoNotCallMeDirectly",
+              scala.collection.immutable.Map.class);
+
     } catch (Throwable t) {
       throw new ExceptionInInitializerError(t);
     }

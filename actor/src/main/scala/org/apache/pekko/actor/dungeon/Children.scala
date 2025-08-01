@@ -23,7 +23,7 @@ import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.InternalStableApi
 import pekko.serialization.{ Serialization, SerializationExtension, Serializers }
-import pekko.util.{ Helpers, Unsafe }
+import pekko.util.Helpers
 
 private[pekko] object Children {
   val GetNobody = () => Nobody
@@ -62,10 +62,9 @@ private[pekko] trait Children { this: ActorCell =>
   private[pekko] def attachChild(props: Props, name: String, systemService: Boolean): ActorRef =
     makeChild(this, props, checkName(name), async = true, systemService = systemService)
 
-  @nowarn @volatile private var _functionRefsDoNotCallMeDirectly = Map.empty[String, FunctionRef]
+  @nowarn @volatile private var _functionRefsDoNotCallMeDirectly = immutable.Map.empty[String, FunctionRef]
   private def functionRefs: Map[String, FunctionRef] =
-    Unsafe.instance.getObjectVolatile(this, AbstractActorCell.functionRefsOffset).asInstanceOf[Map[String,
-      FunctionRef]]: @nowarn("cat=deprecation")
+    AbstractActorCell.functionRefsHandle.get(this)
 
   private[pekko] def getFunctionRefOrNobody(name: String, uid: Int = ActorCell.undefinedUid): InternalActorRef =
     functionRefs.getOrElse(name, Children.GetNobody()) match {
@@ -84,8 +83,7 @@ private[pekko] trait Children { this: ActorCell =>
     @tailrec def rec(): Unit = {
       val old = functionRefs
       val added = old.updated(childPath.name, ref)
-      if (!Unsafe.instance.compareAndSwapObject(this, AbstractActorCell.functionRefsOffset, old, added): @nowarn(
-          "cat=deprecation")) rec()
+      if (!AbstractActorCell.functionRefsHandle.compareAndSet(this, old, added)) rec()
     }
     rec()
 
@@ -100,8 +98,7 @@ private[pekko] trait Children { this: ActorCell =>
       if (!old.contains(name)) false
       else {
         val removed = old - name
-        if (!Unsafe.instance.compareAndSwapObject(this, AbstractActorCell.functionRefsOffset, old, removed): @nowarn(
-            "cat=deprecation")) rec()
+        if (!AbstractActorCell.functionRefsHandle.compareAndSet(this, old, removed)) rec()
         else {
           ref.stop()
           true
@@ -112,9 +109,9 @@ private[pekko] trait Children { this: ActorCell =>
   }
 
   protected def stopFunctionRefs(): Unit = {
-    val refs = Unsafe.instance
-      .getAndSetObject(this, AbstractActorCell.functionRefsOffset, Map.empty)
-      .asInstanceOf[Map[String, FunctionRef]]: @nowarn("cat=deprecation")
+    val refs = AbstractActorCell.functionRefsHandle
+      .getAndSet(this, Map.empty)
+      .asInstanceOf[Map[String, FunctionRef]]
     refs.valuesIterator.foreach(_.stop())
   }
 
