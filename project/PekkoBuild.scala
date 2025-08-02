@@ -111,8 +111,7 @@ object PekkoBuild {
 
   private val jvmGCLogOptions: Seq[String] = Seq("-Xlog:gc*")
 
-  // -XDignore.symbol.file suppresses sun.misc.Unsafe warnings
-  final val DefaultJavacOptions = Seq("-encoding", "UTF-8", "-Xlint:unchecked", "-XDignore.symbol.file")
+  final val DefaultJavacOptions = Seq("-encoding", "UTF-8", "-Xlint:unchecked")
 
   lazy val defaultSettings: Seq[Setting[_]] = Def.settings(
     projectInfoVersion := (if (isSnapshot.value) "snapshot" else version.value),
