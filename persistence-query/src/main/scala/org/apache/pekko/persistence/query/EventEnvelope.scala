@@ -15,13 +15,13 @@ package org.apache.pekko.persistence.query
 
 import java.util.Optional
 
-import scala.runtime.AbstractFunction4
+import scala.runtime.AbstractFunction5
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.util.HashCode
 
 // for binary compatibility (used to be a case class)
-object EventEnvelope extends AbstractFunction4[Offset, String, Long, Any, EventEnvelope] {
+object EventEnvelope extends AbstractFunction5[Offset, String, Long, Any, Long, EventEnvelope] {
   def apply(offset: Offset, persistenceId: String, sequenceNr: Long, event: Any, timestamp: Long): EventEnvelope =
     new EventEnvelope(offset, persistenceId, sequenceNr, event, timestamp, None)
 
