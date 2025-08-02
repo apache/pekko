@@ -15,47 +15,36 @@ package org.apache.pekko.util;
 
 import org.apache.pekko.annotation.InternalApi;
 
-import java.lang.reflect.Field;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.nio.charset.StandardCharsets;
 
 /** INTERNAL API */
 @InternalApi
 public final class Unsafe {
-  private static final sun.misc.Unsafe instance;
-
-  private static final long stringValueFieldOffset;
+  private static final VarHandle stringValueFieldHandle;
   private static final int copyUSAsciiStrToBytesAlgorithm;
 
   static {
     try {
-      sun.misc.Unsafe found = null;
-      for (Field field : sun.misc.Unsafe.class.getDeclaredFields()) {
-        if (field.getType() == sun.misc.Unsafe.class) {
-          field.setAccessible(true);
-          found = (sun.misc.Unsafe) field.get(null);
-          break;
-        }
-      }
-      if (found == null) throw new IllegalStateException("Can't find instance of sun.misc.Unsafe");
-      else instance = found;
-
-      long fo;
+      VarHandle handle;
       try {
-        fo = instance.objectFieldOffset(String.class.getDeclaredField("value"));
+        MethodHandles.Lookup lookup =
+            MethodHandles.privateLookupIn(String.class, MethodHandles.lookup());
+        handle = lookup.findVarHandle(String.class, "value", byte[].class);
       } catch (NoSuchFieldException nsfe) {
         // The platform's implementation of String doesn't have a 'value' field, so we have to use
         // algorithm 0
-        fo = -1;
+        handle = null;
       }
-      stringValueFieldOffset = fo;
+      stringValueFieldHandle = handle;
 
-      if (stringValueFieldOffset > -1) {
-        // Select optimization algorithm for `copyUSAciiBytesToStr`.
+      if (handle != null) {
+        // Select optimization algorithm for `copyUSAsciiBytesToStr`.
         // For example algorithm 1 will fail with JDK 11 on ARM32 (Raspberry Pi),
         // and therefore algorithm 0 is selected on that architecture.
         String testStr = "abc";
         if (testUSAsciiStrToBytesAlgorithm1(testStr)) copyUSAsciiStrToBytesAlgorithm = 1;
-        else if (testUSAsciiStrToBytesAlgorithm2(testStr)) copyUSAsciiStrToBytesAlgorithm = 2;
         else copyUSAsciiStrToBytesAlgorithm = 0;
       } else
         // We know so little about the platform's String implementation that we have
@@ -70,12 +59,12 @@ public final class Unsafe {
     try {
       byte[] bytes = new byte[str.length()];
 
-      // copy of implementation in copyUSAciiBytesToStr
+      // copy of implementation in copyUSAsciiBytesToStr
       byte[] strBytes = str.getBytes(StandardCharsets.US_ASCII);
       System.arraycopy(strBytes, 0, bytes, 0, str.length());
       // end copy
 
-      String result = copyUSAciiBytesToStr(str.length(), bytes);
+      String result = copyUSAsciiBytesToStr(str.length(), bytes);
       return str.equals(result);
     } catch (Throwable all) {
       return false;
@@ -86,38 +75,19 @@ public final class Unsafe {
     try {
       byte[] bytes = new byte[str.length()];
 
-      // copy of implementation in copyUSAciiBytesToStr
-      final byte[] chars = (byte[]) instance.getObject(str, stringValueFieldOffset);
+      // copy of implementation in copyUSAsciiBytesToStr
+      final byte[] chars = (byte[]) stringValueFieldHandle.get(str);
       System.arraycopy(chars, 0, bytes, 0, str.length());
       // end copy
 
-      String result = copyUSAciiBytesToStr(str.length(), bytes);
+      String result = copyUSAsciiBytesToStr(str.length(), bytes);
       return str.equals(result);
     } catch (Throwable all) {
       return false;
     }
   }
 
-  static boolean testUSAsciiStrToBytesAlgorithm2(String str) {
-    try {
-      byte[] bytes = new byte[str.length()];
-
-      // copy of implementation in copyUSAciiBytesToStr
-      final char[] chars = (char[]) instance.getObject(str, stringValueFieldOffset);
-      int i = 0;
-      while (i < str.length()) {
-        bytes[i] = (byte) chars[i++];
-      }
-      // end copy
-
-      String result = copyUSAciiBytesToStr(str.length(), bytes);
-      return str.equals(result);
-    } catch (Throwable all) {
-      return false;
-    }
-  }
-
-  private static String copyUSAciiBytesToStr(int length, byte[] bytes) {
+  private static String copyUSAsciiBytesToStr(int length, byte[] bytes) {
     char[] resultChars = new char[length];
     int i = 0;
     while (i < length) {
@@ -130,14 +100,8 @@ public final class Unsafe {
 
   public static void copyUSAsciiStrToBytes(String str, byte[] bytes) {
     if (copyUSAsciiStrToBytesAlgorithm == 1) {
-      final byte[] chars = (byte[]) instance.getObject(str, stringValueFieldOffset);
+      final byte[] chars = (byte[]) stringValueFieldHandle.get(str);
       System.arraycopy(chars, 0, bytes, 0, str.length());
-    } else if (copyUSAsciiStrToBytesAlgorithm == 2) {
-      final char[] chars = (char[]) instance.getObject(str, stringValueFieldOffset);
-      int i = 0;
-      while (i < str.length()) {
-        bytes[i] = (byte) chars[i++];
-      }
     } else {
       byte[] strBytes = str.getBytes(StandardCharsets.US_ASCII);
       System.arraycopy(strBytes, 0, bytes, 0, str.length());
@@ -150,20 +114,7 @@ public final class Unsafe {
     int i = 0;
 
     if (copyUSAsciiStrToBytesAlgorithm == 1) {
-      final byte[] chars = (byte[]) instance.getObject(str, stringValueFieldOffset);
-      while (i < str.length()) {
-        long x = s0 ^ (long) chars[i++]; // Mix character into PRNG state
-        long y = s1;
-
-        // Xorshift128+ round
-        s0 = y;
-        x ^= x << 23;
-        y ^= y >>> 26;
-        x ^= x >>> 17;
-        s1 = x ^ y;
-      }
-    } else if (copyUSAsciiStrToBytesAlgorithm == 2) {
-      final char[] chars = (char[]) instance.getObject(str, stringValueFieldOffset);
+      final byte[] chars = (byte[]) stringValueFieldHandle.get(str);
       while (i < str.length()) {
         long x = s0 ^ (long) chars[i++]; // Mix character into PRNG state
         long y = s1;
