@@ -17,7 +17,6 @@ import org.apache.pekko.annotation.InternalApi;
 
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 /** INTERNAL API */
 @InternalApi
@@ -25,7 +24,6 @@ public final class Unsafe {
   public static final sun.misc.Unsafe instance;
 
   private static final long stringValueFieldOffset;
-  private static final boolean isJavaVersion9Plus;
   private static final int copyUSAsciiStrToBytesAlgorithm;
 
   static {
@@ -51,15 +49,12 @@ public final class Unsafe {
       }
       stringValueFieldOffset = fo;
 
-      isJavaVersion9Plus = isIsJavaVersion9Plus();
-
       if (stringValueFieldOffset > -1) {
         // Select optimization algorithm for `copyUSAciiBytesToStr`.
         // For example algorithm 1 will fail with JDK 11 on ARM32 (Raspberry Pi),
         // and therefore algorithm 0 is selected on that architecture.
         String testStr = "abc";
-        if (isJavaVersion9Plus && testUSAsciiStrToBytesAlgorithm1(testStr))
-          copyUSAsciiStrToBytesAlgorithm = 1;
+        if (testUSAsciiStrToBytesAlgorithm1(testStr)) copyUSAsciiStrToBytesAlgorithm = 1;
         else if (testUSAsciiStrToBytesAlgorithm2(testStr)) copyUSAsciiStrToBytesAlgorithm = 2;
         else copyUSAsciiStrToBytesAlgorithm = 0;
       } else
@@ -69,17 +64,6 @@ public final class Unsafe {
     } catch (Throwable t) {
       throw new ExceptionInInitializerError(t);
     }
-  }
-
-  static boolean isIsJavaVersion9Plus() {
-    // See Oracle section 1.5.3 at:
-    // https://docs.oracle.com/javase/8/docs/technotes/guides/versioning/spec/versioning2.html
-    final int[] version =
-        Arrays.stream(System.getProperty("java.specification.version").split("\\."))
-            .mapToInt(Integer::parseInt)
-            .toArray();
-    final int javaVersion = version[0] == 1 ? version[1] : version[0];
-    return javaVersion > 8;
   }
 
   static boolean testUSAsciiStrToBytesAlgorithm0(String str) {
