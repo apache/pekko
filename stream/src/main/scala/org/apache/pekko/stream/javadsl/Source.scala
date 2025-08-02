@@ -3588,7 +3588,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    */
   def take(n: Long): javadsl.Source[Out, Mat] =
     new Source(delegate.take(n))
-    
+
   /**
    * Terminate processing (and cancel the upstream publisher) after the given
    * duration. Due to input buffering some elements may have been

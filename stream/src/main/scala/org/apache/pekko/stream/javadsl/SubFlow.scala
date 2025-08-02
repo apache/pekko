@@ -2486,7 +2486,7 @@ final class SubFlow[In, Out, Mat](
       cost: Int,
       per: java.time.Duration,
       costCalculation: function.Function[Out, Integer]): javadsl.SubFlow[In, Out, Mat] =
-    new SubFlow(delegate.throttle(cost, per.asScala, costCalculation.apply))   
+    new SubFlow(delegate.throttle(cost, per.asScala, costCalculation.apply))
 
   /**
    * Sends elements downstream with speed limited to `cost/per`. Cost is
