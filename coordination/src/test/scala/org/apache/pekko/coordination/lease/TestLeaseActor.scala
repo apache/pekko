@@ -94,7 +94,7 @@ class TestLeaseActorClientExt(val system: ExtendedActorSystem) extends Extension
 
   def getLeaseActor(): ActorRef = {
     val lease = leaseActor.get
-    if (lease == null) throw new IllegalStateException("LeaseActorRef must be set first")
+    if (lease eq null) throw new IllegalStateException("LeaseActorRef must be set first")
     lease
   }
 

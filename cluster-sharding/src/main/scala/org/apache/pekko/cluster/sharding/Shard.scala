@@ -1045,7 +1045,7 @@ private[pekko] class Shard(
 
   private def deliverMessage(msg: Any, snd: ActorRef): Unit = {
     val (entityId, payload) = extractEntityId(msg)
-    if (entityId == null || entityId == "") {
+    if ((entityId eq null) || entityId == "") {
       log.warning("{}: Id must not be empty, dropping message [{}]", typeName, msg.getClass.getName)
       context.system.deadLetters ! Dropped(msg, "No recipient entity id", snd, self)
     } else {

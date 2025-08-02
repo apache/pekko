@@ -69,7 +69,7 @@ abstract class QuickRestartSpec extends MultiNodeClusterSpec(QuickRestartMultiJv
       for (n <- 1 to rounds) {
         log.info("round-" + n)
         runOn(second) {
-          restartingSystem = if (restartingSystem == null) {
+          restartingSystem = if (restartingSystem eq null) {
             ActorSystem(
               system.name,
               MultiNodeSpec.configureNextPortIfFixed(

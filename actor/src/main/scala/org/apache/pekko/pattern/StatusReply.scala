@@ -35,7 +35,7 @@ import pekko.dispatch.ExecutionContexts
  * @tparam T the type of value a successful reply would have
  */
 final class StatusReply[+T] private (private val status: Try[T]) {
-  if (status == null)
+  if (status eq null)
     throw InvalidMessageException("[null] is not an allowed status")
 
   /**

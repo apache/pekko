@@ -90,7 +90,7 @@ private[pekko] trait FaultHandling { this: ActorCell =>
    * Do re-create the actor in response to a failure.
    */
   protected def faultRecreate(cause: Throwable): Unit =
-    if (actor == null) {
+    if (actor eq null) {
       system.eventStream.publish(
         Error(self.path.toString, clazz(actor), "changing Recreate into Create after " + cause))
       faultCreate()
@@ -134,7 +134,7 @@ private[pekko] trait FaultHandling { this: ActorCell =>
    *        prompted this action.
    */
   protected def faultResume(causedByFailure: Throwable): Unit = {
-    if (actor == null) {
+    if (actor eq null) {
       system.eventStream.publish(
         Error(self.path.toString, clazz(actor), "changing Resume into Create after " + causedByFailure))
       faultCreate()

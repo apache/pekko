@@ -119,7 +119,7 @@ private[pekko] object Reflect {
         } else null
       }
 
-    if (constructor == null) error("no matching constructor")
+    if (constructor eq null) error("no matching constructor")
     else constructor
   }
 

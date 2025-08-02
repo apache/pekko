@@ -422,7 +422,7 @@ final class ExplicitlyAskableActorRef(val actorRef: ActorRef) extends AnyVal {
             s"question not sent to [$actorRef]."))
       case _ =>
         val message =
-          if (sender == null) null else messageFactory(sender.asInstanceOf[InternalActorRef].provider.deadLetters)
+          if (sender eq null) null else messageFactory(sender.asInstanceOf[InternalActorRef].provider.deadLetters)
         Future.failed[Any](AskableActorRef.unsupportedRecipientType(actorRef, message, sender))
     }
 }
@@ -501,7 +501,7 @@ final class ExplicitlyAskableActorSelection(val actorSel: ActorSelection) extend
             s"question not sent to [$actorSel]."))
       case _ =>
         val message =
-          if (sender == null) null else messageFactory(sender.asInstanceOf[InternalActorRef].provider.deadLetters)
+          if (sender eq null) null else messageFactory(sender.asInstanceOf[InternalActorRef].provider.deadLetters)
         Future.failed[Any](AskableActorRef.unsupportedRecipientType(actorSel, message, sender))
     }
 }

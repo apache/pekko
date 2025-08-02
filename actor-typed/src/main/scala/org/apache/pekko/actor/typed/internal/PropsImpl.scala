@@ -66,7 +66,7 @@ import pekko.annotation.InternalApi
   }
 
   final case class ActorTagsImpl(tags: Set[String], next: Props = Props.empty) extends ActorTags {
-    if (tags == null)
+    if (tags eq null)
       throw new IllegalArgumentException("Tags must not be null")
     def withNext(next: Props): Props = copy(next = next)
   }

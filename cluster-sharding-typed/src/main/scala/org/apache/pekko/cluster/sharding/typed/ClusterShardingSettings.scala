@@ -121,7 +121,7 @@ object ClusterShardingSettings {
   }
 
   private def option(role: String): Option[String] =
-    if (role == "" || role == null) None else Option(role)
+    if (role == "" || (role eq null)) None else Option(role)
 
   sealed trait StateStoreMode { def name: String }
 

@@ -61,7 +61,7 @@ object MiscMessageSerializerSpec {
     }
 
     def stackTrace: List[StackTraceElement] =
-      if (getStackTrace == null) Nil
+      if (getStackTrace eq null) Nil
       else getStackTrace.toList
   }
 

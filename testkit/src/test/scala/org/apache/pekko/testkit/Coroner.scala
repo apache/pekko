@@ -167,7 +167,7 @@ object Coroner {
       } else {
         (threadMx.findMonitorDeadlockedThreads(), "monitors, but NOT ownable synchronizers")
       }
-      if (ids == null) {
+      if (ids eq null) {
         (Seq.empty, desc)
       } else {
         val maxTraceDepth = 1000 // Seems deep enough

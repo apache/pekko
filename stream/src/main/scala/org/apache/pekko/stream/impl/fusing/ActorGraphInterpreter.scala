@@ -573,7 +573,7 @@ import org.reactivestreams.Subscription
       (logic, event, promise, handler) => {
         val asyncInput = AsyncInput(this, logic, event, promise, handler)
         val currentInterpreter = GraphInterpreter.currentInterpreterOrNull
-        if (currentInterpreter == null || (currentInterpreter.context ne self))
+        if ((currentInterpreter eq null) || (currentInterpreter.context ne self))
           self ! asyncInput
         else enqueueToShortCircuit(asyncInput)
       }, attributes.mandatoryAttribute[ActorAttributes.FuzzingMode].enabled, self)

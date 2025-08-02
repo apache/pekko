@@ -46,7 +46,7 @@ class TestLeaseExt(val system: ExtendedActorSystem) extends Extension {
 
   def getTestLease(name: String): TestLease = {
     val lease = testLeases.get(name)
-    if (lease == null)
+    if (lease eq null)
       throw new IllegalStateException(
         s"Test lease $name has not been set yet. Current leases ${testLeases.keys().asScala.toList}")
     lease

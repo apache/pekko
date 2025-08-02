@@ -1364,7 +1364,7 @@ class PersistentShardCoordinator(
       state = st.withRememberEntities(settings.rememberEntities)
       // Old versions of the state object may not have unallocatedShard set,
       // thus it will be null.
-      if (state.unallocatedShards == null)
+      if (state.unallocatedShards eq null)
         state = state.copy(unallocatedShards = Set.empty)
 
     case RecoveryCompleted =>

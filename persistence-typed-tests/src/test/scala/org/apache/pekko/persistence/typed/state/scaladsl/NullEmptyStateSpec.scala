@@ -46,7 +46,7 @@ class NullEmptyStateSpec
       commandHandler = (state, command) => {
         if (command == "stop")
           Effect.stop()
-        else if (state == null)
+        else if (state eq null)
           Effect.persist(command).thenReply(probe)(newState => newState)
         else
           Effect.persist(s"$state:$command").thenReply(probe)(newState => newState)

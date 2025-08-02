@@ -742,7 +742,7 @@ trait TestKitBase {
 
     var elem: AnyRef = queue.peekFirst()
     var left = leftNow
-    while (left.toNanos > 0 && elem == null) {
+    while (left.toNanos > 0 && (elem eq null)) {
       // Use of (left / 2) gives geometric series limited by finish time similar to (1/2)^n limited by 1,
       // so it is very precise
       Thread.sleep(pollInterval.toMillis min (left / 2).toMillis)

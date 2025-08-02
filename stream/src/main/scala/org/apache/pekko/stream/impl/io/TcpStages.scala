@@ -414,7 +414,7 @@ private[stream] object ConnectionSourceStage {
     }
 
     private def closeConnectionDownstreamFinished(): Unit = {
-      if (connection == null) {
+      if (connection eq null) {
         // This is an outbound connection for which downstream finished
         // before the connection was even established.
         // In that case we close the connection as soon as upstream finishes

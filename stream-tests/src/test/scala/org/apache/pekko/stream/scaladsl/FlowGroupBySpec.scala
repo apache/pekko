@@ -640,7 +640,7 @@ class FlowGroupBySpec extends StreamSpec("""
             if (!state.hasDemand) blockingNextElement = byteString
             randomDemand()
           } else if (state.hasDemand) {
-            if (blockingNextElement == null) {
+            if (blockingNextElement eq null) {
               state.probe.expectNext() should ===(byteString)
               map.put(index, SubFlowState(state.probe, false, null))
               randomDemand()

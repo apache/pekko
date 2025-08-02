@@ -69,7 +69,7 @@ import pekko.util.OptionVal
     }
 
     @tailrec private def isAllowedSpringClass(clazz: Class[_]): Boolean = {
-      if (clazz == null || clazz.equals(classOf[java.lang.Object]))
+      if ((clazz eq null) || clazz.equals(classOf[java.lang.Object]))
         true
       else {
         val name = clazz.getSimpleName

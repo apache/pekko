@@ -89,7 +89,7 @@ final case class Identify(messageId: Any) extends AutoReceivedMessage with NotIn
  */
 @SerialVersionUID(1L)
 final case class ActorIdentity(correlationId: Any, ref: Option[ActorRef]) {
-  if (ref.isDefined && ref.get == null) {
+  if (ref.isDefined && (ref.get eq null)) {
     throw new IllegalArgumentException(
       "ActorIdentity created with ref = Some(null) is not allowed, " +
       "this could happen when serializing with Scala 2.12 and deserializing with Scala 2.11 which is not supported.")
@@ -201,7 +201,7 @@ class ActorInitializationException protected (actor: ActorRef, message: String, 
 }
 object ActorInitializationException {
   private def enrichedMessage(actor: ActorRef, message: String) =
-    if (actor == null) message else s"${actor.path}: $message"
+    if (actor eq null) message else s"${actor.path}: $message"
   private[pekko] def apply(actor: ActorRef, message: String, cause: Throwable = null): ActorInitializationException =
     new ActorInitializationException(actor, message, cause)
   private[pekko] def apply(message: String): ActorInitializationException =
@@ -230,7 +230,7 @@ final case class PreRestartException private[pekko] (
     extends ActorInitializationException(
       actor,
       "exception in preRestart(" +
-      (if (originalCause == null) "null" else originalCause.getClass) + ", " +
+      (if (originalCause eq null) "null" else originalCause.getClass) + ", " +
       (messageOption match { case Some(m: AnyRef) => m.getClass; case _ => "None" }) +
       ")",
       cause)
@@ -247,7 +247,7 @@ final case class PreRestartException private[pekko] (
 final case class PostRestartException private[pekko] (actor: ActorRef, cause: Throwable, originalCause: Throwable)
     extends ActorInitializationException(
       actor,
-      "exception post restart (" + (if (originalCause == null) "null" else originalCause.getClass) + ")",
+      "exception post restart (" + (if (originalCause eq null) "null" else originalCause.getClass) + ")",
       cause)
 
 /**

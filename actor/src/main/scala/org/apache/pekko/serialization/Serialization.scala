@@ -83,7 +83,7 @@ object Serialization {
             catch { case NonFatal(_) => path.toSerializationFormat }
         }
       case Information(address, system) =>
-        if (originalSystem == null || originalSystem == system)
+        if ((originalSystem eq null) || originalSystem == system)
           path.toSerializationFormatWithAddress(address)
         else {
           val provider = originalSystem.provider

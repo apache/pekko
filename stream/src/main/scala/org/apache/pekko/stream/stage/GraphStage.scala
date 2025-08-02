@@ -388,7 +388,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
    * INTERNAL API
    */
   private[pekko] def interpreter: GraphInterpreter =
-    if (_interpreter == null)
+    if (_interpreter eq null)
       throw new IllegalStateException(
         "not yet initialized: only setHandler is allowed in GraphStageLogic constructor. To access materializer use Source/Flow/Sink.fromMaterializer factory")
     else _interpreter
@@ -1092,7 +1092,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
     }
 
     def addFollowUp(e: Emitting[T]): Unit =
-      if (followUps == null) {
+      if (followUps eq null) {
         followUps = e
         followUpsTail = e
       } else {

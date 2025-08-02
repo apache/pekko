@@ -310,7 +310,7 @@ import pekko.stream.stage._
    * materializer for the GraphInterpreter—fusing is only an optimization.
    */
   def init(subMat: Materializer): Unit = {
-    _subFusingMaterializer = if (subMat == null) materializer else subMat
+    _subFusingMaterializer = if (subMat eq null) materializer else subMat
     var i = 0
     while (i < logics.length) {
       val logic = logics(i)
@@ -376,7 +376,7 @@ import pekko.stream.stage._
         chaseCounter = math.min(ChaseLimit, eventsRemaining)
 
         def reportStageError(e: Throwable): Unit = {
-          if (activeStage == null) throw e
+          if (activeStage eq null) throw e
           else {
             val loggingEnabled = activeStage.attributes.get[LogLevels] match {
               case Some(levels) => levels.onFailure != LogLevels.Off

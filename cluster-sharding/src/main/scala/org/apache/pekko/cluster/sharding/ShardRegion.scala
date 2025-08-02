@@ -1309,7 +1309,7 @@ private[pekko] class ShardRegion(
             if (verboseDebug)
               log.debug("{}: Forwarding message for shard [{}] to [{}]", typeName, shardId, shardRegionRef)
             shardRegionRef.tell(msg, snd)
-          case None if shardId == null || shardId == "" =>
+          case None if (shardId eq null) || shardId == "" =>
             log.warning("{}: Shard must not be empty, dropping message [{}]", typeName, msg.getClass.getName)
             context.system.deadLetters ! msg
           case None =>

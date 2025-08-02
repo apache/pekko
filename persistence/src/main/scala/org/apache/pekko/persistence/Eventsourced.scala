@@ -567,7 +567,7 @@ private[persistence] trait Eventsourced
    */
   def recoveryRunning: Boolean = {
     // currentState is null if this is called from constructor
-    if (currentState == null) true else currentState.recoveryRunning
+    if (currentState eq null) true else currentState.recoveryRunning
   }
 
   /**
