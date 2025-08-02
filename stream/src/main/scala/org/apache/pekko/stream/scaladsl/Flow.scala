@@ -3096,35 +3096,6 @@ trait FlowOps[+Out, +Mat] {
     via(new Throttle(cost, per, maximumBurst, costCalculation, mode))
 
   /**
-   * This is a simplified version of throttle that spreads events evenly across the given time interval. throttleEven using
-   * best effort approach to meet throttle rate.
-   *
-   * Use this operator when you need just slow down a stream without worrying about exact amount
-   * of time between events.
-   *
-   * If you want to be sure that no time interval has no more than specified number of events you need to use
-   * [[throttle]] with maximumBurst attribute.
-   * @see [[throttle]]
-   */
-  @deprecated("Use throttle without `maximumBurst` parameter instead.", "Akka 2.5.12")
-  def throttleEven(elements: Int, per: FiniteDuration, mode: ThrottleMode): Repr[Out] =
-    throttle(elements, per, Throttle.AutomaticMaximumBurst, ConstantFun.oneInt, mode)
-
-  /**
-   * This is a simplified version of throttle that spreads events evenly across the given time interval.
-   *
-   * Use this operator when you need just slow down a stream without worrying about exact amount
-   * of time between events.
-   *
-   * If you want to be sure that no time interval has no more than specified number of events you need to use
-   * [[throttle]] with maximumBurst attribute.
-   * @see [[throttle]]
-   */
-  @deprecated("Use throttle without `maximumBurst` parameter instead.", "Akka 2.5.12")
-  def throttleEven(cost: Int, per: FiniteDuration, costCalculation: (Out) => Int, mode: ThrottleMode): Repr[Out] =
-    throttle(cost, per, Throttle.AutomaticMaximumBurst, costCalculation, mode)
-
-  /**
    * Detaches upstream demand from downstream demand without detaching the
    * stream rates; in other words acts like a buffer of size 1.
    *
