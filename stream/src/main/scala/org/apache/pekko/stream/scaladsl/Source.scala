@@ -548,26 +548,6 @@ object Source {
     Source.fromGraph(new FailedSource[T](cause))
 
   /**
-   * Creates a `Source` that is not materialized until there is downstream demand, when the source gets materialized
-   * the materialized future is completed with its value, if downstream cancels or fails without any demand the
-   * create factory is never called and the materialized `Future` is failed.
-   */
-  @deprecated("Use 'Source.lazySource' instead", "Akka 2.6.0")
-  def lazily[T, M](create: () => Source[T, M]): Source[T, Future[M]] =
-    Source.fromGraph(new LazySource[T, M](create))
-
-  /**
-   * Creates a `Source` from supplied future factory that is not called until downstream demand. When source gets
-   * materialized the materialized future is completed with the value from the factory. If downstream cancels or fails
-   * without any demand the create factory is never called and the materialized `Future` is failed.
-   *
-   * @see [[Source.lazily]]
-   */
-  @deprecated("Use 'Source.lazyFuture' instead", "Akka 2.6.0")
-  def lazilyAsync[T](create: () => Future[T]): Source[T, Future[NotUsed]] =
-    lazily(() => fromFuture(create()))
-
-  /**
    * Emits a single value when the given `Future` is successfully completed and then completes the stream.
    * The stream fails if the `Future` is completed with a failure.
    */
