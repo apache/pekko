@@ -17,7 +17,7 @@ import java.util.{ Comparator, Optional }
 import java.util.concurrent.CompletionStage
 import java.util.function.Supplier
 
-import scala.annotation.{ nowarn, varargs }
+import scala.annotation.varargs
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable
 import scala.reflect.ClassTag
