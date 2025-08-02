@@ -1098,11 +1098,13 @@ object Source {
    * @param read - function that reads data from opened resource. It is called each time backpressure signal
    *             is received. Stream calls close and completes when `Future` from read function returns None.
    * @param close - function that closes resource
+   * @tparam T the element type
+   * @tparam R the resource type
    */
-  def unfoldResourceAsync[T, S](
-      create: () => Future[S],
-      read: (S) => Future[Option[T]],
-      close: (S) => Future[Done]): Source[T, NotUsed] =
+  def unfoldResourceAsync[T, R](
+      create: () => Future[R],
+      read: (R) => Future[Option[T]],
+      close: (R) => Future[Done]): Source[T, NotUsed] =
     Source.fromGraph(new UnfoldResourceSourceAsync(create, read, close))
 
   /**

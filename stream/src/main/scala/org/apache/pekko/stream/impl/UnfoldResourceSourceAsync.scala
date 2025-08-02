@@ -31,10 +31,10 @@ import pekko.util.OptionVal
 /**
  * INTERNAL API
  */
-@InternalApi private[pekko] final class UnfoldResourceSourceAsync[T, S](
-    create: () => Future[S],
-    readData: (S) => Future[Option[T]],
-    close: (S) => Future[Done])
+@InternalApi private[pekko] final class UnfoldResourceSourceAsync[R, T](
+    create: () => Future[R],
+    readData: (R) => Future[Option[T]],
+    close: (R) => Future[Done])
     extends GraphStage[SourceShape[T]] {
   val out = Outlet[T]("UnfoldResourceSourceAsync.out")
   override val shape = SourceShape(out)
@@ -45,9 +45,9 @@ import pekko.util.OptionVal
     new GraphStageLogic(shape) with OutHandler {
       private lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
       private implicit def ec: ExecutionContext = materializer.executionContext
-      private var maybeResource: OptionVal[S] = OptionVal.none
+      private var maybeResource: OptionVal[R] = OptionVal.none
 
-      private val createdCallback = getAsyncCallback[Try[S]] {
+      private val createdCallback = getAsyncCallback[Try[R]] {
         case Success(resource) =>
           require(resource != null, "`create` method should not return a null resource.")
           maybeResource = OptionVal(resource)
@@ -134,7 +134,7 @@ import pekko.util.OptionVal
           createdCallback(resource).failed.foreach {
             case _: StreamDetachedException =>
               // stream stopped before created callback could be invoked, we need
-              // to close the resource if it is was opened, to not leak it
+              // to close the resource if it was opened, to not leak it
               resource match {
                 case Success(r) =>
                   close(r)
