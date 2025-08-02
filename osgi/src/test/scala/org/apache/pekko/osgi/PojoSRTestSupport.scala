@@ -18,7 +18,7 @@ import java.net.URL
 import java.util.{ Date, HashMap, ServiceLoader, UUID }
 import java.util.jar.JarInputStream
 
-import scala.annotation.tailrec
+import scala.annotation.{ nowarn, tailrec }
 import scala.collection.immutable
 import scala.concurrent.duration._
 import scala.reflect.ClassTag
@@ -158,6 +158,7 @@ class BundleDescriptorBuilder(name: String) {
   /**
    * Build the actual PojoSR BundleDescriptor instance
    */
+  @nowarn("msg=deprecated")
   def build: BundleDescriptor = {
     val file: File = tinybundleToJarFile(name)
     new BundleDescriptor(
