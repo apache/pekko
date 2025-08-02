@@ -34,7 +34,7 @@ public final class Unsafe {
         handle = lookup.findVarHandle(String.class, "value", byte[].class);
       } catch (NoSuchFieldException | IllegalAccessException e) {
         // The platform's implementation of String doesn't have a 'value' field
-        // of the field is inaccessible, so we have to use algorithm 0.
+        // or the field is inaccessible, so we have to use algorithm 0.
         // You need `--add-opens=java.base/java.lang=ALL-UNNAMED` or similar to access it.
         handle = null;
       }
