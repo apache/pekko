@@ -15,13 +15,13 @@ package org.apache.pekko.persistence.query
 
 import java.util.Optional
 
-import scala.runtime.AbstractFunction4
+import scala.runtime.AbstractFunction5
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.util.HashCode
 
 // for binary compatibility (used to be a case class)
-object EventEnvelope extends AbstractFunction4[Offset, String, Long, Any, EventEnvelope] {
+object EventEnvelope extends AbstractFunction5[Offset, String, Long, Any, Long, EventEnvelope] {
   def apply(offset: Offset, persistenceId: String, sequenceNr: Long, event: Any, timestamp: Long): EventEnvelope =
     new EventEnvelope(offset, persistenceId, sequenceNr, event, timestamp, None)
 
@@ -33,10 +33,6 @@ object EventEnvelope extends AbstractFunction4[Offset, String, Long, Any, EventE
       timestamp: Long,
       meta: Option[Any]): EventEnvelope =
     new EventEnvelope(offset, persistenceId, sequenceNr, event, timestamp, meta)
-
-  @deprecated("for binary compatibility", "Akka 2.6.2")
-  override def apply(offset: Offset, persistenceId: String, sequenceNr: Long, event: Any): EventEnvelope =
-    new EventEnvelope(offset, persistenceId, sequenceNr, event)
 
   def unapply(arg: EventEnvelope): Option[(Offset, String, Long, Any)] =
     Some((arg.offset, arg.persistenceId, arg.sequenceNr, arg.event))
@@ -59,10 +55,6 @@ final class EventEnvelope(
     val eventMetadata: Option[Any])
     extends Product4[Offset, String, Long, Any]
     with Serializable {
-
-  @deprecated("for binary compatibility", "Akka 2.6.2")
-  def this(offset: Offset, persistenceId: String, sequenceNr: Long, event: Any) =
-    this(offset, persistenceId, sequenceNr, event, 0L, None)
 
   // bin compat 2.6.7
   def this(offset: Offset, persistenceId: String, sequenceNr: Long, event: Any, timestamp: Long) =

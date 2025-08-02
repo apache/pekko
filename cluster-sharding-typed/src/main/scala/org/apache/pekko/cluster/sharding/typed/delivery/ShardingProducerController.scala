@@ -213,9 +213,6 @@ object ShardingProducerController {
       val resendFirstUnconfirmedIdleTimeout: FiniteDuration,
       val producerControllerSettings: ProducerController.Settings) {
 
-    @deprecated("use resendFirstUnconfirmedIdleTimeout", "Akka 2.6.19")
-    def resendFirsUnconfirmedIdleTimeout: FiniteDuration = resendFirstUnconfirmedIdleTimeout
-
     if (producerControllerSettings.chunkLargeMessagesBytes > 0)
       throw new IllegalArgumentException("Chunked messages not implemented for sharding yet.")
 
@@ -238,14 +235,6 @@ object ShardingProducerController {
       copy(resendFirstUnconfirmedIdleTimeout = newResendFirstUnconfirmedIdleTimeout)
 
     def withResendFirstUnconfirmedIdleTimeout(newResendFirstUnconfirmedIdleTimeout: java.time.Duration): Settings =
-      copy(resendFirstUnconfirmedIdleTimeout = newResendFirstUnconfirmedIdleTimeout.asScala)
-
-    @deprecated("use resendFirstUnconfirmedIdleTimeout", "Akka 2.6.19")
-    def withResendFirsUnconfirmedIdleTimeout(newResendFirstUnconfirmedIdleTimeout: FiniteDuration): Settings =
-      copy(resendFirstUnconfirmedIdleTimeout = newResendFirstUnconfirmedIdleTimeout)
-
-    @deprecated("use resendFirstUnconfirmedIdleTimeout", "Akka 2.6.19")
-    def withResendFirsUnconfirmedIdleTimeout(newResendFirstUnconfirmedIdleTimeout: java.time.Duration): Settings =
       copy(resendFirstUnconfirmedIdleTimeout = newResendFirstUnconfirmedIdleTimeout.asScala)
 
     def withProducerControllerSettings(newProducerControllerSettings: ProducerController.Settings): Settings =
