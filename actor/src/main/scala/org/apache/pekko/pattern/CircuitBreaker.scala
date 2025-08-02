@@ -30,6 +30,7 @@ import pekko.PekkoException
 import pekko.actor.{ ExtendedActorSystem, Scheduler }
 import pekko.dispatch.ExecutionContexts.parasitic
 import pekko.pattern.internal.{ CircuitBreakerNoopTelemetry, CircuitBreakerTelemetry }
+import pekko.annotation.InternalApi
 import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
 
@@ -769,6 +770,7 @@ class CircuitBreaker(
   /**
    * Internal state abstraction
    */
+  @InternalApi
   private[pattern] sealed trait State {
     private val listeners = new CopyOnWriteArrayList[Runnable]
 
