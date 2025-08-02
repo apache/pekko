@@ -505,16 +505,6 @@ object Flow {
     Flow.fromGraph(new SetupFlowStage(factory))
 
   /**
-   * Defers the creation of a [[Flow]] until materialization. The `factory` function
-   * exposes [[ActorMaterializer]] which is going to be used during materialization and
-   * [[Attributes]] of the [[Flow]] returned by this method.
-   */
-  @deprecated("Use 'fromMaterializer' instead", "Akka 2.6.0")
-  def setup[T, U, M](factory: (ActorMaterializer, Attributes) => Flow[T, U, M]): Flow[T, U, Future[M]] =
-    Flow.fromGraph(new SetupFlowStage((materializer, attributes) =>
-      factory(ActorMaterializerHelper.downcast(materializer), attributes)))
-
-  /**
    * Creates a `Flow` from a `Sink` and a `Source` where the Flow's input
    * will be sent to the Sink and the Flow's output will come from the Source.
    *
@@ -671,63 +661,6 @@ object Flow {
       FlowShape(bidi.in1, bidi.out2)
     })
   // format: ON
-
-  /**
-   * Creates a real `Flow` upon receiving the first element. Internal `Flow` will not be created
-   * if there are no elements, because of completion, cancellation, or error.
-   *
-   * The materialized value of the `Flow` is the value that is created by the `fallback` function.
-   *
-   * '''Emits when''' the internal flow is successfully created and it emits
-   *
-   * '''Backpressures when''' the internal flow is successfully created and it backpressures
-   *
-   * '''Completes when''' upstream completes and all elements have been emitted from the internal flow
-   *
-   * '''Cancels when''' downstream cancels (see below)
-   *
-   * The operator's default behavior in case of downstream cancellation before nested flow materialization (future completion) is to cancel immediately.
-   *  This behavior can be controlled by setting the [[pekko.stream.Attributes.NestedMaterializationCancellationPolicy.PropagateToNested]] attribute,
-   * this will delay downstream cancellation until nested flow's materialization which is then immediately cancelled (with the original cancellation cause).
-   */
-  @deprecated(
-    "Use 'Flow.futureFlow' in combination with prefixAndTail(1) instead, see `futureFlow` operator docs for details",
-    "Akka 2.6.0")
-  def lazyInit[I, O, M](flowFactory: I => Future[Flow[I, O, M]], fallback: () => M): Flow[I, O, M] =
-    Flow[I]
-      .flatMapPrefix(1) {
-        case Seq(a) => futureFlow(flowFactory(a)).mapMaterializedValue(_ => NotUsed)
-        case Nil    => Flow[I].asInstanceOf[Flow[I, O, NotUsed]]
-        case _      => throw new RuntimeException() // won't happen, compiler exhaustiveness check pleaser
-      }
-      .mapMaterializedValue(_ => fallback())
-
-  /**
-   * Creates a real `Flow` upon receiving the first element. Internal `Flow` will not be created
-   * if there are no elements, because of completion, cancellation, or error.
-   *
-   * The materialized value of the `Flow` is a `Future[Option[M]]` that is completed with `Some(mat)` when the internal
-   * flow gets materialized or with `None` when there where no elements. If the flow materialization (including
-   * the call of the `flowFactory`) fails then the future is completed with a failure.
-   *
-   * '''Emits when''' the internal flow is successfully created and it emits
-   *
-   * '''Backpressures when''' the internal flow is successfully created and it backpressures
-   *
-   * '''Completes when''' upstream completes and all elements have been emitted from the internal flow
-   *
-   * '''Cancels when''' downstream cancels (see below)
-   *
-   * The operator's default behavior in case of downstream cancellation before nested flow materialization (future completion) is to cancel immediately.
-   *  This behavior can be controlled by setting the [[pekko.stream.Attributes.NestedMaterializationCancellationPolicy.PropagateToNested]] attribute,
-   * this will delay downstream cancellation until nested flow's materialization which is then immediately cancelled (with the original cancellation cause).
-   */
-  @deprecated("Use 'Flow.lazyFutureFlow' instead", "Akka 2.6.0")
-  def lazyInitAsync[I, O, M](flowFactory: () => Future[Flow[I, O, M]]): Flow[I, O, Future[Option[M]]] =
-    Flow.lazyFutureFlow(flowFactory).mapMaterializedValue {
-      implicit val ec = pekko.dispatch.ExecutionContexts.parasitic
-      _.map(Some.apply).recover { case _: NeverMaterializedException => None }
-    }
 
   /**
    * Turn a `Future[Flow]` into a flow that will consume the values of the source when the future completes successfully.
@@ -3161,35 +3094,6 @@ trait FlowOps[+Out, +Mat] {
       costCalculation: (Out) => Int,
       mode: ThrottleMode): Repr[Out] =
     via(new Throttle(cost, per, maximumBurst, costCalculation, mode))
-
-  /**
-   * This is a simplified version of throttle that spreads events evenly across the given time interval. throttleEven using
-   * best effort approach to meet throttle rate.
-   *
-   * Use this operator when you need just slow down a stream without worrying about exact amount
-   * of time between events.
-   *
-   * If you want to be sure that no time interval has no more than specified number of events you need to use
-   * [[throttle]] with maximumBurst attribute.
-   * @see [[throttle]]
-   */
-  @deprecated("Use throttle without `maximumBurst` parameter instead.", "Akka 2.5.12")
-  def throttleEven(elements: Int, per: FiniteDuration, mode: ThrottleMode): Repr[Out] =
-    throttle(elements, per, Throttle.AutomaticMaximumBurst, ConstantFun.oneInt, mode)
-
-  /**
-   * This is a simplified version of throttle that spreads events evenly across the given time interval.
-   *
-   * Use this operator when you need just slow down a stream without worrying about exact amount
-   * of time between events.
-   *
-   * If you want to be sure that no time interval has no more than specified number of events you need to use
-   * [[throttle]] with maximumBurst attribute.
-   * @see [[throttle]]
-   */
-  @deprecated("Use throttle without `maximumBurst` parameter instead.", "Akka 2.5.12")
-  def throttleEven(cost: Int, per: FiniteDuration, costCalculation: (Out) => Int, mode: ThrottleMode): Repr[Out] =
-    throttle(cost, per, Throttle.AutomaticMaximumBurst, costCalculation, mode)
 
   /**
    * Detaches upstream demand from downstream demand without detaching the

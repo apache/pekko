@@ -387,16 +387,6 @@ object Source {
     Source.fromGraph(new SetupSourceStage(factory))
 
   /**
-   * Defers the creation of a [[Source]] until materialization. The `factory` function
-   * exposes [[ActorMaterializer]] which is going to be used during materialization and
-   * [[Attributes]] of the [[Source]] returned by this method.
-   */
-  @deprecated("Use 'fromMaterializer' instead", "Akka 2.6.0")
-  def setup[T, M](factory: (ActorMaterializer, Attributes) => Source[T, M]): Source[T, Future[M]] =
-    Source.fromGraph(new SetupSourceStage((materializer, attributes) =>
-      factory(ActorMaterializerHelper.downcast(materializer), attributes)))
-
-  /**
    * Helper to create [[Source]] from `Iterable`.
    * Example usage: `Source(Seq(1,2,3))`
    *
@@ -556,26 +546,6 @@ object Source {
    */
   def failed[T](cause: Throwable): Source[T, NotUsed] =
     Source.fromGraph(new FailedSource[T](cause))
-
-  /**
-   * Creates a `Source` that is not materialized until there is downstream demand, when the source gets materialized
-   * the materialized future is completed with its value, if downstream cancels or fails without any demand the
-   * create factory is never called and the materialized `Future` is failed.
-   */
-  @deprecated("Use 'Source.lazySource' instead", "Akka 2.6.0")
-  def lazily[T, M](create: () => Source[T, M]): Source[T, Future[M]] =
-    Source.fromGraph(new LazySource[T, M](create))
-
-  /**
-   * Creates a `Source` from supplied future factory that is not called until downstream demand. When source gets
-   * materialized the materialized future is completed with the value from the factory. If downstream cancels or fails
-   * without any demand the create factory is never called and the materialized `Future` is failed.
-   *
-   * @see [[Source.lazily]]
-   */
-  @deprecated("Use 'Source.lazyFuture' instead", "Akka 2.6.0")
-  def lazilyAsync[T](create: () => Future[T]): Source[T, Future[NotUsed]] =
-    lazily(() => fromFuture(create()))
 
   /**
    * Emits a single value when the given `Future` is successfully completed and then completes the stream.
