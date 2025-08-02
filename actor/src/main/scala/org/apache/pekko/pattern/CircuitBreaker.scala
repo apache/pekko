@@ -764,7 +764,7 @@ class CircuitBreaker(
 
   private def isIgnoredException(ex: Any): Boolean =
     allowExceptions.nonEmpty && (ex match {
-      case ce: CompletionException => ce.getCause != null && allowExceptions.contains(ce.getCause.getClass.getName)
+      case ce: CompletionException => (ce.getCause ne null) && allowExceptions.contains(ce.getCause.getClass.getName)
       case _                       => allowExceptions.contains(ex.getClass.getName)
     })
 

@@ -138,7 +138,7 @@ private[pekko] trait FaultHandling { this: ActorCell =>
       system.eventStream.publish(
         Error(self.path.toString, clazz(actor), "changing Resume into Create after " + causedByFailure))
       faultCreate()
-    } else if (isFailedFatally && causedByFailure != null) {
+    } else if (isFailedFatally && (causedByFailure ne null)) {
       system.eventStream.publish(
         Error(self.path.toString, clazz(actor), "changing Resume into Restart after " + causedByFailure))
       faultRecreate(causedByFailure)
@@ -147,7 +147,7 @@ private[pekko] trait FaultHandling { this: ActorCell =>
       // done always to keep that suspend counter balanced
       // must happen “atomically”
       try resumeNonRecursive()
-      finally if (causedByFailure != null) clearFailed()
+      finally if (causedByFailure ne null) clearFailed()
       resumeChildren(causedByFailure, perp)
     }
   }
@@ -331,7 +331,7 @@ private[pekko] trait FaultHandling { this: ActorCell =>
      * otherwise tell the supervisor etc. (in that second case, the match
      * below will hit the empty default case, too)
      */
-    if (actor != null) {
+    if (actor ne null) {
       try actor.supervisorStrategy.handleChildTerminated(this, child, children)
       catch handleNonFatalOrInterruptedException { e =>
           publish(Error(e, self.path.toString, clazz(actor), "handleChildTerminated failed"))

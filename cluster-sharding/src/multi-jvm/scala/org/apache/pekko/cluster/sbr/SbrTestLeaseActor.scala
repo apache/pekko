@@ -92,7 +92,7 @@ class SbrTestLeaseActorClientExt(val system: ExtendedActorSystem) extends Extens
 
   def getActorLeaseClient(): SbrTestLeaseActorClient = {
     val lease = leaseClient.get
-    if (lease eq null) throw new IllegalStateException("ActorLeaseClient must be set first")
+    if (lease == null) throw new IllegalStateException("ActorLeaseClient must be set first")
     lease
   }
 
@@ -113,7 +113,7 @@ class SbrTestLeaseActorClient(settings: LeaseSettings, system: ExtendedActorSyst
 
   private def leaseRef: ActorRef = {
     val ref = _leaseRef.get
-    if (ref eq null) throw new IllegalStateException("ActorLeaseRef must be set first")
+    if (ref == null) throw new IllegalStateException("ActorLeaseRef must be set first")
     ref
   }
 

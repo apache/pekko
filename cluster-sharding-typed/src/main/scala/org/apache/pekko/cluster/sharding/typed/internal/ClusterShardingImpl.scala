@@ -174,7 +174,7 @@ import pekko.util.JavaDurationConverters._
     val extractorAdapter = new ExtractorAdapter(extractor)
     val extractEntityId: ShardRegion.ExtractEntityId = {
       // TODO is it possible to avoid the double evaluation of entityId
-      case message if extractorAdapter.entityId(message) != null =>
+      case message if extractorAdapter.entityId(message) ne null =>
         (extractorAdapter.entityId(message), extractorAdapter.unwrapMessage(message))
     }
     val extractShardId: ShardRegion.ExtractShardId = { message =>

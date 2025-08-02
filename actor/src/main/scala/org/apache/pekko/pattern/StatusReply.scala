@@ -130,7 +130,7 @@ object StatusReply {
      */
     def apply[T](value: T): StatusReply[T] = new StatusReply(ScalaSuccess(value))
     def unapply(status: StatusReply[Any]): Option[Any] =
-      if (status != null && status.isSuccess) Some(status.getValue)
+      if ((status ne null) && status.isSuccess) Some(status.getValue)
       else None
   }
 
@@ -162,7 +162,7 @@ object StatusReply {
      */
     def apply[T](exception: Throwable): StatusReply[T] = new StatusReply(ScalaFailure(exception))
     def unapply(status: StatusReply[_]): Option[Throwable] =
-      if (status != null && status.isError) Some(status.getError)
+      if ((status ne null) && status.isError) Some(status.getError)
       else None
   }
 

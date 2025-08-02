@@ -401,7 +401,7 @@ private[stream] object ConnectionSourceStage {
           connectionClosePending = true // will continue when WriteAck is received and writeBuffer drained
         else
           connection ! Close
-      } else if (connection != null) {
+      } else if (connection ne null) {
         // We still read, so we only close the write side
         if (writeInProgress)
           connectionClosePending = true // will continue when WriteAck is received and writeBuffer drained
@@ -479,7 +479,7 @@ private[stream] object ConnectionSourceStage {
           closeConnectionUpstreamFinished()
 
         override def onUpstreamFailure(ex: Throwable): Unit = {
-          if (connection != null) {
+          if (connection ne null) {
             if (interpreter.log.isDebugEnabled) {
               val msg = "Aborting tcp connection to {} because of upstream failure: {}"
 

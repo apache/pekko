@@ -603,7 +603,7 @@ import pekko.stream.stage._
     }
 
   // Returns true if the given stage is already completed
-  def isStageCompleted(stage: GraphStageLogic): Boolean = stage != null && shutdownCounter(stage.stageId) == 0
+  def isStageCompleted(stage: GraphStageLogic): Boolean = (stage ne null) && shutdownCounter(stage.stageId) == 0
 
   // Returns true if the given stage is already finalized
   private def isStageFinalized(stage: GraphStageLogic): Boolean = finalizedMark(stage.stageId)
@@ -712,7 +712,7 @@ import pekko.stream.stage._
         LogicSnapshotImpl(idx, logic.toString, logic.attributes)
     }
     val logicIndexes = logics.zipWithIndex.map { case (stage, idx) => stage -> idx }.toMap
-    val connectionSnapshots = connections.filter(_ != null).map { connection =>
+    val connectionSnapshots = connections.filter(_ ne null).map { connection =>
       ConnectionSnapshotImpl(
         connection.id,
         logicSnapshots(logicIndexes(connection.inOwner)),

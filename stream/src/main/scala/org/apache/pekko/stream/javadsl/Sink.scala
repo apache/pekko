@@ -457,7 +457,7 @@ object Sink {
       fanOutStrategy: function.Function[java.lang.Integer, Graph[UniformFanOutShape[T, U], NotUsed]])
       : Sink[T, NotUsed] = {
     import pekko.util.ccompat.JavaConverters._
-    val seq = if (rest != null) rest.asScala.map(_.asScala).toSeq else immutable.Seq()
+    val seq = if (rest ne null) rest.asScala.map(_.asScala).toSeq else immutable.Seq()
     new Sink(scaladsl.Sink.combine(output1.asScala, output2.asScala, seq: _*)(num => fanOutStrategy.apply(num)))
   }
 
@@ -483,7 +483,7 @@ object Sink {
       sinks: java.util.List[_ <: Graph[SinkShape[U], M]],
       fanOutStrategy: function.Function[java.lang.Integer, Graph[UniformFanOutShape[T, U], NotUsed]])
       : Sink[T, java.util.List[M]] = {
-    val seq = if (sinks != null) CollectionUtil.toSeq(sinks).collect {
+    val seq = if (sinks ne null) CollectionUtil.toSeq(sinks).collect {
       case sink: Sink[U @unchecked, M @unchecked] => sink.asScala
       case other                                  => other
     }

@@ -159,7 +159,7 @@ object DistributedPubSubMediator {
   @SerialVersionUID(1L) final case class Put(ref: ActorRef)
   @SerialVersionUID(1L) final case class Remove(path: String)
   @SerialVersionUID(1L) final case class Subscribe(topic: String, group: Option[String], ref: ActorRef) {
-    require(topic != null && topic != "", "topic must be defined")
+    require((topic ne null) && topic != "", "topic must be defined")
 
     /**
      * Convenience constructor with `group` None
@@ -175,7 +175,7 @@ object DistributedPubSubMediator {
     def apply(topic: String, ref: ActorRef) = new Subscribe(topic, ref)
   }
   @SerialVersionUID(1L) final case class Unsubscribe(topic: String, group: Option[String], ref: ActorRef) {
-    require(topic != null && topic != "", "topic must be defined")
+    require((topic ne null) && topic != "", "topic must be defined")
     def this(topic: String, ref: ActorRef) = this(topic, None, ref)
     def this(topic: String, group: String, ref: ActorRef) = this(topic, Some(group), ref)
   }

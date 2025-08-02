@@ -197,7 +197,7 @@ class ResizableMultiReaderRingBufferSpec extends AnyWordSpec with Matchers {
   class TestBuffer(iSize: Int, mSize: Int, cursors: Cursors)
       extends ResizableMultiReaderRingBuffer[Int](iSize, mSize, cursors) {
     def inspect: String =
-      underlyingArray.map(x => if (x eq null) 0 else x).mkString("", " ", " " + toString.dropWhile(_ != '('))
+      underlyingArray.map(x => if (x == null) 0 else x).mkString("", " ", " " + toString.dropWhile(_ != '('))
   }
 
   class Test(iSize: Int, mSize: Int, cursorCount: Int)

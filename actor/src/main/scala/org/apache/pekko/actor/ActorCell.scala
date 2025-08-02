@@ -641,7 +641,7 @@ private[pekko] class ActorCell(
 
   protected def create(failure: Option[ActorInitializationException]): Unit = {
     def failActor(): Unit =
-      if (_actor != null) {
+      if (_actor ne null) {
         clearActorFields(actor, recreate = false)
         _actor = null // ensure that we know that we failed during creation
       }
@@ -684,7 +684,7 @@ private[pekko] class ActorCell(
 
   @tailrec
   private def rootCauseOf(throwable: Throwable): Throwable = {
-    if (throwable.getCause != null && throwable.getCause != throwable)
+    if ((throwable.getCause ne null) && throwable.getCause != throwable)
       rootCauseOf(throwable.getCause)
     else
       throwable

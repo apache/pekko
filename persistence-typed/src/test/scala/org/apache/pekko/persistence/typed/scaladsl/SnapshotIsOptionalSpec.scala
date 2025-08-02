@@ -39,7 +39,7 @@ object SnapshotIsOptionalSpec {
     @JsonCreator
     def this() = this(null)
 
-    if (field1 eq null)
+    if (field1 == null)
       throw new RuntimeException("Deserialization error")
   }
   case class Command(c: String) extends CborSerializable

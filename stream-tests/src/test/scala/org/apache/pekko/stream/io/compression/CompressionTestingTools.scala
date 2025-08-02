@@ -54,7 +54,7 @@ object CompressionTestingTools {
   implicit class EnhancedThrowable(val throwable: Throwable) extends AnyVal {
     def ultimateCause: Throwable = {
       @tailrec def rec(ex: Throwable): Throwable =
-        if (ex.getCause eq null) ex
+        if (ex.getCause == null) ex
         else rec(ex.getCause)
 
       rec(throwable)

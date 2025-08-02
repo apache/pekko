@@ -94,7 +94,7 @@ private[pekko] abstract class AbstractActorRefResolveCache[R <: ActorRef: ClassT
     ref match {
       case r: RemoteActorRef =>
         val cachedAssociation = r.cachedAssociation
-        if (cachedAssociation != null && cachedAssociation.isRemovedAfterQuarantined())
+        if ((cachedAssociation ne null) && cachedAssociation.isRemovedAfterQuarantined())
           r.cachedAssociation = null
       case _ =>
     }

@@ -457,7 +457,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
    */
   final protected def setHandler(in: Inlet[_], handler: InHandler): Unit = {
     handlers(in.id) = handler
-    if (_interpreter != null) _interpreter.setHandler(conn(in), handler)
+    if (_interpreter ne null) _interpreter.setHandler(conn(in), handler)
   }
 
   /**
@@ -480,7 +480,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
    */
   final protected def setHandler(out: Outlet[_], handler: OutHandler): Unit = {
     handlers(out.id + inCount) = handler
-    if (_interpreter != null) _interpreter.setHandler(conn(out), handler)
+    if (_interpreter ne null) _interpreter.setHandler(conn(out), handler)
   }
 
   private def conn(in: Inlet[_]): Connection = portToConn(in.id)
@@ -1063,7 +1063,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
     protected def followUp(): Unit = {
       setHandler(out, previous)
       andThen()
-      if (followUps != null) {
+      if (followUps ne null) {
 
         /*
          * If (while executing andThen() callback) handler was changed to new emitting,
@@ -1080,7 +1080,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
            * If next element is emitting completion and there are some elements after it,
            * we to need pass them before completion
            */
-          if (next.followUps != null) {
+          if (next.followUps ne null) {
             setHandler(out, dequeueHeadAndAddToTail(next))
           } else {
             complete(out)
@@ -1185,7 +1185,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
       override def onUpstreamFailure(ex: Throwable): Unit = if (doFail) failStage(ex)
     }
     val ph = new PassAlongHandler
-    if (_interpreter != null) {
+    if (_interpreter ne null) {
       if (isAvailable(from)) emit(to, grab(from), ph)
       if (doFinish && isClosed(from)) completeStage()
     }
@@ -1212,7 +1212,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
    */
   final def getAsyncCallback[T](handler: T => Unit): AsyncCallback[T] = {
     val callback = new ConcurrentAsyncCallback[T](handler)
-    if (_interpreter != null) callback.onStart()
+    if (_interpreter ne null) callback.onStart()
     else callbacksWaitingForInterpreter = callback :: callbacksWaitingForInterpreter
     callback
   }

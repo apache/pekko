@@ -87,7 +87,7 @@ private[pekko] final class OutputStreamGraphStage(factory: () => OutputStream, a
 
       override def postStop(): Unit = {
         try {
-          if (outputStream != null) {
+          if (outputStream ne null) {
             outputStream.flush()
             outputStream.close()
           }

@@ -3383,7 +3383,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
       those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
       segmentSize: Int,
       eagerClose: Boolean): javadsl.Flow[In, Out, Mat] = {
-    val seq = if (those != null) CollectionUtil.toSeq(those).collect {
+    val seq = if (those ne null) CollectionUtil.toSeq(those).collect {
       case source: Source[Out @unchecked, _] => source.asScala
       case other                             => other
     }
@@ -3465,7 +3465,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
   def mergeAll(
       those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
       eagerComplete: Boolean): javadsl.Flow[In, Out, Mat] = {
-    val seq = if (those != null) CollectionUtil.toSeq(those).collect {
+    val seq = if (those ne null) CollectionUtil.toSeq(those).collect {
       case source: Source[Out @unchecked, _] => source.asScala
       case other                             => other
     }

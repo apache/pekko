@@ -766,7 +766,7 @@ class CoordinatedShutdownSpec
     private val mockRuntime = new JVMShutdownHooks {
       override def addHook(t: Thread): Unit = synchronized {
         // mimic validation in JDK ApplicationShutdownHooks
-        if (shutdownHooks eq null)
+        if (shutdownHooks == null)
           throw new IllegalStateException("Shutdown in progress");
 
         if (t.isAlive())
@@ -780,7 +780,7 @@ class CoordinatedShutdownSpec
 
       override def removeHook(t: Thread): Boolean = synchronized {
         // mimic validation in JDK ApplicationShutdownHooks
-        if (t eq null)
+        if (t == null)
           throw new NullPointerException();
 
         if (shutdownHooks.contains(t)) {

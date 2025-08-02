@@ -89,7 +89,7 @@ object LatencySpec extends MultiNodeConfig {
         cachedSender = null
         sender() ! Reset
       case msg =>
-        if (cachedSender eq null) cachedSender = sender()
+        if (cachedSender == null) cachedSender = sender()
         cachedSender ! msg
     }
   }
