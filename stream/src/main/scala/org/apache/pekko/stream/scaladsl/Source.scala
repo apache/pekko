@@ -800,34 +800,6 @@ object Source {
   }
 
   /**
-   * Creates a `Source` that is materialized as an [[pekko.actor.ActorRef]].
-   * Messages sent to this actor will be emitted to the stream if there is demand from downstream,
-   * and a new message will only be accepted after the previous messages has been consumed and acknowledged back.
-   * The stream will complete with failure if a message is sent before the acknowledgement has been replied back.
-   *
-   * The stream can be completed successfully by sending the actor reference a [[pekko.actor.Status.Success]].
-   * If the content is [[pekko.stream.CompletionStrategy.immediately]] the completion will be signaled immediately,
-   * otherwise if the content is [[pekko.stream.CompletionStrategy.draining]] (or anything else)
-   * already buffered element will be signaled before signaling completion.
-   *
-   * The stream can be completed with failure by sending a [[pekko.actor.Status.Failure]] to the
-   * actor reference. In case the Actor is still draining its internal buffer (after having received
-   * a [[pekko.actor.Status.Success]]) before signaling completion and it receives a [[pekko.actor.Status.Failure]],
-   * the failure will be signaled downstream immediately (instead of the completion signal).
-   *
-   * The actor will be stopped when the stream is completed, failed or canceled from downstream,
-   * i.e. you can watch it to get notified when that happens.
-   */
-  @deprecated("Use actorRefWithBackpressure accepting completion and failure matchers instead", "Akka 2.6.0")
-  def actorRefWithAck[T](ackMessage: Any): Source[T, ActorRef] =
-    actorRefWithAck(None, ackMessage,
-      {
-        case pekko.actor.Status.Success(s: CompletionStrategy) => s
-        case pekko.actor.Status.Success(_)                     => CompletionStrategy.Draining
-        case pekko.actor.Status.Success                        => CompletionStrategy.Draining
-      }, { case pekko.actor.Status.Failure(cause) => cause })
-
-  /**
    * Combines several sources with fan-in strategy like [[Merge]] or [[Concat]] into a single [[Source]].
    */
   def combine[T, U](first: Source[T, _], second: Source[T, _], rest: Source[T, _]*)(

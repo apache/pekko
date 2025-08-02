@@ -144,19 +144,6 @@ abstract class Materializer {
   def scheduleAtFixedRate(initialDelay: FiniteDuration, interval: FiniteDuration, task: Runnable): Cancellable
 
   /**
-   * Interface for operators that need timer services for their functionality. Schedules a
-   * repeated task with the given interval between invocations.
-   *
-   * @return A [[pekko.actor.Cancellable]] that allows cancelling the timer. Cancelling is best effort, if the event
-   *         has been already enqueued it will not have an effect.
-   */
-  @deprecated(
-    "Use scheduleWithFixedDelay or scheduleAtFixedRate instead. This has the same semantics as " +
-    "scheduleAtFixedRate, but scheduleWithFixedDelay is often preferred.",
-    since = "Akka 2.6.0")
-  def schedulePeriodically(initialDelay: FiniteDuration, interval: FiniteDuration, task: Runnable): Cancellable
-
-  /**
    * Shuts down this materializer and all the operators that have been materialized through this materializer. After
    * having shut down, this materializer cannot be used again. Any attempt to materialize operators after having
    * shut down will result in an IllegalStateException being thrown at materialization time.

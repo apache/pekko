@@ -20,7 +20,6 @@ import java.util.stream.Collector
 
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable
-import scala.concurrent.ExecutionContext
 import scala.util.Try
 
 import org.apache.pekko
@@ -236,24 +235,6 @@ object Sink {
         .toCompletionStage())
 
   /**
-   * A `Sink` that will invoke the given procedure for each received element in parallel. The sink is materialized
-   * into a [[java.util.concurrent.CompletionStage]].
-   *
-   * If `f` throws an exception and the supervision decision is
-   * [[pekko.stream.Supervision.Stop]] the `CompletionStage` will be completed with failure.
-   *
-   * If `f` throws an exception and the supervision decision is
-   * [[pekko.stream.Supervision.Resume]] or [[pekko.stream.Supervision.Restart]] the
-   * element is dropped and the stream continues.
-   */
-  @deprecated(
-    "Use `foreachAsync` instead, it allows you to choose how to run the procedure, by calling some other API returning a CompletionStage or using CompletableFuture.supplyAsync.",
-    since = "Akka 2.5.17")
-  def foreachParallel[T](parallel: Int, f: function.Procedure[T],
-      ec: ExecutionContext): Sink[T, CompletionStage[Done]] =
-    new Sink(scaladsl.Sink.foreachParallel(parallel)(f.apply)(ec).toCompletionStage())
-
-  /**
    * A `Sink` that when the flow is completed, either through a failure or normal
    * completion, apply the provided function with [[scala.util.Success]]
    * or [[scala.util.Failure]].
@@ -393,32 +374,6 @@ object Sink {
       onFailureMessage: function.Function[Throwable, Any]): Sink[In, NotUsed] =
     new Sink(
       scaladsl.Sink.actorRefWithBackpressure[In](ref, onInitMessage, onCompleteMessage, t => onFailureMessage(t)))
-
-  /**
-   * Sends the elements of the stream to the given `ActorRef` that sends back back-pressure signal.
-   * First element is always `onInitMessage`, then stream is waiting for acknowledgement message
-   * `ackMessage` from the given actor which means that it is ready to process
-   * elements. It also requires `ackMessage` message after each stream element
-   * to make backpressure work.
-   *
-   * If the target actor terminates the stream will be canceled.
-   * When the stream is completed successfully the given `onCompleteMessage`
-   * will be sent to the destination actor.
-   * When the stream is completed with failure - result of `onFailureMessage(throwable)`
-   * message will be sent to the destination actor.
-   *
-   * @deprecated Use actorRefWithBackpressure instead
-   */
-  @deprecated("Use actorRefWithBackpressure instead", "Akka 2.6.0")
-  def actorRefWithAck[In](
-      ref: ActorRef,
-      onInitMessage: Any,
-      ackMessage: Any,
-      onCompleteMessage: Any,
-      onFailureMessage: function.Function[Throwable, Any]): Sink[In, NotUsed] =
-    new Sink(
-      scaladsl.Sink
-        .actorRefWithBackpressure[In](ref, onInitMessage, ackMessage, onCompleteMessage, t => onFailureMessage(t)))
 
   /**
    * A graph with the shape of a sink logically is a sink, this method makes

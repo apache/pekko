@@ -16,7 +16,7 @@ package org.apache.pekko.stream.scaladsl
 import scala.annotation.tailrec
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.Future
 import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
@@ -388,25 +388,6 @@ object Sink {
     }
 
   /**
-   * A `Sink` that will invoke the given function to each of the elements
-   * as they pass in. The sink is materialized into a [[scala.concurrent.Future]]
-   *
-   * If `f` throws an exception and the supervision decision is
-   * [[pekko.stream.Supervision.Stop]] the `Future` will be completed with failure.
-   *
-   * If `f` throws an exception and the supervision decision is
-   * [[pekko.stream.Supervision.Resume]] or [[pekko.stream.Supervision.Restart]] the
-   * element is dropped and the stream continues.
-   *
-   * See also [[Flow.mapAsyncUnordered]]
-   */
-  @deprecated(
-    "Use `foreachAsync` instead, it allows you to choose how to run the procedure, by calling some other API returning a Future or spawning a new Future.",
-    since = "Akka 2.5.17")
-  def foreachParallel[T](parallelism: Int)(f: T => Unit)(implicit ec: ExecutionContext): Sink[T, Future[Done]] =
-    Flow[T].mapAsyncUnordered(parallelism)(t => Future(f(t))).toMat(Sink.ignore)(Keep.right)
-
-  /**
    * A `Sink` that will invoke the given function for every received element, giving it its previous
    * output (or the given `zero` value) and the element as input.
    * The returned [[scala.concurrent.Future]] will be completed with value of the final
@@ -696,28 +677,6 @@ object Sink {
       onCompleteMessage: Any,
       onFailureMessage: Throwable => Any): Sink[T, NotUsed] =
     actorRefWithAck(ref, _ => identity, _ => onInitMessage, None, onCompleteMessage, onFailureMessage)
-
-  /**
-   * Sends the elements of the stream to the given `ActorRef` that sends back back-pressure signal.
-   * First element is always `onInitMessage`, then stream is waiting for acknowledgement message
-   * `ackMessage` from the given actor which means that it is ready to process
-   * elements. It also requires `ackMessage` message after each stream element
-   * to make backpressure work.
-   *
-   * If the target actor terminates the stream will be canceled.
-   * When the stream is completed successfully the given `onCompleteMessage`
-   * will be sent to the destination actor.
-   * When the stream is completed with failure - result of `onFailureMessage(throwable)`
-   * function will be sent to the destination actor.
-   */
-  @deprecated("Use actorRefWithBackpressure accepting completion and failure matchers instead", "Akka 2.6.0")
-  def actorRefWithAck[T](
-      ref: ActorRef,
-      onInitMessage: Any,
-      ackMessage: Any,
-      onCompleteMessage: Any,
-      onFailureMessage: (Throwable) => Any = Status.Failure.apply): Sink[T, NotUsed] =
-    actorRefWithAck(ref, _ => identity, _ => onInitMessage, Some(ackMessage), onCompleteMessage, onFailureMessage)
 
   /**
    * Creates a `Sink` that is materialized as an [[pekko.stream.scaladsl.SinkQueueWithCancel]].
