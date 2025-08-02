@@ -80,7 +80,7 @@ class DurableStateStoreRegistry(system: ExtendedActorSystem)
 
   /** Check for default or missing identity. */
   private def isEmpty(text: String) = {
-    text == null || text.isEmpty
+    (text eq null) || text.isEmpty
   }
 
   /**

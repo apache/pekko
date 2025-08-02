@@ -119,7 +119,7 @@ private[pekko] object Reflect {
         } else null
       }
 
-    if (constructor == null) error("no matching constructor")
+    if (constructor eq null) error("no matching constructor")
     else constructor
   }
 
@@ -135,7 +135,7 @@ private[pekko] object Reflect {
 
   def findMarker(root: Class[_], marker: Class[_]): Type = {
     @tailrec def rec(curr: Class[_]): Type = {
-      if (curr.getSuperclass != null && marker.isAssignableFrom(curr.getSuperclass)) rec(curr.getSuperclass)
+      if ((curr.getSuperclass ne null) && marker.isAssignableFrom(curr.getSuperclass)) rec(curr.getSuperclass)
       else
         curr.getGenericInterfaces.collectFirst {
           case c: Class[_] if marker.isAssignableFrom(c)                                            => c
@@ -159,7 +159,7 @@ private[pekko] object Reflect {
         .from(2 /*is the magic number, promise*/ )
         .map(get)
         .dropWhile { c =>
-          c != null &&
+          (c ne null) &&
           (c.getName.startsWith("org.apache.pekko.actor.ActorSystem") ||
           c.getName.startsWith("scala.Option") ||
           c.getName.startsWith("scala.collection.Iterator") ||

@@ -118,7 +118,7 @@ private[pekko] final class InputStreamSource(factory: () => InputStream, chunkSi
 
       private def closeInputStream(): Unit = {
         try {
-          if (inputStream != null)
+          if (inputStream ne null)
             inputStream.close()
         } catch {
           case NonFatal(ex) =>

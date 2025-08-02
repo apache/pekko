@@ -144,7 +144,7 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
               try {
                 runnable.run()
                 val driftNanos = clock() - getAndAdd(delay.toNanos)
-                if (self.get() != null)
+                if (self.get() ne null)
                   swap(schedule(executor, this, Duration.fromNanos(Math.max(delay.toNanos - driftNanos, 1))))
               } catch {
                 case _: SchedulerException => // ignore failure to enqueue or terminated target actor
@@ -204,10 +204,10 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
 
   private def schedule(ec: ExecutionContext, r: Runnable, delay: FiniteDuration): TimerTask =
     if (delay.length <= 0L) { // use simple comparison instead of Ordering for performance
-      if (stopped.get != null) throw SchedulerException("cannot enqueue after timer shutdown")
+      if (stopped.get ne null) throw SchedulerException("cannot enqueue after timer shutdown")
       ec.execute(r)
       NotCancellable
-    } else if (stopped.get != null) {
+    } else if (stopped.get ne null) {
       throw SchedulerException("cannot enqueue after timer shutdown")
     } else {
       val delayNanos = delay.toNanos
@@ -216,7 +216,7 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
       val ticks = (delayNanos / tickNanos).toInt
       val task = new TaskHolder(r, ticks, ec)
       queue.add(task)
-      if (stopped.get != null && task.cancel())
+      if ((stopped.get ne null) && task.cancel())
         throw SchedulerException("cannot enqueue after timer shutdown")
       task
     }

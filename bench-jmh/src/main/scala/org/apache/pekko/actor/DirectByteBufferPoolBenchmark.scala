@@ -68,7 +68,7 @@ class DirectByteBufferPoolBenchmark {
   def unpooledHeapAllocAndRelease(): Unit = {
     val idx = random.nextInt(unpooledHeapBuffers.length)
     val oldBuf = unpooledHeapBuffers(idx)
-    if (oldBuf != null) DirectByteBufferPool.tryCleanDirectByteBuffer(oldBuf)
+    if (oldBuf ne null) DirectByteBufferPool.tryCleanDirectByteBuffer(oldBuf)
     unpooledHeapBuffers(idx) = ByteBuffer.allocateDirect(size)
   }
 
@@ -76,7 +76,7 @@ class DirectByteBufferPoolBenchmark {
   def unpooledDirectAllocAndRelease(): Unit = {
     val idx = random.nextInt(unpooledDirectBuffers.length)
     val oldBuf = unpooledDirectBuffers(idx)
-    if (oldBuf != null) DirectByteBufferPool.tryCleanDirectByteBuffer(oldBuf)
+    if (oldBuf ne null) DirectByteBufferPool.tryCleanDirectByteBuffer(oldBuf)
     unpooledDirectBuffers(idx) = ByteBuffer.allocateDirect(size)
   }
 
@@ -84,7 +84,7 @@ class DirectByteBufferPoolBenchmark {
   def pooledDirectAllocAndRelease(): Unit = {
     val idx = random.nextInt(pooledDirectBuffers.length)
     val oldBuf = pooledDirectBuffers(idx)
-    if (oldBuf != null) arteryPool.release(oldBuf)
+    if (oldBuf ne null) arteryPool.release(oldBuf)
     pooledDirectBuffers(idx) = arteryPool.acquire()
   }
 

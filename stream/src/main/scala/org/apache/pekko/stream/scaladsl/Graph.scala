@@ -125,7 +125,7 @@ final class Merge[T](val inputPorts: Int, val eagerComplete: Boolean) extends Gr
       @tailrec
       private def dequeueAndDispatch(): Unit = {
         val in = pendingQueue.dequeue()
-        if (in == null) {
+        if (in eq null) {
           // in is null if we reached the end of the queue
           if (upstreamsClosed) completeStage()
         } else if (isAvailable(in)) {
@@ -417,7 +417,7 @@ final class MergePrioritized[T] private (val priorities: Seq[Int], val eagerComp
           var next: Inlet[T] = null
           ix = 0
 
-          while (ix < in.length && next == null) {
+          while (ix < in.length && (next eq null)) {
             if (isAvailable(in(ix))) {
               r -= priorities(ix)
               if (r < 0) next = in(ix)

@@ -403,12 +403,12 @@ object Behaviors {
       behavior: Behavior[T]): Behavior[T] = {
 
     def asScalaMap(m: java.util.Map[String, String]): Map[String, String] = {
-      if (m == null || m.isEmpty) Map.empty[String, String]
+      if ((m eq null) || m.isEmpty) Map.empty[String, String]
       else m.asScala.toMap
     }
 
     val mdcForMessageFun: T => Map[String, String] =
-      if (mdcForMessage == null) _ => Map.empty
+      if (mdcForMessage eq null) _ => Map.empty
       else { message =>
         asScalaMap(mdcForMessage.apply(message))
       }

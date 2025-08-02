@@ -358,7 +358,7 @@ import pekko.util.ccompat.JavaConverters._
           val key = keyFor(elem)
           require(key != null, "Key cannot be null")
           val substreamSource = activeSubstreamsMap.get(key)
-          if (substreamSource != null) {
+          if (substreamSource ne null) {
             if (substreamSource.isAvailable) substreamSource.push(elem)
             else {
               nextElementKey = key
@@ -397,7 +397,7 @@ import pekko.util.ccompat.JavaConverters._
 
       override protected def onTimer(timerKey: Any): Unit = {
         val substreamSource = activeSubstreamsMap.get(timerKey)
-        if (substreamSource != null) {
+        if (substreamSource ne null) {
           if (!allowClosedSubstreamRecreation) {
             closedSubstreams.add(timerKey)
           }

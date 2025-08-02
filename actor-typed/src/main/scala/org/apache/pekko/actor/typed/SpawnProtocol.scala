@@ -67,7 +67,7 @@ object SpawnProtocol {
       msg match {
         case Spawn(bhvr: Behavior[t], name, props, replyTo) =>
           val ref =
-            if (name == null || name.equals(""))
+            if ((name eq null) || name.equals(""))
               ctx.spawnAnonymous(bhvr, props)
             else {
 

@@ -177,7 +177,7 @@ final case class ConsistentHashingRoutingLogic(
     // If defaultAddress is not available the message will not be routed, but new attempt
     // is performed for next message.
     val a = ConsistentHashingRoutingLogic.defaultAddress(system)
-    if (a == null)
+    if (a eq null)
       throw new IllegalStateException("defaultAddress not available yet")
     a
   }

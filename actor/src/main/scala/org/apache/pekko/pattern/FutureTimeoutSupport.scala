@@ -78,7 +78,7 @@ trait FutureTimeoutSupport {
           val future = value
           future.handle[Unit]((t: T, ex: Throwable) => {
             if (t != null) p.complete(t)
-            if (ex != null) p.completeExceptionally(ex)
+            if (ex ne null) p.completeExceptionally(ex)
           })
         } catch {
           case NonFatal(ex) => p.completeExceptionally(ex)
@@ -142,7 +142,7 @@ trait FutureTimeoutSupport {
       stage.handle[Unit]((v: T, ex: Throwable) => {
         timeout.cancel()
         if (v != null) p.complete(v)
-        if (ex != null) p.completeExceptionally(ex)
+        if (ex ne null) p.completeExceptionally(ex)
       })
       p
     }

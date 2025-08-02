@@ -484,9 +484,9 @@ object Tcp extends ExtensionId[TcpExt] with ExtensionIdProvider {
       _cause
         .map(t => {
           val msg =
-            if (t.getCause == null)
+            if (t.getCause eq null)
               t.getMessage
-            else if (t.getCause.getCause == null)
+            else if (t.getCause.getCause eq null)
               s"${t.getMessage}, caused by: ${t.getCause}"
             else
               s"${t.getMessage}, caused by: ${t.getCause}, caused by: ${t.getCause.getCause}"

@@ -588,7 +588,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
     OneForOneStrategy(loggingEnabled = false) {
       case InvalidAssociation(localAddress, remoteAddress, reason, disassociationInfo) =>
         keepQuarantinedOr(remoteAddress) {
-          val causedBy = if (reason.getCause == null) "" else s"Caused by: [${reason.getCause.getMessage}]"
+          val causedBy = if (reason.getCause eq null) "" else s"Caused by: [${reason.getCause.getMessage}]"
           log.warning(
             "Tried to associate with unreachable remote address [{}]. " +
             "Address is now gated for {} ms, all messages to this address will be delivered to dead letters. " +

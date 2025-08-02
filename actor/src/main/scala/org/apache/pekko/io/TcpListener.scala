@@ -140,7 +140,7 @@ private[io] class TcpListener(
           case NonFatal(e) => { log.error(e, "Accept error: could not accept new connection"); null }
         }
       } else null
-    if (socketChannel != null) {
+    if (socketChannel ne null) {
       log.debug("New connection accepted")
       socketChannel.configureBlocking(false)
       def props(registry: ChannelRegistry) =

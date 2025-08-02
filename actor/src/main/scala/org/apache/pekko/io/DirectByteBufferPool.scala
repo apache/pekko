@@ -57,7 +57,7 @@ private[pekko] class DirectByteBufferPool(defaultBufferSize: Int, maxPoolEntries
     }
 
     // allocate new and clear outside the lock
-    if (buffer == null)
+    if (buffer eq null)
       allocate(defaultBufferSize)
     else {
       buffer.clear()

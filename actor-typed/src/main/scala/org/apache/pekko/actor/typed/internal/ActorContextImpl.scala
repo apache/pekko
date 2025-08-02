@@ -285,7 +285,7 @@ import scala.util.Success
       future: CompletionStage[Value],
       applyToResult: pekko.japi.function.Function2[Value, Throwable, T]): Unit = {
     future.handle[Unit] { (value, ex) =>
-      if (ex != null)
+      if (ex ne null)
         self.unsafeUpcast ! AdaptMessage(ex, applyToResult.apply(null.asInstanceOf[Value], _: Throwable))
       else self.unsafeUpcast ! AdaptMessage(value, applyToResult.apply(_: Value, null))
     }

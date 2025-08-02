@@ -2188,7 +2188,7 @@ final class SubFlow[In, Out, Mat](
   def mergeAll(
       those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
       eagerComplete: Boolean): SubFlow[In, Out, Mat] = {
-    val seq = if (those != null) CollectionUtil.toSeq(those).collect {
+    val seq = if (those ne null) CollectionUtil.toSeq(those).collect {
       case source: Source[Out @unchecked, _] => source.asScala
       case other                             => other
     }
@@ -2246,7 +2246,7 @@ final class SubFlow[In, Out, Mat](
       those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
       segmentSize: Int,
       eagerClose: Boolean): SubFlow[In, Out, Mat] = {
-    val seq = if (those != null) CollectionUtil.toSeq(those).collect {
+    val seq = if (those ne null) CollectionUtil.toSeq(those).collect {
       case source: Source[Out @unchecked, _] => source.asScala
       case other                             => other
     }

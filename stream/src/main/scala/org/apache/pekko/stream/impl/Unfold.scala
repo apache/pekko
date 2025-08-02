@@ -163,7 +163,7 @@ private[pekko] final class UnfoldJava[S, E](s: S, f: function.Function[S, Option
           handle(future.getNow(null))
         } else {
           future.handle((r, ex) => {
-            if (ex != null) {
+            if (ex ne null) {
               asyncHandler(Failure(ex))
             } else {
               asyncHandler(Success(r))

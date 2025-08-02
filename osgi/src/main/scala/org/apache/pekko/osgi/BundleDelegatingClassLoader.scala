@@ -92,7 +92,7 @@ class BundleDelegatingClassLoader(bundle: Bundle, fallBackClassLoader: ClassLoad
         } else {
           val wiring = b.adapt(classOf[BundleWiring])
           val direct: Set[Bundle] =
-            if (wiring == null) Set.empty
+            if (wiring eq null) Set.empty
             else {
               val requiredWires: List[BundleWire] =
                 wiring.getRequiredWires(BundleRevision.PACKAGE_NAMESPACE).asScala.toList

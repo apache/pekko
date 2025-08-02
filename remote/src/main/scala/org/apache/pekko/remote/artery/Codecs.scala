@@ -768,7 +768,7 @@ private[remote] class DuplicateHandshakeReq(
             push(out, currentIterator.next())
           } finally {
             val buf = envelope.envelopeBuffer
-            if (buf != null) {
+            if (buf ne null) {
               envelope.releaseEnvelopeBuffer()
               bufferPool.release(buf)
             }
@@ -834,7 +834,7 @@ private[remote] class DuplicateFlush(numberOfLanes: Int, system: ExtendedActorSy
             push(out, currentIterator.next())
           } finally {
             val buf = envelope.envelopeBuffer
-            if (buf != null) {
+            if (buf ne null) {
               envelope.releaseEnvelopeBuffer()
               bufferPool.release(buf)
             }

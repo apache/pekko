@@ -470,7 +470,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
       system.stop(clusterDaemons)
 
       // readView might be null if init fails before it is created
-      if (readView != null)
+      if (readView ne null)
         readView.close()
 
       closeScheduler()

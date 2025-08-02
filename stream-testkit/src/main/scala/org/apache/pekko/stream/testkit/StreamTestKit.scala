@@ -935,7 +935,7 @@ object TestSubscriber {
         }
 
       // if no subscription was obtained yet, we expect it
-      if (_subscription == null) self.expectSubscription()
+      if (_subscription eq null) self.expectSubscription()
       _subscription.request(Long.MaxValue)
 
       drain()

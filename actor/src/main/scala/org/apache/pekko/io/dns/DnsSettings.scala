@@ -222,7 +222,7 @@ object DnsSettings {
         val ctx = new InitialDirContext(env)
         val dnsUrls = ctx.getEnvironment.get("java.naming.provider.url").asInstanceOf[String]
         // Only try if not empty as otherwise we will produce an exception
-        if (dnsUrls != null && !dnsUrls.isEmpty) {
+        if ((dnsUrls ne null) && !dnsUrls.isEmpty) {
           val servers = dnsUrls.split(" ")
           servers.flatMap { server =>
             asInetSocketAddress(server).toOption

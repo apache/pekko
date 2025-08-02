@@ -144,7 +144,7 @@ import java.util.function.Predicate
   override def exists(predicate: T => Boolean): Boolean = {
     var hasElement = false
     var node = _first
-    while (node != null && !hasElement) {
+    while ((node ne null) && !hasElement) {
       hasElement = predicate(node.message)
       node = node.next
     }

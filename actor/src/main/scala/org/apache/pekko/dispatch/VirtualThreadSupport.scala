@@ -85,7 +85,7 @@ private[dispatch] object VirtualThreadSupport {
       val ofVirtualClass = ClassLoader.getSystemClassLoader.loadClass("java.lang.Thread$Builder$OfVirtual")
       val ofVirtualMethod = classOf[Thread].getDeclaredMethod("ofVirtual")
       var builder = ofVirtualMethod.invoke(null)
-      if (executor != null) {
+      if (executor ne null) {
         val clazz = builder.getClass
         val field = clazz.getDeclaredField("scheduler")
         field.setAccessible(true)
