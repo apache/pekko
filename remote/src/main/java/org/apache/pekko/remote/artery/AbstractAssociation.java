@@ -13,16 +13,19 @@
 
 package org.apache.pekko.remote.artery;
 
-import org.apache.pekko.util.Unsafe;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 
 class AbstractAssociation {
-  protected static final long sharedStateOffset;
+  protected static final VarHandle sharedStateHandle;
 
   static {
     try {
-      sharedStateOffset =
-          Unsafe.instance.objectFieldOffset(
-              Association.class.getDeclaredField("_sharedStateDoNotCallMeDirectly"));
+      MethodHandles.Lookup lookup =
+          MethodHandles.privateLookupIn(Association.class, MethodHandles.lookup());
+      sharedStateHandle =
+          lookup.findVarHandle(
+              Association.class, "_sharedStateDoNotCallMeDirectly", AssociationState.class);
     } catch (Throwable t) {
       throw new ExceptionInInitializerError(t);
     }

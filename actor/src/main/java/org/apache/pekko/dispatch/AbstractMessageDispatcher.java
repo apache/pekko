@@ -13,16 +13,25 @@
 
 package org.apache.pekko.dispatch;
 
-import org.apache.pekko.util.Unsafe;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 
 abstract class AbstractMessageDispatcher {
-    final static long shutdownScheduleOffset;
-    final static long inhabitantsOffset;
+    final static VarHandle shutdownScheduleHandle;
+    final static VarHandle inhabitantsHandle;
 
     static {
         try {
-          shutdownScheduleOffset = Unsafe.instance.objectFieldOffset(MessageDispatcher.class.getDeclaredField("_shutdownScheduleDoNotCallMeDirectly"));
-          inhabitantsOffset = Unsafe.instance.objectFieldOffset(MessageDispatcher.class.getDeclaredField("_inhabitantsDoNotCallMeDirectly"));
+            MethodHandles.Lookup lookup =
+              MethodHandles.privateLookupIn(MessageDispatcher.class, MethodHandles.lookup());
+            shutdownScheduleHandle = lookup.findVarHandle(
+                MessageDispatcher.class,
+                "_shutdownScheduleDoNotCallMeDirectly",
+                int.class);
+            inhabitantsHandle = lookup.findVarHandle(
+                MessageDispatcher.class,
+                "_inhabitantsDoNotCallMeDirectly",
+                long.class);
         } catch(Throwable t){
             throw new ExceptionInInitializerError(t);
         }

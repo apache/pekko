@@ -67,7 +67,6 @@ import pekko.stream.scaladsl.MergeHub
 import pekko.stream.scaladsl.Source
 import pekko.util.OptionVal
 import pekko.util.PrettyDuration._
-import pekko.util.Unsafe
 import pekko.util.WildcardIndex
 import pekko.util.ccompat._
 
@@ -264,22 +263,20 @@ private[remote] class Association(
   private[artery] var _sharedStateDoNotCallMeDirectly: AssociationState = AssociationState()
 
   /**
-   * Helper method for access to underlying state via Unsafe
+   * Helper method for access to underlying state via VarHandle
    *
    * @param oldState Previous state
    * @param newState Next state on transition
    * @return Whether the previous state matched correctly
    */
   private[artery] def swapState(oldState: AssociationState, newState: AssociationState): Boolean =
-    Unsafe.instance.compareAndSwapObject(this, AbstractAssociation.sharedStateOffset, oldState, newState): @nowarn(
-      "cat=deprecation")
+    AbstractAssociation.sharedStateHandle.compareAndSet(this, oldState, newState)
 
   /**
    * @return Reference to current shared state
    */
   def associationState: AssociationState =
-    Unsafe.instance.getObjectVolatile(this, AbstractAssociation.sharedStateOffset).asInstanceOf[
-      AssociationState]: @nowarn("cat=deprecation")
+    AbstractAssociation.sharedStateHandle.get(this)
 
   def setControlIdleKillSwitch(killSwitch: OptionVal[SharedKillSwitch]): Unit = {
     val current = associationState
