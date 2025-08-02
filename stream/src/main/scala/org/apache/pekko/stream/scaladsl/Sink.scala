@@ -708,37 +708,6 @@ object Sink {
   def queue[T](): Sink[T, SinkQueueWithCancel[T]] = queue(1)
 
   /**
-   * Creates a real `Sink` upon receiving the first element. Internal `Sink` will not be created if there are no elements,
-   * because of completion or error.
-   *
-   * If upstream completes before an element was received then the `Future` is completed with the value created by fallback.
-   * If upstream fails before an element was received, `sinkFactory` throws an exception, or materialization of the internal
-   * sink fails then the `Future` is completed with the exception.
-   * Otherwise the `Future` is completed with the materialized value of the internal sink.
-   */
-  @deprecated("Use 'Sink.lazyFutureSink' in combination with 'Flow.prefixAndTail(1)' instead", "Akka 2.6.0")
-  def lazyInit[T, M](sinkFactory: T => Future[Sink[T, M]], fallback: () => M): Sink[T, Future[M]] =
-    Sink
-      .fromGraph(new LazySink[T, M](sinkFactory))
-      .mapMaterializedValue(_.recover { case _: NeverMaterializedException => fallback() }(ExecutionContexts.parasitic))
-
-  /**
-   * Creates a real `Sink` upon receiving the first element. Internal `Sink` will not be created if there are no elements,
-   * because of completion or error.
-   *
-   * If upstream completes before an element was received then the `Future` is completed with `None`.
-   * If upstream fails before an element was received, `sinkFactory` throws an exception, or materialization of the internal
-   * sink fails then the `Future` is completed with the exception.
-   * Otherwise the `Future` is completed with the materialized value of the internal sink.
-   */
-  @deprecated("Use 'Sink.lazyFutureSink' instead", "Akka 2.6.0")
-  def lazyInitAsync[T, M](sinkFactory: () => Future[Sink[T, M]]): Sink[T, Future[Option[M]]] =
-    Sink.fromGraph(new LazySink[T, M](_ => sinkFactory())).mapMaterializedValue { m =>
-      implicit val ec = ExecutionContexts.parasitic
-      m.map(Option.apply _).recover { case _: NeverMaterializedException => None }
-    }
-
-  /**
    * Turn a `Future[Sink]` into a Sink that will consume the values of the source when the future completes successfully.
    * If the `Future` is completed with a failure the stream is failed.
    *

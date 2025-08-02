@@ -479,45 +479,6 @@ object Sink {
   def queue[T](): Sink[T, SinkQueueWithCancel[T]] = queue(1)
 
   /**
-   * Creates a real `Sink` upon receiving the first element. Internal `Sink` will not be created if there are no elements,
-   * because of completion or error.
-   *
-   * If upstream completes before an element was received then the `Future` is completed with the value created by fallback.
-   * If upstream fails before an element was received, `sinkFactory` throws an exception, or materialization of the internal
-   * sink fails then the `Future` is completed with the exception.
-   * Otherwise the `Future` is completed with the materialized value of the internal sink.
-   */
-  @deprecated("Use 'Sink.lazyCompletionStageSink' in combination with 'Flow.prefixAndTail(1)' instead", "Akka 2.6.0")
-  def lazyInit[T, M](
-      sinkFactory: function.Function[T, CompletionStage[Sink[T, M]]],
-      fallback: function.Creator[M]): Sink[T, CompletionStage[M]] =
-    new Sink(
-      scaladsl.Sink
-        .lazyInit[T, M](
-          t => sinkFactory.apply(t).asScala.map(_.asScala)(ExecutionContexts.parasitic),
-          () => fallback.create())
-        .mapMaterializedValue(_.asJava))
-
-  /**
-   * Creates a real `Sink` upon receiving the first element. Internal `Sink` will not be created if there are no elements,
-   * because of completion or error.
-   *
-   * If upstream completes before an element was received then the `Future` is completed with `None`.
-   * If upstream fails before an element was received, `sinkFactory` throws an exception, or materialization of the internal
-   * sink fails then the `Future` is completed with the exception.
-   * Otherwise the `Future` is completed with the materialized value of the internal sink.
-   */
-  @deprecated("Use 'Sink.lazyCompletionStageSink' instead", "Akka 2.6.0")
-  def lazyInitAsync[T, M](
-      sinkFactory: function.Creator[CompletionStage[Sink[T, M]]]): Sink[T, CompletionStage[Optional[M]]] = {
-    val sSink = scaladsl.Sink
-      .lazyInitAsync[T, M](() => sinkFactory.create().asScala.map(_.asScala)(ExecutionContexts.parasitic))
-      .mapMaterializedValue(fut =>
-        fut.map(_.fold(Optional.empty[M]())(m => Optional.ofNullable(m)))(ExecutionContexts.parasitic).asJava)
-    new Sink(sSink)
-  }
-
-  /**
    * Turn a `Future[Sink]` into a Sink that will consume the values of the source when the future completes successfully.
    * If the `Future` is completed with a failure the stream is failed.
    *

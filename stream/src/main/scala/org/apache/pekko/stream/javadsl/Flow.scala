@@ -270,61 +270,6 @@ object Flow {
     new Flow(scaladsl.Flow.fromSinkAndSourceCoupledMat(sink, source)(combinerToScala(combine)))
 
   /**
-   * Creates a real `Flow` upon receiving the first element. Internal `Flow` will not be created
-   * if there are no elements, because of completion, cancellation, or error.
-   *
-   * The materialized value of the `Flow` is the value that is created by the `fallback` function.
-   *
-   * '''Emits when''' the internal flow is successfully created and it emits
-   *
-   * '''Backpressures when''' the internal flow is successfully created and it backpressures
-   *
-   * '''Completes when''' upstream completes and all elements have been emitted from the internal flow
-   *
-   * '''Cancels when''' downstream cancels
-   */
-  @deprecated(
-    "Use 'Flow.completionStageFlow' in combination with prefixAndTail(1) instead, see `completionStageFlow` operator docs for details",
-    "Akka 2.6.0")
-  def lazyInit[I, O, M](
-      flowFactory: function.Function[I, CompletionStage[Flow[I, O, M]]],
-      fallback: function.Creator[M]): Flow[I, O, M] = {
-    import pekko.util.FutureConverters._
-    val sflow = scaladsl.Flow.lazyInit(
-      (flowFactory.apply(_)).andThen(_.asScala.map(_.asScala)(ExecutionContexts.parasitic)),
-      fallback.create _)
-    new Flow(sflow)
-  }
-
-  /**
-   * Creates a real `Flow` upon receiving the first element. Internal `Flow` will not be created
-   * if there are no elements, because of completion, cancellation, or error.
-   *
-   * The materialized value of the `Flow` is a `Future[Option[M]]` that is completed with `Some(mat)` when the internal
-   * flow gets materialized or with `None` when there where no elements. If the flow materialization (including
-   * the call of the `flowFactory`) fails then the future is completed with a failure.
-   *
-   * '''Emits when''' the internal flow is successfully created and it emits
-   *
-   * '''Backpressures when''' the internal flow is successfully created and it backpressures
-   *
-   * '''Completes when''' upstream completes and all elements have been emitted from the internal flow
-   *
-   * '''Cancels when''' downstream cancels
-   */
-  @deprecated("Use 'Flow.lazyCompletionStageFlow' instead", "Akka 2.6.0")
-  def lazyInitAsync[I, O, M](
-      flowFactory: function.Creator[CompletionStage[Flow[I, O, M]]]): Flow[I, O, CompletionStage[Optional[M]]] = {
-    import pekko.util.FutureConverters._
-
-    val sflow = scaladsl.Flow
-      .lazyInitAsync(() => flowFactory.create().asScala.map(_.asScala)(ExecutionContexts.parasitic))
-      .mapMaterializedValue(fut =>
-        fut.map(_.fold[Optional[M]](Optional.empty())(m => Optional.ofNullable(m)))(ExecutionContexts.parasitic).asJava)
-    new Flow(sflow)
-  }
-
-  /**
    * Turn a `CompletionStage<Flow>` into a flow that will consume the values of the source when the future completes successfully.
    * If the `Future` is completed with a failure the stream is failed.
    *

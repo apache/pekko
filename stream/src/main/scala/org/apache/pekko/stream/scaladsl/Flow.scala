@@ -663,63 +663,6 @@ object Flow {
   // format: ON
 
   /**
-   * Creates a real `Flow` upon receiving the first element. Internal `Flow` will not be created
-   * if there are no elements, because of completion, cancellation, or error.
-   *
-   * The materialized value of the `Flow` is the value that is created by the `fallback` function.
-   *
-   * '''Emits when''' the internal flow is successfully created and it emits
-   *
-   * '''Backpressures when''' the internal flow is successfully created and it backpressures
-   *
-   * '''Completes when''' upstream completes and all elements have been emitted from the internal flow
-   *
-   * '''Cancels when''' downstream cancels (see below)
-   *
-   * The operator's default behavior in case of downstream cancellation before nested flow materialization (future completion) is to cancel immediately.
-   *  This behavior can be controlled by setting the [[pekko.stream.Attributes.NestedMaterializationCancellationPolicy.PropagateToNested]] attribute,
-   * this will delay downstream cancellation until nested flow's materialization which is then immediately cancelled (with the original cancellation cause).
-   */
-  @deprecated(
-    "Use 'Flow.futureFlow' in combination with prefixAndTail(1) instead, see `futureFlow` operator docs for details",
-    "Akka 2.6.0")
-  def lazyInit[I, O, M](flowFactory: I => Future[Flow[I, O, M]], fallback: () => M): Flow[I, O, M] =
-    Flow[I]
-      .flatMapPrefix(1) {
-        case Seq(a) => futureFlow(flowFactory(a)).mapMaterializedValue(_ => NotUsed)
-        case Nil    => Flow[I].asInstanceOf[Flow[I, O, NotUsed]]
-        case _      => throw new RuntimeException() // won't happen, compiler exhaustiveness check pleaser
-      }
-      .mapMaterializedValue(_ => fallback())
-
-  /**
-   * Creates a real `Flow` upon receiving the first element. Internal `Flow` will not be created
-   * if there are no elements, because of completion, cancellation, or error.
-   *
-   * The materialized value of the `Flow` is a `Future[Option[M]]` that is completed with `Some(mat)` when the internal
-   * flow gets materialized or with `None` when there where no elements. If the flow materialization (including
-   * the call of the `flowFactory`) fails then the future is completed with a failure.
-   *
-   * '''Emits when''' the internal flow is successfully created and it emits
-   *
-   * '''Backpressures when''' the internal flow is successfully created and it backpressures
-   *
-   * '''Completes when''' upstream completes and all elements have been emitted from the internal flow
-   *
-   * '''Cancels when''' downstream cancels (see below)
-   *
-   * The operator's default behavior in case of downstream cancellation before nested flow materialization (future completion) is to cancel immediately.
-   *  This behavior can be controlled by setting the [[pekko.stream.Attributes.NestedMaterializationCancellationPolicy.PropagateToNested]] attribute,
-   * this will delay downstream cancellation until nested flow's materialization which is then immediately cancelled (with the original cancellation cause).
-   */
-  @deprecated("Use 'Flow.lazyFutureFlow' instead", "Akka 2.6.0")
-  def lazyInitAsync[I, O, M](flowFactory: () => Future[Flow[I, O, M]]): Flow[I, O, Future[Option[M]]] =
-    Flow.lazyFutureFlow(flowFactory).mapMaterializedValue {
-      implicit val ec = pekko.dispatch.ExecutionContexts.parasitic
-      _.map(Some.apply).recover { case _: NeverMaterializedException => None }
-    }
-
-  /**
    * Turn a `Future[Flow]` into a flow that will consume the values of the source when the future completes successfully.
    * If the `Future` is completed with a failure the stream is failed.
    *
