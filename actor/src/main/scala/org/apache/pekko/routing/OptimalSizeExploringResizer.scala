@@ -218,7 +218,7 @@ case class DefaultOptimalSizeExploringResizer(
       case ActorRefRoutee(a: ActorRefWithCell) =>
         a.underlying match {
           case cell: ActorCell =>
-            cell.mailbox.numberOfMessages + (if (cell.currentMessage != null) 1 else 0)
+            cell.mailbox.numberOfMessages + (if (cell.currentMessage ne null) 1 else 0)
           case cell => cell.numberOfMessages
         }
       case _ => 0

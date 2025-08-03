@@ -607,7 +607,7 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
           tryPull()
 
         case UnRegister(id, previousOffset, finalOffset) =>
-          if (findAndRemoveConsumer(id, previousOffset) != null)
+          if (findAndRemoveConsumer(id, previousOffset) ne null)
             activeConsumers -= 1
           if (activeConsumers == 0) {
             if (isClosed(in)) completeStage()

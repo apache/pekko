@@ -50,7 +50,7 @@ private[pekko] final class MapConcat[In, Out](f: In => IterableOnce[Out])
 
       private var currentIterator: Iterator[Out] = _
 
-      private def hasNext = currentIterator != null && currentIterator.hasNext
+      private def hasNext = (currentIterator ne null) && currentIterator.hasNext
 
       override def onPush(): Unit =
         try {

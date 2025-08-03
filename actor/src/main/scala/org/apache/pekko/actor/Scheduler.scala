@@ -89,12 +89,12 @@ trait Scheduler {
           override def run(): Unit = {
             try {
               runnable.run()
-              if (get != null)
+              if (get ne null)
                 swap(scheduleOnce(delay, this))
             } catch {
               // ignore failure to enqueue or terminated target actor
-              case _: SchedulerException                                                                         =>
-              case e: IllegalStateException if e.getCause != null && e.getCause.isInstanceOf[SchedulerException] =>
+              case _: SchedulerException                                                                           =>
+              case e: IllegalStateException if (e.getCause ne null) && e.getCause.isInstanceOf[SchedulerException] =>
             }
           }
 
@@ -541,7 +541,7 @@ object Scheduler {
 
     @tailrec final protected def swap(c: Cancellable): Unit = {
       get match {
-        case null => if (c != null) c.cancel()
+        case null => if (c ne null) c.cancel()
         case old  =>
           if (!compareAndSet(old, c))
             swap(c)

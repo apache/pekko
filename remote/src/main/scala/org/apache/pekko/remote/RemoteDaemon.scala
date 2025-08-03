@@ -94,7 +94,7 @@ private[pekko] class RemoteSystemDaemon(
   @tailrec private def addChildParentNeedsWatch(parent: ActorRef, child: ActorRef): Boolean =
     parent2children.get(parent) match {
       case null =>
-        if (parent2children.putIfAbsent(parent, Set(child)) == null) true
+        if (parent2children.putIfAbsent(parent, Set(child)) eq null) true
         else addChildParentNeedsWatch(parent, child)
       case children =>
         if (parent2children.replace(parent, children, children + child)) false

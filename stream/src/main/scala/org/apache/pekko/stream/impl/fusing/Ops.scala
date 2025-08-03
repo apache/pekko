@@ -2362,7 +2362,7 @@ private[pekko] final class StatefulMapConcat[In, Out](val factory: StatefulMapCo
     private var accumulator: StatefulMapConcatAccumulator[In, Out] = factory.accumulator()
     private val contextPropagation = ContextPropagation()
 
-    private def hasNext = if (currentIterator != null) currentIterator.hasNext else false
+    private def hasNext = if (currentIterator ne null) currentIterator.hasNext else false
 
     setHandlers(in, out, this)
 

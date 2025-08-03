@@ -69,7 +69,7 @@ import pekko.util.OptionVal
     }
 
     @tailrec private def isAllowedSpringClass(clazz: Class[_]): Boolean = {
-      if (clazz == null || clazz.equals(classOf[java.lang.Object]))
+      if ((clazz eq null) || clazz.equals(classOf[java.lang.Object]))
         true
       else {
         val name = clazz.getSimpleName
@@ -88,7 +88,7 @@ import pekko.util.OptionVal
     Set(classOf[java.io.Serializable], classOf[java.io.Serializable], classOf[java.lang.Comparable[_]])
 
   def isGZipped(bytes: Array[Byte]): Boolean = {
-    (bytes != null) && (bytes.length >= 2) &&
+    (bytes ne null) && (bytes.length >= 2) &&
     (bytes(0) == GZIPInputStream.GZIP_MAGIC.toByte) &&
     (bytes(1) == (GZIPInputStream.GZIP_MAGIC >> 8).toByte)
   }

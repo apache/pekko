@@ -47,7 +47,7 @@ class EventFilter(clazz: Class[_], system: ActorSystem) {
   def intercept[T](code: Supplier[T]): T = {
     val filter: pekko.testkit.EventFilter =
       if (_clazz eq classOf[Logging.Error]) {
-        if (exceptionType == null) exceptionType = Logging.noCause.getClass
+        if (exceptionType eq null) exceptionType = Logging.noCause.getClass
         new ErrorFilter(exceptionType, source, message, pattern, complete, occurrences)
       } else if (_clazz eq classOf[Logging.Warning]) {
         new WarningFilter(source, message, pattern, complete, occurrences)

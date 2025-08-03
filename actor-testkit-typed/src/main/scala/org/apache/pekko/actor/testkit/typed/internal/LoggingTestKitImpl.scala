@@ -71,7 +71,7 @@ import pekko.testkit.TestKit
   }
 
   private def messageOrEmpty(event: LoggingEvent): String =
-    if (event.message == null) "" else event.message
+    if (event.message eq null) "" else event.message
 
   private def sourceOrEmpty(event: LoggingEvent): String =
     event.mdc.getOrElse("pekkoSource", "")

@@ -460,7 +460,7 @@ import pekko.util.ByteString
   @tailrec
   private def runDelegatedTasks(): Unit = {
     val task = engine.getDelegatedTask
-    if (task != null) {
+    if (task ne null) {
       if (tracing) log.debug("running task")
       task.run()
       runDelegatedTasks()

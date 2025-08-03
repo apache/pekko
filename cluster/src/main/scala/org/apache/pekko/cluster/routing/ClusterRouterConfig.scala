@@ -279,7 +279,7 @@ private[pekko] trait ClusterRouterSettingsBase {
 
   require(totalInstances > 0, "totalInstances of cluster router must be > 0")
   require(useRoles != null, "useRoles must be non-null")
-  require(!useRoles.exists(role => role == null || role.isEmpty), "All roles in useRoles must be non-empty")
+  require(!useRoles.exists(role => (role eq null) || role.isEmpty), "All roles in useRoles must be non-empty")
 }
 
 /**

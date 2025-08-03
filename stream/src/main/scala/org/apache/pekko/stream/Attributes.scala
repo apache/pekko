@@ -673,7 +673,7 @@ object Attributes {
    * If the name is null or empty the name is ignored, i.e. [[#none]] is returned.
    */
   def name(name: String): Attributes =
-    if (name == null || name.isEmpty) none
+    if ((name eq null) || name.isEmpty) none
     else Attributes(Name(name))
 
   /**

@@ -366,7 +366,7 @@ private[io] abstract class TcpConnection(val tcp: TcpExt, val channel: SocketCha
     }
 
   @tailrec private[this] def extractMsg(t: Throwable): String =
-    if (t == null) "unknown"
+    if (t eq null) "unknown"
     else {
       t.getMessage match {
         case null | "" => extractMsg(t.getCause)

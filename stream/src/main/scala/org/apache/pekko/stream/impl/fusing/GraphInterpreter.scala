@@ -310,7 +310,7 @@ import pekko.stream.stage._
    * materializer for the GraphInterpreter—fusing is only an optimization.
    */
   def init(subMat: Materializer): Unit = {
-    _subFusingMaterializer = if (subMat == null) materializer else subMat
+    _subFusingMaterializer = if (subMat eq null) materializer else subMat
     var i = 0
     while (i < logics.length) {
       val logic = logics(i)
@@ -376,7 +376,7 @@ import pekko.stream.stage._
         chaseCounter = math.min(ChaseLimit, eventsRemaining)
 
         def reportStageError(e: Throwable): Unit = {
-          if (activeStage == null) throw e
+          if (activeStage eq null) throw e
           else {
             val loggingEnabled = activeStage.attributes.get[LogLevels] match {
               case Some(levels) => levels.onFailure != LogLevels.Off
@@ -603,7 +603,7 @@ import pekko.stream.stage._
     }
 
   // Returns true if the given stage is already completed
-  def isStageCompleted(stage: GraphStageLogic): Boolean = stage != null && shutdownCounter(stage.stageId) == 0
+  def isStageCompleted(stage: GraphStageLogic): Boolean = (stage ne null) && shutdownCounter(stage.stageId) == 0
 
   // Returns true if the given stage is already finalized
   private def isStageFinalized(stage: GraphStageLogic): Boolean = finalizedMark(stage.stageId)
@@ -712,7 +712,7 @@ import pekko.stream.stage._
         LogicSnapshotImpl(idx, logic.toString, logic.attributes)
     }
     val logicIndexes = logics.zipWithIndex.map { case (stage, idx) => stage -> idx }.toMap
-    val connectionSnapshots = connections.filter(_ != null).map { connection =>
+    val connectionSnapshots = connections.filter(_ ne null).map { connection =>
       ConnectionSnapshotImpl(
         connection.id,
         logicSnapshots(logicIndexes(connection.inOwner)),

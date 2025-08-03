@@ -110,5 +110,5 @@ private[pekko] abstract class PersistencePlugin[ScalaDsl, JavaDsl, T: ClassTag](
   }
 
   /** Check for default or missing identity. */
-  private def isEmpty(text: String): Boolean = text == null || text.length == 0
+  private def isEmpty(text: String): Boolean = (text eq null) || text.isEmpty
 }
