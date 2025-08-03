@@ -27,7 +27,7 @@ import org.apache.pekko
 import pekko.annotation.InternalStableApi
 import pekko.compat
 import pekko.dispatch.internal.SameThreadExecutionContext
-import pekko.japi.{ Function => JFunc, Option => JOption, Procedure }
+import pekko.japi.{ Option => JOption, Procedure }
 import pekko.util.unused
 
 /**
@@ -148,7 +148,7 @@ object Futures {
    */
   def find[T <: AnyRef](
       futures: JIterable[Future[T]],
-      predicate: JFunc[T, java.lang.Boolean],
+      predicate: pekko.japi.function.Function[T, java.lang.Boolean],
       executor: ExecutionContext): Future[JOption[T]] = {
     implicit val ec = executor
     compat.Future.find[T](futures.asScala)(predicate.apply(_))(executor).map(JOption.fromScalaOption)
@@ -198,7 +198,7 @@ object Futures {
    * This is useful for performing a parallel map. For example, to apply a function to all items of a list
    * in parallel.
    */
-  def traverse[A, B](in: JIterable[A], fn: JFunc[A, Future[B]], executor: ExecutionContext): Future[JIterable[B]] = {
+  def traverse[A, B](in: JIterable[A], fn: pekko.japi.function.Function[A, Future[B]], executor: ExecutionContext): Future[JIterable[B]] = {
     implicit val d = executor
     in.asScala.foldLeft(Future(new JLinkedList[B]())) { (fr, a) =>
       val fb = fn(a)
@@ -345,7 +345,7 @@ abstract class Recover[+T] extends japi.RecoverBridge[T] {
  * to failure cases.
  */
 object Filter {
-  def filterOf[T](f: pekko.japi.Function[T, java.lang.Boolean]): (T => Boolean) =
+  def filterOf[T](f: pekko.japi.function.Function[T, java.lang.Boolean]): (T => Boolean) =
     new Function1[T, Boolean] { def apply(result: T): Boolean = f(result).booleanValue() }
 }
 

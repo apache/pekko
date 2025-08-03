@@ -126,7 +126,7 @@ object Patterns {
    *   timeout);
    * }}}
    */
-  def askWithReplyTo(actor: ActorRef, messageFactory: japi.Function[ActorRef, Any], timeout: Timeout): Future[AnyRef] =
+  def askWithReplyTo(actor: ActorRef, messageFactory: japi.function.Function[ActorRef, Any], timeout: Timeout): Future[AnyRef] =
     extended.ask(actor, messageFactory.apply _)(timeout).asInstanceOf[Future[AnyRef]]
 
   /**
@@ -197,7 +197,7 @@ object Patterns {
    */
   def askWithReplyTo(
       actor: ActorRef,
-      messageFactory: japi.Function[ActorRef, Any],
+      messageFactory: japi.function.Function[ActorRef, Any],
       timeoutMillis: Long): Future[AnyRef] =
     extended.ask(actor, messageFactory.apply _)(Timeout(timeoutMillis.millis)).asInstanceOf[Future[AnyRef]]
 
@@ -312,7 +312,7 @@ object Patterns {
    */
   def askWithReplyTo(
       selection: ActorSelection,
-      messageFactory: japi.Function[ActorRef, Any],
+      messageFactory: japi.function.Function[ActorRef, Any],
       timeoutMillis: Long): Future[AnyRef] =
     extended.ask(selection, messageFactory.apply _)(Timeout(timeoutMillis.millis)).asInstanceOf[Future[AnyRef]]
 
@@ -329,7 +329,7 @@ object Patterns {
    */
   def askWithReplyTo(
       selection: ActorSelection,
-      messageFactory: japi.Function[ActorRef, Any],
+      messageFactory: japi.function.Function[ActorRef, Any],
       timeout: java.time.Duration): CompletionStage[AnyRef] =
     extended.ask(selection, messageFactory.apply _)(timeout.asScala).asJava.asInstanceOf[CompletionStage[AnyRef]]
 

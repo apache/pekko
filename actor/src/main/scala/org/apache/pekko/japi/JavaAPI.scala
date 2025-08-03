@@ -27,17 +27,6 @@ import org.apache.pekko
 import pekko.util.Collections.EmptyImmutableSeq
 
 /**
- * A Function interface. Used to create first-class-functions is Java.
- *
- * This class is kept for compatibility, but for future API's please prefer [[pekko.japi.function.Function]].
- */
-@FunctionalInterface
-trait Function[T, R] {
-  @throws(classOf[Exception])
-  def apply(param: T): R
-}
-
-/**
  * A Function interface. Used to create 2-arg first-class-functions is Java.
  *
  * This class is kept for compatibility, but for future API's please prefer [[pekko.japi.function.Function2]].
