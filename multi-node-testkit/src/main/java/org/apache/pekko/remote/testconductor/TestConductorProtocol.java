@@ -95,16 +95,6 @@ public final class TestConductorProtocol {
     /**
      * @param value The numeric wire value of the corresponding enum entry.
      * @return The enum associated with the given numeric wire value.
-     * @deprecated Use {@link #forNumber(int)} instead.
-     */
-    @java.lang.Deprecated
-    public static BarrierOp valueOf(int value) {
-      return forNumber(value);
-    }
-
-    /**
-     * @param value The numeric wire value of the corresponding enum entry.
-     * @return The enum associated with the given numeric wire value.
      */
     public static BarrierOp forNumber(int value) {
       switch (value) {
@@ -234,16 +224,6 @@ public final class TestConductorProtocol {
     /**
      * @param value The numeric wire value of the corresponding enum entry.
      * @return The enum associated with the given numeric wire value.
-     * @deprecated Use {@link #forNumber(int)} instead.
-     */
-    @java.lang.Deprecated
-    public static FailType valueOf(int value) {
-      return forNumber(value);
-    }
-
-    /**
-     * @param value The numeric wire value of the corresponding enum entry.
-     * @return The enum associated with the given numeric wire value.
      */
     public static FailType forNumber(int value) {
       switch (value) {
@@ -346,16 +326,6 @@ public final class TestConductorProtocol {
 
     public final int getNumber() {
       return value;
-    }
-
-    /**
-     * @param value The numeric wire value of the corresponding enum entry.
-     * @return The enum associated with the given numeric wire value.
-     * @deprecated Use {@link #forNumber(int)} instead.
-     */
-    @java.lang.Deprecated
-    public static Direction valueOf(int value) {
-      return forNumber(value);
     }
 
     /**
