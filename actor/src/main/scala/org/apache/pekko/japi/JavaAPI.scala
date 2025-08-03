@@ -38,16 +38,6 @@ trait Effect {
 }
 
 /**
- * Java API: Defines a criteria and determines whether the parameter meets this criteria.
- *
- * This class is kept for compatibility, but for future API's please prefer [[java.util.function.Predicate]].
- */
-@FunctionalInterface
-trait Predicate[T] {
-  def test(param: T): Boolean
-}
-
-/**
  * Java API
  * Represents a pair (tuple) of two elements.
  *
