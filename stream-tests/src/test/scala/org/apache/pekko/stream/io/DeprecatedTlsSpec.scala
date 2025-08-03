@@ -357,6 +357,19 @@ class DeprecatedTlsSpec extends StreamSpec(DeprecatedTlsSpec.configOverrides) wi
       def output = ByteString("TLS_ECDHE_RSA_WITH_AES_128_CBC_SHAhello")
     }
 
+    val renegotiationScenarios = if (JavaVersion.majorVersion <= 21)
+      Seq(
+        SessionRenegotiationBySender,
+        SessionRenegotiationByReceiver,
+        SessionRenegotiationFirstOne,
+        SessionRenegotiationFirstTwo)
+    else
+      // skip SessionRenegotiationFirstOne as it uses a weak cipher suite and the test will fail
+      Seq(
+        SessionRenegotiationBySender,
+        SessionRenegotiationByReceiver,
+        SessionRenegotiationFirstTwo)
+
     val scenarios =
       Seq(
         SingleBytes,
@@ -369,11 +382,7 @@ class DeprecatedTlsSpec extends StreamSpec(DeprecatedTlsSpec.configOverrides) wi
         CancellingRHS,
         CancellingRHSIgnoresBoth,
         LHSIgnoresBoth,
-        BothSidesIgnoreBoth,
-        SessionRenegotiationBySender,
-        SessionRenegotiationByReceiver,
-        SessionRenegotiationFirstOne,
-        SessionRenegotiationFirstTwo)
+        BothSidesIgnoreBoth) ++ renegotiationScenarios
 
     for {
       commPattern <- communicationPatterns
