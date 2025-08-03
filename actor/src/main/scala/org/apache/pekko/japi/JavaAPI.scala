@@ -27,17 +27,6 @@ import org.apache.pekko
 import pekko.util.Collections.EmptyImmutableSeq
 
 /**
- * A Function interface. Used to create 2-arg first-class-functions is Java.
- *
- * This class is kept for compatibility, but for future API's please prefer [[pekko.japi.function.Function2]].
- */
-@FunctionalInterface
-trait Function2[T1, T2, R] {
-  @throws(classOf[Exception])
-  def apply(arg1: T1, arg2: T2): R
-}
-
-/**
  * A Procedure is like a Function, but it doesn't produce a return value.
  *
  * This class is kept for compatibility, but for future API's please prefer [[pekko.japi.function.Procedure]].

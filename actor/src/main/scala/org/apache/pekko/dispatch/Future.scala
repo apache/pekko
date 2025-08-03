@@ -169,7 +169,7 @@ object Futures {
   def fold[T <: AnyRef, R <: AnyRef](
       zero: R,
       futures: JIterable[Future[T]],
-      fun: pekko.japi.Function2[R, T, R],
+      fun: pekko.japi.function.Function2[R, T, R],
       executor: ExecutionContext): Future[R] =
     compat.Future.fold(futures.asScala)(zero)(fun.apply)(executor)
 
@@ -178,7 +178,7 @@ object Futures {
    */
   def reduce[T <: AnyRef, R >: T](
       futures: JIterable[Future[T]],
-      fun: pekko.japi.Function2[R, T, R],
+      fun: pekko.japi.function.Function2[R, T, R],
       executor: ExecutionContext): Future[R] =
     compat.Future.reduce[T, R](futures.asScala)(fun.apply)(executor)
 
