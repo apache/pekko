@@ -160,7 +160,7 @@ object Behaviors {
    *
    * @since 1.1.0
    */
-  def receiveMessageWithSame[T](onMessage: pekko.japi.Procedure[T]): Behavior[T] =
+  def receiveMessageWithSame[T](onMessage: pekko.japi.function.Procedure[T]): Behavior[T] =
     new BehaviorImpl.ReceiveBehavior((_, msg) => {
       onMessage.apply(msg)
       same[T]

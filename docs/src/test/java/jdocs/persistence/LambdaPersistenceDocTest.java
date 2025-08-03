@@ -14,7 +14,7 @@
 package jdocs.persistence;
 
 import org.apache.pekko.actor.*;
-import org.apache.pekko.japi.Procedure;
+import org.apache.pekko.japi.function.Procedure;
 import org.apache.pekko.pattern.BackoffOpts;
 import org.apache.pekko.pattern.BackoffSupervisor;
 import org.apache.pekko.persistence.*;

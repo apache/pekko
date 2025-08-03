@@ -27,7 +27,8 @@ import org.apache.pekko
 import pekko.annotation.InternalStableApi
 import pekko.compat
 import pekko.dispatch.internal.SameThreadExecutionContext
-import pekko.japi.{ Option => JOption, Procedure }
+import pekko.japi.{ Option => JOption }
+import pekko.japi.function.Procedure
 import pekko.util.unused
 
 /**

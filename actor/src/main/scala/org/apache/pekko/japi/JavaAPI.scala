@@ -27,17 +27,6 @@ import org.apache.pekko
 import pekko.util.Collections.EmptyImmutableSeq
 
 /**
- * A Procedure is like a Function, but it doesn't produce a return value.
- *
- * This class is kept for compatibility, but for future API's please prefer [[pekko.japi.function.Procedure]].
- */
-@FunctionalInterface
-trait Procedure[T] {
-  @throws(classOf[Exception])
-  def apply(param: T): Unit
-}
-
-/**
  * An executable piece of code that takes no parameters and doesn't return any value.
  *
  * This class is kept for compatibility, but for future API's please prefer [[pekko.japi.function.Effect]].
