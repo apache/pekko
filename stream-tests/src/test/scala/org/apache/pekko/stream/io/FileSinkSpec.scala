@@ -18,18 +18,17 @@ import java.nio.file.StandardOpenOption.{ CREATE, WRITE }
 
 import scala.annotation.nowarn
 import scala.collection.mutable.ListBuffer
-import scala.concurrent.{ Await, Future }
+import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.Success
 
 import com.google.common.jimfs.{ Configuration, Jimfs }
 
 import org.apache.pekko
-import pekko.dispatch.ExecutionContexts
 import pekko.stream._
 import pekko.stream.impl.{ PhasedFusingActorMaterializer, StreamSupervisor }
 import pekko.stream.impl.StreamSupervisor.Children
-import pekko.stream.scaladsl.{ FileIO, Keep, Sink, Source }
+import pekko.stream.scaladsl.{ FileIO, Keep, Source }
 import pekko.stream.testkit._
 import pekko.stream.testkit.Utils._
 import pekko.util.ByteString
@@ -205,23 +204,6 @@ class FileSinkSpec extends StreamSpec(UnboundedMailboxConfig) with ScalaFutures 
         } finally {
           forever.complete(Success(None))
         }
-      }
-    }
-
-    "write single line to a file from lazy sink" in {
-      // LazySink must wait for result of initialization even if got upstreamComplete
-      targetFile { f =>
-        val completion = Source(List(TestByteStrings.head)).runWith(
-          Sink
-            .lazyInitAsync(() => Future.successful(FileIO.toPath(f)))
-            // map a Future[Option[Future[IOResult]]] into a Future[Option[IOResult]]
-            .mapMaterializedValue(_.flatMap {
-              case Some(future) => future.map(Some(_))(ExecutionContexts.parasitic)
-              case None         => Future.successful(None)
-            }(ExecutionContexts.parasitic)))
-
-        Await.result(completion, 3.seconds)
-        checkFileContents(f, TestLines.head)
       }
     }
 

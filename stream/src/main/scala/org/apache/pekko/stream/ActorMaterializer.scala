@@ -198,25 +198,6 @@ object ActorMaterializer {
 }
 
 /**
- * INTERNAL API
- */
-private[pekko] object ActorMaterializerHelper {
-
-  /**
-   * INTERNAL API
-   */
-  @deprecated("The Materializer now has all methods the ActorMaterializer used to have", "Akka 2.6.0")
-  private[pekko] def downcast(materializer: Materializer): ActorMaterializer =
-    materializer match {
-      case m: ActorMaterializer => m
-      case _                    =>
-        throw new IllegalArgumentException(
-          s"required [${classOf[ActorMaterializer].getName}] " +
-          s"but got [${materializer.getClass.getName}]")
-    }
-}
-
-/**
  * An ActorMaterializer takes a stream blueprint and turns it into a running stream.
  */
 @deprecated("The Materializer now has all methods the ActorMaterializer used to have", "Akka 2.6.0")
