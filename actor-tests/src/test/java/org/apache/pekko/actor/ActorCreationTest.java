@@ -22,7 +22,7 @@ import java.util.stream.IntStream;
 import org.junit.Assert;
 import org.junit.Test;
 
-import org.apache.pekko.japi.Creator;
+import org.apache.pekko.japi.function.Creator;
 
 import org.scalatestplus.junit.JUnitSuite;
 

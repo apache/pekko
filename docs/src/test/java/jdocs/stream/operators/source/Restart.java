@@ -15,7 +15,7 @@ package jdocs.stream.operators.source;
 
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.Cancellable;
-import org.apache.pekko.japi.Creator;
+import org.apache.pekko.japi.function.Creator;
 import org.apache.pekko.stream.KillSwitches;
 import org.apache.pekko.stream.RestartSettings;
 import org.apache.pekko.stream.UniqueKillSwitch;

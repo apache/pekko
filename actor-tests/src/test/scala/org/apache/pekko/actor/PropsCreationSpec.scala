@@ -31,7 +31,7 @@ object PropsCreationSpec {
     override def receive = Actor.emptyBehavior
   }
 
-  object OneParamActorCreator extends pekko.japi.Creator[Actor] {
+  object OneParamActorCreator extends pekko.japi.function.Creator[Actor] {
     override def create(): Actor = new OneParamActor(null)
   }
 

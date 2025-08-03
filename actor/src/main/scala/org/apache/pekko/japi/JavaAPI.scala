@@ -21,8 +21,6 @@ import scala.reflect.ClassTag
 import scala.runtime.AbstractPartialFunction
 import scala.util.control.NoStackTrace
 
-import scala.annotation.nowarn
-
 import org.apache.pekko
 import pekko.util.Collections.EmptyImmutableSeq
 
@@ -49,23 +47,6 @@ case class Pair[A, B](first: A, second: B) {
 }
 object Pair {
   def create[A, B](first: A, second: B): Pair[A, B] = new Pair(first, second)
-}
-
-/**
- * A constructor/factory, takes no parameters but creates a new value of type T every call.
- *
- * This class is kept for compatibility, but for future API's please prefer [[pekko.japi.function.Creator]].
- */
-@nowarn("msg=@SerialVersionUID has no effect")
-@SerialVersionUID(1L)
-@FunctionalInterface
-trait Creator[T] extends Serializable {
-
-  /**
-   * This method must return a different instance upon every call.
-   */
-  @throws(classOf[Exception])
-  def create(): T
 }
 
 object JavaPartialFunction {

@@ -14,7 +14,7 @@
 package jdocs.testkit;
 
 import org.apache.pekko.actor.*;
-import org.apache.pekko.japi.Creator;
+import org.apache.pekko.japi.function.Creator;
 import org.apache.pekko.japi.function.Function;
 import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.testkit.TestProbe;
