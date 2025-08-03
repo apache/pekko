@@ -25,17 +25,6 @@ import org.apache.pekko
 import pekko.util.Collections.EmptyImmutableSeq
 
 /**
- * An executable piece of code that takes no parameters and doesn't return any value.
- *
- * This class is kept for compatibility, but for future API's please prefer [[pekko.japi.function.Effect]].
- */
-@FunctionalInterface
-trait Effect {
-  @throws(classOf[Exception])
-  def apply(): Unit
-}
-
-/**
  * Java API
  * Represents a pair (tuple) of two elements.
  *

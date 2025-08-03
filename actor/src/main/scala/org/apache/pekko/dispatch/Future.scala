@@ -199,7 +199,8 @@ object Futures {
    * This is useful for performing a parallel map. For example, to apply a function to all items of a list
    * in parallel.
    */
-  def traverse[A, B](in: JIterable[A], fn: pekko.japi.function.Function[A, Future[B]], executor: ExecutionContext): Future[JIterable[B]] = {
+  def traverse[A, B](in: JIterable[A], fn: pekko.japi.function.Function[A, Future[B]], executor: ExecutionContext)
+      : Future[JIterable[B]] = {
     implicit val d = executor
     in.asScala.foldLeft(Future(new JLinkedList[B]())) { (fr, a) =>
       val fb = fn(a)

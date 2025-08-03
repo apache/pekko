@@ -126,7 +126,8 @@ object Patterns {
    *   timeout);
    * }}}
    */
-  def askWithReplyTo(actor: ActorRef, messageFactory: japi.function.Function[ActorRef, Any], timeout: Timeout): Future[AnyRef] =
+  def askWithReplyTo(actor: ActorRef, messageFactory: japi.function.Function[ActorRef, Any], timeout: Timeout)
+      : Future[AnyRef] =
     extended.ask(actor, messageFactory.apply _)(timeout).asInstanceOf[Future[AnyRef]]
 
   /**

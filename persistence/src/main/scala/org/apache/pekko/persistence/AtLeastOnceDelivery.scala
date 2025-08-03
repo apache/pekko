@@ -471,6 +471,7 @@ abstract class AbstractPersistentActorWithAtLeastOnceDelivery
    * This method will throw [[AtLeastOnceDelivery.MaxUnconfirmedMessagesExceededException]]
    * if [[#numberOfUnconfirmed]] is greater than or equal to [[#maxUnconfirmedMessages]].
    */
-  def deliver(destination: ActorSelection, deliveryIdToMessage: pekko.japi.function.Function[java.lang.Long, Object]): Unit =
+  def deliver(destination: ActorSelection, deliveryIdToMessage: pekko.japi.function.Function[java.lang.Long, Object])
+      : Unit =
     internalDeliver(destination)(id => deliveryIdToMessage.apply(id))
 }
