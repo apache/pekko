@@ -13,6 +13,7 @@
 
 package org.apache.pekko.persistence
 
+import scala.annotation.nowarn
 import scala.concurrent.duration._
 import scala.runtime.BoxedUnit
 
@@ -73,6 +74,7 @@ object TimerPersistentActorSpec {
     override def createReceiveRecover(): AbstractActor.Receive =
       AbstractActor.emptyBehavior
 
+    @nowarn("msg=deprecated")
     override def createReceive(): AbstractActor.Receive =
       new AbstractActor.Receive({
         case Scheduled(msg, replyTo) =>
