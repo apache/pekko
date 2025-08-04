@@ -1,0 +1,38 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# Migrate functions in japi.* to to japi.function.*
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.actor.AllForOneStrategy.this")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.actor.OneForOneStrategy.this")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.actor.Props.create")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.actor.SupervisorStrategy.makeDecider")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.dispatch.ExecutionContexts.fromExecutorService")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.dispatch.ExecutionContexts.fromExecutor")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.dispatch.Filter.filterOf")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.dispatch.Futures.traverse")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.dispatch.Futures.reduce")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.dispatch.Futures.fold")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.dispatch.Futures.find")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.japi.Creator")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.japi.Effect")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.japi.Function")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.japi.Function2")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.japi.Predicate")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.japi.Procedure")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.pattern.Patterns.askWithReplyTo")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.serialization.SerializationSetup.create")
+
