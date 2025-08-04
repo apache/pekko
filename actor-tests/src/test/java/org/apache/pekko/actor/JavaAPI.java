@@ -15,7 +15,6 @@ package org.apache.pekko.actor;
 
 import org.apache.pekko.event.Logging;
 import org.apache.pekko.event.Logging.LoggerInitialized;
-import org.apache.pekko.japi.Creator;
 import org.apache.pekko.japi.Pair;
 import org.apache.pekko.japi.Util;
 import org.apache.pekko.japi.tuple.Tuple22;
@@ -36,7 +35,6 @@ import java.util.Optional;
 
 import static org.junit.Assert.*;
 
-@SuppressWarnings("deprecation")
 public class JavaAPI extends JUnitSuite {
 
   @ClassRule
@@ -70,11 +68,11 @@ public class JavaAPI extends JUnitSuite {
     assertNotNull(ref);
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({"unchecked", "deprecation"})
   public static Props mkErasedProps() {
     return Props.create(
         JavaAPITestActor.class,
-        new Creator() {
+        new org.apache.pekko.japi.Creator() {
           public Object create() {
             return new JavaAPITestActor();
           }
