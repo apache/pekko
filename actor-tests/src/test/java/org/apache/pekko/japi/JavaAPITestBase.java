@@ -24,6 +24,7 @@ import java.util.concurrent.Callable;
 
 import static org.junit.Assert.*;
 
+@SuppressWarnings("deprecation")
 public class JavaAPITestBase extends JUnitSuite {
 
   @Test

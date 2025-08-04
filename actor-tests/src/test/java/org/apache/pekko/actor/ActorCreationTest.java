@@ -26,6 +26,7 @@ import org.apache.pekko.japi.Creator;
 
 import org.scalatestplus.junit.JUnitSuite;
 
+@SuppressWarnings("deprecation")
 public class ActorCreationTest extends JUnitSuite {
 
   static class C implements Creator<AbstractActor> {

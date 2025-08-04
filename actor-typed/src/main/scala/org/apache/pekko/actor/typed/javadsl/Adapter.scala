@@ -13,6 +13,8 @@
 
 package org.apache.pekko.actor.typed.javadsl
 
+import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.actor
 import pekko.actor.typed.ActorRef
@@ -153,6 +155,7 @@ object Adapter {
    * takes a classic [[pekko.actor.Props]] parameter. Cluster Sharding is an
    * example of that.
    */
+  @nowarn("msg=deprecated")
   def props[T](behavior: Creator[Behavior[T]], deploy: Props): pekko.actor.Props =
     pekko.actor.typed.internal.adapter.PropsAdapter(
       () => Behaviors.supervise(behavior.create()).onFailure(SupervisorStrategy.stop),
@@ -168,6 +171,7 @@ object Adapter {
    * takes a classic [[pekko.actor.Props]] parameter. Cluster Sharding is an
    * example of that.
    */
+  @nowarn("msg=deprecated")
   def props[T](behavior: Creator[Behavior[T]]): pekko.actor.Props =
     props(behavior, Props.empty)
 

@@ -56,6 +56,7 @@ object ExecutionContexts {
    * @param errorReporter a Procedure that will log any exceptions passed to it
    * @return a new ExecutionContext
    */
+  @nowarn("msg=deprecated")
   def fromExecutor(executor: Executor, errorReporter: Procedure[Throwable]): ExecutionContextExecutor =
     ExecutionContext.fromExecutor(executor, errorReporter.apply)
 
@@ -77,6 +78,7 @@ object ExecutionContexts {
    * @param errorReporter a Procedure that will log any exceptions passed to it
    * @return a new ExecutionContext
    */
+  @nowarn("msg=deprecated")
   def fromExecutorService(
       executorService: ExecutorService,
       errorReporter: Procedure[Throwable]): ExecutionContextExecutorService =
@@ -161,6 +163,7 @@ object Futures {
   /**
    * Returns a Future that will hold the optional result of the first Future with a result that matches the predicate
    */
+  @nowarn("msg=deprecated")
   def find[T <: AnyRef](
       futures: JIterable[Future[T]],
       predicate: JFunc[T, java.lang.Boolean],
@@ -181,6 +184,7 @@ object Futures {
    * the result will be the first failure of any of the futures, or any failure in the actual fold,
    * or the result of the fold.
    */
+ @nowarn("msg=deprecated")
   def fold[T <: AnyRef, R <: AnyRef](
       zero: R,
       futures: JIterable[Future[T]],
@@ -191,6 +195,7 @@ object Futures {
   /**
    * Reduces the results of the supplied futures and binary function.
    */
+  @nowarn("msg=deprecated")
   def reduce[T <: AnyRef, R >: T](
       futures: JIterable[Future[T]],
       fun: pekko.japi.Function2[R, T, R],
@@ -213,6 +218,7 @@ object Futures {
    * This is useful for performing a parallel map. For example, to apply a function to all items of a list
    * in parallel.
    */
+  @nowarn("msg=deprecated")  
   def traverse[A, B](in: JIterable[A], fn: JFunc[A, Future[B]], executor: ExecutionContext): Future[JIterable[B]] = {
     implicit val d = executor
     in.asScala.foldLeft(Future(new JLinkedList[B]())) { (fr, a) =>
@@ -368,6 +374,7 @@ abstract class Recover[+T] extends japi.RecoverBridge[T] {
  * to failure cases.
  */
 object Filter {
+  @nowarn("msg=deprecated")
   def filterOf[T](f: pekko.japi.Function[T, java.lang.Boolean]): (T => Boolean) =
     new Function1[T, Boolean] { def apply(result: T): Boolean = f(result).booleanValue() }
 }

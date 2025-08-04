@@ -36,6 +36,7 @@ import java.util.Optional;
 
 import static org.junit.Assert.*;
 
+@SuppressWarnings("deprecation")
 public class JavaAPI extends JUnitSuite {
 
   @ClassRule

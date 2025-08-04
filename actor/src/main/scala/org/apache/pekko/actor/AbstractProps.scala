@@ -16,8 +16,7 @@ package org.apache.pekko.actor
 import java.lang.reflect.{ Modifier, ParameterizedType, TypeVariable }
 import java.lang.reflect.Constructor
 
-import scala.annotation.tailrec
-import scala.annotation.varargs
+import scala.annotation.{ nowarn, tailrec, varargs }
 
 import org.apache.pekko
 import pekko.japi.Creator
@@ -84,6 +83,7 @@ private[pekko] trait AbstractProps {
   /**
    * Create new Props from the given [[pekko.japi.Creator]] with the type set to the given actorClass.
    */
+  @nowarn("msg=deprecated")
   def create[T <: Actor](actorClass: Class[T], creator: Creator[T]): Props = {
     checkCreatorClosingOver(creator.getClass)
     create(classOf[CreatorConsumer], actorClass, creator)
