@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-# Migrate functions in japi.* to to japi.function.*
+# Migrate functions in japi.* to japi.function.*
 ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.actor.AllForOneStrategy.this")
 ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.actor.OneForOneStrategy.this")
 ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.actor.Props.create")
