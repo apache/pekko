@@ -22,35 +22,33 @@ import java.util.stream.IntStream;
 import org.junit.Assert;
 import org.junit.Test;
 
-import org.apache.pekko.japi.Creator;
-
 import org.scalatestplus.junit.JUnitSuite;
 
 @SuppressWarnings("deprecation")
 public class ActorCreationTest extends JUnitSuite {
 
-  static class C implements Creator<AbstractActor> {
+  static class C implements org.apache.pekko.japi.Creator<AbstractActor> {
     @Override
     public AbstractActor create() throws Exception {
       return null;
     }
   }
 
-  static class D<T> implements Creator<T> {
+  static class D<T> implements org.apache.pekko.japi.Creator<T> {
     @Override
     public T create() {
       return null;
     }
   }
 
-  static class E<T extends AbstractActor> implements Creator<T> {
+  static class E<T extends AbstractActor> implements org.apache.pekko.japi.Creator<T> {
     @Override
     public T create() {
       return null;
     }
   }
 
-  static interface I<T> extends Creator<AbstractActor> {}
+  static interface I<T> extends org.apache.pekko.japi.Creator<AbstractActor> {}
 
   static class F implements I<Object> {
     @Override
@@ -59,7 +57,7 @@ public class ActorCreationTest extends JUnitSuite {
     }
   }
 
-  static class G implements Creator {
+  static class G implements org.apache.pekko.japi.Creator {
     public Object create() {
       return null;
     }
@@ -69,7 +67,7 @@ public class ActorCreationTest extends JUnitSuite {
     public H(String a) {}
   }
 
-  static class P implements Creator<AbstractActor> {
+  static class P implements org.apache.pekko.japi.Creator<AbstractActor> {
     final String value;
 
     public P(String value) {
@@ -114,7 +112,7 @@ public class ActorCreationTest extends JUnitSuite {
       // since runtime type information erased
       return Props.create(
           TestActor2.class,
-          new Creator<TestActor2>() {
+          new org.apache.pekko.japi.Creator<TestActor2>() {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -127,7 +125,7 @@ public class ActorCreationTest extends JUnitSuite {
     public static Props propsUsingCreatorWithoutClass(final int magicNumber) {
       return Props.create(
           TestActor2.class,
-          new Creator<TestActor2>() {
+          new org.apache.pekko.japi.Creator<TestActor2>() {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -137,8 +135,8 @@ public class ActorCreationTest extends JUnitSuite {
           });
     }
 
-    private static final Creator<TestActor2> staticCreator =
-        new Creator<TestActor2>() {
+    private static final org.apache.pekko.japi.Creator<TestActor2> staticCreator =
+        new org.apache.pekko.japi.Creator<TestActor2>() {
           private static final long serialVersionUID = 1L;
 
           @Override
@@ -164,7 +162,7 @@ public class ActorCreationTest extends JUnitSuite {
 
   public static class Issue20537Reproducer extends UntypedAbstractActor {
 
-    static final class ReproducerCreator implements Creator<Issue20537Reproducer> {
+    static final class ReproducerCreator implements org.apache.pekko.japi.Creator<Issue20537Reproducer> {
 
       final boolean create;
 
@@ -192,7 +190,7 @@ public class ActorCreationTest extends JUnitSuite {
             () ->
                 Props.create(
                     Actor.class,
-                    new Creator<Actor>() {
+                    new org.apache.pekko.japi.Creator<Actor>() {
                       @Override
                       public Actor create() throws Exception {
                         return null;
@@ -239,7 +237,7 @@ public class ActorCreationTest extends JUnitSuite {
 
   @Test
   public void testRightTopLevelNonStaticCreator() {
-    final Creator<UntypedAbstractActor> nonStatic = new NonStaticCreator();
+    final org.apache.pekko.japi.Creator<UntypedAbstractActor> nonStatic = new NonStaticCreator();
     final Props p = Props.create(UntypedAbstractActor.class, nonStatic);
     assertEquals(UntypedAbstractActor.class, p.actorClass());
   }
@@ -274,8 +272,8 @@ public class ActorCreationTest extends JUnitSuite {
         exception.getMessage());
   }
 
-  private static Creator<AbstractActor> createAnonymousCreatorInStaticMethod() {
-    return new Creator<AbstractActor>() {
+  private static org.apache.pekko.japi.Creator<AbstractActor> createAnonymousCreatorInStaticMethod() {
+    return new org.apache.pekko.japi.Creator<AbstractActor>() {
       @Override
       public AbstractActor create() throws Exception {
         return null;
@@ -286,7 +284,7 @@ public class ActorCreationTest extends JUnitSuite {
   @Test
   @Deprecated
   public void testAnonymousClassCreatedInStaticMethodCreator() {
-    final Creator<AbstractActor> anonymousCreatorFromStaticMethod =
+    final org.apache.pekko.japi.Creator<AbstractActor> anonymousCreatorFromStaticMethod =
         createAnonymousCreatorInStaticMethod();
     Props.create(anonymousCreatorFromStaticMethod);
   }
@@ -294,7 +292,7 @@ public class ActorCreationTest extends JUnitSuite {
   @Test
   @Deprecated
   public void testClassCreatorWithArguments() {
-    final Creator<AbstractActor> anonymousCreatorFromStaticMethod = new P("hello");
+    final org.apache.pekko.japi.Creator<AbstractActor> anonymousCreatorFromStaticMethod = new P("hello");
     Props.create(anonymousCreatorFromStaticMethod);
   }
 
@@ -306,7 +304,7 @@ public class ActorCreationTest extends JUnitSuite {
             "Should have detected this is not a real static class, and thrown",
             IllegalArgumentException.class,
             () -> {
-              final Creator<AbstractActor> anonymousCreatorFromStaticMethod = new P("hello") {
+              final org.apache.pekko.japi.Creator<AbstractActor> anonymousCreatorFromStaticMethod = new P("hello") {
                     // captures enclosing class
                   };
               Props.create(anonymousCreatorFromStaticMethod);
