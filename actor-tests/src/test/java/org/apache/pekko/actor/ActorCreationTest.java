@@ -162,7 +162,8 @@ public class ActorCreationTest extends JUnitSuite {
 
   public static class Issue20537Reproducer extends UntypedAbstractActor {
 
-    static final class ReproducerCreator implements org.apache.pekko.japi.Creator<Issue20537Reproducer> {
+    static final class ReproducerCreator
+        implements org.apache.pekko.japi.Creator<Issue20537Reproducer> {
 
       final boolean create;
 
@@ -272,7 +273,8 @@ public class ActorCreationTest extends JUnitSuite {
         exception.getMessage());
   }
 
-  private static org.apache.pekko.japi.Creator<AbstractActor> createAnonymousCreatorInStaticMethod() {
+  private static org.apache.pekko.japi.Creator<AbstractActor>
+      createAnonymousCreatorInStaticMethod() {
     return new org.apache.pekko.japi.Creator<AbstractActor>() {
       @Override
       public AbstractActor create() throws Exception {
@@ -292,7 +294,8 @@ public class ActorCreationTest extends JUnitSuite {
   @Test
   @Deprecated
   public void testClassCreatorWithArguments() {
-    final org.apache.pekko.japi.Creator<AbstractActor> anonymousCreatorFromStaticMethod = new P("hello");
+    final org.apache.pekko.japi.Creator<AbstractActor> anonymousCreatorFromStaticMethod =
+        new P("hello");
     Props.create(anonymousCreatorFromStaticMethod);
   }
 
@@ -304,7 +307,8 @@ public class ActorCreationTest extends JUnitSuite {
             "Should have detected this is not a real static class, and thrown",
             IllegalArgumentException.class,
             () -> {
-              final org.apache.pekko.japi.Creator<AbstractActor> anonymousCreatorFromStaticMethod = new P("hello") {
+              final org.apache.pekko.japi.Creator<AbstractActor> anonymousCreatorFromStaticMethod =
+                  new P("hello") {
                     // captures enclosing class
                   };
               Props.create(anonymousCreatorFromStaticMethod);
