@@ -184,7 +184,7 @@ object Futures {
    * the result will be the first failure of any of the futures, or any failure in the actual fold,
    * or the result of the fold.
    */
- @nowarn("msg=deprecated")
+  @nowarn("msg=deprecated")
   def fold[T <: AnyRef, R <: AnyRef](
       zero: R,
       futures: JIterable[Future[T]],
@@ -218,7 +218,7 @@ object Futures {
    * This is useful for performing a parallel map. For example, to apply a function to all items of a list
    * in parallel.
    */
-  @nowarn("msg=deprecated")  
+  @nowarn("msg=deprecated")
   def traverse[A, B](in: JIterable[A], fn: JFunc[A, Future[B]], executor: ExecutionContext): Future[JIterable[B]] = {
     implicit val d = executor
     in.asScala.foldLeft(Future(new JLinkedList[B]())) { (fr, a) =>
