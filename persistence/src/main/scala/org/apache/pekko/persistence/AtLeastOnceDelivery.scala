@@ -13,6 +13,7 @@
 
 package org.apache.pekko.persistence
 
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent.duration.FiniteDuration
 
@@ -448,6 +449,7 @@ abstract class AbstractPersistentActorWithAtLeastOnceDelivery
    * This method will throw [[AtLeastOnceDelivery.MaxUnconfirmedMessagesExceededException]]
    * if [[#numberOfUnconfirmed]] is greater than or equal to [[#maxUnconfirmedMessages]].
    */
+  @nowarn("msg=deprecated")
   def deliver(destination: ActorPath, deliveryIdToMessage: pekko.japi.Function[java.lang.Long, Object]): Unit =
     internalDeliver(destination)(id => deliveryIdToMessage.apply(id))
 
@@ -471,6 +473,7 @@ abstract class AbstractPersistentActorWithAtLeastOnceDelivery
    * This method will throw [[AtLeastOnceDelivery.MaxUnconfirmedMessagesExceededException]]
    * if [[#numberOfUnconfirmed]] is greater than or equal to [[#maxUnconfirmedMessages]].
    */
+  @nowarn("msg=deprecated")
   def deliver(destination: ActorSelection, deliveryIdToMessage: pekko.japi.Function[java.lang.Long, Object]): Unit =
     internalDeliver(destination)(id => deliveryIdToMessage.apply(id))
 }

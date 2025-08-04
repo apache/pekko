@@ -15,6 +15,7 @@ package org.apache.pekko.persistence
 
 import java.lang.{ Iterable => JIterable }
 
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.util.control.NoStackTrace
 
@@ -392,6 +393,7 @@ abstract class AbstractPersistentActor extends AbstractActor with AbstractPersis
    * @param event event to be persisted.
    * @param handler handler for each persisted `event`
    */
+  @nowarn("msg=deprecated")
   def persist[A](event: A, handler: Procedure[A]): Unit =
     internalPersist(event)(event => handler(event))
 
@@ -403,6 +405,7 @@ abstract class AbstractPersistentActor extends AbstractActor with AbstractPersis
    * @param events events to be persisted.
    * @param handler handler for each persisted `events`
    */
+  @nowarn("msg=deprecated")
   def persistAll[A](events: JIterable[A], handler: Procedure[A]): Unit =
     internalPersistAll(Util.immutableSeq(events))(event => handler(event))
 
@@ -424,6 +427,7 @@ abstract class AbstractPersistentActor extends AbstractActor with AbstractPersis
    * @param event event to be persisted
    * @param handler handler for each persisted `event`
    */
+  @nowarn("msg=deprecated")
   def persistAsync[A](event: A, handler: Procedure[A]): Unit =
     internalPersistAsync(event)(event => handler(event))
 
@@ -435,6 +439,7 @@ abstract class AbstractPersistentActor extends AbstractActor with AbstractPersis
    * @param events events to be persisted
    * @param handler handler for each persisted `events`
    */
+  @nowarn("msg=deprecated")
   def persistAllAsync[A](events: JIterable[A], handler: Procedure[A]): Unit =
     internalPersistAllAsync(Util.immutableSeq(events))(event => handler(event))
 
@@ -455,6 +460,7 @@ abstract class AbstractPersistentActor extends AbstractActor with AbstractPersis
    * @param event event to be handled in the future, when preceding persist operations have been processes
    * @param handler handler for the given `event`
    */
+  @nowarn("msg=deprecated")
   def deferAsync[A](event: A)(handler: Procedure[A]): Unit =
     internalDeferAsync(event)(event => handler(event))
 
@@ -476,6 +482,7 @@ abstract class AbstractPersistentActor extends AbstractActor with AbstractPersis
    * @param event event to be handled in the future, when preceding persist operations have been processes
    * @param handler handler for the given `event`
    */
+  @nowarn("msg=deprecated")
   def defer[A](event: A)(handler: Procedure[A]): Unit = {
     internalDefer(event)(event => handler(event))
   }
