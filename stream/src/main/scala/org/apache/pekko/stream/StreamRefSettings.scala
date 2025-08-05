@@ -28,12 +28,6 @@ import com.typesafe.config.Config
 @nowarn("msg=deprecated")
 object StreamRefSettings {
 
-  /** Java API */
-  @deprecated(
-    "Use attributes on the Runnable graph or change the defaults in configuration, see migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
-    since = "Akka 2.6.0")
-  def create(system: ActorSystem): StreamRefSettings = apply(system)
-
   /** Scala API */
   @deprecated(
     "Use attributes on the Runnable graph or change the defaults in configuration, see migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
@@ -41,12 +35,6 @@ object StreamRefSettings {
   def apply(system: ActorSystem): StreamRefSettings = {
     apply(system.settings.config.getConfig("pekko.stream.materializer.stream-ref"))
   }
-
-  /** Java API */
-  @deprecated(
-    "Use attributes on the Runnable graph or change the defaults in configuration, see migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
-    since = "Akka 2.6.0")
-  def create(c: Config): StreamRefSettings = apply(c)
 
   /** Scala API */
   @deprecated(
