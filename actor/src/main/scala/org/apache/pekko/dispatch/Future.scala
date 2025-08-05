@@ -137,6 +137,7 @@ object Futures {
   /**
    * Creates an already completed CompletionStage with the specified exception
    */
+  @deprecated("Use `CompletableFuture#failedStage` instead.", since = "2.0.0")
   def failedCompletionStage[T](ex: Throwable): CompletionStage[T] = {
     val f = CompletableFuture.completedFuture[T](null.asInstanceOf[T])
     f.obtrudeException(ex)
