@@ -13,6 +13,8 @@
 
 package org.apache.pekko.dispatch;
 
+import org.apache.pekko.japi.function.Function;
+import org.apache.pekko.japi.function.Function2;
 import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.actor.ActorSystem;
 

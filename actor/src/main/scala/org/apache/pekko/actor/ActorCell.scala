@@ -29,7 +29,7 @@ import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.dispatch.{ Envelope, MessageDispatcher }
 import pekko.dispatch.sysmsg._
 import pekko.event.Logging.{ Debug, Error, LogEvent }
-import pekko.japi.Procedure
+import pekko.japi.function.Procedure
 import pekko.util.unused
 
 /**

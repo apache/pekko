@@ -15,7 +15,7 @@ package org.apache.pekko.actor;
 
 import org.apache.pekko.event.Logging;
 import org.apache.pekko.event.Logging.LoggerInitialized;
-import org.apache.pekko.japi.Creator;
+import org.apache.pekko.japi.function.Creator;
 import org.apache.pekko.japi.Pair;
 import org.apache.pekko.japi.Util;
 import org.apache.pekko.japi.tuple.Tuple22;

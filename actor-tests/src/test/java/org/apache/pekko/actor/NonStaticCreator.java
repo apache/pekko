@@ -13,7 +13,7 @@
 
 package org.apache.pekko.actor;
 
-import org.apache.pekko.japi.Creator;
+import org.apache.pekko.japi.function.Creator;
 
 public class NonStaticCreator implements Creator<UntypedAbstractActor> {
   @Override

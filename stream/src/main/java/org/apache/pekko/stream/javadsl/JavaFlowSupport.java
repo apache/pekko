@@ -15,7 +15,7 @@ package org.apache.pekko.stream.javadsl;
 
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.japi.Pair;
-import org.apache.pekko.japi.Creator;
+import org.apache.pekko.japi.function.Creator;
 import org.apache.pekko.stream.impl.JavaFlowAndRsConverters;
 
 /**
@@ -92,7 +92,7 @@ public final class JavaFlowSupport {
      * Creates a Flow from a {@link java.util.concurrent.Flow.Processor>> and returns a materialized value.
      */
     public static <I, O, M> org.apache.pekko.stream.javadsl.Flow<I, O, M> fromProcessorMat(
-        org.apache.pekko.japi.Creator<
+        org.apache.pekko.japi.function.Creator<
                 org.apache.pekko.japi.Pair<java.util.concurrent.Flow.Processor<I, O>, M>>
             processorFactory)
         throws Exception {

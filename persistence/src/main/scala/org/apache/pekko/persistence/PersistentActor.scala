@@ -23,7 +23,7 @@ import com.typesafe.config.Config
 import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.InternalApi
-import pekko.japi.Procedure
+import pekko.japi.function.Procedure
 import pekko.japi.Util
 
 abstract class RecoveryCompleted

@@ -20,7 +20,7 @@ import scala.annotation.tailrec
 import scala.annotation.varargs
 
 import org.apache.pekko
-import pekko.japi.Creator
+import pekko.japi.function.Creator
 
 /**
  * Java API: Factory for Props instances.

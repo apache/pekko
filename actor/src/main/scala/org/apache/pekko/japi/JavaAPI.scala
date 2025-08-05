@@ -21,64 +21,8 @@ import scala.reflect.ClassTag
 import scala.runtime.AbstractPartialFunction
 import scala.util.control.NoStackTrace
 
-import scala.annotation.nowarn
-
 import org.apache.pekko
 import pekko.util.Collections.EmptyImmutableSeq
-
-/**
- * A Function interface. Used to create first-class-functions is Java.
- *
- * This class is kept for compatibility, but for future API's please prefer [[pekko.japi.function.Function]].
- */
-@FunctionalInterface
-trait Function[T, R] {
-  @throws(classOf[Exception])
-  def apply(param: T): R
-}
-
-/**
- * A Function interface. Used to create 2-arg first-class-functions is Java.
- *
- * This class is kept for compatibility, but for future API's please prefer [[pekko.japi.function.Function2]].
- */
-@FunctionalInterface
-trait Function2[T1, T2, R] {
-  @throws(classOf[Exception])
-  def apply(arg1: T1, arg2: T2): R
-}
-
-/**
- * A Procedure is like a Function, but it doesn't produce a return value.
- *
- * This class is kept for compatibility, but for future API's please prefer [[pekko.japi.function.Procedure]].
- */
-@FunctionalInterface
-trait Procedure[T] {
-  @throws(classOf[Exception])
-  def apply(param: T): Unit
-}
-
-/**
- * An executable piece of code that takes no parameters and doesn't return any value.
- *
- * This class is kept for compatibility, but for future API's please prefer [[pekko.japi.function.Effect]].
- */
-@FunctionalInterface
-trait Effect {
-  @throws(classOf[Exception])
-  def apply(): Unit
-}
-
-/**
- * Java API: Defines a criteria and determines whether the parameter meets this criteria.
- *
- * This class is kept for compatibility, but for future API's please prefer [[java.util.function.Predicate]].
- */
-@FunctionalInterface
-trait Predicate[T] {
-  def test(param: T): Boolean
-}
 
 /**
  * Java API
@@ -92,23 +36,6 @@ case class Pair[A, B](first: A, second: B) {
 }
 object Pair {
   def create[A, B](first: A, second: B): Pair[A, B] = new Pair(first, second)
-}
-
-/**
- * A constructor/factory, takes no parameters but creates a new value of type T every call.
- *
- * This class is kept for compatibility, but for future API's please prefer [[pekko.japi.function.Creator]].
- */
-@nowarn("msg=@SerialVersionUID has no effect")
-@SerialVersionUID(1L)
-@FunctionalInterface
-trait Creator[T] extends Serializable {
-
-  /**
-   * This method must return a different instance upon every call.
-   */
-  @throws(classOf[Exception])
-  def create(): T
 }
 
 object JavaPartialFunction {

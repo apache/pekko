@@ -34,7 +34,7 @@ object SerializationSetup {
    * Java API: Programmatic definition of serializers
    * @param createSerializers create pairs of serializer and the set of classes it should be used for
    */
-  def create(createSerializers: pekko.japi.Function[ExtendedActorSystem, java.util.List[SerializerDetails]])
+  def create(createSerializers: pekko.japi.function.Function[ExtendedActorSystem, java.util.List[SerializerDetails]])
       : SerializationSetup =
     apply(sys => createSerializers(sys).asScala.toVector)
 
