@@ -25,7 +25,7 @@ import pekko.stream.impl.streamref.StreamRefSettingsImpl
 import com.typesafe.config.Config
 
 @InternalApi
-private[stream]object StreamRefSettings {
+private[stream] object StreamRefSettings {
 
   /** Scala API */
   @deprecated(
