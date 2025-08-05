@@ -276,45 +276,6 @@ final class AbruptStageTerminationException(logic: GraphStageLogic)
 object ActorMaterializerSettings {
 
   /**
-   * Create [[ActorMaterializerSettings]] from individual settings (Scala).
-   *
-   * Prefer using either config for defaults or attributes for per-stream config.
-   * See migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html"
-   */
-  @deprecated(
-    "Use config or attributes to configure the materializer. See migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
-    "Akka 2.6.0")
-  def apply(
-      initialInputBufferSize: Int,
-      maxInputBufferSize: Int,
-      dispatcher: String,
-      supervisionDecider: Supervision.Decider,
-      subscriptionTimeoutSettings: StreamSubscriptionTimeoutSettings,
-      debugLogging: Boolean,
-      outputBurstLimit: Int,
-      fuzzingMode: Boolean,
-      autoFusing: Boolean,
-      maxFixedBufferSize: Int) = {
-    // these sins were committed in the name of bin comp:
-    val config = ConfigFactory.defaultReference
-    new ActorMaterializerSettings(
-      initialInputBufferSize,
-      maxInputBufferSize,
-      dispatcher,
-      supervisionDecider,
-      subscriptionTimeoutSettings,
-      debugLogging,
-      outputBurstLimit,
-      fuzzingMode,
-      autoFusing,
-      maxFixedBufferSize,
-      1000,
-      IOSettings(tcpWriteBufferSize = 16 * 1024),
-      StreamRefSettings(config.getConfig("pekko.stream.materializer.stream-ref")),
-      config.getString(ActorAttributes.IODispatcher.dispatcher))
-  }
-
-  /**
    * Create [[ActorMaterializerSettings]] from the settings of an [[pekko.actor.ActorSystem]] (Scala).
    *
    * Prefer using either config for defaults or attributes for per-stream config.
@@ -351,67 +312,6 @@ object ActorMaterializerSettings {
       ioSettings = IOSettings(config.getConfig("io")),
       streamRefSettings = StreamRefSettings(config.getConfig("stream-ref")),
       blockingIoDispatcher = config.getString("blocking-io-dispatcher"))
-
-  /**
-   * Create [[ActorMaterializerSettings]] from individual settings (Java).
-   *
-   * Prefer using either config for defaults or attributes for per-stream config.
-   * See migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html"
-   */
-  @deprecated(
-    "Use config or attributes to configure the materializer. See migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
-    "Akka 2.6.0")
-  def create(
-      initialInputBufferSize: Int,
-      maxInputBufferSize: Int,
-      dispatcher: String,
-      supervisionDecider: Supervision.Decider,
-      subscriptionTimeoutSettings: StreamSubscriptionTimeoutSettings,
-      debugLogging: Boolean,
-      outputBurstLimit: Int,
-      fuzzingMode: Boolean,
-      autoFusing: Boolean,
-      maxFixedBufferSize: Int) = {
-    // these sins were committed in the name of bin comp:
-    val config = ConfigFactory.defaultReference
-    new ActorMaterializerSettings(
-      initialInputBufferSize,
-      maxInputBufferSize,
-      dispatcher,
-      supervisionDecider,
-      subscriptionTimeoutSettings,
-      debugLogging,
-      outputBurstLimit,
-      fuzzingMode,
-      autoFusing,
-      maxFixedBufferSize,
-      1000,
-      IOSettings(tcpWriteBufferSize = 16 * 1024),
-      StreamRefSettings(config.getConfig("pekko.stream.materializer.stream-ref")),
-      config.getString(ActorAttributes.IODispatcher.dispatcher))
-  }
-
-  /**
-   * Create [[ActorMaterializerSettings]] from the settings of an [[pekko.actor.ActorSystem]] (Java).
-   */
-  @deprecated(
-    "Use config or attributes to configure the materializer. See migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
-    "Akka 2.6.0")
-  def create(system: ActorSystem): ActorMaterializerSettings =
-    apply(system)
-
-  /**
-   * Create [[ActorMaterializerSettings]] from a Config subsection (Java).
-   *
-   * Prefer using either config for defaults or attributes for per-stream config.
-   * See migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html"
-   */
-  @deprecated(
-    "Use config or attributes to configure the materializer. See migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
-    "Akka 2.6.0")
-  def create(config: Config): ActorMaterializerSettings =
-    apply(config)
-
 }
 
 /**
