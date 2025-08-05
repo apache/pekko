@@ -522,22 +522,10 @@ object IOSettings {
   @deprecated(
     "Use setting 'pekko.stream.materializer.io.tcp.write-buffer-size' or attribute TcpAttributes.writeBufferSize instead",
     "Akka 2.6.0")
-  def apply(system: ActorSystem): IOSettings =
-    apply(system.settings.config.getConfig("pekko.stream.materializer.io"))
-
-  @deprecated(
-    "Use setting 'pekko.stream.materializer.io.tcp.write-buffer-size' or attribute TcpAttributes.writeBufferSize instead",
-    "Akka 2.6.0")
   def apply(config: Config): IOSettings =
     new IOSettings(
       tcpWriteBufferSize = math.min(Int.MaxValue, config.getBytes("tcp.write-buffer-size")).toInt,
       coalesceWrites = config.getInt("tcp.coalesce-writes"))
-
-  @deprecated(
-    "Use setting 'pekko.stream.materializer.io.tcp.write-buffer-size' or attribute TcpAttributes.writeBufferSize instead",
-    "Akka 2.6.0")
-  def apply(tcpWriteBufferSize: Int): IOSettings =
-    new IOSettings(tcpWriteBufferSize)
 }
 
 @nowarn("msg=deprecated")

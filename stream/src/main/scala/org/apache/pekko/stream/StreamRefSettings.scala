@@ -19,7 +19,6 @@ import scala.annotation.nowarn
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
 import pekko.annotation.DoNotInherit
 import pekko.stream.impl.streamref.StreamRefSettingsImpl
 
@@ -27,15 +26,6 @@ import com.typesafe.config.Config
 
 @nowarn("msg=deprecated")
 object StreamRefSettings {
-
-  /** Scala API */
-  @deprecated(
-    "Use attributes on the Runnable graph or change the defaults in configuration, see migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
-    since = "Akka 2.6.0")
-  def apply(system: ActorSystem): StreamRefSettings = {
-    apply(system.settings.config.getConfig("pekko.stream.materializer.stream-ref"))
-  }
-
   /** Scala API */
   @deprecated(
     "Use attributes on the Runnable graph or change the defaults in configuration, see migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",

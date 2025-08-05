@@ -16,9 +16,17 @@
 # under the License.
 
 # Remove deprecated methods
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.ActorMaterializer.create")
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.stream.ActorMaterializerHelper*")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.ActorMaterializerSettings.create")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.ActorMaterializerSettings.apply")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.ActorMaterializerSettings.this")
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.stream.FanInShape1N")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.IOSettings.create")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.IOSettings.apply")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.Materializer.schedulePeriodically")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.StreamRefSettings.create")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.StreamRefSettings.apply")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.UniformFanInShape.inSeq")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.UniformFanOutShape.outArray")
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.stream.impl.ConstantFun*")
