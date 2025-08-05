@@ -14,7 +14,7 @@
 package org.apache.pekko.dispatch
 
 import java.lang.{ Iterable => JIterable }
-import java.util.{ LinkedList => JLinkedList }
+import java.util.{ LinkedList => JLinkedList, Optional }
 import java.util.concurrent.{ Callable, Executor, ExecutorService }
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
@@ -27,7 +27,6 @@ import org.apache.pekko
 import pekko.annotation.InternalStableApi
 import pekko.compat
 import pekko.dispatch.internal.SameThreadExecutionContext
-import pekko.japi.{ Option => JOption }
 import pekko.japi.function.Procedure
 import pekko.util.unused
 
@@ -150,9 +149,11 @@ object Futures {
   def find[T <: AnyRef](
       futures: JIterable[Future[T]],
       predicate: pekko.japi.function.Function[T, java.lang.Boolean],
-      executor: ExecutionContext): Future[JOption[T]] = {
-    implicit val ec = executor
-    compat.Future.find[T](futures.asScala)(predicate.apply(_))(executor).map(JOption.fromScalaOption)
+      executor: ExecutionContext): Future[Optional[T]] = {
+    import pekko.util.OptionConverters._
+    import pekko.dispatch.ExecutionContexts.parasitic
+    compat.Future.find[T](futures.asScala)(predicate.apply(_))(executor)
+      .map(_.toJava)(parasitic)
   }
 
   /**
