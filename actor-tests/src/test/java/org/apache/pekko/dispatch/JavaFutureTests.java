@@ -29,6 +29,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.LinkedList;
 import java.lang.Iterable;
@@ -320,7 +321,7 @@ public class JavaFutureTests extends JUnitSuite {
               system.dispatcher()));
     }
     final Integer expect = 5;
-    Future<Option<Integer>> f =
+    Future<Optional<Integer>> f =
         Futures.find(
             listFutures,
             new Function<Integer, Boolean>() {

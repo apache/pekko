@@ -31,7 +31,6 @@ import org.apache.pekko.cluster.sharding.ShardRegion;
 // #counter-extractor
 
 // #counter-start
-import org.apache.pekko.japi.Option;
 import org.apache.pekko.cluster.sharding.ClusterSharding;
 import org.apache.pekko.cluster.sharding.ClusterShardingSettings;
 
@@ -86,7 +85,7 @@ public class ClusterShardingTest {
     // #counter-extractor
 
     // #counter-start
-    Option<String> roleOption = Option.none();
+    Optional<String> roleOption = Optional.empty();
     ClusterShardingSettings settings = ClusterShardingSettings.create(system);
     ActorRef startedCounterRegion =
         ClusterSharding.get(system)
