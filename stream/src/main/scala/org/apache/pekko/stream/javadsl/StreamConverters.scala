@@ -75,7 +75,7 @@ object StreamConverters {
    * Creates a Sink which when materialized will return an [[java.io.InputStream]] which it is possible
    * to read the values produced by the stream this Sink is attached to.
    *
-   * This method uses a default read timeout, use [[#inputStream(FiniteDuration)]] or [[#inputStream(java.time.Duration)]] to explicitly
+   * This method uses a default read timeout, use [[#inputStream(java.time.Duration)]] to explicitly
    * configure the timeout.
    *
    * This Sink is intended for inter-operation with legacy APIs since it is inherently blocking.
@@ -162,7 +162,7 @@ object StreamConverters {
   /**
    * Creates a Source which when materialized will return an [[java.io.OutputStream]] which it is possible
    * to write the ByteStrings to the stream this Source is attached to. The write timeout for OutputStreams
-   * materialized will default to 5 seconds, @see [[#outputStream(FiniteDuration)]] or [[#outputStream(java.time.Duration)]] if you want to override it.
+   * materialized will default to 5 seconds, @see [[#outputStream(java.time.Duration)]] if you want to override it.
    *
    * This Source is intended for inter-operation with legacy APIs since it is inherently blocking.
    *
