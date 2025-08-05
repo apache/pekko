@@ -36,7 +36,7 @@ import pekko.util.Helpers.toRootLowerCase
 import com.typesafe.config.Config
 
 @InternalApi
-private[stream] object ActorMaterializer {
+private[pekko] object ActorMaterializer {
 
   /**
    * Scala API: Creates an ActorMaterializer that can materialize stream blueprints as running streams.
@@ -151,7 +151,7 @@ private[stream] object ActorMaterializer {
 
 @InternalApi
 @deprecated("The Materializer now has all methods the ActorMaterializer used to have", "Akka 2.6.0")
-private[stream] abstract class ActorMaterializer extends Materializer with MaterializerLoggingProvider {
+private[pekko] abstract class ActorMaterializer extends Materializer with MaterializerLoggingProvider {
 
   @deprecated(
     "Use attributes to access settings from stages, see https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
@@ -223,7 +223,7 @@ final class AbruptStageTerminationException(logic: GraphStageLogic)
       s"GraphStage [$logic] terminated abruptly, caused by for example materializer or actor system termination.",
       cause = null)
 
-@InternalApi // referenced by ArterySettings in pekko-remote
+@InternalApi // referenced by ArterySettings in pekko-remote and also by some code in pekko-http
 private[pekko] object ActorMaterializerSettings {
 
   /**
@@ -523,7 +523,7 @@ final class ActorMaterializerSettings @InternalApi private (
 }
 
 @InternalApi
-private[stream] object IOSettings {
+private[pekko] object IOSettings {
   @deprecated(
     "Use setting 'pekko.stream.materializer.io.tcp.write-buffer-size' or attribute TcpAttributes.writeBufferSize instead",
     "Akka 2.6.0")
