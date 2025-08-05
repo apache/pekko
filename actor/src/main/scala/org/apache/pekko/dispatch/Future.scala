@@ -150,18 +150,22 @@ object Futures {
   def find[T <: AnyRef](
       futures: JIterable[Future[T]],
       predicate: pekko.japi.function.Function[T, java.lang.Boolean],
-      executor: ExecutionContext): Future[Optional[T]] = {
+      executor: ExecutionContext): CompletionStage[Optional[T]] = {
     import pekko.util.OptionConverters._
+    import pekko.util.FutureConverters._
     import pekko.dispatch.ExecutionContexts.parasitic
     compat.Future.find[T](futures.asScala)(predicate.apply(_))(executor)
       .map(_.toJava)(parasitic)
+      .asJava
   }
 
   /**
    * Returns a Future to the result of the first future in the list that is completed
    */
-  def firstCompletedOf[T <: AnyRef](futures: JIterable[Future[T]], executor: ExecutionContext): Future[T] =
-    Future.firstCompletedOf(futures.asScala)(executor)
+  def firstCompletedOf[T <: AnyRef](futures: JIterable[Future[T]], executor: ExecutionContext): CompletionStage[T] = {
+    import pekko.util.FutureConverters._
+    Future.firstCompletedOf(futures.asScala)(executor).asJava
+  }
 
   /**
    * A non-blocking fold over the specified futures, with the start value of the given zero.
@@ -173,8 +177,10 @@ object Futures {
       zero: R,
       futures: JIterable[Future[T]],
       fun: pekko.japi.function.Function2[R, T, R],
-      executor: ExecutionContext): Future[R] =
-    compat.Future.fold(futures.asScala)(zero)(fun.apply)(executor)
+      executor: ExecutionContext): CompletionStage[R] = {
+    import pekko.util.FutureConverters._
+    compat.Future.fold(futures.asScala)(zero)(fun.apply)(executor).asJava
+  }
 
   /**
    * Reduces the results of the supplied futures and binary function.
@@ -182,18 +188,21 @@ object Futures {
   def reduce[T <: AnyRef, R >: T](
       futures: JIterable[Future[T]],
       fun: pekko.japi.function.Function2[R, T, R],
-      executor: ExecutionContext): Future[R] =
-    compat.Future.reduce[T, R](futures.asScala)(fun.apply)(executor)
+      executor: ExecutionContext): CompletionStage[R] = {
+    import pekko.util.FutureConverters._
+    compat.Future.reduce[T, R](futures.asScala)(fun.apply)(executor).asJava
+  }
 
   /**
    * Simple version of [[#traverse]]. Transforms a JIterable[Future[A]] into a Future[JIterable[A]].
    * Useful for reducing many Futures into a single Future.
    */
-  def sequence[A](in: JIterable[Future[A]], executor: ExecutionContext): Future[JIterable[A]] = {
+  def sequence[A](in: JIterable[Future[A]], executor: ExecutionContext): CompletionStage[JIterable[A]] = {
     implicit val d = executor
+    import pekko.util.FutureConverters._
     in.asScala.foldLeft(Future(new JLinkedList[A]())) { (fr, fa) =>
       for (r <- fr; a <- fa) yield { r.add(a); r }
-    }
+    }.mapTo[JIterable[A]].asJava
   }
 
   /**
@@ -202,12 +211,13 @@ object Futures {
    * in parallel.
    */
   def traverse[A, B](in: JIterable[A], fn: pekko.japi.function.Function[A, Future[B]], executor: ExecutionContext)
-      : Future[JIterable[B]] = {
+      : CompletionStage[JIterable[B]] = {
     implicit val d = executor
+    import pekko.util.FutureConverters._
     in.asScala.foldLeft(Future(new JLinkedList[B]())) { (fr, a) =>
       val fb = fn(a)
       for (r <- fr; b <- fb) yield { r.add(b); r }
-    }
+    }.mapTo[JIterable[B]].asJava
   }
 }
 

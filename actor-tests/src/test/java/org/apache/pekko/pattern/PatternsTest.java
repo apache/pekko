@@ -19,7 +19,6 @@ import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.testkit.TestProbe;
 import org.apache.pekko.util.Timeout;
-import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
@@ -330,8 +329,12 @@ public class PatternsTest extends JUnitSuite {
             ec,
             failedCallable);
 
-    Future<String> resultFuture = Futures.firstCompletedOf(Arrays.asList(delayedFuture), ec);
-    Await.result(resultFuture, scala.concurrent.duration.FiniteDuration.apply(3, SECONDS));
+    var resultFuture = Futures.firstCompletedOf(Arrays.asList(delayedFuture), ec);
+    try {
+      resultFuture.toCompletableFuture().get(3, SECONDS);
+    } catch (ExecutionException e) {
+      throw (IllegalStateException) e.getCause();
+    }
   }
 
   @Test(expected = IllegalStateException.class)
@@ -344,8 +347,12 @@ public class PatternsTest extends JUnitSuite {
             ec,
             () -> Futures.failed(new IllegalStateException("Illegal!")));
 
-    Future<String> resultFuture = Futures.firstCompletedOf(Arrays.asList(delayedFuture), ec);
-    Await.result(resultFuture, FiniteDuration.apply(3, SECONDS));
+    var resultFuture = Futures.firstCompletedOf(Arrays.asList(delayedFuture), ec);
+    try {
+      resultFuture.toCompletableFuture().get(3, SECONDS);
+    } catch (ExecutionException e) {
+      throw (IllegalStateException) e.getCause();
+    }
   }
 
   @Test
@@ -359,9 +366,8 @@ public class PatternsTest extends JUnitSuite {
             ec,
             () -> Futures.successful(expected));
 
-    Future<String> resultFuture = Futures.firstCompletedOf(Arrays.asList(delayedFuture), ec);
-    final String actual = Await.result(resultFuture, FiniteDuration.apply(3, SECONDS));
-
+    var resultFuture = Futures.firstCompletedOf(Arrays.asList(delayedFuture), ec);
+    final String actual = resultFuture.toCompletableFuture().get(3, SECONDS);
     assertEquals(expected, actual);
   }
 
@@ -376,9 +382,9 @@ public class PatternsTest extends JUnitSuite {
             ec,
             () -> Futures.successful(expected));
 
-    Future<String> resultFuture = Futures.firstCompletedOf(Arrays.asList(delayedFuture), ec);
+    var resultFuture = Futures.firstCompletedOf(Arrays.asList(delayedFuture), ec);
 
-    final String actual = Await.result(resultFuture, FiniteDuration.apply(3, SECONDS));
+    final String actual = resultFuture.toCompletableFuture().get(3, SECONDS);
     assertEquals(expected, actual);
   }
 
@@ -395,10 +401,10 @@ public class PatternsTest extends JUnitSuite {
 
     Future<String> immediateFuture = Futures.future(() -> expected, ec);
 
-    Future<String> resultFuture =
+    CompletionStage<String> resultFuture =
         Futures.firstCompletedOf(Arrays.asList(delayedFuture, immediateFuture), ec);
 
-    final String actual = Await.result(resultFuture, FiniteDuration.apply(3, SECONDS));
+    final String actual = resultFuture.toCompletableFuture().get(3, SECONDS);
     assertEquals(expected, actual);
   }
 
