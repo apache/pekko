@@ -13,6 +13,8 @@
 
 package org.apache.pekko.event
 
+import scala.annotation.nowarn
+
 import com.typesafe.config.{ Config, ConfigFactory }
 import org.scalatest.BeforeAndAfterEach
 
@@ -299,6 +301,7 @@ object ScanningEventBusSpec {
 
   class MyScanningEventBus extends EventBus with ScanningClassification {
     type Event = Int
+    @nowarn("msg=deprecated")
     type Subscriber = Procedure[Int]
     type Classifier = String
 
@@ -320,23 +323,28 @@ class ScanningEventBusSpec extends EventBusSpec("ScanningEventBus") {
 
   def createEvents(numberOfEvents: Int) = 0 until numberOfEvents
 
+  @nowarn("msg=deprecated")
   def createSubscriber(pipeTo: ActorRef) = new Procedure[Int] { def apply(i: Int) = pipeTo ! i }
 
   def classifierFor(event: BusType#Event) = event.toString
 
+  @nowarn("msg=deprecated")
   def disposeSubscriber(system: ActorSystem, subscriber: BusType#Subscriber): Unit = ()
 }
 
 object LookupEventBusSpec {
   class MyLookupEventBus extends EventBus with LookupClassification {
     type Event = Int
+    @nowarn("msg=deprecated")
     type Subscriber = Procedure[Int]
     type Classifier = String
 
     override protected def classify(event: Int): String = event.toString
+    @nowarn("msg=deprecated")
     override protected def compareSubscribers(a: Procedure[Int], b: Procedure[Int]): Int =
       pekko.util.Helpers.compareIdentityHash(a, b)
     override protected def mapSize() = 32
+    @nowarn("msg=deprecated")
     override protected def publish(event: Int, subscriber: Procedure[Int]): Unit =
       subscriber(event)
   }
@@ -351,9 +359,11 @@ class LookupEventBusSpec extends EventBusSpec("LookupEventBus") {
 
   def createEvents(numberOfEvents: Int) = 0 until numberOfEvents
 
+  @nowarn("msg=deprecated")
   def createSubscriber(pipeTo: ActorRef) = new Procedure[Int] { def apply(i: Int) = pipeTo ! i }
 
   def classifierFor(event: BusType#Event) = event.toString
 
+  @nowarn("msg=deprecated")
   def disposeSubscriber(system: ActorSystem, subscriber: BusType#Subscriber): Unit = ()
 }

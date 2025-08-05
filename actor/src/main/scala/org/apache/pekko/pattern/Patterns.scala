@@ -17,6 +17,7 @@ import java.util.Optional
 import java.util.concurrent.{ Callable, CompletionStage, TimeUnit }
 import java.util.function.BiPredicate
 
+import scala.annotation.nowarn
 import scala.concurrent.ExecutionContext
 
 import org.apache.pekko
@@ -126,6 +127,7 @@ object Patterns {
    *   timeout);
    * }}}
    */
+  @nowarn("msg=deprecated")
   def askWithReplyTo(actor: ActorRef, messageFactory: japi.Function[ActorRef, Any], timeout: Timeout): Future[AnyRef] =
     extended.ask(actor, messageFactory.apply _)(timeout).asInstanceOf[Future[AnyRef]]
 
@@ -195,6 +197,7 @@ object Patterns {
    *   timeout);
    * }}}
    */
+  @nowarn("msg=deprecated")
   def askWithReplyTo(
       actor: ActorRef,
       messageFactory: japi.Function[ActorRef, Any],
@@ -310,6 +313,7 @@ object Patterns {
    *   timeout);
    * }}}
    */
+  @nowarn("msg=deprecated")
   def askWithReplyTo(
       selection: ActorSelection,
       messageFactory: japi.Function[ActorRef, Any],
@@ -327,6 +331,7 @@ object Patterns {
    *   timeout);
    * }}}
    */
+  @nowarn("msg=deprecated")
   def askWithReplyTo(
       selection: ActorSelection,
       messageFactory: japi.Function[ActorRef, Any],

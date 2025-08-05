@@ -29,6 +29,7 @@ import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.duration.Duration
 import scala.language.implicitConversions
 import scala.util.control.NonFatal
+import scala.annotation.nowarn
 
 /**
  * INTERNAL API
@@ -248,6 +249,7 @@ object SupervisorStrategy extends SupervisorStrategyLowPriorityImplicits {
   implicit def seqThrowable2Decider(trapExit: immutable.Seq[Class[_ <: Throwable]]): Decider = makeDecider(trapExit)
 
   type Decider = PartialFunction[Throwable, Directive]
+  @nowarn("msg=deprecated")
   type JDecider = pekko.japi.Function[Throwable, Directive]
   type CauseDirective = (Class[_ <: Throwable], Directive)
 

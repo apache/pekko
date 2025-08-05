@@ -13,9 +13,8 @@
 
 package org.apache.pekko.actor;
 
-import org.apache.pekko.japi.Creator;
-
-public class NonStaticCreator implements Creator<UntypedAbstractActor> {
+@SuppressWarnings("deprecation")
+public class NonStaticCreator implements org.apache.pekko.japi.Creator<UntypedAbstractActor> {
   @Override
   public UntypedAbstractActor create() throws Exception {
     return null;

@@ -32,6 +32,7 @@ import pekko.util.Collections.EmptyImmutableSeq
  * This class is kept for compatibility, but for future API's please prefer [[pekko.japi.function.Function]].
  */
 @FunctionalInterface
+@deprecated("Will be removed in favor of pekko.japi.function.Function in Pekko 2.0.0", "1.2.0")
 trait Function[T, R] {
   @throws(classOf[Exception])
   def apply(param: T): R
@@ -43,6 +44,7 @@ trait Function[T, R] {
  * This class is kept for compatibility, but for future API's please prefer [[pekko.japi.function.Function2]].
  */
 @FunctionalInterface
+@deprecated("Will be removed in favor of pekko.japi.function.Function2 in Pekko 2.0.0", "1.2.0")
 trait Function2[T1, T2, R] {
   @throws(classOf[Exception])
   def apply(arg1: T1, arg2: T2): R
@@ -54,6 +56,7 @@ trait Function2[T1, T2, R] {
  * This class is kept for compatibility, but for future API's please prefer [[pekko.japi.function.Procedure]].
  */
 @FunctionalInterface
+@deprecated("Will be removed in favor of pekko.japi.function.Procedure in Pekko 2.0.0", "1.2.0")
 trait Procedure[T] {
   @throws(classOf[Exception])
   def apply(param: T): Unit
@@ -65,6 +68,7 @@ trait Procedure[T] {
  * This class is kept for compatibility, but for future API's please prefer [[pekko.japi.function.Effect]].
  */
 @FunctionalInterface
+@deprecated("Will be removed in favor of pekko.japi.function.Effect in Pekko 2.0.0", "1.2.0")
 trait Effect {
   @throws(classOf[Exception])
   def apply(): Unit
@@ -76,6 +80,7 @@ trait Effect {
  * This class is kept for compatibility, but for future API's please prefer [[java.util.function.Predicate]].
  */
 @FunctionalInterface
+@deprecated("Will be removed in favor of pekko.japi.function.Predicate in Pekko 2.0.0", "1.2.0")
 trait Predicate[T] {
   def test(param: T): Boolean
 }
@@ -102,6 +107,7 @@ object Pair {
 @nowarn("msg=@SerialVersionUID has no effect")
 @SerialVersionUID(1L)
 @FunctionalInterface
+@deprecated("Will be removed in favor of pekko.japi.function.Creator in Pekko 2.0.0", "1.2.0")
 trait Creator[T] extends Serializable {
 
   /**
@@ -176,6 +182,7 @@ abstract class JavaPartialFunction[A, B] extends AbstractPartialFunction[A, B] {
  * are either instances of case class <code>Some</code> or it is case
  * object <code>None</code>.
  */
+@deprecated("Will be removed in favor of java.util.Optional in Pekko 2.0.0", "1.2.0")
 sealed abstract class Option[A] extends java.lang.Iterable[A] {
   def get: A
 
@@ -190,6 +197,7 @@ sealed abstract class Option[A] extends java.lang.Iterable[A] {
   def iterator: java.util.Iterator[A] = if (isEmpty) emptyList[A].iterator else singletonList(get).iterator
 }
 
+@deprecated("Will be removed in favor of java.util.Optional in Pekko 2.0.0", "1.2.0")
 object Option {
 
   /**

@@ -96,6 +96,7 @@ object TypedActorSpec {
     @throws(classOf[TimeoutException])
     def failingOptionPigdog(): Option[String] = throw new IllegalStateException("expected")
 
+    @nowarn("msg=deprecated")
     @throws(classOf[TimeoutException])
     def failingJOptionPigdog(): JOption[String] = throw new IllegalStateException("expected")
 
@@ -107,11 +108,13 @@ object TypedActorSpec {
     @throws(classOf[TimeoutException])
     def optionPigdog(delay: FiniteDuration): Option[String]
 
+    @nowarn("msg=deprecated")
     @throws(classOf[TimeoutException])
     def joptionPigdog(delay: FiniteDuration): JOption[String]
 
     def nullFuture(): Future[Any] = null
 
+    @nowarn("msg=deprecated")
     def nullJOption(): JOption[Any] = null
 
     def nullOption(): Option[Any] = null
@@ -157,6 +160,7 @@ object TypedActorSpec {
       Some(pigdog())
     }
 
+    @nowarn("msg=deprecated")
     def joptionPigdog(delay: FiniteDuration): JOption[String] = {
       Thread.sleep(delay.toMillis)
       JOption.some(pigdog())

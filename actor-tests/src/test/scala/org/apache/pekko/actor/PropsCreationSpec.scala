@@ -33,6 +33,7 @@ object PropsCreationSpec {
     override def receive = Actor.emptyBehavior
   }
 
+  @nowarn("msg=deprecated")
   object OneParamActorCreator extends pekko.japi.Creator[Actor] {
     override def create(): Actor = new OneParamActor(null)
   }

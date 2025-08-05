@@ -13,6 +13,7 @@
 
 package org.apache.pekko.serialization
 
+import scala.annotation.nowarn
 import scala.collection.immutable
 
 import org.apache.pekko
@@ -34,6 +35,7 @@ object SerializationSetup {
    * Java API: Programmatic definition of serializers
    * @param createSerializers create pairs of serializer and the set of classes it should be used for
    */
+  @nowarn("msg=deprecated")
   def create(createSerializers: pekko.japi.Function[ExtendedActorSystem, java.util.List[SerializerDetails]])
       : SerializationSetup =
     apply(sys => createSerializers(sys).asScala.toVector)

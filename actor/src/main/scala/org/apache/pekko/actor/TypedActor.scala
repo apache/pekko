@@ -615,6 +615,7 @@ final case class TypedProps[T <: AnyRef] protected[TypedProps] (
    * or if the interface class is not an interface, all the interfaces it implements,
    * appended in the sequence of interfaces.
    */
+  @nowarn("msg=deprecated")
   def this(interface: Class[_ >: T], implementation: Creator[T]) =
     this(interfaces = TypedProps.extractInterfaces(interface), creator = implementation.create _)
 

@@ -87,6 +87,7 @@ private[pekko] class CreatorFunctionConsumer(creator: () => Actor) extends Indir
 /**
  * INTERNAL API
  */
+@nowarn("msg=deprecated")
 private[pekko] class CreatorConsumer(clazz: Class[_ <: Actor], creator: Creator[Actor]) extends IndirectActorProducer {
   override def actorClass = clazz
   override def produce() = creator.create()

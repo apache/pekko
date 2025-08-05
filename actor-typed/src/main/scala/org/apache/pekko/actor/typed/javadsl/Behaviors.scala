@@ -16,6 +16,7 @@ package org.apache.pekko.actor.typed.javadsl
 import java.util.Collections
 import java.util.function.{ Function => JFunction, Supplier }
 
+import scala.annotation.nowarn
 import scala.reflect.ClassTag
 
 import org.apache.pekko
@@ -140,6 +141,7 @@ object Behaviors {
    * that can potentially be different from this one. State is maintained by returning
    * a new behavior that holds the new immutable state.
    */
+  @nowarn("msg=deprecated")
   def receiveMessage[T](onMessage: pekko.japi.Function[T, Behavior[T]]): Behavior[T] =
     new BehaviorImpl.ReceiveBehavior((_, msg) => onMessage.apply(msg))
 
@@ -160,6 +162,7 @@ object Behaviors {
    *
    * @since 1.1.0
    */
+  @nowarn("msg=deprecated")
   def receiveMessageWithSame[T](onMessage: pekko.japi.Procedure[T]): Behavior[T] =
     new BehaviorImpl.ReceiveBehavior((_, msg) => {
       onMessage.apply(msg)
