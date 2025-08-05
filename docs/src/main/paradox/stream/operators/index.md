@@ -18,12 +18,9 @@ These built-in sources are available from @scala[`org.apache.pekko.stream.scalad
 |Source|<a name="from"></a>@ref[@scala[apply]@java[from]](Source/from.md)|Stream the values of an @scala[`immutable.Seq`]@java[`Iterable`].|
 |Source|<a name="fromarray"></a>@ref[fromArray](Source/fromArray.md)|Stream the values of an `array`.|
 |Source|<a name="fromcompletionstage"></a>@ref[fromCompletionStage](Source/fromCompletionStage.md)|Deprecated by @ref[`Source.completionStage`](Source/completionStage.md).|
-|Source|<a name="fromfuture"></a>@ref[fromFuture](Source/fromFuture.md)|Deprecated by @ref[`Source.future`](Source/future.md).|
-|Source|<a name="fromfuturesource"></a>@ref[fromFutureSource](Source/fromFutureSource.md)|Deprecated by @ref[`Source.futureSource`](Source/futureSource.md).|
 |Source|<a name="fromiterator"></a>@ref[fromIterator](Source/fromIterator.md)|Stream the values from an `Iterator`, requesting the next value when there is demand.|
 |Source|<a name="fromjavastream"></a>@ref[fromJavaStream](Source/fromJavaStream.md)|Stream the values from a Java 8 `Stream`, requesting the next value when there is demand.|
 |Source|<a name="frompublisher"></a>@ref[fromPublisher](Source/fromPublisher.md)|Integration with Reactive Streams, subscribes to a @javadoc[Publisher](java.util.concurrent.Flow.Publisher).|
-|Source|<a name="fromsourcecompletionstage"></a>@ref[fromSourceCompletionStage](Source/fromSourceCompletionStage.md)|Deprecated by @ref[`Source.completionStageSource`](Source/completionStageSource.md).|
 |Source|<a name="future"></a>@ref[future](Source/future.md)|Send the single value of the `Future` when it completes and there is demand.|
 |Source|<a name="futuresource"></a>@ref[futureSource](Source/futureSource.md)|Streams the elements of the given future source once it successfully completes.|
 |Source|<a name="iterate"></a>@ref[iterate](Source/iterate.md)|Creates a sequential `Source` by iterating with the given predicate, function and seed.|
@@ -468,9 +465,6 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 * [foreachAsync](Sink/foreachAsync.md)
 * [from](Source/from.md)
 * [fromArray](Source/fromArray.md)
-* [fromCompletionStage](Source/fromCompletionStage.md)
-* [fromFuture](Source/fromFuture.md)
-* [fromFutureSource](Source/fromFutureSource.md)
 * [fromInputStream](StreamConverters/fromInputStream.md)
 * [fromIterator](Source/fromIterator.md)
 * [fromJavaStream](Source/fromJavaStream.md)
@@ -482,7 +476,6 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 * [fromPublisher](Source/fromPublisher.md)
 * [fromSinkAndSource](Flow/fromSinkAndSource.md)
 * [fromSinkAndSourceCoupled](Flow/fromSinkAndSourceCoupled.md)
-* [fromSourceCompletionStage](Source/fromSourceCompletionStage.md)
 * [fromSubscriber](Sink/fromSubscriber.md)
 * [future](Source/future.md)
 * [futureFlow](Flow/futureFlow.md)
