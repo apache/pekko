@@ -26,6 +26,7 @@ import com.typesafe.config.Config
 
 @nowarn("msg=deprecated")
 object StreamRefSettings {
+
   /** Scala API */
   @deprecated(
     "Use attributes on the Runnable graph or change the defaults in configuration, see migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
