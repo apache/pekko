@@ -87,6 +87,7 @@ private[pekko] class DirectByteBufferPool(defaultBufferSize: Int, maxPoolEntries
 
 /** INTERNAL API */
 private[pekko] object DirectByteBufferPool {
+
   /**
    * DirectByteBuffers are garbage collected by using a phantom reference and a
    * reference queue. Every once a while, the JVM checks the reference queue and
