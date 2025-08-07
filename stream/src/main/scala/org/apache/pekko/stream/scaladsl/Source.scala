@@ -399,46 +399,6 @@ object Source {
     fromGraph(new IterableSource[T](iterable)).withAttributes(DefaultAttributes.iterableSource)
 
   /**
-   * Starts a new `Source` from the given `Future`. The stream will consist of
-   * one element when the `Future` is completed with a successful value, which
-   * may happen before or after materializing the `Flow`.
-   * The stream terminates with a failure if the `Future` is completed with a failure.
-   */
-  @deprecated("Use 'Source.future' instead", "Akka 2.6.0")
-  def fromFuture[T](future: Future[T]): Source[T, NotUsed] =
-    fromGraph(new FutureSource(future))
-
-  /**
-   * Starts a new `Source` from the given `Future`. The stream will consist of
-   * one element when the `Future` is completed with a successful value, which
-   * may happen before or after materializing the `Flow`.
-   * The stream terminates with a failure if the `Future` is completed with a failure.
-   */
-  @deprecated("Use 'Source.completionStage' instead", "Akka 2.6.0")
-  def fromCompletionStage[T](future: CompletionStage[T]): Source[T, NotUsed] =
-    fromGraph(new FutureSource(future.asScala))
-
-  /**
-   * Streams the elements of the given future source once it successfully completes.
-   * If the [[Future]] fails the stream is failed with the exception from the future. If downstream cancels before the
-   * stream completes the materialized `Future` will be failed with a [[StreamDetachedException]]
-   */
-  @deprecated("Use 'Source.futureSource' (potentially together with `Source.fromGraph`) instead", "Akka 2.6.0")
-  def fromFutureSource[T, M](future: Future[Graph[SourceShape[T], M]]): Source[T, Future[M]] =
-    fromGraph(new FutureFlattenSource(future))
-
-  /**
-   * Streams the elements of an asynchronous source once its given `completion` operator completes.
-   * If the [[CompletionStage]] fails the stream is failed with the exception from the future.
-   * If downstream cancels before the stream completes the materialized `Future` will be failed
-   * with a [[StreamDetachedException]]
-   */
-  @deprecated("Use scala-compat CompletionStage to future converter and 'Source.futureSource' instead", "Akka 2.6.0")
-  def fromSourceCompletionStage[T, M](
-      completion: CompletionStage[_ <: Graph[SourceShape[T], M]]): Source[T, CompletionStage[M]] =
-    fromFutureSource(completion.asScala).mapMaterializedValue(_.asJava)
-
-  /**
    * Elements are emitted periodically with the specified interval.
    * The tick element will be delivered to downstream consumers that has requested any elements.
    * If a consumer has not requested any elements at the point in time when the tick
