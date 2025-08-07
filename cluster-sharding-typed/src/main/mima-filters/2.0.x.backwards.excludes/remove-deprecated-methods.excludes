@@ -17,7 +17,7 @@
 
 # Remove deprecated methods
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.sharding.typed.ClusterShardingSettings.passivateIdleEntityAfter")
-ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.sharding.typed.ClusterShardingSettings.withPassivateIdleEntityAfter"
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.sharding.typed.ClusterShardingSettings.withPassivateIdleEntityAfter")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.sharding.typed.ClusterShardingSettings.this")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.sharding.typed.delivery.ShardingProducerController#Settings.resendFirsUnconfirmedIdleTimeout")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.sharding.typed.delivery.ShardingProducerController#Settings.withResendFirsUnconfirmedIdleTimeout")
