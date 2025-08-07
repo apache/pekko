@@ -237,14 +237,6 @@ final class Source[+Out, +Mat](
   def asJava: javadsl.Source[Out @uncheckedVariance, Mat @uncheckedVariance] = new javadsl.Source(this)
 
   /**
-   * Combines several sources with fan-in strategy like `Merge` or `Concat` and returns `Source`.
-   */
-  @deprecated("Use `Source.combine` on companion object instead", "Akka 2.5.5")
-  def combine[T, U](first: Source[T, _], second: Source[T, _], rest: Source[T, _]*)(
-      strategy: Int => Graph[UniformFanInShape[T, U], NotUsed]): Source[U, NotUsed] =
-    Source.combine(first, second, rest: _*)(strategy)
-
-  /**
    * Transform this source whose element is ``e`` into a source producing tuple ``(e, f(e))``
    */
   def asSourceWithContext[Ctx](f: Out => Ctx): SourceWithContext[Out, Ctx, Mat] =
@@ -654,48 +646,6 @@ object Source {
       .fromGraph(new ActorRefSource(bufferSize, overflowStrategy, completionMatcher, failureMatcher))
       .withAttributes(DefaultAttributes.actorRefSource)
   }
-
-  /**
-   * Creates a `Source` that is materialized as an [[pekko.actor.ActorRef]].
-   * Messages sent to this actor will be emitted to the stream if there is demand from downstream,
-   * otherwise they will be buffered until request for demand is received.
-   *
-   * Depending on the defined [[pekko.stream.OverflowStrategy]] it might drop elements if
-   * there is no space available in the buffer.
-   *
-   * The strategy [[pekko.stream.OverflowStrategy.backpressure]] is not supported, and an
-   * IllegalArgument("Backpressure overflowStrategy not supported") will be thrown if it is passed as argument.
-   *
-   * The buffer can be disabled by using `bufferSize` of 0 and then received messages are dropped if there is no demand
-   * from downstream. When `bufferSize` is 0 the `overflowStrategy` does not matter.
-   *
-   * The stream can be completed successfully by sending the actor reference a [[pekko.actor.Status.Success]].
-   * If the content is [[pekko.stream.CompletionStrategy.immediately]] the completion will be signaled immediately.
-   * Otherwise, if the content is [[pekko.stream.CompletionStrategy.draining]] (or anything else)
-   * already buffered elements will be sent out before signaling completion.
-   * Using [[pekko.actor.PoisonPill]] or [[pekko.actor.ActorSystem.stop]] to stop the actor and complete the stream is *not supported*.
-   *
-   * The stream can be completed with failure by sending a [[pekko.actor.Status.Failure]] to the
-   * actor reference. In case the Actor is still draining its internal buffer (after having received
-   * a [[pekko.actor.Status.Success]]) before signaling completion and it receives a [[pekko.actor.Status.Failure]],
-   * the failure will be signaled downstream immediately (instead of the completion signal).
-   *
-   * The actor will be stopped when the stream is canceled from downstream,
-   * i.e. you can watch it to get notified when that happens.
-   *
-   * See also [[pekko.stream.scaladsl.Source.queue]].
-   *
-   * @param bufferSize The size of the buffer in element count
-   * @param overflowStrategy Strategy that is used when incoming elements cannot fit inside the buffer
-   */
-  @deprecated("Use variant accepting completion and failure matchers instead", "Akka 2.6.0")
-  def actorRef[T](bufferSize: Int, overflowStrategy: OverflowStrategy): Source[T, ActorRef] =
-    actorRef(
-      {
-        case pekko.actor.Status.Success(s: CompletionStrategy) => s
-        case pekko.actor.Status.Success(_)                     => CompletionStrategy.Draining
-        case pekko.actor.Status.Success                        => CompletionStrategy.Draining
-      }, { case pekko.actor.Status.Failure(cause) => cause }, bufferSize, overflowStrategy)
 
   /**
    * INTERNAL API

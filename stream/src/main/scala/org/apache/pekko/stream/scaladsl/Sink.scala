@@ -21,7 +21,7 @@ import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
 import pekko.{ util, Done, NotUsed }
-import pekko.actor.{ ActorRef, Status }
+import pekko.actor.ActorRef
 import pekko.annotation.InternalApi
 import pekko.dispatch.ExecutionContexts
 import pekko.stream._
@@ -569,25 +569,6 @@ object Sink {
    */
   def actorRef[T](ref: ActorRef, onCompleteMessage: Any, onFailureMessage: Throwable => Any): Sink[T, NotUsed] =
     fromGraph(new ActorRefSinkStage[T](ref, onCompleteMessage, onFailureMessage))
-
-  /**
-   * Sends the elements of the stream to the given `ActorRef`.
-   * If the target actor terminates the stream will be canceled.
-   * When the stream is completed successfully the given `onCompleteMessage`
-   * will be sent to the destination actor.
-   * When the stream is completed with failure a [[pekko.actor.Status.Failure]]
-   * message will be sent to the destination actor.
-   *
-   * It will request at most `maxInputBufferSize` number of elements from
-   * upstream, but there is no back-pressure signal from the destination actor,
-   * i.e. if the actor is not consuming the messages fast enough the mailbox
-   * of the actor will grow. For potentially slow consumer actors it is recommended
-   * to use a bounded mailbox with zero `mailbox-push-timeout-time` or use a rate
-   * limiting operator in front of this `Sink`.
-   */
-  @deprecated("Use variant accepting both on complete and on failure message", "Akka 2.6.0")
-  def actorRef[T](ref: ActorRef, onCompleteMessage: Any): Sink[T, NotUsed] =
-    fromGraph(new ActorRefSinkStage[T](ref, onCompleteMessage, t => Status.Failure(t)))
 
   /**
    * INTERNAL API

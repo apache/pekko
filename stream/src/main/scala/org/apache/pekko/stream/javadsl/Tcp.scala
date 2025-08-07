@@ -186,37 +186,6 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
         .mapMaterializedValue(_.map(new ServerBinding(_))(parasitic).asJava))
 
   /**
-   * Creates a [[Tcp.ServerBinding]] instance which represents a prospective TCP server binding on the given `endpoint`.
-   *
-   * Please note that the startup of the server is asynchronous, i.e. after materializing the enclosing
-   * [[pekko.stream.scaladsl.RunnableGraph]] the server is not immediately available. Only after the materialized future
-   * completes is the server ready to accept client connections.
-   *
-   * @param interface The interface to listen on
-   * @param port      The port to listen on
-   * @param backlog   Controls the size of the connection backlog
-   * @param options   TCP options for the connections, see [[pekko.io.Tcp]] for details
-   * @param halfClose
-   *                  Controls whether the connection is kept open even after writing has been completed to the accepted
-   *                  TCP connections.
-   *                  If set to true, the connection will implement the TCP half-close mechanism, allowing the client to
-   *                  write to the connection even after the server has finished writing. The TCP socket is only closed
-   *                  after both the client and server finished writing.
-   *                  If set to false, the connection will immediately closed once the server closes its write side,
-   *                  independently whether the client is still attempting to write. This setting is recommended
-   *                  for servers, and therefore it is the default setting.
-   */
-  @deprecated("Use bind that takes a java.time.Duration parameter instead.", "Akka 2.6.0")
-  def bind(
-      interface: String,
-      port: Int,
-      backlog: Int,
-      options: JIterable[SocketOption],
-      halfClose: Boolean,
-      idleTimeout: Duration): Source[IncomingConnection, CompletionStage[ServerBinding]] =
-    bind(interface, port, backlog, options, halfClose, durationToJavaOptional(idleTimeout))
-
-  /**
    * Creates a [[Tcp.ServerBinding]] without specifying options.
    * It represents a prospective TCP server binding on the given `endpoint`.
    *
