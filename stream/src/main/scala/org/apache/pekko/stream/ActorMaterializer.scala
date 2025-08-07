@@ -28,7 +28,6 @@ import pekko.actor.ExtendedActorSystem
 import pekko.actor.Props
 import pekko.annotation.InternalApi
 import pekko.event.LoggingAdapter
-import pekko.japi.function
 import pekko.stream.impl._
 import pekko.stream.stage.GraphStageLogic
 import pekko.util.Helpers.toRootLowerCase
@@ -373,83 +372,6 @@ final class ActorMaterializerSettings @InternalApi private (
   }
 
   /**
-   * Scala API: Decides how exceptions from application code are to be handled, unless
-   * overridden for specific flows of the stream operations with
-   * [[pekko.stream.Attributes#supervisionStrategy]].
-   *
-   * Note that supervision in streams are implemented on a per operator basis and is not supported
-   * by every operator.
-   */
-  @deprecated("Use attribute 'ActorAttributes.supervisionStrategy' to change setting value", "Akka 2.6.0")
-  def withSupervisionStrategy(decider: Supervision.Decider): ActorMaterializerSettings = {
-    if (decider eq this.supervisionDecider) this
-    else copy(supervisionDecider = decider)
-  }
-
-  /**
-   * Java API: Decides how exceptions from application code are to be handled, unless
-   * overridden for specific flows of the stream operations with
-   * [[pekko.stream.Attributes#supervisionStrategy]].
-   *
-   * Note that supervision in streams are implemented on a per operator basis and is not supported
-   * by every operator.
-   */
-  @deprecated("Use attribute 'ActorAttributes.SupervisionStrategy' to change setting value", "Akka 2.6.0")
-  def withSupervisionStrategy(
-      decider: function.Function[Throwable, Supervision.Directive]): ActorMaterializerSettings = {
-    import Supervision._
-    copy(supervisionDecider = decider match {
-      case `resumingDecider`   => resumingDecider
-      case `restartingDecider` => restartingDecider
-      case `stoppingDecider`   => stoppingDecider
-      case other               => other.apply _
-    })
-  }
-
-  /**
-   * Test utility: fuzzing mode means that GraphStage events are not processed
-   * in FIFO order within a fused subgraph, but randomized.
-   */
-  @deprecated("Use attribute 'ActorAttributes.FuzzingMode' to change setting value", "Akka 2.6.0")
-  def withFuzzing(enable: Boolean): ActorMaterializerSettings =
-    if (enable == this.fuzzingMode) this
-    else copy(fuzzingMode = enable)
-
-  /**
-   * Maximum number of elements emitted in batch if downstream signals large demand.
-   */
-  @deprecated("Use attribute 'ActorAttributes.OutputBurstLimit' to change setting value", "Akka 2.6.0")
-  def withOutputBurstLimit(limit: Int): ActorMaterializerSettings =
-    if (limit == this.outputBurstLimit) this
-    else copy(outputBurstLimit = limit)
-
-  /**
-   * Limit for number of messages that can be processed synchronously in stream to substream communication
-   */
-  @deprecated("Use attribute 'ActorAttributes.SyncProcessingLimit' to change setting value", "Akka 2.6.0")
-  def withSyncProcessingLimit(limit: Int): ActorMaterializerSettings =
-    if (limit == this.syncProcessingLimit) this
-    else copy(syncProcessingLimit = limit)
-
-  /**
-   * Enable to log all elements that are dropped due to failures (at DEBUG level).
-   */
-  @deprecated("Use attribute 'ActorAttributes.DebugLogging' to change setting value", "Akka 2.6.0")
-  def withDebugLogging(enable: Boolean): ActorMaterializerSettings =
-    if (enable == this.debugLogging) this
-    else copy(debugLogging = enable)
-
-  /**
-   * Configure the maximum buffer size for which a FixedSizeBuffer will be preallocated.
-   * This defaults to a large value because it is usually better to fail early when
-   * system memory is not sufficient to hold the buffer.
-   */
-  @deprecated("Use attribute 'ActorAttributes.MaxFixedBufferSize' to change setting value", "Akka 2.6.0")
-  def withMaxFixedBufferSize(size: Int): ActorMaterializerSettings =
-    if (size == this.maxFixedBufferSize) this
-    else copy(maxFixedBufferSize = size)
-
-  /**
    * Leaked publishers and subscribers are cleaned up when they are not used within a given
    * deadline, configured by [[StreamSubscriptionTimeoutSettings]].
    */
@@ -465,11 +387,6 @@ final class ActorMaterializerSettings @InternalApi private (
   def withStreamRefSettings(streamRefSettings: StreamRefSettings): ActorMaterializerSettings =
     if (streamRefSettings == this.streamRefSettings) this
     else copy(streamRefSettings = streamRefSettings)
-
-  @deprecated("Use attribute 'ActorAttributes.BlockingIoDispatcher' to change setting value", "Akka 2.6.0")
-  def withBlockingIoDispatcher(newBlockingIoDispatcher: String): ActorMaterializerSettings =
-    if (newBlockingIoDispatcher == blockingIoDispatcher) this
-    else copy(blockingIoDispatcher = newBlockingIoDispatcher)
 
   private def requirePowerOfTwo(n: Integer, name: String): Unit = {
     require(n > 0, s"$name must be > 0")
