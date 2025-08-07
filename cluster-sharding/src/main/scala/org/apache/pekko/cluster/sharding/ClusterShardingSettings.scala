@@ -1005,18 +1005,6 @@ final class ClusterShardingSettings(
   def withStateStoreMode(stateStoreMode: String): ClusterShardingSettings =
     copy(stateStoreMode = stateStoreMode)
 
-  @deprecated("See passivationStrategySettings.idleEntitySettings instead", since = "Akka 2.6.18")
-  def passivateIdleEntityAfter: FiniteDuration =
-    passivationStrategySettings.idleEntitySettings.fold(Duration.Zero)(_.timeout)
-
-  @deprecated("Use withPassivationStrategy instead", since = "Akka 2.6.18")
-  def withPassivateIdleAfter(duration: FiniteDuration): ClusterShardingSettings =
-    copy(passivationStrategySettings = passivationStrategySettings.withOldIdleStrategy(duration))
-
-  @deprecated("Use withPassivationStrategy instead", since = "Akka 2.6.18")
-  def withPassivateIdleAfter(duration: java.time.Duration): ClusterShardingSettings =
-    copy(passivationStrategySettings = passivationStrategySettings.withOldIdleStrategy(duration.asScala))
-
   /**
    * API MAY CHANGE: Settings for passivation strategies may change after additional testing and feedback.
    */
