@@ -3916,17 +3916,6 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * The `combine` function is used to combine the `FlowMonitor` with this flow's materialized value.
    */
-  @deprecated("Use monitor() or monitorMat(combine) instead", "Akka 2.5.17")
-  def monitor[M](combine: function.Function2[Mat, FlowMonitor[Out], M]): javadsl.Flow[In, Out, M] =
-    new Flow(delegate.monitorMat(combinerToScala(combine)))
-
-  /**
-   * Materializes to `FlowMonitor[Out]` that allows monitoring of the current flow. All events are propagated
-   * by the monitor unchanged. Note that the monitor inserts a memory barrier every time it processes an
-   * event, and may therefor affect performance.
-   *
-   * The `combine` function is used to combine the `FlowMonitor` with this flow's materialized value.
-   */
   def monitorMat[M](combine: function.Function2[Mat, FlowMonitor[Out], M]): javadsl.Flow[In, Out, M] =
     new Flow(delegate.monitorMat(combinerToScala(combine)))
 
