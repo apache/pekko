@@ -82,7 +82,6 @@ object EventSourcedBehaviorSignalSpec {
 
   // Configuration for tests
   val config: Config = ConfigFactory.parseString(s"""
-    pekko.version = "0.0.0+27639-12cde0bd+20250807-1601-SNAPSHOT"
     pekko.loglevel = INFO
     pekko.persistence.journal.plugin = "signal-test-journal"
     signal-test-journal = $${pekko.persistence.journal.inmem}
@@ -196,10 +195,10 @@ class EventSourcedBehaviorSignalSpec
       // Wait for recovery to complete
       signalProbe.expectMessage("RecoveryCompleted")
 
-      // Send a command that will trigger a failure
+      // Send a command that won't trigger a failure
       actor ! Increment
 
-      // Verify that the JournalPersistFailed signal was received
+      // Verify that no signal was emitted
       signalProbe.expectNoMessage(5.seconds)
     }
   }
