@@ -42,16 +42,16 @@ final case class RecoveryFailed(failure: Throwable) extends EventSourcedSignal {
 final case class JournalPersistFailed(failure: Throwable) extends EventSourcedSignal {
 
   /**
-    * Java API
-    */
+   * Java API
+   */
   def getFailure(): Throwable = failure
 }
 
 final case class JournalPersistRejected(failure: Throwable) extends EventSourcedSignal {
 
   /**
-    * Java API
-    */
+   * Java API
+   */
   def getFailure(): Throwable = failure
 }
 

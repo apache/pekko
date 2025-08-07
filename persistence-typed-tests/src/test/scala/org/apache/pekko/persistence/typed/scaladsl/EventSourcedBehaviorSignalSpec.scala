@@ -38,23 +38,23 @@ class SignalTestJournal extends InmemJournal {
       atomicWrite.payload.exists { persistentRepr =>
         persistentRepr.payload match {
           case event: EventSourcedBehaviorSignalSpec.Incremented => event.shouldReject
-          case _ => false
+          case _                                                 => false
         }
       }
     }
-    
+
     val shouldFail = messages.exists { atomicWrite =>
       atomicWrite.payload.exists { persistentRepr =>
         persistentRepr.payload match {
           case event: EventSourcedBehaviorSignalSpec.Incremented => event.shouldFail
-          case _ => false
+          case _                                                 => false
         }
       }
     }
-    
+
     if (shouldReject) {
       // Return a successful future with a failed Try to simulate rejection
-      Future.successful(messages.map(_ => 
+      Future.successful(messages.map(_ =>
         Try { throw TestException("Journal rejected the event") }
       ))
     } else if (shouldFail) {
@@ -94,7 +94,7 @@ object EventSourcedBehaviorSignalSpec {
   def signalTrackingBehavior(
       persistenceId: PersistenceId,
       signalProbe: ActorRef[String]): Behavior[Command] = {
-    
+
     // Create the base EventSourcedBehavior
     val eventSourcedBehavior = EventSourcedBehavior[Command, Event, State](
       persistenceId,
@@ -125,7 +125,7 @@ object EventSourcedBehaviorSignalSpec {
           val message = s"JournalPersistFailed: ${signal.failure.getMessage}"
           signalProbe ! message
       }
-      
+
     // We don't need to handle failures with supervision since we're only testing the signals
     eventSourcedBehavior
   }
@@ -145,19 +145,19 @@ class EventSourcedBehaviorSignalSpec
     "receive JournalPersistRejected signal when journal rejects events" in {
       // Create a probe to track signals
       val signalProbe = createTestProbe[String]()
-      
+
       // Create a behavior that will track signals
       val behavior = signalTrackingBehavior(nextPid(), signalProbe.ref)
-      
+
       // Spawn the actor
       val actor = spawn(behavior)
-      
+
       // Wait for recovery to complete
       signalProbe.expectMessage("RecoveryCompleted")
-      
+
       // Send a command that will trigger a rejection
       actor ! IncrementWithReject
-      
+
       // Verify that the JournalPersistRejected signal was received
       signalProbe.expectMessage(5.seconds, "JournalPersistRejected: Journal rejected the event")
     }
@@ -165,19 +165,19 @@ class EventSourcedBehaviorSignalSpec
     "receive JournalPersistFailed signal when journal fails to persist events" in {
       // Create a probe to track signals
       val signalProbe = createTestProbe[String]()
-      
+
       // Create a behavior that will track signals
       val behavior = signalTrackingBehavior(nextPid(), signalProbe.ref)
-      
+
       // Spawn the actor
       val actor = spawn(behavior)
-      
+
       // Wait for recovery to complete
       signalProbe.expectMessage("RecoveryCompleted")
-      
+
       // Send a command that will trigger a failure
       actor ! IncrementWithFailure
-      
+
       // Verify that the JournalPersistFailed signal was received
       signalProbe.expectMessage(5.seconds, "JournalPersistFailed: Journal failed to persist the event")
     }

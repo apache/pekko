@@ -52,13 +52,13 @@ import pekko.persistence.typed.{
   DeleteSnapshotsFailed,
   DeletionTarget,
   EventRejectedException,
+  JournalPersistFailed,
+  JournalPersistRejected,
   PersistenceId,
   SnapshotCompleted,
   SnapshotFailed,
   SnapshotMetadata,
-  SnapshotSelectionCriteria,
-  JournalPersistFailed,
-  JournalPersistRejected,
+  SnapshotSelectionCriteria
 }
 import pekko.persistence.typed.internal.EventSourcedBehaviorImpl.{ GetSeenSequenceNr, GetState, GetStateReply }
 import pekko.persistence.typed.internal.InternalProtocol.ReplicatedEventEnvelope
