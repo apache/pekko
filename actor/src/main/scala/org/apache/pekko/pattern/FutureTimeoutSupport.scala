@@ -21,7 +21,6 @@ import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.dispatch.Futures
 
 trait FutureTimeoutSupport {
 
@@ -70,7 +69,7 @@ trait FutureTimeoutSupport {
       implicit ec: ExecutionContext): CompletionStage[T] =
     if (duration.isFinite && duration.length < 1) {
       try value
-      catch { case NonFatal(t) => Futures.failedCompletionStage(t) }
+      catch { case NonFatal(t) => CompletableFuture.failedStage(t) }
     } else {
       val p = new CompletableFuture[T]
       using.scheduleOnce(duration) {
@@ -78,7 +77,7 @@ trait FutureTimeoutSupport {
           val future = value
           future.handle[Unit]((t: T, ex: Throwable) => {
             if (t != null) p.complete(t)
-            if (ex != null) p.completeExceptionally(ex)
+            if (ex ne null) p.completeExceptionally(ex)
           })
         } catch {
           case NonFatal(ex) => p.completeExceptionally(ex)
@@ -129,7 +128,7 @@ trait FutureTimeoutSupport {
     val stage: CompletionStage[T] =
       try value
       catch {
-        case NonFatal(t) => Futures.failedCompletionStage(t)
+        case NonFatal(t) => CompletableFuture.failedStage(t)
       }
     if (stage.toCompletableFuture.isDone) {
       stage
@@ -142,7 +141,7 @@ trait FutureTimeoutSupport {
       stage.handle[Unit]((v: T, ex: Throwable) => {
         timeout.cancel()
         if (v != null) p.complete(v)
-        if (ex != null) p.completeExceptionally(ex)
+        if (ex ne null) p.completeExceptionally(ex)
       })
       p
     }

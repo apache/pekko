@@ -18,7 +18,7 @@ import org.scalatest.BeforeAndAfterEach
 
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorRef, ActorSystem, PoisonPill, Props }
-import pekko.japi.Procedure
+import pekko.japi.function.Procedure
 import pekko.testkit._
 
 object EventBusSpec {

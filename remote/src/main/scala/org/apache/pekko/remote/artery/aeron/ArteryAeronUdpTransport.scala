@@ -467,12 +467,12 @@ private[remote] class ArteryAeronUdpTransport(_system: ExtendedActorSystem, _pro
       .stop()
       .map { _ =>
         flightRecorder.transportStopped()
-        if (aeronErrorLogTask != null) {
+        if (aeronErrorLogTask ne null) {
           aeronErrorLogTask.cancel()
           flightRecorder.transportAeronErrorLogTaskStopped()
         }
-        if (aeron != null) aeron.close()
-        if (aeronErrorLog != null) aeronErrorLog.close()
+        if (aeron ne null) aeron.close()
+        if (aeronErrorLog ne null) aeronErrorLog.close()
         if (mediaDriver.get.isDefined) stopMediaDriver()
 
         Done

@@ -367,15 +367,6 @@ object Tcp extends ExtensionId[TcpExt] with ExtensionIdProvider {
   }
 
   /**
-   * @see [[WritePath]]
-   */
-  @deprecated("Use WritePath instead", "Akka 2.5.10")
-  final case class WriteFile(filePath: String, position: Long, count: Long, ack: Event) extends SimpleWriteCommand {
-    require(position >= 0, "WriteFile.position must be >= 0")
-    require(count > 0, "WriteFile.count must be > 0")
-  }
-
-  /**
    * Write `count` bytes starting at `position` from file at `filePath` to the connection.
    * The count must be &gt; 0. The connection actor will reply with a [[CommandFailed]]
    * message if the write could not be enqueued. If [[SimpleWriteCommand#wantsAck]]
@@ -493,9 +484,9 @@ object Tcp extends ExtensionId[TcpExt] with ExtensionIdProvider {
       _cause
         .map(t => {
           val msg =
-            if (t.getCause == null)
+            if (t.getCause eq null)
               t.getMessage
-            else if (t.getCause.getCause == null)
+            else if (t.getCause.getCause eq null)
               s"${t.getMessage}, caused by: ${t.getCause}"
             else
               s"${t.getMessage}, caused by: ${t.getCause}, caused by: ${t.getCause.getCause}"

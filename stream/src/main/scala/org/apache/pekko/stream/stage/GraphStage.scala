@@ -388,7 +388,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
    * INTERNAL API
    */
   private[pekko] def interpreter: GraphInterpreter =
-    if (_interpreter == null)
+    if (_interpreter eq null)
       throw new IllegalStateException(
         "not yet initialized: only setHandler is allowed in GraphStageLogic constructor. To access materializer use Source/Flow/Sink.fromMaterializer factory")
     else _interpreter
@@ -457,7 +457,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
    */
   final protected def setHandler(in: Inlet[_], handler: InHandler): Unit = {
     handlers(in.id) = handler
-    if (_interpreter != null) _interpreter.setHandler(conn(in), handler)
+    if (_interpreter ne null) _interpreter.setHandler(conn(in), handler)
   }
 
   /**
@@ -480,7 +480,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
    */
   final protected def setHandler(out: Outlet[_], handler: OutHandler): Unit = {
     handlers(out.id + inCount) = handler
-    if (_interpreter != null) _interpreter.setHandler(conn(out), handler)
+    if (_interpreter ne null) _interpreter.setHandler(conn(out), handler)
   }
 
   private def conn(in: Inlet[_]): Connection = portToConn(in.id)
@@ -1063,7 +1063,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
     protected def followUp(): Unit = {
       setHandler(out, previous)
       andThen()
-      if (followUps != null) {
+      if (followUps ne null) {
 
         /*
          * If (while executing andThen() callback) handler was changed to new emitting,
@@ -1080,7 +1080,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
            * If next element is emitting completion and there are some elements after it,
            * we to need pass them before completion
            */
-          if (next.followUps != null) {
+          if (next.followUps ne null) {
             setHandler(out, dequeueHeadAndAddToTail(next))
           } else {
             complete(out)
@@ -1092,7 +1092,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
     }
 
     def addFollowUp(e: Emitting[T]): Unit =
-      if (followUps == null) {
+      if (followUps eq null) {
         followUps = e
         followUpsTail = e
       } else {
@@ -1185,7 +1185,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
       override def onUpstreamFailure(ex: Throwable): Unit = if (doFail) failStage(ex)
     }
     val ph = new PassAlongHandler
-    if (_interpreter != null) {
+    if (_interpreter ne null) {
       if (isAvailable(from)) emit(to, grab(from), ph)
       if (doFinish && isClosed(from)) completeStage()
     }
@@ -1212,7 +1212,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
    */
   final def getAsyncCallback[T](handler: T => Unit): AsyncCallback[T] = {
     val callback = new ConcurrentAsyncCallback[T](handler)
-    if (_interpreter != null) callback.onStart()
+    if (_interpreter ne null) callback.onStart()
     else callbacksWaitingForInterpreter = callback :: callbacksWaitingForInterpreter
     callback
   }
@@ -1834,66 +1834,6 @@ abstract class TimerGraphStageLogic(_shape: Shape) extends GraphStageLogic(_shap
   }
 
   /**
-   * Schedule timer to call [[#onTimer]] periodically with the given interval after the specified
-   * initial delay.
-   * Any existing timer with the same key will automatically be canceled before
-   * adding the new timer.
-   */
-  @deprecated(
-    "Use scheduleWithFixedDelay or scheduleAtFixedRate instead. This has the same semantics as " +
-    "scheduleAtFixedRate, but scheduleWithFixedDelay is often preferred.",
-    since = "Akka 2.6.0")
-  final protected def schedulePeriodicallyWithInitialDelay(
-      timerKey: Any,
-      initialDelay: FiniteDuration,
-      interval: FiniteDuration): Unit =
-    scheduleAtFixedRate(timerKey, initialDelay, interval)
-
-  /**
-   * Schedule timer to call [[#onTimer]] periodically with the given interval after the specified
-   * initial delay.
-   * Any existing timer with the same key will automatically be canceled before
-   * adding the new timer.
-   */
-  @deprecated(
-    "Use scheduleWithFixedDelay or scheduleAtFixedRate instead. This has the same semantics as " +
-    "scheduleAtFixedRate, but scheduleWithFixedDelay is often preferred.",
-    since = "Akka 2.6.0")
-  final protected def schedulePeriodicallyWithInitialDelay(
-      timerKey: Any,
-      initialDelay: java.time.Duration,
-      interval: java.time.Duration): Unit = {
-    import pekko.util.JavaDurationConverters._
-    schedulePeriodicallyWithInitialDelay(timerKey, initialDelay.asScala, interval.asScala)
-  }
-
-  /**
-   * Schedule timer to call [[#onTimer]] periodically with the given interval.
-   * Any existing timer with the same key will automatically be canceled before
-   * adding the new timer.
-   */
-  @deprecated(
-    "Use scheduleWithFixedDelay or scheduleAtFixedRate instead. This has the same semantics as " +
-    "scheduleAtFixedRate, but scheduleWithFixedDelay is often preferred.",
-    since = "Akka 2.6.0")
-  final protected def schedulePeriodically(timerKey: Any, interval: FiniteDuration): Unit =
-    schedulePeriodicallyWithInitialDelay(timerKey, interval, interval)
-
-  /**
-   * Schedule timer to call [[#onTimer]] periodically with the given interval.
-   * Any existing timer with the same key will automatically be canceled before
-   * adding the new timer.
-   */
-  @deprecated(
-    "Use scheduleWithFixedDelay or scheduleAtFixedRate instead. This has the same semantics as " +
-    "scheduleAtFixedRate, but scheduleWithFixedDelay is often preferred.",
-    since = "Akka 2.6.0")
-  final protected def schedulePeriodically(timerKey: Any, interval: java.time.Duration): Unit = {
-    import pekko.util.JavaDurationConverters._
-    schedulePeriodically(timerKey, interval.asScala)
-  }
-
-  /**
    * Cancel timer, ensuring that the [[#onTimer]] is not subsequently called.
    *
    * @param timerKey key of the timer to cancel
@@ -1956,14 +1896,7 @@ trait OutHandler {
   @throws(classOf[Exception])
   def onPull(): Unit
 
-  /**
-   * Called when the output port will no longer accept any new elements. After this callback no other callbacks will
-   * be called for this port.
-   */
-  @throws(classOf[Exception])
-  @deprecatedOverriding("Override `def onDownstreamFinish(cause: Throwable)`, instead.", since = "Akka 2.6.0") // warns when overriding
-  @deprecated("Call onDownstreamFinish with a cancellation cause.", since = "Akka 2.6.0") // warns when calling
-  def onDownstreamFinish(): Unit = {
+  private def onDownstreamFinish(): Unit = {
     val thisStage = GraphInterpreter.currentInterpreter.activeStage
     require(
       thisStage.lastCancellationCause ne null,

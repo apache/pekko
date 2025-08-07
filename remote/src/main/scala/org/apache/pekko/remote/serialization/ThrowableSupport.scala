@@ -39,12 +39,12 @@ private[pekko] class ThrowableSupport(system: ExtendedActorSystem) {
 
   def toProtobufThrowable(t: Throwable): ContainerFormats.Throwable.Builder = {
     val b = ContainerFormats.Throwable.newBuilder().setClassName(t.getClass.getName)
-    if (t.getMessage != null)
+    if (t.getMessage ne null)
       b.setMessage(t.getMessage)
-    if (t.getCause != null)
+    if (t.getCause ne null)
       b.setCause(payloadSupport.payloadBuilder(t.getCause))
     val stackTrace = t.getStackTrace
-    if (stackTrace != null) {
+    if (stackTrace ne null) {
       var i = 0
       while (i < stackTrace.length) {
         b.addStackTrace(stackTraceElementBuilder(stackTrace(i)))

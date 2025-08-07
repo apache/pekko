@@ -46,21 +46,21 @@ trait SerializationSupport {
   @volatile
   private var ser: Serialization = _
   def serialization: Serialization = {
-    if (ser == null) ser = SerializationExtension(system)
+    if (ser eq null) ser = SerializationExtension(system)
     ser
   }
 
   @volatile
   private var protocol: String = _
   def addressProtocol: String = {
-    if (protocol == null) protocol = system.provider.getDefaultAddress.protocol
+    if (protocol eq null) protocol = system.provider.getDefaultAddress.protocol
     protocol
   }
 
   @volatile
   private var transportInfo: Serialization.Information = _
   def transportInformation: Serialization.Information = {
-    if (transportInfo == null) {
+    if (transportInfo eq null) {
       val address = system.provider.getDefaultAddress
       transportInfo = Serialization.Information(address, system)
     }

@@ -15,8 +15,8 @@ package jdocs.stream.javadsl.cookbook;
 
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
-import org.apache.pekko.japi.Function;
 import org.apache.pekko.japi.Pair;
+import org.apache.pekko.japi.function.Function;
 import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.stream.javadsl.SubSource;

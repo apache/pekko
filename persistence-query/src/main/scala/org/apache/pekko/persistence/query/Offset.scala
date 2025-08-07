@@ -55,7 +55,7 @@ final case class Sequence(value: Long) extends Offset with Ordered[Sequence] {
  * as the `offset` parameter in a subsequent query.
  */
 final case class TimeBasedUUID(value: UUID) extends Offset with Ordered[TimeBasedUUID] {
-  if (value == null || value.version != 1) {
+  if ((value eq null) || value.version != 1) {
     throw new IllegalArgumentException("UUID " + value + " is not a time-based UUID")
   }
 

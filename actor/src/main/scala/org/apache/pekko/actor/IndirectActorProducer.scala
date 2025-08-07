@@ -18,7 +18,7 @@ import scala.collection.immutable
 import scala.annotation.nowarn
 
 import org.apache.pekko
-import pekko.japi.Creator
+import pekko.japi.function.Creator
 import pekko.util.Reflect
 
 /**

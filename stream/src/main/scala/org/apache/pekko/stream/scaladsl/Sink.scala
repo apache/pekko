@@ -13,10 +13,10 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import scala.annotation.{ nowarn, tailrec }
+import scala.annotation.tailrec
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.Future
 import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
@@ -178,17 +178,6 @@ object Sink {
       .to(Sink.head)
 
   /**
-   * Defers the creation of a [[Sink]] until materialization. The `factory` function
-   * exposes [[ActorMaterializer]] which is going to be used during materialization and
-   * [[Attributes]] of the [[Sink]] returned by this method.
-   */
-  @deprecated("Use 'fromMaterializer' instead", "Akka 2.6.0")
-  def setup[T, M](factory: (ActorMaterializer, Attributes) => Sink[T, M]): Sink[T, Future[M]] =
-    fromMaterializer { (mat, attr) =>
-      factory(ActorMaterializerHelper.downcast(mat), attr)
-    }
-
-  /**
    * Helper to create [[Sink]] from `Subscriber`.
    */
   def fromSubscriber[T](subscriber: Subscriber[T]): Sink[T, NotUsed] =
@@ -336,8 +325,6 @@ object Sink {
    * Combine several sinks with fan-out strategy like `Broadcast` or `Balance` and returns `Sink`.
    */
   def combine[T, U](first: Sink[U, _], second: Sink[U, _], rest: Sink[U, _]*)(
-      @nowarn
-      @deprecatedName(Symbol("strategy"))
       fanOutStrategy: Int => Graph[UniformFanOutShape[T, U], NotUsed]): Sink[T, NotUsed] =
     Sink.fromGraph(GraphDSL.create() { implicit b =>
       import GraphDSL.Implicits._
@@ -388,25 +375,6 @@ object Sink {
           SinkShape(c.in)
         })
     }
-
-  /**
-   * A `Sink` that will invoke the given function to each of the elements
-   * as they pass in. The sink is materialized into a [[scala.concurrent.Future]]
-   *
-   * If `f` throws an exception and the supervision decision is
-   * [[pekko.stream.Supervision.Stop]] the `Future` will be completed with failure.
-   *
-   * If `f` throws an exception and the supervision decision is
-   * [[pekko.stream.Supervision.Resume]] or [[pekko.stream.Supervision.Restart]] the
-   * element is dropped and the stream continues.
-   *
-   * See also [[Flow.mapAsyncUnordered]]
-   */
-  @deprecated(
-    "Use `foreachAsync` instead, it allows you to choose how to run the procedure, by calling some other API returning a Future or spawning a new Future.",
-    since = "Akka 2.5.17")
-  def foreachParallel[T](parallelism: Int)(f: T => Unit)(implicit ec: ExecutionContext): Sink[T, Future[Done]] =
-    Flow[T].mapAsyncUnordered(parallelism)(t => Future(f(t))).toMat(Sink.ignore)(Keep.right)
 
   /**
    * A `Sink` that will invoke the given function for every received element, giving it its previous
@@ -700,28 +668,6 @@ object Sink {
     actorRefWithAck(ref, _ => identity, _ => onInitMessage, None, onCompleteMessage, onFailureMessage)
 
   /**
-   * Sends the elements of the stream to the given `ActorRef` that sends back back-pressure signal.
-   * First element is always `onInitMessage`, then stream is waiting for acknowledgement message
-   * `ackMessage` from the given actor which means that it is ready to process
-   * elements. It also requires `ackMessage` message after each stream element
-   * to make backpressure work.
-   *
-   * If the target actor terminates the stream will be canceled.
-   * When the stream is completed successfully the given `onCompleteMessage`
-   * will be sent to the destination actor.
-   * When the stream is completed with failure - result of `onFailureMessage(throwable)`
-   * function will be sent to the destination actor.
-   */
-  @deprecated("Use actorRefWithBackpressure accepting completion and failure matchers instead", "Akka 2.6.0")
-  def actorRefWithAck[T](
-      ref: ActorRef,
-      onInitMessage: Any,
-      ackMessage: Any,
-      onCompleteMessage: Any,
-      onFailureMessage: (Throwable) => Any = Status.Failure.apply): Sink[T, NotUsed] =
-    actorRefWithAck(ref, _ => identity, _ => onInitMessage, Some(ackMessage), onCompleteMessage, onFailureMessage)
-
-  /**
    * Creates a `Sink` that is materialized as an [[pekko.stream.scaladsl.SinkQueueWithCancel]].
    * [[pekko.stream.scaladsl.SinkQueueWithCancel.pull]] method is pulling element from the stream and returns ``Future[Option[T]``.
    * `Future` completes when element is available.
@@ -760,37 +706,6 @@ object Sink {
    * See also [[pekko.stream.scaladsl.SinkQueueWithCancel]]
    */
   def queue[T](): Sink[T, SinkQueueWithCancel[T]] = queue(1)
-
-  /**
-   * Creates a real `Sink` upon receiving the first element. Internal `Sink` will not be created if there are no elements,
-   * because of completion or error.
-   *
-   * If upstream completes before an element was received then the `Future` is completed with the value created by fallback.
-   * If upstream fails before an element was received, `sinkFactory` throws an exception, or materialization of the internal
-   * sink fails then the `Future` is completed with the exception.
-   * Otherwise the `Future` is completed with the materialized value of the internal sink.
-   */
-  @deprecated("Use 'Sink.lazyFutureSink' in combination with 'Flow.prefixAndTail(1)' instead", "Akka 2.6.0")
-  def lazyInit[T, M](sinkFactory: T => Future[Sink[T, M]], fallback: () => M): Sink[T, Future[M]] =
-    Sink
-      .fromGraph(new LazySink[T, M](sinkFactory))
-      .mapMaterializedValue(_.recover { case _: NeverMaterializedException => fallback() }(ExecutionContexts.parasitic))
-
-  /**
-   * Creates a real `Sink` upon receiving the first element. Internal `Sink` will not be created if there are no elements,
-   * because of completion or error.
-   *
-   * If upstream completes before an element was received then the `Future` is completed with `None`.
-   * If upstream fails before an element was received, `sinkFactory` throws an exception, or materialization of the internal
-   * sink fails then the `Future` is completed with the exception.
-   * Otherwise the `Future` is completed with the materialized value of the internal sink.
-   */
-  @deprecated("Use 'Sink.lazyFutureSink' instead", "Akka 2.6.0")
-  def lazyInitAsync[T, M](sinkFactory: () => Future[Sink[T, M]]): Sink[T, Future[Option[M]]] =
-    Sink.fromGraph(new LazySink[T, M](_ => sinkFactory())).mapMaterializedValue { m =>
-      implicit val ec = ExecutionContexts.parasitic
-      m.map(Option.apply _).recover { case _: NeverMaterializedException => None }
-    }
 
   /**
    * Turn a `Future[Sink]` into a Sink that will consume the values of the source when the future completes successfully.

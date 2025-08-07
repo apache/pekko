@@ -13,20 +13,24 @@
 
 package org.apache.pekko.actor;
 
-import org.apache.pekko.util.Unsafe;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
+
+import org.apache.pekko.actor.Cell;
 
 final class AbstractActorRef {
-  static final long cellOffset;
-  static final long lookupOffset;
+  static final VarHandle cellHandle;
+  static final VarHandle lookupHandle;
 
   static {
     try {
-      cellOffset =
-          Unsafe.instance.objectFieldOffset(
-              RepointableActorRef.class.getDeclaredField("_cellDoNotCallMeDirectly"));
-      lookupOffset =
-          Unsafe.instance.objectFieldOffset(
-              RepointableActorRef.class.getDeclaredField("_lookupDoNotCallMeDirectly"));
+      MethodHandles.Lookup lookup =
+          MethodHandles.privateLookupIn(RepointableActorRef.class, MethodHandles.lookup());
+
+      cellHandle =
+          lookup.findVarHandle(RepointableActorRef.class, "_cellDoNotCallMeDirectly", Cell.class);
+      lookupHandle =
+          lookup.findVarHandle(RepointableActorRef.class, "_lookupDoNotCallMeDirectly", Cell.class);
     } catch (Throwable t) {
       throw new ExceptionInInitializerError(t);
     }

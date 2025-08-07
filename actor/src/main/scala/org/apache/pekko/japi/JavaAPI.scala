@@ -13,72 +13,13 @@
 
 package org.apache.pekko.japi
 
-import java.util.Collections.{ emptyList, singletonList }
-
 import scala.collection.immutable
-import scala.language.implicitConversions
 import scala.reflect.ClassTag
 import scala.runtime.AbstractPartialFunction
 import scala.util.control.NoStackTrace
 
-import scala.annotation.nowarn
-
 import org.apache.pekko
 import pekko.util.Collections.EmptyImmutableSeq
-
-/**
- * A Function interface. Used to create first-class-functions is Java.
- *
- * This class is kept for compatibility, but for future API's please prefer [[pekko.japi.function.Function]].
- */
-@FunctionalInterface
-trait Function[T, R] {
-  @throws(classOf[Exception])
-  def apply(param: T): R
-}
-
-/**
- * A Function interface. Used to create 2-arg first-class-functions is Java.
- *
- * This class is kept for compatibility, but for future API's please prefer [[pekko.japi.function.Function2]].
- */
-@FunctionalInterface
-trait Function2[T1, T2, R] {
-  @throws(classOf[Exception])
-  def apply(arg1: T1, arg2: T2): R
-}
-
-/**
- * A Procedure is like a Function, but it doesn't produce a return value.
- *
- * This class is kept for compatibility, but for future API's please prefer [[pekko.japi.function.Procedure]].
- */
-@FunctionalInterface
-trait Procedure[T] {
-  @throws(classOf[Exception])
-  def apply(param: T): Unit
-}
-
-/**
- * An executable piece of code that takes no parameters and doesn't return any value.
- *
- * This class is kept for compatibility, but for future API's please prefer [[pekko.japi.function.Effect]].
- */
-@FunctionalInterface
-trait Effect {
-  @throws(classOf[Exception])
-  def apply(): Unit
-}
-
-/**
- * Java API: Defines a criteria and determines whether the parameter meets this criteria.
- *
- * This class is kept for compatibility, but for future API's please prefer [[java.util.function.Predicate]].
- */
-@FunctionalInterface
-trait Predicate[T] {
-  def test(param: T): Boolean
-}
 
 /**
  * Java API
@@ -92,23 +33,6 @@ case class Pair[A, B](first: A, second: B) {
 }
 object Pair {
   def create[A, B](first: A, second: B): Pair[A, B] = new Pair(first, second)
-}
-
-/**
- * A constructor/factory, takes no parameters but creates a new value of type T every call.
- *
- * This class is kept for compatibility, but for future API's please prefer [[pekko.japi.function.Creator]].
- */
-@nowarn("msg=@SerialVersionUID has no effect")
-@SerialVersionUID(1L)
-@FunctionalInterface
-trait Creator[T] extends Serializable {
-
-  /**
-   * This method must return a different instance upon every call.
-   */
-  @throws(classOf[Exception])
-  def create(): T
 }
 
 object JavaPartialFunction {
@@ -169,76 +93,6 @@ abstract class JavaPartialFunction[A, B] extends AbstractPartialFunction[A, B] {
   final override def applyOrElse[A1 <: A, B1 >: B](x: A1, default: A1 => B1): B1 =
     try apply(x, false)
     catch { case NoMatch => default(x) }
-}
-
-/**
- * This class represents optional values. Instances of <code>Option</code>
- * are either instances of case class <code>Some</code> or it is case
- * object <code>None</code>.
- */
-sealed abstract class Option[A] extends java.lang.Iterable[A] {
-  def get: A
-
-  /**
-   * Returns <code>a</code> if this is <code>some(a)</code> or <code>defaultValue</code> if
-   * this is <code>none</code>.
-   */
-  def getOrElse[B >: A](defaultValue: B): B
-  def isEmpty: Boolean
-  def isDefined: Boolean = !isEmpty
-  def asScala: scala.Option[A]
-  def iterator: java.util.Iterator[A] = if (isEmpty) emptyList[A].iterator else singletonList(get).iterator
-}
-
-object Option {
-
-  /**
-   * <code>Option</code> factory that creates <code>Some</code>
-   */
-  def some[A](v: A): Option[A] = Some(v)
-
-  /**
-   * <code>Option</code> factory that creates <code>None</code>
-   */
-  def none[A] = None.asInstanceOf[Option[A]]
-
-  /**
-   * <code>Option</code> factory that creates <code>None</code> if
-   * <code>v</code> is <code>null</code>, <code>Some(v)</code> otherwise.
-   */
-  def option[A](v: A): Option[A] = if (v == null) none else some(v)
-
-  /**
-   * Converts a Scala Option to a Java Option
-   */
-  def fromScalaOption[T](scalaOption: scala.Option[T]): Option[T] = scalaOption match {
-    case scala.Some(r) => some(r)
-    case scala.None    => none
-  }
-
-  /**
-   * Class <code>Some[A]</code> represents existing values of type
-   * <code>A</code>.
-   */
-  final case class Some[A](v: A) extends Option[A] {
-    def get: A = v
-    def getOrElse[B >: A](defaultValue: B): B = v
-    def isEmpty: Boolean = false
-    def asScala: scala.Some[A] = scala.Some(v)
-  }
-
-  /**
-   * This case object represents non-existent values.
-   */
-  private case object None extends Option[Nothing] {
-    def get: Nothing = throw new NoSuchElementException("None.get")
-    def getOrElse[B](defaultValue: B): B = defaultValue
-    def isEmpty: Boolean = true
-    def asScala: scala.None.type = scala.None
-  }
-
-  implicit def java2ScalaOption[A](o: Option[A]): scala.Option[A] = o.asScala
-  implicit def scala2JavaOption[A](o: scala.Option[A]): Option[A] = if (o.isDefined) some(o.get) else none
 }
 
 /**

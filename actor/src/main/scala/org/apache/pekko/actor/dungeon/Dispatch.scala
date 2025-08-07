@@ -31,7 +31,6 @@ import pekko.dispatch.sysmsg._
 import pekko.event.Logging.Error
 import pekko.serialization.{ DisabledJavaSerializer, SerializationExtension, Serializers }
 import pekko.serialization.Serialization
-import pekko.util.Unsafe
 
 @SerialVersionUID(1L)
 final case class SerializationCheckFailedException private[dungeon] (msg: Object, cause: Throwable)
@@ -53,14 +52,12 @@ private[pekko] trait Dispatch { this: ActorCell =>
   }
 
   final def mailbox: Mailbox =
-    Unsafe.instance.getObjectVolatile(this, AbstractActorCell.mailboxOffset).asInstanceOf[Mailbox]: @nowarn(
-      "cat=deprecation")
+    AbstractActorCell.mailboxHandle.get(this)
 
   @tailrec
   final def swapMailbox(newMailbox: Mailbox): Mailbox = {
     val oldMailbox = mailbox
-    if (!Unsafe.instance.compareAndSwapObject(this, AbstractActorCell.mailboxOffset, oldMailbox, newMailbox): @nowarn(
-        "cat=deprecation"))
+    if (!AbstractActorCell.mailboxHandle.compareAndSet(this, oldMailbox, newMailbox))
       swapMailbox(newMailbox)
     else oldMailbox
   }
@@ -96,7 +93,7 @@ private[pekko] trait Dispatch { this: ActorCell =>
         val req = system.mailboxes.getRequiredType(actorClass)
         if (req.isInstance(mbox.messageQueue)) Create(None)
         else {
-          val gotType = if (mbox.messageQueue == null) "null" else mbox.messageQueue.getClass.getName
+          val gotType = if (mbox.messageQueue eq null) "null" else mbox.messageQueue.getClass.getName
           Create(Some(ActorInitializationException(self, s"Actor [$self] requires mailbox type [$req] got [$gotType]")))
         }
       case _ => Create(None)

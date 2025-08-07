@@ -27,7 +27,7 @@ import pekko.actor.dungeon.ChildrenContainer
 import pekko.dispatch._
 import pekko.dispatch.sysmsg._
 import pekko.event.Logging.Warning
-import pekko.util.{ unused, Unsafe }
+import pekko.util.unused
 
 /**
  * This actor ref starts out with some dummy cell (by default just enqueuing
@@ -47,7 +47,7 @@ private[pekko] class RepointableActorRef(
     extends ActorRefWithCell
     with RepointableRef {
 
-  import AbstractActorRef.{ cellOffset, lookupOffset }
+  import AbstractActorRef.{ cellHandle, lookupHandle }
 
   /*
    * H E R E   B E   D R A G O N S !
@@ -66,20 +66,19 @@ private[pekko] class RepointableActorRef(
     _lookupDoNotCallMeDirectly
   }
 
-  def underlying: Cell =
-    Unsafe.instance.getObjectVolatile(this, cellOffset).asInstanceOf[Cell]: @nowarn("cat=deprecation")
-  def lookup = Unsafe.instance.getObjectVolatile(this, lookupOffset).asInstanceOf[Cell]: @nowarn("cat=deprecation")
+  def underlying: Cell = cellHandle.get(this)
+  def lookup: Cell = lookupHandle.get(this)
 
   @tailrec
   final def swapCell(next: Cell): Cell = {
     val old = underlying
-    if (Unsafe.instance.compareAndSwapObject(this, cellOffset, old, next): @nowarn("cat=deprecation")) old
+    if (cellHandle.compareAndSet(this, old, next)) old
     else swapCell(next)
   }
 
   @tailrec final def swapLookup(next: Cell): Cell = {
     val old = lookup
-    if (Unsafe.instance.compareAndSwapObject(this, lookupOffset, old, next): @nowarn("cat=deprecation")) old
+    if (lookupHandle.compareAndSet(this, old, next)) old
     else swapLookup(next)
   }
 

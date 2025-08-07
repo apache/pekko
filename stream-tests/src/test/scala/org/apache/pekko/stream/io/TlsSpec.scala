@@ -390,6 +390,23 @@ class TlsSpec extends StreamSpec(TlsSpec.configOverrides) with WithLogCapturing 
         def output = ByteString("TLS_ECDHE_RSA_WITH_AES_128_CBC_SHAhello")
       }
 
+      val renegotiationScenarios = if (protocol == "TLSv1.2") {
+        if (JavaVersion.majorVersion <= 21)
+          Seq(
+            SessionRenegotiationBySender,
+            SessionRenegotiationByReceiver,
+            SessionRenegotiationFirstOne,
+            SessionRenegotiationFirstTwo)
+        else
+          // skip SessionRenegotiationFirstOne as it uses a weak cipher suite and the test will fail
+          Seq(
+            SessionRenegotiationBySender,
+            SessionRenegotiationByReceiver,
+            SessionRenegotiationFirstTwo)
+      } else
+        // TLSv1.3 doesn't support renegotiation
+        Nil
+
       val scenarios =
         Seq(
           SingleBytes,
@@ -402,15 +419,7 @@ class TlsSpec extends StreamSpec(TlsSpec.configOverrides) with WithLogCapturing 
           CancellingRHS,
           CancellingRHSIgnoresBoth,
           LHSIgnoresBoth,
-          BothSidesIgnoreBoth) ++
-        (if (protocol == "TLSv1.2")
-           Seq(
-             SessionRenegotiationBySender,
-             SessionRenegotiationByReceiver,
-             SessionRenegotiationFirstOne,
-             SessionRenegotiationFirstTwo)
-         else // TLSv1.3 doesn't support renegotiation
-           Nil)
+          BothSidesIgnoreBoth) ++ renegotiationScenarios
 
       for {
         commPattern <- communicationPatterns

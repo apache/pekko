@@ -33,5 +33,7 @@ addSbtPlugin("io.github.roiocam" % "sbt-depend-walker" % "0.1.1")
 addSbtPlugin("com.github.sbt" % "sbt-sbom" % "0.4.0")
 
 addSbtPlugin("org.apache.pekko" % "pekko-sbt-paradox" % "1.0.1")
+addSbtPlugin("com.lightbend.paradox" % "sbt-paradox-theme" % "0.10.7")
+addSbtPlugin("com.lightbend.paradox" % "sbt-paradox" % "0.10.7")
 
 addSbtPlugin("com.gradle" % "sbt-develocity" % "1.3")

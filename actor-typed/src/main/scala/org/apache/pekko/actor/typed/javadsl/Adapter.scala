@@ -23,7 +23,7 @@ import pekko.actor.typed.Scheduler
 import pekko.actor.typed.SupervisorStrategy
 import pekko.actor.typed.internal.adapter.ActorContextAdapter
 import pekko.actor.typed.scaladsl.adapter._
-import pekko.japi.Creator
+import pekko.japi.function.Creator
 
 /**
  * Adapters between typed and classic actors and actor systems.

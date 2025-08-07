@@ -14,10 +14,11 @@
 package org.apache.pekko.actor
 
 import java.io.Closeable
+import java.lang.invoke.{ MethodHandles, VarHandle }
 import java.util.concurrent.ThreadFactory
 import java.util.concurrent.atomic.{ AtomicLong, AtomicReference }
 
-import scala.annotation.{ nowarn, tailrec }
+import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
 import scala.concurrent.duration._
@@ -29,7 +30,6 @@ import pekko.actor.Scheduler.AtomicCancellable
 import pekko.dispatch.AbstractNodeQueue
 import pekko.event.LoggingAdapter
 import pekko.util.Helpers
-import pekko.util.Unsafe.{ instance => unsafe }
 
 /**
  * This scheduler implementation is based on a revolving wheel of buckets,
@@ -144,7 +144,7 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
               try {
                 runnable.run()
                 val driftNanos = clock() - getAndAdd(delay.toNanos)
-                if (self.get() != null)
+                if (self.get() ne null)
                   swap(schedule(executor, this, Duration.fromNanos(Math.max(delay.toNanos - driftNanos, 1))))
               } catch {
                 case _: SchedulerException => // ignore failure to enqueue or terminated target actor
@@ -204,10 +204,10 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
 
   private def schedule(ec: ExecutionContext, r: Runnable, delay: FiniteDuration): TimerTask =
     if (delay.length <= 0L) { // use simple comparison instead of Ordering for performance
-      if (stopped.get != null) throw SchedulerException("cannot enqueue after timer shutdown")
+      if (stopped.get ne null) throw SchedulerException("cannot enqueue after timer shutdown")
       ec.execute(r)
       NotCancellable
-    } else if (stopped.get != null) {
+    } else if (stopped.get ne null) {
       throw SchedulerException("cannot enqueue after timer shutdown")
     } else {
       val delayNanos = delay.toNanos
@@ -216,7 +216,7 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
       val ticks = (delayNanos / tickNanos).toInt
       val task = new TaskHolder(r, ticks, ec)
       queue.add(task)
-      if (stopped.get != null && task.cancel())
+      if ((stopped.get ne null) && task.cancel())
         throw SchedulerException("cannot enqueue after timer shutdown")
       task
     }
@@ -355,9 +355,10 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
 }
 
 object LightArrayRevolverScheduler {
-  @nowarn("msg=deprecated")
-  private[this] val taskOffset =
-    unsafe.objectFieldOffset(classOf[TaskHolder].getDeclaredField("task")): @nowarn("cat=deprecation")
+  private[this] val taskHandle: VarHandle = {
+    val lookup = MethodHandles.privateLookupIn(classOf[TaskHolder], MethodHandles.lookup())
+    lookup.findVarHandle(classOf[TaskHolder], "task", classOf[Runnable])
+  }
 
   private class TaskQueue extends AbstractNodeQueue[TaskHolder]
 
@@ -376,7 +377,7 @@ object LightArrayRevolverScheduler {
     private final def extractTask(replaceWith: Runnable): Runnable =
       task match {
         case t @ (ExecutedTask | CancelledTask) => t
-        case x                                  => if (unsafe.compareAndSwapObject(this, taskOffset, x, replaceWith): @nowarn("cat=deprecation")) x
+        case x                                  => if (taskHandle.compareAndSet(this, x, replaceWith)) x
           else extractTask(replaceWith)
       }
 

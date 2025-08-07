@@ -719,23 +719,6 @@ trait TestKitBase {
   }
 
   /**
-   * Assert that no message is received. Waits for the default period configured as
-   * `pekko.test.expect-no-message-default`.
-   * That timeout is scaled using the configuration entry "pekko.test.timefactor".
-   */
-  @deprecated(message = "Use expectNoMessage instead", since = "Akka 2.5.5")
-  def expectNoMsg(): Unit = expectNoMessage()
-
-  /**
-   * Assert that no message is received for the specified time.
-   * NOTE! Supplied value is always dilated.
-   */
-  @deprecated(message = "Use expectNoMessage instead", since = "Akka 2.5.5")
-  def expectNoMsg(max: FiniteDuration): Unit = {
-    expectNoMsg_internal(max.dilated)
-  }
-
-  /**
    * Assert that no message is received for the specified time.
    * Supplied value is not dilated.
    */
@@ -759,7 +742,7 @@ trait TestKitBase {
 
     var elem: AnyRef = queue.peekFirst()
     var left = leftNow
-    while (left.toNanos > 0 && elem == null) {
+    while (left.toNanos > 0 && (elem eq null)) {
       // Use of (left / 2) gives geometric series limited by finish time similar to (1/2)^n limited by 1,
       // so it is very precise
       Thread.sleep(pollInterval.toMillis min (left / 2).toMillis)

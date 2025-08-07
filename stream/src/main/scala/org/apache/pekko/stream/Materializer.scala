@@ -63,7 +63,7 @@ abstract class Materializer {
    */
   def materialize[Mat](
       runnable: Graph[ClosedShape, Mat],
-      @deprecatedName(Symbol("initialAttributes")) defaultAttributes: Attributes): Mat
+      defaultAttributes: Attributes): Mat
 
   /**
    * Running a flow graph will require execution resources, as will computations
@@ -142,19 +142,6 @@ abstract class Materializer {
    *         has been already enqueued it will not have an effect.
    */
   def scheduleAtFixedRate(initialDelay: FiniteDuration, interval: FiniteDuration, task: Runnable): Cancellable
-
-  /**
-   * Interface for operators that need timer services for their functionality. Schedules a
-   * repeated task with the given interval between invocations.
-   *
-   * @return A [[pekko.actor.Cancellable]] that allows cancelling the timer. Cancelling is best effort, if the event
-   *         has been already enqueued it will not have an effect.
-   */
-  @deprecated(
-    "Use scheduleWithFixedDelay or scheduleAtFixedRate instead. This has the same semantics as " +
-    "scheduleAtFixedRate, but scheduleWithFixedDelay is often preferred.",
-    since = "Akka 2.6.0")
-  def schedulePeriodically(initialDelay: FiniteDuration, interval: FiniteDuration, task: Runnable): Cancellable
 
   /**
    * Shuts down this materializer and all the operators that have been materialized through this materializer. After

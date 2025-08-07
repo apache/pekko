@@ -89,12 +89,12 @@ trait Scheduler {
           override def run(): Unit = {
             try {
               runnable.run()
-              if (get != null)
+              if (get ne null)
                 swap(scheduleOnce(delay, this))
             } catch {
               // ignore failure to enqueue or terminated target actor
-              case _: SchedulerException                                                                         =>
-              case e: IllegalStateException if e.getCause != null && e.getCause.isInstanceOf[SchedulerException] =>
+              case _: SchedulerException                                                                           =>
+              case e: IllegalStateException if (e.getCause ne null) && e.getCause.isInstanceOf[SchedulerException] =>
             }
           }
 
@@ -370,51 +370,8 @@ trait Scheduler {
     "Use scheduleWithFixedDelay or scheduleAtFixedRate instead. This has the same semantics as " +
     "scheduleAtFixedRate, but scheduleWithFixedDelay is often preferred.",
     since = "Akka 2.6.0")
-  final def schedule(
-      initialDelay: java.time.Duration,
-      interval: java.time.Duration,
-      receiver: ActorRef,
-      message: Any,
-      executor: ExecutionContext,
-      sender: ActorRef): Cancellable = {
-    import JavaDurationConverters._
-    schedule(initialDelay.asScala, interval.asScala, receiver, message)(executor, sender)
-  }
-
-  /**
-   * Deprecated API: See [[Scheduler#scheduleWithFixedDelay]] or [[Scheduler#scheduleAtFixedRate]].
-   */
-  @deprecated(
-    "Use scheduleWithFixedDelay or scheduleAtFixedRate instead. This has the same semantics as " +
-    "scheduleAtFixedRate, but scheduleWithFixedDelay is often preferred.",
-    since = "Akka 2.6.0")
-  final def schedule(initialDelay: FiniteDuration, interval: FiniteDuration)(f: => Unit)(
-      implicit
-      executor: ExecutionContext): Cancellable =
-    schedule(initialDelay, interval, new Runnable { override def run(): Unit = f })
-
-  /**
-   * Deprecated API: See [[Scheduler#scheduleWithFixedDelay]] or [[Scheduler#scheduleAtFixedRate]].
-   */
-  @deprecated(
-    "Use scheduleWithFixedDelay or scheduleAtFixedRate instead. This has the same semantics as " +
-    "scheduleAtFixedRate, but scheduleWithFixedDelay is often preferred.",
-    since = "Akka 2.6.0")
   def schedule(initialDelay: FiniteDuration, interval: FiniteDuration, runnable: Runnable)(
       implicit executor: ExecutionContext): Cancellable
-
-  /**
-   * Deprecated API: See [[Scheduler#scheduleWithFixedDelay]] or [[Scheduler#scheduleAtFixedRate]].
-   */
-  @deprecated(
-    "Use scheduleWithFixedDelay or scheduleAtFixedRate instead. This has the same semantics as " +
-    "scheduleAtFixedRate, but scheduleWithFixedDelay is often preferred.",
-    since = "Akka 2.6.0")
-  def schedule(initialDelay: java.time.Duration, interval: java.time.Duration, runnable: Runnable)(
-      implicit executor: ExecutionContext): Cancellable = {
-    import JavaDurationConverters._
-    schedule(initialDelay.asScala, interval.asScala, runnable)
-  }
 
   /**
    * Scala API: Schedules a message to be sent once with a delay, i.e. a time period that has
@@ -584,7 +541,7 @@ object Scheduler {
 
     @tailrec final protected def swap(c: Cancellable): Unit = {
       get match {
-        case null => if (c != null) c.cancel()
+        case null => if (c ne null) c.cancel()
         case old  =>
           if (!compareAndSet(old, c))
             swap(c)

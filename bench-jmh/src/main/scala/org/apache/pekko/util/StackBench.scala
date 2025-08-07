@@ -14,6 +14,7 @@
 package org.apache.pekko.util
 
 import java.util.concurrent.TimeUnit
+import scala.annotation.nowarn
 
 import org.openjdk.jmh.annotations.{ Benchmark, Measurement, Scope, State }
 
@@ -21,6 +22,7 @@ import org.openjdk.jmh.annotations.{ Benchmark, Measurement, Scope, State }
 @Measurement(timeUnit = TimeUnit.MICROSECONDS)
 class StackBench {
 
+  @nowarn("msg=deprecated")
   class CustomSecurtyManager extends SecurityManager {
     def getTrace: Array[Class[_]] =
       getClassContext

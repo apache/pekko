@@ -1647,7 +1647,7 @@ trait DiagnosticLoggingAdapter extends LoggingAdapter {
    * These values can be used in PatternLayout when `org.apache.pekko.event.slf4j.Slf4jLogger` is configured.
    * Visit <a href="https://logback.qos.ch/manual/mdc.html">Logback Docs: MDC</a> for more information.
    */
-  def mdc(mdc: MDC): Unit = _mdc = if (mdc != null) mdc else emptyMDC
+  def mdc(mdc: MDC): Unit = _mdc = if (mdc ne null) mdc else emptyMDC
 
   /**
    * Java API:
@@ -1675,7 +1675,7 @@ trait DiagnosticLoggingAdapter extends LoggingAdapter {
    * These values can be used in PatternLayout when `org.apache.pekko.event.slf4j.Slf4jLogger` is configured.
    * Visit <a href="https://logback.qos.ch/manual/mdc.html">Logback Docs: MDC</a> for more information.
    */
-  def setMDC(jMdc: java.util.Map[String, Any]): Unit = mdc(if (jMdc != null) jMdc.asScala.toMap else emptyMDC)
+  def setMDC(jMdc: java.util.Map[String, Any]): Unit = mdc(if (jMdc ne null) jMdc.asScala.toMap else emptyMDC)
 
   /**
    * Clear all entries in the MDC
@@ -1716,13 +1716,6 @@ object LogMarker {
     import pekko.util.ccompat.JavaConverters._
     apply(name, properties.asScala.toMap)
   }
-
-  @deprecated("use org.apache.pekko.event.LogEventWithMarker#marker instead", since = "Akka 2.5.12")
-  def extractFromMDC(mdc: MDC): Option[String] =
-    mdc.get(MDCKey) match {
-      case Some(v) => Some(v.toString)
-      case None    => None
-    }
 
   private[pekko] final val Security = apply("SECURITY")
 

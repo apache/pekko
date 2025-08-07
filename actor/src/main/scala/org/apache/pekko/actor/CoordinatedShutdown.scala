@@ -388,7 +388,7 @@ final class CoordinatedShutdown private[pekko] (
     phases: Map[String, CoordinatedShutdown.Phase],
     jvmShutdownHooks: JVMShutdownHooks = JVMShutdownHooks)
     extends Extension {
-  import CoordinatedShutdown.{ Reason, UnknownReason }
+  import CoordinatedShutdown.Reason
 
   /** INTERNAL API */
   private[pekko] val log = Logging(system, classOf[CoordinatedShutdown])
@@ -697,9 +697,6 @@ final class CoordinatedShutdown private[pekko] (
    */
   def run(reason: Reason): Future[Done] = run(reason, None)
 
-  @deprecated("Use the method with `reason` parameter instead", since = "Akka 2.5.8")
-  def run(): Future[Done] = run(UnknownReason)
-
   /**
    * Java API: Run tasks of all phases. The returned
    * `CompletionStage` is completed when all tasks have been completed,
@@ -708,9 +705,6 @@ final class CoordinatedShutdown private[pekko] (
    * It's safe to call this method multiple times. It will only run the shutdown sequence once.
    */
   def runAll(reason: Reason): CompletionStage[Done] = run(reason).asJava
-
-  @deprecated("Use the method with `reason` parameter instead", since = "Akka 2.5.8")
-  def runAll(): CompletionStage[Done] = runAll(UnknownReason)
 
   /**
    * Scala API: Run tasks of all phases including and after the given phase.
@@ -784,10 +778,6 @@ final class CoordinatedShutdown private[pekko] (
     runPromise.future
   }
 
-  @deprecated("Use the method with `reason` parameter instead", since = "Akka 2.5.8")
-  def run(fromPhase: Option[String]): Future[Done] =
-    run(UnknownReason, fromPhase)
-
   /**
    * Java API: Run tasks of all phases including and after the given phase.
    * The returned `CompletionStage` is completed when all such tasks have been completed,
@@ -797,10 +787,6 @@ final class CoordinatedShutdown private[pekko] (
    */
   def run(reason: Reason, fromPhase: Optional[String]): CompletionStage[Done] =
     run(reason, fromPhase.toScala).asJava
-
-  @deprecated("Use the method with `reason` parameter instead", since = "Akka 2.5.8")
-  def run(fromPhase: Optional[String]): CompletionStage[Done] =
-    run(UnknownReason, fromPhase)
 
   /**
    * The configured timeout for a given `phase`.

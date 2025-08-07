@@ -158,7 +158,7 @@ import org.reactivestreams.Subscription
       }
     }
 
-    if (s == null) {
+    if (s eq null) {
       val ex = subscriberMustNotBeNullException
       try rec(Inert.subscriber)
       finally throw ex // must throw NPE, rule 2:13
@@ -197,7 +197,7 @@ import org.reactivestreams.Subscription
       }
     }
 
-    if (s == null) {
+    if (s eq null) {
       val ex = subscriptionMustNotBeNullException
       try rec(ErrorPublisher(ex, "failed-VirtualProcessor"))
       finally throw ex // must throw NPE, rule 2:13
@@ -290,10 +290,10 @@ import org.reactivestreams.Subscription
               s"VirtualPublisher#$hashCode($other).onError(${ex.getMessage}). spec violation or cancellation race")
       }
 
-    val ex = if (t == null) exceptionMustNotBeNullException else t
+    val ex = if (t eq null) exceptionMustNotBeNullException else t
     rec(ex)
     // must throw NPE, rule 2.13
-    if (t == null) throw ex
+    if (t eq null) throw ex
   }
 
   @tailrec override def onComplete(): Unit = {

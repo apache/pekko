@@ -150,12 +150,6 @@ private[pekko] class SubFusingActorMaterializerImpl(
       task: Runnable): Cancellable =
     delegate.scheduleAtFixedRate(initialDelay, interval, task)
 
-  override def schedulePeriodically(
-      initialDelay: FiniteDuration,
-      interval: FiniteDuration,
-      task: Runnable): Cancellable =
-    scheduleAtFixedRate(initialDelay, interval, task)
-
   override def withNamePrefix(name: String): SubFusingActorMaterializerImpl =
     new SubFusingActorMaterializerImpl(delegate.withNamePrefix(name), registerShell)
 

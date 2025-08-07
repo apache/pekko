@@ -140,7 +140,7 @@ object Behaviors {
    * that can potentially be different from this one. State is maintained by returning
    * a new behavior that holds the new immutable state.
    */
-  def receiveMessage[T](onMessage: pekko.japi.Function[T, Behavior[T]]): Behavior[T] =
+  def receiveMessage[T](onMessage: pekko.japi.function.Function[T, Behavior[T]]): Behavior[T] =
     new BehaviorImpl.ReceiveBehavior((_, msg) => onMessage.apply(msg))
 
   /**
@@ -160,7 +160,7 @@ object Behaviors {
    *
    * @since 1.1.0
    */
-  def receiveMessageWithSame[T](onMessage: pekko.japi.Procedure[T]): Behavior[T] =
+  def receiveMessageWithSame[T](onMessage: pekko.japi.function.Procedure[T]): Behavior[T] =
     new BehaviorImpl.ReceiveBehavior((_, msg) => {
       onMessage.apply(msg)
       same[T]
@@ -403,12 +403,12 @@ object Behaviors {
       behavior: Behavior[T]): Behavior[T] = {
 
     def asScalaMap(m: java.util.Map[String, String]): Map[String, String] = {
-      if (m == null || m.isEmpty) Map.empty[String, String]
+      if ((m eq null) || m.isEmpty) Map.empty[String, String]
       else m.asScala.toMap
     }
 
     val mdcForMessageFun: T => Map[String, String] =
-      if (mdcForMessage == null) _ => Map.empty
+      if (mdcForMessage eq null) _ => Map.empty
       else { message =>
         asScalaMap(mdcForMessage.apply(message))
       }

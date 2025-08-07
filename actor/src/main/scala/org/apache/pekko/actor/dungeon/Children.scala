@@ -23,7 +23,7 @@ import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.InternalStableApi
 import pekko.serialization.{ Serialization, SerializationExtension, Serializers }
-import pekko.util.{ Helpers, Unsafe }
+import pekko.util.Helpers
 
 private[pekko] object Children {
   val GetNobody = () => Nobody
@@ -38,11 +38,9 @@ private[pekko] trait Children { this: ActorCell =>
   private var _childrenRefsDoNotCallMeDirectly: ChildrenContainer = EmptyChildrenContainer
 
   def childrenRefs: ChildrenContainer =
-    Unsafe.instance.getObjectVolatile(this, AbstractActorCell.childrenOffset).asInstanceOf[ChildrenContainer]: @nowarn(
-      "cat=deprecation")
+    AbstractActorCell.childrenHandle.get(this)
 
   final def children: immutable.Iterable[ActorRef] = childrenRefs.children
-  @nowarn("msg=deprecated")
   final def getChildren(): java.lang.Iterable[ActorRef] = {
     import pekko.util.ccompat.JavaConverters._
     children.asJava
@@ -64,10 +62,9 @@ private[pekko] trait Children { this: ActorCell =>
   private[pekko] def attachChild(props: Props, name: String, systemService: Boolean): ActorRef =
     makeChild(this, props, checkName(name), async = true, systemService = systemService)
 
-  @nowarn @volatile private var _functionRefsDoNotCallMeDirectly = Map.empty[String, FunctionRef]
+  @nowarn @volatile private var _functionRefsDoNotCallMeDirectly = immutable.Map.empty[String, FunctionRef]
   private def functionRefs: Map[String, FunctionRef] =
-    Unsafe.instance.getObjectVolatile(this, AbstractActorCell.functionRefsOffset).asInstanceOf[Map[String,
-      FunctionRef]]: @nowarn("cat=deprecation")
+    AbstractActorCell.functionRefsHandle.get(this)
 
   private[pekko] def getFunctionRefOrNobody(name: String, uid: Int = ActorCell.undefinedUid): InternalActorRef =
     functionRefs.getOrElse(name, Children.GetNobody()) match {
@@ -86,8 +83,7 @@ private[pekko] trait Children { this: ActorCell =>
     @tailrec def rec(): Unit = {
       val old = functionRefs
       val added = old.updated(childPath.name, ref)
-      if (!Unsafe.instance.compareAndSwapObject(this, AbstractActorCell.functionRefsOffset, old, added): @nowarn(
-          "cat=deprecation")) rec()
+      if (!AbstractActorCell.functionRefsHandle.compareAndSet(this, old, added)) rec()
     }
     rec()
 
@@ -102,8 +98,7 @@ private[pekko] trait Children { this: ActorCell =>
       if (!old.contains(name)) false
       else {
         val removed = old - name
-        if (!Unsafe.instance.compareAndSwapObject(this, AbstractActorCell.functionRefsOffset, old, removed): @nowarn(
-            "cat=deprecation")) rec()
+        if (!AbstractActorCell.functionRefsHandle.compareAndSet(this, old, removed)) rec()
         else {
           ref.stop()
           true
@@ -114,19 +109,19 @@ private[pekko] trait Children { this: ActorCell =>
   }
 
   protected def stopFunctionRefs(): Unit = {
-    val refs = Unsafe.instance
-      .getAndSetObject(this, AbstractActorCell.functionRefsOffset, Map.empty)
-      .asInstanceOf[Map[String, FunctionRef]]: @nowarn("cat=deprecation")
+    val refs = AbstractActorCell.functionRefsHandle
+      .getAndSet(this, Map.empty)
+      .asInstanceOf[Map[String, FunctionRef]]
     refs.valuesIterator.foreach(_.stop())
   }
 
   @nowarn @volatile private var _nextNameDoNotCallMeDirectly = 0L
   final protected def randomName(sb: java.lang.StringBuilder): String = {
-    val num = Unsafe.instance.getAndAddLong(this, AbstractActorCell.nextNameOffset, 1): @nowarn("cat=deprecation")
+    val num: Long = AbstractActorCell.nextNameHandle.getAndAdd(this, 1L)
     Helpers.base64(num, sb)
   }
   final protected def randomName(): String = {
-    val num = Unsafe.instance.getAndAddLong(this, AbstractActorCell.nextNameOffset, 1): @nowarn("cat=deprecation")
+    val num: Long = AbstractActorCell.nextNameHandle.getAndAdd(this, 1L)
     Helpers.base64(num)
   }
 
@@ -155,8 +150,7 @@ private[pekko] trait Children { this: ActorCell =>
    * low level CAS helpers
    */
   private final def swapChildrenRefs(oldChildren: ChildrenContainer, newChildren: ChildrenContainer): Boolean =
-    Unsafe.instance.compareAndSwapObject(this, AbstractActorCell.childrenOffset, oldChildren, newChildren): @nowarn(
-      "cat=deprecation")
+    AbstractActorCell.childrenHandle.compareAndSet(this, oldChildren, newChildren)
 
   @tailrec final def reserveChild(name: String): Boolean = {
     val c = childrenRefs
@@ -189,8 +183,7 @@ private[pekko] trait Children { this: ActorCell =>
   }
 
   final protected def setTerminated(): Unit =
-    Unsafe.instance.putObjectVolatile(this, AbstractActorCell.childrenOffset, TerminatedChildrenContainer): @nowarn(
-      "cat=deprecation")
+    AbstractActorCell.childrenHandle.set(this, TerminatedChildrenContainer)
 
   /*
    * ActorCell-internal API

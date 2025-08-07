@@ -85,7 +85,7 @@ import org.reactivestreams.{ Subscriber, Subscription }
     if (element == null) throw elementMustNotBeNullException
 
   final def requireNonNullSubscription(subscription: Subscription): Unit =
-    if (subscription == null) throw subscriptionMustNotBeNullException
+    if (subscription eq null) throw subscriptionMustNotBeNullException
 
   sealed trait SpecViolation extends Throwable
 

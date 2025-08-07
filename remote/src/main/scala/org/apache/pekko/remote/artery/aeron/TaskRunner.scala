@@ -203,7 +203,7 @@ private[pekko] class TaskRunner(system: ExtendedActorSystem, val idleCpuLevel: I
       case Shutdown     =>
         running = false
         tasks.removeAll() // gc friendly
-        while (cmdQueue.poll() != null) () // gc friendly
+        while (cmdQueue.poll() ne null) () // gc friendly
         shutdown.trySuccess(Done)
     }
   }

@@ -248,7 +248,7 @@ object SupervisorStrategy extends SupervisorStrategyLowPriorityImplicits {
   implicit def seqThrowable2Decider(trapExit: immutable.Seq[Class[_ <: Throwable]]): Decider = makeDecider(trapExit)
 
   type Decider = PartialFunction[Throwable, Directive]
-  type JDecider = pekko.japi.Function[Throwable, Directive]
+  type JDecider = pekko.japi.function.Function[Throwable, Directive]
   type CauseDirective = (Class[_ <: Throwable], Directive)
 
   /**

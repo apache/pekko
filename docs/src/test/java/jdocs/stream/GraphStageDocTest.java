@@ -17,10 +17,9 @@ package jdocs.stream;
 import org.apache.pekko.Done;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
-import org.apache.pekko.japi.Option;
 import org.apache.pekko.japi.Pair;
-import org.apache.pekko.japi.Predicate;
-import org.apache.pekko.japi.Function;
+import org.apache.pekko.japi.function.Predicate;
+import org.apache.pekko.japi.function.Function;
 import org.apache.pekko.japi.function.Procedure;
 import org.apache.pekko.stream.*;
 import org.apache.pekko.stream.javadsl.*;
@@ -315,7 +314,7 @@ public class GraphStageDocTest extends AbstractJavaTest {
       return new GraphStageLogic(shape) {
         // Again: note that all mutable state
         // MUST be inside the GraphStageLogic
-        Option<A> lastElem = Option.none();
+        Optional<A> lastElem = Optional.empty();
 
         {
           setHandler(
@@ -324,13 +323,13 @@ public class GraphStageDocTest extends AbstractJavaTest {
                 @Override
                 public void onPush() {
                   A elem = grab(in);
-                  lastElem = Option.some(elem);
+                  lastElem = Optional.ofNullable(elem);
                   push(out, elem);
                 }
 
                 @Override
                 public void onUpstreamFinish() {
-                  if (lastElem.isDefined()) {
+                  if (lastElem.isPresent()) {
                     emit(out, lastElem.get());
                   }
                   complete(out);
@@ -342,9 +341,9 @@ public class GraphStageDocTest extends AbstractJavaTest {
               new AbstractOutHandler() {
                 @Override
                 public void onPull() throws Exception {
-                  if (lastElem.isDefined()) {
+                  if (lastElem.isPresent()) {
                     push(out, lastElem.get());
-                    lastElem = Option.none();
+                    lastElem = Optional.empty();
                   } else {
                     pull(in);
                   }

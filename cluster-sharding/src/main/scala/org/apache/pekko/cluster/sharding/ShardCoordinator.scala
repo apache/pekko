@@ -1305,8 +1305,7 @@ abstract class ShardCoordinator(
  *
  * @see [[ClusterSharding$ ClusterSharding extension]]
  */
-@deprecated("Use `ddata` mode, persistence mode is deprecated.", "Akka 2.6.0")
-class PersistentShardCoordinator(
+private class PersistentShardCoordinator(
     override val typeName: String,
     settings: ClusterShardingSettings,
     allocationStrategy: ShardCoordinator.ShardAllocationStrategy)
@@ -1364,7 +1363,7 @@ class PersistentShardCoordinator(
       state = st.withRememberEntities(settings.rememberEntities)
       // Old versions of the state object may not have unallocatedShard set,
       // thus it will be null.
-      if (state.unallocatedShards == null)
+      if (state.unallocatedShards eq null)
         state = state.copy(unallocatedShards = Set.empty)
 
     case RecoveryCompleted =>

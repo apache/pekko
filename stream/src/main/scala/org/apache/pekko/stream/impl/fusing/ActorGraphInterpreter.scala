@@ -249,7 +249,7 @@ import org.reactivestreams.Subscription
       } else if (upstreamCompleted) {
         // onComplete or onError has been called before OnSubscribe
         tryCancel(subscription, SubscriptionWithCancelException.NoMoreElementsNeeded)
-      } else if (upstream != null) { // reactive streams spec 2.5
+      } else if (upstream ne null) { // reactive streams spec 2.5
         tryCancel(subscription, new IllegalStateException("Publisher can only be subscribed once."))
       } else {
         upstream = subscription
@@ -573,7 +573,7 @@ import org.reactivestreams.Subscription
       (logic, event, promise, handler) => {
         val asyncInput = AsyncInput(this, logic, event, promise, handler)
         val currentInterpreter = GraphInterpreter.currentInterpreterOrNull
-        if (currentInterpreter == null || (currentInterpreter.context ne self))
+        if ((currentInterpreter eq null) || (currentInterpreter.context ne self))
           self ! asyncInput
         else enqueueToShortCircuit(asyncInput)
       }, attributes.mandatoryAttribute[ActorAttributes.FuzzingMode].enabled, self)
@@ -785,7 +785,7 @@ import org.reactivestreams.Subscription
   override def preStart(): Unit = {
     tryInit(_initial)
     if (activeInterpreters.isEmpty) context.stop(self)
-    else if (shortCircuitBuffer != null) shortCircuitBatch()
+    else if (shortCircuitBuffer ne null) shortCircuitBatch()
   }
 
   @tailrec private def shortCircuitBatch(): Unit = {
@@ -826,11 +826,11 @@ import org.reactivestreams.Subscription
     case b: BoundaryEvent =>
       currentLimit = eventLimit
       processEvent(b)
-      if (shortCircuitBuffer != null) shortCircuitBatch()
+      if (shortCircuitBuffer ne null) shortCircuitBatch()
 
     case Resume =>
       currentLimit = eventLimit
-      if (shortCircuitBuffer != null) shortCircuitBatch()
+      if (shortCircuitBuffer ne null) shortCircuitBatch()
 
     case Snapshot =>
       sender() ! StreamSnapshotImpl(

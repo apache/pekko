@@ -92,16 +92,6 @@ public final class ClusterMessages {
     /**
      * @param value The numeric wire value of the corresponding enum entry.
      * @return The enum associated with the given numeric wire value.
-     * @deprecated Use {@link #forNumber(int)} instead.
-     */
-    @java.lang.Deprecated
-    public static ReachabilityStatus valueOf(int value) {
-      return forNumber(value);
-    }
-
-    /**
-     * @param value The numeric wire value of the corresponding enum entry.
-     * @return The enum associated with the given numeric wire value.
      */
     public static ReachabilityStatus forNumber(int value) {
       switch (value) {
@@ -254,16 +244,6 @@ public final class ClusterMessages {
 
     public final int getNumber() {
       return value;
-    }
-
-    /**
-     * @param value The numeric wire value of the corresponding enum entry.
-     * @return The enum associated with the given numeric wire value.
-     * @deprecated Use {@link #forNumber(int)} instead.
-     */
-    @java.lang.Deprecated
-    public static MemberStatus valueOf(int value) {
-      return forNumber(value);
     }
 
     /**
@@ -3597,16 +3577,6 @@ public final class ClusterMessages {
 
       public final int getNumber() {
         return value;
-      }
-
-      /**
-       * @param value The numeric wire value of the corresponding enum entry.
-       * @return The enum associated with the given numeric wire value.
-       * @deprecated Use {@link #forNumber(int)} instead.
-       */
-      @java.lang.Deprecated
-      public static Type valueOf(int value) {
-        return forNumber(value);
       }
 
       /**

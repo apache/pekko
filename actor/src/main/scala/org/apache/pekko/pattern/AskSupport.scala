@@ -16,11 +16,11 @@ package org.apache.pekko.pattern
 import java.net.URLEncoder
 import java.util.concurrent.TimeoutException
 
-import scala.annotation.tailrec
+import scala.annotation.{ nowarn, tailrec }
+import scala.collection.immutable
 import scala.concurrent.{ Future, Promise }
 import scala.language.implicitConversions
 import scala.util.{ Failure, Success }
-import scala.annotation.nowarn
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
@@ -28,9 +28,7 @@ import pekko.actor._
 import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.dispatch.ExecutionContexts
 import pekko.dispatch.sysmsg._
-import pekko.util.{ Timeout, Unsafe }
-import pekko.util.ByteString
-import pekko.util.unused
+import pekko.util.{ unused, ByteString, Timeout }
 
 /**
  * This is what is used to complete a Future that is returned from an ask/? call,
@@ -422,7 +420,7 @@ final class ExplicitlyAskableActorRef(val actorRef: ActorRef) extends AnyVal {
             s"question not sent to [$actorRef]."))
       case _ =>
         val message =
-          if (sender == null) null else messageFactory(sender.asInstanceOf[InternalActorRef].provider.deadLetters)
+          if (sender eq null) null else messageFactory(sender.asInstanceOf[InternalActorRef].provider.deadLetters)
         Future.failed[Any](AskableActorRef.unsupportedRecipientType(actorRef, message, sender))
     }
 }
@@ -501,7 +499,7 @@ final class ExplicitlyAskableActorSelection(val actorSel: ActorSelection) extend
             s"question not sent to [$actorSel]."))
       case _ =>
         val message =
-          if (sender == null) null else messageFactory(sender.asInstanceOf[InternalActorRef].provider.deadLetters)
+          if (sender eq null) null else messageFactory(sender.asInstanceOf[InternalActorRef].provider.deadLetters)
         Future.failed[Any](AskableActorRef.unsupportedRecipientType(actorSel, message, sender))
     }
 }
@@ -518,7 +516,7 @@ private[pekko] final class PromiseActorRef(
     _mcn: String,
     refPathPrefix: String)
     extends MinimalActorRef {
-  import AbstractPromiseActorRef.{ stateOffset, watchedByOffset }
+  import AbstractPromiseActorRef.{ stateHandle, watchedByHandle }
   import PromiseActorRef._
 
   // This is necessary for weaving the PromiseActorRef into the asked message, i.e. the replyTo pattern.
@@ -542,18 +540,17 @@ private[pekko] final class PromiseActorRef(
 
   @volatile
   @nowarn("msg=is never updated")
-  private[this] var _watchedByDoNotCallMeDirectly: Set[ActorRef] = ActorCell.emptyActorRefSet
+  private[this] var _watchedByDoNotCallMeDirectly: immutable.Set[ActorRef] = ActorCell.emptyActorRefSet
 
   @nowarn private def _preventPrivateUnusedErasure = {
     _stateDoNotCallMeDirectly
     _watchedByDoNotCallMeDirectly
   }
 
-  private[this] def watchedBy: Set[ActorRef] =
-    Unsafe.instance.getObjectVolatile(this, watchedByOffset).asInstanceOf[Set[ActorRef]]: @nowarn("cat=deprecation")
+  private[this] def watchedBy: Set[ActorRef] = watchedByHandle.get(this)
 
   private[this] def updateWatchedBy(oldWatchedBy: Set[ActorRef], newWatchedBy: Set[ActorRef]): Boolean =
-    Unsafe.instance.compareAndSwapObject(this, watchedByOffset, oldWatchedBy, newWatchedBy): @nowarn("cat=deprecation")
+    watchedByHandle.compareAndSet(this, oldWatchedBy, newWatchedBy)
 
   @tailrec // Returns false if the Promise is already completed
   private[this] final def addWatcher(watcher: ActorRef): Boolean = watchedBy match {
@@ -573,13 +570,12 @@ private[pekko] final class PromiseActorRef(
     case other => if (!updateWatchedBy(other, null)) clearWatchers() else other
   }
 
-  private[this] def state: AnyRef = Unsafe.instance.getObjectVolatile(this, stateOffset): @nowarn("cat=deprecation")
+  private[this] def state: AnyRef = stateHandle.get(this)
 
   private[this] def updateState(oldState: AnyRef, newState: AnyRef): Boolean =
-    Unsafe.instance.compareAndSwapObject(this, stateOffset, oldState, newState): @nowarn("cat=deprecation")
+    stateHandle.compareAndSet(this, oldState, newState)
 
-  private[this] def setState(newState: AnyRef): Unit =
-    Unsafe.instance.putObjectVolatile(this, stateOffset, newState): @nowarn("cat=deprecation")
+  private[this] def setState(newState: AnyRef): Unit = stateHandle.set(this, newState)
 
   override def getParent: InternalActorRef = provider.tempContainer
 

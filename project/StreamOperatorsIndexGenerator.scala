@@ -90,7 +90,6 @@ object StreamOperatorsIndexGenerator extends AutoPlugin {
   val pendingTestCases = Map(
     "Source" -> pendingSourceOrFlow,
     "Flow" -> (pendingSourceOrFlow ++ Seq(
-      "lazyInit",
       "fromProcessorMat",
       "toProcessor",
       "fromProcessor",
@@ -99,7 +98,6 @@ object StreamOperatorsIndexGenerator extends AutoPlugin {
       "joinMat",
       "fromFunction")),
     "Sink" -> Seq(
-      "lazyInit",
       "contramap",
       "named",
       "addAttributes",

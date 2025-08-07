@@ -13,11 +13,10 @@
 
 package org.apache.pekko.cluster
 
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.collection.immutable.{ SortedSet, VectorBuilder }
 import scala.runtime.AbstractFunction5
-
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorRef, Address }
@@ -80,14 +79,13 @@ object ClusterEvent {
         immutable.SortedSet[Member], Set[Member], Set[Address], Option[Address], Map[String, Option[Address]],
         CurrentClusterState] {
 
-    @nowarn("msg=deprecated")
     def apply(
         members: immutable.SortedSet[Member] = immutable.SortedSet.empty,
         unreachable: Set[Member] = Set.empty,
         seenBy: Set[Address] = Set.empty,
         leader: Option[Address] = None,
         roleLeaderMap: Map[String, Option[Address]] = Map.empty): CurrentClusterState =
-      new CurrentClusterState(members, unreachable, seenBy, leader, roleLeaderMap)
+      new CurrentClusterState(members, unreachable, seenBy, leader, roleLeaderMap, Set.empty, Set.empty)
 
     def unapply(cs: CurrentClusterState): Option[
       (immutable.SortedSet[Member], Set[Member], Set[Address], Option[Address], Map[String, Option[Address]])] =
@@ -113,27 +111,6 @@ object ClusterEvent {
       extends Product5[
         immutable.SortedSet[Member], Set[Member], Set[Address], Option[Address], Map[String, Option[Address]]]
       with Serializable {
-
-    // for binary compatibility
-    @deprecated("use main constructor", since = "Akka 2.6.10")
-    def this(
-        members: immutable.SortedSet[Member],
-        unreachable: Set[Member],
-        seenBy: Set[Address],
-        leader: Option[Address],
-        roleLeaderMap: Map[String, Option[Address]],
-        unreachableDataCenters: Set[DataCenter]) =
-      this(members, unreachable, seenBy, leader, roleLeaderMap, unreachableDataCenters, Set.empty)
-
-    // for binary compatibility
-    @deprecated("use main constructor", since = "Akka 2.6.10")
-    def this(
-        members: immutable.SortedSet[Member] = immutable.SortedSet.empty,
-        unreachable: Set[Member] = Set.empty,
-        seenBy: Set[Address] = Set.empty,
-        leader: Option[Address] = None,
-        roleLeaderMap: Map[String, Option[Address]] = Map.empty) =
-      this(members, unreachable, seenBy, leader, roleLeaderMap, Set.empty, Set.empty)
 
     /**
      * Java API: get current member list.

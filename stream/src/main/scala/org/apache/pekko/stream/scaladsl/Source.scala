@@ -15,7 +15,7 @@ package org.apache.pekko.stream.scaladsl
 
 import java.util.concurrent.CompletionStage
 
-import scala.annotation.{ nowarn, tailrec }
+import scala.annotation.tailrec
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.{ immutable, AbstractIterator }
 import scala.concurrent.{ Future, Promise }
@@ -387,16 +387,6 @@ object Source {
     Source.fromGraph(new SetupSourceStage(factory))
 
   /**
-   * Defers the creation of a [[Source]] until materialization. The `factory` function
-   * exposes [[ActorMaterializer]] which is going to be used during materialization and
-   * [[Attributes]] of the [[Source]] returned by this method.
-   */
-  @deprecated("Use 'fromMaterializer' instead", "Akka 2.6.0")
-  def setup[T, M](factory: (ActorMaterializer, Attributes) => Source[T, M]): Source[T, Future[M]] =
-    Source.fromGraph(new SetupSourceStage((materializer, attributes) =>
-      factory(ActorMaterializerHelper.downcast(materializer), attributes)))
-
-  /**
    * Helper to create [[Source]] from `Iterable`.
    * Example usage: `Source(Seq(1,2,3))`
    *
@@ -407,46 +397,6 @@ object Source {
    */
   def apply[T](iterable: immutable.Iterable[T]): Source[T, NotUsed] =
     fromGraph(new IterableSource[T](iterable)).withAttributes(DefaultAttributes.iterableSource)
-
-  /**
-   * Starts a new `Source` from the given `Future`. The stream will consist of
-   * one element when the `Future` is completed with a successful value, which
-   * may happen before or after materializing the `Flow`.
-   * The stream terminates with a failure if the `Future` is completed with a failure.
-   */
-  @deprecated("Use 'Source.future' instead", "Akka 2.6.0")
-  def fromFuture[T](future: Future[T]): Source[T, NotUsed] =
-    fromGraph(new FutureSource(future))
-
-  /**
-   * Starts a new `Source` from the given `Future`. The stream will consist of
-   * one element when the `Future` is completed with a successful value, which
-   * may happen before or after materializing the `Flow`.
-   * The stream terminates with a failure if the `Future` is completed with a failure.
-   */
-  @deprecated("Use 'Source.completionStage' instead", "Akka 2.6.0")
-  def fromCompletionStage[T](future: CompletionStage[T]): Source[T, NotUsed] =
-    fromGraph(new FutureSource(future.asScala))
-
-  /**
-   * Streams the elements of the given future source once it successfully completes.
-   * If the [[Future]] fails the stream is failed with the exception from the future. If downstream cancels before the
-   * stream completes the materialized `Future` will be failed with a [[StreamDetachedException]]
-   */
-  @deprecated("Use 'Source.futureSource' (potentially together with `Source.fromGraph`) instead", "Akka 2.6.0")
-  def fromFutureSource[T, M](future: Future[Graph[SourceShape[T], M]]): Source[T, Future[M]] =
-    fromGraph(new FutureFlattenSource(future))
-
-  /**
-   * Streams the elements of an asynchronous source once its given `completion` operator completes.
-   * If the [[CompletionStage]] fails the stream is failed with the exception from the future.
-   * If downstream cancels before the stream completes the materialized `Future` will be failed
-   * with a [[StreamDetachedException]]
-   */
-  @deprecated("Use scala-compat CompletionStage to future converter and 'Source.futureSource' instead", "Akka 2.6.0")
-  def fromSourceCompletionStage[T, M](
-      completion: CompletionStage[_ <: Graph[SourceShape[T], M]]): Source[T, CompletionStage[M]] =
-    fromFutureSource(completion.asScala).mapMaterializedValue(_.asJava)
 
   /**
    * Elements are emitted periodically with the specified interval.
@@ -556,26 +506,6 @@ object Source {
    */
   def failed[T](cause: Throwable): Source[T, NotUsed] =
     Source.fromGraph(new FailedSource[T](cause))
-
-  /**
-   * Creates a `Source` that is not materialized until there is downstream demand, when the source gets materialized
-   * the materialized future is completed with its value, if downstream cancels or fails without any demand the
-   * create factory is never called and the materialized `Future` is failed.
-   */
-  @deprecated("Use 'Source.lazySource' instead", "Akka 2.6.0")
-  def lazily[T, M](create: () => Source[T, M]): Source[T, Future[M]] =
-    Source.fromGraph(new LazySource[T, M](create))
-
-  /**
-   * Creates a `Source` from supplied future factory that is not called until downstream demand. When source gets
-   * materialized the materialized future is completed with the value from the factory. If downstream cancels or fails
-   * without any demand the create factory is never called and the materialized `Future` is failed.
-   *
-   * @see [[Source.lazily]]
-   */
-  @deprecated("Use 'Source.lazyFuture' instead", "Akka 2.6.0")
-  def lazilyAsync[T](create: () => Future[T]): Source[T, Future[NotUsed]] =
-    lazily(() => fromFuture(create()))
 
   /**
    * Emits a single value when the given `Future` is successfully completed and then completes the stream.
@@ -800,39 +730,9 @@ object Source {
   }
 
   /**
-   * Creates a `Source` that is materialized as an [[pekko.actor.ActorRef]].
-   * Messages sent to this actor will be emitted to the stream if there is demand from downstream,
-   * and a new message will only be accepted after the previous messages has been consumed and acknowledged back.
-   * The stream will complete with failure if a message is sent before the acknowledgement has been replied back.
-   *
-   * The stream can be completed successfully by sending the actor reference a [[pekko.actor.Status.Success]].
-   * If the content is [[pekko.stream.CompletionStrategy.immediately]] the completion will be signaled immediately,
-   * otherwise if the content is [[pekko.stream.CompletionStrategy.draining]] (or anything else)
-   * already buffered element will be signaled before signaling completion.
-   *
-   * The stream can be completed with failure by sending a [[pekko.actor.Status.Failure]] to the
-   * actor reference. In case the Actor is still draining its internal buffer (after having received
-   * a [[pekko.actor.Status.Success]]) before signaling completion and it receives a [[pekko.actor.Status.Failure]],
-   * the failure will be signaled downstream immediately (instead of the completion signal).
-   *
-   * The actor will be stopped when the stream is completed, failed or canceled from downstream,
-   * i.e. you can watch it to get notified when that happens.
-   */
-  @deprecated("Use actorRefWithBackpressure accepting completion and failure matchers instead", "Akka 2.6.0")
-  def actorRefWithAck[T](ackMessage: Any): Source[T, ActorRef] =
-    actorRefWithAck(None, ackMessage,
-      {
-        case pekko.actor.Status.Success(s: CompletionStrategy) => s
-        case pekko.actor.Status.Success(_)                     => CompletionStrategy.Draining
-        case pekko.actor.Status.Success                        => CompletionStrategy.Draining
-      }, { case pekko.actor.Status.Failure(cause) => cause })
-
-  /**
    * Combines several sources with fan-in strategy like [[Merge]] or [[Concat]] into a single [[Source]].
    */
   def combine[T, U](first: Source[T, _], second: Source[T, _], rest: Source[T, _]*)(
-      @nowarn
-      @deprecatedName(Symbol("strategy"))
       fanInStrategy: Int => Graph[UniformFanInShape[T, U], NotUsed]): Source[U, NotUsed] =
     Source.fromGraph(GraphDSL.create() { implicit b =>
       import GraphDSL.Implicits._
@@ -873,8 +773,6 @@ object Source {
    * Combines several sources with fan-in strategy like [[Merge]] or [[Concat]] into a single [[Source]] with a materialized value.
    */
   def combineMat[T, U, M1, M2, M](first: Source[T, M1], second: Source[T, M2])(
-      @nowarn
-      @deprecatedName(Symbol("strategy"))
       fanInStrategy: Int => Graph[UniformFanInShape[T, U], NotUsed])(matF: (M1, M2) => M): Source[U, M] =
     Source.fromGraph(GraphDSL.createGraph(first, second)(matF) { implicit b => (shape1, shape2) =>
       import GraphDSL.Implicits._
@@ -1079,8 +977,10 @@ object Source {
    * @param read - function that reads data from opened resource. It is called each time backpressure signal
    *             is received. Stream calls close and completes when `read` returns None.
    * @param close - function that closes resource
+   * @tparam T - the element type
+   * @tparam R - the resource type.
    */
-  def unfoldResource[T, S](create: () => S, read: (S) => Option[T], close: (S) => Unit): Source[T, NotUsed] =
+  def unfoldResource[T, R](create: () => R, read: (R) => Option[T], close: (R) => Unit): Source[T, NotUsed] =
     Source.fromGraph(new UnfoldResourceSource(create, read, close))
 
   /**
@@ -1102,11 +1002,13 @@ object Source {
    * @param read - function that reads data from opened resource. It is called each time backpressure signal
    *             is received. Stream calls close and completes when `Future` from read function returns None.
    * @param close - function that closes resource
+   * @tparam T the element type
+   * @tparam R the resource type
    */
-  def unfoldResourceAsync[T, S](
-      create: () => Future[S],
-      read: (S) => Future[Option[T]],
-      close: (S) => Future[Done]): Source[T, NotUsed] =
+  def unfoldResourceAsync[T, R](
+      create: () => Future[R],
+      read: (R) => Future[Option[T]],
+      close: (R) => Future[Done]): Source[T, NotUsed] =
     Source.fromGraph(new UnfoldResourceSourceAsync(create, read, close))
 
   /**

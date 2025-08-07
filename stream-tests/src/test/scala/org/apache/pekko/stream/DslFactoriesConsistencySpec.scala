@@ -72,10 +72,11 @@ class DslFactoriesConsistencySpec extends AnyWordSpec with Matchers {
       (classOf[scala.Function1[_, _]],                     classOf[pekko.japi.function.Function[_, _]]) ::
       (classOf[scala.Function2[_, _, _]],                  classOf[java.util.function.BiFunction[_, _, _]]) :: // setup
       (classOf[scala.Function1[scala.Function1[_, _], _]], classOf[pekko.japi.function.Function2[_, _, _]]) ::
-      (classOf[pekko.stream.scaladsl.Source[_, _]],         classOf[pekko.stream.javadsl.Source[_, _]]) ::
-      (classOf[pekko.stream.scaladsl.Sink[_, _]],           classOf[pekko.stream.javadsl.Sink[_, _]]) ::
-      (classOf[pekko.stream.scaladsl.Flow[_, _, _]],        classOf[pekko.stream.javadsl.Flow[_, _, _]]) ::
-      (classOf[pekko.stream.scaladsl.RunnableGraph[_]],     classOf[pekko.stream.javadsl.RunnableGraph[_]]) ::
+      (classOf[scala.concurrent.duration.FiniteDuration],  classOf[java.time.Duration]) ::
+      (classOf[pekko.stream.scaladsl.Source[_, _]],        classOf[pekko.stream.javadsl.Source[_, _]]) ::
+      (classOf[pekko.stream.scaladsl.Sink[_, _]],          classOf[pekko.stream.javadsl.Sink[_, _]]) ::
+      (classOf[pekko.stream.scaladsl.Flow[_, _, _]],       classOf[pekko.stream.javadsl.Flow[_, _, _]]) ::
+      (classOf[pekko.stream.scaladsl.RunnableGraph[_]],    classOf[pekko.stream.javadsl.RunnableGraph[_]]) ::
       (2 to 22) .map { i => (Class.forName(s"scala.Function$i"), Class.forName(s"org.apache.pekko.japi.function.Function$i")) }.toList
   // format: ON
 
@@ -169,7 +170,9 @@ class DslFactoriesConsistencySpec extends AnyWordSpec with Matchers {
       Ignore(_ == pekko.stream.scaladsl.Source.getClass, _ == "actorRef", _ => true, _ => true), // Internal in scaladsl
       Ignore(_ == pekko.stream.scaladsl.Source.getClass, _ == "actorRefWithAck", _ => true, _ => true), // Internal in scaladsl
       Ignore(_ == pekko.stream.scaladsl.Source.getClass, _ == "actorRefWithBackpressure", _ => true, _ => true), // Internal in scaladsl
+      Ignore(_ == pekko.stream.scaladsl.Source.getClass, _ == "tick", _ => true, _ => true), // Params are different (Scala vs Java durations)
       Ignore(_ == pekko.stream.scaladsl.BidiFlow.getClass, _ == "apply", _ == 24, _ => true),
+      Ignore(_ == pekko.stream.scaladsl.BidiFlow.getClass, _ == "bidirectionalIdleTimeout", _ => true, _ => true),
       Ignore(_ == pekko.stream.scaladsl.GraphDSL.getClass, _ == "runnable", _ == 24, _ => true),
       Ignore(_ == pekko.stream.scaladsl.GraphDSL.getClass, _ == "create", _ == 24, _ => true),
       // all generated methods like scaladsl.Sink$.akka$stream$scaladsl$Sink$$newOnCompleteStage$1
@@ -300,7 +303,7 @@ class DslFactoriesConsistencySpec extends AnyWordSpec with Matchers {
     (graph.isAssignableFrom(s) && graph.isAssignableFrom(j))
 
   def typeMatch(scalaParams: List[Class[_]], javaParams: List[Class[_]]): Boolean =
-    (scalaParams.toList, javaParams.toList) match {
+    (scalaParams, javaParams) match {
       case (s, j) if s == j                     => true
       case (s, j) if s.zip(j).forall(typeMatch) => true
       case _                                    => false

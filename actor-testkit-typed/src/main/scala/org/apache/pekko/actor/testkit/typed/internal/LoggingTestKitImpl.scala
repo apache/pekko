@@ -71,7 +71,7 @@ import pekko.testkit.TestKit
   }
 
   private def messageOrEmpty(event: LoggingEvent): String =
-    if (event.message == null) "" else event.message
+    if (event.message eq null) "" else event.message
 
   private def sourceOrEmpty(event: LoggingEvent): String =
     event.mdc.getOrElse("pekkoSource", "")
@@ -122,10 +122,6 @@ import pekko.testkit.TestKit
 
   override def expect[T](system: ActorSystem[_], code: Supplier[T]): T =
     expect(code.get())(system)
-
-  // deprecated (renamed to expect)
-  override def intercept[T](code: => T)(implicit system: ActorSystem[_]): T =
-    expect(code)(system)
 
   private def checkLogback(system: ActorSystem[_]): Unit = {
     if (!system.dynamicAccess.classIsOnClasspath("ch.qos.logback.classic.spi.ILoggingEvent")) {

@@ -34,9 +34,9 @@ import pekko.stream.stage.GraphStageLogic
 import pekko.util.Helpers.toRootLowerCase
 
 import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
-object ActorMaterializer {
+@InternalApi
+private[pekko] object ActorMaterializer {
 
   /**
    * Scala API: Creates an ActorMaterializer that can materialize stream blueprints as running streams.
@@ -131,58 +131,6 @@ object ActorMaterializer {
   def create(context: ActorRefFactory): ActorMaterializer =
     apply()(context)
 
-  /**
-   * Java API: Creates an ActorMaterializer that can materialize stream blueprints as running streams.
-   *
-   * The required [[pekko.actor.ActorRefFactory]]
-   * (which can be either an [[pekko.actor.ActorSystem]] or an [[pekko.actor.ActorContext]])
-   * will be used to create these actors, therefore it is *forbidden* to pass this object
-   * to another actor if the factory is an ActorContext.
-   *
-   * The `namePrefix` is used as the first part of the names of the actors running
-   * the processing steps. The default `namePrefix` is `"flow"`. The actor names are built up of
-   * `namePrefix-flowNumber-flowStepNumber-stepName`.
-   */
-  @deprecated(
-    "Use the system wide materializer or Materializer.create(actorContext) with stream attributes or configuration settings to change defaults",
-    "Akka 2.6.0")
-  def create(context: ActorRefFactory, namePrefix: String): ActorMaterializer = {
-    val system = actorSystemOf(context)
-    val settings = ActorMaterializerSettings(system)
-    apply(settings, namePrefix)(context)
-  }
-
-  /**
-   * Java API: Creates an ActorMaterializer that can materialize stream blueprints as running streams.
-   *
-   * The required [[pekko.actor.ActorRefFactory]]
-   * (which can be either an [[pekko.actor.ActorSystem]] or an [[pekko.actor.ActorContext]])
-   * will be used to create one actor that in turn creates actors for the transformation steps.
-   */
-  @deprecated(
-    "Use the system wide materializer or Materializer.create(actorContext) with stream attributes or configuration settings to change defaults",
-    "Akka 2.6.0")
-  def create(settings: ActorMaterializerSettings, context: ActorRefFactory): ActorMaterializer =
-    apply(Option(settings), None)(context)
-
-  /**
-   * Java API: Creates an ActorMaterializer that can materialize stream blueprints as running streams.
-   *
-   * The required [[pekko.actor.ActorRefFactory]]
-   * (which can be either an [[pekko.actor.ActorSystem]] or an [[pekko.actor.ActorContext]])
-   * will be used to create these actors, therefore it is *forbidden* to pass this object
-   * to another actor if the factory is an ActorContext.
-   *
-   * The `namePrefix` is used as the first part of the names of the actors running
-   * the processing steps. The default `namePrefix` is `"flow"`. The actor names are built up of
-   * `namePrefix-flowNumber-flowStepNumber-stepName`.
-   */
-  @deprecated(
-    "Use the system wide materializer or Materializer.create(actorContext) with stream attributes or configuration settings to change defaults",
-    "Akka 2.6.0")
-  def create(settings: ActorMaterializerSettings, context: ActorRefFactory, namePrefix: String): ActorMaterializer =
-    apply(Option(settings), Option(namePrefix))(context)
-
   private def actorSystemOf(context: ActorRefFactory): ActorSystem = {
     val system = context match {
       case s: ExtendedActorSystem => s
@@ -198,29 +146,12 @@ object ActorMaterializer {
 }
 
 /**
- * INTERNAL API
- */
-private[pekko] object ActorMaterializerHelper {
-
-  /**
-   * INTERNAL API
-   */
-  @deprecated("The Materializer now has all methods the ActorMaterializer used to have", "Akka 2.6.0")
-  private[pekko] def downcast(materializer: Materializer): ActorMaterializer =
-    materializer match {
-      case m: ActorMaterializer => m
-      case _                    =>
-        throw new IllegalArgumentException(
-          s"required [${classOf[ActorMaterializer].getName}] " +
-          s"but got [${materializer.getClass.getName}]")
-    }
-}
-
-/**
  * An ActorMaterializer takes a stream blueprint and turns it into a running stream.
  */
+
+@InternalApi
 @deprecated("The Materializer now has all methods the ActorMaterializer used to have", "Akka 2.6.0")
-abstract class ActorMaterializer extends Materializer with MaterializerLoggingProvider {
+private[pekko] abstract class ActorMaterializer extends Materializer with MaterializerLoggingProvider {
 
   @deprecated(
     "Use attributes to access settings from stages, see https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
@@ -292,46 +223,8 @@ final class AbruptStageTerminationException(logic: GraphStageLogic)
       s"GraphStage [$logic] terminated abruptly, caused by for example materializer or actor system termination.",
       cause = null)
 
-object ActorMaterializerSettings {
-
-  /**
-   * Create [[ActorMaterializerSettings]] from individual settings (Scala).
-   *
-   * Prefer using either config for defaults or attributes for per-stream config.
-   * See migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html"
-   */
-  @deprecated(
-    "Use config or attributes to configure the materializer. See migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
-    "Akka 2.6.0")
-  def apply(
-      initialInputBufferSize: Int,
-      maxInputBufferSize: Int,
-      dispatcher: String,
-      supervisionDecider: Supervision.Decider,
-      subscriptionTimeoutSettings: StreamSubscriptionTimeoutSettings,
-      debugLogging: Boolean,
-      outputBurstLimit: Int,
-      fuzzingMode: Boolean,
-      autoFusing: Boolean,
-      maxFixedBufferSize: Int) = {
-    // these sins were committed in the name of bin comp:
-    val config = ConfigFactory.defaultReference
-    new ActorMaterializerSettings(
-      initialInputBufferSize,
-      maxInputBufferSize,
-      dispatcher,
-      supervisionDecider,
-      subscriptionTimeoutSettings,
-      debugLogging,
-      outputBurstLimit,
-      fuzzingMode,
-      autoFusing,
-      maxFixedBufferSize,
-      1000,
-      IOSettings(tcpWriteBufferSize = 16 * 1024),
-      StreamRefSettings(config.getConfig("pekko.stream.materializer.stream-ref")),
-      config.getString(ActorAttributes.IODispatcher.dispatcher))
-  }
+@InternalApi // referenced by ArterySettings in pekko-remote and also by some code in pekko-http
+private[pekko] object ActorMaterializerSettings {
 
   /**
    * Create [[ActorMaterializerSettings]] from the settings of an [[pekko.actor.ActorSystem]] (Scala).
@@ -370,67 +263,6 @@ object ActorMaterializerSettings {
       ioSettings = IOSettings(config.getConfig("io")),
       streamRefSettings = StreamRefSettings(config.getConfig("stream-ref")),
       blockingIoDispatcher = config.getString("blocking-io-dispatcher"))
-
-  /**
-   * Create [[ActorMaterializerSettings]] from individual settings (Java).
-   *
-   * Prefer using either config for defaults or attributes for per-stream config.
-   * See migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html"
-   */
-  @deprecated(
-    "Use config or attributes to configure the materializer. See migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
-    "Akka 2.6.0")
-  def create(
-      initialInputBufferSize: Int,
-      maxInputBufferSize: Int,
-      dispatcher: String,
-      supervisionDecider: Supervision.Decider,
-      subscriptionTimeoutSettings: StreamSubscriptionTimeoutSettings,
-      debugLogging: Boolean,
-      outputBurstLimit: Int,
-      fuzzingMode: Boolean,
-      autoFusing: Boolean,
-      maxFixedBufferSize: Int) = {
-    // these sins were committed in the name of bin comp:
-    val config = ConfigFactory.defaultReference
-    new ActorMaterializerSettings(
-      initialInputBufferSize,
-      maxInputBufferSize,
-      dispatcher,
-      supervisionDecider,
-      subscriptionTimeoutSettings,
-      debugLogging,
-      outputBurstLimit,
-      fuzzingMode,
-      autoFusing,
-      maxFixedBufferSize,
-      1000,
-      IOSettings(tcpWriteBufferSize = 16 * 1024),
-      StreamRefSettings(config.getConfig("pekko.stream.materializer.stream-ref")),
-      config.getString(ActorAttributes.IODispatcher.dispatcher))
-  }
-
-  /**
-   * Create [[ActorMaterializerSettings]] from the settings of an [[pekko.actor.ActorSystem]] (Java).
-   */
-  @deprecated(
-    "Use config or attributes to configure the materializer. See migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
-    "Akka 2.6.0")
-  def create(system: ActorSystem): ActorMaterializerSettings =
-    apply(system)
-
-  /**
-   * Create [[ActorMaterializerSettings]] from a Config subsection (Java).
-   *
-   * Prefer using either config for defaults or attributes for per-stream config.
-   * See migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html"
-   */
-  @deprecated(
-    "Use config or attributes to configure the materializer. See migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
-    "Akka 2.6.0")
-  def create(config: Config): ActorMaterializerSettings =
-    apply(config)
-
 }
 
 /**
@@ -480,99 +312,6 @@ final class ActorMaterializerSettings @InternalApi private (
   require(
     initialInputBufferSize <= maxInputBufferSize,
     s"initialInputBufferSize($initialInputBufferSize) must be <= maxInputBufferSize($maxInputBufferSize)")
-
-  // backwards compatibility when added IOSettings, shouldn't be needed since private, but added to satisfy mima
-  @deprecated("Use ActorMaterializerSettings.apply or ActorMaterializerSettings.create instead", "Akka 2.5.10")
-  def this(
-      initialInputBufferSize: Int,
-      maxInputBufferSize: Int,
-      dispatcher: String,
-      supervisionDecider: Supervision.Decider,
-      subscriptionTimeoutSettings: StreamSubscriptionTimeoutSettings,
-      debugLogging: Boolean,
-      outputBurstLimit: Int,
-      fuzzingMode: Boolean,
-      autoFusing: Boolean,
-      maxFixedBufferSize: Int,
-      syncProcessingLimit: Int,
-      ioSettings: IOSettings) =
-    // using config like this is not quite right but the only way to solve backwards comp without hard coding settings
-    this(
-      initialInputBufferSize,
-      maxInputBufferSize,
-      dispatcher,
-      supervisionDecider,
-      subscriptionTimeoutSettings,
-      debugLogging,
-      outputBurstLimit,
-      fuzzingMode,
-      autoFusing,
-      maxFixedBufferSize,
-      syncProcessingLimit,
-      ioSettings,
-      StreamRefSettings(ConfigFactory.defaultReference().getConfig("pekko.stream.materializer.stream-ref")),
-      ConfigFactory.defaultReference().getString(ActorAttributes.IODispatcher.dispatcher))
-
-  // backwards compatibility when added IOSettings, shouldn't be needed since private, but added to satisfy mima
-  @deprecated("Use ActorMaterializerSettings.apply or ActorMaterializerSettings.create instead", "Akka 2.5.10")
-  def this(
-      initialInputBufferSize: Int,
-      maxInputBufferSize: Int,
-      dispatcher: String,
-      supervisionDecider: Supervision.Decider,
-      subscriptionTimeoutSettings: StreamSubscriptionTimeoutSettings,
-      debugLogging: Boolean,
-      outputBurstLimit: Int,
-      fuzzingMode: Boolean,
-      autoFusing: Boolean,
-      maxFixedBufferSize: Int,
-      syncProcessingLimit: Int) =
-    // using config like this is not quite right but the only way to solve backwards comp without hard coding settings
-    this(
-      initialInputBufferSize,
-      maxInputBufferSize,
-      dispatcher,
-      supervisionDecider,
-      subscriptionTimeoutSettings,
-      debugLogging,
-      outputBurstLimit,
-      fuzzingMode,
-      autoFusing,
-      maxFixedBufferSize,
-      syncProcessingLimit,
-      IOSettings(tcpWriteBufferSize = 16 * 1024),
-      StreamRefSettings(ConfigFactory.defaultReference().getConfig("pekko.stream.materializer.stream-ref")),
-      ConfigFactory.defaultReference().getString(ActorAttributes.IODispatcher.dispatcher))
-
-  // backwards compatibility when added IOSettings, shouldn't be needed since private, but added to satisfy mima
-  @deprecated("Use ActorMaterializerSettings.apply or ActorMaterializerSettings.create instead", "Akka 2.5.10")
-  def this(
-      initialInputBufferSize: Int,
-      maxInputBufferSize: Int,
-      dispatcher: String,
-      supervisionDecider: Supervision.Decider,
-      subscriptionTimeoutSettings: StreamSubscriptionTimeoutSettings,
-      debugLogging: Boolean,
-      outputBurstLimit: Int,
-      fuzzingMode: Boolean,
-      autoFusing: Boolean,
-      maxFixedBufferSize: Int) =
-    // using config like this is not quite right but the only way to solve backwards comp without hard coding settings
-    this(
-      initialInputBufferSize,
-      maxInputBufferSize,
-      dispatcher,
-      supervisionDecider,
-      subscriptionTimeoutSettings,
-      debugLogging,
-      outputBurstLimit,
-      fuzzingMode,
-      autoFusing,
-      maxFixedBufferSize,
-      1000,
-      IOSettings(tcpWriteBufferSize = 16 * 1024),
-      StreamRefSettings(ConfigFactory.defaultReference().getConfig("pekko.stream.materializer.stream-ref")),
-      ConfigFactory.defaultReference().getString(ActorAttributes.IODispatcher.dispatcher))
 
   private def copy(
       initialInputBufferSize: Int = this.initialInputBufferSize,
@@ -783,13 +522,8 @@ final class ActorMaterializerSettings @InternalApi private (
     s"$syncProcessingLimit,$fuzzingMode,$autoFusing,$ioSettings)"
 }
 
-object IOSettings {
-  @deprecated(
-    "Use setting 'pekko.stream.materializer.io.tcp.write-buffer-size' or attribute TcpAttributes.writeBufferSize instead",
-    "Akka 2.6.0")
-  def apply(system: ActorSystem): IOSettings =
-    apply(system.settings.config.getConfig("pekko.stream.materializer.io"))
-
+@InternalApi
+private[pekko] object IOSettings {
   @deprecated(
     "Use setting 'pekko.stream.materializer.io.tcp.write-buffer-size' or attribute TcpAttributes.writeBufferSize instead",
     "Akka 2.6.0")
@@ -797,31 +531,6 @@ object IOSettings {
     new IOSettings(
       tcpWriteBufferSize = math.min(Int.MaxValue, config.getBytes("tcp.write-buffer-size")).toInt,
       coalesceWrites = config.getInt("tcp.coalesce-writes"))
-
-  @deprecated(
-    "Use setting 'pekko.stream.materializer.io.tcp.write-buffer-size' or attribute TcpAttributes.writeBufferSize instead",
-    "Akka 2.6.0")
-  def apply(tcpWriteBufferSize: Int): IOSettings =
-    new IOSettings(tcpWriteBufferSize)
-
-  /** Java API */
-  @deprecated(
-    "Use setting 'pekko.stream.materializer.io.tcp.write-buffer-size' or attribute TcpAttributes.writeBufferSize instead",
-    "Akka 2.6.0")
-  def create(config: Config) = apply(config)
-
-  /** Java API */
-  @deprecated(
-    "Use setting 'pekko.stream.materializer.io.tcp.write-buffer-size' or attribute TcpAttributes.writeBufferSize instead",
-    "Akka 2.6.0")
-  def create(system: ActorSystem) = apply(system)
-
-  /** Java API */
-  @deprecated(
-    "Use setting 'pekko.stream.materializer.io.tcp.write-buffer-size' or attribute TcpAttributes.writeBufferSize instead",
-    "Akka 2.6.0")
-  def create(tcpWriteBufferSize: Int): IOSettings =
-    apply(tcpWriteBufferSize)
 }
 
 @nowarn("msg=deprecated")

@@ -17,9 +17,6 @@ import java.io.{ InputStream, OutputStream }
 import java.util.concurrent.CompletionStage
 import java.util.stream.Collector
 
-import scala.annotation.nowarn
-import scala.concurrent.duration.FiniteDuration
-
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.japi.function
@@ -28,6 +25,7 @@ import pekko.stream.IOResult
 import pekko.stream.scaladsl.SinkToCompletionStage
 import pekko.stream.scaladsl.SourceToCompletionStage
 import pekko.util.ByteString
+import pekko.util.JavaDurationConverters._
 
 /**
  * Converters for interacting with the blocking `java.io` streams APIs and Java 8 Streams
@@ -77,7 +75,7 @@ object StreamConverters {
    * Creates a Sink which when materialized will return an [[java.io.InputStream]] which it is possible
    * to read the values produced by the stream this Sink is attached to.
    *
-   * This method uses a default read timeout, use [[#inputStream(FiniteDuration)]] or [[#inputStream(java.time.Duration)]] to explicitly
+   * This method uses a default read timeout, use [[#inputStream(java.time.Duration)]] to explicitly
    * configure the timeout.
    *
    * This Sink is intended for inter-operation with legacy APIs since it is inherently blocking.
@@ -102,28 +100,8 @@ object StreamConverters {
    *
    * @param readTimeout the max time the read operation on the materialized InputStream should block
    */
-  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
-  def asInputStream(readTimeout: FiniteDuration): Sink[ByteString, InputStream] =
-    new Sink(scaladsl.StreamConverters.asInputStream(readTimeout))
-
-  /**
-   * Creates a Sink which when materialized will return an [[java.io.InputStream]] which it is possible
-   * to read the values produced by the stream this Sink is attached to.
-   *
-   * This Sink is intended for inter-operation with legacy APIs since it is inherently blocking.
-   *
-   * You can configure the internal buffer size by using [[pekko.stream.ActorAttributes]].
-   *
-   * The [[InputStream]] will be closed when the stream flowing into this [[Sink]] completes, and
-   * closing the [[InputStream]] will cancel this [[Sink]].
-   *
-   * @param readTimeout the max time the read operation on the materialized InputStream should block
-   */
-  @nowarn("msg=deprecated")
-  def asInputStream(readTimeout: java.time.Duration): Sink[ByteString, InputStream] = {
-    import pekko.util.JavaDurationConverters._
-    asInputStream(readTimeout.asScala)
-  }
+  def asInputStream(readTimeout: java.time.Duration): Sink[ByteString, InputStream] =
+    new Sink(scaladsl.StreamConverters.asInputStream(readTimeout.asScala))
 
   /**
    * Creates a Source from an [[java.io.InputStream]] created by the given function.
@@ -170,23 +148,6 @@ object StreamConverters {
    *
    * This Source is intended for inter-operation with legacy APIs since it is inherently blocking.
    *
-   * You can configure the internal buffer size by using [[pekko.stream.ActorAttributes]].
-   *
-   * The created [[OutputStream]] will be closed when the [[Source]] is cancelled, and closing the [[OutputStream]]
-   * will complete this [[Source]].
-   *
-   * @param writeTimeout the max time the write operation on the materialized OutputStream should block
-   */
-  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
-  def asOutputStream(writeTimeout: FiniteDuration): javadsl.Source[ByteString, OutputStream] =
-    new Source(scaladsl.StreamConverters.asOutputStream(writeTimeout))
-
-  /**
-   * Creates a Source which when materialized will return an [[java.io.OutputStream]] which it is possible
-   * to write the ByteStrings to the stream this Source is attached to.
-   *
-   * This Source is intended for inter-operation with legacy APIs since it is inherently blocking.
-   *
    * You can configure the default dispatcher for this Source by changing the `pekko.stream.materializer.blocking-io-dispatcher` or
    * set it for a given Source by using [[pekko.stream.ActorAttributes]].
    *
@@ -195,16 +156,13 @@ object StreamConverters {
    *
    * @param writeTimeout the max time the write operation on the materialized OutputStream should block
    */
-  @nowarn("msg=deprecated")
-  def asOutputStream(writeTimeout: java.time.Duration): javadsl.Source[ByteString, OutputStream] = {
-    import pekko.util.JavaDurationConverters._
-    asOutputStream(writeTimeout.asScala)
-  }
+  def asOutputStream(writeTimeout: java.time.Duration): javadsl.Source[ByteString, OutputStream] =
+    new Source(scaladsl.StreamConverters.asOutputStream(writeTimeout.asScala))
 
   /**
    * Creates a Source which when materialized will return an [[java.io.OutputStream]] which it is possible
    * to write the ByteStrings to the stream this Source is attached to. The write timeout for OutputStreams
-   * materialized will default to 5 seconds, @see [[#outputStream(FiniteDuration)]] or [[#outputStream(java.time.Duration)]] if you want to override it.
+   * materialized will default to 5 seconds, @see [[#outputStream(java.time.Duration)]] if you want to override it.
    *
    * This Source is intended for inter-operation with legacy APIs since it is inherently blocking.
    *

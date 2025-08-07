@@ -14,7 +14,7 @@
 package org.apache.pekko.dispatch
 
 import java.lang.{ Iterable => JIterable }
-import java.util.{ LinkedList => JLinkedList }
+import java.util.{ LinkedList => JLinkedList, Optional }
 import java.util.concurrent.{ Callable, Executor, ExecutorService }
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
@@ -23,14 +23,11 @@ import scala.concurrent.{ ExecutionContext, ExecutionContextExecutor, ExecutionC
 import scala.runtime.{ AbstractPartialFunction, BoxedUnit }
 import scala.util.{ Failure, Success, Try }
 
-import scala.annotation.nowarn
-
 import org.apache.pekko
-import pekko.annotation.InternalApi
 import pekko.annotation.InternalStableApi
 import pekko.compat
 import pekko.dispatch.internal.SameThreadExecutionContext
-import pekko.japi.{ Function => JFunc, Option => JOption, Procedure }
+import pekko.japi.function.Procedure
 import pekko.util.unused
 
 /**
@@ -101,18 +98,6 @@ object ExecutionContexts {
   @InternalStableApi
   private[pekko] val parasitic: ExecutionContext = SameThreadExecutionContext()
 
-  /**
-   * INTERNAL API
-   */
-  @InternalApi
-  @deprecated("Use ExecutionContexts.parasitic instead", "Akka 2.6.4")
-  private[pekko] object sameThreadExecutionContext extends ExecutionContext with BatchingExecutor {
-    override protected def unbatchedExecute(runnable: Runnable): Unit = parasitic.execute(runnable)
-    override protected def resubmitOnBlock: Boolean = false // No point since we execute on same thread
-    override def reportFailure(t: Throwable): Unit =
-      parasitic.reportFailure(t)
-  }
-
 }
 
 /**
@@ -152,6 +137,7 @@ object Futures {
   /**
    * Creates an already completed CompletionStage with the specified exception
    */
+  @deprecated("Use `CompletableFuture#failedStage` instead.", since = "2.0.0")
   def failedCompletionStage[T](ex: Throwable): CompletionStage[T] = {
     val f = CompletableFuture.completedFuture[T](null.asInstanceOf[T])
     f.obtrudeException(ex)
@@ -163,10 +149,12 @@ object Futures {
    */
   def find[T <: AnyRef](
       futures: JIterable[Future[T]],
-      predicate: JFunc[T, java.lang.Boolean],
-      executor: ExecutionContext): Future[JOption[T]] = {
-    implicit val ec = executor
-    compat.Future.find[T](futures.asScala)(predicate.apply(_))(executor).map(JOption.fromScalaOption)
+      predicate: pekko.japi.function.Function[T, java.lang.Boolean],
+      executor: ExecutionContext): Future[Optional[T]] = {
+    import pekko.util.OptionConverters._
+    import pekko.dispatch.ExecutionContexts.parasitic
+    compat.Future.find[T](futures.asScala)(predicate.apply(_))(executor)
+      .map(_.toJava)(parasitic)
   }
 
   /**
@@ -184,7 +172,7 @@ object Futures {
   def fold[T <: AnyRef, R <: AnyRef](
       zero: R,
       futures: JIterable[Future[T]],
-      fun: pekko.japi.Function2[R, T, R],
+      fun: pekko.japi.function.Function2[R, T, R],
       executor: ExecutionContext): Future[R] =
     compat.Future.fold(futures.asScala)(zero)(fun.apply)(executor)
 
@@ -193,7 +181,7 @@ object Futures {
    */
   def reduce[T <: AnyRef, R >: T](
       futures: JIterable[Future[T]],
-      fun: pekko.japi.Function2[R, T, R],
+      fun: pekko.japi.function.Function2[R, T, R],
       executor: ExecutionContext): Future[R] =
     compat.Future.reduce[T, R](futures.asScala)(fun.apply)(executor)
 
@@ -213,7 +201,8 @@ object Futures {
    * This is useful for performing a parallel map. For example, to apply a function to all items of a list
    * in parallel.
    */
-  def traverse[A, B](in: JIterable[A], fn: JFunc[A, Future[B]], executor: ExecutionContext): Future[JIterable[B]] = {
+  def traverse[A, B](in: JIterable[A], fn: pekko.japi.function.Function[A, Future[B]], executor: ExecutionContext)
+      : Future[JIterable[B]] = {
     implicit val d = executor
     in.asScala.foldLeft(Future(new JLinkedList[B]())) { (fr, a) =>
       val fb = fn(a)
@@ -226,8 +215,7 @@ object Futures {
  * This class contains bridge classes between Scala and Java.
  * Internal use only.
  */
-object japi {
-  @deprecated("Do not use this directly, use subclasses of this", "Akka 2.0")
+private[dispatch] object japi {
   class CallbackBridge[-T] extends AbstractPartialFunction[T, BoxedUnit] {
     override final def isDefinedAt(t: T): Boolean = true
     override final def apply(t: T): BoxedUnit = {
@@ -237,20 +225,17 @@ object japi {
     protected def internal(@unused result: T): Unit = ()
   }
 
-  @deprecated("Do not use this directly, use 'Recover'", "Akka 2.0")
   class RecoverBridge[+T] extends AbstractPartialFunction[Throwable, T] {
     override final def isDefinedAt(t: Throwable): Boolean = true
     override final def apply(t: Throwable): T = internal(t)
     protected def internal(@unused result: Throwable): T = null.asInstanceOf[T]
   }
 
-  @deprecated("Do not use this directly, use subclasses of this", "Akka 2.0")
   class BooleanFunctionBridge[-T] extends scala.Function1[T, Boolean] {
     override final def apply(t: T): Boolean = internal(t)
     protected def internal(@unused result: T): Boolean = false
   }
 
-  @deprecated("Do not use this directly, use subclasses of this", "Akka 2.0")
   class UnitFunctionBridge[-T] extends (T => BoxedUnit) {
     final def apply$mcLJ$sp(l: Long): BoxedUnit = { internal(l.asInstanceOf[T]); BoxedUnit.UNIT }
     final def apply$mcLI$sp(i: Int): BoxedUnit = { internal(i.asInstanceOf[T]); BoxedUnit.UNIT }
@@ -267,7 +252,6 @@ object japi {
  *
  * Java API
  */
-@nowarn("msg=deprecated")
 abstract class OnSuccess[-T] extends japi.CallbackBridge[T] {
   protected final override def internal(result: T) = onSuccess(result)
 
@@ -285,7 +269,6 @@ abstract class OnSuccess[-T] extends japi.CallbackBridge[T] {
  *
  * Java API
  */
-@nowarn("msg=deprecated")
 abstract class OnFailure extends japi.CallbackBridge[Throwable] {
   protected final override def internal(failure: Throwable) = onFailure(failure)
 
@@ -303,7 +286,6 @@ abstract class OnFailure extends japi.CallbackBridge[Throwable] {
  *
  * Java API
  */
-@nowarn("msg=deprecated")
 abstract class OnComplete[-T] extends japi.CallbackBridge[Try[T]] {
   protected final override def internal(value: Try[T]): Unit = value match {
     case Failure(t) => onComplete(t, null.asInstanceOf[T])
@@ -326,7 +308,6 @@ abstract class OnComplete[-T] extends japi.CallbackBridge[Try[T]] {
  *
  * Java API
  */
-@nowarn("msg=deprecated")
 abstract class Recover[+T] extends japi.RecoverBridge[T] {
   protected final override def internal(result: Throwable): T = recover(result)
 
@@ -368,7 +349,7 @@ abstract class Recover[+T] extends japi.RecoverBridge[T] {
  * to failure cases.
  */
 object Filter {
-  def filterOf[T](f: pekko.japi.Function[T, java.lang.Boolean]): (T => Boolean) =
+  def filterOf[T](f: pekko.japi.function.Function[T, java.lang.Boolean]): (T => Boolean) =
     new Function1[T, Boolean] { def apply(result: T): Boolean = f(result).booleanValue() }
 }
 
@@ -380,7 +361,6 @@ object Filter {
  * SAM (Single Abstract Method) class
  * Java API
  */
-@nowarn("msg=deprecated")
 abstract class Foreach[-T] extends japi.UnitFunctionBridge[T] {
   override final def internal(t: T): Unit = each(t)
 

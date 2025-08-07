@@ -170,7 +170,7 @@ private[io] class UdpConnection(
   }
 
   override def postStop(): Unit =
-    if (channel != null && channel.isOpen) {
+    if ((channel ne null) && channel.isOpen) {
       log.debug("Closing DatagramChannel after being stopped")
       try channel.close()
       catch {
