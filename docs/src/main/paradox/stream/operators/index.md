@@ -373,7 +373,6 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 |RestartSource|<a name="onfailureswithbackoff"></a>@ref[onFailuresWithBackoff](RestartSource/onFailuresWithBackoff.md)|Wrap the given @apidoc[Source] with a @apidoc[Source] that will restart it when it fails using an exponential backoff. Notice that this @apidoc[Source] will not restart on completion of the wrapped flow.|
 |RestartFlow|<a name="onfailureswithbackoff"></a>@ref[onFailuresWithBackoff](RestartFlow/onFailuresWithBackoff.md)|Wrap the given @apidoc[Flow] with a @apidoc[Flow] that will restart it when it fails using an exponential backoff. Notice that this @apidoc[Flow] will not restart on completion of the wrapped flow.|
 |Source/Flow|<a name="recover"></a>@ref[recover](Source-or-Flow/recover.md)|Allow sending of one last element downstream when a failure has happened upstream.|
-|Source/Flow|<a name="recoverwith"></a>@ref[recoverWith](Source-or-Flow/recoverWith.md)|Allow switching to alternative Source when a failure has happened upstream.|
 |Source/Flow|<a name="recoverwithretries"></a>@ref[recoverWithRetries](Source-or-Flow/recoverWithRetries.md)|RecoverWithRetries allows to switch to alternative Source on flow failure.|
 |RestartSource|<a name="withbackoff"></a>@ref[withBackoff](RestartSource/withBackoff.md)|Wrap the given @apidoc[Source] with a @apidoc[Source] that will restart it when it fails or completes using an exponential backoff.|
 |RestartFlow|<a name="withbackoff"></a>@ref[withBackoff](RestartFlow/withBackoff.md)|Wrap the given @apidoc[Flow] with a @apidoc[Flow] that will restart it when it fails or complete using an exponential backoff.|
@@ -559,7 +558,6 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 * [queue](Sink/queue.md)
 * [range](Source/range.md)
 * [recover](Source-or-Flow/recover.md)
-* [recoverWith](Source-or-Flow/recoverWith.md)
 * [recoverWithRetries](Source-or-Flow/recoverWithRetries.md)
 * [reduce](Source-or-Flow/reduce.md)
 * [reduce](Sink/reduce.md)
