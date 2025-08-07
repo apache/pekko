@@ -16,8 +16,6 @@
 # under the License.
 
 # Remove deprecated methods
-ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.sharding.ClusterShardingSettings.passivateIdleEntityAfter")
-ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.sharding.ClusterShardingSettings.withPassivateIdleAfter")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.sharding.typed.ClusterShardingSettings.passivateIdleEntityAfter")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.sharding.typed.ClusterShardingSettings.withPassivateIdleEntityAfter")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.cluster.sharding.typed.ClusterShardingSettings.this")
