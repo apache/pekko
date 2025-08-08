@@ -31,6 +31,8 @@ ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.Acto
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.stream.BindFailedException$")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.BindFailedException.canEqual")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.BindFailedException.productIterator")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.BindFailedException.productElementNames")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.BindFailedException.productElementName")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.BindFailedException.productElement")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.BindFailedException.productArity")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.BindFailedException.productPrefix")
