@@ -459,57 +459,6 @@ object Source {
   /**
    * Creates a `Source` that is materialized as an [[pekko.actor.ActorRef]].
    * Messages sent to this actor will be emitted to the stream if there is demand from downstream,
-   * otherwise they will be buffered until request for demand is received.
-   *
-   * Depending on the defined [[pekko.stream.OverflowStrategy]] it might drop elements if
-   * there is no space available in the buffer.
-   *
-   * The strategy [[pekko.stream.OverflowStrategy.backpressure]] is not supported, and an
-   * IllegalArgument("Backpressure overflowStrategy not supported") will be thrown if it is passed as argument.
-   *
-   * The buffer can be disabled by using `bufferSize` of 0 and then received messages are dropped if there is no demand
-   * from downstream. When `bufferSize` is 0 the `overflowStrategy` does not matter.
-   *
-   * The stream can be completed successfully by sending the actor reference a [[pekko.actor.Status.Success]]
-   * (whose content will be ignored) in which case already buffered elements will be signaled before signaling
-   * completion.
-   *
-   * The stream can be completed successfully by sending the actor reference a [[pekko.actor.Status.Success]].
-   * If the content is [[pekko.stream.CompletionStrategy.immediately]] the completion will be signaled immediately,
-   * otherwise if the content is [[pekko.stream.CompletionStrategy.draining]] (or anything else)
-   * already buffered elements will be signaled before signaling completion.
-   * Sending [[pekko.actor.PoisonPill]] will signal completion immediately but this behavior is deprecated and scheduled to be removed.
-   *
-   * The stream can be completed with failure by sending a [[pekko.actor.Status.Failure]] to the
-   * actor reference. In case the Actor is still draining its internal buffer (after having received
-   * a [[pekko.actor.Status.Success]]) before signaling completion and it receives a [[pekko.actor.Status.Failure]],
-   * the failure will be signaled downstream immediately (instead of the completion signal).
-   *
-   * Note that terminating the actor without first completing it, either with a success or a
-   * failure, will prevent the actor triggering downstream completion and the stream will continue
-   * to run even though the source actor is dead. Therefore you should **not** attempt to
-   * manually terminate the actor such as with a [[pekko.actor.PoisonPill]].
-   *
-   * The actor will be stopped when the stream is completed, failed or canceled from downstream,
-   * i.e. you can watch it to get notified when that happens.
-   *
-   * See also [[pekko.stream.javadsl.Source.queue]].
-   *
-   * @param bufferSize The size of the buffer in element count
-   * @param overflowStrategy Strategy that is used when incoming elements cannot fit inside the buffer
-   */
-  @deprecated("Use variant accepting completion and failure matchers", "Akka 2.6.0")
-  def actorRef[T](bufferSize: Int, overflowStrategy: OverflowStrategy): Source[T, ActorRef] =
-    new Source(scaladsl.Source.actorRef(
-      {
-        case pekko.actor.Status.Success(s: CompletionStrategy) => s
-        case pekko.actor.Status.Success(_)                     => CompletionStrategy.Draining
-        case pekko.actor.Status.Success                        => CompletionStrategy.Draining
-      }, { case pekko.actor.Status.Failure(cause) => cause }, bufferSize, overflowStrategy))
-
-  /**
-   * Creates a `Source` that is materialized as an [[pekko.actor.ActorRef]].
-   * Messages sent to this actor will be emitted to the stream if there is demand from downstream,
    * and a new message will only be accepted after the previous messages has been consumed and acknowledged back.
    * The stream will complete with failure if a message is sent before the acknowledgement has been replied back.
    *
@@ -4429,16 +4378,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    */
   def watchTermination[M](matF: function.Function2[Mat, CompletionStage[Done], M]): javadsl.Source[Out, M] =
     new Source(delegate.watchTermination()((left, right) => matF(left, right.asJava)))
-
-  /**
-   * Materializes to `FlowMonitor<Out>` that allows monitoring of the current flow. All events are propagated
-   * by the monitor unchanged. Note that the monitor inserts a memory barrier every time it processes an
-   * event, and may therefor affect performance.
-   * The `combine` function is used to combine the `FlowMonitor` with this flow's materialized value.
-   */
-  @deprecated("Use monitor() or monitorMat(combine) instead", "Akka 2.5.17")
-  def monitor[M](combine: function.Function2[Mat, FlowMonitor[Out], M]): javadsl.Source[Out, M] =
-    new Source(delegate.monitorMat(combinerToScala(combine)))
 
   /**
    * Materializes to `FlowMonitor[Out]` that allows monitoring of the current flow. All events are propagated
