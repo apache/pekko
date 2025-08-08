@@ -53,18 +53,7 @@ Scala
 Java
 :  @@snip [DnsCompileOnlyDocTest.java](/docs/src/test/java/jdocs/actor/io/dns/DnsCompileOnlyDocTest.java) { #resolve }
 
-Alternatively the `IO(Dns)` actor can be interacted with directly. However this exposes the different protocols of the DNS provider.
-`inet-adddress` uses `Dns.Resolve` and `Dns.Resolved` where as the `async-dns` uses `DnsProtocol.Resolve` and `DnsProtocol.Resolved`. 
-The reason for the difference is `inet-address` predates `async-dns` and `async-dns` exposes additional information such as SRV records 
-and it wasn't possible to evolve the original API in a backward compatible way.
-
-Inet-Address API:
-
-Scala
-:  @@snip [IODocSpec.scala](/docs/src/test/scala/docs/actor/io/dns/DnsCompileOnlyDocSpec.scala) { #actor-api-inet-address }
-
-Java
-:  @@snip [DnsCompileOnlyDocTest.java](/docs/src/test/java/jdocs/actor/io/dns/DnsCompileOnlyDocTest.java) { #actor-api-inet-address }
+Alternatively the `IO(Dns)` actor can be interacted with directly. `async-dns` protocol uses `DnsProtocol.Resolve` and `DnsProtocol.Resolved`. 
 
 Async-DNS API:
 

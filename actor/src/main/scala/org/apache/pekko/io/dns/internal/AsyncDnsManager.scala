@@ -19,7 +19,6 @@ import java.util.concurrent.TimeUnit
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration.Duration
 
-import scala.annotation.nowarn
 import com.typesafe.config.Config
 
 import org.apache.pekko
@@ -28,7 +27,7 @@ import pekko.annotation.InternalApi
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.io.{ Dns, DnsExt, DnsProvider }
 import pekko.io.PeriodicCacheCleanup
-import pekko.io.dns.{ AAAARecord, ARecord, DnsProtocol, DnsSettings }
+import pekko.io.dns.{ DnsProtocol, DnsSettings }
 import pekko.io.dns.internal.AsyncDnsManager.CacheCleanup
 import pekko.routing.FromConfig
 import pekko.util.Timeout
@@ -47,7 +46,6 @@ private[pekko] object AsyncDnsManager {
  * INTERNAL API
  */
 @InternalApi
-@nowarn("msg=deprecated")
 private[io] final class AsyncDnsManager(
     name: String,
     system: ExtendedActorSystem,
@@ -59,8 +57,6 @@ private[io] final class AsyncDnsManager(
     with RequiresMessageQueue[UnboundedMessageQueueSemantics]
     with ActorLogging
     with Timers {
-  import pekko.pattern.ask
-  import pekko.pattern.pipe
 
   /**
    * Ctr expected by the DnsExt for all DnsMangers
@@ -101,26 +97,10 @@ private[io] final class AsyncDnsManager(
     }
   }
 
-  // still support deprecated DNS API
-  @nowarn("msg=deprecated")
   override def receive: Receive = {
     case r: DnsProtocol.Resolve =>
       log.debug("Resolution request for {} {} from {}", r.name, r.requestType, sender())
       resolver.forward(r)
-
-    case Dns.Resolve(name) =>
-      // adapt legacy protocol to new protocol and back again, no where in pekko
-      // sends this message but supported until the old messages are removed
-      log.debug("(deprecated) Resolution request for {} from {}", name, sender())
-      val adapted = DnsProtocol.Resolve(name)
-      val reply = (resolver ? adapted).mapTo[DnsProtocol.Resolved].map { asyncResolved =>
-        val ips = asyncResolved.records.collect {
-          case a: ARecord    => a.ip
-          case a: AAAARecord => a.ip
-        }
-        Dns.Resolved(asyncResolved.name, ips)
-      }
-      reply.pipeTo(sender())
 
     case CacheCleanup =>
       cacheCleanup.foreach(_.cleanup())
