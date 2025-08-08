@@ -18,18 +18,15 @@ import java.util.concurrent.atomic.AtomicReference
 import scala.annotation.tailrec
 import scala.collection.immutable
 
-import scala.annotation.nowarn
-
 import org.apache.pekko
 import pekko.actor.NoSerializationVerificationNeeded
 import pekko.annotation.InternalApi
-import pekko.io.dns.{ AAAARecord, ARecord }
 import pekko.io.dns.CachePolicy.CachePolicy
 import pekko.io.dns.CachePolicy.Forever
 import pekko.io.dns.CachePolicy.Never
 import pekko.io.dns.CachePolicy.Ttl
 import pekko.io.dns.DnsProtocol
-import pekko.io.dns.DnsProtocol.{ Ip, RequestType, Resolved }
+import pekko.io.dns.DnsProtocol.{ RequestType, Resolved }
 
 private[io] trait PeriodicCacheCleanup {
   def cleanup(): Unit
@@ -44,27 +41,6 @@ class SimpleDnsCache extends Dns with PeriodicCacheCleanup with NoSerializationV
       () => clock()))
 
   private val nanoBase = System.nanoTime()
-
-  /**
-   * Gets any IPv4 and IPv6 cached entries.
-   * To get Srv or just one type use DnsProtocol
-   *
-   * This method is deprecated and involves a copy from the new protocol to
-   * remain compatible
-   */
-  @nowarn("msg=deprecated")
-  override def cached(name: String): Option[Dns.Resolved] = {
-    // adapt response to the old protocol
-    val ipv4 = cacheRef.get().get((name, Ip(ipv6 = false))).toList.flatMap(_.records)
-    val ipv6 = cacheRef.get().get((name, Ip(ipv4 = false))).toList.flatMap(_.records)
-    val both = cacheRef.get().get((name, Ip())).toList.flatMap(_.records)
-    val all = (ipv4 ++ ipv6 ++ both).collect {
-      case r: ARecord    => r.ip
-      case r: AAAARecord => r.ip
-    }
-    if (all.isEmpty) None
-    else Some(Dns.Resolved(name, all))
-  }
 
   override def cached(request: DnsProtocol.Resolve): Option[DnsProtocol.Resolved] =
     cacheRef.get().get((request.name, request.requestType))
