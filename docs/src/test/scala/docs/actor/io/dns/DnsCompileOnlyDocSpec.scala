@@ -31,6 +31,21 @@ object DnsCompileOnlyDocSpec {
   val actorRef: ActorRef = ???
 
   {
+    // #resolve
+    val resolve = DnsProtocol.Resolve("google.com", DnsProtocol.ipRequestType())
+    val initial: Option[DnsProtocol.Resolved] = Dns.resolve(resolve, system, actorRef)
+    val cached: Option[DnsProtocol.Resolved] = Dns.cached(resolve)(system)
+    // #resolve
+  }
+
+  {
+    // #actor-api-inet-address
+    val resolved: Future[DnsProtocol.Resolved] =
+      (IO(Dns) ? DnsProtocol.Resolve("google.com")).mapTo[DnsProtocol.Resolved]
+    // #actor-api-inet-address
+  }
+
+  {
     // #actor-api-async
     val resolved: Future[DnsProtocol.Resolved] =
       (IO(Dns) ? DnsProtocol.Resolve("google.com")).mapTo[DnsProtocol.Resolved]
