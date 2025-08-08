@@ -30,6 +30,7 @@ ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.Acto
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.ActorMaterializerSettings.withBlockingIoDispatcher")
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.stream.BindFailedException$")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.BindFailedException.canEqual")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.BindFailedException.fromProduct")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.BindFailedException.productIterator")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.BindFailedException.productElementNames")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.BindFailedException.productElementName")

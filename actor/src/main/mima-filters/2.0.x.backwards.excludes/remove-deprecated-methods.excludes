@@ -40,6 +40,8 @@ ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.event.Logging$Stan
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.event.jul.*")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.io.Dns.cached")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.io.Dns.resolve")
+ProblemFilters.exclude[MissingFieldProblem]("org.apache.pekko.io.Dns.Resolve")
+ProblemFilters.exclude[MissingFieldProblem]("org.apache.pekko.io.Dns.Resolved")
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.io.Dns$Resolve")
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.io.Dns$Resolve$")
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.io.Dns$Resolved")
