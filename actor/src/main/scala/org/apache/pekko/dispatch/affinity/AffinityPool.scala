@@ -85,7 +85,7 @@ private[affinity] object AffinityPool {
           idling = true
           transitionTo(Spinning)
         case Spinning =>
-          OnSpinWait.spinWait()
+          Thread.onSpinWait()
           turns += 1
           if (turns > maxSpins)
             transitionTo(Yielding)
