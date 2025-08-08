@@ -98,7 +98,7 @@ private[pekko] object DirectByteBufferPool {
    */
   def tryCleanDirectByteBuffer(byteBuffer: ByteBuffer): Unit = {
     try {
-      if (ByteBufferCleaner.isSupported)
+      if (byteBuffer.isDirect() && ByteBufferCleaner.isSupported)
         ByteBufferCleaner.clean(byteBuffer)
     } catch {
       case NonFatal(_) => /* ok, best effort attempt to cleanup failed */
