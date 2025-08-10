@@ -19,7 +19,4 @@ class StreamTcpException(msg: String) extends RuntimeException(msg) with NoStack
 
 class BindFailedException extends StreamTcpException("bind failed")
 
-@deprecated("BindFailedException object will never be thrown. Match on the class instead.", "Akka 2.4.19")
-case object BindFailedException extends BindFailedException
-
 class ConnectionException(msg: String) extends StreamTcpException(msg)
