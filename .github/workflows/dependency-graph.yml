@@ -33,7 +33,7 @@ jobs:
       # to submit dependencies
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Install sbt
         uses: sbt/setup-sbt@234370af1319038bf8dc432f8a7e4b83078a1781 # v1.1.11
       - uses: scalacenter/sbt-dependency-submission@64084844d2b0a9b6c3765f33acde2fbe3f5ae7d3 # v3.1.0
