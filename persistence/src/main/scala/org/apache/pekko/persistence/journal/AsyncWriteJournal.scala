@@ -67,8 +67,20 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
   final val receiveWriteJournal: Actor.Receive = {
     // cannot be a val in the trait due to binary compatibility
     val replayDebugEnabled: Boolean = config.getBoolean("replay-filter.debug")
+    val enableGlobalWriteResponseOrder: Boolean = config.getBoolean("write-response-global-order")
+
     val eventStream = context.system.eventStream // used from Future callbacks
     implicit val ec: ExecutionContext = context.dispatcher
+
+    // should be a private method in the trait, but it needs the enableGlobalWriteResponseOrder field which can't be
+    // moved to the trait level because adding any fields there breaks bincompat
+    def sendWriteResponse(msg: Any, snr: Long, target: ActorRef, sender: ActorRef): Unit = {
+      if (enableGlobalWriteResponseOrder) {
+        resequencer ! Desequenced(msg, snr, target, sender)
+      } else {
+        target.tell(msg, sender)
+      }
+    }
 
     {
       case WriteMessages(messages, persistentActor, actorInstanceId) =>
@@ -100,7 +112,7 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
 
         writeResult.onComplete {
           case Success(results) =>
-            resequencer ! Desequenced(WriteMessagesSuccessful, cctr, persistentActor, self)
+            sendWriteResponse(WriteMessagesSuccessful, cctr, persistentActor, self)
 
             val resultsIter =
               if (results.isEmpty) Iterator.fill(atomicWriteCount)(AsyncWriteJournal.successUnit)
@@ -111,12 +123,12 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
                 resultsIter.next() match {
                   case Success(_) =>
                     a.payload.foreach { p =>
-                      resequencer ! Desequenced(WriteMessageSuccess(p, actorInstanceId), n, persistentActor, p.sender)
+                      sendWriteResponse(WriteMessageSuccess(p, actorInstanceId), n, persistentActor, p.sender)
                       n += 1
                     }
                   case Failure(e) =>
                     a.payload.foreach { p =>
-                      resequencer ! Desequenced(
+                      sendWriteResponse(
                         WriteMessageRejected(p, e, actorInstanceId),
                         n,
                         persistentActor,
@@ -126,21 +138,21 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
                 }
 
               case r: NonPersistentRepr =>
-                resequencer ! Desequenced(LoopMessageSuccess(r.payload, actorInstanceId), n, persistentActor, r.sender)
+                sendWriteResponse(LoopMessageSuccess(r.payload, actorInstanceId), n, persistentActor, r.sender)
                 n += 1
             }
 
           case Failure(e) =>
-            resequencer ! Desequenced(WriteMessagesFailed(e, atomicWriteCount), cctr, persistentActor, self)
+            sendWriteResponse(WriteMessagesFailed(e, atomicWriteCount), cctr, persistentActor, self)
             var n = cctr + 1
             messages.foreach {
               case a: AtomicWrite =>
                 a.payload.foreach { p =>
-                  resequencer ! Desequenced(WriteMessageFailure(p, e, actorInstanceId), n, persistentActor, p.sender)
+                  sendWriteResponse(WriteMessageFailure(p, e, actorInstanceId), n, persistentActor, p.sender)
                   n += 1
                 }
               case r: NonPersistentRepr =>
-                resequencer ! Desequenced(LoopMessageSuccess(r.payload, actorInstanceId), n, persistentActor, r.sender)
+                sendWriteResponse(LoopMessageSuccess(r.payload, actorInstanceId), n, persistentActor, r.sender)
                 n += 1
             }
         }
