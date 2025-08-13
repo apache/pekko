@@ -39,7 +39,7 @@ import static java.lang.invoke.MethodType.methodType;
  */
 final class ByteBufferCleaner {
 
-  // copied from
+  // adapted from
   // https://github.com/apache/commons-io/blob/441115a4b5cd63ae808dd4c40fc238cb52c8048f/src/main/java/org/apache/commons/io/input/ByteBufferCleaner.java
 
   private interface Cleaner {
@@ -78,13 +78,12 @@ final class ByteBufferCleaner {
       MethodHandle invokeCleaner =
           lookup.findVirtual(
               unsafeClass, "invokeCleaner", methodType(void.class, ByteBuffer.class));
-      invokeCleaner = invokeCleaner.bindTo(theUnsafe);
-      this.invokeCleaner = invokeCleaner;
+      this.invokeCleaner = invokeCleaner.bindTo(theUnsafe);
     }
 
     @Override
     public void clean(final ByteBuffer buffer) throws Throwable {
-      invokeCleaner.invoke(buffer);
+      invokeCleaner.invokeExact(buffer);
     }
   }
 
