@@ -51,7 +51,7 @@ final class ByteBufferCleaner {
     private final Method cleanerMethod;
     private final Method cleanMethod;
 
-    private Java8Cleaner() throws ReflectiveOperationException, SecurityException {
+    private Java8Cleaner() throws ReflectiveOperationException {
       cleanMethod = Class.forName("sun.misc.Cleaner").getMethod("clean");
       cleanerMethod = Class.forName("sun.nio.ch.DirectBuffer").getMethod("cleaner");
     }
@@ -69,7 +69,7 @@ final class ByteBufferCleaner {
 
     private final MethodHandle invokeCleaner;
 
-    private Java9Cleaner() throws ReflectiveOperationException, SecurityException {
+    private Java9Cleaner() throws ReflectiveOperationException {
       final Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
       final Field field = unsafeClass.getDeclaredField("theUnsafe");
       field.setAccessible(true);
