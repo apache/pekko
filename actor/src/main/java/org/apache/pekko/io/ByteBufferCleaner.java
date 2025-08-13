@@ -104,15 +104,33 @@ final class ByteBufferCleaner {
   }
 
   private static Cleaner getCleaner() {
+    Cleaner cleaner = null;
     try {
-      return new Java8Cleaner();
+      cleaner = new Java8Cleaner();
     } catch (final Exception e) {
       try {
-        return new Java9Cleaner();
+        cleaner = new Java9Cleaner();
       } catch (final Exception e1) {
-        throw new IllegalStateException("Failed to initialize a Cleaner.", e);
+        System.err.println(
+            "WARNING: Failed to initialize a ByteBuffer Cleaner. This means "
+                + "direct ByteBuffers will only be cleaned upon garbage collection. Reason: "
+                + e1);
       }
     }
+    if (cleaner != null) {
+      try {
+        ByteBuffer testByteBuffer = ByteBuffer.allocateDirect(1);
+        cleaner.clean(testByteBuffer);
+      } catch (final Throwable t) {
+        cleaner = null;
+        System.err.println(
+            "WARNING: ByteBuffer Cleaner failed to clean a test buffer. ByteBuffer Cleaner "
+                + "has been disabled. This means direct ByteBuffers will only be cleaned upon garbage collection. "
+                + "Reason: "
+                + t);
+      }
+    }
+    return cleaner;
   }
 
   /**

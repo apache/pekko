@@ -26,7 +26,7 @@ class ByteBufferCleanerSpec extends AnyWordSpec with Matchers {
 
   "ByteBufferCleaner" should {
     "be able to clean direct byte buffers" in {
-      val buffer = ByteBuffer.allocateDirect(1024)
+      val buffer = ByteBuffer.allocateDirect(1)
       ByteBufferCleaner.isSupported shouldBe true
       ByteBufferCleaner.clean(buffer) // This should not throw an exception
     }
