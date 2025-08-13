@@ -17,9 +17,13 @@
 
 package org.apache.pekko.io;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
+
+import static java.lang.invoke.MethodType.methodType;
 
 /**
  * Cleans a direct {@link ByteBuffer}. Without manual intervention, direct ByteBuffers will be
@@ -39,7 +43,7 @@ final class ByteBufferCleaner {
   // https://github.com/apache/commons-io/blob/441115a4b5cd63ae808dd4c40fc238cb52c8048f/src/main/java/org/apache/commons/io/input/ByteBufferCleaner.java
 
   private interface Cleaner {
-    void clean(ByteBuffer buffer) throws ReflectiveOperationException;
+    void clean(ByteBuffer buffer) throws Throwable;
   }
 
   private static final class Java8Cleaner implements Cleaner {
@@ -53,7 +57,7 @@ final class ByteBufferCleaner {
     }
 
     @Override
-    public void clean(final ByteBuffer buffer) throws ReflectiveOperationException {
+    public void clean(final ByteBuffer buffer) throws Throwable {
       final Object cleaner = cleanerMethod.invoke(buffer);
       if (cleaner != null) {
         cleanMethod.invoke(cleaner);
@@ -63,20 +67,24 @@ final class ByteBufferCleaner {
 
   private static final class Java9Cleaner implements Cleaner {
 
-    private final Object theUnsafe;
-    private final Method invokeCleaner;
+    private final MethodHandle invokeCleaner;
 
     private Java9Cleaner() throws ReflectiveOperationException, SecurityException {
       final Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
       final Field field = unsafeClass.getDeclaredField("theUnsafe");
       field.setAccessible(true);
-      theUnsafe = field.get(null);
-      invokeCleaner = unsafeClass.getMethod("invokeCleaner", ByteBuffer.class);
+      final Object theUnsafe = field.get(null);
+      MethodHandles.Lookup lookup = MethodHandles.lookup();
+      MethodHandle invokeCleaner =
+          lookup.findVirtual(
+              unsafeClass, "invokeCleaner", methodType(void.class, ByteBuffer.class));
+      invokeCleaner = invokeCleaner.bindTo(theUnsafe);
+      this.invokeCleaner = invokeCleaner;
     }
 
     @Override
-    public void clean(final ByteBuffer buffer) throws ReflectiveOperationException {
-      invokeCleaner.invoke(theUnsafe, buffer);
+    public void clean(final ByteBuffer buffer) throws Throwable {
+      invokeCleaner.invoke(buffer);
     }
   }
 
@@ -91,8 +99,8 @@ final class ByteBufferCleaner {
   static void clean(final ByteBuffer buffer) {
     try {
       INSTANCE.clean(buffer);
-    } catch (final Exception e) {
-      throw new IllegalStateException("Failed to clean direct buffer.", e);
+    } catch (final Throwable t) {
+      throw new IllegalStateException("Failed to clean direct buffer.", t);
     }
   }
 
