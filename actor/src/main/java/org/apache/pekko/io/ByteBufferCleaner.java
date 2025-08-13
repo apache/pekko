@@ -20,7 +20,6 @@ package org.apache.pekko.io;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 
 import static java.lang.invoke.MethodType.methodType;
@@ -44,25 +43,6 @@ final class ByteBufferCleaner {
 
   private interface Cleaner {
     void clean(ByteBuffer buffer) throws Throwable;
-  }
-
-  private static final class Java8Cleaner implements Cleaner {
-
-    private final Method cleanerMethod;
-    private final Method cleanMethod;
-
-    private Java8Cleaner() throws ReflectiveOperationException {
-      cleanMethod = Class.forName("sun.misc.Cleaner").getMethod("clean");
-      cleanerMethod = Class.forName("sun.nio.ch.DirectBuffer").getMethod("cleaner");
-    }
-
-    @Override
-    public void clean(final ByteBuffer buffer) throws Throwable {
-      final Object cleaner = cleanerMethod.invoke(buffer);
-      if (cleaner != null) {
-        cleanMethod.invoke(cleaner);
-      }
-    }
   }
 
   private static final class Java9Cleaner implements Cleaner {
@@ -106,16 +86,12 @@ final class ByteBufferCleaner {
   private static Cleaner getCleaner() {
     Cleaner cleaner = null;
     try {
-      cleaner = new Java8Cleaner();
-    } catch (final Exception e) {
-      try {
-        cleaner = new Java9Cleaner();
-      } catch (final Exception e1) {
-        System.err.println(
-            "WARNING: Failed to initialize a ByteBuffer Cleaner. This means "
-                + "direct ByteBuffers will only be cleaned upon garbage collection. Reason: "
-                + e1);
-      }
+      cleaner = new Java9Cleaner();
+    } catch (final Exception e1) {
+      System.err.println(
+          "WARNING: Failed to initialize a ByteBuffer Cleaner. This means "
+              + "direct ByteBuffers will only be cleaned upon garbage collection. Reason: "
+              + e1);
     }
     if (cleaner != null) {
       try {
