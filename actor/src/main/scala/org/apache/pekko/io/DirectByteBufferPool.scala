@@ -87,24 +87,6 @@ private[pekko] class DirectByteBufferPool(defaultBufferSize: Int, maxPoolEntries
 
 /** INTERNAL API */
 private[pekko] object DirectByteBufferPool {
-  private val CleanDirectBuffer: ByteBuffer => Unit =
-    try {
-      val cleanerMethod = Class.forName("java.nio.DirectByteBuffer").getMethod("cleaner")
-      cleanerMethod.setAccessible(true)
-
-      val cleanMethod = Class.forName("sun.misc.Cleaner").getMethod("clean")
-      cleanMethod.setAccessible(true)
-
-      { (bb: ByteBuffer) =>
-        try if (bb.isDirect) {
-            val cleaner = cleanerMethod.invoke(bb)
-            cleanMethod.invoke(cleaner)
-          }
-        catch {
-          case NonFatal(_) => /* ok, best effort attempt to cleanup failed */
-        }
-      }
-    } catch { case NonFatal(_) => _ => () /* reflection failed, use no-op fallback */ }
 
   /**
    * DirectByteBuffers are garbage collected by using a phantom reference and a
@@ -113,8 +95,13 @@ private[pekko] object DirectByteBufferPool {
    * immediately after discarding all references to a DirectByteBuffer, it's
    * easy to OutOfMemoryError yourself using DirectByteBuffers. This function
    * explicitly calls the Cleaner method of a DirectByteBuffer.
-   *
-   * Utilizes reflection to avoid dependency to `sun.misc.Cleaner`.
    */
-  def tryCleanDirectByteBuffer(byteBuffer: ByteBuffer): Unit = CleanDirectBuffer(byteBuffer)
+  def tryCleanDirectByteBuffer(byteBuffer: ByteBuffer): Unit = {
+    try {
+      if (byteBuffer.isDirect() && ByteBufferCleaner.isSupported)
+        ByteBufferCleaner.clean(byteBuffer)
+    } catch {
+      case NonFatal(_) => /* ok, best effort attempt to cleanup failed */
+    }
+  }
 }
