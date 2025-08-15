@@ -21,8 +21,8 @@ import scala.util.{ Failure, Success, Try }
 import scala.util.control.NonFatal
 
 import org.apache.pekko
-import org.apache.pekko.annotation.InternalApi
 import pekko.actor._
+import pekko.annotation.InternalApi
 import pekko.pattern.CircuitBreaker
 import pekko.pattern.pipe
 import pekko.persistence._
