@@ -21,6 +21,7 @@ import scala.util.{ Failure, Success, Try }
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+import org.apache.pekko.annotation.InternalApi
 import pekko.actor._
 import pekko.pattern.CircuitBreaker
 import pekko.pattern.pipe
@@ -74,6 +75,7 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
 
     // should be a private method in the trait, but it needs the enableGlobalWriteResponseOrder field which can't be
     // moved to the trait level because adding any fields there breaks bincompat
+    @InternalApi
     def sendWriteResponse(msg: Any, snr: Long, target: ActorRef, sender: ActorRef): Unit = {
       if (enableGlobalWriteResponseOrder) {
         resequencer ! Desequenced(msg, snr, target, sender)
