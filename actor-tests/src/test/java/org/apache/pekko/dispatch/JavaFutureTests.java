@@ -210,9 +210,9 @@ public class JavaFutureTests extends JUnitSuite {
               system.dispatcher()));
     }
 
-    Future<Iterable<String>> futureList = Futures.sequence(listFutures, system.dispatcher());
+    var futureList = Futures.sequence(listFutures, system.dispatcher());
 
-    assertEquals(listExpected, Await.result(futureList, timeout));
+    assertEquals(listExpected, futureList.toCompletableFuture().get(timeout.toMillis(), TimeUnit.MILLISECONDS));
   }
 
   // TODO: Improve this test, perhaps with an Actor
@@ -233,7 +233,7 @@ public class JavaFutureTests extends JUnitSuite {
               system.dispatcher()));
     }
 
-    Future<String> result =
+    var result =
         Futures.fold(
             "",
             listFutures,
@@ -244,7 +244,7 @@ public class JavaFutureTests extends JUnitSuite {
             },
             system.dispatcher());
 
-    assertEquals(expected.toString(), Await.result(result, timeout));
+    assertEquals(expected.toString(), result.toCompletableFuture().get(timeout.toMillis(), TimeUnit.MILLISECONDS));
   }
 
   @Test
@@ -264,7 +264,7 @@ public class JavaFutureTests extends JUnitSuite {
               system.dispatcher()));
     }
 
-    Future<String> result =
+    var result =
         Futures.reduce(
             listFutures,
             new Function2<String, String, String>() {
@@ -274,7 +274,7 @@ public class JavaFutureTests extends JUnitSuite {
             },
             system.dispatcher());
 
-    assertEquals(expected.toString(), Await.result(result, timeout));
+    assertEquals(expected.toString(), result.toCompletableFuture().get(timeout.toMillis(), TimeUnit.MILLISECONDS));
   }
 
   @Test
@@ -287,7 +287,7 @@ public class JavaFutureTests extends JUnitSuite {
       listStrings.add("test");
     }
 
-    Future<Iterable<String>> result =
+    var result =
         Futures.traverse(
             listStrings,
             new Function<String, Future<String>>() {
@@ -303,7 +303,7 @@ public class JavaFutureTests extends JUnitSuite {
             },
             system.dispatcher());
 
-    assertEquals(expectedStrings, Await.result(result, timeout));
+    assertEquals(expectedStrings, result.toCompletableFuture().get(timeout.toMillis(), TimeUnit.MILLISECONDS));
   }
 
   @Test
@@ -321,7 +321,7 @@ public class JavaFutureTests extends JUnitSuite {
               system.dispatcher()));
     }
     final Integer expect = 5;
-    Future<Optional<Integer>> f =
+    var f =
         Futures.find(
             listFutures,
             new Function<Integer, Boolean>() {
@@ -330,8 +330,7 @@ public class JavaFutureTests extends JUnitSuite {
               }
             },
             system.dispatcher());
-
-    assertEquals(expect, Await.result(f, timeout).get());
+    assertEquals(expect, f.toCompletableFuture().get(timeout.toMillis(), TimeUnit.MILLISECONDS).get());
   }
 
   @Test
