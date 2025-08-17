@@ -363,14 +363,7 @@ trait Scheduler {
         }
       })
 
-  /**
-   * Deprecated API: See [[Scheduler#scheduleWithFixedDelay]] or [[Scheduler#scheduleAtFixedRate]].
-   */
-  @deprecated(
-    "Use scheduleWithFixedDelay or scheduleAtFixedRate instead. This has the same semantics as " +
-    "scheduleAtFixedRate, but scheduleWithFixedDelay is often preferred.",
-    since = "Akka 2.6.0")
-  def schedule(initialDelay: FiniteDuration, interval: FiniteDuration, runnable: Runnable)(
+  protected def schedule(initialDelay: FiniteDuration, interval: FiniteDuration, runnable: Runnable)(
       implicit executor: ExecutionContext): Cancellable
 
   /**
