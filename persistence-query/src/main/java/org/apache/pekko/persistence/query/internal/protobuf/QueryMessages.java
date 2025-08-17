@@ -21,184 +21,206 @@ package org.apache.pekko.persistence.query.internal.protobuf;
 @org.apache.pekko.protobufv3.internal.Generated
 public final class QueryMessages {
   private QueryMessages() {}
+
   static {
     org.apache.pekko.protobufv3.internal.RuntimeVersion.validateProtobufGencodeVersion(
-      org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
-      /* major= */ 4,
-      /* minor= */ 32,
-      /* patch= */ 0,
-      /* suffix= */ "",
-      QueryMessages.class.getName());
-  }
-  public static void registerAllExtensions(
-      org.apache.pekko.protobufv3.internal.ExtensionRegistryLite registry) {
+        org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 32,
+        /* patch= */ 0,
+        /* suffix= */ "",
+        QueryMessages.class.getName());
   }
 
   public static void registerAllExtensions(
+      org.apache.pekko.protobufv3.internal.ExtensionRegistryLite registry) {}
+
+  public static void registerAllExtensions(
       org.apache.pekko.protobufv3.internal.ExtensionRegistry registry) {
-    registerAllExtensions(
-        (org.apache.pekko.protobufv3.internal.ExtensionRegistryLite) registry);
+    registerAllExtensions((org.apache.pekko.protobufv3.internal.ExtensionRegistryLite) registry);
   }
-  public interface EventEnvelopeOrBuilder extends
+
+  public interface EventEnvelopeOrBuilder
+      extends
       // @@protoc_insertion_point(interface_extends:org.apache.pekko.persistence.query.EventEnvelope)
       org.apache.pekko.protobufv3.internal.MessageOrBuilder {
 
     /**
      * <code>required string persistence_id = 1;</code>
+     *
      * @return Whether the persistenceId field is set.
      */
     boolean hasPersistenceId();
     /**
      * <code>required string persistence_id = 1;</code>
+     *
      * @return The persistenceId.
      */
     java.lang.String getPersistenceId();
     /**
      * <code>required string persistence_id = 1;</code>
+     *
      * @return The bytes for persistenceId.
      */
-    org.apache.pekko.protobufv3.internal.ByteString
-        getPersistenceIdBytes();
+    org.apache.pekko.protobufv3.internal.ByteString getPersistenceIdBytes();
 
     /**
      * <code>required string entity_type = 2;</code>
+     *
      * @return Whether the entityType field is set.
      */
     boolean hasEntityType();
     /**
      * <code>required string entity_type = 2;</code>
+     *
      * @return The entityType.
      */
     java.lang.String getEntityType();
     /**
      * <code>required string entity_type = 2;</code>
+     *
      * @return The bytes for entityType.
      */
-    org.apache.pekko.protobufv3.internal.ByteString
-        getEntityTypeBytes();
+    org.apache.pekko.protobufv3.internal.ByteString getEntityTypeBytes();
 
     /**
      * <code>required int32 slice = 3;</code>
+     *
      * @return Whether the slice field is set.
      */
     boolean hasSlice();
     /**
      * <code>required int32 slice = 3;</code>
+     *
      * @return The slice.
      */
     int getSlice();
 
     /**
      * <code>required int64 sequence_nr = 4;</code>
+     *
      * @return Whether the sequenceNr field is set.
      */
     boolean hasSequenceNr();
     /**
      * <code>required int64 sequence_nr = 4;</code>
+     *
      * @return The sequenceNr.
      */
     long getSequenceNr();
 
     /**
      * <code>required int64 timestamp = 5;</code>
+     *
      * @return Whether the timestamp field is set.
      */
     boolean hasTimestamp();
     /**
      * <code>required int64 timestamp = 5;</code>
+     *
      * @return The timestamp.
      */
     long getTimestamp();
 
     /**
      * <code>required string offset = 6;</code>
+     *
      * @return Whether the offset field is set.
      */
     boolean hasOffset();
     /**
      * <code>required string offset = 6;</code>
+     *
      * @return The offset.
      */
     java.lang.String getOffset();
     /**
      * <code>required string offset = 6;</code>
+     *
      * @return The bytes for offset.
      */
-    org.apache.pekko.protobufv3.internal.ByteString
-        getOffsetBytes();
+    org.apache.pekko.protobufv3.internal.ByteString getOffsetBytes();
 
     /**
      * <code>required string offset_manifest = 7;</code>
+     *
      * @return Whether the offsetManifest field is set.
      */
     boolean hasOffsetManifest();
     /**
      * <code>required string offset_manifest = 7;</code>
+     *
      * @return The offsetManifest.
      */
     java.lang.String getOffsetManifest();
     /**
      * <code>required string offset_manifest = 7;</code>
+     *
      * @return The bytes for offsetManifest.
      */
-    org.apache.pekko.protobufv3.internal.ByteString
-        getOffsetManifestBytes();
+    org.apache.pekko.protobufv3.internal.ByteString getOffsetManifestBytes();
 
     /**
      * <code>optional .Payload event = 8;</code>
+     *
      * @return Whether the event field is set.
      */
     boolean hasEvent();
     /**
      * <code>optional .Payload event = 8;</code>
+     *
      * @return The event.
      */
     org.apache.pekko.remote.ContainerFormats.Payload getEvent();
-    /**
-     * <code>optional .Payload event = 8;</code>
-     */
+    /** <code>optional .Payload event = 8;</code> */
     org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder getEventOrBuilder();
 
     /**
      * <code>optional .Payload metadata = 9;</code>
+     *
      * @return Whether the metadata field is set.
      */
     boolean hasMetadata();
     /**
      * <code>optional .Payload metadata = 9;</code>
+     *
      * @return The metadata.
      */
     org.apache.pekko.remote.ContainerFormats.Payload getMetadata();
-    /**
-     * <code>optional .Payload metadata = 9;</code>
-     */
+    /** <code>optional .Payload metadata = 9;</code> */
     org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder getMetadataOrBuilder();
   }
   /**
+   *
+   *
    * <pre>
    * for org.apache.pekko.persistence.query.typed.EventEnvelope
    * </pre>
    *
    * Protobuf type {@code org.apache.pekko.persistence.query.EventEnvelope}
    */
-  public static final class EventEnvelope extends
-      org.apache.pekko.protobufv3.internal.GeneratedMessage implements
+  public static final class EventEnvelope
+      extends org.apache.pekko.protobufv3.internal.GeneratedMessage
+      implements
       // @@protoc_insertion_point(message_implements:org.apache.pekko.persistence.query.EventEnvelope)
       EventEnvelopeOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
+
     static {
       org.apache.pekko.protobufv3.internal.RuntimeVersion.validateProtobufGencodeVersion(
-        org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
-        /* major= */ 4,
-        /* minor= */ 32,
-        /* patch= */ 0,
-        /* suffix= */ "",
-        EventEnvelope.class.getName());
+          org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
+          /* major= */ 4,
+          /* minor= */ 32,
+          /* patch= */ 0,
+          /* suffix= */ "",
+          EventEnvelope.class.getName());
     }
     // Use EventEnvelope.newBuilder() to construct.
-    private EventEnvelope(org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
+    private EventEnvelope(
+        org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
       super(builder);
     }
+
     private EventEnvelope() {
       persistenceId_ = "";
       entityType_ = "";
@@ -208,23 +230,30 @@ public final class QueryMessages {
 
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.internal_static_org_apache_pekko_persistence_query_EventEnvelope_descriptor;
+      return org.apache.pekko.persistence.query.internal.protobuf.QueryMessages
+          .internal_static_org_apache_pekko_persistence_query_EventEnvelope_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.internal_static_org_apache_pekko_persistence_query_EventEnvelope_fieldAccessorTable
+      return org.apache.pekko.persistence.query.internal.protobuf.QueryMessages
+          .internal_static_org_apache_pekko_persistence_query_EventEnvelope_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope.class, org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope.Builder.class);
+              org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope
+                  .class,
+              org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope
+                  .Builder.class);
     }
 
     private int bitField0_;
     public static final int PERSISTENCE_ID_FIELD_NUMBER = 1;
+
     @SuppressWarnings("serial")
     private volatile java.lang.Object persistenceId_ = "";
     /**
      * <code>required string persistence_id = 1;</code>
+     *
      * @return Whether the persistenceId field is set.
      */
     @java.lang.Override
@@ -233,6 +262,7 @@ public final class QueryMessages {
     }
     /**
      * <code>required string persistence_id = 1;</code>
+     *
      * @return The persistenceId.
      */
     @java.lang.Override
@@ -241,7 +271,7 @@ public final class QueryMessages {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        org.apache.pekko.protobufv3.internal.ByteString bs = 
+        org.apache.pekko.protobufv3.internal.ByteString bs =
             (org.apache.pekko.protobufv3.internal.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
@@ -252,16 +282,15 @@ public final class QueryMessages {
     }
     /**
      * <code>required string persistence_id = 1;</code>
+     *
      * @return The bytes for persistenceId.
      */
     @java.lang.Override
-    public org.apache.pekko.protobufv3.internal.ByteString
-        getPersistenceIdBytes() {
+    public org.apache.pekko.protobufv3.internal.ByteString getPersistenceIdBytes() {
       java.lang.Object ref = persistenceId_;
       if (ref instanceof java.lang.String) {
-        org.apache.pekko.protobufv3.internal.ByteString b = 
-            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        org.apache.pekko.protobufv3.internal.ByteString b =
+            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
         persistenceId_ = b;
         return b;
       } else {
@@ -270,10 +299,12 @@ public final class QueryMessages {
     }
 
     public static final int ENTITY_TYPE_FIELD_NUMBER = 2;
+
     @SuppressWarnings("serial")
     private volatile java.lang.Object entityType_ = "";
     /**
      * <code>required string entity_type = 2;</code>
+     *
      * @return Whether the entityType field is set.
      */
     @java.lang.Override
@@ -282,6 +313,7 @@ public final class QueryMessages {
     }
     /**
      * <code>required string entity_type = 2;</code>
+     *
      * @return The entityType.
      */
     @java.lang.Override
@@ -290,7 +322,7 @@ public final class QueryMessages {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        org.apache.pekko.protobufv3.internal.ByteString bs = 
+        org.apache.pekko.protobufv3.internal.ByteString bs =
             (org.apache.pekko.protobufv3.internal.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
@@ -301,16 +333,15 @@ public final class QueryMessages {
     }
     /**
      * <code>required string entity_type = 2;</code>
+     *
      * @return The bytes for entityType.
      */
     @java.lang.Override
-    public org.apache.pekko.protobufv3.internal.ByteString
-        getEntityTypeBytes() {
+    public org.apache.pekko.protobufv3.internal.ByteString getEntityTypeBytes() {
       java.lang.Object ref = entityType_;
       if (ref instanceof java.lang.String) {
-        org.apache.pekko.protobufv3.internal.ByteString b = 
-            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        org.apache.pekko.protobufv3.internal.ByteString b =
+            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
         entityType_ = b;
         return b;
       } else {
@@ -322,6 +353,7 @@ public final class QueryMessages {
     private int slice_ = 0;
     /**
      * <code>required int32 slice = 3;</code>
+     *
      * @return Whether the slice field is set.
      */
     @java.lang.Override
@@ -330,6 +362,7 @@ public final class QueryMessages {
     }
     /**
      * <code>required int32 slice = 3;</code>
+     *
      * @return The slice.
      */
     @java.lang.Override
@@ -341,6 +374,7 @@ public final class QueryMessages {
     private long sequenceNr_ = 0L;
     /**
      * <code>required int64 sequence_nr = 4;</code>
+     *
      * @return Whether the sequenceNr field is set.
      */
     @java.lang.Override
@@ -349,6 +383,7 @@ public final class QueryMessages {
     }
     /**
      * <code>required int64 sequence_nr = 4;</code>
+     *
      * @return The sequenceNr.
      */
     @java.lang.Override
@@ -360,6 +395,7 @@ public final class QueryMessages {
     private long timestamp_ = 0L;
     /**
      * <code>required int64 timestamp = 5;</code>
+     *
      * @return Whether the timestamp field is set.
      */
     @java.lang.Override
@@ -368,6 +404,7 @@ public final class QueryMessages {
     }
     /**
      * <code>required int64 timestamp = 5;</code>
+     *
      * @return The timestamp.
      */
     @java.lang.Override
@@ -376,10 +413,12 @@ public final class QueryMessages {
     }
 
     public static final int OFFSET_FIELD_NUMBER = 6;
+
     @SuppressWarnings("serial")
     private volatile java.lang.Object offset_ = "";
     /**
      * <code>required string offset = 6;</code>
+     *
      * @return Whether the offset field is set.
      */
     @java.lang.Override
@@ -388,6 +427,7 @@ public final class QueryMessages {
     }
     /**
      * <code>required string offset = 6;</code>
+     *
      * @return The offset.
      */
     @java.lang.Override
@@ -396,7 +436,7 @@ public final class QueryMessages {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        org.apache.pekko.protobufv3.internal.ByteString bs = 
+        org.apache.pekko.protobufv3.internal.ByteString bs =
             (org.apache.pekko.protobufv3.internal.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
@@ -407,16 +447,15 @@ public final class QueryMessages {
     }
     /**
      * <code>required string offset = 6;</code>
+     *
      * @return The bytes for offset.
      */
     @java.lang.Override
-    public org.apache.pekko.protobufv3.internal.ByteString
-        getOffsetBytes() {
+    public org.apache.pekko.protobufv3.internal.ByteString getOffsetBytes() {
       java.lang.Object ref = offset_;
       if (ref instanceof java.lang.String) {
-        org.apache.pekko.protobufv3.internal.ByteString b = 
-            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        org.apache.pekko.protobufv3.internal.ByteString b =
+            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
         offset_ = b;
         return b;
       } else {
@@ -425,10 +464,12 @@ public final class QueryMessages {
     }
 
     public static final int OFFSET_MANIFEST_FIELD_NUMBER = 7;
+
     @SuppressWarnings("serial")
     private volatile java.lang.Object offsetManifest_ = "";
     /**
      * <code>required string offset_manifest = 7;</code>
+     *
      * @return Whether the offsetManifest field is set.
      */
     @java.lang.Override
@@ -437,6 +478,7 @@ public final class QueryMessages {
     }
     /**
      * <code>required string offset_manifest = 7;</code>
+     *
      * @return The offsetManifest.
      */
     @java.lang.Override
@@ -445,7 +487,7 @@ public final class QueryMessages {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        org.apache.pekko.protobufv3.internal.ByteString bs = 
+        org.apache.pekko.protobufv3.internal.ByteString bs =
             (org.apache.pekko.protobufv3.internal.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
@@ -456,16 +498,15 @@ public final class QueryMessages {
     }
     /**
      * <code>required string offset_manifest = 7;</code>
+     *
      * @return The bytes for offsetManifest.
      */
     @java.lang.Override
-    public org.apache.pekko.protobufv3.internal.ByteString
-        getOffsetManifestBytes() {
+    public org.apache.pekko.protobufv3.internal.ByteString getOffsetManifestBytes() {
       java.lang.Object ref = offsetManifest_;
       if (ref instanceof java.lang.String) {
-        org.apache.pekko.protobufv3.internal.ByteString b = 
-            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        org.apache.pekko.protobufv3.internal.ByteString b =
+            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
         offsetManifest_ = b;
         return b;
       } else {
@@ -477,6 +518,7 @@ public final class QueryMessages {
     private org.apache.pekko.remote.ContainerFormats.Payload event_;
     /**
      * <code>optional .Payload event = 8;</code>
+     *
      * @return Whether the event field is set.
      */
     @java.lang.Override
@@ -485,24 +527,28 @@ public final class QueryMessages {
     }
     /**
      * <code>optional .Payload event = 8;</code>
+     *
      * @return The event.
      */
     @java.lang.Override
     public org.apache.pekko.remote.ContainerFormats.Payload getEvent() {
-      return event_ == null ? org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance() : event_;
+      return event_ == null
+          ? org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance()
+          : event_;
     }
-    /**
-     * <code>optional .Payload event = 8;</code>
-     */
+    /** <code>optional .Payload event = 8;</code> */
     @java.lang.Override
     public org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder getEventOrBuilder() {
-      return event_ == null ? org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance() : event_;
+      return event_ == null
+          ? org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance()
+          : event_;
     }
 
     public static final int METADATA_FIELD_NUMBER = 9;
     private org.apache.pekko.remote.ContainerFormats.Payload metadata_;
     /**
      * <code>optional .Payload metadata = 9;</code>
+     *
      * @return Whether the metadata field is set.
      */
     @java.lang.Override
@@ -511,21 +557,25 @@ public final class QueryMessages {
     }
     /**
      * <code>optional .Payload metadata = 9;</code>
+     *
      * @return The metadata.
      */
     @java.lang.Override
     public org.apache.pekko.remote.ContainerFormats.Payload getMetadata() {
-      return metadata_ == null ? org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance() : metadata_;
+      return metadata_ == null
+          ? org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance()
+          : metadata_;
     }
-    /**
-     * <code>optional .Payload metadata = 9;</code>
-     */
+    /** <code>optional .Payload metadata = 9;</code> */
     @java.lang.Override
     public org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder getMetadataOrBuilder() {
-      return metadata_ == null ? org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance() : metadata_;
+      return metadata_ == null
+          ? org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance()
+          : metadata_;
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -578,9 +628,10 @@ public final class QueryMessages {
 
     @java.lang.Override
     public void writeTo(org.apache.pekko.protobufv3.internal.CodedOutputStream output)
-                        throws java.io.IOException {
+        throws java.io.IOException {
       if (((bitField0_ & 0x00000001) != 0)) {
-        org.apache.pekko.protobufv3.internal.GeneratedMessage.writeString(output, 1, persistenceId_);
+        org.apache.pekko.protobufv3.internal.GeneratedMessage.writeString(
+            output, 1, persistenceId_);
       }
       if (((bitField0_ & 0x00000002) != 0)) {
         org.apache.pekko.protobufv3.internal.GeneratedMessage.writeString(output, 2, entityType_);
@@ -598,7 +649,8 @@ public final class QueryMessages {
         org.apache.pekko.protobufv3.internal.GeneratedMessage.writeString(output, 6, offset_);
       }
       if (((bitField0_ & 0x00000040) != 0)) {
-        org.apache.pekko.protobufv3.internal.GeneratedMessage.writeString(output, 7, offsetManifest_);
+        org.apache.pekko.protobufv3.internal.GeneratedMessage.writeString(
+            output, 7, offsetManifest_);
       }
       if (((bitField0_ & 0x00000080) != 0)) {
         output.writeMessage(8, getEvent());
@@ -616,36 +668,42 @@ public final class QueryMessages {
 
       size = 0;
       if (((bitField0_ & 0x00000001) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.GeneratedMessage.computeStringSize(1, persistenceId_);
+        size +=
+            org.apache.pekko.protobufv3.internal.GeneratedMessage.computeStringSize(
+                1, persistenceId_);
       }
       if (((bitField0_ & 0x00000002) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.GeneratedMessage.computeStringSize(2, entityType_);
+        size +=
+            org.apache.pekko.protobufv3.internal.GeneratedMessage.computeStringSize(2, entityType_);
       }
       if (((bitField0_ & 0x00000004) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeInt32Size(3, slice_);
+        size += org.apache.pekko.protobufv3.internal.CodedOutputStream.computeInt32Size(3, slice_);
       }
       if (((bitField0_ & 0x00000008) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeInt64Size(4, sequenceNr_);
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeInt64Size(4, sequenceNr_);
       }
       if (((bitField0_ & 0x00000010) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeInt64Size(5, timestamp_);
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeInt64Size(5, timestamp_);
       }
       if (((bitField0_ & 0x00000020) != 0)) {
         size += org.apache.pekko.protobufv3.internal.GeneratedMessage.computeStringSize(6, offset_);
       }
       if (((bitField0_ & 0x00000040) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.GeneratedMessage.computeStringSize(7, offsetManifest_);
+        size +=
+            org.apache.pekko.protobufv3.internal.GeneratedMessage.computeStringSize(
+                7, offsetManifest_);
       }
       if (((bitField0_ & 0x00000080) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeMessageSize(8, getEvent());
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeMessageSize(
+                8, getEvent());
       }
       if (((bitField0_ & 0x00000100) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeMessageSize(9, getMetadata());
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeMessageSize(
+                9, getMetadata());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -655,57 +713,51 @@ public final class QueryMessages {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
-      if (!(obj instanceof org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope)) {
+      if (!(obj
+          instanceof
+          org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope)) {
         return super.equals(obj);
       }
-      org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope other = (org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope) obj;
+      org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope other =
+          (org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope) obj;
 
       if (hasPersistenceId() != other.hasPersistenceId()) return false;
       if (hasPersistenceId()) {
-        if (!getPersistenceId()
-            .equals(other.getPersistenceId())) return false;
+        if (!getPersistenceId().equals(other.getPersistenceId())) return false;
       }
       if (hasEntityType() != other.hasEntityType()) return false;
       if (hasEntityType()) {
-        if (!getEntityType()
-            .equals(other.getEntityType())) return false;
+        if (!getEntityType().equals(other.getEntityType())) return false;
       }
       if (hasSlice() != other.hasSlice()) return false;
       if (hasSlice()) {
-        if (getSlice()
-            != other.getSlice()) return false;
+        if (getSlice() != other.getSlice()) return false;
       }
       if (hasSequenceNr() != other.hasSequenceNr()) return false;
       if (hasSequenceNr()) {
-        if (getSequenceNr()
-            != other.getSequenceNr()) return false;
+        if (getSequenceNr() != other.getSequenceNr()) return false;
       }
       if (hasTimestamp() != other.hasTimestamp()) return false;
       if (hasTimestamp()) {
-        if (getTimestamp()
-            != other.getTimestamp()) return false;
+        if (getTimestamp() != other.getTimestamp()) return false;
       }
       if (hasOffset() != other.hasOffset()) return false;
       if (hasOffset()) {
-        if (!getOffset()
-            .equals(other.getOffset())) return false;
+        if (!getOffset().equals(other.getOffset())) return false;
       }
       if (hasOffsetManifest() != other.hasOffsetManifest()) return false;
       if (hasOffsetManifest()) {
-        if (!getOffsetManifest()
-            .equals(other.getOffsetManifest())) return false;
+        if (!getOffsetManifest().equals(other.getOffsetManifest())) return false;
       }
       if (hasEvent() != other.hasEvent()) return false;
       if (hasEvent()) {
-        if (!getEvent()
-            .equals(other.getEvent())) return false;
+        if (!getEvent().equals(other.getEvent())) return false;
       }
       if (hasMetadata() != other.hasMetadata()) return false;
       if (hasMetadata()) {
-        if (!getMetadata()
-            .equals(other.getMetadata())) return false;
+        if (!getMetadata().equals(other.getMetadata())) return false;
       }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
@@ -732,13 +784,12 @@ public final class QueryMessages {
       }
       if (hasSequenceNr()) {
         hash = (37 * hash) + SEQUENCE_NR_FIELD_NUMBER;
-        hash = (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashLong(
-            getSequenceNr());
+        hash =
+            (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashLong(getSequenceNr());
       }
       if (hasTimestamp()) {
         hash = (37 * hash) + TIMESTAMP_FIELD_NUMBER;
-        hash = (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashLong(
-            getTimestamp());
+        hash = (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashLong(getTimestamp());
       }
       if (hasOffset()) {
         hash = (37 * hash) + OFFSET_FIELD_NUMBER;
@@ -761,90 +812,112 @@ public final class QueryMessages {
       return hash;
     }
 
-    public static org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope parseFrom(
-        java.nio.ByteBuffer data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+    public static org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope
+        parseFrom(java.nio.ByteBuffer data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
-    }
-    public static org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope parseFrom(
-        java.nio.ByteBuffer data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope parseFrom(
-        org.apache.pekko.protobufv3.internal.ByteString data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope parseFrom(
-        org.apache.pekko.protobufv3.internal.ByteString data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope parseFrom(byte[] data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope parseFrom(
-        byte[] data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input);
-    }
-    public static org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope parseFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseDelimitedWithIOException(PARSER, input);
+    public static org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope
+        parseFrom(
+            java.nio.ByteBuffer data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
     }
 
-    public static org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope parseDelimitedFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    public static org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope
+        parseFrom(org.apache.pekko.protobufv3.internal.ByteString data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
     }
-    public static org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input);
+
+    public static org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope
+        parseFrom(
+            org.apache.pekko.protobufv3.internal.ByteString data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessage
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope
+        parseFrom(byte[] data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+
+    public static org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope
+        parseFrom(
+            byte[] data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope
+        parseFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input);
+    }
+
+    public static org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope
+        parseFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input, extensionRegistry);
+    }
+
+    public static org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope
+        parseDelimitedFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseDelimitedWithIOException(
+          PARSER, input);
+    }
+
+    public static org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope
+        parseDelimitedFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseDelimitedWithIOException(
+          PARSER, input, extensionRegistry);
+    }
+
+    public static org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope
+        parseFrom(org.apache.pekko.protobufv3.internal.CodedInputStream input)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input);
+    }
+
+    public static org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope
+        parseFrom(
+            org.apache.pekko.protobufv3.internal.CodedInputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage.parseWithIOException(
+          PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope prototype) {
+
+    public static Builder newBuilder(
+        org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope
+            prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
@@ -854,46 +927,55 @@ public final class QueryMessages {
       return builder;
     }
     /**
+     *
+     *
      * <pre>
      * for org.apache.pekko.persistence.query.typed.EventEnvelope
      * </pre>
      *
      * Protobuf type {@code org.apache.pekko.persistence.query.EventEnvelope}
      */
-    public static final class Builder extends
-        org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder> implements
+    public static final class Builder
+        extends org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder>
+        implements
         // @@protoc_insertion_point(builder_implements:org.apache.pekko.persistence.query.EventEnvelope)
         org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelopeOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.internal_static_org_apache_pekko_persistence_query_EventEnvelope_descriptor;
+        return org.apache.pekko.persistence.query.internal.protobuf.QueryMessages
+            .internal_static_org_apache_pekko_persistence_query_EventEnvelope_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.internal_static_org_apache_pekko_persistence_query_EventEnvelope_fieldAccessorTable
+        return org.apache.pekko.persistence.query.internal.protobuf.QueryMessages
+            .internal_static_org_apache_pekko_persistence_query_EventEnvelope_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope.class, org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope.Builder.class);
+                org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope
+                    .class,
+                org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope
+                    .Builder.class);
       }
 
-      // Construct using org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope.newBuilder()
+      // Construct using
+      // org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(
-          org.apache.pekko.protobufv3.internal.GeneratedMessage.BuilderParent parent) {
+      private Builder(org.apache.pekko.protobufv3.internal.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
+
       private void maybeForceBuilderInitialization() {
-        if (org.apache.pekko.protobufv3.internal.GeneratedMessage
-                .alwaysUseFieldBuilders) {
+        if (org.apache.pekko.protobufv3.internal.GeneratedMessage.alwaysUseFieldBuilders) {
           internalGetEventFieldBuilder();
           internalGetMetadataFieldBuilder();
         }
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -919,19 +1001,23 @@ public final class QueryMessages {
       }
 
       @java.lang.Override
-      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-          getDescriptorForType() {
-        return org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.internal_static_org_apache_pekko_persistence_query_EventEnvelope_descriptor;
+      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor getDescriptorForType() {
+        return org.apache.pekko.persistence.query.internal.protobuf.QueryMessages
+            .internal_static_org_apache_pekko_persistence_query_EventEnvelope_descriptor;
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope getDefaultInstanceForType() {
-        return org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope.getDefaultInstance();
+      public org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope
+          getDefaultInstanceForType() {
+        return org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope
+            .getDefaultInstance();
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope build() {
-        org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope result = buildPartial();
+      public org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope
+          build() {
+        org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope result =
+            buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -939,14 +1025,20 @@ public final class QueryMessages {
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope buildPartial() {
-        org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope result = new org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope(this);
-        if (bitField0_ != 0) { buildPartial0(result); }
+      public org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope
+          buildPartial() {
+        org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope result =
+            new org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope(
+                this);
+        if (bitField0_ != 0) {
+          buildPartial0(result);
+        }
         onBuilt();
         return result;
       }
 
-      private void buildPartial0(org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope result) {
+      private void buildPartial0(
+          org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope result) {
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -978,15 +1070,11 @@ public final class QueryMessages {
           to_bitField0_ |= 0x00000040;
         }
         if (((from_bitField0_ & 0x00000080) != 0)) {
-          result.event_ = eventBuilder_ == null
-              ? event_
-              : eventBuilder_.build();
+          result.event_ = eventBuilder_ == null ? event_ : eventBuilder_.build();
           to_bitField0_ |= 0x00000080;
         }
         if (((from_bitField0_ & 0x00000100) != 0)) {
-          result.metadata_ = metadataBuilder_ == null
-              ? metadata_
-              : metadataBuilder_.build();
+          result.metadata_ = metadataBuilder_ == null ? metadata_ : metadataBuilder_.build();
           to_bitField0_ |= 0x00000100;
         }
         result.bitField0_ |= to_bitField0_;
@@ -994,16 +1082,23 @@ public final class QueryMessages {
 
       @java.lang.Override
       public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
-        if (other instanceof org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope) {
-          return mergeFrom((org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope)other);
+        if (other
+            instanceof
+            org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope) {
+          return mergeFrom(
+              (org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope)
+                  other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope other) {
-        if (other == org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope.getDefaultInstance()) return this;
+      public Builder mergeFrom(
+          org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope other) {
+        if (other
+            == org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope
+                .getDefaultInstance()) return this;
         if (other.hasPersistenceId()) {
           persistenceId_ = other.persistenceId_;
           bitField0_ |= 0x00000001;
@@ -1096,61 +1191,68 @@ public final class QueryMessages {
               case 0:
                 done = true;
                 break;
-              case 10: {
-                persistenceId_ = input.readBytes();
-                bitField0_ |= 0x00000001;
-                break;
-              } // case 10
-              case 18: {
-                entityType_ = input.readBytes();
-                bitField0_ |= 0x00000002;
-                break;
-              } // case 18
-              case 24: {
-                slice_ = input.readInt32();
-                bitField0_ |= 0x00000004;
-                break;
-              } // case 24
-              case 32: {
-                sequenceNr_ = input.readInt64();
-                bitField0_ |= 0x00000008;
-                break;
-              } // case 32
-              case 40: {
-                timestamp_ = input.readInt64();
-                bitField0_ |= 0x00000010;
-                break;
-              } // case 40
-              case 50: {
-                offset_ = input.readBytes();
-                bitField0_ |= 0x00000020;
-                break;
-              } // case 50
-              case 58: {
-                offsetManifest_ = input.readBytes();
-                bitField0_ |= 0x00000040;
-                break;
-              } // case 58
-              case 66: {
-                input.readMessage(
-                    internalGetEventFieldBuilder().getBuilder(),
-                    extensionRegistry);
-                bitField0_ |= 0x00000080;
-                break;
-              } // case 66
-              case 74: {
-                input.readMessage(
-                    internalGetMetadataFieldBuilder().getBuilder(),
-                    extensionRegistry);
-                bitField0_ |= 0x00000100;
-                break;
-              } // case 74
-              default: {
-                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                  done = true; // was an endgroup tag
-                }
-                break;
-              } // default:
+              case 10:
+                {
+                  persistenceId_ = input.readBytes();
+                  bitField0_ |= 0x00000001;
+                  break;
+                } // case 10
+              case 18:
+                {
+                  entityType_ = input.readBytes();
+                  bitField0_ |= 0x00000002;
+                  break;
+                } // case 18
+              case 24:
+                {
+                  slice_ = input.readInt32();
+                  bitField0_ |= 0x00000004;
+                  break;
+                } // case 24
+              case 32:
+                {
+                  sequenceNr_ = input.readInt64();
+                  bitField0_ |= 0x00000008;
+                  break;
+                } // case 32
+              case 40:
+                {
+                  timestamp_ = input.readInt64();
+                  bitField0_ |= 0x00000010;
+                  break;
+                } // case 40
+              case 50:
+                {
+                  offset_ = input.readBytes();
+                  bitField0_ |= 0x00000020;
+                  break;
+                } // case 50
+              case 58:
+                {
+                  offsetManifest_ = input.readBytes();
+                  bitField0_ |= 0x00000040;
+                  break;
+                } // case 58
+              case 66:
+                {
+                  input.readMessage(internalGetEventFieldBuilder().getBuilder(), extensionRegistry);
+                  bitField0_ |= 0x00000080;
+                  break;
+                } // case 66
+              case 74:
+                {
+                  input.readMessage(
+                      internalGetMetadataFieldBuilder().getBuilder(), extensionRegistry);
+                  bitField0_ |= 0x00000100;
+                  break;
+                } // case 74
+              default:
+                {
+                  if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                    done = true; // was an endgroup tag
+                  }
+                  break;
+                } // default:
             } // switch (tag)
           } // while (!done)
         } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
@@ -1160,11 +1262,13 @@ public final class QueryMessages {
         } // finally
         return this;
       }
+
       private int bitField0_;
 
       private java.lang.Object persistenceId_ = "";
       /**
        * <code>required string persistence_id = 1;</code>
+       *
        * @return Whether the persistenceId field is set.
        */
       public boolean hasPersistenceId() {
@@ -1172,6 +1276,7 @@ public final class QueryMessages {
       }
       /**
        * <code>required string persistence_id = 1;</code>
+       *
        * @return The persistenceId.
        */
       public java.lang.String getPersistenceId() {
@@ -1190,15 +1295,14 @@ public final class QueryMessages {
       }
       /**
        * <code>required string persistence_id = 1;</code>
+       *
        * @return The bytes for persistenceId.
        */
-      public org.apache.pekko.protobufv3.internal.ByteString
-          getPersistenceIdBytes() {
+      public org.apache.pekko.protobufv3.internal.ByteString getPersistenceIdBytes() {
         java.lang.Object ref = persistenceId_;
         if (ref instanceof String) {
-          org.apache.pekko.protobufv3.internal.ByteString b = 
-              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          org.apache.pekko.protobufv3.internal.ByteString b =
+              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
           persistenceId_ = b;
           return b;
         } else {
@@ -1207,12 +1311,14 @@ public final class QueryMessages {
       }
       /**
        * <code>required string persistence_id = 1;</code>
+       *
        * @param value The persistenceId to set.
        * @return This builder for chaining.
        */
-      public Builder setPersistenceId(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
+      public Builder setPersistenceId(java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
         persistenceId_ = value;
         bitField0_ |= 0x00000001;
         onChanged();
@@ -1220,6 +1326,7 @@ public final class QueryMessages {
       }
       /**
        * <code>required string persistence_id = 1;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearPersistenceId() {
@@ -1230,12 +1337,14 @@ public final class QueryMessages {
       }
       /**
        * <code>required string persistence_id = 1;</code>
+       *
        * @param value The bytes for persistenceId to set.
        * @return This builder for chaining.
        */
-      public Builder setPersistenceIdBytes(
-          org.apache.pekko.protobufv3.internal.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
+      public Builder setPersistenceIdBytes(org.apache.pekko.protobufv3.internal.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
         persistenceId_ = value;
         bitField0_ |= 0x00000001;
         onChanged();
@@ -1245,6 +1354,7 @@ public final class QueryMessages {
       private java.lang.Object entityType_ = "";
       /**
        * <code>required string entity_type = 2;</code>
+       *
        * @return Whether the entityType field is set.
        */
       public boolean hasEntityType() {
@@ -1252,6 +1362,7 @@ public final class QueryMessages {
       }
       /**
        * <code>required string entity_type = 2;</code>
+       *
        * @return The entityType.
        */
       public java.lang.String getEntityType() {
@@ -1270,15 +1381,14 @@ public final class QueryMessages {
       }
       /**
        * <code>required string entity_type = 2;</code>
+       *
        * @return The bytes for entityType.
        */
-      public org.apache.pekko.protobufv3.internal.ByteString
-          getEntityTypeBytes() {
+      public org.apache.pekko.protobufv3.internal.ByteString getEntityTypeBytes() {
         java.lang.Object ref = entityType_;
         if (ref instanceof String) {
-          org.apache.pekko.protobufv3.internal.ByteString b = 
-              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          org.apache.pekko.protobufv3.internal.ByteString b =
+              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
           entityType_ = b;
           return b;
         } else {
@@ -1287,12 +1397,14 @@ public final class QueryMessages {
       }
       /**
        * <code>required string entity_type = 2;</code>
+       *
        * @param value The entityType to set.
        * @return This builder for chaining.
        */
-      public Builder setEntityType(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
+      public Builder setEntityType(java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
         entityType_ = value;
         bitField0_ |= 0x00000002;
         onChanged();
@@ -1300,6 +1412,7 @@ public final class QueryMessages {
       }
       /**
        * <code>required string entity_type = 2;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearEntityType() {
@@ -1310,21 +1423,24 @@ public final class QueryMessages {
       }
       /**
        * <code>required string entity_type = 2;</code>
+       *
        * @param value The bytes for entityType to set.
        * @return This builder for chaining.
        */
-      public Builder setEntityTypeBytes(
-          org.apache.pekko.protobufv3.internal.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
+      public Builder setEntityTypeBytes(org.apache.pekko.protobufv3.internal.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
         entityType_ = value;
         bitField0_ |= 0x00000002;
         onChanged();
         return this;
       }
 
-      private int slice_ ;
+      private int slice_;
       /**
        * <code>required int32 slice = 3;</code>
+       *
        * @return Whether the slice field is set.
        */
       @java.lang.Override
@@ -1333,6 +1449,7 @@ public final class QueryMessages {
       }
       /**
        * <code>required int32 slice = 3;</code>
+       *
        * @return The slice.
        */
       @java.lang.Override
@@ -1341,6 +1458,7 @@ public final class QueryMessages {
       }
       /**
        * <code>required int32 slice = 3;</code>
+       *
        * @param value The slice to set.
        * @return This builder for chaining.
        */
@@ -1353,6 +1471,7 @@ public final class QueryMessages {
       }
       /**
        * <code>required int32 slice = 3;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearSlice() {
@@ -1362,9 +1481,10 @@ public final class QueryMessages {
         return this;
       }
 
-      private long sequenceNr_ ;
+      private long sequenceNr_;
       /**
        * <code>required int64 sequence_nr = 4;</code>
+       *
        * @return Whether the sequenceNr field is set.
        */
       @java.lang.Override
@@ -1373,6 +1493,7 @@ public final class QueryMessages {
       }
       /**
        * <code>required int64 sequence_nr = 4;</code>
+       *
        * @return The sequenceNr.
        */
       @java.lang.Override
@@ -1381,6 +1502,7 @@ public final class QueryMessages {
       }
       /**
        * <code>required int64 sequence_nr = 4;</code>
+       *
        * @param value The sequenceNr to set.
        * @return This builder for chaining.
        */
@@ -1393,6 +1515,7 @@ public final class QueryMessages {
       }
       /**
        * <code>required int64 sequence_nr = 4;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearSequenceNr() {
@@ -1402,9 +1525,10 @@ public final class QueryMessages {
         return this;
       }
 
-      private long timestamp_ ;
+      private long timestamp_;
       /**
        * <code>required int64 timestamp = 5;</code>
+       *
        * @return Whether the timestamp field is set.
        */
       @java.lang.Override
@@ -1413,6 +1537,7 @@ public final class QueryMessages {
       }
       /**
        * <code>required int64 timestamp = 5;</code>
+       *
        * @return The timestamp.
        */
       @java.lang.Override
@@ -1421,6 +1546,7 @@ public final class QueryMessages {
       }
       /**
        * <code>required int64 timestamp = 5;</code>
+       *
        * @param value The timestamp to set.
        * @return This builder for chaining.
        */
@@ -1433,6 +1559,7 @@ public final class QueryMessages {
       }
       /**
        * <code>required int64 timestamp = 5;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearTimestamp() {
@@ -1445,6 +1572,7 @@ public final class QueryMessages {
       private java.lang.Object offset_ = "";
       /**
        * <code>required string offset = 6;</code>
+       *
        * @return Whether the offset field is set.
        */
       public boolean hasOffset() {
@@ -1452,6 +1580,7 @@ public final class QueryMessages {
       }
       /**
        * <code>required string offset = 6;</code>
+       *
        * @return The offset.
        */
       public java.lang.String getOffset() {
@@ -1470,15 +1599,14 @@ public final class QueryMessages {
       }
       /**
        * <code>required string offset = 6;</code>
+       *
        * @return The bytes for offset.
        */
-      public org.apache.pekko.protobufv3.internal.ByteString
-          getOffsetBytes() {
+      public org.apache.pekko.protobufv3.internal.ByteString getOffsetBytes() {
         java.lang.Object ref = offset_;
         if (ref instanceof String) {
-          org.apache.pekko.protobufv3.internal.ByteString b = 
-              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          org.apache.pekko.protobufv3.internal.ByteString b =
+              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
           offset_ = b;
           return b;
         } else {
@@ -1487,12 +1615,14 @@ public final class QueryMessages {
       }
       /**
        * <code>required string offset = 6;</code>
+       *
        * @param value The offset to set.
        * @return This builder for chaining.
        */
-      public Builder setOffset(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
+      public Builder setOffset(java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
         offset_ = value;
         bitField0_ |= 0x00000020;
         onChanged();
@@ -1500,6 +1630,7 @@ public final class QueryMessages {
       }
       /**
        * <code>required string offset = 6;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearOffset() {
@@ -1510,12 +1641,14 @@ public final class QueryMessages {
       }
       /**
        * <code>required string offset = 6;</code>
+       *
        * @param value The bytes for offset to set.
        * @return This builder for chaining.
        */
-      public Builder setOffsetBytes(
-          org.apache.pekko.protobufv3.internal.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
+      public Builder setOffsetBytes(org.apache.pekko.protobufv3.internal.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
         offset_ = value;
         bitField0_ |= 0x00000020;
         onChanged();
@@ -1525,6 +1658,7 @@ public final class QueryMessages {
       private java.lang.Object offsetManifest_ = "";
       /**
        * <code>required string offset_manifest = 7;</code>
+       *
        * @return Whether the offsetManifest field is set.
        */
       public boolean hasOffsetManifest() {
@@ -1532,6 +1666,7 @@ public final class QueryMessages {
       }
       /**
        * <code>required string offset_manifest = 7;</code>
+       *
        * @return The offsetManifest.
        */
       public java.lang.String getOffsetManifest() {
@@ -1550,15 +1685,14 @@ public final class QueryMessages {
       }
       /**
        * <code>required string offset_manifest = 7;</code>
+       *
        * @return The bytes for offsetManifest.
        */
-      public org.apache.pekko.protobufv3.internal.ByteString
-          getOffsetManifestBytes() {
+      public org.apache.pekko.protobufv3.internal.ByteString getOffsetManifestBytes() {
         java.lang.Object ref = offsetManifest_;
         if (ref instanceof String) {
-          org.apache.pekko.protobufv3.internal.ByteString b = 
-              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          org.apache.pekko.protobufv3.internal.ByteString b =
+              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
           offsetManifest_ = b;
           return b;
         } else {
@@ -1567,12 +1701,14 @@ public final class QueryMessages {
       }
       /**
        * <code>required string offset_manifest = 7;</code>
+       *
        * @param value The offsetManifest to set.
        * @return This builder for chaining.
        */
-      public Builder setOffsetManifest(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
+      public Builder setOffsetManifest(java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
         offsetManifest_ = value;
         bitField0_ |= 0x00000040;
         onChanged();
@@ -1580,6 +1716,7 @@ public final class QueryMessages {
       }
       /**
        * <code>required string offset_manifest = 7;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearOffsetManifest() {
@@ -1590,12 +1727,14 @@ public final class QueryMessages {
       }
       /**
        * <code>required string offset_manifest = 7;</code>
+       *
        * @param value The bytes for offsetManifest to set.
        * @return This builder for chaining.
        */
-      public Builder setOffsetManifestBytes(
-          org.apache.pekko.protobufv3.internal.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
+      public Builder setOffsetManifestBytes(org.apache.pekko.protobufv3.internal.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
         offsetManifest_ = value;
         bitField0_ |= 0x00000040;
         onChanged();
@@ -1604,9 +1743,13 @@ public final class QueryMessages {
 
       private org.apache.pekko.remote.ContainerFormats.Payload event_;
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
-          org.apache.pekko.remote.ContainerFormats.Payload, org.apache.pekko.remote.ContainerFormats.Payload.Builder, org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder> eventBuilder_;
+              org.apache.pekko.remote.ContainerFormats.Payload,
+              org.apache.pekko.remote.ContainerFormats.Payload.Builder,
+              org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder>
+          eventBuilder_;
       /**
        * <code>optional .Payload event = 8;</code>
+       *
        * @return Whether the event field is set.
        */
       public boolean hasEvent() {
@@ -1614,18 +1757,19 @@ public final class QueryMessages {
       }
       /**
        * <code>optional .Payload event = 8;</code>
+       *
        * @return The event.
        */
       public org.apache.pekko.remote.ContainerFormats.Payload getEvent() {
         if (eventBuilder_ == null) {
-          return event_ == null ? org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance() : event_;
+          return event_ == null
+              ? org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance()
+              : event_;
         } else {
           return eventBuilder_.getMessage();
         }
       }
-      /**
-       * <code>optional .Payload event = 8;</code>
-       */
+      /** <code>optional .Payload event = 8;</code> */
       public Builder setEvent(org.apache.pekko.remote.ContainerFormats.Payload value) {
         if (eventBuilder_ == null) {
           if (value == null) {
@@ -1639,9 +1783,7 @@ public final class QueryMessages {
         onChanged();
         return this;
       }
-      /**
-       * <code>optional .Payload event = 8;</code>
-       */
+      /** <code>optional .Payload event = 8;</code> */
       public Builder setEvent(
           org.apache.pekko.remote.ContainerFormats.Payload.Builder builderForValue) {
         if (eventBuilder_ == null) {
@@ -1653,14 +1795,12 @@ public final class QueryMessages {
         onChanged();
         return this;
       }
-      /**
-       * <code>optional .Payload event = 8;</code>
-       */
+      /** <code>optional .Payload event = 8;</code> */
       public Builder mergeEvent(org.apache.pekko.remote.ContainerFormats.Payload value) {
         if (eventBuilder_ == null) {
-          if (((bitField0_ & 0x00000080) != 0) &&
-            event_ != null &&
-            event_ != org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance()) {
+          if (((bitField0_ & 0x00000080) != 0)
+              && event_ != null
+              && event_ != org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance()) {
             getEventBuilder().mergeFrom(value);
           } else {
             event_ = value;
@@ -1674,9 +1814,7 @@ public final class QueryMessages {
         }
         return this;
       }
-      /**
-       * <code>optional .Payload event = 8;</code>
-       */
+      /** <code>optional .Payload event = 8;</code> */
       public Builder clearEvent() {
         bitField0_ = (bitField0_ & ~0x00000080);
         event_ = null;
@@ -1687,37 +1825,35 @@ public final class QueryMessages {
         onChanged();
         return this;
       }
-      /**
-       * <code>optional .Payload event = 8;</code>
-       */
+      /** <code>optional .Payload event = 8;</code> */
       public org.apache.pekko.remote.ContainerFormats.Payload.Builder getEventBuilder() {
         bitField0_ |= 0x00000080;
         onChanged();
         return internalGetEventFieldBuilder().getBuilder();
       }
-      /**
-       * <code>optional .Payload event = 8;</code>
-       */
+      /** <code>optional .Payload event = 8;</code> */
       public org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder getEventOrBuilder() {
         if (eventBuilder_ != null) {
           return eventBuilder_.getMessageOrBuilder();
         } else {
-          return event_ == null ?
-              org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance() : event_;
+          return event_ == null
+              ? org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance()
+              : event_;
         }
       }
-      /**
-       * <code>optional .Payload event = 8;</code>
-       */
+      /** <code>optional .Payload event = 8;</code> */
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
-          org.apache.pekko.remote.ContainerFormats.Payload, org.apache.pekko.remote.ContainerFormats.Payload.Builder, org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder> 
+              org.apache.pekko.remote.ContainerFormats.Payload,
+              org.apache.pekko.remote.ContainerFormats.Payload.Builder,
+              org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder>
           internalGetEventFieldBuilder() {
         if (eventBuilder_ == null) {
-          eventBuilder_ = new org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
-              org.apache.pekko.remote.ContainerFormats.Payload, org.apache.pekko.remote.ContainerFormats.Payload.Builder, org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder>(
-                  getEvent(),
-                  getParentForChildren(),
-                  isClean());
+          eventBuilder_ =
+              new org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
+                  org.apache.pekko.remote.ContainerFormats.Payload,
+                  org.apache.pekko.remote.ContainerFormats.Payload.Builder,
+                  org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder>(
+                  getEvent(), getParentForChildren(), isClean());
           event_ = null;
         }
         return eventBuilder_;
@@ -1725,9 +1861,13 @@ public final class QueryMessages {
 
       private org.apache.pekko.remote.ContainerFormats.Payload metadata_;
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
-          org.apache.pekko.remote.ContainerFormats.Payload, org.apache.pekko.remote.ContainerFormats.Payload.Builder, org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder> metadataBuilder_;
+              org.apache.pekko.remote.ContainerFormats.Payload,
+              org.apache.pekko.remote.ContainerFormats.Payload.Builder,
+              org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder>
+          metadataBuilder_;
       /**
        * <code>optional .Payload metadata = 9;</code>
+       *
        * @return Whether the metadata field is set.
        */
       public boolean hasMetadata() {
@@ -1735,18 +1875,19 @@ public final class QueryMessages {
       }
       /**
        * <code>optional .Payload metadata = 9;</code>
+       *
        * @return The metadata.
        */
       public org.apache.pekko.remote.ContainerFormats.Payload getMetadata() {
         if (metadataBuilder_ == null) {
-          return metadata_ == null ? org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance() : metadata_;
+          return metadata_ == null
+              ? org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance()
+              : metadata_;
         } else {
           return metadataBuilder_.getMessage();
         }
       }
-      /**
-       * <code>optional .Payload metadata = 9;</code>
-       */
+      /** <code>optional .Payload metadata = 9;</code> */
       public Builder setMetadata(org.apache.pekko.remote.ContainerFormats.Payload value) {
         if (metadataBuilder_ == null) {
           if (value == null) {
@@ -1760,9 +1901,7 @@ public final class QueryMessages {
         onChanged();
         return this;
       }
-      /**
-       * <code>optional .Payload metadata = 9;</code>
-       */
+      /** <code>optional .Payload metadata = 9;</code> */
       public Builder setMetadata(
           org.apache.pekko.remote.ContainerFormats.Payload.Builder builderForValue) {
         if (metadataBuilder_ == null) {
@@ -1774,14 +1913,13 @@ public final class QueryMessages {
         onChanged();
         return this;
       }
-      /**
-       * <code>optional .Payload metadata = 9;</code>
-       */
+      /** <code>optional .Payload metadata = 9;</code> */
       public Builder mergeMetadata(org.apache.pekko.remote.ContainerFormats.Payload value) {
         if (metadataBuilder_ == null) {
-          if (((bitField0_ & 0x00000100) != 0) &&
-            metadata_ != null &&
-            metadata_ != org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance()) {
+          if (((bitField0_ & 0x00000100) != 0)
+              && metadata_ != null
+              && metadata_
+                  != org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance()) {
             getMetadataBuilder().mergeFrom(value);
           } else {
             metadata_ = value;
@@ -1795,9 +1933,7 @@ public final class QueryMessages {
         }
         return this;
       }
-      /**
-       * <code>optional .Payload metadata = 9;</code>
-       */
+      /** <code>optional .Payload metadata = 9;</code> */
       public Builder clearMetadata() {
         bitField0_ = (bitField0_ & ~0x00000100);
         metadata_ = null;
@@ -1808,37 +1944,35 @@ public final class QueryMessages {
         onChanged();
         return this;
       }
-      /**
-       * <code>optional .Payload metadata = 9;</code>
-       */
+      /** <code>optional .Payload metadata = 9;</code> */
       public org.apache.pekko.remote.ContainerFormats.Payload.Builder getMetadataBuilder() {
         bitField0_ |= 0x00000100;
         onChanged();
         return internalGetMetadataFieldBuilder().getBuilder();
       }
-      /**
-       * <code>optional .Payload metadata = 9;</code>
-       */
+      /** <code>optional .Payload metadata = 9;</code> */
       public org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder getMetadataOrBuilder() {
         if (metadataBuilder_ != null) {
           return metadataBuilder_.getMessageOrBuilder();
         } else {
-          return metadata_ == null ?
-              org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance() : metadata_;
+          return metadata_ == null
+              ? org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance()
+              : metadata_;
         }
       }
-      /**
-       * <code>optional .Payload metadata = 9;</code>
-       */
+      /** <code>optional .Payload metadata = 9;</code> */
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
-          org.apache.pekko.remote.ContainerFormats.Payload, org.apache.pekko.remote.ContainerFormats.Payload.Builder, org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder> 
+              org.apache.pekko.remote.ContainerFormats.Payload,
+              org.apache.pekko.remote.ContainerFormats.Payload.Builder,
+              org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder>
           internalGetMetadataFieldBuilder() {
         if (metadataBuilder_ == null) {
-          metadataBuilder_ = new org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
-              org.apache.pekko.remote.ContainerFormats.Payload, org.apache.pekko.remote.ContainerFormats.Payload.Builder, org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder>(
-                  getMetadata(),
-                  getParentForChildren(),
-                  isClean());
+          metadataBuilder_ =
+              new org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
+                  org.apache.pekko.remote.ContainerFormats.Payload,
+                  org.apache.pekko.remote.ContainerFormats.Payload.Builder,
+                  org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder>(
+                  getMetadata(), getParentForChildren(), isClean());
           metadata_ = null;
         }
         return metadataBuilder_;
@@ -1848,36 +1982,42 @@ public final class QueryMessages {
     }
 
     // @@protoc_insertion_point(class_scope:org.apache.pekko.persistence.query.EventEnvelope)
-    private static final org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope DEFAULT_INSTANCE;
+    private static final org.apache.pekko.persistence.query.internal.protobuf.QueryMessages
+            .EventEnvelope
+        DEFAULT_INSTANCE;
+
     static {
-      DEFAULT_INSTANCE = new org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope();
+      DEFAULT_INSTANCE =
+          new org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope();
     }
 
-    public static org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope getDefaultInstance() {
+    public static org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope
+        getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final org.apache.pekko.protobufv3.internal.Parser<EventEnvelope>
-        PARSER = new org.apache.pekko.protobufv3.internal.AbstractParser<EventEnvelope>() {
-      @java.lang.Override
-      public EventEnvelope parsePartialFrom(
-          org.apache.pekko.protobufv3.internal.CodedInputStream input,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        Builder builder = newBuilder();
-        try {
-          builder.mergeFrom(input, extensionRegistry);
-        } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(builder.buildPartial());
-        } catch (org.apache.pekko.protobufv3.internal.UninitializedMessageException e) {
-          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-        } catch (java.io.IOException e) {
-          throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
-              .setUnfinishedMessage(builder.buildPartial());
-        }
-        return builder.buildPartial();
-      }
-    };
+    private static final org.apache.pekko.protobufv3.internal.Parser<EventEnvelope> PARSER =
+        new org.apache.pekko.protobufv3.internal.AbstractParser<EventEnvelope>() {
+          @java.lang.Override
+          public EventEnvelope parsePartialFrom(
+              org.apache.pekko.protobufv3.internal.CodedInputStream input,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+            Builder builder = newBuilder();
+            try {
+              builder.mergeFrom(input, extensionRegistry);
+            } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
+              throw e.setUnfinishedMessage(builder.buildPartial());
+            } catch (org.apache.pekko.protobufv3.internal.UninitializedMessageException e) {
+              throw e.asInvalidProtocolBufferException()
+                  .setUnfinishedMessage(builder.buildPartial());
+            } catch (java.io.IOException e) {
+              throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
+                  .setUnfinishedMessage(builder.buildPartial());
+            }
+            return builder.buildPartial();
+          }
+        };
 
     public static org.apache.pekko.protobufv3.internal.Parser<EventEnvelope> parser() {
       return PARSER;
@@ -1889,47 +2029,58 @@ public final class QueryMessages {
     }
 
     @java.lang.Override
-    public org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope getDefaultInstanceForType() {
+    public org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope
+        getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
-
   }
 
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_org_apache_pekko_persistence_query_EventEnvelope_descriptor;
-  private static final 
-    org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
+      internal_static_org_apache_pekko_persistence_query_EventEnvelope_descriptor;
+  private static final org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
       internal_static_org_apache_pekko_persistence_query_EventEnvelope_fieldAccessorTable;
 
-  public static org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
-      getDescriptor() {
+  public static org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor getDescriptor() {
     return descriptor;
   }
-  private static  org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
-      descriptor;
+
+  private static org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor descriptor;
+
   static {
     java.lang.String[] descriptorData = {
-      "\n\023QueryMessages.proto\022\"org.apache.pekko." +
-      "persistence.query\032\026ContainerFormats.prot" +
-      "o\"\321\001\n\rEventEnvelope\022\026\n\016persistence_id\030\001 " +
-      "\002(\t\022\023\n\013entity_type\030\002 \002(\t\022\r\n\005slice\030\003 \002(\005\022" +
-      "\023\n\013sequence_nr\030\004 \002(\003\022\021\n\ttimestamp\030\005 \002(\003\022" +
-      "\016\n\006offset\030\006 \002(\t\022\027\n\017offset_manifest\030\007 \002(\t" +
-      "\022\027\n\005event\030\010 \001(\0132\010.Payload\022\032\n\010metadata\030\t " +
-      "\001(\0132\010.PayloadB8\n4org.apache.pekko.persis" +
-      "tence.query.internal.protobufH\001"
+      "\n\023QueryMessages.proto\022\"org.apache.pekko."
+          + "persistence.query\032\026ContainerFormats.prot"
+          + "o\"\321\001\n\rEventEnvelope\022\026\n\016persistence_id\030\001 "
+          + "\002(\t\022\023\n\013entity_type\030\002 \002(\t\022\r\n\005slice\030\003 \002(\005\022"
+          + "\023\n\013sequence_nr\030\004 \002(\003\022\021\n\ttimestamp\030\005 \002(\003\022"
+          + "\016\n\006offset\030\006 \002(\t\022\027\n\017offset_manifest\030\007 \002(\t"
+          + "\022\027\n\005event\030\010 \001(\0132\010.Payload\022\032\n\010metadata\030\t "
+          + "\001(\0132\010.PayloadB8\n4org.apache.pekko.persis"
+          + "tence.query.internal.protobufH\001"
     };
-    descriptor = org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
-      .internalBuildGeneratedFileFrom(descriptorData,
-        new org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor[] {
-          org.apache.pekko.remote.ContainerFormats.getDescriptor(),
-        });
+    descriptor =
+        org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
+            .internalBuildGeneratedFileFrom(
+                descriptorData,
+                new org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor[] {
+                  org.apache.pekko.remote.ContainerFormats.getDescriptor(),
+                });
     internal_static_org_apache_pekko_persistence_query_EventEnvelope_descriptor =
-      getDescriptor().getMessageTypes().get(0);
-    internal_static_org_apache_pekko_persistence_query_EventEnvelope_fieldAccessorTable = new
-      org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
-        internal_static_org_apache_pekko_persistence_query_EventEnvelope_descriptor,
-        new java.lang.String[] { "PersistenceId", "EntityType", "Slice", "SequenceNr", "Timestamp", "Offset", "OffsetManifest", "Event", "Metadata", });
+        getDescriptor().getMessageTypes().get(0);
+    internal_static_org_apache_pekko_persistence_query_EventEnvelope_fieldAccessorTable =
+        new org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
+            internal_static_org_apache_pekko_persistence_query_EventEnvelope_descriptor,
+            new java.lang.String[] {
+              "PersistenceId",
+              "EntityType",
+              "Slice",
+              "SequenceNr",
+              "Timestamp",
+              "Offset",
+              "OffsetManifest",
+              "Event",
+              "Metadata",
+            });
     descriptor.resolveAllFeaturesImmutable();
     org.apache.pekko.remote.ContainerFormats.getDescriptor();
   }
