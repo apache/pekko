@@ -17,6 +17,7 @@
 
 # Remove deprecated methods
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.testkit.ExplicitlyTriggeredScheduler.schedule")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.testkit.ExplicitlyTriggeredScheduler.schedule$*")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.testkit.TestFSMRef.setTimer*")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.testkit.TestKit.expectNoMsg")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.testkit.TestKitBase.expectNoMsg")
