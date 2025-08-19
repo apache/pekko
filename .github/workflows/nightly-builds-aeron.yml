@@ -9,6 +9,7 @@
 name: Nightly Aeron Tests
 
 on:
+  pull_request:
   schedule:
     - cron: "0 0 * * *"
   workflow_dispatch:
@@ -35,11 +36,11 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
 
-      - name: Setup Java 17
+      - name: Setup Java 24
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 17
+          java-version: 24
 
       - name: Install sbt
         uses: sbt/setup-sbt@f20dc1bc1f8be605c44ffbcec6f17f708a4af9d1 # v1.1.12
