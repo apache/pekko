@@ -123,6 +123,7 @@ trait FutureTimeoutSupport {
    * if the provided value is not completed within the specified duration.
    * @since 1.2.0
    */
+  @deprecated("Use `CompletableFuture#orTimeout instead.", "Pekko 2.0.0")
   def timeoutCompletionStage[T](duration: FiniteDuration, using: Scheduler)(value: => CompletionStage[T])(
       implicit ec: ExecutionContext): CompletionStage[T] = {
     val stage: CompletionStage[T] =

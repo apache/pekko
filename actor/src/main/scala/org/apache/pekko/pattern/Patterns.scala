@@ -24,6 +24,8 @@ import pekko.actor.{ ActorSelection, ClassicActorSystemProvider, Scheduler }
 import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
 
+import scala.annotation.nowarn
+
 /**
  * Java API: for Pekko patterns such as `ask`, `pipe` and others which work with [[java.util.concurrent.CompletionStage]].
  */
@@ -471,6 +473,8 @@ object Patterns {
    * if the provided value is not completed within the specified duration.
    * @since 1.2.0
    */
+  @deprecated("Use `CompletableFuture#orTimeout instead.", "Pekko 2.0.0")
+  @nowarn("msg=deprecated")
   def timeout[T](
       duration: java.time.Duration,
       scheduler: Scheduler,
