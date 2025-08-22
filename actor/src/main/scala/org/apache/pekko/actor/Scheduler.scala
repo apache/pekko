@@ -15,7 +15,6 @@ package org.apache.pekko.actor
 
 import java.util.concurrent.atomic.AtomicReference
 
-import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
@@ -150,7 +149,6 @@ trait Scheduler {
    *
    * Note: For scheduling within actors `with Timers` should be preferred.
    */
-  @nowarn("msg=deprecated")
   final def scheduleWithFixedDelay(
       initialDelay: FiniteDuration,
       delay: FiniteDuration,
@@ -225,7 +223,6 @@ trait Scheduler {
    *
    * Note: For scheduling within actors `with Timers` should be preferred.
    */
-  @nowarn("msg=deprecated")
   final def scheduleAtFixedRate(initialDelay: FiniteDuration, interval: FiniteDuration)(runnable: Runnable)(
       implicit executor: ExecutionContext): Cancellable =
     schedule(initialDelay, interval, runnable)(executor)
@@ -294,7 +291,6 @@ trait Scheduler {
    *
    * Note: For scheduling within actors `with Timers` should be preferred.
    */
-  @nowarn("msg=deprecated")
   final def scheduleAtFixedRate(
       initialDelay: FiniteDuration,
       interval: FiniteDuration,
@@ -303,7 +299,16 @@ trait Scheduler {
       implicit
       executor: ExecutionContext,
       sender: ActorRef = Actor.noSender): Cancellable =
-    schedule(initialDelay, interval, receiver, message)
+    schedule(
+      initialDelay,
+      interval,
+      new Runnable {
+        def run(): Unit = {
+          receiver ! message
+          if (receiver.isTerminated)
+            throw SchedulerException("timer active for terminated actor")
+        }
+      })
 
   /**
    * Java API: Schedules a message to be sent repeatedly with an initial delay and
@@ -340,37 +345,7 @@ trait Scheduler {
     scheduleAtFixedRate(initialDelay.asScala, interval.asScala, receiver, message)(executor, sender)
   }
 
-  /**
-   * Deprecated API: See [[Scheduler#scheduleWithFixedDelay]] or [[Scheduler#scheduleAtFixedRate]].
-   */
-  @deprecated(
-    "Use scheduleWithFixedDelay or scheduleAtFixedRate instead. This has the same semantics as " +
-    "scheduleAtFixedRate, but scheduleWithFixedDelay is often preferred.",
-    since = "Akka 2.6.0")
-  @nowarn("msg=deprecated")
-  final def schedule(initialDelay: FiniteDuration, interval: FiniteDuration, receiver: ActorRef, message: Any)(
-      implicit
-      executor: ExecutionContext,
-      sender: ActorRef = Actor.noSender): Cancellable =
-    schedule(
-      initialDelay,
-      interval,
-      new Runnable {
-        def run(): Unit = {
-          receiver ! message
-          if (receiver.isTerminated)
-            throw SchedulerException("timer active for terminated actor")
-        }
-      })
-
-  /**
-   * Deprecated API: See [[Scheduler#scheduleWithFixedDelay]] or [[Scheduler#scheduleAtFixedRate]].
-   */
-  @deprecated(
-    "Use scheduleWithFixedDelay or scheduleAtFixedRate instead. This has the same semantics as " +
-    "scheduleAtFixedRate, but scheduleWithFixedDelay is often preferred.",
-    since = "Akka 2.6.0")
-  def schedule(initialDelay: FiniteDuration, interval: FiniteDuration, runnable: Runnable)(
+  protected def schedule(initialDelay: FiniteDuration, interval: FiniteDuration, runnable: Runnable)(
       implicit executor: ExecutionContext): Cancellable
 
   /**

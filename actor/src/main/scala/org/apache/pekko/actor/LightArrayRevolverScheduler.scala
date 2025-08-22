@@ -131,7 +131,7 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
     super.scheduleWithFixedDelay(initialDelay, delay)(runnable)
   }
 
-  override def schedule(initialDelay: FiniteDuration, delay: FiniteDuration, runnable: Runnable)(
+  override protected def schedule(initialDelay: FiniteDuration, delay: FiniteDuration, runnable: Runnable)(
       implicit executor: ExecutionContext): Cancellable = {
     checkPeriod(delay)
     checkMaxDelay(roundUp(delay).toNanos)

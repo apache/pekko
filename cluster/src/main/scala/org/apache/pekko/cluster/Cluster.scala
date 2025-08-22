@@ -23,7 +23,6 @@ import scala.concurrent.{ Await, ExecutionContext }
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
-import scala.annotation.nowarn
 import com.typesafe.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
@@ -110,7 +109,6 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
   /**
    * Java API: roles that this member has
    */
-  @nowarn("msg=deprecated")
   def getSelfRoles: java.util.Set[String] = {
     import pekko.util.ccompat.JavaConverters._
     selfRoles.asJava
@@ -191,10 +189,9 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
 
         override def maxFrequency: Double = systemScheduler.maxFrequency
 
-        @nowarn("msg=deprecated")
         override def schedule(initialDelay: FiniteDuration, interval: FiniteDuration, runnable: Runnable)(
             implicit executor: ExecutionContext): Cancellable =
-          systemScheduler.schedule(initialDelay, interval, runnable)
+          systemScheduler.scheduleAtFixedRate(initialDelay, interval)(runnable)
 
         override def scheduleOnce(delay: FiniteDuration, runnable: Runnable)(
             implicit executor: ExecutionContext): Cancellable =
