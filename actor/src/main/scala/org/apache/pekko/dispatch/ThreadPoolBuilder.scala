@@ -72,6 +72,7 @@ trait ExecutorServiceFactory {
  */
 trait ExecutorServiceFactoryProvider {
   def createExecutorServiceFactory(id: String, threadFactory: ThreadFactory): ExecutorServiceFactory
+  def isVirtualized: Boolean = false // can be overridden by implementations
 }
 
 /**
