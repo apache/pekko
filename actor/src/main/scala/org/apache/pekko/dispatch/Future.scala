@@ -154,6 +154,7 @@ object Futures {
   /**
    * Creates an already completed CompletionStage with the specified exception
    */
+  @deprecated("Use `CompletableFuture.failedStage` instead, will be removed in Pekko 2.0.0", "Pekko 1.2.0")
   def failedCompletionStage[T](ex: Throwable): CompletionStage[T] = {
     val f = CompletableFuture.completedFuture[T](null.asInstanceOf[T])
     f.obtrudeException(ex)
@@ -274,6 +275,7 @@ object japi {
  * Java API
  */
 @nowarn("msg=deprecated")
+@deprecated("Use Java's CompletableFuture instead, will be removed in Pekko 2.0.0", "Pekko 1.2.0")
 abstract class OnSuccess[-T] extends japi.CallbackBridge[T] {
   protected final override def internal(result: T) = onSuccess(result)
 
@@ -292,6 +294,7 @@ abstract class OnSuccess[-T] extends japi.CallbackBridge[T] {
  * Java API
  */
 @nowarn("msg=deprecated")
+@deprecated("Use Java's CompletableFuture instead, will be removed in Pekko 2.0.0", "Pekko 1.2.0")
 abstract class OnFailure extends japi.CallbackBridge[Throwable] {
   protected final override def internal(failure: Throwable) = onFailure(failure)
 
@@ -310,6 +313,7 @@ abstract class OnFailure extends japi.CallbackBridge[Throwable] {
  * Java API
  */
 @nowarn("msg=deprecated")
+@deprecated("Use Java's CompletableFuture instead, will be removed in Pekko 2.0.0", "Pekko 1.2.0")
 abstract class OnComplete[-T] extends japi.CallbackBridge[Try[T]] {
   protected final override def internal(value: Try[T]): Unit = value match {
     case Failure(t) => onComplete(t, null.asInstanceOf[T])
@@ -333,6 +337,7 @@ abstract class OnComplete[-T] extends japi.CallbackBridge[Try[T]] {
  * Java API
  */
 @nowarn("msg=deprecated")
+@deprecated("Use Java's CompletableFuture instead, will be removed in Pekko 2.0.0", "Pekko 1.2.0")
 abstract class Recover[+T] extends japi.RecoverBridge[T] {
   protected final override def internal(result: Throwable): T = recover(result)
 
@@ -373,6 +378,7 @@ abstract class Recover[+T] extends japi.RecoverBridge[T] {
  * thus Java users should prefer `Future.map`, translating non-matching values
  * to failure cases.
  */
+@deprecated("Use Java's CompletableFuture instead, will be removed in Pekko 2.0.0", "Pekko 1.2.0")
 object Filter {
   @nowarn("msg=deprecated")
   def filterOf[T](f: pekko.japi.Function[T, java.lang.Boolean]): (T => Boolean) =
@@ -388,6 +394,7 @@ object Filter {
  * Java API
  */
 @nowarn("msg=deprecated")
+@deprecated("Use Java's CompletableFuture instead, will be removed in Pekko 2.0.0", "Pekko 1.2.0")
 abstract class Foreach[-T] extends japi.UnitFunctionBridge[T] {
   override final def internal(t: T): Unit = each(t)
 
@@ -410,6 +417,7 @@ abstract class Foreach[-T] extends japi.UnitFunctionBridge[T] {
  *
  * Java API
  */
+@deprecated("Use Java's CompletableFuture instead, will be removed in Pekko 2.0.0", "Pekko 1.2.0")
 abstract class Mapper[-T, +R] extends scala.runtime.AbstractFunction1[T, R] {
 
   /**
