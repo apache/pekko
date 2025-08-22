@@ -494,7 +494,7 @@ object MultiJvmPlugin extends AutoPlugin {
     val hosts = classesHostsJavas.map(_._2)
     // TODO move this out, maybe to the hosts string as well?
     val syncProcesses = classesHostsJavas.map {
-      case ((testClass, hostAndUser, java)) =>
+      case (testClass, hostAndUser, java) =>
         (testClass + " sync", Jvm.syncJar(testJar, hostAndUser, targetDir, log))
     }
     val syncResult = processExitCodes(name, syncProcesses, log)

@@ -398,7 +398,7 @@ final case class ManyVersionVector(versions: TreeMap[UniqueAddress, Long]) exten
     else this
 
   override def toString: String =
-    versions.map { case ((n, v)) => n.toString + " -> " + v }.mkString("VersionVector(", ", ", ")")
+    versions.map { case (n, v) => n.toString + " -> " + v }.mkString("VersionVector(", ", ", ")")
 
   /** INTERNAL API */
   @InternalApi override private[pekko] def estimatedSize: Int =
