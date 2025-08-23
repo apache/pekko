@@ -23,6 +23,7 @@ import com.typesafe.config.Config
 
 import org.apache.pekko
 import pekko.actor._
+import pekko.event.LoggingAdapter
 import pekko.remote.transport.AssociationHandle._
 import pekko.remote.transport.Transport._
 import pekko.util.ByteString
@@ -484,7 +485,10 @@ final case class TestAssociationHandle(
   override def write(payload: ByteString): Boolean =
     if (writable) transport.write(this, payload) else false
 
-  override def disassociate(): Unit = transport.disassociate(this)
+  override def disassociate(reason: String, log: LoggingAdapter): Unit = {
+    super.disassociate(reason, log)
+    transport.disassociate(this)
+  }
 
   /**
    * Key used in [[pekko.remote.transport.TestTransport.AssociationRegistry]] to identify associations. Contains an
