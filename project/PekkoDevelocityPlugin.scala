@@ -60,8 +60,8 @@ object PekkoDevelocityPlugin extends AutoPlugin {
                   .withEnabled(false)))
       if (isInsideCI) {
         apacheDevelocityConfiguration
-          .withTestRetryConfiguration(
-            original.testRetryConfiguration
+          .withTestRetry(
+            original.testRetry
               .withMaxRetries(1)
               .withFlakyTestPolicy(FlakyTestPolicy.Fail) // preserve the original build outcome in case of flaky tests
           )

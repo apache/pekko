@@ -11,8 +11,8 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import com.hpe.sbt.ValidatePullRequest
-import com.hpe.sbt.ValidatePullRequest.PathGlobFilter
+import com.github.sbt.pullrequestvalidator.ValidatePullRequest
+import com.github.sbt.pullrequestvalidator.ValidatePullRequest.PathGlobFilter
 import com.lightbend.paradox.sbt.ParadoxPlugin
 import com.lightbend.paradox.sbt.ParadoxPlugin.autoImport.paradox
 import com.typesafe.tools.mima.plugin.MimaKeys.mimaReportBinaryIssues
