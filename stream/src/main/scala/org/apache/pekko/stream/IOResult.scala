@@ -14,7 +14,6 @@
 package org.apache.pekko.stream
 
 import scala.util.{ Failure, Success, Try }
-import scala.util.control.NoStackTrace
 
 import org.apache.pekko
 import pekko.Done
@@ -72,15 +71,6 @@ object IOResult {
   def createFailed(count: Long, ex: Throwable): IOResult =
     new IOResult(count, Failure(ex))
 }
-
-/**
- * This exception signals that a stream has been completed by an onError signal
- * while there was still IO operations in progress.
- */
-@deprecated("use IOOperationIncompleteException", "Akka 2.6.0")
-final case class AbruptIOTerminationException(ioResult: IOResult, cause: Throwable)
-    extends RuntimeException("Stream terminated without completing IO operation.", cause)
-    with NoStackTrace
 
 /**
  * This exception signals that a stream has been completed or has an error while
