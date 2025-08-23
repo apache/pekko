@@ -124,6 +124,16 @@ object Futures {
   import org.apache.pekko.util.ccompat.JavaConverters._
 
   /**
+   * Convert a Scala Future to a Java CompletionStage.
+   *
+   * @since 1.2.0
+   */
+  def asJava[T](future: Future[T]): CompletionStage[T] = {
+    import org.apache.pekko.util.FutureConverters._
+    future.asJava
+  }
+
+  /**
    * Starts an asynchronous computation and returns a `Future` object with the result of that computation.
    *
    * The result becomes available once the asynchronous computation is completed.

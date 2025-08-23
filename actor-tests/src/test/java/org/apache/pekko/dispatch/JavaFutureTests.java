@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.util.concurrent.Callable;
 import java.util.LinkedList;
 import java.lang.Iterable;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import static org.apache.pekko.japi.Util.classTag;
@@ -46,7 +47,14 @@ public class JavaFutureTests extends JUnitSuite {
   private final ActorSystem system = actorSystemResource.getSystem();
   private final Duration timeout = Duration.create(5, TimeUnit.SECONDS);
 
-  @Test
+    @Test
+    public void mustBeAbleToCreateAJavaCompletionStage() throws Exception {
+        Future<Integer> f = Futures.successful(42);
+        CompletableFuture<Integer> cs = Futures.asJava(f).toCompletableFuture();
+        assertEquals(42, cs.get(3, TimeUnit.SECONDS).intValue());
+    }
+
+    @Test
   public void mustBeAbleToMapAFuture() throws Exception {
 
     Future<String> f1 =
