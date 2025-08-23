@@ -187,3 +187,4 @@ ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.stag
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.stage.TimerGraphStageLogic.schedulePeriodically")
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.stream.AbruptIOTerminationException")
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.stream.AbruptIOTerminationException$")
+ProblemFilters.exclude[DirectMissingMethodProblem]("com.typesafe.sslconfig.pekko.PekkoSSLConfig.validateDefaultTrustManager")
