@@ -319,6 +319,7 @@ public class PatternsTest extends JUnitSuite {
   }
 
   @Test(expected = IllegalStateException.class)
+  @SuppressWarnings("deprecation")
   public void testAfterFailedCallable() throws Exception {
     Callable<Future<String>> failedCallable =
         () -> Futures.failed(new IllegalStateException("Illegal!"));
@@ -335,6 +336,7 @@ public class PatternsTest extends JUnitSuite {
   }
 
   @Test(expected = IllegalStateException.class)
+  @SuppressWarnings("deprecation")
   public void testAfterFailedFuture() throws Exception {
 
     Future<String> delayedFuture =
@@ -349,6 +351,7 @@ public class PatternsTest extends JUnitSuite {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
   public void testAfterSuccessfulCallable() throws Exception {
     final String expected = "Hello";
 
@@ -366,6 +369,7 @@ public class PatternsTest extends JUnitSuite {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
   public void testAfterSuccessfulFuture() throws Exception {
     final String expected = "Hello";
 
@@ -383,6 +387,7 @@ public class PatternsTest extends JUnitSuite {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
   public void testAfterFiniteDuration() throws Exception {
     final String expected = "Hello";
 

@@ -33,6 +33,7 @@ import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.LinkedList;
 import java.lang.Iterable;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import static org.apache.pekko.japi.Util.classTag;
@@ -47,6 +48,13 @@ public class JavaFutureTests extends JUnitSuite {
 
   private final ActorSystem system = actorSystemResource.getSystem();
   private final Duration timeout = Duration.create(5, TimeUnit.SECONDS);
+
+  @Test
+  public void mustBeAbleToCreateAJavaCompletionStage() throws Exception {
+    Future<Integer> f = Futures.successful(42);
+    CompletableFuture<Integer> cs = Futures.asJava(f).toCompletableFuture();
+    assertEquals(42, cs.get(3, TimeUnit.SECONDS).intValue());
+  }
 
   @Test
   public void mustBeAbleToMapAFuture() throws Exception {
@@ -194,6 +202,7 @@ public class JavaFutureTests extends JUnitSuite {
 
   // TODO: Improve this test, perhaps with an Actor
   @Test
+  @SuppressWarnings("deprecation")
   public void mustSequenceAFutureList() throws Exception {
     LinkedList<Future<String>> listFutures = new LinkedList<>();
     LinkedList<String> listExpected = new LinkedList<>();
@@ -217,6 +226,7 @@ public class JavaFutureTests extends JUnitSuite {
 
   // TODO: Improve this test, perhaps with an Actor
   @Test
+  @SuppressWarnings("deprecation")
   public void foldForJavaApiMustWork() throws Exception {
     LinkedList<Future<String>> listFutures = new LinkedList<>();
     StringBuilder expected = new StringBuilder();
@@ -248,6 +258,7 @@ public class JavaFutureTests extends JUnitSuite {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
   public void reduceForJavaApiMustWork() throws Exception {
     LinkedList<Future<String>> listFutures = new LinkedList<>();
     StringBuilder expected = new StringBuilder();
@@ -278,6 +289,7 @@ public class JavaFutureTests extends JUnitSuite {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
   public void traverseForJavaApiMustWork() throws Exception {
     LinkedList<String> listStrings = new LinkedList<>();
     LinkedList<String> expectedStrings = new LinkedList<>();
@@ -307,6 +319,7 @@ public class JavaFutureTests extends JUnitSuite {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
   public void findForJavaApiMustWork() throws Exception {
     LinkedList<Future<Integer>> listFutures = new LinkedList<>();
     for (int i = 0; i < 10; i++) {
