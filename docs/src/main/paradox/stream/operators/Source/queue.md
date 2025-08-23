@@ -10,14 +10,14 @@ Materialize a `BoundedSourceQueue` or `SourceQueue` onto which elements can be p
 
 ## Description (`BoundedSourceQueue`)
 
-The `BoundedSourceQueue` is an optimized variant of the `SourceQueue` with `OverflowStrategy.dropNew`. 
+The `BoundedSourceQueue` is an optimized variant of the `SourceQueue` which will drop the newest elements when back pressuring and buffer is full. 
 The `BoundedSourceQueue` will give immediate, synchronous feedback whether an element was accepted or not and is therefore recommended for situations where overload and dropping elements is expected and needs to be handled quickly.
 
 In contrast, the `SourceQueue` offers more variety of `OverflowStrategies` but feedback is only asynchronously provided through a @scala[`Future`]@java[`CompletionStage`] value. 
 In cases where elements need to be discarded quickly at times of overload to avoid out-of-memory situations, delivering feedback asynchronously can itself become a problem. 
 This happens if elements come in faster than the feedback can be delivered in which case the feedback mechanism itself is part of the reason that an out-of-memory situation arises.
 
-In summary, prefer `BoundedSourceQueue` over `SourceQueue` with `OverflowStrategy.dropNew` especially in high-load scenarios. 
+In summary, prefer `BoundedSourceQueue` over `SourceQueue` especially in high-load scenarios. 
 Use `SourceQueue` if you need one of the other `OverflowStrategies`.
 
 The `BoundedSourceQueue` contains a buffer that can be used by many producers on different threads.

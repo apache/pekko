@@ -74,14 +74,6 @@ private[pekko] object OverflowStrategies {
   /**
    * INTERNAL API
    */
-  private[pekko] case class DropNew(logLevel: LogLevel) extends OverflowStrategy {
-    override def withLogLevel(logLevel: LogLevel): DropNew = DropNew(logLevel)
-    private[pekko] override def isBackpressure: Boolean = false
-  }
-
-  /**
-   * INTERNAL API
-   */
   private[pekko] case class Backpressure(logLevel: LogLevel) extends OverflowStrategy {
     override def withLogLevel(logLevel: LogLevel): Backpressure = Backpressure(logLevel)
     private[pekko] override def isBackpressure: Boolean = true
@@ -123,14 +115,6 @@ object OverflowStrategy {
   def dropBuffer: OverflowStrategy = DropBuffer(Logging.DebugLevel)
 
   /**
-   * If the buffer is full when a new element arrives, drops the new element.
-   *
-   * @deprecated Use {@link pekko.stream.javadsl.Source#queue(int,org.apache.pekko.stream.OverflowStrategy)} instead
-   */
-  @deprecated("Use Source.queue instead", "Akka 2.6.11")
-  def dropNew: OverflowStrategy = DropNew(Logging.DebugLevel)
-
-  /**
    * If the buffer is full when a new element is available this strategy backpressures the upstream publisher until
    * space becomes available in the buffer.
    */
@@ -166,11 +150,6 @@ object DelayOverflowStrategy {
    * If the buffer is full when a new element arrives, drops all the buffered elements to make space for the new element.
    */
   def dropBuffer: DelayOverflowStrategy = DropBuffer(Logging.DebugLevel)
-
-  /**
-   * If the buffer is full when a new element arrives, drops the new element.
-   */
-  def dropNew: DelayOverflowStrategy = DropNew(Logging.DebugLevel)
 
   /**
    * If the buffer is full when a new element is available this strategy backpressures the upstream publisher until

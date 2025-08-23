@@ -101,12 +101,6 @@ import pekko.stream.stage._
                 name)
               buffer.clear()
               enqueueAndSuccess(offer)
-            case s: DropNew =>
-              log.log(
-                s.logLevel,
-                "Dropping the new element because buffer is full and overflowStrategy is: [DropNew] in stream [{}]",
-                name)
-              offer.promise.success(QueueOfferResult.Dropped)
             case s: Fail =>
               log.log(s.logLevel, "Failing because buffer is full and overflowStrategy is: [Fail] in stream [{}]", name)
               val bufferOverflowException = BufferOverflowException(s"Buffer overflow (max capacity was: $maxBuffer)!")
@@ -150,7 +144,7 @@ import pekko.stream.stage._
                   name)
                 pendingOffers.dequeue().promise.success(QueueOfferResult.Dropped)
                 pendingOffers.enqueue(offer)
-              case s @ (_: DropTail | _: DropNew) =>
+              case s @ (_: DropTail) =>
                 log.log(
                   s.logLevel,
                   "Dropping element because buffer is full and overflowStrategy is: [{}] in stream [{}]",

@@ -188,3 +188,7 @@ ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.stag
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.stream.AbruptIOTerminationException")
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.stream.AbruptIOTerminationException$")
 ProblemFilters.exclude[DirectMissingMethodProblem]("com.typesafe.sslconfig.pekko.PekkoSSLConfig.validateDefaultTrustManager")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.DelayOverflowStrategy.dropNew")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.stream.OverflowStrategies$DropNew")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.stream.OverflowStrategies$DropNew$")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.OverflowStrategy.dropNew")

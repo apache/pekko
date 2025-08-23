@@ -235,21 +235,6 @@ class QueueSourceSpec extends StreamSpec {
       expectMsgClass(classOf[Status.Failure])
     }
 
-    "return false when element was not added to buffer" in {
-      val s = TestSubscriber.manualProbe[Int]()
-      @nowarn("msg=deprecated")
-      val queue = Source.queue(1, OverflowStrategy.dropNew).to(Sink.fromSubscriber(s)).run()
-      val sub = s.expectSubscription()
-
-      queue.offer(1)
-      queue.offer(2).pipeTo(testActor)
-      expectMsg(QueueOfferResult.Dropped)
-
-      sub.request(1)
-      s.expectNext(1)
-      sub.cancel()
-    }
-
     "wait when buffer is full and backpressure is on" in {
       val s = TestSubscriber.manualProbe[Int]()
       val queue = Source.queue(1, OverflowStrategy.backpressure).to(Sink.fromSubscriber(s)).run()
@@ -272,7 +257,7 @@ class QueueSourceSpec extends StreamSpec {
     "fail offer future when stream is completed" in {
       val s = TestSubscriber.manualProbe[Int]()
       @nowarn("msg=deprecated")
-      val queue = Source.queue(1, OverflowStrategy.dropNew).to(Sink.fromSubscriber(s)).run()
+      val queue = Source.queue(1, OverflowStrategy.dropHead).to(Sink.fromSubscriber(s)).run()
       val sub = s.expectSubscription()
       queue.watchCompletion().pipeTo(testActor)
       sub.cancel()

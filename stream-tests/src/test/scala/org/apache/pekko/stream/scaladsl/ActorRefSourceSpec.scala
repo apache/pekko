@@ -65,23 +65,6 @@ class ActorRefSourceSpec extends StreamSpec {
       for (n <- 300 to 399) s.expectNext(n)
     }
 
-    "drop new when full and with dropNew strategy" in {
-      val (ref, sub) = Source
-        .actorRef(PartialFunction.empty, PartialFunction.empty, 100, OverflowStrategy.dropNew)
-        .toMat(TestSink.probe[Int])(Keep.both)
-        .run()
-
-      for (n <- 1 to 20) ref ! n
-      sub.request(10)
-      for (n <- 1 to 10) sub.expectNext(n)
-      sub.request(10)
-      for (n <- 11 to 20) sub.expectNext(n)
-
-      for (n <- 200 to 399) ref ! n
-      sub.request(100)
-      for (n <- 200 to 299) sub.expectNext(n)
-    }
-
     "terminate when the stream is cancelled" in {
       val s = TestSubscriber.manualProbe[Int]()
       val ref = Source

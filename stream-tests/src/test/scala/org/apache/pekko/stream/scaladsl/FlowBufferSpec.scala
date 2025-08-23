@@ -22,7 +22,6 @@ import org.apache.pekko
 import pekko.stream.BufferOverflowException
 import pekko.stream.OverflowStrategy
 import pekko.stream.testkit._
-import pekko.stream.testkit.scaladsl._
 
 @nowarn("msg=deprecated")
 class FlowBufferSpec extends StreamSpec("""
@@ -179,35 +178,6 @@ class FlowBufferSpec extends StreamSpec("""
       subscriber.expectNext(-1)
 
       sub.cancel()
-    }
-
-    "drop new elements if buffer is full and configured so" in {
-      val (publisher, subscriber) = TestSource
-        .probe[Int]
-        .buffer(100, overflowStrategy = OverflowStrategy.dropNew)
-        .toMat(TestSink.probe[Int])(Keep.both)
-        .run()
-
-      subscriber.ensureSubscription()
-
-      // Fill up buffer
-      for (i <- 1 to 150) publisher.sendNext(i)
-
-      // The next request would  be otherwise in race with the last onNext in the above loop
-      subscriber.expectNoMessage(500.millis)
-
-      // drain
-      for (i <- 1 to 100) {
-        subscriber.requestNext(i)
-      }
-
-      subscriber.request(1)
-      subscriber.expectNoMessage(1.seconds)
-
-      publisher.sendNext(-1)
-      subscriber.requestNext(-1)
-
-      subscriber.cancel()
     }
 
     "fail upstream if buffer is full and configured so" in {

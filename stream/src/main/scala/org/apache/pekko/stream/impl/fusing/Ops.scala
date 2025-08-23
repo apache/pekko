@@ -993,15 +993,6 @@ private[stream] object Collect {
               }
               buffer.enqueue(elem)
               pull(in)
-          case s: DropNew =>
-            elem =>
-              if (!buffer.isFull) buffer.enqueue(elem)
-              else
-                log.log(
-                  s.logLevel,
-                  "Dropping the new element because buffer is full and overflowStrategy is: [DropNew] in stream [{}]",
-                  name)
-              pull(in)
           case s: Backpressure =>
             elem =>
               buffer.enqueue(elem)
@@ -1949,11 +1940,6 @@ private[stream] object Collect {
           () => {
             buffer.dropTail()
             grabAndPull()
-          }
-        case _: DropNew =>
-          () => {
-            grab(in)
-            if (shouldPull) pull(in)
           }
         case _: DropBuffer =>
           () => {
