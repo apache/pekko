@@ -37,7 +37,7 @@ trait FutureTimeoutSupport {
    * Returns a [[java.util.concurrent.CompletionStage]] that will be completed with the success or failure of the provided value
    * after the specified duration.
    */
-  def afterCompletionStage[T](duration: FiniteDuration)(value: => CompletionStage[T])(
+  def afterCompletionStage[T](duration: java.time.Duration)(value: => CompletionStage[T])(
       implicit system: ClassicActorSystemProvider): CompletionStage[T] =
     afterCompletionStage(duration, system.classicSystem.scheduler)(value)(system.classicSystem.dispatcher)
 
@@ -65,24 +65,27 @@ trait FutureTimeoutSupport {
    * Returns a [[java.util.concurrent.CompletionStage]] that will be completed with the success or failure of the provided value
    * after the specified duration.
    */
-  def afterCompletionStage[T](duration: FiniteDuration, using: Scheduler)(value: => CompletionStage[T])(
+  def afterCompletionStage[T](duration: java.time.Duration, using: Scheduler)(value: => CompletionStage[T])(
       implicit ec: ExecutionContext): CompletionStage[T] =
-    if (duration.isFinite && duration.length < 1) {
+    if (duration.isZero || duration.isNegative) {
       try value
       catch { case NonFatal(t) => CompletableFuture.failedStage(t) }
     } else {
       val p = new CompletableFuture[T]
-      using.scheduleOnce(duration) {
-        try {
-          val future = value
-          future.handle[Unit]((t: T, ex: Throwable) => {
-            if (t != null) p.complete(t)
-            if (ex ne null) p.completeExceptionally(ex)
-          })
-        } catch {
-          case NonFatal(ex) => p.completeExceptionally(ex)
-        }
-      }
+      using.scheduleOnce(
+        duration,
+        new Runnable {
+          override def run(): Unit =
+            try {
+              val future = value
+              future.handle[Unit]((t: T, ex: Throwable) => {
+                if (t != null) p.complete(t)
+                if (ex ne null) p.completeExceptionally(ex)
+              })
+            } catch {
+              case NonFatal(ex) => p.completeExceptionally(ex)
+            }
+        })
       p
     }
 

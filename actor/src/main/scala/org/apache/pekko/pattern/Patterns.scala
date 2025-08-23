@@ -466,7 +466,7 @@ object Patterns {
       scheduler: Scheduler,
       context: ExecutionContext,
       value: Callable[CompletionStage[T]]): CompletionStage[T] =
-    afterCompletionStage(duration.asScala, scheduler)(value.call())(context)
+    afterCompletionStage(duration, scheduler)(value.call())(context)
 
   /**
    * Returns a [[java.util.concurrent.CompletionStage]] that will be completed with a [[java.util.concurrent.TimeoutException]]
