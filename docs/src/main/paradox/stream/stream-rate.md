@@ -137,14 +137,8 @@ Scala
 Java
 :   @@snip [StreamBuffersRateDocTest.java](/docs/src/test/java/jdocs/stream/StreamBuffersRateDocTest.java) { #explicit-buffers-droptail }
 
-Instead of dropping the youngest element from the tail of the buffer a new element can be dropped without
-enqueueing it to the buffer at all.
-
-Scala
-:   @@snip [StreamBuffersRateSpec.scala](/docs/src/test/scala/docs/stream/StreamBuffersRateSpec.scala) { #explicit-buffers-dropnew }
-
-Java
-:   @@snip [StreamBuffersRateDocTest.java](/docs/src/test/java/jdocs/stream/StreamBuffersRateDocTest.java) { #explicit-buffers-dropnew }
+Instead of dropping the youngest element from the tail of the buffer, a new element can be dropped without
+ enqueueing it to the buffer at all with `Source#queue`.
 
 Here is another example with a queue of 1000 jobs, but it makes space for the new element by
 dropping one element from the *head* of the buffer. This is the *oldest*

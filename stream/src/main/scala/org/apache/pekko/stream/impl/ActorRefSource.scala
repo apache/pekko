@@ -112,11 +112,6 @@ private object ActorRefSource {
                     buf.clear()
                     buf.enqueue(m)
                     tryPush()
-                  case s: DropNew =>
-                    log.log(
-                      s.logLevel,
-                      "Dropping the new element because buffer is full and overflowStrategy is: [DropNew] in stream [{}]",
-                      name)
                   case s: Fail =>
                     log.log(
                       s.logLevel,

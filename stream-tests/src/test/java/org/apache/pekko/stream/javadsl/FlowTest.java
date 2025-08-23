@@ -1512,7 +1512,7 @@ public class FlowTest extends StreamTest {
     @SuppressWarnings("deprecation")
     Source<String, ActorRef> source =
         Source.actorRef(
-            msg -> Optional.empty(), msg -> Optional.empty(), 1, OverflowStrategy.dropNew());
+            msg -> Optional.empty(), msg -> Optional.empty(), 1, OverflowStrategy.dropHead());
     final ActorRef actor = source.toMat(sink, Keep.left()).run(system);
     probe.watch(actor);
     probe.expectTerminated(actor);

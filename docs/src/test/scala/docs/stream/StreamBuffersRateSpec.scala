@@ -87,10 +87,6 @@ class StreamBuffersRateSpec extends PekkoSpec {
     jobs.buffer(1000, OverflowStrategy.dropTail)
     // #explicit-buffers-droptail
 
-    // #explicit-buffers-dropnew
-    jobs.buffer(1000, OverflowStrategy.dropNew)
-    // #explicit-buffers-dropnew
-
     // #explicit-buffers-drophead
     jobs.buffer(1000, OverflowStrategy.dropHead)
     // #explicit-buffers-drophead

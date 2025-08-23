@@ -855,8 +855,8 @@ object Source {
    * The strategy [[pekko.stream.OverflowStrategy.backpressure]] will not complete last `offer():Future`
    * call when buffer is full.
    *
-   * Instead of using the strategy [[pekko.stream.OverflowStrategy.dropNew]] it's recommended to use
-   * `Source.queue(bufferSize)` instead which returns a [[QueueOfferResult]] synchronously.
+   * To drop the newest elements, it's recommended combining with `Source.queue(bufferSize)`
+   * which returns a [[QueueOfferResult]] synchronously.
    *
    * You can watch accessibility of stream with [[pekko.stream.scaladsl.SourceQueueWithComplete.watchCompletion]].
    * It returns future that completes with success when the operator is completed or fails when the stream is failed.
@@ -891,8 +891,8 @@ object Source {
    * The strategy [[pekko.stream.OverflowStrategy.backpressure]] will not complete `maxConcurrentOffers` number of
    * `offer():Future` call when buffer is full.
    *
-   * Instead of using the strategy [[pekko.stream.OverflowStrategy.dropNew]] it's recommended to use
-   * `Source.queue(bufferSize)` instead which returns a [[QueueOfferResult]] synchronously.
+   * To drop the newest elements, it's recommended combining with `Source.queue(bufferSize)`
+   * which returns a [[QueueOfferResult]] synchronously.
    *
    * You can watch accessibility of stream with [[pekko.stream.scaladsl.SourceQueueWithComplete.watchCompletion]].
    * It returns future that completes with success when the operator is completed or fails when the stream is failed.
@@ -905,8 +905,7 @@ object Source {
    *
    * @param bufferSize size of buffer in element count
    * @param overflowStrategy Strategy that is used when incoming elements cannot fit inside the buffer
-   * @param maxConcurrentOffers maximum number of pending offers when buffer is full, should be greater than 0, not
-   *                            applicable when `OverflowStrategy.dropNew` is used
+   * @param maxConcurrentOffers maximum number of pending offers when buffer is full, should be greater than 0.
    */
   def queue[T](
       bufferSize: Int,

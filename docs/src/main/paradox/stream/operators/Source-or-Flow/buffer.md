@@ -18,7 +18,6 @@ handled according to the specified `OverflowStrategy`:
  * `dropHead` drops the oldest element in the buffer to make space for the new element
  * `dropTail` drops the youngest element in the buffer to make space for the new element
  * `dropBuffer` drops the entire buffer and buffers the new element
- * `dropNew` drops the new element
  * `fail` fails the flow with a `BufferOverflowException`
 
 ## Reactive Streams semantics
