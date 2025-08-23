@@ -28,6 +28,7 @@ import pekko.{ OnlyCauseStackTrace, PekkoException }
 import pekko.actor._
 import pekko.actor.SupervisorStrategy.Stop
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
+import pekko.event.LoggingAdapter
 import pekko.pattern.pipe
 import pekko.remote._
 import pekko.remote.transport.ActorTransportAdapter._
@@ -238,9 +239,15 @@ private[remote] class PekkoProtocolHandle(
 
   override def write(payload: ByteString): Boolean = wrappedHandle.write(codec.constructPayload(payload))
 
-  override def disassociate(): Unit = disassociate(Unknown)
+  override def disassociate(reason: String, log: LoggingAdapter): Unit = {
+    super.disassociate(reason, log)
+    stateActor ! DisassociateUnderlying(Unknown)
+  }
 
-  def disassociate(info: DisassociateInfo): Unit = stateActor ! DisassociateUnderlying(info)
+  def disassociate(info: DisassociateInfo, log: LoggingAdapter): Unit = {
+    super.disassociate(info.toString, log)
+    stateActor ! DisassociateUnderlying(info)
+  }
 }
 
 @nowarn("msg=deprecated")

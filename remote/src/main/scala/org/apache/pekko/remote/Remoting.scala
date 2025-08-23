@@ -827,7 +827,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
         shutdownStatus <- shutdownAll(transportMapping.values)(_.shutdown())
       } yield flushStatus && shutdownStatus).pipeTo(sender())
 
-      pendingReadHandoffs.valuesIterator.foreach(_.disassociate(AssociationHandle.Shutdown))
+      pendingReadHandoffs.valuesIterator.foreach(_.disassociate(AssociationHandle.Shutdown, log))
 
       // Ignore all other writes
       normalShutdown = true
@@ -836,7 +836,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
 
   def flushing: Receive = {
     case s: Send                                    => extendedSystem.deadLetters ! s
-    case InboundAssociation(h: PekkoProtocolHandle) => h.disassociate(AssociationHandle.Shutdown)
+    case InboundAssociation(h: PekkoProtocolHandle) => h.disassociate(AssociationHandle.Shutdown, log)
     case Terminated(_)                              => // why should we care now?
   }
 
@@ -855,7 +855,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
           }
         case None =>
           if (endpoints.isQuarantined(handle.remoteAddress, handle.handshakeInfo.uid))
-            handle.disassociate(AssociationHandle.Quarantined)
+            handle.disassociate(AssociationHandle.Quarantined, log)
           else
             endpoints.writableEndpointWithPolicyFor(handle.remoteAddress) match {
               case Some(Pass(ep, None)) =>
@@ -1035,7 +1035,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
 
   override def postStop(): Unit = {
     pruneTimerCancellable.cancel()
-    pendingReadHandoffs.valuesIterator.foreach(_.disassociate(AssociationHandle.Shutdown))
+    pendingReadHandoffs.valuesIterator.foreach(_.disassociate(AssociationHandle.Shutdown, log))
 
     if (!normalShutdown) {
       // Remaining running endpoints are children, so they will clean up themselves.

@@ -29,3 +29,5 @@ ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.remote.serializati
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.remote.serialization.LongSerializer")
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.remote.serialization.StringSerializer")
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.remote.transport.FailureInjectorTransportAdapter$All*")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.remote.transport.AssociationHandle.disassociate")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.remote.transport.TestAssociationHandle.disassociate")

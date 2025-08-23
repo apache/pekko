@@ -186,15 +186,10 @@ private[remote] final case class FailureInjectorHandle(
       wrappedHandle.write(payload)
     else true
 
-  override def disassociate(reason: String, log: LoggingAdapter): Unit =
+  override def disassociate(reason: String, log: LoggingAdapter): Unit = {
+    super.disassociate(reason, log)
     wrappedHandle.disassociate(reason, log)
-
-  @deprecated(
-    message = "Use method that states reasons to make sure disassociation reasons are logged.",
-    since = "Akka 2.5.3")
-  @nowarn("msg=deprecated")
-  override def disassociate(): Unit =
-    wrappedHandle.disassociate()
+  }
 
   override def notify(ev: HandleEvent): Unit =
     if (!gremlinAdapter.shouldDropInbound(wrappedHandle.remoteAddress, ev, "handler.notify"))
