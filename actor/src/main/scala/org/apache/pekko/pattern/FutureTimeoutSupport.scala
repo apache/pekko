@@ -126,8 +126,8 @@ trait FutureTimeoutSupport {
    * if the provided value is not completed within the specified duration.
    * @since 1.2.0
    */
-  @deprecated("Use `CompletableFuture#orTimeout instead.", "Pekko 2.0.0")
-  def timeoutCompletionStage[T](duration: FiniteDuration, using: Scheduler)(value: => CompletionStage[T])(
+  @deprecated("Use `CompletableFuture#orTimeout instead.", "2.0.0")
+  def timeoutCompletionStage[T](duration: java.time.Duration, using: Scheduler)(value: => CompletionStage[T])(
       implicit ec: ExecutionContext): CompletionStage[T] = {
     val stage: CompletionStage[T] =
       try value
@@ -138,10 +138,12 @@ trait FutureTimeoutSupport {
       stage
     } else {
       val p = new CompletableFuture[T]
-      val timeout = using.scheduleOnce(duration) {
-        p.completeExceptionally(new TimeoutException(s"Timeout of $duration expired"))
-        stage.toCompletableFuture.cancel(true)
-      }
+      val timeout = using.scheduleOnce(duration,
+        () => {
+          p.completeExceptionally(new TimeoutException(s"Timeout of $duration expired"))
+          stage.toCompletableFuture.cancel(true)
+          ()
+        })
       stage.handle[Unit]((v: T, ex: Throwable) => {
         timeout.cancel()
         if (v != null) p.complete(v)

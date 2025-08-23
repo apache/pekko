@@ -480,7 +480,7 @@ object Patterns {
       scheduler: Scheduler,
       context: ExecutionContext,
       value: Callable[CompletionStage[T]]): CompletionStage[T] =
-    timeoutCompletionStage(duration.asScala, scheduler)(value.call())(context)
+    timeoutCompletionStage(duration, scheduler)(value.call())(context)
 
   /**
    * Returns an internally retrying [[java.util.concurrent.CompletionStage]]
