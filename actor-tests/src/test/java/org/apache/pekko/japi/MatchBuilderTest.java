@@ -22,6 +22,7 @@ import scala.MatchError;
 
 import static org.junit.Assert.*;
 
+@SuppressWarnings("deprecation")
 public class MatchBuilderTest extends JUnitSuite {
 
   @Test

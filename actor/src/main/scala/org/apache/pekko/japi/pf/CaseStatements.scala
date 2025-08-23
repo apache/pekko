@@ -15,10 +15,13 @@ package org.apache.pekko.japi.pf
 
 import FI.{ Apply, Predicate, UnitApply }
 
+import scala.annotation.nowarn
+
 private[pf] object CaseStatement {
   def empty[F, T](): PartialFunction[F, T] = PartialFunction.empty
 }
 
+@nowarn("msg=deprecated")
 private[pf] class CaseStatement[-F, +P, T](predicate: Predicate, apply: Apply[P, T]) extends PartialFunction[F, T] {
 
   override def isDefinedAt(o: F) = predicate.defined(o)
@@ -26,6 +29,7 @@ private[pf] class CaseStatement[-F, +P, T](predicate: Predicate, apply: Apply[P,
   override def apply(o: F) = apply.apply(o.asInstanceOf[P])
 }
 
+@nowarn("msg=deprecated")
 private[pf] class UnitCaseStatement[F, P](predicate: Predicate, apply: UnitApply[P]) extends PartialFunction[F, Unit] {
 
   override def isDefinedAt(o: F) = predicate.defined(o)
