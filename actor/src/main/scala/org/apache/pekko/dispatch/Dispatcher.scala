@@ -64,6 +64,7 @@ class Dispatcher(
     new LazyExecutorServiceDelegate(executorServiceFactoryProvider.createExecutorServiceFactory(id, threadFactory))
 
   protected final def executorService: ExecutorServiceDelegate = executorServiceDelegate
+  private val isVirtualized = executorServiceFactoryProvider.isVirtualized
 
   /**
    * INTERNAL API
@@ -71,7 +72,12 @@ class Dispatcher(
   protected[pekko] def dispatch(receiver: ActorCell, invocation: Envelope): Unit = {
     val mbox = receiver.mailbox
     mbox.enqueue(receiver.self, invocation)
-    registerForExecution(mbox, true, false)
+    registerForExecution(mbox, hasMessageHint = true, hasSystemMessageHint = false)
+  }
+
+  final override def batchable(runnable: Runnable): Boolean = {
+    // If this is a virtualized, we don't batch, otherwise, too much threadLocals.
+    if (isVirtualized) false else super.batchable(runnable)
   }
 
   /**

@@ -73,6 +73,7 @@ object ForkJoinExecutorConfigurator {
 class ForkJoinExecutorConfigurator(config: Config, prerequisites: DispatcherPrerequisites)
     extends ExecutorServiceConfigurator(config, prerequisites) {
   import ForkJoinExecutorConfigurator._
+  final override val isVirtualized: Boolean = config.getBoolean("virtualize") && JavaVersion.majorVersion >= 21
 
   def validate(t: ThreadFactory): ForkJoinPool.ForkJoinWorkerThreadFactory = t match {
     case correct: ForkJoinPool.ForkJoinWorkerThreadFactory => correct
@@ -86,30 +87,23 @@ class ForkJoinExecutorConfigurator(config: Config, prerequisites: DispatcherPrer
       val threadFactory: ForkJoinPool.ForkJoinWorkerThreadFactory,
       val parallelism: Int,
       val asyncMode: Boolean,
-      val maxPoolSize: Int,
-      val virtualize: Boolean)
+      val maxPoolSize: Int)
       extends ExecutorServiceFactory {
     def this(threadFactory: ForkJoinPool.ForkJoinWorkerThreadFactory,
         parallelism: Int,
         asyncMode: Boolean,
-        maxPoolSize: Int,
-        virtualize: Boolean) =
-      this(null, threadFactory, parallelism, asyncMode, maxPoolSize, virtualize)
+        maxPoolSize: Int) =
+      this(null, threadFactory, parallelism, asyncMode, maxPoolSize)
 
     def this(threadFactory: ForkJoinPool.ForkJoinWorkerThreadFactory,
         parallelism: Int,
-        asyncMode: Boolean) = this(threadFactory, parallelism, asyncMode, ForkJoinPoolConstants.MaxCap, false)
-
-    def this(threadFactory: ForkJoinPool.ForkJoinWorkerThreadFactory,
-        parallelism: Int,
-        asyncMode: Boolean,
-        maxPoolSize: Int) = this(threadFactory, parallelism, asyncMode, maxPoolSize, false)
+        asyncMode: Boolean) = this(threadFactory, parallelism, asyncMode, ForkJoinPoolConstants.MaxCap)
 
     def this(threadFactory: ForkJoinPool.ForkJoinWorkerThreadFactory, parallelism: Int) =
       this(threadFactory, parallelism, asyncMode = true)
 
     def createExecutorService: ExecutorService = {
-      val tf = if (virtualize && JavaVersion.majorVersion >= 21) {
+      val tf = if (isVirtualized) {
         threadFactory match {
           // we need to use the thread factory to create carrier thread
           case m: MonitorableThreadFactory => new MonitorableCarrierThreadFactory(m.name)
@@ -119,7 +113,7 @@ class ForkJoinExecutorConfigurator(config: Config, prerequisites: DispatcherPrer
 
       val pool = new PekkoForkJoinPool(parallelism, tf, maxPoolSize, MonitorableThreadFactory.doNothing, asyncMode)
 
-      if (virtualize && JavaVersion.majorVersion >= 21) {
+      if (isVirtualized) {
         // when virtualized, we need enhanced thread factory
         val factory: ThreadFactory = threadFactory match {
           case MonitorableThreadFactory(name, _, contextClassLoader, exceptionHandler, _) =>
@@ -173,7 +167,7 @@ class ForkJoinExecutorConfigurator(config: Config, prerequisites: DispatcherPrer
         config.getDouble("parallelism-factor"),
         config.getInt("parallelism-max")),
       asyncMode,
-      config.getInt("maximum-pool-size"),
-      config.getBoolean("virtualize"))
+      config.getInt("maximum-pool-size")
+    )
   }
 }
