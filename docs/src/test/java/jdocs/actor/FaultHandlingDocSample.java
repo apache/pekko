@@ -22,15 +22,12 @@ import java.util.Map;
 import java.time.Duration;
 
 import org.apache.pekko.actor.*;
-import org.apache.pekko.dispatch.Mapper;
 import org.apache.pekko.event.LoggingReceive;
 import org.apache.pekko.japi.pf.DeciderBuilder;
 import org.apache.pekko.pattern.Patterns;
-import org.apache.pekko.util.Timeout;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
-import static org.apache.pekko.japi.Util.classTag;
 import static org.apache.pekko.actor.SupervisorStrategy.restart;
 import static org.apache.pekko.actor.SupervisorStrategy.stop;
 import static org.apache.pekko.actor.SupervisorStrategy.escalate;
@@ -127,7 +124,7 @@ public class FaultHandlingDocSample {
    * sender of the Start message of current Progress. The Worker supervise the CounterService.
    */
   public static class Worker extends AbstractLoggingActor {
-    final Timeout askTimeout = Timeout.create(Duration.ofSeconds(5));
+    final Duration askTimeout = Duration.ofSeconds(5);
 
     // The sender of the initial Start message will continuously be notified
     // about progress
@@ -177,14 +174,8 @@ public class FaultHandlingDocSample {
                     // Send current progress to the initial sender
                     pipe(
                             Patterns.ask(counterService, GetCurrentCount, askTimeout)
-                                .mapTo(classTag(CurrentCount.class))
-                                .map(
-                                    new Mapper<CurrentCount, Progress>() {
-                                      public Progress apply(CurrentCount c) {
-                                        return new Progress(100.0 * c.count / totalCount);
-                                      }
-                                    },
-                                    getContext().dispatcher()),
+                                .thenApply(CurrentCount.class::cast)
+                                .thenApply(c -> new Progress(100.0 * c.count / totalCount)),
                             getContext().dispatcher())
                         .to(progressListener);
                   })
