@@ -30,14 +30,17 @@ public final class FI {
    *
    * @param <I> the input type, that this Apply will be applied to
    * @param <R> the return type, that the results of the application will have
+   * @deprecated Will be removed in 2.0.0
    */
   @FunctionalInterface
+  @Deprecated
   public interface Apply<I, R> {
     /**
      * The application to perform.
      *
      * @param i an instance that the application is performed on
      * @return the result of the application
+     * @deprecated Will be removed in 2.0.0
      */
     R apply(I i) throws Exception;
   }
@@ -51,8 +54,10 @@ public final class FI {
    * @param <I1> the first input type, that this Apply will be applied to
    * @param <I2> the second input type, that this Apply will be applied to
    * @param <R> the return type, that the results of the application will have
+   * @deprecated Will be removed in 2.0.0
    */
   @FunctionalInterface
+  @Deprecated
   public interface Apply2<I1, I2, R> {
     /**
      * The application to perform.
@@ -60,6 +65,7 @@ public final class FI {
      * @param i1 an instance that the application is performed on
      * @param i2 an instance that the application is performed on
      * @return the result of the application
+     * @deprecated Will be removed in 2.0.0
      */
     R apply(I1 i1, I2 i2) throws Exception;
   }
@@ -71,7 +77,9 @@ public final class FI {
    * java.util.function.Predicate} or {@link org.apache.pekko.japi.function.Predicate}.
    *
    * @param <T> the type that the predicate will operate on.
+   * @deprecated Will be removed in 2.0.0
    */
+  @Deprecated
   @FunctionalInterface
   public interface TypedPredicate<T> {
     /**
@@ -88,8 +96,10 @@ public final class FI {
    *
    * @param <T> the type that the predicate will operate on.
    * @param <U> the type that the predicate will operate on.
+   * @deprecated Will be removed in 2.0.0
    */
   @FunctionalInterface
+  @Deprecated
   public interface TypedPredicate2<T, U> {
     /**
      * The predicate to evaluate.
@@ -108,8 +118,10 @@ public final class FI {
    * org.apache.pekko.japi.function.Procedure}.
    *
    * @param <I> the input type, that this Apply will be applied to
+   * @deprecated Will be removed in 2.0.0
    */
   @FunctionalInterface
+  @Deprecated
   public interface UnitApply<I> {
     /**
      * The application to perform.
@@ -124,8 +136,10 @@ public final class FI {
    *
    * @param <I1> the first input type, that this Apply will be applied to
    * @param <I2> the second input type, that this Apply will be applied to
+   * @deprecated Will be removed in 2.0.0
    */
   @FunctionalInterface
+  @Deprecated
   public interface UnitApply2<I1, I2> {
     /**
      * The application to perform.
@@ -142,8 +156,10 @@ public final class FI {
    * @param <I1> the first input type, that this Apply will be applied to
    * @param <I2> the second input type, that this Apply will be applied to
    * @param <I3> the third input type, that this Apply will be applied to
+   * @deprecated Will be removed in 2.0.0
    */
   @FunctionalInterface
+  @Deprecated
   public interface UnitApply3<I1, I2, I3> {
     /**
      * The application to perform.
@@ -162,8 +178,10 @@ public final class FI {
    * @param <I2> the second input type, that this Apply will be applied to
    * @param <I3> the third input type, that this Apply will be applied to
    * @param <I4> the fourth input type, that this Apply will be applied to
+   * @deprecated Will be removed in 2.0.0
    */
   @FunctionalInterface
+  @Deprecated
   public interface UnitApply4<I1, I2, I3, I4> {
     /**
      * The application to perform.
@@ -181,8 +199,11 @@ public final class FI {
    *
    * <p>This class is kept for compatibility, but for future API's please prefer {@link
    * org.apache.pekko.japi.function.Effect}.
+   *
+   * @deprecated Will be removed in 2.0.0
    */
   @FunctionalInterface
+  @Deprecated
   public interface UnitApplyVoid {
     /** The application to perform. */
     void apply() throws Exception;
@@ -194,8 +215,11 @@ public final class FI {
    *
    * <p>This class is kept for compatibility, but for future API's please prefer {@link
    * java.util.function.Predicate} or {@link org.apache.pekko.japi.function.Predicate}.
+   *
+   * @deprecated Will be removed in 2.0.0
    */
   @FunctionalInterface
+  @Deprecated
   interface Predicate {
     /**
      * The predicate to evaluate.

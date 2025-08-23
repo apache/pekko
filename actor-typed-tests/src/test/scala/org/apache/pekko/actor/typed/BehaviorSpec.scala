@@ -194,6 +194,8 @@ object BehaviorSpec {
     new F1[PFBuilder[Command, Command], PFBuilder[Command, Command]] {
       override def apply(in: PFBuilder[Command, Command]) = f(in)
     }
+
+  @nowarn("msg=deprecated")
   def fi(f: Command => Command) =
     new FI.Apply[Command, Command] {
       override def apply(in: Command) = f(in)

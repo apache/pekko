@@ -18,6 +18,8 @@ import scala.concurrent.duration.FiniteDuration
 import org.apache.pekko
 import pekko.util.JavaDurationConverters._
 
+import scala.annotation.nowarn
+
 /**
  * Java API: compatible with lambda expressions
  */
@@ -39,6 +41,7 @@ object AbstractFSM {
  *
  * Finite State Machine actor abstract base class.
  */
+@nowarn("msg=deprecated")
 abstract class AbstractFSM[S, D] extends FSM[S, D] {
   import java.util.{ List => JList }
 
