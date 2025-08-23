@@ -124,6 +124,16 @@ object Futures {
   import org.apache.pekko.util.ccompat.JavaConverters._
 
   /**
+   * Convert a Scala Future to a Java CompletionStage.
+   *
+   * @since 1.2.0
+   */
+  def asJava[T](future: Future[T]): CompletionStage[T] = {
+    import org.apache.pekko.util.FutureConverters._
+    future.asJava
+  }
+
+  /**
    * Starts an asynchronous computation and returns a `Future` object with the result of that computation.
    *
    * The result becomes available once the asynchronous computation is completed.
@@ -154,7 +164,7 @@ object Futures {
   /**
    * Creates an already completed CompletionStage with the specified exception
    */
-  @deprecated("Use `CompletableFuture.failedStage` instead, will be removed in Pekko 2.0.0", "Pekko 1.2.0")
+  @deprecated("Use `CompletableFuture.failedStage` instead, will be removed in Pekko 2.0.0", "1.2.0")
   def failedCompletionStage[T](ex: Throwable): CompletionStage[T] = {
     val f = CompletableFuture.completedFuture[T](null.asInstanceOf[T])
     f.obtrudeException(ex)
@@ -164,6 +174,7 @@ object Futures {
   /**
    * Returns a Future that will hold the optional result of the first Future with a result that matches the predicate
    */
+  @deprecated("Use `CompletionStages#find` instead.", since = "1.2.0")
   @nowarn("msg=deprecated")
   def find[T <: AnyRef](
       futures: JIterable[Future[T]],
@@ -176,6 +187,8 @@ object Futures {
   /**
    * Returns a Future to the result of the first future in the list that is completed
    */
+  @deprecated("Use `CompletionStages#firstCompletedOf` instead.", since = "1.2.0")
+  @nowarn("msg=deprecated")
   def firstCompletedOf[T <: AnyRef](futures: JIterable[Future[T]], executor: ExecutionContext): Future[T] =
     Future.firstCompletedOf(futures.asScala)(executor)
 
@@ -185,6 +198,7 @@ object Futures {
    * the result will be the first failure of any of the futures, or any failure in the actual fold,
    * or the result of the fold.
    */
+  @deprecated("Use `CompletionStages#fold` instead.", since = "1.2.0")
   @nowarn("msg=deprecated")
   def fold[T <: AnyRef, R <: AnyRef](
       zero: R,
@@ -196,6 +210,7 @@ object Futures {
   /**
    * Reduces the results of the supplied futures and binary function.
    */
+  @deprecated("Use `CompletionStages#reduce` instead.", since = "1.2.0")
   @nowarn("msg=deprecated")
   def reduce[T <: AnyRef, R >: T](
       futures: JIterable[Future[T]],
@@ -207,6 +222,7 @@ object Futures {
    * Simple version of [[#traverse]]. Transforms a JIterable[Future[A]] into a Future[JIterable[A]].
    * Useful for reducing many Futures into a single Future.
    */
+  @deprecated("Use `CompletionStages#sequence` instead.", since = "1.2.0")
   def sequence[A](in: JIterable[Future[A]], executor: ExecutionContext): Future[JIterable[A]] = {
     implicit val d = executor
     in.asScala.foldLeft(Future(new JLinkedList[A]())) { (fr, fa) =>
@@ -219,8 +235,10 @@ object Futures {
    * This is useful for performing a parallel map. For example, to apply a function to all items of a list
    * in parallel.
    */
+  @deprecated("Use `CompletionStages#traverse` instead.", since = "1.2.0")
   @nowarn("msg=deprecated")
-  def traverse[A, B](in: JIterable[A], fn: JFunc[A, Future[B]], executor: ExecutionContext): Future[JIterable[B]] = {
+  def traverse[A, B](in: JIterable[A], fn: JFunc[A, Future[B]], executor: ExecutionContext)
+      : Future[JIterable[B]] = {
     implicit val d = executor
     in.asScala.foldLeft(Future(new JLinkedList[B]())) { (fr, a) =>
       val fb = fn(a)
@@ -275,7 +293,7 @@ object japi {
  * Java API
  */
 @nowarn("msg=deprecated")
-@deprecated("Use Java's CompletableFuture instead, will be removed in Pekko 2.0.0", "Pekko 1.2.0")
+@deprecated("Use Java's CompletableFuture instead, will be removed in Pekko 2.0.0", "1.2.0")
 abstract class OnSuccess[-T] extends japi.CallbackBridge[T] {
   protected final override def internal(result: T) = onSuccess(result)
 
@@ -294,7 +312,7 @@ abstract class OnSuccess[-T] extends japi.CallbackBridge[T] {
  * Java API
  */
 @nowarn("msg=deprecated")
-@deprecated("Use Java's CompletableFuture instead, will be removed in Pekko 2.0.0", "Pekko 1.2.0")
+@deprecated("Use Java's CompletableFuture instead, will be removed in Pekko 2.0.0", "1.2.0")
 abstract class OnFailure extends japi.CallbackBridge[Throwable] {
   protected final override def internal(failure: Throwable) = onFailure(failure)
 
@@ -313,7 +331,7 @@ abstract class OnFailure extends japi.CallbackBridge[Throwable] {
  * Java API
  */
 @nowarn("msg=deprecated")
-@deprecated("Use Java's CompletableFuture instead, will be removed in Pekko 2.0.0", "Pekko 1.2.0")
+@deprecated("Use Java's CompletableFuture instead, will be removed in Pekko 2.0.0", "1.2.0")
 abstract class OnComplete[-T] extends japi.CallbackBridge[Try[T]] {
   protected final override def internal(value: Try[T]): Unit = value match {
     case Failure(t) => onComplete(t, null.asInstanceOf[T])
@@ -337,7 +355,7 @@ abstract class OnComplete[-T] extends japi.CallbackBridge[Try[T]] {
  * Java API
  */
 @nowarn("msg=deprecated")
-@deprecated("Use Java's CompletableFuture instead, will be removed in Pekko 2.0.0", "Pekko 1.2.0")
+@deprecated("Use Java's CompletableFuture instead, will be removed in Pekko 2.0.0", "1.2.0")
 abstract class Recover[+T] extends japi.RecoverBridge[T] {
   protected final override def internal(result: Throwable): T = recover(result)
 
@@ -378,7 +396,7 @@ abstract class Recover[+T] extends japi.RecoverBridge[T] {
  * thus Java users should prefer `Future.map`, translating non-matching values
  * to failure cases.
  */
-@deprecated("Use Java's CompletableFuture instead, will be removed in Pekko 2.0.0", "Pekko 1.2.0")
+@deprecated("Use Java's CompletableFuture instead, will be removed in Pekko 2.0.0", "1.2.0")
 object Filter {
   @nowarn("msg=deprecated")
   def filterOf[T](f: pekko.japi.Function[T, java.lang.Boolean]): (T => Boolean) =
@@ -394,7 +412,7 @@ object Filter {
  * Java API
  */
 @nowarn("msg=deprecated")
-@deprecated("Use Java's CompletableFuture instead, will be removed in Pekko 2.0.0", "Pekko 1.2.0")
+@deprecated("Use Java's CompletableFuture instead, will be removed in Pekko 2.0.0", "1.2.0")
 abstract class Foreach[-T] extends japi.UnitFunctionBridge[T] {
   override final def internal(t: T): Unit = each(t)
 
@@ -417,7 +435,7 @@ abstract class Foreach[-T] extends japi.UnitFunctionBridge[T] {
  *
  * Java API
  */
-@deprecated("Use Java's CompletableFuture instead, will be removed in Pekko 2.0.0", "Pekko 1.2.0")
+@deprecated("Use Java's CompletableFuture instead, will be removed in Pekko 2.0.0", "1.2.0")
 abstract class Mapper[-T, +R] extends scala.runtime.AbstractFunction1[T, R] {
 
   /**
