@@ -488,6 +488,7 @@ public class PatternsTest extends JUnitSuite {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
   public void testCompletedStageWithTimeout() throws Exception {
     final String expected = "Hello";
     final CompletionStage<String> delayedStage =
@@ -501,6 +502,7 @@ public class PatternsTest extends JUnitSuite {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
   public void testFailedCompletedStageWithTimeout() throws Exception {
     final CompletionStage<String> delayedStage =
         Patterns.timeout(
@@ -521,6 +523,7 @@ public class PatternsTest extends JUnitSuite {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
   public void testCompletedWithTimeout() throws Exception {
     final CompletionStage<String> delayedStage =
         Patterns.timeout(Duration.ofMillis(200), system.scheduler(), ec, CompletableFuture::new);
