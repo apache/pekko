@@ -14,12 +14,13 @@
 package org.apache.pekko.pattern;
 
 import org.apache.pekko.actor.*;
+import org.apache.pekko.dispatch.CompletionStages;
 import org.apache.pekko.dispatch.Futures;
 import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.testkit.TestProbe;
 import org.apache.pekko.util.Timeout;
-import org.junit.Assert;
+
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
@@ -321,33 +322,39 @@ public class PatternsTest extends JUnitSuite {
   @Test(expected = IllegalStateException.class)
   @SuppressWarnings("deprecation")
   public void testAfterFailedCallable() throws Exception {
-    Callable<Future<String>> failedCallable =
-        () -> Futures.failed(new IllegalStateException("Illegal!"));
+    Callable<CompletionStage<String>> failedCallable =
+        () -> Futures.failedCompletionStage(new IllegalStateException("Illegal!"));
 
-    Future<String> delayedFuture =
-        Patterns.after(
-            scala.concurrent.duration.Duration.create(200, "millis"),
-            system.scheduler(),
-            ec,
-            failedCallable);
+    CompletionStage<String> delayedFuture =
+        Patterns.after(Duration.ofMillis(200), system.scheduler(), ec, failedCallable);
 
-    Future<String> resultFuture = Futures.firstCompletedOf(Arrays.asList(delayedFuture), ec);
-    Await.result(resultFuture, scala.concurrent.duration.FiniteDuration.apply(3, SECONDS));
+    CompletionStage<String> resultFuture =
+        CompletionStages.firstCompletedOf(Arrays.asList(delayedFuture));
+    try {
+      resultFuture.toCompletableFuture().get(3, SECONDS);
+    } catch (ExecutionException e) {
+      throw (IllegalStateException) e.getCause();
+    }
   }
 
   @Test(expected = IllegalStateException.class)
   @SuppressWarnings("deprecation")
   public void testAfterFailedFuture() throws Exception {
 
-    Future<String> delayedFuture =
+    CompletionStage<String> delayedFuture =
         Patterns.after(
-            scala.concurrent.duration.Duration.create(200, "millis"),
+            Duration.ofMillis(200),
             system.scheduler(),
             ec,
-            () -> Futures.failed(new IllegalStateException("Illegal!")));
+            () -> Futures.failedCompletionStage(new IllegalStateException("Illegal!")));
 
-    Future<String> resultFuture = Futures.firstCompletedOf(Arrays.asList(delayedFuture), ec);
-    Await.result(resultFuture, FiniteDuration.apply(3, SECONDS));
+    CompletionStage<String> resultFuture =
+        CompletionStages.firstCompletedOf(Arrays.asList(delayedFuture));
+    try {
+      resultFuture.toCompletableFuture().get(3, SECONDS);
+    } catch (ExecutionException e) {
+      throw (IllegalStateException) e.getCause();
+    }
   }
 
   @Test
@@ -355,15 +362,16 @@ public class PatternsTest extends JUnitSuite {
   public void testAfterSuccessfulCallable() throws Exception {
     final String expected = "Hello";
 
-    Future<String> delayedFuture =
+    CompletionStage<String> delayedFuture =
         Patterns.after(
-            scala.concurrent.duration.Duration.create(200, "millis"),
+            Duration.ofMillis(200),
             system.scheduler(),
             ec,
-            () -> Futures.successful(expected));
+            () -> CompletableFuture.completedFuture(expected));
 
-    Future<String> resultFuture = Futures.firstCompletedOf(Arrays.asList(delayedFuture), ec);
-    final String actual = Await.result(resultFuture, FiniteDuration.apply(3, SECONDS));
+    CompletionStage<String> resultFuture =
+        CompletionStages.firstCompletedOf(Arrays.asList(delayedFuture));
+    final String actual = resultFuture.toCompletableFuture().get(3, SECONDS);
 
     assertEquals(expected, actual);
   }
@@ -373,16 +381,17 @@ public class PatternsTest extends JUnitSuite {
   public void testAfterSuccessfulFuture() throws Exception {
     final String expected = "Hello";
 
-    Future<String> delayedFuture =
+    CompletionStage<String> delayedFuture =
         Patterns.after(
-            scala.concurrent.duration.Duration.create(200, "millis"),
+            Duration.ofMillis(200),
             system.scheduler(),
             ec,
-            () -> Futures.successful(expected));
+            () -> CompletableFuture.completedFuture(expected));
 
-    Future<String> resultFuture = Futures.firstCompletedOf(Arrays.asList(delayedFuture), ec);
+    CompletionStage<String> resultFuture =
+        CompletionStages.firstCompletedOf(Arrays.asList(delayedFuture));
 
-    final String actual = Await.result(resultFuture, FiniteDuration.apply(3, SECONDS));
+    final String actual = resultFuture.toCompletableFuture().get(3, SECONDS);
     assertEquals(expected, actual);
   }
 
@@ -391,19 +400,19 @@ public class PatternsTest extends JUnitSuite {
   public void testAfterFiniteDuration() throws Exception {
     final String expected = "Hello";
 
-    Future<String> delayedFuture =
+    CompletionStage<String> delayedFuture =
         Patterns.after(
-            scala.concurrent.duration.Duration.create(200, "millis"),
+            Duration.ofMillis(200),
             system.scheduler(),
             ec,
-            () -> Futures.successful("world"));
+            () -> CompletableFuture.completedFuture("world"));
 
-    Future<String> immediateFuture = Futures.future(() -> expected, ec);
+    CompletionStage<String> immediateFuture = CompletableFuture.completedFuture(expected);
 
-    Future<String> resultFuture =
-        Futures.firstCompletedOf(Arrays.asList(delayedFuture, immediateFuture), ec);
+    CompletionStage<String> resultFuture =
+        CompletionStages.firstCompletedOf(Arrays.asList(delayedFuture, immediateFuture));
 
-    final String actual = Await.result(resultFuture, FiniteDuration.apply(3, SECONDS));
+    final String actual = resultFuture.toCompletableFuture().get(3, SECONDS);
     assertEquals(expected, actual);
   }
 
