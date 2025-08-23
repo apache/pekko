@@ -411,6 +411,7 @@ abstract class MessageDispatcherConfigurator(_config: Config, val prerequisites:
 
 final class VirtualThreadExecutorConfigurator(config: Config, prerequisites: DispatcherPrerequisites)
     extends ExecutorServiceConfigurator(config, prerequisites) {
+  override def isVirtualized: Boolean = true
 
   override def createExecutorServiceFactory(id: String, threadFactory: ThreadFactory): ExecutorServiceFactory = {
     import VirtualThreadSupport._
