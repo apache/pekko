@@ -23,6 +23,7 @@ import org.agrona.IoUtil;
 import org.agrona.concurrent.AtomicBuffer;
 import org.agrona.concurrent.errors.ErrorLogReader;
 
+import org.apache.pekko.annotation.InternalApi;
 import org.apache.pekko.event.LoggingAdapter;
 import org.apache.pekko.util.Helpers;
 
@@ -37,14 +38,10 @@ import java.util.concurrent.atomic.AtomicLong;
  * by media driver in shared memory. This application reads the cnc file and prints the distinct
  * errors. Layout of the cnc file is described in {@link io.aeron.CncFileDescriptor}.
  */
+@InternalApi
 public class AeronErrorLog {
   final MappedByteBuffer cncByteBuffer;
   final AtomicBuffer buffer;
-
-  @Deprecated
-  public AeronErrorLog(File cncFile) {
-    this(cncFile, NoLogging.getInstance());
-  }
 
   public AeronErrorLog(File cncFile, LoggingAdapter log) {
     cncByteBuffer = IoUtil.mapExistingFile(cncFile, "cnc");
