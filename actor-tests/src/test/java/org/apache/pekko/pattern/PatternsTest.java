@@ -528,7 +528,7 @@ public class PatternsTest extends JUnitSuite {
       delayedStage.toCompletableFuture().get(3, SECONDS);
     } catch (ExecutionException e) {
       assertTrue(e.getCause() instanceof TimeoutException);
-      assertEquals("Timeout of 200 milliseconds expired", e.getCause().getMessage());
+      assertEquals("Timeout of PT0.2S expired", e.getCause().getMessage());
     }
   }
 

@@ -17,6 +17,7 @@ import java.util.concurrent.{ CompletableFuture, CompletionStage, TimeoutExcepti
 import scala.concurrent.{ ExecutionContext, Future, Promise }
 import scala.concurrent.duration.FiniteDuration
 import scala.util.control.NonFatal
+
 import org.apache.pekko
 import pekko.actor._
 import pekko.dispatch.Futures
@@ -126,7 +127,7 @@ trait FutureTimeoutSupport {
    * @since 1.2.0
    */
   @nowarn("msg=deprecated")
-  def timeoutCompletionStage[T](duration: FiniteDuration, using: Scheduler)(value: => CompletionStage[T])(
+  def timeoutCompletionStage[T](duration: java.time.Duration, using: Scheduler)(value: => CompletionStage[T])(
       implicit ec: ExecutionContext): CompletionStage[T] = {
     val stage: CompletionStage[T] =
       try value
@@ -137,10 +138,12 @@ trait FutureTimeoutSupport {
       stage
     } else {
       val p = new CompletableFuture[T]
-      val timeout = using.scheduleOnce(duration) {
-        p.completeExceptionally(new TimeoutException(s"Timeout of $duration expired"))
-        stage.toCompletableFuture.cancel(true)
-      }
+      val timeout = using.scheduleOnce(duration,
+        () => {
+          p.completeExceptionally(new TimeoutException(s"Timeout of $duration expired"))
+          stage.toCompletableFuture.cancel(true)
+          ()
+        })
       stage.handle[Unit]((v: T, ex: Throwable) => {
         timeout.cancel()
         if (v != null) p.complete(v)
