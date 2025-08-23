@@ -14,14 +14,14 @@
 package org.apache.pekko.pattern
 
 import java.util.concurrent.{ CompletableFuture, CompletionStage, TimeoutException }
-
 import scala.concurrent.{ ExecutionContext, Future, Promise }
 import scala.concurrent.duration.FiniteDuration
 import scala.util.control.NonFatal
-
 import org.apache.pekko
 import pekko.actor._
 import pekko.dispatch.Futures
+
+import scala.annotation.nowarn
 
 trait FutureTimeoutSupport {
 
@@ -66,6 +66,7 @@ trait FutureTimeoutSupport {
    * Returns a [[java.util.concurrent.CompletionStage]] that will be completed with the success or failure of the provided value
    * after the specified duration.
    */
+  @nowarn("msg=deprecated")
   def afterCompletionStage[T](duration: FiniteDuration, using: Scheduler)(value: => CompletionStage[T])(
       implicit ec: ExecutionContext): CompletionStage[T] =
     if (duration.isFinite && duration.length < 1) {
@@ -124,6 +125,7 @@ trait FutureTimeoutSupport {
    * if the provided value is not completed within the specified duration.
    * @since 1.2.0
    */
+  @nowarn("msg=deprecated")
   def timeoutCompletionStage[T](duration: FiniteDuration, using: Scheduler)(value: => CompletionStage[T])(
       implicit ec: ExecutionContext): CompletionStage[T] = {
     val stage: CompletionStage[T] =
