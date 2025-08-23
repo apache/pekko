@@ -13,7 +13,6 @@
 
 package org.apache.pekko.stream
 
-import scala.annotation.nowarn
 import scala.util.{ Failure, Success, Try }
 import scala.util.control.NoStackTrace
 
@@ -26,14 +25,18 @@ import pekko.Done
  * @param count Numeric value depending on context, for example IO operations performed or bytes processed.
  * @param status Status of the result. Can be either [[pekko.Done]] or an exception.
  */
-@nowarn("msg=deprecated") // Status
 final case class IOResult(
     count: Long,
-    @deprecated("status is always set to Success(Done)", "Akka 2.6.0") status: Try[Done]) {
+    status: Try[Done]) {
 
+  /**
+   * Creates a new IOResult with the given count and the same status.
+   */
   def withCount(value: Long): IOResult = copy(count = value)
 
-  @deprecated("status is always set to Success(Done)", "Akka 2.6.0")
+  /**
+   * Creates a new IOResult with the given status and the same count.
+   */
   def withStatus(value: Try[Done]): IOResult = copy(status = value)
 
   /**
@@ -44,14 +47,12 @@ final case class IOResult(
   /**
    * Java API: Indicates whether IO operation completed successfully or not.
    */
-  @deprecated("status is always set to Success(Done)", "Akka 2.6.0")
   def wasSuccessful: Boolean = status.isSuccess
 
   /**
    * Java API: If the IO operation resulted in an error, returns the corresponding [[java.lang.Throwable]]
    * or throws [[UnsupportedOperationException]] otherwise.
    */
-  @deprecated("status is always set to Success(Done)", "Akka 2.6.0")
   def getError: Throwable = status match {
     case Failure(t) => t
     case Success(_) => throw new UnsupportedOperationException("IO operation was successful.")
@@ -68,7 +69,6 @@ object IOResult {
     new IOResult(count, Success(Done))
 
   /** JAVA API: Creates failed IOResult, `count` should be the number of bytes (or other unit, please document in your APIs) processed before failing */
-  @deprecated("use IOOperationIncompleteException", "Akka 2.6.0")
   def createFailed(count: Long, ex: Throwable): IOResult =
     new IOResult(count, Failure(ex))
 }
