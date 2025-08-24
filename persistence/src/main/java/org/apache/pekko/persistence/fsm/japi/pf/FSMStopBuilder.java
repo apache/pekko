@@ -13,8 +13,12 @@
 
 package org.apache.pekko.persistence.fsm.japi.pf;
 
-import org.apache.pekko.japi.pf.FI;
+import org.apache.pekko.japi.function.Predicate;
+import org.apache.pekko.japi.function.Procedure;
+import org.apache.pekko.japi.function.Procedure2;
+import org.apache.pekko.japi.function.Procedure3;
 import org.apache.pekko.japi.pf.UnitPFBuilder;
+import org.apache.pekko.persistence.fsm.PersistentFSM;
 import scala.PartialFunction;
 import scala.runtime.BoxedUnit;
 
@@ -40,16 +44,16 @@ public class FSMStopBuilder<S, D> {
    */
   public FSMStopBuilder<S, D> stop(
       final org.apache.pekko.persistence.fsm.PersistentFSM.Reason reason,
-      final FI.UnitApply2<S, D> apply) {
+      final Procedure2<S, D> apply) {
     builder.match(
         org.apache.pekko.persistence.fsm.PersistentFSM.StopEvent.class,
-        new FI.TypedPredicate<org.apache.pekko.persistence.fsm.PersistentFSM.StopEvent>() {
+        new Predicate<org.apache.pekko.persistence.fsm.PersistentFSM.StopEvent>() {
           @Override
-          public boolean defined(org.apache.pekko.persistence.fsm.PersistentFSM.StopEvent e) {
+          public boolean test(org.apache.pekko.persistence.fsm.PersistentFSM.StopEvent e) {
             return reason.equals(e.reason());
           }
         },
-        new FI.UnitApply<org.apache.pekko.persistence.fsm.PersistentFSM.StopEvent>() {
+        new Procedure<org.apache.pekko.persistence.fsm.PersistentFSM.StopEvent>() {
           public void apply(org.apache.pekko.persistence.fsm.PersistentFSM.StopEvent e)
               throws Exception {
             @SuppressWarnings("unchecked")
@@ -72,12 +76,12 @@ public class FSMStopBuilder<S, D> {
    * @return the builder with the case statement added
    */
   public <P extends org.apache.pekko.persistence.fsm.PersistentFSM.Reason>
-      FSMStopBuilder<S, D> stop(final Class<P> reasonType, final FI.UnitApply3<P, S, D> apply) {
+      FSMStopBuilder<S, D> stop(final Class<P> reasonType, final Procedure3<P, S, D> apply) {
     return this.stop(
         reasonType,
-        new FI.TypedPredicate<P>() {
+        new Predicate<P>() {
           @Override
-          public boolean defined(P p) {
+          public boolean test(P p) {
             return true;
           }
         },
@@ -96,23 +100,23 @@ public class FSMStopBuilder<S, D> {
   public <P extends org.apache.pekko.persistence.fsm.PersistentFSM.Reason>
       FSMStopBuilder<S, D> stop(
           final Class<P> reasonType,
-          final FI.TypedPredicate<P> predicate,
-          final FI.UnitApply3<P, S, D> apply) {
+          final Predicate<P> predicate,
+          final Procedure3<P, S, D> apply) {
     builder.match(
         org.apache.pekko.persistence.fsm.PersistentFSM.StopEvent.class,
-        new FI.TypedPredicate<org.apache.pekko.persistence.fsm.PersistentFSM.StopEvent>() {
+        new Predicate<org.apache.pekko.persistence.fsm.PersistentFSM.StopEvent>() {
           @Override
-          public boolean defined(org.apache.pekko.persistence.fsm.PersistentFSM.StopEvent e) {
+          public boolean test(org.apache.pekko.persistence.fsm.PersistentFSM.StopEvent e) {
             if (reasonType.isInstance(e.reason())) {
               @SuppressWarnings("unchecked")
               P p = (P) e.reason();
-              return predicate.defined(p);
+              return predicate.test(p);
             } else {
               return false;
             }
           }
         },
-        new FI.UnitApply<org.apache.pekko.persistence.fsm.PersistentFSM.StopEvent>() {
+        new Procedure<PersistentFSM.StopEvent>() {
           public void apply(org.apache.pekko.persistence.fsm.PersistentFSM.StopEvent e)
               throws Exception {
             @SuppressWarnings("unchecked")

@@ -13,6 +13,9 @@
 
 package org.apache.pekko.japi.pf;
 
+import org.apache.pekko.japi.function.Function;
+import org.apache.pekko.japi.function.Predicate;
+
 /**
  * A builder for {@link scala.PartialFunction}.
  *
@@ -40,7 +43,7 @@ public final class PFBuilder<I, R> extends AbstractPFBuilder<I, R> {
    * @param apply an action to apply to the argument if the type matches
    * @return a builder with the case statement added
    */
-  public <P> PFBuilder<I, R> match(final Class<P> type, FI.Apply<P, R> apply) {
+  public <P> PFBuilder<I, R> match(final Class<P> type, Function<P, R> apply) {
     return matchUnchecked(type, apply);
   }
 
@@ -54,17 +57,9 @@ public final class PFBuilder<I, R> extends AbstractPFBuilder<I, R> {
    * @return a builder with the case statement added
    */
   @SuppressWarnings("unchecked")
-  public PFBuilder<I, R> matchUnchecked(final Class<?> type, FI.Apply<?, R> apply) {
-
-    FI.Predicate predicate =
-        new FI.Predicate() {
-          @Override
-          public boolean defined(Object o) {
-            return type.isInstance(o);
-          }
-        };
-
-    addStatement(new CaseStatement<I, Object, R>(predicate, (FI.Apply<Object, R>) apply));
+  public PFBuilder<I, R> matchUnchecked(final Class<?> type, Function<?, R> apply) {
+    Predicate<I> predicate = type::isInstance;
+    addStatement(new CaseStatement<I, Object, R>(predicate, (Function<Object, R>) apply));
     return this;
   }
 
@@ -78,7 +73,7 @@ public final class PFBuilder<I, R> extends AbstractPFBuilder<I, R> {
    * @return a builder with the case statement added
    */
   public <P> PFBuilder<I, R> match(
-      final Class<P> type, final FI.TypedPredicate<P> predicate, final FI.Apply<P, R> apply) {
+      final Class<P> type, final Predicate<P> predicate, final Function<P, R> apply) {
     return matchUnchecked(type, predicate, apply);
   }
 
@@ -95,16 +90,16 @@ public final class PFBuilder<I, R> extends AbstractPFBuilder<I, R> {
    */
   @SuppressWarnings("unchecked")
   public PFBuilder<I, R> matchUnchecked(
-      final Class<?> type, final FI.TypedPredicate<?> predicate, final FI.Apply<?, R> apply) {
-    FI.Predicate fiPredicate =
-        new FI.Predicate() {
-          @Override
-          public boolean defined(Object o) {
-            if (!type.isInstance(o)) return false;
-            else return ((FI.TypedPredicate<Object>) predicate).defined(o);
+      final Class<?> type, final Predicate<?> predicate, final Function<?, R> apply) {
+    Predicate<I> fiPredicate =
+        o -> {
+          if (!type.isInstance(o)) {
+            return false;
+          } else {
+            return ((Predicate<Object>) predicate).test(o);
           }
         };
-    addStatement(new CaseStatement<I, Object, R>(fiPredicate, (FI.Apply<Object, R>) apply));
+    addStatement(new CaseStatement<I, Object, R>(fiPredicate, (Function<Object, R>) apply));
     return this;
   }
 
@@ -115,13 +110,13 @@ public final class PFBuilder<I, R> extends AbstractPFBuilder<I, R> {
    * @param apply an action to apply to the argument if the object compares equal
    * @return a builder with the case statement added
    */
-  public <P> PFBuilder<I, R> matchEquals(final P object, final FI.Apply<P, R> apply) {
+  public <P> PFBuilder<I, R> matchEquals(final P object, final Function<P, R> apply) {
     addStatement(
         new CaseStatement<I, P, R>(
-            new FI.Predicate() {
+            new Predicate<>() {
               @Override
-              public boolean defined(Object o) {
-                return object.equals(o);
+              public boolean test(final I param) {
+                return object.equals(param);
               }
             },
             apply));
@@ -134,12 +129,12 @@ public final class PFBuilder<I, R> extends AbstractPFBuilder<I, R> {
    * @param apply an action to apply to the argument
    * @return a builder with the case statement added
    */
-  public PFBuilder<I, R> matchAny(final FI.Apply<I, R> apply) {
+  public PFBuilder<I, R> matchAny(final Function<I, R> apply) {
     addStatement(
         new CaseStatement<I, I, R>(
-            new FI.Predicate() {
+            new Predicate<I>() {
               @Override
-              public boolean defined(Object o) {
+              public boolean test(final I param) {
                 return true;
               }
             },

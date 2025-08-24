@@ -14,6 +14,8 @@
 package org.apache.pekko.japi.pf;
 
 import org.apache.pekko.actor.AbstractActor.Receive;
+import org.apache.pekko.japi.function.Predicate;
+import org.apache.pekko.japi.function.Procedure;
 import scala.PartialFunction;
 import scala.runtime.BoxedUnit;
 
@@ -84,7 +86,7 @@ public class ReceiveBuilder {
    * @param apply an action to apply to the argument if the type matches
    * @return a builder with the case statement added
    */
-  public <P> ReceiveBuilder match(final Class<P> type, final FI.UnitApply<P> apply) {
+  public <P> ReceiveBuilder match(final Class<P> type, final Procedure<P> apply) {
     return matchUnchecked(type, apply);
   }
 
@@ -98,17 +100,17 @@ public class ReceiveBuilder {
    * @return a builder with the case statement added
    */
   @SuppressWarnings("unchecked")
-  public ReceiveBuilder matchUnchecked(final Class<?> type, final FI.UnitApply<?> apply) {
+  public ReceiveBuilder matchUnchecked(final Class<?> type, final Procedure<?> apply) {
 
-    FI.Predicate predicate =
-        new FI.Predicate() {
+    Predicate<Object> predicate =
+        new Predicate<>() {
           @Override
-          public boolean defined(Object o) {
+          public boolean test(Object o) {
             return type.isInstance(o);
           }
         };
 
-    addStatement(new UnitCaseStatement<Object, Object>(predicate, (FI.UnitApply<Object>) apply));
+    addStatement(new UnitCaseStatement<Object, Object>(predicate, (Procedure<Object>) apply));
 
     return this;
   }
@@ -123,7 +125,7 @@ public class ReceiveBuilder {
    * @return a builder with the case statement added
    */
   public <P> ReceiveBuilder match(
-      final Class<P> type, final FI.TypedPredicate<P> predicate, final FI.UnitApply<P> apply) {
+      final Class<P> type, final Predicate<P> predicate, final Procedure<P> apply) {
     return matchUnchecked(type, predicate, apply);
   }
 
@@ -139,7 +141,7 @@ public class ReceiveBuilder {
   public <P> ReceiveBuilder match(
       final Class<P> type,
       final java.util.function.BooleanSupplier externalPredicate,
-      final FI.UnitApply<P> apply) {
+      final Procedure<P> apply) {
     return matchUnchecked(type, externalPredicate, apply);
   }
 
@@ -156,17 +158,17 @@ public class ReceiveBuilder {
    */
   @SuppressWarnings("unchecked")
   public <P> ReceiveBuilder matchUnchecked(
-      final Class<?> type, final FI.TypedPredicate<?> predicate, final FI.UnitApply<P> apply) {
-    FI.Predicate fiPredicate =
-        new FI.Predicate() {
+      final Class<?> type, final Predicate<?> predicate, final Procedure<P> apply) {
+    Predicate<Object> fiPredicate =
+        new Predicate<>() {
           @Override
-          public boolean defined(Object o) {
+          public boolean test(Object o) {
             if (!type.isInstance(o)) return false;
-            else return ((FI.TypedPredicate<Object>) predicate).defined(o);
+            else return ((Predicate<Object>) predicate).test(o);
           }
         };
 
-    addStatement(new UnitCaseStatement<Object, Object>(fiPredicate, (FI.UnitApply<Object>) apply));
+    addStatement(new UnitCaseStatement<Object, Object>(fiPredicate, (Procedure<Object>) apply));
 
     return this;
   }
@@ -186,16 +188,16 @@ public class ReceiveBuilder {
   public <P> ReceiveBuilder matchUnchecked(
       final Class<?> type,
       final java.util.function.BooleanSupplier externalPredicate,
-      final FI.UnitApply<P> apply) {
-    FI.Predicate fiPredicate =
-        new FI.Predicate() {
+      final Procedure<P> apply) {
+    Predicate<Object> fiPredicate =
+        new Predicate<>() {
           @Override
-          public boolean defined(Object o) {
+          public boolean test(Object o) {
             return type.isInstance(o) && externalPredicate.getAsBoolean();
           }
         };
 
-    addStatement(new UnitCaseStatement<Object, Object>(fiPredicate, (FI.UnitApply<Object>) apply));
+    addStatement(new UnitCaseStatement<Object, Object>(fiPredicate, (Procedure<Object>) apply));
 
     return this;
   }
@@ -207,12 +209,12 @@ public class ReceiveBuilder {
    * @param apply an action to apply to the argument if the object compares equal
    * @return a builder with the case statement added
    */
-  public <P> ReceiveBuilder matchEquals(final P object, final FI.UnitApply<P> apply) {
+  public <P> ReceiveBuilder matchEquals(final P object, final Procedure<P> apply) {
     addStatement(
         new UnitCaseStatement<Object, P>(
-            new FI.Predicate() {
+            new Predicate<>() {
               @Override
-              public boolean defined(Object o) {
+              public boolean test(Object o) {
                 return object.equals(o);
               }
             },
@@ -230,17 +232,17 @@ public class ReceiveBuilder {
    * @return a builder with the case statement added
    */
   public <P> ReceiveBuilder matchEquals(
-      final P object, final FI.TypedPredicate<P> predicate, final FI.UnitApply<P> apply) {
+      final P object, final Predicate<P> predicate, final Procedure<P> apply) {
     addStatement(
         new UnitCaseStatement<Object, P>(
-            new FI.Predicate() {
+            new Predicate<>() {
               @Override
-              public boolean defined(Object o) {
+              public boolean test(Object o) {
                 if (!object.equals(o)) return false;
                 else {
                   @SuppressWarnings("unchecked")
                   P p = (P) o;
-                  return predicate.defined(p);
+                  return predicate.test(p);
                 }
               }
             },
@@ -261,13 +263,13 @@ public class ReceiveBuilder {
   public <P> ReceiveBuilder matchEquals(
       final P object,
       final java.util.function.BooleanSupplier externalPredicate,
-      final FI.UnitApply<P> apply) {
-    final FI.Predicate predicate = o -> object.equals(o) && externalPredicate.getAsBoolean();
-    addStatement(new UnitCaseStatement<>(predicate, (FI.UnitApply<Object>) apply));
+      final Procedure<P> apply) {
+    final Predicate<Object> predicate = o -> object.equals(o) && externalPredicate.getAsBoolean();
+    addStatement(new UnitCaseStatement<>(predicate, (Procedure<Object>) apply));
     return this;
   }
 
-  private static final FI.Predicate ALWAYS_TRUE = (input) -> true;
+  private static final Predicate<Object> ALWAYS_TRUE = (input) -> true;
 
   /**
    * Add a new case statement to this builder, that matches any argument.
@@ -275,7 +277,7 @@ public class ReceiveBuilder {
    * @param apply an action to apply to the argument
    * @return a builder with the case statement added
    */
-  public ReceiveBuilder matchAny(final FI.UnitApply<Object> apply) {
+  public ReceiveBuilder matchAny(final Procedure<Object> apply) {
     addStatement(new UnitCaseStatement<>(ALWAYS_TRUE, apply));
     return this;
   }
@@ -288,9 +290,8 @@ public class ReceiveBuilder {
    * @return a builder with the case statement added
    */
   public ReceiveBuilder matchAny(
-      final java.util.function.BooleanSupplier externalPredicate,
-      final FI.UnitApply<Object> apply) {
-    final FI.Predicate predicate = o -> externalPredicate.getAsBoolean();
+      final java.util.function.BooleanSupplier externalPredicate, final Procedure<Object> apply) {
+    final Predicate<Object> predicate = o -> externalPredicate.getAsBoolean();
     addStatement(new UnitCaseStatement<>(predicate, apply));
     return this;
   }

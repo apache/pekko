@@ -13,22 +13,25 @@
 
 package org.apache.pekko.japi.pf
 
-import FI.{ Apply, Predicate, UnitApply }
+import org.apache.pekko
+import pekko.japi.function.{ Function, Predicate, Procedure }
 
 private[pf] object CaseStatement {
   def empty[F, T](): PartialFunction[F, T] = PartialFunction.empty
 }
 
-private[pf] class CaseStatement[-F, +P, T](predicate: Predicate, apply: Apply[P, T]) extends PartialFunction[F, T] {
+private[pf] class CaseStatement[-F, +P, T](predicate: Predicate[F], apply: Function[P, T])
+    extends PartialFunction[F, T] {
 
-  override def isDefinedAt(o: F) = predicate.defined(o)
+  override def isDefinedAt(o: F): Boolean = predicate.test(o)
 
-  override def apply(o: F) = apply.apply(o.asInstanceOf[P])
+  override def apply(o: F): T = apply.apply(o.asInstanceOf[P])
 }
 
-private[pf] class UnitCaseStatement[F, P](predicate: Predicate, apply: UnitApply[P]) extends PartialFunction[F, Unit] {
+private[pf] class UnitCaseStatement[F, P](predicate: Predicate[F], apply: Procedure[P])
+    extends PartialFunction[F, Unit] {
 
-  override def isDefinedAt(o: F) = predicate.defined(o)
+  override def isDefinedAt(o: F): Boolean = predicate.test(o)
 
-  override def apply(o: F) = apply.apply(o.asInstanceOf[P])
+  override def apply(o: F): Unit = apply.apply(o.asInstanceOf[P])
 }

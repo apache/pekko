@@ -13,6 +13,10 @@
 
 package org.apache.pekko.japi.pf;
 
+import org.apache.pekko.japi.function.Effect;
+import org.apache.pekko.japi.function.Predicate;
+import org.apache.pekko.japi.function.Procedure;
+import org.apache.pekko.japi.function.Procedure2;
 import scala.PartialFunction;
 import scala.runtime.BoxedUnit;
 import scala.Tuple2;
@@ -35,17 +39,17 @@ public class FSMTransitionHandlerBuilder<S> {
    * @return the builder with the case statement added
    */
   public FSMTransitionHandlerBuilder<S> state(
-      final S fromState, final S toState, final FI.UnitApplyVoid apply) {
+      final S fromState, final S toState, final Effect apply) {
     builder.match(
         Tuple2.class,
-        new FI.TypedPredicate<Tuple2>() {
+        new Predicate<Tuple2>() {
           @Override
-          public boolean defined(Tuple2 t) {
+          public boolean test(Tuple2 t) {
             return (fromState == null || fromState.equals(t._1()))
                 && (toState == null || toState.equals(t._2()));
           }
         },
-        new FI.UnitApply<Tuple2>() {
+        new Procedure<Tuple2>() {
           @Override
           public void apply(Tuple2 t) throws Exception {
             apply.apply();
@@ -63,17 +67,17 @@ public class FSMTransitionHandlerBuilder<S> {
    * @return the builder with the case statement added
    */
   public FSMTransitionHandlerBuilder<S> state(
-      final S fromState, final S toState, final FI.UnitApply2<S, S> apply) {
+      final S fromState, final S toState, final Procedure2<S, S> apply) {
     builder.match(
         Tuple2.class,
-        new FI.TypedPredicate<Tuple2>() {
+        new Predicate<Tuple2>() {
           @Override
-          public boolean defined(Tuple2 t) {
+          public boolean test(Tuple2 t) {
             return (fromState == null || fromState.equals(t._1()))
                 && (toState == null || toState.equals(t._2()));
           }
         },
-        new FI.UnitApply<Tuple2>() {
+        new Procedure<Tuple2>() {
           @Override
           public void apply(Tuple2 t) throws Exception {
             @SuppressWarnings("unchecked")

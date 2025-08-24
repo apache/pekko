@@ -17,8 +17,8 @@ import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.actor.Props;
-import org.apache.pekko.japi.pf.FI;
 import jdocs.AbstractJavaTest;
+import org.apache.pekko.japi.function.Predicate;
 import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -122,7 +122,7 @@ public class InitializationDocTest extends AbstractJavaTest {
   static class GenericActorWithPredicate extends AbstractActor {
     @Override
     public Receive createReceive() {
-      FI.TypedPredicate<GenericMessage<String>> typedPredicate = s -> !s.value.isEmpty();
+      Predicate<GenericMessage<String>> typedPredicate = s -> !s.value.isEmpty();
 
       return receiveBuilder()
           .matchUnchecked(

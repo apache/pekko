@@ -13,6 +13,8 @@
 
 package org.apache.pekko.japi.pf;
 
+import org.apache.pekko.japi.function.Predicate;
+import org.apache.pekko.japi.function.Procedure;
 import scala.runtime.BoxedUnit;
 
 /**
@@ -33,7 +35,7 @@ public final class UnitPFBuilder<I> extends AbstractPFBuilder<I, BoxedUnit> {
    * @param apply an action to apply to the argument if the type matches
    * @return a builder with the case statement added
    */
-  public <P> UnitPFBuilder<I> match(final Class<P> type, final FI.UnitApply<P> apply) {
+  public <P> UnitPFBuilder<I> match(final Class<P> type, final Procedure<P> apply) {
     return matchUnchecked(type, apply);
   }
 
@@ -47,17 +49,17 @@ public final class UnitPFBuilder<I> extends AbstractPFBuilder<I, BoxedUnit> {
    * @return a builder with the case statement added
    */
   @SuppressWarnings("unchecked")
-  public UnitPFBuilder<I> matchUnchecked(final Class<?> type, final FI.UnitApply<?> apply) {
+  public UnitPFBuilder<I> matchUnchecked(final Class<?> type, final Procedure<?> apply) {
 
-    FI.Predicate predicate =
-        new FI.Predicate() {
+    Predicate<I> predicate =
+        new Predicate<I>() {
           @Override
-          public boolean defined(Object o) {
-            return type.isInstance(o);
+          public boolean test(final I param) {
+            return type.isInstance(param);
           }
         };
 
-    addStatement(new UnitCaseStatement<I, Object>(predicate, (FI.UnitApply<Object>) apply));
+    addStatement(new UnitCaseStatement<I, Object>(predicate, (Procedure<Object>) apply));
 
     return this;
   }
@@ -72,7 +74,7 @@ public final class UnitPFBuilder<I> extends AbstractPFBuilder<I, BoxedUnit> {
    * @return a builder with the case statement added
    */
   public <P> UnitPFBuilder<I> match(
-      final Class<P> type, final FI.TypedPredicate<P> predicate, final FI.UnitApply<P> apply) {
+      final Class<P> type, final Predicate<P> predicate, final Procedure<P> apply) {
     return matchUnchecked(type, predicate, apply);
   }
 
@@ -89,19 +91,20 @@ public final class UnitPFBuilder<I> extends AbstractPFBuilder<I, BoxedUnit> {
    */
   @SuppressWarnings("unchecked")
   public UnitPFBuilder<I> matchUnchecked(
-      final Class<?> type, final FI.TypedPredicate<?> predicate, final FI.UnitApply<?> apply) {
-    FI.Predicate fiPredicate =
-        new FI.Predicate() {
+      final Class<?> type, final Predicate<?> predicate, final Procedure<?> apply) {
+    Predicate<I> fiPredicate =
+        new Predicate<I>() {
           @Override
-          public boolean defined(Object o) {
-            if (!type.isInstance(o)) return false;
-            else {
-              return ((FI.TypedPredicate<Object>) predicate).defined(o);
+          public boolean test(final I param) {
+            if (!type.isInstance(param)) {
+              return false;
+            } else {
+              return ((Predicate<Object>) predicate).test(param);
             }
           }
         };
 
-    addStatement(new UnitCaseStatement<I, Object>(fiPredicate, (FI.UnitApply<Object>) apply));
+    addStatement(new UnitCaseStatement<I, Object>(fiPredicate, (Procedure<Object>) apply));
 
     return this;
   }
@@ -113,13 +116,13 @@ public final class UnitPFBuilder<I> extends AbstractPFBuilder<I, BoxedUnit> {
    * @param apply an action to apply to the argument if the object compares equal
    * @return a builder with the case statement added
    */
-  public <P> UnitPFBuilder<I> matchEquals(final P object, final FI.UnitApply<P> apply) {
+  public <P> UnitPFBuilder<I> matchEquals(final P object, final Procedure<P> apply) {
     addStatement(
         new UnitCaseStatement<I, P>(
-            new FI.Predicate() {
+            new Predicate<I>() {
               @Override
-              public boolean defined(Object o) {
-                return object.equals(o);
+              public boolean test(final I param) {
+                return object.equals(param);
               }
             },
             apply));
@@ -136,17 +139,18 @@ public final class UnitPFBuilder<I> extends AbstractPFBuilder<I, BoxedUnit> {
    * @return a builder with the case statement added
    */
   public <P> UnitPFBuilder<I> matchEquals(
-      final P object, final FI.TypedPredicate<P> predicate, final FI.UnitApply<P> apply) {
+      final P object, final Predicate<P> predicate, final Procedure<P> apply) {
     addStatement(
         new UnitCaseStatement<I, P>(
-            new FI.Predicate() {
+            new Predicate<I>() {
               @Override
-              public boolean defined(Object o) {
-                if (!object.equals(o)) return false;
-                else {
+              public boolean test(final I param) {
+                if (!object.equals(param)) {
+                  return false;
+                } else {
                   @SuppressWarnings("unchecked")
-                  P p = (P) o;
-                  return predicate.defined(p);
+                  P p = (P) param;
+                  return predicate.test(p);
                 }
               }
             },
@@ -160,12 +164,12 @@ public final class UnitPFBuilder<I> extends AbstractPFBuilder<I, BoxedUnit> {
    * @param apply an action to apply to the argument
    * @return a builder with the case statement added
    */
-  public UnitPFBuilder<I> matchAny(final FI.UnitApply<Object> apply) {
+  public UnitPFBuilder<I> matchAny(final Procedure<Object> apply) {
     addStatement(
         new UnitCaseStatement<I, Object>(
-            new FI.Predicate() {
+            new Predicate<I>() {
               @Override
-              public boolean defined(Object o) {
+              public boolean test(final I param) {
                 return true;
               }
             },

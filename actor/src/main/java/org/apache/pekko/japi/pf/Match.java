@@ -13,6 +13,8 @@
 
 package org.apache.pekko.japi.pf;
 
+import org.apache.pekko.japi.function.Function;
+import org.apache.pekko.japi.function.Predicate;
 import scala.MatchError;
 import scala.PartialFunction;
 
@@ -30,9 +32,9 @@ public class Match<I, R> extends AbstractMatch<I, R> {
    * @param type a type to match the argument against
    * @param apply an action to apply to the argument if the type matches
    * @return a builder with the case statement added
-   * @see PFBuilder#match(Class, FI.Apply)
+   * @see PFBuilder#match(Class, Function)
    */
-  public static <F, T, P> PFBuilder<F, T> match(final Class<P> type, final FI.Apply<P, T> apply) {
+  public static <F, T, P> PFBuilder<F, T> match(final Class<P> type, final Function<P, T> apply) {
     return new PFBuilder<F, T>().match(type, apply);
   }
 
@@ -42,10 +44,10 @@ public class Match<I, R> extends AbstractMatch<I, R> {
    * class with generic type argument it can be useful, e.g. <code>List.class</code> and <code>
    * (List&lt;String&gt; list) -> {}</code>.
    *
-   * @see PFBuilder#matchUnchecked(Class, FI.Apply)
+   * @see PFBuilder#matchUnchecked(Class, Function)
    */
   public static <F, T> PFBuilder<F, T> matchUnchecked(
-      final Class<?> type, final FI.Apply<?, T> apply) {
+      final Class<?> type, final Function<?, T> apply) {
     return new PFBuilder<F, T>().matchUnchecked(type, apply);
   }
 
@@ -56,10 +58,10 @@ public class Match<I, R> extends AbstractMatch<I, R> {
    * @param predicate a predicate that will be evaluated on the argument if the type matches
    * @param apply an action to apply to the argument if the type matches
    * @return a builder with the case statement added
-   * @see PFBuilder#match(Class, FI.TypedPredicate, FI.Apply)
+   * @see PFBuilder#match(Class, Predicate, Function)
    */
   public static <F, T, P> PFBuilder<F, T> match(
-      final Class<P> type, final FI.TypedPredicate<P> predicate, final FI.Apply<P, T> apply) {
+      final Class<P> type, final Predicate<P> predicate, final Function<P, T> apply) {
     return new PFBuilder<F, T>().match(type, predicate, apply);
   }
 
@@ -69,10 +71,10 @@ public class Match<I, R> extends AbstractMatch<I, R> {
    * class with generic type argument it can be useful, e.g. <code>List.class</code> and <code>
    * (List&lt;String&gt; list) -> {}</code>.
    *
-   * @see PFBuilder#matchUnchecked(Class, FI.TypedPredicate, FI.Apply)
+   * @see PFBuilder#matchUnchecked(Class, Predicate, Function)
    */
   public static <F, T> PFBuilder<F, T> matchUnchecked(
-      final Class<?> type, final FI.TypedPredicate<?> predicate, final FI.Apply<?, T> apply) {
+      final Class<?> type, final Predicate<?> predicate, final Function<?, T> apply) {
     return new PFBuilder<F, T>().matchUnchecked(type, predicate, apply);
   }
 
@@ -82,9 +84,9 @@ public class Match<I, R> extends AbstractMatch<I, R> {
    * @param object the object to compare equals with
    * @param apply an action to apply to the argument if the object compares equal
    * @return a builder with the case statement added
-   * @see PFBuilder#matchEquals(Object, FI.Apply)
+   * @see PFBuilder#matchEquals(Object, Function)
    */
-  public static <F, T, P> PFBuilder<F, T> matchEquals(final P object, final FI.Apply<P, T> apply) {
+  public static <F, T, P> PFBuilder<F, T> matchEquals(final P object, final Function<P, T> apply) {
     return new PFBuilder<F, T>().matchEquals(object, apply);
   }
 
@@ -93,9 +95,9 @@ public class Match<I, R> extends AbstractMatch<I, R> {
    *
    * @param apply an action to apply to the argument
    * @return a builder with the case statement added
-   * @see PFBuilder#matchAny(FI.Apply)
+   * @see PFBuilder#matchAny(Function)
    */
-  public static <F, T> PFBuilder<F, T> matchAny(final FI.Apply<F, T> apply) {
+  public static <F, T> PFBuilder<F, T> matchAny(final Function<F, T> apply) {
     return new PFBuilder<F, T>().matchAny(apply);
   }
 

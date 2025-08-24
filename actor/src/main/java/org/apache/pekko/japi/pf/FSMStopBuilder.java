@@ -14,6 +14,10 @@
 package org.apache.pekko.japi.pf;
 
 import org.apache.pekko.actor.FSM;
+import org.apache.pekko.japi.function.Predicate;
+import org.apache.pekko.japi.function.Procedure;
+import org.apache.pekko.japi.function.Procedure2;
+import org.apache.pekko.japi.function.Procedure3;
 import scala.PartialFunction;
 import scala.runtime.BoxedUnit;
 
@@ -34,16 +38,16 @@ public class FSMStopBuilder<S, D> {
    * @param apply an action to apply to the event and state data if there is a match
    * @return the builder with the case statement added
    */
-  public FSMStopBuilder<S, D> stop(final FSM.Reason reason, final FI.UnitApply2<S, D> apply) {
+  public FSMStopBuilder<S, D> stop(final FSM.Reason reason, final Procedure2<S, D> apply) {
     builder.match(
         FSM.StopEvent.class,
-        new FI.TypedPredicate<FSM.StopEvent>() {
+        new Predicate<FSM.StopEvent>() {
           @Override
-          public boolean defined(FSM.StopEvent e) {
+          public boolean test(FSM.StopEvent e) {
             return reason.equals(e.reason());
           }
         },
-        new FI.UnitApply<FSM.StopEvent>() {
+        new Procedure<FSM.StopEvent>() {
           public void apply(FSM.StopEvent e) throws Exception {
             @SuppressWarnings("unchecked")
             S s = (S) e.currentState();
@@ -65,12 +69,12 @@ public class FSMStopBuilder<S, D> {
    * @return the builder with the case statement added
    */
   public <P extends FSM.Reason> FSMStopBuilder<S, D> stop(
-      final Class<P> reasonType, final FI.UnitApply3<P, S, D> apply) {
+      final Class<P> reasonType, final Procedure3<P, S, D> apply) {
     return this.stop(
         reasonType,
-        new FI.TypedPredicate<P>() {
+        new Predicate<P>() {
           @Override
-          public boolean defined(P p) {
+          public boolean test(P p) {
             return true;
           }
         },
@@ -87,24 +91,22 @@ public class FSMStopBuilder<S, D> {
    * @return the builder with the case statement added
    */
   public <P extends FSM.Reason> FSMStopBuilder<S, D> stop(
-      final Class<P> reasonType,
-      final FI.TypedPredicate<P> predicate,
-      final FI.UnitApply3<P, S, D> apply) {
+      final Class<P> reasonType, final Predicate<P> predicate, final Procedure3<P, S, D> apply) {
     builder.match(
         FSM.StopEvent.class,
-        new FI.TypedPredicate<FSM.StopEvent>() {
+        new Predicate<FSM.StopEvent>() {
           @Override
-          public boolean defined(FSM.StopEvent e) {
+          public boolean test(FSM.StopEvent e) {
             if (reasonType.isInstance(e.reason())) {
               @SuppressWarnings("unchecked")
               P p = (P) e.reason();
-              return predicate.defined(p);
+              return predicate.test(p);
             } else {
               return false;
             }
           }
         },
-        new FI.UnitApply<FSM.StopEvent>() {
+        new Procedure<FSM.StopEvent>() {
           public void apply(FSM.StopEvent e) throws Exception {
             @SuppressWarnings("unchecked")
             P p = (P) e.reason();

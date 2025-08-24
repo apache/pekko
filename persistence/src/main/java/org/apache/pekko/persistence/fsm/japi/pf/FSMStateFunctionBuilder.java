@@ -13,8 +13,12 @@
 
 package org.apache.pekko.persistence.fsm.japi.pf;
 
-import org.apache.pekko.japi.pf.FI;
+import org.apache.pekko.japi.function.Function;
+import org.apache.pekko.japi.function.Function2;
+import org.apache.pekko.japi.function.Predicate;
+import org.apache.pekko.japi.function.Predicate2;
 import org.apache.pekko.japi.pf.PFBuilder;
+import org.apache.pekko.persistence.fsm.PersistentFSM;
 import scala.PartialFunction;
 
 import java.util.List;
@@ -55,13 +59,13 @@ public class FSMStateFunctionBuilder<S, D, E> {
   private FSMStateFunctionBuilder<S, D, E> erasedEvent(
       final Object eventOrType,
       final Object dataOrType,
-      final FI.TypedPredicate2 predicate,
-      final FI.Apply2 apply) {
+      final Predicate2 predicate,
+      final Function2 apply) {
     builder.match(
         org.apache.pekko.persistence.fsm.PersistentFSM.Event.class,
-        new FI.TypedPredicate<org.apache.pekko.persistence.fsm.PersistentFSM.Event>() {
+        new Predicate<PersistentFSM.Event>() {
           @Override
-          public boolean defined(org.apache.pekko.persistence.fsm.PersistentFSM.Event e) {
+          public boolean test(org.apache.pekko.persistence.fsm.PersistentFSM.Event e) {
             boolean res = true;
             if (eventOrType != null) {
               if (eventOrType instanceof Class) {
@@ -81,15 +85,13 @@ public class FSMStateFunctionBuilder<S, D, E> {
             }
             if (res && predicate != null) {
               @SuppressWarnings("unchecked")
-              boolean ures = predicate.defined(e.event(), e.stateData());
+              boolean ures = predicate.test(e.event(), e.stateData());
               res = ures;
             }
             return res;
           }
         },
-        new FI.Apply<
-            org.apache.pekko.persistence.fsm.PersistentFSM.Event,
-            org.apache.pekko.persistence.fsm.PersistentFSM.State<S, D, E>>() {
+        new Function<PersistentFSM.Event, PersistentFSM.State<S, D, E>>() {
           public org.apache.pekko.persistence.fsm.PersistentFSM.State<S, D, E> apply(
               org.apache.pekko.persistence.fsm.PersistentFSM.Event e) throws Exception {
             @SuppressWarnings("unchecked")
@@ -117,8 +119,8 @@ public class FSMStateFunctionBuilder<S, D, E> {
   public final <P, Q> FSMStateFunctionBuilder<S, D, E> event(
       final Class<P> eventType,
       final Class<Q> dataType,
-      final FI.TypedPredicate2<P, Q> predicate,
-      final FI.Apply2<P, Q, org.apache.pekko.persistence.fsm.PersistentFSM.State<S, D, E>> apply) {
+      final Predicate2<P, Q> predicate,
+      final Function2<P, Q, org.apache.pekko.persistence.fsm.PersistentFSM.State<S, D, E>> apply) {
     erasedEvent(eventType, dataType, predicate, apply);
     return this;
   }
@@ -136,7 +138,7 @@ public class FSMStateFunctionBuilder<S, D, E> {
   public <P, Q> FSMStateFunctionBuilder<S, D, E> event(
       final Class<P> eventType,
       final Class<Q> dataType,
-      final FI.Apply2<P, Q, org.apache.pekko.persistence.fsm.PersistentFSM.State<S, D, E>> apply) {
+      final Function2<P, Q, org.apache.pekko.persistence.fsm.PersistentFSM.State<S, D, E>> apply) {
     return erasedEvent(eventType, dataType, null, apply);
   }
 
@@ -150,8 +152,8 @@ public class FSMStateFunctionBuilder<S, D, E> {
    */
   public <P> FSMStateFunctionBuilder<S, D, E> event(
       final Class<P> eventType,
-      final FI.TypedPredicate2<P, D> predicate,
-      final FI.Apply2<P, D, org.apache.pekko.persistence.fsm.PersistentFSM.State<S, D, E>> apply) {
+      final Predicate2<P, D> predicate,
+      final Function2<P, D, org.apache.pekko.persistence.fsm.PersistentFSM.State<S, D, E>> apply) {
     return erasedEvent(eventType, null, predicate, apply);
   }
 
@@ -164,7 +166,7 @@ public class FSMStateFunctionBuilder<S, D, E> {
    */
   public <P> FSMStateFunctionBuilder<S, D, E> event(
       final Class<P> eventType,
-      final FI.Apply2<P, D, org.apache.pekko.persistence.fsm.PersistentFSM.State<S, D, E>> apply) {
+      final Function2<P, D, org.apache.pekko.persistence.fsm.PersistentFSM.State<S, D, E>> apply) {
     return erasedEvent(eventType, null, null, apply);
   }
 
@@ -176,8 +178,8 @@ public class FSMStateFunctionBuilder<S, D, E> {
    * @return the builder with the case statement added
    */
   public FSMStateFunctionBuilder<S, D, E> event(
-      final FI.TypedPredicate2<Object, D> predicate,
-      final FI.Apply2<Object, D, org.apache.pekko.persistence.fsm.PersistentFSM.State<S, D, E>>
+      final Predicate2<Object, D> predicate,
+      final Function2<Object, D, org.apache.pekko.persistence.fsm.PersistentFSM.State<S, D, E>>
           apply) {
     return erasedEvent(null, null, predicate, apply);
   }
@@ -195,13 +197,13 @@ public class FSMStateFunctionBuilder<S, D, E> {
   public <Q> FSMStateFunctionBuilder<S, D, E> event(
       final List<Object> eventMatches,
       final Class<Q> dataType,
-      final FI.Apply2<Object, Q, org.apache.pekko.persistence.fsm.PersistentFSM.State<S, D, E>>
+      final Function2<Object, Q, org.apache.pekko.persistence.fsm.PersistentFSM.State<S, D, E>>
           apply) {
     builder.match(
         org.apache.pekko.persistence.fsm.PersistentFSM.Event.class,
-        new FI.TypedPredicate<org.apache.pekko.persistence.fsm.PersistentFSM.Event>() {
+        new Predicate<org.apache.pekko.persistence.fsm.PersistentFSM.Event>() {
           @Override
-          public boolean defined(org.apache.pekko.persistence.fsm.PersistentFSM.Event e) {
+          public boolean test(org.apache.pekko.persistence.fsm.PersistentFSM.Event e) {
             if (dataType != null && !dataType.isInstance(e.stateData())) return false;
 
             boolean emMatch = false;
@@ -218,7 +220,7 @@ public class FSMStateFunctionBuilder<S, D, E> {
             return emMatch;
           }
         },
-        new FI.Apply<
+        new Function<
             org.apache.pekko.persistence.fsm.PersistentFSM.Event,
             org.apache.pekko.persistence.fsm.PersistentFSM.State<S, D, E>>() {
           public org.apache.pekko.persistence.fsm.PersistentFSM.State<S, D, E> apply(
@@ -242,7 +244,7 @@ public class FSMStateFunctionBuilder<S, D, E> {
    */
   public FSMStateFunctionBuilder<S, D, E> event(
       final List<Object> eventMatches,
-      final FI.Apply2<Object, D, org.apache.pekko.persistence.fsm.PersistentFSM.State<S, D, E>>
+      final Function2<Object, D, org.apache.pekko.persistence.fsm.PersistentFSM.State<S, D, E>>
           apply) {
     return event(eventMatches, null, apply);
   }
@@ -259,7 +261,7 @@ public class FSMStateFunctionBuilder<S, D, E> {
   public <P, Q> FSMStateFunctionBuilder<S, D, E> eventEquals(
       final P event,
       final Class<Q> dataType,
-      final FI.Apply2<P, Q, org.apache.pekko.persistence.fsm.PersistentFSM.State<S, D, E>> apply) {
+      final Function2<P, Q, org.apache.pekko.persistence.fsm.PersistentFSM.State<S, D, E>> apply) {
     return erasedEvent(event, dataType, null, apply);
   }
 
@@ -272,7 +274,7 @@ public class FSMStateFunctionBuilder<S, D, E> {
    */
   public <P> FSMStateFunctionBuilder<S, D, E> eventEquals(
       final P event,
-      final FI.Apply2<P, D, org.apache.pekko.persistence.fsm.PersistentFSM.State<S, D, E>> apply) {
+      final Function2<P, D, org.apache.pekko.persistence.fsm.PersistentFSM.State<S, D, E>> apply) {
     return erasedEvent(event, null, null, apply);
   }
 
@@ -283,7 +285,7 @@ public class FSMStateFunctionBuilder<S, D, E> {
    * @return the builder with the case statement added
    */
   public FSMStateFunctionBuilder<S, D, E> anyEvent(
-      final FI.Apply2<Object, D, org.apache.pekko.persistence.fsm.PersistentFSM.State<S, D, E>>
+      final Function2<Object, D, org.apache.pekko.persistence.fsm.PersistentFSM.State<S, D, E>>
           apply) {
     return erasedEvent(null, null, null, apply);
   }

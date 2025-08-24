@@ -13,7 +13,8 @@
 
 package org.apache.pekko.japi;
 
-import org.apache.pekko.japi.pf.FI;
+import org.apache.pekko.japi.function.Function;
+import org.apache.pekko.japi.function.Predicate;
 import org.apache.pekko.japi.pf.Match;
 import org.junit.Assert;
 import org.junit.Test;
@@ -30,7 +31,7 @@ public class MatchBuilderTest extends JUnitSuite {
         Match.create(
             Match.match(
                     Integer.class,
-                    new FI.Apply<Integer, Double>() {
+                    new Function<Integer, Double>() {
                       @Override
                       public Double apply(Integer integer) {
                         return integer * 10.0;
@@ -38,7 +39,7 @@ public class MatchBuilderTest extends JUnitSuite {
                     })
                 .match(
                     Number.class,
-                    new FI.Apply<Number, Double>() {
+                    new Function<Number, Double>() {
                       @Override
                       public Double apply(Number number) {
                         return number.doubleValue() * (-10.0);
@@ -70,7 +71,7 @@ public class MatchBuilderTest extends JUnitSuite {
         Match.create(
             Match.matchUnchecked(
                 GenericClass.class,
-                new FI.Apply<GenericClass<String>, String>() {
+                new Function<GenericClass<String>, String>() {
                   @Override
                   public String apply(GenericClass<String> stringGenericClass) {
                     return stringGenericClass.val;
@@ -89,13 +90,13 @@ public class MatchBuilderTest extends JUnitSuite {
         Match.create(
             Match.matchUnchecked(
                 GenericClass.class,
-                new FI.TypedPredicate<GenericClass<String>>() {
+                new Predicate<GenericClass<String>>() {
                   @Override
-                  public boolean defined(GenericClass<String> genericClass) {
+                  public boolean test(GenericClass<String> genericClass) {
                     return !genericClass.val.isEmpty();
                   }
                 },
-                new FI.Apply<GenericClass<String>, String>() {
+                new Function<GenericClass<String>, String>() {
                   @Override
                   public String apply(GenericClass<String> stringGenericClass) {
                     return stringGenericClass.val;
