@@ -144,3 +144,4 @@ ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.japi.pf.Un
 ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.japi.pf.UnitPFBuilder.matchUnchecked")
 ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.japi.pf.UnitPFBuilder.matchEquals")
 ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.japi.pf.UnitPFBuilder.matchAny")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.japi.JAPI")
