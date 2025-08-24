@@ -70,7 +70,7 @@ Most of the changes appeared in the milestone releases (1.2.0-M1 and 1.2.0-M2) b
 * Change aggregateWithBoundary operator in javadsl to use Optional ([PR1876](https://github.com/apache/pekko/pull/1876))
 * TLS v1.3 is now the default ([PR1901](https://github.com/apache/pekko/pull/1901))
 * Set vector builder to null after stage completed to avoid leak ([PR1917](https://github.com/apache/pekko/pull/1917))
-* Renamed internal Alogithm class (pekko-serialization-jackson) ([PR1932](https://github.com/apache/pekko/pull/1932))
+* Renamed internal Algorithm class (pekko-serialization-jackson) ([PR1932](https://github.com/apache/pekko/pull/1932))
 * Deprecate FunctionalInterfaces that are being removed in pekko 2.0.0 ([PR2004](https://github.com/apache/pekko/pull/2004), [PR2075](https://github.com/apache/pekko/pull/2075)) 
 * Disable batch if isVirtualized ([PR2046](https://github.com/apache/pekko/pull/2046))
 * Deprecate more methods in Futures ([PR2048](https://github.com/apache/pekko/pull/2048))
