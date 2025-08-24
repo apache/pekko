@@ -92,6 +92,18 @@ trait Predicate[-T] extends java.io.Serializable {
 }
 
 /**
+ * Java API: Defines a criteria and determines whether the parameter meets this criteria.
+ * `Serializable` is needed to be able to grab line number for Java 8 lambdas.
+ * Supports throwing `Exception` in the apply, which the `java.util.function.BiPredicate` counterpart does not.
+ */
+@nowarn("msg=@SerialVersionUID has no effect")
+@SerialVersionUID(1L)
+@FunctionalInterface
+trait Predicate2[-T1, -T2] extends java.io.Serializable {
+  def test(param1: T1, param2: T2): Boolean
+}
+
+/**
  * A constructor/factory, takes no parameters but creates a new value of type T every call.
  * Supports throwing `Exception` in the apply, which the `java.util.function.Supplier` counterpart does not.
  */

@@ -13,6 +13,8 @@
 
 package org.apache.pekko.japi.pf;
 
+import org.apache.pekko.japi.function.Predicate;
+import org.apache.pekko.japi.function.Procedure;
 import scala.MatchError;
 import scala.PartialFunction;
 import scala.runtime.BoxedUnit;
@@ -32,9 +34,9 @@ public class UnitMatch<I> extends AbstractMatch<I, BoxedUnit> {
    * @param type a type to match the argument against
    * @param apply an action to apply to the argument if the type matches
    * @return a builder with the case statement added
-   * @see UnitPFBuilder#match(Class, FI.UnitApply)
+   * @see UnitPFBuilder#match(Class, Procedure)
    */
-  public static <F, P> UnitPFBuilder<F> match(final Class<P> type, FI.UnitApply<P> apply) {
+  public static <F, P> UnitPFBuilder<F> match(final Class<P> type, Procedure<P> apply) {
     return new UnitPFBuilder<F>().match(type, apply);
   }
 
@@ -42,10 +44,10 @@ public class UnitMatch<I> extends AbstractMatch<I, BoxedUnit> {
    * Convenience function to create a {@link UnitPFBuilder} with the first case statement added.
    * Should normally not be used.
    *
-   * @see UnitPFBuilder#matchUnchecked(Class, FI.UnitApply)
+   * @see UnitPFBuilder#matchUnchecked(Class, Procedure)
    */
   public static UnitPFBuilder<Object> matchUnchecked(
-      final Class<?> type, final FI.UnitApply<?> apply) {
+      final Class<?> type, final Procedure<?> apply) {
     return new UnitPFBuilder<Object>().matchUnchecked(type, apply);
   }
 
@@ -56,10 +58,10 @@ public class UnitMatch<I> extends AbstractMatch<I, BoxedUnit> {
    * @param predicate a predicate that will be evaluated on the argument if the type matches
    * @param apply an action to apply to the argument if the type and predicate matches
    * @return a builder with the case statement added
-   * @see UnitPFBuilder#match(Class, FI.TypedPredicate, FI.UnitApply)
+   * @see UnitPFBuilder#match(Class, Predicate, Procedure)
    */
   public static <F, P> UnitPFBuilder<F> match(
-      final Class<P> type, final FI.TypedPredicate<P> predicate, final FI.UnitApply<P> apply) {
+      final Class<P> type, final Predicate<P> predicate, final Procedure<P> apply) {
     return new UnitPFBuilder<F>().match(type, predicate, apply);
   }
 
@@ -67,10 +69,10 @@ public class UnitMatch<I> extends AbstractMatch<I, BoxedUnit> {
    * Convenience function to create a {@link UnitPFBuilder} with the first case statement added.
    * Should normally not be used.
    *
-   * @see UnitPFBuilder#matchUnchecked(Class, FI.TypedPredicate, FI.UnitApply)
+   * @see UnitPFBuilder#matchUnchecked(Class, Predicate, Procedure)
    */
   public static <F, P> UnitPFBuilder<F> matchUnchecked(
-      final Class<?> type, final FI.TypedPredicate<?> predicate, final FI.UnitApply<?> apply) {
+      final Class<?> type, final Predicate<?> predicate, final Procedure<?> apply) {
     return new UnitPFBuilder<F>().matchUnchecked(type, predicate, apply);
   }
 
@@ -80,9 +82,9 @@ public class UnitMatch<I> extends AbstractMatch<I, BoxedUnit> {
    * @param object the object to compare equals with
    * @param apply an action to apply to the argument if the object compares equal
    * @return a builder with the case statement added
-   * @see UnitPFBuilder#matchEquals(Object, FI.UnitApply)
+   * @see UnitPFBuilder#matchEquals(Object, Procedure)
    */
-  public static <F, P> UnitPFBuilder<F> matchEquals(final P object, final FI.UnitApply<P> apply) {
+  public static <F, P> UnitPFBuilder<F> matchEquals(final P object, final Procedure<P> apply) {
     return new UnitPFBuilder<F>().matchEquals(object, apply);
   }
 
@@ -93,10 +95,10 @@ public class UnitMatch<I> extends AbstractMatch<I, BoxedUnit> {
    * @param predicate a predicate that will be evaluated on the argument the object compares equal
    * @param apply an action to apply to the argument if the object compares equal
    * @return a builder with the case statement added
-   * @see UnitPFBuilder#matchEquals(Object, FI.UnitApply)
+   * @see UnitPFBuilder#matchEquals(Object, Procedure)
    */
   public static <F, P> UnitPFBuilder<F> matchEquals(
-      final P object, final FI.TypedPredicate<P> predicate, final FI.UnitApply<P> apply) {
+      final P object, final Predicate<P> predicate, final Procedure<P> apply) {
     return new UnitPFBuilder<F>().matchEquals(object, predicate, apply);
   }
 
@@ -105,9 +107,9 @@ public class UnitMatch<I> extends AbstractMatch<I, BoxedUnit> {
    *
    * @param apply an action to apply to the argument
    * @return a builder with the case statement added
-   * @see UnitPFBuilder#matchAny(FI.UnitApply)
+   * @see UnitPFBuilder#matchAny(Procedure)
    */
-  public static <F> UnitPFBuilder<F> matchAny(final FI.UnitApply<Object> apply) {
+  public static <F> UnitPFBuilder<F> matchAny(final Procedure<Object> apply) {
     return new UnitPFBuilder<F>().matchAny(apply);
   }
 

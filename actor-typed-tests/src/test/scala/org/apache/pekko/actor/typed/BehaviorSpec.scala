@@ -28,7 +28,8 @@ import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.typed.javadsl.{ Behaviors => JBehaviors }
 import pekko.actor.typed.scaladsl.{ AbstractBehavior => SAbstractBehavior }
 import pekko.actor.typed.scaladsl.{ Behaviors => SBehaviors }
-import pekko.japi.pf.{ FI, PFBuilder }
+import pekko.japi.pf.PFBuilder
+import pekko.japi.function.Function
 
 object BehaviorSpec {
   sealed trait Command {
@@ -195,7 +196,7 @@ object BehaviorSpec {
       override def apply(in: PFBuilder[Command, Command]) = f(in)
     }
   def fi(f: Command => Command) =
-    new FI.Apply[Command, Command] {
+    new Function[Command, Command] {
       override def apply(in: Command) = f(in)
     }
 

@@ -13,6 +13,9 @@
 
 package org.apache.pekko.japi.pf;
 
+import org.apache.pekko.japi.function.Function;
+import org.apache.pekko.japi.function.Predicate;
+
 import static org.apache.pekko.actor.SupervisorStrategy.Directive;
 
 /**
@@ -48,7 +51,7 @@ public class DeciderBuilder {
    * @return a builder with the case statement added
    */
   public static <P extends Throwable> PFBuilder<Throwable, Directive> match(
-      final Class<P> type, FI.Apply<P, Directive> apply) {
+      final Class<P> type, Function<P, Directive> apply) {
     return Match.match(type, apply);
   }
 
@@ -62,7 +65,7 @@ public class DeciderBuilder {
    * @return a builder with the case statement added
    */
   public static <P extends Throwable> PFBuilder<Throwable, Directive> match(
-      final Class<P> type, FI.TypedPredicate<P> predicate, FI.Apply<P, Directive> apply) {
+      final Class<P> type, Predicate<P> predicate, Function<P, Directive> apply) {
     return Match.match(type, predicate, apply);
   }
 
@@ -72,7 +75,7 @@ public class DeciderBuilder {
    * @param apply an action to apply to the argument
    * @return a builder with the case statement added
    */
-  public static PFBuilder<Throwable, Directive> matchAny(FI.Apply<Throwable, Directive> apply) {
+  public static PFBuilder<Throwable, Directive> matchAny(Function<Throwable, Directive> apply) {
     return Match.matchAny(apply);
   }
 }
