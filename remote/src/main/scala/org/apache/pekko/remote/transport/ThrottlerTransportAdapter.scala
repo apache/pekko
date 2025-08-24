@@ -31,6 +31,7 @@ import pekko.actor._
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.dispatch.ExecutionContexts
 import pekko.dispatch.sysmsg.{ Unwatch, Watch }
+import pekko.event.LoggingAdapter
 import pekko.pattern.{ ask, pipe, PromiseActorRef }
 import pekko.remote.RARP
 import pekko.remote.transport.ActorTransportAdapter.AssociateUnderlying
@@ -646,7 +647,10 @@ private[transport] final case class ThrottlerHandle(_wrappedHandle: AssociationH
 
   }
 
-  override def disassociate(): Unit = throttlerActor ! PoisonPill
+  override def disassociate(reason: String, log: LoggingAdapter): Unit = {
+    super.disassociate(reason, log)
+    throttlerActor ! PoisonPill
+  }
 
   def disassociateWithFailure(reason: DisassociateInfo): Unit = {
     throttlerActor ! ThrottledAssociation.FailWith(reason)

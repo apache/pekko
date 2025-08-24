@@ -282,17 +282,6 @@ trait AssociationHandle {
    * be notified, but this is not guaranteed. The Transport that provides the handle MUST guarantee that disassociate()
    * could be called arbitrarily many times.
    */
-  @deprecated(
-    message = "Use method that states reasons to make sure disassociation reasons are logged.",
-    since = "Akka 2.5.3")
-  def disassociate(): Unit
-
-  /**
-   * Closes the underlying transport link, if needed. Some transports might not need an explicit teardown (UDP) and
-   * some transports may not support it (hardware connections). Remote endpoint of the channel or connection MAY
-   * be notified, but this is not guaranteed. The Transport that provides the handle MUST guarantee that disassociate()
-   * could be called arbitrarily many times.
-   */
   @nowarn("msg=deprecated")
   def disassociate(reason: String, log: LoggingAdapter): Unit = {
     if (log.isDebugEnabled)
@@ -301,7 +290,5 @@ trait AssociationHandle {
         localAddress,
         remoteAddress,
         reason)
-
-    disassociate()
   }
 }

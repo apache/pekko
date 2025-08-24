@@ -707,7 +707,7 @@ private[remote] class EndpointWriter(
     ackIdleTimer.cancel()
     while (!prioBuffer.isEmpty) extendedSystem.deadLetters ! prioBuffer.poll
     while (!buffer.isEmpty) extendedSystem.deadLetters ! buffer.poll
-    handle.foreach { _.disassociate(stopReason) }
+    handle.foreach { _.disassociate(stopReason, log) }
     eventPublisher.notifyListeners(DisassociatedEvent(localAddress, remoteAddress, inbound))
   }
 
