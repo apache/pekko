@@ -4,7 +4,7 @@ Apache Pekko 1.2.x releases support Java 8 and above.
 
 # 1.2.0
 
-Pekko 1.2.0 has some new features, performance updates and dependency upgrades. See [GitHub Milestone for 1.2.0-M1](https://github.com/apache/pekko/milestone/6?closed=1) [GitHub Milestone for 1.2.0-M2](https://github.com/apache/pekko/milestone/15?closed=1) and [GitHub Milestone for 1.2.0](https://github.com/apache/pekko/milestone/16?closed=1) for a fuller list of changes.
+Pekko 1.2.0 has some new features, performance updates and dependency upgrades. See [GitHub Milestone for 1.2.0-M1](https://github.com/apache/pekko/milestone/6?closed=1), [GitHub Milestone for 1.2.0-M2](https://github.com/apache/pekko/milestone/15?closed=1) and [GitHub Milestone for 1.2.0](https://github.com/apache/pekko/milestone/16?closed=1) for a fuller list of changes.
 
 Most of the changes appeared in the milestone releases (1.2.0-M1 and 1.2.0-M2) but some additional changes were made for the 1.2.0 release. These extra changes include deprecating some methods that will be removed in a future release.
 
@@ -48,7 +48,7 @@ Most of the changes appeared in the milestone releases (1.2.0-M1 and 1.2.0-M2) b
 * Add JournalPersistFailed and JournalPersistRejected signals ([PR1961](https://github.com/apache/pekko/pull/1961))
 * Make calculateDelay a public method ([PR1940](https://github.com/apache/pekko/pull/1940))
 * Allow disabling AsyncWriteJournal.Resequencer to improve latency ([#2026](https://github.com/apache/pekko/issues/2026))
-* Add CompletionStages helper ([#2049](https://github.com/apache/pekko/pull/2049))
+* Add CompletionStages helper ([PR2049](https://github.com/apache/pekko/pull/2049))
 
 ### Changes
 
@@ -64,14 +64,14 @@ Most of the changes appeared in the milestone releases (1.2.0-M1 and 1.2.0-M2) b
 * Tweak withAttributes in Flow ([PR1658](https://github.com/apache/pekko/pull/1658))
 * Handle NormalShutdownReason in MergeHub ([PR1741](https://github.com/apache/pekko/pull/1741))
 * optimize recoverWith to avoid some materialization ([PR1775](https://github.com/apache/pekko/pull/1775))
-* Regenerated all the source code for Protobuf using 4.32.0 ([PR1795](https://github.com/apache/pekko/pull/1795, [PR2036](https://github.com/apache/pekko/pull/2036)))
+* Regenerated all the source code for Protobuf using 4.32.0 ([PR1795](https://github.com/apache/pekko/pull/1795), [PR2036](https://github.com/apache/pekko/pull/2036))
 * Avoid materialize an empty source in switchMap ([PR1804](https://github.com/apache/pekko/pull/1804))
 * Fix wrong name attribute for iterate and mapAsyncPartitionUnordered operators ([PR1869](https://github.com/apache/pekko/pull/1869))
 * Change aggregateWithBoundary operator in javadsl to use Optional ([PR1876](https://github.com/apache/pekko/pull/1876))
 * TLS v1.3 is now the default ([PR1901](https://github.com/apache/pekko/pull/1901))
 * Set vector builder to null after stage completed to avoid leak ([PR1917](https://github.com/apache/pekko/pull/1917))
 * Renamed internal Alogithm class (pekko-serialization-jackson) ([PR1932](https://github.com/apache/pekko/pull/1932))
-* Deprecate FunctionalInterfaces that are being removed in pekko 2.0.0 ([PR2004](https://github.com/apache/pekko/pull/2004), ([PR2075](https://github.com/apache/pekko/pull/2075)) 
+* Deprecate FunctionalInterfaces that are being removed in pekko 2.0.0 ([PR2004](https://github.com/apache/pekko/pull/2004), [PR2075](https://github.com/apache/pekko/pull/2075)) 
 * Disable batch if isVirtualized ([PR2046](https://github.com/apache/pekko/pull/2046))
 * Deprecate more methods in Futures ([PR2048](https://github.com/apache/pekko/pull/2048))
 * Remove incorrect deprecation in IOResult ([PR2054](https://github.com/apache/pekko/pull/2054))
