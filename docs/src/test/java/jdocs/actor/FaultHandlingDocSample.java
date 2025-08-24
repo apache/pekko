@@ -15,29 +15,26 @@ package jdocs.actor;
 
 // #all
 // #imports
+import static jdocs.actor.FaultHandlingDocSample.CounterApi.*;
+import static jdocs.actor.FaultHandlingDocSample.CounterServiceApi.*;
+import static jdocs.actor.FaultHandlingDocSample.StorageApi.*;
+import static jdocs.actor.FaultHandlingDocSample.WorkerApi.*;
+import static org.apache.pekko.actor.SupervisorStrategy.escalate;
+import static org.apache.pekko.actor.SupervisorStrategy.restart;
+import static org.apache.pekko.actor.SupervisorStrategy.stop;
+import static org.apache.pekko.pattern.Patterns.pipe;
+
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.time.Duration;
-
 import org.apache.pekko.actor.*;
 import org.apache.pekko.event.LoggingReceive;
 import org.apache.pekko.japi.pf.DeciderBuilder;
 import org.apache.pekko.pattern.Patterns;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
-
-import static org.apache.pekko.actor.SupervisorStrategy.restart;
-import static org.apache.pekko.actor.SupervisorStrategy.stop;
-import static org.apache.pekko.actor.SupervisorStrategy.escalate;
-
-import static org.apache.pekko.pattern.Patterns.pipe;
-
-import static jdocs.actor.FaultHandlingDocSample.WorkerApi.*;
-import static jdocs.actor.FaultHandlingDocSample.CounterServiceApi.*;
-import static jdocs.actor.FaultHandlingDocSample.CounterApi.*;
-import static jdocs.actor.FaultHandlingDocSample.StorageApi.*;
 
 // #imports
 

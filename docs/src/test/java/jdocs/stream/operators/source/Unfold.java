@@ -13,12 +13,11 @@
 
 package jdocs.stream.operators.source;
 
+import java.math.BigInteger;
+import java.util.Optional;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.japi.Pair;
 import org.apache.pekko.stream.javadsl.Source;
-
-import java.math.BigInteger;
-import java.util.Optional;
 
 interface Unfold {
 
@@ -31,6 +30,7 @@ interface Unfold {
           else return Optional.of(Pair.create(current - 1, current));
         });
   }
+
   // #countdown
 
   // #fibonacci

@@ -17,8 +17,8 @@ import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.cluster.Cluster;
 import org.apache.pekko.cluster.ClusterEvent.CurrentClusterState;
 import org.apache.pekko.cluster.ClusterEvent.MemberEvent;
-import org.apache.pekko.cluster.ClusterEvent.MemberUp;
 import org.apache.pekko.cluster.ClusterEvent.MemberRemoved;
+import org.apache.pekko.cluster.ClusterEvent.MemberUp;
 import org.apache.pekko.cluster.ClusterEvent.UnreachableMember;
 import org.apache.pekko.event.Logging;
 import org.apache.pekko.event.LoggingAdapter;
@@ -27,6 +27,7 @@ public class SimpleClusterListener2 extends AbstractActor {
   LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
   // #join
   Cluster cluster = Cluster.get(getContext().getSystem());
+
   // #join
 
   // subscribe to cluster changes

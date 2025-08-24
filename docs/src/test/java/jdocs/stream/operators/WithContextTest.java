@@ -13,26 +13,25 @@
 
 package jdocs.stream.operators;
 
-import org.apache.pekko.actor.ActorSystem;
-// #imports
-import org.apache.pekko.NotUsed;
-import org.apache.pekko.japi.Pair;
-import org.apache.pekko.stream.javadsl.*;
-// #imports
-import org.apache.pekko.testkit.javadsl.TestKit;
-import jdocs.AbstractJavaTest;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
-
-import static org.hamcrest.CoreMatchers.hasItems;
-import static org.hamcrest.MatcherAssert.assertThat;
+import jdocs.AbstractJavaTest;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.actor.ActorSystem;
+// #imports
+import org.apache.pekko.japi.Pair;
+import org.apache.pekko.stream.javadsl.*;
+// #imports
+import org.apache.pekko.testkit.javadsl.TestKit;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class WithContextTest extends AbstractJavaTest {
 

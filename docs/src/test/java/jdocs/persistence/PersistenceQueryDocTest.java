@@ -13,27 +13,23 @@
 
 package jdocs.persistence;
 
+import com.typesafe.config.Config;
 import java.sql.Connection;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-
+import java.util.concurrent.CompletionStage;
+import jdocs.persistence.query.MyEventsByTagSource;
 import org.apache.pekko.NotUsed;
-import org.apache.pekko.persistence.query.Sequence;
-import org.apache.pekko.persistence.query.Offset;
-import com.typesafe.config.Config;
-
 import org.apache.pekko.actor.*;
 import org.apache.pekko.persistence.query.*;
+import org.apache.pekko.persistence.query.Offset;
+import org.apache.pekko.persistence.query.Sequence;
 import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
-
-import jdocs.persistence.query.MyEventsByTagSource;
 import org.reactivestreams.Subscriber;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CompletionStage;
 
 public class PersistenceQueryDocTest {
 
@@ -50,6 +46,7 @@ public class PersistenceQueryDocTest {
       this.payload = payload;
     }
   }
+
   // #advanced-journal-query-types
 
   public
@@ -64,6 +61,7 @@ public class PersistenceQueryDocTest {
       this.infinite = infinite;
     }
   }
+
   // #advanced-journal-query-types
 
   interface OrderCompleted {}
@@ -87,6 +85,7 @@ public class PersistenceQueryDocTest {
       return this.javadslReadJournal;
     }
   }
+
   // #my-read-journal
 
   public
@@ -157,6 +156,7 @@ public class PersistenceQueryDocTest {
       throw new UnsupportedOperationException("Not implemented yet");
     }
   }
+
   // #my-read-journal
 
   public
@@ -206,6 +206,7 @@ public class PersistenceQueryDocTest {
       return javadslReadJournal.byTagsWithMeta(jTags).asScala();
     }
   }
+
   // #my-read-journal
 
   void demonstrateBasicUsage() {
@@ -372,6 +373,7 @@ public class PersistenceQueryDocTest {
       // #projection-into-different-store-simple-classes
     }
   }
+
   // #projection-into-different-store-simple-classes
 
   void demonstrateWritingIntoDifferentStoreWithMapAsync() {
@@ -414,6 +416,7 @@ public class PersistenceQueryDocTest {
       // #projection-into-different-store
     }
   }
+
   // #projection-into-different-store
 
   static class ComplexState {

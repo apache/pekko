@@ -13,6 +13,9 @@
 
 package jdocs.stream.javadsl.cookbook;
 
+import com.typesafe.config.ConfigFactory;
+import java.util.Arrays;
+import jdocs.stream.SilenceSystemOut;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.event.Logging;
@@ -22,14 +25,10 @@ import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.testkit.DebugFilter;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import com.typesafe.config.ConfigFactory;
-import jdocs.stream.SilenceSystemOut;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import scala.runtime.AbstractFunction0;
-
-import java.util.Arrays;
 
 public class RecipeLoggingElements extends RecipeTest {
   static ActorSystem system;
@@ -40,7 +39,8 @@ public class RecipeLoggingElements extends RecipeTest {
         ActorSystem.create(
             "RecipeLoggingElements",
             ConfigFactory.parseString(
-                "pekko.loglevel=DEBUG\npekko.loggers = [org.apache.pekko.testkit.TestEventListener]"));
+                "pekko.loglevel=DEBUG\n"
+                    + "pekko.loggers = [org.apache.pekko.testkit.TestEventListener]"));
   }
 
   @AfterClass

@@ -15,19 +15,18 @@ package jdocs.org.apache.pekko.typed;
 
 // #oo-style
 // #fun-style
+import java.time.Duration;
+import org.apache.pekko.Done;
+import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.SupervisorStrategy;
+import org.apache.pekko.actor.typed.javadsl.AbstractBehavior;
 import org.apache.pekko.actor.typed.javadsl.ActorContext;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 // #fun-style
-import org.apache.pekko.actor.typed.javadsl.AbstractBehavior;
 import org.apache.pekko.actor.typed.javadsl.Receive;
 // #oo-style
-
-import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.javadsl.TimerScheduler;
-import org.apache.pekko.Done;
-import java.time.Duration;
 
 interface StyleGuideDocExamples {
 
@@ -97,6 +96,7 @@ interface StyleGuideDocExamples {
       public enum Increment implements Command {
         INSTANCE
       }
+
       // #message-enum
 
       public static class GetValue implements Command {
@@ -114,6 +114,7 @@ interface StyleGuideDocExamples {
           this.value = value;
         }
       }
+
       // #messages
 
       public static Behavior<Command> create() {
@@ -276,6 +277,7 @@ interface StyleGuideDocExamples {
           this.value = value;
         }
       }
+
       // #fun-style-setup-params2
 
       private static class Setup {
@@ -370,6 +372,7 @@ interface StyleGuideDocExamples {
           this.value = value;
         }
       }
+
       // #fun-style-setup-params3
 
       public static Behavior<Command> create(String name) {
@@ -462,6 +465,7 @@ interface StyleGuideDocExamples {
         }
       }
     }
+
     // #behavior-factory-method
 
     public class Usage {
@@ -601,6 +605,7 @@ interface StyleGuideDocExamples {
         getContext().getLog().debug("[{}] Incremented counter to [{}]", name, count);
         return this;
       }
+
       // #on-message-lambda
 
       private Behavior<Command> onTick() {
@@ -616,6 +621,7 @@ interface StyleGuideDocExamples {
         command.replyTo.tell(new Value(count));
         return this;
       }
+
       // #on-message-method-ref
 
       // #public-private-messages-1

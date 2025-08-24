@@ -13,6 +13,19 @@
 
 package jdocs.org.apache.pekko.typed;
 
+import static jdocs.org.apache.pekko.typed.AggregatorTest.IllustrateUsage.Hotel1;
+import static jdocs.org.apache.pekko.typed.AggregatorTest.IllustrateUsage.Hotel2;
+import static jdocs.org.apache.pekko.typed.AggregatorTest.IllustrateUsage.HotelCustomer;
+import static org.junit.Assert.assertEquals;
+
+import java.math.BigDecimal;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
@@ -26,20 +39,6 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
-
-import java.math.BigDecimal;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import static jdocs.org.apache.pekko.typed.AggregatorTest.IllustrateUsage.HotelCustomer;
-import static jdocs.org.apache.pekko.typed.AggregatorTest.IllustrateUsage.Hotel1;
-import static jdocs.org.apache.pekko.typed.AggregatorTest.IllustrateUsage.Hotel2;
-import static org.junit.Assert.assertEquals;
 
 public class AggregatorTest extends JUnitSuite {
   @ClassRule public static final TestKitJunitResource testKit = new TestKitJunitResource();

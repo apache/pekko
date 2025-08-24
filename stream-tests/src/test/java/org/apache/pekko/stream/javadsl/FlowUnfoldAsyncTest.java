@@ -17,6 +17,9 @@
 
 package org.apache.pekko.stream.javadsl;
 
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import org.apache.pekko.japi.Pair;
 import org.apache.pekko.stream.StreamTest;
 import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
@@ -24,10 +27,6 @@ import org.apache.pekko.testkit.PekkoSpec;
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 public class FlowUnfoldAsyncTest extends StreamTest {
   @ClassRule

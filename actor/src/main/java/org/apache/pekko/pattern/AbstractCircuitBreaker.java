@@ -15,10 +15,8 @@ package org.apache.pekko.pattern;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
-
-import scala.concurrent.duration.FiniteDuration;
-
 import org.apache.pekko.pattern.CircuitBreaker.State;
+import scala.concurrent.duration.FiniteDuration;
 
 class AbstractCircuitBreaker {
   protected static final VarHandle stateHandle;

@@ -13,13 +13,13 @@
 
 package org.apache.pekko.actor;
 
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
-import org.junit.*;
-import org.apache.pekko.testkit.PekkoSpec;
-import com.typesafe.config.ConfigFactory;
-import org.scalatestplus.junit.JUnitSuite;
-
 import static org.junit.Assert.*;
+
+import com.typesafe.config.ConfigFactory;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoSpec;
+import org.junit.*;
+import org.scalatestplus.junit.JUnitSuite;
 
 public class JavaExtension extends JUnitSuite {
 

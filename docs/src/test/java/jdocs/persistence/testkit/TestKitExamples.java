@@ -64,6 +64,7 @@ public class TestKitExamples {
       }
     }
   }
+
   // #set-event-storage-policy
 
   // #set-snapshot-storage-policy

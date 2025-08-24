@@ -13,6 +13,10 @@
 
 package org.apache.pekko.stream.javadsl;
 
+import static org.junit.Assert.assertEquals;
+
+import java.time.Duration;
+import java.util.Optional;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.japi.Pair;
 import org.apache.pekko.stream.StreamTest;
@@ -27,11 +31,6 @@ import org.junit.Test;
 import scala.util.Failure;
 import scala.util.Success;
 import scala.util.Try;
-
-import java.time.Duration;
-import java.util.Optional;
-
-import static org.junit.Assert.assertEquals;
 
 public class RetryFlowTest extends StreamTest {
   public RetryFlowTest() {

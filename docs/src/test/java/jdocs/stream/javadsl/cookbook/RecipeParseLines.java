@@ -13,6 +13,8 @@
 
 package jdocs.stream.javadsl.cookbook;
 
+import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.stream.javadsl.Framing;
@@ -24,9 +26,6 @@ import org.apache.pekko.util.ByteString;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 
 public class RecipeParseLines extends RecipeTest {
 

@@ -37,6 +37,7 @@ public class Messages {
       return values;
     }
   }
+
   // #immutable-message
 
   public static class DoIt {

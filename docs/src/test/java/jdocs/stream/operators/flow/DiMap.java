@@ -18,12 +18,12 @@
 package jdocs.stream.operators.flow;
 
 // #imports
+import java.util.Arrays;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.stream.javadsl.Flow;
 import org.apache.pekko.stream.javadsl.Source;
 
-import java.util.Arrays;
 // #imports
 
 public class DiMap {

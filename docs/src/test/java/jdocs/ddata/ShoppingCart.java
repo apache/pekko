@@ -14,11 +14,10 @@
 package jdocs.ddata;
 
 import java.io.Serializable;
+import java.time.Duration;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.time.Duration;
-
 import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.actor.Props;
@@ -191,6 +190,7 @@ public class ShoppingCart extends AbstractActor {
         new Replicator.Get<LWWMap<String, LineItem>>(dataKey, Replicator.readLocal(), ctx),
         getSelf());
   }
+
   // #get-cart
 
   // #add-item
@@ -267,6 +267,7 @@ public class ShoppingCart extends AbstractActor {
     return response.key().equals(dataKey)
         && (response.getRequest().orElse(null) instanceof RemoveItem);
   }
+
   // #remove-item
 
   private Receive matchOther() {

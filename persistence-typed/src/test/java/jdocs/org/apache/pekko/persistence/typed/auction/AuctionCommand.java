@@ -13,10 +13,9 @@
 
 package jdocs.org.apache.pekko.persistence.typed.auction;
 
+import java.util.UUID;
 import org.apache.pekko.Done;
 import org.apache.pekko.actor.typed.ActorRef;
-
-import java.util.UUID;
 
 /** An auction command. */
 public interface AuctionCommand {
@@ -110,8 +109,10 @@ public interface AuctionCommand {
 
     /** The current price of the auction. */
     private final int currentPrice;
+
     /** The status of the attempt to place a bid. */
     private final PlaceBidStatus status;
+
     /** The current winning bidder. */
     private final UUID currentBidder;
 

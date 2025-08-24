@@ -13,21 +13,20 @@
 
 package org.apache.pekko.stream.stage;
 
-import org.apache.pekko.NotUsed;
-import org.apache.pekko.stream.StreamTest;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
-import org.apache.pekko.stream.javadsl.Sink;
-import org.apache.pekko.stream.javadsl.Source;
-import org.apache.pekko.testkit.PekkoSpec;
-
-import org.junit.ClassRule;
-import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.stream.StreamTest;
+import org.apache.pekko.stream.javadsl.Sink;
+import org.apache.pekko.stream.javadsl.Source;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoSpec;
+import org.junit.ClassRule;
+import org.junit.Test;
 
 public class StageTest extends StreamTest {
   public StageTest() {

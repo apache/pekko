@@ -13,12 +13,10 @@
 
 package org.apache.pekko.stream.javadsl;
 
+import java.util.concurrent.Flow;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.japi.Pair;
 import org.junit.Test;
-
-import java.util.concurrent.Flow;
-
 import org.scalatestplus.junit.JUnitSuite;
 
 public class JavaFlowSupportCompileTest extends JUnitSuite {

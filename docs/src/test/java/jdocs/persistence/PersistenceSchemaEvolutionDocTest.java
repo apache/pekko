@@ -15,17 +15,14 @@ package jdocs.persistence;
 
 import docs.persistence.ExampleJsonMarshaller;
 import docs.persistence.proto.FlightAppModels;
-
 import java.io.NotSerializableException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-
-import spray.json.JsObject;
-
 import org.apache.pekko.persistence.journal.EventAdapter;
 import org.apache.pekko.persistence.journal.EventSeq;
 import org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException;
 import org.apache.pekko.serialization.SerializerWithStringManifest;
+import spray.json.JsObject;
 
 public class PersistenceSchemaEvolutionDocTest {
 
@@ -50,6 +47,7 @@ public class PersistenceSchemaEvolutionDocTest {
       else return Unknown;
     }
   }
+
   // #protobuf-read-optional-model
 
   public
@@ -65,6 +63,7 @@ public class PersistenceSchemaEvolutionDocTest {
       this.seatType = seatType;
     }
   }
+
   // #protobuf-read-optional-model
 
   public
@@ -128,6 +127,7 @@ public class PersistenceSchemaEvolutionDocTest {
       else return SeatType.Unknown;
     }
   }
+
   // #protobuf-read-optional
 
   public static class RenamePlainJson {
@@ -185,6 +185,7 @@ public class PersistenceSchemaEvolutionDocTest {
         this.surname = surname;
       }
     }
+
     // #simplest-custom-serializer-model
 
     public
@@ -257,7 +258,8 @@ public class PersistenceSchemaEvolutionDocTest {
   }
 
   // #split-events-during-recovery
-  interface Version1 {};
+  interface Version1 {}
+  ;
 
   interface Version2 {}
 
@@ -286,6 +288,7 @@ public class PersistenceSchemaEvolutionDocTest {
       this.name = name;
     }
   }
+
   // #split-events-during-recovery
   public
   // #split-events-during-recovery
@@ -324,6 +327,7 @@ public class PersistenceSchemaEvolutionDocTest {
       return event;
     }
   }
+
   // #split-events-during-recovery
 
   public static class CustomerBlinked {
@@ -373,6 +377,7 @@ public class PersistenceSchemaEvolutionDocTest {
       else return new String(bytes, utf8);
     }
   }
+
   // #string-serializer-skip-deleved-event-by-manifest
 
   public
@@ -394,6 +399,7 @@ public class PersistenceSchemaEvolutionDocTest {
       else return EventSeq.single(event);
     }
   }
+
   // #string-serializer-skip-deleved-event-by-manifest-adapter
 
   // #string-serializer-handle-rename
@@ -438,6 +444,7 @@ public class PersistenceSchemaEvolutionDocTest {
       else throw new NotSerializableException("unexpected manifest [" + manifest + "]");
     }
   }
+
   // #string-serializer-handle-rename
 
   public
@@ -492,6 +499,7 @@ public class PersistenceSchemaEvolutionDocTest {
       this.customerName = customerName;
     }
   }
+
   // #detach-models
 
   // #detach-models-adapter
@@ -521,6 +529,7 @@ public class PersistenceSchemaEvolutionDocTest {
       }
     }
   }
+
   // #detach-models-adapter
 
   public

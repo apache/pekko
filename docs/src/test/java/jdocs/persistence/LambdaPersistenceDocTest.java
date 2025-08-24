@@ -13,15 +13,14 @@
 
 package jdocs.persistence;
 
+import java.io.Serializable;
+import java.time.Duration;
+import java.util.Optional;
 import org.apache.pekko.actor.*;
 import org.apache.pekko.japi.function.Procedure;
 import org.apache.pekko.pattern.BackoffOpts;
 import org.apache.pekko.pattern.BackoffSupervisor;
 import org.apache.pekko.persistence.*;
-
-import java.io.Serializable;
-import java.time.Duration;
-import java.util.Optional;
 
 public class LambdaPersistenceDocTest {
 
@@ -50,6 +49,7 @@ public class LambdaPersistenceDocTest {
           public Recovery recovery() {
             return Recovery.none();
           }
+
           // #recovery-disabled
 
           // #recover-on-restart-disabled
@@ -132,6 +132,7 @@ public class LambdaPersistenceDocTest {
             // ...
           }
         }
+
         // #recovery-completed
 
         abstract class MyPersistentActor6 extends AbstractPersistentActor {
@@ -300,6 +301,7 @@ public class LambdaPersistenceDocTest {
                     })
                 .build();
           }
+
           // #save-snapshot
 
           @Override
@@ -331,6 +333,7 @@ public class LambdaPersistenceDocTest {
             return Recovery.create(
                 SnapshotSelectionCriteria.create(457L, System.currentTimeMillis()));
           }
+
           // #snapshot-criteria
 
           // #snapshot-offer
@@ -352,6 +355,7 @@ public class LambdaPersistenceDocTest {
                     })
                 .build();
           }
+
           // #snapshot-offer
 
           @Override
@@ -423,6 +427,7 @@ public class LambdaPersistenceDocTest {
             return receiveBuilder().match(String.class, this::handleCommand).build();
           }
         }
+
         // #persist-async
 
         public void usage() {
@@ -482,6 +487,7 @@ public class LambdaPersistenceDocTest {
             return receiveBuilder().match(String.class, this::handleCommand).build();
           }
         }
+
         // #defer
 
         public void usage() {
@@ -587,6 +593,7 @@ public class LambdaPersistenceDocTest {
                     })
                 .build();
           }
+
           // #nested-persist-persist
 
           void usage(ActorRef persistentActor) {
@@ -647,6 +654,7 @@ public class LambdaPersistenceDocTest {
                     })
                 .build();
           }
+
           // #nested-persistAsync-persistAsync
 
           void usage(ActorRef persistentActor) {
@@ -708,6 +716,7 @@ public class LambdaPersistenceDocTest {
             return receiveBuilder().matchAny(any -> {}).build();
           }
         }
+
         // #safe-shutdown
 
         public void usage() {

@@ -13,17 +13,14 @@
 
 package org.apache.pekko.actor;
 
-import static org.junit.Assert.*;
 import static java.util.stream.Collectors.toCollection;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.stream.IntStream;
-
+import org.apache.pekko.japi.function.Creator;
 import org.junit.Assert;
 import org.junit.Test;
-
-import org.apache.pekko.japi.function.Creator;
-
 import org.scalatestplus.junit.JUnitSuite;
 
 public class ActorCreationTest extends JUnitSuite {
@@ -193,7 +190,8 @@ public class ActorCreationTest extends JUnitSuite {
                       }
                     }));
     assertEquals(
-        "cannot use non-static local Creator to create actors; make it static (e.g. local to a static method) or top-level",
+        "cannot use non-static local Creator to create actors; make it static (e.g. local to a"
+            + " static method) or top-level",
         exception.getMessage());
   }
 

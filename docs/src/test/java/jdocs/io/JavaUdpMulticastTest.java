@@ -13,22 +13,20 @@
 
 package jdocs.io;
 
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.*;
+import jdocs.AbstractJavaTest;
 import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.actor.Props;
 import org.apache.pekko.io.Udp;
 import org.apache.pekko.testkit.SocketUtil;
-
-import jdocs.AbstractJavaTest;
 import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.net.Inet6Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.util.*;
 
 public class JavaUdpMulticastTest extends AbstractJavaTest {
 
@@ -61,7 +59,8 @@ public class JavaUdpMulticastTest extends AbstractJavaTest {
           system
               .log()
               .info(
-                  "JavaUdpMulticastTest skipped since no ipv6 interface supporting multicast could be found");
+                  "JavaUdpMulticastTest skipped since no ipv6 interface supporting multicast could"
+                      + " be found");
         } else {
           // lots of problems with choosing the wrong interface for this test depending
           // on the platform (awsdl0 can't be used on OSX, docker[0-9] can't be used in a docker

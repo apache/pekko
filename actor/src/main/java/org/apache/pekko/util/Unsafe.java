@@ -13,11 +13,10 @@
 
 package org.apache.pekko.util;
 
-import org.apache.pekko.annotation.InternalApi;
-
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 import java.nio.charset.StandardCharsets;
+import org.apache.pekko.annotation.InternalApi;
 
 /** INTERNAL API */
 @InternalApi

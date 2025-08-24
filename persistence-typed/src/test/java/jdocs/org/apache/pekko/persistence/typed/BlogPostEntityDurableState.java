@@ -74,10 +74,12 @@ public class BlogPostEntityDurableState
       return content.postId;
     }
   }
+
   // #state
 
   // #commands
   public interface Command {}
+
   // #reply-command
   public static class AddPost implements Command {
     final PostContent content;
@@ -96,6 +98,7 @@ public class BlogPostEntityDurableState
       this.postId = postId;
     }
   }
+
   // #reply-command
   public static class GetPost implements Command {
     final ActorRef<PostContent> replyTo;
@@ -134,6 +137,7 @@ public class BlogPostEntityDurableState
       this.body = body;
     }
   }
+
   // #commands
 
   // #behavior

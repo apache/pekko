@@ -13,21 +13,20 @@
 
 package jdocs.discovery;
 
+import docs.discovery.DnsDiscoveryDocSpec;
+import java.time.Duration;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.TimeUnit;
 import org.apache.pekko.actor.ActorSystem;
 // #lookup-dns
 import org.apache.pekko.discovery.Discovery;
 import org.apache.pekko.discovery.ServiceDiscovery;
 // #lookup-dns
 import org.apache.pekko.testkit.javadsl.TestKit;
-import docs.discovery.DnsDiscoveryDocSpec;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
-
-import java.time.Duration;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("unused")
 public class DnsDiscoveryDocTest extends JUnitSuite {

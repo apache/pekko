@@ -13,6 +13,10 @@
 
 package jdocs.org.apache.pekko.cluster.sharding.typed;
 
+import static jdocs.org.apache.pekko.cluster.sharding.typed.ShardingCompileOnlyTest.Counter;
+
+import java.time.Duration;
+import java.util.concurrent.CompletionStage;
 import org.apache.pekko.Done;
 import org.apache.pekko.actor.Address;
 import org.apache.pekko.actor.typed.ActorRef;
@@ -24,11 +28,6 @@ import org.apache.pekko.cluster.sharding.typed.ShardingEnvelope;
 import org.apache.pekko.cluster.sharding.typed.javadsl.ClusterSharding;
 import org.apache.pekko.cluster.sharding.typed.javadsl.Entity;
 import org.apache.pekko.cluster.sharding.typed.javadsl.EntityTypeKey;
-
-import java.time.Duration;
-import java.util.concurrent.CompletionStage;
-
-import static jdocs.org.apache.pekko.cluster.sharding.typed.ShardingCompileOnlyTest.Counter;
 
 public class ExternalShardAllocationCompileOnlyTest {
 

@@ -13,6 +13,8 @@
 
 package org.apache.pekko.japi;
 
+import static org.junit.Assert.*;
+
 import org.apache.pekko.japi.function.Function;
 import org.apache.pekko.japi.function.Predicate;
 import org.apache.pekko.japi.pf.Match;
@@ -20,8 +22,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
 import scala.MatchError;
-
-import static org.junit.Assert.*;
 
 public class MatchBuilderTest extends JUnitSuite {
 

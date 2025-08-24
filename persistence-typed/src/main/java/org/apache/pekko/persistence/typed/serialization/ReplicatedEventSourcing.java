@@ -39,6 +39,7 @@ public final class ReplicatedEventSourcing {
       org.apache.pekko.protobufv3.internal.ExtensionRegistry registry) {
     registerAllExtensions((org.apache.pekko.protobufv3.internal.ExtensionRegistryLite) registry);
   }
+
   /** Protobuf enum {@code ORSetDeltaOp} */
   public enum ORSetDeltaOp implements org.apache.pekko.protobufv3.internal.ProtocolMessageEnum {
     /** <code>Add = 0;</code> */
@@ -58,10 +59,13 @@ public final class ReplicatedEventSourcing {
           /* suffix= */ "",
           ORSetDeltaOp.class.getName());
     }
+
     /** <code>Add = 0;</code> */
     public static final int Add_VALUE = 0;
+
     /** <code>Remove = 1;</code> */
     public static final int Remove_VALUE = 1;
+
     /** <code>Full = 2;</code> */
     public static final int Full_VALUE = 2;
 
@@ -156,6 +160,7 @@ public final class ReplicatedEventSourcing {
      * @return Whether the value field is set.
      */
     boolean hasValue();
+
     /**
      * <code>required bytes value = 1;</code>
      *
@@ -163,6 +168,7 @@ public final class ReplicatedEventSourcing {
      */
     org.apache.pekko.protobufv3.internal.ByteString getValue();
   }
+
   /** Protobuf type {@code Counter} */
   public static final class Counter extends org.apache.pekko.protobufv3.internal.GeneratedMessage
       implements
@@ -179,6 +185,7 @@ public final class ReplicatedEventSourcing {
           /* suffix= */ "",
           Counter.class.getName());
     }
+
     // Use Counter.newBuilder() to construct.
     private Counter(org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -210,6 +217,7 @@ public final class ReplicatedEventSourcing {
     public static final int VALUE_FIELD_NUMBER = 1;
     private org.apache.pekko.protobufv3.internal.ByteString value_ =
         org.apache.pekko.protobufv3.internal.ByteString.EMPTY;
+
     /**
      * <code>required bytes value = 1;</code>
      *
@@ -219,6 +227,7 @@ public final class ReplicatedEventSourcing {
     public boolean hasValue() {
       return ((bitField0_ & 0x00000001) != 0);
     }
+
     /**
      * <code>required bytes value = 1;</code>
      *
@@ -419,6 +428,7 @@ public final class ReplicatedEventSourcing {
       Builder builder = new Builder(parent);
       return builder;
     }
+
     /** Protobuf type {@code Counter} */
     public static final class Builder
         extends org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder>
@@ -585,6 +595,7 @@ public final class ReplicatedEventSourcing {
 
       private org.apache.pekko.protobufv3.internal.ByteString value_ =
           org.apache.pekko.protobufv3.internal.ByteString.EMPTY;
+
       /**
        * <code>required bytes value = 1;</code>
        *
@@ -594,6 +605,7 @@ public final class ReplicatedEventSourcing {
       public boolean hasValue() {
         return ((bitField0_ & 0x00000001) != 0);
       }
+
       /**
        * <code>required bytes value = 1;</code>
        *
@@ -603,6 +615,7 @@ public final class ReplicatedEventSourcing {
       public org.apache.pekko.protobufv3.internal.ByteString getValue() {
         return value_;
       }
+
       /**
        * <code>required bytes value = 1;</code>
        *
@@ -618,6 +631,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /**
        * <code>required bytes value = 1;</code>
        *
@@ -698,6 +712,7 @@ public final class ReplicatedEventSourcing {
      * @return Whether the delta field is set.
      */
     boolean hasDelta();
+
     /**
      * <code>required bytes delta = 1;</code>
      *
@@ -705,6 +720,7 @@ public final class ReplicatedEventSourcing {
      */
     org.apache.pekko.protobufv3.internal.ByteString getDelta();
   }
+
   /** Protobuf type {@code CounterUpdate} */
   public static final class CounterUpdate
       extends org.apache.pekko.protobufv3.internal.GeneratedMessage
@@ -722,6 +738,7 @@ public final class ReplicatedEventSourcing {
           /* suffix= */ "",
           CounterUpdate.class.getName());
     }
+
     // Use CounterUpdate.newBuilder() to construct.
     private CounterUpdate(
         org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
@@ -754,6 +771,7 @@ public final class ReplicatedEventSourcing {
     public static final int DELTA_FIELD_NUMBER = 1;
     private org.apache.pekko.protobufv3.internal.ByteString delta_ =
         org.apache.pekko.protobufv3.internal.ByteString.EMPTY;
+
     /**
      * <code>required bytes delta = 1;</code>
      *
@@ -763,6 +781,7 @@ public final class ReplicatedEventSourcing {
     public boolean hasDelta() {
       return ((bitField0_ & 0x00000001) != 0);
     }
+
     /**
      * <code>required bytes delta = 1;</code>
      *
@@ -976,6 +995,7 @@ public final class ReplicatedEventSourcing {
       Builder builder = new Builder(parent);
       return builder;
     }
+
     /** Protobuf type {@code CounterUpdate} */
     public static final class Builder
         extends org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder>
@@ -1148,6 +1168,7 @@ public final class ReplicatedEventSourcing {
 
       private org.apache.pekko.protobufv3.internal.ByteString delta_ =
           org.apache.pekko.protobufv3.internal.ByteString.EMPTY;
+
       /**
        * <code>required bytes delta = 1;</code>
        *
@@ -1157,6 +1178,7 @@ public final class ReplicatedEventSourcing {
       public boolean hasDelta() {
         return ((bitField0_ & 0x00000001) != 0);
       }
+
       /**
        * <code>required bytes delta = 1;</code>
        *
@@ -1166,6 +1188,7 @@ public final class ReplicatedEventSourcing {
       public org.apache.pekko.protobufv3.internal.ByteString getDelta() {
         return delta_;
       }
+
       /**
        * <code>required bytes delta = 1;</code>
        *
@@ -1181,6 +1204,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /**
        * <code>required bytes delta = 1;</code>
        *
@@ -1263,12 +1287,14 @@ public final class ReplicatedEventSourcing {
      * @return Whether the originDc field is set.
      */
     boolean hasOriginDc();
+
     /**
      * <code>required string originDc = 1;</code>
      *
      * @return The originDc.
      */
     java.lang.String getOriginDc();
+
     /**
      * <code>required string originDc = 1;</code>
      *
@@ -1282,6 +1308,7 @@ public final class ReplicatedEventSourcing {
      * @return Whether the vvector field is set.
      */
     boolean hasVvector();
+
     /**
      * <code>required .VersionVector vvector = 2;</code>
      *
@@ -1289,6 +1316,7 @@ public final class ReplicatedEventSourcing {
      */
     org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
         getVvector();
+
     /** <code>required .VersionVector vvector = 2;</code> */
     org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder
         getVvectorOrBuilder();
@@ -1297,17 +1325,21 @@ public final class ReplicatedEventSourcing {
     java.util.List<
             org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector>
         getDotsList();
+
     /** <code>repeated .VersionVector dots = 3;</code> */
     org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector getDots(
         int index);
+
     /** <code>repeated .VersionVector dots = 3;</code> */
     int getDotsCount();
+
     /** <code>repeated .VersionVector dots = 3;</code> */
     java.util.List<
             ? extends
                 org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
                     .VersionVectorOrBuilder>
         getDotsOrBuilderList();
+
     /** <code>repeated .VersionVector dots = 3;</code> */
     org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder
         getDotsOrBuilder(int index);
@@ -1318,12 +1350,14 @@ public final class ReplicatedEventSourcing {
      * @return A list containing the stringElements.
      */
     java.util.List<java.lang.String> getStringElementsList();
+
     /**
      * <code>repeated string stringElements = 4;</code>
      *
      * @return The count of stringElements.
      */
     int getStringElementsCount();
+
     /**
      * <code>repeated string stringElements = 4;</code>
      *
@@ -1331,6 +1365,7 @@ public final class ReplicatedEventSourcing {
      * @return The stringElements at the given index.
      */
     java.lang.String getStringElements(int index);
+
     /**
      * <code>repeated string stringElements = 4;</code>
      *
@@ -1345,12 +1380,14 @@ public final class ReplicatedEventSourcing {
      * @return A list containing the intElements.
      */
     java.util.List<java.lang.Integer> getIntElementsList();
+
     /**
      * <code>repeated sint32 intElements = 5 [packed = true];</code>
      *
      * @return The count of intElements.
      */
     int getIntElementsCount();
+
     /**
      * <code>repeated sint32 intElements = 5 [packed = true];</code>
      *
@@ -1365,12 +1402,14 @@ public final class ReplicatedEventSourcing {
      * @return A list containing the longElements.
      */
     java.util.List<java.lang.Long> getLongElementsList();
+
     /**
      * <code>repeated sint64 longElements = 6 [packed = true];</code>
      *
      * @return The count of longElements.
      */
     int getLongElementsCount();
+
     /**
      * <code>repeated sint64 longElements = 6 [packed = true];</code>
      *
@@ -1381,16 +1420,21 @@ public final class ReplicatedEventSourcing {
 
     /** <code>repeated .Payload otherElements = 7;</code> */
     java.util.List<org.apache.pekko.remote.ContainerFormats.Payload> getOtherElementsList();
+
     /** <code>repeated .Payload otherElements = 7;</code> */
     org.apache.pekko.remote.ContainerFormats.Payload getOtherElements(int index);
+
     /** <code>repeated .Payload otherElements = 7;</code> */
     int getOtherElementsCount();
+
     /** <code>repeated .Payload otherElements = 7;</code> */
     java.util.List<? extends org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder>
         getOtherElementsOrBuilderList();
+
     /** <code>repeated .Payload otherElements = 7;</code> */
     org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder getOtherElementsOrBuilder(int index);
   }
+
   /** Protobuf type {@code ORSet} */
   public static final class ORSet extends org.apache.pekko.protobufv3.internal.GeneratedMessage
       implements
@@ -1407,6 +1451,7 @@ public final class ReplicatedEventSourcing {
           /* suffix= */ "",
           ORSet.class.getName());
     }
+
     // Use ORSet.newBuilder() to construct.
     private ORSet(org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -1443,6 +1488,7 @@ public final class ReplicatedEventSourcing {
 
     @SuppressWarnings("serial")
     private volatile java.lang.Object originDc_ = "";
+
     /**
      * <code>required string originDc = 1;</code>
      *
@@ -1452,6 +1498,7 @@ public final class ReplicatedEventSourcing {
     public boolean hasOriginDc() {
       return ((bitField0_ & 0x00000001) != 0);
     }
+
     /**
      * <code>required string originDc = 1;</code>
      *
@@ -1472,6 +1519,7 @@ public final class ReplicatedEventSourcing {
         return s;
       }
     }
+
     /**
      * <code>required string originDc = 1;</code>
      *
@@ -1493,6 +1541,7 @@ public final class ReplicatedEventSourcing {
     public static final int VVECTOR_FIELD_NUMBER = 2;
     private org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
         vvector_;
+
     /**
      * <code>required .VersionVector vvector = 2;</code>
      *
@@ -1502,6 +1551,7 @@ public final class ReplicatedEventSourcing {
     public boolean hasVvector() {
       return ((bitField0_ & 0x00000002) != 0);
     }
+
     /**
      * <code>required .VersionVector vvector = 2;</code>
      *
@@ -1515,6 +1565,7 @@ public final class ReplicatedEventSourcing {
               .getDefaultInstance()
           : vvector_;
     }
+
     /** <code>required .VersionVector vvector = 2;</code> */
     @java.lang.Override
     public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
@@ -1532,6 +1583,7 @@ public final class ReplicatedEventSourcing {
     private java.util.List<
             org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector>
         dots_;
+
     /** <code>repeated .VersionVector dots = 3;</code> */
     @java.lang.Override
     public java.util.List<
@@ -1539,6 +1591,7 @@ public final class ReplicatedEventSourcing {
         getDotsList() {
       return dots_;
     }
+
     /** <code>repeated .VersionVector dots = 3;</code> */
     @java.lang.Override
     public java.util.List<
@@ -1548,17 +1601,20 @@ public final class ReplicatedEventSourcing {
         getDotsOrBuilderList() {
       return dots_;
     }
+
     /** <code>repeated .VersionVector dots = 3;</code> */
     @java.lang.Override
     public int getDotsCount() {
       return dots_.size();
     }
+
     /** <code>repeated .VersionVector dots = 3;</code> */
     @java.lang.Override
     public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
         getDots(int index) {
       return dots_.get(index);
     }
+
     /** <code>repeated .VersionVector dots = 3;</code> */
     @java.lang.Override
     public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
@@ -1572,6 +1628,7 @@ public final class ReplicatedEventSourcing {
     @SuppressWarnings("serial")
     private org.apache.pekko.protobufv3.internal.LazyStringArrayList stringElements_ =
         org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
+
     /**
      * <code>repeated string stringElements = 4;</code>
      *
@@ -1580,6 +1637,7 @@ public final class ReplicatedEventSourcing {
     public org.apache.pekko.protobufv3.internal.ProtocolStringList getStringElementsList() {
       return stringElements_;
     }
+
     /**
      * <code>repeated string stringElements = 4;</code>
      *
@@ -1588,6 +1646,7 @@ public final class ReplicatedEventSourcing {
     public int getStringElementsCount() {
       return stringElements_.size();
     }
+
     /**
      * <code>repeated string stringElements = 4;</code>
      *
@@ -1597,6 +1656,7 @@ public final class ReplicatedEventSourcing {
     public java.lang.String getStringElements(int index) {
       return stringElements_.get(index);
     }
+
     /**
      * <code>repeated string stringElements = 4;</code>
      *
@@ -1611,6 +1671,7 @@ public final class ReplicatedEventSourcing {
 
     @SuppressWarnings("serial")
     private org.apache.pekko.protobufv3.internal.Internal.IntList intElements_ = emptyIntList();
+
     /**
      * <code>repeated sint32 intElements = 5 [packed = true];</code>
      *
@@ -1620,6 +1681,7 @@ public final class ReplicatedEventSourcing {
     public java.util.List<java.lang.Integer> getIntElementsList() {
       return intElements_;
     }
+
     /**
      * <code>repeated sint32 intElements = 5 [packed = true];</code>
      *
@@ -1628,6 +1690,7 @@ public final class ReplicatedEventSourcing {
     public int getIntElementsCount() {
       return intElements_.size();
     }
+
     /**
      * <code>repeated sint32 intElements = 5 [packed = true];</code>
      *
@@ -1644,6 +1707,7 @@ public final class ReplicatedEventSourcing {
 
     @SuppressWarnings("serial")
     private org.apache.pekko.protobufv3.internal.Internal.LongList longElements_ = emptyLongList();
+
     /**
      * <code>repeated sint64 longElements = 6 [packed = true];</code>
      *
@@ -1653,6 +1717,7 @@ public final class ReplicatedEventSourcing {
     public java.util.List<java.lang.Long> getLongElementsList() {
       return longElements_;
     }
+
     /**
      * <code>repeated sint64 longElements = 6 [packed = true];</code>
      *
@@ -1661,6 +1726,7 @@ public final class ReplicatedEventSourcing {
     public int getLongElementsCount() {
       return longElements_.size();
     }
+
     /**
      * <code>repeated sint64 longElements = 6 [packed = true];</code>
      *
@@ -1677,27 +1743,32 @@ public final class ReplicatedEventSourcing {
 
     @SuppressWarnings("serial")
     private java.util.List<org.apache.pekko.remote.ContainerFormats.Payload> otherElements_;
+
     /** <code>repeated .Payload otherElements = 7;</code> */
     @java.lang.Override
     public java.util.List<org.apache.pekko.remote.ContainerFormats.Payload> getOtherElementsList() {
       return otherElements_;
     }
+
     /** <code>repeated .Payload otherElements = 7;</code> */
     @java.lang.Override
     public java.util.List<? extends org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder>
         getOtherElementsOrBuilderList() {
       return otherElements_;
     }
+
     /** <code>repeated .Payload otherElements = 7;</code> */
     @java.lang.Override
     public int getOtherElementsCount() {
       return otherElements_.size();
     }
+
     /** <code>repeated .Payload otherElements = 7;</code> */
     @java.lang.Override
     public org.apache.pekko.remote.ContainerFormats.Payload getOtherElements(int index) {
       return otherElements_.get(index);
     }
+
     /** <code>repeated .Payload otherElements = 7;</code> */
     @java.lang.Override
     public org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder getOtherElementsOrBuilder(
@@ -2031,6 +2102,7 @@ public final class ReplicatedEventSourcing {
       Builder builder = new Builder(parent);
       return builder;
     }
+
     /** Protobuf type {@code ORSet} */
     public static final class Builder
         extends org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder>
@@ -2456,6 +2528,7 @@ public final class ReplicatedEventSourcing {
       private int bitField0_;
 
       private java.lang.Object originDc_ = "";
+
       /**
        * <code>required string originDc = 1;</code>
        *
@@ -2464,6 +2537,7 @@ public final class ReplicatedEventSourcing {
       public boolean hasOriginDc() {
         return ((bitField0_ & 0x00000001) != 0);
       }
+
       /**
        * <code>required string originDc = 1;</code>
        *
@@ -2483,6 +2557,7 @@ public final class ReplicatedEventSourcing {
           return (java.lang.String) ref;
         }
       }
+
       /**
        * <code>required string originDc = 1;</code>
        *
@@ -2499,6 +2574,7 @@ public final class ReplicatedEventSourcing {
           return (org.apache.pekko.protobufv3.internal.ByteString) ref;
         }
       }
+
       /**
        * <code>required string originDc = 1;</code>
        *
@@ -2514,6 +2590,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /**
        * <code>required string originDc = 1;</code>
        *
@@ -2525,6 +2602,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /**
        * <code>required string originDc = 1;</code>
        *
@@ -2551,6 +2629,7 @@ public final class ReplicatedEventSourcing {
               org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
                   .VersionVectorOrBuilder>
           vvectorBuilder_;
+
       /**
        * <code>required .VersionVector vvector = 2;</code>
        *
@@ -2559,6 +2638,7 @@ public final class ReplicatedEventSourcing {
       public boolean hasVvector() {
         return ((bitField0_ & 0x00000002) != 0);
       }
+
       /**
        * <code>required .VersionVector vvector = 2;</code>
        *
@@ -2575,6 +2655,7 @@ public final class ReplicatedEventSourcing {
           return vvectorBuilder_.getMessage();
         }
       }
+
       /** <code>required .VersionVector vvector = 2;</code> */
       public Builder setVvector(
           org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
@@ -2591,6 +2672,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /** <code>required .VersionVector vvector = 2;</code> */
       public Builder setVvector(
           org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
@@ -2605,6 +2687,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /** <code>required .VersionVector vvector = 2;</code> */
       public Builder mergeVvector(
           org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
@@ -2628,6 +2711,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>required .VersionVector vvector = 2;</code> */
       public Builder clearVvector() {
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -2639,6 +2723,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /** <code>required .VersionVector vvector = 2;</code> */
       public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
               .Builder
@@ -2647,6 +2732,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return internalGetVvectorFieldBuilder().getBuilder();
       }
+
       /** <code>required .VersionVector vvector = 2;</code> */
       public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
               .VersionVectorOrBuilder
@@ -2660,6 +2746,7 @@ public final class ReplicatedEventSourcing {
               : vvector_;
         }
       }
+
       /** <code>required .VersionVector vvector = 2;</code> */
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
               org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
@@ -2718,6 +2805,7 @@ public final class ReplicatedEventSourcing {
           return dotsBuilder_.getMessageList();
         }
       }
+
       /** <code>repeated .VersionVector dots = 3;</code> */
       public int getDotsCount() {
         if (dotsBuilder_ == null) {
@@ -2726,6 +2814,7 @@ public final class ReplicatedEventSourcing {
           return dotsBuilder_.getCount();
         }
       }
+
       /** <code>repeated .VersionVector dots = 3;</code> */
       public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
           getDots(int index) {
@@ -2735,6 +2824,7 @@ public final class ReplicatedEventSourcing {
           return dotsBuilder_.getMessage(index);
         }
       }
+
       /** <code>repeated .VersionVector dots = 3;</code> */
       public Builder setDots(
           int index,
@@ -2752,6 +2842,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .VersionVector dots = 3;</code> */
       public Builder setDots(
           int index,
@@ -2767,6 +2858,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .VersionVector dots = 3;</code> */
       public Builder addDots(
           org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
@@ -2783,6 +2875,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .VersionVector dots = 3;</code> */
       public Builder addDots(
           int index,
@@ -2800,6 +2893,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .VersionVector dots = 3;</code> */
       public Builder addDots(
           org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
@@ -2814,6 +2908,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .VersionVector dots = 3;</code> */
       public Builder addDots(
           int index,
@@ -2829,6 +2924,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .VersionVector dots = 3;</code> */
       public Builder addAllDots(
           java.lang.Iterable<
@@ -2845,6 +2941,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .VersionVector dots = 3;</code> */
       public Builder clearDots() {
         if (dotsBuilder_ == null) {
@@ -2856,6 +2953,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .VersionVector dots = 3;</code> */
       public Builder removeDots(int index) {
         if (dotsBuilder_ == null) {
@@ -2867,12 +2965,14 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .VersionVector dots = 3;</code> */
       public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
               .Builder
           getDotsBuilder(int index) {
         return internalGetDotsFieldBuilder().getBuilder(index);
       }
+
       /** <code>repeated .VersionVector dots = 3;</code> */
       public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
               .VersionVectorOrBuilder
@@ -2883,6 +2983,7 @@ public final class ReplicatedEventSourcing {
           return dotsBuilder_.getMessageOrBuilder(index);
         }
       }
+
       /** <code>repeated .VersionVector dots = 3;</code> */
       public java.util.List<
               ? extends
@@ -2895,6 +2996,7 @@ public final class ReplicatedEventSourcing {
           return java.util.Collections.unmodifiableList(dots_);
         }
       }
+
       /** <code>repeated .VersionVector dots = 3;</code> */
       public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
               .Builder
@@ -2904,6 +3006,7 @@ public final class ReplicatedEventSourcing {
                 org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
                     .VersionVector.getDefaultInstance());
       }
+
       /** <code>repeated .VersionVector dots = 3;</code> */
       public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
               .Builder
@@ -2914,6 +3017,7 @@ public final class ReplicatedEventSourcing {
                 org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
                     .VersionVector.getDefaultInstance());
       }
+
       /** <code>repeated .VersionVector dots = 3;</code> */
       public java.util.List<
               org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
@@ -2955,6 +3059,7 @@ public final class ReplicatedEventSourcing {
         }
         bitField0_ |= 0x00000008;
       }
+
       /**
        * <code>repeated string stringElements = 4;</code>
        *
@@ -2964,6 +3069,7 @@ public final class ReplicatedEventSourcing {
         stringElements_.makeImmutable();
         return stringElements_;
       }
+
       /**
        * <code>repeated string stringElements = 4;</code>
        *
@@ -2972,6 +3078,7 @@ public final class ReplicatedEventSourcing {
       public int getStringElementsCount() {
         return stringElements_.size();
       }
+
       /**
        * <code>repeated string stringElements = 4;</code>
        *
@@ -2981,6 +3088,7 @@ public final class ReplicatedEventSourcing {
       public java.lang.String getStringElements(int index) {
         return stringElements_.get(index);
       }
+
       /**
        * <code>repeated string stringElements = 4;</code>
        *
@@ -2990,6 +3098,7 @@ public final class ReplicatedEventSourcing {
       public org.apache.pekko.protobufv3.internal.ByteString getStringElementsBytes(int index) {
         return stringElements_.getByteString(index);
       }
+
       /**
        * <code>repeated string stringElements = 4;</code>
        *
@@ -3007,6 +3116,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /**
        * <code>repeated string stringElements = 4;</code>
        *
@@ -3023,6 +3133,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /**
        * <code>repeated string stringElements = 4;</code>
        *
@@ -3037,6 +3148,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /**
        * <code>repeated string stringElements = 4;</code>
        *
@@ -3049,6 +3161,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /**
        * <code>repeated string stringElements = 4;</code>
        *
@@ -3074,6 +3187,7 @@ public final class ReplicatedEventSourcing {
         }
         bitField0_ |= 0x00000010;
       }
+
       /**
        * <code>repeated sint32 intElements = 5 [packed = true];</code>
        *
@@ -3083,6 +3197,7 @@ public final class ReplicatedEventSourcing {
         intElements_.makeImmutable();
         return intElements_;
       }
+
       /**
        * <code>repeated sint32 intElements = 5 [packed = true];</code>
        *
@@ -3091,6 +3206,7 @@ public final class ReplicatedEventSourcing {
       public int getIntElementsCount() {
         return intElements_.size();
       }
+
       /**
        * <code>repeated sint32 intElements = 5 [packed = true];</code>
        *
@@ -3100,6 +3216,7 @@ public final class ReplicatedEventSourcing {
       public int getIntElements(int index) {
         return intElements_.getInt(index);
       }
+
       /**
        * <code>repeated sint32 intElements = 5 [packed = true];</code>
        *
@@ -3115,6 +3232,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /**
        * <code>repeated sint32 intElements = 5 [packed = true];</code>
        *
@@ -3129,6 +3247,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /**
        * <code>repeated sint32 intElements = 5 [packed = true];</code>
        *
@@ -3143,6 +3262,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /**
        * <code>repeated sint32 intElements = 5 [packed = true];</code>
        *
@@ -3164,6 +3284,7 @@ public final class ReplicatedEventSourcing {
         }
         bitField0_ |= 0x00000020;
       }
+
       /**
        * <code>repeated sint64 longElements = 6 [packed = true];</code>
        *
@@ -3173,6 +3294,7 @@ public final class ReplicatedEventSourcing {
         longElements_.makeImmutable();
         return longElements_;
       }
+
       /**
        * <code>repeated sint64 longElements = 6 [packed = true];</code>
        *
@@ -3181,6 +3303,7 @@ public final class ReplicatedEventSourcing {
       public int getLongElementsCount() {
         return longElements_.size();
       }
+
       /**
        * <code>repeated sint64 longElements = 6 [packed = true];</code>
        *
@@ -3190,6 +3313,7 @@ public final class ReplicatedEventSourcing {
       public long getLongElements(int index) {
         return longElements_.getLong(index);
       }
+
       /**
        * <code>repeated sint64 longElements = 6 [packed = true];</code>
        *
@@ -3205,6 +3329,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /**
        * <code>repeated sint64 longElements = 6 [packed = true];</code>
        *
@@ -3219,6 +3344,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /**
        * <code>repeated sint64 longElements = 6 [packed = true];</code>
        *
@@ -3233,6 +3359,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /**
        * <code>repeated sint64 longElements = 6 [packed = true];</code>
        *
@@ -3272,6 +3399,7 @@ public final class ReplicatedEventSourcing {
           return otherElementsBuilder_.getMessageList();
         }
       }
+
       /** <code>repeated .Payload otherElements = 7;</code> */
       public int getOtherElementsCount() {
         if (otherElementsBuilder_ == null) {
@@ -3280,6 +3408,7 @@ public final class ReplicatedEventSourcing {
           return otherElementsBuilder_.getCount();
         }
       }
+
       /** <code>repeated .Payload otherElements = 7;</code> */
       public org.apache.pekko.remote.ContainerFormats.Payload getOtherElements(int index) {
         if (otherElementsBuilder_ == null) {
@@ -3288,6 +3417,7 @@ public final class ReplicatedEventSourcing {
           return otherElementsBuilder_.getMessage(index);
         }
       }
+
       /** <code>repeated .Payload otherElements = 7;</code> */
       public Builder setOtherElements(
           int index, org.apache.pekko.remote.ContainerFormats.Payload value) {
@@ -3303,6 +3433,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .Payload otherElements = 7;</code> */
       public Builder setOtherElements(
           int index, org.apache.pekko.remote.ContainerFormats.Payload.Builder builderForValue) {
@@ -3315,6 +3446,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .Payload otherElements = 7;</code> */
       public Builder addOtherElements(org.apache.pekko.remote.ContainerFormats.Payload value) {
         if (otherElementsBuilder_ == null) {
@@ -3329,6 +3461,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .Payload otherElements = 7;</code> */
       public Builder addOtherElements(
           int index, org.apache.pekko.remote.ContainerFormats.Payload value) {
@@ -3344,6 +3477,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .Payload otherElements = 7;</code> */
       public Builder addOtherElements(
           org.apache.pekko.remote.ContainerFormats.Payload.Builder builderForValue) {
@@ -3356,6 +3490,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .Payload otherElements = 7;</code> */
       public Builder addOtherElements(
           int index, org.apache.pekko.remote.ContainerFormats.Payload.Builder builderForValue) {
@@ -3368,6 +3503,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .Payload otherElements = 7;</code> */
       public Builder addAllOtherElements(
           java.lang.Iterable<? extends org.apache.pekko.remote.ContainerFormats.Payload> values) {
@@ -3381,6 +3517,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .Payload otherElements = 7;</code> */
       public Builder clearOtherElements() {
         if (otherElementsBuilder_ == null) {
@@ -3392,6 +3529,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .Payload otherElements = 7;</code> */
       public Builder removeOtherElements(int index) {
         if (otherElementsBuilder_ == null) {
@@ -3403,11 +3541,13 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .Payload otherElements = 7;</code> */
       public org.apache.pekko.remote.ContainerFormats.Payload.Builder getOtherElementsBuilder(
           int index) {
         return internalGetOtherElementsFieldBuilder().getBuilder(index);
       }
+
       /** <code>repeated .Payload otherElements = 7;</code> */
       public org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder getOtherElementsOrBuilder(
           int index) {
@@ -3417,6 +3557,7 @@ public final class ReplicatedEventSourcing {
           return otherElementsBuilder_.getMessageOrBuilder(index);
         }
       }
+
       /** <code>repeated .Payload otherElements = 7;</code> */
       public java.util.List<? extends org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder>
           getOtherElementsOrBuilderList() {
@@ -3426,11 +3567,13 @@ public final class ReplicatedEventSourcing {
           return java.util.Collections.unmodifiableList(otherElements_);
         }
       }
+
       /** <code>repeated .Payload otherElements = 7;</code> */
       public org.apache.pekko.remote.ContainerFormats.Payload.Builder addOtherElementsBuilder() {
         return internalGetOtherElementsFieldBuilder()
             .addBuilder(org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance());
       }
+
       /** <code>repeated .Payload otherElements = 7;</code> */
       public org.apache.pekko.remote.ContainerFormats.Payload.Builder addOtherElementsBuilder(
           int index) {
@@ -3438,6 +3581,7 @@ public final class ReplicatedEventSourcing {
             .addBuilder(
                 index, org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance());
       }
+
       /** <code>repeated .Payload otherElements = 7;</code> */
       public java.util.List<org.apache.pekko.remote.ContainerFormats.Payload.Builder>
           getOtherElementsBuilderList() {
@@ -3531,22 +3675,27 @@ public final class ReplicatedEventSourcing {
             org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
                 .Entry>
         getEntriesList();
+
     /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
     org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup.Entry
         getEntries(int index);
+
     /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
     int getEntriesCount();
+
     /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
     java.util.List<
             ? extends
                 org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
                     .ORSetDeltaGroup.EntryOrBuilder>
         getEntriesOrBuilderList();
+
     /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
     org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
             .EntryOrBuilder
         getEntriesOrBuilder(int index);
   }
+
   /** Protobuf type {@code ORSetDeltaGroup} */
   public static final class ORSetDeltaGroup
       extends org.apache.pekko.protobufv3.internal.GeneratedMessage
@@ -3564,6 +3713,7 @@ public final class ReplicatedEventSourcing {
           /* suffix= */ "",
           ORSetDeltaGroup.class.getName());
     }
+
     // Use ORSetDeltaGroup.newBuilder() to construct.
     private ORSetDeltaGroup(
         org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
@@ -3603,6 +3753,7 @@ public final class ReplicatedEventSourcing {
        * @return Whether the operation field is set.
        */
       boolean hasOperation();
+
       /**
        * <code>required .ORSetDeltaOp operation = 1;</code>
        *
@@ -3617,6 +3768,7 @@ public final class ReplicatedEventSourcing {
        * @return Whether the underlying field is set.
        */
       boolean hasUnderlying();
+
       /**
        * <code>required .ORSet underlying = 2;</code>
        *
@@ -3624,10 +3776,12 @@ public final class ReplicatedEventSourcing {
        */
       org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
           getUnderlying();
+
       /** <code>required .ORSet underlying = 2;</code> */
       org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetOrBuilder
           getUnderlyingOrBuilder();
     }
+
     /** Protobuf type {@code ORSetDeltaGroup.Entry} */
     public static final class Entry extends org.apache.pekko.protobufv3.internal.GeneratedMessage
         implements
@@ -3644,6 +3798,7 @@ public final class ReplicatedEventSourcing {
             /* suffix= */ "",
             Entry.class.getName());
       }
+
       // Use Entry.newBuilder() to construct.
       private Entry(org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
         super(builder);
@@ -3674,6 +3829,7 @@ public final class ReplicatedEventSourcing {
       private int bitField0_;
       public static final int OPERATION_FIELD_NUMBER = 1;
       private int operation_ = 0;
+
       /**
        * <code>required .ORSetDeltaOp operation = 1;</code>
        *
@@ -3683,6 +3839,7 @@ public final class ReplicatedEventSourcing {
       public boolean hasOperation() {
         return ((bitField0_ & 0x00000001) != 0);
       }
+
       /**
        * <code>required .ORSetDeltaOp operation = 1;</code>
        *
@@ -3704,6 +3861,7 @@ public final class ReplicatedEventSourcing {
       public static final int UNDERLYING_FIELD_NUMBER = 2;
       private org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
           underlying_;
+
       /**
        * <code>required .ORSet underlying = 2;</code>
        *
@@ -3713,6 +3871,7 @@ public final class ReplicatedEventSourcing {
       public boolean hasUnderlying() {
         return ((bitField0_ & 0x00000002) != 0);
       }
+
       /**
        * <code>required .ORSet underlying = 2;</code>
        *
@@ -3726,6 +3885,7 @@ public final class ReplicatedEventSourcing {
                 .getDefaultInstance()
             : underlying_;
       }
+
       /** <code>required .ORSet underlying = 2;</code> */
       @java.lang.Override
       public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetOrBuilder
@@ -3969,6 +4129,7 @@ public final class ReplicatedEventSourcing {
         Builder builder = new Builder(parent);
         return builder;
       }
+
       /** Protobuf type {@code ORSetDeltaGroup.Entry} */
       public static final class Builder
           extends org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder>
@@ -4193,6 +4354,7 @@ public final class ReplicatedEventSourcing {
         private int bitField0_;
 
         private int operation_ = 0;
+
         /**
          * <code>required .ORSetDeltaOp operation = 1;</code>
          *
@@ -4202,6 +4364,7 @@ public final class ReplicatedEventSourcing {
         public boolean hasOperation() {
           return ((bitField0_ & 0x00000001) != 0);
         }
+
         /**
          * <code>required .ORSetDeltaOp operation = 1;</code>
          *
@@ -4219,6 +4382,7 @@ public final class ReplicatedEventSourcing {
                   .ORSetDeltaOp.Add
               : result;
         }
+
         /**
          * <code>required .ORSetDeltaOp operation = 1;</code>
          *
@@ -4236,6 +4400,7 @@ public final class ReplicatedEventSourcing {
           onChanged();
           return this;
         }
+
         /**
          * <code>required .ORSetDeltaOp operation = 1;</code>
          *
@@ -4257,6 +4422,7 @@ public final class ReplicatedEventSourcing {
                 org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
                     .ORSetOrBuilder>
             underlyingBuilder_;
+
         /**
          * <code>required .ORSet underlying = 2;</code>
          *
@@ -4265,6 +4431,7 @@ public final class ReplicatedEventSourcing {
         public boolean hasUnderlying() {
           return ((bitField0_ & 0x00000002) != 0);
         }
+
         /**
          * <code>required .ORSet underlying = 2;</code>
          *
@@ -4281,6 +4448,7 @@ public final class ReplicatedEventSourcing {
             return underlyingBuilder_.getMessage();
           }
         }
+
         /** <code>required .ORSet underlying = 2;</code> */
         public Builder setUnderlying(
             org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet value) {
@@ -4296,6 +4464,7 @@ public final class ReplicatedEventSourcing {
           onChanged();
           return this;
         }
+
         /** <code>required .ORSet underlying = 2;</code> */
         public Builder setUnderlying(
             org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet.Builder
@@ -4309,6 +4478,7 @@ public final class ReplicatedEventSourcing {
           onChanged();
           return this;
         }
+
         /** <code>required .ORSet underlying = 2;</code> */
         public Builder mergeUnderlying(
             org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet value) {
@@ -4331,6 +4501,7 @@ public final class ReplicatedEventSourcing {
           }
           return this;
         }
+
         /** <code>required .ORSet underlying = 2;</code> */
         public Builder clearUnderlying() {
           bitField0_ = (bitField0_ & ~0x00000002);
@@ -4342,6 +4513,7 @@ public final class ReplicatedEventSourcing {
           onChanged();
           return this;
         }
+
         /** <code>required .ORSet underlying = 2;</code> */
         public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet
                 .Builder
@@ -4350,6 +4522,7 @@ public final class ReplicatedEventSourcing {
           onChanged();
           return internalGetUnderlyingFieldBuilder().getBuilder();
         }
+
         /** <code>required .ORSet underlying = 2;</code> */
         public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
                 .ORSetOrBuilder
@@ -4363,6 +4536,7 @@ public final class ReplicatedEventSourcing {
                 : underlying_;
           }
         }
+
         /** <code>required .ORSet underlying = 2;</code> */
         private org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
                 org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSet,
@@ -4451,6 +4625,7 @@ public final class ReplicatedEventSourcing {
             org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
                 .Entry>
         entries_;
+
     /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
     @java.lang.Override
     public java.util.List<
@@ -4459,6 +4634,7 @@ public final class ReplicatedEventSourcing {
         getEntriesList() {
       return entries_;
     }
+
     /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
     @java.lang.Override
     public java.util.List<
@@ -4468,11 +4644,13 @@ public final class ReplicatedEventSourcing {
         getEntriesOrBuilderList() {
       return entries_;
     }
+
     /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
     @java.lang.Override
     public int getEntriesCount() {
       return entries_.size();
     }
+
     /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
     @java.lang.Override
     public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
@@ -4480,6 +4658,7 @@ public final class ReplicatedEventSourcing {
         getEntries(int index) {
       return entries_.get(index);
     }
+
     /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
     @java.lang.Override
     public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
@@ -4695,6 +4874,7 @@ public final class ReplicatedEventSourcing {
       Builder builder = new Builder(parent);
       return builder;
     }
+
     /** Protobuf type {@code ORSetDeltaGroup} */
     public static final class Builder
         extends org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder>
@@ -4955,6 +5135,7 @@ public final class ReplicatedEventSourcing {
           return entriesBuilder_.getMessageList();
         }
       }
+
       /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
       public int getEntriesCount() {
         if (entriesBuilder_ == null) {
@@ -4963,6 +5144,7 @@ public final class ReplicatedEventSourcing {
           return entriesBuilder_.getCount();
         }
       }
+
       /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
       public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
               .ORSetDeltaGroup.Entry
@@ -4973,6 +5155,7 @@ public final class ReplicatedEventSourcing {
           return entriesBuilder_.getMessage(index);
         }
       }
+
       /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
       public Builder setEntries(
           int index,
@@ -4991,6 +5174,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
       public Builder setEntries(
           int index,
@@ -5006,6 +5190,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
       public Builder addEntries(
           org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
@@ -5023,6 +5208,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
       public Builder addEntries(
           int index,
@@ -5041,6 +5227,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
       public Builder addEntries(
           org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.ORSetDeltaGroup
@@ -5055,6 +5242,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
       public Builder addEntries(
           int index,
@@ -5070,6 +5258,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
       public Builder addAllEntries(
           java.lang.Iterable<
@@ -5086,6 +5275,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
       public Builder clearEntries() {
         if (entriesBuilder_ == null) {
@@ -5097,6 +5287,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
       public Builder removeEntries(int index) {
         if (entriesBuilder_ == null) {
@@ -5108,12 +5299,14 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
       public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
               .ORSetDeltaGroup.Entry.Builder
           getEntriesBuilder(int index) {
         return internalGetEntriesFieldBuilder().getBuilder(index);
       }
+
       /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
       public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
               .ORSetDeltaGroup.EntryOrBuilder
@@ -5124,6 +5317,7 @@ public final class ReplicatedEventSourcing {
           return entriesBuilder_.getMessageOrBuilder(index);
         }
       }
+
       /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
       public java.util.List<
               ? extends
@@ -5136,6 +5330,7 @@ public final class ReplicatedEventSourcing {
           return java.util.Collections.unmodifiableList(entries_);
         }
       }
+
       /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
       public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
               .ORSetDeltaGroup.Entry.Builder
@@ -5145,6 +5340,7 @@ public final class ReplicatedEventSourcing {
                 org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
                     .ORSetDeltaGroup.Entry.getDefaultInstance());
       }
+
       /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
       public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
               .ORSetDeltaGroup.Entry.Builder
@@ -5155,6 +5351,7 @@ public final class ReplicatedEventSourcing {
                 org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
                     .ORSetDeltaGroup.Entry.getDefaultInstance());
       }
+
       /** <code>repeated .ORSetDeltaGroup.Entry entries = 1;</code> */
       public java.util.List<
               org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
@@ -5255,22 +5452,27 @@ public final class ReplicatedEventSourcing {
             org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
                 .Entry>
         getEntriesList();
+
     /** <code>repeated .VersionVector.Entry entries = 1;</code> */
     org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector.Entry
         getEntries(int index);
+
     /** <code>repeated .VersionVector.Entry entries = 1;</code> */
     int getEntriesCount();
+
     /** <code>repeated .VersionVector.Entry entries = 1;</code> */
     java.util.List<
             ? extends
                 org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
                     .VersionVector.EntryOrBuilder>
         getEntriesOrBuilderList();
+
     /** <code>repeated .VersionVector.Entry entries = 1;</code> */
     org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
             .EntryOrBuilder
         getEntriesOrBuilder(int index);
   }
+
   /** Protobuf type {@code VersionVector} */
   public static final class VersionVector
       extends org.apache.pekko.protobufv3.internal.GeneratedMessage
@@ -5288,6 +5490,7 @@ public final class ReplicatedEventSourcing {
           /* suffix= */ "",
           VersionVector.class.getName());
     }
+
     // Use VersionVector.newBuilder() to construct.
     private VersionVector(
         org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
@@ -5327,12 +5530,14 @@ public final class ReplicatedEventSourcing {
        * @return Whether the key field is set.
        */
       boolean hasKey();
+
       /**
        * <code>required string key = 1;</code>
        *
        * @return The key.
        */
       java.lang.String getKey();
+
       /**
        * <code>required string key = 1;</code>
        *
@@ -5346,6 +5551,7 @@ public final class ReplicatedEventSourcing {
        * @return Whether the version field is set.
        */
       boolean hasVersion();
+
       /**
        * <code>required int64 version = 2;</code>
        *
@@ -5353,6 +5559,7 @@ public final class ReplicatedEventSourcing {
        */
       long getVersion();
     }
+
     /** Protobuf type {@code VersionVector.Entry} */
     public static final class Entry extends org.apache.pekko.protobufv3.internal.GeneratedMessage
         implements
@@ -5369,6 +5576,7 @@ public final class ReplicatedEventSourcing {
             /* suffix= */ "",
             Entry.class.getName());
       }
+
       // Use Entry.newBuilder() to construct.
       private Entry(org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
         super(builder);
@@ -5401,6 +5609,7 @@ public final class ReplicatedEventSourcing {
 
       @SuppressWarnings("serial")
       private volatile java.lang.Object key_ = "";
+
       /**
        * <code>required string key = 1;</code>
        *
@@ -5410,6 +5619,7 @@ public final class ReplicatedEventSourcing {
       public boolean hasKey() {
         return ((bitField0_ & 0x00000001) != 0);
       }
+
       /**
        * <code>required string key = 1;</code>
        *
@@ -5430,6 +5640,7 @@ public final class ReplicatedEventSourcing {
           return s;
         }
       }
+
       /**
        * <code>required string key = 1;</code>
        *
@@ -5450,6 +5661,7 @@ public final class ReplicatedEventSourcing {
 
       public static final int VERSION_FIELD_NUMBER = 2;
       private long version_ = 0L;
+
       /**
        * <code>required int64 version = 2;</code>
        *
@@ -5459,6 +5671,7 @@ public final class ReplicatedEventSourcing {
       public boolean hasVersion() {
         return ((bitField0_ & 0x00000002) != 0);
       }
+
       /**
        * <code>required int64 version = 2;</code>
        *
@@ -5695,6 +5908,7 @@ public final class ReplicatedEventSourcing {
         Builder builder = new Builder(parent);
         return builder;
       }
+
       /** Protobuf type {@code VersionVector.Entry} */
       public static final class Builder
           extends org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder>
@@ -5893,6 +6107,7 @@ public final class ReplicatedEventSourcing {
         private int bitField0_;
 
         private java.lang.Object key_ = "";
+
         /**
          * <code>required string key = 1;</code>
          *
@@ -5901,6 +6116,7 @@ public final class ReplicatedEventSourcing {
         public boolean hasKey() {
           return ((bitField0_ & 0x00000001) != 0);
         }
+
         /**
          * <code>required string key = 1;</code>
          *
@@ -5920,6 +6136,7 @@ public final class ReplicatedEventSourcing {
             return (java.lang.String) ref;
           }
         }
+
         /**
          * <code>required string key = 1;</code>
          *
@@ -5937,6 +6154,7 @@ public final class ReplicatedEventSourcing {
             return (org.apache.pekko.protobufv3.internal.ByteString) ref;
           }
         }
+
         /**
          * <code>required string key = 1;</code>
          *
@@ -5952,6 +6170,7 @@ public final class ReplicatedEventSourcing {
           onChanged();
           return this;
         }
+
         /**
          * <code>required string key = 1;</code>
          *
@@ -5963,6 +6182,7 @@ public final class ReplicatedEventSourcing {
           onChanged();
           return this;
         }
+
         /**
          * <code>required string key = 1;</code>
          *
@@ -5980,6 +6200,7 @@ public final class ReplicatedEventSourcing {
         }
 
         private long version_;
+
         /**
          * <code>required int64 version = 2;</code>
          *
@@ -5989,6 +6210,7 @@ public final class ReplicatedEventSourcing {
         public boolean hasVersion() {
           return ((bitField0_ & 0x00000002) != 0);
         }
+
         /**
          * <code>required int64 version = 2;</code>
          *
@@ -5998,6 +6220,7 @@ public final class ReplicatedEventSourcing {
         public long getVersion() {
           return version_;
         }
+
         /**
          * <code>required int64 version = 2;</code>
          *
@@ -6011,6 +6234,7 @@ public final class ReplicatedEventSourcing {
           onChanged();
           return this;
         }
+
         /**
          * <code>required int64 version = 2;</code>
          *
@@ -6090,6 +6314,7 @@ public final class ReplicatedEventSourcing {
             org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
                 .Entry>
         entries_;
+
     /** <code>repeated .VersionVector.Entry entries = 1;</code> */
     @java.lang.Override
     public java.util.List<
@@ -6098,6 +6323,7 @@ public final class ReplicatedEventSourcing {
         getEntriesList() {
       return entries_;
     }
+
     /** <code>repeated .VersionVector.Entry entries = 1;</code> */
     @java.lang.Override
     public java.util.List<
@@ -6107,11 +6333,13 @@ public final class ReplicatedEventSourcing {
         getEntriesOrBuilderList() {
       return entries_;
     }
+
     /** <code>repeated .VersionVector.Entry entries = 1;</code> */
     @java.lang.Override
     public int getEntriesCount() {
       return entries_.size();
     }
+
     /** <code>repeated .VersionVector.Entry entries = 1;</code> */
     @java.lang.Override
     public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
@@ -6119,6 +6347,7 @@ public final class ReplicatedEventSourcing {
         getEntries(int index) {
       return entries_.get(index);
     }
+
     /** <code>repeated .VersionVector.Entry entries = 1;</code> */
     @java.lang.Override
     public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
@@ -6331,6 +6560,7 @@ public final class ReplicatedEventSourcing {
       Builder builder = new Builder(parent);
       return builder;
     }
+
     /** Protobuf type {@code VersionVector} */
     public static final class Builder
         extends org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder>
@@ -6588,6 +6818,7 @@ public final class ReplicatedEventSourcing {
           return entriesBuilder_.getMessageList();
         }
       }
+
       /** <code>repeated .VersionVector.Entry entries = 1;</code> */
       public int getEntriesCount() {
         if (entriesBuilder_ == null) {
@@ -6596,6 +6827,7 @@ public final class ReplicatedEventSourcing {
           return entriesBuilder_.getCount();
         }
       }
+
       /** <code>repeated .VersionVector.Entry entries = 1;</code> */
       public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
               .Entry
@@ -6606,6 +6838,7 @@ public final class ReplicatedEventSourcing {
           return entriesBuilder_.getMessage(index);
         }
       }
+
       /** <code>repeated .VersionVector.Entry entries = 1;</code> */
       public Builder setEntries(
           int index,
@@ -6624,6 +6857,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .VersionVector.Entry entries = 1;</code> */
       public Builder setEntries(
           int index,
@@ -6639,6 +6873,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .VersionVector.Entry entries = 1;</code> */
       public Builder addEntries(
           org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
@@ -6656,6 +6891,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .VersionVector.Entry entries = 1;</code> */
       public Builder addEntries(
           int index,
@@ -6674,6 +6910,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .VersionVector.Entry entries = 1;</code> */
       public Builder addEntries(
           org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
@@ -6688,6 +6925,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .VersionVector.Entry entries = 1;</code> */
       public Builder addEntries(
           int index,
@@ -6703,6 +6941,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .VersionVector.Entry entries = 1;</code> */
       public Builder addAllEntries(
           java.lang.Iterable<
@@ -6719,6 +6958,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .VersionVector.Entry entries = 1;</code> */
       public Builder clearEntries() {
         if (entriesBuilder_ == null) {
@@ -6730,6 +6970,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .VersionVector.Entry entries = 1;</code> */
       public Builder removeEntries(int index) {
         if (entriesBuilder_ == null) {
@@ -6741,12 +6982,14 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .VersionVector.Entry entries = 1;</code> */
       public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
               .Entry.Builder
           getEntriesBuilder(int index) {
         return internalGetEntriesFieldBuilder().getBuilder(index);
       }
+
       /** <code>repeated .VersionVector.Entry entries = 1;</code> */
       public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
               .EntryOrBuilder
@@ -6757,6 +7000,7 @@ public final class ReplicatedEventSourcing {
           return entriesBuilder_.getMessageOrBuilder(index);
         }
       }
+
       /** <code>repeated .VersionVector.Entry entries = 1;</code> */
       public java.util.List<
               ? extends
@@ -6769,6 +7013,7 @@ public final class ReplicatedEventSourcing {
           return java.util.Collections.unmodifiableList(entries_);
         }
       }
+
       /** <code>repeated .VersionVector.Entry entries = 1;</code> */
       public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
               .Entry.Builder
@@ -6778,6 +7023,7 @@ public final class ReplicatedEventSourcing {
                 org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
                     .VersionVector.Entry.getDefaultInstance());
       }
+
       /** <code>repeated .VersionVector.Entry entries = 1;</code> */
       public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
               .Entry.Builder
@@ -6788,6 +7034,7 @@ public final class ReplicatedEventSourcing {
                 org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
                     .VersionVector.Entry.getDefaultInstance());
       }
+
       /** <code>repeated .VersionVector.Entry entries = 1;</code> */
       public java.util.List<
               org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
@@ -6889,12 +7136,14 @@ public final class ReplicatedEventSourcing {
      * @return Whether the originReplica field is set.
      */
     boolean hasOriginReplica();
+
     /**
      * <code>required string originReplica = 1;</code>
      *
      * @return The originReplica.
      */
     java.lang.String getOriginReplica();
+
     /**
      * <code>required string originReplica = 1;</code>
      *
@@ -6908,6 +7157,7 @@ public final class ReplicatedEventSourcing {
      * @return Whether the originSequenceNr field is set.
      */
     boolean hasOriginSequenceNr();
+
     /**
      * <code>required int64 originSequenceNr = 2;</code>
      *
@@ -6921,6 +7171,7 @@ public final class ReplicatedEventSourcing {
      * @return Whether the versionVector field is set.
      */
     boolean hasVersionVector();
+
     /**
      * <code>required .VersionVector versionVector = 3;</code>
      *
@@ -6928,6 +7179,7 @@ public final class ReplicatedEventSourcing {
      */
     org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
         getVersionVector();
+
     /** <code>required .VersionVector versionVector = 3;</code> */
     org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder
         getVersionVectorOrBuilder();
@@ -6938,6 +7190,7 @@ public final class ReplicatedEventSourcing {
      * @return Whether the concurrent field is set.
      */
     boolean hasConcurrent();
+
     /**
      * <code>required bool concurrent = 4;</code>
      *
@@ -6945,6 +7198,7 @@ public final class ReplicatedEventSourcing {
      */
     boolean getConcurrent();
   }
+
   /** Protobuf type {@code ReplicatedEventMetadata} */
   public static final class ReplicatedEventMetadata
       extends org.apache.pekko.protobufv3.internal.GeneratedMessage
@@ -6962,6 +7216,7 @@ public final class ReplicatedEventSourcing {
           /* suffix= */ "",
           ReplicatedEventMetadata.class.getName());
     }
+
     // Use ReplicatedEventMetadata.newBuilder() to construct.
     private ReplicatedEventMetadata(
         org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
@@ -6995,6 +7250,7 @@ public final class ReplicatedEventSourcing {
 
     @SuppressWarnings("serial")
     private volatile java.lang.Object originReplica_ = "";
+
     /**
      * <code>required string originReplica = 1;</code>
      *
@@ -7004,6 +7260,7 @@ public final class ReplicatedEventSourcing {
     public boolean hasOriginReplica() {
       return ((bitField0_ & 0x00000001) != 0);
     }
+
     /**
      * <code>required string originReplica = 1;</code>
      *
@@ -7024,6 +7281,7 @@ public final class ReplicatedEventSourcing {
         return s;
       }
     }
+
     /**
      * <code>required string originReplica = 1;</code>
      *
@@ -7044,6 +7302,7 @@ public final class ReplicatedEventSourcing {
 
     public static final int ORIGINSEQUENCENR_FIELD_NUMBER = 2;
     private long originSequenceNr_ = 0L;
+
     /**
      * <code>required int64 originSequenceNr = 2;</code>
      *
@@ -7053,6 +7312,7 @@ public final class ReplicatedEventSourcing {
     public boolean hasOriginSequenceNr() {
       return ((bitField0_ & 0x00000002) != 0);
     }
+
     /**
      * <code>required int64 originSequenceNr = 2;</code>
      *
@@ -7066,6 +7326,7 @@ public final class ReplicatedEventSourcing {
     public static final int VERSIONVECTOR_FIELD_NUMBER = 3;
     private org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
         versionVector_;
+
     /**
      * <code>required .VersionVector versionVector = 3;</code>
      *
@@ -7075,6 +7336,7 @@ public final class ReplicatedEventSourcing {
     public boolean hasVersionVector() {
       return ((bitField0_ & 0x00000004) != 0);
     }
+
     /**
      * <code>required .VersionVector versionVector = 3;</code>
      *
@@ -7088,6 +7350,7 @@ public final class ReplicatedEventSourcing {
               .getDefaultInstance()
           : versionVector_;
     }
+
     /** <code>required .VersionVector versionVector = 3;</code> */
     @java.lang.Override
     public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
@@ -7101,6 +7364,7 @@ public final class ReplicatedEventSourcing {
 
     public static final int CONCURRENT_FIELD_NUMBER = 4;
     private boolean concurrent_ = false;
+
     /**
      * <code>required bool concurrent = 4;</code>
      *
@@ -7110,6 +7374,7 @@ public final class ReplicatedEventSourcing {
     public boolean hasConcurrent() {
       return ((bitField0_ & 0x00000008) != 0);
     }
+
     /**
      * <code>required bool concurrent = 4;</code>
      *
@@ -7398,6 +7663,7 @@ public final class ReplicatedEventSourcing {
       Builder builder = new Builder(parent);
       return builder;
     }
+
     /** Protobuf type {@code ReplicatedEventMetadata} */
     public static final class Builder
         extends org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder>
@@ -7647,6 +7913,7 @@ public final class ReplicatedEventSourcing {
       private int bitField0_;
 
       private java.lang.Object originReplica_ = "";
+
       /**
        * <code>required string originReplica = 1;</code>
        *
@@ -7655,6 +7922,7 @@ public final class ReplicatedEventSourcing {
       public boolean hasOriginReplica() {
         return ((bitField0_ & 0x00000001) != 0);
       }
+
       /**
        * <code>required string originReplica = 1;</code>
        *
@@ -7674,6 +7942,7 @@ public final class ReplicatedEventSourcing {
           return (java.lang.String) ref;
         }
       }
+
       /**
        * <code>required string originReplica = 1;</code>
        *
@@ -7690,6 +7959,7 @@ public final class ReplicatedEventSourcing {
           return (org.apache.pekko.protobufv3.internal.ByteString) ref;
         }
       }
+
       /**
        * <code>required string originReplica = 1;</code>
        *
@@ -7705,6 +7975,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /**
        * <code>required string originReplica = 1;</code>
        *
@@ -7716,6 +7987,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /**
        * <code>required string originReplica = 1;</code>
        *
@@ -7733,6 +8005,7 @@ public final class ReplicatedEventSourcing {
       }
 
       private long originSequenceNr_;
+
       /**
        * <code>required int64 originSequenceNr = 2;</code>
        *
@@ -7742,6 +8015,7 @@ public final class ReplicatedEventSourcing {
       public boolean hasOriginSequenceNr() {
         return ((bitField0_ & 0x00000002) != 0);
       }
+
       /**
        * <code>required int64 originSequenceNr = 2;</code>
        *
@@ -7751,6 +8025,7 @@ public final class ReplicatedEventSourcing {
       public long getOriginSequenceNr() {
         return originSequenceNr_;
       }
+
       /**
        * <code>required int64 originSequenceNr = 2;</code>
        *
@@ -7764,6 +8039,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /**
        * <code>required int64 originSequenceNr = 2;</code>
        *
@@ -7786,6 +8062,7 @@ public final class ReplicatedEventSourcing {
               org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
                   .VersionVectorOrBuilder>
           versionVectorBuilder_;
+
       /**
        * <code>required .VersionVector versionVector = 3;</code>
        *
@@ -7794,6 +8071,7 @@ public final class ReplicatedEventSourcing {
       public boolean hasVersionVector() {
         return ((bitField0_ & 0x00000004) != 0);
       }
+
       /**
        * <code>required .VersionVector versionVector = 3;</code>
        *
@@ -7810,6 +8088,7 @@ public final class ReplicatedEventSourcing {
           return versionVectorBuilder_.getMessage();
         }
       }
+
       /** <code>required .VersionVector versionVector = 3;</code> */
       public Builder setVersionVector(
           org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
@@ -7826,6 +8105,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /** <code>required .VersionVector versionVector = 3;</code> */
       public Builder setVersionVector(
           org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
@@ -7840,6 +8120,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /** <code>required .VersionVector versionVector = 3;</code> */
       public Builder mergeVersionVector(
           org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
@@ -7863,6 +8144,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>required .VersionVector versionVector = 3;</code> */
       public Builder clearVersionVector() {
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -7874,6 +8156,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /** <code>required .VersionVector versionVector = 3;</code> */
       public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
               .Builder
@@ -7882,6 +8165,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return internalGetVersionVectorFieldBuilder().getBuilder();
       }
+
       /** <code>required .VersionVector versionVector = 3;</code> */
       public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
               .VersionVectorOrBuilder
@@ -7895,6 +8179,7 @@ public final class ReplicatedEventSourcing {
               : versionVector_;
         }
       }
+
       /** <code>required .VersionVector versionVector = 3;</code> */
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
               org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
@@ -7920,6 +8205,7 @@ public final class ReplicatedEventSourcing {
       }
 
       private boolean concurrent_;
+
       /**
        * <code>required bool concurrent = 4;</code>
        *
@@ -7929,6 +8215,7 @@ public final class ReplicatedEventSourcing {
       public boolean hasConcurrent() {
         return ((bitField0_ & 0x00000008) != 0);
       }
+
       /**
        * <code>required bool concurrent = 4;</code>
        *
@@ -7938,6 +8225,7 @@ public final class ReplicatedEventSourcing {
       public boolean getConcurrent() {
         return concurrent_;
       }
+
       /**
        * <code>required bool concurrent = 4;</code>
        *
@@ -7951,6 +8239,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /**
        * <code>required bool concurrent = 4;</code>
        *
@@ -8035,6 +8324,7 @@ public final class ReplicatedEventSourcing {
      * @return Whether the version field is set.
      */
     boolean hasVersion();
+
     /**
      * <code>required .VersionVector version = 1;</code>
      *
@@ -8042,6 +8332,7 @@ public final class ReplicatedEventSourcing {
      */
     org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
         getVersion();
+
     /** <code>required .VersionVector version = 1;</code> */
     org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder
         getVersionOrBuilder();
@@ -8051,23 +8342,28 @@ public final class ReplicatedEventSourcing {
             org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
                 .ReplicatedSnapshotMetadata.Seen>
         getSeenPerReplicaList();
+
     /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
     org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
             .ReplicatedSnapshotMetadata.Seen
         getSeenPerReplica(int index);
+
     /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
     int getSeenPerReplicaCount();
+
     /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
     java.util.List<
             ? extends
                 org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
                     .ReplicatedSnapshotMetadata.SeenOrBuilder>
         getSeenPerReplicaOrBuilderList();
+
     /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
     org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
             .ReplicatedSnapshotMetadata.SeenOrBuilder
         getSeenPerReplicaOrBuilder(int index);
   }
+
   /** Protobuf type {@code ReplicatedSnapshotMetadata} */
   public static final class ReplicatedSnapshotMetadata
       extends org.apache.pekko.protobufv3.internal.GeneratedMessage
@@ -8085,6 +8381,7 @@ public final class ReplicatedEventSourcing {
           /* suffix= */ "",
           ReplicatedSnapshotMetadata.class.getName());
     }
+
     // Use ReplicatedSnapshotMetadata.newBuilder() to construct.
     private ReplicatedSnapshotMetadata(
         org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
@@ -8124,12 +8421,14 @@ public final class ReplicatedEventSourcing {
        * @return Whether the replicaId field is set.
        */
       boolean hasReplicaId();
+
       /**
        * <code>required string replicaId = 1;</code>
        *
        * @return The replicaId.
        */
       java.lang.String getReplicaId();
+
       /**
        * <code>required string replicaId = 1;</code>
        *
@@ -8143,6 +8442,7 @@ public final class ReplicatedEventSourcing {
        * @return Whether the sequenceNr field is set.
        */
       boolean hasSequenceNr();
+
       /**
        * <code>required int64 sequenceNr = 2;</code>
        *
@@ -8150,6 +8450,7 @@ public final class ReplicatedEventSourcing {
        */
       long getSequenceNr();
     }
+
     /** Protobuf type {@code ReplicatedSnapshotMetadata.Seen} */
     public static final class Seen extends org.apache.pekko.protobufv3.internal.GeneratedMessage
         implements
@@ -8166,6 +8467,7 @@ public final class ReplicatedEventSourcing {
             /* suffix= */ "",
             Seen.class.getName());
       }
+
       // Use Seen.newBuilder() to construct.
       private Seen(org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
         super(builder);
@@ -8198,6 +8500,7 @@ public final class ReplicatedEventSourcing {
 
       @SuppressWarnings("serial")
       private volatile java.lang.Object replicaId_ = "";
+
       /**
        * <code>required string replicaId = 1;</code>
        *
@@ -8207,6 +8510,7 @@ public final class ReplicatedEventSourcing {
       public boolean hasReplicaId() {
         return ((bitField0_ & 0x00000001) != 0);
       }
+
       /**
        * <code>required string replicaId = 1;</code>
        *
@@ -8227,6 +8531,7 @@ public final class ReplicatedEventSourcing {
           return s;
         }
       }
+
       /**
        * <code>required string replicaId = 1;</code>
        *
@@ -8247,6 +8552,7 @@ public final class ReplicatedEventSourcing {
 
       public static final int SEQUENCENR_FIELD_NUMBER = 2;
       private long sequenceNr_ = 0L;
+
       /**
        * <code>required int64 sequenceNr = 2;</code>
        *
@@ -8256,6 +8562,7 @@ public final class ReplicatedEventSourcing {
       public boolean hasSequenceNr() {
         return ((bitField0_ & 0x00000002) != 0);
       }
+
       /**
        * <code>required int64 sequenceNr = 2;</code>
        *
@@ -8497,6 +8804,7 @@ public final class ReplicatedEventSourcing {
         Builder builder = new Builder(parent);
         return builder;
       }
+
       /** Protobuf type {@code ReplicatedSnapshotMetadata.Seen} */
       public static final class Builder
           extends org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder>
@@ -8695,6 +9003,7 @@ public final class ReplicatedEventSourcing {
         private int bitField0_;
 
         private java.lang.Object replicaId_ = "";
+
         /**
          * <code>required string replicaId = 1;</code>
          *
@@ -8703,6 +9012,7 @@ public final class ReplicatedEventSourcing {
         public boolean hasReplicaId() {
           return ((bitField0_ & 0x00000001) != 0);
         }
+
         /**
          * <code>required string replicaId = 1;</code>
          *
@@ -8722,6 +9032,7 @@ public final class ReplicatedEventSourcing {
             return (java.lang.String) ref;
           }
         }
+
         /**
          * <code>required string replicaId = 1;</code>
          *
@@ -8739,6 +9050,7 @@ public final class ReplicatedEventSourcing {
             return (org.apache.pekko.protobufv3.internal.ByteString) ref;
           }
         }
+
         /**
          * <code>required string replicaId = 1;</code>
          *
@@ -8754,6 +9066,7 @@ public final class ReplicatedEventSourcing {
           onChanged();
           return this;
         }
+
         /**
          * <code>required string replicaId = 1;</code>
          *
@@ -8765,6 +9078,7 @@ public final class ReplicatedEventSourcing {
           onChanged();
           return this;
         }
+
         /**
          * <code>required string replicaId = 1;</code>
          *
@@ -8782,6 +9096,7 @@ public final class ReplicatedEventSourcing {
         }
 
         private long sequenceNr_;
+
         /**
          * <code>required int64 sequenceNr = 2;</code>
          *
@@ -8791,6 +9106,7 @@ public final class ReplicatedEventSourcing {
         public boolean hasSequenceNr() {
           return ((bitField0_ & 0x00000002) != 0);
         }
+
         /**
          * <code>required int64 sequenceNr = 2;</code>
          *
@@ -8800,6 +9116,7 @@ public final class ReplicatedEventSourcing {
         public long getSequenceNr() {
           return sequenceNr_;
         }
+
         /**
          * <code>required int64 sequenceNr = 2;</code>
          *
@@ -8813,6 +9130,7 @@ public final class ReplicatedEventSourcing {
           onChanged();
           return this;
         }
+
         /**
          * <code>required int64 sequenceNr = 2;</code>
          *
@@ -8889,6 +9207,7 @@ public final class ReplicatedEventSourcing {
     public static final int VERSION_FIELD_NUMBER = 1;
     private org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
         version_;
+
     /**
      * <code>required .VersionVector version = 1;</code>
      *
@@ -8898,6 +9217,7 @@ public final class ReplicatedEventSourcing {
     public boolean hasVersion() {
       return ((bitField0_ & 0x00000001) != 0);
     }
+
     /**
      * <code>required .VersionVector version = 1;</code>
      *
@@ -8911,6 +9231,7 @@ public final class ReplicatedEventSourcing {
               .getDefaultInstance()
           : version_;
     }
+
     /** <code>required .VersionVector version = 1;</code> */
     @java.lang.Override
     public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
@@ -8929,6 +9250,7 @@ public final class ReplicatedEventSourcing {
             org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
                 .ReplicatedSnapshotMetadata.Seen>
         seenPerReplica_;
+
     /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
     @java.lang.Override
     public java.util.List<
@@ -8937,6 +9259,7 @@ public final class ReplicatedEventSourcing {
         getSeenPerReplicaList() {
       return seenPerReplica_;
     }
+
     /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
     @java.lang.Override
     public java.util.List<
@@ -8946,11 +9269,13 @@ public final class ReplicatedEventSourcing {
         getSeenPerReplicaOrBuilderList() {
       return seenPerReplica_;
     }
+
     /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
     @java.lang.Override
     public int getSeenPerReplicaCount() {
       return seenPerReplica_.size();
     }
+
     /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
     @java.lang.Override
     public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
@@ -8958,6 +9283,7 @@ public final class ReplicatedEventSourcing {
         getSeenPerReplica(int index) {
       return seenPerReplica_.get(index);
     }
+
     /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
     @java.lang.Override
     public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
@@ -9199,6 +9525,7 @@ public final class ReplicatedEventSourcing {
       Builder builder = new Builder(parent);
       return builder;
     }
+
     /** Protobuf type {@code ReplicatedSnapshotMetadata} */
     public static final class Builder
         extends org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder>
@@ -9476,6 +9803,7 @@ public final class ReplicatedEventSourcing {
               org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
                   .VersionVectorOrBuilder>
           versionBuilder_;
+
       /**
        * <code>required .VersionVector version = 1;</code>
        *
@@ -9484,6 +9812,7 @@ public final class ReplicatedEventSourcing {
       public boolean hasVersion() {
         return ((bitField0_ & 0x00000001) != 0);
       }
+
       /**
        * <code>required .VersionVector version = 1;</code>
        *
@@ -9500,6 +9829,7 @@ public final class ReplicatedEventSourcing {
           return versionBuilder_.getMessage();
         }
       }
+
       /** <code>required .VersionVector version = 1;</code> */
       public Builder setVersion(
           org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
@@ -9516,6 +9846,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /** <code>required .VersionVector version = 1;</code> */
       public Builder setVersion(
           org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
@@ -9530,6 +9861,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /** <code>required .VersionVector version = 1;</code> */
       public Builder mergeVersion(
           org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
@@ -9553,6 +9885,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>required .VersionVector version = 1;</code> */
       public Builder clearVersion() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -9564,6 +9897,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /** <code>required .VersionVector version = 1;</code> */
       public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
               .Builder
@@ -9572,6 +9906,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return internalGetVersionFieldBuilder().getBuilder();
       }
+
       /** <code>required .VersionVector version = 1;</code> */
       public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
               .VersionVectorOrBuilder
@@ -9585,6 +9920,7 @@ public final class ReplicatedEventSourcing {
               : version_;
         }
       }
+
       /** <code>required .VersionVector version = 1;</code> */
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
               org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
@@ -9643,6 +9979,7 @@ public final class ReplicatedEventSourcing {
           return seenPerReplicaBuilder_.getMessageList();
         }
       }
+
       /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
       public int getSeenPerReplicaCount() {
         if (seenPerReplicaBuilder_ == null) {
@@ -9651,6 +9988,7 @@ public final class ReplicatedEventSourcing {
           return seenPerReplicaBuilder_.getCount();
         }
       }
+
       /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
       public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
               .ReplicatedSnapshotMetadata.Seen
@@ -9661,6 +9999,7 @@ public final class ReplicatedEventSourcing {
           return seenPerReplicaBuilder_.getMessage(index);
         }
       }
+
       /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
       public Builder setSeenPerReplica(
           int index,
@@ -9679,6 +10018,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
       public Builder setSeenPerReplica(
           int index,
@@ -9694,6 +10034,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
       public Builder addSeenPerReplica(
           org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
@@ -9711,6 +10052,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
       public Builder addSeenPerReplica(
           int index,
@@ -9729,6 +10071,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
       public Builder addSeenPerReplica(
           org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
@@ -9743,6 +10086,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
       public Builder addSeenPerReplica(
           int index,
@@ -9758,6 +10102,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
       public Builder addAllSeenPerReplica(
           java.lang.Iterable<
@@ -9775,6 +10120,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
       public Builder clearSeenPerReplica() {
         if (seenPerReplicaBuilder_ == null) {
@@ -9786,6 +10132,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
       public Builder removeSeenPerReplica(int index) {
         if (seenPerReplicaBuilder_ == null) {
@@ -9797,12 +10144,14 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
       public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
               .ReplicatedSnapshotMetadata.Seen.Builder
           getSeenPerReplicaBuilder(int index) {
         return internalGetSeenPerReplicaFieldBuilder().getBuilder(index);
       }
+
       /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
       public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
               .ReplicatedSnapshotMetadata.SeenOrBuilder
@@ -9813,6 +10162,7 @@ public final class ReplicatedEventSourcing {
           return seenPerReplicaBuilder_.getMessageOrBuilder(index);
         }
       }
+
       /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
       public java.util.List<
               ? extends
@@ -9825,6 +10175,7 @@ public final class ReplicatedEventSourcing {
           return java.util.Collections.unmodifiableList(seenPerReplica_);
         }
       }
+
       /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
       public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
               .ReplicatedSnapshotMetadata.Seen.Builder
@@ -9834,6 +10185,7 @@ public final class ReplicatedEventSourcing {
                 org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
                     .ReplicatedSnapshotMetadata.Seen.getDefaultInstance());
       }
+
       /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
       public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
               .ReplicatedSnapshotMetadata.Seen.Builder
@@ -9844,6 +10196,7 @@ public final class ReplicatedEventSourcing {
                 org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
                     .ReplicatedSnapshotMetadata.Seen.getDefaultInstance());
       }
+
       /** <code>repeated .ReplicatedSnapshotMetadata.Seen seenPerReplica = 2;</code> */
       public java.util.List<
               org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
@@ -9951,12 +10304,14 @@ public final class ReplicatedEventSourcing {
      * @return Whether the replicaId field is set.
      */
     boolean hasReplicaId();
+
     /**
      * <code>optional string replicaId = 1;</code>
      *
      * @return The replicaId.
      */
     java.lang.String getReplicaId();
+
     /**
      * <code>optional string replicaId = 1;</code>
      *
@@ -9970,6 +10325,7 @@ public final class ReplicatedEventSourcing {
      * @return Whether the versionVector field is set.
      */
     boolean hasVersionVector();
+
     /**
      * <code>optional .VersionVector versionVector = 2;</code>
      *
@@ -9977,10 +10333,12 @@ public final class ReplicatedEventSourcing {
      */
     org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
         getVersionVector();
+
     /** <code>optional .VersionVector versionVector = 2;</code> */
     org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVectorOrBuilder
         getVersionVectorOrBuilder();
   }
+
   /** Protobuf type {@code ReplicatedPublishedEventMetaData} */
   public static final class ReplicatedPublishedEventMetaData
       extends org.apache.pekko.protobufv3.internal.GeneratedMessage
@@ -9998,6 +10356,7 @@ public final class ReplicatedEventSourcing {
           /* suffix= */ "",
           ReplicatedPublishedEventMetaData.class.getName());
     }
+
     // Use ReplicatedPublishedEventMetaData.newBuilder() to construct.
     private ReplicatedPublishedEventMetaData(
         org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
@@ -10031,6 +10390,7 @@ public final class ReplicatedEventSourcing {
 
     @SuppressWarnings("serial")
     private volatile java.lang.Object replicaId_ = "";
+
     /**
      * <code>optional string replicaId = 1;</code>
      *
@@ -10040,6 +10400,7 @@ public final class ReplicatedEventSourcing {
     public boolean hasReplicaId() {
       return ((bitField0_ & 0x00000001) != 0);
     }
+
     /**
      * <code>optional string replicaId = 1;</code>
      *
@@ -10060,6 +10421,7 @@ public final class ReplicatedEventSourcing {
         return s;
       }
     }
+
     /**
      * <code>optional string replicaId = 1;</code>
      *
@@ -10081,6 +10443,7 @@ public final class ReplicatedEventSourcing {
     public static final int VERSIONVECTOR_FIELD_NUMBER = 2;
     private org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
         versionVector_;
+
     /**
      * <code>optional .VersionVector versionVector = 2;</code>
      *
@@ -10090,6 +10453,7 @@ public final class ReplicatedEventSourcing {
     public boolean hasVersionVector() {
       return ((bitField0_ & 0x00000002) != 0);
     }
+
     /**
      * <code>optional .VersionVector versionVector = 2;</code>
      *
@@ -10103,6 +10467,7 @@ public final class ReplicatedEventSourcing {
               .getDefaultInstance()
           : versionVector_;
     }
+
     /** <code>optional .VersionVector versionVector = 2;</code> */
     @java.lang.Override
     public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
@@ -10341,6 +10706,7 @@ public final class ReplicatedEventSourcing {
       Builder builder = new Builder(parent);
       return builder;
     }
+
     /** Protobuf type {@code ReplicatedPublishedEventMetaData} */
     public static final class Builder
         extends org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder>
@@ -10552,6 +10918,7 @@ public final class ReplicatedEventSourcing {
       private int bitField0_;
 
       private java.lang.Object replicaId_ = "";
+
       /**
        * <code>optional string replicaId = 1;</code>
        *
@@ -10560,6 +10927,7 @@ public final class ReplicatedEventSourcing {
       public boolean hasReplicaId() {
         return ((bitField0_ & 0x00000001) != 0);
       }
+
       /**
        * <code>optional string replicaId = 1;</code>
        *
@@ -10579,6 +10947,7 @@ public final class ReplicatedEventSourcing {
           return (java.lang.String) ref;
         }
       }
+
       /**
        * <code>optional string replicaId = 1;</code>
        *
@@ -10595,6 +10964,7 @@ public final class ReplicatedEventSourcing {
           return (org.apache.pekko.protobufv3.internal.ByteString) ref;
         }
       }
+
       /**
        * <code>optional string replicaId = 1;</code>
        *
@@ -10610,6 +10980,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /**
        * <code>optional string replicaId = 1;</code>
        *
@@ -10621,6 +10992,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /**
        * <code>optional string replicaId = 1;</code>
        *
@@ -10647,6 +11019,7 @@ public final class ReplicatedEventSourcing {
               org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
                   .VersionVectorOrBuilder>
           versionVectorBuilder_;
+
       /**
        * <code>optional .VersionVector versionVector = 2;</code>
        *
@@ -10655,6 +11028,7 @@ public final class ReplicatedEventSourcing {
       public boolean hasVersionVector() {
         return ((bitField0_ & 0x00000002) != 0);
       }
+
       /**
        * <code>optional .VersionVector versionVector = 2;</code>
        *
@@ -10671,6 +11045,7 @@ public final class ReplicatedEventSourcing {
           return versionVectorBuilder_.getMessage();
         }
       }
+
       /** <code>optional .VersionVector versionVector = 2;</code> */
       public Builder setVersionVector(
           org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
@@ -10687,6 +11062,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /** <code>optional .VersionVector versionVector = 2;</code> */
       public Builder setVersionVector(
           org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
@@ -10701,6 +11077,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /** <code>optional .VersionVector versionVector = 2;</code> */
       public Builder mergeVersionVector(
           org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
@@ -10724,6 +11101,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>optional .VersionVector versionVector = 2;</code> */
       public Builder clearVersionVector() {
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -10735,6 +11113,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /** <code>optional .VersionVector versionVector = 2;</code> */
       public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing.VersionVector
               .Builder
@@ -10743,6 +11122,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return internalGetVersionVectorFieldBuilder().getBuilder();
       }
+
       /** <code>optional .VersionVector versionVector = 2;</code> */
       public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
               .VersionVectorOrBuilder
@@ -10756,6 +11136,7 @@ public final class ReplicatedEventSourcing {
               : versionVector_;
         }
       }
+
       /** <code>optional .VersionVector versionVector = 2;</code> */
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
               org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
@@ -10856,12 +11237,14 @@ public final class ReplicatedEventSourcing {
      * @return Whether the persistenceId field is set.
      */
     boolean hasPersistenceId();
+
     /**
      * <code>optional string persistenceId = 1;</code>
      *
      * @return The persistenceId.
      */
     java.lang.String getPersistenceId();
+
     /**
      * <code>optional string persistenceId = 1;</code>
      *
@@ -10875,6 +11258,7 @@ public final class ReplicatedEventSourcing {
      * @return Whether the sequenceNr field is set.
      */
     boolean hasSequenceNr();
+
     /**
      * <code>optional int64 sequenceNr = 2;</code>
      *
@@ -10888,12 +11272,14 @@ public final class ReplicatedEventSourcing {
      * @return Whether the payload field is set.
      */
     boolean hasPayload();
+
     /**
      * <code>optional .Payload payload = 3;</code>
      *
      * @return The payload.
      */
     org.apache.pekko.remote.ContainerFormats.Payload getPayload();
+
     /** <code>optional .Payload payload = 3;</code> */
     org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder getPayloadOrBuilder();
 
@@ -10903,6 +11289,7 @@ public final class ReplicatedEventSourcing {
      * @return Whether the timestamp field is set.
      */
     boolean hasTimestamp();
+
     /**
      * <code>optional int64 timestamp = 4;</code>
      *
@@ -10916,6 +11303,7 @@ public final class ReplicatedEventSourcing {
      * @return Whether the metadata field is set.
      */
     boolean hasMetadata();
+
     /**
      * <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code>
      *
@@ -10924,11 +11312,13 @@ public final class ReplicatedEventSourcing {
     org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
             .ReplicatedPublishedEventMetaData
         getMetadata();
+
     /** <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code> */
     org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
             .ReplicatedPublishedEventMetaDataOrBuilder
         getMetadataOrBuilder();
   }
+
   /** Protobuf type {@code PublishedEvent} */
   public static final class PublishedEvent
       extends org.apache.pekko.protobufv3.internal.GeneratedMessage
@@ -10946,6 +11336,7 @@ public final class ReplicatedEventSourcing {
           /* suffix= */ "",
           PublishedEvent.class.getName());
     }
+
     // Use PublishedEvent.newBuilder() to construct.
     private PublishedEvent(
         org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
@@ -10979,6 +11370,7 @@ public final class ReplicatedEventSourcing {
 
     @SuppressWarnings("serial")
     private volatile java.lang.Object persistenceId_ = "";
+
     /**
      * <code>optional string persistenceId = 1;</code>
      *
@@ -10988,6 +11380,7 @@ public final class ReplicatedEventSourcing {
     public boolean hasPersistenceId() {
       return ((bitField0_ & 0x00000001) != 0);
     }
+
     /**
      * <code>optional string persistenceId = 1;</code>
      *
@@ -11008,6 +11401,7 @@ public final class ReplicatedEventSourcing {
         return s;
       }
     }
+
     /**
      * <code>optional string persistenceId = 1;</code>
      *
@@ -11028,6 +11422,7 @@ public final class ReplicatedEventSourcing {
 
     public static final int SEQUENCENR_FIELD_NUMBER = 2;
     private long sequenceNr_ = 0L;
+
     /**
      * <code>optional int64 sequenceNr = 2;</code>
      *
@@ -11037,6 +11432,7 @@ public final class ReplicatedEventSourcing {
     public boolean hasSequenceNr() {
       return ((bitField0_ & 0x00000002) != 0);
     }
+
     /**
      * <code>optional int64 sequenceNr = 2;</code>
      *
@@ -11049,6 +11445,7 @@ public final class ReplicatedEventSourcing {
 
     public static final int PAYLOAD_FIELD_NUMBER = 3;
     private org.apache.pekko.remote.ContainerFormats.Payload payload_;
+
     /**
      * <code>optional .Payload payload = 3;</code>
      *
@@ -11058,6 +11455,7 @@ public final class ReplicatedEventSourcing {
     public boolean hasPayload() {
       return ((bitField0_ & 0x00000004) != 0);
     }
+
     /**
      * <code>optional .Payload payload = 3;</code>
      *
@@ -11069,6 +11467,7 @@ public final class ReplicatedEventSourcing {
           ? org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance()
           : payload_;
     }
+
     /** <code>optional .Payload payload = 3;</code> */
     @java.lang.Override
     public org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder getPayloadOrBuilder() {
@@ -11079,6 +11478,7 @@ public final class ReplicatedEventSourcing {
 
     public static final int TIMESTAMP_FIELD_NUMBER = 4;
     private long timestamp_ = 0L;
+
     /**
      * <code>optional int64 timestamp = 4;</code>
      *
@@ -11088,6 +11488,7 @@ public final class ReplicatedEventSourcing {
     public boolean hasTimestamp() {
       return ((bitField0_ & 0x00000008) != 0);
     }
+
     /**
      * <code>optional int64 timestamp = 4;</code>
      *
@@ -11102,6 +11503,7 @@ public final class ReplicatedEventSourcing {
     private org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
             .ReplicatedPublishedEventMetaData
         metadata_;
+
     /**
      * <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code>
      *
@@ -11111,6 +11513,7 @@ public final class ReplicatedEventSourcing {
     public boolean hasMetadata() {
       return ((bitField0_ & 0x00000010) != 0);
     }
+
     /**
      * <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code>
      *
@@ -11125,6 +11528,7 @@ public final class ReplicatedEventSourcing {
               .ReplicatedPublishedEventMetaData.getDefaultInstance()
           : metadata_;
     }
+
     /** <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code> */
     @java.lang.Override
     public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
@@ -11416,6 +11820,7 @@ public final class ReplicatedEventSourcing {
       Builder builder = new Builder(parent);
       return builder;
     }
+
     /** Protobuf type {@code PublishedEvent} */
     public static final class Builder
         extends org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder>
@@ -11672,6 +12077,7 @@ public final class ReplicatedEventSourcing {
       private int bitField0_;
 
       private java.lang.Object persistenceId_ = "";
+
       /**
        * <code>optional string persistenceId = 1;</code>
        *
@@ -11680,6 +12086,7 @@ public final class ReplicatedEventSourcing {
       public boolean hasPersistenceId() {
         return ((bitField0_ & 0x00000001) != 0);
       }
+
       /**
        * <code>optional string persistenceId = 1;</code>
        *
@@ -11699,6 +12106,7 @@ public final class ReplicatedEventSourcing {
           return (java.lang.String) ref;
         }
       }
+
       /**
        * <code>optional string persistenceId = 1;</code>
        *
@@ -11715,6 +12123,7 @@ public final class ReplicatedEventSourcing {
           return (org.apache.pekko.protobufv3.internal.ByteString) ref;
         }
       }
+
       /**
        * <code>optional string persistenceId = 1;</code>
        *
@@ -11730,6 +12139,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /**
        * <code>optional string persistenceId = 1;</code>
        *
@@ -11741,6 +12151,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /**
        * <code>optional string persistenceId = 1;</code>
        *
@@ -11758,6 +12169,7 @@ public final class ReplicatedEventSourcing {
       }
 
       private long sequenceNr_;
+
       /**
        * <code>optional int64 sequenceNr = 2;</code>
        *
@@ -11767,6 +12179,7 @@ public final class ReplicatedEventSourcing {
       public boolean hasSequenceNr() {
         return ((bitField0_ & 0x00000002) != 0);
       }
+
       /**
        * <code>optional int64 sequenceNr = 2;</code>
        *
@@ -11776,6 +12189,7 @@ public final class ReplicatedEventSourcing {
       public long getSequenceNr() {
         return sequenceNr_;
       }
+
       /**
        * <code>optional int64 sequenceNr = 2;</code>
        *
@@ -11789,6 +12203,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /**
        * <code>optional int64 sequenceNr = 2;</code>
        *
@@ -11807,6 +12222,7 @@ public final class ReplicatedEventSourcing {
               org.apache.pekko.remote.ContainerFormats.Payload.Builder,
               org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder>
           payloadBuilder_;
+
       /**
        * <code>optional .Payload payload = 3;</code>
        *
@@ -11815,6 +12231,7 @@ public final class ReplicatedEventSourcing {
       public boolean hasPayload() {
         return ((bitField0_ & 0x00000004) != 0);
       }
+
       /**
        * <code>optional .Payload payload = 3;</code>
        *
@@ -11829,6 +12246,7 @@ public final class ReplicatedEventSourcing {
           return payloadBuilder_.getMessage();
         }
       }
+
       /** <code>optional .Payload payload = 3;</code> */
       public Builder setPayload(org.apache.pekko.remote.ContainerFormats.Payload value) {
         if (payloadBuilder_ == null) {
@@ -11843,6 +12261,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /** <code>optional .Payload payload = 3;</code> */
       public Builder setPayload(
           org.apache.pekko.remote.ContainerFormats.Payload.Builder builderForValue) {
@@ -11855,6 +12274,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /** <code>optional .Payload payload = 3;</code> */
       public Builder mergePayload(org.apache.pekko.remote.ContainerFormats.Payload value) {
         if (payloadBuilder_ == null) {
@@ -11875,6 +12295,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>optional .Payload payload = 3;</code> */
       public Builder clearPayload() {
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -11886,12 +12307,14 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /** <code>optional .Payload payload = 3;</code> */
       public org.apache.pekko.remote.ContainerFormats.Payload.Builder getPayloadBuilder() {
         bitField0_ |= 0x00000004;
         onChanged();
         return internalGetPayloadFieldBuilder().getBuilder();
       }
+
       /** <code>optional .Payload payload = 3;</code> */
       public org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder getPayloadOrBuilder() {
         if (payloadBuilder_ != null) {
@@ -11902,6 +12325,7 @@ public final class ReplicatedEventSourcing {
               : payload_;
         }
       }
+
       /** <code>optional .Payload payload = 3;</code> */
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
               org.apache.pekko.remote.ContainerFormats.Payload,
@@ -11921,6 +12345,7 @@ public final class ReplicatedEventSourcing {
       }
 
       private long timestamp_;
+
       /**
        * <code>optional int64 timestamp = 4;</code>
        *
@@ -11930,6 +12355,7 @@ public final class ReplicatedEventSourcing {
       public boolean hasTimestamp() {
         return ((bitField0_ & 0x00000008) != 0);
       }
+
       /**
        * <code>optional int64 timestamp = 4;</code>
        *
@@ -11939,6 +12365,7 @@ public final class ReplicatedEventSourcing {
       public long getTimestamp() {
         return timestamp_;
       }
+
       /**
        * <code>optional int64 timestamp = 4;</code>
        *
@@ -11952,6 +12379,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /**
        * <code>optional int64 timestamp = 4;</code>
        *
@@ -11975,6 +12403,7 @@ public final class ReplicatedEventSourcing {
               org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
                   .ReplicatedPublishedEventMetaDataOrBuilder>
           metadataBuilder_;
+
       /**
        * <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code>
        *
@@ -11983,6 +12412,7 @@ public final class ReplicatedEventSourcing {
       public boolean hasMetadata() {
         return ((bitField0_ & 0x00000010) != 0);
       }
+
       /**
        * <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code>
        *
@@ -12000,6 +12430,7 @@ public final class ReplicatedEventSourcing {
           return metadataBuilder_.getMessage();
         }
       }
+
       /** <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code> */
       public Builder setMetadata(
           org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
@@ -12017,6 +12448,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /** <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code> */
       public Builder setMetadata(
           org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
@@ -12031,6 +12463,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /** <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code> */
       public Builder mergeMetadata(
           org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
@@ -12055,6 +12488,7 @@ public final class ReplicatedEventSourcing {
         }
         return this;
       }
+
       /** <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code> */
       public Builder clearMetadata() {
         bitField0_ = (bitField0_ & ~0x00000010);
@@ -12066,6 +12500,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return this;
       }
+
       /** <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code> */
       public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
               .ReplicatedPublishedEventMetaData.Builder
@@ -12074,6 +12509,7 @@ public final class ReplicatedEventSourcing {
         onChanged();
         return internalGetMetadataFieldBuilder().getBuilder();
       }
+
       /** <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code> */
       public org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
               .ReplicatedPublishedEventMetaDataOrBuilder
@@ -12087,6 +12523,7 @@ public final class ReplicatedEventSourcing {
               : metadata_;
         }
       }
+
       /** <code>optional .ReplicatedPublishedEventMetaData metadata = 5;</code> */
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
               org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcing
@@ -12227,36 +12664,57 @@ public final class ReplicatedEventSourcing {
 
   static {
     java.lang.String[] descriptorData = {
-      "\n\035ReplicatedEventSourcing.proto\032\026Contain"
-          + "erFormats.proto\"\030\n\007Counter\022\r\n\005value\030\001 \002("
-          + "\014\"\036\n\rCounterUpdate\022\r\n\005delta\030\001 \002(\014\"\304\001\n\005OR"
-          + "Set\022\020\n\010originDc\030\001 \002(\t\022\037\n\007vvector\030\002 \002(\0132\016"
-          + ".VersionVector\022\034\n\004dots\030\003 \003(\0132\016.VersionVe"
-          + "ctor\022\026\n\016stringElements\030\004 \003(\t\022\027\n\013intEleme"
-          + "nts\030\005 \003(\021B\002\020\001\022\030\n\014longElements\030\006 \003(\022B\002\020\001\022"
-          + "\037\n\rotherElements\030\007 \003(\0132\010.Payload\"\201\001\n\017ORS"
-          + "etDeltaGroup\022\'\n\007entries\030\001 \003(\0132\026.ORSetDel"
-          + "taGroup.Entry\032E\n\005Entry\022 \n\toperation\030\001 \002("
-          + "\0162\r.ORSetDeltaOp\022\032\n\nunderlying\030\002 \002(\0132\006.O"
-          + "RSet\"]\n\rVersionVector\022%\n\007entries\030\001 \003(\0132\024"
-          + ".VersionVector.Entry\032%\n\005Entry\022\013\n\003key\030\001 \002"
-          + "(\t\022\017\n\007version\030\002 \002(\003\"\205\001\n\027ReplicatedEventM"
-          + "etadata\022\025\n\roriginReplica\030\001 \002(\t\022\030\n\020origin"
-          + "SequenceNr\030\002 \002(\003\022%\n\rversionVector\030\003 \002(\0132"
-          + "\016.VersionVector\022\022\n\nconcurrent\030\004 \002(\010\"\246\001\n\032"
-          + "ReplicatedSnapshotMetadata\022\037\n\007version\030\001 "
-          + "\002(\0132\016.VersionVector\0228\n\016seenPerReplica\030\002 "
-          + "\003(\0132 .ReplicatedSnapshotMetadata.Seen\032-\n"
-          + "\004Seen\022\021\n\treplicaId\030\001 \002(\t\022\022\n\nsequenceNr\030\002"
-          + " \002(\003\"\\\n ReplicatedPublishedEventMetaData"
-          + "\022\021\n\treplicaId\030\001 \001(\t\022%\n\rversionVector\030\002 \001"
-          + "(\0132\016.VersionVector\"\236\001\n\016PublishedEvent\022\025\n"
-          + "\rpersistenceId\030\001 \001(\t\022\022\n\nsequenceNr\030\002 \001(\003"
-          + "\022\031\n\007payload\030\003 \001(\0132\010.Payload\022\021\n\ttimestamp"
-          + "\030\004 \001(\003\0223\n\010metadata\030\005 \001(\0132!.ReplicatedPub"
-          + "lishedEventMetaData*-\n\014ORSetDeltaOp\022\007\n\003A"
-          + "dd\020\000\022\n\n\006Remove\020\001\022\010\n\004Full\020\002B4\n0org.apache"
-          + ".pekko.persistence.typed.serializationH\001"
+      "\n"
+          + "\035ReplicatedEventSourcing.proto\032\026ContainerFormats.proto\"\030\n"
+          + "\007Counter\022\r\n"
+          + "\005value\030\001 \002(\014\"\036\n\r"
+          + "CounterUpdate\022\r\n"
+          + "\005delta\030\001 \002(\014\"\304\001\n"
+          + "\005ORSet\022\020\n"
+          + "\010originDc\030\001 \002(\t\022\037\n"
+          + "\007vvector\030\002 \002(\0132\016.VersionVector\022\034\n"
+          + "\004dots\030\003 \003(\0132\016.VersionVector\022\026\n"
+          + "\016stringElements\030\004 \003(\t\022\027\n"
+          + "\013intElements\030\005 \003(\021B\002\020\001\022\030\n"
+          + "\014longElements\030\006 \003(\022B\002\020\001\022\037\n\r"
+          + "otherElements\030\007 \003(\0132\010.Payload\"\201\001\n"
+          + "\017ORSetDeltaGroup\022\'\n"
+          + "\007entries\030\001 \003(\0132\026.ORSetDeltaGroup.Entry\032E\n"
+          + "\005Entry\022 \n"
+          + "\toperation\030\001 \002(\0162\r"
+          + ".ORSetDeltaOp\022\032\n\n"
+          + "underlying\030\002 \002(\0132\006.ORSet\"]\n\r"
+          + "VersionVector\022%\n"
+          + "\007entries\030\001 \003(\0132\024.VersionVector.Entry\032%\n"
+          + "\005Entry\022\013\n"
+          + "\003key\030\001 \002(\t\022\017\n"
+          + "\007version\030\002 \002(\003\"\205\001\n"
+          + "\027ReplicatedEventMetadata\022\025\n\r"
+          + "originReplica\030\001 \002(\t\022\030\n"
+          + "\020originSequenceNr\030\002 \002(\003\022%\n\r"
+          + "versionVector\030\003 \002(\0132\016.VersionVector\022\022\n\n"
+          + "concurrent\030\004 \002(\010\"\246\001\n"
+          + "\032ReplicatedSnapshotMetadata\022\037\n"
+          + "\007version\030\001 \002(\0132\016.VersionVector\0228\n"
+          + "\016seenPerReplica\030\002 \003(\0132 .ReplicatedSnapshotMetadata.Seen\032-\n"
+          + "\004Seen\022\021\n"
+          + "\treplicaId\030\001 \002(\t\022\022\n\n"
+          + "sequenceNr\030\002 \002(\003\"\\\n"
+          + " ReplicatedPublishedEventMetaData\022\021\n"
+          + "\treplicaId\030\001 \001(\t\022%\n\r"
+          + "versionVector\030\002 \001(\0132\016.VersionVector\"\236\001\n"
+          + "\016PublishedEvent\022\025\n"
+          + "\r"
+          + "persistenceId\030\001 \001(\t\022\022\n\n"
+          + "sequenceNr\030\002 \001(\003\022\031\n"
+          + "\007payload\030\003 \001(\0132\010.Payload\022\021\n"
+          + "\ttimestamp\030\004 \001(\003\0223\n"
+          + "\010metadata\030\005 \001(\0132!.ReplicatedPublishedEventMetaData*-\n"
+          + "\014ORSetDeltaOp\022\007\n"
+          + "\003Add\020\000\022\n\n"
+          + "\006Remove\020\001\022\010\n"
+          + "\004Full\020\002B4\n"
+          + "0org.apache.pekko.persistence.typed.serializationH\001"
     };
     descriptor =
         org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor

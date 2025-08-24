@@ -13,6 +13,8 @@
 
 package jdocs.org.apache.pekko.persistence.typed;
 
+import java.time.Duration;
+import java.util.Optional;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.SupervisorStrategy;
 import org.apache.pekko.persistence.typed.PersistenceId;
@@ -20,9 +22,6 @@ import org.apache.pekko.persistence.typed.javadsl.CommandHandler;
 import org.apache.pekko.persistence.typed.javadsl.Effect;
 import org.apache.pekko.persistence.typed.javadsl.EventHandler;
 import org.apache.pekko.persistence.typed.javadsl.EventSourcedBehavior;
-
-import java.time.Duration;
-import java.util.Optional;
 
 public interface StashingExample {
 

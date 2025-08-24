@@ -13,9 +13,8 @@
 
 package jdoc.org.apache.pekko.serialization.jackson.v2a;
 
-import jdoc.org.apache.pekko.serialization.jackson.MySerializable;
-
 import java.util.Optional;
+import jdoc.org.apache.pekko.serialization.jackson.MySerializable;
 
 // #structural
 public class Customer implements MySerializable {

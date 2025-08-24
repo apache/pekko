@@ -13,13 +13,12 @@
 
 package org.apache.pekko.actor.testkit.typed.javadsl;
 
+import java.time.Duration;
+import java.util.List;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Props;
 import org.apache.pekko.actor.typed.Scheduler;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
-
-import java.time.Duration;
-import java.util.List;
 
 public class ActorTestKitApiTest {
 

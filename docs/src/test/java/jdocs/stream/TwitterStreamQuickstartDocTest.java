@@ -13,23 +13,8 @@
 
 package jdocs.stream;
 
-import org.apache.pekko.Done;
-import org.apache.pekko.NotUsed;
-import org.apache.pekko.actor.ActorSystem;
-import org.apache.pekko.japi.JavaPartialFunction;
-// #imports
-import org.apache.pekko.stream.*;
-import org.apache.pekko.stream.javadsl.*;
-// #imports
-import jdocs.AbstractJavaTest;
-import jdocs.stream.TwitterStreamQuickstartDocTest.Model.Author;
-import jdocs.stream.TwitterStreamQuickstartDocTest.Model.Hashtag;
-import jdocs.stream.TwitterStreamQuickstartDocTest.Model.Tweet;
-import org.apache.pekko.testkit.javadsl.TestKit;
-
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static jdocs.stream.TwitterStreamQuickstartDocTest.Model.PEKKO;
+import static jdocs.stream.TwitterStreamQuickstartDocTest.Model.tweets;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,9 +24,22 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
-
-import static jdocs.stream.TwitterStreamQuickstartDocTest.Model.PEKKO;
-import static jdocs.stream.TwitterStreamQuickstartDocTest.Model.tweets;
+import jdocs.AbstractJavaTest;
+import jdocs.stream.TwitterStreamQuickstartDocTest.Model.Author;
+import jdocs.stream.TwitterStreamQuickstartDocTest.Model.Hashtag;
+import jdocs.stream.TwitterStreamQuickstartDocTest.Model.Tweet;
+import org.apache.pekko.Done;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.japi.JavaPartialFunction;
+// #imports
+import org.apache.pekko.stream.*;
+import org.apache.pekko.stream.javadsl.*;
+// #imports
+import org.apache.pekko.testkit.javadsl.TestKit;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 @SuppressWarnings("unused")
 public class TwitterStreamQuickstartDocTest extends AbstractJavaTest {
@@ -103,6 +101,7 @@ public class TwitterStreamQuickstartDocTest extends AbstractJavaTest {
       }
       // #model
     }
+
     // #model
 
     // #model
@@ -137,6 +136,7 @@ public class TwitterStreamQuickstartDocTest extends AbstractJavaTest {
       }
       // #model
     }
+
     // #model
 
     // #model
@@ -169,6 +169,7 @@ public class TwitterStreamQuickstartDocTest extends AbstractJavaTest {
 
       // #model
     }
+
     // #model
 
     // #model

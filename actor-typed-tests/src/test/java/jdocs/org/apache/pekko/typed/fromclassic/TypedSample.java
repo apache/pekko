@@ -14,15 +14,14 @@
 package jdocs.org.apache.pekko.typed.fromclassic;
 
 // #hello-world-actor
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.javadsl.AbstractBehavior;
 import org.apache.pekko.actor.typed.javadsl.ActorContext;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.apache.pekko.actor.typed.javadsl.Receive;
-
-import java.util.HashMap;
-import java.util.Map;
 
 // #hello-world-actor
 
@@ -70,6 +69,7 @@ interface TypedSample {
       return this;
     }
   }
+
   // #hello-world-actor
 
   // #children
@@ -129,6 +129,7 @@ interface TypedSample {
       return this;
     }
   }
+
   // #children
 
   public class Child {

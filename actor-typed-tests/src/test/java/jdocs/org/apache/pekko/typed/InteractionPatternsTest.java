@@ -13,18 +13,8 @@
 
 package jdocs.org.apache.pekko.typed;
 
-import org.apache.pekko.Done;
-import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
-import org.apache.pekko.actor.typed.ActorRef;
-import org.apache.pekko.actor.typed.ActorSystem;
-import org.apache.pekko.actor.typed.Behavior;
-import org.apache.pekko.actor.typed.javadsl.*;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import static jdocs.org.apache.pekko.typed.InteractionPatternsTest.Samples.*;
+import static org.junit.Assert.assertEquals;
 
 import java.net.URI;
 import java.time.Duration;
@@ -32,9 +22,18 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
-
-import static jdocs.org.apache.pekko.typed.InteractionPatternsTest.Samples.*;
-import static org.junit.Assert.assertEquals;
+import org.apache.pekko.Done;
+import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
+import org.apache.pekko.actor.typed.ActorRef;
+import org.apache.pekko.actor.typed.ActorSystem;
+import org.apache.pekko.actor.typed.Behavior;
+import org.apache.pekko.actor.typed.javadsl.*;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
+import org.scalatestplus.junit.JUnitSuite;
 
 public class InteractionPatternsTest extends JUnitSuite {
 
@@ -63,6 +62,7 @@ public class InteractionPatternsTest extends JUnitSuite {
                     .build());
       }
     }
+
     // #fire-and-forget-definition
 
     public class CookieFabric {
@@ -84,6 +84,7 @@ public class InteractionPatternsTest extends JUnitSuite {
           this.result = result;
         }
       }
+
       // #request-response-protocol
 
       // #request-response-respond
@@ -99,6 +100,7 @@ public class InteractionPatternsTest extends JUnitSuite {
         request.replyTo.tell(new Response("Here are the cookies for " + request.query));
         return Behaviors.same();
       }
+
       // #request-response-respond
 
       void demo() {
@@ -237,6 +239,7 @@ public class InteractionPatternsTest extends JUnitSuite {
         }
       }
     }
+
     // #adapted-response
 
     // #timer
@@ -254,6 +257,7 @@ public class InteractionPatternsTest extends JUnitSuite {
         public List<Command> getMessages() {
           return messages;
         }
+
         // #timer
         @Override
         public boolean equals(Object o) {
@@ -345,6 +349,7 @@ public class InteractionPatternsTest extends JUnitSuite {
         }
       }
     }
+
     // #timer
 
     // #actor-ask
@@ -463,6 +468,7 @@ public class InteractionPatternsTest extends JUnitSuite {
         return this;
       }
     }
+
     // #actor-ask
 
     // #per-session-child
@@ -686,6 +692,7 @@ public class InteractionPatternsTest extends JUnitSuite {
         return this;
       }
     }
+
     // #standalone-ask
 
     class NotShown {
@@ -713,6 +720,7 @@ public class InteractionPatternsTest extends JUnitSuite {
               else System.out.println("Boo! didn't get cookies in time. " + failure);
             });
       }
+
       // #standalone-ask
 
       public void askAndMapInvalid(

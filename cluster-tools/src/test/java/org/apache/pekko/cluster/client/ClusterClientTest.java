@@ -13,15 +13,14 @@
 
 package org.apache.pekko.cluster.client;
 
-import org.apache.pekko.actor.*;
 import com.typesafe.config.ConfigFactory;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import org.apache.pekko.actor.*;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.scalatestplus.junit.JUnitSuite;
 
 public class ClusterClientTest extends JUnitSuite {
@@ -44,6 +43,7 @@ public class ClusterClientTest extends JUnitSuite {
             ActorPaths.fromString("pekko://OtherSys@host1:7355/system/receptionist"),
             ActorPaths.fromString("pekko://OtherSys@host2:7355/system/receptionist")));
   }
+
   // #initialContacts
 
   @Test
@@ -115,6 +115,7 @@ public class ClusterClientTest extends JUnitSuite {
           .build();
     }
   }
+
   // #clientEventsListener
 
   // #receptionistEventsListener

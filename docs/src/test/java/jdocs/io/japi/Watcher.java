@@ -14,10 +14,9 @@
 package jdocs.io.japi;
 
 import java.util.concurrent.CountDownLatch;
-
+import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.actor.Terminated;
-import org.apache.pekko.actor.AbstractActor;
 
 public class Watcher extends AbstractActor {
 

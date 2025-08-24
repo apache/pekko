@@ -13,10 +13,9 @@
 
 package jdocs.org.apache.pekko.typed.supervision;
 
+import java.time.Duration;
 import org.apache.pekko.actor.typed.*;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
-
-import java.time.Duration;
 
 public class SupervisionCompileOnlyTest {
   // #wrap
@@ -45,6 +44,7 @@ public class SupervisionCompileOnlyTest {
     public static Behavior<Command> create() {
       return Behaviors.supervise(counter(1)).onFailure(SupervisorStrategy.restart());
     }
+
     // #top-level
 
     private static Behavior<Command> counter(int currentValue) {
@@ -63,6 +63,7 @@ public class SupervisionCompileOnlyTest {
       return Behaviors.same();
     }
   }
+
   // #wrap
 
   public static Behavior<String> behavior = Behaviors.empty();
@@ -116,6 +117,7 @@ public class SupervisionCompileOnlyTest {
                 }))
         .onFailure(SupervisorStrategy.restart());
   }
+
   // #restart-stop-children
 
   // #restart-keep-children
@@ -138,6 +140,7 @@ public class SupervisionCompileOnlyTest {
               .onFailure(SupervisorStrategy.restart().withStopChildren(false));
         });
   }
+
   // #restart-keep-children
 
   interface Resource {

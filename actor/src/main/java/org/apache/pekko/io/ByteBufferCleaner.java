@@ -17,12 +17,12 @@
 
 package org.apache.pekko.io;
 
+import static java.lang.invoke.MethodType.methodType;
+
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
-
-import static java.lang.invoke.MethodType.methodType;
 
 /**
  * Cleans a direct {@link ByteBuffer}. Without manual intervention, direct ByteBuffers will be
@@ -100,9 +100,9 @@ final class ByteBufferCleaner {
       } catch (final Throwable t) {
         cleaner = null;
         System.err.println(
-            "WARNING: ByteBuffer Cleaner failed to clean a test buffer. ByteBuffer Cleaner "
-                + "has been disabled. This means direct ByteBuffers will only be cleaned upon garbage collection. "
-                + "Reason: "
+            "WARNING: ByteBuffer Cleaner failed to clean a test buffer. ByteBuffer Cleaner has been"
+                + " disabled. This means direct ByteBuffers will only be cleaned upon garbage"
+                + " collection. Reason: "
                 + t);
       }
     }

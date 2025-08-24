@@ -13,17 +13,16 @@
 
 package org.apache.pekko.actor.typed.javadsl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.function.Function;
 import org.apache.pekko.actor.testkit.typed.internal.StubbedActorContext;
 import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
 import org.apache.pekko.actor.typed.internal.StashBufferImpl;
 import org.junit.Rule;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
-
-import java.util.function.Function;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class StashBufferTest extends JUnitSuite {
 

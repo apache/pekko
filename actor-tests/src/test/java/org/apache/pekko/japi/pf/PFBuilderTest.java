@@ -13,11 +13,11 @@
 
 package org.apache.pekko.japi.pf;
 
+import static org.junit.Assert.*;
+
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
 import scala.PartialFunction;
-
-import static org.junit.Assert.*;
 
 @SuppressWarnings("serial")
 public class PFBuilderTest extends JUnitSuite {

@@ -13,17 +13,16 @@
 
 package jdocs.stream;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import jdocs.AbstractJavaTest;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.japi.function.Function;
-import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.stream.javadsl.Sink;
-import jdocs.AbstractJavaTest;
+import org.apache.pekko.stream.javadsl.Source;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
 
 public class SinkRecipeDocTest extends AbstractJavaTest {
   static ActorSystem system;

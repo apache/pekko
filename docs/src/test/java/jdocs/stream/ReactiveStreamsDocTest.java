@@ -13,31 +13,29 @@
 
 package jdocs.stream;
 
+import static jdocs.stream.ReactiveStreamsDocTest.Fixture.Data.authors;
+import static jdocs.stream.TwitterStreamQuickstartDocTest.Model.PEKKO;
+
+import jdocs.AbstractJavaTest;
+import jdocs.stream.TwitterStreamQuickstartDocTest.Model.Author;
+import jdocs.stream.TwitterStreamQuickstartDocTest.Model.Tweet;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.japi.function.Creator;
 import org.apache.pekko.stream.javadsl.*;
 import org.apache.pekko.testkit.TestProbe;
-import jdocs.AbstractJavaTest;
-import jdocs.stream.TwitterStreamQuickstartDocTest.Model.Author;
-import jdocs.stream.TwitterStreamQuickstartDocTest.Model.Tweet;
 import org.apache.pekko.testkit.javadsl.TestKit;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 // #imports
+import org.reactivestreams.Processor;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
-import org.reactivestreams.Processor;
-// #imports
 import org.reactivestreams.Subscription;
 
-import java.lang.Exception;
-
-import static jdocs.stream.ReactiveStreamsDocTest.Fixture.Data.authors;
-import static jdocs.stream.TwitterStreamQuickstartDocTest.Model.PEKKO;
+// #imports
 
 public class ReactiveStreamsDocTest extends AbstractJavaTest {
 
@@ -74,10 +72,12 @@ public class ReactiveStreamsDocTest extends AbstractJavaTest {
     static interface RS {
       // #tweets-publisher
       Publisher<Tweet> tweets();
+
       // #tweets-publisher
 
       // #author-storage-subscriber
       Subscriber<Author> storage();
+
       // #author-storage-subscriber
 
       // #author-alert-subscriber

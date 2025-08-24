@@ -18,14 +18,12 @@ import static org.junit.Assert.assertEquals;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
-
-import org.junit.ClassRule;
-import org.junit.Test;
-
 import org.apache.pekko.stream.Attributes;
 import org.apache.pekko.stream.StreamTest;
 import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
+import org.junit.ClassRule;
+import org.junit.Test;
 
 public class AttributesTest extends StreamTest {
 

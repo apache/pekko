@@ -13,15 +13,15 @@
 
 package jdocs.testkit;
 
+import com.typesafe.config.ConfigFactory;
+import docs.testkit.MockedChild;
+import jdocs.AbstractJavaTest;
 import org.apache.pekko.actor.*;
 import org.apache.pekko.japi.function.Creator;
 import org.apache.pekko.japi.function.Function;
 import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.testkit.TestProbe;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import com.typesafe.config.ConfigFactory;
-import docs.testkit.MockedChild;
-import jdocs.AbstractJavaTest;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -61,6 +61,7 @@ public class ParentChildTest extends AbstractJavaTest {
           .build();
     }
   }
+
   // #test-example
 
   static
@@ -79,6 +80,7 @@ public class ParentChildTest extends AbstractJavaTest {
           .build();
     }
   }
+
   // #test-dependentchild
 
   static
@@ -100,6 +102,7 @@ public class ParentChildTest extends AbstractJavaTest {
           .build();
     }
   }
+
   // #test-dependentparent
 
   static
@@ -120,6 +123,7 @@ public class ParentChildTest extends AbstractJavaTest {
           .build();
     }
   }
+
   // #test-dependentparent-generic
 
   @Test
@@ -190,6 +194,7 @@ public class ParentChildTest extends AbstractJavaTest {
       };
     }
   }
+
   // #test-fabricated-parent-creator
 
   @Test

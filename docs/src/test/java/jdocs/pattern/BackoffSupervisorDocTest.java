@@ -13,12 +13,13 @@
 
 package jdocs.pattern;
 
+// #backoff-imports
+import java.time.Duration;
 import org.apache.pekko.actor.*;
 import org.apache.pekko.pattern.BackoffOpts;
 import org.apache.pekko.pattern.BackoffSupervisor;
 import org.apache.pekko.testkit.TestActors.EchoActor;
-// #backoff-imports
-import java.time.Duration;
+
 // #backoff-imports
 
 public class BackoffSupervisorDocTest {

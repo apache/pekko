@@ -13,14 +13,13 @@
 
 package jdocs.org.apache.pekko.persistence.typed;
 
+import static jdocs.org.apache.pekko.persistence.typed.WebStoreCustomerFSM.*;
+
+import java.time.Duration;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.javadsl.TimerScheduler;
 import org.apache.pekko.persistence.typed.*;
 import org.apache.pekko.persistence.typed.javadsl.*;
-
-import java.time.Duration;
-
-import static jdocs.org.apache.pekko.persistence.typed.WebStoreCustomerFSM.*;
 
 @Deprecated
 public class PersistentFsmToTypedMigrationCompileOnlyTest {
@@ -55,6 +54,7 @@ public class PersistentFsmToTypedMigrationCompileOnlyTest {
   private enum Timeout implements Command {
     INSTANCE
   }
+
   // #commands
 
   // #state
@@ -89,6 +89,7 @@ public class PersistentFsmToTypedMigrationCompileOnlyTest {
       super(cart);
     }
   }
+
   // #state
 
   // #event-adapter
@@ -162,6 +163,7 @@ public class PersistentFsmToTypedMigrationCompileOnlyTest {
       builder.forAnyState().onCommand(GetCurrentCart.class, this::getCurrentCart);
       return builder.build();
     }
+
     // #command-handler
 
     private Effect<DomainEvent, State> addItem(AddItem item) {
@@ -216,6 +218,7 @@ public class PersistentFsmToTypedMigrationCompileOnlyTest {
 
       return eventHandlerBuilder.build();
     }
+
     // #event-handler
 
     @Override
@@ -236,6 +239,7 @@ public class PersistentFsmToTypedMigrationCompileOnlyTest {
               })
           .build();
     }
+
     // #signal-handler
 
     // #snapshot-adapter

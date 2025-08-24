@@ -13,6 +13,12 @@
 
 package org.apache.pekko.stream.javadsl;
 
+import static org.junit.Assert.assertEquals;
+
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 import org.apache.pekko.japi.Pair;
 import org.apache.pekko.stream.StreamTest;
 import org.apache.pekko.stream.ThrottleMode;
@@ -20,13 +26,6 @@ import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import java.time.Duration;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import static org.junit.Assert.assertEquals;
 
 public class SourceWithContextThrottleTest extends StreamTest {
 

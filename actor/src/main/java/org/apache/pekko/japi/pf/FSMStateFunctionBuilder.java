@@ -13,10 +13,10 @@
 
 package org.apache.pekko.japi.pf;
 
+import java.util.List;
 import org.apache.pekko.actor.FSM;
 import org.apache.pekko.japi.function.*;
 import scala.PartialFunction;
-import java.util.List;
 
 /**
  * Builder used to create a partial function for {@link org.apache.pekko.actor.FSM#whenUnhandled}.

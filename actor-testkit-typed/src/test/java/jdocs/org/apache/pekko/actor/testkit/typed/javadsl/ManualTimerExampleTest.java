@@ -15,20 +15,17 @@ package jdocs.org.apache.pekko.actor.testkit.typed.javadsl;
 
 // #manual-scheduling-simple
 
+import java.time.Duration;
 import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
-import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.testkit.typed.javadsl.ManualTime;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
+import org.apache.pekko.actor.typed.Behavior;
+import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.junit.ClassRule;
 import org.junit.Rule;
-import org.scalatestplus.junit.JUnitSuite;
-import java.time.Duration;
-
-import org.apache.pekko.actor.typed.javadsl.Behaviors;
-
 import org.junit.Test;
-
-import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
+import org.scalatestplus.junit.JUnitSuite;
 
 public class ManualTimerExampleTest extends JUnitSuite {
 

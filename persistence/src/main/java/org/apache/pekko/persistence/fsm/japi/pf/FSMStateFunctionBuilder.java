@@ -13,6 +13,7 @@
 
 package org.apache.pekko.persistence.fsm.japi.pf;
 
+import java.util.List;
 import org.apache.pekko.japi.function.Function;
 import org.apache.pekko.japi.function.Function2;
 import org.apache.pekko.japi.function.Predicate;
@@ -20,8 +21,6 @@ import org.apache.pekko.japi.function.Predicate2;
 import org.apache.pekko.japi.pf.PFBuilder;
 import org.apache.pekko.persistence.fsm.PersistentFSM;
 import scala.PartialFunction;
-
-import java.util.List;
 
 /**
  * Builder used to create a partial function for {@link org.apache.pekko.actor.FSM#whenUnhandled}.

@@ -14,9 +14,7 @@
 package jdocs.ddata;
 
 import java.util.HashSet;
-
 import java.util.Set;
-
 import org.apache.pekko.cluster.ddata.AbstractReplicatedData;
 import org.apache.pekko.cluster.ddata.GSet;
 

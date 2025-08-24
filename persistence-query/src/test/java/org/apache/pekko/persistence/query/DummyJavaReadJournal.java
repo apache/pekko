@@ -14,7 +14,6 @@
 package org.apache.pekko.persistence.query;
 
 import java.util.Iterator;
-
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.persistence.query.javadsl.PersistenceIdsQuery;
 import org.apache.pekko.persistence.query.javadsl.ReadJournal;

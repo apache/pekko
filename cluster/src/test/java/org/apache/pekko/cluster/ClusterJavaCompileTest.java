@@ -13,11 +13,10 @@
 
 package org.apache.pekko.cluster;
 
-import org.apache.pekko.actor.ActorSystem;
-import org.apache.pekko.actor.Address;
-
 import java.util.Collections;
 import java.util.List;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.actor.Address;
 
 // Doc code, compile only
 @SuppressWarnings("ConstantConditions")

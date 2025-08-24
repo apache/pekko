@@ -13,19 +13,17 @@
 
 package jdocs.actor.fsm;
 
-import org.apache.pekko.actor.*;
+import static jdocs.actor.fsm.FSMDocTest.Messages.*;
+import static jdocs.actor.fsm.FSMDocTest.StateType.*;
+import static org.junit.Assert.*;
+
+import java.time.Duration;
 import jdocs.AbstractJavaTest;
+import org.apache.pekko.actor.*;
 import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import static jdocs.actor.fsm.FSMDocTest.StateType.*;
-import static jdocs.actor.fsm.FSMDocTest.Messages.*;
-
-import java.time.Duration;
 
 public class FSMDocTest extends AbstractJavaTest {
   static ActorSystem system;
@@ -59,10 +57,12 @@ public class FSMDocTest extends AbstractJavaTest {
     Bar
   };
 
-  public static interface X {};
+  public static interface X {}
+  ;
 
   public static class DummyFSM extends AbstractFSM<StateType, Integer> {
     Integer newData = 42;
+
     // #alt-transition-syntax
     public void handler(StateType from, StateType to) {
       // handle transition here
@@ -153,6 +153,7 @@ public class FSMDocTest extends AbstractJavaTest {
     // #body-elided
     // #logging-fsm
     ActorRef target = null;
+
     // #logging-fsm
     @Override
     public int logDepth() {
@@ -207,6 +208,7 @@ public class FSMDocTest extends AbstractJavaTest {
     }
     // #body-elided
   }
+
   // #logging-fsm
 
   @Test

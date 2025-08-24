@@ -13,14 +13,13 @@
 
 package jdocs.stream.operators.flow;
 
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.stream.javadsl.Flow;
 import org.apache.pekko.stream.javadsl.Source;
-
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
 
 public class FutureFlow {
 
@@ -31,6 +30,7 @@ public class FutureFlow {
     return CompletableFuture.completedFuture(
         Flow.of(Integer.class).map(n -> "id: " + id + " value: " + n));
   }
+
   // #base-on-first-element
 
   public void compileOnlyBaseOnFirst() {

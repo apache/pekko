@@ -13,7 +13,23 @@
 
 package org.apache.pekko.stream.javadsl;
 
+import static org.apache.pekko.NotUsed.notUsed;
+import static org.apache.pekko.stream.testkit.StreamTestKit.PublisherProbeSubscription;
+import static org.apache.pekko.stream.testkit.TestPublisher.ManualProbe;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.*;
+
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
+import java.time.Duration;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import org.apache.pekko.Done;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorRef;
@@ -36,27 +52,10 @@ import org.apache.pekko.stream.testkit.javadsl.TestSink;
 import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import com.google.common.collect.Iterables;
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
 import scala.util.Try;
-
-import java.time.Duration;
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
-
-import static org.apache.pekko.NotUsed.notUsed;
-import static org.apache.pekko.stream.testkit.StreamTestKit.PublisherProbeSubscription;
-import static org.apache.pekko.stream.testkit.TestPublisher.ManualProbe;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
 
 @SuppressWarnings("serial")
 public class SourceTest extends StreamTest {
@@ -70,9 +69,11 @@ public class SourceTest extends StreamTest {
 
   interface Fruit {}
 
-  static class Apple implements Fruit {};
+  static class Apple implements Fruit {}
+  ;
 
-  static class Orange implements Fruit {};
+  static class Orange implements Fruit {}
+  ;
 
   public void compileOnlyUpcast() {
     Source<Apple, NotUsed> apples = null;
