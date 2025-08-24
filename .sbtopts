@@ -2,3 +2,8 @@
 -J-Xms1G
 -Dmultinode.XX:MetaspaceSize=128M
 -J-XX:+AlwaysActAsServerClassMachine
+-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED
+-J--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED
+-J--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED
+-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED
+-J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED
