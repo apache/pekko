@@ -2,24 +2,34 @@
 
 Apache Pekko 1.2.x releases support Java 8 and above.
 
-# 1.2.0-M2
+# 1.2.0
 
-Pekko 1.2.0-M2 has some new features, performance updates and dependency upgrades. See the [GitHub Milestone](https://github.com/apache/pekko/milestone/15?closed=1) for a fuller list of changes.
+Pekko 1.2.0 has some new features, performance updates and dependency upgrades. See [GitHub Milestone for 1.2.0-M1](https://github.com/apache/pekko/milestone/6?closed=1) [GitHub Milestone for 1.2.0-M2](https://github.com/apache/pekko/milestone/15?closed=1), [GitHub Milestone for 1.2.0](https://github.com/apache/pekko/milestone/16?closed=1) for a fuller list of changes.
 
-This is milestone release and is aimed at testing some new changes. This release should ideally not be used in production.
+Most of the changes appeared in the milestone releases (1.2.0-M1 and 1.2.0-M2) but some additional changes were made for the 1.2.0 release. These extra changes include deprecating some methods that will be removed in a future release.
 
 ### Bug Fixes
 
+* Fix a leak in FlatMapPrefix operator ([PR1622](https://github.com/apache/pekko/pull/1622))
+* Fix a leak in PrefixAndTail operator ([PR1623](https://github.com/apache/pekko/pull/1623))
+* Fix occasional ordering issue in FlowWithContext#unsafeOptionalDataVia ([PR1681](https://github.com/apache/pekko/pull/1681))
+* Add the missing EmptySource case to TraversalBuilder ([PR1743](https://github.com/apache/pekko/pull/1743))
 * Issue forming mixed Akka/Pekko cluster when classic remoting with SSL/TLS is used ([PR1857](https://github.com/apache/pekko/pull/1857))
 * Join cluster check adjusted to support Akka nodes ([PR1866](https://github.com/apache/pekko/pull/1866), [PR1877](https://github.com/apache/pekko/pull/1877))
     * If you are attempting to mix Akka and Pekko nodes in a cluster, it is still recommended to disable the join cluster check but these changes may be enough to get it work ([docs](https://cwiki.apache.org/confluence/display/PEKKO/Pekko+Akka+Compatibility)).
 * BroadcastHub drops elements due to register/unregister race ([PR1841](https://github.com/apache/pekko/pull/1841))
 * Fix issue with number deserialization in pekko-cluster-metrics ([PR1899](https://github.com/apache/pekko/pull/1899))
 * Fix typed persistence stack overflow with many read only commands ([PR1919](https://github.com/apache/pekko/pull/1919))
-
+* Allow overriding dispatcher in mapWithResource ([PR1949](https://github.com/apache/pekko/pull/1949))
+* Fix issue with ByteBuffer cleaner only working with Java 8 ([PR2020](https://github.com/apache/pekko/pull/2020))
 
 ### Additions
 
+* add non-default config that allows InboundQuarantineCheck to ignore 'harmless' quarantine events ([PR1555](https://github.com/apache/pekko/pull/1555))
+* New Sink.none operator ([PR1614](https://github.com/apache/pekko/pull/1614))
+* Add overridden duration timeout to StreamTestKit ([PR1648](https://github.com/apache/pekko/pull/1648))
+* Add Identity function to Java DSL ([PR1671](https://github.com/apache/pekko/pull/1671))
+* Add support for controlling the NettyTransport's byteBuf allocator type ([PR1707](https://github.com/apache/pekko/pull/1707))
 * Add Pattern timeout support ([PR1424](https://github.com/apache/pekko/pull/1424))
 * Add TraversalBuilder.getValuePresentedSource method for further optimization ([PR1701](https://github.com/apache/pekko/pull/1701))
 * Add flatmapConcat with parallelism support ([PR1702](https://github.com/apache/pekko/pull/1702))
@@ -35,50 +45,10 @@ This is milestone release and is aimed at testing some new changes. This release
 * Add dropRepeated stream operator ([PR1868](https://github.com/apache/pekko/pull/1868))
 * Add onComplete support for statefulMapConcat operator ([PR1870](https://github.com/apache/pekko/pull/1870))
 * Add groupedAdjacentBy and GroupedAdjacentByWeighted stream operators ([PR1937](https://github.com/apache/pekko/pull/1937))
+* Add JournalPersistFailed and JournalPersistRejected signals ([PR1961](https://github.com/apache/pekko/pull/1961))
 * Make calculateDelay a public method ([PR1940](https://github.com/apache/pekko/pull/1940))
-
-### Changes
-
-* Tweak withAttributes in Flow ([PR1658](https://github.com/apache/pekko/pull/1658))
-* Handle NormalShutdownReason in MergeHub ([PR1741](https://github.com/apache/pekko/pull/1741))
-* optimize recoverWith to avoid some materialization ([PR1775](https://github.com/apache/pekko/pull/1775))
-* Regenerated all the source code for Protobuf using 4.29.3 ([PR1795](https://github.com/apache/pekko/pull/1795))
-* Avoid materialize an empty source in switchMap ([PR1804](https://github.com/apache/pekko/pull/1804))
-* Fix wrong name attribute for iterate and mapAsyncPartitionUnordered operators ([PR1869](https://github.com/apache/pekko/pull/1869))
-* Change aggregateWithBoundary operator in javadsl to use Optional ([PR1876](https://github.com/apache/pekko/pull/1876))
-* TLS v1.3 is now the default ([PR1901](https://github.com/apache/pekko/pull/1901))
-* Set vector builder to null after stage completed to avoid leak ([PR1917](https://github.com/apache/pekko/pull/1917))
-* Renamed internal Alogithm class (pekko-serialization-jackson) ([PR1932](https://github.com/apache/pekko/pull/1932))
-
-### Dependency Changes
-
-* netty 4.2.2.Final
-* jackson 2.19.1
-* lightbend/config 1.4.4
-* protobuf-java 4.31.1
-* slfj4 2.0.17
-* jupiter-junit 5.13.3
-
-## 1.2.0-M1
-
-Pekko 1.2.0-M1 has some new features, performance updates and dependency upgrades. See the [GitHub Milestone](https://github.com/apache/pekko/milestone/6?closed=1) for a fuller list of changes.
-
-This is milestone release and is aimed at testing some new changes. It is expected that there will be at least one more milestone before a full release. This release should ideally not be used in production.
-
-### Bug Fixes
-
-* Fix a leak in FlatMapPrefix operator ([PR1622](https://github.com/apache/pekko/pull/1622))
-* Fix a leak in PrefixAndTail operator ([PR1623](https://github.com/apache/pekko/pull/1623))
-* Fix occasional ordering issue in FlowWithContext#unsafeOptionalDataVia ([PR1681](https://github.com/apache/pekko/pull/1681))
-* Add the missing EmptySource case to TraversalBuilder ([PR1743](https://github.com/apache/pekko/pull/1743))
-
-### Additions
-
-* add non-default config that allows InboundQuarantineCheck to ignore 'harmless' quarantine events ([PR1555](https://github.com/apache/pekko/pull/1555))
-* New Sink.none operator ([PR1614](https://github.com/apache/pekko/pull/1614))
-* Add overridden duration timeout to StreamTestKit ([PR1648](https://github.com/apache/pekko/pull/1648))
-* Add Identity function to Java DSL ([PR1671](https://github.com/apache/pekko/pull/1671))
-* Add support for controlling the NettyTransport's byteBuf allocator type ([PR1707](https://github.com/apache/pekko/pull/1707))
+* Allow disabling AsyncWriteJournal.Resequencer to improve latency ([#2026](https://github.com/apache/pekko/issues/2026))
+* Add CompletionStages helper ([#2049](https://github.com/apache/pekko/pull/2049))
 
 ### Changes
 
@@ -91,10 +61,28 @@ This is milestone release and is aimed at testing some new changes. It is expect
 * Avoid forwarding method on ArrayDequeue in BatchingExecutor ([PR1688](https://github.com/apache/pekko/pull/1688))
 * Enhance virtual thread support ([PR1724](https://github.com/apache/pekko/pull/1724))
 * Add LoadMetrics support for virtual thread executor ([PR1734](https://github.com/apache/pekko/pull/1734))
+* Tweak withAttributes in Flow ([PR1658](https://github.com/apache/pekko/pull/1658))
+* Handle NormalShutdownReason in MergeHub ([PR1741](https://github.com/apache/pekko/pull/1741))
+* optimize recoverWith to avoid some materialization ([PR1775](https://github.com/apache/pekko/pull/1775))
+* Regenerated all the source code for Protobuf using 4.32.0 ([PR1795](https://github.com/apache/pekko/pull/1795, [PR2036](https://github.com/apache/pekko/pull/2036)))
+* Avoid materialize an empty source in switchMap ([PR1804](https://github.com/apache/pekko/pull/1804))
+* Fix wrong name attribute for iterate and mapAsyncPartitionUnordered operators ([PR1869](https://github.com/apache/pekko/pull/1869))
+* Change aggregateWithBoundary operator in javadsl to use Optional ([PR1876](https://github.com/apache/pekko/pull/1876))
+* TLS v1.3 is now the default ([PR1901](https://github.com/apache/pekko/pull/1901))
+* Set vector builder to null after stage completed to avoid leak ([PR1917](https://github.com/apache/pekko/pull/1917))
+* Renamed internal Alogithm class (pekko-serialization-jackson) ([PR1932](https://github.com/apache/pekko/pull/1932))
+* Deprecate FunctionalInterfaces that are being removed in pekko 2.0.0 ([PR2004](https://github.com/apache/pekko/pull/2004), ([PR2075](https://github.com/apache/pekko/pull/2075)) 
+* Disable batch if isVirtualized ([PR2046](https://github.com/apache/pekko/pull/2046))
+* Deprecate more methods in Futures ([PR2048](https://github.com/apache/pekko/pull/2048))
+* Remove incorrect deprecation in IOResult ([PR2054](https://github.com/apache/pekko/pull/2054))
+* Make timeoutCompletionStage accept Java Duration ([PR2063](https://github.com/apache/pekko/pull/2063))
 
 ### Dependency Changes
 
-* jackson 2.18.2 - it is recommended for users to uptake jackson 2.18.3 when it is released due to some bug fixes ([PR1556](https://github.com/apache/pekko/pull/1556))
-* netty 4.1.117.Final
-* protobuf-java to 3.25.6 ([PR1748](https://github.com/apache/pekko/pull/1748))
-* scala 2.12.20, 2.13.16, 3.3.5
+* netty 4.2.4.Final
+* jackson 2.19.2
+* lightbend/config 1.4.4
+* protobuf-java 4.32.0
+* slfj4 2.0.17
+* jupiter-junit 5.13.3
+* scala 2.12.20, 2.13.16, 3.3.6
