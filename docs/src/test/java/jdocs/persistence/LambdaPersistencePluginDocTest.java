@@ -134,7 +134,8 @@ public class LambdaPersistencePluginDocTest {
     }
 
     @Override
-    public CompletionStage<Long> doAsyncReadHighestSequenceNr(String persistenceId, long fromSequenceNr) {
+    public CompletionStage<Long> doAsyncReadHighestSequenceNr(
+        String persistenceId, long fromSequenceNr) {
       return null;
     }
   }
