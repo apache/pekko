@@ -13,19 +13,20 @@
 
 package jdocs.io;
 
-import org.apache.pekko.actor.ActorSystem;
-import org.apache.pekko.actor.AbstractActor;
 // #imports
 import java.net.InetSocketAddress;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.io.Inet;
 import org.apache.pekko.io.Tcp;
 import org.apache.pekko.io.TcpMessage;
 import org.apache.pekko.io.TcpSO;
 import org.apache.pekko.util.ByteString;
-import java.time.Duration;
+
 // #imports
 
 public class IODocTest {

@@ -9,22 +9,20 @@
 
 package org.apache.pekko.actor.testkit.typed.javadsl;
 
-import org.apache.pekko.actor.testkit.typed.annotations.JUnit5TestKit;
-import org.apache.pekko.Done;
-import org.apache.pekko.actor.typed.javadsl.Behaviors;
-
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.scalatestplus.junit.JUnitSuite;
+import static org.apache.pekko.Done.done;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
-
-import static org.apache.pekko.Done.done;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import org.apache.pekko.Done;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnit5TestKit;
+import org.apache.pekko.actor.typed.javadsl.Behaviors;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.scalatestplus.junit.JUnitSuite;
 
 @DisplayName("ActorTestKitTestJUnit5")
 @ExtendWith(TestKitJUnit5Extension.class)

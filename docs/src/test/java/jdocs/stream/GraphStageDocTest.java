@@ -14,12 +14,19 @@
 package jdocs.stream;
 
 // #imports
+import static org.junit.Assert.assertEquals;
+
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.TimeUnit;
+import jdocs.AbstractJavaTest;
 import org.apache.pekko.Done;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.japi.Pair;
-import org.apache.pekko.japi.function.Predicate;
 import org.apache.pekko.japi.function.Function;
+import org.apache.pekko.japi.function.Predicate;
 import org.apache.pekko.japi.function.Procedure;
 import org.apache.pekko.stream.*;
 import org.apache.pekko.stream.javadsl.*;
@@ -27,20 +34,12 @@ import org.apache.pekko.stream.stage.*;
 // #imports
 import org.apache.pekko.stream.testkit.TestPublisher;
 import org.apache.pekko.stream.testkit.TestSubscriber;
-import jdocs.AbstractJavaTest;
 import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.reactivestreams.Subscription;
 import scala.concurrent.ExecutionContext;
-
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.TimeUnit;
-
-import static org.junit.Assert.assertEquals;
 
 public class GraphStageDocTest extends AbstractJavaTest {
   static ActorSystem system;
@@ -94,6 +93,7 @@ public class GraphStageDocTest extends AbstractJavaTest {
       };
     }
   }
+
   // #simple-source
 
   // #simple-sink
@@ -132,6 +132,7 @@ public class GraphStageDocTest extends AbstractJavaTest {
       };
     }
   }
+
   // #simple-sink
 
   @Test
@@ -209,6 +210,7 @@ public class GraphStageDocTest extends AbstractJavaTest {
       };
     }
   }
+
   // #one-to-one
 
   @Test
@@ -280,6 +282,7 @@ public class GraphStageDocTest extends AbstractJavaTest {
       };
     }
   }
+
   // #many-to-one
 
   @Test
@@ -353,6 +356,7 @@ public class GraphStageDocTest extends AbstractJavaTest {
       };
     }
   }
+
   // #one-to-many
 
   @Test
@@ -409,6 +413,7 @@ public class GraphStageDocTest extends AbstractJavaTest {
       };
     }
   }
+
   // #simpler-one-to-many
 
   @Test
@@ -502,6 +507,7 @@ public class GraphStageDocTest extends AbstractJavaTest {
       };
     }
   }
+
   // #async-side-channel
 
   @Test
@@ -586,6 +592,7 @@ public class GraphStageDocTest extends AbstractJavaTest {
       };
     }
   }
+
   // #timed
 
   public void demonstrateAGraphStageWithATimer() throws Exception {
@@ -656,6 +663,7 @@ public class GraphStageDocTest extends AbstractJavaTest {
       return new Pair<>(logic, promise);
     }
   }
+
   // #materialized
 
   public void demonstrateACustomMaterializedValue() throws Exception {
@@ -750,6 +758,7 @@ public class GraphStageDocTest extends AbstractJavaTest {
       };
     }
   }
+
   // #detached
 
   public void demonstrateADetachedGraphStage() throws Exception {

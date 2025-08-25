@@ -13,6 +13,13 @@
 
 package org.apache.pekko.stream.javadsl;
 
+import static org.junit.Assert.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.TimeUnit;
 import org.apache.pekko.Done;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.japi.Pair;
@@ -22,14 +29,6 @@ import org.apache.pekko.testkit.PekkoSpec;
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.TimeUnit;
-
-import static org.junit.Assert.*;
 
 public class GraphDslTest extends StreamTest {
   public GraphDslTest() {

@@ -19,10 +19,10 @@ import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
 // #adapter-import
 // in Java use the static methods on Adapter to convert from classic to typed
-import org.apache.pekko.actor.typed.javadsl.Adapter;
-// #adapter-import
 import org.apache.pekko.actor.typed.javadsl.AbstractBehavior;
 import org.apache.pekko.actor.typed.javadsl.ActorContext;
+import org.apache.pekko.actor.typed.javadsl.Adapter;
+// #adapter-import
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.apache.pekko.actor.typed.javadsl.Receive;
 import org.apache.pekko.testkit.javadsl.TestKit;
@@ -83,6 +83,7 @@ public class TypedWatchingClassicTest extends JUnitSuite {
       return this;
     }
   }
+
   // #typed
 
   // #classic
@@ -100,6 +101,7 @@ public class TypedWatchingClassicTest extends JUnitSuite {
       message.replyTo.tell(Typed.Pong.INSTANCE);
     }
   }
+
   // #classic
 
   @Test

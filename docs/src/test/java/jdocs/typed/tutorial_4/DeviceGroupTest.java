@@ -13,23 +13,21 @@
 
 package jdocs.typed.tutorial_4;
 
+import static jdocs.typed.tutorial_4.DeviceManager.DeviceRegistered;
+import static jdocs.typed.tutorial_4.DeviceManager.ReplyDeviceList;
+import static jdocs.typed.tutorial_4.DeviceManager.RequestDeviceList;
+import static jdocs.typed.tutorial_4.DeviceManager.RequestTrackDevice;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
-
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-
-import static jdocs.typed.tutorial_4.DeviceManager.DeviceRegistered;
-import static jdocs.typed.tutorial_4.DeviceManager.RequestTrackDevice;
-import static jdocs.typed.tutorial_4.DeviceManager.ReplyDeviceList;
-import static jdocs.typed.tutorial_4.DeviceManager.RequestDeviceList;
 
 public class DeviceGroupTest extends JUnitSuite {
 
@@ -65,6 +63,7 @@ public class DeviceGroupTest extends JUnitSuite {
     groupActor.tell(new RequestTrackDevice("wrongGroup", "device1", probe.getRef()));
     probe.expectNoMessage();
   }
+
   // #device-group-test-registration
 
   // #device-group-test3
@@ -81,6 +80,7 @@ public class DeviceGroupTest extends JUnitSuite {
     DeviceRegistered registered2 = probe.receiveMessage();
     assertEquals(registered1.device, registered2.device);
   }
+
   // #device-group-test3
 
   // #device-group-list-terminate-test

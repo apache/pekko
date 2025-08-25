@@ -17,7 +17,11 @@
 
 package org.apache.pekko.actor.typed.eventstream;
 
+import org.apache.pekko.actor.DeadLetter;
 import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
+import org.apache.pekko.actor.typed.ActorRef;
+import org.apache.pekko.actor.typed.ActorSystem;
+// #dead-letter-imports
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.javadsl.AbstractBehavior;
 import org.apache.pekko.actor.typed.javadsl.ActorContext;
@@ -25,10 +29,7 @@ import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.apache.pekko.actor.typed.javadsl.Receive;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
-// #dead-letter-imports
-import org.apache.pekko.actor.DeadLetter;
-import org.apache.pekko.actor.typed.ActorRef;
-import org.apache.pekko.actor.typed.ActorSystem;
+
 // #dead-letter-imports
 
 public class EventStreamDocTest extends JUnitSuite {

@@ -13,6 +13,18 @@
 
 package jdocs.org.apache.pekko.persistence.typed;
 
+import static jdocs.org.apache.pekko.persistence.typed.AuctionEntity.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
@@ -34,23 +46,10 @@ import org.apache.pekko.persistence.typed.javadsl.ReplicatedEventSourcing;
 import org.apache.pekko.persistence.typed.javadsl.ReplicationContext;
 import org.apache.pekko.persistence.typed.javadsl.SignalHandler;
 import org.apache.pekko.serialization.jackson.CborSerializable;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
-
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static jdocs.org.apache.pekko.persistence.typed.AuctionEntity.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class ReplicatedAuctionExampleTest extends JUnitSuite {
   @ClassRule
@@ -167,6 +166,7 @@ class AuctionEntity
   private enum Close implements Command {
     INSTANCE
   }
+
   // #commands
 
   // #events
@@ -201,6 +201,7 @@ class AuctionEntity
       this.amount = amount;
     }
   }
+
   // #events
 
   // #state
@@ -261,6 +262,7 @@ class AuctionEntity
       return !stillRunning && finishedAtDc.isEmpty();
     }
   }
+
   // #state
 
   // #setup
@@ -398,6 +400,7 @@ class AuctionEntity
 
     return builder.build();
   }
+
   // #command-handler
 
   // #event-handler
@@ -427,6 +430,7 @@ class AuctionEntity
         .onEvent(WinnerDecided.class, (state, event) -> state.close())
         .build();
   }
+
   // #event-handler
 
   // #event-triggers

@@ -14,13 +14,13 @@
 package jdocs.stream.operators.source;
 
 // #imports
-import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Publisher;
-
+import java.util.concurrent.Flow.Subscriber;
 import org.apache.pekko.NotUsed;
-import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.stream.javadsl.JavaFlowSupport;
 // #imports
+import org.apache.pekko.stream.javadsl.Source;
+
 public interface AsSubscriber {
   // We are 'faking' the JavaFlowSupport API here so we can include the signature as a snippet in
   // the API,

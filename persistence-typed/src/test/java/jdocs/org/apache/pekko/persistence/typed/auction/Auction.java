@@ -20,14 +20,19 @@ import java.util.UUID;
 public final class Auction {
   /** The item under auction. */
   private final UUID itemId;
+
   /** The user that created the item. */
   private final UUID creator;
+
   /** The reserve price of the auction. */
   private final int reservePrice;
+
   /** The minimum increment between bids. */
   private final int increment;
+
   /** The time the auction started. */
   private final Instant startTime;
+
   /** The time the auction will end. */
   private final Instant endTime;
 

@@ -13,9 +13,8 @@
 
 package org.apache.pekko.cluster.singleton;
 
-import org.apache.pekko.actor.ActorSystem;
-
 import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.actor.Props;
 
 public class ClusterSingletonManagerTest {

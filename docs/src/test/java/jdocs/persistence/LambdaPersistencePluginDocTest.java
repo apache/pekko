@@ -14,31 +14,27 @@
 package jdocs.persistence;
 
 // #plugin-imports
-import org.apache.pekko.dispatch.Futures;
-import org.apache.pekko.persistence.*;
-import org.apache.pekko.persistence.journal.japi.*;
-import org.apache.pekko.persistence.snapshot.japi.*;
-// #plugin-imports
-
-import org.apache.pekko.actor.*;
-import org.apache.pekko.persistence.journal.leveldb.SharedLeveldbJournal;
-import org.apache.pekko.persistence.journal.leveldb.SharedLeveldbStore;
-
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Optional;
+import java.util.function.Consumer;
+import org.apache.pekko.actor.*;
+import org.apache.pekko.dispatch.Futures;
+import org.apache.pekko.persistence.*;
+import org.apache.pekko.persistence.japi.journal.JavaJournalSpec;
+import org.apache.pekko.persistence.japi.snapshot.JavaSnapshotStoreSpec;
+import org.apache.pekko.persistence.journal.japi.*;
+import org.apache.pekko.persistence.journal.leveldb.SharedLeveldbJournal;
+import org.apache.pekko.persistence.journal.leveldb.SharedLeveldbStore;
+import org.apache.pekko.persistence.snapshot.japi.*;
+// #plugin-imports
+import org.iq80.leveldb.util.FileUtils;
 import org.junit.runner.RunWith;
 import org.scalatestplus.junit.JUnitRunner;
 import scala.concurrent.Future;
-import java.util.function.Consumer;
-import org.iq80.leveldb.util.FileUtils;
-import java.util.Optional;
-
-import org.apache.pekko.persistence.japi.journal.JavaJournalSpec;
-import org.apache.pekko.persistence.japi.snapshot.JavaSnapshotStoreSpec;
 
 public class LambdaPersistencePluginDocTest {
 
@@ -47,6 +43,7 @@ public class LambdaPersistencePluginDocTest {
         final ActorSystem system = null;
         // #shared-store-creation
         final ActorRef store = system.actorOf(Props.create(SharedLeveldbStore.class), "store");
+
         // #shared-store-creation
 
         // #shared-store-usage
@@ -116,6 +113,7 @@ public class LambdaPersistencePluginDocTest {
         return Futures.failed(e);
       }
     }
+
     // #sync-journal-plugin-api
 
     @Override

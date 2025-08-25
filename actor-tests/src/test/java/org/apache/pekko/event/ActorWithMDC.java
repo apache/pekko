@@ -13,11 +13,10 @@
 
 package org.apache.pekko.event;
 
-import org.apache.pekko.actor.AbstractActor;
-
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import org.apache.pekko.actor.AbstractActor;
 
 public class ActorWithMDC extends AbstractActor {
 

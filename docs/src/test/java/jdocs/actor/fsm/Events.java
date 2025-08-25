@@ -13,8 +13,8 @@
 
 package jdocs.actor.fsm;
 
-import org.apache.pekko.actor.ActorRef;
 import java.util.List;
+import org.apache.pekko.actor.ActorRef;
 
 public class Events {
 
@@ -30,6 +30,7 @@ public class Events {
     public ActorRef getRef() {
       return ref;
     }
+
     // #boilerplate
 
     @Override
@@ -52,6 +53,7 @@ public class Events {
     public Object getObj() {
       return obj;
     }
+
     // #boilerplate
 
     @Override
@@ -74,6 +76,7 @@ public class Events {
     public List<Object> getList() {
       return list;
     }
+
     // #boilerplate
 
     @Override

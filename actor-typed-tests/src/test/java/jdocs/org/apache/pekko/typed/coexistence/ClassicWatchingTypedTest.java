@@ -13,22 +13,22 @@
 
 package jdocs.org.apache.pekko.typed.coexistence;
 
+import static org.apache.pekko.actor.typed.javadsl.Behaviors.same;
+
 import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.actor.typed.Behavior;
+import org.apache.pekko.actor.typed.javadsl.Adapter;
+// #adapter-import
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 // #adapter-import
 // In java use the static methods on Adapter to convert from typed to classic
-import org.apache.pekko.actor.typed.javadsl.Adapter;
-// #adapter-import
 import org.apache.pekko.testkit.TestProbe;
 import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
 import scala.concurrent.duration.Duration;
-
-import static org.apache.pekko.actor.typed.javadsl.Behaviors.same;
 
 public class ClassicWatchingTypedTest extends JUnitSuite {
 
@@ -63,6 +63,7 @@ public class ClassicWatchingTypedTest extends JUnitSuite {
           .build();
     }
   }
+
   // #classic-watch
 
   // #typed
@@ -90,6 +91,7 @@ public class ClassicWatchingTypedTest extends JUnitSuite {
           .build();
     }
   }
+
   // #typed
 
   @Test

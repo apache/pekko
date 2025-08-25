@@ -20,7 +20,6 @@ package org.apache.pekko.util;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-
 import scala.Option;
 import scala.concurrent.Future;
 

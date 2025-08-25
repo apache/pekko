@@ -13,6 +13,8 @@
 
 package jdocs.stream.javadsl.cookbook;
 
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.japi.Pair;
@@ -30,9 +32,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import scala.concurrent.Await;
-
-import java.time.Duration;
-import java.util.concurrent.TimeUnit;
 
 public class RecipeMissedTicks extends RecipeTest {
   static ActorSystem system;

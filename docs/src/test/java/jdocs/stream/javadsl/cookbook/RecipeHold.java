@@ -13,6 +13,7 @@
 
 package jdocs.stream.javadsl.cookbook;
 
+import java.time.Duration;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.japi.Pair;
 import org.apache.pekko.stream.Attributes;
@@ -34,8 +35,6 @@ import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.time.Duration;
 
 public class RecipeHold extends RecipeTest {
   static ActorSystem system;
@@ -101,6 +100,7 @@ public class RecipeHold extends RecipeTest {
       };
     }
   }
+
   // #hold-version-1
 
   // #hold-version-2
@@ -151,6 +151,7 @@ public class RecipeHold extends RecipeTest {
       };
     }
   }
+
   // #hold-version-2
 
   @Test

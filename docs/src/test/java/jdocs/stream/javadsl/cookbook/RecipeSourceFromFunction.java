@@ -13,20 +13,19 @@
 
 package jdocs.stream.javadsl.cookbook;
 
+import com.typesafe.config.ConfigFactory;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import com.typesafe.config.ConfigFactory;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 public class RecipeSourceFromFunction extends RecipeTest {
   static ActorSystem system;
@@ -37,7 +36,8 @@ public class RecipeSourceFromFunction extends RecipeTest {
         ActorSystem.create(
             "RecipeSourceFromFunction",
             ConfigFactory.parseString(
-                "pekko.loglevel=DEBUG\npekko.loggers = [org.apache.pekko.testkit.TestEventListener]"));
+                "pekko.loglevel=DEBUG\n"
+                    + "pekko.loggers = [org.apache.pekko.testkit.TestEventListener]"));
   }
 
   @AfterClass

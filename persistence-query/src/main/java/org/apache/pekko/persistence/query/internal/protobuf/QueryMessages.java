@@ -51,12 +51,14 @@ public final class QueryMessages {
      * @return Whether the persistenceId field is set.
      */
     boolean hasPersistenceId();
+
     /**
      * <code>required string persistence_id = 1;</code>
      *
      * @return The persistenceId.
      */
     java.lang.String getPersistenceId();
+
     /**
      * <code>required string persistence_id = 1;</code>
      *
@@ -70,12 +72,14 @@ public final class QueryMessages {
      * @return Whether the entityType field is set.
      */
     boolean hasEntityType();
+
     /**
      * <code>required string entity_type = 2;</code>
      *
      * @return The entityType.
      */
     java.lang.String getEntityType();
+
     /**
      * <code>required string entity_type = 2;</code>
      *
@@ -89,6 +93,7 @@ public final class QueryMessages {
      * @return Whether the slice field is set.
      */
     boolean hasSlice();
+
     /**
      * <code>required int32 slice = 3;</code>
      *
@@ -102,6 +107,7 @@ public final class QueryMessages {
      * @return Whether the sequenceNr field is set.
      */
     boolean hasSequenceNr();
+
     /**
      * <code>required int64 sequence_nr = 4;</code>
      *
@@ -115,6 +121,7 @@ public final class QueryMessages {
      * @return Whether the timestamp field is set.
      */
     boolean hasTimestamp();
+
     /**
      * <code>required int64 timestamp = 5;</code>
      *
@@ -128,12 +135,14 @@ public final class QueryMessages {
      * @return Whether the offset field is set.
      */
     boolean hasOffset();
+
     /**
      * <code>required string offset = 6;</code>
      *
      * @return The offset.
      */
     java.lang.String getOffset();
+
     /**
      * <code>required string offset = 6;</code>
      *
@@ -147,12 +156,14 @@ public final class QueryMessages {
      * @return Whether the offsetManifest field is set.
      */
     boolean hasOffsetManifest();
+
     /**
      * <code>required string offset_manifest = 7;</code>
      *
      * @return The offsetManifest.
      */
     java.lang.String getOffsetManifest();
+
     /**
      * <code>required string offset_manifest = 7;</code>
      *
@@ -166,12 +177,14 @@ public final class QueryMessages {
      * @return Whether the event field is set.
      */
     boolean hasEvent();
+
     /**
      * <code>optional .Payload event = 8;</code>
      *
      * @return The event.
      */
     org.apache.pekko.remote.ContainerFormats.Payload getEvent();
+
     /** <code>optional .Payload event = 8;</code> */
     org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder getEventOrBuilder();
 
@@ -181,15 +194,18 @@ public final class QueryMessages {
      * @return Whether the metadata field is set.
      */
     boolean hasMetadata();
+
     /**
      * <code>optional .Payload metadata = 9;</code>
      *
      * @return The metadata.
      */
     org.apache.pekko.remote.ContainerFormats.Payload getMetadata();
+
     /** <code>optional .Payload metadata = 9;</code> */
     org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder getMetadataOrBuilder();
   }
+
   /**
    *
    *
@@ -215,6 +231,7 @@ public final class QueryMessages {
           /* suffix= */ "",
           EventEnvelope.class.getName());
     }
+
     // Use EventEnvelope.newBuilder() to construct.
     private EventEnvelope(
         org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
@@ -251,6 +268,7 @@ public final class QueryMessages {
 
     @SuppressWarnings("serial")
     private volatile java.lang.Object persistenceId_ = "";
+
     /**
      * <code>required string persistence_id = 1;</code>
      *
@@ -260,6 +278,7 @@ public final class QueryMessages {
     public boolean hasPersistenceId() {
       return ((bitField0_ & 0x00000001) != 0);
     }
+
     /**
      * <code>required string persistence_id = 1;</code>
      *
@@ -280,6 +299,7 @@ public final class QueryMessages {
         return s;
       }
     }
+
     /**
      * <code>required string persistence_id = 1;</code>
      *
@@ -302,6 +322,7 @@ public final class QueryMessages {
 
     @SuppressWarnings("serial")
     private volatile java.lang.Object entityType_ = "";
+
     /**
      * <code>required string entity_type = 2;</code>
      *
@@ -311,6 +332,7 @@ public final class QueryMessages {
     public boolean hasEntityType() {
       return ((bitField0_ & 0x00000002) != 0);
     }
+
     /**
      * <code>required string entity_type = 2;</code>
      *
@@ -331,6 +353,7 @@ public final class QueryMessages {
         return s;
       }
     }
+
     /**
      * <code>required string entity_type = 2;</code>
      *
@@ -351,6 +374,7 @@ public final class QueryMessages {
 
     public static final int SLICE_FIELD_NUMBER = 3;
     private int slice_ = 0;
+
     /**
      * <code>required int32 slice = 3;</code>
      *
@@ -360,6 +384,7 @@ public final class QueryMessages {
     public boolean hasSlice() {
       return ((bitField0_ & 0x00000004) != 0);
     }
+
     /**
      * <code>required int32 slice = 3;</code>
      *
@@ -372,6 +397,7 @@ public final class QueryMessages {
 
     public static final int SEQUENCE_NR_FIELD_NUMBER = 4;
     private long sequenceNr_ = 0L;
+
     /**
      * <code>required int64 sequence_nr = 4;</code>
      *
@@ -381,6 +407,7 @@ public final class QueryMessages {
     public boolean hasSequenceNr() {
       return ((bitField0_ & 0x00000008) != 0);
     }
+
     /**
      * <code>required int64 sequence_nr = 4;</code>
      *
@@ -393,6 +420,7 @@ public final class QueryMessages {
 
     public static final int TIMESTAMP_FIELD_NUMBER = 5;
     private long timestamp_ = 0L;
+
     /**
      * <code>required int64 timestamp = 5;</code>
      *
@@ -402,6 +430,7 @@ public final class QueryMessages {
     public boolean hasTimestamp() {
       return ((bitField0_ & 0x00000010) != 0);
     }
+
     /**
      * <code>required int64 timestamp = 5;</code>
      *
@@ -416,6 +445,7 @@ public final class QueryMessages {
 
     @SuppressWarnings("serial")
     private volatile java.lang.Object offset_ = "";
+
     /**
      * <code>required string offset = 6;</code>
      *
@@ -425,6 +455,7 @@ public final class QueryMessages {
     public boolean hasOffset() {
       return ((bitField0_ & 0x00000020) != 0);
     }
+
     /**
      * <code>required string offset = 6;</code>
      *
@@ -445,6 +476,7 @@ public final class QueryMessages {
         return s;
       }
     }
+
     /**
      * <code>required string offset = 6;</code>
      *
@@ -467,6 +499,7 @@ public final class QueryMessages {
 
     @SuppressWarnings("serial")
     private volatile java.lang.Object offsetManifest_ = "";
+
     /**
      * <code>required string offset_manifest = 7;</code>
      *
@@ -476,6 +509,7 @@ public final class QueryMessages {
     public boolean hasOffsetManifest() {
       return ((bitField0_ & 0x00000040) != 0);
     }
+
     /**
      * <code>required string offset_manifest = 7;</code>
      *
@@ -496,6 +530,7 @@ public final class QueryMessages {
         return s;
       }
     }
+
     /**
      * <code>required string offset_manifest = 7;</code>
      *
@@ -516,6 +551,7 @@ public final class QueryMessages {
 
     public static final int EVENT_FIELD_NUMBER = 8;
     private org.apache.pekko.remote.ContainerFormats.Payload event_;
+
     /**
      * <code>optional .Payload event = 8;</code>
      *
@@ -525,6 +561,7 @@ public final class QueryMessages {
     public boolean hasEvent() {
       return ((bitField0_ & 0x00000080) != 0);
     }
+
     /**
      * <code>optional .Payload event = 8;</code>
      *
@@ -536,6 +573,7 @@ public final class QueryMessages {
           ? org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance()
           : event_;
     }
+
     /** <code>optional .Payload event = 8;</code> */
     @java.lang.Override
     public org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder getEventOrBuilder() {
@@ -546,6 +584,7 @@ public final class QueryMessages {
 
     public static final int METADATA_FIELD_NUMBER = 9;
     private org.apache.pekko.remote.ContainerFormats.Payload metadata_;
+
     /**
      * <code>optional .Payload metadata = 9;</code>
      *
@@ -555,6 +594,7 @@ public final class QueryMessages {
     public boolean hasMetadata() {
       return ((bitField0_ & 0x00000100) != 0);
     }
+
     /**
      * <code>optional .Payload metadata = 9;</code>
      *
@@ -566,6 +606,7 @@ public final class QueryMessages {
           ? org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance()
           : metadata_;
     }
+
     /** <code>optional .Payload metadata = 9;</code> */
     @java.lang.Override
     public org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder getMetadataOrBuilder() {
@@ -926,6 +967,7 @@ public final class QueryMessages {
       Builder builder = new Builder(parent);
       return builder;
     }
+
     /**
      *
      *
@@ -1266,6 +1308,7 @@ public final class QueryMessages {
       private int bitField0_;
 
       private java.lang.Object persistenceId_ = "";
+
       /**
        * <code>required string persistence_id = 1;</code>
        *
@@ -1274,6 +1317,7 @@ public final class QueryMessages {
       public boolean hasPersistenceId() {
         return ((bitField0_ & 0x00000001) != 0);
       }
+
       /**
        * <code>required string persistence_id = 1;</code>
        *
@@ -1293,6 +1337,7 @@ public final class QueryMessages {
           return (java.lang.String) ref;
         }
       }
+
       /**
        * <code>required string persistence_id = 1;</code>
        *
@@ -1309,6 +1354,7 @@ public final class QueryMessages {
           return (org.apache.pekko.protobufv3.internal.ByteString) ref;
         }
       }
+
       /**
        * <code>required string persistence_id = 1;</code>
        *
@@ -1324,6 +1370,7 @@ public final class QueryMessages {
         onChanged();
         return this;
       }
+
       /**
        * <code>required string persistence_id = 1;</code>
        *
@@ -1335,6 +1382,7 @@ public final class QueryMessages {
         onChanged();
         return this;
       }
+
       /**
        * <code>required string persistence_id = 1;</code>
        *
@@ -1352,6 +1400,7 @@ public final class QueryMessages {
       }
 
       private java.lang.Object entityType_ = "";
+
       /**
        * <code>required string entity_type = 2;</code>
        *
@@ -1360,6 +1409,7 @@ public final class QueryMessages {
       public boolean hasEntityType() {
         return ((bitField0_ & 0x00000002) != 0);
       }
+
       /**
        * <code>required string entity_type = 2;</code>
        *
@@ -1379,6 +1429,7 @@ public final class QueryMessages {
           return (java.lang.String) ref;
         }
       }
+
       /**
        * <code>required string entity_type = 2;</code>
        *
@@ -1395,6 +1446,7 @@ public final class QueryMessages {
           return (org.apache.pekko.protobufv3.internal.ByteString) ref;
         }
       }
+
       /**
        * <code>required string entity_type = 2;</code>
        *
@@ -1410,6 +1462,7 @@ public final class QueryMessages {
         onChanged();
         return this;
       }
+
       /**
        * <code>required string entity_type = 2;</code>
        *
@@ -1421,6 +1474,7 @@ public final class QueryMessages {
         onChanged();
         return this;
       }
+
       /**
        * <code>required string entity_type = 2;</code>
        *
@@ -1438,6 +1492,7 @@ public final class QueryMessages {
       }
 
       private int slice_;
+
       /**
        * <code>required int32 slice = 3;</code>
        *
@@ -1447,6 +1502,7 @@ public final class QueryMessages {
       public boolean hasSlice() {
         return ((bitField0_ & 0x00000004) != 0);
       }
+
       /**
        * <code>required int32 slice = 3;</code>
        *
@@ -1456,6 +1512,7 @@ public final class QueryMessages {
       public int getSlice() {
         return slice_;
       }
+
       /**
        * <code>required int32 slice = 3;</code>
        *
@@ -1469,6 +1526,7 @@ public final class QueryMessages {
         onChanged();
         return this;
       }
+
       /**
        * <code>required int32 slice = 3;</code>
        *
@@ -1482,6 +1540,7 @@ public final class QueryMessages {
       }
 
       private long sequenceNr_;
+
       /**
        * <code>required int64 sequence_nr = 4;</code>
        *
@@ -1491,6 +1550,7 @@ public final class QueryMessages {
       public boolean hasSequenceNr() {
         return ((bitField0_ & 0x00000008) != 0);
       }
+
       /**
        * <code>required int64 sequence_nr = 4;</code>
        *
@@ -1500,6 +1560,7 @@ public final class QueryMessages {
       public long getSequenceNr() {
         return sequenceNr_;
       }
+
       /**
        * <code>required int64 sequence_nr = 4;</code>
        *
@@ -1513,6 +1574,7 @@ public final class QueryMessages {
         onChanged();
         return this;
       }
+
       /**
        * <code>required int64 sequence_nr = 4;</code>
        *
@@ -1526,6 +1588,7 @@ public final class QueryMessages {
       }
 
       private long timestamp_;
+
       /**
        * <code>required int64 timestamp = 5;</code>
        *
@@ -1535,6 +1598,7 @@ public final class QueryMessages {
       public boolean hasTimestamp() {
         return ((bitField0_ & 0x00000010) != 0);
       }
+
       /**
        * <code>required int64 timestamp = 5;</code>
        *
@@ -1544,6 +1608,7 @@ public final class QueryMessages {
       public long getTimestamp() {
         return timestamp_;
       }
+
       /**
        * <code>required int64 timestamp = 5;</code>
        *
@@ -1557,6 +1622,7 @@ public final class QueryMessages {
         onChanged();
         return this;
       }
+
       /**
        * <code>required int64 timestamp = 5;</code>
        *
@@ -1570,6 +1636,7 @@ public final class QueryMessages {
       }
 
       private java.lang.Object offset_ = "";
+
       /**
        * <code>required string offset = 6;</code>
        *
@@ -1578,6 +1645,7 @@ public final class QueryMessages {
       public boolean hasOffset() {
         return ((bitField0_ & 0x00000020) != 0);
       }
+
       /**
        * <code>required string offset = 6;</code>
        *
@@ -1597,6 +1665,7 @@ public final class QueryMessages {
           return (java.lang.String) ref;
         }
       }
+
       /**
        * <code>required string offset = 6;</code>
        *
@@ -1613,6 +1682,7 @@ public final class QueryMessages {
           return (org.apache.pekko.protobufv3.internal.ByteString) ref;
         }
       }
+
       /**
        * <code>required string offset = 6;</code>
        *
@@ -1628,6 +1698,7 @@ public final class QueryMessages {
         onChanged();
         return this;
       }
+
       /**
        * <code>required string offset = 6;</code>
        *
@@ -1639,6 +1710,7 @@ public final class QueryMessages {
         onChanged();
         return this;
       }
+
       /**
        * <code>required string offset = 6;</code>
        *
@@ -1656,6 +1728,7 @@ public final class QueryMessages {
       }
 
       private java.lang.Object offsetManifest_ = "";
+
       /**
        * <code>required string offset_manifest = 7;</code>
        *
@@ -1664,6 +1737,7 @@ public final class QueryMessages {
       public boolean hasOffsetManifest() {
         return ((bitField0_ & 0x00000040) != 0);
       }
+
       /**
        * <code>required string offset_manifest = 7;</code>
        *
@@ -1683,6 +1757,7 @@ public final class QueryMessages {
           return (java.lang.String) ref;
         }
       }
+
       /**
        * <code>required string offset_manifest = 7;</code>
        *
@@ -1699,6 +1774,7 @@ public final class QueryMessages {
           return (org.apache.pekko.protobufv3.internal.ByteString) ref;
         }
       }
+
       /**
        * <code>required string offset_manifest = 7;</code>
        *
@@ -1714,6 +1790,7 @@ public final class QueryMessages {
         onChanged();
         return this;
       }
+
       /**
        * <code>required string offset_manifest = 7;</code>
        *
@@ -1725,6 +1802,7 @@ public final class QueryMessages {
         onChanged();
         return this;
       }
+
       /**
        * <code>required string offset_manifest = 7;</code>
        *
@@ -1747,6 +1825,7 @@ public final class QueryMessages {
               org.apache.pekko.remote.ContainerFormats.Payload.Builder,
               org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder>
           eventBuilder_;
+
       /**
        * <code>optional .Payload event = 8;</code>
        *
@@ -1755,6 +1834,7 @@ public final class QueryMessages {
       public boolean hasEvent() {
         return ((bitField0_ & 0x00000080) != 0);
       }
+
       /**
        * <code>optional .Payload event = 8;</code>
        *
@@ -1769,6 +1849,7 @@ public final class QueryMessages {
           return eventBuilder_.getMessage();
         }
       }
+
       /** <code>optional .Payload event = 8;</code> */
       public Builder setEvent(org.apache.pekko.remote.ContainerFormats.Payload value) {
         if (eventBuilder_ == null) {
@@ -1783,6 +1864,7 @@ public final class QueryMessages {
         onChanged();
         return this;
       }
+
       /** <code>optional .Payload event = 8;</code> */
       public Builder setEvent(
           org.apache.pekko.remote.ContainerFormats.Payload.Builder builderForValue) {
@@ -1795,6 +1877,7 @@ public final class QueryMessages {
         onChanged();
         return this;
       }
+
       /** <code>optional .Payload event = 8;</code> */
       public Builder mergeEvent(org.apache.pekko.remote.ContainerFormats.Payload value) {
         if (eventBuilder_ == null) {
@@ -1814,6 +1897,7 @@ public final class QueryMessages {
         }
         return this;
       }
+
       /** <code>optional .Payload event = 8;</code> */
       public Builder clearEvent() {
         bitField0_ = (bitField0_ & ~0x00000080);
@@ -1825,12 +1909,14 @@ public final class QueryMessages {
         onChanged();
         return this;
       }
+
       /** <code>optional .Payload event = 8;</code> */
       public org.apache.pekko.remote.ContainerFormats.Payload.Builder getEventBuilder() {
         bitField0_ |= 0x00000080;
         onChanged();
         return internalGetEventFieldBuilder().getBuilder();
       }
+
       /** <code>optional .Payload event = 8;</code> */
       public org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder getEventOrBuilder() {
         if (eventBuilder_ != null) {
@@ -1841,6 +1927,7 @@ public final class QueryMessages {
               : event_;
         }
       }
+
       /** <code>optional .Payload event = 8;</code> */
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
               org.apache.pekko.remote.ContainerFormats.Payload,
@@ -1865,6 +1952,7 @@ public final class QueryMessages {
               org.apache.pekko.remote.ContainerFormats.Payload.Builder,
               org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder>
           metadataBuilder_;
+
       /**
        * <code>optional .Payload metadata = 9;</code>
        *
@@ -1873,6 +1961,7 @@ public final class QueryMessages {
       public boolean hasMetadata() {
         return ((bitField0_ & 0x00000100) != 0);
       }
+
       /**
        * <code>optional .Payload metadata = 9;</code>
        *
@@ -1887,6 +1976,7 @@ public final class QueryMessages {
           return metadataBuilder_.getMessage();
         }
       }
+
       /** <code>optional .Payload metadata = 9;</code> */
       public Builder setMetadata(org.apache.pekko.remote.ContainerFormats.Payload value) {
         if (metadataBuilder_ == null) {
@@ -1901,6 +1991,7 @@ public final class QueryMessages {
         onChanged();
         return this;
       }
+
       /** <code>optional .Payload metadata = 9;</code> */
       public Builder setMetadata(
           org.apache.pekko.remote.ContainerFormats.Payload.Builder builderForValue) {
@@ -1913,6 +2004,7 @@ public final class QueryMessages {
         onChanged();
         return this;
       }
+
       /** <code>optional .Payload metadata = 9;</code> */
       public Builder mergeMetadata(org.apache.pekko.remote.ContainerFormats.Payload value) {
         if (metadataBuilder_ == null) {
@@ -1933,6 +2025,7 @@ public final class QueryMessages {
         }
         return this;
       }
+
       /** <code>optional .Payload metadata = 9;</code> */
       public Builder clearMetadata() {
         bitField0_ = (bitField0_ & ~0x00000100);
@@ -1944,12 +2037,14 @@ public final class QueryMessages {
         onChanged();
         return this;
       }
+
       /** <code>optional .Payload metadata = 9;</code> */
       public org.apache.pekko.remote.ContainerFormats.Payload.Builder getMetadataBuilder() {
         bitField0_ |= 0x00000100;
         onChanged();
         return internalGetMetadataFieldBuilder().getBuilder();
       }
+
       /** <code>optional .Payload metadata = 9;</code> */
       public org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder getMetadataOrBuilder() {
         if (metadataBuilder_ != null) {
@@ -1960,6 +2055,7 @@ public final class QueryMessages {
               : metadata_;
         }
       }
+
       /** <code>optional .Payload metadata = 9;</code> */
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilder<
               org.apache.pekko.remote.ContainerFormats.Payload,
@@ -2048,15 +2144,20 @@ public final class QueryMessages {
 
   static {
     java.lang.String[] descriptorData = {
-      "\n\023QueryMessages.proto\022\"org.apache.pekko."
-          + "persistence.query\032\026ContainerFormats.prot"
-          + "o\"\321\001\n\rEventEnvelope\022\026\n\016persistence_id\030\001 "
-          + "\002(\t\022\023\n\013entity_type\030\002 \002(\t\022\r\n\005slice\030\003 \002(\005\022"
-          + "\023\n\013sequence_nr\030\004 \002(\003\022\021\n\ttimestamp\030\005 \002(\003\022"
-          + "\016\n\006offset\030\006 \002(\t\022\027\n\017offset_manifest\030\007 \002(\t"
-          + "\022\027\n\005event\030\010 \001(\0132\010.Payload\022\032\n\010metadata\030\t "
-          + "\001(\0132\010.PayloadB8\n4org.apache.pekko.persis"
-          + "tence.query.internal.protobufH\001"
+      "\n"
+          + "\023QueryMessages.proto\022\"org.apache.pekko."
+          + "persistence.query\032\026ContainerFormats.proto\"\321\001\n\r"
+          + "EventEnvelope\022\026\n"
+          + "\016persistence_id\030\001 \002(\t\022\023\n"
+          + "\013entity_type\030\002 \002(\t\022\r\n"
+          + "\005slice\030\003 \002(\005\022\023\n"
+          + "\013sequence_nr\030\004 \002(\003\022\021\n"
+          + "\ttimestamp\030\005 \002(\003\022\016\n"
+          + "\006offset\030\006 \002(\t\022\027\n"
+          + "\017offset_manifest\030\007 \002(\t\022\027\n"
+          + "\005event\030\010 \001(\0132\010.Payload\022\032\n"
+          + "\010metadata\030\t \001(\0132\010.PayloadB8\n"
+          + "4org.apache.pekko.persistence.query.internal.protobufH\001"
     };
     descriptor =
         org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor

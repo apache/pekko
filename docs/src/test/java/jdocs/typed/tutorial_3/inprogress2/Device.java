@@ -15,6 +15,7 @@ package jdocs.typed.tutorial_3.inprogress2;
 
 // #device-with-read
 
+import java.util.Optional;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.PostStop;
@@ -22,8 +23,6 @@ import org.apache.pekko.actor.typed.javadsl.AbstractBehavior;
 import org.apache.pekko.actor.typed.javadsl.ActorContext;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.apache.pekko.actor.typed.javadsl.Receive;
-
-import java.util.Optional;
 
 // #read-protocol-2
 public class Device extends AbstractBehavior<Device.Command> {
@@ -48,6 +47,7 @@ public class Device extends AbstractBehavior<Device.Command> {
       this.value = value;
     }
   }
+
   // #read-protocol-2
 
   public static Behavior<Command> create(String groupId, String deviceId) {

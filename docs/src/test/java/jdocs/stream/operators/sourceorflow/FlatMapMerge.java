@@ -13,11 +13,10 @@
 
 package jdocs.stream.operators.sourceorflow;
 
+import java.util.Arrays;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.stream.javadsl.Source;
-
-import java.util.Arrays;
 
 public class FlatMapMerge {
   private static ActorSystem system = null;
@@ -27,6 +26,7 @@ public class FlatMapMerge {
   private Source<String, NotUsed> lookupCustomerEvents(String customerId) {
     return Source.from(Arrays.asList(customerId + "-evt-1", customerId + "-evt-2"));
   }
+
   // #flatmap-merge
 
   void example() {

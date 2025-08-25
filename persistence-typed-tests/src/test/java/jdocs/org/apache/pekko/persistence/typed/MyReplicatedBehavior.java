@@ -13,12 +13,11 @@
 
 package jdocs.org.apache.pekko.persistence.typed;
 
+import java.util.*;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.persistence.typed.ReplicaId;
 import org.apache.pekko.persistence.typed.ReplicationId;
 import org.apache.pekko.persistence.typed.javadsl.*;
-
-import java.util.*;
 
 // #factory
 public class MyReplicatedBehavior
@@ -37,6 +36,7 @@ public class MyReplicatedBehavior
 
   public static final Set<ReplicaId> ALL_REPLICAS =
       Collections.unmodifiableSet(new HashSet<>(Arrays.asList(DCA, DCB)));
+
   // #replicas
 
   // #factory-shared
@@ -48,6 +48,7 @@ public class MyReplicatedBehavior
         queryPluginId,
         MyReplicatedBehavior::new);
   }
+
   // #factory-shared
 
   // #factory
@@ -65,6 +66,7 @@ public class MyReplicatedBehavior
   private MyReplicatedBehavior(ReplicationContext replicationContext) {
     super(replicationContext);
   }
+
   // #factory
 
   @Override

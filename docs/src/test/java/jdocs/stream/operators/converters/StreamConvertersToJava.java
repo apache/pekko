@@ -13,13 +13,8 @@
 
 package jdocs.stream.operators.converters;
 
-import org.apache.pekko.NotUsed;
-import org.apache.pekko.actor.ActorSystem;
+import static org.junit.Assert.assertEquals;
 // #import
-import org.apache.pekko.japi.function.Creator;
-import org.apache.pekko.stream.Materializer;
-import org.apache.pekko.stream.javadsl.Sink;
-import org.apache.pekko.stream.javadsl.StreamConverters;
 
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
@@ -28,15 +23,18 @@ import java.util.concurrent.TimeoutException;
 import java.util.stream.BaseStream;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import jdocs.AbstractJavaTest;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.japi.function.Creator;
+import org.apache.pekko.stream.javadsl.Sink;
+import org.apache.pekko.stream.javadsl.Source;
+import org.apache.pekko.stream.javadsl.StreamConverters;
 // #import
 import org.apache.pekko.testkit.javadsl.TestKit;
-import jdocs.AbstractJavaTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.apache.pekko.stream.javadsl.Source;
-
-import static org.junit.Assert.assertEquals;
 
 /** */
 public class StreamConvertersToJava extends AbstractJavaTest {

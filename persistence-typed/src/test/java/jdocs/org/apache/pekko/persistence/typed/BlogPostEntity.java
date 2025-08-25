@@ -58,6 +58,7 @@ public class BlogPostEntity
       this.postId = postId;
     }
   }
+
   // #event
 
   // #state
@@ -106,10 +107,12 @@ public class BlogPostEntity
       return content.postId;
     }
   }
+
   // #state
 
   // #commands
   public interface Command {}
+
   // #reply-command
   public static class AddPost implements Command {
     final PostContent content;
@@ -128,6 +131,7 @@ public class BlogPostEntity
       this.postId = postId;
     }
   }
+
   // #reply-command
   public static class GetPost implements Command {
     final ActorRef<PostContent> replyTo;
@@ -166,6 +170,7 @@ public class BlogPostEntity
       this.body = body;
     }
   }
+
   // #commands
 
   // #behavior
@@ -249,6 +254,7 @@ public class BlogPostEntity
     cmd.replyTo.tell(state.content);
     return Effect().none();
   }
+
   // #command-handler
 
   // #event-handler

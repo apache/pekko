@@ -13,13 +13,12 @@
 
 package org.apache.pekko.persistence.fsm;
 
-import org.apache.pekko.actor.*;
-
 import java.io.Serializable;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.time.Duration;
+import org.apache.pekko.actor.*;
 
 @Deprecated
 public class AbstractPersistentFSMTest {
@@ -51,6 +50,7 @@ public class AbstractPersistentFSMTest {
         return stateIdentifier;
       }
     }
+
     // #customer-states
 
     // #customer-states-data
@@ -115,6 +115,7 @@ public class AbstractPersistentFSMTest {
         return item.price == price && id.equals(item.id) && name.equals(item.name);
       }
     }
+
     // #customer-states-data
 
     public interface Command {}
@@ -143,6 +144,7 @@ public class AbstractPersistentFSMTest {
     public enum GetCurrentCart implements Command {
       INSTANCE
     }
+
     // #customer-commands
 
     public interface DomainEvent extends Serializable {}
@@ -167,6 +169,7 @@ public class AbstractPersistentFSMTest {
     public enum OrderDiscarded implements DomainEvent {
       INSTANCE
     }
+
     // #customer-domain-events
 
     public enum CustomerInactive implements DomainEvent {

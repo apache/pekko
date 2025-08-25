@@ -16,8 +16,6 @@ package org.apache.pekko.actor;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 
-import org.apache.pekko.actor.Cell;
-
 final class AbstractActorRef {
   static final VarHandle cellHandle;
   static final VarHandle lookupHandle;

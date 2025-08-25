@@ -13,36 +13,32 @@
 
 package jdocs.routing;
 
+import static org.apache.pekko.japi.Util.immutableIndexedSeq;
+import static org.junit.Assert.*;
+
+import com.typesafe.config.ConfigFactory;
+import docs.routing.CustomRouterDocSpec;
+import java.util.ArrayList;
+import java.util.List;
+import jdocs.AbstractJavaTest;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.actor.Props;
+// #imports1
 import org.apache.pekko.routing.FromConfig;
 import org.apache.pekko.routing.RoundRobinRoutingLogic;
 import org.apache.pekko.routing.Routee;
 import org.apache.pekko.routing.RoutingLogic;
 import org.apache.pekko.routing.SeveralRoutees;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 
-import jdocs.AbstractJavaTest;
+// #imports1
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import com.typesafe.config.ConfigFactory;
-
 import scala.collection.immutable.IndexedSeq;
-import static org.apache.pekko.japi.Util.immutableIndexedSeq;
 
-import docs.routing.CustomRouterDocSpec;
-import org.apache.pekko.actor.ActorRef;
-import org.apache.pekko.actor.ActorSystem;
-import org.apache.pekko.actor.Props;
-// #imports1
-import org.apache.pekko.actor.AbstractActor;
-
-import java.util.ArrayList;
-import java.util.List;
-
-// #imports1
 
 public class CustomRouterDocTest extends AbstractJavaTest {
 
@@ -73,6 +69,7 @@ public class CustomRouterDocTest extends AbstractJavaTest {
       return new SeveralRoutees(targets);
     }
   }
+
   // #routing-logic
 
   public

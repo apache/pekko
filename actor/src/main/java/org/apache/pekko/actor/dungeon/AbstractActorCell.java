@@ -15,7 +15,6 @@ package org.apache.pekko.actor.dungeon;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
-
 import org.apache.pekko.actor.ActorCell;
 import org.apache.pekko.dispatch.Mailbox;
 

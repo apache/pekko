@@ -13,10 +13,10 @@
 
 package jdocs.persistence;
 
-import org.apache.pekko.persistence.AbstractPersistentActor;
-import org.apache.pekko.persistence.RuntimePluginConfig;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import org.apache.pekko.persistence.AbstractPersistentActor;
+import org.apache.pekko.persistence.RuntimePluginConfig;
 
 public class PersistenceMultiDocTest {
 
@@ -27,6 +27,7 @@ public class PersistenceMultiDocTest {
       return "123";
     }
   }
+
   // #default-plugins
 
   // #override-plugins
@@ -48,6 +49,7 @@ public class PersistenceMultiDocTest {
       return "pekko.persistence.chronicle.snapshot-store";
     }
   }
+
   // #override-plugins
 
   // #runtime-config

@@ -13,10 +13,6 @@
 
 package jdocs.org.apache.pekko.persistence.typed.auction;
 
-import org.apache.pekko.Done;
-import org.apache.pekko.persistence.typed.PersistenceId;
-import org.apache.pekko.persistence.typed.javadsl.*;
-
 import static jdocs.org.apache.pekko.persistence.typed.auction.AuctionCommand.*;
 import static jdocs.org.apache.pekko.persistence.typed.auction.AuctionEvent.*;
 
@@ -24,7 +20,10 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
+import org.apache.pekko.Done;
 import org.apache.pekko.actor.typed.ActorRef;
+import org.apache.pekko.persistence.typed.PersistenceId;
+import org.apache.pekko.persistence.typed.javadsl.*;
 
 /**
  * Based on
@@ -101,6 +100,7 @@ public class AuctionEntity
           newCommandHandlerBuilder()
               .forStateType(AuctionState.class)
               .onCommand(CancelAuction.class, this::cancelAuction);
+
   // Note, an item can go from completed to cancelled, since it is the item service that controls
   // whether an auction is cancelled or not. If it cancels before it receives a bidding finished
   // event from us, it will ignore the bidding finished event, so we need to update our state to

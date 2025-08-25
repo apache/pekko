@@ -13,20 +13,20 @@
 
 package jdocs.actor.fsm;
 
+import static jdocs.actor.fsm.Events.Batch;
+import static jdocs.actor.fsm.Events.Flush.Flush;
+import static jdocs.actor.fsm.Events.Queue;
+import static jdocs.actor.fsm.Events.SetTarget;
+
+import java.util.LinkedList;
+import jdocs.AbstractJavaTest;
 import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.actor.Props;
-import jdocs.AbstractJavaTest;
 import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import java.util.LinkedList;
-
-import static jdocs.actor.fsm.Events.Batch;
-import static jdocs.actor.fsm.Events.Queue;
-import static jdocs.actor.fsm.Events.SetTarget;
-import static jdocs.actor.fsm.Events.Flush.Flush;
 
 // #test-code
 public class BuncherTest extends AbstractJavaTest {

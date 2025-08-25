@@ -13,6 +13,8 @@
 
 package jdocs.stream.javadsl.cookbook;
 
+import java.time.Duration;
+import java.util.Arrays;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.japi.Pair;
 import org.apache.pekko.stream.ClosedShape;
@@ -28,9 +30,6 @@ import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.time.Duration;
-import java.util.Arrays;
 
 public class RecipeManualTrigger extends RecipeTest {
   static ActorSystem system;

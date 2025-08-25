@@ -13,6 +13,17 @@
 
 package jdocs.stream;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
+import java.util.stream.Stream;
+import jdocs.AbstractJavaTest;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.japi.Pair;
@@ -27,24 +38,12 @@ import org.apache.pekko.stream.testkit.javadsl.TestSink;
 import org.apache.pekko.stream.testkit.javadsl.TestSource;
 import org.apache.pekko.testkit.TestLatch;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import jdocs.AbstractJavaTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import scala.concurrent.Await;
 import scala.concurrent.duration.Duration;
 import scala.util.Random;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
-import java.util.stream.Stream;
-
-import static org.junit.Assert.assertEquals;
 
 public class RateTransformationDocTest extends AbstractJavaTest {
 

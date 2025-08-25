@@ -15,13 +15,14 @@ package jdocs.org.apache.pekko.cluster.typed;
 
 // #import
 import org.apache.pekko.actor.typed.ActorRef;
+import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.javadsl.ActorContext;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.apache.pekko.actor.typed.receptionist.Receptionist;
 import org.apache.pekko.actor.typed.receptionist.ServiceKey;
+
 // #import
-import org.apache.pekko.actor.typed.ActorSystem;
 
 public interface ReceptionistExample {
 
@@ -69,6 +70,7 @@ public interface ReceptionistExample {
       return Behaviors.same();
     }
   }
+
   // #ping-service
 
   // #pinger
@@ -100,6 +102,7 @@ public interface ReceptionistExample {
       return Behaviors.stopped();
     }
   }
+
   // #pinger
 
   // #pinger-guardian
@@ -139,6 +142,7 @@ public interface ReceptionistExample {
       return Behaviors.same();
     }
   }
+
   // #pinger-guardian
 
   // #find
@@ -194,6 +198,7 @@ public interface ReceptionistExample {
       return Behaviors.same();
     }
   }
+
   // #find
 
   default void deregisterSample() {

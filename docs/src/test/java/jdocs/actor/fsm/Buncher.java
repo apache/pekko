@@ -13,21 +13,21 @@
 
 package jdocs.actor.fsm;
 
+import static jdocs.actor.fsm.Buncher.Data;
+import static jdocs.actor.fsm.Buncher.State;
+import static jdocs.actor.fsm.Buncher.State.*;
+import static jdocs.actor.fsm.Buncher.Uninitialized.*;
+import static jdocs.actor.fsm.Events.*;
+
 // #simple-imports
-import org.apache.pekko.actor.AbstractFSM;
-import org.apache.pekko.actor.ActorRef;
-import org.apache.pekko.japi.pf.UnitMatch;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.time.Duration;
+import org.apache.pekko.actor.AbstractFSM;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.japi.pf.UnitMatch;
 // #simple-imports
-
-import static jdocs.actor.fsm.Buncher.Data;
-import static jdocs.actor.fsm.Buncher.State.*;
-import static jdocs.actor.fsm.Buncher.State;
-import static jdocs.actor.fsm.Buncher.Uninitialized.*;
-import static jdocs.actor.fsm.Events.*;
 
 // #simple-fsm
 public class Buncher extends AbstractFSM<State, Data> {
@@ -97,6 +97,7 @@ public class Buncher extends AbstractFSM<State, Data> {
     initialize();
     // #fsm-body
   }
+
   // #simple-fsm
 
   static
@@ -139,6 +140,7 @@ public class Buncher extends AbstractFSM<State, Data> {
     public List<Object> getQueue() {
       return queue;
     }
+
     // #boilerplate
 
     @Override

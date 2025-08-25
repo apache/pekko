@@ -13,19 +13,18 @@
 
 package org.apache.pekko.actor.testkit.typed.javadsl;
 
+import static org.apache.pekko.Done.done;
+import static org.junit.Assert.assertEquals;
+
+import java.util.HashMap;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import org.apache.pekko.Done;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
-
-import java.util.HashMap;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-
-import static org.apache.pekko.Done.done;
-import static org.junit.Assert.assertEquals;
 
 public class ActorTestKitTest extends JUnitSuite {
 

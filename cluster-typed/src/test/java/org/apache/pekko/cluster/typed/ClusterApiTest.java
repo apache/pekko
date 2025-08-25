@@ -13,15 +13,14 @@
 
 package org.apache.pekko.cluster.typed;
 
-import org.apache.pekko.cluster.ClusterEvent;
-import org.apache.pekko.actor.typed.ActorSystem;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import java.util.concurrent.TimeUnit;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
+import org.apache.pekko.actor.typed.ActorSystem;
+import org.apache.pekko.cluster.ClusterEvent;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
-
-import java.util.concurrent.TimeUnit;
 
 public class ClusterApiTest extends JUnitSuite {
 

@@ -20,10 +20,13 @@ import java.util.UUID;
 public final class Bid {
   /** The bidder. */
   private final UUID bidder;
+
   /** The time the bid was placed. */
   private final Instant bidTime;
+
   /** The bid price. */
   private final int bidPrice;
+
   /** The maximum the bidder is willing to bid. */
   private final int maximumBid;
 

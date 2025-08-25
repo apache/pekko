@@ -13,15 +13,14 @@
 
 package jdocs.org.apache.pekko.typed;
 
-import org.apache.pekko.actor.typed.ActorRef;
-import org.apache.pekko.actor.typed.Behavior;
-import org.apache.pekko.actor.typed.javadsl.Behaviors;
-
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.pekko.actor.typed.ActorRef;
+import org.apache.pekko.actor.typed.Behavior;
+import org.apache.pekko.actor.typed.javadsl.Behaviors;
 
 interface FSMDocTest {
 
@@ -55,6 +54,7 @@ interface FSMDocTest {
         this.obj = obj;
       }
     }
+
     // #simple-events
 
     // #storing-state
@@ -132,6 +132,7 @@ interface FSMDocTest {
       }
       // #storing-state
     }
+
     // #storing-state
 
     // #simple-state

@@ -13,10 +13,10 @@
 
 package org.apache.pekko.japi.pf;
 
+import static org.apache.pekko.actor.SupervisorStrategy.Directive;
+
 import org.apache.pekko.japi.function.Function;
 import org.apache.pekko.japi.function.Predicate;
-
-import static org.apache.pekko.actor.SupervisorStrategy.Directive;
 
 /**
  * Used for building a partial function for {@link org.apache.pekko.actor.Actor#supervisorStrategy

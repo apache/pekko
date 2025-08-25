@@ -51,6 +51,7 @@ public final class ProtobufProtocolV3 {
      * @return The query.
      */
     java.lang.String getQuery();
+
     /**
      * <code>string query = 1;</code>
      *
@@ -72,6 +73,7 @@ public final class ProtobufProtocolV3 {
      */
     int getResultPerPage();
   }
+
   /** Protobuf type {@code MyMessageV3} */
   public static final class MyMessageV3
       extends org.apache.pekko.protobufv3.internal.GeneratedMessage
@@ -89,6 +91,7 @@ public final class ProtobufProtocolV3 {
           /* suffix= */ "",
           MyMessageV3.class.getName());
     }
+
     // Use MyMessageV3.newBuilder() to construct.
     private MyMessageV3(org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -118,6 +121,7 @@ public final class ProtobufProtocolV3 {
 
     @SuppressWarnings("serial")
     private volatile java.lang.Object query_ = "";
+
     /**
      * <code>string query = 1;</code>
      *
@@ -136,6 +140,7 @@ public final class ProtobufProtocolV3 {
         return s;
       }
     }
+
     /**
      * <code>string query = 1;</code>
      *
@@ -156,6 +161,7 @@ public final class ProtobufProtocolV3 {
 
     public static final int PAGE_NUMBER_FIELD_NUMBER = 2;
     private int pageNumber_ = 0;
+
     /**
      * <code>int32 page_number = 2;</code>
      *
@@ -168,6 +174,7 @@ public final class ProtobufProtocolV3 {
 
     public static final int RESULT_PER_PAGE_FIELD_NUMBER = 3;
     private int resultPerPage_ = 0;
+
     /**
      * <code>int32 result_per_page = 3;</code>
      *
@@ -369,6 +376,7 @@ public final class ProtobufProtocolV3 {
       Builder builder = new Builder(parent);
       return builder;
     }
+
     /** Protobuf type {@code MyMessageV3} */
     public static final class Builder
         extends org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder>
@@ -547,6 +555,7 @@ public final class ProtobufProtocolV3 {
       private int bitField0_;
 
       private java.lang.Object query_ = "";
+
       /**
        * <code>string query = 1;</code>
        *
@@ -564,6 +573,7 @@ public final class ProtobufProtocolV3 {
           return (java.lang.String) ref;
         }
       }
+
       /**
        * <code>string query = 1;</code>
        *
@@ -580,6 +590,7 @@ public final class ProtobufProtocolV3 {
           return (org.apache.pekko.protobufv3.internal.ByteString) ref;
         }
       }
+
       /**
        * <code>string query = 1;</code>
        *
@@ -595,6 +606,7 @@ public final class ProtobufProtocolV3 {
         onChanged();
         return this;
       }
+
       /**
        * <code>string query = 1;</code>
        *
@@ -606,6 +618,7 @@ public final class ProtobufProtocolV3 {
         onChanged();
         return this;
       }
+
       /**
        * <code>string query = 1;</code>
        *
@@ -624,6 +637,7 @@ public final class ProtobufProtocolV3 {
       }
 
       private int pageNumber_;
+
       /**
        * <code>int32 page_number = 2;</code>
        *
@@ -633,6 +647,7 @@ public final class ProtobufProtocolV3 {
       public int getPageNumber() {
         return pageNumber_;
       }
+
       /**
        * <code>int32 page_number = 2;</code>
        *
@@ -646,6 +661,7 @@ public final class ProtobufProtocolV3 {
         onChanged();
         return this;
       }
+
       /**
        * <code>int32 page_number = 2;</code>
        *
@@ -659,6 +675,7 @@ public final class ProtobufProtocolV3 {
       }
 
       private int resultPerPage_;
+
       /**
        * <code>int32 result_per_page = 3;</code>
        *
@@ -668,6 +685,7 @@ public final class ProtobufProtocolV3 {
       public int getResultPerPage() {
         return resultPerPage_;
       }
+
       /**
        * <code>int32 result_per_page = 3;</code>
        *
@@ -681,6 +699,7 @@ public final class ProtobufProtocolV3 {
         onChanged();
         return this;
       }
+
       /**
        * <code>int32 result_per_page = 3;</code>
        *
@@ -761,10 +780,13 @@ public final class ProtobufProtocolV3 {
 
   static {
     java.lang.String[] descriptorData = {
-      "\n\030ProtobufProtocolV3.proto\"J\n\013MyMessageV"
-          + "3\022\r\n\005query\030\001 \001(\t\022\023\n\013page_number\030\002 \001(\005\022\027\n"
-          + "\017result_per_page\030\003 \001(\005B%\n#org.apache.pek"
-          + "ko.remote.protobuf.v3b\006proto3"
+      "\n"
+          + "\030ProtobufProtocolV3.proto\"J\n"
+          + "\013MyMessageV3\022\r\n"
+          + "\005query\030\001 \001(\t\022\023\n"
+          + "\013page_number\030\002 \001(\005\022\027\n"
+          + "\017result_per_page\030\003 \001(\005B%\n"
+          + "#org.apache.pekko.remote.protobuf.v3b\006proto3"
     };
     descriptor =
         org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor

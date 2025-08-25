@@ -14,6 +14,8 @@
 package docs.org.apache.pekko.stream.typed;
 
 // #actor-source-ref
+import java.util.Optional;
+// #actor-source-ref
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.japi.JavaPartialFunction;
@@ -21,9 +23,6 @@ import org.apache.pekko.stream.OverflowStrategy;
 import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.stream.typed.javadsl.ActorSource;
-
-import java.util.Optional;
-// #actor-source-ref
 
 public class ActorSourceExample {
 
@@ -48,6 +47,7 @@ public class ActorSourceExample {
       this.ex = ex;
     }
   }
+
   // #actor-source-ref
 
   {

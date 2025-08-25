@@ -23,8 +23,10 @@ public final class AuctionState {
 
   /** The auction details. */
   private final Optional<Auction> auction;
+
   /** The status of the auction. */
   private final AuctionStatus status;
+
   /** The bidding history for the auction. */
   private final List<Bid> biddingHistory;
 

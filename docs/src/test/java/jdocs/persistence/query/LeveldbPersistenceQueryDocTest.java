@@ -15,14 +15,13 @@ package jdocs.persistence.query;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
-import org.apache.pekko.persistence.journal.WriteEventAdapter;
 import org.apache.pekko.persistence.journal.Tagged;
+import org.apache.pekko.persistence.journal.WriteEventAdapter;
 import org.apache.pekko.persistence.query.EventEnvelope;
-import org.apache.pekko.persistence.query.Sequence;
 import org.apache.pekko.persistence.query.PersistenceQuery;
+import org.apache.pekko.persistence.query.Sequence;
 import org.apache.pekko.persistence.query.journal.leveldb.javadsl.LeveldbReadJournal;
 import org.apache.pekko.stream.javadsl.Source;
 

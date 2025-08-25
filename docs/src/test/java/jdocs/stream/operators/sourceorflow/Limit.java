@@ -13,13 +13,12 @@
 
 package jdocs.stream.operators.sourceorflow;
 
+import java.util.List;
+import java.util.concurrent.CompletionStage;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
-
-import java.util.List;
-import java.util.concurrent.CompletionStage;
 
 public class Limit {
   public void simple() {

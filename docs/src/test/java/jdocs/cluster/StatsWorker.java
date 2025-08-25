@@ -15,7 +15,6 @@ package jdocs.cluster;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.pekko.actor.AbstractActor;
 
 // #worker

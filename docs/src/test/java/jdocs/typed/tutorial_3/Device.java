@@ -16,7 +16,6 @@ package jdocs.typed.tutorial_3;
 // #full-device
 
 import java.util.Optional;
-
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.PostStop;
@@ -49,6 +48,7 @@ public class Device extends AbstractBehavior<Device.Command> {
       this.requestId = requestId;
     }
   }
+
   // #write-protocol
 
   public static final class ReadTemperature implements Command {

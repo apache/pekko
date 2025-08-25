@@ -13,19 +13,19 @@
 
 package jdocs.stream.operators;
 
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
-
+import org.apache.pekko.japi.Pair;
 import org.apache.pekko.stream.javadsl.AsPublisher;
 import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
 // #takeLast-operator-example
-import org.apache.pekko.japi.Pair;
 import org.reactivestreams.Publisher;
+
 // #takeLast-operator-example
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
 
 public class SinkDocExamples {
 

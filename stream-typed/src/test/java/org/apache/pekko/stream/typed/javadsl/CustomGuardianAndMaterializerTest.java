@@ -13,6 +13,10 @@
 
 package org.apache.pekko.stream.typed.javadsl;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.TimeUnit;
 import org.apache.pekko.Done;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
@@ -26,11 +30,6 @@ import org.apache.pekko.stream.javadsl.Source;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
-
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.TimeUnit;
-
-import static org.junit.Assert.assertEquals;
 
 public class CustomGuardianAndMaterializerTest extends JUnitSuite {
 

@@ -23,6 +23,7 @@ public interface AuctionEvent {
 
     /** The item that the auction started on. */
     private final UUID itemId;
+
     /** The auction details. */
     private final Auction auction;
 
@@ -45,6 +46,7 @@ public interface AuctionEvent {
 
     /** The item that the bid was placed on. */
     private final UUID itemId;
+
     /** The bid. */
     private final Bid bid;
 

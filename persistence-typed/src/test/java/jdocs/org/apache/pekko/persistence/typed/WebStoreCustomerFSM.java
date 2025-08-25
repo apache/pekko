@@ -14,10 +14,9 @@
 package jdocs.org.apache.pekko.persistence.typed;
 
 import java.io.Serializable;
-
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.ArrayList;
 
 /**
  * The model from org.apache.pekko.persistence.fsm.AbstractPersistentFSMTest.WebStoreCustomerFSM

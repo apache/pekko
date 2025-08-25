@@ -13,6 +13,8 @@
 
 package jdocs.typed.tutorial_4;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.PostStop;
@@ -20,9 +22,6 @@ import org.apache.pekko.actor.typed.javadsl.AbstractBehavior;
 import org.apache.pekko.actor.typed.javadsl.ActorContext;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.apache.pekko.actor.typed.javadsl.Receive;
-
-import java.util.HashMap;
-import java.util.Map;
 
 // #device-group-full
 // #device-group-remove
@@ -43,6 +42,7 @@ public class DeviceGroup extends AbstractBehavior<DeviceGroup.Command> {
       this.deviceId = deviceId;
     }
   }
+
   // #device-terminated
 
   public static Behavior<Command> create(String groupId) {
@@ -93,6 +93,7 @@ public class DeviceGroup extends AbstractBehavior<DeviceGroup.Command> {
     r.replyTo.tell(new DeviceManager.ReplyDeviceList(r.requestId, deviceIdToActor.keySet()));
     return this;
   }
+
   // #device-group-remove
 
   private DeviceGroup onTerminated(DeviceTerminated t) {
@@ -100,6 +101,7 @@ public class DeviceGroup extends AbstractBehavior<DeviceGroup.Command> {
     deviceIdToActor.remove(t.deviceId);
     return this;
   }
+
   // #device-group-register
 
   @Override

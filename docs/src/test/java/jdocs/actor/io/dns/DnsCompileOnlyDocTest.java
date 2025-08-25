@@ -13,17 +13,15 @@
 
 package jdocs.actor.io.dns;
 
+import static org.apache.pekko.pattern.Patterns.ask;
+
+import java.time.Duration;
+import java.util.concurrent.CompletionStage;
 import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.io.Dns;
 import org.apache.pekko.io.dns.DnsProtocol;
-
-import static org.apache.pekko.pattern.Patterns.ask;
-
 import scala.Option;
-
-import java.time.Duration;
-import java.util.concurrent.CompletionStage;
 
 public class DnsCompileOnlyDocTest {
   public static void example() {

@@ -13,6 +13,13 @@
 
 package org.apache.pekko.actor.testkit.typed.javadsl;
 
+import static org.junit.Assert.*;
+
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.IntStream;
 import org.apache.pekko.Done;
 import org.apache.pekko.actor.testkit.typed.CapturedLogEvent;
 import org.apache.pekko.actor.testkit.typed.Effect;
@@ -24,14 +31,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
 import org.slf4j.event.Level;
-
-import java.time.Duration;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.IntStream;
-
-import static org.junit.Assert.*;
 
 public class BehaviorTestKitTest extends JUnitSuite {
 

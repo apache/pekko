@@ -13,18 +13,16 @@
 
 package org.apache.pekko.actor;
 
+import static org.junit.Assert.assertEquals;
+
 import java.time.Duration;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
-
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
-
-import static org.junit.Assert.assertEquals;
 
 public class ActorSelectionTest extends JUnitSuite {
 

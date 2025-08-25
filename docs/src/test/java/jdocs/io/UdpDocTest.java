@@ -14,16 +14,16 @@
 package jdocs.io;
 
 // #imports
+import java.net.InetSocketAddress;
+import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.actor.PoisonPill;
-import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.io.Udp;
 import org.apache.pekko.io.UdpConnected;
 import org.apache.pekko.io.UdpConnectedMessage;
 import org.apache.pekko.io.UdpMessage;
 import org.apache.pekko.util.ByteString;
 
-import java.net.InetSocketAddress;
 // #imports
 
 public class UdpDocTest {
@@ -70,6 +70,7 @@ public class UdpDocTest {
           .build();
     }
   }
+
   // #sender
 
   // #listener
@@ -125,6 +126,7 @@ public class UdpDocTest {
           .build();
     }
   }
+
   // #listener
 
   // #connected

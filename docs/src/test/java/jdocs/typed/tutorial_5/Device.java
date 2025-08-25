@@ -14,7 +14,6 @@
 package jdocs.typed.tutorial_5;
 
 import java.util.Optional;
-
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.PostStop;
@@ -69,6 +68,7 @@ public class Device extends AbstractBehavior<Device.Command> {
       this.value = value;
     }
   }
+
   // #respond-declare
 
   static enum Passivate implements Command {
@@ -114,6 +114,7 @@ public class Device extends AbstractBehavior<Device.Command> {
     r.replyTo.tell(new RespondTemperature(r.requestId, deviceId, lastTemperatureReading));
     return this;
   }
+
   // #respond-reply
 
   private Behavior<Command> onPostStop() {

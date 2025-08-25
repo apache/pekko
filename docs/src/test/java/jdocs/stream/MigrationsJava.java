@@ -13,13 +13,14 @@
 
 package jdocs.stream;
 
-import java.util.stream.Stream;
+import static org.apache.pekko.stream.javadsl.AsPublisher.*;
+// #asPublisher-import
 
+import java.util.stream.Stream;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.japi.Pair;
 import org.apache.pekko.stream.javadsl.*;
-// #asPublisher-import
-import static org.apache.pekko.stream.javadsl.AsPublisher.*;
+
 // #asPublisher-import
 
 public class MigrationsJava {

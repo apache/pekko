@@ -13,8 +13,24 @@
 
 package org.apache.pekko.stream.javadsl;
 
+import static org.apache.pekko.Done.done;
+import static org.apache.pekko.stream.testkit.StreamTestKit.PublisherProbeSubscription;
+import static org.junit.Assert.*;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import java.time.Duration;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.pekko.Done;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorRef;
@@ -23,35 +39,18 @@ import org.apache.pekko.japi.Pair;
 import org.apache.pekko.japi.function.*;
 import org.apache.pekko.japi.pf.PFBuilder;
 import org.apache.pekko.stream.*;
-import org.apache.pekko.stream.scaladsl.FlowSpec;
-import org.apache.pekko.stream.testkit.javadsl.TestSink;
 import org.apache.pekko.stream.javadsl.GraphDSL.Builder;
+import org.apache.pekko.stream.scaladsl.FlowSpec;
 import org.apache.pekko.stream.stage.*;
-import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.stream.testkit.TestPublisher;
+import org.apache.pekko.stream.testkit.javadsl.TestSink;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.reactivestreams.Publisher;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
-
-import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Supplier;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.time.Duration;
-
-import static org.apache.pekko.Done.done;
-import static org.apache.pekko.stream.testkit.StreamTestKit.PublisherProbeSubscription;
-import static org.junit.Assert.*;
 
 @SuppressWarnings("serial")
 public class FlowTest extends StreamTest {
@@ -65,9 +64,11 @@ public class FlowTest extends StreamTest {
 
   interface Fruit {}
 
-  static class Apple implements Fruit {};
+  static class Apple implements Fruit {}
+  ;
 
-  static class Orange implements Fruit {};
+  static class Orange implements Fruit {}
+  ;
 
   public void compileOnlyUpcast() {
     Flow<Apple, Apple, NotUsed> appleFlow = null;
