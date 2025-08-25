@@ -13,9 +13,9 @@
 
 package org.apache.pekko.persistence.journal.japi;
 
+import java.util.concurrent.CompletionStage;
 import java.util.function.Consumer;
 import org.apache.pekko.persistence.PersistentRepr;
-import scala.concurrent.Future;
 
 interface AsyncRecoveryPlugin {
   // #async-replay-plugin-api
@@ -37,8 +37,9 @@ interface AsyncRecoveryPlugin {
    * @param toSequenceNr sequence number where replay should end (inclusive).
    * @param max maximum number of messages to be replayed.
    * @param replayCallback called to replay a single message. Can be called from any thread.
+   * @return a CompletionStage that will be completed when the replay is done (in Pekko 1.x, this was a Scala Future)
    */
-  Future<Void> doAsyncReplayMessages(
+  CompletionStage<Void> doAsyncReplayMessages(
       String persistenceId,
       long fromSequenceNr,
       long toSequenceNr,
@@ -54,7 +55,8 @@ interface AsyncRecoveryPlugin {
    *
    * @param persistenceId id of the persistent actor.
    * @param fromSequenceNr hint where to start searching for the highest sequence number.
+   * @return a CompletionStage that will be completed when the read is done (in Pekko 1.x, this was a Scala Future)
    */
-  Future<Long> doAsyncReadHighestSequenceNr(String persistenceId, long fromSequenceNr);
+  CompletionStage<Long> doAsyncReadHighestSequenceNr(String persistenceId, long fromSequenceNr);
   // #async-replay-plugin-api
 }

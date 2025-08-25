@@ -36,7 +36,6 @@ import org.apache.pekko.persistence.snapshot.japi.*;
 import org.iq80.leveldb.util.FileUtils;
 import org.junit.runner.RunWith;
 import org.scalatestplus.junit.JUnitRunner;
-import scala.concurrent.Future;
 
 public class LambdaPersistencePluginDocTest {
 
@@ -125,7 +124,7 @@ public class LambdaPersistencePluginDocTest {
     }
 
     @Override
-    public Future<Void> doAsyncReplayMessages(
+    public CompletionStage<Void> doAsyncReplayMessages(
         String persistenceId,
         long fromSequenceNr,
         long toSequenceNr,
@@ -135,7 +134,7 @@ public class LambdaPersistencePluginDocTest {
     }
 
     @Override
-    public Future<Long> doAsyncReadHighestSequenceNr(String persistenceId, long fromSequenceNr) {
+    public CompletionStage<Long> doAsyncReadHighestSequenceNr(String persistenceId, long fromSequenceNr) {
       return null;
     }
   }
