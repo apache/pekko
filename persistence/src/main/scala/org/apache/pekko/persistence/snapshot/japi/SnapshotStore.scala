@@ -26,7 +26,7 @@ import pekko.util.FutureConverters._
  * Java API: abstract snapshot store.
  */
 abstract class SnapshotStore extends SSnapshotStore with SnapshotStorePlugin {
-  import context.dispatcher
+  import pekko.dispatch.ExecutionContexts.parasitic
 
   override final def loadAsync(
       persistenceId: String,
