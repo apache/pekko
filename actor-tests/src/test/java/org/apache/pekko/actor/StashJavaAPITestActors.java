@@ -34,7 +34,7 @@ public class StashJavaAPITestActors {
         return count + 1;
       }
     } else if (msg instanceof Integer value) {
-      assertEquals(5, value);
+      assertEquals(5, value.intValue());
     }
     return count;
   }
