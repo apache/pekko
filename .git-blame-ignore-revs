@@ -85,3 +85,6 @@ f48453e60a8d11f74acc7a10d3a9da90b8acd4af
 
 # Scala Steward: Reformat with scalafmt 3.9.9
 952b3f29b1c9d38afdd4a47283e77941b8b82f10
+
+# bump java fmt to 0.10.0
+00b0a9927855e1e699e7fa2b5356952ff72d8703
