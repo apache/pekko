@@ -24,13 +24,13 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Consumer;
 import org.apache.pekko.actor.*;
-import org.apache.pekko.dispatch.Futures;
 import org.apache.pekko.persistence.*;
 import org.apache.pekko.persistence.japi.journal.JavaJournalSpec;
 import org.apache.pekko.persistence.japi.snapshot.JavaSnapshotStoreSpec;
 import org.apache.pekko.persistence.journal.japi.*;
 import org.apache.pekko.persistence.journal.leveldb.SharedLeveldbJournal;
 import org.apache.pekko.persistence.journal.leveldb.SharedLeveldbStore;
+import org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite;
 import org.apache.pekko.persistence.snapshot.japi.*;
 // #plugin-imports
 import org.iq80.leveldb.util.FileUtils;
@@ -113,7 +113,7 @@ public class LambdaPersistencePluginDocTest {
         // result.add(..)
         return CompletableFuture.completedFuture(result);
       } catch (Exception e) {
-        return Futures.failedCompletionStage(e);
+        return CompletableFuture.failedFuture(e);
       }
     }
 
