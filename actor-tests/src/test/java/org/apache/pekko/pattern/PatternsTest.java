@@ -220,7 +220,7 @@ public class PatternsTest extends JUnitSuite {
   @Test
   public void usePipe() throws Exception {
     TestProbe probe = new TestProbe(system);
-    pipe(Futures.successful("ho!"), system.dispatcher()).to(probe.ref());
+    pipe(CompletableFuture.completedFuture("ho!"), system.dispatcher()).to(probe.ref());
     probe.expectMsg("ho!");
   }
 
@@ -228,7 +228,7 @@ public class PatternsTest extends JUnitSuite {
   public void usePipeWithActorSelection() throws Exception {
     TestProbe probe = new TestProbe(system);
     ActorSelection selection = system.actorSelection(probe.ref().path());
-    pipe(Futures.successful("hi!"), system.dispatcher()).to(selection);
+    pipe(CompletableFuture.completedFuture("hi!"), system.dispatcher()).to(selection);
     probe.expectMsg("hi!");
   }
 
