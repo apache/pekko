@@ -14,10 +14,10 @@
 package org.apache.pekko.persistence.snapshot.japi;
 
 import java.util.Optional;
+import java.util.concurrent.CompletionStage;
 import org.apache.pekko.persistence.SelectedSnapshot;
 import org.apache.pekko.persistence.SnapshotMetadata;
 import org.apache.pekko.persistence.SnapshotSelectionCriteria;
-import scala.concurrent.Future;
 
 interface SnapshotStorePlugin {
   // #snapshot-store-plugin-api
@@ -26,8 +26,10 @@ interface SnapshotStorePlugin {
    *
    * @param persistenceId id of the persistent actor.
    * @param criteria selection criteria for loading.
+   * @return a CompletionStage that will be completed when the loading is done (in Pekko 1.x, this
+   *     was a Scala Future)
    */
-  Future<Optional<SelectedSnapshot>> doLoadAsync(
+  CompletionStage<Optional<SelectedSnapshot>> doLoadAsync(
       String persistenceId, SnapshotSelectionCriteria criteria);
 
   /**
@@ -35,22 +37,28 @@ interface SnapshotStorePlugin {
    *
    * @param metadata snapshot metadata.
    * @param snapshot snapshot.
+   * @return a CompletionStage that will be completed when the saving is done (in Pekko 1.x, this
+   *     was a Scala Future)
    */
-  Future<Void> doSaveAsync(SnapshotMetadata metadata, Object snapshot);
+  CompletionStage<Void> doSaveAsync(SnapshotMetadata metadata, Object snapshot);
 
   /**
    * Java API, Plugin API: deletes the snapshot identified by `metadata`.
    *
    * @param metadata snapshot metadata.
+   * @return a CompletionStage that will be completed when the deletion is done (in Pekko 1.x, this
+   *     was a Scala Future)
    */
-  Future<Void> doDeleteAsync(SnapshotMetadata metadata);
+  CompletionStage<Void> doDeleteAsync(SnapshotMetadata metadata);
 
   /**
    * Java API, Plugin API: deletes all snapshots matching `criteria`.
    *
    * @param persistenceId id of the persistent actor.
    * @param criteria selection criteria for deleting.
+   * @return a CompletionStage that will be completed when the deletion is done (in Pekko 1.x, this
+   *     was a Scala Future)
    */
-  Future<Void> doDeleteAsync(String persistenceId, SnapshotSelectionCriteria criteria);
+  CompletionStage<Void> doDeleteAsync(String persistenceId, SnapshotSelectionCriteria criteria);
   // #snapshot-store-plugin-api
 }

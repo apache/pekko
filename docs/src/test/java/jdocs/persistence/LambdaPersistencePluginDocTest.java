@@ -20,9 +20,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.function.Consumer;
 import org.apache.pekko.actor.*;
-import org.apache.pekko.dispatch.Futures;
 import org.apache.pekko.persistence.*;
 import org.apache.pekko.persistence.japi.journal.JavaJournalSpec;
 import org.apache.pekko.persistence.japi.snapshot.JavaSnapshotStoreSpec;
@@ -34,7 +35,6 @@ import org.apache.pekko.persistence.snapshot.japi.*;
 import org.iq80.leveldb.util.FileUtils;
 import org.junit.runner.RunWith;
 import org.scalatestplus.junit.JUnitRunner;
-import scala.concurrent.Future;
 
 public class LambdaPersistencePluginDocTest {
 
@@ -78,51 +78,52 @@ public class LambdaPersistencePluginDocTest {
 
   class MySnapshotStore extends SnapshotStore {
     @Override
-    public Future<Optional<SelectedSnapshot>> doLoadAsync(
+    public CompletionStage<Optional<SelectedSnapshot>> doLoadAsync(
         String persistenceId, SnapshotSelectionCriteria criteria) {
       return null;
     }
 
     @Override
-    public Future<Void> doSaveAsync(SnapshotMetadata metadata, Object snapshot) {
+    public CompletionStage<Void> doSaveAsync(SnapshotMetadata metadata, Object snapshot) {
       return null;
     }
 
     @Override
-    public Future<Void> doDeleteAsync(SnapshotMetadata metadata) {
-      return Futures.successful(null);
+    public CompletionStage<Void> doDeleteAsync(SnapshotMetadata metadata) {
+      return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public Future<Void> doDeleteAsync(String persistenceId, SnapshotSelectionCriteria criteria) {
-      return Futures.successful(null);
+    public CompletionStage<Void> doDeleteAsync(
+        String persistenceId, SnapshotSelectionCriteria criteria) {
+      return CompletableFuture.completedFuture(null);
     }
   }
 
   class MyAsyncJournal extends AsyncWriteJournal {
     // #sync-journal-plugin-api
     @Override
-    public Future<Iterable<Optional<Exception>>> doAsyncWriteMessages(
+    public CompletionStage<Iterable<Optional<Exception>>> doAsyncWriteMessages(
         Iterable<AtomicWrite> messages) {
       try {
         Iterable<Optional<Exception>> result = new ArrayList<Optional<Exception>>();
         // blocking call here...
         // result.add(..)
-        return Futures.successful(result);
+        return CompletableFuture.completedFuture(result);
       } catch (Exception e) {
-        return Futures.failed(e);
+        return CompletableFuture.failedFuture(e);
       }
     }
 
     // #sync-journal-plugin-api
 
     @Override
-    public Future<Void> doAsyncDeleteMessagesTo(String persistenceId, long toSequenceNr) {
+    public CompletionStage<Void> doAsyncDeleteMessagesTo(String persistenceId, long toSequenceNr) {
       return null;
     }
 
     @Override
-    public Future<Void> doAsyncReplayMessages(
+    public CompletionStage<Void> doAsyncReplayMessages(
         String persistenceId,
         long fromSequenceNr,
         long toSequenceNr,
@@ -132,7 +133,8 @@ public class LambdaPersistencePluginDocTest {
     }
 
     @Override
-    public Future<Long> doAsyncReadHighestSequenceNr(String persistenceId, long fromSequenceNr) {
+    public CompletionStage<Long> doAsyncReadHighestSequenceNr(
+        String persistenceId, long fromSequenceNr) {
       return null;
     }
   }

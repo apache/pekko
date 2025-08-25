@@ -14,8 +14,8 @@
 package org.apache.pekko.persistence.journal.japi;
 
 import java.util.Optional;
+import java.util.concurrent.CompletionStage;
 import org.apache.pekko.persistence.*;
-import scala.concurrent.Future;
 
 interface AsyncWritePlugin {
   // #async-write-plugin-api
@@ -70,16 +70,22 @@ interface AsyncWritePlugin {
    * and the max batch size is reached.
    *
    * <p>This call is protected with a circuit-breaker.
+   *
+   * @return a CompletionStage that will be completed when the write is done (in Pekko 1.x, this was
+   *     a Scala Future)
    */
-  Future<Iterable<Optional<Exception>>> doAsyncWriteMessages(Iterable<AtomicWrite> messages);
+  CompletionStage<Iterable<Optional<Exception>>> doAsyncWriteMessages(
+      Iterable<AtomicWrite> messages);
 
   /**
    * Java API, Plugin API: synchronously deletes all persistent messages up to `toSequenceNr`.
    *
    * <p>This call is protected with a circuit-breaker.
    *
+   * @return a CompletionStage that will be completed when the deletion is done (in Pekko 1.x, this
+   *     was a Scala Future)
    * @see AsyncRecoveryPlugin
    */
-  Future<Void> doAsyncDeleteMessagesTo(String persistenceId, long toSequenceNr);
+  CompletionStage<Void> doAsyncDeleteMessagesTo(String persistenceId, long toSequenceNr);
   // #async-write-plugin-api
 }

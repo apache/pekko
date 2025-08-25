@@ -31,6 +31,7 @@ import pekko.japi.function.Creator
 import pekko.stream._
 import pekko.stream.impl.LinearTraversalBuilder
 import pekko.stream.scaladsl.SinkToCompletionStage
+import pekko.util.ConstantFun.scalaAnyToUnit
 import pekko.util.FutureConverters._
 import pekko.util.OptionConverters._
 
@@ -231,7 +232,7 @@ object Sink {
       f: function.Function[T, CompletionStage[Void]]): Sink[T, CompletionStage[Done]] =
     new Sink(
       scaladsl.Sink
-        .foreachAsync(parallelism)((x: T) => f(x).asScala.map(_ => ())(ExecutionContexts.parasitic))
+        .foreachAsync(parallelism)((x: T) => f(x).asScala.map(scalaAnyToUnit)(ExecutionContexts.parasitic))
         .toCompletionStage())
 
   /**

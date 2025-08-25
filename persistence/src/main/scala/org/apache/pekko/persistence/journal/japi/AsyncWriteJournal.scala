@@ -19,8 +19,11 @@ import scala.util.Failure
 import scala.util.Try
 
 import org.apache.pekko
+import pekko.dispatch.ExecutionContexts
 import pekko.persistence._
 import pekko.persistence.journal.{ AsyncWriteJournal => SAsyncWriteJournal }
+import pekko.util.ConstantFun.scalaAnyToUnit
+import pekko.util.FutureConverters._
 import pekko.util.ccompat._
 import pekko.util.ccompat.JavaConverters._
 
@@ -30,18 +33,18 @@ import pekko.util.ccompat.JavaConverters._
 @ccompatUsedUntil213
 abstract class AsyncWriteJournal extends AsyncRecovery with SAsyncWriteJournal with AsyncWritePlugin {
   import SAsyncWriteJournal.successUnit
-  import context.dispatcher
 
   final def asyncWriteMessages(messages: immutable.Seq[AtomicWrite]): Future[immutable.Seq[Try[Unit]]] =
-    doAsyncWriteMessages(messages.asJava).map { results =>
+    doAsyncWriteMessages(messages.asJava).asScala.map { results =>
       results.asScala.iterator
         .map { r =>
           if (r.isPresent) Failure(r.get)
           else successUnit
         }
         .to(immutable.IndexedSeq)
-    }
+    }(ExecutionContexts.parasitic)
 
-  final def asyncDeleteMessagesTo(persistenceId: String, toSequenceNr: Long) =
-    doAsyncDeleteMessagesTo(persistenceId, toSequenceNr).map(_ => ())
+  final def asyncDeleteMessagesTo(persistenceId: String, toSequenceNr: Long): Future[Unit] = {
+    doAsyncDeleteMessagesTo(persistenceId, toSequenceNr).asScala.map(scalaAnyToUnit)(ExecutionContexts.parasitic)
+  }
 }
