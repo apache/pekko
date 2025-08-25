@@ -98,7 +98,7 @@ interface ShardingDocExample {
       final Exception cause;
 
       private DBError(Throwable cause) {
-        if (cause instanceof Exception) this.cause = (Exception) cause;
+        if (cause instanceof Exception exception) this.cause = exception;
         else this.cause = new RuntimeException(cause.getMessage(), cause);
       }
     }
@@ -221,13 +221,11 @@ interface ShardingDocExample {
       }
 
       private Behavior<Command> onDelivery(CommandDelivery delivery) {
-        if (delivery.command instanceof AddTask) {
-          AddTask addTask = (AddTask) delivery.command;
+        if (delivery.command instanceof AddTask addTask) {
           state = state.add(addTask.item);
           save(state, delivery.confirmTo);
           return this;
-        } else if (delivery.command instanceof CompleteTask) {
-          CompleteTask completeTask = (CompleteTask) delivery.command;
+        } else if (delivery.command instanceof CompleteTask completeTask) {
           state = state.remove(completeTask.item);
           save(state, delivery.confirmTo);
           return this;

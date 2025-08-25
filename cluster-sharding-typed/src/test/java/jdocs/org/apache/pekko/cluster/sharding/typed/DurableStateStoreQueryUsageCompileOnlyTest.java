@@ -39,8 +39,7 @@ class DurableStateStoreQueryUsageCompileOnlySpec {
         durableStateStoreQuery.changes("tag", offset);
     source.map(
         chg -> {
-          if (chg instanceof UpdatedDurableState) {
-            UpdatedDurableState<Record> upd = (UpdatedDurableState<Record>) chg;
+          if (chg instanceof UpdatedDurableState upd) {
             return upd.value();
           } else {
             throw new IllegalArgumentException("Unexpected DurableStateChange " + chg.getClass());
