@@ -20,6 +20,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.function.Consumer;
 import org.apache.pekko.actor.*;
 import org.apache.pekko.dispatch.Futures;
@@ -78,46 +80,47 @@ public class LambdaPersistencePluginDocTest {
 
   class MySnapshotStore extends SnapshotStore {
     @Override
-    public Future<Optional<SelectedSnapshot>> doLoadAsync(
+    public CompletionStage<Optional<SelectedSnapshot>> doLoadAsync(
         String persistenceId, SnapshotSelectionCriteria criteria) {
       return null;
     }
 
     @Override
-    public Future<Void> doSaveAsync(SnapshotMetadata metadata, Object snapshot) {
+    public CompletionStage<Void> doSaveAsync(SnapshotMetadata metadata, Object snapshot) {
       return null;
     }
 
     @Override
-    public Future<Void> doDeleteAsync(SnapshotMetadata metadata) {
-      return Futures.successful(null);
+    public CompletionStage<Void> doDeleteAsync(SnapshotMetadata metadata) {
+      return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public Future<Void> doDeleteAsync(String persistenceId, SnapshotSelectionCriteria criteria) {
-      return Futures.successful(null);
+    public CompletionStage<Void> doDeleteAsync(
+        String persistenceId, SnapshotSelectionCriteria criteria) {
+      return CompletableFuture.completedFuture(null);
     }
   }
 
   class MyAsyncJournal extends AsyncWriteJournal {
     // #sync-journal-plugin-api
     @Override
-    public Future<Iterable<Optional<Exception>>> doAsyncWriteMessages(
+    public CompletionStage<Iterable<Optional<Exception>>> doAsyncWriteMessages(
         Iterable<AtomicWrite> messages) {
       try {
         Iterable<Optional<Exception>> result = new ArrayList<Optional<Exception>>();
         // blocking call here...
         // result.add(..)
-        return Futures.successful(result);
+        return CompletableFuture.completedFuture(result);
       } catch (Exception e) {
-        return Futures.failed(e);
+        return Futures.failedCompletionStage(e);
       }
     }
 
     // #sync-journal-plugin-api
 
     @Override
-    public Future<Void> doAsyncDeleteMessagesTo(String persistenceId, long toSequenceNr) {
+    public CompletionStage<Void> doAsyncDeleteMessagesTo(String persistenceId, long toSequenceNr) {
       return null;
     }
 
