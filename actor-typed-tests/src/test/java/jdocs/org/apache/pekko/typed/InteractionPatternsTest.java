@@ -702,8 +702,8 @@ public class InteractionPatternsTest extends JUnitSuite {
 
         result.whenComplete(
             (reply, failure) -> {
-              if (reply instanceof CookieFabric.Cookies cookies)
-                System.out.println("Yay, " + cookies.count + " cookies!");
+              if (reply instanceof CookieFabric.Cookies cookiesReply)
+                System.out.println("Yay, " + cookiesReply.count + " cookies!");
               else if (reply instanceof CookieFabric.InvalidRequest invalidRequest)
                 System.out.println("No cookies for me. " + invalidRequest.reason);
               else System.out.println("Boo! didn't get cookies in time. " + failure);
@@ -724,8 +724,8 @@ public class InteractionPatternsTest extends JUnitSuite {
         CompletionStage<CookieFabric.Cookies> cookies =
             result.thenCompose(
                 (CookieFabric.Reply reply) -> {
-                  if (reply instanceof CookieFabric.Cookies cookies) {
-                    return CompletableFuture.completedFuture(cookies);
+                  if (reply instanceof CookieFabric.Cookies cookiesReply) {
+                    return CompletableFuture.completedFuture(cookiesReply);
                   } else if (reply instanceof CookieFabric.InvalidRequest invalidRequest) {
                     CompletableFuture<CookieFabric.Cookies> failed = new CompletableFuture<>();
                     failed.completeExceptionally(
