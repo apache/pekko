@@ -117,8 +117,7 @@ public class PersistenceQueryDocTest {
      */
     @Override
     public Source<EventEnvelope, NotUsed> eventsByTag(String tag, Offset offset) {
-      if (offset instanceof Sequence) {
-        Sequence sequenceOffset = (Sequence) offset;
+      if (offset instanceof Sequence sequenceOffset) {
         return Source.fromGraph(
             new MyEventsByTagSource(conn, tag, sequenceOffset.value(), refreshInterval));
       } else if (offset == NoOffset.getInstance())

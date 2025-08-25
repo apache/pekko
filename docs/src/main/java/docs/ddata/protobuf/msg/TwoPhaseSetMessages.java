@@ -471,8 +471,8 @@ public final class TwoPhaseSetMessages {
 
       @java.lang.Override
       public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
-        if (other instanceof docs.ddata.protobuf.msg.TwoPhaseSetMessages.TwoPhaseSet) {
-          return mergeFrom((docs.ddata.protobuf.msg.TwoPhaseSetMessages.TwoPhaseSet)other);
+        if (other instanceof docs.ddata.protobuf.msg.TwoPhaseSetMessages.TwoPhaseSet tps) {
+          return mergeFrom(tps);
         } else {
           super.mergeFrom(other);
           return this;
@@ -1200,8 +1200,8 @@ public final class TwoPhaseSetMessages {
 
       @java.lang.Override
       public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
-        if (other instanceof docs.ddata.protobuf.msg.TwoPhaseSetMessages.TwoPhaseSet2) {
-          return mergeFrom((docs.ddata.protobuf.msg.TwoPhaseSetMessages.TwoPhaseSet2)other);
+        if (other instanceof docs.ddata.protobuf.msg.TwoPhaseSetMessages.TwoPhaseSet2 tps) {
+          return mergeFrom(tps);
         } else {
           super.mergeFrom(other);
           return this;

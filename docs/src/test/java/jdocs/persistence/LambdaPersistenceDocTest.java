@@ -236,11 +236,9 @@ public class LambdaPersistenceDocTest {
           }
 
           void updateState(Object event) {
-            if (event instanceof MsgSent) {
-              final MsgSent evt = (MsgSent) event;
+            if (event instanceof MsgSent evt) {
               deliver(destination, deliveryId -> new Msg(deliveryId, evt.s));
-            } else if (event instanceof MsgConfirmed) {
-              final MsgConfirmed evt = (MsgConfirmed) event;
+            } else if (event instanceof MsgConfirmed evt) {
               confirmDelivery(evt.deliveryId);
             }
           }

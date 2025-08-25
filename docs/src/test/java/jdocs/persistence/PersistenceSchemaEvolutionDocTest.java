@@ -101,8 +101,7 @@ public class PersistenceSchemaEvolutionDocTest {
 
     @Override
     public byte[] toBinary(Object o) {
-      if (o instanceof SeatReserved) {
-        SeatReserved s = (SeatReserved) o;
+      if (o instanceof SeatReserved s) {
         return FlightAppModels.SeatReserved.newBuilder()
             .setRow(s.row)
             .setLetter(s.letter)
@@ -153,8 +152,7 @@ public class PersistenceSchemaEvolutionDocTest {
 
       @Override
       public EventSeq fromJournal(Object event, String manifest) {
-        if (event instanceof JsObject) {
-          JsObject json = (JsObject) event;
+        if (event instanceof JsObject json) {
           if (V1.equals(manifest)) json = rename(json, "code", "seatNr");
           return EventSeq.single(json);
         } else {
@@ -217,8 +215,7 @@ public class PersistenceSchemaEvolutionDocTest {
       // serialize the object
       @Override
       public byte[] toBinary(Object obj) {
-        if (obj instanceof Person) {
-          Person p = (Person) obj;
+        if (obj instanceof Person p) {
           return (p.name + "|" + p.surname).getBytes(utf8);
         } else {
           throw new IllegalArgumentException(
@@ -312,8 +309,7 @@ public class PersistenceSchemaEvolutionDocTest {
 
     @Override
     public EventSeq fromJournal(Object event, String manifest) {
-      if (event instanceof UserDetailsChanged) {
-        UserDetailsChanged c = (UserDetailsChanged) event;
+      if (event instanceof UserDetailsChanged c) {
         if (c.name == null) return EventSeq.single(new UserAddressChanged(c.address));
         else if (c.address == null) return EventSeq.single(new UserNameChanged(c.name));
         else return EventSeq.create(new UserNameChanged(c.name), new UserAddressChanged(c.address));
@@ -426,8 +422,7 @@ public class PersistenceSchemaEvolutionDocTest {
 
     @Override
     public byte[] toBinary(Object o) {
-      if (o instanceof SamplePayload) {
-        SamplePayload s = (SamplePayload) o;
+      if (o instanceof SamplePayload s) {
         return s.payload.toString().getBytes(utf8);
       } else {
         // previously also handled "old" events here.
@@ -511,8 +506,7 @@ public class PersistenceSchemaEvolutionDocTest {
 
     @Override
     public Object toJournal(Object event) {
-      if (event instanceof SeatBooked) {
-        SeatBooked s = (SeatBooked) event;
+      if (event instanceof SeatBooked s) {
         return new SeatBookedData(s.code, s.customer.name);
       } else {
         throw new IllegalArgumentException("Unsupported: " + event.getClass());
@@ -521,8 +515,7 @@ public class PersistenceSchemaEvolutionDocTest {
 
     @Override
     public EventSeq fromJournal(Object event, String manifest) {
-      if (event instanceof SeatBookedData) {
-        SeatBookedData d = (SeatBookedData) event;
+      if (event instanceof SeatBookedData d) {
         return EventSeq.single(new SeatBooked(d.code, new Customer(d.customerName)));
       } else {
         throw new IllegalArgumentException("Unsupported: " + event.getClass());
@@ -551,8 +544,7 @@ public class PersistenceSchemaEvolutionDocTest {
 
     @Override
     public EventSeq fromJournal(Object event, String manifest) {
-      if (event instanceof JsObject) {
-        JsObject json = (JsObject) event;
+      if (event instanceof JsObject json) {
         return EventSeq.single(marshaller.fromJson(json));
       } else {
         throw new IllegalArgumentException(

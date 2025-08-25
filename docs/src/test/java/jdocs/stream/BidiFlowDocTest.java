@@ -64,8 +64,8 @@ public class BidiFlowDocTest extends AbstractJavaTest {
 
     @Override
     public boolean equals(Object o) {
-      if (o instanceof Ping) {
-        return ((Ping) o).id == id;
+      if (o instanceof Ping ping) {
+        return ping.id == id;
       } else return false;
     }
 
@@ -84,8 +84,8 @@ public class BidiFlowDocTest extends AbstractJavaTest {
 
     @Override
     public boolean equals(Object o) {
-      if (o instanceof Pong) {
-        return ((Pong) o).id == id;
+      if (o instanceof Pong pong) {
+        return pong.id == id;
       } else return false;
     }
 
@@ -98,8 +98,8 @@ public class BidiFlowDocTest extends AbstractJavaTest {
   // #codec-impl
   public static ByteString toBytes(Message msg) {
     // #implementation-details-elided
-    if (msg instanceof Ping) {
-      final int id = ((Ping) msg).id;
+    if (msg instanceof Ping ping) {
+      final int id = ping.id;
       return new ByteStringBuilder().putByte((byte) 1).putInt(id, ByteOrder.LITTLE_ENDIAN).result();
     } else {
       final int id = ((Pong) msg).id;

@@ -158,8 +158,8 @@ public final class FlightAppModels {
     @java.lang.Override
     public java.lang.String getLetter() {
       java.lang.Object ref = letter_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
+      if (ref instanceof java.lang.String s) {
+        return s;
       } else {
         org.apache.pekko.protobufv3.internal.ByteString bs = 
             (org.apache.pekko.protobufv3.internal.ByteString) ref;
@@ -178,10 +178,9 @@ public final class FlightAppModels {
     public org.apache.pekko.protobufv3.internal.ByteString
         getLetterBytes() {
       java.lang.Object ref = letter_;
-      if (ref instanceof java.lang.String) {
+      if (ref instanceof java.lang.String s) {
         org.apache.pekko.protobufv3.internal.ByteString b = 
-            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(s);
         letter_ = b;
         return b;
       } else {
@@ -234,8 +233,8 @@ public final class FlightAppModels {
     @java.lang.Override
     public java.lang.String getSeatType() {
       java.lang.Object ref = seatType_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
+      if (ref instanceof java.lang.String s) {
+        return s;
       } else {
         org.apache.pekko.protobufv3.internal.ByteString bs = 
             (org.apache.pekko.protobufv3.internal.ByteString) ref;
@@ -258,10 +257,9 @@ public final class FlightAppModels {
     public org.apache.pekko.protobufv3.internal.ByteString
         getSeatTypeBytes() {
       java.lang.Object ref = seatType_;
-      if (ref instanceof java.lang.String) {
+      if (ref instanceof java.lang.String s) {
         org.apache.pekko.protobufv3.internal.ByteString b = 
-            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(s);
         seatType_ = b;
         return b;
       } else {
@@ -557,8 +555,8 @@ public final class FlightAppModels {
 
       @java.lang.Override
       public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
-        if (other instanceof docs.persistence.proto.FlightAppModels.SeatReserved) {
-          return mergeFrom((docs.persistence.proto.FlightAppModels.SeatReserved)other);
+        if (other instanceof docs.persistence.proto.FlightAppModels.SeatReserved seatReserved) {
+          return mergeFrom(seatReserved);
         } else {
           super.mergeFrom(other);
           return this;
@@ -658,7 +656,9 @@ public final class FlightAppModels {
        */
       public java.lang.String getLetter() {
         java.lang.Object ref = letter_;
-        if (!(ref instanceof java.lang.String)) {
+        if (ref instanceof java.lang.String s) {
+          return s;
+        } else {
           org.apache.pekko.protobufv3.internal.ByteString bs =
               (org.apache.pekko.protobufv3.internal.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
@@ -666,8 +666,6 @@ public final class FlightAppModels {
             letter_ = s;
           }
           return s;
-        } else {
-          return (java.lang.String) ref;
         }
       }
       /**
@@ -677,10 +675,9 @@ public final class FlightAppModels {
       public org.apache.pekko.protobufv3.internal.ByteString
           getLetterBytes() {
         java.lang.Object ref = letter_;
-        if (ref instanceof String) {
+        if (ref instanceof String s) {
           org.apache.pekko.protobufv3.internal.ByteString b = 
-              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(s);
           letter_ = b;
           return b;
         } else {
@@ -786,7 +783,9 @@ public final class FlightAppModels {
        */
       public java.lang.String getSeatType() {
         java.lang.Object ref = seatType_;
-        if (!(ref instanceof java.lang.String)) {
+        if (ref instanceof java.lang.String s) {
+          return s;
+        } else {
           org.apache.pekko.protobufv3.internal.ByteString bs =
               (org.apache.pekko.protobufv3.internal.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
@@ -794,8 +793,6 @@ public final class FlightAppModels {
             seatType_ = s;
           }
           return s;
-        } else {
-          return (java.lang.String) ref;
         }
       }
       /**
@@ -809,10 +806,9 @@ public final class FlightAppModels {
       public org.apache.pekko.protobufv3.internal.ByteString
           getSeatTypeBytes() {
         java.lang.Object ref = seatType_;
-        if (ref instanceof String) {
+        if (ref instanceof String s) {
           org.apache.pekko.protobufv3.internal.ByteString b = 
-              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(s);
           seatType_ = b;
           return b;
         } else {

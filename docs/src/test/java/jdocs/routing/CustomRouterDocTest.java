@@ -91,7 +91,7 @@ public class CustomRouterDocTest extends AbstractJavaTest {
 
     @Override
     public boolean equals(Object obj) {
-      return (obj instanceof TestRoutee) && n == ((TestRoutee) obj).n;
+      return (obj instanceof TestRoutee routee) && n == routee.n;
     }
   }
 

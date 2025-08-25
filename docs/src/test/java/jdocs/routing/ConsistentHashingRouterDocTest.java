@@ -135,8 +135,8 @@ public class ConsistentHashingRouterDocTest extends AbstractJavaTest {
             new ConsistentHashMapper() {
               @Override
               public Object hashKey(Object message) {
-                if (message instanceof Evict) {
-                  return ((Evict) message).key;
+                if (message instanceof Evict evict) {
+                  return evict.key;
                 } else {
                   return null;
                 }
