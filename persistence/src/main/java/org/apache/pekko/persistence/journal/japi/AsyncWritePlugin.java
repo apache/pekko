@@ -15,7 +15,6 @@ package org.apache.pekko.persistence.journal.japi;
 
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
-
 import org.apache.pekko.persistence.*;
 
 interface AsyncWritePlugin {

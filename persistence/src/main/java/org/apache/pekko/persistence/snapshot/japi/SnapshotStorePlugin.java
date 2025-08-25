@@ -15,7 +15,6 @@ package org.apache.pekko.persistence.snapshot.japi;
 
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
-
 import org.apache.pekko.persistence.SelectedSnapshot;
 import org.apache.pekko.persistence.SnapshotMetadata;
 import org.apache.pekko.persistence.SnapshotSelectionCriteria;
