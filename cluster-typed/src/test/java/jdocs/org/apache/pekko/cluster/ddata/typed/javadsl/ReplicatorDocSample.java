@@ -167,7 +167,7 @@ interface ReplicatorDocSample {
     }
 
     private Behavior<Command> onInternalGetResponse(InternalGetResponse msg) {
-      if (msg.rsp instanceof Replicator.GetSuccess rsp) {
+      if (msg.rsp instanceof Replicator.GetSuccess<GCounter> rsp) {
         int value = rsp.get(key).getValue().intValue();
         msg.replyTo.tell(value);
         return this;
@@ -178,7 +178,7 @@ interface ReplicatorDocSample {
     }
 
     private Behavior<Command> onInternalSubscribeResponse(InternalSubscribeResponse msg) {
-      if (msg.rsp instanceof Replicator.Changed rsp) {
+      if (msg.rsp instanceof Replicator.Changed<GCounter> rsp) {
         GCounter counter = rsp.get(key);
         cachedValue = counter.getValue().intValue();
         return this;
