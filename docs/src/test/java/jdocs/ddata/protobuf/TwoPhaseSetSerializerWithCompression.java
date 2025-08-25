@@ -24,8 +24,8 @@ public class TwoPhaseSetSerializerWithCompression extends TwoPhaseSetSerializer 
   // #compression
   @Override
   public byte[] toBinary(Object obj) {
-    if (obj instanceof TwoPhaseSet) {
-      return compress(twoPhaseSetToProto((TwoPhaseSet) obj));
+    if (obj instanceof TwoPhaseSet tps) {
+      return compress(twoPhaseSetToProto(tps));
     } else {
       throw new IllegalArgumentException("Can't serialize object of type " + obj.getClass());
     }

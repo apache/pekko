@@ -34,11 +34,10 @@ public class Monitor {
   private static <T> void printMonitorState(FlowMonitorState.StreamState<T> state) {
     if (state == FlowMonitorState.finished()) {
       System.out.println("Stream is initialized but hasn't processed any element");
-    } else if (state instanceof FlowMonitorState.Received) {
-      FlowMonitorState.Received msg = (FlowMonitorState.Received) state;
-      System.out.println("Last message received: " + msg.msg());
-    } else if (state instanceof FlowMonitorState.Failed) {
-      Throwable cause = ((FlowMonitorState.Failed) state).cause();
+    } else if (state instanceof FlowMonitorState.Received received) {
+      System.out.println("Last message received: " + received.msg());
+    } else if (state instanceof FlowMonitorState.Failed failed) {
+      Throwable cause = failed.cause();
       System.out.println("Stream failed with cause: " + cause.getMessage());
     } else {
       System.out.println("Stream completed already");

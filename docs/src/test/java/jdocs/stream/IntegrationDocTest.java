@@ -803,8 +803,7 @@ public class IntegrationDocTest extends AbstractJavaTest {
                     System.out.println("enqueued " + x);
                   } else if (result == QueueOfferResult.dropped()) {
                     System.out.println("dropped " + x);
-                  } else if (result instanceof QueueOfferResult.Failure) {
-                    QueueOfferResult.Failure failure = (QueueOfferResult.Failure) result;
+                  } else if (result instanceof QueueOfferResult.Failure failure) {
                     System.out.println("Offer failed " + failure.cause().getMessage());
                   } else if (result instanceof QueueOfferResult.QueueClosed$) {
                     System.out.println("Bounded Source Queue closed");

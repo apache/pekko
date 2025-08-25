@@ -43,8 +43,7 @@ public class TestKitExamples {
       // if you return ProcessingSuccess the operation will be performed, otherwise not.
       if (count < 10) {
         count += 1;
-        if (processingUnit instanceof ReadEvents) {
-          ReadEvents read = (ReadEvents) processingUnit;
+        if (processingUnit instanceof ReadEvents read) {
           if (read.batch().nonEmpty()) {
             ProcessingSuccess.getInstance();
           } else {
@@ -79,8 +78,7 @@ public class TestKitExamples {
       // if you return ProcessingSuccess the operation will be performed, otherwise not.
       if (count < 10) {
         count += 1;
-        if (processingUnit instanceof ReadSnapshot) {
-          ReadSnapshot read = (ReadSnapshot) processingUnit;
+        if (processingUnit instanceof ReadSnapshot read) {
           if (read.getSnapshot().isPresent()) {
             ProcessingSuccess.getInstance();
           } else {

@@ -67,8 +67,8 @@ public class EchoManager extends AbstractActor {
         .match(
             Tcp.CommandFailed.class,
             failed -> {
-              if (failed.cmd() instanceof Bind) {
-                log.warning("cannot bind to [{}]", ((Bind) failed.cmd()).localAddress());
+              if (failed.cmd() instanceof Bind bind) {
+                log.warning("cannot bind to [{}]", bind.localAddress());
                 getContext().stop(getSelf());
               } else {
                 log.warning("unknown command failed [{}]", failed.cmd());

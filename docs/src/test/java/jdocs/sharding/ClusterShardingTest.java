@@ -54,28 +54,28 @@ public class ClusterShardingTest {
 
           @Override
           public String entityId(Object message) {
-            if (message instanceof Counter.EntityEnvelope)
-              return String.valueOf(((Counter.EntityEnvelope) message).id);
-            else if (message instanceof Counter.Get)
-              return String.valueOf(((Counter.Get) message).counterId);
+            if (message instanceof Counter.EntityEnvelope envelope)
+              return String.valueOf(envelope.id);
+            else if (message instanceof Counter.Get get)
+              return String.valueOf(get.counterId);
             else return null;
           }
 
           @Override
           public Object entityMessage(Object message) {
-            if (message instanceof Counter.EntityEnvelope)
-              return ((Counter.EntityEnvelope) message).payload;
+            if (message instanceof Counter.EntityEnvelope envelope)
+              return envelope.payload;
             else return message;
           }
 
           @Override
           public String shardId(Object message) {
             int numberOfShards = 100;
-            if (message instanceof Counter.EntityEnvelope) {
-              long id = ((Counter.EntityEnvelope) message).id;
+            if (message instanceof Counter.EntityEnvelope envelope) {
+              long id = envelope.id;
               return String.valueOf(id % numberOfShards);
-            } else if (message instanceof Counter.Get) {
-              long id = ((Counter.Get) message).counterId;
+            } else if (message instanceof Counter.Get get) {
+              long id = get.counterId;
               return String.valueOf(id % numberOfShards);
             } else {
               return null;
@@ -123,17 +123,17 @@ public class ClusterShardingTest {
 
           @Override
           public String entityId(Object message) {
-            if (message instanceof Counter.EntityEnvelope)
-              return String.valueOf(((Counter.EntityEnvelope) message).id);
-            else if (message instanceof Counter.Get)
-              return String.valueOf(((Counter.Get) message).counterId);
+            if (message instanceof Counter.EntityEnvelope envelope)
+              return String.valueOf(envelope.id);
+            else if (message instanceof Counter.Get get)
+              return String.valueOf(get.counterId);
             else return null;
           }
 
           @Override
           public Object entityMessage(Object message) {
-            if (message instanceof Counter.EntityEnvelope)
-              return ((Counter.EntityEnvelope) message).payload;
+            if (message instanceof Counter.EntityEnvelope envelope)
+              return envelope.payload;
             else return message;
           }
 
@@ -141,14 +141,14 @@ public class ClusterShardingTest {
           @Override
           public String shardId(Object message) {
             int numberOfShards = 100;
-            if (message instanceof Counter.EntityEnvelope) {
-              long id = ((Counter.EntityEnvelope) message).id;
+            if (message instanceof Counter.EntityEnvelope envelope) {
+              long id = envelope.id;
               return String.valueOf(id % numberOfShards);
-            } else if (message instanceof Counter.Get) {
-              long id = ((Counter.Get) message).counterId;
+            } else if (message instanceof Counter.Get get) {
+              long id = get.counterId;
               return String.valueOf(id % numberOfShards);
-            } else if (message instanceof ShardRegion.StartEntity) {
-              long id = Long.valueOf(((ShardRegion.StartEntity) message).entityId());
+            } else if (message instanceof ShardRegion.StartEntity entity) {
+              long id = Long.valueOf(entity.entityId());
               return String.valueOf(id % numberOfShards);
             } else {
               return null;

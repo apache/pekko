@@ -116,8 +116,8 @@ public class SerializationDocTest {
     @Override
     public byte[] toBinary(Object obj) {
       // Put the real code that serializes the object here
-      if (obj instanceof Customer) return ((Customer) obj).name.getBytes(UTF_8);
-      else if (obj instanceof User) return ((User) obj).name.getBytes(UTF_8);
+      if (obj instanceof Customer customer) return customer.name.getBytes(UTF_8);
+      else if (obj instanceof User user) return user.name.getBytes(UTF_8);
       else throw new IllegalArgumentException("Unknown type: " + obj);
     }
 

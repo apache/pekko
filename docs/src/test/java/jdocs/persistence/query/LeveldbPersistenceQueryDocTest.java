@@ -74,8 +74,7 @@ public class LeveldbPersistenceQueryDocTest {
 
     @Override
     public Object toJournal(Object event) {
-      if (event instanceof String) {
-        String s = (String) event;
+      if (event instanceof String s) {
         Set<String> tags = new HashSet<String>();
         if (s.contains("green")) tags.add("green");
         if (s.contains("black")) tags.add("black");
