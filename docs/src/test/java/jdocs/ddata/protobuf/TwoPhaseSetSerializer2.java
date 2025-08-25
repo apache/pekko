@@ -49,8 +49,7 @@ public class TwoPhaseSetSerializer2 extends AbstractSerializationSupport {
 
   @Override
   public byte[] toBinary(Object obj) {
-    if (obj instanceof TwoPhaseSet tps) {
-      return twoPhaseSetToProto((TwoPhaseSet) obj).toByteArray();
+      return twoPhaseSetToProto(tps).toByteArray();
     } else {
       throw new IllegalArgumentException("Can't serialize object of type " + obj.getClass());
     }
