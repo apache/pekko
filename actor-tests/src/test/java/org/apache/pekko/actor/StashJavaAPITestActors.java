@@ -23,9 +23,9 @@ public class StashJavaAPITestActors {
    */
   private static int testReceive(
       Object msg, int count, ActorRef sender, ActorRef self, UnrestrictedStash stash) {
-    if (msg instanceof String) {
+    if (msg instanceof String s) {
       if (count < 0) {
-        sender.tell(((String) msg).length(), self);
+        sender.tell(s.length(), self);
       } else if (count == 2) {
         stash.unstashAll();
         return -1;
@@ -33,8 +33,7 @@ public class StashJavaAPITestActors {
         stash.stash();
         return count + 1;
       }
-    } else if (msg instanceof Integer) {
-      int value = (Integer) msg;
+    } else if (msg instanceof Integer value) {
       assertEquals(5, value);
     }
     return count;

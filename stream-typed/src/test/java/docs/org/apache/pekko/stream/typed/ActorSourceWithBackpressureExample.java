@@ -90,7 +90,7 @@ class StreamFeeder extends AbstractBehavior<StreamFeeder.Emitted> {
               else return Optional.empty();
             },
             (msg) -> {
-              if (msg instanceof FailureOccured) return Optional.of(((FailureOccured) msg).ex);
+              if (msg instanceof FailureOccured failure) return Optional.of(failure.ex);
               else return Optional.empty();
             });
 

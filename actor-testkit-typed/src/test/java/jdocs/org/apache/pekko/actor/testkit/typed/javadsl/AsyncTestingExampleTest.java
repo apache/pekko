@@ -66,9 +66,10 @@ public class AsyncTestingExampleTest
       @Override
       public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Pong)) return false;
-        Pong pong = (Pong) o;
-        return message.equals(pong.message);
+        if (o instanceof Pong pong) {
+          return message.equals(pong.message);
+        }
+        return false;
       }
 
       @Override

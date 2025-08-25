@@ -118,12 +118,11 @@ public class ActorCompile {
   {
     Behaviors.<MyMsg>receive(
         (context, message) -> {
-          if (message instanceof MyMsgA) {
+          if (message instanceof MyMsgA msgA) {
             return Behaviors.receive(
                 (ctx2, msg2) -> {
-                  if (msg2 instanceof MyMsgB) {
-                    ((MyMsgA) message).replyTo.tell(((MyMsgB) msg2).greeting);
-
+                  if (msg2 instanceof MyMsgB msgB) {
+                    msgA.replyTo.tell(msgB.greeting);
                     ActorRef<String> adapter =
                         ctx2.messageAdapter(String.class, s -> new MyMsgB(s.toUpperCase()));
                   }

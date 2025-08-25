@@ -57,7 +57,7 @@ public class ActorSourceExample {
     final Source<Protocol, ActorRef<Protocol>> source =
         ActorSource.actorRef(
             (m) -> m instanceof Complete,
-            (m) -> (m instanceof Fail) ? Optional.of(((Fail) m).ex) : Optional.empty(),
+            (m) -> (m instanceof Fail fail) ? Optional.of(fail.ex) : Optional.empty(),
             8,
             OverflowStrategy.fail());
 
@@ -66,8 +66,8 @@ public class ActorSourceExample {
             .collect(
                 new JavaPartialFunction<Protocol, String>() {
                   public String apply(Protocol p, boolean isCheck) {
-                    if (p instanceof Message) {
-                      return ((Message) p).msg;
+                    if (p instanceof Message message) {
+                      return message.msg;
                     } else {
                       throw noMatch();
                     }

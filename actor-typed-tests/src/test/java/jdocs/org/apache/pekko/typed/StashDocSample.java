@@ -168,8 +168,8 @@ interface StashDocSample {
 
     private static RuntimeException asRuntimeException(Throwable t) {
       // can't throw Throwable in lambdas
-      if (t instanceof RuntimeException) {
-        return (RuntimeException) t;
+      if (t instanceof RuntimeException runtimeException) {
+        return runtimeException;
       } else {
         return new RuntimeException(t);
       }

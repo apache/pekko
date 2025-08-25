@@ -236,14 +236,14 @@ public class AdapterTest extends JUnitSuite {
   static Behavior<Typed2Msg> typed2() {
     return Behaviors.receive(
         (context, message) -> {
-          if (message instanceof Ping) {
-            ActorRef<String> replyTo = ((Ping) message).replyTo;
+          if (message instanceof Ping ping) {
+            ActorRef<String> replyTo = ping.replyTo;
             replyTo.tell("pong");
             return same();
           } else if (message instanceof StopIt) {
             return stopped();
-          } else if (message instanceof ThrowIt) {
-            throw (ThrowIt) message;
+          } else if (message instanceof ThrowIt throwIt) {
+            throw throwIt;
           } else {
             return unhandled();
           }
