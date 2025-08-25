@@ -163,23 +163,23 @@ public class CountMinSketch {
         // this is not cryptographic one, anything which is stable and random is good enough
         return o.hashCode();
       }
-      if (o instanceof String) {
-        return hash(((String) o).getBytes());
+      if (o instanceof String s) {
+        return hash(s.getBytes());
       }
-      if (o instanceof Long) {
-        return hashLong((Long) o, 0);
+      if (o instanceof Long l) {
+        return hashLong(l, 0);
       }
-      if (o instanceof Integer) {
-        return hashLong((Integer) o, 0);
+      if (o instanceof Integer i) {
+        return hashLong(i, 0);
       }
-      if (o instanceof Double) {
-        return hashLong(Double.doubleToRawLongBits((Double) o), 0);
+      if (o instanceof Double d) {
+        return hashLong(Double.doubleToRawLongBits(d), 0);
       }
-      if (o instanceof Float) {
+      if (o instanceof Float f) {
         return hashLong(Float.floatToRawIntBits((Float) o), 0);
       }
-      if (o instanceof byte[]) {
-        return bytesHash((byte[]) o, 0);
+      if (o instanceof byte[] array) {
+        return bytesHash(array, 0);
       }
       return hash(o.toString());
     }

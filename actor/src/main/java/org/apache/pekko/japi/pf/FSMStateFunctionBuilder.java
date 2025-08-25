@@ -57,16 +57,14 @@ public class FSMStateFunctionBuilder<S, D> {
           public boolean test(FSM.Event e) {
             boolean res = true;
             if (eventOrType != null) {
-              if (eventOrType instanceof Class) {
-                Class eventType = (Class) eventOrType;
+              if (eventOrType instanceof Class eventType) {
                 res = eventType.isInstance(e.event());
               } else {
                 res = eventOrType.equals(e.event());
               }
             }
             if (res && dataOrType != null) {
-              if (dataOrType instanceof Class) {
-                Class dataType = (Class) dataOrType;
+              if (dataOrType instanceof Class dataType) {
                 res = dataType.isInstance(e.stateData());
               } else {
                 res = dataOrType.equals(e.stateData());
@@ -191,8 +189,7 @@ public class FSMStateFunctionBuilder<S, D> {
             boolean emMatch = false;
             Object event = e.event();
             for (Object em : eventMatches) {
-              if (em instanceof Class) {
-                Class emc = (Class) em;
+              if (em instanceof Class emc) {
                 emMatch = emc.isInstance(event);
               } else {
                 emMatch = event.equals(em);

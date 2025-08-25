@@ -69,7 +69,7 @@ public class ActorSourceSinkCompileTest {
   {
     ActorSource.actorRef(
             (m) -> false,
-            (m) -> (m instanceof Failure) ? Optional.of(((Failure) m).ex) : Optional.empty(),
+            (m) -> (m instanceof Failure failure) ? Optional.of(failure.ex) : Optional.empty(),
             10,
             OverflowStrategy.dropBuffer())
         .to(Sink.seq());

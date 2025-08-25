@@ -220,14 +220,11 @@ public class InteractionPatternsTest extends JUnitSuite {
 
         private Behavior<Command> onWrappedBackendResponse(WrappedBackendResponse wrapped) {
           Backend.Response response = wrapped.response;
-          if (response instanceof Backend.JobStarted) {
-            Backend.JobStarted rsp = (Backend.JobStarted) response;
+          if (response instanceof Backend.JobStarted rsp) {
             getContext().getLog().info("Started {}", rsp.taskId);
-          } else if (response instanceof Backend.JobProgress) {
-            Backend.JobProgress rsp = (Backend.JobProgress) response;
+          } else if (response instanceof Backend.JobProgress rsp) {
             getContext().getLog().info("Progress {}", rsp.taskId);
-          } else if (response instanceof Backend.JobCompleted) {
-            Backend.JobCompleted rsp = (Backend.JobCompleted) response;
+          } else if (response instanceof Backend.JobCompleted rsp) {
             getContext().getLog().info("Completed {}", rsp.taskId);
             inProgress.get(rsp.taskId).tell(rsp.result);
             inProgress.remove(rsp.taskId);
@@ -712,11 +709,10 @@ public class InteractionPatternsTest extends JUnitSuite {
 
         result.whenComplete(
             (reply, failure) -> {
-              if (reply instanceof CookieFabric.Cookies)
-                System.out.println("Yay, " + ((CookieFabric.Cookies) reply).count + " cookies!");
-              else if (reply instanceof CookieFabric.InvalidRequest)
-                System.out.println(
-                    "No cookies for me. " + ((CookieFabric.InvalidRequest) reply).reason);
+              if (reply instanceof CookieFabric.Cookies cookiesReply)
+                System.out.println("Yay, " + cookiesReply.count + " cookies!");
+              else if (reply instanceof CookieFabric.InvalidRequest invalidRequest)
+                System.out.println("No cookies for me. " + invalidRequest.reason);
               else System.out.println("Boo! didn't get cookies in time. " + failure);
             });
       }
@@ -736,12 +732,12 @@ public class InteractionPatternsTest extends JUnitSuite {
         CompletionStage<CookieFabric.Cookies> cookies =
             result.thenCompose(
                 (CookieFabric.Reply reply) -> {
-                  if (reply instanceof CookieFabric.Cookies) {
-                    return CompletableFuture.completedFuture((CookieFabric.Cookies) reply);
-                  } else if (reply instanceof CookieFabric.InvalidRequest) {
+                  if (reply instanceof CookieFabric.Cookies cookiesReply) {
+                    return CompletableFuture.completedFuture(cookiesReply);
+                  } else if (reply instanceof CookieFabric.InvalidRequest invalidRequest) {
                     CompletableFuture<CookieFabric.Cookies> failed = new CompletableFuture<>();
                     failed.completeExceptionally(
-                        new IllegalArgumentException(((CookieFabric.InvalidRequest) reply).reason));
+                        new IllegalArgumentException(invalidRequest.reason));
                     return failed;
                   } else {
                     throw new IllegalStateException("Unexpected reply: " + reply.getClass());

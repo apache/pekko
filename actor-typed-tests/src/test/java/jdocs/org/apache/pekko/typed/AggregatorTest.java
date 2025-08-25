@@ -191,11 +191,9 @@ public class AggregatorTest extends JUnitSuite {
                     r -> {
                       // The hotels have different protocols with different replies,
                       // convert them to `HotelCustomer.Quote` that this actor understands.
-                      if (r instanceof Hotel1.Quote) {
-                        Hotel1.Quote q = (Hotel1.Quote) r;
+                      if (r instanceof Hotel1.Quote q) {
                         return new Quote(q.hotel, q.price);
-                      } else if (r instanceof Hotel2.Price) {
-                        Hotel2.Price p = (Hotel2.Price) r;
+                      } else if (r instanceof Hotel2.Price p) {
                         return new Quote(p.hotel, p.price);
                       } else {
                         throw new IllegalArgumentException("Unknown reply " + r);

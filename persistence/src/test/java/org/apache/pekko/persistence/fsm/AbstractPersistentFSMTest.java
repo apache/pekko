@@ -301,8 +301,8 @@ public class AbstractPersistentFSMTest {
     // #customer-apply-event
     @Override
     public ShoppingCart applyEvent(DomainEvent event, ShoppingCart currentData) {
-      if (event instanceof ItemAdded) {
-        currentData.addItem(((ItemAdded) event).getItem());
+      if (event instanceof ItemAdded itemAdded) {
+        currentData.addItem(itemAdded.getItem());
         return currentData;
       } else if (event instanceof OrderExecuted) {
         return currentData;
