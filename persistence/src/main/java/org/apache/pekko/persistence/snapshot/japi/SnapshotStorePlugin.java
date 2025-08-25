@@ -26,6 +26,7 @@ interface SnapshotStorePlugin {
    *
    * @param persistenceId id of the persistent actor.
    * @param criteria selection criteria for loading.
+   * @return a CompletionStage that will be completed when the loading is done (in Pekko 1.x, this was a Scala Future)
    */
   CompletionStage<Optional<SelectedSnapshot>> doLoadAsync(
       String persistenceId, SnapshotSelectionCriteria criteria);
@@ -35,6 +36,7 @@ interface SnapshotStorePlugin {
    *
    * @param metadata snapshot metadata.
    * @param snapshot snapshot.
+   * @return a CompletionStage that will be completed when the saving is done (in Pekko 1.x, this was a Scala Future)
    */
   CompletionStage<Void> doSaveAsync(SnapshotMetadata metadata, Object snapshot);
 
@@ -42,6 +44,7 @@ interface SnapshotStorePlugin {
    * Java API, Plugin API: deletes the snapshot identified by `metadata`.
    *
    * @param metadata snapshot metadata.
+   * @return a CompletionStage that will be completed when the deletion is done (in Pekko 1.x, this was a Scala Future)
    */
   CompletionStage<Void> doDeleteAsync(SnapshotMetadata metadata);
 
@@ -50,6 +53,7 @@ interface SnapshotStorePlugin {
    *
    * @param persistenceId id of the persistent actor.
    * @param criteria selection criteria for deleting.
+   * @return a CompletionStage that will be completed when the deletion is done (in Pekko 1.x, this was a Scala Future)
    */
   CompletionStage<Void> doDeleteAsync(String persistenceId, SnapshotSelectionCriteria criteria);
   // #snapshot-store-plugin-api

@@ -70,6 +70,7 @@ interface AsyncWritePlugin {
    * and the max batch size is reached.
    *
    * <p>This call is protected with a circuit-breaker.
+   * @return a CompletionStage that will be completed when the write is done (in Pekko 1.x, this was a Scala Future)
    */
   CompletionStage<Iterable<Optional<Exception>>> doAsyncWriteMessages(
       Iterable<AtomicWrite> messages);
@@ -79,6 +80,7 @@ interface AsyncWritePlugin {
    *
    * <p>This call is protected with a circuit-breaker.
    *
+   * @return a CompletionStage that will be completed when the deletion is done (in Pekko 1.x, this was a Scala Future)
    * @see AsyncRecoveryPlugin
    */
   CompletionStage<Void> doAsyncDeleteMessagesTo(String persistenceId, long toSequenceNr);
