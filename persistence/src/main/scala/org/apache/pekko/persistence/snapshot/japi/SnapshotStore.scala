@@ -19,7 +19,7 @@ import org.apache.pekko
 import pekko.japi.Util._
 import pekko.persistence._
 import pekko.persistence.snapshot.{ SnapshotStore => SSnapshotStore }
-import pekko.util.ConstantFun
+import pekko.util.ConstantFun.scalaAnyToUnit
 import pekko.util.FutureConverters._
 
 /**
@@ -34,12 +34,12 @@ abstract class SnapshotStore extends SSnapshotStore with SnapshotStorePlugin {
     doLoadAsync(persistenceId, criteria).asScala.map(option)
 
   override final def saveAsync(metadata: SnapshotMetadata, snapshot: Any): Future[Unit] =
-    doSaveAsync(metadata, snapshot).asScala.map(ConstantFun.unit)
+    doSaveAsync(metadata, snapshot).asScala.map(scalaAnyToUnit)
 
   override final def deleteAsync(metadata: SnapshotMetadata): Future[Unit] =
-    doDeleteAsync(metadata).asScala.map(ConstantFun.unit)
+    doDeleteAsync(metadata).asScala.map(scalaAnyToUnit)
 
   override final def deleteAsync(persistenceId: String, criteria: SnapshotSelectionCriteria): Future[Unit] =
-    doDeleteAsync(persistenceId: String, criteria: SnapshotSelectionCriteria).asScala.map(ConstantFun.unit)
+    doDeleteAsync(persistenceId: String, criteria: SnapshotSelectionCriteria).asScala.map(scalaAnyToUnit)
 
 }
