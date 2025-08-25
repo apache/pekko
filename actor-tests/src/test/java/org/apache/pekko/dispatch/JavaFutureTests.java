@@ -13,26 +13,25 @@
 
 package org.apache.pekko.dispatch;
 
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
-import org.apache.pekko.actor.ActorSystem;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
-import org.apache.pekko.japi.*;
-import org.junit.ClassRule;
-import org.scalatestplus.junit.JUnitSuite;
 import scala.concurrent.Await;
 import scala.concurrent.Future;
 import scala.concurrent.Promise;
 import scala.concurrent.duration.Duration;
+
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.japi.*;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoSpec;
+import org.junit.ClassRule;
+import org.scalatestplus.junit.JUnitSuite;
 import org.junit.Test;
+
+import static org.apache.pekko.japi.Util.classTag;
 import static org.junit.Assert.*;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-import static org.apache.pekko.japi.Util.classTag;
-
-import org.apache.pekko.testkit.PekkoSpec;
-
-@SuppressWarnings("deprecation")
 public class JavaFutureTests extends JUnitSuite {
 
   @ClassRule
