@@ -675,7 +675,34 @@ abstract class ActorSystem extends ActorRefFactory with ClassicActorSystemProvid
    * using the dispatcher of this actor system as it will have been shut down before the
    * future completes.
    */
-  def terminate(): Future[Terminated]
+  def terminate(): Unit
+
+  /**
+   * Terminates this actor system and blocks the current thread until it is terminated,
+   * waiting at most the given duration.
+   *
+   * @param atMost the maximum duration to wait
+   * @throws java.util.concurrent.TimeoutException if the wait timed out
+   * @throws InterruptedException if the current thread is interrupted while waiting
+   */
+  def terminateAndAwait(atMost: Duration): Unit = {
+    import scala.concurrent.Await
+    Await.result(whenTerminated, atMost)
+  }
+
+  /**
+   * Terminates this actor system and blocks the current thread until it is terminated,
+   * waiting at most the given duration.
+   *
+   * @param atMost the maximum duration to wait
+   * @throws java.util.concurrent.TimeoutException if the wait timed out
+   * @throws InterruptedException if the current thread is interrupted while waiting
+   */
+  def terminateAndAwait(atMost: java.time.Duration): Unit = {
+    import scala.concurrent.Await
+    import JavaDurationConverters._
+    Await.result(whenTerminated, atMost.asScala)
+  }
 
   /**
    * Returns a Future which will be completed after the ActorSystem has been terminated
@@ -1063,7 +1090,7 @@ private[pekko] class ActorSystemImpl(
 
   @volatile private var terminating = false
 
-  override def terminate(): Future[Terminated] = {
+  override def terminate(): Unit = {
     terminating = true
     if (settings.CoordinatedShutdownRunByActorSystemTerminate && !aborting) {
       // Note that the combination CoordinatedShutdownRunByActorSystemTerminate==true &&

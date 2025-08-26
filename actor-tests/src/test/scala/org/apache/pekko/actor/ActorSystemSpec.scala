@@ -250,19 +250,17 @@ class ActorSystemSpec extends PekkoSpec(ActorSystemSpec.config) with ImplicitSen
       val system = ActorSystem().asInstanceOf[ActorSystemImpl]
       val wt = system.whenTerminated
       wt.isCompleted should ===(false)
-      val f = system.terminate()
+      system.terminate()
       val terminated = Await.result(wt, 10.seconds)
       system.whenTerminated.isCompleted should ===(true)
       terminated.actor should ===(system.provider.rootGuardian)
       terminated.addressTerminated should ===(true)
       terminated.existenceConfirmed should ===(true)
-      (terminated should be).theSameInstanceAs(Await.result(f, 10.seconds))
     }
 
     "throw RejectedExecutionException when shutdown" in {
       val system2 = ActorSystem("RejectedExecution-1", PekkoSpec.testConf)
-      Await.ready(system2.terminate(), 10.seconds)
-
+      system2.terminateAndAwait(10.seconds)
       intercept[RejectedExecutionException] {
         system2.registerOnTermination { println("IF YOU SEE THIS THEN THERE'S A BUG HERE") }
       }.getMessage should ===("ActorSystem already terminated.")
@@ -280,7 +278,7 @@ class ActorSystemSpec extends PekkoSpec(ActorSystemSpec.config) with ImplicitSen
         case _: RejectedExecutionException => count.incrementAndGet()
       }
 
-      Await.ready(system2.whenTerminated, 10.seconds)
+      system2.terminateAndAwait(10.seconds)
       count.get() should ===(1)
     }
 

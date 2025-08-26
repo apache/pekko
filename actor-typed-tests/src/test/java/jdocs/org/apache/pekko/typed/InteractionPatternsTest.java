@@ -21,7 +21,6 @@ import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.TimeUnit;
 import org.apache.pekko.Done;
 import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
@@ -897,8 +896,7 @@ public class InteractionPatternsTest extends JUnitSuite {
     ref.tell(new Printer.PrintMe("message 2"));
     // #fire-and-forget-doit
 
-    system.terminate();
-    system.getWhenTerminated().toCompletableFuture().get(5, TimeUnit.SECONDS);
+    system.terminateAndAwait(Duration.ofSeconds(5));
   }
 
   @Test

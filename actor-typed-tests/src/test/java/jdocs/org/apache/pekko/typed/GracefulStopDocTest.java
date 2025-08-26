@@ -15,6 +15,7 @@ package jdocs.org.apache.pekko.typed;
 
 // #imports
 
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.pekko.actor.typed.ActorSystem;
@@ -100,7 +101,7 @@ interface GracefulStopDocTest {
 
     system.tell(MasterControlProgram.GracefulShutdown.INSTANCE);
 
-    system.getWhenTerminated().toCompletableFuture().get(3, TimeUnit.SECONDS);
+    system.terminateAndAwait(Duration.ofSeconds(3));
   }
 
   // #worker-actor

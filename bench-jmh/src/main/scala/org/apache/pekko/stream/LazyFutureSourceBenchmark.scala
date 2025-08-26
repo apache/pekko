@@ -54,7 +54,7 @@ class LazyFutureSourceBenchmark {
 
   @TearDown
   def shutdown(): Unit = {
-    Await.result(system.terminate(), 5.seconds)
+    system.terminateAndAwait(5.seconds)
   }
 
   private val newLazyFutureSource = Source.lazyFuture(() => Future.successful("")).toMat(Sink.ignore)(Keep.right)
