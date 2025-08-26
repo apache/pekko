@@ -13,7 +13,6 @@
 
 package org.apache.pekko.cluster.ddata
 
-import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
@@ -289,7 +288,7 @@ abstract class DurableDataSpec(multiNodeConfig: DurableDataSpecConfig)
           expectTerminated(r)
         }
       } finally {
-        Await.ready(sys1.terminate(), 10.seconds)
+        sys1.terminateAndAwait(10.seconds)
       }
 
       val sys2 = ActorSystem(
@@ -320,7 +319,7 @@ abstract class DurableDataSpec(multiNodeConfig: DurableDataSpecConfig)
           expectMsgType[GetSuccess[GCounter]].dataValue.value.toInt should be(2)
         }
       } finally {
-        Await.ready(sys1.terminate(), 10.seconds)
+        sys1.terminateAndAwait(10.seconds)
       }
 
     }

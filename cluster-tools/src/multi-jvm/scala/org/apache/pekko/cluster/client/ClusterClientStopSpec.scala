@@ -117,7 +117,7 @@ class ClusterClientStopSpec extends MultiNodeSpec(ClusterClientStopSpec) with ST
 
       runOn(first, second) {
         enterBarrier("was-in-contact")
-        Await.ready(system.terminate(), 10.seconds)
+        system.terminateAndAwait(10.seconds)
 
       }
 
