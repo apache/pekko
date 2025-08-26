@@ -15,7 +15,7 @@ package org.apache.pekko.cluster.typed;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.cluster.ClusterEvent;
@@ -61,10 +61,8 @@ public class ClusterApiTest extends JUnitSuite {
 
       probe2.expectMessageClass(SelfRemoved.class);
     } finally {
-      system1.terminate();
-      system1.getWhenTerminated().toCompletableFuture().get(5, TimeUnit.SECONDS);
-      system2.terminate();
-      system2.getWhenTerminated().toCompletableFuture().get(5, TimeUnit.SECONDS);
+      system1.terminateAndAwait(Duration.ofSeconds(5));
+      system2.terminateAndAwait(Duration.ofSeconds(5));
     }
   }
 }
