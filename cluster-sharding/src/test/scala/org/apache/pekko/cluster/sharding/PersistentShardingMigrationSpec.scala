@@ -22,7 +22,6 @@ import pekko.persistence.PersistentActor
 import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
 import com.typesafe.config.{ Config, ConfigFactory }
 
-import scala.concurrent.Await
 import scala.concurrent.duration._
 
 /**
@@ -183,7 +182,7 @@ class PersistentShardingMigrationSpec extends PekkoSpec(PersistentShardingMigrat
           extractShardId(rememberedEntitiesProbe.ref))
         f(system, region, rememberedEntitiesProbe)
       } finally {
-        Await.ready(system.terminate(), 20.seconds)
+        system.terminateAndAwait(20.seconds)
       }
     }
 

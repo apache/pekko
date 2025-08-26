@@ -15,7 +15,6 @@ package org.apache.pekko.actor
 
 import java.util.concurrent.TimeUnit
 
-import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.openjdk.jmh.annotations._
@@ -48,7 +47,7 @@ class ActorCreationBenchmark {
   @TearDown(Level.Trial)
   def shutdown(): Unit = {
     system.terminate()
-    Await.ready(system.whenTerminated, 15.seconds)
+    system.terminateAndAwait(15.seconds)
   }
 
   @Benchmark

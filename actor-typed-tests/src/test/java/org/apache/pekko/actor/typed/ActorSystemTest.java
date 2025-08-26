@@ -13,11 +13,9 @@
 
 package org.apache.pekko.actor.typed;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertFalse;
 
-import java.util.concurrent.CompletionStage;
-import org.apache.pekko.Done;
+import java.time.Duration;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
@@ -29,8 +27,7 @@ public class ActorSystemTest extends JUnitSuite {
     final ActorSystem<Void> system =
         ActorSystem.create(Behaviors.empty(), "GetWhenTerminatedSystem");
     system.terminate();
-    final CompletionStage<Done> cs = system.getWhenTerminated();
-    cs.toCompletableFuture().get(2, SECONDS);
+    system.terminateAndAwait(Duration.ofSeconds(2));
   }
 
   @Test

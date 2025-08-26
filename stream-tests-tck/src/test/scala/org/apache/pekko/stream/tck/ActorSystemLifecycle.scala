@@ -15,7 +15,6 @@ package org.apache.pekko.stream.tck
 
 import java.util.concurrent.TimeoutException
 
-import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import com.typesafe.config.Config
@@ -50,7 +49,7 @@ trait ActorSystemLifecycle {
   @AfterClass
   def shutdownActorSystem(): Unit = {
     try {
-      Await.ready(system.terminate(), shutdownTimeout)
+      system.terminateAndAwait(shutdownTimeout)
     } catch {
       case _: TimeoutException =>
         val msg = "Failed to stop [%s] within [%s] \n%s".format(

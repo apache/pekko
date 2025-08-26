@@ -15,7 +15,6 @@ package org.apache.pekko.persistence.query
 
 import java.util.concurrent.atomic.AtomicInteger
 
-import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import com.typesafe.config.{ Config, ConfigFactory }
@@ -101,7 +100,7 @@ class PersistenceQuerySpec extends AnyWordSpecLike with Matchers with BeforeAndA
 
     val sys = ActorSystem(s"sys-${systemCounter.incrementAndGet()}", config)
     try block(sys)
-    finally Await.ready(sys.terminate(), 10.seconds)
+    finally sys.terminateAndAwait(10.seconds)
   }
 }
 

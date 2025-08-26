@@ -63,7 +63,7 @@ class InvokeWithFeedbackBenchmark {
   def tearDown(): Unit = {
     sourceQueue.complete()
     // no way to observe sink completion from the outside
-    Await.result(system.terminate(), 5.seconds)
+    system.terminateAndAwait(5.seconds)
   }
 
 }

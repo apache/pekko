@@ -15,7 +15,7 @@ package jdocs.cluster;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.actor.Props;
 import org.apache.pekko.cluster.Cluster;
@@ -70,7 +70,7 @@ public class FactorialFrontendMain {
                   @Override
                   public void run() {
                     try {
-                      system.getWhenTerminated().toCompletableFuture().get(10, TimeUnit.SECONDS);
+                      system.terminateAndAwait(Duration.ofSeconds(10));
                     } catch (Exception e) {
                       System.exit(-1);
                     }

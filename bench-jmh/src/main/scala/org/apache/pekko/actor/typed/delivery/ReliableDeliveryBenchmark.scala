@@ -238,7 +238,7 @@ class ReliableDeliveryBenchmark {
   @TearDown(Level.Trial)
   def shutdown(): Unit = {
     system.terminate()
-    Await.ready(system.whenTerminated, 15.seconds)
+    system.terminateAndAwait(15.seconds)
   }
 
   @Benchmark

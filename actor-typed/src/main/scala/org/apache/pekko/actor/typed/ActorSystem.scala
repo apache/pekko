@@ -16,9 +16,11 @@ package org.apache.pekko.actor.typed
 import java.util.concurrent.{ CompletionStage, ThreadFactory }
 
 import scala.concurrent.{ ExecutionContextExecutor, Future }
+import scala.concurrent.duration.Duration
 
 import com.typesafe.config.{ Config, ConfigFactory }
 import org.slf4j.Logger
+
 import org.apache.pekko
 import pekko.{ actor => classic, Done }
 import pekko.actor.{ Address, BootstrapSetup, ClassicActorSystemProvider }
@@ -124,6 +126,35 @@ abstract class ActorSystem[-T] extends ActorRef[T] with Extensions with ClassicA
    * be observed with [[ActorSystem.whenTerminated]] or [[ActorSystem.getWhenTerminated]].
    */
   def terminate(): Unit
+
+  /**
+   * Terminates this actor system and blocks the current thread until it is terminated,
+   * waiting at most the given duration.
+   *
+   * @param atMost the maximum duration to wait
+   * @throws java.util.concurrent.TimeoutException if the wait timed out
+   * @throws InterruptedException if the current thread is interrupted while waiting
+   */
+  def terminateAndAwait(atMost: Duration): Unit = {
+    import scala.concurrent.Await
+    terminate()
+    Await.result(whenTerminated, atMost)
+  }
+
+  /**
+   * Terminates this actor system and blocks the current thread until it is terminated,
+   * waiting at most the given duration.
+   *
+   * @param atMost the maximum duration to wait
+   * @throws java.util.concurrent.TimeoutException if the wait timed out
+   * @throws InterruptedException if the current thread is interrupted while waiting
+   */
+  def terminateAndAwait(atMost: java.time.Duration): Unit = {
+    import scala.concurrent.Await
+    import pekko.util.JavaDurationConverters._
+    terminate()
+    Await.result(whenTerminated, atMost.asScala)
+  }
 
   /**
    * Scala API: Returns a Future which will be completed after the ActorSystem has been terminated.

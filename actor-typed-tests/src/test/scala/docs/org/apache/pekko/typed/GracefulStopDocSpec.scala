@@ -24,7 +24,6 @@ import pekko.actor.typed.{ ActorSystem, PostStop }
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.typed.ActorRef
 import scala.concurrent.duration._
-import scala.concurrent.Await
 import org.scalatest.wordspec.AnyWordSpecLike
 import pekko.actor.typed.Terminated
 
@@ -157,7 +156,7 @@ class GracefulStopDocSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike
       // brutally stop the system
       system.terminate()
 
-      Await.result(system.whenTerminated, 3.seconds)
+      system.terminateAndAwait(3.seconds)
       // #start-workers
     }
 
@@ -176,7 +175,7 @@ class GracefulStopDocSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike
 
       Thread.sleep(100)
 
-      Await.result(system.whenTerminated, 3.seconds)
+      system.terminateAndAwait(3.seconds)
     }
   }
 }

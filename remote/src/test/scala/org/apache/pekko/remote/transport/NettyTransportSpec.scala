@@ -27,7 +27,6 @@ import org.scalatest.wordspec.AnyWordSpec
 
 import java.net.{ InetAddress, InetSocketAddress }
 import java.nio.channels.ServerSocketChannel
-import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
 object NettyTransportSpec {
@@ -69,7 +68,7 @@ class NettyTransportSpec extends AnyWordSpec with Matchers with BindBehavior {
 
       getInternal() should contain(getExternal().withProtocol("tcp"))
 
-      Await.result(sys.terminate(), Duration.Inf)
+      sys.terminateAndAwait(Duration.Inf)
     }
 
     "bind to a random port but remoting accepts from a specified port" in {
@@ -89,7 +88,7 @@ class NettyTransportSpec extends AnyWordSpec with Matchers with BindBehavior {
         getExternal() should ===(address.toAkkaAddress("pekko.tcp"))
         getInternal() should not contain address.toAkkaAddress("tcp")
 
-        Await.result(sys.terminate(), Duration.Inf)
+        sys.terminateAndAwait(Duration.Inf)
       } finally {
         openSS.close()
       }
@@ -117,7 +116,7 @@ class NettyTransportSpec extends AnyWordSpec with Matchers with BindBehavior {
       getExternal() should ===(address.toAkkaAddress("pekko.tcp"))
       getInternal() should contain(address.toAkkaAddress("tcp"))
 
-      Await.result(sys.terminate(), Duration.Inf)
+      sys.terminateAndAwait(Duration.Inf)
     }
 
     "bind to all interfaces" in {
@@ -132,7 +131,7 @@ class NettyTransportSpec extends AnyWordSpec with Matchers with BindBehavior {
       getInternal().flatMap(_.port) should contain(getExternal().port.get)
       getInternal().map(x => (x.host.get should include).regex("0.0.0.0".r)) // regexp dot is intentional to match IPv4 and 6 addresses
 
-      Await.result(sys.terminate(), Duration.Inf)
+      sys.terminateAndAwait(Duration.Inf)
     }
 
     "be able to specify byte buffer allocator" in {
@@ -186,7 +185,7 @@ trait BindBehavior {
       getExternal() should ===(address.toAkkaAddress(s"pekko.tcp"))
       getInternal() should contain(address.toAkkaAddress("tcp"))
 
-      Await.result(sys.terminate(), Duration.Inf)
+      sys.terminateAndAwait(Duration.Inf)
     }
 
     s"bind to specified tcp address" in {
@@ -218,7 +217,7 @@ trait BindBehavior {
       getExternal() should ===(address.toAkkaAddress(s"pekko.tcp"))
       getInternal() should contain(bindAddress.toAkkaAddress("tcp"))
 
-      Await.result(sys.terminate(), Duration.Inf)
+      sys.terminateAndAwait(Duration.Inf)
     }
   }
 }

@@ -55,7 +55,7 @@ class CollectBenchmark {
 
   @TearDown
   def shutdown(): Unit = {
-    Await.result(system.terminate(), 5.seconds)
+    system.terminateAndAwait(5.seconds)
   }
 
   private val newCollect = Source

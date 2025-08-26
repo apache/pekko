@@ -215,7 +215,8 @@ class ExtensionsSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with
         before shouldEqual beforeCreation + 1
         after shouldEqual before
       } finally {
-        classicSystem.terminate().futureValue
+        classicSystem.terminate()
+        classicSystem.whenTerminated.futureValue
       }
     }
 
@@ -229,7 +230,8 @@ class ExtensionsSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with
         (ext1 should be).theSameInstanceAs(ext2)
 
       } finally {
-        classicSystem.terminate().futureValue
+        classicSystem.terminate()
+        classicSystem.whenTerminated.futureValue
       }
     }
 

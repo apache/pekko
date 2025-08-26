@@ -15,7 +15,6 @@ package org.apache.pekko.cluster.ddata
 
 import java.util.concurrent.TimeUnit
 
-import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
@@ -72,8 +71,8 @@ class ORSetSerializationBenchmark {
 
   @TearDown
   def shutdown(): Unit = {
-    Await.result(system1.terminate(), 5.seconds)
-    Await.result(system2.terminate(), 5.seconds)
+    system1.terminateAndAwait(5.seconds)
+    system2.terminateAndAwait(5.seconds)
   }
 
   @Benchmark

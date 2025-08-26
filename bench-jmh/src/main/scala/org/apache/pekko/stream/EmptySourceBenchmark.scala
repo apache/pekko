@@ -32,7 +32,7 @@ class EmptySourceBenchmark {
 
   @TearDown
   def shutdown(): Unit = {
-    Await.result(system.terminate(), 5.seconds)
+    system.terminateAndAwait(5.seconds)
   }
 
   val setup = Source.empty[String].toMat(Sink.ignore)(Keep.right)

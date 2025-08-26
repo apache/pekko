@@ -14,7 +14,6 @@
 package org.apache.pekko.actor
 
 import scala.collection.immutable
-import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.{ Failure, Success, Try }
 
@@ -88,7 +87,7 @@ class DynamicAccessSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll
   }
 
   override def afterAll() = {
-    Await.result(system.terminate(), 10.seconds)
+    system.terminateAndAwait(10.seconds)
     super.afterAll()
   }
 }

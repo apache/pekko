@@ -857,7 +857,8 @@ class TcpSpec extends StreamSpec("""
         // and is possible to communicate with
         Source.single(ByteString(0)).via(Tcp().outgoingConnection(address)).runWith(Sink.ignore).futureValue
 
-        sys2.terminate().futureValue
+        sys2.terminate()
+        sys2.whenTerminated.futureValue
 
         val binding = bindingFuture.futureValue
         binding.unbind().futureValue

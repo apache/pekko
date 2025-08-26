@@ -16,7 +16,6 @@ package org.apache.pekko.persistence.serialization
 import java.io.NotSerializableException
 import java.util.UUID
 
-import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
 import com.typesafe.config._
@@ -348,7 +347,7 @@ class MessageSerializerRemotingSpec extends PekkoSpec(remote.withFallback(custom
   }
 
   override def afterTermination(): Unit = {
-    Await.ready(remoteSystem.terminate(), Duration.Inf)
+    remoteSystem.terminateAndAwait(Duration.Inf)
   }
 
   "A message serializer" must {

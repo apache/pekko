@@ -13,7 +13,6 @@
 
 package org.apache.pekko.cluster.client
 
-import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import scala.annotation.nowarn
@@ -117,7 +116,7 @@ class ClusterClientStopSpec extends MultiNodeSpec(ClusterClientStopSpec) with ST
 
       runOn(first, second) {
         enterBarrier("was-in-contact")
-        Await.ready(system.terminate(), 10.seconds)
+        system.terminateAndAwait(10.seconds)
 
       }
 

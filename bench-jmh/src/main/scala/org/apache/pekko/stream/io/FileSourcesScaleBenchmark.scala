@@ -79,7 +79,7 @@ class FileSourcesScaleBenchmark {
 
   @TearDown
   def shutdown(): Unit = {
-    Await.result(system.terminate(), Duration.Inf)
+    system.terminateAndAwait(Duration.Inf)
   }
 
   @Benchmark

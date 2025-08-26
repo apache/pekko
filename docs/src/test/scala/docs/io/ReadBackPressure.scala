@@ -13,14 +13,13 @@
 
 package docs.io
 
-import org.apache.pekko.actor.{ Actor, ActorLogging, ActorRef, ActorSystem, Props }
+import org.apache.pekko.actor.{ Actor, ActorRef, Props }
 import org.apache.pekko.io.Tcp._
 import org.apache.pekko.io.{ IO, Tcp }
 import java.net.InetSocketAddress
 import org.apache.pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
 import org.apache.pekko.util.ByteString
 
-import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
 object PullReadingExample {
@@ -90,6 +89,6 @@ class PullReadingSpec extends PekkoSpec with ImplicitSender {
     client.send(connection, ResumeReading)
     client.expectMsg(Received(ByteString("hello")))
 
-    Await.ready(system.terminate(), Duration.Inf)
+    system.terminateAndAwait(Duration.Inf)
   }
 }

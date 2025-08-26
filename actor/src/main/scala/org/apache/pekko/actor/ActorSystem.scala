@@ -678,6 +678,32 @@ abstract class ActorSystem extends ActorRefFactory with ClassicActorSystemProvid
   def terminate(): Future[Terminated]
 
   /**
+   * Terminates this actor system and blocks the current thread until it is terminated,
+   * waiting at most the given duration.
+   *
+   * @param atMost the maximum duration to wait
+   * @throws java.util.concurrent.TimeoutException if the wait timed out
+   * @throws InterruptedException if the current thread is interrupted while waiting
+   */
+  def terminateAndAwait(atMost: Duration): Unit = {
+    import scala.concurrent.Await
+    Await.result(terminate(), atMost)
+  }
+
+  /**
+   * Terminates this actor system and blocks the current thread until it is terminated,
+   * waiting at most the given duration.
+   *
+   * @param atMost the maximum duration to wait
+   * @throws java.util.concurrent.TimeoutException if the wait timed out
+   * @throws InterruptedException if the current thread is interrupted while waiting
+   */
+  def terminateAndAwait(atMost: java.time.Duration): Unit = {
+    import JavaDurationConverters._
+    terminateAndAwait(atMost.asScala)
+  }
+
+  /**
    * Returns a Future which will be completed after the ActorSystem has been terminated
    * and termination hooks have been executed. If you registered any callback with
    * [[ActorSystem#registerOnTermination]], the returned Future from this method will not complete
