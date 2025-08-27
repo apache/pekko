@@ -33,7 +33,7 @@ import com.google.common.jimfs.{ Configuration, Jimfs }
 
 import org.apache.pekko
 import pekko.Done
-import pekko.stream.{ AbruptTerminationException, ActorAttributes, ActorMaterializer, SystemMaterializer }
+import pekko.stream.{ AbruptTerminationException, ActorAttributes, ActorMaterializer, Attributes, SystemMaterializer }
 import pekko.stream.ActorAttributes.supervisionStrategy
 import pekko.stream.Supervision.{ restartingDecider, resumingDecider, stoppingDecider }
 import pekko.stream.impl.{ PhasedFusingActorMaterializer, StreamSupervisor }
@@ -228,6 +228,31 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
         .tell(StreamSupervisor.GetChildren, testActor)
       val ref = expectMsgType[Children].children.find(_.path.toString contains "mapWithResource").get
       try assertDispatcher(ref, ActorAttributes.IODispatcher.dispatcher)
+      finally p.cancel()
+    }
+
+    "allow overriding the default dispatcher" in {
+      val p = Source
+        .single(1)
+        .mapWithResource(() => newBufferedReader())(
+          (reader, _) => Option(reader.readLine()),
+          reader => {
+            reader.close()
+            None
+          })
+        .withAttributes(
+          Attributes.name("mapWithResourceCustomDispatcher") and
+          ActorAttributes.dispatcher("pekko.actor.default-dispatcher")
+        )
+        .runWith(TestSink.probe)
+
+      SystemMaterializer(system).materializer
+        .asInstanceOf[PhasedFusingActorMaterializer]
+        .supervisor
+        .tell(StreamSupervisor.GetChildren, testActor)
+      val ref = expectMsgType[Children].children
+        .find(_.path.toString contains "mapWithResourceCustomDispatcher").get
+      try assertDispatcher(ref, "pekko.actor.default-dispatcher")
       finally p.cancel()
     }
 
