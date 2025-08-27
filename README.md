@@ -22,14 +22,13 @@ The CI build is Linux based (Ubuntu) and most Pekko developers use Macs or Linux
 
 To use IntelliJ IDEA, you need to configure your project to use JDK 8. For a visual guide, refer to this [Q&A](https://github.com/apache/pekko/discussions/1847#discussioncomment-13166066).
 
-- File > Project Structure > Project Settings > Project > Set your JDK to version 8
-- Settings > ... > Scala Compiler Server > Set your JDK to version 8 
-- Settings > ... > sbt > Set your JRE to version 8
+- File > Project Structure > Project Settings > Project > Set your JDK to version 17
+- Settings > ... > Scala Compiler Server > Set your JDK to version 17 
+- Settings > ... > sbt > Set your JRE to version 17
 
 ### Prerequisites
-- Make sure you have installed a Java Development Kit (JDK) version 11 or later.
+- Make sure you have installed a Java Development Kit (JDK) version 17 or later.
 - Make sure you have [sbt](https://www.scala-sbt.org/) installed and using this JDK.
-- Make sure you also have Java 8 installed (JDK or JRE).
 - [Graphviz](https://graphviz.gitlab.io/download/) is needed for the scaladoc generation build task, which is part of the release.
 
 ### Running the Build

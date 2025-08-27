@@ -16,6 +16,8 @@ Depending on which version (or sometimes module) you want to work on, you should
 
 * `main` – active development branch of Pekko
 * `1.0.x` – maintenance branch of Pekko 1.0
+* `1.1.x` – maintenance branch of Pekko 1.1
+* `1.2.x` – maintenance branch of Pekko 1.2
 
 ### Tags
 
