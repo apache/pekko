@@ -527,6 +527,7 @@ lazy val clusterTyped = pekkoModule("cluster-typed")
   // To be able to import ContainerFormats.proto
   .settings(Protobuf.importPath := Some(baseDirectory.value / ".." / "remote" / "src" / "main" / "protobuf"))
   .settings(AutomaticModuleName.settings("pekko.cluster.typed"))
+  .settings(OSGi.clusterTyped)
   .settings(Protobuf.settings)
   // To be able to import ContainerFormats.proto
   .settings(Protobuf.importPath := Some(baseDirectory.value / ".." / "remote" / "src" / "main" / "protobuf"))

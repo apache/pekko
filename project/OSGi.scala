@@ -62,6 +62,8 @@ object OSGi {
 
   lazy val cluster = exports(Seq("org.apache.pekko.cluster.*"))
 
+  lazy val clusterTyped = exports(Seq("org.apache.pekko.cluster.typed.*", "org.apache.pekko.cluster.ddata.typed.*"))
+
   lazy val clusterTools = exports(Seq("org.apache.pekko.cluster.singleton.*", "org.apache.pekko.cluster.client.*",
     "org.apache.pekko.cluster.pubsub.*"))
 
