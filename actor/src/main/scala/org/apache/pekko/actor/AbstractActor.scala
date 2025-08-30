@@ -366,6 +366,15 @@ abstract class AbstractLoggingActor extends AbstractActor with ActorLogging
 /**
  * Java API: compatible with lambda expressions
  *
+ * Actor base class that mixes in logging into the Actor.
+ *
+ * @since 2.0.0
+ */
+abstract class UntypedAbstractLoggingActor extends UntypedAbstractActor with ActorLogging
+
+/**
+ * Java API: compatible with lambda expressions
+ *
  * Actor base class that should be extended to create an actor with a stash.
  *
  * The stash enables an actor to temporarily stash away messages that can not or
@@ -411,6 +420,17 @@ abstract class AbstractActorWithStash extends AbstractActor with Stash
 /**
  * Java API: compatible with lambda expressions
  *
+ * Actor base class that should be extended to create an actor with a stash.
+ *
+ * @see [[pekko.actor.AbstractActorWithStash]] for details on how `Stash` works.
+ *
+ * @since 2.0.0
+ */
+abstract class UntypedAbstractActorWithStash extends UntypedAbstractActor with Stash
+
+/**
+ * Java API: compatible with lambda expressions
+ *
  * Actor base class with `Stash` that enforces an unbounded deque for the actor. The proper mailbox has to be configured
  * manually, and the mailbox should extend the [[pekko.dispatch.DequeBasedMessageQueueSemantics]] marker trait.
  * See [[pekko.actor.AbstractActorWithStash]] for details on how `Stash` works.
@@ -420,7 +440,28 @@ abstract class AbstractActorWithUnboundedStash extends AbstractActor with Unboun
 /**
  * Java API: compatible with lambda expressions
  *
+ * Actor base class with `Stash` that enforces an unbounded deque for the actor. The proper mailbox has to be configured
+ * manually, and the mailbox should extend the [[pekko.dispatch.DequeBasedMessageQueueSemantics]] marker trait.
+ * See [[pekko.actor.AbstractActorWithStash]] for details on how `Stash` works.
+ *
+ * @since 2.0.0
+ */
+abstract class UntypedAbstractActorWithUnboundedStash extends UntypedAbstractActor with UnboundedStash
+
+/**
+ * Java API: compatible with lambda expressions
+ *
  * Actor base class with `Stash` that does not enforce any mailbox type. The mailbox of the actor has to be configured
  * manually. See [[pekko.actor.AbstractActorWithStash]] for details on how `Stash` works.
  */
 abstract class AbstractActorWithUnrestrictedStash extends AbstractActor with UnrestrictedStash
+
+/**
+ * Java API: compatible with lambda expressions
+ *
+ * Actor base class with `Stash` that does not enforce any mailbox type. The mailbox of the actor has to be configured
+ * manually. See [[pekko.actor.AbstractActorWithStash]] for details on how `Stash` works.
+ *
+ * @since 2.0.0
+ */
+abstract class UntypedAbstractActorWithUnrestrictedStash extends UntypedAbstractActor with UnrestrictedStash
