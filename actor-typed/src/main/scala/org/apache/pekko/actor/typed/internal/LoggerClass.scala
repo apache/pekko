@@ -13,12 +13,11 @@
 
 package org.apache.pekko.actor.typed.internal
 
-import scala.annotation.nowarn
 import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.util.OptionVal
+import pekko.util.{ ClassContext, OptionVal }
 
 /**
  * INTERNAL API
@@ -26,19 +25,12 @@ import pekko.util.OptionVal
 @InternalApi
 private[pekko] object LoggerClass {
 
-  // just to get access to the class context
-  @nowarn("msg=deprecated")
-  private final class TrickySecurityManager extends SecurityManager {
-    def getClassStack: Array[Class[_]] = getClassContext
-  }
-
   private val defaultPrefixesToSkip = List("scala.runtime", "org.apache.pekko.actor.typed.internal")
 
   /**
    * Try to extract a logger class from the call stack, if not possible the provided default is used
    */
   def detectLoggerClassFromStack(default: Class[_], additionalPrefixesToSkip: List[String] = Nil): Class[_] = {
-    // TODO use stack walker API when we no longer need to support Java 8
     try {
       def skip(name: String): Boolean = {
         def loop(skipList: List[String]): Boolean = skipList match {
@@ -51,7 +43,7 @@ private[pekko] object LoggerClass {
         loop(additionalPrefixesToSkip ::: defaultPrefixesToSkip)
       }
 
-      val trace = new TrickySecurityManager().getClassStack
+      val trace = ClassContext.getClassStack
       var suitableClass: OptionVal[Class[_]] = OptionVal.None
       var idx = 1 // skip this method/class and right away
       while (suitableClass.isEmpty && idx < trace.length) {
