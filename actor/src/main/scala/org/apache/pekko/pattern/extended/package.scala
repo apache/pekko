@@ -42,7 +42,7 @@ package pattern
  * {{{
  * import static org.apache.pekko.pattern.Patterns.ask;
  *
- * ask(actor, new org.apache.pekko.japi.Function<ActorRef, Object> {
+ * ask(actor, new org.apache.pekko.japi.function.Function<ActorRef, Object> {
  *   Object apply(ActorRef askSender) {
  *     return new Request(askSender);
  *   }
