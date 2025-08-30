@@ -122,6 +122,8 @@ object OSGi {
 
   lazy val coordination = exports(Seq("org.apache.pekko.coordination.*"))
 
+  lazy val pki = exports(Seq("org.apache.pekko.pki.*"))
+
   lazy val osgiOptionalImports = Seq(
     // needed because testkit is normally not used in the application bundle,
     // but it should still be included as transitive dependency and used by BundleDelegatingClassLoader
