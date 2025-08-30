@@ -392,6 +392,7 @@ lazy val pki =
     .dependsOn(actor) // this dependency only exists for "@ApiMayChange"
     .settings(Dependencies.pki)
     .settings(AutomaticModuleName.settings("pekko.pki"))
+    .settings(OSGi.pki)
     .disablePlugins(MimaPlugin)
 
 lazy val remote =
