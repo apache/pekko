@@ -3233,6 +3233,7 @@ trait FlowOps[+Out, +Mat] {
         case (`passedEnd`, r: U @unchecked) => (thisElem, r)
         case (l: A @unchecked, `passedEnd`) => (l, thatElem)
         case t: (A, U) @unchecked           => t
+        case _                              => throw new RuntimeException() // compiler exhaustiveness check pleaser
       }
     zipFlow
   }
