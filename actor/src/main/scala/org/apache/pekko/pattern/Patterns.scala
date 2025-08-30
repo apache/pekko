@@ -348,7 +348,7 @@ object Patterns {
    * {{{
    *   final Future<Object> f = Patterns.ask(worker, request, timeout);
    *   // apply some transformation (i.e. enrich with request info)
-   *   final Future<Object> transformed = f.map(new org.apache.pekko.japi.Function<Object, Object>() { ... });
+   *   final Future<Object> transformed = f.map(new org.apache.pekko.japi.function.Function<Object, Object>() { ... });
    *   // send it on to the next operator
    *   Patterns.pipe(transformed, context).to(nextActor);
    * }}}
