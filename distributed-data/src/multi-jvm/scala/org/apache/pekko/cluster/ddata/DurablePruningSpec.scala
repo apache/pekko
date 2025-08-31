@@ -13,7 +13,6 @@
 
 package org.apache.pekko.cluster.ddata
 
-import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
@@ -149,7 +148,7 @@ class DurablePruningSpec extends MultiNodeSpec(DurablePruningSpec) with STMultiN
       }
       enterBarrier("removed")
       runOn(first) {
-        Await.ready(sys2.terminate(), 5.seconds)
+        sys2.terminateAndAwait(5.seconds)
       }
 
       within(15.seconds) {

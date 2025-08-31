@@ -45,7 +45,7 @@ class DispatcherShutdownSpec extends AnyWordSpec with Matchers {
       val system = ActorSystem("DispatcherShutdownSpec")
       threadCount should be > 0
 
-      Await.ready(system.terminate(), 1.second)
+      system.terminateAndAwait(1.seconds)
       Await.ready(Future(pekko.Done)(system.dispatcher), 1.second)
 
       TestKit.awaitCond(threadCount == 0, 3.second)

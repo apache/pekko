@@ -224,7 +224,7 @@ abstract class RemoteReDeploymentMultiJvmSpec(multiNodeConfig: RemoteReDeploymen
       enterBarrier("stopping")
 
       runOn(second) {
-        Await.result(sys.terminate(), 10.seconds)
+        sys.terminateAndAwait(10.seconds)
       }
     }
 

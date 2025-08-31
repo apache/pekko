@@ -16,7 +16,6 @@ package org.apache.pekko.stream
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
-import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
@@ -70,7 +69,7 @@ class PartitionHubBenchmark {
 
   @TearDown
   def shutdown(): Unit = {
-    Await.result(system.terminate(), 5.seconds)
+    system.terminateAndAwait(5.seconds)
   }
 
   @Benchmark

@@ -15,7 +15,6 @@ package org.apache.pekko.persistence
 
 import java.io.File
 
-import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import com.typesafe.config.{ Config, ConfigFactory }
@@ -184,7 +183,7 @@ class EndToEndEventAdapterSpec extends AnyWordSpecLike with Matchers with Before
   def withActorSystem[T](name: String, config: Config)(block: ActorSystem => T): T = {
     val system = ActorSystem(name, journalConfig.withFallback(config))
     try block(system)
-    finally Await.ready(system.terminate(), 3.seconds)
+    finally system.terminateAndAwait(3.seconds)
   }
 
   "EventAdapters in end-to-end scenarios" must {
