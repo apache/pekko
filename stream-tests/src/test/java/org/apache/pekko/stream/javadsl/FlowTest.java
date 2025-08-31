@@ -1338,10 +1338,29 @@ public class FlowTest extends StreamTest {
                 return elem;
               }
             })
-        .onErrorComplete()
+        .via(Flow.of(Integer.class).onErrorComplete())
         .runWith(TestSink.probe(system), system)
         .request(2)
         .expectNext(1)
+        .expectComplete();
+  }
+
+  @Test
+  public void mustBeAbleToOnErrorResume() {
+    Source.from(Arrays.asList(1, 2))
+        .map(
+            elem -> {
+              if (elem == 2) {
+                throw new RuntimeException("ex");
+              } else {
+                return elem;
+              }
+            })
+        .via(Flow.of(Integer.class).onErrorResume(e -> Source.single(0)))
+        .runWith(TestSink.probe(system), system)
+        .request(2)
+        .expectNext(1)
+        .expectNext(0)
         .expectComplete();
   }
 
@@ -1356,10 +1375,31 @@ public class FlowTest extends StreamTest {
                 return elem;
               }
             })
-        .onErrorComplete(IllegalArgumentException.class)
+        .via(Flow.of(Integer.class).onErrorComplete(IllegalArgumentException.class))
         .runWith(TestSink.probe(system), system)
         .request(2)
         .expectNext(1)
+        .expectComplete();
+  }
+
+  @Test
+  public void mustBeAbleToOnErrorResumeWithDedicatedException() {
+    Source.from(Arrays.asList(1, 2))
+        .map(
+            elem -> {
+              if (elem == 2) {
+                throw new IllegalArgumentException("ex");
+              } else {
+                return elem;
+              }
+            })
+        .via(
+            Flow.of(Integer.class)
+                .onErrorResume(IllegalArgumentException.class, e -> Source.single(0)))
+        .runWith(TestSink.probe(system), system)
+        .request(2)
+        .expectNext(1)
+        .expectNext(0)
         .expectComplete();
   }
 
@@ -1375,7 +1415,26 @@ public class FlowTest extends StreamTest {
                 return elem;
               }
             })
-        .onErrorComplete(TimeoutException.class)
+        .via(Flow.of(Integer.class).onErrorComplete(TimeoutException.class))
+        .runWith(TestSink.probe(system), system)
+        .request(2)
+        .expectNext(1)
+        .expectError(ex);
+  }
+
+  @Test
+  public void onErrorResumeMustBeAbleToFailWhenExceptionTypeNotMatch() {
+    final IllegalArgumentException ex = new IllegalArgumentException("ex");
+    Source.from(Arrays.asList(1, 2))
+        .map(
+            elem -> {
+              if (elem == 2) {
+                throw ex;
+              } else {
+                return elem;
+              }
+            })
+        .via(Flow.of(Integer.class).onErrorResume(TimeoutException.class, e -> Source.single(0)))
         .runWith(TestSink.probe(system), system)
         .request(2)
         .expectNext(1)
@@ -1393,10 +1452,31 @@ public class FlowTest extends StreamTest {
                 return elem;
               }
             })
-        .onErrorComplete(ex -> ex.getMessage().contains("Boom"))
+        .via(Flow.of(Integer.class).onErrorComplete(ex -> ex.getMessage().contains("Boom")))
         .runWith(TestSink.probe(system), system)
         .request(2)
         .expectNext(1)
+        .expectComplete();
+  }
+
+  @Test
+  public void mustBeAbleToOnErrorResumeWithPredicate() {
+    Source.from(Arrays.asList(1, 2))
+        .map(
+            elem -> {
+              if (elem == 2) {
+                throw new IllegalArgumentException("Boom");
+              } else {
+                return elem;
+              }
+            })
+        .via(
+            Flow.of(Integer.class)
+                .onErrorResume(ex -> ex.getMessage().contains("Boom"), e -> Source.single(0)))
+        .runWith(TestSink.probe(system), system)
+        .request(2)
+        .expectNext(1)
+        .expectNext(0)
         .expectComplete();
   }
 
