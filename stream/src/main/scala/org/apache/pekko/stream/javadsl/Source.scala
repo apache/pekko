@@ -2393,8 +2393,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Completes when''' upstream completes or upstream failed with exception pf can handle
    *
    * '''Cancels when''' downstream cancels
-   *
-   * @deprecated use `recoverWithRetries` instead
    */
   def recoverWith(pf: PartialFunction[Throwable, _ <: Graph[SourceShape[Out], NotUsed]]): Source[Out, Mat] =
     new Source(delegate.recoverWith(pf))
@@ -2417,11 +2415,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Completes when''' upstream completes or upstream failed with exception pf can handle
    *
    * '''Cancels when''' downstream cancels
-   *
-   * @deprecated use `recoverWithRetries` instead
    */
-  @deprecated("Use recoverWithRetries instead.", "Akka 2.6.6")
-  @nowarn("msg=deprecated")
   def recoverWith(
       clazz: Class[_ <: Throwable],
       supplier: Supplier[Graph[SourceShape[Out], NotUsed]]): Source[Out, Mat] =
