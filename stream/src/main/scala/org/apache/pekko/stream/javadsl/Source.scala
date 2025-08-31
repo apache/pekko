@@ -18,7 +18,7 @@ import java.util.Optional
 import java.util.concurrent.{ CompletableFuture, CompletionStage }
 import java.util.function.{ BiFunction, Supplier }
 
-import scala.annotation.{ nowarn, varargs }
+import scala.annotation.varargs
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable
 import scala.concurrent.{ Future, Promise }
@@ -2196,8 +2196,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Completes when''' upstream completes or upstream failed with exception pf can handle
    *
    * '''Cancels when''' downstream cancels
-   *
-   * @deprecated use `recoverWithRetries` instead
    */
   def recoverWith(pf: PartialFunction[Throwable, _ <: Graph[SourceShape[Out], NotUsed]]): Source[Out, Mat] =
     new Source(delegate.recoverWith(pf))
@@ -2220,11 +2218,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Completes when''' upstream completes or upstream failed with exception pf can handle
    *
    * '''Cancels when''' downstream cancels
-   *
-   * @deprecated use `recoverWithRetries` instead
    */
-  @deprecated("Use recoverWithRetries instead.", "Akka 2.6.6")
-  @nowarn("msg=deprecated")
   def recoverWith(
       clazz: Class[_ <: Throwable],
       supplier: Supplier[Graph[SourceShape[Out], NotUsed]]): Source[Out, Mat] =
