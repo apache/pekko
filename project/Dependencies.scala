@@ -39,7 +39,8 @@ object Dependencies {
   val nettyVersion = "4.2.4.Final"
   val logbackVersion = "1.5.18"
 
-  val jacksonCoreVersion = "2.19.2"
+  val jacksonAnnotationsVersion = "2.20"
+  val jacksonCoreVersion = "2.20.0"
   val jacksonDatabindVersion = jacksonCoreVersion
 
   val scala212Version = "2.12.20"
@@ -103,7 +104,7 @@ object Dependencies {
     val asnOne = ("com.hierynomus" % "asn-one" % "0.6.0").exclude("org.slf4j", "slf4j-api")
 
     val jacksonCore = "com.fasterxml.jackson.core" % "jackson-core" % jacksonCoreVersion
-    val jacksonAnnotations = "com.fasterxml.jackson.core" % "jackson-annotations" % jacksonCoreVersion
+    val jacksonAnnotations = "com.fasterxml.jackson.core" % "jackson-annotations" % jacksonAnnotationsVersion
     val jacksonDatabind = "com.fasterxml.jackson.core" % "jackson-databind" % jacksonDatabindVersion
     val jacksonJdk8 = "com.fasterxml.jackson.datatype" % "jackson-datatype-jdk8" % jacksonCoreVersion
     val jacksonJsr310 = "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310" % jacksonCoreVersion
