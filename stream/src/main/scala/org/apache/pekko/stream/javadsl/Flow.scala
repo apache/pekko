@@ -2271,6 +2271,81 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
     })
 
   /**
+   * Transform a failure signal into a stream of elements provided by a factory function.
+   * This allows to continue processing with another stream when a failure occurs.
+   *
+   * Since the underlying failure signal onError arrives out-of-band, it might jump over existing elements.
+   * This operator can recover the failure signal, but not the skipped elements, which will be dropped.
+   *
+   * '''Emits when''' element is available from the upstream or upstream is failed and fallback Source produces an element
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' upstream completes or upstream failed with exception and fallback Source completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @param fallback Function which produces a Source to continue the stream
+   * @since 2.0.0
+   */
+  def onErrorResume[T >: Out](fallback: function.Function[_ >: Throwable, _ <: Graph[SourceShape[T], NotUsed]])
+      : javadsl.Flow[In, T, Mat] = new Flow(delegate.recoverWith {
+    case ex: Throwable => fallback(ex)
+  })
+
+  /**
+   * Transform a failure signal into a stream of elements provided by a factory function.
+   * This allows to continue processing with another stream when a failure occurs.
+   *
+   * Since the underlying failure signal onError arrives out-of-band, it might jump over existing elements.
+   * This operator can recover the failure signal, but not the skipped elements, which will be dropped.
+   *
+   * '''Emits when''' element is available from the upstream or upstream is failed and fallback Source produces an element
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' upstream completes or upstream failed with exception and fallback Source completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @param clazz the class object of the failure cause
+   * @param fallback Function which produces a Source to continue the stream
+   * @since 2.0.0
+   */
+  def onErrorResume[T >: Out](
+      clazz: Class[_ <: Throwable],
+      fallback: function.Function[_ >: Throwable, _ <: Graph[SourceShape[T], NotUsed]])
+      : javadsl.Flow[In, T, Mat] = new Flow(delegate.recoverWith {
+    case ex: Throwable if clazz.isInstance(ex) => fallback(ex)
+  })
+
+  /**
+   * Transform a failure signal into a stream of elements provided by a factory function.
+   * This allows to continue processing with another stream when a failure occurs.
+   *
+   * Since the underlying failure signal onError arrives out-of-band, it might jump over existing elements.
+   * This operator can recover the failure signal, but not the skipped elements, which will be dropped.
+   *
+   * '''Emits when''' element is available from the upstream or upstream is failed and fallback Source produces an element
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' upstream completes or upstream failed with exception and fallback Source completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @param predicate Predicate which determines if the exception should be handled
+   * @param function Function which produces a Source to continue the stream
+   * @since 2.0.0
+   */
+  def onErrorResume[T >: Out](
+      predicate: function.Predicate[_ >: Throwable],
+      fallback: function.Function[_ >: Throwable, _ <: Graph[SourceShape[T], NotUsed]])
+      : javadsl.Flow[In, T, Mat] = new Flow(delegate.recoverWith {
+    case ex: Throwable if predicate.test(ex) => fallback(ex)
+  })
+
+  /**
    * Terminate processing (and cancel the upstream publisher) after the given
    * number of elements. Due to input buffering some elements may have been
    * requested from upstream publishers that will then not be processed downstream
