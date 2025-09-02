@@ -13,8 +13,6 @@
 
 package org.apache.pekko.actor.testkit.typed.scaladsl
 
-import java.util.concurrent.ThreadLocalRandom
-
 import scala.collection.immutable
 
 import org.apache.pekko
@@ -22,11 +20,12 @@ import pekko.actor.{ Address, RootActorPath }
 import pekko.actor.testkit.typed.internal.TestInboxImpl
 import pekko.actor.typed.ActorRef
 import pekko.annotation.{ ApiMayChange, DoNotInherit }
+import pekko.util.RandomNumberGenerator
 
 @ApiMayChange
 object TestInbox {
   def apply[T](name: String = "inbox"): TestInbox[T] = {
-    val uid = ThreadLocalRandom.current().nextInt()
+    val uid = RandomNumberGenerator.get().nextInt()
     new TestInboxImpl((address / name).withUid(uid))
   }
 

@@ -14,7 +14,7 @@
 package org.apache.pekko.pattern
 
 import java.util.Optional
-import java.util.concurrent.{ Callable, CompletionException, CompletionStage, CopyOnWriteArrayList, ThreadLocalRandom }
+import java.util.concurrent.{ Callable, CompletionException, CompletionStage, CopyOnWriteArrayList }
 import java.util.concurrent.atomic.{ AtomicBoolean, AtomicInteger, AtomicLong }
 import java.util.function.BiFunction
 import java.util.function.Consumer
@@ -33,6 +33,7 @@ import pekko.pattern.internal.{ CircuitBreakerNoopTelemetry, CircuitBreakerTelem
 import pekko.annotation.InternalApi
 import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
+import pekko.util.RandomNumberGenerator
 
 /**
  * Companion object providing factory methods for Circuit Breaker which runs callbacks in caller's thread
@@ -1064,7 +1065,7 @@ class CircuitBreaker(
       scheduler.scheduleOnce(currentResetTimeout) {
         attemptReset()
       }
-      val rnd = 1.0 + ThreadLocalRandom.current().nextDouble() * randomFactor
+      val rnd = 1.0 + RandomNumberGenerator.get().nextDouble() * randomFactor
       val nextResetTimeout = currentResetTimeout * exponentialBackoffFactor * rnd match {
         case f: FiniteDuration => f
         case _                 => currentResetTimeout
