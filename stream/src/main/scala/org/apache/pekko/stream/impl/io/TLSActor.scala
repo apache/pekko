@@ -42,7 +42,7 @@ import pekko.util.ByteString
 
   def props(
       maxInputBufferSize: Int,
-      createSSLEngine: () => SSLEngine, 
+      createSSLEngine: () => SSLEngine,
       verifySession: SSLSession => Try[Unit],
       closing: TLSClosing,
       tracing: Boolean = false): Props =
