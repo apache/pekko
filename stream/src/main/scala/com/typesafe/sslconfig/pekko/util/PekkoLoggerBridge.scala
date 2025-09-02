@@ -24,6 +24,8 @@ import com.typesafe.sslconfig.util.{ LoggerFactory, NoDepsLogger }
 /**
  * Internal Usage only. Will be removed in Pekko 2.0.0.
  */
+@deprecated("ssl-config support will be removed in Pekko 2.0.0. Use Tcp and TLS with SSLEngine parameters instead.",
+  "1.2.1")
 @InternalApi
 final class PekkoLoggerFactory(system: ActorSystem) extends LoggerFactory {
   override def apply(clazz: Class[_]): NoDepsLogger = new PekkoLoggerBridge(system.eventStream, clazz)
@@ -35,6 +37,8 @@ final class PekkoLoggerFactory(system: ActorSystem) extends LoggerFactory {
 /**
  * Internal Usage only. Will be removed in Pekko 2.0.0.
  */
+@deprecated("ssl-config support will be removed in Pekko 2.0.0. Use Tcp and TLS with SSLEngine parameters instead.",
+  "1.2.1")
 @InternalApi
 class PekkoLoggerBridge(bus: EventStream, logSource: String, logClass: Class[_]) extends NoDepsLogger {
   def this(bus: EventStream, clazz: Class[_]) = this(bus, clazz.getCanonicalName, clazz)
