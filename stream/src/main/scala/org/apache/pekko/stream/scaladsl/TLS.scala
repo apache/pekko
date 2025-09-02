@@ -73,11 +73,11 @@ object TLS {
    * For a description of the `closing` parameter please refer to [[TLSClosing]].
    */
   def apply(
-      createSSLEngine: () => SSLEngine, // we don't offer the internal `ActorSystem => SSLEngine` API here, see #21753
-      verifySession: SSLSession => Try[Unit], // we don't offer the internal API that provides `ActorSystem` here, see #21753
+      createSSLEngine: () => SSLEngine,
+      verifySession: SSLSession => Try[Unit],
       closing: TLSClosing): scaladsl.BidiFlow[SslTlsOutbound, ByteString, ByteString, SslTlsInbound, NotUsed] =
     scaladsl.BidiFlow.fromGraph(
-      TlsModule(Attributes.none, _ => createSSLEngine(), (_, session) => verifySession(session), closing))
+      TlsModule(Attributes.none, () => createSSLEngine(), session => verifySession(session), closing))
 
   /**
    * Create a StreamTls [[pekko.stream.scaladsl.BidiFlow]].
@@ -88,7 +88,7 @@ object TLS {
    * For a description of the `closing` parameter please refer to [[TLSClosing]].
    */
   def apply(
-      createSSLEngine: () => SSLEngine, // we don't offer the internal `ActorSystem => SSLEngine` API here, see #21753
+      createSSLEngine: () => SSLEngine,
       closing: TLSClosing): scaladsl.BidiFlow[SslTlsOutbound, ByteString, ByteString, SslTlsInbound, NotUsed] =
     apply(createSSLEngine, _ => Success(()), closing)
 }

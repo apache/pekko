@@ -42,8 +42,8 @@ import pekko.util.ByteString
 
   def props(
       maxInputBufferSize: Int,
-      createSSLEngine: ActorSystem => SSLEngine, // ActorSystem is only needed to support the PekkoSSLConfig legacy, see #21753
-      verifySession: (ActorSystem, SSLSession) => Try[Unit], // ActorSystem is only needed to support the PekkoSSLConfig legacy, see #21753
+      createSSLEngine: () => SSLEngine, 
+      verifySession: SSLSession => Try[Unit],
       closing: TLSClosing,
       tracing: Boolean = false): Props =
     Props(new TLSActor(maxInputBufferSize, createSSLEngine, verifySession, closing, tracing)).withDeploy(Deploy.local)
@@ -60,8 +60,8 @@ import pekko.util.ByteString
  */
 @InternalApi private[stream] class TLSActor(
     maxInputBufferSize: Int,
-    createSSLEngine: ActorSystem => SSLEngine, // ActorSystem is only needed to support the PekkoSSLConfig legacy, see #21753
-    verifySession: (ActorSystem, SSLSession) => Try[Unit], // ActorSystem is only needed to support the PekkoSSLConfig legacy, see #21753
+    createSSLEngine: () => SSLEngine,
+    verifySession: SSLSession => Try[Unit],
     closing: TLSClosing,
     tracing: Boolean)
     extends Actor
@@ -170,7 +170,7 @@ import pekko.util.ByteString
   // The engine could also be instantiated in ActorMaterializerImpl but if creation fails
   // during materialization it would be worse than failing later on.
   val engine =
-    try createSSLEngine(context.system)
+    try createSSLEngine()
     catch { case NonFatal(ex) => fail(ex, closeTransport = true); throw ex }
 
   engine.beginHandshake()
@@ -475,7 +475,7 @@ import pekko.util.ByteString
     if (tracing) log.debug("handshake finished")
     val session = engine.getSession
 
-    verifySession(context.system, session) match {
+    verifySession(session) match {
       case Success(()) =>
         currentSession = session
         corkUser = false
