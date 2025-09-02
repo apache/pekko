@@ -191,3 +191,4 @@ ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.Dela
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.stream.OverflowStrategies$DropNew")
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.stream.OverflowStrategies$DropNew$")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.OverflowStrategy.dropNew")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.stage.GraphStageLogic.lastCancellationCause_=")
