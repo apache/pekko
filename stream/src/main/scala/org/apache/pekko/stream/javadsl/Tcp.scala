@@ -19,11 +19,9 @@ import java.util.Optional
 import java.util.concurrent.CompletionStage
 import java.util.function.{ Function => JFunction }
 import java.util.function.Supplier
-import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLEngine
 import javax.net.ssl.SSLSession
 
-import scala.annotation.nowarn
 import scala.concurrent.duration._
 import scala.util.Failure
 import scala.util.Success
@@ -40,7 +38,6 @@ import pekko.io.Inet.SocketOption
 import pekko.stream.Materializer
 import pekko.stream.SystemMaterializer
 import pekko.stream.TLSClosing
-import pekko.stream.TLSProtocol.NegotiateNewSession
 import pekko.stream.scaladsl
 import pekko.util.ByteString
 import pekko.util.FutureConverters._
@@ -239,42 +236,6 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
         .mapMaterializedValue(_.map(new OutgoingConnection(_))(parasitic).asJava))
 
   /**
-   * Creates an [[Tcp.OutgoingConnection]] instance representing a prospective TCP client connection to the given endpoint.
-   *
-   * Note that the ByteString chunk boundaries are not retained across the network,
-   * to achieve application level chunks you have to introduce explicit framing in your streams,
-   * for example using the [[Framing]] operators.
-   *
-   * @param remoteAddress The remote address to connect to
-   * @param localAddress  Optional local address for the connection
-   * @param options   TCP options for the connections, see [[pekko.io.Tcp]] for details
-   * @param halfClose
-   *                  Controls whether the connection is kept open even after writing has been completed to the accepted
-   *                  TCP connections.
-   *                  If set to true, the connection will implement the TCP half-close mechanism, allowing the server to
-   *                  write to the connection even after the client has finished writing. The TCP socket is only closed
-   *                  after both the client and server finished writing. This setting is recommended for clients and
-   *                  therefore it is the default setting.
-   *                  If set to false, the connection will immediately closed once the client closes its write side,
-   *                  independently whether the server is still attempting to write.
-   */
-  @deprecated("Use bind that takes a java.time.Duration parameter instead.", "Akka 2.6.0")
-  def outgoingConnection(
-      remoteAddress: InetSocketAddress,
-      localAddress: Optional[InetSocketAddress],
-      options: JIterable[SocketOption],
-      halfClose: Boolean,
-      connectTimeout: Duration,
-      idleTimeout: Duration): Flow[ByteString, ByteString, CompletionStage[OutgoingConnection]] =
-    outgoingConnection(
-      remoteAddress,
-      localAddress,
-      options,
-      halfClose,
-      durationToJavaOptional(connectTimeout),
-      durationToJavaOptional(idleTimeout))
-
-  /**
    * Creates an [[Tcp.OutgoingConnection]] without specifying options.
    * It represents a prospective TCP client connection to the given endpoint.
    *
@@ -286,60 +247,6 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
     Flow.fromGraph(
       delegate
         .outgoingConnection(new InetSocketAddress(host, port))
-        .mapMaterializedValue(_.map(new OutgoingConnection(_))(parasitic).asJava))
-
-  /**
-   * Creates an [[Tcp.OutgoingConnection]] with TLS.
-   * The returned flow represents a TCP client connection to the given endpoint where all bytes in and
-   * out go through TLS.
-   *
-   * @see [[Tcp.outgoingConnection]]
-   */
-  @deprecated(
-    "Use outgoingConnectionWithTls that takes a SSLEngine factory instead. " +
-    "Setup the SSLEngine with needed parameters.",
-    "Akka 2.6.0")
-  def outgoingTlsConnection(
-      host: String,
-      port: Int,
-      sslContext: SSLContext,
-      negotiateNewSession: NegotiateNewSession): Flow[ByteString, ByteString, CompletionStage[OutgoingConnection]] =
-    Flow.fromGraph(
-      delegate
-        .outgoingTlsConnection(host, port, sslContext, negotiateNewSession)
-        .mapMaterializedValue(_.map(new OutgoingConnection(_))(parasitic).asJava))
-
-  /**
-   * Creates an [[Tcp.OutgoingConnection]] with TLS.
-   * The returned flow represents a TCP client connection to the given endpoint where all bytes in and
-   * out go through TLS.
-   *
-   * @see [[Tcp.outgoingConnection]]
-   *
-   * Marked API-may-change to leave room for an improvement around the very long parameter list.
-   */
-  @deprecated(
-    "Use outgoingConnectionWithTls that takes a SSLEngine factory instead. " +
-    "Setup the SSLEngine with needed parameters.",
-    "Akka 2.6.0")
-  def outgoingTlsConnection(
-      remoteAddress: InetSocketAddress,
-      sslContext: SSLContext,
-      negotiateNewSession: NegotiateNewSession,
-      localAddress: Optional[InetSocketAddress],
-      options: JIterable[SocketOption],
-      connectTimeout: Duration,
-      idleTimeout: Duration): Flow[ByteString, ByteString, CompletionStage[OutgoingConnection]] =
-    Flow.fromGraph(
-      delegate
-        .outgoingTlsConnection(
-          remoteAddress,
-          sslContext,
-          negotiateNewSession,
-          localAddress.toScala,
-          CollectionUtil.toSeq(options),
-          connectTimeout,
-          idleTimeout)
         .mapMaterializedValue(_.map(new OutgoingConnection(_))(parasitic).asJava))
 
   /**
@@ -402,56 +309,6 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
    * where all incoming and outgoing bytes are passed through TLS.
    *
    * @see [[Tcp.bind]]
-   * Marked API-may-change to leave room for an improvement around the very long parameter list.
-   *
-   * Note: the half close parameter is currently ignored
-   */
-  @deprecated(
-    "Use bindWithTls that takes a SSLEngine factory instead. " +
-    "Setup the SSLEngine with needed parameters.",
-    "Akka 2.6.0")
-  def bindTls(
-      interface: String,
-      port: Int,
-      sslContext: SSLContext,
-      negotiateNewSession: NegotiateNewSession,
-      backlog: Int,
-      options: JIterable[SocketOption],
-      @nowarn // unused #26689
-      halfClose: Boolean,
-      idleTimeout: Duration): Source[IncomingConnection, CompletionStage[ServerBinding]] =
-    Source.fromGraph(
-      delegate
-        .bindTls(interface, port, sslContext, negotiateNewSession, backlog, CollectionUtil.toSeq(options), idleTimeout)
-        .map(new IncomingConnection(_))
-        .mapMaterializedValue(_.map(new ServerBinding(_))(parasitic).asJava))
-
-  /**
-   * Creates a [[Tcp.ServerBinding]] instance which represents a prospective TCP server binding on the given `endpoint`
-   * where all incoming and outgoing bytes are passed through TLS.
-   *
-   * @see [[Tcp.bind]]
-   */
-  @deprecated(
-    "Use bindWithTls that takes a SSLEngine factory instead. " +
-    "Setup the SSLEngine with needed parameters.",
-    "Akka 2.6.0")
-  def bindTls(
-      interface: String,
-      port: Int,
-      sslContext: SSLContext,
-      negotiateNewSession: NegotiateNewSession): Source[IncomingConnection, CompletionStage[ServerBinding]] =
-    Source.fromGraph(
-      delegate
-        .bindTls(interface, port, sslContext, negotiateNewSession)
-        .map(new IncomingConnection(_))
-        .mapMaterializedValue(_.map(new ServerBinding(_))(parasitic).asJava))
-
-  /**
-   * Creates a [[Tcp.ServerBinding]] instance which represents a prospective TCP server binding on the given `endpoint`
-   * where all incoming and outgoing bytes are passed through TLS.
-   *
-   * @see [[Tcp.bind]]
    */
   def bindWithTls(
       interface: String,
@@ -500,9 +357,5 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
 
   private def optionalDurationToScala(duration: Optional[java.time.Duration]) = {
     if (duration.isPresent) duration.get.asScala else Duration.Inf
-  }
-
-  private def durationToJavaOptional(duration: Duration): Optional[java.time.Duration] = {
-    if (duration.isFinite) Optional.ofNullable(duration.asJava) else Optional.empty()
   }
 }
