@@ -15,11 +15,16 @@ package com.typesafe.sslconfig.pekko.util
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
+import pekko.annotation.InternalApi
 import pekko.event.{ DummyClassForStringSources, EventStream }
 import pekko.event.Logging._
 
 import com.typesafe.sslconfig.util.{ LoggerFactory, NoDepsLogger }
 
+/**
+ * Internal Usage only. Will be removed in Pekko 2.0.0.
+ */
+@InternalApi
 final class PekkoLoggerFactory(system: ActorSystem) extends LoggerFactory {
   override def apply(clazz: Class[_]): NoDepsLogger = new PekkoLoggerBridge(system.eventStream, clazz)
 
@@ -27,6 +32,10 @@ final class PekkoLoggerFactory(system: ActorSystem) extends LoggerFactory {
     new PekkoLoggerBridge(system.eventStream, name, classOf[DummyClassForStringSources])
 }
 
+/**
+ * Internal Usage only. Will be removed in Pekko 2.0.0.
+ */
+@InternalApi
 class PekkoLoggerBridge(bus: EventStream, logSource: String, logClass: Class[_]) extends NoDepsLogger {
   def this(bus: EventStream, clazz: Class[_]) = this(bus, clazz.getCanonicalName, clazz)
 
