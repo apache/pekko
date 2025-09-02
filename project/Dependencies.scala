@@ -50,8 +50,6 @@ object Dependencies {
 
   val reactiveStreamsVersion = "1.0.4"
 
-  val sslConfigVersion = "0.6.1"
-
   val scalaTestVersion = "3.2.19"
   val scalaTestScalaCheckVersion = "1-18"
   val scalaCheckVersion = "1.18.0"
@@ -82,9 +80,6 @@ object Dependencies {
 
     // reactive streams
     val reactiveStreams = "org.reactivestreams" % "reactive-streams" % reactiveStreamsVersion
-
-    // ssl-config
-    val sslConfigCore = "com.typesafe" %% "ssl-config-core" % sslConfigVersion
 
     val lmdb = "org.lmdbjava" % "lmdbjava" % "0.9.1"
 
@@ -356,7 +351,7 @@ object Dependencies {
 
   // pekko stream
 
-  lazy val stream = l ++= Seq[sbt.ModuleID](reactiveStreams, sslConfigCore, TestDependencies.scalatest)
+  lazy val stream = l ++= Seq[sbt.ModuleID](reactiveStreams, TestDependencies.scalatest)
 
   lazy val streamTestkit = l ++= Seq(
     TestDependencies.scalatest,

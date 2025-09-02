@@ -96,13 +96,10 @@ object OSGi {
 
   lazy val stream =
     exports(
-      packages = Seq("org.apache.pekko.stream.*", "com.typesafe.sslconfig.pekko.*"),
+      packages = Seq("org.apache.pekko.stream.*"),
       imports = Seq(
         scalaJava8CompatImport(),
-        scalaParsingCombinatorImport(),
-        sslConfigCoreImport("com.typesafe.sslconfig.ssl.*"),
-        sslConfigCoreImport("com.typesafe.sslconfig.util.*"),
-        "!com.typesafe.sslconfig.pekko.*"))
+        scalaParsingCombinatorImport()))
 
   lazy val streamTestkit = exports(Seq("org.apache.pekko.stream.testkit.*"))
 
@@ -155,12 +152,6 @@ object OSGi {
     versionedImport(packageName, "1.0.2", "1.0.2")
   def scalaParsingCombinatorImport(packageName: String = "scala.util.parsing.combinator.*") =
     versionedImport(packageName, "1.1.0", "1.2.0")
-  def sslConfigCoreImport(packageName: String = "com.typesafe.sslconfig") =
-    versionedImport(packageName, "0.4.0", "1.0.0")
-  def sslConfigCoreSslImport(packageName: String = "com.typesafe.sslconfig.ssl.*") =
-    versionedImport(packageName, "0.4.0", "1.0.0")
-  def sslConfigCoreUtilImport(packageName: String = "com.typesafe.sslconfig.util.*") =
-    versionedImport(packageName, "0.4.0", "1.0.0")
   def kamonImport(packageName: String = "kamon.sigar.*") =
     optionalResolution(versionedImport(packageName, "1.6.5", "1.6.6"))
   def sigarImport(packageName: String = "org.hyperic.*") =

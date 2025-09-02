@@ -13,20 +13,16 @@
 
 package org.apache.pekko.stream.javadsl
 
-import java.util.Optional
 import java.util.function.{ Consumer, Supplier }
-import javax.net.ssl.{ SSLContext, SSLEngine, SSLSession }
+import javax.net.ssl.{ SSLEngine, SSLSession }
 
 import scala.util.Try
 
 import org.apache.pekko
-import pekko.{ japi, NotUsed }
+import pekko.NotUsed
 import pekko.stream._
 import pekko.stream.TLSProtocol._
 import pekko.util.ByteString
-import pekko.util.OptionConverters._
-
-import com.typesafe.sslconfig.pekko.PekkoSSLConfig
 
 /**
  * Stream cipher support based upon JSSE.
@@ -64,112 +60,6 @@ import com.typesafe.sslconfig.pekko.PekkoSSLConfig
  * supported with TLS 1.3 where the spec allows it.
  */
 object TLS {
-
-  /**
-   * Create a StreamTls [[pekko.stream.javadsl.BidiFlow]] in client mode. The
-   * SSLContext will be used to create an SSLEngine to which then the
-   * `firstSession` parameters are applied before initiating the first
-   * handshake. The `role` parameter determines the SSLEngine’s role; this is
-   * often the same as the underlying transport’s server or client role, but
-   * that is not a requirement and depends entirely on the application
-   * protocol.
-   *
-   * This method uses the default closing behavior or [[IgnoreComplete]].
-   */
-  @deprecated("Use create that takes a SSLEngine factory instead. Setup the SSLEngine with needed parameters.",
-    "Akka 2.6.0")
-  def create(
-      sslContext: SSLContext,
-      sslConfig: Optional[PekkoSSLConfig],
-      firstSession: NegotiateNewSession,
-      role: TLSRole): BidiFlow[SslTlsOutbound, ByteString, ByteString, SslTlsInbound, NotUsed] =
-    new javadsl.BidiFlow(scaladsl.TLS.apply(sslContext, sslConfig.toScala, firstSession, role))
-
-  /**
-   * Create a StreamTls [[pekko.stream.javadsl.BidiFlow]] in client mode. The
-   * SSLContext will be used to create an SSLEngine to which then the
-   * `firstSession` parameters are applied before initiating the first
-   * handshake. The `role` parameter determines the SSLEngine’s role; this is
-   * often the same as the underlying transport’s server or client role, but
-   * that is not a requirement and depends entirely on the application
-   * protocol.
-   *
-   * This method uses the default closing behavior or [[IgnoreComplete]].
-   */
-  @deprecated("Use create that takes a SSLEngine factory instead. Setup the SSLEngine with needed parameters.",
-    "Akka 2.6.0")
-  def create(
-      sslContext: SSLContext,
-      firstSession: NegotiateNewSession,
-      role: TLSRole): BidiFlow[SslTlsOutbound, ByteString, ByteString, SslTlsInbound, NotUsed] =
-    new javadsl.BidiFlow(scaladsl.TLS.apply(sslContext, None, firstSession, role))
-
-  /**
-   * Create a StreamTls [[pekko.stream.javadsl.BidiFlow]] in client mode. The
-   * SSLContext will be used to create an SSLEngine to which then the
-   * `firstSession` parameters are applied before initiating the first
-   * handshake. The `role` parameter determines the SSLEngine’s role; this is
-   * often the same as the underlying transport’s server or client role, but
-   * that is not a requirement and depends entirely on the application
-   * protocol.
-   *
-   * For a description of the `closing` parameter please refer to [[TLSClosing]].
-   *
-   * The `hostInfo` parameter allows to optionally specify a pair of hostname and port
-   * that will be used when creating the SSLEngine with `sslContext.createSslEngine`.
-   * The SSLEngine may use this information e.g. when an endpoint identification algorithm was
-   * configured using [[javax.net.ssl.SSLParameters.setEndpointIdentificationAlgorithm]].
-   */
-  @deprecated("Use create that takes a SSLEngine factory instead. Setup the SSLEngine with needed parameters.",
-    "Akka 2.6.0")
-  def create(
-      sslContext: SSLContext,
-      sslConfig: Optional[PekkoSSLConfig],
-      firstSession: NegotiateNewSession,
-      role: TLSRole,
-      hostInfo: Optional[japi.Pair[String, java.lang.Integer]],
-      closing: TLSClosing): BidiFlow[SslTlsOutbound, ByteString, ByteString, SslTlsInbound, NotUsed] =
-    new javadsl.BidiFlow(
-      scaladsl.TLS.apply(
-        sslContext,
-        sslConfig.toScala,
-        firstSession,
-        role,
-        closing,
-        hostInfo.toScala.map(e => (e.first, e.second))))
-
-  /**
-   * Create a StreamTls [[pekko.stream.javadsl.BidiFlow]] in client mode. The
-   * SSLContext will be used to create an SSLEngine to which then the
-   * `firstSession` parameters are applied before initiating the first
-   * handshake. The `role` parameter determines the SSLEngine’s role; this is
-   * often the same as the underlying transport’s server or client role, but
-   * that is not a requirement and depends entirely on the application
-   * protocol.
-   *
-   * For a description of the `closing` parameter please refer to [[TLSClosing]].
-   *
-   * The `hostInfo` parameter allows to optionally specify a pair of hostname and port
-   * that will be used when creating the SSLEngine with `sslContext.createSslEngine`.
-   * The SSLEngine may use this information e.g. when an endpoint identification algorithm was
-   * configured using [[javax.net.ssl.SSLParameters.setEndpointIdentificationAlgorithm]].
-   */
-  @deprecated("Use create that takes a SSLEngine factory instead. Setup the SSLEngine with needed parameters.",
-    "Akka 2.6.0")
-  def create(
-      sslContext: SSLContext,
-      firstSession: NegotiateNewSession,
-      role: TLSRole,
-      hostInfo: Optional[japi.Pair[String, java.lang.Integer]],
-      closing: TLSClosing): BidiFlow[SslTlsOutbound, ByteString, ByteString, SslTlsInbound, NotUsed] =
-    new javadsl.BidiFlow(
-      scaladsl.TLS.apply(
-        sslContext,
-        None,
-        firstSession,
-        role,
-        closing,
-        hostInfo.toScala.map(e => (e.first, e.second))))
 
   /**
    * Create a StreamTls [[pekko.stream.javadsl.BidiFlow]]. This is a low-level interface.
