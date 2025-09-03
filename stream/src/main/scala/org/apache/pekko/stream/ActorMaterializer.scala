@@ -15,7 +15,6 @@ package org.apache.pekko.stream
 
 import java.util.concurrent.TimeUnit
 
-import scala.annotation.nowarn
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
@@ -221,7 +220,6 @@ private[pekko] object ActorMaterializerSettings {
  *
  * The constructor is not public API, use create or apply on the [[ActorMaterializerSettings]] companion instead.
  */
-@nowarn("msg=deprecated")
 final class ActorMaterializerSettings @InternalApi private (
     /*
      * Important note: `initialInputBufferSize`, `maxInputBufferSize`, `dispatcher` and
@@ -390,7 +388,6 @@ private[pekko] object IOSettings {
       coalesceWrites = config.getInt("tcp.coalesce-writes"))
 }
 
-@nowarn("msg=deprecated")
 final class IOSettings private (
     private[stream] val tcpWriteBufferSize: Int,
     val coalesceWrites: Int) {
