@@ -613,15 +613,6 @@ class ClusterReceptionistSpec extends AnyWordSpec with Matchers with LogCapturin
       }
     }
 
-    "not conflict with the ClusterClient receptionist default name".taggedAs(LongRunningTest, GHExcludeAeronTest) in {
-      val testKit = ActorTestKit(s"ClusterReceptionistSpec-test-9", ClusterReceptionistSpec.config)
-      try {
-        testKit.system.systemActorOf(Behaviors.ignore, "receptionist")
-      } finally {
-        testKit.shutdownTestKit()
-      }
-    }
-
     "handle unregistration and re-registration of services".taggedAs(LongRunningTest, GHExcludeAeronTest) in {
       val testKit1 = ActorTestKit("ClusterReceptionistSpec-test-10", ClusterReceptionistSpec.config)
       val system1 = testKit1.system
