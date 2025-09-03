@@ -25,9 +25,7 @@ import pekko.actor.ActorRef
 import pekko.actor.ActorRefFactory
 import pekko.actor.ActorSystem
 import pekko.actor.ExtendedActorSystem
-import pekko.actor.Props
 import pekko.annotation.InternalApi
-import pekko.event.LoggingAdapter
 import pekko.stream.impl._
 import pekko.stream.stage.GraphStageLogic
 import pekko.util.Helpers.toRootLowerCase
@@ -54,7 +52,7 @@ private[pekko] object ActorMaterializer {
     "Use the system wide materializer with stream attributes or configuration settings to change defaults",
     "Akka 2.6.0")
   def apply(materializerSettings: Option[ActorMaterializerSettings] = None, namePrefix: Option[String] = None)(
-      implicit context: ActorRefFactory): ActorMaterializer = {
+      implicit context: ActorRefFactory): Materializer = {
     val system = actorSystemOf(context)
 
     val settings = materializerSettings.getOrElse(SystemMaterializer(system).materializerSettings)
@@ -77,14 +75,14 @@ private[pekko] object ActorMaterializer {
     "Use the system wide materializer with stream attributes or configuration settings to change defaults",
     "Akka 2.6.0")
   def apply(materializerSettings: ActorMaterializerSettings, namePrefix: String)(
-      implicit context: ActorRefFactory): ActorMaterializer = {
+      implicit context: ActorRefFactory): Materializer = {
 
     context match {
       case system: ActorSystem =>
         // system level materializer, defer to the system materializer extension
         SystemMaterializer(system)
           .createAdditionalLegacySystemMaterializer(namePrefix, materializerSettings)
-          .asInstanceOf[ActorMaterializer]
+          .asInstanceOf[Materializer]
 
       case context: ActorContext =>
         // actor context level materializer, will live as a child of this actor
@@ -110,7 +108,7 @@ private[pekko] object ActorMaterializer {
   @deprecated(
     "Use the system wide materializer or Materializer.apply(actorContext) with stream attributes or configuration settings to change defaults",
     "Akka 2.6.0")
-  def apply(materializerSettings: ActorMaterializerSettings)(implicit context: ActorRefFactory): ActorMaterializer =
+  def apply(materializerSettings: ActorMaterializerSettings)(implicit context: ActorRefFactory): Materializer =
     apply(Some(materializerSettings), None)
 
   /**
@@ -127,7 +125,7 @@ private[pekko] object ActorMaterializer {
   @deprecated(
     "Use the system wide materializer or Materializer.create(actorContext) with stream attributes or configuration settings to change defaults",
     "Akka 2.6.0")
-  def create(context: ActorRefFactory): ActorMaterializer =
+  def create(context: ActorRefFactory): Materializer =
     apply()(context)
 
   private def actorSystemOf(context: ActorRefFactory): ActorSystem = {
@@ -141,53 +139,6 @@ private[pekko] object ActorMaterializer {
     }
     system
   }
-
-}
-
-/**
- * An ActorMaterializer takes a stream blueprint and turns it into a running stream.
- */
-
-@InternalApi
-@deprecated("The Materializer now has all methods the ActorMaterializer used to have", "Akka 2.6.0")
-private[pekko] abstract class ActorMaterializer extends Materializer with MaterializerLoggingProvider {
-
-  @deprecated(
-    "Use attributes to access settings from stages, see https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
-    "Akka 2.6.0")
-  def settings: ActorMaterializerSettings
-
-  /**
-   * Shuts down this materializer and all the operators that have been materialized through this materializer. After
-   * having shut down, this materializer cannot be used again. Any attempt to materialize operators after having
-   * shut down will result in an IllegalStateException being thrown at materialization time.
-   */
-  def shutdown(): Unit
-
-  /**
-   * Indicates if the materializer has been shut down.
-   */
-  def isShutdown: Boolean
-
-  /**
-   * INTERNAL API
-   */
-  private[pekko] def actorOf(context: MaterializationContext, props: Props): ActorRef
-
-  /**
-   * INTERNAL API
-   */
-  def system: ActorSystem
-
-  /**
-   * INTERNAL API
-   */
-  private[pekko] def logger: LoggingAdapter
-
-  /**
-   * INTERNAL API
-   */
-  private[pekko] def supervisor: ActorRef
 
 }
 

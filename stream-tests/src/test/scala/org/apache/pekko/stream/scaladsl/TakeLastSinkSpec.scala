@@ -18,7 +18,7 @@ import scala.collection.immutable
 import scala.concurrent.{ Await, Future }
 
 import org.apache.pekko
-import pekko.stream.{ AbruptTerminationException, ActorMaterializer, ActorMaterializerSettings }
+import pekko.stream.{ AbruptTerminationException, ActorMaterializer, ActorMaterializerSettings, Materializer }
 import pekko.stream.testkit.{ StreamSpec, TestPublisher }
 
 @nowarn
@@ -26,7 +26,7 @@ class TakeLastSinkSpec extends StreamSpec {
 
   val settings = ActorMaterializerSettings(system).withInputBuffer(initialSize = 2, maxSize = 16)
 
-  implicit val mat: ActorMaterializer = ActorMaterializer(settings)
+  implicit val mat: Materializer = ActorMaterializer(settings)
 
   "Sink.takeLast" must {
     "return the last 3 elements" in {

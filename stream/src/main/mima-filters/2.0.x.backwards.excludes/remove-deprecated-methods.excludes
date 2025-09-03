@@ -192,3 +192,12 @@ ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.stream.OverflowStr
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.stream.OverflowStrategies$DropNew$")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.OverflowStrategy.dropNew")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.stage.GraphStageLogic.lastCancellationCause_=")
+ProblemFilters.exclude[FinalClassProblem]("org.apache.pekko.stream.ActorMaterializer")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.stream.ActorMaterializer.create")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.stream.ActorMaterializer.apply")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.ActorMaterializer.settings")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.ActorMaterializer.shutdown")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.ActorMaterializer.isShutdown")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.ActorMaterializer.system")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.ActorMaterializer.this")
+
