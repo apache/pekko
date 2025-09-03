@@ -461,15 +461,9 @@ object StreamSubscriptionTimeoutSettings {
  * Leaked publishers and subscribers are cleaned up when they are not used within a given
  * deadline, configured by [[StreamSubscriptionTimeoutSettings]].
  */
-@nowarn("msg=deprecated")
 final class StreamSubscriptionTimeoutSettings(
-    @deprecated(
-      "Use attribute 'ActorAttributes.StreamSubscriptionTimeoutMode' to read the concrete setting value",
-      "Akka 2.6.0")
-    val mode: StreamSubscriptionTimeoutTerminationMode,
-    @deprecated("Use attribute 'ActorAttributes.StreamSubscriptionTimeout' to read the concrete setting value",
-      "Akka 2.6.0")
-    val timeout: FiniteDuration) {
+    private[stream] val mode: StreamSubscriptionTimeoutTerminationMode,
+    private[stream] val timeout: FiniteDuration) {
   override def equals(other: Any): Boolean = other match {
     case s: StreamSubscriptionTimeoutSettings => s.mode == mode && s.timeout == timeout
     case _                                    => false
