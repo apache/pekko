@@ -19,6 +19,7 @@ import org.apache.pekko
 import pekko.stream.ActorMaterializer
 import pekko.stream.ActorMaterializerSettings
 import pekko.stream.testkit.StreamSpec
+import pekko.stream.Materializer
 import pekko.testkit.TestProbe
 
 @nowarn("msg=deprecated")
@@ -30,7 +31,7 @@ class FlowDispatcherSpec extends StreamSpec(s"my-dispatcher = $${pekko.test.stre
       settings: ActorMaterializerSettings = defaultSettings,
       dispatcher: String = "pekko.test.stream-dispatcher") = {
 
-    implicit val materializer: ActorMaterializer = ActorMaterializer(settings)
+    implicit val materializer: Materializer = ActorMaterializer(settings)
 
     val probe = TestProbe()
     Source(List(1, 2, 3)).map(i => { probe.ref ! Thread.currentThread().getName(); i }).to(Sink.ignore).run()

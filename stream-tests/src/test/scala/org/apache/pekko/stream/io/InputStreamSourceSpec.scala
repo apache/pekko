@@ -21,7 +21,13 @@ import scala.util.Success
 
 import org.apache.pekko
 import pekko.Done
-import pekko.stream.{ AbruptStageTerminationException, ActorMaterializer, ActorMaterializerSettings, IOResult }
+import pekko.stream.{
+  AbruptStageTerminationException,
+  ActorMaterializer,
+  ActorMaterializerSettings,
+  IOResult,
+  Materializer
+}
 import pekko.stream.scaladsl.{ Keep, Sink, StreamConverters }
 import pekko.stream.testkit._
 import pekko.stream.testkit.Utils._
@@ -32,7 +38,7 @@ import pekko.util.ByteString
 class InputStreamSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
 
   val settings = ActorMaterializerSettings(system).withDispatcher("pekko.actor.default-dispatcher")
-  implicit val materializer: ActorMaterializer = ActorMaterializer(settings)
+  implicit val materializer: Materializer = ActorMaterializer(settings)
 
   private def inputStreamFor(bytes: Array[Byte]): InputStream =
     new ByteArrayInputStream(bytes)

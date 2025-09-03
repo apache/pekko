@@ -20,7 +20,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 import org.apache.pekko
 import pekko.pattern.pipe
-import pekko.stream.{ ActorMaterializer, ActorMaterializerSettings }
+import pekko.stream.{ ActorMaterializer, ActorMaterializerSettings, Materializer }
 import pekko.stream.testkit._
 
 @nowarn
@@ -28,7 +28,7 @@ class FlowSlidingSpec extends StreamSpec with ScalaCheckPropertyChecks {
   import system.dispatcher
   val settings = ActorMaterializerSettings(system).withInputBuffer(initialSize = 2, maxSize = 16)
 
-  implicit val materializer: ActorMaterializer = ActorMaterializer(settings)
+  implicit val materializer: Materializer = ActorMaterializer(settings)
 
   "Sliding" must {
     import org.scalacheck.Shrink.shrinkAny

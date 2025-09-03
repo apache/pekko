@@ -20,7 +20,7 @@ import scala.util.Success
 
 import org.apache.pekko
 import pekko.Done
-import pekko.stream.{ ActorMaterializer, ActorMaterializerSettings, IOOperationIncompleteException }
+import pekko.stream.{ ActorMaterializer, ActorMaterializerSettings, IOOperationIncompleteException, Materializer }
 import pekko.stream.scaladsl.{ Source, StreamConverters }
 import pekko.stream.testkit._
 import pekko.stream.testkit.Utils._
@@ -33,7 +33,7 @@ import org.scalatest.concurrent.ScalaFutures
 class OutputStreamSinkSpec extends StreamSpec(UnboundedMailboxConfig) with ScalaFutures {
 
   val settings = ActorMaterializerSettings(system).withDispatcher("pekko.actor.default-dispatcher")
-  implicit val materializer: ActorMaterializer = ActorMaterializer(settings)
+  implicit val materializer: Materializer = ActorMaterializer(settings)
 
   "OutputStreamSink" must {
     "write bytes to void OutputStream" in {
