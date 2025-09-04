@@ -13,13 +13,13 @@
 
 package org.apache.pekko.stream.javadsl
 
-import java.util.function.{ Consumer, Supplier }
 import javax.net.ssl.{ SSLEngine, SSLSession }
 
 import scala.util.Try
 
 import org.apache.pekko
 import pekko.NotUsed
+import pekko.japi.function
 import pekko.stream._
 import pekko.stream.TLSProtocol._
 import pekko.util.ByteString
@@ -73,11 +73,11 @@ object TLS {
    * For a description of the `closing` parameter please refer to [[TLSClosing]].
    */
   def create(
-      sslEngineCreator: Supplier[SSLEngine],
-      sessionVerifier: Consumer[SSLSession],
+      sslEngineCreator: function.Creator[SSLEngine],
+      sessionVerifier: function.Procedure[SSLSession],
       closing: TLSClosing): BidiFlow[SslTlsOutbound, ByteString, ByteString, SslTlsInbound, NotUsed] =
     new javadsl.BidiFlow(
-      scaladsl.TLS.apply(() => sslEngineCreator.get(), session => Try(sessionVerifier.accept(session)), closing))
+      scaladsl.TLS.apply(() => sslEngineCreator.create(), session => Try(sessionVerifier(session)), closing))
 
   /**
    * Create a StreamTls [[pekko.stream.javadsl.BidiFlow]]. This is a low-level interface.
@@ -88,9 +88,9 @@ object TLS {
    * For a description of the `closing` parameter please refer to [[TLSClosing]].
    */
   def create(
-      sslEngineCreator: Supplier[SSLEngine],
+      sslEngineCreator: function.Creator[SSLEngine],
       closing: TLSClosing): BidiFlow[SslTlsOutbound, ByteString, ByteString, SslTlsInbound, NotUsed] =
-    new javadsl.BidiFlow(scaladsl.TLS.apply(() => sslEngineCreator.get(), closing))
+    new javadsl.BidiFlow(scaladsl.TLS.apply(() => sslEngineCreator.create(), closing))
 }
 
 /**

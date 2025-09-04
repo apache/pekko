@@ -16,10 +16,10 @@ package org.apache.pekko.stream
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
+import pekko.japi.function
 import pekko.event.Logging
 import pekko.event.Logging.LogLevel
 import pekko.util.ConstantFun
-import pekko.util.FunctionConverters._
 import pekko.util.JavaDurationConverters._
 
 final class RestartSettings private (
@@ -58,8 +58,8 @@ final class RestartSettings private (
     copy(maxRestarts = count, maxRestartsWithin = within.asScala)
 
   /** Decides whether the failure should restart the stream or make the surrounding stream fail */
-  def withRestartOn(restartOn: java.util.function.Predicate[Throwable]): RestartSettings =
-    copy(restartOn = restartOn.asScala)
+  def withRestartOn(restartOn: function.Predicate[Throwable]): RestartSettings =
+    copy(restartOn = t => restartOn.test(t))
 
   def withLogSettings(newLogSettings: RestartSettings.LogSettings): RestartSettings =
     copy(logSettings = newLogSettings)
