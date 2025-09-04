@@ -15,7 +15,6 @@ package org.apache.pekko.stream.javadsl
 
 import java.util.Optional
 import java.util.concurrent.{ CompletableFuture, CompletionStage }
-import java.util.function.BiFunction
 import java.util.stream.Collector
 
 import scala.annotation.unchecked.uncheckedVariance
@@ -391,7 +390,8 @@ object Sink {
    * exposes [[Materializer]] which is going to be used during materialization and
    * [[Attributes]] of the [[Sink]] returned by this method.
    */
-  def fromMaterializer[T, M](factory: BiFunction[Materializer, Attributes, Sink[T, M]]): Sink[T, CompletionStage[M]] =
+  def fromMaterializer[T, M](
+      factory: function.Function2[Materializer, Attributes, Sink[T, M]]): Sink[T, CompletionStage[M]] =
     scaladsl.Sink.fromMaterializer((mat, attr) => factory(mat, attr).asScala).mapMaterializedValue(_.asJava).asJava
 
   /**

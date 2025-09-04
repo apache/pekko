@@ -17,8 +17,6 @@ import java.lang.{ Iterable => JIterable }
 import java.net.InetSocketAddress
 import java.util.Optional
 import java.util.concurrent.CompletionStage
-import java.util.function.{ Function => JFunction }
-import java.util.function.Supplier
 import javax.net.ssl.SSLEngine
 import javax.net.ssl.SSLSession
 
@@ -35,6 +33,7 @@ import pekko.actor.ExtensionId
 import pekko.actor.ExtensionIdProvider
 import pekko.annotation.InternalApi
 import pekko.io.Inet.SocketOption
+import pekko.japi.function
 import pekko.stream.Materializer
 import pekko.stream.SystemMaterializer
 import pekko.stream.TLSClosing
@@ -261,10 +260,10 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
    */
   def outgoingConnectionWithTls(
       remoteAddress: InetSocketAddress,
-      createSSLEngine: Supplier[SSLEngine]): Flow[ByteString, ByteString, CompletionStage[OutgoingConnection]] =
+      createSSLEngine: function.Creator[SSLEngine]): Flow[ByteString, ByteString, CompletionStage[OutgoingConnection]] =
     Flow.fromGraph(
       delegate
-        .outgoingConnectionWithTls(remoteAddress, createSSLEngine = () => createSSLEngine.get())
+        .outgoingConnectionWithTls(remoteAddress, createSSLEngine = () => createSSLEngine.create())
         .mapMaterializedValue(_.map(new OutgoingConnection(_))(parasitic).asJava))
 
   /**
@@ -279,18 +278,18 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
    */
   def outgoingConnectionWithTls(
       remoteAddress: InetSocketAddress,
-      createSSLEngine: Supplier[SSLEngine],
+      createSSLEngine: function.Creator[SSLEngine],
       localAddress: Optional[InetSocketAddress],
       options: JIterable[SocketOption],
       connectTimeout: Optional[java.time.Duration],
       idleTimeout: Optional[java.time.Duration],
-      verifySession: JFunction[SSLSession, Optional[Throwable]],
+      verifySession: function.Function[SSLSession, Optional[Throwable]],
       closing: TLSClosing): Flow[ByteString, ByteString, CompletionStage[OutgoingConnection]] = {
     Flow.fromGraph(
       delegate
         .outgoingConnectionWithTls(
           remoteAddress,
-          createSSLEngine = () => createSSLEngine.get(),
+          createSSLEngine = () => createSSLEngine.create(),
           localAddress.toScala,
           CollectionUtil.toSeq(options),
           optionalDurationToScala(connectTimeout),
@@ -313,10 +312,10 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
   def bindWithTls(
       interface: String,
       port: Int,
-      createSSLEngine: Supplier[SSLEngine]): Source[IncomingConnection, CompletionStage[ServerBinding]] = {
+      createSSLEngine: function.Creator[SSLEngine]): Source[IncomingConnection, CompletionStage[ServerBinding]] = {
     Source.fromGraph(
       delegate
-        .bindWithTls(interface, port, createSSLEngine = () => createSSLEngine.get())
+        .bindWithTls(interface, port, createSSLEngine = () => createSSLEngine.create())
         .map(new IncomingConnection(_))
         .mapMaterializedValue(_.map(new ServerBinding(_))(parasitic).asJava))
   }
@@ -330,18 +329,18 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
   def bindWithTls(
       interface: String,
       port: Int,
-      createSSLEngine: Supplier[SSLEngine],
+      createSSLEngine: function.Creator[SSLEngine],
       backlog: Int,
       options: JIterable[SocketOption],
       idleTimeout: Optional[java.time.Duration],
-      verifySession: JFunction[SSLSession, Optional[Throwable]],
+      verifySession: function.Function[SSLSession, Optional[Throwable]],
       closing: TLSClosing): Source[IncomingConnection, CompletionStage[ServerBinding]] = {
     Source.fromGraph(
       delegate
         .bindWithTls(
           interface,
           port,
-          createSSLEngine = () => createSSLEngine.get(),
+          createSSLEngine = () => createSSLEngine.create(),
           backlog,
           CollectionUtil.toSeq(options),
           optionalDurationToScala(idleTimeout),

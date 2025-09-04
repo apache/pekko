@@ -15,7 +15,6 @@ package org.apache.pekko.stream.javadsl
 
 import java.util.{ Comparator, Optional }
 import java.util.concurrent.CompletionStage
-import java.util.function.Supplier
 
 import scala.annotation.varargs
 import scala.annotation.unchecked.uncheckedVariance
@@ -717,7 +716,7 @@ final class SubFlow[In, Out, Mat](
    */
   def groupedAdjacentByWeighted[R](f: function.Function[Out, R],
       maxWeight: Long,
-      costFn: java.util.function.Function[Out, java.lang.Long])
+      costFn: function.Function[Out, java.lang.Long])
       : SubFlow[In, java.util.List[Out @uncheckedVariance], Mat] =
     new SubFlow(delegate.groupedAdjacentByWeighted(f.apply, maxWeight)(costFn.apply).map(_.asJava))
 
@@ -1134,13 +1133,13 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    *
-   * @param delayStrategySupplier creates new [[DelayStrategy]] object for each materialization
+   * @param delayStrategyCreator creates new [[DelayStrategy]] object for each materialization
    * @param overFlowStrategy Strategy that is used when incoming elements cannot fit inside the buffer
    */
   def delayWith(
-      delayStrategySupplier: Supplier[DelayStrategy[Out]],
+      delayStrategyCreator: function.Creator[DelayStrategy[Out]],
       overFlowStrategy: DelayOverflowStrategy): SubFlow[In, Out, Mat] =
-    new SubFlow(delegate.delayWith(() => DelayStrategy.asScala(delayStrategySupplier.get), overFlowStrategy))
+    new SubFlow(delegate.delayWith(() => DelayStrategy.asScala(delayStrategyCreator.create()), overFlowStrategy))
 
   /**
    * Discard the given number of elements at the beginning of the stream.
@@ -1367,7 +1366,7 @@ final class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels
    *  @since 1.1.0
    */
-  def onErrorComplete(predicate: java.util.function.Predicate[_ >: Throwable]): SubFlow[In, Out, Mat] =
+  def onErrorComplete(predicate: function.Predicate[_ >: Throwable]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.onErrorComplete {
       case ex: Throwable if predicate.test(ex) => true
     })
@@ -2790,13 +2789,13 @@ final class SubFlow[In, Out, Mat](
    * @param emitOnTimer decide whether the current aggregated elements can be emitted, the custom function is invoked on every interval
    */
   @deprecated("Use the overloaded one which accepts an Optional instead.", since = "1.2.0")
-  def aggregateWithBoundary[Agg, Emit](allocate: java.util.function.Supplier[Agg],
+  def aggregateWithBoundary[Agg, Emit](allocate: function.Creator[Agg],
       aggregate: function.Function2[Agg, Out, Pair[Agg, Boolean]],
       harvest: function.Function[Agg, Emit],
-      emitOnTimer: Pair[java.util.function.Predicate[Agg], java.time.Duration])
+      emitOnTimer: Pair[function.Predicate[Agg], java.time.Duration])
       : javadsl.SubFlow[In, Emit, Mat] = {
     new SubFlow(
-      asScala.aggregateWithBoundary(() => allocate.get())(
+      asScala.aggregateWithBoundary(() => allocate.create())(
         aggregate = (agg, out) => aggregate.apply(agg, out).toScala,
         harvest = agg => harvest.apply(agg),
         emitOnTimer = Option(emitOnTimer).map {
@@ -2822,14 +2821,14 @@ final class SubFlow[In, Out, Mat](
    * @param harvest     this is invoked before emit within the current stage/operator
    * @param emitOnTimer decide whether the current aggregated elements can be emitted, the custom function is invoked on every interval
    */
-  def aggregateWithBoundary[Agg, Emit](allocate: java.util.function.Supplier[Agg],
+  def aggregateWithBoundary[Agg, Emit](allocate: function.Creator[Agg],
       aggregate: function.Function2[Agg, Out, Pair[Agg, Boolean]],
       harvest: function.Function[Agg, Emit],
-      emitOnTimer: Optional[Pair[java.util.function.Predicate[Agg], java.time.Duration]])
+      emitOnTimer: Optional[Pair[function.Predicate[Agg], java.time.Duration]])
       : javadsl.SubFlow[In, Emit, Mat] = {
     import org.apache.pekko.util.OptionConverters._
     new SubFlow(
-      asScala.aggregateWithBoundary(() => allocate.get())(
+      asScala.aggregateWithBoundary(() => allocate.create())(
         aggregate = (agg, out) => aggregate.apply(agg, out).toScala,
         harvest = agg => harvest.apply(agg),
         emitOnTimer = emitOnTimer.toScala.map {

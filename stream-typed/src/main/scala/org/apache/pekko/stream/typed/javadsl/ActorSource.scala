@@ -13,11 +13,10 @@
 
 package org.apache.pekko.stream.typed.javadsl
 
-import java.util.function.Predicate
-
 import org.apache.pekko
 import pekko.actor.typed._
 import pekko.japi.JavaPartialFunction
+import pekko.japi.function
 import pekko.stream.{ CompletionStrategy, OverflowStrategy }
 import pekko.stream.javadsl._
 
@@ -58,7 +57,7 @@ object ActorSource {
    * @param overflowStrategy Strategy that is used when incoming elements cannot fit inside the buffer
    */
   def actorRef[T](
-      completionMatcher: Predicate[T],
+      completionMatcher: function.Predicate[T],
       failureMatcher: pekko.japi.function.Function[T, java.util.Optional[Throwable]],
       bufferSize: Int,
       overflowStrategy: OverflowStrategy): Source[T, ActorRef[T]] = {

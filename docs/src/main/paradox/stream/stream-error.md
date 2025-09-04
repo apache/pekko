@@ -20,8 +20,8 @@ Each of the operators downstream gets informed about the failure and each upstre
 
 In many cases you may want to avoid complete stream failure, this can be done in a few different ways:
 
- * @apidoc[recover](stream.*.Source) {scala="#recover[T&gt;:Out](pf:PartialFunction[Throwable,T]):FlowOps.this.Repr[T]" java="#recover(java.lang.Class,java.util.function.Supplier)"} to emit a final element then complete the stream normally on upstream failure 
- * @apidoc[recoverWithRetries](stream.*.Source) {scala="#recoverWithRetries[T&gt;:Out](attempts:Int,pf:PartialFunction[Throwable,org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[T],org.apache.pekko.NotUsed]]):FlowOps.this.Repr[T]" java="#recoverWithRetries(int,java.lang.Class,java.util.function.Supplier)"} to create a new upstream and start consuming from that on failure
+ * @apidoc[recover](stream.*.Source) {scala="#recover[T&gt;:Out](pf:PartialFunction[Throwable,T]):FlowOps.this.Repr[T]" java="#recover(java.lang.Class,org.apache.pekko.japi.function.Creator)"} to emit a final element then complete the stream normally on upstream failure 
+ * @apidoc[recoverWithRetries](stream.*.Source) {scala="#recoverWithRetries[T&gt;:Out](attempts:Int,pf:PartialFunction[Throwable,org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[T],org.apache.pekko.NotUsed]]):FlowOps.this.Repr[T]" java="#recoverWithRetries(int,java.lang.Class,org.apache.pekko.japi.function.Creator)"} to create a new upstream and start consuming from that on failure
  * Restarting sections of the stream after a backoff
  * Using a supervision strategy for operators that support it
  
@@ -52,7 +52,7 @@ in @ref:[Logging in streams](stream-cookbook.md#logging-in-streams).
 
 ## Recover
 
-@apidoc[recover](stream.*.Source) {scala="#recover[T&gt;:Out](pf:PartialFunction[Throwable,T]):FlowOps.this.Repr[T]" java="#recover(java.lang.Class,java.util.function.Supplier)"} allows you to emit a final element and then complete the stream on an upstream failure.
+@apidoc[recover](stream.*.Source) {scala="#recover[T&gt;:Out](pf:PartialFunction[Throwable,T]):FlowOps.this.Repr[T]" java="#recover(java.lang.Class,org.apache.pekko.japi.function.Creator)"} allows you to emit a final element and then complete the stream on an upstream failure.
 Deciding which exceptions should be recovered is done through a @scaladoc[PartialFunction](scala.PartialFunction). If an exception
 does not have a @scala[matching case] @java[match defined] the stream is failed. 
 
@@ -80,7 +80,7 @@ Java
 
 ## Recover with retries
 
-@apidoc[recoverWithRetries](stream.*.Source) {scala="#recoverWithRetries[T&gt;:Out](attempts:Int,pf:PartialFunction[Throwable,org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[T],org.apache.pekko.NotUsed]]):FlowOps.this.Repr[T]" java="#recoverWithRetries(int,java.lang.Class,java.util.function.Supplier)"} allows you to put a new upstream in place of the failed one, recovering 
+@apidoc[recoverWithRetries](stream.*.Source) {scala="#recoverWithRetries[T&gt;:Out](attempts:Int,pf:PartialFunction[Throwable,org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[T],org.apache.pekko.NotUsed]]):FlowOps.this.Repr[T]" java="#recoverWithRetries(int,java.lang.Class,org.apache.pekko.japi.function.Creator)"} allows you to put a new upstream in place of the failed one, recovering 
 stream failures up to a specified maximum number of times. 
 
 Deciding which exceptions should be recovered is done through a @scaladoc[PartialFunction](scala.PartialFunction). If an exception

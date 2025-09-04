@@ -6,7 +6,7 @@ Defer the creation of a `Sink` until materialization and access `Materializer` a
 
 ## Signature
 
-@apidoc[Sink.fromMaterializer](Sink$) { scala="#fromMaterializer[T,M](factory:(org.apache.pekko.stream.Materializer,org.apache.pekko.stream.Attributes)=&gt;org.apache.pekko.stream.scaladsl.Sink[T,M]):org.apache.pekko.stream.scaladsl.Sink[T,scala.concurrent.Future[M]]" java="#fromMaterializer(java.util.function.BiFunction)" }
+@apidoc[Sink.fromMaterializer](Sink$) { scala="#fromMaterializer[T,M](factory:(org.apache.pekko.stream.Materializer,org.apache.pekko.stream.Attributes)=&gt;org.apache.pekko.stream.scaladsl.Sink[T,M]):org.apache.pekko.stream.scaladsl.Sink[T,scala.concurrent.Future[M]]" java="#fromMaterializer(org.apache.pekko.japi.function.Function2)" }
 
 ## Description
 
