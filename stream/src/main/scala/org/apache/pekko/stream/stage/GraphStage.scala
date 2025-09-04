@@ -1647,8 +1647,10 @@ trait AsyncCallback[T] {
    *
    * For cases where it is important to know if the notification was ever processed or not
    * see [[AsyncCallback#invokeWithFeedback]]
+   *
+   * @param msg the message to the GraphStage, can be null
    */
-  def invoke(t: T): Unit
+  def invoke(msg: T): Unit
 
   /**
    * Dispatch an asynchronous notification. This method is thread-safe and
@@ -1661,8 +1663,10 @@ trait AsyncCallback[T] {
    *
    * The handling of the returned future incurs a slight overhead, so for cases where it does not matter
    * to the invoking logic see [[AsyncCallback#invoke]]
+   *
+   * @param msg the message to the GraphStage, can be null
    */
-  def invokeWithFeedback(t: T): Future[Done]
+  def invokeWithFeedback(msg: T): Future[Done]
 
   /**
    * Java API
@@ -1677,11 +1681,13 @@ trait AsyncCallback[T] {
    *
    * The handling of the returned future incurs a slight overhead, so for cases where it does not matter
    * to the invoking logic see [[AsyncCallback#invoke]]
+   *
+   * @param msg the message to the GraphStage, can be null
    * @since 1.2.0
    */
-  def invokeWithFeedbackCompletionStage(t: T): CompletionStage[Done] = {
+  def invokeWithFeedbackCompletionStage(msg: T): CompletionStage[Done] = {
     import pekko.util.FutureConverters._
-    invokeWithFeedback(t).asJava
+    invokeWithFeedback(msg).asJava
   }
 }
 
