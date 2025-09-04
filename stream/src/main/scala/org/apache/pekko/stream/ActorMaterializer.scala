@@ -15,7 +15,6 @@ package org.apache.pekko.stream
 
 import java.util.concurrent.TimeUnit
 
-import scala.annotation.nowarn
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
@@ -221,7 +220,6 @@ private[pekko] object ActorMaterializerSettings {
  *
  * The constructor is not public API, use create or apply on the [[ActorMaterializerSettings]] companion instead.
  */
-@nowarn("msg=deprecated")
 final class ActorMaterializerSettings @InternalApi private (
     /*
      * Important note: `initialInputBufferSize`, `maxInputBufferSize`, `dispatcher` and
@@ -229,31 +227,20 @@ final class ActorMaterializerSettings @InternalApi private (
      * since these settings allow for overriding using [[Attributes]]. They must always be gotten from the effective
      * attributes.
      */
-    @deprecated("Use attribute 'Attributes.InputBuffer' to read the concrete setting value", "Akka 2.6.0")
-    val initialInputBufferSize: Int,
-    @deprecated("Use attribute 'Attributes.InputBuffer' to read the concrete setting value", "Akka 2.6.0")
-    val maxInputBufferSize: Int,
-    @deprecated("Use attribute 'ActorAttributes.Dispatcher' to read the concrete setting value", "Akka 2.6.0")
-    val dispatcher: String,
-    @deprecated("Use attribute 'ActorAttributes.SupervisionStrategy' to read the concrete setting value", "Akka 2.6.0")
-    val supervisionDecider: Supervision.Decider,
+    private[stream] val initialInputBufferSize: Int,
+    private[stream] val maxInputBufferSize: Int,
+    private[stream] val dispatcher: String,
+    private[stream] val supervisionDecider: Supervision.Decider,
     val subscriptionTimeoutSettings: StreamSubscriptionTimeoutSettings,
-    @deprecated("Use attribute 'ActorAttributes.DebugLogging' to read the concrete setting value", "Akka 2.6.0")
-    val debugLogging: Boolean,
-    @deprecated("Use attribute 'ActorAttributes.OutputBurstLimit' to read the concrete setting value", "Akka 2.6.0")
-    val outputBurstLimit: Int,
-    @deprecated("Use attribute 'ActorAttributes.FuzzingMode' to read the concrete setting value", "Akka 2.6.0")
-    val fuzzingMode: Boolean,
-    @deprecated("No longer has any effect", "Akka 2.6.0")
-    val autoFusing: Boolean,
-    @deprecated("Use attribute 'ActorAttributes.MaxFixedBufferSize' to read the concrete setting value", "Akka 2.6.0")
-    val maxFixedBufferSize: Int,
-    @deprecated("Use attribute 'ActorAttributes.SyncProcessingLimit' to read the concrete setting value", "Akka 2.6.0")
-    val syncProcessingLimit: Int,
+    private[stream] val debugLogging: Boolean,
+    private[stream] val outputBurstLimit: Int,
+    private[stream] val fuzzingMode: Boolean,
+    private[stream] val autoFusing: Boolean,
+    private[stream] val maxFixedBufferSize: Int,
+    private[stream] val syncProcessingLimit: Int,
     val ioSettings: IOSettings,
     val streamRefSettings: StreamRefSettings,
-    @deprecated("Use attribute 'ActorAttributes.BlockingIoDispatcher' to read the concrete setting value", "Akka 2.6.0")
-    val blockingIoDispatcher: String) {
+    private[stream] val blockingIoDispatcher: String) {
 
   require(initialInputBufferSize > 0, "initialInputBufferSize must be > 0")
   require(syncProcessingLimit > 0, "syncProcessingLimit must be > 0")
@@ -401,10 +388,8 @@ private[pekko] object IOSettings {
       coalesceWrites = config.getInt("tcp.coalesce-writes"))
 }
 
-@nowarn("msg=deprecated")
 final class IOSettings private (
-    @deprecated("Use attribute 'TcpAttributes.TcpWriteBufferSize' to read the concrete setting value", "Akka 2.6.0")
-    val tcpWriteBufferSize: Int,
+    private[stream] val tcpWriteBufferSize: Int,
     val coalesceWrites: Int) {
 
   // constructor for binary compatibility with version 2.6.15 and earlier
@@ -473,15 +458,9 @@ object StreamSubscriptionTimeoutSettings {
  * Leaked publishers and subscribers are cleaned up when they are not used within a given
  * deadline, configured by [[StreamSubscriptionTimeoutSettings]].
  */
-@nowarn("msg=deprecated")
 final class StreamSubscriptionTimeoutSettings(
-    @deprecated(
-      "Use attribute 'ActorAttributes.StreamSubscriptionTimeoutMode' to read the concrete setting value",
-      "Akka 2.6.0")
-    val mode: StreamSubscriptionTimeoutTerminationMode,
-    @deprecated("Use attribute 'ActorAttributes.StreamSubscriptionTimeout' to read the concrete setting value",
-      "Akka 2.6.0")
-    val timeout: FiniteDuration) {
+    private[stream] val mode: StreamSubscriptionTimeoutTerminationMode,
+    private[stream] val timeout: FiniteDuration) {
   override def equals(other: Any): Boolean = other match {
     case s: StreamSubscriptionTimeoutSettings => s.mode == mode && s.timeout == timeout
     case _                                    => false
