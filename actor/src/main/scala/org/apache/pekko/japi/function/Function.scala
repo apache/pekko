@@ -30,8 +30,8 @@ trait Function[-T, +R] extends java.io.Serializable {
   def apply(param: T): R
 
   /**
-   * Compose this function with another function `g`, such that the resulting function
-   * is equivalent to `this(g(x))`.
+   * Creates a composed function that first applies `g` to its input, then applies this function to the result.
+   * That is, the resulting function is equivalent to `this(g(x))`.
    * @since 2.0.0
    */
   def compose[V](g: Function[V, T]): Function[V, R] = (v: V) => this.apply(g.apply(v))
