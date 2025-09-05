@@ -24,8 +24,8 @@ class ByteString_indexOf_Benchmark {
   val bss = start ++ start ++ start ++ start ++ start ++ ByteString("xyz")
 
   val bs = bss.compact // compacted
-  val aByte = 'a'.toByte
   val oByte = 'o'.toByte
+  val zByte = 'z'.toByte
 
   /*
   original
@@ -49,10 +49,10 @@ class ByteString_indexOf_Benchmark {
   def bss_indexOf_from_far_index_case: Int = bss.indexOf('z', 109)
 
   @Benchmark
-  def bss_indexOf_from_far_index_case_byte: Int = bss.indexOf('z'.toByte, 109)
+  def bss_indexOf_from_far_index_case_byte: Int = bss.indexOf(zByte, 109)
 
   @Benchmark
-  def bss_indexOf_from_best_case: Int = bss.indexOf(aByte, 0)
+  def bss_indexOf_from_best_case: Int = bss.indexOf('a', 0)
 
   @Benchmark
   def bs1_indexOf_from: Int = bs.indexOf('o', 5)
