@@ -65,8 +65,10 @@ trait Function2[-T1, -T2, +R] extends java.io.Serializable {
   def apply(arg1: T1, arg2: T2): R
 
   /**
-   * Compose this function with another function, such that the resulting function
+   * Compose this function with another function `g`, such that the resulting function
    * is equivalent to `g(this(x1, x2))`.
+   * This creates a composed function that first applies this function to its arguments,
+   * and then applies function `g` to the result.
    * @since 2.0.0
    */
   def andThen[V](g: Function[R, V]): Function2[T1, T2, V] =
