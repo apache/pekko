@@ -664,7 +664,29 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       compact.indexOf('e') should ===(3)
       compact.indexOf('f') should ===(4)
       compact.indexOf('g') should ===(5)
+    }
+    "lastIndexOf" in {
+      ByteString.empty.indexOf(5) should ===(-1)
+      val byteString1 = ByteString1.fromString("abb")
+      byteString1.lastIndexOf('a') should ===(0)
+      byteString1.lastIndexOf('b') should ===(2)
+      byteString1.lastIndexOf('d') should ===(-1)
 
+      val byteStrings = ByteStrings(ByteString1.fromString("abb"), ByteString1.fromString("efg"))
+      byteStrings.lastIndexOf('a') should ===(0)
+      byteStrings.lastIndexOf('b') should ===(2)
+      byteStrings.lastIndexOf('d') should ===(-1)
+      byteStrings.lastIndexOf('e') should ===(3)
+      byteStrings.lastIndexOf('f') should ===(4)
+      byteStrings.lastIndexOf('g') should ===(5)
+
+      val compact = byteStrings.compact
+      compact.lastIndexOf('a') should ===(0)
+      compact.lastIndexOf('b') should ===(2)
+      compact.lastIndexOf('d') should ===(-1)
+      compact.lastIndexOf('e') should ===(3)
+      compact.lastIndexOf('f') should ===(4)
+      compact.lastIndexOf('g') should ===(5)
     }
     "indexOf from offset" in {
       ByteString.empty.indexOf(5, -1) should ===(-1)
@@ -716,6 +738,48 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       compact.indexOf('g', 4) should ===(5)
       compact.indexOf('g', 5) should ===(5)
       compact.indexOf('g', 6) should ===(-1)
+    }
+    "lastIndexOf from offset" in {
+      ByteString.empty.lastIndexOf(5, -1) should ===(-1)
+      ByteString.empty.lastIndexOf(5, 0) should ===(-1)
+      ByteString.empty.lastIndexOf(5, 1) should ===(-1)
+      val byteString1 = ByteString1.fromString("abb")
+      byteString1.lastIndexOf('d', -1) should ===(-1)
+      byteString1.lastIndexOf('d', 4) should ===(-1)
+      byteString1.lastIndexOf('d', 1) should ===(-1)
+      byteString1.lastIndexOf('d', 0) should ===(-1)
+      byteString1.lastIndexOf('a', -1) should ===(-1)
+      byteString1.lastIndexOf('a', 0) should ===(0)
+      byteString1.lastIndexOf('a', 1) should ===(0)
+      byteString1.lastIndexOf('b', 2) should ===(2)
+      byteString1.lastIndexOf('b', 1) should ===(1)
+      byteString1.lastIndexOf('b', 0) should ===(-1)
+
+      val byteStrings = ByteStrings(ByteString1.fromString("abb"), ByteString1.fromString("efg"))
+      byteStrings.lastIndexOf('e', 6) should ===(3)
+      byteStrings.lastIndexOf('e', 4) should ===(3)
+      byteStrings.lastIndexOf('e', 1) should ===(-1)
+      byteStrings.lastIndexOf('e', 0) should ===(-1)
+      byteStrings.lastIndexOf('e', -1) should ===(-1)
+
+      byteStrings.lastIndexOf('b', 6) should ===(2)
+      byteStrings.lastIndexOf('b', 4) should ===(2)
+      byteStrings.lastIndexOf('b', 1) should ===(1)
+      byteStrings.lastIndexOf('b', 0) should ===(-1)
+      byteStrings.lastIndexOf('b', -1) should ===(-1)
+
+      val compact = byteStrings.compact
+      compact.lastIndexOf('e', 6) should ===(3)
+      compact.lastIndexOf('e', 4) should ===(3)
+      compact.lastIndexOf('e', 1) should ===(-1)
+      compact.lastIndexOf('e', 0) should ===(-1)
+      compact.lastIndexOf('e', -1) should ===(-1)
+
+      compact.lastIndexOf('b', 6) should ===(2)
+      compact.lastIndexOf('b', 4) should ===(2)
+      compact.lastIndexOf('b', 1) should ===(1)
+      compact.lastIndexOf('b', 0) should ===(-1)
+      compact.lastIndexOf('b', -1) should ===(-1)
     }
     "indexOf (specialized)" in {
       ByteString.empty.indexOf(5.toByte) should ===(-1)
