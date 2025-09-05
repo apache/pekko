@@ -254,7 +254,7 @@ final class LmdbDurableStore(config: Config) extends Actor with ActorLogging {
           dbPut(OptionVal.None, key, data)
         } else {
           if (pending.isEmpty)
-            context.system.scheduler.scheduleOnce(writeBehindInterval, self, WriteBehind)(context.dispatcher)
+            context.system.scheduler.scheduleOnce(writeBehindInterval, self, WriteBehind)(context.dispatcher, self)
           pending.put(key, data)
         }
         reply match {
