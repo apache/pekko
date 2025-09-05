@@ -28,6 +28,18 @@ import scala.annotation.nowarn
 trait Function[-T, +R] extends java.io.Serializable {
   @throws(classOf[Exception])
   def apply(param: T): R
+
+  /**
+   * That is, the resulting function is equivalent to `this(g(v))`.
+   * @since 2.0.0
+   */
+  def compose[V](g: Function[V, T]): Function[V, R] = (v: V) => this.apply(g.apply(v))
+
+  /**
+   * Creates a composed function that first applies this function to its input, then applies `g` to the result.
+   * @since 2.0.0
+   */
+  def andThen[V](g: Function[R, V]): Function[T, V] = (t: T) => g.apply(this.apply(t))
 }
 
 object Function {
@@ -50,6 +62,16 @@ object Function {
 trait Function2[-T1, -T2, +R] extends java.io.Serializable {
   @throws(classOf[Exception])
   def apply(arg1: T1, arg2: T2): R
+
+  /**
+   * Compose this function with another function `g`, such that the resulting function
+   * is equivalent to `g(this(x1, x2))`.
+   * This creates a composed function that first applies this function to its arguments,
+   * and then applies function `g` to the result.
+   * @since 2.0.0
+   */
+  def andThen[V](g: Function[R, V]): Function2[T1, T2, V] =
+    (t1: T1, t2: T2) => g.apply(this.apply(t1, t2))
 }
 
 /**
@@ -89,6 +111,12 @@ trait Effect extends java.io.Serializable {
 @FunctionalInterface
 trait Predicate[-T] extends java.io.Serializable {
   def test(param: T): Boolean
+
+  /**
+   * Returns a predicate that represents the logical negation of this predicate.
+   * @since 2.0.0
+   */
+  def negate: Predicate[T] = (t: T) => !this.test(t)
 }
 
 /**
@@ -101,6 +129,12 @@ trait Predicate[-T] extends java.io.Serializable {
 @FunctionalInterface
 trait Predicate2[-T1, -T2] extends java.io.Serializable {
   def test(param1: T1, param2: T2): Boolean
+
+  /**
+   * Returns a predicate that represents the logical negation of this predicate.
+   * @since 2.0.0
+   */
+  def negate: Predicate2[T1, T2] = (t1: T1, t2: T2) => !this.test(t1, t2)
 }
 
 /**
