@@ -243,16 +243,30 @@ object ByteString {
       }
     }
 
+    @nowarn
     override def indexOf(elem: Byte, from: Int): Int = {
-      if (from >= length) -1
-      else {
-        var i = math.max(from, 0)
-        while (i < length) {
-          if (bytes(i) == elem) return i
-          i += 1
-        }
-        -1
+      val fromIndex = math.max(0, from)
+      if (fromIndex >= length) return -1
+      val searchLength = length - fromIndex
+      var offset = fromIndex
+      val byteCount = searchLength & 7
+      if (byteCount > 0) {
+        val index = unrolledFirstIndexOf(fromIndex, byteCount, elem)
+        if (index != -1) return index
+        offset += byteCount
+        if (offset == length) return -1
       }
+      val longCount = searchLength >>> 3
+      val pattern = SWARUtil.compilePattern(elem)
+      var i = 0
+      while (i < longCount) {
+        val word = SWARUtil.getLong(bytes, offset)
+        val result = SWARUtil.applyPattern(word, pattern)
+        if (result != 0) return offset + SWARUtil.getIndex(result)
+        offset += java.lang.Long.BYTES
+        i += 1
+      }
+      -1
     }
 
     override def indexOf(elem: Byte, from: Int, to: Int): Int = {
@@ -266,6 +280,35 @@ object ByteString {
         }
         -1
       }
+    }
+
+    // does not range check - assumes caller has checked bounds
+    private def getLong(index: Int): Long = {
+      (bytes(index).toLong & 0xFF) << 56 |
+      (bytes(index + 1).toLong & 0xFF) << 48 |
+      (bytes(index + 2).toLong & 0xFF) << 40 |
+      (bytes(index + 3).toLong & 0xFF) << 32 |
+      (bytes(index + 4).toLong & 0xFF) << 24 |
+      (bytes(index + 5).toLong & 0xFF) << 16 |
+      (bytes(index + 6).toLong & 0xFF) << 8 |
+      (bytes(index + 7).toLong & 0xFF)
+    }
+
+    private def unrolledFirstIndexOf(fromIndex: Int, byteCount: Int, value: Byte): Int = {
+      if (bytes(fromIndex) == value) fromIndex
+      else if (byteCount == 1) -1
+      else if (bytes(fromIndex + 1) == value) fromIndex + 1
+      else if (byteCount == 2) -1
+      else if (bytes(fromIndex + 2) == value) fromIndex + 2
+      else if (byteCount == 3) -1
+      else if (bytes(fromIndex + 3) == value) fromIndex + 3
+      else if (byteCount == 4) -1
+      else if (bytes(fromIndex + 4) == value) fromIndex + 4
+      else if (byteCount == 5) -1
+      else if (bytes(fromIndex + 5) == value) fromIndex + 5
+      else if (byteCount == 6) -1
+      else if (bytes(fromIndex + 6) == value) fromIndex + 6
+      else -1
     }
 
     override def slice(from: Int, until: Int): ByteString =
@@ -458,16 +501,30 @@ object ByteString {
       }
     }
 
+    @nowarn
     override def indexOf(elem: Byte, from: Int): Int = {
-      if (from >= length) -1
-      else {
-        var i = math.max(from, 0)
-        while (i < length) {
-          if (bytes(startIndex + i) == elem) return i
-          i += 1
-        }
-        -1
+val fromIndex = math.max(0, from)
+      if (fromIndex >= length) return -1
+      val searchLength = length - fromIndex
+      var offset = fromIndex
+      val byteCount = searchLength & 7
+      if (byteCount > 0) {
+        val index = unrolledFirstIndexOf(fromIndex + startIndex, byteCount, elem)
+        if (index != -1) return index - startIndex
+        offset += byteCount
+        if (offset == length) return -1
       }
+      val longCount = searchLength >>> 3
+      val pattern = SWARUtil.compilePattern(elem)
+      var i = 0
+      while (i < longCount) {
+        val word = SWARUtil.getLong(bytes, startIndex + offset)
+        val result = SWARUtil.applyPattern(word, pattern)
+        if (result != 0) return offset + SWARUtil.getIndex(result)
+        offset += java.lang.Long.BYTES
+        i += 1
+      }
+      -1
     }
 
     override def indexOf(elem: Byte, from: Int, to: Int): Int = {
@@ -481,6 +538,37 @@ object ByteString {
         }
         -1
       }
+    }
+
+    // does not range check - assumes caller has checked bounds
+    private def getLong(index: Int): Long = {
+      val checkedIndex = startIndex + index
+      (bytes(checkedIndex).toLong & 0xFF) << 56 |
+      (bytes(checkedIndex + 1).toLong & 0xFF) << 48 |
+      (bytes(checkedIndex + 2).toLong & 0xFF) << 40 |
+      (bytes(checkedIndex + 3).toLong & 0xFF) << 32 |
+      (bytes(checkedIndex + 4).toLong & 0xFF) << 24 |
+      (bytes(checkedIndex + 5).toLong & 0xFF) << 16 |
+      (bytes(checkedIndex + 6).toLong & 0xFF) << 8 |
+      (bytes(checkedIndex + 7).toLong & 0xFF)
+    }
+
+    // the calling code already adds the startIndex so this method does not need to
+    private def unrolledFirstIndexOf(fromIndex: Int, byteCount: Int, value: Byte): Int = {
+      if (bytes(fromIndex) == value) fromIndex
+      else if (byteCount == 1) -1
+      else if (bytes(fromIndex + 1) == value) fromIndex + 1
+      else if (byteCount == 2) -1
+      else if (bytes(fromIndex + 2) == value) fromIndex + 2
+      else if (byteCount == 3) -1
+      else if (bytes(fromIndex + 3) == value) fromIndex + 3
+      else if (byteCount == 4) -1
+      else if (bytes(fromIndex + 4) == value) fromIndex + 4
+      else if (byteCount == 5) -1
+      else if (bytes(fromIndex + 5) == value) fromIndex + 5
+      else if (byteCount == 6) -1
+      else if (bytes(fromIndex + 6) == value) fromIndex + 6
+      else -1
     }
 
     override def copyToArray[B >: Byte](dest: Array[B], start: Int, len: Int): Int = {
