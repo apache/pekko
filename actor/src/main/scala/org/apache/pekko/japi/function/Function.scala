@@ -37,8 +37,7 @@ trait Function[-T, +R] extends java.io.Serializable {
   def compose[V](g: Function[V, T]): Function[V, R] = (v: V) => this.apply(g.apply(v))
 
   /**
-   * Compose this function with another function `g`, such that the resulting function
-   * is equivalent to `g(this(x))`.
+   * Creates a composed function that first applies this function to its input, then applies `g` to the result.
    * @since 2.0.0
    */
   def andThen[V](g: Function[R, V]): Function[T, V] = (t: T) => g.apply(this.apply(t))
