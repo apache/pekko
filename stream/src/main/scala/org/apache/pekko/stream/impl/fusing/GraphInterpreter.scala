@@ -342,11 +342,24 @@ import pekko.stream.stage._
     var i = 0
     while (i < logics.length) {
       val logic = logics(i)
-      if (!isStageCompleted(logic) && !isStageFinalized(logic)) {
+      if ((logic ne null) && !isStageCompleted(logic) && !isStageFinalized(logic)) {
         markStageFinalized(logic)
         finalizeStage(logic)
       }
+      // Release reference to the stage logic so it can be garbage collected
+      // even if the GraphInterpreter is still alive due to other references
+      logics(i) = null
       i += 1
+    }
+    // Null connection handlers for all finalized stages to break handler-to-logic reference chains
+    var j = 0
+    while (j < connections.length) {
+      val conn = connections(j)
+      if (conn ne null) {
+        conn.inHandler = null
+        conn.outHandler = null
+      }
+      j += 1
     }
   }
 
@@ -357,10 +370,16 @@ import pekko.stream.stage._
   private def outOwnerName(connection: Connection): String = connection.outOwner.toString
 
   // Debug name for a connections input part
-  private def inLogicName(connection: Connection): String = logics(connection.inOwner.stageId).toString
+  private def inLogicName(connection: Connection): String = {
+    val logic = logics(connection.inOwner.stageId)
+    if (logic ne null) logic.toString else "<completed>"
+  }
 
   // Debug name for a connections output part
-  private def outLogicName(connection: Connection): String = logics(connection.outOwner.stageId).toString
+  private def outLogicName(connection: Connection): String = {
+    val logic = logics(connection.outOwner.stageId)
+    if (logic ne null) logic.toString else "<completed>"
+  }
 
   private def shutdownCounters: String =
     shutdownCounter.map(x => if (x >= KeepGoingFlag) s"${x & KeepGoingMask}(KeepGoing)" else x.toString).mkString(",")

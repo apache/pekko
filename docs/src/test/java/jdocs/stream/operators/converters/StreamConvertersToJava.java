@@ -67,6 +67,17 @@ public class StreamConvertersToJava extends AbstractJavaTest {
   }
 
   @Test
+  public void demonstrateConverterToJava8StreamOnSink() {
+    // #asJavaStreamOnSink
+
+    Source<Integer, NotUsed> source = Source.range(0, 9).filter(i -> i % 2 == 0);
+    Stream<Integer> jStream = source.runWith(Sink.asJavaStream(), system);
+
+    // #asJavaStreamOnSink
+    assertEquals(5, jStream.count());
+  }
+
+  @Test
   public void demonstrateCreatingASourceFromJava8Stream()
       throws InterruptedException, ExecutionException, TimeoutException {
     // #fromJavaStream
