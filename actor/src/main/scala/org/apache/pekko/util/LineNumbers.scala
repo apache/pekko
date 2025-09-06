@@ -253,16 +253,22 @@ object LineNumbers {
 
   private def skipInterfaceInfo(d: DataInputStream)(implicit c: Constants): Unit = {
     val count = d.readUnsignedShort()
-    for (_ <- 1 to count) {
+    var i = 1
+    while (i <= count) {
       val intf = d.readUnsignedShort()
       if (debug) println(s"LNB:   implements ${c(intf)}")
+      i += 1
     }
   }
 
   private def skipFields(d: DataInputStream)(implicit c: Constants): Unit = {
     val count = d.readUnsignedShort()
     if (debug) println(s"LNB: reading $count fields:")
-    for (_ <- 1 to count) skipMethodOrField(d)
+    var i = 1
+    while (i <= count) {
+      skipMethodOrField(d)
+      i += 1
+    }
   }
 
   private def skipMethodOrField(d: DataInputStream)(implicit c: Constants): Unit = {
@@ -270,7 +276,11 @@ object LineNumbers {
     val name = d.readUnsignedShort() // name
     skip(d, 2) // signature
     val attributes = d.readUnsignedShort()
-    for (_ <- 1 to attributes) skipAttribute(d)
+    var i = 1
+    while (i <= attributes) {
+      skipAttribute(d)
+      i += 1
+    }
     if (debug) println(s"LNB:   ${c(name)} ($attributes attributes)")
   }
 
@@ -295,7 +305,11 @@ object LineNumbers {
       }
     } else {
       if (debug) println(s"LNB:   (skipped)")
-      for (_ <- 1 to count) skipMethodOrField(d)
+      var i = 1
+      while (i <= count) {
+        skipMethodOrField(d)
+        i += 1
+      }
       None
     }
   }

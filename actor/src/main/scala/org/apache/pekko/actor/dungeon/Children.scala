@@ -330,7 +330,14 @@ private[pekko] trait Children { this: ActorCell =>
             throw e
         }
       // mailbox==null during RoutedActorCell constructor, where suspends are queued otherwise
-      if (mailbox ne null) for (_ <- 1 to mailbox.suspendCount) actor.suspend()
+      if (mailbox ne null) {
+        val suspendCount = mailbox.suspendCount
+        var i = 1
+        while (i <= suspendCount) {
+          actor.suspend()
+          i += 1
+        }
+      }
       initChild(actor)
       actor.start()
       actor

@@ -1971,7 +1971,9 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
       to ! status
     } else {
       val totChunks = dataEntries.size / maxDeltaElements
-      for (_ <- 1 to math.min(totChunks, 10)) {
+      var i = 1
+      val maxLoop = math.min(totChunks, 10)
+      while (i <= maxLoop) {
         if (totChunks == statusTotChunks)
           statusCount += 1
         else {
@@ -1983,6 +1985,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
             case (key, (_, _)) if math.abs(key.hashCode % totChunks) == chunk => (key, getDigest(key))
           }, chunk, totChunks, toSystemUid, selfFromSystemUid)
         to ! status
+        i += 1
       }
     }
   }
