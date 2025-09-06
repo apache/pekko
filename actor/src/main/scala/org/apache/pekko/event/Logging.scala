@@ -31,9 +31,11 @@ import pekko.actor.ActorSystem.Settings
 import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.dispatch.RequiresMessageQueue
 import pekko.event.Logging._
-import pekko.util.{ Helpers, ReentrantGuard }
+import pekko.util.Helpers
 import pekko.util.Timeout
 import pekko.util.unused
+
+import java.util.concurrent.locks.ReentrantLock
 
 /**
  * This trait brings log level handling to the EventStream: it reads the log
@@ -50,7 +52,7 @@ trait LoggingBus extends ActorEventBus {
 
   import Logging._
 
-  private val guard = new ReentrantGuard
+  private val guard = new ReentrantLock()
   private var loggers = Seq.empty[ActorRef]
   @volatile private var _logLevel: LogLevel = _
 
@@ -69,21 +71,26 @@ trait LoggingBus extends ActorEventBus {
    * will not participate in the automatic management of log level
    * subscriptions!
    */
-  def setLogLevel(level: LogLevel): Unit = guard.withGuard {
-    val logLvl = _logLevel // saves (2 * AllLogLevel.size - 1) volatile reads (because of the loops below)
-    for {
-      l <- AllLogLevels
-      // subscribe if previously ignored and now requested
-      if l > logLvl && l <= level
-      log <- loggers
-    } subscribe(log, classFor(l))
-    for {
-      l <- AllLogLevels
-      // unsubscribe if previously registered and now ignored
-      if l <= logLvl && l > level
-      log <- loggers
-    } unsubscribe(log, classFor(l))
-    _logLevel = level
+  def setLogLevel(level: LogLevel): Unit = {
+    guard.lock()
+    try {
+      val logLvl = _logLevel // saves (2 * AllLogLevel.size - 1) volatile reads (because of the loops below)
+      for {
+        l <- AllLogLevels
+        // subscribe if previously ignored and now requested
+        if l > logLvl && l <= level
+        log <- loggers
+      } subscribe(log, classFor(l))
+      for {
+        l <- AllLogLevels
+        // unsubscribe if previously registered and now ignored
+        if l <= logLvl && l > level
+        log <- loggers
+      } unsubscribe(log, classFor(l))
+      _logLevel = level
+    } finally {
+      guard.unlock()
+    }
   }
 
   private def setUpStdoutLogger(config: Settings): Unit = {
@@ -98,9 +105,12 @@ trait LoggingBus extends ActorEventBus {
       ErrorLevel
     }
     AllLogLevels.filter(level >= _).foreach(l => subscribe(StandardOutLogger, classFor(l)))
-    guard.withGuard {
+    guard.lock()
+    try {
       loggers :+= StandardOutLogger
       _logLevel = level
+    } finally {
+      guard.unlock()
     }
   }
 
@@ -147,9 +157,12 @@ trait LoggingBus extends ActorEventBus {
             }
             .get
         }
-      guard.withGuard {
+      guard.lock()
+      try {
         loggers = myloggers
         _logLevel = level
+      } finally {
+        guard.unlock()
       }
       try {
         if (system.settings.DebugUnhandledMessage)
