@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit.MICROSECONDS
 import java.util.concurrent.atomic.AtomicReference
 import java.util.concurrent.locks.LockSupport
 
-import scala.annotation.{ switch, tailrec }
+import scala.annotation.{ nowarn, switch, tailrec }
 import scala.collection.{ immutable, mutable }
 
 import com.typesafe.config.Config
@@ -140,6 +140,7 @@ private[pekko] class AffinityPool(
   // adding a worker. We want the creation of the worker, addition
   // to the set and starting to worker to be an atomic action. Using
   // a concurrent set would not give us that
+  @nowarn("msg=deprecated")
   private val bookKeepingLock = new ReentrantGuard()
 
   // condition used for awaiting termination
