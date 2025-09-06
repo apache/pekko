@@ -503,7 +503,7 @@ object ByteString {
 
     @nowarn
     override def indexOf(elem: Byte, from: Int): Int = {
-val fromIndex = math.max(0, from)
+      val fromIndex = math.max(0, from)
       if (fromIndex >= length) return -1
       val searchLength = length - fromIndex
       var offset = fromIndex

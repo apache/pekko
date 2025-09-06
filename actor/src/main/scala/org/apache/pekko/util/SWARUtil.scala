@@ -15,6 +15,8 @@
 
 package org.apache.pekko.util
 
+import java.lang.invoke.MethodHandles
+
 import org.apache.pekko.annotation.InternalApi
 
 /**
@@ -26,6 +28,15 @@ import org.apache.pekko.annotation.InternalApi
  */
 @InternalApi
 private[util] object SWARUtil {
+
+  private val (longBeArrayView, longBeArrayViewSupported) =
+    try {
+      (MethodHandles.byteArrayViewVarHandle(
+          classOf[Array[Long]], java.nio.ByteOrder.BIG_ENDIAN),
+        true)
+    } catch {
+      case _: Throwable => (null, false)
+    }
 
   /**
    * Compiles given byte into a long pattern suitable for SWAR operations.
@@ -57,4 +68,28 @@ private[util] object SWARUtil {
    */
   def getIndex(word: Long): Int =
     java.lang.Long.numberOfLeadingZeros(word) >>> 3
+
+  /**
+   * Returns the long value at the specified index in the given byte array.
+   * Uses big-endian byte order. Uses a VarHandle byte array view if supported.
+   * Does not range check - assumes caller has checked bounds.
+   *
+   * @param array the byte array to read from
+   * @param index the index to read from
+   * @return the long value at the specified index
+   */
+  def getLong(array: Array[Byte], index: Int): Long = {
+    if (longBeArrayViewSupported) {
+      longBeArrayView.get(array, index)
+    } else {
+      (array(index).toLong & 0xFF) << 56 |
+      (array(index + 1).toLong & 0xFF) << 48 |
+      (array(index + 2).toLong & 0xFF) << 40 |
+      (array(index + 3).toLong & 0xFF) << 32 |
+      (array(index + 4).toLong & 0xFF) << 24 |
+      (array(index + 5).toLong & 0xFF) << 16 |
+      (array(index + 6).toLong & 0xFF) << 8 |
+      (array(index + 7).toLong & 0xFF)
+    }
+  }
 }
