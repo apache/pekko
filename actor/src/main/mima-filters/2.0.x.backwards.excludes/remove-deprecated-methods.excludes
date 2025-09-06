@@ -145,3 +145,8 @@ ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.japi.pf.Un
 ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.japi.pf.UnitPFBuilder.matchEquals")
 ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.japi.pf.UnitPFBuilder.matchAny")
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.japi.JAPI")
+ProblemFilters.exclude[ReversedMissingMethodProblem]("org.apache.pekko.event.LoggingBus.org$apache$pekko$event$LoggingBus$_setter_$org$apache$pekko$event$LoggingBus$$guard_=")
+ProblemFilters.exclude[ReversedMissingMethodProblem]("org.apache.pekko.event.LoggingBus.org$apache$pekko$event$LoggingBus$$guard")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.util.ReentrantGuard")
+
+
