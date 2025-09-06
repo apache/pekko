@@ -213,6 +213,23 @@ object Sink {
     new Sink(scaladsl.Sink.asPublisher(fanout == AsPublisher.WITH_FANOUT))
 
   /**
+   * Creates a sink which materializes into Java 8 ``Stream`` that can be run to trigger demand through the sink.
+   * Elements emitted through the stream will be available for reading through the Java 8 ``Stream``.
+   *
+   * The Java 8 ``Stream`` will be ended when the stream flowing into this ``Sink`` completes, and closing the Java
+   * ``Stream`` will cancel the inflow of this ``Sink``.
+   *
+   * Java 8 ``Stream`` throws exception in case reactive stream failed.
+   *
+   * Be aware that Java ``Stream`` blocks current thread while waiting on next element from downstream.
+   * As it is interacting with blocking API the implementation runs on a separate dispatcher
+   * configured through the ``pekko.stream.blocking-io-dispatcher``.
+   *
+   * @since 2.0.0
+   */
+  def asJavaStream[T](): Sink[T, java.util.stream.Stream[T]] = new Sink(scaladsl.StreamConverters.asJavaStream())
+
+  /**
    * A `Sink` that will invoke the given procedure for each received element. The sink is materialized
    * into a [[java.util.concurrent.CompletionStage]] which will be completed with `Success` when reaching the
    * normal end of the stream, or completed with `Failure` if there is a failure signaled in
