@@ -259,11 +259,13 @@ object ByteString {
       }
       val longCount = searchLength >>> 3
       val pattern = SWARUtil.compilePattern(elem)
-      for (_ <- 0 until longCount) {
+      var i = 0
+      while (i < longCount) {
         val word = getLong(offset)
         val result = SWARUtil.applyPattern(word, pattern)
         if (result != 0) return offset + SWARUtil.getIndex(result)
         offset += java.lang.Long.BYTES
+        i += 1
       }
       -1
     }
@@ -503,11 +505,13 @@ object ByteString {
       }
       val longCount = searchLength >>> 3
       val pattern = SWARUtil.compilePattern(elem)
-      for (_ <- 0 until longCount) {
+      var i = 0
+      while (i < longCount) {
         val word = getLong(offset)
         val result = SWARUtil.applyPattern(word, pattern)
         if (result != 0) return offset + SWARUtil.getIndex(result)
         offset += java.lang.Long.BYTES
+        i += 1
       }
       -1
     }
