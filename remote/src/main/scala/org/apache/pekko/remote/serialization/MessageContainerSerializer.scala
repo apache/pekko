@@ -25,9 +25,7 @@ import pekko.protobufv3.internal.ByteString
 import pekko.remote.ByteStringUtils
 import pekko.remote.ContainerFormats
 import pekko.serialization.{ BaseSerializer, SerializationExtension, Serializers }
-import pekko.util.ccompat._
 
-@ccompatUsedUntil213
 class MessageContainerSerializer(val system: ExtendedActorSystem) extends BaseSerializer {
 
   private lazy val serialization = SerializationExtension(system)

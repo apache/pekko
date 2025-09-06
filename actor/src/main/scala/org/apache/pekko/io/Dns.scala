@@ -26,7 +26,6 @@ import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 import pekko.event.Logging
 import pekko.io.dns.DnsProtocol
-import pekko.util.ccompat._
 import pekko.util.unused
 
 /**
@@ -34,7 +33,6 @@ import pekko.util.unused
  *
  * This used to be a supported extension point but will be removed in future versions of Apache Pekko.
  */
-@ccompatUsedUntil213
 @DoNotInherit
 abstract class Dns {
 

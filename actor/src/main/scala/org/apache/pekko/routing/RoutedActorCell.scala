@@ -30,7 +30,6 @@ import pekko.actor.SupervisorStrategy
 import pekko.actor.Terminated
 import pekko.dispatch.Envelope
 import pekko.dispatch.MessageDispatcher
-import pekko.util.ccompat._
 
 /**
  * INTERNAL API
@@ -46,7 +45,6 @@ private[pekko] object RoutedActorCell {
 /**
  * INTERNAL API
  */
-@ccompatUsedUntil213
 private[pekko] class RoutedActorCell(
     _system: ActorSystemImpl,
     _ref: InternalActorRef,

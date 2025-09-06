@@ -59,7 +59,6 @@ import pekko.stream.scaladsl.Source
 import pekko.stream.scaladsl.Tcp
 import pekko.stream.scaladsl.Tcp.ServerBinding
 import pekko.util.{ ByteString, OptionVal }
-import pekko.util.ccompat._
 
 /**
  * INTERNAL API
@@ -77,7 +76,6 @@ private[remote] object ArteryTcpTransport {
 /**
  * INTERNAL API
  */
-@ccompatUsedUntil213
 private[remote] class ArteryTcpTransport(
     _system: ExtendedActorSystem,
     _provider: RemoteActorRefProvider,

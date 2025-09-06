@@ -17,11 +17,9 @@ package tcp
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.actor.setup.Setup
-import pekko.util.ccompat._
 import javax.net.ssl.SSLEngine
 import javax.net.ssl.SSLSession
 
-@ccompatUsedUntil213
 trait SSLEngineProvider {
 
   def createServerSSLEngine(hostname: String, port: Int): SSLEngine

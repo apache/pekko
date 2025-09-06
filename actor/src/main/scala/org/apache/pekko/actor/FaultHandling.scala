@@ -19,7 +19,6 @@ import pekko.event.Logging
 import pekko.event.Logging.{ Error, LogEvent, LogLevel }
 import pekko.japi.Util.immutableSeq
 import pekko.util.JavaDurationConverters._
-import pekko.util.ccompat._
 
 import java.lang.reflect.InvocationTargetException
 import java.lang.{ Iterable => JIterable }
@@ -44,7 +43,6 @@ private[pekko] case object ChildNameReserved extends ChildStats
  * ChildRestartStats is the statistics kept by every parent Actor for every child Actor
  * and is used for SupervisorStrategies to know how to deal with problems that occur for the children.
  */
-@ccompatUsedUntil213
 final case class ChildRestartStats(
     child: ActorRef,
     var maxNrOfRetriesCount: Int = 0,

@@ -32,9 +32,7 @@ import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.InternalApi
 import pekko.event.{ LogMarker, Logging, LoggingAdapter }
-import pekko.util.ccompat._
 
-@ccompatUsedUntil213
 object Serialization {
 
   /**

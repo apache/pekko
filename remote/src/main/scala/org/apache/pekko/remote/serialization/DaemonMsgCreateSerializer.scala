@@ -25,7 +25,6 @@ import pekko.remote.DaemonMsgCreate
 import pekko.remote.WireFormats.{ DaemonMsgCreateData, DeployData, PropsData }
 import pekko.routing.{ NoRouter, RouterConfig }
 import pekko.serialization.{ BaseSerializer, SerializationExtension, SerializerWithStringManifest }
-import pekko.util.ccompat._
 import pekko.util.ccompat.JavaConverters._
 
 /**
@@ -36,7 +35,6 @@ import pekko.util.ccompat.JavaConverters._
  *
  * INTERNAL API
  */
-@ccompatUsedUntil213
 private[pekko] final class DaemonMsgCreateSerializer(val system: ExtendedActorSystem) extends BaseSerializer {
   import Deploy.NoDispatcherGiven
   import ProtobufSerializer.deserializeActorRef

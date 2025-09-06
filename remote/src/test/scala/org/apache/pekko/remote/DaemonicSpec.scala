@@ -20,10 +20,8 @@ import com.typesafe.config.ConfigFactory
 import org.apache.pekko
 import pekko.actor.{ ActorSystem, Address }
 import pekko.testkit._
-import pekko.util.ccompat._
 import pekko.util.ccompat.JavaConverters._
 
-@ccompatUsedUntil213
 class DaemonicSpec extends PekkoSpec {
 
   "Remoting configured with daemonic = on" must {
