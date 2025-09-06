@@ -532,10 +532,12 @@ object ByteString {
 
       builder.sizeHint(nByteStrings)
 
-      for (_ <- 0 until nByteStrings) {
+      var i = 0
+      while (i < nByteStrings) {
         val bs = ByteString1.readFromInputStream(is)
         builder += bs
         length += bs.length
+        i += 1
       }
 
       new ByteStrings(builder.result(), length)
