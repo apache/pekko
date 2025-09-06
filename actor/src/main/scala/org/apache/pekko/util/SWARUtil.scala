@@ -29,13 +29,14 @@ import org.apache.pekko.annotation.InternalApi
 @InternalApi
 private[util] object SWARUtil {
 
-  val (longBeArrayView, longBeArrayViewSupported) = try {
-    (MethodHandles.byteArrayViewVarHandle(
-      classOf[Array[Long]], java.nio.ByteOrder.BIG_ENDIAN),
-    true)
-  } catch {
-    case _: Throwable => (null, false)
-  }
+  val (longBeArrayView, longBeArrayViewSupported) =
+    try {
+      (MethodHandles.byteArrayViewVarHandle(
+          classOf[Array[Long]], java.nio.ByteOrder.BIG_ENDIAN),
+        true)
+    } catch {
+      case _: Throwable => (null, false)
+    }
 
   /**
    * Compiles given byte into a long pattern suitable for SWAR operations.
@@ -82,13 +83,13 @@ private[util] object SWARUtil {
       longBeArrayView.get(array, index)
     } else {
       (array(index).toLong & 0xFF) << 56 |
-        (array(index + 1).toLong & 0xFF) << 48 |
-        (array(index + 2).toLong & 0xFF) << 40 |
-        (array(index + 3).toLong & 0xFF) << 32 |
-        (array(index + 4).toLong & 0xFF) << 24 |
-        (array(index + 5).toLong & 0xFF) << 16 |
-        (array(index + 6).toLong & 0xFF) << 8 |
-        (array(index + 7).toLong & 0xFF)
+      (array(index + 1).toLong & 0xFF) << 48 |
+      (array(index + 2).toLong & 0xFF) << 40 |
+      (array(index + 3).toLong & 0xFF) << 32 |
+      (array(index + 4).toLong & 0xFF) << 24 |
+      (array(index + 5).toLong & 0xFF) << 16 |
+      (array(index + 6).toLong & 0xFF) << 8 |
+      (array(index + 7).toLong & 0xFF)
     }
   }
 }
