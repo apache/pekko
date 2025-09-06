@@ -17,12 +17,10 @@ import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.util.ccompat._
 
 /**
  * INTERNAL API
  */
-@ccompatUsedUntil213
 private[cluster] object Reachability {
   val empty = new Reachability(Vector.empty, Map.empty)
 

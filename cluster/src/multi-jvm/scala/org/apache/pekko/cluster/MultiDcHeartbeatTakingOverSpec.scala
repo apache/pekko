@@ -26,9 +26,7 @@ import pekko.annotation.InternalApi
 import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.testkit._
-import pekko.util.ccompat._
 
-@ccompatUsedUntil213
 object MultiDcHeartbeatTakingOverSpecMultiJvmSpec extends MultiNodeConfig {
   val first = role("first") //   alpha
   val second = role("second") // alpha

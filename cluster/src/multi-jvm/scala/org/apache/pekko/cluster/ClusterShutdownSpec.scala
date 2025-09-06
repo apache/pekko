@@ -16,7 +16,6 @@ package org.apache.pekko.cluster
 import org.apache.pekko
 import pekko.cluster.MemberStatus.Removed
 import pekko.remote.testkit.MultiNodeConfig
-import pekko.util.ccompat._
 import org.scalatest.concurrent.Eventually
 
 import scala.concurrent.duration._
@@ -35,7 +34,6 @@ class ClusterShutdownSpecMultiJvmNode2 extends ClusterShutdownSpec
 class ClusterShutdownSpecMultiJvmNode3 extends ClusterShutdownSpec
 class ClusterShutdownSpecMultiJvmNode4 extends ClusterShutdownSpec
 
-@ccompatUsedUntil213
 abstract class ClusterShutdownSpec extends MultiNodeClusterSpec(ClusterShutdownSpec) with Eventually {
 
   import ClusterShutdownSpec._

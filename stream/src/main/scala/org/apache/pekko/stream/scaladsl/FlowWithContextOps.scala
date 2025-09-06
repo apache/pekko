@@ -26,13 +26,11 @@ import pekko.event.{ LogMarker, LoggingAdapter, MarkerLoggingAdapter }
 import pekko.stream._
 import pekko.stream.impl.Throttle
 import pekko.util.ConstantFun
-import pekko.util.ccompat._
 
 /**
  * Shared stream operations for [[FlowWithContext]] and [[SourceWithContext]] that automatically propagate a context
  * element with each data element.
  */
-@ccompatUsedUntil213
 trait FlowWithContextOps[+Out, +Ctx, +Mat] {
   type ReprMat[+O, +C, +M] <: FlowWithContextOps[O, C, M] {
     type ReprMat[+OO, +CC, +MatMat] = FlowWithContextOps.this.ReprMat[OO, CC, MatMat]

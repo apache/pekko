@@ -31,14 +31,12 @@ import pekko.persistence.serialization._
 import pekko.persistence.snapshot._
 import pekko.serialization.SerializationExtension
 import pekko.util.ByteString.UTF_8
-import pekko.util.ccompat._
 
 /**
  * INTERNAL API
  *
  * Local filesystem backed snapshot store.
  */
-@ccompatUsedUntil213
 private[persistence] class LocalSnapshotStore(config: Config) extends SnapshotStore with ActorLogging {
   private val FilenamePattern = """^snapshot-(.+)-(\d+)-(\d+)""".r
   private val persistenceIdStartIdx = 9 // Persistence ID starts after the "snapshot-" substring

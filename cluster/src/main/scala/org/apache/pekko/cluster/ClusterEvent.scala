@@ -27,7 +27,6 @@ import pekko.cluster.ClusterSettings.DataCenter
 import pekko.cluster.MemberStatus._
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.event.EventStream
-import pekko.util.ccompat._
 import pekko.util.ccompat.JavaConverters._
 
 /**
@@ -411,7 +410,6 @@ object ClusterEvent {
    * The nodes that have seen current version of the Gossip.
    */
   @InternalApi
-  @ccompatUsedUntil213
   private[cluster] final case class SeenChanged(convergence: Boolean, seenBy: Set[Address]) extends ClusterDomainEvent
 
   /**

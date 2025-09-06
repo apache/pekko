@@ -38,7 +38,6 @@ import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
 import pekko.util.OptionConverters._
 import pekko.util.ccompat.JavaConverters._
-import pekko.util.ccompat._
 
 import org.reactivestreams.{ Publisher, Subscriber }
 
@@ -828,7 +827,6 @@ object Source {
  * A `Source` is a set of stream processing steps that has one open output and an attached input.
  * Can be used as a `Publisher`
  */
-@ccompatUsedUntil213
 final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[SourceShape[Out], Mat] {
 
   import org.apache.pekko.util.ccompat.JavaConverters._

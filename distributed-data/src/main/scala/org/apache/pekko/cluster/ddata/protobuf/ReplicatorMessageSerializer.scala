@@ -41,13 +41,11 @@ import pekko.serialization.BaseSerializer
 import pekko.serialization.Serialization
 import pekko.serialization.SerializerWithStringManifest
 import pekko.util.{ ByteString => PekkoByteString }
-import pekko.util.ccompat._
 import pekko.util.ccompat.JavaConverters._
 
 /**
  * INTERNAL API
  */
-@ccompatUsedUntil213
 @InternalApi
 private[pekko] object ReplicatorMessageSerializer {
 

@@ -22,9 +22,7 @@ import pekko.actor.Cancellable
 import pekko.actor.DeadLetterSuppression
 import pekko.annotation.InternalApi
 import pekko.persistence.serialization.Message
-import pekko.util.ccompat._
 
-@ccompatUsedUntil213
 object AtLeastOnceDelivery {
 
   /**

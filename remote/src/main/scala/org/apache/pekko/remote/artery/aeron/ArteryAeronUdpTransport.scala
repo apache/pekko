@@ -57,12 +57,10 @@ import pekko.stream.scaladsl.Flow
 import pekko.stream.scaladsl.Keep
 import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.Source
-import pekko.util.ccompat._
 
 /**
  * INTERNAL API
  */
-@ccompatUsedUntil213
 private[remote] class ArteryAeronUdpTransport(_system: ExtendedActorSystem, _provider: RemoteActorRefProvider)
     extends ArteryTransport(_system, _provider) {
   import AeronSource.AeronLifecycle

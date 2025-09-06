@@ -30,9 +30,7 @@ import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.testkit.MultiNodeSpec
 import pekko.remote.transport.ThrottlerTransportAdapter.Direction
 import pekko.testkit._
-import pekko.util.ccompat._
 
-@ccompatUsedUntil213
 object RestartNode3MultiJvmSpec extends MultiNodeConfig {
   val first = role("first")
   val second = role("second")

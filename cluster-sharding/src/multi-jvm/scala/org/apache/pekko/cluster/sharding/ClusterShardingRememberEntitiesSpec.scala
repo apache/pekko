@@ -22,9 +22,7 @@ import pekko.actor._
 import pekko.cluster.{ Cluster, MemberStatus }
 import pekko.testkit._
 import pekko.remote.testkit.MultiNodeSpec
-import pekko.util.ccompat._
 
-@ccompatUsedUntil213
 object ClusterShardingRememberEntitiesSpec {
 
   val extractEntityId: ShardRegion.ExtractEntityId = {

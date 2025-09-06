@@ -28,13 +28,11 @@ import pekko.cluster.pubsub.protobuf.msg.{ DistributedPubSubMessages => dm }
 import pekko.protobufv3.internal.{ ByteString, MessageLite }
 import pekko.remote.ByteStringUtils
 import pekko.serialization._
-import pekko.util.ccompat._
 import pekko.util.ccompat.JavaConverters._
 
 /**
  * INTERNAL API: Protobuf serializer of DistributedPubSubMediator messages.
  */
-@ccompatUsedUntil213
 private[pekko] class DistributedPubSubMessageSerializer(val system: ExtendedActorSystem)
     extends SerializerWithStringManifest
     with BaseSerializer {

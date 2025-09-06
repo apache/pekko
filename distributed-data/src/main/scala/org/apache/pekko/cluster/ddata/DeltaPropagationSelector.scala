@@ -21,13 +21,11 @@ import pekko.cluster.UniqueAddress
 import pekko.cluster.ddata.Key.KeyId
 import pekko.cluster.ddata.Replicator.Internal.DeltaPropagation
 import pekko.cluster.ddata.Replicator.Internal.DeltaPropagation.NoDeltaPlaceholder
-import pekko.util.ccompat._
 
 /**
  * INTERNAL API: Used by the Replicator actor.
  * Extracted to separate trait to make it easy to test.
  */
-@ccompatUsedUntil213
 @InternalApi
 private[pekko] trait DeltaPropagationSelector {
 

@@ -41,13 +41,11 @@ import pekko.protobufv3.internal.MessageLite
 import pekko.serialization.BaseSerializer
 import pekko.serialization.Serialization
 import pekko.serialization.SerializerWithStringManifest
-import pekko.util.ccompat._
 import pekko.util.ccompat.JavaConverters._
 
 /**
  * INTERNAL API: Protobuf serializer of ClusterSharding messages.
  */
-@ccompatUsedUntil213
 private[pekko] class ClusterShardingMessageSerializer(val system: ExtendedActorSystem)
     extends SerializerWithStringManifest
     with BaseSerializer {

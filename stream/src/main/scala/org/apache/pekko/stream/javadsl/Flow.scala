@@ -40,7 +40,6 @@ import pekko.util.JavaDurationConverters._
 import pekko.util.OptionConverters._
 import pekko.util.Timeout
 import pekko.util.unused
-import pekko.util.ccompat._
 import org.reactivestreams.Processor
 
 object Flow {
@@ -366,7 +365,6 @@ object Flow {
 /**
  * A `Flow` is a set of stream processing steps that has one open input and one open output.
  */
-@ccompatUsedUntil213
 final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Graph[FlowShape[In, Out], Mat] {
   import org.apache.pekko.util.ccompat.JavaConverters._
 

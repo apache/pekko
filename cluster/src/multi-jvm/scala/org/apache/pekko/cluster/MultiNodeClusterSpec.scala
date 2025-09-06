@@ -35,9 +35,7 @@ import pekko.remote.testkit.{ MultiNodeSpec, STMultiNodeSpec }
 import pekko.serialization.jackson.CborSerializable
 import pekko.testkit._
 import pekko.testkit.TestEvent._
-import pekko.util.ccompat._
 
-@ccompatUsedUntil213
 object MultiNodeClusterSpec {
 
   def clusterConfigWithFailureDetectorPuppet: Config =

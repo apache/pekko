@@ -19,7 +19,6 @@ package org.apache.pekko.stream.javadsl
 
 import org.apache.pekko
 import pekko.japi.function
-import pekko.util.ccompat.ccompatUsedUntil213
 
 import java.util.Collections
 import scala.annotation.unchecked.uncheckedVariance
@@ -29,7 +28,6 @@ import scala.annotation.unchecked.uncheckedVariance
  *
  * @since 1.2.0
  */
-@ccompatUsedUntil213
 @FunctionalInterface
 trait StatefulMapConcatAccumulator[-In, Out] extends function.Function[In, java.lang.Iterable[Out]] {
 

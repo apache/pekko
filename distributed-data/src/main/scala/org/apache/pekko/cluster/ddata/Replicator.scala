@@ -69,9 +69,7 @@ import pekko.serialization.SerializationExtension
 import pekko.util.ByteString
 import pekko.util.Helpers.toRootLowerCase
 import pekko.util.JavaDurationConverters._
-import pekko.util.ccompat._
 
-@ccompatUsedUntil213
 object ReplicatorSettings {
 
   /**
