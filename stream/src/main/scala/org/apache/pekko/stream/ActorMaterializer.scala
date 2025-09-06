@@ -352,7 +352,7 @@ final class ActorMaterializerSettings @InternalApi private (
    * INTERNAL API
    */
   @InternalApi
-  private[pekko] def toAttributes: Attributes =
+  private[pekko] lazy val toAttributes: Attributes =
     Attributes(
       // these are the core stream/materializer settings, ad hoc handling of defaults for the stage specific ones
       // for stream refs and io live with the respective stages
@@ -368,7 +368,6 @@ final class ActorMaterializerSettings @InternalApi private (
       ActorAttributes.FuzzingMode(fuzzingMode) ::
       ActorAttributes.MaxFixedBufferSize(maxFixedBufferSize) ::
       ActorAttributes.SyncProcessingLimit(syncProcessingLimit) ::
-
       Nil)
 
   override def toString: String =
