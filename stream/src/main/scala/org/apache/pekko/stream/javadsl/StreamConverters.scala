@@ -184,7 +184,7 @@ object StreamConverters {
    * Java 8 ``Stream`` throws exception in case reactive stream failed.
    *
    * Be aware that Java ``Stream`` blocks current thread while waiting on next element from downstream.
-   * As it is interacting wit blocking API the implementation runs on a separate dispatcher
+   * As it is interacting with blocking API the implementation runs on a separate dispatcher
    * configured through the ``pekko.stream.blocking-io-dispatcher``.
    */
   def asJavaStream[T](): Sink[T, java.util.stream.Stream[T]] = new Sink(scaladsl.StreamConverters.asJavaStream())
