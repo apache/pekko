@@ -153,3 +153,8 @@ ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.dispatch.Th
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.dispatch.ThreadPoolConfig.copy")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.dispatch.ThreadPoolConfig.this")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.dispatch.ThreadPoolConfig#ThreadPoolExecutorServiceFactory.this")
+ProblemFilters.exclude[ReversedMissingMethodProblem]("org.apache.pekko.event.LoggingBus.org$apache$pekko$event$LoggingBus$_setter_$org$apache$pekko$event$LoggingBus$$guard_=")
+ProblemFilters.exclude[ReversedMissingMethodProblem]("org.apache.pekko.event.LoggingBus.org$apache$pekko$event$LoggingBus$$guard")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.util.ReentrantGuard")
+
+

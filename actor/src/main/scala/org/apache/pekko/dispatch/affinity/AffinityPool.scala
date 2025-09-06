@@ -18,8 +18,7 @@ import java.util.Collections
 import java.util.concurrent._
 import java.util.concurrent.TimeUnit.MICROSECONDS
 import java.util.concurrent.atomic.AtomicReference
-import java.util.concurrent.locks.LockSupport
-
+import java.util.concurrent.locks.{ LockSupport, ReentrantLock }
 import scala.annotation.{ switch, tailrec }
 import scala.collection.{ immutable, mutable }
 
@@ -29,7 +28,7 @@ import org.apache.pekko
 import pekko.annotation.{ ApiMayChange, InternalApi }
 import pekko.dispatch._
 import pekko.event.Logging
-import pekko.util.{ ImmutableIntMap, ReentrantGuard }
+import pekko.util.ImmutableIntMap
 import pekko.util.Helpers.Requiring
 
 @InternalApi
@@ -140,7 +139,7 @@ private[pekko] class AffinityPool(
   // adding a worker. We want the creation of the worker, addition
   // to the set and starting to worker to be an atomic action. Using
   // a concurrent set would not give us that
-  private val bookKeepingLock = new ReentrantGuard()
+  private val bookKeepingLock = new ReentrantLock()
 
   // condition used for awaiting termination
   private val terminationCondition = bookKeepingLock.newCondition()
@@ -151,15 +150,19 @@ private[pekko] class AffinityPool(
   private[this] final val workQueues = Array.fill(parallelism)(new BoundedAffinityTaskQueue(affinityGroupSize))
   private[this] final val workers = mutable.Set[AffinityPoolWorker]()
 
-  def start(): this.type =
-    bookKeepingLock.withGuard {
+  def start(): this.type = {
+    bookKeepingLock.lock()
+    try {
       if (poolState == Uninitialized) {
         poolState = Initializing
         workQueues.foreach(q => addWorker(workers, q))
         poolState = Running
       }
       this
+    } finally {
+      bookKeepingLock.unlock()
     }
+  }
 
   // WARNING: Only call while holding the bookKeepingLock
   private def addWorker(workers: mutable.Set[AffinityPoolWorker], q: BoundedAffinityTaskQueue): Unit = {
@@ -181,8 +184,9 @@ private[pekko] class AffinityPool(
    * responsible for adding one more worker to compensate for its
    * own termination
    */
-  private def onWorkerExit(w: AffinityPoolWorker, abruptTermination: Boolean): Unit =
-    bookKeepingLock.withGuard {
+  private def onWorkerExit(w: AffinityPoolWorker, abruptTermination: Boolean): Unit = {
+    bookKeepingLock.lock()
+    try {
       workers.remove(w)
       if (abruptTermination && poolState == Running)
         addWorker(workers, w.q)
@@ -190,7 +194,10 @@ private[pekko] class AffinityPool(
         poolState = ShutDown // transition to shutdown and try to transition to termination
         attemptPoolTermination()
       }
+    } finally {
+      bookKeepingLock.unlock()
     }
+  }
 
   override def execute(command: Runnable): Unit = {
     val queue = workQueues(queueSelector.getQueue(command, parallelism)) // Will throw NPE if command is null
@@ -207,9 +214,12 @@ private[pekko] class AffinityPool(
       else awaitTermination(terminationCondition.awaitNanos(nanos))
     }
 
-    bookKeepingLock.withGuard {
+    bookKeepingLock.lock()
+    try {
       // need to hold the lock to avoid monitor exception
       awaitTermination(unit.toNanos(timeout))
+    } finally {
+      bookKeepingLock.unlock()
     }
   }
 
@@ -220,22 +230,30 @@ private[pekko] class AffinityPool(
       terminationCondition.signalAll()
     }
 
-  override def shutdownNow(): java.util.List[Runnable] =
-    bookKeepingLock.withGuard {
+  override def shutdownNow(): java.util.List[Runnable] = {
+    bookKeepingLock.lock()
+    try {
       poolState = ShutDown
       workers.foreach(_.stop())
       attemptPoolTermination()
       // like in the FJ executor, we do not provide facility to obtain tasks that were in queue
       Collections.emptyList[Runnable]()
+    } finally {
+      bookKeepingLock.unlock()
     }
+  }
 
-  override def shutdown(): Unit =
-    bookKeepingLock.withGuard {
+  override def shutdown(): Unit = {
+    bookKeepingLock.lock()
+    try {
       poolState = ShuttingDown
       // interrupts only idle workers.. so others can process their queues
       workers.foreach(_.stopIfIdle())
       attemptPoolTermination()
+    } finally {
+      bookKeepingLock.unlock()
     }
+  }
 
   override def isShutdown: Boolean = poolState >= ShutDown
 
