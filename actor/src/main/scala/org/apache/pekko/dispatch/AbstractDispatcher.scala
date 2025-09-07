@@ -28,7 +28,7 @@ import pekko.dispatch.affinity.AffinityPoolConfigurator
 import pekko.dispatch.sysmsg._
 import pekko.event.EventStream
 import pekko.event.Logging.{ emptyMDC, Debug, Error, LogEventException, Warning }
-import pekko.util.{ unused, Index }
+import pekko.util.{ unused, Index, JavaVersion }
 
 import com.typesafe.config.Config
 
@@ -471,42 +471,49 @@ final class VirtualThreadExecutorConfigurator(config: Config, prerequisites: Dis
 trait ThreadPoolExecutorServiceFactoryProvider extends ExecutorServiceFactoryProvider {
   def threadPoolConfig: ThreadPoolConfig
   def createExecutorServiceFactory(id: String, threadFactory: ThreadFactory): ExecutorServiceFactory = {
-    class ThreadPoolExecutorServiceFactory(threadFactory: ThreadFactory) extends ExecutorServiceFactory {
+
+    object ThreadPoolExecutorServiceFactory extends ExecutorServiceFactory {
       def createExecutorService: ExecutorService = {
+        val tf = threadFactory match {
+          case m: MonitorableThreadFactory => m.withName(m.name + "-" + id)
+          case _                           => threadFactory
+        }
+        val poolThreadFactory = tf match {
+          case m: MonitorableThreadFactory if isVirtualized => m.withName(m.name + "-" + "CarrierThread")
+          case _                                            => tf
+        }
+
         val config = threadPoolConfig
-        val service: ThreadPoolExecutor = new ThreadPoolExecutor(
+        val pool = new ThreadPoolExecutor(
           config.corePoolSize,
           config.maxPoolSize,
           config.threadTimeout.length,
           config.threadTimeout.unit,
           config.queueFactory(),
-          threadFactory,
+          poolThreadFactory,
           config.rejectionPolicy) with LoadMetrics {
           def atFullThrottle(): Boolean = this.getActiveCount >= this.getPoolSize
         }
-        service.allowCoreThreadTimeOut(config.allowCorePoolTimeout)
-        service
-      }
-    }
+        pool.allowCoreThreadTimeOut(config.allowCorePoolTimeout)
 
-    def createExecutorServiceFactory(id: String, threadFactory: ThreadFactory): ExecutorServiceFactory = {
-      val tf = threadFactory match {
-        case m: MonitorableThreadFactory =>
-          // add the dispatcher id to the thread names
-          m.withName(m.name + "-" + id)
-        case other => other
+        if (isVirtualized) {
+          val prefixName = threadFactory match {
+            case m: MonitorableThreadFactory => m.name + "-" + id
+            case _                           => id
+          }
+          createVirtualized(tf, pool, prefixName)
+        } else pool
       }
-      new ThreadPoolExecutorServiceFactory(tf)
     }
-    createExecutorServiceFactory(id, threadFactory)
+    ThreadPoolExecutorServiceFactory
   }
 }
 
 class ThreadPoolExecutorConfigurator(config: Config, prerequisites: DispatcherPrerequisites)
     extends ExecutorServiceConfigurator(config, prerequisites)
     with ThreadPoolExecutorServiceFactoryProvider {
-
   override val threadPoolConfig: ThreadPoolConfig = createThreadPoolConfigBuilder(config, prerequisites).config
+  override val isVirtualized: Boolean = threadPoolConfig.isVirtualized && JavaVersion.majorVersion >= 21
 
   protected def createThreadPoolConfigBuilder(
       config: Config,
@@ -516,6 +523,7 @@ class ThreadPoolExecutorConfigurator(config: Config, prerequisites: DispatcherPr
       ThreadPoolConfigBuilder(ThreadPoolConfig())
         .setKeepAliveTime(config.getMillisDuration("keep-alive-time"))
         .setAllowCoreThreadTimeout(config.getBoolean("allow-core-timeout"))
+        .isVirtualized(config.getBoolean("virtualize"))
         .configure(Some(config.getInt("task-queue-size")).flatMap {
           case size if size > 0 =>
             Some(config.getString("task-queue-type"))
