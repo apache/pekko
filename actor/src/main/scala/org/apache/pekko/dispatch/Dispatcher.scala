@@ -86,7 +86,7 @@ class Dispatcher(
   protected[pekko] def systemDispatch(receiver: ActorCell, invocation: SystemMessage): Unit = {
     val mbox = receiver.mailbox
     mbox.systemEnqueue(receiver.self, invocation)
-    registerForExecution(mbox, false, true)
+    registerForExecution(mbox, hasMessageHint = false, hasSystemMessageHint = true)
   }
 
   /**

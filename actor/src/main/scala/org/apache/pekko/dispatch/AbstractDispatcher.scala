@@ -161,7 +161,7 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
    */
   final def attach(actor: ActorCell): Unit = {
     register(actor)
-    registerForExecution(actor.mailbox, false, true)
+    registerForExecution(actor.mailbox, hasMessageHint = false, hasSystemMessageHint = true)
   }
 
   /**
@@ -289,7 +289,7 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
   protected[pekko] def resume(actor: ActorCell): Unit = {
     val mbox = actor.mailbox
     if ((mbox.actor eq actor) && (mbox.dispatcher eq this) && mbox.resume())
-      registerForExecution(mbox, false, false)
+      registerForExecution(mbox, hasMessageHint = false, hasSystemMessageHint = false)
   }
 
   /**
