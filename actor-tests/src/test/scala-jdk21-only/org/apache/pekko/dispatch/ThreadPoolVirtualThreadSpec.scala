@@ -18,22 +18,19 @@
 package org.apache.pekko.dispatch
 
 import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.{ Actor, Props }
 import pekko.testkit.{ ImplicitSender, PekkoSpec }
 
-object ForkJoinPoolVirtualThreadSpec {
+object ThreadPoolVirtualThreadSpec {
   val config = ConfigFactory.parseString("""
       |custom {
       |  task-dispatcher {
       |    mailbox-type = "org.apache.pekko.dispatch.SingleConsumerOnlyUnboundedMailbox"
       |    throughput = 5
-      |    executor = "fork-join-executor"
-      |    fork-join-executor {
-      |      parallelism-factor = 2
-      |      parallelism-max = 2
-      |      parallelism-min = 2
+      |    executor = "thread-pool-executor"
+      |    thread-pool-executor {
+      |      fixed-pool-size = 4
       |      virtualize = on
       |    }
       |  }
@@ -50,17 +47,17 @@ object ForkJoinPoolVirtualThreadSpec {
 
 }
 
-class ForkJoinPoolVirtualThreadSpec extends PekkoSpec(ForkJoinPoolVirtualThreadSpec.config) with ImplicitSender {
-  import ForkJoinPoolVirtualThreadSpec._
+class ThreadPoolVirtualThreadSpec extends PekkoSpec(ThreadPoolVirtualThreadSpec.config) with ImplicitSender {
+  import ThreadPoolVirtualThreadSpec._
 
-  "PekkoForkJoinPool" must {
+  "ThreadPool" must {
 
     "support virtualization with Virtual Thread" in {
       val actor = system.actorOf(Props(new ThreadNameActor).withDispatcher("custom.task-dispatcher"))
       for (_ <- 1 to 1000) {
         actor ! "ping"
         expectMsgPF() { case name: String =>
-          name should include("ForkJoinPoolVirtualThreadSpec-custom.task-dispatcher-virtual-thread-")
+          name should include("ThreadPoolVirtualThreadSpec-custom.task-dispatcher-virtual-thread-")
         }
       }
     }
