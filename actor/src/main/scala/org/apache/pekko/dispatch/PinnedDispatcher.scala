@@ -36,7 +36,9 @@ class PinnedDispatcher(
       _id,
       Int.MaxValue,
       Duration.Zero,
-      _threadPoolConfig.copy(corePoolSize = 1, maxPoolSize = 1),
+      new ThreadPoolExecutorServiceFactoryProvider() {
+        override def threadPoolConfig: ThreadPoolConfig = _threadPoolConfig.copy(corePoolSize = 1, maxPoolSize = 1)
+      },
       _shutdownTimeout) {
 
   @volatile
