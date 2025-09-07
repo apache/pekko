@@ -13,6 +13,9 @@
 
 package org.apache.pekko.dispatch
 
+import org.apache.pekko
+import pekko.annotation.InternalApi
+
 import java.util.Collection
 import java.util.concurrent.{
   ArrayBlockingQueue,
@@ -76,8 +79,10 @@ trait ExecutorServiceFactoryProvider {
 }
 
 /**
+ * INTERNAL API
  * A small configuration DSL to create ThreadPoolExecutors that can be provided as an ExecutorServiceFactoryProvider to Dispatcher
  */
+@InternalApi
 final case class ThreadPoolConfig(
     allowCorePoolTimeout: Boolean = ThreadPoolConfig.defaultAllowCoreThreadTimeout,
     corePoolSize: Int = ThreadPoolConfig.defaultCorePoolSize,
