@@ -27,6 +27,7 @@ import scala.util.control.NonFatal
 
 @InternalApi
 private[dispatch] object VirtualThreadSupport {
+  val zero = java.lang.Long.valueOf(0L)
   private val lookup = MethodHandles.publicLookup()
 
   /**
@@ -67,7 +68,7 @@ private[dispatch] object VirtualThreadSupport {
         MethodType.methodType(ofVirtualClass, classOf[String], classOf[Long]))
       // TODO support replace scheduler when we drop Java 8 support
       val factoryMethod = lookup.findVirtual(builderClass, "factory", MethodType.methodType(classOf[ThreadFactory]))
-      builder = nameMethod.invoke(builder, prefix + "-virtual-thread-", 0L)
+      builder = nameMethod.invoke(builder, prefix + "-virtual-thread-", zero)
       factoryMethod.invoke(builder).asInstanceOf[ThreadFactory]
     } catch {
       case NonFatal(e) =>
@@ -85,7 +86,7 @@ private[dispatch] object VirtualThreadSupport {
       val ofVirtualClass = ClassLoader.getSystemClassLoader.loadClass("java.lang.Thread$Builder$OfVirtual")
       val ofVirtualMethod = classOf[Thread].getDeclaredMethod("ofVirtual")
       var builder = ofVirtualMethod.invoke(null)
-      if (executor != null) {
+      if (executor ne null) {
         val clazz = builder.getClass
         val field = clazz.getDeclaredField("scheduler")
         field.setAccessible(true)
@@ -93,7 +94,6 @@ private[dispatch] object VirtualThreadSupport {
       }
       val nameMethod = ofVirtualClass.getDeclaredMethod("name", classOf[String], classOf[Long])
       val factoryMethod = builderClass.getDeclaredMethod("factory")
-      val zero = java.lang.Long.valueOf(0L)
       builder = nameMethod.invoke(builder, prefix + "-virtual-thread-", zero)
       factoryMethod.invoke(builder).asInstanceOf[ThreadFactory]
     } catch {
