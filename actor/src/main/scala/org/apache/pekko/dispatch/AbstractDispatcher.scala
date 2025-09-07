@@ -23,7 +23,7 @@ import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.annotation.InternalStableApi
+import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.dispatch.affinity.AffinityPoolConfigurator
 import pekko.dispatch.sysmsg._
 import pekko.event.EventStream
@@ -464,10 +464,49 @@ final class VirtualThreadExecutorConfigurator(config: Config, prerequisites: Dis
   }
 }
 
-class ThreadPoolExecutorConfigurator(config: Config, prerequisites: DispatcherPrerequisites)
-    extends ExecutorServiceConfigurator(config, prerequisites) {
+/**
+ * INTERNAL API
+ */
+@InternalApi
+trait ThreadPoolExecutorServiceFactoryProvider extends ExecutorServiceFactoryProvider {
+  def threadPoolConfig: ThreadPoolConfig
+  def createExecutorServiceFactory(id: String, threadFactory: ThreadFactory): ExecutorServiceFactory = {
+    class ThreadPoolExecutorServiceFactory(threadFactory: ThreadFactory) extends ExecutorServiceFactory {
+      def createExecutorService: ExecutorService = {
+        val config = threadPoolConfig
+        val service: ThreadPoolExecutor = new ThreadPoolExecutor(
+          config.corePoolSize,
+          config.maxPoolSize,
+          config.threadTimeout.length,
+          config.threadTimeout.unit,
+          config.queueFactory(),
+          threadFactory,
+          config.rejectionPolicy) with LoadMetrics {
+          def atFullThrottle(): Boolean = this.getActiveCount >= this.getPoolSize
+        }
+        service.allowCoreThreadTimeOut(config.allowCorePoolTimeout)
+        service
+      }
+    }
 
-  val threadPoolConfig: ThreadPoolConfig = createThreadPoolConfigBuilder(config, prerequisites).config
+    def createExecutorServiceFactory(id: String, threadFactory: ThreadFactory): ExecutorServiceFactory = {
+      val tf = threadFactory match {
+        case m: MonitorableThreadFactory =>
+          // add the dispatcher id to the thread names
+          m.withName(m.name + "-" + id)
+        case other => other
+      }
+      new ThreadPoolExecutorServiceFactory(tf)
+    }
+    createExecutorServiceFactory(id, threadFactory)
+  }
+}
+
+class ThreadPoolExecutorConfigurator(config: Config, prerequisites: DispatcherPrerequisites)
+    extends ExecutorServiceConfigurator(config, prerequisites)
+    with ThreadPoolExecutorServiceFactoryProvider {
+
+  override val threadPoolConfig: ThreadPoolConfig = createThreadPoolConfigBuilder(config, prerequisites).config
 
   protected def createThreadPoolConfigBuilder(
       config: Config,
@@ -505,9 +544,6 @@ class ThreadPoolExecutorConfigurator(config: Config, prerequisites: DispatcherPr
     else
       builder.setFixedPoolSize(config.getInt("fixed-pool-size"))
   }
-
-  def createExecutorServiceFactory(id: String, threadFactory: ThreadFactory): ExecutorServiceFactory =
-    threadPoolConfig.createExecutorServiceFactory(id, threadFactory)
 }
 
 class DefaultExecutorServiceConfigurator(

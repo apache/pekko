@@ -13,6 +13,8 @@
 
 package org.apache.pekko.dispatch
 
+import org.apache.pekko.annotation.InternalApi
+
 import java.util.Collection
 import java.util.concurrent.{
   ArrayBlockingQueue,
@@ -30,7 +32,6 @@ import java.util.concurrent.{
   TimeUnit
 }
 import java.util.concurrent.atomic.{ AtomicLong, AtomicReference }
-
 import scala.concurrent.{ BlockContext, CanAwait }
 import scala.concurrent.duration.Duration
 
@@ -76,16 +77,18 @@ trait ExecutorServiceFactoryProvider {
 }
 
 /**
- * A small configuration DSL to create ThreadPoolExecutors that can be provided as an ExecutorServiceFactoryProvider to Dispatcher
+ * INTERNAL API
+ *
+ * Configuration object for ThreadPoolExecutor
  */
+@InternalApi
 final case class ThreadPoolConfig(
     allowCorePoolTimeout: Boolean = ThreadPoolConfig.defaultAllowCoreThreadTimeout,
     corePoolSize: Int = ThreadPoolConfig.defaultCorePoolSize,
     maxPoolSize: Int = ThreadPoolConfig.defaultMaxPoolSize,
     threadTimeout: Duration = ThreadPoolConfig.defaultTimeout,
     queueFactory: ThreadPoolConfig.QueueFactory = ThreadPoolConfig.linkedBlockingQueue(),
-    rejectionPolicy: RejectedExecutionHandler = ThreadPoolConfig.defaultRejectionPolicy)
-    extends ExecutorServiceFactoryProvider {
+    rejectionPolicy: RejectedExecutionHandler = ThreadPoolConfig.defaultRejectionPolicy) {
   // Written explicitly to permit non-inlined defn; this is necessary for downstream instrumentation that stores extra
   // context information on the config
   @noinline
@@ -98,32 +101,6 @@ final case class ThreadPoolConfig(
       rejectionPolicy: RejectedExecutionHandler = rejectionPolicy
   ): ThreadPoolConfig =
     ThreadPoolConfig(allowCorePoolTimeout, corePoolSize, maxPoolSize, threadTimeout, queueFactory, rejectionPolicy)
-
-  class ThreadPoolExecutorServiceFactory(val threadFactory: ThreadFactory) extends ExecutorServiceFactory {
-    def createExecutorService: ExecutorService = {
-      val service: ThreadPoolExecutor = new ThreadPoolExecutor(
-        corePoolSize,
-        maxPoolSize,
-        threadTimeout.length,
-        threadTimeout.unit,
-        queueFactory(),
-        threadFactory,
-        rejectionPolicy) with LoadMetrics {
-        def atFullThrottle(): Boolean = this.getActiveCount >= this.getPoolSize
-      }
-      service.allowCoreThreadTimeOut(allowCorePoolTimeout)
-      service
-    }
-  }
-  def createExecutorServiceFactory(id: String, threadFactory: ThreadFactory): ExecutorServiceFactory = {
-    val tf = threadFactory match {
-      case m: MonitorableThreadFactory =>
-        // add the dispatcher id to the thread names
-        m.withName(m.name + "-" + id)
-      case other => other
-    }
-    new ThreadPoolExecutorServiceFactory(tf)
-  }
 }
 
 /**
