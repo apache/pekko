@@ -16,4 +16,6 @@
 # under the License.
 
 # Remove deprecated method in Scheduler
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.compat.PartialFunction")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.compat.PartialFunction$")
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.util.ccompat.ccompatUsedUntil213")
