@@ -16,7 +16,7 @@ package org.apache.pekko.util
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.locks.ReentrantLock
 
-@deprecated("Use java.util.concurrent.locks.ReentrantLock directly, will be removed in Pekko 2.0.0", "1.2.0")
+@deprecated("Use java.util.concurrent.locks.ReentrantLock directly, will be removed in Pekko 2.0.0", "1.2.1")
 final class ReentrantGuard extends ReentrantLock {
 
   final def withGuard[T](body: => T): T = {
