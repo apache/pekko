@@ -14,16 +14,6 @@
 package org.apache.pekko.util
 
 import java.util.concurrent.atomic.AtomicBoolean
-import java.util.concurrent.locks.ReentrantLock
-
-final class ReentrantGuard extends ReentrantLock {
-
-  final def withGuard[T](body: => T): T = {
-    lock()
-    try body
-    finally unlock()
-  }
-}
 
 /**
  * An atomic switch that can be either on or off
