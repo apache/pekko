@@ -16,13 +16,11 @@ package org.apache.pekko.event
 import java.util.concurrent.TimeoutException
 import java.util.concurrent.atomic.AtomicInteger
 
-import scala.annotation.implicitNotFound
+import scala.annotation.{ implicitNotFound, nowarn }
 import scala.collection.immutable
 import scala.concurrent.Await
 import scala.language.existentials
 import scala.util.control.{ NoStackTrace, NonFatal }
-
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.{ ConfigurationException, PekkoException }
@@ -50,6 +48,7 @@ trait LoggingBus extends ActorEventBus {
 
   import Logging._
 
+  @nowarn("msg=deprecated")
   private val guard = new ReentrantGuard
   private var loggers = Seq.empty[ActorRef]
   @volatile private var _logLevel: LogLevel = _
