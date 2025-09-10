@@ -25,7 +25,7 @@ import scala.concurrent.ExecutionContext
 import scala.util.Try
 import scala.util.control.NonFatal
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 import org.apache.pekko
 import pekko.actor._

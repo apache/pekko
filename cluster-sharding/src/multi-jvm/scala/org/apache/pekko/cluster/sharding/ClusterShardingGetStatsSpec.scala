@@ -21,7 +21,7 @@ import pekko.cluster.Cluster
 import pekko.cluster.MemberStatus
 import pekko.testkit.TestDuration
 import pekko.testkit.TestProbe
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 object ClusterShardingGetStatsSpec {
   import MultiNodeClusterShardingSpec.PingPongActor

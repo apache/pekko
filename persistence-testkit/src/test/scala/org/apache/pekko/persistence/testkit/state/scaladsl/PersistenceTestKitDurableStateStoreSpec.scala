@@ -24,7 +24,7 @@ import pekko.persistence.testkit.PersistenceTestKitDurableStateStorePlugin
 import pekko.stream.scaladsl.Sink
 import pekko.stream.testkit.scaladsl.TestSink
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
 object PersistenceTestKitDurableStateStoreSpec {

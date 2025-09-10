@@ -13,7 +13,7 @@
 
 package org.apache.pekko.coordination.lease
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 object LeaseSettings {
   def apply(config: Config, leaseName: String, ownerName: String): LeaseSettings = {

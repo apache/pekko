@@ -16,8 +16,8 @@ package org.apache.pekko.routing
 import scala.collection.immutable
 
 import scala.annotation.nowarn
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.Config
+import org.ekrich.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor.ActorContext
@@ -132,7 +132,7 @@ final case class BalancingPool(
         // use the user defined 'pool-dispatcher' config as fallback, if any
         if (systemConfig.hasPath(deployDispatcherConfigPath))
           systemConfig.getConfig(deployDispatcherConfigPath)
-        else ConfigFactory.empty)
+        else ConfigFactory.empty())
 
       dispatchers.registerConfigurator(
         dispatcherId,

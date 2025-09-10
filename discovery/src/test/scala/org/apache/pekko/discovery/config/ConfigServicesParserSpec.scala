@@ -15,7 +15,7 @@ package org.apache.pekko.discovery.config
 
 import scala.collection.immutable
 
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 

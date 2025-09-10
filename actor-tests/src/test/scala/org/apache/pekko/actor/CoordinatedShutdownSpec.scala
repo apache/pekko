@@ -23,8 +23,8 @@ import pekko.testkit.PekkoSpec
 import pekko.testkit.EventFilter
 import pekko.testkit.TestKit
 import pekko.testkit.TestProbe
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.Config
+import org.ekrich.config.ConfigFactory
 
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeoutException

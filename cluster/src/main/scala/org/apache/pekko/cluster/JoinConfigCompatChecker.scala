@@ -15,7 +15,7 @@ package org.apache.pekko.cluster
 
 import scala.collection.{ immutable => im }
 
-import com.typesafe.config.{ Config, ConfigFactory, ConfigValue }
+import org.ekrich.config.{ Config, ConfigFactory, ConfigValue }
 
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
@@ -49,7 +49,7 @@ object JoinConfigCompatChecker {
    * @param toCheck - the Config instance to be checked
    */
   def exists(requiredKeys: im.Seq[String], toCheck: Config): ConfigValidation = {
-    val allKeys = toCheck.entrySet().asScala.map(_.getKey)
+    val allKeys = toCheck.entrySet.asScala.map(_.getKey)
     // return all not found required keys
     val result =
       requiredKeys.collect {
@@ -101,7 +101,7 @@ object JoinConfigCompatChecker {
    * INTERNAL API
    * Builds a new Config object containing only the required entries defined by `requiredKeys`
    *
-   * This method is used from the joining side to prepare the [[com.typesafe.config.Config]] instance that will be sent over the wire.
+   * This method is used from the joining side to prepare the [[org.ekrich.config.Config]] instance that will be sent over the wire.
    * We don't send the full config to avoid unnecessary data transfer, but also to avoid leaking any sensitive
    * information that users may have added to their configuration.
    */
@@ -136,7 +136,7 @@ object JoinConfigCompatChecker {
    */
   @InternalApi
   private[cluster] def removeSensitiveKeys(config: Config, clusterSettings: ClusterSettings): im.Seq[String] = {
-    val existingKeys = config.entrySet().asScala.map(_.getKey).to(im.Seq)
+    val existingKeys = config.entrySet.asScala.map(_.getKey).to(im.Seq)
     removeSensitiveKeys(existingKeys, clusterSettings)
   }
 

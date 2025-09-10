@@ -16,7 +16,7 @@ package org.apache.pekko.actor.testkit.typed.scaladsl
 import scala.annotation.varargs
 import scala.concurrent.duration.{ Duration, FiniteDuration }
 
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
 import pekko.actor.typed.ActorSystem

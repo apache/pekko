@@ -17,7 +17,7 @@
 
 package org.apache.pekko.persistence.serialization
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.persistence.fsm.PersistentFSM.PersistentFSMSnapshot

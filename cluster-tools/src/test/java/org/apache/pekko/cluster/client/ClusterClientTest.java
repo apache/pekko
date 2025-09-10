@@ -13,12 +13,12 @@
 
 package org.apache.pekko.cluster.client;
 
-import com.typesafe.config.ConfigFactory;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import org.apache.pekko.actor.*;
 import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.ekrich.config.ConfigFactory;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;

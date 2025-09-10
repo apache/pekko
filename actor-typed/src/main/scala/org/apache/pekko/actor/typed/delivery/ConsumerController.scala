@@ -17,7 +17,7 @@ import java.time.{ Duration => JavaDuration }
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 import org.apache.pekko
 import pekko.actor.DeadLetterSuppression

@@ -12,7 +12,7 @@
  */
 
 import org.apache.pekko.persistence.{ PersistentActor, RuntimePluginConfig }
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 object PersistenceMultiDocSpec {
 

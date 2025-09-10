@@ -19,7 +19,7 @@ import pekko.actor.typed.ActorRef
 import pekko.actor.typed.Behavior
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.RecoveryCompleted
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
 object PrimitiveStateSpec {

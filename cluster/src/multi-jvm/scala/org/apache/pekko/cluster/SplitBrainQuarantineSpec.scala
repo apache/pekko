@@ -21,7 +21,7 @@ import pekko.remote.artery.ArterySettings
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.transport.ThrottlerTransportAdapter
 import pekko.testkit.LongRunningTest
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 import scala.concurrent.duration._
 

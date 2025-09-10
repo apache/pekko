@@ -21,7 +21,7 @@ import pekko.cluster.sharding.typed.scaladsl.Entity
 import pekko.cluster.typed.Cluster
 import pekko.cluster.typed.Join
 import pekko.persistence.typed.PersistenceId
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
 object HelloWorldEventSourcedEntityExampleSpec {

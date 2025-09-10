@@ -17,7 +17,7 @@ import java.lang.management.ManagementFactory
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import javax.management.InstanceNotFoundException
 import javax.management.ObjectName
 

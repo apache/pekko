@@ -30,7 +30,7 @@ import scala.util.Try
 import scala.util.control.NonFatal
 
 import com.google.common.jimfs.{ Configuration, Jimfs }
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.matchers._
 
 import org.apache.pekko

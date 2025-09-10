@@ -23,8 +23,8 @@ import pekko.persistence.journal.SteppingInmemJournal
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.RecoveryFailed
 import pekko.persistence.typed.internal.JournalFailureException
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.Config
+import org.ekrich.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import java.util.concurrent.atomic.AtomicInteger

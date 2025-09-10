@@ -24,7 +24,7 @@ import org.apache.pekko.stream._
 import scala.concurrent.Future
 import org.apache.pekko.testkit.TestProbe
 import org.apache.pekko.actor.{ Actor, ActorLogging, ActorRef, Props }
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.apache.pekko.util.Timeout
 
 import scala.concurrent.ExecutionContext

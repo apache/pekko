@@ -23,7 +23,7 @@ import scala.collection.immutable
 import scala.concurrent.duration._
 import scala.util.{ Failure, Success, Try }
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorLogging }

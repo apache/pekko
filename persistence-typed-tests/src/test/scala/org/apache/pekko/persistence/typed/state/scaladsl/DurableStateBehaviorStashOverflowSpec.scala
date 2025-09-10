@@ -23,7 +23,7 @@ import pekko.persistence.state.DurableStateStoreProvider
 import pekko.persistence.state.scaladsl.{ DurableStateStore, DurableStateUpdateStore, GetObjectResult }
 import pekko.persistence.state.javadsl.{ DurableStateStore => JDurableStateStore }
 import pekko.persistence.typed.PersistenceId
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import scala.concurrent.{ Future, Promise }

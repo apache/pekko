@@ -18,7 +18,7 @@ import java.lang.{ Iterable => JIterable }
 import scala.collection.immutable
 import scala.util.control.NoStackTrace
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 import org.apache.pekko
 import pekko.actor._

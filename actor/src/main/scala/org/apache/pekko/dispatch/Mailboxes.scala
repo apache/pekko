@@ -21,7 +21,7 @@ import scala.annotation.tailrec
 import scala.concurrent.duration.Duration
 import scala.util.control.NonFatal
 
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
 import pekko.ConfigurationException
@@ -248,7 +248,7 @@ private[pekko] class Mailboxes(
                     case exception =>
                       throw new IllegalArgumentException(
                         s"Cannot instantiate MailboxType [$fqcn], defined in [$id], make sure it has a public" +
-                        " constructor with [org.apache.pekko.actor.ActorSystem.Settings, com.typesafe.config.Config] parameters",
+                        " constructor with [org.apache.pekko.actor.ActorSystem.Settings, org.ekrich.config.Config] parameters",
                         exception)
                   }
                   .get

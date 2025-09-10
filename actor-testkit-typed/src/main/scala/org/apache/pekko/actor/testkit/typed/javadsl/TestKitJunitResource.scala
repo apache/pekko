@@ -15,8 +15,8 @@ package org.apache.pekko.actor.testkit.typed.javadsl
 
 import java.time.Duration
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.Config
+import org.ekrich.config.ConfigFactory
 import org.junit.Rule
 import org.junit.rules.ExternalResource
 

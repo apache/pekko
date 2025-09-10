@@ -14,7 +14,7 @@
 package org.apache.pekko.cluster.sharding.typed
 
 import scala.concurrent.duration._
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.concurrent.ScalaFutures
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.TestProbe

@@ -13,7 +13,7 @@
 
 package org.apache.pekko.cluster.sharding.typed
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.concurrent.ScalaFutures
 
 import org.apache.pekko

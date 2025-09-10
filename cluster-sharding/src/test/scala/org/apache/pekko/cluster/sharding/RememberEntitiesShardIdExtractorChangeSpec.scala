@@ -25,7 +25,7 @@ import pekko.persistence.PersistentActor
 import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
 import pekko.testkit.TestProbe
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 import scala.concurrent.Await
 import scala.concurrent.duration._

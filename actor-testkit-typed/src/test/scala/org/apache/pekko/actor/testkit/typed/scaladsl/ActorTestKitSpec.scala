@@ -15,7 +15,7 @@ package org.apache.pekko.actor.testkit.typed.scaladsl
 
 import scala.concurrent.Promise
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.{ AnyWordSpec, AnyWordSpecLike }

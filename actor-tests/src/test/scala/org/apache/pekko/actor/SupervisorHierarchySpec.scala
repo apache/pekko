@@ -26,7 +26,7 @@ import scala.util.control.NoStackTrace
 
 import SupervisorStrategy.{ Directive, Restart, Resume, Stop }
 import scala.annotation.nowarn
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
 import pekko.actor.SupervisorStrategy.seqThrowable2Decider

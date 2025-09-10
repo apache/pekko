@@ -15,9 +15,9 @@ package org.apache.pekko.actor;
 
 import static org.junit.Assert.*;
 
-import com.typesafe.config.ConfigFactory;
 import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
+import org.ekrich.config.ConfigFactory;
 import org.junit.*;
 import org.scalatestplus.junit.JUnitSuite;
 

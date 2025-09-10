@@ -18,7 +18,7 @@ import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor._

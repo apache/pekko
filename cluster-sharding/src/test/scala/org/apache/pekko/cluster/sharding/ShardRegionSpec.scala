@@ -15,7 +15,7 @@ package org.apache.pekko.cluster.sharding
 
 import java.io.File
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.apache.commons.io.FileUtils
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorLogging, ActorRef, ActorSystem, PoisonPill, Props }

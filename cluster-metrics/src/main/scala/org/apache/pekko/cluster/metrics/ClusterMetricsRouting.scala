@@ -21,7 +21,7 @@ import scala.annotation.tailrec
 import scala.collection.immutable
 
 import scala.annotation.nowarn
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 import org.apache.pekko
 import pekko.actor.Actor
@@ -420,7 +420,7 @@ object MetricsSelector {
               throw new IllegalArgumentException(
                 s"Cannot instantiate metrics-selector [$fqn], " +
                 "make sure it extends [org.apache.pekko.cluster.routing.MetricsSelector] and " +
-                "has constructor with [com.typesafe.config.Config] parameter",
+                "has constructor with [org.ekrich.config.Config] parameter",
                 exception)
           }
           .get

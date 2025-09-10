@@ -21,7 +21,7 @@ import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
-import com.typesafe.config._
+import org.ekrich.config._
 import org.apache.pekko
 import pekko.actor._
 import pekko.event.AddressTerminatedTopic

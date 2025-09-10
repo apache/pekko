@@ -21,7 +21,7 @@ import pekko.actor.typed.Behavior
 import pekko.actor.typed.Dispatchers
 import pekko.actor.typed.MailboxSelector
 import pekko.actor.typed.scaladsl.Behaviors
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
 class MailboxDocSpec

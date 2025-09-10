@@ -20,7 +20,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.language.implicitConversions
 
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 import org.scalatest.{ Canceled, Outcome, Suite }
 import org.scalatest.exceptions.TestCanceledException
 

@@ -23,7 +23,7 @@ import pekko.cluster.MemberStatus
 import pekko.cluster.pubsub.{ DistributedPubSub, DistributedPubSubMediator }
 import pekko.cluster.typed.{ Cluster, Join }
 import pekko.event.Logging
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 
 object Ontology {
 

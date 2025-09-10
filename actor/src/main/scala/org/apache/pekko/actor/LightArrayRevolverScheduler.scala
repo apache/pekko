@@ -24,7 +24,7 @@ import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 import org.apache.pekko
 import pekko.actor.Scheduler.AtomicCancellable
 import pekko.dispatch.AbstractNodeQueue

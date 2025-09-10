@@ -29,8 +29,8 @@ import pekko.persistence.typed.JournalPersistRejected
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.RecoveryCompleted
 import pekko.serialization.jackson.CborSerializable
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.Config
+import org.ekrich.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import scala.collection.immutable

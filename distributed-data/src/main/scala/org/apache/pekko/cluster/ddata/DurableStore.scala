@@ -21,7 +21,7 @@ import scala.concurrent.duration._
 import scala.util.Try
 import scala.util.control.NonFatal
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 import org.lmdbjava.Dbi
 import org.lmdbjava.DbiFlags
 import org.lmdbjava.Env

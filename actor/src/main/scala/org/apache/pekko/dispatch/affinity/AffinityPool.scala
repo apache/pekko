@@ -22,7 +22,7 @@ import java.util.concurrent.locks.{ LockSupport, ReentrantLock }
 import scala.annotation.{ switch, tailrec }
 import scala.collection.{ immutable, mutable }
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 import org.apache.pekko
 import pekko.annotation.{ ApiMayChange, InternalApi }

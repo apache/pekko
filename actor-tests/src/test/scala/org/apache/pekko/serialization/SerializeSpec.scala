@@ -22,7 +22,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import SerializationTests._
-import com.typesafe.config._
+import org.ekrich.config._
 import test.org.apache.pekko.serialization.NoVerification
 
 import org.apache.pekko

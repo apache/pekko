@@ -24,8 +24,6 @@ import static org.apache.pekko.actor.SupervisorStrategy.restart;
 import static org.apache.pekko.actor.SupervisorStrategy.stop;
 import static org.apache.pekko.pattern.Patterns.pipe;
 
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +33,8 @@ import org.apache.pekko.actor.*;
 import org.apache.pekko.event.LoggingReceive;
 import org.apache.pekko.japi.pf.DeciderBuilder;
 import org.apache.pekko.pattern.Patterns;
+import org.ekrich.config.Config;
+import org.ekrich.config.ConfigFactory;
 
 // #imports
 

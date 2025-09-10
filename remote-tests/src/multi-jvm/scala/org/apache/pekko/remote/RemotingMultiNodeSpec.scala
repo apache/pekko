@@ -13,7 +13,7 @@
 
 package org.apache.pekko.remote
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.Suite
 
 import org.apache.pekko

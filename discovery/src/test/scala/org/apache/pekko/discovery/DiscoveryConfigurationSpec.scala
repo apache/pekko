@@ -16,7 +16,7 @@ package org.apache.pekko.discovery
 import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 

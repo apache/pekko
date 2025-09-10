@@ -19,7 +19,7 @@ import pekko.cluster.ddata.SelfUniqueAddress
 import pekko.cluster.ddata.typed.scaladsl.DistributedData
 import pekko.cluster.ddata.typed.scaladsl.Replicator
 import pekko.actor.testkit.typed.scaladsl._
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
 // #sample

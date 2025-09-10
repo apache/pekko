@@ -26,7 +26,7 @@ import pekko.persistence.testkit.PersistenceTestKitSnapshotPlugin
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.RecoveryCompleted
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior.CommandHandler
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import java.util.UUID

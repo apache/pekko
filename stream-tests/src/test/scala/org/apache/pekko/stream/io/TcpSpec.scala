@@ -57,8 +57,8 @@ import pekko.util.ByteString
 import org.scalatest.concurrent.PatienceConfiguration
 import org.scalatest.concurrent.PatienceConfiguration.Timeout
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.Config
+import org.ekrich.config.ConfigFactory
 
 @nowarn("msg=never used")
 class NonResolvingDnsActor(cache: SimpleDnsCache, config: Config) extends Actor {

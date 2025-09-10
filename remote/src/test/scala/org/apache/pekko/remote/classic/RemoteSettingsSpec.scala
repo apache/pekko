@@ -14,7 +14,7 @@
 package org.apache.pekko.remote.classic
 
 import scala.annotation.nowarn
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 

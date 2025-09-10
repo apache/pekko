@@ -13,10 +13,10 @@
 
 package jdocs.persistence;
 
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import org.apache.pekko.persistence.AbstractPersistentActor;
 import org.apache.pekko.persistence.RuntimePluginConfig;
+import org.ekrich.config.Config;
+import org.ekrich.config.ConfigFactory;
 
 public class PersistenceMultiDocTest {
 

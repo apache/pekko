@@ -18,7 +18,7 @@ import java.util.{ Date => SerializableDummy }
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor.{ ActorSystem, BootstrapSetup, ExtendedActorSystem }

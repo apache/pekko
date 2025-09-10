@@ -17,7 +17,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import scala.annotation.nowarn
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
 import pekko.actor._

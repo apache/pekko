@@ -14,8 +14,8 @@
 package org.apache.pekko.cluster.sharding.passivation
 
 import org.apache.pekko.cluster.sharding.ShardRegion
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.Config
+import org.ekrich.config.ConfigFactory
 
 import scala.concurrent.duration._
 

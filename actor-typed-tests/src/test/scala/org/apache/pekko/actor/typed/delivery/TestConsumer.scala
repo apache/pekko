@@ -17,8 +17,8 @@ import java.nio.charset.StandardCharsets
 import scala.concurrent.duration.Duration
 import scala.concurrent.duration.FiniteDuration
 import scala.concurrent.duration._
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.Config
+import org.ekrich.config.ConfigFactory
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.Behavior

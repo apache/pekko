@@ -16,7 +16,7 @@ package org.apache.pekko.persistence.typed.internal
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.FiniteDuration
 import scala.util.control.NonFatal
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.apache.pekko
 import pekko.util.Helpers.ConfigOps
 import pekko.actor.Cancellable
@@ -77,9 +77,9 @@ private[pekko] final class BehaviorSetup[C, E, S](
   val persistence: Persistence = Persistence(context.system.toClassic)
 
   val journal: ClassicActorRef = persistence
-    .journalFor(settings.journalPluginId, settings.journalPluginConfig.getOrElse(ConfigFactory.empty))
+    .journalFor(settings.journalPluginId, settings.journalPluginConfig.getOrElse(ConfigFactory.empty()))
   val snapshotStore: ClassicActorRef = persistence
-    .snapshotStoreFor(settings.snapshotPluginId, settings.snapshotPluginConfig.getOrElse(ConfigFactory.empty))
+    .snapshotStoreFor(settings.snapshotPluginId, settings.snapshotPluginConfig.getOrElse(ConfigFactory.empty()))
 
   val isSnapshotOptional: Boolean =
     Persistence(context.system.classicSystem).configFor(snapshotStore).getBoolean("snapshot-is-optional")
@@ -112,7 +112,7 @@ private[pekko] final class BehaviorSetup[C, E, S](
   private var recoveryTimer: OptionVal[Cancellable] = OptionVal.None
 
   val recoveryEventTimeout: FiniteDuration = persistence
-    .journalConfigFor(settings.journalPluginId, settings.journalPluginConfig.getOrElse(ConfigFactory.empty))
+    .journalConfigFor(settings.journalPluginId, settings.journalPluginConfig.getOrElse(ConfigFactory.empty()))
     .getMillisDuration("recovery-event-timeout")
 
   def startRecoveryTimer(snapshot: Boolean): Unit = {

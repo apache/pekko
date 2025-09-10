@@ -25,7 +25,7 @@ import scala.util.{ Failure, Success }
 import scala.util.control.NonFatal
 
 import scala.annotation.nowarn
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 import org.apache.pekko
 import pekko.Done
@@ -930,7 +930,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
             throw new IllegalArgumentException(
               s"Cannot instantiate transport [$fqn]. " +
               "Make sure it extends [org.apache.pekko.remote.transport.Transport] and has constructor with " +
-              "[org.apache.pekko.actor.ExtendedActorSystem] and [com.typesafe.config.Config] parameters",
+              "[org.apache.pekko.actor.ExtendedActorSystem] and [org.ekrich.config.Config] parameters",
               exception)
 
         }

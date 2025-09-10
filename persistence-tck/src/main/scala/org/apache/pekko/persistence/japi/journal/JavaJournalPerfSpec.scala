@@ -13,7 +13,7 @@
 
 package org.apache.pekko.persistence.japi.journal
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 import org.scalactic.source.Position
 import org.scalatest.Informer
 

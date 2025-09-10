@@ -22,7 +22,7 @@ import pekko.actor.typed.Behavior
 import pekko.actor.typed.scaladsl.adapter._
 import pekko.persistence.journal.SteppingInmemJournal
 import pekko.persistence.typed.PersistenceId
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import scala.concurrent.duration._

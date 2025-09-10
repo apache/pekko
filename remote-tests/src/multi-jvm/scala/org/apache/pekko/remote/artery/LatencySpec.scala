@@ -20,7 +20,7 @@ import java.util.concurrent.locks.LockSupport
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.HdrHistogram.Histogram
 
 import org.apache.pekko

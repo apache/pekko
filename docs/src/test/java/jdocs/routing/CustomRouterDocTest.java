@@ -16,7 +16,7 @@ package jdocs.routing;
 import static org.apache.pekko.japi.Util.immutableIndexedSeq;
 import static org.junit.Assert.*;
 
-import com.typesafe.config.ConfigFactory;
+import org.ekrich.config.ConfigFactory;
 import docs.routing.CustomRouterDocSpec;
 import java.util.ArrayList;
 import java.util.List;

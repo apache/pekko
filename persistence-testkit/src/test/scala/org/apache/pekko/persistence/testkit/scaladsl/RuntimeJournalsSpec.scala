@@ -17,7 +17,7 @@
 
 package org.apache.pekko.persistence.testkit.scaladsl
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.testkit.typed.scaladsl.LogCapturing

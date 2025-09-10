@@ -20,7 +20,7 @@ import scala.concurrent.{ Await, Awaitable }
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
-import com.typesafe.config.{ Config, ConfigFactory, ConfigObject }
+import org.ekrich.config.{ Config, ConfigFactory, ConfigObject }
 import io.netty.channel.ChannelException
 import language.implicitConversions
 import org.apache.pekko
@@ -83,7 +83,7 @@ abstract class MultiNodeConfig {
         pekko.remote.log-remote-lifecycle-events = on
         """)
     else
-      ConfigFactory.empty
+      ConfigFactory.empty()
 
   /**
    * Construct a RoleName and return it, to be used as an identifier in the
@@ -120,7 +120,7 @@ abstract class MultiNodeConfig {
            pekko.remote.classic.netty.tcp.applied-adapters = [trttl, gremlin]
            pekko.remote.artery.advanced.test-mode = on
         """)
-      else ConfigFactory.empty
+      else ConfigFactory.empty()
 
     val configs = _nodeConf
       .get(myself)

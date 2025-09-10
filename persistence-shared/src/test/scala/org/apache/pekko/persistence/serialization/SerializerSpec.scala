@@ -19,7 +19,7 @@ import java.util.UUID
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
-import com.typesafe.config._
+import org.ekrich.config._
 import org.apache.commons.codec.binary.Hex.{ decodeHex, encodeHex }
 
 import org.apache.pekko
@@ -76,7 +76,7 @@ object SerializerSpecConfigs {
     """)
 
   def config(configs: String*): Config =
-    configs.foldLeft(ConfigFactory.empty)((r, c) => r.withFallback(ConfigFactory.parseString(c)))
+    configs.foldLeft(ConfigFactory.empty())((r, c) => r.withFallback(ConfigFactory.parseString(c)))
 
 }
 

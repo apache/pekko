@@ -25,7 +25,7 @@ import pekko.cluster.MultiNodeClusterSpec
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.testkit.STMultiNodeSpec
 import pekko.testkit._
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 import scala.concurrent.duration._
 

@@ -26,7 +26,7 @@ import pekko.testkit.{ ExplicitlyTriggeredScheduler, PekkoSpec }
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
-import com.typesafe.config.{ ConfigFactory, ConfigValueFactory }
+import org.ekrich.config.{ ConfigFactory, ConfigValueFactory }
 
 class AggregateWithBoundarySpec extends StreamSpec {
 

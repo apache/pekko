@@ -171,7 +171,7 @@ configuration, or the mailbox configuration.
 @@@ note
 
 Make sure to include a constructor which takes
-@apidoc[actor.ActorSystem.Settings](actor.ActorSystem.Settings) and [com.typesafe.config.Config](https://lightbend.github.io/config/latest/api/index.html?com/typesafe/config/Config.html)
+@apidoc[actor.ActorSystem.Settings](actor.ActorSystem.Settings) and [org.ekrich.config.Config](https://lightbend.github.io/config/latest/api/index.html?com/typesafe/config/Config.html)
 arguments, as this constructor is invoked reflectively to construct your
 mailbox type. The config passed in as second argument is that section from
 the configuration which describes the dispatcher or mailbox setting using

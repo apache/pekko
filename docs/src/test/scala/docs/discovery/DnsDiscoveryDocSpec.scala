@@ -14,7 +14,7 @@
 package docs.discovery
 
 import org.apache.pekko.testkit.PekkoSpec
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 import scala.concurrent.duration._
 import scala.concurrent.Future

@@ -15,7 +15,7 @@ package org.apache.pekko.cluster.sharding.typed.internal
 
 import scala.collection.{ immutable => im }
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 import org.apache.pekko
 import pekko.annotation.InternalApi

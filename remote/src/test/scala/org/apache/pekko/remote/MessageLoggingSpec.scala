@@ -14,7 +14,7 @@
 package org.apache.pekko.remote
 
 import MessageLoggingSpec._
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorIdentity, ActorSystem, ExtendedActorSystem, Identify, Props, RootActorPath }

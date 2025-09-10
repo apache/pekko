@@ -966,7 +966,7 @@ Scala
 Java
 :  @@snip [CustomRouterDocTest.java](/docs/src/test/java/jdocs/routing/CustomRouterDocTest.java) { #usage-1 }
 
-Note that we added a constructor in `RedundancyGroup` that takes a @javadoc[Config](com.typesafe.config.Config) parameter.
+Note that we added a constructor in `RedundancyGroup` that takes a @scaladoc[Config](org.ekrich.config.Config) parameter.
 That makes it possible to define it in configuration.
 
 Scala
@@ -977,7 +977,7 @@ Java
 
 Note the fully qualified class name in the `router` property. The router class must extend
 `org.apache.pekko.routing.RouterConfig` (`Pool`, `Group` or `CustomRouterConfig`) and have 
-constructor with one `com.typesafe.config.Config` parameter.
+constructor with one `org.ekrich.config.Config` parameter.
 The deployment section of the configuration is passed to the constructor.
 
 Scala

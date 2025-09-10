@@ -14,8 +14,8 @@
 package org.apache.pekko.remote.serialization
 
 import java.nio.charset.StandardCharsets
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.Config
+import org.ekrich.config.ConfigFactory
 import org.apache.pekko
 import pekko.actor.ActorIdentity
 import pekko.actor.ActorRef

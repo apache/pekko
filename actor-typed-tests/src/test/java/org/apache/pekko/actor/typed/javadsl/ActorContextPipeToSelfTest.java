@@ -16,7 +16,6 @@ package org.apache.pekko.actor.typed.javadsl;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.*;
 
-import com.typesafe.config.ConfigFactory;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -27,6 +26,7 @@ import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.Props;
+import org.ekrich.config.ConfigFactory;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;

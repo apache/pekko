@@ -16,7 +16,6 @@ package jdocs.ddata;
 import static org.apache.pekko.cluster.ddata.Replicator.*;
 import static org.junit.Assert.assertEquals;
 
-import com.typesafe.config.ConfigFactory;
 import docs.ddata.DistributedDataDocSpec;
 import java.math.BigInteger;
 import java.time.Duration;
@@ -29,6 +28,7 @@ import org.apache.pekko.actor.*;
 import org.apache.pekko.cluster.ddata.*;
 import org.apache.pekko.japi.pf.ReceiveBuilder;
 import org.apache.pekko.testkit.javadsl.TestKit;
+import org.ekrich.config.ConfigFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

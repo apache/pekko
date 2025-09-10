@@ -20,8 +20,8 @@ import scala.collection.immutable
 import scala.concurrent.Future
 import scala.util.Try
 import scala.util.control.NonFatal
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.Config
+import org.ekrich.config.ConfigFactory
 import pekko.annotation.ApiMayChange
 import pekko.annotation.InternalApi
 import pekko.event.Logging

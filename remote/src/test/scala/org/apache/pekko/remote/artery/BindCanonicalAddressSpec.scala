@@ -18,7 +18,7 @@ import java.net.InetAddress
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 

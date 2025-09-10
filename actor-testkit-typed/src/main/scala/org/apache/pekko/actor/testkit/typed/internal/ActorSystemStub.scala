@@ -16,7 +16,7 @@ package org.apache.pekko.actor.testkit.typed.internal
 import java.util.concurrent.{ CompletionStage, ThreadFactory }
 import scala.concurrent._
 import scala.annotation.nowarn
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.apache.pekko

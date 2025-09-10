@@ -16,7 +16,7 @@ package org.apache.pekko.actor
 import scala.annotation.tailrec
 import scala.concurrent.duration.Duration
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 import org.agrona.concurrent.ManyToOneConcurrentArrayQueue
 
 import org.apache.pekko

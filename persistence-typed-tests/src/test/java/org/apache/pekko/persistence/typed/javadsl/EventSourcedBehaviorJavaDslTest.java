@@ -21,7 +21,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.google.common.collect.Sets;
-import com.typesafe.config.ConfigFactory;
 import java.time.Duration;
 import java.util.*;
 import org.apache.pekko.Done;
@@ -44,6 +43,7 @@ import org.apache.pekko.persistence.testkit.query.javadsl.PersistenceTestKitRead
 import org.apache.pekko.persistence.typed.*;
 import org.apache.pekko.serialization.jackson.CborSerializable;
 import org.apache.pekko.stream.javadsl.Sink;
+import org.ekrich.config.ConfigFactory;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;

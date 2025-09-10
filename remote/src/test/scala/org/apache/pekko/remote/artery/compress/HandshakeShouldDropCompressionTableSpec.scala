@@ -16,7 +16,7 @@ package org.apache.pekko.remote.artery.compress
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.BeforeAndAfter
 
 import org.apache.pekko

@@ -30,7 +30,7 @@ import scala.concurrent.duration._
 import pekko.Done
 import pekko.actor.typed.Behavior
 import pekko.actor.typed.scaladsl.Behaviors
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 object PersistenceQueryDocSpec {
 

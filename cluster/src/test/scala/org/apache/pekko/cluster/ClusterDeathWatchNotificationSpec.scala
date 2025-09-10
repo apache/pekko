@@ -18,7 +18,7 @@ import scala.concurrent.duration._
 import org.apache.pekko
 import pekko.actor._
 import pekko.testkit._
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 import pekko.remote.artery.ArteryMultiNodeSpec
 import pekko.remote.artery.ArterySpecSupport

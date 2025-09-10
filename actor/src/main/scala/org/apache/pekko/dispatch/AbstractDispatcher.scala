@@ -30,7 +30,7 @@ import pekko.event.EventStream
 import pekko.event.Logging.{ emptyMDC, Debug, Error, LogEventException, Warning }
 import pekko.util.{ unused, Index, JavaVersion }
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 final case class Envelope private (message: Any, sender: ActorRef) {
 

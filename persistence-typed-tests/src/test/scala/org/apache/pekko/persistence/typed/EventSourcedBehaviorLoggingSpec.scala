@@ -25,7 +25,7 @@ import pekko.persistence.typed.EventSourcedBehaviorLoggingSpec.ChattyEventSourci
 import pekko.persistence.typed.scaladsl.Effect
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior
 import pekko.serialization.jackson.CborSerializable
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import pekko.Done

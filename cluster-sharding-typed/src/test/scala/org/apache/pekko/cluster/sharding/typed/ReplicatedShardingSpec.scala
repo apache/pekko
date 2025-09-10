@@ -35,13 +35,13 @@ import pekko.persistence.typed.scaladsl.ReplicatedEventSourcing
 import pekko.persistence.typed.scaladsl.Effect
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior
 import pekko.serialization.jackson.CborSerializable
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 import pekko.actor.typed.scaladsl.LoggerOps
 import pekko.cluster.sharding.typed.ReplicatedShardingSpec.MyReplicatedIntSet
 import pekko.cluster.sharding.typed.ReplicatedShardingSpec.MyReplicatedStringSet
 import pekko.persistence.typed.ReplicationId
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 import org.scalatest.time.Span
 
 object ReplicatedShardingSpec {

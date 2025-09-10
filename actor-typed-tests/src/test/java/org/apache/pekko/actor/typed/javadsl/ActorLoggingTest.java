@@ -13,7 +13,6 @@
 
 package org.apache.pekko.actor.typed.javadsl;
 
-import com.typesafe.config.ConfigFactory;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -24,6 +23,7 @@ import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.event.Logging;
 import org.apache.pekko.japi.pf.PFBuilder;
 import org.apache.pekko.testkit.CustomEventFilter;
+import org.ekrich.config.ConfigFactory;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;

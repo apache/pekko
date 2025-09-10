@@ -21,7 +21,7 @@ import scala.annotation.nowarn
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.apache.pekko
 import pekko.{ Done, NotUsed }
 import pekko.actor._

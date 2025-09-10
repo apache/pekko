@@ -16,7 +16,7 @@ package org.apache.pekko.persistence
 import scala.concurrent.duration._
 import scala.runtime.BoxedUnit
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor._

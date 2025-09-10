@@ -18,8 +18,6 @@ import static jdocs.stream.TwitterStreamQuickstartDocTest.Model.tweets;
 import static junit.framework.TestCase.assertTrue;
 import static org.apache.pekko.pattern.Patterns.ask;
 
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -42,6 +40,8 @@ import org.apache.pekko.stream.javadsl.*;
 import org.apache.pekko.testkit.TestProbe;
 import org.apache.pekko.testkit.javadsl.TestKit;
 import org.apache.pekko.util.Timeout;
+import org.ekrich.config.Config;
+import org.ekrich.config.ConfigFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

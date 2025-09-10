@@ -16,8 +16,6 @@ package jdocs.org.apache.pekko.cluster.ddata.typed.javadsl;
 import static jdocs.org.apache.pekko.cluster.ddata.typed.javadsl.ReplicatorDocSample.Counter;
 import static org.junit.Assert.assertEquals;
 
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import java.time.Duration;
 import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
@@ -28,6 +26,8 @@ import org.apache.pekko.cluster.ddata.GCounterKey;
 import org.apache.pekko.cluster.ddata.Key;
 import org.apache.pekko.cluster.ddata.typed.javadsl.DistributedData;
 import org.apache.pekko.cluster.ddata.typed.javadsl.Replicator;
+import org.ekrich.config.Config;
+import org.ekrich.config.ConfigFactory;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;

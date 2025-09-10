@@ -15,7 +15,7 @@ package org.apache.pekko.osgi
 
 import java.util.{ Dictionary, Properties }
 
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 import org.osgi.framework._
 import org.osgi.service.log.LogService
 
@@ -138,8 +138,8 @@ abstract class ActorSystemActivator extends BundleActivator {
    *    the System properties.
    *
    * @param context the bundle context
-   * @return the actor system specific configuration, ConfigFactory.empty by default
+   * @return the actor system specific configuration, ConfigFactory.empty() by default
    */
-  def getActorSystemConfiguration(@unused context: BundleContext): Config = ConfigFactory.empty
+  def getActorSystemConfiguration(@unused context: BundleContext): Config = ConfigFactory.empty()
 
 }

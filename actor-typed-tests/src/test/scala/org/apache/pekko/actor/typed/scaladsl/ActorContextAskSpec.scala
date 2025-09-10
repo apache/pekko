@@ -19,7 +19,7 @@ import scala.concurrent.TimeoutException
 import scala.concurrent.duration._
 import scala.reflect.ClassTag
 import scala.util.{ Failure, Success }
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.LogCapturing

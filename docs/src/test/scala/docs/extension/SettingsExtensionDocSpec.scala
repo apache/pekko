@@ -22,7 +22,7 @@ import pekko.actor.ExtensionIdProvider
 import pekko.actor.ExtendedActorSystem
 
 import scala.concurrent.duration.Duration
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 import java.util.concurrent.TimeUnit
 
 import pekko.actor.ClassicActorSystemProvider

@@ -16,7 +16,7 @@ package org.apache.pekko.remote.routing
 import java.util.concurrent.atomic.AtomicInteger
 
 import scala.annotation.nowarn
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor.ActorCell

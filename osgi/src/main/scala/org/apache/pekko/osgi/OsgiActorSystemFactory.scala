@@ -13,7 +13,7 @@
 
 package org.apache.pekko.osgi
 
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 import org.osgi.framework.BundleContext
 
 import org.apache.pekko
@@ -27,7 +27,7 @@ import pekko.util.unused
 class OsgiActorSystemFactory(
     val context: BundleContext,
     val fallbackClassLoader: Option[ClassLoader],
-    config: Config = ConfigFactory.empty) {
+    config: Config = ConfigFactory.empty()) {
 
   /*
    * Classloader that delegates to the bundle for which the factory is creating an ActorSystem

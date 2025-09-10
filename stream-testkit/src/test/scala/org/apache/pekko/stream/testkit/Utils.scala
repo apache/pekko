@@ -19,7 +19,7 @@ import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.actor.ActorRefWithCell
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 object Utils {
 

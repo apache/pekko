@@ -21,7 +21,7 @@ import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
 import scala.annotation.nowarn
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 import org.apache.pekko
 import pekko.{ OnlyCauseStackTrace, PekkoException }
@@ -104,7 +104,7 @@ final case class HandshakeInfo(origin: Address, uid: Int, cookie: Option[String]
  *  - pluggable codecs to encode and decode Pekko PDUs
  *
  * It is not possible to load this transport dynamically using the configuration of remoting, because it does not
- * expose a constructor with [[com.typesafe.config.Config]] and [[pekko.actor.ExtendedActorSystem]] parameters.
+ * expose a constructor with [[org.ekrich.config.Config]] and [[pekko.actor.ExtendedActorSystem]] parameters.
  * This transport is instead loaded automatically by [[pekko.remote.Remoting]] to wrap all the dynamically loaded
  * transports.
  *

@@ -13,7 +13,6 @@
 
 package jdocs.persistence;
 
-import com.typesafe.config.Config;
 import java.sql.Connection;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -29,6 +28,7 @@ import org.apache.pekko.persistence.query.Offset;
 import org.apache.pekko.persistence.query.Sequence;
 import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
+import org.ekrich.config.Config;
 import org.reactivestreams.Subscriber;
 
 public class PersistenceQueryDocTest {

@@ -13,7 +13,7 @@
 
 package org.apache.pekko.cluster.pubsub
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko

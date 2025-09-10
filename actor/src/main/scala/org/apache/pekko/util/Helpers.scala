@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 import scala.annotation.tailrec
 import scala.concurrent.duration.{ Duration, FiniteDuration }
-import com.typesafe.config.{ Config, ConfigRenderOptions }
+import org.ekrich.config.{ Config, ConfigRenderOptions }
 
 object Helpers {
 
@@ -187,7 +187,7 @@ object Helpers {
      */
     def renderWithRedactions(): String = {
       val username = System.getProperty("user.name")
-      val configText = config.root.render(ConfigRenderOptions.defaults().setShowEnvVariableValues(false))
+      val configText = config.root.render(ConfigRenderOptions.defaults.setShowEnvVariableValues(false))
       configText.replace(username, "<username>")
     }
 

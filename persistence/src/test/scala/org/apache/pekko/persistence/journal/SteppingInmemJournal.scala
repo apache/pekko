@@ -18,7 +18,7 @@ import scala.concurrent.{ Await, Future, Promise }
 import scala.concurrent.duration._
 import scala.util.Try
 
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
 import pekko.actor.{ ActorRef, ActorSystem }

@@ -15,7 +15,7 @@ package org.apache.pekko.remote
 
 import java.io.NotSerializableException
 
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
 import pekko.actor.{ ActorSystem, ExtendedActorSystem, RootActorPath }

@@ -15,7 +15,7 @@ package org.apache.pekko.persistence.state
 
 import scala.reflect.ClassTag
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 import org.apache.pekko
 import pekko.actor.ActorSystem

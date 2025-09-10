@@ -19,7 +19,7 @@ import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.util.control.NonFatal
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest._
 import org.scalatest.concurrent.Eventually
 import org.scalatest.concurrent.ScalaFutures

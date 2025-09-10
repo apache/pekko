@@ -15,7 +15,7 @@ package org.apache.pekko.cluster
 
 import InternalClusterAction._
 import MemberStatus._
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import language.implicitConversions
 
 import org.apache.pekko

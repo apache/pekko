@@ -16,7 +16,7 @@ package org.apache.pekko.cluster.protobuf
 import collection.immutable.SortedSet
 
 import scala.annotation.nowarn
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor.{ Address, ExtendedActorSystem }
@@ -100,8 +100,8 @@ class ClusterMessageSerializerSpec extends PekkoSpec("pekko.actor.provider = clu
       checkSerialization(InternalClusterAction.Join(uniqueAddress, Set("dc-A"), Version("1.2.3")))
       checkSerialization(ClusterUserAction.Leave(address))
       checkSerialization(ClusterUserAction.Down(address))
-      checkSerialization(InternalClusterAction.InitJoin(ConfigFactory.empty))
-      checkSerialization(InternalClusterAction.InitJoinAck(address, CompatibleConfig(ConfigFactory.empty)))
+      checkSerialization(InternalClusterAction.InitJoin(ConfigFactory.empty()))
+      checkSerialization(InternalClusterAction.InitJoinAck(address, CompatibleConfig(ConfigFactory.empty())))
       checkSerialization(InternalClusterAction.InitJoinNack(address))
       checkSerialization(ClusterHeartbeatSender.Heartbeat(address, -1, -1))
       checkSerialization(ClusterHeartbeatSender.HeartbeatRsp(uniqueAddress, -1, -1))
@@ -143,10 +143,10 @@ class ClusterMessageSerializerSpec extends PekkoSpec("pekko.actor.provider = clu
       checkDeserializationWithManifest(ClusterUserAction.Leave(address), ClusterMessageSerializer.LeaveManifest)
       checkDeserializationWithManifest(ClusterUserAction.Down(address), ClusterMessageSerializer.DownManifest)
       checkDeserializationWithManifest(
-        InternalClusterAction.InitJoin(ConfigFactory.empty),
+        InternalClusterAction.InitJoin(ConfigFactory.empty()),
         ClusterMessageSerializer.OldInitJoinManifest)
       checkDeserializationWithManifest(
-        InternalClusterAction.InitJoinAck(address, CompatibleConfig(ConfigFactory.empty)),
+        InternalClusterAction.InitJoinAck(address, CompatibleConfig(ConfigFactory.empty())),
         ClusterMessageSerializer.OldInitJoinAckManifest)
       checkDeserializationWithManifest(
         InternalClusterAction.InitJoinNack(address),

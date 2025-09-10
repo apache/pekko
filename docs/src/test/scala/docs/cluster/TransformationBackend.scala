@@ -24,7 +24,7 @@ import org.apache.pekko.cluster.ClusterEvent.CurrentClusterState
 import org.apache.pekko.cluster.ClusterEvent.MemberUp
 import org.apache.pekko.cluster.Member
 import org.apache.pekko.cluster.MemberStatus
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 //#backend
 class TransformationBackend extends Actor {

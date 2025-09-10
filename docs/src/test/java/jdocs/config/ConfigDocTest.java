@@ -17,8 +17,8 @@ package jdocs.config;
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
+import org.ekrich.config.Config;
+import org.ekrich.config.ConfigFactory;
 
 // #imports
 import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;

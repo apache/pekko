@@ -16,7 +16,7 @@ package org.apache.pekko.cluster.metrics
 import scala.concurrent.duration.Duration
 import scala.concurrent.duration.FiniteDuration
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 import org.apache.pekko
 import pekko.util.Helpers.ConfigOps

@@ -19,7 +19,7 @@ import scala.concurrent.duration._
 import scala.reflect.ClassTag
 
 import scala.annotation.nowarn
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 import org.apache.commons.io.FileUtils
 
 import org.apache.pekko

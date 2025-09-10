@@ -26,7 +26,7 @@ import pekko.cluster.singleton.{
 import pekko.cluster.typed.internal.AdaptedClusterSingletonImpl
 import pekko.coordination.lease.LeaseUsageSettings
 import pekko.util.JavaDurationConverters._
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 object ClusterSingletonSettings {
   def apply(system: ActorSystem[_]): ClusterSingletonSettings =

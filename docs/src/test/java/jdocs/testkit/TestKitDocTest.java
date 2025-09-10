@@ -15,7 +15,6 @@ package jdocs.testkit;
 
 import static org.junit.Assert.*;
 
-import com.typesafe.config.ConfigFactory;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -40,6 +39,7 @@ import org.apache.pekko.testkit.TestActorRef;
 import org.apache.pekko.testkit.TestProbe;
 import org.apache.pekko.testkit.javadsl.EventFilter;
 import org.apache.pekko.testkit.javadsl.TestKit;
+import org.ekrich.config.ConfigFactory;
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;

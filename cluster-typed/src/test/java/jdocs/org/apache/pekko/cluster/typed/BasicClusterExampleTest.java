@@ -28,8 +28,8 @@ import org.apache.pekko.cluster.ClusterEvent;
 import org.apache.pekko.cluster.typed.*;
 // #cluster-imports
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
+import org.ekrich.config.Config;
+import org.ekrich.config.ConfigFactory;
 
 import java.util.ArrayList;
 import java.util.List;

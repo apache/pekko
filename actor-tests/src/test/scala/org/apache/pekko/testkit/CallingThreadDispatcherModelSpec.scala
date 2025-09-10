@@ -15,7 +15,7 @@ package org.apache.pekko.testkit
 
 import java.util.concurrent.atomic.AtomicInteger
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 import org.apache.pekko
 import pekko.actor.dispatch.ActorModelSpec

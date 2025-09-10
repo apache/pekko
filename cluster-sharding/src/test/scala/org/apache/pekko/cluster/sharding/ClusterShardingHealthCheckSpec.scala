@@ -17,7 +17,7 @@ import org.apache.pekko
 import pekko.testkit.PekkoSpec
 import pekko.testkit.TestProbe
 import pekko.testkit.WithLogCapturing
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.concurrent.ScalaFutures
 
 import scala.concurrent.duration._

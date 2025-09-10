@@ -19,7 +19,7 @@ import pekko.actor.testkit.typed.{ CapturedLogEvent, Effect }
 import pekko.actor.typed.receptionist.Receptionist
 import pekko.actor.typed.{ ActorRef, Behavior, Signal }
 import pekko.annotation.{ ApiMayChange, DoNotInherit }
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 import java.util.concurrent.ThreadLocalRandom
 

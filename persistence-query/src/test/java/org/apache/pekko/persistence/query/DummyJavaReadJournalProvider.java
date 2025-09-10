@@ -13,8 +13,8 @@
 
 package org.apache.pekko.persistence.query;
 
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
+import org.ekrich.config.Config;
+import org.ekrich.config.ConfigFactory;
 
 public class DummyJavaReadJournalProvider implements ReadJournalProvider {
 

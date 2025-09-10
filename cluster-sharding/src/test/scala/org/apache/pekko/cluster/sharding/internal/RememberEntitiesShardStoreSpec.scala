@@ -22,7 +22,7 @@ import pekko.cluster.sharding.ClusterShardingSettings
 import pekko.cluster.sharding.ShardRegion.ShardId
 import pekko.cluster.{ Cluster, MemberStatus }
 import pekko.testkit.{ ImplicitSender, PekkoSpec, WithLogCapturing }
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
 /**

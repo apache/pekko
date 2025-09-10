@@ -15,7 +15,7 @@ package org.apache.pekko.cluster
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.remote.testkit.MultiNodeConfig

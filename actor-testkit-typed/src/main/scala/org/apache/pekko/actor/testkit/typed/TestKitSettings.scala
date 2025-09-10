@@ -15,7 +15,7 @@ package org.apache.pekko.actor.testkit.typed
 
 import scala.concurrent.duration.{ Duration, FiniteDuration }
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 import org.apache.pekko
 import pekko.actor.typed.ActorSystem

@@ -20,7 +20,7 @@ import pekko.cluster.sharding.ShardRegion.CurrentRegions
 import pekko.cluster.{ Cluster, MemberStatus }
 import pekko.persistence.PersistentActor
 import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 
 import scala.concurrent.Await
 import scala.concurrent.duration._

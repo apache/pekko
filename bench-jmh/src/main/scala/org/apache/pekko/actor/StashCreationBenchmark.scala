@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.openjdk.jmh.annotations._
 
 import org.apache.pekko.testkit.TestProbe

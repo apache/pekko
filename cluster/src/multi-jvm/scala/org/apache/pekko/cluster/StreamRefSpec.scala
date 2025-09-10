@@ -18,7 +18,7 @@ import scala.concurrent.duration._
 import scala.util.Failure
 import scala.util.Success
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.Done

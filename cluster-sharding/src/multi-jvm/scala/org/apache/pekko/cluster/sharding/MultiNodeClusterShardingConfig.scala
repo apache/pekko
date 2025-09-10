@@ -15,7 +15,7 @@ package org.apache.pekko.cluster.sharding
 
 import java.lang.reflect.Modifier
 
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
 import pekko.cluster.MultiNodeClusterSpec
@@ -109,7 +109,7 @@ abstract class MultiNodeClusterShardingConfig(
 
   val persistenceConfig: Config =
     if (mode == ClusterShardingSettings.StateStoreModeDData && rememberEntitiesStore != ClusterShardingSettings.RememberEntitiesStoreEventsourced)
-      ConfigFactory.empty
+      ConfigFactory.empty()
     else MultiNodeClusterShardingConfig.persistenceConfig(targetDir)
 
   val common: Config =

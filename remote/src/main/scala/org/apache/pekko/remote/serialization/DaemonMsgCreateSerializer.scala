@@ -14,7 +14,7 @@
 package org.apache.pekko.remote.serialization
 
 import scala.collection.immutable
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 
 import util.{ Failure, Success }
 import org.apache.pekko
@@ -123,7 +123,7 @@ private[pekko] final class DaemonMsgCreateSerializer(val system: ExtendedActorSy
             // old wire format
             oldDeserialize(protoDeploy.getConfig, classOf[Config])
           }
-        } else ConfigFactory.empty
+        } else ConfigFactory.empty()
 
       val routerConfig =
         if (protoDeploy.hasRouterConfig) {
@@ -253,7 +253,7 @@ private[pekko] final class DaemonMsgCreateSerializer(val system: ExtendedActorSy
       case Failure(e) =>
         // Fallback to the java serializer, because some interfaces don't implement java.io.Serializable,
         // but the impl instance does. This could be optimized by adding java serializers in reference.conf:
-        // com.typesafe.config.Config
+        // org.ekrich.config.Config
         // org.apache.pekko.routing.RouterConfig
         // org.apache.pekko.actor.Scope
         serialization.deserialize(bytes, classOf[java.io.Serializable]) match {

@@ -15,7 +15,7 @@ package org.apache.pekko.persistence.query
 
 import scala.reflect.ClassTag
 
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
 import pekko.actor._
@@ -66,7 +66,7 @@ class PersistenceQuery(system: ExtendedActorSystem)
    * read journal configuration entry.
    */
   final def readJournalFor[T <: scaladsl.ReadJournal](readJournalPluginId: String): T =
-    readJournalFor(readJournalPluginId, ConfigFactory.empty)
+    readJournalFor(readJournalPluginId, ConfigFactory.empty())
 
   /**
    * Java API: Returns the [[pekko.persistence.query.javadsl.ReadJournal]] specified by the given

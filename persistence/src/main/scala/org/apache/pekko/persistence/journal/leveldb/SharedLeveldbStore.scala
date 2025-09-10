@@ -19,7 +19,7 @@ import scala.util.Success
 import scala.util.Try
 import scala.util.control.NonFatal
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 import org.apache.pekko
 import pekko.pattern.pipe

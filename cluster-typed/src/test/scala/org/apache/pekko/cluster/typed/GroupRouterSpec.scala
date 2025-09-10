@@ -25,7 +25,7 @@ import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.GroupRouter
 import pekko.actor.typed.scaladsl.Routers
 import pekko.serialization.jackson.CborSerializable
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import scala.concurrent.duration._

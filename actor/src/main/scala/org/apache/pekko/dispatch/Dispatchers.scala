@@ -17,7 +17,7 @@ import java.util.concurrent.{ ConcurrentHashMap, ThreadFactory }
 import scala.annotation.{ nowarn, tailrec }
 import scala.concurrent.ExecutionContext
 
-import com.typesafe.config.{ Config, ConfigFactory, ConfigValueType }
+import org.ekrich.config.{ Config, ConfigFactory, ConfigValueType }
 import org.apache.pekko
 import pekko.ConfigurationException
 import pekko.actor.{ ActorSystem, DynamicAccess, Scheduler }
@@ -168,12 +168,12 @@ class Dispatchers @InternalApi private[pekko] (
         val newConfigurator: MessageDispatcherConfigurator =
           if (cachingConfig.hasPath(id)) {
             val valueAtPath = cachingConfig.getValue(id)
-            valueAtPath.valueType() match {
+            valueAtPath.valueType match {
               case ConfigValueType.STRING =>
                 // a dispatcher key can be an alias of another dispatcher, if it is a string
                 // we treat that string value as the id of a dispatcher to lookup, it will be stored
                 // both under the actual id and the alias id in the 'dispatcherConfigurators' cache
-                val actualId = valueAtPath.unwrapped().asInstanceOf[String]
+                val actualId = valueAtPath.unwrapped.asInstanceOf[String]
                 logger.debug("Dispatcher id [{}] is an alias, actual dispatcher will be [{}]", id, actualId)
                 lookupConfigurator(actualId, depth + 1)
 
@@ -280,7 +280,7 @@ class Dispatchers @InternalApi private[pekko] (
             case exception =>
               throw new ConfigurationException(
                 ("Cannot instantiate MessageDispatcherConfigurator type [%s], defined in [%s], " +
-                "make sure it has constructor with [com.typesafe.config.Config] and " +
+                "make sure it has constructor with [org.ekrich.config.Config] and " +
                 "[org.apache.pekko.dispatch.DispatcherPrerequisites] parameters").format(fqn, cfg.getString("id")),
                 exception)
           }

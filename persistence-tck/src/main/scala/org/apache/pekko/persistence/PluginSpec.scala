@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 import scala.reflect.ClassTag
 
-import com.typesafe.config._
+import org.ekrich.config._
 import org.scalatest._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike

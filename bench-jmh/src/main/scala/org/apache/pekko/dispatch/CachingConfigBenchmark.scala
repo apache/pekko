@@ -15,7 +15,7 @@ package org.apache.pekko.dispatch
 
 import java.util.concurrent.TimeUnit
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.openjdk.jmh.annotations._
 
 @State(Scope.Benchmark)

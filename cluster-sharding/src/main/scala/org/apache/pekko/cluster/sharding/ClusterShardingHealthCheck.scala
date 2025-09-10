@@ -28,7 +28,7 @@ import pekko.util.JavaDurationConverters._
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 /**
  * Internal API

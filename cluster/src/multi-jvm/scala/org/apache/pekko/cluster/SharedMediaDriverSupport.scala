@@ -20,7 +20,7 @@ import java.util.function.Consumer
 import scala.annotation.tailrec
 import scala.util.control.NonFatal
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import io.aeron.CommonContext
 import io.aeron.driver.MediaDriver
 import io.aeron.driver.ThreadingMode

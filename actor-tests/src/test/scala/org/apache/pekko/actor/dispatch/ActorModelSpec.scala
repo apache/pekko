@@ -22,7 +22,7 @@ import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
 
 import scala.annotation.nowarn
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 import org.scalatest.Assertions._
 
 import org.apache.pekko

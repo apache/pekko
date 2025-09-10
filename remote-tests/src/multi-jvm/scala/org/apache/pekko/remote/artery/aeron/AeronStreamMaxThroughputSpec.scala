@@ -22,7 +22,7 @@ import scala.collection.AbstractIterator
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import io.aeron.Aeron
 import io.aeron.CncFileDescriptor
 import org.agrona.IoUtil

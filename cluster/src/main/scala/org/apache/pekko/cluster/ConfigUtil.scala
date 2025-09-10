@@ -17,7 +17,7 @@
 
 package org.apache.pekko.cluster
 
-import com.typesafe.config.{ Config, ConfigValue, ConfigValueFactory, ConfigValueType }
+import org.ekrich.config.{ Config, ConfigValue, ConfigValueFactory, ConfigValueType }
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
@@ -35,8 +35,8 @@ private[cluster] object ConfigUtil {
 
   def adaptPekkoToAkkaConfig(cfg: Config): Config = {
     import org.apache.pekko.util.ccompat.JavaConverters._
-    val innerSet = cfg.entrySet().asScala
-      .filter(e => e.getKey.startsWith("pekko.") && e.getValue.valueType() != ConfigValueType.OBJECT)
+    val innerSet = cfg.entrySet.asScala
+      .filter(e => e.getKey.startsWith("pekko.") && e.getValue.valueType != ConfigValueType.OBJECT)
       .map { entry =>
         entry.getKey.replace("pekko", "akka") -> adjustPackageNameToAkkaIfNecessary(entry.getValue)
       }
@@ -49,8 +49,8 @@ private[cluster] object ConfigUtil {
 
   def adaptAkkaToPekkoConfig(cfg: Config): Config = {
     import org.apache.pekko.util.ccompat.JavaConverters._
-    val innerSet = cfg.entrySet().asScala
-      .filter(e => e.getKey.startsWith("akka.") && e.getValue.valueType() != ConfigValueType.OBJECT)
+    val innerSet = cfg.entrySet.asScala
+      .filter(e => e.getKey.startsWith("akka.") && e.getValue.valueType != ConfigValueType.OBJECT)
       .map { entry =>
         entry.getKey.replace("akka", "pekko") -> adjustPackageNameToPekkoIfNecessary(entry.getValue)
       }
@@ -81,8 +81,8 @@ private[cluster] object ConfigUtil {
   }
 
   private def adjustPackageNameToAkkaIfNecessary(cv: ConfigValue): ConfigValue = {
-    if (cv.valueType() == ConfigValueType.STRING) {
-      val str = cv.unwrapped().toString
+    if (cv.valueType == ConfigValueType.STRING) {
+      val str = cv.unwrapped.toString
       if (str.startsWith(PekkoPrefix)) {
         ConfigValueFactory.fromAnyRef(str.replace(PekkoPrefix, AkkaPrefix))
       } else {
@@ -94,8 +94,8 @@ private[cluster] object ConfigUtil {
   }
 
   private def adjustPackageNameToPekkoIfNecessary(cv: ConfigValue): ConfigValue = {
-    if (cv.valueType() == ConfigValueType.STRING) {
-      val str = cv.unwrapped().toString
+    if (cv.valueType == ConfigValueType.STRING) {
+      val str = cv.unwrapped.toString
       if (str.startsWith(AkkaPrefix)) {
         ConfigValueFactory.fromAnyRef(str.replace(AkkaPrefix, PekkoPrefix))
       } else {

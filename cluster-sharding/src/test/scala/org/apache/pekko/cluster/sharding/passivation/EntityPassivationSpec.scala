@@ -24,8 +24,8 @@ import pekko.cluster.sharding.ShardRegion
 import pekko.testkit.WithLogCapturing
 import pekko.testkit.PekkoSpec
 import pekko.testkit.TestProbe
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.Config
+import org.ekrich.config.ConfigFactory
 import org.scalatest.concurrent.Eventually
 
 import scala.concurrent.duration._

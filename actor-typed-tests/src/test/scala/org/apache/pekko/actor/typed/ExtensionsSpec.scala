@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 import scala.concurrent.Future
 
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko

@@ -154,6 +154,8 @@ object UnidocRoot extends AutoPlugin {
         ScalaUnidoc / unidocProjectFilter := unidocRootProjectFilter(unidocRootIgnoreProjects.value),
         JavaUnidoc / unidocProjectFilter := unidocRootProjectFilter(unidocRootIgnoreProjects.value),
         Compile / doc / apiMappings ++= {
+          val sBinaryVersion = scalaBinaryVersion.value
+
           val entries: Seq[Attributed[File]] =
             (LocalProject("slf4j") / Compile / fullClasspath).value ++
             (LocalProject("persistence") / Compile / fullClasspath).value ++
@@ -172,7 +174,8 @@ object UnidocRoot extends AutoPlugin {
 
           val mappings: Seq[(File, URL)] = {
             mappingsFor("org.slf4j", List("slf4j-api"), "https://www.javadoc.io/doc/org.slf4j/slf4j-api/%s/") ++
-            mappingsFor("com.typesafe", List("config"), "https://www.javadoc.io/doc/com.typesafe/config/%s/") ++
+            mappingsFor("org.ekrich", List("sconfig"),
+              s"https://www.javadoc.io/doc/org.ekrich/sconfig_$sBinaryVersion/%s/") ++
             mappingsFor("io.aeron", List("aeron-client", "aeron-driver"),
               "https://www.javadoc.io/doc/io.aeron/aeron-all/%s/") ++
             mappingsFor("org.reactivestreams", List("reactive-streams"),

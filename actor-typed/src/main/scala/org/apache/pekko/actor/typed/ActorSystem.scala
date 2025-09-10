@@ -17,7 +17,7 @@ import java.util.concurrent.{ CompletionStage, ThreadFactory }
 
 import scala.concurrent.{ ExecutionContextExecutor, Future }
 
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 import org.slf4j.Logger
 import org.apache.pekko
 import pekko.{ actor => classic, Done }

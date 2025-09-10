@@ -15,7 +15,7 @@ package docs.coordination
 
 import scala.concurrent.Future
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 import org.apache.pekko.cluster.Cluster
 import org.apache.pekko.coordination.lease.LeaseSettings

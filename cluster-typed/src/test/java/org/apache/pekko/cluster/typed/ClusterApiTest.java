@@ -13,12 +13,12 @@
 
 package org.apache.pekko.cluster.typed;
 
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import java.util.concurrent.TimeUnit;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.cluster.ClusterEvent;
+import org.ekrich.config.Config;
+import org.ekrich.config.ConfigFactory;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
 

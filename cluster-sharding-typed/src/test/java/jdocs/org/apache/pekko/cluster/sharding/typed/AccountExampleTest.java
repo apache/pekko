@@ -19,8 +19,6 @@ import static org.apache.pekko.Done.done;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.concurrent.CompletionStage;
@@ -36,6 +34,8 @@ import org.apache.pekko.cluster.typed.Cluster;
 import org.apache.pekko.cluster.typed.Join;
 import org.apache.pekko.pattern.StatusReply;
 import org.apache.pekko.persistence.typed.PersistenceId;
+import org.ekrich.config.Config;
+import org.ekrich.config.ConfigFactory;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;

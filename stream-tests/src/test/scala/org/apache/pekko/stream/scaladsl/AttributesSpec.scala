@@ -30,7 +30,7 @@ import pekko.stream.stage._
 import pekko.stream.testkit._
 import pekko.testkit.TestKit
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 object AttributesSpec {
 

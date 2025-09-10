@@ -13,8 +13,6 @@
 
 package org.apache.pekko.cluster.sharding.typed.javadsl;
 
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import java.util.concurrent.CompletionStage;
 import org.apache.pekko.Done;
 import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
@@ -28,6 +26,8 @@ import org.apache.pekko.persistence.typed.javadsl.CommandHandler;
 import org.apache.pekko.persistence.typed.javadsl.Effect;
 import org.apache.pekko.persistence.typed.javadsl.EventHandler;
 import org.apache.pekko.persistence.typed.javadsl.EventSourcedBehavior;
+import org.ekrich.config.Config;
+import org.ekrich.config.ConfigFactory;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;

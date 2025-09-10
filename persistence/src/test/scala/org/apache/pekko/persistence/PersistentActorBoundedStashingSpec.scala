@@ -15,7 +15,7 @@ package org.apache.pekko.persistence
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 import org.scalatest.BeforeAndAfterEach
 
 import org.apache.pekko

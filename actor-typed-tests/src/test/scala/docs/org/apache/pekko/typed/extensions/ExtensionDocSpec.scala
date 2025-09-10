@@ -20,7 +20,7 @@ import pekko.actor.typed.Extension
 import pekko.actor.typed.ExtensionId
 import pekko.actor.typed.scaladsl.Behaviors
 import scala.annotation.nowarn
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 import scala.concurrent.Future
 

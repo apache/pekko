@@ -13,7 +13,7 @@
 
 package docs.persistence
 
-import com.typesafe.config._
+import org.ekrich.config._
 
 import scala.concurrent.duration._
 import org.scalatest.wordspec.AnyWordSpec

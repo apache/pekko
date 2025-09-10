@@ -31,7 +31,7 @@ import pekko.persistence.testkit.internal.InMemStorageExtension
 import pekko.persistence.testkit.query.internal.EventsByPersistenceIdStage
 import pekko.stream.scaladsl.Source
 import pekko.util.unused
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 import org.slf4j.LoggerFactory
 import pekko.persistence.Persistence
 import pekko.persistence.query.typed

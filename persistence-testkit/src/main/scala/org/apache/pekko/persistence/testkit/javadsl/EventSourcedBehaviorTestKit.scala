@@ -18,7 +18,7 @@ import java.util.{ List => JList }
 import java.util.function.{ Function => JFunction }
 
 import scala.reflect.ClassTag
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.ActorSystem

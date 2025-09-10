@@ -14,8 +14,6 @@
 package jdocs.persistence;
 
 // #plugin-imports
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +30,8 @@ import org.apache.pekko.persistence.journal.leveldb.SharedLeveldbJournal;
 import org.apache.pekko.persistence.journal.leveldb.SharedLeveldbStore;
 import org.apache.pekko.persistence.snapshot.japi.*;
 // #plugin-imports
+import org.ekrich.config.Config;
+import org.ekrich.config.ConfigFactory;
 import org.iq80.leveldb.util.FileUtils;
 import org.junit.runner.RunWith;
 import org.scalatestplus.junit.JUnitRunner;

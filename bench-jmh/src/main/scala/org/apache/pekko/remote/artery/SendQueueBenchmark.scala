@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.agrona.concurrent.ManyToOneConcurrentArrayQueue
 import org.openjdk.jmh.annotations._
 

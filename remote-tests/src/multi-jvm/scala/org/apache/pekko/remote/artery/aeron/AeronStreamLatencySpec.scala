@@ -26,7 +26,7 @@ import java.util.concurrent.locks.LockSupport
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import io.aeron.Aeron
 import io.aeron.CncFileDescriptor
 import org.HdrHistogram.Histogram

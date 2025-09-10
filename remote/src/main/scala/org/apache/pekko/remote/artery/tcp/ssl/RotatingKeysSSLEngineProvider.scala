@@ -33,7 +33,7 @@ import pekko.remote.artery.tcp.SslTransportException
 import pekko.remote.artery.tcp.ssl.RotatingKeysSSLEngineProvider.CachedContext
 import pekko.remote.artery.tcp.ssl.RotatingKeysSSLEngineProvider.ConfiguredContext
 import pekko.stream.TLSRole
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 import javax.net.ssl.KeyManager
 import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLEngine

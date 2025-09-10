@@ -254,7 +254,7 @@ object DispatcherDocSpec {
   import org.apache.pekko
   import pekko.dispatch.PriorityGenerator
   import pekko.dispatch.UnboundedStablePriorityMailbox
-  import com.typesafe.config.Config
+  import org.ekrich.config.Config
 
   // We inherit, in this case, from UnboundedStablePriorityMailbox
   // and seed it with the priority generator

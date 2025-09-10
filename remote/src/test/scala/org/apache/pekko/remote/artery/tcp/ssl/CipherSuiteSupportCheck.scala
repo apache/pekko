@@ -20,7 +20,7 @@ import pekko.actor.ActorSystem
 import pekko.actor.ExtendedActorSystem
 import pekko.event.NoMarkerLogging
 import pekko.remote.artery.tcp.SecureRandomFactory
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 import javax.net.ssl.SSLEngine
 
 import scala.util.Try
