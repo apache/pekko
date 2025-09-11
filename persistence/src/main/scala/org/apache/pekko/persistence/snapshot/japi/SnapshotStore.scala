@@ -17,7 +17,6 @@ import scala.concurrent.Future
 
 import org.apache.pekko
 import pekko.dispatch.ExecutionContexts
-import pekko.japi.Util._
 import pekko.persistence._
 import pekko.persistence.snapshot.{ SnapshotStore => SSnapshotStore }
 import pekko.util.ConstantFun.scalaAnyToUnit
@@ -30,8 +29,10 @@ abstract class SnapshotStore extends SSnapshotStore with SnapshotStorePlugin {
 
   override final def loadAsync(
       persistenceId: String,
-      criteria: SnapshotSelectionCriteria): Future[Option[SelectedSnapshot]] =
-    doLoadAsync(persistenceId, criteria).asScala.map(option)(ExecutionContexts.parasitic)
+      criteria: SnapshotSelectionCriteria): Future[Option[SelectedSnapshot]] = {
+    import pekko.util.OptionConverters._
+    doLoadAsync(persistenceId, criteria).asScala.map(_.toScala)(ExecutionContexts.parasitic)
+  }
 
   override final def saveAsync(metadata: SnapshotMetadata, snapshot: Any): Future[Unit] =
     doSaveAsync(metadata, snapshot).asScala.map(scalaAnyToUnit)(ExecutionContexts.parasitic)
