@@ -17,7 +17,6 @@ import scala.concurrent.Future
 
 import org.apache.pekko
 import pekko.dispatch.ExecutionContexts
-import pekko.japi.Util._
 import pekko.persistence._
 import pekko.persistence.snapshot.{ SnapshotStore => SSnapshotStore }
 import pekko.util.ConstantFun.scalaAnyToUnit
