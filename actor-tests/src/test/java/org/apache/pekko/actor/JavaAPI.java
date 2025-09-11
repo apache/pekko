@@ -15,11 +15,9 @@ package org.apache.pekko.actor;
 
 import static org.junit.Assert.*;
 
-import java.util.Optional;
 import org.apache.pekko.event.Logging;
 import org.apache.pekko.event.Logging.LoggerInitialized;
 import org.apache.pekko.japi.Pair;
-import org.apache.pekko.japi.Util;
 import org.apache.pekko.japi.function.Creator;
 import org.apache.pekko.japi.tuple.Tuple22;
 import org.apache.pekko.japi.tuple.Tuple4;
@@ -32,7 +30,6 @@ import org.apache.pekko.testkit.TestProbe;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
-import scala.Option;
 
 public class JavaAPI extends JUnitSuite {
 
@@ -147,15 +144,6 @@ public class JavaAPI extends JUnitSuite {
     final Pair<Integer, String> p = Pair.create(1, "2");
     final Tuple4<Integer, String, Integer, Long> t4 = Tuple4.create(1, "2", 3, 4L);
     Tuple22.create(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22);
-  }
-
-  @Test
-  public void mustBeAbleToCreateOptionFromOptional() {
-    Option<Object> empty = Util.option(Optional.ofNullable(null));
-    assertTrue(empty.isEmpty());
-
-    Option<String> full = Util.option(Optional.ofNullable("hello"));
-    assertTrue(full.isDefined());
   }
 
   public static class ActorWithConstructorParams extends UntypedAbstractActor {
