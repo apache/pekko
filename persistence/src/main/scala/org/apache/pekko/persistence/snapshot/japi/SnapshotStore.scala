@@ -16,7 +16,6 @@ package org.apache.pekko.persistence.snapshot.japi
 import scala.concurrent.Future
 
 import org.apache.pekko
-import pekko.japi.Util._
 import pekko.persistence._
 import pekko.persistence.snapshot.{ SnapshotStore => SSnapshotStore }
 
