@@ -151,6 +151,7 @@ public class JavaAPI extends JUnitSuite {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
   public void mustBeAbleToCreateOptionFromOptional() {
     Option<Object> empty = Util.option(Optional.ofNullable(null));
     assertTrue(empty.isEmpty());
