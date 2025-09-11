@@ -13,7 +13,6 @@
 
 package org.apache.pekko.cluster.typed
 
-import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
@@ -121,7 +120,7 @@ class ClusterSingletonApiSpec
 
   override def afterAll(): Unit = {
     super.afterAll()
-    Await.result(system2.terminate(), 3.seconds)
+    system2.terminateAndAwait(3.seconds)
   }
 
 }

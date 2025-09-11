@@ -239,7 +239,8 @@ class PersistentFsmToTypedMigrationSpec extends AnyWordSpec with ScalaFutures wi
         fsmRef ! PoisonPill
         classicProbe.expectTerminated(fsmRef)
       } finally {
-        classicActorSystem.terminate().futureValue
+        classicActorSystem.terminate()
+        classicActorSystem.whenTerminated.futureValue
       }
 
       val typedTestKit = ActorTestKit("System", PersistentFsmToTypedMigrationSpec.config)
@@ -277,7 +278,8 @@ class PersistentFsmToTypedMigrationSpec extends AnyWordSpec with ScalaFutures wi
         fsmRef.tell(GetCurrentCart, classicProbe.ref)
         classicProbe.expectMsg(NonEmptyShoppingCart(Seq(shirt)))
       } finally {
-        classicActorSystem.terminate().futureValue
+        classicActorSystem.terminate()
+        classicActorSystem.whenTerminated.futureValue
       }
 
       val typedTestKit = ActorTestKit("TypedSystem", PersistentFsmToTypedMigrationSpec.config)

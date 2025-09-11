@@ -15,7 +15,6 @@ package org.apache.pekko.dispatch
 
 import java.util.concurrent.TimeUnit
 
-import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
@@ -61,7 +60,7 @@ mailbox {
     }).withDispatcher("dispatcher").withMailbox("mailbox"), "receiver")
 
   @TearDown
-  def teardown(): Unit = Await.result(sys.terminate(), 5.seconds)
+  def teardown(): Unit = sys.terminateAndAwait(5.seconds)
 
   @TearDown(Level.Invocation)
   def waitInBetween(): Unit = {

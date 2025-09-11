@@ -116,7 +116,8 @@ abstract class QuickRestartSpec extends MultiNodeClusterSpec(QuickRestartMultiJv
 
         enterBarrier("before-terminate-" + n)
         runOn(second) {
-          restartingSystem.terminate().await
+          restartingSystem.terminate()
+          restartingSystem.whenTerminated.await
         }
         // don't wait for it to be removed, new incarnation will join in next round
         enterBarrier("terminated-" + n)

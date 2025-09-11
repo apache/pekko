@@ -197,8 +197,8 @@ class CodecBenchmark {
 
   @TearDown(Level.Trial)
   def tearDownTrial(): Unit = {
-    Await.result(system.terminate(), 5.seconds)
-    Await.result(systemB.terminate(), 5.seconds)
+    system.terminateAndAwait(5.seconds)
+    systemB.terminateAndAwait(5.seconds)
   }
 
   @Setup(Level.Iteration)

@@ -15,7 +15,6 @@ package org.apache.pekko.cluster.typed.internal.receptionist
 
 import java.util.concurrent.ThreadLocalRandom
 
-import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
@@ -206,7 +205,7 @@ class ClusterReceptionistSpec extends AnyWordSpec with Matchers with LogCapturin
         if (down) {
           // abrupt termination
           system2.terminate()
-          Await.ready(system2.whenTerminated, 10.seconds)
+          system2.terminateAndAwait(10.seconds)
           clusterNode1.manager ! Down(clusterNode2.selfMember.address)
         } else {
           clusterNode1.manager ! Leave(clusterNode2.selfMember.address)
@@ -323,7 +322,7 @@ class ClusterReceptionistSpec extends AnyWordSpec with Matchers with LogCapturin
 
         // abrupt termination
         system2.terminate()
-        Await.ready(system2.whenTerminated, 10.seconds)
+        system2.terminateAndAwait(10.seconds)
         clusterNode1.manager ! Down(clusterNode2.selfMember.address)
         regProbe1.awaitAssert({
 
@@ -369,7 +368,7 @@ class ClusterReceptionistSpec extends AnyWordSpec with Matchers with LogCapturin
         // abrupt termination but then a node with the same host:port comes online quickly
         system1.log.debug("Terminating system2: [{}]", clusterNode2.selfMember.uniqueAddress)
         system2.terminate()
-        Await.ready(system2.whenTerminated, 10.seconds)
+        system2.terminateAndAwait(10.seconds)
 
         val testKit3 = ActorTestKit(
           system1.name,
@@ -484,7 +483,7 @@ class ClusterReceptionistSpec extends AnyWordSpec with Matchers with LogCapturin
         // abrupt termination but then a node with the same host:port comes online quickly
         system1.log.debug("Terminating system2: [{}]", clusterNode2.selfMember.uniqueAddress)
         system2.terminate()
-        Await.ready(system2.whenTerminated, 10.seconds)
+        system2.terminateAndAwait(10.seconds)
 
         val testKit3 = ActorTestKit(
           system1.name,
