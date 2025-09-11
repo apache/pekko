@@ -305,7 +305,7 @@ object Util {
 
   // TODO in case we decide to pull in scala-java8-compat methods below could be removed - https://github.com/akka/akka/issues/16247
 
-  @deprecated("This method will be removed in Pekko 2.0.0", "1.2.0")
+  @deprecated("This method will be removed in Pekko 2.0.0", "1.2.1")
   def option[T](jOption: java.util.Optional[T]): scala.Option[T] =
     scala.Option(jOption.orElse(null.asInstanceOf[T]))
 }
