@@ -15,5 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-# Move BackoffSupervisor.calculateDelay
+# Move BackoffSupervisor.calculateDelay to RetrySupport
+# Was removed in Pekko 1.2.0 but added back in 1.2.1 due to breakages
+# in pekko-persistence-cassandra - this method is deprecated in 1.2.1+
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.pattern.BackoffSupervisor.calculateDelay")
