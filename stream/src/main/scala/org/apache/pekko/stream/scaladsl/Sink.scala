@@ -293,6 +293,23 @@ object Sink {
       else new PublisherSink[T](DefaultAttributes.publisherSink, shape("PublisherSink")))
 
   /**
+   * Creates a sink which materializes into Java 8 ``Stream`` that can be run to trigger demand through the sink.
+   * Elements emitted through the stream will be available for reading through the Java 8 ``Stream``.
+   *
+   * The Java 8 ``Stream`` will be ended when the stream flowing into this ``Sink`` completes, and closing the Java
+   * ``Stream`` will cancel the inflow of this ``Sink``.
+   *
+   * If the Java 8 ``Stream`` throws exception the Pekko stream is cancelled.
+   *
+   * Be aware that Java ``Stream`` blocks current thread while waiting on next element from downstream.
+   * As it is interacting with blocking API the implementation runs on a separate dispatcher
+   * configured through the ``pekko.stream.blocking-io-dispatcher``.
+   *
+   * @since 2.0.0
+   */
+  def asJavaStream[T](): Sink[T, java.util.stream.Stream[T]] = StreamConverters.asJavaStream()
+
+  /**
    * A `Sink` that will consume the stream and discard the elements.
    */
   def ignore: Sink[Any, Future[Done]] = fromGraph(GraphStages.IgnoreSink)
