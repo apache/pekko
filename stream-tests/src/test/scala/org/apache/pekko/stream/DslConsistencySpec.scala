@@ -70,7 +70,9 @@ class DslConsistencySpec extends AnyWordSpec with Matchers {
       "andThenMat",
       "isIdentity",
       "withAttributes",
-      "transformMaterializing") ++
+      "transformMaterializing",
+      "onErrorResume" // Java Only, Scala use `recoverWith`
+    ) ++
     Set("asScala", "asJava", "deprecatedAndThen", "deprecatedAndThenMat")
 
   val graphHelpers = Set(
