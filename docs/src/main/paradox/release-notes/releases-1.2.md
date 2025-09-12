@@ -86,3 +86,9 @@ Most of the changes appeared in the milestone releases (1.2.0-M1 and 1.2.0-M2) b
 * slfj4 2.0.17
 * jupiter-junit 5.13.3
 * scala 2.12.20, 2.13.16, 3.3.6
+
+### Known Issues
+
+This release breaks binary compatibility for [pekko-persistence-cassandra](https://github.com/apache/pekko-persistence-cassandra/issues/305)
+and users of that lib will need to avoid Pekko 1.2.0 release. We will fix
+this in the 1.2.1 release.
