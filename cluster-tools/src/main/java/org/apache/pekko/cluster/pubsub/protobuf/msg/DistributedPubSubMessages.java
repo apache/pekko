@@ -5325,7 +5325,7 @@ public final class DistributedPubSubMessages {
   /**
    * <pre>
    * *
-   * Send normally local, but it is also used by the ClusterClient.
+   * Send normally local
    * </pre>
    *
    * Protobuf type {@code Send}
@@ -5673,7 +5673,7 @@ public final class DistributedPubSubMessages {
     /**
      * <pre>
      * *
-     * Send normally local, but it is also used by the ClusterClient.
+     * Send normally local
      * </pre>
      *
      * Protobuf type {@code Send}
@@ -6210,7 +6210,7 @@ public final class DistributedPubSubMessages {
   /**
    * <pre>
    * *
-   * SendToAll normally local, but it is also used by the ClusterClient.
+   * SendToAll normally local
    * </pre>
    *
    * Protobuf type {@code SendToAll}
@@ -6558,7 +6558,7 @@ public final class DistributedPubSubMessages {
     /**
      * <pre>
      * *
-     * SendToAll normally local, but it is also used by the ClusterClient.
+     * SendToAll normally local
      * </pre>
      *
      * Protobuf type {@code SendToAll}
@@ -7084,7 +7084,7 @@ public final class DistributedPubSubMessages {
   /**
    * <pre>
    * *
-   * Publish normally local, but it is also used by the ClusterClient.
+   * Publish normally local
    * </pre>
    *
    * Protobuf type {@code Publish}
@@ -7392,7 +7392,7 @@ public final class DistributedPubSubMessages {
     /**
      * <pre>
      * *
-     * Publish normally local, but it is also used by the ClusterClient.
+     * Publish normally local
      * </pre>
      *
      * Protobuf type {@code Publish}
