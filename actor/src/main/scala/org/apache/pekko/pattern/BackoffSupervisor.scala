@@ -312,7 +312,7 @@ object BackoffSupervisor {
   @InternalApi
   private[pekko] case class ResetRestartCount(current: Int) extends DeadLetterSuppression
 
- /**
+  /**
    * INTERNAL API
    *
    * Calculates an exponential back off delay.
