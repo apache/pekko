@@ -257,6 +257,32 @@ object ByteString {
       }
     }
 
+    override def lastIndexOf[B >: Byte](elem: B, end: Int): Int = {
+      if (end < 0) -1
+      else {
+        var found = -1
+        var i = math.min(end, length - 1)
+        while (i >= 0 && found == -1) {
+          if (bytes(i) == elem) found = i
+          i -= 1
+        }
+        found
+      }
+    }
+
+    override def lastIndexOf(elem: Byte, end: Int): Int = {
+      if (end < 0) -1
+      else {
+        var found = -1
+        var i = math.min(end, length - 1)
+        while (i >= 0 && found == -1) {
+          if (bytes(i) == elem) found = i
+          i -= 1
+        }
+        found
+      }
+    }
+
     override def slice(from: Int, until: Int): ByteString =
       if (from <= 0 && until >= length) this
       else if (from >= length || until <= 0 || from >= until) ByteString.empty
@@ -456,6 +482,32 @@ object ByteString {
         while (i < length && found == -1) {
           if (bytes(startIndex + i) == elem) found = i
           i += 1
+        }
+        found
+      }
+    }
+
+    override def lastIndexOf[B >: Byte](elem: B, end: Int): Int = {
+      if (end < 0) -1
+      else {
+        var found = -1
+        var i = math.min(end, length - 1)
+        while (i >= 0 && found == -1) {
+          if (bytes(startIndex + i) == elem) found = i
+          i -= 1
+        }
+        found
+      }
+    }
+
+    override def lastIndexOf(elem: Byte, end: Int): Int = {
+      if (end < 0) -1
+      else {
+        var found = -1
+        var i = math.min(end, length - 1)
+        while (i >= 0 && found == -1) {
+          if (bytes(startIndex + i) == elem) found = i
+          i -= 1
         }
         found
       }
@@ -715,7 +767,7 @@ object ByteString {
           else {
             val bs = bytestrings(bsIdx)
 
-            if (bs.length <= relativeIndex) {
+            if (bs.length <= relativeIndex || bs.isEmpty) {
               find(bsIdx + 1, relativeIndex - bs.length, bytesPassed + bs.length)
             } else {
               val subIndexOf = bs.indexOf(elem, relativeIndex)
@@ -741,7 +793,7 @@ object ByteString {
           else {
             val bs = bytestrings(bsIdx)
 
-            if (bs.length <= relativeIndex) {
+            if (bs.length <= relativeIndex || bs.isEmpty) {
               find(bsIdx + 1, relativeIndex - bs.length, bytesPassed + bs.length)
             } else {
               val subIndexOf = bs.indexOf(elem, relativeIndex)
@@ -753,6 +805,67 @@ object ByteString {
         }
 
         find(0, math.max(from, 0), 0)
+      }
+    }
+
+    override def lastIndexOf[B >: Byte](elem: B, end: Int): Int = {
+      if (end < 0) -1
+      else {
+        val byteStringsLast = bytestrings.size - 1
+
+        @tailrec
+        def find(bsIdx: Int, relativeIndex: Int, len: Int): Int = {
+          if (bsIdx < 0) -1
+          else {
+            val bs = bytestrings(bsIdx)
+            val bsStartIndex = len - bs.length
+
+            if (relativeIndex < bsStartIndex || bs.isEmpty) {
+              if (bsIdx == 0) -1
+              else find(bsIdx - 1, relativeIndex, bsStartIndex)
+            } else {
+              val subIndexOf = bs.lastIndexOf(elem, relativeIndex)
+              if (subIndexOf < 0) {
+                if (bsIdx == 0) -1
+                else find(bsIdx - 1, relativeIndex, bsStartIndex)
+              } else subIndexOf + bsStartIndex
+            }
+          }
+        }
+
+        find(byteStringsLast, math.min(end, length), length)
+      }
+    }
+
+    override def lastIndexOf(elem: Byte, end: Int): Int = {
+      if (end < 0) -1
+      else {
+        if (end < 0) -1
+        else {
+          val byteStringsLast = bytestrings.size - 1
+
+          @tailrec
+          def find(bsIdx: Int, relativeIndex: Int, len: Int): Int = {
+            if (bsIdx < 0) -1
+            else {
+              val bs = bytestrings(bsIdx)
+              val bsStartIndex = len - bs.length
+
+              if (relativeIndex < bsStartIndex || bs.isEmpty) {
+                if (bsIdx == 0) -1
+                else find(bsIdx - 1, relativeIndex, bsStartIndex)
+              } else {
+                val subIndexOf = bs.lastIndexOf(elem, relativeIndex)
+                if (subIndexOf < 0) {
+                  if (bsIdx == 0) -1
+                  else find(bsIdx - 1, relativeIndex, bsStartIndex)
+                } else subIndexOf + bsStartIndex
+              }
+            }
+          }
+
+          find(byteStringsLast, math.min(end, length), length)
+        }
       }
     }
 
@@ -878,7 +991,7 @@ sealed abstract class ByteString
   // optimized in subclasses
   override def indexOf[B >: Byte](elem: B, from: Int): Int = super.indexOf(elem, from)
 
-  // optimized version of indexOf for bytes, optimized in subclasses
+  // optimized versions of indexOf and lastIndexOf for bytes, optimized in subclasses
   /**
    * Finds index of first occurrence of some byte in this ByteString after or at some start index.
    *
@@ -898,11 +1011,24 @@ sealed abstract class ByteString
    * Similar to indexOf, but it avoids boxing if the value is already a byte.
    *
    *  @param   elem   the element value to search for.
-   *  @return  the index `>= from` of the first element of this ByteString that is equal (as determined by `==`)
+   *  @return  the index of the first element of this ByteString that is equal (as determined by `==`)
    *           to `elem`, or `-1`, if none exists.
    *  @since 1.1.0
    */
   def indexOf(elem: Byte): Int = indexOf(elem, 0)
+
+  /**
+   * Finds index of last occurrence of some byte in this ByteString before or at some end index.
+   *
+   * Similar to lastIndexOf, but it avoids boxing if the value is already a byte.
+   *
+   *  @param   elem   the element value to search for.
+   *  @param   end    the end index
+   *  @return  the index `<= end` of the last element of this ByteString that is equal (as determined by `==`)
+   *           to `elem`, or `-1`, if none exists.
+   *  @since 2.0.0
+   */
+  def lastIndexOf(elem: Byte, end: Int): Int = lastIndexOf[Byte](elem, end)
 
   override def grouped(size: Int): Iterator[ByteString] = {
     if (size <= 0) {
