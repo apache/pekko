@@ -21,6 +21,7 @@ import scala.annotation.varargs
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable
 import scala.concurrent.{ Future, Promise }
+import scala.jdk.javaapi.OptionConverters._
 import scala.reflect.ClassTag
 
 import org.apache.pekko
@@ -36,7 +37,6 @@ import pekko.stream.impl.fusing.{ ArraySource, StatefulMapConcat, ZipWithIndexJa
 import pekko.util.{ unused, _ }
 import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
-import pekko.util.OptionConverters._
 import pekko.util.ccompat.JavaConverters._
 
 import org.reactivestreams.{ Publisher, Subscriber }

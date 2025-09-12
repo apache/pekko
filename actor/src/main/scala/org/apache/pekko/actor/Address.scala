@@ -12,6 +12,7 @@
  */
 
 package org.apache.pekko.actor
+
 import java.net.MalformedURLException
 import java.net.URI
 import java.net.URISyntaxException
@@ -19,10 +20,10 @@ import java.util.Optional
 
 import scala.annotation.tailrec
 import scala.collection.immutable
+import scala.jdk.javaapi.OptionConverters._
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.util.OptionConverters._
 
 /**
  * The address specifies the physical location under which an Actor can be

@@ -23,6 +23,7 @@ import scala.collection.immutable
 import scala.concurrent.{ ExecutionContext, ExecutionContextExecutor, Future, Promise }
 import scala.concurrent.blocking
 import scala.concurrent.duration.Duration
+import scala.jdk.javaapi.OptionConverters._
 import scala.util.{ Failure, Success, Try }
 import scala.util.control.{ ControlThrowable, NonFatal }
 
@@ -41,7 +42,6 @@ import pekko.japi.Util.immutableSeq
 import pekko.serialization.SerializationExtension
 import pekko.util._
 import pekko.util.FutureConverters._
-import pekko.util.OptionConverters._
 import pekko.util.Helpers.toRootLowerCase
 import pekko.util.ccompat.JavaConverters._
 

@@ -64,7 +64,7 @@ final class EventEnvelope(
    * Java API
    */
   def getEventMetaData(): Optional[Any] = {
-    import pekko.util.OptionConverters._
+    import scala.jdk.javaapi.OptionConverters._
     eventMetadata.toJava
   }
 

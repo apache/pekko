@@ -15,12 +15,13 @@ package org.apache.pekko.actor.testkit.typed
 
 import java.util.Optional
 
+import scala.jdk.javaapi.OptionConverters._
+
 import org.slf4j.Marker
 import org.slf4j.event.Level
 
 import org.apache.pekko
 import pekko.util.ccompat.JavaConverters._
-import pekko.util.OptionConverters._
 
 object LoggingEvent {
 

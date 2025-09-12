@@ -15,9 +15,10 @@ package org.apache.pekko.cluster.ddata
 
 import java.util.Optional
 
+import scala.jdk.javaapi.OptionConverters._
+
 import org.apache.pekko
 import pekko.cluster.UniqueAddress
-import pekko.util.OptionConverters._
 
 /**
  * Interface for implementing a state based convergent
