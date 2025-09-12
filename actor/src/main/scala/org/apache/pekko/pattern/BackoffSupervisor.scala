@@ -311,6 +311,21 @@ object BackoffSupervisor {
    */
   @InternalApi
   private[pekko] case class ResetRestartCount(current: Int) extends DeadLetterSuppression
+
+ /**
+   * INTERNAL API
+   *
+   * Calculates an exponential back off delay.
+   *
+   * Was removed in 1.2.0 but added back in 1.2.1 for binary compatibility reasons.
+   */
+  private[pekko] def calculateDelay(
+      restartCount: Int,
+      minBackoff: FiniteDuration,
+      maxBackoff: FiniteDuration,
+      randomFactor: Double): FiniteDuration =
+    RetrySupport.calculateDelay(restartCount, minBackoff, maxBackoff, randomFactor)
+
 }
 
 final class BackoffSupervisor @deprecated("Use `BackoffSupervisor.props` method instead", since = "Akka 2.5.22") (
