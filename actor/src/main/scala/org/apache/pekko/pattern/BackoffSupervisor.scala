@@ -319,6 +319,7 @@ object BackoffSupervisor {
    *
    * Was removed in 1.2.0 but added back in 1.2.1 for binary compatibility reasons.
    */
+  @deprecated("Use RetrySupport.calculateDelay instead", since = "1.2.1")
   private[pekko] def calculateDelay(
       restartCount: Int,
       minBackoff: FiniteDuration,
