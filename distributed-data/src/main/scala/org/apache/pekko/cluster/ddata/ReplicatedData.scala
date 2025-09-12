@@ -17,7 +17,7 @@ import java.util.Optional
 
 import org.apache.pekko
 import pekko.cluster.UniqueAddress
-import pekko.util.OptionConverters._
+import scala.jdk.OptionConverters._
 
 /**
  * Interface for implementing a state based convergent

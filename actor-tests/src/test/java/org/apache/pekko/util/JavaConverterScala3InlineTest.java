@@ -22,11 +22,11 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import scala.Option;
 import scala.concurrent.Future;
+import scala.jdk.javaapi.OptionConverters;
 
 /**
  * These tests are here to ensure that methods from {@link org.apache.pekko.util.FutureConverters},
- * {@link org.apache.pekko.util.JavaDurationConverters} and {@link
- * org.apache.pekko.util.OptionConverters} for use within Java can be compiled from with Java
+ * {@link org.apache.pekko.util.JavaDurationConverters} for use within Java can be compiled from with Java
  * sources. This is because methods marked with the Scala 3 inline keyword cannot be called from
  * within Java (see https://github.com/lampepfl/dotty/issues/19346)
  */

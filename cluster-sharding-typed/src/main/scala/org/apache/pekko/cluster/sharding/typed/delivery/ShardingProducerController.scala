@@ -33,7 +33,7 @@ import pekko.annotation.ApiMayChange
 import pekko.cluster.sharding.typed.ShardingEnvelope
 import pekko.cluster.sharding.typed.delivery.internal.ShardingProducerControllerImpl
 import pekko.util.JavaDurationConverters._
-import pekko.util.OptionConverters._
+import scala.jdk.OptionConverters._
 
 /**
  * Reliable delivery between a producer actor sending messages to sharded consumer

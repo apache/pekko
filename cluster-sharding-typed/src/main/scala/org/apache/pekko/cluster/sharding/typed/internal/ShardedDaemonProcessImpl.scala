@@ -40,7 +40,7 @@ import pekko.cluster.sharding.typed.scaladsl.StartEntity
 import pekko.cluster.typed.Cluster
 import pekko.cluster.typed.SelfUp
 import pekko.cluster.typed.Subscribe
-import pekko.util.OptionConverters._
+import scala.jdk.OptionConverters._
 import pekko.util.PrettyDuration
 
 /**

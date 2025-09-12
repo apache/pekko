@@ -816,7 +816,7 @@ object Patterns {
       delayFunction: IntFunction[Optional[java.time.Duration]],
       scheduler: Scheduler,
       context: ExecutionContext): CompletionStage[T] = {
-    import pekko.util.OptionConverters._
+    import scala.jdk.OptionConverters._
     require(attempt != null, "Parameter attempt should not be null.")
     scalaRetry(
       () => attempt.call().asScala,
@@ -857,7 +857,7 @@ object Patterns {
       delayFunction: IntFunction[Optional[java.time.Duration]],
       scheduler: Scheduler,
       context: ExecutionContext): CompletionStage[T] = {
-    import pekko.util.OptionConverters._
+    import scala.jdk.OptionConverters._
     require(attempt != null, "Parameter attempt should not be null.")
     scalaRetry(
       () => attempt.call().asScala,

@@ -30,7 +30,7 @@ abstract class SnapshotStore extends SSnapshotStore with SnapshotStorePlugin {
   override final def loadAsync(
       persistenceId: String,
       criteria: SnapshotSelectionCriteria): Future[Option[SelectedSnapshot]] = {
-    import pekko.util.OptionConverters._
+    import scala.jdk.OptionConverters._
     doLoadAsync(persistenceId, criteria).asScala.map(_.toScala)(ExecutionContext.parasitic)
   }
 

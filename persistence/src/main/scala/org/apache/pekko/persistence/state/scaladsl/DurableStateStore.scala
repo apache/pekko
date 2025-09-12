@@ -17,7 +17,7 @@ import scala.concurrent.Future
 
 import org.apache.pekko
 import pekko.persistence.state.javadsl.{ GetObjectResult => JGetObjectResult }
-import pekko.util.OptionConverters._
+import scala.jdk.OptionConverters._
 
 /**
  * API for reading durable state objects with payload `A`.

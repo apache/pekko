@@ -34,7 +34,7 @@ import pekko.Done
 import pekko.annotation.InternalApi
 import pekko.event.Logging
 import pekko.pattern.after
-import pekko.util.OptionConverters._
+import scala.jdk.OptionConverters._
 import pekko.util.OptionVal
 import pekko.util.FutureConverters._
 

@@ -32,7 +32,7 @@ import pekko.cluster.sharding.ShardCoordinator.ShardAllocationStrategy
 import pekko.cluster.sharding.typed.internal.EntityTypeKeyImpl
 import pekko.japi.function.{ Function => JFunction }
 import pekko.pattern.StatusReply
-import pekko.util.OptionConverters._
+import scala.jdk.OptionConverters._
 
 @FunctionalInterface
 trait EntityFactory[M] {

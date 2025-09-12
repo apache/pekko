@@ -27,7 +27,7 @@ import pekko.persistence.state.javadsl.GetObjectResult
 import pekko.persistence.testkit.state.scaladsl.{ PersistenceTestKitDurableStateStore => SStore }
 import pekko.stream.javadsl.Source
 import pekko.util.FutureConverters._
-import pekko.util.OptionConverters._
+import scala.jdk.OptionConverters._
 
 object PersistenceTestKitDurableStateStore {
   val Identifier = pekko.persistence.testkit.state.scaladsl.PersistenceTestKitDurableStateStore.Identifier
