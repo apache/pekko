@@ -21,7 +21,7 @@ import scala.concurrent.duration.FiniteDuration
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.annotation.ApiMayChange
-import pekko.dispatch.ExecutionContexts
+import scala.concurrent.ExecutionContext
 import pekko.event.{ LogMarker, LoggingAdapter, MarkerLoggingAdapter }
 import pekko.stream._
 import pekko.stream.impl.Throttle
@@ -141,7 +141,7 @@ trait FlowWithContextOps[+Out, +Ctx, +Mat] {
    */
   def mapAsync[Out2](parallelism: Int)(f: Out => Future[Out2]): Repr[Out2, Ctx] =
     via(flow.mapAsync(parallelism) {
-      case (e, ctx) => f(e).map(o => (o, ctx))(ExecutionContexts.parasitic)
+      case (e, ctx) => f(e).map(o => (o, ctx))(ExecutionContext.parasitic)
     })
 
   /**
@@ -155,7 +155,7 @@ trait FlowWithContextOps[+Out, +Ctx, +Mat] {
       f: (Out, P) => Future[Out2]): Repr[Out2, Ctx] = {
     via(flow[Out, Ctx].mapAsyncPartitioned(parallelism)(pair => partitioner(pair._1)) {
       (pair, partition) =>
-        f(pair._1, partition).map((_, pair._2))(ExecutionContexts.parasitic)
+        f(pair._1, partition).map((_, pair._2))(ExecutionContext.parasitic)
     })
   }
 
@@ -170,7 +170,7 @@ trait FlowWithContextOps[+Out, +Ctx, +Mat] {
       f: (Out, P) => Future[Out2]): Repr[Out2, Ctx] = {
     via(flow[Out, Ctx].mapAsyncPartitionedUnordered(parallelism)(pair => partitioner(pair._1)) {
       (pair, partition) =>
-        f(pair._1, partition).map((_, pair._2))(ExecutionContexts.parasitic)
+        f(pair._1, partition).map((_, pair._2))(ExecutionContext.parasitic)
     })
   }
 

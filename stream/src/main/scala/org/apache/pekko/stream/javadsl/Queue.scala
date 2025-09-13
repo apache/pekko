@@ -20,7 +20,7 @@ import scala.concurrent.Future
 
 import org.apache.pekko
 import pekko.Done
-import pekko.dispatch.ExecutionContexts
+import scala.concurrent.ExecutionContext
 import pekko.stream.QueueOfferResult
 import pekko.util.FutureConverters._
 import pekko.util.OptionConverters._
@@ -141,7 +141,7 @@ object SinkQueueWithCancel {
     new pekko.stream.scaladsl.SinkQueueWithCancel[T] {
 
       override def pull(): Future[Option[T]] =
-        queue.pull().asScala.map(_.toScala)(ExecutionContexts.parasitic)
+        queue.pull().asScala.map(_.toScala)(ExecutionContext.parasitic)
 
       override def cancel(): Unit = queue.cancel()
     }

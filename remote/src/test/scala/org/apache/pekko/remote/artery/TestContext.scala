@@ -25,7 +25,7 @@ import org.apache.pekko
 import pekko.Done
 import pekko.actor.ActorRef
 import pekko.actor.Address
-import pekko.dispatch.ExecutionContexts
+import scala.concurrent.ExecutionContext
 import pekko.remote.UniqueAddress
 import pekko.remote.artery.InboundControlJunction.ControlMessageObserver
 import pekko.remote.artery.InboundControlJunction.ControlMessageSubject
@@ -65,7 +65,7 @@ private[remote] class TestInboundContext(
     val done = a.completeHandshake(peer)
     done.foreach { _ =>
       associationsByUid.put(peer.uid, a)
-    }(ExecutionContexts.parasitic)
+    }(ExecutionContext.parasitic)
     done
   }
 

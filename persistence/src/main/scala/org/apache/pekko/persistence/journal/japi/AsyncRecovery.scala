@@ -19,7 +19,7 @@ import scala.concurrent.Future
 
 import org.apache.pekko
 import pekko.actor.Actor
-import pekko.dispatch.ExecutionContexts
+import scala.concurrent.ExecutionContext
 import pekko.persistence.PersistentRepr
 import pekko.persistence.journal.{ AsyncRecovery => SAsyncReplay }
 import pekko.util.ConstantFun.scalaAnyToUnit
@@ -35,10 +35,10 @@ abstract class AsyncRecovery extends SAsyncReplay with AsyncRecoveryPlugin { thi
     doAsyncReplayMessages(persistenceId, fromSequenceNr, toSequenceNr, max,
       new Consumer[PersistentRepr] {
         def accept(p: PersistentRepr) = replayCallback(p)
-      }).asScala.map(scalaAnyToUnit)(ExecutionContexts.parasitic)
+      }).asScala.map(scalaAnyToUnit)(ExecutionContext.parasitic)
 
   final def asyncReadHighestSequenceNr(persistenceId: String, fromSequenceNr: Long): Future[Long] =
     doAsyncReadHighestSequenceNr(persistenceId, fromSequenceNr: Long)
       .asScala
-      .map(_.longValue)(ExecutionContexts.parasitic)
+      .map(_.longValue)(ExecutionContext.parasitic)
 }

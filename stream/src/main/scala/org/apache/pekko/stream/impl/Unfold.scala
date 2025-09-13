@@ -111,7 +111,7 @@ private[pekko] final class UnfoldJava[S, E](s: S, f: function.Function[S, Option
         future.value match {
           case Some(value) => handle(value)
           case None        =>
-            future.onComplete(asyncHandler)(pekko.dispatch.ExecutionContexts.parasitic)
+            future.onComplete(asyncHandler)(scala.concurrent.ExecutionContext.parasitic)
         }
       }
 

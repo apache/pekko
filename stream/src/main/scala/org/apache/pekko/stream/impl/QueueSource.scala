@@ -220,7 +220,7 @@ import pekko.stream.stage._
           .onComplete {
             case scala.util.Success(_) =>
             case scala.util.Failure(e) => p.tryFailure(e)
-          }(pekko.dispatch.ExecutionContexts.parasitic)
+          }(scala.concurrent.ExecutionContext.parasitic)
         p.future
       }
       override def complete(): Unit = callback.invoke(Completion)

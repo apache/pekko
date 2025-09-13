@@ -468,7 +468,7 @@ private[stream] object Collect {
 @InternalApi private[pekko] final case class ScanAsync[In, Out](zero: Out, f: (Out, In) => Future[Out])
     extends GraphStage[FlowShape[In, Out]] {
 
-  import pekko.dispatch.ExecutionContexts
+  import scala.concurrent.ExecutionContext
 
   val in = Inlet[In]("ScanAsync.in")
   val out = Outlet[Out]("ScanAsync.out")
@@ -560,7 +560,7 @@ private[stream] object Collect {
 
           eventualCurrent.value match {
             case Some(result) => futureCB(result)
-            case _            => eventualCurrent.onComplete(futureCB)(ExecutionContexts.parasitic)
+            case _            => eventualCurrent.onComplete(futureCB)(ExecutionContext.parasitic)
           }
         } catch {
           case NonFatal(ex) =>
@@ -660,7 +660,7 @@ private[stream] object Collect {
 @InternalApi private[pekko] final class FoldAsync[In, Out](zero: Out, f: (Out, In) => Future[Out])
     extends GraphStage[FlowShape[In, Out]] {
 
-  import pekko.dispatch.ExecutionContexts
+  import scala.concurrent.ExecutionContext
 
   val in = Inlet[In]("FoldAsync.in")
   val out = Outlet[Out]("FoldAsync.out")
@@ -740,7 +740,7 @@ private[stream] object Collect {
       private def handleAggregatingValue(): Unit = {
         aggregating.value match {
           case Some(result) => futureCB(result) // already completed
-          case _            => aggregating.onComplete(futureCB)(ExecutionContexts.parasitic)
+          case _            => aggregating.onComplete(futureCB)(ExecutionContext.parasitic)
         }
       }
 
@@ -1321,7 +1321,7 @@ private[stream] object Collect {
           buffer.enqueue(holder)
 
           future.value match {
-            case None    => future.onComplete(holder)(pekko.dispatch.ExecutionContexts.parasitic)
+            case None    => future.onComplete(holder)(scala.concurrent.ExecutionContext.parasitic)
             case Some(v) =>
               // #20217 the future is already here, optimization: avoid scheduling it on the dispatcher and
               // run the logic directly on this thread
@@ -1438,7 +1438,7 @@ private[stream] object Collect {
           val future = f(grab(in))
           inFlight += 1
           future.value match {
-            case None    => future.onComplete(invokeFutureCB)(pekko.dispatch.ExecutionContexts.parasitic)
+            case None    => future.onComplete(invokeFutureCB)(scala.concurrent.ExecutionContext.parasitic)
             case Some(v) => futureCompleted(v)
           }
         } catch {

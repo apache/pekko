@@ -29,7 +29,7 @@ import scala.annotation.nowarn
 import org.apache.pekko
 import pekko.actor._
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
-import pekko.dispatch.ExecutionContexts
+import scala.concurrent.ExecutionContext
 import pekko.dispatch.sysmsg.{ Unwatch, Watch }
 import pekko.event.LoggingAdapter
 import pekko.pattern.{ ask, pipe, PromiseActorRef }
@@ -393,7 +393,7 @@ private[transport] class ThrottlerManager(wrappedTransport: Transport)
             SetThrottleAck
           case _ =>
             throw new IllegalArgumentException() // won't happen, compiler exhaustiveness check pleaser
-        }, t => { internalTarget.sendSystemMessage(Unwatch(target, ref)); t })(ExecutionContexts.parasitic)
+        }, t => { internalTarget.sendSystemMessage(Unwatch(target, ref)); t })(ExecutionContext.parasitic)
     }
   }
 

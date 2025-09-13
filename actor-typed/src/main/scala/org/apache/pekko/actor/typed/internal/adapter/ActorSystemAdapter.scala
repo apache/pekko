@@ -114,7 +114,7 @@ import pekko.util.FutureConverters._
   override def uptime: Long = classicSystem.uptime
   override def printTree: String = system.printTree
 
-  import org.apache.pekko.dispatch.ExecutionContexts.parasitic
+  import scala.concurrent.ExecutionContext.parasitic
 
   override def terminate(): Unit = system.terminate()
   override lazy val whenTerminated: scala.concurrent.Future[pekko.Done] =

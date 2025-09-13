@@ -96,7 +96,7 @@ class FlowFlatMapConcatParallelismSpec extends StreamSpec("""
         Source(sources)
           .flatMapConcat(i, identity(_)) // scala 2.12 can't infer the type of identity
           .runWith(Sink.seq)
-          .map(_.sum)(pekko.dispatch.ExecutionContexts.parasitic)
+          .map(_.sum)(scala.concurrent.ExecutionContext.parasitic)
           .futureValue shouldBe sum
       }
     }
@@ -114,7 +114,7 @@ class FlowFlatMapConcatParallelismSpec extends StreamSpec("""
               (current, current)
             }, _ => None)
           .runWith(Sink.seq)
-          .map(_.sum)(pekko.dispatch.ExecutionContexts.parasitic)
+          .map(_.sum)(scala.concurrent.ExecutionContext.parasitic)
           .futureValue shouldBe sum
       }
     }

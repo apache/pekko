@@ -151,7 +151,7 @@ class ExecutionContextSpec extends PekkoSpec with DefaultTimeout {
     }
 
     "work with same-thread executor plus blocking" in {
-      val ec = pekko.dispatch.ExecutionContexts.parasitic
+      val ec = scala.concurrent.ExecutionContext.parasitic
       var x = 0
       ec.execute(new Runnable {
         override def run = {

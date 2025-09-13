@@ -20,8 +20,6 @@ import java.util.concurrent.CompletionStage
 import scala.concurrent.{ ExecutionContext, ExecutionContextExecutor, ExecutionContextExecutorService, Future, Promise }
 
 import org.apache.pekko
-import pekko.annotation.InternalStableApi
-import pekko.dispatch.internal.SameThreadExecutionContext
 import pekko.japi.function.Procedure
 
 /**
@@ -77,21 +75,6 @@ object ExecutionContexts {
    * @return a reference to the global ExecutionContext
    */
   def global(): ExecutionContextExecutor = ExecutionContext.global
-
-  /**
-   * INTERNAL API
-   *
-   * WARNING: Not A General Purpose ExecutionContext!
-   *
-   * This is an execution context which runs everything on the calling thread.
-   * It is very useful for actions which are known to be non-blocking and
-   * non-throwing in order to save a round-trip to the thread pool.
-   *
-   * Once Scala 2.12 is no longer supported this can be dropped in favour of directly using `ExecutionContext.parasitic`
-   */
-  @InternalStableApi
-  private[pekko] val parasitic: ExecutionContext = SameThreadExecutionContext()
-
 }
 
 /**

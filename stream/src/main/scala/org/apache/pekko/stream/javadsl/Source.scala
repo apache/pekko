@@ -26,7 +26,7 @@ import scala.reflect.ClassTag
 import org.apache.pekko
 import pekko.{ Done, NotUsed }
 import pekko.actor.{ ActorRef, Cancellable, ClassicActorSystemProvider }
-import pekko.dispatch.ExecutionContexts
+import scala.concurrent.ExecutionContext
 import pekko.event.{ LogMarker, LoggingAdapter, MarkerLoggingAdapter }
 import pekko.japi.{ function, JavaPartialFunction, Pair }
 import pekko.japi.function.Creator
@@ -71,7 +71,7 @@ object Source {
     new Source(scaladsl.Source.maybe[T].mapMaterializedValue { (scalaOptionPromise: Promise[Option[T]]) =>
       val javaOptionPromise = new CompletableFuture[Optional[T]]()
       scalaOptionPromise.completeWith(
-        javaOptionPromise.asScala.map(_.toScala)(pekko.dispatch.ExecutionContexts.parasitic))
+        javaOptionPromise.asScala.map(_.toScala)(scala.concurrent.ExecutionContext.parasitic))
 
       javaOptionPromise
     })
@@ -313,7 +313,7 @@ object Source {
    */
   def completionStageSource[T, M](completionStageSource: CompletionStage[Source[T, M]]): Source[T, CompletionStage[M]] =
     scaladsl.Source
-      .futureSource(completionStageSource.asScala.map(_.asScala)(ExecutionContexts.parasitic))
+      .futureSource(completionStageSource.asScala.map(_.asScala)(ExecutionContext.parasitic))
       .mapMaterializedValue(_.asJava)
       .asJava
 
@@ -773,7 +773,7 @@ object Source {
     new Source(
       scaladsl.Source.unfoldResourceAsync[T, R](
         () => create.create().asScala,
-        (resource: R) => read.apply(resource).asScala.map(_.toScala)(pekko.dispatch.ExecutionContexts.parasitic),
+        (resource: R) => read.apply(resource).asScala.map(_.toScala)(scala.concurrent.ExecutionContext.parasitic),
         (resource: R) => close.apply(resource).asScala))
 
   /**

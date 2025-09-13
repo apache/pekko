@@ -19,7 +19,7 @@ import scala.util.Success
 import org.apache.pekko
 import pekko.Done
 import pekko.NotUsed
-import pekko.dispatch.ExecutionContexts
+import scala.concurrent.ExecutionContext
 import pekko.stream.Attributes
 import pekko.stream.FlowShape
 import pekko.stream.Inlet
@@ -62,7 +62,7 @@ class SubInletOutletSpec extends StreamSpec {
         override def preStart(): Unit = {
           sideChannel
             .watchTermination() { (_, done) =>
-              done.onComplete(c => subCompletion = c)(ExecutionContexts.parasitic)
+              done.onComplete(c => subCompletion = c)(ExecutionContext.parasitic)
               NotUsed
             }
             .runWith(Sink.fromGraph(subIn.sink))
@@ -169,7 +169,7 @@ class SubInletOutletSpec extends StreamSpec {
           Source
             .fromGraph(subOut.source)
             .runWith(Sink.ignore)
-            .onComplete(t => subCompletion = t)(ExecutionContexts.parasitic)
+            .onComplete(t => subCompletion = t)(ExecutionContext.parasitic)
           subOut.setHandler(new OutHandler {
             override def onPull(): Unit = pull(in)
           })

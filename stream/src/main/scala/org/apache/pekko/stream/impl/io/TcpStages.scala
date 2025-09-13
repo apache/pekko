@@ -26,7 +26,7 @@ import org.apache.pekko
 import pekko.{ Done, NotUsed }
 import pekko.actor.{ ActorRef, Terminated }
 import pekko.annotation.InternalApi
-import pekko.dispatch.ExecutionContexts
+import scala.concurrent.ExecutionContext
 import pekko.io.Inet.SocketOption
 import pekko.io.Tcp
 import pekko.io.Tcp._
@@ -99,7 +99,7 @@ import pekko.util.ByteString
                   thisStage.tell(Unbind, thisStage)
                 }
                 unbindPromise.future
-              }, unbindPromise.future.map(_ => Done)(ExecutionContexts.parasitic)))
+              }, unbindPromise.future.map(_ => Done)(ExecutionContext.parasitic)))
           case f: CommandFailed =>
             val ex = new BindFailedException {
               // cannot modify the actual exception class for compatibility reasons
@@ -591,7 +591,7 @@ private[stream] object ConnectionSourceStage {
       remoteAddress,
       eagerMaterializer)
 
-    (logic, localAddressPromise.future.map(OutgoingConnection(remoteAddress, _))(ExecutionContexts.parasitic))
+    (logic, localAddressPromise.future.map(OutgoingConnection(remoteAddress, _))(ExecutionContext.parasitic))
   }
 
   override def toString = s"TCP-to($remoteAddress)"

@@ -23,7 +23,7 @@ import org.apache.pekko
 import pekko.{ util, Done, NotUsed }
 import pekko.actor.ActorRef
 import pekko.annotation.InternalApi
-import pekko.dispatch.ExecutionContexts
+import scala.concurrent.ExecutionContext
 import pekko.stream._
 import pekko.stream.impl._
 import pekko.stream.impl.Stages.DefaultAttributes
@@ -201,7 +201,7 @@ object Sink {
       .fromGraph(new HeadOptionStage[T])
       .withAttributes(DefaultAttributes.headSink)
       .mapMaterializedValue(e =>
-        e.map(_.getOrElse(throw new NoSuchElementException("head of empty stream")))(ExecutionContexts.parasitic))
+        e.map(_.getOrElse(throw new NoSuchElementException("head of empty stream")))(ExecutionContext.parasitic))
 
   /**
    * A `Sink` that materializes into a `Future` of the optional first value received.
@@ -223,7 +223,7 @@ object Sink {
   def last[T]: Sink[T, Future[T]] = {
     Sink.fromGraph(new TakeLastStage[T](1)).withAttributes(DefaultAttributes.lastSink).mapMaterializedValue { e =>
       e.map(_.headOption.getOrElse(throw new NoSuchElementException("last of empty stream")))(
-        ExecutionContexts.parasitic)
+        ExecutionContext.parasitic)
     }
   }
 
@@ -236,7 +236,7 @@ object Sink {
    */
   def lastOption[T]: Sink[T, Future[Option[T]]] = {
     Sink.fromGraph(new TakeLastStage[T](1)).withAttributes(DefaultAttributes.lastOptionSink).mapMaterializedValue { e =>
-      e.map(_.headOption)(ExecutionContexts.parasitic)
+      e.map(_.headOption)(ExecutionContext.parasitic)
     }
   }
 

@@ -28,7 +28,7 @@ import scala.util.control.NonFatal
 import org.apache.pekko
 import pekko.PekkoException
 import pekko.actor.{ ExtendedActorSystem, Scheduler }
-import pekko.dispatch.ExecutionContexts.parasitic
+import scala.concurrent.ExecutionContext.parasitic
 import pekko.pattern.internal.{ CircuitBreakerNoopTelemetry, CircuitBreakerTelemetry }
 import pekko.annotation.InternalApi
 import pekko.util.FutureConverters._

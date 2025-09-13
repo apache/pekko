@@ -143,7 +143,7 @@ object Tcp extends ExtensionId[Tcp] with ExtensionIdProvider {
 class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
   import Tcp._
 
-  import org.apache.pekko.dispatch.ExecutionContexts.parasitic
+  import scala.concurrent.ExecutionContext.parasitic
 
   private lazy val delegate: scaladsl.Tcp = scaladsl.Tcp(system)
 

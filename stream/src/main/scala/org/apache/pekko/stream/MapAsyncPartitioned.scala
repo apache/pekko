@@ -24,7 +24,7 @@ import scala.util.control.{ NoStackTrace, NonFatal }
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.dispatch.ExecutionContexts
+import scala.concurrent.ExecutionContext
 import pekko.stream.ActorAttributes.SupervisionStrategy
 import pekko.stream.stage._
 import pekko.util.OptionVal
@@ -157,7 +157,7 @@ private[stream] final class MapAsyncPartitioned[In, Out, Partition](
         partitionsInProgress += partition
 
         future.value match {
-          case None    => future.onComplete(holder)(ExecutionContexts.parasitic)
+          case None    => future.onComplete(holder)(ExecutionContext.parasitic)
           case Some(v) =>
             // #20217 the future is already here, optimization: avoid scheduling it on the dispatcher and
             // run the logic directly on this thread

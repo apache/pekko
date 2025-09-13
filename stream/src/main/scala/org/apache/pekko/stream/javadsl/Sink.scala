@@ -24,7 +24,7 @@ import scala.util.Try
 import org.apache.pekko
 import pekko._
 import pekko.actor.{ ActorRef, ClassicActorSystemProvider, Status }
-import pekko.dispatch.ExecutionContexts
+import scala.concurrent.ExecutionContext
 import pekko.japi.function
 import pekko.japi.function.Creator
 import pekko.stream._
@@ -96,7 +96,7 @@ object Sink {
   def forall[In](p: function.Predicate[In]): javadsl.Sink[In, CompletionStage[java.lang.Boolean]] = {
     import pekko.util.FutureConverters._
     new Sink(scaladsl.Sink.forall[In](p.test)
-      .mapMaterializedValue(_.map(Boolean.box)(ExecutionContexts.parasitic).asJava))
+      .mapMaterializedValue(_.map(Boolean.box)(ExecutionContext.parasitic).asJava))
   }
 
   /**
@@ -121,7 +121,7 @@ object Sink {
   def none[In](p: function.Predicate[In]): javadsl.Sink[In, CompletionStage[java.lang.Boolean]] = {
     import pekko.util.FutureConverters._
     new Sink(scaladsl.Sink.none[In](p.test)
-      .mapMaterializedValue(_.map(Boolean.box)(ExecutionContexts.parasitic).asJava))
+      .mapMaterializedValue(_.map(Boolean.box)(ExecutionContext.parasitic).asJava))
   }
 
   /**
@@ -146,7 +146,7 @@ object Sink {
   def exists[In](p: function.Predicate[In]): javadsl.Sink[In, CompletionStage[java.lang.Boolean]] = {
     import pekko.util.FutureConverters._
     new Sink(scaladsl.Sink.exists[In](p.test)
-      .mapMaterializedValue(_.map(Boolean.box)(ExecutionContexts.parasitic).asJava))
+      .mapMaterializedValue(_.map(Boolean.box)(ExecutionContext.parasitic).asJava))
   }
 
   /**
@@ -231,7 +231,7 @@ object Sink {
       f: function.Function[T, CompletionStage[Void]]): Sink[T, CompletionStage[Done]] =
     new Sink(
       scaladsl.Sink
-        .foreachAsync(parallelism)((x: T) => f(x).asScala.map(scalaAnyToUnit)(ExecutionContexts.parasitic))
+        .foreachAsync(parallelism)((x: T) => f(x).asScala.map(scalaAnyToUnit)(ExecutionContext.parasitic))
         .toCompletionStage())
 
   /**
@@ -260,7 +260,7 @@ object Sink {
    * See also [[head]].
    */
   def headOption[In](): Sink[In, CompletionStage[Optional[In]]] =
-    new Sink(scaladsl.Sink.headOption[In].mapMaterializedValue(_.map(_.toJava)(ExecutionContexts.parasitic).asJava))
+    new Sink(scaladsl.Sink.headOption[In].mapMaterializedValue(_.map(_.toJava)(ExecutionContext.parasitic).asJava))
 
   /**
    * A `Sink` that materializes into a `CompletionStage` of the last value received.
@@ -280,7 +280,7 @@ object Sink {
    * See also [[head]], [[takeLast]].
    */
   def lastOption[In](): Sink[In, CompletionStage[Optional[In]]] =
-    new Sink(scaladsl.Sink.lastOption[In].mapMaterializedValue(_.map(_.toJava)(ExecutionContexts.parasitic).asJava))
+    new Sink(scaladsl.Sink.lastOption[In].mapMaterializedValue(_.map(_.toJava)(ExecutionContext.parasitic).asJava))
 
   /**
    * A `Sink` that materializes into a `CompletionStage` of `List<In>` containing the last `n` collected elements.
@@ -294,7 +294,7 @@ object Sink {
     new Sink(
       scaladsl.Sink
         .takeLast[In](n)
-        .mapMaterializedValue(fut => fut.map(sq => sq.asJava)(ExecutionContexts.parasitic).asJava))
+        .mapMaterializedValue(fut => fut.map(sq => sq.asJava)(ExecutionContext.parasitic).asJava))
   }
 
   /**
@@ -310,7 +310,7 @@ object Sink {
   def seq[In]: Sink[In, CompletionStage[java.util.List[In]]] = {
     import pekko.util.ccompat.JavaConverters._
     new Sink(
-      scaladsl.Sink.seq[In].mapMaterializedValue(fut => fut.map(sq => sq.asJava)(ExecutionContexts.parasitic).asJava))
+      scaladsl.Sink.seq[In].mapMaterializedValue(fut => fut.map(sq => sq.asJava)(ExecutionContext.parasitic).asJava))
   }
 
   /**
@@ -512,7 +512,7 @@ object Sink {
    */
   def lazyCompletionStageSink[T, M](create: Creator[CompletionStage[Sink[T, M]]]): Sink[T, CompletionStage[M]] =
     new Sink(scaladsl.Sink.lazyFutureSink { () =>
-      create.create().asScala.map(_.asScala)(ExecutionContexts.parasitic)
+      create.create().asScala.map(_.asScala)(ExecutionContext.parasitic)
     }).mapMaterializedValue(_.asJava)
 }
 

@@ -18,7 +18,7 @@ import scala.concurrent.Future
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.actor.typed.ActorRef
-import pekko.dispatch.ExecutionContexts
+import scala.concurrent.ExecutionContext
 import pekko.pattern.{ AskTimeoutException, StatusReply }
 import pekko.stream._
 import pekko.stream.scaladsl._
@@ -182,7 +182,7 @@ object ActorFlow {
       implicit timeout: Timeout): Flow[(I, Ctx), (A, Ctx), NotUsed] =
     askImpl[(I, Ctx), Q, A, (A, Ctx)](parallelism)(ref)(
       (in, r) => makeMessage(in._1, r),
-      (in, o: Future[A]) => o.map(a => a -> in._2)(ExecutionContexts.parasitic))
+      (in, o: Future[A]) => o.map(a => a -> in._2)(ExecutionContext.parasitic))
 
   /**
    * Use for messages whose response is known to be a [[pekko.pattern.StatusReply]]. When a [[pekko.pattern.StatusReply#success]] response
@@ -202,7 +202,7 @@ object ActorFlow {
       makeMessage: (I, ActorRef[StatusReply[A]]) => Q)(implicit timeout: Timeout): Flow[(I, Ctx), (A, Ctx), NotUsed] = {
     askImpl[(I, Ctx), Q, StatusReply[A], (StatusReply[A], Ctx)](parallelism)(ref)(
       (in, r) => makeMessage(in._1, r),
-      (in, o: Future[StatusReply[A]]) => o.map(a => a -> in._2)(ExecutionContexts.parasitic)).map {
+      (in, o: Future[StatusReply[A]]) => o.map(a => a -> in._2)(ExecutionContext.parasitic)).map {
       case (StatusReply.Success(a), ctx) => a.asInstanceOf[A] -> ctx
       case (StatusReply.Error(err), _)   => throw err
       case _                             => throw new RuntimeException() // compiler exhaustiveness check pleaser
