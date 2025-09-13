@@ -19,3 +19,5 @@
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.compat.PartialFunction")
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.compat.PartialFunction$")
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.util.ccompat.ccompatUsedUntil213")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.compat.Future")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.compat.Future$")
