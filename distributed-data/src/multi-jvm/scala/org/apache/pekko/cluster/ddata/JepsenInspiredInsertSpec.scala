@@ -17,8 +17,6 @@ import java.util.concurrent.ThreadLocalRandom
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.cluster.Cluster
 import pekko.remote.testconductor.RoleName
@@ -26,6 +24,8 @@ import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.testkit.MultiNodeSpec
 import pekko.remote.transport.ThrottlerTransportAdapter.Direction
 import pekko.testkit._
+
+import com.typesafe.config.ConfigFactory
 
 object JepsenInspiredInsertSpec extends MultiNodeConfig {
   val controller = role("controller")

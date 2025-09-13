@@ -13,10 +13,10 @@
 
 package org.apache.pekko.actor.typed
 
+import org.apache.pekko.actor.testkit.typed.scaladsl.LogCapturing
+
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-
-import org.apache.pekko.actor.testkit.typed.scaladsl.LogCapturing
 
 class PropsSpec extends AnyWordSpec with Matchers with LogCapturing {
 

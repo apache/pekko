@@ -18,21 +18,23 @@ import java.util.concurrent.{ Callable, CompletionException, CompletionStage, Co
 import java.util.concurrent.atomic.{ AtomicBoolean, AtomicInteger, AtomicLong }
 import java.util.function.BiFunction
 import java.util.function.Consumer
+
 import scala.annotation.nowarn
 import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
 import scala.concurrent.TimeoutException
 import scala.concurrent.duration._
+import scala.jdk.DurationConverters._
 import scala.util.{ Failure, Success, Try }
 import scala.util.control.NoStackTrace
 import scala.util.control.NonFatal
+
 import org.apache.pekko
 import pekko.PekkoException
 import pekko.actor.{ ExtendedActorSystem, Scheduler }
+import pekko.annotation.InternalApi
 import pekko.dispatch.ExecutionContexts.parasitic
 import pekko.pattern.internal.{ CircuitBreakerNoopTelemetry, CircuitBreakerTelemetry }
-import pekko.annotation.InternalApi
 import pekko.util.FutureConverters._
-import pekko.util.JavaDurationConverters._
 
 /**
  * Companion object providing factory methods for Circuit Breaker which runs callbacks in caller's thread
@@ -84,7 +86,7 @@ object CircuitBreaker {
       maxFailures: Int,
       callTimeout: java.time.Duration,
       resetTimeout: java.time.Duration): CircuitBreaker =
-    apply(scheduler, maxFailures, callTimeout.asScala, resetTimeout.asScala)
+    apply(scheduler, maxFailures, callTimeout.toScala, resetTimeout.toScala)
 
   /**
    * Java API: Lookup a CircuitBreaker in registry.
@@ -172,8 +174,8 @@ class CircuitBreaker(
     this(
       scheduler,
       maxFailures,
-      callTimeout.asScala,
-      resetTimeout.asScala,
+      callTimeout.toScala,
+      resetTimeout.toScala,
       maxResetTimeout = 36500.days,
       exponentialBackoffFactor = 1.0,
       randomFactor = 0.0)(executor)
@@ -232,7 +234,7 @@ class CircuitBreaker(
    * @param maxResetTimeout the upper bound of resetTimeout
    */
   def withExponentialBackoff(maxResetTimeout: java.time.Duration): CircuitBreaker = {
-    withExponentialBackoff(maxResetTimeout.asScala)
+    withExponentialBackoff(maxResetTimeout.toScala)
   }
 
   /**

@@ -13,8 +13,8 @@
 
 package org.apache.pekko.actor
 
-import java.lang.reflect.Modifier
 import java.lang.reflect.Constructor
+import java.lang.reflect.Modifier
 
 import scala.annotation.tailrec
 import scala.annotation.varargs

@@ -17,8 +17,6 @@ import java.util.concurrent.atomic.AtomicInteger
 
 import scala.concurrent.duration._
 
-import org.scalatest.wordspec.AnyWordSpecLike
-
 import org.apache.pekko
 import pekko.actor
 import pekko.actor.ActorInitializationException
@@ -28,6 +26,8 @@ import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.testkit.typed.scaladsl.TestProbe
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.adapter._
+
+import org.scalatest.wordspec.AnyWordSpecLike
 
 object TransformMessagesSpec {
 

@@ -19,8 +19,8 @@ import pekko.annotation.ApiMayChange
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 import pekko.japi.function
-import pekko.persistence.typed.state.internal.SideEffect
 import pekko.persistence.typed.state.internal._
+import pekko.persistence.typed.state.internal.SideEffect
 
 /**
  * INTERNAL API: see `class EffectFactories`

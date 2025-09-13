@@ -13,12 +13,13 @@
 
 package org.apache.pekko.persistence.journal
 
-import com.typesafe.config.ConfigFactory
+import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.testkit.PekkoSpec
 
-import scala.annotation.nowarn
+import com.typesafe.config.ConfigFactory
 
 @nowarn("msg=Unused import")
 class InmemEventAdaptersSpec extends PekkoSpec {

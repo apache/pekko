@@ -16,8 +16,7 @@ package org.apache.pekko.persistence.typed.delivery
 import java.time.{ Duration => JavaDuration }
 
 import scala.concurrent.duration._
-
-import com.typesafe.config.Config
+import scala.jdk.DurationConverters._
 
 import org.apache.pekko
 import pekko.actor.typed.ActorSystem
@@ -32,7 +31,8 @@ import pekko.persistence.typed.delivery.EventSourcedProducerQueue.CleanupTick
 import pekko.persistence.typed.scaladsl.Effect
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior
 import pekko.persistence.typed.scaladsl.RetentionCriteria
-import pekko.util.JavaDurationConverters._
+
+import com.typesafe.config.Config
 
 /**
  * [[pekko.actor.typed.delivery.DurableProducerQueue]] that can be used with [[pekko.actor.typed.delivery.ProducerController]]
@@ -61,11 +61,11 @@ object EventSourcedProducerQueue {
      */
     def apply(config: Config): Settings = {
       new Settings(
-        restartMaxBackoff = config.getDuration("restart-max-backoff").asScala,
+        restartMaxBackoff = config.getDuration("restart-max-backoff").toScala,
         snapshotEvery = config.getInt("snapshot-every"),
         keepNSnapshots = config.getInt("keep-n-snapshots"),
         deleteEvents = config.getBoolean("delete-events"),
-        cleanupUnusedAfter = config.getDuration("cleanup-unused-after").asScala,
+        cleanupUnusedAfter = config.getDuration("cleanup-unused-after").toScala,
         journalPluginId = config.getString("journal-plugin-id"),
         snapshotPluginId = config.getString("snapshot-plugin-id"))
     }
@@ -113,13 +113,13 @@ object EventSourcedProducerQueue {
      * Java API
      */
     def withRestartMaxBackoff(newRestartMaxBackoff: JavaDuration): Settings =
-      copy(restartMaxBackoff = newRestartMaxBackoff.asScala)
+      copy(restartMaxBackoff = newRestartMaxBackoff.toScala)
 
     /**
      * Java API
      */
     def getRestartMaxBackoff(): JavaDuration =
-      restartMaxBackoff.asJava
+      restartMaxBackoff.toJava
 
     /**
      * Scala API
@@ -131,13 +131,13 @@ object EventSourcedProducerQueue {
      * Java API
      */
     def withCleanupUnusedAfter(newCleanupUnusedAfter: JavaDuration): Settings =
-      copy(cleanupUnusedAfter = newCleanupUnusedAfter.asScala)
+      copy(cleanupUnusedAfter = newCleanupUnusedAfter.toScala)
 
     /**
      * Java API
      */
     def getCleanupUnusedAfter(): JavaDuration =
-      cleanupUnusedAfter.asJava
+      cleanupUnusedAfter.toJava
 
     def withJournalPluginId(id: String): Settings =
       copy(journalPluginId = id)

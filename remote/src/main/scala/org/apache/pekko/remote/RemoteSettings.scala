@@ -13,11 +13,9 @@
 
 package org.apache.pekko.remote
 
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent.duration._
-
-import scala.annotation.nowarn
-import com.typesafe.config.Config
 
 import org.apache.pekko
 import pekko.ConfigurationException
@@ -29,6 +27,8 @@ import pekko.japi.Util._
 import pekko.remote.artery.ArterySettings
 import pekko.util.Helpers.{ toRootLowerCase, ConfigOps, Requiring }
 import pekko.util.Timeout
+
+import com.typesafe.config.Config
 
 final class RemoteSettings(val config: Config) {
   import config._

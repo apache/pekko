@@ -22,8 +22,8 @@ import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.EmptyLocalActorRef
 import pekko.actor._
+import pekko.actor.EmptyLocalActorRef
 import pekko.event.Logging
 import pekko.remote.MessageSerializer
 import pekko.remote.OversizedPayloadException
@@ -35,8 +35,8 @@ import pekko.remote.artery.Decoder.InboundCompressionAccess
 import pekko.remote.artery.Decoder.InboundCompressionAccessImpl
 import pekko.remote.artery.OutboundHandshake.HandshakeReq
 import pekko.remote.artery.SystemMessageDelivery.SystemMessageEnvelope
-import pekko.remote.artery.compress.CompressionProtocol._
 import pekko.remote.artery.compress._
+import pekko.remote.artery.compress.CompressionProtocol._
 import pekko.remote.serialization.AbstractActorRefResolveCache
 import pekko.serialization.Serialization
 import pekko.serialization.SerializationExtension

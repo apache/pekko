@@ -13,9 +13,6 @@
 
 package org.apache.pekko.cluster.sharding.typed
 
-import com.typesafe.config.ConfigFactory
-import org.scalatest.concurrent.ScalaFutures
-
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.TestProbe
 import pekko.actor.typed.ActorRef
@@ -30,6 +27,10 @@ import pekko.cluster.typed.MultiNodeTypedClusterSpec
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.testkit.MultiNodeSpec
 import pekko.serialization.jackson.CborSerializable
+
+import org.scalatest.concurrent.ScalaFutures
+
+import com.typesafe.config.ConfigFactory
 
 object ClusterShardingStatsSpecConfig extends MultiNodeConfig {
 

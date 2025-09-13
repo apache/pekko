@@ -19,14 +19,14 @@ import java.util.concurrent.TimeUnit
 
 import scala.concurrent.duration._
 
-import org.scalatest.wordspec.AnyWordSpecLike
-
 import org.apache.pekko
 import pekko.actor.testkit.typed.TestException
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.testkit.typed.scaladsl.TestProbe
+
+import org.scalatest.wordspec.AnyWordSpecLike
 
 object AbstractStashSpec {
   sealed trait Command

@@ -13,9 +13,9 @@
 
 package org.apache.pekko.remote
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko.actor.ActorMailboxSpec
+
+import com.typesafe.config.ConfigFactory
 
 class RemoteActorMailboxSpec
     extends ActorMailboxSpec(

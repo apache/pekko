@@ -17,12 +17,13 @@ import java.time.Duration
 import java.util.{ List => JList }
 import java.util.{ function => jf }
 
+import scala.jdk.DurationConverters._
+
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.annotation.ApiMayChange
 import pekko.persistence.testkit.{ EventStorage, ExpectedFailure, ExpectedRejection, JournalOperation }
 import pekko.persistence.testkit.scaladsl.{ PersistenceTestKit => ScalaTestKit }
-import pekko.util.JavaDurationConverters._
 import pekko.util.ccompat.JavaConverters._
 
 /**
@@ -42,7 +43,7 @@ class PersistenceTestKit(scalaTestkit: ScalaTestKit) {
    * Check for `max` time that nothing has been saved in the storage.
    */
   def expectNothingPersisted(persistenceId: String, max: Duration): Unit =
-    scalaTestkit.expectNothingPersisted(persistenceId, max.asScala)
+    scalaTestkit.expectNothingPersisted(persistenceId, max.toScala)
 
   /**
    * Check that `event` has been saved in the storage.
@@ -54,7 +55,7 @@ class PersistenceTestKit(scalaTestkit: ScalaTestKit) {
    * Check for `max` time that `event` has been saved in the storage.
    */
   def expectNextPersisted[A](persistenceId: String, event: A, max: Duration): A =
-    scalaTestkit.expectNextPersisted(persistenceId, event, max.asScala)
+    scalaTestkit.expectNextPersisted(persistenceId, event, max.toScala)
 
   /**
    * Check that next persisted in storage for particular persistence id event has expected type.
@@ -66,7 +67,7 @@ class PersistenceTestKit(scalaTestkit: ScalaTestKit) {
    * Check for `max` time that next persisted in storage for particular persistence id event has expected type.
    */
   def expectNextPersistedClass[A](persistenceId: String, cla: Class[A], max: Duration): A =
-    scalaTestkit.expectNextPersistedClass(persistenceId, cla, max.asScala)
+    scalaTestkit.expectNextPersistedClass(persistenceId, cla, max.toScala)
 
   /**
    * Fail next `n` write operations with the `cause` exception for particular persistence id.
@@ -201,7 +202,7 @@ class PersistenceTestKit(scalaTestkit: ScalaTestKit) {
    * Receive for `max` time next n events from the storage.
    */
   def receivePersisted[A](persistenceId: String, n: Int, cla: Class[A], max: Duration): JList[A] =
-    scalaTestkit.receivePersisted(persistenceId, n, cla, max.asScala).asJava
+    scalaTestkit.receivePersisted(persistenceId, n, cla, max.toScala).asJava
 
   /**
    * Reject next n save in storage operations for particular persistence id with `cause` exception.

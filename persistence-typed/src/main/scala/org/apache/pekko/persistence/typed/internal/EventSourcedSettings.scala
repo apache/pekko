@@ -13,11 +13,11 @@
 
 package org.apache.pekko.persistence.typed.internal
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.actor.typed.ActorSystem
 import pekko.annotation.InternalApi
+
+import com.typesafe.config.Config
 
 /**
  * INTERNAL API

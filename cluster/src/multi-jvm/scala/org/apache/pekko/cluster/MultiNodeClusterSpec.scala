@@ -20,21 +20,22 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.language.implicitConversions
 
-import com.typesafe.config.{ Config, ConfigFactory }
-import org.scalatest.{ Canceled, Outcome, Suite }
-import org.scalatest.exceptions.TestCanceledException
-
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorRef, ActorSystem, Address, Deploy, PoisonPill, Props, RootActorPath }
 import pekko.cluster.ClusterEvent.{ MemberEvent, MemberRemoved }
 import pekko.event.Logging.ErrorLevel
 import pekko.remote.DefaultFailureDetectorRegistry
 import pekko.remote.testconductor.RoleName
-import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.testkit.{ MultiNodeSpec, STMultiNodeSpec }
+import pekko.remote.testkit.MultiNodeConfig
 import pekko.serialization.jackson.CborSerializable
 import pekko.testkit._
 import pekko.testkit.TestEvent._
+
+import org.scalatest.{ Canceled, Outcome, Suite }
+import org.scalatest.exceptions.TestCanceledException
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 object MultiNodeClusterSpec {
 

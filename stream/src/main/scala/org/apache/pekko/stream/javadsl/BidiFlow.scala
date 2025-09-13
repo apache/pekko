@@ -101,8 +101,8 @@ object BidiFlow {
    * the *joint* frequencies of the elements in both directions.
    */
   def bidirectionalIdleTimeout[I, O](timeout: java.time.Duration): BidiFlow[I, I, O, O, NotUsed] = {
-    import pekko.util.JavaDurationConverters._
-    new BidiFlow(scaladsl.BidiFlow.bidirectionalIdleTimeout(timeout.asScala))
+    import scala.jdk.DurationConverters._
+    new BidiFlow(scaladsl.BidiFlow.bidirectionalIdleTimeout(timeout.toScala))
   }
 }
 

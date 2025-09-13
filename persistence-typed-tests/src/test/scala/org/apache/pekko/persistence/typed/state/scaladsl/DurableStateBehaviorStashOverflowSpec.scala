@@ -13,6 +13,9 @@
 
 package org.apache.pekko.persistence.typed.state.scaladsl
 
+import scala.concurrent.{ Future, Promise }
+import scala.concurrent.duration._
+
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
@@ -20,14 +23,13 @@ import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.Behavior
 import pekko.persistence.state.DurableStateStoreProvider
-import pekko.persistence.state.scaladsl.{ DurableStateStore, DurableStateUpdateStore, GetObjectResult }
 import pekko.persistence.state.javadsl.{ DurableStateStore => JDurableStateStore }
+import pekko.persistence.state.scaladsl.{ DurableStateStore, DurableStateUpdateStore, GetObjectResult }
 import pekko.persistence.typed.PersistenceId
-import com.typesafe.config.ConfigFactory
+
 import org.scalatest.wordspec.AnyWordSpecLike
 
-import scala.concurrent.{ Future, Promise }
-import scala.concurrent.duration._
+import com.typesafe.config.ConfigFactory
 
 object DurableStateBehaviorStashOverflowSpec {
 

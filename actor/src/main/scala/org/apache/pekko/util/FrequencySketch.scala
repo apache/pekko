@@ -29,9 +29,9 @@
 
 package org.apache.pekko.util
 
-import org.apache.pekko.annotation.InternalApi
-
 import scala.util.hashing.MurmurHash3
+
+import org.apache.pekko.annotation.InternalApi
 
 /**
  * INTERNAL API

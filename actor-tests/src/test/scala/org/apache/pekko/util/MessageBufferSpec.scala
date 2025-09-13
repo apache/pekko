@@ -13,10 +13,10 @@
 
 package org.apache.pekko.util
 
+import org.apache.pekko.actor.{ ActorPath, ActorRef, ActorRefProvider, MinimalActorRef }
+
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-
-import org.apache.pekko.actor.{ ActorPath, ActorRef, ActorRefProvider, MinimalActorRef }
 
 class MessageBufferSpec extends AnyWordSpec with Matchers {
 

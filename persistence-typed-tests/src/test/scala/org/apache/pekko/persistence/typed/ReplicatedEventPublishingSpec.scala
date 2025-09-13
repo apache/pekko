@@ -23,9 +23,10 @@ import pekko.actor.typed.scaladsl.Behaviors
 import pekko.persistence.testkit.PersistenceTestKitPlugin
 import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
 import pekko.persistence.typed.internal.{ ReplicatedPublishedEventMetaData, VersionVector }
-import pekko.persistence.typed.scaladsl.ReplicatedEventSourcing
 import pekko.persistence.typed.scaladsl.Effect
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior
+import pekko.persistence.typed.scaladsl.ReplicatedEventSourcing
+
 import org.scalatest.wordspec.AnyWordSpecLike
 
 object ReplicatedEventPublishingSpec {

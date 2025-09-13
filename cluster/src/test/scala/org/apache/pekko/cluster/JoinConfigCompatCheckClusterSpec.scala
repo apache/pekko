@@ -13,12 +13,12 @@
 
 package org.apache.pekko.cluster
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.testkit.PekkoSpec
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 class JoinConfigCompatCheckClusterSpec extends PekkoSpec {
 

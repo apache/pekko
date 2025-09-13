@@ -15,15 +15,15 @@ package org.apache.pekko.actor
 
 import scala.concurrent.duration.{ Duration, FiniteDuration }
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.ConfigurationException
 import pekko.dispatch._
 import pekko.testkit._
 import pekko.util.Helpers.ConfigOps
 import pekko.util.unused
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 object ActorMailboxSpec {
   val mailboxConf = ConfigFactory.parseString(s"""

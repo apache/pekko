@@ -13,11 +13,11 @@
 
 package org.apache.pekko.cluster.metrics
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.actor.OneForOneStrategy
 import pekko.util.Helpers.ConfigOps
+
+import com.typesafe.config.Config
 
 /**
  * Default [[ClusterMetricsSupervisor]] strategy:

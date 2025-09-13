@@ -13,14 +13,14 @@
 
 package org.apache.pekko.persistence
 
+import java.io.NotSerializableException
 import java.nio.charset.StandardCharsets
+
 import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.actor.ExtendedActorSystem
 import pekko.serialization.Serialization
 import pekko.serialization.SerializerWithStringManifest
-
-import java.io.NotSerializableException
 
 final case class TestPayload(ref: ActorRef)
 

@@ -23,8 +23,6 @@ import scala.concurrent.{ Await, ExecutionContext }
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
-import com.typesafe.config.{ Config, ConfigFactory }
-
 import org.apache.pekko
 import pekko.ConfigurationException
 import pekko.actor._
@@ -38,6 +36,8 @@ import pekko.event.MarkerLoggingAdapter
 import pekko.japi.Util
 import pekko.pattern._
 import pekko.remote.{ UniqueAddress => _, _ }
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 /**
  * Cluster Extension Id and factory for creating Cluster extension.

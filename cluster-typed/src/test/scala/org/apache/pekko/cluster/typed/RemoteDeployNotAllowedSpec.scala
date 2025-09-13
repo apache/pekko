@@ -13,9 +13,6 @@
 
 package org.apache.pekko.cluster.typed
 
-import com.typesafe.config.ConfigFactory
-import org.scalatest.wordspec.AnyWordSpecLike
-
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.ActorTestKit
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
@@ -23,6 +20,10 @@ import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.testkit.typed.scaladsl.TestProbe
 import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.scaladsl.Behaviors
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.ConfigFactory
 
 object RemoteDeployNotAllowedSpec {
   def config = ConfigFactory.parseString(s"""

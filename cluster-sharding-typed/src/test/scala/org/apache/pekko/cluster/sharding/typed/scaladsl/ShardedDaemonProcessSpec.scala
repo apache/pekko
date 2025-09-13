@@ -15,9 +15,6 @@ package org.apache.pekko.cluster.sharding.typed.scaladsl
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-import org.scalatest.wordspec.AnyWordSpecLike
-
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
@@ -28,6 +25,10 @@ import pekko.cluster.MemberStatus
 import pekko.cluster.sharding.typed.ShardedDaemonProcessSettings
 import pekko.cluster.typed.Cluster
 import pekko.cluster.typed.Join
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.ConfigFactory
 
 object ShardedDaemonProcessSpec {
   // single node cluster config

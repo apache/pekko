@@ -15,10 +15,9 @@ package org.apache.pekko.testkit
 
 import java.util.concurrent.atomic.AtomicLong
 
+import scala.annotation.nowarn
 import scala.concurrent.Await
 import scala.reflect.ClassTag
-
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.actor._

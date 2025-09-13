@@ -13,12 +13,12 @@
 
 package org.apache.pekko.io.dns.internal
 
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-
 import org.apache.pekko
 import pekko.io.dns.{ RecordClass, RecordType }
 import pekko.util.ByteString
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 class MessageSpec extends AnyWordSpec with Matchers {
   "The Message" should {

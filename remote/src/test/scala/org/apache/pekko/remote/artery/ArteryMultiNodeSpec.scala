@@ -13,14 +13,15 @@
 
 package org.apache.pekko.remote.artery
 
-import com.typesafe.config.{ Config, ConfigFactory }
-import org.scalatest.{ Outcome, Pending }
-
 import org.apache.pekko
 import pekko.actor.{ ActorSystem, Address, BootstrapSetup, RootActorPath }
 import pekko.actor.setup.ActorSystemSetup
 import pekko.remote.RARP
 import pekko.testkit.{ PekkoSpec, SocketUtil }
+
+import org.scalatest.{ Outcome, Pending }
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 /**
  * Base class for remoting tests what needs to test interaction between a "local" actor system

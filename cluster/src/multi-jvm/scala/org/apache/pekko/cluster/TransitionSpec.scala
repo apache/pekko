@@ -15,7 +15,6 @@ package org.apache.pekko.cluster
 
 import InternalClusterAction._
 import MemberStatus._
-import com.typesafe.config.ConfigFactory
 import language.implicitConversions
 
 import org.apache.pekko
@@ -23,6 +22,8 @@ import pekko.actor.Address
 import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.testkit._
+
+import com.typesafe.config.ConfigFactory
 
 object TransitionMultiJvmSpec extends MultiNodeConfig {
   val first = role("first")

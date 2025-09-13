@@ -17,11 +17,12 @@
 
 package org.apache.pekko.util
 
+import java.util._
+
+import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.util.OptionConverters._
-
-import java.util._
-import scala.annotation.nowarn
 
 /**
  * These tests are here to ensure that methods from [[org.apache.pekko.util.FutureConverters]], [[org.apache.pekko.util.OptionConverters]]

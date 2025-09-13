@@ -20,6 +20,7 @@ import java.util.concurrent.CompletionStage
 import java.util.concurrent.ConcurrentHashMap
 
 import scala.concurrent.Future
+import scala.jdk.DurationConverters._
 
 import org.apache.pekko
 import pekko.actor.ActorRefProvider
@@ -51,7 +52,6 @@ import pekko.pattern.PromiseActorRef
 import pekko.pattern.StatusReply
 import pekko.util.{ unused, ByteString, Timeout }
 import pekko.util.FutureConverters._
-import pekko.util.JavaDurationConverters._
 
 /**
  * INTERNAL API
@@ -346,13 +346,13 @@ import pekko.util.JavaDurationConverters._
   }
 
   override def ask[U](message: JFunction[ActorRef[U], M], timeout: Duration): CompletionStage[U] =
-    ask[U](replyTo => message.apply(replyTo))(timeout.asScala).asJava
+    ask[U](replyTo => message.apply(replyTo))(timeout.toScala).asJava
 
   override def askWithStatus[Res](f: ActorRef[StatusReply[Res]] => M)(implicit timeout: Timeout): Future[Res] =
     StatusReply.flattenStatusFuture(ask[StatusReply[Res]](f))
 
   override def askWithStatus[Res](f: ActorRef[StatusReply[Res]] => M, timeout: Duration): CompletionStage[Res] =
-    askWithStatus(f.apply)(timeout.asScala).asJava
+    askWithStatus(f.apply)(timeout.toScala).asJava
 
   /** Similar to [[pekko.actor.typed.scaladsl.AskPattern.PromiseRef]] but for an `EntityRef` target. */
   @InternalApi

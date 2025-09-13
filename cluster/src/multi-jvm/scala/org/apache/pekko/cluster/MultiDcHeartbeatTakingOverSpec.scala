@@ -17,8 +17,6 @@ import scala.collection.immutable
 import scala.collection.immutable.SortedSet
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.actor.ActorSelection
@@ -26,6 +24,8 @@ import pekko.annotation.InternalApi
 import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.testkit._
+
+import com.typesafe.config.ConfigFactory
 
 object MultiDcHeartbeatTakingOverSpecMultiJvmSpec extends MultiNodeConfig {
   val first = role("first") //   alpha

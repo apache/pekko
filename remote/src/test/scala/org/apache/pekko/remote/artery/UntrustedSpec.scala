@@ -15,8 +15,6 @@ package org.apache.pekko.remote.artery
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.Actor
 import pekko.actor.ActorIdentity
@@ -35,6 +33,8 @@ import pekko.testkit.EventFilter
 import pekko.testkit.ImplicitSender
 import pekko.testkit.TestEvent
 import pekko.testkit.TestProbe
+
+import com.typesafe.config.ConfigFactory
 
 object UntrustedSpec {
   final case class IdentifyReq(path: String) extends CborSerializable

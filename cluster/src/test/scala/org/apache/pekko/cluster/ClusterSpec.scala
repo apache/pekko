@@ -14,12 +14,10 @@
 package org.apache.pekko.cluster
 
 import java.lang.management.ManagementFactory
-
 import javax.management.ObjectName
+
 import scala.concurrent.Await
 import scala.concurrent.duration._
-
-import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
@@ -34,10 +32,12 @@ import pekko.stream.Materializer
 import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.Source
 import pekko.stream.scaladsl.StreamRefs
-import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
+import pekko.testkit.PekkoSpec
 import pekko.testkit.TestProbe
 import pekko.util.Version
+
+import com.typesafe.config.ConfigFactory
 
 object ClusterSpec {
   val config = """

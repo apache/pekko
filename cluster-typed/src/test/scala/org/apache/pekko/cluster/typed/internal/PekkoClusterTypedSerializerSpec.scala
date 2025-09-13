@@ -13,8 +13,6 @@
 
 package org.apache.pekko.cluster.typed.internal
 
-import org.scalatest.wordspec.AnyWordSpecLike
-
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
@@ -23,6 +21,8 @@ import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.adapter._
 import pekko.cluster.typed.internal.receptionist.ClusterReceptionist
 import pekko.serialization.SerializationExtension
+
+import org.scalatest.wordspec.AnyWordSpecLike
 
 class PekkoClusterTypedSerializerSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with LogCapturing {
 

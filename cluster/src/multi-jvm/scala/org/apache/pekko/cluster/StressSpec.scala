@@ -19,10 +19,6 @@ import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.concurrent.duration._
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-import org.scalatest.BeforeAndAfterEach
-
 import org.apache.pekko
 import pekko.actor.Actor
 import pekko.actor.ActorIdentity
@@ -47,10 +43,15 @@ import pekko.remote.artery.ArterySettings.AeronUpd
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.testkit.MultiNodeSpec
 import pekko.remote.transport.ThrottlerTransportAdapter
-import pekko.testkit.TestEvent._
 import pekko.testkit._
+import pekko.testkit.TestEvent._
 import pekko.util.Helpers.ConfigOps
 import pekko.util.Helpers.Requiring
+
+import org.scalatest.BeforeAndAfterEach
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 /**
  * This test is intended to be used as long running stress test

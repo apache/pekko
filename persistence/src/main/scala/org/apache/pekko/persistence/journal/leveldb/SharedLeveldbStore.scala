@@ -19,12 +19,12 @@ import scala.util.Success
 import scala.util.Try
 import scala.util.control.NonFatal
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.pattern.pipe
 import pekko.persistence.AtomicWrite
 import pekko.persistence.journal.AsyncWriteTarget
+
+import com.typesafe.config.Config
 
 /**
  * A LevelDB store that can be shared by multiple actor systems. The shared store must be

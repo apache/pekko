@@ -552,16 +552,16 @@ Scala has proven the most viable way to do it, as long as you keep the following
 
 #### Overview of Scala types and their Java counterparts
 
-| Scala | Java |
-|-------|------|
-| `scala.Option[T]` | `java.util.Optional<T>` (`OptionalDouble`, ...) |
-| `scala.collection.immutable.Seq[T]` | `java.util.List<T>` |
-| `scala.concurrent.Future[T]` | `java.util.concurrent.CompletionStage<T>` |
-| `scala.concurrent.Promise[T]` | `java.util.concurrent.CompletableFuture<T>` |
-| `scala.concurrent.duration.FiniteDuration` | `java.time.Duration` (use `org.apache.pekko.util.JavaDurationConverters`) |
-| `T => Unit` | `java.util.function.Consumer<T>` |
-| `() => R` (`scala.Function0[R]`) | `java.util.function.Supplier<R>` |
-| `T => R` (`scala.Function1[T, R]`) | `java.util.function.Function<T, R>` |
+| Scala | Java                                                           |
+|-------|----------------------------------------------------------------|
+| `scala.Option[T]` | `java.util.Optional<T>` (`OptionalDouble`, ...)                |
+| `scala.collection.immutable.Seq[T]` | `java.util.List<T>`                                            |
+| `scala.concurrent.Future[T]` | `java.util.concurrent.CompletionStage<T>`                      |
+| `scala.concurrent.Promise[T]` | `java.util.concurrent.CompletableFuture<T>`                    |
+| `scala.concurrent.duration.FiniteDuration` | `java.time.Duration` (use `scala.jdk.javaapi.DurationConverters`) |
+| `T => Unit` | `java.util.function.Consumer<T>`                               |
+| `() => R` (`scala.Function0[R]`) | `java.util.function.Supplier<R>`                               |
+| `T => R` (`scala.Function1[T, R]`) | `java.util.function.Function<T, R>`                            |
 
 ### Contributing new Pekko Streams operators
 

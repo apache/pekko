@@ -14,6 +14,7 @@
 package org.apache.pekko.cluster.typed
 
 import scala.concurrent.duration.{ Duration, FiniteDuration, _ }
+import scala.jdk.DurationConverters._
 
 import org.apache.pekko
 import pekko.actor.typed._
@@ -25,7 +26,7 @@ import pekko.cluster.singleton.{
 }
 import pekko.cluster.typed.internal.AdaptedClusterSingletonImpl
 import pekko.coordination.lease.LeaseUsageSettings
-import pekko.util.JavaDurationConverters._
+
 import com.typesafe.config.Config
 
 object ClusterSingletonSettings {
@@ -73,13 +74,13 @@ final class ClusterSingletonSettings(
   def withRemovalMargin(removalMargin: FiniteDuration): ClusterSingletonSettings = copy(removalMargin = removalMargin)
 
   def withRemovalMargin(removalMargin: java.time.Duration): ClusterSingletonSettings =
-    withRemovalMargin(removalMargin.asScala)
+    withRemovalMargin(removalMargin.toScala)
 
   def withHandoverRetryInterval(handOverRetryInterval: FiniteDuration): ClusterSingletonSettings =
     copy(handOverRetryInterval = handOverRetryInterval)
 
   def withHandoverRetryInterval(handOverRetryInterval: java.time.Duration): ClusterSingletonSettings =
-    withHandoverRetryInterval(handOverRetryInterval.asScala)
+    withHandoverRetryInterval(handOverRetryInterval.toScala)
 
   def withBufferSize(bufferSize: Int): ClusterSingletonSettings = copy(bufferSize = bufferSize)
 
@@ -237,7 +238,7 @@ object ClusterSingletonManagerSettings {
     val lease = config.getString("use-lease") match {
       case s if s.isEmpty  => None
       case leaseConfigPath =>
-        Some(new LeaseUsageSettings(leaseConfigPath, config.getDuration("lease-retry-interval").asScala))
+        Some(new LeaseUsageSettings(leaseConfigPath, config.getDuration("lease-retry-interval").toScala))
     }
     new ClusterSingletonManagerSettings(
       singletonName = config.getString("singleton-name"),
@@ -303,13 +304,13 @@ final class ClusterSingletonManagerSettings(
     copy(removalMargin = removalMargin)
 
   def withRemovalMargin(removalMargin: java.time.Duration): ClusterSingletonManagerSettings =
-    withRemovalMargin(removalMargin.asScala)
+    withRemovalMargin(removalMargin.toScala)
 
   def withHandOverRetryInterval(retryInterval: FiniteDuration): ClusterSingletonManagerSettings =
     copy(handOverRetryInterval = retryInterval)
 
   def withHandOverRetryInterval(retryInterval: java.time.Duration): ClusterSingletonManagerSettings =
-    withHandOverRetryInterval(retryInterval.asScala)
+    withHandOverRetryInterval(retryInterval.toScala)
 
   def withLeaseSettings(leaseSettings: LeaseUsageSettings) = copy(leaseSettings = Option(leaseSettings))
 

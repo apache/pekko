@@ -18,12 +18,15 @@ import java.time.Duration
 import java.util.ArrayList
 import java.util.Optional
 import java.util.concurrent.CompletionStage
-import scala.concurrent.{ ExecutionContextExecutor, Future }
-import scala.reflect.ClassTag
-import scala.util.Try
+
 import scala.annotation.{ nowarn, switch }
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import scala.concurrent.{ ExecutionContextExecutor, Future }
+import scala.jdk.DurationConverters._
+import scala.reflect.ClassTag
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
+
 import org.apache.pekko
 import pekko.actor.Address
 import pekko.actor.typed.internal.adapter.ActorSystemAdapter
@@ -31,12 +34,11 @@ import pekko.annotation.InternalApi
 import pekko.dispatch.ExecutionContexts
 import pekko.pattern.StatusReply
 import pekko.util.BoxedType
-import pekko.util.JavaDurationConverters._
 import pekko.util.OptionVal
 import pekko.util.Timeout
 
-import scala.util.Failure
-import scala.util.Success
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 /**
  * INTERNAL API
@@ -201,10 +203,10 @@ import scala.util.Success
   }
 
   override def setReceiveTimeout(duration: java.time.Duration, msg: T): Unit =
-    setReceiveTimeout(duration.asScala, msg)
+    setReceiveTimeout(duration.toScala, msg)
 
   override def scheduleOnce[U](delay: java.time.Duration, target: ActorRef[U], msg: U): pekko.actor.Cancellable =
-    scheduleOnce(delay.asScala, target, msg)
+    scheduleOnce(delay.toScala, target, msg)
 
   override def spawn[U](behavior: pekko.actor.typed.Behavior[U], name: String): pekko.actor.typed.ActorRef[U] =
     spawn(behavior, name, Props.empty)

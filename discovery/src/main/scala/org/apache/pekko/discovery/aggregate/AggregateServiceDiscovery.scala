@@ -17,8 +17,6 @@ import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
 import scala.util.control.NonFatal
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.annotation.InternalApi
@@ -29,6 +27,8 @@ import pekko.dispatch.MessageDispatcher
 import pekko.event.Logging
 import pekko.util.Helpers.Requiring
 import pekko.util.ccompat.JavaConverters._
+
+import com.typesafe.config.Config
 
 /**
  * INTERNAL API

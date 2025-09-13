@@ -26,9 +26,10 @@ import scala.reflect.ClassTag
 import de.kalpatec.pojosr.framework.launch.{ BundleDescriptor, ClasspathScanner, PojoServiceRegistryFactory }
 import org.apache.commons.io.IOUtils.copy
 import org.osgi.framework._
-import org.scalatest.{ BeforeAndAfterAll, Suite }
 
 import org.apache.pekko.util.ccompat.JavaConverters._
+
+import org.scalatest.{ BeforeAndAfterAll, Suite }
 
 /**
  * Trait that provides support for building pekko-osgi tests using PojoSR

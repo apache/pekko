@@ -21,8 +21,8 @@ import pekko.stream.scaladsl.Flow
 import pekko.stream.scaladsl.Framing.FramingException
 import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.Source
-import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
+import pekko.testkit.PekkoSpec
 import pekko.util.ByteString
 
 class TcpFramingSpec extends PekkoSpec("""

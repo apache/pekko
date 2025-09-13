@@ -15,15 +15,16 @@ package org.apache.pekko.persistence.typed.delivery
 
 import java.util.UUID
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-import org.scalatest.wordspec.AnyWordSpecLike
-
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl._
 import pekko.actor.typed.delivery.ConsumerController
 import pekko.actor.typed.delivery.ProducerController
 import pekko.persistence.typed.PersistenceId
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 object ReliableDeliveryWithEventSourcedProducerQueueSpec {
   def conf: Config =

@@ -15,8 +15,6 @@ package org.apache.pekko.cluster.typed.internal
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.TestProbe
 import pekko.actor.typed.receptionist.Receptionist
@@ -30,6 +28,8 @@ import pekko.cluster.typed.MultiNodeTypedClusterSpec
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.testkit.MultiNodeSpec
 import pekko.remote.transport.ThrottlerTransportAdapter.Direction
+
+import com.typesafe.config.ConfigFactory
 
 object ClusterReceptionistUnreachabilitySpecConfig extends MultiNodeConfig {
   val first = role("first")

@@ -15,15 +15,15 @@ package org.apache.pekko.persistence.typed.state.internal
 
 import java.util.concurrent.TimeUnit
 
-import scala.concurrent.duration.FiniteDuration
 import scala.concurrent.duration._
-
-import com.typesafe.config.Config
+import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
 import pekko.actor.typed.ActorSystem
 import pekko.annotation.InternalApi
 import pekko.persistence.Persistence
+
+import com.typesafe.config.Config
 
 /**
  * INTERNAL API

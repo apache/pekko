@@ -13,6 +13,7 @@
 
 package org.apache.pekko.stream.stage
 
+import java.util.Spliterator
 import java.util.concurrent.{ CompletionStage, ConcurrentHashMap }
 import java.util.concurrent.atomic.AtomicReference
 
@@ -35,8 +36,6 @@ import pekko.stream.scaladsl.GenericGraphWithChangedAttributes
 import pekko.stream.stage.ConcurrentAsyncCallbackState.{ NoPendingEvents, State }
 import pekko.util.OptionVal
 import pekko.util.unused
-
-import java.util.Spliterator
 
 /**
  * Scala API: A GraphStage represents a reusable graph stream processing operator.
@@ -1759,8 +1758,8 @@ abstract class TimerGraphStageLogic(_shape: Shape) extends GraphStageLogic(_shap
    * adding the new timer.
    */
   final protected def scheduleOnce(timerKey: Any, delay: java.time.Duration): Unit = {
-    import pekko.util.JavaDurationConverters._
-    scheduleOnce(timerKey, delay.asScala)
+    import scala.jdk.DurationConverters._
+    scheduleOnce(timerKey, delay.toScala)
   }
 
   /**
@@ -1793,8 +1792,8 @@ abstract class TimerGraphStageLogic(_shape: Shape) extends GraphStageLogic(_shap
       timerKey: Any,
       initialDelay: java.time.Duration,
       interval: java.time.Duration): Unit = {
-    import pekko.util.JavaDurationConverters._
-    scheduleWithFixedDelay(timerKey, initialDelay.asScala, interval.asScala)
+    import scala.jdk.DurationConverters._
+    scheduleWithFixedDelay(timerKey, initialDelay.toScala, interval.toScala)
   }
 
   /**
@@ -1827,8 +1826,8 @@ abstract class TimerGraphStageLogic(_shape: Shape) extends GraphStageLogic(_shap
       timerKey: Any,
       initialDelay: java.time.Duration,
       interval: java.time.Duration): Unit = {
-    import pekko.util.JavaDurationConverters._
-    scheduleAtFixedRate(timerKey, initialDelay.asScala, interval.asScala)
+    import scala.jdk.DurationConverters._
+    scheduleAtFixedRate(timerKey, initialDelay.toScala, interval.toScala)
   }
 
   /**

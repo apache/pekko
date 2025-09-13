@@ -13,11 +13,10 @@
 
 package org.apache.pekko.actor.dungeon
 
+import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.util.control.{ NoStackTrace, NonFatal }
 import scala.util.control.Exception.Catcher
-
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.PekkoException

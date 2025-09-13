@@ -18,13 +18,13 @@ import java.util.concurrent.TimeUnit
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.ConfigurationException
 import pekko.annotation.InternalApi
 import pekko.util.Helpers
 import pekko.util.Helpers.Requiring
+
+import com.typesafe.config.Config
 
 /**
  * INTERNAL API

@@ -16,12 +16,12 @@ package org.apache.pekko.remote
 import scala.concurrent.duration.Duration
 import scala.concurrent.duration.FiniteDuration
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.event.EventStream
 import pekko.remote.FailureDetector.Clock
 import pekko.util.Helpers.ConfigOps
+
+import com.typesafe.config.Config
 
 /**
  * Implementation of failure detector using an absolute timeout of missing heartbeats

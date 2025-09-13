@@ -14,6 +14,7 @@
 package org.apache.pekko.cluster
 
 import scala.concurrent.duration._
+
 import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.actor.Identify
@@ -23,6 +24,7 @@ import pekko.remote.artery.ThisActorSystemQuarantinedEvent
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.transport.ThrottlerTransportAdapter
 import pekko.testkit.LongRunningTest
+
 import com.typesafe.config.ConfigFactory
 
 object DowningWhenOtherHasQuarantinedThisActorSystemSpec extends MultiNodeConfig {

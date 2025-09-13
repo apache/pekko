@@ -14,13 +14,13 @@
 package org.apache.pekko.remote.artery
 
 import org.apache.pekko
+import pekko.pattern.ask
 import pekko.remote.RARP
 import pekko.testkit.DeadLettersFilter
 import pekko.testkit.ImplicitSender
 import pekko.testkit.TestActors
-import pekko.testkit.TestEvent.Mute
 import pekko.testkit.TestDuration
-import pekko.pattern.ask
+import pekko.testkit.TestEvent.Mute
 import pekko.util.Timeout
 
 /**

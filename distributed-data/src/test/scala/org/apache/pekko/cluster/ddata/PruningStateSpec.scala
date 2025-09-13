@@ -13,12 +13,12 @@
 
 package org.apache.pekko.cluster.ddata
 
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-
 import org.apache.pekko
 import pekko.actor.Address
 import pekko.cluster.UniqueAddress
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 class PruningStateSpec extends AnyWordSpec with Matchers {
   import PruningState._

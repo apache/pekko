@@ -15,13 +15,13 @@ package org.apache.pekko.cluster.sharding
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor._
 import pekko.cluster.{ Cluster, MemberStatus }
-import pekko.testkit._
 import pekko.remote.testkit.MultiNodeSpec
+import pekko.testkit._
+
+import com.typesafe.config.ConfigFactory
 
 object ClusterShardingRememberEntitiesSpec {
 

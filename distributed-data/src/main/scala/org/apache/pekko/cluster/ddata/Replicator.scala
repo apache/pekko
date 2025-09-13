@@ -19,20 +19,19 @@ import java.util.concurrent.ThreadLocalRandom
 import java.util.concurrent.TimeUnit
 import java.util.function.{ Function => JFunction }
 
+import scala.annotation.nowarn
 import scala.annotation.varargs
 import scala.collection.immutable
 import scala.collection.immutable.TreeSet
 import scala.collection.mutable
 import scala.concurrent.duration._
 import scala.concurrent.duration.FiniteDuration
+import scala.jdk.DurationConverters._
 import scala.util.Failure
 import scala.util.Success
 import scala.util.Try
 import scala.util.control.NoStackTrace
 import scala.util.control.NonFatal
-
-import scala.annotation.nowarn
-import com.typesafe.config.Config
 
 import org.apache.pekko
 import pekko.actor.Actor
@@ -68,7 +67,8 @@ import pekko.remote.RARP
 import pekko.serialization.SerializationExtension
 import pekko.util.ByteString
 import pekko.util.Helpers.toRootLowerCase
-import pekko.util.JavaDurationConverters._
+
+import com.typesafe.config.Config
 
 object ReplicatorSettings {
 
@@ -307,7 +307,7 @@ object Replicator {
     /**
      * Java API
      */
-    def this(n: Int, timeout: java.time.Duration) = this(n, timeout.asScala)
+    def this(n: Int, timeout: java.time.Duration) = this(n, timeout.toScala)
   }
   final case class ReadMajority(timeout: FiniteDuration, minCap: Int = DefaultMajorityMinCap) extends ReadConsistency {
     def this(timeout: FiniteDuration) = this(timeout, DefaultMajorityMinCap)
@@ -315,7 +315,7 @@ object Replicator {
     /**
      * Java API
      */
-    def this(timeout: java.time.Duration) = this(timeout.asScala, DefaultMajorityMinCap)
+    def this(timeout: java.time.Duration) = this(timeout.toScala, DefaultMajorityMinCap)
   }
 
   /**
@@ -329,14 +329,14 @@ object Replicator {
     /**
      * Java API
      */
-    def this(timeout: java.time.Duration, additional: Int) = this(timeout.asScala, additional, DefaultMajorityMinCap)
+    def this(timeout: java.time.Duration, additional: Int) = this(timeout.toScala, additional, DefaultMajorityMinCap)
   }
   final case class ReadAll(timeout: FiniteDuration) extends ReadConsistency {
 
     /**
      * Java API
      */
-    def this(timeout: java.time.Duration) = this(timeout.asScala)
+    def this(timeout: java.time.Duration) = this(timeout.toScala)
   }
 
   sealed trait WriteConsistency {
@@ -351,7 +351,7 @@ object Replicator {
     /**
      * Java API
      */
-    def this(n: Int, timeout: java.time.Duration) = this(n, timeout.asScala)
+    def this(n: Int, timeout: java.time.Duration) = this(n, timeout.toScala)
   }
   final case class WriteMajority(timeout: FiniteDuration, minCap: Int = DefaultMajorityMinCap)
       extends WriteConsistency {
@@ -360,7 +360,7 @@ object Replicator {
     /**
      * Java API
      */
-    def this(timeout: java.time.Duration) = this(timeout.asScala, DefaultMajorityMinCap)
+    def this(timeout: java.time.Duration) = this(timeout.toScala, DefaultMajorityMinCap)
   }
 
   /**
@@ -374,14 +374,14 @@ object Replicator {
     /**
      * Java API
      */
-    def this(timeout: java.time.Duration, additional: Int) = this(timeout.asScala, additional, DefaultMajorityMinCap)
+    def this(timeout: java.time.Duration, additional: Int) = this(timeout.toScala, additional, DefaultMajorityMinCap)
   }
   final case class WriteAll(timeout: FiniteDuration) extends WriteConsistency {
 
     /**
      * Java API
      */
-    def this(timeout: java.time.Duration) = this(timeout.asScala)
+    def this(timeout: java.time.Duration) = this(timeout.toScala)
   }
 
   /**

@@ -13,11 +13,8 @@
 
 package org.apache.pekko.remote
 
-import scala.concurrent.duration._
-
 import scala.annotation.nowarn
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor.Actor
@@ -36,6 +33,9 @@ import pekko.remote.artery.RemoteDeploymentSpec
 import pekko.testkit.EventFilter
 import pekko.testkit.ImplicitSender
 import pekko.testkit.TestProbe
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 object RemoteFeaturesSpec {
 

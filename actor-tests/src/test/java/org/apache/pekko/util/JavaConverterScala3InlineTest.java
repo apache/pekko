@@ -17,7 +17,6 @@
 
 package org.apache.pekko.util;
 
-import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import scala.Option;
@@ -25,7 +24,7 @@ import scala.concurrent.Future;
 
 /**
  * These tests are here to ensure that methods from {@link org.apache.pekko.util.FutureConverters},
- * {@link org.apache.pekko.util.JavaDurationConverters} and {@link
+ * {@link org.apache.scala.jdk.DurationConverters} and {@link
  * org.apache.pekko.util.OptionConverters} for use within Java can be compiled from with Java
  * sources. This is because methods marked with the Scala 3 inline keyword cannot be called from
  * within Java (see https://github.com/lampepfl/dotty/issues/19346)
@@ -40,7 +39,5 @@ public class JavaConverterScala3InlineTest {
 
     FutureConverters.asJava(Future.successful(""));
     FutureConverters.asScala(CompletableFuture.completedFuture(""));
-
-    JavaDurationConverters.asFiniteDuration(Duration.ofMillis(0));
   }
 }

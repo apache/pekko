@@ -14,11 +14,10 @@
 package org.apache.pekko.actor.testkit.typed.internal
 
 import java.util.concurrent.{ CompletionStage, ThreadFactory }
-import scala.concurrent._
+
 import scala.annotation.nowarn
-import com.typesafe.config.{ Config, ConfigFactory }
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import scala.concurrent._
+
 import org.apache.pekko
 import pekko.{ actor => classic }
 import pekko.Done
@@ -38,6 +37,11 @@ import pekko.actor.typed.internal.InternalRecipientRef
 import pekko.actor.typed.receptionist.Receptionist
 import pekko.annotation.InternalApi
 import pekko.util.FutureConverters._
+
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 /**
  * INTERNAL API
