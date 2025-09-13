@@ -15,8 +15,6 @@ package org.apache.pekko.cluster.pubsub
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.Actor
 import pekko.actor.ActorLogging
@@ -31,6 +29,8 @@ import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.testkit.MultiNodeSpec
 import pekko.remote.testkit.STMultiNodeSpec
 import pekko.testkit._
+
+import com.typesafe.config.ConfigFactory
 
 object DistributedPubSubMediatorSpec extends MultiNodeConfig {
   val first = role("first")

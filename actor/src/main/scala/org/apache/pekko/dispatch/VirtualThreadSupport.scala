@@ -17,13 +17,14 @@
 
 package org.apache.pekko.dispatch
 
+import java.lang.invoke.{ MethodHandles, MethodType }
+import java.util.concurrent.{ ExecutorService, ForkJoinPool, ForkJoinWorkerThread, ThreadFactory }
+
+import scala.util.control.NonFatal
+
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.util.JavaVersion
-
-import java.lang.invoke.{ MethodHandles, MethodType }
-import java.util.concurrent.{ ExecutorService, ForkJoinPool, ForkJoinWorkerThread, ThreadFactory }
-import scala.util.control.NonFatal
 
 @InternalApi
 private[dispatch] object VirtualThreadSupport {

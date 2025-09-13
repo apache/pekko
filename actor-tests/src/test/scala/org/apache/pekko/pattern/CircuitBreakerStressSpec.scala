@@ -24,8 +24,8 @@ import pekko.actor.Actor
 import pekko.actor.ActorLogging
 import pekko.actor.Props
 import pekko.actor.Status.Failure
-import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
+import pekko.testkit.PekkoSpec
 
 object CircuitBreakerStressSpec {
   case object JobDone

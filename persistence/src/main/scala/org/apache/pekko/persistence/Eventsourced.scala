@@ -16,12 +16,10 @@ package org.apache.pekko.persistence
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicInteger
 
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent.duration.FiniteDuration
 import scala.util.control.NonFatal
-
-import scala.annotation.nowarn
-import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorCell, DeadLetter, StashOverflowException }
@@ -29,6 +27,8 @@ import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.dispatch.Envelope
 import pekko.event.{ Logging, LoggingAdapter }
 import pekko.util.Helpers.ConfigOps
+
+import com.typesafe.config.ConfigFactory
 
 /** INTERNAL API */
 @InternalApi

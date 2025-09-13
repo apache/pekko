@@ -13,17 +13,17 @@
 
 package org.apache.pekko.stream.impl.fusing
 
+import scala.concurrent.{ Await, Future, Promise }
+
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.ActorRef
 import pekko.stream._
 import pekko.stream.scaladsl.{ Keep, Sink, Source }
 import pekko.stream.stage._
-import pekko.stream.testkit.Utils.TE
 import pekko.stream.testkit.{ TestPublisher, TestSubscriber }
+import pekko.stream.testkit.Utils.TE
 import pekko.testkit.{ PekkoSpec, TestProbe }
-
-import scala.concurrent.{ Await, Future, Promise }
 
 class AsyncCallbackSpec extends PekkoSpec("""
     pekko.stream.materializer.debug.fuzzing-mode = off

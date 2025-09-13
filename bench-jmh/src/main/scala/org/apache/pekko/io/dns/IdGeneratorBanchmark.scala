@@ -17,6 +17,9 @@
 
 package org.apache.pekko.io.dns
 
+import java.security.SecureRandom
+import java.util.concurrent.{ ThreadLocalRandom, TimeUnit }
+
 import org.openjdk.jmh.annotations.{
   Benchmark,
   BenchmarkMode,
@@ -29,9 +32,6 @@ import org.openjdk.jmh.annotations.{
   Threads,
   Warmup
 }
-
-import java.util.concurrent.{ ThreadLocalRandom, TimeUnit }
-import java.security.SecureRandom
 
 @BenchmarkMode(Array(Mode.Throughput))
 @OutputTimeUnit(TimeUnit.NANOSECONDS)

@@ -24,14 +24,16 @@ import pekko.actor.typed.Behavior
 import pekko.persistence.query.PersistenceQuery
 import pekko.persistence.query.scaladsl.CurrentEventsByPersistenceIdQuery
 import pekko.persistence.testkit.PersistenceTestKitPlugin
-import pekko.persistence.typed.scaladsl.ReplicatedEventSourcing
 import pekko.persistence.typed.scaladsl.Effect
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior
+import pekko.persistence.typed.scaladsl.ReplicatedEventSourcing
 import pekko.stream.scaladsl.Sink
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+
 import org.scalatest.concurrent.Eventually
 import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 object MultiJournalReplicationSpec {
 

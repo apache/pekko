@@ -16,9 +16,6 @@ package org.apache.pekko.remote.artery
 import scala.concurrent.Future
 import scala.concurrent.Promise
 
-import org.scalatest.concurrent.Eventually
-import org.scalatest.time.Span
-
 import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.actor.ActorSystem
@@ -29,6 +26,9 @@ import pekko.remote.UniqueAddress
 import pekko.testkit.ImplicitSender
 import pekko.testkit.TestActors
 import pekko.testkit.TestProbe
+
+import org.scalatest.concurrent.Eventually
+import org.scalatest.time.Span
 
 class HarmlessQuarantineSpec extends ArteryMultiNodeSpec("""
   pekko.loglevel=INFO

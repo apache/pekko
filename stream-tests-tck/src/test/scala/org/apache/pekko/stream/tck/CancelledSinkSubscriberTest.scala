@@ -13,10 +13,11 @@
 
 package org.apache.pekko.stream.tck
 
-import org.reactivestreams.Subscriber
 import org.testng.SkipException
 
 import org.apache.pekko.stream.scaladsl._
+
+import org.reactivestreams.Subscriber
 
 class CancelledSinkSubscriberTest extends PekkoSubscriberBlackboxVerification[Int] {
 

@@ -20,10 +20,11 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import BenchmarkActors._
-import com.typesafe.config.ConfigFactory
 import org.openjdk.jmh.annotations._
 
 import org.apache.pekko.testkit.TestProbe
+
+import com.typesafe.config.ConfigFactory
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Array(Mode.Throughput))

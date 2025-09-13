@@ -16,8 +16,6 @@ package org.apache.pekko.cluster
 import scala.collection.immutable
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.Actor
 import pekko.actor.ActorSystem
@@ -29,6 +27,8 @@ import pekko.cluster.MemberStatus._
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.testkit.MultiNodeSpec
 import pekko.testkit._
+
+import com.typesafe.config.ConfigFactory
 
 object RestartNode2SpecMultiJvmSpec extends MultiNodeConfig {
   val seed1 = role("seed1")

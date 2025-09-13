@@ -13,8 +13,6 @@
 
 package org.apache.pekko.stream.tck
 
-import org.reactivestreams.Processor
-
 import org.apache.pekko
 import pekko.stream.Attributes
 import pekko.stream.impl.fusing.GraphStages.SimpleLinearGraphStage
@@ -22,6 +20,8 @@ import pekko.stream.scaladsl.Flow
 import pekko.stream.stage.GraphStageLogic
 import pekko.stream.stage.InHandler
 import pekko.stream.stage.OutHandler
+
+import org.reactivestreams.Processor
 
 class TransformProcessorTest extends PekkoIdentityProcessorVerification[Int] {
 

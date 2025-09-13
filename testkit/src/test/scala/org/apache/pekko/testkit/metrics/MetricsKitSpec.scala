@@ -13,10 +13,11 @@
 
 package org.apache.pekko.testkit.metrics
 
-import com.typesafe.config.ConfigFactory
 import org.scalatest._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+
+import com.typesafe.config.ConfigFactory
 
 class MetricsKitSpec extends AnyWordSpec with Matchers with BeforeAndAfter with BeforeAndAfterAll with MetricsKit {
 

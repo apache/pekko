@@ -16,16 +16,17 @@ package org.apache.pekko.discovery.config
 import scala.collection.immutable
 import scala.concurrent.duration._
 
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.discovery.Discovery
+import org.apache.pekko.discovery.ServiceDiscovery.ResolvedTarget
+import org.apache.pekko.testkit.TestKit
+
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.discovery.Discovery
-import org.apache.pekko.discovery.ServiceDiscovery.ResolvedTarget
-import org.apache.pekko.testkit.TestKit
+import com.typesafe.config.{ Config, ConfigFactory }
 
 object ConfigServiceDiscoverySpec {
 

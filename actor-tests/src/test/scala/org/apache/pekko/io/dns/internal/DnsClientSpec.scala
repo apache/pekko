@@ -15,7 +15,9 @@ package org.apache.pekko.io.dns.internal
 
 import java.net.{ InetAddress, InetSocketAddress }
 import java.util.concurrent.atomic.AtomicBoolean
+
 import scala.collection.{ immutable => im }
+
 import org.apache.pekko
 import org.apache.pekko.actor.Status.Failure
 import pekko.actor.Props

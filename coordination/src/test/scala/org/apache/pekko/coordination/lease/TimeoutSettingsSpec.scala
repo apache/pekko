@@ -15,9 +15,10 @@ package org.apache.pekko.coordination.lease
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+
+import com.typesafe.config.ConfigFactory
 
 class TimeoutSettingsSpec extends AnyWordSpec with Matchers {
   private def conf(overrides: String): TimeoutSettings = {

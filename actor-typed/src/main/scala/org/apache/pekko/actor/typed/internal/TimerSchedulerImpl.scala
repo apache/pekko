@@ -16,15 +16,16 @@ package internal
 
 import java.time.Duration
 
+import scala.concurrent.duration.FiniteDuration
+
 import org.apache.pekko
 import pekko.actor.{ Cancellable, NotInfluenceReceiveTimeout }
 import pekko.actor.typed.scaladsl.{ ActorContext, LoggerOps }
 import pekko.annotation.InternalApi
 import pekko.dispatch.ExecutionContexts
 import pekko.util.OptionVal
-import org.slf4j.Logger
 
-import scala.concurrent.duration.FiniteDuration
+import org.slf4j.Logger
 
 /**
  * INTERNAL API

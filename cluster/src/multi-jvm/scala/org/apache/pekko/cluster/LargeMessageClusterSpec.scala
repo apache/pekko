@@ -18,7 +18,6 @@ import java.nio.charset.StandardCharsets
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
 import org.apache.pekko
 import pekko.actor.ActorIdentity
 import pekko.actor.ActorRef
@@ -32,6 +31,8 @@ import pekko.remote.testkit.MultiNodeConfig
 import pekko.serialization.SerializerWithStringManifest
 import pekko.testkit._
 import pekko.util.unused
+
+import com.typesafe.config.ConfigFactory
 
 object LargeMessageClusterMultiJvmSpec extends MultiNodeConfig {
   val first = role("first")

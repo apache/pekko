@@ -18,7 +18,6 @@ import java.util.concurrent.atomic.AtomicReference
 import scala.concurrent.duration._
 
 import DurableProducerQueue.MessageSent
-import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
 import pekko.Done
@@ -28,6 +27,8 @@ import pekko.actor.typed.ActorRef
 import pekko.actor.typed.delivery.internal.ProducerControllerImpl
 import pekko.actor.typed.receptionist.Receptionist
 import pekko.actor.typed.receptionist.ServiceKey
+
+import org.scalatest.wordspec.AnyWordSpecLike
 
 class DurableWorkPullingSpec
     extends ScalaTestWithActorTestKit("""

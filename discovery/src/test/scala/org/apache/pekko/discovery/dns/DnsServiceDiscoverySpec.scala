@@ -18,10 +18,6 @@ import java.net.{ Inet6Address, InetAddress }
 import scala.collection.{ immutable => im }
 import scala.concurrent.duration._
 
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
-
 import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.actor.ExtendedActorSystem
@@ -33,6 +29,10 @@ import pekko.io.dns.{ AAAARecord, ARecord, DnsProtocol, SRVRecord }
 import pekko.io.dns.CachePolicy.Ttl
 import pekko.testkit.PekkoSpec
 import pekko.testkit.TestProbe
+
+import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 
 class DnsServiceDiscoverySpec extends PekkoSpec with AnyWordSpecLike with Matchers with ScalaFutures {
 

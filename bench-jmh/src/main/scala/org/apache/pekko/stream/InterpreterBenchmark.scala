@@ -19,8 +19,8 @@ import org.openjdk.jmh.annotations._
 
 import org.apache.pekko
 import pekko.event._
-import pekko.stream.impl.fusing.GraphInterpreterSpecKit
 import pekko.stream.impl.fusing.GraphInterpreter.{ DownstreamBoundaryStageLogic, UpstreamBoundaryStageLogic }
+import pekko.stream.impl.fusing.GraphInterpreterSpecKit
 import pekko.stream.impl.fusing.GraphStages
 import pekko.stream.stage._
 

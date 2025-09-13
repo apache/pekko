@@ -13,8 +13,6 @@
 
 package org.apache.pekko.persistence.typed.state.internal
 
-import org.slf4j.LoggerFactory
-
 import org.apache.pekko
 import pekko.actor.typed
 import pekko.actor.typed.ActorRef
@@ -29,12 +27,14 @@ import pekko.actor.typed.scaladsl.ActorContext
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.annotation._
 import pekko.persistence.RecoveryPermitter
-import pekko.persistence.typed.state.scaladsl._
 import pekko.persistence.state.exception.DurableStateException
 import pekko.persistence.state.scaladsl.GetObjectResult
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.SnapshotAdapter
+import pekko.persistence.typed.state.scaladsl._
 import pekko.util.unused
+
+import org.slf4j.LoggerFactory
 
 @InternalApi
 private[pekko] object DurableStateBehaviorImpl {

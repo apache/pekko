@@ -16,8 +16,6 @@ package org.apache.pekko.remote.classic
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.{ ActorIdentity, Identify, _ }
 import pekko.remote.{ RARP, RemotingMultiNodeSpec }
@@ -25,6 +23,8 @@ import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.transport.ThrottlerTransportAdapter.{ Direction, ForceDisassociate }
 import pekko.testkit._
+
+import com.typesafe.config.ConfigFactory
 
 object RemoteNodeShutdownAndComesBackSpec extends MultiNodeConfig {
   val first = role("first")

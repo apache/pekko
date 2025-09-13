@@ -20,6 +20,13 @@ import java.security.PrivateKey
 import java.security.SecureRandom
 import java.security.cert.Certificate
 import java.security.cert.X509Certificate
+import javax.net.ssl.KeyManager
+import javax.net.ssl.SSLContext
+import javax.net.ssl.SSLEngine
+import javax.net.ssl.SSLSession
+import javax.net.ssl.TrustManager
+
+import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
@@ -33,14 +40,8 @@ import pekko.remote.artery.tcp.SslTransportException
 import pekko.remote.artery.tcp.ssl.RotatingKeysSSLEngineProvider.CachedContext
 import pekko.remote.artery.tcp.ssl.RotatingKeysSSLEngineProvider.ConfiguredContext
 import pekko.stream.TLSRole
-import com.typesafe.config.Config
-import javax.net.ssl.KeyManager
-import javax.net.ssl.SSLContext
-import javax.net.ssl.SSLEngine
-import javax.net.ssl.SSLSession
-import javax.net.ssl.TrustManager
 
-import scala.concurrent.duration._
+import com.typesafe.config.Config
 
 /**
  * Variation on ConfigSSLEngineProvider that will periodically reload the keys and certificates

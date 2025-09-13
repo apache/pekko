@@ -13,9 +13,9 @@
 
 package org.apache.pekko.util
 
-import org.apache.pekko.annotation.InternalApi
-
 import scala.collection.AbstractIterator
+
+import org.apache.pekko.annotation.InternalApi
 
 /**
  * INTERNAL API

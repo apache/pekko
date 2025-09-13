@@ -15,11 +15,11 @@ package org.apache.pekko.persistence.testkit.internal
 
 import java.util.concurrent.atomic.AtomicReference
 
+import scala.collection.immutable
+
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.persistence.testkit.ProcessingPolicy
-
-import scala.collection.immutable
 
 /**
  * INTERNAL API

@@ -13,6 +13,8 @@
 
 package org.apache.pekko.persistence.typed.scaladsl
 
+import java.util.concurrent.atomic.AtomicInteger
+
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
@@ -25,9 +27,8 @@ import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.SnapshotAdapter
 import pekko.serialization.jackson.CborSerializable
-import org.scalatest.wordspec.AnyWordSpecLike
 
-import java.util.concurrent.atomic.AtomicInteger
+import org.scalatest.wordspec.AnyWordSpecLike
 
 object EventSourcedSnapshotAdapterSpec {
 
@@ -43,6 +44,7 @@ class EventSourcedSnapshotAdapterSpec
     with AnyWordSpecLike
     with LogCapturing {
   import EventSourcedSnapshotAdapterSpec._
+
   import pekko.actor.typed.scaladsl.adapter._
 
   val pidCounter = new AtomicInteger(0)

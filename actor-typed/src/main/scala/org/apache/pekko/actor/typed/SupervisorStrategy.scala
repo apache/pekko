@@ -16,12 +16,12 @@ package org.apache.pekko.actor.typed
 import scala.concurrent.duration.Duration
 import scala.concurrent.duration.FiniteDuration
 
-import org.slf4j.event.Level
-
 import org.apache.pekko
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 import pekko.util.JavaDurationConverters._
+
+import org.slf4j.event.Level
 
 object SupervisorStrategy {
 

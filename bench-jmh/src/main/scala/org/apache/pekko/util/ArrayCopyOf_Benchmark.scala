@@ -17,9 +17,9 @@
 
 package org.apache.pekko.util
 
-import org.openjdk.jmh.annotations._
-
 import java.util.concurrent.TimeUnit
+
+import org.openjdk.jmh.annotations._
 
 @State(Scope.Benchmark)
 @Measurement(timeUnit = TimeUnit.MILLISECONDS)

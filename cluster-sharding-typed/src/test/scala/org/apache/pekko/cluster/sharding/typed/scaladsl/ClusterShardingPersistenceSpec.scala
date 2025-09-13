@@ -22,9 +22,6 @@ import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-import org.scalatest.wordspec.AnyWordSpecLike
-
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
@@ -46,6 +43,10 @@ import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.RecoveryCompleted
 import pekko.persistence.typed.scaladsl.Effect
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.ConfigFactory
 
 object ClusterShardingPersistenceSpec {
   val config = ConfigFactory.parseString("""

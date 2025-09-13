@@ -19,7 +19,6 @@ import java.util.UUID
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
-import com.typesafe.config._
 import org.apache.commons.codec.binary.Hex.{ decodeHex, encodeHex }
 
 import org.apache.pekko
@@ -29,6 +28,8 @@ import pekko.persistence.AtLeastOnceDelivery.{ AtLeastOnceDeliverySnapshot, Unco
 import pekko.serialization._
 import pekko.testkit._
 import pekko.util.ByteString.UTF_8
+
+import com.typesafe.config._
 
 object SerializerSpecConfigs {
   val customSerializers =

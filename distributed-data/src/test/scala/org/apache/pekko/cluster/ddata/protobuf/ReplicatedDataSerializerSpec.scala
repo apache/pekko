@@ -13,11 +13,6 @@
 
 package org.apache.pekko.cluster.ddata.protobuf
 
-import com.typesafe.config.ConfigFactory
-import org.scalatest.BeforeAndAfterAll
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
-
 import org.apache.pekko
 import pekko.actor.ActorIdentity
 import pekko.actor.ActorRef
@@ -34,6 +29,12 @@ import pekko.cluster.ddata.Replicator.Internal._
 import pekko.remote.RARP
 import pekko.testkit.TestActors
 import pekko.testkit.TestKit
+
+import org.scalatest.BeforeAndAfterAll
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.ConfigFactory
 
 class ReplicatedDataSerializerSpec
     extends TestKit(

@@ -15,8 +15,6 @@ package org.apache.pekko.remote.routing
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko.actor.Actor
 import org.apache.pekko.actor.ActorRef
 import org.apache.pekko.actor.Address
@@ -29,6 +27,8 @@ import org.apache.pekko.routing.RoutedActorRef
 import org.apache.pekko.routing.ScatterGatherFirstCompletedPool
 import org.apache.pekko.testkit._
 import org.apache.pekko.testkit.TestEvent._
+
+import com.typesafe.config.ConfigFactory
 
 class RemoteScatterGatherConfig(artery: Boolean) extends MultiNodeConfig {
 

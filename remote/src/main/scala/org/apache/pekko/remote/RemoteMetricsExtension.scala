@@ -15,9 +15,8 @@ package org.apache.pekko.remote
 
 import java.util.concurrent.ConcurrentHashMap
 
-import scala.annotation.tailrec
-
 import scala.annotation.nowarn
+import scala.annotation.tailrec
 
 import org.apache.pekko
 import pekko.actor.ActorSelectionMessage

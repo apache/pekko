@@ -20,8 +20,6 @@ import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.concurrent.duration.FiniteDuration
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.actor.ActorSystem
@@ -34,6 +32,8 @@ import pekko.pattern.pipe
 import pekko.util.Helpers.ConfigOps
 import pekko.util.JavaDurationConverters._
 import pekko.util.Timeout
+
+import com.typesafe.config.Config
 
 /**
  * Broadcasts the message to all routees, and replies with the first response.

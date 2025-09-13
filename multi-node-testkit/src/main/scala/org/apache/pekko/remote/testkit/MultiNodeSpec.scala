@@ -20,9 +20,8 @@ import scala.concurrent.{ Await, Awaitable }
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
-import com.typesafe.config.{ Config, ConfigFactory, ConfigObject }
-import io.netty.channel.ChannelException
 import language.implicitConversions
+
 import org.apache.pekko
 import pekko.actor._
 import pekko.actor.RootActorPath
@@ -34,6 +33,10 @@ import pekko.testkit._
 import pekko.testkit.TestEvent._
 import pekko.testkit.TestKit
 import pekko.util.Timeout
+
+import io.netty.channel.ChannelException
+
+import com.typesafe.config.{ Config, ConfigFactory, ConfigObject }
 
 /**
  * Configure the role names and participants of the test, including configuration settings.

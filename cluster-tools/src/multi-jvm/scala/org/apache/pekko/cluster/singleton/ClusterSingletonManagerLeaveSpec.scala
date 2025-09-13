@@ -15,8 +15,6 @@ package org.apache.pekko.cluster.singleton
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.Actor
 import pekko.actor.ActorRef
@@ -28,6 +26,8 @@ import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.testkit.MultiNodeSpec
 import pekko.remote.testkit.STMultiNodeSpec
 import pekko.testkit._
+
+import com.typesafe.config.ConfigFactory
 
 object ClusterSingletonManagerLeaveSpec extends MultiNodeConfig {
   val first = role("first")

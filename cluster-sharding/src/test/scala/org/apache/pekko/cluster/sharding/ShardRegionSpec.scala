@@ -15,19 +15,21 @@ package org.apache.pekko.cluster.sharding
 
 import java.io.File
 
-import com.typesafe.config.ConfigFactory
+import scala.concurrent.{ ExecutionContext, Future }
+
 import org.apache.commons.io.FileUtils
+
 import org.apache.pekko
+import pekko.Done
 import pekko.actor.{ Actor, ActorLogging, ActorRef, ActorSystem, PoisonPill, Props }
 import pekko.cluster.{ Cluster, MemberStatus }
 import pekko.cluster.ClusterEvent.CurrentClusterState
 import pekko.cluster.sharding.ShardRegion.MessageExtractor
-import pekko.Done
 import pekko.stream.scaladsl.{ Sink, Source }
 import pekko.testkit.{ DeadLettersFilter, PekkoSpec, TestProbe, WithLogCapturing }
 import pekko.testkit.TestEvent.Mute
 
-import scala.concurrent.{ ExecutionContext, Future }
+import com.typesafe.config.ConfigFactory
 
 object ShardRegionSpec {
   val host = "127.0.0.1"

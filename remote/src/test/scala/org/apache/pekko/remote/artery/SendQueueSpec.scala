@@ -26,8 +26,8 @@ import pekko.stream.scaladsl.Keep
 import pekko.stream.scaladsl.Source
 import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.scaladsl.TestSink
-import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
+import pekko.testkit.PekkoSpec
 
 object SendQueueSpec {
 

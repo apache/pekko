@@ -13,15 +13,15 @@
 
 package org.apache.pekko.actor.typed.internal.routing
 
+import java.util.function
+import java.util.function.Predicate
+
 import org.apache.pekko
 import pekko.actor.typed._
 import pekko.actor.typed.javadsl.PoolRouter
 import pekko.actor.typed.scaladsl.{ AbstractBehavior, ActorContext, Behaviors }
 import pekko.annotation.InternalApi
 import pekko.util.ConstantFun
-
-import java.util.function
-import java.util.function.Predicate
 
 /**
  * INTERNAL API

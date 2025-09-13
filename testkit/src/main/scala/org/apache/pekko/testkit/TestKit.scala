@@ -17,14 +17,13 @@ import java.util.concurrent._
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
+import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.reflect.ClassTag
 import scala.util.control.NonFatal
-
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.actor._

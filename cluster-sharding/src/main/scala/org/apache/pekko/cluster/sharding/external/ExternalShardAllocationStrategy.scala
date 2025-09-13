@@ -38,8 +38,8 @@ import pekko.cluster.sharding.ShardCoordinator
 import pekko.cluster.sharding.ShardRegion.ShardId
 import pekko.event.Logging
 import pekko.pattern.AskTimeoutException
-import pekko.util.Timeout
 import pekko.util.JavaDurationConverters._
+import pekko.util.Timeout
 
 object ExternalShardAllocationStrategy {
 

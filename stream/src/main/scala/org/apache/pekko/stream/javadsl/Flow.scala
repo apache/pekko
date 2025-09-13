@@ -17,8 +17,8 @@ import java.util.Comparator
 import java.util.Optional
 import java.util.concurrent.CompletionStage
 
-import scala.annotation.varargs
 import scala.annotation.unchecked.uncheckedVariance
+import scala.annotation.varargs
 import scala.collection.immutable
 import scala.reflect.ClassTag
 
@@ -40,6 +40,7 @@ import pekko.util.JavaDurationConverters._
 import pekko.util.OptionConverters._
 import pekko.util.Timeout
 import pekko.util.unused
+
 import org.reactivestreams.Processor
 
 object Flow {

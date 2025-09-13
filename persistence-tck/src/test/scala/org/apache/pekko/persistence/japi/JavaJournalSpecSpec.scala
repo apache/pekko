@@ -13,10 +13,11 @@
 
 package org.apache.pekko.persistence.japi
 
-import com.typesafe.config.ConfigFactory
+import org.apache.pekko.persistence.japi.journal.JavaJournalSpec
+
 import org.scalatest.DoNotDiscover
 
-import org.apache.pekko.persistence.japi.journal.JavaJournalSpec
+import com.typesafe.config.ConfigFactory
 
 /* Only checking that compilation works with the constructor here as expected (no other abstract fields leaked) */
 @DoNotDiscover

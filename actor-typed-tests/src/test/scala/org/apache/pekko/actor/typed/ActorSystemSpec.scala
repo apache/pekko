@@ -17,12 +17,13 @@
 
 package org.apache.pekko.actor.typed
 
-import com.typesafe.config.ConfigFactory
+import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.testkit.PekkoSpec
 
-import scala.annotation.nowarn
+import com.typesafe.config.ConfigFactory
 
 @nowarn("msg=possible missing interpolator")
 class ActorSystemSpec extends PekkoSpec {

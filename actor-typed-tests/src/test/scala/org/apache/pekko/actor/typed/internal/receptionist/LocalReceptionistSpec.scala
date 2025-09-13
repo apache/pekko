@@ -15,9 +15,6 @@ package org.apache.pekko.actor.typed.internal.receptionist
 
 import scala.concurrent.Future
 
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.{ AnyWordSpec, AnyWordSpecLike }
-
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.BehaviorTestKit
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
@@ -30,6 +27,9 @@ import pekko.actor.typed.receptionist.Receptionist._
 import pekko.actor.typed.receptionist.ServiceKey
 import pekko.actor.typed.scaladsl.AskPattern._
 import pekko.actor.typed.scaladsl.Behaviors
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.{ AnyWordSpec, AnyWordSpecLike }
 
 object LocalReceptionistSpec {
   trait ServiceA

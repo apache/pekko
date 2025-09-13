@@ -13,13 +13,12 @@
 
 package org.apache.pekko.actor
 
+import scala.annotation.nowarn
 import scala.concurrent.Await
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.util.Failure
 import scala.util.Success
-
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.testkit._

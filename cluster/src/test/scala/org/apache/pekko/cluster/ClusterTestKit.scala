@@ -16,11 +16,11 @@ package org.apache.pekko.cluster
 import scala.concurrent.duration._
 import scala.util.Random
 
-import com.typesafe.config.{ Config, ConfigFactory }
-
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.testkit.{ PekkoSpec, TestKitBase }
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 /**
  * Builds on TestKitBase to provide some extra utilities to run cluster test.

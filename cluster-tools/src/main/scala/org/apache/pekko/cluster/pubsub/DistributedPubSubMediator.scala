@@ -22,8 +22,6 @@ import scala.collection.immutable.Set
 import scala.collection.immutable.TreeMap
 import scala.concurrent.duration._
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.DoNotInherit
@@ -40,6 +38,8 @@ import pekko.routing.Routee
 import pekko.routing.Router
 import pekko.routing.RouterEnvelope
 import pekko.routing.RoutingLogic
+
+import com.typesafe.config.Config
 
 object DistributedPubSubSettings {
 

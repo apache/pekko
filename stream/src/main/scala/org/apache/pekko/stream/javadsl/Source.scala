@@ -17,8 +17,8 @@ import java.util
 import java.util.Optional
 import java.util.concurrent.{ CompletableFuture, CompletionStage }
 
-import scala.annotation.varargs
 import scala.annotation.unchecked.uncheckedVariance
+import scala.annotation.varargs
 import scala.collection.immutable
 import scala.concurrent.{ Future, Promise }
 import scala.reflect.ClassTag

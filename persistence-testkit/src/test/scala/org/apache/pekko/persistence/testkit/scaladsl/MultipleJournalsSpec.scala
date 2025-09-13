@@ -26,8 +26,10 @@ import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.scaladsl.Effect
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior
 import pekko.stream.scaladsl.Sink
-import com.typesafe.config.ConfigFactory
+
 import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.ConfigFactory
 
 object MultipleJournalsSpec {
 

@@ -18,12 +18,14 @@ import java.time.Duration
 import java.util.ArrayList
 import java.util.Optional
 import java.util.concurrent.CompletionStage
+
+import scala.annotation.{ nowarn, switch }
 import scala.concurrent.{ ExecutionContextExecutor, Future }
 import scala.reflect.ClassTag
+import scala.util.Failure
+import scala.util.Success
 import scala.util.Try
-import scala.annotation.{ nowarn, switch }
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+
 import org.apache.pekko
 import pekko.actor.Address
 import pekko.actor.typed.internal.adapter.ActorSystemAdapter
@@ -35,8 +37,8 @@ import pekko.util.JavaDurationConverters._
 import pekko.util.OptionVal
 import pekko.util.Timeout
 
-import scala.util.Failure
-import scala.util.Success
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 /**
  * INTERNAL API

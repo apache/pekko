@@ -24,8 +24,6 @@ import scala.reflect.classTag
 import scala.util.control.NoStackTrace
 
 import RemoteConnection.getAddrString
-import io.netty.channel.{ Channel, ChannelHandlerContext, ChannelInboundHandlerAdapter }
-import io.netty.channel.ChannelHandler.Sharable
 
 import org.apache.pekko
 import pekko.ConfigurationException
@@ -48,6 +46,9 @@ import pekko.event.LoggingReceive
 import pekko.pattern.ask
 import pekko.remote.transport.ThrottlerTransportAdapter.Direction
 import pekko.util.Timeout
+
+import io.netty.channel.{ Channel, ChannelHandlerContext, ChannelInboundHandlerAdapter }
+import io.netty.channel.ChannelHandler.Sharable
 
 /**
  * The conductor is the one orchestrating the test: it governs the

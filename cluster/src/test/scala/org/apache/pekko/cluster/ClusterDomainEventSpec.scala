@@ -14,10 +14,12 @@
 package org.apache.pekko.cluster
 
 import scala.collection.immutable.SortedSet
+
+import org.apache.pekko.actor.Address
+
+import org.scalatest.BeforeAndAfterAll
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import org.apache.pekko.actor.Address
-import org.scalatest.BeforeAndAfterAll
 
 class ClusterDomainEventSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll {
 

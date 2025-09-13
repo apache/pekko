@@ -26,12 +26,12 @@ import scala.util.{ DynamicVariable, Failure, Try }
 import scala.util.Success
 import scala.util.control.NonFatal
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.InternalApi
 import pekko.event.{ LogMarker, Logging, LoggingAdapter }
+
+import com.typesafe.config.Config
 
 object Serialization {
 

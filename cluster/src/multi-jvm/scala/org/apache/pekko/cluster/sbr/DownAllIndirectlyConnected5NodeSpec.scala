@@ -15,14 +15,14 @@ package org.apache.pekko.cluster.sbr
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.cluster.Cluster
 import pekko.cluster.MemberStatus
 import pekko.cluster.MultiNodeClusterSpec
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.transport.ThrottlerTransportAdapter
+
+import com.typesafe.config.ConfigFactory
 
 object DownAllIndirectlyConnected5NodeSpec extends MultiNodeConfig {
   val node1 = role("node1")

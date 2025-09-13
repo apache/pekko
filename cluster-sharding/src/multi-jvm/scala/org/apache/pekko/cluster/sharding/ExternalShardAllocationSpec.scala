@@ -15,9 +15,6 @@ package org.apache.pekko.cluster.sharding
 
 import scala.concurrent.duration._
 
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.time.Span
-
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorLogging, Address, Props }
 import pekko.cluster.Cluster
@@ -25,6 +22,9 @@ import pekko.cluster.sharding.ExternalShardAllocationSpec.GiveMeYourHome.{ Get, 
 import pekko.cluster.sharding.external.{ ExternalShardAllocation, ExternalShardAllocationStrategy }
 import pekko.serialization.jackson.CborSerializable
 import pekko.testkit.{ ImplicitSender, TestProbe }
+
+import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.time.Span
 
 object ExternalShardAllocationSpecConfig
     extends MultiNodeClusterShardingConfig(additionalConfig = """

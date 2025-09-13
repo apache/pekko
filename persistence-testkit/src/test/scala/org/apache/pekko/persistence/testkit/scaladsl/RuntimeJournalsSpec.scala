@@ -17,7 +17,6 @@
 
 package org.apache.pekko.persistence.testkit.scaladsl
 
-import com.typesafe.config.ConfigFactory
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
@@ -39,8 +38,11 @@ import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.scaladsl.Effect
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior
 import pekko.persistence.typed.scaladsl.RetentionCriteria
+
 import org.scalatest.Inside
 import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.ConfigFactory
 
 object RuntimeJournalsSpec {
 
