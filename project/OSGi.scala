@@ -51,7 +51,6 @@ object OSGi {
     // pekko-actor packages are not imported, as contained in the CP
     OsgiKeys.importPackage := (osgiOptionalImports.map(optionalResolution)) ++ Seq(
       "!sun.misc",
-      scalaJava8CompatImport(),
       scalaVersion(scalaImport).value,
       configImport(),
       "*"),
@@ -77,7 +76,6 @@ object OSGi {
   lazy val protobufV3 = osgiSettings ++ Seq(
     OsgiKeys.importPackage := Seq(
       "!sun.misc",
-      scalaJava8CompatImport(),
       scalaVersion(scalaImport).value,
       configImport(),
       "*"),
@@ -97,9 +95,7 @@ object OSGi {
   lazy val stream =
     exports(
       packages = Seq("org.apache.pekko.stream.*"),
-      imports = Seq(
-        scalaJava8CompatImport(),
-        scalaParsingCombinatorImport()))
+      imports = Seq(scalaParsingCombinatorImport()))
 
   lazy val streamTestkit = exports(Seq("org.apache.pekko.stream.testkit.*"))
 
@@ -148,8 +144,6 @@ object OSGi {
     val ScalaVersion(epoch, major) = version
     versionedImport(packageName, s"$epoch.$major", s"$epoch.${major.toInt + 1}")
   }
-  def scalaJava8CompatImport(packageName: String = "scala.compat.java8.*") =
-    versionedImport(packageName, "1.0.2", "1.0.2")
   def scalaParsingCombinatorImport(packageName: String = "scala.util.parsing.combinator.*") =
     versionedImport(packageName, "1.1.0", "1.2.0")
   def kamonImport(packageName: String = "kamon.sigar.*") =

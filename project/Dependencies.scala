@@ -25,9 +25,6 @@ object Dependencies {
     val protocVersion = "32.0"
   }
 
-  lazy val java8CompatVersion = settingKey[String]("The version of scala-java8-compat to use.")
-    .withRank(KeyRanks.Invisible) // avoid 'unused key' warning
-
   val junitVersion = "4.13.2"
   val junit5Version = "5.13.4"
   val slf4jVersion = "2.0.17"
@@ -53,9 +50,7 @@ object Dependencies {
   val scalaTestScalaCheckVersion = "1-18"
   val scalaCheckVersion = "1.18.0"
 
-  val Versions =
-    Seq(crossScalaVersions := allScalaVersions, scalaVersion := allScalaVersions.head,
-      java8CompatVersion := "1.0.2")
+  val Versions = Seq(crossScalaVersions := allScalaVersions, scalaVersion := allScalaVersions.head)
 
   object Compile {
     // Compile
@@ -84,11 +79,6 @@ object Dependencies {
 
     val junit = "junit" % "junit" % junitVersion
     val junit5 = "org.junit.jupiter" % "junit-jupiter-engine" % junit5Version
-
-    // For Java 8 Conversions
-    lazy val java8Compat = Def.setting {
-      "org.scala-lang.modules" %% "scala-java8-compat" % java8CompatVersion.value
-    }
 
     val aeronDriver = "io.aeron" % "aeron-driver" % aeronVersion
     val aeronClient = "io.aeron" % "aeron-client" % aeronVersion
@@ -207,13 +197,7 @@ object Dependencies {
   // TODO check if `l ++=` everywhere expensive?
   lazy val l = libraryDependencies
 
-  lazy val actor = l ++= (CrossVersion.partialVersion(scalaVersion.value) match {
-    // java8-compat is only used in a couple of places for 2.13,
-    // it is probably possible to remove the dependency if needed.
-    case Some((2, n)) if n == 12 =>
-      List("org.scala-lang.modules" %% "scala-java8-compat" % java8CompatVersion.value)
-    case _ => List.empty
-  }) ++ Seq(config)
+  lazy val actor = l ++= Seq(config)
 
   val actorTyped = l ++= Seq(slf4jApi)
 
