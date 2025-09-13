@@ -15,7 +15,6 @@ package org.apache.pekko.pattern
 
 import java.util.Optional
 import java.util.concurrent.{ Callable, CompletionStage, TimeUnit }
-import java.util.function.BiPredicate
 
 import scala.concurrent.ExecutionContext
 
@@ -518,7 +517,7 @@ object Patterns {
    */
   def retry[T](
       attempt: Callable[CompletionStage[T]],
-      shouldRetry: BiPredicate[T, Throwable],
+      shouldRetry: japi.function.Predicate2[T, Throwable],
       attempts: Int,
       ec: ExecutionContext): CompletionStage[T] = {
     require(attempt != null, "Parameter attempt should not be null.")
@@ -585,7 +584,7 @@ object Patterns {
    */
   def retry[T](
       attempt: Callable[CompletionStage[T]],
-      shouldRetry: BiPredicate[T, Throwable],
+      shouldRetry: japi.function.Predicate2[T, Throwable],
       attempts: Int,
       minBackoff: java.time.Duration,
       maxBackoff: java.time.Duration,
@@ -662,7 +661,7 @@ object Patterns {
    */
   def retry[T](
       attempt: Callable[CompletionStage[T]],
-      shouldRetry: BiPredicate[T, Throwable],
+      shouldRetry: japi.function.Predicate2[T, Throwable],
       attempts: Int,
       minBackoff: java.time.Duration,
       maxBackoff: java.time.Duration,
@@ -738,7 +737,7 @@ object Patterns {
    */
   def retry[T](
       attempt: Callable[CompletionStage[T]],
-      shouldRetry: BiPredicate[T, Throwable],
+      shouldRetry: japi.function.Predicate2[T, Throwable],
       attempts: Int,
       delay: java.time.Duration,
       system: ClassicActorSystemProvider): CompletionStage[T] =
@@ -787,7 +786,7 @@ object Patterns {
    */
   def retry[T](
       attempt: Callable[CompletionStage[T]],
-      shouldRetry: BiPredicate[T, Throwable],
+      shouldRetry: japi.function.Predicate2[T, Throwable],
       attempts: Int,
       delay: java.time.Duration,
       scheduler: Scheduler,
@@ -813,7 +812,7 @@ object Patterns {
   def retry[T](
       attempt: Callable[CompletionStage[T]],
       attempts: Int,
-      delayFunction: java.util.function.IntFunction[Optional[java.time.Duration]],
+      delayFunction: japi.function.IntFunction[Optional[java.time.Duration]],
       scheduler: Scheduler,
       context: ExecutionContext): CompletionStage[T] = {
     import pekko.util.OptionConverters._
@@ -852,9 +851,9 @@ object Patterns {
    */
   def retry[T](
       attempt: Callable[CompletionStage[T]],
-      shouldRetry: BiPredicate[T, Throwable],
+      shouldRetry: japi.function.Predicate2[T, Throwable],
       attempts: Int,
-      delayFunction: java.util.function.IntFunction[Optional[java.time.Duration]],
+      delayFunction: japi.function.IntFunction[Optional[java.time.Duration]],
       scheduler: Scheduler,
       context: ExecutionContext): CompletionStage[T] = {
     import pekko.util.OptionConverters._
