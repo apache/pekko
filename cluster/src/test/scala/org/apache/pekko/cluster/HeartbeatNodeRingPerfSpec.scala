@@ -13,10 +13,10 @@
 
 package org.apache.pekko.cluster
 
+import org.apache.pekko.actor.Address
+
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-
-import org.apache.pekko.actor.Address
 
 class HeartbeatNodeRingPerfSpec extends AnyWordSpec with Matchers {
 

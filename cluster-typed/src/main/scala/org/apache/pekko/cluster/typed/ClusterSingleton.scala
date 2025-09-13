@@ -14,6 +14,7 @@
 package org.apache.pekko.cluster.typed
 
 import scala.concurrent.duration.{ Duration, FiniteDuration, _ }
+import scala.jdk.DurationConverters._
 
 import org.apache.pekko
 import pekko.actor.typed._
@@ -25,7 +26,7 @@ import pekko.cluster.singleton.{
 }
 import pekko.cluster.typed.internal.AdaptedClusterSingletonImpl
 import pekko.coordination.lease.LeaseUsageSettings
-import scala.jdk.DurationConverters._
+
 import com.typesafe.config.Config
 
 object ClusterSingletonSettings {

@@ -16,6 +16,7 @@ package org.apache.pekko.stream
 import scala.annotation.nowarn
 import scala.concurrent.Await
 import scala.concurrent.Promise
+import scala.jdk.DurationConverters._
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
@@ -29,7 +30,6 @@ import pekko.annotation.InternalApi
 import pekko.dispatch.Dispatchers
 import pekko.pattern.ask
 import pekko.stream.impl.MaterializerGuardian
-import scala.jdk.DurationConverters._
 import pekko.util.Timeout
 
 /**

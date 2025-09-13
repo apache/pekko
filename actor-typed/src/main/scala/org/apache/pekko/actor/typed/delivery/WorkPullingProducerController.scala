@@ -16,9 +16,8 @@ package org.apache.pekko.actor.typed.delivery
 import java.util.Optional
 
 import scala.concurrent.duration.FiniteDuration
+import scala.jdk.DurationConverters._
 import scala.reflect.ClassTag
-
-import com.typesafe.config.Config
 
 import org.apache.pekko
 import pekko.Done
@@ -29,8 +28,9 @@ import pekko.actor.typed.delivery.internal.WorkPullingProducerControllerImpl
 import pekko.actor.typed.receptionist.ServiceKey
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.annotation.ApiMayChange
-import scala.jdk.DurationConverters._
 import pekko.util.OptionConverters._
+
+import com.typesafe.config.Config
 
 /**
  * Work pulling is a pattern where several worker actors pull tasks in their own pace from

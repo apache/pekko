@@ -17,10 +17,11 @@ import java.util
 import java.util.Optional
 import java.util.concurrent.{ CompletableFuture, CompletionStage }
 
-import scala.annotation.varargs
 import scala.annotation.unchecked.uncheckedVariance
+import scala.annotation.varargs
 import scala.collection.immutable
 import scala.concurrent.{ Future, Promise }
+import scala.jdk.DurationConverters._
 import scala.reflect.ClassTag
 
 import org.apache.pekko
@@ -35,7 +36,6 @@ import pekko.stream.impl.{ LinearTraversalBuilder, UnfoldAsyncJava, UnfoldJava }
 import pekko.stream.impl.fusing.{ ArraySource, StatefulMapConcat, ZipWithIndexJava }
 import pekko.util.{ unused, _ }
 import pekko.util.FutureConverters._
-import scala.jdk.DurationConverters._
 import pekko.util.OptionConverters._
 import pekko.util.ccompat.JavaConverters._
 

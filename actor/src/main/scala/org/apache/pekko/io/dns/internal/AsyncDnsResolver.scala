@@ -18,9 +18,9 @@ import java.net.{ Inet4Address, Inet6Address, InetAddress, InetSocketAddress }
 import scala.collection.immutable
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.Future
-import scala.util.Try
-import scala.util.Success
 import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
 import scala.util.control.NonFatal
 
 import org.apache.pekko

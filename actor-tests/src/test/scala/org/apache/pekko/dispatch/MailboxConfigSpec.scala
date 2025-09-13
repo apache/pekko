@@ -18,13 +18,14 @@ import java.util.concurrent.{ BlockingQueue, ConcurrentLinkedQueue }
 import scala.concurrent.{ Await, ExecutionContext, Future }
 import scala.concurrent.duration._
 
-import com.typesafe.config.{ Config, ConfigFactory }
-import org.scalatest.{ BeforeAndAfterAll, BeforeAndAfterEach }
-
 import org.apache.pekko
 import pekko.actor._
 import pekko.testkit.{ EventFilter, PekkoSpec }
 import pekko.util.unused
+
+import org.scalatest.{ BeforeAndAfterAll, BeforeAndAfterEach }
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 abstract class MailboxSpec extends PekkoSpec with BeforeAndAfterAll with BeforeAndAfterEach {
   def name: String

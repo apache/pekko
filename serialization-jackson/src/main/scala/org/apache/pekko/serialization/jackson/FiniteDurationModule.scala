@@ -14,6 +14,7 @@
 package org.apache.pekko.serialization.jackson
 
 import scala.concurrent.duration.FiniteDuration
+import scala.jdk.DurationConverters._
 
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.core.JsonParser
@@ -26,7 +27,6 @@ import com.fasterxml.jackson.datatype.jsr310.ser.DurationSerializer
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import scala.jdk.DurationConverters._
 
 /**
  * INTERNAL API: Adds support for serializing and deserializing [[FiniteDuration]].

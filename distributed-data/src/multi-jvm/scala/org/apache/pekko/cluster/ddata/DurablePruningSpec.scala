@@ -16,8 +16,6 @@ package org.apache.pekko.cluster.ddata
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.actor.ActorSystem
@@ -27,6 +25,8 @@ import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.testkit.MultiNodeSpec
 import pekko.testkit._
+
+import com.typesafe.config.ConfigFactory
 
 object DurablePruningSpec extends MultiNodeConfig {
   val first = role("first")

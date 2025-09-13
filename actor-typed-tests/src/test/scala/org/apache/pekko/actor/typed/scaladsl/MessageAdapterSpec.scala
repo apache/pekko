@@ -13,10 +13,6 @@
 
 package org.apache.pekko.actor.typed.scaladsl
 
-import com.typesafe.config.ConfigFactory
-import org.scalatest.wordspec.AnyWordSpecLike
-import org.slf4j.LoggerFactory
-
 import org.apache.pekko
 import pekko.actor.DeadLetter
 import pekko.actor.testkit.typed.TestException
@@ -30,6 +26,12 @@ import pekko.actor.typed.Behavior
 import pekko.actor.typed.PostStop
 import pekko.actor.typed.Props
 import pekko.actor.typed.internal.AdaptMessage
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import org.slf4j.LoggerFactory
+
+import com.typesafe.config.ConfigFactory
 
 object MessageAdapterSpec {
   val config = ConfigFactory.parseString("""

@@ -18,11 +18,10 @@ import java.net.InetSocketAddress
 import java.net.Socket
 import java.nio.file.{ Path, Paths }
 
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent.duration._
-
-import scala.annotation.nowarn
-import com.typesafe.config.Config
+import scala.jdk.DurationConverters._
 
 import org.apache.pekko
 import pekko.actor._
@@ -30,8 +29,9 @@ import pekko.annotation.InternalApi
 import pekko.io.Inet._
 import pekko.util.{ ByteString, Helpers }
 import pekko.util.Helpers.Requiring
-import scala.jdk.DurationConverters._
 import pekko.util.ccompat.JavaConverters._
+
+import com.typesafe.config.Config
 
 /**
  * TCP Extension for Akka’s IO layer.

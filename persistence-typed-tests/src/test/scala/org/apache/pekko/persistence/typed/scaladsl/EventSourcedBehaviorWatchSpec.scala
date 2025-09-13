@@ -13,6 +13,8 @@
 
 package org.apache.pekko.persistence.typed.scaladsl
 
+import java.util.concurrent.atomic.AtomicInteger
+
 import org.apache.pekko
 import pekko.actor.testkit.typed.TestException
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
@@ -22,22 +24,22 @@ import pekko.actor.testkit.typed.scaladsl.TestProbe
 import pekko.actor.typed._
 import pekko.actor.typed.scaladsl.ActorContext
 import pekko.actor.typed.scaladsl.Behaviors
-import pekko.persistence.typed.internal.EventSourcedBehaviorImpl.WriterIdentity
+import pekko.persistence.{ Recovery => ClassicRecovery }
+import pekko.persistence.typed.NoOpEventAdapter
+import pekko.persistence.typed.PersistenceId
+import pekko.persistence.typed.RecoveryCompleted
 import pekko.persistence.typed.internal.BehaviorSetup
+import pekko.persistence.typed.internal.EventSourcedBehaviorImpl.WriterIdentity
 import pekko.persistence.typed.internal.EventSourcedSettings
 import pekko.persistence.typed.internal.InternalProtocol
 import pekko.persistence.typed.internal.NoOpSnapshotAdapter
 import pekko.persistence.typed.internal.StashState
-import pekko.persistence.typed.NoOpEventAdapter
-import pekko.persistence.typed.PersistenceId
-import pekko.persistence.typed.RecoveryCompleted
-import pekko.persistence.{ Recovery => ClassicRecovery }
 import pekko.serialization.jackson.CborSerializable
 import pekko.util.ConstantFun
-import org.scalatest.wordspec.AnyWordSpecLike
-import org.slf4j.LoggerFactory
 
-import java.util.concurrent.atomic.AtomicInteger
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import org.slf4j.LoggerFactory
 
 object EventSourcedBehaviorWatchSpec {
   sealed trait Command extends CborSerializable

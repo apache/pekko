@@ -13,13 +13,13 @@
 
 package org.apache.pekko.remote.artery
 
+import java.io.NotSerializableException
+
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.protobufv3.internal.ByteString
 import pekko.remote.artery.protobuf.{ TestMessages => proto }
 import pekko.serialization.SerializerWithStringManifest
-
-import java.io.NotSerializableException
 
 object TestMessage {
   final case class Item(id: Long, name: String)

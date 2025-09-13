@@ -19,6 +19,7 @@ import java.util.concurrent.CountDownLatch
 import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.concurrent.duration._
+import scala.jdk.DurationConverters._
 import scala.reflect.ClassTag
 
 import org.apache.pekko
@@ -34,7 +35,6 @@ import pekko.stream._
 import pekko.stream.impl._
 import pekko.testkit.{ TestActor, TestProbe }
 import pekko.testkit.TestActor.AutoPilot
-import scala.jdk.DurationConverters._
 import pekko.util.ccompat.JavaConverters._
 
 import org.reactivestreams.{ Publisher, Subscriber, Subscription }

@@ -17,6 +17,8 @@ import java.io.{ InputStream, OutputStream }
 import java.util.concurrent.CompletionStage
 import java.util.stream.Collector
 
+import scala.jdk.DurationConverters._
+
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.japi.function
@@ -25,7 +27,6 @@ import pekko.stream.IOResult
 import pekko.stream.scaladsl.SinkToCompletionStage
 import pekko.stream.scaladsl.SourceToCompletionStage
 import pekko.util.ByteString
-import scala.jdk.DurationConverters._
 
 /**
  * Converters for interacting with the blocking `java.io` streams APIs and Java 8 Streams

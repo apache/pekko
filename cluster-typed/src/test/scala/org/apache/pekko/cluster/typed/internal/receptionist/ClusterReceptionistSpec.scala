@@ -18,10 +18,6 @@ import java.util.concurrent.ThreadLocalRandom
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-
 import org.apache.pekko
 import pekko.actor.RootActorPath
 import pekko.actor.testkit.typed.FishingOutcome
@@ -40,10 +36,14 @@ import pekko.cluster.typed.Join
 import pekko.cluster.typed.JoinSeedNodes
 import pekko.cluster.typed.Leave
 import pekko.serialization.jackson.CborSerializable
-import pekko.testkit.LongRunningTest
-import org.scalatest.concurrent.ScalaFutures
-
 import pekko.testkit.GHExcludeAeronTest
+import pekko.testkit.LongRunningTest
+
+import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+
+import com.typesafe.config.ConfigFactory
 
 object ClusterReceptionistSpec {
   val config = ConfigFactory.parseString(s"""

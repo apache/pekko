@@ -14,6 +14,7 @@
 package org.apache.pekko.remote
 
 import scala.util.control.NonFatal
+
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.annotation.InternalApi

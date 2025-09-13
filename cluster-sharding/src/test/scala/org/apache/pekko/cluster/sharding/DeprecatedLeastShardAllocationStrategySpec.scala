@@ -13,6 +13,8 @@
 
 package org.apache.pekko.cluster.sharding
 
+import scala.collection.immutable.SortedSet
+
 import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.actor.Address
@@ -25,8 +27,6 @@ import pekko.cluster.sharding.internal.AbstractLeastShardAllocationStrategy
 import pekko.cluster.sharding.internal.AbstractLeastShardAllocationStrategy.RegionEntry
 import pekko.testkit.PekkoSpec
 import pekko.util.Version
-
-import scala.collection.immutable.SortedSet
 
 class DeprecatedLeastShardAllocationStrategySpec extends PekkoSpec {
   import LeastShardAllocationStrategySpec._

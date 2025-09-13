@@ -17,6 +17,7 @@ import java.util.Optional
 import java.util.concurrent.CompletionStage
 
 import scala.annotation.unchecked.uncheckedVariance
+import scala.jdk.DurationConverters._
 
 import org.apache.pekko
 import pekko.annotation.ApiMayChange
@@ -25,7 +26,6 @@ import pekko.japi.{ function, Pair }
 import pekko.stream._
 import pekko.util.ConstantFun
 import pekko.util.FutureConverters._
-import scala.jdk.DurationConverters._
 import pekko.util.OptionConverters._
 import pekko.util.ccompat.JavaConverters._
 

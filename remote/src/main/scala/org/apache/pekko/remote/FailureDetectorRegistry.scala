@@ -13,12 +13,12 @@
 
 package org.apache.pekko.remote
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.ConfigurationException
 import pekko.actor.{ ActorContext, ActorSystem, ExtendedActorSystem }
 import pekko.event.EventStream
+
+import com.typesafe.config.Config
 
 /**
  * Interface for a registry of Pekko failure detectors. New resources are implicitly registered when heartbeat is first

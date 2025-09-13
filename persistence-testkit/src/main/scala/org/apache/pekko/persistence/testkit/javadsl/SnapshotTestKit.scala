@@ -17,13 +17,14 @@ import java.time.Duration
 import java.util.{ List => JList }
 import java.util.{ function => jf }
 
+import scala.jdk.DurationConverters._
+
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.annotation.ApiMayChange
 import pekko.japi.Pair
 import pekko.persistence.testkit.{ ExpectedFailure, SnapshotMeta, SnapshotOperation, SnapshotStorage }
 import pekko.persistence.testkit.scaladsl.{ SnapshotTestKit => ScalaTestKit }
-import scala.jdk.DurationConverters._
 import pekko.util.ccompat.JavaConverters._
 
 /**

@@ -15,17 +15,19 @@ package org.apache.pekko.persistence
 
 import java.io.File
 import java.util.concurrent.TimeUnit
+
+import scala.annotation.nowarn
 import scala.concurrent.Await
 import scala.concurrent.duration._
+
 import org.apache.commons.io.FileUtils
 import org.openjdk.jmh.annotations._
+
 import org.apache.pekko
 import pekko.actor._
 import pekko.persistence.journal.AsyncWriteTarget._
 import pekko.persistence.journal.leveldb.{ SharedLeveldbJournal, SharedLeveldbStore }
 import pekko.testkit.TestProbe
-
-import scala.annotation.nowarn
 
 /*
   # OS:   OSX 10.9.3

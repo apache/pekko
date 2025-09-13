@@ -13,13 +13,13 @@
 
 package org.apache.pekko.persistence.testkit
 
-import org.apache.pekko
-import pekko.NotUsed
 import java.util.{ List => JList }
 
 import scala.collection.immutable
 import scala.util.{ Failure, Success, Try }
 
+import org.apache.pekko
+import pekko.NotUsed
 import pekko.annotation.InternalApi
 import pekko.persistence.PersistentRepr
 import pekko.persistence.journal.Tagged

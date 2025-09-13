@@ -26,8 +26,6 @@ import scala.concurrent.duration.Duration
 import scala.util.{ Failure, Success, Try }
 import scala.util.control.{ ControlThrowable, NonFatal }
 
-import com.typesafe.config.{ Config, ConfigFactory }
-
 import org.apache.pekko
 import pekko.ConfigurationException
 import pekko.actor.dungeon.ChildrenContainer
@@ -41,9 +39,11 @@ import pekko.japi.Util.immutableSeq
 import pekko.serialization.SerializationExtension
 import pekko.util._
 import pekko.util.FutureConverters._
-import pekko.util.OptionConverters._
 import pekko.util.Helpers.toRootLowerCase
+import pekko.util.OptionConverters._
 import pekko.util.ccompat.JavaConverters._
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 object BootstrapSetup {
 

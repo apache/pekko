@@ -14,11 +14,11 @@
 package org.apache.pekko.stream.javadsl
 
 import scala.concurrent.duration.FiniteDuration
+import scala.jdk.DurationConverters._
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.stream.scaladsl
-import scala.jdk.DurationConverters._
 
 /**
  * Allows to manage delay and can be stateful to compute delay for any sequence of elements,

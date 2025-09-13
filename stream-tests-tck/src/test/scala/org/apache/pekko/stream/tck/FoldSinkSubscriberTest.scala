@@ -13,9 +13,9 @@
 
 package org.apache.pekko.stream.tck
 
-import org.reactivestreams.Subscriber
-
 import org.apache.pekko.stream.scaladsl._
+
+import org.reactivestreams.Subscriber
 
 class FoldSinkSubscriberTest extends PekkoSubscriberBlackboxVerification[Int] {
 

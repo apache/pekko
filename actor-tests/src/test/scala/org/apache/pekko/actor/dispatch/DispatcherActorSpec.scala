@@ -22,8 +22,8 @@ import scala.concurrent.duration._
 import org.apache.pekko
 import pekko.actor.{ Actor, Props }
 import pekko.pattern.ask
-import pekko.testkit.PekkoSpec
 import pekko.testkit.DefaultTimeout
+import pekko.testkit.PekkoSpec
 
 object DispatcherActorSpec {
   val config = """

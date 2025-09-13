@@ -23,8 +23,8 @@ import pekko.cluster.ClusterEvent.CurrentClusterState
 import pekko.cluster.ClusterHeartbeatSender.Heartbeat
 import pekko.cluster.CrossDcHeartbeatSender.ReportStatus
 import pekko.cluster.CrossDcHeartbeatSenderSpec.TestCrossDcHeartbeatSender
-import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
+import pekko.testkit.PekkoSpec
 import pekko.testkit.TestProbe
 import pekko.util.Version
 

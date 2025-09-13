@@ -18,7 +18,6 @@ import java.util.{ List => JList }
 import java.util.function.Supplier
 
 import org.apache.pekko
-import pekko.japi.function.Creator
 import pekko.actor.testkit.typed.FishingOutcome
 import pekko.actor.testkit.typed.TestKitSettings
 import pekko.actor.testkit.typed.internal.TestProbeImpl
@@ -27,6 +26,7 @@ import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.RecipientRef
 import pekko.actor.typed.internal.InternalRecipientRef
 import pekko.annotation.DoNotInherit
+import pekko.japi.function.Creator
 import pekko.util.unused
 
 object FishingOutcomes {

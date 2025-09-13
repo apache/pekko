@@ -16,6 +16,7 @@ package org.apache.pekko.actor
 import java.util.concurrent.CompletionStage
 import java.util.regex.Pattern
 
+import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.concurrent.Future
@@ -23,8 +24,6 @@ import scala.concurrent.Promise
 import scala.concurrent.duration._
 import scala.language.implicitConversions
 import scala.util.Success
-
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.dispatch.ExecutionContexts
@@ -106,8 +105,9 @@ abstract class ActorSelection extends Serializable {
    * supplied `timeout`.
    */
   def resolveOne(timeout: java.time.Duration): CompletionStage[ActorRef] = {
-    import FutureConverters._
     import scala.jdk.DurationConverters._
+
+    import FutureConverters._
     resolveOne(timeout.toScala).asJava
   }
 

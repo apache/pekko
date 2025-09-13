@@ -13,22 +13,22 @@
 
 package org.apache.pekko.persistence.testkit
 
-import org.apache.pekko
-import pekko.actor.ActorLogging
 import scala.collection.immutable
 import scala.concurrent.Future
 import scala.util.Try
 
-import com.typesafe.config.{ Config, ConfigFactory }
-
+import org.apache.pekko
+import pekko.actor.ActorLogging
 import pekko.annotation.InternalApi
 import pekko.persistence._
 import pekko.persistence.journal.AsyncWriteJournal
 import pekko.persistence.journal.Tagged
 import pekko.persistence.snapshot.SnapshotStore
-import pekko.persistence.testkit.internal.CurrentTime
 import pekko.persistence.testkit.internal.{ InMemStorageExtension, SnapshotStorageEmulatorExtension }
+import pekko.persistence.testkit.internal.CurrentTime
 import pekko.util.unused
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 /**
  * INTERNAL API

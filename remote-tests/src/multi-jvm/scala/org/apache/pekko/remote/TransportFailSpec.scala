@@ -15,11 +15,8 @@ package org.apache.pekko.remote
 
 import java.util.concurrent.atomic.AtomicBoolean
 
-import scala.concurrent.duration._
-
 import scala.annotation.nowarn
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor.Actor
@@ -33,6 +30,9 @@ import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.testkit._
 import pekko.util.unused
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 object TransportFailConfig extends MultiNodeConfig {
   val first = role("first")

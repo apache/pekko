@@ -15,13 +15,13 @@ package org.apache.pekko.cluster
 
 import scala.collection.immutable
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.Address
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.testkit._
 import pekko.util.Version
+
+import com.typesafe.config.ConfigFactory
 
 object JoinSeedNodeMultiJvmSpec extends MultiNodeConfig {
   val seed1 = role("seed1")

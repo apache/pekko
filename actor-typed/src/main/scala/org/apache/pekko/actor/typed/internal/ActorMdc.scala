@@ -13,9 +13,9 @@
 
 package org.apache.pekko.actor.typed.internal
 
-import org.slf4j.MDC
-
 import org.apache.pekko.annotation.InternalApi
+
+import org.slf4j.MDC
 
 /**
  * INTERNAL API

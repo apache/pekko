@@ -19,7 +19,6 @@ import scala.concurrent.Await
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
 import org.openjdk.jmh.annotations.Benchmark
 import org.openjdk.jmh.annotations.BenchmarkMode
 import org.openjdk.jmh.annotations.Fork
@@ -37,6 +36,8 @@ import org.openjdk.jmh.annotations.Warmup
 
 import org.apache.pekko
 import pekko.actor.typed.scaladsl.AskPattern._
+
+import com.typesafe.config.ConfigFactory
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Array(Mode.Throughput))

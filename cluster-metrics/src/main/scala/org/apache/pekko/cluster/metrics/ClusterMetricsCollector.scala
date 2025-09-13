@@ -15,9 +15,8 @@ package org.apache.pekko.cluster.metrics
 
 import java.util.concurrent.ThreadLocalRandom
 
-import scala.collection.immutable
-
 import scala.annotation.nowarn
+import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.actor.Actor

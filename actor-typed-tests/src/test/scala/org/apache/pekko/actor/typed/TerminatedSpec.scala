@@ -13,12 +13,12 @@
 
 package org.apache.pekko.actor.typed
 
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.TestInbox
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 class TerminatedSpec extends AnyWordSpec with Matchers with LogCapturing {
 

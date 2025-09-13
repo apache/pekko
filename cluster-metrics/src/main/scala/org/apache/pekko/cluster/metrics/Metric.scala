@@ -13,11 +13,10 @@
 
 package org.apache.pekko.cluster.metrics
 
+import scala.annotation.nowarn
 import scala.util.Failure
 import scala.util.Success
 import scala.util.Try
-
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.actor.Address

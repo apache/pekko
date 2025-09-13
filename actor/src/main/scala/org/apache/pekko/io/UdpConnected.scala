@@ -16,9 +16,8 @@ package org.apache.pekko.io
 import java.lang.{ Iterable => JIterable }
 import java.net.InetSocketAddress
 
-import scala.collection.immutable
-
 import scala.annotation.nowarn
+import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.actor._

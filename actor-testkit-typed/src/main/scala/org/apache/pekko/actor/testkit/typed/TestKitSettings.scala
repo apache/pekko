@@ -14,15 +14,15 @@
 package org.apache.pekko.actor.testkit.typed
 
 import scala.concurrent.duration.{ Duration, FiniteDuration }
-
-import com.typesafe.config.Config
+import scala.jdk.DurationConverters._
 
 import org.apache.pekko
 import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.Extension
 import pekko.actor.typed.ExtensionId
-import scala.jdk.DurationConverters._
 import pekko.util.Timeout
+
+import com.typesafe.config.Config
 
 object TestKitSettings {
 

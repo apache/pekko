@@ -15,9 +15,10 @@ package org.apache.pekko.actor.testkit.typed.javadsl
 
 import java.time.Duration
 
+import scala.jdk.DurationConverters._
+
 import org.apache.pekko
 import pekko.actor.typed.{ ActorRef, Behavior, Props }
-import scala.jdk.DurationConverters._
 
 /**
  * Factories for behavior effects for [[BehaviorTestKit]], each effect has a suitable equals and can be used to compare

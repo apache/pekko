@@ -13,12 +13,12 @@
 
 package org.apache.pekko.actor.typed.internal.routing
 
-import org.scalatest.wordspec.AnyWordSpecLike
-
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
 import pekko.actor.typed.{ ActorRef, Behavior, DispatcherSelector }
 import pekko.actor.typed.scaladsl.{ Behaviors, Routers }
+
+import org.scalatest.wordspec.AnyWordSpecLike
 
 object PoolRouterSpec {
 

@@ -13,15 +13,16 @@
 
 package org.apache.pekko.actor.testkit.typed.javadsl
 
-import org.apache.pekko
-import pekko.actor.testkit.typed.internal.{ ActorSystemStub, BehaviorTestKitImpl }
-import pekko.actor.testkit.typed.{ CapturedLogEvent, Effect }
-import pekko.actor.typed.receptionist.Receptionist
-import pekko.actor.typed.{ ActorRef, Behavior, Signal }
-import pekko.annotation.{ ApiMayChange, DoNotInherit }
-import com.typesafe.config.Config
-
 import java.util.concurrent.ThreadLocalRandom
+
+import org.apache.pekko
+import pekko.actor.testkit.typed.{ CapturedLogEvent, Effect }
+import pekko.actor.testkit.typed.internal.{ ActorSystemStub, BehaviorTestKitImpl }
+import pekko.actor.typed.{ ActorRef, Behavior, Signal }
+import pekko.actor.typed.receptionist.Receptionist
+import pekko.annotation.{ ApiMayChange, DoNotInherit }
+
+import com.typesafe.config.Config
 
 object BehaviorTestKit {
 

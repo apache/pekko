@@ -19,8 +19,6 @@ import java.util.concurrent.ThreadLocalRandom
 
 import scala.concurrent.Future
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.ActorRef
@@ -30,6 +28,8 @@ import pekko.remote.UniqueAddress
 import pekko.remote.artery.InboundControlJunction.ControlMessageObserver
 import pekko.remote.artery.InboundControlJunction.ControlMessageSubject
 import pekko.util.OptionVal
+
+import com.typesafe.config.ConfigFactory
 
 private[remote] class TestInboundContext(
     override val localAddress: UniqueAddress,

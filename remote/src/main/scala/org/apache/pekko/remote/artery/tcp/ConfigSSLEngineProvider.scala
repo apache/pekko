@@ -20,15 +20,6 @@ import java.nio.file.Paths
 import java.security.GeneralSecurityException
 import java.security.KeyStore
 import java.security.SecureRandom
-
-import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.event.LogMarker
-import pekko.event.Logging
-import pekko.event.MarkerLoggingAdapter
-import pekko.remote.artery.tcp.ssl.SSLEngineConfig
-import pekko.stream.TLSRole
-import com.typesafe.config.Config
 import javax.net.ssl.KeyManager
 import javax.net.ssl.KeyManagerFactory
 import javax.net.ssl.SSLContext
@@ -38,6 +29,16 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.TrustManagerFactory
 
 import scala.util.Try
+
+import org.apache.pekko
+import pekko.actor.ActorSystem
+import pekko.event.LogMarker
+import pekko.event.Logging
+import pekko.event.MarkerLoggingAdapter
+import pekko.remote.artery.tcp.ssl.SSLEngineConfig
+import pekko.stream.TLSRole
+
+import com.typesafe.config.Config
 
 /**
  * Config in pekko.remote.artery.ssl.config-ssl-engine

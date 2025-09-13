@@ -17,8 +17,8 @@ import org.apache.pekko
 import pekko.actor.typed.ActorRef
 import pekko.annotation.ApiMayChange
 import pekko.annotation.DoNotInherit
-import pekko.persistence.typed.state.internal.SideEffect
 import pekko.persistence.typed.state.internal._
+import pekko.persistence.typed.state.internal.SideEffect
 
 /**
  * Factory methods for creating [[Effect]] directives - how a `DurableStateBehavior` reacts on a command.

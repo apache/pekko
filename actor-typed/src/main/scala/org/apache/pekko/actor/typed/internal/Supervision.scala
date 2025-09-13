@@ -19,9 +19,10 @@ import java.util.concurrent.ThreadLocalRandom
 import scala.concurrent.duration.Deadline
 import scala.concurrent.duration.FiniteDuration
 import scala.reflect.ClassTag
+import scala.util.Try
 import scala.util.control.Exception.Catcher
 import scala.util.control.NonFatal
-import org.slf4j.event.Level
+
 import org.apache.pekko
 import pekko.actor.DeadLetterSuppression
 import pekko.actor.Dropped
@@ -36,7 +37,7 @@ import pekko.event.Logging
 import pekko.util.OptionVal
 import pekko.util.unused
 
-import scala.util.Try
+import org.slf4j.event.Level
 
 /**
  * INTERNAL API

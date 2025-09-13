@@ -22,6 +22,7 @@ import java.util.function.Supplier
 import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.concurrent.duration._
+import scala.jdk.DurationConverters._
 import scala.reflect.ClassTag
 import scala.util.control.NonFatal
 
@@ -43,7 +44,6 @@ import pekko.actor.typed.scaladsl.Behaviors
 import pekko.annotation.InternalApi
 import pekko.japi.function.Creator
 import pekko.util.BoxedType
-import scala.jdk.DurationConverters._
 import pekko.util.PrettyDuration._
 import pekko.util.ccompat.JavaConverters._
 

@@ -26,18 +26,18 @@ import scala.concurrent.duration.FiniteDuration
 import scala.util.Try
 import scala.util.control.NonFatal
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.Done
 import pekko.annotation.InternalApi
 import pekko.dispatch.ExecutionContexts
 import pekko.event.Logging
 import pekko.pattern.after
+import pekko.util.FutureConverters._
 import pekko.util.OptionConverters._
 import pekko.util.OptionVal
-import pekko.util.FutureConverters._
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 object CoordinatedShutdown extends ExtensionId[CoordinatedShutdown] with ExtensionIdProvider {
 

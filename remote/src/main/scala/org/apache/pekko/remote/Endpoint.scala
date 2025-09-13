@@ -17,13 +17,12 @@ import java.io.NotSerializableException
 import java.util.concurrent.{ ConcurrentHashMap, TimeoutException }
 import java.util.concurrent.locks.LockSupport
 
+import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.concurrent.Future
 import scala.concurrent.duration.Deadline
 import scala.concurrent.duration.Duration
 import scala.util.control.NonFatal
-
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.{ OnlyCauseStackTrace, PekkoException }
@@ -38,13 +37,13 @@ import pekko.remote.EndpointManager.{ Link, ResendState, Send }
 import pekko.remote.EndpointWriter.{ FlushAndStop, StoppedReading }
 import pekko.remote.WireFormats.SerializedMessage
 import pekko.remote.transport._
-import pekko.remote.transport.PekkoPduCodec.Message
 import pekko.remote.transport.AssociationHandle.{
   ActorHandleEventListener,
   DisassociateInfo,
   Disassociated,
   InboundPayload
 }
+import pekko.remote.transport.PekkoPduCodec.Message
 import pekko.remote.transport.Transport.InvalidAssociationException
 import pekko.serialization.Serialization
 import pekko.util.ByteString

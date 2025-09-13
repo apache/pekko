@@ -15,6 +15,8 @@ package org.apache.pekko.cluster.ddata.typed.javadsl
 
 import java.util.function.{ Function => JFunction }
 
+import scala.jdk.DurationConverters._
+
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.ActorSystem
@@ -27,7 +29,6 @@ import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 import pekko.cluster.ddata.ReplicatedData
 import pekko.cluster.ddata.SelfUniqueAddress
-import scala.jdk.DurationConverters._
 
 object DistributedData extends ExtensionId[DistributedData] {
   def get(system: ActorSystem[_]): DistributedData = apply(system)

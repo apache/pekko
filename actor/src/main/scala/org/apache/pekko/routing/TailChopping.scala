@@ -18,9 +18,8 @@ import java.util.concurrent.atomic.AtomicInteger
 import scala.collection.immutable
 import scala.concurrent.{ ExecutionContext, Promise }
 import scala.concurrent.duration._
+import scala.jdk.DurationConverters._
 import scala.util.Random
-
-import com.typesafe.config.Config
 
 import org.apache.pekko
 import pekko.actor._
@@ -28,8 +27,9 @@ import pekko.dispatch.Dispatchers
 import pekko.japi.Util.immutableSeq
 import pekko.pattern.{ ask, pipe, AskTimeoutException }
 import pekko.util.Helpers.ConfigOps
-import scala.jdk.DurationConverters._
 import pekko.util.Timeout
+
+import com.typesafe.config.Config
 
 /**
  * As each message is sent to the router, the routees are randomly ordered. The message is sent to the

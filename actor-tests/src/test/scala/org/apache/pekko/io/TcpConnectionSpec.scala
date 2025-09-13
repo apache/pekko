@@ -30,8 +30,6 @@ import scala.util.Try
 import scala.util.control.NonFatal
 
 import com.google.common.jimfs.{ Configuration, Jimfs }
-import com.typesafe.config.ConfigFactory
-import org.scalatest.matchers._
 
 import org.apache.pekko
 import pekko.actor._
@@ -42,6 +40,10 @@ import pekko.testkit.{ EventFilter, PekkoSpec, SocketUtil, TestActorRef, TestPro
 import pekko.testkit.SocketUtil.temporaryServerAddress
 import pekko.testkit.WithLogCapturing
 import pekko.util.{ ByteString, Helpers }
+
+import org.scalatest.matchers._
+
+import com.typesafe.config.ConfigFactory
 
 object TcpConnectionSpec {
   case class Ack(i: Int) extends Event

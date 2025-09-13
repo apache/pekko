@@ -13,8 +13,12 @@
 
 package org.apache.pekko.actor.typed.internal
 
+import java.util.function.{ Function => JFunction }
+import java.util.function.Predicate
+
 import scala.annotation.tailrec
 import scala.util.control.NonFatal
+
 import org.apache.pekko
 import pekko.actor.DeadLetter
 import pekko.actor.typed.Behavior
@@ -27,9 +31,6 @@ import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.japi.function.Procedure
 import pekko.util.{ unused, ConstantFun }
 import pekko.util.OptionVal
-
-import java.util.function.{ Function => JFunction }
-import java.util.function.Predicate
 
 /**
  * INTERNAL API

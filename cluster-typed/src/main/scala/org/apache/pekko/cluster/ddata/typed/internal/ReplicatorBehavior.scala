@@ -14,6 +14,7 @@
 package org.apache.pekko.cluster.ddata.typed.internal
 
 import scala.concurrent.duration._
+import scala.jdk.DurationConverters._
 
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
@@ -25,7 +26,6 @@ import pekko.annotation.InternalApi
 import pekko.cluster.{ ddata => dd }
 import pekko.cluster.ddata.ReplicatedData
 import pekko.pattern.ask
-import scala.jdk.DurationConverters._
 import pekko.util.Timeout
 
 /**

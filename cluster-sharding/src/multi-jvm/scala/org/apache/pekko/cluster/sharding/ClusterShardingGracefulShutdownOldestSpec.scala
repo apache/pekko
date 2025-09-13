@@ -13,14 +13,14 @@
 
 package org.apache.pekko.cluster.sharding
 
+import scala.concurrent.Await
 import scala.concurrent.duration._
+
 import org.apache.pekko
 import pekko.actor._
 import pekko.cluster.sharding.ShardCoordinator.ShardAllocationStrategy
 import pekko.remote.testconductor.RoleName
 import pekko.testkit._
-
-import scala.concurrent.Await
 
 abstract class ClusterShardingGracefulShutdownOldestSpecConfig(mode: String)
     extends MultiNodeClusterShardingConfig(

@@ -15,10 +15,11 @@ package org.apache.pekko.actor.dungeon
 
 import java.util.Optional
 
+import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.util.control.NonFatal
-import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.InternalStableApi

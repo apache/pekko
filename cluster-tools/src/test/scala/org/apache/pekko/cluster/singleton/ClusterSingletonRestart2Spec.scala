@@ -15,8 +15,6 @@ package org.apache.pekko.cluster.singleton
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.Actor
 import pekko.actor.ActorSystem
@@ -27,6 +25,8 @@ import pekko.cluster.MemberStatus
 import pekko.cluster.UniqueAddress
 import pekko.testkit.PekkoSpec
 import pekko.testkit.TestProbe
+
+import com.typesafe.config.ConfigFactory
 
 object ClusterSingletonRestart2Spec {
   def singletonActorProps: Props = Props(new Singleton)

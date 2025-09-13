@@ -13,12 +13,13 @@
 
 package org.apache.pekko.dispatch
 
-import org.apache.pekko
-import pekko.annotation.InternalApi
-
 import java.util.concurrent.Executor
+
 import scala.annotation.tailrec
 import scala.concurrent._
+
+import org.apache.pekko
+import pekko.annotation.InternalApi
 
 /**
  * INTERNAL API

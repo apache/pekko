@@ -15,14 +15,14 @@ package org.apache.pekko.remote.artery
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorPath, ActorRef, Props }
 import pekko.remote.RemotingMultiNodeSpec
 import pekko.remote.testkit.{ MultiNodeConfig, MultiNodeSpec, STMultiNodeSpec }
 import pekko.testkit.ImplicitSender
 import pekko.testkit.JavaSerializable
+
+import com.typesafe.config.ConfigFactory
 
 object DirectMemorySpec extends MultiNodeConfig {
   val first = role("first")

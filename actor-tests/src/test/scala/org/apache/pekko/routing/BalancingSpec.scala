@@ -21,12 +21,12 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorLogging, ActorRef, PoisonPill, Props }
-import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
+import pekko.testkit.PekkoSpec
 import pekko.testkit.TestLatch
-import org.scalatest.BeforeAndAfterEach
-
 import pekko.testkit.TestProbe
+
+import org.scalatest.BeforeAndAfterEach
 
 object BalancingSpec {
   val counter = new AtomicInteger(1)

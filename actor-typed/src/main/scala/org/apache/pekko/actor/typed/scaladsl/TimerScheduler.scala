@@ -13,9 +13,9 @@
 
 package org.apache.pekko.actor.typed.scaladsl
 
-import org.apache.pekko.annotation.DoNotInherit
-
 import scala.concurrent.duration.FiniteDuration
+
+import org.apache.pekko.annotation.DoNotInherit
 
 /**
  * Support for scheduled `self` messages in an actor.

@@ -16,13 +16,13 @@ package org.apache.pekko.cluster.sharding.typed
 import java.time.Duration
 
 import scala.concurrent.duration.FiniteDuration
-
-import com.typesafe.config.Config
+import scala.jdk.DurationConverters._
 
 import org.apache.pekko
 import pekko.actor.typed.ActorSystem
 import pekko.annotation.InternalApi
-import scala.jdk.DurationConverters._
+
+import com.typesafe.config.Config
 
 object ShardedDaemonProcessSettings {
 

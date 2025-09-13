@@ -16,9 +16,9 @@ package org.apache.pekko.stream.javadsl
 import java.util.function.ToLongBiFunction
 
 import org.apache.pekko
-import pekko.japi.function
 import pekko.NotUsed
 import pekko.annotation.DoNotInherit
+import pekko.japi.function
 import pekko.util.unused
 
 /**

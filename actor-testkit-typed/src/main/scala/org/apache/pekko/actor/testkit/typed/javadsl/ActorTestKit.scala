@@ -15,7 +15,7 @@ package org.apache.pekko.actor.testkit.typed.javadsl
 
 import java.time.Duration
 
-import com.typesafe.config.Config
+import scala.jdk.DurationConverters._
 
 import org.apache.pekko
 import pekko.actor.DeadLetter
@@ -29,8 +29,9 @@ import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.Behavior
 import pekko.actor.typed.Props
 import pekko.actor.typed.Scheduler
-import scala.jdk.DurationConverters._
 import pekko.util.Timeout
+
+import com.typesafe.config.Config
 
 object ActorTestKit {
 

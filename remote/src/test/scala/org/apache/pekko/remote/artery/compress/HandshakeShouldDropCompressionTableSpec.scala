@@ -16,9 +16,6 @@ package org.apache.pekko.remote.artery.compress
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-import org.scalatest.BeforeAndAfter
-
 import org.apache.pekko
 import pekko.actor.{ ActorIdentity, ActorSystem, Identify }
 import pekko.pattern.ask
@@ -27,6 +24,10 @@ import pekko.remote.artery.{ ArteryMultiNodeSpec, ArterySpecSupport, ArteryTrans
 import pekko.remote.artery.compress.CompressionProtocol.Events.{ Event, ReceivedActorRefCompressionTable }
 import pekko.testkit._
 import pekko.util.Timeout
+
+import org.scalatest.BeforeAndAfter
+
+import com.typesafe.config.ConfigFactory
 
 object HandshakeShouldDropCompressionTableSpec {
   val commonConfig = ConfigFactory.parseString(s"""

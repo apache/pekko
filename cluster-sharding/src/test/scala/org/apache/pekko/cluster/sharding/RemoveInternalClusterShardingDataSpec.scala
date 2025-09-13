@@ -32,8 +32,8 @@ import pekko.persistence.Recovery
 import pekko.persistence.RecoveryCompleted
 import pekko.persistence.SnapshotOffer
 import pekko.persistence.SnapshotSelectionCriteria
-import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
+import pekko.testkit.PekkoSpec
 import pekko.testkit.TestActors.EchoActor
 import pekko.testkit.WithLogCapturing
 

@@ -14,11 +14,13 @@
 package org.apache.pekko.persistence.serialization
 
 import java.io.NotSerializableException
+
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.collection.immutable.VectorBuilder
 import scala.concurrent.duration
 import scala.concurrent.duration.Duration
-import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.actor.{ ActorPath, ExtendedActorSystem }
 import pekko.actor.Actor

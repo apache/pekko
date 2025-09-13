@@ -18,14 +18,15 @@ import java.util.concurrent.ThreadLocalRandom
 
 import scala.collection.immutable
 import scala.concurrent.duration._
+import scala.jdk.DurationConverters._
 
 import OptimalSizeExploringResizer._
-import com.typesafe.config.Config
 
 import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.InternalApi
-import scala.jdk.DurationConverters._
+
+import com.typesafe.config.Config
 
 trait OptimalSizeExploringResizer extends Resizer {
 

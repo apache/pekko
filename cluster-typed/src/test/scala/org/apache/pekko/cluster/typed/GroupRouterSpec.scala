@@ -13,6 +13,8 @@
 
 package org.apache.pekko.cluster.typed
 
+import scala.concurrent.duration._
+
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
@@ -25,10 +27,10 @@ import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.GroupRouter
 import pekko.actor.typed.scaladsl.Routers
 import pekko.serialization.jackson.CborSerializable
-import com.typesafe.config.ConfigFactory
+
 import org.scalatest.wordspec.AnyWordSpecLike
 
-import scala.concurrent.duration._
+import com.typesafe.config.ConfigFactory
 
 object GroupRouterSpec {
   def config = ConfigFactory.parseString(s"""

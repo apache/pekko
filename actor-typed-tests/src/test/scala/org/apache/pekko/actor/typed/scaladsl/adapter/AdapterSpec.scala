@@ -15,10 +15,6 @@ package org.apache.pekko.actor.typed.scaladsl.adapter
 
 import scala.util.control.NoStackTrace
 
-import org.scalatest.BeforeAndAfterAll
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-
 import org.apache.pekko
 import pekko.{ actor => classic }
 import pekko.Done
@@ -36,6 +32,10 @@ import pekko.actor.typed.internal.adapter.SchedulerAdapter
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.serialization.SerializationExtension
 import pekko.testkit._
+
+import org.scalatest.BeforeAndAfterAll
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 object AdapterSpec {
   val classic1: classic.Props = classic.Props(new Classic1)

@@ -13,15 +13,15 @@
 
 package org.apache.pekko.actor.typed.delivery
 
-import org.scalatest.TestSuite
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-
 import org.apache.pekko
 import pekko.actor.typed.delivery.DurableProducerQueue.MessageSent
 import pekko.actor.typed.delivery.DurableProducerQueue.State
 import pekko.actor.typed.delivery.internal.ChunkedMessage
 import pekko.util.ByteString
+
+import org.scalatest.TestSuite
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 class DurableProducerQueueSpec extends AnyWordSpec with TestSuite with Matchers {
 

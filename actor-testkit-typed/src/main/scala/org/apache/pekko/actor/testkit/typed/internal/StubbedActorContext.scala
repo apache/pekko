@@ -13,21 +13,23 @@
 
 package org.apache.pekko.actor.testkit.typed.internal
 
-import org.apache.pekko
-import pekko.actor.testkit.typed.CapturedLogEvent
-import pekko.actor.typed._
-import pekko.actor.typed.internal._
-import pekko.actor.{ ActorPath, ActorRefProvider, InvalidMessageException }
-import pekko.annotation.InternalApi
-import pekko.util.Helpers
-import pekko.{ actor => classic }
-import org.slf4j.{ Logger, Marker }
-import org.slf4j.helpers.{ MessageFormatter, SubstituteLoggerFactory }
-
 import java.util.concurrent.ThreadLocalRandom.{ current => rnd }
+
 import scala.collection.immutable.TreeMap
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration.FiniteDuration
+
+import org.apache.pekko
+import pekko.{ actor => classic }
+import pekko.actor.{ ActorPath, ActorRefProvider, InvalidMessageException }
+import pekko.actor.testkit.typed.CapturedLogEvent
+import pekko.actor.typed._
+import pekko.actor.typed.internal._
+import pekko.annotation.InternalApi
+import pekko.util.Helpers
+
+import org.slf4j.{ Logger, Marker }
+import org.slf4j.helpers.{ MessageFormatter, SubstituteLoggerFactory }
 
 /**
  * INTERNAL API

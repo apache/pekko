@@ -15,10 +15,9 @@ package org.apache.pekko.cluster
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
+import scala.jdk.DurationConverters._
 import scala.util.Failure
 import scala.util.Success
-
-import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.Done
@@ -37,7 +36,8 @@ import pekko.stream.scaladsl.StreamRefs
 import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.testkit._
-import scala.jdk.DurationConverters._
+
+import com.typesafe.config.ConfigFactory
 
 object StreamRefSpec extends MultiNodeConfig {
   val first = role("first")

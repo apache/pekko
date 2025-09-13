@@ -15,10 +15,10 @@ package org.apache.pekko.remote.artery
 
 import scala.util.Random
 
+import org.apache.pekko.util.OptionVal
+
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-
-import org.apache.pekko.util.OptionVal
 
 class ImmutableLongMapSpec extends AnyWordSpec with Matchers {
 

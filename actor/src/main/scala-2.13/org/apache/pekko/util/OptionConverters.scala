@@ -17,10 +17,11 @@
 
 package org.apache.pekko.util
 
-import org.apache.pekko.annotation.InternalStableApi
-
 import java.util._
+
 import scala.jdk.OptionShape
+
+import org.apache.pekko.annotation.InternalStableApi
 
 /**
  * INTERNAL API

@@ -19,8 +19,9 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import BenchmarkActors._
-import com.typesafe.config.ConfigFactory
 import org.openjdk.jmh.annotations._
+
+import com.typesafe.config.ConfigFactory
 
 object ActorBenchmark {
   // Constants because they are used in annotations

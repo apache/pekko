@@ -17,21 +17,21 @@
 
 package org.apache.pekko.stream.scaladsl
 
+import java.util.Collections
+import java.util.concurrent.ThreadLocalRandom
+import java.util.concurrent.atomic.AtomicInteger
+
+import scala.annotation.switch
+import scala.concurrent.Future
+import scala.concurrent.duration.DurationInt
+import scala.util.control.NoStackTrace
+
 import org.apache.pekko
-import pekko.pattern.FutureTimeoutSupport
 import pekko.NotUsed
+import pekko.pattern.FutureTimeoutSupport
 import pekko.stream._
 import pekko.stream.testkit.{ ScriptedTest, StreamSpec }
 import pekko.stream.testkit.scaladsl.TestSink
-
-import java.util.concurrent.ThreadLocalRandom
-import java.util.concurrent.atomic.AtomicInteger
-import java.util.Collections
-
-import scala.annotation.switch
-import scala.concurrent.duration.DurationInt
-import scala.concurrent.Future
-import scala.util.control.NoStackTrace
 
 class FlowFlatMapConcatParallelismSpec extends StreamSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 2

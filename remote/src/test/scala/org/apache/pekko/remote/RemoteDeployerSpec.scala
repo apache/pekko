@@ -13,13 +13,13 @@
 
 package org.apache.pekko.remote
 
-import com.typesafe.config._
-
 import org.apache.pekko
 import pekko.ConfigurationException
 import pekko.actor._
 import pekko.routing._
 import pekko.testkit._
+
+import com.typesafe.config._
 
 object RemoteDeployerSpec {
   val deployerConf = ConfigFactory.parseString(
