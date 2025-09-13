@@ -24,6 +24,7 @@ import org.junit.Test;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -97,4 +98,22 @@ public class FutureDocTest extends AbstractJavaTest {
 
     retriedFuture.toCompletableFuture().get(2, SECONDS);
   }
+
+    @Test
+    public void useRetryWithPredicateWithIntFunction() throws Exception {
+        // #retry
+        Callable<CompletionStage<String>> attempt = () -> CompletableFuture.completedFuture("test");
+
+        CompletionStage<String> retriedFuture =
+            Patterns.retry(
+                attempt,
+                (notUsed, e) -> e != null,
+                3,
+                current -> Optional.of(java.time.Duration.ofMillis(200)),
+                system.classicSystem().scheduler(),
+                system.executionContext());
+        // #retry
+
+        retriedFuture.toCompletableFuture().get(2, SECONDS);
+    }
 }
