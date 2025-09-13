@@ -23,8 +23,8 @@ import pekko.remote.artery.InboundControlJunction.ControlMessageObserver
 import pekko.stream.scaladsl.Keep
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.stream.testkit.scaladsl.TestSource
-import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
+import pekko.testkit.PekkoSpec
 import pekko.testkit.TestProbe
 import pekko.util.OptionVal
 

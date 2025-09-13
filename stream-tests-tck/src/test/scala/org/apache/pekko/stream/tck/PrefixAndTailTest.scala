@@ -16,11 +16,11 @@ package org.apache.pekko.stream.tck
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import org.reactivestreams.Publisher
-
 import org.apache.pekko
 import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.Source
+
+import org.reactivestreams.Publisher
 
 class PrefixAndTailTest extends PekkoPublisherVerification[Int] {
 

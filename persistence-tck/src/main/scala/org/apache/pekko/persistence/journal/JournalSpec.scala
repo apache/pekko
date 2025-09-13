@@ -15,8 +15,6 @@ package org.apache.pekko.persistence.journal
 
 import scala.concurrent.duration._
 
-import com.typesafe.config._
-
 import org.apache.pekko
 import pekko.actor._
 import pekko.persistence._
@@ -24,6 +22,8 @@ import pekko.persistence.JournalProtocol._
 import pekko.persistence.scalatest.{ MayVerb, OptionalTests }
 import pekko.testkit._
 import pekko.util.unused
+
+import com.typesafe.config._
 
 object JournalSpec {
   val config: Config = ConfigFactory.parseString(s"""

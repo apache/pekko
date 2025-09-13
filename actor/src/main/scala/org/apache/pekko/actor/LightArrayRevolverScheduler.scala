@@ -24,12 +24,13 @@ import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
-import com.typesafe.config.Config
 import org.apache.pekko
 import pekko.actor.Scheduler.AtomicCancellable
 import pekko.dispatch.AbstractNodeQueue
 import pekko.event.LoggingAdapter
 import pekko.util.Helpers
+
+import com.typesafe.config.Config
 
 /**
  * This scheduler implementation is based on a revolving wheel of buckets,

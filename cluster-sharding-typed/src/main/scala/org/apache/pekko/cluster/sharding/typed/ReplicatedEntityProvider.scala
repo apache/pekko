@@ -13,21 +13,21 @@
 
 package org.apache.pekko.cluster.sharding.typed
 
-import org.apache.pekko
-import pekko.cluster.sharding.typed.scaladsl.Entity
-import pekko.cluster.sharding.typed.scaladsl.EntityTypeKey
-import pekko.cluster.sharding.typed.javadsl.{ Entity => JEntity, EntityTypeKey => JEntityTypeKey }
-import pekko.persistence.typed.ReplicaId
+import java.util.{ Set => JSet }
 
 import scala.collection.immutable
 import scala.reflect.ClassTag
-import pekko.util.ccompat.JavaConverters._
-import java.util.{ Set => JSet }
 
+import org.apache.pekko
 import pekko.actor.typed.Behavior
 import pekko.cluster.sharding.typed.internal.EntityTypeKeyImpl
+import pekko.cluster.sharding.typed.javadsl.{ Entity => JEntity, EntityTypeKey => JEntityTypeKey }
+import pekko.cluster.sharding.typed.scaladsl.Entity
+import pekko.cluster.sharding.typed.scaladsl.EntityTypeKey
+import pekko.persistence.typed.ReplicaId
 import pekko.persistence.typed.ReplicationId
 import pekko.persistence.typed.ReplicationId.Separator
+import pekko.util.ccompat.JavaConverters._
 
 object ReplicatedEntityProvider {
 

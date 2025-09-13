@@ -19,11 +19,10 @@ import java.time.LocalDateTime
 import java.util
 import java.util.concurrent.TimeUnit
 
+import scala.annotation.nowarn
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import scala.annotation.nowarn
-import com.typesafe.config.ConfigFactory
 import org.openjdk.jmh.annotations._
 
 import org.apache.pekko
@@ -31,6 +30,8 @@ import pekko.actor._
 import pekko.serialization.Serialization
 import pekko.serialization.SerializationExtension
 import pekko.serialization.SerializerWithStringManifest
+
+import com.typesafe.config.ConfigFactory
 
 object JacksonSerializationBench {
   trait TestMessage

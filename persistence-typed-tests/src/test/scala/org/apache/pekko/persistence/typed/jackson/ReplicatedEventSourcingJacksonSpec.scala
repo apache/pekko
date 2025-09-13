@@ -13,13 +13,15 @@
 
 package org.apache.pekko.persistence.typed.jackson
 
+import com.fasterxml.jackson.databind.annotation.{ JsonDeserialize, JsonSerialize }
+
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit, SerializationTestKit }
 import pekko.persistence.typed.ReplicaId
 import pekko.persistence.typed.crdt.{ Counter, LwwTime, ORSet }
 import pekko.persistence.typed.jackson.ReplicatedEventSourcingJacksonSpec.{ WithCounter, WithLwwTime, WithOrSet }
 import pekko.serialization.jackson.{ JsonSerializable, PekkoSerializationDeserializer, PekkoSerializationSerializer }
-import com.fasterxml.jackson.databind.annotation.{ JsonDeserialize, JsonSerialize }
+
 import org.scalatest.wordspec.AnyWordSpecLike
 
 object ReplicatedEventSourcingJacksonSpec {

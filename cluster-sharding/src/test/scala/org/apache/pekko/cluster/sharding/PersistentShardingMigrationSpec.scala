@@ -14,16 +14,17 @@
 package org.apache.pekko.cluster.sharding
 import java.util.UUID
 
-import org.apache.pekko
-import pekko.actor.{ ActorRef, ActorSystem, Props }
-import pekko.cluster.sharding.ShardRegion.CurrentRegions
-import pekko.cluster.{ Cluster, MemberStatus }
-import pekko.persistence.PersistentActor
-import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
-import com.typesafe.config.{ Config, ConfigFactory }
-
 import scala.concurrent.Await
 import scala.concurrent.duration._
+
+import org.apache.pekko
+import pekko.actor.{ ActorRef, ActorSystem, Props }
+import pekko.cluster.{ Cluster, MemberStatus }
+import pekko.cluster.sharding.ShardRegion.CurrentRegions
+import pekko.persistence.PersistentActor
+import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 /**
  * Test migration from old persistent shard coordinator with remembered

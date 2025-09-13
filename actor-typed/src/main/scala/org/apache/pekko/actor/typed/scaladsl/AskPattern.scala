@@ -15,8 +15,9 @@ package org.apache.pekko.actor.typed.scaladsl
 
 import java.util.concurrent.TimeoutException
 
-import scala.concurrent.Future
 import scala.annotation.nowarn
+import scala.concurrent.Future
+
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.ActorSystem

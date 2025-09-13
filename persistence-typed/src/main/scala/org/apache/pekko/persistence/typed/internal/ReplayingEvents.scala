@@ -13,8 +13,10 @@
 
 package org.apache.pekko.persistence.typed.internal
 
+import scala.collection.immutable
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
+
 import org.apache.pekko
 import pekko.actor.typed.{ Behavior, Signal }
 import pekko.actor.typed.internal.PoisonPill
@@ -38,8 +40,6 @@ import pekko.persistence.typed.internal.Running.startReplicationStream
 import pekko.util.OptionVal
 import pekko.util.PrettyDuration._
 import pekko.util.unused
-
-import scala.collection.immutable
 
 /**
  * *

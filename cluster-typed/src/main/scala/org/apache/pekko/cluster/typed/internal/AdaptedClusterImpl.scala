@@ -24,8 +24,8 @@ import pekko.actor.typed.scaladsl.adapter._
 import pekko.annotation.InternalApi
 import pekko.cluster.{ ClusterEvent, Member, MemberStatus }
 import pekko.cluster.ClusterEvent.MemberEvent
-import pekko.cluster.typed.PrepareForFullClusterShutdown
 import pekko.cluster.typed._
+import pekko.cluster.typed.PrepareForFullClusterShutdown
 
 /**
  * INTERNAL API:

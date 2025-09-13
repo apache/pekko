@@ -22,6 +22,12 @@ import scala.concurrent.{ Await, ExecutionContext, ExecutionContextExecutor, Fut
 import scala.util.control.Exception
 
 import org.scalactic.source.Position
+
+import org.apache.pekko
+import pekko.testkit.TimingTest
+import pekko.util.DefaultExecutionContext._
+import pekko.util.ccompat.JavaConverters._
+
 import org.scalatest.concurrent.{ Signaler, ThreadSignaler }
 import org.scalatest.exceptions.TestFailedDueToTimeoutException
 import org.scalatest.matchers.{ MatchResult, Matcher }
@@ -29,11 +35,6 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.time.Span
 import org.scalatest.time.SpanSugar._
 import org.scalatest.wordspec.AnyWordSpec
-
-import org.apache.pekko
-import pekko.testkit.TimingTest
-import pekko.util.DefaultExecutionContext._
-import pekko.util.ccompat.JavaConverters._
 
 class BoundedBlockingQueueSpec
     extends AnyWordSpec

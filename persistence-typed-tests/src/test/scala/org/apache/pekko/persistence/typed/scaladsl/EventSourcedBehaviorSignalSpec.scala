@@ -17,6 +17,11 @@
 
 package org.apache.pekko.persistence.typed.scaladsl
 
+import scala.collection.immutable
+import scala.concurrent.Future
+import scala.concurrent.duration._
+import scala.util.Try
+
 import org.apache.pekko
 import pekko.actor.testkit.typed.TestException
 import pekko.actor.testkit.typed.scaladsl._
@@ -29,14 +34,11 @@ import pekko.persistence.typed.JournalPersistRejected
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.RecoveryCompleted
 import pekko.serialization.jackson.CborSerializable
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+
 import org.scalatest.wordspec.AnyWordSpecLike
 
-import scala.collection.immutable
-import scala.concurrent.Future
-import scala.concurrent.duration._
-import scala.util.Try
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 // Custom journal that checks event flags to determine whether to reject or fail writes
 class SignalTestJournal extends InmemJournal {

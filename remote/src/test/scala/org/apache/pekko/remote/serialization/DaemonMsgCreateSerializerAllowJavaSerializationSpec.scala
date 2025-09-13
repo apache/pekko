@@ -13,8 +13,6 @@
 
 package org.apache.pekko.remote.serialization
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.Actor
 import pekko.actor.ActorRef
@@ -30,9 +28,11 @@ import pekko.routing.FromConfig
 import pekko.routing.RoundRobinPool
 import pekko.serialization.Serialization
 import pekko.serialization.SerializationExtension
-import pekko.testkit.PekkoSpec
 import pekko.testkit.JavaSerializable
+import pekko.testkit.PekkoSpec
 import pekko.util.unused
+
+import com.typesafe.config.ConfigFactory
 
 object DaemonMsgCreateSerializerAllowJavaSerializationSpec {
 

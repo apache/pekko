@@ -15,8 +15,6 @@ package org.apache.pekko.cluster
 
 import scala.collection.immutable.SortedSet
 
-import org.scalatest.BeforeAndAfterEach
-
 import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.actor.Address
@@ -27,9 +25,11 @@ import pekko.cluster.ClusterSettings.DefaultDataCenter
 import pekko.cluster.InternalClusterAction._
 import pekko.cluster.MemberStatus._
 import pekko.remote.RARP
-import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
+import pekko.testkit.PekkoSpec
 import pekko.testkit.TestProbe
+
+import org.scalatest.BeforeAndAfterEach
 
 object ClusterDomainEventPublisherSpec {
   val config = """

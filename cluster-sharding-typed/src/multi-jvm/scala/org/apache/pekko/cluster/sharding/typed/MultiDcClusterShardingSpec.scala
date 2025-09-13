@@ -14,8 +14,7 @@
 package org.apache.pekko.cluster.sharding.typed
 
 import scala.concurrent.duration._
-import com.typesafe.config.ConfigFactory
-import org.scalatest.concurrent.ScalaFutures
+
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.TestProbe
 import pekko.actor.typed.ActorRef
@@ -26,6 +25,10 @@ import pekko.cluster.sharding.typed.scaladsl.EntityTypeKey
 import pekko.cluster.typed.{ MultiDcPinger, MultiNodeTypedClusterSpec }
 import pekko.remote.testkit.{ MultiNodeConfig, MultiNodeSpec }
 import pekko.util.Timeout
+
+import org.scalatest.concurrent.ScalaFutures
+
+import com.typesafe.config.ConfigFactory
 
 object MultiDcClusterShardingSpecConfig extends MultiNodeConfig {
   val first = role("first")

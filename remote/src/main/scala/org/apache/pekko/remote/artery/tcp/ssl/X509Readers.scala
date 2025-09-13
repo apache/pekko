@@ -15,10 +15,10 @@ package org.apache.pekko.remote.artery.tcp.ssl
 
 import java.security.cert.X509Certificate
 import java.util
+import javax.naming.ldap.LdapName
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import javax.naming.ldap.LdapName
 import pekko.util.ccompat.JavaConverters._
 
 /**

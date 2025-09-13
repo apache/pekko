@@ -15,9 +15,6 @@ package org.apache.pekko.cluster
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-import org.scalatest.concurrent.ScalaFutures
-
 import org.apache.pekko
 import pekko.actor.Actor
 import pekko.actor.ActorIdentity
@@ -32,6 +29,10 @@ import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.testkit.ImplicitSender
 import pekko.testkit.TestProbe
+
+import org.scalatest.concurrent.ScalaFutures
+
+import com.typesafe.config.ConfigFactory
 
 class ClusterWatcherNoClusterWatcheeConfig(val useUnsafe: Boolean, artery: Boolean) extends MultiNodeConfig {
 

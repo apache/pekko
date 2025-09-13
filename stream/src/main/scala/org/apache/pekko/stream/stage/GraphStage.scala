@@ -13,6 +13,7 @@
 
 package org.apache.pekko.stream.stage
 
+import java.util.Spliterator
 import java.util.concurrent.{ CompletionStage, ConcurrentHashMap }
 import java.util.concurrent.atomic.AtomicReference
 
@@ -35,8 +36,6 @@ import pekko.stream.scaladsl.GenericGraphWithChangedAttributes
 import pekko.stream.stage.ConcurrentAsyncCallbackState.{ NoPendingEvents, State }
 import pekko.util.OptionVal
 import pekko.util.unused
-
-import java.util.Spliterator
 
 /**
  * Scala API: A GraphStage represents a reusable graph stream processing operator.

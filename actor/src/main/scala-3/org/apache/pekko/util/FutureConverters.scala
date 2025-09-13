@@ -9,10 +9,11 @@
 
 package org.apache.pekko.util
 
-import org.apache.pekko.annotation.InternalStableApi
-
 import java.util.concurrent.CompletionStage
+
 import scala.concurrent.Future
+
+import org.apache.pekko.annotation.InternalStableApi
 
 /**
  * INTERNAL API

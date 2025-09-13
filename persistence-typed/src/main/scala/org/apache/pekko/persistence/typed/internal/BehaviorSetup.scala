@@ -16,13 +16,12 @@ package org.apache.pekko.persistence.typed.internal
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.FiniteDuration
 import scala.util.control.NonFatal
-import com.typesafe.config.ConfigFactory
+
 import org.apache.pekko
-import pekko.util.Helpers.ConfigOps
+import pekko.actor.{ ActorRef => ClassicActorRef }
 import pekko.actor.Cancellable
 import pekko.actor.typed.Signal
 import pekko.actor.typed.scaladsl.ActorContext
-import pekko.actor.{ ActorRef => ClassicActorRef }
 import pekko.annotation.InternalApi
 import pekko.persistence._
 import pekko.persistence.typed.EventAdapter
@@ -31,9 +30,13 @@ import pekko.persistence.typed.ReplicaId
 import pekko.persistence.typed.SnapshotAdapter
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior
 import pekko.persistence.typed.scaladsl.RetentionCriteria
+import pekko.util.Helpers.ConfigOps
 import pekko.util.OptionVal
+
 import org.slf4j.Logger
 import org.slf4j.MDC
+
+import com.typesafe.config.ConfigFactory
 
 /**
  * INTERNAL API
@@ -72,6 +75,7 @@ private[pekko] final class BehaviorSetup[C, E, S](
 
   import BehaviorSetup._
   import InternalProtocol.RecoveryTickEvent
+
   import pekko.actor.typed.scaladsl.adapter._
 
   val persistence: Persistence = Persistence(context.system.toClassic)

@@ -13,12 +13,13 @@
 
 package org.apache.pekko.actor.typed.delivery
 
+import java.io.NotSerializableException
 import java.nio.charset.StandardCharsets
+
+import scala.concurrent.duration._
 import scala.concurrent.duration.Duration
 import scala.concurrent.duration.FiniteDuration
-import scala.concurrent.duration._
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.Behavior
@@ -28,7 +29,8 @@ import pekko.actor.typed.scaladsl.ActorContext
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.serialization.SerializerWithStringManifest
 
-import java.io.NotSerializableException
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 object TestConsumer {
 

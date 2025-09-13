@@ -12,8 +12,6 @@
  */
 
 package org.apache.pekko.actor.typed.coexistence
-import org.scalatest.wordspec.AnyWordSpecLike
-
 import org.apache.pekko
 import pekko.{ actor => classic }
 import pekko.actor.Actor
@@ -23,6 +21,8 @@ import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.adapter._
+
+import org.scalatest.wordspec.AnyWordSpecLike
 
 object TypedSupervisingClassicSpec {
 

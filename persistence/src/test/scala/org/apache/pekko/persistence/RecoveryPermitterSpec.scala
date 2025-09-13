@@ -16,13 +16,13 @@ package org.apache.pekko.persistence
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor._
 import pekko.testkit.{ EventFilter, ImplicitSender, TestEvent }
 import pekko.testkit.TestActors
 import pekko.testkit.TestProbe
+
+import com.typesafe.config.ConfigFactory
 
 object RecoveryPermitterSpec {
 

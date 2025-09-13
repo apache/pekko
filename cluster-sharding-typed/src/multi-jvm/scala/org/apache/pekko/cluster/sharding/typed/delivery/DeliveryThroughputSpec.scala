@@ -18,8 +18,6 @@ import java.util.concurrent.TimeUnit.NANOSECONDS
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.TestProbe
 import pekko.actor.typed.ActorRef
@@ -44,6 +42,8 @@ import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.testkit.MultiNodeSpec
 import pekko.remote.testkit.PerfFlamesSupport
 import pekko.serialization.jackson.CborSerializable
+
+import com.typesafe.config.ConfigFactory
 
 object DeliveryThroughputSpec extends MultiNodeConfig {
   val first = role("first")

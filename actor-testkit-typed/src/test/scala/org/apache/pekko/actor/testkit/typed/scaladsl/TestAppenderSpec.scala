@@ -17,10 +17,11 @@ import java.util.concurrent.atomic.AtomicInteger
 
 import scala.concurrent.Future
 
-import org.scalatest.wordspec.AnyWordSpecLike
-import org.slf4j.LoggerFactory
-
 import org.apache.pekko.actor.testkit.typed.TestException
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import org.slf4j.LoggerFactory
 
 class TestAppenderSpec
     extends ScalaTestWithActorTestKit(

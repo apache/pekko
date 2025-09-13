@@ -13,13 +13,10 @@
 
 package org.apache.pekko.persistence.typed.delivery
 
-import scala.concurrent.duration._
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicInteger
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-import org.scalatest.wordspec.AnyWordSpecLike
+import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor.testkit.typed.FishingOutcome
@@ -28,6 +25,11 @@ import pekko.actor.typed.delivery.ConsumerController
 import pekko.actor.typed.delivery.WorkPullingProducerController
 import pekko.actor.typed.receptionist.ServiceKey
 import pekko.persistence.typed.PersistenceId
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 object WorkPullingWithEventSourcedProducerQueueSpec {
   def conf: Config =

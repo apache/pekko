@@ -16,8 +16,6 @@ package org.apache.pekko.cluster.sharding.typed
 import scala.collection.immutable
 import scala.concurrent.duration._
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.actor.typed.ActorSystem
 import pekko.annotation.{ ApiMayChange, InternalApi }
@@ -29,6 +27,8 @@ import pekko.cluster.typed.ClusterSingletonManagerSettings
 import pekko.coordination.lease.LeaseUsageSettings
 import pekko.japi.Util.immutableSeq
 import pekko.util.JavaDurationConverters._
+
+import com.typesafe.config.Config
 
 object ClusterShardingSettings {
 

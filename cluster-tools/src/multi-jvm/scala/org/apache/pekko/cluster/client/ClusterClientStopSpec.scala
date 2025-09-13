@@ -13,11 +13,9 @@
 
 package org.apache.pekko.cluster.client
 
+import scala.annotation.nowarn
 import scala.concurrent.Await
 import scala.concurrent.duration._
-
-import scala.annotation.nowarn
-import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor.{ Actor, Props }
@@ -26,6 +24,8 @@ import pekko.cluster.pubsub.{ DistributedPubSub, DistributedPubSubMediator }
 import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.{ MultiNodeConfig, MultiNodeSpec, STMultiNodeSpec }
 import pekko.testkit.{ EventFilter, ImplicitSender }
+
+import com.typesafe.config.ConfigFactory
 
 object ClusterClientStopSpec extends MultiNodeConfig {
   val client = role("client")

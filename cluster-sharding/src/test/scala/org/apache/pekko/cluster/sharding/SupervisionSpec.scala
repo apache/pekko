@@ -14,15 +14,17 @@
 package org.apache.pekko.cluster.sharding
 
 import scala.concurrent.duration._
-import com.typesafe.config.ConfigFactory
+
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorLogging, ActorRef, PoisonPill, Props }
 import pekko.cluster.Cluster
 import pekko.cluster.sharding.ShardRegion.Passivate
 import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
+import pekko.testkit.{ ImplicitSender, PekkoSpec }
 import pekko.testkit.EventFilter
 import pekko.testkit.WithLogCapturing
-import pekko.testkit.{ ImplicitSender, PekkoSpec }
+
+import com.typesafe.config.ConfigFactory
 
 object SupervisionSpec {
   val config =

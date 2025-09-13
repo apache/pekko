@@ -15,6 +15,7 @@ package org.apache.pekko.actor.typed
 package scaladsl
 
 import scala.reflect.ClassTag
+
 import org.apache.pekko
 import org.apache.pekko.actor.typed.SuperviseBehavior
 import pekko.actor.typed.internal._

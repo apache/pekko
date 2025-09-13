@@ -19,7 +19,6 @@ import java.util.concurrent.TimeUnit
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
 import org.openjdk.jmh.annotations._
 
 import org.apache.pekko
@@ -33,6 +32,8 @@ import pekko.remote.artery.LatchSink
 import pekko.stream.scaladsl._
 import pekko.stream.testkit.scaladsl.StreamTestKit
 import pekko.util.Timeout
+
+import com.typesafe.config.ConfigFactory
 
 object AskBenchmark {
   final val OperationsPerInvocation = 100000

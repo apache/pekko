@@ -15,21 +15,21 @@ package org.apache.pekko.remote.artery
 
 import java.net.InetAddress
 
-import scala.concurrent.duration._
-
 import scala.annotation.nowarn
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.NotUsed
+import pekko.io.dns.internal.AsyncDnsResolver
 import pekko.stream.ActorMaterializerSettings
 import pekko.util.Helpers.ConfigOps
 import pekko.util.Helpers.Requiring
 import pekko.util.Helpers.toRootLowerCase
 import pekko.util.WildcardIndex
 import pekko.util.ccompat.JavaConverters._
-import pekko.io.dns.internal.AsyncDnsResolver
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 /** INTERNAL API */
 private[pekko] final class ArterySettings private (config: Config) {

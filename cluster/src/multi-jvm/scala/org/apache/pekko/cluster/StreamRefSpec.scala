@@ -18,8 +18,6 @@ import scala.concurrent.duration._
 import scala.util.Failure
 import scala.util.Success
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.{ Actor, ActorIdentity, ActorLogging, ActorRef, Identify, Props }
@@ -38,6 +36,8 @@ import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.testkit._
 import pekko.util.JavaDurationConverters._
+
+import com.typesafe.config.ConfigFactory
 
 object StreamRefSpec extends MultiNodeConfig {
   val first = role("first")

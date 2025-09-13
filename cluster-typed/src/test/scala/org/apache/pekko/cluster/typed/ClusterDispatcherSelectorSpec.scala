@@ -13,9 +13,9 @@
 
 package org.apache.pekko.cluster.typed
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko.actor.typed.scaladsl.DispatcherSelectorSpec
+
+import com.typesafe.config.ConfigFactory
 
 class ClusterDispatcherSelectorSpec
     extends DispatcherSelectorSpec(ConfigFactory.parseString("""

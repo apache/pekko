@@ -17,12 +17,12 @@ import java.time.Duration
 
 import scala.annotation.varargs
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.internal.adapter.SchedulerAdapter
 import pekko.util.JavaDurationConverters._
+
+import com.typesafe.config.Config
 
 /**
  * Manual time allows you to do async tests while controlling the scheduler of the system.

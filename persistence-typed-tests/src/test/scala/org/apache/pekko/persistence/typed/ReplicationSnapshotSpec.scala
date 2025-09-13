@@ -19,10 +19,11 @@ import pekko.Done
 import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
 import pekko.actor.typed.{ ActorRef, Behavior }
 import pekko.persistence.testkit.{ PersistenceTestKitPlugin, PersistenceTestKitSnapshotPlugin }
-import pekko.persistence.testkit.scaladsl.{ PersistenceTestKit, SnapshotTestKit }
 import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
+import pekko.persistence.testkit.scaladsl.{ PersistenceTestKit, SnapshotTestKit }
 import pekko.persistence.typed.internal.{ ReplicatedPublishedEventMetaData, VersionVector }
 import pekko.persistence.typed.scaladsl.ReplicatedEventSourcing
+
 import org.scalatest.concurrent.Eventually
 import org.scalatest.wordspec.AnyWordSpecLike
 

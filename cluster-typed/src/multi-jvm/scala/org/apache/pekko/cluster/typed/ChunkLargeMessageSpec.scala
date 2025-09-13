@@ -16,7 +16,6 @@ package org.apache.pekko.cluster.typed
 import scala.concurrent.duration._
 import scala.util.Random
 
-import com.typesafe.config.ConfigFactory
 import org.HdrHistogram.Histogram
 
 import org.apache.pekko
@@ -31,6 +30,8 @@ import pekko.cluster.MultiNodeClusterSpec
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.testkit.MultiNodeSpec
 import pekko.serialization.jackson.CborSerializable
+
+import com.typesafe.config.ConfigFactory
 
 object ChunkLargeMessageSpec extends MultiNodeConfig {
   val first = role("first")

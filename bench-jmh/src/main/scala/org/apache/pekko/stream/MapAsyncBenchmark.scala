@@ -20,7 +20,6 @@ import scala.concurrent.Await
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
 import org.openjdk.jmh.annotations._
 
 import org.apache.pekko
@@ -30,6 +29,8 @@ import pekko.remote.artery.BenchTestSource
 import pekko.remote.artery.LatchSink
 import pekko.stream.scaladsl._
 import pekko.stream.testkit.scaladsl.StreamTestKit
+
+import com.typesafe.config.ConfigFactory
 
 object MapAsyncBenchmark {
   final val OperationsPerInvocation = 100000

@@ -15,13 +15,14 @@ package org.apache.pekko.osgi
 
 import java.util.{ Dictionary, Properties }
 
-import com.typesafe.config.{ Config, ConfigFactory }
 import org.osgi.framework._
 import org.osgi.service.log.LogService
 
 import org.apache.pekko
 import pekko.actor.{ ActorRefFactory, ActorSystem }
 import pekko.util.unused
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 /**
  * Abstract bundle activator implementation to bootstrap and configure an actor system in an

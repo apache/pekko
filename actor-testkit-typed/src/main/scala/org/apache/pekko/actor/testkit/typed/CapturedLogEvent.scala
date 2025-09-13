@@ -15,13 +15,13 @@ package org.apache.pekko.actor.testkit.typed
 
 import java.util.Optional
 
-import org.slf4j.Marker
-import org.slf4j.event.Level
-
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.util.OptionConverters._
 import pekko.util.OptionVal
+
+import org.slf4j.Marker
+import org.slf4j.event.Level
 
 /**
  * Representation of a Log Event issued by a [[pekko.actor.typed.Behavior]]

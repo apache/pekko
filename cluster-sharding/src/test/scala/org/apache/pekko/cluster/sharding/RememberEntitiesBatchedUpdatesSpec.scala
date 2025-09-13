@@ -17,8 +17,10 @@ import org.apache.pekko
 import pekko.actor.{ Actor, ActorLogging, ActorRef, Props }
 import pekko.cluster.{ Cluster, MemberStatus }
 import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
-import com.typesafe.config.ConfigFactory
+
 import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.ConfigFactory
 
 object RememberEntitiesBatchedUpdatesSpec {
 

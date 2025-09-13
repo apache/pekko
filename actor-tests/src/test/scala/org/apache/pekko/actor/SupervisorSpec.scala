@@ -18,10 +18,6 @@ import java.util.concurrent.atomic.AtomicInteger
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-import org.scalatest.BeforeAndAfterEach
-
 import org.apache.pekko
 import pekko.{ Die, Ping }
 import pekko.ConfigurationException
@@ -32,6 +28,11 @@ import pekko.routing.RoundRobinPool
 import pekko.testkit._
 import pekko.testkit.TestEvent._
 import pekko.util.unused
+
+import org.scalatest.BeforeAndAfterEach
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 object SupervisorSpec {
   val Timeout = 5.seconds

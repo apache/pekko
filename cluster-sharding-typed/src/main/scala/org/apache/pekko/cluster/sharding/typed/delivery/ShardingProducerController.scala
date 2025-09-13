@@ -18,8 +18,6 @@ import java.util.Optional
 import scala.concurrent.duration.FiniteDuration
 import scala.reflect.ClassTag
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.typed.ActorRef
@@ -34,6 +32,8 @@ import pekko.cluster.sharding.typed.ShardingEnvelope
 import pekko.cluster.sharding.typed.delivery.internal.ShardingProducerControllerImpl
 import pekko.util.JavaDurationConverters._
 import pekko.util.OptionConverters._
+
+import com.typesafe.config.Config
 
 /**
  * Reliable delivery between a producer actor sending messages to sharded consumer

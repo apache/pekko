@@ -13,16 +13,17 @@
 
 package org.apache.pekko.remote.artery
 
-import com.typesafe.config.ConfigFactory
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.remote.RARP
 import pekko.remote.RemoteTransportException
 import pekko.testkit.SocketUtil
 import pekko.testkit.TestKit
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+
+import com.typesafe.config.ConfigFactory
 
 class ArteryFailedToBindSpec extends AnyWordSpec with Matchers {
 

@@ -13,10 +13,9 @@
 
 package org.apache.pekko.remote
 
+import scala.annotation.nowarn
 import scala.collection.mutable
 import scala.concurrent.duration._
-
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.actor._

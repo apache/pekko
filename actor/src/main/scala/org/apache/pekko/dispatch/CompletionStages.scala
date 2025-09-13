@@ -17,13 +17,14 @@
 
 package org.apache.pekko.dispatch
 
-import org.apache.pekko
-
 import java.util.Optional
-import java.util.concurrent.atomic.AtomicReference
 import java.util.concurrent.{ CompletableFuture, CompletionStage, Executor }
+import java.util.concurrent.atomic.AtomicReference
 import java.util.function.{ BiConsumer, BiFunction }
+
 import scala.annotation.nowarn
+
+import org.apache.pekko
 
 /**
  * CompletionStages provides utilities for working with `CompletionStage`s.

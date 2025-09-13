@@ -15,13 +15,13 @@ package org.apache.pekko.cluster.ddata
 
 import scala.collection.immutable.TreeMap
 
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-
 import org.apache.pekko
 import pekko.actor.Address
 import pekko.cluster.UniqueAddress
 import pekko.cluster.ddata.Replicator.Changed
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 class ORSetSpec extends AnyWordSpec with Matchers {
 

@@ -15,9 +15,10 @@ package org.apache.pekko.persistence.testkit.state.javadsl
 
 import java.util.Optional
 import java.util.concurrent.{ CompletableFuture, CompletionStage }
+
 import org.apache.pekko
-import pekko.japi.Pair
 import pekko.{ Done, NotUsed }
+import pekko.japi.Pair
 import pekko.persistence.query.DurableStateChange
 import pekko.persistence.query.Offset
 import pekko.persistence.query.javadsl.{ DurableStateStorePagedPersistenceIdsQuery, DurableStateStoreQuery }

@@ -13,9 +13,8 @@
 
 package org.apache.pekko.routing
 
-import scala.collection.immutable
-
 import scala.annotation.nowarn
+import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.ConfigurationException
