@@ -19,7 +19,7 @@ package org.apache.pekko.util
 
 import java.util._
 import scala.annotation.nowarn
-import scala.jdk.javaapi.OptionConverters._
+import scala.jdk.OptionConverters._
 
 /**
  * These tests are here to ensure that methods from [[org.apache.pekko.util.FutureConverters]], [[org.apache.pekko.util.OptionConverters]]

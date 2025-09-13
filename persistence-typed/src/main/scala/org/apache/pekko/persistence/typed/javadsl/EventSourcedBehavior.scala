@@ -16,7 +16,7 @@ package org.apache.pekko.persistence.typed.javadsl
 import java.util.Collections
 import java.util.Optional
 
-import scala.jdk.javaapi.OptionConverters._
+import scala.jdk.OptionConverters._
 
 import com.typesafe.config.Config
 import org.apache.pekko

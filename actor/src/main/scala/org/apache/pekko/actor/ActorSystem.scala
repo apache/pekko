@@ -23,7 +23,7 @@ import scala.collection.immutable
 import scala.concurrent.{ ExecutionContext, ExecutionContextExecutor, Future, Promise }
 import scala.concurrent.blocking
 import scala.concurrent.duration.Duration
-import scala.jdk.javaapi.OptionConverters._
+import scala.jdk.OptionConverters._
 import scala.util.{ Failure, Success, Try }
 import scala.util.control.{ ControlThrowable, NonFatal }
 

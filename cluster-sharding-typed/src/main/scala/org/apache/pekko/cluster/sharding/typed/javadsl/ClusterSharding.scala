@@ -19,7 +19,7 @@ import java.util.Optional
 import java.util.concurrent.CompletionStage
 
 import scala.annotation.nowarn
-import scala.jdk.javaapi.OptionConverters._
+import scala.jdk.OptionConverters._
 
 import org.apache.pekko
 import pekko.actor.typed.ActorRef

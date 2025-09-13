@@ -19,7 +19,7 @@ import java.util.Optional
 
 import scala.annotation.tailrec
 import scala.concurrent.duration.FiniteDuration
-import scala.jdk.javaapi.OptionConverters._
+import scala.jdk.OptionConverters._
 import scala.reflect.{ classTag, ClassTag }
 import scala.util.control.NonFatal
 

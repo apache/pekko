@@ -23,7 +23,7 @@ import scala.annotation.tailrec
 import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
 import scala.concurrent.duration._
 import scala.concurrent.duration.FiniteDuration
-import scala.jdk.javaapi.OptionConverters._
+import scala.jdk.OptionConverters._
 import scala.util.Try
 import scala.util.control.NonFatal
 

@@ -17,7 +17,7 @@ import java.util.function.IntFunction
 import java.util.Optional
 
 import scala.reflect.ClassTag
-import scala.jdk.javaapi.OptionConverters._
+import scala.jdk.OptionConverters._
 
 import org.apache.pekko
 import pekko.actor.typed.ActorRef

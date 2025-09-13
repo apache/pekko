@@ -15,7 +15,7 @@ package org.apache.pekko.persistence.state.scaladsl
 
 import scala.concurrent.Future
 
-import scala.jdk.javaapi.OptionConverters._
+import scala.jdk.OptionConverters._
 
 import org.apache.pekko
 import pekko.persistence.state.javadsl.{ GetObjectResult => JGetObjectResult }

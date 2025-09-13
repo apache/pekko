@@ -19,7 +19,7 @@ import java.util.concurrent.CompletionStage
 import scala.annotation.varargs
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable
-import scala.jdk.javaapi.OptionConverters._
+import scala.jdk.OptionConverters._
 import scala.reflect.ClassTag
 
 import org.apache.pekko

@@ -20,7 +20,7 @@ import java.util.Optional
 
 import scala.annotation.tailrec
 import scala.collection.immutable
-import scala.jdk.javaapi.OptionConverters._
+import scala.jdk.OptionConverters._
 
 import org.apache.pekko
 import pekko.annotation.InternalApi

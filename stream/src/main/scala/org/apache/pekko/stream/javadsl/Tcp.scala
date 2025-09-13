@@ -21,7 +21,7 @@ import javax.net.ssl.SSLEngine
 import javax.net.ssl.SSLSession
 
 import scala.concurrent.duration._
-import scala.jdk.javaapi.OptionConverters._
+import scala.jdk.OptionConverters._
 import scala.util.Failure
 import scala.util.Success
 

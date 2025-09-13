@@ -17,7 +17,7 @@ import java.util.Optional
 
 import scala.annotation.varargs
 import scala.reflect.ClassTag
-import scala.jdk.javaapi.OptionConverters._
+import scala.jdk.OptionConverters._
 
 import org.apache.pekko
 import pekko.annotation.InternalApi

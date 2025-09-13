@@ -16,7 +16,7 @@ package org.apache.pekko.persistence.testkit.state.javadsl
 import java.util.Optional
 import java.util.concurrent.{ CompletableFuture, CompletionStage }
 
-import scala.jdk.javaapi.OptionConverters._
+import scala.jdk.OptionConverters._
 
 import org.apache.pekko
 import pekko.japi.Pair

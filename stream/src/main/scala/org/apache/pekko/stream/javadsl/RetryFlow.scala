@@ -15,7 +15,7 @@ package org.apache.pekko.stream.javadsl
 
 import java.util.Optional
 
-import scala.jdk.javaapi.OptionConverters._
+import scala.jdk.OptionConverters._
 
 import org.apache.pekko
 import pekko.annotation.ApiMayChange

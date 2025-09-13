@@ -19,7 +19,7 @@ import java.util.function.Consumer
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
-import scala.jdk.javaapi.OptionConverters._
+import scala.jdk.OptionConverters._
 
 import org.apache.pekko
 import pekko.annotation.InternalApi

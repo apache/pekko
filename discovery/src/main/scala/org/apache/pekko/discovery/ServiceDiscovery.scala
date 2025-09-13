@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit
 import scala.collection.immutable
 import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
-import scala.jdk.javaapi.OptionConverters._
+import scala.jdk.OptionConverters._
 
 import org.apache.pekko
 import pekko.actor.{ DeadLetterSuppression, NoSerializationVerificationNeeded }

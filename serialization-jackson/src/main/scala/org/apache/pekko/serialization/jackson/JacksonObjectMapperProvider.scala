@@ -17,7 +17,7 @@ import java.util.Optional
 import java.util.concurrent.ConcurrentHashMap
 import scala.annotation.nowarn
 import scala.collection.immutable
-import scala.jdk.javaapi.OptionConverters._
+import scala.jdk.OptionConverters._
 import scala.util.{ Failure, Success }
 
 import com.fasterxml.jackson.annotation.{ JsonAutoDetect, JsonCreator, PropertyAccessor }

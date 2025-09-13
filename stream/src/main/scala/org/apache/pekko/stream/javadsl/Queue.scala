@@ -17,7 +17,7 @@ import java.util.Optional
 import java.util.concurrent.CompletionStage
 
 import scala.concurrent.Future
-import scala.jdk.javaapi.OptionConverters._
+import scala.jdk.OptionConverters._
 
 import org.apache.pekko
 import pekko.Done

@@ -815,7 +815,7 @@ object Patterns {
       delayFunction: japi.function.IntFunction[Optional[java.time.Duration]],
       scheduler: Scheduler,
       context: ExecutionContext): CompletionStage[T] = {
-    import scala.jdk.javaapi.OptionConverters._
+    import scala.jdk.OptionConverters._
     require(attempt != null, "Parameter attempt should not be null.")
     scalaRetry(
       () => attempt.call().asScala,
@@ -856,7 +856,7 @@ object Patterns {
       delayFunction: japi.function.IntFunction[Optional[java.time.Duration]],
       scheduler: Scheduler,
       context: ExecutionContext): CompletionStage[T] = {
-    import scala.jdk.javaapi.OptionConverters._
+    import scala.jdk.OptionConverters._
     require(attempt != null, "Parameter attempt should not be null.")
     scalaRetry(
       () => attempt.call().asScala,

@@ -16,7 +16,7 @@ package org.apache.pekko.actor.typed.delivery
 import java.util.Optional
 
 import scala.concurrent.duration.FiniteDuration
-import scala.jdk.javaapi.OptionConverters._
+import scala.jdk.OptionConverters._
 import scala.reflect.ClassTag
 
 import com.typesafe.config.Config

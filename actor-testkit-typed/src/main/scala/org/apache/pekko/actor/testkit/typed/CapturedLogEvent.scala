@@ -15,7 +15,7 @@ package org.apache.pekko.actor.testkit.typed
 
 import java.util.Optional
 
-import scala.jdk.javaapi.OptionConverters._
+import scala.jdk.OptionConverters._
 
 import org.slf4j.Marker
 import org.slf4j.event.Level
