@@ -39,7 +39,7 @@ import pekko.stream.SystemMaterializer
 import pekko.stream.TLSClosing
 import pekko.stream.scaladsl
 import pekko.util.ByteString
-import pekko.util.FutureConverters._
+import scala.jdk.FutureConverters._
 import pekko.util.JavaDurationConverters._
 import scala.jdk.OptionConverters._
 

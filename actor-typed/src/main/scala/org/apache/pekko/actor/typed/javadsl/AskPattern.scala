@@ -22,7 +22,7 @@ import pekko.actor.typed.Scheduler
 import pekko.actor.typed.scaladsl.AskPattern._
 import pekko.japi.function.{ Function => JFunction }
 import pekko.pattern.StatusReply
-import pekko.util.FutureConverters._
+import scala.jdk.FutureConverters._
 import pekko.util.JavaDurationConverters._
 
 /**

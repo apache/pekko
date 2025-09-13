@@ -34,7 +34,7 @@ import pekko.stream._
 import pekko.stream.impl.{ LinearTraversalBuilder, UnfoldAsyncJava, UnfoldJava }
 import pekko.stream.impl.fusing.{ ArraySource, StatefulMapConcat, ZipWithIndexJava }
 import pekko.util.{ unused, _ }
-import pekko.util.FutureConverters._
+import scala.jdk.FutureConverters._
 import pekko.util.JavaDurationConverters._
 import scala.jdk.OptionConverters._
 import pekko.util.ccompat.JavaConverters._

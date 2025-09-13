@@ -23,7 +23,7 @@ import scala.concurrent.ExecutionContext
 import pekko.persistence.PersistentRepr
 import pekko.persistence.journal.{ AsyncRecovery => SAsyncReplay }
 import pekko.util.ConstantFun.scalaAnyToUnit
-import pekko.util.FutureConverters._
+import scala.jdk.FutureConverters._
 
 /**
  * Java API: asynchronous message replay and sequence number recovery interface.

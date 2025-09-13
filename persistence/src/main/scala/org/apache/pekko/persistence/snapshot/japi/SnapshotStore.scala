@@ -20,7 +20,7 @@ import scala.concurrent.ExecutionContext
 import pekko.persistence._
 import pekko.persistence.snapshot.{ SnapshotStore => SSnapshotStore }
 import pekko.util.ConstantFun.scalaAnyToUnit
-import pekko.util.FutureConverters._
+import scala.jdk.FutureConverters._
 
 /**
  * Java API: abstract snapshot store.

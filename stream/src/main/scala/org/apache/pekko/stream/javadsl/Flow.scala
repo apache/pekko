@@ -35,7 +35,7 @@ import pekko.japi.function.Creator
 import pekko.stream.{ javadsl, _ }
 import pekko.stream.impl.fusing.{ StatefulMapConcat, ZipWithIndexJava }
 import pekko.util.ConstantFun
-import pekko.util.FutureConverters._
+import scala.jdk.FutureConverters._
 import pekko.util.JavaDurationConverters._
 import scala.jdk.OptionConverters._
 import pekko.util.Timeout
@@ -273,7 +273,7 @@ object Flow {
    * [[NeverMaterializedException]] if upstream fails or downstream cancels before the completion stage has completed.
    */
   def completionStageFlow[I, O, M](flow: CompletionStage[Flow[I, O, M]]): Flow[I, O, CompletionStage[M]] = {
-    import pekko.util.FutureConverters._
+    import scala.jdk.FutureConverters._
     val sflow =
       scaladsl.Flow.futureFlow(flow.asScala.map(_.asScala)(ExecutionContext.parasitic)).mapMaterializedValue(_.asJava)
     new javadsl.Flow(sflow)
@@ -295,7 +295,7 @@ object Flow {
    * '''Cancels when''' downstream cancels
    */
   def lazyFlow[I, O, M](create: Creator[Flow[I, O, M]]): Flow[I, O, CompletionStage[M]] = {
-    import pekko.util.FutureConverters._
+    import scala.jdk.FutureConverters._
     val sflow = scaladsl.Flow
       .lazyFlow { () =>
         create.create().asScala

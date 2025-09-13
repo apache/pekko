@@ -529,7 +529,7 @@ Scala has proven the most viable way to do it, as long as you keep the following
 1. If the underlying Scala code requires an `ExecutionContext`, make the Java API take an `Executor` and use
    `ExecutionContext.fromExecutor(executor)` for conversion.
 
-1. Use `org.apache.pekko.util.FutureConverters` to translate `Future`s to `CompletionStage`s (or vice versa).
+1. Use `scala.jdk.FutureConverters` to translate `Future`s to `CompletionStage`s (or vice versa).
 
 1. Use `scala.jdk.javaapi.OptionConverters` to translate `Option`s to Java `Optional`s (or vice versa).
 

@@ -50,7 +50,7 @@ import pekko.pattern.AskTimeoutException
 import pekko.pattern.PromiseActorRef
 import pekko.pattern.StatusReply
 import pekko.util.{ unused, ByteString, Timeout }
-import pekko.util.FutureConverters._
+import scala.jdk.FutureConverters._
 import pekko.util.JavaDurationConverters._
 
 /**

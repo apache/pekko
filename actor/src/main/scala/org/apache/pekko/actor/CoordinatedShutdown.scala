@@ -36,7 +36,7 @@ import pekko.event.Logging
 import pekko.pattern.after
 import scala.jdk.OptionConverters._
 import pekko.util.OptionVal
-import pekko.util.FutureConverters._
+import scala.jdk.FutureConverters._
 
 object CoordinatedShutdown extends ExtensionId[CoordinatedShutdown] with ExtensionIdProvider {
 

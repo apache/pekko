@@ -31,7 +31,6 @@ import scala.concurrent.ExecutionContext
 import pekko.pattern.ask
 import pekko.routing.MurmurHash
 import pekko.util.{ Helpers, JavaDurationConverters, Timeout }
-import pekko.util.FutureConverters
 
 /**
  * An ActorSelection is a logical view of a section of an ActorSystem's tree of Actors,
@@ -106,7 +105,7 @@ abstract class ActorSelection extends Serializable {
    * supplied `timeout`.
    */
   def resolveOne(timeout: java.time.Duration): CompletionStage[ActorRef] = {
-    import FutureConverters._
+    import scala.jdk.FutureConverters._
     import JavaDurationConverters._
     resolveOne(timeout.asScala).asJava
   }

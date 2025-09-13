@@ -22,7 +22,7 @@ import org.apache.pekko
 import pekko.Done
 import scala.concurrent.ExecutionContext
 import pekko.stream.QueueOfferResult
-import pekko.util.FutureConverters._
+import scala.jdk.FutureConverters._
 import scala.jdk.OptionConverters._
 
 /**

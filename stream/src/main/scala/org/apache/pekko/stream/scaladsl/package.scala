@@ -17,7 +17,7 @@ import java.util.concurrent.CompletionStage
 
 import scala.concurrent.Future
 
-import org.apache.pekko.util.FutureConverters._
+import scala.jdk.FutureConverters._
 
 /**
  * Scala API: The flow DSL allows the formulation of stream transformations based on some

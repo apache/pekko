@@ -44,7 +44,7 @@ import pekko.cluster.sharding.external.ShardLocations
 import pekko.dispatch.MessageDispatcher
 import pekko.event.Logging
 import pekko.pattern.ask
-import pekko.util.FutureConverters._
+import scala.jdk.FutureConverters._
 import pekko.util.JavaDurationConverters._
 import pekko.util.PrettyDuration._
 import pekko.util.Timeout

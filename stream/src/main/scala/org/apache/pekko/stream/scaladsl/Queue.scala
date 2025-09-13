@@ -23,7 +23,7 @@ import pekko.Done
 import pekko.annotation.InternalApi
 import scala.concurrent.ExecutionContext
 import pekko.stream.QueueOfferResult
-import pekko.util.FutureConverters._
+import scala.jdk.FutureConverters._
 import scala.jdk.OptionConverters._
 
 /**
