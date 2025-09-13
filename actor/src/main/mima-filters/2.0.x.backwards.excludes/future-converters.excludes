@@ -22,3 +22,4 @@ ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.util.Future
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.util.FutureConverters#FutureOps.asJava")
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.dispatch.internal.SameThreadExecutionContext")
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.dispatch.internal.SameThreadExecutionContext$")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.dispatch.ExecutionContexts.parasitic")
