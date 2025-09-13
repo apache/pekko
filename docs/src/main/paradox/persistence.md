@@ -899,8 +899,8 @@ plugin entries with a standard `class` property as well as settings which are sp
 
 By default, a persistent actor will use the configuration loaded at @apidoc[actor.ActorSystem] creation time to create journal and snapshot store plugins.
 
-When the persistent actor overrides the @apidoc[journalPluginConfig](persistence.RuntimePluginConfig) {scala="#journalPluginConfig:com.typesafe.config.Config" java="#journalPluginConfig()"} and @apidoc[snapshotPluginConfig](persistence.RuntimePluginConfig) {scala="#snapshotPluginConfig:com.typesafe.config.Config" java="#snapshotPluginConfig()"} methods,
-the actor will use the declared @javadoc[Config](com.typesafe.config.Config) objects with a fallback on the default configuration.
+When the persistent actor overrides the @apidoc[journalPluginConfig](persistence.RuntimePluginConfig) {scala="#journalPluginConfig:org.ekrich.config.Config" java="#journalPluginConfig()"} and @apidoc[snapshotPluginConfig](persistence.RuntimePluginConfig) {scala="#snapshotPluginConfig:org.ekrich.config.Config" java="#snapshotPluginConfig()"} methods,
+the actor will use the declared @scaladoc[Config](org.ekrich.config.Config) objects with a fallback on the default configuration.
 It allows a dynamic configuration of the journal and the snapshot store at runtime:
 
 Scala

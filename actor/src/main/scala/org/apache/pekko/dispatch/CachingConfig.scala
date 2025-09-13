@@ -19,7 +19,7 @@ import java.util.concurrent.{ ConcurrentHashMap, TimeUnit }
 
 import scala.util.{ Failure, Success, Try }
 
-import com.typesafe.config._
+import org.ekrich.config._
 
 /**
  * INTERNAL API
@@ -68,8 +68,8 @@ private[pekko] class CachingConfig(_config: Config) extends Config {
             case Failure(_) =>
               emptyPathEntry
             case Success(v) =>
-              if (v.valueType() == ConfigValueType.STRING)
-                StringPathEntry(true, true, v.atKey("cached"), v.unwrapped().asInstanceOf[String])
+              if (v.valueType == ConfigValueType.STRING)
+                StringPathEntry(true, true, v.atKey("cached"), v.unwrapped.asInstanceOf[String])
               else
                 ValuePathEntry(true, true, v.atKey("cached"))
           }
@@ -87,13 +87,13 @@ private[pekko] class CachingConfig(_config: Config) extends Config {
     config.checkValid(reference, restrictToPaths: _*)
   }
 
-  def root() = config.root()
+  def root = config.root
 
-  def origin() = config.origin()
+  def origin = config.origin
 
   def withFallback(other: ConfigMergeable) = new CachingConfig(config.withFallback(other))
 
-  def resolve() = resolve(ConfigResolveOptions.defaults())
+  def resolve() = resolve(ConfigResolveOptions.defaults)
 
   def resolve(options: ConfigResolveOptions) = {
     val resolved = config.resolve(options)
@@ -113,7 +113,7 @@ private[pekko] class CachingConfig(_config: Config) extends Config {
 
   def isEmpty = config.isEmpty
 
-  def entrySet() = config.entrySet()
+  def entrySet = config.entrySet
 
   def getBoolean(path: String) = config.getBoolean(path)
 
@@ -201,7 +201,7 @@ private[pekko] class CachingConfig(_config: Config) extends Config {
 
   def getMemorySizeList(path: String) = config.getMemorySizeList(path)
 
-  def isResolved() = config.isResolved()
+  def isResolved = config.isResolved
 
   def resolveWith(source: Config, options: ConfigResolveOptions) = config.resolveWith(source, options)
 

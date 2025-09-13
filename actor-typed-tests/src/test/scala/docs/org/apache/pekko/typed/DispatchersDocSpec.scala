@@ -22,7 +22,7 @@ import pekko.actor.typed.{ ActorRef, Behavior, DispatcherSelector, Props, SpawnP
 import pekko.dispatch.Dispatcher
 import DispatchersDocSpec._
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 import scala.concurrent.Future
 import pekko.actor.testkit.typed.scaladsl.LogCapturing

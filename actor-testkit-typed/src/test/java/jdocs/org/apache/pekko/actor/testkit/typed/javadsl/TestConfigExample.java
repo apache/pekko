@@ -14,7 +14,7 @@
 package jdocs.org.apache.pekko.actor.testkit.typed.javadsl;
 
 // #default-application-conf
-import com.typesafe.config.ConfigFactory;
+import org.ekrich.config.ConfigFactory;
 
 // #default-application-conf
 

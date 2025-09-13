@@ -18,7 +18,7 @@ import java.util.concurrent.ThreadLocalRandom
 import scala.collection.immutable
 
 import scala.annotation.nowarn
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 import org.apache.pekko
 import pekko.actor.ActorSystem

@@ -15,8 +15,8 @@ package org.apache.pekko.actor
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-import com.typesafe.config.ConfigParseOptions
+import org.ekrich.config.ConfigFactory
+import org.ekrich.config.ConfigParseOptions
 
 import org.apache.pekko
 import pekko.routing._
@@ -142,7 +142,7 @@ class DeployerSpec extends PekkoSpec(DeployerSpec.deployerConf) {
     }
 
     "detect invalid number-of-instances" in {
-      intercept[com.typesafe.config.ConfigException.WrongType] {
+      intercept[org.ekrich.config.ConfigException.WrongType] {
         val invalidDeployerConf = ConfigFactory
           .parseString(
             """

@@ -60,7 +60,7 @@ object Dependencies {
   object Compile {
     // Compile
 
-    val config = "com.typesafe" % "config" % "1.4.5"
+    val sConfig = "org.ekrich" %% "sconfig" % "1.11.0"
     val `netty-transport` = "io.netty" % "netty-transport" % nettyVersion
     val `netty-handler` = "io.netty" % "netty-handler" % nettyVersion
 
@@ -213,7 +213,7 @@ object Dependencies {
     case Some((2, n)) if n == 12 =>
       List("org.scala-lang.modules" %% "scala-java8-compat" % java8CompatVersion.value)
     case _ => List.empty
-  }) ++ Seq(config)
+  }) ++ Seq(sConfig)
 
   val actorTyped = l ++= Seq(slf4jApi)
 

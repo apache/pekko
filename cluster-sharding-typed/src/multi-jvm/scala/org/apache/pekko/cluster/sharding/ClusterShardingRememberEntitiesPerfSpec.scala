@@ -22,7 +22,7 @@ import pekko.actor._
 import pekko.cluster.MemberStatus
 import pekko.cluster.sharding.ShardRegion.{ CurrentShardRegionState, GetShardRegionState, Passivate }
 import pekko.testkit._
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.HdrHistogram.Histogram
 
 import scala.concurrent.duration._

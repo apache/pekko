@@ -17,7 +17,7 @@ import scala.concurrent.duration._
 import scala.util.Failure
 import scala.util.Success
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko

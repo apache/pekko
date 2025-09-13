@@ -20,7 +20,7 @@ import java.util.UUID
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 import org.apache.pekko
 import pekko.actor.{ ActorRef, Props }

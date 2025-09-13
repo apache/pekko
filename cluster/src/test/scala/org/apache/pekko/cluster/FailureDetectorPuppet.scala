@@ -15,7 +15,7 @@ package org.apache.pekko.cluster
 
 import java.util.concurrent.atomic.AtomicReference
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 import org.apache.pekko
 import pekko.event.EventStream

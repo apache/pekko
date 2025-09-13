@@ -1,0 +1,46 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# Replacing Lightbend Config (https://github.com/lightbend/config) with sconfig (https://github.com/ekrich/sconfig)
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.cluster.ClusterSettings.config")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.cluster.ClusterSettings.FailureDetectorConfig")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.cluster.ClusterSettings.this")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.cluster.ClusterSettings#CrossDcFailureDetectorSettings.config")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.cluster.ClusterSettings#CrossDcFailureDetectorSettings.this")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.cluster.InternalClusterAction#CompatibleConfig.clusterConfig")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.cluster.InternalClusterAction#CompatibleConfig.copy")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.cluster.InternalClusterAction#CompatibleConfig.copy$default$1")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.cluster.InternalClusterAction#CompatibleConfig.this")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.cluster.InternalClusterAction#CompatibleConfig.apply")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.cluster.InternalClusterAction#CompatibleConfig.unapply")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.cluster.InternalClusterAction#CompatibleConfig._1")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.cluster.InternalClusterAction#InitJoin.configOfJoiningNode")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.cluster.InternalClusterAction#InitJoin.copy")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.cluster.InternalClusterAction#InitJoin.copy$default$1")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.cluster.InternalClusterAction#InitJoin.this")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.cluster.InternalClusterAction#InitJoin.apply")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.cluster.InternalClusterAction#InitJoin.unapply")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.cluster.InternalClusterAction#InitJoin._1")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.cluster.JoinConfigCompatChecker.fullMatch")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.cluster.JoinConfigCompatChecker.exists")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.cluster.JoinConfigCompatChecker.check")
+ProblemFilters.exclude[ReversedMissingMethodProblem]("org.apache.pekko.cluster.JoinConfigCompatChecker.check")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.cluster.JoinConfigCompatChecker.checkEquality")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.cluster.JoinConfigCompatChecker.filterWithKeys")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.cluster.JoinConfigCompatChecker.removeSensitiveKeys")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.cluster.routing.ClusterRouterGroupSettings.fromConfig")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.cluster.routing.ClusterRouterPoolSettings.fromConfig")

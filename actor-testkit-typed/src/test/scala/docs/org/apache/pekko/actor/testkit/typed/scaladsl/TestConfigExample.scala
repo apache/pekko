@@ -18,7 +18,7 @@ object TestConfigExample {
   def illustrateApplicationConfig(): Unit = {
 
     // #default-application-conf
-    import com.typesafe.config.ConfigFactory
+    import org.ekrich.config.ConfigFactory
 
     ConfigFactory.load()
     // #default-application-conf

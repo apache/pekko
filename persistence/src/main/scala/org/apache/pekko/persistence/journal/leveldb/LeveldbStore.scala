@@ -21,7 +21,7 @@ import scala.concurrent.Future
 import scala.util._
 import scala.util.control.NonFatal
 
-import com.typesafe.config.{ Config, ConfigFactory, ConfigObject }
+import org.ekrich.config.{ Config, ConfigFactory, ConfigObject }
 import org.iq80.leveldb._
 
 import org.apache.pekko
@@ -36,7 +36,7 @@ private[persistence] object LeveldbStore {
   val emptyConfig = ConfigFactory.empty()
 
   def toCompactionIntervalMap(obj: ConfigObject): Map[String, Long] = {
-    obj.unwrapped().asScala.map(entry => (entry._1, java.lang.Long.parseLong(entry._2.toString))).toMap
+    obj.unwrapped.asScala.map(entry => (entry._1, java.lang.Long.parseLong(entry._2.toString))).toMap
   }
 }
 

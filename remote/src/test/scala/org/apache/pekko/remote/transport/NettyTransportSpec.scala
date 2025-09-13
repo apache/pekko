@@ -13,7 +13,7 @@
 
 package org.apache.pekko.remote.transport
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import io.netty.buffer.{ AdaptiveByteBufAllocator, PooledByteBufAllocator, UnpooledByteBufAllocator }
 
 import org.apache.pekko

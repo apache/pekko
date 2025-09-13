@@ -30,7 +30,7 @@ import pekko.persistence.typed.PersistenceId
 import pekko.serialization.jackson.CborSerializable
 import pekko.stream.scaladsl.Sink
 import pekko.testkit.JavaSerializable
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import java.util.concurrent.atomic.AtomicInteger

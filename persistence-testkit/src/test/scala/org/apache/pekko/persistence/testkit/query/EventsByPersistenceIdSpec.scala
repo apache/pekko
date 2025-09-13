@@ -23,7 +23,7 @@ import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.scaladsl.{ Effect, EventSourcedBehavior }
 import pekko.stream.testkit.scaladsl.TestSink
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import scala.concurrent.duration._

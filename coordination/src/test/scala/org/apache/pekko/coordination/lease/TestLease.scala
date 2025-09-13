@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicReference
 import scala.concurrent.Future
 import scala.concurrent.Promise
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor.ActorSystem

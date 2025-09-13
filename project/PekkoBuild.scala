@@ -163,7 +163,7 @@ object PekkoBuild {
       """|import language.postfixOps
          |import org.apache.pekko.actor._
          |import scala.concurrent._
-         |import com.typesafe.config.ConfigFactory
+         |import org.ekrich.config.ConfigFactory
          |import scala.concurrent.duration._
          |import org.apache.pekko.util.Timeout
          |var config = ConfigFactory.parseString("pekko.stdout-loglevel=INFO,pekko.loglevel=DEBUG,pinned{type=PinnedDispatcher,executor=thread-pool-executor,throughput=1000}")

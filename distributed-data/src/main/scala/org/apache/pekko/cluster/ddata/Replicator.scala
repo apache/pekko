@@ -32,7 +32,7 @@ import scala.util.control.NoStackTrace
 import scala.util.control.NonFatal
 
 import scala.annotation.nowarn
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 import org.apache.pekko
 import pekko.actor.Actor

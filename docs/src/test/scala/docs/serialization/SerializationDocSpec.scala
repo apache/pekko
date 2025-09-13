@@ -23,7 +23,7 @@ package docs.serialization {
   // #imports
 
   import org.apache.pekko.testkit._
-  import com.typesafe.config.ConfigFactory
+  import org.ekrich.config.ConfigFactory
   import org.apache.pekko.actor.ExtendedActorSystem
   import java.nio.charset.StandardCharsets
 

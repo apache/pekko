@@ -15,7 +15,7 @@ package org.apache.pekko.actor
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 import org.scalatest.BeforeAndAfterEach
 
 import org.apache.pekko

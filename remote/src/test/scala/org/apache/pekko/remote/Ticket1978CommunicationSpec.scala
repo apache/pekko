@@ -22,7 +22,7 @@ import scala.concurrent.duration._
 import scala.reflect.classTag
 
 import scala.annotation.nowarn
-import com.typesafe.config._
+import org.ekrich.config._
 
 import org.apache.pekko
 import pekko.actor._
@@ -93,7 +93,7 @@ object Configuration {
         ConfigFactory.parseString(conf.format(localPort, trustStore, keyStore, cipher, enabled.mkString(", ")))
       val fullConfig = config
         .withFallback(PekkoSpec.testConf)
-        .withFallback(ConfigFactory.load)
+        .withFallback(ConfigFactory.load())
         .getConfig("pekko.remote.classic.netty.ssl.security")
       val settings = new SSLSettings(fullConfig)
 

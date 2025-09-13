@@ -16,8 +16,8 @@ package org.apache.pekko.cluster
 import scala.collection.immutable
 import scala.concurrent.duration._
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigObject
+import org.ekrich.config.Config
+import org.ekrich.config.ConfigObject
 
 import org.apache.pekko
 import pekko.actor.Address

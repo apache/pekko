@@ -15,7 +15,7 @@ package jdocs.persistence.testkit;
 
 import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
 
-import com.typesafe.config.ConfigFactory;
+import org.ekrich.config.ConfigFactory;
 import jdocs.AbstractJavaTest;
 import org.junit.ClassRule;
 import org.junit.Test;

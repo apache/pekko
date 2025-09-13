@@ -15,7 +15,7 @@ package org.apache.pekko.cluster.sharding
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
 import pekko.cluster.sharding.ShardRegion.{ ClusterShardingStats, GetClusterShardingStats }

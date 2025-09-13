@@ -19,7 +19,7 @@ import scala.concurrent.Promise
 import scala.concurrent.duration._
 import scala.util.Success
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor.Actor

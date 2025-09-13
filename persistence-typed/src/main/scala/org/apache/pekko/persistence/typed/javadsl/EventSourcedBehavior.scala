@@ -16,7 +16,7 @@ package org.apache.pekko.persistence.typed.javadsl
 import java.util.Collections
 import java.util.Optional
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 import org.apache.pekko
 import pekko.actor.typed
 import pekko.actor.typed.BackoffSupervisorStrategy

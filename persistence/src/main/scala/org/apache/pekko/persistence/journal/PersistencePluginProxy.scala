@@ -18,7 +18,7 @@ import java.util.concurrent.TimeoutException
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 import org.apache.pekko
 import pekko.actor._

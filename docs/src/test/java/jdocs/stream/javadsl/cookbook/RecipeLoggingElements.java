@@ -13,7 +13,6 @@
 
 package jdocs.stream.javadsl.cookbook;
 
-import com.typesafe.config.ConfigFactory;
 import java.util.Arrays;
 import jdocs.stream.SilenceSystemOut;
 import org.apache.pekko.NotUsed;
@@ -25,6 +24,7 @@ import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.testkit.DebugFilter;
 import org.apache.pekko.testkit.javadsl.TestKit;
+import org.ekrich.config.ConfigFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

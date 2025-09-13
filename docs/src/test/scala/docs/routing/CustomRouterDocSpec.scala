@@ -87,7 +87,7 @@ import pekko.dispatch.Dispatchers
 import pekko.routing.Group
 import pekko.routing.Router
 import pekko.japi.Util.immutableSeq
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 final case class RedundancyGroup(routeePaths: immutable.Iterable[String], nbrCopies: Int) extends Group {
 

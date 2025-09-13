@@ -14,7 +14,7 @@
 package org.apache.pekko.cluster.sbr
 
 import org.apache.pekko.testkit.PekkoSpec
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.concurrent.Eventually
 
 class LeaseMajoritySpec extends PekkoSpec() with Eventually {

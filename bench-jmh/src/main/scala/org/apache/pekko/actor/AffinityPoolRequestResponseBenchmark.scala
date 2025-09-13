@@ -15,7 +15,7 @@ package org.apache.pekko.actor
 
 import java.util.concurrent.{ CountDownLatch, TimeUnit }
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.openjdk.jmh.annotations._
 
 import org.apache.pekko

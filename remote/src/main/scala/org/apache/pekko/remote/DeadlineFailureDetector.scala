@@ -16,7 +16,7 @@ package org.apache.pekko.remote
 import scala.concurrent.duration.Duration
 import scala.concurrent.duration.FiniteDuration
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 import org.apache.pekko
 import pekko.event.EventStream

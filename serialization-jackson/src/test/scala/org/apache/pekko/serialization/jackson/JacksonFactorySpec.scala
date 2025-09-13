@@ -18,7 +18,7 @@
 package org.apache.pekko.serialization.jackson
 
 import com.fasterxml.jackson.core.util.JsonRecyclerPools.BoundedPool
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike

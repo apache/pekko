@@ -20,7 +20,7 @@ import org.apache.pekko.actor.ActorSystem
 import org.apache.pekko.persistence.journal.{ EventAdapter, EventSeq }
 import org.apache.pekko.serialization.{ SerializationExtension, SerializerWithStringManifest }
 import org.apache.pekko.testkit.TestKit
-import com.typesafe.config._
+import org.ekrich.config._
 import org.scalatest.wordspec.AnyWordSpec
 import spray.json.JsObject
 import scala.concurrent.duration._

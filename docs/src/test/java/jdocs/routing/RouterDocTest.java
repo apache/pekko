@@ -22,7 +22,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-import com.typesafe.config.ConfigFactory;
+import org.ekrich.config.ConfigFactory;
 
 import java.io.Serializable;
 import java.util.ArrayList;

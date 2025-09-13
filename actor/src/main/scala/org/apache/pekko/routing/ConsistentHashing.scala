@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicReference
 import scala.collection.immutable
 import scala.util.control.NonFatal
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 import org.apache.pekko
 import pekko.actor.ActorPath

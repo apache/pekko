@@ -24,8 +24,8 @@ import pekko.persistence.testkit.PersistenceTestKitPlugin
 import pekko.persistence.typed.PersistenceId
 import pekko.serialization.Serialization
 import pekko.serialization.SerializationExtension
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.Config
+import org.ekrich.config.ConfigFactory
 import org.apache.commons.io.FileUtils
 import org.scalatest.wordspec.AnyWordSpecLike
 

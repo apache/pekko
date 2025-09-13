@@ -16,7 +16,7 @@ package org.apache.pekko.cluster.sbr
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.concurrent.Eventually
 
 import org.apache.pekko
@@ -126,7 +126,7 @@ class SplitBrainResolverSpec
   private lazy val selfUniqueAddress = Cluster(system).selfUniqueAddress
 
   private val testLeaseSettings =
-    new LeaseSettings("pekko-sbr", "test", new TimeoutSettings(1.second, 2.minutes, 3.seconds), ConfigFactory.empty)
+    new LeaseSettings("pekko-sbr", "test", new TimeoutSettings(1.second, 2.minutes, 3.seconds), ConfigFactory.empty())
 
   def createReachability(unreachability: Seq[(Member, Member)]): Reachability = {
     Reachability(

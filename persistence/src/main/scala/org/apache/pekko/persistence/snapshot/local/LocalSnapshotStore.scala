@@ -22,7 +22,7 @@ import scala.collection.immutable
 import scala.concurrent.Future
 import scala.util._
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 import org.apache.pekko
 import pekko.actor.ActorLogging

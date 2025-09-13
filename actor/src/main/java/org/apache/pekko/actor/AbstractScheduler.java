@@ -26,8 +26,8 @@ import scala.concurrent.duration.FiniteDuration;
  * its timeout.
  *
  * <p>Scheduler implementation are loaded reflectively at ActorSystem start-up with the following
- * constructor arguments: 1) the system’s com.typesafe.config.Config (from system.settings.config)
- * 2) a org.apache.pekko.event.LoggingAdapter 3) a java.util.concurrent.ThreadFactory
+ * constructor arguments: 1) the system’s org.ekrich.config.Config (from system.settings.config) 2)
+ * a org.apache.pekko.event.LoggingAdapter 3) a java.util.concurrent.ThreadFactory
  */
 public abstract class AbstractScheduler extends AbstractSchedulerBase {
 

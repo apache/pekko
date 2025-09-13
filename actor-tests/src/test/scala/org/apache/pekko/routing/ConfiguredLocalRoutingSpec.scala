@@ -18,7 +18,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import scala.annotation.nowarn
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 import org.apache.pekko
 import pekko.ConfigurationException

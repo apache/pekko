@@ -17,7 +17,7 @@ import org.apache.pekko.dispatch.ControlMessage;
 import org.apache.pekko.dispatch.RequiresMessageQueue;
 import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import com.typesafe.config.ConfigFactory;
+import org.ekrich.config.ConfigFactory;
 import docs.dispatcher.DispatcherDocSpec;
 import jdocs.AbstractJavaTest;
 import jdocs.actor.MyBoundedActor;
@@ -39,7 +39,7 @@ import org.apache.pekko.event.LoggingAdapter;
 import org.apache.pekko.dispatch.PriorityGenerator;
 import org.apache.pekko.dispatch.UnboundedStablePriorityMailbox;
 import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
-import com.typesafe.config.Config;
+import org.ekrich.config.Config;
 
 // #imports-prio-mailbox
 

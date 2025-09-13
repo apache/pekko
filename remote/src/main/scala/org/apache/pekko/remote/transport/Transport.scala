@@ -77,7 +77,7 @@ object Transport {
  * underlying transmission mechanism and setting up logical links between transport entities.
  *
  * Transport implementations that are loaded dynamically by the remoting must have a constructor that accepts a
- * [[com.typesafe.config.Config]] and an [[pekko.actor.ExtendedActorSystem]] as parameters.
+ * [[org.ekrich.config.Config]] and an [[pekko.actor.ExtendedActorSystem]] as parameters.
  */
 @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 trait Transport {

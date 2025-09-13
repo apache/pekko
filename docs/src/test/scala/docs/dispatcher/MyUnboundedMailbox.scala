@@ -21,7 +21,7 @@ import pekko.dispatch.Envelope
 import pekko.dispatch.MailboxType
 import pekko.dispatch.MessageQueue
 import pekko.dispatch.ProducesMessageQueue
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 import java.util.concurrent.ConcurrentLinkedQueue
 import scala.Option
 

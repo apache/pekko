@@ -22,7 +22,7 @@ import scala.concurrent.duration._
 
 //#MultiNodeConfig
 import org.apache.pekko.remote.testkit.MultiNodeConfig
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 object StatsSampleSpecConfig extends MultiNodeConfig {
   // register the named roles (nodes) of the test

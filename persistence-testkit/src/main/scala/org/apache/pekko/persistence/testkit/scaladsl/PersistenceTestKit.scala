@@ -16,7 +16,7 @@ package org.apache.pekko.persistence.testkit.scaladsl
 import scala.collection.immutable
 import scala.concurrent.duration.FiniteDuration
 import scala.util.Try
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.actor.ClassicActorSystemProvider

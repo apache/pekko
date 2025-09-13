@@ -33,7 +33,7 @@ import pekko.stream.testkit.{ StreamSpec, TestPublisher }
 import pekko.testkit.{ ImplicitSender, TestProbe }
 import pekko.testkit.TestKit
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 object IndirectMaterializerCreation extends ExtensionId[IndirectMaterializerCreation] with ExtensionIdProvider {
   def createExtension(system: ExtendedActorSystem): IndirectMaterializerCreation =

@@ -14,7 +14,7 @@
 package org.apache.pekko.cluster.sharding
 
 import scala.concurrent.duration._
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorLogging, ActorRef, PoisonPill, Props }
 import pekko.cluster.Cluster

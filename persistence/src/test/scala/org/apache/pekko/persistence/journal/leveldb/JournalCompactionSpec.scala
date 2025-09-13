@@ -17,7 +17,7 @@ import java.io.File
 
 import scala.util.Random
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 import org.apache.commons.io.FileUtils
 
 import org.apache.pekko

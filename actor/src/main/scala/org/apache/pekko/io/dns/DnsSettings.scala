@@ -37,7 +37,7 @@ import scala.collection.immutable
 import scala.concurrent.duration.FiniteDuration
 import scala.util.{ Failure, Success, Try }
 
-import com.typesafe.config.{ Config, ConfigValueType }
+import org.ekrich.config.{ Config, ConfigValueType }
 
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
@@ -58,7 +58,7 @@ private[dns] final class DnsSettings(system: ExtendedActorSystem, c: Config) {
   import DnsSettings._
 
   val NameServers: List[InetSocketAddress] = {
-    c.getValue("nameservers").valueType() match {
+    c.getValue("nameservers").valueType match {
       case ConfigValueType.STRING =>
         c.getString("nameservers") match {
           case "default" =>
@@ -125,7 +125,7 @@ private[dns] final class DnsSettings(system: ExtendedActorSystem, c: Config) {
   }
 
   val SearchDomains: List[String] = {
-    c.getValue("search-domains").valueType() match {
+    c.getValue("search-domains").valueType match {
       case ConfigValueType.STRING =>
         c.getString("search-domains") match {
           case "default" => resolvConf.map(_.search).getOrElse(Nil)
@@ -138,7 +138,7 @@ private[dns] final class DnsSettings(system: ExtendedActorSystem, c: Config) {
   }
 
   val NDots: Int = {
-    c.getValue("ndots").valueType() match {
+    c.getValue("ndots").valueType match {
       case ConfigValueType.STRING =>
         c.getString("ndots") match {
           case "default" => resolvConf.map(_.ndots).getOrElse(1)

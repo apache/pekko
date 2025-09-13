@@ -12,7 +12,7 @@
  */
 
 package org.apache.pekko.actor.typed.coexistence
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.wordspec.AnyWordSpecLike
 

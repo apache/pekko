@@ -21,7 +21,7 @@ import pekko.cluster.MemberStatus
 import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
 import pekko.testkit.WithLogCapturing
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 import scala.concurrent.duration._
 

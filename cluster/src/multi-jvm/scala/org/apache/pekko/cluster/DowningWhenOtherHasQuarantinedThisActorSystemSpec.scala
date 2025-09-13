@@ -23,7 +23,7 @@ import pekko.remote.artery.ThisActorSystemQuarantinedEvent
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.transport.ThrottlerTransportAdapter
 import pekko.testkit.LongRunningTest
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 object DowningWhenOtherHasQuarantinedThisActorSystemSpec extends MultiNodeConfig {
   val first = role("first")

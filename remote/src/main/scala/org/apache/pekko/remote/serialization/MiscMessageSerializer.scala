@@ -19,7 +19,7 @@ import java.util.Optional
 import java.util.concurrent.TimeUnit
 
 import scala.concurrent.duration.{ FiniteDuration, TimeUnit }
-import com.typesafe.config.{ Config, ConfigFactory, ConfigRenderOptions }
+import org.ekrich.config.{ Config, ConfigFactory, ConfigRenderOptions }
 import org.apache.pekko
 import pekko.{ Done, NotUsed }
 import pekko.actor._
@@ -167,7 +167,7 @@ class MiscMessageSerializer(val system: ExtendedActorSystem) extends SerializerW
   }
 
   private def serializeConfig(c: Config): Array[Byte] = {
-    c.root.render(ConfigRenderOptions.concise()).getBytes(StandardCharsets.UTF_8)
+    c.root.render(ConfigRenderOptions.concise).getBytes(StandardCharsets.UTF_8)
   }
 
   private def protoForAddressData(address: Address): AddressData.Builder =

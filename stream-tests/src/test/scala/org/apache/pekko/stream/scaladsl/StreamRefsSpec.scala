@@ -32,7 +32,7 @@ import pekko.stream.testkit.scaladsl._
 import pekko.testkit.{ PekkoSpec, TestKit, TestProbe }
 import pekko.util.ByteString
 
-import com.typesafe.config._
+import org.ekrich.config._
 
 object StreamRefsSpec {
 

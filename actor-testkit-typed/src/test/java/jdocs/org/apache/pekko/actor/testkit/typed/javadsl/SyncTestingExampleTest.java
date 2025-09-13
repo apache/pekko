@@ -16,7 +16,6 @@ package jdocs.org.apache.pekko.actor.testkit.typed.javadsl;
 // #imports
 import static org.junit.Assert.assertEquals;
 
-import com.typesafe.config.Config;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +25,7 @@ import org.apache.pekko.actor.testkit.typed.javadsl.BehaviorTestKit;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestInbox;
 import org.apache.pekko.actor.typed.*;
 import org.apache.pekko.actor.typed.javadsl.*;
+import org.ekrich.config.Config;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
 import org.slf4j.event.Level;

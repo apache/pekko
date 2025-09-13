@@ -19,7 +19,7 @@ package org.apache.pekko.actor.testkit.typed.scaladsl
 
 import org.apache.pekko
 import pekko.actor.typed.ActorSystem
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.apache.pekko.actor.testkit.typed.javadsl.JUnit5TestKitBuilder
 import org.scalatest.wordspec.AnyWordSpec
 

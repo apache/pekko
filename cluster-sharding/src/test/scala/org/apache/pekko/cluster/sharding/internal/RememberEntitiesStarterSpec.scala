@@ -20,7 +20,7 @@ import pekko.cluster.sharding.ShardRegion
 import pekko.cluster.sharding.ShardRegion.ShardId
 import pekko.testkit.PekkoSpec
 import pekko.testkit.TestProbe
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 import scala.concurrent.duration._
 

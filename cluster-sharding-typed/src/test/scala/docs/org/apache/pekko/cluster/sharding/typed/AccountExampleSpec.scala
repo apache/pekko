@@ -26,7 +26,7 @@ import pekko.cluster.typed.Cluster
 import pekko.cluster.typed.Join
 import pekko.pattern.StatusReply
 import pekko.persistence.typed.PersistenceId
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
 object AccountExampleSpec {

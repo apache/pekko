@@ -13,7 +13,6 @@
 
 package org.apache.pekko.stream;
 
-import com.typesafe.config.ConfigFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.concurrent.CompletionStage;
@@ -26,6 +25,7 @@ import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.stream.scaladsl.TcpAttributes;
 import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
+import org.ekrich.config.ConfigFactory;
 import org.junit.ClassRule;
 import org.junit.Test;
 

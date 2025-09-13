@@ -18,7 +18,7 @@ import java.util.concurrent.ThreadLocalRandom
 import scala.collection.immutable
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor.{ ActorSystem, Address }

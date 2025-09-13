@@ -20,7 +20,7 @@ import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
 
 import scala.annotation.nowarn
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 import org.apache.pekko

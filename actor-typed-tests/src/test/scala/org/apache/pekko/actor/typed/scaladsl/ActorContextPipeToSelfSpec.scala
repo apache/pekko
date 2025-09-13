@@ -18,7 +18,7 @@ import scala.concurrent.Promise
 import scala.util.{ Failure, Success }
 import scala.util.control.NoStackTrace
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko

@@ -13,13 +13,13 @@
 
 package jdocs.io.japi;
 
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.actor.Props;
+import org.ekrich.config.Config;
+import org.ekrich.config.ConfigFactory;
 
 public class EchoServer {
 

@@ -22,8 +22,8 @@ import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.SnapshotCompleted
 import pekko.persistence.typed.SnapshotFailed
 import pekko.serialization.jackson.CborSerializable
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.Config
+import org.ekrich.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import java.util.concurrent.atomic.AtomicInteger

@@ -16,7 +16,7 @@ package org.apache.pekko.cluster.sharding.typed
 import scala.collection.immutable
 import scala.concurrent.duration._
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 import org.apache.pekko
 import pekko.actor.typed.ActorSystem

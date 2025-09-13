@@ -19,7 +19,7 @@ import java.util.concurrent.ThreadLocalRandom
 
 import scala.concurrent.Future
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.Done

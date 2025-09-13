@@ -15,7 +15,7 @@ package org.apache.pekko.remote.routing
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 import org.apache.pekko.actor.Actor
 import org.apache.pekko.actor.ActorRef

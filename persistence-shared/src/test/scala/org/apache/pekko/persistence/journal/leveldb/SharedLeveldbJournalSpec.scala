@@ -14,7 +14,7 @@
 package org.apache.pekko.persistence.journal.leveldb
 
 import scala.annotation.nowarn
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.apache.pekko
 import pekko.actor._
 import pekko.persistence._

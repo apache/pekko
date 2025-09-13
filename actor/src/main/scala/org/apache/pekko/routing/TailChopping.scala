@@ -20,7 +20,7 @@ import scala.concurrent.{ ExecutionContext, Promise }
 import scala.concurrent.duration._
 import scala.util.Random
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 import org.apache.pekko
 import pekko.actor._

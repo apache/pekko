@@ -17,11 +17,11 @@ import static junit.framework.TestCase.assertSame;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import java.util.function.Function;
 import org.apache.pekko.actor.setup.ActorSystemSetup;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
+import org.ekrich.config.Config;
+import org.ekrich.config.ConfigFactory;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
 

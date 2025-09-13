@@ -13,7 +13,6 @@
 
 package jdocs.testkit;
 
-import com.typesafe.config.ConfigFactory;
 import docs.testkit.MockedChild;
 import jdocs.AbstractJavaTest;
 import org.apache.pekko.actor.*;
@@ -22,6 +21,7 @@ import org.apache.pekko.japi.function.Function;
 import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.testkit.TestProbe;
 import org.apache.pekko.testkit.javadsl.TestKit;
+import org.ekrich.config.ConfigFactory;
 import org.junit.ClassRule;
 import org.junit.Test;
 

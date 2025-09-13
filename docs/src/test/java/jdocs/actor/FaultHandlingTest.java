@@ -16,8 +16,8 @@ package jdocs.actor;
 import org.apache.pekko.actor.*;
 
 import org.apache.pekko.testkit.javadsl.TestKit;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
+import org.ekrich.config.Config;
+import org.ekrich.config.ConfigFactory;
 import jdocs.AbstractJavaTest;
 import java.util.Optional;
 import java.time.Duration;

@@ -22,7 +22,7 @@ import scala.concurrent.duration._
 import scala.concurrent.duration.Duration
 import scala.util.control.NonFatal
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 import org.apache.pekko
 import pekko.actor.{

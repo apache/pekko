@@ -18,7 +18,7 @@ import java.util.Optional
 import scala.concurrent.duration.FiniteDuration
 import scala.reflect.ClassTag
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 import org.apache.pekko
 import pekko.Done

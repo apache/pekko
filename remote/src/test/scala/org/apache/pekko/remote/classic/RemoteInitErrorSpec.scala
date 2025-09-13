@@ -18,7 +18,7 @@ import scala.collection.mutable.Set
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.concurrent.Eventually._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec

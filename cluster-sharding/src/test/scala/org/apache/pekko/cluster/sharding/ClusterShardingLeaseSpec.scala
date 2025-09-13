@@ -16,7 +16,7 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.util.Success
 import scala.util.control.NoStackTrace
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 import org.apache.pekko
 import pekko.actor.Props
 import pekko.cluster.sharding.ShardRegion.StartEntity

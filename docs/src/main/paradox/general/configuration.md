@@ -153,14 +153,14 @@ Welcome to Scala 2.13 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0).
 Type in expressions to have them evaluated.
 Type :help for more information.
 
-scala> import com.typesafe.config._
-import com.typesafe.config._
+scala> import org.ekrich.config._
+import org.ekrich.config._
 
 scala> ConfigFactory.parseString("a.b=12")
-res0: com.typesafe.config.Config = Config(SimpleConfigObject({"a" : {"b" : 12}}))
+res0: org.ekrich.config.Config = Config(SimpleConfigObject({"a" : {"b" : 12}}))
 
 scala> res0.root.render
-res1: java.lang.String =
+res1: String =
 {
     # String: 1
     "a" : {

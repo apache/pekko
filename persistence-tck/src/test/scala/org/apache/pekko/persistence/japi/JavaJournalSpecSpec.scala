@@ -13,7 +13,7 @@
 
 package org.apache.pekko.persistence.japi
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.DoNotDiscover
 
 import org.apache.pekko.persistence.japi.journal.JavaJournalSpec

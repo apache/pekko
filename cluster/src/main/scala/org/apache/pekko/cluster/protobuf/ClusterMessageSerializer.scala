@@ -18,7 +18,7 @@ import java.util.zip.{ GZIPInputStream, GZIPOutputStream }
 import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.concurrent.duration.Deadline
-import com.typesafe.config.{ Config, ConfigFactory, ConfigRenderOptions }
+import org.ekrich.config.{ Config, ConfigFactory, ConfigRenderOptions }
 import org.apache.pekko
 import pekko.actor.{ Address, ExtendedActorSystem }
 import pekko.annotation.InternalApi
@@ -307,7 +307,7 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
     if (m.hasCurrentConfig)
       InternalClusterAction.InitJoin(ConfigFactory.parseString(m.getCurrentConfig))
     else
-      InternalClusterAction.InitJoin(ConfigFactory.empty)
+      InternalClusterAction.InitJoin(ConfigFactory.empty())
   }
 
   private def deserializeInitJoinAck(bytes: Array[Byte]): InternalClusterAction.InitJoinAck = {

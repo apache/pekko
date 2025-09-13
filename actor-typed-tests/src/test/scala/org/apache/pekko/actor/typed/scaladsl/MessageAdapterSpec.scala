@@ -13,7 +13,7 @@
 
 package org.apache.pekko.actor.typed.scaladsl
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.slf4j.LoggerFactory
 

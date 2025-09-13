@@ -13,7 +13,7 @@
 
 package org.apache.pekko.persistence
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 import org.apache.pekko
 import pekko.actor.Actor

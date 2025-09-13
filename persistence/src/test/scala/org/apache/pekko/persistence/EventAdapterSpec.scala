@@ -15,7 +15,7 @@ package org.apache.pekko.persistence
 
 import scala.collection.immutable
 
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
 import pekko.actor._

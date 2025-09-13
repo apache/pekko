@@ -19,7 +19,7 @@ import scala.collection.immutable
 import scala.concurrent.Future
 import scala.util.Try
 
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 
 import pekko.annotation.InternalApi
 import pekko.persistence._

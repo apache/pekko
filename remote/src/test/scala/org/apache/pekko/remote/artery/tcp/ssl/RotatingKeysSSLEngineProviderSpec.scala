@@ -36,7 +36,7 @@ import pekko.remote.artery.tcp.TlsTcpSpec
 import pekko.testkit.ImplicitSender
 import pekko.testkit.TestActors
 import pekko.testkit.TestProbe
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLEngine
 import javax.net.ssl.SSLSession

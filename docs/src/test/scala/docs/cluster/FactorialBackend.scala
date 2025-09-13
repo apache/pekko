@@ -15,7 +15,7 @@ package scala.docs.cluster
 
 import scala.annotation.tailrec
 import scala.concurrent.Future
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.apache.pekko.actor.Actor
 import org.apache.pekko.actor.ActorLogging
 import org.apache.pekko.actor.ActorSystem

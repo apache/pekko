@@ -13,7 +13,7 @@
 
 package org.apache.pekko.remote.artery
 
-import com.typesafe.config._
+import org.ekrich.config._
 
 import org.apache.pekko
 import pekko.ConfigurationException

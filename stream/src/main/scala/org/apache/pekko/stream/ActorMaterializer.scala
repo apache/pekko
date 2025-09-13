@@ -29,7 +29,7 @@ import pekko.stream.impl._
 import pekko.stream.stage.GraphStageLogic
 import pekko.util.Helpers.toRootLowerCase
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 @InternalApi
 private[pekko] object ActorMaterializer {

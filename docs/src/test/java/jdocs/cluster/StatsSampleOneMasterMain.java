@@ -13,8 +13,6 @@
 
 package jdocs.cluster;
 
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.actor.PoisonPill;
 import org.apache.pekko.actor.Props;
@@ -22,6 +20,8 @@ import org.apache.pekko.cluster.singleton.ClusterSingletonManager;
 import org.apache.pekko.cluster.singleton.ClusterSingletonManagerSettings;
 import org.apache.pekko.cluster.singleton.ClusterSingletonProxy;
 import org.apache.pekko.cluster.singleton.ClusterSingletonProxySettings;
+import org.ekrich.config.Config;
+import org.ekrich.config.ConfigFactory;
 
 public class StatsSampleOneMasterMain {
 

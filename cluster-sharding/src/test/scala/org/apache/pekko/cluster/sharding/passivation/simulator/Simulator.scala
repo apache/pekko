@@ -38,7 +38,7 @@ import pekko.cluster.sharding.internal.SegmentedLeastRecentlyUsedReplacementPoli
 import pekko.stream.scaladsl.Flow
 import pekko.stream.scaladsl.Source
 import pekko.util.OptionVal
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 import scala.collection.immutable
 import scala.collection.mutable
@@ -55,7 +55,7 @@ object Simulator {
   def main(args: Array[String]): Unit = {
     val configName = args.headOption
     println(s"Running passivation simulator with [${configName.getOrElse("default application")}] config")
-    val config = configName.fold(ConfigFactory.load)(ConfigFactory.load)
+    val config = configName.fold(ConfigFactory.load())(ConfigFactory.load)
     run(SimulatorSettings(config))
   }
 

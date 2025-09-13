@@ -17,7 +17,7 @@ import java.util.Optional
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicInteger
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 import org.apache.pekko
 import pekko.actor.typed
 import pekko.actor.typed.ActorRef

@@ -24,8 +24,8 @@ import pekko.testkit.EventFilter
 import pekko.testkit.ImplicitSender
 import pekko.testkit.TestActors
 import pekko.testkit.TestProbe
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.Config
+import org.ekrich.config.ConfigFactory
 import javax.net.ssl.SSLEngine
 import javax.net.ssl.SSLSession
 import org.scalatest.matchers.should.Matchers

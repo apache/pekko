@@ -308,8 +308,8 @@ Java
 
 The @apidoc[query.ReadJournalProvider] class must have a constructor with one of these signatures:
 
- * constructor with a @apidoc[actor.ExtendedActorSystem] parameter, a @javadoc[com.typesafe.config.Config](com.typesafe.config.Config) parameter, and a `String` parameter for the config path
- * constructor with a `ExtendedActorSystem` parameter, and a `com.typesafe.config.Config` parameter
+ * constructor with a @apidoc[actor.ExtendedActorSystem] parameter, a @scaladoc[org.ekrich.config.Config](org.ekrich.config.Config) parameter, and a `String` parameter for the config path
+ * constructor with a `ExtendedActorSystem` parameter, and a `org.ekrich.config.Config` parameter
  * constructor with one `ExtendedActorSystem` parameter
  * constructor without parameters
 

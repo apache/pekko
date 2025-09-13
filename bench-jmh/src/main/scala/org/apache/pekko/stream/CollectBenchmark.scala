@@ -13,7 +13,7 @@
 
 package org.apache.pekko.stream
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.apache.pekko
 import org.openjdk.jmh.annotations._
 import pekko.actor.ActorSystem

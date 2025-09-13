@@ -20,8 +20,8 @@ import pekko.actor.typed.Behavior
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.persistence.typed.PersistenceId
 import org.scalatest.wordspec.AnyWordSpecLike
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.Config
+import org.ekrich.config.ConfigFactory
 
 import java.util.concurrent.atomic.AtomicInteger
 import scala.concurrent.duration._

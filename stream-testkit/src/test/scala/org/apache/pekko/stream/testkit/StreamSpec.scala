@@ -28,7 +28,7 @@ import pekko.testkit.TestKitUtils
 
 import org.scalatest.Failed
 
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 
 import java.util.concurrent.TimeUnit
 

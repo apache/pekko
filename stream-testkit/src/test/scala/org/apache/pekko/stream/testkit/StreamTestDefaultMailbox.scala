@@ -24,7 +24,7 @@ import pekko.dispatch.ProducesMessageQueue
 import pekko.dispatch.UnboundedMailbox
 import pekko.stream.impl.MaterializerGuardian
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 /**
  * INTERNAL API

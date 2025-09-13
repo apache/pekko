@@ -16,7 +16,7 @@ package org.apache.pekko.actor
 import scala.concurrent.duration._
 
 import com.codahale.metrics.Histogram
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.BeforeAndAfterAll
 
 import org.apache.pekko

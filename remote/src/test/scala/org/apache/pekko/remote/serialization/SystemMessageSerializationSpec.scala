@@ -13,7 +13,7 @@
 
 package org.apache.pekko.remote.serialization
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor.{ ActorInitializationException, ExtendedActorSystem, InternalActorRef }

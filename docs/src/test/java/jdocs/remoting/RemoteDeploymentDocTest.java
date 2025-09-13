@@ -19,7 +19,7 @@ import jdocs.AbstractJavaTest;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import com.typesafe.config.ConfigFactory;
+import org.ekrich.config.ConfigFactory;
 
 // #import
 import org.apache.pekko.actor.ActorRef;

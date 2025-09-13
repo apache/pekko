@@ -23,7 +23,7 @@ import pekko.coordination.lease.LeaseUsageSettings
 import pekko.japi.Util.immutableSeq
 import pekko.util.Helpers.toRootLowerCase
 import pekko.util.JavaDurationConverters._
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 import scala.collection.immutable
 import scala.concurrent.duration._

@@ -13,7 +13,7 @@
 
 package org.apache.pekko.remote.artery
 
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 
 object ArterySpecSupport {
   // same for all artery enabled remoting tests

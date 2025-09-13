@@ -20,7 +20,7 @@ import org.scalatest.wordspec.AnyWordSpec
 
 //#imports
 import org.apache.pekko.actor.typed.ActorSystem
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 //#imports
 
 class ConfigDocSpec extends AnyWordSpec with Matchers {

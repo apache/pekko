@@ -15,8 +15,8 @@ package org.apache.pekko.persistence.testkit.scaladsl
 
 import scala.collection.immutable
 import scala.reflect.ClassTag
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.Config
+import org.ekrich.config.ConfigFactory
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.ActorTestKit
 import pekko.actor.typed.ActorRef

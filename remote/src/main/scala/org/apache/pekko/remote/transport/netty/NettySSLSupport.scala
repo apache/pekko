@@ -15,7 +15,7 @@ package org.apache.pekko.remote.transport.netty
 
 import scala.annotation.nowarn
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 import org.apache.pekko
 import pekko.util.ccompat.JavaConverters._
 

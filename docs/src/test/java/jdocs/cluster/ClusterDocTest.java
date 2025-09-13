@@ -14,7 +14,7 @@
 package jdocs.cluster;
 
 import org.apache.pekko.testkit.javadsl.TestKit;
-import com.typesafe.config.ConfigFactory;
+import org.ekrich.config.ConfigFactory;
 
 import java.util.LinkedList;
 import java.util.List;

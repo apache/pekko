@@ -22,7 +22,7 @@ import org.apache.pekko.actor.Props
 import org.apache.pekko.actor.Terminated
 import org.apache.pekko.pattern.ask
 import org.apache.pekko.util.Timeout
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import java.util.concurrent.atomic.AtomicInteger
 
 //#frontend

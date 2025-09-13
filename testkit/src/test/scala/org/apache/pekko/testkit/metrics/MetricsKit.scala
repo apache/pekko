@@ -22,7 +22,7 @@ import scala.reflect.ClassTag
 import scala.util.matching.Regex
 
 import com.codahale.metrics._
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 import org.scalatest.Notifying
 
 import org.apache.pekko

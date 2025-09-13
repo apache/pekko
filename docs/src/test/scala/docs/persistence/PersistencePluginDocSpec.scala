@@ -16,7 +16,7 @@ package docs.persistence
 import scala.collection.immutable
 import org.apache.pekko.actor.ActorSystem
 import org.apache.pekko.testkit.TestKit
-import com.typesafe.config._
+import org.ekrich.config._
 import org.scalatest.wordspec.AnyWordSpec
 
 import scala.concurrent.Future

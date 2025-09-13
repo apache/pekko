@@ -13,7 +13,7 @@
 
 package org.apache.pekko.event
 
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 import org.scalatest.BeforeAndAfterEach
 
 import org.apache.pekko

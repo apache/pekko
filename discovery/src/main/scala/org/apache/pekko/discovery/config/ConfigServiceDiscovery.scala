@@ -16,7 +16,7 @@ package org.apache.pekko.discovery.config
 import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
 
-import com.typesafe.config.{ Config, ConfigUtil }
+import org.ekrich.config.{ Config, ConfigUtil }
 
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
@@ -33,7 +33,7 @@ import pekko.util.ccompat.JavaConverters._
 private object ConfigServicesParser {
   def parse(config: Config): Map[String, Resolved] = {
     val byService = config
-      .root()
+      .root
       .entrySet()
       .asScala
       .map { en =>

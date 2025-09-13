@@ -334,7 +334,7 @@ class TestKitDocSpec extends PekkoSpec with DefaultTimeout with ImplicitSender {
   "demonstrate EventFilter" in {
     // #event-filter
     import org.apache.pekko.testkit.EventFilter
-    import com.typesafe.config.ConfigFactory
+    import org.ekrich.config.ConfigFactory
 
     implicit val system: ActorSystem = ActorSystem(
       "testsystem",

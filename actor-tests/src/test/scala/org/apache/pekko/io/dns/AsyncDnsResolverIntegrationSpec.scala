@@ -17,7 +17,7 @@ import java.net.InetAddress
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.scalatest.time.Millis
 import org.scalatest.time.Span
 

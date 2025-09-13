@@ -28,7 +28,7 @@ import pekko.event.Logging
 import pekko.event.MarkerLoggingAdapter
 import pekko.remote.artery.tcp.ssl.SSLEngineConfig
 import pekko.stream.TLSRole
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 import javax.net.ssl.KeyManager
 import javax.net.ssl.KeyManagerFactory
 import javax.net.ssl.SSLContext

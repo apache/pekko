@@ -15,7 +15,7 @@ package org.apache.pekko.cluster.sharding.typed.delivery
 
 import java.util.function.{ Function => JFunction }
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 import org.apache.pekko
 import pekko.actor.typed.ActorRef

@@ -21,7 +21,7 @@ import scala.collection.immutable
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
 import pekko.actor._
@@ -128,9 +128,9 @@ trait RuntimePluginConfig {
 
   /**
    * Additional configuration of the journal plugin servicing this persistent actor.
-   * When empty, the whole configuration of the journal plugin will be taken from the [[com.typesafe.config.Config]] loaded into the
+   * When empty, the whole configuration of the journal plugin will be taken from the [[org.ekrich.config.Config]] loaded into the
    * [[pekko.actor.ActorSystem]].
-   * When configured, the journal plugin configuration will be taken from this [[com.typesafe.config.Config]] merged with the [[com.typesafe.config.Config]]
+   * When configured, the journal plugin configuration will be taken from this [[org.ekrich.config.Config]] merged with the [[org.ekrich.config.Config]]
    * loaded into the [[pekko.actor.ActorSystem]].
    *
    * @return an additional configuration used to configure the journal plugin.
@@ -139,9 +139,9 @@ trait RuntimePluginConfig {
 
   /**
    * Additional configuration of the snapshot plugin servicing this persistent actor.
-   * When empty, the whole configuration of the snapshot plugin will be taken from the [[com.typesafe.config.Config]] loaded into the
+   * When empty, the whole configuration of the snapshot plugin will be taken from the [[org.ekrich.config.Config]] loaded into the
    * [[pekko.actor.ActorSystem]].
-   * When configured, the snapshot plugin configuration will be taken from this [[com.typesafe.config.Config]] merged with the [[com.typesafe.config.Config]]
+   * When configured, the snapshot plugin configuration will be taken from this [[org.ekrich.config.Config]] merged with the [[org.ekrich.config.Config]]
    * loaded into the [[pekko.actor.ActorSystem]].
    *
    * @return an additional configuration used to configure the snapshot plugin.
@@ -230,7 +230,7 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
   private lazy val defaultJournalPluginId = {
     val configPath = config.getString("journal.plugin")
     verifyPluginConfigIsDefined(configPath, "Default journal")
-    verifyJournalPluginConfigExists(ConfigFactory.empty, configPath)
+    verifyJournalPluginConfigExists(ConfigFactory.empty(), configPath)
     configPath
   }
 
@@ -245,7 +245,7 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
         "For details see 'reference.conf'")
       NoSnapshotStorePluginId
     } else {
-      verifySnapshotPluginConfigExists(ConfigFactory.empty, configPath)
+      verifySnapshotPluginConfigExists(ConfigFactory.empty(), configPath)
       configPath
     }
   }
@@ -299,7 +299,7 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
    * adapter for each class, otherwise the most specific adapter matching a given class will be returned.
    */
   final def adaptersFor(journalPluginId: String): EventAdapters = {
-    adaptersFor(journalPluginId: String, ConfigFactory.empty)
+    adaptersFor(journalPluginId: String, ConfigFactory.empty())
   }
 
   /**
@@ -336,7 +336,7 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
    */
   private[pekko] final def journalConfigFor(
       journalPluginId: String,
-      journalPluginConfig: Config = ConfigFactory.empty): Config = {
+      journalPluginConfig: Config = ConfigFactory.empty()): Config = {
     val configPath = if (isEmpty(journalPluginId)) defaultJournalPluginId else journalPluginId
     verifyJournalPluginConfigExists(journalPluginConfig, configPath)
     pluginHolderFor(configPath, JournalFallbackConfigPath, journalPluginConfig).config
@@ -364,7 +364,7 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
   @InternalStableApi
   private[pekko] final def journalFor(
       journalPluginId: String,
-      journalPluginConfig: Config = ConfigFactory.empty): ActorRef = {
+      journalPluginConfig: Config = ConfigFactory.empty()): ActorRef = {
     val configPath = if (isEmpty(journalPluginId)) defaultJournalPluginId else journalPluginId
     verifyJournalPluginConfigExists(journalPluginConfig, configPath)
     pluginHolderFor(configPath, JournalFallbackConfigPath, journalPluginConfig).actor
@@ -381,7 +381,7 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
   @InternalStableApi
   private[pekko] final def snapshotStoreFor(
       snapshotPluginId: String,
-      snapshotPluginConfig: Config = ConfigFactory.empty): ActorRef = {
+      snapshotPluginConfig: Config = ConfigFactory.empty()): ActorRef = {
     val configPath = if (isEmpty(snapshotPluginId)) defaultSnapshotPluginId else snapshotPluginId
     verifySnapshotPluginConfigExists(snapshotPluginConfig, configPath)
     pluginHolderFor(configPath, SnapshotStoreFallbackConfigPath, snapshotPluginConfig).actor
@@ -439,7 +439,7 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
 
   private class PluginHolderExtensionId(configPath: String, fallbackPath: String, additionalConfig: Config)
       extends ExtensionId[PluginHolder] {
-    def this(configPath: String, fallbackPath: String) = this(configPath, fallbackPath, ConfigFactory.empty)
+    def this(configPath: String, fallbackPath: String) = this(configPath, fallbackPath, ConfigFactory.empty())
 
     override def createExtension(system: ExtendedActorSystem): PluginHolder = {
       val mergedConfig = additionalConfig.withFallback(system.settings.config)

@@ -25,7 +25,7 @@ import scala.util.control.NonFatal
 
 import atomic.{ AtomicInteger, AtomicReference }
 import scala.annotation.nowarn
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 
 import org.scalatest.BeforeAndAfterEach
 import org.apache.pekko
@@ -797,7 +797,7 @@ class LightArrayRevolverSchedulerSpec extends PekkoSpec(SchedulerSpec.testConfRe
   }
 
   @nowarn
-  def withScheduler(start: Long = 0L, _startTick: Int = 0, config: Config = ConfigFactory.empty)(
+  def withScheduler(start: Long = 0L, _startTick: Int = 0, config: Config = ConfigFactory.empty())(
       thunk: (Scheduler with Closeable, Driver) => Unit): Unit = {
     val lbq = new AtomicReference[LinkedBlockingQueue[Long]](new LinkedBlockingQueue[Long])
     val prb = TestProbe()

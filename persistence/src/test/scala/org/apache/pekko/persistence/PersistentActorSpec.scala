@@ -22,7 +22,7 @@ import scala.util.Random
 import scala.util.control.NoStackTrace
 import scala.annotation.nowarn
 
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 import org.apache.pekko
 import pekko.actor._
 import pekko.persistence.PersistentActorSpec._

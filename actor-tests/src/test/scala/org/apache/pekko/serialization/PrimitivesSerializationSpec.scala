@@ -18,7 +18,7 @@ import java.nio.ByteOrder
 
 import scala.util.Random
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.testkit.PekkoSpec

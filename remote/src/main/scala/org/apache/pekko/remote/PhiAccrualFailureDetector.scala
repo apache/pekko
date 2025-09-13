@@ -18,7 +18,7 @@ import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.concurrent.duration.Duration
 import scala.concurrent.duration.FiniteDuration
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.event.EventStream

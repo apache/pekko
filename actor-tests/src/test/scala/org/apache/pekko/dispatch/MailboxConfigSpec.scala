@@ -18,7 +18,7 @@ import java.util.concurrent.{ BlockingQueue, ConcurrentLinkedQueue }
 import scala.concurrent.{ Await, ExecutionContext, Future }
 import scala.concurrent.duration._
 
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 import org.scalatest.{ BeforeAndAfterAll, BeforeAndAfterEach }
 
 import org.apache.pekko

@@ -33,7 +33,7 @@ import pekko.testkit.TestDuration
 
 import org.reactivestreams.{ Publisher, Subscriber }
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 object FlowSpec {
   class Fruit extends Serializable

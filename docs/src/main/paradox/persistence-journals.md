@@ -50,8 +50,8 @@ actors to achieve parallelism.
 
 The journal plugin class must have a constructor with one of these signatures:
 
- * constructor with one `com.typesafe.config.Config` parameter and a `String` parameter for the config path
- * constructor with one `com.typesafe.config.Config` parameter
+ * constructor with one `org.ekrich.config.Config` parameter and a `String` parameter for the config path
+ * constructor with one `org.ekrich.config.Config` parameter
  * constructor without parameters
 
 The plugin section of the actor system's config will be passed in the config constructor parameter. The config path
@@ -82,8 +82,8 @@ actors to achieve parallelism.
 
 The snapshot store plugin class must have a constructor with one of these signatures:
 
- * constructor with one `com.typesafe.config.Config` parameter and a `String` parameter for the config path
- * constructor with one `com.typesafe.config.Config` parameter
+ * constructor with one `org.ekrich.config.Config` parameter and a `String` parameter for the config path
+ * constructor with one `org.ekrich.config.Config` parameter
  * constructor without parameters
 
 The plugin section of the actor system's config will be passed in the config constructor parameter. The config path

@@ -15,7 +15,7 @@ package org.apache.pekko.persistence.journal
 
 import scala.concurrent.duration._
 
-import com.typesafe.config._
+import org.ekrich.config._
 
 import org.apache.pekko
 import pekko.actor._

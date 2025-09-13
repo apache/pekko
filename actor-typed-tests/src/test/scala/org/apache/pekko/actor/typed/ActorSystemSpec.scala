@@ -17,7 +17,7 @@
 
 package org.apache.pekko.actor.typed
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.apache.pekko
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.testkit.PekkoSpec

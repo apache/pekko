@@ -20,7 +20,7 @@ import java.util.concurrent.locks.ReentrantLock
 import scala.annotation.tailrec
 import scala.concurrent.duration.{ Duration, FiniteDuration }
 import scala.util.control.NonFatal
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 import org.apache.pekko
 import pekko.actor.{ ActorCell, ActorRef, ActorSystem, DeadLetter, InternalActorRef }
 import pekko.annotation.InternalStableApi

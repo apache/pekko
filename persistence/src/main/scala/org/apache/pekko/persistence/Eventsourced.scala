@@ -21,7 +21,7 @@ import scala.concurrent.duration.FiniteDuration
 import scala.util.control.NonFatal
 
 import scala.annotation.nowarn
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorCell, DeadLetter, StashOverflowException }
@@ -76,7 +76,7 @@ private[persistence] trait Eventsourced
   private[persistence] lazy val journal = {
     val journalPluginConfig = this match {
       case c: RuntimePluginConfig => c.journalPluginConfig
-      case _                      => ConfigFactory.empty
+      case _                      => ConfigFactory.empty()
     }
     extension.journalFor(journalPluginId, journalPluginConfig)
   }
@@ -84,7 +84,7 @@ private[persistence] trait Eventsourced
   private[persistence] lazy val snapshotStore = {
     val snapshotPluginConfig = this match {
       case c: RuntimePluginConfig => c.snapshotPluginConfig
-      case _                      => ConfigFactory.empty
+      case _                      => ConfigFactory.empty()
     }
     extension.snapshotStoreFor(snapshotPluginId, snapshotPluginConfig)
   }
@@ -98,7 +98,7 @@ private[persistence] trait Eventsourced
   private val maxMessageBatchSize = {
     val journalPluginConfig = this match {
       case c: RuntimePluginConfig => c.journalPluginConfig
-      case _                      => ConfigFactory.empty
+      case _                      => ConfigFactory.empty()
     }
     extension.journalConfigFor(journalPluginId, journalPluginConfig).getInt("max-message-batch-size")
   }
@@ -243,7 +243,7 @@ private[persistence] trait Eventsourced
     val timeout = {
       val journalPluginConfig = this match {
         case c: RuntimePluginConfig => c.journalPluginConfig
-        case _                      => ConfigFactory.empty
+        case _                      => ConfigFactory.empty()
       }
       extension.journalConfigFor(journalPluginId, journalPluginConfig).getMillisDuration("recovery-event-timeout")
     }

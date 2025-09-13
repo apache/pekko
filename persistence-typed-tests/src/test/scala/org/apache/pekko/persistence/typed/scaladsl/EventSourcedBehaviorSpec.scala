@@ -44,8 +44,8 @@ import pekko.persistence.{ SnapshotMetadata => ClassicSnapshotMetadata }
 import pekko.persistence.{ SnapshotSelectionCriteria => ClassicSnapshotSelectionCriteria }
 import pekko.serialization.jackson.CborSerializable
 import pekko.stream.scaladsl.Sink
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.Config
+import org.ekrich.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import java.util.UUID

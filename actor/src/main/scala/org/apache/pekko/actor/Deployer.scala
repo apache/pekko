@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicReference
 import scala.annotation.tailrec
 
 import scala.annotation.nowarn
-import com.typesafe.config._
+import org.ekrich.config._
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
@@ -37,7 +37,7 @@ object Deploy {
 
   def apply(
       path: String = "",
-      config: Config = ConfigFactory.empty,
+      config: Config = ConfigFactory.empty(),
       routerConfig: RouterConfig = NoRouter,
       scope: Scope = NoScopeGiven,
       dispatcher: String = Deploy.NoDispatcherGiven,
@@ -67,7 +67,7 @@ object Deploy {
 @SerialVersionUID(3L)
 final class Deploy(
     val path: String = "",
-    val config: Config = ConfigFactory.empty,
+    val config: Config = ConfigFactory.empty(),
     val routerConfig: RouterConfig = NoRouter,
     val scope: Scope = NoScopeGiven,
     val dispatcher: String = Deploy.NoDispatcherGiven,
@@ -89,17 +89,17 @@ final class Deploy(
   /**
    * Java API to create a Deploy with the given RouterConfig
    */
-  def this(routing: RouterConfig) = this("", ConfigFactory.empty, routing)
+  def this(routing: RouterConfig) = this("", ConfigFactory.empty(), routing)
 
   /**
    * Java API to create a Deploy with the given RouterConfig with Scope
    */
-  def this(routing: RouterConfig, scope: Scope) = this("", ConfigFactory.empty, routing, scope)
+  def this(routing: RouterConfig, scope: Scope) = this("", ConfigFactory.empty(), routing, scope)
 
   /**
    * Java API to create a Deploy with the given Scope
    */
-  def this(scope: Scope) = this("", ConfigFactory.empty, NoRouter, scope)
+  def this(scope: Scope) = this("", ConfigFactory.empty(), NoRouter, scope)
 
   /**
    * Do a merge between this and the other Deploy, where values from “this” take

@@ -16,7 +16,7 @@ package org.apache.pekko.cluster.sharding.typed
 import scala.collection.{ immutable => im }
 import scala.concurrent.duration._
 
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 

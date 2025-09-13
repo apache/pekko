@@ -37,3 +37,6 @@ addSbtPlugin("com.lightbend.paradox" % "sbt-paradox-theme" % "0.10.7")
 addSbtPlugin("com.lightbend.paradox" % "sbt-paradox" % "0.10.7")
 
 addSbtPlugin("com.gradle" % "sbt-develocity" % "1.3.1")
+
+// Used for ProjectFileIgnoreSupport
+libraryDependencies += "org.ekrich" %% "sconfig" % "1.11.0"

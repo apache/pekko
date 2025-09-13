@@ -18,8 +18,8 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 import scala.reflect.ClassTag
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.Config
+import org.ekrich.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.ConfigurationException

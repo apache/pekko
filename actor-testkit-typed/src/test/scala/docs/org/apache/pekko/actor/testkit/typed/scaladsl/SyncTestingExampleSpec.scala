@@ -21,7 +21,7 @@ import pekko.actor.testkit.typed.scaladsl.BehaviorTestKit
 import pekko.actor.testkit.typed.scaladsl.TestInbox
 import pekko.actor.typed._
 import pekko.actor.typed.scaladsl._
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import org.slf4j.event.Level
 
 //#imports

@@ -13,7 +13,7 @@
 
 package org.apache.pekko.cluster.typed
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 import org.apache.pekko.actor.typed.scaladsl.DispatcherSelectorSpec
 

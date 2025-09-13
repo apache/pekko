@@ -21,7 +21,7 @@ import pekko.cluster.MemberStatus
 import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.transport.ThrottlerTransportAdapter
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 import pekko.cluster.MultiNodeClusterSpec
 import pekko.coordination.lease.TestLease

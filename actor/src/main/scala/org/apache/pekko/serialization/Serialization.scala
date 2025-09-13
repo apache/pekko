@@ -26,7 +26,7 @@ import scala.util.{ DynamicVariable, Failure, Try }
 import scala.util.Success
 import scala.util.control.NonFatal
 
-import com.typesafe.config.Config
+import org.ekrich.config.Config
 
 import org.apache.pekko
 import pekko.actor._

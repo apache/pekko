@@ -15,7 +15,7 @@ package org.apache.pekko.cluster.typed
 
 import scala.concurrent.Promise
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.Done

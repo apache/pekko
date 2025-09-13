@@ -13,7 +13,7 @@
 
 package org.apache.pekko.actor
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor.ActorSystem.Settings

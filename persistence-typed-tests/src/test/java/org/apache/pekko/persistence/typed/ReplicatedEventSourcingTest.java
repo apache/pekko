@@ -16,7 +16,6 @@ package org.apache.pekko.persistence.typed;
 import static org.apache.pekko.Done.done;
 import static org.junit.Assert.assertEquals;
 
-import com.typesafe.config.ConfigFactory;
 import java.util.*;
 import org.apache.pekko.Done;
 import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
@@ -27,6 +26,7 @@ import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.persistence.testkit.PersistenceTestKitPlugin;
 import org.apache.pekko.persistence.testkit.query.javadsl.PersistenceTestKitReadJournal;
 import org.apache.pekko.persistence.typed.javadsl.*;
+import org.ekrich.config.ConfigFactory;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;

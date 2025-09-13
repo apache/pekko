@@ -13,7 +13,7 @@
 
 package org.apache.pekko.remote.artery
 
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.ekrich.config.{ Config, ConfigFactory }
 import org.scalatest.{ Outcome, Pending }
 
 import org.apache.pekko

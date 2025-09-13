@@ -22,7 +22,7 @@ import scala.concurrent.duration._
 import pekko.util.Timeout
 import pekko.event.LoggingReceive
 import pekko.pattern.{ ask, pipe }
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 //#imports
 
 /**

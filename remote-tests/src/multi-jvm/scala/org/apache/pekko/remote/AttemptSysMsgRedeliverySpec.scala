@@ -15,7 +15,7 @@ package org.apache.pekko.remote
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
+import org.ekrich.config.ConfigFactory
 import testkit.MultiNodeConfig
 
 import org.apache.pekko
