@@ -32,7 +32,7 @@ import pekko.actor.typed.scaladsl.Behaviors
 import pekko.annotation.ApiMayChange
 import pekko.cluster.sharding.typed.ShardingEnvelope
 import pekko.cluster.sharding.typed.delivery.internal.ShardingProducerControllerImpl
-import pekko.util.JavaDurationConverters._
+import scala.jdk.DurationConverters._
 import scala.jdk.OptionConverters._
 
 /**
@@ -185,9 +185,9 @@ object ShardingProducerController {
     def apply(config: Config): Settings = {
       new Settings(
         bufferSize = config.getInt("buffer-size"),
-        config.getDuration("internal-ask-timeout").asScala,
-        config.getDuration("cleanup-unused-after").asScala,
-        config.getDuration("resend-first-unconfirmed-idle-timeout").asScala,
+        config.getDuration("internal-ask-timeout").toScala,
+        config.getDuration("cleanup-unused-after").toScala,
+        config.getDuration("resend-first-unconfirmed-idle-timeout").toScala,
         ProducerController.Settings(config))
     }
 
@@ -223,19 +223,19 @@ object ShardingProducerController {
       copy(internalAskTimeout = newInternalAskTimeout)
 
     def withInternalAskTimeout(newInternalAskTimeout: java.time.Duration): Settings =
-      copy(internalAskTimeout = newInternalAskTimeout.asScala)
+      copy(internalAskTimeout = newInternalAskTimeout.toScala)
 
     def withCleanupUnusedAfter(newCleanupUnusedAfter: FiniteDuration): Settings =
       copy(cleanupUnusedAfter = newCleanupUnusedAfter)
 
     def withCleanupUnusedAfter(newCleanupUnusedAfter: java.time.Duration): Settings =
-      copy(cleanupUnusedAfter = newCleanupUnusedAfter.asScala)
+      copy(cleanupUnusedAfter = newCleanupUnusedAfter.toScala)
 
     def withResendFirstUnconfirmedIdleTimeout(newResendFirstUnconfirmedIdleTimeout: FiniteDuration): Settings =
       copy(resendFirstUnconfirmedIdleTimeout = newResendFirstUnconfirmedIdleTimeout)
 
     def withResendFirstUnconfirmedIdleTimeout(newResendFirstUnconfirmedIdleTimeout: java.time.Duration): Settings =
-      copy(resendFirstUnconfirmedIdleTimeout = newResendFirstUnconfirmedIdleTimeout.asScala)
+      copy(resendFirstUnconfirmedIdleTimeout = newResendFirstUnconfirmedIdleTimeout.toScala)
 
     def withProducerControllerSettings(newProducerControllerSettings: ProducerController.Settings): Settings =
       copy(producerControllerSettings = newProducerControllerSettings)

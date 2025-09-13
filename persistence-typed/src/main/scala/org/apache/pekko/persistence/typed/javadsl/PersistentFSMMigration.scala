@@ -19,7 +19,7 @@ import java.util.Optional
 import org.apache.pekko
 import pekko.japi.function.Function3
 import pekko.persistence.typed.SnapshotAdapter
-import pekko.util.JavaDurationConverters._
+import scala.jdk.DurationConverters._
 import scala.jdk.OptionConverters._
 
 /**
@@ -37,5 +37,5 @@ object PersistentFSMMigration {
    */
   def snapshotAdapter[State](adapt: Function3[String, Any, Optional[Duration], State]): SnapshotAdapter[State] =
     pekko.persistence.typed.scaladsl.PersistentFSMMigration.snapshotAdapter((stateId, snapshot, timer) =>
-      adapt.apply(stateId, snapshot, timer.map(_.asJava).toJava))
+      adapt.apply(stateId, snapshot, timer.map(_.toJava).toJava))
 }

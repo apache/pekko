@@ -13,9 +13,9 @@
 
 package org.apache.pekko.actor;
 
-import org.apache.pekko.util.JavaDurationConverters;
 import scala.concurrent.ExecutionContext;
 import scala.concurrent.duration.FiniteDuration;
+import scala.jdk.javaapi.DurationConverters;
 
 /**
  * An Apache Pekko scheduler service. This one needs one special behavior: if Closeable, it MUST
@@ -45,7 +45,7 @@ public abstract class AbstractScheduler extends AbstractSchedulerBase {
    */
   public Cancellable scheduleOnce(
       final java.time.Duration delay, final Runnable runnable, final ExecutionContext executor) {
-    return scheduleOnce(JavaDurationConverters.asFiniteDuration(delay), runnable, executor);
+    return scheduleOnce(DurationConverters.toScala(delay), runnable, executor);
   }
 
   /**

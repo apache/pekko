@@ -19,7 +19,7 @@ import org.apache.pekko
 import pekko.annotation.ApiMayChange
 import pekko.japi.Pair
 import pekko.stream.scaladsl
-import pekko.util.JavaDurationConverters._
+import scala.jdk.DurationConverters._
 import scala.jdk.OptionConverters._
 
 object RetryFlow {
@@ -54,7 +54,7 @@ object RetryFlow {
       flow: Flow[In, Out, Mat],
       decideRetry: pekko.japi.function.Function2[In, Out, Optional[In]]): Flow[In, Out, Mat] =
     scaladsl.RetryFlow
-      .withBackoff[In, Out, Mat](minBackoff.asScala, maxBackoff.asScala, randomFactor, maxRetries, flow.asScala) {
+      .withBackoff[In, Out, Mat](minBackoff.toScala, maxBackoff.toScala, randomFactor, maxRetries, flow.asScala) {
         (in, out) =>
           decideRetry.apply(in, out).toScala
       }
@@ -95,8 +95,8 @@ object RetryFlow {
       : FlowWithContext[In, InCtx, Out, OutCtx, Mat] =
     scaladsl.RetryFlow
       .withBackoffAndContext[In, InCtx, Out, OutCtx, Mat](
-        minBackoff.asScala,
-        maxBackoff.asScala,
+        minBackoff.toScala,
+        maxBackoff.toScala,
         randomFactor,
         maxRetries,
         flow.asScala) { (in, out) =>

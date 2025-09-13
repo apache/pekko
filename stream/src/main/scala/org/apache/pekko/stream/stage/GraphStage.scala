@@ -1759,8 +1759,8 @@ abstract class TimerGraphStageLogic(_shape: Shape) extends GraphStageLogic(_shap
    * adding the new timer.
    */
   final protected def scheduleOnce(timerKey: Any, delay: java.time.Duration): Unit = {
-    import pekko.util.JavaDurationConverters._
-    scheduleOnce(timerKey, delay.asScala)
+    import scala.jdk.DurationConverters._
+    scheduleOnce(timerKey, delay.toScala)
   }
 
   /**
@@ -1793,8 +1793,8 @@ abstract class TimerGraphStageLogic(_shape: Shape) extends GraphStageLogic(_shap
       timerKey: Any,
       initialDelay: java.time.Duration,
       interval: java.time.Duration): Unit = {
-    import pekko.util.JavaDurationConverters._
-    scheduleWithFixedDelay(timerKey, initialDelay.asScala, interval.asScala)
+    import scala.jdk.DurationConverters._
+    scheduleWithFixedDelay(timerKey, initialDelay.toScala, interval.toScala)
   }
 
   /**
@@ -1827,8 +1827,8 @@ abstract class TimerGraphStageLogic(_shape: Shape) extends GraphStageLogic(_shap
       timerKey: Any,
       initialDelay: java.time.Duration,
       interval: java.time.Duration): Unit = {
-    import pekko.util.JavaDurationConverters._
-    scheduleAtFixedRate(timerKey, initialDelay.asScala, interval.asScala)
+    import scala.jdk.DurationConverters._
+    scheduleAtFixedRate(timerKey, initialDelay.toScala, interval.toScala)
   }
 
   /**

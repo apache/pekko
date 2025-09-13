@@ -25,7 +25,7 @@ import com.typesafe.config.Config
 import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.InternalApi
-import pekko.util.JavaDurationConverters._
+import scala.jdk.DurationConverters._
 
 trait OptimalSizeExploringResizer extends Resizer {
 
@@ -71,8 +71,8 @@ case object OptimalSizeExploringResizer {
       lowerBound = resizerCfg.getInt("lower-bound"),
       upperBound = resizerCfg.getInt("upper-bound"),
       chanceOfScalingDownWhenFull = resizerCfg.getDouble("chance-of-ramping-down-when-full"),
-      actionInterval = resizerCfg.getDuration("action-interval").asScala,
-      downsizeAfterUnderutilizedFor = resizerCfg.getDuration("downsize-after-underutilized-for").asScala,
+      actionInterval = resizerCfg.getDuration("action-interval").toScala,
+      downsizeAfterUnderutilizedFor = resizerCfg.getDuration("downsize-after-underutilized-for").toScala,
       numOfAdjacentSizesToConsiderDuringOptimization = resizerCfg.getInt("optimization-range"),
       exploreStepSize = resizerCfg.getDouble("explore-step-size"),
       explorationProbability = resizerCfg.getDouble("chance-of-exploration"),
@@ -269,7 +269,7 @@ case class DefaultOptimalSizeExploringResizer(
     val now = LocalDateTime.now
     val proposedChange =
       if (record.underutilizationStreak.fold(false)(
-          _.start.isBefore(now.minus(downsizeAfterUnderutilizedFor.asJava)))) {
+          _.start.isBefore(now.minus(downsizeAfterUnderutilizedFor.asInstanceOf[FiniteDuration].toJava)))) {
         val downsizeTo = (record.underutilizationStreak.get.highestUtilization * downsizeRatio).toInt
         Math.min(downsizeTo - currentSize, 0)
       } else if (performanceLog.isEmpty || record.underutilizationStreak.isDefined) {

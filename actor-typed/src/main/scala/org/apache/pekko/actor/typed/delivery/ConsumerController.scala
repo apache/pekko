@@ -33,7 +33,7 @@ import pekko.actor.typed.scaladsl.Behaviors
 import pekko.annotation.ApiMayChange
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
-import pekko.util.JavaDurationConverters._
+import scala.jdk.DurationConverters._
 
 /**
  * `ConsumerController` and [[ProducerController]] or [[WorkPullingProducerController]] are used
@@ -214,8 +214,8 @@ object ConsumerController {
     def apply(config: Config): Settings = {
       new Settings(
         flowControlWindow = config.getInt("flow-control-window"),
-        resendIntervalMin = config.getDuration("resend-interval-min").asScala,
-        resendIntervalMax = config.getDuration("resend-interval-max").asScala,
+        resendIntervalMin = config.getDuration("resend-interval-min").toScala,
+        resendIntervalMax = config.getDuration("resend-interval-max").toScala,
         onlyFlowControl = config.getBoolean("only-flow-control"))
     }
 
@@ -259,19 +259,19 @@ object ConsumerController {
      * Java API
      */
     def withResendIntervalMin(newResendIntervalMin: JavaDuration): Settings =
-      copy(resendIntervalMin = newResendIntervalMin.asScala)
+      copy(resendIntervalMin = newResendIntervalMin.toScala)
 
     /**
      * Java API
      */
     def withResendIntervalMax(newResendIntervalMax: JavaDuration): Settings =
-      copy(resendIntervalMax = newResendIntervalMax.asScala)
+      copy(resendIntervalMax = newResendIntervalMax.toScala)
 
     /**
      * Java API
      */
     def getResendIntervalMax(): JavaDuration =
-      resendIntervalMax.asJava
+      resendIntervalMax.toJava
 
     def withOnlyFlowControl(newOnlyFlowControl: Boolean): Settings =
       copy(onlyFlowControl = newOnlyFlowControl)

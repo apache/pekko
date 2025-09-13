@@ -27,7 +27,7 @@ import pekko.japi.function
 import pekko.stream._
 import pekko.util.ConstantFun
 import scala.jdk.FutureConverters._
-import pekko.util.JavaDurationConverters._
+import scala.jdk.DurationConverters._
 import scala.jdk.OptionConverters._
 import pekko.util.ccompat.JavaConverters._
 
@@ -365,7 +365,7 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    * @see [[pekko.stream.javadsl.Source.throttle]]
    */
   def throttle(elements: Int, per: java.time.Duration): SourceWithContext[Out, Ctx, Mat] =
-    viaScala(_.throttle(elements, per.asScala))
+    viaScala(_.throttle(elements, per.toScala))
 
   /**
    * Context-preserving variant of [[pekko.stream.javadsl.Source.throttle]].
@@ -377,7 +377,7 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
       per: java.time.Duration,
       maximumBurst: Int,
       mode: ThrottleMode): SourceWithContext[Out, Ctx, Mat] =
-    viaScala(_.throttle(elements, per.asScala, maximumBurst, mode))
+    viaScala(_.throttle(elements, per.toScala, maximumBurst, mode))
 
   /**
    * Context-preserving variant of [[pekko.stream.javadsl.Source.throttle]].
@@ -388,7 +388,7 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
       cost: Int,
       per: java.time.Duration,
       costCalculation: function.Function[Out, Integer]): SourceWithContext[Out, Ctx, Mat] =
-    viaScala(_.throttle(cost, per.asScala, costCalculation.apply))
+    viaScala(_.throttle(cost, per.toScala, costCalculation.apply))
 
   /**
    * Context-preserving variant of [[pekko.stream.javadsl.Source.throttle]].
@@ -401,7 +401,7 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
       maximumBurst: Int,
       costCalculation: function.Function[Out, Integer],
       mode: ThrottleMode): SourceWithContext[Out, Ctx, Mat] =
-    viaScala(_.throttle(cost, per.asScala, maximumBurst, costCalculation.apply, mode))
+    viaScala(_.throttle(cost, per.toScala, maximumBurst, costCalculation.apply, mode))
 
   /**
    * Connect this [[pekko.stream.javadsl.SourceWithContext]] to a [[pekko.stream.javadsl.Sink]],

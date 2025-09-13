@@ -32,7 +32,7 @@ import pekko.annotation.ApiMayChange
 import pekko.annotation.InternalApi
 import pekko.util.Helpers.toRootLowerCase
 import pekko.util.Helpers.Requiring
-import pekko.util.JavaDurationConverters._
+import scala.jdk.DurationConverters._
 import scala.jdk.OptionConverters._
 
 /**
@@ -171,9 +171,9 @@ object ProducerController {
           config.getBytes("chunk-large-messages").requiring(_ <= Int.MaxValue, "Too large chunk-large-messages.").toInt
       }
       new Settings(
-        durableQueueRequestTimeout = config.getDuration("durable-queue.request-timeout").asScala,
+        durableQueueRequestTimeout = config.getDuration("durable-queue.request-timeout").toScala,
         durableQueueRetryAttempts = config.getInt("durable-queue.retry-attempts"),
-        durableQueueResendFirstInterval = config.getDuration("durable-queue.resend-first-interval").asScala,
+        durableQueueResendFirstInterval = config.getDuration("durable-queue.resend-first-interval").toScala,
         chunkLargeMessagesBytes)
     }
 
@@ -217,19 +217,19 @@ object ProducerController {
      * Java API
      */
     def withDurableQueueRequestTimeout(newDurableQueueRequestTimeout: JavaDuration): Settings =
-      copy(durableQueueRequestTimeout = newDurableQueueRequestTimeout.asScala)
+      copy(durableQueueRequestTimeout = newDurableQueueRequestTimeout.toScala)
 
     /**
      * Java API
      */
     def withDurableQueueResendFirstInterval(newDurableQueueResendFirstInterval: JavaDuration): Settings =
-      copy(durableQueueResendFirstInterval = newDurableQueueResendFirstInterval.asScala)
+      copy(durableQueueResendFirstInterval = newDurableQueueResendFirstInterval.toScala)
 
     /**
      * Java API
      */
     def getDurableQueueRequestTimeout(): JavaDuration =
-      durableQueueRequestTimeout.asJava
+      durableQueueRequestTimeout.toJava
 
     def withChunkLargeMessagesBytes(newChunkLargeMessagesBytes: Int): Settings =
       copy(chunkLargeMessagesBytes = newChunkLargeMessagesBytes)

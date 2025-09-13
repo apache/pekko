@@ -23,7 +23,7 @@ import pekko.japi.function.{ Effect, Function2, Predicate, Predicate2, Procedure
 import pekko.actor._
 import pekko.japi.pf.{ FSMTransitionHandlerBuilder, UnitMatch, UnitPFBuilder }
 import pekko.routing.{ Deafen, Listen, Listeners }
-import pekko.util.JavaDurationConverters._
+import scala.jdk.DurationConverters._
 import pekko.util.unused
 
 /**
@@ -1118,7 +1118,7 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
    * in the mailbox when the new timer was started.
    */
   def startTimerWithFixedDelay(name: String, msg: Any, delay: java.time.Duration): Unit =
-    startTimerWithFixedDelay(name, msg, delay.asScala)
+    startTimerWithFixedDelay(name, msg, delay.toScala)
 
   /**
    * Schedules a message to be sent repeatedly to the `self` actor with a
@@ -1146,7 +1146,7 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
    * in the mailbox when the new timer was started.
    */
   def startTimerAtFixedRate(name: String, msg: Any, interval: java.time.Duration): Unit =
-    startTimerAtFixedRate(name, msg, interval.asScala)
+    startTimerAtFixedRate(name, msg, interval.toScala)
 
   /**
    * Start a timer that will send `msg` once to the `self` actor after
@@ -1158,7 +1158,7 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
    * in the mailbox when the new timer was started.
    */
   def startSingleTimer(name: String, msg: Any, delay: java.time.Duration): Unit =
-    startSingleTimer(name, msg, delay.asScala)
+    startSingleTimer(name, msg, delay.toScala)
 
   /**
    * Schedule named timer to deliver message after given delay, possibly repeating.
