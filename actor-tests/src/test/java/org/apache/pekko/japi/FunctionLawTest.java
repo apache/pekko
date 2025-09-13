@@ -53,7 +53,7 @@ public class FunctionLawTest {
   }
 
   @Test
-  public void testPredicateNegate() {
+  public void testPredicateNegate() throws Exception {
     final Predicate<Object> alwaysTrue = o -> true;
     final Predicate<Object> alwaysFalse = alwaysTrue.negate();
     Assert.assertTrue(alwaysTrue.test(new Object()));
@@ -62,7 +62,7 @@ public class FunctionLawTest {
   }
 
   @Test
-  public void testPredicate2Negate() {
+  public void testPredicate2Negate() throws Exception {
     final Predicate2<Object, Object> alwaysTrue = (o1, o2) -> true;
     final Predicate2<Object, Object> alwaysFalse = alwaysTrue.negate();
     Assert.assertTrue(alwaysTrue.test(new Object(), new Object()));

@@ -95,7 +95,7 @@ public final class UnitPFBuilder<I> extends AbstractPFBuilder<I, BoxedUnit> {
     Predicate<I> fiPredicate =
         new Predicate<I>() {
           @Override
-          public boolean test(final I param) {
+          public boolean test(final I param) throws Exception {
             if (!type.isInstance(param)) {
               return false;
             } else {
@@ -144,7 +144,7 @@ public final class UnitPFBuilder<I> extends AbstractPFBuilder<I, BoxedUnit> {
         new UnitCaseStatement<I, P>(
             new Predicate<I>() {
               @Override
-              public boolean test(final I param) {
+              public boolean test(final I param) throws Exception {
                 if (!object.equals(param)) {
                   return false;
                 } else {

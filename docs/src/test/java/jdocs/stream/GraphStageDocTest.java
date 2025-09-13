@@ -260,7 +260,7 @@ public class GraphStageDocTest extends AbstractJavaTest {
               in,
               new AbstractInHandler() {
                 @Override
-                public void onPush() {
+                public void onPush() throws Exception {
                   A elem = grab(in);
                   if (p.test(elem)) {
                     push(out, elem);
