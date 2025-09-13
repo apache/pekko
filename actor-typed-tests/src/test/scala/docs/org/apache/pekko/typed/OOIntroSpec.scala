@@ -13,6 +13,9 @@
 
 package docs.org.apache.pekko.typed
 
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
+
 //#imports
 import org.apache.pekko
 import pekko.Done
@@ -23,10 +26,6 @@ import pekko.actor.typed.scaladsl.{ AbstractBehavior, ActorContext, Behaviors, L
 
 import pekko.NotUsed
 import pekko.actor.typed.Terminated
-
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
-
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import org.scalatest.wordspec.AnyWordSpecLike
 

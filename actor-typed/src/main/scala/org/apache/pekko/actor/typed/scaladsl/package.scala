@@ -13,8 +13,7 @@
 
 package org.apache.pekko.actor.typed
 
-import org.slf4j.Logger
-import org.slf4j.Marker
+import org.slf4j.{ Logger, Marker }
 
 package object scaladsl {
 

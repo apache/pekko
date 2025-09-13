@@ -14,20 +14,15 @@
 package org.apache.pekko.persistence.query.journal.leveldb
 
 import scala.concurrent.duration._
+import scala.annotation.nowarn
+
 import org.apache.pekko
-import pekko.persistence.journal.Tagged
-import pekko.persistence.journal.WriteEventAdapter
-import pekko.persistence.query.EventEnvelope
-import pekko.persistence.query.NoOffset
-import pekko.persistence.query.PersistenceQuery
-import pekko.persistence.query.Sequence
+import pekko.persistence.journal.{ Tagged, WriteEventAdapter }
+import pekko.persistence.query.{ EventEnvelope, NoOffset, PersistenceQuery, Sequence }
 import pekko.persistence.query.journal.leveldb.scaladsl.LeveldbReadJournal
 import pekko.persistence.query.scaladsl.EventsByTagQuery
 import pekko.stream.testkit.scaladsl.TestSink
-import pekko.testkit.PekkoSpec
-import pekko.testkit.ImplicitSender
-
-import scala.annotation.nowarn
+import pekko.testkit.{ ImplicitSender, PekkoSpec }
 
 object EventsByTagSpec {
   val config = s"""

@@ -22,23 +22,13 @@ import scala.util.Success
 
 import org.apache.pekko
 import pekko.actor.DeadLetterSuppression
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.DispatcherSelector
-import pekko.actor.typed.delivery.ConsumerController
+import pekko.actor.typed.{ ActorRef, Behavior, DispatcherSelector }
+import pekko.actor.typed.delivery.{ ConsumerController, DurableProducerQueue, ProducerController }
 import pekko.actor.typed.delivery.ConsumerController.SequencedMessage
-import pekko.actor.typed.delivery.DurableProducerQueue
-import pekko.actor.typed.delivery.ProducerController
 import pekko.actor.typed.internal.ActorFlightRecorder
-import pekko.actor.typed.scaladsl.ActorContext
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.actor.typed.scaladsl.LoggerOps
-import pekko.actor.typed.scaladsl.TimerScheduler
-import pekko.serialization.Serialization
-import pekko.serialization.SerializationExtension
-import pekko.serialization.Serializers
-import pekko.util.ByteString
-import pekko.util.Timeout
+import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors, LoggerOps, TimerScheduler }
+import pekko.serialization.{ Serialization, SerializationExtension, Serializers }
+import pekko.util.{ ByteString, Timeout }
 
 /**
  * INTERNAL API

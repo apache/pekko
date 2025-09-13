@@ -19,6 +19,8 @@ import java.io.NotSerializableException
 import java.util.zip.{ GZIPInputStream, GZIPOutputStream }
 import scala.annotation.tailrec
 import scala.collection.immutable
+import scala.jdk.CollectionConverters._
+
 import org.apache.pekko
 import pekko.actor.{ Address, ExtendedActorSystem }
 import pekko.cluster.metrics._
@@ -27,7 +29,6 @@ import pekko.dispatch.Dispatchers
 import pekko.protobufv3.internal.MessageLite
 import pekko.remote.ByteStringUtils
 import pekko.serialization.{ BaseSerializer, SerializationExtension, SerializerWithStringManifest, Serializers }
-import pekko.util.ccompat.JavaConverters._
 
 /**
  * Protobuf serializer for [[pekko.cluster.metrics.ClusterMetricsMessage]] types.

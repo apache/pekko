@@ -13,11 +13,7 @@
 
 package org.apache.pekko.actor.typed.internal.jfr
 
-import jdk.jfr.Category
-import jdk.jfr.Enabled
-import jdk.jfr.Event
-import jdk.jfr.Label
-import jdk.jfr.StackTrace
+import jdk.jfr.{ Category, Enabled, Event, Label, StackTrace }
 
 import org.apache.pekko.annotation.InternalApi
 

@@ -14,7 +14,6 @@
 package org.apache.pekko.stream.scaladsl
 
 import scala.annotation.nowarn
-import scala.collection.immutable.Seq
 import scala.concurrent.Future
 
 import org.apache.pekko

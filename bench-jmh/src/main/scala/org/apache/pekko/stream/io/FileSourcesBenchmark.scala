@@ -17,19 +17,15 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.util.concurrent.TimeUnit
 
-import scala.concurrent.Await
-import scala.concurrent.Future
-import scala.concurrent.Promise
+import scala.concurrent.{ Await, Future, Promise }
 import scala.concurrent.duration._
 
 import org.openjdk.jmh.annotations._
 
 import org.apache.pekko
-import pekko.Done
-import pekko.NotUsed
+import pekko.{ Done, NotUsed }
 import pekko.actor.ActorSystem
-import pekko.stream.Attributes
-import pekko.stream.IOResult
+import pekko.stream.{ Attributes, IOResult }
 import pekko.stream.scaladsl._
 import pekko.util.ByteString
 

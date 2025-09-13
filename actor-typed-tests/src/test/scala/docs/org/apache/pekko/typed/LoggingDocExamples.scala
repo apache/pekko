@@ -15,15 +15,13 @@ package docs.org.apache.pekko.typed
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import scala.util.Failure
-import scala.util.Success
-import org.apache.pekko
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.ActorTags
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.scaladsl.Behaviors
+import scala.util.{ Failure, Success }
+
 import org.slf4j.LoggerFactory
+
+import org.apache.pekko
+import pekko.actor.typed.{ ActorRef, ActorSystem, ActorTags, Behavior }
+import pekko.actor.typed.scaladsl.Behaviors
 
 object LoggingDocExamples {
 

@@ -22,13 +22,14 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.{ Duration, FiniteDuration }
 import scala.util.Try
 
+import scala.jdk.CollectionConverters._
+
 import com.typesafe.config.Config
 
 import org.apache.pekko
 import pekko.actor.Cancellable
 import pekko.actor.Scheduler
 import pekko.event.LoggingAdapter
-import pekko.util.ccompat.JavaConverters._
 import pekko.util.unused
 
 /**

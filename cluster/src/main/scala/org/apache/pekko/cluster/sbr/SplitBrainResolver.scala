@@ -20,22 +20,11 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.Address
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.Props
-import pekko.actor.Stash
-import pekko.actor.Timers
-import pekko.annotation.InternalApi
-import pekko.annotation.InternalStableApi
-import pekko.cluster.Cluster
-import pekko.cluster.ClusterEvent
+import pekko.actor.{ Actor, Address, ExtendedActorSystem, Props, Stash, Timers }
+import pekko.annotation.{ InternalApi, InternalStableApi }
+import pekko.cluster.{ Cluster, ClusterEvent, ClusterLogMarker, Member, Reachability, UniqueAddress }
 import pekko.cluster.ClusterEvent._
-import pekko.cluster.ClusterLogMarker
 import pekko.cluster.ClusterSettings.DataCenter
-import pekko.cluster.Member
-import pekko.cluster.Reachability
-import pekko.cluster.UniqueAddress
 import pekko.cluster.sbr.DowningStrategy.Decision
 import pekko.event.DiagnosticMarkerBusLoggingAdapter
 import pekko.event.Logging

@@ -16,8 +16,7 @@ package org.apache.pekko.cluster.sharding.typed.testkit.javadsl
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
 import pekko.cluster.sharding.typed.internal.testkit.TestEntityRefImpl
-import pekko.cluster.sharding.typed.javadsl.EntityRef
-import pekko.cluster.sharding.typed.javadsl.EntityTypeKey
+import pekko.cluster.sharding.typed.javadsl.{ EntityRef, EntityTypeKey }
 
 /**
  * For testing purposes this `EntityRef` can be used in place of a real [[pekko.cluster.sharding.typed.javadsl.EntityRef]].

@@ -16,8 +16,7 @@ package org.apache.pekko.actor
 import java.io.{ NotSerializableException, ObjectOutputStream }
 import java.util.concurrent.ThreadLocalRandom
 
-import scala.annotation.{ switch, tailrec }
-import scala.annotation.nowarn
+import scala.annotation.{ nowarn, switch, tailrec }
 import scala.collection.immutable
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration.Duration

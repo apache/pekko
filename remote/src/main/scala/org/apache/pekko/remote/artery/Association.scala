@@ -15,41 +15,24 @@ package org.apache.pekko.remote.artery
 
 import java.net.ConnectException
 import java.util.Queue
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.LinkedBlockingQueue
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicBoolean
-import java.util.concurrent.atomic.AtomicReference
+import java.util.concurrent.{ CountDownLatch, LinkedBlockingQueue, TimeUnit }
+import java.util.concurrent.atomic.{ AtomicBoolean, AtomicReference }
 
-import scala.annotation.tailrec
-import scala.concurrent.Future
-import scala.concurrent.Promise
+import scala.annotation.{ nowarn, tailrec }
+import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
-import scala.annotation.nowarn
 import org.agrona.concurrent.ManyToOneConcurrentArrayQueue
 
 import org.apache.pekko
-import pekko.Done
-import pekko.NotUsed
-import pekko.actor.ActorRef
-import pekko.actor.ActorSelectionMessage
-import pekko.actor.Address
-import pekko.actor.Cancellable
-import pekko.actor.Dropped
+import pekko.{ Done, NotUsed }
+import pekko.actor.{ ActorRef, ActorSelectionMessage, Address, Cancellable, Dropped }
 import pekko.dispatch.Dispatchers
-import pekko.dispatch.sysmsg.DeathWatchNotification
-import pekko.dispatch.sysmsg.SystemMessage
-import pekko.dispatch.sysmsg.Unwatch
+import pekko.dispatch.sysmsg.{ DeathWatchNotification, SystemMessage, Unwatch }
 import pekko.event.Logging
-import pekko.remote.DaemonMsgCreate
-import pekko.remote.PriorityMessage
-import pekko.remote.RemoteActorRef
-import pekko.remote.RemoteLogMarker
-import pekko.remote.UniqueAddress
-import pekko.remote.artery.ArteryTransport.AeronTerminated
-import pekko.remote.artery.ArteryTransport.ShuttingDown
+import pekko.remote.{ DaemonMsgCreate, PriorityMessage, RemoteActorRef, RemoteLogMarker, UniqueAddress }
+import pekko.remote.artery.ArteryTransport.{ AeronTerminated, ShuttingDown }
 import pekko.remote.artery.Encoder.OutboundCompressionAccess
 import pekko.remote.artery.InboundControlJunction.ControlMessageSubject
 import pekko.remote.artery.OutboundControlJunction.OutboundControlIngress
@@ -57,17 +40,10 @@ import pekko.remote.artery.OutboundHandshake.HandshakeTimeoutException
 import pekko.remote.artery.SystemMessageDelivery.ClearSystemMessageDelivery
 import pekko.remote.artery.aeron.AeronSink.GaveUpMessageException
 import pekko.remote.artery.compress.CompressionTable
-import pekko.stream.AbruptTerminationException
-import pekko.stream.KillSwitches
-import pekko.stream.Materializer
-import pekko.stream.SharedKillSwitch
-import pekko.stream.StreamTcpException
-import pekko.stream.scaladsl.Keep
-import pekko.stream.scaladsl.MergeHub
-import pekko.stream.scaladsl.Source
-import pekko.util.OptionVal
+import pekko.stream.{ AbruptTerminationException, KillSwitches, Materializer, SharedKillSwitch, StreamTcpException }
+import pekko.stream.scaladsl.{ Keep, MergeHub, Source }
+import pekko.util.{ OptionVal, WildcardIndex }
 import pekko.util.PrettyDuration._
-import pekko.util.WildcardIndex
 
 /**
  * INTERNAL API

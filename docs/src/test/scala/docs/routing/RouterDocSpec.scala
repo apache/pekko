@@ -14,26 +14,28 @@
 package docs.routing
 
 import scala.concurrent.duration._
-import org.apache.pekko.testkit._
-import org.apache.pekko.actor.{ Actor, ActorRef, Props }
-import org.apache.pekko.actor.Terminated
-import org.apache.pekko.routing.FromConfig
-import org.apache.pekko.routing.RoundRobinPool
-import org.apache.pekko.routing.RandomPool
-import org.apache.pekko.routing.RoundRobinGroup
-import org.apache.pekko.routing.SmallestMailboxPool
-import org.apache.pekko.routing.BroadcastPool
-import org.apache.pekko.routing.BroadcastGroup
-import org.apache.pekko.routing.ConsistentHashingGroup
-import org.apache.pekko.routing.ConsistentHashingPool
-import org.apache.pekko.routing.DefaultResizer
-import org.apache.pekko.routing.ScatterGatherFirstCompletedGroup
-import org.apache.pekko.routing.RandomGroup
-import org.apache.pekko.routing.ScatterGatherFirstCompletedPool
-import org.apache.pekko.routing.BalancingPool
-import org.apache.pekko.routing.TailChoppingGroup
-import org.apache.pekko.routing.TailChoppingPool
-import org.apache.pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
+
+import org.apache.pekko
+import pekko.testkit._
+import pekko.actor.{ Actor, ActorRef, Props }
+import pekko.actor.Terminated
+import pekko.routing.FromConfig
+import pekko.routing.RoundRobinPool
+import pekko.routing.RandomPool
+import pekko.routing.RoundRobinGroup
+import pekko.routing.SmallestMailboxPool
+import pekko.routing.BroadcastPool
+import pekko.routing.BroadcastGroup
+import pekko.routing.ConsistentHashingGroup
+import pekko.routing.ConsistentHashingPool
+import pekko.routing.DefaultResizer
+import pekko.routing.ScatterGatherFirstCompletedGroup
+import pekko.routing.RandomGroup
+import pekko.routing.ScatterGatherFirstCompletedPool
+import pekko.routing.BalancingPool
+import pekko.routing.TailChoppingGroup
+import pekko.routing.TailChoppingPool
 
 object RouterDocSpec {
 

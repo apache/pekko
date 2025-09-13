@@ -17,10 +17,7 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.event.Logging
-import pekko.testkit.PekkoSpec
-import pekko.testkit.ImplicitSender
-import pekko.testkit.TestActors
-import pekko.testkit.TestProbe
+import pekko.testkit.{ ImplicitSender, PekkoSpec, TestActors, TestProbe }
 
 object DeadLetterSupressionSpec {
 

@@ -85,7 +85,7 @@ private[pekko] class RemoteSystemDaemon(
 
   private val allowListEnabled = system.settings.config.getBoolean("pekko.remote.deployment.enable-allow-list")
   private val remoteDeploymentAllowList: immutable.Set[String] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     if (allowListEnabled)
       system.settings.config.getStringList("pekko.remote.deployment.allowed-actor-classes").asScala.toSet
     else Set.empty

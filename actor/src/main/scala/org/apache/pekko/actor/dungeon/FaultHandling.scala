@@ -18,20 +18,20 @@ import scala.util.control.Exception._
 import scala.util.control.NonFatal
 
 import org.apache.pekko
-import pekko.actor.ActorCell
-import pekko.actor.ActorInterruptedException
-import pekko.actor.ActorRef
-import pekko.actor.ActorRefScope
-import pekko.actor.InternalActorRef
-import pekko.actor.PostRestartException
-import pekko.actor.PreRestartException
-import pekko.annotation.InternalApi
-import pekko.annotation.InternalStableApi
+import pekko.actor.{
+  ActorCell,
+  ActorInterruptedException,
+  ActorRef,
+  ActorRefScope,
+  InternalActorRef,
+  PostRestartException,
+  PreRestartException
+}
+import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.dispatch._
 import pekko.dispatch.sysmsg._
 import pekko.event.Logging
-import pekko.event.Logging.Debug
-import pekko.event.Logging.Error
+import pekko.event.Logging.{ Debug, Error }
 
 /**
  * INTERNAL API

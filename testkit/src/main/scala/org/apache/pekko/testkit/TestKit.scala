@@ -17,20 +17,16 @@ import java.util.concurrent._
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
-import scala.annotation.tailrec
+import scala.annotation.{ nowarn, tailrec }
 import scala.collection.immutable
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.reflect.ClassTag
 import scala.util.control.NonFatal
 
-import scala.annotation.nowarn
-
 import org.apache.pekko
 import pekko.actor._
-import pekko.actor.DeadLetter
-import pekko.actor.IllegalActorStateException
-import pekko.actor.Terminated
+import pekko.actor.{ DeadLetter, IllegalActorStateException, Terminated }
 import pekko.annotation.InternalApi
 import pekko.util.{ BoxedType, Timeout }
 
@@ -143,7 +139,7 @@ class TestActor(queue: BlockingDeque[TestActor.Message]) extends Actor {
   }
 
   override def postStop() = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     queue.asScala.foreach { m =>
       context.system.deadLetters.tell(DeadLetter(m.msg, m.sender, self), m.sender)
     }

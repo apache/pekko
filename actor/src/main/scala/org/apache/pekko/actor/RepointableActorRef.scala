@@ -16,11 +16,9 @@ package org.apache.pekko.actor
 import java.util.{ LinkedList => JLinkedList }
 import java.util.concurrent.locks.ReentrantLock
 
-import scala.annotation.tailrec
+import scala.annotation.{ nowarn, tailrec }
 import scala.collection.immutable
 import scala.util.control.NonFatal
-
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.actor.dungeon.ChildrenContainer

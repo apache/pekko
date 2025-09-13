@@ -24,21 +24,19 @@ import pekko.{ actor => classic }
 import pekko.Done
 import pekko.actor
 import pekko.actor.{ ActorRefProvider, Address, ExtendedActorSystem, InvalidMessageException }
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.DispatcherSelector
-import pekko.actor.typed.Dispatchers
-import pekko.actor.typed.Props
-import pekko.actor.typed.Scheduler
-import pekko.actor.typed.Settings
-import pekko.actor.typed.SupervisorStrategy
-import pekko.actor.typed.internal.ActorRefImpl
-import pekko.actor.typed.internal.ExtensionsImpl
-import pekko.actor.typed.internal.InternalRecipientRef
-import pekko.actor.typed.internal.PropsImpl.DispatcherDefault
-import pekko.actor.typed.internal.PropsImpl.DispatcherFromConfig
-import pekko.actor.typed.internal.PropsImpl.DispatcherSameAsParent
+import pekko.actor.typed.{
+  ActorRef,
+  ActorSystem,
+  Behavior,
+  DispatcherSelector,
+  Dispatchers,
+  Props,
+  Scheduler,
+  Settings,
+  SupervisorStrategy
+}
+import pekko.actor.typed.internal.{ ActorRefImpl, ExtensionsImpl, InternalRecipientRef }
+import pekko.actor.typed.internal.PropsImpl.{ DispatcherDefault, DispatcherFromConfig, DispatcherSameAsParent }
 import pekko.actor.typed.internal.SystemMessage
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.annotation.InternalApi

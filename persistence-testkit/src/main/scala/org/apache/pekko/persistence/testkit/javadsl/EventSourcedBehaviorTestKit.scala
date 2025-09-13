@@ -17,7 +17,9 @@ import java.util.Optional
 import java.util.{ List => JList }
 import java.util.function.{ Function => JFunction }
 
+import scala.jdk.CollectionConverters._
 import scala.reflect.ClassTag
+
 import com.typesafe.config.Config
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
@@ -26,7 +28,6 @@ import pekko.actor.typed.Behavior
 import pekko.annotation.ApiMayChange
 import pekko.annotation.DoNotInherit
 import pekko.persistence.testkit.scaladsl
-import pekko.util.ccompat.JavaConverters._
 
 import scala.annotation.varargs
 

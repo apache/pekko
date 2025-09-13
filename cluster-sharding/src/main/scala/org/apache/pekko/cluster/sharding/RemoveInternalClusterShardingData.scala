@@ -13,24 +13,14 @@
 
 package org.apache.pekko.cluster.sharding
 
-import scala.concurrent.Future
-import scala.concurrent.Promise
-import scala.util.Failure
-import scala.util.Success
-import scala.util.Try
-import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorLogging
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
-import pekko.actor.Deploy
-import pekko.actor.Props
-import pekko.actor.Terminated
-import pekko.persistence._
-import pekko.persistence.journal.leveldb.SharedLeveldbJournal
-import pekko.persistence.journal.leveldb.SharedLeveldbStore
-
 import scala.annotation.nowarn
+import scala.concurrent.{ Future, Promise }
+import scala.util.{ Failure, Success, Try }
+
+import org.apache.pekko
+import pekko.actor.{ Actor, ActorLogging, ActorRef, ActorSystem, Deploy, Props, Terminated }
+import pekko.persistence._
+import pekko.persistence.journal.leveldb.{ SharedLeveldbJournal, SharedLeveldbStore }
 
 /**
  * Utility program that removes the internal data stored with Pekko Persistence

@@ -14,6 +14,7 @@
 package docs.org.apache.pekko.cluster.sharding.typed
 
 import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.actor.ActorSystem

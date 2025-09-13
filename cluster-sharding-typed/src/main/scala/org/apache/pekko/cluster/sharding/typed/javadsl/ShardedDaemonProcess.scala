@@ -17,8 +17,7 @@ import java.util.function.IntFunction
 import java.util.Optional
 
 import org.apache.pekko
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Behavior
+import pekko.actor.typed.{ ActorSystem, Behavior }
 import pekko.annotation.DoNotInherit
 import pekko.cluster.sharding.ShardCoordinator.ShardAllocationStrategy
 import pekko.cluster.sharding.typed.ShardedDaemonProcessSettings

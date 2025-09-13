@@ -18,8 +18,7 @@ import org.scalatest.wordspec.AnyWordSpec
 
 import org.apache.pekko
 import pekko.actor.testkit.typed.internal.StubbedActorContext
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.TestInbox
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, TestInbox }
 import pekko.actor.typed.Behavior
 
 class StashBufferSpec extends AnyWordSpec with Matchers with LogCapturing {

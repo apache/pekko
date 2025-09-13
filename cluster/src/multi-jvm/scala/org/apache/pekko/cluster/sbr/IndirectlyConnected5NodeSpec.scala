@@ -18,9 +18,7 @@ import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
-import pekko.cluster.Cluster
-import pekko.cluster.MemberStatus
-import pekko.cluster.MultiNodeClusterSpec
+import pekko.cluster.{ Cluster, MemberStatus, MultiNodeClusterSpec }
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.transport.ThrottlerTransportAdapter
 

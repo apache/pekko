@@ -19,19 +19,11 @@ import scala.annotation.tailrec
 import scala.collection.immutable
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorPath
-import pekko.actor.ActorSelection
-import pekko.actor.Address
-import pekko.actor.DeadLetterSuppression
-import pekko.actor.Props
-import pekko.actor.RootActorPath
+import pekko.actor.{ Actor, ActorPath, ActorSelection, Address, DeadLetterSuppression, Props, RootActorPath }
 import pekko.annotation.InternalApi
 import pekko.cluster.ClusterEvent._
-import pekko.event.ActorWithLogClass
-import pekko.event.Logging
-import pekko.remote.FailureDetectorRegistry
-import pekko.remote.HeartbeatMessage
+import pekko.event.{ ActorWithLogClass, Logging }
+import pekko.remote.{ FailureDetectorRegistry, HeartbeatMessage }
 
 /**
  * INTERNAL API.

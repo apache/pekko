@@ -18,7 +18,9 @@ import java.nio.charset.StandardCharsets
 import java.util.Optional
 import java.util.concurrent.TimeUnit
 
-import scala.concurrent.duration.{ FiniteDuration, TimeUnit }
+import scala.concurrent.duration.FiniteDuration
+import scala.jdk.CollectionConverters._
+
 import com.typesafe.config.{ Config, ConfigFactory, ConfigRenderOptions }
 import org.apache.pekko
 import pekko.{ Done, NotUsed }
@@ -30,7 +32,6 @@ import pekko.remote.WireFormats.AddressData
 import pekko.remote.routing.RemoteRouterConfig
 import pekko.routing._
 import pekko.serialization.{ BaseSerializer, Serialization, SerializationExtension, SerializerWithStringManifest }
-import pekko.util.ccompat.JavaConverters._
 
 class MiscMessageSerializer(val system: ExtendedActorSystem) extends SerializerWithStringManifest with BaseSerializer {
 

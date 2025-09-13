@@ -14,8 +14,7 @@
 package org.apache.pekko.actor.typed.internal
 
 import org.apache.pekko
-import pekko.actor.typed.{ DispatcherSelector, MailboxSelector, Props }
-import pekko.actor.typed.ActorTags
+import pekko.actor.typed.{ ActorTags, DispatcherSelector, MailboxSelector, Props }
 import pekko.annotation.InternalApi
 
 /**

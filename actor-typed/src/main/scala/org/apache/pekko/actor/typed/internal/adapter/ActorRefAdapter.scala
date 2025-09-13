@@ -17,8 +17,7 @@ package adapter
 
 import org.apache.pekko
 import pekko.{ actor => classic }
-import pekko.actor.ActorRefProvider
-import pekko.actor.InvalidMessageException
+import pekko.actor.{ ActorRefProvider, InvalidMessageException }
 import pekko.annotation.InternalApi
 import pekko.dispatch.sysmsg
 

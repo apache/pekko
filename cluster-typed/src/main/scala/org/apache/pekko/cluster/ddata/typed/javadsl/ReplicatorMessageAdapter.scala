@@ -16,10 +16,8 @@ package org.apache.pekko.cluster.ddata.typed.javadsl
 import java.time.Duration
 import java.util.function.{ Function => JFunction }
 
-import scala.util.Failure
-import scala.util.Success
-
 import scala.annotation.nowarn
+import scala.util.{ Failure, Success }
 
 import org.apache.pekko
 import pekko.actor.typed.ActorRef

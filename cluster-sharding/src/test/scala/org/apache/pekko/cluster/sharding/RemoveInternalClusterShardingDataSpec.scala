@@ -25,17 +25,10 @@ import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.actor.Props
 import pekko.cluster.Cluster
-import pekko.cluster.sharding.RemoveInternalClusterShardingData.RemoveOnePersistenceId.Removals
-import pekko.cluster.sharding.RemoveInternalClusterShardingData.RemoveOnePersistenceId.Result
-import pekko.persistence.PersistentActor
-import pekko.persistence.Recovery
-import pekko.persistence.RecoveryCompleted
-import pekko.persistence.SnapshotOffer
-import pekko.persistence.SnapshotSelectionCriteria
-import pekko.testkit.PekkoSpec
-import pekko.testkit.ImplicitSender
+import pekko.cluster.sharding.RemoveInternalClusterShardingData.RemoveOnePersistenceId.{ Removals, Result }
+import pekko.persistence.{ PersistentActor, Recovery, RecoveryCompleted, SnapshotOffer, SnapshotSelectionCriteria }
+import pekko.testkit.{ ImplicitSender, PekkoSpec, WithLogCapturing }
 import pekko.testkit.TestActors.EchoActor
-import pekko.testkit.WithLogCapturing
 
 object RemoveInternalClusterShardingDataSpec {
   val config = """

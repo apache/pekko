@@ -17,20 +17,20 @@ import org.apache.pekko
 import pekko.actor.ActorLogging
 import pekko.actor.Props
 import pekko.annotation.InternalApi
-import pekko.cluster.sharding.ClusterShardingSerializable
-import pekko.cluster.sharding.ClusterShardingSettings
-import pekko.cluster.sharding.ShardRegion
+import pekko.cluster.sharding.{ ClusterShardingSerializable, ClusterShardingSettings, ShardRegion }
 import pekko.cluster.sharding.ShardRegion.EntityId
-import pekko.persistence.DeleteMessagesFailure
-import pekko.persistence.DeleteMessagesSuccess
-import pekko.persistence.DeleteSnapshotsFailure
-import pekko.persistence.DeleteSnapshotsSuccess
-import pekko.persistence.PersistentActor
-import pekko.persistence.RecoveryCompleted
-import pekko.persistence.SaveSnapshotFailure
-import pekko.persistence.SaveSnapshotSuccess
-import pekko.persistence.SnapshotOffer
-import pekko.persistence.SnapshotSelectionCriteria
+import pekko.persistence.{
+  DeleteMessagesFailure,
+  DeleteMessagesSuccess,
+  DeleteSnapshotsFailure,
+  DeleteSnapshotsSuccess,
+  PersistentActor,
+  RecoveryCompleted,
+  SaveSnapshotFailure,
+  SaveSnapshotSuccess,
+  SnapshotOffer,
+  SnapshotSelectionCriteria
+}
 
 /**
  * INTERNAL API

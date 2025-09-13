@@ -18,10 +18,7 @@ import scala.annotation.tailrec
 import BehaviorBuilder._
 
 import org.apache.pekko
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.ExtensibleBehavior
-import pekko.actor.typed.Signal
-import pekko.actor.typed.TypedActorContext
+import pekko.actor.typed.{ Behavior, ExtensibleBehavior, Signal, TypedActorContext }
 import pekko.annotation.InternalApi
 import pekko.japi.function.{ Function => JFunction }
 import pekko.japi.function.{ Predicate => JPredicate }

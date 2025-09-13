@@ -12,19 +12,23 @@
  */
 
 package org.apache.pekko.cluster.sharding
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+
 import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.cluster.sharding
-import pekko.cluster.sharding.Shard.Active
-import pekko.cluster.sharding.Shard.NoState
-import pekko.cluster.sharding.Shard.Passivating
-import pekko.cluster.sharding.Shard.RememberedButNotCreated
-import pekko.cluster.sharding.Shard.RememberingStart
-import pekko.cluster.sharding.Shard.RememberingStop
+import pekko.cluster.sharding.Shard.{
+  Active,
+  NoState,
+  Passivating,
+  RememberedButNotCreated,
+  RememberingStart,
+  RememberingStop
+}
 import pekko.event.NoLogging
 import pekko.util.OptionVal
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 
 class EntitiesSpec extends AnyWordSpec with Matchers {
 

@@ -17,9 +17,11 @@ import java.util
 
 import scala.annotation.tailrec
 import scala.collection.immutable
+import scala.jdk.CollectionConverters._
 import scala.reflect.ClassTag
 import scala.util.control.Exception.Catcher
 import scala.util.control.NonFatal
+
 import org.apache.pekko
 import pekko.actor.ActorPath
 import pekko.actor.testkit.typed.{ CapturedLogEvent, Effect }
@@ -29,7 +31,6 @@ import pekko.actor.typed.{ ActorRef, Behavior, BehaviorInterceptor, PostStop, Si
 import pekko.actor.typed.receptionist.Receptionist
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.annotation.InternalApi
-import pekko.util.ccompat.JavaConverters._
 
 /**
  * INTERNAL API

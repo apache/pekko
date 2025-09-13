@@ -13,9 +13,11 @@
 
 package org.apache.pekko.remote.classic
 
-import scala.concurrent.duration._
 import scala.annotation.nowarn
+import scala.concurrent.duration._
+
 import com.typesafe.config._
+
 import org.apache.pekko
 import pekko.actor._
 import pekko.remote.EndpointException

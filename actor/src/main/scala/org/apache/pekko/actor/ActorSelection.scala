@@ -16,15 +16,12 @@ package org.apache.pekko.actor
 import java.util.concurrent.CompletionStage
 import java.util.regex.Pattern
 
-import scala.annotation.tailrec
+import scala.annotation.{ nowarn, tailrec }
 import scala.collection.immutable
-import scala.concurrent.Future
-import scala.concurrent.Promise
+import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration._
 import scala.language.implicitConversions
 import scala.util.Success
-
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.dispatch.ExecutionContexts

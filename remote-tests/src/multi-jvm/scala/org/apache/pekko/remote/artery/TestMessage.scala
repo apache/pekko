@@ -63,7 +63,7 @@ class TestMessageSerializer(val system: ExtendedActorSystem) extends SerializerW
 
   override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = {
     val protoMsg = proto.TestMessage.parseFrom(bytes)
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     val items = protoMsg.getItemsList.asScala.map { item =>
       TestMessage.Item(item.getId, item.getName)
     }.toVector

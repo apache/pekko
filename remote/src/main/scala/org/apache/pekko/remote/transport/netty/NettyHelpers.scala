@@ -18,12 +18,12 @@ import java.nio.channels.ClosedChannelException
 import scala.annotation.nowarn
 import scala.util.control.NonFatal
 
+import io.netty.buffer.ByteBuf
+import io.netty.channel.{ ChannelHandlerContext, ChannelInboundHandlerAdapter }
+
 import org.apache.pekko
 import pekko.PekkoException
 import pekko.util.unused
-
-import io.netty.buffer.ByteBuf
-import io.netty.channel.{ ChannelHandlerContext, ChannelInboundHandlerAdapter }
 
 /**
  * INTERNAL API

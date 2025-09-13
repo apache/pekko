@@ -14,10 +14,7 @@
 package org.apache.pekko.actor
 
 import org.apache.pekko
-import pekko.testkit.PekkoSpec
-import pekko.testkit.EventFilter
-import pekko.testkit.ImplicitSender
-import pekko.testkit.TestActors
+import pekko.testkit.{ EventFilter, ImplicitSender, PekkoSpec, TestActors }
 
 object DeadLetterSuspensionSpec {
 

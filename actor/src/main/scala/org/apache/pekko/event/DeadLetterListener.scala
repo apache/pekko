@@ -13,20 +13,21 @@
 
 package org.apache.pekko.event
 
-import scala.concurrent.duration.Deadline
-import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.duration.{ Deadline, FiniteDuration }
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorLogMarker
-import pekko.actor.ActorRef
-import pekko.actor.AllDeadLetters
-import pekko.actor.DeadLetter
-import pekko.actor.DeadLetterActorRef
-import pekko.actor.DeadLetterSuppression
-import pekko.actor.Dropped
-import pekko.actor.UnhandledMessage
-import pekko.actor.WrappedMessage
+import pekko.actor.{
+  Actor,
+  ActorLogMarker,
+  ActorRef,
+  AllDeadLetters,
+  DeadLetter,
+  DeadLetterActorRef,
+  DeadLetterSuppression,
+  Dropped,
+  UnhandledMessage,
+  WrappedMessage
+}
 import pekko.event.Logging.Info
 import pekko.util.PrettyDuration._
 

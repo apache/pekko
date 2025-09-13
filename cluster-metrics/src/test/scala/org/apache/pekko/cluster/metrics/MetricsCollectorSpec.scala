@@ -13,10 +13,9 @@
 
 package org.apache.pekko.cluster.metrics
 
+import scala.annotation.nowarn
 import scala.concurrent.duration._
 import scala.util.Try
-
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.cluster.metrics.StandardMetrics._

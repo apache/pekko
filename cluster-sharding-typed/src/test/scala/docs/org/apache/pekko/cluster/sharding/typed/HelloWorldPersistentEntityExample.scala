@@ -17,8 +17,7 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
+import pekko.actor.typed.{ ActorRef, ActorSystem }
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior

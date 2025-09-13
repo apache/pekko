@@ -18,13 +18,13 @@ import java.util.function.{ Function => JFunction, Supplier }
 
 import scala.annotation.varargs
 import scala.concurrent.duration._
+import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.InternalApi
 import pekko.testkit.{ TestActor, TestDuration, TestProbe }
 import pekko.util.JavaDurationConverters._
-import pekko.util.ccompat.JavaConverters._
 
 /**
  * Java API: Test kit for testing actors. Inheriting from this class enables

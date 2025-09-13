@@ -15,10 +15,10 @@ package org.apache.pekko.remote.classic.transport
 
 import java.util.concurrent.TimeoutException
 
+import scala.annotation.nowarn
 import scala.concurrent.{ Await, Promise }
 import scala.concurrent.duration._
 
-import scala.annotation.nowarn
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko

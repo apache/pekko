@@ -22,8 +22,7 @@ import org.openjdk.jmh.annotations._
 
 import org.apache.pekko
 import pekko.routing.RoundRobinPool
-import pekko.testkit.TestActors
-import pekko.testkit.TestProbe
+import pekko.testkit.{ TestActors, TestProbe }
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Array(Mode.SingleShotTime))

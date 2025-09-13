@@ -17,8 +17,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.TestInbox
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, TestInbox }
 
 class TerminatedSpec extends AnyWordSpec with Matchers with LogCapturing {
 

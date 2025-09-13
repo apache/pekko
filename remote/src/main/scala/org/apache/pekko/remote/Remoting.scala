@@ -17,6 +17,7 @@ import java.net.URLEncoder
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeoutException
 
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.collection.immutable.{ HashMap, Seq }
 import scala.concurrent.{ Await, Future, Promise }
@@ -24,7 +25,6 @@ import scala.concurrent.duration._
 import scala.util.{ Failure, Success }
 import scala.util.control.NonFatal
 
-import scala.annotation.nowarn
 import com.typesafe.config.Config
 
 import org.apache.pekko

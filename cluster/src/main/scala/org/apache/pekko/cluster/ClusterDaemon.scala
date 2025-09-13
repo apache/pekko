@@ -15,8 +15,7 @@ package org.apache.pekko.cluster
 
 import scala.annotation.nowarn
 import scala.collection.immutable
-import scala.concurrent.Future
-import scala.concurrent.Promise
+import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
 

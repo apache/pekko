@@ -14,15 +14,15 @@
 package org.apache.pekko.cluster.sharding.typed
 
 import scala.concurrent.duration._
+
 import com.typesafe.config.ConfigFactory
 import org.scalatest.concurrent.ScalaFutures
+
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.TestProbe
 import pekko.actor.typed.ActorRef
 import pekko.cluster.MultiNodeClusterSpec
-import pekko.cluster.sharding.typed.scaladsl.ClusterSharding
-import pekko.cluster.sharding.typed.scaladsl.Entity
-import pekko.cluster.sharding.typed.scaladsl.EntityTypeKey
+import pekko.cluster.sharding.typed.scaladsl.{ ClusterSharding, Entity, EntityTypeKey }
 import pekko.cluster.typed.{ MultiDcPinger, MultiNodeTypedClusterSpec }
 import pekko.remote.testkit.{ MultiNodeConfig, MultiNodeSpec }
 import pekko.util.Timeout

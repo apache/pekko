@@ -16,9 +16,8 @@ package org.apache.pekko.cluster.sharding
 import org.apache.pekko
 import pekko.actor.Props
 import pekko.cluster.Cluster
-import pekko.testkit.PekkoSpec
+import pekko.testkit.{ PekkoSpec, WithLogCapturing }
 import pekko.testkit.TestActors.EchoActor
-import pekko.testkit.WithLogCapturing
 
 object GetShardTypeNamesSpec {
   val config =

@@ -16,14 +16,13 @@ package org.apache.pekko.pattern
 import java.util.Optional
 import java.util.concurrent.{ Callable, CompletionStage, TimeUnit }
 
+import scala.annotation.nowarn
 import scala.concurrent.ExecutionContext
 
 import org.apache.pekko
 import pekko.actor.{ ActorSelection, ClassicActorSystemProvider, Scheduler }
 import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
-
-import scala.annotation.nowarn
 
 /**
  * Java API: for Pekko patterns such as `ask`, `pipe` and others which work with [[java.util.concurrent.CompletionStage]].

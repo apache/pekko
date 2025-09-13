@@ -13,16 +13,15 @@
 
 package org.apache.pekko.cluster.sharding.internal
 
+import scala.concurrent.duration._
+
+import com.typesafe.config.ConfigFactory
+
 import org.apache.pekko
-import pekko.cluster.sharding.ClusterShardingSettings
-import pekko.cluster.sharding.Shard
-import pekko.cluster.sharding.ShardRegion
+import pekko.cluster.sharding.{ ClusterShardingSettings, Shard, ShardRegion }
 import pekko.cluster.sharding.ShardRegion.ShardId
 import pekko.testkit.PekkoSpec
 import pekko.testkit.TestProbe
-import com.typesafe.config.ConfigFactory
-
-import scala.concurrent.duration._
 
 class RememberEntitiesStarterSpec extends PekkoSpec {
 

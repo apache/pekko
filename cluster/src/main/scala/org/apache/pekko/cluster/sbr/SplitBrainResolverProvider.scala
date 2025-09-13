@@ -13,14 +13,11 @@
 
 package org.apache.pekko.cluster.sbr
 
-import scala.concurrent.duration.Duration
-import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.duration.{ Duration, FiniteDuration }
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.actor.Props
-import pekko.cluster.Cluster
-import pekko.cluster.DowningProvider
+import pekko.actor.{ ActorSystem, Props }
+import pekko.cluster.{ Cluster, DowningProvider }
 import pekko.coordination.lease.scaladsl.LeaseProvider
 
 /**

@@ -16,8 +16,7 @@ package org.apache.pekko.actor.typed.delivery
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
+import pekko.actor.typed.{ ActorRef, Behavior }
 import pekko.actor.typed.scaladsl.Behaviors
 
 object TestProducerWorkPulling {

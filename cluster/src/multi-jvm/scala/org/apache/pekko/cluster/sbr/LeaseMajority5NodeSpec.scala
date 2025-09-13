@@ -24,8 +24,7 @@ import pekko.remote.transport.ThrottlerTransportAdapter
 import com.typesafe.config.ConfigFactory
 
 import pekko.cluster.MultiNodeClusterSpec
-import pekko.coordination.lease.TestLease
-import pekko.coordination.lease.TestLeaseExt
+import pekko.coordination.lease.{ TestLease, TestLeaseExt }
 
 object LeaseMajority5NodeSpec extends MultiNodeConfig {
   val node1 = role("node1")

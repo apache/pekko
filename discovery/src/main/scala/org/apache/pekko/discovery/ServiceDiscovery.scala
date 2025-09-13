@@ -15,8 +15,7 @@ package org.apache.pekko.discovery
 
 import java.net.InetAddress
 import java.util.Optional
-import java.util.concurrent.CompletionStage
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.{ CompletionStage, TimeUnit }
 
 import scala.collection.immutable
 import scala.concurrent.Future
@@ -54,7 +53,7 @@ object ServiceDiscovery {
      * Java API
      */
     def getAddresses: java.util.List[ResolvedTarget] = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       addresses.asJava
     }
 

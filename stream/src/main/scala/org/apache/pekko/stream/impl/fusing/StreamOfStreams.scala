@@ -19,14 +19,14 @@ import java.util.concurrent.atomic.AtomicReference
 import scala.annotation.{ nowarn, tailrec }
 import scala.collection.immutable
 import scala.concurrent.duration.FiniteDuration
+import scala.jdk.CollectionConverters._
 import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.annotation.InternalApi
 import pekko.stream._
-import pekko.stream.ActorAttributes.StreamSubscriptionTimeout
-import pekko.stream.ActorAttributes.SupervisionStrategy
+import pekko.stream.ActorAttributes.{ StreamSubscriptionTimeout, SupervisionStrategy }
 import pekko.stream.Attributes.SourceLocation
 import pekko.stream.Supervision.Decider
 import pekko.stream.impl.{ Buffer => BufferImpl }
@@ -39,7 +39,6 @@ import pekko.stream.impl.fusing.GraphStages.SingleSource
 import pekko.stream.scaladsl._
 import pekko.stream.stage._
 import pekko.util.OptionVal
-import pekko.util.ccompat.JavaConverters._
 
 /**
  * INTERNAL API

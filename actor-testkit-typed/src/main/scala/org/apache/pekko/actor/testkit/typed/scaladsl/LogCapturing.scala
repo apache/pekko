@@ -15,9 +15,7 @@ package org.apache.pekko.actor.testkit.typed.scaladsl
 
 import scala.util.control.NonFatal
 
-import org.scalatest.BeforeAndAfterAll
-import org.scalatest.Outcome
-import org.scalatest.TestSuite
+import org.scalatest.{ BeforeAndAfterAll, Outcome, TestSuite }
 import org.slf4j.LoggerFactory
 
 import org.apache.pekko.actor.testkit.typed.internal.CapturingAppender

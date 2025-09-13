@@ -18,8 +18,7 @@ import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration._
 import scala.concurrent.duration.Duration
 import scala.concurrent.duration.FiniteDuration
-
-import language.implicitConversions
+import scala.language.implicitConversions
 
 import org.apache.pekko
 import pekko.annotation.InternalApi

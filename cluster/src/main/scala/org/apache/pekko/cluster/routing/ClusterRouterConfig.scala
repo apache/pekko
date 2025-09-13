@@ -14,31 +14,34 @@
 package org.apache.pekko.cluster.routing
 
 import java.util.concurrent.atomic.AtomicInteger
+
 import scala.annotation.{ tailrec, varargs }
 import scala.collection.immutable
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import scala.jdk.CollectionConverters._
+
+import com.typesafe.config.{ Config, ConfigFactory }
+
 import org.apache.pekko
 import pekko.actor._
 import pekko.cluster.Cluster
 import pekko.cluster.ClusterEvent._
-import pekko.cluster.Member
-import pekko.cluster.MemberStatus
+import pekko.cluster.{ Member, MemberStatus }
 import pekko.japi.Util.immutableSeq
 import pekko.remote.RemoteScope
-import pekko.routing.ActorRefRoutee
-import pekko.routing.ActorSelectionRoutee
-import pekko.routing.Group
-import pekko.routing.Pool
-import pekko.routing.Resizer
-import pekko.routing.Routee
-import pekko.routing.Router
-import pekko.routing.RouterActor
-import pekko.routing.RouterConfig
-import pekko.routing.RouterPoolActor
-import pekko.routing.RoutingLogic
+import pekko.routing.{
+  ActorRefRoutee,
+  ActorSelectionRoutee,
+  Group,
+  Pool,
+  Resizer,
+  Routee,
+  Router,
+  RouterActor,
+  RouterConfig,
+  RouterPoolActor,
+  RoutingLogic
+}
 import pekko.util.HashCode
-import pekko.util.ccompat.JavaConverters._
 
 object ClusterRouterGroupSettings {
 

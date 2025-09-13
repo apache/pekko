@@ -15,8 +15,7 @@ package org.apache.pekko.stream.impl.fusing
 
 import java.util.concurrent.TimeUnit.NANOSECONDS
 
-import scala.annotation.nowarn
-import scala.annotation.tailrec
+import scala.annotation.{ nowarn, tailrec }
 import scala.collection.immutable
 import scala.collection.immutable.VectorBuilder
 import scala.concurrent.Future
@@ -24,6 +23,7 @@ import scala.concurrent.duration.{ FiniteDuration, _ }
 import scala.util.{ Failure, Success, Try }
 import scala.util.control.{ NoStackTrace, NonFatal }
 import scala.util.control.Exception.Catcher
+
 import org.apache.pekko
 import pekko.actor.{ ActorRef, Terminated }
 import pekko.annotation.InternalApi

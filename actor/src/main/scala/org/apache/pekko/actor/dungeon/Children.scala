@@ -15,10 +15,10 @@ package org.apache.pekko.actor.dungeon
 
 import java.util.Optional
 
-import scala.annotation.tailrec
+import scala.annotation.{ nowarn, tailrec }
 import scala.collection.immutable
 import scala.util.control.NonFatal
-import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.InternalStableApi
@@ -42,7 +42,7 @@ private[pekko] trait Children { this: ActorCell =>
 
   final def children: immutable.Iterable[ActorRef] = childrenRefs.children
   final def getChildren(): java.lang.Iterable[ActorRef] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     children.asJava
   }
 

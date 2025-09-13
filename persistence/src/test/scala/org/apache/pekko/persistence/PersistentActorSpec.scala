@@ -15,14 +15,14 @@ package org.apache.pekko.persistence
 
 import java.util.concurrent.atomic.AtomicInteger
 
-import scala.collection.immutable.Seq
+import scala.annotation.nowarn
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.Random
 import scala.util.control.NoStackTrace
-import scala.annotation.nowarn
 
 import com.typesafe.config.{ Config, ConfigFactory }
+
 import org.apache.pekko
 import pekko.actor._
 import pekko.persistence.PersistentActorSpec._

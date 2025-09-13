@@ -12,6 +12,7 @@
  */
 
 package org.apache.pekko.cluster.sharding
+
 import org.apache.pekko
 import pekko.actor.{ ExtendedActorSystem, Extension, ExtensionId, ExtensionIdProvider }
 import pekko.annotation.InternalApi

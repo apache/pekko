@@ -20,19 +20,20 @@ import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.Actor
-import pekko.actor.ActorIdentity
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
-import pekko.actor.Address
-import pekko.actor.Deploy
-import pekko.actor.Identify
-import pekko.actor.Props
-import pekko.actor.RootActorPath
-import pekko.actor.Terminated
+import pekko.actor.{
+  Actor,
+  ActorIdentity,
+  ActorRef,
+  ActorSystem,
+  Address,
+  Deploy,
+  Identify,
+  Props,
+  RootActorPath,
+  Terminated
+}
 import pekko.cluster.MemberStatus._
-import pekko.remote.testkit.MultiNodeConfig
-import pekko.remote.testkit.MultiNodeSpec
+import pekko.remote.testkit.{ MultiNodeConfig, MultiNodeSpec }
 import pekko.testkit._
 
 object RestartNodeMultiJvmSpec extends MultiNodeConfig {

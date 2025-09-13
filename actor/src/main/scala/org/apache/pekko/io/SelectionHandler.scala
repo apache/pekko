@@ -30,8 +30,7 @@ import com.typesafe.config.Config
 import org.apache.pekko
 import pekko.actor._
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
-import pekko.event.Logging
-import pekko.event.LoggingAdapter
+import pekko.event.{ Logging, LoggingAdapter }
 import pekko.routing.RandomPool
 import pekko.util.Helpers.Requiring
 import pekko.util.SerializedSuspendableExecutionContext

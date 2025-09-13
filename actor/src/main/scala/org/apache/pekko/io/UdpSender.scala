@@ -13,6 +13,7 @@
 
 package org.apache.pekko.io
 
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.util.control.NonFatal
 
@@ -21,7 +22,6 @@ import pekko.actor._
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.io.Inet.{ DatagramChannelCreator, SocketOption }
 import pekko.io.Udp._
-import scala.annotation.nowarn
 
 /**
  * INTERNAL API

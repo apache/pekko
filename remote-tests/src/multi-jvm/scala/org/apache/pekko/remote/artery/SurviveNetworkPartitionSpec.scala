@@ -13,15 +13,14 @@
 
 package org.apache.pekko.remote.artery
 
+import scala.annotation.nowarn
 import scala.concurrent.duration._
 
-import scala.annotation.nowarn
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.actor.ActorIdentity
-import pekko.actor.Identify
+import pekko.actor.{ ActorIdentity, Identify }
 import pekko.remote.{ RARP, RemotingMultiNodeSpec }
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.transport.ThrottlerTransportAdapter.Direction

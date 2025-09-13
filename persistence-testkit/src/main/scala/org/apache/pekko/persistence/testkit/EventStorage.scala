@@ -18,6 +18,7 @@ import pekko.NotUsed
 import java.util.{ List => JList }
 
 import scala.collection.immutable
+import scala.jdk.CollectionConverters._
 import scala.util.{ Failure, Success, Try }
 
 import pekko.annotation.InternalApi
@@ -26,7 +27,6 @@ import pekko.persistence.journal.Tagged
 import pekko.persistence.testkit.ProcessingPolicy.DefaultPolicies
 import pekko.persistence.testkit.internal.TestKitStorage
 import pekko.stream.scaladsl.Source
-import pekko.util.ccompat.JavaConverters._
 
 /**
  * INTERNAL API

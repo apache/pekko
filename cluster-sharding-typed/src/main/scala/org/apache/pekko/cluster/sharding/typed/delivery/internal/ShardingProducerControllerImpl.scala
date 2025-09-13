@@ -16,24 +16,15 @@ package org.apache.pekko.cluster.sharding.typed.delivery.internal
 import java.util.concurrent.TimeoutException
 
 import scala.reflect.ClassTag
-import scala.util.Failure
-import scala.util.Success
+import scala.util.{ Failure, Success }
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.DispatcherSelector
-import pekko.actor.typed.delivery.ConsumerController
-import pekko.actor.typed.delivery.DurableProducerQueue
-import pekko.actor.typed.delivery.DurableProducerQueue.ConfirmationQualifier
-import pekko.actor.typed.delivery.DurableProducerQueue.SeqNr
-import pekko.actor.typed.delivery.ProducerController
+import pekko.actor.typed.{ ActorRef, Behavior, DispatcherSelector }
+import pekko.actor.typed.delivery.{ ConsumerController, DurableProducerQueue, ProducerController }
+import pekko.actor.typed.delivery.DurableProducerQueue.{ ConfirmationQualifier, SeqNr }
 import pekko.actor.typed.delivery.internal.ProducerControllerImpl
-import pekko.actor.typed.scaladsl.ActorContext
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.actor.typed.scaladsl.LoggerOps
-import pekko.actor.typed.scaladsl.StashBuffer
+import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors, LoggerOps, StashBuffer }
 import pekko.annotation.InternalApi
 import pekko.cluster.sharding.typed.ShardingEnvelope
 import pekko.cluster.sharding.typed.delivery.ShardingProducerController

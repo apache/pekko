@@ -12,6 +12,7 @@
  */
 
 package org.apache.pekko.util
+
 import java.util.Arrays
 
 import scala.annotation.tailrec

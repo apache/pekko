@@ -21,13 +21,15 @@ import scala.util.control.NonFatal
 import com.typesafe.config.Config
 
 import org.apache.pekko
-import pekko.actor.ActorPath
-import pekko.actor.ActorSystem
-import pekko.actor.Address
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.InvalidMessageException
-import pekko.actor.SupervisorStrategy
-import pekko.actor.WrappedMessage
+import pekko.actor.{
+  ActorPath,
+  ActorSystem,
+  Address,
+  ExtendedActorSystem,
+  InvalidMessageException,
+  SupervisorStrategy,
+  WrappedMessage
+}
 import pekko.dispatch.Dispatchers
 import pekko.event.Logging
 import pekko.japi.Util.immutableSeq

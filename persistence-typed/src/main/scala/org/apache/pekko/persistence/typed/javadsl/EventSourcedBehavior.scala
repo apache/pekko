@@ -204,7 +204,7 @@ abstract class EventSourcedBehavior[Command, Event, State] private[pekko] (
     val snapshotWhen: (State, Event, Long) => Boolean = (state, event, seqNr) => shouldSnapshot(state, event, seqNr)
 
     val tagger: Event => Set[String] = { event =>
-      import org.apache.pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       val tags = tagsFor(event)
       if (tags.isEmpty) Set.empty
       else tags.asScala.toSet

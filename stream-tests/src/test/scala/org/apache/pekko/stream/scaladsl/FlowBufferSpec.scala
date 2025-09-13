@@ -19,8 +19,7 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.stream.BufferOverflowException
-import pekko.stream.OverflowStrategy
+import pekko.stream.{ BufferOverflowException, OverflowStrategy }
 import pekko.stream.testkit._
 
 @nowarn("msg=deprecated")

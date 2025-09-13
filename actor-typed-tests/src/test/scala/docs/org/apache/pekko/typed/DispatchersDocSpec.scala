@@ -13,19 +13,21 @@
 
 package docs.org.apache.pekko.typed
 
+import scala.concurrent.Future
+
+import com.typesafe.config.ConfigFactory
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.TestProbe
 import pekko.actor.typed.scaladsl.AskPattern._
 import pekko.actor.typed.SpawnProtocol.Spawn
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.{ ActorRef, Behavior, DispatcherSelector, Props, SpawnProtocol }
+import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.dispatch.Dispatcher
 import DispatchersDocSpec._
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import com.typesafe.config.ConfigFactory
-import org.scalatest.wordspec.AnyWordSpecLike
-import scala.concurrent.Future
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
 
 object DispatchersDocSpec {
 

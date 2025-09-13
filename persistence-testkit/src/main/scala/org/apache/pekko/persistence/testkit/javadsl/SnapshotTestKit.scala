@@ -17,6 +17,8 @@ import java.time.Duration
 import java.util.{ List => JList }
 import java.util.{ function => jf }
 
+import scala.jdk.CollectionConverters._
+
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.annotation.ApiMayChange
@@ -24,7 +26,6 @@ import pekko.japi.Pair
 import pekko.persistence.testkit.{ ExpectedFailure, SnapshotMeta, SnapshotOperation, SnapshotStorage }
 import pekko.persistence.testkit.scaladsl.{ SnapshotTestKit => ScalaTestKit }
 import pekko.util.JavaDurationConverters._
-import pekko.util.ccompat.JavaConverters._
 
 /**
  * Class for testing persisted snapshots in persistent actors.

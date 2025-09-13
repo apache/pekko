@@ -21,17 +21,11 @@ import org.scalatest.wordspec.AnyWordSpec
 
 import org.apache.pekko
 import pekko.{ actor => classic }
-import pekko.Done
-import pekko.NotUsed
-import pekko.actor.ActorInitializationException
-import pekko.actor.InvalidMessageException
+import pekko.{ Done, NotUsed }
+import pekko.actor.{ ActorInitializationException, InvalidMessageException }
 import pekko.actor.testkit.typed.TestException
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.Terminated
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, LoggingTestKit }
+import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior, Terminated }
 import pekko.actor.typed.internal.adapter.SchedulerAdapter
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.serialization.SerializationExtension

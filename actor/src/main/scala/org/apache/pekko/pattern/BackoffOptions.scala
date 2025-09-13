@@ -13,13 +13,13 @@
 
 package org.apache.pekko.pattern
 
+import scala.concurrent.duration.{ Duration, FiniteDuration }
+
 import org.apache.pekko
 import pekko.actor.{ ActorRef, OneForOneStrategy, Props, SupervisorStrategy }
 import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.pattern.internal.{ BackoffOnRestartSupervisor, BackoffOnStopSupervisor }
 import pekko.util.JavaDurationConverters._
-
-import scala.concurrent.duration.{ Duration, FiniteDuration }
 
 /**
  * Backoff options allow to specify a number of properties for backoff supervisors.

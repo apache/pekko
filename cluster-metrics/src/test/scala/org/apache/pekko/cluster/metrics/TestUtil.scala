@@ -20,18 +20,18 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.slf4j.bridge.SLF4JBridgeHandler
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorLogging
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
-import pekko.actor.Address
-import pekko.actor.Deploy
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.PoisonPill
-import pekko.actor.Props
-import pekko.dispatch.Dispatchers
-import pekko.dispatch.RequiresMessageQueue
-import pekko.dispatch.UnboundedMessageQueueSemantics
+import pekko.actor.{
+  Actor,
+  ActorLogging,
+  ActorRef,
+  ActorSystem,
+  Address,
+  Deploy,
+  ExtendedActorSystem,
+  PoisonPill,
+  Props
+}
+import pekko.dispatch.{ Dispatchers, RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.remote.RARP
 import pekko.testkit.PekkoSpec
 

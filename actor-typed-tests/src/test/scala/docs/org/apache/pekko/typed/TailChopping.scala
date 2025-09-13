@@ -18,8 +18,7 @@ import scala.concurrent.duration.FiniteDuration
 import scala.reflect.ClassTag
 
 import org.apache.pekko
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
+import pekko.actor.typed.{ ActorRef, Behavior }
 import pekko.actor.typed.scaladsl.Behaviors
 
 object TailChopping {

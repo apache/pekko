@@ -90,7 +90,7 @@ object NettyFutureBridge {
   }
 
   def apply(nettyFuture: ChannelGroupFuture): Future[ChannelGroup] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     val p = Promise[ChannelGroup]()
     nettyFuture.addListener((future: ChannelGroupFuture) =>
       p.complete(

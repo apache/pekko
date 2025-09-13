@@ -15,8 +15,7 @@ package org.apache.pekko.stream.testkit
 
 import java.util.concurrent.ThreadLocalRandom
 
-import scala.annotation.nowarn
-import scala.annotation.tailrec
+import scala.annotation.{ nowarn, tailrec }
 import scala.concurrent.duration._
 
 import org.apache.pekko

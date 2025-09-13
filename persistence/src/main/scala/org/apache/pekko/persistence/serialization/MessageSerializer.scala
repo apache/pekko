@@ -14,11 +14,13 @@
 package org.apache.pekko.persistence.serialization
 
 import java.io.NotSerializableException
+
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.collection.immutable.VectorBuilder
 import scala.concurrent.duration
 import scala.concurrent.duration.Duration
-import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.actor.{ ActorPath, ExtendedActorSystem }
 import pekko.actor.Actor
@@ -123,7 +125,7 @@ class MessageSerializer(val system: ExtendedActorSystem) extends BaseSerializer 
 
   def atLeastOnceDeliverySnapshot(
       atLeastOnceDeliverySnapshot: mf.AtLeastOnceDeliverySnapshot): AtLeastOnceDeliverySnapshot = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     val unconfirmedDeliveries = new VectorBuilder[UnconfirmedDelivery]()
     atLeastOnceDeliverySnapshot.getUnconfirmedDeliveriesList().iterator().asScala.foreach { next =>
       unconfirmedDeliveries += UnconfirmedDelivery(
@@ -227,7 +229,7 @@ class MessageSerializer(val system: ExtendedActorSystem) extends BaseSerializer 
   }
 
   private def atomicWrite(atomicWrite: mf.AtomicWrite): AtomicWrite = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     AtomicWrite(atomicWrite.getPayloadList.asScala.iterator.map(persistent).to(immutable.IndexedSeq))
   }
 

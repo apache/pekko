@@ -15,10 +15,14 @@ package org.apache.pekko.cluster.protobuf
 
 import java.io.{ ByteArrayInputStream, ByteArrayOutputStream }
 import java.util.zip.{ GZIPInputStream, GZIPOutputStream }
+
 import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.concurrent.duration.Deadline
+import scala.jdk.CollectionConverters._
+
 import com.typesafe.config.{ Config, ConfigFactory, ConfigRenderOptions }
+
 import org.apache.pekko
 import pekko.actor.{ Address, ExtendedActorSystem }
 import pekko.annotation.InternalApi
@@ -31,7 +35,6 @@ import pekko.remote.ByteStringUtils
 import pekko.routing.Pool
 import pekko.serialization._
 import pekko.util.Version
-import pekko.util.ccompat.JavaConverters._
 
 /**
  * INTERNAL API

@@ -309,7 +309,7 @@ object CoordinatedShutdown extends ExtensionId[CoordinatedShutdown] with Extensi
    * INTERNAL API
    */
   private[pekko] def phasesFromConfig(conf: Config): Map[String, Phase] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     val defaultPhaseTimeout = conf.getString("default-phase-timeout")
     val phasesConf = conf.getConfig("phases")
     val defaultPhaseConfig = ConfigFactory.parseString(s"""
@@ -513,7 +513,7 @@ final class CoordinatedShutdown private[pekko] (
     def get(phaseName: String): Option[PhaseDefinition] = Option(registeredPhases.get(phaseName))
 
     def totalDuration(): FiniteDuration = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       registeredPhases.keySet.asScala.foldLeft(Duration.Zero) {
         case (acc, phase) =>
           acc + timeout(phase)

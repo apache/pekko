@@ -13,11 +13,11 @@
 
 package org.apache.pekko.cluster.sharding.passivation
 
-import org.apache.pekko.cluster.sharding.ShardRegion
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{ Config, ConfigFactory }
 
 import scala.concurrent.duration._
+
+import org.apache.pekko.cluster.sharding.ShardRegion
 
 object LeastFrequentlyUsedSpec {
 

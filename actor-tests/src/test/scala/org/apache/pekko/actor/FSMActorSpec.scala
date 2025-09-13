@@ -260,7 +260,7 @@ class FSMActorSpec extends PekkoSpec(Map("pekko.actor.debug.fsm" -> true)) with 
     }
 
     "log events and transitions if asked to do so" in {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       val config = ConfigFactory
         .parseMap(Map("pekko.loglevel" -> "DEBUG", "pekko.actor.debug.fsm" -> true).asJava)
         .withFallback(system.settings.config)

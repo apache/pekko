@@ -17,19 +17,13 @@ import java.net.URI
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
-import scala.util.Failure
-import scala.util.Success
+import scala.util.{ Failure, Success }
+
 import org.apache.pekko
-import pekko.Done
-import pekko.NotUsed
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.actor.typed.scaladsl.LoggerOps
-import pekko.actor.typed.scaladsl.TimerScheduler
+import pekko.{ Done, NotUsed }
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
+import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior }
+import pekko.actor.typed.scaladsl.{ Behaviors, LoggerOps, TimerScheduler }
 import pekko.pattern.StatusReply
 import org.scalatest.wordspec.AnyWordSpecLike
 

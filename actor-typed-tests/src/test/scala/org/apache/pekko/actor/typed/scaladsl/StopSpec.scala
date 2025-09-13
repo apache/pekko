@@ -17,13 +17,9 @@ import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.testkit.typed.scaladsl.TestProbe
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit, TestProbe }
 import pekko.actor.typed
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.BehaviorInterceptor
-import pekko.actor.typed.PostStop
+import pekko.actor.typed.{ Behavior, BehaviorInterceptor, PostStop }
 
 class StopSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with LogCapturing {
   import BehaviorInterceptor._

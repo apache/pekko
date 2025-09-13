@@ -13,25 +13,22 @@
 
 package docs.org.apache.pekko.typed
 
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
 //#fiddle_code
 //#imports
 import org.apache.pekko
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.actor.typed.scaladsl.LoggerOps
+import pekko.actor.typed.scaladsl.{ Behaviors, LoggerOps }
 import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior }
 //#imports
 //#fiddle_code
 
-import pekko.NotUsed
-import pekko.Done
+import pekko.{ Done, NotUsed }
 import pekko.actor.typed.{ DispatcherSelector, Terminated }
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-
-import org.scalatest.wordspec.AnyWordSpecLike
-import pekko.actor.testkit.typed.scaladsl.ActorTestKit
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
+import pekko.actor.testkit.typed.scaladsl.{ ActorTestKit, LogCapturing, ScalaTestWithActorTestKit }
 
 object IntroSpec {
   //format: OFF

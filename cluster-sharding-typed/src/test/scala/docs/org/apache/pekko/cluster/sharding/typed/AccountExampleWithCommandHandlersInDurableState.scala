@@ -15,13 +15,11 @@ package docs.org.apache.pekko.cluster.sharding.typed
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
+import pekko.actor.typed.{ ActorRef, Behavior }
 import pekko.cluster.sharding.typed.scaladsl.EntityTypeKey
 import pekko.pattern.StatusReply
 import pekko.persistence.typed.PersistenceId
-import pekko.persistence.typed.state.scaladsl.Effect
-import pekko.persistence.typed.state.scaladsl.DurableStateBehavior
+import pekko.persistence.typed.state.scaladsl.{ DurableStateBehavior, Effect }
 import pekko.serialization.jackson.CborSerializable
 
 /**

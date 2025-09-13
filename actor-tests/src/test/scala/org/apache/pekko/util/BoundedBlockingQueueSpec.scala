@@ -19,6 +19,7 @@ import java.util.concurrent.locks.{ Condition, LockSupport, ReentrantLock }
 
 import scala.collection.mutable
 import scala.concurrent.{ Await, ExecutionContext, ExecutionContextExecutor, Future }
+import scala.jdk.CollectionConverters._
 import scala.util.control.Exception
 
 import org.scalactic.source.Position
@@ -33,7 +34,6 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.apache.pekko
 import pekko.testkit.TimingTest
 import pekko.util.DefaultExecutionContext._
-import pekko.util.ccompat.JavaConverters._
 
 class BoundedBlockingQueueSpec
     extends AnyWordSpec

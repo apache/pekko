@@ -12,9 +12,8 @@
  */
 
 package org.apache.pekko.util
-import java.lang.reflect.Constructor
-import java.lang.reflect.ParameterizedType
-import java.lang.reflect.Type
+
+import java.lang.reflect.{ Constructor, ParameterizedType, Type }
 
 import scala.annotation.tailrec
 import scala.collection.immutable

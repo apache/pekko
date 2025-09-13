@@ -19,22 +19,20 @@ import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorRef
-import pekko.actor.Address
-import pekko.actor.Props
-import pekko.actor.Terminated
+import pekko.actor.{ Actor, ActorRef, Address, Props, Terminated }
 import pekko.cluster.MultiNodeClusterSpec
 import pekko.pattern.ask
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.transport.ThrottlerTransportAdapter.Direction
-import pekko.routing.ActorRefRoutee
-import pekko.routing.ActorSelectionRoutee
-import pekko.routing.FromConfig
-import pekko.routing.GetRoutees
-import pekko.routing.RoundRobinPool
-import pekko.routing.RoutedActorRef
-import pekko.routing.Routees
+import pekko.routing.{
+  ActorRefRoutee,
+  ActorSelectionRoutee,
+  FromConfig,
+  GetRoutees,
+  RoundRobinPool,
+  RoutedActorRef,
+  Routees
+}
 import pekko.testkit._
 
 object ClusterRoundRobinMultiJvmSpec extends MultiNodeConfig {

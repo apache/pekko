@@ -14,18 +14,14 @@
 package org.apache.pekko.stream
 
 import scala.annotation.nowarn
-import scala.concurrent.Await
-import scala.concurrent.Future
+import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
 import scala.util.{ Failure, Try }
 
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.{ Actor, ActorSystem, PoisonPill, Props }
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.Extension
-import pekko.actor.ExtensionId
-import pekko.actor.ExtensionIdProvider
+import pekko.actor.{ ExtendedActorSystem, Extension, ExtensionId, ExtensionIdProvider }
 import pekko.stream.ActorMaterializerSpec.ActorWithMaterializer
 import pekko.stream.impl.{ PhasedFusingActorMaterializer, StreamSupervisor }
 import pekko.stream.scaladsl.{ Sink, Source }

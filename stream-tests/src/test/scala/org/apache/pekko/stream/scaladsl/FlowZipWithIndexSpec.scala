@@ -13,10 +13,11 @@
 
 package org.apache.pekko.stream.scaladsl
 
+import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.stream.{ ActorMaterializer, ActorMaterializerSettings, ClosedShape, Materializer, UniformFanInShape }
 import pekko.stream.testkit.{ StreamSpec, TestSubscriber }
-import scala.annotation.nowarn
 
 @nowarn // keep unused imports
 class FlowZipWithIndexSpec extends StreamSpec {
