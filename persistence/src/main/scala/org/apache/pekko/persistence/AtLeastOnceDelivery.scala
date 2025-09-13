@@ -17,9 +17,7 @@ import scala.collection.immutable
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
-import pekko.actor.{ ActorPath, ActorSelection, NotInfluenceReceiveTimeout }
-import pekko.actor.Cancellable
-import pekko.actor.DeadLetterSuppression
+import pekko.actor.{ ActorPath, ActorSelection, Cancellable, DeadLetterSuppression, NotInfluenceReceiveTimeout }
 import pekko.annotation.InternalApi
 import pekko.persistence.serialization.Message
 
@@ -41,7 +39,7 @@ object AtLeastOnceDelivery {
      * Java API
      */
     def getUnconfirmedDeliveries: java.util.List[UnconfirmedDelivery] = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       unconfirmedDeliveries.asJava
     }
 
@@ -57,7 +55,7 @@ object AtLeastOnceDelivery {
      * Java API
      */
     def getUnconfirmedDeliveries: java.util.List[UnconfirmedDelivery] = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       unconfirmedDeliveries.asJava
     }
   }

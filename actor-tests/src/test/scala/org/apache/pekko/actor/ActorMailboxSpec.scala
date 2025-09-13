@@ -15,8 +15,7 @@ package org.apache.pekko.actor
 
 import scala.concurrent.duration.{ Duration, FiniteDuration }
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
 import pekko.ConfigurationException

@@ -15,13 +15,6 @@ package doc.org.apache.pekko.serialization.jackson
 
 import java.util.Optional
 
-import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.serialization.Serialization
-import pekko.serialization.SerializationExtension
-import pekko.serialization.SerializerWithStringManifest
-import pekko.serialization.Serializers
-import pekko.testkit.TestKit
 import com.fasterxml.jackson.annotation.{ JsonSubTypes, JsonTypeInfo, JsonTypeName }
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
@@ -31,6 +24,11 @@ import com.typesafe.config.ConfigFactory
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
+
+import org.apache.pekko
+import pekko.actor.ActorSystem
+import pekko.serialization.{ Serialization, SerializationExtension, SerializerWithStringManifest, Serializers }
+import pekko.testkit.TestKit
 
 //#marker-interface
 /**
@@ -276,9 +274,7 @@ class SerializationDocSpec
 
   "EventMigration doc sample Java classes" must {
     import jdoc.org.apache.pekko.serialization.jackson.v1.OrderAdded
-    import jdoc.org.apache.pekko.serialization.jackson.v2a.Customer
-    import jdoc.org.apache.pekko.serialization.jackson.v2a.ItemAdded
-    import jdoc.org.apache.pekko.serialization.jackson.v2a.OrderPlaced
+    import jdoc.org.apache.pekko.serialization.jackson.v2a.{ Customer, ItemAdded, OrderPlaced }
 
     "test add optional field" in {
       val event1 =
@@ -343,9 +339,7 @@ class SerializationDocSpec
 
   "EventMigration doc sample Scala classes" must {
     import doc.org.apache.pekko.serialization.jackson.v1.OrderAdded
-    import doc.org.apache.pekko.serialization.jackson.v2a.Customer
-    import doc.org.apache.pekko.serialization.jackson.v2a.ItemAdded
-    import doc.org.apache.pekko.serialization.jackson.v2a.OrderPlaced
+    import doc.org.apache.pekko.serialization.jackson.v2a.{ Customer, ItemAdded, OrderPlaced }
 
     "test add optional field" in {
       val event1 =

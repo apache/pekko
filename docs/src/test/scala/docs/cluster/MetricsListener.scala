@@ -18,13 +18,9 @@ import org.apache.pekko
 import pekko.actor.ActorLogging
 import pekko.actor.Actor
 import pekko.cluster.Cluster
-import pekko.cluster.metrics.ClusterMetricsEvent
-import pekko.cluster.metrics.ClusterMetricsChanged
 import pekko.cluster.ClusterEvent.CurrentClusterState
-import pekko.cluster.metrics.NodeMetrics
-import pekko.cluster.metrics.StandardMetrics.HeapMemory
-import pekko.cluster.metrics.StandardMetrics.Cpu
-import pekko.cluster.metrics.ClusterMetricsExtension
+import pekko.cluster.metrics.{ ClusterMetricsChanged, ClusterMetricsExtension, NodeMetrics }
+import pekko.cluster.metrics.StandardMetrics.{ Cpu, HeapMemory }
 
 class MetricsListener extends Actor with ActorLogging {
   val selfAddress = Cluster(context.system).selfAddress

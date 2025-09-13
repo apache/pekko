@@ -19,8 +19,8 @@ import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorRef, Address, Props }
-import pekko.cluster.{ Cluster, MemberStatus }
 import pekko.cluster.sharding.ShardRegion.{ CurrentRegions, GetCurrentRegions }
+import pekko.cluster.{ Cluster, MemberStatus }
 import pekko.remote.testconductor.RoleName
 import pekko.serialization.jackson.CborSerializable
 import pekko.testkit._

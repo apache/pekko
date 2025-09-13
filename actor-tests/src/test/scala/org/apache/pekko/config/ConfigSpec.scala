@@ -21,8 +21,7 @@ import com.typesafe.config.ConfigFactory
 import org.scalatest.Assertions
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.actor.ExtendedActorSystem
+import pekko.actor.{ ActorSystem, ExtendedActorSystem }
 import pekko.event.DefaultLoggingFilter
 import pekko.event.Logging.DefaultLogger
 import pekko.testkit.PekkoSpec

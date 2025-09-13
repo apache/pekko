@@ -15,35 +15,27 @@ package org.apache.pekko.stream.scaladsl
 
 import java.net.InetSocketAddress
 import java.util.concurrent.TimeoutException
-import javax.net.ssl.SSLEngine
-import javax.net.ssl.SSLSession
+import javax.net.ssl.{ SSLEngine, SSLSession }
 
 import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent.Future
-import scala.concurrent.duration.Duration
-import scala.concurrent.duration.FiniteDuration
-import scala.util.Success
-import scala.util.Try
+import scala.concurrent.duration.{ Duration, FiniteDuration }
 import scala.util.control.NoStackTrace
+import scala.util.{ Success, Try }
 
 import org.apache.pekko
-import pekko.Done
-import pekko.NotUsed
 import pekko.actor._
 import pekko.annotation.InternalApi
-import pekko.io.{ Tcp => IoTcp }
-import pekko.io.IO
 import pekko.io.Inet.SocketOption
-import pekko.stream._
+import pekko.io.{ IO, Tcp => IoTcp }
 import pekko.stream.Attributes.Attribute
+import pekko.stream._
 import pekko.stream.impl.fusing.GraphStages.detacher
-import pekko.stream.impl.io.ConnectionSourceStage
-import pekko.stream.impl.io.OutgoingConnectionStage
-import pekko.stream.impl.io.TcpIdleTimeout
-import pekko.util.ByteString
+import pekko.stream.impl.io.{ ConnectionSourceStage, OutgoingConnectionStage, TcpIdleTimeout }
 import pekko.util.JavaDurationConverters._
-import pekko.util.unused
+import pekko.util.{ unused, ByteString }
+import pekko.{ Done, NotUsed }
 
 object Tcp extends ExtensionId[Tcp] with ExtensionIdProvider {
 

@@ -15,18 +15,18 @@ package org.apache.pekko.remote
 
 import java.util.concurrent.ConcurrentHashMap
 
-import scala.annotation.tailrec
-
-import scala.annotation.nowarn
+import scala.annotation.{ nowarn, tailrec }
 
 import org.apache.pekko
-import pekko.actor.ActorSelectionMessage
-import pekko.actor.ActorSystem
-import pekko.actor.ClassicActorSystemProvider
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.Extension
-import pekko.actor.ExtensionId
-import pekko.actor.ExtensionIdProvider
+import pekko.actor.{
+  ActorSelectionMessage,
+  ActorSystem,
+  ClassicActorSystemProvider,
+  ExtendedActorSystem,
+  Extension,
+  ExtensionId,
+  ExtensionIdProvider
+}
 import pekko.event.Logging
 import pekko.routing.RouterEnvelope
 

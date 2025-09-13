@@ -13,8 +13,8 @@
 
 package docs.stream.operators.sourceorflow
 
-import org.apache.pekko.stream.scaladsl.Sink
-import org.apache.pekko.stream.scaladsl.Source
+import org.apache.pekko
+import pekko.stream.scaladsl.{ Sink, Source }
 
 object Intersperse extends App {
   import org.apache.pekko.actor.ActorSystem

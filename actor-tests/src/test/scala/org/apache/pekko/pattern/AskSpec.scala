@@ -13,15 +13,14 @@
 
 package org.apache.pekko.pattern
 
+import scala.annotation.nowarn
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.Failure
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.testkit.{ PekkoSpec, TestProbe }
-import pekko.testkit.WithLogCapturing
+import pekko.testkit.{ PekkoSpec, TestProbe, WithLogCapturing }
 import pekko.util.Timeout
 
 @nowarn

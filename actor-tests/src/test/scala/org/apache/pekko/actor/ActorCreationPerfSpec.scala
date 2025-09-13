@@ -20,9 +20,8 @@ import com.typesafe.config.ConfigFactory
 import org.scalatest.BeforeAndAfterAll
 
 import org.apache.pekko
-import pekko.testkit.{ ImplicitSender, PekkoSpec, PerformanceTest }
 import pekko.testkit.metrics._
-import pekko.testkit.metrics.HeapMemoryUsage
+import pekko.testkit.{ ImplicitSender, PekkoSpec, PerformanceTest }
 
 object ActorCreationPerfSpec {
 

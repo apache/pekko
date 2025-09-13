@@ -13,12 +13,10 @@
 
 package org.apache.pekko.cluster.pubsub
 
-import java.net.URLDecoder
-import java.net.URLEncoder
+import java.net.{ URLDecoder, URLEncoder }
 import java.util.concurrent.ThreadLocalRandom
 
 import scala.collection.immutable
-import scala.collection.immutable.Set
 import scala.collection.immutable.TreeMap
 import scala.concurrent.duration._
 
@@ -27,19 +25,19 @@ import com.typesafe.config.Config
 import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.DoNotInherit
-import pekko.cluster.Cluster
 import pekko.cluster.ClusterEvent._
-import pekko.cluster.Member
-import pekko.cluster.MemberStatus
-import pekko.routing.ActorRefRoutee
-import pekko.routing.BroadcastRoutingLogic
-import pekko.routing.ConsistentHashingRoutingLogic
-import pekko.routing.RandomRoutingLogic
-import pekko.routing.RoundRobinRoutingLogic
-import pekko.routing.Routee
-import pekko.routing.Router
-import pekko.routing.RouterEnvelope
-import pekko.routing.RoutingLogic
+import pekko.cluster.{ Cluster, Member, MemberStatus }
+import pekko.routing.{
+  ActorRefRoutee,
+  BroadcastRoutingLogic,
+  ConsistentHashingRoutingLogic,
+  RandomRoutingLogic,
+  RoundRobinRoutingLogic,
+  Routee,
+  Router,
+  RouterEnvelope,
+  RoutingLogic
+}
 
 object DistributedPubSubSettings {
 
@@ -245,7 +243,7 @@ object DistributedPubSubMediator {
      * Java API
      */
     def getTopics(): java.util.Set[String] = {
-      import org.apache.pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       topics.asJava
     }
   }
@@ -555,8 +553,8 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
     with ActorLogging
     with PerGroupingBuffer {
 
-  import DistributedPubSubMediator._
   import DistributedPubSubMediator.Internal._
+  import DistributedPubSubMediator._
   import settings._
 
   require(

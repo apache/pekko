@@ -15,27 +15,20 @@ package org.apache.pekko.cluster.sharding
 
 import scala.annotation.tailrec
 import scala.collection.immutable
+import scala.collection.immutable.SortedSet
 import scala.util.Random
+
 import org.apache.pekko
 import pekko.actor.ActorRef
-import pekko.cluster.ClusterEvent
 import pekko.cluster.ClusterEvent.CurrentClusterState
-import pekko.cluster.Member
 import pekko.cluster.sharding.ShardCoordinator.ShardAllocationStrategy
 import pekko.cluster.sharding.ShardRegion.ShardId
 import pekko.cluster.sharding.internal.LeastShardAllocationStrategy
+import pekko.cluster.{ ClusterEvent, Member }
 import pekko.testkit.PekkoSpec
 
-import scala.collection.immutable.SortedSet
-
 class LeastShardAllocationStrategyRandomizedSpec extends PekkoSpec("pekko.loglevel = INFO") {
-  import LeastShardAllocationStrategySpec.{
-    afterRebalance,
-    countShards,
-    countShardsPerRegion,
-    newFakeRegion,
-    newUpMember
-  }
+  import LeastShardAllocationStrategySpec._
 
   @volatile var clusterMembers: SortedSet[Member] = SortedSet.empty
 

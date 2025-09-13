@@ -21,8 +21,8 @@ import org.apache.pekko
 import pekko.actor._
 import pekko.remote.routing._
 import pekko.routing._
-import pekko.testkit._
 import pekko.testkit.TestActors.echoActorProps
+import pekko.testkit._
 
 object RemoteRouterSpec {
   class Parent extends Actor {

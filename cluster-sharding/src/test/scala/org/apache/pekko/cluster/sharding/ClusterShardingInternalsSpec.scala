@@ -21,8 +21,7 @@ import pekko.cluster.ClusterSettings.DataCenter
 import pekko.cluster.sharding.ShardCoordinator.Internal.ShardStopped
 import pekko.cluster.sharding.ShardCoordinator.ShardAllocationStrategy
 import pekko.cluster.sharding.ShardRegion.{ ExtractEntityId, ExtractShardId, HandOffStopper, Msg }
-import pekko.testkit.WithLogCapturing
-import pekko.testkit.{ PekkoSpec, TestProbe }
+import pekko.testkit.{ PekkoSpec, TestProbe, WithLogCapturing }
 
 object ClusterShardingInternalsSpec {
   case class HandOffStopMessage() extends NoSerializationVerificationNeeded

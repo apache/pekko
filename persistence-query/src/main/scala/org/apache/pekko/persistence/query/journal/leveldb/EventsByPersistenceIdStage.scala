@@ -14,27 +14,19 @@
 package org.apache.pekko.persistence.query.journal.leveldb
 
 import scala.concurrent.duration.FiniteDuration
+
 import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.annotation.InternalApi
-import pekko.persistence.JournalProtocol.RecoverySuccess
-import pekko.persistence.JournalProtocol.ReplayMessages
-import pekko.persistence.JournalProtocol.ReplayMessagesFailure
-import pekko.persistence.JournalProtocol.ReplayedMessage
+import pekko.persistence.JournalProtocol.{ RecoverySuccess, ReplayMessages, ReplayMessagesFailure, ReplayedMessage }
 import pekko.persistence.Persistence
 import pekko.persistence.journal.leveldb.LeveldbJournal
 import pekko.persistence.journal.leveldb.LeveldbJournal.EventAppended
 import pekko.persistence.query.EventEnvelope
 import pekko.persistence.query.Sequence
 import pekko.persistence.query.journal.leveldb.EventsByPersistenceIdStage.Continue
-import pekko.stream.Attributes
-import pekko.stream.Materializer
-import pekko.stream.Outlet
-import pekko.stream.SourceShape
-import pekko.stream.stage.GraphStage
-import pekko.stream.stage.GraphStageLogic
-import pekko.stream.stage.OutHandler
-import pekko.stream.stage.TimerGraphStageLogicWithLogging
+import pekko.stream.{ Attributes, Materializer, Outlet, SourceShape }
+import pekko.stream.stage.{ GraphStage, GraphStageLogic, OutHandler, TimerGraphStageLogicWithLogging }
 
 /**
  * INTERNAL API

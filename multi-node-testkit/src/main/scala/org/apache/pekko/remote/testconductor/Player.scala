@@ -23,8 +23,7 @@ import scala.concurrent.{ Await, ExecutionContext, Future }
 import scala.concurrent.duration._
 import scala.reflect.classTag
 import scala.util.{ Failure, Success, Try }
-import scala.util.control.NoStackTrace
-import scala.util.control.NonFatal
+import scala.util.control.{ NoStackTrace, NonFatal }
 
 import io.netty.channel.{ Channel, ChannelHandlerContext, ChannelInboundHandlerAdapter }
 import io.netty.channel.ChannelHandler.Sharable

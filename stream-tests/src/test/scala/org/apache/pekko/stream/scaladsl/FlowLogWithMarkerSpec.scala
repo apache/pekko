@@ -20,10 +20,10 @@ import scala.util.control.NoStackTrace
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.event.{ DummyClassForStringSources, LogMarker, Logging }
-import pekko.stream._
 import pekko.stream.ActorAttributes._
 import pekko.stream.Attributes.LogLevels
 import pekko.stream.Supervision._
+import pekko.stream._
 import pekko.stream.testkit.{ ScriptedTest, StreamSpec }
 import pekko.testkit.TestProbe
 

@@ -15,10 +15,11 @@ package org.apache.pekko.pattern.internal
 
 import java.util.{ List => JList }
 
+import scala.jdk.CollectionConverters._
+
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.annotation.{ InternalApi, InternalStableApi }
-import pekko.util.ccompat.JavaConverters._
 
 /**
  * Service Provider Interface (SPI) for collecting metrics from Circuit Breaker.

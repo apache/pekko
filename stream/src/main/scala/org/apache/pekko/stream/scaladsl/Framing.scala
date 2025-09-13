@@ -20,10 +20,10 @@ import scala.reflect.ClassTag
 
 import org.apache.pekko
 import pekko.NotUsed
-import pekko.stream.{ Attributes, FlowShape, Inlet, Outlet }
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.fusing.GraphStages.SimpleLinearGraphStage
 import pekko.stream.stage._
+import pekko.stream.{ Attributes, FlowShape, Inlet, Outlet }
 import pekko.util.{ ByteIterator, ByteString, OptionVal }
 
 object Framing {

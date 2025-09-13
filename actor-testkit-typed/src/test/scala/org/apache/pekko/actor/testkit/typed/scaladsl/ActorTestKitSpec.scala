@@ -22,8 +22,7 @@ import org.scalatest.wordspec.{ AnyWordSpec, AnyWordSpecLike }
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.Dropped
-import pekko.actor.UnhandledMessage
+import pekko.actor.{ Dropped, UnhandledMessage }
 import pekko.actor.testkit.typed.internal.ActorTestKitGuardian
 import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.eventstream.EventStream

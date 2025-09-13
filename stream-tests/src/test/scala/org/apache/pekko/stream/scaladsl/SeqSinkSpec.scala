@@ -14,14 +14,11 @@
 package org.apache.pekko.stream.scaladsl
 
 import scala.collection.immutable
-import scala.concurrent.Await
-import scala.concurrent.Future
+import scala.concurrent.{ Await, Future }
 
 import org.apache.pekko
-import pekko.stream.AbruptTerminationException
-import pekko.stream.Materializer
-import pekko.stream.testkit.StreamSpec
-import pekko.stream.testkit.TestPublisher
+import pekko.stream.{ AbruptTerminationException, Materializer }
+import pekko.stream.testkit.{ StreamSpec, TestPublisher }
 
 class SeqSinkSpec extends StreamSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 2

@@ -18,8 +18,9 @@
 package docs.stream.operators.flow
 
 //#imports
-import org.apache.pekko.NotUsed
-import org.apache.pekko.stream.scaladsl._
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.stream.scaladsl._
 
 //#imports
 

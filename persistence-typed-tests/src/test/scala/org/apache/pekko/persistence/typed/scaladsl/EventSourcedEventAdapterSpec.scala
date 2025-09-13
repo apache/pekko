@@ -13,27 +13,22 @@
 
 package org.apache.pekko.persistence.typed.scaladsl
 
-import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.testkit.typed.scaladsl.TestProbe
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.persistence.query.EventEnvelope
-import pekko.persistence.query.PersistenceQuery
-import pekko.persistence.query.Sequence
-import pekko.persistence.testkit.PersistenceTestKitPlugin
-import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
-import pekko.persistence.typed.EventAdapter
-import pekko.persistence.typed.EventSeq
-import pekko.persistence.typed.PersistenceId
-import pekko.serialization.jackson.CborSerializable
-import pekko.stream.scaladsl.Sink
-import pekko.testkit.JavaSerializable
+import java.util.concurrent.atomic.AtomicInteger
+
 import com.typesafe.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
-import java.util.concurrent.atomic.AtomicInteger
+import org.apache.pekko
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit, TestProbe }
+import pekko.actor.typed.ActorRef
+import pekko.actor.typed.scaladsl.Behaviors
+import pekko.persistence.query.{ EventEnvelope, PersistenceQuery, Sequence }
+import pekko.persistence.testkit.PersistenceTestKitPlugin
+import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
+import pekko.persistence.typed.{ EventAdapter, EventSeq, PersistenceId }
+import pekko.serialization.jackson.CborSerializable
+import pekko.stream.scaladsl.Sink
+import pekko.testkit.JavaSerializable
 
 object EventSourcedEventAdapterSpec {
 

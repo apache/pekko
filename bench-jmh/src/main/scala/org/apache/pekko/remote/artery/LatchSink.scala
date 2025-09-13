@@ -13,16 +13,11 @@
 
 package org.apache.pekko.remote.artery
 
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.CyclicBarrier
+import java.util.concurrent.{ CountDownLatch, CyclicBarrier }
 
 import org.apache.pekko
-import pekko.stream.Attributes
-import pekko.stream.Inlet
-import pekko.stream.SinkShape
-import pekko.stream.stage.GraphStage
-import pekko.stream.stage.GraphStageLogic
-import pekko.stream.stage.InHandler
+import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler }
+import pekko.stream.{ Attributes, Inlet, SinkShape }
 
 class LatchSink(countDownAfter: Int, latch: CountDownLatch) extends GraphStage[SinkShape[Any]] {
   val in: Inlet[Any] = Inlet("LatchSink")

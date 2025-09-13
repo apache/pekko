@@ -15,12 +15,13 @@ package docs.io
 
 import java.net.InetSocketAddress
 
+import scala.io.StdIn
+
 import com.typesafe.config.ConfigFactory
+
 import org.apache.pekko.actor.{ Actor, ActorLogging, ActorRef, ActorSystem, Props, SupervisorStrategy }
 import org.apache.pekko.io.{ IO, Tcp }
 import org.apache.pekko.util.ByteString
-
-import scala.io.StdIn
 
 object EchoServer extends App {
 

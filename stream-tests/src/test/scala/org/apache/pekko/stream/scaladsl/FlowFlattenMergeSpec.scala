@@ -16,19 +16,16 @@ package org.apache.pekko.stream.scaladsl
 import scala.concurrent._
 import scala.concurrent.duration._
 
+import org.scalatest.exceptions.TestFailedException
+
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream._
-import pekko.stream.stage.GraphStage
-import pekko.stream.stage.GraphStageLogic
-import pekko.stream.stage.OutHandler
-import pekko.stream.testkit.StreamSpec
-import pekko.stream.testkit.TestPublisher
+import pekko.stream.stage.{ GraphStage, GraphStageLogic, OutHandler }
+import pekko.stream.testkit.{ StreamSpec, TestPublisher }
 import pekko.stream.testkit.Utils.TE
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.testkit.TestLatch
-
-import org.scalatest.exceptions.TestFailedException
 
 class FlowFlattenMergeSpec extends StreamSpec {
   import system.dispatcher

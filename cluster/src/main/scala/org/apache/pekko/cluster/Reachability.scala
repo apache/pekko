@@ -15,8 +15,7 @@ package org.apache.pekko.cluster
 
 import scala.collection.immutable
 
-import org.apache.pekko
-import pekko.annotation.InternalApi
+import org.apache.pekko.annotation.InternalApi
 
 /**
  * INTERNAL API

@@ -16,25 +16,21 @@ package org.apache.pekko.io.dns.internal
 import java.net.{ Inet4Address, Inet6Address, InetAddress, InetSocketAddress }
 
 import scala.collection.immutable
-import scala.concurrent.ExecutionContextExecutor
-import scala.concurrent.Future
-import scala.util.Try
-import scala.util.Success
-import scala.util.Failure
+import scala.concurrent.{ ExecutionContextExecutor, Future }
 import scala.util.control.NonFatal
+import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorLogging, ActorRef, ActorRefFactory }
 import pekko.annotation.InternalApi
 import pekko.io.SimpleDnsCache
-import pekko.io.dns._
 import pekko.io.dns.CachePolicy.{ Never, Ttl }
 import pekko.io.dns.DnsProtocol.{ Ip, RequestType, Srv }
+import pekko.io.dns._
 import pekko.io.dns.internal.DnsClient._
-import pekko.pattern.{ ask, pipe }
-import pekko.pattern.AskTimeoutException
-import pekko.util.{ Helpers, Timeout }
+import pekko.pattern.{ ask, pipe, AskTimeoutException }
 import pekko.util.PrettyDuration._
+import pekko.util.{ Helpers, Timeout }
 
 /**
  * INTERNAL API

@@ -15,8 +15,7 @@ package org.apache.pekko.remote.artery
 
 import java.util.concurrent.TimeUnit
 
-import scala.concurrent.Future
-import scala.concurrent.Promise
+import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
@@ -29,22 +28,21 @@ import pekko.remote.MessageSerializer
 import pekko.remote.OversizedPayloadException
 import pekko.remote.RemoteActorRefProvider
 import pekko.remote.UniqueAddress
-import pekko.remote.artery.Decoder.AdvertiseActorRefsCompressionTable
-import pekko.remote.artery.Decoder.AdvertiseClassManifestsCompressionTable
-import pekko.remote.artery.Decoder.InboundCompressionAccess
-import pekko.remote.artery.Decoder.InboundCompressionAccessImpl
+import pekko.remote.artery.Decoder.{
+  AdvertiseActorRefsCompressionTable,
+  AdvertiseClassManifestsCompressionTable,
+  InboundCompressionAccess,
+  InboundCompressionAccessImpl
+}
 import pekko.remote.artery.OutboundHandshake.HandshakeReq
 import pekko.remote.artery.SystemMessageDelivery.SystemMessageEnvelope
 import pekko.remote.artery.compress.CompressionProtocol._
 import pekko.remote.artery.compress._
 import pekko.remote.serialization.AbstractActorRefResolveCache
-import pekko.serialization.Serialization
-import pekko.serialization.SerializationExtension
-import pekko.serialization.Serializers
+import pekko.serialization.{ Serialization, SerializationExtension, Serializers }
 import pekko.stream._
 import pekko.stream.stage._
-import pekko.util.OptionVal
-import pekko.util.unused
+import pekko.util.{ unused, OptionVal }
 
 /**
  * INTERNAL API

@@ -15,13 +15,12 @@ package docs.org.apache.pekko.actor.testkit.typed.scaladsl
 
 //#manual-scheduling-simple
 import scala.concurrent.duration._
-import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.testkit.typed.scaladsl.ManualTime
-import pekko.actor.testkit.typed.scaladsl.TestProbe
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.typed.scaladsl.Behaviors
+
 import org.scalatest.wordspec.AnyWordSpecLike
+
+import org.apache.pekko
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ManualTime, ScalaTestWithActorTestKit, TestProbe }
+import pekko.actor.typed.scaladsl.Behaviors
 
 class ManualTimerExampleSpec
     extends ScalaTestWithActorTestKit(ManualTime.config)

@@ -13,33 +13,23 @@
 
 package org.apache.pekko.actor.typed.scaladsl
 
-import java.util.concurrent.atomic.AtomicInteger
-import java.util.concurrent.atomic.AtomicReference
+import java.util.concurrent.atomic.{ AtomicInteger, AtomicReference }
 
 import com.typesafe.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
-import org.slf4j.LoggerFactory
-import org.slf4j.MDC
 import org.slf4j.helpers.BasicMarkerFactory
+import org.slf4j.{ LoggerFactory, MDC }
 
 import org.apache.pekko
-import pekko.actor.ActorPath
-import pekko.actor.ActorSystem
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.testkit.typed.LoggingEvent
-import pekko.actor.testkit.typed.TestException
-import pekko.actor.testkit.typed.scaladsl.ActorTestKit
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.typed.ActorTags
-import pekko.actor.typed.Behavior
+import pekko.actor.testkit.typed.scaladsl.{ ActorTestKit, LogCapturing, LoggingTestKit, ScalaTestWithActorTestKit }
+import pekko.actor.testkit.typed.{ LoggingEvent, TestException }
 import pekko.actor.typed.internal.ActorMdc
 import pekko.actor.typed.scaladsl.adapter._
+import pekko.actor.typed.{ ActorTags, Behavior }
+import pekko.actor.{ ActorPath, ActorSystem, ExtendedActorSystem }
 import pekko.event.DefaultLoggingFilter
 import pekko.event.Logging.DefaultLogger
-import pekko.event.slf4j.Slf4jLogger
-import pekko.event.slf4j.Slf4jLoggingFilter
+import pekko.event.slf4j.{ Slf4jLogger, Slf4jLoggingFilter }
 
 class SomeClass
 
@@ -291,9 +281,8 @@ class ActorLoggingSpec extends ScalaTestWithActorTestKit("""
 
   "SLF4J Settings" must {
     import org.apache.pekko
-    import pekko.actor.{ ActorSystem => ClassicActorSystem }
-    import pekko.actor.ExtendedActorSystem
     import pekko.actor.typed.scaladsl.adapter._
+    import pekko.actor.{ ExtendedActorSystem, ActorSystem => ClassicActorSystem }
 
     "by default be amended to use Slf4jLogger" in {
       system.settings.config.getStringList("pekko.loggers").size() should ===(1)

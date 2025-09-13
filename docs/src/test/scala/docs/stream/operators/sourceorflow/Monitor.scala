@@ -13,16 +13,17 @@
 
 package docs.stream.operators.sourceorflow
 
-import org.apache.pekko.NotUsed
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.stream.FlowMonitor
-import org.apache.pekko.stream.FlowMonitorState
-import org.apache.pekko.stream.scaladsl.Keep
-import org.apache.pekko.stream.scaladsl.Sink
-import org.apache.pekko.stream.scaladsl.Source
-
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration._
+
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.actor.ActorSystem
+import pekko.stream.FlowMonitor
+import pekko.stream.FlowMonitorState
+import pekko.stream.scaladsl.Keep
+import pekko.stream.scaladsl.Sink
+import pekko.stream.scaladsl.Source
 
 class Monitor {
 

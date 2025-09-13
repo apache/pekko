@@ -13,14 +13,16 @@
 
 package docs.stream
 
-import org.apache.pekko.NotUsed
-import org.apache.pekko.stream.{ KillSwitches, RestartSettings }
-import org.apache.pekko.stream.scaladsl._
-import org.apache.pekko.testkit.PekkoSpec
-import docs.CompileOnlySpec
-
 import scala.concurrent.duration._
 import scala.concurrent._
+
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.stream.{ KillSwitches, RestartSettings }
+import pekko.stream.scaladsl._
+import pekko.testkit.PekkoSpec
+
+import docs.CompileOnlySpec
 
 class RestartDocSpec extends PekkoSpec with CompileOnlySpec {
   import system.dispatcher

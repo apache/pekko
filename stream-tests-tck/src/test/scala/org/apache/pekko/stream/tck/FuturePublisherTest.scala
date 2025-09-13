@@ -17,9 +17,7 @@ import scala.concurrent.Promise
 
 import org.reactivestreams._
 
-import org.apache.pekko
-import pekko.stream.scaladsl.Sink
-import pekko.stream.scaladsl.Source
+import org.apache.pekko.stream.scaladsl.{ Sink, Source }
 
 class FuturePublisherTest extends PekkoPublisherVerification[Int] {
 

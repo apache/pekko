@@ -22,28 +22,27 @@ import scala.util.control.NonFatal
 import org.apache.pekko
 import pekko.actor.{
   Actor,
+  ActorIdentity,
   ActorPath,
   ActorPathExtractor,
   ActorRef,
+  ActorRefScope,
+  ActorRefWithCell,
+  ActorSelectionMessage,
   ActorSystemImpl,
   AddressTerminated,
   Deploy,
+  EmptyLocalActorRef,
+  Identify,
   InternalActorRef,
   Nobody,
   Props,
+  SelectChildName,
+  SelectChildPattern,
+  SelectParent,
   VirtualPathContainer
 }
-import pekko.actor.ActorIdentity
-import pekko.actor.ActorRefScope
-import pekko.actor.ActorRefWithCell
-import pekko.actor.ActorSelectionMessage
-import pekko.actor.EmptyLocalActorRef
-import pekko.actor.Identify
-import pekko.actor.SelectChildName
-import pekko.actor.SelectChildPattern
-import pekko.actor.SelectParent
-import pekko.dispatch.sysmsg.{ DeathWatchNotification, SystemMessage, Watch }
-import pekko.dispatch.sysmsg.Unwatch
+import pekko.dispatch.sysmsg.{ DeathWatchNotification, SystemMessage, Unwatch, Watch }
 import pekko.event.{ AddressTerminatedTopic, LogMarker, MarkerLoggingAdapter }
 import pekko.util.Switch
 
@@ -85,7 +84,7 @@ private[pekko] class RemoteSystemDaemon(
 
   private val allowListEnabled = system.settings.config.getBoolean("pekko.remote.deployment.enable-allow-list")
   private val remoteDeploymentAllowList: immutable.Set[String] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     if (allowListEnabled)
       system.settings.config.getStringList("pekko.remote.deployment.allowed-actor-classes").asScala.toSet
     else Set.empty

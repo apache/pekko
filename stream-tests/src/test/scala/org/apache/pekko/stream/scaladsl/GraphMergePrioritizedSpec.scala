@@ -17,9 +17,9 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.NotUsed
-import pekko.stream.{ ClosedShape, Inlet, Outlet }
-import pekko.stream.testkit.{ TestSubscriber, TwoStreamsSetup }
 import pekko.stream.testkit.TestSubscriber.ManualProbe
+import pekko.stream.testkit.{ TestSubscriber, TwoStreamsSetup }
+import pekko.stream.{ ClosedShape, Inlet, Outlet }
 
 class GraphMergePrioritizedSpec extends TwoStreamsSetup {
   import GraphDSL.Implicits._

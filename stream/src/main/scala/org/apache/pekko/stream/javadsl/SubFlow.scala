@@ -13,12 +13,13 @@
 
 package org.apache.pekko.stream.javadsl
 
-import java.util.{ Comparator, Optional }
 import java.util.concurrent.CompletionStage
+import java.util.{ Comparator, Optional }
 
-import scala.annotation.varargs
 import scala.annotation.unchecked.uncheckedVariance
+import scala.annotation.varargs
 import scala.collection.immutable
+import scala.jdk.CollectionConverters._
 import scala.reflect.ClassTag
 
 import org.apache.pekko
@@ -31,7 +32,6 @@ import pekko.util.ConstantFun
 import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
 import pekko.util.OptionConverters._
-import pekko.util.ccompat.JavaConverters._
 
 object SubFlow {
 

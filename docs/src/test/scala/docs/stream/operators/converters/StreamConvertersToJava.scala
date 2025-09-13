@@ -17,18 +17,16 @@ package docs.stream.operators.converters
 import java.util.stream
 import java.util.stream.IntStream
 
-import org.apache.pekko
-import pekko.NotUsed
-import pekko.stream.scaladsl.Keep
-import pekko.stream.scaladsl.Sink
-import pekko.stream.scaladsl.Source
-import pekko.stream.scaladsl.StreamConverters
-// #import
-import pekko.testkit.PekkoSpec
-import org.scalatest.concurrent.Futures
-
 import scala.collection.immutable
 import scala.concurrent.Future
+
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.stream.scaladsl.{ Keep, Sink, Source, StreamConverters }
+// #import
+import pekko.testkit.PekkoSpec
+
+import org.scalatest.concurrent.Futures
 
 class StreamConvertersToJava extends PekkoSpec with Futures {
 

@@ -13,12 +13,10 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import scala.concurrent.Await
-import scala.concurrent.ExecutionContextExecutor
-import scala.concurrent.Future
-import scala.concurrent.duration._
-
 import org.apache.pekko.stream.testkit._
+
+import scala.concurrent.{ Await, ExecutionContextExecutor, Future }
+import scala.concurrent.duration._
 
 class LastSinkSpec extends StreamSpec with ScriptedTest {
 

@@ -13,26 +13,18 @@
 
 package org.apache.pekko.actor
 
-import org.apache.pekko
-import pekko.ConfigurationException
-import pekko.Done
-import pekko.actor.CoordinatedShutdown.Phase
-import pekko.actor.CoordinatedShutdown.UnknownReason
-import pekko.dispatch.ExecutionContexts
-import pekko.testkit.PekkoSpec
-import pekko.testkit.EventFilter
-import pekko.testkit.TestKit
-import pekko.testkit.TestProbe
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import java.util.concurrent.{ Executors, TimeoutException }
 
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeoutException
 import scala.concurrent.duration._
-import scala.concurrent.Await
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
-import scala.concurrent.Promise
+import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
+
+import com.typesafe.config.{ Config, ConfigFactory }
+
+import org.apache.pekko
+import pekko.actor.CoordinatedShutdown.{ Phase, UnknownReason }
+import pekko.dispatch.ExecutionContexts
+import pekko.testkit.{ EventFilter, PekkoSpec, TestKit, TestProbe }
+import pekko.{ ConfigurationException, Done }
 
 class CoordinatedShutdownSpec
     extends PekkoSpec(ConfigFactory.parseString("""

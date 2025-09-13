@@ -13,15 +13,13 @@
 
 package org.apache.pekko.stream
 
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.{ CountDownLatch, TimeUnit }
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
 import org.openjdk.jmh.annotations._
-import org.openjdk.jmh.annotations.OperationsPerInvocation
 
 import org.apache.pekko
 import pekko.NotUsed

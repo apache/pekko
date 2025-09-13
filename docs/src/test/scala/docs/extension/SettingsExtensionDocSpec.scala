@@ -14,23 +14,26 @@
 package docs.extension
 
 //#imports
-import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.actor.Extension
-import pekko.actor.ExtensionId
-import pekko.actor.ExtensionIdProvider
-import pekko.actor.ExtendedActorSystem
-
-import scala.concurrent.duration.Duration
-import com.typesafe.config.Config
 import java.util.concurrent.TimeUnit
 
-import pekko.actor.ClassicActorSystemProvider
+import scala.concurrent.duration.Duration
+
+import com.typesafe.config.Config
+
+import org.apache.pekko
+import pekko.actor.{
+  ActorSystem,
+  ClassicActorSystemProvider,
+  ExtendedActorSystem,
+  Extension,
+  ExtensionId,
+  ExtensionIdProvider
+}
 
 //#imports
 
-import org.apache.pekko.actor.Actor
-import org.apache.pekko.testkit.PekkoSpec
+import pekko.actor.Actor
+import pekko.testkit.PekkoSpec
 
 //#extension
 class SettingsImpl(config: Config) extends Extension {

@@ -16,21 +16,16 @@ package org.apache.pekko.routing
 import java.util.concurrent.TimeoutException
 
 import scala.collection.immutable
-import scala.concurrent.Future
-import scala.concurrent.Promise
 import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.{ Future, Promise }
 
 import com.typesafe.config.Config
 
 import org.apache.pekko
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
-import pekko.actor.SupervisorStrategy
-import pekko.dispatch.Dispatchers
-import pekko.dispatch.ExecutionContexts
+import pekko.actor.{ ActorRef, ActorSystem, SupervisorStrategy }
+import pekko.dispatch.{ Dispatchers, ExecutionContexts }
 import pekko.japi.Util.immutableSeq
-import pekko.pattern.ask
-import pekko.pattern.pipe
+import pekko.pattern.{ ask, pipe }
 import pekko.util.Helpers.ConfigOps
 import pekko.util.JavaDurationConverters._
 import pekko.util.Timeout

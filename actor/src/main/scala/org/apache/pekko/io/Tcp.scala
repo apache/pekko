@@ -14,24 +14,23 @@
 package org.apache.pekko.io
 
 import java.lang.{ Iterable => JIterable }
-import java.net.InetSocketAddress
-import java.net.Socket
+import java.net.{ InetSocketAddress, Socket }
 import java.nio.file.{ Path, Paths }
 
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent.duration._
+import scala.jdk.CollectionConverters._
 
-import scala.annotation.nowarn
 import com.typesafe.config.Config
 
 import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.InternalApi
 import pekko.io.Inet._
-import pekko.util.{ ByteString, Helpers }
 import pekko.util.Helpers.Requiring
 import pekko.util.JavaDurationConverters._
-import pekko.util.ccompat.JavaConverters._
+import pekko.util.{ ByteString, Helpers }
 
 /**
  * TCP Extension for Akka’s IO layer.
@@ -599,7 +598,6 @@ class TcpExt(system: ExtendedActorSystem) extends IO.Extension {
   val Settings = new Settings(system.settings.config.getConfig("pekko.io.tcp"))
   class Settings private[TcpExt] (_config: Config) extends SelectionHandlerSettings(_config) {
     import _config._
-
     import pekko.util.Helpers.ConfigOps
 
     val NrOfSelectors: Int = getInt("nr-of-selectors").requiring(_ > 0, "nr-of-selectors must be > 0")
@@ -692,6 +690,7 @@ object TcpSO extends SoJavaFactories {
 
 object TcpMessage {
   import Tcp._
+
   import language.implicitConversions
 
   /**

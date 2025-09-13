@@ -19,7 +19,6 @@ package org.apache.pekko.cluster.metrics.protobuf
 
 import java.io.{ ByteArrayInputStream, ByteArrayOutputStream, ObjectOutputStream }
 import java.math.BigInteger
-import scala.math.BigInt
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec

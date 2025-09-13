@@ -15,41 +15,44 @@ package org.apache.pekko.cluster.sharding
 
 import java.net.URLEncoder
 import java.util
+
+import scala.concurrent.duration._
+
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorLogging
-import pekko.actor.ActorRef
-import pekko.actor.DeadLetterSuppression
-import pekko.actor.Deploy
-import pekko.actor.Dropped
-import pekko.actor.NoSerializationVerificationNeeded
-import pekko.actor.Props
-import pekko.actor.Stash
-import pekko.actor.Terminated
-import pekko.actor.Timers
+import pekko.actor.{
+  Actor,
+  ActorLogging,
+  ActorRef,
+  DeadLetterSuppression,
+  Deploy,
+  Dropped,
+  NoSerializationVerificationNeeded,
+  Props,
+  Stash,
+  Terminated,
+  Timers
+}
 import pekko.annotation.InternalStableApi
 import pekko.cluster.Cluster
-import pekko.cluster.ClusterEvent.InitialStateAsEvents
-import pekko.cluster.ClusterEvent.MemberEvent
-import pekko.cluster.ClusterEvent.MemberPreparingForShutdown
-import pekko.cluster.ClusterEvent.MemberReadyForShutdown
+import pekko.cluster.ClusterEvent.{
+  InitialStateAsEvents,
+  MemberEvent,
+  MemberPreparingForShutdown,
+  MemberReadyForShutdown
+}
 import pekko.cluster.sharding.ShardRegion.ShardsUpdated
-import pekko.cluster.sharding.internal.EntityPassivationStrategy
-import pekko.cluster.sharding.internal.RememberEntitiesShardStore
 import pekko.cluster.sharding.internal.RememberEntitiesShardStore.GetEntities
-import pekko.cluster.sharding.internal.RememberEntitiesProvider
-import pekko.cluster.sharding.internal.RememberEntityStarter
-import pekko.coordination.lease.scaladsl.Lease
-import pekko.coordination.lease.scaladsl.LeaseProvider
+import pekko.cluster.sharding.internal.{
+  EntityPassivationStrategy,
+  RememberEntitiesProvider,
+  RememberEntitiesShardStore,
+  RememberEntityStarter
+}
+import pekko.coordination.lease.scaladsl.{ Lease, LeaseProvider }
 import pekko.event.LoggingAdapter
 import pekko.pattern.pipe
-import pekko.util.MessageBufferMap
-import pekko.util.OptionVal
 import pekko.util.PrettyDuration._
-import pekko.util.unused
-
-import scala.collection.immutable.Set
-import scala.concurrent.duration._
+import pekko.util.{ unused, MessageBufferMap, OptionVal }
 
 /**
  * INTERNAL API
@@ -369,7 +372,7 @@ private[pekko] object Shard {
       }
     }
 
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     // only called once during handoff
     def activeEntities(): Set[ActorRef] = byRef.keySet.asScala.toSet
 
@@ -432,14 +435,8 @@ private[pekko] class Shard(
     with Timers {
 
   import Shard._
-  import ShardCoordinator.Internal.HandOff
-  import ShardCoordinator.Internal.ShardStopped
-  import ShardRegion.EntityId
-  import ShardRegion.HandOffStopper
-  import ShardRegion.Passivate
-  import ShardRegion.ShardInitialized
-
-  import pekko.cluster.sharding.ShardCoordinator.Internal.CoordinatorMessage
+  import ShardRegion.{ EntityId, HandOffStopper, Passivate, ShardInitialized }
+  import ShardCoordinator.Internal.{ CoordinatorMessage, HandOff, ShardStopped }
 
   private val verboseDebug = context.system.settings.config.getBoolean("pekko.cluster.sharding.verbose-debug-logging")
 

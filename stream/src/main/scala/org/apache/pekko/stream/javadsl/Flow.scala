@@ -13,34 +13,29 @@
 
 package org.apache.pekko.stream.javadsl
 
-import java.util.Comparator
-import java.util.Optional
+import java.util.{ Comparator, Optional }
 import java.util.concurrent.CompletionStage
 
-import scala.annotation.varargs
 import scala.annotation.unchecked.uncheckedVariance
+import scala.annotation.varargs
 import scala.collection.immutable
 import scala.reflect.ClassTag
 
+import org.reactivestreams.Processor
+
 import org.apache.pekko
-import pekko.Done
-import pekko.NotUsed
-import pekko.actor.ActorRef
-import pekko.actor.ClassicActorSystemProvider
+import pekko.{ Done, NotUsed }
+import pekko.actor.{ ActorRef, ClassicActorSystemProvider }
 import pekko.dispatch.ExecutionContexts
 import pekko.event.{ LogMarker, LoggingAdapter, MarkerLoggingAdapter }
-import pekko.japi.Pair
-import pekko.japi.function
+import pekko.japi.{ function, Pair }
 import pekko.japi.function.Creator
-import pekko.stream.{ javadsl, _ }
 import pekko.stream.impl.fusing.{ StatefulMapConcat, ZipWithIndexJava }
-import pekko.util.ConstantFun
+import pekko.stream._
 import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
 import pekko.util.OptionConverters._
-import pekko.util.Timeout
-import pekko.util.unused
-import org.reactivestreams.Processor
+import pekko.util.{ unused, ConstantFun, Timeout }
 
 object Flow {
 
@@ -366,7 +361,7 @@ object Flow {
  * A `Flow` is a set of stream processing steps that has one open input and one open output.
  */
 final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Graph[FlowShape[In, Out], Mat] {
-  import org.apache.pekko.util.ccompat.JavaConverters._
+  import scala.jdk.CollectionConverters._
 
   override def shape: FlowShape[In, Out] = delegate.shape
   override def traversalBuilder = delegate.traversalBuilder

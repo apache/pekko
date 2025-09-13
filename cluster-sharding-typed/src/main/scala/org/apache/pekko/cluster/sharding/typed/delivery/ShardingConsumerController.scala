@@ -18,11 +18,9 @@ import java.util.function.{ Function => JFunction }
 import com.typesafe.config.Config
 
 import org.apache.pekko
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Behavior
 import pekko.actor.typed.delivery.ConsumerController
 import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior }
 import pekko.annotation.ApiMayChange
 import pekko.cluster.sharding.typed.delivery.internal.ShardingConsumerControllerImpl
 

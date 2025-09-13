@@ -15,11 +15,10 @@ package org.apache.pekko.stream.tck
 
 import scala.collection.immutable
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{ Config, ConfigFactory }
+
 import org.reactivestreams.Publisher
-import org.reactivestreams.tck.PublisherVerification
-import org.reactivestreams.tck.TestEnvironment
+import org.reactivestreams.tck.{ PublisherVerification, TestEnvironment }
 import org.scalatestplus.testng.TestNGSuiteLike
 
 import org.apache.pekko.stream.testkit.TestPublisher

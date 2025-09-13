@@ -13,14 +13,16 @@
 
 package docs.org.apache.pekko.cluster.typed
 
-import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.ActorTestKit
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.testkit.SocketUtil
 import scala.annotation.nowarn
+import scala.concurrent.duration._
+
 import com.typesafe.config.ConfigFactory
-import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+
+import org.apache.pekko
+import pekko.actor.testkit.typed.scaladsl.{ ActorTestKit, LogCapturing }
+import pekko.testkit.SocketUtil
 //#cluster-imports
 import org.apache.pekko
 import pekko.actor.typed._
@@ -32,8 +34,6 @@ import pekko.cluster.typed._
 import pekko.actor.testkit.typed.scaladsl.TestProbe
 import org.scalatest.concurrent.{ Eventually, ScalaFutures }
 import org.scalatest.time.{ Millis, Seconds, Span }
-
-import scala.concurrent.duration._
 
 object BasicClusterExampleSpec {
   val configSystem1 = ConfigFactory.parseString(s"""
@@ -70,8 +70,7 @@ pekko {
     val system: ActorSystem[_] = ???
 
     // #join-seed-nodes
-    import pekko.actor.Address
-    import pekko.actor.AddressFromURIString
+    import pekko.actor.{ Address, AddressFromURIString }
     import pekko.cluster.typed.JoinSeedNodes
 
     val seedNodes: List[Address] =

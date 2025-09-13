@@ -17,9 +17,10 @@ import org.apache.pekko.testkit.{ PekkoSpec => MyFavoriteTestFrameWorkPlusPekkoT
 import org.apache.pekko.util.ByteString
 
 //#test-code
+import scala.collection.immutable
+
 import org.apache.pekko
 import pekko.actor.Props
-import scala.collection.immutable
 
 object FSMDocSpec {
   // messages and data types

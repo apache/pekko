@@ -13,10 +13,9 @@
 
 package org.apache.pekko.io
 
-import Tcp._
-
 import org.apache.pekko
 import pekko.actor.{ ActorLogging, Props }
+import pekko.io.Tcp._
 
 /**
  * INTERNAL API

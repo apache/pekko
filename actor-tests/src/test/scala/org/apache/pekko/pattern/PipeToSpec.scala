@@ -17,8 +17,7 @@ import scala.concurrent.Future
 
 import org.apache.pekko
 import pekko.actor.Status
-import pekko.testkit.PekkoSpec
-import pekko.testkit.TestProbe
+import pekko.testkit.{ PekkoSpec, TestProbe }
 
 class PipeToSpec extends PekkoSpec {
 

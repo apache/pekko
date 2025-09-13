@@ -13,11 +13,11 @@
 
 package doc.org.apache.pekko.discovery
 
-import org.apache.pekko.actor.ActorSystem
-
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.duration._
-import scala.concurrent.ExecutionContext.Implicits.global
+
+import org.apache.pekko.actor.ActorSystem
 
 object CompileOnlySpec {
 

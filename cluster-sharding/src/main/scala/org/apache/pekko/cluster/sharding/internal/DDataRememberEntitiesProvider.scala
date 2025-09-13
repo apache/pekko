@@ -14,8 +14,7 @@
 package org.apache.pekko.cluster.sharding.internal
 
 import org.apache.pekko
-import pekko.actor.ActorRef
-import pekko.actor.Props
+import pekko.actor.{ ActorRef, Props }
 import pekko.annotation.InternalApi
 import pekko.cluster.sharding.ClusterShardingSettings
 import pekko.cluster.sharding.ShardRegion.ShardId

@@ -13,13 +13,10 @@
 
 package org.apache.pekko.stream.tck
 
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.{ ExecutorService, Executors, TimeUnit }
 
+import org.reactivestreams.tck.{ IdentityProcessorVerification, TestEnvironment }
 import org.reactivestreams.{ Processor, Publisher, Subscriber, Subscription }
-import org.reactivestreams.tck.IdentityProcessorVerification
-import org.reactivestreams.tck.TestEnvironment
 import org.scalatestplus.testng.TestNGSuiteLike
 import org.testng.annotations.AfterClass
 

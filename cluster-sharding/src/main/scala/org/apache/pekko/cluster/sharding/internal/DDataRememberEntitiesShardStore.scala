@@ -13,36 +13,31 @@
 
 package org.apache.pekko.cluster.sharding.internal
 
+import scala.concurrent.ExecutionContext
+
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorLogging
-import pekko.actor.ActorRef
-import pekko.actor.Props
-import pekko.actor.Stash
+import pekko.actor.{ Actor, ActorLogging, ActorRef, Props, Stash }
 import pekko.annotation.InternalApi
 import pekko.cluster.Cluster
-import pekko.cluster.ddata.ORSet
-import pekko.cluster.ddata.ORSetKey
-import pekko.cluster.ddata.Replicator.Get
-import pekko.cluster.ddata.Replicator.GetDataDeleted
-import pekko.cluster.ddata.Replicator.GetFailure
-import pekko.cluster.ddata.Replicator.GetSuccess
-import pekko.cluster.ddata.Replicator.ModifyFailure
-import pekko.cluster.ddata.Replicator.NotFound
-import pekko.cluster.ddata.Replicator.ReadMajority
-import pekko.cluster.ddata.Replicator.StoreFailure
-import pekko.cluster.ddata.Replicator.Update
-import pekko.cluster.ddata.Replicator.UpdateDataDeleted
-import pekko.cluster.ddata.Replicator.UpdateSuccess
-import pekko.cluster.ddata.Replicator.UpdateTimeout
-import pekko.cluster.ddata.Replicator.WriteMajority
-import pekko.cluster.ddata.SelfUniqueAddress
+import pekko.cluster.ddata.Replicator.{
+  Get,
+  GetDataDeleted,
+  GetFailure,
+  GetSuccess,
+  ModifyFailure,
+  NotFound,
+  ReadMajority,
+  StoreFailure,
+  Update,
+  UpdateDataDeleted,
+  UpdateSuccess,
+  UpdateTimeout,
+  WriteMajority
+}
+import pekko.cluster.ddata.{ ORSet, ORSetKey, SelfUniqueAddress }
 import pekko.cluster.sharding.ClusterShardingSettings
-import pekko.cluster.sharding.ShardRegion.EntityId
-import pekko.cluster.sharding.ShardRegion.ShardId
+import pekko.cluster.sharding.ShardRegion.{ EntityId, ShardId }
 import pekko.util.PrettyDuration._
-
-import scala.concurrent.ExecutionContext
 
 /**
  * INTERNAL API

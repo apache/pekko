@@ -21,11 +21,11 @@ import scala.concurrent.duration.FiniteDuration
 import scala.util.control.NonFatal
 
 import org.apache.pekko
-import pekko.stream.{ Attributes, Outlet, SourceShape }
 import pekko.stream.Attributes.InputBuffer
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.io.OutputStreamSourceStage._
 import pekko.stream.stage._
+import pekko.stream.{ Attributes, Outlet, SourceShape }
 import pekko.util.ByteString
 
 private[stream] object OutputStreamSourceStage {

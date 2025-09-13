@@ -13,8 +13,7 @@
 
 package org.apache.pekko.stream
 
-import java.util.concurrent.Semaphore
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.{ Semaphore, TimeUnit }
 
 import scala.concurrent.Await
 import scala.concurrent.duration._

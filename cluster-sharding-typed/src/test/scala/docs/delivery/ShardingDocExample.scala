@@ -16,16 +16,13 @@ package docs.delivery
 //#imports
 import scala.concurrent.Future
 import scala.concurrent.duration._
-import scala.util.Failure
-import scala.util.Success
+import scala.util.{ Failure, Success }
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
 import pekko.actor.typed.delivery.ConsumerController
-import pekko.actor.typed.scaladsl.ActorContext
-import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors }
+import pekko.actor.typed.{ ActorRef, Behavior }
 import pekko.cluster.sharding.typed.delivery.ShardingConsumerController
 import pekko.util.Timeout
 
@@ -198,9 +195,7 @@ object ShardingDocExample {
     Behaviors.setup[Nothing] { context =>
       // #init
       import org.apache.pekko
-      import pekko.cluster.sharding.typed.scaladsl.ClusterSharding
-      import pekko.cluster.sharding.typed.scaladsl.Entity
-      import pekko.cluster.sharding.typed.scaladsl.EntityTypeKey
+      import pekko.cluster.sharding.typed.scaladsl.{ ClusterSharding, Entity, EntityTypeKey }
       import pekko.cluster.typed.Cluster
 
       val db: DB = ???

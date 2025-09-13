@@ -17,28 +17,17 @@ import java.util.concurrent.TimeoutException
 
 import scala.collection.immutable
 import scala.reflect.ClassTag
-import scala.util.Failure
-import scala.util.Success
+import scala.util.{ Failure, Success }
 
 import org.apache.pekko
 import pekko.actor.DeadLetterSuppression
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.DispatcherSelector
-import pekko.actor.typed.delivery.ConsumerController
 import pekko.actor.typed.delivery.ConsumerController.SequencedMessage
-import pekko.actor.typed.delivery.DurableProducerQueue
-import pekko.actor.typed.delivery.ProducerController
+import pekko.actor.typed.delivery.{ ConsumerController, DurableProducerQueue, ProducerController }
 import pekko.actor.typed.internal.ActorFlightRecorder
-import pekko.actor.typed.scaladsl.ActorContext
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.actor.typed.scaladsl.LoggerOps
-import pekko.actor.typed.scaladsl.TimerScheduler
-import pekko.serialization.Serialization
-import pekko.serialization.SerializationExtension
-import pekko.serialization.Serializers
-import pekko.util.ByteString
-import pekko.util.Timeout
+import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors, LoggerOps, TimerScheduler }
+import pekko.actor.typed.{ ActorRef, Behavior, DispatcherSelector }
+import pekko.serialization.{ Serialization, SerializationExtension, Serializers }
+import pekko.util.{ ByteString, Timeout }
 
 /**
  * INTERNAL API
@@ -87,11 +76,7 @@ import pekko.util.Timeout
  */
 object ProducerControllerImpl {
 
-  import ProducerController.Command
-  import ProducerController.RegisterConsumer
-  import ProducerController.RequestNext
-  import ProducerController.SeqNr
-  import ProducerController.Start
+  import ProducerController.{ Command, RegisterConsumer, RequestNext, SeqNr, Start }
 
   sealed trait InternalCommand
 
@@ -382,16 +367,8 @@ private class ProducerControllerImpl[A: ClassTag](
     msgAdapter: ActorRef[A],
     timers: TimerScheduler[ProducerControllerImpl.InternalCommand]) {
   import ConsumerController.SequencedMessage
-  import DurableProducerQueue.MessageSent
-  import DurableProducerQueue.NoQualifier
-  import DurableProducerQueue.StoreMessageConfirmed
-  import DurableProducerQueue.StoreMessageSent
-  import DurableProducerQueue.StoreMessageSentAck
-  import ProducerController.MessageWithConfirmation
-  import ProducerController.RegisterConsumer
-  import ProducerController.RequestNext
-  import ProducerController.SeqNr
-  import ProducerController.Start
+  import DurableProducerQueue.{ MessageSent, NoQualifier, StoreMessageConfirmed, StoreMessageSent, StoreMessageSentAck }
+  import ProducerController.{ MessageWithConfirmation, RegisterConsumer, RequestNext, SeqNr, Start }
   import ProducerControllerImpl._
 
   private val flightRecorder = ActorFlightRecorder(context.system).delivery

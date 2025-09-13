@@ -13,8 +13,9 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import org.apache.pekko.testkit.PekkoSpec
 import scala.annotation.nowarn
+
+import org.apache.pekko.testkit.PekkoSpec
 
 @nowarn // for keeping imports
 class FlowPrependSpec extends PekkoSpec {

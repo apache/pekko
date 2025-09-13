@@ -13,26 +13,13 @@
 
 package org.apache.pekko.cluster.testkit
 
-import scala.concurrent.duration.Duration
-import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.duration.{ Duration, FiniteDuration }
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorLogging
-import pekko.actor.ActorSystem
-import pekko.actor.Address
-import pekko.actor.Cancellable
-import pekko.actor.Props
-import pekko.actor.Scheduler
-import pekko.cluster.Cluster
+import pekko.actor.{ Actor, ActorLogging, ActorSystem, Address, Cancellable, Props, Scheduler }
 import pekko.cluster.ClusterEvent._
-import pekko.cluster.DowningProvider
-import pekko.cluster.Member
-import pekko.cluster.MembershipState
-import pekko.cluster.UniqueAddress
-import pekko.util.Helpers.ConfigOps
-import pekko.util.Helpers.Requiring
-import pekko.util.Helpers.toRootLowerCase
+import pekko.cluster.{ Cluster, DowningProvider, Member, MembershipState, UniqueAddress }
+import pekko.util.Helpers.{ toRootLowerCase, ConfigOps, Requiring }
 
 /**
  * Downing provider used for testing.

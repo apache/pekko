@@ -16,17 +16,12 @@ package org.apache.pekko.actor.typed.internal.pubsub
 import scala.reflect.ClassTag
 
 import org.apache.pekko
-import pekko.actor.Dropped
-import pekko.actor.InvalidMessageException
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
 import pekko.actor.typed.pubsub.Topic
-import pekko.actor.typed.receptionist.Receptionist
-import pekko.actor.typed.receptionist.ServiceKey
-import pekko.actor.typed.scaladsl.AbstractBehavior
-import pekko.actor.typed.scaladsl.ActorContext
-import pekko.actor.typed.scaladsl.LoggerOps
+import pekko.actor.typed.receptionist.{ Receptionist, ServiceKey }
 import pekko.actor.typed.scaladsl.adapter._
+import pekko.actor.typed.scaladsl.{ AbstractBehavior, ActorContext, LoggerOps }
+import pekko.actor.typed.{ ActorRef, Behavior }
+import pekko.actor.{ Dropped, InvalidMessageException }
 import pekko.annotation.InternalApi
 
 /**

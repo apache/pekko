@@ -15,22 +15,17 @@ package org.apache.pekko.serialization.jackson
 
 import java.util.Optional
 import java.util.concurrent.ConcurrentHashMap
+
 import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.util.{ Failure, Success }
+
 import com.fasterxml.jackson.annotation.{ JsonAutoDetect, JsonCreator, PropertyAccessor }
-import com.fasterxml.jackson.core.{
-  JsonFactory,
-  JsonFactoryBuilder,
-  JsonGenerator,
-  JsonParser,
-  StreamReadConstraints,
-  StreamReadFeature,
-  StreamWriteConstraints,
-  StreamWriteFeature
-}
 import com.fasterxml.jackson.core.json.{ JsonReadFeature, JsonWriteFeature }
 import com.fasterxml.jackson.core.util.{ BufferRecycler, JsonRecyclerPools, RecyclerPool }
+import com.fasterxml.jackson.core._
+import com.fasterxml.jackson.databind.cfg.EnumFeature
+import com.fasterxml.jackson.databind.json.JsonMapper
 import com.fasterxml.jackson.databind.{
   DeserializationFeature,
   MapperFeature,
@@ -38,25 +33,16 @@ import com.fasterxml.jackson.databind.{
   ObjectMapper,
   SerializationFeature
 }
-import com.fasterxml.jackson.databind.cfg.EnumFeature
-import com.fasterxml.jackson.databind.json.JsonMapper
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule
 import com.typesafe.config.Config
+
 import org.apache.pekko
-import pekko.actor.{
-  ActorSystem,
-  ClassicActorSystemProvider,
-  DynamicAccess,
-  ExtendedActorSystem,
-  Extension,
-  ExtensionId,
-  ExtensionIdProvider
-}
 import pekko.actor.setup.Setup
+import pekko.actor._
 import pekko.annotation.InternalStableApi
 import pekko.event.{ Logging, LoggingAdapter }
-import pekko.util.unused
 import pekko.util.OptionConverters._
+import pekko.util.unused
 
 object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvider] with ExtensionIdProvider {
   override def get(system: ActorSystem): JacksonObjectMapperProvider = super.get(system)
@@ -258,7 +244,7 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
       dynamicAccess: DynamicAccess,
       log: Option[LoggingAdapter]): Unit = {
 
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
 
     val configuredModules = config.getStringList("jackson-modules").asScala
     val modules1 =
@@ -332,13 +318,13 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
     }
 
   private def features(config: Config, section: String): immutable.Seq[(String, Boolean)] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     val cfg = config.getConfig(section)
     cfg.root.keySet().asScala.map(key => key -> cfg.getBoolean(key)).toList
   }
 
   private def configPairs(config: Config, section: String): immutable.Seq[(String, String)] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     val cfg = config.getConfig(section)
     cfg.root.keySet().asScala.map(key => key -> cfg.getString(key)).toList
   }

@@ -13,28 +13,16 @@
 
 package org.apache.pekko.stream.impl
 
-import scala.util.Failure
-import scala.util.Success
+import scala.util.{ Failure, Success }
 
 import org.apache.pekko
-import pekko.Done
-import pekko.NotUsed
+import pekko.{ Done, NotUsed }
 import pekko.dispatch.ExecutionContexts
-import pekko.stream.Attributes
-import pekko.stream.FlowShape
-import pekko.stream.Inlet
-import pekko.stream.Outlet
-import pekko.stream.SinkShape
+import pekko.stream._
 import pekko.stream.SubscriptionWithCancelException.NoMoreElementsNeeded
-import pekko.stream.scaladsl.Sink
-import pekko.stream.scaladsl.Source
-import pekko.stream.stage.GraphStage
-import pekko.stream.stage.GraphStageLogic
-import pekko.stream.stage.InHandler
-import pekko.stream.stage.OutHandler
-import pekko.stream.testkit.StreamSpec
-import pekko.stream.testkit.TestPublisher
-import pekko.stream.testkit.TestSubscriber
+import pekko.stream.scaladsl.{ Sink, Source }
+import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
+import pekko.stream.testkit.{ StreamSpec, TestPublisher, TestSubscriber }
 import pekko.stream.testkit.Utils.TE
 
 class SubInletOutletSpec extends StreamSpec {

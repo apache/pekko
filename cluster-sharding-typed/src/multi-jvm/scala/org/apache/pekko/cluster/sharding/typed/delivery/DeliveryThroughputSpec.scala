@@ -22,27 +22,16 @@ import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.TestProbe
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.PostStop
-import pekko.actor.typed.delivery.ConsumerController
-import pekko.actor.typed.delivery.ProducerController
-import pekko.actor.typed.delivery.WorkPullingProducerController
+import pekko.actor.typed.delivery.{ ConsumerController, ProducerController, WorkPullingProducerController }
 import pekko.actor.typed.receptionist.ServiceKey
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.actor.typed.scaladsl.LoggerOps
+import pekko.actor.typed.scaladsl.{ Behaviors, LoggerOps }
+import pekko.actor.typed.{ ActorRef, Behavior, PostStop }
 import pekko.cluster.MultiNodeClusterSpec
 import pekko.cluster.sharding.typed.ShardingEnvelope
-import pekko.cluster.sharding.typed.scaladsl.ClusterSharding
-import pekko.cluster.sharding.typed.scaladsl.Entity
-import pekko.cluster.sharding.typed.scaladsl.EntityTypeKey
+import pekko.cluster.sharding.typed.scaladsl.{ ClusterSharding, Entity, EntityTypeKey }
 import pekko.cluster.typed.MultiNodeTypedClusterSpec
-import pekko.remote.artery.BenchmarkFileReporter
-import pekko.remote.artery.PlotResult
-import pekko.remote.artery.TestRateReporter
-import pekko.remote.testkit.MultiNodeConfig
-import pekko.remote.testkit.MultiNodeSpec
-import pekko.remote.testkit.PerfFlamesSupport
+import pekko.remote.artery.{ BenchmarkFileReporter, PlotResult, TestRateReporter }
+import pekko.remote.testkit.{ MultiNodeConfig, MultiNodeSpec, PerfFlamesSupport }
 import pekko.serialization.jackson.CborSerializable
 
 object DeliveryThroughputSpec extends MultiNodeConfig {

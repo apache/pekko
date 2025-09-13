@@ -17,11 +17,8 @@ package scaladsl
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
-import pekko.Done
-import pekko.NotUsed
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.testkit.typed.scaladsl.TestProbe
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit, TestProbe }
+import pekko.{ Done, NotUsed }
 
 final class GracefulStopSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with LogCapturing {
 

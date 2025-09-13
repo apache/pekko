@@ -14,18 +14,14 @@
 package org.apache.pekko.stream.impl
 
 import java.util.concurrent.TimeUnit
-
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.openjdk.jmh.annotations._
-import org.openjdk.jmh.annotations.TearDown
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
-import pekko.stream.scaladsl.Keep
-import pekko.stream.scaladsl.Sink
-import pekko.stream.scaladsl.StreamConverters
+import pekko.stream.scaladsl.{ Keep, Sink, StreamConverters }
 
 object OutputStreamSourceStageBenchmark {
   final val WritesPerBench = 10000

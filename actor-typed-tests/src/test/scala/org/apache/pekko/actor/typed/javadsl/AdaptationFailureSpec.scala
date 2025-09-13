@@ -20,12 +20,8 @@ import org.scalatest.wordspec.AnyWordSpecLike
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.testkit.typed.TestException
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.MessageAdaptionFailure
-import pekko.actor.typed.PreRestart
-import pekko.actor.typed.Terminated
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
+import pekko.actor.typed.{ Behavior, MessageAdaptionFailure, PreRestart, Terminated }
 
 object AdaptationFailureSpec {
   def emptyAbstractBehavior: Behavior[Any] = Behaviors.setup(new EmptyAbstractBehavior(_))

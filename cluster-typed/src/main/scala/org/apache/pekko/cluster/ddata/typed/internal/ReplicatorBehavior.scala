@@ -16,14 +16,12 @@ package org.apache.pekko.cluster.ddata.typed.internal
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.Terminated
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.adapter._
+import pekko.actor.typed.{ ActorRef, Behavior, Terminated }
 import pekko.annotation.InternalApi
-import pekko.cluster.{ ddata => dd }
 import pekko.cluster.ddata.ReplicatedData
+import pekko.cluster.{ ddata => dd }
 import pekko.pattern.ask
 import pekko.util.JavaDurationConverters._
 import pekko.util.Timeout

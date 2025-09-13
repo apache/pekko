@@ -15,9 +15,7 @@ package docs.org.apache.pekko.typed.fromclassic
 
 // #hello-world-actor
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorLogging
-import pekko.actor.Props
+import pekko.actor.{ Actor, ActorLogging, Props }
 
 // #hello-world-actor
 

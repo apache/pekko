@@ -15,27 +15,18 @@ package org.apache.pekko.remote.artery
 package aeron
 
 import scala.annotation.tailrec
-import scala.concurrent.Future
-import scala.concurrent.Promise
+import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration._
-import scala.util.Failure
-import scala.util.Success
-import scala.util.Try
+import scala.util.{ Failure, Success, Try }
 import scala.util.control.NoStackTrace
 
-import io.aeron.Aeron
-import io.aeron.Publication
+import io.aeron.{ Aeron, Publication }
 import org.agrona.concurrent.UnsafeBuffer
 
 import org.apache.pekko
 import pekko.Done
-import pekko.stream.Attributes
-import pekko.stream.Inlet
-import pekko.stream.SinkShape
-import pekko.stream.stage.AsyncCallback
-import pekko.stream.stage.GraphStageLogic
-import pekko.stream.stage.GraphStageWithMaterializedValue
-import pekko.stream.stage.InHandler
+import pekko.stream.{ Attributes, Inlet, SinkShape }
+import pekko.stream.stage.{ AsyncCallback, GraphStageLogic, GraphStageWithMaterializedValue, InHandler }
 import pekko.util.PrettyDuration.PrettyPrintableDuration
 
 /**

@@ -13,8 +13,9 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import org.apache.pekko.stream._
-import org.apache.pekko.stream.stage._
+import org.apache.pekko
+import pekko.stream._
+import pekko.stream.stage._
 
 object UnzipWithApply {
 

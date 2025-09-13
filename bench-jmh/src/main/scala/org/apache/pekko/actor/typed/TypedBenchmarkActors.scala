@@ -19,8 +19,7 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.typed.scaladsl.ActorContext
-import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors }
 
 object TypedBenchmarkActors {
 

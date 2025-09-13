@@ -18,9 +18,7 @@ import scala.concurrent.duration._
 
 import org.reactivestreams.Publisher
 
-import org.apache.pekko
-import pekko.stream.scaladsl.Sink
-import pekko.stream.scaladsl.Source
+import org.apache.pekko.stream.scaladsl.{ Sink, Source }
 
 class PrefixAndTailTest extends PekkoPublisherVerification[Int] {
 

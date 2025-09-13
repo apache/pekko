@@ -13,29 +13,20 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import scala.concurrent.Future
-import scala.concurrent.Promise
+import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.ActorRef
-import pekko.actor.Kill
-import pekko.actor.NoSerializationVerificationNeeded
-import pekko.actor.PoisonPill
+import pekko.actor.{ ActorRef, Kill, NoSerializationVerificationNeeded, PoisonPill }
 import pekko.event.Logging
 import pekko.stream._
-import pekko.stream.stage.GraphStageLogic
-import pekko.stream.stage.GraphStageWithMaterializedValue
-import pekko.stream.stage.InHandler
+import pekko.stream.stage.{ GraphStageLogic, GraphStageWithMaterializedValue, InHandler }
 import pekko.stream.testkit.StreamSpec
-import pekko.testkit.EventFilter
-import pekko.testkit.ImplicitSender
-import pekko.testkit.TestEvent
-import pekko.testkit.TestProbe
+import pekko.testkit.{ EventFilter, ImplicitSender, TestEvent, TestProbe }
 
 class StageActorRefSpec extends StreamSpec with ImplicitSender {
-  import StageActorRefSpec._
   import StageActorRefSpec.ControlProtocol._
+  import StageActorRefSpec._
 
   def sumStage(probe: ActorRef) = SumTestStage(probe)
 

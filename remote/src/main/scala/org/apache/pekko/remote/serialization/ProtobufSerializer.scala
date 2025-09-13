@@ -21,11 +21,9 @@ import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.actor.{ ActorRef, ExtendedActorSystem }
-import pekko.event.LogMarker
-import pekko.event.Logging
+import pekko.event.{ LogMarker, Logging }
 import pekko.remote.WireFormats.ActorRefData
-import pekko.serialization.{ BaseSerializer, Serialization }
-import pekko.serialization.SerializationExtension
+import pekko.serialization.{ BaseSerializer, Serialization, SerializationExtension }
 
 object ProtobufSerializer {
   private val ARRAY_OF_BYTE_ARRAY = Array[Class[_]](classOf[Array[Byte]])
@@ -60,7 +58,7 @@ class ProtobufSerializer(val system: ExtendedActorSystem) extends BaseSerializer
   private val toByteArrayMethodBindingRef = new AtomicReference[Map[Class[_], Method]](Map.empty)
 
   private val allowedClassNames: Set[String] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     system.settings.config.getStringList("pekko.serialization.protobuf.allowed-classes").asScala.toSet
   }
 

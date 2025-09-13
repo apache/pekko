@@ -13,8 +13,7 @@
 
 package org.apache.pekko.remote
 
-import scala.concurrent.duration.Duration
-import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.duration.{ Duration, FiniteDuration }
 
 import com.typesafe.config.Config
 

@@ -13,15 +13,15 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import java.util.concurrent.{ CountDownLatch, ThreadLocalRandom }
 import java.util.concurrent.atomic.AtomicLong
+import java.util.concurrent.{ CountDownLatch, ThreadLocalRandom }
 
 import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.stream.QueueOfferResult
-import pekko.stream.testkit.{ StreamSpec, TestSubscriber }
 import pekko.stream.testkit.scaladsl.TestSink
+import pekko.stream.testkit.{ StreamSpec, TestSubscriber }
 import pekko.testkit.WithLogCapturing
 
 class BoundedSourceQueueSpec extends StreamSpec("""pekko.loglevel = debug

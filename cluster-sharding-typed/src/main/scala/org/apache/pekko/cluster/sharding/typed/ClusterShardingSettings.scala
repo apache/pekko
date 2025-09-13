@@ -24,8 +24,7 @@ import pekko.annotation.{ ApiMayChange, InternalApi }
 import pekko.cluster.ClusterSettings.DataCenter
 import pekko.cluster.sharding.{ ClusterShardingSettings => ClassicShardingSettings }
 import pekko.cluster.singleton.{ ClusterSingletonManagerSettings => ClassicClusterSingletonManagerSettings }
-import pekko.cluster.typed.Cluster
-import pekko.cluster.typed.ClusterSingletonManagerSettings
+import pekko.cluster.typed.{ Cluster, ClusterSingletonManagerSettings }
 import pekko.coordination.lease.LeaseUsageSettings
 import pekko.japi.Util.immutableSeq
 import pekko.util.JavaDurationConverters._

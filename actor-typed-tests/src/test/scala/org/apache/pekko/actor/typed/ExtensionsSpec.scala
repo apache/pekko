@@ -14,19 +14,16 @@
 package org.apache.pekko.actor.typed
 
 import java.util.concurrent.atomic.AtomicInteger
-
 import scala.concurrent.Future
 
-import com.typesafe.config.{ Config, ConfigFactory }
 import org.scalatest.wordspec.AnyWordSpecLike
 
+import com.typesafe.config.{ Config, ConfigFactory }
 import org.apache.pekko
 import pekko.actor.BootstrapSetup
 import pekko.actor.setup.ActorSystemSetup
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.typed.receptionist.Receptionist
-import pekko.actor.typed.receptionist.ServiceKey
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
+import pekko.actor.typed.receptionist.{ Receptionist, ServiceKey }
 import pekko.actor.typed.scaladsl.Behaviors
 
 class DummyExtension1 extends Extension

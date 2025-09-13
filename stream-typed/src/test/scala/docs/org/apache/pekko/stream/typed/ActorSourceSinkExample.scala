@@ -15,8 +15,8 @@ package docs.org.apache.pekko.stream.typed
 
 import org.apache.pekko
 import pekko.NotUsed
-import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior }
 import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior }
 
 object ActorSourceSinkExample {
 

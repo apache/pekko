@@ -16,22 +16,23 @@ package org.apache.pekko.coordination.lease
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicReference
 
-import scala.concurrent.Future
-import scala.concurrent.Promise
+import scala.concurrent.{ Future, Promise }
+import scala.jdk.CollectionConverters._
 
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.actor.ClassicActorSystemProvider
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.Extension
-import pekko.actor.ExtensionId
-import pekko.actor.ExtensionIdProvider
+import pekko.actor.{
+  ActorSystem,
+  ClassicActorSystemProvider,
+  ExtendedActorSystem,
+  Extension,
+  ExtensionId,
+  ExtensionIdProvider
+}
 import pekko.coordination.lease.scaladsl.Lease
 import pekko.event.Logging
 import pekko.testkit.TestProbe
-import pekko.util.ccompat.JavaConverters._
 
 object TestLeaseExt extends ExtensionId[TestLeaseExt] with ExtensionIdProvider {
   override def get(system: ActorSystem): TestLeaseExt = super.get(system)

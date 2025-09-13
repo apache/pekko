@@ -28,6 +28,7 @@ import pekko.util.Timeout
 //#imports
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.stream.testkit.TestSubscriber
+
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import scala.collection.immutable

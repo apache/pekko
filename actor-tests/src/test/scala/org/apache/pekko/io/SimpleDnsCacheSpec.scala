@@ -23,9 +23,8 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 import org.apache.pekko
-import pekko.io.dns.ARecord
 import pekko.io.dns.CachePolicy.Ttl
-import pekko.io.dns.DnsProtocol
+import pekko.io.dns.{ ARecord, DnsProtocol }
 import pekko.io.dns.DnsProtocol.Ip
 
 class SimpleDnsCacheSpec extends AnyWordSpec with Matchers {

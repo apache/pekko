@@ -20,10 +20,8 @@ import java.util.stream.Collector
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.japi.function
-import pekko.stream.{ javadsl, scaladsl }
-import pekko.stream.IOResult
-import pekko.stream.scaladsl.SinkToCompletionStage
-import pekko.stream.scaladsl.SourceToCompletionStage
+import pekko.stream.scaladsl.{ SinkToCompletionStage, SourceToCompletionStage }
+import pekko.stream.{ javadsl, scaladsl, IOResult }
 import pekko.util.ByteString
 import pekko.util.JavaDurationConverters._
 

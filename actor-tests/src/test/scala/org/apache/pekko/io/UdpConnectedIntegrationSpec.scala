@@ -19,11 +19,8 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor.ActorRef
-import pekko.testkit.PekkoSpec
-import pekko.testkit.ImplicitSender
 import pekko.testkit.SocketUtil.temporaryServerAddresses
-import pekko.testkit.TestProbe
-import pekko.testkit.WithLogCapturing
+import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe, WithLogCapturing }
 import pekko.util.ByteString
 
 class UdpConnectedIntegrationSpec extends PekkoSpec("""

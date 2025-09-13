@@ -19,14 +19,14 @@ import java.nio.file.{ Files, NoSuchFileException, Path, StandardOpenOption }
 
 import scala.annotation.tailrec
 import scala.concurrent.{ Future, Promise }
-import scala.util.{ Failure, Success, Try }
 import scala.util.control.NonFatal
+import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
 import pekko.Done
-import pekko.stream.{ IOResult, _ }
 import pekko.stream.Attributes.InputBuffer
 import pekko.stream.stage._
+import pekko.stream._
 import pekko.util.ByteString
 
 /**

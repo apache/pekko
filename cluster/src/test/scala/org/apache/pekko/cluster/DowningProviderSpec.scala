@@ -14,19 +14,19 @@
 package org.apache.pekko.cluster
 
 import java.util.concurrent.atomic.AtomicBoolean
+
 import scala.concurrent.duration._
+import scala.util.control.NonFatal
+
 import com.typesafe.config.ConfigFactory
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+
 import org.apache.pekko
 import pekko.ConfigurationException
-import pekko.actor.ActorSystem
-import pekko.actor.Props
-import pekko.testkit.TestKit.awaitCond
-import pekko.testkit.TestKit.shutdownActorSystem
+import pekko.actor.{ ActorSystem, Props }
+import pekko.testkit.TestKit.{ awaitCond, shutdownActorSystem }
 import pekko.util.unused
-
-import scala.util.control.NonFatal
 
 class FailingDowningProvider(@unused system: ActorSystem) extends DowningProvider {
   override val downRemovalMargin: FiniteDuration = 20.seconds

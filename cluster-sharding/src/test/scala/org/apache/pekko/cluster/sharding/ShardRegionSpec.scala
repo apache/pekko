@@ -15,19 +15,20 @@ package org.apache.pekko.cluster.sharding
 
 import java.io.File
 
+import scala.concurrent.{ ExecutionContext, Future }
+
 import com.typesafe.config.ConfigFactory
 import org.apache.commons.io.FileUtils
+
 import org.apache.pekko
+import pekko.Done
 import pekko.actor.{ Actor, ActorLogging, ActorRef, ActorSystem, PoisonPill, Props }
-import pekko.cluster.{ Cluster, MemberStatus }
 import pekko.cluster.ClusterEvent.CurrentClusterState
 import pekko.cluster.sharding.ShardRegion.MessageExtractor
-import pekko.Done
+import pekko.cluster.{ Cluster, MemberStatus }
 import pekko.stream.scaladsl.{ Sink, Source }
-import pekko.testkit.{ DeadLettersFilter, PekkoSpec, TestProbe, WithLogCapturing }
 import pekko.testkit.TestEvent.Mute
-
-import scala.concurrent.{ ExecutionContext, Future }
+import pekko.testkit.{ DeadLettersFilter, PekkoSpec, TestProbe, WithLogCapturing }
 
 object ShardRegionSpec {
   val host = "127.0.0.1"
@@ -106,9 +107,9 @@ object ShardRegionSpec {
 }
 class ShardRegionSpec extends PekkoSpec(ShardRegionSpec.config) with WithLogCapturing {
 
-  import scala.concurrent.duration._
-
   import ShardRegionSpec._
+
+  import scala.concurrent.duration._
 
   val storageLocation = List(
     new File(

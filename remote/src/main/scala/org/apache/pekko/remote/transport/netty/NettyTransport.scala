@@ -18,52 +18,35 @@ import java.util.concurrent.CancellationException
 import java.util.concurrent.atomic.AtomicInteger
 
 import scala.annotation.nowarn
-import scala.concurrent.{ blocking, ExecutionContext, Future, Promise }
 import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.{ blocking, ExecutionContext, Future, Promise }
 import scala.util.Try
 import scala.util.control.{ NoStackTrace, NonFatal }
 
 import com.typesafe.config.Config
-
-import org.apache.pekko
-import pekko.ConfigurationException
-import pekko.OnlyCauseStackTrace
-import pekko.actor.{ ActorSystem, Address, ExtendedActorSystem }
-import pekko.dispatch.ThreadPoolConfig
-import pekko.event.Logging
-import pekko.remote.RARP
-import pekko.remote.transport.{ AssociationHandle, Transport }
-import pekko.remote.transport.AssociationHandle.HandleEventListener
-import pekko.remote.transport.Transport._
-import pekko.util.Helpers.Requiring
-import pekko.util.{ Helpers, OptionVal }
-
 import io.netty.bootstrap.{ Bootstrap => ClientBootstrap, ServerBootstrap }
-import io.netty.buffer.{
-  AdaptiveByteBufAllocator,
-  ByteBufAllocator,
-  PooledByteBufAllocator,
-  Unpooled,
-  UnpooledByteBufAllocator
-}
-import io.netty.channel.{
-  Channel,
-  ChannelFuture,
-  ChannelHandlerContext,
-  ChannelInitializer,
-  ChannelOption,
-  ChannelPipeline,
-  EventLoopGroup,
-  MultiThreadIoEventLoopGroup
-}
+import io.netty.buffer._
 import io.netty.channel.group.{ ChannelGroup, ChannelGroupFuture, ChannelMatchers, DefaultChannelGroup }
 import io.netty.channel.nio.NioIoHandler
 import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.{ NioServerSocketChannel, NioSocketChannel }
+import io.netty.channel._
 import io.netty.handler.codec.{ LengthFieldBasedFrameDecoder, LengthFieldPrepender }
 import io.netty.handler.flush.FlushConsolidationHandler
 import io.netty.handler.ssl.SslHandler
 import io.netty.util.concurrent.GlobalEventExecutor
+
+import org.apache.pekko
+import pekko.{ ConfigurationException, OnlyCauseStackTrace }
+import pekko.actor.{ ActorSystem, Address, ExtendedActorSystem }
+import pekko.dispatch.ThreadPoolConfig
+import pekko.event.Logging
+import pekko.remote.RARP
+import pekko.remote.transport.AssociationHandle.HandleEventListener
+import pekko.remote.transport.Transport._
+import pekko.remote.transport.{ AssociationHandle, Transport }
+import pekko.util.Helpers.Requiring
+import pekko.util.{ Helpers, OptionVal }
 
 @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 object NettyFutureBridge {
@@ -90,7 +73,7 @@ object NettyFutureBridge {
   }
 
   def apply(nettyFuture: ChannelGroupFuture): Future[ChannelGroup] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     val p = Promise[ChannelGroup]()
     nettyFuture.addListener((future: ChannelGroupFuture) =>
       p.complete(

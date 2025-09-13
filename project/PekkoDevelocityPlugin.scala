@@ -15,6 +15,9 @@
  * limitations under the License.
  */
 
+import sbt.Keys.insideCI
+import sbt.{ url, AutoPlugin, Def, PluginTrigger, Plugins, Setting }
+
 import com.gradle.develocity.agent.sbt.DevelocityPlugin
 import com.gradle.develocity.agent.sbt.DevelocityPlugin.autoImport.{
   develocityConfiguration,
@@ -22,8 +25,6 @@ import com.gradle.develocity.agent.sbt.DevelocityPlugin.autoImport.{
   ProjectId,
   Publishing
 }
-import sbt.{ inConfig, url, AutoPlugin, Def, PluginTrigger, Plugins, Setting }
-import sbt.Keys.insideCI
 
 object PekkoDevelocityPlugin extends AutoPlugin {
 

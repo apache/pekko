@@ -19,16 +19,18 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorLogging
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
-import pekko.actor.ClassicActorSystemProvider
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.Extension
-import pekko.actor.ExtensionId
-import pekko.actor.ExtensionIdProvider
-import pekko.actor.Props
+import pekko.actor.{
+  Actor,
+  ActorLogging,
+  ActorRef,
+  ActorSystem,
+  ClassicActorSystemProvider,
+  ExtendedActorSystem,
+  Extension,
+  ExtensionId,
+  ExtensionIdProvider,
+  Props
+}
 import pekko.coordination.lease.scaladsl.Lease
 import pekko.event.Logging
 import pekko.pattern.ask
@@ -104,9 +106,7 @@ class TestLeaseActorClientExt(val system: ExtendedActorSystem) extends Extension
 }
 
 class TestLeaseActorClient(settings: LeaseSettings, system: ExtendedActorSystem) extends Lease(settings) {
-  import TestLeaseActor.Acquire
-  import TestLeaseActor.Create
-  import TestLeaseActor.Release
+  import TestLeaseActor.{ Acquire, Create, Release }
 
   private val log = Logging(system, classOf[TestLeaseActorClient])
   val leaseActor = TestLeaseActorClientExt(system).getLeaseActor()

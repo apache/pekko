@@ -17,9 +17,7 @@ object TimerDocSpec {
   // #timers
   import scala.concurrent.duration._
 
-  import org.apache.pekko
-  import pekko.actor.Actor
-  import pekko.actor.Timers
+  import org.apache.pekko.actor.{ Actor, Timers }
 
   object MyActor {
     private case object TickKey

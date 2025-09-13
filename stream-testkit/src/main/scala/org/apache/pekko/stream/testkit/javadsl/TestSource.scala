@@ -14,8 +14,7 @@
 package org.apache.pekko.stream.testkit.javadsl
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.actor.ClassicActorSystemProvider
+import pekko.actor.{ ActorSystem, ClassicActorSystemProvider }
 import pekko.stream.javadsl.Source
 import pekko.stream.testkit._
 

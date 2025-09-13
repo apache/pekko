@@ -19,14 +19,13 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.{ Random, Try }
 
-import MetricsBasedResizerSpec._
-import OptimalSizeExploringResizer._
-
 import org.apache.pekko
 import pekko.actor._
 import pekko.pattern.ask
-import pekko.testkit._
+import pekko.routing.MetricsBasedResizerSpec._
+import pekko.routing.OptimalSizeExploringResizer._
 import pekko.testkit.TestEvent._
+import pekko.testkit._
 import pekko.util.Timeout
 
 object MetricsBasedResizerSpec {

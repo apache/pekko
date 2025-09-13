@@ -18,9 +18,9 @@ import java.util.concurrent.ThreadLocalRandom
 import scala.collection.immutable
 
 import org.apache.pekko
-import pekko.actor.{ Address, RootActorPath }
 import pekko.actor.testkit.typed.internal.TestInboxImpl
 import pekko.actor.typed.ActorRef
+import pekko.actor.{ Address, RootActorPath }
 import pekko.annotation.{ ApiMayChange, DoNotInherit }
 
 @ApiMayChange

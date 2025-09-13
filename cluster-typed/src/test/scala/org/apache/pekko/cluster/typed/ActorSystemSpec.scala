@@ -15,33 +15,24 @@ package org.apache.pekko.cluster.typed
 
 import java.nio.charset.StandardCharsets
 
-import scala.concurrent.Future
-import scala.concurrent.Promise
+import scala.concurrent.{ Future, Promise }
 import scala.util.control.NonFatal
 
 import com.typesafe.config.ConfigFactory
 import org.scalatest._
-import org.scalatest.concurrent.Eventually
-import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.concurrent.{ Eventually, ScalaFutures }
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.time.Span
 import org.scalatest.wordspec.AnyWordSpec
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.CoordinatedShutdown
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.InvalidMessageException
 import pekko.actor.testkit.typed.TestKitSettings
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.TestInbox
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorRefResolver
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.PostStop
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, TestInbox }
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.adapter._
+import pekko.actor.typed.{ ActorRef, ActorRefResolver, ActorSystem, Behavior, PostStop }
+import pekko.actor.{ CoordinatedShutdown, ExtendedActorSystem, InvalidMessageException }
 import pekko.serialization.SerializerWithStringManifest
 
 object ActorSystemSpec {

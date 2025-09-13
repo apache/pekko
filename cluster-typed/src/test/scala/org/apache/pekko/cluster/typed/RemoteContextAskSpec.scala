@@ -14,22 +14,17 @@
 package org.apache.pekko.cluster.typed
 
 import scala.concurrent.duration._
-import scala.util.Failure
-import scala.util.Success
+import scala.util.{ Failure, Success }
 
 import com.typesafe.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.testkit.typed.scaladsl.TestProbe
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.receptionist.Receptionist
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit, TestProbe }
 import pekko.actor.typed.receptionist.Receptionist.Registered
-import pekko.actor.typed.receptionist.ServiceKey
+import pekko.actor.typed.receptionist.{ Receptionist, ServiceKey }
 import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.{ ActorRef, ActorSystem }
 import pekko.serialization.jackson.CborSerializable
 import pekko.util.Timeout
 

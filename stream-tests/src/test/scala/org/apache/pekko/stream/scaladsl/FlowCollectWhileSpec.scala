@@ -21,9 +21,9 @@ import org.apache.pekko
 import pekko.stream.ActorAttributes._
 import pekko.stream.OverflowStrategy
 import pekko.stream.Supervision._
-import pekko.stream.testkit.{ ScriptedTest, StreamSpec }
 import pekko.stream.testkit.Utils.TE
 import pekko.stream.testkit.scaladsl.TestSink
+import pekko.stream.testkit.{ ScriptedTest, StreamSpec }
 
 class FlowCollectWhileSpec extends StreamSpec with ScriptedTest {
 

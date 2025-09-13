@@ -17,9 +17,8 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.{ ActorRef, ActorSystem }
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior
 import pekko.serialization.jackson.CborSerializable
@@ -28,8 +27,7 @@ object HelloWorldPersistentEntityExample {
 
   // #persistent-entity-usage
   import org.apache.pekko
-  import pekko.cluster.sharding.typed.scaladsl.ClusterSharding
-  import pekko.cluster.sharding.typed.scaladsl.Entity
+  import pekko.cluster.sharding.typed.scaladsl.{ ClusterSharding, Entity }
   import pekko.util.Timeout
 
   class HelloWorldService(system: ActorSystem[_]) {
@@ -54,7 +52,6 @@ object HelloWorldPersistentEntityExample {
   // #persistent-entity-usage
 
   // #persistent-entity
-  import org.apache.pekko
   import pekko.actor.typed.Behavior
   import pekko.cluster.sharding.typed.scaladsl.EntityTypeKey
   import pekko.persistence.typed.scaladsl.Effect

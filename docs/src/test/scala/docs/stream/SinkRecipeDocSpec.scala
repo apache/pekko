@@ -13,10 +13,11 @@
 
 package docs.stream
 
-import org.apache.pekko.stream.scaladsl.{ Sink, Source }
+import scala.concurrent.Future
+
 import docs.stream.cookbook.RecipeSpec
 
-import scala.concurrent.Future
+import org.apache.pekko.stream.scaladsl.{ Sink, Source }
 
 class SinkRecipeDocSpec extends RecipeSpec {
   "Sink.foreachAsync" must {

@@ -14,11 +14,10 @@
 package org.apache.pekko.io
 
 import java.io.IOException
-import java.net.{ InetSocketAddress, ServerSocket }
-import java.net.SocketTimeoutException
+import java.net.{ InetSocketAddress, ServerSocket, SocketTimeoutException }
 import java.nio.ByteBuffer
-import java.nio.channels._
 import java.nio.channels.SelectionKey._
+import java.nio.channels._
 import java.nio.channels.spi.SelectorProvider
 import java.nio.file.Files
 import java.util.Random
@@ -38,9 +37,8 @@ import pekko.actor._
 import pekko.io.Inet.SocketOption
 import pekko.io.SelectionHandler._
 import pekko.io.Tcp._
-import pekko.testkit.{ EventFilter, PekkoSpec, SocketUtil, TestActorRef, TestProbe }
 import pekko.testkit.SocketUtil.temporaryServerAddress
-import pekko.testkit.WithLogCapturing
+import pekko.testkit.{ EventFilter, PekkoSpec, SocketUtil, TestActorRef, TestProbe, WithLogCapturing }
 import pekko.util.{ ByteString, Helpers }
 
 object TcpConnectionSpec {

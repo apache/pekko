@@ -16,7 +16,7 @@ package org.apache.pekko.actor
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
-import org.apache.pekko.japi.function.{ Effect, Function2, Predicate, Predicate2, Procedure, Procedure2, Procedure3 }
+import pekko.japi.function.{ Effect, Function2, Predicate, Predicate2, Procedure, Procedure2, Procedure3 }
 import pekko.util.JavaDurationConverters._
 
 /**
@@ -41,11 +41,10 @@ object AbstractFSM {
  * Finite State Machine actor abstract base class.
  */
 abstract class AbstractFSM[S, D] extends FSM[S, D] {
-  import java.util.{ List => JList }
-
   import FSM._
-
   import pekko.japi.pf._
+
+  import java.util.{ List => JList }
 
   /**
    * Returns this AbstractActor's ActorContext

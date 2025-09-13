@@ -13,14 +13,9 @@
 
 package typed.tutorial_4
 
-import org.apache.pekko.actor.typed.ActorRef
-import org.apache.pekko.actor.typed.Behavior
-import org.apache.pekko.actor.typed.PostStop
-import org.apache.pekko.actor.typed.Signal
-import org.apache.pekko.actor.typed.scaladsl.AbstractBehavior
-import org.apache.pekko.actor.typed.scaladsl.ActorContext
-import org.apache.pekko.actor.typed.scaladsl.Behaviors
-import org.apache.pekko.actor.typed.scaladsl.LoggerOps
+import org.apache.pekko
+import pekko.actor.typed.{ ActorRef, Behavior, PostStop, Signal }
+import pekko.actor.typed.scaladsl.{ AbstractBehavior, ActorContext, Behaviors, LoggerOps }
 
 //#device-group-full
 //#device-group-register

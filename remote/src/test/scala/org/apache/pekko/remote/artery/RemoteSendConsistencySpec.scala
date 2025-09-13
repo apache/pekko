@@ -20,16 +20,18 @@ import scala.concurrent.duration._
 import com.typesafe.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorIdentity
-import pekko.actor.ActorPath
-import pekko.actor.ActorRef
-import pekko.actor.ActorSelection
-import pekko.actor.Deploy
-import pekko.actor.Identify
-import pekko.actor.PoisonPill
-import pekko.actor.Props
-import pekko.actor.RootActorPath
+import pekko.actor.{
+  Actor,
+  ActorIdentity,
+  ActorPath,
+  ActorRef,
+  ActorSelection,
+  Deploy,
+  Identify,
+  PoisonPill,
+  Props,
+  RootActorPath
+}
 import pekko.testkit.{ ImplicitSender, TestActors, TestProbe }
 
 class ArteryUpdSendConsistencyWithOneLaneSpec

@@ -14,13 +14,15 @@
 package org.apache.pekko.remote
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.actor.Address
-import pekko.actor.ClassicActorSystemProvider
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.Extension
-import pekko.actor.ExtensionId
-import pekko.actor.ExtensionIdProvider
+import pekko.actor.{
+  ActorSystem,
+  Address,
+  ClassicActorSystemProvider,
+  ExtendedActorSystem,
+  Extension,
+  ExtensionId,
+  ExtensionIdProvider
+}
 import pekko.remote.artery.ArteryTransport
 
 /**

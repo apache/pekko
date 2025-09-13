@@ -17,27 +17,20 @@ import java.util.UUID
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{ Config, ConfigFactory }
 import org.scalatest.wordspec.AnyWordSpecLike
+
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.delivery.ConsumerController
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
 import pekko.actor.typed.delivery.ConsumerController.SequencedMessage
-import pekko.actor.typed.delivery.DurableProducerQueue
-import pekko.actor.typed.delivery.TestConsumer
+import pekko.actor.typed.delivery.{ ConsumerController, DurableProducerQueue, TestConsumer }
 import pekko.actor.typed.eventstream.EventStream
 import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.{ ActorRef, Behavior }
 import pekko.cluster.sharding.typed.ShardingEnvelope
-import pekko.cluster.sharding.typed.scaladsl.ClusterSharding
-import pekko.cluster.sharding.typed.scaladsl.Entity
-import pekko.cluster.sharding.typed.scaladsl.EntityTypeKey
-import pekko.cluster.typed.Cluster
-import pekko.cluster.typed.Join
+import pekko.cluster.sharding.typed.scaladsl.{ ClusterSharding, Entity, EntityTypeKey }
+import pekko.cluster.typed.{ Cluster, Join }
 import pekko.persistence.journal.inmem.InmemJournal
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.delivery.EventSourcedProducerQueue

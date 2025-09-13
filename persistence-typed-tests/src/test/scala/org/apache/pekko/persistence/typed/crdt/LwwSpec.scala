@@ -13,20 +13,14 @@
 
 package org.apache.pekko.persistence.typed.crdt
 
-import org.apache.pekko
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
-import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
-import pekko.persistence.typed.ReplicationId
-import pekko.persistence.typed.scaladsl.Effect
-import pekko.persistence.typed.scaladsl.EventSourcedBehavior
-import pekko.persistence.typed.scaladsl.ReplicatedEventSourcing
-import pekko.persistence.typed.ReplicaId
-import pekko.persistence.typed.ReplicationBaseSpec
-import pekko.serialization.jackson.CborSerializable
+import java.util.concurrent.{ CountDownLatch, TimeUnit }
 
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
+import org.apache.pekko
+import pekko.actor.typed.{ ActorRef, Behavior }
+import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
+import pekko.persistence.typed.{ ReplicaId, ReplicationBaseSpec, ReplicationId }
+import pekko.persistence.typed.scaladsl.{ Effect, EventSourcedBehavior, ReplicatedEventSourcing }
+import pekko.serialization.jackson.CborSerializable
 
 object LwwSpec {
 

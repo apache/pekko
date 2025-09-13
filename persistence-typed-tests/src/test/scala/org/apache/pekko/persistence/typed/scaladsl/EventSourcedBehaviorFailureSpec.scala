@@ -13,32 +13,24 @@
 
 package org.apache.pekko.persistence.typed.scaladsl
 
-import org.apache.pekko
-import pekko.actor.testkit.typed.TestException
-import pekko.actor.testkit.typed.TestKitSettings
-import pekko.actor.testkit.typed.scaladsl._
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.PostStop
-import pekko.actor.typed.PreRestart
-import pekko.actor.typed.Signal
-import pekko.actor.typed.SupervisorStrategy
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.actor.typed.scaladsl.adapter._
-import pekko.persistence.AtomicWrite
-import pekko.persistence.journal.inmem.InmemJournal
-import pekko.persistence.typed.EventRejectedException
-import pekko.persistence.typed.PersistenceId
-import pekko.persistence.typed.RecoveryCompleted
-import pekko.persistence.typed.RecoveryFailed
-import pekko.persistence.typed.internal.JournalFailureException
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-import org.scalatest.wordspec.AnyWordSpecLike
-
 import scala.collection.immutable
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.util.Try
+
+import com.typesafe.config.{ Config, ConfigFactory }
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import org.apache.pekko
+import pekko.actor.testkit.typed.{ TestException, TestKitSettings }
+import pekko.actor.testkit.typed.scaladsl._
+import pekko.actor.typed.{ ActorRef, PostStop, PreRestart, Signal, SupervisorStrategy }
+import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.scaladsl.adapter._
+import pekko.persistence.AtomicWrite
+import pekko.persistence.journal.inmem.InmemJournal
+import pekko.persistence.typed.{ EventRejectedException, PersistenceId, RecoveryCompleted, RecoveryFailed }
+import pekko.persistence.typed.internal.JournalFailureException
 
 class ChaosJournal extends InmemJournal {
   var counts = Map.empty[String, Int]

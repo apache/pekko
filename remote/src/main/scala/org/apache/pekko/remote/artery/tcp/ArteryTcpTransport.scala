@@ -18,45 +18,31 @@ import java.net.InetSocketAddress
 import java.util.concurrent.atomic.AtomicInteger
 
 import scala.collection.immutable
-import scala.concurrent.Await
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
-import scala.concurrent.Promise
+import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
 import scala.concurrent.duration.Duration
-import scala.util.Failure
-import scala.util.Success
-import scala.util.Try
+import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
 import pekko.ConfigurationException
 import pekko.Done
 import pekko.NotUsed
-import pekko.actor.ActorSystem
-import pekko.actor.ExtendedActorSystem
+import pekko.actor.{ ActorSystem, ExtendedActorSystem }
 import pekko.dispatch.ExecutionContexts
 import pekko.event.Logging
-import pekko.remote.RemoteActorRefProvider
-import pekko.remote.RemoteLogMarker
-import pekko.remote.RemoteTransportException
+import pekko.remote.{ RemoteActorRefProvider, RemoteLogMarker, RemoteTransportException }
 import pekko.remote.artery.Decoder.InboundCompressionAccess
 import pekko.remote.artery.compress._
-import pekko.stream.Attributes
+import pekko.stream.{
+  Attributes,
+  IgnoreComplete,
+  KillSwitches,
+  Materializer,
+  RestartSettings,
+  SharedKillSwitch,
+  SinkShape
+}
 import pekko.stream.Attributes.LogLevels
-import pekko.stream.IgnoreComplete
-import pekko.stream.KillSwitches
-import pekko.stream.Materializer
-import pekko.stream.RestartSettings
-import pekko.stream.SharedKillSwitch
-import pekko.stream.SinkShape
-import pekko.stream.scaladsl.Flow
-import pekko.stream.scaladsl.GraphDSL
-import pekko.stream.scaladsl.Keep
-import pekko.stream.scaladsl.MergeHub
-import pekko.stream.scaladsl.Partition
-import pekko.stream.scaladsl.RestartFlow
-import pekko.stream.scaladsl.Sink
-import pekko.stream.scaladsl.Source
-import pekko.stream.scaladsl.Tcp
+import pekko.stream.scaladsl.{ Flow, GraphDSL, Keep, MergeHub, Partition, RestartFlow, Sink, Source, Tcp }
 import pekko.stream.scaladsl.Tcp.ServerBinding
 import pekko.util.{ ByteString, OptionVal }
 

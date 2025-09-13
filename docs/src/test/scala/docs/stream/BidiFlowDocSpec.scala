@@ -13,14 +13,17 @@
 
 package docs.stream
 
-import org.apache.pekko.testkit.PekkoSpec
-import org.apache.pekko.stream.scaladsl._
-import org.apache.pekko.stream._
-import org.apache.pekko.util.ByteString
 import java.nio.ByteOrder
-import org.apache.pekko.stream.stage._
+
 import scala.concurrent.duration._
 import scala.concurrent.Await
+
+import org.apache.pekko
+import pekko.stream._
+import pekko.stream.scaladsl._
+import pekko.stream.stage._
+import pekko.testkit.PekkoSpec
+import pekko.util.ByteString
 
 object BidiFlowDocSpec {
   // #codec

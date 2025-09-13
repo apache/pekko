@@ -13,8 +13,9 @@
 
 package doc.org.apache.pekko.serialization.jackson.v2a
 
-import org.apache.pekko.serialization.jackson.JacksonMigration
 import com.fasterxml.jackson.databind.JsonNode
+
+import org.apache.pekko.serialization.jackson.JacksonMigration
 
 // #rename-class
 class OrderPlacedMigration extends JacksonMigration {

@@ -13,8 +13,7 @@
 
 package org.apache.pekko.cluster
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem

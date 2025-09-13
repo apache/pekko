@@ -18,18 +18,11 @@ import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorLogging
-import pekko.actor.ActorRef
-import pekko.actor.PoisonPill
-import pekko.actor.Props
+import pekko.actor.{ Actor, ActorLogging, ActorRef, PoisonPill, Props }
 import pekko.cluster.Cluster
-import pekko.cluster.pubsub.DistributedPubSubMediator.Internal.Delta
-import pekko.cluster.pubsub.DistributedPubSubMediator.Internal.Status
+import pekko.cluster.pubsub.DistributedPubSubMediator.Internal.{ Delta, Status }
 import pekko.remote.testconductor.RoleName
-import pekko.remote.testkit.MultiNodeConfig
-import pekko.remote.testkit.MultiNodeSpec
-import pekko.remote.testkit.STMultiNodeSpec
+import pekko.remote.testkit.{ MultiNodeConfig, MultiNodeSpec, STMultiNodeSpec }
 import pekko.testkit._
 
 object DistributedPubSubMediatorSpec extends MultiNodeConfig {
@@ -141,8 +134,8 @@ class DistributedPubSubMediatorSpec
     with STMultiNodeSpec
     with ImplicitSender {
   import DistributedPubSubMediator._
-  import DistributedPubSubMediatorSpec._
   import DistributedPubSubMediatorSpec.TestChatUser._
+  import DistributedPubSubMediatorSpec._
 
   override def initialParticipants = roles.size
 

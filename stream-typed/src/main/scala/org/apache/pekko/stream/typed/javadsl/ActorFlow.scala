@@ -14,11 +14,11 @@
 package org.apache.pekko.stream.typed.javadsl
 
 import scala.concurrent.duration._
+
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.actor.typed.ActorRef
-import pekko.japi.Pair
-import pekko.japi.function
+import pekko.japi.{ function, Pair }
 import pekko.pattern.StatusReply
 import pekko.stream.javadsl.Flow
 import pekko.util.JavaDurationConverters

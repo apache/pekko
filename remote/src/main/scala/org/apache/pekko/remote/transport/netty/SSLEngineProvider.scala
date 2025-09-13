@@ -13,26 +13,17 @@
 
 package org.apache.pekko.remote.transport.netty
 
-import java.io.FileNotFoundException
-import java.io.IOException
-import java.nio.file.Files
-import java.nio.file.Paths
-import java.security.GeneralSecurityException
-import java.security.KeyStore
-import java.security.SecureRandom
-import javax.net.ssl.KeyManager
-import javax.net.ssl.KeyManagerFactory
-import javax.net.ssl.SSLContext
-import javax.net.ssl.SSLEngine
-import javax.net.ssl.TrustManager
-import javax.net.ssl.TrustManagerFactory
+import java.io.{ FileNotFoundException, IOException }
+import java.nio.file.{ Files, Paths }
+import java.security.{ GeneralSecurityException, KeyStore, SecureRandom }
 
 import scala.util.Try
 
+import javax.net.ssl._
+
 import org.apache.pekko
 import pekko.actor.ActorSystem
-import pekko.event.Logging
-import pekko.event.MarkerLoggingAdapter
+import pekko.event.{ Logging, MarkerLoggingAdapter }
 import pekko.remote.RemoteTransportException
 import pekko.remote.artery.tcp.SecureRandomFactory
 import pekko.stream.TLSRole

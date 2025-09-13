@@ -13,18 +13,13 @@
 
 package org.apache.pekko.stream.io
 
-import java.nio.file.Files
-import java.nio.file.Path
+import java.nio.file.{ Files, Path }
 import java.util.concurrent.TimeUnit
 
-import scala.concurrent.Await
-import scala.concurrent.Future
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, Future }
 
 import org.openjdk.jmh.annotations._
-import org.openjdk.jmh.annotations.BenchmarkMode
-import org.openjdk.jmh.annotations.Scope
-import org.openjdk.jmh.annotations.State
 
 import org.apache.pekko
 import pekko.actor.ActorSystem

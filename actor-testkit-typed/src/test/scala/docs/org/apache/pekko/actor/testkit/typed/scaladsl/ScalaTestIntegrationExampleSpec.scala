@@ -14,6 +14,7 @@
 package docs.org.apache.pekko.actor.testkit.typed.scaladsl
 
 import scala.annotation.nowarn
+
 import docs.org.apache.pekko.actor.testkit.typed.scaladsl.AsyncTestingExampleSpec.Echo
 //#extend-multiple-times
 //#log-capturing

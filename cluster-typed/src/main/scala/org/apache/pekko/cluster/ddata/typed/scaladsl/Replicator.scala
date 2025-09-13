@@ -16,12 +16,10 @@ package org.apache.pekko.cluster.ddata.typed.scaladsl
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
-import pekko.cluster.{ ddata => dd }
-import pekko.cluster.ddata.Key
-import pekko.cluster.ddata.ReplicatedData
+import pekko.actor.typed.{ ActorRef, Behavior }
 import pekko.cluster.ddata.typed.internal.ReplicatorBehavior
+import pekko.cluster.ddata.{ Key, ReplicatedData }
+import pekko.cluster.{ ddata => dd }
 
 /**
  * @see [[pekko.cluster.ddata.Replicator]].

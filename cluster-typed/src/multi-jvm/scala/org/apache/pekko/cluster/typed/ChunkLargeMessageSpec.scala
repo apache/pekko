@@ -21,15 +21,11 @@ import org.HdrHistogram.Histogram
 
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.TestProbe
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.PostStop
-import pekko.actor.typed.delivery.ConsumerController
-import pekko.actor.typed.delivery.ProducerController
+import pekko.actor.typed.delivery.{ ConsumerController, ProducerController }
 import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.{ ActorRef, Behavior, PostStop }
 import pekko.cluster.MultiNodeClusterSpec
-import pekko.remote.testkit.MultiNodeConfig
-import pekko.remote.testkit.MultiNodeSpec
+import pekko.remote.testkit.{ MultiNodeConfig, MultiNodeSpec }
 import pekko.serialization.jackson.CborSerializable
 
 object ChunkLargeMessageSpec extends MultiNodeConfig {

@@ -14,6 +14,7 @@
 package org.apache.pekko.persistence.query.journal.leveldb
 
 import com.typesafe.config.Config
+
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.persistence.query.ReadJournalProvider

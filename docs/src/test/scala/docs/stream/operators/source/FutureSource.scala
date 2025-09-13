@@ -14,12 +14,11 @@
 package docs.stream.operators.source
 
 // #sourceFutureSource
+import scala.concurrent.Future
 
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream.scaladsl.Source
-
-import scala.concurrent.Future
 
 object FutureSource {
   def sourceCompletionStageSource(): Unit = {

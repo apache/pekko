@@ -13,17 +13,16 @@
 
 package docs.stream.operators.sourceorflow
 
+import scala.concurrent.{ ExecutionContextExecutor, Future }
+import scala.concurrent.duration._
+import scala.util.Random
+
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.actor.ActorSystem
 import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.Source
 import pekko.util.Timeout
-
-import scala.concurrent.ExecutionContextExecutor
-import scala.concurrent.Future
-import scala.concurrent.duration._
-import scala.util.Random
 
 /**
  */

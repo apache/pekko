@@ -15,8 +15,7 @@ package org.apache.pekko.persistence.journal.inmem
 
 import org.apache.pekko
 import pekko.actor.Props
-import pekko.persistence.PersistenceSpec
-import pekko.persistence.PersistentActor
+import pekko.persistence.{ PersistenceSpec, PersistentActor }
 import pekko.testkit._
 
 object InmemJournalSpec {

@@ -13,19 +13,16 @@
 
 package org.apache.pekko.persistence.testkit.state.scaladsl
 
+import com.typesafe.config.ConfigFactory
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.persistence.query.NoOffset
-import pekko.persistence.query.Sequence
-import pekko.persistence.query.UpdatedDurableState
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
+import pekko.persistence.query.{ NoOffset, Sequence, UpdatedDurableState }
 import pekko.persistence.testkit.PersistenceTestKitDurableStateStorePlugin
 import pekko.stream.scaladsl.Sink
 import pekko.stream.testkit.scaladsl.TestSink
-
-import com.typesafe.config.ConfigFactory
-import org.scalatest.wordspec.AnyWordSpecLike
 
 object PersistenceTestKitDurableStateStoreSpec {
   val config =

@@ -20,8 +20,6 @@ import sbt._
 import sbt.util.CacheStoreFactory
 import Keys._
 
-import sbtassembly.AssemblyKeys._
-
 object Protobuf {
   lazy val paths = SettingKey[Seq[File]]("protobuf-paths", "The paths that contain *.proto files.")
   lazy val outputPaths =

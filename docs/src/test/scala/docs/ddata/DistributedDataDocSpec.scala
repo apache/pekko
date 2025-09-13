@@ -15,12 +15,11 @@ package docs.ddata
 
 import scala.concurrent.duration._
 
-import org.apache.pekko.actor.Actor
+import org.apache.pekko.actor.{ Actor, ActorRef }
 import org.apache.pekko.cluster.ddata._
-import org.apache.pekko.testkit.PekkoSpec
-import org.apache.pekko.testkit.TestProbe
-import org.apache.pekko.actor.ActorRef
+import org.apache.pekko.testkit.{ PekkoSpec, TestProbe }
 import org.apache.pekko.serialization.SerializationExtension
+
 import jdocs.ddata
 
 object DistributedDataDocSpec {
@@ -409,7 +408,7 @@ class DistributedDataDocSpec extends PekkoSpec(DistributedDataDocSpec.config) {
   }
 
   "test japi.TwoPhaseSetSerializer" in {
-    import org.apache.pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     val s1 = ddata.TwoPhaseSet.create().add("a").add("b").add("c").remove("b")
     s1.getElements.asScala should be(Set("a", "c"))
     val serializer = SerializationExtension(system).findSerializerFor(s1)

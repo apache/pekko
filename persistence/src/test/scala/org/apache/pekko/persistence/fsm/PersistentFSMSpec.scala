@@ -15,10 +15,10 @@ package org.apache.pekko.persistence.fsm
 
 import java.io.File
 
+import scala.annotation.nowarn
 import scala.concurrent.duration._
 import scala.reflect.ClassTag
 
-import scala.annotation.nowarn
 import com.typesafe.config.{ Config, ConfigFactory }
 import org.apache.commons.io.FileUtils
 

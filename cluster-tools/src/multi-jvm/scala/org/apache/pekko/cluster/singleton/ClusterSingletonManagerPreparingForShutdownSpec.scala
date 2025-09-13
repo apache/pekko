@@ -13,21 +13,16 @@
 
 package org.apache.pekko.cluster.singleton
 
-import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorLogging
-import pekko.actor.ActorRef
-import pekko.actor.Props
-import pekko.cluster.Cluster
-import pekko.cluster.MemberStatus
-import pekko.cluster.MemberStatus.Removed
-import pekko.cluster.MultiNodeClusterSpec
-import pekko.remote.testkit.MultiNodeConfig
-import pekko.remote.testkit.STMultiNodeSpec
-import pekko.testkit._
+import scala.concurrent.duration._
+
 import com.typesafe.config.ConfigFactory
 
-import scala.concurrent.duration._
+import org.apache.pekko
+import pekko.actor.{ Actor, ActorLogging, ActorRef, Props }
+import pekko.cluster.MemberStatus.Removed
+import pekko.cluster.{ Cluster, MemberStatus, MultiNodeClusterSpec }
+import pekko.remote.testkit.{ MultiNodeConfig, STMultiNodeSpec }
+import pekko.testkit._
 
 object ClusterSingletonManagerPreparingForShutdownSpec extends MultiNodeConfig {
   val first = role("first")

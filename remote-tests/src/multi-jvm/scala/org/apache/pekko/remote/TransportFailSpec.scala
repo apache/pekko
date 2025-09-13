@@ -15,19 +15,13 @@ package org.apache.pekko.remote
 
 import java.util.concurrent.atomic.AtomicBoolean
 
+import scala.annotation.nowarn
 import scala.concurrent.duration._
 
-import scala.annotation.nowarn
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorIdentity
-import pekko.actor.ActorRef
-import pekko.actor.Identify
-import pekko.actor.PoisonPill
-import pekko.actor.Props
+import pekko.actor.{ Actor, ActorIdentity, ActorRef, Identify, PoisonPill, Props }
 import pekko.event.EventStream
 import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig

@@ -13,8 +13,7 @@
 
 package org.apache.pekko.dispatch
 
-import scala.concurrent.duration.Duration
-import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.duration.{ Duration, FiniteDuration }
 
 import org.apache.pekko
 import pekko.actor.ActorCell

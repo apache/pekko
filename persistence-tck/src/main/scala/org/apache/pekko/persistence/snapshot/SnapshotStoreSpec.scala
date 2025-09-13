@@ -13,10 +13,7 @@
 
 package org.apache.pekko.persistence.snapshot
 
-import scala.collection.immutable.Seq
-
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
 import pekko.actor._

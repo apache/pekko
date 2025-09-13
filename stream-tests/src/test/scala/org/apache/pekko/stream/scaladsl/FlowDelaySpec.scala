@@ -17,21 +17,17 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
+import org.scalatest.concurrent.PatienceConfiguration
+import org.scalatest.time.{ Milliseconds, Span }
+
 import org.apache.pekko
 import pekko.Done
-import pekko.stream._
 import pekko.stream.Attributes._
 import pekko.stream.OverflowStrategies.EmitEarly
-import pekko.stream.testkit.StreamSpec
-import pekko.stream.testkit.TestPublisher
-import pekko.stream.testkit.TestSubscriber
+import pekko.stream._
+import pekko.stream.testkit.{ StreamSpec, TestPublisher, TestSubscriber }
 import pekko.stream.testkit.scaladsl.TestSink
-import pekko.testkit.TestDuration
-import pekko.testkit.TimingTest
-
-import org.scalatest.concurrent.PatienceConfiguration
-import org.scalatest.time.Milliseconds
-import org.scalatest.time.Span
+import pekko.testkit.{ TestDuration, TimingTest }
 
 class FlowDelaySpec extends StreamSpec {
 
@@ -182,9 +178,8 @@ class FlowDelaySpec extends StreamSpec {
     }
 
     "properly delay according to buffer size" taggedAs TimingTest in {
-      import system.dispatcher
-
       import pekko.pattern.pipe
+      import system.dispatcher
 
       // With a buffer size of 1, delays add up
       Source(1 to 5)

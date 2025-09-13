@@ -13,17 +13,14 @@
 
 package org.apache.pekko.cluster.sharding
 
-import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.Props
-import pekko.cluster.Cluster
-import pekko.cluster.MemberStatus
-import pekko.testkit.PekkoSpec
-import pekko.testkit.ImplicitSender
-import pekko.testkit.WithLogCapturing
+import scala.concurrent.duration._
+
 import com.typesafe.config.ConfigFactory
 
-import scala.concurrent.duration._
+import org.apache.pekko
+import pekko.actor.{ Actor, Props }
+import pekko.cluster.{ Cluster, MemberStatus }
+import pekko.testkit.{ ImplicitSender, PekkoSpec, WithLogCapturing }
 
 /**
  * Verifies that the automatic restart on terminate/crash that is in place for remember entities does not apply

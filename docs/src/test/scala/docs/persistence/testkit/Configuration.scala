@@ -13,10 +13,12 @@
 
 package docs.persistence.testkit
 
-import org.apache.pekko.actor.typed.ActorSystem
-import org.apache.pekko.persistence.testkit.{ PersistenceTestKitPlugin, PersistenceTestKitSnapshotPlugin }
-import org.apache.pekko.persistence.testkit.scaladsl.{ PersistenceTestKit, SnapshotTestKit }
 import com.typesafe.config.ConfigFactory
+
+import org.apache.pekko
+import pekko.actor.typed.ActorSystem
+import pekko.persistence.testkit.{ PersistenceTestKitPlugin, PersistenceTestKitSnapshotPlugin }
+import pekko.persistence.testkit.scaladsl.{ PersistenceTestKit, SnapshotTestKit }
 
 object TestKitTypedConf {
 

@@ -14,8 +14,7 @@
 package org.apache.pekko.stream.stage
 
 import org.apache.pekko
-import pekko.event.LoggingAdapter
-import pekko.event.NoLogging
+import pekko.event.{ LoggingAdapter, NoLogging }
 import pekko.stream.MaterializerLoggingProvider
 
 /**

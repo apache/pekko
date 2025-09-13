@@ -18,12 +18,12 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.function.{ Function => JFunction }
 
 import scala.annotation.nowarn
+
 import com.typesafe.config.Config
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.annotation.DoNotInherit
-import pekko.annotation.InternalApi
+import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.event.Logging
 import pekko.io.dns.DnsProtocol
 import pekko.util.unused

@@ -13,17 +13,18 @@
 
 package docs.org.apache.pekko.cluster.typed
 
-import scala.util.{ Failure, Success, Try }
 import scala.concurrent.duration._
+import scala.util.{ Failure, Success, Try }
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
-import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior }
 import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior }
 import pekko.cluster.MemberStatus
 import pekko.cluster.pubsub.{ DistributedPubSub, DistributedPubSubMediator }
 import pekko.cluster.typed.{ Cluster, Join }
 import pekko.event.Logging
-import com.typesafe.config.{ Config, ConfigFactory }
 
 object Ontology {
 
@@ -95,8 +96,7 @@ object Publisher {
     def apply(): Behavior[AnyRef] = {
       // #publisher
       Behaviors.setup[AnyRef] { context =>
-        import pekko.cluster.pubsub.DistributedPubSub
-        import pekko.cluster.pubsub.DistributedPubSubMediator
+        import pekko.cluster.pubsub.{ DistributedPubSub, DistributedPubSubMediator }
         val mediator = DistributedPubSub(context.system).mediator
 
         var registry: Map[DataKey, DataType] = Map.empty
@@ -293,6 +293,7 @@ object DataPlatform {
 
 object DistributedPubSubExample {
   import pekko.actor.testkit.typed.scaladsl.TestProbe
+
   import Ontology._
 
   val config: Config = ConfigFactory.parseString(s"""

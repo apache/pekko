@@ -13,49 +13,45 @@
 
 package org.apache.pekko.persistence.typed.internal
 
-import java.util.Optional
-import java.util.UUID
+import java.util.{ Optional, UUID }
 import java.util.concurrent.atomic.AtomicInteger
 
 import com.typesafe.config.Config
+import org.slf4j.LoggerFactory
+
 import org.apache.pekko
 import pekko.actor.typed
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.BackoffSupervisorStrategy
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.BehaviorInterceptor
-import pekko.actor.typed.PostStop
-import pekko.actor.typed.Signal
-import pekko.actor.typed.SupervisorStrategy
+import pekko.actor.typed.{
+  ActorRef,
+  BackoffSupervisorStrategy,
+  Behavior,
+  BehaviorInterceptor,
+  PostStop,
+  Signal,
+  SupervisorStrategy
+}
 import pekko.actor.typed.internal.ActorContextImpl
-import pekko.actor.typed.scaladsl.ActorContext
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.actor.typed.scaladsl.LoggerOps
+import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors, LoggerOps }
 import pekko.annotation._
-import pekko.persistence.JournalProtocol
-import pekko.persistence.Recovery
-import pekko.persistence.RecoveryPermitter
-import pekko.persistence.SnapshotProtocol
+import pekko.persistence.{ JournalProtocol, Recovery, RecoveryPermitter, SnapshotProtocol }
 import pekko.persistence.journal.Tagged
-import pekko.persistence.typed.DeleteEventsCompleted
-import pekko.persistence.typed.DeleteEventsFailed
-import pekko.persistence.typed.DeleteSnapshotsCompleted
-import pekko.persistence.typed.DeleteSnapshotsFailed
-import pekko.persistence.typed.DeletionTarget
-import pekko.persistence.typed.EventAdapter
-import pekko.persistence.typed.NoOpEventAdapter
-import pekko.persistence.typed.PersistenceId
-import pekko.persistence.typed.PublishedEvent
-import pekko.persistence.typed.ReplicaId
-import pekko.persistence.typed.SnapshotAdapter
-import pekko.persistence.typed.SnapshotCompleted
-import pekko.persistence.typed.SnapshotFailed
-import pekko.persistence.typed.scaladsl.RetentionCriteria
-import pekko.persistence.typed.scaladsl._
-import pekko.persistence.typed.scaladsl.{ Recovery => TypedRecovery }
-import pekko.util.ConstantFun
-import pekko.util.unused
-import org.slf4j.LoggerFactory
+import pekko.persistence.typed.{
+  DeleteEventsCompleted,
+  DeleteEventsFailed,
+  DeleteSnapshotsCompleted,
+  DeleteSnapshotsFailed,
+  DeletionTarget,
+  EventAdapter,
+  NoOpEventAdapter,
+  PersistenceId,
+  PublishedEvent,
+  ReplicaId,
+  SnapshotAdapter,
+  SnapshotCompleted,
+  SnapshotFailed
+}
+import pekko.persistence.typed.scaladsl.{ Recovery => TypedRecovery, RetentionCriteria, _ }
+import pekko.util.{ unused, ConstantFun }
 
 @InternalApi
 private[pekko] object EventSourcedBehaviorImpl {

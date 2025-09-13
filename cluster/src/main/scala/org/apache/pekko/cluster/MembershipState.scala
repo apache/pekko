@@ -16,8 +16,7 @@ package org.apache.pekko.cluster
 import java.util.concurrent.ThreadLocalRandom
 
 import scala.annotation.tailrec
-import scala.collection.SortedSet
-import scala.collection.immutable
+import scala.collection.{ immutable, SortedSet }
 import scala.util.Random
 
 import org.apache.pekko

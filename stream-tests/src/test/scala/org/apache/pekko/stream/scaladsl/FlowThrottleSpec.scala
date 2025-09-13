@@ -13,8 +13,7 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import java.util.concurrent.atomic.AtomicInteger
-import java.util.concurrent.atomic.AtomicLong
+import java.util.concurrent.atomic.{ AtomicInteger, AtomicLong }
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -23,12 +22,11 @@ import scala.util.control.NoStackTrace
 
 import org.apache.pekko
 import pekko.Done
-import pekko.stream._
 import pekko.stream.ThrottleMode.{ Enforcing, Shaping }
+import pekko.stream._
 import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.TestSink
-import pekko.testkit.TestDuration
-import pekko.testkit.TimingTest
+import pekko.testkit.{ TestDuration, TimingTest }
 import pekko.util.ByteString
 
 class FlowThrottleSpec extends StreamSpec("""

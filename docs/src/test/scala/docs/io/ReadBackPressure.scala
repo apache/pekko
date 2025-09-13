@@ -13,12 +13,14 @@
 
 package docs.io
 
-import org.apache.pekko.actor.{ Actor, ActorLogging, ActorRef, ActorSystem, Props }
-import org.apache.pekko.io.Tcp._
-import org.apache.pekko.io.{ IO, Tcp }
 import java.net.InetSocketAddress
-import org.apache.pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
-import org.apache.pekko.util.ByteString
+
+import org.apache.pekko
+import pekko.actor.{ Actor, ActorRef, Props }
+import pekko.io.Tcp._
+import pekko.io.{ IO, Tcp }
+import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
+import pekko.util.ByteString
 
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration

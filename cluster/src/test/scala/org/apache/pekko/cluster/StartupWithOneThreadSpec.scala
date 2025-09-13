@@ -16,12 +16,8 @@ package org.apache.pekko.cluster
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorLogging
-import pekko.actor.Address
-import pekko.actor.Props
-import pekko.testkit.PekkoSpec
-import pekko.testkit.ImplicitSender
+import pekko.actor.{ Actor, ActorLogging, Address, Props }
+import pekko.testkit.{ ImplicitSender, PekkoSpec }
 
 object StartupWithOneThreadSpec {
   val config = """

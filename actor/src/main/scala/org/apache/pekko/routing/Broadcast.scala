@@ -13,14 +13,13 @@
 
 package org.apache.pekko.routing
 
+import scala.annotation.nowarn
 import scala.collection.immutable
 
-import scala.annotation.nowarn
 import com.typesafe.config.Config
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.actor.SupervisorStrategy
+import pekko.actor.{ ActorSystem, SupervisorStrategy }
 import pekko.dispatch.Dispatchers
 import pekko.japi.Util.immutableSeq
 

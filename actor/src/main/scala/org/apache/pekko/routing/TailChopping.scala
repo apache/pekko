@@ -16,8 +16,8 @@ package org.apache.pekko.routing
 import java.util.concurrent.atomic.AtomicInteger
 
 import scala.collection.immutable
-import scala.concurrent.{ ExecutionContext, Promise }
 import scala.concurrent.duration._
+import scala.concurrent.{ ExecutionContext, Promise }
 import scala.util.Random
 
 import com.typesafe.config.Config

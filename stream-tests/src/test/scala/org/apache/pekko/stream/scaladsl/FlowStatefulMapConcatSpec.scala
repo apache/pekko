@@ -17,8 +17,7 @@ import scala.annotation.nowarn
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
-import pekko.stream.ActorAttributes
-import pekko.stream.Supervision
+import pekko.stream.{ ActorAttributes, Supervision }
 import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.TestSink
 

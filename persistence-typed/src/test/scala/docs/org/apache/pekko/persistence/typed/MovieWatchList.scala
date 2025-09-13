@@ -14,11 +14,9 @@
 package docs.org.apache.pekko.persistence.typed
 
 import org.apache.pekko
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
+import pekko.actor.typed.{ ActorRef, Behavior }
 import pekko.persistence.typed.PersistenceId
-import pekko.persistence.typed.scaladsl.Effect
-import pekko.persistence.typed.scaladsl.EventSourcedBehavior
+import pekko.persistence.typed.scaladsl.{ Effect, EventSourcedBehavior }
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior.CommandHandler
 
 object MovieWatchList {

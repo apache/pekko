@@ -24,8 +24,8 @@ import java.util.concurrent.atomic.AtomicInteger
 
 import scala.annotation.{ nowarn, tailrec }
 import scala.collection.mutable.ListBuffer
-import scala.concurrent.{ Await, Promise }
 import scala.concurrent.duration.DurationInt
+import scala.concurrent.{ Await, Promise }
 import scala.util.Success
 import scala.util.control.NoStackTrace
 
@@ -33,14 +33,14 @@ import com.google.common.jimfs.{ Configuration, Jimfs }
 
 import org.apache.pekko
 import pekko.Done
-import pekko.stream.{ AbruptTerminationException, ActorAttributes, ActorMaterializer, Attributes, SystemMaterializer }
 import pekko.stream.ActorAttributes.supervisionStrategy
 import pekko.stream.Supervision.{ restartingDecider, resumingDecider, stoppingDecider }
-import pekko.stream.impl.{ PhasedFusingActorMaterializer, StreamSupervisor }
 import pekko.stream.impl.StreamSupervisor.Children
-import pekko.stream.testkit.{ StreamSpec, TestSubscriber }
+import pekko.stream.impl.{ PhasedFusingActorMaterializer, StreamSupervisor }
 import pekko.stream.testkit.Utils.{ assertDispatcher, TE, UnboundedMailboxConfig }
 import pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
+import pekko.stream.testkit.{ StreamSpec, TestSubscriber }
+import pekko.stream._
 import pekko.testkit.EventFilter
 import pekko.util.ByteString
 

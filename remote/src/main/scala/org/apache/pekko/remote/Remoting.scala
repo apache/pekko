@@ -14,33 +14,31 @@
 package org.apache.pekko.remote
 
 import java.net.URLEncoder
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.TimeoutException
-
-import scala.collection.immutable
-import scala.collection.immutable.{ HashMap, Seq }
-import scala.concurrent.{ Await, Future, Promise }
-import scala.concurrent.duration._
-import scala.util.{ Failure, Success }
-import scala.util.control.NonFatal
+import java.util.concurrent.{ ConcurrentHashMap, TimeoutException }
 
 import scala.annotation.nowarn
+import scala.collection.immutable
+import scala.collection.immutable.{ HashMap, Seq }
+import scala.concurrent.duration._
+import scala.concurrent.{ Await, Future, Promise }
+import scala.util.control.NonFatal
+import scala.util.{ Failure, Success }
+
 import com.typesafe.config.Config
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor._
 import pekko.actor.SupervisorStrategy._
+import pekko.actor._
 import pekko.annotation.InternalStableApi
-import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
-import pekko.dispatch.MessageDispatcher
+import pekko.dispatch.{ MessageDispatcher, RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.event.{ Logging, LoggingAdapter }
 import pekko.pattern.{ ask, gracefulStop, pipe }
 import pekko.remote.EndpointManager._
 import pekko.remote.Remoting.TransportSupervisor
-import pekko.remote.transport._
 import pekko.remote.transport.PekkoPduCodec.Message
 import pekko.remote.transport.Transport.{ ActorAssociationEventListener, AssociationEventListener, InboundAssociation }
+import pekko.remote.transport._
 import pekko.util.ByteString.UTF_8
 import pekko.util.OptionVal
 

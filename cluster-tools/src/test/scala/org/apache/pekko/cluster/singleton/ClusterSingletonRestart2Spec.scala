@@ -18,15 +18,9 @@ import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorSystem
-import pekko.actor.PoisonPill
-import pekko.actor.Props
-import pekko.cluster.Cluster
-import pekko.cluster.MemberStatus
-import pekko.cluster.UniqueAddress
-import pekko.testkit.PekkoSpec
-import pekko.testkit.TestProbe
+import pekko.actor.{ Actor, ActorSystem, PoisonPill, Props }
+import pekko.cluster.{ Cluster, MemberStatus, UniqueAddress }
+import pekko.testkit.{ PekkoSpec, TestProbe }
 
 object ClusterSingletonRestart2Spec {
   def singletonActorProps: Props = Props(new Singleton)

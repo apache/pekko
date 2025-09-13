@@ -13,19 +13,13 @@
 
 package org.apache.pekko.routing
 
-import scala.concurrent.Await
-import scala.concurrent.ExecutionContextExecutor
+import scala.concurrent.{ Await, ExecutionContextExecutor }
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorRef
-import pekko.actor.Props
+import pekko.actor.{ Actor, ActorRef, Props }
 import pekko.pattern.ask
-import pekko.routing.ConsistentHashingRouter.ConsistentHashMapping
-import pekko.routing.ConsistentHashingRouter.ConsistentHashable
-import pekko.routing.ConsistentHashingRouter.ConsistentHashableEnvelope
-import pekko.testkit._
-import pekko.testkit.PekkoSpec
+import pekko.routing.ConsistentHashingRouter.{ ConsistentHashMapping, ConsistentHashable, ConsistentHashableEnvelope }
+import pekko.testkit.{ PekkoSpec, _ }
 
 object ConsistentHashingRouterSpec {
 

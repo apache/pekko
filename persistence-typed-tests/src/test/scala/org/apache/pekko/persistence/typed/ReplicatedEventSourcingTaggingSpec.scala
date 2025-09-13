@@ -15,23 +15,20 @@ package org.apache.pekko.persistence.typed
 
 import java.util.concurrent.atomic.AtomicInteger
 
-import org.apache.pekko
-import pekko.Done
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.typed.ActorRef
-import pekko.persistence.query.NoOffset
-import pekko.persistence.query.scaladsl.CurrentEventsByTagQuery
-import pekko.persistence.query.PersistenceQuery
-import pekko.persistence.testkit.PersistenceTestKitPlugin
-import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
-import pekko.persistence.typed.scaladsl.Effect
-import pekko.persistence.typed.scaladsl.EventSourcedBehavior
-import pekko.persistence.typed.scaladsl.ReplicatedEventSourcing
-import pekko.stream.scaladsl.Sink
-import pekko.serialization.jackson.CborSerializable
 import org.scalatest.concurrent.Eventually
 import org.scalatest.wordspec.AnyWordSpecLike
+
+import org.apache.pekko
+import pekko.Done
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
+import pekko.actor.typed.ActorRef
+import pekko.persistence.query.{ NoOffset, PersistenceQuery }
+import pekko.persistence.query.scaladsl.CurrentEventsByTagQuery
+import pekko.persistence.testkit.PersistenceTestKitPlugin
+import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
+import pekko.persistence.typed.scaladsl.{ Effect, EventSourcedBehavior, ReplicatedEventSourcing }
+import pekko.serialization.jackson.CborSerializable
+import pekko.stream.scaladsl.Sink
 
 object ReplicatedEventSourcingTaggingSpec {
 

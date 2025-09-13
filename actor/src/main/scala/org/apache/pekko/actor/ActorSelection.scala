@@ -16,22 +16,18 @@ package org.apache.pekko.actor
 import java.util.concurrent.CompletionStage
 import java.util.regex.Pattern
 
-import scala.annotation.tailrec
+import scala.annotation.{ nowarn, tailrec }
 import scala.collection.immutable
-import scala.concurrent.Future
-import scala.concurrent.Promise
 import scala.concurrent.duration._
+import scala.concurrent.{ Future, Promise }
 import scala.language.implicitConversions
 import scala.util.Success
-
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.dispatch.ExecutionContexts
 import pekko.pattern.ask
 import pekko.routing.MurmurHash
-import pekko.util.{ Helpers, JavaDurationConverters, Timeout }
-import pekko.util.FutureConverters
+import pekko.util.{ FutureConverters, Helpers, JavaDurationConverters, Timeout }
 
 /**
  * An ActorSelection is a logical view of a section of an ActorSystem's tree of Actors,

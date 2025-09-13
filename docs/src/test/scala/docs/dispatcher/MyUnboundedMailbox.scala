@@ -14,16 +14,13 @@
 package docs.dispatcher
 
 //#mailbox-implementation-example
-import org.apache.pekko
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
-import pekko.dispatch.Envelope
-import pekko.dispatch.MailboxType
-import pekko.dispatch.MessageQueue
-import pekko.dispatch.ProducesMessageQueue
-import com.typesafe.config.Config
 import java.util.concurrent.ConcurrentLinkedQueue
-import scala.Option
+
+import com.typesafe.config.Config
+
+import org.apache.pekko
+import pekko.actor.{ ActorRef, ActorSystem }
+import pekko.dispatch.{ Envelope, MailboxType, MessageQueue, ProducesMessageQueue }
 
 object MyUnboundedMailbox {
   // This is the MessageQueue implementation

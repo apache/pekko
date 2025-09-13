@@ -13,12 +13,11 @@
 
 package org.apache.pekko.io
 
-import java.net.DatagramSocket
-import java.net.InetSocketAddress
-
-import scala.collection.immutable
+import java.net.{ DatagramSocket, InetSocketAddress }
 
 import scala.annotation.nowarn
+import scala.collection.immutable
+
 import com.typesafe.config.Config
 
 import org.apache.pekko
@@ -255,9 +254,9 @@ class UdpExt(system: ExtendedActorSystem) extends IO.Extension {
 object UdpMessage {
   import java.lang.{ Iterable => JIterable }
 
-  import Udp._
+  import scala.jdk.CollectionConverters._
 
-  import pekko.util.ccompat.JavaConverters._
+  import Udp._
 
   /**
    * Each [[Udp.Send]] can optionally request a positive acknowledgment to be sent

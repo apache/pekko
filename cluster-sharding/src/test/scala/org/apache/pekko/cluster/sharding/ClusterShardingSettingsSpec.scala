@@ -13,14 +13,15 @@
 
 package org.apache.pekko.cluster.sharding
 
-import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.testkit.{ PekkoSpec, TestKit }
+import scala.concurrent.duration._
+
 import com.typesafe.config.ConfigFactory
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-import scala.concurrent.duration._
+import org.apache.pekko
+import pekko.actor.ActorSystem
+import pekko.testkit.{ PekkoSpec, TestKit }
 
 class ClusterShardingSettingsSpec extends AnyWordSpec with Matchers {
 

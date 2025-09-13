@@ -17,12 +17,10 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.Done
-import pekko.stream.ClosedShape
-import pekko.stream.KillSwitches
+import pekko.stream.{ ClosedShape, KillSwitches }
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.Utils.TE
-import pekko.stream.testkit.scaladsl.TestSink
-import pekko.stream.testkit.scaladsl.TestSource
+import pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
 
 class FlowKillSwitchSpec extends StreamSpec {
 

@@ -16,8 +16,7 @@ package org.apache.pekko.remote.artery
 import java.util.concurrent.atomic.AtomicReference
 
 import scala.annotation.tailrec
-import scala.concurrent.duration.Deadline
-import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.duration.{ Deadline, FiniteDuration }
 
 /**
  * INTERNAL API

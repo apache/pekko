@@ -18,8 +18,7 @@ import scala.collection.immutable
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.annotation.ApiMayChange
-import pekko.persistence.query.DurableStateChange
-import pekko.persistence.query.Offset
+import pekko.persistence.query.{ DurableStateChange, Offset }
 import pekko.persistence.state.scaladsl.DurableStateStore
 import pekko.stream.scaladsl.Source
 

@@ -18,29 +18,20 @@
 package org.apache.pekko.persistence.testkit.scaladsl
 
 import com.typesafe.config.ConfigFactory
-import org.apache.pekko
-import pekko.Done
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.scaladsl.adapter._
-import pekko.persistence.JournalProtocol.RecoverySuccess
-import pekko.persistence.JournalProtocol.ReplayMessages
-import pekko.persistence.JournalProtocol.ReplayedMessage
-import pekko.persistence.Persistence
-import pekko.persistence.SelectedSnapshot
-import pekko.persistence.SnapshotProtocol.LoadSnapshot
-import pekko.persistence.SnapshotProtocol.LoadSnapshotResult
-import pekko.persistence.SnapshotSelectionCriteria
-import pekko.persistence.testkit.PersistenceTestKitPlugin
-import pekko.persistence.testkit.PersistenceTestKitSnapshotPlugin
-import pekko.persistence.typed.PersistenceId
-import pekko.persistence.typed.scaladsl.Effect
-import pekko.persistence.typed.scaladsl.EventSourcedBehavior
-import pekko.persistence.typed.scaladsl.RetentionCriteria
 import org.scalatest.Inside
 import org.scalatest.wordspec.AnyWordSpecLike
+
+import org.apache.pekko
+import pekko.Done
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
+import pekko.actor.typed.{ ActorRef, Behavior }
+import pekko.actor.typed.scaladsl.adapter._
+import pekko.persistence.JournalProtocol.{ RecoverySuccess, ReplayMessages, ReplayedMessage }
+import pekko.persistence.{ Persistence, SelectedSnapshot, SnapshotSelectionCriteria }
+import pekko.persistence.SnapshotProtocol.{ LoadSnapshot, LoadSnapshotResult }
+import pekko.persistence.testkit.{ PersistenceTestKitPlugin, PersistenceTestKitSnapshotPlugin }
+import pekko.persistence.typed.PersistenceId
+import pekko.persistence.typed.scaladsl.{ Effect, EventSourcedBehavior, RetentionCriteria }
 
 object RuntimeJournalsSpec {
 

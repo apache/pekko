@@ -31,10 +31,8 @@ import org.scalatest.wordspec.AnyWordSpec
 
 //#test-header
 import scala.concurrent.duration._
-
 import scala.concurrent.Future
-import scala.util.Success
-import scala.util.Try
+import scala.util.{ Success, Try }
 
 object AsyncTestingExampleSpec {
   // #under-test

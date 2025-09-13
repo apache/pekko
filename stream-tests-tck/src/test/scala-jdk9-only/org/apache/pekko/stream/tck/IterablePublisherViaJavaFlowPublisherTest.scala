@@ -15,10 +15,11 @@ package org.apache.pekko.stream.tck
 
 import java.util.concurrent.{ Flow => JavaFlow }
 
+import org.reactivestreams._
+
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream.scaladsl.{ Flow, JavaFlowSupport, Sink, Source }
-import org.reactivestreams._
 
 class IterablePublisherViaJavaFlowPublisherTest extends PekkoPublisherVerification[Int] {
 

@@ -14,9 +14,8 @@
 package docs.event
 
 import scala.concurrent.duration._
-import org.apache.pekko.testkit.PekkoSpec
+import org.apache.pekko.testkit.{ PekkoSpec, TestProbe }
 import org.apache.pekko.actor.{ ActorRef, ActorSystem }
-import org.apache.pekko.testkit.TestProbe
 
 object EventBusDocSpec {
 

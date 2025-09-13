@@ -18,24 +18,24 @@ import java.util.concurrent.CompletionStage
 import scala.annotation.tailrec
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.{ immutable, AbstractIterator }
-import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.{ Future, Promise }
 import scala.util.control.NonFatal
 
+import org.reactivestreams.{ Publisher, Subscriber }
+
 import org.apache.pekko
-import pekko.{ Done, NotUsed }
 import pekko.actor.{ ActorRef, Cancellable }
 import pekko.annotation.InternalApi
 import pekko.stream._
-import pekko.stream.impl._
 import pekko.stream.impl.Stages.DefaultAttributes
-import pekko.stream.impl.fusing.{ GraphStages, IterableSource, LazyFutureSource, LazySingleSource }
+import pekko.stream.impl._
 import pekko.stream.impl.fusing.GraphStages._
+import pekko.stream.impl.fusing.{ GraphStages, IterableSource, LazyFutureSource, LazySingleSource }
 import pekko.stream.stage.GraphStageWithMaterializedValue
 import pekko.util.ConstantFun
 import pekko.util.FutureConverters._
-
-import org.reactivestreams.{ Publisher, Subscriber }
+import pekko.{ Done, NotUsed }
 
 /**
  * A `Source` is a set of stream processing steps that has one open output. It can comprise

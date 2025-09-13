@@ -13,10 +13,11 @@
 
 package docs.stream
 
-import org.apache.pekko.NotUsed
-import org.apache.pekko.stream.scaladsl.{ Flow, Sink, Source }
-import org.apache.pekko.stream.testkit._
-import org.apache.pekko.testkit.PekkoSpec
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.stream.scaladsl.{ Flow, Sink, Source }
+import pekko.stream.testkit._
+import pekko.testkit.PekkoSpec
 
 class ReactiveStreamsDocSpec extends PekkoSpec {
   import TwitterStreamQuickstartDocSpec._

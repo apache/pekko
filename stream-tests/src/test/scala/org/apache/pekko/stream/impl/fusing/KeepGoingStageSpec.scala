@@ -13,23 +13,14 @@
 
 package org.apache.pekko.stream.impl.fusing
 
-import scala.concurrent.Await
-import scala.concurrent.Future
-import scala.concurrent.Promise
+import scala.concurrent.{ Await, Future, Promise }
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.ActorRef
-import pekko.actor.NoSerializationVerificationNeeded
-import pekko.stream.Attributes
-import pekko.stream.Inlet
-import pekko.stream.SinkShape
-import pekko.stream.scaladsl.Keep
-import pekko.stream.scaladsl.Source
-import pekko.stream.stage.AsyncCallback
-import pekko.stream.stage.GraphStageLogic
-import pekko.stream.stage.GraphStageWithMaterializedValue
-import pekko.stream.stage.InHandler
+import pekko.actor.{ ActorRef, NoSerializationVerificationNeeded }
+import pekko.stream.{ Attributes, Inlet, SinkShape }
+import pekko.stream.scaladsl.{ Keep, Source }
+import pekko.stream.stage.{ AsyncCallback, GraphStageLogic, GraphStageWithMaterializedValue, InHandler }
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.Utils._
 

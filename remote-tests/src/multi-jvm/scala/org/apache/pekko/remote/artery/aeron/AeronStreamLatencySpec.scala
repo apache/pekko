@@ -16,19 +16,14 @@ package aeron
 
 import java.io.File
 import java.nio.charset.StandardCharsets
-import java.util.concurrent.CyclicBarrier
-import java.util.concurrent.Executors
-import java.util.concurrent.atomic.AtomicBoolean
-import java.util.concurrent.atomic.AtomicInteger
-import java.util.concurrent.atomic.AtomicLong
-import java.util.concurrent.atomic.AtomicLongArray
+import java.util.concurrent.{ CyclicBarrier, Executors }
+import java.util.concurrent.atomic.{ AtomicBoolean, AtomicInteger, AtomicLong, AtomicLongArray }
 import java.util.concurrent.locks.LockSupport
 
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
-import io.aeron.Aeron
-import io.aeron.CncFileDescriptor
+import io.aeron.{ Aeron, CncFileDescriptor }
 import org.HdrHistogram.Histogram
 import org.agrona.IoUtil
 import org.agrona.concurrent.ManyToOneConcurrentArrayQueue
@@ -36,12 +31,9 @@ import org.agrona.concurrent.ManyToOneConcurrentArrayQueue
 import org.apache.pekko
 import pekko.Done
 import pekko.actor._
-import pekko.remote.testkit.MultiNodeConfig
-import pekko.remote.testkit.STMultiNodeSpec
-import pekko.stream.KillSwitches
-import pekko.stream.ThrottleMode
-import pekko.stream.scaladsl.Flow
-import pekko.stream.scaladsl.Source
+import pekko.remote.testkit.{ MultiNodeConfig, STMultiNodeSpec }
+import pekko.stream.{ KillSwitches, ThrottleMode }
+import pekko.stream.scaladsl.{ Flow, Source }
 import pekko.testkit._
 import pekko.util.ByteString
 

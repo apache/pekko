@@ -24,10 +24,10 @@ import scala.util.control.{ NoStackTrace, NonFatal }
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.annotation.InternalApi
-import pekko.stream._
 import pekko.stream.ActorAttributes.SupervisionStrategy
-import pekko.stream.impl._
+import pekko.stream._
 import pekko.stream.impl.Stages.DefaultAttributes
+import pekko.stream.impl._
 import pekko.stream.impl.fusing.GraphStages
 import pekko.stream.scaladsl.Partition.PartitionOutOfBoundsException
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }

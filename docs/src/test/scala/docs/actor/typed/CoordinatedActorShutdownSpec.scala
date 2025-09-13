@@ -13,15 +13,15 @@
 
 package docs.actor.typed
 
+import scala.concurrent.Future
+import scala.concurrent.duration._
+
 import org.apache.pekko.Done
 import org.apache.pekko.actor.{ Cancellable, CoordinatedShutdown }
 import org.apache.pekko.actor.typed.{ ActorRef, ActorSystem, Behavior }
 import org.apache.pekko.actor.typed.scaladsl.Behaviors
 import org.apache.pekko.actor.typed.scaladsl.AskPattern._
 import org.apache.pekko.util.Timeout
-
-import scala.concurrent.Future
-import scala.concurrent.duration._
 
 class CoordinatedActorShutdownSpec {
 

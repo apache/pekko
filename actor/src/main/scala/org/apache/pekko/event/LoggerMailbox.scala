@@ -16,12 +16,8 @@ package org.apache.pekko.event
 import com.typesafe.config.Config
 
 import org.apache.pekko
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
-import pekko.dispatch.MailboxType
-import pekko.dispatch.MessageQueue
-import pekko.dispatch.ProducesMessageQueue
-import pekko.dispatch.UnboundedMailbox
+import pekko.actor.{ ActorRef, ActorSystem }
+import pekko.dispatch.{ MailboxType, MessageQueue, ProducesMessageQueue, UnboundedMailbox }
 import pekko.event.Logging.LogEvent
 import pekko.util.unused
 

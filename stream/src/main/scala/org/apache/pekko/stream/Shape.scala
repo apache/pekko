@@ -15,11 +15,11 @@ package org.apache.pekko.stream
 
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable
+import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.util.Collections.EmptyImmutableSeq
-import pekko.util.ccompat.JavaConverters._
 
 /**
  * An input port of a StreamLayout.Module. This type logically belongs

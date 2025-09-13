@@ -13,8 +13,7 @@
 
 package org.apache.pekko.stream
 
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.{ CountDownLatch, TimeUnit }
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -24,12 +23,8 @@ import org.openjdk.jmh.annotations._
 
 import org.apache.pekko
 import pekko.NotUsed
-import pekko.actor.Actor
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
-import pekko.actor.Props
-import pekko.remote.artery.BenchTestSource
-import pekko.remote.artery.LatchSink
+import pekko.actor.{ Actor, ActorRef, ActorSystem, Props }
+import pekko.remote.artery.{ BenchTestSource, LatchSink }
 import pekko.stream.scaladsl._
 import pekko.stream.testkit.scaladsl.StreamTestKit
 import pekko.util.Timeout

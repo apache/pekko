@@ -14,16 +14,15 @@
 package org.apache.pekko.cluster
 
 import scala.concurrent.duration._
+
+import com.typesafe.config.ConfigFactory
+
 import org.apache.pekko
-import pekko.actor.ActorRef
-import pekko.actor.Identify
-import pekko.actor.RootActorPath
-import pekko.remote.artery.ArterySettings
-import pekko.remote.artery.ThisActorSystemQuarantinedEvent
+import pekko.actor.{ ActorRef, Identify, RootActorPath }
+import pekko.remote.artery.{ ArterySettings, ThisActorSystemQuarantinedEvent }
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.transport.ThrottlerTransportAdapter
 import pekko.testkit.LongRunningTest
-import com.typesafe.config.ConfigFactory
 
 object DowningWhenOtherHasQuarantinedThisActorSystemSpec extends MultiNodeConfig {
   val first = role("first")

@@ -14,10 +14,9 @@
 package scala.docs.cluster
 
 import org.apache.pekko
+import pekko.actor.{ Actor, ActorLogging }
 import pekko.cluster.Cluster
 import pekko.cluster.ClusterEvent._
-import pekko.actor.ActorLogging
-import pekko.actor.Actor
 
 class SimpleClusterListener extends Actor with ActorLogging {
 

@@ -13,31 +13,26 @@
 
 package org.apache.pekko.persistence.typed.scaladsl
 
+import java.util.concurrent.{ CountDownLatch, TimeUnit }
+import java.util.concurrent.atomic.AtomicInteger
+
+import scala.concurrent.duration._
+
+import com.typesafe.config.{ Config, ConfigFactory }
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import org.apache.pekko
 import pekko.NotUsed
-import pekko.actor.Dropped
-import pekko.actor.UnhandledMessage
+import pekko.actor.{ Dropped, UnhandledMessage }
 import pekko.actor.testkit.typed.TestException
 import pekko.actor.testkit.typed.scaladsl._
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.PostStop
-import pekko.actor.typed.SupervisorStrategy
+import pekko.actor.typed.{ ActorRef, Behavior, PostStop, SupervisorStrategy }
 import pekko.actor.typed.eventstream.EventStream
 import pekko.actor.typed.internal.PoisonPill
 import pekko.actor.typed.javadsl.StashOverflowException
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.adapter._
-import pekko.persistence.typed.PersistenceId
-import pekko.persistence.typed.RecoveryCompleted
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-import org.scalatest.wordspec.AnyWordSpecLike
-
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicInteger
-import scala.concurrent.duration._
+import pekko.persistence.typed.{ PersistenceId, RecoveryCompleted }
 
 object EventSourcedBehaviorStashSpec {
   def conf: Config = ConfigFactory.parseString(s"""

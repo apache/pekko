@@ -14,9 +14,7 @@
 package org.apache.pekko.persistence.journal.leveldb
 
 import scala.concurrent.Future
-import scala.util.Failure
-import scala.util.Success
-import scala.util.Try
+import scala.util.{ Failure, Success, Try }
 import scala.util.control.NonFatal
 
 import com.typesafe.config.Config

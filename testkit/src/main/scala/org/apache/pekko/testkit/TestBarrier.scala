@@ -15,8 +15,7 @@ package org.apache.pekko.testkit
 
 import java.util.concurrent.{ CyclicBarrier, TimeUnit, TimeoutException }
 
-import scala.concurrent.duration.Duration
-import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.duration.{ Duration, FiniteDuration }
 
 import org.apache.pekko.actor.ActorSystem
 

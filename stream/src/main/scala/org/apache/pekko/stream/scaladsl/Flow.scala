@@ -20,38 +20,30 @@ import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
 import scala.reflect.ClassTag
 
-import org.apache.pekko
-import pekko.Done
-import pekko.NotUsed
-import pekko.actor.ActorRef
-import pekko.annotation.ApiMayChange
-import pekko.annotation.DoNotInherit
-import pekko.event.LogMarker
-import pekko.event.LoggingAdapter
-import pekko.event.MarkerLoggingAdapter
-import pekko.stream._
-import pekko.stream.Attributes.SourceLocation
-import pekko.stream.impl.LinearTraversalBuilder
-import pekko.stream.impl.ProcessorModule
-import pekko.stream.impl.SetupFlowStage
-import pekko.stream.impl.SingleConcat
-import pekko.stream.impl.Stages.DefaultAttributes
-import pekko.stream.impl.SubFlowImpl
-import pekko.stream.impl.Throttle
-import pekko.stream.impl.Timers
-import pekko.stream.impl.TraversalBuilder
-import pekko.stream.impl.fusing
-import pekko.stream.impl.fusing._
-import pekko.stream.impl.fusing.FlattenMerge
-import pekko.stream.stage._
-import pekko.util.ConstantFun
-import pekko.util.OptionVal
-import pekko.util.Timeout
+import org.reactivestreams.{ Processor, Publisher, Subscriber, Subscription }
 
-import org.reactivestreams.Processor
-import org.reactivestreams.Publisher
-import org.reactivestreams.Subscriber
-import org.reactivestreams.Subscription
+import org.apache.pekko
+import pekko.{ Done, NotUsed }
+import pekko.actor.ActorRef
+import pekko.annotation.{ ApiMayChange, DoNotInherit }
+import pekko.event.{ LogMarker, LoggingAdapter, MarkerLoggingAdapter }
+import pekko.stream.Attributes.SourceLocation
+import pekko.stream._
+import pekko.stream.impl.Stages.DefaultAttributes
+import pekko.stream.impl.fusing.{ FlattenMerge, _ }
+import pekko.stream.impl.{
+  fusing,
+  LinearTraversalBuilder,
+  ProcessorModule,
+  SetupFlowStage,
+  SingleConcat,
+  SubFlowImpl,
+  Throttle,
+  Timers,
+  TraversalBuilder
+}
+import pekko.stream.stage._
+import pekko.util.{ ConstantFun, OptionVal, Timeout }
 
 /**
  * A `Flow` is a set of stream processing steps that has one open input and one open output.
@@ -845,7 +837,6 @@ final case class RunnableGraph[+Mat](override val traversalBuilder: TraversalBui
 @DoNotInherit
 trait FlowOps[+Out, +Mat] {
   import GraphDSL.Implicits._
-
   import org.apache.pekko.stream.impl.Stages._
 
   type Repr[+O] <: FlowOps[O, Mat] {

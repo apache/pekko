@@ -13,20 +13,17 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import scala.concurrent.Promise
-import scala.concurrent.duration._
-
 import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.stream.Attributes
 import pekko.stream.impl.fusing.GraphStages.SimpleLinearGraphStage
-import pekko.stream.stage.AsyncCallback
-import pekko.stream.stage.InHandler
-import pekko.stream.stage.OutHandler
-import pekko.stream.stage.TimerGraphStageLogic
-import pekko.stream.testkit._
+import pekko.stream.stage.{ AsyncCallback, InHandler, OutHandler, TimerGraphStageLogic }
 import pekko.stream.testkit.Utils._
+import pekko.stream.testkit._
 import pekko.testkit.TestDuration
+
+import scala.concurrent.Promise
+import scala.concurrent.duration._
 
 object GraphStageTimersSpec {
   case object TestSingleTimer

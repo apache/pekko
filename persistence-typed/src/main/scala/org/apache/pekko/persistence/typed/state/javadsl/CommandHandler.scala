@@ -14,10 +14,7 @@
 package org.apache.pekko.persistence.typed.state.javadsl
 
 import java.util.Objects
-import java.util.function.BiFunction
-import java.util.function.Predicate
-import java.util.function.Supplier
-import java.util.function.{ Function => JFunction }
+import java.util.function.{ BiFunction, Function => JFunction, Predicate, Supplier }
 
 import org.apache.pekko
 import pekko.annotation.InternalApi

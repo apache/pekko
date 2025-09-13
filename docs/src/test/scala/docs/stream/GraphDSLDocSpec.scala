@@ -13,15 +13,16 @@
 
 package docs.stream
 
-import org.apache.pekko.NotUsed
-import org.apache.pekko.stream._
-import org.apache.pekko.stream.scaladsl._
-import org.apache.pekko.testkit.PekkoSpec
-
 import scala.collection.immutable
 import scala.concurrent.duration._
 import scala.concurrent.{ Await, Future }
 import scala.concurrent.ExecutionContext
+
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.stream._
+import pekko.stream.scaladsl._
+import pekko.testkit.PekkoSpec
 
 class GraphDSLDocSpec extends PekkoSpec {
 

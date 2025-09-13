@@ -13,22 +13,19 @@
 
 package org.apache.pekko.cluster.sharding
 
-import org.apache.pekko
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
-import pekko.annotation.ApiMayChange
-import pekko.event.Logging
-import pekko.pattern.ask
-import pekko.util.Timeout
-import pekko.annotation.InternalApi
-import pekko.pattern.AskTimeoutException
-import pekko.util.ccompat.JavaConverters._
-import pekko.util.JavaDurationConverters._
-
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
+import scala.concurrent.{ ExecutionContext, Future }
 import scala.concurrent.duration.FiniteDuration
+import scala.jdk.CollectionConverters._
+
 import com.typesafe.config.Config
+
+import org.apache.pekko
+import pekko.actor.{ ActorRef, ActorSystem }
+import pekko.annotation.{ ApiMayChange, InternalApi }
+import pekko.event.Logging
+import pekko.pattern.{ ask, AskTimeoutException }
+import pekko.util.JavaDurationConverters._
+import pekko.util.Timeout
 
 /**
  * Internal API

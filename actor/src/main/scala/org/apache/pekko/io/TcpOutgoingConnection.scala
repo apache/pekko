@@ -20,8 +20,8 @@ import scala.concurrent.duration._
 import scala.util.control.{ NoStackTrace, NonFatal }
 
 import org.apache.pekko
-import pekko.actor.{ ActorRef, ReceiveTimeout }
 import pekko.actor.Status.Failure
+import pekko.actor.{ ActorRef, ReceiveTimeout }
 import pekko.annotation.InternalApi
 import pekko.io.SelectionHandler._
 import pekko.io.Tcp._

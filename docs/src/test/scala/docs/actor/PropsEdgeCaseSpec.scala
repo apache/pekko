@@ -13,9 +13,11 @@
 
 package docs.actor
 
-import org.apache.pekko.actor.{ Actor, Props }
-import docs.CompileOnlySpec
 import org.scalatest.wordspec.AnyWordSpec
+
+import org.apache.pekko.actor.{ Actor, Props }
+
+import docs.CompileOnlySpec
 
 //#props-edge-cases-value-class
 case class MyValueClass(v: Int) extends AnyVal

@@ -15,12 +15,8 @@ package org.apache.pekko.actor.typed.internal.adapter
 
 import org.apache.pekko
 import pekko.actor.Deploy
-import pekko.actor.typed.ActorTags
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.DispatcherSelector
-import pekko.actor.typed.MailboxSelector
-import pekko.actor.typed.Props
 import pekko.actor.typed.internal.PropsImpl._
+import pekko.actor.typed._
 import pekko.annotation.InternalApi
 import pekko.dispatch.Mailboxes
 

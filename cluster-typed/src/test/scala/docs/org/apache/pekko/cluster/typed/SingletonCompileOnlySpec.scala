@@ -13,11 +13,11 @@
 
 package docs.org.apache.pekko.cluster.typed
 
-import org.apache.pekko
-import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior, SupervisorStrategy }
-import pekko.actor.typed.scaladsl.Behaviors
 import scala.concurrent.duration._
 
+import org.apache.pekko
+import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior, SupervisorStrategy }
 import pekko.cluster.typed.ClusterSingletonSettings
 
 object SingletonCompileOnlySpec {
@@ -52,8 +52,7 @@ object SingletonCompileOnlySpec {
 
   // #singleton
   import org.apache.pekko
-  import pekko.cluster.typed.ClusterSingleton
-  import pekko.cluster.typed.SingletonActor
+  import pekko.cluster.typed.{ ClusterSingleton, SingletonActor }
 
   val singletonManager = ClusterSingleton(system)
   // Start if needed and provide a proxy to a named singleton

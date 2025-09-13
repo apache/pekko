@@ -14,11 +14,7 @@
 package org.apache.pekko.actor.typed.internal
 
 import org.apache.pekko
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.BehaviorInterceptor
-import pekko.actor.typed.BehaviorSignalInterceptor
-import pekko.actor.typed.Signal
-import pekko.actor.typed.TypedActorContext
+import pekko.actor.typed.{ Behavior, BehaviorInterceptor, BehaviorSignalInterceptor, Signal, TypedActorContext }
 import pekko.annotation.InternalApi
 
 /**

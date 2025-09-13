@@ -12,21 +12,19 @@
  */
 
 package org.apache.pekko.actor.typed.scaladsl
+
 import java.util.concurrent.atomic.AtomicInteger
+
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
+
 import org.apache.pekko
-import pekko.actor.{ ActorPath, ActorSystem }
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.internal.routing.GroupRouterImpl
-import pekko.actor.typed.internal.routing.RoutingLogics
-import pekko.actor.typed.receptionist.Receptionist
-import pekko.actor.typed.receptionist.ServiceKey
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, LoggingTestKit, ScalaTestWithActorTestKit }
+import pekko.actor.typed.internal.routing.{ GroupRouterImpl, RoutingLogics }
+import pekko.actor.typed.receptionist.{ Receptionist, ServiceKey }
 import pekko.actor.typed.scaladsl.adapter._
+import pekko.actor.typed.{ ActorRef, Behavior }
+import pekko.actor.{ ActorPath, ActorSystem }
 
 class RoutersSpec extends ScalaTestWithActorTestKit("""
     pekko.loglevel=debug

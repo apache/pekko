@@ -17,8 +17,7 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.cluster.sharding.ShardRegion.Passivate
-import pekko.cluster.sharding.ShardRegion.StartEntity
+import pekko.cluster.sharding.ShardRegion.{ Passivate, StartEntity }
 import pekko.remote.testconductor.RoleName
 import pekko.remote.transport.ThrottlerTransportAdapter.Direction
 import pekko.serialization.jackson.CborSerializable

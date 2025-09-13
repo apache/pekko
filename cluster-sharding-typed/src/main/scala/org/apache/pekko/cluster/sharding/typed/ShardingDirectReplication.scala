@@ -15,16 +15,11 @@ package org.apache.pekko.cluster.sharding.typed
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
 import pekko.actor.typed.eventstream.EventStream
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.actor.typed.scaladsl.LoggerOps
-import pekko.annotation.DoNotInherit
-import pekko.annotation.InternalApi
-import pekko.persistence.typed.PublishedEvent
-import pekko.persistence.typed.ReplicaId
-import pekko.persistence.typed.ReplicationId
+import pekko.actor.typed.scaladsl.{ Behaviors, LoggerOps }
+import pekko.actor.typed.{ ActorRef, Behavior }
+import pekko.annotation.{ DoNotInherit, InternalApi }
+import pekko.persistence.typed.{ PublishedEvent, ReplicaId, ReplicationId }
 
 /**
  * INTERNAL API

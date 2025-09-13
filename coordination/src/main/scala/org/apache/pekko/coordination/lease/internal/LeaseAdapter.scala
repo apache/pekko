@@ -17,8 +17,7 @@ import java.util.Optional
 import java.util.concurrent.CompletionStage
 import java.util.function.Consumer
 
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
+import scala.concurrent.{ ExecutionContext, Future }
 
 import org.apache.pekko
 import pekko.annotation.InternalApi

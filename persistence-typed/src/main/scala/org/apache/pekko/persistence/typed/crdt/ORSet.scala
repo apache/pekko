@@ -15,12 +15,13 @@ package org.apache.pekko.persistence.typed.crdt
 
 import scala.annotation.tailrec
 import scala.collection.immutable
+
 import org.apache.pekko
-import pekko.util.HashCode
 import pekko.annotation.InternalApi
 import pekko.persistence.typed.ReplicaId
 import pekko.persistence.typed.crdt.ORSet.DeltaOp
 import pekko.persistence.typed.internal.{ ManyVersionVector, OneVersionVector, VersionVector }
+import pekko.util.HashCode
 
 object ORSet {
   def empty[A](originReplica: ReplicaId): ORSet[A] = new ORSet(originReplica.id, Map.empty, VersionVector.empty)
@@ -301,7 +302,7 @@ final class ORSet[A] private[pekko] (
    * Java API
    */
   def getElements(): java.util.Set[A] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     elements.asJava
   }
 
@@ -330,7 +331,7 @@ final class ORSet[A] private[pekko] (
    * `elems` must not be empty.
    */
   def addAll(elems: java.util.Set[A]): ORSet.DeltaOp = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     addAll(elems.asScala.toSet)
   }
 
@@ -372,7 +373,7 @@ final class ORSet[A] private[pekko] (
    * `elems` must not be empty.
    */
   def removeAll(elems: java.util.Set[A]): ORSet.DeltaOp = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     removeAll(elems.asScala.toSet)
   }
 

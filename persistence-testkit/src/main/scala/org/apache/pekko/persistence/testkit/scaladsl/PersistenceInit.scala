@@ -20,8 +20,7 @@ import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.ClassicActorSystemProvider
-import pekko.actor.ExtendedActorSystem
+import pekko.actor.{ ClassicActorSystemProvider, ExtendedActorSystem }
 import pekko.persistence.testkit.internal.PersistenceInitImpl
 import pekko.util.Timeout
 

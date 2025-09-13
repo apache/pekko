@@ -14,32 +14,28 @@
 package org.apache.pekko.cluster.sharding
 
 import java.net.URLEncoder
+
 import scala.annotation.tailrec
 import scala.collection.immutable
-import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration._
+import scala.concurrent.{ Future, Promise }
 import scala.reflect.ClassTag
 import scala.runtime.AbstractFunction1
 import scala.util.{ Failure, Success }
+
 import org.apache.pekko
 import pekko.Done
 import pekko.actor._
-import pekko.annotation.ApiMayChange
-import pekko.annotation.{ InternalApi, InternalStableApi }
-import pekko.cluster.Cluster
+import pekko.annotation.{ ApiMayChange, InternalApi, InternalStableApi }
 import pekko.cluster.ClusterEvent._
-import pekko.cluster.ClusterSettings
 import pekko.cluster.ClusterSettings.DataCenter
-import pekko.cluster.Member
-import pekko.cluster.MemberStatus
 import pekko.cluster.sharding.ClusterShardingSettings.PassivationStrategy
 import pekko.cluster.sharding.Shard.ShardStats
 import pekko.cluster.sharding.internal.RememberEntitiesProvider
+import pekko.cluster.{ Cluster, ClusterSettings, Member, MemberStatus }
 import pekko.event.Logging
-import pekko.pattern.ask
-import pekko.pattern.pipe
-import pekko.util.MessageBufferMap
-import pekko.util.Timeout
+import pekko.pattern.{ ask, pipe }
+import pekko.util.{ MessageBufferMap, Timeout }
 
 /**
  * @see [[ClusterSharding$ ClusterSharding extension]]
@@ -261,7 +257,7 @@ object ShardRegion {
      * Java API
      */
     def getRegions: java.util.Set[Address] = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       regions.asJava
     }
 
@@ -291,7 +287,7 @@ object ShardRegion {
      * Java API
      */
     def getRegions(): java.util.Map[Address, ShardRegionStats] = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       regions.asJava
     }
   }
@@ -325,13 +321,13 @@ object ShardRegion {
      * Java API
      */
     def getStats(): java.util.Map[ShardId, Int] = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       stats.asJava
     }
 
     /** Java API */
     def getFailed(): java.util.Set[ShardId] = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       failed.asJava
     }
 
@@ -391,13 +387,13 @@ object ShardRegion {
      * If gathering the shard information times out the set of shards will be empty.
      */
     def getShards(): java.util.Set[ShardState] = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       shards.asJava
     }
 
     /** Java API */
     def getFailed(): java.util.Set[ShardId] = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       failed.asJava
     }
 
@@ -434,7 +430,7 @@ object ShardRegion {
      * Java API:
      */
     def getEntityIds(): java.util.Set[EntityId] = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       entityIds.asJava
     }
   }

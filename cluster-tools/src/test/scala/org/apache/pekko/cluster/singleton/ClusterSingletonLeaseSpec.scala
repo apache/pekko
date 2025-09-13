@@ -22,19 +22,10 @@ import scala.util.Success
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorLogging
-import pekko.actor.ActorRef
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.PoisonPill
-import pekko.actor.Props
-import pekko.cluster.Cluster
-import pekko.cluster.MemberStatus
-import pekko.coordination.lease.TestLease
-import pekko.coordination.lease.TestLeaseExt
-import pekko.testkit.PekkoSpec
-import pekko.testkit.TestException
-import pekko.testkit.TestProbe
+import pekko.actor.{ Actor, ActorLogging, ActorRef, ExtendedActorSystem, PoisonPill, Props }
+import pekko.cluster.{ Cluster, MemberStatus }
+import pekko.coordination.lease.{ TestLease, TestLeaseExt }
+import pekko.testkit.{ PekkoSpec, TestException, TestProbe }
 
 class ImportantSingleton(lifeCycleProbe: ActorRef) extends Actor with ActorLogging {
 

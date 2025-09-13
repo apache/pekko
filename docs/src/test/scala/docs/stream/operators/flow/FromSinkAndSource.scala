@@ -13,19 +13,12 @@
 
 package docs.stream.operators.flow
 
-import org.apache.pekko.NotUsed
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.stream.scaladsl.BroadcastHub
-import org.apache.pekko.stream.scaladsl.Flow
-import org.apache.pekko.stream.scaladsl.Framing
-import org.apache.pekko.stream.scaladsl.Keep
-import org.apache.pekko.stream.scaladsl.MergeHub
-import org.apache.pekko.stream.scaladsl.Sink
-import org.apache.pekko.stream.scaladsl.Source
-import org.apache.pekko.stream.scaladsl.Tcp
-import org.apache.pekko.stream.testkit.TestPublisher
-import org.apache.pekko.stream.testkit.TestSubscriber
-import org.apache.pekko.util.ByteString
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.actor.ActorSystem
+import pekko.stream.scaladsl.{ BroadcastHub, Flow, Framing, Keep, MergeHub, Sink, Source, Tcp }
+import pekko.stream.testkit.{ TestPublisher, TestSubscriber }
+import pekko.util.ByteString
 
 import scala.concurrent.duration._
 

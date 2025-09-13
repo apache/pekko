@@ -15,18 +15,14 @@ package org.apache.pekko.actor.typed.scaladsl
 
 import java.util.concurrent.TimeoutException
 
-import scala.concurrent.Future
 import scala.annotation.nowarn
+import scala.concurrent.Future
+
 import org.apache.pekko
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.RecipientRef
-import pekko.actor.typed.Scheduler
-import pekko.actor.typed.internal.{ adapter => adapt }
-import pekko.actor.typed.internal.InternalRecipientRef
+import pekko.actor.typed.internal.{ adapter => adapt, InternalRecipientRef }
+import pekko.actor.typed.{ ActorRef, ActorSystem, RecipientRef, Scheduler }
 import pekko.annotation.InternalStableApi
-import pekko.pattern.PromiseActorRef
-import pekko.pattern.StatusReply
+import pekko.pattern.{ PromiseActorRef, StatusReply }
 import pekko.util.{ unused, Timeout }
 
 /**

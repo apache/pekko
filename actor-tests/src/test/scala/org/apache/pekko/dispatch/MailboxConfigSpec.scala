@@ -15,8 +15,8 @@ package org.apache.pekko.dispatch
 
 import java.util.concurrent.{ BlockingQueue, ConcurrentLinkedQueue }
 
-import scala.concurrent.{ Await, ExecutionContext, Future }
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, ExecutionContext, Future }
 
 import com.typesafe.config.{ Config, ConfigFactory }
 import org.scalatest.{ BeforeAndAfterAll, BeforeAndAfterEach }

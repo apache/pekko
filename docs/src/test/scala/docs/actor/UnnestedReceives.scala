@@ -13,8 +13,9 @@
 
 package docs.actor
 
-import org.apache.pekko.actor._
 import scala.collection.mutable.ListBuffer
+
+import org.apache.pekko.actor._
 
 /**
  * Requirements are as follows:

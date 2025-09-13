@@ -14,8 +14,7 @@
 package org.apache.pekko.stream.scaladsl
 
 import scala.collection.immutable
-import scala.concurrent.Await
-import scala.concurrent.Future
+import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
 
 import org.apache.pekko

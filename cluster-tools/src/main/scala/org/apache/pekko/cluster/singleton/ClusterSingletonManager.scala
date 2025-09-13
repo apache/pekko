@@ -14,41 +14,38 @@
 package org.apache.pekko.cluster.singleton
 
 import scala.collection.immutable
-import scala.concurrent.Future
-import scala.concurrent.Promise
 import scala.concurrent.duration._
+import scala.concurrent.{ Future, Promise }
 import scala.util.control.NonFatal
+
 import com.typesafe.config.Config
+
 import org.apache.pekko
-import pekko.PekkoException
-import pekko.Done
-import pekko.actor.Actor
-import pekko.actor.ActorRef
-import pekko.actor.ActorSelection
-import pekko.actor.ActorSystem
-import pekko.actor.Address
-import pekko.actor.CoordinatedShutdown
-import pekko.actor.DeadLetterSuppression
-import pekko.actor.Deploy
-import pekko.actor.FSM
-import pekko.actor.NoSerializationVerificationNeeded
-import pekko.actor.Props
-import pekko.actor.Terminated
-import pekko.annotation.DoNotInherit
-import pekko.annotation.InternalStableApi
-import pekko.cluster._
+import pekko.actor.{
+  Actor,
+  ActorRef,
+  ActorSelection,
+  ActorSystem,
+  Address,
+  CoordinatedShutdown,
+  DeadLetterSuppression,
+  Deploy,
+  FSM,
+  NoSerializationVerificationNeeded,
+  Props,
+  Terminated
+}
+import pekko.annotation.{ DoNotInherit, InternalStableApi }
 import pekko.cluster.ClusterEvent._
+import pekko.cluster._
 import pekko.coordination.lease.LeaseUsageSettings
-import pekko.coordination.lease.scaladsl.Lease
-import pekko.coordination.lease.scaladsl.LeaseProvider
+import pekko.coordination.lease.scaladsl.{ Lease, LeaseProvider }
 import pekko.dispatch.Dispatchers
-import pekko.event.LogMarker
-import pekko.event.Logging
-import pekko.event.MarkerLoggingAdapter
-import pekko.pattern.ask
-import pekko.pattern.pipe
+import pekko.event.{ LogMarker, Logging, MarkerLoggingAdapter }
+import pekko.pattern.{ ask, pipe }
 import pekko.util.JavaDurationConverters._
 import pekko.util.Timeout
+import pekko.{ Done, PekkoException }
 
 object ClusterSingletonManagerSettings {
 
@@ -491,8 +488,8 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
     extends Actor
     with FSM[ClusterSingletonManager.State, ClusterSingletonManager.Data] {
 
-  import ClusterSingletonManager.Internal._
   import ClusterSingletonManager.Internal.OldestChangedBuffer._
+  import ClusterSingletonManager.Internal._
   import settings._
 
   val cluster = Cluster(context.system)

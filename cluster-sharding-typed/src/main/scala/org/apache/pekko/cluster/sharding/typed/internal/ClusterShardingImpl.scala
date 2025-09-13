@@ -16,42 +16,29 @@ package internal
 
 import java.net.URLEncoder
 import java.time.Duration
-import java.util.concurrent.CompletionStage
-import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.{ CompletionStage, ConcurrentHashMap }
 
 import scala.concurrent.Future
 
 import org.apache.pekko
-import pekko.actor.ActorRefProvider
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.InternalActorRef
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.Props
-import pekko.actor.typed.internal.InternalRecipientRef
-import pekko.actor.typed.internal.PoisonPill
-import pekko.actor.typed.internal.PoisonPillInterceptor
-import pekko.actor.typed.internal.adapter.ActorRefAdapter
-import pekko.actor.typed.internal.adapter.ActorSystemAdapter
+import pekko.actor.typed.internal.adapter.{ ActorRefAdapter, ActorSystemAdapter }
+import pekko.actor.typed.internal.{ InternalRecipientRef, PoisonPill, PoisonPillInterceptor }
 import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior, Props }
+import pekko.actor.{ ActorRefProvider, ExtendedActorSystem, InternalActorRef }
 import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.cluster.ClusterSettings.DataCenter
-import pekko.cluster.sharding.ShardCoordinator
 import pekko.cluster.sharding.ShardCoordinator.ShardAllocationStrategy
-import pekko.cluster.sharding.ShardRegion
 import pekko.cluster.sharding.ShardRegion.{ StartEntity => ClassicStartEntity }
 import pekko.cluster.sharding.typed.scaladsl.EntityContext
+import pekko.cluster.sharding.{ ShardCoordinator, ShardRegion }
 import pekko.cluster.typed.Cluster
-import pekko.event.Logging
-import pekko.event.LoggingAdapter
+import pekko.event.{ Logging, LoggingAdapter }
 import pekko.japi.function.{ Function => JFunction }
-import pekko.pattern.AskTimeoutException
-import pekko.pattern.PromiseActorRef
-import pekko.pattern.StatusReply
-import pekko.util.{ unused, ByteString, Timeout }
+import pekko.pattern.{ AskTimeoutException, PromiseActorRef, StatusReply }
 import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
+import pekko.util.{ unused, ByteString, Timeout }
 
 /**
  * INTERNAL API

@@ -22,17 +22,16 @@ import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
 import com.typesafe.config.ConfigFactory
+
 import org.apache.pekko
-import pekko.{ Done, NotUsed }
 import pekko.actor._
-import pekko.pattern.AskTimeoutException
-import pekko.pattern.StatusReply
-import pekko.remote.{ RemoteScope, RemoteWatcher }
+import pekko.pattern.{ AskTimeoutException, StatusReply }
 import pekko.remote.routing.RemoteRouterConfig
+import pekko.remote.{ RemoteScope, RemoteWatcher }
 import pekko.routing._
 import pekko.serialization.SerializationExtension
-import pekko.testkit.PekkoSpec
-import pekko.testkit.JavaSerializable
+import pekko.testkit.{ JavaSerializable, PekkoSpec }
+import pekko.{ Done, NotUsed }
 
 object MiscMessageSerializerSpec {
   val serializationTestOverrides =
@@ -177,7 +176,7 @@ class MiscMessageSerializerSpec extends PekkoSpec(MiscMessageSerializerSpec.test
       val result = serializer.fromBinary(serializer.toBinary(msg), serializer.manifest(msg))
       msg match {
         case t: Throwable =>
-          import org.scalactic.TripleEquals.unconstrainedEquality
+
           // typically no equals in exceptions
           result.getClass should ===(t.getClass)
           result.asInstanceOf[Throwable].getMessage should ===(t.getMessage)

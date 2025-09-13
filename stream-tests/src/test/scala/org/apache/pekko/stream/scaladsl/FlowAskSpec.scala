@@ -15,23 +15,17 @@ package org.apache.pekko.stream.scaladsl
 
 import java.util.concurrent.ThreadLocalRandom
 
-import scala.concurrent.Await
-import scala.concurrent.Future
+import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
 import scala.reflect.ClassTag
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorRef
-import pekko.actor.PoisonPill
-import pekko.actor.Props
-import pekko.stream.ActorAttributes
+import pekko.actor.{ Actor, ActorRef, PoisonPill, Props }
 import pekko.stream.ActorAttributes.supervisionStrategy
-import pekko.stream.Supervision
+import pekko.stream.{ ActorAttributes, Supervision }
 import pekko.stream.Supervision.resumingDecider
 import pekko.stream.testkit._
-import pekko.testkit.TestActors
-import pekko.testkit.TestProbe
+import pekko.testkit.{ TestActors, TestProbe }
 import pekko.util.Timeout
 
 object FlowAskSpec {

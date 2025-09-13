@@ -15,16 +15,12 @@ package scala.docs.ddata
 
 import scala.concurrent.duration._
 
-import org.apache.pekko.actor.Actor
-import org.apache.pekko.actor.ActorRef
-import org.apache.pekko.actor.Props
-import org.apache.pekko.cluster.ddata.DistributedData
-import org.apache.pekko.cluster.ddata.LWWMap
-import org.apache.pekko.cluster.ddata.LWWMapKey
-import org.apache.pekko.cluster.ddata.SelfUniqueAddress
+import org.apache.pekko
+import pekko.actor.{ Actor, ActorRef, Props }
+import pekko.cluster.ddata.{ DistributedData, LWWMap, LWWMapKey, SelfUniqueAddress }
 
 object ShoppingCart {
-  import org.apache.pekko.cluster.ddata.Replicator._
+  import pekko.cluster.ddata.Replicator._
 
   def props(userId: String): Props = Props(new ShoppingCart(userId))
 
@@ -45,7 +41,7 @@ object ShoppingCart {
 
 class ShoppingCart(userId: String) extends Actor {
   import ShoppingCart._
-  import org.apache.pekko.cluster.ddata.Replicator._
+  import pekko.cluster.ddata.Replicator._
 
   val replicator = DistributedData(context.system).replicator
   implicit val node: SelfUniqueAddress = DistributedData(context.system).selfUniqueAddress

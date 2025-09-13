@@ -13,17 +13,18 @@
 
 package docs.stream
 
-import org.apache.pekko.NotUsed
-import org.apache.pekko.stream.scaladsl.{ Flow, Keep, Sink, Source }
-import org.apache.pekko.stream.stage._
-import org.apache.pekko.stream._
-import org.apache.pekko.stream.testkit.{ TestPublisher, TestSubscriber }
-import org.apache.pekko.testkit.{ PekkoSpec, TestLatch }
-
 import scala.collection.mutable
 import scala.concurrent.{ Await, Future, Promise }
 import scala.concurrent.duration._
 import scala.collection.immutable.Iterable
+
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.stream.scaladsl.{ Flow, Keep, Sink, Source }
+import pekko.stream.stage._
+import pekko.stream._
+import pekko.stream.testkit.{ TestPublisher, TestSubscriber }
+import pekko.testkit.PekkoSpec
 
 class GraphStageDocSpec extends PekkoSpec {
 

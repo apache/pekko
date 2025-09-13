@@ -14,8 +14,7 @@
 package org.apache.pekko.persistence
 
 import org.apache.pekko
-import pekko.actor.ActorRef
-import pekko.actor.Props
+import pekko.actor.{ ActorRef, Props }
 import pekko.testkit.ImplicitSender
 
 object OptimizedRecoverySpec {

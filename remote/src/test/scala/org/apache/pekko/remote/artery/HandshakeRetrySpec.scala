@@ -19,8 +19,7 @@ import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.testkit.ImplicitSender
-import pekko.testkit.TestActors
+import pekko.testkit.{ ImplicitSender, TestActors }
 
 object HandshakeRetrySpec {
   val commonConfig = ConfigFactory.parseString(s"""

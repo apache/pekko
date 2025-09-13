@@ -14,16 +14,16 @@
 package org.apache.pekko.remote.artery.tcp.ssl
 
 import java.security.NoSuchAlgorithmException
-
-import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.actor.ExtendedActorSystem
-import pekko.event.NoMarkerLogging
-import pekko.remote.artery.tcp.SecureRandomFactory
-import com.typesafe.config.Config
 import javax.net.ssl.SSLEngine
 
 import scala.util.Try
+
+import com.typesafe.config.Config
+
+import org.apache.pekko
+import pekko.actor.{ ActorSystem, ExtendedActorSystem }
+import pekko.event.NoMarkerLogging
+import pekko.remote.artery.tcp.SecureRandomFactory
 
 object CipherSuiteSupportCheck {
 

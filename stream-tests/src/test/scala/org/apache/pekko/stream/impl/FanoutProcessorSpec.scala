@@ -14,9 +14,7 @@
 package org.apache.pekko.stream.impl
 
 import org.apache.pekko
-import pekko.stream.scaladsl.Keep
-import pekko.stream.scaladsl.Sink
-import pekko.stream.scaladsl.Source
+import pekko.stream.scaladsl.{ Keep, Sink, Source }
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.Utils.TE
 import pekko.testkit.TestProbe

@@ -16,8 +16,7 @@ package org.apache.pekko.cluster.sharding.internal
 import org.apache.pekko
 import pekko.actor.Props
 import pekko.annotation.InternalApi
-import pekko.cluster.sharding.ShardRegion.EntityId
-import pekko.cluster.sharding.ShardRegion.ShardId
+import pekko.cluster.sharding.ShardRegion.{ EntityId, ShardId }
 
 /**
  * INTERNAL API

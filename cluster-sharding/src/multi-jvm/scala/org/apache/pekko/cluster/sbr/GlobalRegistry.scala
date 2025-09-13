@@ -16,11 +16,7 @@ package org.apache.pekko.cluster.sbr
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorLogging
-import pekko.actor.ActorRef
-import pekko.actor.Address
-import pekko.actor.Props
+import pekko.actor.{ Actor, ActorLogging, ActorRef, Address, Props }
 import pekko.cluster.Cluster
 import pekko.cluster.sharding.ShardRegion
 import pekko.serialization.jackson.CborSerializable

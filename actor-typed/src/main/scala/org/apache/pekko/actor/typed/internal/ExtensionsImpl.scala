@@ -13,16 +13,15 @@
 
 package org.apache.pekko.actor.typed.internal
 
-import java.util.concurrent.{ ConcurrentHashMap, CountDownLatch }
-
 import scala.annotation.tailrec
+import scala.jdk.CollectionConverters._
 import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
-import pekko.actor.typed.{ ActorSystem, Extension, ExtensionId, Extensions }
-import pekko.actor.typed.ExtensionSetup
+import pekko.actor.typed._
 import pekko.annotation.InternalApi
-import pekko.util.ccompat.JavaConverters._
+
+import java.util.concurrent.{ ConcurrentHashMap, CountDownLatch }
 
 /**
  * INTERNAL API

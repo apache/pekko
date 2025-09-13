@@ -13,13 +13,12 @@
 
 package org.apache.pekko.persistence.fsm
 
-import scala.annotation.varargs
+import scala.annotation.{ nowarn, varargs }
 import scala.collection.immutable
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration._
 import scala.reflect.ClassTag
 
-import scala.annotation.nowarn
 import com.typesafe.config.Config
 
 import org.apache.pekko

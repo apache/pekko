@@ -19,38 +19,39 @@ import java.util.concurrent.ConcurrentHashMap
 
 import scala.collection.immutable
 import scala.concurrent.Await
+import scala.jdk.CollectionConverters._
 import scala.util.control.NonFatal
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
-import pekko.actor.ClassicActorSystemProvider
-import pekko.actor.Deploy
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.Extension
-import pekko.actor.ExtensionId
-import pekko.actor.ExtensionIdProvider
-import pekko.actor.NoSerializationVerificationNeeded
-import pekko.actor.PoisonPill
-import pekko.actor.Props
-import pekko.actor.Status
+import pekko.actor.{
+  Actor,
+  ActorRef,
+  ActorSystem,
+  ClassicActorSystemProvider,
+  Deploy,
+  ExtendedActorSystem,
+  Extension,
+  ExtensionId,
+  ExtensionIdProvider,
+  NoSerializationVerificationNeeded,
+  PoisonPill,
+  Props,
+  Status
+}
 import pekko.annotation.InternalApi
-import pekko.cluster.Cluster
-import pekko.cluster.ClusterSettings
 import pekko.cluster.ClusterSettings.DataCenter
-import pekko.cluster.ddata.Replicator
-import pekko.cluster.ddata.ReplicatorSettings
-import pekko.cluster.sharding.internal.CustomStateStoreModeProvider
-import pekko.cluster.sharding.internal.DDataRememberEntitiesProvider
-import pekko.cluster.sharding.internal.EventSourcedRememberEntitiesProvider
-import pekko.cluster.sharding.internal.RememberEntitiesProvider
+import pekko.cluster.ddata.{ Replicator, ReplicatorSettings }
+import pekko.cluster.sharding.internal.{
+  CustomStateStoreModeProvider,
+  DDataRememberEntitiesProvider,
+  EventSourcedRememberEntitiesProvider,
+  RememberEntitiesProvider
+}
 import pekko.cluster.singleton.ClusterSingletonManager
+import pekko.cluster.{ Cluster, ClusterSettings }
 import pekko.event.Logging
-import pekko.pattern.BackoffOpts
-import pekko.pattern.ask
+import pekko.pattern.{ ask, BackoffOpts }
 import pekko.util.ByteString
-import pekko.util.ccompat.JavaConverters._
 
 /**
  * This extension provides sharding functionality of actors in a cluster.

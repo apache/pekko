@@ -15,8 +15,7 @@ package org.apache.pekko.actor.typed.internal.jfr
 
 import org.apache.pekko
 import pekko.actor.ActorPath
-import pekko.actor.typed.internal.ActorFlightRecorder
-import pekko.actor.typed.internal.DeliveryFlightRecorder
+import pekko.actor.typed.internal.{ ActorFlightRecorder, DeliveryFlightRecorder }
 import pekko.annotation.InternalApi
 
 /**

@@ -16,25 +16,14 @@ package org.apache.pekko.remote.routing
 import java.util.concurrent.atomic.AtomicInteger
 
 import scala.annotation.nowarn
+import scala.jdk.CollectionConverters._
+
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
-import pekko.actor.ActorCell
-import pekko.actor.ActorContext
-import pekko.actor.ActorSystem
-import pekko.actor.Address
-import pekko.actor.Deploy
-import pekko.actor.Props
-import pekko.actor.SupervisorStrategy
+import pekko.actor.{ ActorCell, ActorContext, ActorSystem, Address, Deploy, Props, SupervisorStrategy }
 import pekko.remote.RemoteScope
-import pekko.routing.ActorRefRoutee
-import pekko.routing.Pool
-import pekko.routing.Resizer
-import pekko.routing.Routee
-import pekko.routing.Router
-import pekko.routing.RouterActor
-import pekko.routing.RouterConfig
-import pekko.util.ccompat.JavaConverters._
+import pekko.routing.{ ActorRefRoutee, Pool, Resizer, Routee, Router, RouterActor, RouterConfig }
 
 /**
  * [[pekko.routing.RouterConfig]] implementation for remote deployment on defined

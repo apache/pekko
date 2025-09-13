@@ -13,20 +13,21 @@
 
 package org.apache.pekko.routing
 
-import scala.collection.immutable
-
 import scala.annotation.nowarn
+import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.ConfigurationException
-import pekko.actor.ActorContext
-import pekko.actor.ActorPath
-import pekko.actor.ActorSystem
-import pekko.actor.AutoReceivedMessage
-import pekko.actor.OneForOneStrategy
-import pekko.actor.Props
-import pekko.actor.SupervisorStrategy
-import pekko.actor.Terminated
+import pekko.actor.{
+  ActorContext,
+  ActorPath,
+  ActorSystem,
+  AutoReceivedMessage,
+  OneForOneStrategy,
+  Props,
+  SupervisorStrategy,
+  Terminated
+}
 import pekko.dispatch.Dispatchers
 import pekko.japi.Util.immutableSeq
 import pekko.util.unused
@@ -417,7 +418,7 @@ final case class Routees(routees: immutable.IndexedSeq[Routee]) {
    * Java API
    */
   def getRoutees: java.util.List[Routee] = {
-    import org.apache.pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     routees.asJava
   }
 }

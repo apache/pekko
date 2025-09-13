@@ -15,10 +15,9 @@ package docs.stream.operators.flow
 
 import java.util
 
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.stream.scaladsl.Flow
-import org.apache.pekko.stream.scaladsl.Sink
-import org.apache.pekko.stream.scaladsl.Source
+import org.apache.pekko
+import pekko.actor.ActorSystem
+import pekko.stream.scaladsl.{ Flow, Sink, Source }
 
 object Lazy {
 

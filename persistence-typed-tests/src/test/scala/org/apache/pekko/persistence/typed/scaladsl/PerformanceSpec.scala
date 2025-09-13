@@ -13,24 +13,21 @@
 
 package org.apache.pekko.persistence.typed.scaladsl
 
-import org.apache.pekko
-import pekko.actor.testkit.typed.TestException
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.testkit.typed.scaladsl.TestProbe
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.SupervisorStrategy
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.persistence.testkit.PersistenceTestKitPlugin
-import pekko.persistence.testkit.PersistenceTestKitSnapshotPlugin
-import pekko.persistence.typed.PersistenceId
-import pekko.persistence.typed.RecoveryCompleted
-import pekko.persistence.typed.scaladsl.EventSourcedBehavior.CommandHandler
+import java.util.UUID
+
+import scala.concurrent.duration._
+
 import com.typesafe.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
-import java.util.UUID
-import scala.concurrent.duration._
+import org.apache.pekko
+import pekko.actor.testkit.typed.TestException
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit, TestProbe }
+import pekko.actor.typed.{ ActorRef, SupervisorStrategy }
+import pekko.actor.typed.scaladsl.Behaviors
+import pekko.persistence.testkit.{ PersistenceTestKitPlugin, PersistenceTestKitSnapshotPlugin }
+import pekko.persistence.typed.{ PersistenceId, RecoveryCompleted }
+import pekko.persistence.typed.scaladsl.EventSourcedBehavior.CommandHandler
 
 object PerformanceSpec {
 

@@ -13,17 +13,18 @@
 
 package org.apache.pekko.persistence.typed.crdt
 
+import scala.util.Random
+
 import org.apache.pekko
 import pekko.actor.typed.{ ActorRef, Behavior }
 import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
 import pekko.persistence.typed.scaladsl.{ Effect, EventSourcedBehavior, ReplicatedEventSourcing }
 import pekko.persistence.typed.{ ReplicaId, ReplicationBaseSpec }
-import ORSetSpec.ORSetEntity._
 import pekko.persistence.typed.ReplicationBaseSpec.{ R1, R2 }
 import pekko.persistence.typed.ReplicationId
 import pekko.persistence.typed.crdt.ORSetSpec.ORSetEntity
 
-import scala.util.Random
+import ORSetSpec.ORSetEntity._
 
 object ORSetSpec {
 

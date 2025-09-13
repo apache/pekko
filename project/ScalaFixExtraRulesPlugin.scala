@@ -12,6 +12,7 @@
  */
 
 import sbt.{ AutoPlugin, PluginTrigger, Plugins }
+
 import scalafix.sbt.ScalafixPlugin
 
 object ScalaFixExtraRulesPlugin extends AutoPlugin with ScalafixSupport {

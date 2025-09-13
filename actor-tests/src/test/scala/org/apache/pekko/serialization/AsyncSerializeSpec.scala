@@ -13,10 +13,12 @@
 
 package org.apache.pekko.serialization
 
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.CompletionStage
+import java.util.concurrent.{ CompletableFuture, CompletionStage }
+
 import scala.concurrent.Future
+
 import com.typesafe.config.ConfigFactory
+
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.testkit.{ EventFilter, PekkoSpec }

@@ -15,11 +15,8 @@ package org.apache.pekko.serialization.jackson
 
 // FIXME maybe move many things to `org.apache.pekko.serialization.jackson.internal` package?
 
-import com.fasterxml.jackson.core.JsonGenerator
-import com.fasterxml.jackson.core.JsonParser
-import com.fasterxml.jackson.core.JsonTokenId
-import com.fasterxml.jackson.databind.DeserializationContext
-import com.fasterxml.jackson.databind.SerializerProvider
+import com.fasterxml.jackson.core.{ JsonGenerator, JsonParser, JsonTokenId }
+import com.fasterxml.jackson.databind.{ DeserializationContext, SerializerProvider }
 import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer
 import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer
 

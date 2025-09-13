@@ -13,9 +13,8 @@
 
 package org.apache.pekko.cluster
 
-import scala.runtime.AbstractFunction2
-
 import scala.annotation.nowarn
+import scala.runtime.AbstractFunction2
 
 import org.apache.pekko
 import pekko.actor.Address
@@ -64,7 +63,7 @@ class Member private[cluster] (
    */
   @nowarn("msg=deprecated")
   def getRoles: java.util.Set[String] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     roles.asJava
   }
 

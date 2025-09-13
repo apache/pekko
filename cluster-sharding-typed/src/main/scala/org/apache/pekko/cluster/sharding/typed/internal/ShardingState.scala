@@ -14,17 +14,13 @@
 package org.apache.pekko.cluster.sharding.typed.internal
 
 import org.apache.pekko
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.SupervisorStrategy
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.adapter._
+import pekko.actor.typed.{ Behavior, SupervisorStrategy }
 import pekko.annotation.InternalApi
-import pekko.cluster.sharding.ClusterSharding
-import pekko.cluster.sharding.ShardRegion
 import pekko.cluster.sharding.ShardRegion.CurrentShardRegionState
-import pekko.cluster.sharding.typed.ClusterShardingQuery
-import pekko.cluster.sharding.typed.GetClusterShardingStats
-import pekko.cluster.sharding.typed.GetShardRegionState
+import pekko.cluster.sharding.typed.{ ClusterShardingQuery, GetClusterShardingStats, GetShardRegionState }
+import pekko.cluster.sharding.{ ClusterSharding, ShardRegion }
 
 /**
  * INTERNAL API

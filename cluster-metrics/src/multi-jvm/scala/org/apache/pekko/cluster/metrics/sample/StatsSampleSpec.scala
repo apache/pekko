@@ -21,8 +21,9 @@ import pekko.cluster.ClusterEvent.{ CurrentClusterState, MemberUp }
 import scala.concurrent.duration._
 
 //#MultiNodeConfig
-import org.apache.pekko.remote.testkit.MultiNodeConfig
 import com.typesafe.config.ConfigFactory
+
+import org.apache.pekko.remote.testkit.MultiNodeConfig
 
 object StatsSampleSpecConfig extends MultiNodeConfig {
   // register the named roles (nodes) of the test

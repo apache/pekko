@@ -17,17 +17,11 @@ import java.util.Queue
 
 import scala.annotation.tailrec
 import scala.concurrent.Promise
-import scala.util.Failure
-import scala.util.Success
-import scala.util.Try
+import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
-import pekko.stream.Attributes
-import pekko.stream.Outlet
-import pekko.stream.SourceShape
-import pekko.stream.stage.GraphStageLogic
-import pekko.stream.stage.GraphStageWithMaterializedValue
-import pekko.stream.stage.OutHandler
+import pekko.stream.{ Attributes, Outlet, SourceShape }
+import pekko.stream.stage.{ GraphStageLogic, GraphStageWithMaterializedValue, OutHandler }
 
 /**
  * INTERNAL API

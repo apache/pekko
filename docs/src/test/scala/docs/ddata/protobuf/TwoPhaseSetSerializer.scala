@@ -14,14 +14,16 @@
 package docs.ddata.protobuf
 
 //#serializer
-import java.util.ArrayList
-import java.util.Collections
+import java.util.{ ArrayList, Collections }
+
+import scala.jdk.CollectionConverters._
+
 import org.apache.pekko
-import pekko.util.ccompat.JavaConverters._
 import pekko.actor.ExtendedActorSystem
 import pekko.cluster.ddata.GSet
 import pekko.cluster.ddata.protobuf.SerializationSupport
 import pekko.serialization.Serializer
+
 import docs.ddata.TwoPhaseSet
 import docs.ddata.protobuf.msg.TwoPhaseSetMessages
 
@@ -60,7 +62,7 @@ class TwoPhaseSetSerializer(val system: ExtendedActorSystem) extends Serializer 
 
   def twoPhaseSetFromBinary(bytes: Array[Byte]): TwoPhaseSet = {
     val msg = TwoPhaseSetMessages.TwoPhaseSet.parseFrom(bytes)
-    val addsSet = msg.getAddsList.iterator.asScala.toSet
+    val addsSet = msg.getAddsList.asScala.toSet
     val removalsSet = msg.getRemovalsList.iterator.asScala.toSet
     val adds = addsSet.foldLeft(GSet.empty[String])((acc, el) => acc.add(el))
     val removals = removalsSet.foldLeft(GSet.empty[String])((acc, el) => acc.add(el))

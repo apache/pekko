@@ -17,16 +17,16 @@ import java.io.{ InputStream, OutputStream }
 import java.util.Spliterators
 import java.util.stream.{ Collector, StreamSupport }
 
-import scala.concurrent.{ Await, Future }
-import scala.concurrent.duration._
 import scala.concurrent.duration.Duration._
+import scala.concurrent.duration._
+import scala.concurrent.{ Await, Future }
 
 import org.apache.pekko
 import pekko.NotUsed
-import pekko.stream.{ Attributes, IOResult, SinkShape }
-import pekko.stream.impl._
 import pekko.stream.impl.Stages.DefaultAttributes
+import pekko.stream.impl._
 import pekko.stream.impl.io.{ InputStreamSinkStage, InputStreamSource, OutputStreamGraphStage, OutputStreamSourceStage }
+import pekko.stream.{ Attributes, IOResult, SinkShape }
 import pekko.util.ByteString
 
 /**

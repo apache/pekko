@@ -13,8 +13,7 @@
 
 package org.apache.pekko.japi.pf
 
-import org.apache.pekko
-import pekko.japi.function.{ Function, Predicate, Procedure }
+import org.apache.pekko.japi.function.{ Function, Predicate, Procedure }
 
 private[pf] object CaseStatement {
   def empty[F, T](): PartialFunction[F, T] = PartialFunction.empty

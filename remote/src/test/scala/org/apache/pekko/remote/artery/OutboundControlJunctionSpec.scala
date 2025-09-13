@@ -17,10 +17,8 @@ import org.apache.pekko
 import pekko.actor.Address
 import pekko.remote.UniqueAddress
 import pekko.stream.scaladsl.Keep
-import pekko.stream.testkit.scaladsl.TestSink
-import pekko.stream.testkit.scaladsl.TestSource
-import pekko.testkit.PekkoSpec
-import pekko.testkit.ImplicitSender
+import pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
+import pekko.testkit.{ ImplicitSender, PekkoSpec }
 import pekko.util.OptionVal
 
 object OutboundControlJunctionSpec {

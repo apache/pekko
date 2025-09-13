@@ -13,8 +13,7 @@
 
 package org.apache.pekko.actor.typed.eventstream
 
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.{ CountDownLatch, TimeUnit }
 
 import scala.concurrent.duration._
 
@@ -22,8 +21,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
 import pekko.actor.DeadLetter
-import pekko.actor.testkit.typed.scaladsl.{ ScalaTestWithActorTestKit, TestProbe }
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit, TestProbe }
 import pekko.actor.typed.scaladsl.Behaviors
 
 class EventStreamSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with LogCapturing {

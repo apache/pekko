@@ -13,19 +13,15 @@
 
 package org.apache.pekko.pattern
 
-import java.util.concurrent.ThreadLocalRandom
-import java.util.concurrent.TimeoutException
+import java.util.concurrent.{ ThreadLocalRandom, TimeoutException }
 
 import scala.concurrent.Promise
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorLogging
-import pekko.actor.Props
 import pekko.actor.Status.Failure
-import pekko.testkit.PekkoSpec
-import pekko.testkit.ImplicitSender
+import pekko.actor.{ Actor, ActorLogging, Props }
+import pekko.testkit.{ ImplicitSender, PekkoSpec }
 
 object CircuitBreakerStressSpec {
   case object JobDone

@@ -17,10 +17,10 @@ import scala.concurrent.{ Future, Promise }
 
 import org.apache.pekko
 import pekko.NotUsed
-import pekko.stream.{ AbruptStageTerminationException, Attributes, Materializer, NeverMaterializedException }
 import pekko.stream.SubscriptionWithCancelException.NonFailureCancellation
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.Utils.TE
+import pekko.stream.{ AbruptStageTerminationException, Attributes, Materializer, NeverMaterializedException }
 
 class FlowFutureFlowSpec extends StreamSpec {
   def src10(i: Int = 0) = Source(i until (i + 10))

@@ -21,9 +21,7 @@ import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.Actor
-import pekko.actor.ActorLogging
-import pekko.actor.Props
+import pekko.actor.{ Actor, ActorLogging, Props }
 import pekko.annotation.InternalApi
 
 /**

@@ -18,6 +18,10 @@ import java.net.InetSocketAddress
 import scala.annotation.nowarn
 import scala.concurrent.{ Future, Promise }
 
+import io.netty.buffer.{ ByteBuf, ByteBufUtil, Unpooled }
+import io.netty.channel.{ Channel, ChannelHandlerContext }
+import io.netty.util.AttributeKey
+
 import org.apache.pekko
 import pekko.actor.Address
 import pekko.event.LoggingAdapter
@@ -25,10 +29,6 @@ import pekko.remote.transport.AssociationHandle
 import pekko.remote.transport.AssociationHandle.{ Disassociated, HandleEvent, HandleEventListener, InboundPayload }
 import pekko.remote.transport.Transport.AssociationEventListener
 import pekko.util.ByteString
-
-import io.netty.buffer.{ ByteBuf, ByteBufUtil, Unpooled }
-import io.netty.channel.{ Channel, ChannelHandlerContext }
-import io.netty.util.AttributeKey
 
 private[remote] object TcpHandlers {
   private val LISTENER = AttributeKey.valueOf[HandleEventListener]("listener")

@@ -13,24 +13,20 @@
 
 package docs.org.apache.pekko.typed
 
-import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import org.scalatest.wordspec.AnyWordSpecLike
+
+import org.apache.pekko
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
 
 object StashDocSpec {
   // #stashing
   import scala.concurrent.Future
-  import scala.util.Failure
-  import scala.util.Success
+  import scala.util.{ Failure, Success }
 
   import org.apache.pekko
   import pekko.Done
-  import pekko.actor.typed.ActorRef
-  import pekko.actor.typed.Behavior
-  import pekko.actor.typed.scaladsl.ActorContext
-  import pekko.actor.typed.scaladsl.Behaviors
-  import pekko.actor.typed.scaladsl.StashBuffer
+  import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors, StashBuffer }
+  import pekko.actor.typed.{ ActorRef, Behavior }
 
   trait DB {
     def save(id: String, value: String): Future[Done]
@@ -112,10 +108,10 @@ object StashDocSpec {
 }
 
 class StashDocSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with LogCapturing {
-  import StashDocSpec.DB
-  import StashDocSpec.DataAccess
-  import scala.concurrent.Future
+  import StashDocSpec.{ DB, DataAccess }
   import pekko.Done
+
+  import scala.concurrent.Future
 
   "Stashing docs" must {
 

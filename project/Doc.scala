@@ -11,16 +11,17 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
+import scala.annotation.tailrec
+
 import sbt._
+import sbt.Keys._
+import sbt.File
+import sbt.ScopeFilter.ProjectFilter
+
 import sbtunidoc.BaseUnidocPlugin.autoImport.{ unidoc, unidocAllSources, unidocProjectFilter }
 import sbtunidoc.JavaUnidocPlugin.autoImport.JavaUnidoc
 import sbtunidoc.ScalaUnidocPlugin.autoImport.ScalaUnidoc
 import sbtunidoc.GenJavadocPlugin.autoImport._
-import sbt.Keys._
-import sbt.File
-import scala.annotation.tailrec
-
-import sbt.ScopeFilter.ProjectFilter
 
 object Scaladoc extends AutoPlugin {
 

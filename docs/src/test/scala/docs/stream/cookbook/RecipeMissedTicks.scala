@@ -13,12 +13,14 @@
 
 package docs.stream.cookbook
 
-import org.apache.pekko.NotUsed
-import org.apache.pekko.stream.scaladsl._
-import org.apache.pekko.stream.testkit._
 import scala.concurrent.duration._
-import org.apache.pekko.testkit.TestLatch
 import scala.concurrent.Await
+
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.stream.scaladsl._
+import pekko.stream.testkit._
+import pekko.testkit.TestLatch
 
 class RecipeMissedTicks extends RecipeSpec {
 

@@ -19,16 +19,12 @@ import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.TestProbe
-import pekko.actor.typed.receptionist.Receptionist
-import pekko.actor.typed.receptionist.ServiceKey
+import pekko.actor.typed.receptionist.{ Receptionist, ServiceKey }
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.cluster.MultiNodeClusterSpec
-import pekko.cluster.typed.MultiDcClusterSingletonSpecConfig.first
-import pekko.cluster.typed.MultiDcClusterSingletonSpecConfig.second
-import pekko.cluster.typed.MultiDcClusterSingletonSpecConfig.third
+import pekko.cluster.typed.MultiDcClusterSingletonSpecConfig.{ first, second, third }
 import pekko.cluster.typed.MultiNodeTypedClusterSpec
-import pekko.remote.testkit.MultiNodeConfig
-import pekko.remote.testkit.MultiNodeSpec
+import pekko.remote.testkit.{ MultiNodeConfig, MultiNodeSpec }
 import pekko.remote.transport.ThrottlerTransportAdapter.Direction
 
 object ClusterReceptionistUnreachabilitySpecConfig extends MultiNodeConfig {

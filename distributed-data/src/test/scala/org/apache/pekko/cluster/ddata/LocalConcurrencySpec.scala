@@ -19,12 +19,8 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorSystem
-import pekko.actor.Props
-import pekko.actor.Stash
-import pekko.testkit.ImplicitSender
-import pekko.testkit.TestKit
+import pekko.actor.{ Actor, ActorSystem, Props, Stash }
+import pekko.testkit.{ ImplicitSender, TestKit }
 
 object LocalConcurrencySpec {
 

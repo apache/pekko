@@ -17,15 +17,13 @@ import scala.concurrent.duration._
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicInteger
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{ Config, ConfigFactory }
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
 import pekko.actor.testkit.typed.FishingOutcome
 import pekko.actor.testkit.typed.scaladsl._
-import pekko.actor.typed.delivery.ConsumerController
-import pekko.actor.typed.delivery.WorkPullingProducerController
+import pekko.actor.typed.delivery.{ ConsumerController, WorkPullingProducerController }
 import pekko.actor.typed.receptionist.ServiceKey
 import pekko.persistence.typed.PersistenceId
 

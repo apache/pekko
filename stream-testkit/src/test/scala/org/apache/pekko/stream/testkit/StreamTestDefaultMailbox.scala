@@ -13,18 +13,11 @@
 
 package org.apache.pekko.stream.testkit
 
-import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorRef
-import pekko.actor.ActorRefWithCell
-import pekko.actor.ActorSystem
-import pekko.dispatch.MailboxType
-import pekko.dispatch.MessageQueue
-import pekko.dispatch.ProducesMessageQueue
-import pekko.dispatch.UnboundedMailbox
-import pekko.stream.impl.MaterializerGuardian
-
 import com.typesafe.config.Config
+import org.apache.pekko
+import pekko.actor.{ Actor, ActorRef, ActorRefWithCell, ActorSystem }
+import pekko.dispatch.{ MailboxType, MessageQueue, ProducesMessageQueue, UnboundedMailbox }
+import pekko.stream.impl.MaterializerGuardian
 
 /**
  * INTERNAL API

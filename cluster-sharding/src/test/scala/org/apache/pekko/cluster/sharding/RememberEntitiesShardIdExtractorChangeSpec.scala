@@ -15,20 +15,17 @@ package org.apache.pekko.cluster.sharding
 
 import java.util.UUID
 
+import scala.concurrent.Await
+import scala.concurrent.duration._
+
+import com.typesafe.config.ConfigFactory
+
 import org.apache.pekko
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
-import pekko.actor.Props
+import pekko.actor.{ ActorRef, ActorSystem, Props }
 import pekko.cluster.Cluster
 import pekko.cluster.sharding.ShardRegion.CurrentRegions
 import pekko.persistence.PersistentActor
-import pekko.testkit.PekkoSpec
-import pekko.testkit.ImplicitSender
-import pekko.testkit.TestProbe
-import com.typesafe.config.ConfigFactory
-
-import scala.concurrent.Await
-import scala.concurrent.duration._
+import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
 
 /**
  * Covers that remembered entities is correctly migrated when used and the shard id extractor

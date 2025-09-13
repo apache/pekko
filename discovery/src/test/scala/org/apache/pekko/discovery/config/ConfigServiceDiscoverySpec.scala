@@ -22,10 +22,11 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.discovery.Discovery
-import org.apache.pekko.discovery.ServiceDiscovery.ResolvedTarget
-import org.apache.pekko.testkit.TestKit
+import org.apache.pekko
+import pekko.actor.ActorSystem
+import pekko.discovery.Discovery
+import pekko.discovery.ServiceDiscovery.ResolvedTarget
+import pekko.testkit.TestKit
 
 object ConfigServiceDiscoverySpec {
 

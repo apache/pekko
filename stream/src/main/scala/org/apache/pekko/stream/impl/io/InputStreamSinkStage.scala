@@ -14,19 +14,19 @@
 package org.apache.pekko.stream.impl.io
 
 import java.io.{ IOException, InputStream }
-import java.util.concurrent.{ BlockingQueue, LinkedBlockingDeque, TimeUnit }
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.{ BlockingQueue, LinkedBlockingDeque, TimeUnit }
 
 import scala.annotation.tailrec
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.stream.{ AbruptStageTerminationException, Attributes, Inlet, SinkShape }
 import pekko.stream.Attributes.InputBuffer
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.io.InputStreamSinkStage._
 import pekko.stream.stage._
+import pekko.stream.{ AbruptStageTerminationException, Attributes, Inlet, SinkShape }
 import pekko.util.ByteString
 
 private[stream] object InputStreamSinkStage {

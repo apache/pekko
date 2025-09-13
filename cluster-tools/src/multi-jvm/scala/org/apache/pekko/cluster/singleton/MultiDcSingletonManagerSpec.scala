@@ -19,8 +19,7 @@ import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorLogging, Address, PoisonPill, Props }
-import pekko.cluster.Cluster
-import pekko.cluster.ClusterSettings
+import pekko.cluster.{ Cluster, ClusterSettings }
 import pekko.remote.testkit.{ MultiNodeConfig, MultiNodeSpec, STMultiNodeSpec }
 import pekko.serialization.jackson.CborSerializable
 import pekko.testkit.ImplicitSender

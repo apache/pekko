@@ -16,23 +16,24 @@ package scaladsl
 
 import scala.concurrent.Future
 import scala.reflect.ClassTag
+
 import org.apache.pekko
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.Extension
-import pekko.actor.typed.ExtensionId
-import pekko.actor.typed.ExtensionSetup
-import pekko.actor.typed.Props
-import pekko.actor.typed.RecipientRef
 import pekko.actor.typed.internal.InternalRecipientRef
-import pekko.annotation.DoNotInherit
-import pekko.annotation.InternalApi
+import pekko.actor.typed.{
+  ActorRef,
+  ActorSystem,
+  Behavior,
+  Extension,
+  ExtensionId,
+  ExtensionSetup,
+  Props,
+  RecipientRef
+}
+import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.cluster.ClusterSettings.DataCenter
 import pekko.cluster.sharding.ShardCoordinator.ShardAllocationStrategy
 import pekko.cluster.sharding.ShardRegion.{ StartEntity => ClassicStartEntity }
-import pekko.cluster.sharding.typed.internal.ClusterShardingImpl
-import pekko.cluster.sharding.typed.internal.EntityTypeKeyImpl
+import pekko.cluster.sharding.typed.internal.{ ClusterShardingImpl, EntityTypeKeyImpl }
 import pekko.pattern.StatusReply
 import pekko.util.Timeout
 

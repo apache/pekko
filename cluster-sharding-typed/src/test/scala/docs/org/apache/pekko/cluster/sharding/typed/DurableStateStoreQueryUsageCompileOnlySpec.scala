@@ -14,6 +14,7 @@
 package docs.org.apache.pekko.cluster.sharding.typed
 
 import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.actor.ActorSystem
@@ -25,10 +26,9 @@ object DurableStateStoreQueryUsageCompileOnlySpec {
   def getQuery[Record](system: ActorSystem, pluginId: String, offset: Offset) = {
     // #get-durable-state-store-query-example
     import org.apache.pekko
-    import pekko.persistence.state.DurableStateStoreRegistry
     import pekko.persistence.query.scaladsl.DurableStateStoreQuery
-    import pekko.persistence.query.DurableStateChange
-    import pekko.persistence.query.UpdatedDurableState
+    import pekko.persistence.query.{ DurableStateChange, UpdatedDurableState }
+    import pekko.persistence.state.DurableStateStoreRegistry
 
     val durableStateStoreQuery =
       DurableStateStoreRegistry(system).durableStateStoreFor[DurableStateStoreQuery[Record]](pluginId)

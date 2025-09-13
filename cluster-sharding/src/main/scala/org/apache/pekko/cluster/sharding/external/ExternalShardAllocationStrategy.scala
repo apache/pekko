@@ -18,28 +18,28 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorLogging
-import pekko.actor.ActorRef
-import pekko.actor.ActorRefScope
-import pekko.actor.Address
-import pekko.actor.AddressFromURIString
-import pekko.actor.ClassicActorSystemProvider
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.NoSerializationVerificationNeeded
-import pekko.actor.Props
-import pekko.actor.Stash
+import pekko.actor.{
+  Actor,
+  ActorLogging,
+  ActorRef,
+  ActorRefScope,
+  Address,
+  AddressFromURIString,
+  ClassicActorSystemProvider,
+  ExtendedActorSystem,
+  NoSerializationVerificationNeeded,
+  Props,
+  Stash
+}
 import pekko.cluster.Cluster
-import pekko.cluster.ddata.DistributedData
-import pekko.cluster.ddata.LWWMapKey
-import pekko.cluster.ddata.Replicator.Changed
-import pekko.cluster.ddata.Replicator.Subscribe
+import pekko.cluster.ddata.Replicator.{ Changed, Subscribe }
+import pekko.cluster.ddata.{ DistributedData, LWWMapKey }
 import pekko.cluster.sharding.ShardCoordinator
 import pekko.cluster.sharding.ShardRegion.ShardId
 import pekko.event.Logging
 import pekko.pattern.AskTimeoutException
-import pekko.util.Timeout
 import pekko.util.JavaDurationConverters._
+import pekko.util.Timeout
 
 object ExternalShardAllocationStrategy {
 
@@ -125,9 +125,8 @@ class ExternalShardAllocationStrategy(systemProvider: ClassicActorSystemProvider
   private val system = systemProvider.classicSystem
 
   import ExternalShardAllocationStrategy._
-  import system.dispatcher
-
   import pekko.pattern.ask
+  import system.dispatcher
 
   private val log = Logging(system, classOf[ExternalShardAllocationStrategy])
 

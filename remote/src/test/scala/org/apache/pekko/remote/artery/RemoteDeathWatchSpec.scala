@@ -13,17 +13,15 @@
 
 package org.apache.pekko.remote.artery
 
+import scala.annotation.nowarn
 import scala.concurrent.duration._
 
-import scala.annotation.nowarn
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.actor.RootActorPath
 import pekko.remote.RARP
-import pekko.testkit._
-import pekko.testkit.SocketUtil
+import pekko.testkit.{ SocketUtil, _ }
 
 object RemoteDeathWatchSpec {
   val otherPort = ArteryMultiNodeSpec.freePort(ConfigFactory.load())

@@ -15,9 +15,7 @@ package org.apache.pekko.persistence.typed.scaladsl
 
 import org.apache.pekko
 import pekko.annotation.DoNotInherit
-import pekko.persistence.typed.PersistenceId
-import pekko.persistence.typed.ReplicaId
-import pekko.persistence.typed.ReplicationId
+import pekko.persistence.typed.{ PersistenceId, ReplicaId, ReplicationId }
 import pekko.persistence.typed.internal.ReplicationContextImpl
 
 /**

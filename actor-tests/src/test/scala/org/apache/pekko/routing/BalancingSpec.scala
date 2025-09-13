@@ -16,17 +16,14 @@ package org.apache.pekko.routing
 import java.net.URLEncoder
 import java.util.concurrent.atomic.AtomicInteger
 
-import scala.concurrent.{ Await, Future, Promise }
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, Future, Promise }
 
-import org.apache.pekko
-import pekko.actor.{ Actor, ActorLogging, ActorRef, PoisonPill, Props }
-import pekko.testkit.PekkoSpec
-import pekko.testkit.ImplicitSender
-import pekko.testkit.TestLatch
 import org.scalatest.BeforeAndAfterEach
 
-import pekko.testkit.TestProbe
+import org.apache.pekko
+import pekko.actor._
+import pekko.testkit.{ ImplicitSender, PekkoSpec, TestLatch, TestProbe }
 
 object BalancingSpec {
   val counter = new AtomicInteger(1)

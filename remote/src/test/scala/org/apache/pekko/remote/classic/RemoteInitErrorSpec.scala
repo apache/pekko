@@ -16,6 +16,7 @@ package org.apache.pekko.remote.classic
 import scala.annotation.nowarn
 import scala.collection.mutable.Set
 import scala.concurrent.duration._
+import scala.jdk.CollectionConverters._
 import scala.util.control.NonFatal
 
 import com.typesafe.config.ConfigFactory
@@ -23,9 +24,7 @@ import org.scalatest.concurrent.Eventually._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.util.ccompat.JavaConverters._
+import org.apache.pekko.actor.ActorSystem
 
 /**
  * The 192.0.2.1 is a Documentation IP-address and should not be used at all

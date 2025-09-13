@@ -14,14 +14,14 @@
 package org.apache.pekko.remote.transport
 
 import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.PekkoException
 import pekko.actor.{ ActorRef, Address, AddressFromURIString, InternalActorRef }
 import pekko.protobufv3.internal.InvalidProtocolBufferException
-import pekko.remote._
 import pekko.remote.WireFormats._
-import pekko.util.ByteString
-import pekko.util.OptionVal
+import pekko.remote._
+import pekko.util.{ ByteString, OptionVal }
 
 /**
  * INTERNAL API
@@ -217,7 +217,7 @@ private[remote] object PekkoPduProtobufCodec extends PekkoPduCodec {
     val ackAndEnvelope = AckAndEnvelopeContainer.parseFrom(raw.toArrayUnsafe())
 
     val ackOption = if (ackAndEnvelope.hasAck) {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       Some(
         Ack(
           SeqNo(ackAndEnvelope.getAck.getCumulativeAck),

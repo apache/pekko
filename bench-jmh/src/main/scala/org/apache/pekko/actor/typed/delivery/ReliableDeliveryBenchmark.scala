@@ -18,21 +18,18 @@ import java.util.concurrent.TimeUnit
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
-import scala.util.Failure
-import scala.util.Success
+import scala.util.{ Failure, Success }
 
 import com.typesafe.config.ConfigFactory
 import org.openjdk.jmh.annotations._
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Behavior
 import pekko.actor.typed.delivery.ProducerController.MessageWithConfirmation
 import pekko.actor.typed.receptionist.ServiceKey
 import pekko.actor.typed.scaladsl.AskPattern._
 import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior }
 
 object Producer {
   trait Command

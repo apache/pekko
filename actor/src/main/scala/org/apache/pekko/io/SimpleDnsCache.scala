@@ -21,10 +21,7 @@ import scala.collection.immutable
 import org.apache.pekko
 import pekko.actor.NoSerializationVerificationNeeded
 import pekko.annotation.InternalApi
-import pekko.io.dns.CachePolicy.CachePolicy
-import pekko.io.dns.CachePolicy.Forever
-import pekko.io.dns.CachePolicy.Never
-import pekko.io.dns.CachePolicy.Ttl
+import pekko.io.dns.CachePolicy.{ CachePolicy, Forever, Never, Ttl }
 import pekko.io.dns.DnsProtocol
 import pekko.io.dns.DnsProtocol.{ RequestType, Resolved }
 

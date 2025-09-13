@@ -18,15 +18,10 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.ActorSystem
-import pekko.actor.CoordinatedShutdown
-import pekko.actor.Props
-import pekko.cluster.Cluster
-import pekko.cluster.MemberStatus
-import pekko.testkit.PekkoSpec
+import pekko.actor.{ ActorSystem, CoordinatedShutdown, Props }
+import pekko.cluster.{ Cluster, MemberStatus }
 import pekko.testkit.TestActors.EchoActor
-import pekko.testkit.TestProbe
-import pekko.testkit.WithLogCapturing
+import pekko.testkit.{ PekkoSpec, TestProbe, WithLogCapturing }
 
 object CoordinatedShutdownShardingSpec {
   val config =

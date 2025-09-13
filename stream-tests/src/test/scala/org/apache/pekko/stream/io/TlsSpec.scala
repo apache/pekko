@@ -13,29 +13,26 @@
 
 package org.apache.pekko.stream.io
 
-import java.security.KeyStore
-import java.security.SecureRandom
+import java.security.{ KeyStore, SecureRandom }
 import java.security.cert.CertificateException
 import java.util.concurrent.TimeoutException
 import javax.net.ssl._
 
 import scala.collection.immutable
-import scala.concurrent.Await
-import scala.concurrent.Future
+import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
 import scala.util.Random
 
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.pattern.{ after => later }
-import pekko.stream._
 import pekko.stream.TLSProtocol._
+import pekko.stream._
 import pekko.stream.impl.fusing.GraphStages.SimpleLinearGraphStage
 import pekko.stream.scaladsl._
 import pekko.stream.stage._
 import pekko.stream.testkit._
-import pekko.testkit.TestDuration
-import pekko.testkit.WithLogCapturing
+import pekko.testkit.{ TestDuration, WithLogCapturing }
 import pekko.util.{ ByteString, JavaVersion }
 
 object TlsSpec {

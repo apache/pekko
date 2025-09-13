@@ -22,10 +22,7 @@ import scala.util.matching.Regex
 import org.slf4j.event.Level
 
 import org.apache.pekko
-import pekko.actor.testkit.typed.LoggingEvent
-import pekko.actor.testkit.typed.TestKitSettings
-import pekko.actor.testkit.typed.javadsl
-import pekko.actor.testkit.typed.scaladsl
+import pekko.actor.testkit.typed.{ javadsl, scaladsl, LoggingEvent, TestKitSettings }
 import pekko.actor.typed.ActorSystem
 import pekko.annotation.InternalApi
 import pekko.testkit.TestKit
@@ -156,7 +153,7 @@ import pekko.testkit.TestKit
     copy(mdc = newMdc)
 
   override def withMdc(newMdc: java.util.Map[String, String]): javadsl.LoggingTestKit = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     withMdc(newMdc.asScala.toMap)
   }
 

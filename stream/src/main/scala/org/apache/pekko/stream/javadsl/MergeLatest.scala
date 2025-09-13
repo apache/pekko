@@ -13,10 +13,11 @@
 
 package org.apache.pekko.stream.javadsl
 
+import scala.jdk.CollectionConverters._
+
 import org.apache.pekko
-import pekko.stream.{ scaladsl, UniformFanInShape }
 import pekko.stream.stage.GraphStage
-import pekko.util.ccompat.JavaConverters._
+import pekko.stream.{ scaladsl, UniformFanInShape }
 
 /**
  * MergeLatest joins elements from N input streams into stream of lists of size N.

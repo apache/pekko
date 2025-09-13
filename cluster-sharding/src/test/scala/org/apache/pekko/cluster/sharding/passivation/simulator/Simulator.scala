@@ -13,39 +13,38 @@
 
 package org.apache.pekko.cluster.sharding.passivation.simulator
 
+import scala.collection.{ immutable, mutable }
+import scala.concurrent.{ ExecutionContext, Future }
+import scala.util.{ Failure, Success }
+
+import com.typesafe.config.ConfigFactory
+
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.actor.ActorSystem
-import pekko.cluster.sharding.internal.ActiveEntities
-import pekko.cluster.sharding.internal.AdmissionFilter
-import pekko.cluster.sharding.internal.AdmissionOptimizer
-import pekko.cluster.sharding.internal.AlwaysAdmissionFilter
-import pekko.cluster.sharding.internal.CompositeEntityPassivationStrategy
-import pekko.cluster.sharding.internal.DisabledEntityPassivationStrategy
-import pekko.cluster.sharding.internal.EntityPassivationStrategy
-import pekko.cluster.sharding.internal.FrequencySketchAdmissionFilter
-import pekko.cluster.sharding.internal.HillClimbingAdmissionOptimizer
-import pekko.cluster.sharding.internal.LeastFrequentlyUsedEntityPassivationStrategy
-import pekko.cluster.sharding.internal.LeastFrequentlyUsedReplacementPolicy
-import pekko.cluster.sharding.internal.LeastRecentlyUsedEntityPassivationStrategy
-import pekko.cluster.sharding.internal.LeastRecentlyUsedReplacementPolicy
-import pekko.cluster.sharding.internal.MostRecentlyUsedEntityPassivationStrategy
-import pekko.cluster.sharding.internal.MostRecentlyUsedReplacementPolicy
-import pekko.cluster.sharding.internal.NoActiveEntities
-import pekko.cluster.sharding.internal.NoAdmissionOptimizer
-import pekko.cluster.sharding.internal.SegmentedLeastRecentlyUsedEntityPassivationStrategy
-import pekko.cluster.sharding.internal.SegmentedLeastRecentlyUsedReplacementPolicy
-import pekko.stream.scaladsl.Flow
-import pekko.stream.scaladsl.Source
+import pekko.cluster.sharding.internal.{
+  ActiveEntities,
+  AdmissionFilter,
+  AdmissionOptimizer,
+  AlwaysAdmissionFilter,
+  CompositeEntityPassivationStrategy,
+  DisabledEntityPassivationStrategy,
+  EntityPassivationStrategy,
+  FrequencySketchAdmissionFilter,
+  HillClimbingAdmissionOptimizer,
+  LeastFrequentlyUsedEntityPassivationStrategy,
+  LeastFrequentlyUsedReplacementPolicy,
+  LeastRecentlyUsedEntityPassivationStrategy,
+  LeastRecentlyUsedReplacementPolicy,
+  MostRecentlyUsedEntityPassivationStrategy,
+  MostRecentlyUsedReplacementPolicy,
+  NoActiveEntities,
+  NoAdmissionOptimizer,
+  SegmentedLeastRecentlyUsedEntityPassivationStrategy,
+  SegmentedLeastRecentlyUsedReplacementPolicy
+}
+import pekko.stream.scaladsl.{ Flow, Source }
 import pekko.util.OptionVal
-import com.typesafe.config.ConfigFactory
-
-import scala.collection.immutable
-import scala.collection.mutable
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
-import scala.util.Failure
-import scala.util.Success
 
 /**
  * Simulator for testing the efficiency of passivation strategies.

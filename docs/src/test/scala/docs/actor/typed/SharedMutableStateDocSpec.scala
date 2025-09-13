@@ -13,14 +13,14 @@
 
 package docs.actor.typed
 
-import org.apache.pekko.actor.typed.scaladsl._
-import org.apache.pekko.actor.typed.{ ActorRef, Behavior }
-import org.apache.pekko.util.Timeout
-
 import scala.collection.mutable
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.util.{ Failure, Success }
+
+import org.apache.pekko.actor.typed.scaladsl._
+import org.apache.pekko.actor.typed.{ ActorRef, Behavior }
+import org.apache.pekko.util.Timeout
 
 class SharedMutableStateDocSpec {
 

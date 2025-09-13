@@ -23,8 +23,7 @@ import org.apache.pekko
 import pekko.cluster.Cluster
 import pekko.cluster.ddata.Replicator._
 import pekko.remote.testconductor.RoleName
-import pekko.remote.testkit.MultiNodeConfig
-import pekko.remote.testkit.MultiNodeSpec
+import pekko.remote.testkit.{ MultiNodeConfig, MultiNodeSpec }
 import pekko.serialization.jackson.CborSerializable
 import pekko.testkit._
 

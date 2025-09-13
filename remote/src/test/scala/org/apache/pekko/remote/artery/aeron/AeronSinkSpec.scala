@@ -27,11 +27,8 @@ import org.agrona.IoUtil
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.remote.artery.aeron.AeronSink.GaveUpMessageException
-import pekko.stream.scaladsl.Sink
-import pekko.stream.scaladsl.Source
-import pekko.testkit.PekkoSpec
-import pekko.testkit.ImplicitSender
-import pekko.testkit.SocketUtil
+import pekko.stream.scaladsl.{ Sink, Source }
+import pekko.testkit.{ ImplicitSender, PekkoSpec, SocketUtil }
 
 class AeronSinkSpec extends PekkoSpec("""
     pekko.stream.materializer.debug.fuzzing-mode = on

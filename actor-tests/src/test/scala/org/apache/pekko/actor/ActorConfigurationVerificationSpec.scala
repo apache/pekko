@@ -20,9 +20,8 @@ import org.scalatest.BeforeAndAfterEach
 import org.apache.pekko
 import pekko.ConfigurationException
 import pekko.routing._
-import pekko.testkit._
-import pekko.testkit.DefaultTimeout
 import pekko.testkit.TestEvent._
+import pekko.testkit.{ DefaultTimeout, _ }
 
 object ActorConfigurationVerificationSpec {
 

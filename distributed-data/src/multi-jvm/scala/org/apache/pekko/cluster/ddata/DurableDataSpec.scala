@@ -21,14 +21,10 @@ import com.typesafe.config.ConfigFactory
 import org.scalatest.CancelAfterFailure
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
-import pekko.actor.Props
+import pekko.actor.{ Actor, ActorRef, ActorSystem, Props }
 import pekko.cluster.Cluster
 import pekko.remote.testconductor.RoleName
-import pekko.remote.testkit.MultiNodeConfig
-import pekko.remote.testkit.MultiNodeSpec
+import pekko.remote.testkit.{ MultiNodeConfig, MultiNodeSpec }
 import pekko.testkit._
 
 final case class DurableDataSpecConfig(writeBehind: Boolean) extends MultiNodeConfig {

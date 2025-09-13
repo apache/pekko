@@ -14,17 +14,18 @@
 package org.apache.pekko.remote.artery
 
 import org.apache.pekko
-import pekko.actor.ActorRef
-import pekko.actor.ActorSelection
-import pekko.actor.ActorSelectionMessage
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.LocalRef
-import pekko.actor.PossiblyHarmful
-import pekko.actor.RepointableRef
+import pekko.actor.{
+  ActorRef,
+  ActorSelection,
+  ActorSelectionMessage,
+  ExtendedActorSystem,
+  LocalRef,
+  PossiblyHarmful,
+  RepointableRef
+}
 import pekko.dispatch.sysmsg.SystemMessage
 import pekko.event.{ LogMarker, Logging }
-import pekko.remote.RemoteActorRefProvider
-import pekko.remote.RemoteRef
+import pekko.remote.{ RemoteActorRefProvider, RemoteRef }
 import pekko.util.OptionVal
 
 /**

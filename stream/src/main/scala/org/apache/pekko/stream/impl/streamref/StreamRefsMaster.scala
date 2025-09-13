@@ -14,8 +14,14 @@
 package org.apache.pekko.stream.impl.streamref
 
 import org.apache.pekko
-import pekko.actor.{ ActorSystem, ExtendedActorSystem, Extension, ExtensionId, ExtensionIdProvider }
-import pekko.actor.ClassicActorSystemProvider
+import pekko.actor.{
+  ActorSystem,
+  ClassicActorSystemProvider,
+  ExtendedActorSystem,
+  Extension,
+  ExtensionId,
+  ExtensionIdProvider
+}
 import pekko.annotation.InternalApi
 import pekko.stream.impl.SeqActorName
 

@@ -12,7 +12,11 @@
  */
 
 package org.apache.pekko.persistence.typed
+
 import java.util.concurrent.atomic.AtomicInteger
+
+import org.scalatest.concurrent.Eventually
+import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
 import pekko.Done
@@ -23,8 +27,6 @@ import pekko.persistence.testkit.scaladsl.{ PersistenceTestKit, SnapshotTestKit 
 import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
 import pekko.persistence.typed.internal.{ ReplicatedPublishedEventMetaData, VersionVector }
 import pekko.persistence.typed.scaladsl.ReplicatedEventSourcing
-import org.scalatest.concurrent.Eventually
-import org.scalatest.wordspec.AnyWordSpecLike
 
 object ReplicationSnapshotSpec {
 

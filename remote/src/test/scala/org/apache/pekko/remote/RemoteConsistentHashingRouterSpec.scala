@@ -15,9 +15,7 @@ package org.apache.pekko.remote
 
 import org.apache.pekko
 import pekko.actor.Address
-import pekko.routing.ActorSelectionRoutee
-import pekko.routing.ConsistentHash
-import pekko.routing.ConsistentRoutee
+import pekko.routing.{ ActorSelectionRoutee, ConsistentHash, ConsistentRoutee }
 import pekko.testkit.PekkoSpec
 
 class RemoteConsistentHashingRouterSpec

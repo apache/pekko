@@ -11,15 +11,16 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import scala.sys.process.Process
-import sjsonnew.BasicJsonProtocol._
+import java.io.File
+import java.lang.Boolean.getBoolean
+
 import sbt._
 import Keys._
 
-import java.io.File
-import java.lang.Boolean.getBoolean
 import sbtassembly.AssemblyPlugin.assemblySettings
 import sbtassembly.{ AssemblyKeys, MergeStrategy }
+import scala.sys.process.Process
+import sjsonnew.BasicJsonProtocol._
 import AssemblyKeys._
 
 object MultiJvmPlugin extends AutoPlugin {

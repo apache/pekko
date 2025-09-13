@@ -26,8 +26,7 @@ import pekko.persistence.testkit.{
   Stopped,
   TestCommand
 }
-import pekko.persistence.typed.PersistenceId
-import pekko.persistence.typed.RecoveryCompleted
+import pekko.persistence.typed.{ PersistenceId, RecoveryCompleted }
 import pekko.persistence.typed.scaladsl.{ Effect, EventSourcedBehavior }
 
 trait ScalaDslUtils extends CommonUtils {

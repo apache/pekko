@@ -17,8 +17,7 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.stream.testkit._
-import pekko.stream.testkit.scaladsl.TestSink
-import pekko.stream.testkit.scaladsl.TestSource
+import pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
 
 class FlowIntersperseSpec extends StreamSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 2

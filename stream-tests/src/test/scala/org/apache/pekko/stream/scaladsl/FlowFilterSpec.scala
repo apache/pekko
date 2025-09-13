@@ -23,8 +23,7 @@ import pekko.stream.ActorAttributes._
 import pekko.stream.Attributes
 import pekko.stream.Supervision._
 import pekko.stream.testkit._
-import pekko.stream.testkit.scaladsl.TestSink
-import pekko.stream.testkit.scaladsl.TestSource
+import pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
 
 class FlowFilterSpec extends StreamSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 2

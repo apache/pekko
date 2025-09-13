@@ -14,19 +14,13 @@
 package org.apache.pekko.remote.artery
 
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicBoolean
-import java.util.concurrent.atomic.AtomicLong
-import java.util.concurrent.atomic.AtomicReference
+import java.util.concurrent.atomic.{ AtomicBoolean, AtomicLong, AtomicReference }
 
-import scala.annotation.tailrec
-import scala.concurrent.Await
-import scala.concurrent.Future
-import scala.concurrent.Promise
+import scala.annotation.{ nowarn, tailrec }
+import scala.concurrent.{ Await, Future, Promise }
 import scala.concurrent.duration._
 import scala.util.Try
 import scala.util.control.NoStackTrace
-
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.Done
@@ -36,27 +30,17 @@ import pekko.annotation.InternalStableApi
 import pekko.dispatch.Dispatchers
 import pekko.event.Logging
 import pekko.event.MarkerLoggingAdapter
-import pekko.remote.AddressUidExtension
-import pekko.remote.RemoteActorRef
-import pekko.remote.RemoteActorRefProvider
-import pekko.remote.RemoteTransport
-import pekko.remote.UniqueAddress
+import pekko.remote.{ AddressUidExtension, RemoteActorRef, RemoteActorRefProvider, RemoteTransport, UniqueAddress }
 import pekko.remote.artery.Decoder.InboundCompressionAccess
 import pekko.remote.artery.Encoder.OutboundCompressionAccess
-import pekko.remote.artery.InboundControlJunction.ControlMessageObserver
-import pekko.remote.artery.InboundControlJunction.ControlMessageSubject
+import pekko.remote.artery.InboundControlJunction.{ ControlMessageObserver, ControlMessageSubject }
 import pekko.remote.artery.OutboundControlJunction.OutboundControlIngress
 import pekko.remote.artery.compress._
 import pekko.remote.artery.compress.CompressionProtocol.CompressionMessage
-import pekko.remote.transport.ThrottlerTransportAdapter.Blackhole
-import pekko.remote.transport.ThrottlerTransportAdapter.SetThrottle
-import pekko.remote.transport.ThrottlerTransportAdapter.Unthrottled
+import pekko.remote.transport.ThrottlerTransportAdapter.{ Blackhole, SetThrottle, Unthrottled }
 import pekko.stream._
-import pekko.stream.scaladsl.Flow
-import pekko.stream.scaladsl.Keep
-import pekko.stream.scaladsl.Sink
-import pekko.util.OptionVal
-import pekko.util.WildcardIndex
+import pekko.stream.scaladsl.{ Flow, Keep, Sink }
+import pekko.util.{ OptionVal, WildcardIndex }
 
 /**
  * INTERNAL API

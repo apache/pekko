@@ -14,15 +14,14 @@
 package org.apache.pekko.persistence.query.journal.leveldb
 
 import scala.concurrent.duration._
+import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.persistence.query.PersistenceQuery
 import pekko.persistence.query.journal.leveldb.scaladsl.LeveldbReadJournal
 import pekko.persistence.query.scaladsl.PersistenceIdsQuery
 import pekko.stream.testkit.scaladsl.TestSink
-import pekko.testkit.PekkoSpec
-import pekko.testkit.ImplicitSender
-
-import scala.annotation.nowarn
+import pekko.testkit.{ ImplicitSender, PekkoSpec }
 
 object AllPersistenceIdsSpec {
   val config = """

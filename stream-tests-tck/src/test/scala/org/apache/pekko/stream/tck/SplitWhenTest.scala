@@ -20,8 +20,7 @@ import org.reactivestreams.Publisher
 
 import org.apache.pekko
 import pekko.stream.impl.EmptyPublisher
-import pekko.stream.scaladsl.Sink
-import pekko.stream.scaladsl.Source
+import pekko.stream.scaladsl.{ Sink, Source }
 
 class SplitWhenTest extends PekkoPublisherVerification[Int] {
 

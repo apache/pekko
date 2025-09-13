@@ -20,6 +20,7 @@ import pekko.actor.ExtendedActorSystem
 import pekko.actor.typed.ActorRefResolver
 import pekko.actor.typed.scaladsl.adapter._
 import pekko.serialization.SerializerWithStringManifest
+
 import docs.org.apache.pekko.cluster.typed.PingPongExample.PingService
 
 //#serializer

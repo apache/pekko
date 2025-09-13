@@ -17,8 +17,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.adapter._
 import pekko.cluster.typed.internal.receptionist.ClusterReceptionist

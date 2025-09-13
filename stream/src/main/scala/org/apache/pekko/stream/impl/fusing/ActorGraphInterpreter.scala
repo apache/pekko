@@ -22,28 +22,24 @@ import scala.collection.immutable
 import scala.concurrent.Promise
 import scala.util.control.NonFatal
 
+import org.reactivestreams.{ Publisher, Subscriber, Subscription }
+
 import org.apache.pekko
 import pekko.Done
 import pekko.actor._
-import pekko.annotation.InternalApi
-import pekko.annotation.InternalStableApi
+import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.event.Logging
 import pekko.stream._
-import pekko.stream.impl._
 import pekko.stream.impl.ReactiveStreamsCompliance._
-import pekko.stream.impl.SubFusingActorMaterializerImpl
-import pekko.stream.impl.fusing.GraphInterpreter.Connection
-import pekko.stream.impl.fusing.GraphInterpreter.DownstreamBoundaryStageLogic
-import pekko.stream.impl.fusing.GraphInterpreter.UpstreamBoundaryStageLogic
+import pekko.stream.impl._
+import pekko.stream.impl.fusing.GraphInterpreter.{
+  Connection,
+  DownstreamBoundaryStageLogic,
+  UpstreamBoundaryStageLogic
+}
 import pekko.stream.snapshot._
-import pekko.stream.stage.GraphStageLogic
-import pekko.stream.stage.InHandler
-import pekko.stream.stage.OutHandler
+import pekko.stream.stage.{ GraphStageLogic, InHandler, OutHandler }
 import pekko.util.OptionVal
-
-import org.reactivestreams.Publisher
-import org.reactivestreams.Subscriber
-import org.reactivestreams.Subscription
 
 /**
  * INTERNAL API

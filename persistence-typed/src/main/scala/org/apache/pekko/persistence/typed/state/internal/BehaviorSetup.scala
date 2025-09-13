@@ -19,18 +19,16 @@ import org.slf4j.Logger
 import org.slf4j.MDC
 
 import org.apache.pekko
-import pekko.actor.Cancellable
+import pekko.actor.{ ActorRef => ClassicActorRef, Cancellable }
 import pekko.actor.typed.Signal
 import pekko.actor.typed.scaladsl.ActorContext
-import pekko.actor.{ ActorRef => ClassicActorRef }
 import pekko.annotation.InternalApi
 import pekko.persistence._
+import pekko.persistence.typed.{ PersistenceId, SnapshotAdapter }
 import pekko.persistence.typed.state.internal.InternalProtocol.RecoveryTimeout
 import pekko.persistence.typed.state.scaladsl.DurableStateBehavior
 import pekko.persistence.state.DurableStateStoreRegistry
 import pekko.persistence.state.scaladsl.DurableStateUpdateStore
-import pekko.persistence.typed.PersistenceId
-import pekko.persistence.typed.SnapshotAdapter
 import pekko.util.OptionVal
 
 /**

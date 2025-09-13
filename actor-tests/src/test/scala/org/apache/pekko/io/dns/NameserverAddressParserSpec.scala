@@ -13,10 +13,10 @@
 
 package org.apache.pekko.io.dns
 
-import java.net.InetSocketAddress
-
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+
+import java.net.InetSocketAddress
 
 class NameserverAddressParserSpec extends AnyWordSpec with Matchers {
   "Parser" should {

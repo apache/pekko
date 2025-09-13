@@ -13,9 +13,8 @@
 
 package org.apache.pekko.remote.artery
 
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
 import java.nio.charset.StandardCharsets
+import java.nio.{ ByteBuffer, ByteOrder }
 import java.util.concurrent.TimeUnit
 
 import org.openjdk.jmh.annotations._

@@ -17,14 +17,11 @@ import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
 import pekko.actor.typed.ActorRef
 import pekko.persistence.Persistence
-import pekko.persistence.query.NoOffset
-import pekko.persistence.query.PersistenceQuery
-import pekko.persistence.testkit.query.EventsByPersistenceIdSpec.Command
-import pekko.persistence.testkit.query.EventsByPersistenceIdSpec.testBehaviour
+import pekko.persistence.query.{ NoOffset, PersistenceQuery }
+import pekko.persistence.testkit.query.EventsByPersistenceIdSpec.{ testBehaviour, Command }
 import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
 import pekko.stream.scaladsl.Sink
 

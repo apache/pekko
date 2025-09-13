@@ -20,17 +20,9 @@ import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.stream.{
-  AbruptStageTerminationException,
-  Attributes,
-  IOOperationIncompleteException,
-  IOResult,
-  Outlet,
-  SourceShape,
-  SubscriptionWithCancelException
-}
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.stage.{ GraphStageLogic, GraphStageLogicWithLogging, GraphStageWithMaterializedValue, OutHandler }
+import pekko.stream._
 import pekko.util.ByteString
 
 /**

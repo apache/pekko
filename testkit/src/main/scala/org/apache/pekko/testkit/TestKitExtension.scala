@@ -18,8 +18,7 @@ import scala.concurrent.duration.FiniteDuration
 import com.typesafe.config.Config
 
 import org.apache.pekko
-import pekko.actor.{ ActorSystem, ExtendedActorSystem, Extension, ExtensionId }
-import pekko.actor.ClassicActorSystemProvider
+import pekko.actor._
 import pekko.util.Timeout
 
 object TestKitExtension extends ExtensionId[TestKitSettings] {

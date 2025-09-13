@@ -13,22 +13,15 @@
 
 package org.apache.pekko.stream.impl
 
-import scala.concurrent.Future
-import scala.concurrent.Promise
+import scala.concurrent.{ Future, Promise }
 import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.stream._
 import pekko.stream.Attributes.SourceLocation
-import pekko.stream.scaladsl.Flow
-import pekko.stream.scaladsl.Keep
-import pekko.stream.scaladsl.Sink
-import pekko.stream.scaladsl.Source
-import pekko.stream.stage.GraphStageLogic
-import pekko.stream.stage.GraphStageWithMaterializedValue
-import pekko.stream.stage.InHandler
-import pekko.stream.stage.OutHandler
+import pekko.stream._
+import pekko.stream.scaladsl.{ Flow, Keep, Sink, Source }
+import pekko.stream.stage.{ GraphStageLogic, GraphStageWithMaterializedValue, InHandler, OutHandler }
 
 /** Internal Api */
 @InternalApi private[stream] final class SetupFlowStage[T, U, M](factory: (Materializer, Attributes) => Flow[T, U, M])

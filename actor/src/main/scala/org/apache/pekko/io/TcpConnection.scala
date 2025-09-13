@@ -16,16 +16,14 @@ package org.apache.pekko.io
 import java.io.IOException
 import java.net.{ InetSocketAddress, SocketException }
 import java.nio.ByteBuffer
-import java.nio.channels.{ FileChannel, SocketChannel }
 import java.nio.channels.SelectionKey._
+import java.nio.channels.{ FileChannel, SocketChannel }
 import java.nio.file.Path
 
-import scala.annotation.tailrec
+import scala.annotation.{ nowarn, tailrec }
 import scala.collection.immutable
 import scala.concurrent.duration._
 import scala.util.control.{ NoStackTrace, NonFatal }
-
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.actor._

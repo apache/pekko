@@ -12,6 +12,7 @@
  */
 
 import sbt.{ inConfig, AutoPlugin, Def, PluginTrigger, Plugins, Setting }
+
 import scalafix.sbt.ScalafixPlugin
 import scalafix.sbt.ScalafixPlugin.autoImport.scalafixConfigSettings
 

@@ -16,12 +16,9 @@ package org.apache.pekko.cluster
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.ActorIdentity
-import pekko.actor.Identify
-import pekko.actor.PoisonPill
+import pekko.actor.{ ActorIdentity, Identify, PoisonPill }
 import pekko.remote.artery.ArteryMultiNodeSpec
-import pekko.testkit.ImplicitSender
-import pekko.testkit.TestActors
+import pekko.testkit.{ ImplicitSender, TestActors }
 
 /**
  * Reproducer for issue #24847

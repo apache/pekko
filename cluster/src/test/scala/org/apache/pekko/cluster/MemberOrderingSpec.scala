@@ -20,13 +20,11 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 import org.apache.pekko
-import pekko.actor.Address
-import pekko.actor.AddressFromURIString
+import pekko.actor.{ Address, AddressFromURIString }
 import pekko.util.Version
 
 class MemberOrderingSpec extends AnyWordSpec with Matchers {
-  import Member.addressOrdering
-  import Member.ordering
+  import Member.{ addressOrdering, ordering }
   import MemberStatus._
 
   def m(address: Address, status: MemberStatus): Member = TestMember(address, status)

@@ -12,6 +12,7 @@
  */
 
 package docs.stream.operators.sourceorflow
+
 import org.apache.pekko.stream.scaladsl.Source
 
 object Grouped {

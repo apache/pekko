@@ -14,13 +14,11 @@
 package docs.stream.operators.source
 
 //#imports
-import java.util.concurrent.Flow.Subscriber
 import java.util.concurrent.Flow.Publisher
 
 import org.apache.pekko
 import pekko.NotUsed
-import pekko.stream.scaladsl.Source
-import pekko.stream.scaladsl.JavaFlowSupport
+import pekko.stream.scaladsl.{ JavaFlowSupport, Source }
 
 //#imports
 

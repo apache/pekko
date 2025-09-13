@@ -14,14 +14,13 @@
 package org.apache.pekko.util
 
 import java.nio.{ ByteBuffer, ByteOrder }
-import scala.annotation.tailrec
-import scala.collection.BufferedIterator
-import scala.collection.LinearSeq
-import scala.collection.mutable.ListBuffer
-import scala.reflect.ClassTag
-import org.apache.pekko.util.Collections.EmptyImmutableSeq
 
-import scala.annotation.nowarn
+import scala.annotation.{ nowarn, tailrec }
+import scala.collection.mutable.ListBuffer
+import scala.collection.{ BufferedIterator, LinearSeq }
+import scala.reflect.ClassTag
+
+import org.apache.pekko.util.Collections.EmptyImmutableSeq
 
 object ByteIterator {
   object ByteArrayIterator {

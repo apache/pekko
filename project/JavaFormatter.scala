@@ -11,8 +11,9 @@
  * Copyright (C) 2019-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import com.github.sbt.JavaFormatterPlugin
 import sbt.{ AutoPlugin, PluginTrigger, Plugins }
+
+import com.github.sbt.JavaFormatterPlugin
 
 object JavaFormatter extends AutoPlugin {
 

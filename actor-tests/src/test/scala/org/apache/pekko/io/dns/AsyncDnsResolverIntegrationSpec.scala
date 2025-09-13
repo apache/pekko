@@ -18,17 +18,15 @@ import java.net.InetAddress
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
-import org.scalatest.time.Millis
-import org.scalatest.time.Span
+import org.scalatest.time.{ Millis, Span }
 
-import CachePolicy.Ttl
 import org.apache.pekko
-import pekko.io.{ Dns, IO }
+import pekko.io.dns.CachePolicy.Ttl
 import pekko.io.dns.DnsProtocol.{ Ip, RequestType, Srv }
+import pekko.io.{ Dns, IO }
 import pekko.pattern.ask
-import pekko.testkit.SocketUtil
 import pekko.testkit.SocketUtil.Both
-import pekko.testkit.WithLogCapturing
+import pekko.testkit.{ SocketUtil, WithLogCapturing }
 import pekko.util.Timeout
 
 /**

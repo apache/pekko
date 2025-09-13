@@ -17,11 +17,7 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.function.{ Function => JFunction }
 
 import org.apache.pekko
-import pekko.actor.ClassicActorSystemProvider
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.Extension
-import pekko.actor.ExtensionId
-import pekko.actor.ExtensionIdProvider
+import pekko.actor.{ ClassicActorSystemProvider, ExtendedActorSystem, Extension, ExtensionId, ExtensionIdProvider }
 import pekko.annotation.ApiMayChange
 import pekko.cluster.sharding.external.internal.ExternalShardAllocationClientImpl
 

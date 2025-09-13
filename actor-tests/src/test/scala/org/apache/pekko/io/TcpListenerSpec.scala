@@ -14,20 +14,18 @@
 package org.apache.pekko.io
 
 import java.net.Socket
-import java.nio.channels.{ SelectableChannel, SocketChannel }
 import java.nio.channels.SelectionKey.OP_ACCEPT
+import java.nio.channels.{ SelectableChannel, SocketChannel }
 
 import scala.concurrent.duration._
-
-import Tcp._
 
 import org.apache.pekko
 import pekko.actor._
 import pekko.io.SelectionHandler._
+import pekko.io.Tcp._
 import pekko.io.TcpListener.{ FailedRegisterIncoming, RegisterIncoming }
 import pekko.io.TcpListenerSpec.RegisterChannel
-import pekko.testkit.{ EventFilter, PekkoSpec, TestActorRef, TestProbe }
-import pekko.testkit.SocketUtil
+import pekko.testkit.{ EventFilter, PekkoSpec, SocketUtil, TestActorRef, TestProbe }
 
 class TcpListenerSpec extends PekkoSpec("""
     pekko.io.tcp.batch-accept-limit = 2

@@ -13,10 +13,10 @@
 
 package docs.stream.operators.sourceorflow
 
-import org.apache.pekko.stream.scaladsl.Source
-
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
+
+import org.apache.pekko.stream.scaladsl.Source
 
 object ScanAsync {
 

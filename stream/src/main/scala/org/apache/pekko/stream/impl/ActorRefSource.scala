@@ -16,8 +16,8 @@ package org.apache.pekko.stream.impl
 import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.annotation.InternalApi
-import pekko.stream._
 import pekko.stream.OverflowStrategies._
+import pekko.stream._
 import pekko.stream.stage._
 import pekko.util.OptionVal
 

@@ -14,11 +14,7 @@
 package org.apache.pekko.persistence
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorLogging
-import pekko.actor.ActorRef
-import pekko.actor.Props
-import pekko.actor.Terminated
+import pekko.actor.{ Actor, ActorLogging, ActorRef, Props, Terminated }
 import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.util.MessageBuffer
 

@@ -20,8 +20,7 @@ import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor.Address
-import pekko.cluster.ClusterEvent.CurrentClusterState
-import pekko.cluster.ClusterEvent.MemberUp
+import pekko.cluster.ClusterEvent.{ CurrentClusterState, MemberUp }
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.testkit._
 

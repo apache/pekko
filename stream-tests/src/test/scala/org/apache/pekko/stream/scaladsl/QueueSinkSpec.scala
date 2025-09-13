@@ -13,18 +13,14 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import scala.concurrent.Await
-import scala.concurrent.ExecutionContextExecutor
-import scala.concurrent.Promise
+import scala.concurrent.{ Await, ExecutionContextExecutor, Promise }
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
 import pekko.pattern.pipe
-import pekko.stream.AbruptTerminationException
 import pekko.stream.Attributes.inputBuffer
-import pekko.stream.Materializer
-import pekko.stream.StreamDetachedException
+import pekko.stream.{ AbruptTerminationException, Materializer, StreamDetachedException }
 import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.TestSource
 

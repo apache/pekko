@@ -13,17 +13,14 @@
 
 package org.apache.pekko.cluster.sharding.internal
 
+import scala.collection.immutable
+import scala.concurrent.duration.FiniteDuration
+
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.cluster.sharding.ClusterShardingSettings
 import pekko.cluster.sharding.ShardRegion.EntityId
-import pekko.util.FastFrequencySketch
-import pekko.util.FrequencySketch
-import pekko.util.OptionVal
-import pekko.util.{ FrequencyList, RecencyList, SegmentedRecencyList }
-
-import scala.collection.immutable
-import scala.concurrent.duration.FiniteDuration
+import pekko.util.{ FastFrequencySketch, FrequencyList, FrequencySketch, OptionVal, RecencyList, SegmentedRecencyList }
 
 /**
  * INTERNAL API

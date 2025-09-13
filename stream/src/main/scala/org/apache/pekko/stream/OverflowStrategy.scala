@@ -13,12 +13,11 @@
 
 package org.apache.pekko.stream
 
-import OverflowStrategies._
-
 import org.apache.pekko
 import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.event.Logging
 import pekko.event.Logging.LogLevel
+import pekko.stream.OverflowStrategies._
 
 /**
  * Represents a strategy that decides how to deal with a buffer of time based operator

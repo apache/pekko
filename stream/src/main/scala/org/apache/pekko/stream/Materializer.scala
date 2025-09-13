@@ -18,14 +18,8 @@ import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
-import pekko.actor.Cancellable
-import pekko.actor.ClassicActorContextProvider
-import pekko.actor.ClassicActorSystemProvider
-import pekko.actor.Props
-import pekko.annotation.DoNotInherit
-import pekko.annotation.InternalApi
+import pekko.actor._
+import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.event.LoggingAdapter
 
 /**

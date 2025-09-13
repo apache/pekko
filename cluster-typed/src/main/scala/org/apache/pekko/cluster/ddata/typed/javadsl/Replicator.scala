@@ -17,16 +17,12 @@ import java.time.Duration
 import java.util.function.{ Function => JFunction }
 
 import org.apache.pekko
-import pekko.actor.DeadLetterSuppression
-import pekko.actor.NoSerializationVerificationNeeded
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
-import pekko.annotation.DoNotInherit
-import pekko.annotation.InternalApi
-import pekko.cluster.{ ddata => dd }
-import pekko.cluster.ddata.Key
-import pekko.cluster.ddata.ReplicatedData
+import pekko.actor.typed.{ ActorRef, Behavior }
+import pekko.actor.{ DeadLetterSuppression, NoSerializationVerificationNeeded }
+import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.cluster.ddata.typed.internal.ReplicatorBehavior
+import pekko.cluster.ddata.{ Key, ReplicatedData }
+import pekko.cluster.{ ddata => dd }
 import pekko.util.JavaDurationConverters._
 
 /**

@@ -21,12 +21,10 @@ import com.typesafe.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
 import pekko.actor.typed.delivery.DurableProducerQueue.MessageSent
 import pekko.actor.typed.delivery.ProducerController.MessageWithConfirmation
-import pekko.actor.typed.delivery.internal.ChunkedMessage
-import pekko.actor.typed.delivery.internal.ProducerControllerImpl
+import pekko.actor.typed.delivery.internal.{ ChunkedMessage, ProducerControllerImpl }
 import pekko.util.ByteString
 
 class DurableProducerControllerSpec

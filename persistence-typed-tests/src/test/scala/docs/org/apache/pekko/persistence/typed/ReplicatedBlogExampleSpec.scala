@@ -17,16 +17,12 @@ import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.scaladsl.ActorContext
-import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
+import pekko.actor.typed.{ ActorRef, Behavior }
+import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors }
 import pekko.persistence.testkit.PersistenceTestKitPlugin
 import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
-import pekko.persistence.typed.ReplicaId
-import pekko.persistence.typed.ReplicationId
+import pekko.persistence.typed.{ ReplicaId, ReplicationId }
 import pekko.persistence.typed.crdt.LwwTime
 import pekko.persistence.typed.scaladsl._
 import pekko.serialization.jackson.CborSerializable

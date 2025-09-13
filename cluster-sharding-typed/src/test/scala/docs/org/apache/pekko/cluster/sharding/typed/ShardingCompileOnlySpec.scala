@@ -13,19 +13,17 @@
 
 package docs.org.apache.pekko.cluster.sharding.typed
 
+import scala.annotation.nowarn
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior }
 import pekko.actor.typed.scaladsl.Behaviors
-import pekko.cluster.sharding.typed.scaladsl.Entity
+import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior }
+import pekko.cluster.sharding.typed.scaladsl.{ ClusterSharding, Entity, EntityTypeKey }
 import pekko.persistence.typed.PersistenceId
-import scala.annotation.nowarn
+
 import docs.org.apache.pekko.persistence.typed.BlogPostEntity
 import docs.org.apache.pekko.persistence.typed.BlogPostEntity.Command
-
-import pekko.cluster.sharding.typed.scaladsl.ClusterSharding
-import pekko.cluster.sharding.typed.scaladsl.EntityTypeKey
 
 @nowarn
 object ShardingCompileOnlySpec {
@@ -37,9 +35,7 @@ object ShardingCompileOnlySpec {
     // #sharding-extension
     import org.apache.pekko
     import pekko.cluster.sharding.typed.ShardingEnvelope
-    import pekko.cluster.sharding.typed.scaladsl.ClusterSharding
-    import pekko.cluster.sharding.typed.scaladsl.EntityTypeKey
-    import pekko.cluster.sharding.typed.scaladsl.EntityRef
+    import pekko.cluster.sharding.typed.scaladsl.{ ClusterSharding, EntityRef, EntityTypeKey }
 
     val sharding = ClusterSharding(system)
     // #sharding-extension
@@ -100,8 +96,7 @@ object ShardingCompileOnlySpec {
 
   object CounterWithPassivate {
     import org.apache.pekko
-    import pekko.cluster.sharding.typed.scaladsl.ClusterSharding
-    import pekko.cluster.sharding.typed.scaladsl.EntityTypeKey
+    import pekko.cluster.sharding.typed.scaladsl.{ ClusterSharding, EntityTypeKey }
 
     // #counter-passivate
     object Counter {
@@ -148,8 +143,7 @@ object ShardingCompileOnlySpec {
   object CounterWithResponseToShardedActor {
 
     import org.apache.pekko
-    import pekko.cluster.sharding.typed.scaladsl.ClusterSharding
-    import pekko.cluster.sharding.typed.scaladsl.EntityTypeKey
+    import pekko.cluster.sharding.typed.scaladsl.{ ClusterSharding, EntityTypeKey }
 
     // #sharded-response
     // a sharded actor that needs counter updates
@@ -195,8 +189,8 @@ object ShardingCompileOnlySpec {
 
     // #get-shard-region-state
     import org.apache.pekko
-    import pekko.cluster.sharding.typed.GetShardRegionState
     import pekko.cluster.sharding.ShardRegion.CurrentShardRegionState
+    import pekko.cluster.sharding.typed.GetShardRegionState
 
     val replyTo: ActorRef[CurrentShardRegionState] = replyMessageAdapter
 
@@ -214,8 +208,9 @@ object ShardingCompileOnlySpec {
 
     // #get-cluster-sharding-stats
     import org.apache.pekko
-    import pekko.cluster.sharding.typed.GetClusterShardingStats
     import pekko.cluster.sharding.ShardRegion.ClusterShardingStats
+    import pekko.cluster.sharding.typed.GetClusterShardingStats
+
     import scala.concurrent.duration._
 
     val replyTo: ActorRef[ClusterShardingStats] = replyMessageAdapter

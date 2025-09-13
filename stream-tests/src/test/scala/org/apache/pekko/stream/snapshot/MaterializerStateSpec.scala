@@ -19,9 +19,9 @@ import javax.net.ssl.SSLContext
 import scala.concurrent.Promise
 
 import org.apache.pekko
-import pekko.stream.{ FlowShape, Materializer }
 import pekko.stream.scaladsl.{ Flow, GraphDSL, Keep, Merge, Partition, Sink, Source, Tcp }
 import pekko.stream.testkit.scaladsl.TestSink
+import pekko.stream.{ FlowShape, Materializer }
 import pekko.testkit.PekkoSpec
 
 class MaterializerStateSpec extends PekkoSpec() {

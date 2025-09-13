@@ -18,40 +18,39 @@ import java.net.URLEncoder
 import scala.collection.immutable
 import scala.collection.immutable.{ HashMap, HashSet }
 import scala.concurrent.duration._
+import scala.jdk.CollectionConverters._
 
 import com.typesafe.config.Config
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorIdentity
-import pekko.actor.ActorLogging
-import pekko.actor.ActorPath
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
-import pekko.actor.Address
-import pekko.actor.Cancellable
-import pekko.actor.ClassicActorSystemProvider
-import pekko.actor.DeadLetterSuppression
-import pekko.actor.Deploy
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.Extension
-import pekko.actor.ExtensionId
-import pekko.actor.ExtensionIdProvider
-import pekko.actor.Identify
-import pekko.actor.NoSerializationVerificationNeeded
-import pekko.actor.Props
-import pekko.actor.ReceiveTimeout
-import pekko.actor.Terminated
-import pekko.cluster.Cluster
+import pekko.actor.{
+  Actor,
+  ActorIdentity,
+  ActorLogging,
+  ActorPath,
+  ActorRef,
+  ActorSystem,
+  Address,
+  Cancellable,
+  ClassicActorSystemProvider,
+  DeadLetterSuppression,
+  Deploy,
+  ExtendedActorSystem,
+  Extension,
+  ExtensionId,
+  ExtensionIdProvider,
+  Identify,
+  NoSerializationVerificationNeeded,
+  Props,
+  ReceiveTimeout,
+  Terminated
+}
 import pekko.cluster.ClusterEvent._
-import pekko.cluster.Member
-import pekko.cluster.MemberStatus
 import pekko.cluster.pubsub._
+import pekko.cluster.{ Cluster, Member, MemberStatus }
 import pekko.remote.DeadlineFailureDetector
-import pekko.routing.ConsistentHash
-import pekko.routing.MurmurHash
+import pekko.routing.{ ConsistentHash, MurmurHash }
 import pekko.util.MessageBuffer
-import pekko.util.ccompat.JavaConverters._
 
 @deprecated(
   "Use Pekko gRPC instead, see https://pekko.apache.org/docs/pekko/current/cluster-client.html#migration-to-pekko-grpc",
@@ -380,8 +379,8 @@ object ClusterClient {
   since = "Akka 2.6.0")
 final class ClusterClient(settings: ClusterClientSettings) extends Actor with ActorLogging {
 
-  import ClusterClient._
   import ClusterClient.Internal._
+  import ClusterClient._
   import ClusterReceptionist.Internal._
   import settings._
 

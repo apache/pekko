@@ -13,13 +13,15 @@
 
 package docs.stream.cookbook
 
-import org.apache.pekko.NotUsed
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.stream.scaladsl.{ Sink, Source }
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.actor.ActorSystem
+import pekko.stream.scaladsl.{ Sink, Source }
 
 class RecipeSplitter extends AnyWordSpec with BeforeAndAfterAll with Matchers with ScalaFutures {
 

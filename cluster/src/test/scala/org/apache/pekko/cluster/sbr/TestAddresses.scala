@@ -15,12 +15,8 @@ package org.apache.pekko.cluster.sbr
 
 import org.apache.pekko
 import pekko.actor.Address
-import pekko.cluster.ClusterSettings
-import pekko.cluster.Member
-import pekko.cluster.MemberStatus
-import pekko.cluster.MemberStatus.Up
-import pekko.cluster.MemberStatus.WeaklyUp
-import pekko.cluster.UniqueAddress
+import pekko.cluster.MemberStatus.{ Up, WeaklyUp }
+import pekko.cluster.{ ClusterSettings, Member, MemberStatus, UniqueAddress }
 import pekko.util.Version
 
 /**

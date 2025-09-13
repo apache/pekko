@@ -14,7 +14,6 @@
 package org.apache.pekko.testkit.metrics
 
 import com.codahale.metrics._
-import com.codahale.metrics.jvm
 
 private[pekko] trait MemoryUsageSnapshotting extends MetricsPrefix {
   this: jvm.MemoryUsageGaugeSet =>

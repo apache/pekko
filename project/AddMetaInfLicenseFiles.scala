@@ -17,6 +17,7 @@
 
 import sbt.Keys._
 import sbt._
+
 import org.mdedetrich.apache.sonatype.ApacheSonatypePlugin
 import org.mdedetrich.apache.sonatype.ApacheSonatypePlugin.autoImport._
 

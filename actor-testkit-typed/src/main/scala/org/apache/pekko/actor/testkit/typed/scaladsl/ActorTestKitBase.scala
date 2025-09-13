@@ -13,19 +13,13 @@
 
 package org.apache.pekko.actor.testkit.typed.scaladsl
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
-import pekko.actor.DeadLetter
-import pekko.actor.Dropped
-import pekko.actor.UnhandledMessage
 import pekko.actor.testkit.typed.TestKitSettings
 import pekko.actor.testkit.typed.internal.TestKitUtils
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.Props
+import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior, Props }
+import pekko.actor.{ DeadLetter, Dropped, UnhandledMessage }
 import pekko.util.Timeout
 
 object ActorTestKitBase {

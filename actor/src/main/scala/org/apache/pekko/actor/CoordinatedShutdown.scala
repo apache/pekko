@@ -14,20 +14,18 @@
 package org.apache.pekko.actor
 
 import java.util.Optional
-import java.util.concurrent._
 import java.util.concurrent.TimeUnit.MILLISECONDS
+import java.util.concurrent._
 import java.util.concurrent.atomic.AtomicReference
 import java.util.function.Supplier
 
 import scala.annotation.tailrec
+import scala.concurrent.duration.{ FiniteDuration, _ }
 import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
-import scala.concurrent.duration._
-import scala.concurrent.duration.FiniteDuration
 import scala.util.Try
 import scala.util.control.NonFatal
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
 import pekko.Done
@@ -35,9 +33,9 @@ import pekko.annotation.InternalApi
 import pekko.dispatch.ExecutionContexts
 import pekko.event.Logging
 import pekko.pattern.after
+import pekko.util.FutureConverters._
 import pekko.util.OptionConverters._
 import pekko.util.OptionVal
-import pekko.util.FutureConverters._
 
 object CoordinatedShutdown extends ExtensionId[CoordinatedShutdown] with ExtensionIdProvider {
 
@@ -309,7 +307,7 @@ object CoordinatedShutdown extends ExtensionId[CoordinatedShutdown] with Extensi
    * INTERNAL API
    */
   private[pekko] def phasesFromConfig(conf: Config): Map[String, Phase] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     val defaultPhaseTimeout = conf.getString("default-phase-timeout")
     val phasesConf = conf.getConfig("phases")
     val defaultPhaseConfig = ConfigFactory.parseString(s"""
@@ -513,7 +511,7 @@ final class CoordinatedShutdown private[pekko] (
     def get(phaseName: String): Option[PhaseDefinition] = Option(registeredPhases.get(phaseName))
 
     def totalDuration(): FiniteDuration = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       registeredPhases.keySet.asScala.foldLeft(Duration.Zero) {
         case (acc, phase) =>
           acc + timeout(phase)

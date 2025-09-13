@@ -13,6 +13,7 @@
 
 import sbt._
 import sbt.Keys._
+
 import org.mdedetrich.apache.sonatype.ApacheSonatypePlugin
 import sbtdynver.DynVerPlugin
 import sbtdynver.DynVerPlugin.autoImport.dynverSonatypeSnapshots

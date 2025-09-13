@@ -15,22 +15,19 @@ package docs.org.apache.pekko.persistence.typed
 
 import java.util.UUID
 
-import docs.org.apache.pekko.persistence.typed.ReplicatedShoppingCartExampleSpec.ShoppingCart.CartItems
 import org.scalatest.wordspec.AnyWordSpecLike
+
 import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
+import pekko.actor.typed.{ ActorRef, Behavior }
 import pekko.persistence.testkit.PersistenceTestKitPlugin
 import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
-import pekko.persistence.typed.ReplicaId
-import pekko.persistence.typed.ReplicationId
+import pekko.persistence.typed.{ ReplicaId, ReplicationId }
 import pekko.persistence.typed.crdt.Counter
-import pekko.persistence.typed.scaladsl.Effect
-import pekko.persistence.typed.scaladsl.EventSourcedBehavior
-import pekko.persistence.typed.scaladsl.ReplicatedEventSourcing
+import pekko.persistence.typed.scaladsl.{ Effect, EventSourcedBehavior, ReplicatedEventSourcing }
 import pekko.serialization.jackson.CborSerializable
+
+import docs.org.apache.pekko.persistence.typed.ReplicatedShoppingCartExampleSpec.ShoppingCart.CartItems
 
 object ReplicatedShoppingCartExampleSpec {
 

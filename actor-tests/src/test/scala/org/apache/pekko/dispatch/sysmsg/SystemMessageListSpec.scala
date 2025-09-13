@@ -18,8 +18,7 @@ import pekko.actor.Props
 import pekko.testkit.PekkoSpec
 
 class SystemMessageListSpec extends PekkoSpec {
-  import SystemMessageList.ENil
-  import SystemMessageList.LNil
+  import SystemMessageList.{ ENil, LNil }
 
   val child = system.actorOf(Props.empty, "dummy") // need an ActorRef for the Failed msg
 

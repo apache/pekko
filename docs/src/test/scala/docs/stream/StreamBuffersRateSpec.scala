@@ -13,10 +13,11 @@
 
 package docs.stream
 
-import org.apache.pekko.NotUsed
-import org.apache.pekko.stream._
-import org.apache.pekko.stream.scaladsl._
-import org.apache.pekko.testkit.PekkoSpec
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.stream._
+import pekko.stream.scaladsl._
+import pekko.testkit.PekkoSpec
 
 class StreamBuffersRateSpec extends PekkoSpec {
 

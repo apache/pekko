@@ -15,9 +15,7 @@ package org.apache.pekko.remote
 
 import java.util.concurrent.ThreadLocalRandom
 
-import scala.annotation.tailrec
-
-import scala.annotation.nowarn
+import scala.annotation.{ nowarn, tailrec }
 
 import org.apache.pekko.testkit.PekkoSpec
 

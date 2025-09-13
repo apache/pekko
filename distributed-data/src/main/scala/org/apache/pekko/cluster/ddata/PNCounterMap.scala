@@ -17,9 +17,8 @@ import java.math.BigInteger
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.cluster.Cluster
-import pekko.cluster.UniqueAddress
 import pekko.cluster.ddata.ORMap._
+import pekko.cluster.{ Cluster, UniqueAddress }
 
 object PNCounterMap {
 
@@ -64,7 +63,7 @@ final class PNCounterMap[A] private[pekko] (private[pekko] val underlying: ORMap
 
   /** Java API */
   def getEntries: java.util.Map[A, BigInteger] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     underlying.entries.map { case (k, c) => k -> c.value.bigInteger }.asJava
   }
 

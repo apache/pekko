@@ -16,10 +16,11 @@ package org.apache.pekko.remote.artery
 import java.io.NotSerializableException
 import java.util.concurrent.ThreadLocalRandom
 
-import scala.concurrent.duration._
 import scala.annotation.nowarn
+import scala.concurrent.duration._
+
 import org.apache.pekko
-import pekko.actor.{ Actor, ActorRef, Dropped, PoisonPill, Props }
+import pekko.actor._
 import pekko.remote.{ AssociationErrorEvent, DisassociatedEvent, OversizedPayloadException, RARP }
 import pekko.testkit.{ EventFilter, ImplicitSender, TestActors, TestProbe }
 import pekko.util.ByteString

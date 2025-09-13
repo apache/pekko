@@ -23,8 +23,8 @@ import pekko.Done
 import pekko.actor.ActorRef
 import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.event.LoggingAdapter
-import pekko.stream._
 import pekko.stream.Attributes.LogLevels
+import pekko.stream._
 import pekko.stream.snapshot._
 import pekko.stream.stage._
 

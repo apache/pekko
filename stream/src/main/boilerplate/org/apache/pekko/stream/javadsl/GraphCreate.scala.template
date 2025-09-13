@@ -13,10 +13,10 @@
 
 package org.apache.pekko.stream.javadsl
 
-import org.apache.pekko.stream.scaladsl
-import org.apache.pekko.stream.{ Shape, Graph }
-import org.apache.pekko.japi.function
-import org.apache.pekko.NotUsed
+import org.apache.pekko
+import pekko.japi.function
+import pekko.stream.{ scaladsl, Shape, Graph}
+import pekko.NotUsed
 
 private[stream] abstract class GraphCreate {
   /**

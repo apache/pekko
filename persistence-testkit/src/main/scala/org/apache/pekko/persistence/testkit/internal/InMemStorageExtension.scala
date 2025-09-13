@@ -19,10 +19,7 @@ import org.apache.pekko
 import pekko.actor.Extension
 import pekko.actor.{ ActorSystem, ExtendedActorSystem, ExtensionId, ExtensionIdProvider }
 import pekko.annotation.InternalApi
-import pekko.persistence.testkit.EventStorage
-import pekko.persistence.testkit.JournalOperation
-import pekko.persistence.testkit.PersistenceTestKitPlugin
-import pekko.persistence.testkit.ProcessingPolicy
+import pekko.persistence.testkit.{ EventStorage, JournalOperation, PersistenceTestKitPlugin, ProcessingPolicy }
 import pekko.persistence.testkit.scaladsl.PersistenceTestKit
 
 /**

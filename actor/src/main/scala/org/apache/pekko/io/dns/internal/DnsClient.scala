@@ -14,16 +14,18 @@
 package org.apache.pekko.io.dns.internal
 
 import java.net.{ InetAddress, InetSocketAddress }
+
+import scala.annotation.{ nowarn, tailrec }
 import scala.collection.{ immutable => im }
 import scala.concurrent.duration._
 import scala.util.Try
-import scala.annotation.{ nowarn, tailrec }
+
 import org.apache.pekko
-import pekko.actor.{ Actor, ActorLogging, ActorRef, NoSerializationVerificationNeeded, Props, Stash }
 import pekko.actor.Status.Failure
+import pekko.actor._
 import pekko.annotation.InternalApi
-import pekko.io.{ IO, Tcp, Udp }
 import pekko.io.dns.{ RecordClass, RecordType, ResourceRecord }
+import pekko.io.{ IO, Tcp, Udp }
 import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
 
 /**

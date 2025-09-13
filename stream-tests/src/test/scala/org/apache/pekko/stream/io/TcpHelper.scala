@@ -20,10 +20,8 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.io.IO
-import pekko.io.Tcp
-import pekko.io.Tcp.ConnectionClosed
-import pekko.io.Tcp.ResumeReading
+import pekko.io.{ IO, Tcp }
+import pekko.io.Tcp.{ ConnectionClosed, ResumeReading }
 import pekko.stream.testkit._
 import pekko.testkit.SocketUtil.temporaryServerAddress
 import pekko.testkit.TestProbe

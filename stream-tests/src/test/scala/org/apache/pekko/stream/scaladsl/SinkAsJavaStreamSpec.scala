@@ -17,11 +17,10 @@ import java.util.stream.Collectors
 
 import org.apache.pekko
 import pekko.stream._
-import pekko.stream.impl.PhasedFusingActorMaterializer
-import pekko.stream.impl.StreamSupervisor
+import pekko.stream.impl.{ PhasedFusingActorMaterializer, StreamSupervisor }
 import pekko.stream.impl.StreamSupervisor.Children
-import pekko.stream.testkit._
 import pekko.stream.testkit.Utils._
+import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.TestSource
 import pekko.util.ByteString
 

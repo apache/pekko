@@ -22,8 +22,8 @@ import scala.annotation.tailrec
 import scala.util.control.NonFatal
 
 import org.apache.pekko
-import pekko.actor.{ Actor, ActorLogging, ActorRef }
 import pekko.actor.Status.Failure
+import pekko.actor.{ Actor, ActorLogging, ActorRef }
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.io.SelectionHandler._
 import pekko.io.UdpConnected._

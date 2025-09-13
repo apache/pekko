@@ -17,9 +17,9 @@
 
 package org.apache.pekko.util
 
-import org.apache.pekko.annotation.InternalStableApi
-
 import scala.jdk.Priority0FunctionExtensions
+
+import org.apache.pekko.annotation.InternalStableApi
 
 /**
  * INTERNAL API

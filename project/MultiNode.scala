@@ -11,16 +11,16 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import TestExtras.Filter.Keys._
-import MultiJvmPlugin.autoImport.multiJvmCreateLogger
-import MultiJvmPlugin.autoImport._
-
-import sbt.{ Def, _ }
 import sbt.Keys._
-import sbtheader.HeaderPlugin.autoImport._
+import sbt.{ Def, _ }
+
 import org.scalafmt.sbt.ScalafmtPlugin.scalafmtConfigSettings
-import sbtassembly.MergeStrategy
 import sbtassembly.AssemblyKeys._
+import sbtassembly.MergeStrategy
+import sbtheader.HeaderPlugin.autoImport._
+
+import MultiJvmPlugin.autoImport._
+import TestExtras.Filter.Keys._
 
 object MultiNode extends AutoPlugin {
 

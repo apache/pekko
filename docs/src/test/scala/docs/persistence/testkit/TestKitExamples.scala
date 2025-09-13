@@ -13,14 +13,16 @@
 
 package docs.persistence.testkit
 
-import org.apache.pekko.persistence.typed.PersistenceId
-import org.apache.pekko.persistence.typed.scaladsl.Effect
-import org.apache.pekko.persistence.typed.scaladsl.EventSourcedBehavior
-import org.apache.pekko.serialization.jackson.CborSerializable
 import com.typesafe.config.ConfigFactory
-import docs.persistence.testkit.PersistenceTestKitSampleSpec.{ Cmd, Evt, _ }
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.wordspec.AnyWordSpecLike
+
+import org.apache.pekko
+import pekko.persistence.typed.PersistenceId
+import pekko.persistence.typed.scaladsl.{ Effect, EventSourcedBehavior }
+import pekko.serialization.jackson.CborSerializable
+
+import docs.persistence.testkit.PersistenceTestKitSampleSpec.{ Cmd, Evt, _ }
 
 object PersistenceTestKitSampleSpec {
   final case class Cmd(data: String) extends CborSerializable

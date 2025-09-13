@@ -13,10 +13,11 @@
 
 package docs.pattern
 
-import org.apache.pekko.actor.{ ActorContext, ActorSystem, OneForOneStrategy, Props, SupervisorStrategy }
-import org.apache.pekko.cluster.sharding.ShardRegion.Passivate
-import org.apache.pekko.pattern.{ BackoffOpts, BackoffSupervisor }
-import org.apache.pekko.testkit.TestActors.EchoActor
+import org.apache.pekko
+import pekko.actor.{ ActorContext, ActorSystem, OneForOneStrategy, Props, SupervisorStrategy }
+import pekko.cluster.sharding.ShardRegion.Passivate
+import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
+import pekko.testkit.TestActors.EchoActor
 
 class BackoffSupervisorDocSpec {
 

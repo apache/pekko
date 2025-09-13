@@ -19,15 +19,11 @@ import java.util.Optional
 import java.util.concurrent.CompletionStage
 
 import scala.annotation.nowarn
+
 import org.apache.pekko
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.Props
-import pekko.actor.typed.RecipientRef
 import pekko.actor.typed.internal.InternalRecipientRef
-import pekko.annotation.DoNotInherit
-import pekko.annotation.InternalApi
+import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior, Props, RecipientRef }
+import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.cluster.sharding.ShardCoordinator.ShardAllocationStrategy
 import pekko.cluster.sharding.typed.internal.EntityTypeKeyImpl
 import pekko.japi.function.{ Function => JFunction }

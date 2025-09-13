@@ -13,15 +13,14 @@
 
 package org.apache.pekko.stream
 
-import java.lang.reflect.Method
-import java.lang.reflect.Modifier
+import java.lang.reflect.{ Method, Modifier }
 
 import scala.annotation.nowarn
 
-import org.apache.pekko
-
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+
+import org.apache.pekko
 
 object DslConsistencySpec {
   class ScalaSubSource[Out, Mat]

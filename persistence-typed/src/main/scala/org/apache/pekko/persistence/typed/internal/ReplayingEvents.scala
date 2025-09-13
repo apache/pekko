@@ -13,33 +13,32 @@
 
 package org.apache.pekko.persistence.typed.internal
 
+import scala.collection.immutable
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
+
 import org.apache.pekko
 import pekko.actor.typed.{ Behavior, Signal }
-import pekko.actor.typed.internal.PoisonPill
-import pekko.actor.typed.internal.UnstashException
+import pekko.actor.typed.internal.{ PoisonPill, UnstashException }
 import pekko.actor.typed.scaladsl.{ AbstractBehavior, ActorContext, Behaviors, LoggerOps }
 import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.event.Logging
 import pekko.persistence._
 import pekko.persistence.JournalProtocol._
-import pekko.persistence.typed.EmptyEventSeq
-import pekko.persistence.typed.EventsSeq
-import pekko.persistence.typed.RecoveryCompleted
-import pekko.persistence.typed.RecoveryFailed
-import pekko.persistence.typed.ReplicaId
-import pekko.persistence.typed.SingleEventSeq
+import pekko.persistence.typed.{
+  EmptyEventSeq,
+  EventsSeq,
+  RecoveryCompleted,
+  RecoveryFailed,
+  ReplicaId,
+  SingleEventSeq
+}
 import pekko.persistence.typed.internal.BehaviorSetup.SnapshotWithoutRetention
 import pekko.persistence.typed.internal.EventSourcedBehaviorImpl.{ GetSeenSequenceNr, GetState }
 import pekko.persistence.typed.internal.ReplayingEvents.ReplayingState
-import pekko.persistence.typed.internal.Running.WithSeqNrAccessible
-import pekko.persistence.typed.internal.Running.startReplicationStream
-import pekko.util.OptionVal
+import pekko.persistence.typed.internal.Running.{ startReplicationStream, WithSeqNrAccessible }
+import pekko.util.{ unused, OptionVal }
 import pekko.util.PrettyDuration._
-import pekko.util.unused
-
-import scala.collection.immutable
 
 /**
  * *

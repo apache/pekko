@@ -19,15 +19,16 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.{ AnyWordSpec, AnyWordSpecLike }
 
 import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.BehaviorTestKit
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.testkit.typed.scaladsl.TestInbox
-import pekko.actor.testkit.typed.scaladsl.TestProbe
+import pekko.actor.testkit.typed.scaladsl.{
+  BehaviorTestKit,
+  LogCapturing,
+  ScalaTestWithActorTestKit,
+  TestInbox,
+  TestProbe
+}
 import pekko.actor.typed._
-import pekko.actor.typed.receptionist.Receptionist
 import pekko.actor.typed.receptionist.Receptionist._
-import pekko.actor.typed.receptionist.ServiceKey
+import pekko.actor.typed.receptionist.{ Receptionist, ServiceKey }
 import pekko.actor.typed.scaladsl.AskPattern._
 import pekko.actor.typed.scaladsl.Behaviors
 

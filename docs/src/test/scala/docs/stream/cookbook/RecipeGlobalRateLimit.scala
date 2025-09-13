@@ -13,15 +13,16 @@
 
 package docs.stream.cookbook
 
-import org.apache.pekko.NotUsed
-import org.apache.pekko.actor.{ Actor, ActorRef, Props }
-import org.apache.pekko.stream.ClosedShape
-import org.apache.pekko.stream.scaladsl._
-import org.apache.pekko.stream.testkit._
-import org.apache.pekko.testkit._
-
 import scala.collection.immutable
 import scala.concurrent.duration._
+
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.actor.{ Actor, ActorRef, Props }
+import pekko.stream.ClosedShape
+import pekko.stream.scaladsl._
+import pekko.stream.testkit._
+import pekko.testkit._
 
 class RecipeGlobalRateLimit extends RecipeSpec {
 

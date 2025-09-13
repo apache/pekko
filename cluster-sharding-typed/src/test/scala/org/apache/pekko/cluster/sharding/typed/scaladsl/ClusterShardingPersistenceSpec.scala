@@ -13,39 +13,26 @@
 
 package org.apache.pekko.cluster.sharding.typed.scaladsl
 
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.{ ConcurrentHashMap, CountDownLatch, TimeUnit }
 
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
-import scala.concurrent.Promise
 import scala.concurrent.duration._
+import scala.concurrent.{ ExecutionContext, Future, Promise }
 
 import com.typesafe.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.testkit.typed.scaladsl.TestProbe
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.PostStop
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit, TestProbe }
 import pekko.actor.typed.internal.PoisonPill
 import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.{ ActorRef, Behavior, PostStop }
+import pekko.cluster.sharding.ShardRegion.{ CurrentShardRegionState, GetShardRegionState }
+import pekko.cluster.sharding.typed.scaladsl.ClusterSharding.{ Passivate, ShardCommand }
 import pekko.cluster.sharding.{ ClusterSharding => ClassicClusterSharding }
-import pekko.cluster.sharding.ShardRegion.CurrentShardRegionState
-import pekko.cluster.sharding.ShardRegion.GetShardRegionState
-import pekko.cluster.sharding.typed.scaladsl.ClusterSharding.Passivate
-import pekko.cluster.sharding.typed.scaladsl.ClusterSharding.ShardCommand
-import pekko.cluster.typed.Cluster
-import pekko.cluster.typed.Join
-import pekko.persistence.typed.PersistenceId
-import pekko.persistence.typed.RecoveryCompleted
-import pekko.persistence.typed.scaladsl.Effect
-import pekko.persistence.typed.scaladsl.EventSourcedBehavior
+import pekko.cluster.typed.{ Cluster, Join }
+import pekko.persistence.typed.scaladsl.{ Effect, EventSourcedBehavior }
+import pekko.persistence.typed.{ PersistenceId, RecoveryCompleted }
 
 object ClusterShardingPersistenceSpec {
   val config = ConfigFactory.parseString("""

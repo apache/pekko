@@ -18,8 +18,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 import org.apache.pekko
-import pekko.actor.typed.delivery.DurableProducerQueue.MessageSent
-import pekko.actor.typed.delivery.DurableProducerQueue.State
+import pekko.actor.typed.delivery.DurableProducerQueue.{ MessageSent, State }
 import pekko.actor.typed.delivery.internal.ChunkedMessage
 import pekko.util.ByteString
 

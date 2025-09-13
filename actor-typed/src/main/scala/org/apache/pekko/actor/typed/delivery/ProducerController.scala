@@ -22,16 +22,11 @@ import scala.reflect.ClassTag
 import com.typesafe.config.Config
 
 import org.apache.pekko
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.delivery.internal.DeliverySerializable
-import pekko.actor.typed.delivery.internal.ProducerControllerImpl
+import pekko.actor.typed.delivery.internal.{ DeliverySerializable, ProducerControllerImpl }
 import pekko.actor.typed.scaladsl.Behaviors
-import pekko.annotation.ApiMayChange
-import pekko.annotation.InternalApi
-import pekko.util.Helpers.toRootLowerCase
-import pekko.util.Helpers.Requiring
+import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior }
+import pekko.annotation.{ ApiMayChange, InternalApi }
+import pekko.util.Helpers.{ toRootLowerCase, Requiring }
 import pekko.util.JavaDurationConverters._
 import pekko.util.OptionConverters._
 

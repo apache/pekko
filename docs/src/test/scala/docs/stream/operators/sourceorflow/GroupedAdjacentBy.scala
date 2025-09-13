@@ -15,8 +15,6 @@ package docs.stream.operators.sourceorflow
 
 import org.apache.pekko.stream.scaladsl.Source
 
-import scala.collection.immutable
-
 object GroupedAdjacentBy {
   def groupedAdjacentByExample(): Unit = {
     import org.apache.pekko.actor.ActorSystem

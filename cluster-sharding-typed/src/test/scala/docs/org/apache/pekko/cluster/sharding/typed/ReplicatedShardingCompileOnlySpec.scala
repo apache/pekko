@@ -13,18 +13,18 @@
 
 package docs.org.apache.pekko.cluster.sharding.typed
 
-import org.apache.pekko
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Behavior
-import pekko.cluster.sharding.typed.ReplicatedEntity
-import pekko.cluster.sharding.typed.ReplicatedEntityProvider
-import pekko.cluster.sharding.typed.ReplicatedSharding
-import pekko.cluster.sharding.typed.ReplicatedShardingExtension
-import pekko.cluster.sharding.typed.scaladsl.Entity
-import pekko.cluster.sharding.typed.scaladsl.EntityRef
-import pekko.persistence.typed.ReplicaId
-import pekko.persistence.typed.ReplicationId
 import scala.annotation.nowarn
+
+import org.apache.pekko
+import pekko.actor.typed.{ ActorSystem, Behavior }
+import pekko.cluster.sharding.typed.scaladsl.{ Entity, EntityRef }
+import pekko.cluster.sharding.typed.{
+  ReplicatedEntity,
+  ReplicatedEntityProvider,
+  ReplicatedSharding,
+  ReplicatedShardingExtension
+}
+import pekko.persistence.typed.{ ReplicaId, ReplicationId }
 
 @nowarn("msg=never used")
 object ReplicatedShardingCompileOnlySpec {

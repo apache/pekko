@@ -16,9 +16,8 @@ package org.apache.pekko.stream.impl
 import scala.annotation.nowarn
 
 import org.apache.pekko
-import pekko.stream.ActorAttributes
 import pekko.stream.ActorAttributes.MaxFixedBufferSize
-import pekko.stream.ActorMaterializerSettings
+import pekko.stream.{ ActorAttributes, ActorMaterializerSettings }
 import pekko.stream.testkit.StreamSpec
 
 @nowarn("msg=deprecated")

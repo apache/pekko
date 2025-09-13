@@ -13,11 +13,12 @@
 
 package docs.persistence
 
-import org.apache.pekko.actor._
-import org.apache.pekko.pattern.{ BackoffOpts, BackoffSupervisor }
-import org.apache.pekko.persistence._
-
 import scala.concurrent.duration._
+
+import org.apache.pekko
+import pekko.actor._
+import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
+import pekko.persistence._
 
 object PersistenceDocSpec {
 

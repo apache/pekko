@@ -15,11 +15,9 @@ package docs.org.apache.pekko.cluster.typed
 
 //#import
 import org.apache.pekko
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.receptionist.Receptionist
-import pekko.actor.typed.receptionist.ServiceKey
+import pekko.actor.typed.receptionist.{ Receptionist, ServiceKey }
 import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.{ ActorRef, Behavior }
 //#import
 
 object PingPongExample {
@@ -113,8 +111,9 @@ object PingPongExample {
 }
 
 object ReceptionistExample {
-  import PingPongExample._
   import pekko.actor.typed.ActorSystem
+
+  import PingPongExample._
 
   def main(args: Array[String]): Unit = {
     val system = ActorSystem[Nothing](Guardian(), "PingPongExample")

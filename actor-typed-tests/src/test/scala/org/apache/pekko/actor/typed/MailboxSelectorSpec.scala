@@ -13,23 +13,22 @@
 
 package org.apache.pekko.actor.typed
 
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.{ CountDownLatch, TimeUnit }
 
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
 import pekko.actor.ActorCell
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, LoggingTestKit, ScalaTestWithActorTestKit }
 import pekko.actor.typed.internal.adapter.ActorContextAdapter
 import pekko.actor.typed.scaladsl.AskPattern._
 import pekko.actor.typed.scaladsl.Behaviors
-import pekko.dispatch.BoundedMessageQueueSemantics
-import pekko.dispatch.BoundedNodeMessageQueue
-import pekko.dispatch.MessageQueue
-import pekko.dispatch.UnboundedMessageQueueSemantics
+import pekko.dispatch.{
+  BoundedMessageQueueSemantics,
+  BoundedNodeMessageQueue,
+  MessageQueue,
+  UnboundedMessageQueueSemantics
+}
 
 class MailboxSelectorSpec extends ScalaTestWithActorTestKit("""
     specific-mailbox {

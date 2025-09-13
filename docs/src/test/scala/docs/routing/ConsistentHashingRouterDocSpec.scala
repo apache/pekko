@@ -13,10 +13,9 @@
 
 package docs.routing
 
-import org.apache.pekko.testkit.PekkoSpec
-import org.apache.pekko.testkit.ImplicitSender
-import org.apache.pekko.routing.FromConfig
-import org.apache.pekko.actor.ActorRef
+import org.apache.pekko
+import pekko.actor.ActorRef
+import pekko.testkit.{ ImplicitSender, PekkoSpec }
 
 object ConsistentHashingRouterDocSpec {
 

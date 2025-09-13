@@ -20,12 +20,14 @@ import com.typesafe.config.Config
 import org.agrona.concurrent.ManyToOneConcurrentArrayQueue
 
 import org.apache.pekko
-import pekko.dispatch.BoundedMessageQueueSemantics
-import pekko.dispatch.BoundedNodeMessageQueue
-import pekko.dispatch.Envelope
-import pekko.dispatch.MailboxType
-import pekko.dispatch.MessageQueue
-import pekko.dispatch.ProducesMessageQueue
+import pekko.dispatch.{
+  BoundedMessageQueueSemantics,
+  BoundedNodeMessageQueue,
+  Envelope,
+  MailboxType,
+  MessageQueue,
+  ProducesMessageQueue
+}
 
 /**
  * ManyToOneArrayMailbox is a high-performance, multiple-producer single-consumer, bounded MailboxType,

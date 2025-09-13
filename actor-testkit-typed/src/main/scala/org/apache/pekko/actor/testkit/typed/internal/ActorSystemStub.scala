@@ -14,30 +14,32 @@
 package org.apache.pekko.actor.testkit.typed.internal
 
 import java.util.concurrent.{ CompletionStage, ThreadFactory }
-import scala.concurrent._
+
 import scala.annotation.nowarn
+import scala.concurrent._
+
 import com.typesafe.config.{ Config, ConfigFactory }
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import org.slf4j.{ Logger, LoggerFactory }
+
 import org.apache.pekko
-import pekko.{ actor => classic }
-import pekko.Done
-import pekko.actor.{ ActorPath, ActorRefProvider, Address, ReflectiveDynamicAccess }
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.DispatcherSelector
-import pekko.actor.typed.Dispatchers
-import pekko.actor.typed.Extension
-import pekko.actor.typed.ExtensionId
-import pekko.actor.typed.Props
-import pekko.actor.typed.Scheduler
-import pekko.actor.typed.Settings
-import pekko.actor.typed.internal.ActorRefImpl
-import pekko.actor.typed.internal.InternalRecipientRef
+import pekko.actor.typed.internal.{ ActorRefImpl, InternalRecipientRef }
 import pekko.actor.typed.receptionist.Receptionist
+import pekko.actor.typed.{
+  ActorRef,
+  ActorSystem,
+  Behavior,
+  DispatcherSelector,
+  Dispatchers,
+  Extension,
+  ExtensionId,
+  Props,
+  Scheduler,
+  Settings
+}
+import pekko.actor.{ ActorPath, ActorRefProvider, Address, ReflectiveDynamicAccess }
 import pekko.annotation.InternalApi
 import pekko.util.FutureConverters._
+import pekko.{ actor => classic, Done }
 
 /**
  * INTERNAL API

@@ -14,15 +14,16 @@
 package docs.io
 
 //#imports
+import java.net.InetSocketAddress
+
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorRef, Props }
 import pekko.io.{ IO, Tcp }
 import pekko.util.ByteString
-import java.net.InetSocketAddress
 //#imports
-
-import org.apache.pekko.testkit.PekkoSpec
 import scala.concurrent.duration._
+
+import pekko.testkit.PekkoSpec
 
 class DemoActor extends Actor {
   // #manager

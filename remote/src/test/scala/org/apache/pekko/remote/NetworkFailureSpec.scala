@@ -17,9 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 import scala.concurrent.Future
 
-import org.apache.pekko
-import pekko.testkit.PekkoSpec
-import pekko.testkit.DefaultTimeout
+import org.apache.pekko.testkit.{ DefaultTimeout, PekkoSpec }
 
 trait NetworkFailureSpec extends DefaultTimeout { self: PekkoSpec =>
   import scala.concurrent.duration.Duration

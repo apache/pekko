@@ -18,15 +18,11 @@ import scala.concurrent.duration._
 import scala.reflect.ClassTag
 
 import org.apache.pekko
-import pekko.actor.testkit.typed.FishingOutcome
-import pekko.actor.testkit.typed.TestKitSettings
 import pekko.actor.testkit.typed.internal.TestProbeImpl
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.RecipientRef
+import pekko.actor.testkit.typed.{ FishingOutcome, TestKitSettings }
 import pekko.actor.typed.internal.InternalRecipientRef
-import pekko.annotation.DoNotInherit
-import pekko.annotation.InternalApi
+import pekko.actor.typed.{ ActorRef, ActorSystem, RecipientRef }
+import pekko.annotation.{ DoNotInherit, InternalApi }
 
 object FishingOutcomes {
 

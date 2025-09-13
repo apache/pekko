@@ -18,10 +18,7 @@ import scala.concurrent.ExecutionContextExecutor
 
 import org.scalatest.wordspec.AnyWordSpecLike
 
-import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.testkit.typed.scaladsl.TestProbe
+import org.apache.pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit, TestProbe }
 
 class ReceivePartialSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with LogCapturing {
 

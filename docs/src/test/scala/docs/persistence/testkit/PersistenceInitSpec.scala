@@ -15,17 +15,17 @@ package docs.persistence.testkit
 
 import java.util.UUID
 
-import org.apache.pekko.Done
-import org.apache.pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import org.scalatest.wordspec.AnyWordSpecLike
 
-//#imports
-import org.apache.pekko.persistence.testkit.scaladsl.PersistenceInit
+import org.apache.pekko
+import pekko.Done
+import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 
-import scala.concurrent.Await
-import scala.concurrent.Future
+//#imports
+import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
 
+import org.apache.pekko.persistence.testkit.scaladsl.PersistenceInit
 //#imports
 
 class PersistenceInitSpec extends ScalaTestWithActorTestKit(s"""

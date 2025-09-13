@@ -13,10 +13,11 @@
 
 package org.apache.pekko.actor.typed
 
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.{ ActorTestKit, LogCapturing, LoggingTestKit, ScalaTestWithActorTestKit }
 import pekko.actor.typed.internal.adapter.ActorSystemAdapter
-import org.scalatest.wordspec.AnyWordSpecLike
 
 object LocalActorRefProviderLogMessagesSpec {
   val config = """

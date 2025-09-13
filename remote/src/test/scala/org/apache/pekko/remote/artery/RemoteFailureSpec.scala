@@ -18,9 +18,8 @@ import scala.concurrent.duration._
 import org.apache.pekko
 import pekko.remote.EndpointDisassociatedException
 import pekko.serialization.jackson.CborSerializable
-import pekko.testkit.{ EventFilter, ImplicitSender, TestActors, TestEvent }
-import pekko.testkit.DeadLettersFilter
 import pekko.testkit.TestEvent.Mute
+import pekko.testkit.{ DeadLettersFilter, EventFilter, ImplicitSender, TestActors, TestEvent }
 
 object RemoteFailureSpec {
   final case class Ping(s: String) extends CborSerializable

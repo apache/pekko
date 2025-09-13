@@ -13,16 +13,15 @@
 
 package docs.org.apache.pekko.typed
 
-import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.TestProbe
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.actor.typed.{ ActorRef, Behavior }
-
 import scala.collection.immutable
 import scala.concurrent.duration._
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
+
 import org.scalatest.wordspec.AnyWordSpecLike
+
+import org.apache.pekko
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit, TestProbe }
+import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.{ ActorRef, Behavior }
 
 object FSMDocSpec {
 

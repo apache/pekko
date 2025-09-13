@@ -13,15 +13,15 @@
 
 package org.apache.pekko.actor.testkit.typed.internal
 
-import ch.qos.logback.classic.spi.ILoggingEvent
-import ch.qos.logback.classic.spi.ThrowableProxy
+import java.util.Collections
+
+import ch.qos.logback.classic.spi.{ ILoggingEvent, ThrowableProxy }
 import ch.qos.logback.core.AppenderBase
 import org.slf4j.{ MDC, Marker }
+
 import org.apache.pekko
 import pekko.actor.testkit.typed.LoggingEvent
 import pekko.annotation.InternalApi
-
-import java.util.Collections
 
 /**
  * INTERNAL API
@@ -82,7 +82,7 @@ import java.util.Collections
 
   // invocations are synchronized via doAppend in AppenderBase
   override def append(event: ILoggingEvent): Unit = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
 
     val throwable = event.getThrowableProxy match {
       case p: ThrowableProxy =>

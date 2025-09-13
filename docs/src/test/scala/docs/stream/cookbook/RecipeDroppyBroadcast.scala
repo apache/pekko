@@ -13,9 +13,10 @@
 
 package docs.stream.cookbook
 
-import org.apache.pekko.stream.{ ClosedShape, OverflowStrategy }
-import org.apache.pekko.stream.scaladsl._
-import org.apache.pekko.stream.testkit._
+import org.apache.pekko
+import pekko.stream.{ ClosedShape, OverflowStrategy }
+import pekko.stream.scaladsl._
+import pekko.stream.testkit._
 
 class RecipeDroppyBroadcast extends RecipeSpec {
 

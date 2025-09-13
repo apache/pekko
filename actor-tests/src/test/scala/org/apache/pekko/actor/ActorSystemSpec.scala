@@ -13,13 +13,13 @@
 
 package org.apache.pekko.actor
 
-import java.util.concurrent.{ ConcurrentLinkedQueue, RejectedExecutionException }
 import java.util.concurrent.atomic.AtomicInteger
-
-import scala.concurrent.{ Await, Future }
-import scala.concurrent.duration._
+import java.util.concurrent.{ ConcurrentLinkedQueue, RejectedExecutionException }
 
 import scala.annotation.nowarn
+import scala.concurrent.duration._
+import scala.concurrent.{ Await, Future }
+
 import com.typesafe.config.{ Config, ConfigFactory }
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
@@ -29,8 +29,8 @@ import pekko.dispatch._
 import pekko.japi.Util.immutableSeq
 import pekko.pattern.ask
 import pekko.testkit.{ TestKit, _ }
-import pekko.util.{ Switch, Timeout }
 import pekko.util.Helpers.ConfigOps
+import pekko.util.{ Switch, Timeout }
 
 object ActorSystemSpec {
 

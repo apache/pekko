@@ -13,10 +13,11 @@
 
 package docs.stream.operators.sourceorflow
 
-import org.apache.pekko.NotUsed
-import org.apache.pekko.actor.ActorRef
-import org.apache.pekko.stream.WatchedActorTerminatedException
-import org.apache.pekko.stream.scaladsl.Flow
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.actor.ActorRef
+import pekko.stream.WatchedActorTerminatedException
+import pekko.stream.scaladsl.Flow
 
 object Watch {
 

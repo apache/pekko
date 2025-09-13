@@ -15,11 +15,10 @@ package org.apache.pekko.stream.testkit
 
 import scala.util.control.NoStackTrace
 
-import org.apache.pekko
-import pekko.actor.ActorRef
-import pekko.actor.ActorRefWithCell
-
 import com.typesafe.config.ConfigFactory
+
+import org.apache.pekko
+import pekko.actor.{ ActorRef, ActorRefWithCell }
 
 object Utils {
 

@@ -13,9 +13,8 @@
 
 package org.apache.pekko.remote.artery
 
-import scala.util.Random
-
 import scala.annotation.nowarn
+import scala.util.Random
 
 import org.apache.pekko
 import pekko.testkit.PekkoSpec

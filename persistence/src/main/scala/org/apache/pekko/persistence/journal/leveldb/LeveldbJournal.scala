@@ -15,16 +15,13 @@ package org.apache.pekko.persistence.journal.leveldb
 
 import scala.concurrent.Future
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
 import pekko.actor._
 import pekko.pattern.pipe
-import pekko.persistence.JournalProtocol.RecoverySuccess
-import pekko.persistence.JournalProtocol.ReplayMessagesFailure
-import pekko.persistence.Persistence
-import pekko.persistence.PersistentRepr
+import pekko.persistence.JournalProtocol.{ RecoverySuccess, ReplayMessagesFailure }
+import pekko.persistence.{ Persistence, PersistentRepr }
 import pekko.persistence.journal._
 import pekko.util.Helpers.ConfigOps
 import pekko.util.Timeout

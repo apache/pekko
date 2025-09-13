@@ -13,8 +13,10 @@
 
 package docs.stream.cookbook
 
-import org.apache.pekko.stream.scaladsl._
 import scala.concurrent.Future
+
+import org.apache.pekko
+import pekko.stream.scaladsl._
 
 class RecipeSeq extends RecipeSpec {
 

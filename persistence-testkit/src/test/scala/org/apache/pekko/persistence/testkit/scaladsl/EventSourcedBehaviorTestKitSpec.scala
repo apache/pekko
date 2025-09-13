@@ -14,25 +14,22 @@
 package org.apache.pekko.persistence.testkit.scaladsl
 
 import java.io.NotSerializableException
+
 import org.scalatest.wordspec.AnyWordSpecLike
+
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.testkit.typed.TestException
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.scaladsl.ActorContext
-import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, LoggingTestKit, ScalaTestWithActorTestKit }
+import pekko.actor.typed.{ ActorRef, Behavior }
+import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors }
 import pekko.persistence.testkit.scaladsl.EventSourcedBehaviorTestKitSpec.TestCounter.{
   NotSerializableState,
   NullState
 }
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.internal.JournalFailureException
-import pekko.persistence.typed.scaladsl.Effect
-import pekko.persistence.typed.scaladsl.EventSourcedBehavior
+import pekko.persistence.typed.scaladsl.{ Effect, EventSourcedBehavior }
 import pekko.serialization.DisabledJavaSerializer
 import pekko.serialization.jackson.CborSerializable
 

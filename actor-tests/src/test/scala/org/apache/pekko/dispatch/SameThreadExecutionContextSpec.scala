@@ -13,8 +13,7 @@
 
 package org.apache.pekko.dispatch
 
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Promise
+import scala.concurrent.{ ExecutionContext, Promise }
 
 import org.scalatest.matchers.should.Matchers
 

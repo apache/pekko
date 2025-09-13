@@ -18,23 +18,16 @@ import java.nio.file.{ OpenOption, Path }
 
 import scala.collection.immutable
 import scala.concurrent.{ Future, Promise }
+import scala.jdk.CollectionConverters._
 import scala.util.Success
 import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.stream.{
-  AbruptStageTerminationException,
-  Attributes,
-  IOOperationIncompleteException,
-  IOResult,
-  Inlet,
-  SinkShape
-}
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.stage.{ GraphStageLogic, GraphStageWithMaterializedValue, InHandler }
+import pekko.stream._
 import pekko.util.ByteString
-import pekko.util.ccompat.JavaConverters._
 
 /**
  * INTERNAL API

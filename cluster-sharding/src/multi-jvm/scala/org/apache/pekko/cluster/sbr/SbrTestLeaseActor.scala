@@ -19,15 +19,17 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorLogging
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.Extension
-import pekko.actor.ExtensionId
-import pekko.actor.ExtensionIdProvider
-import pekko.actor.Props
+import pekko.actor.{
+  Actor,
+  ActorLogging,
+  ActorRef,
+  ActorSystem,
+  ExtendedActorSystem,
+  Extension,
+  ExtensionId,
+  ExtensionIdProvider,
+  Props
+}
 import pekko.coordination.lease.LeaseSettings
 import pekko.coordination.lease.scaladsl.Lease
 import pekko.pattern.ask
@@ -102,8 +104,7 @@ class SbrTestLeaseActorClientExt(val system: ExtendedActorSystem) extends Extens
 }
 
 class SbrTestLeaseActorClient(settings: LeaseSettings, system: ExtendedActorSystem) extends Lease(settings) {
-  import SbrTestLeaseActor.Acquire
-  import SbrTestLeaseActor.Release
+  import SbrTestLeaseActor.{ Acquire, Release }
 
   SbrTestLeaseActorClientExt(system).setActorLeaseClient(this)
 

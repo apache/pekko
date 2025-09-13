@@ -18,11 +18,13 @@ import java.net.{ InetAddress, InetSocketAddress }
 import scala.collection.immutable
 import scala.concurrent.{ Await, Awaitable }
 import scala.concurrent.duration._
+import scala.language.implicitConversions
 import scala.util.control.NonFatal
 
 import com.typesafe.config.{ Config, ConfigFactory, ConfigObject }
+
 import io.netty.channel.ChannelException
-import language.implicitConversions
+
 import org.apache.pekko
 import pekko.actor._
 import pekko.actor.RootActorPath
@@ -274,7 +276,7 @@ object MultiNodeSpec {
       """)
 
   private def mapToConfig(map: Map[String, Any]): Config = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     ConfigFactory.parseMap(map.asJava)
   }
 
@@ -521,7 +523,7 @@ abstract class MultiNodeSpec(
               base.replace(tag, replaceWith)
           }
       }
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       ConfigFactory.parseString(deployString).root.asScala.foreach {
         case (key, value: ConfigObject) => deployer.parseConfig(key, value.toConfig).foreach(deployer.deploy)
         case (key, x)                   =>

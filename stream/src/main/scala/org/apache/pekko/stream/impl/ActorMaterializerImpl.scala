@@ -22,14 +22,12 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.annotation.DoNotInherit
-import pekko.annotation.InternalApi
+import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.dispatch.Dispatchers
 import pekko.event.LoggingAdapter
 import pekko.pattern.StatusReply
 import pekko.stream._
-import pekko.stream.impl.fusing.ActorGraphInterpreter
-import pekko.stream.impl.fusing.GraphInterpreterShell
+import pekko.stream.impl.fusing.{ ActorGraphInterpreter, GraphInterpreterShell }
 import pekko.stream.snapshot.StreamSnapshot
 import pekko.util.OptionVal
 

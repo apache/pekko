@@ -16,24 +16,18 @@ package org.apache.pekko.persistence.query.internal
 import java.io.NotSerializableException
 import java.nio.charset.StandardCharsets.UTF_8
 import java.time.Instant
-import java.util.Base64
-import java.util.UUID
+import java.util.{ Base64, UUID }
+
 import scala.util.control.NonFatal
+
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.event.Logging
-import pekko.persistence.query.NoOffset
-import pekko.persistence.query.Offset
-import pekko.persistence.query.Sequence
-import pekko.persistence.query.TimeBasedUUID
-import pekko.persistence.query.TimestampOffset
+import pekko.persistence.query.{ NoOffset, Offset, Sequence, TimeBasedUUID, TimestampOffset }
 import pekko.persistence.query.internal.protobuf.QueryMessages
 import pekko.persistence.query.typed.EventEnvelope
 import pekko.remote.serialization.WrappedPayloadSupport.{ deserializePayload, payloadBuilder }
-import pekko.serialization.BaseSerializer
-import pekko.serialization.SerializationExtension
-import pekko.serialization.SerializerWithStringManifest
-import pekko.serialization.Serializers
+import pekko.serialization.{ BaseSerializer, SerializationExtension, SerializerWithStringManifest, Serializers }
 
 /**
  * INTERNAL API

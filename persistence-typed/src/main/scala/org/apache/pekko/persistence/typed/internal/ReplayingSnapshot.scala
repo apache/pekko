@@ -16,15 +16,13 @@ package org.apache.pekko.persistence.typed.internal
 import org.apache.pekko
 import pekko.actor.typed.Behavior
 import pekko.actor.typed.internal.PoisonPill
-import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors }
+import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors, LoggerOps }
 import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.persistence._
-import pekko.persistence.SnapshotProtocol.LoadSnapshotFailed
-import pekko.persistence.SnapshotProtocol.LoadSnapshotResult
+import pekko.persistence.SnapshotProtocol.{ LoadSnapshotFailed, LoadSnapshotResult }
 import pekko.persistence.typed.{ RecoveryFailed, ReplicaId }
 import pekko.persistence.typed.internal.EventSourcedBehaviorImpl.{ GetSeenSequenceNr, GetState }
 import pekko.util.unused
-import pekko.actor.typed.scaladsl.LoggerOps
 
 /**
  * INTERNAL API

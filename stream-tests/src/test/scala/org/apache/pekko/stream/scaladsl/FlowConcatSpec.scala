@@ -15,21 +15,17 @@ package org.apache.pekko.stream.scaladsl
 
 import java.util.concurrent.atomic.AtomicBoolean
 
-import scala.concurrent.Await
-import scala.concurrent.Promise
+import scala.concurrent.{ Await, Promise }
 import scala.concurrent.duration._
+
+import org.reactivestreams.Publisher
+import org.scalatest.concurrent.ScalaFutures
 
 import org.apache.pekko
 import pekko.NotUsed
-import pekko.stream.testkit.BaseTwoStreamsSetup
-import pekko.stream.testkit.TestPublisher
-import pekko.stream.testkit.TestSubscriber
+import pekko.stream.testkit.{ BaseTwoStreamsSetup, TestPublisher, TestSubscriber }
 import pekko.stream.testkit.scaladsl.StreamTestKit._
 import pekko.stream.testkit.scaladsl.TestSink
-
-import org.reactivestreams.Publisher
-
-import org.scalatest.concurrent.ScalaFutures
 
 abstract class AbstractFlowConcatSpec extends BaseTwoStreamsSetup {
 

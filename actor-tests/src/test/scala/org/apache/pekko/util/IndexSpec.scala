@@ -15,16 +15,12 @@ package org.apache.pekko.util
 
 import java.util.Comparator
 
-import scala.concurrent.Await
-import scala.concurrent.ExecutionContextExecutor
-import scala.concurrent.Future
+import scala.concurrent.{ Await, ExecutionContextExecutor, Future }
 import scala.util.Random
 
 import org.scalatest.matchers.should.Matchers
 
-import org.apache.pekko
-import pekko.testkit.PekkoSpec
-import pekko.testkit.DefaultTimeout
+import org.apache.pekko.testkit.{ DefaultTimeout, PekkoSpec }
 
 class IndexSpec extends PekkoSpec with Matchers with DefaultTimeout {
   implicit val ec: ExecutionContextExecutor = system.dispatcher

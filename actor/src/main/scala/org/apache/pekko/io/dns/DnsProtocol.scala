@@ -13,19 +13,16 @@
 
 package org.apache.pekko.io.dns
 
-import java.net.Inet4Address
-import java.net.Inet6Address
-import java.net.InetAddress
-import java.net.UnknownHostException
+import java.net.{ Inet4Address, Inet6Address, InetAddress, UnknownHostException }
 import java.util
 
 import scala.collection.{ immutable => im }
+import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
 import pekko.actor.NoSerializationVerificationNeeded
 import pekko.io.IpVersionSelector
 import pekko.routing.ConsistentHashingRouter.ConsistentHashable
-import pekko.util.ccompat.JavaConverters._
 
 /**
  * Supersedes [[pekko.io.Dns]] protocol.

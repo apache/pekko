@@ -14,20 +14,14 @@
 package org.apache.pekko.persistence.typed.scaladsl
 
 import com.typesafe.config.Config
+
 import org.apache.pekko
-import pekko.actor.typed.BackoffSupervisorStrategy
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.Signal
+import pekko.actor.typed.{ BackoffSupervisorStrategy, Behavior, Signal }
 import pekko.actor.typed.internal.BehaviorImpl.DeferredBehavior
-import pekko.actor.typed.internal.InterceptorImpl
-import pekko.actor.typed.internal.LoggerClass
+import pekko.actor.typed.internal.{ InterceptorImpl, LoggerClass }
 import pekko.actor.typed.scaladsl.ActorContext
-import pekko.annotation.ApiMayChange
-import pekko.annotation.DoNotInherit
-import pekko.annotation.InternalApi
-import pekko.persistence.typed.EventAdapter
-import pekko.persistence.typed.PersistenceId
-import pekko.persistence.typed.SnapshotAdapter
+import pekko.annotation.{ ApiMayChange, DoNotInherit, InternalApi }
+import pekko.persistence.typed.{ EventAdapter, PersistenceId, SnapshotAdapter }
 import pekko.persistence.typed.internal._
 
 import scala.annotation.tailrec

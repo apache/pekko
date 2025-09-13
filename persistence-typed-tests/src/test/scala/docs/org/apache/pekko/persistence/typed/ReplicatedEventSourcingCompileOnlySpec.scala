@@ -17,10 +17,8 @@ import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.actor.typed.ActorSystem
-import pekko.persistence.typed.ReplicaId
-import pekko.persistence.typed.ReplicationId
-import pekko.persistence.typed.scaladsl.EventSourcedBehavior
-import pekko.persistence.typed.scaladsl.ReplicatedEventSourcing
+import pekko.persistence.typed.{ ReplicaId, ReplicationId }
+import pekko.persistence.typed.scaladsl.{ EventSourcedBehavior, ReplicatedEventSourcing }
 
 @nowarn("msg=never used")
 object ReplicatedEventSourcingCompileOnlySpec {

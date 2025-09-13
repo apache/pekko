@@ -13,20 +13,18 @@
 
 package org.apache.pekko.remote.transport
 
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ThreadLocalRandom
+import java.util.concurrent.{ ConcurrentHashMap, ThreadLocalRandom }
 
+import scala.annotation.nowarn
 import scala.concurrent.{ Future, Promise }
 import scala.util.control.NoStackTrace
-
-import FailureInjectorTransportAdapter._
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.PekkoException
 import pekko.actor.{ Address, ExtendedActorSystem }
 import pekko.event.{ Logging, LoggingAdapter }
 import pekko.remote.transport.AssociationHandle.{ HandleEvent, HandleEventListener }
+import pekko.remote.transport.FailureInjectorTransportAdapter._
 import pekko.remote.transport.Transport._
 import pekko.util.ByteString
 

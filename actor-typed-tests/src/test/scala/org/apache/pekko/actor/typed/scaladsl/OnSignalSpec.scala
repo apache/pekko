@@ -18,10 +18,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.testkit.typed.scaladsl.ActorTestKit
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.testkit.typed.scaladsl.TestProbe
+import pekko.actor.testkit.typed.scaladsl.{ ActorTestKit, LogCapturing, ScalaTestWithActorTestKit, TestProbe }
 
 final class OnSignalSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with LogCapturing {
 

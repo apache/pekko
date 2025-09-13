@@ -16,17 +16,12 @@ package org.apache.pekko.cluster.testkit
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.ActorRef
-import pekko.actor.Address
-import pekko.actor.Props
-import pekko.actor.Scheduler
+import pekko.actor.{ ActorRef, Address, Props, Scheduler }
 import pekko.cluster.ClusterEvent._
-import pekko.cluster.Member
 import pekko.cluster.MemberStatus._
-import pekko.cluster.TestMember
+import pekko.cluster.{ Member, TestMember }
 import pekko.remote.RARP
-import pekko.testkit.PekkoSpec
-import pekko.testkit.TimingTest
+import pekko.testkit.{ PekkoSpec, TimingTest }
 
 object AutoDownSpec {
   final case class DownCalled(address: Address)

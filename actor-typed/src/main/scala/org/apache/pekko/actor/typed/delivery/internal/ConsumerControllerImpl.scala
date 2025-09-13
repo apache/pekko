@@ -16,20 +16,11 @@ package org.apache.pekko.actor.typed.delivery.internal
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.PostStop
-import pekko.actor.typed.delivery.ConsumerController
-import pekko.actor.typed.delivery.ConsumerController.DeliverThenStop
-import pekko.actor.typed.delivery.ProducerController
+import pekko.actor.typed.delivery.{ ConsumerController, ProducerController }
 import pekko.actor.typed.internal.ActorFlightRecorder
-import pekko.actor.typed.receptionist.Receptionist
-import pekko.actor.typed.receptionist.ServiceKey
-import pekko.actor.typed.scaladsl.ActorContext
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.actor.typed.scaladsl.LoggerOps
-import pekko.actor.typed.scaladsl.StashBuffer
-import pekko.actor.typed.scaladsl.TimerScheduler
+import pekko.actor.typed.receptionist.{ Receptionist, ServiceKey }
+import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors, LoggerOps, StashBuffer, TimerScheduler }
+import pekko.actor.typed.{ ActorRef, Behavior, PostStop }
 import pekko.annotation.InternalApi
 import pekko.serialization.SerializationExtension
 import pekko.util.ByteString
@@ -76,11 +67,7 @@ import pekko.util.ConstantFun.scalaIdentityFunction
  * the expected sequence number arrives.
  */
 @InternalApi private[pekko] object ConsumerControllerImpl {
-  import ConsumerController.Command
-  import ConsumerController.RegisterToProducerController
-  import ConsumerController.SeqNr
-  import ConsumerController.SequencedMessage
-  import ConsumerController.Start
+  import ConsumerController._
 
   sealed trait InternalCommand
 
@@ -273,15 +260,9 @@ private class ConsumerControllerImpl[A] private (
     stashBuffer: StashBuffer[ConsumerControllerImpl.InternalCommand],
     settings: ConsumerController.Settings) {
 
-  import ConsumerController.Confirmed
-  import ConsumerController.Delivery
-  import ConsumerController.RegisterToProducerController
-  import ConsumerController.SequencedMessage
-  import ConsumerController.Start
+  import ConsumerController._
   import ConsumerControllerImpl._
-  import ProducerControllerImpl.Ack
-  import ProducerControllerImpl.Request
-  import ProducerControllerImpl.Resend
+  import ProducerControllerImpl.{ Ack, Request, Resend }
   import settings.flowControlWindow
 
   private val flightRecorder = ActorFlightRecorder(context.system).delivery

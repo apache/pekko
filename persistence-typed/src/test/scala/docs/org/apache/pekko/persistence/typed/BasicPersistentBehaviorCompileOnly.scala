@@ -13,18 +13,13 @@
 
 package docs.org.apache.pekko.persistence.typed
 
+import scala.annotation.nowarn
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.SupervisorStrategy
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.actor.typed.scaladsl.LoggerOps
-import pekko.persistence.typed.DeleteEventsFailed
-import pekko.persistence.typed.DeleteSnapshotsFailed
-import pekko.persistence.typed.EventAdapter
-import pekko.persistence.typed.EventSeq
+import pekko.actor.typed.{ ActorRef, Behavior, SupervisorStrategy }
+import pekko.actor.typed.scaladsl.{ Behaviors, LoggerOps }
+import pekko.persistence.typed.{ DeleteEventsFailed, DeleteSnapshotsFailed, EventAdapter, EventSeq }
 import pekko.persistence.typed.scaladsl.Recovery
 //#structure
 //#behavior
@@ -35,9 +30,7 @@ import pekko.persistence.typed.PersistenceId
 //#behavior
 //#structure
 import org.apache.pekko
-import pekko.persistence.typed.RecoveryCompleted
-import pekko.persistence.typed.SnapshotFailed
-import scala.annotation.nowarn
+import pekko.persistence.typed.{ RecoveryCompleted, SnapshotFailed }
 
 // unused variables in pattern match are useful in the docs
 @nowarn

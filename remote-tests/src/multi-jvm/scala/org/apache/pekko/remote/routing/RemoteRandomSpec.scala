@@ -18,16 +18,10 @@ import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorRef
-import pekko.actor.Address
-import pekko.actor.PoisonPill
-import pekko.actor.Props
+import pekko.actor._
 import pekko.remote.RemotingMultiNodeSpec
 import pekko.remote.testkit.MultiNodeConfig
-import pekko.routing.Broadcast
-import pekko.routing.RandomPool
-import pekko.routing.RoutedActorRef
+import pekko.routing.{ Broadcast, RandomPool, RoutedActorRef }
 import pekko.testkit._
 
 class RemoteRandomConfig(artery: Boolean) extends MultiNodeConfig {

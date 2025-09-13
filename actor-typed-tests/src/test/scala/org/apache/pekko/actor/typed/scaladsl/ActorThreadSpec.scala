@@ -13,21 +13,17 @@
 
 package org.apache.pekko.actor.typed.scaladsl
 
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.{ CountDownLatch, TimeUnit }
 
 import scala.concurrent.Future
-import scala.util.Failure
-import scala.util.Success
+import scala.util.{ Failure, Success }
+
+import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, LoggingTestKit, ScalaTestWithActorTestKit }
 import pekko.actor.typed.scaladsl.ActorThreadSpec.Echo
-import org.scalatest.wordspec.AnyWordSpecLike
+import pekko.actor.typed.{ ActorRef, Behavior }
 
 object ActorThreadSpec {
   object Echo {

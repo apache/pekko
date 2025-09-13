@@ -17,9 +17,7 @@ import java.util.ArrayDeque
 
 import scala.annotation.tailrec
 import scala.concurrent.duration._
-import scala.util.Failure
-import scala.util.Success
-import scala.util.Try
+import scala.util.{ Failure, Success, Try }
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
@@ -32,16 +30,8 @@ import pekko.event.Logging
 import pekko.remote.UniqueAddress
 import pekko.remote.artery.InboundControlJunction.ControlMessageObserver
 import pekko.remote.artery.OutboundHandshake.HandshakeReq
-import pekko.stream.Attributes
-import pekko.stream.FlowShape
-import pekko.stream.Inlet
-import pekko.stream.Outlet
-import pekko.stream.stage.GraphStage
-import pekko.stream.stage.GraphStageLogic
-import pekko.stream.stage.InHandler
-import pekko.stream.stage.OutHandler
-import pekko.stream.stage.StageLogging
-import pekko.stream.stage.TimerGraphStageLogic
+import pekko.stream.{ Attributes, FlowShape, Inlet, Outlet }
+import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler, StageLogging, TimerGraphStageLogic }
 import pekko.util.OptionVal
 import pekko.util.PrettyDuration.PrettyPrintableDuration
 

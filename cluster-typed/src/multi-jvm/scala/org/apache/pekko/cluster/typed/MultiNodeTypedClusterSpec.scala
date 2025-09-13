@@ -15,31 +15,21 @@ package org.apache.pekko.cluster.typed
 
 import java.util.concurrent.ConcurrentHashMap
 
-import scala.concurrent.Await
-import scala.concurrent.Future
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, Future }
 import scala.language.implicitConversions
 
 import org.scalatest.Suite
 import org.scalatest.matchers.should.Matchers
 
 import org.apache.pekko
-import pekko.actor.ActorIdentity
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.Props
-import pekko.actor.typed.SpawnProtocol
 import pekko.actor.typed.scaladsl.AskPattern._
 import pekko.actor.typed.scaladsl.adapter._
-import pekko.actor.Address
-import pekko.actor.Identify
-import pekko.actor.Scheduler
-import pekko.cluster.ClusterEvent
-import pekko.cluster.MemberStatus
+import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior, Props, SpawnProtocol }
+import pekko.actor.{ ActorIdentity, Address, Identify, Scheduler }
+import pekko.cluster.{ ClusterEvent, MemberStatus }
 import pekko.remote.testconductor.RoleName
-import pekko.remote.testkit.MultiNodeSpec
-import pekko.remote.testkit.STMultiNodeSpec
+import pekko.remote.testkit.{ MultiNodeSpec, STMultiNodeSpec }
 import pekko.testkit.WatchedByCoroner
 import pekko.util.Timeout
 

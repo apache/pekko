@@ -13,14 +13,14 @@
 
 package org.apache.pekko.persistence.testkit.scaladsl
 
+import com.typesafe.config.ConfigFactory
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
 import pekko.persistence.testkit.PersistenceTestKitPlugin
 import pekko.persistence.testkit.scaladsl.EventSourcedBehaviorTestKitSpec.TestCounter
 import pekko.persistence.typed.PersistenceId
-import com.typesafe.config.ConfigFactory
-import org.scalatest.wordspec.AnyWordSpecLike
 
 class EventSourcedBehaviorNoSnapshotTestKitSpec
     extends ScalaTestWithActorTestKit(ConfigFactory.parseString("""

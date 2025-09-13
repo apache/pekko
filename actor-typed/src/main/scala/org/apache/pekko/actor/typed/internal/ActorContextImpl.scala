@@ -15,28 +15,24 @@ package org.apache.pekko.actor.typed
 package internal
 
 import java.time.Duration
-import java.util.ArrayList
-import java.util.Optional
 import java.util.concurrent.CompletionStage
+import java.util.{ ArrayList, Optional }
+
+import scala.annotation.{ nowarn, switch }
 import scala.concurrent.{ ExecutionContextExecutor, Future }
 import scala.reflect.ClassTag
-import scala.util.Try
-import scala.annotation.{ nowarn, switch }
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import scala.util.{ Failure, Success, Try }
+
+import org.slf4j.{ Logger, LoggerFactory }
+
 import org.apache.pekko
 import pekko.actor.Address
 import pekko.actor.typed.internal.adapter.ActorSystemAdapter
 import pekko.annotation.InternalApi
 import pekko.dispatch.ExecutionContexts
 import pekko.pattern.StatusReply
-import pekko.util.BoxedType
 import pekko.util.JavaDurationConverters._
-import pekko.util.OptionVal
-import pekko.util.Timeout
-
-import scala.util.Failure
-import scala.util.Success
+import pekko.util.{ BoxedType, OptionVal, Timeout }
 
 /**
  * INTERNAL API

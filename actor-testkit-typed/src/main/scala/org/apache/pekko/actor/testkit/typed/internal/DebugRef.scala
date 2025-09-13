@@ -18,12 +18,11 @@ import java.util.concurrent.ConcurrentLinkedQueue
 import scala.annotation.tailrec
 
 import org.apache.pekko
-import pekko.{ actor => classic }
 import pekko.actor.ActorRefProvider
 import pekko.actor.typed.ActorRef
-import pekko.actor.typed.internal.{ ActorRefImpl, SystemMessage }
-import pekko.actor.typed.internal.InternalRecipientRef
+import pekko.actor.typed.internal.{ ActorRefImpl, InternalRecipientRef, SystemMessage }
 import pekko.annotation.InternalApi
+import pekko.{ actor => classic }
 
 /**
  * INTERNAL API

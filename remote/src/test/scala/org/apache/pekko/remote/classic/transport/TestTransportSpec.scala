@@ -13,16 +13,15 @@
 
 package org.apache.pekko.remote.classic.transport
 
-import scala.concurrent._
-
 import scala.annotation.nowarn
+import scala.concurrent._
 
 import org.apache.pekko
 import pekko.actor.Address
-import pekko.remote.transport.{ AssociationHandle, TestTransport }
 import pekko.remote.transport.AssociationHandle.{ ActorHandleEventListener, Disassociated, InboundPayload }
 import pekko.remote.transport.TestTransport._
 import pekko.remote.transport.Transport._
+import pekko.remote.transport.{ AssociationHandle, TestTransport }
 import pekko.testkit._
 import pekko.util.ByteString
 

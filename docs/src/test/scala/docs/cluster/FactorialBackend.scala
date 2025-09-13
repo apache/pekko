@@ -15,12 +15,12 @@ package scala.docs.cluster
 
 import scala.annotation.tailrec
 import scala.concurrent.Future
+
 import com.typesafe.config.ConfigFactory
-import org.apache.pekko.actor.Actor
-import org.apache.pekko.actor.ActorLogging
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.actor.Props
-import org.apache.pekko.pattern.pipe
+
+import org.apache.pekko
+import pekko.actor.{ Actor, ActorLogging, ActorSystem, Props }
+import pekko.pattern.pipe
 
 //#backend
 class FactorialBackend extends Actor with ActorLogging {

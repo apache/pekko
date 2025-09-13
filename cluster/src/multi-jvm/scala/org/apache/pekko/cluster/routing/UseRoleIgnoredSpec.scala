@@ -23,13 +23,8 @@ import pekko.actor._
 import pekko.cluster.MultiNodeClusterSpec
 import pekko.pattern.ask
 import pekko.remote.testkit.MultiNodeConfig
-import pekko.routing.GetRoutees
-import pekko.routing.RoundRobinGroup
-import pekko.routing.RoundRobinPool
-import pekko.routing.Routees
+import pekko.routing.{ GetRoutees, RoundRobinGroup, RoundRobinPool, Routees }
 import pekko.testkit._
-import pekko.testkit.DefaultTimeout
-import pekko.testkit.ImplicitSender
 
 object UseRoleIgnoredMultiJvmSpec extends MultiNodeConfig {
 

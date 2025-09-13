@@ -14,24 +14,18 @@
 package org.apache.pekko.stream.scaladsl
 
 import scala.concurrent.Future
-import scala.util.Failure
-import scala.util.Success
-import scala.util.Try
+import scala.util.{ Failure, Success, Try }
 import scala.xml.Node
 
+import org.reactivestreams.{ Publisher, Subscriber, Subscription }
+import org.scalatest.Assertion
+
 import org.apache.pekko
-import pekko.Done
-import pekko.NotUsed
+import pekko.{ Done, NotUsed }
 import pekko.stream._
 import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.TestSource
 import pekko.testkit.TestProbe
-
-import org.reactivestreams.Publisher
-import org.reactivestreams.Subscriber
-import org.reactivestreams.Subscription
-
-import org.scalatest.Assertion
 
 class CoupledTerminationFlowSpec extends StreamSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 2

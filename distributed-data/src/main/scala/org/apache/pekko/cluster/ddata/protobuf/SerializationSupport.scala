@@ -13,24 +13,21 @@
 
 package org.apache.pekko.cluster.ddata.protobuf
 
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.util.zip.GZIPInputStream
-import java.util.zip.GZIPOutputStream
+import java.io.{ ByteArrayInputStream, ByteArrayOutputStream }
+import java.util.zip.{ GZIPInputStream, GZIPOutputStream }
+
 import scala.annotation.tailrec
 import scala.collection.immutable.TreeMap
+import scala.jdk.CollectionConverters._
+
 import org.apache.pekko
-import pekko.actor.ActorRef
-import pekko.actor.Address
-import pekko.actor.ExtendedActorSystem
+import pekko.actor.{ ActorRef, Address, ExtendedActorSystem }
 import pekko.cluster.UniqueAddress
 import pekko.cluster.ddata.VersionVector
 import pekko.cluster.ddata.protobuf.msg.{ ReplicatorMessages => dm }
-import pekko.protobufv3.internal.ByteString
-import pekko.protobufv3.internal.MessageLite
+import pekko.protobufv3.internal.{ ByteString, MessageLite }
 import pekko.remote.ByteStringUtils
 import pekko.serialization._
-import pekko.util.ccompat.JavaConverters._
 
 /**
  * Some useful serialization helper methods.

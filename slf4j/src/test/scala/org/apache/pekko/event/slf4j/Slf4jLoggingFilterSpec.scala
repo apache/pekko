@@ -18,17 +18,10 @@ import scala.concurrent.duration._
 import org.scalatest.BeforeAndAfterEach
 
 import org.apache.pekko
-import pekko.actor.{ Actor, ActorLogging, Props }
-import pekko.actor.ActorRef
+import pekko.actor.{ Actor, ActorLogging, ActorRef, Props }
 import pekko.event.Logging
-import pekko.event.Logging.Debug
-import pekko.event.Logging.Info
-import pekko.event.Logging.InitializeLogger
-import pekko.event.Logging.LogEvent
-import pekko.event.Logging.LoggerInitialized
-import pekko.event.Logging.Warning
-import pekko.testkit.PekkoSpec
-import pekko.testkit.TestProbe
+import pekko.event.Logging.{ Debug, Info, InitializeLogger, LogEvent, LoggerInitialized, Warning }
+import pekko.testkit.{ PekkoSpec, TestProbe }
 
 object Slf4jLoggingFilterSpec {
 

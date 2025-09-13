@@ -16,12 +16,13 @@ package org.apache.pekko.discovery.dns
 import java.net.InetAddress
 
 import scala.concurrent.duration._
+
 import com.typesafe.config.ConfigFactory
+
 import org.apache.pekko
 import pekko.actor.ActorSystem
-import pekko.discovery.{ Discovery, Lookup }
-import pekko.discovery.ServiceDiscovery
 import pekko.discovery.ServiceDiscovery.ResolvedTarget
+import pekko.discovery.{ Discovery, Lookup, ServiceDiscovery }
 import pekko.io.dns.DockerBindDnsService
 import pekko.testkit.{ SocketUtil, TestKit }
 

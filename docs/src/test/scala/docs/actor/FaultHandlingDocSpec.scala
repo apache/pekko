@@ -21,6 +21,7 @@ import com.typesafe.config.{ Config, ConfigFactory }
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
+
 import org.apache.pekko.testkit.{ EventFilter, ImplicitSender, TestKit }
 
 //#testkit

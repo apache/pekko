@@ -13,8 +13,8 @@
 
 package org.apache.pekko.util
 
-import java.lang.{ Double => JDouble, Float => JFloat }
 import java.lang.reflect.{ Array => JArray }
+import java.lang.{ Double => JDouble, Float => JFloat }
 
 /**
  * Set of methods which allow easy implementation of <code>hashCode</code>.

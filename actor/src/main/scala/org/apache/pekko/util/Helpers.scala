@@ -26,13 +26,15 @@
 
 package org.apache.pekko.util
 
-import java.time.{ Instant, LocalDateTime, ZoneId }
 import java.time.format.DateTimeFormatter
-import java.util.{ Comparator, Locale }
+import java.time.{ Instant, LocalDateTime, ZoneId }
 import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
+import java.util.{ Comparator, Locale }
+
 import scala.annotation.tailrec
 import scala.concurrent.duration.{ Duration, FiniteDuration }
+
 import com.typesafe.config.{ Config, ConfigRenderOptions }
 
 object Helpers {

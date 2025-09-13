@@ -13,24 +13,18 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import org.apache.pekko
-import pekko.NotUsed
-import pekko.stream.Attributes
-import pekko.stream.Outlet
-import pekko.stream.SourceShape
-import pekko.stream.stage.GraphStage
-import pekko.stream.stage.GraphStageLogic
-import pekko.stream.stage.OutHandler
-import pekko.stream.testkit.StreamSpec
-import pekko.stream.testkit.TestPublisher
-import pekko.stream.testkit.Utils.TE
-import pekko.stream.testkit.scaladsl.TestSink
-import pekko.stream.testkit.scaladsl.TestSource
+import scala.concurrent.Await
+import scala.concurrent.duration.DurationInt
 
 import org.scalatest.exceptions.TestFailedException
 
-import scala.concurrent.Await
-import scala.concurrent.duration.DurationInt
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.stream.{ Attributes, Outlet, SourceShape }
+import pekko.stream.stage.{ GraphStage, GraphStageLogic, OutHandler }
+import pekko.stream.testkit.{ StreamSpec, TestPublisher }
+import pekko.stream.testkit.Utils.TE
+import pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
 
 class FlowSwitchSpec extends StreamSpec {
 

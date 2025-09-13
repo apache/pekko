@@ -13,21 +13,19 @@
 
 package org.apache.pekko.persistence.testkit.scaladsl
 
+import com.typesafe.config.ConfigFactory
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
+import pekko.actor.typed.{ ActorRef, Behavior }
 import pekko.persistence.query.PersistenceQuery
 import pekko.persistence.query.scaladsl.CurrentEventsByPersistenceIdQuery
 import pekko.persistence.testkit.PersistenceTestKitPlugin
 import pekko.persistence.typed.PersistenceId
-import pekko.persistence.typed.scaladsl.Effect
-import pekko.persistence.typed.scaladsl.EventSourcedBehavior
+import pekko.persistence.typed.scaladsl.{ Effect, EventSourcedBehavior }
 import pekko.stream.scaladsl.Sink
-import com.typesafe.config.ConfigFactory
-import org.scalatest.wordspec.AnyWordSpecLike
 
 object MultipleJournalsSpec {
 

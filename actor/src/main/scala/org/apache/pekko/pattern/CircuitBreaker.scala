@@ -14,23 +14,22 @@
 package org.apache.pekko.pattern
 
 import java.util.Optional
-import java.util.concurrent.{ Callable, CompletionException, CompletionStage, CopyOnWriteArrayList, ThreadLocalRandom }
 import java.util.concurrent.atomic.{ AtomicBoolean, AtomicInteger, AtomicLong }
-import java.util.function.BiFunction
-import java.util.function.Consumer
+import java.util.concurrent._
+import java.util.function.{ BiFunction, Consumer }
+
 import scala.annotation.nowarn
-import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
-import scala.concurrent.TimeoutException
 import scala.concurrent.duration._
+import scala.concurrent.{ Future, TimeoutException, _ }
+import scala.util.control.{ NoStackTrace, NonFatal }
 import scala.util.{ Failure, Success, Try }
-import scala.util.control.NoStackTrace
-import scala.util.control.NonFatal
+
 import org.apache.pekko
 import pekko.PekkoException
 import pekko.actor.{ ExtendedActorSystem, Scheduler }
+import pekko.annotation.InternalApi
 import pekko.dispatch.ExecutionContexts.parasitic
 import pekko.pattern.internal.{ CircuitBreakerNoopTelemetry, CircuitBreakerTelemetry }
-import pekko.annotation.InternalApi
 import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
 

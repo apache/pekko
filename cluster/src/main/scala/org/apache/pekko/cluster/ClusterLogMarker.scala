@@ -15,8 +15,7 @@ package org.apache.pekko.cluster
 
 import org.apache.pekko
 import pekko.actor.Address
-import pekko.annotation.ApiMayChange
-import pekko.annotation.InternalApi
+import pekko.annotation.{ ApiMayChange, InternalApi }
 import pekko.cluster.sbr.DowningStrategy
 import pekko.event.LogMarker
 

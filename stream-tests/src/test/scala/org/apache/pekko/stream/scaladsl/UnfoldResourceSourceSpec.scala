@@ -20,19 +20,15 @@ import java.util.concurrent.atomic.AtomicInteger
 
 import scala.concurrent.duration._
 
-import com.google.common.jimfs.Configuration
-import com.google.common.jimfs.Jimfs
+import com.google.common.jimfs.{ Configuration, Jimfs }
 
 import org.apache.pekko
-import pekko.stream.ActorAttributes
 import pekko.stream.ActorAttributes._
 import pekko.stream.Supervision._
-import pekko.stream.SystemMaterializer
-import pekko.stream.impl.PhasedFusingActorMaterializer
-import pekko.stream.impl.StreamSupervisor
+import pekko.stream.{ ActorAttributes, SystemMaterializer }
+import pekko.stream.impl.{ PhasedFusingActorMaterializer, StreamSupervisor }
 import pekko.stream.impl.StreamSupervisor.Children
-import pekko.stream.testkit.StreamSpec
-import pekko.stream.testkit.TestSubscriber
+import pekko.stream.testkit.{ StreamSpec, TestSubscriber }
 import pekko.stream.testkit.Utils._
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.testkit.EventFilter

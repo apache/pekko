@@ -13,8 +13,7 @@
 
 package org.apache.pekko.cluster.typed.internal.receptionist
 
-import scala.concurrent.duration._
-import scala.concurrent.duration.Deadline
+import scala.concurrent.duration.{ Deadline, _ }
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike

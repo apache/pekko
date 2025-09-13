@@ -13,13 +13,13 @@
 
 package docs.persistence
 
-import org.apache.pekko.actor.{ ExtendedActorSystem, Props }
-import org.apache.pekko.persistence.journal.{ EventAdapter, EventSeq }
-import org.apache.pekko.persistence.{ PersistentActor, RecoveryCompleted }
-import org.apache.pekko.testkit.{ PekkoSpec, TestProbe }
 import com.google.gson.{ Gson, JsonElement }
 
-import scala.collection.immutable
+import org.apache.pekko
+import pekko.actor.{ ExtendedActorSystem, Props }
+import pekko.persistence.journal.{ EventAdapter, EventSeq }
+import pekko.persistence.{ PersistentActor, RecoveryCompleted }
+import pekko.testkit.{ PekkoSpec, TestProbe }
 
 class PersistenceEventAdapterDocSpec(config: String) extends PekkoSpec(config) {
 

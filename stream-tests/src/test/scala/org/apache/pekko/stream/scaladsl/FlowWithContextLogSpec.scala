@@ -15,10 +15,9 @@ package org.apache.pekko.stream.scaladsl
 
 import org.apache.pekko
 import pekko.event.Logging
-import pekko.stream._
 import pekko.stream.Attributes.LogLevels
-import pekko.stream.testkit.ScriptedTest
-import pekko.stream.testkit.StreamSpec
+import pekko.stream._
+import pekko.stream.testkit.{ ScriptedTest, StreamSpec }
 import pekko.testkit.TestProbe
 
 class FlowWithContextLogSpec extends StreamSpec("""

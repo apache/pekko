@@ -15,14 +15,9 @@ package org.apache.pekko.actor.typed.javadsl
 
 import org.apache.pekko
 import pekko.actor
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.Props
-import pekko.actor.typed.Scheduler
-import pekko.actor.typed.SupervisorStrategy
 import pekko.actor.typed.internal.adapter.ActorContextAdapter
 import pekko.actor.typed.scaladsl.adapter._
+import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior, Props, Scheduler, SupervisorStrategy }
 import pekko.japi.function.Creator
 
 /**

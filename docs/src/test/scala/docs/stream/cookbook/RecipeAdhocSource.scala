@@ -14,15 +14,16 @@
 package docs.stream.cookbook
 
 import java.util.concurrent.atomic.{ AtomicBoolean, AtomicInteger }
+
+import scala.concurrent._
+import scala.concurrent.duration._
+
 import org.apache.pekko
 import pekko.stream.scaladsl.Source
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.stream.BackpressureTimeoutException
 import pekko.testkit.TimingTest
 import pekko.{ Done, NotUsed }
-
-import scala.concurrent._
-import scala.concurrent.duration._
 
 class RecipeAdhocSource extends RecipeSpec {
 
@@ -33,7 +34,7 @@ class RecipeAdhocSource extends RecipeSpec {
         .backpressureTimeout(timeout)
         .recoverWithRetries(maxRetries,
           {
-            case t: TimeoutException =>
+            case _: TimeoutException =>
               Source.lazySource(() => source.backpressureTimeout(timeout)).mapMaterializedValue(_ => NotUsed)
           }))
   // #adhoc-source

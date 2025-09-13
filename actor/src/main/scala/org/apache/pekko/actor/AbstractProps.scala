@@ -13,11 +13,9 @@
 
 package org.apache.pekko.actor
 
-import java.lang.reflect.Modifier
-import java.lang.reflect.Constructor
+import java.lang.reflect.{ Constructor, Modifier }
 
-import scala.annotation.tailrec
-import scala.annotation.varargs
+import scala.annotation.{ tailrec, varargs }
 
 import org.apache.pekko
 import pekko.japi.function.Creator

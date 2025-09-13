@@ -13,22 +13,22 @@
 
 package org.apache.pekko.remote.transport
 
+import java.net.{ InetAddress, InetSocketAddress }
+import java.nio.channels.ServerSocketChannel
+
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
+
 import com.typesafe.config.ConfigFactory
 import io.netty.buffer.{ AdaptiveByteBufAllocator, PooledByteBufAllocator, UnpooledByteBufAllocator }
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 import org.apache.pekko
 import pekko.actor.{ ActorSystem, Address, ExtendedActorSystem }
 import pekko.remote.BoundAddressesExtension
 import pekko.remote.transport.netty.NettyTransport.deriveByteBufAllocator
 import pekko.testkit.SocketUtil
-
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-
-import java.net.{ InetAddress, InetSocketAddress }
-import java.nio.channels.ServerSocketChannel
-import scala.concurrent.Await
-import scala.concurrent.duration.Duration
 
 object NettyTransportSpec {
   val commonConfig = ConfigFactory.parseString("""

@@ -15,10 +15,12 @@ package org.apache.pekko.cluster.singleton.protobuf
 
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
-import pekko.cluster.singleton.ClusterSingletonManager.Internal.HandOverDone
-import pekko.cluster.singleton.ClusterSingletonManager.Internal.HandOverInProgress
-import pekko.cluster.singleton.ClusterSingletonManager.Internal.HandOverToMe
-import pekko.cluster.singleton.ClusterSingletonManager.Internal.TakeOverFromMe
+import pekko.cluster.singleton.ClusterSingletonManager.Internal.{
+  HandOverDone,
+  HandOverInProgress,
+  HandOverToMe,
+  TakeOverFromMe
+}
 import pekko.testkit.PekkoSpec
 
 class ClusterSingletonMessageSerializerSpec extends PekkoSpec {

@@ -19,8 +19,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.stream.impl.ActorSubscriberMessage.OnComplete
-import pekko.stream.impl.ActorSubscriberMessage.OnNext
+import pekko.stream.impl.ActorSubscriberMessage.{ OnComplete, OnNext }
 import pekko.stream.impl.RequestMore
 import pekko.stream.testkit._
 

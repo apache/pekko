@@ -19,19 +19,13 @@ import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
 import pekko.actor.typed.ActorRef
 import pekko.cluster.ClusterSettings.DataCenter
 import pekko.cluster.sharding.ShardCoordinator
 import pekko.cluster.sharding.ShardCoordinator.ShardAllocationStrategy
-import pekko.cluster.sharding.typed.ClusterShardingQuery
-import pekko.cluster.sharding.typed.ClusterShardingSettings
-import pekko.cluster.sharding.typed.javadsl
-import pekko.cluster.sharding.typed.scaladsl.ClusterSharding
-import pekko.cluster.sharding.typed.scaladsl.Entity
-import pekko.cluster.sharding.typed.scaladsl.EntityRef
-import pekko.cluster.sharding.typed.scaladsl.EntityTypeKey
+import pekko.cluster.sharding.typed.scaladsl.{ ClusterSharding, Entity, EntityRef, EntityTypeKey }
+import pekko.cluster.sharding.typed.{ javadsl, ClusterShardingQuery, ClusterShardingSettings }
 
 object TestEntityRefSpec {
 

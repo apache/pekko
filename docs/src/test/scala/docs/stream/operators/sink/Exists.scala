@@ -18,11 +18,12 @@
 package docs.stream.operators.sink
 
 //#imports
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.stream.scaladsl._
-
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.{ Await, ExecutionContext }
+
+import org.apache.pekko
+import pekko.actor.ActorSystem
+import pekko.stream.scaladsl._
 //#imports
 
 object Exists {

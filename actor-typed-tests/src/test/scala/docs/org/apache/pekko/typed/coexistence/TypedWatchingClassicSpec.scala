@@ -13,6 +13,10 @@
 
 package docs.org.apache.pekko.typed.coexistence
 
+import org.scalatest.wordspec.AnyWordSpec
+
+import scala.concurrent.duration._
+
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.typed._
@@ -26,8 +30,6 @@ import org.apache.pekko.testkit.TestProbe
 //#import-alias
 import org.apache.pekko.{ actor => classic }
 //#import-alias
-import org.scalatest.wordspec.AnyWordSpec
-import scala.concurrent.duration._
 
 object TypedWatchingClassicSpec {
 

@@ -14,12 +14,9 @@
 package org.apache.pekko.remote
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorRef
-import pekko.actor.InternalActorRef
-import pekko.actor.Terminated
-import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
+import pekko.actor.{ Actor, ActorRef, InternalActorRef, Terminated }
 import pekko.dispatch.sysmsg.DeathWatchNotification
+import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
 
 /**
  * INTERNAL API

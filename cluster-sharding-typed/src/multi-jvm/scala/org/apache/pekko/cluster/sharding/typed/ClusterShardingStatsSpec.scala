@@ -18,17 +18,13 @@ import org.scalatest.concurrent.ScalaFutures
 
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.TestProbe
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
 import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.{ ActorRef, Behavior }
 import pekko.cluster.MultiNodeClusterSpec
 import pekko.cluster.sharding.ShardRegion.ClusterShardingStats
-import pekko.cluster.sharding.typed.scaladsl.ClusterSharding
-import pekko.cluster.sharding.typed.scaladsl.Entity
-import pekko.cluster.sharding.typed.scaladsl.EntityTypeKey
+import pekko.cluster.sharding.typed.scaladsl.{ ClusterSharding, Entity, EntityTypeKey }
 import pekko.cluster.typed.MultiNodeTypedClusterSpec
-import pekko.remote.testkit.MultiNodeConfig
-import pekko.remote.testkit.MultiNodeSpec
+import pekko.remote.testkit.{ MultiNodeConfig, MultiNodeSpec }
 import pekko.serialization.jackson.CborSerializable
 
 object ClusterShardingStatsSpecConfig extends MultiNodeConfig {

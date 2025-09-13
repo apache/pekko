@@ -13,22 +13,20 @@
 
 package org.apache.pekko.remote.testkit
 
-import java.awt.Toolkit
-import java.awt.datatransfer.Clipboard
-import java.awt.datatransfer.ClipboardOwner
-import java.awt.datatransfer.DataFlavor
-import java.awt.datatransfer.StringSelection
-import java.awt.datatransfer.Transferable
-import java.io.BufferedReader
-import java.io.FileReader
-import java.io.FileWriter
-import java.io.InputStreamReader
-import java.io.OutputStreamWriter
-import java.io.PrintWriter
-import java.io.StringReader
-import java.io.StringWriter
-
 import scala.annotation.tailrec
+
+import java.awt.Toolkit
+import java.awt.datatransfer.{ Clipboard, ClipboardOwner, DataFlavor, StringSelection, Transferable }
+import java.io.{
+  BufferedReader,
+  FileReader,
+  FileWriter,
+  InputStreamReader,
+  OutputStreamWriter,
+  PrintWriter,
+  StringReader,
+  StringWriter
+}
 
 /**
  * Utility to make log files from multi-node tests easier to analyze.

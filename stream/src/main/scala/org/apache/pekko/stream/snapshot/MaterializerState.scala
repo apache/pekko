@@ -14,18 +14,16 @@
 package org.apache.pekko.stream.snapshot
 
 import scala.collection.immutable
-import scala.concurrent.{ ExecutionContext, Future }
 import scala.concurrent.duration._
+import scala.concurrent.{ ExecutionContext, Future }
 
 import org.apache.pekko
-import pekko.actor.{ ActorPath, ActorRef }
-import pekko.actor.ActorSystem
+import pekko.actor.{ ActorPath, ActorRef, ActorSystem }
 import pekko.annotation.{ ApiMayChange, DoNotInherit, InternalApi }
 import pekko.pattern.ask
-import pekko.stream.{ Attributes, Materializer }
-import pekko.stream.SystemMaterializer
-import pekko.stream.impl.{ PhasedFusingActorMaterializer, StreamSupervisor }
 import pekko.stream.impl.fusing.ActorGraphInterpreter
+import pekko.stream.impl.{ PhasedFusingActorMaterializer, StreamSupervisor }
+import pekko.stream.{ Attributes, Materializer, SystemMaterializer }
 import pekko.util.Timeout
 
 /**

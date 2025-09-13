@@ -16,11 +16,7 @@ package org.apache.pekko.persistence.typed.internal
 import org.apache.pekko
 import pekko.actor.Dropped
 import pekko.actor.typed.Behavior
-import pekko.actor.typed.scaladsl.ActorContext
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.actor.typed.scaladsl.LoggerOps
-import pekko.actor.typed.scaladsl.StashBuffer
-import pekko.actor.typed.scaladsl.StashOverflowException
+import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors, LoggerOps, StashBuffer, StashOverflowException }
 import pekko.actor.typed.scaladsl.adapter._
 import pekko.annotation.InternalApi
 import pekko.util.ConstantFun

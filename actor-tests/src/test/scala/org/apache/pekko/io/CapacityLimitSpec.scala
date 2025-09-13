@@ -13,11 +13,10 @@
 
 package org.apache.pekko.io
 
-import Tcp._
-
 import org.apache.pekko
-import pekko.testkit.{ PekkoSpec, TestProbe }
+import pekko.io.Tcp._
 import pekko.testkit.SocketUtil.temporaryServerAddresses
+import pekko.testkit.{ PekkoSpec, TestProbe }
 
 class CapacityLimitSpec extends PekkoSpec("""
     pekko.loglevel = ERROR

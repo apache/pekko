@@ -16,31 +16,27 @@ package org.apache.pekko.cluster.sharding.external.internal
 import java.util.concurrent.CompletionStage
 
 import scala.concurrent.Future
+import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
-import pekko.actor.Address
-import pekko.actor.AddressFromURIString
+import pekko.actor.{ ActorRef, ActorSystem, Address, AddressFromURIString }
 import pekko.annotation.InternalApi
-import pekko.cluster.ddata.DistributedData
-import pekko.cluster.ddata.LWWMap
-import pekko.cluster.ddata.Replicator.Get
-import pekko.cluster.ddata.Replicator.GetFailure
-import pekko.cluster.ddata.Replicator.GetSuccess
-import pekko.cluster.ddata.Replicator.NotFound
-import pekko.cluster.ddata.Replicator.ReadMajority
-import pekko.cluster.ddata.Replicator.Update
-import pekko.cluster.ddata.Replicator.UpdateSuccess
-import pekko.cluster.ddata.Replicator.UpdateTimeout
-import pekko.cluster.ddata.Replicator.WriteLocal
-import pekko.cluster.ddata.SelfUniqueAddress
+import pekko.cluster.ddata.Replicator.{
+  Get,
+  GetFailure,
+  GetSuccess,
+  NotFound,
+  ReadMajority,
+  Update,
+  UpdateSuccess,
+  UpdateTimeout,
+  WriteLocal
+}
+import pekko.cluster.ddata.{ DistributedData, LWWMap, SelfUniqueAddress }
 import pekko.cluster.sharding.ShardRegion.ShardId
-import pekko.cluster.sharding.external.ClientTimeoutException
-import pekko.cluster.sharding.external.ExternalShardAllocationStrategy
 import pekko.cluster.sharding.external.ExternalShardAllocationStrategy.ShardLocation
-import pekko.cluster.sharding.external.ShardLocations
+import pekko.cluster.sharding.external.{ ClientTimeoutException, ExternalShardAllocationStrategy, ShardLocations }
 import pekko.dispatch.MessageDispatcher
 import pekko.event.Logging
 import pekko.pattern.ask
@@ -48,7 +44,6 @@ import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
 import pekko.util.PrettyDuration._
 import pekko.util.Timeout
-import pekko.util.ccompat.JavaConverters._
 
 /**
  * INTERNAL API

@@ -14,33 +14,26 @@
 package org.apache.pekko.remote.artery
 
 import java.io.IOException
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
+import java.nio.{ ByteBuffer, ByteOrder }
+import java.util.concurrent.{ CountDownLatch, TimeUnit }
 
-import scala.annotation.tailrec
-import scala.concurrent.Await
-import scala.concurrent.Future
+import scala.annotation.{ nowarn, tailrec }
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, Future }
 
-import scala.annotation.nowarn
 import com.typesafe.config.ConfigFactory
 import org.openjdk.jmh.annotations._
 
 import org.apache.pekko
-import pekko.Done
-import pekko.NotUsed
 import pekko.actor._
 import pekko.remote._
 import pekko.remote.artery.Decoder.InboundCompressionAccess
 import pekko.remote.artery.compress._
-import pekko.serialization.BaseSerializer
-import pekko.serialization.ByteBufferSerializer
-import pekko.serialization.SerializationExtension
+import pekko.serialization.{ BaseSerializer, ByteBufferSerializer, SerializationExtension }
 import pekko.stream.SystemMaterializer
 import pekko.stream.scaladsl._
 import pekko.util.OptionVal
+import pekko.{ Done, NotUsed }
 
 @State(Scope.Benchmark)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)

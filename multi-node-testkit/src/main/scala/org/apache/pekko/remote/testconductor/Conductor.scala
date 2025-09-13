@@ -17,8 +17,7 @@ import java.net.InetSocketAddress
 import java.util.concurrent.ConcurrentHashMap
 
 import scala.annotation.nowarn
-import scala.concurrent.Await
-import scala.concurrent.Future
+import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
 import scala.reflect.classTag
 import scala.util.control.NoStackTrace
@@ -28,8 +27,7 @@ import io.netty.channel.{ Channel, ChannelHandlerContext, ChannelInboundHandlerA
 import io.netty.channel.ChannelHandler.Sharable
 
 import org.apache.pekko
-import pekko.ConfigurationException
-import pekko.PekkoException
+import pekko.{ ConfigurationException, PekkoException }
 import pekko.actor.{
   Actor,
   ActorRef,
@@ -43,8 +41,7 @@ import pekko.actor.{
   Status,
   SupervisorStrategy
 }
-import pekko.event.{ Logging, LoggingAdapter }
-import pekko.event.LoggingReceive
+import pekko.event.{ Logging, LoggingAdapter, LoggingReceive }
 import pekko.pattern.ask
 import pekko.remote.transport.ThrottlerTransportAdapter.Direction
 import pekko.util.Timeout

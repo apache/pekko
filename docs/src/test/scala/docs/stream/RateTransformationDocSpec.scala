@@ -13,16 +13,16 @@
 
 package docs.stream
 
-import org.apache.pekko.stream.scaladsl._
-import org.apache.pekko.stream.testkit.scaladsl._
-
-import scala.util.Random
-import scala.math._
 import scala.concurrent.duration._
 import scala.collection.immutable
-import org.apache.pekko.testkit.{ PekkoSpec, TestLatch }
-
 import scala.concurrent.Await
+import scala.math._
+import scala.util.Random
+
+import org.apache.pekko
+import pekko.stream.scaladsl._
+import pekko.stream.testkit.scaladsl._
+import pekko.testkit.{ PekkoSpec, TestLatch }
 
 class RateTransformationDocSpec extends PekkoSpec {
 

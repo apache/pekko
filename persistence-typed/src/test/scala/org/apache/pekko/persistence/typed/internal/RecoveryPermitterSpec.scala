@@ -21,17 +21,13 @@ import org.scalatest.wordspec.AnyWordSpecLike
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.actor.PoisonPill
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.testkit.typed.scaladsl.TestProbe
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, LoggingTestKit, ScalaTestWithActorTestKit, TestProbe }
 import pekko.actor.typed.{ ActorRef, Behavior }
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.adapter.{ TypedActorRefOps, TypedActorSystemOps }
 import pekko.persistence.Persistence
 import pekko.persistence.RecoveryPermitter.{ RecoveryPermitGranted, RequestRecoveryPermit, ReturnRecoveryPermit }
-import pekko.persistence.typed.PersistenceId
-import pekko.persistence.typed.RecoveryCompleted
+import pekko.persistence.typed.{ PersistenceId, RecoveryCompleted }
 import pekko.persistence.typed.scaladsl.{ Effect, EventSourcedBehavior }
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior.CommandHandler
 

@@ -12,6 +12,7 @@
  */
 
 package org.apache.pekko.persistence
+
 import scala.runtime.AbstractFunction3
 
 /**

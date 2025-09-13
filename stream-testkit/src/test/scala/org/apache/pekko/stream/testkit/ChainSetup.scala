@@ -15,16 +15,13 @@ package org.apache.pekko.stream.testkit
 
 import scala.annotation.nowarn
 
-import org.apache.pekko
-import pekko.NotUsed
-import pekko.actor.ActorRefFactory
-import pekko.actor.ActorSystem
-import pekko.stream.ActorMaterializer
-import pekko.stream.ActorMaterializerSettings
-import pekko.stream.Materializer
-import pekko.stream.scaladsl._
-
 import org.reactivestreams.Publisher
+
+import org.apache.pekko
+import org.apache.pekko.NotUsed
+import pekko.actor.{ ActorRefFactory, ActorSystem }
+import pekko.stream.{ ActorMaterializer, ActorMaterializerSettings, Materializer }
+import pekko.stream.scaladsl._
 
 class ChainSetup[In, Out, M](
     stream: Flow[In, In, NotUsed] => Flow[In, Out, M],

@@ -13,20 +13,20 @@
 
 package org.apache.pekko.remote.classic
 
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import scala.annotation.nowarn
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor._
 import pekko.actor.dungeon.ChildrenContainer
-import pekko.remote.{ AddressUidExtension, RARP }
 import pekko.remote.transport.ThrottlerTransportAdapter.ForceDisassociate
-import pekko.testkit._
+import pekko.remote.{ AddressUidExtension, RARP }
 import pekko.testkit.TestActors.EchoActor
+import pekko.testkit._
 
 object ActorsLeakSpec {
 

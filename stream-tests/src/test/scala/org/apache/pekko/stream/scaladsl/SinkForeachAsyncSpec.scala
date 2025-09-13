@@ -13,24 +13,18 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.{ CountDownLatch, Executors, TimeUnit }
 
-import scala.concurrent.Await
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
+import scala.concurrent.{ Await, ExecutionContext, Future }
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
 import pekko.Done
 import pekko.stream.ActorAttributes.supervisionStrategy
-import pekko.stream.Supervision.resumingDecider
-import pekko.stream.Supervision.stoppingDecider
+import pekko.stream.Supervision.{ resumingDecider, stoppingDecider }
 import pekko.stream.testkit.StreamSpec
-import pekko.testkit.TestLatch
-import pekko.testkit.TestProbe
+import pekko.testkit.{ TestLatch, TestProbe }
 
 class SinkForeachAsyncSpec extends StreamSpec {
 

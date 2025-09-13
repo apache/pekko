@@ -14,11 +14,11 @@
 package org.apache.pekko.serialization
 
 import scala.collection.immutable
+import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.actor.setup.Setup
-import pekko.util.ccompat.JavaConverters._
 
 object SerializationSetup {
 

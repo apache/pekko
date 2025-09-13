@@ -13,16 +13,14 @@
 
 package org.apache.pekko.dispatch
 
-import java.util.{ Comparator, Iterator }
 import java.util.concurrent.ConcurrentSkipListSet
+import java.util.{ Comparator, Iterator }
 
 import scala.annotation.tailrec
-import scala.concurrent.duration.Duration
-import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.duration.{ Duration, FiniteDuration }
 
 import org.apache.pekko
-import pekko.actor.ActorCell
-import pekko.actor.ActorSystemImpl
+import pekko.actor.{ ActorCell, ActorSystemImpl }
 import pekko.dispatch.sysmsg._
 import pekko.util.Helpers
 

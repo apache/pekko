@@ -16,22 +16,15 @@ package org.apache.pekko.remote.serialization
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorRef
-import pekko.actor.Address
-import pekko.actor.Deploy
-import pekko.actor.Props
-import pekko.actor.SupervisorStrategy
-import pekko.remote.DaemonMsgCreate
-import pekko.remote.RemoteScope
-import pekko.remote.serialization.DaemonMsgCreateSerializerAllowJavaSerializationSpec.ActorWithDummyParameter
-import pekko.remote.serialization.DaemonMsgCreateSerializerAllowJavaSerializationSpec.MyActorWithParam
-import pekko.routing.FromConfig
-import pekko.routing.RoundRobinPool
-import pekko.serialization.Serialization
-import pekko.serialization.SerializationExtension
-import pekko.testkit.PekkoSpec
-import pekko.testkit.JavaSerializable
+import pekko.actor.{ Actor, ActorRef, Address, Deploy, Props, SupervisorStrategy }
+import pekko.remote.{ DaemonMsgCreate, RemoteScope }
+import pekko.remote.serialization.DaemonMsgCreateSerializerAllowJavaSerializationSpec.{
+  ActorWithDummyParameter,
+  MyActorWithParam
+}
+import pekko.routing.{ FromConfig, RoundRobinPool }
+import pekko.serialization.{ Serialization, SerializationExtension }
+import pekko.testkit.{ JavaSerializable, PekkoSpec }
 import pekko.util.unused
 
 object DaemonMsgCreateSerializerAllowJavaSerializationSpec {

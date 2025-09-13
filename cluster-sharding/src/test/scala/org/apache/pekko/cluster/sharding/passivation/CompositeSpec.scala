@@ -13,11 +13,11 @@
 
 package org.apache.pekko.cluster.sharding.passivation
 
-import org.apache.pekko.cluster.sharding.ShardRegion
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-
 import scala.concurrent.duration._
+
+import com.typesafe.config.{ Config, ConfigFactory }
+
+import org.apache.pekko.cluster.sharding.ShardRegion
 
 object CompositeSpec {
 
@@ -112,8 +112,7 @@ object CompositeSpec {
 class AdmissionWindowAndFilterSpec
     extends AbstractEntityPassivationSpec(CompositeSpec.admissionWindowAndFilterConfig, expectedEntities = 41) {
 
-  import EntityPassivationSpec.Entity.Envelope
-  import EntityPassivationSpec.Entity.Stop
+  import EntityPassivationSpec.Entity.{ Envelope, Stop }
 
   "Passivation of entities with composite LRU/FS/SLRU strategy" must {
     "passivate the least recently or frequently used entities when the per-shard entity limit is reached" in {
@@ -205,8 +204,7 @@ class AdmissionWindowAndFilterSpec
 class AdmissionFilterNoWindowSpec
     extends AbstractEntityPassivationSpec(CompositeSpec.admissionFilterNoWindowConfig, expectedEntities = 21) {
 
-  import EntityPassivationSpec.Entity.Envelope
-  import EntityPassivationSpec.Entity.Stop
+  import EntityPassivationSpec.Entity.{ Envelope, Stop }
 
   "Passivation of entities with composite (no window) FS/LRU strategy" must {
     "passivate the least recently or frequently used entities when the per-shard entity limit is reached" in {
@@ -268,8 +266,7 @@ class AdmissionFilterNoWindowSpec
 class AdaptiveAdmissionWindowSpec
     extends AbstractEntityPassivationSpec(CompositeSpec.adaptiveWindowConfig, expectedEntities = 70) {
 
-  import EntityPassivationSpec.Entity.Envelope
-  import EntityPassivationSpec.Entity.Stop
+  import EntityPassivationSpec.Entity.{ Envelope, Stop }
 
   "Passivation of entities with composite LRU/FS/LRU/HC strategy" must {
     "adjust the admission window size when optimizing with hill-climbing algorithm" in {
@@ -382,8 +379,7 @@ class AdaptiveAdmissionWindowSpec
 
 class CompositeWithIdleSpec extends AbstractEntityPassivationSpec(CompositeSpec.idleConfig, expectedEntities = 3) {
 
-  import EntityPassivationSpec.Entity.Envelope
-  import EntityPassivationSpec.Entity.Stop
+  import EntityPassivationSpec.Entity.{ Envelope, Stop }
 
   "Passivation of idle entities with least recently used strategy" must {
     "passivate entities when they haven't seen messages for the configured timeout" in {
@@ -425,8 +421,7 @@ class CompositeWithIdleSpec extends AbstractEntityPassivationSpec(CompositeSpec.
 class CompositeLimitAdjustmentSpec
     extends AbstractEntityPassivationSpec(CompositeSpec.admissionWindowAndFilterConfig, expectedEntities = 41) {
 
-  import EntityPassivationSpec.Entity.Envelope
-  import EntityPassivationSpec.Entity.Stop
+  import EntityPassivationSpec.Entity.{ Envelope, Stop }
 
   "Passivation of least recently used entities" must {
     "adjust per-shard entity limits when the per-region limit is dynamically adjusted" in {

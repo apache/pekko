@@ -14,14 +14,13 @@
 package org.apache.pekko.actor.dispatch
 
 import java.rmi.RemoteException
-import java.util.concurrent.{ ConcurrentHashMap, CountDownLatch, TimeUnit }
 import java.util.concurrent.atomic.{ AtomicInteger, AtomicLong }
+import java.util.concurrent.{ ConcurrentHashMap, CountDownLatch, TimeUnit }
 
-import scala.annotation.tailrec
-import scala.concurrent.{ Await, Future }
+import scala.annotation.{ nowarn, tailrec }
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, Future }
 
-import scala.annotation.nowarn
 import com.typesafe.config.Config
 import org.scalatest.Assertions._
 
@@ -436,7 +435,7 @@ abstract class ActorModelSpec(config: String) extends PekkoSpec(config) with Def
         val f6 = a ? Reply("bar2")
 
         val c = system.scheduler.scheduleOnce(2.seconds) {
-          import pekko.util.ccompat.JavaConverters._
+          import scala.jdk.CollectionConverters._
           Thread.getAllStackTraces().asScala.foreach {
             case (thread, stack) =>
               println(s"$thread:")

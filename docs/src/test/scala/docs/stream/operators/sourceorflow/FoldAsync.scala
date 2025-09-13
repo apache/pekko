@@ -14,11 +14,11 @@
 package docs.stream.operators.sourceorflow
 
 //#imports
+import scala.concurrent.{ ExecutionContext, Future }
+
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.stream.scaladsl.Source
-
-import scala.concurrent.{ ExecutionContext, Future }
 //#imports
 
 object FoldAsync extends App {

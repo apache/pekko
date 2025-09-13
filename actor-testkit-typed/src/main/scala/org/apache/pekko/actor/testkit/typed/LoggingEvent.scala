@@ -15,11 +15,12 @@ package org.apache.pekko.actor.testkit.typed
 
 import java.util.Optional
 
+import scala.jdk.CollectionConverters._
+
 import org.slf4j.Marker
 import org.slf4j.event.Level
 
 import org.apache.pekko
-import pekko.util.ccompat.JavaConverters._
 import pekko.util.OptionConverters._
 
 object LoggingEvent {
@@ -81,7 +82,6 @@ final case class LoggingEvent(
    * Java API
    */
   def getMdc: java.util.Map[String, String] = {
-    import pekko.util.ccompat.JavaConverters._
     mdc.asJava
   }
 

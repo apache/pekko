@@ -16,9 +16,7 @@ package org.apache.pekko.cluster.sharding
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorRef
-import pekko.actor.Props
+import pekko.actor.{ Actor, ActorRef, Props }
 import pekko.cluster.MemberStatus
 import pekko.remote.transport.ThrottlerTransportAdapter.Direction
 import pekko.serialization.jackson.CborSerializable

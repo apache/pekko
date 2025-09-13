@@ -15,25 +15,19 @@ package org.apache.pekko.stream.testkit
 
 import java.util.concurrent.ThreadLocalRandom
 
-import scala.annotation.nowarn
-import scala.annotation.tailrec
+import scala.annotation.{ nowarn, tailrec }
 import scala.concurrent.duration._
 
+import org.reactivestreams.Publisher
+import org.scalatest.matchers.should.Matchers
+
 import org.apache.pekko
-import pekko.NotUsed
+import org.apache.pekko.NotUsed
 import pekko.actor.ActorSystem
-import pekko.stream.ActorMaterializerSettings
-import pekko.stream.Materializer
-import pekko.stream.SystemMaterializer
-import pekko.stream.scaladsl.Flow
-import pekko.stream.scaladsl.Sink
-import pekko.stream.scaladsl.Source
+import pekko.stream.{ ActorMaterializerSettings, Materializer, SystemMaterializer }
+import pekko.stream.scaladsl.{ Flow, Sink, Source }
 import pekko.stream.testkit.TestPublisher._
 import pekko.stream.testkit.TestSubscriber._
-
-import org.reactivestreams.Publisher
-
-import org.scalatest.matchers.should.Matchers
 
 trait ScriptedTest extends Matchers {
 

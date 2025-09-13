@@ -22,8 +22,7 @@ import org.apache.pekko
 import pekko.actor.Dropped
 import pekko.cluster.Cluster
 import pekko.remote.testconductor.RoleName
-import pekko.remote.testkit.MultiNodeConfig
-import pekko.remote.testkit.MultiNodeSpec
+import pekko.remote.testkit.{ MultiNodeConfig, MultiNodeSpec }
 import pekko.testkit._
 
 object ReplicatorGossipSpec extends MultiNodeConfig {

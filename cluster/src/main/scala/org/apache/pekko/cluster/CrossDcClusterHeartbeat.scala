@@ -13,16 +13,14 @@
 
 package org.apache.pekko.cluster
 
-import scala.collection.SortedSet
-import scala.collection.immutable
+import scala.collection.{ immutable, SortedSet }
 
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorSelection, Address, NoSerializationVerificationNeeded }
 import pekko.annotation.InternalApi
 import pekko.cluster.ClusterEvent._
 import pekko.cluster.ClusterSettings.DataCenter
-import pekko.event.ActorWithLogClass
-import pekko.event.Logging
+import pekko.event.{ ActorWithLogClass, Logging }
 import pekko.remote.FailureDetectorRegistry
 import pekko.util.ConstantFun
 
@@ -50,8 +48,8 @@ private[cluster] class CrossDcHeartbeatSender extends Actor {
   val cluster = Cluster(context.system)
 
   val verboseHeartbeat = cluster.settings.Debug.VerboseHeartbeatLogging
-  import cluster.{ scheduler, selfAddress, selfDataCenter, selfUniqueAddress }
   import cluster.settings.PeriodicTasksInitialDelay
+  import cluster.{ scheduler, selfAddress, selfDataCenter, selfUniqueAddress }
   import context.dispatcher
 
   private val clusterLogger =

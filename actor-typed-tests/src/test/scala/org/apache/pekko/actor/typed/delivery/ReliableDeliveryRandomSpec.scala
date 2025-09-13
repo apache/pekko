@@ -18,19 +18,14 @@ import java.util.concurrent.atomic.AtomicReference
 import scala.concurrent.duration._
 import scala.util.Random
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{ Config, ConfigFactory }
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.BehaviorInterceptor
-import pekko.actor.typed.TypedActorContext
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
 import pekko.actor.typed.delivery.internal.ProducerControllerImpl
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.actor.typed.scaladsl.LoggerOps
+import pekko.actor.typed.scaladsl.{ Behaviors, LoggerOps }
+import pekko.actor.typed.{ Behavior, BehaviorInterceptor, TypedActorContext }
 
 object ReliableDeliveryRandomSpec {
   val config: Config = ConfigFactory.parseString("""

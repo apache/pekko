@@ -31,9 +31,9 @@
  */
 package org.apache.pekko.routing
 
-import java.lang.Integer.{ rotateLeft => rotl }
-
 import scala.annotation.nowarn
+
+import java.lang.Integer.{ rotateLeft => rotl }
 
 /**
  * An object designed to generate well-distributed non-cryptographic

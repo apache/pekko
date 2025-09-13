@@ -20,16 +20,15 @@ import org.slf4j.LoggerFactory
 import org.apache.pekko
 import pekko.actor.DeadLetter
 import pekko.actor.testkit.typed.TestException
-import pekko.actor.testkit.typed.scaladsl.FishingOutcomes
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.testkit.typed.scaladsl.TestProbe
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.PostStop
-import pekko.actor.typed.Props
+import pekko.actor.testkit.typed.scaladsl.{
+  FishingOutcomes,
+  LogCapturing,
+  LoggingTestKit,
+  ScalaTestWithActorTestKit,
+  TestProbe
+}
 import pekko.actor.typed.internal.AdaptMessage
+import pekko.actor.typed.{ ActorRef, Behavior, PostStop, Props }
 
 object MessageAdapterSpec {
   val config = ConfigFactory.parseString("""

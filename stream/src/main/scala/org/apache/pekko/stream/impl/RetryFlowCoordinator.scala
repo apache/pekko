@@ -18,9 +18,9 @@ import scala.concurrent.duration._
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.pattern.RetrySupport
-import pekko.stream.{ Attributes, BidiShape, Inlet, Outlet }
 import pekko.stream.SubscriptionWithCancelException.NonFailureCancellation
 import pekko.stream.stage._
+import pekko.stream.{ Attributes, BidiShape, Inlet, Outlet }
 import pekko.util.OptionVal
 
 /**

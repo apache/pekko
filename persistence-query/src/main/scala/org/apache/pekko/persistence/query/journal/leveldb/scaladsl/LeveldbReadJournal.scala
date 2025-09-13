@@ -23,13 +23,8 @@ import org.apache.pekko
 import pekko.NotUsed
 import pekko.actor.ExtendedActorSystem
 import pekko.event.Logging
-import pekko.persistence.query.EventEnvelope
-import pekko.persistence.query.NoOffset
-import pekko.persistence.query.Offset
-import pekko.persistence.query.Sequence
-import pekko.persistence.query.journal.leveldb.AllPersistenceIdsStage
-import pekko.persistence.query.journal.leveldb.EventsByPersistenceIdStage
-import pekko.persistence.query.journal.leveldb.EventsByTagStage
+import pekko.persistence.query.{ EventEnvelope, NoOffset, Offset, Sequence }
+import pekko.persistence.query.journal.leveldb.{ AllPersistenceIdsStage, EventsByPersistenceIdStage, EventsByTagStage }
 import pekko.persistence.query.scaladsl._
 import pekko.persistence.query.scaladsl.ReadJournal
 import pekko.stream.scaladsl.Source

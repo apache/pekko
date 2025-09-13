@@ -21,12 +21,8 @@ import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
 import pekko.actor.ActorInitializationException
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.testkit.typed.scaladsl.TestProbe
-import pekko.actor.typed.internal.PoisonPill
-import pekko.actor.typed.internal.PoisonPillInterceptor
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, LoggingTestKit, ScalaTestWithActorTestKit, TestProbe }
+import pekko.actor.typed.internal.{ PoisonPill, PoisonPillInterceptor }
 import pekko.actor.typed.scaladsl.Behaviors
 
 object InterceptSpec {

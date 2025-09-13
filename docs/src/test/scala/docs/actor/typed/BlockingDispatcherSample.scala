@@ -13,11 +13,13 @@
 
 package docs.actor.typed
 
-import org.apache.pekko.actor.typed._
-import org.apache.pekko.actor.typed.scaladsl._
-import com.typesafe.config.{ Config, ConfigFactory }
-
 import scala.concurrent.{ ExecutionContext, Future }
+
+import com.typesafe.config.ConfigFactory
+
+import org.apache.pekko
+import pekko.actor.typed._
+import pekko.actor.typed.scaladsl._
 
 // #blocking-in-future
 object BlockingFutureActor {

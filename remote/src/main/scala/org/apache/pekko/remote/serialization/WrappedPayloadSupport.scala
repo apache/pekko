@@ -13,19 +13,14 @@
 
 package org.apache.pekko.remote.serialization
 
+import java.nio.ByteOrder
+
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.event.{ Logging, LoggingAdapter }
 import pekko.protobufv3.internal.ByteString
-import pekko.remote.ByteStringUtils
-import pekko.remote.ContainerFormats
-import pekko.serialization.ByteBufferSerializer
-import pekko.serialization.{ SerializationExtension, Serializers }
-import pekko.serialization.DisabledJavaSerializer
-import pekko.serialization.Serialization
-import pekko.serialization.SerializerWithStringManifest
-
-import java.nio.ByteOrder
+import pekko.remote.{ ByteStringUtils, ContainerFormats }
+import pekko.serialization._
 
 /**
  * INTERNAL API

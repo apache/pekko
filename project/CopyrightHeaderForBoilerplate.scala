@@ -11,11 +11,13 @@
  * Copyright (C) 2019-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import CopyrightHeader.cStyleComment
-import sbtheader.HeaderPlugin.autoImport._
 import sbt.Keys.sourceDirectory
 import sbt.{ inConfig, Compile, Def, Plugins, Test, _ }
+
+import sbtheader.HeaderPlugin.autoImport.*
 import spray.boilerplate.BoilerplatePlugin
+
+import CopyrightHeader.cStyleComment
 
 object CopyrightHeaderForBoilerplate extends AutoPlugin {
   override lazy val requires: Plugins = BoilerplatePlugin && CopyrightHeader

@@ -13,29 +13,24 @@
 
 package docs.org.apache.pekko.typed
 
-import scala.concurrent.duration._
-import scala.concurrent.Future
-import org.apache.pekko
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.scaladsl.LoggerOps
-import pekko.actor.typed.scaladsl.TimerScheduler
-import pekko.actor.typed.SupervisorStrategy
-
-import scala.concurrent.duration.FiniteDuration
-import pekko.Done
 import scala.annotation.nowarn
+import scala.concurrent.Future
+import scala.concurrent.duration.{ FiniteDuration, _ }
+
+import org.apache.pekko
+import pekko.Done
+import pekko.actor.typed.scaladsl.{ LoggerOps, TimerScheduler }
+import pekko.actor.typed.{ ActorRef, ActorSystem, SupervisorStrategy }
 
 //#oo-style
 //#fun-style
 
 import org.apache.pekko
 import pekko.actor.typed.Behavior
-import pekko.actor.typed.scaladsl.ActorContext
-import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors }
 //#fun-style
-import org.apache.pekko.actor.typed.scaladsl.AbstractBehavior
 import org.slf4j.Logger
+import org.apache.pekko.actor.typed.scaladsl.AbstractBehavior
 //#oo-style
 
 object StyleGuideDocExamples {

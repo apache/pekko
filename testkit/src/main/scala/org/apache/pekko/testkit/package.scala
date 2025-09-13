@@ -19,8 +19,7 @@ import scala.collection.immutable
 import scala.concurrent.duration.{ Duration, FiniteDuration }
 import scala.reflect.ClassTag
 
-import org.apache.pekko
-import pekko.actor.ActorSystem
+import org.apache.pekko.actor.ActorSystem
 
 package object testkit {
   def filterEvents[T](eventFilters: Iterable[EventFilter])(block: => T)(implicit system: ActorSystem): T = {

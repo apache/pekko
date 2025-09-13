@@ -22,23 +22,15 @@ import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.delivery.ConsumerController
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, LoggingTestKit, ScalaTestWithActorTestKit }
 import pekko.actor.typed.delivery.ConsumerController.SequencedMessage
-import pekko.actor.typed.delivery.TestConsumer
 import pekko.actor.typed.delivery.internal.ProducerControllerImpl
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.actor.typed.scaladsl.LoggerOps
+import pekko.actor.typed.delivery.{ ConsumerController, TestConsumer }
+import pekko.actor.typed.scaladsl.{ Behaviors, LoggerOps }
+import pekko.actor.typed.{ ActorRef, Behavior }
 import pekko.cluster.sharding.typed.ShardingEnvelope
-import pekko.cluster.sharding.typed.scaladsl.ClusterSharding
-import pekko.cluster.sharding.typed.scaladsl.Entity
-import pekko.cluster.sharding.typed.scaladsl.EntityTypeKey
-import pekko.cluster.typed.Cluster
-import pekko.cluster.typed.Join
+import pekko.cluster.sharding.typed.scaladsl.{ ClusterSharding, Entity, EntityTypeKey }
+import pekko.cluster.typed.{ Cluster, Join }
 
 object ReliableDeliveryShardingSpec {
   val config = ConfigFactory.parseString("""

@@ -17,16 +17,8 @@ import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.ConfigurationException
-import pekko.actor.ActorPath
-import pekko.actor.ActorSystemImpl
-import pekko.actor.Cell
-import pekko.actor.InternalActorRef
-import pekko.actor.Props
-import pekko.actor.RepointableActorRef
-import pekko.actor.UnstartedCell
-import pekko.dispatch.BalancingDispatcher
-import pekko.dispatch.MailboxType
-import pekko.dispatch.MessageDispatcher
+import pekko.actor.{ ActorPath, ActorSystemImpl, Cell, InternalActorRef, Props, RepointableActorRef, UnstartedCell }
+import pekko.dispatch.{ BalancingDispatcher, MailboxType, MessageDispatcher }
 
 /**
  * INTERNAL API

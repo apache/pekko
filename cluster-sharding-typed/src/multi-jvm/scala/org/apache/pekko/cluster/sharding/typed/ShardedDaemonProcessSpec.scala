@@ -21,15 +21,12 @@ import org.scalatest.concurrent.ScalaFutures
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.TestProbe
 import pekko.actor.typed.Behavior
-import pekko.actor.typed.receptionist.Receptionist
-import pekko.actor.typed.receptionist.ServiceKey
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.actor.typed.scaladsl.Routers
+import pekko.actor.typed.receptionist.{ Receptionist, ServiceKey }
+import pekko.actor.typed.scaladsl.{ Behaviors, Routers }
 import pekko.cluster.MultiNodeClusterSpec
 import pekko.cluster.sharding.typed.scaladsl.ShardedDaemonProcess
 import pekko.cluster.typed.MultiNodeTypedClusterSpec
-import pekko.remote.testkit.MultiNodeConfig
-import pekko.remote.testkit.MultiNodeSpec
+import pekko.remote.testkit.{ MultiNodeConfig, MultiNodeSpec }
 import pekko.serialization.jackson.CborSerializable
 
 object ShardedDaemonProcessSpec extends MultiNodeConfig {

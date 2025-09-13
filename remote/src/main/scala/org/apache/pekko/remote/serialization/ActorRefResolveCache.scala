@@ -16,20 +16,20 @@ package org.apache.pekko.remote.serialization
 import scala.reflect.ClassTag
 
 import org.apache.pekko
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
-import pekko.actor.ClassicActorSystemProvider
-import pekko.actor.EmptyLocalActorRef
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.Extension
-import pekko.actor.ExtensionId
-import pekko.actor.ExtensionIdProvider
-import pekko.actor.InternalActorRef
-import pekko.remote.RemoteActorRef
-import pekko.remote.RemoteActorRefProvider
+import pekko.actor.{
+  ActorRef,
+  ActorSystem,
+  ClassicActorSystemProvider,
+  EmptyLocalActorRef,
+  ExtendedActorSystem,
+  Extension,
+  ExtensionId,
+  ExtensionIdProvider,
+  InternalActorRef
+}
+import pekko.remote.{ RemoteActorRef, RemoteActorRefProvider }
 import pekko.remote.artery.LruBoundedCache
-import pekko.util.Unsafe
-import pekko.util.unused
+import pekko.util.{ unused, Unsafe }
 
 /**
  * INTERNAL API: Thread local cache per actor system

@@ -14,11 +14,8 @@
 package org.apache.pekko.actor.typed.internal.receptionist
 
 import org.apache.pekko
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Dispatchers
-import pekko.actor.typed.Props
 import pekko.actor.typed.receptionist.Receptionist
+import pekko.actor.typed.{ ActorRef, ActorSystem, Dispatchers, Props }
 import pekko.annotation.InternalApi
 
 /**

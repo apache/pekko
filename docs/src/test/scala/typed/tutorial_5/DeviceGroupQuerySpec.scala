@@ -14,15 +14,20 @@
 package typed.tutorial_5
 
 import scala.concurrent.duration._
-import org.apache.pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+
 import org.scalatest.wordspec.AnyWordSpecLike
+
+import org.apache.pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+
 import typed.tutorial_5.Device.Command
 import typed.tutorial_5.DeviceGroupQuery.WrappedRespondTemperature
-import typed.tutorial_5.DeviceManager.DeviceNotAvailable
-import typed.tutorial_5.DeviceManager.DeviceTimedOut
-import typed.tutorial_5.DeviceManager.RespondAllTemperatures
-import typed.tutorial_5.DeviceManager.Temperature
-import typed.tutorial_5.DeviceManager.TemperatureNotAvailable
+import typed.tutorial_5.DeviceManager.{
+  DeviceNotAvailable,
+  DeviceTimedOut,
+  RespondAllTemperatures,
+  Temperature,
+  TemperatureNotAvailable
+}
 
 class DeviceGroupQuerySpec extends ScalaTestWithActorTestKit with AnyWordSpecLike {
 

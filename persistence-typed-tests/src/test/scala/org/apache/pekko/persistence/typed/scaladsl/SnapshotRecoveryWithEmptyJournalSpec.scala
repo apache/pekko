@@ -13,24 +13,21 @@
 
 package org.apache.pekko.persistence.typed.scaladsl
 
+import java.io.File
+import java.util.UUID
+
+import com.typesafe.config.{ Config, ConfigFactory }
+import org.apache.commons.io.FileUtils
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
+import pekko.actor.typed.{ ActorRef, Behavior }
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.persistence.serialization.Snapshot
 import pekko.persistence.testkit.PersistenceTestKitPlugin
 import pekko.persistence.typed.PersistenceId
-import pekko.serialization.Serialization
-import pekko.serialization.SerializationExtension
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-import org.apache.commons.io.FileUtils
-import org.scalatest.wordspec.AnyWordSpecLike
-
-import java.io.File
-import java.util.UUID
+import pekko.serialization.{ Serialization, SerializationExtension }
 
 object SnapshotRecoveryWithEmptyJournalSpec {
   val survivingSnapshotPath = s"target/survivingSnapshotPath-${UUID.randomUUID().toString}"

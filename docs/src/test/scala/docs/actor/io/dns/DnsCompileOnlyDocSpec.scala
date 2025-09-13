@@ -16,8 +16,8 @@ package docs.actor.io.dns
 import org.apache.pekko.actor.{ ActorRef, ActorSystem }
 import org.apache.pekko.io.dns.DnsProtocol
 import org.apache.pekko.io.dns.DnsProtocol.Srv
-import org.apache.pekko.pattern.ask
 import org.apache.pekko.io.{ Dns, IO }
+import org.apache.pekko.pattern.ask
 import org.apache.pekko.util.Timeout
 
 import scala.concurrent.Future

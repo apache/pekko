@@ -13,8 +13,9 @@
 
 import java.io.File
 
-import com.typesafe.config.ConfigFactory
 import sbt.ConsoleLogger
+
+import com.typesafe.config.ConfigFactory
 
 class ProjectFileIgnoreSupport(ignoreConfigFile: File, descriptor: String) {
   private lazy val stdoutLogger = ConsoleLogger(System.out)

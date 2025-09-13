@@ -21,18 +21,12 @@ import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.annotation.InternalApi
 import pekko.persistence.journal.Tagged
-import pekko.persistence.query.EventEnvelope
-import pekko.persistence.query.Sequence
+import pekko.persistence.query.{ EventEnvelope, Sequence }
 import pekko.persistence.testkit.EventStorage
 import pekko.persistence.testkit.PersistenceTestKitPlugin
 import pekko.persistence.testkit.PersistenceTestKitPlugin.TagWrite
-import pekko.stream.stage.GraphStage
-import pekko.stream.stage.GraphStageLogic
-import pekko.stream.stage.GraphStageLogicWithLogging
-import pekko.stream.stage.OutHandler
-import pekko.stream.Attributes
-import pekko.stream.Outlet
-import pekko.stream.SourceShape
+import pekko.stream.stage.{ GraphStage, GraphStageLogic, GraphStageLogicWithLogging, OutHandler }
+import pekko.stream.{ Attributes, Outlet, SourceShape }
 
 /**
  * INTERNAL API

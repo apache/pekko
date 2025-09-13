@@ -20,11 +20,12 @@ import java.util.concurrent.atomic.{ AtomicLong, AtomicReference }
 
 import scala.annotation.tailrec
 import scala.collection.immutable
-import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
 import scala.util.control.NonFatal
 
 import com.typesafe.config.Config
+
 import org.apache.pekko
 import pekko.actor.Scheduler.AtomicCancellable
 import pekko.dispatch.AbstractNodeQueue
@@ -51,8 +52,7 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
     extends Scheduler
     with Closeable {
 
-  import Helpers.ConfigOps
-  import Helpers.Requiring
+  import Helpers.{ ConfigOps, Requiring }
 
   val WheelSize: Int =
     config

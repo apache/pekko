@@ -14,10 +14,7 @@
 package org.apache.pekko.actor.typed.javadsl
 
 import org.apache.pekko
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.ExtensibleBehavior
-import pekko.actor.typed.Signal
-import pekko.actor.typed.TypedActorContext
+import pekko.actor.typed.{ Behavior, ExtensibleBehavior, Signal, TypedActorContext }
 import pekko.annotation.DoNotInherit
 
 /**

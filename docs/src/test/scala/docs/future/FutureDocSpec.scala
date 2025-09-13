@@ -13,18 +13,15 @@
 
 package docs.future
 
+import scala.concurrent.duration._
+import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
+import scala.util.{ Failure, Success }
+
 import org.apache.pekko
+import pekko.actor.typed.ActorSystem
 import pekko.testkit._
 import pekko.actor.{ Actor, ActorRef, Props, Status }
 import pekko.util.Timeout
-
-import scala.concurrent.duration._
-import java.lang.IllegalStateException
-
-import pekko.actor.typed.ActorSystem
-
-import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
-import scala.util.{ Failure, Success }
 
 object FutureDocSpec {
 

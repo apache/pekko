@@ -18,12 +18,10 @@ import java.net.{ Inet4Address, Inet6Address, InetAddress }
 import scala.annotation.switch
 import scala.concurrent.duration._
 
-import CachePolicy._
-
 import org.apache.pekko
 import pekko.actor.NoSerializationVerificationNeeded
-import pekko.annotation.DoNotInherit
-import pekko.annotation.InternalApi
+import pekko.annotation.{ DoNotInherit, InternalApi }
+import pekko.io.dns.CachePolicy._
 import pekko.io.dns.internal.{ DomainName, _ }
 import pekko.util.{ unused, ByteIterator, ByteString }
 

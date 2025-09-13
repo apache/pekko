@@ -15,6 +15,7 @@ package org.apache.pekko.event
 
 import scala.annotation.tailrec
 import scala.concurrent.duration._
+import scala.jdk.CollectionConverters._
 
 import com.typesafe.config.ConfigFactory
 import org.scalatest.BeforeAndAfterAll
@@ -23,7 +24,6 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.apache.pekko
 import pekko.actor._
 import pekko.testkit._
-import pekko.util.ccompat.JavaConverters._
 
 object LoggingReceiveSpec {
   class TestLogActor extends Actor {

@@ -12,13 +12,13 @@
  */
 
 import java.io.PrintWriter
-import java.time.LocalDateTime
-import java.time.ZoneId
+import java.time.{ LocalDateTime, ZoneId }
 import java.time.format.DateTimeFormatter
+
 import sbt.{ Def, _ }
-import Keys._
 import sbt.internal.LogManager
 import sbt.internal.util.ConsoleOut
+import Keys._
 
 object AddLogTimestamps extends AutoPlugin {
   val enableTimestamps: Boolean = CliOption("pekko.log.timestamps", false).get

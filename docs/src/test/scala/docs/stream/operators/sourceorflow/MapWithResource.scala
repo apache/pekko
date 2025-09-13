@@ -17,10 +17,11 @@
 
 package docs.stream.operators.sourceorflow
 
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.stream.scaladsl.Source
-
 import java.net.URL
+
+import org.apache.pekko
+import pekko.actor.ActorSystem
+import pekko.stream.scaladsl.Source
 
 object MapWithResource {
   implicit val actorSystem: ActorSystem = ???
