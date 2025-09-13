@@ -27,7 +27,7 @@ import pekko.actor.ActorRef
 import pekko.actor.ActorSystem
 import pekko.actor.SupervisorStrategy
 import pekko.dispatch.Dispatchers
-import pekko.dispatch.ExecutionContexts
+import scala.concurrent.ExecutionContext
 import pekko.japi.Util.immutableSeq
 import pekko.pattern.ask
 import pekko.pattern.pipe
@@ -57,7 +57,7 @@ private[pekko] final case class ScatterGatherFirstCompletedRoutees(
     extends Routee {
 
   override def send(message: Any, sender: ActorRef): Unit = {
-    implicit val ec = ExecutionContexts.parasitic
+    implicit val ec = ExecutionContext.parasitic
     if (routees.isEmpty) {
       val reply = Future.failed(new TimeoutException("Timeout due to no routees"))
       reply.pipeTo(sender)

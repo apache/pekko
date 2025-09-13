@@ -26,7 +26,7 @@ import scala.util.control.NoStackTrace
 import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.{ InternalApi, InternalStableApi }
-import pekko.dispatch.ExecutionContexts
+import scala.concurrent.ExecutionContext
 import pekko.dispatch.sysmsg._
 import pekko.util.{ unused, ByteString, Timeout }
 
@@ -717,7 +717,7 @@ private[pekko] object PromiseActorRef {
     val result = Promise[Any]()
     val scheduler = provider.guardian.underlying.system.scheduler
     val a = new PromiseActorRef(provider, result, messageClassName, refPathPrefix)
-    implicit val ec = ExecutionContexts.parasitic
+    implicit val ec = ExecutionContext.parasitic
     val f = scheduler.scheduleOnce(timeout.duration) {
       val timedOut = result.tryComplete {
         val wasSentBy = if (sender == ActorRef.noSender) "" else s" was sent by [$sender]"

@@ -21,7 +21,7 @@ import org.apache.pekko
 import pekko.Done
 import pekko.actor.ActorSystem
 import pekko.actor.Address
-import pekko.dispatch.ExecutionContexts
+import scala.concurrent.ExecutionContext
 import pekko.remote.UniqueAddress
 import pekko.stream.Attributes
 import pekko.stream.FlowShape
@@ -308,7 +308,7 @@ private[remote] class InboundHandshake(inboundContext: InboundContext, inControl
             // periodically.
             thenInside()
           case None =>
-            first.onComplete(_ => runInStage.invoke(thenInside))(ExecutionContexts.parasitic)
+            first.onComplete(_ => runInStage.invoke(thenInside))(ExecutionContext.parasitic)
         }
 
       }

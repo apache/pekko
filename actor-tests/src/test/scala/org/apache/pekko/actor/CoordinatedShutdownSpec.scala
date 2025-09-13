@@ -18,7 +18,6 @@ import pekko.ConfigurationException
 import pekko.Done
 import pekko.actor.CoordinatedShutdown.Phase
 import pekko.actor.CoordinatedShutdown.UnknownReason
-import pekko.dispatch.ExecutionContexts
 import pekko.testkit.PekkoSpec
 import pekko.testkit.EventFilter
 import pekko.testkit.TestKit
@@ -323,10 +322,10 @@ class CoordinatedShutdownSpec
             Future {
               testProbe.ref ! BMessage("concurrentB")
               Done
-            }(ExecutionContexts.parasitic)
+            }(ExecutionContext.parasitic)
           }
           Done
-        }(ExecutionContexts.parasitic)
+        }(ExecutionContext.parasitic)
 
       val cancellationFut: Future[Done] = {
         val cancellables = (0 until 20).map { _ =>

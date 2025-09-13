@@ -232,7 +232,7 @@ private[pekko] final class FlattenConcat[T, M](parallelism: Int)
 
       private def addPendingFutureElem(future: Future[T]): Unit = {
         val inflightSource = new InflightPendingFutureSource[T](invokeCb)
-        future.onComplete(inflightSource)(pekko.dispatch.ExecutionContexts.parasitic)
+        future.onComplete(inflightSource)(scala.concurrent.ExecutionContext.parasitic)
         queue.enqueue(inflightSource)
       }
 

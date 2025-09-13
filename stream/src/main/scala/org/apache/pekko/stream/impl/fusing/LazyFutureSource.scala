@@ -21,7 +21,7 @@ import scala.concurrent.Future
 import scala.util.Try
 
 import org.apache.pekko
-import pekko.dispatch.ExecutionContexts
+import scala.concurrent.ExecutionContext
 import pekko.stream.Attributes
 import pekko.stream.Attributes.SourceLocation
 import pekko.stream.Outlet
@@ -50,7 +50,7 @@ private[pekko] final class LazyFutureSource[T](f: () => Future[T]) extends Graph
           case Some(result) => handle(result)
           case None         =>
             val cb = getAsyncCallback[Try[T]](handle).invoke _
-            future.onComplete(cb)(ExecutionContexts.parasitic)
+            future.onComplete(cb)(ExecutionContext.parasitic)
         }
       }
 

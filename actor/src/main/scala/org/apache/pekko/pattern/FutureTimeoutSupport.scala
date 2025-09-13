@@ -116,7 +116,7 @@ trait FutureTimeoutSupport {
         future.onComplete { result =>
           timeout.cancel()
           p.tryComplete(result)
-        }(pekko.dispatch.ExecutionContexts.parasitic)
+        }(scala.concurrent.ExecutionContext.parasitic)
         p.future
     }
   }

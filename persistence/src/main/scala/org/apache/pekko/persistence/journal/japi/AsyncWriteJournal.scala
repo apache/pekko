@@ -19,7 +19,7 @@ import scala.util.Failure
 import scala.util.Try
 
 import org.apache.pekko
-import pekko.dispatch.ExecutionContexts
+import scala.concurrent.ExecutionContext
 import pekko.persistence._
 import pekko.persistence.journal.{ AsyncWriteJournal => SAsyncWriteJournal }
 import pekko.util.ConstantFun.scalaAnyToUnit
@@ -40,9 +40,9 @@ abstract class AsyncWriteJournal extends AsyncRecovery with SAsyncWriteJournal w
           else successUnit
         }
         .to(immutable.IndexedSeq)
-    }(ExecutionContexts.parasitic)
+    }(ExecutionContext.parasitic)
 
   final def asyncDeleteMessagesTo(persistenceId: String, toSequenceNr: Long): Future[Unit] = {
-    doAsyncDeleteMessagesTo(persistenceId, toSequenceNr).asScala.map(scalaAnyToUnit)(ExecutionContexts.parasitic)
+    doAsyncDeleteMessagesTo(persistenceId, toSequenceNr).asScala.map(scalaAnyToUnit)(ExecutionContext.parasitic)
   }
 }
