@@ -22,13 +22,11 @@ import pekko.actor._
 import pekko.cluster.MemberStatus
 import pekko.cluster.sharding.ShardRegion.{ CurrentShardRegionState, GetShardRegionState, Passivate }
 import pekko.testkit._
-import pekko.util.ccompat._
 import com.typesafe.config.ConfigFactory
 import org.HdrHistogram.Histogram
 
 import scala.concurrent.duration._
 
-@ccompatUsedUntil213
 object ClusterShardingRememberEntitiesPerfSpec {
   val NrRegions = 6
   // use 5 for "real" testing

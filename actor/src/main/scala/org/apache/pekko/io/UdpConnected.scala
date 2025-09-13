@@ -25,7 +25,6 @@ import pekko.actor._
 import pekko.io.Inet.SocketOption
 import pekko.io.Udp.UdpSettings
 import pekko.util.ByteString
-import pekko.util.ccompat._
 
 /**
  * UDP Extension for Akka’s IO layer.
@@ -39,7 +38,6 @@ import pekko.util.ccompat._
  *
  * The Java API for generating UDP commands is available at [[UdpConnectedMessage]].
  */
-@ccompatUsedUntil213
 object UdpConnected extends ExtensionId[UdpConnectedExt] with ExtensionIdProvider {
 
   override def lookup = UdpConnected

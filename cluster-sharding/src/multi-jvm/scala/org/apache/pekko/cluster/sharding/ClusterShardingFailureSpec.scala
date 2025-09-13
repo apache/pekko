@@ -23,9 +23,7 @@ import pekko.remote.testconductor.RoleName
 import pekko.remote.transport.ThrottlerTransportAdapter.Direction
 import pekko.serialization.jackson.CborSerializable
 import pekko.testkit._
-import pekko.util.ccompat._
 
-@ccompatUsedUntil213
 object ClusterShardingFailureSpec {
   case class Get(id: String) extends CborSerializable
   case class Add(id: String, i: Int) extends CborSerializable

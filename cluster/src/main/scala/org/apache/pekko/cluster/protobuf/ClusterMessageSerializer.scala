@@ -31,14 +31,12 @@ import pekko.remote.ByteStringUtils
 import pekko.routing.Pool
 import pekko.serialization._
 import pekko.util.Version
-import pekko.util.ccompat._
 import pekko.util.ccompat.JavaConverters._
 
 /**
  * INTERNAL API
  */
 @InternalApi
-@ccompatUsedUntil213
 private[pekko] object ClusterMessageSerializer {
   // Kept for one version iteration from Akka 2.6.4 to allow rolling migration to short manifests
   // can be removed in Akka 2.6.6 or later.

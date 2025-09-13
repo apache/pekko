@@ -30,7 +30,6 @@ import com.typesafe.config.Config
 import org.apache.pekko
 import pekko.Done
 import pekko.actor._
-import pekko.actor.ActorInitializationException
 import pekko.actor.SupervisorStrategy._
 import pekko.annotation.InternalStableApi
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
@@ -44,7 +43,6 @@ import pekko.remote.transport.PekkoPduCodec.Message
 import pekko.remote.transport.Transport.{ ActorAssociationEventListener, AssociationEventListener, InboundAssociation }
 import pekko.util.ByteString.UTF_8
 import pekko.util.OptionVal
-import pekko.util.ccompat._
 
 /**
  * INTERNAL API
@@ -145,7 +143,6 @@ private[remote] object Remoting {
  * INTERNAL API
  */
 @nowarn("msg=deprecated")
-@ccompatUsedUntil213
 private[remote] class Remoting(_system: ExtendedActorSystem, _provider: RemoteActorRefProvider)
     extends RemoteTransport(_system, _provider) {
 

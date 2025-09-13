@@ -34,12 +34,10 @@ import pekko.testkit._
 import pekko.testkit.TestEvent._
 import pekko.testkit.TestKit
 import pekko.util.Timeout
-import pekko.util.ccompat._
 
 /**
  * Configure the role names and participants of the test, including configuration settings.
  */
-@ccompatUsedUntil213
 abstract class MultiNodeConfig {
 
   private var _commonConf: Option[Config] = None

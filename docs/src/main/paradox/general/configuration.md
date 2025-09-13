@@ -149,7 +149,7 @@ If in doubt, you can inspect your configuration objects
 before or after using them to construct an actor system:
 
 ```
-Welcome to Scala 2.12 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0).
+Welcome to Scala 2.13 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0).
 Type in expressions to have them evaluated.
 Type :help for more information.
 

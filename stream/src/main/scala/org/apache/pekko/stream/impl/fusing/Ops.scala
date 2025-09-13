@@ -53,7 +53,6 @@ import pekko.stream.scaladsl.{
 }
 import pekko.stream.stage._
 import pekko.util.{ unused, ConstantFun, OptionVal }
-import pekko.util.ccompat._
 
 /**
  * INTERNAL API
@@ -2325,7 +2324,6 @@ private[pekko] final class StatefulMap[S, In, Out](create: () => S, f: (S, In) =
  * INTERNAL API
  */
 @InternalApi
-@ccompatUsedUntil213
 private[pekko] final class StatefulMapConcat[In, Out](val factory: StatefulMapConcatAccumulatorFactory[In, Out])
     extends GraphStage[FlowShape[In, Out]] {
   val in = Inlet[In]("StatefulMapConcat.in")

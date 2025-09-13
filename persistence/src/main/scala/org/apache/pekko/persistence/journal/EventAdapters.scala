@@ -26,12 +26,10 @@ import com.typesafe.config.Config
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.event.{ Logging, LoggingAdapter }
-import pekko.util.ccompat._
 
 /**
  * `EventAdapters` serves as a per-journal collection of bound event adapters.
  */
-@ccompatUsedUntil213
 class EventAdapters(
     map: ConcurrentHashMap[Class[_], EventAdapter],
     bindings: immutable.Seq[(Class[_], EventAdapter)],

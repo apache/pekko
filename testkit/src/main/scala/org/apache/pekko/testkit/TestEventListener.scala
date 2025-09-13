@@ -29,7 +29,6 @@ import pekko.event.Logging
 import pekko.event.Logging.{ Debug, Error, Info, InitializeLogger, LogEvent, LoggerInitialized, Warning }
 import pekko.japi.Util.immutableSeq
 import pekko.util.BoxedType
-import pekko.util.ccompat._
 
 /**
  * Implementation helpers of the EventFilter facilities: send `Mute`
@@ -553,7 +552,6 @@ final case class DeadLettersFilter(val messageClass: Class[_])(occurrences: Int)
  * }
  * </code></pre>
  */
-@ccompatUsedUntil213
 class TestEventListener extends Logging.DefaultLogger {
   import TestEvent._
 

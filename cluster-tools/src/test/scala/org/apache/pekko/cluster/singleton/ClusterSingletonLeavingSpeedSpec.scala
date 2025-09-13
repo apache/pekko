@@ -83,8 +83,6 @@ class ClusterSingletonLeavingSpeedSpec
 
   override def expectedTestDuration: FiniteDuration = 10.minutes
 
-  import pekko.util.ccompat._
-  @ccompatUsedUntil213
   def join(from: ActorSystem, to: ActorSystem, probe: ActorRef): Unit = {
 
     from.actorOf(

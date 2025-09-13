@@ -18,7 +18,6 @@
 package org.apache.pekko.util
 
 import org.apache.pekko
-import pekko.util.ccompat._
 import pekko.util.OptionConverters._
 
 import java.util._
@@ -32,7 +31,6 @@ import scala.annotation.nowarn
  * Remove this once Scala 2.12 support is dropped since all methods are in Scala 2.13+ stdlib
  */
 
-@ccompatUsedUntil213
 @nowarn("msg=deprecated")
 object Scala212CompatTest {
 

@@ -36,10 +36,8 @@ import pekko.serialization.BaseSerializer
 import pekko.serialization.Serialization
 import pekko.serialization.SerializerWithStringManifest
 import pekko.util.ByteString.UTF_8
-import pekko.util.ccompat._
 import pekko.util.ccompat.JavaConverters._
 
-@ccompatUsedUntil213
 private object ReplicatedDataSerializer {
   /*
    * Generic superclass to allow to compare Entry types used in protobuf.

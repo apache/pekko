@@ -24,13 +24,11 @@ import pekko.persistence._
 import pekko.persistence.journal.{ AsyncWriteJournal => SAsyncWriteJournal }
 import pekko.util.ConstantFun.scalaAnyToUnit
 import pekko.util.FutureConverters._
-import pekko.util.ccompat._
 import pekko.util.ccompat.JavaConverters._
 
 /**
  * Java API: abstract journal, optimized for asynchronous, non-blocking writes.
  */
-@ccompatUsedUntil213
 abstract class AsyncWriteJournal extends AsyncRecovery with SAsyncWriteJournal with AsyncWritePlugin {
   import SAsyncWriteJournal.successUnit
 

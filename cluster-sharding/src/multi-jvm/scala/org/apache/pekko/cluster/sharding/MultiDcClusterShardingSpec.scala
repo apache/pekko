@@ -24,9 +24,7 @@ import pekko.cluster.sharding.ShardRegion.{ CurrentRegions, GetCurrentRegions }
 import pekko.remote.testconductor.RoleName
 import pekko.serialization.jackson.CborSerializable
 import pekko.testkit._
-import pekko.util.ccompat._
 
-@ccompatUsedUntil213
 object MultiDcClusterShardingSpec {
   sealed trait EntityMsg extends CborSerializable {
     def id: String

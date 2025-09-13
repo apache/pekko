@@ -29,12 +29,8 @@ class SameThreadExecutionContextSpec extends PekkoSpec with Matchers {
 
     "return a Scala specific version" in {
       val ec = SameThreadExecutionContext()
-      if (util.Properties.versionNumberString.startsWith("2.12")) {
-        ec.getClass.getName should startWith("org.apache.pekko.dispatch.internal.SameThreadExecutionContext")
-      } else {
-        // in 2.13 and higher parasitic is available
-        ec.getClass.getName should ===("scala.concurrent.ExecutionContext$parasitic$")
-      }
+      // in Scala 2.13 and higher parasitic is available
+      ec.getClass.getName should ===("scala.concurrent.ExecutionContext$parasitic$")
     }
 
     "should run follow up future operations in the same dispatcher" in {

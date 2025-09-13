@@ -35,7 +35,6 @@ import pekko.stream.impl._
 import pekko.testkit.{ TestActor, TestProbe }
 import pekko.testkit.TestActor.AutoPilot
 import pekko.util.JavaDurationConverters._
-import pekko.util.ccompat._
 import pekko.util.ccompat.JavaConverters._
 
 import org.reactivestreams.{ Publisher, Subscriber, Subscription }
@@ -120,7 +119,6 @@ object TestPublisher {
 
     type Self <: ManualProbe[I]
 
-    @ccompatUsedUntil213
     private val probe: TestProbe = TestProbe()
 
     // this is a way to pause receiving message from probe until subscription is done

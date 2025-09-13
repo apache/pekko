@@ -39,9 +39,7 @@ import pekko.cluster.typed.Leave
 import pekko.pattern.AskTimeoutException
 import pekko.serialization.jackson.CborSerializable
 import pekko.util.Timeout
-import pekko.util.ccompat._
 
-@ccompatUsedUntil213
 object ClusterShardingSpec {
   val config = ConfigFactory.parseString(s"""
       pekko.actor.provider = cluster

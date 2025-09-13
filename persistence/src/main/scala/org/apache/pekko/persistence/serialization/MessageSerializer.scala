@@ -29,7 +29,6 @@ import pekko.persistence.serialization.{ MessageFormats => mf }
 import pekko.protobufv3.internal.ByteString
 import pekko.protobufv3.internal.UnsafeByteOperations
 import pekko.serialization._
-import pekko.util.ccompat._
 
 /**
  * Marker trait for all protobuf-serializable messages in `pekko.persistence`.
@@ -39,7 +38,6 @@ trait Message extends Serializable
 /**
  * Protobuf serializer for [[pekko.persistence.PersistentRepr]], [[pekko.persistence.AtLeastOnceDelivery]] and [[pekko.persistence.fsm.PersistentFSM.StateChangeEvent]] messages.
  */
-@ccompatUsedUntil213
 class MessageSerializer(val system: ExtendedActorSystem) extends BaseSerializer {
   import PersistentRepr.Undefined
 

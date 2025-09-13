@@ -23,9 +23,7 @@ import pekko.cluster.MemberStatus
 import pekko.remote.transport.ThrottlerTransportAdapter.Direction
 import pekko.serialization.jackson.CborSerializable
 import pekko.testkit._
-import pekko.util.ccompat._
 
-@ccompatUsedUntil213
 object ClusterShardCoordinatorDowning2Spec {
   case class Ping(id: String) extends CborSerializable
 

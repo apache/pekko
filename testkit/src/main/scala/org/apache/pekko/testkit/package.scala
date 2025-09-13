@@ -21,10 +21,8 @@ import scala.reflect.ClassTag
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
-import pekko.util.ccompat._
 
 package object testkit {
-  @ccompatUsedUntil213
   def filterEvents[T](eventFilters: Iterable[EventFilter])(block: => T)(implicit system: ActorSystem): T = {
     def now = System.currentTimeMillis
 

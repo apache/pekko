@@ -42,10 +42,8 @@ import pekko.cluster.sharding.typed.ReplicatedShardingSpec.MyReplicatedIntSet
 import pekko.cluster.sharding.typed.ReplicatedShardingSpec.MyReplicatedStringSet
 import pekko.persistence.typed.ReplicationId
 import com.typesafe.config.Config
-import pekko.util.ccompat._
 import org.scalatest.time.Span
 
-@ccompatUsedUntil213
 object ReplicatedShardingSpec {
   def commonConfig = ConfigFactory.parseString("""
       pekko.loglevel = DEBUG

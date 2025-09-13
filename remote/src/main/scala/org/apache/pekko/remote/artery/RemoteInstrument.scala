@@ -29,7 +29,6 @@ import pekko.annotation.InternalStableApi
 import pekko.event.Logging
 import pekko.event.LoggingAdapter
 import pekko.remote.RemoteActorRefProvider
-import pekko.util.ccompat._
 import pekko.util.OptionVal
 import pekko.util.unused
 
@@ -45,7 +44,6 @@ import pekko.util.unused
  * will be created for each encoder and decoder. It's only called from the operator, so if it doesn't
  * delegate to any shared instance it doesn't have to be thread-safe.
  */
-@ccompatUsedUntil213
 abstract class RemoteInstrument {
 
   /**

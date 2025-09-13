@@ -48,8 +48,6 @@ class ClusterSingletonRestartSpec
   val sys2 = ActorSystem(system.name, system.settings.config)
   var sys3: ActorSystem = null
 
-  import pekko.util.ccompat._
-  @ccompatUsedUntil213
   def join(from: ActorSystem, to: ActorSystem): Unit = {
     from.actorOf(
       ClusterSingletonManager.props(

@@ -47,7 +47,6 @@ import pekko.stream.stage._
 import pekko.util.ConstantFun
 import pekko.util.OptionVal
 import pekko.util.Timeout
-import pekko.util.ccompat._
 
 import org.reactivestreams.Processor
 import org.reactivestreams.Publisher
@@ -844,7 +843,6 @@ final case class RunnableGraph[+Mat](override val traversalBuilder: TraversalBui
  * Binary compatibility is only maintained for callers of this trait’s interface.
  */
 @DoNotInherit
-@ccompatUsedUntil213
 trait FlowOps[+Out, +Mat] {
   import GraphDSL.Implicits._
 

@@ -20,9 +20,7 @@ import pekko.cluster.MemberStatus
 import pekko.cluster.sharding.ShardCoordinator.ShardAllocationStrategy
 import pekko.cluster.sharding.ShardRegion.{ ClusterShardingStats, GetClusterShardingStats }
 import pekko.testkit._
-import pekko.util.ccompat._
 
-@ccompatUsedUntil213
 abstract class ClusterShardingMinMembersSpecConfig(mode: String)
     extends MultiNodeClusterShardingConfig(
       mode,

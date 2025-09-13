@@ -37,9 +37,7 @@ import pekko.pattern.{ ask, AskTimeoutException }
 import pekko.remote.testconductor.RemoteConnection.getAddrString
 import pekko.remote.transport.ThrottlerTransportAdapter.{ Blackhole, SetThrottle, TokenBucket, Unthrottled }
 import pekko.util.Timeout
-import pekko.util.ccompat._
 
-@ccompatUsedUntil213
 object Player {
 
   final class Waiter extends Actor with RequiresMessageQueue[UnboundedMessageQueueSemantics] {

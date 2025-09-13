@@ -32,7 +32,6 @@ import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
 import pekko.util.OptionConverters._
 import pekko.util.ccompat.JavaConverters._
-import pekko.util.ccompat._
 
 object SubFlow {
 
@@ -52,7 +51,6 @@ object SubFlow {
  * SubFlows cannot contribute to the super-flow’s materialized value since they
  * are materialized later, during the runtime of the flow graph processing.
  */
-@ccompatUsedUntil213
 final class SubFlow[In, Out, Mat](
     delegate: scaladsl.SubFlow[Out, Mat, scaladsl.Flow[In, Out, Mat]#Repr, scaladsl.Sink[In, Mat]]) {
 

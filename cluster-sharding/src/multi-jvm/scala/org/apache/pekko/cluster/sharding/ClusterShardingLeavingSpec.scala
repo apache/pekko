@@ -20,9 +20,7 @@ import pekko.actor.{ Actor, ActorRef, Props }
 import pekko.cluster.MemberStatus
 import pekko.serialization.jackson.CborSerializable
 import pekko.testkit._
-import pekko.util.ccompat._
 
-@ccompatUsedUntil213
 object ClusterShardingLeavingSpec {
   case class Ping(id: String) extends CborSerializable
 

@@ -236,7 +236,7 @@ Pekko uses [MiMa](https://github.com/lightbend/mima) to validate the binary comp
 PR fails due to binary compatibility issues, you may see an error like this:
 
 ```
-[info] stream: found 1 potential binary incompatibilities while checking against org.apache.pekko:pekko-stream_2.12:2.4.2  (filtered 222)
+[info] stream: found 1 potential binary incompatibilities while checking against org.apache.pekko:pekko-stream_2.13:2.4.2  (filtered 222)
 [error]  * method foldAsync(java.lang.Object,scala.Function2)org.apache.pekko.stream.scaladsl.FlowOps in trait org.apache.pekko.stream.scaladsl.FlowOps is present only in current version
 [error]    filter with: ProblemFilters.exclude[ReversedMissingMethodProblem]("org.apache.pekko.stream.scaladsl.FlowOps.foldAsync")
 ```

@@ -32,7 +32,6 @@ import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
 import pekko.util.OptionConverters._
 import pekko.util.ccompat.JavaConverters._
-import pekko.util.ccompat._
 
 /**
  * * Upcast a stream of elements to a stream of supertypes of that element. Useful in combination with
@@ -47,7 +46,6 @@ object SubSource {
  * SubFlows cannot contribute to the super-flow’s materialized value since they
  * are materialized later, during the runtime of the flow graph processing.
  */
-@ccompatUsedUntil213
 final class SubSource[Out, Mat](
     delegate: scaladsl.SubFlow[Out, Mat, scaladsl.Source[Out, Mat]#Repr, scaladsl.RunnableGraph[Mat]]) {
 

@@ -30,13 +30,11 @@ import pekko.protobufv3.internal.ByteString
 import pekko.protobufv3.internal.MessageLite
 import pekko.remote.ByteStringUtils
 import pekko.serialization._
-import pekko.util.ccompat._
 import pekko.util.ccompat.JavaConverters._
 
 /**
  * Some useful serialization helper methods.
  */
-@ccompatUsedUntil213
 trait SerializationSupport {
 
   private final val BufferSize = 1024 * 4

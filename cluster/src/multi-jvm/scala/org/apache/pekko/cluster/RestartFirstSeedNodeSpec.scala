@@ -29,9 +29,7 @@ import pekko.cluster.MemberStatus._
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.testkit.MultiNodeSpec
 import pekko.testkit._
-import pekko.util.ccompat._
 
-@ccompatUsedUntil213
 object RestartFirstSeedNodeMultiJvmSpec extends MultiNodeConfig {
   val seed1 = role("seed1")
   val seed2 = role("seed2")

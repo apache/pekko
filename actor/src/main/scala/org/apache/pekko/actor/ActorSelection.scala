@@ -31,7 +31,6 @@ import pekko.dispatch.ExecutionContexts
 import pekko.pattern.ask
 import pekko.routing.MurmurHash
 import pekko.util.{ Helpers, JavaDurationConverters, Timeout }
-import pekko.util.ccompat._
 import pekko.util.FutureConverters
 
 /**
@@ -39,7 +38,6 @@ import pekko.util.FutureConverters
  * allowing for broadcasting of messages to that section.
  */
 @SerialVersionUID(1L)
-@ccompatUsedUntil213
 abstract class ActorSelection extends Serializable {
   this: ScalaActorSelection =>
 

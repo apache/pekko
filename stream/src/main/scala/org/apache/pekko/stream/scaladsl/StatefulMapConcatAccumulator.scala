@@ -20,14 +20,12 @@ package org.apache.pekko.stream.scaladsl
 import org.apache.pekko
 import pekko.japi.function
 import pekko.stream.{ javadsl, scaladsl }
-import pekko.util.ccompat._
 
 /**
  * A special accumulator for `StatefulMapConcat` operator that allows to emit elements when the upstream has completed.
  *
  * @since 1.2.0
  */
-@ccompatUsedUntil213
 @FunctionalInterface
 trait StatefulMapConcatAccumulator[-In, +Out] extends (In => IterableOnce[Out]) {
 
