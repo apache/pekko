@@ -15,6 +15,7 @@ package org.apache.pekko.pattern
 
 import java.util.Optional
 import java.util.concurrent.{ Callable, CompletionStage, TimeUnit }
+import java.util.function.IntFunction
 
 import scala.concurrent.ExecutionContext
 
@@ -812,7 +813,7 @@ object Patterns {
   def retry[T](
       attempt: Callable[CompletionStage[T]],
       attempts: Int,
-      delayFunction: japi.function.IntFunction[Optional[java.time.Duration]],
+      delayFunction: IntFunction[Optional[java.time.Duration]],
       scheduler: Scheduler,
       context: ExecutionContext): CompletionStage[T] = {
     import pekko.util.OptionConverters._
@@ -853,7 +854,7 @@ object Patterns {
       attempt: Callable[CompletionStage[T]],
       shouldRetry: japi.function.Predicate2[T, Throwable],
       attempts: Int,
-      delayFunction: japi.function.IntFunction[Optional[java.time.Duration]],
+      delayFunction: IntFunction[Optional[java.time.Duration]],
       scheduler: Scheduler,
       context: ExecutionContext): CompletionStage[T] = {
     import pekko.util.OptionConverters._
