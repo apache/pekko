@@ -33,7 +33,7 @@ import pekko.stream.impl.fusing.{ GraphStages, IterableSource, LazyFutureSource,
 import pekko.stream.impl.fusing.GraphStages._
 import pekko.stream.stage.GraphStageWithMaterializedValue
 import pekko.util.ConstantFun
-import pekko.util.FutureConverters._
+import scala.jdk.FutureConverters._
 
 import org.reactivestreams.{ Publisher, Subscriber }
 

@@ -76,7 +76,7 @@ abstract class AsyncSerializerWithStringManifest(system: ExtendedActorSystem)
  */
 abstract class AsyncSerializerWithStringManifestCS(system: ExtendedActorSystem)
     extends AsyncSerializerWithStringManifest(system) {
-  import pekko.util.FutureConverters._
+  import scala.jdk.FutureConverters._
 
   def toBinaryAsyncCS(o: AnyRef): CompletionStage[Array[Byte]]
 

@@ -37,7 +37,7 @@ import pekko.actor.typed.internal.ActorRefImpl
 import pekko.actor.typed.internal.InternalRecipientRef
 import pekko.actor.typed.receptionist.Receptionist
 import pekko.annotation.InternalApi
-import pekko.util.FutureConverters._
+import scala.jdk.FutureConverters._
 
 /**
  * INTERNAL API
