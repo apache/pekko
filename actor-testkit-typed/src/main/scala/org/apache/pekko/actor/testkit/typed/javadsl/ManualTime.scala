@@ -22,7 +22,7 @@ import com.typesafe.config.Config
 import org.apache.pekko
 import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.internal.adapter.SchedulerAdapter
-import pekko.util.JavaDurationConverters._
+import scala.jdk.DurationConverters._
 
 /**
  * Manual time allows you to do async tests while controlling the scheduler of the system.
@@ -70,11 +70,11 @@ final class ManualTime(delegate: pekko.testkit.ExplicitlyTriggeredScheduler) {
    * If you want the amount of time passed to be dilated, apply the dilation before passing the delay to
    * this method.
    */
-  def timePasses(amount: Duration): Unit = delegate.timePasses(amount.asScala)
+  def timePasses(amount: Duration): Unit = delegate.timePasses(amount.toScala)
 
   @varargs
   def expectNoMessageFor(duration: Duration, on: TestProbe[_]*): Unit = {
-    delegate.timePasses(duration.asScala)
+    delegate.timePasses(duration.toScala)
     on.foreach(_.expectNoMessage(Duration.ZERO))
   }
 

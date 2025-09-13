@@ -48,7 +48,7 @@ import pekko.io.dns.IdGenerator.Policy
 import pekko.io.dns.internal.{ ResolvConf, ResolvConfParser }
 import pekko.util.Helpers
 import pekko.util.Helpers.Requiring
-import pekko.util.JavaDurationConverters._
+import scala.jdk.DurationConverters._
 import pekko.util.ccompat.JavaConverters._
 
 /** INTERNAL API */
@@ -77,7 +77,7 @@ private[dns] final class DnsSettings(system: ExtendedActorSystem, c: Config) {
     }
   }
 
-  val ResolveTimeout: FiniteDuration = c.getDuration("resolve-timeout").asScala
+  val ResolveTimeout: FiniteDuration = c.getDuration("resolve-timeout").toScala
 
   val PositiveCachePolicy: CachePolicy = getTtl("positive-ttl")
   val NegativeCachePolicy: CachePolicy = getTtl("negative-ttl")

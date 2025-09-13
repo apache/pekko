@@ -47,7 +47,7 @@ import pekko.event.Logging
 import pekko.event.MarkerLoggingAdapter
 import pekko.pattern.ask
 import pekko.pattern.pipe
-import pekko.util.JavaDurationConverters._
+import scala.jdk.DurationConverters._
 import pekko.util.Timeout
 
 object ClusterSingletonManagerSettings {
@@ -70,7 +70,7 @@ object ClusterSingletonManagerSettings {
     val lease = config.getString("use-lease") match {
       case s if s.isEmpty  => None
       case leaseConfigPath =>
-        Some(new LeaseUsageSettings(leaseConfigPath, config.getDuration("lease-retry-interval").asScala))
+        Some(new LeaseUsageSettings(leaseConfigPath, config.getDuration("lease-retry-interval").toScala))
     }
     new ClusterSingletonManagerSettings(
       singletonName = config.getString("singleton-name"),

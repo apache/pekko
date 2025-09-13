@@ -37,7 +37,7 @@ import pekko.stream.scaladsl.StreamRefs
 import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.testkit._
-import pekko.util.JavaDurationConverters._
+import scala.jdk.DurationConverters._
 
 object StreamRefSpec extends MultiNodeConfig {
   val first = role("first")
@@ -266,7 +266,7 @@ abstract class StreamRefSpec extends MultiNodeClusterSpec(StreamRefSpec) with Im
         // the subscription timeout for a failure
         val timeout = system.settings.config
           .getDuration("pekko.stream.materializer.stream-ref.subscription-timeout")
-          .asScala + 2.seconds
+          .toScala + 2.seconds
         streamLifecycle3.expectMsg(timeout, "failed-system-42-tmp")
       }
 

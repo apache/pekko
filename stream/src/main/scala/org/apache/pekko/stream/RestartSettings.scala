@@ -20,7 +20,7 @@ import pekko.japi.function
 import pekko.event.Logging
 import pekko.event.Logging.LogLevel
 import pekko.util.ConstantFun
-import pekko.util.JavaDurationConverters._
+import scala.jdk.DurationConverters._
 
 final class RestartSettings private (
     val minBackoff: FiniteDuration,
@@ -35,13 +35,13 @@ final class RestartSettings private (
   def withMinBackoff(value: FiniteDuration): RestartSettings = copy(minBackoff = value)
 
   /** Java API: minimum (initial) duration until the child actor will started again, if it is terminated */
-  def withMinBackoff(value: java.time.Duration): RestartSettings = copy(minBackoff = value.asScala)
+  def withMinBackoff(value: java.time.Duration): RestartSettings = copy(minBackoff = value.toScala)
 
   /** Scala API: the exponential back-off is capped to this duration */
   def withMaxBackoff(value: FiniteDuration): RestartSettings = copy(maxBackoff = value)
 
   /** Java API: the exponential back-off is capped to this duration */
-  def withMaxBackoff(value: java.time.Duration): RestartSettings = copy(maxBackoff = value.asScala)
+  def withMaxBackoff(value: java.time.Duration): RestartSettings = copy(maxBackoff = value.toScala)
 
   /**
    * After calculation of the exponential back-off an additional random delay based on this factor is added
@@ -55,7 +55,7 @@ final class RestartSettings private (
 
   /** Java API: The amount of restarts is capped to `count` within a timeframe of `within` */
   def withMaxRestarts(count: Int, within: java.time.Duration): RestartSettings =
-    copy(maxRestarts = count, maxRestartsWithin = within.asScala)
+    copy(maxRestarts = count, maxRestartsWithin = within.toScala)
 
   /** Decides whether the failure should restart the stream or make the surrounding stream fail */
   def withRestartOn(restartOn: function.Predicate[Throwable]): RestartSettings =
@@ -100,11 +100,11 @@ object RestartSettings {
   /** Java API */
   def create(minBackoff: java.time.Duration, maxBackoff: java.time.Duration, randomFactor: Double): RestartSettings =
     new RestartSettings(
-      minBackoff = minBackoff.asScala,
-      maxBackoff = maxBackoff.asScala,
+      minBackoff = minBackoff.toScala,
+      maxBackoff = maxBackoff.toScala,
       randomFactor = randomFactor,
       maxRestarts = Int.MaxValue,
-      maxRestartsWithin = minBackoff.asScala,
+      maxRestartsWithin = minBackoff.toScala,
       logSettings = LogSettings.defaultSettings,
       restartOn = ConstantFun.anyToTrue)
 

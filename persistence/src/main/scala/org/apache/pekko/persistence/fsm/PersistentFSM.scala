@@ -28,7 +28,6 @@ import pekko.annotation.InternalApi
 import pekko.persistence.{ PersistentActor, RecoveryCompleted, SnapshotOffer }
 import pekko.persistence.fsm.PersistentFSM.FSMState
 import pekko.persistence.serialization.Message
-import pekko.util.JavaDurationConverters
 
 /**
  * SnapshotAfter Extension Id and factory for creating SnapshotAfter extension
@@ -430,8 +429,8 @@ object PersistentFSM {
      * Use Duration.Inf to deactivate an existing timeout.
      */
     def forMax(timeout: java.time.Duration): State[S, D, E] = {
-      import JavaDurationConverters._
-      forMax(timeout.asScala)
+      import scala.jdk.DurationConverters._
+      forMax(timeout.toScala)
     }
 
     /**

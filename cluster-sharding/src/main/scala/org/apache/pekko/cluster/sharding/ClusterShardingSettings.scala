@@ -22,7 +22,7 @@ import pekko.cluster.singleton.ClusterSingletonManagerSettings
 import pekko.coordination.lease.LeaseUsageSettings
 import pekko.japi.Util.immutableSeq
 import pekko.util.Helpers.toRootLowerCase
-import pekko.util.JavaDurationConverters._
+import scala.jdk.DurationConverters._
 import com.typesafe.config.Config
 
 import scala.collection.immutable
@@ -104,7 +104,7 @@ object ClusterShardingSettings {
 
     val lease = config.getString("use-lease") match {
       case s if s.isEmpty => None
-      case other          => Some(new LeaseUsageSettings(other, config.getDuration("lease-retry-interval").asScala))
+      case other          => Some(new LeaseUsageSettings(other, config.getDuration("lease-retry-interval").toScala))
     }
 
     new ClusterShardingSettings(
@@ -271,11 +271,11 @@ object ClusterShardingSettings {
 
       def withTimeout(timeout: FiniteDuration): IdleSettings = copy(timeout = timeout)
 
-      def withTimeout(timeout: java.time.Duration): IdleSettings = withTimeout(timeout.asScala)
+      def withTimeout(timeout: java.time.Duration): IdleSettings = withTimeout(timeout.toScala)
 
       def withInterval(interval: FiniteDuration): IdleSettings = copy(interval = Some(interval))
 
-      def withInterval(interval: java.time.Duration): IdleSettings = withInterval(interval.asScala)
+      def withInterval(interval: java.time.Duration): IdleSettings = withInterval(interval.toScala)
 
       private def copy(timeout: FiniteDuration = timeout, interval: Option[FiniteDuration] = interval): IdleSettings =
         new IdleSettings(timeout, interval)
@@ -1019,7 +1019,7 @@ final class ClusterShardingSettings(
     copy(shardRegionQueryTimeout = duration)
 
   def withShardRegionQueryTimeout(duration: java.time.Duration): ClusterShardingSettings =
-    copy(shardRegionQueryTimeout = duration.asScala)
+    copy(shardRegionQueryTimeout = duration.toScala)
 
   def withLeaseSettings(leaseSettings: LeaseUsageSettings): ClusterShardingSettings =
     copy(leaseSettings = Some(leaseSettings))

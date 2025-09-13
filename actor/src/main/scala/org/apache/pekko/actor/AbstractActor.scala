@@ -17,13 +17,12 @@ import java.util.Optional
 
 import scala.annotation.nowarn
 import scala.concurrent.ExecutionContextExecutor
-import scala.concurrent.duration.Duration
+import scala.concurrent.duration.{ Duration, FiniteDuration }
 import scala.runtime.BoxedUnit
 
 import org.apache.pekko
 import pekko.annotation.DoNotInherit
 import pekko.japi.pf.ReceiveBuilder
-import pekko.util.JavaDurationConverters
 
 /**
  * Java API: compatible with lambda expressions
@@ -165,8 +164,12 @@ object AbstractActor {
      * than the ordinary actor message processing thread, such as [[java.util.concurrent.CompletionStage]] and [[scala.concurrent.Future]] callbacks.
      */
     def getReceiveTimeout(): java.time.Duration = {
-      import JavaDurationConverters._
-      receiveTimeout.asJava
+      if (receiveTimeout.isFinite) {
+        import scala.jdk.DurationConverters._
+        receiveTimeout.asInstanceOf[FiniteDuration].toJava
+      } else {
+        java.time.Duration.ZERO
+      }
     }
 
     /**
@@ -189,8 +192,8 @@ object AbstractActor {
      * than the ordinary actor message processing thread, such as [[java.util.concurrent.CompletionStage]] and [[scala.concurrent.Future]] callbacks.
      */
     def setReceiveTimeout(timeout: java.time.Duration): Unit = {
-      import JavaDurationConverters._
-      setReceiveTimeout(timeout.asScala)
+      import scala.jdk.DurationConverters._
+      setReceiveTimeout(timeout.toScala)
     }
 
     /**

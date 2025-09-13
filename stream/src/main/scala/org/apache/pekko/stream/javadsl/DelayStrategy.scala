@@ -18,7 +18,7 @@ import scala.concurrent.duration.FiniteDuration
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.stream.scaladsl
-import pekko.util.JavaDurationConverters.JavaDurationOps
+import scala.jdk.DurationConverters._
 
 /**
  * Allows to manage delay and can be stateful to compute delay for any sequence of elements,
@@ -38,7 +38,7 @@ object DelayStrategy {
   /** INTERNAL API */
   @InternalApi
   private[javadsl] def asScala[T](delayStrategy: DelayStrategy[T]) = new scaladsl.DelayStrategy[T] {
-    override def nextDelay(elem: T): FiniteDuration = delayStrategy.nextDelay(elem).asScala
+    override def nextDelay(elem: T): FiniteDuration = delayStrategy.nextDelay(elem).toScala
   }
 
   /**

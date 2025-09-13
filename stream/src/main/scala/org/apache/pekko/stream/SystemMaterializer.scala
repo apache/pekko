@@ -29,7 +29,7 @@ import pekko.annotation.InternalApi
 import pekko.dispatch.Dispatchers
 import pekko.pattern.ask
 import pekko.stream.impl.MaterializerGuardian
-import pekko.util.JavaDurationConverters._
+import scala.jdk.DurationConverters._
 import pekko.util.Timeout
 
 /**
@@ -59,7 +59,7 @@ final class SystemMaterializer(system: ExtendedActorSystem) extends Extension {
   private[pekko] val materializerSettings = ActorMaterializerSettings(system)
 
   private implicit val materializerTimeout: Timeout =
-    system.settings.config.getDuration("pekko.stream.materializer.creation-timeout").asScala
+    system.settings.config.getDuration("pekko.stream.materializer.creation-timeout").toScala
 
   @InternalApi @nowarn("msg=deprecated")
   private val materializerGuardian = system.systemActorOf(

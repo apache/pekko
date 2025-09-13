@@ -27,7 +27,7 @@ import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 import pekko.cluster.ddata.ReplicatedData
 import pekko.cluster.ddata.SelfUniqueAddress
-import pekko.util.JavaDurationConverters._
+import scala.jdk.DurationConverters._
 
 object DistributedData extends ExtensionId[DistributedData] {
   def get(system: ActorSystem[_]): DistributedData = apply(system)
@@ -62,7 +62,7 @@ object DistributedData extends ExtensionId[DistributedData] {
         new ReplicatorMessageAdapter[A, B](
           context,
           distributedData.replicator,
-          distributedData.unexpectedAskTimeout.asJava)
+          distributedData.unexpectedAskTimeout.toJava)
       factory(replicatorAdapter)
     }
   }

@@ -25,7 +25,7 @@ import pekko.annotation.InternalApi
 import pekko.cluster.{ ddata => dd }
 import pekko.cluster.ddata.ReplicatedData
 import pekko.pattern.ask
-import pekko.util.JavaDurationConverters._
+import scala.jdk.DurationConverters._
 import pekko.util.Timeout
 
 /**
@@ -84,7 +84,7 @@ import pekko.util.Timeout
               case cmd: JReplicator.Get[d] =>
                 implicit val timeout: Timeout = Timeout(cmd.consistency.timeout match {
                   case java.time.Duration.ZERO => localAskTimeout
-                  case t                       => t.asScala + additionalAskTimeout
+                  case t                       => t.toScala + additionalAskTimeout
                 })
                 import ctx.executionContext
                 val reply =
@@ -112,7 +112,7 @@ import pekko.util.Timeout
               case cmd: JReplicator.Update[d] =>
                 implicit val timeout: Timeout = Timeout(cmd.writeConsistency.timeout match {
                   case java.time.Duration.ZERO => localAskTimeout
-                  case t                       => t.asScala + additionalAskTimeout
+                  case t                       => t.toScala + additionalAskTimeout
                 })
                 import ctx.executionContext
                 val reply =
@@ -179,7 +179,7 @@ import pekko.util.Timeout
               case cmd: JReplicator.Delete[d] =>
                 implicit val timeout: Timeout = Timeout(cmd.consistency.timeout match {
                   case java.time.Duration.ZERO => localAskTimeout
-                  case t                       => t.asScala + additionalAskTimeout
+                  case t                       => t.toScala + additionalAskTimeout
                 })
                 import ctx.executionContext
                 val reply =

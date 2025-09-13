@@ -17,7 +17,7 @@ import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
 import org.apache.pekko.japi.function.{ Effect, Function2, Predicate, Predicate2, Procedure, Procedure2, Procedure3 }
-import pekko.util.JavaDurationConverters._
+import scala.jdk.DurationConverters._
 
 /**
  * Java API: compatible with lambda expressions
@@ -123,7 +123,7 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
       stateName: S,
       stateTimeout: java.time.Duration,
       stateFunctionBuilder: FSMStateFunctionBuilder[S, D]): Unit = {
-    when(stateName, stateTimeout.asScala, stateFunctionBuilder)
+    when(stateName, stateTimeout.toScala, stateFunctionBuilder)
   }
 
   /**
@@ -159,7 +159,7 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
    * @param timeout state timeout for the initial state, overriding the default timeout for that state
    */
   final def startWith(stateName: S, stateData: D, timeout: java.time.Duration): Unit = {
-    startWith(stateName, stateData, timeout.asScala)
+    startWith(stateName, stateData, timeout.toScala)
   }
 
   /**
@@ -461,7 +461,7 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
    * in the mailbox when the new timer was started.
    */
   def startTimerWithFixedDelay(name: String, msg: Any, delay: java.time.Duration): Unit =
-    startTimerWithFixedDelay(name, msg, delay.asScala)
+    startTimerWithFixedDelay(name, msg, delay.toScala)
 
   /**
    * Schedules a message to be sent repeatedly to the `self` actor with a
@@ -489,7 +489,7 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
    * in the mailbox when the new timer was started.
    */
   def startTimerAtFixedRate(name: String, msg: Any, interval: java.time.Duration): Unit =
-    startTimerAtFixedRate(name, msg, interval.asScala)
+    startTimerAtFixedRate(name, msg, interval.toScala)
 
   /**
    * Start a timer that will send `msg` once to the `self` actor after
@@ -501,7 +501,7 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
    * in the mailbox when the new timer was started.
    */
   def startSingleTimer(name: String, msg: Any, delay: java.time.Duration): Unit =
-    startSingleTimer(name, msg, delay.asScala)
+    startSingleTimer(name, msg, delay.toScala)
 
   /**
    * Default reason if calling `stop()`.

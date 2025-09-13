@@ -30,7 +30,7 @@ import org.apache.pekko
 import pekko.dispatch.ExecutionContexts
 import pekko.pattern.ask
 import pekko.routing.MurmurHash
-import pekko.util.{ Helpers, JavaDurationConverters, Timeout }
+import pekko.util.{ Helpers, Timeout }
 import pekko.util.FutureConverters
 
 /**
@@ -107,8 +107,8 @@ abstract class ActorSelection extends Serializable {
    */
   def resolveOne(timeout: java.time.Duration): CompletionStage[ActorRef] = {
     import FutureConverters._
-    import JavaDurationConverters._
-    resolveOne(timeout.asScala).asJava
+    import scala.jdk.DurationConverters._
+    resolveOne(timeout.toScala).asJava
   }
 
   override def toString: String = {

@@ -21,7 +21,7 @@ import org.apache.pekko
 import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.Extension
 import pekko.actor.typed.ExtensionId
-import pekko.util.JavaDurationConverters._
+import scala.jdk.DurationConverters._
 import pekko.util.Timeout
 
 object TestKitSettings {
@@ -97,5 +97,5 @@ final class TestKitSettings(val config: Config) {
    * Java API: Scale the `duration` with the configured `TestTimeFactor`
    */
   def dilated(duration: java.time.Duration): java.time.Duration =
-    dilated(duration.asScala).asJava
+    dilated(duration.toScala).toJava
 }

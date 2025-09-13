@@ -17,7 +17,7 @@ import org.apache.pekko
 import pekko.actor.{ ActorRef, OneForOneStrategy, Props, SupervisorStrategy }
 import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.pattern.internal.{ BackoffOnRestartSupervisor, BackoffOnStopSupervisor }
-import pekko.util.JavaDurationConverters._
+import scala.jdk.DurationConverters._
 
 import scala.concurrent.duration.{ Duration, FiniteDuration }
 
@@ -132,7 +132,7 @@ object BackoffOpts {
       minBackoff: java.time.Duration,
       maxBackoff: java.time.Duration,
       randomFactor: Double): BackoffOnFailureOptions =
-    onFailure(childProps, childName, minBackoff.asScala, maxBackoff.asScala, randomFactor)
+    onFailure(childProps, childName, minBackoff.toScala, maxBackoff.toScala, randomFactor)
 
   /**
    * Back-off options for creating a back-off supervisor actor that expects a child actor to stop on failure.
@@ -254,7 +254,7 @@ object BackoffOpts {
       minBackoff: java.time.Duration,
       maxBackoff: java.time.Duration,
       randomFactor: Double): BackoffOnStopOptions =
-    onStop(childProps, childName, minBackoff.asScala, maxBackoff.asScala, randomFactor)
+    onStop(childProps, childName, minBackoff.toScala, maxBackoff.toScala, randomFactor)
 
 }
 

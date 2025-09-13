@@ -23,7 +23,7 @@ import pekko.annotation.ApiMayChange
 import pekko.japi.Pair
 import pekko.persistence.testkit.{ ExpectedFailure, SnapshotMeta, SnapshotOperation, SnapshotStorage }
 import pekko.persistence.testkit.scaladsl.{ SnapshotTestKit => ScalaTestKit }
-import pekko.util.JavaDurationConverters._
+import scala.jdk.DurationConverters._
 import pekko.util.ccompat.JavaConverters._
 
 /**
@@ -43,7 +43,7 @@ class SnapshotTestKit(scalaTestkit: ScalaTestKit) {
    * Check for `max` time that nothing has been saved in the storage.
    */
   def expectNothingPersisted(persistenceId: String, max: Duration): Unit =
-    scalaTestkit.expectNothingPersisted(persistenceId, max.asScala)
+    scalaTestkit.expectNothingPersisted(persistenceId, max.toScala)
 
   /**
    * Check that `snapshot` has been saved in the storage.
@@ -55,7 +55,7 @@ class SnapshotTestKit(scalaTestkit: ScalaTestKit) {
    * Check for `max` time that `snapshot` has been saved in the storage.
    */
   def expectNextPersisted[A](persistenceId: String, snapshot: A, max: Duration): A =
-    scalaTestkit.expectNextPersisted(persistenceId, snapshot, max.asScala)
+    scalaTestkit.expectNextPersisted(persistenceId, snapshot, max.toScala)
 
   /**
    * Check that next persisted in storage for particular persistence id snapshot has expected type.
@@ -67,7 +67,7 @@ class SnapshotTestKit(scalaTestkit: ScalaTestKit) {
    * Check for `max` time that next persisted in storage for particular persistence id snapshot has expected type.
    */
   def expectNextPersistedClass[A](persistenceId: String, cla: Class[A], max: Duration): A =
-    scalaTestkit.expectNextPersistedClass[A](persistenceId, cla, max.asScala)
+    scalaTestkit.expectNextPersistedClass[A](persistenceId, cla, max.toScala)
 
   /**
    * Fail next `n` write operations with the `cause` exception for particular persistence id.
@@ -202,7 +202,7 @@ class SnapshotTestKit(scalaTestkit: ScalaTestKit) {
    * Receive for `max` time next `n` snapshots that have been persisted in the storage.
    */
   def receivePersisted[A](persistenceId: String, n: Int, cla: Class[A], max: Duration): JList[A] =
-    scalaTestkit.receivePersisted[A](persistenceId, n, cla, max.asScala).asJava
+    scalaTestkit.receivePersisted[A](persistenceId, n, cla, max.toScala).asJava
 
   /**
    * Persist `snapshots` with metadata into storage in order.

@@ -21,7 +21,8 @@ import pekko.japi.Pair
 import pekko.japi.function
 import pekko.pattern.StatusReply
 import pekko.stream.javadsl.Flow
-import pekko.util.JavaDurationConverters
+
+import scala.jdk.DurationConverters.JavaDurationOps
 
 /**
  * Collection of Flows aimed at integrating with typed Actors.
@@ -71,7 +72,7 @@ object ActorFlow {
       makeMessage: function.Function2[I, ActorRef[A], Q]): Flow[I, A, NotUsed] =
     org.apache.pekko.stream.typed.scaladsl.ActorFlow
       .ask[I, Q, A](parallelism = 2)(ref)((i, ref) => makeMessage(i, ref))(
-        JavaDurationConverters.asFiniteDuration(timeout))
+        timeout.toScala)
       .asJava
 
   /**
@@ -85,7 +86,7 @@ object ActorFlow {
       makeMessage: function.Function2[I, ActorRef[StatusReply[A]], Q]): Flow[I, A, NotUsed] =
     org.apache.pekko.stream.typed.scaladsl.ActorFlow
       .askWithStatus[I, Q, A](parallelism = 2)(ref)((i, ref) => makeMessage(i, ref))(
-        JavaDurationConverters.asFiniteDuration(timeout))
+        timeout.toScala)
       .asJava
 
   /**
@@ -157,7 +158,7 @@ object ActorFlow {
       .via(
         org.apache.pekko.stream.typed.scaladsl.ActorFlow
           .askWithContext[I, Q, A, Ctx](parallelism = 2)(ref)((i, ref) => makeMessage(i, ref))(
-            JavaDurationConverters.asFiniteDuration(timeout))
+            timeout.toScala)
           .map { case (a, ctx) => Pair(a, ctx) })
       .asJava
 
@@ -176,7 +177,7 @@ object ActorFlow {
       .via(
         org.apache.pekko.stream.typed.scaladsl.ActorFlow
           .askWithStatusAndContext[I, Q, A, Ctx](parallelism = 2)(ref)((i, ref) => makeMessage(i, ref))(
-            JavaDurationConverters.asFiniteDuration(timeout))
+            timeout.toScala)
           .map { case (a, ctx) => Pair(a, ctx) })
       .asJava
 
@@ -194,7 +195,7 @@ object ActorFlow {
       .via(
         org.apache.pekko.stream.typed.scaladsl.ActorFlow
           .askWithContext[I, Q, A, Ctx](parallelism)(ref)((i, ref) => makeMessage(i, ref))(
-            JavaDurationConverters.asFiniteDuration(timeout))
+            timeout.toScala)
           .map { case (a, ctx) => Pair(a, ctx) })
       .asJava
   }
