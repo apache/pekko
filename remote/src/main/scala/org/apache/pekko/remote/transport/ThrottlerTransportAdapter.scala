@@ -16,15 +16,13 @@ package org.apache.pekko.remote.transport
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 
-import scala.annotation.tailrec
+import scala.annotation.{ nowarn, tailrec }
 import scala.collection.immutable.Queue
 import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration._
 import scala.math.min
 import scala.util.{ Failure, Success }
 import scala.util.control.NonFatal
-
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.actor._

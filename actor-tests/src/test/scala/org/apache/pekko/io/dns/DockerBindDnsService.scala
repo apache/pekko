@@ -14,6 +14,7 @@
 package org.apache.pekko.io.dns
 
 import scala.concurrent.duration._
+import scala.jdk.CollectionConverters._
 import scala.util.Try
 import scala.util.control.NonFatal
 
@@ -28,7 +29,6 @@ import org.scalatest.concurrent.Eventually
 
 import org.apache.pekko
 import pekko.testkit.PekkoSpec
-import pekko.util.ccompat.JavaConverters._
 
 abstract class DockerBindDnsService(config: Config) extends PekkoSpec(config) with Eventually {
 

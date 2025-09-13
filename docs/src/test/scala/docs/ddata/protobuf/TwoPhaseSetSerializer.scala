@@ -16,8 +16,10 @@ package docs.ddata.protobuf
 //#serializer
 import java.util.ArrayList
 import java.util.Collections
+
+import scala.jdk.CollectionConverters._
+
 import org.apache.pekko
-import pekko.util.ccompat.JavaConverters._
 import pekko.actor.ExtendedActorSystem
 import pekko.cluster.ddata.GSet
 import pekko.cluster.ddata.protobuf.SerializationSupport

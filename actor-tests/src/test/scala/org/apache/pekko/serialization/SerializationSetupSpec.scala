@@ -15,8 +15,8 @@ package org.apache.pekko.serialization
 
 import java.util.{ BitSet => ProgrammaticJavaDummy }
 import java.util.{ Date => SerializableDummy }
-import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.ConcurrentHashMap
 
 import com.typesafe.config.ConfigFactory
 

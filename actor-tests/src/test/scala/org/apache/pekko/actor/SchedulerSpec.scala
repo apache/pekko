@@ -17,17 +17,16 @@ import java.io.Closeable
 import java.util.concurrent._
 import java.util.concurrent.ThreadLocalRandom
 
+import scala.annotation.nowarn
 import scala.concurrent.{ Await, ExecutionContext, Future }
 import scala.concurrent.duration._
 import scala.util.Try
-import scala.util.control.NoStackTrace
-import scala.util.control.NonFatal
+import scala.util.control.{ NoStackTrace, NonFatal }
 
 import atomic.{ AtomicInteger, AtomicReference }
-import scala.annotation.nowarn
 import com.typesafe.config.{ Config, ConfigFactory }
-
 import org.scalatest.BeforeAndAfterEach
+
 import org.apache.pekko
 import pekko.pattern.ask
 import pekko.testkit._

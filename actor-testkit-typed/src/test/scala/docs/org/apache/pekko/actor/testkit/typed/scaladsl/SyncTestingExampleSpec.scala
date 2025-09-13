@@ -17,8 +17,7 @@ package docs.org.apache.pekko.actor.testkit.typed.scaladsl
 import org.apache.pekko
 import pekko.actor.testkit.typed.CapturedLogEvent
 import pekko.actor.testkit.typed.Effect._
-import pekko.actor.testkit.typed.scaladsl.BehaviorTestKit
-import pekko.actor.testkit.typed.scaladsl.TestInbox
+import pekko.actor.testkit.typed.scaladsl.{ BehaviorTestKit, TestInbox }
 import pekko.actor.typed._
 import pekko.actor.typed.scaladsl._
 import com.typesafe.config.ConfigFactory

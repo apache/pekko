@@ -15,9 +15,11 @@ package org.apache.pekko.serialization.jackson
 
 import java.util.Optional
 import java.util.concurrent.ConcurrentHashMap
+
 import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.util.{ Failure, Success }
+
 import com.fasterxml.jackson.annotation.{ JsonAutoDetect, JsonCreator, PropertyAccessor }
 import com.fasterxml.jackson.core.{
   JsonFactory,
@@ -42,6 +44,7 @@ import com.fasterxml.jackson.databind.cfg.EnumFeature
 import com.fasterxml.jackson.databind.json.JsonMapper
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule
 import com.typesafe.config.Config
+
 import org.apache.pekko
 import pekko.actor.{
   ActorSystem,
@@ -258,7 +261,7 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
       dynamicAccess: DynamicAccess,
       log: Option[LoggingAdapter]): Unit = {
 
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
 
     val configuredModules = config.getStringList("jackson-modules").asScala
     val modules1 =
@@ -332,13 +335,13 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
     }
 
   private def features(config: Config, section: String): immutable.Seq[(String, Boolean)] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     val cfg = config.getConfig(section)
     cfg.root.keySet().asScala.map(key => key -> cfg.getBoolean(key)).toList
   }
 
   private def configPairs(config: Config, section: String): immutable.Seq[(String, String)] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     val cfg = config.getConfig(section)
     cfg.root.keySet().asScala.map(key => key -> cfg.getString(key)).toList
   }

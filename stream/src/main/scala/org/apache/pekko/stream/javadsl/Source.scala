@@ -21,6 +21,7 @@ import scala.annotation.varargs
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable
 import scala.concurrent.{ Future, Promise }
+import scala.jdk.CollectionConverters._
 import scala.reflect.ClassTag
 
 import org.apache.pekko
@@ -37,7 +38,6 @@ import pekko.util.{ unused, _ }
 import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
 import pekko.util.OptionConverters._
-import pekko.util.ccompat.JavaConverters._
 
 import org.reactivestreams.{ Publisher, Subscriber }
 
@@ -829,7 +829,7 @@ object Source {
  */
 final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[SourceShape[Out], Mat] {
 
-  import org.apache.pekko.util.ccompat.JavaConverters._
+  import scala.jdk.CollectionConverters._
 
   override def shape: SourceShape[Out] = delegate.shape
 

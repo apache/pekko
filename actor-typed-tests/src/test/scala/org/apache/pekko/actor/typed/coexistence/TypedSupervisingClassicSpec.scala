@@ -12,6 +12,7 @@
  */
 
 package org.apache.pekko.actor.typed.coexistence
+
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko

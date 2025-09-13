@@ -13,9 +13,8 @@
 
 package org.apache.pekko.remote.classic.transport
 
-import scala.concurrent.{ Await, Future }
-
 import scala.annotation.nowarn
+import scala.concurrent.{ Await, Future }
 
 import org.apache.pekko
 import pekko.actor.{ Address, ExtendedActorSystem }

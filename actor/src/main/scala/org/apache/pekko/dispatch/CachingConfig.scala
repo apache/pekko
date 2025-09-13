@@ -13,7 +13,6 @@
 
 package org.apache.pekko.dispatch
 
-import java.lang.Enum
 import java.util
 import java.util.concurrent.{ ConcurrentHashMap, TimeUnit }
 

@@ -223,7 +223,7 @@ final case class Attributes(attributeList: List[Attributes.Attribute] = Nil) {
    * `get` to get the most specific attribute value.
    */
   def getAttributeList(): java.util.List[Attribute] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     attributeList.asJava
   }
 

@@ -13,10 +13,12 @@
 
 package docs.org.apache.pekko.typed
 
-import scala.concurrent.duration._
-import org.apache.pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import scala.annotation.nowarn
+import scala.concurrent.duration._
+
 import org.scalatest.wordspec.AnyWordSpecLike
+
+import org.apache.pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 
 object FaultToleranceDocSpec {
   // #bubbling-example

@@ -33,9 +33,8 @@ import pekko.remote.serialization.WrappedPayloadSupport
 import pekko.serialization.{ BaseSerializer, SerializerWithStringManifest }
 
 import scala.annotation.tailrec
-import pekko.util.ccompat.JavaConverters._
-
 import scala.collection.immutable.TreeMap
+import scala.jdk.CollectionConverters._
 
 /**
  * INTERNAL API

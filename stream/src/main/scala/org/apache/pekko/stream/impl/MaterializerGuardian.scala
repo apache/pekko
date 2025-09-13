@@ -17,11 +17,9 @@ import scala.annotation.nowarn
 import scala.concurrent.Promise
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.Props
+import pekko.actor.{ Actor, Props }
 import pekko.annotation.InternalApi
-import pekko.stream.ActorMaterializerSettings
-import pekko.stream.Materializer
+import pekko.stream.{ ActorMaterializerSettings, Materializer }
 
 /**
  * INTERNAL API

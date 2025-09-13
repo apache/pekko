@@ -13,17 +13,14 @@
 
 package org.apache.pekko.actor.typed
 
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
-import scala.concurrent.TimeoutException
+import scala.concurrent.{ ExecutionContext, Future, TimeoutException }
 import scala.concurrent.duration._
-import scala.util.Success
+import scala.util.{ Failure, Success }
+
 import org.scalatest.wordspec.AnyWordSpecLike
+
 import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.testkit.typed.scaladsl.TestProbe
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, LoggingTestKit, ScalaTestWithActorTestKit, TestProbe }
 import pekko.actor.typed.internal.adapter.ActorSystemAdapter
 import pekko.actor.typed.scaladsl.AskPattern._
 import pekko.actor.typed.scaladsl.Behaviors
@@ -31,8 +28,6 @@ import pekko.actor.typed.scaladsl.Behaviors._
 import pekko.pattern.StatusReply
 import pekko.testkit.TestException
 import pekko.util.Timeout
-
-import scala.util.Failure
 
 object AskSpec {
   sealed trait Msg

@@ -14,8 +14,7 @@
 package org.apache.pekko.routing
 
 import scala.collection.immutable
-import scala.concurrent.Await
-import scala.concurrent.ExecutionContextExecutor
+import scala.concurrent.{ Await, ExecutionContextExecutor }
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory

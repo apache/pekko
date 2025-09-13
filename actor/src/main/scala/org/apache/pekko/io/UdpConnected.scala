@@ -16,9 +16,8 @@ package org.apache.pekko.io
 import java.lang.{ Iterable => JIterable }
 import java.net.InetSocketAddress
 
-import scala.collection.immutable
-
 import scala.annotation.nowarn
+import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.actor._
@@ -267,7 +266,7 @@ object UdpConnectedMessage {
   def resumeReading: Command = ResumeReading
 
   implicit private def fromJava[T](coll: JIterable[T]): immutable.Iterable[T] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     coll.asScala.to(immutable.Iterable)
   }
 }

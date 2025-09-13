@@ -19,9 +19,7 @@ import com.typesafe.config.Config
 
 import org.apache.pekko
 import pekko.actor.dispatch.ActorModelSpec
-import pekko.dispatch.DispatcherPrerequisites
-import pekko.dispatch.MessageDispatcher
-import pekko.dispatch.MessageDispatcherConfigurator
+import pekko.dispatch.{ DispatcherPrerequisites, MessageDispatcher, MessageDispatcherConfigurator }
 
 object CallingThreadDispatcherModelSpec {
   import ActorModelSpec._

@@ -19,9 +19,7 @@ import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
 import pekko.actor.ActorRef
-import pekko.testkit.PekkoSpec
-import pekko.testkit.TestActors
-import pekko.testkit.WithLogCapturing
+import pekko.testkit.{ PekkoSpec, TestActors, WithLogCapturing }
 
 object ProxyShardingSpec {
   val config = """

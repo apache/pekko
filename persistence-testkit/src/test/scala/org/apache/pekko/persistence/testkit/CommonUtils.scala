@@ -27,7 +27,7 @@ trait CommonUtils extends AnyWordSpecLike with TestKitBase {
 
   protected def randomPid() = UUID.randomUUID().toString
 
-  import pekko.util.ccompat.JavaConverters._
+  import scala.jdk.CollectionConverters._
 
   def initSystemWithEnabledPlugin(name: String, serializeMessages: Boolean, serializeSnapshots: Boolean) =
     ActorSystem(

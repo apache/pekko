@@ -17,8 +17,7 @@ import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
-import pekko.cluster.sharding.ShardRegion.ClusterShardingStats
-import pekko.cluster.sharding.ShardRegion.CurrentShardRegionState
+import pekko.cluster.sharding.ShardRegion.{ ClusterShardingStats, CurrentShardRegionState }
 import pekko.cluster.sharding.typed.scaladsl.EntityTypeKey
 import pekko.util.JavaDurationConverters
 

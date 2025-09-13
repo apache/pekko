@@ -14,13 +14,11 @@
 package org.apache.pekko.cluster.sharding.internal
 
 import org.apache.pekko
-import pekko.actor.ActorLogging
-import pekko.actor.Props
+import pekko.actor.{ ActorLogging, Props }
 import pekko.annotation.InternalApi
 import pekko.cluster.sharding.ShardCoordinator.Internal
 import pekko.cluster.sharding.ShardRegion.ShardId
-import pekko.cluster.sharding.ClusterShardingSerializable
-import pekko.cluster.sharding.ClusterShardingSettings
+import pekko.cluster.sharding.{ ClusterShardingSerializable, ClusterShardingSettings }
 import pekko.persistence._
 
 import scala.collection.mutable

@@ -13,13 +13,14 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import org.apache.pekko
-import pekko.stream.testkit.{ BaseTwoStreamsSetup, TestSubscriber }
+import scala.annotation.nowarn
+import scala.concurrent.duration._
+
 import org.reactivestreams.Publisher
 
-import scala.concurrent.duration._
+import org.apache.pekko
+import pekko.stream.testkit.{ BaseTwoStreamsSetup, TestSubscriber }
 import pekko.testkit.EventFilter
-import scala.annotation.nowarn
 
 @nowarn // keep unused imports
 class FlowZipWithSpec extends BaseTwoStreamsSetup {

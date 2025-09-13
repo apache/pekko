@@ -14,17 +14,13 @@
 package org.apache.pekko.cluster.sbr
 
 import scala.collection.immutable
-import scala.concurrent.duration.Duration
-import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.duration.{ Duration, FiniteDuration }
+
 import org.apache.pekko
 import pekko.actor.Address
-import pekko.annotation.InternalApi
-import pekko.annotation.InternalStableApi
+import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.cluster.ClusterSettings.DataCenter
-import pekko.cluster.Member
-import pekko.cluster.MemberStatus
-import pekko.cluster.Reachability
-import pekko.cluster.UniqueAddress
+import pekko.cluster.{ Member, MemberStatus, Reachability, UniqueAddress }
 import pekko.coordination.lease.scaladsl.Lease
 
 /**

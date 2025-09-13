@@ -13,16 +13,14 @@
 
 package docs.org.apache.pekko.cluster.sharding.typed
 
-import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.cluster.sharding.typed.scaladsl.ClusterSharding
-import pekko.cluster.sharding.typed.scaladsl.Entity
-import pekko.cluster.typed.Cluster
-import pekko.cluster.typed.Join
-import pekko.persistence.typed.PersistenceId
 import com.typesafe.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
+
+import org.apache.pekko
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
+import pekko.cluster.sharding.typed.scaladsl.{ ClusterSharding, Entity }
+import pekko.cluster.typed.{ Cluster, Join }
+import pekko.persistence.typed.PersistenceId
 
 object HelloWorldEventSourcedEntityExampleSpec {
   val config = ConfigFactory.parseString("""

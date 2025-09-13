@@ -16,12 +16,12 @@ package org.apache.pekko.cluster.ddata.protobuf
 import java.{ lang => jl }
 import java.io.NotSerializableException
 import java.util
-import java.util.ArrayList
-import java.util.Collections
-import java.util.Comparator
-import scala.annotation.tailrec
+import java.util.{ ArrayList, Collections, Comparator }
+
+import scala.annotation.{ nowarn, tailrec }
 import scala.collection.immutable
-import scala.annotation.nowarn
+import scala.jdk.CollectionConverters._
+
 import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.actor.ExtendedActorSystem
@@ -36,7 +36,6 @@ import pekko.serialization.BaseSerializer
 import pekko.serialization.Serialization
 import pekko.serialization.SerializerWithStringManifest
 import pekko.util.ByteString.UTF_8
-import pekko.util.ccompat.JavaConverters._
 
 private object ReplicatedDataSerializer {
   /*

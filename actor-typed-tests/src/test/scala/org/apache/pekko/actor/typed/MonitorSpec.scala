@@ -16,9 +16,7 @@ package org.apache.pekko.actor.typed
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.testkit.typed.scaladsl.TestProbe
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit, TestProbe }
 import pekko.actor.typed.scaladsl.Behaviors
 
 class MonitorSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with LogCapturing {

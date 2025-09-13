@@ -13,8 +13,7 @@
 
 package org.apache.pekko.serialization
 
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
+import java.nio.{ ByteBuffer, ByteOrder }
 
 import scala.util.Random
 

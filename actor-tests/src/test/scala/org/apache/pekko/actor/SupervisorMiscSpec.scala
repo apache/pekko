@@ -15,11 +15,10 @@ package org.apache.pekko.actor
 
 import java.util.concurrent.{ CountDownLatch, TimeUnit }
 
+import scala.annotation.nowarn
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
-
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.pattern.ask

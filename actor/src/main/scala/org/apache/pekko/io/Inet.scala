@@ -13,9 +13,7 @@
 
 package org.apache.pekko.io
 
-import java.net.DatagramSocket
-import java.net.ServerSocket
-import java.net.Socket
+import java.net.{ DatagramSocket, ServerSocket, Socket }
 import java.nio.channels.DatagramChannel
 
 import org.apache.pekko

@@ -13,8 +13,7 @@
 
 package org.apache.pekko.actor.typed.scaladsl.adapter
 
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.{ CountDownLatch, TimeUnit }
 
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
@@ -22,8 +21,7 @@ import org.scalatest.wordspec.AnyWordSpec
 
 import org.apache.pekko
 import pekko.actor.ActorSystemImpl
-import pekko.actor.testkit.typed.scaladsl.ActorTestKit
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
+import pekko.actor.testkit.typed.scaladsl.{ ActorTestKit, LogCapturing }
 import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.scaladsl.Behaviors
 

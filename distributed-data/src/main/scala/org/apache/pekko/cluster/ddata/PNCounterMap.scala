@@ -64,7 +64,7 @@ final class PNCounterMap[A] private[pekko] (private[pekko] val underlying: ORMap
 
   /** Java API */
   def getEntries: java.util.Map[A, BigInteger] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     underlying.entries.map { case (k, c) => k -> c.value.bigInteger }.asJava
   }
 

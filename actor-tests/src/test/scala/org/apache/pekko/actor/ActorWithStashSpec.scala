@@ -15,8 +15,8 @@ package org.apache.pekko.actor
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
-
 import scala.annotation.nowarn
+
 import org.scalatest.BeforeAndAfterEach
 
 import org.apache.pekko

@@ -15,14 +15,13 @@ package docs.delivery
 
 import java.util.UUID
 
+import scala.annotation.nowarn
 import scala.concurrent.duration._
-import scala.util.Failure
-import scala.util.Success
+import scala.util.{ Failure, Success }
 
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.typed.ActorRef
-import scala.annotation.nowarn
 
 @nowarn("msg=never used")
 object WorkPullingDocExample {

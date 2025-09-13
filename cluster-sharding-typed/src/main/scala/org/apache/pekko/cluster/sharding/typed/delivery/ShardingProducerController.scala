@@ -22,12 +22,8 @@ import com.typesafe.config.Config
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.delivery.ConsumerController
-import pekko.actor.typed.delivery.DurableProducerQueue
-import pekko.actor.typed.delivery.ProducerController
+import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior }
+import pekko.actor.typed.delivery.{ ConsumerController, DurableProducerQueue, ProducerController }
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.annotation.ApiMayChange
 import pekko.cluster.sharding.typed.ShardingEnvelope
@@ -152,13 +148,13 @@ object ShardingProducerController {
 
     /** Java API */
     def getEntitiesWithDemand: java.util.Set[String] = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       entitiesWithDemand.asJava
     }
 
     /** Java API */
     def getBufferedForEntitiesWithoutDemand: java.util.Map[String, Integer] = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       bufferedForEntitiesWithoutDemand.iterator.map { case (k, v) => k -> v.asInstanceOf[Integer] }.toMap.asJava
     }
   }

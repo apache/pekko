@@ -13,21 +13,20 @@
 
 package org.apache.pekko.cluster.sharding
 
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.util.Success
-import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.actor._
 import pekko.actor.DeadLetterSuppression
 import pekko.annotation.DoNotInherit
 import pekko.annotation.{ InternalApi, InternalStableApi }
-import pekko.cluster.Cluster
-import pekko.cluster.ClusterEvent
+import pekko.cluster.{ Cluster, ClusterEvent }
 import pekko.cluster.ClusterEvent._
-import pekko.cluster.ddata.LWWRegister
-import pekko.cluster.ddata.LWWRegisterKey
+import pekko.cluster.ddata.{ LWWRegister, LWWRegisterKey }
 import pekko.cluster.ddata.Replicator._
 import pekko.cluster.ddata.SelfUniqueAddress
 import pekko.cluster.sharding.ShardRegion.ShardId
@@ -211,14 +210,14 @@ object ShardCoordinator {
         shardId: ShardId,
         currentShardAllocations: Map[ActorRef, immutable.IndexedSeq[ShardId]]): Future[ActorRef] = {
 
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       allocateShard(requester, shardId, currentShardAllocations.asJava)
     }
 
     override final def rebalance(
         currentShardAllocations: Map[ActorRef, immutable.IndexedSeq[ShardId]],
         rebalanceInProgress: Set[ShardId]): Future[Set[ShardId]] = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       implicit val ec = ExecutionContexts.parasitic
       rebalance(currentShardAllocations.asJava, rebalanceInProgress.asJava).map(_.asScala.toSet)
     }

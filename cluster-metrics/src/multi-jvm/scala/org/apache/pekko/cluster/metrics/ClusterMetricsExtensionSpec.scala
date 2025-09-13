@@ -18,8 +18,7 @@ import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
-import pekko.cluster.MemberStatus
-import pekko.cluster.MultiNodeClusterSpec
+import pekko.cluster.{ MemberStatus, MultiNodeClusterSpec }
 import pekko.remote.testkit.MultiNodeConfig
 
 trait ClusterMetricsCommonConfig extends MultiNodeConfig {

@@ -30,7 +30,7 @@ import pekko.protobufv3.internal.ByteString
 import pekko.protobufv3.internal.MessageLite
 import pekko.remote.ByteStringUtils
 import pekko.serialization._
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * Some useful serialization helper methods.

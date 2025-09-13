@@ -17,10 +17,8 @@ import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
-import pekko.actor.typed.delivery.internal.ChunkedMessage
-import pekko.actor.typed.delivery.internal.DeliverySerializable
-import pekko.annotation.ApiMayChange
-import pekko.annotation.InternalApi
+import pekko.actor.typed.delivery.internal.{ ChunkedMessage, DeliverySerializable }
+import pekko.annotation.{ ApiMayChange, InternalApi }
 
 /**
  * Actor message protocol for storing and confirming reliable delivery of messages. A [[pekko.actor.typed.Behavior]]

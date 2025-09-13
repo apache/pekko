@@ -22,9 +22,7 @@ import com.typesafe.config.Config
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Behavior
+import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior }
 import pekko.actor.typed.delivery.internal.WorkPullingProducerControllerImpl
 import pekko.actor.typed.receptionist.ServiceKey
 import pekko.actor.typed.scaladsl.Behaviors

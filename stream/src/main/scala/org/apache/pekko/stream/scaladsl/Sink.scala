@@ -15,7 +15,7 @@ package org.apache.pekko.stream.scaladsl
 
 import scala.annotation.tailrec
 import scala.annotation.unchecked.uncheckedVariance
-import scala.collection.immutable
+import scala.collection.{ immutable, Factory }
 import scala.concurrent.Future
 import scala.util.{ Failure, Success, Try }
 
@@ -29,7 +29,6 @@ import pekko.stream.impl._
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.fusing.GraphStages
 import pekko.stream.stage._
-import pekko.util.ccompat._
 
 import org.reactivestreams.{ Publisher, Subscriber }
 

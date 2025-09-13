@@ -20,17 +20,12 @@ import scala.collection.immutable
 import scala.util.control.NonFatal
 
 import org.apache.pekko
-import pekko.annotation.DoNotInherit
-import pekko.annotation.InternalApi
+import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.dispatch._
 import pekko.dispatch.sysmsg._
-import pekko.event.AddressTerminatedTopic
-import pekko.event.EventStream
-import pekko.event.Logging
-import pekko.event.MarkerLoggingAdapter
+import pekko.event.{ AddressTerminatedTopic, EventStream, Logging, MarkerLoggingAdapter }
 import pekko.pattern.PromiseActorRef
-import pekko.serialization.JavaSerializer
-import pekko.serialization.Serialization
+import pekko.serialization.{ JavaSerializer, Serialization }
 import pekko.util.OptionVal
 
 object ActorRef {

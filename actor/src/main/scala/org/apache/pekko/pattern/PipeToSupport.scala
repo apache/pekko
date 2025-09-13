@@ -16,9 +16,8 @@ package org.apache.pekko.pattern
 import java.util.concurrent.CompletionStage
 
 import scala.concurrent.{ ExecutionContext, Future }
+import scala.language.implicitConversions
 import scala.util.{ Failure, Success }
-
-import language.implicitConversions
 
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorRef, Status }

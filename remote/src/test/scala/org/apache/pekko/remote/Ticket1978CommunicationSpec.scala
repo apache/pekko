@@ -17,11 +17,11 @@ import java.io.ByteArrayOutputStream
 import java.security.NoSuchAlgorithmException
 import java.util.zip.GZIPOutputStream
 
+import scala.annotation.nowarn
 import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
 import scala.reflect.classTag
 
-import scala.annotation.nowarn
 import com.typesafe.config._
 
 import org.apache.pekko

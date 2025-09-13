@@ -16,16 +16,13 @@ package docs.delivery
 //#imports
 import scala.concurrent.Future
 import scala.concurrent.duration._
-import scala.util.Failure
-import scala.util.Success
+import scala.util.{ Failure, Success }
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
+import pekko.actor.typed.{ ActorRef, Behavior }
 import pekko.actor.typed.delivery.ConsumerController
-import pekko.actor.typed.scaladsl.ActorContext
-import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors }
 import pekko.cluster.sharding.typed.delivery.ShardingConsumerController
 import pekko.util.Timeout
 

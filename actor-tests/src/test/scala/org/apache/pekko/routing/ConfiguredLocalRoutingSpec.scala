@@ -13,20 +13,16 @@
 
 package org.apache.pekko.routing
 
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import scala.annotation.nowarn
 import com.typesafe.config.Config
 
 import org.apache.pekko
 import pekko.ConfigurationException
-import pekko.actor.{ Actor, ActorRef, Deploy, Props }
-import pekko.actor.ActorPath
-import pekko.actor.ActorSystem
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.UnstartedCell
+import pekko.actor.{ Actor, ActorPath, ActorRef, ActorSystem, Deploy, ExtendedActorSystem, Props, UnstartedCell }
 import pekko.pattern.gracefulStop
 import pekko.testkit.{ DefaultTimeout, ImplicitSender, PekkoSpec }
 import pekko.testkit.TestActors.echoActorProps

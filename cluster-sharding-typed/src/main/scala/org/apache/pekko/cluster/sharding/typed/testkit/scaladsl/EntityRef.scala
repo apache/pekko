@@ -16,8 +16,7 @@ package org.apache.pekko.cluster.sharding.typed.testkit.scaladsl
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
 import pekko.cluster.sharding.typed.internal.testkit.TestEntityRefImpl
-import pekko.cluster.sharding.typed.scaladsl.EntityRef
-import pekko.cluster.sharding.typed.scaladsl.EntityTypeKey
+import pekko.cluster.sharding.typed.scaladsl.{ EntityRef, EntityTypeKey }
 
 /**
  * For testing purposes this `EntityRef` can be used in place of a real [[pekko.cluster.sharding.typed.scaladsl.EntityRef]].

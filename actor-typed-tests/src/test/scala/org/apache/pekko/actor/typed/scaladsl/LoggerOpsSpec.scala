@@ -17,9 +17,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
 import org.slf4j.LoggerFactory
 
 import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, LoggingTestKit, ScalaTestWithActorTestKit }
 
 object LoggerOpsSpec {
   case class Value1(i: Int)

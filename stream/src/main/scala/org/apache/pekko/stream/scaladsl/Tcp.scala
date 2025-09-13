@@ -21,15 +21,12 @@ import javax.net.ssl.SSLSession
 import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent.Future
-import scala.concurrent.duration.Duration
-import scala.concurrent.duration.FiniteDuration
-import scala.util.Success
-import scala.util.Try
+import scala.concurrent.duration.{ Duration, FiniteDuration }
+import scala.util.{ Success, Try }
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
-import pekko.Done
-import pekko.NotUsed
+import pekko.{ Done, NotUsed }
 import pekko.actor._
 import pekko.annotation.InternalApi
 import pekko.io.{ Tcp => IoTcp }
@@ -38,12 +35,9 @@ import pekko.io.Inet.SocketOption
 import pekko.stream._
 import pekko.stream.Attributes.Attribute
 import pekko.stream.impl.fusing.GraphStages.detacher
-import pekko.stream.impl.io.ConnectionSourceStage
-import pekko.stream.impl.io.OutgoingConnectionStage
-import pekko.stream.impl.io.TcpIdleTimeout
-import pekko.util.ByteString
+import pekko.stream.impl.io.{ ConnectionSourceStage, OutgoingConnectionStage, TcpIdleTimeout }
+import pekko.util.{ unused, ByteString }
 import pekko.util.JavaDurationConverters._
-import pekko.util.unused
 
 object Tcp extends ExtensionId[Tcp] with ExtensionIdProvider {
 

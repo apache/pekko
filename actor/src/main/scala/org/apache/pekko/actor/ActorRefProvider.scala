@@ -21,8 +21,7 @@ import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.ConfigurationException
-import pekko.annotation.DoNotInherit
-import pekko.annotation.InternalApi
+import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.dispatch.{ Mailboxes, RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.dispatch.Dispatchers
 import pekko.dispatch.sysmsg._

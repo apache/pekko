@@ -15,9 +15,7 @@ package org.apache.pekko.util
 
 import java.util.Comparator
 
-import scala.concurrent.Await
-import scala.concurrent.ExecutionContextExecutor
-import scala.concurrent.Future
+import scala.concurrent.{ Await, ExecutionContextExecutor, Future }
 import scala.util.Random
 
 import org.scalatest.matchers.should.Matchers

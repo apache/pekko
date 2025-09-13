@@ -15,18 +15,13 @@ package org.apache.pekko.cluster.metrics
 
 import java.io.Closeable
 import java.lang.System.{ currentTimeMillis => newTimestamp }
-import java.lang.management.ManagementFactory
-import java.lang.management.MemoryMXBean
-import java.lang.management.MemoryUsage
-import java.lang.management.OperatingSystemMXBean
+import java.lang.management.{ ManagementFactory, MemoryMXBean, MemoryUsage, OperatingSystemMXBean }
 
 import org.hyperic.sigar.SigarProxy
 
 import org.apache.pekko
 import pekko.ConfigurationException
-import pekko.actor.ActorSystem
-import pekko.actor.Address
-import pekko.actor.ExtendedActorSystem
+import pekko.actor.{ ActorSystem, Address, ExtendedActorSystem }
 import pekko.cluster.Cluster
 import pekko.event.Logging
 

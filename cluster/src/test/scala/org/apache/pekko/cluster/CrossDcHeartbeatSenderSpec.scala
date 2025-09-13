@@ -16,16 +16,12 @@ package org.apache.pekko.cluster
 import scala.collection.immutable.SortedSet
 
 import org.apache.pekko
-import pekko.actor.ActorSelection
-import pekko.actor.Address
-import pekko.actor.Props
+import pekko.actor.{ ActorSelection, Address, Props }
 import pekko.cluster.ClusterEvent.CurrentClusterState
 import pekko.cluster.ClusterHeartbeatSender.Heartbeat
 import pekko.cluster.CrossDcHeartbeatSender.ReportStatus
 import pekko.cluster.CrossDcHeartbeatSenderSpec.TestCrossDcHeartbeatSender
-import pekko.testkit.PekkoSpec
-import pekko.testkit.ImplicitSender
-import pekko.testkit.TestProbe
+import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
 import pekko.util.Version
 
 object CrossDcHeartbeatSenderSpec {

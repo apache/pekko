@@ -13,10 +13,7 @@
 
 package org.apache.pekko.dataflow
 
-import scala.concurrent.Await
-import scala.concurrent.ExecutionContextExecutor
-import scala.concurrent.ExecutionException
-import scala.concurrent.Future
+import scala.concurrent.{ Await, ExecutionContextExecutor, ExecutionException, Future }
 import scala.concurrent.duration._
 
 import org.apache.pekko

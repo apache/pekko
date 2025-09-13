@@ -22,8 +22,7 @@ import CachePolicy._
 
 import org.apache.pekko
 import pekko.actor.NoSerializationVerificationNeeded
-import pekko.annotation.DoNotInherit
-import pekko.annotation.InternalApi
+import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.io.dns.internal.{ DomainName, _ }
 import pekko.util.{ unused, ByteIterator, ByteString }
 

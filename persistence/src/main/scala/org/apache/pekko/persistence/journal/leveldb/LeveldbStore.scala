@@ -18,6 +18,7 @@ import java.io.File
 import scala.collection.immutable
 import scala.collection.mutable
 import scala.concurrent.Future
+import scala.jdk.CollectionConverters._
 import scala.util._
 import scala.util.control.NonFatal
 
@@ -30,7 +31,6 @@ import pekko.persistence._
 import pekko.persistence.journal.Tagged
 import pekko.persistence.journal.WriteJournalBase
 import pekko.serialization.SerializationExtension
-import pekko.util.ccompat.JavaConverters._
 
 private[persistence] object LeveldbStore {
   val emptyConfig = ConfigFactory.empty()

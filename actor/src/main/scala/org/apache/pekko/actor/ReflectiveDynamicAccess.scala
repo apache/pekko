@@ -17,8 +17,7 @@ import java.lang.reflect.InvocationTargetException
 
 import scala.collection.immutable
 import scala.reflect.ClassTag
-import scala.util.Failure
-import scala.util.Try
+import scala.util.{ Failure, Try }
 
 import org.apache.pekko
 import pekko.annotation.DoNotInherit

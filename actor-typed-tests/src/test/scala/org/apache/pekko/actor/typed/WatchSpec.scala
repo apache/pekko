@@ -22,12 +22,8 @@ import org.apache.pekko
 import pekko.Done
 import pekko.actor
 import pekko.actor.testkit.typed.TestException
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.testkit.typed.scaladsl.TestProbe
-import pekko.actor.typed.scaladsl.AbstractBehavior
-import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, LoggingTestKit, ScalaTestWithActorTestKit, TestProbe }
+import pekko.actor.typed.scaladsl.{ AbstractBehavior, Behaviors }
 import pekko.actor.typed.scaladsl.adapter._
 
 object WatchSpec {

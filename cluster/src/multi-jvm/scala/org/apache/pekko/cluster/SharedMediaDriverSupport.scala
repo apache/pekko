@@ -22,8 +22,7 @@ import scala.util.control.NonFatal
 
 import com.typesafe.config.ConfigFactory
 import io.aeron.CommonContext
-import io.aeron.driver.MediaDriver
-import io.aeron.driver.ThreadingMode
+import io.aeron.driver.{ MediaDriver, ThreadingMode }
 import org.agrona.IoUtil
 
 import org.apache.pekko
@@ -31,8 +30,7 @@ import pekko.remote.RemoteSettings
 import pekko.remote.artery.ArterySettings
 import pekko.remote.artery.ArterySettings.AeronUpd
 import pekko.remote.artery.aeron.TaskRunner
-import pekko.remote.testkit.MultiNodeConfig
-import pekko.remote.testkit.MultiNodeSpec
+import pekko.remote.testkit.{ MultiNodeConfig, MultiNodeSpec }
 
 object SharedMediaDriverSupport {
 

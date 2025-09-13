@@ -17,12 +17,13 @@ import scala.concurrent.{ ExecutionContextExecutor, Future }
 import scala.concurrent.duration.FiniteDuration
 import scala.reflect.ClassTag
 import scala.util.Try
+
 import org.slf4j.Logger
+
 import org.apache.pekko
 import pekko.actor.ClassicActorContextProvider
 import pekko.actor.typed._
-import pekko.annotation.DoNotInherit
-import pekko.annotation.InternalApi
+import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.pattern.StatusReply
 import pekko.util.Timeout
 

@@ -19,49 +19,43 @@ import java.util.concurrent.ThreadLocalRandom
 import java.util.concurrent.TimeUnit
 import java.util.function.{ Function => JFunction }
 
-import scala.annotation.varargs
+import scala.annotation.{ nowarn, varargs }
 import scala.collection.immutable
 import scala.collection.immutable.TreeSet
 import scala.collection.mutable
 import scala.concurrent.duration._
 import scala.concurrent.duration.FiniteDuration
-import scala.util.Failure
-import scala.util.Success
-import scala.util.Try
-import scala.util.control.NoStackTrace
-import scala.util.control.NonFatal
+import scala.util.{ Failure, Success, Try }
+import scala.util.control.{ NoStackTrace, NonFatal }
 
-import scala.annotation.nowarn
 import com.typesafe.config.Config
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorInitializationException
-import pekko.actor.ActorLogging
-import pekko.actor.ActorRef
-import pekko.actor.ActorSelection
-import pekko.actor.ActorSystem
-import pekko.actor.Address
-import pekko.actor.Cancellable
-import pekko.actor.DeadLetterSuppression
-import pekko.actor.Deploy
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.NoSerializationVerificationNeeded
-import pekko.actor.OneForOneStrategy
-import pekko.actor.Props
-import pekko.actor.ReceiveTimeout
-import pekko.actor.SupervisorStrategy
-import pekko.actor.Terminated
+import pekko.actor.{
+  Actor,
+  ActorInitializationException,
+  ActorLogging,
+  ActorRef,
+  ActorSelection,
+  ActorSystem,
+  Address,
+  Cancellable,
+  DeadLetterSuppression,
+  Deploy,
+  ExtendedActorSystem,
+  NoSerializationVerificationNeeded,
+  OneForOneStrategy,
+  Props,
+  ReceiveTimeout,
+  SupervisorStrategy,
+  Terminated
+}
 import pekko.annotation.InternalApi
-import pekko.cluster.Cluster
+import pekko.cluster.{ Cluster, Member, MemberStatus, UniqueAddress }
 import pekko.cluster.ClusterEvent._
 import pekko.cluster.ClusterEvent.InitialStateAsEvents
-import pekko.cluster.Member
-import pekko.cluster.MemberStatus
-import pekko.cluster.UniqueAddress
 import pekko.cluster.ddata.DurableStore._
-import pekko.cluster.ddata.Key.KeyId
-import pekko.cluster.ddata.Key.KeyR
+import pekko.cluster.ddata.Key.{ KeyId, KeyR }
 import pekko.dispatch.Dispatchers
 import pekko.event.Logging
 import pekko.remote.RARP
@@ -96,7 +90,7 @@ object ReplicatorSettings {
       else Some(config.getBytes("log-data-size-exceeding").toInt)
     }
 
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     new ReplicatorSettings(
       roles = roleOption(config.getString("role")).toSet,
       gossipInterval = config.getDuration("gossip-interval", MILLISECONDS).millis,
@@ -231,7 +225,7 @@ final class ReplicatorSettings(
    * Java API
    */
   def withDurableKeys(durableKeys: java.util.Set[String]): ReplicatorSettings = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     withDurableKeys(durableKeys.asScala.toSet)
   }
 
@@ -408,7 +402,7 @@ object Replicator {
      * Java API
      */
     def getKeyIds: java.util.Set[String] = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       keyIds.asJava
     }
   }

@@ -15,8 +15,7 @@ package org.apache.pekko.cluster.metrics.protobuf
 
 import org.apache.pekko
 import pekko.actor.{ Address, ExtendedActorSystem }
-import pekko.cluster.MemberStatus
-import pekko.cluster.TestMember
+import pekko.cluster.{ MemberStatus, TestMember }
 import pekko.cluster.metrics._
 import pekko.testkit.PekkoSpec
 

@@ -17,10 +17,12 @@ import com.typesafe.config._
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.cluster.routing.ClusterRouterGroup
-import pekko.cluster.routing.ClusterRouterGroupSettings
-import pekko.cluster.routing.ClusterRouterPool
-import pekko.cluster.routing.ClusterRouterPoolSettings
+import pekko.cluster.routing.{
+  ClusterRouterGroup,
+  ClusterRouterGroupSettings,
+  ClusterRouterPool,
+  ClusterRouterPoolSettings
+}
 import pekko.routing._
 import pekko.testkit._
 

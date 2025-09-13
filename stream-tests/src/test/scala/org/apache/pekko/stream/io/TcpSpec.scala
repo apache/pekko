@@ -19,25 +19,14 @@ import java.util.concurrent.atomic.AtomicInteger
 
 import scala.annotation.nowarn
 import scala.collection.immutable
-import scala.concurrent.Await
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
-import scala.concurrent.Promise
+import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
 import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.Done
 import pekko.NotUsed
-import pekko.actor.Actor
-import pekko.actor.ActorIdentity
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.Identify
-import pekko.actor.Kill
-import pekko.io.Dns
-import pekko.io.DnsProvider
-import pekko.io.SimpleDnsCache
+import pekko.actor.{ Actor, ActorIdentity, ActorRef, ActorSystem, ExtendedActorSystem, Identify, Kill }
+import pekko.io.{ Dns, DnsProvider, SimpleDnsCache }
 import pekko.io.Tcp._
 import pekko.io.dns.DnsProtocol
 import pekko.stream._
@@ -48,17 +37,13 @@ import pekko.stream.scaladsl.Tcp.ServerBinding
 import pekko.stream.testkit._
 import pekko.testkit.EventFilter
 import pekko.testkit.SocketUtil.{ temporaryServerAddress, temporaryServerHostnameAndPort }
-import pekko.testkit.TestKit
-import pekko.testkit.TestLatch
-import pekko.testkit.TestProbe
-import pekko.testkit.WithLogCapturing
+import pekko.testkit.{ TestKit, TestLatch, TestProbe, WithLogCapturing }
 import pekko.util.ByteString
 
 import org.scalatest.concurrent.PatienceConfiguration
 import org.scalatest.concurrent.PatienceConfiguration.Timeout
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{ Config, ConfigFactory }
 
 @nowarn("msg=never used")
 class NonResolvingDnsActor(cache: SimpleDnsCache, config: Config) extends Actor {

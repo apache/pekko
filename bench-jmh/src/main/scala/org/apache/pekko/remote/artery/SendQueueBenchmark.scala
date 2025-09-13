@@ -13,9 +13,7 @@
 
 package org.apache.pekko.remote.artery
 
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.CyclicBarrier
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.{ CountDownLatch, CyclicBarrier, TimeUnit }
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -26,9 +24,7 @@ import org.openjdk.jmh.annotations._
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
-import pekko.stream.KillSwitches
-import pekko.stream.OverflowStrategy
-import pekko.stream.SystemMaterializer
+import pekko.stream.{ KillSwitches, OverflowStrategy, SystemMaterializer }
 import pekko.stream.scaladsl._
 
 @State(Scope.Benchmark)

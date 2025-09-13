@@ -16,12 +16,12 @@ package org.apache.pekko.actor.testkit.typed.javadsl
 import java.util.concurrent.ThreadLocalRandom
 
 import scala.collection.immutable
+import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
 import pekko.actor.testkit.typed.internal.TestInboxImpl
 import pekko.actor.typed.ActorRef
 import pekko.annotation.DoNotInherit
-import pekko.util.ccompat.JavaConverters._
 
 object TestInbox {
   import pekko.actor.testkit.typed.scaladsl.TestInbox.address

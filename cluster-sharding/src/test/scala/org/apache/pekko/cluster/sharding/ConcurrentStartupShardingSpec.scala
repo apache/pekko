@@ -15,15 +15,10 @@ package org.apache.pekko.cluster.sharding
 
 import scala.concurrent.duration._
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorRef
-import pekko.actor.Props
-import pekko.cluster.Cluster
-import pekko.cluster.MemberStatus
-import pekko.testkit.PekkoSpec
-import pekko.testkit.DeadLettersFilter
+import pekko.actor.{ Actor, ActorRef, Props }
+import pekko.cluster.{ Cluster, MemberStatus }
+import pekko.testkit.{ DeadLettersFilter, PekkoSpec, WithLogCapturing }
 import pekko.testkit.TestEvent.Mute
-import pekko.testkit.WithLogCapturing
 
 object ConcurrentStartupShardingSpec {
 

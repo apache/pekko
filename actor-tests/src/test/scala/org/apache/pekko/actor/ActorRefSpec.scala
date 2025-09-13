@@ -13,10 +13,7 @@
 
 package org.apache.pekko.actor
 
-import java.lang.IllegalStateException
-
-import scala.concurrent.Await
-import scala.concurrent.Promise
+import scala.concurrent.{ Await, Promise }
 import scala.concurrent.duration._
 
 import org.apache.pekko

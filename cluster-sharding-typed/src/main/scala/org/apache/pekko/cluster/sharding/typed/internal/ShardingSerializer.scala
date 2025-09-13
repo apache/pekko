@@ -14,15 +14,14 @@
 package org.apache.pekko.cluster.sharding.typed.internal
 
 import java.io.NotSerializableException
+
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.cluster.sharding.typed.ShardingEnvelope
 import pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
 import pekko.protobufv3.internal.CodedOutputStream
 import pekko.remote.serialization.WrappedPayloadSupport
-import pekko.serialization.BaseSerializer
-import pekko.serialization.ByteBufferSerializer
-import pekko.serialization.SerializerWithStringManifest
+import pekko.serialization.{ BaseSerializer, ByteBufferSerializer, SerializerWithStringManifest }
 
 import java.nio.ByteBuffer
 

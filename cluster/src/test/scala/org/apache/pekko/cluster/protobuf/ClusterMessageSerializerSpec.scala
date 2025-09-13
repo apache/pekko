@@ -13,9 +13,9 @@
 
 package org.apache.pekko.cluster.protobuf
 
-import collection.immutable.SortedSet
-
 import scala.annotation.nowarn
+import scala.collection.immutable.SortedSet
+
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko

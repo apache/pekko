@@ -17,13 +17,10 @@ import java.io.NotSerializableException
 import java.util.concurrent.{ ConcurrentHashMap, TimeoutException }
 import java.util.concurrent.locks.LockSupport
 
-import scala.annotation.tailrec
+import scala.annotation.{ nowarn, tailrec }
 import scala.concurrent.Future
-import scala.concurrent.duration.Deadline
-import scala.concurrent.duration.Duration
+import scala.concurrent.duration.{ Deadline, Duration }
 import scala.util.control.NonFatal
-
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.{ OnlyCauseStackTrace, PekkoException }

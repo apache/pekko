@@ -23,6 +23,7 @@ import pekko.actor.typed.scaladsl.{ Behaviors, Routers }
 // #pool
 import pekko.actor.typed.DispatcherSelector
 import org.scalatest.wordspec.AnyWordSpecLike
+
 object RouterSpec {
 
   // #routee

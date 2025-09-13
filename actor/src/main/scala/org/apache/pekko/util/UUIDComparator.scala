@@ -13,8 +13,7 @@
 
 package org.apache.pekko.util
 
-import java.util.Comparator
-import java.util.UUID
+import java.util.{ Comparator, UUID }
 
 /**
  * Scala implementation of UUIDComparator in

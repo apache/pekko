@@ -21,8 +21,7 @@ import org.apache.pekko.actor.typed.ActorSystem
 
 //#imports
 import org.apache.pekko
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
+import pekko.actor.typed.{ ActorRef, Behavior }
 import pekko.actor.typed.delivery.ProducerController
 import pekko.actor.typed.scaladsl.Behaviors
 

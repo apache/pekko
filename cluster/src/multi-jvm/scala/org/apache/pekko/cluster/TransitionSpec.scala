@@ -13,10 +13,12 @@
 
 package org.apache.pekko.cluster
 
+import scala.language.implicitConversions
+
+import com.typesafe.config.ConfigFactory
+
 import InternalClusterAction._
 import MemberStatus._
-import com.typesafe.config.ConfigFactory
-import language.implicitConversions
 
 import org.apache.pekko
 import pekko.actor.Address

@@ -13,6 +13,7 @@
 
 package docs.org.apache.pekko.persistence.typed
 
+import scala.annotation.nowarn
 import scala.concurrent.duration._
 
 import org.apache.pekko
@@ -37,7 +38,6 @@ import pekko.persistence.typed.PersistenceId
 import org.apache.pekko
 import pekko.persistence.typed.RecoveryCompleted
 import pekko.persistence.typed.SnapshotFailed
-import scala.annotation.nowarn
 
 // unused variables in pattern match are useful in the docs
 @nowarn

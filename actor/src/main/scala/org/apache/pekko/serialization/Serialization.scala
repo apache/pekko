@@ -15,7 +15,6 @@ package org.apache.pekko.serialization
 
 import java.io.NotSerializableException
 import java.nio.ByteBuffer
-import java.util.NoSuchElementException
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicReference
 
@@ -55,7 +54,7 @@ object Serialization {
     }
 
     private final def configToMap(cfg: Config): Map[String, String] = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       cfg.root.unwrapped.asScala.toMap.map { case (k, v) => k -> v.toString }
     }
   }

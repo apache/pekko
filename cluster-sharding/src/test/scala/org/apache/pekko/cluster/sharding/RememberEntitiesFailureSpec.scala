@@ -13,26 +13,26 @@
 
 package org.apache.pekko.cluster.sharding
 
+import scala.annotation.nowarn
+import scala.concurrent.duration._
+import scala.concurrent.ExecutionContext
+
+import com.typesafe.config.ConfigFactory
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.{ Actor, ActorLogging, ActorRef, Props, Timers }
 import pekko.cluster.Cluster
 import pekko.cluster.MemberStatus
+import pekko.cluster.sharding.ShardCoordinator.ShardAllocationStrategy
 import pekko.cluster.sharding.ShardRegion.ShardId
-import pekko.cluster.sharding.internal.RememberEntitiesCoordinatorStore
-import pekko.cluster.sharding.internal.RememberEntitiesShardStore
-import pekko.cluster.sharding.internal.RememberEntitiesProvider
-import pekko.testkit.PekkoSpec
-import pekko.testkit.TestException
-import pekko.testkit.TestProbe
-import pekko.testkit.WithLogCapturing
-import scala.annotation.nowarn
-import com.typesafe.config.ConfigFactory
-import org.scalatest.wordspec.AnyWordSpecLike
-import scala.concurrent.duration._
-import scala.concurrent.ExecutionContext
-
-import org.apache.pekko.cluster.sharding.ShardCoordinator.ShardAllocationStrategy
+import pekko.cluster.sharding.internal.{
+  RememberEntitiesCoordinatorStore,
+  RememberEntitiesProvider,
+  RememberEntitiesShardStore
+}
+import pekko.testkit.{ PekkoSpec, TestException, TestProbe, WithLogCapturing }
 
 object RememberEntitiesFailureSpec {
   val config = ConfigFactory.parseString(s"""

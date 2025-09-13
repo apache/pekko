@@ -14,8 +14,7 @@
 package org.apache.pekko.actor
 
 import java.util.concurrent.TimeoutException
-import java.util.concurrent.atomic.AtomicBoolean
-import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.{ AtomicBoolean, AtomicInteger }
 
 import scala.concurrent.Await
 import scala.concurrent.duration._

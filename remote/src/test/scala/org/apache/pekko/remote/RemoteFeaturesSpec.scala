@@ -13,11 +13,10 @@
 
 package org.apache.pekko.remote
 
+import scala.annotation.nowarn
 import scala.concurrent.duration._
 
-import scala.annotation.nowarn
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
 import pekko.actor.Actor

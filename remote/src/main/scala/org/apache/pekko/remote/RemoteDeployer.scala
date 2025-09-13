@@ -13,6 +13,8 @@
 
 package org.apache.pekko.remote
 
+import scala.jdk.CollectionConverters._
+
 import com.typesafe.config._
 
 import org.apache.pekko
@@ -21,7 +23,6 @@ import pekko.actor._
 import pekko.remote.routing.RemoteRouterConfig
 import pekko.routing._
 import pekko.routing.Pool
-import pekko.util.ccompat.JavaConverters._
 
 @SerialVersionUID(1L)
 final case class RemoteScope(node: Address) extends Scope {

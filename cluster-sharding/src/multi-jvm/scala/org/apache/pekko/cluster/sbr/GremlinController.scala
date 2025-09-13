@@ -14,19 +14,11 @@
 package org.apache.pekko.cluster.sbr
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorLogging
-import pekko.actor.ActorRef
-import pekko.actor.Address
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.Props
+import pekko.actor.{ Actor, ActorLogging, ActorRef, Address, ExtendedActorSystem, Props }
 import pekko.cluster.Cluster
 import pekko.pattern.pipe
 import pekko.remote.RemoteActorRefProvider
-import pekko.remote.transport.ThrottlerTransportAdapter.Blackhole
-import pekko.remote.transport.ThrottlerTransportAdapter.Direction
-import pekko.remote.transport.ThrottlerTransportAdapter.SetThrottle
-import pekko.remote.transport.ThrottlerTransportAdapter.Unthrottled
+import pekko.remote.transport.ThrottlerTransportAdapter.{ Blackhole, Direction, SetThrottle, Unthrottled }
 import pekko.serialization.jackson.CborSerializable
 
 object GremlinController {

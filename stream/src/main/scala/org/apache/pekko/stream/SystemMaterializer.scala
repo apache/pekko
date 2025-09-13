@@ -14,17 +14,18 @@
 package org.apache.pekko.stream
 
 import scala.annotation.nowarn
-import scala.concurrent.Await
-import scala.concurrent.Promise
+import scala.concurrent.{ Await, Promise }
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.actor.ClassicActorSystemProvider
-import pekko.actor.Deploy
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.Extension
-import pekko.actor.ExtensionId
-import pekko.actor.ExtensionIdProvider
+import pekko.actor.{
+  ActorSystem,
+  ClassicActorSystemProvider,
+  Deploy,
+  ExtendedActorSystem,
+  Extension,
+  ExtensionId,
+  ExtensionIdProvider
+}
 import pekko.annotation.InternalApi
 import pekko.dispatch.Dispatchers
 import pekko.pattern.ask

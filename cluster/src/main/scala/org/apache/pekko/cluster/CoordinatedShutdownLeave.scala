@@ -15,9 +15,7 @@ package org.apache.pekko.cluster
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.Actor
-import pekko.actor.ActorRef
-import pekko.actor.Props
+import pekko.actor.{ Actor, ActorRef, Props }
 import pekko.cluster.ClusterEvent._
 import pekko.cluster.MemberStatus._
 

@@ -19,8 +19,7 @@ import scala.collection.immutable.SortedSet
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.Props
+import pekko.actor.{ Actor, Props }
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.testkit._
 

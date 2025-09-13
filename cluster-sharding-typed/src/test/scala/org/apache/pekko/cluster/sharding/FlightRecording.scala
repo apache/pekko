@@ -12,8 +12,8 @@
  */
 
 package org.apache.pekko.cluster.sharding
-import java.nio.file.Files
-import java.nio.file.Path
+
+import java.nio.file.{ Files, Path }
 
 import org.apache.pekko.actor.{ ActorSystem, ExtendedActorSystem }
 

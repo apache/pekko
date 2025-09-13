@@ -16,20 +16,12 @@ package org.apache.pekko.actor.typed.delivery.internal
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.PostStop
-import pekko.actor.typed.delivery.ConsumerController
+import pekko.actor.typed.{ ActorRef, Behavior, PostStop }
+import pekko.actor.typed.delivery.{ ConsumerController, ProducerController }
 import pekko.actor.typed.delivery.ConsumerController.DeliverThenStop
-import pekko.actor.typed.delivery.ProducerController
 import pekko.actor.typed.internal.ActorFlightRecorder
-import pekko.actor.typed.receptionist.Receptionist
-import pekko.actor.typed.receptionist.ServiceKey
-import pekko.actor.typed.scaladsl.ActorContext
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.actor.typed.scaladsl.LoggerOps
-import pekko.actor.typed.scaladsl.StashBuffer
-import pekko.actor.typed.scaladsl.TimerScheduler
+import pekko.actor.typed.receptionist.{ Receptionist, ServiceKey }
+import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors, LoggerOps, StashBuffer, TimerScheduler }
 import pekko.annotation.InternalApi
 import pekko.serialization.SerializationExtension
 import pekko.util.ByteString

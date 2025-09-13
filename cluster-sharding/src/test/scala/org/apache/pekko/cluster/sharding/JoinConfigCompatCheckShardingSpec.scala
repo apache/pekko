@@ -21,8 +21,7 @@ import com.typesafe.config.{ Config, ConfigFactory }
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.cluster.{ Cluster, ClusterReadView }
-import pekko.testkit.WithLogCapturing
-import pekko.testkit.{ LongRunningTest, PekkoSpec }
+import pekko.testkit.{ LongRunningTest, PekkoSpec, WithLogCapturing }
 
 class JoinConfigCompatCheckShardingSpec extends PekkoSpec() with WithLogCapturing {
 
