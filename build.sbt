@@ -107,8 +107,7 @@ lazy val root = Project(id = "pekko", base = file("."))
       benchJmh,
       protobufV3,
       pekkoScalaNightly,
-      docs,
-      serialversionRemoverPlugin))
+      docs))
   .settings(
     Compile / headerCreate / unmanagedSources := (baseDirectory.value / "project").**("*.scala").get)
   .settings(PekkoBuild.welcomeSettings)
@@ -120,7 +119,6 @@ lazy val actor = pekkoModule("actor")
   .settings(AutomaticModuleName.settings("pekko.actor"))
   .settings(AddMetaInfLicenseFiles.actorSettings)
   .settings(VersionGenerator.settings)
-  .settings(serialversionRemoverPluginSettings)
   .enablePlugins(BoilerplatePlugin, SbtOsgi)
 
 lazy val actorTests = pekkoModule("actor-tests")
@@ -406,7 +404,6 @@ lazy val remote =
     .settings(OSGi.remote)
     .settings(Protobuf.settings)
     .settings(Test / parallelExecution := false)
-    .settings(serialversionRemoverPluginSettings)
     .enablePlugins(DependWalkerPlugin, SbtOsgi)
 
 lazy val remoteTests = pekkoModule("remote-tests")
@@ -601,20 +598,6 @@ lazy val billOfMaterials = Project("bill-of-materials", file("bill-of-materials"
     name := "pekko-bom",
     bomIncludeProjects := userProjects,
     description := s"${description.value} (depending on Scala ${CrossVersion.binaryScalaVersion(scalaVersion.value)})")
-
-lazy val serialversionRemoverPlugin =
-  Project(id = "serialVersionRemoverPlugin", base = file("plugins/serialversion-remover-plugin")).settings(
-    scalaVersion := Dependencies.scala3Version,
-    libraryDependencies += ("org.scala-lang" %% "scala3-compiler" % Dependencies.scala3Version),
-    Compile / doc / sources := Nil,
-    Compile / publishArtifact := false)
-
-lazy val serialversionRemoverPluginSettings = Seq(
-  Compile / scalacOptions ++= (
-    if (scalaVersion.value.startsWith("3."))
-      Seq("-Xplugin:" + (serialversionRemoverPlugin / Compile / Keys.`package`).value.getAbsolutePath.toString)
-    else Nil
-  ))
 
 def pekkoModule(moduleName: String): Project =
   Project(id = moduleName, base = file(moduleName))

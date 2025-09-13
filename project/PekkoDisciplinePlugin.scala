@@ -119,7 +119,7 @@ object PekkoDisciplinePlugin extends AutoPlugin {
   lazy val disciplineSettings =
     if (enabled) {
       nowarnSettings ++ Seq(
-        Compile / scalacOptions ++= Seq("-Xfatal-warnings"),
+        Compile / scalacOptions ++= (if (scalaVersion.value.startsWith("3.")) Nil else Seq("-Xfatal-warnings")),
         Test / scalacOptions --= testUndiscipline,
         Compile / javacOptions ++= (
           if (jvmIgnoreWarnings || scalaVersion.value.startsWith("3.") || nonFatalJavaWarningsFor(name.value)) {
