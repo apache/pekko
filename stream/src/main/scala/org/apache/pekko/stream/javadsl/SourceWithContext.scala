@@ -17,6 +17,7 @@ import java.util.Optional
 import java.util.concurrent.CompletionStage
 
 import scala.annotation.unchecked.uncheckedVariance
+import scala.jdk.OptionConverters._
 
 import org.apache.pekko
 import pekko.actor.ClassicActorSystemProvider
@@ -28,7 +29,6 @@ import pekko.stream._
 import pekko.util.ConstantFun
 import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
-import pekko.util.OptionConverters._
 import pekko.util.ccompat.JavaConverters._
 
 object SourceWithContext {

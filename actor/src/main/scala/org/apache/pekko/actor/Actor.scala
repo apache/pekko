@@ -100,7 +100,7 @@ final case class ActorIdentity(correlationId: Any, ref: Option[ActorRef]) {
    * not defined if no actor matched the request.
    */
   def getActorRef: Optional[ActorRef] = {
-    import pekko.util.OptionConverters._
+    import scala.jdk.OptionConverters._
     ref.toJava
   }
 }

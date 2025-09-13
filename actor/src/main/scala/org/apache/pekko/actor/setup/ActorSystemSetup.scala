@@ -17,10 +17,10 @@ import java.util.Optional
 
 import scala.annotation.varargs
 import scala.reflect.ClassTag
+import scala.jdk.OptionConverters._
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.util.OptionConverters._
 
 /**
  * Marker supertype for a setup part that can be put inside [[pekko.actor.setup.ActorSystemSetup]], if a specific concrete setup

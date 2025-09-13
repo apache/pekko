@@ -19,6 +19,7 @@ import java.util.stream.Collector
 
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable
+import scala.jdk.OptionConverters._
 import scala.util.Try
 
 import org.apache.pekko
@@ -32,7 +33,6 @@ import pekko.stream.impl.LinearTraversalBuilder
 import pekko.stream.scaladsl.SinkToCompletionStage
 import pekko.util.ConstantFun.scalaAnyToUnit
 import pekko.util.FutureConverters._
-import pekko.util.OptionConverters._
 
 import org.reactivestreams.{ Publisher, Subscriber }
 

@@ -226,7 +226,7 @@ final class EventSourcedBehaviorTestKit[Command, Event, State](
 
   private val _persistenceTestKit = new PersistenceTestKit(delegate.persistenceTestKit)
   private val _snapshotTestKit = {
-    import pekko.util.OptionConverters._
+    import scala.jdk.OptionConverters._
     delegate.snapshotTestKit.map(new SnapshotTestKit(_)).toJava
   }
 

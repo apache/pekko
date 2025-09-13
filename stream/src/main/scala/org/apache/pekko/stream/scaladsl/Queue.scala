@@ -17,6 +17,7 @@ import java.util.Optional
 import java.util.concurrent.CompletionStage
 
 import scala.concurrent.Future
+import scala.jdk.OptionConverters._
 
 import org.apache.pekko
 import pekko.Done
@@ -24,7 +25,6 @@ import pekko.annotation.InternalApi
 import pekko.dispatch.ExecutionContexts
 import pekko.stream.QueueOfferResult
 import pekko.util.FutureConverters._
-import pekko.util.OptionConverters._
 
 /**
  * This trait allows to have a queue as a data source for some stream.

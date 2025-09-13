@@ -21,6 +21,7 @@ import javax.net.ssl.SSLEngine
 import javax.net.ssl.SSLSession
 
 import scala.concurrent.duration._
+import scala.jdk.OptionConverters._
 import scala.util.Failure
 import scala.util.Success
 
@@ -41,7 +42,6 @@ import pekko.stream.scaladsl
 import pekko.util.ByteString
 import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
-import pekko.util.OptionConverters._
 
 object Tcp extends ExtensionId[Tcp] with ExtensionIdProvider {
 

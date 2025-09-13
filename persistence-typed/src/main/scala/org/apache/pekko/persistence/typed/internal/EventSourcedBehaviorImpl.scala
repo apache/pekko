@@ -387,7 +387,7 @@ private[pekko] final case class PublishedEventImpl(
     replicatedMetaData: Option[ReplicatedPublishedEventMetaData])
     extends PublishedEvent
     with InternalProtocol {
-  import pekko.util.OptionConverters._
+  import scala.jdk.OptionConverters._
 
   def tags: Set[String] = payload match {
     case t: Tagged => t.tags

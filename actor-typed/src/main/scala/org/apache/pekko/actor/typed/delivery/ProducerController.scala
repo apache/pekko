@@ -17,6 +17,7 @@ import java.time.{ Duration => JavaDuration }
 import java.util.Optional
 
 import scala.concurrent.duration._
+import scala.jdk.OptionConverters._
 import scala.reflect.ClassTag
 
 import com.typesafe.config.Config
@@ -33,7 +34,6 @@ import pekko.annotation.InternalApi
 import pekko.util.Helpers.toRootLowerCase
 import pekko.util.Helpers.Requiring
 import pekko.util.JavaDurationConverters._
-import pekko.util.OptionConverters._
 
 /**
  * Point-to-point reliable delivery between a single producer actor sending messages and a single consumer

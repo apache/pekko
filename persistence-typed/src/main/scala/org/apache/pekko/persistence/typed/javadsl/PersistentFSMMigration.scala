@@ -20,7 +20,7 @@ import org.apache.pekko
 import pekko.japi.function.Function3
 import pekko.persistence.typed.SnapshotAdapter
 import pekko.util.JavaDurationConverters._
-import pekko.util.OptionConverters._
+import scala.jdk.OptionConverters._
 
 /**
  * Helper functions for migration from PersistentFSM to Persistence Typed

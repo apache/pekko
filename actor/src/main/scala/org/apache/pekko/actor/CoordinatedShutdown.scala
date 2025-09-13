@@ -23,6 +23,7 @@ import scala.annotation.tailrec
 import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
 import scala.concurrent.duration._
 import scala.concurrent.duration.FiniteDuration
+import scala.jdk.OptionConverters._
 import scala.util.Try
 import scala.util.control.NonFatal
 
@@ -35,7 +36,6 @@ import pekko.annotation.InternalApi
 import pekko.dispatch.ExecutionContexts
 import pekko.event.Logging
 import pekko.pattern.after
-import pekko.util.OptionConverters._
 import pekko.util.OptionVal
 import pekko.util.FutureConverters._
 
