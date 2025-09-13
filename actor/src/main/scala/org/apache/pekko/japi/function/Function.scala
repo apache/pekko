@@ -110,6 +110,7 @@ trait Effect extends java.io.Serializable {
 @SerialVersionUID(1L)
 @FunctionalInterface
 trait Predicate[-T] extends java.io.Serializable {
+  @throws(classOf[Exception])
   def test(param: T): Boolean
 
   /**
@@ -128,6 +129,7 @@ trait Predicate[-T] extends java.io.Serializable {
 @SerialVersionUID(1L)
 @FunctionalInterface
 trait Predicate2[-T1, -T2] extends java.io.Serializable {
+  @throws(classOf[Exception])
   def test(param1: T1, param2: T2): Boolean
 
   /**

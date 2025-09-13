@@ -96,7 +96,7 @@ public class FSMStopBuilder<S, D> {
         FSM.StopEvent.class,
         new Predicate<FSM.StopEvent>() {
           @Override
-          public boolean test(FSM.StopEvent e) {
+          public boolean test(FSM.StopEvent e) throws Exception {
             if (reasonType.isInstance(e.reason())) {
               @SuppressWarnings("unchecked")
               P p = (P) e.reason();

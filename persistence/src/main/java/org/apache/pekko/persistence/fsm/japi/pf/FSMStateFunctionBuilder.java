@@ -64,7 +64,8 @@ public class FSMStateFunctionBuilder<S, D, E> {
         org.apache.pekko.persistence.fsm.PersistentFSM.Event.class,
         new Predicate<PersistentFSM.Event>() {
           @Override
-          public boolean test(org.apache.pekko.persistence.fsm.PersistentFSM.Event e) {
+          public boolean test(org.apache.pekko.persistence.fsm.PersistentFSM.Event e)
+              throws Exception {
             boolean res = true;
             if (eventOrType != null) {
               if (eventOrType instanceof Class eventType) {

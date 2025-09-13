@@ -14,6 +14,7 @@
 package org.apache.pekko.japi.pf;
 
 import org.apache.pekko.actor.AbstractActor.Receive;
+import org.apache.pekko.japi.function.BooleanSupplier;
 import org.apache.pekko.japi.function.Predicate;
 import org.apache.pekko.japi.function.Procedure;
 import scala.PartialFunction;
@@ -139,9 +140,7 @@ public class ReceiveBuilder {
    * @return a builder with the case statement added
    */
   public <P> ReceiveBuilder match(
-      final Class<P> type,
-      final java.util.function.BooleanSupplier externalPredicate,
-      final Procedure<P> apply) {
+      final Class<P> type, final BooleanSupplier externalPredicate, final Procedure<P> apply) {
     return matchUnchecked(type, externalPredicate, apply);
   }
 
@@ -162,7 +161,7 @@ public class ReceiveBuilder {
     Predicate<Object> fiPredicate =
         new Predicate<>() {
           @Override
-          public boolean test(Object o) {
+          public boolean test(Object o) throws Exception {
             if (!type.isInstance(o)) return false;
             else return ((Predicate<Object>) predicate).test(o);
           }
@@ -186,14 +185,12 @@ public class ReceiveBuilder {
    */
   @SuppressWarnings("unchecked")
   public <P> ReceiveBuilder matchUnchecked(
-      final Class<?> type,
-      final java.util.function.BooleanSupplier externalPredicate,
-      final Procedure<P> apply) {
+      final Class<?> type, final BooleanSupplier externalPredicate, final Procedure<P> apply) {
     Predicate<Object> fiPredicate =
         new Predicate<>() {
           @Override
-          public boolean test(Object o) {
-            return type.isInstance(o) && externalPredicate.getAsBoolean();
+          public boolean test(Object o) throws Exception {
+            return type.isInstance(o) && externalPredicate.get();
           }
         };
 
@@ -237,7 +234,7 @@ public class ReceiveBuilder {
         new UnitCaseStatement<Object, P>(
             new Predicate<>() {
               @Override
-              public boolean test(Object o) {
+              public boolean test(Object o) throws Exception {
                 if (!object.equals(o)) return false;
                 else {
                   @SuppressWarnings("unchecked")
@@ -261,10 +258,8 @@ public class ReceiveBuilder {
    */
   @SuppressWarnings("unchecked")
   public <P> ReceiveBuilder matchEquals(
-      final P object,
-      final java.util.function.BooleanSupplier externalPredicate,
-      final Procedure<P> apply) {
-    final Predicate<Object> predicate = o -> object.equals(o) && externalPredicate.getAsBoolean();
+      final P object, final BooleanSupplier externalPredicate, final Procedure<P> apply) {
+    final Predicate<Object> predicate = o -> object.equals(o) && externalPredicate.get();
     addStatement(new UnitCaseStatement<>(predicate, (Procedure<Object>) apply));
     return this;
   }
@@ -290,8 +285,8 @@ public class ReceiveBuilder {
    * @return a builder with the case statement added
    */
   public ReceiveBuilder matchAny(
-      final java.util.function.BooleanSupplier externalPredicate, final Procedure<Object> apply) {
-    final Predicate<Object> predicate = o -> externalPredicate.getAsBoolean();
+      final BooleanSupplier externalPredicate, final Procedure<Object> apply) {
+    final Predicate<Object> predicate = o -> externalPredicate.get();
     addStatement(new UnitCaseStatement<>(predicate, apply));
     return this;
   }

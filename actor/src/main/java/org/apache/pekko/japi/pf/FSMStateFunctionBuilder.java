@@ -54,7 +54,7 @@ public class FSMStateFunctionBuilder<S, D> {
         FSM.Event.class,
         new Predicate<FSM.Event>() {
           @Override
-          public boolean test(FSM.Event e) {
+          public boolean test(FSM.Event e) throws Exception {
             boolean res = true;
             if (eventOrType != null) {
               if (eventOrType instanceof Class eventType) {

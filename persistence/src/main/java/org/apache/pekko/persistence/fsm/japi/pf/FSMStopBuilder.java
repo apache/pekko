@@ -106,7 +106,8 @@ public class FSMStopBuilder<S, D> {
         org.apache.pekko.persistence.fsm.PersistentFSM.StopEvent.class,
         new Predicate<org.apache.pekko.persistence.fsm.PersistentFSM.StopEvent>() {
           @Override
-          public boolean test(org.apache.pekko.persistence.fsm.PersistentFSM.StopEvent e) {
+          public boolean test(org.apache.pekko.persistence.fsm.PersistentFSM.StopEvent e)
+              throws Exception {
             if (reasonType.isInstance(e.reason())) {
               @SuppressWarnings("unchecked")
               P p = (P) e.reason();
