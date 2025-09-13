@@ -34,7 +34,7 @@ object CompletionStages {
    * Convert a `CompletionStage` to a Scala `Future`.
    */
   def asScala[T](stage: CompletionStage[T]): scala.concurrent.Future[T] = {
-    import org.apache.pekko.util.FutureConverters._
+    import scala.jdk.FutureConverters._
     stage.asScala
   }
 

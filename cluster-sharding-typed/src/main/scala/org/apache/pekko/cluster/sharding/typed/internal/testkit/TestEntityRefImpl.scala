@@ -28,7 +28,7 @@ import pekko.cluster.sharding.typed.javadsl.EntityRef
 import pekko.cluster.sharding.typed.scaladsl
 import pekko.japi.function.{ Function => JFunction }
 import pekko.pattern.StatusReply
-import pekko.util.FutureConverters._
+import scala.jdk.FutureConverters._
 import pekko.util.JavaDurationConverters._
 import pekko.util.Timeout
 
