@@ -11,7 +11,7 @@
  * Copyright (C) 2019-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import de.heikoseeberger.sbtheader.HeaderPlugin.autoImport.headerSources
+import sbtheader.HeaderPlugin.autoImport.headerSources
 import sbt.{ Compile, Def, Test, _ }
 
 object CopyrightHeaderForJdk9 extends AutoPlugin {
