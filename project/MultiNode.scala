@@ -17,7 +17,7 @@ import MultiJvmPlugin.autoImport._
 
 import sbt.{ Def, _ }
 import sbt.Keys._
-import de.heikoseeberger.sbtheader.HeaderPlugin.autoImport._
+import sbtheader.HeaderPlugin.autoImport._
 import org.scalafmt.sbt.ScalafmtPlugin.scalafmtConfigSettings
 import sbtassembly.MergeStrategy
 import sbtassembly.AssemblyKeys._
