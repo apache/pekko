@@ -19,7 +19,6 @@ import java.time.LocalDateTime
 import java.util
 import java.util.concurrent.TimeUnit
 
-import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import scala.annotation.nowarn
@@ -233,7 +232,7 @@ class JacksonSerializationBench {
 
   @TearDown(Level.Trial)
   def tearDownTrial(): Unit = {
-    Await.result(system.terminate(), 5.seconds)
+    system.terminateAndAwait(5.seconds)
   }
 
   private var size = 0L

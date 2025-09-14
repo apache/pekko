@@ -158,7 +158,7 @@ class ActorMaterializerSpec extends StreamSpec with ImplicitSender {
     "report correctly if it has been shut down from the side" in {
       val sys = ActorSystem()
       val m = ActorMaterializer.create(sys)
-      Await.result(sys.terminate(), Duration.Inf)
+      sys.terminateAndAwait(Duration.Inf)
       m.isShutdown should ===(true)
     }
   }

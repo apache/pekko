@@ -546,7 +546,7 @@ class CoordinatedShutdownSpec
     "be run by ActorSystem.terminate" in {
       val sys = ActorSystem(system.name, system.settings.config)
       try {
-        Await.result(sys.terminate(), 10.seconds)
+        sys.terminateAndAwait(10.seconds)
         sys.whenTerminated.isCompleted should ===(true)
         CoordinatedShutdown(sys).shutdownReason() should ===(Some(CoordinatedShutdown.ActorSystemTerminateReason))
       } finally {
@@ -561,7 +561,7 @@ class CoordinatedShutdownSpec
           .parseString("pekko.coordinated-shutdown.run-by-actor-system-terminate = off")
           .withFallback(system.settings.config))
       try {
-        Await.result(sys.terminate(), 10.seconds)
+        sys.terminateAndAwait(10.seconds)
         sys.whenTerminated.isCompleted should ===(true)
         CoordinatedShutdown(sys).shutdownReason() should ===(None)
       } finally {
