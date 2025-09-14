@@ -34,9 +34,9 @@ private[pekko] object JavaDurationConverters {
   final implicit class ScalaDurationOps(val self: Duration) extends AnyVal {
     @inline def asJava: JDuration = self match {
       case fd: FiniteDuration => JDuration.ofNanos(fd.toNanos)
-      case Duration.Inf => ChronoUnit.FOREVER.getDuration()
-      case Duration.MinusInf => ChronoUnit.FOREVER.getDuration().negated()
-      case _ => ChronoUnit.FOREVER.getDuration()
+      case Duration.Inf       => ChronoUnit.FOREVER.getDuration()
+      case Duration.MinusInf  => ChronoUnit.FOREVER.getDuration().negated()
+      case _                  => ChronoUnit.FOREVER.getDuration()
     }
   }
 }
