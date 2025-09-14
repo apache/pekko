@@ -12,7 +12,9 @@
  */
 
 package org.apache.pekko.util
+
 import java.time.{ Duration => JDuration }
+import java.time.temporal.ChronoUnit
 
 import scala.concurrent.duration.{ Duration, FiniteDuration }
 
@@ -30,6 +32,11 @@ private[pekko] object JavaDurationConverters {
   }
 
   final implicit class ScalaDurationOps(val self: Duration) extends AnyVal {
-    @inline def asJava: JDuration = JDuration.ofNanos(self.toNanos)
+    @inline def asJava: JDuration = self match {
+      case fd: FiniteDuration => JDuration.ofNanos(fd.toNanos)
+      case Duration.Inf => ChronoUnit.FOREVER.getDuration()
+      case Duration.MinusInf => ChronoUnit.FOREVER.getDuration().negated()
+      case _ => ChronoUnit.FOREVER.getDuration()
+    }
   }
 }
