@@ -52,7 +52,7 @@ class JavaDurationConvertersSpec extends AnyWordSpec with Matchers {
       scalaDuration.asJava should ===(ChronoUnit.FOREVER.getDuration)
     }
 
-    "convert minfinite duration to java.time.Duration" in {
+    "convert minus infinite duration to java.time.Duration" in {
       val scalaDuration: Duration = Duration.MinusInf
       scalaDuration.asJava should ===(ChronoUnit.FOREVER.getDuration().negated())
     }

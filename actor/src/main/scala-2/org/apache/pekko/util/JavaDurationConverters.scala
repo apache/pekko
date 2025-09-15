@@ -25,9 +25,13 @@ import org.apache.pekko.annotation.InternalStableApi
  */
 @InternalStableApi
 private[pekko] object JavaDurationConverters {
+  // Scala FiniteDurations only support up to approx 252 years
+  // Java Durations support much larger durations
+  // this method will throw an java.lang.IllegalArgumentException if the Java Duration is too large
   @inline def asFiniteDuration(duration: JDuration): FiniteDuration = duration.asScala
 
   final implicit class JavaDurationOps(val self: JDuration) extends AnyVal {
+    // see note on asFiniteDuration
     @inline def asScala: FiniteDuration = Duration.fromNanos(self.toNanos)
   }
 
