@@ -28,7 +28,7 @@ private[pekko] object JavaDurationConverters {
 
   // Ideally this should have the Scala 3 inline keyword but then Java sources are
   // unable to call this method, see https://github.com/lampepfl/dotty/issues/19346
-  
+
   // Scala FiniteDurations only support up to approx 252 years
   // Java Durations support much larger durations
   // this method will throw an java.lang.IllegalArgumentException if the Java Duration is too large
