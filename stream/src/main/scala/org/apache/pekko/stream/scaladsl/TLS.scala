@@ -19,8 +19,8 @@ import scala.util.{ Success, Try }
 
 import org.apache.pekko
 import pekko.NotUsed
-import pekko.stream._
 import pekko.stream.TLSProtocol._
+import pekko.stream._
 import pekko.stream.impl.io.TlsModule
 import pekko.util.ByteString
 
@@ -115,7 +115,7 @@ object TLSPlacebo {
 
 import java.security.Principal
 import java.security.cert.Certificate
-import javax.net.ssl.{ SSLPeerUnverifiedException, SSLSession }
+import javax.net.ssl.SSLPeerUnverifiedException
 
 /** Allows access to an SSLSession with Scala types */
 trait ScalaSessionAPI {

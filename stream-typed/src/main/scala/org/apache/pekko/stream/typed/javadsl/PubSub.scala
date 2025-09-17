@@ -19,8 +19,7 @@ import pekko.actor.typed.ActorRef
 import pekko.actor.typed.pubsub.Topic
 import pekko.annotation.ApiMayChange
 import pekko.stream.OverflowStrategy
-import pekko.stream.javadsl.Sink
-import pekko.stream.javadsl.Source
+import pekko.stream.javadsl.{ Sink, Source }
 
 /**
  * Sources and sinks to integrate [[pekko.actor.typed.pubsub.Topic]] with streams allowing for local or distributed

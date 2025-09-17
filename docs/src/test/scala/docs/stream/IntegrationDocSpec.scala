@@ -13,25 +13,24 @@
 
 package docs.stream
 
-import scala.concurrent.duration._
-
-import org.apache.pekko.Done
-import org.apache.pekko.NotUsed
-import org.apache.pekko.testkit.PekkoSpec
-import org.apache.pekko.stream.scaladsl._
-import org.apache.pekko.stream._
-
-import scala.concurrent.Future
-import org.apache.pekko.testkit.TestProbe
-import org.apache.pekko.actor.{ Actor, ActorLogging, ActorRef, Props }
-import com.typesafe.config.ConfigFactory
-import org.apache.pekko.util.Timeout
-
-import scala.concurrent.ExecutionContext
 import java.util.concurrent.atomic.AtomicInteger
 
-import org.apache.pekko.stream.scaladsl.Flow
+import scala.concurrent.duration._
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+
+import com.typesafe.config.ConfigFactory
 import org.scalacheck.Gen.const
+
+import org.apache.pekko
+import pekko.Done
+import pekko.NotUsed
+import pekko.actor.{ Actor, ActorLogging, ActorRef, Props }
+import pekko.testkit.{ PekkoSpec, TestProbe }
+import pekko.stream.scaladsl._
+import pekko.stream.scaladsl.Flow
+import pekko.stream._
+import pekko.util.Timeout
 
 object IntegrationDocSpec {
   import TwitterStreamQuickstartDocSpec._

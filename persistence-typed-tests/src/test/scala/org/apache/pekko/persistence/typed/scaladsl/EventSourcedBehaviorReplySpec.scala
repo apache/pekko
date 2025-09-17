@@ -13,19 +13,17 @@
 
 package org.apache.pekko.persistence.typed.scaladsl
 
+import java.util.concurrent.atomic.AtomicInteger
+
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.testkit.typed.scaladsl._
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.scaladsl.ActorContext
-import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.{ ActorRef, Behavior }
+import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors }
 import pekko.persistence.testkit.PersistenceTestKitPlugin
 import pekko.persistence.typed.PersistenceId
 import pekko.serialization.jackson.CborSerializable
 import org.scalatest.wordspec.AnyWordSpecLike
-
-import java.util.concurrent.atomic.AtomicInteger
 
 object EventSourcedBehaviorReplySpec {
 

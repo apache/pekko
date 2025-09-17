@@ -13,15 +13,12 @@
 
 package docs.org.apache.pekko.typed.supervision
 
-import org.apache.pekko
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.PostStop
-import pekko.actor.typed.PreRestart
-import pekko.actor.typed.{ Behavior, SupervisorStrategy }
-import pekko.actor.typed.scaladsl.Behaviors
 import scala.annotation.nowarn
-
 import scala.concurrent.duration._
+
+import org.apache.pekko
+import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed._
 
 object SupervisionCompileOnly {
 

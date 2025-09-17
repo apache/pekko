@@ -15,10 +15,11 @@ package org.apache.pekko.dispatch.affinity
 
 import java.lang.Integer.reverseBytes
 import java.util.Collections
-import java.util.concurrent._
 import java.util.concurrent.TimeUnit.MICROSECONDS
+import java.util.concurrent._
 import java.util.concurrent.atomic.AtomicReference
 import java.util.concurrent.locks.{ LockSupport, ReentrantLock }
+
 import scala.annotation.{ switch, tailrec }
 import scala.collection.{ immutable, mutable }
 
@@ -28,8 +29,8 @@ import org.apache.pekko
 import pekko.annotation.{ ApiMayChange, InternalApi }
 import pekko.dispatch._
 import pekko.event.Logging
-import pekko.util.ImmutableIntMap
 import pekko.util.Helpers.Requiring
+import pekko.util.ImmutableIntMap
 
 @InternalApi
 @ApiMayChange

@@ -20,19 +20,12 @@ import scala.util.control.NonFatal
 
 import io.aeron.{ Aeron, FragmentAssembler, Subscription }
 import io.aeron.exceptions.DriverTimeoutException
-import io.aeron.logbuffer.FragmentHandler
-import io.aeron.logbuffer.Header
+import io.aeron.logbuffer.{ FragmentHandler, Header }
 import org.agrona.DirectBuffer
 
 import org.apache.pekko
-import pekko.stream.Attributes
-import pekko.stream.Outlet
-import pekko.stream.SourceShape
-import pekko.stream.stage.AsyncCallback
-import pekko.stream.stage.GraphStageLogic
-import pekko.stream.stage.GraphStageWithMaterializedValue
-import pekko.stream.stage.OutHandler
-import pekko.stream.stage.StageLogging
+import pekko.stream.{ Attributes, Outlet, SourceShape }
+import pekko.stream.stage.{ AsyncCallback, GraphStageLogic, GraphStageWithMaterializedValue, OutHandler, StageLogging }
 
 /**
  * INTERNAL API

@@ -14,9 +14,7 @@
 package org.apache.pekko.remote.artery
 
 import org.apache.pekko
-import pekko.actor.{ EmptyLocalActorRef, InternalActorRef }
-import pekko.actor.ActorRefScope
-import pekko.actor.ExtendedActorSystem
+import pekko.actor.{ ActorRefScope, EmptyLocalActorRef, ExtendedActorSystem, InternalActorRef }
 import pekko.remote.RemoteActorRef
 import pekko.testkit.{ EventFilter, TestActors }
 

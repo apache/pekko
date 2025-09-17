@@ -13,18 +13,17 @@
 
 package docs.org.apache.pekko.typed
 
-import scala.concurrent.duration._
-import org.apache.pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import scala.annotation.nowarn
+import scala.concurrent.duration._
+
 import org.scalatest.wordspec.AnyWordSpecLike
+
+import org.apache.pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 
 object FaultToleranceDocSpec {
   // #bubbling-example
   import org.apache.pekko
-  import pekko.actor.typed.ActorRef
-  import pekko.actor.typed.Behavior
-  import pekko.actor.typed.DeathPactException
-  import pekko.actor.typed.SupervisorStrategy
+  import pekko.actor.typed.{ ActorRef, Behavior, DeathPactException, SupervisorStrategy }
   import pekko.actor.typed.scaladsl.Behaviors
 
   object Protocol {

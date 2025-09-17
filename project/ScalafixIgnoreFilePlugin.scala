@@ -13,6 +13,7 @@
 
 import sbt.plugins.JvmPlugin
 import sbt.{ AutoPlugin, PluginTrigger, Plugins }
+
 import scalafix.sbt.ScalafixPlugin
 
 object ScalafixIgnoreFilePlugin extends AutoPlugin with ScalafixSupport {

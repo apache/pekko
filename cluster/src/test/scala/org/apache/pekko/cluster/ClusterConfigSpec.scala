@@ -13,9 +13,9 @@
 
 package org.apache.pekko.cluster
 
+import scala.annotation.nowarn
 import scala.concurrent.duration._
 
-import scala.annotation.nowarn
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko

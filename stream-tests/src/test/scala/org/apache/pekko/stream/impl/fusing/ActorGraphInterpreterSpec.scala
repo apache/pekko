@@ -15,9 +15,10 @@ package org.apache.pekko.stream.impl.fusing
 
 import java.util.concurrent.CountDownLatch
 
-import scala.concurrent.Await
-import scala.concurrent.Promise
+import scala.concurrent.{ Await, Promise }
 import scala.concurrent.duration._
+
+import org.reactivestreams.{ Publisher, Subscriber, Subscription }
 
 import org.apache.pekko
 import pekko.Done
@@ -25,20 +26,10 @@ import pekko.stream._
 import pekko.stream.impl.ReactiveStreamsCompliance.SpecViolation
 import pekko.stream.impl.fusing.GraphStages.SimpleLinearGraphStage
 import pekko.stream.scaladsl._
-import pekko.stream.stage.GraphStage
-import pekko.stream.stage.GraphStageLogic
-import pekko.stream.stage.InHandler
-import pekko.stream.stage.OutHandler
-import pekko.stream.testkit.StreamSpec
-import pekko.stream.testkit.TestPublisher
-import pekko.stream.testkit.TestSubscriber
+import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
+import pekko.stream.testkit.{ StreamSpec, TestPublisher, TestSubscriber }
 import pekko.stream.testkit.Utils._
-import pekko.testkit.EventFilter
-import pekko.testkit.TestLatch
-
-import org.reactivestreams.Publisher
-import org.reactivestreams.Subscriber
-import org.reactivestreams.Subscription
+import pekko.testkit.{ EventFilter, TestLatch }
 
 class ActorGraphInterpreterSpec extends StreamSpec {
   "ActorGraphInterpreter" must {

@@ -17,20 +17,21 @@ import java.util.Arrays
 import java.util.concurrent.ThreadLocalRandom
 import java.util.concurrent.atomic.AtomicReference
 
-import scala.annotation.tailrec
+import scala.annotation.{ nowarn, tailrec }
 import scala.collection.immutable
 
-import scala.annotation.nowarn
 import com.typesafe.config.Config
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorSystem
-import pekko.actor.Address
-import pekko.actor.DynamicAccess
-import pekko.actor.NoSerializationVerificationNeeded
-import pekko.actor.Props
-import pekko.actor.SupervisorStrategy
+import pekko.actor.{
+  Actor,
+  ActorSystem,
+  Address,
+  DynamicAccess,
+  NoSerializationVerificationNeeded,
+  Props,
+  SupervisorStrategy
+}
 import pekko.cluster.Cluster
 import pekko.cluster.routing.ClusterRouterSettingsBase
 import pekko.dispatch.Dispatchers

@@ -17,14 +17,11 @@ import java.net.URL
 import java.util.Enumeration
 
 import scala.annotation.tailrec
-import scala.util.Failure
-import scala.util.Success
-import scala.util.Try
+import scala.jdk.CollectionConverters._
+import scala.util.{ Failure, Success, Try }
 
 import org.osgi.framework.{ Bundle, BundleContext }
 import org.osgi.framework.wiring.{ BundleRevision, BundleWire, BundleWiring }
-
-import org.apache.pekko.util.ccompat.JavaConverters._
 
 /*
  * Companion object to create bundle delegating ClassLoader instances

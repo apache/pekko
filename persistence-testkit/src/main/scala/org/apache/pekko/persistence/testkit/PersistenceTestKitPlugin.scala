@@ -13,18 +13,17 @@
 
 package org.apache.pekko.persistence.testkit
 
-import org.apache.pekko
-import pekko.actor.ActorLogging
 import scala.collection.immutable
 import scala.concurrent.Future
 import scala.util.Try
 
 import com.typesafe.config.{ Config, ConfigFactory }
 
+import org.apache.pekko
+import pekko.actor.ActorLogging
 import pekko.annotation.InternalApi
 import pekko.persistence._
-import pekko.persistence.journal.AsyncWriteJournal
-import pekko.persistence.journal.Tagged
+import pekko.persistence.journal.{ AsyncWriteJournal, Tagged }
 import pekko.persistence.snapshot.SnapshotStore
 import pekko.persistence.testkit.internal.CurrentTime
 import pekko.persistence.testkit.internal.{ InMemStorageExtension, SnapshotStorageEmulatorExtension }
@@ -120,7 +119,7 @@ object PersistenceTestKitPlugin {
 
   val PluginId = "pekko.persistence.testkit.journal"
 
-  import pekko.util.ccompat.JavaConverters._
+  import scala.jdk.CollectionConverters._
 
   def getInstance() = this
 
@@ -169,10 +168,9 @@ class PersistenceTestKitSnapshotPlugin(
 }
 
 object PersistenceTestKitSnapshotPlugin {
+  import scala.jdk.CollectionConverters._
 
   val PluginId = "pekko.persistence.testkit.snapshotstore.pluginid"
-
-  import pekko.util.ccompat.JavaConverters._
 
   def getInstance() = this
 
@@ -186,10 +184,9 @@ object PersistenceTestKitSnapshotPlugin {
 }
 
 object PersistenceTestKitDurableStateStorePlugin {
+  import scala.jdk.CollectionConverters._
 
   val PluginId = "pekko.persistence.testkit.state"
-
-  import pekko.util.ccompat.JavaConverters._
 
   def getInstance() = this
 

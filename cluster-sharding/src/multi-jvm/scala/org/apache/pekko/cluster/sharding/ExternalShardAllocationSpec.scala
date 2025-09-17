@@ -80,9 +80,8 @@ abstract class ExternalShardAllocationSpec
     extends MultiNodeClusterShardingSpec(ExternalShardAllocationSpecConfig)
     with ImplicitSender
     with ScalaFutures {
-
-  import ExternalShardAllocationSpec._
   import ExternalShardAllocationSpec.GiveMeYourHome._
+  import ExternalShardAllocationSpec._
   import ExternalShardAllocationSpecConfig._
 
   override implicit val patienceConfig: PatienceConfig = {

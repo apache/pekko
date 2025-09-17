@@ -14,21 +14,20 @@
 package docs.org.apache.pekko.cluster.ddata.typed.scaladsl
 
 import scala.concurrent.duration._
-import org.apache.pekko
-import pekko.cluster.ddata.SelfUniqueAddress
-import pekko.cluster.ddata.typed.scaladsl.DistributedData
-import pekko.cluster.ddata.typed.scaladsl.Replicator
-import pekko.actor.testkit.typed.scaladsl._
+
 import com.typesafe.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
+import org.apache.pekko
+import pekko.actor.testkit.typed.scaladsl._
+import pekko.cluster.ddata.SelfUniqueAddress
+import pekko.cluster.ddata.typed.scaladsl.{ DistributedData, Replicator }
+
 // #sample
 import org.apache.pekko
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
+import pekko.actor.typed.{ ActorRef, Behavior }
 import pekko.actor.typed.scaladsl.Behaviors
-import pekko.cluster.ddata.GCounter
-import pekko.cluster.ddata.GCounterKey
+import pekko.cluster.ddata.{ GCounter, GCounterKey }
 import pekko.cluster.ddata.typed.scaladsl.Replicator._
 
 // #sample

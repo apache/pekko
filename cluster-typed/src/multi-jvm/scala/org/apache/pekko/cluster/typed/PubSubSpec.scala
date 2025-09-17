@@ -22,8 +22,7 @@ import pekko.actor.typed.pubsub.Topic
 import pekko.actor.typed.scaladsl.adapter._
 import pekko.cluster.MultiNodeClusterSpec
 import pekko.remote.testconductor.RoleName
-import pekko.remote.testkit.MultiNodeConfig
-import pekko.remote.testkit.MultiNodeSpec
+import pekko.remote.testkit.{ MultiNodeConfig, MultiNodeSpec }
 import pekko.serialization.jackson.CborSerializable
 
 object PubSubSpecConfig extends MultiNodeConfig {

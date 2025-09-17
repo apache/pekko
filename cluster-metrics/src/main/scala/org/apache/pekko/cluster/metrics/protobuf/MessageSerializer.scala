@@ -13,12 +13,14 @@
 
 package org.apache.pekko.cluster.metrics.protobuf
 
-import java.{ lang => jl }
-import java.io.{ ByteArrayInputStream, ByteArrayOutputStream, ObjectOutputStream }
-import java.io.NotSerializableException
+import java.io.{ ByteArrayInputStream, ByteArrayOutputStream, NotSerializableException, ObjectOutputStream }
 import java.util.zip.{ GZIPInputStream, GZIPOutputStream }
+import java.{ lang => jl }
+
 import scala.annotation.tailrec
 import scala.collection.immutable
+import scala.jdk.CollectionConverters._
+
 import org.apache.pekko
 import pekko.actor.{ Address, ExtendedActorSystem }
 import pekko.cluster.metrics._
@@ -27,7 +29,6 @@ import pekko.dispatch.Dispatchers
 import pekko.protobufv3.internal.MessageLite
 import pekko.remote.ByteStringUtils
 import pekko.serialization.{ BaseSerializer, SerializationExtension, SerializerWithStringManifest, Serializers }
-import pekko.util.ccompat.JavaConverters._
 
 /**
  * Protobuf serializer for [[pekko.cluster.metrics.ClusterMetricsMessage]] types.
@@ -194,8 +195,7 @@ class MessageSerializer(val system: ExtendedActorSystem) extends SerializerWithS
     }
 
     def numberToProto(number: Number): cm.NodeMetrics.Number.Builder = {
-      import cm.NodeMetrics.Number
-      import cm.NodeMetrics.NumberType
+      import cm.NodeMetrics.{ Number, NumberType }
       number match {
         case n: jl.Double  => Number.newBuilder().setType(NumberType.Double).setValue64(jl.Double.doubleToLongBits(n))
         case n: jl.Long    => Number.newBuilder().setType(NumberType.Long).setValue64(n)

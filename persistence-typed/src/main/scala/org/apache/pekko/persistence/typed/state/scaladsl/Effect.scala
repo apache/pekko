@@ -15,8 +15,7 @@ package org.apache.pekko.persistence.typed.state.scaladsl
 
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
-import pekko.annotation.ApiMayChange
-import pekko.annotation.DoNotInherit
+import pekko.annotation.{ ApiMayChange, DoNotInherit }
 import pekko.persistence.typed.state.internal.SideEffect
 import pekko.persistence.typed.state.internal._
 

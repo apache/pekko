@@ -13,9 +13,10 @@
 
 package docs.stream
 
-import org.apache.pekko.stream.scaladsl.{ Sink, Source }
-import org.apache.pekko.stream.SubstreamCancelStrategy
-import org.apache.pekko.testkit.PekkoSpec
+import org.apache.pekko
+import pekko.stream.scaladsl.{ Sink, Source }
+import pekko.stream.SubstreamCancelStrategy
+import pekko.testkit.PekkoSpec
 
 class SubstreamDocSpec extends PekkoSpec {
 

@@ -13,11 +13,11 @@
 
 package org.apache.pekko.cluster.sharding.passivation
 
-import org.apache.pekko.cluster.sharding.ShardRegion
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-
 import scala.concurrent.duration._
+
+import com.typesafe.config.{ Config, ConfigFactory }
+
+import org.apache.pekko.cluster.sharding.ShardRegion
 
 object LeastRecentlyUsedSpec {
 
@@ -74,9 +74,7 @@ object LeastRecentlyUsedSpec {
 
 class LeastRecentlyUsedSpec extends AbstractEntityPassivationSpec(LeastRecentlyUsedSpec.config, expectedEntities = 40) {
 
-  import EntityPassivationSpec.Entity.Envelope
-  import EntityPassivationSpec.Entity.ManuallyPassivate
-  import EntityPassivationSpec.Entity.Stop
+  import EntityPassivationSpec.Entity.{ Envelope, ManuallyPassivate, Stop }
 
   "Passivation of least recently used entities" must {
     "passivate the least recently used entities when the per-shard entity limit is reached" in {
@@ -184,8 +182,7 @@ class LeastRecentlyUsedSpec extends AbstractEntityPassivationSpec(LeastRecentlyU
 class SegmentedLeastRecentlyUsedSpec
     extends AbstractEntityPassivationSpec(LeastRecentlyUsedSpec.segmentedConfig, expectedEntities = 21) {
 
-  import EntityPassivationSpec.Entity.Envelope
-  import EntityPassivationSpec.Entity.Stop
+  import EntityPassivationSpec.Entity.{ Envelope, Stop }
 
   "Passivation of segmented least recently used entities" must {
     "passivate the (segmented) least recently used entities when the per-shard entity limit is reached" in {
@@ -255,8 +252,7 @@ class SegmentedLeastRecentlyUsedSpec
 class LeastRecentlyUsedWithIdleSpec
     extends AbstractEntityPassivationSpec(LeastRecentlyUsedSpec.idleConfig, expectedEntities = 3) {
 
-  import EntityPassivationSpec.Entity.Envelope
-  import EntityPassivationSpec.Entity.Stop
+  import EntityPassivationSpec.Entity.{ Envelope, Stop }
 
   "Passivation of idle entities with least recently used strategy" must {
     "passivate entities when they haven't seen messages for the configured timeout" in {
@@ -298,8 +294,7 @@ class LeastRecentlyUsedWithIdleSpec
 class LeastRecentlyUsedLimitAdjustmentSpec
     extends AbstractEntityPassivationSpec(LeastRecentlyUsedSpec.config, expectedEntities = 21) {
 
-  import EntityPassivationSpec.Entity.Envelope
-  import EntityPassivationSpec.Entity.Stop
+  import EntityPassivationSpec.Entity.{ Envelope, Stop }
 
   "Passivation of least recently used entities" must {
     "adjust per-shard entity limits when the per-region limit is dynamically adjusted" in {
@@ -359,8 +354,7 @@ class LeastRecentlyUsedLimitAdjustmentSpec
 class SegmentedLeastRecentlyUsedLimitAdjustmentSpec
     extends AbstractEntityPassivationSpec(LeastRecentlyUsedSpec.segmentedInitialLimitConfig, expectedEntities = 31) {
 
-  import EntityPassivationSpec.Entity.Envelope
-  import EntityPassivationSpec.Entity.Stop
+  import EntityPassivationSpec.Entity.{ Envelope, Stop }
 
   "Passivation of segmented least recently used entities" must {
     "adjust per-shard entity limits when the per-region limit is dynamically adjusted" in {

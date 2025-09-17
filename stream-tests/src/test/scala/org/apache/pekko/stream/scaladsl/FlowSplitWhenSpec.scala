@@ -13,22 +13,20 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import scala.concurrent.Await
-import scala.concurrent.Future
+import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
 
+import org.reactivestreams.Publisher
+
 import org.apache.pekko
-import pekko.Done
-import pekko.NotUsed
-import pekko.stream._
+import pekko.{ Done, NotUsed }
 import pekko.stream.Supervision.Decider
+import pekko.stream._
 import pekko.stream.impl.SubscriptionTimeoutException
 import pekko.stream.impl.fusing.Split
-import pekko.stream.testkit._
 import pekko.stream.testkit.Utils._
+import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.TestSink
-
-import org.reactivestreams.Publisher
 
 class FlowSplitWhenSpec extends StreamSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 2

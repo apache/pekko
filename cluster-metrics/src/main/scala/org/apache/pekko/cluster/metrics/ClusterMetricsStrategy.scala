@@ -33,8 +33,8 @@ class ClusterMetricsStrategy(config: Config)
  * Provide custom metrics strategy resources.
  */
 object ClusterMetricsStrategy {
-  import pekko.actor._
   import pekko.actor.SupervisorStrategy._
+  import pekko.actor._
 
   /**
    * [[pekko.actor.SupervisorStrategy]] `Decider` which allows to survive intermittent Sigar native method calls failures.

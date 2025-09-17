@@ -13,8 +13,7 @@
 
 package org.apache.pekko.persistence.typed.javadsl
 
-import java.util.function.BiConsumer
-import java.util.function.Consumer
+import java.util.function.{ BiConsumer, Consumer }
 
 import org.apache.pekko
 import pekko.actor.typed.Signal

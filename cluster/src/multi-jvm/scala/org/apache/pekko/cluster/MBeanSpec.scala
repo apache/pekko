@@ -14,12 +14,11 @@
 package org.apache.pekko.cluster
 
 import java.lang.management.ManagementFactory
+import javax.management.{ InstanceNotFoundException, ObjectName }
 
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
-import javax.management.InstanceNotFoundException
-import javax.management.ObjectName
 
 import org.apache.pekko
 import pekko.remote.testkit.MultiNodeConfig

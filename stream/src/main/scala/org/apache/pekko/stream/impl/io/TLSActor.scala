@@ -14,23 +14,23 @@
 package org.apache.pekko.stream.impl.io
 
 import java.nio.ByteBuffer
-import javax.net.ssl._
 import javax.net.ssl.SSLEngineResult.HandshakeStatus
 import javax.net.ssl.SSLEngineResult.HandshakeStatus._
 import javax.net.ssl.SSLEngineResult.Status._
+import javax.net.ssl._
 
 import scala.annotation.tailrec
-import scala.util.{ Failure, Success, Try }
 import scala.util.control.NonFatal
+import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.InternalApi
-import pekko.stream._
 import pekko.stream.TLSProtocol._
-import pekko.stream.impl._
+import pekko.stream._
 import pekko.stream.impl.FanIn.InputBunch
 import pekko.stream.impl.FanOut.OutputBunch
+import pekko.stream.impl._
 import pekko.stream.impl.fusing.ActorGraphInterpreter
 import pekko.stream.snapshot.StreamSnapshotImpl
 import pekko.util.ByteString

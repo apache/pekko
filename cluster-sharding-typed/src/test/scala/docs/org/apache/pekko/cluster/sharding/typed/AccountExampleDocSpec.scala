@@ -14,16 +14,15 @@
 package docs.org.apache.pekko.cluster.sharding.typed
 
 //#test
-import org.apache.pekko
-import pekko.Done
-import pekko.persistence.testkit.scaladsl.EventSourcedBehaviorTestKit
-import pekko.persistence.typed.PersistenceId
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.pattern.StatusReply
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.wordspec.AnyWordSpecLike
 
+import org.apache.pekko
+import pekko.Done
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
+import pekko.pattern.StatusReply
+import pekko.persistence.testkit.scaladsl.EventSourcedBehaviorTestKit
+import pekko.persistence.typed.PersistenceId
 //#test
 
 import docs.org.apache.pekko.cluster.sharding.typed.AccountExampleWithEventHandlersInState.AccountEntity

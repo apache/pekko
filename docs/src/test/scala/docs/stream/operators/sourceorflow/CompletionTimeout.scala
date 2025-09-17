@@ -13,12 +13,13 @@
 
 package docs.stream.operators.sourceorflow
 
-import org.apache.pekko.Done
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.stream.scaladsl.{ Flow, Sink, Source }
-
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContextExecutor, Future }
+
+import org.apache.pekko
+import pekko.Done
+import pekko.actor.ActorSystem
+import pekko.stream.scaladsl.Source
 
 object CompletionTimeout {
   implicit val system: ActorSystem = ???

@@ -14,14 +14,12 @@
 package org.apache.pekko.cluster.ddata.typed.scaladsl
 
 import scala.concurrent.duration.FiniteDuration
-import scala.util.Failure
-import scala.util.Success
+import scala.util.{ Failure, Success }
 
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.scaladsl.ActorContext
-import pekko.cluster.ddata.Key
-import pekko.cluster.ddata.ReplicatedData
+import pekko.cluster.ddata.{ Key, ReplicatedData }
 import pekko.util.Timeout
 
 object ReplicatorMessageAdapter {

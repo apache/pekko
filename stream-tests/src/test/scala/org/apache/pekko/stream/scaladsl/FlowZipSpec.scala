@@ -13,19 +13,19 @@
 
 package org.apache.pekko.stream.scaladsl
 
+import scala.annotation.nowarn
+
+import org.reactivestreams.Publisher
+
 import org.apache.pekko
 import pekko.stream.testkit.scaladsl.StreamTestKit._
 import pekko.stream.testkit.{ BaseTwoStreamsSetup, TestSubscriber }
-import scala.annotation.nowarn
-import org.reactivestreams.Publisher
 
 @nowarn // keep unused imports
 class FlowZipSpec extends BaseTwoStreamsSetup {
 
 //#zip
   import org.apache.pekko
-  import pekko.stream.scaladsl.Source
-  import pekko.stream.scaladsl.Sink
 
 //#zip
 

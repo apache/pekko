@@ -16,8 +16,7 @@ package org.apache.pekko.actor
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
-import pekko.actor.ActorSystem.Settings
-import pekko.actor.ActorSystem.findClassLoader
+import pekko.actor.ActorSystem.{ findClassLoader, Settings }
 import pekko.actor.setup.ActorSystemSetup
 import pekko.testkit.AbstractSpec
 

@@ -16,9 +16,7 @@ package org.apache.pekko.stream.impl.streamref
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.annotation.InternalApi
-import pekko.stream.SinkRef
-import pekko.stream.SourceRef
-import pekko.stream.StreamRefResolver
+import pekko.stream.{ SinkRef, SourceRef, StreamRefResolver }
 
 /**
  * INTERNAL API

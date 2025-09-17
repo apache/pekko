@@ -14,16 +14,15 @@
 package org.apache.pekko.remote.artery
 
 import java.util.concurrent.atomic.AtomicReference
+
 import scala.annotation.tailrec
+
 import org.apache.pekko
 import pekko.actor.Address
 import pekko.event.Logging
 import pekko.remote.artery.OutboundHandshake.HandshakeReq
 import pekko.remote.transport.ThrottlerTransportAdapter.Direction
-import pekko.stream.Attributes
-import pekko.stream.FlowShape
-import pekko.stream.Inlet
-import pekko.stream.Outlet
+import pekko.stream.{ Attributes, FlowShape, Inlet, Outlet }
 import pekko.stream.stage._
 import pekko.util.OptionVal
 

@@ -13,6 +13,15 @@
 
 package org.apache.pekko.actor.testkit.typed.internal
 
+import java.util.concurrent.ThreadLocalRandom.{ current => rnd }
+
+import scala.collection.immutable.TreeMap
+import scala.concurrent.ExecutionContextExecutor
+import scala.concurrent.duration.FiniteDuration
+
+import org.slf4j.helpers.{ MessageFormatter, SubstituteLoggerFactory }
+import org.slf4j.{ Logger, Marker }
+
 import org.apache.pekko
 import pekko.actor.testkit.typed.CapturedLogEvent
 import pekko.actor.typed._
@@ -21,13 +30,6 @@ import pekko.actor.{ ActorPath, ActorRefProvider, InvalidMessageException }
 import pekko.annotation.InternalApi
 import pekko.util.Helpers
 import pekko.{ actor => classic }
-import org.slf4j.{ Logger, Marker }
-import org.slf4j.helpers.{ MessageFormatter, SubstituteLoggerFactory }
-
-import java.util.concurrent.ThreadLocalRandom.{ current => rnd }
-import scala.collection.immutable.TreeMap
-import scala.concurrent.ExecutionContextExecutor
-import scala.concurrent.duration.FiniteDuration
 
 /**
  * INTERNAL API
@@ -238,7 +240,7 @@ private[pekko] final class FunctionRef[-T](override val path: ActorPath, send: (
    * this method.
    */
   def logEntries: List[CapturedLogEvent] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     substituteLoggerFactory.getEventQueue
       .iterator()
       .asScala

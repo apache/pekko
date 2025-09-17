@@ -18,8 +18,7 @@ import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
-import pekko.cluster.MemberStatus
-import pekko.cluster.MultiNodeClusterSpec
+import pekko.cluster.{ MemberStatus, MultiNodeClusterSpec }
 import pekko.remote.testkit.MultiNodeConfig
 
 trait ClusterMetricsCommonConfig extends MultiNodeConfig {
@@ -96,8 +95,7 @@ abstract class ClusterMetricsEnabledSpec
   def isSigar(collector: MetricsCollector): Boolean = collector.isInstanceOf[SigarMetricsCollector]
 
   def saveApplicationConf(): Unit = {
-    import java.io.File
-    import java.io.PrintWriter
+    import java.io.{ File, PrintWriter }
     val conf = cluster.system.settings.config
     val text = conf.root.render
     val file = new File(s"target/${myself.name}_application.conf")

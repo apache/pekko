@@ -15,14 +15,11 @@ package org.apache.pekko.stream.scaladsl
 
 import java.util.concurrent.atomic.AtomicInteger
 
-import scala.concurrent.Await
-import scala.concurrent.Future
-import scala.concurrent.Promise
+import scala.concurrent.{ Await, Future, Promise }
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.Done
-import pekko.NotUsed
+import pekko.{ Done, NotUsed }
 import pekko.stream._
 import pekko.stream.testkit._
 

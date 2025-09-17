@@ -15,13 +15,7 @@ package org.apache.pekko.remote.artery.jfr
 
 import java.net.InetSocketAddress
 
-import jdk.jfr.Category
-import jdk.jfr.DataAmount
-import jdk.jfr.Enabled
-import jdk.jfr.Event
-import jdk.jfr.Label
-import jdk.jfr.StackTrace
-import jdk.jfr.Timespan
+import jdk.jfr.{ Category, DataAmount, Enabled, Event, Label, StackTrace, Timespan }
 
 import org.apache.pekko
 import pekko.actor.Address

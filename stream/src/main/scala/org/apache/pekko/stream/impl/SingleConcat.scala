@@ -15,14 +15,8 @@ package org.apache.pekko.stream.impl
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.stream.Attributes
-import pekko.stream.FlowShape
-import pekko.stream.Inlet
-import pekko.stream.Outlet
-import pekko.stream.stage.GraphStage
-import pekko.stream.stage.GraphStageLogic
-import pekko.stream.stage.InHandler
-import pekko.stream.stage.OutHandler
+import pekko.stream.{ Attributes, FlowShape, Inlet, Outlet }
+import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
 
 /**
  * Concatenating a single element to a stream is common enough that it warrants this optimization

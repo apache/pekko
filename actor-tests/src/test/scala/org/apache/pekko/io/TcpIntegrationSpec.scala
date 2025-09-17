@@ -23,8 +23,7 @@ import org.scalatest.concurrent.TimeLimits
 import org.apache.pekko
 import pekko.actor.{ ActorRef, PoisonPill }
 import pekko.io.Tcp._
-import pekko.testkit.{ PekkoSpec, TestProbe }
-import pekko.testkit.WithLogCapturing
+import pekko.testkit.{ PekkoSpec, TestProbe, WithLogCapturing }
 import pekko.util.ByteString
 
 class TcpIntegrationSpec extends PekkoSpec("""

@@ -13,10 +13,11 @@
 
 package docs.stream
 
-import org.apache.pekko.NotUsed
-import org.apache.pekko.stream.FlowShape
-import org.apache.pekko.stream.scaladsl.{ Balance, Flow, GraphDSL, Merge, Source }
-import org.apache.pekko.testkit.PekkoSpec
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.stream.FlowShape
+import pekko.stream.scaladsl.{ Balance, Flow, GraphDSL, Merge }
+import pekko.testkit.PekkoSpec
 
 class FlowParallelismDocSpec extends PekkoSpec {
 

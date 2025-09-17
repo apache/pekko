@@ -15,8 +15,8 @@ package org.apache.pekko.dispatch
 
 import java.lang.management.ManagementFactory
 
-import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, Future }
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec

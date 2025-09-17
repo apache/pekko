@@ -25,8 +25,7 @@ import pekko.remote.artery.OutboundHandshake.{ HandshakeReq, HandshakeRsp }
 import pekko.remote.artery.compress.{ CompressionProtocol, CompressionTable }
 import pekko.remote.artery.compress.CompressionProtocol._
 import pekko.serialization.{ BaseSerializer, Serialization, SerializationExtension, SerializerWithStringManifest }
-import pekko.remote.artery.Flush
-import pekko.remote.artery.FlushAck
+import pekko.remote.artery.{ Flush, FlushAck }
 
 /** INTERNAL API */
 private[pekko] object ArteryMessageSerializer {
@@ -133,7 +132,7 @@ private[pekko] final class ArteryMessageSerializer(val system: ExtendedActorSyst
           s"Manifest '$manifest' not defined for ArteryControlMessageSerializer (serializer id $identifier)")
     }
 
-  import pekko.util.ccompat.JavaConverters._
+  import scala.jdk.CollectionConverters._
 
   def serializeQuarantined(quarantined: Quarantined): ArteryControlFormats.Quarantined =
     ArteryControlFormats.Quarantined

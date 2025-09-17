@@ -13,10 +13,7 @@
 
 package org.apache.pekko.serialization
 
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.io.NotSerializableException
-import java.io.ObjectOutputStream
+import java.io.{ ByteArrayInputStream, ByteArrayOutputStream, NotSerializableException, ObjectOutputStream }
 import java.nio.ByteBuffer
 import java.util.concurrent.Callable
 
@@ -26,8 +23,7 @@ import scala.util.control.NoStackTrace
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.annotation.InternalApi
-import pekko.event.LogMarker
-import pekko.event.Logging
+import pekko.event.{ LogMarker, Logging }
 import pekko.util.ClassLoaderObjectInputStream
 
 /**

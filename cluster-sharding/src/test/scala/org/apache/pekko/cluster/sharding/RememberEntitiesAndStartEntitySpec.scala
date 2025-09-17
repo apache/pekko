@@ -17,19 +17,11 @@ import com.typesafe.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorRef
-import pekko.actor.PoisonPill
-import pekko.actor.Props
-import pekko.cluster.Cluster
-import pekko.cluster.MemberStatus
-import pekko.cluster.sharding.Shard.GetShardStats
-import pekko.cluster.sharding.Shard.ShardStats
-import pekko.cluster.sharding.ShardRegion.StartEntity
-import pekko.cluster.sharding.ShardRegion.StartEntityAck
-import pekko.testkit.PekkoSpec
-import pekko.testkit.ImplicitSender
-import pekko.testkit.WithLogCapturing
+import pekko.actor.{ Actor, ActorRef, PoisonPill, Props }
+import pekko.cluster.sharding.Shard.{ GetShardStats, ShardStats }
+import pekko.cluster.sharding.ShardRegion.{ StartEntity, StartEntityAck }
+import pekko.cluster.{ Cluster, MemberStatus }
+import pekko.testkit.{ ImplicitSender, PekkoSpec, WithLogCapturing }
 
 object RememberEntitiesAndStartEntitySpec {
   class EntityActor extends Actor {

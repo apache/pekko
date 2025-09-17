@@ -19,38 +19,37 @@ import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.concurrent.duration._
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{ Config, ConfigFactory }
 import org.scalatest.BeforeAndAfterEach
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorIdentity
-import pekko.actor.ActorLogging
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
-import pekko.actor.Address
-import pekko.actor.Deploy
-import pekko.actor.Identify
-import pekko.actor.Props
-import pekko.actor.RootActorPath
-import pekko.actor.Terminated
-import pekko.cluster.ClusterEvent.CurrentClusterState
-import pekko.cluster.ClusterEvent.CurrentInternalStats
-import pekko.cluster.ClusterEvent.InitialStateAsSnapshot
-import pekko.cluster.ClusterEvent.MemberDowned
-import pekko.cluster.ClusterEvent.MemberEvent
-import pekko.remote.DefaultFailureDetectorRegistry
-import pekko.remote.PhiAccrualFailureDetector
-import pekko.remote.RARP
+import pekko.actor.{
+  Actor,
+  ActorIdentity,
+  ActorLogging,
+  ActorRef,
+  ActorSystem,
+  Address,
+  Deploy,
+  Identify,
+  Props,
+  RootActorPath,
+  Terminated
+}
+import pekko.cluster.ClusterEvent.{
+  CurrentClusterState,
+  CurrentInternalStats,
+  InitialStateAsSnapshot,
+  MemberDowned,
+  MemberEvent
+}
 import pekko.remote.artery.ArterySettings.AeronUpd
-import pekko.remote.testkit.MultiNodeConfig
-import pekko.remote.testkit.MultiNodeSpec
+import pekko.remote.testkit.{ MultiNodeConfig, MultiNodeSpec }
 import pekko.remote.transport.ThrottlerTransportAdapter
+import pekko.remote.{ DefaultFailureDetectorRegistry, PhiAccrualFailureDetector, RARP }
 import pekko.testkit.TestEvent._
 import pekko.testkit._
-import pekko.util.Helpers.ConfigOps
-import pekko.util.Helpers.Requiring
+import pekko.util.Helpers.{ ConfigOps, Requiring }
 
 /**
  * This test is intended to be used as long running stress test
@@ -527,7 +526,7 @@ abstract class StressSpec extends MultiNodeClusterSpec(StressMultiJvmSpec) with 
       .append(" MB")
     sb.append("\n")
 
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     val args = runtime.getInputArguments.asScala.filterNot(_.contains("classpath")).mkString("\n  ")
     sb.append("Args:\n  ").append(args)
     sb.append("\n")

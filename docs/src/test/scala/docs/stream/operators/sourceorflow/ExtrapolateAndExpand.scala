@@ -13,25 +13,22 @@
 
 package docs.stream.operators.sourceorflow
 
-import org.apache.pekko.NotUsed
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.actor.Cancellable
-import org.apache.pekko.stream.DelayOverflowStrategy
-import org.apache.pekko.stream.scaladsl.DelayStrategy
-import org.apache.pekko.stream.scaladsl.Flow
-import org.apache.pekko.stream.scaladsl.Sink
-import org.apache.pekko.stream.scaladsl.Source
-import org.apache.pekko.util.ByteString
-import docs.stream.operators.sourceorflow.ExtrapolateAndExpand.fps
-import docs.stream.operators.sourceorflow.ExtrapolateAndExpand.nowInSeconds
-import docs.stream.operators.sourceorflow.ExtrapolateAndExpand.periodInMillis
-import docs.stream.operators.sourceorflow.ExtrapolateAndExpand.videoAt25Fps
-
 import scala.concurrent.duration._
 import scala.util.Random
 
-/**
- */
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.actor.ActorSystem
+import pekko.actor.Cancellable
+import pekko.stream.DelayOverflowStrategy
+import pekko.stream.scaladsl.DelayStrategy
+import pekko.stream.scaladsl.Flow
+import pekko.stream.scaladsl.Sink
+import pekko.stream.scaladsl.Source
+import pekko.util.ByteString
+
+import docs.stream.operators.sourceorflow.ExtrapolateAndExpand.{ fps, nowInSeconds, periodInMillis, videoAt25Fps }
+
 object ExtrapolateAndExpandMain extends App {
   implicit val sys: ActorSystem = ActorSystem("25fps-stream")
   videoAt25Fps.map(_.pixels.utf8String).map(frame => s"$nowInSeconds - $frame").to(Sink.foreach(println)).run()

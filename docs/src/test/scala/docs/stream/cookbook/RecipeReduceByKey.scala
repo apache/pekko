@@ -13,10 +13,12 @@
 
 package docs.stream.cookbook
 
-import org.apache.pekko.NotUsed
-import org.apache.pekko.stream.scaladsl._
 import scala.concurrent.Await
 import scala.concurrent.duration._
+
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.stream.scaladsl._
 
 class RecipeReduceByKey extends RecipeSpec {
 

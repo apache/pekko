@@ -13,15 +13,13 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import scala.concurrent.Await
-import scala.concurrent.Future
+import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.stream._
 import pekko.stream.testkit._
-import pekko.stream.testkit.scaladsl.TestSink
-import pekko.stream.testkit.scaladsl.TestSource
+import pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
 
 class GraphBroadcastSpec extends StreamSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 2

@@ -13,22 +13,16 @@
 
 package org.apache.pekko.remote.artery
 
-import scala.concurrent.Await
-import scala.concurrent.Future
-import scala.concurrent.Promise
-import scala.concurrent.duration._
-
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.remote.AddressUidExtension
-import pekko.remote.RARP
-import pekko.remote.UniqueAddress
-import pekko.remote.testkit.MultiNodeConfig
-import pekko.remote.testkit.MultiNodeSpec
-import pekko.remote.testkit.STMultiNodeSpec
+import pekko.remote.{ AddressUidExtension, RARP, UniqueAddress }
+import pekko.remote.testkit.{ MultiNodeConfig, MultiNodeSpec, STMultiNodeSpec }
 import pekko.testkit._
+
+import scala.concurrent.{ Await, Future, Promise }
+import scala.concurrent.duration._
 
 object HandshakeRestartReceiverSpec extends MultiNodeConfig {
   val first = role("first")

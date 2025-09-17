@@ -14,16 +14,14 @@
 package scala.docs.cluster
 
 import scala.concurrent.duration._
+
 import com.typesafe.config.ConfigFactory
-import org.apache.pekko.actor.Actor
-import org.apache.pekko.actor.ActorLogging
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.actor.Props
-import org.apache.pekko.cluster.Cluster
-import org.apache.pekko.routing.FromConfig
-import org.apache.pekko.actor.ReceiveTimeout
-import scala.util.Try
-import scala.concurrent.Await
+
+import org.apache.pekko
+import pekko.actor.{ Actor, ActorLogging, ActorSystem, Props }
+import pekko.cluster.Cluster
+import pekko.routing.FromConfig
+import pekko.actor.ReceiveTimeout
 
 //#frontend
 class FactorialFrontend(upToN: Int, repeat: Boolean) extends Actor with ActorLogging {

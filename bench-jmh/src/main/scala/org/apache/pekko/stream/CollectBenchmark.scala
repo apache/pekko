@@ -13,9 +13,17 @@
 
 package org.apache.pekko.stream
 
+import java.util.concurrent.TimeUnit
+
+import scala.annotation.nowarn
+import scala.concurrent._
+import scala.concurrent.duration._
+import scala.util.control.NonFatal
+
 import com.typesafe.config.ConfigFactory
-import org.apache.pekko
 import org.openjdk.jmh.annotations._
+
+import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.stream.ActorAttributes.SupervisionStrategy
 import pekko.stream.Attributes.SourceLocation
@@ -24,12 +32,6 @@ import pekko.stream.impl.fusing.Collect
 import pekko.stream.impl.fusing.Collect.NotApplied
 import pekko.stream.scaladsl._
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
-
-import java.util.concurrent.TimeUnit
-import scala.annotation.nowarn
-import scala.concurrent._
-import scala.concurrent.duration._
-import scala.util.control.NonFatal
 
 object CollectBenchmark {
   final val OperationsPerInvocation = 10000000

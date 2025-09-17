@@ -19,10 +19,8 @@ import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl._
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.scaladsl.Behaviors
+import pekko.stream.scaladsl.{ Keep, Sink, Source }
 import pekko.stream.{ CompletionStrategy, OverflowStrategy }
-import pekko.stream.scaladsl.Keep
-import pekko.stream.scaladsl.Sink
-import pekko.stream.scaladsl.Source
 
 object ActorSourceSinkSpec {
 

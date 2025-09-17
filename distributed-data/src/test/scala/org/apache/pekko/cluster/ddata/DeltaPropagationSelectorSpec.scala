@@ -21,10 +21,8 @@ import org.apache.pekko
 import pekko.actor.Address
 import pekko.cluster.UniqueAddress
 import pekko.cluster.ddata.Key.KeyId
-import pekko.cluster.ddata.Replicator.Internal.DataEnvelope
-import pekko.cluster.ddata.Replicator.Internal.Delta
-import pekko.cluster.ddata.Replicator.Internal.DeltaPropagation
 import pekko.cluster.ddata.Replicator.Internal.DeltaPropagation.NoDeltaPlaceholder
+import pekko.cluster.ddata.Replicator.Internal.{ DataEnvelope, Delta, DeltaPropagation }
 
 object DeltaPropagationSelectorSpec {
   class TestSelector(val selfUniqueAddress: UniqueAddress, override val allNodes: Vector[UniqueAddress])

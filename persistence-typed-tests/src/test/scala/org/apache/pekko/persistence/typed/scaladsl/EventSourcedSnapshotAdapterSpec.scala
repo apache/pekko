@@ -13,21 +13,18 @@
 
 package org.apache.pekko.persistence.typed.scaladsl
 
-import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.testkit.typed.scaladsl.TestProbe
-import pekko.actor.typed.ActorRef
-import pekko.persistence.query.PersistenceQuery
-import pekko.persistence.testkit.PersistenceTestKitPlugin
-import pekko.persistence.testkit.PersistenceTestKitSnapshotPlugin
-import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
-import pekko.persistence.typed.PersistenceId
-import pekko.persistence.typed.SnapshotAdapter
-import pekko.serialization.jackson.CborSerializable
+import java.util.concurrent.atomic.AtomicInteger
+
 import org.scalatest.wordspec.AnyWordSpecLike
 
-import java.util.concurrent.atomic.AtomicInteger
+import org.apache.pekko
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit, TestProbe }
+import pekko.actor.typed.ActorRef
+import pekko.persistence.query.PersistenceQuery
+import pekko.persistence.testkit.{ PersistenceTestKitPlugin, PersistenceTestKitSnapshotPlugin }
+import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
+import pekko.persistence.typed.{ PersistenceId, SnapshotAdapter }
+import pekko.serialization.jackson.CborSerializable
 
 object EventSourcedSnapshotAdapterSpec {
 

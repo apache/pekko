@@ -13,17 +13,16 @@
 
 package org.apache.pekko.actor
 
+import scala.annotation.nowarn
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import scala.annotation.nowarn
 import org.scalatest.BeforeAndAfterEach
 
 import org.apache.pekko
 import pekko.pattern.ask
-import pekko.testkit._
-import pekko.testkit.DefaultTimeout
 import pekko.testkit.TestEvent._
+import pekko.testkit.{ DefaultTimeout, _ }
 
 object ActorWithStashSpec {
 

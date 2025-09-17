@@ -19,9 +19,7 @@ import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor.{ ActorIdentity, Identify }
-import pekko.testkit.ImplicitSender
-import pekko.testkit.TestActors
-import pekko.testkit.TestProbe
+import pekko.testkit.{ ImplicitSender, TestActors, TestProbe }
 
 object HandshakeFailureSpec {
 

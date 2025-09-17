@@ -13,19 +13,13 @@
 
 package org.apache.pekko.persistence.typed.state.internal
 
-import scala.util.Failure
-import scala.util.Success
+import scala.util.{ Failure, Success }
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.PostStop
-import pekko.actor.typed.PreRestart
-import pekko.actor.typed.Signal
-import pekko.actor.typed.scaladsl.ActorContext
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.annotation.InternalApi
-import pekko.annotation.InternalStableApi
+import pekko.actor.typed.{ Behavior, PostStop, PreRestart, Signal }
+import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors }
+import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.persistence._
 import pekko.persistence.state.scaladsl.GetObjectResult
 import pekko.util.unused

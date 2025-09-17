@@ -16,12 +16,10 @@ package org.apache.pekko.stream.scaladsl
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.stream.FlowMonitorState
 import pekko.stream.FlowMonitorState._
-import pekko.stream.Materializer
+import pekko.stream.{ FlowMonitorState, Materializer }
 import pekko.stream.testkit.StreamSpec
-import pekko.stream.testkit.scaladsl.TestSink
-import pekko.stream.testkit.scaladsl.TestSource
+import pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
 
 class FlowMonitorSpec extends StreamSpec {
 

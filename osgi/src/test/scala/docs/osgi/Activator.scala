@@ -22,9 +22,10 @@ class SomeActor extends pekko.actor.Actor {
 }
 
 //#Activator
+import org.osgi.framework.BundleContext
+
 import org.apache.pekko
 import pekko.actor.{ ActorSystem, Props }
-import org.osgi.framework.BundleContext
 import pekko.osgi.ActorSystemActivator
 
 class Activator extends ActorSystemActivator {

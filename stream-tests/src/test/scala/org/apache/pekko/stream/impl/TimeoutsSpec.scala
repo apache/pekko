@@ -15,19 +15,15 @@ package org.apache.pekko.stream.impl
 
 import java.util.concurrent.TimeoutException
 
-import scala.concurrent.Await
-import scala.concurrent.Future
+import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.Done
 import pekko.stream._
 import pekko.stream.scaladsl._
-import pekko.stream.testkit.StreamSpec
-import pekko.stream.testkit.TestPublisher
-import pekko.stream.testkit.TestSubscriber
+import pekko.stream.testkit.{ StreamSpec, TestPublisher, TestSubscriber }
 import pekko.stream.testkit.Utils._
-
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 

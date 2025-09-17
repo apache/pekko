@@ -13,18 +13,16 @@
 
 package docs.io
 
-import org.apache.pekko.testkit.PekkoSpec
-import org.apache.pekko.actor.Actor
-import org.apache.pekko.io.IO
-import org.apache.pekko.io.Udp
-import org.apache.pekko.actor.ActorRef
 import java.net.InetSocketAddress
-import org.apache.pekko.util.ByteString
-import org.apache.pekko.testkit.TestProbe
-import org.apache.pekko.actor.Props
+
 import scala.concurrent.duration._
-import org.apache.pekko.actor.PoisonPill
-import org.apache.pekko.io.UdpConnected
+
+import org.apache.pekko
+import pekko.testkit.PekkoSpec
+import pekko.actor.{ Actor, ActorRef, PoisonPill, Props }
+import pekko.io.{ IO, Udp, UdpConnected }
+import pekko.testkit.TestProbe
+import pekko.util.ByteString
 
 object ScalaUdpDocSpec {
 

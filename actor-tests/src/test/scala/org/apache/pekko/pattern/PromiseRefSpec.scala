@@ -13,8 +13,8 @@
 
 package org.apache.pekko.pattern
 
-import scala.concurrent.{ Await, Promise }
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, Promise }
 
 import org.apache.pekko
 import pekko.actor._
@@ -30,8 +30,6 @@ object PromiseRefSpec {
 
 class PromiseRefSpec extends PekkoSpec with ImplicitSender {
   import PromiseRefSpec._
-
-  import pekko.pattern._
 
   "The PromiseRef" must {
     "complete promise with received message" in {

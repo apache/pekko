@@ -13,15 +13,10 @@
 
 package org.apache.pekko.pattern
 
-import scala.concurrent.Await
-import scala.concurrent.ExecutionContext
-import scala.concurrent.ExecutionContextExecutor
-import scala.concurrent.Future
-import scala.concurrent.TimeoutException
 import scala.concurrent.duration._
-import scala.util.Failure
-import scala.util.Success
-import scala.util.Try
+import scala.concurrent._
+import scala.util.{ Failure, Success, Try }
+
 import org.apache.pekko
 import pekko.actor.{ ActorSystem, ExtendedActorSystem }
 import pekko.testkit._

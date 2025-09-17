@@ -13,16 +13,12 @@
 
 package org.apache.pekko.event
 
+import scala.language.existentials
 import scala.runtime.BoxedUnit
 
-import language.existentials
-
 import org.apache.pekko
-import pekko.actor.AbstractActor
 import pekko.actor.Actor.Receive
-import pekko.actor.ActorCell
-import pekko.actor.ActorContext
-import pekko.actor.DiagnosticActorLogging
+import pekko.actor.{ AbstractActor, ActorCell, ActorContext, DiagnosticActorLogging }
 import pekko.event.Logging.{ LogEvent, LogLevel }
 
 object LoggingReceive {

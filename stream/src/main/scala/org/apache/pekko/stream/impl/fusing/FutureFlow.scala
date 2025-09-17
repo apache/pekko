@@ -14,12 +14,16 @@
 package org.apache.pekko.stream.impl.fusing
 
 import scala.concurrent.{ Future, Promise }
-import scala.util.{ Failure, Success, Try }
 import scala.util.control.NonFatal
+import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.dispatch.ExecutionContexts
+import pekko.stream.Attributes.SourceLocation
+import pekko.stream.impl.Stages.DefaultAttributes
+import pekko.stream.scaladsl.{ Flow, Keep, Source }
+import pekko.stream.stage.{ GraphStageLogic, GraphStageWithMaterializedValue, InHandler, OutHandler }
 import pekko.stream.{
   AbruptStageTerminationException,
   Attributes,
@@ -28,10 +32,6 @@ import pekko.stream.{
   NeverMaterializedException,
   Outlet
 }
-import pekko.stream.Attributes.SourceLocation
-import pekko.stream.impl.Stages.DefaultAttributes
-import pekko.stream.scaladsl.{ Flow, Keep, Source }
-import pekko.stream.stage.{ GraphStageLogic, GraphStageWithMaterializedValue, InHandler, OutHandler }
 import pekko.util.OptionVal
 
 @InternalApi private[pekko] final class FutureFlow[In, Out, M](futureFlow: Future[Flow[In, Out, M]])

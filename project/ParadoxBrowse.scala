@@ -11,10 +11,11 @@
  * Copyright (C) 2018-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import com.lightbend.paradox.sbt.ParadoxPlugin
-import com.lightbend.paradox.sbt.ParadoxPlugin.autoImport._
 import sbt.Keys._
 import sbt._
+
+import com.lightbend.paradox.sbt.ParadoxPlugin
+import com.lightbend.paradox.sbt.ParadoxPlugin.autoImport._
 
 object ParadoxBrowse extends AutoPlugin {
 

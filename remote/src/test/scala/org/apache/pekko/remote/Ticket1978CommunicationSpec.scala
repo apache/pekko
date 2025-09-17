@@ -17,11 +17,11 @@ import java.io.ByteArrayOutputStream
 import java.security.NoSuchAlgorithmException
 import java.util.zip.GZIPOutputStream
 
-import scala.concurrent.{ Await, Future }
+import scala.annotation.nowarn
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, Future }
 import scala.reflect.classTag
 
-import scala.annotation.nowarn
 import com.typesafe.config._
 
 import org.apache.pekko
@@ -29,8 +29,7 @@ import pekko.actor._
 import pekko.event.NoMarkerLogging
 import pekko.pattern.ask
 import pekko.remote.Configuration.{ getCipherConfig, CipherConfig }
-import pekko.remote.transport.netty.ConfigSSLEngineProvider
-import pekko.remote.transport.netty.SSLSettings
+import pekko.remote.transport.netty.{ ConfigSSLEngineProvider, SSLSettings }
 import pekko.testkit._
 import pekko.util.Timeout
 

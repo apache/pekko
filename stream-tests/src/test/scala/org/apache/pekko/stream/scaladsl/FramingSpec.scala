@@ -25,13 +25,8 @@ import org.apache.pekko
 import pekko.stream._
 import pekko.stream.scaladsl.Framing.FramingException
 import pekko.stream.stage._
-import pekko.stream.stage.GraphStage
-import pekko.stream.testkit.StreamSpec
-import pekko.stream.testkit.TestPublisher
-import pekko.stream.testkit.TestSubscriber
-import pekko.util.ByteString
-import pekko.util.ByteStringBuilder
-import pekko.util.unused
+import pekko.stream.testkit.{ StreamSpec, TestPublisher, TestSubscriber }
+import pekko.util.{ unused, ByteString, ByteStringBuilder }
 
 class FramingSpec extends StreamSpec {
 

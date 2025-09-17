@@ -13,13 +13,11 @@
 
 package org.apache.pekko.actor.testkit.typed.scaladsl
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-import org.scalatest.{ BeforeAndAfterAll, TestSuite }
-import org.scalatest.concurrent.Eventually
-import org.scalatest.concurrent.ScalaFutures
+import com.typesafe.config.{ Config, ConfigFactory }
+import org.scalatest.concurrent.{ Eventually, ScalaFutures }
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.time.Span
+import org.scalatest.{ BeforeAndAfterAll, TestSuite }
 
 import org.apache.pekko
 import pekko.actor.testkit.typed.TestKitSettings

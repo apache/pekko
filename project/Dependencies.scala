@@ -11,9 +11,10 @@
  * Copyright (C) 2016-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
+import scala.language.implicitConversions
+
 import sbt._
 import Keys._
-import scala.language.implicitConversions
 
 object Dependencies {
   import DependencyHelpers._

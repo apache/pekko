@@ -15,9 +15,9 @@ package docs.extension
 
 import java.util.concurrent.atomic.AtomicLong
 
-import org.apache.pekko.actor.Actor
-import org.apache.pekko.actor.ClassicActorSystemProvider
-import org.apache.pekko.testkit.PekkoSpec
+import org.apache.pekko
+import pekko.actor.{ Actor, ClassicActorSystemProvider }
+import pekko.testkit.PekkoSpec
 
 //#extension
 import org.apache.pekko.actor.Extension
@@ -34,10 +34,7 @@ class CountExtensionImpl extends Extension {
 
 //#extensionid
 import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.actor.ExtensionId
-import pekko.actor.ExtensionIdProvider
-import pekko.actor.ExtendedActorSystem
+import pekko.actor.{ ActorSystem, ExtendedActorSystem, ExtensionId, ExtensionIdProvider }
 
 object CountExtension extends ExtensionId[CountExtensionImpl] with ExtensionIdProvider {
   // The lookup method is required by ExtensionIdProvider,

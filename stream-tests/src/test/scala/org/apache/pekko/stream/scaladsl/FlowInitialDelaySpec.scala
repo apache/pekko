@@ -18,9 +18,7 @@ import java.util.concurrent.TimeoutException
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import org.apache.pekko
-import pekko.stream.testkit.StreamSpec
-import pekko.stream.testkit.TestSubscriber
+import org.apache.pekko.stream.testkit.{ StreamSpec, TestSubscriber }
 
 class FlowInitialDelaySpec extends StreamSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 2

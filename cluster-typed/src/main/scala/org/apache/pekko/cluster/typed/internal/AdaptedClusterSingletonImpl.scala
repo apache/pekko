@@ -17,11 +17,11 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.function.{ Function => JFunction }
 
 import org.apache.pekko
-import pekko.actor.{ ExtendedActorSystem, InvalidActorNameException }
-import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior }
-import pekko.actor.typed.internal.{ PoisonPill, PoisonPillInterceptor }
 import pekko.actor.typed.internal.adapter.ActorSystemAdapter
+import pekko.actor.typed.internal.{ PoisonPill, PoisonPillInterceptor }
 import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior }
+import pekko.actor.{ ExtendedActorSystem, InvalidActorNameException }
 import pekko.annotation.InternalApi
 import pekko.cluster.ClusterSettings.DataCenter
 import pekko.cluster.singleton.{ ClusterSingletonManager => OldSingletonManager, ClusterSingletonProxy }
@@ -38,7 +38,6 @@ private[pekko] final class AdaptedClusterSingletonImpl(system: ActorSystem[_]) e
     "only adapted actor systems can be used for the typed cluster singleton")
 
   import ClusterSingletonImpl._
-
   import pekko.actor.typed.scaladsl.adapter._
 
   private lazy val cluster = Cluster(system)

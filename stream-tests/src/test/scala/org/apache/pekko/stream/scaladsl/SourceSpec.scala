@@ -13,25 +13,27 @@
 
 package org.apache.pekko.stream.scaladsl
 
+import scala.annotation.nowarn
+import scala.concurrent.{ Await, Future }
+
+import org.scalatest.time.{ Millis, Span }
+
 import org.apache.pekko
 import pekko.Done
 import pekko.stream.testkit.Utils.TE
 import pekko.testkit.DefaultTimeout
-import org.scalatest.time.{ Millis, Span }
 
-import scala.annotation.nowarn
-import scala.concurrent.{ Await, Future }
 //#imports
 import org.apache.pekko.stream._
 
 //#imports
+import scala.collection.immutable
+import scala.concurrent.duration._
+
 import pekko.NotUsed
 import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.testkit.EventFilter
-
-import scala.collection.immutable
-import scala.concurrent.duration._
 
 @nowarn // tests assigning to typed val
 class SourceSpec extends StreamSpec with DefaultTimeout {

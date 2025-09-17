@@ -15,27 +15,21 @@ package org.apache.pekko.persistence.typed
 
 import java.util.concurrent.CyclicBarrier
 
-import scala.concurrent.Future
-import scala.concurrent.Promise
+import scala.concurrent.{ Future, Promise }
 import scala.util.Success
 
 import com.typesafe.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.testkit.typed.scaladsl.TestProbe
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Extension
-import pekko.actor.typed.ExtensionId
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit, TestProbe }
+import pekko.actor.typed.{ ActorSystem, Extension, ExtensionId }
 import pekko.actor.typed.scaladsl.adapter._
 import pekko.persistence
 import pekko.persistence.SelectedSnapshot
 import pekko.persistence.snapshot.SnapshotStore
 import pekko.persistence.typed.StashingWhenSnapshottingSpec.ControllableSnapshotStoreExt
-import pekko.persistence.typed.scaladsl.Effect
-import pekko.persistence.typed.scaladsl.EventSourcedBehavior
+import pekko.persistence.typed.scaladsl.{ Effect, EventSourcedBehavior }
 
 object StashingWhenSnapshottingSpec {
   object ControllableSnapshotStoreExt extends ExtensionId[ControllableSnapshotStoreExt] {

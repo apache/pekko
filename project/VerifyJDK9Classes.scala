@@ -15,9 +15,10 @@
  * limitations under the License.
  */
 
+import sbt._
+import sbt.Keys._
+
 object VerifyJDK9Classes {
-  import sbt._
-  import sbt.Keys._
 
   lazy val settings: Seq[Setting[_]] = inConfig(Compile) {
     Seq {

@@ -18,11 +18,7 @@ import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorIdentity
-import pekko.actor.ActorRef
-import pekko.actor.Identify
-import pekko.actor.Props
+import pekko.actor.{ Actor, ActorIdentity, ActorRef, Identify, Props }
 import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.serialization.jackson.CborSerializable

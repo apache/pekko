@@ -13,8 +13,8 @@
 
 package org.apache.pekko.testkit
 
-import scala.concurrent.{ Await, Promise }
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, Promise }
 
 import org.scalatest.BeforeAndAfterEach
 

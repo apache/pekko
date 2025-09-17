@@ -16,10 +16,11 @@ package org.apache.pekko.persistence.japi.journal
 import scala.collection.immutable
 
 import com.typesafe.config.Config
+import org.scalatest.{ Args, ConfigMap, Filter, Status, Suite, TestData }
+
 import org.apache.pekko
 import pekko.persistence.CapabilityFlag
 import pekko.persistence.journal.JournalSpec
-import org.scalatest.{ Args, ConfigMap, Filter, Status, Suite, TestData }
 
 /**
  * JAVA API

@@ -13,13 +13,14 @@
 
 package org.apache.pekko.cluster
 
-import InternalClusterAction._
-import MemberStatus._
+import scala.language.implicitConversions
+
 import com.typesafe.config.ConfigFactory
-import language.implicitConversions
 
 import org.apache.pekko
 import pekko.actor.Address
+import pekko.cluster.InternalClusterAction._
+import pekko.cluster.MemberStatus._
 import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.testkit._

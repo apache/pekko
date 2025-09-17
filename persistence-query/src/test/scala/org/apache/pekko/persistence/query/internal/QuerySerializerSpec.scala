@@ -17,13 +17,9 @@ import java.time.Instant
 import java.util.UUID
 
 import org.apache.pekko
-import pekko.persistence.query.NoOffset
-import pekko.persistence.query.Sequence
-import pekko.persistence.query.TimeBasedUUID
-import pekko.persistence.query.TimestampOffset
+import pekko.persistence.query.{ NoOffset, Sequence, TimeBasedUUID, TimestampOffset }
 import pekko.persistence.query.typed.EventEnvelope
-import pekko.serialization.SerializationExtension
-import pekko.serialization.SerializerWithStringManifest
+import pekko.serialization.{ SerializationExtension, SerializerWithStringManifest }
 import pekko.testkit.PekkoSpec
 
 class QuerySerializerSpec extends PekkoSpec {

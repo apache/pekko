@@ -13,10 +13,12 @@
 
 package docs.stream.cookbook
 
-import org.apache.pekko.stream.ClosedShape
-import org.apache.pekko.stream.scaladsl._
-import org.apache.pekko.stream.testkit._
 import scala.concurrent.duration._
+
+import org.apache.pekko
+import pekko.stream.ClosedShape
+import pekko.stream.scaladsl._
+import pekko.stream.testkit._
 
 class RecipeManualTrigger extends RecipeSpec {
 

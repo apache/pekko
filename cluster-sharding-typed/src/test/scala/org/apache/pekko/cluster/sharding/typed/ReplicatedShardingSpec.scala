@@ -14,35 +14,24 @@
 package org.apache.pekko.cluster.sharding.typed
 
 import java.util.concurrent.ThreadLocalRandom
+
+import com.typesafe.config.{ Config, ConfigFactory }
+import org.scalatest.time.Span
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.{ ActorTestKit, LogCapturing, ScalaTestWithActorTestKit }
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.scaladsl.{ Behaviors, LoggerOps }
+import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior }
 import pekko.cluster.MemberStatus
-import pekko.cluster.sharding.typed.ReplicatedShardingSpec.DataCenter
-import pekko.cluster.sharding.typed.ReplicatedShardingSpec.Normal
-import pekko.cluster.sharding.typed.ReplicatedShardingSpec.ReplicationType
-import pekko.cluster.sharding.typed.ReplicatedShardingSpec.Role
+import pekko.cluster.sharding.typed.ReplicatedShardingSpec._
 import pekko.cluster.sharding.typed.scaladsl.Entity
-import pekko.cluster.typed.Cluster
-import pekko.cluster.typed.Join
+import pekko.cluster.typed.{ Cluster, Join }
 import pekko.persistence.testkit.PersistenceTestKitPlugin
 import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
-import pekko.persistence.typed.ReplicaId
-import pekko.persistence.typed.scaladsl.ReplicatedEventSourcing
-import pekko.persistence.typed.scaladsl.Effect
-import pekko.persistence.typed.scaladsl.EventSourcedBehavior
+import pekko.persistence.typed.scaladsl.{ Effect, EventSourcedBehavior, ReplicatedEventSourcing }
+import pekko.persistence.typed.{ ReplicaId, ReplicationId }
 import pekko.serialization.jackson.CborSerializable
-import com.typesafe.config.ConfigFactory
-import org.scalatest.wordspec.AnyWordSpecLike
-import pekko.actor.typed.scaladsl.LoggerOps
-import pekko.cluster.sharding.typed.ReplicatedShardingSpec.MyReplicatedIntSet
-import pekko.cluster.sharding.typed.ReplicatedShardingSpec.MyReplicatedStringSet
-import pekko.persistence.typed.ReplicationId
-import com.typesafe.config.Config
-import org.scalatest.time.Span
 
 object ReplicatedShardingSpec {
   def commonConfig = ConfigFactory.parseString("""

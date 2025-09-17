@@ -14,12 +14,8 @@
 package org.apache.pekko.remote.artery
 
 import org.apache.pekko
-import pekko.stream.Attributes
-import pekko.stream.Outlet
-import pekko.stream.SourceShape
-import pekko.stream.stage.GraphStage
-import pekko.stream.stage.GraphStageLogic
-import pekko.stream.stage.OutHandler
+import pekko.stream.stage.{ GraphStage, GraphStageLogic, OutHandler }
+import pekko.stream.{ Attributes, Outlet, SourceShape }
 
 /**
  * Emits integers from 1 to the given `elementCount`. The `java.lang.Integer`

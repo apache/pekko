@@ -17,11 +17,10 @@ import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.actor.Address
-import pekko.actor.typed.{ ActorRef, ActorSystem, Extension, ExtensionId }
-import pekko.actor.typed.ExtensionSetup
+import pekko.actor.typed.{ ActorRef, ActorSystem, Extension, ExtensionId, ExtensionSetup }
 import pekko.annotation.DoNotInherit
-import pekko.cluster._
 import pekko.cluster.ClusterEvent.{ ClusterDomainEvent, CurrentClusterState }
+import pekko.cluster._
 import pekko.cluster.typed.internal.AdapterClusterImpl
 import pekko.japi.Util
 

@@ -14,8 +14,7 @@
 package org.apache.pekko.persistence.journal
 
 import scala.collection.immutable
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
+import scala.concurrent.{ ExecutionContext, Future }
 import scala.concurrent.duration._
 import scala.util.{ Failure, Success, Try }
 import scala.util.control.NonFatal
@@ -23,8 +22,7 @@ import scala.util.control.NonFatal
 import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.InternalApi
-import pekko.pattern.CircuitBreaker
-import pekko.pattern.pipe
+import pekko.pattern.{ pipe, CircuitBreaker }
 import pekko.persistence._
 import pekko.util.Helpers.toRootLowerCase
 

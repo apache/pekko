@@ -17,24 +17,23 @@ import scala.collection.immutable
 import scala.concurrent.Await
 import scala.reflect.ClassTag
 import scala.util.control.NonFatal
+
 import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.ActorTestKit
-import pekko.actor.testkit.typed.scaladsl.SerializationTestKit
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Behavior
+import pekko.actor.testkit.typed.scaladsl.{ ActorTestKit, SerializationTestKit }
+import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior }
 import pekko.annotation.InternalApi
 import pekko.persistence.query.PersistenceQuery
 import pekko.persistence.query.scaladsl.CurrentEventsByPersistenceIdQuery
 import pekko.persistence.testkit.SnapshotMeta
 import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
 import pekko.persistence.testkit.scaladsl.EventSourcedBehaviorTestKit
-import pekko.persistence.testkit.scaladsl.EventSourcedBehaviorTestKit.CommandResult
-import pekko.persistence.testkit.scaladsl.EventSourcedBehaviorTestKit.CommandResultWithReply
-import pekko.persistence.testkit.scaladsl.EventSourcedBehaviorTestKit.RestartResult
-import pekko.persistence.testkit.scaladsl.EventSourcedBehaviorTestKit.SerializationSettings
-import pekko.persistence.testkit.scaladsl.PersistenceTestKit
-import pekko.persistence.testkit.scaladsl.SnapshotTestKit
+import pekko.persistence.testkit.scaladsl.EventSourcedBehaviorTestKit.{
+  CommandResult,
+  CommandResultWithReply,
+  RestartResult,
+  SerializationSettings
+}
+import pekko.persistence.testkit.scaladsl.{ PersistenceTestKit, SnapshotTestKit }
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.internal.EventSourcedBehaviorImpl
 import pekko.persistence.typed.internal.EventSourcedBehaviorImpl.GetStateReply

@@ -20,17 +20,11 @@ import scala.annotation.tailrec
 import scala.util.control.NonFatal
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.actor.WrappedMessage
-import pekko.actor.ActorRef
-import pekko.actor.ExtendedActorSystem
-import pekko.annotation.InternalApi
-import pekko.annotation.InternalStableApi
-import pekko.event.Logging
-import pekko.event.LoggingAdapter
+import pekko.actor.{ ActorRef, ActorSystem, ExtendedActorSystem, WrappedMessage }
+import pekko.annotation.{ InternalApi, InternalStableApi }
+import pekko.event.{ Logging, LoggingAdapter }
 import pekko.remote.RemoteActorRefProvider
-import pekko.util.OptionVal
-import pekko.util.unused
+import pekko.util.{ unused, OptionVal }
 
 /**
  * INTERNAL API
@@ -412,7 +406,7 @@ private[remote] object RemoteInstruments {
   def create(system: ExtendedActorSystem, @unused log: LoggingAdapter): Vector[RemoteInstrument] = {
     val c = system.settings.config
     val path = "pekko.remote.artery.advanced.instruments"
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     val configuredInstruments = c
       .getStringList(path)
       .asScala

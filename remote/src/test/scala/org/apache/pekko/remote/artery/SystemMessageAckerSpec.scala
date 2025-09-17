@@ -18,13 +18,9 @@ import pekko.actor.Address
 import pekko.remote.UniqueAddress
 import pekko.remote.artery.SystemMessageDelivery._
 import pekko.stream.scaladsl.Keep
-import pekko.stream.testkit.TestPublisher
-import pekko.stream.testkit.TestSubscriber
-import pekko.stream.testkit.scaladsl.TestSink
-import pekko.stream.testkit.scaladsl.TestSource
-import pekko.testkit.PekkoSpec
-import pekko.testkit.ImplicitSender
-import pekko.testkit.TestProbe
+import pekko.stream.testkit.{ TestPublisher, TestSubscriber }
+import pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
+import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
 import pekko.util.OptionVal
 
 class SystemMessageAckerSpec extends PekkoSpec("""

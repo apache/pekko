@@ -17,28 +17,22 @@ import java.net.InetAddress
 
 import scala.collection.{ immutable => im }
 import scala.concurrent.Future
-import scala.concurrent.duration._
-import scala.concurrent.duration.FiniteDuration
-import scala.util.Failure
-import scala.util.Success
+import scala.concurrent.duration.{ FiniteDuration, _ }
+import scala.util.{ Failure, Success }
 
 import org.apache.pekko
-import pekko.actor.ActorRef
-import pekko.actor.ExtendedActorSystem
+import pekko.actor.{ ActorRef, ExtendedActorSystem }
 import pekko.annotation.InternalApi
-import pekko.discovery._
 import pekko.discovery.ServiceDiscovery.{ Resolved, ResolvedTarget }
+import pekko.discovery._
 import pekko.dispatch.MessageDispatcher
 import pekko.event.Logging
-import pekko.io.{ Dns, IO }
-import pekko.io.SimpleDnsCache
-import pekko.io.dns.{ AAAARecord, ARecord, DnsProtocol, SRVRecord }
 import pekko.io.dns.DnsProtocol.{ Ip, Srv }
 import pekko.io.dns.internal.AsyncDnsManager
-import pekko.pattern.AskTimeoutException
-import pekko.pattern.ask
-import pekko.util.OptionVal
-import pekko.util.Timeout
+import pekko.io.dns.{ AAAARecord, ARecord, DnsProtocol, SRVRecord }
+import pekko.io.{ Dns, IO, SimpleDnsCache }
+import pekko.pattern.{ ask, AskTimeoutException }
+import pekko.util.{ OptionVal, Timeout }
 
 /**
  * INTERNAL API

@@ -14,29 +14,20 @@
 package org.apache.pekko.cluster
 
 import java.lang.management.ManagementFactory
-
 import javax.management.ObjectName
+
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.actor.Address
-import pekko.actor.CoordinatedShutdown
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.Props
+import pekko.actor._
 import pekko.cluster.ClusterEvent._
-import pekko.cluster.ClusterEvent.MemberEvent
 import pekko.cluster.InternalClusterAction._
 import pekko.stream.Materializer
-import pekko.stream.scaladsl.Sink
-import pekko.stream.scaladsl.Source
-import pekko.stream.scaladsl.StreamRefs
-import pekko.testkit.PekkoSpec
-import pekko.testkit.ImplicitSender
-import pekko.testkit.TestProbe
+import pekko.stream.scaladsl.{ Sink, Source, StreamRefs }
+import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
 import pekko.util.Version
 
 object ClusterSpec {

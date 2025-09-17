@@ -13,24 +13,17 @@
 
 package org.apache.pekko.remote.artery
 
-import scala.concurrent.Await
-import scala.concurrent.Future
-import scala.concurrent.Promise
+import scala.concurrent.{ Await, Future, Promise }
 import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor.Address
 import pekko.remote.UniqueAddress
-import pekko.remote.artery.OutboundHandshake.HandshakeReq
-import pekko.remote.artery.OutboundHandshake.HandshakeRsp
+import pekko.remote.artery.OutboundHandshake.{ HandshakeReq, HandshakeRsp }
 import pekko.stream.scaladsl.Keep
-import pekko.stream.testkit.TestPublisher
-import pekko.stream.testkit.TestSubscriber
-import pekko.stream.testkit.scaladsl.TestSink
-import pekko.stream.testkit.scaladsl.TestSource
-import pekko.testkit.PekkoSpec
-import pekko.testkit.ImplicitSender
-import pekko.testkit.TestProbe
+import pekko.stream.testkit.{ TestPublisher, TestSubscriber }
+import pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
+import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
 import pekko.util.OptionVal
 
 object InboundHandshakeSpec {

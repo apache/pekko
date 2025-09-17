@@ -14,10 +14,15 @@
 package org.apache.pekko.coordination.lease.javadsl
 
 import org.apache.pekko
-import pekko.actor.{ ActorSystem, ExtendedActorSystem, Extension, ExtensionId, ExtensionIdProvider }
-import pekko.actor.ClassicActorSystemProvider
-import pekko.coordination.lease.internal.LeaseAdapter
-import pekko.coordination.lease.internal.LeaseAdapterToScala
+import pekko.actor.{
+  ActorSystem,
+  ClassicActorSystemProvider,
+  ExtendedActorSystem,
+  Extension,
+  ExtensionId,
+  ExtensionIdProvider
+}
+import pekko.coordination.lease.internal.{ LeaseAdapter, LeaseAdapterToScala }
 import pekko.coordination.lease.scaladsl.{ LeaseProvider => ScalaLeaseProvider }
 
 object LeaseProvider extends ExtensionId[LeaseProvider] with ExtensionIdProvider {

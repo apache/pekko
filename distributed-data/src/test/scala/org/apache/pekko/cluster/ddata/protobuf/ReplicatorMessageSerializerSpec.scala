@@ -21,22 +21,13 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.actor.Address
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.Props
+import pekko.actor.{ ActorSystem, Address, ExtendedActorSystem, Props }
 import pekko.cluster.UniqueAddress
 import pekko.cluster.ddata.DurableStore.DurableDataEnvelope
-import pekko.cluster.ddata.GCounter
-import pekko.cluster.ddata.GSet
-import pekko.cluster.ddata.GSetKey
-import pekko.cluster.ddata.ORMultiMap
-import pekko.cluster.ddata.ORSet
-import pekko.cluster.ddata.PruningState.PruningInitialized
-import pekko.cluster.ddata.PruningState.PruningPerformed
-import pekko.cluster.ddata.Replicator._
+import pekko.cluster.ddata.PruningState.{ PruningInitialized, PruningPerformed }
 import pekko.cluster.ddata.Replicator.Internal._
-import pekko.cluster.ddata.VersionVector
+import pekko.cluster.ddata.Replicator._
+import pekko.cluster.ddata.{ GCounter, GSet, GSetKey, ORMultiMap, ORSet, VersionVector }
 import pekko.remote.RARP
 import pekko.testkit.TestKit
 import pekko.util.{ unused, ByteString }

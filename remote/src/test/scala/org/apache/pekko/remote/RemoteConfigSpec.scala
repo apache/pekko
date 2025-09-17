@@ -13,10 +13,10 @@
 
 package org.apache.pekko.remote
 
-import io.netty.buffer.PooledByteBufAllocator
-
-import scala.concurrent.duration._
 import scala.annotation.nowarn
+import scala.concurrent.duration._
+
+import io.netty.buffer.PooledByteBufAllocator
 
 import org.apache.pekko
 import pekko.remote.transport.PekkoProtocolSettings

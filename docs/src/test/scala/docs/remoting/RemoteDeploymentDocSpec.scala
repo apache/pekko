@@ -13,8 +13,9 @@
 
 package docs.remoting
 
-import org.apache.pekko.actor.{ Actor, ActorRef, ActorSystem, ExtendedActorSystem }
-import org.apache.pekko.testkit.{ ImplicitSender, PekkoSpec }
+import org.apache.pekko
+import pekko.actor.{ Actor, ActorRef, ActorSystem, ExtendedActorSystem }
+import pekko.testkit.{ ImplicitSender, PekkoSpec }
 //#import
 import org.apache.pekko
 import pekko.actor.{ Address, AddressFromURIString, Deploy, Props }

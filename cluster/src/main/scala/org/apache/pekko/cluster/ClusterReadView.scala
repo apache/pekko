@@ -19,16 +19,10 @@ import java.util.concurrent.atomic.AtomicReference
 import scala.collection.immutable
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorRef
-import pekko.actor.Address
-import pekko.actor.Deploy
-import pekko.actor.PoisonPill
-import pekko.actor.Props
+import pekko.actor.{ Actor, ActorRef, Address, Deploy, PoisonPill, Props }
 import pekko.annotation.InternalApi
 import pekko.cluster.ClusterEvent._
-import pekko.dispatch.RequiresMessageQueue
-import pekko.dispatch.UnboundedMessageQueueSemantics
+import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
 
 /**
  * INTERNAL API

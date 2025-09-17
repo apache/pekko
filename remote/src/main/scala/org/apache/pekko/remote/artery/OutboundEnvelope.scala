@@ -14,8 +14,7 @@
 package org.apache.pekko.remote.artery
 
 import org.apache.pekko
-import pekko.actor.ActorRef
-import pekko.actor.NoSerializationVerificationNeeded
+import pekko.actor.{ ActorRef, NoSerializationVerificationNeeded }
 import pekko.remote.RemoteActorRef
 import pekko.util.OptionVal
 

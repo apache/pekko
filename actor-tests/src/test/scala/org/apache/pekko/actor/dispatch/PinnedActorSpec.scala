@@ -22,8 +22,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.apache.pekko
 import pekko.actor.{ Actor, Props }
 import pekko.pattern.ask
-import pekko.testkit._
-import pekko.testkit.PekkoSpec
+import pekko.testkit.{ PekkoSpec, _ }
 
 object PinnedActorSpec {
   val config = """

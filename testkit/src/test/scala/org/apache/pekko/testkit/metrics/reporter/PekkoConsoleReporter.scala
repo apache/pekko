@@ -41,7 +41,7 @@ class PekkoConsoleReporter(registry: PekkoMetricRegistry, verbose: Boolean, outp
       histograms: util.SortedMap[String, Histogram],
       meters: util.SortedMap[String, Meter],
       timers: util.SortedMap[String, Timer]): Unit = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
 
     // default Metrics types
     printMetrics(gauges.asScala, printGauge)
@@ -126,9 +126,10 @@ class PekkoConsoleReporter(registry: PekkoMetricRegistry, verbose: Boolean, outp
   }
 
   private def printKnownOpsInTimespanCounter(counter: KnownOpsInTimespanTimer): Unit = {
-    import concurrent.duration._
+    import scala.concurrent.duration._
 
     import pekko.util.PrettyDuration._
+
     output.print("               ops = %d%n".format(counter.getCount()))
     output.print("              time = %s%n".format(counter.elapsedTime.nanos.pretty))
     output.print("             ops/s = %2.2f%n".format(counter.opsPerSecond))

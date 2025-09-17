@@ -15,8 +15,7 @@ package org.apache.pekko.remote.artery
 
 import java.util.ArrayDeque
 
-import scala.concurrent.Future
-import scala.concurrent.Promise
+import scala.concurrent.{ Future, Promise }
 import scala.util.Try
 
 import org.apache.pekko
@@ -24,10 +23,7 @@ import pekko.Done
 import pekko.annotation.InternalApi
 import pekko.event.Logging
 import pekko.remote.UniqueAddress
-import pekko.stream.Attributes
-import pekko.stream.FlowShape
-import pekko.stream.Inlet
-import pekko.stream.Outlet
+import pekko.stream.{ Attributes, FlowShape, Inlet, Outlet }
 import pekko.stream.stage._
 import pekko.util.OptionVal
 

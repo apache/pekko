@@ -20,9 +20,9 @@ package org.apache.pekko.stream.impl.fusing
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.japi.Pair
-import pekko.stream.{ Attributes, FlowShape, Inlet, Outlet }
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
+import pekko.stream.{ Attributes, FlowShape, Inlet, Outlet }
 
 /**
  * INTERNAL API

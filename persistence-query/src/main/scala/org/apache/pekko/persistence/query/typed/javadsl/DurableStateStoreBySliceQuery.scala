@@ -17,8 +17,7 @@ import org.apache.pekko
 import pekko.NotUsed
 import pekko.annotation.ApiMayChange
 import pekko.japi.Pair
-import pekko.persistence.query.DurableStateChange
-import pekko.persistence.query.Offset
+import pekko.persistence.query.{ DurableStateChange, Offset }
 import pekko.persistence.state.javadsl.DurableStateStore
 import pekko.stream.javadsl.Source
 

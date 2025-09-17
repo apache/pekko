@@ -16,14 +16,13 @@ package org.apache.pekko.cluster.client.protobuf
 import java.io.NotSerializableException
 
 import scala.annotation.nowarn
+import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.cluster.client.ClusterReceptionist
 import pekko.cluster.client.protobuf.msg.{ ClusterClientMessages => cm }
-import pekko.serialization.BaseSerializer
-import pekko.serialization.SerializerWithStringManifest
-import pekko.util.ccompat.JavaConverters._
+import pekko.serialization.{ BaseSerializer, SerializerWithStringManifest }
 
 /**
  * INTERNAL API: Serializer of ClusterClient messages.

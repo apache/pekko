@@ -13,15 +13,13 @@
 
 package org.apache.pekko.remote
 
-import MessageLoggingSpec._
 import com.typesafe.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorIdentity, ActorSystem, ExtendedActorSystem, Identify, Props, RootActorPath }
+import pekko.remote.MessageLoggingSpec._
 import pekko.serialization.jackson.CborSerializable
-import pekko.testkit.EventFilter
-import pekko.testkit.TestActors
-import pekko.testkit.{ ImplicitSender, PekkoSpec, TestKit }
+import pekko.testkit.{ EventFilter, ImplicitSender, PekkoSpec, TestActors, TestKit }
 
 object MessageLoggingSpec {
   def config(artery: Boolean) = ConfigFactory.parseString(s"""

@@ -13,16 +13,16 @@
 
 package org.apache.pekko.pattern
 
-import scala.concurrent.{ ExecutionContext, Future }
+import java.util.concurrent.ThreadLocalRandom
+
 import scala.concurrent.duration.{ Duration, FiniteDuration }
-import scala.util.{ Failure, Success, Try }
+import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.control.NonFatal
+import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
 import pekko.actor.Scheduler
 import pekko.util.ConstantFun
-
-import java.util.concurrent.ThreadLocalRandom
 
 /**
  * This trait provides the retry utility function

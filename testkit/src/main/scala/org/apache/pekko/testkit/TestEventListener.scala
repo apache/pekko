@@ -21,9 +21,7 @@ import scala.reflect.ClassTag
 import scala.util.matching.Regex
 
 import org.apache.pekko
-import pekko.actor.{ ActorSystem, DeadLetter, UnhandledMessage }
-import pekko.actor.Dropped
-import pekko.actor.NoSerializationVerificationNeeded
+import pekko.actor.{ ActorSystem, DeadLetter, Dropped, NoSerializationVerificationNeeded, UnhandledMessage }
 import pekko.dispatch.sysmsg.{ SystemMessage, Terminate }
 import pekko.event.Logging
 import pekko.event.Logging.{ Debug, Error, Info, InitializeLogger, LogEvent, LoggerInitialized, Warning }

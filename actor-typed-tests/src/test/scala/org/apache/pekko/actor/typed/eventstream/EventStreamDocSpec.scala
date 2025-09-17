@@ -17,18 +17,21 @@
 
 package org.apache.pekko.actor.typed.eventstream
 
-import org.apache.pekko.actor.{ AllDeadLetters, DeadLetter, Dropped, SuppressedDeadLetter, UnhandledMessage }
-import org.apache.pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
-import org.apache.pekko.actor.typed.ActorSystem
-import org.apache.pekko.actor.typed.scaladsl.Behaviors
 import org.scalatest.wordspec.AnyWordSpecLike
+
+import org.apache.pekko
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
+import pekko.actor.typed.ActorSystem
+import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.{ AllDeadLetters, DeadLetter, Dropped, SuppressedDeadLetter, UnhandledMessage }
 
 object EventStreamDocSpec {
 
   // #listen-to-dead-letters
-  import org.apache.pekko.actor.typed.Behavior
-  import org.apache.pekko.actor.typed.eventstream.EventStream.Subscribe
-  import org.apache.pekko.actor.typed.scaladsl.Behaviors
+  import org.apache.pekko
+  import pekko.actor.typed.Behavior
+  import pekko.actor.typed.eventstream.EventStream.Subscribe
+  import pekko.actor.typed.scaladsl.Behaviors
 
   object DeadLetterListener {
     sealed trait Command

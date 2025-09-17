@@ -18,8 +18,7 @@ import scala.concurrent.Future
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
-import pekko.PekkoException
-import pekko.Done
+import pekko.{ Done, PekkoException }
 import pekko.actor._
 import pekko.annotation.InternalStableApi
 import pekko.event.LoggingAdapter

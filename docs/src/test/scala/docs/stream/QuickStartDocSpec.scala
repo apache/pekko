@@ -13,6 +13,10 @@
 
 package docs.stream
 
+import org.scalatest.BeforeAndAfterAll
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.concurrent._
+
 //#stream-imports
 import org.apache.pekko
 import pekko.stream._
@@ -20,17 +24,15 @@ import pekko.stream.scaladsl._
 //#stream-imports
 
 //#other-imports
+import java.nio.file.Paths
+
+import scala.concurrent._
+import scala.concurrent.duration._
+
 import pekko.{ Done, NotUsed }
 import pekko.actor.ActorSystem
 import pekko.util.ByteString
-import scala.concurrent._
-import scala.concurrent.duration._
-import java.nio.file.Paths
 //#other-imports
-
-import org.scalatest.BeforeAndAfterAll
-import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.concurrent._
 
 //#main-app
 object Main extends App {

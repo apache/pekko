@@ -12,6 +12,7 @@
  */
 
 package org.apache.pekko.persistence.testkit.query.internal
+
 import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.annotation.InternalApi

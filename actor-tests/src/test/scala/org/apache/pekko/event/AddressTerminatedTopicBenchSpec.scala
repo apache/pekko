@@ -16,10 +16,7 @@ package org.apache.pekko.event
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
-import pekko.actor.Props
+import pekko.actor.{ Actor, ActorRef, ActorSystem, Props }
 import pekko.testkit._
 
 object AddressTerminatedTopicBenchSpec {

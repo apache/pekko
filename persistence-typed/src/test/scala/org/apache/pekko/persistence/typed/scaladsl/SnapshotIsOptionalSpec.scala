@@ -17,13 +17,11 @@ import java.util.UUID
 import java.util.concurrent.atomic.AtomicInteger
 
 import com.fasterxml.jackson.annotation.JsonCreator
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{ Config, ConfigFactory }
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
 import pekko.actor.typed.ActorRef
 import pekko.persistence.typed.PersistenceId
 import pekko.serialization.jackson.CborSerializable

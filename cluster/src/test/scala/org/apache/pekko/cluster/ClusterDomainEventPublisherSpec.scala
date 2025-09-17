@@ -18,18 +18,13 @@ import scala.collection.immutable.SortedSet
 import org.scalatest.BeforeAndAfterEach
 
 import org.apache.pekko
-import pekko.actor.ActorRef
-import pekko.actor.Address
-import pekko.actor.PoisonPill
-import pekko.actor.Props
+import pekko.actor.{ ActorRef, Address, PoisonPill, Props }
 import pekko.cluster.ClusterEvent._
 import pekko.cluster.ClusterSettings.DefaultDataCenter
 import pekko.cluster.InternalClusterAction._
 import pekko.cluster.MemberStatus._
 import pekko.remote.RARP
-import pekko.testkit.PekkoSpec
-import pekko.testkit.ImplicitSender
-import pekko.testkit.TestProbe
+import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
 
 object ClusterDomainEventPublisherSpec {
   val config = """

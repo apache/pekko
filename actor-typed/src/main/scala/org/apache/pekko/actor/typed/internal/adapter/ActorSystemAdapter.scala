@@ -14,35 +14,20 @@
 package org.apache.pekko.actor.typed.internal.adapter
 
 import java.util.concurrent.CompletionStage
-
 import scala.concurrent.ExecutionContextExecutor
 
 import org.slf4j.{ Logger, LoggerFactory }
 
 import org.apache.pekko
-import pekko.{ actor => classic }
-import pekko.Done
-import pekko.actor
-import pekko.actor.{ ActorRefProvider, Address, ExtendedActorSystem, InvalidMessageException }
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.DispatcherSelector
-import pekko.actor.typed.Dispatchers
-import pekko.actor.typed.Props
-import pekko.actor.typed.Scheduler
-import pekko.actor.typed.Settings
-import pekko.actor.typed.SupervisorStrategy
-import pekko.actor.typed.internal.ActorRefImpl
-import pekko.actor.typed.internal.ExtensionsImpl
-import pekko.actor.typed.internal.InternalRecipientRef
-import pekko.actor.typed.internal.PropsImpl.DispatcherDefault
-import pekko.actor.typed.internal.PropsImpl.DispatcherFromConfig
-import pekko.actor.typed.internal.PropsImpl.DispatcherSameAsParent
-import pekko.actor.typed.internal.SystemMessage
+import pekko.actor.typed.internal.PropsImpl.{ DispatcherDefault, DispatcherFromConfig, DispatcherSameAsParent }
+import pekko.actor.typed.internal.{ ActorRefImpl, ExtensionsImpl, InternalRecipientRef, SystemMessage }
 import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed._
+import pekko.actor.{ ActorRefProvider, Address, ExtendedActorSystem, InvalidMessageException }
 import pekko.annotation.InternalApi
 import pekko.util.FutureConverters._
+import pekko.{ actor, Done }
+import pekko.{ actor => classic }
 
 /**
  * INTERNAL API. Lightweight wrapper for presenting a classic ActorSystem to a Behavior (via the context).

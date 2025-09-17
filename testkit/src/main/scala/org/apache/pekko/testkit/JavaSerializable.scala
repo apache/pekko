@@ -13,8 +13,6 @@
 
 package org.apache.pekko.testkit
 
-import java.io.Serializable
-
 /**
  * Marker trait for test messages that will use Java serialization via
  * [[org.apache.pekko.testkit.TestJavaSerializer]]

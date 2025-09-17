@@ -13,19 +13,20 @@
 
 package docs.testkit
 
+import scala.collection.immutable
+import scala.concurrent.Future
 import scala.util.Success
+import scala.util.control.NonFatal
+
 import org.apache.pekko.testkit._
 
 //#imports-test-probe
 import scala.concurrent.duration._
+
 import org.apache.pekko.actor._
 import org.apache.pekko.testkit.TestProbe
 
 //#imports-test-probe
-
-import scala.collection.immutable
-import scala.concurrent.Future
-import scala.util.control.NonFatal
 
 object TestKitDocSpec {
   case object Say42

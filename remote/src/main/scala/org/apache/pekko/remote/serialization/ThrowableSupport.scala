@@ -13,16 +13,14 @@
 
 package org.apache.pekko.remote.serialization
 
-import scala.util.Failure
-import scala.util.Success
+import scala.util.{ Failure, Success }
 import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.event.Logging
 import pekko.remote.ContainerFormats
-import pekko.serialization.DisabledJavaSerializer
-import pekko.serialization.SerializationExtension
+import pekko.serialization.{ DisabledJavaSerializer, SerializationExtension }
 
 /**
  * INTERNAL API
@@ -110,7 +108,7 @@ private[pekko] class ThrowableSupport(system: ExtendedActorSystem) {
   }
 
   private def fillInStackTrace(protoT: ContainerFormats.Throwable, t: Throwable): Unit = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     val stackTrace =
       protoT.getStackTraceList.asScala.map { elem =>
         val fileName = elem.getFileName

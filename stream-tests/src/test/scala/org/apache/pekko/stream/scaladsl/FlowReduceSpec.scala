@@ -17,8 +17,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.stream.ActorAttributes
-import pekko.stream.Supervision
+import pekko.stream.{ ActorAttributes, Supervision }
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.Utils._
 

@@ -18,12 +18,8 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 import org.apache.pekko
-import pekko.actor.ActorPath
-import pekko.actor.ActorRefProvider
-import pekko.actor.ActorSystemImpl
-import pekko.actor.MinimalActorRef
-import pekko.actor.RootActorPath
-import pekko.actor.typed.scaladsl.Behaviors
+import org.apache.pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.{ ActorPath, ActorRefProvider, ActorSystemImpl, MinimalActorRef, RootActorPath }
 
 class ActorRefResolverSpec extends AnyWordSpec with ScalaFutures with Matchers {
   "ActorRefResolver" should {

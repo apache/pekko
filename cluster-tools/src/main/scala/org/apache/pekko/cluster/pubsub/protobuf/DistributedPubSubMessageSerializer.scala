@@ -13,22 +13,21 @@
 
 package org.apache.pekko.cluster.pubsub.protobuf
 
-import java.io.{ ByteArrayInputStream, ByteArrayOutputStream }
-import java.io.NotSerializableException
-import java.util.zip.GZIPInputStream
-import java.util.zip.GZIPOutputStream
+import java.io.{ ByteArrayInputStream, ByteArrayOutputStream, NotSerializableException }
+import java.util.zip.{ GZIPInputStream, GZIPOutputStream }
+
 import scala.annotation.tailrec
 import scala.collection.immutable.TreeMap
+import scala.jdk.CollectionConverters._
+
 import org.apache.pekko
-import pekko.actor.{ Address, ExtendedActorSystem }
-import pekko.actor.ActorRef
-import pekko.cluster.pubsub.DistributedPubSubMediator._
+import pekko.actor.{ ActorRef, Address, ExtendedActorSystem }
 import pekko.cluster.pubsub.DistributedPubSubMediator.Internal._
+import pekko.cluster.pubsub.DistributedPubSubMediator._
 import pekko.cluster.pubsub.protobuf.msg.{ DistributedPubSubMessages => dm }
 import pekko.protobufv3.internal.{ ByteString, MessageLite }
 import pekko.remote.ByteStringUtils
 import pekko.serialization._
-import pekko.util.ccompat.JavaConverters._
 
 /**
  * INTERNAL API: Protobuf serializer of DistributedPubSubMediator messages.

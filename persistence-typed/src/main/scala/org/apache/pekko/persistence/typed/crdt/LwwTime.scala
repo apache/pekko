@@ -12,6 +12,7 @@
  */
 
 package org.apache.pekko.persistence.typed.crdt
+
 import org.apache.pekko.persistence.typed.ReplicaId
 
 /**

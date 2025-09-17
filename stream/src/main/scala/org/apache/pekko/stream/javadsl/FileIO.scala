@@ -17,12 +17,12 @@ import java.nio.file.{ OpenOption, Path }
 import java.util
 import java.util.concurrent.CompletionStage
 
+import scala.jdk.CollectionConverters._
+
 import org.apache.pekko
+import pekko.stream.scaladsl.{ SinkToCompletionStage, SourceToCompletionStage }
 import pekko.stream.{ javadsl, scaladsl, IOResult }
-import pekko.stream.scaladsl.SinkToCompletionStage
-import pekko.stream.scaladsl.SourceToCompletionStage
 import pekko.util.ByteString
-import pekko.util.ccompat.JavaConverters._
 
 /**
  * Java API: Factories to create sinks and sources from files

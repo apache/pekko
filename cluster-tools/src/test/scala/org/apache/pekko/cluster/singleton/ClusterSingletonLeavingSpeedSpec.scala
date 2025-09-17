@@ -18,17 +18,10 @@ import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
-import pekko.actor.CoordinatedShutdown
-import pekko.actor.PoisonPill
-import pekko.actor.Props
-import pekko.cluster.Cluster
-import pekko.cluster.MemberStatus
+import pekko.actor.{ Actor, ActorRef, ActorSystem, CoordinatedShutdown, PoisonPill, Props }
 import pekko.cluster.singleton.ClusterSingletonLeavingSpeedSpec.TheSingleton
-import pekko.testkit.PekkoSpec
-import pekko.testkit.TestProbe
+import pekko.cluster.{ Cluster, MemberStatus }
+import pekko.testkit.{ PekkoSpec, TestProbe }
 
 object ClusterSingletonLeavingSpeedSpec {
 

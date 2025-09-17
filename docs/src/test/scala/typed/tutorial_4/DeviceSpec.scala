@@ -13,8 +13,9 @@
 
 package typed.tutorial_4
 
-import org.apache.pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import org.scalatest.wordspec.AnyWordSpecLike
+
+import org.apache.pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 
 class DeviceSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike {
   import Device._

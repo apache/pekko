@@ -19,8 +19,7 @@ import org.apache.pekko
 import pekko.actor.{ ActorInitializationException, ExtendedActorSystem, InternalActorRef }
 import pekko.dispatch.sysmsg._
 import pekko.serialization.SerializationExtension
-import pekko.testkit.{ PekkoSpec, TestProbe }
-import pekko.testkit.JavaSerializable
+import pekko.testkit.{ JavaSerializable, PekkoSpec, TestProbe }
 
 object SystemMessageSerializationSpec {
   val serializationTestOverrides =

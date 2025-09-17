@@ -17,8 +17,7 @@ import jdocs.actor.ImmutableMessage
 
 //#imports1
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.Props
+import pekko.actor.{ Actor, Props }
 import pekko.event.Logging
 
 //#imports1
@@ -30,11 +29,12 @@ import pekko.actor.{ ActorIdentity, ActorLogging, ActorRef, ActorSystem, Identif
 
 // #watch
 // #identify
-import pekko.testkit._
-import pekko.util._
 import scala.concurrent.duration._
 import scala.concurrent.Await
+
 import pekko.actor.CoordinatedShutdown
+import pekko.testkit._
+import pekko.util._
 
 //#my-actor
 class MyActor extends Actor {

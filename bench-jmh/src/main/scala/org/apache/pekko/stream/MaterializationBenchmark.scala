@@ -15,17 +15,15 @@ package org.apache.pekko.stream
 
 import java.util.concurrent.TimeUnit
 
-import scala.concurrent.Await
-import scala.concurrent.Future
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, Future }
 
 import org.openjdk.jmh.annotations._
 
 import org.apache.pekko
-import pekko.Done
-import pekko.NotUsed
 import pekko.actor.ActorSystem
 import pekko.stream.scaladsl._
+import pekko.{ Done, NotUsed }
 
 object MaterializationBenchmark {
 

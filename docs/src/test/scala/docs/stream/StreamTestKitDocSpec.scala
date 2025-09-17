@@ -13,16 +13,16 @@
 
 package docs.stream
 
-import scala.util._
 import scala.concurrent.duration._
 import scala.concurrent._
 
-import org.apache.pekko.Done
-import org.apache.pekko.stream._
-import org.apache.pekko.stream.scaladsl._
-import org.apache.pekko.stream.testkit.scaladsl._
-import org.apache.pekko.testkit.{ PekkoSpec, TestProbe }
-import org.apache.pekko.pattern
+import org.apache.pekko
+import pekko.Done
+import pekko.stream._
+import pekko.stream.scaladsl._
+import pekko.stream.testkit.scaladsl._
+import pekko.testkit.{ PekkoSpec, TestProbe }
+import pekko.pattern
 
 class StreamTestKitDocSpec extends PekkoSpec {
 

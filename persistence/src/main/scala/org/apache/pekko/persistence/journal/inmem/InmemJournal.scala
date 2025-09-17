@@ -13,25 +13,22 @@
 
 package org.apache.pekko.persistence.journal.inmem
 
-import org.apache.pekko
-import pekko.actor.ActorRef
-
 import scala.collection.immutable
 import scala.concurrent.Future
 import scala.util.Try
 import scala.util.control.NonFatal
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-import pekko.annotation.ApiMayChange
-import pekko.annotation.InternalApi
+
+import com.typesafe.config.{ Config, ConfigFactory }
+
+import org.apache.pekko
+import pekko.actor.ActorRef
+import pekko.annotation.{ ApiMayChange, InternalApi }
 import pekko.event.Logging
-import pekko.persistence.AtomicWrite
+import pekko.persistence.{ AtomicWrite, PersistentRepr }
 import pekko.persistence.JournalProtocol.RecoverySuccess
-import pekko.persistence.PersistentRepr
 import pekko.persistence.journal.inmem.InmemJournal.{ MessageWithMeta, ReplayWithMeta }
 import pekko.persistence.journal.{ AsyncWriteJournal, Tagged }
-import pekko.serialization.SerializationExtension
-import pekko.serialization.Serializers
+import pekko.serialization.{ SerializationExtension, Serializers }
 import pekko.util.OptionVal
 
 /**

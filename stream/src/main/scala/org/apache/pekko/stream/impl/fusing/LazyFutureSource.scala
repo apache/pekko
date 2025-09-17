@@ -22,15 +22,11 @@ import scala.util.Try
 
 import org.apache.pekko
 import pekko.dispatch.ExecutionContexts
-import pekko.stream.Attributes
 import pekko.stream.Attributes.SourceLocation
-import pekko.stream.Outlet
-import pekko.stream.SourceShape
+import pekko.stream.{ Attributes, Outlet, SourceShape }
 import pekko.stream.impl.ReactiveStreamsCompliance
 import pekko.stream.impl.Stages.DefaultAttributes
-import pekko.stream.stage.GraphStage
-import pekko.stream.stage.GraphStageLogic
-import pekko.stream.stage.OutHandler
+import pekko.stream.stage.{ GraphStage, GraphStageLogic, OutHandler }
 
 private[pekko] final class LazyFutureSource[T](f: () => Future[T]) extends GraphStage[SourceShape[T]] {
   require(f != null, "f should not be null.")

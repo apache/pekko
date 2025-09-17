@@ -17,15 +17,14 @@ import java.util
 import java.util.Comparator
 
 import scala.annotation.unchecked.uncheckedVariance
+import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.japi.{ function, Pair }
 import pekko.stream._
 import pekko.stream.scaladsl.GenericGraph
-import pekko.util.ConstantFun
-import pekko.util.ccompat.JavaConverters._
-import pekko.util.unused
+import pekko.util.{ unused, ConstantFun }
 
 /**
  * Merge several streams, taking elements as they arrive from input streams
@@ -542,7 +541,7 @@ object ZipN {
  */
 object ZipWithN {
   def create[A, O](zipper: function.Function[java.util.List[A], O], n: Int): Graph[UniformFanInShape[A, O], NotUsed] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     scaladsl.ZipWithN[A, O](seq => zipper.apply(seq.asJava))(n)
   }
 }

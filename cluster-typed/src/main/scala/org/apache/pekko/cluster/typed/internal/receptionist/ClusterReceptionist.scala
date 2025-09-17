@@ -17,7 +17,6 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor.Address
-import pekko.actor.typed.{ ActorRef, Behavior }
 import pekko.actor.typed.internal.receptionist.{
   AbstractServiceKey,
   ReceptionistBehaviorProvider,
@@ -25,21 +24,23 @@ import pekko.actor.typed.internal.receptionist.{
 }
 import pekko.actor.typed.receptionist.Receptionist.Command
 import pekko.actor.typed.receptionist.ServiceKey
-import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors, LoggerOps }
 import pekko.actor.typed.scaladsl.adapter._
+import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors, LoggerOps }
+import pekko.actor.typed.{ ActorRef, Behavior }
 import pekko.annotation.InternalApi
+import pekko.cluster.ClusterEvent.{
+  ClusterDomainEvent,
+  ClusterShuttingDown,
+  MemberJoined,
+  MemberRemoved,
+  MemberUp,
+  MemberWeaklyUp,
+  ReachabilityEvent,
+  ReachableMember,
+  UnreachableMember
+}
+import pekko.cluster.ddata.{ ORMultiMap, ORMultiMapKey, Replicator, SelfUniqueAddress }
 import pekko.cluster.{ Cluster, ClusterEvent, UniqueAddress }
-import pekko.cluster.ClusterEvent.ClusterDomainEvent
-import pekko.cluster.ClusterEvent.ClusterShuttingDown
-import pekko.cluster.ClusterEvent.MemberJoined
-import pekko.cluster.ClusterEvent.MemberRemoved
-import pekko.cluster.ClusterEvent.MemberUp
-import pekko.cluster.ClusterEvent.MemberWeaklyUp
-import pekko.cluster.ClusterEvent.ReachabilityEvent
-import pekko.cluster.ClusterEvent.ReachableMember
-import pekko.cluster.ClusterEvent.UnreachableMember
-import pekko.cluster.ddata.{ ORMultiMap, ORMultiMapKey, Replicator }
-import pekko.cluster.ddata.SelfUniqueAddress
 import pekko.remote.AddressUidExtension
 import pekko.util.TypedMultiMap
 

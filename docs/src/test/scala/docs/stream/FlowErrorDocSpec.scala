@@ -14,11 +14,13 @@
 package docs.stream
 
 import scala.concurrent.Await
-import org.apache.pekko.stream.Supervision
-import org.apache.pekko.stream.scaladsl._
-import org.apache.pekko.testkit.PekkoSpec
-import org.apache.pekko.stream.ActorAttributes
 import scala.concurrent.duration._
+
+import org.apache.pekko
+import pekko.stream.Supervision
+import pekko.stream.scaladsl._
+import pekko.testkit.PekkoSpec
+import pekko.stream.ActorAttributes
 
 class FlowErrorDocSpec extends PekkoSpec {
 

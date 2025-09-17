@@ -13,33 +13,33 @@
 
 package org.apache.pekko.persistence.typed.scaladsl
 
-import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl._
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.scaladsl.ActorContext
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.persistence.testkit.PersistenceTestKitPlugin
-import pekko.persistence.testkit.PersistenceTestKitSnapshotPlugin
-import pekko.persistence.typed.DeleteEventsCompleted
-import pekko.persistence.typed.DeleteSnapshotsCompleted
-import pekko.persistence.typed.DeleteSnapshotsFailed
-import pekko.persistence.typed.DeletionTarget
-import pekko.persistence.typed.EventSourcedSignal
-import pekko.persistence.typed.PersistenceId
-import pekko.persistence.typed.RecoveryCompleted
-import pekko.persistence.typed.SnapshotCompleted
-import pekko.persistence.typed.SnapshotFailed
-import pekko.persistence.typed.SnapshotSelectionCriteria
-import pekko.serialization.jackson.CborSerializable
-import pekko.util.unused
+import java.util.concurrent.atomic.AtomicInteger
+
+import scala.concurrent.duration._
+import scala.util.{ Success, Try }
+
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
-import java.util.concurrent.atomic.AtomicInteger
-import scala.concurrent.duration._
-import scala.util.Success
-import scala.util.Try
+import org.apache.pekko
+import pekko.actor.testkit.typed.scaladsl._
+import pekko.actor.typed.{ ActorRef, Behavior }
+import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors }
+import pekko.persistence.testkit.{ PersistenceTestKitPlugin, PersistenceTestKitSnapshotPlugin }
+import pekko.persistence.typed.{
+  DeleteEventsCompleted,
+  DeleteSnapshotsCompleted,
+  DeleteSnapshotsFailed,
+  DeletionTarget,
+  EventSourcedSignal,
+  PersistenceId,
+  RecoveryCompleted,
+  SnapshotCompleted,
+  SnapshotFailed,
+  SnapshotSelectionCriteria
+}
+import pekko.serialization.jackson.CborSerializable
+import pekko.util.unused
 
 object EventSourcedBehaviorRetentionSpec extends Matchers {
 

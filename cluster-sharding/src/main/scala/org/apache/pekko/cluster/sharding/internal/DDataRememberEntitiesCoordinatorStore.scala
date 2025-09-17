@@ -12,19 +12,13 @@
  */
 
 package org.apache.pekko.cluster.sharding.internal
+
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorLogging
-import pekko.actor.ActorRef
-import pekko.actor.Props
+import pekko.actor.{ Actor, ActorLogging, ActorRef, Props }
 import pekko.annotation.InternalApi
 import pekko.cluster.Cluster
-import pekko.cluster.ddata.GSet
-import pekko.cluster.ddata.GSetKey
-import pekko.cluster.ddata.Replicator
-import pekko.cluster.ddata.Replicator.ReadMajority
-import pekko.cluster.ddata.Replicator.WriteMajority
-import pekko.cluster.ddata.SelfUniqueAddress
+import pekko.cluster.ddata.Replicator.{ ReadMajority, WriteMajority }
+import pekko.cluster.ddata.{ GSet, GSetKey, Replicator, SelfUniqueAddress }
 import pekko.cluster.sharding.ClusterShardingSettings
 import pekko.cluster.sharding.ShardRegion.ShardId
 

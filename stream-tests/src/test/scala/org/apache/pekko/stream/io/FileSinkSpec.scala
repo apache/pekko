@@ -13,8 +13,8 @@
 
 package org.apache.pekko.stream.io
 
-import java.nio.file._
 import java.nio.file.StandardOpenOption.{ CREATE, WRITE }
+import java.nio.file._
 
 import scala.annotation.nowarn
 import scala.collection.mutable.ListBuffer
@@ -23,17 +23,16 @@ import scala.concurrent.duration._
 import scala.util.Success
 
 import com.google.common.jimfs.{ Configuration, Jimfs }
+import org.scalatest.concurrent.ScalaFutures
 
 import org.apache.pekko
 import pekko.stream._
-import pekko.stream.impl.{ PhasedFusingActorMaterializer, StreamSupervisor }
 import pekko.stream.impl.StreamSupervisor.Children
+import pekko.stream.impl.{ PhasedFusingActorMaterializer, StreamSupervisor }
 import pekko.stream.scaladsl.{ FileIO, Keep, Source }
-import pekko.stream.testkit._
 import pekko.stream.testkit.Utils._
+import pekko.stream.testkit._
 import pekko.util.ByteString
-
-import org.scalatest.concurrent.ScalaFutures
 
 @nowarn
 class FileSinkSpec extends StreamSpec(UnboundedMailboxConfig) with ScalaFutures {

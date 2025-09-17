@@ -21,11 +21,10 @@ import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.stream._
 import pekko.stream.impl.StreamLayout.AtomicModule
 import pekko.stream.impl.TraversalBuilder.{ AnyFunction1, AnyFunction2 }
-import pekko.stream.impl.fusing.{ GraphStageModule, IterableSource }
 import pekko.stream.impl.fusing.GraphStages.{ FutureSource, SingleSource }
+import pekko.stream.impl.fusing.{ GraphStageModule, IterableSource }
 import pekko.stream.scaladsl.Keep
-import pekko.util.OptionVal
-import pekko.util.unused
+import pekko.util.{ unused, OptionVal }
 
 /**
  * INTERNAL API

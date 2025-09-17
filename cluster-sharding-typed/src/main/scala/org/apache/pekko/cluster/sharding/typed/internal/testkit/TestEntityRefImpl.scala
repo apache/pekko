@@ -17,15 +17,14 @@ import java.time.Duration
 import java.util.concurrent.CompletionStage
 
 import scala.concurrent.Future
+
 import org.apache.pekko
 import pekko.actor.ActorRefProvider
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Scheduler
 import pekko.actor.typed.internal.InternalRecipientRef
+import pekko.actor.typed.{ ActorRef, Scheduler }
 import pekko.annotation.InternalApi
-import pekko.cluster.sharding.typed.javadsl
 import pekko.cluster.sharding.typed.javadsl.EntityRef
-import pekko.cluster.sharding.typed.scaladsl
+import pekko.cluster.sharding.typed.{ javadsl, scaladsl }
 import pekko.japi.function.{ Function => JFunction }
 import pekko.pattern.StatusReply
 import pekko.util.FutureConverters._

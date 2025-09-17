@@ -16,8 +16,7 @@ package org.apache.pekko.util
 import java.nio.{ ByteBuffer, ByteOrder }
 
 import scala.annotation.tailrec
-import scala.collection.BufferedIterator
-import scala.collection.LinearSeq
+import scala.collection.{ BufferedIterator, LinearSeq }
 import scala.collection.mutable.ListBuffer
 import scala.reflect.ClassTag
 

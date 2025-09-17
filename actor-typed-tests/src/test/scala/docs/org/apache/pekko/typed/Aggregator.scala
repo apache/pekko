@@ -13,15 +13,14 @@
 
 package docs.org.apache.pekko.typed
 
-//#behavior
 import scala.collection.immutable
 import scala.concurrent.duration.FiniteDuration
 import scala.reflect.ClassTag
 
+//#behavior
 import org.apache.pekko
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
 import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.{ ActorRef, Behavior }
 
 object Aggregator {
 

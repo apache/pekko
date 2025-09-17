@@ -16,24 +16,15 @@ package org.apache.pekko.cluster.sharding.typed.delivery.internal
 import java.util.concurrent.TimeoutException
 
 import scala.reflect.ClassTag
-import scala.util.Failure
-import scala.util.Success
+import scala.util.{ Failure, Success }
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.DispatcherSelector
-import pekko.actor.typed.delivery.ConsumerController
-import pekko.actor.typed.delivery.DurableProducerQueue
-import pekko.actor.typed.delivery.DurableProducerQueue.ConfirmationQualifier
-import pekko.actor.typed.delivery.DurableProducerQueue.SeqNr
-import pekko.actor.typed.delivery.ProducerController
+import pekko.actor.typed.delivery.DurableProducerQueue.{ ConfirmationQualifier, SeqNr }
 import pekko.actor.typed.delivery.internal.ProducerControllerImpl
-import pekko.actor.typed.scaladsl.ActorContext
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.actor.typed.scaladsl.LoggerOps
-import pekko.actor.typed.scaladsl.StashBuffer
+import pekko.actor.typed.delivery.{ ConsumerController, DurableProducerQueue, ProducerController }
+import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors, LoggerOps, StashBuffer }
+import pekko.actor.typed.{ ActorRef, Behavior, DispatcherSelector }
 import pekko.annotation.InternalApi
 import pekko.cluster.sharding.typed.ShardingEnvelope
 import pekko.cluster.sharding.typed.delivery.ShardingProducerController
@@ -44,10 +35,7 @@ import pekko.util.Timeout
  */
 @InternalApi private[pekko] object ShardingProducerControllerImpl {
 
-  import ShardingProducerController.Command
-  import ShardingProducerController.EntityId
-  import ShardingProducerController.RequestNext
-  import ShardingProducerController.Start
+  import ShardingProducerController.{ Command, EntityId, RequestNext, Start }
 
   sealed trait InternalCommand
 
@@ -279,14 +267,8 @@ private class ShardingProducerControllerImpl[A: ClassTag](
     region: ActorRef[ShardingEnvelope[ConsumerController.SequencedMessage[A]]],
     durableQueue: Option[ActorRef[DurableProducerQueue.Command[A]]],
     settings: ShardingProducerController.Settings) {
-  import DurableProducerQueue.MessageSent
-  import DurableProducerQueue.StoreMessageConfirmed
-  import DurableProducerQueue.StoreMessageSent
-  import DurableProducerQueue.StoreMessageSentAck
-  import ShardingProducerController.EntityId
-  import ShardingProducerController.MessageWithConfirmation
-  import ShardingProducerController.RequestNext
-  import ShardingProducerController.Start
+  import DurableProducerQueue.{ MessageSent, StoreMessageConfirmed, StoreMessageSent, StoreMessageSentAck }
+  import ShardingProducerController.{ EntityId, MessageWithConfirmation, RequestNext, Start }
   import ShardingProducerControllerImpl._
 
   private val producerControllerSettings = settings.producerControllerSettings

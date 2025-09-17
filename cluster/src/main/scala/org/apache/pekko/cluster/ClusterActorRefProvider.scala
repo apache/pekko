@@ -14,31 +14,33 @@
 package org.apache.pekko.cluster
 
 import scala.annotation.nowarn
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
 import pekko.ConfigurationException
-import pekko.actor.ActorPath
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
-import pekko.actor.ActorSystemImpl
-import pekko.actor.Address
-import pekko.actor.Deploy
-import pekko.actor.DynamicAccess
-import pekko.actor.NoScopeGiven
-import pekko.actor.Scope
+import pekko.actor.{
+  ActorPath,
+  ActorRef,
+  ActorSystem,
+  ActorSystemImpl,
+  Address,
+  Deploy,
+  DynamicAccess,
+  NoScopeGiven,
+  Scope
+}
 import pekko.annotation.InternalApi
-import pekko.cluster.routing.ClusterRouterGroup
-import pekko.cluster.routing.ClusterRouterGroupSettings
-import pekko.cluster.routing.ClusterRouterPool
-import pekko.cluster.routing.ClusterRouterPoolSettings
+import pekko.cluster.routing.{
+  ClusterRouterGroup,
+  ClusterRouterGroupSettings,
+  ClusterRouterPool,
+  ClusterRouterPoolSettings
+}
 import pekko.event.EventStream
-import pekko.remote.RemoteActorRefProvider
-import pekko.remote.RemoteDeployer
 import pekko.remote.routing.RemoteRouterConfig
-import pekko.routing.Group
-import pekko.routing.Pool
+import pekko.remote.{ RemoteActorRefProvider, RemoteDeployer }
+import pekko.routing.{ Group, Pool }
 
 /**
  * INTERNAL API

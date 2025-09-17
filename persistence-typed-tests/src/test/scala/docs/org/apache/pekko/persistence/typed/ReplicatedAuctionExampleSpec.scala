@@ -21,23 +21,13 @@ import docs.org.apache.pekko.persistence.typed.ReplicatedAuctionExampleSpec.Auct
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.scaladsl.ActorContext
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.actor.typed.scaladsl.LoggerOps
-import pekko.actor.typed.scaladsl.TimerScheduler
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
+import pekko.actor.typed.{ ActorRef, Behavior }
+import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors, LoggerOps, TimerScheduler }
 import pekko.persistence.testkit.PersistenceTestKitPlugin
 import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
-import pekko.persistence.typed.RecoveryCompleted
-import pekko.persistence.typed.ReplicaId
-import pekko.persistence.typed.ReplicationId
-import pekko.persistence.typed.scaladsl.Effect
-import pekko.persistence.typed.scaladsl.EventSourcedBehavior
-import pekko.persistence.typed.scaladsl.ReplicatedEventSourcing
-import pekko.persistence.typed.scaladsl.ReplicationContext
+import pekko.persistence.typed.{ RecoveryCompleted, ReplicaId, ReplicationId }
+import pekko.persistence.typed.scaladsl.{ Effect, EventSourcedBehavior, ReplicatedEventSourcing, ReplicationContext }
 import pekko.serialization.jackson.CborSerializable
 
 object ReplicatedAuctionExampleSpec {

@@ -13,23 +13,16 @@
 
 package org.apache.pekko.remote.artery
 
-import scala.concurrent.Future
-import scala.concurrent.Promise
+import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration._
 
 import org.scalatest.concurrent.Eventually
 import org.scalatest.time.Span
 
 import org.apache.pekko
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
-import pekko.actor.Address
-import pekko.actor.RootActorPath
-import pekko.remote.RARP
-import pekko.remote.UniqueAddress
-import pekko.testkit.ImplicitSender
-import pekko.testkit.TestActors
-import pekko.testkit.TestProbe
+import pekko.actor.{ ActorRef, ActorSystem, Address, RootActorPath }
+import pekko.remote.{ RARP, UniqueAddress }
+import pekko.testkit.{ ImplicitSender, TestActors, TestProbe }
 
 class OutboundIdleShutdownSpec extends ArteryMultiNodeSpec("""
   pekko.loglevel=INFO

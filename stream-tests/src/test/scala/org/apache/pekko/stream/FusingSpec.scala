@@ -13,9 +13,8 @@
 
 package org.apache.pekko.stream
 
-import scala.concurrent.{ duration, Await, Promise }
-
-import duration._
+import scala.concurrent.duration._
+import scala.concurrent.{ Await, Promise }
 
 import org.apache.pekko
 import pekko.Done

@@ -15,12 +15,12 @@ package org.apache.pekko.cluster.sharding.internal
 
 import scala.collection.immutable
 import scala.concurrent.Future
+
 import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.annotation.InternalApi
 import pekko.cluster.sharding.ShardRegion.ShardId
-import pekko.cluster.sharding.internal.AbstractLeastShardAllocationStrategy.RegionEntry
-import pekko.cluster.sharding.internal.AbstractLeastShardAllocationStrategy.ShardSuitabilityOrdering
+import pekko.cluster.sharding.internal.AbstractLeastShardAllocationStrategy.{ RegionEntry, ShardSuitabilityOrdering }
 
 /**
  * INTERNAL API
@@ -56,8 +56,7 @@ import pekko.cluster.sharding.internal.AbstractLeastShardAllocationStrategy.Shar
   override def rebalance(
       currentShardAllocations: Map[ActorRef, immutable.IndexedSeq[ShardId]],
       rebalanceInProgress: Set[ShardId]): Future[Set[ShardId]] = {
-    import math.max
-    import math.min
+    import math.{ max, min }
 
     def limit(numberOfShards: Int): Int =
       max(1, min((relativeLimit * numberOfShards).toInt, absoluteLimit))

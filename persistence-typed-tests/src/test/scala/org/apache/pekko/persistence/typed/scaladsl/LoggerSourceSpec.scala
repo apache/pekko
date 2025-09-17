@@ -12,20 +12,17 @@
  */
 
 package org.apache.pekko.persistence.typed.scaladsl
-import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.persistence.typed.PersistenceId
-import pekko.persistence.typed.RecoveryCompleted
-import pekko.persistence.typed.SnapshotCompleted
-import pekko.persistence.typed.SnapshotFailed
+
+import java.util.concurrent.atomic.AtomicInteger
+
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.slf4j.event.Level
 
-import java.util.concurrent.atomic.AtomicInteger
+import org.apache.pekko
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, LoggingTestKit, ScalaTestWithActorTestKit }
+import pekko.actor.typed.Behavior
+import pekko.actor.typed.scaladsl.Behaviors
+import pekko.persistence.typed.{ PersistenceId, RecoveryCompleted, SnapshotCompleted, SnapshotFailed }
 
 // Note that the spec name here is important since there are heuristics in place to avoid names
 // starting with EventSourcedBehavior

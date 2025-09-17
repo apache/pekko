@@ -20,8 +20,7 @@ import com.typesafe.config.ConfigFactory
 import org.apache.pekko
 import pekko.cluster.Cluster
 import pekko.remote.testconductor.RoleName
-import pekko.remote.testkit.MultiNodeConfig
-import pekko.remote.testkit.MultiNodeSpec
+import pekko.remote.testkit.{ MultiNodeConfig, MultiNodeSpec }
 import pekko.remote.transport.ThrottlerTransportAdapter.Direction
 import pekko.testkit._
 

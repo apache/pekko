@@ -16,11 +16,9 @@ package docs.org.apache.pekko.persistence.typed
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.SupervisorStrategy
+import pekko.actor.typed.{ Behavior, SupervisorStrategy }
 import pekko.persistence.typed.PersistenceId
-import pekko.persistence.typed.scaladsl.Effect
-import pekko.persistence.typed.scaladsl.EventSourcedBehavior
+import pekko.persistence.typed.scaladsl.{ Effect, EventSourcedBehavior }
 
 object StashingExample {
 

@@ -16,8 +16,7 @@ package org.apache.pekko.cluster.ddata
 import org.apache.pekko
 import pekko.actor.Address
 import pekko.annotation.InternalApi
-import pekko.cluster.Member
-import pekko.cluster.UniqueAddress
+import pekko.cluster.{ Member, UniqueAddress }
 import pekko.util.unused
 
 /**

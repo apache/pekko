@@ -16,12 +16,14 @@ package org.apache.pekko.routing
 import scala.collection.immutable
 
 import org.apache.pekko
-import pekko.actor.ActorRef
-import pekko.actor.ActorSelection
-import pekko.actor.InternalActorRef
-import pekko.actor.InvalidMessageException
-import pekko.actor.NoSerializationVerificationNeeded
-import pekko.actor.WrappedMessage
+import pekko.actor.{
+  ActorRef,
+  ActorSelection,
+  InternalActorRef,
+  InvalidMessageException,
+  NoSerializationVerificationNeeded,
+  WrappedMessage
+}
 import pekko.japi.Util.immutableSeq
 
 /**
@@ -91,7 +93,7 @@ final case class SeveralRoutees(routees: immutable.IndexedSeq[Routee]) extends R
    * Java API
    */
   def getRoutees(): java.util.List[Routee] = {
-    import org.apache.pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     routees.asJava
   }
 

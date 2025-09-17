@@ -15,17 +15,14 @@ package org.apache.pekko.actor
 
 import java.util.concurrent.{ CountDownLatch, TimeUnit }
 
+import scala.annotation.nowarn
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
-import scala.annotation.nowarn
-
 import org.apache.pekko
 import pekko.pattern.ask
-import pekko.testkit.{ filterEvents, EventFilter }
-import pekko.testkit.PekkoSpec
-import pekko.testkit.DefaultTimeout
+import pekko.testkit.{ filterEvents, DefaultTimeout, EventFilter, PekkoSpec }
 
 object SupervisorMiscSpec {
   val config = """

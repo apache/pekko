@@ -15,30 +15,30 @@ package org.apache.pekko.remote.transport
 
 import java.util.concurrent.TimeoutException
 
+import scala.annotation.nowarn
 import scala.collection.immutable
-import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration._
+import scala.concurrent.{ Future, Promise }
 import scala.util.control.NonFatal
 
-import scala.annotation.nowarn
 import com.typesafe.config.Config
 
 import org.apache.pekko
-import pekko.{ OnlyCauseStackTrace, PekkoException }
-import pekko.actor._
 import pekko.actor.SupervisorStrategy.Stop
+import pekko.actor._
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.event.LoggingAdapter
 import pekko.pattern.pipe
 import pekko.remote._
 import pekko.remote.transport.ActorTransportAdapter._
+import pekko.remote.transport.AssociationHandle._
 import pekko.remote.transport.PekkoPduCodec._
 import pekko.remote.transport.PekkoProtocolTransport._
-import pekko.remote.transport.AssociationHandle._
 import pekko.remote.transport.ProtocolStateActor._
 import pekko.remote.transport.Transport._
 import pekko.util.ByteString
 import pekko.util.Helpers.Requiring
+import pekko.{ OnlyCauseStackTrace, PekkoException }
 
 @SerialVersionUID(1L)
 class PekkoProtocolException(
@@ -49,7 +49,6 @@ class PekkoProtocolException(
 private[remote] class PekkoProtocolSettings(config: Config) {
 
   import config._
-
   import pekko.util.Helpers.ConfigOps
 
   val TransportFailureDetectorConfig: Config = getConfig("pekko.remote.classic.transport-failure-detector")

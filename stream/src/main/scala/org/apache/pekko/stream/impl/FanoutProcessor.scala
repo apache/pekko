@@ -13,18 +13,14 @@
 
 package org.apache.pekko.stream.impl
 
+import org.reactivestreams.Subscriber
+
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorRef
-import pekko.actor.Deploy
-import pekko.actor.Props
+import pekko.actor.{ Actor, ActorRef, Deploy, Props }
 import pekko.annotation.InternalApi
 import pekko.stream.ActorAttributes.StreamSubscriptionTimeout
-import pekko.stream.Attributes
-import pekko.stream.StreamSubscriptionTimeoutTerminationMode
+import pekko.stream.{ Attributes, StreamSubscriptionTimeoutTerminationMode }
 import pekko.util.OptionVal
-
-import org.reactivestreams.Subscriber
 
 /**
  * INTERNAL API

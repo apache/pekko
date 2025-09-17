@@ -14,16 +14,18 @@
 package org.apache.pekko.remote.serialization
 
 import scala.collection.immutable
+
 import org.apache.pekko
-import pekko.actor.ActorSelectionMessage
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.SelectChildName
-import pekko.actor.SelectChildPattern
-import pekko.actor.SelectParent
-import pekko.actor.SelectionPathElement
+import pekko.actor.{
+  ActorSelectionMessage,
+  ExtendedActorSystem,
+  SelectChildName,
+  SelectChildPattern,
+  SelectParent,
+  SelectionPathElement
+}
 import pekko.protobufv3.internal.ByteString
-import pekko.remote.ByteStringUtils
-import pekko.remote.ContainerFormats
+import pekko.remote.{ ByteStringUtils, ContainerFormats }
 import pekko.serialization.{ BaseSerializer, SerializationExtension, Serializers }
 
 class MessageContainerSerializer(val system: ExtendedActorSystem) extends BaseSerializer {
@@ -78,7 +80,7 @@ class MessageContainerSerializer(val system: ExtendedActorSystem) extends BaseSe
       .deserialize(selectionEnvelope.getEnclosedMessage.toByteArray, selectionEnvelope.getSerializerId, manifest)
       .get
 
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     val elements: immutable.Iterable[SelectionPathElement] = selectionEnvelope.getPatternList.asScala.iterator
       .map { x =>
         x.getType match {

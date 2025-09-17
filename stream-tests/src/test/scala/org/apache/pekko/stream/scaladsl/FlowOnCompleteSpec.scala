@@ -14,8 +14,7 @@
 package org.apache.pekko.stream.scaladsl
 
 import scala.concurrent.duration._
-import scala.util.Failure
-import scala.util.Success
+import scala.util.{ Failure, Success }
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko

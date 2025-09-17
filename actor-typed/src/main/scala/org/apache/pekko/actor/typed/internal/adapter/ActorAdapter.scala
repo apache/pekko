@@ -17,21 +17,18 @@ package adapter
 
 import java.lang.reflect.InvocationTargetException
 
-import scala.annotation.switch
-import scala.annotation.tailrec
+import scala.annotation.{ switch, tailrec }
 import scala.util.control.Exception.Catcher
 import scala.util.control.NonFatal
 
 import org.apache.pekko
-import pekko.{ actor => classic }
-import pekko.actor.ActorInitializationException
-import pekko.actor.ActorRefWithCell
-import pekko.actor.typed.internal.BehaviorImpl.DeferredBehavior
-import pekko.actor.typed.internal.BehaviorImpl.StoppedBehavior
+import pekko.actor.{ ActorInitializationException, ActorRefWithCell }
+import pekko.actor.typed.internal.BehaviorImpl.{ DeferredBehavior, StoppedBehavior }
 import pekko.actor.typed.internal.TimerSchedulerImpl.TimerMsg
 import pekko.actor.typed.internal.adapter.ActorAdapter.TypedActorFailedException
 import pekko.annotation.InternalApi
 import pekko.util.OptionVal
+import pekko.{ actor => classic }
 
 /**
  * INTERNAL API

@@ -20,14 +20,11 @@ import scala.concurrent.duration._
 import org.agrona.concurrent.ManyToOneConcurrentArrayQueue
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.Props
-import pekko.stream.scaladsl.Keep
-import pekko.stream.scaladsl.Source
+import pekko.actor.{ Actor, Props }
+import pekko.stream.scaladsl.{ Keep, Source }
 import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.scaladsl.TestSink
-import pekko.testkit.PekkoSpec
-import pekko.testkit.ImplicitSender
+import pekko.testkit.{ ImplicitSender, PekkoSpec }
 
 object SendQueueSpec {
 

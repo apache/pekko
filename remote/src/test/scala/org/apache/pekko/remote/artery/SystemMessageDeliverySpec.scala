@@ -18,29 +18,17 @@ import java.util.concurrent.ThreadLocalRandom
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
 import pekko.NotUsed
-import pekko.actor.ActorIdentity
-import pekko.actor.ActorSystem
-import pekko.actor.Identify
-import pekko.actor.RootActorPath
-import pekko.remote.AddressUidExtension
-import pekko.remote.RARP
-import pekko.remote.UniqueAddress
+import pekko.actor.{ ActorIdentity, ActorSystem, Identify, RootActorPath }
+import pekko.remote.{ AddressUidExtension, RARP, UniqueAddress }
 import pekko.remote.artery.SystemMessageDelivery._
 import pekko.stream.ThrottleMode
-import pekko.stream.scaladsl.Flow
-import pekko.stream.scaladsl.Sink
-import pekko.stream.scaladsl.Source
+import pekko.stream.scaladsl.{ Flow, Sink, Source }
 import pekko.stream.testkit.scaladsl.TestSink
-import pekko.testkit.EventFilter
-import pekko.testkit.ImplicitSender
-import pekko.testkit.TestActors
-import pekko.testkit.TestEvent
-import pekko.testkit.TestProbe
+import pekko.testkit.{ EventFilter, ImplicitSender, TestActors, TestEvent, TestProbe }
 import pekko.util.OptionVal
 
 object SystemMessageDeliverySpec {

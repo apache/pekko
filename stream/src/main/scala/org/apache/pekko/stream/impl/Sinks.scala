@@ -15,35 +15,26 @@ package org.apache.pekko.stream.impl
 
 import java.util.function.BinaryOperator
 
-import scala.collection.immutable
-import scala.collection.mutable
-import scala.concurrent.Future
-import scala.concurrent.Promise
-import scala.util.Failure
-import scala.util.Success
-import scala.util.Try
+import scala.collection.{ immutable, mutable, Factory }
+import scala.concurrent.{ Future, Promise }
 import scala.util.control.NonFatal
+import scala.util.{ Failure, Success, Try }
+
+import org.reactivestreams.{ Publisher, Subscriber }
 
 import org.apache.pekko
 import pekko.NotUsed
-import pekko.annotation.DoNotInherit
-import pekko.annotation.InternalApi
+import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.dispatch.ExecutionContexts
 import pekko.event.Logging
-import pekko.stream._
 import pekko.stream.ActorAttributes.StreamSubscriptionTimeout
-import pekko.stream.Attributes.InputBuffer
-import pekko.stream.Attributes.SourceLocation
-import pekko.stream.impl.QueueSink.Output
-import pekko.stream.impl.QueueSink.Pull
+import pekko.stream.Attributes.{ InputBuffer, SourceLocation }
+import pekko.stream._
+import pekko.stream.impl.QueueSink.{ Output, Pull }
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.StreamLayout.AtomicModule
 import pekko.stream.scaladsl.{ Keep, Sink, SinkQueueWithCancel, Source }
 import pekko.stream.stage._
-import pekko.util.ccompat._
-
-import org.reactivestreams.Publisher
-import org.reactivestreams.Subscriber
 
 /**
  * INTERNAL API

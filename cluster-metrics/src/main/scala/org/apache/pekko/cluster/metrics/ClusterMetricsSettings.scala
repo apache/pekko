@@ -13,14 +13,12 @@
 
 package org.apache.pekko.cluster.metrics
 
-import scala.concurrent.duration.Duration
-import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.duration.{ Duration, FiniteDuration }
 
 import com.typesafe.config.Config
 
 import org.apache.pekko
-import pekko.util.Helpers.ConfigOps
-import pekko.util.Helpers.Requiring
+import pekko.util.Helpers.{ ConfigOps, Requiring }
 
 /**
  * Metrics extension settings. Documented in: `src/main/resources/reference.conf`.

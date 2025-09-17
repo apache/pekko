@@ -19,8 +19,7 @@ import org.apache.pekko
 import pekko.actor.Dropped
 import pekko.actor.typed._
 import pekko.actor.typed.eventstream.EventStream
-import pekko.actor.typed.receptionist.Receptionist
-import pekko.actor.typed.receptionist.ServiceKey
+import pekko.actor.typed.receptionist.{ Receptionist, ServiceKey }
 import pekko.actor.typed.scaladsl.{ AbstractBehavior, ActorContext, StashBuffer }
 import pekko.annotation.InternalApi
 

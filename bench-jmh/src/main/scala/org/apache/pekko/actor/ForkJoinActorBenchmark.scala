@@ -19,11 +19,12 @@ import scala.annotation.tailrec
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import BenchmarkActors._
 import com.typesafe.config.ConfigFactory
 import org.openjdk.jmh.annotations._
 
-import org.apache.pekko.testkit.TestProbe
+import org.apache.pekko
+import pekko.actor.BenchmarkActors._
+import pekko.testkit.TestProbe
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Array(Mode.Throughput))

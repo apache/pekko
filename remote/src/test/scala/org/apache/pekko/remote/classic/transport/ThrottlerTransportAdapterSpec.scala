@@ -13,18 +13,18 @@
 
 package org.apache.pekko.remote.classic.transport
 
+import scala.annotation.nowarn
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import scala.annotation.nowarn
 import com.typesafe.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.remote.{ EndpointException, RemoteActorRefProvider }
 import pekko.remote.classic.transport.ThrottlerTransportAdapterSpec._
-import pekko.remote.transport.{ TestTransport, ThrottlerTransportAdapter }
 import pekko.remote.transport.ThrottlerTransportAdapter._
+import pekko.remote.transport.{ TestTransport, ThrottlerTransportAdapter }
+import pekko.remote.{ EndpointException, RemoteActorRefProvider }
 import pekko.testkit.{ DefaultTimeout, EventFilter, ImplicitSender, PekkoSpec, TestEvent, TimingTest }
 
 object ThrottlerTransportAdapterSpec {

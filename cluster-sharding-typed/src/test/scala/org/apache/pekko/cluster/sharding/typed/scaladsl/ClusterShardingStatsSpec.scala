@@ -16,17 +16,12 @@ package org.apache.pekko.cluster.sharding.typed.scaladsl
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
 import pekko.actor.typed.ActorRef
-import pekko.cluster.sharding.ShardRegion.ClusterShardingStats
-import pekko.cluster.sharding.ShardRegion.ShardRegionStats
-import pekko.cluster.sharding.typed.ClusterShardingSettings
-import pekko.cluster.sharding.typed.GetClusterShardingStats
+import pekko.cluster.sharding.ShardRegion.{ ClusterShardingStats, ShardRegionStats }
 import pekko.cluster.sharding.typed.scaladsl.ClusterShardingSpec._
-import pekko.cluster.typed.Cluster
-import pekko.cluster.typed.Join
-import pekko.cluster.typed.SelfUp
+import pekko.cluster.sharding.typed.{ ClusterShardingSettings, GetClusterShardingStats }
+import pekko.cluster.typed.{ Cluster, Join, SelfUp }
 
 class ClusterShardingStatsSpec
     extends ScalaTestWithActorTestKit(ClusterShardingSpec.config)

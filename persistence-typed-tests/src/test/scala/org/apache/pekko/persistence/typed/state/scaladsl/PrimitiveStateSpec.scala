@@ -13,16 +13,14 @@
 
 package org.apache.pekko.persistence.typed.state.scaladsl
 
-import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl._
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
-import pekko.persistence.typed.PersistenceId
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{ Config, ConfigFactory }
 import org.scalatest.wordspec.AnyWordSpecLike
 
+import org.apache.pekko
+import pekko.actor.testkit.typed.scaladsl._
+import pekko.actor.typed.{ ActorRef, Behavior }
 import pekko.persistence.testkit.PersistenceTestKitDurableStateStorePlugin
+import pekko.persistence.typed.PersistenceId
 
 object PrimitiveStateSpec {
 

@@ -15,25 +15,17 @@ package org.apache.pekko.stream.scaladsl
 
 import java.util.concurrent.atomic.AtomicInteger
 
-import scala.concurrent.Await
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
-import scala.concurrent.Promise
+import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
 import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.Done
-import pekko.stream.ActorAttributes
-import pekko.stream.Materializer
-import pekko.stream.Supervision
-import pekko.stream.impl.PhasedFusingActorMaterializer
-import pekko.stream.impl.StreamSupervisor
+import pekko.stream.{ ActorAttributes, Materializer, Supervision }
+import pekko.stream.impl.{ PhasedFusingActorMaterializer, StreamSupervisor }
 import pekko.stream.impl.StreamSupervisor.Children
-import pekko.stream.testkit.StreamSpec
-import pekko.stream.testkit.TestSubscriber
+import pekko.stream.testkit.{ StreamSpec, TestSubscriber }
 import pekko.stream.testkit.Utils._
-import pekko.testkit.TestLatch
-import pekko.testkit.TestProbe
+import pekko.testkit.{ TestLatch, TestProbe }
 
 object UnfoldResourceAsyncSourceSpec {
 

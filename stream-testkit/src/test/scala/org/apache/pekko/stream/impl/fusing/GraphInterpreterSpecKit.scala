@@ -19,20 +19,18 @@ import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.actor.Cancellable
-import pekko.actor.Props
+import pekko.actor.{ ActorSystem, Cancellable, Props }
 import pekko.annotation.InternalApi
 import pekko.event.Logging
-import pekko.stream._
 import pekko.stream.Supervision.Decider
+import pekko.stream._
 import pekko.stream.impl.fusing.GraphInterpreter.{
   Connection,
   DownstreamBoundaryStageLogic,
   Failed,
   UpstreamBoundaryStageLogic
 }
-import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler, _ }
+import pekko.stream.stage._
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.Utils.TE
 

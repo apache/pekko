@@ -16,22 +16,21 @@ package org.apache.pekko.util
 import java.io.{ ByteArrayInputStream, ByteArrayOutputStream, ObjectInputStream, ObjectOutputStream }
 import java.lang.Double.doubleToRawLongBits
 import java.lang.Float.floatToRawIntBits
-import java.nio.{ ByteBuffer, ByteOrder }
 import java.nio.ByteOrder.{ BIG_ENDIAN, LITTLE_ENDIAN }
 import java.nio.charset.StandardCharsets
+import java.nio.{ ByteBuffer, ByteOrder }
 
 import scala.annotation.nowarn
 import scala.collection.mutable.Builder
 
 import org.apache.commons.codec.binary.Hex.encodeHex
-import org.scalacheck.{ Arbitrary, Gen }
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.{ Arbitrary, Gen }
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.scalacheck.Checkers
 
-import org.apache.pekko
-import pekko.util.ByteString.{ ByteString1, ByteString1C, ByteStrings }
+import org.apache.pekko.util.ByteString.{ ByteString1, ByteString1C, ByteStrings }
 
 class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
 
@@ -1020,7 +1019,7 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
           a.asByteBuffers.forall(_.isReadOnly)
         }
         check { (a: ByteString) =>
-          import pekko.util.ccompat.JavaConverters._
+          import scala.jdk.CollectionConverters._
           a.asByteBuffers.zip(a.getByteBuffers().asScala).forall(x => x._1 == x._2)
         }
       }

@@ -13,17 +13,13 @@
 
 package org.apache.pekko.persistence.typed.serialization
 
-import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.persistence.typed.PersistenceId
-import pekko.persistence.typed.ReplicaId
-import pekko.persistence.typed.crdt.Counter
-import pekko.persistence.typed.crdt.ORSet
-import pekko.persistence.typed.internal.PublishedEventImpl
-import pekko.persistence.typed.internal.ReplicatedPublishedEventMetaData
-import pekko.persistence.typed.internal.VersionVector
 import org.scalatest.wordspec.AnyWordSpecLike
+
+import org.apache.pekko
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
+import pekko.persistence.typed.{ PersistenceId, ReplicaId }
+import pekko.persistence.typed.crdt.{ Counter, ORSet }
+import pekko.persistence.typed.internal.{ PublishedEventImpl, ReplicatedPublishedEventMetaData, VersionVector }
 
 class ReplicatedEventSourcingSerializerSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with LogCapturing {
 

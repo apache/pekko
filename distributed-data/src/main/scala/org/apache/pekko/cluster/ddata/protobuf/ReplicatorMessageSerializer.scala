@@ -16,32 +16,26 @@ package org.apache.pekko.cluster.ddata.protobuf
 import java.io.NotSerializableException
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
+
 import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.concurrent.duration._
-import scala.concurrent.duration.Duration
-import scala.concurrent.duration.FiniteDuration
+import scala.jdk.CollectionConverters._
+
 import org.apache.pekko
-import pekko.actor.Address
-import pekko.actor.ExtendedActorSystem
+import pekko.actor.{ Address, ExtendedActorSystem }
 import pekko.annotation.InternalApi
-import pekko.cluster.Member
-import pekko.cluster.UniqueAddress
 import pekko.cluster.ddata.DurableStore.DurableDataEnvelope
 import pekko.cluster.ddata.Key.KeyR
-import pekko.cluster.ddata.PruningState
 import pekko.cluster.ddata.PruningState.PruningPerformed
-import pekko.cluster.ddata.ReplicatedData
-import pekko.cluster.ddata.Replicator._
 import pekko.cluster.ddata.Replicator.Internal._
-import pekko.cluster.ddata.VersionVector
+import pekko.cluster.ddata.Replicator._
 import pekko.cluster.ddata.protobuf.msg.{ ReplicatorMessages => dm }
+import pekko.cluster.ddata.{ PruningState, ReplicatedData, VersionVector }
+import pekko.cluster.{ Member, UniqueAddress }
 import pekko.remote.ByteStringUtils
-import pekko.serialization.BaseSerializer
-import pekko.serialization.Serialization
-import pekko.serialization.SerializerWithStringManifest
+import pekko.serialization.{ BaseSerializer, Serialization, SerializerWithStringManifest }
 import pekko.util.{ ByteString => PekkoByteString }
-import pekko.util.ccompat.JavaConverters._
 
 /**
  * INTERNAL API

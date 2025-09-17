@@ -17,11 +17,11 @@ import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream._
 import pekko.stream.impl.TraversalTestUtils._
-import pekko.stream.impl.fusing.IterableSource
 import pekko.stream.impl.fusing.GraphStages.{ FutureSource, SingleSource }
+import pekko.stream.impl.fusing.IterableSource
 import pekko.stream.scaladsl.{ Keep, Source }
-import pekko.util.OptionVal
 import pekko.testkit.PekkoSpec
+import pekko.util.OptionVal
 
 import scala.concurrent.Future
 

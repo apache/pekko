@@ -13,24 +13,20 @@
 
 package org.apache.pekko.stream
 
-import java.util.concurrent.Semaphore
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.{ Semaphore, TimeUnit }
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.Random
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{ Config, ConfigFactory }
 import org.openjdk.jmh.annotations._
 
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.actor.ActorSystem
 import pekko.remote.artery.BenchTestSourceSameElement
-import pekko.stream.scaladsl.Framing
-import pekko.stream.scaladsl.Sink
-import pekko.stream.scaladsl.Source
+import pekko.stream.scaladsl.{ Framing, Sink, Source }
 import pekko.util.ByteString
 
 @State(Scope.Benchmark)

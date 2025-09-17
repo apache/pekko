@@ -13,35 +13,31 @@
 
 package org.apache.pekko.cluster.sharding.protobuf
 
-import java.io.{ ByteArrayInputStream, ByteArrayOutputStream }
-import java.io.NotSerializableException
-import java.util.zip.GZIPInputStream
-import java.util.zip.GZIPOutputStream
+import java.io.{ ByteArrayInputStream, ByteArrayOutputStream, NotSerializableException }
+import java.util.zip.{ GZIPInputStream, GZIPOutputStream }
 
 import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.concurrent.duration._
+import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
-import pekko.actor.ActorRef
-import pekko.actor.Address
-import pekko.actor.ExtendedActorSystem
-import pekko.cluster.sharding.Shard
-import pekko.cluster.sharding.ShardCoordinator
+import pekko.actor.{ ActorRef, Address, ExtendedActorSystem }
 import pekko.cluster.sharding.ShardRegion._
-import pekko.cluster.sharding.protobuf.msg.{ ClusterShardingMessages => sm }
-import pekko.cluster.sharding.protobuf.msg.ClusterShardingMessages
 import pekko.cluster.sharding.internal.EventSourcedRememberEntitiesCoordinatorStore.{
   MigrationMarker,
   State => RememberShardsState
 }
-import pekko.cluster.sharding.internal.EventSourcedRememberEntitiesShardStore.{ State => EntityState }
-import pekko.cluster.sharding.internal.EventSourcedRememberEntitiesShardStore.{ EntitiesStarted, EntitiesStopped }
+import pekko.cluster.sharding.internal.EventSourcedRememberEntitiesShardStore.{
+  EntitiesStarted,
+  EntitiesStopped,
+  State => EntityState
+}
+import pekko.cluster.sharding.protobuf.msg.ClusterShardingMessages
+import pekko.cluster.sharding.protobuf.msg.{ ClusterShardingMessages => sm }
+import pekko.cluster.sharding.{ Shard, ShardCoordinator }
 import pekko.protobufv3.internal.MessageLite
-import pekko.serialization.BaseSerializer
-import pekko.serialization.Serialization
-import pekko.serialization.SerializerWithStringManifest
-import pekko.util.ccompat.JavaConverters._
+import pekko.serialization.{ BaseSerializer, Serialization, SerializerWithStringManifest }
 
 /**
  * INTERNAL API: Protobuf serializer of ClusterSharding messages.
@@ -49,8 +45,7 @@ import pekko.util.ccompat.JavaConverters._
 private[pekko] class ClusterShardingMessageSerializer(val system: ExtendedActorSystem)
     extends SerializerWithStringManifest
     with BaseSerializer {
-  import Shard.{ CurrentShardState, GetCurrentShardState }
-  import Shard.{ GetShardStats, ShardStats }
+  import Shard.{ CurrentShardState, GetCurrentShardState, GetShardStats, ShardStats }
   import ShardCoordinator.Internal._
 
   private final val BufferSize = 1024 * 4

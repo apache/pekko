@@ -13,31 +13,28 @@
 
 package org.apache.pekko.remote.artery.tcp
 
-import java.io.FileNotFoundException
-import java.io.IOException
-import java.nio.file.Files
-import java.nio.file.Paths
-import java.security.GeneralSecurityException
-import java.security.KeyStore
-import java.security.SecureRandom
+import java.io.{ FileNotFoundException, IOException }
+import java.nio.file.{ Files, Paths }
+import java.security.{ GeneralSecurityException, KeyStore, SecureRandom }
+
+import scala.util.Try
+
+import com.typesafe.config.Config
+import javax.net.ssl.{
+  KeyManager,
+  KeyManagerFactory,
+  SSLContext,
+  SSLEngine,
+  SSLSession,
+  TrustManager,
+  TrustManagerFactory
+}
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
-import pekko.event.LogMarker
-import pekko.event.Logging
-import pekko.event.MarkerLoggingAdapter
+import pekko.event.{ LogMarker, Logging, MarkerLoggingAdapter }
 import pekko.remote.artery.tcp.ssl.SSLEngineConfig
 import pekko.stream.TLSRole
-import com.typesafe.config.Config
-import javax.net.ssl.KeyManager
-import javax.net.ssl.KeyManagerFactory
-import javax.net.ssl.SSLContext
-import javax.net.ssl.SSLEngine
-import javax.net.ssl.SSLSession
-import javax.net.ssl.TrustManager
-import javax.net.ssl.TrustManagerFactory
-
-import scala.util.Try
 
 /**
  * Config in pekko.remote.artery.ssl.config-ssl-engine

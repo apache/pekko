@@ -16,10 +16,10 @@ package docs.actor
 import docs.actor.SchedulerDocSpec.TickActor
 
 //#imports1
-import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.Props
 import scala.concurrent.duration._
+
+import org.apache.pekko
+import pekko.actor.{ Actor, Props }
 
 //#imports1
 

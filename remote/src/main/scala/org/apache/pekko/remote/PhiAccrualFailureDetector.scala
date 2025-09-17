@@ -14,15 +14,16 @@
 package org.apache.pekko.remote
 
 import java.util.concurrent.atomic.AtomicReference
+
 import scala.annotation.tailrec
 import scala.collection.immutable
-import scala.concurrent.duration.Duration
-import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.duration.{ Duration, FiniteDuration }
+
 import com.typesafe.config.Config
+
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.event.EventStream
-import pekko.event.Logging
+import pekko.event.{ EventStream, Logging }
 import pekko.event.Logging.Warning
 import pekko.remote.FailureDetector.Clock
 import pekko.util.Helpers.ConfigOps

@@ -15,8 +15,7 @@ package org.apache.pekko.stream.javadsl
 
 import org.apache.pekko
 import pekko.NotUsed
-import pekko.japi.Pair
-import pekko.japi.function
+import pekko.japi.{ function, Pair }
 
 object Keep {
   private val _left = new function.Function2[Any, Any, Any] with ((Any, Any) => Any) { def apply(l: Any, r: Any) = l }

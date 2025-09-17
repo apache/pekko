@@ -14,9 +14,8 @@
 package docs.org.apache.pekko.typed.pubsub
 
 import org.apache.pekko
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
 import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.{ ActorRef, Behavior }
 
 object PubSubExample {
 

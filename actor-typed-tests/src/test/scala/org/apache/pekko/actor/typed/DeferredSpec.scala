@@ -21,8 +21,7 @@ import org.scalatest.wordspec.{ AnyWordSpec, AnyWordSpecLike }
 import org.apache.pekko
 import pekko.actor.ActorInitializationException
 import pekko.actor.testkit.typed.TestKitSettings
-import pekko.actor.testkit.typed.scaladsl._
-import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
+import pekko.actor.testkit.typed.scaladsl.{ LoggingTestKit, _ }
 import pekko.actor.typed.scaladsl.Behaviors
 
 object DeferredSpec {

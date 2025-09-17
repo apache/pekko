@@ -13,17 +13,15 @@
 
 package org.apache.pekko.persistence.typed.scaladsl
 
+import java.util.UUID
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.testkit.typed.scaladsl.TestProbe
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, LoggingTestKit, ScalaTestWithActorTestKit, TestProbe }
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior.CommandHandler
 import pekko.serialization.jackson.CborSerializable
-import org.scalatest.wordspec.AnyWordSpecLike
-
-import java.util.UUID
 
 object OptionalSnapshotStoreSpec {
 

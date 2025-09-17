@@ -18,8 +18,7 @@ import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
-import pekko.actor.{ ActorIdentity, Identify }
-import pekko.actor.RootActorPath
+import pekko.actor.{ ActorIdentity, Identify, RootActorPath }
 import pekko.testkit._
 
 object HandshakeDenySpec {

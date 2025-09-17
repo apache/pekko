@@ -20,9 +20,8 @@ import org.apache.pekko
 import pekko.NotUsed
 import pekko.event.Logging
 import pekko.pattern.RetrySupport
+import pekko.stream.Attributes.{ Attribute, LogLevels }
 import pekko.stream._
-import pekko.stream.Attributes.Attribute
-import pekko.stream.Attributes.LogLevels
 import pekko.stream.impl.fusing.GraphStages.SimpleLinearGraphStage
 import pekko.stream.scaladsl.RestartWithBackoffFlow.Delay
 import pekko.stream.stage._

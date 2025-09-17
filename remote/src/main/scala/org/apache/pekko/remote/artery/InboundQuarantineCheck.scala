@@ -16,12 +16,8 @@ package org.apache.pekko.remote.artery
 import org.apache.pekko
 import pekko.actor.ActorSelectionMessage
 import pekko.event.Logging
-import pekko.remote.HeartbeatMessage
-import pekko.remote.UniqueAddress
-import pekko.stream.Attributes
-import pekko.stream.FlowShape
-import pekko.stream.Inlet
-import pekko.stream.Outlet
+import pekko.remote.{ HeartbeatMessage, UniqueAddress }
+import pekko.stream.{ Attributes, FlowShape, Inlet, Outlet }
 import pekko.stream.stage._
 import pekko.util.OptionVal
 

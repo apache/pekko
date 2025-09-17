@@ -13,12 +13,13 @@
 
 package docs.stream.operators.source
 
-import org.apache.pekko.Done
-import org.apache.pekko.NotUsed
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.stream.scaladsl.Source
-
 import scala.concurrent.Future
+
+import org.apache.pekko
+import pekko.Done
+import pekko.NotUsed
+import pekko.actor.ActorSystem
+import pekko.stream.scaladsl.Source
 
 object UnfoldResourceAsync {
 

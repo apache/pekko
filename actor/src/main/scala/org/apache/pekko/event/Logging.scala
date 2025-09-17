@@ -15,27 +15,22 @@ package org.apache.pekko.event
 
 import java.util.concurrent.TimeoutException
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.locks.ReentrantLock
 
-import scala.annotation.implicitNotFound
+import scala.annotation.{ implicitNotFound, nowarn }
 import scala.collection.immutable
 import scala.concurrent.Await
 import scala.language.existentials
 import scala.util.control.{ NoStackTrace, NonFatal }
 
-import scala.annotation.nowarn
-
 import org.apache.pekko
-import pekko.{ ConfigurationException, PekkoException }
-import pekko.actor._
 import pekko.actor.ActorSystem.Settings
+import pekko.actor._
 import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.dispatch.RequiresMessageQueue
 import pekko.event.Logging._
-import pekko.util.Helpers
-import pekko.util.Timeout
-import pekko.util.unused
-
-import java.util.concurrent.locks.ReentrantLock
+import pekko.util.{ unused, Helpers, Timeout }
+import pekko.{ ConfigurationException, PekkoException }
 
 /**
  * This trait brings log level handling to the EventStream: it reads the log
@@ -777,7 +772,7 @@ object Logging {
      * Java API: Retrieve the contents of the MDC.
      */
     def getMDC: java.util.Map[String, Any] = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       mdc.asJava
     }
   }
@@ -1636,11 +1631,10 @@ class DefaultLoggingFilter(logLevel: () => Logging.LogLevel) extends LoggingFilt
  */
 trait DiagnosticLoggingAdapter extends LoggingAdapter {
 
-  import java.{ util => ju }
-
   import Logging._
 
-  import pekko.util.ccompat.JavaConverters._
+  import java.{ util => ju }
+  import scala.jdk.CollectionConverters._
 
   private var _mdc = emptyMDC
 
@@ -1705,7 +1699,7 @@ class LogMarker(val name: String, val properties: Map[String, Any]) {
 
   /** Java API */
   def getProperties: java.util.Map[String, Object] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     properties.map { case (k, v) => (k, v.asInstanceOf[AnyRef]) }.asJava
   }
 
@@ -1726,7 +1720,7 @@ object LogMarker {
 
   /** Java API */
   def create(name: String, properties: java.util.Map[String, Any]): LogMarker = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     apply(name, properties.asScala.toMap)
   }
 

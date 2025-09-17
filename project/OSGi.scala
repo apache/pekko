@@ -11,10 +11,11 @@
  * Copyright (C) 2016-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import com.github.sbt.osgi.OsgiKeys
-import com.github.sbt.osgi.SbtOsgi._
 import sbt._
 import sbt.Keys._
+
+import com.github.sbt.osgi.OsgiKeys
+import com.github.sbt.osgi.SbtOsgi._
 import sbtassembly.AssemblyKeys.assembly
 import net.bzzt.reproduciblebuilds.ReproducibleBuildsPlugin
 

@@ -7,11 +7,13 @@ package org.apache.pekko.stream
 import java.util
 import java.util.concurrent.TimeUnit
 
-import org.apache.pekko.stream.impl.MaterializerSession
-import org.apache.pekko.stream.impl.NewLayout._
-import org.apache.pekko.stream.impl.StreamLayout.{ AtomicModule, Module }
 import org.openjdk.jmh.annotations._
 import org.reactivestreams.{ Publisher, Subscriber, Subscription }
+
+import org.apache.pekko
+import pekko.stream.impl.MaterializerSession
+import pekko.stream.impl.NewLayout._
+import pekko.stream.impl.StreamLayout.{ AtomicModule, Module }
 
 @State(Scope.Benchmark)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)

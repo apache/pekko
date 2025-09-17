@@ -18,26 +18,23 @@ import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
-import pekko.actor.ActorIdentity
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystemImpl
-import pekko.actor.Address
-import pekko.actor.AddressFromURIString
-import pekko.actor.Identify
-import pekko.actor.Nobody
-import pekko.actor.PoisonPill
-import pekko.actor.Props
-import pekko.remote.RemoteNodeDeathWatchSpec.UnwatchIt
-import pekko.remote.RemoteNodeDeathWatchSpec.WatchIt
+import pekko.actor.{
+  ActorIdentity,
+  ActorRef,
+  ActorSystemImpl,
+  Address,
+  AddressFromURIString,
+  Identify,
+  Nobody,
+  PoisonPill,
+  Props
+}
+import pekko.remote.RemoteNodeDeathWatchSpec.{ UnwatchIt, WatchIt }
 import pekko.remote.RemoteWatcher.Stats
 import pekko.remote.routing.RemoteRouterConfig
 import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig
-import pekko.routing.Broadcast
-import pekko.routing.FromConfig
-import pekko.routing.RoundRobinGroup
-import pekko.routing.RoundRobinPool
-import pekko.routing.RoutedActorRef
+import pekko.routing.{ Broadcast, FromConfig, RoundRobinGroup, RoundRobinPool, RoutedActorRef }
 import pekko.testkit.TestProbe
 
 class RemotingFeaturesConfig(val useUnsafe: Boolean, artery: Boolean) extends MultiNodeConfig {
@@ -160,10 +157,7 @@ abstract class RemotingFeaturesSafeSpec
 abstract class RemotingFeaturesUnsafeSpec
     extends RemotingFeaturesSpec(new RemotingFeaturesConfig(useUnsafe = true, artery = true)) {
 
-  import RemoteNodeDeathWatchSpec.Ack
-  import RemoteNodeDeathWatchSpec.DeathWatchIt
-  import RemoteNodeDeathWatchSpec.ProbeActor
-  import RemoteNodeDeathWatchSpec.WatchIt
+  import RemoteNodeDeathWatchSpec.{ Ack, DeathWatchIt, ProbeActor, WatchIt }
   import multiNodeConfig._
 
   def stats(watcher: ActorRef, message: DeathWatchIt): Stats = {
@@ -241,7 +235,6 @@ abstract class RemotingFeaturesSpec(val multiNodeConfig: RemotingFeaturesConfig)
 
   import RemoteWatcher._
   import multiNodeConfig._
-
   import pekko.remote.routing.RemoteRoundRobinSpec._
 
   override def initialParticipants: Int = roles.size

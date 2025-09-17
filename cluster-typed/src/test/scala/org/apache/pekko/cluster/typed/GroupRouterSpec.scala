@@ -13,22 +13,17 @@
 
 package org.apache.pekko.cluster.typed
 
-import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.receptionist.Receptionist
-import pekko.actor.typed.receptionist.ServiceKey
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.actor.typed.scaladsl.GroupRouter
-import pekko.actor.typed.scaladsl.Routers
-import pekko.serialization.jackson.CborSerializable
+import scala.concurrent.duration._
+
 import com.typesafe.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
-import scala.concurrent.duration._
+import org.apache.pekko
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
+import pekko.actor.typed.receptionist.{ Receptionist, ServiceKey }
+import pekko.actor.typed.scaladsl.{ Behaviors, GroupRouter, Routers }
+import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior }
+import pekko.serialization.jackson.CborSerializable
 
 object GroupRouterSpec {
   def config = ConfigFactory.parseString(s"""

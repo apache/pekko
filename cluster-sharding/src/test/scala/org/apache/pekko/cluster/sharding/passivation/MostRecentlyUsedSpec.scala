@@ -13,11 +13,11 @@
 
 package org.apache.pekko.cluster.sharding.passivation
 
-import org.apache.pekko.cluster.sharding.ShardRegion
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-
 import scala.concurrent.duration._
+
+import com.typesafe.config.{ Config, ConfigFactory }
+
+import org.apache.pekko.cluster.sharding.ShardRegion
 
 object MostRecentlyUsedSpec {
 
@@ -49,9 +49,7 @@ object MostRecentlyUsedSpec {
 
 class MostRecentlyUsedSpec extends AbstractEntityPassivationSpec(MostRecentlyUsedSpec.config, expectedEntities = 40) {
 
-  import EntityPassivationSpec.Entity.Envelope
-  import EntityPassivationSpec.Entity.ManuallyPassivate
-  import EntityPassivationSpec.Entity.Stop
+  import EntityPassivationSpec.Entity.{ Envelope, ManuallyPassivate, Stop }
 
   "Passivation of most recently used entities" must {
     "passivate the most recently used entities when the per-shard entity limit is reached" in {
@@ -158,8 +156,7 @@ class MostRecentlyUsedSpec extends AbstractEntityPassivationSpec(MostRecentlyUse
 class MostRecentlyUsedWithIdleSpec
     extends AbstractEntityPassivationSpec(MostRecentlyUsedSpec.idleConfig, expectedEntities = 3) {
 
-  import EntityPassivationSpec.Entity.Envelope
-  import EntityPassivationSpec.Entity.Stop
+  import EntityPassivationSpec.Entity.{ Envelope, Stop }
 
   "Passivation of idle entities with most recently used strategy" must {
     "passivate entities when they haven't seen messages for the configured timeout" in {
@@ -201,8 +198,7 @@ class MostRecentlyUsedWithIdleSpec
 class MostRecentlyUsedLimitAdjustmentSpec
     extends AbstractEntityPassivationSpec(MostRecentlyUsedSpec.config, expectedEntities = 21) {
 
-  import EntityPassivationSpec.Entity.Envelope
-  import EntityPassivationSpec.Entity.Stop
+  import EntityPassivationSpec.Entity.{ Envelope, Stop }
 
   "Passivation of most recently used entities" must {
     "adjust per-shard entity limits when the per-region limit is dynamically adjusted" in {

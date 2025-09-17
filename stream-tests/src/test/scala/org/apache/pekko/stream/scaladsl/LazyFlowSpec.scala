@@ -14,17 +14,17 @@
 package org.apache.pekko.stream.scaladsl
 
 import scala.collection.immutable
-import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration._
+import scala.concurrent.{ Future, Promise }
 
 import org.apache.pekko
-import pekko.{ Done, NotUsed }
-import pekko.stream.{ AbruptStageTerminationException, Attributes, Materializer, NeverMaterializedException }
 import pekko.stream.Attributes.Attribute
 import pekko.stream.scaladsl.AttributesSpec.AttributesFlow
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.Utils._
+import pekko.stream.{ AbruptStageTerminationException, Attributes, Materializer, NeverMaterializedException }
 import pekko.testkit.TestProbe
+import pekko.{ Done, NotUsed }
 
 class LazyFlowSpec extends StreamSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 1

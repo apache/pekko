@@ -13,6 +13,8 @@
 
 package org.apache.pekko.persistence.testkit.javadsl
 
+import scala.jdk.CollectionConverters._
+
 import org.scalatest.matchers.should.Matchers._
 
 import org.apache.pekko
@@ -22,7 +24,6 @@ import pekko.japi.Pair
 import pekko.persistence._
 import pekko.persistence.testkit._
 import pekko.testkit.EventFilter
-import pekko.util.ccompat.JavaConverters._
 
 trait CommonSnapshotTests extends JavaDslUtils {
 

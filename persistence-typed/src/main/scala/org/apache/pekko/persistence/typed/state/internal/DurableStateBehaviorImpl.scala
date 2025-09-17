@@ -17,23 +17,23 @@ import org.slf4j.LoggerFactory
 
 import org.apache.pekko
 import pekko.actor.typed
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.BackoffSupervisorStrategy
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.BehaviorInterceptor
-import pekko.actor.typed.PostStop
-import pekko.actor.typed.Signal
-import pekko.actor.typed.SupervisorStrategy
+import pekko.actor.typed.{
+  ActorRef,
+  BackoffSupervisorStrategy,
+  Behavior,
+  BehaviorInterceptor,
+  PostStop,
+  Signal,
+  SupervisorStrategy
+}
 import pekko.actor.typed.internal.ActorContextImpl
-import pekko.actor.typed.scaladsl.ActorContext
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.annotation._
+import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors }
+import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.persistence.RecoveryPermitter
 import pekko.persistence.typed.state.scaladsl._
 import pekko.persistence.state.exception.DurableStateException
 import pekko.persistence.state.scaladsl.GetObjectResult
-import pekko.persistence.typed.PersistenceId
-import pekko.persistence.typed.SnapshotAdapter
+import pekko.persistence.typed.{ PersistenceId, SnapshotAdapter }
 import pekko.util.unused
 
 @InternalApi

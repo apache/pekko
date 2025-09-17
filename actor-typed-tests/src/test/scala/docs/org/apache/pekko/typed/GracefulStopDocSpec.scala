@@ -15,20 +15,18 @@ package docs.org.apache.pekko.typed
 
 //#imports
 import org.apache.pekko
-import pekko.actor.typed.Behavior
 import pekko.actor.typed.scaladsl.Behaviors
-import pekko.actor.typed.{ ActorSystem, PostStop }
+import pekko.actor.typed.{ ActorSystem, Behavior, PostStop }
 
 //#imports
 
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.typed.ActorRef
 import scala.concurrent.duration._
 import scala.concurrent.Await
-import org.scalatest.wordspec.AnyWordSpecLike
-import pekko.actor.typed.Terminated
 
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
+import pekko.actor.typed.{ ActorRef, Terminated }
 
 object GracefulStopDocSpec {
 

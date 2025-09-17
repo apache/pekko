@@ -18,8 +18,7 @@ import java.util.concurrent.ThreadLocalRandom.{ current => random }
 import org.apache.pekko
 import pekko.stream.ActorAttributes._
 import pekko.stream.Supervision._
-import pekko.stream.testkit.ScriptedTest
-import pekko.stream.testkit.StreamSpec
+import pekko.stream.testkit.{ ScriptedTest, StreamSpec }
 import pekko.stream.testkit.Utils.TE
 import pekko.stream.testkit.scaladsl.TestSink
 

@@ -13,15 +13,14 @@
 
 package docs.routing
 
-import org.apache.pekko.testkit.PekkoSpec
-import org.apache.pekko.testkit.ImplicitSender
-import org.apache.pekko.actor.Actor
-import org.apache.pekko.actor.Props
-import CustomRouterDocSpec.RedundancyRoutingLogic
 import scala.collection.immutable
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.routing.FromConfig
-import org.apache.pekko.actor.ActorRef
+
+import org.apache.pekko
+import pekko.actor.{ Actor, ActorRef, ActorSystem, Props }
+import pekko.routing.FromConfig
+import pekko.testkit.{ ImplicitSender, PekkoSpec }
+
+import CustomRouterDocSpec.RedundancyRoutingLogic
 
 object CustomRouterDocSpec {
 

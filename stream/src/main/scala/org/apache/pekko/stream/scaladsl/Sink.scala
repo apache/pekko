@@ -15,23 +15,22 @@ package org.apache.pekko.stream.scaladsl
 
 import scala.annotation.tailrec
 import scala.annotation.unchecked.uncheckedVariance
-import scala.collection.immutable
+import scala.collection.{ immutable, Factory }
 import scala.concurrent.Future
 import scala.util.{ Failure, Success, Try }
 
+import org.reactivestreams.{ Publisher, Subscriber }
+
 import org.apache.pekko
-import pekko.{ util, Done, NotUsed }
 import pekko.actor.ActorRef
 import pekko.annotation.InternalApi
 import pekko.dispatch.ExecutionContexts
 import pekko.stream._
-import pekko.stream.impl._
 import pekko.stream.impl.Stages.DefaultAttributes
+import pekko.stream.impl._
 import pekko.stream.impl.fusing.GraphStages
 import pekko.stream.stage._
-import pekko.util.ccompat._
-
-import org.reactivestreams.{ Publisher, Subscriber }
+import pekko.{ util, Done, NotUsed }
 
 /**
  * A `Sink` is a set of stream processing steps that has one open input.

@@ -22,12 +22,8 @@ package com.example
 
 //#iot-supervisor
 import org.apache.pekko
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.PostStop
-import pekko.actor.typed.Signal
-import pekko.actor.typed.scaladsl.AbstractBehavior
-import pekko.actor.typed.scaladsl.ActorContext
-import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.{ Behavior, PostStop, Signal }
+import pekko.actor.typed.scaladsl.{ AbstractBehavior, ActorContext, Behaviors }
 
 object IotSupervisor {
   def apply(): Behavior[Nothing] =

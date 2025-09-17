@@ -13,13 +13,14 @@
 
 package org.apache.pekko.cluster.sharding.passivation.simulator
 
-import org.apache.pekko
-import pekko.japi.Util.immutableSeq
-import pekko.util.ccompat.JavaConverters._
+import java.util.Locale
+
+import scala.collection.immutable
+import scala.jdk.CollectionConverters._
+
 import com.typesafe.config.Config
 
-import java.util.Locale
-import scala.collection.immutable
+import org.apache.pekko.japi.Util.immutableSeq
 
 final case class SimulatorSettings(runs: immutable.Seq[SimulatorSettings.RunSettings], printDetailedStats: Boolean)
 

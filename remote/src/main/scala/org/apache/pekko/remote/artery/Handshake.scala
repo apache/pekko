@@ -19,17 +19,12 @@ import scala.util.control.NoStackTrace
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.ActorSystem
-import pekko.actor.Address
+import pekko.actor.{ ActorSystem, Address }
 import pekko.dispatch.ExecutionContexts
 import pekko.remote.UniqueAddress
-import pekko.stream.Attributes
-import pekko.stream.FlowShape
-import pekko.stream.Inlet
-import pekko.stream.Outlet
+import pekko.stream.{ Attributes, FlowShape, Inlet, Outlet }
 import pekko.stream.stage._
-import pekko.util.OptionVal
-import pekko.util.unused
+import pekko.util.{ unused, OptionVal }
 
 /**
  * INTERNAL API

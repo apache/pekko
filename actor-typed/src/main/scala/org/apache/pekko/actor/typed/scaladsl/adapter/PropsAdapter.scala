@@ -14,10 +14,8 @@
 package org.apache.pekko.actor.typed.scaladsl.adapter
 
 import org.apache.pekko
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.Props
-import pekko.actor.typed.SupervisorStrategy
 import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.{ Behavior, Props, SupervisorStrategy }
 
 /**
  * Wrap [[pekko.actor.typed.Behavior]] in a classic [[pekko.actor.Props]], i.e. when

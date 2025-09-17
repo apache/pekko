@@ -20,9 +20,7 @@ import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.testkit.{ EventFilter, ImplicitSender, TestEvent }
-import pekko.testkit.TestActors
-import pekko.testkit.TestProbe
+import pekko.testkit.{ EventFilter, ImplicitSender, TestActors, TestEvent, TestProbe }
 
 object RecoveryPermitterSpec {
 

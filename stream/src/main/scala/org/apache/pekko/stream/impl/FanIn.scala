@@ -13,15 +13,13 @@
 
 package org.apache.pekko.stream.impl
 
+import org.reactivestreams.{ Subscriber, Subscription }
+
 import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.{ DoNotInherit, InternalApi }
-import pekko.stream.AbruptTerminationException
-import pekko.stream.ActorAttributes
-import pekko.stream.Attributes
+import pekko.stream.{ AbruptTerminationException, ActorAttributes, Attributes }
 import pekko.util.unused
-
-import org.reactivestreams.{ Subscriber, Subscription }
 
 /**
  * INTERNAL API

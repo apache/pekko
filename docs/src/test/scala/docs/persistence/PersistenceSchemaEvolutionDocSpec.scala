@@ -16,14 +16,17 @@ package docs.persistence
 import java.io.NotSerializableException
 import java.nio.charset.StandardCharsets
 
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.persistence.journal.{ EventAdapter, EventSeq }
-import org.apache.pekko.serialization.{ SerializationExtension, SerializerWithStringManifest }
-import org.apache.pekko.testkit.TestKit
+import scala.concurrent.duration._
+
 import com.typesafe.config._
 import org.scalatest.wordspec.AnyWordSpec
 import spray.json.JsObject
-import scala.concurrent.duration._
+
+import org.apache.pekko
+import pekko.actor.ActorSystem
+import pekko.persistence.journal.{ EventAdapter, EventSeq }
+import pekko.serialization.{ SerializationExtension, SerializerWithStringManifest }
+import pekko.testkit.TestKit
 
 import docs.persistence.proto.FlightAppModels
 

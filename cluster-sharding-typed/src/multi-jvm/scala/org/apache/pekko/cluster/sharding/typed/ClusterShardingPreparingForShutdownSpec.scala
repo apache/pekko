@@ -13,26 +13,21 @@
 
 package org.apache.pekko.cluster.sharding.typed
 
+import scala.concurrent.duration._
+
+import com.typesafe.config.ConfigFactory
+
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.TestProbe
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
 import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.{ ActorRef, Behavior }
 import pekko.cluster.MemberStatus
 import pekko.cluster.MemberStatus.Removed
 import pekko.cluster.sharding.typed.ClusterShardingPreparingForShutdownSpec.Pinger.Command
-import pekko.cluster.sharding.typed.scaladsl.ClusterSharding
-import pekko.cluster.sharding.typed.scaladsl.Entity
-import pekko.cluster.sharding.typed.scaladsl.EntityTypeKey
-import pekko.cluster.typed.Leave
-import pekko.cluster.typed.MultiNodeTypedClusterSpec
-import pekko.cluster.typed.PrepareForFullClusterShutdown
-import pekko.remote.testkit.MultiNodeConfig
-import pekko.remote.testkit.MultiNodeSpec
+import pekko.cluster.sharding.typed.scaladsl.{ ClusterSharding, Entity, EntityTypeKey }
+import pekko.cluster.typed.{ Leave, MultiNodeTypedClusterSpec, PrepareForFullClusterShutdown }
+import pekko.remote.testkit.{ MultiNodeConfig, MultiNodeSpec }
 import pekko.serialization.jackson.CborSerializable
-import com.typesafe.config.ConfigFactory
-
-import scala.concurrent.duration._
 
 object ClusterShardingPreparingForShutdownSpec extends MultiNodeConfig {
   val first = role("first")
@@ -73,8 +68,8 @@ class ClusterShardingPreparingForShutdownMultiJvmNode3 extends ClusterShardingPr
 class ClusterShardingPreparingForShutdownSpec
     extends MultiNodeSpec(ClusterShardingPreparingForShutdownSpec)
     with MultiNodeTypedClusterSpec {
-  import ClusterShardingPreparingForShutdownSpec._
   import ClusterShardingPreparingForShutdownSpec.Pinger._
+  import ClusterShardingPreparingForShutdownSpec._
 
   override def initialParticipants = roles.size
 

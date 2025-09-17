@@ -13,34 +13,22 @@
 
 package org.apache.pekko.remote.artery.tcp.ssl
 
-import java.io.FileNotFoundException
-import java.io.IOException
-import java.security.GeneralSecurityException
-import java.security.PrivateKey
-import java.security.SecureRandom
-import java.security.cert.Certificate
-import java.security.cert.X509Certificate
+import java.io.{ FileNotFoundException, IOException }
+import java.security.{ GeneralSecurityException, PrivateKey, SecureRandom }
+import java.security.cert.{ Certificate, X509Certificate }
+
+import scala.concurrent.duration._
+
+import com.typesafe.config.Config
+import javax.net.ssl.{ KeyManager, SSLContext, SSLEngine, SSLSession, TrustManager }
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
-import pekko.annotation.ApiMayChange
-import pekko.annotation.InternalApi
-import pekko.event.Logging
-import pekko.event.MarkerLoggingAdapter
-import pekko.remote.artery.tcp.SSLEngineProvider
-import pekko.remote.artery.tcp.SecureRandomFactory
-import pekko.remote.artery.tcp.SslTransportException
-import pekko.remote.artery.tcp.ssl.RotatingKeysSSLEngineProvider.CachedContext
-import pekko.remote.artery.tcp.ssl.RotatingKeysSSLEngineProvider.ConfiguredContext
+import pekko.annotation.{ ApiMayChange, InternalApi }
+import pekko.event.{ Logging, MarkerLoggingAdapter }
+import pekko.remote.artery.tcp.{ SSLEngineProvider, SecureRandomFactory, SslTransportException }
+import pekko.remote.artery.tcp.ssl.RotatingKeysSSLEngineProvider.{ CachedContext, ConfiguredContext }
 import pekko.stream.TLSRole
-import com.typesafe.config.Config
-import javax.net.ssl.KeyManager
-import javax.net.ssl.SSLContext
-import javax.net.ssl.SSLEngine
-import javax.net.ssl.SSLSession
-import javax.net.ssl.TrustManager
-
-import scala.concurrent.duration._
 
 /**
  * Variation on ConfigSSLEngineProvider that will periodically reload the keys and certificates

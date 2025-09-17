@@ -14,12 +14,11 @@
 package org.apache.pekko.remote.transport
 
 import scala.collection.immutable
-import scala.concurrent.{ ExecutionContext, Future, Promise }
 import scala.concurrent.duration._
+import scala.concurrent.{ ExecutionContext, Future, Promise }
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.actor.DeadLetterSuppression
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.pattern.{ ask, gracefulStop, pipe }
 import pekko.remote.RARP

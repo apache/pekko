@@ -18,9 +18,7 @@ import scala.concurrent.duration._
 
 import com.typesafe.config.{ Config, ConfigFactory }
 
-import org.apache.pekko
-import pekko.testkit.GHExcludeAeronTest
-import pekko.testkit.LongRunningTest
+import org.apache.pekko.testkit.{ GHExcludeAeronTest, LongRunningTest }
 
 object JoinConfigCompatCheckerRollingUpdateSpec {
 

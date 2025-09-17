@@ -16,8 +16,8 @@ package org.apache.pekko.event
 import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
 import java.time.{ LocalDateTime, ZoneOffset }
-import java.util.{ Calendar, Date, GregorianCalendar, TimeZone }
 import java.util.concurrent.TimeUnit
+import java.util.{ Calendar, Date, GregorianCalendar, TimeZone }
 
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
@@ -28,9 +28,7 @@ import org.scalatest.wordspec.AnyWordSpec
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.event.Logging._
-import pekko.event.Logging.InitializeLogger
-import pekko.event.Logging.Warning
+import pekko.event.Logging.{ InitializeLogger, Warning, _ }
 import pekko.serialization.SerializationExtension
 import pekko.testkit._
 import pekko.util.Helpers

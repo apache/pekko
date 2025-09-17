@@ -13,20 +13,16 @@
 
 package org.apache.pekko.cluster.sharding
 
+import scala.collection.immutable.SortedSet
+
 import org.apache.pekko
-import pekko.actor.ActorRef
-import pekko.actor.Address
+import pekko.actor.{ ActorRef, Address }
 import pekko.cluster.ClusterEvent.CurrentClusterState
-import pekko.cluster.ClusterSettings
-import pekko.cluster.Member
-import pekko.cluster.MemberStatus
-import pekko.cluster.UniqueAddress
 import pekko.cluster.sharding.internal.AbstractLeastShardAllocationStrategy
 import pekko.cluster.sharding.internal.AbstractLeastShardAllocationStrategy.RegionEntry
+import pekko.cluster.{ ClusterSettings, Member, MemberStatus, UniqueAddress }
 import pekko.testkit.PekkoSpec
 import pekko.util.Version
-
-import scala.collection.immutable.SortedSet
 
 class DeprecatedLeastShardAllocationStrategySpec extends PekkoSpec {
   import LeastShardAllocationStrategySpec._

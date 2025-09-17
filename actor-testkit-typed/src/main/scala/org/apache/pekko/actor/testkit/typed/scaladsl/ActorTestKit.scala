@@ -20,26 +20,17 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.reflect.ClassTag
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{ Config, ConfigFactory }
 import org.slf4j.LoggerFactory
 
 import org.apache.pekko
-import pekko.actor.DeadLetter
-import pekko.actor.DeadLetterSuppression
-import pekko.actor.Dropped
-import pekko.actor.UnhandledMessage
 import pekko.actor.testkit.typed.TestKitSettings
-import pekko.actor.testkit.typed.internal.ActorTestKitGuardian
-import pekko.actor.testkit.typed.internal.TestKitUtils
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.Props
-import pekko.actor.typed.Scheduler
+import pekko.actor.testkit.typed.internal.{ ActorTestKitGuardian, TestKitUtils }
 import pekko.actor.typed.eventstream.EventStream
 import pekko.actor.typed.scaladsl.AskPattern._
 import pekko.actor.typed.scaladsl.adapter._
+import pekko.actor.typed._
+import pekko.actor.{ DeadLetter, DeadLetterSuppression, Dropped, UnhandledMessage }
 import pekko.annotation.InternalApi
 import pekko.util.Timeout
 

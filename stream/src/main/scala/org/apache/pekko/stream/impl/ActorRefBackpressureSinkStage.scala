@@ -18,8 +18,8 @@ import java.util
 import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.InternalApi
-import pekko.stream._
 import pekko.stream.Attributes.InputBuffer
+import pekko.stream._
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.stage._
 

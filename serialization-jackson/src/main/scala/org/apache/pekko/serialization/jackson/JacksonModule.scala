@@ -15,18 +15,19 @@ package org.apache.pekko.serialization.jackson
 
 import com.fasterxml.jackson.core.Version
 import com.fasterxml.jackson.core.util.VersionUtil
-import com.fasterxml.jackson.databind.BeanDescription
-import com.fasterxml.jackson.databind.DeserializationConfig
-import com.fasterxml.jackson.databind.JavaType
-import com.fasterxml.jackson.databind.JsonDeserializer
-import com.fasterxml.jackson.databind.JsonSerializer
-import com.fasterxml.jackson.databind.Module
 import com.fasterxml.jackson.databind.Module.SetupContext
-import com.fasterxml.jackson.databind.SerializationConfig
+import com.fasterxml.jackson.databind.{
+  BeanDescription,
+  DeserializationConfig,
+  JavaType,
+  JsonDeserializer,
+  JsonSerializer,
+  Module,
+  SerializationConfig
+}
 import com.fasterxml.jackson.databind.`type`.TypeModifier
 import com.fasterxml.jackson.databind.deser.Deserializers
-import com.fasterxml.jackson.databind.ser.BeanSerializerModifier
-import com.fasterxml.jackson.databind.ser.Serializers
+import com.fasterxml.jackson.databind.ser.{ BeanSerializerModifier, Serializers }
 
 import org.apache.pekko
 import pekko.annotation.InternalApi

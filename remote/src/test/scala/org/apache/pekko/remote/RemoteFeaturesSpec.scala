@@ -13,29 +13,16 @@
 
 package org.apache.pekko.remote
 
+import scala.annotation.nowarn
 import scala.concurrent.duration._
 
-import scala.annotation.nowarn
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorIdentity
-import pekko.actor.AddressFromURIString
-import pekko.actor.Identify
-import pekko.actor.InternalActorRef
-import pekko.actor.Props
-import pekko.actor.RootActorPath
-import pekko.remote.RemoteWatcher.Stats
-import pekko.remote.RemoteWatcher.UnwatchRemote
-import pekko.remote.RemoteWatcher.WatchRemote
-import pekko.remote.artery.ArteryMultiNodeSpec
-import pekko.remote.artery.ArterySpecSupport
-import pekko.remote.artery.RemoteDeploymentSpec
-import pekko.testkit.EventFilter
-import pekko.testkit.ImplicitSender
-import pekko.testkit.TestProbe
+import pekko.actor._
+import pekko.remote.RemoteWatcher.{ Stats, UnwatchRemote, WatchRemote }
+import pekko.remote.artery.{ ArteryMultiNodeSpec, ArterySpecSupport, RemoteDeploymentSpec }
+import pekko.testkit.{ EventFilter, ImplicitSender, TestProbe }
 
 object RemoteFeaturesSpec {
 

@@ -18,21 +18,18 @@ import java.net.{ Inet6Address, InetAddress }
 import scala.collection.{ immutable => im }
 import scala.concurrent.duration._
 
+import org.apache.pekko
+import pekko.actor.{ ActorRef, ExtendedActorSystem }
+import pekko.discovery
+import pekko.discovery.ServiceDiscovery
+import pekko.discovery.ServiceDiscovery.{ DiscoveryTimeoutException, Resolved, ResolvedTarget }
+import pekko.io.dns.CachePolicy.Ttl
+import pekko.io.dns.{ AAAARecord, ARecord, DnsProtocol, SRVRecord }
+import pekko.testkit.{ PekkoSpec, TestProbe }
+
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
-
-import org.apache.pekko
-import pekko.actor.ActorRef
-import pekko.actor.ExtendedActorSystem
-import pekko.discovery
-import pekko.discovery.ServiceDiscovery
-import pekko.discovery.ServiceDiscovery.{ Resolved, ResolvedTarget }
-import pekko.discovery.ServiceDiscovery.DiscoveryTimeoutException
-import pekko.io.dns.{ AAAARecord, ARecord, DnsProtocol, SRVRecord }
-import pekko.io.dns.CachePolicy.Ttl
-import pekko.testkit.PekkoSpec
-import pekko.testkit.TestProbe
 
 class DnsServiceDiscoverySpec extends PekkoSpec with AnyWordSpecLike with Matchers with ScalaFutures {
 

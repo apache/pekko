@@ -16,16 +16,11 @@ package org.apache.pekko.cluster.sharding.typed.scaladsl
 import scala.reflect.ClassTag
 
 import org.apache.pekko
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.Extension
-import pekko.actor.typed.ExtensionId
-import pekko.annotation.DoNotInherit
-import pekko.annotation.InternalApi
+import pekko.actor.typed.{ ActorSystem, Behavior, Extension, ExtensionId }
+import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.cluster.sharding.ShardCoordinator.ShardAllocationStrategy
-import pekko.cluster.sharding.typed.ShardedDaemonProcessSettings
 import pekko.cluster.sharding.typed.internal.ShardedDaemonProcessImpl
-import pekko.cluster.sharding.typed.javadsl
+import pekko.cluster.sharding.typed.{ javadsl, ShardedDaemonProcessSettings }
 
 object ShardedDaemonProcess extends ExtensionId[ShardedDaemonProcess] {
   override def createExtension(system: ActorSystem[_]): ShardedDaemonProcess = new ShardedDaemonProcessImpl(system)

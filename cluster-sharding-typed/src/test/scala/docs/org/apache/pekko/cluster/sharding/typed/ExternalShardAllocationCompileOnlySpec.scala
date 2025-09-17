@@ -13,21 +13,18 @@
 
 package docs.org.apache.pekko.cluster.sharding.typed
 
+import scala.concurrent.Future
+
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.Address
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
-import pekko.cluster.sharding.external.ExternalShardAllocation
-import pekko.cluster.sharding.external.ExternalShardAllocationStrategy
+import pekko.actor.typed.{ ActorRef, ActorSystem }
 import pekko.cluster.sharding.external.scaladsl.ExternalShardAllocationClient
+import pekko.cluster.sharding.external.{ ExternalShardAllocation, ExternalShardAllocationStrategy }
 import pekko.cluster.sharding.typed.ShardingEnvelope
-import pekko.cluster.sharding.typed.scaladsl.EntityTypeKey
-import pekko.cluster.sharding.typed.scaladsl.ClusterSharding
-import pekko.cluster.sharding.typed.scaladsl.Entity
-import docs.org.apache.pekko.cluster.sharding.typed.ShardingCompileOnlySpec.Basics.Counter
+import pekko.cluster.sharding.typed.scaladsl.{ ClusterSharding, Entity, EntityTypeKey }
 
-import scala.concurrent.Future
+import docs.org.apache.pekko.cluster.sharding.typed.ShardingCompileOnlySpec.Basics.Counter
 
 class ExternalShardAllocationCompileOnlySpec {
   val system: ActorSystem[_] = ???

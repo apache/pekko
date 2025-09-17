@@ -13,33 +13,25 @@
 
 package org.apache.pekko.cluster.sharding.typed
 
+import com.typesafe.config.ConfigFactory
+import org.scalatest.concurrent.{ Eventually, ScalaFutures }
+import org.scalatest.time.Span
+
 import org.apache.pekko
-import pekko.actor.typed.scaladsl.LoggerOps
 import pekko.Done
 import pekko.actor.testkit.typed.scaladsl.TestProbe
 import pekko.actor.typed.ActorRef
-import pekko.actor.typed.scaladsl.ActorContext
-import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors, LoggerOps }
 import pekko.cluster.MultiNodeClusterSpec
-import pekko.cluster.sharding.typed.ReplicatedShardingSpec.TestRES.GetState
-import pekko.cluster.sharding.typed.ReplicatedShardingSpec.TestRES.State
-import pekko.cluster.sharding.typed.ReplicatedShardingSpec.TestRES.StoreMe
+import pekko.cluster.sharding.typed.ReplicatedShardingSpec.TestRES.{ GetState, State, StoreMe }
 import pekko.cluster.sharding.typed.scaladsl.Entity
 import pekko.cluster.typed.MultiNodeTypedClusterSpec
 import pekko.persistence.journal.PersistencePluginProxy
 import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
-import pekko.persistence.typed.ReplicaId
-import pekko.persistence.typed.ReplicationId
-import pekko.persistence.typed.scaladsl.ReplicatedEventSourcing
-import pekko.persistence.typed.scaladsl.Effect
-import pekko.persistence.typed.scaladsl.EventSourcedBehavior
-import pekko.remote.testkit.MultiNodeConfig
-import pekko.remote.testkit.MultiNodeSpec
+import pekko.persistence.typed.scaladsl.{ Effect, EventSourcedBehavior, ReplicatedEventSourcing }
+import pekko.persistence.typed.{ ReplicaId, ReplicationId }
+import pekko.remote.testkit.{ MultiNodeConfig, MultiNodeSpec }
 import pekko.serialization.jackson.CborSerializable
-import com.typesafe.config.ConfigFactory
-import org.scalatest.concurrent.Eventually
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.time.Span
 
 object ReplicatedShardingSpec extends MultiNodeConfig {
   val first = role("first")

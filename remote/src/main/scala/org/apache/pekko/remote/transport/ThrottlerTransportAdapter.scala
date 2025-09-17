@@ -16,33 +16,24 @@ package org.apache.pekko.remote.transport
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 
-import scala.annotation.tailrec
+import scala.annotation.{ nowarn, tailrec }
 import scala.collection.immutable.Queue
-import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration._
+import scala.concurrent.{ Future, Promise }
 import scala.math.min
-import scala.util.{ Failure, Success }
 import scala.util.control.NonFatal
-
-import scala.annotation.nowarn
+import scala.util.{ Failure, Success }
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
-import pekko.dispatch.ExecutionContexts
 import pekko.dispatch.sysmsg.{ Unwatch, Watch }
+import pekko.dispatch.{ ExecutionContexts, RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.event.LoggingAdapter
 import pekko.pattern.{ ask, pipe, PromiseActorRef }
 import pekko.remote.RARP
 import pekko.remote.transport.ActorTransportAdapter.AssociateUnderlying
+import pekko.remote.transport.AssociationHandle._
 import pekko.remote.transport.PekkoPduCodec.Associate
-import pekko.remote.transport.AssociationHandle.{
-  ActorHandleEventListener,
-  DisassociateInfo,
-  Disassociated,
-  HandleEventListener,
-  InboundPayload
-}
 import pekko.remote.transport.ThrottlerManager.{ Checkin, Handle, Listener, ListenerAndMode }
 import pekko.remote.transport.ThrottlerTransportAdapter._
 import pekko.remote.transport.Transport._

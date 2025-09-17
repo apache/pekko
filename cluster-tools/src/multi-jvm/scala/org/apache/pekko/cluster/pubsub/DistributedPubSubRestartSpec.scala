@@ -19,18 +19,10 @@ import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorIdentity
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
-import pekko.actor.Identify
-import pekko.actor.Props
-import pekko.actor.RootActorPath
+import pekko.actor.{ Actor, ActorIdentity, ActorRef, ActorSystem, Identify, Props, RootActorPath }
 import pekko.cluster.Cluster
 import pekko.remote.testconductor.RoleName
-import pekko.remote.testkit.MultiNodeConfig
-import pekko.remote.testkit.MultiNodeSpec
-import pekko.remote.testkit.STMultiNodeSpec
+import pekko.remote.testkit.{ MultiNodeConfig, MultiNodeSpec, STMultiNodeSpec }
 import pekko.testkit._
 
 object DistributedPubSubRestartSpec extends MultiNodeConfig {

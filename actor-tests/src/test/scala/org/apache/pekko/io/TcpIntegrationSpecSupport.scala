@@ -16,15 +16,13 @@ package org.apache.pekko.io
 import scala.annotation.tailrec
 import scala.collection.immutable
 
-import Tcp._
-
 import org.apache.pekko
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
+import pekko.actor.{ ActorRef, ActorSystem }
 import pekko.dispatch.ExecutionContexts
 import pekko.io.Inet.SocketOption
-import pekko.testkit.{ PekkoSpec, TestProbe }
+import pekko.io.Tcp._
 import pekko.testkit.SocketUtil.temporaryServerAddress
+import pekko.testkit.{ PekkoSpec, TestProbe }
 
 trait TcpIntegrationSpecSupport { this: PekkoSpec =>
 

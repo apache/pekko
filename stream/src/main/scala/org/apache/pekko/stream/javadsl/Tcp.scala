@@ -17,31 +17,22 @@ import java.lang.{ Iterable => JIterable }
 import java.net.InetSocketAddress
 import java.util.Optional
 import java.util.concurrent.CompletionStage
-import javax.net.ssl.SSLEngine
-import javax.net.ssl.SSLSession
+import javax.net.ssl.{ SSLEngine, SSLSession }
 
 import scala.concurrent.duration._
-import scala.util.Failure
-import scala.util.Success
+import scala.util.{ Failure, Success }
 
 import org.apache.pekko
-import pekko.{ Done, NotUsed }
-import pekko.actor.ActorSystem
-import pekko.actor.ClassicActorSystemProvider
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.ExtensionId
-import pekko.actor.ExtensionIdProvider
+import pekko.actor._
 import pekko.annotation.InternalApi
 import pekko.io.Inet.SocketOption
 import pekko.japi.function
-import pekko.stream.Materializer
-import pekko.stream.SystemMaterializer
-import pekko.stream.TLSClosing
-import pekko.stream.scaladsl
+import pekko.stream.{ scaladsl, Materializer, SystemMaterializer, TLSClosing }
 import pekko.util.ByteString
 import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
 import pekko.util.OptionConverters._
+import pekko.{ Done, NotUsed }
 
 object Tcp extends ExtensionId[Tcp] with ExtensionIdProvider {
 
@@ -142,7 +133,6 @@ object Tcp extends ExtensionId[Tcp] with ExtensionIdProvider {
 
 class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
   import Tcp._
-
   import org.apache.pekko.dispatch.ExecutionContexts.parasitic
 
   private lazy val delegate: scaladsl.Tcp = scaladsl.Tcp(system)

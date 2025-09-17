@@ -17,12 +17,9 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Scheduler
-import pekko.cluster.ddata.GCounter
-import pekko.cluster.ddata.GCounterKey
-import pekko.cluster.ddata.SelfUniqueAddress
+import pekko.actor.typed.{ ActorRef, Scheduler }
 import pekko.cluster.ddata.typed.scaladsl.Replicator._
+import pekko.cluster.ddata.{ GCounter, GCounterKey, SelfUniqueAddress }
 import pekko.util.Timeout
 
 object ReplicatorCompileOnlyTest {

@@ -13,22 +13,16 @@
 
 package org.apache.pekko.cluster.sharding.passivation
 
-import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorRef
-import pekko.actor.Props
-import pekko.cluster.Cluster
-import pekko.cluster.sharding.ClusterSharding
-import pekko.cluster.sharding.ClusterShardingSettings
-import pekko.cluster.sharding.ShardRegion
-import pekko.testkit.WithLogCapturing
-import pekko.testkit.PekkoSpec
-import pekko.testkit.TestProbe
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import scala.concurrent.duration._
+
+import com.typesafe.config.{ Config, ConfigFactory }
 import org.scalatest.concurrent.Eventually
 
-import scala.concurrent.duration._
+import org.apache.pekko
+import pekko.actor.{ Actor, ActorRef, Props }
+import pekko.cluster.Cluster
+import pekko.cluster.sharding.{ ClusterSharding, ClusterShardingSettings, ShardRegion }
+import pekko.testkit.{ PekkoSpec, TestProbe, WithLogCapturing }
 
 object EntityPassivationSpec {
 

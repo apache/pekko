@@ -15,8 +15,7 @@ package org.apache.pekko.actor
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-import com.typesafe.config.ConfigParseOptions
+import com.typesafe.config.{ ConfigFactory, ConfigParseOptions }
 
 import org.apache.pekko
 import pekko.routing._

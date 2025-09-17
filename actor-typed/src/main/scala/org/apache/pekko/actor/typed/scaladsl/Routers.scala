@@ -14,9 +14,9 @@
 package org.apache.pekko.actor.typed.scaladsl
 
 import org.apache.pekko
-import pekko.actor.typed.{ Behavior, Props }
 import pekko.actor.typed.internal.routing.{ GroupRouterBuilder, PoolRouterBuilder }
 import pekko.actor.typed.receptionist.ServiceKey
+import pekko.actor.typed.{ Behavior, Props }
 import pekko.annotation.DoNotInherit
 
 object Routers {

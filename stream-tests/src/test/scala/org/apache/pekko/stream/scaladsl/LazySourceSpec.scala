@@ -15,26 +15,19 @@ package org.apache.pekko.stream.scaladsl
 
 import java.util.concurrent.atomic.AtomicBoolean
 
-import scala.collection.immutable.Seq
-import scala.concurrent.Future
-import scala.concurrent.Promise
-
-import org.apache.pekko
-import pekko.Done
-import pekko.NotUsed
-import pekko.stream._
-import pekko.stream.Attributes.Attribute
-import pekko.stream.scaladsl.AttributesSpec.AttributesSource
-import pekko.stream.stage.GraphStage
-import pekko.stream.stage.GraphStageLogic
-import pekko.stream.testkit.StreamSpec
-import pekko.stream.testkit.TestPublisher
-import pekko.stream.testkit.TestSubscriber
-import pekko.stream.testkit.Utils.TE
-import pekko.testkit.DefaultTimeout
-import pekko.testkit.TestProbe
+import scala.concurrent.{ Future, Promise }
 
 import org.scalatest.concurrent.ScalaFutures
+
+import org.apache.pekko
+import pekko.{ Done, NotUsed }
+import pekko.stream.Attributes.Attribute
+import pekko.stream._
+import pekko.stream.scaladsl.AttributesSpec.AttributesSource
+import pekko.stream.stage.{ GraphStage, GraphStageLogic }
+import pekko.stream.testkit.{ StreamSpec, TestPublisher, TestSubscriber }
+import pekko.stream.testkit.Utils.TE
+import pekko.testkit.{ DefaultTimeout, TestProbe }
 
 class LazySourceSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
 

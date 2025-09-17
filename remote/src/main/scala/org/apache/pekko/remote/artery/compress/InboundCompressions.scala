@@ -20,15 +20,10 @@ import scala.annotation.tailrec
 import org.agrona.collections.Long2ObjectHashMap
 
 import org.apache.pekko
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
-import pekko.actor.Address
-import pekko.actor.InternalActorRef
-import pekko.event.Logging
-import pekko.event.LoggingAdapter
+import pekko.actor.{ ActorRef, ActorSystem, Address, InternalActorRef }
+import pekko.event.{ Logging, LoggingAdapter }
 import pekko.remote.artery._
-import pekko.util.OptionVal
-import pekko.util.unused
+import pekko.util.{ unused, OptionVal }
 
 /**
  * INTERNAL API
@@ -162,7 +157,7 @@ private[remote] final class InboundCompressionsImpl(
   }
 
   override def currentOriginUids: Set[Long] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     // can't use union because of java.lang.Long and Scala Long mismatch,
     // only used for testing so doesn't matter
     val result = Set.empty[java.lang.Long] ++ _actorRefsIns.keySet.asScala.iterator ++

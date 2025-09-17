@@ -20,9 +20,9 @@ import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.stream.{ Attributes, IOOperationIncompleteException, IOResult, Inlet, SinkShape }
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.stage.{ GraphStageLogic, GraphStageLogicWithLogging, GraphStageWithMaterializedValue, InHandler }
+import pekko.stream.{ Attributes, IOOperationIncompleteException, IOResult, Inlet, SinkShape }
 import pekko.util.ByteString
 
 /**

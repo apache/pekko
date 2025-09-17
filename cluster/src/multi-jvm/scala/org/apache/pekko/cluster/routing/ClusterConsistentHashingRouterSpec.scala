@@ -18,20 +18,12 @@ import scala.concurrent.Await
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorRef
-import pekko.actor.Address
-import pekko.actor.Props
+import pekko.actor.{ Actor, ActorRef, Address, Props }
 import pekko.cluster.MultiNodeClusterSpec
 import pekko.pattern.ask
 import pekko.remote.testkit.MultiNodeConfig
-import pekko.routing.ActorRefRoutee
-import pekko.routing.ConsistentHashingPool
-import pekko.routing.ConsistentHashingRouter.ConsistentHashMapping
-import pekko.routing.ConsistentHashingRouter.ConsistentHashableEnvelope
-import pekko.routing.FromConfig
-import pekko.routing.GetRoutees
-import pekko.routing.Routees
+import pekko.routing.ConsistentHashingRouter.{ ConsistentHashMapping, ConsistentHashableEnvelope }
+import pekko.routing.{ ActorRefRoutee, ConsistentHashingPool, FromConfig, GetRoutees, Routees }
 import pekko.testkit._
 
 object ClusterConsistentHashingRouterMultiJvmSpec extends MultiNodeConfig {

@@ -14,8 +14,7 @@
 package org.apache.pekko.remote.artery.tcp
 
 import java.io.ByteArrayOutputStream
-import java.security.NoSuchAlgorithmException
-import java.security.SecureRandom
+import java.security.{ NoSuchAlgorithmException, SecureRandom }
 import java.util.zip.GZIPOutputStream
 
 import org.apache.pekko

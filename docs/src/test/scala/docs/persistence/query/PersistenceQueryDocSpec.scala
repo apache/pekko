@@ -13,24 +13,22 @@
 
 package docs.persistence.query
 
-import org.apache.pekko
-import pekko.NotUsed
-import pekko.actor._
-import pekko.persistence.query._
-import pekko.stream.scaladsl.{ Flow, Sink, Source }
-import pekko.stream.javadsl
-import pekko.testkit.PekkoSpec
-import pekko.util.Timeout
-import org.reactivestreams.Subscriber
 import scala.collection.immutable
 import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
 import scala.concurrent.duration._
 
-import pekko.Done
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.scaladsl.Behaviors
 import com.typesafe.config.Config
+import org.reactivestreams.Subscriber
+
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.actor._
+import pekko.persistence.query._
+import pekko.stream.scaladsl.{ Sink, Source }
+import pekko.stream.javadsl
+import pekko.testkit.PekkoSpec
+import pekko.util.Timeout
 
 object PersistenceQueryDocSpec {
 
@@ -140,7 +138,7 @@ object PersistenceQueryDocSpec {
     // possibility to add more plugin specific queries
 
     def byTagsWithMeta(tags: java.util.Set[String]): javadsl.Source[RichEvent, QueryMetadata] = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       scaladslReadJournal.byTagsWithMeta(tags.asScala.toSet).asJava
     }
   }

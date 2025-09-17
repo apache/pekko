@@ -12,9 +12,8 @@
  */
 
 package org.apache.pekko.actor
-import java.net.MalformedURLException
-import java.net.URI
-import java.net.URISyntaxException
+
+import java.net.{ MalformedURLException, URI, URISyntaxException }
 import java.util.Optional
 
 import scala.annotation.tailrec

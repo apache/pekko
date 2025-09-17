@@ -18,23 +18,14 @@ import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorIdentity
-import pekko.actor.ActorLogging
-import pekko.actor.ActorRef
-import pekko.actor.ActorSelection
-import pekko.actor.Identify
-import pekko.actor.Props
-import pekko.actor.RootActorPath
+import pekko.actor.{ Actor, ActorIdentity, ActorLogging, ActorRef, ActorSelection, Identify, Props, RootActorPath }
 import pekko.cluster.Cluster
 import pekko.cluster.ClusterEvent._
 import pekko.remote.testconductor.RoleName
-import pekko.remote.testkit.MultiNodeConfig
-import pekko.remote.testkit.MultiNodeSpec
-import pekko.remote.testkit.STMultiNodeSpec
+import pekko.remote.testkit.{ MultiNodeConfig, MultiNodeSpec, STMultiNodeSpec }
 import pekko.serialization.jackson.CborSerializable
-import pekko.testkit._
 import pekko.testkit.TestEvent._
+import pekko.testkit._
 
 object ClusterSingletonManagerSpec extends MultiNodeConfig {
   val controller = role("controller")
@@ -182,9 +173,9 @@ class ClusterSingletonManagerSpec
     with STMultiNodeSpec
     with ImplicitSender {
 
-  import ClusterSingletonManagerSpec._
   import ClusterSingletonManagerSpec.Consumer._
   import ClusterSingletonManagerSpec.PointToPointChannel._
+  import ClusterSingletonManagerSpec._
 
   override def initialParticipants = roles.size
 

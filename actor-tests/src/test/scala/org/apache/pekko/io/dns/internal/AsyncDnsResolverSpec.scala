@@ -14,20 +14,20 @@
 package org.apache.pekko.io.dns.internal
 
 import java.net.{ Inet6Address, InetAddress }
-
 import scala.collection.{ immutable => im }
 import scala.concurrent.duration._
 
 import com.typesafe.config.{ Config, ConfigFactory, ConfigValueFactory }
+
 import org.apache.pekko
-import pekko.actor.{ ActorRef, ExtendedActorSystem, Props }
 import pekko.actor.Status.Failure
+import pekko.actor.{ ActorRef, ExtendedActorSystem, Props }
 import pekko.io.SimpleDnsCache
-import pekko.io.dns.{ AAAARecord, ARecord, DnsSettings, IdGenerator, SRVRecord }
 import pekko.io.dns.CachePolicy.Ttl
 import pekko.io.dns.DnsProtocol._
 import pekko.io.dns.internal.AsyncDnsResolver.ResolveFailedException
-import pekko.io.dns.internal.DnsClient.{ Answer, DuplicateId, Question4, Question6, SrvQuestion }
+import pekko.io.dns.internal.DnsClient._
+import pekko.io.dns._
 import pekko.testkit.{ PekkoSpec, TestProbe, WithLogCapturing }
 
 class AsyncDnsResolverSpec extends PekkoSpec("""

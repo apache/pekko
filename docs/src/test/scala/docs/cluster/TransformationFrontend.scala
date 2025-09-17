@@ -13,17 +13,16 @@
 
 package scala.docs.cluster
 
-import scala.util.Success
-import scala.concurrent.duration._
-import org.apache.pekko.actor.Actor
-import org.apache.pekko.actor.ActorRef
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.actor.Props
-import org.apache.pekko.actor.Terminated
-import org.apache.pekko.pattern.ask
-import org.apache.pekko.util.Timeout
-import com.typesafe.config.ConfigFactory
 import java.util.concurrent.atomic.AtomicInteger
+
+import scala.concurrent.duration._
+
+import com.typesafe.config.ConfigFactory
+
+import org.apache.pekko
+import pekko.actor.{ Actor, ActorRef, ActorSystem, Props, Terminated }
+import pekko.pattern.ask
+import pekko.util.Timeout
 
 //#frontend
 class TransformationFrontend extends Actor {

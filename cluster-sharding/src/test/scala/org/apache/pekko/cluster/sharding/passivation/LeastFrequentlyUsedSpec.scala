@@ -13,11 +13,11 @@
 
 package org.apache.pekko.cluster.sharding.passivation
 
-import org.apache.pekko.cluster.sharding.ShardRegion
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-
 import scala.concurrent.duration._
+
+import com.typesafe.config.{ Config, ConfigFactory }
+
+import org.apache.pekko.cluster.sharding.ShardRegion
 
 object LeastFrequentlyUsedSpec {
 
@@ -67,9 +67,7 @@ object LeastFrequentlyUsedSpec {
 class LeastFrequentlyUsedSpec
     extends AbstractEntityPassivationSpec(LeastFrequentlyUsedSpec.config, expectedEntities = 40) {
 
-  import EntityPassivationSpec.Entity.Envelope
-  import EntityPassivationSpec.Entity.ManuallyPassivate
-  import EntityPassivationSpec.Entity.Stop
+  import EntityPassivationSpec.Entity.{ Envelope, ManuallyPassivate, Stop }
 
   "Passivation of least frequently used entities" must {
     "passivate the least frequently used entities when the per-shard entity limit is reached" in {
@@ -218,8 +216,7 @@ class LeastFrequentlyUsedSpec
 class LeastFrequentlyUsedWithDynamicAgingSpec
     extends AbstractEntityPassivationSpec(LeastFrequentlyUsedSpec.dynamicAgingConfig, expectedEntities = 21) {
 
-  import EntityPassivationSpec.Entity.Envelope
-  import EntityPassivationSpec.Entity.Stop
+  import EntityPassivationSpec.Entity.{ Envelope, Stop }
 
   "Passivation of least frequently used entities with dynamic aging" must {
     "passivate the least frequently used entities when the per-shard entity limit is reached" in {
@@ -295,8 +292,7 @@ class LeastFrequentlyUsedWithDynamicAgingSpec
 class LeastFrequentlyUsedWithIdleSpec
     extends AbstractEntityPassivationSpec(LeastFrequentlyUsedSpec.idleConfig, expectedEntities = 3) {
 
-  import EntityPassivationSpec.Entity.Envelope
-  import EntityPassivationSpec.Entity.Stop
+  import EntityPassivationSpec.Entity.{ Envelope, Stop }
 
   "Passivation of idle entities with least frequently used strategy" must {
     "passivate entities when they haven't seen messages for the configured timeout" in {
@@ -338,8 +334,7 @@ class LeastFrequentlyUsedWithIdleSpec
 class LeastFrequentlyUsedLimitAdjustmentSpec
     extends AbstractEntityPassivationSpec(LeastFrequentlyUsedSpec.config, expectedEntities = 21) {
 
-  import EntityPassivationSpec.Entity.Envelope
-  import EntityPassivationSpec.Entity.Stop
+  import EntityPassivationSpec.Entity.{ Envelope, Stop }
 
   "Passivation of least frequently used entities" must {
     "adjust per-shard entity limits when the per-region limit is dynamically adjusted" in {

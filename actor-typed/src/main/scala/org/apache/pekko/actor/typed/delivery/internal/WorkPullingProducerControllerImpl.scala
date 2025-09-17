@@ -14,30 +14,23 @@
 package org.apache.pekko.actor.typed.delivery.internal
 
 import java.util.UUID
-import java.util.concurrent.ThreadLocalRandom
-import java.util.concurrent.TimeoutException
+import java.util.concurrent.{ ThreadLocalRandom, TimeoutException }
 
 import scala.reflect.ClassTag
-import scala.util.Failure
-import scala.util.Success
+import scala.util.{ Failure, Success }
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.DispatcherSelector
-import pekko.actor.typed.delivery.ConsumerController
-import pekko.actor.typed.delivery.DurableProducerQueue
-import pekko.actor.typed.delivery.DurableProducerQueue.ConfirmationQualifier
-import pekko.actor.typed.delivery.DurableProducerQueue.SeqNr
-import pekko.actor.typed.delivery.ProducerController
-import pekko.actor.typed.delivery.WorkPullingProducerController
-import pekko.actor.typed.receptionist.Receptionist
-import pekko.actor.typed.receptionist.ServiceKey
-import pekko.actor.typed.scaladsl.ActorContext
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.actor.typed.scaladsl.LoggerOps
-import pekko.actor.typed.scaladsl.StashBuffer
+import pekko.actor.typed.delivery.DurableProducerQueue.{ ConfirmationQualifier, SeqNr }
+import pekko.actor.typed.delivery.{
+  ConsumerController,
+  DurableProducerQueue,
+  ProducerController,
+  WorkPullingProducerController
+}
+import pekko.actor.typed.receptionist.{ Receptionist, ServiceKey }
+import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors, LoggerOps, StashBuffer }
+import pekko.actor.typed.{ ActorRef, Behavior, DispatcherSelector }
 import pekko.annotation.InternalApi
 import pekko.util.Timeout
 
@@ -46,9 +39,7 @@ import pekko.util.Timeout
  */
 @InternalApi private[pekko] object WorkPullingProducerControllerImpl {
 
-  import WorkPullingProducerController.Command
-  import WorkPullingProducerController.RequestNext
-  import WorkPullingProducerController.Start
+  import WorkPullingProducerController.{ Command, RequestNext, Start }
 
   sealed trait InternalCommand
 
@@ -279,14 +270,8 @@ private class WorkPullingProducerControllerImpl[A: ClassTag](
     requestNext: WorkPullingProducerController.RequestNext[A],
     durableQueue: Option[ActorRef[DurableProducerQueue.Command[A]]],
     settings: WorkPullingProducerController.Settings) {
-  import DurableProducerQueue.MessageSent
-  import DurableProducerQueue.StoreMessageConfirmed
-  import DurableProducerQueue.StoreMessageSent
-  import DurableProducerQueue.StoreMessageSentAck
-  import WorkPullingProducerController.GetWorkerStats
-  import WorkPullingProducerController.MessageWithConfirmation
-  import WorkPullingProducerController.Start
-  import WorkPullingProducerController.WorkerStats
+  import DurableProducerQueue.{ MessageSent, StoreMessageConfirmed, StoreMessageSent, StoreMessageSentAck }
+  import WorkPullingProducerController.{ GetWorkerStats, MessageWithConfirmation, Start, WorkerStats }
   import WorkPullingProducerControllerImpl._
 
   private val producerControllerSettings = settings.producerControllerSettings

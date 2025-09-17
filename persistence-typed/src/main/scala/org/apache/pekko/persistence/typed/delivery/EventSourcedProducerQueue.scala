@@ -20,18 +20,13 @@ import scala.concurrent.duration._
 import com.typesafe.config.Config
 
 import org.apache.pekko
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.SupervisorStrategy
+import pekko.actor.typed.{ ActorSystem, Behavior, SupervisorStrategy }
 import pekko.actor.typed.delivery.DurableProducerQueue
-import pekko.actor.typed.scaladsl.ActorContext
-import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors }
 import pekko.annotation.ApiMayChange
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.delivery.EventSourcedProducerQueue.CleanupTick
-import pekko.persistence.typed.scaladsl.Effect
-import pekko.persistence.typed.scaladsl.EventSourcedBehavior
-import pekko.persistence.typed.scaladsl.RetentionCriteria
+import pekko.persistence.typed.scaladsl.{ Effect, EventSourcedBehavior, RetentionCriteria }
 import pekko.util.JavaDurationConverters._
 
 /**

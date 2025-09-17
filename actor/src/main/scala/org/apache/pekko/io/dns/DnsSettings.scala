@@ -35,6 +35,7 @@ import java.util
 
 import scala.collection.immutable
 import scala.concurrent.duration.FiniteDuration
+import scala.jdk.CollectionConverters._
 import scala.util.{ Failure, Success, Try }
 
 import com.typesafe.config.{ Config, ConfigValueType }
@@ -49,7 +50,6 @@ import pekko.io.dns.internal.{ ResolvConf, ResolvConfParser }
 import pekko.util.Helpers
 import pekko.util.Helpers.Requiring
 import pekko.util.JavaDurationConverters._
-import pekko.util.ccompat.JavaConverters._
 
 /** INTERNAL API */
 @InternalApi

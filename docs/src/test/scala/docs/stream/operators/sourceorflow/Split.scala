@@ -13,21 +13,18 @@
 
 package docs.stream.operators.sourceorflow
 
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneOffset
+import java.time.{ Instant, LocalDateTime, ZoneOffset }
 
 import scala.concurrent.duration._
-
-import org.apache.pekko.stream.scaladsl.Sink
-import org.apache.pekko.stream.scaladsl.Source
-
 import scala.annotation.nowarn
+
+import org.apache.pekko
+import pekko.stream.scaladsl.{ Sink, Source }
 
 @nowarn("msg=deprecated")
 object Split {
   def splitWhenExample(args: Array[String]): Unit = {
-    import org.apache.pekko.actor.ActorSystem
+    import pekko.actor.ActorSystem
 
     implicit val system: ActorSystem = ActorSystem()
 
@@ -70,7 +67,7 @@ object Split {
   }
 
   def splitAfterExample(args: Array[String]): Unit = {
-    import org.apache.pekko.actor.ActorSystem
+    import pekko.actor.ActorSystem
 
     implicit val system: ActorSystem = ActorSystem()
 

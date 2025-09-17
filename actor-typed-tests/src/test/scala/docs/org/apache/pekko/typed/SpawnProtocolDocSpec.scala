@@ -13,31 +13,27 @@
 
 package docs.org.apache.pekko.typed
 
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
-import scala.concurrent.duration._
-import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.ActorTestKit
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import docs.org.apache.pekko.typed.IntroSpec.HelloWorld
-import org.scalatest.wordspec.AnyWordSpecLike
 import scala.annotation.nowarn
+import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.duration._
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import org.apache.pekko
+import pekko.actor.testkit.typed.scaladsl.{ ActorTestKit, LogCapturing, ScalaTestWithActorTestKit }
+
+import docs.org.apache.pekko.typed.IntroSpec.HelloWorld
 
 //#imports1
 import org.apache.pekko
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.SpawnProtocol
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.actor.typed.scaladsl.LoggerOps
+import pekko.actor.typed.scaladsl.{ Behaviors, LoggerOps }
+import pekko.actor.typed.{ Behavior, SpawnProtocol }
 
 //#imports1
 
 //#imports2
 import org.apache.pekko
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Props
+import pekko.actor.typed.{ ActorRef, ActorSystem, Props }
 import pekko.util.Timeout
 
 //#imports2

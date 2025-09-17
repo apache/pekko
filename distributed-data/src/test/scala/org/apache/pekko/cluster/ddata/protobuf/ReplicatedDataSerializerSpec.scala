@@ -19,21 +19,21 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
-import pekko.actor.ActorIdentity
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
-import pekko.actor.Address
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.Identify
-import pekko.actor.Props
-import pekko.actor.RootActorPath
-import pekko.cluster.Cluster
-import pekko.cluster.UniqueAddress
-import pekko.cluster.ddata._
+import pekko.actor.{
+  ActorIdentity,
+  ActorRef,
+  ActorSystem,
+  Address,
+  ExtendedActorSystem,
+  Identify,
+  Props,
+  RootActorPath
+}
 import pekko.cluster.ddata.Replicator.Internal._
+import pekko.cluster.ddata._
+import pekko.cluster.{ Cluster, UniqueAddress }
 import pekko.remote.RARP
-import pekko.testkit.TestActors
-import pekko.testkit.TestKit
+import pekko.testkit.{ TestActors, TestKit }
 
 class ReplicatedDataSerializerSpec
     extends TestKit(

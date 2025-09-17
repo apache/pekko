@@ -17,18 +17,12 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.stream.Attributes
-import pekko.stream.ThrottleMode
+import pekko.stream.{ Attributes, ThrottleMode }
 import pekko.stream.impl.io.ByteStringParser
-import pekko.stream.impl.io.ByteStringParser.ByteReader
-import pekko.stream.impl.io.ByteStringParser.ParseResult
-import pekko.stream.impl.io.ByteStringParser.ParseStep
-import pekko.stream.scaladsl.Sink
-import pekko.stream.scaladsl.Source
+import pekko.stream.impl.io.ByteStringParser.{ ByteReader, ParseResult, ParseStep }
+import pekko.stream.scaladsl.{ Sink, Source }
 import pekko.stream.stage.GraphStageLogic
-import pekko.stream.testkit.StreamSpec
-import pekko.stream.testkit.TestPublisher
-import pekko.stream.testkit.TestSubscriber
+import pekko.stream.testkit.{ StreamSpec, TestPublisher, TestSubscriber }
 import pekko.util.ByteString
 
 class ByteStringParserSpec extends StreamSpec {

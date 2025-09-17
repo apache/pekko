@@ -22,7 +22,7 @@ object UniformFanInShape {
 
   /** Java API */
   def create[I, O](outlet: Outlet[O], inlets: java.util.List[Inlet[I]]): UniformFanInShape[I, O] = {
-    import org.apache.pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     new UniformFanInShape(inlets.size, FanInShape.Ports(outlet, inlets.asScala.toList))
   }
 }

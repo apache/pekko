@@ -13,49 +13,43 @@
 
 package org.apache.pekko.persistence.typed.scaladsl
 
+import java.util.UUID
+import java.util.concurrent.atomic.AtomicInteger
+
+import scala.concurrent.{ Future, Promise }
+import scala.concurrent.duration._
+import scala.util.{ Failure, Success, Try }
+
+import com.typesafe.config.{ Config, ConfigFactory }
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.ActorInitializationException
 import pekko.actor.testkit.typed.TestException
 import pekko.actor.testkit.typed.scaladsl._
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.SupervisorStrategy
-import pekko.actor.typed.Terminated
-import pekko.actor.typed.scaladsl.ActorContext
-import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior, SupervisorStrategy, Terminated }
+import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors }
 import pekko.persistence.SelectedSnapshot
 import pekko.persistence.journal.inmem.InmemJournal
-import pekko.persistence.query.EventEnvelope
-import pekko.persistence.query.Offset
-import pekko.persistence.query.PersistenceQuery
-import pekko.persistence.query.Sequence
+import pekko.persistence.query.{ EventEnvelope, Offset, PersistenceQuery, Sequence }
 import pekko.persistence.snapshot.SnapshotStore
 import pekko.persistence.testkit.PersistenceTestKitPlugin
 import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
-import pekko.persistence.typed.PersistenceId
-import pekko.persistence.typed.RecoveryCompleted
-import pekko.persistence.typed.SnapshotCompleted
-import pekko.persistence.typed.SnapshotFailed
-import pekko.persistence.typed.SnapshotMetadata
-import pekko.persistence.typed.SnapshotSelectionCriteria
-import pekko.persistence.{ SnapshotMetadata => ClassicSnapshotMetadata }
-import pekko.persistence.{ SnapshotSelectionCriteria => ClassicSnapshotSelectionCriteria }
+import pekko.persistence.typed.{
+  PersistenceId,
+  RecoveryCompleted,
+  SnapshotCompleted,
+  SnapshotFailed,
+  SnapshotMetadata,
+  SnapshotSelectionCriteria
+}
+import pekko.persistence.{
+  SnapshotMetadata => ClassicSnapshotMetadata,
+  SnapshotSelectionCriteria => ClassicSnapshotSelectionCriteria
+}
 import pekko.serialization.jackson.CborSerializable
 import pekko.stream.scaladsl.Sink
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-import org.scalatest.wordspec.AnyWordSpecLike
-
-import java.util.UUID
-import java.util.concurrent.atomic.AtomicInteger
-import scala.concurrent.Future
-import scala.concurrent.Promise
-import scala.concurrent.duration._
-import scala.util.Failure
-import scala.util.Success
-import scala.util.Try
 
 object EventSourcedBehaviorSpec {
 

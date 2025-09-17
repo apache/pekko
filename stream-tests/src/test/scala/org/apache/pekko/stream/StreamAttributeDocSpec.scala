@@ -17,11 +17,7 @@ import scala.concurrent.Future
 
 import org.apache.pekko
 import pekko.Done
-import pekko.stream.scaladsl.Keep
-import pekko.stream.scaladsl.RunnableGraph
-import pekko.stream.scaladsl.Sink
-import pekko.stream.scaladsl.Source
-import pekko.stream.scaladsl.TcpAttributes
+import pekko.stream.scaladsl.{ Keep, RunnableGraph, Sink, Source, TcpAttributes }
 import pekko.stream.testkit.StreamSpec
 
 class StreamAttributeDocSpec extends StreamSpec("my-stream-dispatcher = \"pekko.test.stream-dispatcher\"") {

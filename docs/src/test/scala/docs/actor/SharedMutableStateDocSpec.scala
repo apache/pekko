@@ -16,12 +16,14 @@ package docs.actor
 class SharedMutableStateDocSpec {
 
   // #mutable-state
-  import org.apache.pekko.actor.{ Actor, ActorRef }
-  import org.apache.pekko.pattern.ask
-  import org.apache.pekko.util.Timeout
   import scala.concurrent.Future
   import scala.concurrent.duration._
   import scala.collection.mutable
+
+  import org.apache.pekko
+  import pekko.actor.{ Actor, ActorRef }
+  import pekko.pattern.ask
+  import pekko.util.Timeout
 
   case class Message(msg: String)
 

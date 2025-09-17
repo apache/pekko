@@ -15,8 +15,7 @@ package org.apache.pekko.persistence.typed
 
 import org.apache.pekko
 import pekko.actor.typed.Signal
-import pekko.annotation.DoNotInherit
-import pekko.annotation.InternalApi
+import pekko.annotation.{ DoNotInherit, InternalApi }
 
 /**
  * Supertype for all Pekko Persistence Typed specific signals

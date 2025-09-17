@@ -15,17 +15,14 @@ package org.apache.pekko.persistence.testkit.scaladsl
 
 import scala.collection.immutable
 import scala.reflect.ClassTag
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+
+import com.typesafe.config.{ Config, ConfigFactory }
+
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.ActorTestKit
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Behavior
-import pekko.annotation.ApiMayChange
-import pekko.annotation.DoNotInherit
-import pekko.persistence.testkit.PersistenceTestKitPlugin
-import pekko.persistence.testkit.PersistenceTestKitSnapshotPlugin
+import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior }
+import pekko.annotation.{ ApiMayChange, DoNotInherit }
+import pekko.persistence.testkit.{ PersistenceTestKitPlugin, PersistenceTestKitSnapshotPlugin }
 import pekko.persistence.testkit.internal.EventSourcedBehaviorTestKitImpl
 
 /**

@@ -17,29 +17,29 @@ import java.util
 import java.util.Optional
 import java.util.concurrent.{ CompletableFuture, CompletionStage }
 
-import scala.annotation.varargs
 import scala.annotation.unchecked.uncheckedVariance
+import scala.annotation.varargs
 import scala.collection.immutable
 import scala.concurrent.{ Future, Promise }
+import scala.jdk.CollectionConverters._
 import scala.reflect.ClassTag
 
+import org.reactivestreams.{ Publisher, Subscriber }
+
 import org.apache.pekko
-import pekko.{ Done, NotUsed }
 import pekko.actor.{ ActorRef, Cancellable, ClassicActorSystemProvider }
 import pekko.dispatch.ExecutionContexts
 import pekko.event.{ LogMarker, LoggingAdapter, MarkerLoggingAdapter }
-import pekko.japi.{ function, JavaPartialFunction, Pair }
 import pekko.japi.function.Creator
+import pekko.japi.{ function, JavaPartialFunction, Pair }
 import pekko.stream._
-import pekko.stream.impl.{ LinearTraversalBuilder, UnfoldAsyncJava, UnfoldJava }
 import pekko.stream.impl.fusing.{ ArraySource, StatefulMapConcat, ZipWithIndexJava }
-import pekko.util.{ unused, _ }
+import pekko.stream.impl.{ LinearTraversalBuilder, UnfoldAsyncJava, UnfoldJava }
 import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
 import pekko.util.OptionConverters._
-import pekko.util.ccompat.JavaConverters._
-
-import org.reactivestreams.{ Publisher, Subscriber }
+import pekko.util._
+import pekko.{ Done, NotUsed }
 
 /** Java API */
 object Source {
@@ -829,7 +829,7 @@ object Source {
  */
 final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[SourceShape[Out], Mat] {
 
-  import org.apache.pekko.util.ccompat.JavaConverters._
+  import scala.jdk.CollectionConverters._
 
   override def shape: SourceShape[Out] = delegate.shape
 

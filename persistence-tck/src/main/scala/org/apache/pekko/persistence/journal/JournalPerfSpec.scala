@@ -18,18 +18,13 @@ import java.nio.charset.StandardCharsets
 import scala.collection.immutable
 import scala.concurrent.duration._
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
-import pekko.actor.ActorLogging
-import pekko.actor.ActorRef
-import pekko.actor.Props
+import pekko.actor.{ ActorLogging, ActorRef, Props }
 import pekko.annotation.InternalApi
 import pekko.persistence.PersistentActor
-import pekko.persistence.journal.JournalPerfSpec.BenchActor
-import pekko.persistence.journal.JournalPerfSpec.Cmd
-import pekko.persistence.journal.JournalPerfSpec.ResetCounter
+import pekko.persistence.journal.JournalPerfSpec.{ BenchActor, Cmd, ResetCounter }
 import pekko.serialization.SerializerWithStringManifest
 import pekko.testkit.TestProbe
 

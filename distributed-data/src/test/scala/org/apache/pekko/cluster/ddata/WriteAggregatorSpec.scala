@@ -17,16 +17,10 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorRef
-import pekko.actor.ActorSelection
-import pekko.actor.ActorSystem
-import pekko.actor.Address
-import pekko.actor.Props
-import pekko.cluster.Cluster
-import pekko.cluster.UniqueAddress
-import pekko.cluster.ddata.Replicator._
+import pekko.actor.{ Actor, ActorRef, ActorSelection, ActorSystem, Address, Props }
 import pekko.cluster.ddata.Replicator.Internal._
+import pekko.cluster.ddata.Replicator._
+import pekko.cluster.{ Cluster, UniqueAddress }
 import pekko.remote.RARP
 import pekko.testkit._
 

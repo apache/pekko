@@ -13,8 +13,11 @@
 
 package org.apache.pekko.cluster.sharding
 
+import scala.annotation.nowarn
 import scala.concurrent.duration._
+
 import com.typesafe.config.ConfigFactory
+
 import org.apache.pekko
 import pekko.actor._
 import pekko.cluster.Cluster
@@ -28,10 +31,8 @@ import pekko.pattern.BackoffOpts
 import pekko.persistence.journal.leveldb.{ SharedLeveldbJournal, SharedLeveldbStore }
 import pekko.persistence.{ Persistence, PersistentActor }
 import pekko.remote.testconductor.RoleName
-import pekko.testkit._
 import pekko.testkit.TestEvent.Mute
-
-import scala.annotation.nowarn
+import pekko.testkit._
 
 object ClusterShardingSpec {
   // #counter-actor

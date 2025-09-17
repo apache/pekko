@@ -10,8 +10,8 @@
 package org.apache.pekko.actor.testkit.typed.scaladsl
 
 import org.apache.pekko
-import pekko.actor.typed.{ ActorRef, Behavior }
 import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.{ ActorRef, Behavior }
 
 object Greeter {
   final case class Greet(whom: String, replyTo: ActorRef[Greeted])

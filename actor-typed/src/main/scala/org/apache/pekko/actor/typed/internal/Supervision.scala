@@ -16,27 +16,22 @@ package internal
 
 import java.util.concurrent.ThreadLocalRandom
 
-import scala.concurrent.duration.Deadline
-import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.duration.{ Deadline, FiniteDuration }
 import scala.reflect.ClassTag
+import scala.util.Try
 import scala.util.control.Exception.Catcher
 import scala.util.control.NonFatal
+
 import org.slf4j.event.Level
+
 import org.apache.pekko
-import pekko.actor.DeadLetterSuppression
-import pekko.actor.Dropped
-import pekko.actor.typed.BehaviorInterceptor.PreStartTarget
-import pekko.actor.typed.BehaviorInterceptor.ReceiveTarget
-import pekko.actor.typed.BehaviorInterceptor.SignalTarget
+import pekko.actor.typed.BehaviorInterceptor.{ PreStartTarget, ReceiveTarget, SignalTarget }
 import pekko.actor.typed.SupervisorStrategy._
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.actor.typed.scaladsl.StashBuffer
+import pekko.actor.typed.scaladsl.{ Behaviors, StashBuffer }
+import pekko.actor.{ DeadLetterSuppression, Dropped }
 import pekko.annotation.InternalApi
 import pekko.event.Logging
-import pekko.util.OptionVal
-import pekko.util.unused
-
-import scala.util.Try
+import pekko.util.{ unused, OptionVal }
 
 /**
  * INTERNAL API

@@ -18,18 +18,19 @@ import scala.collection.immutable
 import com.typesafe.config.Config
 
 import org.apache.pekko
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
-import pekko.actor.ClassicActorSystemProvider
-import pekko.actor.Deploy
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.Extension
-import pekko.actor.ExtensionId
-import pekko.actor.ExtensionIdProvider
-import pekko.actor.Props
-import pekko.actor.SupervisorStrategy
-import pekko.event.Logging
-import pekko.event.LoggingAdapter
+import pekko.actor.{
+  ActorRef,
+  ActorSystem,
+  ClassicActorSystemProvider,
+  Deploy,
+  ExtendedActorSystem,
+  Extension,
+  ExtensionId,
+  ExtensionIdProvider,
+  Props,
+  SupervisorStrategy
+}
+import pekko.event.{ Logging, LoggingAdapter }
 
 /**
  * Cluster metrics extension.

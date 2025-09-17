@@ -14,14 +14,10 @@
 package org.apache.pekko.remote.serialization
 
 import org.apache.pekko
-import pekko.actor.ActorSelectionMessage
-import pekko.actor.SelectChildName
-import pekko.actor.SelectChildPattern
-import pekko.actor.SelectParent
+import pekko.actor.{ ActorSelectionMessage, SelectChildName, SelectChildPattern, SelectParent }
 import pekko.remote.DaemonMsgCreate
 import pekko.serialization.SerializationExtension
-import pekko.testkit.PekkoSpec
-import pekko.testkit.TestActors
+import pekko.testkit.{ PekkoSpec, TestActors }
 
 class MessageContainerSerializerSpec extends PekkoSpec {
 

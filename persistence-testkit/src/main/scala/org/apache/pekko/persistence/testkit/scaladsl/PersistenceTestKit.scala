@@ -16,22 +16,17 @@ package org.apache.pekko.persistence.testkit.scaladsl
 import scala.collection.immutable
 import scala.concurrent.duration.FiniteDuration
 import scala.util.Try
+
 import com.typesafe.config.Config
+
 import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.actor.ClassicActorSystemProvider
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.Extension
-import pekko.actor.ExtensionId
+import pekko.actor.{ ActorSystem, ClassicActorSystemProvider, ExtendedActorSystem, Extension, ExtensionId }
 import pekko.actor.typed.{ ActorSystem => TypedActorSystem }
 import pekko.annotation.ApiMayChange
-import pekko.persistence.Persistence
-import pekko.persistence.PersistentRepr
-import pekko.persistence.SnapshotMetadata
+import pekko.persistence.{ Persistence, PersistentRepr, SnapshotMetadata }
 import pekko.persistence.journal.Tagged
 import pekko.persistence.testkit._
-import pekko.persistence.testkit.internal.InMemStorageExtension
-import pekko.persistence.testkit.internal.SnapshotStorageEmulatorExtension
+import pekko.persistence.testkit.internal.{ InMemStorageExtension, SnapshotStorageEmulatorExtension }
 import pekko.testkit.TestProbe
 
 private[testkit] trait CommonTestKitOps[S, P] extends ClearOps with PolicyOpsTestKit[P] {

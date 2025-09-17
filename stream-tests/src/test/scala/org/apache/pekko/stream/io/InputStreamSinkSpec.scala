@@ -13,25 +13,20 @@
 
 package org.apache.pekko.stream.io
 
-import java.io.IOException
-import java.io.InputStream
-import java.util.concurrent.ThreadLocalRandom
-import java.util.concurrent.TimeoutException
+import java.io.{ IOException, InputStream }
+import java.util.concurrent.{ ThreadLocalRandom, TimeoutException }
 
-import scala.concurrent.Await
-import scala.concurrent.Future
+import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
-import pekko.stream._
 import pekko.stream.Attributes.inputBuffer
+import pekko.stream._
 import pekko.stream.impl.io.InputStreamSinkStage
-import pekko.stream.scaladsl.Keep
-import pekko.stream.scaladsl.Source
-import pekko.stream.scaladsl.StreamConverters
-import pekko.stream.testkit._
+import pekko.stream.scaladsl.{ Keep, Source, StreamConverters }
 import pekko.stream.testkit.Utils._
+import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.TestSource
 import pekko.testkit.TestProbe
 import pekko.util.ByteString

@@ -13,15 +13,11 @@
 
 package org.apache.pekko.dataflow
 
-import scala.concurrent.Await
-import scala.concurrent.ExecutionContextExecutor
-import scala.concurrent.ExecutionException
-import scala.concurrent.Future
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, ExecutionContextExecutor, ExecutionException, Future }
 
 import org.apache.pekko
-import pekko.actor.{ Actor, Props }
-import pekko.actor.ActorRef
+import pekko.actor.{ Actor, ActorRef, Props }
 import pekko.pattern.{ ask, pipe }
 import pekko.testkit.{ DefaultTimeout, PekkoSpec }
 

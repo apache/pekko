@@ -17,9 +17,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.PoisonPill
-import pekko.actor.Props
+import pekko.actor.{ Actor, PoisonPill, Props }
 import pekko.stream.testkit._
 import pekko.testkit.TestActors
 

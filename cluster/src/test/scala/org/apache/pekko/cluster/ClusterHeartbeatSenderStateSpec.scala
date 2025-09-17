@@ -20,8 +20,7 @@ import org.scalatest.wordspec.AnyWordSpec
 
 import org.apache.pekko
 import pekko.actor.Address
-import pekko.remote.DefaultFailureDetectorRegistry
-import pekko.remote.FailureDetector
+import pekko.remote.{ DefaultFailureDetectorRegistry, FailureDetector }
 
 object ClusterHeartbeatSenderStateSpec {
   class FailureDetectorStub extends FailureDetector {

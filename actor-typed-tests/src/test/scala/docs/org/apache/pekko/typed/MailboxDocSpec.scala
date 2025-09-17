@@ -13,16 +13,14 @@
 
 package docs.org.apache.pekko.typed
 
-import org.apache.pekko
-import pekko.Done
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.Dispatchers
-import pekko.actor.typed.MailboxSelector
-import pekko.actor.typed.scaladsl.Behaviors
 import com.typesafe.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
+
+import org.apache.pekko
+import pekko.Done
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
+import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.{ Behavior, Dispatchers, MailboxSelector }
 
 class MailboxDocSpec
     extends ScalaTestWithActorTestKit(ConfigFactory.load("mailbox-config-sample.conf"))

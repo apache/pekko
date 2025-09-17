@@ -13,11 +13,11 @@
 
 package org.apache.pekko.util
 
-import java.util.{ AbstractQueue, Collection, Iterator, Queue }
-import java.util.concurrent.{ BlockingQueue, TimeUnit }
 import java.util.concurrent.locks.{ Condition, ReentrantLock }
+import java.util.concurrent.{ BlockingQueue, TimeUnit }
+import java.util.{ AbstractQueue, Collection, Iterator, Queue }
 
-import annotation.tailrec
+import scala.annotation.tailrec
 
 /**
  * BoundedBlockingQueue wraps any Queue and turns the result into a BlockingQueue with a limited capacity.

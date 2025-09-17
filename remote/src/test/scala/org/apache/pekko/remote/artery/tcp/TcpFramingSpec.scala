@@ -14,16 +14,13 @@
 package org.apache.pekko.remote.artery
 package tcp
 
-import scala.util.Random
-
 import org.apache.pekko
-import pekko.stream.scaladsl.Flow
 import pekko.stream.scaladsl.Framing.FramingException
-import pekko.stream.scaladsl.Sink
-import pekko.stream.scaladsl.Source
-import pekko.testkit.PekkoSpec
-import pekko.testkit.ImplicitSender
+import pekko.stream.scaladsl.{ Flow, Sink, Source }
+import pekko.testkit.{ ImplicitSender, PekkoSpec }
 import pekko.util.ByteString
+
+import scala.util.Random
 
 class TcpFramingSpec extends PekkoSpec("""
     pekko.stream.materializer.debug.fuzzing-mode = on

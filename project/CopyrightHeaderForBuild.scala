@@ -11,10 +11,12 @@
  * Copyright (C) 2019-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import CopyrightHeader.cStyleComment
-import sbtheader.HeaderPlugin.autoImport.{ headerMappings, headerSources, HeaderFileType }
 import sbt.Keys.baseDirectory
 import sbt.{ inConfig, Compile, Def, PluginTrigger, Test, _ }
+
+import sbtheader.HeaderPlugin.autoImport.{ headerMappings, headerSources, HeaderFileType }
+
+import CopyrightHeader.cStyleComment
 
 object CopyrightHeaderForBuild extends AutoPlugin {
   override lazy val requires: Plugins = CopyrightHeader

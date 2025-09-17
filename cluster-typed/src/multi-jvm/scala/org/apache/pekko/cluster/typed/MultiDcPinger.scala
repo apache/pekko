@@ -14,9 +14,8 @@
 package org.apache.pekko.cluster.typed
 
 import org.apache.pekko
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
 import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.{ ActorRef, Behavior }
 import pekko.serialization.jackson.CborSerializable
 
 object MultiDcPinger {

@@ -177,7 +177,6 @@ object ActorEventBusSpec {
 
 class ActorEventBusSpec(conf: Config) extends EventBusSpec("ActorEventBus", conf) {
   import EventBusSpec.TestActorWrapperActor
-
   import org.apache.pekko.event.ActorEventBusSpec._
 
   def this() =

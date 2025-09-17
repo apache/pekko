@@ -14,12 +14,9 @@
 package org.apache.pekko.stream.scaladsl
 
 import java.util.concurrent.ThreadLocalRandom.{ current => random }
-
 import scala.collection.immutable
 
-import org.apache.pekko
-import pekko.stream.testkit.ScriptedTest
-import pekko.stream.testkit.StreamSpec
+import org.apache.pekko.stream.testkit.{ ScriptedTest, StreamSpec }
 
 class FlowGroupedSpec extends StreamSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 2

@@ -12,8 +12,10 @@
  */
 
 package docs.stream.operators.sourceorflow
-import org.apache.pekko.stream.scaladsl.Source
+
 import scala.collection.immutable
+
+import org.apache.pekko.stream.scaladsl.Source
 
 object GroupedWeighted {
   def groupedWeightedExample(): Unit = {

@@ -13,10 +13,11 @@
 
 package docs.stream.operators.sink
 
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.stream.scaladsl.{ Sink, Source }
-
 import scala.concurrent.{ ExecutionContextExecutor, Future }
+
+import org.apache.pekko
+import pekko.actor.ActorSystem
+import pekko.stream.scaladsl.{ Sink, Source }
 
 object Fold {
   implicit val system: ActorSystem = ???

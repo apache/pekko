@@ -15,35 +15,31 @@ package docs.org.apache.pekko.persistence.typed
 
 import java.util.UUID
 
-import org.apache.pekko
-import pekko.actor.PoisonPill
-import pekko.actor.testkit.typed.scaladsl.ActorTestKit
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.actor.typed.scaladsl.TimerScheduler
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
-import pekko.persistence.fsm.PersistentFSM.StateChangeEvent
-import pekko.persistence.fsm.PersistentFSMSpec.CustomerInactive
-import pekko.persistence.fsm.PersistentFSMSpec.DomainEvent
-import pekko.persistence.fsm.PersistentFSMSpec.EmptyShoppingCart
-import pekko.persistence.fsm.PersistentFSMSpec.Item
-import pekko.persistence.fsm.PersistentFSMSpec.ItemAdded
-import pekko.persistence.fsm.PersistentFSMSpec.OrderDiscarded
-import pekko.persistence.fsm.PersistentFSMSpec.OrderExecuted
-import pekko.persistence.fsm.PersistentFSMSpec.ShoppingCart
-import pekko.persistence.typed.scaladsl.Effect
-import pekko.persistence.typed.scaladsl.EventSourcedBehavior
-import pekko.persistence.typed.scaladsl.PersistentFSMMigration
-import pekko.persistence.typed.EventAdapter
-import pekko.persistence.typed.EventSeq
-import pekko.persistence.typed.PersistenceId
-import pekko.persistence.typed.RecoveryCompleted
-import pekko.persistence.typed.SnapshotAdapter
+import scala.concurrent.duration._
+
 import com.typesafe.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.concurrent.ScalaFutures
-import scala.concurrent.duration._
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
+
+import org.apache.pekko
+import pekko.actor.PoisonPill
+import pekko.actor.testkit.typed.scaladsl.{ ActorTestKit, LogCapturing }
+import pekko.actor.typed.scaladsl.{ Behaviors, TimerScheduler }
+import pekko.actor.typed.ActorRef
+import pekko.actor.typed.Behavior
+import pekko.persistence.fsm.PersistentFSM.StateChangeEvent
+import pekko.persistence.fsm.PersistentFSMSpec.{
+  CustomerInactive,
+  DomainEvent,
+  EmptyShoppingCart,
+  Item,
+  ItemAdded,
+  OrderDiscarded,
+  OrderExecuted,
+  ShoppingCart
+}
+import pekko.persistence.typed.scaladsl.{ Effect, EventSourcedBehavior, PersistentFSMMigration }
+import pekko.persistence.typed.{ EventAdapter, EventSeq, PersistenceId, RecoveryCompleted, SnapshotAdapter }
 
 object PersistentFsmToTypedMigrationSpec {
   // cannot be moved to testkit journals as it requires sharing journal content across actor system instances

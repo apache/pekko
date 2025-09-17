@@ -17,26 +17,16 @@
 
 package org.apache.pekko.actor.typed.scaladsl
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{ Config, ConfigFactory }
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
 import pekko.actor.ActorCell
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.DispatcherSelector
-import pekko.actor.typed.MailboxSelector
-import pekko.actor.typed.Props
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
 import pekko.actor.typed.internal.adapter.ActorContextAdapter
 import pekko.actor.typed.scaladsl.AskPattern._
-import pekko.dispatch.BoundedMessageQueueSemantics
-import pekko.dispatch.BoundedNodeMessageQueue
-import pekko.dispatch.Dispatchers
-import pekko.dispatch.MessageQueue
-import pekko.dispatch.NodeMessageQueue
+import pekko.actor.typed._
+import pekko.dispatch.{ Dispatchers, _ }
 
 object MailboxSelectorSpec {
   val config = ConfigFactory.parseString(

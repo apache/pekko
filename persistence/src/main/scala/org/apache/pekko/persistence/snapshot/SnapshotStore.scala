@@ -13,14 +13,12 @@
 
 package org.apache.pekko.persistence.snapshot
 
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
+import scala.concurrent.{ ExecutionContext, Future }
 import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.pattern.CircuitBreaker
-import pekko.pattern.pipe
+import pekko.pattern.{ pipe, CircuitBreaker }
 import pekko.persistence._
 
 /**

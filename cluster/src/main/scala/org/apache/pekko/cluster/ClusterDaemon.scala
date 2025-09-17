@@ -15,25 +15,24 @@ package org.apache.pekko.cluster
 
 import scala.annotation.nowarn
 import scala.collection.immutable
-import scala.concurrent.Future
-import scala.concurrent.Promise
 import scala.concurrent.duration._
+import scala.concurrent.{ Future, Promise }
 import scala.util.control.NonFatal
 
 import com.typesafe.config.Config
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor._
 import pekko.actor.SupervisorStrategy.Stop
+import pekko.actor._
 import pekko.annotation.InternalApi
 import pekko.cluster.ClusterEvent._
 import pekko.cluster.MemberStatus._
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.event.{ ActorWithLogClass, Logging }
 import pekko.pattern.ask
-import pekko.remote.{ QuarantinedEvent => ClassicQuarantinedEvent, RemoteSettings }
 import pekko.remote.artery.QuarantinedEvent
+import pekko.remote.{ QuarantinedEvent => ClassicQuarantinedEvent, RemoteSettings }
 import pekko.util.{ Timeout, Version }
 
 /**
@@ -331,9 +330,9 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
   import MembershipState._
 
   val cluster = Cluster(context.system)
-  import cluster.{ crossDcFailureDetector, failureDetector, scheduler, selfAddress, selfRoles }
   import cluster.ClusterLogger._
   import cluster.settings._
+  import cluster._
 
   val selfDc = cluster.selfDataCenter
 

@@ -13,16 +13,14 @@
 
 package docs.org.apache.pekko.typed.extensions
 
-import org.apache.pekko
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.Extension
-import pekko.actor.typed.ExtensionId
-import pekko.actor.typed.scaladsl.Behaviors
-import scala.annotation.nowarn
 import com.typesafe.config.ConfigFactory
 
+import scala.annotation.nowarn
 import scala.concurrent.Future
+
+import org.apache.pekko
+import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.{ ActorSystem, Behavior, Extension, ExtensionId }
 
 //#shared-resource
 class ExpensiveDatabaseConnection {

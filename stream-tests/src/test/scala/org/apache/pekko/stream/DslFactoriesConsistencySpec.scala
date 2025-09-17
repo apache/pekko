@@ -13,10 +13,10 @@
 
 package org.apache.pekko.stream
 
-import org.apache.pekko
-
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+
+import org.apache.pekko
 
 class DslFactoriesConsistencySpec extends AnyWordSpec with Matchers {
 

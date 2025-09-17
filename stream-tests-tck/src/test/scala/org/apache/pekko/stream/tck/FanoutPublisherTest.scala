@@ -17,9 +17,7 @@ import scala.collection.immutable
 
 import org.reactivestreams.Publisher
 
-import org.apache.pekko
-import pekko.stream.scaladsl.Sink
-import pekko.stream.scaladsl.Source
+import org.apache.pekko.stream.scaladsl.{ Sink, Source }
 
 class FanoutPublisherTest extends PekkoPublisherVerification[Int] {
 

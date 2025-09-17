@@ -15,13 +15,14 @@ package org.apache.pekko.util
 
 import java.io.{ ByteArrayInputStream, InputStream, ObjectInputStream, ObjectOutputStream, SequenceInputStream }
 import java.lang.{ Iterable => JIterable }
-import java.nio.{ ByteBuffer, ByteOrder }
 import java.nio.charset.{ Charset, StandardCharsets }
+import java.nio.{ ByteBuffer, ByteOrder }
 import java.util.Base64
+
 import scala.annotation.{ nowarn, tailrec, varargs }
-import scala.collection.{ immutable, mutable }
 import scala.collection.immutable.{ IndexedSeq, IndexedSeqOps, StrictOptimizedSeqOps, VectorBuilder }
 import scala.collection.mutable.{ Builder, WrappedArray }
+import scala.collection.{ immutable, mutable }
 import scala.jdk.CollectionConverters._
 import scala.reflect.ClassTag
 

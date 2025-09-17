@@ -18,32 +18,22 @@ import java.nio.ByteBuffer
 import java.util.concurrent.TimeUnit
 
 import scala.concurrent.duration._
+import scala.jdk.CollectionConverters._
 import scala.util.Try
 import scala.util.control.NonFatal
 
 import com.typesafe.config.Config
-import org.lmdbjava.Dbi
-import org.lmdbjava.DbiFlags
-import org.lmdbjava.Env
-import org.lmdbjava.EnvFlags
-import org.lmdbjava.Txn
+import org.lmdbjava.{ Dbi, DbiFlags, Env, EnvFlags, Txn }
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorLogging
-import pekko.actor.ActorRef
-import pekko.actor.DeadLetterSuppression
-import pekko.actor.Props
+import pekko.actor.{ Actor, ActorLogging, ActorRef, DeadLetterSuppression, Props }
 import pekko.cluster.Cluster
 import pekko.cluster.ddata.Key.KeyId
 import pekko.cluster.ddata.Replicator.Internal.DataEnvelope
 import pekko.cluster.ddata.Replicator.ReplicatorMessage
 import pekko.io.DirectByteBufferPool
-import pekko.serialization.SerializationExtension
-import pekko.serialization.SerializerWithStringManifest
-import pekko.util.ByteString
-import pekko.util.OptionVal
-import pekko.util.ccompat.JavaConverters._
+import pekko.serialization.{ SerializationExtension, SerializerWithStringManifest }
+import pekko.util.{ ByteString, OptionVal }
 
 /**
  * An actor implementing the durable store for the Distributed Data `Replicator`
@@ -123,8 +113,7 @@ object LmdbDurableStore {
 
 final class LmdbDurableStore(config: Config) extends Actor with ActorLogging {
   import DurableStore._
-  import LmdbDurableStore.Lmdb
-  import LmdbDurableStore.WriteBehind
+  import LmdbDurableStore.{ Lmdb, WriteBehind }
 
   val serialization = SerializationExtension(context.system)
   val serializer = serialization.serializerFor(classOf[DurableDataEnvelope]).asInstanceOf[SerializerWithStringManifest]
@@ -312,7 +301,8 @@ final class LmdbDurableStore(config: Config) extends Actor with ActorLogging {
             TimeUnit.NANOSECONDS.toMillis(System.nanoTime - t0))
       } catch {
         case NonFatal(e) =>
-          import pekko.util.ccompat.JavaConverters._
+          import scala.jdk.CollectionConverters._
+
           log.error(e, "failed to store [{}]", pending.keySet.asScala.mkString(","))
           tx.abort()
       } finally {

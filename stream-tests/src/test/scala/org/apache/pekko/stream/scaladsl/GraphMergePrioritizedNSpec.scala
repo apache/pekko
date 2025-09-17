@@ -20,8 +20,8 @@ import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream.Attributes
 import pekko.stream.Attributes.Attribute
-import pekko.stream.testkit.{ StreamSpec, TestSubscriber }
 import pekko.stream.testkit.TestSubscriber.ManualProbe
+import pekko.stream.testkit.{ StreamSpec, TestSubscriber }
 
 class GraphMergePrioritizedNSpec extends StreamSpec {
 

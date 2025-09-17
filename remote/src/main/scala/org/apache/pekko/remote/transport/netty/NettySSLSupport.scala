@@ -14,11 +14,9 @@
 package org.apache.pekko.remote.transport.netty
 
 import scala.annotation.nowarn
+import scala.jdk.CollectionConverters._
 
 import com.typesafe.config.Config
-import org.apache.pekko
-import pekko.util.ccompat.JavaConverters._
-
 import io.netty.channel.Channel
 import io.netty.handler.ssl.SslHandler
 import io.netty.util.concurrent.Future

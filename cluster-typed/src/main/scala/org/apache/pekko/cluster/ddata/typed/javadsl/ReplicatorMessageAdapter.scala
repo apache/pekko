@@ -16,16 +16,13 @@ package org.apache.pekko.cluster.ddata.typed.javadsl
 import java.time.Duration
 import java.util.function.{ Function => JFunction }
 
-import scala.util.Failure
-import scala.util.Success
-
 import scala.annotation.nowarn
+import scala.util.{ Failure, Success }
 
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.javadsl.ActorContext
-import pekko.cluster.ddata.Key
-import pekko.cluster.ddata.ReplicatedData
+import pekko.cluster.ddata.{ Key, ReplicatedData }
 import pekko.util.JavaDurationConverters._
 import pekko.util.Timeout
 

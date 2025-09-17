@@ -15,14 +15,15 @@ package docs.stream.io
 
 import java.nio.file.{ Files, Paths }
 
-import org.apache.pekko.stream._
-import org.apache.pekko.stream.scaladsl.{ FileIO, Sink, Source }
-import org.apache.pekko.stream.testkit.Utils._
-import org.apache.pekko.util.ByteString
-import org.apache.pekko.testkit.PekkoSpec
-
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
+
+import org.apache.pekko
+import pekko.stream._
+import pekko.stream.scaladsl.{ FileIO, Sink, Source }
+import pekko.stream.testkit.Utils._
+import pekko.util.ByteString
+import pekko.testkit.PekkoSpec
 
 class StreamFileDocSpec extends PekkoSpec(UnboundedMailboxConfig) {
 

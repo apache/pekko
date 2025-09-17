@@ -13,10 +13,9 @@
 
 package org.apache.pekko.cluster.sharding.passivation
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-
 import scala.concurrent.duration._
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 object IdleSpec {
   val config: Config = ConfigFactory.parseString("""
@@ -30,8 +29,7 @@ object IdleSpec {
 
 class IdleSpec extends AbstractEntityPassivationSpec(IdleSpec.config, expectedEntities = 2) {
 
-  import EntityPassivationSpec.Entity.Envelope
-  import EntityPassivationSpec.Entity.Stop
+  import EntityPassivationSpec.Entity.{ Envelope, Stop }
 
   "Passivation of idle entities" must {
     "passivate entities when they haven't seen messages for the configured duration" in {

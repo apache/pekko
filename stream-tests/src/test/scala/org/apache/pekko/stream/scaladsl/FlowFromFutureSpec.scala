@@ -14,13 +14,13 @@
 package org.apache.pekko.stream.scaladsl
 
 import scala.annotation.nowarn
-import scala.concurrent.Future
-import scala.concurrent.Promise
 import scala.concurrent.duration._
+import scala.concurrent.{ Future, Promise }
 import scala.util.control.NoStackTrace
 
-import org.apache.pekko.stream.testkit._
-import org.apache.pekko.stream.testkit.scaladsl.TestSink
+import org.apache.pekko
+import pekko.stream.testkit._
+import pekko.stream.testkit.scaladsl.TestSink
 
 @nowarn("msg=deprecated") // testing deprecated API
 class FlowFromFutureSpec extends StreamSpec {

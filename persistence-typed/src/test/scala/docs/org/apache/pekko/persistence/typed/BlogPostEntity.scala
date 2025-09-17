@@ -15,13 +15,11 @@ package docs.org.apache.pekko.persistence.typed
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
+import pekko.actor.typed.{ ActorRef, Behavior }
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.pattern.StatusReply
 import pekko.persistence.typed.PersistenceId
-import pekko.persistence.typed.scaladsl.Effect
-import pekko.persistence.typed.scaladsl.EventSourcedBehavior
+import pekko.persistence.typed.scaladsl.{ Effect, EventSourcedBehavior }
 
 //#behavior
 object BlogPostEntity {

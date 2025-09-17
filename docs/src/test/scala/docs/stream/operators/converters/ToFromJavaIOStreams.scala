@@ -16,17 +16,19 @@ package docs.stream.operators.converters
 // #import
 import java.io.{ ByteArrayInputStream, ByteArrayOutputStream, InputStream, OutputStream }
 
-import org.apache.pekko.NotUsed
-import org.apache.pekko.stream.IOResult
-import org.apache.pekko.stream.scaladsl.{ Flow, Keep, Sink, Source, StreamConverters }
-import org.apache.pekko.util.ByteString
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.stream.IOResult
+import pekko.stream.scaladsl.{ Flow, Keep, Sink, Source, StreamConverters }
+import pekko.util.ByteString
 
 import scala.util.Random
 // #import
-import org.apache.pekko.testkit.PekkoSpec
+import scala.concurrent.Future
+
 import org.scalatest.concurrent.Futures
 
-import scala.concurrent.Future
+import org.apache.pekko.testkit.PekkoSpec
 
 class ToFromJavaIOStreams extends PekkoSpec with Futures {
 

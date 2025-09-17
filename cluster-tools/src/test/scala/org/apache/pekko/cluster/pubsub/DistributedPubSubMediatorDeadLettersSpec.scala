@@ -17,7 +17,7 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor.DeadLetter
-import pekko.cluster.pubsub.DistributedPubSubMediator.{ Subscribe, _ }
+import pekko.cluster.pubsub.DistributedPubSubMediator._
 import pekko.testkit._
 
 object DistributedPubSubMediatorDeadLettersSpec {

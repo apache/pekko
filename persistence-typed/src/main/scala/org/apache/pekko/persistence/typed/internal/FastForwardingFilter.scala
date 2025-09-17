@@ -16,14 +16,8 @@ package org.apache.pekko.persistence.typed.internal
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.persistence.query.EventEnvelope
-import pekko.stream.Attributes
-import pekko.stream.FlowShape
-import pekko.stream.Inlet
-import pekko.stream.Outlet
-import pekko.stream.stage.GraphStageLogic
-import pekko.stream.stage.GraphStageWithMaterializedValue
-import pekko.stream.stage.InHandler
-import pekko.stream.stage.OutHandler
+import pekko.stream.{ Attributes, FlowShape, Inlet, Outlet }
+import pekko.stream.stage.{ GraphStageLogic, GraphStageWithMaterializedValue, InHandler, OutHandler }
 
 /**
  * INTERNAL API

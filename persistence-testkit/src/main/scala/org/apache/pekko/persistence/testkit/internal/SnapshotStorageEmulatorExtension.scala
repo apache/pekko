@@ -16,8 +16,7 @@ package org.apache.pekko.persistence.testkit.internal
 import java.util.concurrent.ConcurrentHashMap
 
 import org.apache.pekko
-import pekko.actor.Extension
-import pekko.actor.{ ActorSystem, ExtendedActorSystem, ExtensionId, ExtensionIdProvider }
+import pekko.actor.{ ActorSystem, ExtendedActorSystem, Extension, ExtensionId, ExtensionIdProvider }
 import pekko.annotation.InternalApi
 import pekko.persistence.testkit.SnapshotStorage
 import pekko.persistence.testkit.scaladsl.SnapshotTestKit

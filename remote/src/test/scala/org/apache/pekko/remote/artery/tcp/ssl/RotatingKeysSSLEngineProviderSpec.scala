@@ -14,35 +14,20 @@
 package org.apache.pekko.remote.artery.tcp.ssl
 
 import java.io.File
-import java.nio.file.Files
-import java.nio.file.Path
-import java.nio.file.StandardCopyOption
+import java.nio.file.{ Files, Path, StandardCopyOption }
 import java.util.concurrent.atomic.AtomicReference
-
-import org.apache.pekko
-import pekko.actor.ActorIdentity
-import pekko.actor.ActorPath
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
-import pekko.actor.Address
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.Identify
-import pekko.actor.RootActorPath
-import pekko.actor.setup.ActorSystemSetup
-import pekko.remote.artery.ArteryMultiNodeSpec
-import pekko.remote.artery.tcp.SSLEngineProvider
-import pekko.remote.artery.tcp.SSLEngineProviderSetup
-import pekko.remote.artery.tcp.TlsTcpSpec
-import pekko.testkit.ImplicitSender
-import pekko.testkit.TestActors
-import pekko.testkit.TestProbe
-import com.typesafe.config.ConfigFactory
-import javax.net.ssl.SSLContext
-import javax.net.ssl.SSLEngine
-import javax.net.ssl.SSLSession
+import javax.net.ssl.{ SSLContext, SSLEngine, SSLSession }
 
 import scala.concurrent.blocking
 import scala.util.control.NonFatal
+
+import com.typesafe.config.ConfigFactory
+import org.apache.pekko
+import pekko.actor._
+import pekko.actor.setup.ActorSystemSetup
+import pekko.remote.artery.ArteryMultiNodeSpec
+import pekko.remote.artery.tcp.{ SSLEngineProvider, SSLEngineProviderSetup, TlsTcpSpec }
+import pekko.testkit.{ ImplicitSender, TestActors, TestProbe }
 
 // This is a simplification Spec. It doesn't rely on changing files.
 class RotatingProviderWithStaticKeysSpec

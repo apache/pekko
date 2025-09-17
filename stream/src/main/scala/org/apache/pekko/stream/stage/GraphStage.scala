@@ -13,30 +13,27 @@
 
 package org.apache.pekko.stream.stage
 
-import java.util.concurrent.{ CompletionStage, ConcurrentHashMap }
+import java.util.Spliterator
 import java.util.concurrent.atomic.AtomicReference
+import java.util.concurrent.{ CompletionStage, ConcurrentHashMap }
 
 import scala.annotation.tailrec
 import scala.collection.{ immutable, mutable }
-import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.{ Future, Promise }
 
 import org.apache.pekko
-import pekko.{ Done, NotUsed }
 import pekko.actor._
 import pekko.annotation.InternalApi
 import pekko.japi.function.{ Effect, Procedure }
-import pekko.stream._
 import pekko.stream.Attributes.SourceLocation
-import pekko.stream.impl.{ ReactiveStreamsCompliance, TraversalBuilder }
-import pekko.stream.impl.ActorSubscriberMessage
+import pekko.stream._
 import pekko.stream.impl.fusing.{ GraphInterpreter, GraphStageModule, SubSink, SubSource }
+import pekko.stream.impl.{ ActorSubscriberMessage, ReactiveStreamsCompliance, TraversalBuilder }
 import pekko.stream.scaladsl.GenericGraphWithChangedAttributes
 import pekko.stream.stage.ConcurrentAsyncCallbackState.{ NoPendingEvents, State }
-import pekko.util.OptionVal
-import pekko.util.unused
-
-import java.util.Spliterator
+import pekko.util.{ unused, OptionVal }
+import pekko.{ Done, NotUsed }
 
 /**
  * Scala API: A GraphStage represents a reusable graph stream processing operator.
@@ -827,7 +824,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
       andThen: Procedure[java.util.List[T]],
       onClose: Procedure[java.util.List[T]]): Unit = {
     // FIXME `onClose` is a poor name for `onComplete` rename this at the earliest possible opportunity
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     readN(in, n)(seq => andThen(seq.asJava), seq => onClose(seq.asJava))
   }
 
@@ -937,7 +934,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
    * signal.
    */
   final protected def emitMultiple[T](out: Outlet[T], elems: java.util.Iterator[T]): Unit = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     emitMultiple(out, elems.asScala, DoNothing)
   }
 
@@ -950,7 +947,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
    * signal.
    */
   final protected def emitMultiple[T](out: Outlet[T], elems: java.util.Iterator[T], andThen: Effect): Unit = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     emitMultiple(out, elems.asScala, andThen.apply _)
   }
 

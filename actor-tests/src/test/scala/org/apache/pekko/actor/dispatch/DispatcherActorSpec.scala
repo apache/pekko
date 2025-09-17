@@ -13,8 +13,8 @@
 
 package org.apache.pekko.actor.dispatch
 
-import java.util.concurrent.{ CountDownLatch, TimeUnit }
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.{ CountDownLatch, TimeUnit }
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -22,8 +22,7 @@ import scala.concurrent.duration._
 import org.apache.pekko
 import pekko.actor.{ Actor, Props }
 import pekko.pattern.ask
-import pekko.testkit.PekkoSpec
-import pekko.testkit.DefaultTimeout
+import pekko.testkit.{ DefaultTimeout, PekkoSpec }
 
 object DispatcherActorSpec {
   val config = """

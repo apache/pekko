@@ -16,8 +16,8 @@ package org.apache.pekko.pattern.internal
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
-import pekko.actor.{ Actor, ActorLogging, OneForOneStrategy, Props, SupervisorStrategy, Terminated }
 import pekko.actor.SupervisorStrategy.{ Directive, Escalate }
+import pekko.actor._
 import pekko.annotation.InternalApi
 import pekko.pattern.{
   BackoffReset,

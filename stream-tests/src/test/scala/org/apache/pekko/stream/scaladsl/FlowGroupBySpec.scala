@@ -18,29 +18,25 @@ import java.util.concurrent.atomic.AtomicInteger
 
 import scala.annotation.tailrec
 import scala.collection.mutable
-import scala.concurrent.Await
-import scala.concurrent.Promise
+import scala.concurrent.{ Await, Promise }
 import scala.concurrent.duration._
 
+import org.reactivestreams.Publisher
+import org.scalatest.concurrent.PatienceConfiguration.Timeout
+
 import org.apache.pekko
-import pekko.Done
-import pekko.NotUsed
+import pekko.{ Done, NotUsed }
 import pekko.actor.ActorSystem
-import pekko.stream._
 import pekko.stream.Attributes._
 import pekko.stream.Supervision.resumingDecider
+import pekko.stream._
 import pekko.stream.impl.SinkModule
 import pekko.stream.impl.fusing.GroupBy
-import pekko.stream.testkit._
 import pekko.stream.testkit.Utils._
-import pekko.stream.testkit.scaladsl.TestSink
-import pekko.stream.testkit.scaladsl.TestSource
+import pekko.stream.testkit._
+import pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
 import pekko.testkit.TestLatch
 import pekko.util.ByteString
-
-import org.reactivestreams.Publisher
-
-import org.scalatest.concurrent.PatienceConfiguration.Timeout
 
 object FlowGroupBySpec {
 

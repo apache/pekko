@@ -17,27 +17,18 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.Random
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{ Config, ConfigFactory }
 import org.scalatest.BeforeAndAfterEach
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.cluster.Cluster
-import pekko.cluster.MemberStatus
-import pekko.cluster.MultiNodeClusterSpec
-import pekko.cluster.sharding.ClusterSharding
-import pekko.cluster.sharding.ClusterShardingSettings
-import pekko.cluster.singleton.ClusterSingletonManager
-import pekko.cluster.singleton.ClusterSingletonManagerSettings
+import pekko.cluster.sharding.{ ClusterSharding, ClusterShardingSettings }
+import pekko.cluster.singleton.{ ClusterSingletonManager, ClusterSingletonManagerSettings }
+import pekko.cluster.{ Cluster, MemberStatus, MultiNodeClusterSpec }
 import pekko.pattern.ask
 import pekko.remote.testconductor.RoleName
-import pekko.remote.testkit.MultiNodeConfig
-import pekko.remote.testkit.MultiNodeSpec
-import pekko.testkit.ImplicitSender
-import pekko.testkit.LongRunningTest
-import pekko.testkit.TestKit
-import pekko.testkit.TestProbe
+import pekko.remote.testkit.{ MultiNodeConfig, MultiNodeSpec }
+import pekko.testkit.{ ImplicitSender, LongRunningTest, TestKit, TestProbe }
 import pekko.util.Timeout
 
 /*

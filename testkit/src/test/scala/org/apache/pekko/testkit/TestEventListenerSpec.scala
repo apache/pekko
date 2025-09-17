@@ -15,8 +15,7 @@ package org.apache.pekko.testkit
 
 import org.apache.pekko
 import pekko.event.Logging
-import pekko.event.Logging.Error
-import pekko.event.Logging.Warning
+import pekko.event.Logging.{ Error, Warning }
 
 class TestEventListenerSpec extends PekkoSpec with ImplicitSender {
 

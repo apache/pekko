@@ -16,9 +16,9 @@ package org.apache.pekko.actor
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
-import scala.concurrent.{ Await, Promise }
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, Promise }
 
 import org.openjdk.jmh.annotations._
 

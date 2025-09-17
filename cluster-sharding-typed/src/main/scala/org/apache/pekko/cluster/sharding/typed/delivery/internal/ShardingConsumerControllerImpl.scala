@@ -14,15 +14,10 @@
 package org.apache.pekko.cluster.sharding.typed.delivery.internal
 
 import org.apache.pekko
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.DispatcherSelector
-import pekko.actor.typed.Terminated
 import pekko.actor.typed.delivery.ConsumerController
-import pekko.actor.typed.delivery.internal.ConsumerControllerImpl
-import pekko.actor.typed.delivery.internal.ProducerControllerImpl
-import pekko.actor.typed.scaladsl.ActorContext
-import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.delivery.internal.{ ConsumerControllerImpl, ProducerControllerImpl }
+import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors }
+import pekko.actor.typed.{ ActorRef, Behavior, DispatcherSelector, Terminated }
 import pekko.annotation.InternalApi
 import pekko.cluster.sharding.typed.delivery.ShardingConsumerController
 

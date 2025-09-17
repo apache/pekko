@@ -15,6 +15,9 @@ package org.apache.pekko.cluster.sharding.internal
 
 import java.util.UUID
 
+import com.typesafe.config.ConfigFactory
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import org.apache.pekko
 import pekko.actor.Props
 import pekko.cluster.ddata.{ Replicator, ReplicatorSettings }
@@ -22,8 +25,6 @@ import pekko.cluster.sharding.ClusterShardingSettings
 import pekko.cluster.sharding.ShardRegion.ShardId
 import pekko.cluster.{ Cluster, MemberStatus }
 import pekko.testkit.{ ImplicitSender, PekkoSpec, WithLogCapturing }
-import com.typesafe.config.ConfigFactory
-import org.scalatest.wordspec.AnyWordSpecLike
 
 /**
  * Covers the interaction between the shard and the remember entities store

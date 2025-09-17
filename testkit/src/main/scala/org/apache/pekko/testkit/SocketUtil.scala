@@ -14,8 +14,7 @@
 package org.apache.pekko.testkit
 
 import java.net.{ DatagramSocket, InetSocketAddress, NetworkInterface, StandardProtocolFamily }
-import java.nio.channels.DatagramChannel
-import java.nio.channels.ServerSocketChannel
+import java.nio.channels.{ DatagramChannel, ServerSocketChannel }
 
 import scala.collection.immutable
 import scala.util.Random

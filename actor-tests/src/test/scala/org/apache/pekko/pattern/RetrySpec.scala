@@ -13,14 +13,14 @@
 
 package org.apache.pekko.pattern
 
-import scala.concurrent.{ Await, ExecutionContextExecutor, Future }
+import java.util.concurrent.atomic.AtomicInteger
+
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, ExecutionContextExecutor, Future }
 
 import org.apache.pekko
 import pekko.actor.Scheduler
 import pekko.testkit.PekkoSpec
-
-import java.util.concurrent.atomic.AtomicInteger
 
 class RetrySpec extends PekkoSpec with RetrySupport {
   implicit val ec: ExecutionContextExecutor = system.dispatcher

@@ -21,10 +21,10 @@ import scala.concurrent.duration._
 import org.openjdk.jmh.annotations._
 
 import org.apache.pekko
-import pekko.{ Done, NotUsed }
 import pekko.actor.ActorSystem
 import pekko.remote.artery.BenchTestSourceSameElement
 import pekko.stream.scaladsl._
+import pekko.{ Done, NotUsed }
 
 @State(Scope.Benchmark)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)

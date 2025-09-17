@@ -19,12 +19,10 @@ import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorIdentity, ActorLogging, ActorRef, Address, Identify, PoisonPill, Props }
-import pekko.cluster._
 import pekko.cluster.MemberStatus.Up
+import pekko.cluster._
 import pekko.cluster.singleton.ClusterSingletonManagerLeaseSpec.ImportantSingleton.Response
-import pekko.coordination.lease.TestLeaseActor
-import pekko.coordination.lease.TestLeaseActorClient
-import pekko.coordination.lease.TestLeaseActorClientExt
+import pekko.coordination.lease.{ TestLeaseActor, TestLeaseActorClient, TestLeaseActorClientExt }
 import pekko.remote.testkit.{ MultiNodeConfig, STMultiNodeSpec }
 import pekko.testkit._
 
@@ -87,9 +85,8 @@ class ClusterSingletonManagerLeaseSpec
     extends MultiNodeClusterSpec(ClusterSingletonManagerLeaseSpec)
     with STMultiNodeSpec
     with ImplicitSender {
-
-  import ClusterSingletonManagerLeaseSpec._
   import ClusterSingletonManagerLeaseSpec.ImportantSingleton._
+  import ClusterSingletonManagerLeaseSpec._
   import TestLeaseActor._
 
   override def initialParticipants = roles.size

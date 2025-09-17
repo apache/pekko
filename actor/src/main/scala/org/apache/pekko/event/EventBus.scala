@@ -21,8 +21,7 @@ import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.actor.{ ActorRef, ActorSystem }
-import pekko.util.{ Subclassification, SubclassifiedIndex }
-import pekko.util.Index
+import pekko.util.{ Index, Subclassification, SubclassifiedIndex }
 
 /**
  * Represents the base type for EventBuses

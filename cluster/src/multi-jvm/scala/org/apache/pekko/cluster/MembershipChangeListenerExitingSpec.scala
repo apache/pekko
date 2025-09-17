@@ -14,9 +14,7 @@
 package org.apache.pekko.cluster
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.Deploy
-import pekko.actor.Props
+import pekko.actor.{ Actor, Deploy, Props }
 import pekko.cluster.MemberStatus._
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.testkit._

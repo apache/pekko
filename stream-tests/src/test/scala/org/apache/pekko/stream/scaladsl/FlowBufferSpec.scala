@@ -14,14 +14,13 @@
 package org.apache.pekko.stream.scaladsl
 
 import scala.annotation.nowarn
-import scala.concurrent.Await
-import scala.concurrent.Future
+
+import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.stream.BufferOverflowException
-import pekko.stream.OverflowStrategy
 import pekko.stream.testkit._
+import pekko.stream.{ BufferOverflowException, OverflowStrategy }
 
 @nowarn("msg=deprecated")
 class FlowBufferSpec extends StreamSpec("""

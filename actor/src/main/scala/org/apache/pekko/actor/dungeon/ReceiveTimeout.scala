@@ -13,13 +13,10 @@
 
 package org.apache.pekko.actor.dungeon
 
-import scala.concurrent.duration.Duration
-import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.duration.{ Duration, FiniteDuration }
 
 import org.apache.pekko
-import pekko.actor.ActorCell
-import pekko.actor.Cancellable
-import pekko.actor.NotInfluenceReceiveTimeout
+import pekko.actor.{ ActorCell, Cancellable, NotInfluenceReceiveTimeout }
 
 private[pekko] object ReceiveTimeout {
   final val emptyReceiveTimeoutData: (Duration, Cancellable) = (Duration.Undefined, ActorCell.emptyCancellable)

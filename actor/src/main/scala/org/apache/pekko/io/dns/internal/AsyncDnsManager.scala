@@ -13,22 +13,21 @@
 
 package org.apache.pekko.io.dns.internal
 
+import com.typesafe.config.Config
+
 import java.net.InetSocketAddress
 import java.util.concurrent.TimeUnit
 
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration.Duration
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorLogging, ActorRefFactory, Deploy, ExtendedActorSystem, Props, Timers }
 import pekko.annotation.InternalApi
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
-import pekko.io.{ Dns, DnsExt, DnsProvider }
-import pekko.io.PeriodicCacheCleanup
-import pekko.io.dns.{ DnsProtocol, DnsSettings }
 import pekko.io.dns.internal.AsyncDnsManager.CacheCleanup
+import pekko.io.dns.{ DnsProtocol, DnsSettings }
+import pekko.io.{ Dns, DnsExt, DnsProvider, PeriodicCacheCleanup }
 import pekko.routing.FromConfig
 import pekko.util.Timeout
 

@@ -13,13 +13,15 @@
 
 package docs.persistence
 
-import com.typesafe.config._
-
 import scala.concurrent.duration._
+
+import com.typesafe.config._
 import org.scalatest.wordspec.AnyWordSpec
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.serialization.{ SerializationExtension, Serializer }
-import org.apache.pekko.testkit.TestKit
+
+import org.apache.pekko
+import pekko.actor.ActorSystem
+import pekko.serialization.{ SerializationExtension, Serializer }
+import pekko.testkit.TestKit
 
 class PersistenceSerializerDocSpec extends AnyWordSpec {
 

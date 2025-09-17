@@ -18,25 +18,9 @@ import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorIdentity
-import pekko.actor.ActorRef
-import pekko.actor.ActorSelection
-import pekko.actor.ActorSystem
-import pekko.actor.Deploy
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.Identify
-import pekko.actor.PoisonPill
-import pekko.actor.Props
-import pekko.actor.RootActorPath
-import pekko.actor.Terminated
+import pekko.actor._
 import pekko.event.Logging
-import pekko.testkit.PekkoSpec
-import pekko.testkit.EventFilter
-import pekko.testkit.ImplicitSender
-import pekko.testkit.JavaSerializable
-import pekko.testkit.TestEvent
-import pekko.testkit.TestProbe
+import pekko.testkit.{ EventFilter, ImplicitSender, JavaSerializable, PekkoSpec, TestEvent, TestProbe }
 
 object UntrustedSpec {
   final case class IdentifyReq(path: String) extends JavaSerializable

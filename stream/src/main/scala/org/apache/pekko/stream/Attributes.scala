@@ -23,16 +23,13 @@ import scala.reflect.{ classTag, ClassTag }
 import scala.util.control.NonFatal
 
 import org.apache.pekko
-import pekko.annotation.ApiMayChange
-import pekko.annotation.DoNotInherit
-import pekko.annotation.InternalApi
+import pekko.annotation.{ ApiMayChange, DoNotInherit, InternalApi }
 import pekko.event.Logging
 import pekko.japi.function
 import pekko.stream.impl.TraversalBuilder
-import pekko.util.{ ByteString, OptionVal }
 import pekko.util.JavaDurationConverters._
-import pekko.util.LineNumbers
 import pekko.util.OptionConverters._
+import pekko.util.{ ByteString, LineNumbers, OptionVal }
 
 /**
  * Holds attributes which can be used to alter [[pekko.stream.scaladsl.Flow]] / [[pekko.stream.javadsl.Flow]]
@@ -223,7 +220,7 @@ final case class Attributes(attributeList: List[Attributes.Attribute] = Nil) {
    * `get` to get the most specific attribute value.
    */
   def getAttributeList(): java.util.List[Attribute] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     attributeList.asJava
   }
 

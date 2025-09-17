@@ -16,26 +16,27 @@ package org.apache.pekko.persistence.typed.serialization
 import java.io.NotSerializableException
 import java.util.{ ArrayList, Collections, Comparator }
 import java.{ lang => jl }
+
+import scala.annotation.tailrec
+import scala.collection.immutable.TreeMap
+import scala.jdk.CollectionConverters._
+
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.annotation.InternalApi
-import pekko.persistence.typed.PersistenceId
-import pekko.persistence.typed.ReplicaId
+import pekko.persistence.typed.{ PersistenceId, ReplicaId }
 import pekko.persistence.typed.crdt.{ Counter, ORSet }
-import pekko.persistence.typed.internal.PublishedEventImpl
-import pekko.persistence.typed.internal.ReplicatedEventMetadata
-import pekko.persistence.typed.internal.ReplicatedSnapshotMetadata
-import pekko.persistence.typed.internal.ReplicatedPublishedEventMetaData
-import pekko.persistence.typed.internal.VersionVector
+import pekko.persistence.typed.internal.{
+  PublishedEventImpl,
+  ReplicatedEventMetadata,
+  ReplicatedPublishedEventMetaData,
+  ReplicatedSnapshotMetadata,
+  VersionVector
+}
 import pekko.remote.ByteStringUtils
 import pekko.remote.ContainerFormats.Payload
 import pekko.remote.serialization.WrappedPayloadSupport
 import pekko.serialization.{ BaseSerializer, SerializerWithStringManifest }
-
-import scala.annotation.tailrec
-import pekko.util.ccompat.JavaConverters._
-
-import scala.collection.immutable.TreeMap
 
 /**
  * INTERNAL API

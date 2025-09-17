@@ -15,11 +15,8 @@ package docs.org.apache.pekko.typed.fromclassic
 
 // #hello-world-actor
 import org.apache.pekko
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.scaladsl.AbstractBehavior
-import pekko.actor.typed.scaladsl.ActorContext
-import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.scaladsl.{ AbstractBehavior, ActorContext, Behaviors }
+import pekko.actor.typed.{ ActorRef, Behavior }
 
 // #hello-world-actor
 

@@ -13,40 +13,21 @@
 
 package org.apache.pekko.testkit
 
+import com.typesafe.config.Config
+
 import java.lang.ref.WeakReference
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.locks.ReentrantLock
 
 import scala.annotation.tailrec
-import scala.concurrent.duration._
-import scala.concurrent.duration.Duration
+import scala.concurrent.duration.{ Duration, _ }
 import scala.util.control.NonFatal
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
-import pekko.actor.{
-  ActorCell,
-  ActorInitializationException,
-  ActorRef,
-  ExtendedActorSystem,
-  Extension,
-  ExtensionId,
-  ExtensionIdProvider
-}
-import pekko.dispatch.{
-  DefaultSystemMessageQueue,
-  DispatcherPrerequisites,
-  Envelope,
-  Mailbox,
-  MailboxType,
-  MessageDispatcher,
-  MessageDispatcherConfigurator,
-  MessageQueue,
-  TaskInvocation
-}
-import pekko.dispatch.sysmsg.{ Resume, Suspend, SystemMessage }
-import pekko.util.Switch
+import org.apache.pekko.actor._
+import org.apache.pekko.dispatch.sysmsg.{ Resume, Suspend, SystemMessage }
+import org.apache.pekko.dispatch._
+import org.apache.pekko.util.Switch
 
 /*
  * Locking rules:

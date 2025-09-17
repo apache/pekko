@@ -13,32 +13,28 @@
 
 package org.apache.pekko.cluster.sharding
 
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.util.Success
-import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.actor._
-import pekko.actor.DeadLetterSuppression
-import pekko.annotation.DoNotInherit
-import pekko.annotation.{ InternalApi, InternalStableApi }
-import pekko.cluster.Cluster
-import pekko.cluster.ClusterEvent
+import pekko.annotation.{ DoNotInherit, InternalApi, InternalStableApi }
 import pekko.cluster.ClusterEvent._
-import pekko.cluster.ddata.LWWRegister
-import pekko.cluster.ddata.LWWRegisterKey
 import pekko.cluster.ddata.Replicator._
-import pekko.cluster.ddata.SelfUniqueAddress
+import pekko.cluster.ddata.{ LWWRegister, LWWRegisterKey, SelfUniqueAddress }
 import pekko.cluster.sharding.ShardRegion.ShardId
-import pekko.cluster.sharding.internal.AbstractLeastShardAllocationStrategy
 import pekko.cluster.sharding.internal.AbstractLeastShardAllocationStrategy.RegionEntry
 import pekko.cluster.sharding.internal.EventSourcedRememberEntitiesCoordinatorStore.MigrationMarker
 import pekko.cluster.sharding.internal.{
+  AbstractLeastShardAllocationStrategy,
   EventSourcedRememberEntitiesCoordinatorStore,
   RememberEntitiesCoordinatorStore,
   RememberEntitiesProvider
 }
+import pekko.cluster.{ Cluster, ClusterEvent }
 import pekko.dispatch.ExecutionContexts
 import pekko.event.{ BusLogging, Logging }
 import pekko.pattern.{ pipe, AskTimeoutException }
@@ -211,14 +207,14 @@ object ShardCoordinator {
         shardId: ShardId,
         currentShardAllocations: Map[ActorRef, immutable.IndexedSeq[ShardId]]): Future[ActorRef] = {
 
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       allocateShard(requester, shardId, currentShardAllocations.asJava)
     }
 
     override final def rebalance(
         currentShardAllocations: Map[ActorRef, immutable.IndexedSeq[ShardId]],
         rebalanceInProgress: Set[ShardId]): Future[Set[ShardId]] = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       implicit val ec = ExecutionContexts.parasitic
       rebalance(currentShardAllocations.asJava, rebalanceInProgress.asJava).map(_.asScala.toSet)
     }
@@ -664,8 +660,8 @@ abstract class ShardCoordinator(
     extends Actor
     with Timers {
 
-  import ShardCoordinator._
   import ShardCoordinator.Internal._
+  import ShardCoordinator._
   import ShardRegion.ShardId
   import settings.tuningParameters._
 
@@ -1465,7 +1461,6 @@ private[pekko] class DDataShardCoordinator(
 
   import DDataShardCoordinator._
   import ShardCoordinator.Internal._
-
   import pekko.cluster.ddata.Replicator.Update
 
   private val verboseDebug = context.system.settings.config.getBoolean("pekko.cluster.sharding.verbose-debug-logging")

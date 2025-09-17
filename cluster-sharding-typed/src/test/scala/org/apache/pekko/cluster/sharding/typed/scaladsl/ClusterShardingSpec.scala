@@ -14,28 +14,19 @@
 package org.apache.pekko.cluster.sharding.typed.scaladsl
 
 import scala.concurrent.duration._
-import scala.util.Failure
-import scala.util.Success
+import scala.util.{ Failure, Success }
 
 import com.typesafe.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.ActorTestKit
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.testkit.typed.scaladsl.TestProbe
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.PostStop
+import pekko.actor.testkit.typed.scaladsl.{ ActorTestKit, LogCapturing, ScalaTestWithActorTestKit, TestProbe }
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.adapter._
+import pekko.actor.typed.{ ActorRef, ActorSystem, PostStop }
 import pekko.cluster.MemberStatus
-import pekko.cluster.sharding.typed.ShardingEnvelope
-import pekko.cluster.sharding.typed.ShardingMessageExtractor
-import pekko.cluster.typed.Cluster
-import pekko.cluster.typed.Join
-import pekko.cluster.typed.Leave
+import pekko.cluster.sharding.typed.{ ShardingEnvelope, ShardingMessageExtractor }
+import pekko.cluster.typed.{ Cluster, Join, Leave }
 import pekko.pattern.AskTimeoutException
 import pekko.serialization.jackson.CborSerializable
 import pekko.util.Timeout

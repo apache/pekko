@@ -18,10 +18,7 @@ import java.util.LinkedList
 import scala.collection.mutable.LinkedHashSet
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorLogging
-import pekko.actor.ActorRef
-import pekko.actor.Props
+import pekko.actor.{ Actor, ActorLogging, ActorRef, Props }
 import pekko.persistence.JournalProtocol
 
 /**

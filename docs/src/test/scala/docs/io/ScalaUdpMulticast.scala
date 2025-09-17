@@ -13,14 +13,14 @@
 
 package docs.io
 
-import java.net.{ InetAddress, InetSocketAddress, NetworkInterface, StandardProtocolFamily }
-import java.net.DatagramSocket
+import java.net.{ DatagramSocket, InetAddress, InetSocketAddress, NetworkInterface, StandardProtocolFamily }
 import java.nio.channels.DatagramChannel
 
-import org.apache.pekko.actor.{ Actor, ActorLogging, ActorRef }
-import org.apache.pekko.io.Inet.{ DatagramChannelCreator, SocketOptionV2 }
-import org.apache.pekko.io.{ IO, Udp }
-import org.apache.pekko.util.ByteString
+import org.apache.pekko
+import pekko.actor.{ Actor, ActorLogging, ActorRef }
+import pekko.io.Inet.{ DatagramChannelCreator, SocketOptionV2 }
+import pekko.io.{ IO, Udp }
+import pekko.util.ByteString
 
 //#inet6-protocol-family
 final case class Inet6ProtocolFamily() extends DatagramChannelCreator {

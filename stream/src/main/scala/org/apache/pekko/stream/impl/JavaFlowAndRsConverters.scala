@@ -15,11 +15,11 @@ package org.apache.pekko.stream.impl
 
 import java.util.concurrent.Flow
 
-import JavaFlowAndRsConverters.Implicits._
 import org.{ reactivestreams => rs }
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
+import pekko.stream.impl.JavaFlowAndRsConverters.Implicits._
 
 /**
  * INTERNAL API: Provides converters between Reactive Streams (reactive-streams.org) and their Java 9+ counter-parts,

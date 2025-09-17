@@ -16,16 +16,14 @@ package org.apache.pekko.cluster.sbr
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
+import com.typesafe.config.ConfigFactory
+
 import org.apache.pekko
-import pekko.cluster.MemberStatus
+import pekko.cluster.{ MemberStatus, MultiNodeClusterSpec }
+import pekko.coordination.lease.{ TestLease, TestLeaseExt }
 import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.transport.ThrottlerTransportAdapter
-import com.typesafe.config.ConfigFactory
-
-import pekko.cluster.MultiNodeClusterSpec
-import pekko.coordination.lease.TestLease
-import pekko.coordination.lease.TestLeaseExt
 
 object LeaseMajority5NodeSpec extends MultiNodeConfig {
   val node1 = role("node1")

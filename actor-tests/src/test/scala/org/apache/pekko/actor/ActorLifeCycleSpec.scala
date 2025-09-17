@@ -192,9 +192,9 @@ class ActorLifeCycleSpec extends PekkoSpec with BeforeAndAfterEach with Implicit
 
   "have a non null context after termination" in {
     class StopBeforeFutureFinishes(val latch: CountDownLatch) extends Actor {
-      import context.dispatcher
-
       import pekko.pattern._
+
+      import context.dispatcher
 
       override def receive: Receive = {
         case "ping" =>

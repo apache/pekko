@@ -18,8 +18,8 @@ import scala.concurrent.{ Future, Promise }
 import org.apache.pekko
 import pekko.Done
 import pekko.annotation.InternalApi
-import pekko.stream._
 import pekko.stream.OverflowStrategies._
+import pekko.stream._
 import pekko.stream.scaladsl.SourceQueueWithComplete
 import pekko.stream.stage._
 

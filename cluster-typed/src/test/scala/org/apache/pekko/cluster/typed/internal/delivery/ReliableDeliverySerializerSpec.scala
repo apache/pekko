@@ -17,13 +17,9 @@ import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.typed.delivery.ConsumerController
-import pekko.actor.typed.delivery.DurableProducerQueue
-import pekko.actor.typed.delivery.ProducerController
-import pekko.actor.typed.delivery.internal.ChunkedMessage
-import pekko.actor.typed.delivery.internal.ProducerControllerImpl
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
+import pekko.actor.typed.delivery.internal.{ ChunkedMessage, ProducerControllerImpl }
+import pekko.actor.typed.delivery.{ ConsumerController, DurableProducerQueue, ProducerController }
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.adapter._
 import pekko.serialization.SerializationExtension

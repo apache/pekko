@@ -13,12 +13,12 @@
 
 package org.apache.pekko.stream.impl.fusing
 
-import scala.util.control.NoStackTrace
-
 import org.apache.pekko
 import pekko.stream.Supervision
 import pekko.stream.testkit.StreamSpec
 import pekko.util.ConstantFun
+
+import scala.util.control.NoStackTrace
 
 class InterpreterSupervisionSpec extends StreamSpec with GraphInterpreterSpecKit {
 

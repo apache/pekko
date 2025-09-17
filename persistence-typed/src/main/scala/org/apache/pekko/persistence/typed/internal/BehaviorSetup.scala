@@ -16,24 +16,22 @@ package org.apache.pekko.persistence.typed.internal
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.FiniteDuration
 import scala.util.control.NonFatal
+
 import com.typesafe.config.ConfigFactory
+import org.slf4j.Logger
+import org.slf4j.MDC
+
 import org.apache.pekko
-import pekko.util.Helpers.ConfigOps
 import pekko.actor.Cancellable
 import pekko.actor.typed.Signal
 import pekko.actor.typed.scaladsl.ActorContext
 import pekko.actor.{ ActorRef => ClassicActorRef }
 import pekko.annotation.InternalApi
 import pekko.persistence._
-import pekko.persistence.typed.EventAdapter
-import pekko.persistence.typed.PersistenceId
-import pekko.persistence.typed.ReplicaId
-import pekko.persistence.typed.SnapshotAdapter
-import pekko.persistence.typed.scaladsl.EventSourcedBehavior
-import pekko.persistence.typed.scaladsl.RetentionCriteria
+import pekko.persistence.typed.{ EventAdapter, PersistenceId, ReplicaId, SnapshotAdapter }
+import pekko.persistence.typed.scaladsl.{ EventSourcedBehavior, RetentionCriteria }
+import pekko.util.Helpers.ConfigOps
 import pekko.util.OptionVal
-import org.slf4j.Logger
-import org.slf4j.MDC
 
 /**
  * INTERNAL API

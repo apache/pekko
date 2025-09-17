@@ -18,13 +18,9 @@ import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.actor.PoisonPill
-import pekko.cluster.Cluster
-import pekko.cluster.MemberStatus
-import pekko.testkit.PekkoSpec
-import pekko.testkit.TestActors
-import pekko.testkit.TestProbe
+import pekko.actor.{ ActorSystem, PoisonPill }
+import pekko.cluster.{ Cluster, MemberStatus }
+import pekko.testkit.{ PekkoSpec, TestActors, TestProbe }
 
 class ClusterSingletonRestartSpec
     extends PekkoSpec("""

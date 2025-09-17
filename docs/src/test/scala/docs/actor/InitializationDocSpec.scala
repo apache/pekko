@@ -13,8 +13,9 @@
 
 package docs.actor
 
-import org.apache.pekko.actor.{ Actor, Props }
-import org.apache.pekko.testkit.{ ImplicitSender, PekkoSpec }
+import org.apache.pekko
+import pekko.actor.{ Actor, Props }
+import pekko.testkit.{ ImplicitSender, PekkoSpec }
 
 object InitializationDocSpec {
 

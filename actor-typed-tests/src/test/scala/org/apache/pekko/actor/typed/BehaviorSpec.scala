@@ -14,22 +14,19 @@
 package org.apache.pekko.actor.typed
 
 import java.util.function.{ Function => F1 }
-
 import scala.annotation.nowarn
+
 import org.scalactic.TypeCheckedTripleEquals
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.testkit.typed.scaladsl.{ BehaviorTestKit, TestInbox }
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+import pekko.actor.testkit.typed.scaladsl.{ BehaviorTestKit, LogCapturing, ScalaTestWithActorTestKit, TestInbox }
 import pekko.actor.typed.javadsl.{ Behaviors => JBehaviors }
-import pekko.actor.typed.scaladsl.{ AbstractBehavior => SAbstractBehavior }
-import pekko.actor.typed.scaladsl.{ Behaviors => SBehaviors }
-import pekko.japi.pf.PFBuilder
+import pekko.actor.typed.scaladsl.{ AbstractBehavior => SAbstractBehavior, Behaviors => SBehaviors }
 import pekko.japi.function.Function
+import pekko.japi.pf.PFBuilder
 
 object BehaviorSpec {
   sealed trait Command {
@@ -339,7 +336,7 @@ object BehaviorSpec {
 
 }
 
-import BehaviorSpec._
+import org.apache.pekko.actor.typed.BehaviorSpec._
 
 class FullBehaviorSpec extends ScalaTestWithActorTestKit with Messages with BecomeWithLifecycle with Stoppable {
   override def behavior(monitor: ActorRef[Event]): (Behavior[Command], Aux) = mkFull(monitor) -> null

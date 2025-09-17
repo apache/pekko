@@ -17,10 +17,9 @@ import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
-import pekko.stream.{ AbruptStageTerminationException, KillSwitches, Materializer }
-import pekko.stream.testkit.StreamSpec
-import pekko.stream.testkit.TestSubscriber
+import pekko.stream.testkit.{ StreamSpec, TestSubscriber }
 import pekko.stream.testkit.Utils.TE
+import pekko.stream.{ AbruptStageTerminationException, KillSwitches, Materializer }
 import pekko.testkit.DefaultTimeout
 
 class MaybeSourceSpec extends StreamSpec with DefaultTimeout {

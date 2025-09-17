@@ -11,18 +11,19 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import MultiJvmPlugin.autoImport.MultiJvm
-
-import com.lightbend.paradox.projectinfo.ParadoxProjectInfoPluginKeys._
-import sbt.Def
-import sbt.Keys._
-import sbt._
-import sbtassembly.AssemblyPlugin.autoImport._
-import sbtwelcome.WelcomePlugin.autoImport._
-
 import java.io.FileInputStream
 import java.io.InputStreamReader
 import java.util.Properties
+
+import sbt.Def
+import sbt.Keys._
+import sbt._
+
+import com.lightbend.paradox.projectinfo.ParadoxProjectInfoPluginKeys._
+import sbtassembly.AssemblyPlugin.autoImport._
+import sbtwelcome.WelcomePlugin.autoImport._
+
+import MultiJvmPlugin.autoImport.MultiJvm
 
 object PekkoBuild {
 

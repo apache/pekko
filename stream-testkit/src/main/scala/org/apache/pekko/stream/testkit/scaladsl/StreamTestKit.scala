@@ -15,8 +15,8 @@ package org.apache.pekko.stream.testkit.scaladsl
 
 import java.util.concurrent.TimeUnit.MILLISECONDS
 
-import scala.concurrent.{ Await, ExecutionContext }
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, ExecutionContext }
 
 import org.apache.pekko
 import pekko.actor.{ ActorRef, ActorSystem }

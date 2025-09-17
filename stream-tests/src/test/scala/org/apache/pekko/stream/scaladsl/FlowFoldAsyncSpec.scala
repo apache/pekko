@@ -13,23 +13,20 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import scala.concurrent.Await
-import scala.concurrent.ExecutionContextExecutor
-import scala.concurrent.Future
+import scala.concurrent.{ Await, ExecutionContextExecutor, Future }
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
+
+import org.scalatest.concurrent.PatienceConfiguration.Timeout
 
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream.ActorAttributes.supervisionStrategy
-import pekko.stream.Supervision.restartingDecider
-import pekko.stream.Supervision.resumingDecider
+import pekko.stream.Supervision.{ restartingDecider, resumingDecider }
 import pekko.stream.impl.ReactiveStreamsCompliance
-import pekko.stream.testkit._
 import pekko.stream.testkit.Utils._
+import pekko.stream.testkit._
 import pekko.testkit.LongRunningTest
-
-import org.scalatest.concurrent.PatienceConfiguration.Timeout
 
 class FlowFoldAsyncSpec extends StreamSpec {
 

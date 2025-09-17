@@ -13,33 +13,28 @@
 
 package org.apache.pekko.cluster.sharding.typed.internal
 
-import java.util.function.IntFunction
 import java.util.Optional
+import java.util.function.IntFunction
 
 import scala.reflect.ClassTag
+
 import org.apache.pekko
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.actor.typed.scaladsl.LoggerOps
+import pekko.actor.typed.scaladsl.{ Behaviors, LoggerOps }
+import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior }
 import pekko.annotation.InternalApi
 import pekko.cluster.sharding.ShardCoordinator.ShardAllocationStrategy
 import pekko.cluster.sharding.ShardRegion.EntityId
-import pekko.cluster.sharding.typed.ClusterShardingSettings
 import pekko.cluster.sharding.typed.ClusterShardingSettings.{ RememberEntitiesStoreModeDData, StateStoreModeDData }
-import pekko.cluster.sharding.typed.ShardedDaemonProcessSettings
-import pekko.cluster.sharding.typed.ShardingEnvelope
-import pekko.cluster.sharding.typed.ShardingMessageExtractor
-import pekko.cluster.sharding.typed.javadsl
-import pekko.cluster.sharding.typed.scaladsl
-import pekko.cluster.sharding.typed.scaladsl.ClusterSharding
-import pekko.cluster.sharding.typed.scaladsl.Entity
-import pekko.cluster.sharding.typed.scaladsl.EntityTypeKey
-import pekko.cluster.sharding.typed.scaladsl.StartEntity
-import pekko.cluster.typed.Cluster
-import pekko.cluster.typed.SelfUp
-import pekko.cluster.typed.Subscribe
+import pekko.cluster.sharding.typed.scaladsl.{ ClusterSharding, Entity, EntityTypeKey, StartEntity }
+import pekko.cluster.sharding.typed.{
+  javadsl,
+  scaladsl,
+  ClusterShardingSettings,
+  ShardedDaemonProcessSettings,
+  ShardingEnvelope,
+  ShardingMessageExtractor
+}
+import pekko.cluster.typed.{ Cluster, SelfUp, Subscribe }
 import pekko.util.OptionConverters._
 import pekko.util.PrettyDuration
 

@@ -15,13 +15,12 @@ package docs.circuitbreaker
 
 //#imports1
 import scala.concurrent.duration._
-import org.apache.pekko
-import pekko.pattern.CircuitBreaker
-import pekko.pattern.pipe
-import pekko.actor.{ Actor, ActorLogging, ActorRef }
-
 import scala.concurrent.Future
 import scala.util.{ Failure, Success, Try }
+
+import org.apache.pekko
+import pekko.pattern.{ pipe, CircuitBreaker }
+import pekko.actor.{ Actor, ActorLogging, ActorRef }
 
 //#imports1
 

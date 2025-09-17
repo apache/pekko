@@ -11,10 +11,10 @@
  * Copyright (C) 2016-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
+import scala.util.control.NonFatal
+
 import sbt._
 import sbt.Keys._
-
-import scala.util.control.NonFatal
 
 /**
  * Generate the "index" pages of stream operators.

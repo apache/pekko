@@ -16,10 +16,8 @@ package org.apache.pekko.io.dns.internal
 import java.io.File
 import java.nio.file.Files
 
+import scala.jdk.CollectionConverters._
 import scala.util.Try
-
-import org.apache.pekko
-import pekko.util.ccompat.JavaConverters._
 
 private[dns] case class ResolvConf(search: List[String], ndots: Int)
 

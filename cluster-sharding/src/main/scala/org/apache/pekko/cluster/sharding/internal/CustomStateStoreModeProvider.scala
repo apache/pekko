@@ -12,10 +12,9 @@
  */
 
 package org.apache.pekko.cluster.sharding.internal
+
 import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.Props
+import pekko.actor.{ ActorSystem, ExtendedActorSystem, Props }
 import pekko.annotation.InternalApi
 import pekko.cluster.sharding.ClusterShardingSettings
 import pekko.cluster.sharding.ShardRegion.ShardId

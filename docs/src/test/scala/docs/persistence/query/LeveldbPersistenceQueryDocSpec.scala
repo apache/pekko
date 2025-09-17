@@ -13,11 +13,12 @@
 
 package docs.persistence.query
 
-import org.apache.pekko.NotUsed
-import org.apache.pekko.testkit.PekkoSpec
-import org.apache.pekko.persistence.query.{ EventEnvelope, PersistenceQuery, Sequence }
-import org.apache.pekko.persistence.query.journal.leveldb.scaladsl.LeveldbReadJournal
-import org.apache.pekko.stream.scaladsl.Source
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.testkit.PekkoSpec
+import pekko.persistence.query.{ EventEnvelope, PersistenceQuery, Sequence }
+import pekko.persistence.query.journal.leveldb.scaladsl.LeveldbReadJournal
+import pekko.stream.scaladsl.Source
 
 object LeveldbPersistenceQueryDocSpec {
   // #tagger

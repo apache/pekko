@@ -19,8 +19,8 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 import scala.annotation.varargs
 import scala.collection.immutable
-import scala.concurrent.{ Await, ExecutionContext }
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, ExecutionContext }
 import scala.util.control.NonFatal
 
 import com.typesafe.config.{ Config, ConfigFactory }
@@ -31,10 +31,8 @@ import pekko.actor._
 import pekko.annotation.InternalApi
 import pekko.cluster.ClusterSettings.DataCenter
 import pekko.dispatch.MonitorableThreadFactory
-import pekko.event.{ Logging, LoggingAdapter }
-import pekko.event.LogMarker
 import pekko.event.Logging.LogLevel
-import pekko.event.MarkerLoggingAdapter
+import pekko.event.{ LogMarker, Logging, LoggingAdapter, MarkerLoggingAdapter }
 import pekko.japi.Util
 import pekko.pattern._
 import pekko.remote.{ UniqueAddress => _, _ }
@@ -110,7 +108,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
    * Java API: roles that this member has
    */
   def getSelfRoles: java.util.Set[String] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     selfRoles.asJava
   }
 

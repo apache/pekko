@@ -13,15 +13,14 @@
 
 package org.apache.pekko.actor.testkit.typed.internal
 
-import scala.concurrent.{ Await, TimeoutException }
 import scala.concurrent.duration.Duration
+import scala.concurrent.{ Await, TimeoutException }
 import scala.util.control.Exception.Catcher
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors }
 import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior, Props }
-import pekko.actor.typed.scaladsl.ActorContext
-import pekko.actor.typed.scaladsl.Behaviors
 import pekko.annotation.InternalApi
 
 /**

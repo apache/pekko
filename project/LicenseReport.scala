@@ -16,6 +16,7 @@
  */
 
 import sbt._
+
 import sbtlicensereport.SbtLicenseReport
 import sbtlicensereport.SbtLicenseReport.autoImportImpl._
 import sbtlicensereport.license.{ DepModuleInfo, MarkDown }

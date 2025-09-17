@@ -14,8 +14,7 @@
 package org.apache.pekko.actor
 
 import org.apache.pekko
-import pekko.annotation.DoNotInherit
-import pekko.annotation.InternalApi
+import pekko.annotation.{ DoNotInherit, InternalApi }
 
 /**
  * Glue API introduced to allow minimal user effort integration between classic and typed for example for streams.

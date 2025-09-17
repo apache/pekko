@@ -13,9 +13,13 @@
 
 package org.apache.pekko.cluster.sharding
 
+import scala.collection.immutable
+import scala.concurrent.duration._
+
+import com.typesafe.config.Config
+
 import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.actor.NoSerializationVerificationNeeded
+import pekko.actor.{ ActorSystem, NoSerializationVerificationNeeded }
 import pekko.annotation.{ ApiMayChange, InternalApi }
 import pekko.cluster.Cluster
 import pekko.cluster.singleton.ClusterSingletonManagerSettings
@@ -23,10 +27,6 @@ import pekko.coordination.lease.LeaseUsageSettings
 import pekko.japi.Util.immutableSeq
 import pekko.util.Helpers.toRootLowerCase
 import pekko.util.JavaDurationConverters._
-import com.typesafe.config.Config
-
-import scala.collection.immutable
-import scala.concurrent.duration._
 
 object ClusterShardingSettings {
 

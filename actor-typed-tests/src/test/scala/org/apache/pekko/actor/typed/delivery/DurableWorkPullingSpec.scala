@@ -17,17 +17,15 @@ import java.util.concurrent.atomic.AtomicReference
 
 import scala.concurrent.duration._
 
-import DurableProducerQueue.MessageSent
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
 import pekko.actor.typed.ActorRef
+import pekko.actor.typed.delivery.DurableProducerQueue.MessageSent
 import pekko.actor.typed.delivery.internal.ProducerControllerImpl
-import pekko.actor.typed.receptionist.Receptionist
-import pekko.actor.typed.receptionist.ServiceKey
+import pekko.actor.typed.receptionist.{ Receptionist, ServiceKey }
 
 class DurableWorkPullingSpec
     extends ScalaTestWithActorTestKit("""

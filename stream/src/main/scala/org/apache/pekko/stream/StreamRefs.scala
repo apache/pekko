@@ -17,12 +17,7 @@ import scala.language.implicitConversions
 
 import org.apache.pekko
 import pekko.NotUsed
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
-import pekko.actor.ClassicActorSystemProvider
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.Extension
-import pekko.actor.ExtensionId
+import pekko.actor.{ ActorRef, ActorSystem, ClassicActorSystemProvider, ExtendedActorSystem, Extension, ExtensionId }
 import pekko.annotation.DoNotInherit
 import pekko.stream.impl.streamref.StreamRefResolverImpl
 import pekko.stream.scaladsl.{ Sink, Source }

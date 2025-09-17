@@ -13,24 +13,20 @@
 
 package org.apache.pekko.serialization.jackson
 
-import java.time.{ Duration => JDuration }
-import java.time.Instant
-import java.time.LocalDateTime
+import java.time.{ Duration => JDuration, Instant, LocalDateTime }
 import java.util
 import java.util.concurrent.TimeUnit
 
+import scala.annotation.nowarn
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import scala.annotation.nowarn
 import com.typesafe.config.ConfigFactory
-import org.openjdk.jmh.annotations._
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.serialization.Serialization
-import pekko.serialization.SerializationExtension
-import pekko.serialization.SerializerWithStringManifest
+import pekko.serialization.{ Serialization, SerializationExtension, SerializerWithStringManifest }
+import org.openjdk.jmh.annotations._
 
 object JacksonSerializationBench {
   trait TestMessage

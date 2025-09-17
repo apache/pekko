@@ -13,12 +13,12 @@
 
 package docs.stream.cookbook
 
-import org.apache.pekko.stream.scaladsl.Sink
-import org.apache.pekko.stream.scaladsl.Source
-import org.apache.pekko.util.ByteString
-
 import scala.concurrent.Await
 import scala.concurrent.duration._
+
+import org.apache.pekko
+import pekko.stream.scaladsl.{ Sink, Source }
+import pekko.util.ByteString
 
 class RecipeDecompress extends RecipeSpec {
   "Recipe for decompressing a Gzip stream" must {

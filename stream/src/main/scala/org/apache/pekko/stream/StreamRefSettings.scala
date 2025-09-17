@@ -18,11 +18,11 @@ import java.util.concurrent.TimeUnit
 import scala.annotation.nowarn
 import scala.concurrent.duration._
 
+import com.typesafe.config.Config
+
 import org.apache.pekko
 import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.stream.impl.streamref.StreamRefSettingsImpl
-
-import com.typesafe.config.Config
 
 @InternalApi
 private[stream] object StreamRefSettings {

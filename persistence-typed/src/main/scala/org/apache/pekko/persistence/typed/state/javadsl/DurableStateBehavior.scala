@@ -17,17 +17,13 @@ import java.util.Optional
 
 import org.apache.pekko
 import pekko.actor.typed
-import pekko.actor.typed.BackoffSupervisorStrategy
-import pekko.actor.typed.Behavior
+import pekko.actor.typed.{ BackoffSupervisorStrategy, Behavior }
 import pekko.actor.typed.internal.BehaviorImpl.DeferredBehavior
 import pekko.actor.typed.javadsl.ActorContext
-import pekko.annotation.ApiMayChange
-import pekko.annotation.InternalApi
-import pekko.persistence.typed.state.internal
+import pekko.annotation.{ ApiMayChange, InternalApi }
+import pekko.persistence.typed.state.{ internal, scaladsl }
 import pekko.persistence.typed.state.internal._
-import pekko.persistence.typed.state.scaladsl
-import pekko.persistence.typed.PersistenceId
-import pekko.persistence.typed.SnapshotAdapter
+import pekko.persistence.typed.{ PersistenceId, SnapshotAdapter }
 
 /**
  * A `Behavior` for a persistent actor with durable storage of its state.

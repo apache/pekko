@@ -13,22 +13,13 @@
 
 package org.apache.pekko.cluster.sharding.internal
 
-import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorLogging
-import pekko.actor.ActorRef
-import pekko.actor.NoSerializationVerificationNeeded
-import pekko.actor.Props
-import pekko.actor.Timers
-import pekko.annotation.InternalApi
-import pekko.cluster.sharding.ClusterShardingSettings
-import pekko.cluster.sharding.Shard
-import pekko.cluster.sharding.ShardRegion
-import pekko.cluster.sharding.ShardRegion.EntityId
-import pekko.cluster.sharding.ShardRegion.ShardId
-
-import scala.collection.immutable.Set
 import scala.concurrent.ExecutionContext
+
+import org.apache.pekko
+import pekko.actor.{ Actor, ActorLogging, ActorRef, NoSerializationVerificationNeeded, Props, Timers }
+import pekko.annotation.InternalApi
+import pekko.cluster.sharding.ShardRegion.{ EntityId, ShardId }
+import pekko.cluster.sharding.{ ClusterShardingSettings, Shard, ShardRegion }
 
 /**
  * INTERNAL API

@@ -13,8 +13,9 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import org.apache.pekko.NotUsed
-import org.apache.pekko.stream.{ Graph, Shape }
+import org.apache.pekko
+import pekko.stream.{ Graph, Shape }
+import pekko.NotUsed
 
 trait GraphApply {
   /**

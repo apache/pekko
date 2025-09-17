@@ -15,15 +15,13 @@ package org.apache.pekko.stream.impl
 
 import scala.collection.immutable
 
+import org.reactivestreams.Subscription
+
 import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.{ DoNotInherit, InternalApi }
-import pekko.stream.AbruptTerminationException
-import pekko.stream.ActorAttributes
-import pekko.stream.Attributes
+import pekko.stream.{ AbruptTerminationException, ActorAttributes, Attributes }
 import pekko.util.unused
-
-import org.reactivestreams.Subscription
 
 /**
  * INTERNAL API

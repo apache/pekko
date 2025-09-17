@@ -13,23 +13,17 @@
 
 package org.apache.pekko.cluster.sharding
 
-import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorLogging
-import pekko.actor.Props
-import pekko.cluster.Cluster
-import pekko.cluster.MemberStatus
-import pekko.cluster.sharding.ShardRegion.ShardId
-import pekko.coordination.lease.{ LeaseUsageSettings, TestLeaseExt }
-import pekko.testkit.PekkoSpec
-import pekko.testkit.EventFilter
-import pekko.testkit.TestProbe
-import pekko.testkit.WithLogCapturing
-
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.util.Success
 import scala.util.control.NoStackTrace
+
+import org.apache.pekko
+import pekko.actor.{ Actor, ActorLogging, Props }
+import pekko.cluster.sharding.ShardRegion.ShardId
+import pekko.cluster.{ Cluster, MemberStatus }
+import pekko.coordination.lease.{ LeaseUsageSettings, TestLeaseExt }
+import pekko.testkit.{ EventFilter, PekkoSpec, TestProbe, WithLogCapturing }
 
 // FIXME this looks like it is the same test as ClusterShardingLeaseSpec is there any difference?
 object ShardWithLeaseSpec {

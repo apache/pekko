@@ -11,6 +11,9 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
+import sbt._
+import sbt.Keys._
+
 import com.github.sbt.pullrequestvalidator.ValidatePullRequest
 import com.github.sbt.pullrequestvalidator.ValidatePullRequest.PathGlobFilter
 import com.lightbend.paradox.sbt.ParadoxPlugin
@@ -18,8 +21,6 @@ import com.lightbend.paradox.sbt.ParadoxPlugin.autoImport.paradox
 import com.typesafe.tools.mima.plugin.MimaKeys.mimaReportBinaryIssues
 import com.typesafe.tools.mima.plugin.MimaPlugin
 import sbtunidoc.BaseUnidocPlugin.autoImport.unidoc
-import sbt.Keys._
-import sbt._
 
 object PekkoValidatePullRequest extends AutoPlugin {
 
@@ -27,7 +28,7 @@ object PekkoValidatePullRequest extends AutoPlugin {
     lazy val mimaEnabled = CliOption("pekko.mima.enabled", true)
   }
 
-  import ValidatePullRequest.autoImport._
+  import ValidatePullRequest.autoImport.*
 
   override lazy val trigger = allRequirements
   override lazy val requires = ValidatePullRequest
@@ -84,7 +85,7 @@ object PekkoValidatePullRequest extends AutoPlugin {
  * autoplugin would trigger only on projects which have both of these plugins enabled.
  */
 object MultiNodeWithPrValidation extends AutoPlugin {
-  import PekkoValidatePullRequest._
+  import PekkoValidatePullRequest.*
 
   override lazy val trigger = allRequirements
   override lazy val requires = PekkoValidatePullRequest && MultiNode
@@ -98,7 +99,7 @@ object MultiNodeWithPrValidation extends AutoPlugin {
  * when a project has MimaPlugin autoplugin enabled.
  */
 object MimaWithPrValidation extends AutoPlugin {
-  import PekkoValidatePullRequest._
+  import PekkoValidatePullRequest.*
 
   override lazy val trigger = allRequirements
   override lazy val requires = PekkoValidatePullRequest && MimaPlugin
@@ -111,7 +112,7 @@ object MimaWithPrValidation extends AutoPlugin {
  * when a project has ParadoxPlugin autoplugin enabled.
  */
 object ParadoxWithPrValidation extends AutoPlugin {
-  import PekkoValidatePullRequest._
+  import PekkoValidatePullRequest.*
 
   override lazy val trigger = allRequirements
   override lazy val requires = PekkoValidatePullRequest && ParadoxPlugin
@@ -119,7 +120,7 @@ object ParadoxWithPrValidation extends AutoPlugin {
 }
 
 object UnidocWithPrValidation extends AutoPlugin {
-  import PekkoValidatePullRequest._
+  import PekkoValidatePullRequest.*
 
   override lazy val trigger = noTrigger
   override lazy val projectSettings = Seq(additionalTasks += Compile / unidoc)

@@ -16,9 +16,9 @@ package org.apache.pekko.stream.impl
 import org.apache.pekko
 import pekko.actor.{ ActorRef, Terminated }
 import pekko.annotation.InternalApi
-import pekko.stream.{ AbruptStageTerminationException, Attributes, Inlet, SinkShape }
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, StageLogging }
+import pekko.stream.{ AbruptStageTerminationException, Attributes, Inlet, SinkShape }
 
 /**
  * INTERNAL API

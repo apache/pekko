@@ -14,14 +14,16 @@
 package docs.persistence
 
 import scala.collection.immutable
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.testkit.TestKit
+import scala.concurrent.Future
+import scala.concurrent.duration._
+import scala.util.Try
+
 import com.typesafe.config._
 import org.scalatest.wordspec.AnyWordSpec
 
-import scala.concurrent.Future
-import scala.util.Try
-import scala.concurrent.duration._
+import org.apache.pekko
+import pekko.actor.ActorSystem
+import pekko.testkit.TestKit
 
 //#plugin-imports
 import org.apache.pekko

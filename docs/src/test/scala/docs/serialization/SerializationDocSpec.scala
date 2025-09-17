@@ -21,11 +21,12 @@ package docs.serialization {
   import pekko.serialization._
 
   // #imports
-
-  import org.apache.pekko.testkit._
-  import com.typesafe.config.ConfigFactory
-  import org.apache.pekko.actor.ExtendedActorSystem
   import java.nio.charset.StandardCharsets
+
+  import com.typesafe.config.ConfigFactory
+
+  import pekko.actor.ExtendedActorSystem
+  import pekko.testkit._
 
   // #my-own-serializer
   class MyOwnSerializer extends Serializer {

@@ -19,13 +19,12 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.stream._
 import pekko.stream.ActorAttributes.supervisionStrategy
 import pekko.stream.Attributes.inputBuffer
-import pekko.stream.Supervision.restartingDecider
-import pekko.stream.Supervision.resumingDecider
-import pekko.stream.testkit._
+import pekko.stream.Supervision.{ restartingDecider, resumingDecider }
+import pekko.stream._
 import pekko.stream.testkit.Utils.TE
+import pekko.stream.testkit._
 import pekko.testkit.TestLatch
 
 class FlowConflateSpec extends StreamSpec("""

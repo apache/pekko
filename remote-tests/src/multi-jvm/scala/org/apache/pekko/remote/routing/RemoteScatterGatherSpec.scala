@@ -17,18 +17,13 @@ import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
 
-import org.apache.pekko.actor.Actor
-import org.apache.pekko.actor.ActorRef
-import org.apache.pekko.actor.Address
-import org.apache.pekko.actor.PoisonPill
-import org.apache.pekko.actor.Props
-import org.apache.pekko.remote.RemotingMultiNodeSpec
-import org.apache.pekko.remote.testkit.MultiNodeConfig
-import org.apache.pekko.routing.Broadcast
-import org.apache.pekko.routing.RoutedActorRef
-import org.apache.pekko.routing.ScatterGatherFirstCompletedPool
-import org.apache.pekko.testkit._
-import org.apache.pekko.testkit.TestEvent._
+import org.apache.pekko
+import pekko.actor._
+import pekko.remote.RemotingMultiNodeSpec
+import pekko.remote.testkit.MultiNodeConfig
+import pekko.routing.{ Broadcast, RoutedActorRef, ScatterGatherFirstCompletedPool }
+import pekko.testkit.TestEvent._
+import pekko.testkit._
 
 class RemoteScatterGatherConfig(artery: Boolean) extends MultiNodeConfig {
 

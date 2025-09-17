@@ -15,35 +15,21 @@ package org.apache.pekko.stream.scaladsl
 
 import java.util.concurrent.atomic.AtomicInteger
 
-import scala.concurrent.Await
-import scala.concurrent.Promise
+import scala.concurrent.{ Await, Promise }
 import scala.concurrent.duration._
-import scala.util.Failure
-import scala.util.Success
+import scala.util.{ Failure, Success }
 
 import org.apache.pekko
-import pekko.Done
-import pekko.NotUsed
+import pekko.{ Done, NotUsed }
 import pekko.event.Logging
-import pekko.stream.Attributes
 import pekko.stream.Attributes.Name
-import pekko.stream.RestartSettings
-import pekko.stream.scaladsl.AttributesSpec.AttributesFlow
-import pekko.stream.scaladsl.AttributesSpec.AttributesSink
-import pekko.stream.scaladsl.AttributesSpec.AttributesSource
-import pekko.stream.scaladsl.AttributesSpec.WhateverAttribute
-import pekko.stream.scaladsl.AttributesSpec.whateverAttribute
+import pekko.stream.{ Attributes, RestartSettings }
+import pekko.stream.scaladsl.AttributesSpec._
 import pekko.stream.scaladsl.RestartWithBackoffFlow.Delay
-import pekko.stream.testkit.StreamSpec
-import pekko.stream.testkit.TestPublisher
+import pekko.stream.testkit.{ StreamSpec, TestPublisher }
 import pekko.stream.testkit.Utils.TE
-import pekko.stream.testkit.scaladsl.TestSink
-import pekko.stream.testkit.scaladsl.TestSource
-import pekko.testkit.DefaultTimeout
-import pekko.testkit.EventFilter
-import pekko.testkit.TestDuration
-import pekko.testkit.TestProbe
-import pekko.testkit.TimingTest
+import pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
+import pekko.testkit.{ DefaultTimeout, EventFilter, TestDuration, TestProbe, TimingTest }
 
 class RestartSpec
     extends StreamSpec(Map("pekko.test.single-expect-default" -> "10s", "pekko.loglevel" -> "INFO"))

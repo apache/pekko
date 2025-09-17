@@ -19,10 +19,8 @@ import org.scalatest.wordspec.AnyWordSpec
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
-import pekko.remote.RARP
-import pekko.remote.RemoteTransportException
-import pekko.testkit.SocketUtil
-import pekko.testkit.TestKit
+import pekko.remote.{ RARP, RemoteTransportException }
+import pekko.testkit.{ SocketUtil, TestKit }
 
 class ArteryFailedToBindSpec extends AnyWordSpec with Matchers {
 

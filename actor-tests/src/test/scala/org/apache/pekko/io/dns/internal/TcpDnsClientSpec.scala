@@ -15,14 +15,12 @@ package org.apache.pekko.io.dns.internal
 
 import java.net.InetSocketAddress
 
-import scala.collection.immutable.Seq
-
 import org.apache.pekko
 import pekko.actor.{ ActorKilledException, Kill, Props }
 import pekko.io.Tcp
 import pekko.io.Tcp.{ Connected, PeerClosed, Register }
-import pekko.io.dns.{ RecordClass, RecordType }
 import pekko.io.dns.internal.DnsClient.Answer
+import pekko.io.dns.{ RecordClass, RecordType }
 import pekko.testkit.{ EventFilter, ImplicitSender, PekkoSpec, TestProbe }
 
 class TcpDnsClientSpec extends PekkoSpec with ImplicitSender {

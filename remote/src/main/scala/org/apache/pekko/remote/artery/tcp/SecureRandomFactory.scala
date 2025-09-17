@@ -15,10 +15,11 @@ package org.apache.pekko.remote.artery.tcp
 
 import java.security.SecureRandom
 
+import com.typesafe.config.Config
+
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.event.MarkerLoggingAdapter
-import com.typesafe.config.Config
 
 /**
  * INTERNAL API

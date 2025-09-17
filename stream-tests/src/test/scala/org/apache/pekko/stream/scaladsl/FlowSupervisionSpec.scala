@@ -20,8 +20,7 @@ import scala.util.control.NoStackTrace
 
 import org.apache.pekko
 import pekko.NotUsed
-import pekko.stream.ActorAttributes
-import pekko.stream.Supervision
+import pekko.stream.{ ActorAttributes, Supervision }
 import pekko.stream.impl.ReactiveStreamsCompliance
 import pekko.stream.testkit._
 

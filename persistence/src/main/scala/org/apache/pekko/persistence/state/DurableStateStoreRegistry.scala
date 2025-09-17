@@ -18,16 +18,16 @@ import scala.reflect.ClassTag
 import com.typesafe.config.Config
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.actor.ClassicActorSystemProvider
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.Extension
-import pekko.actor.ExtensionId
-import pekko.actor.ExtensionIdProvider
+import pekko.actor.{
+  ActorSystem,
+  ClassicActorSystemProvider,
+  ExtendedActorSystem,
+  Extension,
+  ExtensionId,
+  ExtensionIdProvider
+}
 import pekko.annotation.InternalApi
-import pekko.persistence.Persistence
-import pekko.persistence.PersistencePlugin
-import pekko.persistence.PluginProvider
+import pekko.persistence.{ Persistence, PersistencePlugin, PluginProvider }
 import pekko.persistence.state.scaladsl.DurableStateStore
 import pekko.util.unused
 

@@ -14,23 +14,22 @@
 package org.apache.pekko.cluster
 
 import scala.concurrent.duration.FiniteDuration
+
 import org.apache.pekko
 import pekko.actor._
-import pekko.cluster.ClusterEvent.CurrentClusterState
-import pekko.cluster.ClusterEvent.MemberEvent
-import pekko.cluster.ClusterEvent.MemberJoined
-import pekko.cluster.ClusterEvent.MemberRemoved
-import pekko.cluster.ClusterEvent.MemberTombstonesChanged
-import pekko.cluster.ClusterEvent.MemberUp
-import pekko.cluster.ClusterEvent.MemberWeaklyUp
+import pekko.cluster.ClusterEvent.{
+  CurrentClusterState,
+  MemberEvent,
+  MemberJoined,
+  MemberRemoved,
+  MemberTombstonesChanged,
+  MemberUp,
+  MemberWeaklyUp
+}
 import pekko.dispatch.Dispatchers
 import pekko.dispatch.sysmsg.DeathWatchNotification
-import pekko.event.ActorWithLogClass
-import pekko.event.Logging
-import pekko.remote.FailureDetectorRegistry
-import pekko.remote.RARP
-import pekko.remote.RemoteSettings
-import pekko.remote.RemoteWatcher
+import pekko.event.{ ActorWithLogClass, Logging }
+import pekko.remote.{ FailureDetectorRegistry, RARP, RemoteSettings, RemoteWatcher }
 
 /**
  * INTERNAL API

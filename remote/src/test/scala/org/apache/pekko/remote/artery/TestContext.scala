@@ -13,9 +13,7 @@
 
 package org.apache.pekko.remote.artery
 
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.CopyOnWriteArrayList
-import java.util.concurrent.ThreadLocalRandom
+import java.util.concurrent.{ ConcurrentHashMap, CopyOnWriteArrayList, ThreadLocalRandom }
 
 import scala.concurrent.Future
 
@@ -23,12 +21,10 @@ import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.ActorRef
-import pekko.actor.Address
+import pekko.actor.{ ActorRef, Address }
 import pekko.dispatch.ExecutionContexts
 import pekko.remote.UniqueAddress
-import pekko.remote.artery.InboundControlJunction.ControlMessageObserver
-import pekko.remote.artery.InboundControlJunction.ControlMessageSubject
+import pekko.remote.artery.InboundControlJunction.{ ControlMessageObserver, ControlMessageSubject }
 import pekko.util.OptionVal
 
 private[remote] class TestInboundContext(

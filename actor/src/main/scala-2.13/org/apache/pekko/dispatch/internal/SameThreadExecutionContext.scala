@@ -15,8 +15,7 @@ package org.apache.pekko.dispatch.internal
 
 import scala.concurrent.ExecutionContext
 
-import org.apache.pekko
-import pekko.annotation.InternalApi
+import org.apache.pekko.annotation.InternalApi
 
 /**
  * Factory to create same thread ec. Not intended to be called from any other site than to create [[pekko.dispatch.ExecutionContexts#parasitic]]

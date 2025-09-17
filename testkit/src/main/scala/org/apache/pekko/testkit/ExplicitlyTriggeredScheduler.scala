@@ -13,22 +13,20 @@
 
 package org.apache.pekko.testkit
 
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ThreadFactory
+import com.typesafe.config.Config
+
+import java.util.concurrent.{ ConcurrentHashMap, ThreadFactory }
 import java.util.concurrent.atomic.AtomicLong
 
 import scala.annotation.tailrec
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.{ Duration, FiniteDuration }
+import scala.jdk.CollectionConverters._
 import scala.util.Try
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
-import pekko.actor.Cancellable
-import pekko.actor.Scheduler
+import pekko.actor.{ Cancellable, Scheduler }
 import pekko.event.LoggingAdapter
-import pekko.util.ccompat.JavaConverters._
 import pekko.util.unused
 
 /**

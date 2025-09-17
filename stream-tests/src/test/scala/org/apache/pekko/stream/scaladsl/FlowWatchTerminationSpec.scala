@@ -21,8 +21,7 @@ import pekko.Done
 import pekko.pattern.pipe
 import pekko.stream._
 import pekko.stream.testkit.StreamSpec
-import pekko.stream.testkit.scaladsl.TestSink
-import pekko.stream.testkit.scaladsl.TestSource
+import pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
 
 class FlowWatchTerminationSpec extends StreamSpec {
 

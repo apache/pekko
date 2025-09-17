@@ -15,15 +15,14 @@ package docs.stream.io
 
 import java.util.concurrent.atomic.AtomicReference
 
-import org.apache.pekko.stream.scaladsl.Tcp._
-import org.apache.pekko.stream.scaladsl._
-import org.apache.pekko.testkit.PekkoSpec
-import org.apache.pekko.testkit.TestProbe
-import org.apache.pekko.util.ByteString
-
 import scala.concurrent.Future
-import org.apache.pekko.testkit.SocketUtil
 import scala.concurrent.ExecutionContext
+
+import org.apache.pekko
+import pekko.stream.scaladsl.Tcp._
+import pekko.stream.scaladsl._
+import pekko.testkit.{ PekkoSpec, SocketUtil, TestProbe }
+import pekko.util.ByteString
 
 class StreamTcpDocSpec extends PekkoSpec {
 

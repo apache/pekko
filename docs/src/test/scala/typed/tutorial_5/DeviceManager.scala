@@ -14,13 +14,8 @@
 package typed.tutorial_5
 
 import org.apache.pekko
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.PostStop
-import pekko.actor.typed.Signal
-import pekko.actor.typed.scaladsl.AbstractBehavior
-import pekko.actor.typed.scaladsl.ActorContext
-import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.{ ActorRef, Behavior, PostStop, Signal }
+import pekko.actor.typed.scaladsl.{ AbstractBehavior, ActorContext, Behaviors }
 
 //#device-manager-full
 object DeviceManager {

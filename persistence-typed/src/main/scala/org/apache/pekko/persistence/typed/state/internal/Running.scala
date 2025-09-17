@@ -18,15 +18,10 @@ import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.actor.UnhandledMessage
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.Signal
+import pekko.actor.typed.{ Behavior, Signal }
 import pekko.actor.typed.internal.PoisonPill
-import pekko.actor.typed.scaladsl.AbstractBehavior
-import pekko.actor.typed.scaladsl.ActorContext
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.actor.typed.scaladsl.LoggerOps
-import pekko.annotation.InternalApi
-import pekko.annotation.InternalStableApi
+import pekko.actor.typed.scaladsl.{ AbstractBehavior, ActorContext, Behaviors, LoggerOps }
+import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.persistence.typed.state.internal.DurableStateBehaviorImpl.GetState
 import pekko.persistence.typed.state.scaladsl.Effect
 import pekko.util.unused

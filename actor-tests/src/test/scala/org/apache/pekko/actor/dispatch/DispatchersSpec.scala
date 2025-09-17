@@ -18,8 +18,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 import scala.reflect.ClassTag
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
 import pekko.ConfigurationException
@@ -135,7 +134,7 @@ class DispatchersSpec extends PekkoSpec(DispatchersSpec.config) with ImplicitSen
   val defaultDispatcherConfig = settings.config.getConfig("pekko.actor.default-dispatcher")
 
   lazy val allDispatchers: Map[String, MessageDispatcher] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
 
     validTypes
       .map(t => (t, from(ConfigFactory.parseMap(Map(tipe -> t, id -> t).asJava).withFallback(defaultDispatcherConfig))))
@@ -175,7 +174,7 @@ class DispatchersSpec extends PekkoSpec(DispatchersSpec.config) with ImplicitSen
     }
 
     "throw ConfigurationException if type does not exist" in {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       intercept[ConfigurationException] {
         from(
           ConfigFactory

@@ -15,14 +15,9 @@ package org.apache.pekko.stream.impl.fusing
 
 import org.apache.pekko
 import pekko.stream._
-import pekko.stream.scaladsl.Sink
-import pekko.stream.scaladsl.Source
-import pekko.stream.stage.GraphStage
-import pekko.stream.stage.GraphStageLogic
-import pekko.stream.stage.InHandler
-import pekko.stream.stage.OutHandler
-import pekko.stream.testkit.TestPublisher
-import pekko.stream.testkit.TestSubscriber
+import pekko.stream.scaladsl.{ Sink, Source }
+import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
+import pekko.stream.testkit.{ TestPublisher, TestSubscriber }
 import pekko.stream.testkit.Utils.TE
 import pekko.testkit.PekkoSpec
 

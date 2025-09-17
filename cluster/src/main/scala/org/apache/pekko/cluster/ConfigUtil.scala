@@ -19,8 +19,7 @@ package org.apache.pekko.cluster
 
 import com.typesafe.config.{ Config, ConfigValue, ConfigValueFactory, ConfigValueType }
 
-import org.apache.pekko
-import pekko.annotation.InternalApi
+import org.apache.pekko.annotation.InternalApi
 
 @InternalApi
 private[cluster] object ConfigUtil {
@@ -34,7 +33,7 @@ private[cluster] object ConfigUtil {
   }
 
   def adaptPekkoToAkkaConfig(cfg: Config): Config = {
-    import org.apache.pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     val innerSet = cfg.entrySet().asScala
       .filter(e => e.getKey.startsWith("pekko.") && e.getValue.valueType() != ConfigValueType.OBJECT)
       .map { entry =>
@@ -48,7 +47,7 @@ private[cluster] object ConfigUtil {
   }
 
   def adaptAkkaToPekkoConfig(cfg: Config): Config = {
-    import org.apache.pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     val innerSet = cfg.entrySet().asScala
       .filter(e => e.getKey.startsWith("akka.") && e.getValue.valueType() != ConfigValueType.OBJECT)
       .map { entry =>

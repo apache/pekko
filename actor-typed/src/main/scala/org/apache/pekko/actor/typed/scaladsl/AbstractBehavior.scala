@@ -14,8 +14,7 @@
 package org.apache.pekko.actor.typed.scaladsl
 
 import org.apache.pekko
-import pekko.actor.typed.{ Behavior, ExtensibleBehavior, Signal, TypedActorContext }
-import pekko.actor.typed.MessageAdaptionFailure
+import pekko.actor.typed.{ Behavior, ExtensibleBehavior, MessageAdaptionFailure, Signal, TypedActorContext }
 
 /**
  * An actor `Behavior` can be implemented by extending this class and implement the

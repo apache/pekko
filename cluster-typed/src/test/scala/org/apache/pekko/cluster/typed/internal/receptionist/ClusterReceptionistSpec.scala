@@ -19,31 +19,21 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 import org.apache.pekko
 import pekko.actor.RootActorPath
 import pekko.actor.testkit.typed.FishingOutcome
-import pekko.actor.testkit.typed.scaladsl.ActorTestKit
-import pekko.actor.testkit.typed.scaladsl.FishingOutcomes
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.TestProbe
+import pekko.actor.testkit.typed.scaladsl.{ ActorTestKit, FishingOutcomes, LogCapturing, TestProbe }
 import pekko.actor.typed.ActorRef
-import pekko.actor.typed.receptionist.Receptionist
-import pekko.actor.typed.receptionist.ServiceKey
+import pekko.actor.typed.receptionist.{ Receptionist, ServiceKey }
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.cluster.MemberStatus
-import pekko.cluster.typed.Cluster
-import pekko.cluster.typed.Down
-import pekko.cluster.typed.Join
-import pekko.cluster.typed.JoinSeedNodes
-import pekko.cluster.typed.Leave
+import pekko.cluster.typed.{ Cluster, Down, Join, JoinSeedNodes, Leave }
 import pekko.serialization.jackson.CborSerializable
-import pekko.testkit.LongRunningTest
-import org.scalatest.concurrent.ScalaFutures
-
-import pekko.testkit.GHExcludeAeronTest
+import pekko.testkit.{ GHExcludeAeronTest, LongRunningTest }
 
 object ClusterReceptionistSpec {
   val config = ConfigFactory.parseString(s"""

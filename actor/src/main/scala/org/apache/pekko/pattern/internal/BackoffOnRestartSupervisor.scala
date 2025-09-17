@@ -16,8 +16,8 @@ package org.apache.pekko.pattern.internal
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.{ OneForOneStrategy, _ }
 import pekko.actor.SupervisorStrategy._
+import pekko.actor._
 import pekko.annotation.InternalApi
 import pekko.pattern.{
   BackoffReset,

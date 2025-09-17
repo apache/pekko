@@ -15,6 +15,7 @@ package org.apache.pekko.discovery.aggregate
 
 import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
+import scala.jdk.CollectionConverters._
 import scala.util.control.NonFatal
 
 import com.typesafe.config.Config
@@ -22,13 +23,12 @@ import com.typesafe.config.Config
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.annotation.InternalApi
-import pekko.discovery.{ Discovery, Lookup, ServiceDiscovery }
 import pekko.discovery.ServiceDiscovery.Resolved
 import pekko.discovery.aggregate.AggregateServiceDiscovery.Methods
+import pekko.discovery.{ Discovery, Lookup, ServiceDiscovery }
 import pekko.dispatch.MessageDispatcher
 import pekko.event.Logging
 import pekko.util.Helpers.Requiring
-import pekko.util.ccompat.JavaConverters._
 
 /**
  * INTERNAL API

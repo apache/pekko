@@ -15,28 +15,34 @@ package org.apache.pekko.actor
 
 import java.lang.System.identityHashCode
 import java.lang.ref.WeakReference
-import java.util.concurrent.{ CountDownLatch, TimeUnit }
-import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.{ ConcurrentHashMap, CountDownLatch, TimeUnit }
 
+import scala.annotation.nowarn
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.Random
 import scala.util.control.NoStackTrace
 
-import SupervisorStrategy.{ Directive, Restart, Resume, Stop }
-import scala.annotation.nowarn
 import com.typesafe.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
-import pekko.actor.SupervisorStrategy.seqThrowable2Decider
+import pekko.actor.SupervisorStrategy.{ seqThrowable2Decider, Directive, Restart, Resume, Stop }
 import pekko.dispatch.{ Dispatcher, DispatcherConfigurator, DispatcherPrerequisites, MessageDispatcher }
 import pekko.event.Logging
 import pekko.pattern.ask
-import pekko.testkit.{ DefaultTimeout, EventFilter, ImplicitSender, PekkoSpec }
-import pekko.testkit.{ filterEvents, filterException, TestDuration, TestLatch }
-import pekko.testkit.LongRunningTest
 import pekko.testkit.TestEvent.Mute
+import pekko.testkit.{
+  filterEvents,
+  filterException,
+  DefaultTimeout,
+  EventFilter,
+  ImplicitSender,
+  LongRunningTest,
+  PekkoSpec,
+  TestDuration,
+  TestLatch
+}
 import pekko.util.Helpers.ConfigOps
 
 object SupervisorHierarchySpec {

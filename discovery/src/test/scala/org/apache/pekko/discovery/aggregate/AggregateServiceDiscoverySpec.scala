@@ -25,8 +25,8 @@ import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
 import pekko.actor.{ ActorSystem, ExtendedActorSystem }
-import pekko.discovery.{ Discovery, Lookup, ServiceDiscovery }
 import pekko.discovery.ServiceDiscovery.{ Resolved, ResolvedTarget }
+import pekko.discovery.{ Discovery, Lookup, ServiceDiscovery }
 import pekko.testkit.TestKit
 import pekko.util.unused
 

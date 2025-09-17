@@ -21,12 +21,14 @@ import scala.reflect.ClassTag
 import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.actor.ClassicActorSystemProvider
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.Extension
-import pekko.actor.ExtensionId
-import pekko.actor.ExtensionIdProvider
+import pekko.actor.{
+  ActorSystem,
+  ClassicActorSystemProvider,
+  ExtendedActorSystem,
+  Extension,
+  ExtensionId,
+  ExtensionIdProvider
+}
 import pekko.coordination.lease.LeaseSettings
 import pekko.coordination.lease.internal.LeaseAdapterToScala
 import pekko.event.Logging

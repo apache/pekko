@@ -19,13 +19,10 @@ import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
-import pekko.cluster.Cluster
-import pekko.cluster.MemberStatus
+import pekko.actor.{ ActorRef, ActorSystem }
+import pekko.cluster.{ Cluster, MemberStatus }
 import pekko.remote.testconductor.RoleName
-import pekko.remote.testkit.MultiNodeConfig
-import pekko.remote.testkit.MultiNodeSpec
+import pekko.remote.testkit.{ MultiNodeConfig, MultiNodeSpec }
 import pekko.testkit._
 
 object DurablePruningSpec extends MultiNodeConfig {

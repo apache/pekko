@@ -13,6 +13,7 @@
 
 import sbtheader.{ CommentCreator, HeaderPlugin, NewLine }
 import org.apache.commons.lang3.StringUtils
+
 import sbt._
 
 object CopyrightHeader extends AutoPlugin {

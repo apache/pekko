@@ -17,8 +17,7 @@ import scala.collection.{ immutable => im }
 
 import com.typesafe.config.Config
 
-import org.apache.pekko
-import pekko.annotation.InternalApi
+import org.apache.pekko.annotation.InternalApi
 
 /**
  * INTERNAL API

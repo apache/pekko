@@ -14,12 +14,13 @@
 package docs.testkit
 
 //#plain-spec
-import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.testkit.{ ImplicitSender, TestActors, TestKit }
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
+
+import org.apache.pekko
+import pekko.actor.ActorSystem
+import pekko.testkit.{ ImplicitSender, TestActors, TestKit }
 
 //#implicit-sender
 class MySpec()

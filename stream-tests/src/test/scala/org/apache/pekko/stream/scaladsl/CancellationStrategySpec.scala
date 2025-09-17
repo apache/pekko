@@ -17,29 +17,14 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.NotUsed
-import pekko.stream.Attributes
 import pekko.stream.Attributes.CancellationStrategy
 import pekko.stream.Attributes.CancellationStrategy.FailStage
-import pekko.stream.BidiShape
-import pekko.stream.ClosedShape
-import pekko.stream.Inlet
-import pekko.stream.Materializer
-import pekko.stream.Outlet
-import pekko.stream.SharedKillSwitch
-import pekko.stream.SubscriptionWithCancelException
-import pekko.stream.UniformFanOutShape
+import pekko.stream._
 import pekko.stream.impl.fusing.GraphStages.SimpleLinearGraphStage
-import pekko.stream.stage.GraphStage
-import pekko.stream.stage.GraphStageLogic
-import pekko.stream.stage.InHandler
-import pekko.stream.stage.OutHandler
-import pekko.stream.stage.StageLogging
-import pekko.stream.testkit.StreamSpec
-import pekko.stream.testkit.TestPublisher
-import pekko.stream.testkit.TestSubscriber
+import pekko.stream.stage._
+import pekko.stream.testkit.{ StreamSpec, TestPublisher, TestSubscriber }
 import pekko.stream.testkit.Utils.TE
-import pekko.testkit._
-import pekko.testkit.WithLogCapturing
+import pekko.testkit.{ WithLogCapturing, _ }
 
 class CancellationStrategySpec extends StreamSpec("""pekko.loglevel = DEBUG
        pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]""") with WithLogCapturing {

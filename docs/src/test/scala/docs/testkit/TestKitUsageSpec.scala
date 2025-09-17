@@ -16,20 +16,17 @@ package docs.testkit
 //#testkit-usage
 import scala.util.Random
 
+import scala.concurrent.duration._
+import scala.collection.immutable
+
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatest.matchers.should.Matchers
-
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
-import pekko.actor.Props
+import pekko.actor.{ Actor, ActorRef, ActorSystem, Props }
 import pekko.testkit.{ DefaultTimeout, ImplicitSender, TestActors, TestKit }
-import scala.concurrent.duration._
-import scala.collection.immutable
 
 /**
  * a Test to show some TestKit examples

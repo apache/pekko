@@ -17,21 +17,18 @@ import java.io.IOException
 import java.lang.management.ManagementFactory
 import java.util.concurrent.TimeoutException
 
-import scala.concurrent.Await
-import scala.concurrent.Future
-import scala.concurrent.duration._
+import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration.Duration.Zero
+import scala.concurrent.duration._
 import scala.util.Random
 
 import org.apache.pekko
-import pekko.stream._
 import pekko.stream.Attributes.inputBuffer
+import pekko.stream._
 import pekko.stream.impl.io.OutputStreamSourceStage
-import pekko.stream.scaladsl.Keep
-import pekko.stream.scaladsl.Sink
-import pekko.stream.scaladsl.StreamConverters
-import pekko.stream.testkit._
+import pekko.stream.scaladsl.{ Keep, Sink, StreamConverters }
 import pekko.stream.testkit.Utils._
+import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.util.ByteString
 

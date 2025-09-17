@@ -13,14 +13,14 @@
 
 package org.apache.pekko.io
 
-import java.net.DatagramSocket
-import java.net.InetSocketAddress
+import java.net.{ DatagramSocket, InetSocketAddress }
+
 import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.io.Inet._
 import pekko.io.Udp._
-import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
 import pekko.testkit.SocketUtil.temporaryServerAddresses
+import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
 import pekko.util.ByteString
 
 class UdpIntegrationSpec extends PekkoSpec("""

@@ -19,24 +19,23 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
-import org.openjdk.jmh.annotations.{ Scope => JmhScope }
-import org.openjdk.jmh.annotations.Benchmark
-import org.openjdk.jmh.annotations.BenchmarkMode
-import org.openjdk.jmh.annotations.Fork
-import org.openjdk.jmh.annotations.Measurement
-import org.openjdk.jmh.annotations.Mode
-import org.openjdk.jmh.annotations.OutputTimeUnit
-import org.openjdk.jmh.annotations.State
-import org.openjdk.jmh.annotations.TearDown
-import org.openjdk.jmh.annotations.Warmup
+import org.openjdk.jmh.annotations.{
+  Benchmark,
+  BenchmarkMode,
+  Fork,
+  Measurement,
+  Mode,
+  OutputTimeUnit,
+  Scope => JmhScope,
+  State,
+  TearDown,
+  Warmup
+}
 
 import org.apache.pekko
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
-import pekko.actor.Props
+import pekko.actor.{ ActorRef, ActorSystem, Props }
 import pekko.cluster.Cluster
-import pekko.serialization.SerializationExtension
-import pekko.serialization.Serializers
+import pekko.serialization.{ SerializationExtension, Serializers }
 
 @Fork(2)
 @State(JmhScope.Benchmark)

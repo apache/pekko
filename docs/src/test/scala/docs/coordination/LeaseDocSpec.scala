@@ -19,8 +19,7 @@ import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko.cluster.Cluster
 import org.apache.pekko.coordination.lease.LeaseSettings
-import org.apache.pekko.coordination.lease.scaladsl.Lease
-import org.apache.pekko.coordination.lease.scaladsl.LeaseProvider
+import org.apache.pekko.coordination.lease.scaladsl.{ Lease, LeaseProvider }
 import org.apache.pekko.testkit.PekkoSpec
 
 //#lease-example

@@ -13,13 +13,13 @@
 
 package org.apache.pekko.persistence.typed.internal
 
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
+import java.time.{ Instant, LocalDateTime, ZoneId }
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.atomic.AtomicReference
+
 import scala.annotation.tailrec
 import scala.collection.immutable
+
 import org.apache.pekko
 import pekko.actor.UnhandledMessage
 import pekko.actor.typed.eventstream.EventStream
@@ -28,23 +28,21 @@ import pekko.actor.typed.internal.PoisonPill
 import pekko.actor.typed.scaladsl.{ AbstractBehavior, ActorContext, Behaviors, LoggerOps }
 import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.event.Logging
-import pekko.persistence.DeleteMessagesFailure
-import pekko.persistence.DeleteMessagesSuccess
-import pekko.persistence.DeleteSnapshotFailure
-import pekko.persistence.DeleteSnapshotSuccess
-import pekko.persistence.DeleteSnapshotsFailure
-import pekko.persistence.DeleteSnapshotsSuccess
+import pekko.persistence.{
+  DeleteMessagesFailure,
+  DeleteMessagesSuccess,
+  DeleteSnapshotFailure,
+  DeleteSnapshotSuccess,
+  DeleteSnapshotsFailure,
+  DeleteSnapshotsSuccess
+}
 import pekko.persistence.JournalProtocol
 import pekko.persistence.JournalProtocol._
 import pekko.persistence.PersistentRepr
-import pekko.persistence.SaveSnapshotFailure
-import pekko.persistence.SaveSnapshotSuccess
-import pekko.persistence.SnapshotProtocol
+import pekko.persistence.{ SaveSnapshotFailure, SaveSnapshotSuccess, SnapshotProtocol }
 import pekko.persistence.journal.Tagged
 import pekko.persistence.query.{ EventEnvelope, PersistenceQuery }
 import pekko.persistence.query.scaladsl.EventsByPersistenceIdQuery
-import pekko.persistence.typed.ReplicaId
-import pekko.persistence.typed.ReplicationId
 import pekko.persistence.typed.{
   DeleteEventsCompleted,
   DeleteEventsFailed,
@@ -55,6 +53,8 @@ import pekko.persistence.typed.{
   JournalPersistFailed,
   JournalPersistRejected,
   PersistenceId,
+  ReplicaId,
+  ReplicationId,
   SnapshotCompleted,
   SnapshotFailed,
   SnapshotMetadata,
@@ -65,14 +65,10 @@ import pekko.persistence.typed.internal.InternalProtocol.ReplicatedEventEnvelope
 import pekko.persistence.typed.internal.JournalInteractions.EventToPersist
 import pekko.persistence.typed.internal.Running.WithSeqNrAccessible
 import pekko.persistence.typed.scaladsl.Effect
-import pekko.stream.scaladsl.Keep
+import pekko.stream.scaladsl.{ Keep, RestartSource, Sink, Source }
 import pekko.stream.{ RestartSettings, SystemMaterializer, WatchedActorTerminatedException }
-import pekko.stream.scaladsl.Source
-import pekko.stream.scaladsl.{ RestartSource, Sink }
 import pekko.stream.typed.scaladsl.ActorFlow
-import pekko.util.OptionVal
-import pekko.util.unused
-import pekko.util.Timeout
+import pekko.util.{ unused, OptionVal, Timeout }
 
 /**
  * INTERNAL API

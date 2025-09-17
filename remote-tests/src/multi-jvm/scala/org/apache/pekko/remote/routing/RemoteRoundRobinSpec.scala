@@ -19,12 +19,13 @@ import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
 
-import org.apache.pekko.actor.{ Actor, ActorRef, Address, PoisonPill, Props }
-import org.apache.pekko.pattern.ask
-import org.apache.pekko.remote.RemotingMultiNodeSpec
-import org.apache.pekko.remote.testkit.MultiNodeConfig
-import org.apache.pekko.routing._
-import org.apache.pekko.testkit._
+import org.apache.pekko
+import pekko.actor._
+import pekko.pattern.ask
+import pekko.remote.RemotingMultiNodeSpec
+import pekko.remote.testkit.MultiNodeConfig
+import pekko.routing._
+import pekko.testkit._
 
 class RemoteRoundRobinConfig(artery: Boolean) extends MultiNodeConfig {
 

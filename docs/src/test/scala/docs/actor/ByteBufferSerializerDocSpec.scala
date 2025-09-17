@@ -15,9 +15,9 @@ package docs.actor
 
 //#bytebufserializer-with-manifest
 import java.nio.ByteBuffer
+
 import org.apache.pekko
-import pekko.serialization.ByteBufferSerializer
-import pekko.serialization.SerializerWithStringManifest
+import pekko.serialization.{ ByteBufferSerializer, SerializerWithStringManifest }
 
 //#bytebufserializer-with-manifest
 

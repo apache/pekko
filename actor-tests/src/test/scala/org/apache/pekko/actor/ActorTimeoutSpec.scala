@@ -18,8 +18,8 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.pattern.{ ask, AskTimeoutException }
-import pekko.testkit._
 import pekko.testkit.TestEvent._
+import pekko.testkit._
 import pekko.util.Timeout
 
 class ActorTimeoutSpec extends PekkoSpec {

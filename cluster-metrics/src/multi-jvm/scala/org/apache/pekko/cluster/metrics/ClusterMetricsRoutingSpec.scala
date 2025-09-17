@@ -19,24 +19,17 @@ import scala.annotation.nowarn
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.cluster.Cluster
-import pekko.cluster.MultiNodeClusterSpec
-import pekko.cluster.routing.ClusterRouterPool
-import pekko.cluster.routing.ClusterRouterPoolSettings
+import pekko.cluster.routing.{ ClusterRouterPool, ClusterRouterPoolSettings }
+import pekko.cluster.{ Cluster, MultiNodeClusterSpec }
 import pekko.pattern.ask
 import pekko.remote.testkit.MultiNodeConfig
-import pekko.routing.ActorRefRoutee
-import pekko.routing.FromConfig
-import pekko.routing.GetRoutees
-import pekko.routing.Routees
+import pekko.routing.{ ActorRefRoutee, FromConfig, GetRoutees, Routees }
 import pekko.serialization.jackson.CborSerializable
-import pekko.testkit.GHExcludeTest
-import pekko.testkit.{ DefaultTimeout, ImplicitSender, LongRunningTest }
+import pekko.testkit.{ DefaultTimeout, GHExcludeTest, ImplicitSender, LongRunningTest }
 import pekko.util.unused
 
 object AdaptiveLoadBalancingRouterConfig extends MultiNodeConfig {

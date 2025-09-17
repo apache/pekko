@@ -17,8 +17,8 @@ import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
 import pekko.NotUsed
-import pekko.stream.{ BidiShape, _ }
 import pekko.stream.impl.{ LinearTraversalBuilder, Timers, TraversalBuilder }
+import pekko.stream._
 
 final class BidiFlow[-I1, +O1, -I2, +O2, +Mat](
     override val traversalBuilder: TraversalBuilder,

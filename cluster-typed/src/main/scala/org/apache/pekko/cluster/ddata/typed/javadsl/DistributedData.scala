@@ -16,17 +16,10 @@ package org.apache.pekko.cluster.ddata.typed.javadsl
 import java.util.function.{ Function => JFunction }
 
 import org.apache.pekko
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.Extension
-import pekko.actor.typed.ExtensionId
-import pekko.actor.typed.ExtensionSetup
 import pekko.actor.typed.javadsl.Behaviors
-import pekko.annotation.DoNotInherit
-import pekko.annotation.InternalApi
-import pekko.cluster.ddata.ReplicatedData
-import pekko.cluster.ddata.SelfUniqueAddress
+import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior, Extension, ExtensionId, ExtensionSetup }
+import pekko.annotation.{ DoNotInherit, InternalApi }
+import pekko.cluster.ddata.{ ReplicatedData, SelfUniqueAddress }
 import pekko.util.JavaDurationConverters._
 
 object DistributedData extends ExtensionId[DistributedData] {

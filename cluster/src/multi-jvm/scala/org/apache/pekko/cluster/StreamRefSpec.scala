@@ -15,8 +15,7 @@ package org.apache.pekko.cluster
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
-import scala.util.Failure
-import scala.util.Success
+import scala.util.{ Failure, Success }
 
 import com.typesafe.config.ConfigFactory
 
@@ -26,16 +25,10 @@ import pekko.actor.{ Actor, ActorIdentity, ActorLogging, ActorRef, Identify, Pro
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.transport.ThrottlerTransportAdapter.Direction
 import pekko.serialization.jackson.CborSerializable
-import pekko.stream.Materializer
-import pekko.stream.RemoteStreamRefActorTerminatedException
-import pekko.stream.SinkRef
-import pekko.stream.SourceRef
-import pekko.stream.scaladsl.Keep
-import pekko.stream.scaladsl.Sink
-import pekko.stream.scaladsl.Source
-import pekko.stream.scaladsl.StreamRefs
+import pekko.stream.scaladsl.{ Keep, Sink, Source, StreamRefs }
 import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.scaladsl.TestSink
+import pekko.stream.{ Materializer, RemoteStreamRefActorTerminatedException, SinkRef, SourceRef }
 import pekko.testkit._
 import pekko.util.JavaDurationConverters._
 

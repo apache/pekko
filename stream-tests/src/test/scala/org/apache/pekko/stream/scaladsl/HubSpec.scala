@@ -14,20 +14,16 @@
 package org.apache.pekko.stream.scaladsl
 
 import scala.collection.immutable
-import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
 
 import org.apache.pekko
 import pekko.Done
-import pekko.stream.KillSwitches
-import pekko.stream.ThrottleMode
+import pekko.stream.{ KillSwitches, ThrottleMode }
 import pekko.stream.impl.ActorPublisher
-import pekko.stream.testkit.StreamSpec
-import pekko.stream.testkit.TestPublisher
-import pekko.stream.testkit.TestSubscriber
+import pekko.stream.testkit.{ StreamSpec, TestPublisher, TestSubscriber }
 import pekko.stream.testkit.Utils.TE
-import pekko.stream.testkit.scaladsl.TestSink
-import pekko.stream.testkit.scaladsl.TestSource
+import pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
 import pekko.testkit.EventFilter
 
 class HubSpec extends StreamSpec {

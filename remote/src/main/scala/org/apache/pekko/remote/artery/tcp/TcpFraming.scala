@@ -14,16 +14,13 @@
 package org.apache.pekko.remote.artery
 package tcp
 
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
+import java.nio.{ ByteBuffer, ByteOrder }
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.stream.Attributes
 import pekko.stream.impl.io.ByteStringParser
-import pekko.stream.impl.io.ByteStringParser.ByteReader
-import pekko.stream.impl.io.ByteStringParser.ParseResult
-import pekko.stream.impl.io.ByteStringParser.ParseStep
+import pekko.stream.impl.io.ByteStringParser.{ ByteReader, ParseResult, ParseStep }
 import pekko.stream.scaladsl.Framing.FramingException
 import pekko.stream.stage.GraphStageLogic
 import pekko.util.ByteString

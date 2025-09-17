@@ -16,18 +16,17 @@ package org.apache.pekko.cluster
 import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.collection.immutable.{ SortedSet, VectorBuilder }
+import scala.jdk.CollectionConverters._
 import scala.runtime.AbstractFunction5
 
 import org.apache.pekko
-import pekko.actor.{ Actor, ActorRef, Address }
-import pekko.actor.DeadLetterSuppression
+import pekko.actor.{ Actor, ActorRef, Address, DeadLetterSuppression }
 import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.cluster.ClusterEvent._
 import pekko.cluster.ClusterSettings.DataCenter
 import pekko.cluster.MemberStatus._
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.event.EventStream
-import pekko.util.ccompat.JavaConverters._
 
 /**
  * Domain events published to the event bus.

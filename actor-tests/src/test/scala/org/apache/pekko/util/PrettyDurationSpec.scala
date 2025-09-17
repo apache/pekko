@@ -17,7 +17,6 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 class PrettyDurationSpec extends AnyWordSpec with Matchers {
-
   import scala.concurrent.duration._
 
   import org.apache.pekko.util.PrettyDuration._

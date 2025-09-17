@@ -13,29 +13,24 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import java.util.concurrent.LinkedBlockingQueue
-import java.util.concurrent.ThreadLocalRandom
+import java.util.concurrent.{ LinkedBlockingQueue, ThreadLocalRandom }
 import java.util.concurrent.atomic.AtomicInteger
 
 import scala.annotation.tailrec
-import scala.concurrent.Await
-import scala.concurrent.Future
-import scala.concurrent.Promise
+import scala.concurrent.{ Await, Future, Promise }
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
-import org.apache.pekko
-import pekko.stream.ActorAttributes
-import pekko.stream.ActorAttributes.supervisionStrategy
-import pekko.stream.Supervision
-import pekko.stream.Supervision.resumingDecider
-import pekko.stream.testkit._
-import pekko.stream.testkit.Utils._
-import pekko.stream.testkit.scaladsl.TestSink
-import pekko.testkit.TestLatch
-import pekko.testkit.TestProbe
-
 import org.scalatest.concurrent.PatienceConfiguration.Timeout
+
+import org.apache.pekko
+import pekko.stream.ActorAttributes.supervisionStrategy
+import pekko.stream.{ ActorAttributes, Supervision }
+import pekko.stream.Supervision.resumingDecider
+import pekko.stream.testkit.Utils._
+import pekko.stream.testkit._
+import pekko.stream.testkit.scaladsl.TestSink
+import pekko.testkit.{ TestLatch, TestProbe }
 
 class FlowMapAsyncSpec extends StreamSpec {
 

@@ -15,15 +15,12 @@ package org.apache.pekko.actor.typed.delivery
 
 import java.util.concurrent.atomic.AtomicReference
 
-import scala.concurrent.duration.Duration
-import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.duration.{ Duration, FiniteDuration }
 
 import org.apache.pekko
 import pekko.actor.testkit.typed.TestException
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.SupervisorStrategy
-import pekko.actor.typed.scaladsl.ActorContext
-import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors }
+import pekko.actor.typed.{ Behavior, SupervisorStrategy }
 
 object TestDurableProducerQueue {
   import DurableProducerQueue._

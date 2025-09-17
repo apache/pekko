@@ -17,9 +17,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.stream.testkit.StreamSpec
-import pekko.stream.testkit.TestPublisher
-import pekko.stream.testkit.TestSubscriber
+import pekko.stream.testkit.{ StreamSpec, TestPublisher, TestSubscriber }
 
 class FlowIdleInjectSpec extends StreamSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 2

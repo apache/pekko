@@ -15,14 +15,16 @@ package docs.actor
 
 //#all
 //#imports
+import scala.concurrent.duration._
+
+import com.typesafe.config.ConfigFactory
+
 import org.apache.pekko
 import pekko.actor._
 import pekko.actor.SupervisorStrategy._
-import scala.concurrent.duration._
 import pekko.util.Timeout
 import pekko.event.LoggingReceive
 import pekko.pattern.{ ask, pipe }
-import com.typesafe.config.ConfigFactory
 //#imports
 
 /**

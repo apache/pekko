@@ -17,19 +17,20 @@ import scala.collection.immutable
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorCell
-import pekko.actor.ActorInitializationException
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystemImpl
-import pekko.actor.IndirectActorProducer
-import pekko.actor.InternalActorRef
-import pekko.actor.PoisonPill
-import pekko.actor.Props
-import pekko.actor.SupervisorStrategy
-import pekko.actor.Terminated
-import pekko.dispatch.Envelope
-import pekko.dispatch.MessageDispatcher
+import pekko.actor.{
+  Actor,
+  ActorCell,
+  ActorInitializationException,
+  ActorRef,
+  ActorSystemImpl,
+  IndirectActorProducer,
+  InternalActorRef,
+  PoisonPill,
+  Props,
+  SupervisorStrategy,
+  Terminated
+}
+import pekko.dispatch.{ Envelope, MessageDispatcher }
 
 /**
  * INTERNAL API

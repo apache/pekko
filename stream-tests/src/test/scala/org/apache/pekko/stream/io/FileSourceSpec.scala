@@ -25,14 +25,14 @@ import com.google.common.jimfs.{ Configuration, Jimfs }
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
-import pekko.stream._
 import pekko.stream.IOResult._
-import pekko.stream.impl.{ PhasedFusingActorMaterializer, StreamSupervisor }
+import pekko.stream._
 import pekko.stream.impl.StreamSupervisor.Children
+import pekko.stream.impl.{ PhasedFusingActorMaterializer, StreamSupervisor }
 import pekko.stream.io.FileSourceSpec.Settings
 import pekko.stream.scaladsl.{ FileIO, Keep, Sink }
-import pekko.stream.testkit._
 import pekko.stream.testkit.Utils._
+import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.util.ByteString
 

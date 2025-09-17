@@ -12,10 +12,12 @@
  */
 
 package org.apache.pekko.persistence.testkit.query
+
+import com.typesafe.config.Config
+
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.persistence.query.ReadJournalProvider
-import com.typesafe.config.Config
 
 class PersistenceTestKitReadJournalProvider(system: ExtendedActorSystem, config: Config, configPath: String)
     extends ReadJournalProvider {

@@ -13,10 +13,9 @@
 
 package docs.stream.operators.sink
 
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.stream.scaladsl.Keep
-import org.apache.pekko.stream.scaladsl.Sink
-import org.apache.pekko.stream.scaladsl.Source
+import org.apache.pekko
+import pekko.actor.ActorSystem
+import pekko.stream.scaladsl.{ Keep, Sink, Source }
 
 object Lazy {
 

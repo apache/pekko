@@ -16,8 +16,7 @@ package org.apache.pekko.cluster.sharding
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.cluster.sharding.ShardCoordinator.Internal.ShardHomeAllocated
-import pekko.persistence.journal.EventAdapter
-import pekko.persistence.journal.EventSeq
+import pekko.persistence.journal.{ EventAdapter, EventSeq }
 
 /**
  * Used for migrating from persistent state store mode to the new event sourced remember entities. No user API,

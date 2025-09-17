@@ -13,41 +13,30 @@
 
 package org.apache.pekko.remote
 
+import scala.annotation.nowarn
 import scala.concurrent.Future
 import scala.util.Failure
 import scala.util.control.Exception.Catcher
 import scala.util.control.NonFatal
 
-import scala.annotation.nowarn
-
 import org.apache.pekko
-import pekko.ConfigurationException
-import pekko.Done
+import pekko.{ ConfigurationException, Done }
+import pekko.actor.SystemGuardian.{ RegisterTerminationHook, TerminationHook, TerminationHookDone }
 import pekko.actor._
-import pekko.actor.SystemGuardian.RegisterTerminationHook
-import pekko.actor.SystemGuardian.TerminationHook
-import pekko.actor.SystemGuardian.TerminationHookDone
 import pekko.annotation.InternalApi
-import pekko.dispatch.RequiresMessageQueue
-import pekko.dispatch.UnboundedMessageQueueSemantics
 import pekko.dispatch.sysmsg._
-import pekko.event.EventStream
-import pekko.event.Logging
+import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.event.Logging.Error
-import pekko.event.LoggingAdapter
+import pekko.event.{ EventStream, Logging, LoggingAdapter }
 import pekko.pattern.pipe
-import pekko.remote.artery.ArterySettings
 import pekko.remote.artery.ArterySettings.AeronUpd
-import pekko.remote.artery.ArteryTransport
-import pekko.remote.artery.OutboundEnvelope
 import pekko.remote.artery.SystemMessageDelivery.SystemMessageEnvelope
 import pekko.remote.artery.aeron.ArteryAeronUdpTransport
 import pekko.remote.artery.tcp.ArteryTcpTransport
+import pekko.remote.artery.{ ArterySettings, ArteryTransport, OutboundEnvelope }
 import pekko.remote.serialization.ActorRefResolveThreadLocalCache
 import pekko.serialization.Serialization
-import pekko.util.ErrorMessages
-import pekko.util.OptionVal
-import pekko.util.unused
+import pekko.util.{ unused, ErrorMessages, OptionVal }
 
 /**
  * INTERNAL API

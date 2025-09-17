@@ -14,8 +14,12 @@
 package org.apache.pekko.cluster.sharding
 
 import java.io.File
+
+import scala.annotation.nowarn
 import scala.concurrent.duration._
+
 import org.apache.commons.io.FileUtils
+
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorIdentity, ActorLogging, ActorRef, ActorSystem, Identify, PoisonPill, Props }
 import pekko.cluster.MultiNodeClusterSpec
@@ -25,8 +29,6 @@ import pekko.persistence.journal.leveldb.{ SharedLeveldbJournal, SharedLeveldbSt
 import pekko.remote.testconductor.RoleName
 import pekko.serialization.jackson.CborSerializable
 import pekko.testkit.{ TestActors, TestProbe }
-
-import scala.annotation.nowarn
 
 object MultiNodeClusterShardingSpec {
 

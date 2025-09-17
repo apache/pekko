@@ -21,9 +21,7 @@ import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorSystemImpl
-import pekko.actor.Props
+import pekko.actor.{ Actor, ActorSystemImpl, Props }
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.testkit._
 

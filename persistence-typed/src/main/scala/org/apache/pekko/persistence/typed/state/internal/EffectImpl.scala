@@ -18,8 +18,7 @@ import scala.collection.immutable
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
 import pekko.annotation.InternalApi
-import pekko.persistence.typed.state.javadsl
-import pekko.persistence.typed.state.scaladsl
+import pekko.persistence.typed.state.{ javadsl, scaladsl }
 
 /** INTERNAL API */
 @InternalApi

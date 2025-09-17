@@ -13,8 +13,7 @@
 
 package org.apache.pekko.stream
 
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.{ CountDownLatch, TimeUnit }
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -25,11 +24,8 @@ import org.openjdk.jmh.annotations._
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.actor.ActorSystem
-import pekko.remote.artery.BenchTestSource
-import pekko.remote.artery.FixedSizePartitionHub
-import pekko.remote.artery.LatchSink
-import pekko.stream.scaladsl._
-import pekko.stream.scaladsl.PartitionHub
+import pekko.remote.artery.{ BenchTestSource, FixedSizePartitionHub, LatchSink }
+import pekko.stream.scaladsl.{ PartitionHub, _ }
 import pekko.stream.testkit.scaladsl.StreamTestKit
 
 object PartitionHubBenchmark {

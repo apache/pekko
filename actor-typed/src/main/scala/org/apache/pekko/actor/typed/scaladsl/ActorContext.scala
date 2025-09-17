@@ -13,18 +13,19 @@
 
 package org.apache.pekko.actor.typed.scaladsl
 
-import scala.concurrent.{ ExecutionContextExecutor, Future }
 import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.{ ExecutionContextExecutor, Future }
 import scala.reflect.ClassTag
 import scala.util.Try
+
 import org.slf4j.Logger
+
 import org.apache.pekko
-import pekko.actor.ClassicActorContextProvider
-import pekko.actor.typed._
-import pekko.annotation.DoNotInherit
-import pekko.annotation.InternalApi
-import pekko.pattern.StatusReply
-import pekko.util.Timeout
+import org.apache.pekko.actor.ClassicActorContextProvider
+import org.apache.pekko.actor.typed._
+import org.apache.pekko.annotation.{ DoNotInherit, InternalApi }
+import org.apache.pekko.pattern.StatusReply
+import org.apache.pekko.util.Timeout
 
 /**
  * An Actor is given by the combination of a [[Behavior]] and a context in

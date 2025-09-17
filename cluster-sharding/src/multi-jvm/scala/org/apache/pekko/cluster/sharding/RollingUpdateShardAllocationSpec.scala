@@ -13,17 +13,16 @@
 
 package org.apache.pekko.cluster.sharding
 
+import scala.concurrent.duration._
+
+import com.typesafe.config.ConfigFactory
+
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorLogging
-import pekko.actor.Address
-import pekko.actor.Props
+import pekko.actor.{ Actor, ActorLogging, Address, Props }
 import pekko.cluster.Cluster
 import pekko.cluster.MemberStatus.Up
 import pekko.serialization.jackson.CborSerializable
 import pekko.testkit.ImplicitSender
-import com.typesafe.config.ConfigFactory
-import scala.concurrent.duration._
 
 object RollingUpdateShardAllocationSpecConfig
     extends MultiNodeClusterShardingConfig(
@@ -93,9 +92,8 @@ class RollingUpdateShardAllocationSpecMultiJvmNode4 extends RollingUpdateShardAl
 abstract class RollingUpdateShardAllocationSpec
     extends MultiNodeClusterShardingSpec(RollingUpdateShardAllocationSpecConfig)
     with ImplicitSender {
-
-  import RollingUpdateShardAllocationSpecConfig._
   import RollingUpdateShardAllocationSpec._
+  import RollingUpdateShardAllocationSpecConfig._
 
   val typeName = "home"
 

@@ -13,27 +13,24 @@
 
 package org.apache.pekko.testkit
 
+import java.nio.file.{ Path, Paths }
+
 import scala.concurrent.Future
 import scala.concurrent.duration._
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-import org.scalactic.CanEqual
-import org.scalactic.TypeCheckedTripleEquals
+
+import com.typesafe.config.{ Config, ConfigFactory }
+import org.scalactic.{ CanEqual, TypeCheckedTripleEquals }
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.time.Millis
-import org.scalatest.time.Span
+import org.scalatest.time.{ Millis, Span }
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.dispatch.Dispatchers
-import pekko.event.Logging
-import pekko.event.LoggingAdapter
+import pekko.event.{ Logging, LoggingAdapter }
 import pekko.testkit.TestEvent._
-
-import java.nio.file.{ Path, Paths }
 
 object PekkoSpec {
   val testConf: Config = ConfigFactory.parseString("""
@@ -55,7 +52,7 @@ object PekkoSpec {
       """)
 
   def mapToConfig(map: Map[String, Any]): Config = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     ConfigFactory.parseMap(map.asJava)
   }
 

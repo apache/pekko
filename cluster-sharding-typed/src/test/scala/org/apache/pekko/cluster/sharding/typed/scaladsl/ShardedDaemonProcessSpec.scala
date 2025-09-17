@@ -19,15 +19,12 @@ import com.typesafe.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
 import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.{ ActorRef, Behavior }
 import pekko.cluster.MemberStatus
 import pekko.cluster.sharding.typed.ShardedDaemonProcessSettings
-import pekko.cluster.typed.Cluster
-import pekko.cluster.typed.Join
+import pekko.cluster.typed.{ Cluster, Join }
 
 object ShardedDaemonProcessSpec {
   // single node cluster config

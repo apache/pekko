@@ -14,18 +14,14 @@
 package org.apache.pekko.cluster.typed.internal
 
 import org.apache.pekko
-import pekko.actor.typed.{ ActorRef, ActorSystem, Terminated }
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.Props
-import pekko.actor.typed.SupervisorStrategy
 import pekko.actor.typed.internal.adapter.ActorSystemAdapter
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.adapter._
+import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior, Props, SupervisorStrategy, Terminated }
 import pekko.annotation.InternalApi
-import pekko.cluster.{ ClusterEvent, Member, MemberStatus }
 import pekko.cluster.ClusterEvent.MemberEvent
-import pekko.cluster.typed.PrepareForFullClusterShutdown
 import pekko.cluster.typed._
+import pekko.cluster.{ ClusterEvent, Member, MemberStatus }
 
 /**
  * INTERNAL API:

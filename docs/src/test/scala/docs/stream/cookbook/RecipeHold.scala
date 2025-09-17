@@ -13,11 +13,12 @@
 
 package docs.stream.cookbook
 
-import org.apache.pekko.stream.Attributes
-import org.apache.pekko.stream.scaladsl.{ Sink, Source }
-import org.apache.pekko.stream.testkit._
-
 import scala.concurrent.duration._
+
+import org.apache.pekko
+import pekko.stream.Attributes
+import pekko.stream.scaladsl.{ Sink, Source }
+import pekko.stream.testkit._
 
 object HoldOps {
   // #hold-version-1

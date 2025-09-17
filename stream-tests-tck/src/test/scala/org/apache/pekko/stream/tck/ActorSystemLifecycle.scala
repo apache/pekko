@@ -18,18 +18,13 @@ import java.util.concurrent.TimeoutException
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-import org.testng.annotations.AfterClass
-import org.testng.annotations.BeforeClass
+import com.typesafe.config.{ Config, ConfigFactory }
+import org.testng.annotations.{ AfterClass, BeforeClass }
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.actor.ActorSystemImpl
+import pekko.actor.{ ActorSystem, ActorSystemImpl }
 import pekko.event.Logging
-import pekko.testkit.PekkoSpec
-import pekko.testkit.EventFilter
-import pekko.testkit.TestEvent
+import pekko.testkit.{ EventFilter, PekkoSpec, TestEvent }
 
 trait ActorSystemLifecycle {
 

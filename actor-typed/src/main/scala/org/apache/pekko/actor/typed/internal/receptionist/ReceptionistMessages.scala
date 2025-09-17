@@ -13,12 +13,13 @@
 
 package org.apache.pekko.actor.typed.internal.receptionist
 
+import scala.jdk.CollectionConverters._
+
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
-import pekko.actor.typed.receptionist.{ Receptionist, ServiceKey }
 import pekko.actor.typed.receptionist.Receptionist.Command
+import pekko.actor.typed.receptionist.{ Receptionist, ServiceKey }
 import pekko.annotation.InternalApi
-import pekko.util.ccompat.JavaConverters._
 
 /**
  * Internal API

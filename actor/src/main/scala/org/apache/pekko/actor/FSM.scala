@@ -15,11 +15,8 @@ package org.apache.pekko.actor
 
 import scala.collection.mutable
 import scala.concurrent.ExecutionContextExecutor
-import scala.concurrent.duration._
-import scala.concurrent.duration.Duration
-import scala.concurrent.duration.FiniteDuration
-
-import language.implicitConversions
+import scala.concurrent.duration.{ Duration, FiniteDuration, _ }
+import scala.language.implicitConversions
 
 import org.apache.pekko
 import pekko.annotation.InternalApi

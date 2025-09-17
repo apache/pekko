@@ -13,12 +13,13 @@
 
 package org.apache.pekko.stream.impl.fusing
 
+import org.apache.pekko
+
 import scala.concurrent.duration._
 
-import org.apache.pekko
 import pekko.annotation.InternalApi
+import pekko.stream.stage._
 import pekko.stream.{ Attributes, FlowShape, Inlet, Outlet }
-import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler, TimerGraphStageLogic }
 
 /**
  * INTERNAL API

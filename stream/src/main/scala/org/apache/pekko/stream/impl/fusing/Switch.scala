@@ -18,20 +18,12 @@
 package org.apache.pekko.stream.impl.fusing
 
 import org.apache.pekko
-import pekko.stream.impl.TraversalBuilder
 import pekko.annotation.InternalApi
-import pekko.stream.Attributes
-import pekko.stream.FlowShape
-import pekko.stream.Graph
-import pekko.stream.Inlet
-import pekko.stream.Outlet
-import pekko.stream.SourceShape
+import pekko.stream._
 import pekko.stream.impl.Stages.DefaultAttributes
+import pekko.stream.impl.TraversalBuilder
 import pekko.stream.scaladsl.Source
-import pekko.stream.stage.GraphStage
-import pekko.stream.stage.GraphStageLogic
-import pekko.stream.stage.InHandler
-import pekko.stream.stage.OutHandler
+import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
 import pekko.util.OptionVal
 
 /**

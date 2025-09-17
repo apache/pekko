@@ -15,22 +15,21 @@ package docs.delivery
 
 import java.util.UUID
 
+import scala.annotation.nowarn
 import scala.concurrent.duration._
-import scala.util.Failure
-import scala.util.Success
+import scala.util.{ Failure, Success }
 
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.typed.ActorRef
-import scala.annotation.nowarn
 
 @nowarn("msg=never used")
 object WorkPullingDocExample {
 
   // #imports
   import org.apache.pekko
-  import pekko.actor.typed.scaladsl.Behaviors
   import pekko.actor.typed.Behavior
+  import pekko.actor.typed.scaladsl.Behaviors
   // #imports
 
   // #consumer
@@ -75,8 +74,7 @@ object WorkPullingDocExample {
   // #producer
   import org.apache.pekko
   import pekko.actor.typed.delivery.WorkPullingProducerController
-  import pekko.actor.typed.scaladsl.ActorContext
-  import pekko.actor.typed.scaladsl.StashBuffer
+  import pekko.actor.typed.scaladsl.{ ActorContext, StashBuffer }
 
   object ImageWorkManager {
     sealed trait Command
@@ -120,8 +118,8 @@ object WorkPullingDocExample {
         // #producer
         // #durable-queue
         import org.apache.pekko
-        import pekko.persistence.typed.delivery.EventSourcedProducerQueue
         import pekko.persistence.typed.PersistenceId
+        import pekko.persistence.typed.delivery.EventSourcedProducerQueue
 
         val durableQueue =
           EventSourcedProducerQueue[ImageConverter.ConversionJob](PersistenceId.ofUniqueId("ImageWorkManager"))

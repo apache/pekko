@@ -15,13 +15,10 @@ package org.apache.pekko.cluster.metrics
 
 import java.io.File
 
-import scala.util.Failure
-import scala.util.Success
-import scala.util.Try
+import scala.util.{ Failure, Success, Try }
 
 import kamon.sigar.SigarProvisioner
-import org.hyperic.sigar.Sigar
-import org.hyperic.sigar.SigarProxy
+import org.hyperic.sigar.{ Sigar, SigarProxy }
 
 /**
  * Provide sigar instance as `SigarProxy`.

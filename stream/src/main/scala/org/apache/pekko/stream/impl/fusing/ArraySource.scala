@@ -19,9 +19,9 @@ package org.apache.pekko.stream.impl.fusing
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.stream.{ Attributes, Outlet, SourceShape }
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, OutHandler }
+import pekko.stream.{ Attributes, Outlet, SourceShape }
 
 @InternalApi
 private[pekko] final class ArraySource[T](elements: Array[T]) extends GraphStage[SourceShape[T]] {

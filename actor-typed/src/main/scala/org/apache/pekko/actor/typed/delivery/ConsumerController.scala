@@ -21,18 +21,16 @@ import com.typesafe.config.Config
 
 import org.apache.pekko
 import pekko.actor.DeadLetterSuppression
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.delivery.internal.ChunkedMessage
-import pekko.actor.typed.delivery.internal.ConsumerControllerImpl
-import pekko.actor.typed.delivery.internal.DeliverySerializable
-import pekko.actor.typed.delivery.internal.ProducerControllerImpl
+import pekko.actor.typed.delivery.internal.{
+  ChunkedMessage,
+  ConsumerControllerImpl,
+  DeliverySerializable,
+  ProducerControllerImpl
+}
 import pekko.actor.typed.receptionist.ServiceKey
 import pekko.actor.typed.scaladsl.Behaviors
-import pekko.annotation.ApiMayChange
-import pekko.annotation.DoNotInherit
-import pekko.annotation.InternalApi
+import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior }
+import pekko.annotation.{ ApiMayChange, DoNotInherit, InternalApi }
 import pekko.util.JavaDurationConverters._
 
 /**

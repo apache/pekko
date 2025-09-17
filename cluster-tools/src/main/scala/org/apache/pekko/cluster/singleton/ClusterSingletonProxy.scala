@@ -20,16 +20,9 @@ import com.typesafe.config.Config
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.actor.NoSerializationVerificationNeeded
-import pekko.actor.RootActorPath
-import pekko.cluster.{ Cluster, Member, MemberStatus }
-import pekko.cluster.ClusterEvent._
-import pekko.cluster.ClusterEvent.CurrentClusterState
-import pekko.cluster.ClusterEvent.MemberExited
-import pekko.cluster.ClusterEvent.MemberRemoved
-import pekko.cluster.ClusterEvent.MemberUp
-import pekko.cluster.ClusterSettings
+import pekko.cluster.ClusterEvent.{ CurrentClusterState, MemberEvent, MemberExited, MemberRemoved, MemberUp }
 import pekko.cluster.ClusterSettings.DataCenter
+import pekko.cluster.{ Cluster, ClusterSettings, Member, MemberStatus }
 import pekko.dispatch.Dispatchers
 import pekko.event.Logging
 import pekko.util.MessageBuffer

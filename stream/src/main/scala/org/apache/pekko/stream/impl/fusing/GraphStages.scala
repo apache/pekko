@@ -16,8 +16,8 @@ package org.apache.pekko.stream.impl.fusing
 import java.util.concurrent.atomic.{ AtomicBoolean, AtomicReference }
 
 import scala.annotation.unchecked.uncheckedVariance
-import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.{ Future, Promise }
 import scala.util.Try
 
 import org.apache.pekko
@@ -26,13 +26,13 @@ import pekko.actor.Cancellable
 import pekko.annotation.InternalApi
 import pekko.dispatch.ExecutionContexts
 import pekko.event.Logging
-import pekko.stream.{ Shape, _ }
 import pekko.stream.FlowMonitorState._
-import pekko.stream.impl.{ ContextPropagation, LinearTraversalBuilder, ReactiveStreamsCompliance }
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.StreamLayout._
+import pekko.stream.impl.{ ContextPropagation, LinearTraversalBuilder, ReactiveStreamsCompliance }
 import pekko.stream.scaladsl._
 import pekko.stream.stage._
+import pekko.stream._
 
 /**
  * INTERNAL API

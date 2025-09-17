@@ -16,20 +16,17 @@ package org.apache.pekko.stream.scaladsl
 import java.util.concurrent.atomic.AtomicInteger
 
 import scala.annotation.nowarn
-import scala.concurrent.Await
-import scala.concurrent.Promise
 import scala.concurrent.duration.DurationInt
+import scala.concurrent.{ Await, Promise }
 import scala.util.Success
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
 import pekko.Done
-import pekko.stream.{ AbruptStageTerminationException, ActorAttributes, ActorMaterializer, ClosedShape, Supervision }
-import pekko.stream.testkit.StreamSpec
-import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.Utils.TE
-import pekko.stream.testkit.scaladsl.TestSink
-import pekko.stream.testkit.scaladsl.TestSource
+import pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
+import pekko.stream.testkit.{ StreamSpec, TestSubscriber }
+import pekko.stream._
 import pekko.testkit.EventFilter
 
 class FlowStatefulMapSpec extends StreamSpec {

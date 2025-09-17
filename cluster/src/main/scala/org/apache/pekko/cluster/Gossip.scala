@@ -19,9 +19,10 @@ import java.security.MessageDigest
 import scala.collection.immutable
 import scala.concurrent.duration.Deadline
 
-import ClusterSettings.DataCenter
-import MemberStatus._
-import org.apache.pekko.annotation.InternalApi
+import org.apache.pekko
+import pekko.annotation.InternalApi
+import pekko.cluster.ClusterSettings.DataCenter
+import pekko.cluster.MemberStatus._
 
 /**
  * INTERNAL API

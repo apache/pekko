@@ -13,28 +13,17 @@
 
 package org.apache.pekko.remote.artery.compress
 
+import scala.annotation.nowarn
+import scala.concurrent.Promise
+
+import org.openjdk.jmh.annotations.{ Scope, _ }
+import org.openjdk.jmh.infra.Blackhole
+
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.Props
+import pekko.actor.{ Actor, ActorRef, ActorSystem, ExtendedActorSystem, Props }
 import pekko.pattern.PromiseActorRef
 import pekko.remote.artery.SerializationFormatCache
 import pekko.serialization.Serialization
-import org.openjdk.jmh.annotations.Benchmark
-import org.openjdk.jmh.annotations.Fork
-import org.openjdk.jmh.annotations.Level
-import org.openjdk.jmh.annotations.OperationsPerInvocation
-import org.openjdk.jmh.annotations.Param
-import org.openjdk.jmh.annotations.Scope
-import org.openjdk.jmh.annotations.Setup
-import org.openjdk.jmh.annotations.State
-import org.openjdk.jmh.annotations.TearDown
-import org.openjdk.jmh.infra.Blackhole
-
-import scala.annotation.nowarn
-import scala.concurrent.Promise
 
 /**
  * Actually more like specific benchmarks for the few concrete LRU cache usages

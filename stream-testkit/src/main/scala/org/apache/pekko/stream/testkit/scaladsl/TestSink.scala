@@ -14,14 +14,13 @@
 package org.apache.pekko.stream.testkit.scaladsl
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.actor.ClassicActorSystemProvider
-import pekko.stream._
+import pekko.actor.{ ActorSystem, ClassicActorSystemProvider }
 import pekko.stream.Attributes.none
+import pekko.stream._
 import pekko.stream.scaladsl._
-import pekko.stream.testkit._
 import pekko.stream.testkit.StreamTestKit.ProbeSink
 import pekko.stream.testkit.TestSubscriber.Probe
+import pekko.stream.testkit._
 
 /**
  * Factory methods for test sinks.

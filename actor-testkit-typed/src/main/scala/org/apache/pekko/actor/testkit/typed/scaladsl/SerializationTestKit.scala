@@ -16,8 +16,7 @@ package org.apache.pekko.actor.testkit.typed.scaladsl
 import org.apache.pekko
 import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.scaladsl.adapter._
-import pekko.serialization.SerializationExtension
-import pekko.serialization.Serializers
+import pekko.serialization.{ SerializationExtension, Serializers }
 
 /**
  * Utilities to test serialization.

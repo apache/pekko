@@ -16,17 +16,17 @@ package docs.io
 import java.net.Inet6Address
 import java.net.NetworkInterface
 
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.actor.Props
-import org.apache.pekko.io.Udp
-import org.apache.pekko.testkit.SocketUtil
-import org.apache.pekko.testkit.TestKit
-import org.apache.pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
+import scala.util.Random
+
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
-import scala.util.Random
+import org.apache.pekko
+import pekko.actor.{ ActorSystem, Props }
+import pekko.io.Udp
+import pekko.testkit.{ SocketUtil, TestKit }
 
 class ScalaUdpMulticastSpec
     extends TestKit(ActorSystem("ScalaUdpMulticastSpec"))

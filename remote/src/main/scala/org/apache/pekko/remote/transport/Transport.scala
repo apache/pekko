@@ -13,15 +13,13 @@
 
 package org.apache.pekko.remote.transport
 
+import scala.annotation.nowarn
 import scala.concurrent.{ Future, Promise }
 import scala.util.control.NoStackTrace
 
-import scala.annotation.nowarn
-
 import org.apache.pekko
 import pekko.PekkoException
-import pekko.actor.{ ActorRef, Address, NoSerializationVerificationNeeded }
-import pekko.actor.DeadLetterSuppression
+import pekko.actor.{ ActorRef, Address, DeadLetterSuppression, NoSerializationVerificationNeeded }
 import pekko.event.LoggingAdapter
 import pekko.remote.transport.AssociationHandle.HandleEventListener
 import pekko.util.{ unused, ByteString }

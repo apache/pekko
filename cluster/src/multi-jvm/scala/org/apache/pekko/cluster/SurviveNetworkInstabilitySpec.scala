@@ -13,19 +13,14 @@
 
 package org.apache.pekko.cluster
 
+import scala.annotation.nowarn
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
-import scala.annotation.nowarn
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorRef
-import pekko.actor.Address
-import pekko.actor.PoisonPill
-import pekko.actor.Props
-import pekko.actor.Terminated
+import pekko.actor.{ Actor, ActorRef, Address, PoisonPill, Props, Terminated }
 import pekko.remote.RARP
 import pekko.remote.artery.QuarantinedEvent
 import pekko.remote.testconductor.RoleName

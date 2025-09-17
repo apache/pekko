@@ -16,8 +16,7 @@ package org.apache.pekko.actor.typed.internal.receptionist
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
 import pekko.actor.typed.internal.ActorRefSerializationSpec
 import pekko.actor.typed.receptionist.ServiceKey
 import pekko.serialization.SerializationExtension

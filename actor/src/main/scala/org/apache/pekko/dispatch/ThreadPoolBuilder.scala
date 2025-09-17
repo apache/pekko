@@ -13,11 +13,8 @@
 
 package org.apache.pekko.dispatch
 
-import org.apache.pekko
-import pekko.annotation.InternalApi
-import pekko.dispatch.VirtualThreadSupport.newVirtualThreadFactory
-
 import java.util.Collection
+import java.util.concurrent.atomic.{ AtomicLong, AtomicReference }
 import java.util.concurrent.{
   ArrayBlockingQueue,
   BlockingQueue,
@@ -34,9 +31,13 @@ import java.util.concurrent.{
   ThreadPoolExecutor,
   TimeUnit
 }
-import java.util.concurrent.atomic.{ AtomicLong, AtomicReference }
-import scala.concurrent.{ BlockContext, CanAwait }
+
 import scala.concurrent.duration.Duration
+import scala.concurrent.{ BlockContext, CanAwait }
+
+import org.apache.pekko
+import pekko.annotation.InternalApi
+import pekko.dispatch.VirtualThreadSupport.newVirtualThreadFactory
 
 object ThreadPoolConfig {
   type QueueFactory = () => BlockingQueue[Runnable]

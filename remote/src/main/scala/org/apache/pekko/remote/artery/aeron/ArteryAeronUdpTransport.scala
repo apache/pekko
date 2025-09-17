@@ -16,9 +16,7 @@ package aeron
 
 import java.io.File
 import java.util.UUID
-import java.util.concurrent.atomic.AtomicBoolean
-import java.util.concurrent.atomic.AtomicLong
-import java.util.concurrent.atomic.AtomicReference
+import java.util.concurrent.atomic.{ AtomicBoolean, AtomicLong, AtomicReference }
 
 import scala.annotation.tailrec
 import scala.collection.immutable
@@ -26,37 +24,23 @@ import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
-import io.aeron.Aeron
-import io.aeron.AvailableImageHandler
-import io.aeron.CncFileDescriptor
-import io.aeron.CommonContext
-import io.aeron.Image
+import io.aeron.{ Aeron, AvailableImageHandler, CncFileDescriptor, CommonContext, Image }
 import io.aeron.UnavailableImageHandler
-import io.aeron.driver.MediaDriver
-import io.aeron.driver.ThreadingMode
-import io.aeron.exceptions.ConductorServiceTimeoutException
-import io.aeron.exceptions.DriverTimeoutException
+import io.aeron.driver.{ MediaDriver, ThreadingMode }
+import io.aeron.exceptions.{ ConductorServiceTimeoutException, DriverTimeoutException }
 import io.aeron.status.ChannelEndpointStatus
-import org.agrona.DirectBuffer
-import org.agrona.ErrorHandler
-import org.agrona.IoUtil
+import org.agrona.{ DirectBuffer, ErrorHandler, IoUtil }
 import org.agrona.concurrent.BackoffIdleStrategy
 import org.agrona.concurrent.status.CountersReader.MetaData
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.Address
-import pekko.actor.Cancellable
-import pekko.actor.ExtendedActorSystem
+import pekko.actor.{ Address, Cancellable, ExtendedActorSystem }
 import pekko.event.Logging
-import pekko.remote.RemoteActorRefProvider
-import pekko.remote.RemoteTransportException
+import pekko.remote.{ RemoteActorRefProvider, RemoteTransportException }
 import pekko.remote.artery.compress._
 import pekko.stream.KillSwitches
-import pekko.stream.scaladsl.Flow
-import pekko.stream.scaladsl.Keep
-import pekko.stream.scaladsl.Sink
-import pekko.stream.scaladsl.Source
+import pekko.stream.scaladsl.{ Flow, Keep, Sink, Source }
 
 /**
  * INTERNAL API

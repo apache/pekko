@@ -13,8 +13,6 @@
 
 package org.apache.pekko
 
-import java.io.Serializable
-
 import org.apache.pekko.annotation.DoNotInherit
 
 /**

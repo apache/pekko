@@ -13,13 +13,15 @@
 
 package docs.stream
 
-import org.apache.pekko.stream.scaladsl._
-import org.apache.pekko.stream.{ DelayOverflowStrategy, KillSwitches }
-import org.apache.pekko.testkit.PekkoSpec
-import docs.CompileOnlySpec
-
 import scala.concurrent.Await
 import scala.concurrent.duration._
+
+import org.apache.pekko
+import pekko.stream.scaladsl._
+import pekko.stream.{ DelayOverflowStrategy, KillSwitches }
+import pekko.testkit.PekkoSpec
+
+import docs.CompileOnlySpec
 
 class KillSwitchDocSpec extends PekkoSpec with CompileOnlySpec {
 

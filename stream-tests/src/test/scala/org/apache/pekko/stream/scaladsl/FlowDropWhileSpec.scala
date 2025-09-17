@@ -16,8 +16,8 @@ package org.apache.pekko.stream.scaladsl
 import org.apache.pekko
 import pekko.stream.ActorAttributes._
 import pekko.stream.Supervision._
-import pekko.stream.testkit._
 import pekko.stream.testkit.Utils._
+import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.TestSink
 
 class FlowDropWhileSpec extends StreamSpec {

@@ -14,18 +14,15 @@
 package org.apache.pekko.stream.scaladsl
 
 import java.util
-import java.util.function.BiConsumer
-import java.util.function.BinaryOperator
-import java.util.function.Supplier
-import java.util.function.ToIntFunction
-import java.util.stream.BaseStream
-import java.util.stream.Collector
+import java.util.function.{ BiConsumer, BinaryOperator, Supplier, ToIntFunction }
 import java.util.stream.Collector.Characteristics
-import java.util.stream.Collectors
+import java.util.stream.{ BaseStream, Collector, Collectors }
 import java.util.{ Spliterator, Spliterators }
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
+
+import org.scalatest.time.{ Millis, Span }
 
 import org.apache.pekko
 import pekko.stream.ActorAttributes
@@ -34,18 +31,14 @@ import pekko.stream.testkit.Utils.TE
 import pekko.testkit.DefaultTimeout
 import pekko.util.ByteString
 
-import org.scalatest.time.Millis
-import org.scalatest.time.Span
-
 class StreamConvertersSpec extends StreamSpec with DefaultTimeout {
 
   implicit val config: PatienceConfig = PatienceConfig(timeout = Span(timeout.duration.toMillis, Millis))
 
   "Java Stream source" must {
-    import java.util.stream.IntStream
-    import java.util.stream.Stream
-
     import pekko.util.FunctionConverters._
+
+    import java.util.stream.{ IntStream, Stream }
 
     def javaStreamInts =
       IntStream.iterate(1,

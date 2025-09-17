@@ -23,8 +23,8 @@ import org.apache.pekko
 import pekko.actor.{ ActorIdentity, ActorSystem, Identify }
 import pekko.pattern.ask
 import pekko.remote.RARP
-import pekko.remote.artery.{ ArteryMultiNodeSpec, ArterySpecSupport, ArteryTransport }
 import pekko.remote.artery.compress.CompressionProtocol.Events.{ Event, ReceivedActorRefCompressionTable }
+import pekko.remote.artery.{ ArteryMultiNodeSpec, ArterySpecSupport, ArteryTransport }
 import pekko.testkit._
 import pekko.util.Timeout
 

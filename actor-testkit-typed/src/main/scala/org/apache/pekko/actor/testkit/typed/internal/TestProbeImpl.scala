@@ -14,38 +14,30 @@
 package org.apache.pekko.actor.testkit.typed.internal
 
 import java.time.{ Duration => JDuration }
-import java.util.{ List => JList }
-import java.util.concurrent.BlockingDeque
-import java.util.concurrent.LinkedBlockingDeque
+import java.util.concurrent.{ BlockingDeque, LinkedBlockingDeque }
 import java.util.function.Supplier
+import java.util.{ List => JList }
 
 import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.concurrent.duration._
+import scala.jdk.CollectionConverters._
 import scala.reflect.ClassTag
 import scala.util.control.NonFatal
 
 import org.apache.pekko
-import pekko.actor.ActorRefProvider
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.testkit.typed.FishingOutcome
-import pekko.actor.testkit.typed.TestKitSettings
 import pekko.actor.testkit.typed.javadsl.{ TestProbe => JavaTestProbe }
-import pekko.actor.testkit.typed.scaladsl.{ TestProbe => ScalaTestProbe }
-import pekko.actor.testkit.typed.scaladsl.TestDuration
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.Signal
-import pekko.actor.typed.Terminated
+import pekko.actor.testkit.typed.scaladsl.{ TestDuration, TestProbe => ScalaTestProbe }
+import pekko.actor.testkit.typed.{ FishingOutcome, TestKitSettings }
 import pekko.actor.typed.internal.InternalRecipientRef
 import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior, Signal, Terminated }
+import pekko.actor.{ ActorRefProvider, ExtendedActorSystem }
 import pekko.annotation.InternalApi
 import pekko.japi.function.Creator
 import pekko.util.BoxedType
 import pekko.util.JavaDurationConverters._
 import pekko.util.PrettyDuration._
-import pekko.util.ccompat.JavaConverters._
 
 @InternalApi
 private[pekko] object TestProbeImpl {

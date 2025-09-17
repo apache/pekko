@@ -23,14 +23,12 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
-import io.aeron.Aeron
-import io.aeron.CncFileDescriptor
+import io.aeron.{ Aeron, CncFileDescriptor }
 import org.agrona.IoUtil
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.remote.testkit.MultiNodeConfig
-import pekko.remote.testkit.STMultiNodeSpec
+import pekko.remote.testkit.{ MultiNodeConfig, STMultiNodeSpec }
 import pekko.stream.KillSwitches
 import pekko.stream.scaladsl.Source
 import pekko.testkit._

@@ -19,15 +19,11 @@ import org.slf4j.LoggerFactory
 
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
-import pekko.actor.typed.{ ActorRef, ActorSystem, Extension, ExtensionId, Props }
-import pekko.actor.typed.Behavior
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.actor.typed.scaladsl.LoggerOps
+import pekko.actor.typed.scaladsl.{ Behaviors, LoggerOps }
+import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior, Extension, ExtensionId, Props }
 import pekko.annotation.InternalApi
-import pekko.cluster.{ ddata => dd }
-import pekko.cluster.Cluster
-import pekko.cluster.ddata.ReplicatedData
-import pekko.cluster.ddata.SelfUniqueAddress
+import pekko.cluster.ddata.{ ReplicatedData, SelfUniqueAddress }
+import pekko.cluster.{ ddata => dd, Cluster }
 import pekko.util.JavaDurationConverters._
 
 object DistributedData extends ExtensionId[DistributedData] {

@@ -13,10 +13,11 @@
 
 package docs.org.apache.pekko.persistence.typed
 
+import scala.annotation.nowarn
+
 import org.apache.pekko
-import pekko.actor.typed.ActorRef
 import pekko.Done
-import pekko.actor.typed.Behavior
+import pekko.actor.typed.{ ActorRef, Behavior }
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.persistence.typed.state.scaladsl.Effect
 
@@ -29,7 +30,6 @@ import pekko.persistence.typed.PersistenceId
 //#behavior
 //#structure
 
-import scala.annotation.nowarn
 import pekko.serialization.jackson.CborSerializable
 
 // unused variables in pattern match are useful in the docs

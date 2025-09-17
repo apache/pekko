@@ -24,14 +24,16 @@ import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl._
-import pekko.actor.typed.delivery.DurableProducerQueue.Confirmed
-import pekko.actor.typed.delivery.DurableProducerQueue.LoadState
-import pekko.actor.typed.delivery.DurableProducerQueue.MessageSent
-import pekko.actor.typed.delivery.DurableProducerQueue.NoQualifier
-import pekko.actor.typed.delivery.DurableProducerQueue.State
-import pekko.actor.typed.delivery.DurableProducerQueue.StoreMessageConfirmed
-import pekko.actor.typed.delivery.DurableProducerQueue.StoreMessageSent
-import pekko.actor.typed.delivery.DurableProducerQueue.StoreMessageSentAck
+import pekko.actor.typed.delivery.DurableProducerQueue.{
+  Confirmed,
+  LoadState,
+  MessageSent,
+  NoQualifier,
+  State,
+  StoreMessageConfirmed,
+  StoreMessageSent,
+  StoreMessageSentAck
+}
 import pekko.actor.typed.eventstream.EventStream
 import pekko.persistence.journal.inmem.InmemJournal
 import pekko.persistence.typed.PersistenceId

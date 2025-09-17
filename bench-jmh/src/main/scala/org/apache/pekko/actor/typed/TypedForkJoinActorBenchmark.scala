@@ -15,25 +15,26 @@ package org.apache.pekko.actor.typed
 
 import java.util.concurrent.TimeUnit
 
-import scala.concurrent.Await
-import scala.concurrent.Future
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, Future }
 
 import com.typesafe.config.ConfigFactory
-import org.openjdk.jmh.annotations.Benchmark
-import org.openjdk.jmh.annotations.BenchmarkMode
-import org.openjdk.jmh.annotations.Fork
-import org.openjdk.jmh.annotations.Level
-import org.openjdk.jmh.annotations.Measurement
-import org.openjdk.jmh.annotations.Mode
-import org.openjdk.jmh.annotations.OperationsPerInvocation
-import org.openjdk.jmh.annotations.Param
-import org.openjdk.jmh.annotations.Scope
-import org.openjdk.jmh.annotations.Setup
-import org.openjdk.jmh.annotations.State
-import org.openjdk.jmh.annotations.TearDown
-import org.openjdk.jmh.annotations.Threads
-import org.openjdk.jmh.annotations.Warmup
+import org.openjdk.jmh.annotations.{
+  Benchmark,
+  BenchmarkMode,
+  Fork,
+  Level,
+  Measurement,
+  Mode,
+  OperationsPerInvocation,
+  Param,
+  Scope,
+  Setup,
+  State,
+  TearDown,
+  Threads,
+  Warmup
+}
 
 import org.apache.pekko
 import pekko.actor.typed.scaladsl.AskPattern._

@@ -14,15 +14,10 @@
 package org.apache.pekko.remote
 
 import org.apache.pekko
-import pekko.actor.Actor
-import pekko.actor.ActorLogging
-import pekko.actor.Deploy
-import pekko.actor.ExtendedActorSystem
-import pekko.actor.Props
+import pekko.actor.{ Actor, ActorLogging, Deploy, ExtendedActorSystem, Props }
 import pekko.event.Logging
 import pekko.event.Logging.Info
-import pekko.testkit.PekkoSpec
-import pekko.testkit.TestProbe
+import pekko.testkit.{ PekkoSpec, TestProbe }
 
 object LogSourceSpec {
   class Reporter extends Actor with ActorLogging {

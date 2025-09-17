@@ -16,10 +16,8 @@ package org.apache.pekko.stream.scaladsl
 import scala.annotation.nowarn
 
 import org.apache.pekko
-import pekko.stream.ActorMaterializer
-import pekko.stream.ActorMaterializerSettings
+import pekko.stream.{ ActorMaterializer, ActorMaterializerSettings, Materializer }
 import pekko.stream.testkit.StreamSpec
-import pekko.stream.Materializer
 import pekko.testkit.TestProbe
 
 @nowarn("msg=deprecated")

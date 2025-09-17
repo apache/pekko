@@ -17,13 +17,13 @@ import scala.annotation.nowarn
 import scala.concurrent.duration.FiniteDuration
 import scala.util.control.NoStackTrace
 
+import org.reactivestreams._
+
 import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.InternalApi
 import pekko.stream.StreamSubscriptionTimeoutSettings
 import pekko.stream.StreamSubscriptionTimeoutTerminationMode.{ CancelTermination, NoopTermination, WarnTermination }
-
-import org.reactivestreams._
 
 /**
  * INTERNAL API

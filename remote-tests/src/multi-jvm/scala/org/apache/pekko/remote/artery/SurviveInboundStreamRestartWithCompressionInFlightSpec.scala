@@ -20,10 +20,8 @@ import org.scalatest.concurrent.ScalaFutures
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.actor.ActorIdentity
-import pekko.actor.Identify
-import pekko.remote.{ RARP, RemotingMultiNodeSpec }
 import pekko.remote.testkit.MultiNodeConfig
+import pekko.remote.{ RARP, RemotingMultiNodeSpec }
 import pekko.testkit._
 
 object SurviveInboundStreamRestartWithCompressionInFlightSpec extends MultiNodeConfig {

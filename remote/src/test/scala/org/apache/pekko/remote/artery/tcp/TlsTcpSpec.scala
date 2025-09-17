@@ -15,23 +15,18 @@ package org.apache.pekko.remote.artery
 package tcp
 
 import java.security.NoSuchAlgorithmException
-
-import org.apache.pekko
-import pekko.actor.{ ActorIdentity, ActorPath, ActorRef, Identify, RootActorPath }
-import pekko.actor.setup.ActorSystemSetup
-import pekko.remote.artery.tcp.ssl.CipherSuiteSupportCheck
-import pekko.testkit.EventFilter
-import pekko.testkit.ImplicitSender
-import pekko.testkit.TestActors
-import pekko.testkit.TestProbe
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-import javax.net.ssl.SSLEngine
-import javax.net.ssl.SSLSession
-import org.scalatest.matchers.should.Matchers
-
+import javax.net.ssl.{ SSLEngine, SSLSession }
 import scala.concurrent.duration._
 import scala.util.{ Failure, Success }
+
+import com.typesafe.config.{ Config, ConfigFactory }
+import org.scalatest.matchers.should.Matchers
+
+import org.apache.pekko
+import pekko.actor.setup.ActorSystemSetup
+import pekko.actor._
+import pekko.remote.artery.tcp.ssl.CipherSuiteSupportCheck
+import pekko.testkit.{ EventFilter, ImplicitSender, TestActors, TestProbe }
 
 class TlsTcpWithDefaultConfigSpec extends TlsTcpSpec(ConfigFactory.empty())
 
@@ -59,7 +54,7 @@ class TlsTcpWithCrappyRSAWithMD5OnlyHereToMakeSureThingsWorkSpec
     }
     """))
 
-import pekko.testkit.PekkoSpec._
+import org.apache.pekko.testkit.PekkoSpec._
 class TlsTcpWithRotatingKeysSSLEngineSpec extends TlsTcpSpec(ConfigFactory.parseString(s"""
     pekko.remote.artery.ssl {
        ssl-engine-provider = org.apache.pekko.remote.artery.tcp.ssl.RotatingKeysSSLEngineProvider

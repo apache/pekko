@@ -13,16 +13,12 @@
 
 package org.apache.pekko.cluster.metrics
 
-import scala.Vector
-
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
-import pekko.actor.Address
-import pekko.actor.RootActorPath
+import pekko.actor.{ Address, RootActorPath }
 import pekko.remote.RARP
-import pekko.routing.ActorRefRoutee
-import pekko.routing.ActorSelectionRoutee
+import pekko.routing.{ ActorRefRoutee, ActorSelectionRoutee }
 import pekko.testkit.PekkoSpec
 
 class WeightedRouteesSpec extends PekkoSpec(ConfigFactory.parseString("""

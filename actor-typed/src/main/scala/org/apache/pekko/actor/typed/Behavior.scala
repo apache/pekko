@@ -13,17 +13,14 @@
 
 package org.apache.pekko.actor.typed
 
-import scala.annotation.switch
-import scala.annotation.tailrec
+import scala.annotation.{ switch, tailrec }
 import scala.reflect.ClassTag
 
 import org.apache.pekko
 import pekko.actor.InvalidMessageException
+import pekko.actor.typed.internal.BehaviorImpl.{ DeferredBehavior, StoppedBehavior }
 import pekko.actor.typed.internal.{ BehaviorImpl, BehaviorTags, InterceptorImpl, Supervisor }
-import pekko.actor.typed.internal.BehaviorImpl.DeferredBehavior
-import pekko.actor.typed.internal.BehaviorImpl.StoppedBehavior
-import pekko.annotation.DoNotInherit
-import pekko.annotation.InternalApi
+import pekko.annotation.{ DoNotInherit, InternalApi }
 
 /**
  * The behavior of an actor defines how it reacts to the messages that it

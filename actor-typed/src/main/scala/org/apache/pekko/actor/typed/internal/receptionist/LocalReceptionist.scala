@@ -14,13 +14,10 @@
 package org.apache.pekko.actor.typed.internal.receptionist
 
 import org.apache.pekko
-import pekko.actor.typed.ActorRef
-import pekko.actor.typed.Behavior
 import pekko.actor.typed.receptionist.Receptionist._
 import pekko.actor.typed.receptionist.ServiceKey
-import pekko.actor.typed.scaladsl.ActorContext
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.actor.typed.scaladsl.LoggerOps
+import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors, LoggerOps }
+import pekko.actor.typed.{ ActorRef, Behavior }
 import pekko.annotation.InternalApi
 import pekko.util.TypedMultiMap
 

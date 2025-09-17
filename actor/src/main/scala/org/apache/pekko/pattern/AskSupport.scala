@@ -13,15 +13,15 @@
 
 package org.apache.pekko.pattern
 
-import java.net.URLEncoder
-import java.util.concurrent.TimeoutException
-
 import scala.annotation.{ nowarn, tailrec }
 import scala.collection.immutable
 import scala.concurrent.{ Future, Promise }
 import scala.language.implicitConversions
-import scala.util.{ Failure, Success }
 import scala.util.control.NoStackTrace
+import scala.util.{ Failure, Success }
+
+import java.net.URLEncoder
+import java.util.concurrent.TimeoutException
 
 import org.apache.pekko
 import pekko.actor._
