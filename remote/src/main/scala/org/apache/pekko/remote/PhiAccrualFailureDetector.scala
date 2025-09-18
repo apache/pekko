@@ -14,11 +14,12 @@
 package org.apache.pekko.remote
 
 import java.util.concurrent.atomic.AtomicReference
+
 import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.concurrent.duration.Duration
 import scala.concurrent.duration.FiniteDuration
-import com.typesafe.config.Config
+
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.event.EventStream
@@ -26,6 +27,8 @@ import pekko.event.Logging
 import pekko.event.Logging.Warning
 import pekko.remote.FailureDetector.Clock
 import pekko.util.Helpers.ConfigOps
+
+import com.typesafe.config.Config
 
 /**
  * Implementation of 'The Phi Accrual Failure Detector' by Hayashibara et al. as defined in their paper:

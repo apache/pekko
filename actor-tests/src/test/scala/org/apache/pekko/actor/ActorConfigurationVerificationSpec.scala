@@ -15,14 +15,14 @@ package org.apache.pekko.actor
 
 import scala.concurrent.duration._
 
-import org.scalatest.BeforeAndAfterEach
-
 import org.apache.pekko
 import pekko.ConfigurationException
 import pekko.routing._
 import pekko.testkit._
 import pekko.testkit.DefaultTimeout
 import pekko.testkit.TestEvent._
+
+import org.scalatest.BeforeAndAfterEach
 
 object ActorConfigurationVerificationSpec {
 

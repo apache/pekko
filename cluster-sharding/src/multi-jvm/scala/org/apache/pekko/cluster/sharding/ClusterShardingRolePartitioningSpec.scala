@@ -15,11 +15,11 @@ package org.apache.pekko.cluster.sharding
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.{ Config, ConfigFactory }
-
 import org.apache.pekko
 import pekko.cluster.sharding.ShardRegion.{ ClusterShardingStats, GetClusterShardingStats }
 import pekko.testkit._
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 // Tests the case where cluster roles are used with cluster.min-nr-of-members, no per role min set
 // with 5 node cluster, 2 roles: 3 nodes role R1, 2 nodes role R2

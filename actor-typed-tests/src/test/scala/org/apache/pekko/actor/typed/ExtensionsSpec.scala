@@ -17,9 +17,6 @@ import java.util.concurrent.atomic.AtomicInteger
 
 import scala.concurrent.Future
 
-import com.typesafe.config.{ Config, ConfigFactory }
-import org.scalatest.wordspec.AnyWordSpecLike
-
 import org.apache.pekko
 import pekko.actor.BootstrapSetup
 import pekko.actor.setup.ActorSystemSetup
@@ -28,6 +25,10 @@ import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.typed.receptionist.Receptionist
 import pekko.actor.typed.receptionist.ServiceKey
 import pekko.actor.typed.scaladsl.Behaviors
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 class DummyExtension1 extends Extension
 object DummyExtension1 extends ExtensionId[DummyExtension1] {

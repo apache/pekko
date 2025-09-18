@@ -15,13 +15,13 @@ package org.apache.pekko.actor.testkit.typed.javadsl
 
 import java.util.function.Supplier
 
-import org.slf4j.event.Level
-
 import org.apache.pekko
 import pekko.actor.testkit.typed.LoggingEvent
 import pekko.actor.testkit.typed.internal.LoggingTestKitImpl
 import pekko.actor.typed.ActorSystem
 import pekko.annotation.DoNotInherit
+
+import org.slf4j.event.Level
 
 /**
  * Facilities for verifying logs.

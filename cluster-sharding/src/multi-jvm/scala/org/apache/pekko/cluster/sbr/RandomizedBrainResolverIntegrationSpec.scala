@@ -17,10 +17,6 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.Random
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-import org.scalatest.BeforeAndAfterEach
-
 import org.apache.pekko
 import pekko.actor._
 import pekko.cluster.Cluster
@@ -39,6 +35,11 @@ import pekko.testkit.LongRunningTest
 import pekko.testkit.TestKit
 import pekko.testkit.TestProbe
 import pekko.util.Timeout
+
+import org.scalatest.BeforeAndAfterEach
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 /*
  * Depends on Pekko private classes so needs to be in this package

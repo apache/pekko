@@ -13,10 +13,11 @@
 
 package org.apache.pekko.cluster.sharding.typed.internal
 
-import java.util.function.IntFunction
 import java.util.Optional
+import java.util.function.IntFunction
 
 import scala.reflect.ClassTag
+
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.ActorSystem

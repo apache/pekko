@@ -13,9 +13,9 @@
 
 package org.apache.pekko.persistence.scalatest
 
-import org.scalatest.Informing
-
 import org.apache.pekko.persistence.CapabilityFlag
+
+import org.scalatest.Informing
 
 trait OptionalTests {
   this: Informing =>

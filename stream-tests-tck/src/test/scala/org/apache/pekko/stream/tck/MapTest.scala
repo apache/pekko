@@ -13,9 +13,9 @@
 
 package org.apache.pekko.stream.tck
 
-import org.reactivestreams.Processor
-
 import org.apache.pekko.stream.scaladsl.Flow
+
+import org.reactivestreams.Processor
 
 class MapTest extends PekkoIdentityProcessorVerification[Int] {
 

@@ -15,9 +15,9 @@ package org.apache.pekko.remote
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
+import pekko.protobufv3.internal.{ ByteString => ProtoByteString }
 import pekko.protobufv3.internal.UnsafeByteOperations
 import pekko.util.ByteString
-import pekko.protobufv3.internal.{ ByteString => ProtoByteString }
 import pekko.util.ByteString.ByteString1
 import pekko.util.ByteString.ByteString1C
 

@@ -13,8 +13,8 @@
 
 package org.apache.pekko.actor.typed.delivery
 
-import scala.concurrent.duration.FiniteDuration
 import scala.concurrent.duration._
+import scala.concurrent.duration.FiniteDuration
 import scala.util.Failure
 import scala.util.Success
 

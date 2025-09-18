@@ -22,10 +22,6 @@ import java.util.concurrent.TimeUnit
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
-import com.typesafe.config.{ Config, ConfigFactory }
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-
 import org.apache.pekko
 import pekko.actor._
 import pekko.event.Logging._
@@ -34,6 +30,11 @@ import pekko.event.Logging.Warning
 import pekko.serialization.SerializationExtension
 import pekko.testkit._
 import pekko.util.Helpers
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 object LoggerSpec {
 

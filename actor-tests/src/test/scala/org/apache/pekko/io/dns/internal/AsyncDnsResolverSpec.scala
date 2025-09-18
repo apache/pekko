@@ -18,7 +18,6 @@ import java.net.{ Inet6Address, InetAddress }
 import scala.collection.{ immutable => im }
 import scala.concurrent.duration._
 
-import com.typesafe.config.{ Config, ConfigFactory, ConfigValueFactory }
 import org.apache.pekko
 import pekko.actor.{ ActorRef, ExtendedActorSystem, Props }
 import pekko.actor.Status.Failure
@@ -29,6 +28,8 @@ import pekko.io.dns.DnsProtocol._
 import pekko.io.dns.internal.AsyncDnsResolver.ResolveFailedException
 import pekko.io.dns.internal.DnsClient.{ Answer, DuplicateId, Question4, Question6, SrvQuestion }
 import pekko.testkit.{ PekkoSpec, TestProbe, WithLogCapturing }
+
+import com.typesafe.config.{ Config, ConfigFactory, ConfigValueFactory }
 
 class AsyncDnsResolverSpec extends PekkoSpec("""
     pekko.loglevel = DEBUG

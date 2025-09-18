@@ -13,15 +13,15 @@
 
 package org.apache.pekko.cluster.ddata
 
-import org.scalatest.BeforeAndAfterAll
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
-
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.actor.Address
 import pekko.cluster.UniqueAddress
 import pekko.testkit.TestKit
+
+import org.scalatest.BeforeAndAfterAll
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 
 class VersionVectorSpec
     extends TestKit(ActorSystem("VersionVectorSpec"))

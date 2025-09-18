@@ -17,8 +17,6 @@ import java.net.URLEncoder
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.actor.ExtendedActorSystem
@@ -34,6 +32,8 @@ import pekko.persistence.query.scaladsl._
 import pekko.persistence.query.scaladsl.ReadJournal
 import pekko.stream.scaladsl.Source
 import pekko.util.ByteString
+
+import com.typesafe.config.Config
 
 /**
  * Scala API [[pekko.persistence.query.scaladsl.ReadJournal]] implementation for LevelDB.

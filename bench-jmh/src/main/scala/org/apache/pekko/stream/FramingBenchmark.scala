@@ -20,8 +20,6 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.Random
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 import org.openjdk.jmh.annotations._
 
 import org.apache.pekko
@@ -32,6 +30,9 @@ import pekko.stream.scaladsl.Framing
 import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.Source
 import pekko.util.ByteString
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 @State(Scope.Benchmark)
 @OutputTimeUnit(TimeUnit.SECONDS)

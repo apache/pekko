@@ -15,12 +15,12 @@ package org.apache.pekko.stream.tck
 
 import java.io.InputStream
 
-import org.reactivestreams.Publisher
-
 import org.apache.pekko
 import pekko.stream.ActorAttributes
 import pekko.stream.scaladsl.{ Sink, StreamConverters }
 import pekko.util.ByteString
+
+import org.reactivestreams.Publisher
 
 class InputStreamSourceTest extends PekkoPublisherVerification[ByteString] {
 

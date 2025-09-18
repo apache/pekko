@@ -17,9 +17,6 @@ import java.util.concurrent.atomic.AtomicInteger
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-import org.scalatest.wordspec.AnyWordSpecLike
-
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
@@ -39,6 +36,10 @@ import pekko.cluster.sharding.typed.scaladsl.Entity
 import pekko.cluster.sharding.typed.scaladsl.EntityTypeKey
 import pekko.cluster.typed.Cluster
 import pekko.cluster.typed.Join
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.ConfigFactory
 
 object ReliableDeliveryShardingSpec {
   val config = ConfigFactory.parseString("""

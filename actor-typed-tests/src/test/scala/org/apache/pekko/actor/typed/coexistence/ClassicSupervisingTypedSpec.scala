@@ -12,10 +12,6 @@
  */
 
 package org.apache.pekko.actor.typed.coexistence
-import com.typesafe.config.ConfigFactory
-import org.scalatest.BeforeAndAfterAll
-import org.scalatest.wordspec.AnyWordSpecLike
-
 import org.apache.pekko
 import pekko.{ actor => u }
 import pekko.actor.Actor
@@ -25,6 +21,11 @@ import pekko.actor.typed._
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.adapter._
 import pekko.testkit.TestProbe
+
+import org.scalatest.BeforeAndAfterAll
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.ConfigFactory
 
 object ProbedBehavior {
   def behavior(probe: u.ActorRef): Behavior[String] = {

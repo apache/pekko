@@ -13,11 +13,9 @@
 
 package org.apache.pekko.cluster
 
+import scala.annotation.nowarn
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
-
-import scala.annotation.nowarn
-import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor.Actor
@@ -33,6 +31,8 @@ import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.transport.ThrottlerTransportAdapter.Direction
 import pekko.serialization.jackson.CborSerializable
 import pekko.testkit._
+
+import com.typesafe.config.ConfigFactory
 
 object SurviveNetworkInstabilityMultiJvmSpec extends MultiNodeConfig {
   val first = role("first")

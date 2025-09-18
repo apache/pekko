@@ -19,7 +19,6 @@ import java.util.concurrent.TimeUnit
 import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
 import org.openjdk.jmh.annotations._
 
 import org.apache.pekko
@@ -30,6 +29,8 @@ import pekko.remote.artery.LatchSink
 import pekko.stream.impl.fusing.GraphStages
 import pekko.stream.scaladsl._
 import pekko.stream.testkit.scaladsl.StreamTestKit
+
+import com.typesafe.config.ConfigFactory
 
 object FlatMapConcatBenchmark {
   final val OperationsPerInvocation = 100000

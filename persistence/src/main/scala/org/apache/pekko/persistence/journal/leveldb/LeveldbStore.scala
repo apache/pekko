@@ -21,7 +21,6 @@ import scala.concurrent.Future
 import scala.util._
 import scala.util.control.NonFatal
 
-import com.typesafe.config.{ Config, ConfigFactory, ConfigObject }
 import org.iq80.leveldb._
 
 import org.apache.pekko
@@ -31,6 +30,8 @@ import pekko.persistence.journal.Tagged
 import pekko.persistence.journal.WriteJournalBase
 import pekko.serialization.SerializationExtension
 import pekko.util.ccompat.JavaConverters._
+
+import com.typesafe.config.{ Config, ConfigFactory, ConfigObject }
 
 private[persistence] object LeveldbStore {
   val emptyConfig = ConfigFactory.empty()

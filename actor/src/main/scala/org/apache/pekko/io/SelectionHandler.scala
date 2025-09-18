@@ -25,8 +25,6 @@ import scala.concurrent.ExecutionContext
 import scala.util.Try
 import scala.util.control.NonFatal
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.actor._
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
@@ -35,6 +33,8 @@ import pekko.event.LoggingAdapter
 import pekko.routing.RandomPool
 import pekko.util.Helpers.Requiring
 import pekko.util.SerializedSuspendableExecutionContext
+
+import com.typesafe.config.Config
 
 abstract class SelectionHandlerSettings(config: Config) {
   import config._

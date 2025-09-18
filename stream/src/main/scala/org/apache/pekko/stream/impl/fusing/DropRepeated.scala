@@ -17,14 +17,14 @@
 
 package org.apache.pekko.stream.impl.fusing
 
+import scala.util.control.NonFatal
+
 import org.apache.pekko
+import pekko.stream.{ Attributes, FlowShape, Inlet, Outlet, Supervision }
 import pekko.stream.ActorAttributes.SupervisionStrategy
 import pekko.stream.impl.Stages.DefaultAttributes
-import pekko.stream.{ Attributes, FlowShape, Inlet, Outlet, Supervision }
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
 import pekko.util.OptionVal
-
-import scala.util.control.NonFatal
 
 private[pekko] final class DropRepeated[T](predicate: (T, T) => Boolean) extends GraphStage[FlowShape[T, T]] {
   require(predicate != null, "predicate function should not be null")

@@ -22,11 +22,13 @@ import scala.reflect.ClassTag
 import scala.util.matching.Regex
 
 import com.codahale.metrics._
-import com.typesafe.config.Config
-import org.scalatest.Notifying
 
 import org.apache.pekko
 import pekko.testkit.metrics.reporter.PekkoConsoleReporter
+
+import org.scalatest.Notifying
+
+import com.typesafe.config.Config
 
 /**
  * Allows to easily measure performance / memory / file descriptor use in tests.

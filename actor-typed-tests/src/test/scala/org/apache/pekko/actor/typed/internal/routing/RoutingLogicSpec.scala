@@ -13,15 +13,15 @@
 
 package org.apache.pekko.actor.typed.internal.routing
 
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
-
 import org.apache.pekko
 import pekko.actor.Address
 import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit, TestProbe }
 import pekko.actor.typed.{ ActorSystem, Behavior }
 import pekko.actor.typed.internal.routing.RoutingLogics.ConsistentHashingLogic
 import pekko.actor.typed.scaladsl.Behaviors
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 
 class RoutingLogicSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with Matchers with LogCapturing {
 

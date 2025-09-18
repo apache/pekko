@@ -13,13 +13,14 @@
 
 package org.apache.pekko.event
 
-import com.typesafe.config.{ Config, ConfigFactory }
-import org.scalatest.BeforeAndAfterEach
-
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorRef, ActorSystem, PoisonPill, Props }
 import pekko.japi.function.Procedure
 import pekko.testkit._
+
+import org.scalatest.BeforeAndAfterEach
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 object EventBusSpec {
   class TestActorWrapperActor(testActor: ActorRef) extends Actor {

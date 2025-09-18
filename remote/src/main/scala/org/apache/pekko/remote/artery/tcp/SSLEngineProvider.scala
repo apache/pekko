@@ -14,11 +14,12 @@
 package org.apache.pekko.remote.artery
 package tcp
 
+import javax.net.ssl.SSLEngine
+import javax.net.ssl.SSLSession
+
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.actor.setup.Setup
-import javax.net.ssl.SSLEngine
-import javax.net.ssl.SSLSession
 
 trait SSLEngineProvider {
 

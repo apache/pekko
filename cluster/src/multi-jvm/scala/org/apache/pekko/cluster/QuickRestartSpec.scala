@@ -18,12 +18,12 @@ import java.util.concurrent.ThreadLocalRandom
 import scala.collection.immutable
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.{ ActorSystem, Address }
 import pekko.remote.testkit.{ MultiNodeConfig, MultiNodeSpec }
 import pekko.testkit._
+
+import com.typesafe.config.ConfigFactory
 
 // This test was a reproducer for issue #20639
 object QuickRestartMultiJvmSpec extends MultiNodeConfig {

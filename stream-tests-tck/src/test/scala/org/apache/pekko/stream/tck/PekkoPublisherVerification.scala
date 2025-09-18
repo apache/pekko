@@ -15,14 +15,16 @@ package org.apache.pekko.stream.tck
 
 import scala.collection.immutable
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-import org.reactivestreams.Publisher
-import org.reactivestreams.tck.PublisherVerification
-import org.reactivestreams.tck.TestEnvironment
 import org.scalatestplus.testng.TestNGSuiteLike
 
 import org.apache.pekko.stream.testkit.TestPublisher
+
+import org.reactivestreams.Publisher
+import org.reactivestreams.tck.PublisherVerification
+import org.reactivestreams.tck.TestEnvironment
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 abstract class PekkoPublisherVerification[T](val env: TestEnvironment, publisherShutdownTimeout: Long)
     extends PublisherVerification[T](env, publisherShutdownTimeout)

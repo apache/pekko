@@ -16,13 +16,13 @@ package org.apache.pekko.actor
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.ConfigurationException
 import pekko.actor.setup.ActorSystemSetup
 import pekko.dispatch.{ Dispatchers, ExecutionContexts }
 import pekko.testkit.{ ImplicitSender, PekkoSpec, TestActors, TestProbe }
+
+import com.typesafe.config.ConfigFactory
 
 object ActorSystemDispatchersSpec {
 

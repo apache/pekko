@@ -21,7 +21,6 @@ import java.util.concurrent.TimeUnit.NANOSECONDS
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
 import org.apache.pekko
 import pekko.actor._
 import pekko.remote.{ RARP, RemoteActorRefProvider, RemotingMultiNodeSpec }
@@ -31,6 +30,8 @@ import pekko.remote.testkit.{ MultiNodeConfig, PerfFlamesSupport }
 import pekko.serialization.{ ByteBufferSerializer, SerializerWithStringManifest }
 import pekko.serialization.jackson.CborSerializable
 import pekko.testkit._
+
+import com.typesafe.config.ConfigFactory
 
 object MaxThroughputSpec extends MultiNodeConfig {
   val first = role("first")

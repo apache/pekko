@@ -13,12 +13,13 @@
 
 package org.apache.pekko.osgi
 
-import com.typesafe.config.{ Config, ConfigFactory }
 import org.osgi.framework.BundleContext
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.util.unused
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 /**
  * Factory class to create ActorSystem implementations in an OSGi environment.  This mainly involves dealing with

@@ -19,6 +19,7 @@ import java.util.concurrent.ThreadLocalRandom
 import java.util.concurrent.TimeUnit
 import java.util.function.{ Function => JFunction }
 
+import scala.annotation.nowarn
 import scala.annotation.varargs
 import scala.collection.immutable
 import scala.collection.immutable.TreeSet
@@ -30,9 +31,6 @@ import scala.util.Success
 import scala.util.Try
 import scala.util.control.NoStackTrace
 import scala.util.control.NonFatal
-
-import scala.annotation.nowarn
-import com.typesafe.config.Config
 
 import org.apache.pekko
 import pekko.actor.Actor
@@ -69,6 +67,8 @@ import pekko.serialization.SerializationExtension
 import pekko.util.ByteString
 import pekko.util.Helpers.toRootLowerCase
 import pekko.util.JavaDurationConverters._
+
+import com.typesafe.config.Config
 
 object ReplicatorSettings {
 

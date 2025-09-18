@@ -14,12 +14,12 @@
 package org.apache.pekko.cluster.sharding.typed
 
 import org.apache.pekko
-import pekko.actor.typed.scaladsl.LoggerOps
 import pekko.Done
 import pekko.actor.testkit.typed.scaladsl.TestProbe
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.scaladsl.ActorContext
 import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.scaladsl.LoggerOps
 import pekko.cluster.MultiNodeClusterSpec
 import pekko.cluster.sharding.typed.ReplicatedShardingSpec.TestRES.GetState
 import pekko.cluster.sharding.typed.ReplicatedShardingSpec.TestRES.State
@@ -30,16 +30,18 @@ import pekko.persistence.journal.PersistencePluginProxy
 import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
 import pekko.persistence.typed.ReplicaId
 import pekko.persistence.typed.ReplicationId
-import pekko.persistence.typed.scaladsl.ReplicatedEventSourcing
 import pekko.persistence.typed.scaladsl.Effect
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior
+import pekko.persistence.typed.scaladsl.ReplicatedEventSourcing
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.testkit.MultiNodeSpec
 import pekko.serialization.jackson.CborSerializable
-import com.typesafe.config.ConfigFactory
+
 import org.scalatest.concurrent.Eventually
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.Span
+
+import com.typesafe.config.ConfigFactory
 
 object ReplicatedShardingSpec extends MultiNodeConfig {
   val first = role("first")

@@ -18,8 +18,8 @@
 package org.apache.pekko.stream.scaladsl
 
 import org.apache.pekko
-import pekko.stream.testkit.scaladsl.TestSink
 import pekko.stream.testkit.{ ScriptedTest, StreamSpec }
+import pekko.stream.testkit.scaladsl.TestSink
 
 class FlowGroupedAdjacentByWeightedSpec extends StreamSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 2

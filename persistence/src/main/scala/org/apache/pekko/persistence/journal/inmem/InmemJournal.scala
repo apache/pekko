@@ -13,26 +13,27 @@
 
 package org.apache.pekko.persistence.journal.inmem
 
-import org.apache.pekko
-import pekko.actor.ActorRef
-
 import scala.collection.immutable
 import scala.concurrent.Future
 import scala.util.Try
 import scala.util.control.NonFatal
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+
+import org.apache.pekko
+import pekko.actor.ActorRef
 import pekko.annotation.ApiMayChange
 import pekko.annotation.InternalApi
 import pekko.event.Logging
 import pekko.persistence.AtomicWrite
 import pekko.persistence.JournalProtocol.RecoverySuccess
 import pekko.persistence.PersistentRepr
-import pekko.persistence.journal.inmem.InmemJournal.{ MessageWithMeta, ReplayWithMeta }
 import pekko.persistence.journal.{ AsyncWriteJournal, Tagged }
+import pekko.persistence.journal.inmem.InmemJournal.{ MessageWithMeta, ReplayWithMeta }
 import pekko.serialization.SerializationExtension
 import pekko.serialization.Serializers
 import pekko.util.OptionVal
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 /**
  * The InmemJournal publishes writes and deletes to the `eventStream`, which tests may use to

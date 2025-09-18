@@ -15,16 +15,16 @@ package org.apache.pekko.routing
 
 import java.util.concurrent.atomic.AtomicLong
 
-import scala.collection.immutable
-
 import scala.annotation.nowarn
-import com.typesafe.config.Config
+import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.actor.SupervisorStrategy
 import pekko.dispatch.Dispatchers
 import pekko.japi.Util.immutableSeq
+
+import com.typesafe.config.Config
 
 object RoundRobinRoutingLogic {
   def apply(): RoundRobinRoutingLogic = new RoundRobinRoutingLogic

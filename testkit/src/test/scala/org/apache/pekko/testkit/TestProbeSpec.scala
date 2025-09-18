@@ -19,11 +19,11 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.Try
 
-import org.scalatest.concurrent.Eventually
-
 import org.apache.pekko
 import pekko.actor._
 import pekko.pattern.ask
+
+import org.scalatest.concurrent.Eventually
 
 class TestProbeSpec extends PekkoSpec with DefaultTimeout with Eventually {
 

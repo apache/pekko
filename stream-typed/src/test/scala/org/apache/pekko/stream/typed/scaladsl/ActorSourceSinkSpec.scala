@@ -13,8 +13,6 @@
 
 package org.apache.pekko.stream.typed.scaladsl
 
-import org.scalatest.wordspec.AnyWordSpecLike
-
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl._
 import pekko.actor.typed.ActorRef
@@ -23,6 +21,8 @@ import pekko.stream.{ CompletionStrategy, OverflowStrategy }
 import pekko.stream.scaladsl.Keep
 import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.Source
+
+import org.scalatest.wordspec.AnyWordSpecLike
 
 object ActorSourceSinkSpec {
 

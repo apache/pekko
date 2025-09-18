@@ -13,11 +13,11 @@
 
 package org.apache.pekko.remote.artery
 
-import org.scalatest.matchers.should.Matchers
-
 import org.apache.pekko
 import pekko.testkit.PekkoSpec
 import pekko.util.JavaVersion
+
+import org.scalatest.matchers.should.Matchers
 
 class RemotingFlightRecorderSpec extends PekkoSpec with Matchers {
 

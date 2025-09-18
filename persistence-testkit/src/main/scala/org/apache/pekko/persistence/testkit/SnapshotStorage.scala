@@ -13,10 +13,10 @@
 
 package org.apache.pekko.persistence.testkit
 
+import scala.util.Success
+
 import org.apache.pekko
 import pekko.actor.Extension
-
-import scala.util.Success
 import pekko.annotation.InternalApi
 import pekko.persistence.{ SelectedSnapshot, SnapshotMetadata, SnapshotSelectionCriteria }
 import pekko.persistence.testkit.ProcessingPolicy.DefaultPolicies

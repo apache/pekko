@@ -13,9 +13,8 @@
 
 package org.apache.pekko.remote.classic.transport
 
-import scala.concurrent._
-
 import scala.annotation.nowarn
+import scala.concurrent._
 
 import org.apache.pekko
 import pekko.actor.Address

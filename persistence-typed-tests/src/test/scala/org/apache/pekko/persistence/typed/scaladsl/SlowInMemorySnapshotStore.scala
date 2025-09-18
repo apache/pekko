@@ -13,14 +13,14 @@
 
 package org.apache.pekko.persistence.typed.scaladsl
 
+import scala.concurrent.Future
+
 import org.apache.pekko
+import pekko.persistence.{ SnapshotMetadata => ClassicSnapshotMetadata }
+import pekko.persistence.{ SnapshotSelectionCriteria => ClassicSnapshotSelectionCriteria }
 import pekko.persistence.SelectedSnapshot
 import pekko.persistence.snapshot.SnapshotStore
 import pekko.persistence.typed.scaladsl.SnapshotMutableStateSpec.MutableState
-import pekko.persistence.{ SnapshotMetadata => ClassicSnapshotMetadata }
-import pekko.persistence.{ SnapshotSelectionCriteria => ClassicSnapshotSelectionCriteria }
-
-import scala.concurrent.Future
 
 class SlowInMemorySnapshotStore extends SnapshotStore {
 

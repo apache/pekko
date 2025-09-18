@@ -14,6 +14,7 @@
 package org.apache.pekko.actor.typed.eventstream
 
 import scala.reflect.ClassTag
+
 import org.apache.pekko
 import pekko.actor.InvalidMessageException
 import pekko.actor.typed.ActorRef

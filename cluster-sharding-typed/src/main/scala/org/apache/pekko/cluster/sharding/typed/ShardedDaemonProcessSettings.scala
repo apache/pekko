@@ -17,12 +17,12 @@ import java.time.Duration
 
 import scala.concurrent.duration.FiniteDuration
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.actor.typed.ActorSystem
 import pekko.annotation.InternalApi
 import pekko.util.JavaDurationConverters._
+
+import com.typesafe.config.Config
 
 object ShardedDaemonProcessSettings {
 

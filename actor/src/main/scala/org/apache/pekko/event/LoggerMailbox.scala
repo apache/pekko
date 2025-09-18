@@ -13,8 +13,6 @@
 
 package org.apache.pekko.event
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.actor.ActorSystem
@@ -24,6 +22,8 @@ import pekko.dispatch.ProducesMessageQueue
 import pekko.dispatch.UnboundedMailbox
 import pekko.event.Logging.LogEvent
 import pekko.util.unused
+
+import com.typesafe.config.Config
 
 trait LoggerMessageQueueSemantics
 

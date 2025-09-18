@@ -13,9 +13,9 @@
 
 package org.apache.pekko.persistence.testkit
 
-import org.apache.pekko.annotation.{ ApiMayChange, InternalApi }
-
 import scala.util.control.NoStackTrace
+
+import org.apache.pekko.annotation.{ ApiMayChange, InternalApi }
 
 /**
  * Policies allow to emulate behavior of the storage (failures and rejections).

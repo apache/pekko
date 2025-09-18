@@ -15,14 +15,14 @@ package org.apache.pekko.cluster
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.Address
 import pekko.cluster.ClusterEvent.InitialStateAsEvents
 import pekko.cluster.ClusterEvent.MemberUp
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.testkit._
+
+import com.typesafe.config.ConfigFactory
 
 // Similar to MultiDcJoinSpec, but slightly different scenario
 object MultiDcJoin2MultiJvmSpec extends MultiNodeConfig {

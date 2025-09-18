@@ -15,13 +15,13 @@ package org.apache.pekko.cluster
 
 import scala.collection.immutable.SortedSet
 
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-
 import org.apache.pekko
 import pekko.actor.Address
 import pekko.cluster.ClusterSettings.DefaultDataCenter
 import pekko.cluster.Gossip.vclockName
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 class GossipSpec extends AnyWordSpec with Matchers {
 

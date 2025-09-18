@@ -15,12 +15,12 @@ package org.apache.pekko.cluster.sharding
 
 import java.lang.reflect.Modifier
 
-import com.typesafe.config.{ Config, ConfigFactory }
-
 import org.apache.pekko
 import pekko.cluster.MultiNodeClusterSpec
 import pekko.persistence.journal.leveldb.SharedLeveldbJournal
 import pekko.remote.testkit.MultiNodeConfig
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 object MultiNodeClusterShardingConfig {
 

@@ -26,12 +26,13 @@ import scala.collection.mutable.Builder
 import org.apache.commons.codec.binary.Hex.encodeHex
 import org.scalacheck.{ Arbitrary, Gen }
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.scalacheck.Checkers
 
 import org.apache.pekko
 import pekko.util.ByteString.{ ByteString1, ByteString1C, ByteStrings }
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
 

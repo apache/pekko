@@ -17,8 +17,6 @@ import java.util.concurrent.Executors
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor._
 import pekko.remote.{ RemoteActorRefProvider, RemotingMultiNodeSpec }
@@ -27,6 +25,8 @@ import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.testkit.PerfFlamesSupport
 import pekko.testkit._
+
+import com.typesafe.config.ConfigFactory
 
 object FanOutThroughputSpec extends MultiNodeConfig {
   val totalNumberOfNodes =

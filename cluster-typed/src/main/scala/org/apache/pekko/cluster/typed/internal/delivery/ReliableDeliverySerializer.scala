@@ -14,6 +14,7 @@
 package org.apache.pekko.cluster.typed.internal.delivery
 
 import java.io.NotSerializableException
+
 import org.apache.pekko
 import pekko.actor.typed.ActorRefResolver
 import pekko.actor.typed.delivery.ConsumerController
@@ -25,14 +26,14 @@ import pekko.actor.typed.scaladsl.adapter._
 import pekko.annotation.InternalApi
 import pekko.cluster.typed.internal.protobuf.ReliableDelivery
 import pekko.cluster.typed.internal.protobuf.ReliableDelivery.Confirmed
+import pekko.protobufv3.internal.ByteString
+import pekko.remote.ByteStringUtils
 import pekko.remote.ContainerFormats
 import pekko.remote.ContainerFormats.Payload
 import pekko.remote.serialization.WrappedPayloadSupport
 import pekko.serialization.BaseSerializer
 import pekko.serialization.SerializerWithStringManifest
 import pekko.util.ccompat.JavaConverters._
-import pekko.protobufv3.internal.ByteString
-import pekko.remote.ByteStringUtils
 
 /**
  * INTERNAL API

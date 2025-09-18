@@ -14,6 +14,8 @@
 package org.apache.pekko.cluster.sharding
 
 import scala.collection.immutable
+import scala.collection.immutable.SortedSet
+
 import org.apache.pekko
 import pekko.actor.ActorPath
 import pekko.actor.ActorRef
@@ -34,8 +36,6 @@ import pekko.cluster.sharding.internal.AbstractLeastShardAllocationStrategy.Regi
 import pekko.cluster.sharding.internal.LeastShardAllocationStrategy
 import pekko.testkit.PekkoSpec
 import pekko.util.Version
-
-import scala.collection.immutable.SortedSet
 
 object LeastShardAllocationStrategySpec {
 
