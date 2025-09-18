@@ -16,11 +16,11 @@ package org.apache.pekko.pattern
 import java.net.URLEncoder
 import java.util.concurrent.TimeoutException
 
+import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.concurrent.{ Future, Promise }
 import scala.language.implicitConversions
 import scala.util.{ Failure, Success }
-import scala.annotation.nowarn
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko

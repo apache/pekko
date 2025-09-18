@@ -13,6 +13,13 @@
 
 package org.apache.pekko.cluster.sharding.passivation.simulator
 
+import scala.collection.immutable
+import scala.collection.mutable
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+import scala.util.Failure
+import scala.util.Success
+
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.actor.ActorSystem
@@ -38,14 +45,8 @@ import pekko.cluster.sharding.internal.SegmentedLeastRecentlyUsedReplacementPoli
 import pekko.stream.scaladsl.Flow
 import pekko.stream.scaladsl.Source
 import pekko.util.OptionVal
-import com.typesafe.config.ConfigFactory
 
-import scala.collection.immutable
-import scala.collection.mutable
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
-import scala.util.Failure
-import scala.util.Success
+import com.typesafe.config.ConfigFactory
 
 /**
  * Simulator for testing the efficiency of passivation strategies.

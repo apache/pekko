@@ -13,8 +13,6 @@
 
 package org.apache.pekko.cluster
 
-import com.typesafe.config._
-
 import org.apache.pekko
 import pekko.actor._
 import pekko.cluster.routing.ClusterRouterGroup
@@ -23,6 +21,8 @@ import pekko.cluster.routing.ClusterRouterPool
 import pekko.cluster.routing.ClusterRouterPoolSettings
 import pekko.routing._
 import pekko.testkit._
+
+import com.typesafe.config._
 
 object ClusterDeployerSpec {
   val deployerConf = ConfigFactory.parseString(

@@ -16,13 +16,13 @@ package org.apache.pekko.routing
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import com.typesafe.config.{ Config, ConfigFactory }
-
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorRef, ActorSystem, Props }
 import pekko.pattern.ask
 import pekko.testkit._
 import pekko.testkit.TestEvent._
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 object ResizerSpec {
 

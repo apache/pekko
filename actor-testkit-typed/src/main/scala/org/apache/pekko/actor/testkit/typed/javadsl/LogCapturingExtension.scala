@@ -9,13 +9,16 @@
 
 package org.apache.pekko.actor.testkit.typed.javadsl
 
-import org.junit.jupiter.api.extension.InvocationInterceptor.Invocation
+import java.lang.reflect.Method
+
+import scala.util.control.NonFatal
+
 import org.junit.jupiter.api.extension.{ ExtensionContext, InvocationInterceptor, ReflectiveInvocationContext }
-import org.slf4j.LoggerFactory
+import org.junit.jupiter.api.extension.InvocationInterceptor.Invocation
+
 import org.apache.pekko.actor.testkit.typed.internal.CapturingAppender
 
-import java.lang.reflect.Method
-import scala.util.control.NonFatal
+import org.slf4j.LoggerFactory
 
 final class LogCapturingExtension extends InvocationInterceptor {
 

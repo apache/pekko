@@ -17,14 +17,12 @@ import java.io.Closeable
 import java.util.concurrent.ThreadFactory
 import java.util.concurrent.atomic.AtomicBoolean
 
+import scala.annotation.nowarn
 import scala.annotation.varargs
 import scala.collection.immutable
 import scala.concurrent.{ Await, ExecutionContext }
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
-
-import scala.annotation.nowarn
-import com.typesafe.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
 import pekko.ConfigurationException
@@ -39,6 +37,8 @@ import pekko.event.MarkerLoggingAdapter
 import pekko.japi.Util
 import pekko.pattern._
 import pekko.remote.{ UniqueAddress => _, _ }
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 /**
  * Cluster Extension Id and factory for creating Cluster extension.

@@ -17,11 +17,11 @@ import java.util.logging
 
 import scala.util.control.NoStackTrace
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorLogging, Props }
 import pekko.testkit.PekkoSpec
+
+import com.typesafe.config.ConfigFactory
 
 @deprecated("Use SLF4J instead.", "Akka 2.6.0")
 object JavaLoggerSpec {

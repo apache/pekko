@@ -17,10 +17,10 @@
 
 package org.apache.pekko.dispatch
 
-import org.apache.pekko.annotation.InternalApi
-
 import java.util
 import java.util.concurrent.{ Callable, Executor, ExecutorService, Future, ThreadFactory, TimeUnit }
+
+import org.apache.pekko.annotation.InternalApi
 
 /**
  * A virtualized executor service that creates a new virtual thread for each task.

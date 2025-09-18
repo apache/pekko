@@ -16,10 +16,9 @@ package org.apache.pekko.testkit.javadsl
 import java.util.{ List => JList }
 import java.util.function.{ Function => JFunction, Supplier }
 
+import scala.annotation.nowarn
 import scala.annotation.varargs
 import scala.concurrent.duration._
-
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.actor._

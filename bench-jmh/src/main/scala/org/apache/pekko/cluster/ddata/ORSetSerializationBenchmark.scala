@@ -18,7 +18,6 @@ import java.util.concurrent.TimeUnit
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
 import org.openjdk.jmh.annotations.{ Scope => JmhScope }
 import org.openjdk.jmh.annotations.Benchmark
 import org.openjdk.jmh.annotations.BenchmarkMode
@@ -37,6 +36,8 @@ import pekko.actor.Props
 import pekko.cluster.Cluster
 import pekko.serialization.SerializationExtension
 import pekko.serialization.Serializers
+
+import com.typesafe.config.ConfigFactory
 
 @Fork(2)
 @State(JmhScope.Benchmark)

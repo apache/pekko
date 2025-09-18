@@ -13,6 +13,8 @@
 
 package org.apache.pekko.stream.testkit
 
+import java.util.concurrent.TimeUnit
+
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
@@ -29,8 +31,6 @@ import pekko.testkit.TestKitUtils
 import org.scalatest.Failed
 
 import com.typesafe.config.{ Config, ConfigFactory }
-
-import java.util.concurrent.TimeUnit
 
 abstract class StreamSpec(_system: ActorSystem) extends PekkoSpec(_system) with StreamConfiguration {
 

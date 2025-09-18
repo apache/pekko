@@ -18,10 +18,6 @@ import java.util.concurrent.atomic.AtomicReference
 import scala.concurrent.duration._
 import scala.util.Random
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-import org.scalatest.wordspec.AnyWordSpecLike
-
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
@@ -31,6 +27,11 @@ import pekko.actor.typed.TypedActorContext
 import pekko.actor.typed.delivery.internal.ProducerControllerImpl
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.LoggerOps
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 object ReliableDeliveryRandomSpec {
   val config: Config = ConfigFactory.parseString("""

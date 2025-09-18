@@ -19,7 +19,7 @@ import java.util.Optional
 import java.util.concurrent.TimeUnit
 
 import scala.concurrent.duration.{ FiniteDuration, TimeUnit }
-import com.typesafe.config.{ Config, ConfigFactory, ConfigRenderOptions }
+
 import org.apache.pekko
 import pekko.{ Done, NotUsed }
 import pekko.actor._
@@ -31,6 +31,8 @@ import pekko.remote.routing.RemoteRouterConfig
 import pekko.routing._
 import pekko.serialization.{ BaseSerializer, Serialization, SerializationExtension, SerializerWithStringManifest }
 import pekko.util.ccompat.JavaConverters._
+
+import com.typesafe.config.{ Config, ConfigFactory, ConfigRenderOptions }
 
 class MiscMessageSerializer(val system: ExtendedActorSystem) extends SerializerWithStringManifest with BaseSerializer {
 

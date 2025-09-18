@@ -13,13 +13,13 @@
 
 package org.apache.pekko.actor
 
+import scala.annotation.nowarn
 import scala.collection.mutable
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration._
 import scala.concurrent.duration.Duration
 import scala.concurrent.duration.FiniteDuration
 
-import scala.annotation.nowarn
 import language.implicitConversions
 
 import org.apache.pekko

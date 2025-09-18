@@ -15,8 +15,8 @@ package org.apache.pekko.actor
 
 import java.util.concurrent.ConcurrentHashMap
 
-import scala.annotation.tailrec
 import scala.annotation.nowarn
+import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.util.control.NonFatal
 

@@ -18,8 +18,6 @@ import java.util.concurrent.atomic.AtomicReference
 import scala.collection.immutable
 import scala.util.control.NonFatal
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.actor.ActorPath
 import pekko.actor.ActorSystem
@@ -32,6 +30,8 @@ import pekko.dispatch.Dispatchers
 import pekko.event.Logging
 import pekko.japi.Util.immutableSeq
 import pekko.serialization.SerializationExtension
+
+import com.typesafe.config.Config
 
 object ConsistentHashingRouter {
 

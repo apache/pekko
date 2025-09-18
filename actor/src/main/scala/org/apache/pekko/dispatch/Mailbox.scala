@@ -17,10 +17,11 @@ import java.util.{ Comparator, Deque, PriorityQueue, Queue }
 import java.util.concurrent._
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.locks.ReentrantLock
+
 import scala.annotation.{ nowarn, tailrec }
 import scala.concurrent.duration.{ Duration, FiniteDuration }
 import scala.util.control.NonFatal
-import com.typesafe.config.Config
+
 import org.apache.pekko
 import pekko.actor.{ ActorCell, ActorRef, ActorSystem, DeadLetter, InternalActorRef }
 import pekko.annotation.InternalStableApi
@@ -28,6 +29,8 @@ import pekko.dispatch.sysmsg._
 import pekko.event.Logging.Error
 import pekko.util.{ BoundedBlockingQueue, StablePriorityBlockingQueue, StablePriorityQueue, Unsafe }
 import pekko.util.Helpers.ConfigOps
+
+import com.typesafe.config.Config
 
 /**
  * INTERNAL API

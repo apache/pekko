@@ -16,14 +16,14 @@ package org.apache.pekko.pattern
 import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
 
-import org.scalatest.concurrent.ScalaFutures
-
 import org.apache.pekko
 import pekko.Done
 import pekko.testkit.PekkoSpec
 import pekko.testkit.TestException
 import pekko.testkit.TestProbe
 import pekko.util.Timeout
+
+import org.scalatest.concurrent.ScalaFutures
 
 class StatusReplySpec extends PekkoSpec with ScalaFutures {
 

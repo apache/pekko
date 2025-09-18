@@ -13,16 +13,17 @@
 
 package org.apache.pekko.remote
 
+import scala.annotation.nowarn
 import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
 
 import TypedActorRemoteDeploySpec._
-import scala.annotation.nowarn
-import com.typesafe.config._
 
 import org.apache.pekko
 import pekko.actor.{ ActorSystem, Deploy, TypedActor, TypedProps }
 import pekko.testkit.PekkoSpec
+
+import com.typesafe.config._
 
 object TypedActorRemoteDeploySpec {
   val conf = ConfigFactory.parseString("""

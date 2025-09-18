@@ -17,8 +17,6 @@ import java.time.{ Duration => JavaDuration }
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.Behavior
@@ -33,6 +31,8 @@ import pekko.persistence.typed.scaladsl.Effect
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior
 import pekko.persistence.typed.scaladsl.RetentionCriteria
 import pekko.util.JavaDurationConverters._
+
+import com.typesafe.config.Config
 
 /**
  * [[pekko.actor.typed.delivery.DurableProducerQueue]] that can be used with [[pekko.actor.typed.delivery.ProducerController]]

@@ -15,9 +15,9 @@ package org.apache.pekko.actor
 
 import org.apache.pekko
 import pekko.actor.dungeon.SerializationCheckFailedException
-import pekko.testkit.PekkoSpec
 import pekko.testkit.EventFilter
 import pekko.testkit.ImplicitSender
+import pekko.testkit.PekkoSpec
 
 object FunctionRefSpec {
 

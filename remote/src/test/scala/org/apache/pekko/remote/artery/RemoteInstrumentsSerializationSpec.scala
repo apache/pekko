@@ -14,16 +14,17 @@
 package org.apache.pekko.remote.artery
 
 import java.nio.{ ByteBuffer, CharBuffer }
+import java.nio.ByteOrder
 import java.nio.charset.StandardCharsets
+
 import scala.concurrent.duration._
+
 import org.apache.pekko
 import pekko.actor.{ ActorRef, ActorSystem, ExtendedActorSystem, InternalActorRef }
 import pekko.event._
 import pekko.testkit.{ EventFilter, PekkoSpec, TestProbe }
 import pekko.testkit.TestEvent.Mute
 import pekko.util.{ unused, OptionVal }
-
-import java.nio.ByteOrder
 
 class RemoteInstrumentsSerializationSpec extends PekkoSpec("pekko.loglevel = DEBUG") {
   import RemoteInstrumentsSerializationSpec._

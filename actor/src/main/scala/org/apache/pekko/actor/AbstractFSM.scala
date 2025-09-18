@@ -13,12 +13,11 @@
 
 package org.apache.pekko.actor
 
+import scala.annotation.nowarn
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
 import pekko.util.JavaDurationConverters._
-
-import scala.annotation.nowarn
 
 /**
  * Java API: compatible with lambda expressions

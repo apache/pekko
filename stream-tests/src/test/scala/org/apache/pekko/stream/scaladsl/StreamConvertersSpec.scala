@@ -14,6 +14,7 @@
 package org.apache.pekko.stream.scaladsl
 
 import java.util
+import java.util.{ Spliterator, Spliterators }
 import java.util.function.BiConsumer
 import java.util.function.BinaryOperator
 import java.util.function.Supplier
@@ -22,7 +23,6 @@ import java.util.stream.BaseStream
 import java.util.stream.Collector
 import java.util.stream.Collector.Characteristics
 import java.util.stream.Collectors
-import java.util.{ Spliterator, Spliterators }
 
 import scala.concurrent.Await
 import scala.concurrent.duration._

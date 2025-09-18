@@ -15,16 +15,15 @@ package org.apache.pekko.actor
 
 import java.lang.Thread.sleep
 
+import scala.annotation.nowarn
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import scala.annotation.nowarn
-
 import org.apache.pekko
 import pekko.pattern.ask
-import pekko.testkit.PekkoSpec
 import pekko.testkit.DefaultTimeout
 import pekko.testkit.EventFilter
+import pekko.testkit.PekkoSpec
 import pekko.testkit.TestEvent._
 import pekko.testkit.TestLatch
 

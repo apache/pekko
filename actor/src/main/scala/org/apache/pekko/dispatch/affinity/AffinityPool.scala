@@ -23,14 +23,14 @@ import java.util.concurrent.locks.LockSupport
 import scala.annotation.{ nowarn, switch, tailrec }
 import scala.collection.{ immutable, mutable }
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.annotation.{ ApiMayChange, InternalApi }
 import pekko.dispatch._
 import pekko.event.Logging
 import pekko.util.{ ImmutableIntMap, ReentrantGuard }
 import pekko.util.Helpers.Requiring
+
+import com.typesafe.config.Config
 
 @InternalApi
 @ApiMayChange

@@ -15,10 +15,9 @@ package org.apache.pekko.io
 
 import java.util.concurrent.atomic.AtomicReference
 
+import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.collection.immutable
-
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.actor.NoSerializationVerificationNeeded

@@ -13,6 +13,17 @@
 
 package org.apache.pekko.actor
 
+import java.lang.{ Iterable => JIterable }
+import java.lang.reflect.InvocationTargetException
+import java.util.concurrent.TimeUnit
+
+import scala.annotation.nowarn
+import scala.collection.immutable
+import scala.collection.mutable.ArrayBuffer
+import scala.concurrent.duration.Duration
+import scala.language.implicitConversions
+import scala.util.control.NonFatal
+
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.event.Logging
@@ -20,16 +31,6 @@ import pekko.event.Logging.{ Error, LogEvent, LogLevel }
 import pekko.japi.Util.immutableSeq
 import pekko.util.JavaDurationConverters._
 import pekko.util.ccompat._
-
-import java.lang.reflect.InvocationTargetException
-import java.lang.{ Iterable => JIterable }
-import java.util.concurrent.TimeUnit
-import scala.collection.immutable
-import scala.collection.mutable.ArrayBuffer
-import scala.concurrent.duration.Duration
-import scala.language.implicitConversions
-import scala.util.control.NonFatal
-import scala.annotation.nowarn
 
 /**
  * INTERNAL API

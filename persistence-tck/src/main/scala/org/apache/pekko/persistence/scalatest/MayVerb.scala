@@ -14,6 +14,7 @@
 package org.apache.pekko.persistence.scalatest
 
 import org.scalactic.source.Position
+
 import org.scalatest.exceptions.TestCanceledException
 import org.scalatest.verbs.StringVerbBlockRegistration
 

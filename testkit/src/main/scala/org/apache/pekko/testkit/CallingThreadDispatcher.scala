@@ -22,8 +22,6 @@ import scala.concurrent.duration._
 import scala.concurrent.duration.Duration
 import scala.util.control.NonFatal
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.actor.{
   ActorCell,
@@ -47,6 +45,8 @@ import pekko.dispatch.{
 }
 import pekko.dispatch.sysmsg.{ Resume, Suspend, SystemMessage }
 import pekko.util.Switch
+
+import com.typesafe.config.Config
 
 /*
  * Locking rules:

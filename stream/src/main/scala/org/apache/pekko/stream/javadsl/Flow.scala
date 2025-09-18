@@ -42,8 +42,9 @@ import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
 import pekko.util.OptionConverters._
 import pekko.util.Timeout
-import pekko.util.unused
 import pekko.util.ccompat._
+import pekko.util.unused
+
 import org.reactivestreams.Processor
 
 object Flow {

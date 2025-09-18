@@ -13,9 +13,6 @@
 
 package org.apache.pekko.dispatch
 
-import org.apache.pekko
-import pekko.annotation.InternalApi
-
 import java.util.Collection
 import java.util.concurrent.{
   ArrayBlockingQueue,
@@ -36,6 +33,9 @@ import java.util.concurrent.atomic.{ AtomicLong, AtomicReference }
 
 import scala.concurrent.{ BlockContext, CanAwait }
 import scala.concurrent.duration.Duration
+
+import org.apache.pekko
+import pekko.annotation.InternalApi
 
 object ThreadPoolConfig {
   type QueueFactory = () => BlockingQueue[Runnable]

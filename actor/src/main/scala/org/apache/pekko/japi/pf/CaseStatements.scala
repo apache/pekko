@@ -13,9 +13,9 @@
 
 package org.apache.pekko.japi.pf
 
-import FI.{ Apply, Predicate, UnitApply }
-
 import scala.annotation.nowarn
+
+import FI.{ Apply, Predicate, UnitApply }
 
 private[pf] object CaseStatement {
   def empty[F, T](): PartialFunction[F, T] = PartialFunction.empty

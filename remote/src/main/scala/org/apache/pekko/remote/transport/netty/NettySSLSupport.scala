@@ -15,14 +15,15 @@ package org.apache.pekko.remote.transport.netty
 
 import scala.annotation.nowarn
 
-import com.typesafe.config.Config
 import org.apache.pekko
-import pekko.util.ccompat.ccompatUsedUntil213
 import pekko.util.ccompat.JavaConverters._
+import pekko.util.ccompat.ccompatUsedUntil213
 
 import io.netty.channel.Channel
 import io.netty.handler.ssl.SslHandler
 import io.netty.util.concurrent.Future
+
+import com.typesafe.config.Config
 
 /**
  * INTERNAL API

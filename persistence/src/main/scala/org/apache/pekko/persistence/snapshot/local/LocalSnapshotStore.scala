@@ -22,8 +22,6 @@ import scala.collection.immutable
 import scala.concurrent.Future
 import scala.util._
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.actor.ActorLogging
 import pekko.persistence._
@@ -32,6 +30,8 @@ import pekko.persistence.snapshot._
 import pekko.serialization.SerializationExtension
 import pekko.util.ByteString.UTF_8
 import pekko.util.ccompat._
+
+import com.typesafe.config.Config
 
 /**
  * INTERNAL API

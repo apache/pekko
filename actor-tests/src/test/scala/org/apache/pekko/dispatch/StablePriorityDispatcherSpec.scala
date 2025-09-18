@@ -15,12 +15,12 @@ package org.apache.pekko.dispatch
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorSystem, Props }
 import pekko.testkit.{ DefaultTimeout, PekkoSpec }
 import pekko.util.unused
+
+import com.typesafe.config.Config
 
 object StablePriorityDispatcherSpec {
   case object Result

@@ -17,18 +17,18 @@
 
 package org.apache.pekko.stream.impl.fusing
 
-import org.apache.pekko
-import pekko.annotation.InternalApi
-import pekko.stream.scaladsl.Source
-import pekko.stream.{ Attributes, FlowShape, Graph, Inlet, Outlet, SourceShape, SubscriptionWithCancelException }
-import pekko.stream.impl.Stages.DefaultAttributes
-import pekko.stream.impl.{ Buffer => BufferImpl, FailedSource, JavaStreamSource, TraversalBuilder }
-import pekko.stream.impl.fusing.GraphStages.{ FutureSource, SingleSource }
-import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
-import pekko.util.OptionVal
-
 import scala.concurrent.Future
 import scala.util.{ Failure, Try }
+
+import org.apache.pekko
+import pekko.annotation.InternalApi
+import pekko.stream.{ Attributes, FlowShape, Graph, Inlet, Outlet, SourceShape, SubscriptionWithCancelException }
+import pekko.stream.impl.{ Buffer => BufferImpl, FailedSource, JavaStreamSource, TraversalBuilder }
+import pekko.stream.impl.Stages.DefaultAttributes
+import pekko.stream.impl.fusing.GraphStages.{ FutureSource, SingleSource }
+import pekko.stream.scaladsl.Source
+import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
+import pekko.util.OptionVal
 
 /**
  * INTERNAL API

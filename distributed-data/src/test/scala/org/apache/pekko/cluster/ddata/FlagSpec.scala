@@ -13,10 +13,10 @@
 
 package org.apache.pekko.cluster.ddata
 
+import org.apache.pekko.cluster.ddata.Replicator.Changed
+
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-
-import org.apache.pekko.cluster.ddata.Replicator.Changed
 
 class FlagSpec extends AnyWordSpec with Matchers {
 

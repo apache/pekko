@@ -15,12 +15,13 @@ package org.apache.pekko.persistence.typed.crdt
 
 import scala.annotation.tailrec
 import scala.collection.immutable
+
 import org.apache.pekko
-import pekko.util.HashCode
 import pekko.annotation.InternalApi
 import pekko.persistence.typed.ReplicaId
 import pekko.persistence.typed.crdt.ORSet.DeltaOp
 import pekko.persistence.typed.internal.{ ManyVersionVector, OneVersionVector, VersionVector }
+import pekko.util.HashCode
 
 object ORSet {
   def empty[A](originReplica: ReplicaId): ORSet[A] = new ORSet(originReplica.id, Map.empty, VersionVector.empty)

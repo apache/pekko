@@ -19,8 +19,6 @@ import java.util.concurrent.atomic.AtomicReference
 import scala.concurrent.Future
 import scala.concurrent.Promise
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.actor.ClassicActorSystemProvider
@@ -32,6 +30,8 @@ import pekko.coordination.lease.scaladsl.Lease
 import pekko.event.Logging
 import pekko.testkit.TestProbe
 import pekko.util.ccompat.JavaConverters._
+
+import com.typesafe.config.ConfigFactory
 
 object TestLeaseExt extends ExtensionId[TestLeaseExt] with ExtensionIdProvider {
   override def get(system: ActorSystem): TestLeaseExt = super.get(system)

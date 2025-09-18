@@ -15,8 +15,6 @@ package org.apache.pekko.cluster.sharding
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorRef, Address, Props }
 import pekko.cluster.{ Cluster, MemberStatus }
@@ -25,6 +23,8 @@ import pekko.remote.testconductor.RoleName
 import pekko.serialization.jackson.CborSerializable
 import pekko.testkit._
 import pekko.util.ccompat._
+
+import com.typesafe.config.ConfigFactory
 
 @ccompatUsedUntil213
 object MultiDcClusterShardingSpec {

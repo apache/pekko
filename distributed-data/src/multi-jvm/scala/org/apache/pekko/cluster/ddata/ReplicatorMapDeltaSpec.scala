@@ -17,8 +17,6 @@ import java.util.concurrent.ThreadLocalRandom
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.cluster.Cluster
 import pekko.cluster.ddata.Replicator._
@@ -27,6 +25,8 @@ import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.testkit.MultiNodeSpec
 import pekko.testkit._
+
+import com.typesafe.config.ConfigFactory
 
 object ReplicatorMapDeltaSpec extends MultiNodeConfig {
   val first = role("first")

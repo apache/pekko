@@ -21,7 +21,6 @@ import scala.concurrent.duration._
 import scala.util.Try
 import scala.util.control.NonFatal
 
-import com.typesafe.config.Config
 import org.lmdbjava.Dbi
 import org.lmdbjava.DbiFlags
 import org.lmdbjava.Env
@@ -44,6 +43,8 @@ import pekko.serialization.SerializerWithStringManifest
 import pekko.util.ByteString
 import pekko.util.OptionVal
 import pekko.util.ccompat.JavaConverters._
+
+import com.typesafe.config.Config
 
 /**
  * An actor implementing the durable store for the Distributed Data `Replicator`

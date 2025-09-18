@@ -14,6 +14,8 @@
 package org.apache.pekko.pattern
 
 import java.util.concurrent.{ CompletableFuture, CompletionStage, TimeoutException }
+
+import scala.annotation.nowarn
 import scala.concurrent.{ ExecutionContext, Future, Promise }
 import scala.concurrent.duration.FiniteDuration
 import scala.util.control.NonFatal
@@ -21,8 +23,6 @@ import scala.util.control.NonFatal
 import org.apache.pekko
 import pekko.actor._
 import pekko.dispatch.Futures
-
-import scala.annotation.nowarn
 
 trait FutureTimeoutSupport {
 

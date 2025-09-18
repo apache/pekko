@@ -16,6 +16,7 @@ package org.apache.pekko.persistence
 import java.io.File
 
 import org.apache.commons.io.FileUtils
+
 import org.scalatest.BeforeAndAfterAll
 
 trait PluginCleanup extends BeforeAndAfterAll { self: PluginSpec =>

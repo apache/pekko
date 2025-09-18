@@ -17,13 +17,15 @@ import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.testkit.typed.scaladsl.TestProbe
-import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.Behavior
+import pekko.actor.typed.scaladsl.Behaviors
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.RecoveryCompleted
-import com.typesafe.config.ConfigFactory
+
 import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.ConfigFactory
 
 object EventSourcedSequenceNumberSpec {
 

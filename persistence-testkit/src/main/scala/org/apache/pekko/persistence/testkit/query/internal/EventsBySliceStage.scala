@@ -21,18 +21,18 @@ import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.annotation.InternalApi
 import pekko.persistence.Persistence
-import pekko.persistence.query.typed
 import pekko.persistence.query.Sequence
+import pekko.persistence.query.typed
 import pekko.persistence.testkit.EventStorage
 import pekko.persistence.testkit.PersistenceTestKitPlugin.SliceWrite
 import pekko.persistence.typed.PersistenceId
+import pekko.stream.Attributes
+import pekko.stream.Outlet
+import pekko.stream.SourceShape
 import pekko.stream.stage.GraphStage
 import pekko.stream.stage.GraphStageLogic
 import pekko.stream.stage.GraphStageLogicWithLogging
 import pekko.stream.stage.OutHandler
-import pekko.stream.Attributes
-import pekko.stream.Outlet
-import pekko.stream.SourceShape
 
 /**
  * INTERNAL API

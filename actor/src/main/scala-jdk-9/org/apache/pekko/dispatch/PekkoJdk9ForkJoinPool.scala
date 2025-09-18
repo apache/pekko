@@ -17,11 +17,11 @@
 
 package org.apache.pekko.dispatch
 
+import java.util.concurrent.{ ForkJoinPool, ForkJoinTask, TimeUnit }
+
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.dispatch.ForkJoinExecutorConfigurator.PekkoForkJoinTask
-
-import java.util.concurrent.{ ForkJoinPool, ForkJoinTask, TimeUnit }
 
 /**
  * INTERNAL PEKKO USAGE ONLY

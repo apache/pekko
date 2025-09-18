@@ -15,9 +15,8 @@ package org.apache.pekko.io.dns.internal
 
 import java.net.InetAddress
 
-import scala.collection.immutable.Seq
-
 import scala.annotation.nowarn
+import scala.collection.immutable.Seq
 
 import org.apache.pekko
 import pekko.io.Dns

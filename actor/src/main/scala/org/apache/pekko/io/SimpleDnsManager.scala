@@ -14,13 +14,14 @@
 package org.apache.pekko.io
 
 import java.util.concurrent.TimeUnit
+
+import scala.annotation.nowarn
 import scala.concurrent.duration.Duration
+
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorLogging, Deploy, Props }
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.routing.FromConfig
-
-import scala.annotation.nowarn
 
 final class SimpleDnsManager(val ext: DnsExt)
     extends Actor

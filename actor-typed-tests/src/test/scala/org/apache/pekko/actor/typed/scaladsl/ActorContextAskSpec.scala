@@ -13,21 +13,23 @@
 
 package org.apache.pekko.actor.typed.scaladsl
 
-import org.apache.pekko.actor.testkit.typed.TestException
-
 import scala.concurrent.TimeoutException
 import scala.concurrent.duration._
 import scala.reflect.ClassTag
 import scala.util.{ Failure, Success }
-import com.typesafe.config.ConfigFactory
-import org.scalatest.wordspec.AnyWordSpecLike
+
 import org.apache.pekko
+import org.apache.pekko.actor.testkit.typed.TestException
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.testkit.typed.scaladsl.TestProbe
 import pekko.actor.typed.{ ActorRef, PostStop, Props }
 import pekko.pattern.StatusReply
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.ConfigFactory
 
 object ActorContextAskSpec {
   val config = ConfigFactory.parseString("""

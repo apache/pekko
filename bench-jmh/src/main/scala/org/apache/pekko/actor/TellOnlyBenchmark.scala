@@ -18,13 +18,14 @@ import java.util.concurrent.TimeUnit
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import com.typesafe.config.{ Config, ConfigFactory }
 import org.openjdk.jmh.annotations._
 
 import org.apache.pekko
 import pekko.dispatch._
 import pekko.testkit.TestProbe
 import pekko.util.Helpers.ConfigOps
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Array(Mode.SingleShotTime))

@@ -13,14 +13,16 @@
 
 package org.apache.pekko.dispatch
 
-import com.typesafe.config.Config
+import java.lang.invoke.{ MethodHandle, MethodHandles, MethodType }
+import java.util.concurrent.{ Executor, ExecutorService, ForkJoinPool, ForkJoinTask, ThreadFactory }
+
+import scala.util.Try
+
 import org.apache.pekko
 import pekko.dispatch.VirtualThreadSupport.newVirtualThreadFactory
 import pekko.util.JavaVersion
 
-import java.lang.invoke.{ MethodHandle, MethodHandles, MethodType }
-import java.util.concurrent.{ Executor, ExecutorService, ForkJoinPool, ForkJoinTask, ThreadFactory }
-import scala.util.Try
+import com.typesafe.config.Config
 
 object ForkJoinExecutorConfigurator {
 

@@ -33,8 +33,8 @@ import pekko.util.ConstantFun
 import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
 import pekko.util.OptionConverters._
-import pekko.util.ccompat.JavaConverters._
 import pekko.util.ccompat._
+import pekko.util.ccompat.JavaConverters._
 
 object SubFlow {
 

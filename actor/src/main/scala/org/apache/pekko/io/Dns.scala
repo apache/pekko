@@ -17,10 +17,8 @@ import java.net.{ Inet4Address, Inet6Address, InetAddress, UnknownHostException 
 import java.util.concurrent.ConcurrentHashMap
 import java.util.function.{ Function => JFunction }
 
-import scala.collection.immutable
-
 import scala.annotation.nowarn
-import com.typesafe.config.Config
+import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.actor._
@@ -33,6 +31,8 @@ import pekko.io.dns.DnsProtocol
 import pekko.routing.ConsistentHashingRouter.ConsistentHashable
 import pekko.util.ccompat._
 import pekko.util.unused
+
+import com.typesafe.config.Config
 
 /**
  * Not for user extension.

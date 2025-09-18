@@ -13,12 +13,10 @@
 
 package org.apache.pekko.routing
 
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent.Await
 import scala.concurrent.duration._
-
-import scala.annotation.nowarn
-import com.typesafe.config.Config
 
 import org.apache.pekko
 import pekko.ConfigurationException
@@ -31,6 +29,8 @@ import pekko.pattern.gracefulStop
 import pekko.testkit.{ DefaultTimeout, ImplicitSender, PekkoSpec }
 import pekko.testkit.TestActors.echoActorProps
 import pekko.testkit.TestProbe
+
+import com.typesafe.config.Config
 
 object ConfiguredLocalRoutingSpec {
   val config = """

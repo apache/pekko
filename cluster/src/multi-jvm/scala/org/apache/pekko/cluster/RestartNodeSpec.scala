@@ -16,8 +16,6 @@ package org.apache.pekko.cluster
 import scala.collection.immutable
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.Actor
@@ -35,6 +33,8 @@ import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.testkit.MultiNodeSpec
 import pekko.testkit._
 import pekko.util.ccompat._
+
+import com.typesafe.config.ConfigFactory
 
 @ccompatUsedUntil213
 object RestartNodeMultiJvmSpec extends MultiNodeConfig {

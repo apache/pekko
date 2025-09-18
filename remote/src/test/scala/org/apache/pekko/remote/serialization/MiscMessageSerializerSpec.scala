@@ -21,7 +21,6 @@ import scala.annotation.nowarn
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
-import com.typesafe.config.ConfigFactory
 import org.apache.pekko
 import pekko.{ Done, NotUsed }
 import pekko.actor._
@@ -31,8 +30,10 @@ import pekko.remote.{ RemoteScope, RemoteWatcher }
 import pekko.remote.routing.RemoteRouterConfig
 import pekko.routing._
 import pekko.serialization.SerializationExtension
-import pekko.testkit.PekkoSpec
 import pekko.testkit.JavaSerializable
+import pekko.testkit.PekkoSpec
+
+import com.typesafe.config.ConfigFactory
 
 object MiscMessageSerializerSpec {
   val serializationTestOverrides =

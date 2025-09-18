@@ -15,12 +15,12 @@ package org.apache.pekko.cluster
 
 import java.util.concurrent.atomic.AtomicReference
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.event.EventStream
 import pekko.remote.FailureDetector
 import pekko.util.unused
+
+import com.typesafe.config.Config
 
 /**
  * User controllable "puppet" failure detector.

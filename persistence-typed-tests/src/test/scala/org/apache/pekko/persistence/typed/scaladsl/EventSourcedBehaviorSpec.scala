@@ -13,6 +13,16 @@
 
 package org.apache.pekko.persistence.typed.scaladsl
 
+import java.util.UUID
+import java.util.concurrent.atomic.AtomicInteger
+
+import scala.concurrent.Future
+import scala.concurrent.Promise
+import scala.concurrent.duration._
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
+
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.ActorInitializationException
@@ -25,6 +35,8 @@ import pekko.actor.typed.SupervisorStrategy
 import pekko.actor.typed.Terminated
 import pekko.actor.typed.scaladsl.ActorContext
 import pekko.actor.typed.scaladsl.Behaviors
+import pekko.persistence.{ SnapshotMetadata => ClassicSnapshotMetadata }
+import pekko.persistence.{ SnapshotSelectionCriteria => ClassicSnapshotSelectionCriteria }
 import pekko.persistence.SelectedSnapshot
 import pekko.persistence.journal.inmem.InmemJournal
 import pekko.persistence.query.EventEnvelope
@@ -40,22 +52,13 @@ import pekko.persistence.typed.SnapshotCompleted
 import pekko.persistence.typed.SnapshotFailed
 import pekko.persistence.typed.SnapshotMetadata
 import pekko.persistence.typed.SnapshotSelectionCriteria
-import pekko.persistence.{ SnapshotMetadata => ClassicSnapshotMetadata }
-import pekko.persistence.{ SnapshotSelectionCriteria => ClassicSnapshotSelectionCriteria }
 import pekko.serialization.jackson.CborSerializable
 import pekko.stream.scaladsl.Sink
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+
 import org.scalatest.wordspec.AnyWordSpecLike
 
-import java.util.UUID
-import java.util.concurrent.atomic.AtomicInteger
-import scala.concurrent.Future
-import scala.concurrent.Promise
-import scala.concurrent.duration._
-import scala.util.Failure
-import scala.util.Success
-import scala.util.Try
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 object EventSourcedBehaviorSpec {
 

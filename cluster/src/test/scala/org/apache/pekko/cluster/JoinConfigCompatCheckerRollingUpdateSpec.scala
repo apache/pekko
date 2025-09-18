@@ -16,11 +16,11 @@ package org.apache.pekko.cluster
 import scala.collection.{ immutable => im }
 import scala.concurrent.duration._
 
-import com.typesafe.config.{ Config, ConfigFactory }
-
 import org.apache.pekko
 import pekko.testkit.GHExcludeAeronTest
 import pekko.testkit.LongRunningTest
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 object JoinConfigCompatCheckerRollingUpdateSpec {
 

@@ -14,6 +14,7 @@
 package org.apache.pekko.io.dns.internal
 
 import java.net.InetSocketAddress
+
 import org.apache.pekko
 import pekko.PekkoException
 import pekko.actor.{ Actor, ActorLogging, ActorRef, Stash, Terminated }

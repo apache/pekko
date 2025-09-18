@@ -16,11 +16,9 @@ package org.apache.pekko.io.dns.internal
 import java.net.InetSocketAddress
 import java.util.concurrent.TimeUnit
 
+import scala.annotation.nowarn
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration.Duration
-
-import scala.annotation.nowarn
-import com.typesafe.config.Config
 
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorLogging, ActorRefFactory, Deploy, ExtendedActorSystem, Props, Timers }
@@ -32,6 +30,8 @@ import pekko.io.dns.{ AAAARecord, ARecord, DnsProtocol, DnsSettings }
 import pekko.io.dns.internal.AsyncDnsManager.CacheCleanup
 import pekko.routing.FromConfig
 import pekko.util.Timeout
+
+import com.typesafe.config.Config
 
 /**
  * INTERNAL API

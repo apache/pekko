@@ -13,14 +13,13 @@
 
 package org.apache.pekko.stream.scaladsl
 
+import scala.collection.mutable.ListBuffer
+import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.scaladsl.TestSink
-
-import scala.collection.mutable.ListBuffer
-import scala.concurrent.duration._
 
 class FlowWithContextSpec extends StreamSpec {
 

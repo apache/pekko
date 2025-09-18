@@ -13,10 +13,12 @@
 
 package org.apache.pekko.remote.serialization
 
+import java.io.NotSerializableException
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+
 import scala.util.Random
-import com.typesafe.config.ConfigFactory
+
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.serialization.BaseSerializer
@@ -26,7 +28,7 @@ import pekko.serialization.Serializer
 import pekko.testkit.PekkoSpec
 import pekko.util.ByteString
 
-import java.io.NotSerializableException
+import com.typesafe.config.ConfigFactory
 
 object PrimitivesSerializationSpec {
   val serializationTestOverrides = ""

@@ -21,12 +21,12 @@ import scala.collection.mutable.ArrayBuffer
 import scala.reflect.ClassTag
 import scala.util.Try
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.event.{ Logging, LoggingAdapter }
 import pekko.util.ccompat._
+
+import com.typesafe.config.Config
 
 /**
  * `EventAdapters` serves as a per-journal collection of bound event adapters.

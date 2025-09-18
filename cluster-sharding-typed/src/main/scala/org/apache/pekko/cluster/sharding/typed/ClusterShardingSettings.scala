@@ -16,20 +16,20 @@ package org.apache.pekko.cluster.sharding.typed
 import scala.collection.immutable
 import scala.concurrent.duration._
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.actor.typed.ActorSystem
 import pekko.annotation.{ ApiMayChange, InternalApi }
 import pekko.cluster.ClusterSettings.DataCenter
-import pekko.cluster.sharding.typed.ClusterShardingSettings.RememberEntitiesStoreModeDData
 import pekko.cluster.sharding.{ ClusterShardingSettings => ClassicShardingSettings }
+import pekko.cluster.sharding.typed.ClusterShardingSettings.RememberEntitiesStoreModeDData
 import pekko.cluster.singleton.{ ClusterSingletonManagerSettings => ClassicClusterSingletonManagerSettings }
 import pekko.cluster.typed.Cluster
 import pekko.cluster.typed.ClusterSingletonManagerSettings
 import pekko.coordination.lease.LeaseUsageSettings
 import pekko.japi.Util.immutableSeq
 import pekko.util.JavaDurationConverters._
+
+import com.typesafe.config.Config
 
 object ClusterShardingSettings {
 

@@ -13,16 +13,16 @@
 
 package org.apache.pekko.remote.classic
 
-import scala.concurrent.duration._
-
 import scala.annotation.nowarn
-import com.typesafe.config.ConfigFactory
+import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor.{ RootActorPath, _ }
 import pekko.event.Logging.Warning
 import pekko.remote.{ QuarantinedEvent, RARP, RemoteActorRef }
 import pekko.testkit.{ SocketUtil, _ }
+
+import com.typesafe.config.ConfigFactory
 
 @nowarn // classic deprecated
 class RemoteDeathWatchSpec

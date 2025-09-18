@@ -18,12 +18,14 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.atomic.AtomicReference
+
 import scala.annotation.tailrec
 import scala.collection.immutable
+
 import org.apache.pekko
 import pekko.actor.UnhandledMessage
-import pekko.actor.typed.eventstream.EventStream
 import pekko.actor.typed.{ Behavior, Signal }
+import pekko.actor.typed.eventstream.EventStream
 import pekko.actor.typed.internal.PoisonPill
 import pekko.actor.typed.scaladsl.{ AbstractBehavior, ActorContext, Behaviors, LoggerOps }
 import pekko.annotation.{ InternalApi, InternalStableApi }
@@ -43,8 +45,6 @@ import pekko.persistence.SnapshotProtocol
 import pekko.persistence.journal.Tagged
 import pekko.persistence.query.{ EventEnvelope, PersistenceQuery }
 import pekko.persistence.query.scaladsl.EventsByPersistenceIdQuery
-import pekko.persistence.typed.ReplicaId
-import pekko.persistence.typed.ReplicationId
 import pekko.persistence.typed.{
   DeleteEventsCompleted,
   DeleteEventsFailed,
@@ -60,19 +60,21 @@ import pekko.persistence.typed.{
   SnapshotMetadata,
   SnapshotSelectionCriteria
 }
+import pekko.persistence.typed.ReplicaId
+import pekko.persistence.typed.ReplicationId
 import pekko.persistence.typed.internal.EventSourcedBehaviorImpl.{ GetSeenSequenceNr, GetState, GetStateReply }
 import pekko.persistence.typed.internal.InternalProtocol.ReplicatedEventEnvelope
 import pekko.persistence.typed.internal.JournalInteractions.EventToPersist
 import pekko.persistence.typed.internal.Running.WithSeqNrAccessible
 import pekko.persistence.typed.scaladsl.Effect
-import pekko.stream.scaladsl.Keep
 import pekko.stream.{ RestartSettings, SystemMaterializer, WatchedActorTerminatedException }
-import pekko.stream.scaladsl.Source
 import pekko.stream.scaladsl.{ RestartSource, Sink }
+import pekko.stream.scaladsl.Keep
+import pekko.stream.scaladsl.Source
 import pekko.stream.typed.scaladsl.ActorFlow
 import pekko.util.OptionVal
-import pekko.util.unused
 import pekko.util.Timeout
+import pekko.util.unused
 
 /**
  * INTERNAL API

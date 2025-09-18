@@ -16,12 +16,12 @@ package org.apache.pekko.dispatch
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Promise
 
-import org.scalatest.matchers.should.Matchers
-
 import org.apache.pekko
 import pekko.Done
 import pekko.dispatch.internal.SameThreadExecutionContext
 import pekko.testkit.PekkoSpec
+
+import org.scalatest.matchers.should.Matchers
 
 class SameThreadExecutionContextSpec extends PekkoSpec with Matchers {
 

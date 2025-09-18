@@ -15,8 +15,6 @@ package org.apache.pekko.persistence.state
 
 import scala.reflect.ClassTag
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.actor.ClassicActorSystemProvider
@@ -30,6 +28,8 @@ import pekko.persistence.PersistencePlugin
 import pekko.persistence.PluginProvider
 import pekko.persistence.state.scaladsl.DurableStateStore
 import pekko.util.unused
+
+import com.typesafe.config.Config
 
 /**
  * Persistence extension for queries.

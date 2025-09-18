@@ -16,8 +16,8 @@ package org.apache.pekko.stream.scaladsl
 import scala.annotation.unchecked.uncheckedVariance
 
 import org.apache.pekko
-import pekko.annotation.ApiMayChange
 import pekko.NotUsed
+import pekko.annotation.ApiMayChange
 import pekko.japi.Pair
 import pekko.stream._
 

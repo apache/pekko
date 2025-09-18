@@ -19,8 +19,6 @@ import scala.collection.immutable
 import scala.collection.immutable.{ HashMap, HashSet }
 import scala.concurrent.duration._
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.actor.Actor
 import pekko.actor.ActorIdentity
@@ -53,6 +51,8 @@ import pekko.routing.MurmurHash
 import pekko.util.MessageBuffer
 import pekko.util.ccompat._
 import pekko.util.ccompat.JavaConverters._
+
+import com.typesafe.config.Config
 
 @ccompatUsedUntil213
 @deprecated(

@@ -14,6 +14,7 @@
 package org.apache.pekko.cluster.sharding
 
 import java.net.URLEncoder
+
 import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.concurrent.{ Future, Promise }
@@ -21,11 +22,12 @@ import scala.concurrent.duration._
 import scala.reflect.ClassTag
 import scala.runtime.AbstractFunction1
 import scala.util.{ Failure, Success }
+
 import org.apache.pekko
 import pekko.Done
 import pekko.actor._
-import pekko.annotation.ApiMayChange
 import pekko.annotation.{ InternalApi, InternalStableApi }
+import pekko.annotation.ApiMayChange
 import pekko.cluster.Cluster
 import pekko.cluster.ClusterEvent._
 import pekko.cluster.ClusterSettings

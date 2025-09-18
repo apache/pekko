@@ -17,12 +17,13 @@
 
 package org.apache.pekko.stream.javadsl
 
+import java.util.Collections
+
+import scala.annotation.unchecked.uncheckedVariance
+
 import org.apache.pekko
 import pekko.japi.function
 import pekko.util.ccompat.ccompatUsedUntil213
-
-import java.util.Collections
-import scala.annotation.unchecked.uncheckedVariance
 
 /**
  * A special accumulator for `StatefulMapConcat` operator that allows to emit elements when the upstream has completed.

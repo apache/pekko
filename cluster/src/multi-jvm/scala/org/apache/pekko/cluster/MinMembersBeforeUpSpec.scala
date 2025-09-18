@@ -13,14 +13,14 @@
 
 package org.apache.pekko.cluster
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.cluster.MemberStatus._
 import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.testkit._
 import pekko.util.ccompat._
+
+import com.typesafe.config.ConfigFactory
 
 @ccompatUsedUntil213
 object MinMembersBeforeUpMultiJvmSpec extends MultiNodeConfig {
