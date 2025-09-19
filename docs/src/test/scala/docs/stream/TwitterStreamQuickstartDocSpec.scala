@@ -29,7 +29,6 @@ import org.apache.pekko.testkit.PekkoSpec
 import scala.concurrent.ExecutionContext
 
 object TwitterStreamQuickstartDocSpec {
-  // #fiddle_code
   import org.apache.pekko
   import pekko.NotUsed
   import pekko.actor.ActorSystem
@@ -53,7 +52,6 @@ object TwitterStreamQuickstartDocSpec {
   val pekkoTag = Hashtag("#pekko")
   // #model
 
-  // #fiddle_code
 
   abstract class TweetSourceDecl {
     // #tweet-source
@@ -61,7 +59,6 @@ object TwitterStreamQuickstartDocSpec {
     // #tweet-source
   }
 
-  // #fiddle_code
   val tweets: Source[Tweet, NotUsed] = Source(
     Tweet(Author("rolandkuhn"), System.currentTimeMillis, "#pekko rocks!") ::
     Tweet(Author("patriknw"), System.currentTimeMillis, "#pekko !") ::
@@ -75,7 +72,6 @@ object TwitterStreamQuickstartDocSpec {
     Tweet(Author("drama"), System.currentTimeMillis, "we compared #apples to #oranges!") ::
     Nil)
 
-  // #fiddle_code
 }
 
 class TwitterStreamQuickstartDocSpec extends PekkoSpec {
@@ -87,15 +83,13 @@ class TwitterStreamQuickstartDocSpec extends PekkoSpec {
   def println(s: Any): Unit = ()
 
   trait Example1 {
-    // #fiddle_code
-    // #first-sample
+      // #first-sample
     // #system-setup
     implicit val system: ActorSystem = ActorSystem("reactive-tweets")
     // #system-setup
     // #first-sample
 
-    // #fiddle_code
-  }
+    }
 
   "filter and map" in {
     // #first-sample
@@ -158,18 +152,16 @@ class TwitterStreamQuickstartDocSpec extends PekkoSpec {
     // format: ON
   }
 
-  "simple fiddle showcase" in {
+  "simple example showcase" in {
 
-    // #fiddle_code
-    tweets
+      tweets
       .filterNot(_.hashtags.contains(pekkoTag)) // Remove all tweets containing #pekko hashtag
       .map(_.hashtags) // Get all sets of hashtags ...
       .reduce(_ ++ _) // ... and reduce them to a single set, removing duplicates across all tweets
       .mapConcat(identity) // Flatten the set of hashtags to a stream of hashtags
       .map(_.name.toUpperCase) // Convert all hashtags to upper case
       .runWith(Sink.foreach(println)) // Attach the Flow to a Sink that will finally print the hashtags
-      // #fiddle_code
-      .value
+          .value
   }
 
   "slowProcessing" in {

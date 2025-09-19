@@ -332,7 +332,6 @@ final case class Give(thing: Any)
 
 //#receive-orElse
 
-//#fiddle_code
 import org.apache.pekko.actor.{ Actor, ActorRef, ActorSystem, PoisonPill, Props }
 import scala.concurrent.duration._
 
@@ -364,7 +363,6 @@ class Ponger(pinger: ActorRef) extends Actor {
   }
 }
 
-//#fiddle_code
 
 //#immutable-message-definition
 case class User(name: String)
@@ -409,7 +407,6 @@ class ActorDocSpec extends PekkoSpec("""
   }
 
   "run basic Ping Pong" in {
-    // #fiddle_code
     val system = ActorSystem("pingpong")
 
     val pinger = system.actorOf(Props[Pinger](), "pinger")
@@ -421,7 +418,6 @@ class ActorDocSpec extends PekkoSpec("""
       ponger ! Ping
     }
 
-    // #fiddle_code
 
     val testProbe = new TestProbe(system)
     testProbe.watch(pinger)
