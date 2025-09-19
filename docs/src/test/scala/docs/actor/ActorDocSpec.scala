@@ -363,7 +363,6 @@ class Ponger(pinger: ActorRef) extends Actor {
   }
 }
 
-
 //#immutable-message-definition
 case class User(name: String)
 
@@ -417,7 +416,6 @@ class ActorDocSpec extends PekkoSpec("""
     system.scheduler.scheduleOnce(500.millis) {
       ponger ! Ping
     }
-
 
     val testProbe = new TestProbe(system)
     testProbe.watch(pinger)

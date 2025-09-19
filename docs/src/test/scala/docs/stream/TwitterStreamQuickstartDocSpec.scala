@@ -52,7 +52,6 @@ object TwitterStreamQuickstartDocSpec {
   val pekkoTag = Hashtag("#pekko")
   // #model
 
-
   abstract class TweetSourceDecl {
     // #tweet-source
     val tweets: Source[Tweet, NotUsed]
@@ -83,13 +82,13 @@ class TwitterStreamQuickstartDocSpec extends PekkoSpec {
   def println(s: Any): Unit = ()
 
   trait Example1 {
-      // #first-sample
+    // #first-sample
     // #system-setup
     implicit val system: ActorSystem = ActorSystem("reactive-tweets")
     // #system-setup
     // #first-sample
 
-    }
+  }
 
   "filter and map" in {
     // #first-sample
