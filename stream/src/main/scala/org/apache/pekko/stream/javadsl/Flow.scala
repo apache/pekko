@@ -27,7 +27,7 @@ import pekko.Done
 import pekko.NotUsed
 import pekko.actor.ActorRef
 import pekko.actor.ClassicActorSystemProvider
-import pekko.dispatch.ExecutionContexts
+import scala.concurrent.ExecutionContext
 import pekko.event.{ LogMarker, LoggingAdapter, MarkerLoggingAdapter }
 import pekko.japi.Pair
 import pekko.japi.function
@@ -275,7 +275,7 @@ object Flow {
   def completionStageFlow[I, O, M](flow: CompletionStage[Flow[I, O, M]]): Flow[I, O, CompletionStage[M]] = {
     import pekko.util.FutureConverters._
     val sflow =
-      scaladsl.Flow.futureFlow(flow.asScala.map(_.asScala)(ExecutionContexts.parasitic)).mapMaterializedValue(_.asJava)
+      scaladsl.Flow.futureFlow(flow.asScala.map(_.asScala)(ExecutionContext.parasitic)).mapMaterializedValue(_.asJava)
     new javadsl.Flow(sflow)
   }
 
@@ -328,7 +328,7 @@ object Flow {
   def lazyCompletionStageFlow[I, O, M](
       create: Creator[CompletionStage[Flow[I, O, M]]]): Flow[I, O, CompletionStage[M]] =
     scaladsl.Flow
-      .lazyFutureFlow[I, O, M](() => create.create().asScala.map(_.asScala)(ExecutionContexts.parasitic))
+      .lazyFutureFlow[I, O, M](() => create.create().asScala.map(_.asScala)(ExecutionContext.parasitic))
       .mapMaterializedValue(_.asJava)
       .asJava
 

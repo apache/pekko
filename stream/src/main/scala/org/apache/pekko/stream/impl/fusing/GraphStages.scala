@@ -24,7 +24,7 @@ import org.apache.pekko
 import pekko.Done
 import pekko.actor.Cancellable
 import pekko.annotation.InternalApi
-import pekko.dispatch.ExecutionContexts
+import scala.concurrent.ExecutionContext
 import pekko.event.Logging
 import pekko.stream.{ Shape, _ }
 import pekko.stream.FlowMonitorState._
@@ -316,7 +316,7 @@ import pekko.stream.stage._
               onFutureSourceCompleted(it)
             case _ =>
               val cb = getAsyncCallback[Try[Graph[SourceShape[T], M]]](onFutureSourceCompleted).invoke _
-              futureSource.onComplete(cb)(ExecutionContexts.parasitic) // could be optimised FastFuture-like
+              futureSource.onComplete(cb)(ExecutionContext.parasitic) // could be optimised FastFuture-like
           }
 
         // initial handler (until future completes)
@@ -397,7 +397,7 @@ import pekko.stream.stage._
               handle(completed)
             case None =>
               val cb = getAsyncCallback[Try[T]](handle).invoke _
-              future.onComplete(cb)(ExecutionContexts.parasitic)
+              future.onComplete(cb)(ExecutionContext.parasitic)
           }
         }
 

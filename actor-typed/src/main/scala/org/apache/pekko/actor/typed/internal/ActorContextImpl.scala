@@ -28,7 +28,7 @@ import org.apache.pekko
 import pekko.actor.Address
 import pekko.actor.typed.internal.adapter.ActorSystemAdapter
 import pekko.annotation.InternalApi
-import pekko.dispatch.ExecutionContexts
+import scala.concurrent.ExecutionContext
 import pekko.pattern.StatusReply
 import pekko.util.BoxedType
 import pekko.util.JavaDurationConverters._
@@ -277,7 +277,7 @@ import scala.util.Success
 
   // Scala API impl
   def pipeToSelf[Value](future: Future[Value])(mapResult: Try[Value] => T): Unit = {
-    future.onComplete(value => self.unsafeUpcast ! AdaptMessage(value, mapResult))(ExecutionContexts.parasitic)
+    future.onComplete(value => self.unsafeUpcast ! AdaptMessage(value, mapResult))(ExecutionContext.parasitic)
   }
 
   // Java API impl

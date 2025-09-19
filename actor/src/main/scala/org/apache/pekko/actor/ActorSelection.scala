@@ -27,7 +27,7 @@ import scala.util.Success
 import scala.annotation.nowarn
 
 import org.apache.pekko
-import pekko.dispatch.ExecutionContexts
+import scala.concurrent.ExecutionContext
 import pekko.pattern.ask
 import pekko.routing.MurmurHash
 import pekko.util.{ Helpers, JavaDurationConverters, Timeout }
@@ -75,7 +75,7 @@ abstract class ActorSelection extends Serializable {
    * [[ActorRef]].
    */
   def resolveOne()(implicit timeout: Timeout): Future[ActorRef] = {
-    implicit val ec = ExecutionContexts.parasitic
+    implicit val ec = ExecutionContext.parasitic
     val p = Promise[ActorRef]()
     this.ask(Identify(None)).onComplete {
       case Success(ActorIdentity(_, Some(ref))) => p.success(ref)

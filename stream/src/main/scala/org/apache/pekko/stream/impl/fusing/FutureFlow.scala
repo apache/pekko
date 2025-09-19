@@ -19,7 +19,7 @@ import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.dispatch.ExecutionContexts
+import scala.concurrent.ExecutionContext
 import pekko.stream.{
   AbruptStageTerminationException,
   Attributes,
@@ -62,7 +62,7 @@ import pekko.util.OptionVal
             Initializing.onFuture(tryFlow)
           case None =>
             val cb = getAsyncCallback(Initializing.onFuture)
-            futureFlow.onComplete(cb.invoke)(ExecutionContexts.parasitic)
+            futureFlow.onComplete(cb.invoke)(ExecutionContext.parasitic)
             // in case both ports are closed before future completion
             setKeepGoing(true)
         }

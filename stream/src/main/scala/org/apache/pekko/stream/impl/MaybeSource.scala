@@ -18,7 +18,7 @@ import scala.util.Try
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.dispatch.ExecutionContexts
+import scala.concurrent.ExecutionContext
 import pekko.stream._
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.stage.{ GraphStageLogic, GraphStageWithMaterializedValue, OutHandler }
@@ -49,7 +49,7 @@ import pekko.util.OptionVal
             handleCompletion(value)
           case None =>
             // callback on future completion
-            promise.future.onComplete(getAsyncCallback(handleCompletion).invoke)(ExecutionContexts.parasitic)
+            promise.future.onComplete(getAsyncCallback(handleCompletion).invoke)(ExecutionContext.parasitic)
         }
       }
 

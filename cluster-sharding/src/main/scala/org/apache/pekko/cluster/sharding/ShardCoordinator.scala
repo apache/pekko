@@ -39,7 +39,7 @@ import pekko.cluster.sharding.internal.{
   RememberEntitiesCoordinatorStore,
   RememberEntitiesProvider
 }
-import pekko.dispatch.ExecutionContexts
+import scala.concurrent.ExecutionContext
 import pekko.event.{ BusLogging, Logging }
 import pekko.pattern.{ pipe, AskTimeoutException }
 import pekko.persistence._
@@ -219,7 +219,7 @@ object ShardCoordinator {
         currentShardAllocations: Map[ActorRef, immutable.IndexedSeq[ShardId]],
         rebalanceInProgress: Set[ShardId]): Future[Set[ShardId]] = {
       import pekko.util.ccompat.JavaConverters._
-      implicit val ec = ExecutionContexts.parasitic
+      implicit val ec = ExecutionContext.parasitic
       rebalance(currentShardAllocations.asJava, rebalanceInProgress.asJava).map(_.asScala.toSet)
     }
 

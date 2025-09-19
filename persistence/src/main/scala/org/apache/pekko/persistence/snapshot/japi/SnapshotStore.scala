@@ -16,7 +16,7 @@ package org.apache.pekko.persistence.snapshot.japi
 import scala.concurrent.Future
 
 import org.apache.pekko
-import pekko.dispatch.ExecutionContexts
+import scala.concurrent.ExecutionContext
 import pekko.persistence._
 import pekko.persistence.snapshot.{ SnapshotStore => SSnapshotStore }
 import pekko.util.ConstantFun.scalaAnyToUnit
@@ -31,17 +31,17 @@ abstract class SnapshotStore extends SSnapshotStore with SnapshotStorePlugin {
       persistenceId: String,
       criteria: SnapshotSelectionCriteria): Future[Option[SelectedSnapshot]] = {
     import pekko.util.OptionConverters._
-    doLoadAsync(persistenceId, criteria).asScala.map(_.toScala)(ExecutionContexts.parasitic)
+    doLoadAsync(persistenceId, criteria).asScala.map(_.toScala)(ExecutionContext.parasitic)
   }
 
   override final def saveAsync(metadata: SnapshotMetadata, snapshot: Any): Future[Unit] =
-    doSaveAsync(metadata, snapshot).asScala.map(scalaAnyToUnit)(ExecutionContexts.parasitic)
+    doSaveAsync(metadata, snapshot).asScala.map(scalaAnyToUnit)(ExecutionContext.parasitic)
 
   override final def deleteAsync(metadata: SnapshotMetadata): Future[Unit] =
-    doDeleteAsync(metadata).asScala.map(scalaAnyToUnit)(ExecutionContexts.parasitic)
+    doDeleteAsync(metadata).asScala.map(scalaAnyToUnit)(ExecutionContext.parasitic)
 
   override final def deleteAsync(persistenceId: String, criteria: SnapshotSelectionCriteria): Future[Unit] =
     doDeleteAsync(persistenceId: String, criteria: SnapshotSelectionCriteria).asScala.map(scalaAnyToUnit)(
-      ExecutionContexts.parasitic)
+      ExecutionContext.parasitic)
 
 }

@@ -20,7 +20,7 @@ import scala.util.control.NonFatal
 import org.apache.pekko
 import pekko.Done
 import pekko.annotation.InternalApi
-import pekko.dispatch.ExecutionContexts.parasitic
+import scala.concurrent.ExecutionContext.parasitic
 import pekko.stream._
 import pekko.stream.ActorAttributes.SupervisionStrategy
 import pekko.stream.Attributes.SourceLocation

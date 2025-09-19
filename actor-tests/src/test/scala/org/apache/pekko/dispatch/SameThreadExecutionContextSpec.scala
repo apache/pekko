@@ -20,7 +20,6 @@ import org.scalatest.matchers.should.Matchers
 
 import org.apache.pekko
 import pekko.Done
-import pekko.dispatch.internal.SameThreadExecutionContext
 import pekko.testkit.PekkoSpec
 
 class SameThreadExecutionContextSpec extends PekkoSpec with Matchers {
@@ -28,7 +27,7 @@ class SameThreadExecutionContextSpec extends PekkoSpec with Matchers {
   "The SameThreadExecutionContext" should {
 
     "return a Scala specific version" in {
-      val ec = SameThreadExecutionContext()
+      val ec = ExecutionContext.parasitic
       // in Scala 2.13 and higher parasitic is available
       ec.getClass.getName should ===("scala.concurrent.ExecutionContext$parasitic$")
     }
@@ -40,7 +39,7 @@ class SameThreadExecutionContextSpec extends PekkoSpec with Matchers {
         .map { _ =>
           Thread.currentThread().getName
         }(system.dispatcher)
-        .map(firstName => firstName -> Thread.currentThread().getName)(SameThreadExecutionContext())
+        .map(firstName => firstName -> Thread.currentThread().getName)(ExecutionContext.parasitic)
 
       promise.success(Done)
       val (threadName1, threadName2) = futureThreadNames.futureValue
@@ -54,7 +53,7 @@ class SameThreadExecutionContextSpec extends PekkoSpec with Matchers {
         .map { _ =>
           Thread.currentThread().getName
         }(ExecutionContext.global)
-        .map(firstName => firstName -> Thread.currentThread().getName)(SameThreadExecutionContext())
+        .map(firstName => firstName -> Thread.currentThread().getName)(ExecutionContext.parasitic)
 
       promise.success(Done)
       val (threadName1, threadName2) = futureThreadNames.futureValue

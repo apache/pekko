@@ -20,7 +20,7 @@ import org.apache.pekko
 import pekko.actor.{ Cancellable, NotInfluenceReceiveTimeout }
 import pekko.actor.typed.scaladsl.{ ActorContext, LoggerOps }
 import pekko.annotation.InternalApi
-import pekko.dispatch.ExecutionContexts
+import scala.concurrent.ExecutionContext
 import pekko.util.OptionVal
 import org.slf4j.Logger
 
@@ -123,13 +123,13 @@ import scala.concurrent.duration.FiniteDuration
 
     val task = mode match {
       case SingleMode =>
-        ctx.system.scheduler.scheduleOnce(delay, () => ctx.self.unsafeUpcast ! timerMsg)(ExecutionContexts.parasitic)
+        ctx.system.scheduler.scheduleOnce(delay, () => ctx.self.unsafeUpcast ! timerMsg)(ExecutionContext.parasitic)
       case m: FixedDelayMode =>
         ctx.system.scheduler.scheduleWithFixedDelay(m.initialDelay, delay)(() => ctx.self.unsafeUpcast ! timerMsg)(
-          ExecutionContexts.parasitic)
+          ExecutionContext.parasitic)
       case m: FixedRateMode =>
         ctx.system.scheduler.scheduleAtFixedRate(m.initialDelay, delay)(() => ctx.self.unsafeUpcast ! timerMsg)(
-          ExecutionContexts.parasitic)
+          ExecutionContext.parasitic)
     }
 
     val nextTimer = Timer(key, msg, mode.repeat, nextGen, task)

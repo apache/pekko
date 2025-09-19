@@ -28,7 +28,7 @@ import org.apache.pekko
 import pekko.NotUsed
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
-import pekko.dispatch.ExecutionContexts
+import scala.concurrent.ExecutionContext
 import pekko.event.Logging
 import pekko.stream._
 import pekko.stream.ActorAttributes.StreamSubscriptionTimeout
@@ -385,7 +385,7 @@ import org.reactivestreams.Subscriber
           .foreach {
             case NonFatal(e) => p.tryFailure(e)
             case _           => ()
-          }(pekko.dispatch.ExecutionContexts.parasitic)
+          }(scala.concurrent.ExecutionContext.parasitic)
         p.future
       }
       override def cancel(): Unit = {
@@ -561,7 +561,7 @@ import org.reactivestreams.Subscriber
               failStage(e)
           }
         try {
-          sinkFactory(element).onComplete(cb.invoke)(ExecutionContexts.parasitic)
+          sinkFactory(element).onComplete(cb.invoke)(ExecutionContext.parasitic)
         } catch {
           case NonFatal(e) =>
             promise.failure(e)

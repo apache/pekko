@@ -21,7 +21,7 @@ import Tcp._
 import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.actor.ActorSystem
-import pekko.dispatch.ExecutionContexts
+import scala.concurrent.ExecutionContext
 import pekko.io.Inet.SocketOption
 import pekko.testkit.{ PekkoSpec, TestProbe }
 import pekko.testkit.SocketUtil.temporaryServerAddress
@@ -35,7 +35,7 @@ trait TcpIntegrationSpecSupport { this: PekkoSpec =>
         // terminate clientSystem after server system
         system.whenTerminated.onComplete { _ =>
           res.terminate()
-        }(ExecutionContexts.parasitic)
+        }(ExecutionContext.parasitic)
         res
       } else system
     val bindHandler = TestProbe()

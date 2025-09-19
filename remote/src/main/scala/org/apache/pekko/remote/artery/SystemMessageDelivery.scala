@@ -26,7 +26,7 @@ import org.apache.pekko
 import pekko.Done
 import pekko.actor.ActorRef
 import pekko.annotation.InternalApi
-import pekko.dispatch.ExecutionContexts
+import scala.concurrent.ExecutionContext
 import pekko.dispatch.sysmsg.SystemMessage
 import pekko.event.Logging
 import pekko.remote.UniqueAddress
@@ -119,7 +119,7 @@ import pekko.util.PrettyDuration.PrettyPrintableDuration
           if (isAvailable(out))
             pull(in) // onPull from downstream already called
         }
-        outboundContext.controlSubject.attach(this).foreach(callback.invoke)(ExecutionContexts.parasitic)
+        outboundContext.controlSubject.attach(this).foreach(callback.invoke)(ExecutionContext.parasitic)
       }
 
       override def postStop(): Unit = {
