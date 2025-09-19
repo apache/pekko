@@ -40,8 +40,8 @@ object IntroSpec {
     final case class Greeted(whom: String, from: ActorRef[Greet])
 
     def apply(): Behavior[Greet] = Behaviors.receive { (context, message) =>
-            context.log.info("Hello {}!", message.whom)
-            //#hello-world-actor
+      context.log.info("Hello {}!", message.whom)
+      //#hello-world-actor
       println(s"Hello ${message.whom}!")
       //#hello-world-actor
       message.replyTo ! Greeted(message.whom, context.self)
@@ -60,8 +60,8 @@ object IntroSpec {
     private def bot(greetingCounter: Int, max: Int): Behavior[HelloWorld.Greeted] =
       Behaviors.receive { (context, message) =>
         val n = greetingCounter + 1
-                context.log.info2("Greeting {} for {}", n, message.whom)
-                //#hello-world-bot
+        context.log.info2("Greeting {} for {}", n, message.whom)
+        //#hello-world-bot
         println(s"Greeting $n for ${message.whom}")
         //#hello-world-bot
         if (n == max) {
@@ -104,7 +104,7 @@ object IntroSpec {
 
   // Entry point for the execution
   HelloWorldMain.main(Array.empty)
-    //format: ON
+  //format: ON
 
   object CustomDispatchersExample {
     object HelloWorldMain {
