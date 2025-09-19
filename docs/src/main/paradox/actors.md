@@ -97,7 +97,7 @@ construction.
 
 #### Here is another example:
 
-@@snip [ActorDocSpec.scala](/docs/src/test/scala/docs/actor/ActorDocSpec.scala) { #fiddle_code }
+@@snip [ActorDocSpec.scala](/docs/src/test/scala/docs/actor/ActorDocSpec.scala) { #my-actor }
 
 @@@
 

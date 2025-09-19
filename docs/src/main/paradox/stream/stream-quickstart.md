@@ -119,7 +119,7 @@ whether the stream terminated normally or exceptionally.
 <a name="here-is-another-example"></a>
 Here is another example:
 
-@@snip [TwitterStreamQuickstartDocSpec.scala](/docs/src/test/scala/docs/stream/TwitterStreamQuickstartDocSpec.scala) { #fiddle_code }
+@@snip [TwitterStreamQuickstartDocSpec.scala](/docs/src/test/scala/docs/stream/TwitterStreamQuickstartDocSpec.scala) { #first-sample }
 
 
 ## Reusable Pieces
