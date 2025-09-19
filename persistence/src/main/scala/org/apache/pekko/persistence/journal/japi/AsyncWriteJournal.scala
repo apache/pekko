@@ -23,7 +23,7 @@ import scala.concurrent.ExecutionContext
 import pekko.persistence._
 import pekko.persistence.journal.{ AsyncWriteJournal => SAsyncWriteJournal }
 import pekko.util.ConstantFun.scalaAnyToUnit
-import pekko.util.FutureConverters._
+import scala.jdk.FutureConverters._
 import pekko.util.ccompat.JavaConverters._
 
 /**

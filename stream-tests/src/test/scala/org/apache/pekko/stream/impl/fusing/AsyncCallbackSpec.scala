@@ -133,7 +133,7 @@ class AsyncCallbackSpec extends PekkoSpec("""
       // test it can be used from Java too
       val completionStage = callback.invokeWithFeedbackCompletionStage("whatever")
       probe.expectMsg("whatever")
-      import pekko.util.FutureConverters._
+      import scala.jdk.FutureConverters._
       completionStage.asScala.futureValue should ===(Done)
 
       in.sendComplete()

@@ -31,7 +31,7 @@ import pekko.actor.{ ExtendedActorSystem, Scheduler }
 import scala.concurrent.ExecutionContext.parasitic
 import pekko.pattern.internal.{ CircuitBreakerNoopTelemetry, CircuitBreakerTelemetry }
 import pekko.annotation.InternalApi
-import pekko.util.FutureConverters._
+import scala.jdk.FutureConverters._
 import pekko.util.JavaDurationConverters._
 
 /**

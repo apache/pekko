@@ -88,7 +88,7 @@ object Futures {
    * @since 1.2.0
    */
   def asJava[T](future: Future[T]): CompletionStage[T] = {
-    import org.apache.pekko.util.FutureConverters._
+    import scala.jdk.FutureConverters._
     future.asJava
   }
 

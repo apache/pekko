@@ -23,12 +23,12 @@ import java.util.function.BiFunction;
 import org.apache.pekko.actor.*;
 import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
-import org.apache.pekko.util.FutureConverters;
 import org.apache.pekko.util.JavaDurationConverters;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
 import scala.concurrent.Await;
+import scala.jdk.javaapi.FutureConverters;
 
 public class CircuitBreakerTest extends JUnitSuite {
 

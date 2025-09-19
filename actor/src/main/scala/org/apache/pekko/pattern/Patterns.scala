@@ -21,7 +21,7 @@ import scala.concurrent.ExecutionContext
 
 import org.apache.pekko
 import pekko.actor.{ ActorSelection, ClassicActorSystemProvider, Scheduler }
-import pekko.util.FutureConverters._
+import scala.jdk.FutureConverters._
 import pekko.util.JavaDurationConverters._
 
 import scala.annotation.nowarn

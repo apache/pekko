@@ -25,7 +25,7 @@ import pekko.annotation.InternalApi
 import pekko.coordination.lease.LeaseSettings
 import pekko.coordination.lease.javadsl.{ Lease => JavaLease }
 import pekko.coordination.lease.scaladsl.{ Lease => ScalaLease }
-import pekko.util.FutureConverters._
+import scala.jdk.FutureConverters._
 import scala.jdk.OptionConverters._
 
 /**

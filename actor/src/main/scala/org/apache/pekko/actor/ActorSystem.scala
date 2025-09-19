@@ -40,7 +40,7 @@ import pekko.event.Logging.DefaultLogger
 import pekko.japi.Util.immutableSeq
 import pekko.serialization.SerializationExtension
 import pekko.util._
-import pekko.util.FutureConverters._
+import scala.jdk.FutureConverters._
 import scala.jdk.OptionConverters._
 import pekko.util.Helpers.toRootLowerCase
 import pekko.util.ccompat.JavaConverters._

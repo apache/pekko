@@ -321,7 +321,7 @@ abstract class ServiceDiscovery {
    * The returned future should be failed once resolveTimeout has passed with a [[ServiceDiscovery.DiscoveryTimeoutException]].
    */
   def lookup(query: Lookup, resolveTimeout: java.time.Duration): CompletionStage[Resolved] = {
-    import pekko.util.FutureConverters._
+    import scala.jdk.FutureConverters._
     lookup(query, FiniteDuration(resolveTimeout.toMillis, TimeUnit.MILLISECONDS)).asJava
   }
 

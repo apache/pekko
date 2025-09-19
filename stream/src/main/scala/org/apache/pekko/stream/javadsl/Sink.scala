@@ -31,7 +31,7 @@ import pekko.stream._
 import pekko.stream.impl.LinearTraversalBuilder
 import pekko.stream.scaladsl.SinkToCompletionStage
 import pekko.util.ConstantFun.scalaAnyToUnit
-import pekko.util.FutureConverters._
+import scala.jdk.FutureConverters._
 import scala.jdk.OptionConverters._
 
 import org.reactivestreams.{ Publisher, Subscriber }
@@ -94,7 +94,7 @@ object Sink {
    * @since 1.1.0
    */
   def forall[In](p: function.Predicate[In]): javadsl.Sink[In, CompletionStage[java.lang.Boolean]] = {
-    import pekko.util.FutureConverters._
+    import scala.jdk.FutureConverters._
     new Sink(scaladsl.Sink.forall[In](p.test)
       .mapMaterializedValue(_.map(Boolean.box)(ExecutionContext.parasitic).asJava))
   }
@@ -119,7 +119,7 @@ object Sink {
    * @since 1.2.0
    */
   def none[In](p: function.Predicate[In]): javadsl.Sink[In, CompletionStage[java.lang.Boolean]] = {
-    import pekko.util.FutureConverters._
+    import scala.jdk.FutureConverters._
     new Sink(scaladsl.Sink.none[In](p.test)
       .mapMaterializedValue(_.map(Boolean.box)(ExecutionContext.parasitic).asJava))
   }
@@ -144,7 +144,7 @@ object Sink {
    * @since 1.1.0
    */
   def exists[In](p: function.Predicate[In]): javadsl.Sink[In, CompletionStage[java.lang.Boolean]] = {
-    import pekko.util.FutureConverters._
+    import scala.jdk.FutureConverters._
     new Sink(scaladsl.Sink.exists[In](p.test)
       .mapMaterializedValue(_.map(Boolean.box)(ExecutionContext.parasitic).asJava))
   }

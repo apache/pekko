@@ -1686,7 +1686,7 @@ trait AsyncCallback[T] {
    * @since 1.2.0
    */
   def invokeWithFeedbackCompletionStage(msg: T): CompletionStage[Done] = {
-    import pekko.util.FutureConverters._
+    import scala.jdk.FutureConverters._
     invokeWithFeedback(msg).asJava
   }
 }
