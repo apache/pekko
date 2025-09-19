@@ -113,7 +113,7 @@ final class ORMultiMap[A, B] private[pekko] (
    * Java API: All entries of a multimap where keys are strings and values are sets.
    */
   def getEntries(): java.util.Map[A, java.util.Set[B]] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     val result = new java.util.HashMap[A, java.util.Set[B]]
     if (withValueDeltas)
       underlying.entries.foreach {
@@ -167,7 +167,7 @@ final class ORMultiMap[A, B] private[pekko] (
    * replicated data set.
    */
   def put(node: SelfUniqueAddress, key: A, value: java.util.Set[B]): ORMultiMap[A, B] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     put(node.uniqueAddress, key, value.asScala.toSet)
   }
 

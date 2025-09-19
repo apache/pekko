@@ -33,7 +33,7 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.apache.pekko
 import pekko.testkit.TimingTest
 import pekko.util.DefaultExecutionContext._
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 class BoundedBlockingQueueSpec
     extends AnyWordSpec

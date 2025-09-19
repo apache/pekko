@@ -19,7 +19,7 @@ import org.apache.pekko
 import pekko.actor.typed.{ ActorRef, ActorSystem, Extension, ExtensionId, ExtensionSetup }
 import pekko.actor.typed.internal.receptionist._
 import pekko.annotation.DoNotInherit
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * Register and discover actors that implement a service with a protocol defined by a [[ServiceKey]].

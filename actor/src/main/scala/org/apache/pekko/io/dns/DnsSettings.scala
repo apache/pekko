@@ -49,7 +49,7 @@ import pekko.io.dns.internal.{ ResolvConf, ResolvConfParser }
 import pekko.util.Helpers
 import pekko.util.Helpers.Requiring
 import scala.jdk.DurationConverters._
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /** INTERNAL API */
 @InternalApi

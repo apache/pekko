@@ -34,7 +34,7 @@ import pekko.stream.{
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.stage.{ GraphStageLogic, GraphStageWithMaterializedValue, InHandler }
 import pekko.util.ByteString
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * INTERNAL API

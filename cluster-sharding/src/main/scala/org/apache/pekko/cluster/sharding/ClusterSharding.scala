@@ -50,7 +50,7 @@ import pekko.event.Logging
 import pekko.pattern.BackoffOpts
 import pekko.pattern.ask
 import pekko.util.ByteString
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * This extension provides sharding functionality of actors in a cluster.

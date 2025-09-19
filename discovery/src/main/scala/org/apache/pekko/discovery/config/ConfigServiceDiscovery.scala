@@ -24,7 +24,7 @@ import pekko.annotation.InternalApi
 import pekko.discovery.{ Lookup, ServiceDiscovery }
 import pekko.discovery.ServiceDiscovery.{ Resolved, ResolvedTarget }
 import pekko.event.Logging
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * INTERNAL API

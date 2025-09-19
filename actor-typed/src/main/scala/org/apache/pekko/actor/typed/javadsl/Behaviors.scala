@@ -23,7 +23,7 @@ import pekko.actor.typed._
 import pekko.actor.typed.internal.{ BehaviorImpl, StashBufferImpl, TimerSchedulerImpl, WithMdcBehaviorInterceptor }
 import pekko.japi.function.{ Effect, Function2 => JapiFunction2 }
 import pekko.japi.pf.PFBuilder
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 import pekko.util.unused
 
 /**

@@ -120,7 +120,7 @@ class ExtensionSpec extends AnyWordSpec with Matchers {
     }
 
     "allow for auto-loading of library-extensions from reference.conf" in {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       // could be initialized by other tests, but assuming tests are not running in parallel
       val countBefore = InstanceCountingExtension.createCount.get()
       val system = ActorSystem("extensions")
@@ -133,7 +133,7 @@ class ExtensionSpec extends AnyWordSpec with Matchers {
     }
 
     "not create duplicate instances when auto-loading of library-extensions" in {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       // could be initialized by other tests, but assuming tests are not running in parallel
       val countBefore = InstanceCountingExtension.createCount.get()
       val system = ActorSystem(

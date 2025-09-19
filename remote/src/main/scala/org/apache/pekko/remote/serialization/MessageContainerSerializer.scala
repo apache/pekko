@@ -78,7 +78,7 @@ class MessageContainerSerializer(val system: ExtendedActorSystem) extends BaseSe
       .deserialize(selectionEnvelope.getEnclosedMessage.toByteArray, selectionEnvelope.getSerializerId, manifest)
       .get
 
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     val elements: immutable.Iterable[SelectionPathElement] = selectionEnvelope.getPatternList.asScala.iterator
       .map { x =>
         x.getType match {

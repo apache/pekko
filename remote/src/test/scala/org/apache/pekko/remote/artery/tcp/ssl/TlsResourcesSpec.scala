@@ -22,7 +22,7 @@ import org.scalatest.wordspec.AnyWordSpec
 import scala.util.Try
 import scala.util.control.NonFatal
 
-import org.apache.pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  */

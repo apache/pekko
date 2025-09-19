@@ -22,7 +22,7 @@ import pekko.japi.Pair
 import pekko.persistence._
 import pekko.persistence.testkit._
 import pekko.testkit.EventFilter
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 trait CommonSnapshotTests extends JavaDslUtils {
 

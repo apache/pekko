@@ -152,13 +152,13 @@ object ShardingProducerController {
 
     /** Java API */
     def getEntitiesWithDemand: java.util.Set[String] = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       entitiesWithDemand.asJava
     }
 
     /** Java API */
     def getBufferedForEntitiesWithoutDemand: java.util.Map[String, Integer] = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       bufferedForEntitiesWithoutDemand.iterator.map { case (k, v) => k -> v.asInstanceOf[Integer] }.toMap.asJava
     }
   }

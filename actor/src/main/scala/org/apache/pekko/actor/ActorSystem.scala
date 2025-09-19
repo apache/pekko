@@ -43,7 +43,7 @@ import pekko.util._
 import scala.jdk.FutureConverters._
 import scala.jdk.OptionConverters._
 import pekko.util.Helpers.toRootLowerCase
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 object BootstrapSetup {
 

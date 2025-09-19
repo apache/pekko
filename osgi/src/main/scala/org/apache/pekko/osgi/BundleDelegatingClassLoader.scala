@@ -24,7 +24,7 @@ import scala.util.Try
 import org.osgi.framework.{ Bundle, BundleContext }
 import org.osgi.framework.wiring.{ BundleRevision, BundleWire, BundleWiring }
 
-import org.apache.pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /*
  * Companion object to create bundle delegating ClassLoader instances

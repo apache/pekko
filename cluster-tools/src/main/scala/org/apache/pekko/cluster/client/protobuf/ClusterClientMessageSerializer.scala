@@ -23,7 +23,7 @@ import pekko.cluster.client.ClusterReceptionist
 import pekko.cluster.client.protobuf.msg.{ ClusterClientMessages => cm }
 import pekko.serialization.BaseSerializer
 import pekko.serialization.SerializerWithStringManifest
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * INTERNAL API: Serializer of ClusterClient messages.

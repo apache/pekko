@@ -64,7 +64,7 @@ class Member private[cluster] (
    */
   @nowarn("msg=deprecated")
   def getRoles: java.util.Set[String] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     roles.asJava
   }
 

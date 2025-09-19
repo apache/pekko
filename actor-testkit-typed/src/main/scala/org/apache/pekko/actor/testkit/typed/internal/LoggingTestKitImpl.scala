@@ -156,7 +156,7 @@ import pekko.testkit.TestKit
     copy(mdc = newMdc)
 
   override def withMdc(newMdc: java.util.Map[String, String]): javadsl.LoggingTestKit = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     withMdc(newMdc.asScala.toMap)
   }
 

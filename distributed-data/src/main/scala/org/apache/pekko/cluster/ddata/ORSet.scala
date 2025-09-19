@@ -337,7 +337,7 @@ final class ORSet[A] private[pekko] (
    * Java API
    */
   def getElements(): java.util.Set[A] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     elements.asJava
   }
 

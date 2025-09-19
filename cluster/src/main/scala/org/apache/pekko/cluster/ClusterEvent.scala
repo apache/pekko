@@ -27,7 +27,7 @@ import pekko.cluster.ClusterSettings.DataCenter
 import pekko.cluster.MemberStatus._
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.event.EventStream
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * Domain events published to the event bus.

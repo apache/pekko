@@ -238,7 +238,7 @@ private[pekko] final class FunctionRef[-T](override val path: ActorPath, send: (
    * this method.
    */
   def logEntries: List[CapturedLogEvent] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     substituteLoggerFactory.getEventQueue
       .iterator()
       .asScala

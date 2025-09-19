@@ -84,7 +84,7 @@ final class LWWMap[A, B] private[pekko] (private[pekko] val underlying: ORMap[A,
    * Java API: All entries of the map.
    */
   def getEntries(): java.util.Map[A, B] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     entries.asJava
   }
 

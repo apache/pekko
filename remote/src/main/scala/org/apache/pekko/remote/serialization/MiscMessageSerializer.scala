@@ -30,7 +30,7 @@ import pekko.remote.WireFormats.AddressData
 import pekko.remote.routing.RemoteRouterConfig
 import pekko.routing._
 import pekko.serialization.{ BaseSerializer, Serialization, SerializationExtension, SerializerWithStringManifest }
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 class MiscMessageSerializer(val system: ExtendedActorSystem) extends SerializerWithStringManifest with BaseSerializer {
 

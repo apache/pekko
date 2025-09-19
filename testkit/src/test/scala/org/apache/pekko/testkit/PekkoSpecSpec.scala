@@ -47,7 +47,7 @@ class PekkoSpecSpec extends AnyWordSpec with Matchers {
 
     "terminate all actors" in {
       // verbose config just for demonstration purposes, please leave in in case of debugging
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       val conf = Map(
         "pekko.actor.debug.lifecycle" -> true,
         "pekko.actor.debug.event-stream" -> true,

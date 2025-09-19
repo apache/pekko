@@ -55,7 +55,7 @@ object Serialization {
     }
 
     private final def configToMap(cfg: Config): Map[String, String] = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       cfg.root.unwrapped.asScala.toMap.map { case (k, v) => k -> v.toString }
     }
   }

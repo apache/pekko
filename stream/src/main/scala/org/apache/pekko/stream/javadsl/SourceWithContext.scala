@@ -29,7 +29,7 @@ import pekko.util.ConstantFun
 import scala.jdk.FutureConverters._
 import scala.jdk.DurationConverters._
 import scala.jdk.OptionConverters._
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 object SourceWithContext {
 

@@ -18,8 +18,7 @@ import java.util.Optional
 import org.slf4j.Marker
 import org.slf4j.event.Level
 
-import org.apache.pekko
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.jdk.OptionConverters._
 
 object LoggingEvent {
@@ -81,7 +80,7 @@ final case class LoggingEvent(
    * Java API
    */
   def getMdc: java.util.Map[String, String] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     mdc.asJava
   }
 

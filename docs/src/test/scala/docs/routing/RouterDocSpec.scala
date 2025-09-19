@@ -33,7 +33,7 @@ import org.apache.pekko.routing.ScatterGatherFirstCompletedPool
 import org.apache.pekko.routing.BalancingPool
 import org.apache.pekko.routing.TailChoppingGroup
 import org.apache.pekko.routing.TailChoppingPool
-import org.apache.pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 object RouterDocSpec {
 

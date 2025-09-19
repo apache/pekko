@@ -28,7 +28,7 @@ import org.scalatest.concurrent.Eventually
 
 import org.apache.pekko
 import pekko.testkit.PekkoSpec
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 abstract class DockerBindDnsService(config: Config) extends PekkoSpec(config) with Eventually {
 

@@ -162,7 +162,7 @@ private[remote] final class InboundCompressionsImpl(
   }
 
   override def currentOriginUids: Set[Long] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     // can't use union because of java.lang.Long and Scala Long mismatch,
     // only used for testing so doesn't matter
     val result = Set.empty[java.lang.Long] ++ _actorRefsIns.keySet.asScala.iterator ++

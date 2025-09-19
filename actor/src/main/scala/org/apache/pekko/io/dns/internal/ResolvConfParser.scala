@@ -18,8 +18,7 @@ import java.nio.file.Files
 
 import scala.util.Try
 
-import org.apache.pekko
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 private[dns] case class ResolvConf(search: List[String], ndots: Int)
 

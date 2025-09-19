@@ -207,7 +207,7 @@ import pekko.util.OptionVal
     }
   }
   private val migrations: Map[String, JacksonMigration] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     conf.getConfig("migrations").root.unwrapped.asScala.toMap.map {
       case (k, v) =>
         val transformer = system.dynamicAccess.createInstanceFor[JacksonMigration](v.toString, Nil).get
@@ -216,7 +216,7 @@ import pekko.util.OptionVal
   }
   private val denyList: GadgetClassDenyList = new GadgetClassDenyList
   private val allowedClassPrefix = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     conf.getStringList("allowed-class-prefix").asScala.toVector
   }
   private val typeInManifest: Boolean = conf.getBoolean("type-in-manifest")

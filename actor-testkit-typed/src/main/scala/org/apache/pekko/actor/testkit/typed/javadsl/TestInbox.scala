@@ -21,7 +21,7 @@ import org.apache.pekko
 import pekko.actor.testkit.typed.internal.TestInboxImpl
 import pekko.actor.typed.ActorRef
 import pekko.annotation.DoNotInherit
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 object TestInbox {
   import pekko.actor.testkit.typed.scaladsl.TestInbox.address

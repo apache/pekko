@@ -20,7 +20,7 @@ import pekko.annotation.InternalApi
 import pekko.japi.function
 import pekko.persistence.typed.internal._
 import pekko.persistence.typed.internal.SideEffect
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * INTERNAL API: see `class EffectFactories`

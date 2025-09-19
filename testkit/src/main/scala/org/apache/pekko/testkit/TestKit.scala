@@ -143,7 +143,7 @@ class TestActor(queue: BlockingDeque[TestActor.Message]) extends Actor {
   }
 
   override def postStop() = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     queue.asScala.foreach { m =>
       context.system.deadLetters.tell(DeadLetter(m.msg, m.sender, self), m.sender)
     }

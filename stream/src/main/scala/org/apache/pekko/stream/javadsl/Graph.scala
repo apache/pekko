@@ -24,7 +24,7 @@ import pekko.japi.{ function, Pair }
 import pekko.stream._
 import pekko.stream.scaladsl.GenericGraph
 import pekko.util.ConstantFun
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 import pekko.util.unused
 
 /**
@@ -542,7 +542,7 @@ object ZipN {
  */
 object ZipWithN {
   def create[A, O](zipper: function.Function[java.util.List[A], O], n: Int): Graph[UniformFanInShape[A, O], NotUsed] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     scaladsl.ZipWithN[A, O](seq => zipper.apply(seq.asJava))(n)
   }
 }

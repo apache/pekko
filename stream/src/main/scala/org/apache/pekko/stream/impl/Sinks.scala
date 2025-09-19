@@ -40,7 +40,6 @@ import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.StreamLayout.AtomicModule
 import pekko.stream.scaladsl.{ Keep, Sink, SinkQueueWithCancel, Source }
 import pekko.stream.stage._
-import pekko.util.ccompat._
 
 import org.reactivestreams.Publisher
 import org.reactivestreams.Subscriber
@@ -245,7 +244,8 @@ import org.reactivestreams.Subscriber
 /**
  * INTERNAL API
  */
-@InternalApi private[pekko] final class SeqStage[T, That](implicit cbf: Factory[T, That with immutable.Iterable[_]])
+@InternalApi private[pekko] final class SeqStage[T, That](
+    implicit cbf: scala.collection.Factory[T, That with immutable.Iterable[_]])
     extends GraphStageWithMaterializedValue[SinkShape[T], Future[That]] {
   val in = Inlet[T]("seq.in")
 

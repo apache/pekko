@@ -21,7 +21,7 @@ import scala.collection.immutable
 import scala.annotation.nowarn
 
 import org.apache.pekko
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * Java API

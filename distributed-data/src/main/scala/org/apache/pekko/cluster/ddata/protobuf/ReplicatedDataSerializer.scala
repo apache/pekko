@@ -36,7 +36,7 @@ import pekko.serialization.BaseSerializer
 import pekko.serialization.Serialization
 import pekko.serialization.SerializerWithStringManifest
 import pekko.util.ByteString.UTF_8
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 private object ReplicatedDataSerializer {
   /*

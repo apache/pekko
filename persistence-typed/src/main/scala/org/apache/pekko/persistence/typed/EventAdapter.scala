@@ -91,7 +91,7 @@ object EventSeq {
 
   /** Java API */
   final def create[A](events: java.util.List[A]): EventSeq[A] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     EventsSeq(events.asScala.toList)
   }
 

@@ -31,7 +31,7 @@ import pekko.util.ConstantFun
 import scala.jdk.FutureConverters._
 import scala.jdk.DurationConverters._
 import scala.jdk.OptionConverters._
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * * Upcast a stream of elements to a stream of supertypes of that element. Useful in combination with

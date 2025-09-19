@@ -26,7 +26,7 @@ import pekko.persistence.journal.Tagged
 import pekko.persistence.testkit.ProcessingPolicy.DefaultPolicies
 import pekko.persistence.testkit.internal.TestKitStorage
 import pekko.stream.scaladsl.Source
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * INTERNAL API

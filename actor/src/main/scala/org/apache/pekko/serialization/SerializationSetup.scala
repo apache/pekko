@@ -18,7 +18,7 @@ import scala.collection.immutable
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.actor.setup.Setup
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 object SerializationSetup {
 

@@ -23,7 +23,7 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.apache.pekko
 import pekko.actor._
 import pekko.testkit._
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 object LoggingReceiveSpec {
   class TestLogActor extends Actor {

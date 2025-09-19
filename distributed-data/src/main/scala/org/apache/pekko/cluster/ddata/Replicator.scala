@@ -96,7 +96,7 @@ object ReplicatorSettings {
       else Some(config.getBytes("log-data-size-exceeding").toInt)
     }
 
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     new ReplicatorSettings(
       roles = roleOption(config.getString("role")).toSet,
       gossipInterval = config.getDuration("gossip-interval", MILLISECONDS).millis,
@@ -231,7 +231,7 @@ final class ReplicatorSettings(
    * Java API
    */
   def withDurableKeys(durableKeys: java.util.Set[String]): ReplicatorSettings = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     withDurableKeys(durableKeys.asScala.toSet)
   }
 
@@ -408,7 +408,7 @@ object Replicator {
      * Java API
      */
     def getKeyIds: java.util.Set[String] = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       keyIds.asJava
     }
   }

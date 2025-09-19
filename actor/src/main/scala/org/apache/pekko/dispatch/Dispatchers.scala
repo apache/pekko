@@ -221,7 +221,7 @@ class Dispatchers @InternalApi private[pekko] (
    * INTERNAL API
    */
   private[pekko] def config(id: String, appConfig: Config): Config = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     def simpleName = id.substring(id.lastIndexOf('.') + 1)
     idConfig(id)
       .withFallback(appConfig)
@@ -230,7 +230,7 @@ class Dispatchers @InternalApi private[pekko] (
   }
 
   private def idConfig(id: String): Config = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     ConfigFactory.parseMap(Map("id" -> id).asJava)
   }
 

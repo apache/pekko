@@ -31,7 +31,7 @@ import pekko.actor.ExtensionIdProvider
 import pekko.coordination.lease.scaladsl.Lease
 import pekko.event.Logging
 import pekko.testkit.TestProbe
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 object TestLeaseExt extends ExtensionId[TestLeaseExt] with ExtensionIdProvider {
   override def get(system: ActorSystem): TestLeaseExt = super.get(system)

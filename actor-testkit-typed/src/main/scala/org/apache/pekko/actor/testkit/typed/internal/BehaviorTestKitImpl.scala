@@ -29,7 +29,7 @@ import pekko.actor.typed.{ ActorRef, Behavior, BehaviorInterceptor, PostStop, Si
 import pekko.actor.typed.receptionist.Receptionist
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.annotation.InternalApi
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * INTERNAL API

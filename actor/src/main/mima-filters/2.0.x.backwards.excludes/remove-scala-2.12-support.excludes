@@ -21,3 +21,6 @@ ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.compat.PartialFunc
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.util.ccompat.ccompatUsedUntil213")
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.compat.Future")
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.compat.Future$")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.util.ccompat.package")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.util.ccompat.package$")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.util.ccompat.package$JavaConverters$")

@@ -15,7 +15,7 @@ package org.apache.pekko.remote.artery.tcp.ssl
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 import com.typesafe.config.Config
 
 import scala.concurrent.duration.FiniteDuration

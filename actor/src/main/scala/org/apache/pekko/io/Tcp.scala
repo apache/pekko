@@ -31,7 +31,7 @@ import pekko.io.Inet._
 import pekko.util.{ ByteString, Helpers }
 import pekko.util.Helpers.Requiring
 import scala.jdk.DurationConverters._
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * TCP Extension for Akka’s IO layer.
