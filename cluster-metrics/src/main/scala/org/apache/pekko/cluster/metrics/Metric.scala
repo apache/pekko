@@ -337,7 +337,7 @@ final case class NodeMetrics(address: Address, timestamp: Long, metrics: Set[Met
    */
   @nowarn("msg=deprecated")
   def getMetrics: java.lang.Iterable[Metric] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     metrics.asJava
   }
 

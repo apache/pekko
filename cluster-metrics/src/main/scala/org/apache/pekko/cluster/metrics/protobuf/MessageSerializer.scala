@@ -27,7 +27,7 @@ import pekko.dispatch.Dispatchers
 import pekko.protobufv3.internal.MessageLite
 import pekko.remote.ByteStringUtils
 import pekko.serialization.{ BaseSerializer, SerializationExtension, SerializerWithStringManifest, Serializers }
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * Protobuf serializer for [[pekko.cluster.metrics.ClusterMetricsMessage]] types.

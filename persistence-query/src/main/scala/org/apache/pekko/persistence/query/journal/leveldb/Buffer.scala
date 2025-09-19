@@ -19,7 +19,7 @@ import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.stream.Outlet
 import pekko.stream.stage.GraphStageLogic
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * INTERNAL API

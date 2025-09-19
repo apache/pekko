@@ -75,7 +75,7 @@ class PersistenceTestKitDurableStateStore[A](stateStore: SStore[A])
     stateStore.sliceForPersistenceId(persistenceId)
 
   override def sliceRanges(numberOfRanges: Int): java.util.List[Pair[Integer, Integer]] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     stateStore
       .sliceRanges(numberOfRanges)
       .map(range => Pair(Integer.valueOf(range.min), Integer.valueOf(range.max)))

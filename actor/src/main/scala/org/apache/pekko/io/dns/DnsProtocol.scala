@@ -25,7 +25,7 @@ import org.apache.pekko
 import pekko.actor.NoSerializationVerificationNeeded
 import pekko.io.IpVersionSelector
 import pekko.routing.ConsistentHashingRouter.ConsistentHashable
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * Supersedes [[pekko.io.Dns]] protocol.

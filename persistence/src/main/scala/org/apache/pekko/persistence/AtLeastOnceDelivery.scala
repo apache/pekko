@@ -41,7 +41,7 @@ object AtLeastOnceDelivery {
      * Java API
      */
     def getUnconfirmedDeliveries: java.util.List[UnconfirmedDelivery] = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       unconfirmedDeliveries.asJava
     }
 
@@ -57,7 +57,7 @@ object AtLeastOnceDelivery {
      * Java API
      */
     def getUnconfirmedDeliveries: java.util.List[UnconfirmedDelivery] = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       unconfirmedDeliveries.asJava
     }
   }

@@ -19,7 +19,7 @@ import java.util
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import javax.naming.ldap.LdapName
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * INTERNAL API

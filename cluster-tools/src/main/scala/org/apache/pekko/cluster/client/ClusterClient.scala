@@ -51,7 +51,7 @@ import pekko.remote.DeadlineFailureDetector
 import pekko.routing.ConsistentHash
 import pekko.routing.MurmurHash
 import pekko.util.MessageBuffer
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 @deprecated(
   "Use Pekko gRPC instead, see https://pekko.apache.org/docs/pekko/current/cluster-client.html#migration-to-pekko-grpc",

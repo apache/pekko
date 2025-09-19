@@ -22,7 +22,7 @@ import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * INTERNAL API

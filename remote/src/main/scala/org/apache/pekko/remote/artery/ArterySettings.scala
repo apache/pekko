@@ -28,7 +28,7 @@ import pekko.util.Helpers.ConfigOps
 import pekko.util.Helpers.Requiring
 import pekko.util.Helpers.toRootLowerCase
 import pekko.util.WildcardIndex
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 import pekko.io.dns.internal.AsyncDnsResolver
 
 /** INTERNAL API */

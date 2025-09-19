@@ -417,7 +417,7 @@ final case class Routees(routees: immutable.IndexedSeq[Routee]) {
    * Java API
    */
   def getRoutees: java.util.List[Routee] = {
-    import org.apache.pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     routees.asJava
   }
 }

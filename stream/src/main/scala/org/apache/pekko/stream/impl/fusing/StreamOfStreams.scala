@@ -39,7 +39,7 @@ import pekko.stream.impl.fusing.GraphStages.SingleSource
 import pekko.stream.scaladsl._
 import pekko.stream.stage._
 import pekko.util.OptionVal
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * INTERNAL API

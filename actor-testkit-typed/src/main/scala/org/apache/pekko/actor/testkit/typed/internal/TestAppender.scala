@@ -82,7 +82,7 @@ import java.util.Collections
 
   // invocations are synchronized via doAppend in AppenderBase
   override def append(event: ILoggingEvent): Unit = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
 
     val throwable = event.getThrowableProxy match {
       case p: ThrowableProxy =>

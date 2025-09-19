@@ -18,7 +18,7 @@ import java.util.{ List => JList }
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.annotation.{ InternalApi, InternalStableApi }
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * Service Provider Interface (SPI) for collecting metrics from Circuit Breaker.

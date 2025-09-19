@@ -25,7 +25,7 @@ import pekko.actor.AddressFromURIString
 import pekko.annotation.InternalApi
 import pekko.util.Helpers.{ toRootLowerCase, ConfigOps, Requiring }
 import pekko.util.Version
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 object ClusterSettings {
   type DataCenter = String
@@ -175,7 +175,7 @@ final class ClusterSettings(val config: Config, val systemName: String) {
     cc.getInt("min-nr-of-members")
   }.requiring(_ > 0, "min-nr-of-members must be > 0")
   val MinNrOfMembersOfRole: Map[String, Int] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     cc.getConfig("role")
       .root
       .asScala
@@ -195,7 +195,7 @@ final class ClusterSettings(val config: Config, val systemName: String) {
 
   val ByPassConfigCompatCheck: Boolean = !cc.getBoolean("configuration-compatibility-check.enforce-on-join")
   val ConfigCompatCheckers: Set[String] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     cc.getConfig("configuration-compatibility-check.checkers")
       .root
       .unwrapped
@@ -209,7 +209,7 @@ final class ClusterSettings(val config: Config, val systemName: String) {
   }
 
   val SensitiveConfigPaths = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
 
     val sensitiveKeys =
       cc.getConfig("configuration-compatibility-check.sensitive-config-paths")

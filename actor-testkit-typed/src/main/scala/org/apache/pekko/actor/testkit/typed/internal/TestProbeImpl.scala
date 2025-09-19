@@ -45,7 +45,7 @@ import pekko.japi.function.Creator
 import pekko.util.BoxedType
 import scala.jdk.DurationConverters._
 import pekko.util.PrettyDuration._
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 @InternalApi
 private[pekko] object TestProbeImpl {

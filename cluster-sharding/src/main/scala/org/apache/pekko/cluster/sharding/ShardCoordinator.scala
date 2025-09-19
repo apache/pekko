@@ -211,14 +211,14 @@ object ShardCoordinator {
         shardId: ShardId,
         currentShardAllocations: Map[ActorRef, immutable.IndexedSeq[ShardId]]): Future[ActorRef] = {
 
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       allocateShard(requester, shardId, currentShardAllocations.asJava)
     }
 
     override final def rebalance(
         currentShardAllocations: Map[ActorRef, immutable.IndexedSeq[ShardId]],
         rebalanceInProgress: Set[ShardId]): Future[Set[ShardId]] = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       implicit val ec = ExecutionContext.parasitic
       rebalance(currentShardAllocations.asJava, rebalanceInProgress.asJava).map(_.asScala.toSet)
     }

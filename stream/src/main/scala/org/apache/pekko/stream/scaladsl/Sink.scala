@@ -29,7 +29,6 @@ import pekko.stream.impl._
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.fusing.GraphStages
 import pekko.stream.stage._
-import pekko.util.ccompat._
 
 import org.reactivestreams.{ Publisher, Subscriber }
 
@@ -273,7 +272,8 @@ object Sink {
    *
    * See also [[Flow.limit]], [[Flow.limitWeighted]], [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
    */
-  def collection[T, That](implicit cbf: Factory[T, That with immutable.Iterable[_]]): Sink[T, Future[That]] =
+  def collection[T, That](
+      implicit cbf: scala.collection.Factory[T, That with immutable.Iterable[_]]): Sink[T, Future[That]] =
     Sink.fromGraph(new SeqStage[T, That])
 
   /**

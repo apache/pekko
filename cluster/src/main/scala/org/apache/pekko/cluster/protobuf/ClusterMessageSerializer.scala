@@ -31,7 +31,7 @@ import pekko.remote.ByteStringUtils
 import pekko.routing.Pool
 import pekko.serialization._
 import pekko.util.Version
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * INTERNAL API

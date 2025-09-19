@@ -28,7 +28,7 @@ import pekko.discovery.aggregate.AggregateServiceDiscovery.Methods
 import pekko.dispatch.MessageDispatcher
 import pekko.event.Logging
 import pekko.util.Helpers.Requiring
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * INTERNAL API

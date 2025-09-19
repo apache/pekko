@@ -37,7 +37,7 @@ import pekko.util.{ unused, _ }
 import scala.jdk.FutureConverters._
 import scala.jdk.DurationConverters._
 import scala.jdk.OptionConverters._
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 import org.reactivestreams.{ Publisher, Subscriber }
 
@@ -829,7 +829,7 @@ object Source {
  */
 final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[SourceShape[Out], Mat] {
 
-  import org.apache.pekko.util.ccompat.JavaConverters._
+  import scala.jdk.CollectionConverters._
 
   override def shape: SourceShape[Out] = delegate.shape
 

@@ -290,7 +290,7 @@ object Sink {
    * If there is a failure signaled in the stream the `CompletionStage` will be completed with failure.
    */
   def takeLast[In](n: Int): Sink[In, CompletionStage[java.util.List[In]]] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     new Sink(
       scaladsl.Sink
         .takeLast[In](n)
@@ -308,7 +308,7 @@ object Sink {
    * See also [[Flow.limit]], [[Flow.limitWeighted]], [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
    */
   def seq[In]: Sink[In, CompletionStage[java.util.List[In]]] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     new Sink(
       scaladsl.Sink.seq[In].mapMaterializedValue(fut => fut.map(sq => sq.asJava)(ExecutionContext.parasitic).asJava))
   }
@@ -403,7 +403,7 @@ object Sink {
       rest: java.util.List[Sink[U, _]],
       fanOutStrategy: function.Function[java.lang.Integer, Graph[UniformFanOutShape[T, U], NotUsed]])
       : Sink[T, NotUsed] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     val seq = if (rest ne null) rest.asScala.map(_.asScala).toSeq else immutable.Seq()
     new Sink(scaladsl.Sink.combine(output1.asScala, output2.asScala, seq: _*)(num => fanOutStrategy.apply(num)))
   }
@@ -435,7 +435,7 @@ object Sink {
       case other                                  => other
     }
     else immutable.Seq()
-    import org.apache.pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     new Sink(scaladsl.Sink.combine(seq)(size => fanOutStrategy(size)).mapMaterializedValue(_.asJava))
   }
 

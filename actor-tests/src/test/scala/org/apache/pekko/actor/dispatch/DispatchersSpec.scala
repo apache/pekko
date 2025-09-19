@@ -135,7 +135,7 @@ class DispatchersSpec extends PekkoSpec(DispatchersSpec.config) with ImplicitSen
   val defaultDispatcherConfig = settings.config.getConfig("pekko.actor.default-dispatcher")
 
   lazy val allDispatchers: Map[String, MessageDispatcher] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
 
     validTypes
       .map(t => (t, from(ConfigFactory.parseMap(Map(tipe -> t, id -> t).asJava).withFallback(defaultDispatcherConfig))))
@@ -175,7 +175,7 @@ class DispatchersSpec extends PekkoSpec(DispatchersSpec.config) with ImplicitSen
     }
 
     "throw ConfigurationException if type does not exist" in {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       intercept[ConfigurationException] {
         from(
           ConfigFactory

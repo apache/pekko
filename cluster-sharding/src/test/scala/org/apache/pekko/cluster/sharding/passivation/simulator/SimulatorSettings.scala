@@ -15,7 +15,7 @@ package org.apache.pekko.cluster.sharding.passivation.simulator
 
 import org.apache.pekko
 import pekko.japi.Util.immutableSeq
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 import com.typesafe.config.Config
 
 import java.util.Locale

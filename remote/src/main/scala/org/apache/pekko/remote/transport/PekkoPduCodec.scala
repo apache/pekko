@@ -217,7 +217,7 @@ private[remote] object PekkoPduProtobufCodec extends PekkoPduCodec {
     val ackAndEnvelope = AckAndEnvelopeContainer.parseFrom(raw.toArrayUnsafe())
 
     val ackOption = if (ackAndEnvelope.hasAck) {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       Some(
         Ack(
           SeqNo(ackAndEnvelope.getAck.getCumulativeAck),

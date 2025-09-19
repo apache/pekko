@@ -33,7 +33,7 @@ import pekko.util.Timeout
 final class RemoteSettings(val config: Config) {
   import config._
 
-  import pekko.util.ccompat.JavaConverters._
+  import scala.jdk.CollectionConverters._
 
   val Artery = ArterySettings(getConfig("pekko.remote.artery"))
 

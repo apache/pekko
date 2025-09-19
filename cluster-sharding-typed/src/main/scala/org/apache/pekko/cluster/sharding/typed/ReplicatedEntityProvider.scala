@@ -21,7 +21,7 @@ import pekko.persistence.typed.ReplicaId
 
 import scala.collection.immutable
 import scala.reflect.ClassTag
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 import java.util.{ Set => JSet }
 
 import pekko.actor.typed.Behavior

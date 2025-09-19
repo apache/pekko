@@ -35,7 +35,7 @@ import pekko.stream.impl._
 import pekko.testkit.{ TestActor, TestProbe }
 import pekko.testkit.TestActor.AutoPilot
 import scala.jdk.DurationConverters._
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 import org.reactivestreams.{ Publisher, Subscriber, Subscription }
 

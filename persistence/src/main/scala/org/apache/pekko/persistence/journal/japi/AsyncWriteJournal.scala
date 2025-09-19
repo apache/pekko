@@ -24,7 +24,7 @@ import pekko.persistence._
 import pekko.persistence.journal.{ AsyncWriteJournal => SAsyncWriteJournal }
 import pekko.util.ConstantFun.scalaAnyToUnit
 import scala.jdk.FutureConverters._
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * Java API: abstract journal, optimized for asynchronous, non-blocking writes.

@@ -34,7 +34,7 @@ import pekko.routing.Routee
 import pekko.routing.Router
 import pekko.routing.RouterActor
 import pekko.routing.RouterConfig
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * [[pekko.routing.RouterConfig]] implementation for remote deployment on defined

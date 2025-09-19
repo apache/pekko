@@ -369,7 +369,7 @@ private[pekko] object Shard {
       }
     }
 
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     // only called once during handoff
     def activeEntities(): Set[ActorRef] = byRef.keySet.asScala.toSet
 

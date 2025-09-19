@@ -24,7 +24,7 @@ import pekko.japi.Pair
 import pekko.persistence.testkit.{ ExpectedFailure, SnapshotMeta, SnapshotOperation, SnapshotStorage }
 import pekko.persistence.testkit.scaladsl.{ SnapshotTestKit => ScalaTestKit }
 import scala.jdk.DurationConverters._
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * Class for testing persisted snapshots in persistent actors.

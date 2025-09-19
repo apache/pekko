@@ -20,7 +20,7 @@ import com.typesafe.config.ConfigFactory
 import org.apache.pekko
 import pekko.actor.{ ActorSystem, Address }
 import pekko.testkit._
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 class DaemonicSpec extends PekkoSpec {
 

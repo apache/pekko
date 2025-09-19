@@ -20,7 +20,7 @@ import pekko.persistence.typed.ReplicaId
 import pekko.persistence.typed.ReplicationId
 import pekko.util.OptionVal
 import pekko.util.WallClock
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * INTERNAL API

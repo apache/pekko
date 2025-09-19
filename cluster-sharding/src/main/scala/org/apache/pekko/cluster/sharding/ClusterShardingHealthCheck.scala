@@ -22,7 +22,7 @@ import pekko.pattern.ask
 import pekko.util.Timeout
 import pekko.annotation.InternalApi
 import pekko.pattern.AskTimeoutException
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.jdk.DurationConverters._
 
 import scala.concurrent.ExecutionContext

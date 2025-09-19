@@ -25,7 +25,7 @@ import org.scalatest.wordspec.AnyWordSpec
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * The 192.0.2.1 is a Documentation IP-address and should not be used at all

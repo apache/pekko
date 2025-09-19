@@ -48,7 +48,7 @@ import scala.jdk.FutureConverters._
 import scala.jdk.DurationConverters._
 import pekko.util.PrettyDuration._
 import pekko.util.Timeout
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * INTERNAL API

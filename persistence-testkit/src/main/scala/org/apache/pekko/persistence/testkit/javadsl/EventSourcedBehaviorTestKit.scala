@@ -26,7 +26,7 @@ import pekko.actor.typed.Behavior
 import pekko.annotation.ApiMayChange
 import pekko.annotation.DoNotInherit
 import pekko.persistence.testkit.scaladsl
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 import scala.annotation.varargs
 

@@ -30,7 +30,7 @@ import pekko.persistence._
 import pekko.persistence.journal.Tagged
 import pekko.persistence.journal.WriteJournalBase
 import pekko.serialization.SerializationExtension
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 private[persistence] object LeveldbStore {
   val emptyConfig = ConfigFactory.empty()

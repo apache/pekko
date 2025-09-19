@@ -18,7 +18,7 @@ import pekko.actor.typed.ActorRef
 import pekko.actor.typed.receptionist.{ Receptionist, ServiceKey }
 import pekko.actor.typed.receptionist.Receptionist.Command
 import pekko.annotation.InternalApi
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * Internal API

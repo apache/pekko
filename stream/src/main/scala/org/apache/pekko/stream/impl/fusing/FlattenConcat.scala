@@ -288,7 +288,7 @@ private[pekko] final class FlattenConcat[T, M](parallelism: Int)
                 }
               case iterable: IterableSource[T] @unchecked        => addSourceElements(iterable.elements.iterator)
               case javaStream: JavaStreamSource[T, _] @unchecked =>
-                import pekko.util.ccompat.JavaConverters._
+                import scala.jdk.CollectionConverters._
                 addSourceElements(javaStream.open().iterator.asScala)
               case failed: FailedSource[T] @unchecked                       => addCompletedFutureElem(Failure(failed.failure))
               case maybeEmpty if TraversalBuilder.isEmptySource(maybeEmpty) => // Empty source is discarded

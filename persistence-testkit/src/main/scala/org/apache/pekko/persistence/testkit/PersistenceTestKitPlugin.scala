@@ -120,7 +120,7 @@ object PersistenceTestKitPlugin {
 
   val PluginId = "pekko.persistence.testkit.journal"
 
-  import pekko.util.ccompat.JavaConverters._
+  import scala.jdk.CollectionConverters._
 
   def getInstance() = this
 
@@ -172,7 +172,7 @@ object PersistenceTestKitSnapshotPlugin {
 
   val PluginId = "pekko.persistence.testkit.snapshotstore.pluginid"
 
-  import pekko.util.ccompat.JavaConverters._
+  import scala.jdk.CollectionConverters._
 
   def getInstance() = this
 
@@ -189,7 +189,7 @@ object PersistenceTestKitDurableStateStorePlugin {
 
   val PluginId = "pekko.persistence.testkit.state"
 
-  import pekko.util.ccompat.JavaConverters._
+  import scala.jdk.CollectionConverters._
 
   def getInstance() = this
 

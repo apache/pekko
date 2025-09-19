@@ -28,7 +28,7 @@ import org.apache.pekko
 import pekko.actor.Cancellable
 import pekko.actor.Scheduler
 import pekko.event.LoggingAdapter
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 import pekko.util.unused
 
 /**

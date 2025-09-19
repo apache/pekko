@@ -25,7 +25,7 @@ import pekko.actor.{
   ExtensionIdProvider
 }
 import pekko.pattern.internal.CircuitBreakerTelemetryProvider
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * Companion object providing factory methods for Circuit Breaker which runs callbacks in caller's thread

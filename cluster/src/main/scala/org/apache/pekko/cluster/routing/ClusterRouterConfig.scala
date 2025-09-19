@@ -38,7 +38,7 @@ import pekko.routing.RouterConfig
 import pekko.routing.RouterPoolActor
 import pekko.routing.RoutingLogic
 import pekko.util.HashCode
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 object ClusterRouterGroupSettings {
 

@@ -257,7 +257,7 @@ object UdpMessage {
 
   import Udp._
 
-  import pekko.util.ccompat.JavaConverters._
+  import scala.jdk.CollectionConverters._
 
   /**
    * Each [[Udp.Send]] can optionally request a positive acknowledgment to be sent

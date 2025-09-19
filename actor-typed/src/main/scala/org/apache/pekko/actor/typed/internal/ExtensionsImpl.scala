@@ -22,7 +22,7 @@ import org.apache.pekko
 import pekko.actor.typed.{ ActorSystem, Extension, ExtensionId, Extensions }
 import pekko.actor.typed.ExtensionSetup
 import pekko.annotation.InternalApi
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * INTERNAL API

@@ -16,7 +16,7 @@ package org.apache.pekko.cluster.sharding.external
 import org.apache.pekko
 import pekko.cluster.sharding.ShardRegion.ShardId
 import pekko.cluster.sharding.external.ExternalShardAllocationStrategy.ShardLocation
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 final class ShardLocations(val locations: Map[ShardId, ShardLocation]) {
 

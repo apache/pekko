@@ -41,7 +41,7 @@ import pekko.protobufv3.internal.MessageLite
 import pekko.serialization.BaseSerializer
 import pekko.serialization.Serialization
 import pekko.serialization.SerializerWithStringManifest
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * INTERNAL API: Protobuf serializer of ClusterSharding messages.

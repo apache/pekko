@@ -77,7 +77,7 @@ final case class AssociationErrorEvent(
 @nowarn("msg=deprecated")
 final case class RemotingListenEvent(listenAddresses: Set[Address]) extends RemotingLifecycleEvent {
   def getListenAddresses: java.util.Set[Address] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     listenAddresses.asJava
   }
   override def logLevel: Logging.LogLevel = Logging.InfoLevel
