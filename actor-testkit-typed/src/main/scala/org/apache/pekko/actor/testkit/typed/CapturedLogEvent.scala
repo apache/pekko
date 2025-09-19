@@ -20,7 +20,7 @@ import org.slf4j.event.Level
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.util.OptionConverters._
+import scala.jdk.OptionConverters._
 import pekko.util.OptionVal
 
 /**

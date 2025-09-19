@@ -36,7 +36,7 @@ import pekko.stream.impl.fusing.{ ArraySource, StatefulMapConcat, ZipWithIndexJa
 import pekko.util.{ unused, _ }
 import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
-import pekko.util.OptionConverters._
+import scala.jdk.OptionConverters._
 import pekko.util.ccompat.JavaConverters._
 
 import org.reactivestreams.{ Publisher, Subscriber }
@@ -4782,7 +4782,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
       aggregate: function.Function2[Agg, Out, Pair[Agg, Boolean]],
       harvest: function.Function[Agg, Emit],
       emitOnTimer: Optional[Pair[function.Predicate[Agg], java.time.Duration]]): javadsl.Source[Emit, Mat] = {
-    import org.apache.pekko.util.OptionConverters._
+    import scala.jdk.OptionConverters._
     asScala
       .aggregateWithBoundary(() => allocate.create())(
         aggregate = (agg, out) => aggregate.apply(agg, out).toScala,

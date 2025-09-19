@@ -26,7 +26,7 @@ import pekko.stream._
 import pekko.util.ConstantFun
 import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
-import pekko.util.OptionConverters._
+import scala.jdk.OptionConverters._
 import pekko.util.ccompat.JavaConverters._
 
 object FlowWithContext {

@@ -32,7 +32,7 @@ import pekko.stream.impl.LinearTraversalBuilder
 import pekko.stream.scaladsl.SinkToCompletionStage
 import pekko.util.ConstantFun.scalaAnyToUnit
 import pekko.util.FutureConverters._
-import pekko.util.OptionConverters._
+import scala.jdk.OptionConverters._
 
 import org.reactivestreams.{ Publisher, Subscriber }
 

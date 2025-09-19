@@ -41,7 +41,7 @@ import pekko.stream.scaladsl
 import pekko.util.ByteString
 import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
-import pekko.util.OptionConverters._
+import scala.jdk.OptionConverters._
 
 object Tcp extends ExtensionId[Tcp] with ExtensionIdProvider {
 

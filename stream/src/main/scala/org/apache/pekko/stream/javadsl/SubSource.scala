@@ -30,7 +30,7 @@ import pekko.stream.impl.fusing.{ StatefulMapConcat, ZipWithIndexJava }
 import pekko.util.ConstantFun
 import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
-import pekko.util.OptionConverters._
+import scala.jdk.OptionConverters._
 import pekko.util.ccompat.JavaConverters._
 
 /**
@@ -2798,7 +2798,7 @@ final class SubSource[Out, Mat](
       harvest: function.Function[Agg, Emit],
       emitOnTimer: Optional[Pair[function.Predicate[Agg], java.time.Duration]])
       : javadsl.SubSource[Emit, Mat] = {
-    import org.apache.pekko.util.OptionConverters._
+    import scala.jdk.OptionConverters._
     new SubSource(
       asScala.aggregateWithBoundary(() => allocate.create())(
         aggregate = (agg, out) => aggregate.apply(agg, out).toScala,

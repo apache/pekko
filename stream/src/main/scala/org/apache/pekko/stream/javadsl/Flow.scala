@@ -37,7 +37,7 @@ import pekko.stream.impl.fusing.{ StatefulMapConcat, ZipWithIndexJava }
 import pekko.util.ConstantFun
 import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
-import pekko.util.OptionConverters._
+import scala.jdk.OptionConverters._
 import pekko.util.Timeout
 import pekko.util.unused
 import org.reactivestreams.Processor
@@ -4342,7 +4342,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
       harvest: function.Function[Agg, Emit],
       emitOnTimer: Optional[Pair[function.Predicate[Agg], java.time.Duration]])
       : javadsl.Flow[In, Emit, Mat] = {
-    import org.apache.pekko.util.OptionConverters._
+    import scala.jdk.OptionConverters._
     asScala
       .aggregateWithBoundary(() => allocate.create())(
         aggregate = (agg, out) => aggregate.apply(agg, out).toScala,

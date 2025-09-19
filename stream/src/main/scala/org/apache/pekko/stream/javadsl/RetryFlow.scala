@@ -20,7 +20,7 @@ import pekko.annotation.ApiMayChange
 import pekko.japi.Pair
 import pekko.stream.scaladsl
 import pekko.util.JavaDurationConverters._
-import pekko.util.OptionConverters._
+import scala.jdk.OptionConverters._
 
 object RetryFlow {
 

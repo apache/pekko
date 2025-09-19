@@ -283,7 +283,7 @@ abstract class AbstractActor extends Actor {
   @throws(classOf[Exception])
   @nowarn("msg=deprecated")
   override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
-    import pekko.util.OptionConverters._
+    import scala.jdk.OptionConverters._
     preRestart(reason, message.toJava)
   }
 
@@ -295,7 +295,7 @@ abstract class AbstractActor extends Actor {
    */
   @throws(classOf[Exception])
   def preRestart(reason: Throwable, message: Optional[Any]): Unit = {
-    import pekko.util.OptionConverters._
+    import scala.jdk.OptionConverters._
     super.preRestart(reason, message.toScala)
   }
 

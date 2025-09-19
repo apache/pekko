@@ -18,6 +18,7 @@ import java.util.concurrent.ConcurrentHashMap
 import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.util.{ Failure, Success }
+
 import com.fasterxml.jackson.annotation.{ JsonAutoDetect, JsonCreator, PropertyAccessor }
 import com.fasterxml.jackson.core.{
   JsonFactory,
@@ -56,7 +57,7 @@ import pekko.actor.setup.Setup
 import pekko.annotation.InternalStableApi
 import pekko.event.{ Logging, LoggingAdapter }
 import pekko.util.unused
-import pekko.util.OptionConverters._
+import scala.jdk.OptionConverters._
 
 object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvider] with ExtensionIdProvider {
   override def get(system: ActorSystem): JacksonObjectMapperProvider = super.get(system)

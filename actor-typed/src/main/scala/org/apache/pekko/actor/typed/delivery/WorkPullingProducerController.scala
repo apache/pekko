@@ -30,7 +30,7 @@ import pekko.actor.typed.receptionist.ServiceKey
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.annotation.ApiMayChange
 import pekko.util.JavaDurationConverters._
-import pekko.util.OptionConverters._
+import scala.jdk.OptionConverters._
 
 /**
  * Work pulling is a pattern where several worker actors pull tasks in their own pace from

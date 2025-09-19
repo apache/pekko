@@ -27,7 +27,7 @@ import pekko.annotation.InternalApi
 import pekko.persistence.typed._
 import pekko.persistence.typed.EventAdapter
 import pekko.persistence.typed.internal._
-import pekko.util.OptionConverters._
+import scala.jdk.OptionConverters._
 import pekko.util.unused
 
 abstract class EventSourcedBehavior[Command, Event, State] private[pekko] (

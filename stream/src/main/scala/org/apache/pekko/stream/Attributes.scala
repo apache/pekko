@@ -32,7 +32,7 @@ import pekko.stream.impl.TraversalBuilder
 import pekko.util.{ ByteString, OptionVal }
 import pekko.util.JavaDurationConverters._
 import pekko.util.LineNumbers
-import pekko.util.OptionConverters._
+import scala.jdk.OptionConverters._
 
 /**
  * Holds attributes which can be used to alter [[pekko.stream.scaladsl.Flow]] / [[pekko.stream.javadsl.Flow]]

@@ -33,7 +33,7 @@ import pekko.annotation.InternalApi
 import pekko.util.Helpers.toRootLowerCase
 import pekko.util.Helpers.Requiring
 import pekko.util.JavaDurationConverters._
-import pekko.util.OptionConverters._
+import scala.jdk.OptionConverters._
 
 /**
  * Point-to-point reliable delivery between a single producer actor sending messages and a single consumer

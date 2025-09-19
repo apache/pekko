@@ -41,7 +41,7 @@ import pekko.japi.Util.immutableSeq
 import pekko.serialization.SerializationExtension
 import pekko.util._
 import pekko.util.FutureConverters._
-import pekko.util.OptionConverters._
+import scala.jdk.OptionConverters._
 import pekko.util.Helpers.toRootLowerCase
 import pekko.util.ccompat.JavaConverters._
 

@@ -20,7 +20,7 @@ import org.slf4j.event.Level
 
 import org.apache.pekko
 import pekko.util.ccompat.JavaConverters._
-import pekko.util.OptionConverters._
+import scala.jdk.OptionConverters._
 
 object LoggingEvent {
 

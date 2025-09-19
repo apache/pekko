@@ -24,7 +24,7 @@ import pekko.annotation.InternalApi
 import scala.concurrent.ExecutionContext
 import pekko.stream.QueueOfferResult
 import pekko.util.FutureConverters._
-import pekko.util.OptionConverters._
+import scala.jdk.OptionConverters._
 
 /**
  * This trait allows to have a queue as a data source for some stream.

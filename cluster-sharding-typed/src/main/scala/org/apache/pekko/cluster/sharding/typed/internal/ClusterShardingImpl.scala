@@ -147,7 +147,7 @@ import pekko.util.JavaDurationConverters._
 
   // javadsl impl
   override def init[M, E](entity: javadsl.Entity[M, E]): ActorRef[E] = {
-    import pekko.util.OptionConverters._
+    import scala.jdk.OptionConverters._
     init(
       new scaladsl.Entity(
         createBehavior = (ctx: EntityContext[M]) =>
