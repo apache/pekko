@@ -17,15 +17,17 @@ import java.nio.file.Paths
 import java.util.concurrent.TimeUnit.NANOSECONDS
 import java.util.concurrent.atomic.AtomicInteger
 
+import scala.concurrent.duration._
+
+import org.HdrHistogram.Histogram
+
 import org.apache.pekko
 import pekko.actor._
 import pekko.cluster.MemberStatus
 import pekko.cluster.sharding.ShardRegion.{ CurrentShardRegionState, GetShardRegionState, Passivate }
 import pekko.testkit._
-import com.typesafe.config.ConfigFactory
-import org.HdrHistogram.Histogram
 
-import scala.concurrent.duration._
+import com.typesafe.config.ConfigFactory
 
 object ClusterShardingRememberEntitiesPerfSpec {
   val NrRegions = 6

@@ -22,7 +22,6 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import SerializationTests._
-import com.typesafe.config._
 import test.org.apache.pekko.serialization.NoVerification
 
 import org.apache.pekko
@@ -32,6 +31,8 @@ import pekko.pattern.ask
 import pekko.testkit.{ EventFilter, PekkoSpec }
 import pekko.util.{ unused, Timeout }
 import pekko.util.ByteString
+
+import com.typesafe.config._
 
 object SerializationTests {
 

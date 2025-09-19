@@ -15,10 +15,10 @@ package org.apache.pekko.actor.typed
 
 import java.util.Optional
 
+import org.apache.pekko.annotation.{ DoNotInherit, InternalApi }
+
 import org.slf4j.Logger
 import org.slf4j.event.Level
-
-import org.apache.pekko.annotation.{ DoNotInherit, InternalApi }
 
 /**
  * Logging options when using `Behaviors.logMessages`.

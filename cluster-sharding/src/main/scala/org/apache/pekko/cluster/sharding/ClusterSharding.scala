@@ -19,6 +19,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 import scala.collection.immutable
 import scala.concurrent.Await
+import scala.jdk.CollectionConverters._
 import scala.util.control.NonFatal
 
 import org.apache.pekko
@@ -50,7 +51,6 @@ import pekko.event.Logging
 import pekko.pattern.BackoffOpts
 import pekko.pattern.ask
 import pekko.util.ByteString
-import scala.jdk.CollectionConverters._
 
 /**
  * This extension provides sharding functionality of actors in a cluster.

@@ -20,13 +20,13 @@ import java.util.UUID
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.actor.{ ActorRef, Props }
 import pekko.event.Logging
 import pekko.persistence.snapshot.local.LocalSnapshotStore
 import pekko.testkit.{ EventFilter, ImplicitSender, TestEvent }
+
+import com.typesafe.config.Config
 
 object SnapshotFailureRobustnessSpec {
 

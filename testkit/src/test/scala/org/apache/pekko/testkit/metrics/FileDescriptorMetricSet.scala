@@ -16,11 +16,11 @@ package org.apache.pekko.testkit.metrics
 import java.lang.management.{ ManagementFactory, OperatingSystemMXBean }
 import java.util
 
+import scala.jdk.CollectionConverters._
+
 import com.codahale.metrics.{ Gauge, Metric, MetricSet }
 import com.codahale.metrics.MetricRegistry._
 import com.codahale.metrics.jvm.FileDescriptorRatioGauge
-
-import scala.jdk.CollectionConverters._
 
 /**
  * MetricSet exposing number of open and maximum file descriptors used by the JVM process.

@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicReference
 import scala.annotation.{ nowarn, tailrec }
 import scala.collection.immutable
 import scala.concurrent.duration.FiniteDuration
+import scala.jdk.CollectionConverters._
 import scala.util.control.NonFatal
 
 import org.apache.pekko
@@ -39,7 +40,6 @@ import pekko.stream.impl.fusing.GraphStages.SingleSource
 import pekko.stream.scaladsl._
 import pekko.stream.stage._
 import pekko.util.OptionVal
-import scala.jdk.CollectionConverters._
 
 /**
  * INTERNAL API

@@ -13,13 +13,13 @@
 
 package org.apache.pekko.stream.impl
 
+import scala.concurrent.ExecutionContext
 import scala.util.Failure
 import scala.util.Success
 
 import org.apache.pekko
 import pekko.Done
 import pekko.NotUsed
-import scala.concurrent.ExecutionContext
 import pekko.stream.Attributes
 import pekko.stream.FlowShape
 import pekko.stream.Inlet

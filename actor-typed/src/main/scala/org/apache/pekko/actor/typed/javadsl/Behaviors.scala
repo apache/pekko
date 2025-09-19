@@ -16,6 +16,7 @@ package org.apache.pekko.actor.typed.javadsl
 import java.util.Collections
 import java.util.function.{ Function => JFunction, Supplier }
 
+import scala.jdk.CollectionConverters._
 import scala.reflect.ClassTag
 
 import org.apache.pekko
@@ -23,7 +24,6 @@ import pekko.actor.typed._
 import pekko.actor.typed.internal.{ BehaviorImpl, StashBufferImpl, TimerSchedulerImpl, WithMdcBehaviorInterceptor }
 import pekko.japi.function.{ Effect, Function2 => JapiFunction2 }
 import pekko.japi.pf.PFBuilder
-import scala.jdk.CollectionConverters._
 import pekko.util.unused
 
 /**

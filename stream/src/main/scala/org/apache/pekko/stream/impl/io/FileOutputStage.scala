@@ -18,6 +18,7 @@ import java.nio.file.{ OpenOption, Path }
 
 import scala.collection.immutable
 import scala.concurrent.{ Future, Promise }
+import scala.jdk.CollectionConverters._
 import scala.util.Success
 import scala.util.control.NonFatal
 
@@ -34,7 +35,6 @@ import pekko.stream.{
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.stage.{ GraphStageLogic, GraphStageWithMaterializedValue, InHandler }
 import pekko.util.ByteString
-import scala.jdk.CollectionConverters._
 
 /**
  * INTERNAL API

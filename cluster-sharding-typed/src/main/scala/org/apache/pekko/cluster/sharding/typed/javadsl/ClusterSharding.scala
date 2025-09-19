@@ -19,6 +19,8 @@ import java.util.Optional
 import java.util.concurrent.CompletionStage
 
 import scala.annotation.nowarn
+import scala.jdk.OptionConverters._
+
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.ActorSystem
@@ -32,7 +34,6 @@ import pekko.cluster.sharding.ShardCoordinator.ShardAllocationStrategy
 import pekko.cluster.sharding.typed.internal.EntityTypeKeyImpl
 import pekko.japi.function.{ Function => JFunction }
 import pekko.pattern.StatusReply
-import scala.jdk.OptionConverters._
 
 @FunctionalInterface
 trait EntityFactory[M] {

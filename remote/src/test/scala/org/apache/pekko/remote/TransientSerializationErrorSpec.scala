@@ -15,13 +15,13 @@ package org.apache.pekko.remote
 
 import java.io.NotSerializableException
 
-import com.typesafe.config.{ Config, ConfigFactory }
-
 import org.apache.pekko
 import pekko.actor.{ ActorSystem, ExtendedActorSystem, RootActorPath }
 import pekko.serialization.SerializerWithStringManifest
 import pekko.testkit.{ PekkoSpec, TestActors, TestKit }
 import pekko.util.unused
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 object TransientSerializationErrorSpec {
   object ManifestNotSerializable

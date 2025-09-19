@@ -15,9 +15,10 @@ package org.apache.pekko.cluster
 
 import scala.collection.{ immutable => im }
 
-import com.typesafe.config.{ Config, ConfigFactory }
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 class JoinConfigCompatPreDefinedChecksSpec extends AnyWordSpec with Matchers {
 

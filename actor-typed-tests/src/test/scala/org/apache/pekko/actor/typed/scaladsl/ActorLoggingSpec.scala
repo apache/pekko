@@ -16,12 +16,6 @@ package org.apache.pekko.actor.typed.scaladsl
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicReference
 
-import com.typesafe.config.ConfigFactory
-import org.scalatest.wordspec.AnyWordSpecLike
-import org.slf4j.LoggerFactory
-import org.slf4j.MDC
-import org.slf4j.helpers.BasicMarkerFactory
-
 import org.apache.pekko
 import pekko.actor.ActorPath
 import pekko.actor.ActorSystem
@@ -40,6 +34,14 @@ import pekko.event.DefaultLoggingFilter
 import pekko.event.Logging.DefaultLogger
 import pekko.event.slf4j.Slf4jLogger
 import pekko.event.slf4j.Slf4jLoggingFilter
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import org.slf4j.LoggerFactory
+import org.slf4j.MDC
+import org.slf4j.helpers.BasicMarkerFactory
+
+import com.typesafe.config.ConfigFactory
 
 class SomeClass
 

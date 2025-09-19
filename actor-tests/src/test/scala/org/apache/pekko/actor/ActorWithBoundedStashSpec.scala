@@ -15,9 +15,6 @@ package org.apache.pekko.actor
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.{ Config, ConfigFactory }
-import org.scalatest.BeforeAndAfterEach
-
 import org.apache.pekko
 import pekko.actor.ActorSystem.Settings
 import pekko.dispatch.BoundedDequeBasedMailbox
@@ -25,6 +22,10 @@ import pekko.testkit._
 import pekko.testkit.DefaultTimeout
 import pekko.testkit.TestEvent._
 import pekko.util.unused
+
+import org.scalatest.BeforeAndAfterEach
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 object ActorWithBoundedStashSpec {
 

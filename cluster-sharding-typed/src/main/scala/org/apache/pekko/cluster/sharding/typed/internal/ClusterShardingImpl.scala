@@ -20,6 +20,8 @@ import java.util.concurrent.CompletionStage
 import java.util.concurrent.ConcurrentHashMap
 
 import scala.concurrent.Future
+import scala.jdk.DurationConverters._
+import scala.jdk.FutureConverters._
 
 import org.apache.pekko
 import pekko.actor.ActorRefProvider
@@ -50,8 +52,6 @@ import pekko.pattern.AskTimeoutException
 import pekko.pattern.PromiseActorRef
 import pekko.pattern.StatusReply
 import pekko.util.{ unused, ByteString, Timeout }
-import scala.jdk.FutureConverters._
-import scala.jdk.DurationConverters._
 
 /**
  * INTERNAL API

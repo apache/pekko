@@ -14,10 +14,10 @@
 package org.apache.pekko.dispatch
 
 import java.util.concurrent.{ ConcurrentHashMap, ThreadFactory }
+
 import scala.annotation.{ nowarn, tailrec }
 import scala.concurrent.ExecutionContext
 
-import com.typesafe.config.{ Config, ConfigFactory, ConfigValueType }
 import org.apache.pekko
 import pekko.ConfigurationException
 import pekko.actor.{ ActorSystem, DynamicAccess, Scheduler }
@@ -25,6 +25,8 @@ import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.event.{ EventStream, LoggingAdapter }
 import pekko.event.Logging.Warning
 import pekko.util.Helpers.ConfigOps
+
+import com.typesafe.config.{ Config, ConfigFactory, ConfigValueType }
 
 /**
  * DispatcherPrerequisites represents useful contextual pieces when constructing a MessageDispatcher

@@ -18,14 +18,15 @@ import java.net.InetAddress
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
-import com.typesafe.config.ConfigFactory
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-
 import org.apache.pekko
 import pekko.actor.{ ActorSystem, Address }
 import pekko.remote.transport.NettyTransportSpec._
 import pekko.testkit.SocketUtil
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+
+import com.typesafe.config.ConfigFactory
 
 trait BindCanonicalAddressBehaviors {
   this: AnyWordSpec with Matchers =>

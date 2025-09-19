@@ -15,13 +15,13 @@ package org.apache.pekko.stream.scaladsl
 
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.annotation.ApiMayChange
-import scala.concurrent.ExecutionContext
 import pekko.event.{ LogMarker, LoggingAdapter, MarkerLoggingAdapter }
 import pekko.stream._
 import pekko.stream.impl.Throttle

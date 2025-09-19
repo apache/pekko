@@ -19,14 +19,14 @@ import java.util.concurrent.atomic.AtomicLong
 import scala.collection.immutable
 import scala.concurrent.duration._
 
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-
 import org.apache.pekko
 import pekko.io.dns.ARecord
 import pekko.io.dns.CachePolicy.Ttl
 import pekko.io.dns.DnsProtocol
 import pekko.io.dns.DnsProtocol.Ip
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 class SimpleDnsCacheSpec extends AnyWordSpec with Matchers {
   "Cache" should {

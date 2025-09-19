@@ -16,8 +16,6 @@ package org.apache.pekko.cluster.routing
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.Actor
 import pekko.actor.ActorRef
@@ -36,6 +34,8 @@ import pekko.routing.RoundRobinPool
 import pekko.routing.RoutedActorRef
 import pekko.routing.Routees
 import pekko.testkit._
+
+import com.typesafe.config.ConfigFactory
 
 object ClusterRoundRobinMultiJvmSpec extends MultiNodeConfig {
 

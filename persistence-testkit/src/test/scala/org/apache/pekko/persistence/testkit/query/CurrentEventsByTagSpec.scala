@@ -24,6 +24,7 @@ import pekko.persistence.testkit.query.EventsByPersistenceIdSpec.Command
 import pekko.persistence.testkit.query.EventsByPersistenceIdSpec.testBehaviour
 import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
 import pekko.stream.scaladsl.Sink
+
 import org.scalatest.wordspec.AnyWordSpecLike
 
 class CurrentEventsByTagSpec

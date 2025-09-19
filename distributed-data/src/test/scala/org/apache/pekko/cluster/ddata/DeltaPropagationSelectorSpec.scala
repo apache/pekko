@@ -14,8 +14,6 @@
 package org.apache.pekko.cluster.ddata
 
 import org.scalactic.TypeCheckedTripleEquals
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 
 import org.apache.pekko
 import pekko.actor.Address
@@ -25,6 +23,9 @@ import pekko.cluster.ddata.Replicator.Internal.DataEnvelope
 import pekko.cluster.ddata.Replicator.Internal.Delta
 import pekko.cluster.ddata.Replicator.Internal.DeltaPropagation
 import pekko.cluster.ddata.Replicator.Internal.DeltaPropagation.NoDeltaPlaceholder
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 object DeltaPropagationSelectorSpec {
   class TestSelector(val selfUniqueAddress: UniqueAddress, override val allNodes: Vector[UniqueAddress])

@@ -17,13 +17,14 @@ import java.util.concurrent.atomic.AtomicInteger
 
 import scala.util.control.NoStackTrace
 
-import com.typesafe.config.ConfigFactory
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-
 import org.apache.pekko
 import pekko.testkit.EventFilter
 import pekko.testkit.TestKit._
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+
+import com.typesafe.config.ConfigFactory
 
 object TestExtension extends ExtensionId[TestExtension] with ExtensionIdProvider {
   def lookup = this

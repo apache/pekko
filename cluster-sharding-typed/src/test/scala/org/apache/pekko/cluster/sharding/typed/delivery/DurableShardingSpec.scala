@@ -17,9 +17,6 @@ import java.util.UUID
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-import org.scalatest.wordspec.AnyWordSpecLike
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
@@ -41,6 +38,11 @@ import pekko.cluster.typed.Join
 import pekko.persistence.journal.inmem.InmemJournal
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.delivery.EventSourcedProducerQueue
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 object DurableShardingSpec {
   def conf: Config =

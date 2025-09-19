@@ -14,10 +14,9 @@
 package org.apache.pekko.coordination.lease
 
 import scala.concurrent.duration._
+import scala.jdk.DurationConverters._
 
 import com.typesafe.config.{ Config, ConfigValueType }
-
-import scala.jdk.DurationConverters._
 
 object TimeoutSettings {
   def apply(config: Config): TimeoutSettings = {

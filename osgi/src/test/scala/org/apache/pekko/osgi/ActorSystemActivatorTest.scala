@@ -19,8 +19,6 @@ import scala.concurrent.duration._
 
 import PojoSRTestSupport.bundle
 import de.kalpatec.pojosr.framework.launch.BundleDescriptor
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 import test.{ PingPongActorSystemActivator, RuntimeNameActorSystemActivator, TestActivators }
 import test.PingPong._
 
@@ -28,6 +26,9 @@ import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.pattern.ask
 import pekko.util.Timeout
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 /**
  * Test cases for [[pekko.osgi.ActorSystemActivator]] in 2 different scenarios:

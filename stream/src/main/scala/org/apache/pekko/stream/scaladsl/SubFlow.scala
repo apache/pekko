@@ -13,11 +13,11 @@
 
 package org.apache.pekko.stream.scaladsl
 
+import scala.annotation.unchecked.uncheckedVariance
+
 import org.apache.pekko
 import pekko.annotation.DoNotInherit
 import pekko.stream._
-
-import scala.annotation.unchecked.uncheckedVariance
 
 /**
  * A “stream of streams” sub-flow of data elements, e.g. produced by `groupBy`.

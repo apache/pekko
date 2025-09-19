@@ -13,10 +13,10 @@
 
 package org.apache.pekko.cluster.sharding.typed.internal
 
+import java.nio.charset.StandardCharsets.UTF_8
+
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
-
-import java.nio.charset.StandardCharsets.UTF_8
 
 class Murmur2Spec extends AnyWordSpecLike with Matchers {
   "The Murmur2 hashing" must {

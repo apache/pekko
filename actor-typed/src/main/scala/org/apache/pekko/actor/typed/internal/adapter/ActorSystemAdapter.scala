@@ -16,8 +16,7 @@ package org.apache.pekko.actor.typed.internal.adapter
 import java.util.concurrent.CompletionStage
 
 import scala.concurrent.ExecutionContextExecutor
-
-import org.slf4j.{ Logger, LoggerFactory }
+import scala.jdk.FutureConverters._
 
 import org.apache.pekko
 import pekko.{ actor => classic }
@@ -42,7 +41,8 @@ import pekko.actor.typed.internal.PropsImpl.DispatcherSameAsParent
 import pekko.actor.typed.internal.SystemMessage
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.annotation.InternalApi
-import scala.jdk.FutureConverters._
+
+import org.slf4j.{ Logger, LoggerFactory }
 
 /**
  * INTERNAL API. Lightweight wrapper for presenting a classic ActorSystem to a Behavior (via the context).

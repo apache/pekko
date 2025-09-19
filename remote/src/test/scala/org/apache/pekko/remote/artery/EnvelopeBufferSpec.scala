@@ -14,6 +14,7 @@
 package org.apache.pekko.remote.artery
 
 import java.nio.{ ByteBuffer, ByteOrder }
+
 import org.apache.pekko
 import pekko.actor._
 import pekko.remote.artery.compress.{ CompressionTable, CompressionTestUtils, InboundCompressions }

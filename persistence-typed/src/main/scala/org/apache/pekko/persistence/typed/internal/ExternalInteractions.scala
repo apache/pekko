@@ -14,6 +14,7 @@
 package org.apache.pekko.persistence.typed.internal
 
 import scala.collection.immutable
+
 import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.actor.typed.Behavior

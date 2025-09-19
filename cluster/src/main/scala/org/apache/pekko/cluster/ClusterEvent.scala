@@ -16,6 +16,7 @@ package org.apache.pekko.cluster
 import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.collection.immutable.{ SortedSet, VectorBuilder }
+import scala.jdk.CollectionConverters._
 import scala.runtime.AbstractFunction5
 
 import org.apache.pekko
@@ -27,7 +28,6 @@ import pekko.cluster.ClusterSettings.DataCenter
 import pekko.cluster.MemberStatus._
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.event.EventStream
-import scala.jdk.CollectionConverters._
 
 /**
  * Domain events published to the event bus.

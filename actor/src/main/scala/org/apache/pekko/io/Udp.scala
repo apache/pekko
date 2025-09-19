@@ -16,16 +16,16 @@ package org.apache.pekko.io
 import java.net.DatagramSocket
 import java.net.InetSocketAddress
 
-import scala.collection.immutable
-
 import scala.annotation.nowarn
-import com.typesafe.config.Config
+import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.actor._
 import pekko.io.Inet.{ SoJavaFactories, SocketOption }
 import pekko.util.ByteString
 import pekko.util.Helpers.Requiring
+
+import com.typesafe.config.Config
 
 /**
  * UDP Extension for Akka’s IO layer.
@@ -255,9 +255,9 @@ class UdpExt(system: ExtendedActorSystem) extends IO.Extension {
 object UdpMessage {
   import java.lang.{ Iterable => JIterable }
 
-  import Udp._
-
   import scala.jdk.CollectionConverters._
+
+  import Udp._
 
   /**
    * Each [[Udp.Send]] can optionally request a positive acknowledgment to be sent

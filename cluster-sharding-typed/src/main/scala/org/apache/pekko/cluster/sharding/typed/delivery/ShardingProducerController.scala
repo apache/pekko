@@ -16,9 +16,9 @@ package org.apache.pekko.cluster.sharding.typed.delivery
 import java.util.Optional
 
 import scala.concurrent.duration.FiniteDuration
+import scala.jdk.DurationConverters._
+import scala.jdk.OptionConverters._
 import scala.reflect.ClassTag
-
-import com.typesafe.config.Config
 
 import org.apache.pekko
 import pekko.Done
@@ -32,8 +32,8 @@ import pekko.actor.typed.scaladsl.Behaviors
 import pekko.annotation.ApiMayChange
 import pekko.cluster.sharding.typed.ShardingEnvelope
 import pekko.cluster.sharding.typed.delivery.internal.ShardingProducerControllerImpl
-import scala.jdk.DurationConverters._
-import scala.jdk.OptionConverters._
+
+import com.typesafe.config.Config
 
 /**
  * Reliable delivery between a producer actor sending messages to sharded consumer

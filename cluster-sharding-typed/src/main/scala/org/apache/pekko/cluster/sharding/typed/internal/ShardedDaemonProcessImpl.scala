@@ -13,10 +13,12 @@
 
 package org.apache.pekko.cluster.sharding.typed.internal
 
-import java.util.function.IntFunction
 import java.util.Optional
+import java.util.function.IntFunction
 
+import scala.jdk.OptionConverters._
 import scala.reflect.ClassTag
+
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.ActorSystem
@@ -40,7 +42,6 @@ import pekko.cluster.sharding.typed.scaladsl.StartEntity
 import pekko.cluster.typed.Cluster
 import pekko.cluster.typed.SelfUp
 import pekko.cluster.typed.Subscribe
-import scala.jdk.OptionConverters._
 import pekko.util.PrettyDuration
 
 /**

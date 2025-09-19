@@ -13,6 +13,7 @@
 
 package org.apache.pekko.remote.artery
 
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
@@ -21,7 +22,6 @@ import org.apache.pekko
 import pekko.Done
 import pekko.actor.ActorSystem
 import pekko.actor.Address
-import scala.concurrent.ExecutionContext
 import pekko.remote.UniqueAddress
 import pekko.stream.Attributes
 import pekko.stream.FlowShape

@@ -18,6 +18,7 @@ import java.util
 import com.codahale.metrics._
 import com.codahale.metrics.jvm
 import com.codahale.metrics.jvm.MemoryUsageGaugeSet
+
 import org.scalatest.Notifying
 
 /**

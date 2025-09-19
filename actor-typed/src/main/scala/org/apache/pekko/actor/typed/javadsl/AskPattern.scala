@@ -17,13 +17,14 @@ package javadsl
 import java.time.Duration
 import java.util.concurrent.CompletionStage
 
+import scala.jdk.DurationConverters._
+import scala.jdk.FutureConverters._
+
 import org.apache.pekko
 import pekko.actor.typed.Scheduler
 import pekko.actor.typed.scaladsl.AskPattern._
 import pekko.japi.function.{ Function => JFunction }
 import pekko.pattern.StatusReply
-import scala.jdk.FutureConverters._
-import scala.jdk.DurationConverters._
 
 /**
  * The ask-pattern implements the initiator side of a request–reply protocol.

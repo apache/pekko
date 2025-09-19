@@ -15,10 +15,11 @@ package org.apache.pekko.actor
 
 import java.util.concurrent.TimeUnit
 
-import com.typesafe.config.ConfigFactory
 import org.openjdk.jmh.annotations._
 
 import org.apache.pekko.actor.BenchmarkActors._
+
+import com.typesafe.config.ConfigFactory
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Array(Mode.Throughput))

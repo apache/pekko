@@ -151,8 +151,8 @@ import pekko.remote.artery.ThisActorSystemQuarantinedEvent
     with Timers {
 
   import DowningStrategy._
-  import SplitBrainResolver.ReleaseLeaseCondition.NoLease
   import SplitBrainResolver._
+  import SplitBrainResolver.ReleaseLeaseCondition.NoLease
 
   val log: DiagnosticMarkerBusLoggingAdapter = Logging.withMarker(this)
 

@@ -16,24 +16,24 @@ package org.apache.pekko.routing
 import java.util.concurrent.TimeoutException
 
 import scala.collection.immutable
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.concurrent.duration.FiniteDuration
-
-import com.typesafe.config.Config
+import scala.jdk.DurationConverters._
 
 import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.actor.ActorSystem
 import pekko.actor.SupervisorStrategy
 import pekko.dispatch.Dispatchers
-import scala.concurrent.ExecutionContext
 import pekko.japi.Util.immutableSeq
 import pekko.pattern.ask
 import pekko.pattern.pipe
 import pekko.util.Helpers.ConfigOps
-import scala.jdk.DurationConverters._
 import pekko.util.Timeout
+
+import com.typesafe.config.Config
 
 /**
  * Broadcasts the message to all routees, and replies with the first response.

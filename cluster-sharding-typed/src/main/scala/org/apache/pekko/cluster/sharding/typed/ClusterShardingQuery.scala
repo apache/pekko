@@ -14,13 +14,13 @@
 package org.apache.pekko.cluster.sharding.typed
 
 import scala.concurrent.duration.FiniteDuration
+import scala.jdk.DurationConverters._
 
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
 import pekko.cluster.sharding.ShardRegion.ClusterShardingStats
 import pekko.cluster.sharding.ShardRegion.CurrentShardRegionState
 import pekko.cluster.sharding.typed.scaladsl.EntityTypeKey
-import scala.jdk.DurationConverters._
 
 /**
  * Protocol for querying sharding state e.g. A ShardRegion's state

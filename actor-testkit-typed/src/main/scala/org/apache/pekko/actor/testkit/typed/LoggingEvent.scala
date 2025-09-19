@@ -15,11 +15,11 @@ package org.apache.pekko.actor.testkit.typed
 
 import java.util.Optional
 
-import org.slf4j.Marker
-import org.slf4j.event.Level
-
 import scala.jdk.CollectionConverters._
 import scala.jdk.OptionConverters._
+
+import org.slf4j.Marker
+import org.slf4j.event.Level
 
 object LoggingEvent {
 

@@ -13,11 +13,12 @@
 
 package org.apache.pekko.actor.testkit.typed.internal
 
-import org.slf4j.LoggerFactory
-import org.slf4j.event.Level
+import scala.annotation.tailrec
+
 import org.apache.pekko.annotation.InternalApi
 
-import scala.annotation.tailrec
+import org.slf4j.LoggerFactory
+import org.slf4j.event.Level
 
 /**
  * INTERNAL API

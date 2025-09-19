@@ -17,8 +17,11 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
+
 import scala.annotation.tailrec
 import scala.collection.immutable.TreeMap
+import scala.jdk.CollectionConverters._
+
 import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.actor.Address
@@ -30,7 +33,6 @@ import pekko.protobufv3.internal.ByteString
 import pekko.protobufv3.internal.MessageLite
 import pekko.remote.ByteStringUtils
 import pekko.serialization._
-import scala.jdk.CollectionConverters._
 
 /**
  * Some useful serialization helper methods.

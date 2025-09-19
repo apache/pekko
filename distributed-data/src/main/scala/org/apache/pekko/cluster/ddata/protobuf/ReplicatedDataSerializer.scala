@@ -19,9 +19,12 @@ import java.util
 import java.util.ArrayList
 import java.util.Collections
 import java.util.Comparator
+
+import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.collection.immutable
-import scala.annotation.nowarn
+import scala.jdk.CollectionConverters._
+
 import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.actor.ExtendedActorSystem
@@ -36,7 +39,6 @@ import pekko.serialization.BaseSerializer
 import pekko.serialization.Serialization
 import pekko.serialization.SerializerWithStringManifest
 import pekko.util.ByteString.UTF_8
-import scala.jdk.CollectionConverters._
 
 private object ReplicatedDataSerializer {
   /*

@@ -18,13 +18,13 @@ import java.lang.{ Iterable => JIterable }
 import scala.collection.immutable
 import scala.util.control.NoStackTrace
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.InternalApi
-import pekko.japi.function.Procedure
 import pekko.japi.Util
+import pekko.japi.function.Procedure
+
+import com.typesafe.config.Config
 
 abstract class RecoveryCompleted
 

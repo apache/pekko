@@ -13,11 +13,9 @@
 
 package org.apache.pekko.remote
 
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent.duration._
-
-import scala.annotation.nowarn
-import com.typesafe.config.Config
 
 import org.apache.pekko
 import pekko.ConfigurationException
@@ -30,10 +28,12 @@ import pekko.remote.artery.ArterySettings
 import pekko.util.Helpers.{ toRootLowerCase, ConfigOps, Requiring }
 import pekko.util.Timeout
 
-final class RemoteSettings(val config: Config) {
-  import config._
+import com.typesafe.config.Config
 
+final class RemoteSettings(val config: Config) {
   import scala.jdk.CollectionConverters._
+
+  import config._
 
   val Artery = ArterySettings(getConfig("pekko.remote.artery"))
 

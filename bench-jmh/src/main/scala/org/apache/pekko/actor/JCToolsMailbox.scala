@@ -16,7 +16,6 @@ package org.apache.pekko.actor
 import scala.annotation.tailrec
 import scala.concurrent.duration.Duration
 
-import com.typesafe.config.Config
 import org.jctools.queues.MpscGrowableArrayQueue
 
 import org.apache.pekko
@@ -26,6 +25,8 @@ import pekko.dispatch.Envelope
 import pekko.dispatch.MailboxType
 import pekko.dispatch.MessageQueue
 import pekko.dispatch.ProducesMessageQueue
+
+import com.typesafe.config.Config
 
 case class JCToolsMailbox(val capacity: Int) extends MailboxType with ProducesMessageQueue[BoundedNodeMessageQueue] {
 

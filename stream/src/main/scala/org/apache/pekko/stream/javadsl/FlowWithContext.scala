@@ -17,6 +17,10 @@ import java.util.Optional
 import java.util.concurrent.CompletionStage
 
 import scala.annotation.unchecked.uncheckedVariance
+import scala.jdk.CollectionConverters._
+import scala.jdk.DurationConverters._
+import scala.jdk.FutureConverters._
+import scala.jdk.OptionConverters._
 
 import org.apache.pekko
 import pekko.annotation.ApiMayChange
@@ -24,10 +28,6 @@ import pekko.event.{ LogMarker, LoggingAdapter, MarkerLoggingAdapter }
 import pekko.japi.{ function, Pair }
 import pekko.stream._
 import pekko.util.ConstantFun
-import scala.jdk.FutureConverters._
-import scala.jdk.DurationConverters._
-import scala.jdk.OptionConverters._
-import scala.jdk.CollectionConverters._
 
 object FlowWithContext {
 

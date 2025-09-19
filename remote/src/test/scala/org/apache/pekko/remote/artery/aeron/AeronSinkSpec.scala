@@ -29,8 +29,8 @@ import pekko.actor.ExtendedActorSystem
 import pekko.remote.artery.aeron.AeronSink.GaveUpMessageException
 import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.Source
-import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
+import pekko.testkit.PekkoSpec
 import pekko.testkit.SocketUtil
 
 class AeronSinkSpec extends PekkoSpec("""

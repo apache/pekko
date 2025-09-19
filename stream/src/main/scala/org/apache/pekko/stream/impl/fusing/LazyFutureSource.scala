@@ -17,11 +17,11 @@
 
 package org.apache.pekko.stream.impl.fusing
 
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.util.Try
 
 import org.apache.pekko
-import scala.concurrent.ExecutionContext
 import pekko.stream.Attributes
 import pekko.stream.Attributes.SourceLocation
 import pekko.stream.Outlet

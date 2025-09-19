@@ -16,6 +16,9 @@ package org.apache.pekko.cluster.sharding.external.internal
 import java.util.concurrent.CompletionStage
 
 import scala.concurrent.Future
+import scala.jdk.CollectionConverters._
+import scala.jdk.DurationConverters._
+import scala.jdk.FutureConverters._
 
 import org.apache.pekko
 import pekko.Done
@@ -44,11 +47,8 @@ import pekko.cluster.sharding.external.ShardLocations
 import pekko.dispatch.MessageDispatcher
 import pekko.event.Logging
 import pekko.pattern.ask
-import scala.jdk.FutureConverters._
-import scala.jdk.DurationConverters._
 import pekko.util.PrettyDuration._
 import pekko.util.Timeout
-import scala.jdk.CollectionConverters._
 
 /**
  * INTERNAL API

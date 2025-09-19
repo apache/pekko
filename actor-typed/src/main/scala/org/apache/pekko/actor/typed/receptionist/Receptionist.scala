@@ -13,13 +13,13 @@
 
 package org.apache.pekko.actor.typed.receptionist
 
+import scala.jdk.CollectionConverters._
 import scala.reflect.ClassTag
 
 import org.apache.pekko
 import pekko.actor.typed.{ ActorRef, ActorSystem, Extension, ExtensionId, ExtensionSetup }
 import pekko.actor.typed.internal.receptionist._
 import pekko.annotation.DoNotInherit
-import scala.jdk.CollectionConverters._
 
 /**
  * Register and discover actors that implement a service with a protocol defined by a [[ServiceKey]].

@@ -16,8 +16,6 @@ package org.apache.pekko.cluster
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.cluster.ClusterEvent._
@@ -25,6 +23,8 @@ import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.transport.ThrottlerTransportAdapter.Direction
 import pekko.testkit.TestProbe
+
+import com.typesafe.config.ConfigFactory
 
 object MultiDcSplitBrainMultiJvmSpec extends MultiNodeConfig {
   val first = role("first")

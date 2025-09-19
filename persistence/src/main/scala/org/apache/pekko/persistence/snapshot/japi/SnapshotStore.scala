@@ -13,14 +13,14 @@
 
 package org.apache.pekko.persistence.snapshot.japi
 
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
+import scala.jdk.FutureConverters._
 
 import org.apache.pekko
-import scala.concurrent.ExecutionContext
 import pekko.persistence._
 import pekko.persistence.snapshot.{ SnapshotStore => SSnapshotStore }
 import pekko.util.ConstantFun.scalaAnyToUnit
-import scala.jdk.FutureConverters._
 
 /**
  * Java API: abstract snapshot store.

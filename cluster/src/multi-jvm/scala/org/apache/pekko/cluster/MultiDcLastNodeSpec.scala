@@ -15,9 +15,9 @@ package org.apache.pekko.cluster
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko.remote.testkit.MultiNodeConfig
+
+import com.typesafe.config.ConfigFactory
 
 object MultiDcLastNodeSpec extends MultiNodeConfig {
   val first = role("first")

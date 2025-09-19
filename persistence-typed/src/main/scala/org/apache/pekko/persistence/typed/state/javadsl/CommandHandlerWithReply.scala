@@ -14,16 +14,16 @@
 package org.apache.pekko.persistence.typed.state.javadsl
 
 import java.util.Objects
+import java.util.function.{ Function => JFunction }
 import java.util.function.BiFunction
 import java.util.function.Predicate
 import java.util.function.Supplier
-import java.util.function.{ Function => JFunction }
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.persistence.typed.state.internal._
-import pekko.util.OptionVal
 import pekko.util.FunctionConverters._
+import pekko.util.OptionVal
 
 /* Note that this is a copy of CommandHandler.scala to support ReplyEffect
  * s/Effect/ReplyEffect/

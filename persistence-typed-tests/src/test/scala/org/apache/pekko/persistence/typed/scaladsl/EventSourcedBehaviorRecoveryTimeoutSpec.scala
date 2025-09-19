@@ -13,6 +13,10 @@
 
 package org.apache.pekko.persistence.typed.scaladsl
 
+import java.util.concurrent.atomic.AtomicInteger
+
+import scala.concurrent.duration._
+
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl._
 import pekko.actor.typed.ActorRef
@@ -23,12 +27,11 @@ import pekko.persistence.journal.SteppingInmemJournal
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.RecoveryFailed
 import pekko.persistence.typed.internal.JournalFailureException
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+
 import org.scalatest.wordspec.AnyWordSpecLike
 
-import java.util.concurrent.atomic.AtomicInteger
-import scala.concurrent.duration._
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 object EventSourcedBehaviorRecoveryTimeoutSpec {
 

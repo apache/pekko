@@ -16,6 +16,7 @@ package org.apache.pekko.remote.artery
 import java.util.ArrayDeque
 
 import scala.annotation.tailrec
+import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 import scala.util.Failure
 import scala.util.Success
@@ -26,7 +27,6 @@ import org.apache.pekko
 import pekko.Done
 import pekko.actor.ActorRef
 import pekko.annotation.InternalApi
-import scala.concurrent.ExecutionContext
 import pekko.dispatch.sysmsg.SystemMessage
 import pekko.event.Logging
 import pekko.remote.UniqueAddress

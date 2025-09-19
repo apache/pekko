@@ -17,8 +17,11 @@ import java.io.{ ByteArrayInputStream, ByteArrayOutputStream }
 import java.io.NotSerializableException
 import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
+
 import scala.annotation.tailrec
 import scala.collection.immutable.TreeMap
+import scala.jdk.CollectionConverters._
+
 import org.apache.pekko
 import pekko.actor.{ Address, ExtendedActorSystem }
 import pekko.actor.ActorRef
@@ -28,7 +31,6 @@ import pekko.cluster.pubsub.protobuf.msg.{ DistributedPubSubMessages => dm }
 import pekko.protobufv3.internal.{ ByteString, MessageLite }
 import pekko.remote.ByteStringUtils
 import pekko.serialization._
-import scala.jdk.CollectionConverters._
 
 /**
  * INTERNAL API: Protobuf serializer of DistributedPubSubMediator messages.

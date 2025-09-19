@@ -14,13 +14,13 @@
 package org.apache.pekko.stream
 
 import scala.concurrent.duration.FiniteDuration
+import scala.jdk.DurationConverters._
 
 import org.apache.pekko
-import pekko.japi.function
 import pekko.event.Logging
 import pekko.event.Logging.LogLevel
+import pekko.japi.function
 import pekko.util.ConstantFun
-import scala.jdk.DurationConverters._
 
 final class RestartSettings private (
     val minBackoff: FiniteDuration,

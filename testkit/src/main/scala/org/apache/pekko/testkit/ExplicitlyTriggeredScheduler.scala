@@ -20,16 +20,16 @@ import java.util.concurrent.atomic.AtomicLong
 import scala.annotation.tailrec
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.{ Duration, FiniteDuration }
+import scala.jdk.CollectionConverters._
 import scala.util.Try
-
-import com.typesafe.config.Config
 
 import org.apache.pekko
 import pekko.actor.Cancellable
 import pekko.actor.Scheduler
 import pekko.event.LoggingAdapter
-import scala.jdk.CollectionConverters._
 import pekko.util.unused
+
+import com.typesafe.config.Config
 
 /**
  * For testing: scheduler that does not look at the clock, but must be

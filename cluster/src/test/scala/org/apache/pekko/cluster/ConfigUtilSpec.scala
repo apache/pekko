@@ -17,10 +17,10 @@
 
 package org.apache.pekko.cluster
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.testkit.PekkoSpec
+
+import com.typesafe.config.ConfigFactory
 
 class ConfigUtilSpec extends PekkoSpec {
 

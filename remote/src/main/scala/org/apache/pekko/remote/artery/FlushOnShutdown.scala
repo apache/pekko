@@ -16,6 +16,7 @@ package org.apache.pekko.remote.artery
 import scala.concurrent.Promise
 import scala.concurrent.duration.FiniteDuration
 import scala.util.control.NonFatal
+
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.{ Actor, ActorLogging, Props }

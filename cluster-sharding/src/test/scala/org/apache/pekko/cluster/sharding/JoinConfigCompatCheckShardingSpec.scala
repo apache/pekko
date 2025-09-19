@@ -16,13 +16,13 @@ package org.apache.pekko.cluster.sharding
 import scala.collection.{ immutable => im }
 import scala.concurrent.duration._
 
-import com.typesafe.config.{ Config, ConfigFactory }
-
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.cluster.{ Cluster, ClusterReadView }
-import pekko.testkit.WithLogCapturing
 import pekko.testkit.{ LongRunningTest, PekkoSpec }
+import pekko.testkit.WithLogCapturing
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 class JoinConfigCompatCheckShardingSpec extends PekkoSpec() with WithLogCapturing {
 

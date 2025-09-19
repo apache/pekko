@@ -39,9 +39,8 @@ object GremlinController {
 }
 
 class GremlinController extends Actor with ActorLogging {
-  import context.dispatcher
-
   import GremlinController._
+  import context.dispatcher
   val transport =
     context.system.asInstanceOf[ExtendedActorSystem].provider.asInstanceOf[RemoteActorRefProvider].transport
   val selfAddress = Cluster(context.system).selfAddress

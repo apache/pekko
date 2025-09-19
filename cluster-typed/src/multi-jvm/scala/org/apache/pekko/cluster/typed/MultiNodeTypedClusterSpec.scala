@@ -20,11 +20,11 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.language.implicitConversions
 
-import org.scalatest.Suite
-import org.scalatest.matchers.should.Matchers
-
 import org.apache.pekko
 import pekko.actor.ActorIdentity
+import pekko.actor.Address
+import pekko.actor.Identify
+import pekko.actor.Scheduler
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.Behavior
@@ -32,9 +32,6 @@ import pekko.actor.typed.Props
 import pekko.actor.typed.SpawnProtocol
 import pekko.actor.typed.scaladsl.AskPattern._
 import pekko.actor.typed.scaladsl.adapter._
-import pekko.actor.Address
-import pekko.actor.Identify
-import pekko.actor.Scheduler
 import pekko.cluster.ClusterEvent
 import pekko.cluster.MemberStatus
 import pekko.remote.testconductor.RoleName
@@ -42,6 +39,9 @@ import pekko.remote.testkit.MultiNodeSpec
 import pekko.remote.testkit.STMultiNodeSpec
 import pekko.testkit.WatchedByCoroner
 import pekko.util.Timeout
+
+import org.scalatest.Suite
+import org.scalatest.matchers.should.Matchers
 
 trait MultiNodeTypedClusterSpec extends Suite with STMultiNodeSpec with WatchedByCoroner with Matchers {
   self: MultiNodeSpec =>

@@ -17,8 +17,9 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.concurrent.TimeoutException
 import scala.concurrent.duration._
+import scala.util.Failure
 import scala.util.Success
-import org.scalatest.wordspec.AnyWordSpecLike
+
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
@@ -32,7 +33,7 @@ import pekko.pattern.StatusReply
 import pekko.testkit.TestException
 import pekko.util.Timeout
 
-import scala.util.Failure
+import org.scalatest.wordspec.AnyWordSpecLike
 
 object AskSpec {
   sealed trait Msg

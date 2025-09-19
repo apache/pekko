@@ -15,6 +15,10 @@ package org.apache.pekko.cluster.sharding.internal
 
 import java.lang.{ Boolean => JBoolean, Integer => JInteger }
 
+import scala.collection.immutable
+import scala.concurrent.Future
+import scala.concurrent.duration.DurationInt
+
 import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.actor.ActorSystem
@@ -27,10 +31,6 @@ import pekko.cluster.MemberStatus
 import pekko.cluster.sharding.ShardCoordinator.ActorSystemDependentAllocationStrategy
 import pekko.cluster.sharding.ShardRegion.ShardId
 import pekko.pattern.after
-
-import scala.collection.immutable
-import scala.concurrent.Future
-import scala.concurrent.duration.DurationInt
 
 /**
  * Common logic for the least shard allocation strategy implementations

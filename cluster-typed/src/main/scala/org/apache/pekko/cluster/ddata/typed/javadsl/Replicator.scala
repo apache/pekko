@@ -16,6 +16,8 @@ package org.apache.pekko.cluster.ddata.typed.javadsl
 import java.time.Duration
 import java.util.function.{ Function => JFunction }
 
+import scala.jdk.DurationConverters._
+
 import org.apache.pekko
 import pekko.actor.DeadLetterSuppression
 import pekko.actor.NoSerializationVerificationNeeded
@@ -27,7 +29,6 @@ import pekko.cluster.{ ddata => dd }
 import pekko.cluster.ddata.Key
 import pekko.cluster.ddata.ReplicatedData
 import pekko.cluster.ddata.typed.internal.ReplicatorBehavior
-import scala.jdk.DurationConverters._
 
 /**
  * @see [[pekko.cluster.ddata.Replicator]].

@@ -26,7 +26,6 @@ import java.util.concurrent.locks.LockSupport
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
 import io.aeron.Aeron
 import io.aeron.CncFileDescriptor
 import org.HdrHistogram.Histogram
@@ -44,6 +43,8 @@ import pekko.stream.scaladsl.Flow
 import pekko.stream.scaladsl.Source
 import pekko.testkit._
 import pekko.util.ByteString
+
+import com.typesafe.config.ConfigFactory
 
 object AeronStreamLatencySpec extends MultiNodeConfig {
   val first = role("first")
