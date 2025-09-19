@@ -64,22 +64,22 @@ import scala.concurrent.duration.FiniteDuration
 @InternalApi private[pekko] trait TimerSchedulerCrossDslSupport[T]
     extends scaladsl.TimerScheduler[T]
     with javadsl.TimerScheduler[T] {
-  import pekko.util.JavaDurationConverters._
+  import scala.jdk.DurationConverters._
 
   override final def startTimerWithFixedDelay(key: Any, msg: T, delay: Duration): Unit =
-    startTimerWithFixedDelay(key, msg, delay.asScala)
+    startTimerWithFixedDelay(key, msg, delay.toScala)
 
   override final def startTimerWithFixedDelay(key: Any, msg: T, initialDelay: Duration, delay: Duration): Unit =
-    startTimerWithFixedDelay(key, msg, initialDelay.asScala, delay.asScala)
+    startTimerWithFixedDelay(key, msg, initialDelay.toScala, delay.toScala)
 
   override final def startTimerAtFixedRate(key: Any, msg: T, interval: Duration): Unit =
-    startTimerAtFixedRate(key, msg, interval.asScala)
+    startTimerAtFixedRate(key, msg, interval.toScala)
 
   override final def startTimerAtFixedRate(key: Any, msg: T, initialDelay: Duration, interval: Duration): Unit =
-    startTimerAtFixedRate(key, msg, initialDelay.asScala, interval.asScala)
+    startTimerAtFixedRate(key, msg, initialDelay.toScala, interval.toScala)
 
   override final def startSingleTimer(key: Any, msg: T, delay: Duration): Unit =
-    startSingleTimer(key, msg, delay.asScala)
+    startSingleTimer(key, msg, delay.toScala)
 }
 
 /**

@@ -24,7 +24,7 @@ import language.implicitConversions
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.routing.{ Deafen, Listen, Listeners }
-import pekko.util.{ unused, JavaDurationConverters }
+import pekko.util.unused
 
 object FSM {
 
@@ -293,8 +293,8 @@ object FSM {
      * Use Duration.Inf to deactivate an existing timeout.
      */
     def forMax(timeout: java.time.Duration): State[S, D] = {
-      import JavaDurationConverters._
-      forMax(timeout.asScala)
+      import scala.jdk.DurationConverters._
+      forMax(timeout.toScala)
     }
 
     /**

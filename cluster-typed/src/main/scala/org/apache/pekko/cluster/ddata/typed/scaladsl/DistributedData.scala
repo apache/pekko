@@ -28,7 +28,7 @@ import pekko.cluster.{ ddata => dd }
 import pekko.cluster.Cluster
 import pekko.cluster.ddata.ReplicatedData
 import pekko.cluster.ddata.SelfUniqueAddress
-import pekko.util.JavaDurationConverters._
+import scala.jdk.DurationConverters._
 
 object DistributedData extends ExtensionId[DistributedData] {
   def get(system: ActorSystem[_]): DistributedData = apply(system)
@@ -85,7 +85,7 @@ class DistributedData(system: ActorSystem[_]) extends Extension {
   @InternalApi private[pekko] val unexpectedAskTimeout: FiniteDuration =
     system.settings.config
       .getDuration("pekko.cluster.ddata.typed.replicator-message-adapter-unexpected-ask-timeout")
-      .asScala
+      .toScala
 
   private val classicSystem = system.toClassic.asInstanceOf[ExtendedActorSystem]
 

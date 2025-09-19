@@ -26,7 +26,7 @@ import pekko.actor.typed.ActorRef
 import pekko.actor.typed.javadsl.ActorContext
 import pekko.cluster.ddata.Key
 import pekko.cluster.ddata.ReplicatedData
-import pekko.util.JavaDurationConverters._
+import scala.jdk.DurationConverters._
 import pekko.util.Timeout
 
 /**
@@ -66,7 +66,7 @@ class ReplicatorMessageAdapter[A, B <: ReplicatedData](
     replicator: ActorRef[Replicator.Command],
     unexpectedAskTimeout: Duration) {
 
-  private implicit val askTimeout: Timeout = Timeout(unexpectedAskTimeout.asScala)
+  private implicit val askTimeout: Timeout = Timeout(unexpectedAskTimeout.toScala)
 
   private var changedMessageAdapters: Map[Key[B], ActorRef[Replicator.SubscribeResponse[B]]] = Map.empty
 

@@ -23,11 +23,11 @@ import java.util.function.BiFunction;
 import org.apache.pekko.actor.*;
 import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
-import org.apache.pekko.util.JavaDurationConverters;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
 import scala.concurrent.Await;
+import scala.jdk.javaapi.DurationConverters;
 import scala.jdk.javaapi.FutureConverters;
 
 public class CircuitBreakerTest extends JUnitSuite {
@@ -51,8 +51,7 @@ public class CircuitBreakerTest extends JUnitSuite {
     final CompletionStage<String> res = breaker.callWithCircuitBreakerCS(() -> f);
     assertEquals(
         "hello",
-        Await.result(
-            FutureConverters.asScala(res), JavaDurationConverters.asFiniteDuration(fiveSeconds)));
+        Await.result(FutureConverters.asScala(res), DurationConverters.toScala(fiveSeconds)));
   }
 
   @Test
@@ -71,8 +70,7 @@ public class CircuitBreakerTest extends JUnitSuite {
     final CompletionStage<String> res = breaker.callWithCircuitBreakerCS(() -> f, fn);
     assertEquals(
         "hello",
-        Await.result(
-            FutureConverters.asScala(res), JavaDurationConverters.asFiniteDuration(fiveSeconds)));
+        Await.result(FutureConverters.asScala(res), DurationConverters.toScala(fiveSeconds)));
     assertEquals(1, breaker.currentFailureCount());
   }
 }

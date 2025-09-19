@@ -23,7 +23,7 @@ import pekko.actor.typed.scaladsl.AskPattern._
 import pekko.japi.function.{ Function => JFunction }
 import pekko.pattern.StatusReply
 import scala.jdk.FutureConverters._
-import pekko.util.JavaDurationConverters._
+import scala.jdk.DurationConverters._
 
 /**
  * The ask-pattern implements the initiator side of a request–reply protocol.
@@ -49,7 +49,7 @@ object AskPattern {
       messageFactory: JFunction[ActorRef[Res], Req],
       timeout: Duration,
       scheduler: Scheduler): CompletionStage[Res] =
-    actor.ask(messageFactory.apply)(timeout.asScala, scheduler).asJava
+    actor.ask(messageFactory.apply)(timeout.toScala, scheduler).asJava
 
   /**
    * The same as [[ask]] but only for requests that result in a response of type [[pekko.pattern.StatusReply]].
@@ -62,6 +62,6 @@ object AskPattern {
       messageFactory: JFunction[ActorRef[StatusReply[Res]], Req],
       timeout: Duration,
       scheduler: Scheduler): CompletionStage[Res] =
-    actor.askWithStatus(messageFactory.apply)(timeout.asScala, scheduler).asJava
+    actor.askWithStatus(messageFactory.apply)(timeout.toScala, scheduler).asJava
 
 }

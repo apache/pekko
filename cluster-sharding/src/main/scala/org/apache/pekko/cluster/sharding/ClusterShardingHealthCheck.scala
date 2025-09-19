@@ -23,7 +23,7 @@ import pekko.util.Timeout
 import pekko.annotation.InternalApi
 import pekko.pattern.AskTimeoutException
 import pekko.util.ccompat.JavaConverters._
-import pekko.util.JavaDurationConverters._
+import scala.jdk.DurationConverters._
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
@@ -38,7 +38,7 @@ private[pekko] object ClusterShardingHealthCheckSettings {
   def apply(config: Config): ClusterShardingHealthCheckSettings =
     new ClusterShardingHealthCheckSettings(
       config.getStringList("names").asScala.toSet,
-      config.getDuration("timeout").asScala)
+      config.getDuration("timeout").toScala)
 }
 
 @ApiMayChange

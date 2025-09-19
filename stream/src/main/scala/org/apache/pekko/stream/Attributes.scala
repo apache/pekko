@@ -30,7 +30,7 @@ import pekko.event.Logging
 import pekko.japi.function
 import pekko.stream.impl.TraversalBuilder
 import pekko.util.{ ByteString, OptionVal }
-import pekko.util.JavaDurationConverters._
+import scala.jdk.DurationConverters._
 import pekko.util.LineNumbers
 import scala.jdk.OptionConverters._
 
@@ -483,7 +483,7 @@ object Attributes {
      * but you might still be able observe a long delay at the ultimate source.
      */
     @ApiMayChange
-    def afterDelay(delay: java.time.Duration, strategy: Strategy): Strategy = AfterDelay(delay.asScala, strategy)
+    def afterDelay(delay: java.time.Duration, strategy: Strategy): Strategy = AfterDelay(delay.toScala, strategy)
   }
 
   /**
@@ -834,7 +834,7 @@ object ActorAttributes {
    * Java API: Defines a timeout for stream subscription and what action to take when that hits.
    */
   def streamSubscriptionTimeout(timeout: Duration, mode: StreamSubscriptionTimeoutTerminationMode): Attributes =
-    streamSubscriptionTimeout(timeout.asScala, mode)
+    streamSubscriptionTimeout(timeout.toScala, mode)
 
   /**
    * Maximum number of elements emitted in batch if downstream signals large demand.
@@ -926,7 +926,7 @@ object StreamRefAttributes {
   /**
    * Java API: Specifies the subscription timeout within which the remote side MUST subscribe to the handed out stream reference.
    */
-  def subscriptionTimeout(timeout: Duration): Attributes = subscriptionTimeout(timeout.asScala)
+  def subscriptionTimeout(timeout: Duration): Attributes = subscriptionTimeout(timeout.toScala)
 
   /**
    * Specifies the size of the buffer on the receiving side that is eagerly filled even without demand.
@@ -943,7 +943,7 @@ object StreamRefAttributes {
    *  Java API: If no new elements arrive within this timeout, demand is redelivered.
    */
   def demandRedeliveryInterval(timeout: Duration): Attributes =
-    demandRedeliveryInterval(timeout.asScala)
+    demandRedeliveryInterval(timeout.toScala)
 
   /**
    * Scala API: The time between the Terminated signal being received and when the local SourceRef determines to fail itself
@@ -955,6 +955,6 @@ object StreamRefAttributes {
    * Java API: The time between the Terminated signal being received and when the local SourceRef determines to fail itself
    */
   def finalTerminationSignalDeadline(timeout: Duration): Attributes =
-    finalTerminationSignalDeadline(timeout.asScala)
+    finalTerminationSignalDeadline(timeout.toScala)
 
 }

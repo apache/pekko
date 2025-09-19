@@ -40,7 +40,7 @@ import pekko.stream.TLSClosing
 import pekko.stream.scaladsl
 import pekko.util.ByteString
 import scala.jdk.FutureConverters._
-import pekko.util.JavaDurationConverters._
+import scala.jdk.DurationConverters._
 import scala.jdk.OptionConverters._
 
 object Tcp extends ExtensionId[Tcp] with ExtensionIdProvider {
@@ -355,6 +355,6 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
   }
 
   private def optionalDurationToScala(duration: Optional[java.time.Duration]) = {
-    if (duration.isPresent) duration.get.asScala else Duration.Inf
+    if (duration.isPresent) duration.get.toScala else Duration.Inf
   }
 }

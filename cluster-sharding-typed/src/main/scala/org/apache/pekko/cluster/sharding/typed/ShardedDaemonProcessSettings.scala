@@ -22,7 +22,7 @@ import com.typesafe.config.Config
 import org.apache.pekko
 import pekko.actor.typed.ActorSystem
 import pekko.annotation.InternalApi
-import pekko.util.JavaDurationConverters._
+import scala.jdk.DurationConverters._
 
 object ShardedDaemonProcessSettings {
 
@@ -39,7 +39,7 @@ object ShardedDaemonProcessSettings {
    * Load settings from a specific config location.
    */
   def fromConfig(config: Config): ShardedDaemonProcessSettings = {
-    val keepAliveInterval = config.getDuration("keep-alive-interval").asScala
+    val keepAliveInterval = config.getDuration("keep-alive-interval").toScala
 
     new ShardedDaemonProcessSettings(keepAliveInterval, None, None)
   }
@@ -68,7 +68,7 @@ final class ShardedDaemonProcessSettings @InternalApi private[pekko] (
    * Note: How the sharded set is kept alive may change in the future meaning this setting may go away.
    */
   def withKeepAliveInterval(keepAliveInterval: Duration): ShardedDaemonProcessSettings =
-    copy(keepAliveInterval = keepAliveInterval.asScala)
+    copy(keepAliveInterval = keepAliveInterval.toScala)
 
   /**
    * Specify sharding settings that should be used for the sharded daemon process instead of loading from config.

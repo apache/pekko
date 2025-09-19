@@ -29,7 +29,7 @@ import pekko.actor.typed.delivery.internal.WorkPullingProducerControllerImpl
 import pekko.actor.typed.receptionist.ServiceKey
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.annotation.ApiMayChange
-import pekko.util.JavaDurationConverters._
+import scala.jdk.DurationConverters._
 import scala.jdk.OptionConverters._
 
 /**
@@ -164,7 +164,7 @@ object WorkPullingProducerController {
     def apply(config: Config): Settings = {
       new Settings(
         bufferSize = config.getInt("buffer-size"),
-        config.getDuration("internal-ask-timeout").asScala,
+        config.getDuration("internal-ask-timeout").toScala,
         ProducerController.Settings(config))
     }
 
@@ -198,7 +198,7 @@ object WorkPullingProducerController {
       copy(internalAskTimeout = newInternalAskTimeout)
 
     def withInternalAskTimeout(newInternalAskTimeout: java.time.Duration): Settings =
-      copy(internalAskTimeout = newInternalAskTimeout.asScala)
+      copy(internalAskTimeout = newInternalAskTimeout.toScala)
 
     def withProducerControllerSettings(newProducerControllerSettings: ProducerController.Settings): Settings =
       copy(producerControllerSettings = newProducerControllerSettings)

@@ -31,7 +31,7 @@ import pekko.annotation.InternalApi
 import scala.concurrent.ExecutionContext
 import pekko.pattern.StatusReply
 import pekko.util.BoxedType
-import pekko.util.JavaDurationConverters._
+import scala.jdk.DurationConverters._
 import pekko.util.OptionVal
 import pekko.util.Timeout
 
@@ -201,10 +201,10 @@ import scala.util.Success
   }
 
   override def setReceiveTimeout(duration: java.time.Duration, msg: T): Unit =
-    setReceiveTimeout(duration.asScala, msg)
+    setReceiveTimeout(duration.toScala, msg)
 
   override def scheduleOnce[U](delay: java.time.Duration, target: ActorRef[U], msg: U): pekko.actor.Cancellable =
-    scheduleOnce(delay.asScala, target, msg)
+    scheduleOnce(delay.toScala, target, msg)
 
   override def spawn[U](behavior: pekko.actor.typed.Behavior[U], name: String): pekko.actor.typed.ActorRef[U] =
     spawn(behavior, name, Props.empty)

@@ -25,7 +25,7 @@ import pekko.japi.{ function, Pair }
 import pekko.stream._
 import pekko.util.ConstantFun
 import scala.jdk.FutureConverters._
-import pekko.util.JavaDurationConverters._
+import scala.jdk.DurationConverters._
 import scala.jdk.OptionConverters._
 import pekko.util.ccompat.JavaConverters._
 
@@ -381,7 +381,7 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    * @see [[pekko.stream.javadsl.Flow.throttle]]
    */
   def throttle(elements: Int, per: java.time.Duration): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
-    viaScala(_.throttle(elements, per.asScala))
+    viaScala(_.throttle(elements, per.toScala))
 
   /**
    * Context-preserving variant of [[pekko.stream.javadsl.Flow.throttle]].
@@ -393,7 +393,7 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
       per: java.time.Duration,
       maximumBurst: Int,
       mode: ThrottleMode): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
-    viaScala(_.throttle(elements, per.asScala, maximumBurst, mode))
+    viaScala(_.throttle(elements, per.toScala, maximumBurst, mode))
 
   /**
    * Context-preserving variant of [[pekko.stream.javadsl.Flow.throttle]].
@@ -404,7 +404,7 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
       cost: Int,
       per: java.time.Duration,
       costCalculation: function.Function[Out, Integer]): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
-    viaScala(_.throttle(cost, per.asScala, costCalculation.apply))
+    viaScala(_.throttle(cost, per.toScala, costCalculation.apply))
 
   /**
    * Context-preserving variant of [[pekko.stream.javadsl.Flow.throttle]].
@@ -417,7 +417,7 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
       maximumBurst: Int,
       costCalculation: function.Function[Out, Integer],
       mode: ThrottleMode): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
-    viaScala(_.throttle(cost, per.asScala, maximumBurst, costCalculation.apply, mode))
+    viaScala(_.throttle(cost, per.toScala, maximumBurst, costCalculation.apply, mode))
 
   def asScala: scaladsl.FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
     scaladsl.FlowWithContext.fromTuples(

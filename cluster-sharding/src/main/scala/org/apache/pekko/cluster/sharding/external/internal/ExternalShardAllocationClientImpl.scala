@@ -45,7 +45,7 @@ import pekko.dispatch.MessageDispatcher
 import pekko.event.Logging
 import pekko.pattern.ask
 import scala.jdk.FutureConverters._
-import pekko.util.JavaDurationConverters._
+import scala.jdk.DurationConverters._
 import pekko.util.PrettyDuration._
 import pekko.util.Timeout
 import pekko.util.ccompat.JavaConverters._
@@ -66,7 +66,7 @@ final private[external] class ExternalShardAllocationClientImpl(system: ActorSys
   private val timeout =
     system.settings.config
       .getDuration("pekko.cluster.sharding.external-shard-allocation-strategy.client-timeout")
-      .asScala
+      .toScala
   private implicit val askTimeout: Timeout = Timeout(timeout * 2)
   private implicit val ec: MessageDispatcher = system.dispatchers.internalDispatcher
 

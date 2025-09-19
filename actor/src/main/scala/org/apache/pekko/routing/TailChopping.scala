@@ -28,7 +28,7 @@ import pekko.dispatch.Dispatchers
 import pekko.japi.Util.immutableSeq
 import pekko.pattern.{ ask, pipe, AskTimeoutException }
 import pekko.util.Helpers.ConfigOps
-import pekko.util.JavaDurationConverters._
+import scala.jdk.DurationConverters._
 import pekko.util.Timeout
 
 /**
@@ -197,7 +197,7 @@ final case class TailChoppingPool(
    * @param interval duration after which next routee will be picked
    */
   def this(nr: Int, within: java.time.Duration, interval: java.time.Duration) =
-    this(nr, within.asScala, interval.asScala)
+    this(nr, within.toScala, interval.toScala)
 
   override def createRouter(system: ActorSystem): Router =
     new Router(
@@ -291,7 +291,7 @@ final case class TailChoppingGroup(
    * @param interval duration after which next routee will be picked
    */
   def this(routeePaths: java.lang.Iterable[String], within: java.time.Duration, interval: java.time.Duration) =
-    this(immutableSeq(routeePaths), within.asScala, interval.asScala)
+    this(immutableSeq(routeePaths), within.toScala, interval.toScala)
 
   override def createRouter(system: ActorSystem): Router =
     new Router(

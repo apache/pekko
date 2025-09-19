@@ -18,7 +18,7 @@ import scala.concurrent.duration.FiniteDuration
 import org.apache.pekko
 import pekko.annotation.DoNotInherit
 import pekko.dispatch.Envelope
-import pekko.util.JavaDurationConverters._
+import scala.jdk.DurationConverters._
 import pekko.util.OptionVal
 
 /**
@@ -165,7 +165,7 @@ abstract class UntypedAbstractActorWithTimers extends UntypedAbstractActor with 
    * in the mailbox when the new timer was started.
    */
   final def startTimerWithFixedDelay(key: Any, msg: Any, delay: java.time.Duration): Unit =
-    startTimerWithFixedDelay(key, msg, delay.asScala)
+    startTimerWithFixedDelay(key, msg, delay.toScala)
 
   /**
    * Java API: Schedules a message to be sent repeatedly to the `self` actor with a
@@ -188,7 +188,7 @@ abstract class UntypedAbstractActorWithTimers extends UntypedAbstractActor with 
       msg: Any,
       initialDelay: java.time.Duration,
       delay: java.time.Duration): Unit =
-    startTimerWithFixedDelay(key, msg, initialDelay.asScala, delay.asScala)
+    startTimerWithFixedDelay(key, msg, initialDelay.toScala, delay.toScala)
 
   /**
    * Scala API: Schedules a message to be sent repeatedly to the `self` actor with a
@@ -270,7 +270,7 @@ abstract class UntypedAbstractActorWithTimers extends UntypedAbstractActor with 
    * in the mailbox when the new timer was started.
    */
   final def startTimerAtFixedRate(key: Any, msg: Any, interval: java.time.Duration): Unit =
-    startTimerAtFixedRate(key, msg, interval.asScala)
+    startTimerAtFixedRate(key, msg, interval.toScala)
 
   /**
    * Java API: Schedules a message to be sent repeatedly to the `self` actor with a
@@ -302,7 +302,7 @@ abstract class UntypedAbstractActorWithTimers extends UntypedAbstractActor with 
       msg: Any,
       initialDelay: java.time.Duration,
       interval: java.time.Duration): Unit =
-    startTimerAtFixedRate(key, msg, initialDelay.asScala, interval.asScala)
+    startTimerAtFixedRate(key, msg, initialDelay.toScala, interval.toScala)
 
   /**
    * Start a timer that will send `msg` once to the `self` actor after
@@ -325,7 +325,7 @@ abstract class UntypedAbstractActorWithTimers extends UntypedAbstractActor with 
    * in the mailbox when the new timer was started.
    */
   final def startSingleTimer(key: Any, msg: Any, timeout: java.time.Duration): Unit =
-    startSingleTimer(key, msg, timeout.asScala)
+    startSingleTimer(key, msg, timeout.toScala)
 
   /**
    * Check if a timer with a given `key` is active.
