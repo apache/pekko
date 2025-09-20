@@ -332,7 +332,7 @@ object Sink {
    * See also [[Flow.limit]], [[Flow.limitWeighted]], [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
    */
   def count[In]: Sink[In, CompletionStage[java.lang.Long]] = new Sink(
-    scaladsl.Sink.count[In].mapMaterializedValue(_.mapTo[java.lang.Long].asJava))
+    scaladsl.Sink.count[In].mapMaterializedValue(_.asJava.asInstanceOf[CompletionStage[java.lang.Long]]))
 
   /**
    * Sends the elements of the stream to the given `ActorRef`.
