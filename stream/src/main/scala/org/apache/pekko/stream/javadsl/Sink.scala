@@ -213,11 +213,11 @@ object Sink {
     new Sink(scaladsl.Sink.asPublisher(fanout == AsPublisher.WITH_FANOUT))
 
   /**
-   * A `Sink` that materialize this `Sink` itself as a `Source`.
-   * The returned `Source` is a "live view" onto the `Sink` and only support a single `Subscriber`.
+   * A `Sink` that materializes this `Sink` itself as a `Source`.
+   * The returned `Source` is a "live view" onto the `Sink` and only supports a single `Subscriber`.
    *
-   * Note: even the `Source` is directly connected to the `Sink`, there is still an asynchronous boundary
-   * between them, the performance can be improved in the future.
+   * Note: even if the `Source` is directly connected to the `Sink`, there is still an asynchronous boundary
+   * between them; performance may be improved in the future.
    *
    * @since 2.0.0
    */
