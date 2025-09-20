@@ -13,12 +13,12 @@
 
 package org.apache.pekko.dispatch
 
+import scala.annotation.nowarn
 import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorSystem, Props }
 import pekko.testkit.{ DefaultTimeout, PekkoSpec }
-import pekko.util.unused
 
 import com.typesafe.config.Config
 
@@ -34,7 +34,7 @@ object StablePriorityDispatcherSpec {
     }
     """
 
-  class Unbounded(@unused settings: ActorSystem.Settings, @unused config: Config)
+  class Unbounded(@nowarn("msg=never used") settings: ActorSystem.Settings, @nowarn("msg=never used") config: Config)
       extends UnboundedStablePriorityMailbox(PriorityGenerator({
         case i: Int if i <= 100 => i // Small integers have high priority
         case _: Int             => 101 // Don't care for other integers
@@ -42,7 +42,7 @@ object StablePriorityDispatcherSpec {
         case _                  => throw new RuntimeException() // compiler exhaustiveness check pleaser
       }: Any => Int))
 
-  class Bounded(@unused settings: ActorSystem.Settings, @unused config: Config)
+  class Bounded(@nowarn("msg=never used") settings: ActorSystem.Settings, @nowarn("msg=never used") config: Config)
       extends BoundedStablePriorityMailbox(PriorityGenerator({
           case i: Int if i <= 100 => i // Small integers have high priority
           case _: Int             => 101 // Don't care for other integers

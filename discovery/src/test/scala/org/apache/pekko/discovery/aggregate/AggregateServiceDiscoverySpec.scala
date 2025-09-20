@@ -13,6 +13,7 @@
 
 package org.apache.pekko.discovery.aggregate
 
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent.Future
 import scala.concurrent.duration._
@@ -22,7 +23,6 @@ import pekko.actor.{ ActorSystem, ExtendedActorSystem }
 import pekko.discovery.{ Discovery, Lookup, ServiceDiscovery }
 import pekko.discovery.ServiceDiscovery.{ Resolved, ResolvedTarget }
 import pekko.testkit.TestKit
-import pekko.util.unused
 
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.concurrent.ScalaFutures
@@ -31,7 +31,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
 
 import com.typesafe.config.{ Config, ConfigFactory }
 
-class StubbedServiceDiscovery(@unused system: ExtendedActorSystem) extends ServiceDiscovery {
+class StubbedServiceDiscovery(@nowarn("msg=never used") system: ExtendedActorSystem) extends ServiceDiscovery {
 
   override def lookup(query: Lookup, resolveTimeout: FiniteDuration): Future[Resolved] = {
     if (query.serviceName == "stubbed") {

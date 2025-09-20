@@ -13,6 +13,7 @@
 
 package org.apache.pekko.stream.impl
 
+import scala.annotation.nowarn
 import scala.collection.immutable.Map.Map1
 import scala.language.existentials
 
@@ -25,7 +26,6 @@ import pekko.stream.impl.fusing.{ GraphStageModule, IterableSource }
 import pekko.stream.impl.fusing.GraphStages.{ FutureSource, SingleSource }
 import pekko.stream.scaladsl.Keep
 import pekko.util.OptionVal
-import pekko.util.unused
 
 /**
  * INTERNAL API
@@ -56,7 +56,7 @@ import pekko.util.unused
     Concat.normalizeConcat(this, that)
   }
 
-  def rewireFirstTo(@unused relativeOffset: Int): Traversal = null
+  def rewireFirstTo(@nowarn("msg=never used") relativeOffset: Int): Traversal = null
 }
 
 /**

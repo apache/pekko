@@ -17,6 +17,7 @@ import java.util.Comparator
 import java.util.Optional
 import java.util.concurrent.CompletionStage
 
+import scala.annotation.nowarn
 import scala.annotation.unchecked.uncheckedVariance
 import scala.annotation.varargs
 import scala.collection.immutable
@@ -39,7 +40,6 @@ import pekko.stream.{ javadsl, _ }
 import pekko.stream.impl.fusing.{ StatefulMapConcat, ZipWithIndexJava }
 import pekko.util.ConstantFun
 import pekko.util.Timeout
-import pekko.util.unused
 
 import org.reactivestreams.Processor
 
@@ -93,7 +93,7 @@ object Flow {
       _.toJava).asJava
 
   /** Create a `Flow` which can process elements of type `T`. */
-  def of[T](@unused clazz: Class[T]): javadsl.Flow[T, T, NotUsed] = create[T]()
+  def of[T](@nowarn("msg=never used") clazz: Class[T]): javadsl.Flow[T, T, NotUsed] = create[T]()
 
   /**
    * A graph with the shape of a flow logically is a flow, this method makes it so also in type.

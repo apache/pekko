@@ -12,6 +12,7 @@
  */
 
 package org.apache.pekko.persistence.testkit.query.scaladsl
+import scala.annotation.nowarn
 import scala.collection.immutable
 
 import org.apache.pekko
@@ -40,7 +41,6 @@ import pekko.persistence.testkit.query.internal.EventsBySliceStage
 import pekko.persistence.testkit.query.internal.EventsByTagStage
 import pekko.persistence.typed.PersistenceId
 import pekko.stream.scaladsl.Source
-import pekko.util.unused
 
 import org.slf4j.LoggerFactory
 
@@ -50,7 +50,8 @@ object PersistenceTestKitReadJournal {
   val Identifier = "pekko.persistence.testkit.query"
 }
 
-final class PersistenceTestKitReadJournal(system: ExtendedActorSystem, @unused config: Config, configPath: String)
+final class PersistenceTestKitReadJournal(system: ExtendedActorSystem, @nowarn("msg=never used") config: Config,
+    configPath: String)
     extends ReadJournal
     with EventsByPersistenceIdQuery
     with CurrentEventsByPersistenceIdQuery

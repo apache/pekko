@@ -19,6 +19,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.atomic.AtomicReference
 
+import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.collection.immutable
 
@@ -74,7 +75,6 @@ import pekko.stream.scaladsl.Source
 import pekko.stream.typed.scaladsl.ActorFlow
 import pekko.util.OptionVal
 import pekko.util.Timeout
-import pekko.util.unused
 
 /**
  * INTERNAL API
@@ -1062,16 +1062,18 @@ private[pekko] object Running {
 
   @InternalStableApi
   private[pekko] def onWriteFailed(
-      @unused ctx: ActorContext[_],
-      @unused reason: Throwable,
-      @unused event: PersistentRepr): Unit = ()
+      @nowarn("msg=never used") ctx: ActorContext[_],
+      @nowarn("msg=never used") reason: Throwable,
+      @nowarn("msg=never used") event: PersistentRepr): Unit = ()
   @InternalStableApi
   private[pekko] def onWriteRejected(
-      @unused ctx: ActorContext[_],
-      @unused reason: Throwable,
-      @unused event: PersistentRepr): Unit = ()
+      @nowarn("msg=never used") ctx: ActorContext[_],
+      @nowarn("msg=never used") reason: Throwable,
+      @nowarn("msg=never used") event: PersistentRepr): Unit = ()
   @InternalStableApi
-  private[pekko] def onWriteSuccess(@unused ctx: ActorContext[_], @unused event: PersistentRepr): Unit = ()
+  private[pekko] def onWriteSuccess(@nowarn("msg=never used") ctx: ActorContext[_],
+      @nowarn("msg=never used") event: PersistentRepr): Unit = ()
   @InternalStableApi
-  private[pekko] def onWriteDone(@unused ctx: ActorContext[_], @unused event: PersistentRepr): Unit = ()
+  private[pekko] def onWriteDone(@nowarn("msg=never used") ctx: ActorContext[_],
+      @nowarn("msg=never used") event: PersistentRepr): Unit = ()
 }

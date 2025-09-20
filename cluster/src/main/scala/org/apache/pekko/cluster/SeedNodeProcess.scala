@@ -13,13 +13,13 @@
 
 package org.apache.pekko.cluster
 
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent.duration.{ Deadline, _ }
 
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorRef, Address, CoordinatedShutdown, ReceiveTimeout }
 import pekko.annotation.{ InternalApi, InternalStableApi }
-import pekko.util.unused
 
 /**
  * INTERNAL API.
@@ -327,7 +327,8 @@ private[cluster] final class JoinSeedNodeProcess(
   }
 
   @InternalStableApi
-  private[pekko] def onReceiveTimeout(@unused seedNodes: immutable.IndexedSeq[Address], @unused attempt: Int): Unit = {}
+  private[pekko] def onReceiveTimeout(@nowarn("msg=never used") seedNodes: immutable.IndexedSeq[Address],
+      @nowarn("msg=never used") attempt: Int): Unit = {}
 
   def done: Actor.Receive = {
     case InitJoinAck(_, _) => // already received one, skip rest

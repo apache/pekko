@@ -17,8 +17,8 @@ import java.util
 import java.util.Optional
 import java.util.concurrent.{ CompletableFuture, CompletionStage }
 
+import scala.annotation.{ nowarn, varargs }
 import scala.annotation.unchecked.uncheckedVariance
-import scala.annotation.varargs
 import scala.collection.immutable
 import scala.concurrent.{ Future, Promise }
 import scala.concurrent.ExecutionContext
@@ -37,7 +37,7 @@ import pekko.japi.function.Creator
 import pekko.stream._
 import pekko.stream.impl.{ LinearTraversalBuilder, UnfoldAsyncJava, UnfoldJava }
 import pekko.stream.impl.fusing.{ ArraySource, StatefulMapConcat, ZipWithIndexJava }
-import pekko.util.{ unused, _ }
+import pekko.util._
 
 import org.reactivestreams.{ Publisher, Subscriber }
 
@@ -54,7 +54,7 @@ object Source {
   /**
    * Create a `Source` with no elements. The result is the same as calling `Source.<O>empty()`
    */
-  def empty[T](@unused clazz: Class[T]): Source[T, NotUsed] = empty[T]()
+  def empty[T](@nowarn("msg=never used") clazz: Class[T]): Source[T, NotUsed] = empty[T]()
 
   /**
    * Create a `Source` which materializes a [[java.util.concurrent.CompletableFuture]] which controls what element

@@ -16,6 +16,7 @@ package org.apache.pekko.actor.dispatch
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicBoolean
 
+import scala.annotation.nowarn
 import scala.reflect.ClassTag
 
 import org.apache.pekko
@@ -24,7 +25,6 @@ import pekko.actor._
 import pekko.dispatch._
 import pekko.routing.FromConfig
 import pekko.testkit.{ ImplicitSender, PekkoSpec }
-import pekko.util.unused
 
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
@@ -84,7 +84,8 @@ object DispatchersSpec {
     }
   }
 
-  class OneShotMailboxType(@unused settings: ActorSystem.Settings, @unused config: Config)
+  class OneShotMailboxType(@nowarn("msg=never used") settings: ActorSystem.Settings,
+      @nowarn("msg=never used") config: Config)
       extends MailboxType
       with ProducesMessageQueue[DoublingMailbox] {
     val created = new AtomicBoolean(false)

@@ -15,10 +15,11 @@ package org.apache.pekko.event
 
 import java.util.concurrent.atomic.AtomicInteger
 
+import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.actor._
 import pekko.event.Logging.simpleName
-import pekko.util.unused
 
 /**
  * INTERNAL API
@@ -89,7 +90,7 @@ private[pekko] object ActorClassificationUnsubscriber {
       system: ActorSystem,
       busName: String,
       unsubscribe: ActorRef => Unit,
-      @unused debug: Boolean = false): ActorRef = {
+      @nowarn("msg=never used") debug: Boolean = false): ActorRef = {
     val debug = system.settings.config.getBoolean("pekko.actor.debug.event-stream")
     system
       .asInstanceOf[ExtendedActorSystem]

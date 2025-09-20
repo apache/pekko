@@ -28,7 +28,7 @@ import pekko.dispatch.affinity.AffinityPoolConfigurator
 import pekko.dispatch.sysmsg._
 import pekko.event.EventStream
 import pekko.event.Logging.{ emptyMDC, Debug, Error, LogEventException, Warning }
-import pekko.util.{ unused, Index, JavaVersion }
+import pekko.util.{ Index, JavaVersion }
 
 import com.typesafe.config.Config
 
@@ -350,7 +350,8 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
 /**
  * An ExecutorServiceConfigurator is a class that given some prerequisites and a configuration can create instances of ExecutorService
  */
-abstract class ExecutorServiceConfigurator(@unused config: Config, @unused prerequisites: DispatcherPrerequisites)
+abstract class ExecutorServiceConfigurator(@nowarn("msg=never used") config: Config,
+    @nowarn("msg=never used") prerequisites: DispatcherPrerequisites)
     extends ExecutorServiceFactoryProvider
 
 /**
@@ -517,7 +518,7 @@ class ThreadPoolExecutorConfigurator(config: Config, prerequisites: DispatcherPr
 
   protected def createThreadPoolConfigBuilder(
       config: Config,
-      @unused prerequisites: DispatcherPrerequisites): ThreadPoolConfigBuilder = {
+      @nowarn("msg=never used") prerequisites: DispatcherPrerequisites): ThreadPoolConfigBuilder = {
     import org.apache.pekko.util.Helpers.ConfigOps
     val builder =
       ThreadPoolConfigBuilder(ThreadPoolConfig())

@@ -28,7 +28,6 @@ import pekko.actor.SupervisorStrategy
 import pekko.actor.Terminated
 import pekko.dispatch.Dispatchers
 import pekko.japi.Util.immutableSeq
-import pekko.util.unused
 
 /**
  * This trait represents a router factory: it produces the actual router actor
@@ -72,7 +71,7 @@ trait RouterConfig extends Serializable {
    * Management messages not handled by the "head" actor are
    * delegated to this controller actor.
    */
-  def routingLogicController(@unused routingLogic: RoutingLogic): Option[Props] = None
+  def routingLogicController(@nowarn("msg=never used") routingLogic: RoutingLogic): Option[Props] = None
 
   /**
    * Is the message handled by the router head actor or the
@@ -92,12 +91,12 @@ trait RouterConfig extends Serializable {
   /**
    * Overridable merge strategy, by default completely prefers `this` (i.e. no merge).
    */
-  def withFallback(@unused other: RouterConfig): RouterConfig = this
+  def withFallback(@nowarn("msg=never used") other: RouterConfig): RouterConfig = this
 
   /**
    * Check that everything is there which is needed. Called in constructor of RoutedActorRef to fail early.
    */
-  def verifyConfig(@unused path: ActorPath): Unit = ()
+  def verifyConfig(@nowarn("msg=never used") path: ActorPath): Unit = ()
 
   /**
    * INTERNAL API

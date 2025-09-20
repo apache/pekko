@@ -13,12 +13,14 @@
 
 package org.apache.pekko.event.slf4j
 
+import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.actor._
 import pekko.dispatch.RequiresMessageQueue
 import pekko.event.{ LogMarker, _ }
 import pekko.event.Logging._
-import pekko.util.{ unused, Helpers }
+import pekko.util.Helpers
 
 import org.slf4j.{ Logger => SLFLogger, LoggerFactory => SLFLoggerFactory, MDC, Marker, MarkerFactory }
 
@@ -168,7 +170,7 @@ class Slf4jLogger extends Actor with SLF4JLogging with RequiresMessageQueue[Logg
  * backend configuration (e.g. logback.xml) to filter log events before publishing
  * the log events to the `eventStream`.
  */
-class Slf4jLoggingFilter(@unused settings: ActorSystem.Settings, eventStream: EventStream)
+class Slf4jLoggingFilter(@nowarn("msg=never used") settings: ActorSystem.Settings, eventStream: EventStream)
     extends LoggingFilterWithMarker {
   def isErrorEnabled(logClass: Class[_], logSource: String) =
     (eventStream.logLevel >= ErrorLevel) && Logger(logClass, logSource).isErrorEnabled

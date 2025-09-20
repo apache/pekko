@@ -34,7 +34,6 @@ import pekko.routing.Routees
 import pekko.serialization.jackson.CborSerializable
 import pekko.testkit.{ DefaultTimeout, ImplicitSender, LongRunningTest }
 import pekko.testkit.GHExcludeTest
-import pekko.util.unused
 
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
@@ -121,7 +120,7 @@ object AdaptiveLoadBalancingRouterConfig extends MultiNodeConfig {
 
 }
 
-class TestCustomMetricsSelector(@unused config: Config) extends MetricsSelector {
+class TestCustomMetricsSelector(@nowarn("msg=never used") config: Config) extends MetricsSelector {
   override def weights(nodeMetrics: Set[NodeMetrics]): Map[Address, Int] = Map.empty
 }
 

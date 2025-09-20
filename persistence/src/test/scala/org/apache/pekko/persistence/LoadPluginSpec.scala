@@ -13,11 +13,12 @@
 
 package org.apache.pekko.persistence
 
+import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.actor.Actor
 import pekko.persistence.journal.inmem.InmemJournal
 import pekko.testkit.ImplicitSender
-import pekko.util.unused
 
 import com.typesafe.config.Config
 
@@ -34,7 +35,8 @@ object LoadPluginSpec {
   object JournalWithStartupNotification {
     final case class Started(configPath: String)
   }
-  class JournalWithStartupNotification(@unused config: Config, configPath: String) extends InmemJournal {
+  class JournalWithStartupNotification(@nowarn("msg=never used") config: Config, configPath: String)
+      extends InmemJournal {
     context.system.eventStream.publish(JournalWithStartupNotification.Started(configPath))
   }
 }

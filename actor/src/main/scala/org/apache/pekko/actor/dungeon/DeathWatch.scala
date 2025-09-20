@@ -13,12 +13,13 @@
 
 package org.apache.pekko.actor.dungeon
 
+import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorCell, ActorRef, ActorRefScope, Address, InternalActorRef, Terminated }
 import pekko.dispatch.sysmsg.{ DeathWatchNotification, Unwatch, Watch }
 import pekko.event.AddressTerminatedTopic
 import pekko.event.Logging.{ Debug, Warning }
-import pekko.util.unused
 
 private[pekko] trait DeathWatch { this: ActorCell =>
 
@@ -162,7 +163,7 @@ private[pekko] trait DeathWatch { this: ActorCell =>
       }
     }
 
-  protected def unwatchWatchedActors(@unused actor: Actor): Unit =
+  protected def unwatchWatchedActors(@nowarn("msg=never used") actor: Actor): Unit =
     if (watching.nonEmpty) {
       maintainAddressTerminatedSubscription() {
         try {

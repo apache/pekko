@@ -25,7 +25,6 @@ import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 import pekko.event.Logging
 import pekko.io.dns.DnsProtocol
-import pekko.util.unused
 
 import com.typesafe.config.Config
 
@@ -37,7 +36,7 @@ import com.typesafe.config.Config
 @DoNotInherit
 abstract class Dns {
 
-  def cached(@unused request: DnsProtocol.Resolve): Option[DnsProtocol.Resolved] = None
+  def cached(@nowarn("msg=never used") request: DnsProtocol.Resolve): Option[DnsProtocol.Resolved] = None
 
   def resolve(request: DnsProtocol.Resolve, system: ActorSystem, sender: ActorRef): Option[DnsProtocol.Resolved] = {
     val ret = cached(request)

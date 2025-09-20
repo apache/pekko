@@ -13,6 +13,7 @@
 
 package org.apache.pekko.actor
 
+import scala.annotation.nowarn
 import scala.concurrent.duration.{ Duration, FiniteDuration }
 
 import org.apache.pekko
@@ -20,7 +21,6 @@ import pekko.ConfigurationException
 import pekko.dispatch._
 import pekko.testkit._
 import pekko.util.Helpers.ConfigOps
-import pekko.util.unused
 
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
@@ -197,7 +197,8 @@ object ActorMailboxSpec {
 
   class StashQueueReportingActor extends QueueReportingActor with Stash
 
-  class StashQueueReportingActorWithParams(@unused i: Int, @unused s: String) extends StashQueueReportingActor
+  class StashQueueReportingActorWithParams(@nowarn("msg=never used") i: Int, @nowarn("msg=never used") s: String)
+      extends StashQueueReportingActor
 
   val UnboundedMailboxTypes = Seq(classOf[UnboundedMessageQueueSemantics])
   val BoundedMailboxTypes = Seq(classOf[BoundedMessageQueueSemantics])

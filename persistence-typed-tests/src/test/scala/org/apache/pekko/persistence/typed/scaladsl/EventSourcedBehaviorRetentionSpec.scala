@@ -15,6 +15,7 @@ package org.apache.pekko.persistence.typed.scaladsl
 
 import java.util.concurrent.atomic.AtomicInteger
 
+import scala.annotation.nowarn
 import scala.concurrent.duration._
 import scala.util.Success
 import scala.util.Try
@@ -38,7 +39,6 @@ import pekko.persistence.typed.SnapshotCompleted
 import pekko.persistence.typed.SnapshotFailed
 import pekko.persistence.typed.SnapshotSelectionCriteria
 import pekko.serialization.jackson.CborSerializable
-import pekko.util.unused
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
@@ -59,7 +59,7 @@ object EventSourcedBehaviorRetentionSpec extends Matchers {
   final case class State(value: Int, history: Vector[Int]) extends CborSerializable
 
   def counter(
-      @unused ctx: ActorContext[Command],
+      @nowarn("msg=never used") ctx: ActorContext[Command],
       persistenceId: PersistenceId,
       probe: Option[ActorRef[(State, Event)]] = None,
       snapshotSignalProbe: Option[ActorRef[WrappedSignal]] = None,

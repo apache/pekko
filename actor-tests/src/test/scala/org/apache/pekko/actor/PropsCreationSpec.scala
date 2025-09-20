@@ -13,9 +13,10 @@
 
 package org.apache.pekko.actor
 
+import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.testkit.PekkoSpec
-import pekko.util.unused
 
 object PropsCreationSpec {
 
@@ -23,11 +24,11 @@ object PropsCreationSpec {
 
   final class B
 
-  class OneParamActor(@unused blackhole: A) extends Actor {
+  class OneParamActor(@nowarn("msg=never used") blackhole: A) extends Actor {
     override def receive = Actor.emptyBehavior
   }
 
-  class TwoParamActor(@unused blackhole1: A, @unused blackhole2: B) extends Actor {
+  class TwoParamActor(@nowarn("msg=never used") blackhole1: A, @nowarn("msg=never used") blackhole2: B) extends Actor {
     override def receive = Actor.emptyBehavior
   }
 

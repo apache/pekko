@@ -15,11 +15,12 @@ package org.apache.pekko.stream.javadsl
 
 import java.util.function.ToLongBiFunction
 
+import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.annotation.DoNotInherit
 import pekko.japi.function
-import pekko.util.unused
 
 /**
  * A MergeHub is a special streaming hub that is able to collect streamed elements from a dynamic set of
@@ -64,7 +65,7 @@ object MergeHub {
    * @param clazz Type of elements this hub emits and consumes
    * @param perProducerBufferSize Buffer space used per producer.
    */
-  def of[T](@unused clazz: Class[T], perProducerBufferSize: Int): Source[T, Sink[T, NotUsed]] = {
+  def of[T](@nowarn("msg=never used") clazz: Class[T], perProducerBufferSize: Int): Source[T, Sink[T, NotUsed]] = {
     pekko.stream.scaladsl.MergeHub.source[T](perProducerBufferSize).mapMaterializedValue(_.asJava[T]).asJava
   }
 
@@ -86,7 +87,7 @@ object MergeHub {
    * @param perProducerBufferSize Buffer space used per producer. Default value is 16.
    */
   def withDraining[T](
-      @unused clazz: Class[T],
+      @nowarn("msg=never used") clazz: Class[T],
       perProducerBufferSize: Int): Source[T, pekko.japi.Pair[Sink[T, NotUsed], DrainingControl]] = {
     pekko.stream.scaladsl.MergeHub
       .sourceWithDraining[T](perProducerBufferSize)
@@ -162,7 +163,7 @@ object BroadcastHub {
    *                   concurrent consumers can be in terms of element. If the buffer is full, the producer
    *                   is backpressured. Must be a power of two and less than 4096.
    */
-  def of[T](@unused clazz: Class[T], bufferSize: Int): Sink[T, Source[T, NotUsed]] = {
+  def of[T](@nowarn("msg=never used") clazz: Class[T], bufferSize: Int): Sink[T, Source[T, NotUsed]] = {
     pekko.stream.scaladsl.BroadcastHub.sink[T](bufferSize).mapMaterializedValue(_.asJava).asJava
   }
 
@@ -190,7 +191,8 @@ object BroadcastHub {
    *                                is backpressured. Must be a power of two and less than 4096.
    * @since 1.1.0
    */
-  def of[T](@unused clazz: Class[T], startAfterNrOfConsumers: Int, bufferSize: Int): Sink[T, Source[T, NotUsed]] = {
+  def of[T](@nowarn("msg=never used") clazz: Class[T], startAfterNrOfConsumers: Int, bufferSize: Int)
+      : Sink[T, Source[T, NotUsed]] = {
     pekko.stream.scaladsl.BroadcastHub.sink[T](startAfterNrOfConsumers, bufferSize).mapMaterializedValue(
       _.asJava).asJava
   }
@@ -259,7 +261,7 @@ object PartitionHub {
    *   is backpressured.
    */
   def ofStateful[T](
-      @unused clazz: Class[T],
+      @nowarn("msg=never used") clazz: Class[T],
       partitioner: function.Creator[ToLongBiFunction[ConsumerInfo, T]],
       startAfterNrOfConsumers: Int,
       bufferSize: Int): Sink[T, Source[T, NotUsed]] = {
@@ -338,7 +340,7 @@ object PartitionHub {
    *   is backpressured.
    */
   def of[T](
-      @unused clazz: Class[T],
+      @nowarn("msg=never used") clazz: Class[T],
       partitioner: function.Function2[Integer, T, Integer],
       startAfterNrOfConsumers: Int,
       bufferSize: Int): Sink[T, Source[T, NotUsed]] =

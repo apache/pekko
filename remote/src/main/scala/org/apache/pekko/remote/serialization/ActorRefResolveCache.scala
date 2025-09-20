@@ -13,6 +13,7 @@
 
 package org.apache.pekko.remote.serialization
 
+import scala.annotation.nowarn
 import scala.reflect.ClassTag
 
 import org.apache.pekko
@@ -29,7 +30,6 @@ import pekko.remote.RemoteActorRef
 import pekko.remote.RemoteActorRefProvider
 import pekko.remote.artery.LruBoundedCache
 import pekko.util.Unsafe
-import pekko.util.unused
 
 /**
  * INTERNAL API: Thread local cache per actor system
@@ -64,7 +64,7 @@ private[pekko] class ActorRefResolveThreadLocalCache(val system: ExtendedActorSy
     override def initialValue: ActorRefResolveCache = new ActorRefResolveCache(provider)
   }
 
-  def threadLocalCache(@unused provider: RemoteActorRefProvider): ActorRefResolveCache =
+  def threadLocalCache(@nowarn("msg=never used") provider: RemoteActorRefProvider): ActorRefResolveCache =
     current.get
 
 }

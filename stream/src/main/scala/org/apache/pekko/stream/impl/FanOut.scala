@@ -13,6 +13,7 @@
 
 package org.apache.pekko.stream.impl
 
+import scala.annotation.nowarn
 import scala.collection.immutable
 
 import org.apache.pekko
@@ -21,7 +22,6 @@ import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.stream.AbruptTerminationException
 import pekko.stream.ActorAttributes
 import pekko.stream.Attributes
-import pekko.util.unused
 
 import org.reactivestreams.Subscription
 
@@ -202,7 +202,7 @@ import org.reactivestreams.Subscription
       enqueue(id, elem)
     }
 
-    def onCancel(@unused output: Int): Unit = ()
+    def onCancel(@nowarn("msg=never used") output: Int): Unit = ()
 
     def demandAvailableFor(id: Int) = new TransferState {
       override def isCompleted: Boolean = cancelled(id) || completed(id) || errored(id)

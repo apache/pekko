@@ -33,7 +33,6 @@ import pekko.dispatch.RequiresMessageQueue
 import pekko.event.Logging._
 import pekko.util.Helpers
 import pekko.util.Timeout
-import pekko.util.unused
 
 /**
  * This trait brings log level handling to the EventStream: it reads the log
@@ -291,7 +290,7 @@ trait LoggingBus extends ActorEventBus {
   "Cannot find LogSource for ${T} please see ScalaDoc for LogSource for how to obtain or construct one.") trait LogSource[
     -T] {
   def genString(t: T): String
-  def genString(t: T, @unused system: ActorSystem): String = genString(t)
+  def genString(t: T, @nowarn("msg=never used") system: ActorSystem): String = genString(t)
   def getClazz(t: T): Class[_] = t.getClass
 }
 
@@ -487,7 +486,7 @@ object Logging {
   /**
    * INTERNAL API
    */
-  private[pekko] class LogExt(@unused system: ExtendedActorSystem) extends Extension {
+  private[pekko] class LogExt(@nowarn("msg=never used") system: ExtendedActorSystem) extends Extension {
     private val loggerId = new AtomicInteger
     def id() = loggerId.incrementAndGet()
   }
@@ -1222,7 +1221,8 @@ trait LoggingAdapter {
   protected def notifyError(message: String): Unit
   protected def notifyError(cause: Throwable, message: String): Unit
   protected def notifyWarning(message: String): Unit
-  protected def notifyWarning(@unused cause: Throwable, message: String): Unit = notifyWarning(message)
+  protected def notifyWarning(@nowarn("msg=never used") cause: Throwable, message: String): Unit =
+    notifyWarning(message)
   protected def notifyInfo(message: String): Unit
   protected def notifyDebug(message: String): Unit
 

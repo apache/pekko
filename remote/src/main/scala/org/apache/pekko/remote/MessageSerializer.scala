@@ -13,6 +13,7 @@
 
 package org.apache.pekko.remote
 
+import scala.annotation.nowarn
 import scala.util.control.NonFatal
 
 import org.apache.pekko
@@ -22,7 +23,6 @@ import pekko.protobufv3.internal.ByteString
 import pekko.remote.WireFormats._
 import pekko.remote.artery.{ EnvelopeBuffer, HeaderBuilder, OutboundEnvelope }
 import pekko.serialization._
-import pekko.util.unused
 
 /**
  * INTERNAL API
@@ -103,8 +103,8 @@ private[pekko] object MessageSerializer {
   }
 
   def deserializeForArtery(
-      @unused system: ExtendedActorSystem,
-      @unused originUid: Long,
+      @nowarn("msg=never used") system: ExtendedActorSystem,
+      @nowarn("msg=never used") originUid: Long,
       serialization: Serialization,
       serializer: Int,
       classManifest: String,

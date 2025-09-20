@@ -18,7 +18,7 @@ import java.nio.ByteBuffer
 import java.nio.channels.DatagramChannel
 import java.nio.channels.SelectionKey._
 
-import scala.annotation.tailrec
+import scala.annotation.{ nowarn, tailrec }
 import scala.util.control.NonFatal
 
 import org.apache.pekko
@@ -28,7 +28,7 @@ import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.io.SelectionHandler._
 import pekko.io.UdpConnected._
 import pekko.io.dns.DnsProtocol
-import pekko.util.{ unused, ByteString }
+import pekko.util.ByteString
 
 /**
  * INTERNAL API
@@ -79,7 +79,7 @@ private[io] class UdpConnection(
       }
   }
 
-  def doConnect(@unused address: InetSocketAddress): Unit = {
+  def doConnect(@nowarn("msg=never used") address: InetSocketAddress): Unit = {
     channel = DatagramChannel.open
     channel.configureBlocking(false)
     val socket = channel.socket
