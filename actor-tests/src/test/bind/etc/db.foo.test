@@ -77,4 +77,3 @@ _service._tcp   86400 IN    SRV 65533    40       65535 a-double
 
 cname-in IN CNAME  a-double
 cname-ext IN CNAME  a-single.bar.example.
-

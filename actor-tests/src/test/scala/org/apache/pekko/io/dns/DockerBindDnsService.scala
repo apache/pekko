@@ -53,10 +53,10 @@ abstract class DockerBindDnsService(config: Config) extends PekkoSpec(config) wi
     log.info("Running on port port {}", hostPort)
     super.atStartup()
 
-    // Use jonasal/bind which supports multi-platform including ARM64 for Apple M series machines
-    // and maintains compatibility with traditional bind configuration files
-    // https://github.com/JonasAlfredsson/docker-bind
-    val image = "jonasal/bind:9"
+    // Use cytopia/bind which supports multi-platform including ARM64 for Apple M series machines
+    // and is battle-tested with 5M+ downloads (vs 322 for jonasal/bind)
+    // https://github.com/cytopia/docker-bind
+    val image = "cytopia/bind:latest"
     try {
       client
         .pullImageCmd(image)
@@ -73,14 +73,23 @@ abstract class DockerBindDnsService(config: Config) extends PekkoSpec(config) wi
     val containerCommand: CreateContainerCmd = client
       .createContainerCmd(image)
       .withName(containerName)
-      .withCmd("-4")
+      .withEnv(
+        "DNS_A=a-single.bar.example=192.168.2.20",
+        "DNS_CNAME=cname-ext.foo.test=a-single.bar.example",
+        "ALLOW_RECURSION=any",
+        "DNS_FORWARDER=8.8.8.8"
+      )
       .withHostConfig(
         HostConfig.newHostConfig()
+          .withBinds(
+            Bind.parse(s"${System.getProperty("user.dir")}/actor-tests/src/test/bind/etc:/etc/bind/local-config"),
+            Bind.parse(
+              s"${System.getProperty("user.dir")}/actor-tests/src/test/bind/etc/named.conf.local:/etc/bind/named.conf.local"),
+            Bind.parse(
+              s"${System.getProperty("user.dir")}/actor-tests/src/test/bind/etc/named.conf.options:/etc/bind/named.conf.options"))
           .withPortBindings(
             PortBinding.parse(s"$hostPort:53/tcp"),
-            PortBinding.parse(s"$hostPort:53/udp"))
-          .withBinds(new Bind(new java.io.File("actor-tests/src/test/bind/etc/").getAbsolutePath,
-            new Volume("/etc/bind/local-config"))))
+            PortBinding.parse(s"$hostPort:53/udp")))
 
     client
       .listContainersCmd()
@@ -105,10 +114,11 @@ abstract class DockerBindDnsService(config: Config) extends PekkoSpec(config) wi
     eventually(timeout(25.seconds)) {
       client
         .logContainerCmd(creation.getId())
+        .withStdOut(true)
         .withStdErr(true)
         .exec(reader)
 
-      reader.toString should include("all zones loaded")
+      reader.toString should include("Starting BIND")
     }
   }
 

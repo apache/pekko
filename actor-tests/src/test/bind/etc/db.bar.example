@@ -8,6 +8,6 @@ $TTL 86400
   86400
 )
 
-@        IN NS example
-example  IN A  192.168.2.19
+@      IN NS example
+example     IN A  192.168.2.19
 a-single IN A  192.168.2.20
