@@ -35,6 +35,7 @@ object ForkJoinPoolVirtualThreadSpec {
       |      parallelism-max = 2
       |      parallelism-min = 2
       |      virtualize = on
+      |      virtual-thread-start-number = 0
       |    }
       |  }
       |  task-dispatcher-short {

@@ -33,6 +33,7 @@ object ThreadPoolVirtualThreadSpec {
       |    thread-pool-executor {
       |      fixed-pool-size = 1
       |      virtualize = on
+      |      virtual-thread-start-number = 0
       |    }
       |  }
       |

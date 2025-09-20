@@ -50,7 +50,7 @@ class VirtualThreadPoolDispatcherSpec extends PekkoSpec(VirtualThreadPoolDispatc
       for (_ <- 1 to 1000) {
         innocentActor ! "ping"
         expectMsgPF() { case name: String =>
-          name should include("VirtualThreadPoolDispatcherSpec-virtual-thread-dispatcher-virtual-thread-")
+          name should include("VirtualThreadPoolDispatcherSpec-virtual-thread-dispatcher-virtual-thread")
         }
       }
     }
