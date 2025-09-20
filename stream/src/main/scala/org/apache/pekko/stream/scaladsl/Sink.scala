@@ -27,7 +27,7 @@ import pekko.annotation.InternalApi
 import pekko.stream._
 import pekko.stream.impl._
 import pekko.stream.impl.Stages.DefaultAttributes
-import pekko.stream.impl.fusing.{ CountSink, GraphStages }
+import pekko.stream.impl.fusing.{ CountSink, GraphStages, SourceSink }
 import pekko.stream.stage._
 
 import org.reactivestreams.{ Publisher, Subscriber }
@@ -311,6 +311,19 @@ object Sink {
     fromGraph(
       if (fanout) new FanoutPublisherSink[T](DefaultAttributes.fanoutPublisherSink, shape("FanoutPublisherSink"))
       else new PublisherSink[T](DefaultAttributes.publisherSink, shape("PublisherSink")))
+
+  /**
+   * A `Sink` that materializes this `Sink` itself as a `Source`.
+   * The returned `Source` is a "live view" onto the `Sink` and only supports a single `Subscriber`.
+   *
+   * Note: even if the `Source` is directly connected to the `Sink`, there is still an asynchronous boundary
+   * between them; performance may be improved in the future.
+   *
+   * @since 2.0.0
+   */
+  def source[T]: Sink[T, Source[T, NotUsed]] = _sourceSink.asInstanceOf[Sink[T, Source[T, NotUsed]]]
+
+  private[this] val _sourceSink = fromGraph(SourceSink)
 
   /**
    * A `Sink` that will consume the stream and discard the elements.
