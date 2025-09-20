@@ -2,6 +2,23 @@
 
 Apache Pekko 1.2.x releases support Java 8 and above.
 
+# 1.2.1
+
+Pekko 1.2.1 has some bug fixes and some code has been deprecated to signal that it likely to be removed in 2.0.0. See the [GitHub Milestone](https://github.com/apache/pekko/milestone/20?closed=1) for a fuller list of changes.
+
+### Bug Fixes
+
+* Add back BackoffSupervisor.calculateDelay due to bin compat issues ([PR2195](https://github.com/apache/pekko/pull/2195))
+
+### Changes
+
+* Add OSGi headers to pekko-pki ([PR2109](https://github.com/apache/pekko/pull/2109))
+
+### Dependency Changes
+
+* netty 4.2.5.Final
+* lightbend/config 1.4.5
+
 # 1.2.0
 
 Pekko 1.2.0 has some new features, performance updates and dependency upgrades. See [GitHub Milestone for 1.2.0-M1](https://github.com/apache/pekko/milestone/6?closed=1), [GitHub Milestone for 1.2.0-M2](https://github.com/apache/pekko/milestone/15?closed=1) and [GitHub Milestone for 1.2.0](https://github.com/apache/pekko/milestone/16?closed=1) for a fuller list of changes.
@@ -90,5 +107,5 @@ Most of the changes appeared in the milestone releases (1.2.0-M1 and 1.2.0-M2) b
 ### Known Issues
 
 This release breaks binary compatibility for [pekko-persistence-cassandra](https://github.com/apache/pekko-persistence-cassandra/issues/305)
-and users of that lib will need to avoid Pekko 1.2.0 release. We will fix
+and users of that lib will need to avoid Pekko 1.2.0 release. We fixed
 this in the 1.2.1 release.
