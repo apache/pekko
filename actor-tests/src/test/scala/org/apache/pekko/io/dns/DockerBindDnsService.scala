@@ -53,8 +53,10 @@ abstract class DockerBindDnsService(config: Config) extends PekkoSpec(config) wi
     log.info("Running on port port {}", hostPort)
     super.atStartup()
 
-    // https://github.com/sameersbn/docker-bind/pull/61
-    val image = "raboof/bind:9.11.3-20180713-nochown"
+    // Use jonasal/bind which supports multi-platform including ARM64 for Apple M series machines
+    // and maintains compatibility with traditional bind configuration files
+    // https://github.com/JonasAlfredsson/docker-bind
+    val image = "jonasal/bind:9"
     try {
       client
         .pullImageCmd(image)
@@ -71,15 +73,14 @@ abstract class DockerBindDnsService(config: Config) extends PekkoSpec(config) wi
     val containerCommand: CreateContainerCmd = client
       .createContainerCmd(image)
       .withName(containerName)
-      .withEnv("NO_CHOWN=true")
       .withCmd("-4")
       .withHostConfig(
         HostConfig.newHostConfig()
           .withPortBindings(
             PortBinding.parse(s"$hostPort:53/tcp"),
             PortBinding.parse(s"$hostPort:53/udp"))
-          .withBinds(new Bind(new java.io.File("actor-tests/src/test/bind/").getAbsolutePath,
-            new Volume("/data/bind"))))
+          .withBinds(new Bind(new java.io.File("actor-tests/src/test/bind/etc/").getAbsolutePath,
+            new Volume("/etc/bind/local-config"))))
 
     client
       .listContainersCmd()

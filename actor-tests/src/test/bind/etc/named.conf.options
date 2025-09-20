@@ -1,6 +1,11 @@
 options {
 	directory "/var/cache/bind";
 
+	// Allow recursion for localhost and local networks
+	recursion yes;
+	allow-recursion { localhost; 192.168.0.0/16; 172.16.0.0/12; 10.0.0.0/8; };
+	allow-query { any; };
+
 	// If there is a firewall between you and nameservers you want
 	// to talk to, you may need to fix the firewall to allow multiple
 	// ports to talk.  See https://www.kb.cert.org/vuls/id/800113

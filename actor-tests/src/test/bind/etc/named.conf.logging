@@ -1,0 +1,6 @@
+logging {
+    channel default_debug {
+        stderr;
+        severity dynamic;
+    };
+};
