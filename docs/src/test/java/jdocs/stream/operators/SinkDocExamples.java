@@ -52,6 +52,15 @@ public class SinkDocExamples {
     // #seq-operator-example
   }
 
+  static void countExample() {
+    // #count-operator-example
+    Source<Integer, NotUsed> ints = Source.range(1, 10);
+    CompletionStage<Long> count = ints.runWith(Sink.count(), system);
+    count.thenAccept(System.out::println);
+    // 10
+    // #count-operator-example
+  }
+
   static void takeLastExample() {
     // #takeLast-operator-example
     // pair of (Name, GPA)
