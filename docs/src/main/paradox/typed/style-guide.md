@@ -467,8 +467,7 @@ be good to know that it's optional in case you would prefer a different approach
 * direct processing because there is only one message type
 * if or switch statements
 * annotation processor
-* Vavr Pattern Matching DSL
-* pattern matching since JDK 14 ([JEP 305](https://openjdk.java.net/jeps/305))
+* pattern matching since JDK 21 ([JEP 441](https://openjdk.org/jeps/441))
 
 In `Behaviors` there are `receive`, `receiveMessage` and `receiveSignal` factory methods that takes functions
 instead of using the `ReceiveBuilder`, which is the `receive` with the class parameter.
