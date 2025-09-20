@@ -262,4 +262,15 @@ public class SinkTest extends StreamTest {
     boolean anyMatch = cs.toCompletableFuture().get(100, TimeUnit.MILLISECONDS);
     assertTrue(anyMatch);
   }
+
+  @Test
+  public void mustBeAbleToUseSinkAsSource() throws Exception {
+    final List<Integer> r =
+        Source.range(1, 10)
+            .runWith(Sink.source(), system)
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .get(1, TimeUnit.SECONDS);
+    assertEquals(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), r);
+  }
 }

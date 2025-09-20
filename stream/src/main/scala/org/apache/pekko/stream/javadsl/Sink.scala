@@ -213,6 +213,18 @@ object Sink {
     new Sink(scaladsl.Sink.asPublisher(fanout == AsPublisher.WITH_FANOUT))
 
   /**
+   * A `Sink` that materialize this `Sink` itself as a `Source`.
+   * The returned `Source` is a "live view" onto the `Sink` and only support a single `Subscriber`.
+   *
+   * Note: even the `Source` is directly connected to the `Sink`, there is still an asynchronous boundary
+   * between them, the performance can be improved in the future.
+   *
+   * @since 2.0.0
+   */
+  def source[T](): Sink[T, Source[T, NotUsed]] = new Sink(scaladsl.Sink.source[T])
+    .mapMaterializedValue(src => src.asJava)
+
+  /**
    * A `Sink` that will invoke the given procedure for each received element. The sink is materialized
    * into a [[java.util.concurrent.CompletionStage]] which will be completed with `Success` when reaching the
    * normal end of the stream, or completed with `Failure` if there is a failure signaled in
