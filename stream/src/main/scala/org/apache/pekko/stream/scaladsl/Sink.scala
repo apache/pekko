@@ -27,7 +27,7 @@ import pekko.annotation.InternalApi
 import pekko.stream._
 import pekko.stream.impl._
 import pekko.stream.impl.Stages.DefaultAttributes
-import pekko.stream.impl.fusing.GraphStages
+import pekko.stream.impl.fusing.{ CountSink, GraphStages }
 import pekko.stream.stage._
 
 import org.reactivestreams.{ Publisher, Subscriber }
@@ -260,6 +260,26 @@ object Sink {
    * See also [[Flow.limit]], [[Flow.limitWeighted]], [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
    */
   def seq[T]: Sink[T, Future[immutable.Seq[T]]] = Sink.fromGraph(new SeqStage[T, Vector[T]])
+
+  /**
+   * A `Sink` that counts all incoming elements until upstream terminates.
+   *
+   * Since upstream may be unbounded, consider using `Flow[T].take` or the stricter `Flow[T].limit`
+   * (and their variants) to ensure boundedness. The sink materializes into a `Future` of `Long`
+   * containing the total count of elements that passed through.
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Backpressures when''' never (counting is a lightweight operation)
+   *
+   * '''Cancels when''' never
+   *
+   * @return a `Sink` that materializes to a `Future[Long]` with the element count
+   * @since 2.0.0
+   *
+   * See also [[Flow.limit]], [[Flow.limitWeighted]], [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
+   */
+  def count[T]: Sink[T, Future[Long]] = Sink.fromGraph(CountSink)
 
   /**
    * A `Sink` that keeps on collecting incoming elements until upstream terminates.
