@@ -15,9 +15,6 @@ package org.apache.pekko.dispatch
 
 import java.util.concurrent.{ ExecutorService, ForkJoinPool, ForkJoinTask, ThreadFactory, TimeUnit }
 
-import org.apache.pekko
-import pekko.util.JavaVersion
-
 import com.typesafe.config.Config
 
 object ForkJoinExecutorConfigurator {
@@ -73,7 +70,8 @@ object ForkJoinExecutorConfigurator {
 class ForkJoinExecutorConfigurator(config: Config, prerequisites: DispatcherPrerequisites)
     extends ExecutorServiceConfigurator(config, prerequisites) {
   import ForkJoinExecutorConfigurator._
-  final override val isVirtualized: Boolean = config.getBoolean("virtualize") && JavaVersion.majorVersion >= 21
+  final override val isVirtualized: Boolean = config.getBoolean("virtualize") && VirtualThreadSupport.isSupported
+  override def virtualThreadStartNumber: Int = config.getInt("virtual-thread-start-number")
 
   def validate(t: ThreadFactory): ForkJoinPool.ForkJoinWorkerThreadFactory = t match {
     case correct: ForkJoinPool.ForkJoinWorkerThreadFactory => correct
@@ -115,7 +113,7 @@ class ForkJoinExecutorConfigurator(config: Config, prerequisites: DispatcherPrer
 
       if (isVirtualized) {
         // we need to cast here,
-        createVirtualized(threadFactory.asInstanceOf[ThreadFactory], pool, id)
+        createVirtualized(threadFactory.asInstanceOf[ThreadFactory], pool, id, virtualThreadStartNumber)
       } else {
         pool
       }

@@ -31,8 +31,20 @@ object ThreadPoolVirtualThreadSpec {
       |    throughput = 5
       |    executor = "thread-pool-executor"
       |    thread-pool-executor {
-      |      fixed-pool-size = 4
+      |      fixed-pool-size = 1
       |      virtualize = on
+      |      virtual-thread-start-number = 0
+      |    }
+      |  }
+      |
+      |  task-dispatcher-short {
+      |    mailbox-type = "org.apache.pekko.dispatch.SingleConsumerOnlyUnboundedMailbox"
+      |    throughput = 5
+      |    executor = "thread-pool-executor"
+      |    thread-pool-executor {
+      |      fixed-pool-size = 1
+      |      virtualize = on
+      |      virtual-thread-start-number = -1
       |    }
       |  }
       |}
@@ -59,6 +71,14 @@ class ThreadPoolVirtualThreadSpec extends PekkoSpec(ThreadPoolVirtualThreadSpec.
         actor ! "ping"
         expectMsgPF() { case name: String =>
           name should include("ThreadPoolVirtualThreadSpec-custom.task-dispatcher-virtual-thread-")
+        }
+      }
+
+      val actor2 = system.actorOf(Props(new ThreadNameActor).withDispatcher("custom.task-dispatcher-short"))
+      for (_ <- 1 to 1000) {
+        actor2 ! "ping"
+        expectMsgPF() { case name: String =>
+          name should include("ThreadPoolVirtualThreadSpec-custom.task-dispatcher-short-virtual-thread")
         }
       }
     }
