@@ -16,13 +16,13 @@ package org.apache.pekko.testkit
 import scala.concurrent.{ Await, Promise }
 import scala.concurrent.duration._
 
-import org.scalatest.BeforeAndAfterEach
-
 import org.apache.pekko
 import pekko.actor._
 import pekko.dispatch.Dispatcher
 import pekko.event.Logging.Warning
 import pekko.pattern.ask
+
+import org.scalatest.BeforeAndAfterEach
 
 /**
  * Test whether TestActorRef behaves as an ActorRef should, besides its own spec.

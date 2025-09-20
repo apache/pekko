@@ -13,14 +13,12 @@
 
 package org.apache.pekko.persistence.fsm
 
+import scala.annotation.nowarn
 import scala.annotation.varargs
 import scala.collection.immutable
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration._
 import scala.reflect.ClassTag
-
-import scala.annotation.nowarn
-import com.typesafe.config.Config
 
 import org.apache.pekko
 import pekko.actor._
@@ -28,6 +26,8 @@ import pekko.annotation.InternalApi
 import pekko.persistence.{ PersistentActor, RecoveryCompleted, SnapshotOffer }
 import pekko.persistence.fsm.PersistentFSM.FSMState
 import pekko.persistence.serialization.Message
+
+import com.typesafe.config.Config
 
 /**
  * SnapshotAfter Extension Id and factory for creating SnapshotAfter extension

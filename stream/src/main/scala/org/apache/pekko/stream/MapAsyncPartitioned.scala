@@ -18,13 +18,13 @@
 package org.apache.pekko.stream
 
 import scala.collection.mutable
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.util.{ Failure, Success, Try }
 import scala.util.control.{ NoStackTrace, NonFatal }
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import scala.concurrent.ExecutionContext
 import pekko.stream.ActorAttributes.SupervisionStrategy
 import pekko.stream.stage._
 import pekko.util.OptionVal

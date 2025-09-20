@@ -15,9 +15,8 @@ package org.apache.pekko.cluster.metrics
 
 import java.util.concurrent.ThreadLocalRandom
 
-import scala.concurrent.duration._
-
 import scala.annotation.nowarn
+import scala.concurrent.duration._
 
 import org.apache.pekko.testkit.{ LongRunningTest, PekkoSpec }
 

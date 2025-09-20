@@ -13,8 +13,13 @@
 
 package org.apache.pekko.actor.typed.internal
 
+import java.util.function.{ Function => JFunction }
+import java.util.function.Predicate
+
+import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.util.control.NonFatal
+
 import org.apache.pekko
 import pekko.actor.DeadLetter
 import pekko.actor.typed.Behavior
@@ -25,11 +30,8 @@ import pekko.actor.typed.scaladsl
 import pekko.actor.typed.scaladsl.ActorContext
 import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.japi.function.Procedure
-import pekko.util.{ unused, ConstantFun }
+import pekko.util.ConstantFun
 import pekko.util.OptionVal
-
-import java.util.function.{ Function => JFunction }
-import java.util.function.Predicate
 
 /**
  * INTERNAL API
@@ -96,7 +98,7 @@ import java.util.function.Predicate
   }
 
   @InternalStableApi
-  private def createNode(message: T, @unused ctx: scaladsl.ActorContext[T]): Node[T] = {
+  private def createNode(message: T, @nowarn("msg=never used") ctx: scaladsl.ActorContext[T]): Node[T] = {
     new Node(null, message)
   }
 
@@ -116,7 +118,7 @@ import java.util.function.Predicate
       behavior: Behavior[T],
       ctx: TypedActorContext[T],
       wrappedMessage: T,
-      @unused node: Node[T]): Behavior[T] = {
+      @nowarn("msg=never used") node: Node[T]): Behavior[T] = {
     Behavior.interpretMessage(behavior, ctx, wrappedMessage)
   }
 
@@ -258,10 +260,11 @@ import java.util.function.Predicate
     s"StashBuffer($size/$capacity)"
 
   @InternalStableApi
-  private[pekko] def unstashed(@unused ctx: ActorContext[T], @unused node: Node[T]): Unit = ()
+  private[pekko] def unstashed(@nowarn("msg=never used") ctx: ActorContext[T], @nowarn("msg=never used") node: Node[T])
+      : Unit = ()
 
   @InternalStableApi
-  private def stashCleared(@unused ctx: ActorContext[T]): Unit = ()
+  private def stashCleared(@nowarn("msg=never used") ctx: ActorContext[T]): Unit = ()
 
 }
 

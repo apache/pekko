@@ -19,13 +19,15 @@ import java.nio.charset.StandardCharsets
 import scala.concurrent.duration._
 
 import ch.qos.logback.core.OutputStreamAppender
-import org.scalatest.BeforeAndAfterEach
-import org.slf4j.{ Marker, MarkerFactory }
 
 import org.apache.pekko
 import pekko.actor.{ Actor, DiagnosticActorLogging, Props }
 import pekko.event.{ LogMarker, Logging }
 import pekko.testkit.PekkoSpec
+
+import org.scalatest.BeforeAndAfterEach
+
+import org.slf4j.{ Marker, MarkerFactory }
 
 object Slf4jLoggerSpec {
 

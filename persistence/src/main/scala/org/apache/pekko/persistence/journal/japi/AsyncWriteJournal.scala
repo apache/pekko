@@ -14,17 +14,17 @@
 package org.apache.pekko.persistence.journal.japi
 
 import scala.collection.immutable
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
+import scala.jdk.CollectionConverters._
+import scala.jdk.FutureConverters._
 import scala.util.Failure
 import scala.util.Try
 
 import org.apache.pekko
-import scala.concurrent.ExecutionContext
 import pekko.persistence._
 import pekko.persistence.journal.{ AsyncWriteJournal => SAsyncWriteJournal }
 import pekko.util.ConstantFun.scalaAnyToUnit
-import scala.jdk.FutureConverters._
-import scala.jdk.CollectionConverters._
 
 /**
  * Java API: abstract journal, optimized for asynchronous, non-blocking writes.

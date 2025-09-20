@@ -13,13 +13,13 @@
 
 package org.apache.pekko.stream.scaladsl
 
+import scala.util.control.NoStackTrace
+
 import org.apache.pekko
 import pekko.stream.ActorAttributes._
 import pekko.stream.Supervision._
 import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.TestSink
-
-import scala.util.control.NoStackTrace
 
 class FlowDropRepeatedSpec extends StreamSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 2

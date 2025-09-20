@@ -17,7 +17,6 @@ import java.util.Comparator
 import java.util.concurrent.{ ConcurrentHashMap, ConcurrentSkipListSet }
 
 import scala.annotation.tailrec
-
 import scala.jdk.CollectionConverters._
 
 /**

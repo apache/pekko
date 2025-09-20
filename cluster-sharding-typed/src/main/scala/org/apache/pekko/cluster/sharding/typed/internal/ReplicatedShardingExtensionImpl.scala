@@ -13,25 +13,27 @@
 
 package org.apache.pekko.cluster.sharding.typed.internal
 
-import java.util.concurrent.atomic.AtomicLong
 import java.util.{ Map => JMap }
+import java.util.concurrent.atomic.AtomicLong
+
+import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
 import pekko.actor.typed.ActorSystem
+import pekko.actor.typed.scaladsl.LoggerOps
 import pekko.annotation.InternalApi
-import pekko.cluster.sharding.typed.ReplicatedShardingExtension
-import pekko.cluster.sharding.typed.ReplicatedSharding
+import pekko.cluster.ClusterSettings.DataCenter
 import pekko.cluster.sharding.typed.ReplicatedEntityProvider
+import pekko.cluster.sharding.typed.ReplicatedSharding
+import pekko.cluster.sharding.typed.ReplicatedShardingExtension
+import pekko.cluster.sharding.typed.ShardingDirectReplication
 import pekko.cluster.sharding.typed.scaladsl.ClusterSharding
 import pekko.cluster.sharding.typed.scaladsl.EntityRef
 import pekko.cluster.sharding.typed.scaladsl.EntityTypeKey
 import pekko.persistence.typed.ReplicaId
-import org.slf4j.LoggerFactory
-import pekko.actor.typed.scaladsl.LoggerOps
-import pekko.cluster.ClusterSettings.DataCenter
-import pekko.cluster.sharding.typed.ShardingDirectReplication
 import pekko.persistence.typed.ReplicationId
-import scala.jdk.CollectionConverters._
+
+import org.slf4j.LoggerFactory
 
 /**
  * INTERNAL API

@@ -15,7 +15,7 @@ package org.apache.pekko.stream.typed.scaladsl
 
 import scala.concurrent.Future
 import scala.util.Success
-import org.scalatest.wordspec.AnyWordSpecLike
+
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
@@ -25,6 +25,8 @@ import pekko.stream.AbruptStageTerminationException
 import pekko.stream.Materializer
 import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.Source
+
+import org.scalatest.wordspec.AnyWordSpecLike
 
 class MaterializerForTypedSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with LogCapturing {
 

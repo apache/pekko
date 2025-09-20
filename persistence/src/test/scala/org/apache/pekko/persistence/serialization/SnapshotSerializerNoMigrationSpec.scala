@@ -17,13 +17,13 @@
 
 package org.apache.pekko.persistence.serialization
 
+import java.io.NotSerializableException
+import java.util.Base64
+
 import org.apache.pekko
 import pekko.persistence.fsm.PersistentFSM.PersistentFSMSnapshot
 import pekko.serialization.SerializationExtension
 import pekko.testkit.PekkoSpec
-
-import java.io.NotSerializableException
-import java.util.Base64
 
 class SnapshotSerializerNoMigrationSpec extends PekkoSpec(
       s"${SnapshotAutoMigration.ConfigName}=no-migration"

@@ -13,15 +13,16 @@
 
 package org.apache.pekko.actor
 
+import scala.annotation.nowarn
 import scala.concurrent.Await
 import scala.concurrent.duration._
-
-import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.event._
 import pekko.testkit._
-import pekko.util.{ unused, Timeout }
+import pekko.util.Timeout
+
+import com.typesafe.config.ConfigFactory
 
 object FSMActorSpec {
 
@@ -88,7 +89,7 @@ object FSMActorSpec {
     // verify that old-style does still compile
     onTransition(transitionHandler _)
 
-    def transitionHandler(@unused from: LockState, @unused to: LockState) = {
+    def transitionHandler(@nowarn("msg=never used") from: LockState, @nowarn("msg=never used") to: LockState) = {
       // dummy
     }
 

@@ -13,7 +13,9 @@
 
 package org.apache.pekko.persistence.typed.internal
 
+import scala.annotation.nowarn
 import scala.collection.immutable
+
 import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.actor.typed.Behavior
@@ -28,7 +30,7 @@ import pekko.annotation.InternalStableApi
 import pekko.persistence._
 import pekko.persistence.JournalProtocol.ReplayMessages
 import pekko.persistence.SnapshotProtocol.LoadSnapshot
-import pekko.util.{ unused, OptionVal }
+import pekko.util.OptionVal
 
 /** INTERNAL API */
 @InternalApi
@@ -86,9 +88,9 @@ private[pekko] trait JournalInteractions[C, E, S] {
 
   @InternalStableApi
   private[pekko] def onWriteInitiated(
-      @unused ctx: ActorContext[_],
-      @unused cmd: Any,
-      @unused repr: PersistentRepr): Unit = ()
+      @nowarn("msg=never used") ctx: ActorContext[_],
+      @nowarn("msg=never used") cmd: Any,
+      @nowarn("msg=never used") repr: PersistentRepr): Unit = ()
 
   protected def internalPersistAll(
       ctx: ActorContext[_],
@@ -127,9 +129,9 @@ private[pekko] trait JournalInteractions[C, E, S] {
 
   @InternalStableApi
   private[pekko] def onWritesInitiated(
-      @unused ctx: ActorContext[_],
-      @unused cmd: Any,
-      @unused repr: immutable.Seq[PersistentRepr]): Unit = ()
+      @nowarn("msg=never used") ctx: ActorContext[_],
+      @nowarn("msg=never used") cmd: Any,
+      @nowarn("msg=never used") repr: immutable.Seq[PersistentRepr]): Unit = ()
 
   protected def replayEvents(fromSeqNr: Long, toSeqNr: Long): Unit = {
     setup.internalLogger.debug2("Replaying events: from: {}, to: {}", fromSeqNr, toSeqNr)

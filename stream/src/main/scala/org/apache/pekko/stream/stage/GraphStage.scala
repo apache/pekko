@@ -13,9 +13,11 @@
 
 package org.apache.pekko.stream.stage
 
+import java.util.Spliterator
 import java.util.concurrent.{ CompletionStage, ConcurrentHashMap }
 import java.util.concurrent.atomic.AtomicReference
 
+import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.collection.{ immutable, mutable }
 import scala.concurrent.{ Future, Promise }
@@ -34,9 +36,6 @@ import pekko.stream.impl.fusing.{ GraphInterpreter, GraphStageModule, SubSink, S
 import pekko.stream.scaladsl.GenericGraphWithChangedAttributes
 import pekko.stream.stage.ConcurrentAsyncCallbackState.{ NoPendingEvents, State }
 import pekko.util.OptionVal
-import pekko.util.unused
-
-import java.util.Spliterator
 
 /**
  * Scala API: A GraphStage represents a reusable graph stream processing operator.
@@ -60,7 +59,8 @@ abstract class GraphStageWithMaterializedValue[+S <: Shape, +M] extends Graph[S,
   @InternalApi
   private[pekko] def createLogicAndMaterializedValue(
       inheritedAttributes: Attributes,
-      @unused materializer: Materializer): (GraphStageLogic, M) = createLogicAndMaterializedValue(inheritedAttributes)
+      @nowarn("msg=never used") materializer: Materializer): (GraphStageLogic, M) =
+    createLogicAndMaterializedValue(inheritedAttributes)
 
   @throws(classOf[Exception])
   def createLogicAndMaterializedValue(inheritedAttributes: Attributes): (GraphStageLogic, M)
@@ -1728,7 +1728,7 @@ abstract class TimerGraphStageLogic(_shape: Shape) extends GraphStageLogic(_shap
    * @param timerKey key of the scheduled timer
    */
   @throws(classOf[Exception])
-  protected def onTimer(@unused timerKey: Any): Unit = ()
+  protected def onTimer(@nowarn("msg=never used") timerKey: Any): Unit = ()
 
   // Internal hooks to avoid reliance on user calling super in postStop
   protected[stream] override def afterPostStop(): Unit = {

@@ -15,11 +15,8 @@ package org.apache.pekko.remote
 
 import java.util.concurrent.atomic.AtomicBoolean
 
-import scala.concurrent.duration._
-
 import scala.annotation.nowarn
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor.Actor
@@ -32,7 +29,9 @@ import pekko.event.EventStream
 import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.testkit._
-import pekko.util.unused
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 object TransportFailConfig extends MultiNodeConfig {
   val first = role("first")
@@ -71,7 +70,8 @@ object TransportFailSpec {
   private val fdAvailable = new AtomicBoolean(true)
 
   // FD that will fail when `fdAvailable` flag is false
-  class TestFailureDetector(@unused config: Config, @unused ev: EventStream) extends FailureDetector {
+  class TestFailureDetector(@nowarn("msg=never used") config: Config, @nowarn("msg=never used") ev: EventStream)
+      extends FailureDetector {
     @volatile private var active = false
 
     override def heartbeat(): Unit = {

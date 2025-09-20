@@ -16,14 +16,12 @@ package org.apache.pekko.cluster.sbr
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-import org.scalatest.concurrent.Eventually
-
 import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.actor.Address
 import pekko.actor.ExtendedActorSystem
 import pekko.actor.Props
+import pekko.cluster._
 import pekko.cluster.ClusterEvent.LeaderChanged
 import pekko.cluster.ClusterEvent.MemberExited
 import pekko.cluster.ClusterEvent.MemberRemoved
@@ -36,12 +34,15 @@ import pekko.cluster.ClusterEvent.UnreachableDataCenter
 import pekko.cluster.ClusterEvent.UnreachableMember
 import pekko.cluster.ClusterSettings.DataCenter
 import pekko.cluster.MemberStatus._
-import pekko.cluster._
 import pekko.coordination.lease.LeaseSettings
 import pekko.coordination.lease.TestLease
 import pekko.coordination.lease.TimeoutSettings
-import pekko.testkit.PekkoSpec
 import pekko.testkit.EventFilter
+import pekko.testkit.PekkoSpec
+
+import org.scalatest.concurrent.Eventually
+
+import com.typesafe.config.ConfigFactory
 
 object SplitBrainResolverSpec {
 

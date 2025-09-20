@@ -13,10 +13,10 @@
 
 package org.apache.pekko.util
 
+import scala.concurrent.duration._
+
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-
-import scala.concurrent.duration._
 
 object RecencyListSpec {
   // controlled clock for testing recency windows

@@ -25,9 +25,9 @@ import pekko.actor.typed.internal.LoggerClass
 import pekko.actor.typed.scaladsl.ActorContext
 import pekko.annotation.ApiMayChange
 import pekko.annotation.DoNotInherit
-import pekko.persistence.typed.state.internal._
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.SnapshotAdapter
+import pekko.persistence.typed.state.internal._
 
 /**
  * API May Change

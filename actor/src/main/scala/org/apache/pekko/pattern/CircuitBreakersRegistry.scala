@@ -14,7 +14,10 @@
 package org.apache.pekko.pattern
 
 import java.util.concurrent.ConcurrentHashMap
+
 import scala.concurrent.duration.{ DurationLong, MILLISECONDS }
+import scala.jdk.CollectionConverters._
+
 import org.apache.pekko
 import pekko.actor.{
   ActorSystem,
@@ -25,7 +28,6 @@ import pekko.actor.{
   ExtensionIdProvider
 }
 import pekko.pattern.internal.CircuitBreakerTelemetryProvider
-import scala.jdk.CollectionConverters._
 
 /**
  * Companion object providing factory methods for Circuit Breaker which runs callbacks in caller's thread

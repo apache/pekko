@@ -14,10 +14,11 @@
 package org.apache.pekko.cluster.routing
 
 import java.util.concurrent.atomic.AtomicInteger
+
 import scala.annotation.{ tailrec, varargs }
 import scala.collection.immutable
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import scala.jdk.CollectionConverters._
+
 import org.apache.pekko
 import pekko.actor._
 import pekko.cluster.Cluster
@@ -38,7 +39,9 @@ import pekko.routing.RouterConfig
 import pekko.routing.RouterPoolActor
 import pekko.routing.RoutingLogic
 import pekko.util.HashCode
-import scala.jdk.CollectionConverters._
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 object ClusterRouterGroupSettings {
 

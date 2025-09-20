@@ -16,12 +16,14 @@ package internal
 
 import java.util.concurrent.ThreadLocalRandom
 
+import scala.annotation.nowarn
 import scala.concurrent.duration.Deadline
 import scala.concurrent.duration.FiniteDuration
 import scala.reflect.ClassTag
+import scala.util.Try
 import scala.util.control.Exception.Catcher
 import scala.util.control.NonFatal
-import org.slf4j.event.Level
+
 import org.apache.pekko
 import pekko.actor.DeadLetterSuppression
 import pekko.actor.Dropped
@@ -34,9 +36,8 @@ import pekko.actor.typed.scaladsl.StashBuffer
 import pekko.annotation.InternalApi
 import pekko.event.Logging
 import pekko.util.OptionVal
-import pekko.util.unused
 
-import scala.util.Try
+import org.slf4j.event.Level
 
 /**
  * INTERNAL API
@@ -142,7 +143,7 @@ private abstract class SimpleSupervisor[T, Thr <: Throwable: ClassTag](ss: Super
     } catch handleReceiveException(ctx, target)
   }
 
-  protected def handleException(@unused ctx: TypedActorContext[Any]): Catcher[Behavior[T]] = {
+  protected def handleException(@nowarn("msg=never used") ctx: TypedActorContext[Any]): Catcher[Behavior[T]] = {
     case NonFatal(t) if isInstanceOfTheThrowableClass(t) =>
       BehaviorImpl.failed(t)
   }
@@ -156,7 +157,8 @@ private abstract class SimpleSupervisor[T, Thr <: Throwable: ClassTag](ss: Super
     handleException(ctx)
 }
 
-private class StopSupervisor[T, Thr <: Throwable: ClassTag](@unused initial: Behavior[T], strategy: Stop)
+private class StopSupervisor[T, Thr <: Throwable: ClassTag](@nowarn("msg=never used") initial: Behavior[T],
+    strategy: Stop)
     extends SimpleSupervisor[T, Thr](strategy) {
 
   override def handleException(ctx: TypedActorContext[Any]): Catcher[Behavior[T]] = {
@@ -293,7 +295,7 @@ private class RestartSupervisor[T, Thr <: Throwable: ClassTag](initial: Behavior
 
   override protected def handleExceptionOnStart(
       ctx: TypedActorContext[Any],
-      @unused target: PreStartTarget[T]): Catcher[Behavior[T]] = {
+      @nowarn("msg=never used") target: PreStartTarget[T]): Catcher[Behavior[T]] = {
     case NonFatal(t) if isInstanceOfTheThrowableClass(t) =>
       ctx.asScala.cancelAllTimers()
       strategy match {

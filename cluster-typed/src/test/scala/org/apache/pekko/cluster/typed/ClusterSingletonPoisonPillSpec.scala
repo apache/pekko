@@ -15,8 +15,6 @@ package org.apache.pekko.cluster.typed
 
 import scala.concurrent.duration._
 
-import org.scalatest.wordspec.AnyWordSpecLike
-
 import org.apache.pekko
 import pekko.actor.testkit.typed.TestKitSettings
 import pekko.actor.testkit.typed.scaladsl.{ ScalaTestWithActorTestKit, TestProbe }
@@ -26,6 +24,8 @@ import pekko.actor.typed.internal.PoisonPill
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.adapter._
 import pekko.cluster.typed.ClusterSingletonPoisonPillSpec.GetSelf
+
+import org.scalatest.wordspec.AnyWordSpecLike
 
 object ClusterSingletonPoisonPillSpec {
 

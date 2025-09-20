@@ -14,13 +14,13 @@
 package org.apache.pekko.cluster
 
 import scala.collection.{ immutable => im }
-
-import com.typesafe.config.{ Config, ConfigFactory, ConfigValue }
+import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.annotation.{ DoNotInherit, InternalApi }
-import scala.jdk.CollectionConverters._
+
+import com.typesafe.config.{ Config, ConfigFactory, ConfigValue }
 
 abstract class JoinConfigCompatChecker {
 

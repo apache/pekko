@@ -18,9 +18,6 @@ import java.nio.charset.StandardCharsets
 import scala.collection.immutable
 import scala.concurrent.duration._
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.ActorLogging
 import pekko.actor.ActorRef
@@ -32,6 +29,9 @@ import pekko.persistence.journal.JournalPerfSpec.Cmd
 import pekko.persistence.journal.JournalPerfSpec.ResetCounter
 import pekko.serialization.SerializerWithStringManifest
 import pekko.testkit.TestProbe
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 object JournalPerfSpec {
   class BenchActor(override val persistenceId: String, replyTo: ActorRef, replyAfter: Int)

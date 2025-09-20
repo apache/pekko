@@ -16,13 +16,12 @@ package org.apache.pekko.remote.artery.tcp.ssl
 import java.security.cert.CertificateFactory
 import java.security.cert.X509Certificate
 
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-
+import scala.jdk.CollectionConverters._
 import scala.util.Try
 import scala.util.control.NonFatal
 
-import scala.jdk.CollectionConverters._
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 /**
  */

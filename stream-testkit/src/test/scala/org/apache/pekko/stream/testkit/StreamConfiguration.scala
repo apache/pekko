@@ -17,10 +17,11 @@
 
 package org.apache.pekko.stream.testkit
 
-import org.apache.pekko.testkit.TestKitBase
-import org.scalatest.time.{ Millis, Span }
-
 import java.util.concurrent.TimeUnit
+
+import org.apache.pekko.testkit.TestKitBase
+
+import org.scalatest.time.{ Millis, Span }
 
 trait StreamConfiguration extends TestKitBase {
   case class StreamConfig(allStagesStoppedTimeout: Span = Span({

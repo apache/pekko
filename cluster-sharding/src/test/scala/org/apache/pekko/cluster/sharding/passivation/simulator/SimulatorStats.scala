@@ -13,9 +13,9 @@
 
 package org.apache.pekko.cluster.sharding.passivation.simulator
 
-import org.apache.pekko.stream.scaladsl.Sink
-
 import scala.concurrent.Future
+
+import org.apache.pekko.stream.scaladsl.Sink
 
 object SimulatorStats {
   def apply(): Sink[Simulator.Event, Future[ShardingStats]] =

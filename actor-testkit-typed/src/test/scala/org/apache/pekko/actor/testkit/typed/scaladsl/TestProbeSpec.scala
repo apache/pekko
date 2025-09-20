@@ -15,10 +15,11 @@ package org.apache.pekko.actor.testkit.typed.scaladsl
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
+import org.apache.pekko.actor.typed.scaladsl.Behaviors
+
 import org.scalatest.wordspec.AnyWordSpecLike
 
-import org.apache.pekko.actor.typed.scaladsl.Behaviors
+import com.typesafe.config.ConfigFactory
 
 class TestProbeSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with LogCapturing {
 

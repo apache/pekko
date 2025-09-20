@@ -16,7 +16,9 @@ package org.apache.pekko.persistence.typed.javadsl
 import java.util.Collections
 import java.util.Optional
 
-import com.typesafe.config.Config
+import scala.annotation.nowarn
+import scala.jdk.OptionConverters._
+
 import org.apache.pekko
 import pekko.actor.typed
 import pekko.actor.typed.BackoffSupervisorStrategy
@@ -27,8 +29,8 @@ import pekko.annotation.InternalApi
 import pekko.persistence.typed._
 import pekko.persistence.typed.EventAdapter
 import pekko.persistence.typed.internal._
-import scala.jdk.OptionConverters._
-import pekko.util.unused
+
+import com.typesafe.config.Config
 
 abstract class EventSourcedBehavior[Command, Event, State] private[pekko] (
     val persistenceId: PersistenceId,
@@ -159,7 +161,8 @@ abstract class EventSourcedBehavior[Command, Event, State] private[pekko] (
    * @return `true` if snapshot should be saved at the given `state`, `event` and `sequenceNr` when the event has
    *         been successfully persisted
    */
-  def shouldSnapshot(@unused state: State, @unused event: Event, @unused sequenceNr: Long): Boolean = false
+  def shouldSnapshot(@nowarn("msg=never used") state: State, @nowarn("msg=never used") event: Event,
+      @nowarn("msg=never used") sequenceNr: Long): Boolean = false
 
   /**
    * Criteria for retention/deletion of snapshots and events.
@@ -176,7 +179,7 @@ abstract class EventSourcedBehavior[Command, Event, State] private[pekko] (
   /**
    * The `tagger` function should give event tags, which will be used in persistence query
    */
-  def tagsFor(@unused event: Event): java.util.Set[String] = Collections.emptySet()
+  def tagsFor(@nowarn("msg=never used") event: Event): java.util.Set[String] = Collections.emptySet()
 
   /**
    * Transform the event in another type before giving to the journal. Can be used to wrap events

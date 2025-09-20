@@ -17,19 +17,19 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ThreadFactory
 import java.util.concurrent.atomic.AtomicLong
 
+import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.{ Duration, FiniteDuration }
+import scala.jdk.CollectionConverters._
 import scala.util.Try
-
-import com.typesafe.config.Config
 
 import org.apache.pekko
 import pekko.actor.Cancellable
 import pekko.actor.Scheduler
 import pekko.event.LoggingAdapter
-import scala.jdk.CollectionConverters._
-import pekko.util.unused
+
+import com.typesafe.config.Config
 
 /**
  * For testing: scheduler that does not look at the clock, but must be
@@ -41,7 +41,8 @@ import pekko.util.unused
  * easier, but these tests might fail to catch race conditions that only
  * happen when tasks are scheduled in parallel in 'real time'.
  */
-class ExplicitlyTriggeredScheduler(@unused config: Config, log: LoggingAdapter, @unused tf: ThreadFactory)
+class ExplicitlyTriggeredScheduler(@nowarn("msg=never used") config: Config, log: LoggingAdapter,
+    @nowarn("msg=never used") tf: ThreadFactory)
     extends Scheduler {
 
   private class Item(val interval: Option[FiniteDuration], val runnable: Runnable)

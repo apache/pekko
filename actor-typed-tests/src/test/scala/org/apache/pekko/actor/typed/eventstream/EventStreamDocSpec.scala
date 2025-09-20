@@ -21,6 +21,7 @@ import org.apache.pekko.actor.{ AllDeadLetters, DeadLetter, Dropped, SuppressedD
 import org.apache.pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
 import org.apache.pekko.actor.typed.ActorSystem
 import org.apache.pekko.actor.typed.scaladsl.Behaviors
+
 import org.scalatest.wordspec.AnyWordSpecLike
 
 object EventStreamDocSpec {

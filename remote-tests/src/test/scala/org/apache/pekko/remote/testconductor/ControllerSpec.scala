@@ -19,8 +19,8 @@ import java.net.InetSocketAddress
 import org.apache.pekko
 import pekko.actor.{ AddressFromURIString, PoisonPill, Props }
 import pekko.remote.testconductor.Controller.NodeInfo
-import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
+import pekko.testkit.PekkoSpec
 
 object ControllerSpec {
   val config = """

@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.{ AtomicBoolean, AtomicReference }
 
 import scala.annotation.unchecked.uncheckedVariance
 import scala.concurrent.{ Future, Promise }
+import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.FiniteDuration
 import scala.util.Try
 
@@ -24,7 +25,6 @@ import org.apache.pekko
 import pekko.Done
 import pekko.actor.Cancellable
 import pekko.annotation.InternalApi
-import scala.concurrent.ExecutionContext
 import pekko.event.Logging
 import pekko.stream.{ Shape, _ }
 import pekko.stream.FlowMonitorState._

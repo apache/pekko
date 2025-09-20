@@ -19,10 +19,10 @@ package org.apache.pekko.stream
 package javadsl
 
 import scala.collection.immutable
+import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import scala.jdk.CollectionConverters._
 
 /**
  * INTERNAL API

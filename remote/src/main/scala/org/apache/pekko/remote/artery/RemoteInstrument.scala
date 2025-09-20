@@ -16,21 +16,21 @@ package org.apache.pekko.remote.artery
 import java.nio.ByteBuffer
 import java.util.concurrent.ConcurrentHashMap
 
+import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.util.control.NonFatal
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.actor.WrappedMessage
 import pekko.actor.ActorRef
+import pekko.actor.ActorSystem
 import pekko.actor.ExtendedActorSystem
+import pekko.actor.WrappedMessage
 import pekko.annotation.InternalApi
 import pekko.annotation.InternalStableApi
 import pekko.event.Logging
 import pekko.event.LoggingAdapter
 import pekko.remote.RemoteActorRefProvider
 import pekko.util.OptionVal
-import pekko.util.unused
 
 /**
  * INTERNAL API
@@ -409,7 +409,7 @@ private[remote] object RemoteInstruments {
   def getLength(kl: Int): Int = kl & lengthMask
 
   @InternalStableApi
-  def create(system: ExtendedActorSystem, @unused log: LoggingAdapter): Vector[RemoteInstrument] = {
+  def create(system: ExtendedActorSystem, @nowarn("msg=never used") log: LoggingAdapter): Vector[RemoteInstrument] = {
     val c = system.settings.config
     val path = "pekko.remote.artery.advanced.instruments"
     import scala.jdk.CollectionConverters._

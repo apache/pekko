@@ -13,6 +13,7 @@
 
 package org.apache.pekko.persistence.typed.state.internal
 
+import scala.annotation.nowarn
 import scala.concurrent.duration._
 
 import org.apache.pekko
@@ -32,7 +33,6 @@ import pekko.persistence.typed.state.RecoveryFailed
 import pekko.persistence.typed.state.internal.DurableStateBehaviorImpl.GetState
 import pekko.persistence.typed.state.internal.Running.WithRevisionAccessible
 import pekko.util.PrettyDuration._
-import pekko.util.unused
 
 /**
  * INTERNAL API
@@ -136,11 +136,12 @@ private[pekko] class Recovering[C, S](
   }
 
   @InternalStableApi
-  def onRecoveryStart(@unused context: ActorContext[_]): Unit = ()
+  def onRecoveryStart(@nowarn("msg=never used") context: ActorContext[_]): Unit = ()
   @InternalStableApi
-  def onRecoveryComplete(@unused context: ActorContext[_]): Unit = ()
+  def onRecoveryComplete(@nowarn("msg=never used") context: ActorContext[_]): Unit = ()
   @InternalStableApi
-  def onRecoveryFailed(@unused context: ActorContext[_], @unused reason: Throwable): Unit = ()
+  def onRecoveryFailed(@nowarn("msg=never used") context: ActorContext[_], @nowarn("msg=never used") reason: Throwable)
+      : Unit = ()
 
   private def onRecoveryTimeout(): Behavior[InternalProtocol] = {
     val ex = new RecoveryTimedOut(s"Recovery timed out, didn't get state within ${setup.settings.recoveryTimeout}")

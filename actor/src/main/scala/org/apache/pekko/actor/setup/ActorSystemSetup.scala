@@ -16,11 +16,11 @@ package org.apache.pekko.actor.setup
 import java.util.Optional
 
 import scala.annotation.varargs
+import scala.jdk.OptionConverters._
 import scala.reflect.ClassTag
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import scala.jdk.OptionConverters._
 
 /**
  * Marker supertype for a setup part that can be put inside [[pekko.actor.setup.ActorSystemSetup]], if a specific concrete setup

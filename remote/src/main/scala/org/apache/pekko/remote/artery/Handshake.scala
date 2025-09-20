@@ -13,6 +13,8 @@
 
 package org.apache.pekko.remote.artery
 
+import scala.annotation.nowarn
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
@@ -21,7 +23,6 @@ import org.apache.pekko
 import pekko.Done
 import pekko.actor.ActorSystem
 import pekko.actor.Address
-import scala.concurrent.ExecutionContext
 import pekko.remote.UniqueAddress
 import pekko.stream.Attributes
 import pekko.stream.FlowShape
@@ -29,7 +30,6 @@ import pekko.stream.Inlet
 import pekko.stream.Outlet
 import pekko.stream.stage._
 import pekko.util.OptionVal
-import pekko.util.unused
 
 /**
  * INTERNAL API
@@ -61,7 +61,7 @@ private[remote] object OutboundHandshake {
  * INTERNAL API
  */
 private[remote] class OutboundHandshake(
-    @unused system: ActorSystem,
+    @nowarn("msg=never used") system: ActorSystem,
     outboundContext: OutboundContext,
     outboundEnvelopePool: ObjectPool[ReusableOutboundEnvelope],
     timeout: FiniteDuration,

@@ -13,12 +13,13 @@
 
 package org.apache.pekko.persistence.typed.state.internal
 
+import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.actor.typed.Behavior
 import pekko.actor.typed.internal.PoisonPill
 import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors }
 import pekko.annotation.{ InternalApi, InternalStableApi }
-import pekko.util.unused
 
 /**
  * INTERNAL API
@@ -77,7 +78,7 @@ private[pekko] class RequestingRecoveryPermit[C, S](override val setup: Behavior
   }
 
   @InternalStableApi
-  def onRequestingRecoveryPermit(@unused context: ActorContext[_]): Unit = ()
+  def onRequestingRecoveryPermit(@nowarn("msg=never used") context: ActorContext[_]): Unit = ()
 
   private def becomeRecovering(receivedPoisonPill: Boolean): Behavior[InternalProtocol] = {
     setup.internalLogger.debug(s"Initializing recovery")

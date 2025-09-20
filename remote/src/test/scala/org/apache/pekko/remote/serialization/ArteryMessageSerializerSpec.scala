@@ -17,10 +17,10 @@ import java.io.NotSerializableException
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.remote.artery.Flush
-import pekko.remote.artery.FlushAck
 import pekko.remote.{ RemoteWatcher, UniqueAddress }
 import pekko.remote.artery.{ ActorSystemTerminating, ActorSystemTerminatingAck, Quarantined, SystemMessageDelivery }
+import pekko.remote.artery.Flush
+import pekko.remote.artery.FlushAck
 import pekko.remote.artery.OutboundHandshake.{ HandshakeReq, HandshakeRsp }
 import pekko.remote.artery.compress.CompressionProtocol.{
   ActorRefCompressionAdvertisement,

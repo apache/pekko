@@ -15,8 +15,6 @@ package org.apache.pekko.cluster.sharding.typed.testkit.scaladsl
 
 import scala.concurrent.Future
 
-import org.scalatest.wordspec.AnyWordSpecLike
-
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
@@ -32,6 +30,8 @@ import pekko.cluster.sharding.typed.scaladsl.ClusterSharding
 import pekko.cluster.sharding.typed.scaladsl.Entity
 import pekko.cluster.sharding.typed.scaladsl.EntityRef
 import pekko.cluster.sharding.typed.scaladsl.EntityTypeKey
+
+import org.scalatest.wordspec.AnyWordSpecLike
 
 object TestEntityRefSpec {
 

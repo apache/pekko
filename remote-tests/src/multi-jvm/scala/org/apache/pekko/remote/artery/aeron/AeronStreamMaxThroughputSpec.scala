@@ -22,7 +22,6 @@ import scala.collection.AbstractIterator
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
 import io.aeron.Aeron
 import io.aeron.CncFileDescriptor
 import org.agrona.IoUtil
@@ -35,6 +34,8 @@ import pekko.stream.KillSwitches
 import pekko.stream.scaladsl.Source
 import pekko.testkit._
 import pekko.util.ByteString
+
+import com.typesafe.config.ConfigFactory
 
 object AeronStreamMaxThroughputSpec extends MultiNodeConfig {
   val first = role("first")

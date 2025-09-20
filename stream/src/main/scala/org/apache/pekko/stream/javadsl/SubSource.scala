@@ -16,9 +16,13 @@ package org.apache.pekko.stream.javadsl
 import java.util.{ Comparator, Optional }
 import java.util.concurrent.CompletionStage
 
-import scala.annotation.varargs
 import scala.annotation.unchecked.uncheckedVariance
+import scala.annotation.varargs
 import scala.collection.immutable
+import scala.jdk.CollectionConverters._
+import scala.jdk.DurationConverters._
+import scala.jdk.FutureConverters._
+import scala.jdk.OptionConverters._
 import scala.reflect.ClassTag
 
 import org.apache.pekko
@@ -28,10 +32,6 @@ import pekko.japi.{ function, Pair }
 import pekko.stream._
 import pekko.stream.impl.fusing.{ StatefulMapConcat, ZipWithIndexJava }
 import pekko.util.ConstantFun
-import scala.jdk.FutureConverters._
-import scala.jdk.DurationConverters._
-import scala.jdk.OptionConverters._
-import scala.jdk.CollectionConverters._
 
 /**
  * * Upcast a stream of elements to a stream of supertypes of that element. Useful in combination with

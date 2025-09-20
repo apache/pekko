@@ -13,11 +13,8 @@
 
 package org.apache.pekko.routing
 
-import scala.collection.immutable
-
 import scala.annotation.nowarn
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.actor.ActorContext
@@ -26,6 +23,9 @@ import pekko.actor.Props
 import pekko.actor.SupervisorStrategy
 import pekko.dispatch.BalancingDispatcherConfigurator
 import pekko.dispatch.Dispatchers
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 /**
  * INTERNAL API

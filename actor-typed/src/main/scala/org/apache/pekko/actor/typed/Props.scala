@@ -15,13 +15,13 @@ package org.apache.pekko.actor.typed
 
 import scala.annotation.tailrec
 import scala.annotation.varargs
+import scala.jdk.CollectionConverters._
 import scala.reflect.ClassTag
 
 import org.apache.pekko
 import pekko.actor.typed.internal.PropsImpl._
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
-import scala.jdk.CollectionConverters._
 
 object Props {
 

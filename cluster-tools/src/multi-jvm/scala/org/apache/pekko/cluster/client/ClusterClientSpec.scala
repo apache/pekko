@@ -17,8 +17,6 @@ import scala.annotation.nowarn
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.Actor
 import pekko.actor.ActorPath
@@ -37,7 +35,8 @@ import pekko.remote.testkit.STMultiNodeSpec
 import pekko.remote.transport.ThrottlerTransportAdapter.Direction
 import pekko.testkit._
 import pekko.util.Timeout
-import pekko.util.unused
+
+import com.typesafe.config.ConfigFactory
 
 object ClusterClientSpec extends MultiNodeConfig {
   val client = role("client")
@@ -200,7 +199,7 @@ class ClusterClientSpec extends MultiNodeSpec(ClusterClientSpec) with STMultiNod
     node(r) / "system" / "receptionist"
   }
 
-  @unused
+  @nowarn("msg=never used")
   def docOnly = { // not used, only demo
     // #initialContacts
     val initialContacts = Set(

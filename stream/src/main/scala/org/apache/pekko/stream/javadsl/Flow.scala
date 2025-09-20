@@ -17,9 +17,14 @@ import java.util.Comparator
 import java.util.Optional
 import java.util.concurrent.CompletionStage
 
-import scala.annotation.varargs
+import scala.annotation.nowarn
 import scala.annotation.unchecked.uncheckedVariance
+import scala.annotation.varargs
 import scala.collection.immutable
+import scala.concurrent.ExecutionContext
+import scala.jdk.DurationConverters._
+import scala.jdk.FutureConverters._
+import scala.jdk.OptionConverters._
 import scala.reflect.ClassTag
 
 import org.apache.pekko
@@ -27,7 +32,6 @@ import pekko.Done
 import pekko.NotUsed
 import pekko.actor.ActorRef
 import pekko.actor.ClassicActorSystemProvider
-import scala.concurrent.ExecutionContext
 import pekko.event.{ LogMarker, LoggingAdapter, MarkerLoggingAdapter }
 import pekko.japi.Pair
 import pekko.japi.function
@@ -35,11 +39,8 @@ import pekko.japi.function.Creator
 import pekko.stream.{ javadsl, _ }
 import pekko.stream.impl.fusing.{ StatefulMapConcat, ZipWithIndexJava }
 import pekko.util.ConstantFun
-import scala.jdk.FutureConverters._
-import scala.jdk.DurationConverters._
-import scala.jdk.OptionConverters._
 import pekko.util.Timeout
-import pekko.util.unused
+
 import org.reactivestreams.Processor
 
 object Flow {
@@ -92,7 +93,7 @@ object Flow {
       _.toJava).asJava
 
   /** Create a `Flow` which can process elements of type `T`. */
-  def of[T](@unused clazz: Class[T]): javadsl.Flow[T, T, NotUsed] = create[T]()
+  def of[T](@nowarn("msg=never used") clazz: Class[T]): javadsl.Flow[T, T, NotUsed] = create[T]()
 
   /**
    * A graph with the shape of a flow logically is a flow, this method makes it so also in type.

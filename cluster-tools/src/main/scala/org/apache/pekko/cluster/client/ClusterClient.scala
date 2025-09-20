@@ -18,8 +18,7 @@ import java.net.URLEncoder
 import scala.collection.immutable
 import scala.collection.immutable.{ HashMap, HashSet }
 import scala.concurrent.duration._
-
-import com.typesafe.config.Config
+import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
 import pekko.actor.Actor
@@ -51,7 +50,8 @@ import pekko.remote.DeadlineFailureDetector
 import pekko.routing.ConsistentHash
 import pekko.routing.MurmurHash
 import pekko.util.MessageBuffer
-import scala.jdk.CollectionConverters._
+
+import com.typesafe.config.Config
 
 @deprecated(
   "Use Pekko gRPC instead, see https://pekko.apache.org/docs/pekko/current/cluster-client.html#migration-to-pekko-grpc",

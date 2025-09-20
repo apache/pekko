@@ -14,16 +14,18 @@
 package org.apache.pekko.remote.artery
 
 import java.nio.{ ByteBuffer, CharBuffer }
+import java.nio.ByteOrder
 import java.nio.charset.StandardCharsets
+
+import scala.annotation.nowarn
 import scala.concurrent.duration._
+
 import org.apache.pekko
 import pekko.actor.{ ActorRef, ActorSystem, ExtendedActorSystem, InternalActorRef }
 import pekko.event._
 import pekko.testkit.{ EventFilter, PekkoSpec, TestProbe }
 import pekko.testkit.TestEvent.Mute
-import pekko.util.{ unused, OptionVal }
-
-import java.nio.ByteOrder
+import pekko.util.OptionVal
 
 class RemoteInstrumentsSerializationSpec extends PekkoSpec("pekko.loglevel = DEBUG") {
   import RemoteInstrumentsSerializationSpec._
@@ -135,7 +137,7 @@ class RemoteInstrumentsSerializationSpec extends PekkoSpec("pekko.loglevel = DEB
 
 object RemoteInstrumentsSerializationSpec {
 
-  class Filter(@unused settings: ActorSystem.Settings, stream: EventStream) extends LoggingFilter {
+  class Filter(@nowarn("msg=never used") settings: ActorSystem.Settings, stream: EventStream) extends LoggingFilter {
     stream.publish(Mute(EventFilter.debug()))
 
     override def isErrorEnabled(logClass: Class[_], logSource: String): Boolean = true

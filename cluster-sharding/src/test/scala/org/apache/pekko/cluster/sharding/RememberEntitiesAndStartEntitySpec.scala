@@ -13,9 +13,6 @@
 
 package org.apache.pekko.cluster.sharding
 
-import com.typesafe.config.ConfigFactory
-import org.scalatest.wordspec.AnyWordSpecLike
-
 import org.apache.pekko
 import pekko.actor.Actor
 import pekko.actor.ActorRef
@@ -27,9 +24,13 @@ import pekko.cluster.sharding.Shard.GetShardStats
 import pekko.cluster.sharding.Shard.ShardStats
 import pekko.cluster.sharding.ShardRegion.StartEntity
 import pekko.cluster.sharding.ShardRegion.StartEntityAck
-import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
+import pekko.testkit.PekkoSpec
 import pekko.testkit.WithLogCapturing
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.ConfigFactory
 
 object RememberEntitiesAndStartEntitySpec {
   class EntityActor extends Actor {

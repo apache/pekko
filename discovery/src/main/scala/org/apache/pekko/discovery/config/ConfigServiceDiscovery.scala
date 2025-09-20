@@ -15,8 +15,7 @@ package org.apache.pekko.discovery.config
 
 import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
-
-import com.typesafe.config.{ Config, ConfigUtil }
+import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
@@ -24,7 +23,8 @@ import pekko.annotation.InternalApi
 import pekko.discovery.{ Lookup, ServiceDiscovery }
 import pekko.discovery.ServiceDiscovery.{ Resolved, ResolvedTarget }
 import pekko.event.Logging
-import scala.jdk.CollectionConverters._
+
+import com.typesafe.config.{ Config, ConfigUtil }
 
 /**
  * INTERNAL API

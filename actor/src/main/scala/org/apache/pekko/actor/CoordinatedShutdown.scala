@@ -23,20 +23,20 @@ import scala.annotation.tailrec
 import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
 import scala.concurrent.duration._
 import scala.concurrent.duration.FiniteDuration
+import scala.jdk.FutureConverters._
+import scala.jdk.OptionConverters._
 import scala.util.Try
 import scala.util.control.NonFatal
-
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.Done
 import pekko.annotation.InternalApi
 import pekko.event.Logging
 import pekko.pattern.after
-import scala.jdk.OptionConverters._
 import pekko.util.OptionVal
-import scala.jdk.FutureConverters._
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 object CoordinatedShutdown extends ExtensionId[CoordinatedShutdown] with ExtensionIdProvider {
 

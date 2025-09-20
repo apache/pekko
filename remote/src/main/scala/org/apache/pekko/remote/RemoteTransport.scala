@@ -13,17 +13,18 @@
 
 package org.apache.pekko.remote
 
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent.Future
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
-import pekko.PekkoException
 import pekko.Done
+import pekko.PekkoException
 import pekko.actor._
 import pekko.annotation.InternalStableApi
 import pekko.event.LoggingAdapter
-import pekko.util.{ unused, OptionVal }
+import pekko.util.OptionVal
 
 /**
  * RemoteTransportException represents a general failure within a RemoteTransport,
@@ -93,7 +94,7 @@ private[pekko] abstract class RemoteTransport(val system: ExtendedActorSystem, v
    * @param cmd Command message to send to the transports.
    * @return A Future that indicates when the message was successfully handled or dropped.
    */
-  def managementCommand(@unused cmd: Any): Future[Boolean] = { Future.successful(false) }
+  def managementCommand(@nowarn("msg=never used") cmd: Any): Future[Boolean] = { Future.successful(false) }
 
   /**
    * A Logger that can be used to log issues that may occur

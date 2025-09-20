@@ -21,6 +21,7 @@ import pekko.persistence.typed.crdt.ORSet
 import pekko.persistence.typed.internal.ReplicatedEventMetadata
 import pekko.persistence.typed.internal.ReplicatedSnapshotMetadata
 import pekko.persistence.typed.internal.VersionVector
+
 import org.scalatest.wordspec.AnyWordSpecLike
 
 class ReplicatedEventSourcingSerializationSpec

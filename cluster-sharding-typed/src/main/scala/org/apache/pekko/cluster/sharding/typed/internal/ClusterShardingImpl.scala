@@ -19,7 +19,10 @@ import java.time.Duration
 import java.util.concurrent.CompletionStage
 import java.util.concurrent.ConcurrentHashMap
 
+import scala.annotation.nowarn
 import scala.concurrent.Future
+import scala.jdk.DurationConverters._
+import scala.jdk.FutureConverters._
 
 import org.apache.pekko
 import pekko.actor.ActorRefProvider
@@ -49,9 +52,7 @@ import pekko.japi.function.{ Function => JFunction }
 import pekko.pattern.AskTimeoutException
 import pekko.pattern.PromiseActorRef
 import pekko.pattern.StatusReply
-import pekko.util.{ unused, ByteString, Timeout }
-import scala.jdk.FutureConverters._
-import scala.jdk.DurationConverters._
+import pekko.util.{ ByteString, Timeout }
 
 /**
  * INTERNAL API
@@ -396,7 +397,7 @@ import scala.jdk.DurationConverters._
         shardRegion: pekko.actor.ActorRef,
         entityId: String,
         message: T,
-        @unused timeout: Timeout): Future[U] = {
+        @nowarn("msg=never used") timeout: Timeout): Future[U] = {
       shardRegion ! ShardingEnvelope(entityId, message)
       future
     }

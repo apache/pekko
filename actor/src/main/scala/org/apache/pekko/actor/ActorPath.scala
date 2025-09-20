@@ -15,13 +15,12 @@ package org.apache.pekko.actor
 import java.lang.{ StringBuilder => JStringBuilder }
 import java.net.MalformedURLException
 
+import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.collection.immutable
-
-import scala.annotation.nowarn
+import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
-import scala.jdk.CollectionConverters._
 
 /**
  * Java API

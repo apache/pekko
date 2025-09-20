@@ -15,13 +15,13 @@ package org.apache.pekko.io
 
 import scala.annotation.tailrec
 import scala.collection.immutable
+import scala.concurrent.ExecutionContext
 
 import Tcp._
 
 import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.actor.ActorSystem
-import scala.concurrent.ExecutionContext
 import pekko.io.Inet.SocketOption
 import pekko.testkit.{ PekkoSpec, TestProbe }
 import pekko.testkit.SocketUtil.temporaryServerAddress

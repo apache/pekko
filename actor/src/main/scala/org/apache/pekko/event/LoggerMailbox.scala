@@ -13,7 +13,7 @@
 
 package org.apache.pekko.event
 
-import com.typesafe.config.Config
+import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.actor.ActorRef
@@ -23,14 +23,16 @@ import pekko.dispatch.MessageQueue
 import pekko.dispatch.ProducesMessageQueue
 import pekko.dispatch.UnboundedMailbox
 import pekko.event.Logging.LogEvent
-import pekko.util.unused
+
+import com.typesafe.config.Config
 
 trait LoggerMessageQueueSemantics
 
 /**
  * INTERNAL API
  */
-private[pekko] class LoggerMailboxType(@unused settings: ActorSystem.Settings, @unused config: Config)
+private[pekko] class LoggerMailboxType(@nowarn("msg=never used") settings: ActorSystem.Settings,
+    @nowarn("msg=never used") config: Config)
     extends MailboxType
     with ProducesMessageQueue[LoggerMailbox] {
 
@@ -43,7 +45,7 @@ private[pekko] class LoggerMailboxType(@unused settings: ActorSystem.Settings, @
 /**
  * INTERNAL API
  */
-private[pekko] class LoggerMailbox(@unused owner: ActorRef, system: ActorSystem)
+private[pekko] class LoggerMailbox(@nowarn("msg=never used") owner: ActorRef, system: ActorSystem)
     extends UnboundedMailbox.MessageQueue
     with LoggerMessageQueueSemantics {
 

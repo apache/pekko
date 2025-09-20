@@ -15,11 +15,11 @@ package org.apache.pekko.stream.tck
 
 import scala.collection.immutable
 
-import org.reactivestreams.Publisher
-
 import org.apache.pekko
 import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.Source
+
+import org.reactivestreams.Publisher
 
 class FanoutPublisherTest extends PekkoPublisherVerification[Int] {
 

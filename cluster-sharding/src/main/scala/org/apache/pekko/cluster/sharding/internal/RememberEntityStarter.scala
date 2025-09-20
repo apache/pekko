@@ -13,6 +13,9 @@
 
 package org.apache.pekko.cluster.sharding.internal
 
+import scala.collection.immutable.Set
+import scala.concurrent.ExecutionContext
+
 import org.apache.pekko
 import pekko.actor.Actor
 import pekko.actor.ActorLogging
@@ -26,9 +29,6 @@ import pekko.cluster.sharding.Shard
 import pekko.cluster.sharding.ShardRegion
 import pekko.cluster.sharding.ShardRegion.EntityId
 import pekko.cluster.sharding.ShardRegion.ShardId
-
-import scala.collection.immutable.Set
-import scala.concurrent.ExecutionContext
 
 /**
  * INTERNAL API

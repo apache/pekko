@@ -13,9 +13,9 @@
 
 package org.apache.pekko.remote.serialization
 
+import java.io.NotSerializableException
 import java.nio.charset.StandardCharsets
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
+
 import org.apache.pekko
 import pekko.actor.ActorIdentity
 import pekko.actor.ActorRef
@@ -26,12 +26,13 @@ import pekko.actor.RootActorPath
 import pekko.remote.RARP
 import pekko.serialization.Serialization
 import pekko.serialization.SerializerWithStringManifest
-import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
 import pekko.testkit.JavaSerializable
+import pekko.testkit.PekkoSpec
 import pekko.testkit.TestActors
 
-import java.io.NotSerializableException
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 object SerializationTransportInformationSpec {
 

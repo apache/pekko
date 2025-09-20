@@ -13,7 +13,6 @@
 
 package org.apache.pekko.remote
 
-import com.typesafe.config.ConfigFactory
 import testkit.MultiNodeConfig
 
 import org.apache.pekko
@@ -24,6 +23,8 @@ import pekko.actor.Identify
 import pekko.actor.Props
 import pekko.pattern.ask
 import pekko.testkit._
+
+import com.typesafe.config.ConfigFactory
 
 class LookupRemoteActorMultiJvmSpec(artery: Boolean) extends MultiNodeConfig {
 

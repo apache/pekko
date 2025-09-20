@@ -14,9 +14,9 @@
 package org.apache.pekko.coordination.lease
 
 import scala.concurrent.duration.FiniteDuration
+import scala.jdk.DurationConverters._
 
 import org.apache.pekko
-import scala.jdk.DurationConverters._
 import pekko.util.PrettyDuration._
 
 final class LeaseUsageSettings private[pekko] (val leaseImplementation: String,

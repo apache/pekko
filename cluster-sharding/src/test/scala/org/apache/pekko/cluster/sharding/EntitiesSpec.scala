@@ -23,6 +23,7 @@ import pekko.cluster.sharding.Shard.RememberingStart
 import pekko.cluster.sharding.Shard.RememberingStop
 import pekko.event.NoLogging
 import pekko.util.OptionVal
+
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 

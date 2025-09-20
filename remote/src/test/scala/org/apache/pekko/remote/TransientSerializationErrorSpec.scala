@@ -15,13 +15,14 @@ package org.apache.pekko.remote
 
 import java.io.NotSerializableException
 
-import com.typesafe.config.{ Config, ConfigFactory }
+import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.actor.{ ActorSystem, ExtendedActorSystem, RootActorPath }
 import pekko.serialization.SerializerWithStringManifest
 import pekko.testkit.{ PekkoSpec, TestActors, TestKit }
-import pekko.util.unused
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 object TransientSerializationErrorSpec {
   object ManifestNotSerializable
@@ -31,7 +32,7 @@ object TransientSerializationErrorSpec {
   object NotDeserializable
   object IllegalOnDeserialize
 
-  class TestSerializer(@unused system: ExtendedActorSystem) extends SerializerWithStringManifest {
+  class TestSerializer(@nowarn("msg=never used") system: ExtendedActorSystem) extends SerializerWithStringManifest {
     def identifier: Int = 666
     def manifest(o: AnyRef): String = o match {
       case ManifestNotSerializable => throw new NotSerializableException()

@@ -20,12 +20,12 @@ import java.net.UnknownHostException
 import java.util
 
 import scala.collection.{ immutable => im }
+import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
 import pekko.actor.NoSerializationVerificationNeeded
 import pekko.io.IpVersionSelector
 import pekko.routing.ConsistentHashingRouter.ConsistentHashable
-import scala.jdk.CollectionConverters._
 
 /**
  * Supersedes [[pekko.io.Dns]] protocol.

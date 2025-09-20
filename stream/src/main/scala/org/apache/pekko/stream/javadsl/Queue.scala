@@ -16,14 +16,14 @@ package org.apache.pekko.stream.javadsl
 import java.util.Optional
 import java.util.concurrent.CompletionStage
 
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
+import scala.jdk.FutureConverters._
+import scala.jdk.OptionConverters._
 
 import org.apache.pekko
 import pekko.Done
-import scala.concurrent.ExecutionContext
 import pekko.stream.QueueOfferResult
-import scala.jdk.FutureConverters._
-import scala.jdk.OptionConverters._
 
 /**
  * This trait allows to have a queue as a data source for some stream.

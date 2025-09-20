@@ -15,8 +15,10 @@ package org.apache.pekko.serialization.jackson
 
 import java.util.Optional
 import java.util.concurrent.ConcurrentHashMap
+
 import scala.annotation.nowarn
 import scala.collection.immutable
+import scala.jdk.OptionConverters._
 import scala.util.{ Failure, Success }
 
 import com.fasterxml.jackson.annotation.{ JsonAutoDetect, JsonCreator, PropertyAccessor }
@@ -42,7 +44,7 @@ import com.fasterxml.jackson.databind.{
 import com.fasterxml.jackson.databind.cfg.EnumFeature
 import com.fasterxml.jackson.databind.json.JsonMapper
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule
-import com.typesafe.config.Config
+
 import org.apache.pekko
 import pekko.actor.{
   ActorSystem,
@@ -56,8 +58,8 @@ import pekko.actor.{
 import pekko.actor.setup.Setup
 import pekko.annotation.InternalStableApi
 import pekko.event.{ Logging, LoggingAdapter }
-import pekko.util.unused
-import scala.jdk.OptionConverters._
+
+import com.typesafe.config.Config
 
 object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvider] with ExtensionIdProvider {
   override def get(system: ActorSystem): JacksonObjectMapperProvider = super.get(system)
@@ -466,7 +468,7 @@ class JacksonObjectMapperFactory {
    * @param jsonFactory optional `JsonFactory` such as `CBORFactory`, for plain JSON `None` (defaults)
    *                    can be used
    */
-  def newObjectMapper(@unused bindingName: String, jsonFactory: JsonFactory): ObjectMapper =
+  def newObjectMapper(@nowarn("msg=never used") bindingName: String, jsonFactory: JsonFactory): ObjectMapper =
     JsonMapper.builder(jsonFactory).build()
 
   /**
@@ -482,7 +484,7 @@ class JacksonObjectMapperFactory {
    *                           `pekko.serialization.jackson.deserialization-features`
    */
   def overrideConfiguredModules(
-      @unused bindingName: String,
+      @nowarn("msg=never used") bindingName: String,
       configuredModules: immutable.Seq[Module]): immutable.Seq[Module] =
     configuredModules
 
@@ -499,7 +501,7 @@ class JacksonObjectMapperFactory {
    *                           `pekko.serialization.jackson.serialization-features`
    */
   def overrideConfiguredSerializationFeatures(
-      @unused bindingName: String,
+      @nowarn("msg=never used") bindingName: String,
       configuredFeatures: immutable.Seq[(SerializationFeature, Boolean)])
       : immutable.Seq[(SerializationFeature, Boolean)] =
     configuredFeatures
@@ -517,7 +519,7 @@ class JacksonObjectMapperFactory {
    *                           `pekko.serialization.jackson.deserialization-features`
    */
   def overrideConfiguredDeserializationFeatures(
-      @unused bindingName: String,
+      @nowarn("msg=never used") bindingName: String,
       configuredFeatures: immutable.Seq[(DeserializationFeature, Boolean)])
       : immutable.Seq[(DeserializationFeature, Boolean)] =
     configuredFeatures
@@ -535,7 +537,7 @@ class JacksonObjectMapperFactory {
    *                           `pekko.serialization.jackson3.enum-features`
    */
   def overrideConfiguredEnumFeatures(
-      @unused bindingName: String,
+      @nowarn("msg=never used") bindingName: String,
       configuredFeatures: immutable.Seq[(EnumFeature, Boolean)])
       : immutable.Seq[(EnumFeature, Boolean)] =
     configuredFeatures
@@ -549,7 +551,7 @@ class JacksonObjectMapperFactory {
    * @param configuredFeatures the list of `MapperFeatures` that were configured in `pekko.serialization.jackson.mapper-features`
    */
   def overrideConfiguredMapperFeatures(
-      @unused bindingName: String,
+      @nowarn("msg=never used") bindingName: String,
       configuredFeatures: immutable.Seq[(MapperFeature, Boolean)]): immutable.Seq[(MapperFeature, Boolean)] =
     configuredFeatures
 
@@ -562,7 +564,7 @@ class JacksonObjectMapperFactory {
    * @param configuredFeatures the list of `JsonParser.Feature` that were configured in `pekko.serialization.jackson.json-parser-features`
    */
   def overrideConfiguredJsonParserFeatures(
-      @unused bindingName: String,
+      @nowarn("msg=never used") bindingName: String,
       configuredFeatures: immutable.Seq[(JsonParser.Feature, Boolean)]): immutable.Seq[(JsonParser.Feature, Boolean)] =
     configuredFeatures
 
@@ -575,7 +577,7 @@ class JacksonObjectMapperFactory {
    * @param configuredFeatures the list of `JsonGenerator.Feature` that were configured in `pekko.serialization.jackson.json-generator-features`
    */
   def overrideConfiguredJsonGeneratorFeatures(
-      @unused bindingName: String,
+      @nowarn("msg=never used") bindingName: String,
       configuredFeatures: immutable.Seq[(JsonGenerator.Feature, Boolean)])
       : immutable.Seq[(JsonGenerator.Feature, Boolean)] =
     configuredFeatures
@@ -589,7 +591,7 @@ class JacksonObjectMapperFactory {
    * @param configuredFeatures the list of `StreamReadFeature` that were configured in `pekko.serialization.jackson.stream-read-features`
    */
   def overrideConfiguredStreamReadFeatures(
-      @unused bindingName: String,
+      @nowarn("msg=never used") bindingName: String,
       configuredFeatures: immutable.Seq[(StreamReadFeature, Boolean)]): immutable.Seq[(StreamReadFeature, Boolean)] =
     configuredFeatures
 
@@ -602,7 +604,7 @@ class JacksonObjectMapperFactory {
    * @param configuredFeatures the list of `StreamWriterFeature` that were configured in `pekko.serialization.jackson.stream-write-features`
    */
   def overrideConfiguredStreamWriteFeatures(
-      @unused bindingName: String,
+      @nowarn("msg=never used") bindingName: String,
       configuredFeatures: immutable.Seq[(StreamWriteFeature, Boolean)]): immutable.Seq[(StreamWriteFeature, Boolean)] =
     configuredFeatures
 
@@ -615,7 +617,7 @@ class JacksonObjectMapperFactory {
    * @param configuredFeatures the list of `JsonReadFeature` that were configured in `pekko.serialization.jackson.json-read-features`
    */
   def overrideConfiguredJsonReadFeatures(
-      @unused bindingName: String,
+      @nowarn("msg=never used") bindingName: String,
       configuredFeatures: immutable.Seq[(JsonReadFeature, Boolean)]): immutable.Seq[(JsonReadFeature, Boolean)] =
     configuredFeatures
 
@@ -628,7 +630,7 @@ class JacksonObjectMapperFactory {
    * @param configuredFeatures the list of `JsonWriteFeature` that were configured in `pekko.serialization.jackson.json-write-features`
    */
   def overrideConfiguredJsonWriteFeatures(
-      @unused bindingName: String,
+      @nowarn("msg=never used") bindingName: String,
       configuredFeatures: immutable.Seq[(JsonWriteFeature, Boolean)]): immutable.Seq[(JsonWriteFeature, Boolean)] =
     configuredFeatures
 
@@ -642,7 +644,7 @@ class JacksonObjectMapperFactory {
    *                           `pekko.serialization.jackson.visibility`
    */
   def overrideConfiguredVisibility(
-      @unused bindingName: String,
+      @nowarn("msg=never used") bindingName: String,
       configuredFeatures: immutable.Seq[(PropertyAccessor, JsonAutoDetect.Visibility)])
       : immutable.Seq[(PropertyAccessor, JsonAutoDetect.Visibility)] =
     configuredFeatures

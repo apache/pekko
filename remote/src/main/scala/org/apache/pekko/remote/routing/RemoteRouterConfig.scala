@@ -16,7 +16,7 @@ package org.apache.pekko.remote.routing
 import java.util.concurrent.atomic.AtomicInteger
 
 import scala.annotation.nowarn
-import com.typesafe.config.ConfigFactory
+import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
 import pekko.actor.ActorCell
@@ -34,7 +34,8 @@ import pekko.routing.Routee
 import pekko.routing.Router
 import pekko.routing.RouterActor
 import pekko.routing.RouterConfig
-import scala.jdk.CollectionConverters._
+
+import com.typesafe.config.ConfigFactory
 
 /**
  * [[pekko.routing.RouterConfig]] implementation for remote deployment on defined

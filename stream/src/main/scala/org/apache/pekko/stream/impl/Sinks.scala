@@ -17,6 +17,7 @@ import java.util.function.BinaryOperator
 
 import scala.collection.immutable
 import scala.collection.mutable
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.util.Failure
@@ -28,7 +29,6 @@ import org.apache.pekko
 import pekko.NotUsed
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
-import scala.concurrent.ExecutionContext
 import pekko.event.Logging
 import pekko.stream._
 import pekko.stream.ActorAttributes.StreamSubscriptionTimeout

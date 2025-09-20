@@ -13,13 +13,15 @@
 
 package org.apache.pekko.persistence.japi.journal
 
-import com.typesafe.config.Config
 import org.scalactic.source.Position
-import org.scalatest.Informer
 
 import org.apache.pekko
 import pekko.persistence.CapabilityFlag
 import pekko.persistence.journal.JournalPerfSpec
+
+import org.scalatest.Informer
+
+import com.typesafe.config.Config
 
 /**
  * JAVA API

@@ -19,6 +19,7 @@ import java.util.concurrent.TimeoutException
 import scala.annotation.{ nowarn, tailrec }
 import scala.collection.immutable
 import scala.concurrent.{ Future, Promise }
+import scala.concurrent.ExecutionContext
 import scala.language.implicitConversions
 import scala.util.{ Failure, Success }
 import scala.util.control.NoStackTrace
@@ -26,9 +27,8 @@ import scala.util.control.NoStackTrace
 import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.{ InternalApi, InternalStableApi }
-import scala.concurrent.ExecutionContext
 import pekko.dispatch.sysmsg._
-import pekko.util.{ unused, ByteString, Timeout }
+import pekko.util.{ ByteString, Timeout }
 
 /**
  * This is what is used to complete a Future that is returned from an ask/? call,
@@ -674,22 +674,24 @@ private[pekko] final class PromiseActorRef(
   }
 
   @InternalStableApi
-  private[pekko] def ask(actorSel: ActorSelection, message: Any, @unused timeout: Timeout): Future[Any] = {
+  private[pekko] def ask(actorSel: ActorSelection, message: Any, @nowarn("msg=never used") timeout: Timeout)
+      : Future[Any] = {
     actorSel.tell(message, this)
     result.future
   }
 
   @InternalStableApi
-  private[pekko] def ask(actorRef: ActorRef, message: Any, @unused timeout: Timeout): Future[Any] = {
+  private[pekko] def ask(actorRef: ActorRef, message: Any, @nowarn("msg=never used") timeout: Timeout): Future[Any] = {
     actorRef.tell(message, this)
     result.future
   }
 
   @InternalStableApi
-  private[pekko] def onComplete(@unused message: Any, @unused alreadyCompleted: Boolean): Unit = {}
+  private[pekko] def onComplete(@nowarn("msg=never used") message: Any,
+      @nowarn("msg=never used") alreadyCompleted: Boolean): Unit = {}
 
   @InternalStableApi
-  private[pekko] def onTimeout(@unused timeout: Timeout): Unit = {}
+  private[pekko] def onTimeout(@nowarn("msg=never used") timeout: Timeout): Unit = {}
 }
 
 /**

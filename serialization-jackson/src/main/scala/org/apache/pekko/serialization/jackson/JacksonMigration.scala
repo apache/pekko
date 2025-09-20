@@ -13,9 +13,9 @@
 
 package org.apache.pekko.serialization.jackson
 
-import com.fasterxml.jackson.databind.JsonNode
+import scala.annotation.nowarn
 
-import org.apache.pekko.util.unused
+import com.fasterxml.jackson.databind.JsonNode
 
 /**
  * Data migration of old formats to current format can
@@ -51,7 +51,7 @@ abstract class JacksonMigration {
    * Override this method if you have changed the class name. Return
    * current class name.
    */
-  def transformClassName(@unused fromVersion: Int, className: String): String =
+  def transformClassName(@nowarn("msg=never used") fromVersion: Int, className: String): String =
     className
 
   /**

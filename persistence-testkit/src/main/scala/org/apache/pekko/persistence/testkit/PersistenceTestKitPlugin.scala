@@ -13,22 +13,22 @@
 
 package org.apache.pekko.persistence.testkit
 
-import org.apache.pekko
-import pekko.actor.ActorLogging
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent.Future
 import scala.util.Try
 
-import com.typesafe.config.{ Config, ConfigFactory }
-
+import org.apache.pekko
+import pekko.actor.ActorLogging
 import pekko.annotation.InternalApi
 import pekko.persistence._
 import pekko.persistence.journal.AsyncWriteJournal
 import pekko.persistence.journal.Tagged
 import pekko.persistence.snapshot.SnapshotStore
-import pekko.persistence.testkit.internal.CurrentTime
 import pekko.persistence.testkit.internal.{ InMemStorageExtension, SnapshotStorageEmulatorExtension }
-import pekko.util.unused
+import pekko.persistence.testkit.internal.CurrentTime
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 /**
  * INTERNAL API
@@ -36,7 +36,8 @@ import pekko.util.unused
  * Persistence testkit plugin for events.
  */
 @InternalApi
-class PersistenceTestKitPlugin(@unused cfg: Config, cfgPath: String) extends AsyncWriteJournal with ActorLogging {
+class PersistenceTestKitPlugin(@nowarn("msg=never used") cfg: Config, cfgPath: String) extends AsyncWriteJournal
+    with ActorLogging {
 
   private final val storage = {
     log.debug("Using in memory storage [{}] for test kit journal", cfgPath)
@@ -145,7 +146,7 @@ class PersistenceTestKitSnapshotPlugin(
     // providing this parameter in first position as unused
     // because Persistence extension that instantiates the plugins
     // does not support constructors without it
-    @unused cfg: Config,
+    @nowarn("msg=never used") cfg: Config,
     cfgPath: String
 ) extends SnapshotStore {
 

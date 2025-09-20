@@ -14,10 +14,10 @@
 package org.apache.pekko.actor
 
 import scala.concurrent.duration.FiniteDuration
+import scala.jdk.DurationConverters._
 
 import org.apache.pekko
-import org.apache.pekko.japi.function.{ Effect, Function2, Predicate, Predicate2, Procedure, Procedure2, Procedure3 }
-import scala.jdk.DurationConverters._
+import pekko.japi.function.{ Effect, Function2, Predicate, Predicate2, Procedure, Procedure2, Procedure3 }
 
 /**
  * Java API: compatible with lambda expressions

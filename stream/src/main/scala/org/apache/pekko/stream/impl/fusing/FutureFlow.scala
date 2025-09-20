@@ -14,12 +14,12 @@
 package org.apache.pekko.stream.impl.fusing
 
 import scala.concurrent.{ Future, Promise }
+import scala.concurrent.ExecutionContext
 import scala.util.{ Failure, Success, Try }
 import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import scala.concurrent.ExecutionContext
 import pekko.stream.{
   AbruptStageTerminationException,
   Attributes,

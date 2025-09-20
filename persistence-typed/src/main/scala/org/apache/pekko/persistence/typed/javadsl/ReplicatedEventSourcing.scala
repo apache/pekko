@@ -13,9 +13,11 @@
 
 package org.apache.pekko.persistence.typed.javadsl
 
-import java.util.function.{ Function => JFunction }
-import java.util.{ Set => JSet }
 import java.util.{ Map => JMap }
+import java.util.{ Set => JSet }
+import java.util.function.{ Function => JFunction }
+
+import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
 import pekko.annotation.DoNotInherit
@@ -23,7 +25,6 @@ import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.ReplicaId
 import pekko.persistence.typed.ReplicationId
 import pekko.persistence.typed.internal.ReplicationContextImpl
-import scala.jdk.CollectionConverters._
 
 /**
  * Provides access to replication specific state

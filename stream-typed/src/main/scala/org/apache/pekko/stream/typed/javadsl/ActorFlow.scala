@@ -14,6 +14,8 @@
 package org.apache.pekko.stream.typed.javadsl
 
 import scala.concurrent.duration._
+import scala.jdk.DurationConverters.JavaDurationOps
+
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.actor.typed.ActorRef
@@ -21,8 +23,6 @@ import pekko.japi.Pair
 import pekko.japi.function
 import pekko.pattern.StatusReply
 import pekko.stream.javadsl.Flow
-
-import scala.jdk.DurationConverters.JavaDurationOps
 
 /**
  * Collection of Flows aimed at integrating with typed Actors.

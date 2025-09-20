@@ -15,13 +15,13 @@ package org.apache.pekko.cluster
 
 import java.util.concurrent.ThreadLocalRandom
 
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-
 import org.apache.pekko
 import pekko.actor.Address
 import pekko.remote.DefaultFailureDetectorRegistry
 import pekko.remote.FailureDetector
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 object ClusterHeartbeatSenderStateSpec {
   class FailureDetectorStub extends FailureDetector {

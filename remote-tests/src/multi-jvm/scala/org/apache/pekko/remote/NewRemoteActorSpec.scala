@@ -13,9 +13,9 @@
 
 package org.apache.pekko.remote
 
+import scala.annotation.nowarn
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
 import testkit.MultiNodeConfig
 
 import org.apache.pekko
@@ -23,7 +23,8 @@ import pekko.actor.Actor
 import pekko.actor.ActorRef
 import pekko.actor.Props
 import pekko.actor.Terminated
-import pekko.util.unused
+
+import com.typesafe.config.ConfigFactory
 
 class NewRemoteActorMultiJvmSpec(artery: Boolean) extends MultiNodeConfig {
 
@@ -58,7 +59,7 @@ object NewRemoteActorSpec {
     }
   }
 
-  class SomeActorWithParam(@unused ignored: String) extends Actor {
+  class SomeActorWithParam(@nowarn("msg=never used") ignored: String) extends Actor {
     def receive = {
       case "identify" => sender() ! self
     }

@@ -13,12 +13,12 @@
 
 package org.apache.pekko.pattern
 
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
 import pekko.actor._
-import scala.concurrent.ExecutionContext
 import pekko.dispatch.sysmsg.{ Unwatch, Watch }
 import pekko.util.Timeout
 

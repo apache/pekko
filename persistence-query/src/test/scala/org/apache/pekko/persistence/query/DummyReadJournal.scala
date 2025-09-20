@@ -13,13 +13,14 @@
 
 package org.apache.pekko.persistence.query
 
-import com.typesafe.config.{ Config, ConfigFactory }
+import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.actor.ExtendedActorSystem
 import pekko.stream.scaladsl.Source
-import pekko.util.unused
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 /**
  * Use for tests only!
@@ -77,13 +78,16 @@ class DummyReadJournalProvider(dummyValue: String) extends ReadJournalProvider {
     javaReadJournal
 }
 
-class DummyReadJournalProvider2(@unused sys: ExtendedActorSystem) extends DummyReadJournalProvider
+class DummyReadJournalProvider2(@nowarn("msg=never used") sys: ExtendedActorSystem) extends DummyReadJournalProvider
 
-class DummyReadJournalProvider3(@unused sys: ExtendedActorSystem, @unused conf: Config) extends DummyReadJournalProvider
+class DummyReadJournalProvider3(@nowarn("msg=never used") sys: ExtendedActorSystem,
+    @nowarn("msg=never used") conf: Config) extends DummyReadJournalProvider
 
-class DummyReadJournalProvider4(@unused sys: ExtendedActorSystem, @unused conf: Config, @unused confPath: String)
+class DummyReadJournalProvider4(@nowarn("msg=never used") sys: ExtendedActorSystem,
+    @nowarn("msg=never used") conf: Config, @nowarn("msg=never used") confPath: String)
     extends DummyReadJournalProvider
 
-class DummyReadJournalProvider5(@unused sys: ExtendedActorSystem) extends DummyReadJournalProvider
+class DummyReadJournalProvider5(@nowarn("msg=never used") sys: ExtendedActorSystem) extends DummyReadJournalProvider
 
-class CustomDummyReadJournalProvider5(@unused sys: ExtendedActorSystem) extends DummyReadJournalProvider("custom")
+class CustomDummyReadJournalProvider5(@nowarn("msg=never used") sys: ExtendedActorSystem)
+    extends DummyReadJournalProvider("custom")

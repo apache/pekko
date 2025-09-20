@@ -13,10 +13,8 @@
 
 package org.apache.pekko.cluster.client
 
-import scala.concurrent.duration._
-
 import scala.annotation.nowarn
-import com.typesafe.config.ConfigFactory
+import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor.{ ActorPath, ActorRef }
@@ -24,6 +22,8 @@ import pekko.cluster.{ Cluster, MultiNodeClusterSpec }
 import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.{ MultiNodeConfig, STMultiNodeSpec }
 import pekko.testkit.{ ImplicitSender, TestActors }
+
+import com.typesafe.config.ConfigFactory
 
 object ClusterClientHandoverSpec extends MultiNodeConfig {
   val client = role("client")

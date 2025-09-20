@@ -19,6 +19,8 @@ import java.util.Optional
 import java.util.concurrent.CompletionStage
 
 import scala.annotation.nowarn
+import scala.jdk.OptionConverters._
+
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.ActorSystem
@@ -32,7 +34,6 @@ import pekko.cluster.sharding.ShardCoordinator.ShardAllocationStrategy
 import pekko.cluster.sharding.typed.internal.EntityTypeKeyImpl
 import pekko.japi.function.{ Function => JFunction }
 import pekko.pattern.StatusReply
-import scala.jdk.OptionConverters._
 
 @FunctionalInterface
 trait EntityFactory[M] {
@@ -395,7 +396,7 @@ final class EntityContext[M](
 
 }
 
-@nowarn // for unused msgClass to make class type explicit in the Java API. Not using @unused as the user is likely to see it
+@nowarn // for unused msgClass to make class type explicit in the Java API. Not using @nowarn("msg=never used") as the user is likely to see it
 /** Allows starting a specific Sharded Entity by its entity identifier */
 object StartEntity {
 

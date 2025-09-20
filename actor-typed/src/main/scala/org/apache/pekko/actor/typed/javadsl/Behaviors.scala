@@ -16,6 +16,8 @@ package org.apache.pekko.actor.typed.javadsl
 import java.util.Collections
 import java.util.function.{ Function => JFunction, Supplier }
 
+import scala.annotation.nowarn
+import scala.jdk.CollectionConverters._
 import scala.reflect.ClassTag
 
 import org.apache.pekko
@@ -23,8 +25,6 @@ import pekko.actor.typed._
 import pekko.actor.typed.internal.{ BehaviorImpl, StashBufferImpl, TimerSchedulerImpl, WithMdcBehaviorInterceptor }
 import pekko.japi.function.{ Effect, Function2 => JapiFunction2 }
 import pekko.japi.pf.PFBuilder
-import scala.jdk.CollectionConverters._
-import pekko.util.unused
 
 /**
  * Factories for [[pekko.actor.typed.Behavior]].
@@ -199,7 +199,7 @@ object Behaviors {
    * @param type the supertype of all messages accepted by this behavior
    * @return the behavior builder
    */
-  def receive[T](@unused `type`: Class[T]): BehaviorBuilder[T] = BehaviorBuilder.create[T]
+  def receive[T](@nowarn("msg=never used") `type`: Class[T]): BehaviorBuilder[T] = BehaviorBuilder.create[T]
 
   /**
    * Construct an actor behavior that can react to lifecycle signals only.

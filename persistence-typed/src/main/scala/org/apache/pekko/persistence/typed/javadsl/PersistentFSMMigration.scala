@@ -16,11 +16,12 @@ package org.apache.pekko.persistence.typed.javadsl
 import java.time.Duration
 import java.util.Optional
 
+import scala.jdk.DurationConverters._
+import scala.jdk.OptionConverters._
+
 import org.apache.pekko
 import pekko.japi.function.Function3
 import pekko.persistence.typed.SnapshotAdapter
-import scala.jdk.DurationConverters._
-import scala.jdk.OptionConverters._
 
 /**
  * Helper functions for migration from PersistentFSM to Persistence Typed

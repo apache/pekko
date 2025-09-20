@@ -13,6 +13,7 @@
 
 package org.apache.pekko.persistence.typed.state.internal
 
+import scala.annotation.nowarn
 import scala.util.Failure
 import scala.util.Success
 
@@ -28,7 +29,6 @@ import pekko.annotation.InternalApi
 import pekko.annotation.InternalStableApi
 import pekko.persistence._
 import pekko.persistence.state.scaladsl.GetObjectResult
-import pekko.util.unused
 
 /** INTERNAL API */
 @InternalApi
@@ -86,9 +86,11 @@ private[pekko] trait DurableStateStoreInteractions[C, S] {
 
   // FIXME These hook methods are for Telemetry. What more parameters are needed? persistenceId?
   @InternalStableApi
-  private[pekko] def onWriteInitiated(@unused ctx: ActorContext[_], @unused cmd: Any): Unit = ()
+  private[pekko] def onWriteInitiated(@nowarn("msg=never used") ctx: ActorContext[_],
+      @nowarn("msg=never used") cmd: Any): Unit = ()
 
-  private[pekko] def onDeleteInitiated(@unused ctx: ActorContext[_], @unused cmd: Any): Unit = ()
+  private[pekko] def onDeleteInitiated(@nowarn("msg=never used") ctx: ActorContext[_],
+      @nowarn("msg=never used") cmd: Any): Unit = ()
 
   protected def requestRecoveryPermit(): Unit = {
     setup.persistence.recoveryPermitter.tell(RecoveryPermitter.RequestRecoveryPermit, setup.selfClassic)

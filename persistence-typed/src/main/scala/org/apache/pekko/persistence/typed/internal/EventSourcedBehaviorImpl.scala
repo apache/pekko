@@ -17,7 +17,8 @@ import java.util.Optional
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicInteger
 
-import com.typesafe.config.Config
+import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.actor.typed
 import pekko.actor.typed.ActorRef
@@ -50,12 +51,14 @@ import pekko.persistence.typed.ReplicaId
 import pekko.persistence.typed.SnapshotAdapter
 import pekko.persistence.typed.SnapshotCompleted
 import pekko.persistence.typed.SnapshotFailed
-import pekko.persistence.typed.scaladsl.RetentionCriteria
 import pekko.persistence.typed.scaladsl._
 import pekko.persistence.typed.scaladsl.{ Recovery => TypedRecovery }
+import pekko.persistence.typed.scaladsl.RetentionCriteria
 import pekko.util.ConstantFun
-import pekko.util.unused
+
 import org.slf4j.LoggerFactory
+
+import com.typesafe.config.Config
 
 @InternalApi
 private[pekko] object EventSourcedBehaviorImpl {
@@ -248,7 +251,7 @@ private[pekko] final case class EventSourcedBehaviorImpl[Command, Event, State](
   }
 
   @InternalStableApi
-  private[pekko] def initialize(@unused context: ActorContext[_]): Unit = ()
+  private[pekko] def initialize(@nowarn("msg=never used") context: ActorContext[_]): Unit = ()
 
   override def receiveSignal(
       handler: PartialFunction[(State, Signal), Unit]): EventSourcedBehavior[Command, Event, State] =

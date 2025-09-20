@@ -14,9 +14,10 @@
 package org.apache.pekko.remote.serialization
 
 import scala.collection.immutable
-import com.typesafe.config.{ Config, ConfigFactory }
+import scala.jdk.CollectionConverters._
 
 import util.{ Failure, Success }
+
 import org.apache.pekko
 import pekko.actor.{ Deploy, ExtendedActorSystem, NoScopeGiven, Props, Scope }
 import pekko.protobufv3.internal.ByteString
@@ -25,7 +26,8 @@ import pekko.remote.DaemonMsgCreate
 import pekko.remote.WireFormats.{ DaemonMsgCreateData, DeployData, PropsData }
 import pekko.routing.{ NoRouter, RouterConfig }
 import pekko.serialization.{ BaseSerializer, SerializationExtension, SerializerWithStringManifest }
-import scala.jdk.CollectionConverters._
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 /**
  * Serializes Pekko's internal DaemonMsgCreate using protobuf

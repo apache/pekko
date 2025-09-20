@@ -13,18 +13,18 @@
 
 package org.apache.pekko.persistence.fsm
 
+import scala.annotation.nowarn
 import scala.collection.mutable
 import scala.concurrent.duration.FiniteDuration
+import scala.jdk.DurationConverters._
 
 import language.implicitConversions
 
 import org.apache.pekko
-import pekko.japi.function.{ Effect, Function2, Predicate, Predicate2, Procedure, Procedure2, Procedure3 }
 import pekko.actor._
+import pekko.japi.function.{ Effect, Function2, Predicate, Predicate2, Procedure, Procedure2, Procedure3 }
 import pekko.japi.pf.{ FSMTransitionHandlerBuilder, UnitMatch, UnitPFBuilder }
 import pekko.routing.{ Deafen, Listen, Listeners }
-import scala.jdk.DurationConverters._
-import pekko.util.unused
 
 /**
  * Finite State Machine actor trait. Use as follows:
@@ -537,7 +537,7 @@ trait PersistentFSMBase[S, D, E] extends Actor with Listeners with ActorLogging 
     processEvent(event, source)
   }
 
-  private[pekko] def processEvent(event: Event, @unused source: AnyRef): Unit = {
+  private[pekko] def processEvent(event: Event, @nowarn("msg=never used") source: AnyRef): Unit = {
     val stateFunc = stateFunctions(currentState.stateName)
     val nextState = if (stateFunc.isDefinedAt(event)) {
       stateFunc(event)
