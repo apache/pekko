@@ -15,7 +15,6 @@ package org.apache.pekko.remote
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
 import testkit.MultiNodeConfig
 
 import org.apache.pekko
@@ -24,6 +23,8 @@ import pekko.actor.ActorRef
 import pekko.actor.Props
 import pekko.actor.Terminated
 import pekko.util.unused
+
+import com.typesafe.config.ConfigFactory
 
 class NewRemoteActorMultiJvmSpec(artery: Boolean) extends MultiNodeConfig {
 

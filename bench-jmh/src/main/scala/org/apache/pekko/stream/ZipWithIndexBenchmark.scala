@@ -19,18 +19,18 @@ package org.apache.pekko.stream
 
 import java.util.concurrent.TimeUnit
 
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent._
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
 import org.openjdk.jmh.annotations._
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.stream.scaladsl._
 
-import scala.annotation.nowarn
+import com.typesafe.config.ConfigFactory
 
 object ZipWithIndexBenchmark {
   final val OperationsPerInvocation = 100000

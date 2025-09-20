@@ -17,6 +17,9 @@ import java.time.Duration
 import java.util.concurrent.CompletionStage
 
 import scala.concurrent.Future
+import scala.jdk.DurationConverters._
+import scala.jdk.FutureConverters._
+
 import org.apache.pekko
 import pekko.actor.ActorRefProvider
 import pekko.actor.typed.ActorRef
@@ -28,8 +31,6 @@ import pekko.cluster.sharding.typed.javadsl.EntityRef
 import pekko.cluster.sharding.typed.scaladsl
 import pekko.japi.function.{ Function => JFunction }
 import pekko.pattern.StatusReply
-import scala.jdk.FutureConverters._
-import scala.jdk.DurationConverters._
 import pekko.util.Timeout
 
 /**

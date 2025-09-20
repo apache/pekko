@@ -15,11 +15,12 @@ package org.apache.pekko.persistence.query.journal.leveldb
 
 import java.util
 
+import scala.jdk.CollectionConverters._
+
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.stream.Outlet
 import pekko.stream.stage.GraphStageLogic
-import scala.jdk.CollectionConverters._
 
 /**
  * INTERNAL API

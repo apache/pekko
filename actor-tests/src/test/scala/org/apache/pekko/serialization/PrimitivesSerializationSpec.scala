@@ -18,11 +18,11 @@ import java.nio.ByteOrder
 
 import scala.util.Random
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.testkit.PekkoSpec
 import pekko.util.ByteString
+
+import com.typesafe.config.ConfigFactory
 
 object PrimitivesSerializationSpec {
   val serializationTestOverrides = ""

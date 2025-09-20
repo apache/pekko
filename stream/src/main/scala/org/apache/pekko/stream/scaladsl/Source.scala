@@ -20,6 +20,7 @@ import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.{ immutable, AbstractIterator }
 import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration.FiniteDuration
+import scala.jdk.FutureConverters._
 import scala.util.control.NonFatal
 
 import org.apache.pekko
@@ -33,7 +34,6 @@ import pekko.stream.impl.fusing.{ GraphStages, IterableSource, LazyFutureSource,
 import pekko.stream.impl.fusing.GraphStages._
 import pekko.stream.stage.GraphStageWithMaterializedValue
 import pekko.util.ConstantFun
-import scala.jdk.FutureConverters._
 
 import org.reactivestreams.{ Publisher, Subscriber }
 

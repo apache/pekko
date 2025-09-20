@@ -15,14 +15,14 @@ package org.apache.pekko.event
 
 import java.util.concurrent.TimeoutException
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.locks.ReentrantLock
 
 import scala.annotation.implicitNotFound
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent.Await
 import scala.language.existentials
 import scala.util.control.{ NoStackTrace, NonFatal }
-
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.{ ConfigurationException, PekkoException }
@@ -34,8 +34,6 @@ import pekko.event.Logging._
 import pekko.util.Helpers
 import pekko.util.Timeout
 import pekko.util.unused
-
-import java.util.concurrent.locks.ReentrantLock
 
 /**
  * This trait brings log level handling to the EventStream: it reads the log
@@ -1638,9 +1636,9 @@ trait DiagnosticLoggingAdapter extends LoggingAdapter {
 
   import java.{ util => ju }
 
-  import Logging._
-
   import scala.jdk.CollectionConverters._
+
+  import Logging._
 
   private var _mdc = emptyMDC
 

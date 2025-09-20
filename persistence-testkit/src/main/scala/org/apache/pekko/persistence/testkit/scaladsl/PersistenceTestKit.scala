@@ -16,7 +16,7 @@ package org.apache.pekko.persistence.testkit.scaladsl
 import scala.collection.immutable
 import scala.concurrent.duration.FiniteDuration
 import scala.util.Try
-import com.typesafe.config.Config
+
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.actor.ClassicActorSystemProvider
@@ -33,6 +33,8 @@ import pekko.persistence.testkit._
 import pekko.persistence.testkit.internal.InMemStorageExtension
 import pekko.persistence.testkit.internal.SnapshotStorageEmulatorExtension
 import pekko.testkit.TestProbe
+
+import com.typesafe.config.Config
 
 private[testkit] trait CommonTestKitOps[S, P] extends ClearOps with PolicyOpsTestKit[P] {
   this: HasStorage[P, S] =>

@@ -13,12 +13,13 @@
 
 package org.apache.pekko.stream.tck
 
-import org.reactivestreams.tck.SubscriberBlackboxVerification
-import org.reactivestreams.tck.SubscriberWhiteboxVerification
-import org.reactivestreams.tck.TestEnvironment
 import org.scalatestplus.testng.TestNGSuiteLike
 
 import org.apache.pekko.actor.ActorSystem
+
+import org.reactivestreams.tck.SubscriberBlackboxVerification
+import org.reactivestreams.tck.SubscriberWhiteboxVerification
+import org.reactivestreams.tck.TestEnvironment
 
 abstract class PekkoSubscriberBlackboxVerification[T](env: TestEnvironment)
     extends SubscriberBlackboxVerification[T](env)

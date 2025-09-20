@@ -15,11 +15,10 @@ package org.apache.pekko.persistence.fsm
 
 import java.io.File
 
+import scala.annotation.nowarn
 import scala.concurrent.duration._
 import scala.reflect.ClassTag
 
-import scala.annotation.nowarn
-import com.typesafe.config.{ Config, ConfigFactory }
 import org.apache.commons.io.FileUtils
 
 import org.apache.pekko
@@ -27,6 +26,8 @@ import pekko.actor.{ ActorSystem, _ }
 import pekko.persistence._
 import pekko.persistence.fsm.PersistentFSM._
 import pekko.testkit._
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 @nowarn("msg=deprecated|Unused import")
 abstract class PersistentFSMSpec(config: Config) extends PersistenceSpec(config) with ImplicitSender {

@@ -13,20 +13,20 @@
 
 package org.apache.pekko.persistence.testkit
 
-import org.apache.pekko
-import pekko.NotUsed
 import java.util.{ List => JList }
 
 import scala.collection.immutable
+import scala.jdk.CollectionConverters._
 import scala.util.{ Failure, Success, Try }
 
+import org.apache.pekko
+import pekko.NotUsed
 import pekko.annotation.InternalApi
 import pekko.persistence.PersistentRepr
 import pekko.persistence.journal.Tagged
 import pekko.persistence.testkit.ProcessingPolicy.DefaultPolicies
 import pekko.persistence.testkit.internal.TestKitStorage
 import pekko.stream.scaladsl.Source
-import scala.jdk.CollectionConverters._
 
 /**
  * INTERNAL API

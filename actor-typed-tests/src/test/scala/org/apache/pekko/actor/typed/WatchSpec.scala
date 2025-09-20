@@ -16,8 +16,6 @@ package org.apache.pekko.actor.typed
 import scala.concurrent._
 import scala.concurrent.duration._
 
-import org.scalatest.wordspec.AnyWordSpecLike
-
 import org.apache.pekko
 import pekko.Done
 import pekko.actor
@@ -29,6 +27,8 @@ import pekko.actor.testkit.typed.scaladsl.TestProbe
 import pekko.actor.typed.scaladsl.AbstractBehavior
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.adapter._
+
+import org.scalatest.wordspec.AnyWordSpecLike
 
 object WatchSpec {
 

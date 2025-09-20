@@ -13,6 +13,11 @@
 
 package org.apache.pekko.persistence.typed.scaladsl
 
+import scala.annotation.nowarn
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+import scala.concurrent.duration._
+
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.ActorSystem
@@ -21,11 +26,6 @@ import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.TimerScheduler
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.RecoveryCompleted
-
-import scala.annotation.nowarn
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
-import scala.concurrent.duration._
 
 // unused names in pattern match can be useful in the docs
 @nowarn

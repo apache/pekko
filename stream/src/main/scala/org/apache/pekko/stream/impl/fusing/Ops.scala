@@ -24,6 +24,7 @@ import scala.concurrent.duration.{ FiniteDuration, _ }
 import scala.util.{ Failure, Success, Try }
 import scala.util.control.{ NoStackTrace, NonFatal }
 import scala.util.control.Exception.Catcher
+
 import org.apache.pekko
 import pekko.actor.{ ActorRef, Terminated }
 import pekko.annotation.InternalApi

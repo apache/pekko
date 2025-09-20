@@ -14,8 +14,6 @@
 package org.apache.pekko.cluster
 
 import scala.annotation.nowarn
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.ConfigurationException
@@ -39,6 +37,9 @@ import pekko.remote.RemoteDeployer
 import pekko.remote.routing.RemoteRouterConfig
 import pekko.routing.Group
 import pekko.routing.Pool
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 /**
  * INTERNAL API

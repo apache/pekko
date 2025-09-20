@@ -13,11 +13,12 @@
 
 package org.apache.pekko.dispatch
 
-import com.typesafe.config.Config
+import java.util.concurrent.{ ExecutorService, ForkJoinPool, ForkJoinTask, ThreadFactory, TimeUnit }
+
 import org.apache.pekko
 import pekko.util.JavaVersion
 
-import java.util.concurrent.{ ExecutorService, ForkJoinPool, ForkJoinTask, ThreadFactory, TimeUnit }
+import com.typesafe.config.Config
 
 object ForkJoinExecutorConfigurator {
 

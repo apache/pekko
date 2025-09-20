@@ -17,6 +17,7 @@ import java.util
 import java.util.Comparator
 
 import scala.annotation.unchecked.uncheckedVariance
+import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
 import pekko.NotUsed
@@ -24,7 +25,6 @@ import pekko.japi.{ function, Pair }
 import pekko.stream._
 import pekko.stream.scaladsl.GenericGraph
 import pekko.util.ConstantFun
-import scala.jdk.CollectionConverters._
 import pekko.util.unused
 
 /**

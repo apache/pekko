@@ -16,14 +16,14 @@ package org.apache.pekko.cluster
 import scala.collection.immutable
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.Address
 import pekko.cluster.ClusterEvent.CurrentClusterState
 import pekko.cluster.ClusterEvent.MemberUp
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.testkit._
+
+import com.typesafe.config.ConfigFactory
 
 object DeterministicOldestWhenJoiningMultiJvmSpec extends MultiNodeConfig {
   val seed1 = role("seed1")

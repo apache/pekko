@@ -13,12 +13,12 @@
 
 package org.apache.pekko.actor.typed.javadsl
 
+import java.util.function.{ Function => JFunction, Predicate }
+
 import org.apache.pekko
 import pekko.actor.typed.{ scaladsl, Behavior }
 import pekko.annotation.DoNotInherit
 import pekko.japi.function.Procedure
-
-import java.util.function.{ Function => JFunction, Predicate }
 
 /**
  * A non thread safe mutable message buffer that can be used to buffer messages inside actors

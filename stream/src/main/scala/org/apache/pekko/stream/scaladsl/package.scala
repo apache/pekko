@@ -16,7 +16,6 @@ package org.apache.pekko.stream
 import java.util.concurrent.CompletionStage
 
 import scala.concurrent.Future
-
 import scala.jdk.FutureConverters._
 
 /**

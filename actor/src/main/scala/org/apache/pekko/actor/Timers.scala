@@ -14,11 +14,11 @@
 package org.apache.pekko.actor
 
 import scala.concurrent.duration.FiniteDuration
+import scala.jdk.DurationConverters._
 
 import org.apache.pekko
 import pekko.annotation.DoNotInherit
 import pekko.dispatch.Envelope
-import scala.jdk.DurationConverters._
 import pekko.util.OptionVal
 
 /**

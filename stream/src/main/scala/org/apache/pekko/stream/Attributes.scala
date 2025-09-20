@@ -19,6 +19,8 @@ import java.util.Optional
 
 import scala.annotation.tailrec
 import scala.concurrent.duration.FiniteDuration
+import scala.jdk.DurationConverters._
+import scala.jdk.OptionConverters._
 import scala.reflect.{ classTag, ClassTag }
 import scala.util.control.NonFatal
 
@@ -30,9 +32,7 @@ import pekko.event.Logging
 import pekko.japi.function
 import pekko.stream.impl.TraversalBuilder
 import pekko.util.{ ByteString, OptionVal }
-import scala.jdk.DurationConverters._
 import pekko.util.LineNumbers
-import scala.jdk.OptionConverters._
 
 /**
  * Holds attributes which can be used to alter [[pekko.stream.scaladsl.Flow]] / [[pekko.stream.javadsl.Flow]]

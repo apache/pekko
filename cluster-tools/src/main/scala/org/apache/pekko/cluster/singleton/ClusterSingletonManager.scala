@@ -17,11 +17,12 @@ import scala.collection.immutable
 import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.concurrent.duration._
+import scala.jdk.DurationConverters._
 import scala.util.control.NonFatal
-import com.typesafe.config.Config
+
 import org.apache.pekko
-import pekko.PekkoException
 import pekko.Done
+import pekko.PekkoException
 import pekko.actor.Actor
 import pekko.actor.ActorRef
 import pekko.actor.ActorSelection
@@ -47,8 +48,9 @@ import pekko.event.Logging
 import pekko.event.MarkerLoggingAdapter
 import pekko.pattern.ask
 import pekko.pattern.pipe
-import scala.jdk.DurationConverters._
 import pekko.util.Timeout
+
+import com.typesafe.config.Config
 
 object ClusterSingletonManagerSettings {
 

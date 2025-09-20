@@ -23,10 +23,11 @@ import scala.collection.immutable
 import scala.concurrent.{ ExecutionContext, ExecutionContextExecutor, Future, Promise }
 import scala.concurrent.blocking
 import scala.concurrent.duration.Duration
+import scala.jdk.CollectionConverters._
+import scala.jdk.FutureConverters._
+import scala.jdk.OptionConverters._
 import scala.util.{ Failure, Success, Try }
 import scala.util.control.{ ControlThrowable, NonFatal }
-
-import com.typesafe.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
 import pekko.ConfigurationException
@@ -40,10 +41,9 @@ import pekko.event.Logging.DefaultLogger
 import pekko.japi.Util.immutableSeq
 import pekko.serialization.SerializationExtension
 import pekko.util._
-import scala.jdk.FutureConverters._
-import scala.jdk.OptionConverters._
 import pekko.util.Helpers.toRootLowerCase
-import scala.jdk.CollectionConverters._
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 object BootstrapSetup {
 

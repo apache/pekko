@@ -22,8 +22,8 @@ import java.lang.invoke.{ MethodHandles, MethodType }
 import scala.util.Try
 import scala.util.control.NoStackTrace
 
-import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 
 /**
  * Tests for [[DurableStateException]]s.

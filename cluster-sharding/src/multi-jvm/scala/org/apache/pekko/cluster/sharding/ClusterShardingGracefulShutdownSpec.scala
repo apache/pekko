@@ -13,17 +13,16 @@
 
 package org.apache.pekko.cluster.sharding
 
-import org.apache.pekko.Done
-
+import scala.concurrent.Future
 import scala.concurrent.duration._
+
 import org.apache.pekko
+import org.apache.pekko.Done
 import pekko.actor._
 import pekko.cluster.sharding.ShardCoordinator.ShardAllocationStrategy
 import pekko.cluster.sharding.ShardRegion.{ CurrentRegions, GracefulShutdown }
 import pekko.remote.testconductor.RoleName
 import pekko.testkit._
-
-import scala.concurrent.Future
 
 abstract class ClusterShardingGracefulShutdownSpecConfig(mode: String)
     extends MultiNodeClusterShardingConfig(

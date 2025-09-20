@@ -13,12 +13,12 @@
 
 package org.apache.pekko.stream.impl
 
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Promise
 import scala.util.Try
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import scala.concurrent.ExecutionContext
 import pekko.stream._
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.stage.{ GraphStageLogic, GraphStageWithMaterializedValue, OutHandler }

@@ -17,14 +17,14 @@
 
 package org.apache.pekko.persistence.serialization
 
+import java.util.Base64
+
 import annotation.nowarn
 
 import org.apache.pekko
 import pekko.persistence.fsm.PersistentFSM.PersistentFSMSnapshot
 import pekko.serialization.SerializationExtension
 import pekko.testkit.PekkoSpec
-
-import java.util.Base64
 
 @nowarn("msg=deprecated")
 private[serialization] object SnapshotSerializerTestData {

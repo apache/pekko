@@ -13,12 +13,12 @@
 
 package org.apache.pekko.remote.artery
 
-import com.typesafe.config._
-
 import org.apache.pekko
 import pekko.actor._
 import pekko.remote.RARP
 import pekko.testkit._
+
+import com.typesafe.config._
 
 object RemoteDeploymentSpec {
   class Echo1 extends Actor {

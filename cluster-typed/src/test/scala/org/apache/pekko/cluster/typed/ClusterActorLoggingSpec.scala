@@ -13,10 +13,6 @@
 
 package org.apache.pekko.cluster.typed
 
-import com.typesafe.config.ConfigFactory
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
-
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
@@ -24,6 +20,11 @@ import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.typed.internal.ActorMdc
 import pekko.actor.typed.scaladsl.Behaviors
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.ConfigFactory
 
 object ClusterActorLoggingSpec {
   def config = ConfigFactory.parseString("""

@@ -18,14 +18,15 @@ import java.util.concurrent.atomic.AtomicInteger
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import com.typesafe.config.{ Config, ConfigFactory }
+import org.apache.pekko
+import pekko.actor.ActorSystem
+import pekko.persistence.journal.{ EventSeq, ReadEventAdapter }
+
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
-import org.apache.pekko
-import pekko.actor.ActorSystem
-import pekko.persistence.journal.{ EventSeq, ReadEventAdapter }
+import com.typesafe.config.{ Config, ConfigFactory }
 
 class PersistenceQuerySpec extends AnyWordSpecLike with Matchers with BeforeAndAfterAll {
 

@@ -16,7 +16,8 @@ package org.apache.pekko.persistence.typed.javadsl
 import java.util.Collections
 import java.util.Optional
 
-import com.typesafe.config.Config
+import scala.jdk.OptionConverters._
+
 import org.apache.pekko
 import pekko.actor.typed
 import pekko.actor.typed.BackoffSupervisorStrategy
@@ -27,8 +28,9 @@ import pekko.annotation.InternalApi
 import pekko.persistence.typed._
 import pekko.persistence.typed.EventAdapter
 import pekko.persistence.typed.internal._
-import scala.jdk.OptionConverters._
 import pekko.util.unused
+
+import com.typesafe.config.Config
 
 abstract class EventSourcedBehavior[Command, Event, State] private[pekko] (
     val persistenceId: PersistenceId,

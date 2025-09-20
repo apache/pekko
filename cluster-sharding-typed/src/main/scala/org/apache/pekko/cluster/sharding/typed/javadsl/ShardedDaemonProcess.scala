@@ -13,8 +13,8 @@
 
 package org.apache.pekko.cluster.sharding.typed.javadsl
 
-import java.util.function.IntFunction
 import java.util.Optional
+import java.util.function.IntFunction
 
 import org.apache.pekko
 import pekko.actor.typed.ActorSystem

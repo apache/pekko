@@ -13,10 +13,10 @@
 
 package org.apache.pekko
 
+import org.apache.pekko.actor._
+
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-
-import org.apache.pekko.actor._
 
 /**
  * A spec that verified that the PekkoException has at least a single argument constructor of type String.

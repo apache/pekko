@@ -15,8 +15,6 @@ package org.apache.pekko.cluster.metrics
 
 import scala.Vector
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.Address
 import pekko.actor.RootActorPath
@@ -24,6 +22,8 @@ import pekko.remote.RARP
 import pekko.routing.ActorRefRoutee
 import pekko.routing.ActorSelectionRoutee
 import pekko.testkit.PekkoSpec
+
+import com.typesafe.config.ConfigFactory
 
 class WeightedRouteesSpec extends PekkoSpec(ConfigFactory.parseString("""
       pekko.actor.provider = "cluster"

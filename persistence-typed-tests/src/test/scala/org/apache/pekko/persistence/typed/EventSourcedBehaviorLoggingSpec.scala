@@ -14,9 +14,11 @@
 package org.apache.pekko.persistence.typed
 
 import org.apache.pekko
+import pekko.Done
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+import pekko.actor.typed.ActorRef
 import pekko.actor.typed.Behavior
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.persistence.testkit.PersistenceTestKitPlugin
@@ -25,11 +27,10 @@ import pekko.persistence.typed.EventSourcedBehaviorLoggingSpec.ChattyEventSourci
 import pekko.persistence.typed.scaladsl.Effect
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior
 import pekko.serialization.jackson.CborSerializable
-import com.typesafe.config.{ Config, ConfigFactory }
+
 import org.scalatest.wordspec.AnyWordSpecLike
 
-import pekko.Done
-import pekko.actor.typed.ActorRef
+import com.typesafe.config.{ Config, ConfigFactory }
 
 object EventSourcedBehaviorLoggingSpec {
 

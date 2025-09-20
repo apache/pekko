@@ -23,8 +23,6 @@ import scala.concurrent.duration.FiniteDuration
 import scala.util.Try
 import scala.util.control.{ NoStackTrace, NonFatal }
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.ConfigurationException
 import pekko.OnlyCauseStackTrace
@@ -35,8 +33,8 @@ import pekko.remote.RARP
 import pekko.remote.transport.{ AssociationHandle, Transport }
 import pekko.remote.transport.AssociationHandle.HandleEventListener
 import pekko.remote.transport.Transport._
-import pekko.util.Helpers.Requiring
 import pekko.util.{ Helpers, OptionVal }
+import pekko.util.Helpers.Requiring
 
 import io.netty.bootstrap.{ Bootstrap => ClientBootstrap, ServerBootstrap }
 import io.netty.buffer.{
@@ -64,6 +62,8 @@ import io.netty.handler.codec.{ LengthFieldBasedFrameDecoder, LengthFieldPrepend
 import io.netty.handler.flush.FlushConsolidationHandler
 import io.netty.handler.ssl.SslHandler
 import io.netty.util.concurrent.GlobalEventExecutor
+
+import com.typesafe.config.Config
 
 @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 object NettyFutureBridge {
@@ -128,6 +128,7 @@ class NettyTransportExceptionNoStack(msg: String, cause: Throwable)
 class NettyTransportSettings(config: Config) {
 
   import config._
+
   import pekko.util.Helpers.ConfigOps
 
   val EnableSsl: Boolean = getBoolean("enable-ssl")

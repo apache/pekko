@@ -18,8 +18,8 @@ import java.util.function.{ BiFunction, Function => JFunction, Predicate, Suppli
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.util.OptionVal
 import pekko.util.FunctionConverters._
+import pekko.util.OptionVal
 
 /**
  * FunctionalInterface for reacting on events having been persisted

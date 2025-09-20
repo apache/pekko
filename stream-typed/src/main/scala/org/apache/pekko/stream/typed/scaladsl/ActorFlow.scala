@@ -14,11 +14,12 @@
 package org.apache.pekko.stream.typed.scaladsl
 
 import scala.annotation.implicitNotFound
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
+
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.actor.typed.ActorRef
-import scala.concurrent.ExecutionContext
 import pekko.pattern.{ AskTimeoutException, StatusReply }
 import pekko.stream._
 import pekko.stream.scaladsl._

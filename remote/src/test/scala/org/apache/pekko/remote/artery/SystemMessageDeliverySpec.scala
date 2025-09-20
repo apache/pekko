@@ -18,9 +18,6 @@ import java.util.concurrent.ThreadLocalRandom
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.actor.ActorIdentity
@@ -42,6 +39,9 @@ import pekko.testkit.TestActors
 import pekko.testkit.TestEvent
 import pekko.testkit.TestProbe
 import pekko.util.OptionVal
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 object SystemMessageDeliverySpec {
 

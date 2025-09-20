@@ -14,21 +14,23 @@
 package org.apache.pekko.io.dns
 
 import scala.concurrent.duration._
+import scala.jdk.CollectionConverters._
 import scala.util.Try
 import scala.util.control.NonFatal
 
-import com.typesafe.config.Config
 import com.github.dockerjava.api.DockerClient
 import com.github.dockerjava.api.async.ResultCallback
 import com.github.dockerjava.api.command.CreateContainerCmd
 import com.github.dockerjava.api.model._
 import com.github.dockerjava.core.{ DefaultDockerClientConfig, DockerClientConfig, DockerClientImpl }
 import com.github.dockerjava.httpclient5.ApacheDockerHttpClient
-import org.scalatest.concurrent.Eventually
 
 import org.apache.pekko
 import pekko.testkit.PekkoSpec
-import scala.jdk.CollectionConverters._
+
+import org.scalatest.concurrent.Eventually
+
+import com.typesafe.config.Config
 
 abstract class DockerBindDnsService(config: Config) extends PekkoSpec(config) with Eventually {
 

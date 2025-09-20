@@ -15,12 +15,13 @@ package org.apache.pekko.stream.javadsl
 
 import java.util.Optional
 
+import scala.jdk.DurationConverters._
+import scala.jdk.OptionConverters._
+
 import org.apache.pekko
 import pekko.annotation.ApiMayChange
 import pekko.japi.Pair
 import pekko.stream.scaladsl
-import scala.jdk.DurationConverters._
-import scala.jdk.OptionConverters._
 
 object RetryFlow {
 

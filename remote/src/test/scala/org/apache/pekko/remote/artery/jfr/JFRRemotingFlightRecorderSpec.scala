@@ -13,14 +13,14 @@
 
 package org.apache.pekko.remote.artery.jfr
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.remote.artery.NoOpRemotingFlightRecorder
 import pekko.remote.artery.RemotingFlightRecorder
 import pekko.testkit.PekkoSpec
 import pekko.testkit.TestKit
+
+import com.typesafe.config.ConfigFactory
 
 class JFRRemotingFlightRecorderSpec extends PekkoSpec {
 

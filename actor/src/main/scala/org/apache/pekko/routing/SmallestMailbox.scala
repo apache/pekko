@@ -15,11 +15,9 @@ package org.apache.pekko.routing
 
 import java.util.concurrent.ThreadLocalRandom
 
+import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.collection.immutable
-
-import scala.annotation.nowarn
-import com.typesafe.config.Config
 
 import org.apache.pekko
 import pekko.actor.ActorCell
@@ -27,6 +25,8 @@ import pekko.actor.ActorRefWithCell
 import pekko.actor.ActorSystem
 import pekko.actor.SupervisorStrategy
 import pekko.dispatch.Dispatchers
+
+import com.typesafe.config.Config
 
 object SmallestMailboxRoutingLogic {
   def apply(): SmallestMailboxRoutingLogic = new SmallestMailboxRoutingLogic

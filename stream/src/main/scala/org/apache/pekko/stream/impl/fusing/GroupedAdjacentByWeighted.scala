@@ -17,14 +17,14 @@
 
 package org.apache.pekko.stream.impl.fusing
 
+import scala.collection.immutable
+
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.{ Attributes, FlowShape, Inlet, Outlet }
+import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
 import pekko.util.OptionVal
-
-import scala.collection.immutable
 
 /**
  * INTERNAL API

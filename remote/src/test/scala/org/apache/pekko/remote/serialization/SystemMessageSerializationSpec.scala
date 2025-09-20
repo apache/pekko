@@ -13,14 +13,14 @@
 
 package org.apache.pekko.remote.serialization
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.{ ActorInitializationException, ExtendedActorSystem, InternalActorRef }
 import pekko.dispatch.sysmsg._
 import pekko.serialization.SerializationExtension
 import pekko.testkit.{ PekkoSpec, TestProbe }
 import pekko.testkit.JavaSerializable
+
+import com.typesafe.config.ConfigFactory
 
 object SystemMessageSerializationSpec {
   val serializationTestOverrides =

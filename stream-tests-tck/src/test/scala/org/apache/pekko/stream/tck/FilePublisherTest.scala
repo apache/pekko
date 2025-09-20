@@ -15,7 +15,6 @@ package org.apache.pekko.stream.tck
 
 import java.nio.file.Files
 
-import org.reactivestreams.Publisher
 import org.testng.annotations.{ AfterClass, BeforeClass }
 
 import org.apache.pekko
@@ -26,6 +25,8 @@ import pekko.stream.testkit.Utils._
 import pekko.testkit.{ EventFilter, TestEvent }
 import pekko.testkit.PekkoSpec
 import pekko.util.ByteString
+
+import org.reactivestreams.Publisher
 
 class FilePublisherTest extends PekkoPublisherVerification[ByteString] {
 

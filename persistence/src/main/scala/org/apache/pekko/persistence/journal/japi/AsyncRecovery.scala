@@ -15,15 +15,15 @@ package org.apache.pekko.persistence.journal.japi
 
 import java.util.function.Consumer
 
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
+import scala.jdk.FutureConverters._
 
 import org.apache.pekko
 import pekko.actor.Actor
-import scala.concurrent.ExecutionContext
 import pekko.persistence.PersistentRepr
 import pekko.persistence.journal.{ AsyncRecovery => SAsyncReplay }
 import pekko.util.ConstantFun.scalaAnyToUnit
-import scala.jdk.FutureConverters._
 
 /**
  * Java API: asynchronous message replay and sequence number recovery interface.

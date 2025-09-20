@@ -14,11 +14,13 @@
 package org.apache.pekko.persistence.journal.leveldb
 
 import scala.annotation.nowarn
-import com.typesafe.config.ConfigFactory
+
 import org.apache.pekko
 import pekko.actor._
 import pekko.persistence._
 import pekko.testkit.{ PekkoSpec, TestProbe }
+
+import com.typesafe.config.ConfigFactory
 
 object SharedLeveldbJournalSpec {
   val config = ConfigFactory.parseString(s"""

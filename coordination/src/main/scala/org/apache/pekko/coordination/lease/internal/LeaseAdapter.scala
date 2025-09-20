@@ -19,14 +19,14 @@ import java.util.function.Consumer
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
+import scala.jdk.FutureConverters._
+import scala.jdk.OptionConverters._
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.coordination.lease.LeaseSettings
 import pekko.coordination.lease.javadsl.{ Lease => JavaLease }
 import pekko.coordination.lease.scaladsl.{ Lease => ScalaLease }
-import scala.jdk.FutureConverters._
-import scala.jdk.OptionConverters._
 
 /**
  * INTERNAL API

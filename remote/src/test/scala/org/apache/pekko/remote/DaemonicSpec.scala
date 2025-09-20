@@ -14,13 +14,13 @@
 package org.apache.pekko.remote
 
 import scala.concurrent.duration._
-
-import com.typesafe.config.ConfigFactory
+import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
 import pekko.actor.{ ActorSystem, Address }
 import pekko.testkit._
-import scala.jdk.CollectionConverters._
+
+import com.typesafe.config.ConfigFactory
 
 class DaemonicSpec extends PekkoSpec {
 

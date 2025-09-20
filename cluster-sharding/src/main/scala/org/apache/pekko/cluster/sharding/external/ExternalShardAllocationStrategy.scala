@@ -16,6 +16,7 @@ package org.apache.pekko.cluster.sharding.external
 import scala.collection.immutable
 import scala.concurrent.Future
 import scala.concurrent.duration._
+import scala.jdk.DurationConverters._
 
 import org.apache.pekko
 import pekko.actor.Actor
@@ -39,7 +40,6 @@ import pekko.cluster.sharding.ShardRegion.ShardId
 import pekko.event.Logging
 import pekko.pattern.AskTimeoutException
 import pekko.util.Timeout
-import scala.jdk.DurationConverters._
 
 object ExternalShardAllocationStrategy {
 

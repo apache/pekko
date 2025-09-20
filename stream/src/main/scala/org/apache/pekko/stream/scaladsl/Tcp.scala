@@ -23,6 +23,7 @@ import scala.collection.immutable
 import scala.concurrent.Future
 import scala.concurrent.duration.Duration
 import scala.concurrent.duration.FiniteDuration
+import scala.jdk.DurationConverters._
 import scala.util.Success
 import scala.util.Try
 import scala.util.control.NoStackTrace
@@ -42,7 +43,6 @@ import pekko.stream.impl.io.ConnectionSourceStage
 import pekko.stream.impl.io.OutgoingConnectionStage
 import pekko.stream.impl.io.TcpIdleTimeout
 import pekko.util.ByteString
-import scala.jdk.DurationConverters._
 import pekko.util.unused
 
 object Tcp extends ExtensionId[Tcp] with ExtensionIdProvider {

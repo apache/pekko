@@ -19,6 +19,7 @@ import java.util.concurrent.TimeoutException
 import scala.annotation.{ nowarn, tailrec }
 import scala.collection.immutable
 import scala.concurrent.{ Future, Promise }
+import scala.concurrent.ExecutionContext
 import scala.language.implicitConversions
 import scala.util.{ Failure, Success }
 import scala.util.control.NoStackTrace
@@ -26,7 +27,6 @@ import scala.util.control.NoStackTrace
 import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.{ InternalApi, InternalStableApi }
-import scala.concurrent.ExecutionContext
 import pekko.dispatch.sysmsg._
 import pekko.util.{ unused, ByteString, Timeout }
 
