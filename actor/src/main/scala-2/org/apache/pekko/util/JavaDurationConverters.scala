@@ -12,9 +12,7 @@
  */
 
 package org.apache.pekko.util
-
 import java.time.{ Duration => JDuration }
-import java.time.temporal.ChronoUnit
 
 import scala.concurrent.duration.{ Duration, FiniteDuration }
 
@@ -25,22 +23,13 @@ import org.apache.pekko.annotation.InternalStableApi
  */
 @InternalStableApi
 private[pekko] object JavaDurationConverters {
-  // Scala FiniteDurations only support up to approx 252 years
-  // Java Durations support much larger durations
-  // this method will throw an java.lang.IllegalArgumentException if the Java Duration is too large
   @inline def asFiniteDuration(duration: JDuration): FiniteDuration = duration.asScala
 
   final implicit class JavaDurationOps(val self: JDuration) extends AnyVal {
-    // see note on asFiniteDuration
     @inline def asScala: FiniteDuration = Duration.fromNanos(self.toNanos)
   }
 
   final implicit class ScalaDurationOps(val self: Duration) extends AnyVal {
-    @inline def asJava: JDuration = self match {
-      case fd: FiniteDuration => JDuration.ofNanos(fd.toNanos)
-      case Duration.Inf       => ChronoUnit.FOREVER.getDuration()
-      case Duration.MinusInf  => ChronoUnit.FOREVER.getDuration().negated()
-      case _                  => ChronoUnit.FOREVER.getDuration()
-    }
+    @inline def asJava: JDuration = JDuration.ofNanos(self.toNanos)
   }
 }
