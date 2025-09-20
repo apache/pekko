@@ -15,6 +15,7 @@ package org.apache.pekko.remote.artery
 
 import java.util.concurrent.TimeUnit
 
+import scala.annotation.nowarn
 import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.concurrent.duration._
@@ -44,7 +45,6 @@ import pekko.serialization.Serializers
 import pekko.stream._
 import pekko.stream.stage._
 import pekko.util.OptionVal
-import pekko.util.unused
 
 /**
  * INTERNAL API
@@ -65,7 +65,7 @@ private[remote] class Encoder(
     system: ExtendedActorSystem,
     outboundEnvelopePool: ObjectPool[ReusableOutboundEnvelope],
     bufferPool: EnvelopeBufferPool,
-    @unused streamId: Int,
+    @nowarn("msg=never used") streamId: Int,
     debugLogSend: Boolean,
     version: Byte)
     extends GraphStageWithMaterializedValue[
@@ -643,7 +643,7 @@ private[remote] class Decoder(
  * INTERNAL API
  */
 private[remote] class Deserializer(
-    @unused inboundContext: InboundContext,
+    @nowarn("msg=never used") inboundContext: InboundContext,
     system: ExtendedActorSystem,
     bufferPool: EnvelopeBufferPool)
     extends GraphStage[FlowShape[InboundEnvelope, InboundEnvelope]] {

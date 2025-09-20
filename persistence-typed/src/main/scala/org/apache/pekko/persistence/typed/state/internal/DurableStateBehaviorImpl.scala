@@ -13,6 +13,8 @@
 
 package org.apache.pekko.persistence.typed.state.internal
 
+import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.actor.typed
 import pekko.actor.typed.ActorRef
@@ -32,7 +34,6 @@ import pekko.persistence.state.scaladsl.GetObjectResult
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.SnapshotAdapter
 import pekko.persistence.typed.state.scaladsl._
-import pekko.util.unused
 
 import org.slf4j.LoggerFactory
 
@@ -158,7 +159,7 @@ private[pekko] final case class DurableStateBehaviorImpl[Command, State](
   }
 
   @InternalStableApi
-  private[pekko] def initialize(@unused context: ActorContext[_]): Unit = ()
+  private[pekko] def initialize(@nowarn("msg=never used") context: ActorContext[_]): Unit = ()
 
   override def receiveSignal(handler: PartialFunction[(State, Signal), Unit]): DurableStateBehavior[Command, State] =
     copy(signalHandler = handler)

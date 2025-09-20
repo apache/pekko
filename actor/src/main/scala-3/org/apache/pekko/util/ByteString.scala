@@ -19,7 +19,7 @@ import java.nio.{ ByteBuffer, ByteOrder }
 import java.nio.charset.{ Charset, StandardCharsets }
 import java.util.Base64
 
-import scala.annotation.{ tailrec, varargs }
+import scala.annotation.{ nowarn, tailrec, varargs }
 import scala.collection.{ immutable, mutable }
 import scala.collection.immutable.{ IndexedSeq, IndexedSeqOps, StrictOptimizedSeqOps, VectorBuilder }
 import scala.collection.mutable.{ Builder, WrappedArray }
@@ -992,7 +992,7 @@ sealed abstract class ByteString
    * @param buffer a ByteBuffer to copy bytes to
    * @return the number of bytes actually copied
    */
-  def copyToBuffer(@unused buffer: ByteBuffer): Int
+  def copyToBuffer(@nowarn("msg=never used") buffer: ByteBuffer): Int
 
   /**
    * Create a new ByteString with all contents compacted into a single,

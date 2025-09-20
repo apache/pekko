@@ -13,13 +13,14 @@
 
 package org.apache.pekko.stream.impl
 
+import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.stream.AbruptTerminationException
 import pekko.stream.ActorAttributes
 import pekko.stream.Attributes
-import pekko.util.unused
 
 import org.reactivestreams.{ Subscriber, Subscription }
 
@@ -133,7 +134,7 @@ import org.reactivestreams.{ Subscriber, Subscription }
 
     def onError(input: Int, e: Throwable): Unit
 
-    def onDepleted(@unused input: Int): Unit = ()
+    def onDepleted(@nowarn("msg=never used") input: Int): Unit = ()
 
     def onCompleteWhenNoInput(): Unit = ()
 

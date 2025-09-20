@@ -13,12 +13,13 @@
 
 package org.apache.pekko.persistence.journal.leveldb
 
+import scala.annotation.nowarn
+
 import org.iq80.leveldb.DBIterator
 
 import org.apache.pekko
 import pekko.actor.Actor
 import pekko.util.ByteString.UTF_8
-import pekko.util.unused
 
 /**
  * INTERNAL API.
@@ -80,7 +81,7 @@ private[persistence] trait LeveldbIdMapping extends Actor { this: LeveldbStore =
     numericId
   }
 
-  override protected def newPersistenceIdAdded(@unused id: String): Unit = ()
+  override protected def newPersistenceIdAdded(@nowarn("msg=never used") id: String): Unit = ()
 
   override def preStart(): Unit = {
     idMap = readIdMap()

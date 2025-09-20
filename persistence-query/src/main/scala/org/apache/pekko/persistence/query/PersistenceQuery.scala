@@ -13,6 +13,7 @@
 
 package org.apache.pekko.persistence.query
 
+import scala.annotation.nowarn
 import scala.reflect.ClassTag
 
 import org.apache.pekko
@@ -20,7 +21,6 @@ import pekko.actor._
 import pekko.annotation.InternalApi
 import pekko.persistence.{ PersistencePlugin, PluginProvider }
 import pekko.persistence.query.scaladsl.ReadJournal
-import pekko.util.unused
 
 import com.typesafe.config.{ Config, ConfigFactory }
 
@@ -73,7 +73,7 @@ class PersistenceQuery(system: ExtendedActorSystem)
    * read journal configuration entry.
    */
   final def getReadJournalFor[T <: javadsl.ReadJournal](
-      @unused clazz: Class[T],
+      @nowarn("msg=never used") clazz: Class[T],
       readJournalPluginId: String,
       readJournalPluginConfig: Config): T =
     pluginFor(readJournalPluginId, readJournalPluginConfig).javadslPlugin.asInstanceOf[T]

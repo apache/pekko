@@ -31,13 +31,14 @@
 
 package org.apache.pekko.cluster.ddata
 
+import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.cluster.UniqueAddress
-import pekko.util.{ unused, HashCode }
+import pekko.util.HashCode
 
 object ORSet {
   private val _empty: ORSet[Any] = new ORSet(Map.empty, VersionVector.empty)
@@ -401,7 +402,7 @@ final class ORSet[A] private[pekko] (
    * [[ORSet#remove(node:org\.apache\.pekko\.cluster\.ddata\.SelfUniqueAddress*]]
    * for each element, but it is more efficient.
    */
-  def clear(@unused node: SelfUniqueAddress): ORSet[A] = clear()
+  def clear(@nowarn("msg=never used") node: SelfUniqueAddress): ORSet[A] = clear()
 
   /**
    * INTERNAL API

@@ -43,7 +43,6 @@ import pekko.stream.impl.io.ConnectionSourceStage
 import pekko.stream.impl.io.OutgoingConnectionStage
 import pekko.stream.impl.io.TcpIdleTimeout
 import pekko.util.ByteString
-import pekko.util.unused
 
 object Tcp extends ExtensionId[Tcp] with ExtensionIdProvider {
 
@@ -403,7 +402,7 @@ final class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
   }
 }
 
-final class TcpIdleTimeoutException(msg: String, @unused timeout: Duration)
+final class TcpIdleTimeoutException(msg: String, @nowarn("msg=never used") timeout: Duration)
     extends TimeoutException(msg: String)
     with NoStackTrace // only used from a single stage
 

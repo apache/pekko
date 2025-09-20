@@ -15,6 +15,7 @@ package org.apache.pekko.actor
 
 import java.util.Optional
 
+import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.beans.BeanProperty
 import scala.util.control.NoStackTrace
@@ -23,7 +24,6 @@ import org.apache.pekko
 import pekko.PekkoException
 import pekko.annotation.InternalApi
 import pekko.event.LoggingAdapter
-import pekko.util.unused
 
 /**
  * INTERNAL API
@@ -370,7 +370,7 @@ trait ActorLogging { this: Actor =>
 trait DiagnosticActorLogging extends Actor {
   import pekko.event.Logging._
   val log = pekko.event.Logging(this)
-  def mdc(@unused currentMessage: Any): MDC = emptyMDC
+  def mdc(@nowarn("msg=never used") currentMessage: Any): MDC = emptyMDC
 
   override protected[pekko] def aroundReceive(receive: Actor.Receive, msg: Any): Unit =
     try {
@@ -622,7 +622,7 @@ trait Actor {
    */
   @throws(classOf[Exception]) // when changing this you MUST also change ActorDocTest
   // #lifecycle-hooks
-  def preRestart(@unused reason: Throwable, @unused message: Option[Any]): Unit = {
+  def preRestart(@nowarn("msg=never used") reason: Throwable, @nowarn("msg=never used") message: Option[Any]): Unit = {
     context.children.foreach { child =>
       context.unwatch(child)
       context.stop(child)
@@ -640,7 +640,7 @@ trait Actor {
    */
   @throws(classOf[Exception]) // when changing this you MUST also change ActorDocTest
   // #lifecycle-hooks
-  def postRestart(@unused reason: Throwable): Unit = {
+  def postRestart(@nowarn("msg=never used") reason: Throwable): Unit = {
     preStart()
   }
   // #lifecycle-hooks

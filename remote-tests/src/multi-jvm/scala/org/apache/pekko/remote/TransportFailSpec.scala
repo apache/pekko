@@ -29,7 +29,6 @@ import pekko.event.EventStream
 import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.testkit._
-import pekko.util.unused
 
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
@@ -71,7 +70,8 @@ object TransportFailSpec {
   private val fdAvailable = new AtomicBoolean(true)
 
   // FD that will fail when `fdAvailable` flag is false
-  class TestFailureDetector(@unused config: Config, @unused ev: EventStream) extends FailureDetector {
+  class TestFailureDetector(@nowarn("msg=never used") config: Config, @nowarn("msg=never used") ev: EventStream)
+      extends FailureDetector {
     @volatile private var active = false
 
     override def heartbeat(): Unit = {

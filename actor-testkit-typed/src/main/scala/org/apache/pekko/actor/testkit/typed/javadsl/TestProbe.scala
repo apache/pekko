@@ -17,6 +17,8 @@ import java.time.Duration
 import java.util.{ List => JList }
 import java.util.function.Supplier
 
+import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.actor.testkit.typed.FishingOutcome
 import pekko.actor.testkit.typed.TestKitSettings
@@ -27,7 +29,6 @@ import pekko.actor.typed.RecipientRef
 import pekko.actor.typed.internal.InternalRecipientRef
 import pekko.annotation.DoNotInherit
 import pekko.japi.function.Creator
-import pekko.util.unused
 
 object FishingOutcomes {
 
@@ -57,13 +58,13 @@ object TestProbe {
   def create[M](system: ActorSystem[_]): TestProbe[M] =
     create(name = "testProbe", system)
 
-  def create[M](@unused clazz: Class[M], system: ActorSystem[_]): TestProbe[M] =
+  def create[M](@nowarn("msg=never used") clazz: Class[M], system: ActorSystem[_]): TestProbe[M] =
     create(system)
 
   def create[M](name: String, system: ActorSystem[_]): TestProbe[M] =
     new TestProbeImpl[M](name, system)
 
-  def create[M](name: String, @unused clazz: Class[M], system: ActorSystem[_]): TestProbe[M] =
+  def create[M](name: String, @nowarn("msg=never used") clazz: Class[M], system: ActorSystem[_]): TestProbe[M] =
     new TestProbeImpl[M](name, system)
 }
 

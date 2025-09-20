@@ -16,6 +16,7 @@ package org.apache.pekko.cluster.sharding
 import java.net.URLEncoder
 import java.util
 
+import scala.annotation.nowarn
 import scala.collection.immutable.Set
 import scala.concurrent.duration._
 
@@ -50,7 +51,6 @@ import pekko.pattern.pipe
 import pekko.util.MessageBufferMap
 import pekko.util.OptionVal
 import pekko.util.PrettyDuration._
-import pekko.util.unused
 
 /**
  * INTERNAL API
@@ -424,7 +424,7 @@ private[pekko] class Shard(
     entityProps: String => Props,
     settings: ClusterShardingSettings,
     extractEntityId: ShardRegion.ExtractEntityId,
-    @unused extractShardId: ShardRegion.ExtractShardId,
+    @nowarn("msg=never used") extractShardId: ShardRegion.ExtractShardId,
     handOffStopMessage: Any,
     rememberEntitiesProvider: Option[RememberEntitiesProvider])
     extends Actor
@@ -1141,7 +1141,7 @@ private[pekko] class Shard(
    * of active entities.
    */
   @InternalStableApi
-  def entityCreated(@unused id: EntityId): Int = entities.nrActiveEntities()
+  def entityCreated(@nowarn("msg=never used") id: EntityId): Int = entities.nrActiveEntities()
 
   // ===== buffering while busy saving a start or stop when remembering entities =====
   def appendToMessageBuffer(id: EntityId, msg: Any, snd: ActorRef): Unit = {

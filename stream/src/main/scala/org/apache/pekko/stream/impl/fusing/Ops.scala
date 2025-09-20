@@ -53,7 +53,7 @@ import pekko.stream.scaladsl.{
   StatefulMapConcatAccumulatorFactory
 }
 import pekko.stream.stage._
-import pekko.util.{ unused, ConstantFun, OptionVal }
+import pekko.util.{ ConstantFun, OptionVal }
 
 /**
  * INTERNAL API
@@ -678,7 +678,7 @@ private[stream] object Collect {
       private var aggregator: Out = zero
       private var aggregating: Future[Out] = Future.successful(aggregator)
 
-      private def onRestart(@unused t: Throwable): Unit = {
+      private def onRestart(@nowarn("msg=never used") t: Throwable): Unit = {
         aggregator = zero
       }
 

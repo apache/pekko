@@ -16,6 +16,7 @@ package org.apache.pekko.stream.javadsl
 import java.util
 import java.util.Comparator
 
+import scala.annotation.nowarn
 import scala.annotation.unchecked.uncheckedVariance
 import scala.jdk.CollectionConverters._
 
@@ -25,7 +26,6 @@ import pekko.japi.{ function, Pair }
 import pekko.stream._
 import pekko.stream.scaladsl.GenericGraph
 import pekko.util.ConstantFun
-import pekko.util.unused
 
 /**
  * Merge several streams, taking elements as they arrive from input streams
@@ -50,7 +50,8 @@ object Merge {
   /**
    * Create a new `Merge` operator with the specified output type.
    */
-  def create[T](@unused clazz: Class[T], inputPorts: Int): Graph[UniformFanInShape[T, T], NotUsed] = create(inputPorts)
+  def create[T](@nowarn("msg=never used") clazz: Class[T], inputPorts: Int): Graph[UniformFanInShape[T, T], NotUsed] =
+    create(inputPorts)
 
   /**
    * Create a new `Merge` operator with the specified output type.
@@ -68,7 +69,7 @@ object Merge {
    *                   finish as soon as one of its inputs completes
    */
   def create[T](
-      @unused clazz: Class[T],
+      @nowarn("msg=never used") clazz: Class[T],
       inputPorts: Int,
       eagerComplete: Boolean): Graph[UniformFanInShape[T, T], NotUsed] =
     create(inputPorts, eagerComplete)
@@ -99,7 +100,7 @@ object MergePreferred {
    * Create a new `MergePreferred` operator with the specified output type.
    */
   def create[T](
-      @unused clazz: Class[T],
+      @nowarn("msg=never used") clazz: Class[T],
       secondaryPorts: Int): Graph[scaladsl.MergePreferred.MergePreferredShape[T], NotUsed] =
     create(secondaryPorts)
 
@@ -121,7 +122,7 @@ object MergePreferred {
    *                   finish as soon as one of its inputs completes
    */
   def create[T](
-      @unused clazz: Class[T],
+      @nowarn("msg=never used") clazz: Class[T],
       secondaryPorts: Int,
       eagerComplete: Boolean): Graph[scaladsl.MergePreferred.MergePreferredShape[T], NotUsed] =
     create(secondaryPorts, eagerComplete)
@@ -156,7 +157,8 @@ object MergePrioritized {
   /**
    * Create a new `MergePrioritized` operator with the specified output type.
    */
-  def create[T](@unused clazz: Class[T], priorities: Array[Int]): Graph[UniformFanInShape[T, T], NotUsed] =
+  def create[T](@nowarn("msg=never used") clazz: Class[T], priorities: Array[Int])
+      : Graph[UniformFanInShape[T, T], NotUsed] =
     create(priorities)
 
   /**
@@ -175,7 +177,7 @@ object MergePrioritized {
    *                   finish as soon as one of its inputs completes
    */
   def create[T](
-      @unused clazz: Class[T],
+      @nowarn("msg=never used") clazz: Class[T],
       priorities: Array[Int],
       eagerComplete: Boolean): Graph[UniformFanInShape[T, T], NotUsed] =
     create(priorities, eagerComplete)
@@ -217,7 +219,7 @@ object Broadcast {
   /**
    * Create a new `Broadcast` operator with the specified input type.
    */
-  def create[T](@unused clazz: Class[T], outputCount: Int): Graph[UniformFanOutShape[T, T], NotUsed] =
+  def create[T](@nowarn("msg=never used") clazz: Class[T], outputCount: Int): Graph[UniformFanOutShape[T, T], NotUsed] =
     create(outputCount)
 
 }
@@ -347,7 +349,7 @@ object Partition {
    * @param partitioner function deciding which output each element will be targeted
    */
   def create[T](
-      @unused clazz: Class[T],
+      @nowarn("msg=never used") clazz: Class[T],
       outputCount: Int,
       partitioner: function.Function[T, Integer]): Graph[UniformFanOutShape[T, T], NotUsed] =
     new scaladsl.Partition(outputCount, partitioner.apply, eagerCancel = false)
@@ -361,7 +363,7 @@ object Partition {
    * @param eagerCancel this operator cancels, when any (true) or all (false) of the downstreams cancel
    */
   def create[T](
-      @unused clazz: Class[T],
+      @nowarn("msg=never used") clazz: Class[T],
       outputCount: Int,
       partitioner: function.Function[T, Integer],
       eagerCancel: Boolean): Graph[UniformFanOutShape[T, T], NotUsed] =
@@ -421,7 +423,7 @@ object Balance {
    * @param clazz a type hint for this method
    * @param outputCount number of output ports
    */
-  def create[T](@unused clazz: Class[T], outputCount: Int): Graph[UniformFanOutShape[T, T], NotUsed] =
+  def create[T](@nowarn("msg=never used") clazz: Class[T], outputCount: Int): Graph[UniformFanOutShape[T, T], NotUsed] =
     create(outputCount)
 
   /**
@@ -432,7 +434,7 @@ object Balance {
    * @param waitForAllDownstreams if `true` it will not start emitting elements to downstream outputs until all of them have requested at least one element
    */
   def create[T](
-      @unused clazz: Class[T],
+      @nowarn("msg=never used") clazz: Class[T],
       outputCount: Int,
       waitForAllDownstreams: Boolean): Graph[UniformFanOutShape[T, T], NotUsed] =
     create(outputCount, waitForAllDownstreams)
@@ -446,7 +448,7 @@ object Balance {
    * @param eagerCancel if true, balance cancels upstream if any of its downstreams cancel, if false, when all have cancelled.
    */
   def create[T](
-      @unused clazz: Class[T],
+      @nowarn("msg=never used") clazz: Class[T],
       outputCount: Int,
       waitForAllDownstreams: Boolean,
       eagerCancel: Boolean): Graph[UniformFanOutShape[T, T], NotUsed] =
@@ -571,7 +573,8 @@ object Unzip {
   /**
    * Creates a new `Unzip` operator with the specified output types.
    */
-  def create[A, B](@unused left: Class[A], @unused right: Class[B]): Graph[FanOutShape2[A Pair B, A, B], NotUsed] =
+  def create[A, B](@nowarn("msg=never used") left: Class[A], @nowarn("msg=never used") right: Class[B])
+      : Graph[FanOutShape2[A Pair B, A, B], NotUsed] =
     create[A, B]()
 
 }
@@ -610,7 +613,7 @@ object Concat {
   /**
    * Create a new anonymous `Concat` operator with the specified input types.
    */
-  def create[T](@unused clazz: Class[T]): Graph[UniformFanInShape[T, T], NotUsed] = create()
+  def create[T](@nowarn("msg=never used") clazz: Class[T]): Graph[UniformFanInShape[T, T], NotUsed] = create()
 
 }
 
@@ -671,7 +674,7 @@ object MergeSequence {
    * @param extractSequence The function to extract the sequence from an element.
    */
   def create[T](
-      @unused clazz: Class[T],
+      @nowarn("msg=never used") clazz: Class[T],
       inputCount: Int,
       extractSequence: function.Function[T, Long]): Graph[UniformFanInShape[T, T], NotUsed] =
     create(inputCount, extractSequence)

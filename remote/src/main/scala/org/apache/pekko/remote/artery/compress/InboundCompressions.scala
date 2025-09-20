@@ -15,6 +15,7 @@ package org.apache.pekko.remote.artery.compress
 
 import java.util.function.LongFunction
 
+import scala.annotation.nowarn
 import scala.annotation.tailrec
 
 import org.agrona.collections.Long2ObjectHashMap
@@ -28,7 +29,6 @@ import pekko.event.Logging
 import pekko.event.LoggingAdapter
 import pekko.remote.artery._
 import pekko.util.OptionVal
-import pekko.util.unused
 
 /**
  * INTERNAL API
@@ -441,7 +441,7 @@ private[remote] abstract class InboundCompression[T >: Null](
    * Add `n` occurrence for the given key and call `heavyHittedDetected` if element has become a heavy hitter.
    * Empty keys are omitted.
    */
-  def increment(@unused remoteAddress: Address, value: T, n: Long): Unit = {
+  def increment(@nowarn("msg=never used") remoteAddress: Address, value: T, n: Long): Unit = {
     val count = cms.addObjectAndEstimateCount(value, n)
     addAndCheckIfheavyHitterDetected(value, count)
     alive = true

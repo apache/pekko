@@ -13,11 +13,12 @@
 
 package org.apache.pekko.osgi
 
+import scala.annotation.nowarn
+
 import org.osgi.framework.BundleContext
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
-import pekko.util.unused
 
 import com.typesafe.config.{ Config, ConfigFactory }
 
@@ -53,7 +54,7 @@ class OsgiActorSystemFactory(
    * ensuring that the default/reference configuration is loaded from the pekko-actor bundle.
    * Configuration files found in pekko-actor bundle
    */
-  def actorSystemConfig(@unused context: BundleContext): Config = {
+  def actorSystemConfig(@nowarn("msg=never used") context: BundleContext): Config = {
     config.withFallback(
       ConfigFactory
         .load(classloader)

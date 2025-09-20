@@ -15,17 +15,19 @@ package org.apache.pekko.cluster
 
 import java.util.concurrent.atomic.AtomicReference
 
+import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.event.EventStream
 import pekko.remote.FailureDetector
-import pekko.util.unused
 
 import com.typesafe.config.Config
 
 /**
  * User controllable "puppet" failure detector.
  */
-class FailureDetectorPuppet(@unused config: Config, @unused ev: EventStream) extends FailureDetector {
+class FailureDetectorPuppet(@nowarn("msg=never used") config: Config, @nowarn("msg=never used") ev: EventStream)
+    extends FailureDetector {
 
   sealed trait Status
   object Up extends Status

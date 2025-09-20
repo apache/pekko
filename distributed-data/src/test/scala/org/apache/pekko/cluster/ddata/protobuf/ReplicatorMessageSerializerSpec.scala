@@ -13,6 +13,7 @@
 
 package org.apache.pekko.cluster.ddata.protobuf
 
+import scala.annotation.nowarn
 import scala.concurrent.duration._
 
 import org.apache.pekko
@@ -34,7 +35,7 @@ import pekko.cluster.ddata.Replicator.Internal._
 import pekko.cluster.ddata.VersionVector
 import pekko.remote.RARP
 import pekko.testkit.TestKit
-import pekko.util.{ unused, ByteString }
+import pekko.util.ByteString
 
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.matchers.should.Matchers
@@ -265,7 +266,7 @@ class ReplicatorMessageSerializerSpec
 
     "suppory getOrAdd" in {
       var n = 0
-      def createValue(@unused a: Read): AnyRef = {
+      def createValue(@nowarn("msg=never used") a: Read): AnyRef = {
         n += 1
         new AnyRef {
           override val toString = "v" + n

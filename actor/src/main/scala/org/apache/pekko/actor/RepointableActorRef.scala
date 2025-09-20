@@ -26,7 +26,6 @@ import pekko.actor.dungeon.ChildrenContainer
 import pekko.dispatch._
 import pekko.dispatch.sysmsg._
 import pekko.event.Logging.Warning
-import pekko.util.unused
 
 /**
  * This actor ref starts out with some dummy cell (by default just enqueuing
@@ -136,7 +135,7 @@ private[pekko] class RepointableActorRef(
    * This is called by activate() to obtain the cell which is to replace the
    * unstarted cell. The cell must be fully functional.
    */
-  def newCell(@unused old: UnstartedCell): Cell =
+  def newCell(@nowarn("msg=never used") old: UnstartedCell): Cell =
     new ActorCell(system, this, props, dispatcher, supervisor).init(sendSupervise = false, mailboxType)
 
   def start(): Unit = ()

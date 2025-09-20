@@ -15,12 +15,13 @@ package org.apache.pekko.osgi
 
 import java.util.{ Dictionary, Properties }
 
+import scala.annotation.nowarn
+
 import org.osgi.framework._
 import org.osgi.service.log.LogService
 
 import org.apache.pekko
 import pekko.actor.{ ActorRefFactory, ActorSystem }
-import pekko.util.unused
 
 import com.typesafe.config.{ Config, ConfigFactory }
 
@@ -129,7 +130,7 @@ abstract class ActorSystemActivator extends BundleActivator {
    * @param context the bundle context
    * @return the actor system name
    */
-  def getActorSystemName(@unused context: BundleContext): String = null
+  def getActorSystemName(@nowarn("msg=never used") context: BundleContext): String = null
 
   /**
    * Override this method to define a configuration for your [[pekko.actor.ActorSystem]] instance.
@@ -141,6 +142,6 @@ abstract class ActorSystemActivator extends BundleActivator {
    * @param context the bundle context
    * @return the actor system specific configuration, ConfigFactory.empty by default
    */
-  def getActorSystemConfiguration(@unused context: BundleContext): Config = ConfigFactory.empty
+  def getActorSystemConfiguration(@nowarn("msg=never used") context: BundleContext): Config = ConfigFactory.empty
 
 }

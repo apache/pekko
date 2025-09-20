@@ -26,7 +26,6 @@ import pekko.dispatch.sysmsg.{ DeathWatchNotification, Watch }
 import pekko.event.AddressTerminatedTopic
 import pekko.remote.artery.ArteryMessage
 import pekko.remote.artery.ArteryTransport
-import pekko.util.unused
 
 /**
  * INTERNAL API
@@ -219,7 +218,7 @@ private[pekko] class RemoteWatcher(
    * Returns true if either has cluster or `pekko.remote.use-unsafe-remote-features-outside-cluster`
    * is enabled. Can be overridden when using RemoteWatcher as a superclass.
    */
-  protected def shouldWatch(@unused watchee: InternalActorRef): Boolean = {
+  protected def shouldWatch(@nowarn("msg=never used") watchee: InternalActorRef): Boolean = {
     // In this it is unnecessary if only created by RARP, but cluster needs it.
     // Cleaner than overriding Cluster watcher addWatch/removeWatch just for one boolean test
     remoteProvider.remoteSettings.UseUnsafeRemoteFeaturesWithoutCluster
