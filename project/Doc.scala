@@ -38,8 +38,6 @@ object Scaladoc extends AutoPlugin {
     inTask(doc)(
       Seq(
         Compile / scalacOptions ++= scaladocOptions(version.value, (ThisBuild / baseDirectory).value),
-        // -release caused build failures when generating javadoc:
-        Compile / scalacOptions --= Seq("-release", "8"),
         autoAPIMappings := CliOptions.scaladocAutoAPI.get)) ++
     Seq(Compile / validateDiagrams := true) ++
     CliOptions.scaladocDiagramsEnabled.ifTrue(Compile / doc := {
