@@ -17,7 +17,7 @@ import java.util.concurrent.{ Flow => JavaFlow }
 
 import org.apache.pekko
 import pekko.NotUsed
-import pekko.stream.scaladsl.{ Flow, JavaFlowSupport, Sink, Source }
+import pekko.stream.scaladsl.{ JavaFlowSupport, Sink, Source }
 import org.reactivestreams._
 
 class IterablePublisherViaJavaFlowPublisherTest extends PekkoPublisherVerification[Int] {

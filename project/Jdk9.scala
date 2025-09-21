@@ -17,9 +17,8 @@ import sbt._
 object Jdk9 extends AutoPlugin {
   import JdkOptions.JavaVersion._
 
-  // The version 17 is special for any Java versions >= 17
-  // and the version 21 is special for any Java versions >= 21
-  private val supportedJavaLTSVersions = List("17", "21")
+  // The version 21 is special for any Java versions >= 21
+  private val supportedJavaLTSVersions = List("21")
 
   lazy val CompileJdk9 = config("CompileJdk9").extend(Compile)
 
