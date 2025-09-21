@@ -26,6 +26,7 @@ import org.apache.pekko.stream.testkit.javadsl.TestSink;
 import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.testkit.javadsl.TestKit;
+import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.reactivestreams.Publisher;
@@ -262,5 +263,11 @@ public class SinkTest extends StreamTest {
         Source.from(Arrays.asList(1, 2, 3, 4)).runWith(Sink.exists(param -> param > 3), system);
     boolean anyMatch = cs.toCompletableFuture().get(100, TimeUnit.MILLISECONDS);
     assertTrue(anyMatch);
+  }
+
+  @Test
+  public void sinkMustBeAbleToUseCount() {
+    CompletionStage<Long> cs = Source.range(1, 10).runWith(Sink.count(), system);
+    Assert.assertEquals(10, cs.toCompletableFuture().join().longValue());
   }
 }
