@@ -57,14 +57,13 @@ object Jdk9 extends AutoPlugin {
   lazy val compileJdk9Settings = Seq(
     // following the scala-2.12, scala-sbt-1.0, ... convention
     unmanagedSourceDirectories := additionalSourceDirectories.value,
-    scalacOptions := PekkoBuild.DefaultScalacOptions.value ++ JdkOptions.targetJdkScalacOptions(scalaVersion.value),
-    javacOptions := PekkoBuild.DefaultJavacOptions ++ Seq("--release", JdkOptions.targetJavaVersion))
-
+    scalacOptions := PekkoBuild.DefaultScalacOptions.value ++ Seq("--release", majorVersion.toString),
+    javacOptions := PekkoBuild.DefaultJavacOptions ++ Seq("--release", majorVersion.toString))
   lazy val testJdk9Settings = Seq(
     // following the scala-2.12, scala-sbt-1.0, ... convention
     unmanagedSourceDirectories := additionalTestSourceDirectories.value,
-    scalacOptions := PekkoBuild.DefaultScalacOptions.value ++ Seq("-release", JdkOptions.targetJavaVersion),
-    javacOptions := PekkoBuild.DefaultJavacOptions ++ Seq("--release", JdkOptions.targetJavaVersion),
+    scalacOptions := PekkoBuild.DefaultScalacOptions.value ++ Seq("-release", majorVersion.toString),
+    javacOptions := PekkoBuild.DefaultJavacOptions ++ Seq("--release", majorVersion.toString),
     compile := compile.dependsOn(CompileJdk9 / compile).value,
     classpathConfiguration := TestJdk9,
     externalDependencyClasspath := (Test / externalDependencyClasspath).value)
