@@ -45,6 +45,7 @@ import pekko.stream.stage.OutHandler
     (createStageLogic(matPromise), matPromise.future)
   }
 
+  @scala.annotation.nowarn("msg=inferred structural type")
   private def createStageLogic(matPromise: Promise[M]) = new GraphStageLogic(shape) {
     import SetupStage._
 
@@ -88,6 +89,7 @@ import pekko.stream.stage.OutHandler
     (createStageLogic(matPromise), matPromise.future)
   }
 
+  @scala.annotation.nowarn("msg=inferred structural type")
   private def createStageLogic(matPromise: Promise[M]) = new GraphStageLogic(shape) {
     import SetupStage._
 

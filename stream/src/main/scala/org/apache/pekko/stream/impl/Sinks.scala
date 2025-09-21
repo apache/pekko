@@ -255,6 +255,7 @@ import org.reactivestreams.Subscriber
 
   override protected def initialAttributes: Attributes = DefaultAttributes.seqSink
 
+  @scala.annotation.nowarn("msg=inferred structural type")
   override def createLogicAndMaterializedValue(inheritedAttributes: Attributes) = {
     val p: Promise[That] = Promise()
     val logic = new GraphStageLogic(shape) with InHandler {
@@ -312,6 +313,7 @@ import org.reactivestreams.Subscriber
 
   override def toString: String = "QueueSink"
 
+  @scala.annotation.nowarn("msg=inferred structural type")
   override def createLogicAndMaterializedValue(inheritedAttributes: Attributes) = {
     val stageLogic = new GraphStageLogic(shape) with InHandler with SinkQueueWithCancel[T] {
 
