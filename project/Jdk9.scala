@@ -59,6 +59,7 @@ object Jdk9 extends AutoPlugin {
     unmanagedSourceDirectories := additionalSourceDirectories.value,
     scalacOptions := PekkoBuild.DefaultScalacOptions.value ++ Seq("-release", majorVersion.toString),
     javacOptions := PekkoBuild.DefaultJavacOptions ++ Seq("--release", majorVersion.toString))
+
   lazy val testJdk9Settings = Seq(
     // following the scala-2.12, scala-sbt-1.0, ... convention
     unmanagedSourceDirectories := additionalTestSourceDirectories.value,
