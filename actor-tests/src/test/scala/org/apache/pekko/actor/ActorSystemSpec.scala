@@ -88,6 +88,7 @@ object ActorSystemSpec {
 
   class SlowDispatcher(_config: Config, _prerequisites: DispatcherPrerequisites)
       extends MessageDispatcherConfigurator(_config, _prerequisites) {
+    @nowarn("msg=inferred structural type")
     private val instance = new Dispatcher(
       this,
       this.config.getString("id"),

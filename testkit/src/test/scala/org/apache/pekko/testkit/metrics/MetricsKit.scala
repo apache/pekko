@@ -192,6 +192,7 @@ private[pekko] object MetricsKit {
     override def matches(name: String, metric: Metric) = classOf[KnownOpsInTimespanTimer].isInstance(metric)
   }
 
+  @scala.annotation.nowarn("msg=inferred structural type")
   val GcMetricsFilter = new MetricFilter {
     val keyPattern = """.*\.gc\..*""".r.pattern
 
