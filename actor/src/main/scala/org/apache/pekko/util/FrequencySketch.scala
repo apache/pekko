@@ -29,10 +29,10 @@
 
 package org.apache.pekko.util
 
+import scala.annotation.nowarn
 import scala.util.hashing.MurmurHash3
 
 import org.apache.pekko.annotation.InternalApi
-import scala.annotation.nowarn
 
 /**
  * INTERNAL API
