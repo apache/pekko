@@ -119,7 +119,7 @@ jobs:
         # full version from it.
         scalaVersion: ["2.13.x", "3.3.x"]
         # temp remove 8, 11, 17, 21
-        javaVersion: [25-ea]
+        javaVersion: [25]
     env:
       DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
     steps:
