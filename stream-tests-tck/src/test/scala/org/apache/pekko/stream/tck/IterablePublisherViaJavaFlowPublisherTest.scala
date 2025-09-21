@@ -26,7 +26,7 @@ class IterablePublisherViaJavaFlowPublisherTest extends PekkoPublisherVerificati
     val sourceViaJavaFlowPublisher: JavaFlow.Publisher[Int] = Source(iterable(elements))
       .runWith(JavaFlowSupport.Sink.asPublisher(fanout = false))
 
-    val javaPublisherIntoPekkoSource: Source[Int, NotUsed] =
+    val javaFlowPublisherIntoPekkoSource: Source[Int, NotUsed] =
       JavaFlowSupport.Source.fromPublisher(sourceViaJavaFlowPublisher)
 
     javaFlowPublisherIntoPekkoSource
