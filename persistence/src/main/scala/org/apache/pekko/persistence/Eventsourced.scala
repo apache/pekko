@@ -628,6 +628,7 @@ private[persistence] trait Eventsourced
    * @param replayMax maximum number of messages to replay.
    * @param timeout recovery event timeout
    */
+  @nowarn("msg=inferred structural type")
   private def recoveryStarted(replayMax: Long, timeout: FiniteDuration) = new State {
 
     val timeoutCancellable = {
@@ -745,6 +746,7 @@ private[persistence] trait Eventsourced
    *
    * All incoming messages are stashed.
    */
+  @nowarn("msg=inferred structural type")
   private def recovering(recoveryBehavior: Receive, timeout: FiniteDuration) =
     new State {
 

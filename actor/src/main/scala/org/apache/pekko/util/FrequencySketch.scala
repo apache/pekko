@@ -29,6 +29,7 @@
 
 package org.apache.pekko.util
 
+import scala.annotation.nowarn
 import scala.util.hashing.MurmurHash3
 
 import org.apache.pekko.annotation.InternalApi
@@ -74,6 +75,7 @@ private[pekko] object FrequencySketch {
     implicit val StringHasher: StringHasher = new StringHasher(DefaultSeed)
 
     final class StringHasher(seed: Int) extends Hasher[String] {
+      @nowarn("msg=deprecated")
       override def hash(value: String): Int = MurmurHash3.stringHash(value, seed)
     }
   }

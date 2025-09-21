@@ -76,6 +76,7 @@ final case class Address private[pekko] (protocol: String, system: String, host:
   def hasGlobalScope: Boolean = host.isDefined
 
   // store hashCode
+  @scala.annotation.nowarn("msg=deprecated")
   @transient override lazy val hashCode: Int = scala.util.hashing.MurmurHash3.productHash(this)
 
   /**

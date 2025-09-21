@@ -64,6 +64,7 @@ import pekko.util.ByteString
     throw new UnsupportedOperationException("Not used")
 
   // TODO: Timeout on bind
+  @nowarn("msg=inferred structural type")
   override def createLogicAndMaterializedValue(inheritedAttributes: Attributes, eagerMaterialzer: Materializer) = {
     val bindingPromise = Promise[ServerBinding]()
 

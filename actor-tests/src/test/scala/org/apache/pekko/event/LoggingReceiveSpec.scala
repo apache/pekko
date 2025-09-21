@@ -104,6 +104,7 @@ class LoggingReceiveSpec extends AnyWordSpec with BeforeAndAfterAll {
           case null =>
         }
 
+        @scala.annotation.nowarn("msg=inferred structural type")
         val actor = TestActorRef(new Actor {
           def switch: Actor.Receive = { case "becomenull" => context.become(r, false) }
           def receive =
