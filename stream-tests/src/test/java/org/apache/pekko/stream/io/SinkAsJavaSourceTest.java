@@ -44,4 +44,12 @@ public class SinkAsJavaSourceTest extends StreamTest {
     java.util.stream.Stream<Integer> javaStream = Source.from(list).runWith(streamSink, system);
     assertEquals(list, javaStream.collect(Collectors.toList()));
   }
+
+  @Test
+  public void mustBeAbleToUseAsJavaStreamOnSink() throws Exception {
+    final List<Integer> list = Arrays.asList(1, 2, 3);
+    java.util.stream.Stream<Integer> javaStream =
+        Source.from(list).runWith(Sink.asJavaStream(), system);
+    assertEquals(list, javaStream.collect(Collectors.toList()));
+  }
 }

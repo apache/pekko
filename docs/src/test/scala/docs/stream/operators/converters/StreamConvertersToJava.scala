@@ -43,6 +43,15 @@ class StreamConvertersToJava extends PekkoSpec with Futures {
     jStream.count should be(5)
   }
 
+  "demonstrate materialization to Java8 streams with methods on Sink" in {
+    // #asJavaStreamOnSink
+    val source: Source[Int, NotUsed] = Source(0 to 9).filter(_ % 2 == 0)
+
+    val jStream: java.util.stream.Stream[Int] = source.runWith(Sink.asJavaStream[Int]())
+    // #asJavaStreamOnSink
+    jStream.count should be(5)
+  }
+
   "demonstrate conversion from Java8 streams" in {
     // #fromJavaStream
     def factory(): IntStream = IntStream.rangeClosed(0, 9)

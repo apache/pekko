@@ -50,6 +50,7 @@ These built-in sinks are available from @scala[`org.apache.pekko.stream.scaladsl
 
 | |Operator|Description|
 |--|--|--|
+|Sink|<a name="asjavastream"></a>@ref[asJavaStream](Sink/asJavaStream.md)|Create a sink which materializes into Java 8 `Stream` that can be run to trigger demand through the sink.|
 |Sink|<a name="aspublisher"></a>@ref[asPublisher](Sink/asPublisher.md)|Integration with Reactive Streams, materializes into a `org.reactivestreams.Publisher`.|
 |Sink|<a name="cancelled"></a>@ref[cancelled](Sink/cancelled.md)|Immediately cancel the stream|
 |Sink|<a name="collect"></a>@ref[collect](Sink/collect.md)|Collect all input elements using a Java @javadoc[Collector](java.util.stream.Collector).|
@@ -398,6 +399,7 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 * [alsoToAll](Source-or-Flow/alsoToAll.md)
 * [asFlowWithContext](Flow/asFlowWithContext.md)
 * [asInputStream](StreamConverters/asInputStream.md)
+* [asJavaStream](Sink/asJavaStream.md)
 * [asJavaStream](StreamConverters/asJavaStream.md)
 * [ask](Source-or-Flow/ask.md)
 * [ask](ActorFlow/ask.md)
