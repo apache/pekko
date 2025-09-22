@@ -200,4 +200,5 @@ ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.Acto
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.ActorMaterializer.isShutdown")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.ActorMaterializer.system")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.ActorMaterializer.this")
-
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.stream.impl.SetupStage")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.stream.impl.SetupStage$")
