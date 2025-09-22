@@ -216,6 +216,8 @@ object Sink {
    * A `Sink` that materializes this `Sink` itself as a `Source`.
    * The returned `Source` is a "live view" onto the `Sink` and only supports a single `Subscriber`.
    *
+   * Use [[BroadcastHub#sink]] if you need a `Source` that allows multiple subscribers.
+   *
    * Note: even if the `Source` is directly connected to the `Sink`, there is still an asynchronous boundary
    * between them; performance may be improved in the future.
    *

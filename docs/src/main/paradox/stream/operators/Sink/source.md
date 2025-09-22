@@ -14,6 +14,8 @@ A `Sink` that materializes this `Sink` itself as a `Source`, the returning `Sour
 
 A `Sink` that materialize this `Sink` itself as a `Source`, the returning `Source` can only have one subscriber.
 
+Use `BroadcastHub.sink` if you need a `Source` that allows multiple subscribers.
+
 ## Reactive Streams semantics
 
 @@@div { .callout }
