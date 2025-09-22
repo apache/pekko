@@ -1,6 +1,6 @@
 # Sink.source
 
-Always backpressure never cancel and never consume any elements from the stream.
+A `Sink` that materializes this `Sink` itself as a `Source`, the returning `Source` can only have one subscriber.
 
 @ref[Sink operators](../index.md#sink-operators)
 
@@ -12,7 +12,7 @@ Always backpressure never cancel and never consume any elements from the stream.
 
 ## Description
 
-A `Sink` that materialize this `Sink` itself as a `Source`.
+A `Sink` that materialize this `Sink` itself as a `Source`, the returning `Source` can only have one subscriber.
 
 ## Reactive Streams semantics
 
