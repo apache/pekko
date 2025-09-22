@@ -81,7 +81,7 @@ These built-in sinks are available from @scala[`org.apache.pekko.stream.scaladsl
 |Sink|<a name="queue"></a>@ref[queue](Sink/queue.md)|Materialize a `SinkQueue` that can be pulled to trigger demand through the sink.|
 |Sink|<a name="reduce"></a>@ref[reduce](Sink/reduce.md)|Apply a reduction function on the incoming elements and pass the result to the next invocation.|
 |Sink|<a name="seq"></a>@ref[seq](Sink/seq.md)|Collect values emitted from the stream into a collection.|
-|Sink|<a name="source"></a>@ref[source](Sink/source.md)|Always backpressure never cancel and never consume any elements from the stream.|
+|Sink|<a name="source"></a>@ref[source](Sink/source.md)|A `Sink` that materializes this `Sink` itself as a `Source`, the returning `Source` can only have one subscriber.|
 |Sink|<a name="takelast"></a>@ref[takeLast](Sink/takeLast.md)|Collect the last `n` values emitted from the stream into a collection.|
 
 ## Additional Sink and Source converters
