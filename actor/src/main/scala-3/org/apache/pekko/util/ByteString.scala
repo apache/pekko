@@ -539,7 +539,6 @@ object ByteString {
         length += bs.length
         i += 1
       }
-
       new ByteStrings(builder.result(), length)
     }
   }
@@ -875,9 +874,6 @@ sealed abstract class ByteString
 
   override def indexWhere(p: Byte => Boolean, from: Int): Int = iterator.indexWhere(p, from)
 
-  // optimized in subclasses
-  override def indexOf[B >: Byte](elem: B, from: Int): Int = super.indexOf(elem, from)
-
   // optimized version of indexOf for bytes, optimized in subclasses
   /**
    * Finds index of first occurrence of some byte in this ByteString after or at some start index.
@@ -925,6 +921,7 @@ sealed abstract class ByteString
    *
    * @return this ByteString copied into a byte array
    */
+  @nowarn("msg=easy to mistake")
   protected[ByteString] def toArray: Array[Byte] = toArray[Byte]
 
   final override def toArray[B >: Byte](implicit arg0: ClassTag[B]): Array[B] = {
@@ -934,6 +931,7 @@ sealed abstract class ByteString
     array
   }
 
+  @nowarn("msg=deprecated")
   final override def copyToArray[B >: Byte](xs: Array[B], start: Int): Int = {
     // super uses byteiterator
     copyToArray(xs, start, size.min(xs.size))
@@ -1053,7 +1051,7 @@ sealed abstract class ByteString
    */
   def decodeString(charset: Charset): String
 
-  /**
+  /*
    * Returns a ByteString which is the binary representation of this ByteString
    * if this ByteString is Base64-encoded.
    */
