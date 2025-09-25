@@ -234,26 +234,24 @@ object ByteString {
     override def indexOf[B >: Byte](elem: B, from: Int): Int = {
       if (from >= length) -1
       else {
-        var found = -1
         var i = math.max(from, 0)
-        while (i < length && found == -1) {
-          if (bytes(i) == elem) found = i
+        while (i < length) {
+          if (bytes(i) == elem) return i
           i += 1
         }
-        found
+        -1
       }
     }
 
     override def indexOf(elem: Byte, from: Int): Int = {
       if (from >= length) -1
       else {
-        var found = -1
         var i = math.max(from, 0)
-        while (i < length && found == -1) {
-          if (bytes(i) == elem) found = i
+        while (i < length) {
+          if (bytes(i) == elem) return i
           i += 1
         }
-        found
+        -1
       }
     }
 
@@ -261,13 +259,12 @@ object ByteString {
       if (from >= length || to <= from) -1
       else {
         val upto = math.min(to, length)
-        var found = -1
         var i = math.max(from, 0)
-        while (i < upto && found == -1) {
-          if (bytes(i) == elem) found = i
+        while (i < upto) {
+          if (bytes(i) == elem) return i
           i += 1
         }
-        found
+        -1
       }
     }
 
@@ -452,26 +449,24 @@ object ByteString {
     override def indexOf[B >: Byte](elem: B, from: Int): Int = {
       if (from >= length) -1
       else {
-        var found = -1
         var i = math.max(from, 0)
-        while (i < length && found == -1) {
-          if (bytes(startIndex + i) == elem) found = i
+        while (i < length) {
+          if (bytes(startIndex + i) == elem) return i
           i += 1
         }
-        found
+        -1
       }
     }
 
     override def indexOf(elem: Byte, from: Int): Int = {
       if (from >= length) -1
       else {
-        var found = -1
         var i = math.max(from, 0)
-        while (i < length && found == -1) {
-          if (bytes(startIndex + i) == elem) found = i
+        while (i < length) {
+          if (bytes(startIndex + i) == elem) return i
           i += 1
         }
-        found
+        -1
       }
     }
 
@@ -479,13 +474,12 @@ object ByteString {
       if (from >= length || to <= from) -1
       else {
         val upto = math.min(to, length)
-        var found = -1
         var i = math.max(from, 0)
-        while (i < upto && found == -1) {
-          if (bytes(startIndex + i) == elem) found = i
+        while (i < upto) {
+          if (bytes(startIndex + i) == elem) return i
           i += 1
         }
-        found
+        -1
       }
     }
 
