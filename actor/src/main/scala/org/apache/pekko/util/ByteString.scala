@@ -874,6 +874,9 @@ sealed abstract class ByteString
 
   override def indexWhere(p: Byte => Boolean, from: Int): Int = iterator.indexWhere(p, from)
 
+  // optimized in subclasses
+  override def indexOf[B >: Byte](elem: B, from: Int): Int = super.indexOf(elem, from)
+
   // optimized version of indexOf for bytes, optimized in subclasses
   /**
    * Finds index of first occurrence of some byte in this ByteString after or at some start index.
@@ -1051,7 +1054,7 @@ sealed abstract class ByteString
    */
   def decodeString(charset: Charset): String
 
-  /*
+  /**
    * Returns a ByteString which is the binary representation of this ByteString
    * if this ByteString is Base64-encoded.
    */
