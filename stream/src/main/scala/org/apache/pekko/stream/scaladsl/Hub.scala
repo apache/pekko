@@ -543,7 +543,8 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
      * a wakeup and update their position at the same time.
      *
      */
-    private[this] val consumerWheel = Array.fill[List[Consumer]](bufferSize * 2)(Nil)
+    private[this] val consumerWheel =
+      Array.fill[java.util.ArrayList[Consumer]](bufferSize * 2)(new util.ArrayList[Consumer]())
     private[this] var activeConsumers = 0
 
     override def preStart(): Unit = {
@@ -651,8 +652,10 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
       }
 
       // Notify registered consumers
-      consumerWheel.iterator.flatMap(_.iterator).foreach { consumer =>
-        consumer.callback.invoke(failMessage)
+      var idx = 0
+      while (idx < consumerWheel.length) {
+        consumerWheel(idx).forEach(_.callback.invoke(failMessage))
+        idx += 1
       }
       failStage(ex)
     }
@@ -666,18 +669,16 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
     private def findAndRemoveConsumer(id: Long, offset: Int): Consumer = {
       // TODO: Try to eliminate modulo division somehow...
       val wheelSlot = offset & WheelMask
-      var consumersInSlot = consumerWheel(wheelSlot)
-      // debug(s"consumers before removal $consumersInSlot")
-      var remainingConsumersInSlot: List[Consumer] = Nil
+      val consumersInSlot = consumerWheel(wheelSlot)
       var removedConsumer: Consumer = null
-
-      while (consumersInSlot.nonEmpty) {
-        val consumer = consumersInSlot.head
-        if (consumer.id != id) remainingConsumersInSlot = consumer :: remainingConsumersInSlot
-        else removedConsumer = consumer
-        consumersInSlot = consumersInSlot.tail
+      if (consumersInSlot.size() > 0) {
+        consumersInSlot.removeIf(consumer => {
+          if (consumer.id == id) {
+            removedConsumer = consumer
+            true
+          } else false
+        })
       }
-      consumerWheel(wheelSlot) = remainingConsumersInSlot
       removedConsumer
     }
 
@@ -708,7 +709,7 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
 
     private def addConsumer(consumer: Consumer, offset: Int): Unit = {
       val slot = offset & WheelMask
-      consumerWheel(slot) = consumer :: consumerWheel(slot)
+      consumerWheel(slot).add(consumer)
     }
 
     /*
