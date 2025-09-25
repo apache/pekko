@@ -77,17 +77,26 @@ trait ExecutorServiceFactory {
  */
 trait ExecutorServiceFactoryProvider {
   def createExecutorServiceFactory(id: String, threadFactory: ThreadFactory): ExecutorServiceFactory
+
+  /**
+   * Whether the executor service created by this factory should use virtual threads.
+   */
   def isVirtualized: Boolean = false // can be overridden by implementations
 
-  protected def createVirtualized(
-      threadFactory: ThreadFactory,
+  /**
+   * The starting number of the virtual thread name, if -1, the number will not be appended.
+   */
+  def virtualThreadStartNumber: Int = 0 // can be overridden by implementations
+
+  protected def createVirtualized(threadFactory: ThreadFactory,
       pool: ExecutorService with LoadMetrics,
-      prefixName: String): ExecutorService = {
+      prefixName: String,
+      startNumber: Int): ExecutorService = {
     // when virtualized, we need enhanced thread factory
     val factory: ThreadFactory = threadFactory match {
       case MonitorableThreadFactory(name, _, contextClassLoader, exceptionHandler, _) =>
         new ThreadFactory {
-          private val vtFactory = newVirtualThreadFactory(name, pool) // use the pool as the scheduler
+          private val vtFactory = newVirtualThreadFactory(name, startNumber, pool) // use the pool as the scheduler
 
           override def newThread(r: Runnable): Thread = {
             val vt = vtFactory.newThread(r)
@@ -96,7 +105,7 @@ trait ExecutorServiceFactoryProvider {
             vt
           }
         }
-      case _ => newVirtualThreadFactory(prefixName, pool); // use the pool as the scheduler
+      case _ => newVirtualThreadFactory(prefixName, startNumber, pool); // use the pool as the scheduler
     }
     // wrap the pool with virtualized executor service
     new VirtualizedExecutorService(

@@ -28,7 +28,7 @@ import pekko.dispatch.affinity.AffinityPoolConfigurator
 import pekko.dispatch.sysmsg._
 import pekko.event.EventStream
 import pekko.event.Logging.{ emptyMDC, Debug, Error, LogEventException, Warning }
-import pekko.util.{ Index, JavaVersion }
+import pekko.util.Index
 
 import com.typesafe.config.Config
 
@@ -412,14 +412,14 @@ abstract class MessageDispatcherConfigurator(_config: Config, val prerequisites:
 
 final class VirtualThreadExecutorConfigurator(config: Config, prerequisites: DispatcherPrerequisites)
     extends ExecutorServiceConfigurator(config, prerequisites) {
-  override def isVirtualized: Boolean = true
-
+  override def isVirtualized: Boolean = VirtualThreadSupport.isSupported
+  override def virtualThreadStartNumber: Int = config.getInt("virtual-thread-start-number")
   override def createExecutorServiceFactory(id: String, threadFactory: ThreadFactory): ExecutorServiceFactory = {
     import VirtualThreadSupport._
     val tf: ThreadFactory = threadFactory match {
       case MonitorableThreadFactory(name, _, contextClassLoader, exceptionHandler, _) =>
         new ThreadFactory {
-          private val vtFactory = newVirtualThreadFactory(name + "-" + id)
+          private val vtFactory = newVirtualThreadFactory(name + "-" + id, virtualThreadStartNumber)
 
           override def newThread(r: Runnable): Thread = {
             val vt = vtFactory.newThread(r)
@@ -428,7 +428,7 @@ final class VirtualThreadExecutorConfigurator(config: Config, prerequisites: Dis
             vt
           }
         }
-      case _ => newVirtualThreadFactory(prerequisites.settings.name + "-" + id);
+      case _ => newVirtualThreadFactory(prerequisites.settings.name + "-" + id, virtualThreadStartNumber);
     }
     new ExecutorServiceFactory {
       override def createExecutorService: ExecutorService with LoadMetrics = {
@@ -502,7 +502,7 @@ trait ThreadPoolExecutorServiceFactoryProvider extends ExecutorServiceFactoryPro
             case m: MonitorableThreadFactory => m.name + "-" + id
             case _                           => id
           }
-          createVirtualized(tf, pool, prefixName)
+          createVirtualized(tf, pool, prefixName, virtualThreadStartNumber)
         } else pool
       }
     }
@@ -514,8 +514,8 @@ class ThreadPoolExecutorConfigurator(config: Config, prerequisites: DispatcherPr
     extends ExecutorServiceConfigurator(config, prerequisites)
     with ThreadPoolExecutorServiceFactoryProvider {
   override val threadPoolConfig: ThreadPoolConfig = createThreadPoolConfigBuilder(config, prerequisites).config
-  override val isVirtualized: Boolean = threadPoolConfig.isVirtualized && JavaVersion.majorVersion >= 21
-
+  override val isVirtualized: Boolean = threadPoolConfig.isVirtualized && VirtualThreadSupport.isSupported
+  override def virtualThreadStartNumber: Int = config.getInt("virtual-thread-start-number")
   protected def createThreadPoolConfigBuilder(
       config: Config,
       @nowarn("msg=never used") prerequisites: DispatcherPrerequisites): ThreadPoolConfigBuilder = {

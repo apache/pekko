@@ -35,6 +35,19 @@ object ForkJoinPoolVirtualThreadSpec {
       |      parallelism-max = 2
       |      parallelism-min = 2
       |      virtualize = on
+      |      virtual-thread-start-number = 0
+      |    }
+      |  }
+      |  task-dispatcher-short {
+      |    mailbox-type = "org.apache.pekko.dispatch.SingleConsumerOnlyUnboundedMailbox"
+      |    throughput = 5
+      |    executor = "fork-join-executor"
+      |    fork-join-executor {
+      |      parallelism-factor = 2
+      |      parallelism-max = 2
+      |      parallelism-min = 2
+      |      virtualize = on
+      |      virtual-thread-start-number = -1
       |    }
       |  }
       |}
@@ -61,6 +74,14 @@ class ForkJoinPoolVirtualThreadSpec extends PekkoSpec(ForkJoinPoolVirtualThreadS
         actor ! "ping"
         expectMsgPF() { case name: String =>
           name should include("ForkJoinPoolVirtualThreadSpec-custom.task-dispatcher-virtual-thread-")
+        }
+      }
+
+      val actor2 = system.actorOf(Props(new ThreadNameActor).withDispatcher("custom.task-dispatcher-short"))
+      for (_ <- 1 to 1000) {
+        actor2 ! "ping"
+        expectMsgPF() { case name: String =>
+          name should include("ForkJoinPoolVirtualThreadSpec-custom.task-dispatcher-short-virtual-thread")
         }
       }
     }

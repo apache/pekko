@@ -28,7 +28,7 @@ import pekko.util.JavaVersion
 
 @InternalApi
 private[dispatch] object VirtualThreadSupport {
-  val zero = java.lang.Long.valueOf(0L)
+  private val zero = java.lang.Long.valueOf(0L)
   private val lookup = MethodHandles.publicLookup()
 
   /**
@@ -57,19 +57,46 @@ private[dispatch] object VirtualThreadSupport {
 
   /**
    * Create a virtual thread factory with the default Virtual Thread executor.
+   * @param prefix the prefix of the virtual thread name.
+   * @param start the starting number of the virtual thread name, if -1, the number will not be appended.
    */
-  def newVirtualThreadFactory(prefix: String): ThreadFactory = {
+  def newVirtualThreadFactory(prefix: String, start: Int): ThreadFactory = {
+    newVirtualThreadFactory(prefix, start, null)
+  }
+
+  /**
+   * Create a virtual thread factory with the default Virtual Thread executor.
+   * @param prefix the prefix of the virtual thread name.
+   * @param start the starting number of the virtual thread name, if -1, the number will not be appended.
+   * @param executor the executor to be used as the scheduler of virtual thread. If null, the default scheduler will be used.
+   */
+  def newVirtualThreadFactory(prefix: String, start: Int, executor: ExecutorService): ThreadFactory = {
     require(isSupported, "Virtual thread is not supported.")
+    require(prefix != null && prefix.nonEmpty, "prefix should not be null or empty.")
     try {
       val builderClass = ClassLoader.getSystemClassLoader.loadClass("java.lang.Thread$Builder")
       val ofVirtualClass = ClassLoader.getSystemClassLoader.loadClass("java.lang.Thread$Builder$OfVirtual")
       val ofVirtualMethod = lookup.findStatic(classOf[Thread], "ofVirtual", MethodType.methodType(ofVirtualClass))
       var builder = ofVirtualMethod.invoke()
-      val nameMethod = lookup.findVirtual(ofVirtualClass, "name",
-        MethodType.methodType(ofVirtualClass, classOf[String], classOf[Long]))
-      // TODO support replace scheduler when we drop Java 8 support
+      // set the name
+      if (start <= -1) {
+        val nameMethod = lookup.findVirtual(ofVirtualClass, "name",
+          MethodType.methodType(ofVirtualClass, classOf[String]))
+        builder = nameMethod.invoke(builder, prefix + "-virtual-thread")
+      } else {
+        val nameMethod = lookup.findVirtual(ofVirtualClass, "name",
+          MethodType.methodType(ofVirtualClass, classOf[String], classOf[Long]))
+        builder = nameMethod.invoke(builder, prefix + "-virtual-thread-", zero)
+      }
+      // set the scheduler
+      if (executor ne null) {
+        // Use reflection here, method handle is stricter on access control
+        val clazz = builder.getClass
+        val field = clazz.getDeclaredField("scheduler")
+        field.setAccessible(true)
+        field.set(builder, executor)
+      }
       val factoryMethod = lookup.findVirtual(builderClass, "factory", MethodType.methodType(classOf[ThreadFactory]))
-      builder = nameMethod.invoke(builder, prefix + "-virtual-thread-", zero)
       factoryMethod.invoke(builder).asInstanceOf[ThreadFactory]
     } catch {
       case NonFatal(e) =>
@@ -78,32 +105,9 @@ private[dispatch] object VirtualThreadSupport {
     }
   }
 
-  /**
-   * Create a virtual thread factory with the specified executor as the scheduler of virtual thread.
-   */
-  def newVirtualThreadFactory(prefix: String, executor: ExecutorService): ThreadFactory =
-    try {
-      val builderClass = ClassLoader.getSystemClassLoader.loadClass("java.lang.Thread$Builder")
-      val ofVirtualClass = ClassLoader.getSystemClassLoader.loadClass("java.lang.Thread$Builder$OfVirtual")
-      val ofVirtualMethod = classOf[Thread].getDeclaredMethod("ofVirtual")
-      var builder = ofVirtualMethod.invoke(null)
-      if (executor ne null) {
-        val clazz = builder.getClass
-        val field = clazz.getDeclaredField("scheduler")
-        field.setAccessible(true)
-        field.set(builder, executor)
-      }
-      val nameMethod = ofVirtualClass.getDeclaredMethod("name", classOf[String], classOf[Long])
-      val factoryMethod = builderClass.getDeclaredMethod("factory")
-      builder = nameMethod.invoke(builder, prefix + "-virtual-thread-", zero)
-      factoryMethod.invoke(builder).asInstanceOf[ThreadFactory]
-    } catch {
-      case NonFatal(e) =>
-        // --add-opens java.base/java.lang=ALL-UNNAMED
-        throw new UnsupportedOperationException("Failed to create virtual thread factory", e)
-    }
-
   object CarrierThreadFactory extends ForkJoinPool.ForkJoinWorkerThreadFactory {
+    // --add-opens java.base/java.lang=ALL-UNNAMED
+    // --add-opens java.base/jdk.internal.misc=ALL-UNNAMED
     private val clazz = ClassLoader.getSystemClassLoader.loadClass("jdk.internal.misc.CarrierThread")
     // TODO lookup.findClass is only available in Java 9
     private val constructor = clazz.getDeclaredConstructor(classOf[ForkJoinPool])
