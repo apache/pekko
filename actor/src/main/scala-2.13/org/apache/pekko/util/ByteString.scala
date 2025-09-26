@@ -233,26 +233,24 @@ object ByteString {
     override def indexOf[B >: Byte](elem: B, from: Int): Int = {
       if (from >= length) -1
       else {
-        var found = -1
         var i = math.max(from, 0)
-        while (i < length && found == -1) {
-          if (bytes(i) == elem) found = i
+        while (i < length) {
+          if (bytes(i) == elem) return i
           i += 1
         }
-        found
+        -1
       }
     }
 
     override def indexOf(elem: Byte, from: Int): Int = {
       if (from >= length) -1
       else {
-        var found = -1
         var i = math.max(from, 0)
-        while (i < length && found == -1) {
-          if (bytes(i) == elem) found = i
+        while (i < length) {
+          if (bytes(i) == elem) return i
           i += 1
         }
-        found
+        -1
       }
     }
 
@@ -450,13 +448,12 @@ object ByteString {
     override def indexOf(elem: Byte, from: Int): Int = {
       if (from >= length) -1
       else {
-        var found = -1
         var i = math.max(from, 0)
-        while (i < length && found == -1) {
-          if (bytes(startIndex + i) == elem) found = i
+        while (i < length) {
+          if (bytes(startIndex + i) == elem) return i
           i += 1
         }
-        found
+        -1
       }
     }
 
@@ -1048,7 +1045,7 @@ sealed abstract class ByteString
    */
   def decodeString(charset: Charset): String
 
-  /*
+  /**
    * Returns a ByteString which is the binary representation of this ByteString
    * if this ByteString is Base64-encoded.
    */
