@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-# Remove deprecated method in Scheduler
+# Removing Scala 2.12 support allowed us to remove some compatibility classes
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.compat.PartialFunction")
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.compat.PartialFunction$")
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.util.ccompat.ccompatUsedUntil213")

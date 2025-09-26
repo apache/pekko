@@ -533,7 +533,7 @@ Scala has proven the most viable way to do it, as long as you keep the following
 
 1. Use `scala.jdk.javaapi.OptionConverters` to translate `Option`s to Java `Optional`s (or vice versa).
 
-1. Use `org.apache.pekko.util.FunctionConverters` to translate Scala Functions to Java Functions (or vice versa).
+1. Use `scala.jdk.javapi.FunctionConverters` to translate Scala Functions to Java Functions (or vice versa).
  
 1. Make sure there are Java tests or sample code touching all parts of the API
 

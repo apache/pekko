@@ -45,7 +45,7 @@ class StreamConvertersSpec extends StreamSpec with DefaultTimeout {
     import java.util.stream.IntStream
     import java.util.stream.Stream
 
-    import pekko.util.FunctionConverters._
+    import scala.jdk.FunctionConverters._
 
     def javaStreamInts =
       IntStream.iterate(1,

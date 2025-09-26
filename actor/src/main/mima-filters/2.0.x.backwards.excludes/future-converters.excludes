@@ -15,11 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
-# Result of adding the Scala 3 inline keyword, these methods are no longer visible as ordinary callable methods
-ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.util.FutureConverters#CompletionStageOps.asScala$extension")
-ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.util.FutureConverters#CompletionStageOps.asScala")
-ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.util.FutureConverters#FutureOps.asJava$extension")
-ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.util.FutureConverters#FutureOps.asJava")
+# FutureConverters was removed - you should use the Scala built-in FutureConverters
+# Pekko Utils for ExecutionContexts were removed - you should use the Scala built-in methods instead
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.util.FutureConverters")
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.util.FutureConverters$")
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.util.FutureConverters$CompletionStageOps")

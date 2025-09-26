@@ -92,7 +92,8 @@ final case class ActorIdentity(correlationId: Any, ref: Option[ActorRef]) {
   if (ref.isDefined && (ref.get eq null)) {
     throw new IllegalArgumentException(
       "ActorIdentity created with ref = Some(null) is not allowed, " +
-      "this could happen when serializing with Scala 2.12 and deserializing with Scala 2.11 which is not supported.")
+      "this could happen when serializing with one version of Scala and deserializing with another version. " +
+      "This is unexpected and should be reported to Apache Pekko as a bug.")
   }
 
   /**
