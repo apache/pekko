@@ -793,6 +793,61 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       compact.indexOf('g'.toByte, 5) should ===(5)
       compact.indexOf('g'.toByte, 6) should ===(-1)
     }
+    "indexOf from/to" in {
+      ByteString.empty.indexOf(5.toByte, -1, 10) should ===(-1)
+      ByteString.empty.indexOf(5.toByte, 0, 1) should ===(-1)
+      ByteString.empty.indexOf(5.toByte, 1, -1) should ===(-1)
+      val byteString1 = ByteString1.fromString("abc")
+      byteString1.indexOf('d'.toByte, -1, 1) should ===(-1)
+      byteString1.indexOf('a'.toByte, -1, 1) should ===(0)
+      byteString1.indexOf('a'.toByte, 0, 1) should ===(0)
+      byteString1.indexOf('a'.toByte, 0, 0) should ===(-1)
+      byteString1.indexOf('a'.toByte, 1, 2) should ===(-1)
+
+      val array = Array[Byte]('x', 'y', 'z', 'a', 'b', 'c')
+      val byteString2 = ByteString1(array, 3, 2)
+      byteString2.indexOf('x'.toByte, -1, 3) should ===(-1)
+      byteString2.indexOf('x'.toByte, 0, 3) should ===(-1)
+      byteString2.indexOf('a'.toByte, -1, 1) should ===(0)
+      byteString2.indexOf('a'.toByte, 0, 0) should ===(-1)
+      byteString2.indexOf('a'.toByte, 1, 2) should ===(-1)
+
+      val byteStrings = ByteStrings(ByteString1.fromString("abc"), ByteString1.fromString("efg"))
+      byteStrings.indexOf('c'.toByte, -1, 6) should ===(2)
+      byteStrings.indexOf('c'.toByte, 0, 6) should ===(2)
+      byteStrings.indexOf('c'.toByte, 2, 3) should ===(2)
+      byteStrings.indexOf('c'.toByte, 2, 2) should ===(-1)
+      byteStrings.indexOf('c'.toByte, 3, 4) should ===(-1)
+
+      byteStrings.indexOf('e'.toByte, -1, 6) should ===(3)
+      byteStrings.indexOf('e'.toByte, 0, 4) should ===(3)
+      byteStrings.indexOf('e'.toByte, 1, 4) should ===(3)
+      byteStrings.indexOf('e'.toByte, 4, 5) should ===(-1)
+
+      byteStrings.indexOf('g'.toByte, -1, 6) should ===(5)
+      byteStrings.indexOf('g'.toByte, 0, 5) should ===(-1)
+
+      val compact = byteStrings.compact
+      compact.indexOf('c'.toByte, -1, 6) should ===(2)
+      compact.indexOf('c'.toByte, 0, 6) should ===(2)
+      compact.indexOf('c'.toByte, 2, 3) should ===(2)
+      compact.indexOf('c'.toByte, 2, 2) should ===(-1)
+      compact.indexOf('c'.toByte, 3, 4) should ===(-1)
+
+      compact.indexOf('e'.toByte, -1, 6) should ===(3)
+      compact.indexOf('e'.toByte, 0, 4) should ===(3)
+      compact.indexOf('e'.toByte, 1, 4) should ===(3)
+      compact.indexOf('e'.toByte, 4, 5) should ===(-1)
+
+      compact.indexOf('g'.toByte, -1, 6) should ===(5)
+      compact.indexOf('g'.toByte, 0, 5) should ===(-1)
+
+      val byteStringLong = ByteString1.fromString("abcdefghijklmnopqrstuvwxyz")
+      byteStringLong.indexOf('m', 2, 24) should ===(12)
+      byteStringLong.indexOf('z', 2, 26) should ===(25)
+      byteStringLong.indexOf('z', 2, 24) should ===(-1)
+      byteStringLong.indexOf('a', 2, 24) should ===(-1)
+    }
     "copyToArray" in {
       val byteString = ByteString(1, 2) ++ ByteString(3) ++ ByteString(4)
 
