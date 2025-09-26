@@ -454,7 +454,6 @@ object ByteString {
           i += 1
         }
         -1
-        found
       }
     }
 
