@@ -282,18 +282,6 @@ object ByteString {
       }
     }
 
-    // does not range check - assumes caller has checked bounds
-    private def getLong(index: Int): Long = {
-      (bytes(index).toLong & 0xFF) << 56 |
-      (bytes(index + 1).toLong & 0xFF) << 48 |
-      (bytes(index + 2).toLong & 0xFF) << 40 |
-      (bytes(index + 3).toLong & 0xFF) << 32 |
-      (bytes(index + 4).toLong & 0xFF) << 24 |
-      (bytes(index + 5).toLong & 0xFF) << 16 |
-      (bytes(index + 6).toLong & 0xFF) << 8 |
-      (bytes(index + 7).toLong & 0xFF)
-    }
-
     private def unrolledFirstIndexOf(fromIndex: Int, byteCount: Int, value: Byte): Int = {
       if (bytes(fromIndex) == value) fromIndex
       else if (byteCount == 1) -1
@@ -538,19 +526,6 @@ object ByteString {
         }
         -1
       }
-    }
-
-    // does not range check - assumes caller has checked bounds
-    private def getLong(index: Int): Long = {
-      val checkedIndex = startIndex + index
-      (bytes(checkedIndex).toLong & 0xFF) << 56 |
-      (bytes(checkedIndex + 1).toLong & 0xFF) << 48 |
-      (bytes(checkedIndex + 2).toLong & 0xFF) << 40 |
-      (bytes(checkedIndex + 3).toLong & 0xFF) << 32 |
-      (bytes(checkedIndex + 4).toLong & 0xFF) << 24 |
-      (bytes(checkedIndex + 5).toLong & 0xFF) << 16 |
-      (bytes(checkedIndex + 6).toLong & 0xFF) << 8 |
-      (bytes(checkedIndex + 7).toLong & 0xFF)
     }
 
     // the calling code already adds the startIndex so this method does not need to
