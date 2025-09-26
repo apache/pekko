@@ -219,9 +219,10 @@ Copyright EPFL and Lightbend, Inc.
 
 ---------------
 
-pekko-actor contains code from Netty in `org.apache.pekko.io.dns.DnsSettings.scala`
-which was released under an Apache 2.0 license.
+pekko-actor contains code from Netty which was released under an Apache 2.0 license.
 Copyright 2014 The Netty Project
+- actor/src/main/scala/org/apache/pekko/io/dns/DnsSettings.scala
+- actor/src/main/scala/org/apache/pekko/util/SWARUtil.scala
 
 ---------------
 
