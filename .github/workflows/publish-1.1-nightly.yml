@@ -20,9 +20,8 @@
 name: Publish nightly 1.1 snapshots
 
 on:
+  # no longer scheduled, but can be triggered manually
   workflow_dispatch:
-  schedule:
-    - cron: "0 0 * * *"
 
 permissions:
   contents: read
