@@ -270,16 +270,29 @@ object ByteString {
     }
 
     override def indexOf(elem: Byte, from: Int, to: Int): Int = {
-      if (from >= length || to <= from) -1
-      else {
-        val upto = math.min(to, length)
-        var i = math.max(from, 0)
-        while (i < upto) {
-          if (bytes(i) == elem) return i
-          i += 1
-        }
-        -1
+      val fromIndex = math.max(0, from)
+      val toIndex = math.min(to, length)
+      if (fromIndex >= toIndex) return -1
+      val searchLength = toIndex - fromIndex
+      var offset = fromIndex
+      val byteCount = searchLength & 7
+      if (byteCount > 0) {
+        val index = unrolledFirstIndexOf(fromIndex, byteCount, elem)
+        if (index != -1) return index
+        offset += byteCount
+        if (offset == length) return -1
       }
+      val longCount = searchLength >>> 3
+      val pattern = SWARUtil.compilePattern(elem)
+      var i = 0
+      while (i < longCount) {
+        val word = SWARUtil.getLong(bytes, offset)
+        val result = SWARUtil.applyPattern(word, pattern)
+        if (result != 0) return offset + SWARUtil.getIndex(result)
+        offset += java.lang.Long.BYTES
+        i += 1
+      }
+      -1
     }
 
     private def unrolledFirstIndexOf(fromIndex: Int, byteCount: Int, value: Byte): Int = {
@@ -516,16 +529,30 @@ object ByteString {
     }
 
     override def indexOf(elem: Byte, from: Int, to: Int): Int = {
-      if (from >= length || to <= from) -1
-      else {
-        val upto = math.min(to, length)
-        var i = math.max(from, 0)
-        while (i < upto) {
-          if (bytes(startIndex + i) == elem) return i
-          i += 1
-        }
-        -1
+      val fromIndex = math.max(0, from)
+      val toIndex = math.min(to, length)
+      if (fromIndex >= toIndex) return -1
+      val searchLength = toIndex - fromIndex
+      var offset = fromIndex
+      val byteCount = searchLength & 7
+      if (byteCount > 0) {
+        val index = unrolledFirstIndexOf(fromIndex + startIndex, byteCount, elem)
+        if (index != -1) return index - startIndex
+        offset += byteCount
+        if (offset == length) return -1
       }
+      val longCount = searchLength >>> 3
+      val pattern = SWARUtil.compilePattern(elem)
+      var i = 0
+      while (i < longCount) {
+        val word = SWARUtil.getLong(bytes, startIndex + offset)
+        val result = SWARUtil.applyPattern(word, pattern)
+        if (result != 0) return offset + SWARUtil.getIndex(result)
+        offset += java.lang.Long.BYTES
+        i += 1
+      }
+      -1
+
     }
 
     // the calling code already adds the startIndex so this method does not need to
