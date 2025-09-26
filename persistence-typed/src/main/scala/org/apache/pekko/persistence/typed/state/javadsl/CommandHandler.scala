@@ -22,8 +22,9 @@ import java.util.function.Supplier
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.persistence.typed.state.internal._
-import pekko.util.FunctionConverters._
 import pekko.util.OptionVal
+
+import scala.jdk.FunctionConverters._
 
 /**
  * FunctionalInterface for reacting on commands

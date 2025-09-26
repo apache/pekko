@@ -18,7 +18,7 @@ import java.util.function.{ BiFunction, Function => JFunction, Predicate, Suppli
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.util.FunctionConverters._
+import scala.jdk.FunctionConverters._
 import pekko.util.OptionVal
 
 /**

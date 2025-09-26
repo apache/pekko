@@ -1261,19 +1261,6 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
     }
 
     "serialize correctly" when {
-      // note that this is serialization with Java serialization
-      // real serialization is in pekko-remote
-      if (util.Properties.versionNumberString.startsWith("2.12")) {
-        "parsing regular ByteString1C as compat" in {
-          val oldSerd =
-            "aced00057372002d6f72672e6170616368652e70656b6b6f2e7574696c2e42797465537472696e672442797465537472696e67314336e9eed0afcfe4a40200015b000562797465737400025b42787200276f72672e6170616368652e70656b6b6f2e7574696c2e436f6d7061637442797465537472696e67c819c2e689ed6cad0200007870757200025b42acf317f8060854e002000078700000000a74657374737472696e67"
-          val bs = ByteString("teststring", "UTF8")
-          val str = hexFromSer(bs)
-
-          str should be(oldSerd)
-        }
-      }
-
       "given all types of ByteString" in {
         check { (bs: ByteString) =>
           testSer(bs)

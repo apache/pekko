@@ -16,11 +16,11 @@ package org.apache.pekko.actor.testkit.typed
 import scala.annotation.nowarn
 import scala.concurrent.duration.FiniteDuration
 import scala.jdk.DurationConverters._
+import scala.jdk.FunctionConverters._
 
 import org.apache.pekko
 import pekko.actor.typed.{ ActorRef, Behavior, Props }
 import pekko.annotation.{ DoNotInherit, InternalApi }
-import pekko.util.FunctionConverters._
 
 /**
  * All tracked effects for the [[pekko.actor.testkit.typed.scaladsl.BehaviorTestKit]] and
