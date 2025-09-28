@@ -213,18 +213,18 @@ class SupervisorSpec
   override def beforeEach() = {}
 
   def ping(pingPongActor: ActorRef) = {
-    Await.result(pingPongActor.?(Ping)(DilatedTimeout), DilatedTimeout) should ===(PongMessage)
+    Await.result(pingPongActor.?(Ping)(DilatedTimeout, self), DilatedTimeout) should ===(PongMessage)
     expectMsg(Timeout, PingMessage)
   }
 
   def kill(pingPongActor: ActorRef) = {
-    val result = pingPongActor.?(DieReply)(DilatedTimeout)
+    val result = pingPongActor.?(DieReply)(DilatedTimeout, self)
     expectMsg(Timeout, ExceptionMessage) // this is sent from PingPongActor's postRestart()
     intercept[RuntimeException] { Await.result(result, DilatedTimeout) }
   }
 
   def killExpectNoRestart(pingPongActor: ActorRef) = {
-    val result = pingPongActor.?(DieReply)(DilatedTimeout)
+    val result = pingPongActor.?(DieReply)(DilatedTimeout, self)
     expectNoMessage(500.milliseconds)
     intercept[RuntimeException] { Await.result(result, DilatedTimeout) }
   }
@@ -294,7 +294,7 @@ class SupervisorSpec
     "not restart temporary actor" in {
       val (temporaryActor, _) = temporaryActorAllForOne
 
-      intercept[RuntimeException] { Await.result(temporaryActor.?(DieReply)(DilatedTimeout), DilatedTimeout) }
+      intercept[RuntimeException] { Await.result(temporaryActor.?(DieReply)(DilatedTimeout, self), DilatedTimeout) }
 
       expectNoMessage(1.second)
     }
@@ -447,7 +447,7 @@ class SupervisorSpec
         EventFilter[PreRestartException]("Don't wanna!", occurrences = 1),
         EventFilter[PostRestartException]("Don't wanna!", occurrences = 1)) {
         intercept[RuntimeException] {
-          Await.result(dyingActor.?(DieReply)(DilatedTimeout), DilatedTimeout)
+          Await.result(dyingActor.?(DieReply)(DilatedTimeout, self), DilatedTimeout)
         }
       }
 

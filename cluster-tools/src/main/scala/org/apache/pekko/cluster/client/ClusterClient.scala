@@ -989,7 +989,7 @@ final class ClusterReceptionist(pubSubMediator: ActorRef, settings: ClusterRecep
       failureDetectionInterval,
       failureDetectionInterval,
       self,
-      CheckDeadlines)(context.dispatcher)
+      CheckDeadlines)(context.dispatcher, self)
 
   override def preStart(): Unit = {
     super.preStart()

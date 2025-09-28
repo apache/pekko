@@ -126,7 +126,7 @@ final class PersistencePluginProxy(config: Config) extends Actor with Stash with
         }
       }
 
-      context.system.scheduler.scheduleOnce(initTimeout, self, InitTimeout)(context.dispatcher)
+      context.system.scheduler.scheduleOnce(initTimeout, self, InitTimeout)(context.dispatcher, self)
     }
   }
 

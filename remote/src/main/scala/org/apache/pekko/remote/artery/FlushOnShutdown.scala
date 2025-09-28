@@ -47,7 +47,7 @@ private[remote] class FlushOnShutdown(done: Promise[Done], timeout: FiniteDurati
   var remaining = Map.empty[UniqueAddress, Int]
 
   private val timeoutTask =
-    context.system.scheduler.scheduleOnce(timeout, self, FlushOnShutdown.Timeout)(context.dispatcher)
+    context.system.scheduler.scheduleOnce(timeout, self, FlushOnShutdown.Timeout)(context.dispatcher, self)
 
   override def preStart(): Unit = {
     try {
