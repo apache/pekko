@@ -583,6 +583,42 @@ object TestKit {
     shutdownActorSystem(actorSystem, 10.seconds, verifySystemShutdown)
   }
 
+
+  /**
+   * Java API: Shut down an actor system and wait for termination.
+   * On failure debug output will be logged about the remaining actors in the system.
+   *
+   * The `duration` is dilated by the timefactor. This overloaded
+   * method accepts `java.time.Duration`.
+   * 
+   * If verifySystemShutdown is true, then an exception will be thrown on failure.
+   * 
+   * @since 1.3.0
+   */
+  def shutdownActorSystem(
+      actorSystem: ActorSystem,
+      duration: java.time.Duration): Unit = {
+    import scala.jdk.DurationConverters._
+    pekko.testkit.TestKit.shutdownActorSystem(actorSystem, duration.toScala)
+  }
+
+  /**
+   * Java API: Shut down an actor system and wait for termination.
+   * On failure debug output will be logged about the remaining actors in the system.
+   *
+   * The `duration` is dilated by the timefactor. This overloaded
+   * method accepts `java.time.Duration`.
+   * 
+   * @since 1.3.0
+   */
+  def shutdownActorSystem(
+      actorSystem: ActorSystem,
+      duration: java.time.Duration,
+      verifySystemShutdown: Boolean): Unit = {
+    import scala.jdk.DurationConverters._
+    pekko.testkit.TestKit.shutdownActorSystem(actorSystem, duration.toScala, verifySystemShutdown)
+  }
+
 }
 
 /**
