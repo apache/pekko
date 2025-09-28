@@ -2286,7 +2286,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * '''Cancels when''' downstream cancels
    *
    * @param fallback Function which produces a Source to continue the stream
-   * @since 2.0.0
+   * @since 1.3.0
    */
   def onErrorResume[T >: Out](fallback: function.Function[_ >: Throwable, _ <: Graph[SourceShape[T], NotUsed]])
       : javadsl.Flow[In, T, Mat] = new Flow(delegate.recoverWith {
@@ -2310,7 +2310,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * @param clazz the class object of the failure cause
    * @param fallback Function which produces a Source to continue the stream
-   * @since 2.0.0
+   * @since 1.3.0
    */
   def onErrorResume[T >: Out](
       clazz: Class[_ <: Throwable],
@@ -2336,7 +2336,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * @param predicate Predicate which determines if the exception should be handled
    * @param function Function which produces a Source to continue the stream
-   * @since 2.0.0
+   * @since 1.3.0
    */
   def onErrorResume[T >: Out](
       predicate: function.Predicate[_ >: Throwable],

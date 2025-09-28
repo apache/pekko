@@ -2556,7 +2556,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Cancels when''' downstream cancels
    *
    * @param fallback Function which produces a Source to continue the stream
-   * @since 2.0.0
+   * @since 1.3.0
    */
   def onErrorResume[T >: Out](
       fallback: function.Function[_ >: Throwable, _ <: Graph[SourceShape[T], NotUsed]]): javadsl.Source[T, Mat] =
@@ -2581,7 +2581,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * @param clazz the class object of the failure cause
    * @param fallback Function which produces a Source to continue the stream
-   * @since 2.0.0
+   * @since 1.3.0
    */
   def onErrorResume[T >: Out](
       clazz: Class[_ <: Throwable],
@@ -2607,7 +2607,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * @param predicate Predicate which determines if the exception should be handled
    * @param fallback Function which produces a Source to continue the stream
-   * @since 2.0.0
+   * @since 1.3.0
    */
   def onErrorResume[T >: Out](
       predicate: function.Predicate[_ >: Throwable],
