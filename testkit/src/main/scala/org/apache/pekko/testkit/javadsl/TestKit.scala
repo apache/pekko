@@ -583,16 +583,15 @@ object TestKit {
     shutdownActorSystem(actorSystem, 10.seconds, verifySystemShutdown)
   }
 
-
   /**
-   * Java API: Shut down an actor system and wait for termination.
+   * Shut down an actor system and wait for termination.
    * On failure debug output will be logged about the remaining actors in the system.
    *
    * The `duration` is dilated by the timefactor. This overloaded
    * method accepts `java.time.Duration`.
-   * 
+   *
    * If verifySystemShutdown is true, then an exception will be thrown on failure.
-   * 
+   *
    * @since 1.3.0
    */
   def shutdownActorSystem(
@@ -603,12 +602,12 @@ object TestKit {
   }
 
   /**
-   * Java API: Shut down an actor system and wait for termination.
+   * Shut down an actor system and wait for termination.
    * On failure debug output will be logged about the remaining actors in the system.
    *
    * The `duration` is dilated by the timefactor. This overloaded
    * method accepts `java.time.Duration`.
-   * 
+   *
    * @since 1.3.0
    */
   def shutdownActorSystem(
