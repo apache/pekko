@@ -177,5 +177,7 @@ public class TestKitApiTest {
     testKit.unwatch(actorRef);
 
     testKit.setAutoPilot(autoPilot);
+
+    TestKit.shutdownActorSystem(testKit.getSystem(), Duration.ofSeconds(10));
   }
 }
