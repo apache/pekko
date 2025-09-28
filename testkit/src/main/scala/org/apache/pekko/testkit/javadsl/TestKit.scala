@@ -913,8 +913,8 @@ object TestKit {
   def shutdownActorSystem(
       actorSystem: ActorSystem,
       duration: java.time.Duration): Unit = {
-    import scala.jdk.DurationConverters._
-    pekko.testkit.TestKit.shutdownActorSystem(actorSystem, duration.toScala)
+    import pekko.util.JavaDurationConverters._
+    pekko.testkit.TestKit.shutdownActorSystem(actorSystem, duration.asScala)
   }
 
   /**
@@ -930,8 +930,8 @@ object TestKit {
       actorSystem: ActorSystem,
       duration: java.time.Duration,
       verifySystemShutdown: Boolean): Unit = {
-    import scala.jdk.DurationConverters._
-    pekko.testkit.TestKit.shutdownActorSystem(actorSystem, duration.toScala, verifySystemShutdown)
+    import pekko.util.JavaDurationConverters._
+    pekko.testkit.TestKit.shutdownActorSystem(actorSystem, duration.asScala, verifySystemShutdown)
   }
 
 }
