@@ -13,6 +13,7 @@
 
 package org.apache.pekko.actor
 
+import scala.annotation.nowarn
 import scala.collection.mutable
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration._
@@ -24,7 +25,6 @@ import language.implicitConversions
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.routing.{ Deafen, Listen, Listeners }
-import pekko.util.{ unused, JavaDurationConverters }
 
 object FSM {
 
@@ -293,8 +293,8 @@ object FSM {
      * Use Duration.Inf to deactivate an existing timeout.
      */
     def forMax(timeout: java.time.Duration): State[S, D] = {
-      import JavaDurationConverters._
-      forMax(timeout.asScala)
+      import scala.jdk.DurationConverters._
+      forMax(timeout.toScala)
     }
 
     /**
@@ -834,7 +834,7 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
     processEvent(event, source)
   }
 
-  private[pekko] def processEvent(event: Event, @unused source: AnyRef): Unit = {
+  private[pekko] def processEvent(event: Event, @nowarn("msg=never used") source: AnyRef): Unit = {
     val stateFunc = stateFunctions(currentState.stateName)
     val nextState = if (stateFunc.isDefinedAt(event)) {
       stateFunc(event)

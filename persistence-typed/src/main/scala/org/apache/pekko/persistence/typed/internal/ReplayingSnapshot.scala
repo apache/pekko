@@ -13,18 +13,19 @@
 
 package org.apache.pekko.persistence.typed.internal
 
+import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.actor.typed.Behavior
 import pekko.actor.typed.internal.PoisonPill
 import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors }
+import pekko.actor.typed.scaladsl.LoggerOps
 import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.persistence._
 import pekko.persistence.SnapshotProtocol.LoadSnapshotFailed
 import pekko.persistence.SnapshotProtocol.LoadSnapshotResult
 import pekko.persistence.typed.{ RecoveryFailed, ReplicaId }
 import pekko.persistence.typed.internal.EventSourcedBehaviorImpl.{ GetSeenSequenceNr, GetState }
-import pekko.util.unused
-import pekko.actor.typed.scaladsl.LoggerOps
 
 /**
  * INTERNAL API
@@ -119,9 +120,10 @@ private[pekko] class ReplayingSnapshot[C, E, S](override val setup: BehaviorSetu
   }
 
   @InternalStableApi
-  def onRecoveryStart(@unused context: ActorContext[_]): Unit = ()
+  def onRecoveryStart(@nowarn("msg=never used") context: ActorContext[_]): Unit = ()
   @InternalStableApi
-  def onRecoveryFailed(@unused context: ActorContext[_], @unused reason: Throwable): Unit = ()
+  def onRecoveryFailed(@nowarn("msg=never used") context: ActorContext[_], @nowarn("msg=never used") reason: Throwable)
+      : Unit = ()
 
   private def onRecoveryTick(snapshot: Boolean): Behavior[InternalProtocol] =
     if (snapshot) {

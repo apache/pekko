@@ -18,3 +18,4 @@
 # Remove deprecated methods
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.actor.typed.javadsl.TimerScheduler.startPeriodicTimer")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.actor.typed.scaladsl.TimerScheduler.startPeriodicTimer")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.actor.typed.internal.LoggerClass$TrickySecurityManager")

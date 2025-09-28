@@ -688,7 +688,7 @@ an actor selection.
 
 @@@
 
-Use the @scala[@scaladoc[deliver](org.apache.pekko.persistence.AtLeastOnceDelivery#deliver(destination:org.apache.pekko.actor.ActorPath)(deliveryIdToMessage:Long=%3EAny):Unit)]@java[@javadoc[deliver](pekko.persistence.AbstractPersistentActorWithAtLeastOnceDelivery#deliver(org.apache.pekko.actor.ActorPath,org.apache.pekko.japi.Function))] method to send a message to a destination. Call the @scala[@scaladoc[confirmDelivery](org.apache.pekko.persistence.AtLeastOnceDelivery#confirmDelivery(deliveryId:Long):Boolean)]@java[@javadoc[confirmDelivery](pekko.persistence.AtLeastOnceDeliveryLike#confirmDelivery(long))] method
+Use the @scala[@scaladoc[deliver](org.apache.pekko.persistence.AtLeastOnceDelivery#deliver(destination:org.apache.pekko.actor.ActorPath)(deliveryIdToMessage:Long=%3EAny):Unit)]@java[@javadoc[deliver](pekko.persistence.AbstractPersistentActorWithAtLeastOnceDelivery#deliver(org.apache.pekko.actor.ActorPath,org.apache.pekko.japi.function.Function))] method to send a message to a destination. Call the @scala[@scaladoc[confirmDelivery](org.apache.pekko.persistence.AtLeastOnceDelivery#confirmDelivery(deliveryId:Long):Boolean)]@java[@javadoc[confirmDelivery](pekko.persistence.AtLeastOnceDeliveryLike#confirmDelivery(long))] method
 when the destination has replied with a confirmation message.
 
 ### Relationship between deliver and confirmDelivery
@@ -727,7 +727,7 @@ of your message has replied with your custom correlation id.
 
 The @scala[@scaladoc[AtLeastOnceDelivery](pekko.persistence.AtLeastOnceDelivery) trait]@java[@javadoc[AbstractPersistentActorWithAtLeastOnceDelivery](pekko.persistence.AbstractPersistentActorWithAtLeastOnceDelivery) class] has a state consisting of unconfirmed messages and a
 sequence number. It does not store this state itself. You must persist events corresponding to the
-@scala[@scaladoc[deliver](pekko.persistence.AtLeastOnceDelivery#deliver(destination:org.apache.pekko.actor.ActorPath)(deliveryIdToMessage:Long=%3EAny):Unit)]@java[@javadoc[deliver](pekko.persistence.AbstractPersistentActorWithAtLeastOnceDelivery#deliver(org.apache.pekko.actor.ActorPath,org.apache.pekko.japi.Function))] and @scala[@scaladoc[confirmDelivery](pekko.persistence.AtLeastOnceDelivery#confirmDelivery(deliveryId:Long):Boolean)]@java[@javadoc[confirmDelivery](pekko.persistence.AtLeastOnceDeliveryLike#confirmDelivery(long))] invocations from your `PersistentActor` so that the state can
+@scala[@scaladoc[deliver](pekko.persistence.AtLeastOnceDelivery#deliver(destination:org.apache.pekko.actor.ActorPath)(deliveryIdToMessage:Long=%3EAny):Unit)]@java[@javadoc[deliver](pekko.persistence.AbstractPersistentActorWithAtLeastOnceDelivery#deliver(org.apache.pekko.actor.ActorPath,org.apache.pekko.japi.function.Function))] and @scala[@scaladoc[confirmDelivery](pekko.persistence.AtLeastOnceDelivery#confirmDelivery(deliveryId:Long):Boolean)]@java[@javadoc[confirmDelivery](pekko.persistence.AtLeastOnceDeliveryLike#confirmDelivery(long))] invocations from your `PersistentActor` so that the state can
 be restored by calling the same methods during the recovery phase of the `PersistentActor`. Sometimes
 these events can be derived from other business level events, and sometimes you must create separate events.
 During recovery, calls to `deliver` will not send out messages, those will be sent later

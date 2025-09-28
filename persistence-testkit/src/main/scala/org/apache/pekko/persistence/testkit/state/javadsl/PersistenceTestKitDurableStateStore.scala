@@ -15,9 +15,13 @@ package org.apache.pekko.persistence.testkit.state.javadsl
 
 import java.util.Optional
 import java.util.concurrent.{ CompletableFuture, CompletionStage }
+
+import scala.jdk.FutureConverters._
+import scala.jdk.OptionConverters._
+
 import org.apache.pekko
-import pekko.japi.Pair
 import pekko.{ Done, NotUsed }
+import pekko.japi.Pair
 import pekko.persistence.query.DurableStateChange
 import pekko.persistence.query.Offset
 import pekko.persistence.query.javadsl.{ DurableStateStorePagedPersistenceIdsQuery, DurableStateStoreQuery }
@@ -26,8 +30,6 @@ import pekko.persistence.state.javadsl.DurableStateUpdateStore
 import pekko.persistence.state.javadsl.GetObjectResult
 import pekko.persistence.testkit.state.scaladsl.{ PersistenceTestKitDurableStateStore => SStore }
 import pekko.stream.javadsl.Source
-import pekko.util.FutureConverters._
-import pekko.util.OptionConverters._
 
 object PersistenceTestKitDurableStateStore {
   val Identifier = pekko.persistence.testkit.state.scaladsl.PersistenceTestKitDurableStateStore.Identifier
@@ -75,7 +77,7 @@ class PersistenceTestKitDurableStateStore[A](stateStore: SStore[A])
     stateStore.sliceForPersistenceId(persistenceId)
 
   override def sliceRanges(numberOfRanges: Int): java.util.List[Pair[Integer, Integer]] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     stateStore
       .sliceRanges(numberOfRanges)
       .map(range => Pair(Integer.valueOf(range.min), Integer.valueOf(range.max)))

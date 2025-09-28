@@ -70,7 +70,9 @@ class DslConsistencySpec extends AnyWordSpec with Matchers {
       "andThenMat",
       "isIdentity",
       "withAttributes",
-      "transformMaterializing") ++
+      "transformMaterializing",
+      "onErrorResume" // Java Only, Scala use `recoverWith`
+    ) ++
     Set("asScala", "asJava", "deprecatedAndThen", "deprecatedAndThenMat")
 
   val graphHelpers = Set(
@@ -112,7 +114,7 @@ class DslConsistencySpec extends AnyWordSpec with Matchers {
     sRunnableGraphClass -> Set("builder"))
 
   @nowarn
-  def materializing(m: Method): Boolean = m.getParameterTypes.contains(classOf[ActorMaterializer])
+  def materializing(m: Method): Boolean = m.getParameterTypes.contains(classOf[Materializer])
 
   def assertHasMethod(c: Class[_], name: String): Unit = {
     // include class name to get better error message

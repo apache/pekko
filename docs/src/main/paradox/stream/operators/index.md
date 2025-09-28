@@ -56,6 +56,7 @@ These built-in sinks are available from @scala[`org.apache.pekko.stream.scaladsl
 |Sink|<a name="collection"></a>@ref[collection](Sink/collection.md)|@scala[Collect all values emitted from the stream into a collection.]@java[Operator only available in the Scala API. The closest operator in the Java API is @ref[`Sink.seq`](Sink/seq.md)].|
 |Sink|<a name="combine"></a>@ref[combine](Sink/combine.md)|Combine several sinks into one using a user specified strategy|
 |Sink|<a name="completionstagesink"></a>@ref[completionStageSink](Sink/completionStageSink.md)|Streams the elements to the given future sink once it successfully completes. |
+|Sink|<a name="count"></a>@ref[count](Sink/count.md)|Counts all incoming elements until upstream terminates.|
 |Sink|<a name="exists"></a>@ref[exists](Sink/exists.md)|A `Sink` that will test the given predicate `p` for every received element and completes with the result.|
 |Sink|<a name="fold"></a>@ref[fold](Sink/fold.md)|Fold over emitted elements with a function, where each invocation will get the new element and the result from the previous fold invocation.|
 |Sink|<a name="foldwhile"></a>@ref[foldWhile](Sink/foldWhile.md)|Fold over emitted elements with a function, where each invocation will get the new element and the result from the previous fold invocation.|
@@ -80,6 +81,7 @@ These built-in sinks are available from @scala[`org.apache.pekko.stream.scaladsl
 |Sink|<a name="queue"></a>@ref[queue](Sink/queue.md)|Materialize a `SinkQueue` that can be pulled to trigger demand through the sink.|
 |Sink|<a name="reduce"></a>@ref[reduce](Sink/reduce.md)|Apply a reduction function on the incoming elements and pass the result to the next invocation.|
 |Sink|<a name="seq"></a>@ref[seq](Sink/seq.md)|Collect values emitted from the stream into a collection.|
+|Sink|<a name="source"></a>@ref[source](Sink/source.md)|A `Sink` that materializes this `Sink` itself as a `Source`, the returning `Source` can only have one subscriber.|
 |Sink|<a name="takelast"></a>@ref[takeLast](Sink/takeLast.md)|Collect the last `n` values emitted from the stream into a collection.|
 
 ## Additional Sink and Source converters
@@ -370,6 +372,7 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 |--|--|--|
 |Source/Flow|<a name="maperror"></a>@ref[mapError](Source-or-Flow/mapError.md)|While similar to `recover` this operators can be used to transform an error signal to a different one *without* logging it as an error in the process.|
 |Source/Flow|<a name="onerrorcomplete"></a>@ref[onErrorComplete](Source-or-Flow/onErrorComplete.md)|Allows completing the stream when an upstream error occurs.|
+|Source/Flow|<a name="onerrorresume"></a>@ref[onErrorResume](Source-or-Flow/onErrorResume.md)|Allows transforming a failure signal into a stream of elements provided by a factory function.|
 |RestartSource|<a name="onfailureswithbackoff"></a>@ref[onFailuresWithBackoff](RestartSource/onFailuresWithBackoff.md)|Wrap the given @apidoc[Source] with a @apidoc[Source] that will restart it when it fails using an exponential backoff. Notice that this @apidoc[Source] will not restart on completion of the wrapped flow.|
 |RestartFlow|<a name="onfailureswithbackoff"></a>@ref[onFailuresWithBackoff](RestartFlow/onFailuresWithBackoff.md)|Wrap the given @apidoc[Flow] with a @apidoc[Flow] that will restart it when it fails using an exponential backoff. Notice that this @apidoc[Flow] will not restart on completion of the wrapped flow.|
 |Source/Flow|<a name="recover"></a>@ref[recover](Source-or-Flow/recover.md)|Allow sending of one last element downstream when a failure has happened upstream.|
@@ -432,6 +435,7 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 * [conflate](Source-or-Flow/conflate.md)
 * [conflateWithSeed](Source-or-Flow/conflateWithSeed.md)
 * [contramap](Flow/contramap.md)
+* [count](Sink/count.md)
 * [cycle](Source/cycle.md)
 * [deflate](Compression/deflate.md)
 * [delay](Source-or-Flow/delay.md)
@@ -546,6 +550,7 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 * [none](Sink/none.md)
 * [onComplete](Sink/onComplete.md)
 * [onErrorComplete](Source-or-Flow/onErrorComplete.md)
+* [onErrorResume](Source-or-Flow/onErrorResume.md)
 * [onFailuresWithBackoff](RestartSource/onFailuresWithBackoff.md)
 * [onFailuresWithBackoff](RestartFlow/onFailuresWithBackoff.md)
 * [optionalVia](Source-or-Flow/optionalVia.md)
@@ -571,6 +576,7 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 * [single](Source/single.md)
 * [sink](PubSub/sink.md)
 * [sliding](Source-or-Flow/sliding.md)
+* [source](Sink/source.md)
 * [source](PubSub/source.md)
 * [splitAfter](Source-or-Flow/splitAfter.md)
 * [splitWhen](Source-or-Flow/splitWhen.md)

@@ -13,8 +13,7 @@
 
 package org.apache.pekko.persistence.journal
 
-import org.apache.pekko
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * The journal may support tagging of events that are used by the

@@ -16,6 +16,8 @@ package org.apache.pekko.cluster.ddata.typed.javadsl
 import java.time.Duration
 import java.util.function.{ Function => JFunction }
 
+import scala.jdk.DurationConverters._
+
 import org.apache.pekko
 import pekko.actor.DeadLetterSuppression
 import pekko.actor.NoSerializationVerificationNeeded
@@ -27,7 +29,6 @@ import pekko.cluster.{ ddata => dd }
 import pekko.cluster.ddata.Key
 import pekko.cluster.ddata.ReplicatedData
 import pekko.cluster.ddata.typed.internal.ReplicatorBehavior
-import pekko.util.JavaDurationConverters._
 
 /**
  * @see [[pekko.cluster.ddata.Replicator]].
@@ -66,18 +67,18 @@ object Replicator {
     require(n >= 2, "ReadFrom n must be >= 2, use ReadLocal for n=1")
 
     /** INTERNAL API */
-    @InternalApi private[pekko] override def toClassic = dd.Replicator.ReadFrom(n, timeout.asScala)
+    @InternalApi private[pekko] override def toClassic = dd.Replicator.ReadFrom(n, timeout.toScala)
   }
   final case class ReadMajority(timeout: Duration, minCap: Int = DefaultMajorityMinCap) extends ReadConsistency {
     def this(timeout: Duration) = this(timeout, DefaultMajorityMinCap)
 
     /** INTERNAL API */
-    @InternalApi private[pekko] override def toClassic = dd.Replicator.ReadMajority(timeout.asScala, minCap)
+    @InternalApi private[pekko] override def toClassic = dd.Replicator.ReadMajority(timeout.toScala, minCap)
   }
   final case class ReadAll(timeout: Duration) extends ReadConsistency {
 
     /** INTERNAL API */
-    @InternalApi private[pekko] override def toClassic = dd.Replicator.ReadAll(timeout.asScala)
+    @InternalApi private[pekko] override def toClassic = dd.Replicator.ReadAll(timeout.toScala)
   }
 
   sealed trait WriteConsistency {
@@ -96,18 +97,18 @@ object Replicator {
     require(n >= 2, "WriteTo n must be >= 2, use WriteLocal for n=1")
 
     /** INTERNAL API */
-    @InternalApi private[pekko] override def toClassic = dd.Replicator.WriteTo(n, timeout.asScala)
+    @InternalApi private[pekko] override def toClassic = dd.Replicator.WriteTo(n, timeout.toScala)
   }
   final case class WriteMajority(timeout: Duration, minCap: Int = DefaultMajorityMinCap) extends WriteConsistency {
     def this(timeout: Duration) = this(timeout, DefaultMajorityMinCap)
 
     /** INTERNAL API */
-    @InternalApi private[pekko] override def toClassic = dd.Replicator.WriteMajority(timeout.asScala, minCap)
+    @InternalApi private[pekko] override def toClassic = dd.Replicator.WriteMajority(timeout.toScala, minCap)
   }
   final case class WriteAll(timeout: Duration) extends WriteConsistency {
 
     /** INTERNAL API */
-    @InternalApi private[pekko] override def toClassic = dd.Replicator.WriteAll(timeout.asScala)
+    @InternalApi private[pekko] override def toClassic = dd.Replicator.WriteAll(timeout.toScala)
   }
 
   /**

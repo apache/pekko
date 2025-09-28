@@ -26,13 +26,13 @@ import pekko.persistence.query.Sequence
 import pekko.persistence.testkit.EventStorage
 import pekko.persistence.testkit.PersistenceTestKitPlugin
 import pekko.persistence.testkit.PersistenceTestKitPlugin.TagWrite
+import pekko.stream.Attributes
+import pekko.stream.Outlet
+import pekko.stream.SourceShape
 import pekko.stream.stage.GraphStage
 import pekko.stream.stage.GraphStageLogic
 import pekko.stream.stage.GraphStageLogicWithLogging
 import pekko.stream.stage.OutHandler
-import pekko.stream.Attributes
-import pekko.stream.Outlet
-import pekko.stream.SourceShape
 
 /**
  * INTERNAL API

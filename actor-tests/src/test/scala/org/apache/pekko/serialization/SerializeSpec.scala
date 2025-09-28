@@ -22,7 +22,6 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import SerializationTests._
-import com.typesafe.config._
 import test.org.apache.pekko.serialization.NoVerification
 
 import org.apache.pekko
@@ -30,8 +29,10 @@ import pekko.actor._
 import pekko.actor.dungeon.SerializationCheckFailedException
 import pekko.pattern.ask
 import pekko.testkit.{ EventFilter, PekkoSpec }
-import pekko.util.{ unused, Timeout }
 import pekko.util.ByteString
+import pekko.util.Timeout
+
+import com.typesafe.config._
 
 object SerializationTests {
 
@@ -85,7 +86,7 @@ object SerializationTests {
 
   class BothTestSerializableAndJavaSerializable(s: String) extends SimpleMessage(s) with Serializable
 
-  class BothTestSerializableAndTestSerializable2(@unused s: String) extends Marker with Marker2
+  class BothTestSerializableAndTestSerializable2(@nowarn("msg=never used") s: String) extends Marker with Marker2
 
   trait A
   trait B
@@ -120,7 +121,7 @@ object SerializationTests {
       receiveBuilder().build()
   }
 
-  class NonSerializableActor(@unused arg: AnyRef) extends Actor {
+  class NonSerializableActor(@nowarn("msg=never used") arg: AnyRef) extends Actor {
     def receive = {
       case s: String => sender() ! s
     }

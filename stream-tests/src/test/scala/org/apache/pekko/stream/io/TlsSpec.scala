@@ -115,8 +115,7 @@ class TlsSpec extends StreamSpec(TlsSpec.configOverrides) with WithLogCapturing 
   "SslTls" must {
     "work for TLSv1.2" must { workFor("TLSv1.2", TLS12Ciphers) }
 
-    if (JavaVersion.majorVersion >= 11)
-      "work for TLSv1.3" must { workFor("TLSv1.3", TLS13Ciphers) }
+    "work for TLSv1.3" must { workFor("TLSv1.3", TLS13Ciphers) }
 
     def workFor(protocol: String, ciphers: Set[String]): Unit = {
       val sslContext = initSslContext(protocol)
@@ -483,7 +482,7 @@ class TlsSpec extends StreamSpec(TlsSpec.configOverrides) with WithLogCapturing 
 
         Await.result(serverErr, 1.second).getMessage should include("certificate_unknown")
 
-        val clientErrText = rootCauseOf(Await.result(clientErr, 1.second)).getMessage
+        val clientErrText = Await.result(clientErr, 1.second).getMessage
         clientErrText should include("unable to find valid certification path to requested target")
       }
 
@@ -590,19 +589,11 @@ class TlsSpec extends StreamSpec(TlsSpec.configOverrides) with WithLogCapturing 
 
         cause.getClass should ===(classOf[SSLHandshakeException]) // General SSLEngine problem
 
-        val rootCause = rootCauseOf(cause.getCause)
+        val rootCause = cause.getCause
         rootCause.getClass should ===(classOf[CertificateException])
         rootCause.getMessage should ===("No name matching unknown.example.org found")
       }
     }
-  }
-
-  def rootCauseOf(e: Throwable): Throwable = {
-    if (JavaVersion.majorVersion >= 11) e
-    // Wrapped in extra 'General SSLEngine problem' (sometimes multiple)
-    // on 1.8.0-265 and before, but not 1.8.0-272 and later...
-    else if (e.isInstanceOf[SSLHandshakeException]) rootCauseOf(e.getCause)
-    else e
   }
 
   "A SslTlsPlacebo" must {

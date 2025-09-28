@@ -18,12 +18,12 @@ import java.lang.management.ManagementFactory
 import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
 
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.testkit.TestKit
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 class DispatcherShutdownSpec extends AnyWordSpec with Matchers {
 

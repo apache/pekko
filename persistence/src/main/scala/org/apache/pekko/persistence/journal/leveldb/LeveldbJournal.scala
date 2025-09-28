@@ -15,9 +15,6 @@ package org.apache.pekko.persistence.journal.leveldb
 
 import scala.concurrent.Future
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor._
 import pekko.pattern.pipe
@@ -28,6 +25,9 @@ import pekko.persistence.PersistentRepr
 import pekko.persistence.journal._
 import pekko.util.Helpers.ConfigOps
 import pekko.util.Timeout
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 /**
  * INTERNAL API.

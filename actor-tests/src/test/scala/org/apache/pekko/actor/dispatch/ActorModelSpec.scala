@@ -17,13 +17,10 @@ import java.rmi.RemoteException
 import java.util.concurrent.{ ConcurrentHashMap, CountDownLatch, TimeUnit }
 import java.util.concurrent.atomic.{ AtomicInteger, AtomicLong }
 
+import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
-
-import scala.annotation.nowarn
-import com.typesafe.config.Config
-import org.scalatest.Assertions._
 
 import org.apache.pekko
 import pekko.actor._
@@ -32,6 +29,10 @@ import pekko.event.Logging.Error
 import pekko.pattern.ask
 import pekko.testkit._
 import pekko.util.Switch
+
+import org.scalatest.Assertions._
+
+import com.typesafe.config.Config
 
 object ActorModelSpec {
 
@@ -436,7 +437,7 @@ abstract class ActorModelSpec(config: String) extends PekkoSpec(config) with Def
         val f6 = a ? Reply("bar2")
 
         val c = system.scheduler.scheduleOnce(2.seconds) {
-          import pekko.util.ccompat.JavaConverters._
+          import scala.jdk.CollectionConverters._
           Thread.getAllStackTraces().asScala.foreach {
             case (thread, stack) =>
               println(s"$thread:")

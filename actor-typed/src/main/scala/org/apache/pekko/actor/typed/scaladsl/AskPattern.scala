@@ -15,8 +15,9 @@ package org.apache.pekko.actor.typed.scaladsl
 
 import java.util.concurrent.TimeoutException
 
-import scala.concurrent.Future
 import scala.annotation.nowarn
+import scala.concurrent.Future
+
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.ActorSystem
@@ -27,7 +28,7 @@ import pekko.actor.typed.internal.InternalRecipientRef
 import pekko.annotation.InternalStableApi
 import pekko.pattern.PromiseActorRef
 import pekko.pattern.StatusReply
-import pekko.util.{ unused, Timeout }
+import pekko.util.Timeout
 
 /**
  * The ask-pattern implements the initiator side of a request–reply protocol.
@@ -167,7 +168,8 @@ object AskPattern {
     val promiseRef: PromiseActorRef = _promiseRef
 
     @InternalStableApi
-    private[pekko] def ask[T](target: InternalRecipientRef[T], message: T, @unused timeout: Timeout): Future[U] = {
+    private[pekko] def ask[T](target: InternalRecipientRef[T], message: T, @nowarn("msg=never used") timeout: Timeout)
+        : Future[U] = {
       target ! message
       future
     }

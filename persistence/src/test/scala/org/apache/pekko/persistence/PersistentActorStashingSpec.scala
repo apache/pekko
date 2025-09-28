@@ -13,17 +13,17 @@
 
 package org.apache.pekko.persistence
 
+import scala.annotation.nowarn
 import scala.concurrent.duration._
 import scala.reflect.ClassTag
-
-import com.typesafe.config.Config
 
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorRef, OneForOneStrategy, Props }
 import pekko.actor.SupervisorStrategy.Resume
 import pekko.persistence.journal.SteppingInmemJournal
 import pekko.testkit.ImplicitSender
-import pekko.util.unused
+
+import com.typesafe.config.Config
 
 object PersistentActorStashingSpec {
   final case class Cmd(data: Any)
@@ -185,7 +185,7 @@ object PersistentActorStashingSpec {
       case _ => // ignore
     }
 
-    def stashWithinHandler(@unused evt: Evt) = {
+    def stashWithinHandler(@nowarn("msg=never used") evt: Evt) = {
       stash()
     }
 

@@ -39,7 +39,8 @@ import pekko.util.OptionVal
  * INTERNAL API
  */
 @nowarn("msg=deprecated")
-@DoNotInherit private[pekko] abstract class ExtendedActorMaterializer extends ActorMaterializer {
+@DoNotInherit private[pekko] abstract class ExtendedActorMaterializer extends Materializer
+    with MaterializerLoggingProvider {
 
   override def withNamePrefix(name: String): ExtendedActorMaterializer
 

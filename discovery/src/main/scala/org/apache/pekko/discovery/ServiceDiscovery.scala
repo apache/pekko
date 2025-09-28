@@ -21,11 +21,11 @@ import java.util.concurrent.TimeUnit
 import scala.collection.immutable
 import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
+import scala.jdk.OptionConverters._
 
 import org.apache.pekko
 import pekko.actor.{ DeadLetterSuppression, NoSerializationVerificationNeeded }
 import pekko.util.HashCode
-import pekko.util.OptionConverters._
 
 object ServiceDiscovery {
 
@@ -54,7 +54,7 @@ object ServiceDiscovery {
      * Java API
      */
     def getAddresses: java.util.List[ResolvedTarget] = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       addresses.asJava
     }
 
@@ -321,7 +321,7 @@ abstract class ServiceDiscovery {
    * The returned future should be failed once resolveTimeout has passed with a [[ServiceDiscovery.DiscoveryTimeoutException]].
    */
   def lookup(query: Lookup, resolveTimeout: java.time.Duration): CompletionStage[Resolved] = {
-    import pekko.util.FutureConverters._
+    import scala.jdk.FutureConverters._
     lookup(query, FiniteDuration(resolveTimeout.toMillis, TimeUnit.MILLISECONDS)).asJava
   }
 

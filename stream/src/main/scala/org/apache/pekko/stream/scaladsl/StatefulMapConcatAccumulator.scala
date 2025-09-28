@@ -20,14 +20,12 @@ package org.apache.pekko.stream.scaladsl
 import org.apache.pekko
 import pekko.japi.function
 import pekko.stream.{ javadsl, scaladsl }
-import pekko.util.ccompat._
 
 /**
  * A special accumulator for `StatefulMapConcat` operator that allows to emit elements when the upstream has completed.
  *
  * @since 1.2.0
  */
-@ccompatUsedUntil213
 @FunctionalInterface
 trait StatefulMapConcatAccumulator[-In, +Out] extends (In => IterableOnce[Out]) {
 
@@ -59,7 +57,7 @@ private[pekko] object StatefulMapConcatAccumulatorFactory {
       final override def accumulator(): StatefulMapConcatAccumulator[In, Out] =
         new StatefulMapConcatAccumulator[In, Out] {
           private val accumulator = factory.accumulator()
-          import pekko.util.ccompat.JavaConverters._
+          import scala.jdk.CollectionConverters._
           final override def apply(in: In): IterableOnce[Out] = accumulator(in).asScala
           final override def onComplete(): IterableOnce[Out] = accumulator.onComplete().asScala
         }
@@ -73,7 +71,7 @@ private[pekko] object StatefulMapConcatAccumulatorFactory {
       override def accumulator(): StatefulMapConcatAccumulator[In, Out] =
         new scaladsl.StatefulMapConcatAccumulator[In, Out] {
           private val accumulator = f.create()
-          import pekko.util.ccompat.JavaConverters._
+          import scala.jdk.CollectionConverters._
           final override def apply(in: In): IterableOnce[Out] = accumulator(in).asScala
           final override def onComplete(): IterableOnce[Out] = accumulator match {
             case acc: javadsl.StatefulMapConcatAccumulator[In, Out] @unchecked => acc.onComplete().asScala
@@ -91,7 +89,7 @@ private[pekko] object StatefulMapConcatAccumulatorFactory {
       override def accumulator(): StatefulMapConcatAccumulator[In, Out] =
         new scaladsl.StatefulMapConcatAccumulator[In, Out] {
           private val accumulator = f()
-          import pekko.util.ccompat.JavaConverters._
+          import scala.jdk.CollectionConverters._
           final override def apply(in: In): IterableOnce[Out] = accumulator(in)
           final override def onComplete(): IterableOnce[Out] = accumulator match {
             case acc: javadsl.StatefulMapConcatAccumulator[In, Out] @unchecked => acc.onComplete().asScala

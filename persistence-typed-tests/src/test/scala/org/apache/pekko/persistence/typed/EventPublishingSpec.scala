@@ -24,6 +24,7 @@ import pekko.persistence.testkit.PersistenceTestKitPlugin
 import pekko.persistence.typed.scaladsl.Effect
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior
 import pekko.serialization.jackson.CborSerializable
+
 import org.scalatest.wordspec.AnyWordSpecLike
 
 object EventPublishingSpec {

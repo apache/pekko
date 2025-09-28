@@ -15,11 +15,14 @@ package org.apache.pekko.stream.javadsl
 
 import java.util.{ Comparator, Optional }
 import java.util.concurrent.CompletionStage
-import java.util.function.Supplier
 
-import scala.annotation.varargs
 import scala.annotation.unchecked.uncheckedVariance
+import scala.annotation.varargs
 import scala.collection.immutable
+import scala.jdk.CollectionConverters._
+import scala.jdk.DurationConverters._
+import scala.jdk.FutureConverters._
+import scala.jdk.OptionConverters._
 import scala.reflect.ClassTag
 
 import org.apache.pekko
@@ -29,11 +32,6 @@ import pekko.japi.{ function, Pair }
 import pekko.stream._
 import pekko.stream.impl.fusing.{ StatefulMapConcat, ZipWithIndexJava }
 import pekko.util.ConstantFun
-import pekko.util.FutureConverters._
-import pekko.util.JavaDurationConverters._
-import pekko.util.OptionConverters._
-import pekko.util.ccompat.JavaConverters._
-import pekko.util.ccompat._
 
 object SubFlow {
 
@@ -53,7 +51,6 @@ object SubFlow {
  * SubFlows cannot contribute to the super-flow’s materialized value since they
  * are materialized later, during the runtime of the flow graph processing.
  */
-@ccompatUsedUntil213
 final class SubFlow[In, Out, Mat](
     delegate: scaladsl.SubFlow[Out, Mat, scaladsl.Flow[In, Out, Mat]#Repr, scaladsl.Sink[In, Mat]]) {
 
@@ -717,7 +714,7 @@ final class SubFlow[In, Out, Mat](
    */
   def groupedAdjacentByWeighted[R](f: function.Function[Out, R],
       maxWeight: Long,
-      costFn: java.util.function.Function[Out, java.lang.Long])
+      costFn: function.Function[Out, java.lang.Long])
       : SubFlow[In, java.util.List[Out @uncheckedVariance], Mat] =
     new SubFlow(delegate.groupedAdjacentByWeighted(f.apply, maxWeight)(costFn.apply).map(_.asJava))
 
@@ -1026,7 +1023,7 @@ final class SubFlow[In, Out, Mat](
   def groupedWithin(
       maxNumber: Int,
       duration: java.time.Duration): SubFlow[In, java.util.List[Out @uncheckedVariance], Mat] =
-    new SubFlow(delegate.groupedWithin(maxNumber, duration.asScala).map(_.asJava)) // TODO optimize to one step
+    new SubFlow(delegate.groupedWithin(maxNumber, duration.toScala).map(_.asJava)) // TODO optimize to one step
 
   /**
    * Chunk up this stream into groups of elements received within a time window,
@@ -1050,7 +1047,7 @@ final class SubFlow[In, Out, Mat](
       maxWeight: Long,
       costFn: function.Function[Out, java.lang.Long],
       duration: java.time.Duration): javadsl.SubFlow[In, java.util.List[Out @uncheckedVariance], Mat] =
-    new SubFlow(delegate.groupedWeightedWithin(maxWeight, duration.asScala)(costFn.apply).map(_.asJava))
+    new SubFlow(delegate.groupedWeightedWithin(maxWeight, duration.toScala)(costFn.apply).map(_.asJava))
 
   /**
    * Chunk up this stream into groups of elements received within a time window,
@@ -1076,7 +1073,7 @@ final class SubFlow[In, Out, Mat](
       maxNumber: Int,
       costFn: function.Function[Out, java.lang.Long],
       duration: java.time.Duration): javadsl.SubFlow[In, java.util.List[Out @uncheckedVariance], Mat] =
-    new SubFlow(delegate.groupedWeightedWithin(maxWeight, maxNumber, duration.asScala)(costFn.apply).map(_.asJava))
+    new SubFlow(delegate.groupedWeightedWithin(maxWeight, maxNumber, duration.toScala)(costFn.apply).map(_.asJava))
 
   /**
    * Shifts elements emission in time by a specified amount. It allows to store elements
@@ -1104,7 +1101,7 @@ final class SubFlow[In, Out, Mat](
    * @param strategy Strategy that is used when incoming elements cannot fit inside the buffer
    */
   def delay(of: java.time.Duration, strategy: DelayOverflowStrategy): SubFlow[In, Out, Mat] =
-    new SubFlow(delegate.delay(of.asScala, strategy))
+    new SubFlow(delegate.delay(of.toScala, strategy))
 
   /**
    * Shifts elements emission in time by an amount individually determined through delay strategy a specified amount.
@@ -1134,13 +1131,13 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    *
-   * @param delayStrategySupplier creates new [[DelayStrategy]] object for each materialization
+   * @param delayStrategyCreator creates new [[DelayStrategy]] object for each materialization
    * @param overFlowStrategy Strategy that is used when incoming elements cannot fit inside the buffer
    */
   def delayWith(
-      delayStrategySupplier: Supplier[DelayStrategy[Out]],
+      delayStrategyCreator: function.Creator[DelayStrategy[Out]],
       overFlowStrategy: DelayOverflowStrategy): SubFlow[In, Out, Mat] =
-    new SubFlow(delegate.delayWith(() => DelayStrategy.asScala(delayStrategySupplier.get), overFlowStrategy))
+    new SubFlow(delegate.delayWith(() => DelayStrategy.asScala(delayStrategyCreator.create()), overFlowStrategy))
 
   /**
    * Discard the given number of elements at the beginning of the stream.
@@ -1169,7 +1166,7 @@ final class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def dropWithin(duration: java.time.Duration): SubFlow[In, Out, Mat] =
-    new SubFlow(delegate.dropWithin(duration.asScala))
+    new SubFlow(delegate.dropWithin(duration.toScala))
 
   /**
    * Terminate processing (and cancel the upstream publisher) after predicate
@@ -1367,7 +1364,7 @@ final class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels
    *  @since 1.1.0
    */
-  def onErrorComplete(predicate: java.util.function.Predicate[_ >: Throwable]): SubFlow[In, Out, Mat] =
+  def onErrorComplete(predicate: function.Predicate[_ >: Throwable]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.onErrorComplete {
       case ex: Throwable if predicate.test(ex) => true
     })
@@ -1456,7 +1453,7 @@ final class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels or timer fires
    */
   def takeWithin(duration: java.time.Duration): SubFlow[In, Out, Mat] =
-    new SubFlow(delegate.takeWithin(duration.asScala))
+    new SubFlow(delegate.takeWithin(duration.toScala))
 
   /**
    * Allows a faster upstream to progress independently of a slower subscriber by conflating elements into a summary
@@ -2308,7 +2305,7 @@ final class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def initialTimeout(timeout: java.time.Duration): SubFlow[In, Out, Mat] =
-    new SubFlow(delegate.initialTimeout(timeout.asScala))
+    new SubFlow(delegate.initialTimeout(timeout.toScala))
 
   /**
    * If the completion of the stream does not happen until the provided timeout, the stream is failed
@@ -2323,7 +2320,7 @@ final class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def completionTimeout(timeout: java.time.Duration): SubFlow[In, Out, Mat] =
-    new SubFlow(delegate.completionTimeout(timeout.asScala))
+    new SubFlow(delegate.completionTimeout(timeout.toScala))
 
   /**
    * If the time between two processed elements exceeds the provided timeout, the stream is failed
@@ -2339,7 +2336,7 @@ final class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def idleTimeout(timeout: java.time.Duration): SubFlow[In, Out, Mat] =
-    new SubFlow(delegate.idleTimeout(timeout.asScala))
+    new SubFlow(delegate.idleTimeout(timeout.toScala))
 
   /**
    * If the time between the emission of an element and the following downstream demand exceeds the provided timeout,
@@ -2355,7 +2352,7 @@ final class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def backpressureTimeout(timeout: java.time.Duration): SubFlow[In, Out, Mat] =
-    new SubFlow(delegate.backpressureTimeout(timeout.asScala))
+    new SubFlow(delegate.backpressureTimeout(timeout.toScala))
 
   /**
    * Injects additional elements if upstream does not emit for a configured amount of time. In other words, this
@@ -2375,7 +2372,7 @@ final class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def keepAlive(maxIdle: java.time.Duration, injectedElem: function.Creator[Out]): SubFlow[In, Out, Mat] =
-    new SubFlow(delegate.keepAlive(maxIdle.asScala, () => injectedElem.create()))
+    new SubFlow(delegate.keepAlive(maxIdle.toScala, () => injectedElem.create()))
 
   /**
    * Sends elements downstream with speed limited to `elements/per`. In other words, this operator set the maximum rate
@@ -2407,7 +2404,7 @@ final class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def throttle(elements: Int, per: java.time.Duration): javadsl.SubFlow[In, Out, Mat] =
-    new SubFlow(delegate.throttle(elements, per.asScala))
+    new SubFlow(delegate.throttle(elements, per.toScala))
 
   /**
    * Sends elements downstream with speed limited to `elements/per`. In other words, this operator set the maximum rate
@@ -2449,7 +2446,7 @@ final class SubFlow[In, Out, Mat](
       per: java.time.Duration,
       maximumBurst: Int,
       mode: ThrottleMode): javadsl.SubFlow[In, Out, Mat] =
-    new SubFlow(delegate.throttle(elements, per.asScala, maximumBurst, mode))
+    new SubFlow(delegate.throttle(elements, per.toScala, maximumBurst, mode))
 
   /**
    * Sends elements downstream with speed limited to `cost/per`. Cost is
@@ -2486,7 +2483,7 @@ final class SubFlow[In, Out, Mat](
       cost: Int,
       per: java.time.Duration,
       costCalculation: function.Function[Out, Integer]): javadsl.SubFlow[In, Out, Mat] =
-    new SubFlow(delegate.throttle(cost, per.asScala, costCalculation.apply))
+    new SubFlow(delegate.throttle(cost, per.toScala, costCalculation.apply))
 
   /**
    * Sends elements downstream with speed limited to `cost/per`. Cost is
@@ -2532,7 +2529,7 @@ final class SubFlow[In, Out, Mat](
       maximumBurst: Int,
       costCalculation: function.Function[Out, Integer],
       mode: ThrottleMode): javadsl.SubFlow[In, Out, Mat] =
-    new SubFlow(delegate.throttle(cost, per.asScala, maximumBurst, costCalculation.apply, mode))
+    new SubFlow(delegate.throttle(cost, per.toScala, maximumBurst, costCalculation.apply, mode))
 
   /**
    * Detaches upstream demand from downstream demand without detaching the
@@ -2560,7 +2557,7 @@ final class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def initialDelay(delay: java.time.Duration): SubFlow[In, Out, Mat] =
-    new SubFlow(delegate.initialDelay(delay.asScala))
+    new SubFlow(delegate.initialDelay(delay.toScala))
 
   /**
    * Change the attributes of this [[Source]] to the given ones and seal the list
@@ -2790,17 +2787,17 @@ final class SubFlow[In, Out, Mat](
    * @param emitOnTimer decide whether the current aggregated elements can be emitted, the custom function is invoked on every interval
    */
   @deprecated("Use the overloaded one which accepts an Optional instead.", since = "1.2.0")
-  def aggregateWithBoundary[Agg, Emit](allocate: java.util.function.Supplier[Agg],
+  def aggregateWithBoundary[Agg, Emit](allocate: function.Creator[Agg],
       aggregate: function.Function2[Agg, Out, Pair[Agg, Boolean]],
       harvest: function.Function[Agg, Emit],
-      emitOnTimer: Pair[java.util.function.Predicate[Agg], java.time.Duration])
+      emitOnTimer: Pair[function.Predicate[Agg], java.time.Duration])
       : javadsl.SubFlow[In, Emit, Mat] = {
     new SubFlow(
-      asScala.aggregateWithBoundary(() => allocate.get())(
+      asScala.aggregateWithBoundary(() => allocate.create())(
         aggregate = (agg, out) => aggregate.apply(agg, out).toScala,
         harvest = agg => harvest.apply(agg),
         emitOnTimer = Option(emitOnTimer).map {
-          case Pair(predicate, duration) => (agg => predicate.test(agg), duration.asScala)
+          case Pair(predicate, duration) => (agg => predicate.test(agg), duration.toScala)
         }))
   }
 
@@ -2822,18 +2819,18 @@ final class SubFlow[In, Out, Mat](
    * @param harvest     this is invoked before emit within the current stage/operator
    * @param emitOnTimer decide whether the current aggregated elements can be emitted, the custom function is invoked on every interval
    */
-  def aggregateWithBoundary[Agg, Emit](allocate: java.util.function.Supplier[Agg],
+  def aggregateWithBoundary[Agg, Emit](allocate: function.Creator[Agg],
       aggregate: function.Function2[Agg, Out, Pair[Agg, Boolean]],
       harvest: function.Function[Agg, Emit],
-      emitOnTimer: Optional[Pair[java.util.function.Predicate[Agg], java.time.Duration]])
+      emitOnTimer: Optional[Pair[function.Predicate[Agg], java.time.Duration]])
       : javadsl.SubFlow[In, Emit, Mat] = {
-    import org.apache.pekko.util.OptionConverters._
+    import scala.jdk.OptionConverters._
     new SubFlow(
-      asScala.aggregateWithBoundary(() => allocate.get())(
+      asScala.aggregateWithBoundary(() => allocate.create())(
         aggregate = (agg, out) => aggregate.apply(agg, out).toScala,
         harvest = agg => harvest.apply(agg),
         emitOnTimer = emitOnTimer.toScala.map {
-          case Pair(predicate, duration) => (agg => predicate.test(agg), duration.asScala)
+          case Pair(predicate, duration) => (agg => predicate.test(agg), duration.toScala)
         }))
   }
 

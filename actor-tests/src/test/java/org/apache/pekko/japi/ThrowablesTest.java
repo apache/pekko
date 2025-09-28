@@ -29,4 +29,13 @@ public class ThrowablesTest {
     Assert.assertTrue(Throwables.isFatal(new InterruptedException("fatal")));
     Assert.assertTrue(Throwables.isFatal(new LinkageError("fatal")));
   }
+
+  private void doSneakyThrow() {
+    Throwables.sneakyThrow(new Exception("sneaky"));
+  }
+
+  @Test
+  public void testSneakyThrow() {
+    Assert.assertThrows("sneaky", Exception.class, this::doSneakyThrow);
+  }
 }

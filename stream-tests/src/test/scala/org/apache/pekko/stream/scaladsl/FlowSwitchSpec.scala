@@ -13,6 +13,9 @@
 
 package org.apache.pekko.stream.scaladsl
 
+import scala.concurrent.Await
+import scala.concurrent.duration.DurationInt
+
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream.Attributes
@@ -28,9 +31,6 @@ import pekko.stream.testkit.scaladsl.TestSink
 import pekko.stream.testkit.scaladsl.TestSource
 
 import org.scalatest.exceptions.TestFailedException
-
-import scala.concurrent.Await
-import scala.concurrent.duration.DurationInt
 
 class FlowSwitchSpec extends StreamSpec {
 

@@ -16,30 +16,28 @@ package org.apache.pekko.stream.javadsl
 import java.util
 import java.util.Optional
 import java.util.concurrent.{ CompletableFuture, CompletionStage }
-import java.util.function.{ BiFunction, Supplier }
 
 import scala.annotation.{ nowarn, varargs }
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable
 import scala.concurrent.{ Future, Promise }
+import scala.concurrent.ExecutionContext
+import scala.jdk.CollectionConverters._
+import scala.jdk.DurationConverters._
+import scala.jdk.FutureConverters._
+import scala.jdk.OptionConverters._
 import scala.reflect.ClassTag
 
 import org.apache.pekko
 import pekko.{ Done, NotUsed }
 import pekko.actor.{ ActorRef, Cancellable, ClassicActorSystemProvider }
-import pekko.dispatch.ExecutionContexts
 import pekko.event.{ LogMarker, LoggingAdapter, MarkerLoggingAdapter }
 import pekko.japi.{ function, JavaPartialFunction, Pair }
 import pekko.japi.function.Creator
 import pekko.stream._
 import pekko.stream.impl.{ LinearTraversalBuilder, UnfoldAsyncJava, UnfoldJava }
 import pekko.stream.impl.fusing.{ ArraySource, StatefulMapConcat, ZipWithIndexJava }
-import pekko.util.{ unused, _ }
-import pekko.util.FutureConverters._
-import pekko.util.JavaDurationConverters._
-import pekko.util.OptionConverters._
-import pekko.util.ccompat.JavaConverters._
-import pekko.util.ccompat._
+import pekko.util._
 
 import org.reactivestreams.{ Publisher, Subscriber }
 
@@ -56,7 +54,7 @@ object Source {
   /**
    * Create a `Source` with no elements. The result is the same as calling `Source.<O>empty()`
    */
-  def empty[T](@unused clazz: Class[T]): Source[T, NotUsed] = empty[T]()
+  def empty[T](@nowarn("msg=never used") clazz: Class[T]): Source[T, NotUsed] = empty[T]()
 
   /**
    * Create a `Source` which materializes a [[java.util.concurrent.CompletableFuture]] which controls what element
@@ -73,7 +71,7 @@ object Source {
     new Source(scaladsl.Source.maybe[T].mapMaterializedValue { (scalaOptionPromise: Promise[Option[T]]) =>
       val javaOptionPromise = new CompletableFuture[Optional[T]]()
       scalaOptionPromise.completeWith(
-        javaOptionPromise.asScala.map(_.toScala)(pekko.dispatch.ExecutionContexts.parasitic))
+        javaOptionPromise.asScala.map(_.toScala)(scala.concurrent.ExecutionContext.parasitic))
 
       javaOptionPromise
     })
@@ -231,7 +229,7 @@ object Source {
    * receive new tick elements as soon as it has requested more elements.
    */
   def tick[O](initialDelay: java.time.Duration, interval: java.time.Duration, tick: O): javadsl.Source[O, Cancellable] =
-    new Source(scaladsl.Source.tick(initialDelay.asScala, interval.asScala, tick))
+    new Source(scaladsl.Source.tick(initialDelay.toScala, interval.toScala, tick))
 
   /**
    * Create a `Source` with one element.
@@ -315,7 +313,7 @@ object Source {
    */
   def completionStageSource[T, M](completionStageSource: CompletionStage[Source[T, M]]): Source[T, CompletionStage[M]] =
     scaladsl.Source
-      .futureSource(completionStageSource.asScala.map(_.asScala)(ExecutionContexts.parasitic))
+      .futureSource(completionStageSource.asScala.map(_.asScala)(ExecutionContext.parasitic))
       .mapMaterializedValue(_.asJava)
       .asJava
 
@@ -507,7 +505,7 @@ object Source {
    * [[Attributes]] of the [[Source]] returned by this method.
    */
   def fromMaterializer[T, M](
-      factory: BiFunction[Materializer, Attributes, Source[T, M]]): Source[T, CompletionStage[M]] =
+      factory: function.Function2[Materializer, Attributes, Source[T, M]]): Source[T, CompletionStage[M]] =
     scaladsl.Source.fromMaterializer((mat, attr) => factory(mat, attr).asScala).mapMaterializedValue(_.asJava).asJava
 
   /**
@@ -775,7 +773,7 @@ object Source {
     new Source(
       scaladsl.Source.unfoldResourceAsync[T, R](
         () => create.create().asScala,
-        (resource: R) => read.apply(resource).asScala.map(_.toScala)(pekko.dispatch.ExecutionContexts.parasitic),
+        (resource: R) => read.apply(resource).asScala.map(_.toScala)(scala.concurrent.ExecutionContext.parasitic),
         (resource: R) => close.apply(resource).asScala))
 
   /**
@@ -829,10 +827,9 @@ object Source {
  * A `Source` is a set of stream processing steps that has one open output and an attached input.
  * Can be used as a `Publisher`
  */
-@ccompatUsedUntil213
 final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[SourceShape[Out], Mat] {
 
-  import org.apache.pekko.util.ccompat.JavaConverters._
+  import scala.jdk.CollectionConverters._
 
   override def shape: SourceShape[Out] = delegate.shape
 
@@ -2129,9 +2126,9 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * '''Cancels when''' downstream cancels
    */
-  def recover(clazz: Class[_ <: Throwable], supplier: Supplier[Out]): javadsl.Source[Out, Mat] =
+  def recover(clazz: Class[_ <: Throwable], creator: function.Creator[Out]): javadsl.Source[Out, Mat] =
     recover {
-      case elem if clazz.isInstance(elem) => supplier.get()
+      case elem if clazz.isInstance(elem) => creator.create()
     }
 
   /**
@@ -2196,8 +2193,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Completes when''' upstream completes or upstream failed with exception pf can handle
    *
    * '''Cancels when''' downstream cancels
-   *
-   * @deprecated use `recoverWithRetries` instead
    */
   def recoverWith(pf: PartialFunction[Throwable, _ <: Graph[SourceShape[Out], NotUsed]]): Source[Out, Mat] =
     new Source(delegate.recoverWith(pf))
@@ -2220,16 +2215,12 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Completes when''' upstream completes or upstream failed with exception pf can handle
    *
    * '''Cancels when''' downstream cancels
-   *
-   * @deprecated use `recoverWithRetries` instead
    */
-  @deprecated("Use recoverWithRetries instead.", "Akka 2.6.6")
-  @nowarn("msg=deprecated")
   def recoverWith(
       clazz: Class[_ <: Throwable],
-      supplier: Supplier[Graph[SourceShape[Out], NotUsed]]): Source[Out, Mat] =
+      creator: function.Creator[Graph[SourceShape[Out], NotUsed]]): Source[Out, Mat] =
     recoverWith({
-      case elem if clazz.isInstance(elem) => supplier.get()
+      case elem if clazz.isInstance(elem) => creator.create()
     }: PartialFunction[Throwable, Graph[SourceShape[Out], NotUsed]])
 
   /**
@@ -2283,15 +2274,15 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * @param attempts Maximum number of retries or -1 to retry indefinitely
    * @param clazz the class object of the failure cause
-   * @param supplier supply the new Source to be materialized
+   * @param creator create the new Source to be materialized
    */
   def recoverWithRetries(
       attempts: Int,
       clazz: Class[_ <: Throwable],
-      supplier: Supplier[Graph[SourceShape[Out], NotUsed]]): Source[Out, Mat] =
+      creator: function.Creator[Graph[SourceShape[Out], NotUsed]]): Source[Out, Mat] =
     recoverWithRetries(attempts,
       {
-        case elem if clazz.isInstance(elem) => supplier.get()
+        case elem if clazz.isInstance(elem) => creator.create()
       }: PartialFunction[Throwable, Graph[SourceShape[Out], NotUsed]])
 
   /**
@@ -2344,9 +2335,85 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Cancels when''' downstream cancels
    *  @since 1.1.0
    */
-  def onErrorComplete(predicate: java.util.function.Predicate[_ >: Throwable]): javadsl.Source[Out, Mat] =
+  def onErrorComplete(predicate: function.Predicate[_ >: Throwable]): javadsl.Source[Out, Mat] =
     new Source(delegate.onErrorComplete {
       case ex: Throwable if predicate.test(ex) => true
+    })
+
+  /**
+   * Transform a failure signal into a Source of elements provided by a factory function.
+   * This allows to continue processing with another stream when a failure occurs.
+   *
+   * Since the underlying failure signal onError arrives out-of-band, it might jump over existing elements.
+   * This operator can recover the failure signal, but not the skipped elements, which will be dropped.
+   *
+   * '''Emits when''' element is available from the upstream or upstream is failed and fallback Source produces an element
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' upstream completes or upstream failed with exception and fallback Source completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @param fallback Function which produces a Source to continue the stream
+   * @since 2.0.0
+   */
+  def onErrorResume[T >: Out](
+      fallback: function.Function[_ >: Throwable, _ <: Graph[SourceShape[T], NotUsed]]): javadsl.Source[T, Mat] =
+    new Source(delegate.recoverWith {
+      case ex: Throwable => fallback(ex)
+    })
+
+  /**
+   * Transform a failure signal into a stream of elements provided by a factory function.
+   * This allows to continue processing with another stream when a failure occurs.
+   *
+   * Since the underlying failure signal onError arrives out-of-band, it might jump over existing elements.
+   * This operator can recover the failure signal, but not the skipped elements, which will be dropped.
+   *
+   * '''Emits when''' element is available from the upstream or upstream is failed and fallback Source produces an element
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' upstream completes or upstream failed with exception and fallback Source completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @param clazz the class object of the failure cause
+   * @param fallback Function which produces a Source to continue the stream
+   * @since 2.0.0
+   */
+  def onErrorResume[T >: Out](
+      clazz: Class[_ <: Throwable],
+      fallback: function.Function[_ >: Throwable, _ <: Graph[SourceShape[T], NotUsed]]): javadsl.Source[T, Mat] =
+    new Source(delegate.recoverWith {
+      case ex: Throwable if clazz.isInstance(ex) => fallback(ex)
+    })
+
+  /**
+   * Transform a failure signal into a stream of elements provided by a factory function.
+   * This allows to continue processing with another stream when a failure occurs.
+   *
+   * Since the underlying failure signal onError arrives out-of-band, it might jump over existing elements.
+   * This operator can recover the failure signal, but not the skipped elements, which will be dropped.
+   *
+   * '''Emits when''' element is available from the upstream or upstream is failed and fallback Source produces an element
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' upstream completes or upstream failed with exception and fallback Source completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @param predicate Predicate which determines if the exception should be handled
+   * @param fallback Function which produces a Source to continue the stream
+   * @since 2.0.0
+   */
+  def onErrorResume[T >: Out](
+      predicate: function.Predicate[_ >: Throwable],
+      fallback: function.Function[_ >: Throwable, _ <: Graph[SourceShape[T], NotUsed]]): javadsl.Source[T, Mat] =
+    new Source(delegate.recoverWith {
+      case ex: Throwable if predicate.test(ex) => fallback(ex)
     })
 
   /**
@@ -2918,7 +2985,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * '''Cancels when''' downstream cancels
    */
-  def groupedWeighted(minWeight: Long, costFn: java.util.function.Function[Out, java.lang.Long])
+  def groupedWeighted(minWeight: Long, costFn: function.Function[Out, java.lang.Long])
       : javadsl.Source[java.util.List[Out @uncheckedVariance], Mat] =
     new Source(delegate.groupedWeighted(minWeight)(costFn.apply).map(_.asJava))
 
@@ -2961,7 +3028,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    */
   def groupedAdjacentByWeighted[R](f: function.Function[Out, R],
       maxWeight: Long,
-      costFn: java.util.function.Function[Out, java.lang.Long])
+      costFn: function.Function[Out, java.lang.Long])
       : javadsl.Source[java.util.List[Out @uncheckedVariance], Mat] =
     new Source(delegate.groupedAdjacentByWeighted(f.apply, maxWeight)(costFn.apply).map(_.asJava))
 
@@ -3266,7 +3333,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
   def groupedWithin(
       maxNumber: Int,
       duration: java.time.Duration): javadsl.Source[java.util.List[Out @uncheckedVariance], Mat] =
-    new Source(delegate.groupedWithin(maxNumber, duration.asScala).map(_.asJava)) // TODO optimize to one step
+    new Source(delegate.groupedWithin(maxNumber, duration.toScala).map(_.asJava)) // TODO optimize to one step
 
   /**
    * Chunk up this stream into groups of elements received within a time window,
@@ -3290,7 +3357,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
       maxWeight: Long,
       costFn: function.Function[Out, java.lang.Long],
       duration: java.time.Duration): javadsl.Source[java.util.List[Out @uncheckedVariance], Mat] =
-    new Source(delegate.groupedWeightedWithin(maxWeight, duration.asScala)(costFn.apply).map(_.asJava))
+    new Source(delegate.groupedWeightedWithin(maxWeight, duration.toScala)(costFn.apply).map(_.asJava))
 
   /**
    * Chunk up this stream into groups of elements received within a time window,
@@ -3316,7 +3383,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
       maxNumber: Int,
       costFn: function.Function[Out, java.lang.Long],
       duration: java.time.Duration): javadsl.Source[java.util.List[Out @uncheckedVariance], Mat] =
-    new Source(delegate.groupedWeightedWithin(maxWeight, maxNumber, duration.asScala)(costFn.apply).map(_.asJava))
+    new Source(delegate.groupedWeightedWithin(maxWeight, maxNumber, duration.toScala)(costFn.apply).map(_.asJava))
 
   /**
    * Shifts elements emission in time by a specified amount. It allows to store elements
@@ -3344,7 +3411,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * @param strategy Strategy that is used when incoming elements cannot fit inside the buffer
    */
   def delay(of: java.time.Duration, strategy: DelayOverflowStrategy): Source[Out, Mat] =
-    new Source(delegate.delay(of.asScala, strategy))
+    new Source(delegate.delay(of.toScala, strategy))
 
   /**
    * Shifts elements emission in time by an amount individually determined through delay strategy a specified amount.
@@ -3374,13 +3441,13 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * '''Cancels when''' downstream cancels
    *
-   * @param delayStrategySupplier creates new [[DelayStrategy]] object for each materialization
+   * @param delayStrategyCreator creates new [[DelayStrategy]] object for each materialization
    * @param overFlowStrategy Strategy that is used when incoming elements cannot fit inside the buffer
    */
   def delayWith(
-      delayStrategySupplier: Supplier[DelayStrategy[Out]],
+      delayStrategyCreator: function.Creator[DelayStrategy[Out]],
       overFlowStrategy: DelayOverflowStrategy): Source[Out, Mat] =
-    new Source(delegate.delayWith(() => DelayStrategy.asScala(delayStrategySupplier.get), overFlowStrategy))
+    new Source(delegate.delayWith(() => DelayStrategy.asScala(delayStrategyCreator.create()), overFlowStrategy))
 
   /**
    * Discard the given number of elements at the beginning of the stream.
@@ -3409,7 +3476,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Cancels when''' downstream cancels
    */
   def dropWithin(duration: java.time.Duration): javadsl.Source[Out, Mat] =
-    new Source(delegate.dropWithin(duration.asScala))
+    new Source(delegate.dropWithin(duration.toScala))
 
   /**
    * Terminate processing (and cancel the upstream publisher) after predicate
@@ -3531,7 +3598,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Cancels when''' downstream cancels or timer fires
    */
   def takeWithin(duration: java.time.Duration): javadsl.Source[Out, Mat] =
-    new Source(delegate.takeWithin(duration.asScala))
+    new Source(delegate.takeWithin(duration.toScala))
 
   /**
    * Allows a faster upstream to progress independently of a slower subscriber by conflating elements into a summary
@@ -4145,7 +4212,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Cancels when''' downstream cancels
    */
   def initialTimeout(timeout: java.time.Duration): javadsl.Source[Out, Mat] =
-    new Source(delegate.initialTimeout(timeout.asScala))
+    new Source(delegate.initialTimeout(timeout.toScala))
 
   /**
    * If the completion of the stream does not happen until the provided timeout, the stream is failed
@@ -4160,7 +4227,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Cancels when''' downstream cancels
    */
   def completionTimeout(timeout: java.time.Duration): javadsl.Source[Out, Mat] =
-    new Source(delegate.completionTimeout(timeout.asScala))
+    new Source(delegate.completionTimeout(timeout.toScala))
 
   /**
    * If the time between two processed elements exceeds the provided timeout, the stream is failed
@@ -4176,7 +4243,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Cancels when''' downstream cancels
    */
   def idleTimeout(timeout: java.time.Duration): javadsl.Source[Out, Mat] =
-    new Source(delegate.idleTimeout(timeout.asScala))
+    new Source(delegate.idleTimeout(timeout.toScala))
 
   /**
    * If the time between the emission of an element and the following downstream demand exceeds the provided timeout,
@@ -4192,7 +4259,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Cancels when''' downstream cancels
    */
   def backpressureTimeout(timeout: java.time.Duration): javadsl.Source[Out, Mat] =
-    new Source(delegate.backpressureTimeout(timeout.asScala))
+    new Source(delegate.backpressureTimeout(timeout.toScala))
 
   /**
    * Injects additional elements if upstream does not emit for a configured amount of time. In other words, this
@@ -4212,7 +4279,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Cancels when''' downstream cancels
    */
   def keepAlive(maxIdle: java.time.Duration, injectedElem: function.Creator[Out]): javadsl.Source[Out, Mat] =
-    new Source(delegate.keepAlive(maxIdle.asScala, () => injectedElem.create()))
+    new Source(delegate.keepAlive(maxIdle.toScala, () => injectedElem.create()))
 
   /**
    * Sends elements downstream with speed limited to `elements/per`. In other words, this operator set the maximum rate
@@ -4244,7 +4311,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Cancels when''' downstream cancels
    */
   def throttle(elements: Int, per: java.time.Duration): javadsl.Source[Out, Mat] =
-    new Source(delegate.throttle(elements, per.asScala))
+    new Source(delegate.throttle(elements, per.toScala))
 
   /**
    * Sends elements downstream with speed limited to `elements/per`. In other words, this operator set the maximum rate
@@ -4286,7 +4353,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
       per: java.time.Duration,
       maximumBurst: Int,
       mode: ThrottleMode): javadsl.Source[Out, Mat] =
-    new Source(delegate.throttle(elements, per.asScala, maximumBurst, mode))
+    new Source(delegate.throttle(elements, per.toScala, maximumBurst, mode))
 
   /**
    * Sends elements downstream with speed limited to `cost/per`. Cost is
@@ -4323,7 +4390,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
       cost: Int,
       per: java.time.Duration,
       costCalculation: function.Function[Out, Integer]): javadsl.Source[Out, Mat] =
-    new Source(delegate.throttle(cost, per.asScala, costCalculation.apply _))
+    new Source(delegate.throttle(cost, per.toScala, costCalculation.apply _))
 
   /**
    * Sends elements downstream with speed limited to `cost/per`. Cost is
@@ -4369,7 +4436,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
       maximumBurst: Int,
       costCalculation: function.Function[Out, Integer],
       mode: ThrottleMode): javadsl.Source[Out, Mat] =
-    new Source(delegate.throttle(cost, per.asScala, maximumBurst, costCalculation.apply _, mode))
+    new Source(delegate.throttle(cost, per.toScala, maximumBurst, costCalculation.apply _, mode))
 
   /**
    * Detaches upstream demand from downstream demand without detaching the
@@ -4428,7 +4495,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Cancels when''' downstream cancels
    */
   def initialDelay(delay: java.time.Duration): javadsl.Source[Out, Mat] =
-    new Source(delegate.initialDelay(delay.asScala))
+    new Source(delegate.initialDelay(delay.toScala))
 
   /**
    * Replace the attributes of this [[Source]] with the given ones. If this Source is a composite
@@ -4679,16 +4746,16 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * @param emitOnTimer decide whether the current aggregated elements can be emitted, the custom function is invoked on every interval
    */
   @deprecated("Use the overloaded one which accepts an Optional instead.", since = "1.2.0")
-  def aggregateWithBoundary[Agg, Emit](allocate: java.util.function.Supplier[Agg],
+  def aggregateWithBoundary[Agg, Emit](allocate: function.Creator[Agg],
       aggregate: function.Function2[Agg, Out, Pair[Agg, Boolean]],
       harvest: function.Function[Agg, Emit],
-      emitOnTimer: Pair[java.util.function.Predicate[Agg], java.time.Duration]): javadsl.Source[Emit, Mat] = {
+      emitOnTimer: Pair[function.Predicate[Agg], java.time.Duration]): javadsl.Source[Emit, Mat] = {
     asScala
-      .aggregateWithBoundary(() => allocate.get())(
+      .aggregateWithBoundary(() => allocate.create())(
         aggregate = (agg, out) => aggregate.apply(agg, out).toScala,
         harvest = agg => harvest.apply(agg),
         emitOnTimer = Option(emitOnTimer).map {
-          case Pair(predicate, duration) => (agg => predicate.test(agg), duration.asScala)
+          case Pair(predicate, duration) => (agg => predicate.test(agg), duration.toScala)
         })
       .asJava
   }
@@ -4711,17 +4778,17 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * @param harvest     this is invoked before emit within the current stage/operator
    * @param emitOnTimer decide whether the current aggregated elements can be emitted, the custom function is invoked on every interval
    */
-  def aggregateWithBoundary[Agg, Emit](allocate: java.util.function.Supplier[Agg],
+  def aggregateWithBoundary[Agg, Emit](allocate: function.Creator[Agg],
       aggregate: function.Function2[Agg, Out, Pair[Agg, Boolean]],
       harvest: function.Function[Agg, Emit],
-      emitOnTimer: Optional[Pair[java.util.function.Predicate[Agg], java.time.Duration]]): javadsl.Source[Emit, Mat] = {
-    import org.apache.pekko.util.OptionConverters._
+      emitOnTimer: Optional[Pair[function.Predicate[Agg], java.time.Duration]]): javadsl.Source[Emit, Mat] = {
+    import scala.jdk.OptionConverters._
     asScala
-      .aggregateWithBoundary(() => allocate.get())(
+      .aggregateWithBoundary(() => allocate.create())(
         aggregate = (agg, out) => aggregate.apply(agg, out).toScala,
         harvest = agg => harvest.apply(agg),
         emitOnTimer = emitOnTimer.toScala.map {
-          case Pair(predicate, duration) => (agg => predicate.test(agg), duration.asScala)
+          case Pair(predicate, duration) => (agg => predicate.test(agg), duration.toScala)
         })
       .asJava
   }

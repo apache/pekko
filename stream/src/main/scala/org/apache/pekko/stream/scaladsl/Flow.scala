@@ -47,7 +47,6 @@ import pekko.stream.stage._
 import pekko.util.ConstantFun
 import pekko.util.OptionVal
 import pekko.util.Timeout
-import pekko.util.ccompat._
 
 import org.reactivestreams.Processor
 import org.reactivestreams.Publisher
@@ -755,7 +754,8 @@ object Flow {
         case Seq(a) =>
           val f: Flow[I, O, Future[M]] =
             futureFlow(create()
-              .map(Flow[I].prepend(Source.single(a)).viaMat(_)(Keep.right))(pekko.dispatch.ExecutionContexts.parasitic))
+              .map(Flow[I].prepend(Source.single(a)).viaMat(_)(Keep.right))(
+                scala.concurrent.ExecutionContext.parasitic))
           f
         case Nil =>
           val f: Flow[I, O, Future[M]] = Flow[I]
@@ -844,7 +844,6 @@ final case class RunnableGraph[+Mat](override val traversalBuilder: TraversalBui
  * Binary compatibility is only maintained for callers of this trait’s interface.
  */
 @DoNotInherit
-@ccompatUsedUntil213
 trait FlowOps[+Out, +Mat] {
   import GraphDSL.Implicits._
 

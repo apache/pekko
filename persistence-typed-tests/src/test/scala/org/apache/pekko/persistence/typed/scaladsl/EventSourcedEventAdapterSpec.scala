@@ -13,6 +13,8 @@
 
 package org.apache.pekko.persistence.typed.scaladsl
 
+import java.util.concurrent.atomic.AtomicInteger
+
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
@@ -30,10 +32,10 @@ import pekko.persistence.typed.PersistenceId
 import pekko.serialization.jackson.CborSerializable
 import pekko.stream.scaladsl.Sink
 import pekko.testkit.JavaSerializable
-import com.typesafe.config.ConfigFactory
+
 import org.scalatest.wordspec.AnyWordSpecLike
 
-import java.util.concurrent.atomic.AtomicInteger
+import com.typesafe.config.ConfigFactory
 
 object EventSourcedEventAdapterSpec {
 

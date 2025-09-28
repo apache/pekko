@@ -17,13 +17,14 @@
 
 package org.apache.pekko.dispatch
 
-import org.apache.pekko
-
 import java.util.Optional
-import java.util.concurrent.atomic.AtomicReference
 import java.util.concurrent.{ CompletableFuture, CompletionStage, Executor }
+import java.util.concurrent.atomic.AtomicReference
 import java.util.function.{ BiConsumer, BiFunction }
+
 import scala.annotation.nowarn
+
+import org.apache.pekko
 
 /**
  * CompletionStages provides utilities for working with `CompletionStage`s.
@@ -34,7 +35,7 @@ object CompletionStages {
    * Convert a `CompletionStage` to a Scala `Future`.
    */
   def asScala[T](stage: CompletionStage[T]): scala.concurrent.Future[T] = {
-    import org.apache.pekko.util.FutureConverters._
+    import scala.jdk.FutureConverters._
     stage.asScala
   }
 

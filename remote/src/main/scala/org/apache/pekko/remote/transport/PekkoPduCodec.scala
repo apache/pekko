@@ -14,6 +14,7 @@
 package org.apache.pekko.remote.transport
 
 import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.PekkoException
 import pekko.actor.{ ActorRef, Address, AddressFromURIString, InternalActorRef }
@@ -217,7 +218,7 @@ private[remote] object PekkoPduProtobufCodec extends PekkoPduCodec {
     val ackAndEnvelope = AckAndEnvelopeContainer.parseFrom(raw.toArrayUnsafe())
 
     val ackOption = if (ackAndEnvelope.hasAck) {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       Some(
         Ack(
           SeqNo(ackAndEnvelope.getAck.getCumulativeAck),

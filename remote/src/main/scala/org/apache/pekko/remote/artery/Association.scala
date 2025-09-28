@@ -21,13 +21,13 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
 
+import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
-import scala.annotation.nowarn
 import org.agrona.concurrent.ManyToOneConcurrentArrayQueue
 
 import org.apache.pekko
@@ -68,7 +68,6 @@ import pekko.stream.scaladsl.Source
 import pekko.util.OptionVal
 import pekko.util.PrettyDuration._
 import pekko.util.WildcardIndex
-import pekko.util.ccompat._
 
 /**
  * INTERNAL API
@@ -139,7 +138,6 @@ private[remote] object Association {
  * Thread-safe, mutable holder for association state. Main entry point for remote destined message to a specific
  * remote address.
  */
-@ccompatUsedUntil213
 private[remote] class Association(
     val transport: ArteryTransport,
     val materializer: Materializer,

@@ -17,7 +17,6 @@ import java.io.Closeable
 import java.util.logging.LogManager
 
 import org.scalatestplus.mockito.MockitoSugar
-import org.slf4j.bridge.SLF4JBridgeHandler
 
 import org.apache.pekko
 import pekko.actor.Actor
@@ -34,6 +33,8 @@ import pekko.dispatch.RequiresMessageQueue
 import pekko.dispatch.UnboundedMessageQueueSemantics
 import pekko.remote.RARP
 import pekko.testkit.PekkoSpec
+
+import org.slf4j.bridge.SLF4JBridgeHandler
 
 /**
  * Redirect different logging sources to SLF4J.

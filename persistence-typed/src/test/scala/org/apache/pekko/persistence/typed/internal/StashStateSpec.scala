@@ -15,8 +15,6 @@ package org.apache.pekko.persistence.typed.internal
 
 import scala.concurrent.duration._
 
-import org.scalatest.wordspec.AnyWordSpecLike
-
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
@@ -25,6 +23,8 @@ import pekko.actor.typed.Behavior
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.persistence.typed.internal.InternalProtocol.IncomingCommand
 import pekko.persistence.typed.internal.InternalProtocol.RecoveryPermitGranted
+
+import org.scalatest.wordspec.AnyWordSpecLike
 
 class StashStateSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with LogCapturing {
 

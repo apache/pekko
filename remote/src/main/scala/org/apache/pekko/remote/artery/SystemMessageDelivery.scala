@@ -16,6 +16,7 @@ package org.apache.pekko.remote.artery
 import java.util.ArrayDeque
 
 import scala.annotation.tailrec
+import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 import scala.util.Failure
 import scala.util.Success
@@ -26,7 +27,6 @@ import org.apache.pekko
 import pekko.Done
 import pekko.actor.ActorRef
 import pekko.annotation.InternalApi
-import pekko.dispatch.ExecutionContexts
 import pekko.dispatch.sysmsg.SystemMessage
 import pekko.event.Logging
 import pekko.remote.UniqueAddress
@@ -119,7 +119,7 @@ import pekko.util.PrettyDuration.PrettyPrintableDuration
           if (isAvailable(out))
             pull(in) // onPull from downstream already called
         }
-        outboundContext.controlSubject.attach(this).foreach(callback.invoke)(ExecutionContexts.parasitic)
+        outboundContext.controlSubject.attach(this).foreach(callback.invoke)(ExecutionContext.parasitic)
       }
 
       override def postStop(): Unit = {

@@ -20,7 +20,7 @@ addSbtPlugin("com.thoughtworks.sbt-api-mappings" % "sbt-api-mappings" % "3.0.2")
 addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.7")
 addSbtPlugin("com.github.sbt" % "sbt-boilerplate" % "0.7.0")
 
-addSbtPlugin("de.heikoseeberger" % "sbt-header" % "5.10.0")
+addSbtPlugin("com.github.sbt" % "sbt-header" % "5.11.0")
 addSbtPlugin("com.github.sbt" % "sbt-pull-request-validator" % "2.0.0")
 addSbtPlugin("net.bzzt" % "sbt-reproducible-builds" % "0.32")
 
@@ -28,7 +28,7 @@ addSbtPlugin("com.github.sbt" % "sbt-dynver" % "5.1.1")
 addSbtPlugin("com.github.pjfanning" % "sbt-source-dist" % "0.1.12")
 addSbtPlugin("com.github.pjfanning" % "sbt-pekko-build" % "0.4.5")
 addSbtPlugin("com.github.reibitto" % "sbt-welcome" % "0.5.0")
-addSbtPlugin("com.github.sbt" % "sbt-license-report" % "1.7.0")
+addSbtPlugin("com.github.sbt" % "sbt-license-report" % "1.9.0")
 addSbtPlugin("io.github.roiocam" % "sbt-depend-walker" % "0.1.1")
 addSbtPlugin("com.github.sbt" % "sbt-sbom" % "0.4.0")
 
@@ -36,4 +36,4 @@ addSbtPlugin("org.apache.pekko" % "pekko-sbt-paradox" % "1.0.1")
 addSbtPlugin("com.lightbend.paradox" % "sbt-paradox-theme" % "0.10.7")
 addSbtPlugin("com.lightbend.paradox" % "sbt-paradox" % "0.10.7")
 
-addSbtPlugin("com.gradle" % "sbt-develocity" % "1.3.1")
+addSbtPlugin("com.gradle" % "sbt-develocity" % "1.4")

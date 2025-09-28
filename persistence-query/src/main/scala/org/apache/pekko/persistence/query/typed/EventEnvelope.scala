@@ -93,7 +93,7 @@ final class EventEnvelope[Event](
    * Java API
    */
   def getOptionalEvent(): Optional[Event] = {
-    import pekko.util.OptionConverters._
+    import scala.jdk.OptionConverters._
     eventOption.toJava
   }
 
@@ -101,7 +101,7 @@ final class EventEnvelope[Event](
    * Java API
    */
   def getEventMetaData(): Optional[AnyRef] = {
-    import pekko.util.OptionConverters._
+    import scala.jdk.OptionConverters._
     eventMetadata.map(_.asInstanceOf[AnyRef]).toJava
   }
 

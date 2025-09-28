@@ -17,6 +17,9 @@ import java.time.Duration
 import java.util.concurrent.CompletionStage
 
 import scala.concurrent.Future
+import scala.jdk.DurationConverters._
+import scala.jdk.FutureConverters._
+
 import org.apache.pekko
 import pekko.actor.ActorRefProvider
 import pekko.actor.typed.ActorRef
@@ -28,8 +31,6 @@ import pekko.cluster.sharding.typed.javadsl.EntityRef
 import pekko.cluster.sharding.typed.scaladsl
 import pekko.japi.function.{ Function => JFunction }
 import pekko.pattern.StatusReply
-import pekko.util.FutureConverters._
-import pekko.util.JavaDurationConverters._
 import pekko.util.Timeout
 
 /**
@@ -57,10 +58,10 @@ import pekko.util.Timeout
   }
 
   def ask[U](message: JFunction[ActorRef[U], M], timeout: Duration): CompletionStage[U] =
-    ask[U](replyTo => message.apply(replyTo))(timeout.asScala).asJava
+    ask[U](replyTo => message.apply(replyTo))(timeout.toScala).asJava
 
   override def askWithStatus[Res](f: ActorRef[StatusReply[Res]] => M, timeout: Duration): CompletionStage[Res] =
-    askWithStatus(f)(timeout.asScala).asJava
+    askWithStatus(f)(timeout.toScala).asJava
 
   override def askWithStatus[Res](f: ActorRef[StatusReply[Res]] => M)(implicit timeout: Timeout): Future[Res] =
     StatusReply.flattenStatusFuture(ask(f))

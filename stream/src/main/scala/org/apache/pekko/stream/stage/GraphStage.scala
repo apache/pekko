@@ -13,6 +13,7 @@
 
 package org.apache.pekko.stream.stage
 
+import java.util.Spliterator
 import java.util.concurrent.{ CompletionStage, ConcurrentHashMap }
 import java.util.concurrent.atomic.AtomicReference
 
@@ -35,9 +36,6 @@ import pekko.stream.impl.fusing.{ GraphInterpreter, GraphStageModule, SubSink, S
 import pekko.stream.scaladsl.GenericGraphWithChangedAttributes
 import pekko.stream.stage.ConcurrentAsyncCallbackState.{ NoPendingEvents, State }
 import pekko.util.OptionVal
-import pekko.util.unused
-
-import java.util.Spliterator
 
 /**
  * Scala API: A GraphStage represents a reusable graph stream processing operator.
@@ -61,7 +59,8 @@ abstract class GraphStageWithMaterializedValue[+S <: Shape, +M] extends Graph[S,
   @InternalApi
   private[pekko] def createLogicAndMaterializedValue(
       inheritedAttributes: Attributes,
-      @unused materializer: Materializer): (GraphStageLogic, M) = createLogicAndMaterializedValue(inheritedAttributes)
+      @nowarn("msg=never used") materializer: Materializer): (GraphStageLogic, M) =
+    createLogicAndMaterializedValue(inheritedAttributes)
 
   @throws(classOf[Exception])
   def createLogicAndMaterializedValue(inheritedAttributes: Attributes): (GraphStageLogic, M)
@@ -697,13 +696,6 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
   final def completeStage(): Unit =
     internalCompleteStage(SubscriptionWithCancelException.StageWasCompleted, OptionVal.None)
 
-  // Variable used from `OutHandler.onDownstreamFinish` to carry over cancellation cause in cases where
-  // `OutHandler` implementations call `super.onDownstreamFinished()`.
-  /**
-   * INTERNAL API
-   */
-  @InternalApi private[stream] var lastCancellationCause: Throwable = _
-
   /**
    * Automatically invokes [[cancel]] or [[complete]] on all the input or output ports that have been called,
    * then marks the stage as stopped.
@@ -835,7 +827,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
       andThen: Procedure[java.util.List[T]],
       onClose: Procedure[java.util.List[T]]): Unit = {
     // FIXME `onClose` is a poor name for `onComplete` rename this at the earliest possible opportunity
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     readN(in, n)(seq => andThen(seq.asJava), seq => onClose(seq.asJava))
   }
 
@@ -945,7 +937,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
    * signal.
    */
   final protected def emitMultiple[T](out: Outlet[T], elems: java.util.Iterator[T]): Unit = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     emitMultiple(out, elems.asScala, DoNothing)
   }
 
@@ -958,7 +950,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
    * signal.
    */
   final protected def emitMultiple[T](out: Outlet[T], elems: java.util.Iterator[T], andThen: Effect): Unit = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     emitMultiple(out, elems.asScala, andThen.apply _)
   }
 
@@ -1655,8 +1647,10 @@ trait AsyncCallback[T] {
    *
    * For cases where it is important to know if the notification was ever processed or not
    * see [[AsyncCallback#invokeWithFeedback]]
+   *
+   * @param msg the message to the GraphStage, can be null
    */
-  def invoke(t: T): Unit
+  def invoke(msg: T): Unit
 
   /**
    * Dispatch an asynchronous notification. This method is thread-safe and
@@ -1669,8 +1663,10 @@ trait AsyncCallback[T] {
    *
    * The handling of the returned future incurs a slight overhead, so for cases where it does not matter
    * to the invoking logic see [[AsyncCallback#invoke]]
+   *
+   * @param msg the message to the GraphStage, can be null
    */
-  def invokeWithFeedback(t: T): Future[Done]
+  def invokeWithFeedback(msg: T): Future[Done]
 
   /**
    * Java API
@@ -1685,11 +1681,13 @@ trait AsyncCallback[T] {
    *
    * The handling of the returned future incurs a slight overhead, so for cases where it does not matter
    * to the invoking logic see [[AsyncCallback#invoke]]
+   *
+   * @param msg the message to the GraphStage, can be null
    * @since 1.2.0
    */
-  def invokeWithFeedbackCompletionStage(t: T): CompletionStage[Done] = {
-    import pekko.util.FutureConverters._
-    invokeWithFeedback(t).asJava
+  def invokeWithFeedbackCompletionStage(msg: T): CompletionStage[Done] = {
+    import scala.jdk.FutureConverters._
+    invokeWithFeedback(msg).asJava
   }
 }
 
@@ -1730,7 +1728,7 @@ abstract class TimerGraphStageLogic(_shape: Shape) extends GraphStageLogic(_shap
    * @param timerKey key of the scheduled timer
    */
   @throws(classOf[Exception])
-  protected def onTimer(@unused timerKey: Any): Unit = ()
+  protected def onTimer(@nowarn("msg=never used") timerKey: Any): Unit = ()
 
   // Internal hooks to avoid reliance on user calling super in postStop
   protected[stream] override def afterPostStop(): Unit = {
@@ -1761,8 +1759,8 @@ abstract class TimerGraphStageLogic(_shape: Shape) extends GraphStageLogic(_shap
    * adding the new timer.
    */
   final protected def scheduleOnce(timerKey: Any, delay: java.time.Duration): Unit = {
-    import pekko.util.JavaDurationConverters._
-    scheduleOnce(timerKey, delay.asScala)
+    import scala.jdk.DurationConverters._
+    scheduleOnce(timerKey, delay.toScala)
   }
 
   /**
@@ -1795,8 +1793,8 @@ abstract class TimerGraphStageLogic(_shape: Shape) extends GraphStageLogic(_shap
       timerKey: Any,
       initialDelay: java.time.Duration,
       interval: java.time.Duration): Unit = {
-    import pekko.util.JavaDurationConverters._
-    scheduleWithFixedDelay(timerKey, initialDelay.asScala, interval.asScala)
+    import scala.jdk.DurationConverters._
+    scheduleWithFixedDelay(timerKey, initialDelay.toScala, interval.toScala)
   }
 
   /**
@@ -1829,8 +1827,8 @@ abstract class TimerGraphStageLogic(_shape: Shape) extends GraphStageLogic(_shap
       timerKey: Any,
       initialDelay: java.time.Duration,
       interval: java.time.Duration): Unit = {
-    import pekko.util.JavaDurationConverters._
-    scheduleAtFixedRate(timerKey, initialDelay.asScala, interval.asScala)
+    import scala.jdk.DurationConverters._
+    scheduleAtFixedRate(timerKey, initialDelay.toScala, interval.toScala)
   }
 
   /**
@@ -1896,27 +1894,14 @@ trait OutHandler {
   @throws(classOf[Exception])
   def onPull(): Unit
 
-  private def onDownstreamFinish(): Unit = {
-    val thisStage = GraphInterpreter.currentInterpreter.activeStage
-    require(
-      thisStage.lastCancellationCause ne null,
-      "onDownstreamFinish() must not be called without a cancellation cause")
-    thisStage.cancelStage(thisStage.lastCancellationCause)
-  }
-
   /**
    * Called when the output port will no longer accept any new elements. After this callback no other callbacks will
    * be called for this port.
    */
   @throws(classOf[Exception])
   def onDownstreamFinish(cause: Throwable): Unit = {
-    val thisStage = GraphInterpreter.currentInterpreter.activeStage
-    try {
-      require(cause ne null, "Cancellation cause must not be null")
-      require(thisStage.lastCancellationCause eq null, "onDownstreamFinish(cause) must not be called recursively")
-      thisStage.lastCancellationCause = cause
-      onDownstreamFinish(): @nowarn("msg=deprecated") // if not overridden, call old deprecated variant
-    } finally thisStage.lastCancellationCause = null
+    require(cause ne null, "Cancellation cause must not be null")
+    GraphInterpreter.currentInterpreter.activeStage.cancelStage(cause)
   }
 }
 

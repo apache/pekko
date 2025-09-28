@@ -35,8 +35,6 @@ import java.lang.Integer.{ rotateLeft => rotl }
 
 import scala.annotation.nowarn
 
-import org.apache.pekko.util.ccompat._
-
 /**
  * An object designed to generate well-distributed non-cryptographic
  *  hashes.  It is designed to hash a collection of integers; along with
@@ -46,7 +44,6 @@ import org.apache.pekko.util.ccompat._
  *  incorporate a new integer) to update the values.  Only one method
  *  needs to be called to finalize the hash.
  */
-@ccompatUsedUntil213
 object MurmurHash {
   // Magic values used for MurmurHash's 32 bit hash.
   // Don't change these without consulting a hashing expert!

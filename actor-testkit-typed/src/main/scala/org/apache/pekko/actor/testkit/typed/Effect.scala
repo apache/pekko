@@ -13,14 +13,14 @@
 
 package org.apache.pekko.actor.testkit.typed
 
+import scala.annotation.nowarn
 import scala.concurrent.duration.FiniteDuration
+import scala.jdk.DurationConverters._
+import scala.jdk.FunctionConverters._
 
 import org.apache.pekko
 import pekko.actor.typed.{ ActorRef, Behavior, Props }
 import pekko.annotation.{ DoNotInherit, InternalApi }
-import pekko.util.FunctionConverters._
-import pekko.util.JavaDurationConverters._
-import pekko.util.unused
 
 /**
  * All tracked effects for the [[pekko.actor.testkit.typed.scaladsl.BehaviorTestKit]] and
@@ -156,7 +156,7 @@ object Effect {
   @InternalApi
   private[pekko] object SpawnedAnonymousAdapter {
     def apply[T]() = new SpawnedAnonymousAdapter[T](null)
-    def unapply[T](@unused s: SpawnedAnonymousAdapter[T]): Boolean = true
+    def unapply[T](@nowarn("msg=never used") s: SpawnedAnonymousAdapter[T]): Boolean = true
   }
 
   /**
@@ -198,7 +198,7 @@ object Effect {
     /**
      * Java API
      */
-    def duration(): java.time.Duration = d.asJava
+    def duration(): java.time.Duration = d.toJava
   }
 
   case object ReceiveTimeoutCancelled extends ReceiveTimeoutCancelled
@@ -210,7 +210,7 @@ object Effect {
    * FIXME what about events scheduled through the scheduler?
    */
   final case class Scheduled[U](delay: FiniteDuration, target: ActorRef[U], message: U) extends Effect {
-    def duration(): java.time.Duration = delay.asJava
+    def duration(): java.time.Duration = delay.toJava
   }
 
   final case class TimerScheduled[U](
@@ -220,11 +220,11 @@ object Effect {
       mode: TimerScheduled.TimerMode,
       overriding: Boolean)(val send: () => Unit)
       extends Effect {
-    def duration(): java.time.Duration = delay.asJava
+    def duration(): java.time.Duration = delay.toJava
   }
 
   object TimerScheduled {
-    import pekko.util.JavaDurationConverters._
+    import scala.jdk.DurationConverters._
 
     sealed trait TimerMode
     case object FixedRateMode extends TimerMode
@@ -235,9 +235,9 @@ object Effect {
 
     /*Java API*/
     def fixedRateMode = FixedRateMode
-    def fixedRateMode(initialDelay: java.time.Duration) = FixedRateModeWithInitialDelay(initialDelay.asScala)
+    def fixedRateMode(initialDelay: java.time.Duration) = FixedRateModeWithInitialDelay(initialDelay.toScala)
     def fixedDelayMode = FixedDelayMode
-    def fixedDelayMode(initialDelay: java.time.Duration) = FixedDelayModeWithInitialDelay(initialDelay.asScala)
+    def fixedDelayMode(initialDelay: java.time.Duration) = FixedDelayModeWithInitialDelay(initialDelay.toScala)
     def singleMode = SingleMode
   }
 

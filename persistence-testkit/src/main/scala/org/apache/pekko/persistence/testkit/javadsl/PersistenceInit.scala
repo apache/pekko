@@ -16,12 +16,13 @@ package org.apache.pekko.persistence.testkit.javadsl
 import java.time.Duration
 import java.util.concurrent.CompletionStage
 
+import scala.jdk.DurationConverters._
+import scala.jdk.FutureConverters._
+
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.ClassicActorSystemProvider
 import pekko.persistence.testkit.scaladsl
-import pekko.util.FutureConverters._
-import pekko.util.JavaDurationConverters._
 
 /**
  * Test utility to initialize persistence plugins. Useful when initialization order or coordination
@@ -49,6 +50,6 @@ object PersistenceInit {
       journalPluginId: String,
       snapshotPluginId: String,
       timeout: Duration): CompletionStage[Done] =
-    scaladsl.PersistenceInit.initializePlugins(system, journalPluginId, snapshotPluginId, timeout.asScala).asJava
+    scaladsl.PersistenceInit.initializePlugins(system, journalPluginId, snapshotPluginId, timeout.toScala).asJava
 
 }

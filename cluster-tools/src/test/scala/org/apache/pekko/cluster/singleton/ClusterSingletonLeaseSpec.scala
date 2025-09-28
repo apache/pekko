@@ -19,8 +19,6 @@ import scala.concurrent.Promise
 import scala.concurrent.duration._
 import scala.util.Success
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.Actor
 import pekko.actor.ActorLogging
@@ -35,6 +33,8 @@ import pekko.coordination.lease.TestLeaseExt
 import pekko.testkit.PekkoSpec
 import pekko.testkit.TestException
 import pekko.testkit.TestProbe
+
+import com.typesafe.config.ConfigFactory
 
 class ImportantSingleton(lifeCycleProbe: ActorRef) extends Actor with ActorLogging {
 

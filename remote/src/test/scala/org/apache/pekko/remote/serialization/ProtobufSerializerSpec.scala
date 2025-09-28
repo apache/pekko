@@ -13,6 +13,8 @@
 
 package org.apache.pekko.remote.serialization
 
+import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.remote.MessageSerializer
@@ -21,7 +23,6 @@ import pekko.remote.WireFormats.SerializedMessage
 import pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3
 import pekko.serialization.SerializationExtension
 import pekko.testkit.PekkoSpec
-import pekko.util.unused
 
 // those must be defined as top level classes, to have static parseFrom
 case class MaliciousMessage() {}
@@ -32,25 +33,25 @@ object ProtobufSerializerSpec {
 }
 
 object AnotherMessage {
-  def parseFrom(@unused bytes: Array[Byte]): AnotherMessage =
+  def parseFrom(@nowarn("msg=never used") bytes: Array[Byte]): AnotherMessage =
     new AnotherMessage
 }
 case class AnotherMessage() {}
 
 object AnotherMessage2 {
-  def parseFrom(@unused bytes: Array[Byte]): AnotherMessage2 =
+  def parseFrom(@nowarn("msg=never used") bytes: Array[Byte]): AnotherMessage2 =
     new AnotherMessage2
 }
 case class AnotherMessage2() extends ProtobufSerializerSpec.AnotherInterface {}
 
 object AnotherMessage3 {
-  def parseFrom(@unused bytes: Array[Byte]): AnotherMessage3 =
+  def parseFrom(@nowarn("msg=never used") bytes: Array[Byte]): AnotherMessage3 =
     new AnotherMessage3
 }
 case class AnotherMessage3() extends ProtobufSerializerSpec.AnotherBase {}
 
 object MaliciousMessage {
-  def parseFrom(@unused bytes: Array[Byte]): MaliciousMessage =
+  def parseFrom(@nowarn("msg=never used") bytes: Array[Byte]): MaliciousMessage =
     new MaliciousMessage
 }
 

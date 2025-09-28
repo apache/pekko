@@ -19,9 +19,6 @@ import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.util.Success
 
-import com.typesafe.config.ConfigFactory
-import org.scalatest.wordspec.AnyWordSpecLike
-
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
@@ -36,6 +33,10 @@ import pekko.persistence.snapshot.SnapshotStore
 import pekko.persistence.typed.StashingWhenSnapshottingSpec.ControllableSnapshotStoreExt
 import pekko.persistence.typed.scaladsl.Effect
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.ConfigFactory
 
 object StashingWhenSnapshottingSpec {
   object ControllableSnapshotStoreExt extends ExtensionId[ControllableSnapshotStoreExt] {

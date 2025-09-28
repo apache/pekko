@@ -23,8 +23,6 @@ import scala.concurrent.{ Await, ExecutionContext }
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
-import com.typesafe.config.{ Config, ConfigFactory }
-
 import org.apache.pekko
 import pekko.ConfigurationException
 import pekko.actor._
@@ -38,6 +36,8 @@ import pekko.event.MarkerLoggingAdapter
 import pekko.japi.Util
 import pekko.pattern._
 import pekko.remote.{ UniqueAddress => _, _ }
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 /**
  * Cluster Extension Id and factory for creating Cluster extension.
@@ -110,7 +110,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
    * Java API: roles that this member has
    */
   def getSelfRoles: java.util.Set[String] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     selfRoles.asJava
   }
 

@@ -35,9 +35,9 @@ import java.util
 
 import scala.collection.immutable
 import scala.concurrent.duration.FiniteDuration
+import scala.jdk.CollectionConverters._
+import scala.jdk.DurationConverters._
 import scala.util.{ Failure, Success, Try }
-
-import com.typesafe.config.{ Config, ConfigValueType }
 
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
@@ -48,13 +48,11 @@ import pekko.io.dns.IdGenerator.Policy
 import pekko.io.dns.internal.{ ResolvConf, ResolvConfParser }
 import pekko.util.Helpers
 import pekko.util.Helpers.Requiring
-import pekko.util.JavaDurationConverters._
-import pekko.util.ccompat._
-import pekko.util.ccompat.JavaConverters._
+
+import com.typesafe.config.{ Config, ConfigValueType }
 
 /** INTERNAL API */
 @InternalApi
-@ccompatUsedUntil213
 private[dns] final class DnsSettings(system: ExtendedActorSystem, c: Config) {
 
   import DnsSettings._
@@ -79,7 +77,7 @@ private[dns] final class DnsSettings(system: ExtendedActorSystem, c: Config) {
     }
   }
 
-  val ResolveTimeout: FiniteDuration = c.getDuration("resolve-timeout").asScala
+  val ResolveTimeout: FiniteDuration = c.getDuration("resolve-timeout").toScala
 
   val PositiveCachePolicy: CachePolicy = getTtl("positive-ttl")
   val NegativeCachePolicy: CachePolicy = getTtl("negative-ttl")

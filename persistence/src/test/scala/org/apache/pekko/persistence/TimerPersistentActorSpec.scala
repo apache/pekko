@@ -16,13 +16,13 @@ package org.apache.pekko.persistence
 import scala.concurrent.duration._
 import scala.runtime.BoxedUnit
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor._
 import pekko.japi.function.Procedure
 import pekko.testkit.{ EventFilter, ImplicitSender }
 import pekko.testkit.TestEvent.Mute
+
+import com.typesafe.config.ConfigFactory
 
 object TimerPersistentActorSpec {
 

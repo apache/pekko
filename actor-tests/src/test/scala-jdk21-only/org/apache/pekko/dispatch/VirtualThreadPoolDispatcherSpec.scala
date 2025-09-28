@@ -17,11 +17,11 @@
 
 package org.apache.pekko.dispatch
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.{ Actor, Props }
 import pekko.testkit.{ ImplicitSender, PekkoSpec }
+
+import com.typesafe.config.ConfigFactory
 
 object VirtualThreadPoolDispatcherSpec {
   val config = ConfigFactory.parseString("""
@@ -50,7 +50,7 @@ class VirtualThreadPoolDispatcherSpec extends PekkoSpec(VirtualThreadPoolDispatc
       for (_ <- 1 to 1000) {
         innocentActor ! "ping"
         expectMsgPF() { case name: String =>
-          name should include("VirtualThreadPoolDispatcherSpec-virtual-thread-dispatcher-virtual-thread-")
+          name should include("VirtualThreadPoolDispatcherSpec-virtual-thread-dispatcher-virtual-thread")
         }
       }
     }

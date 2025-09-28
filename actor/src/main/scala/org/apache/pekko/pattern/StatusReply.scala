@@ -13,16 +13,17 @@
 
 package org.apache.pekko.pattern
 
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.util.{ Failure => ScalaFailure }
 import scala.util.{ Success => ScalaSuccess }
 import scala.util.Try
 import scala.util.control.NoStackTrace
+
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.InvalidMessageException
 import pekko.annotation.InternalApi
-import pekko.dispatch.ExecutionContexts
 
 /**
  * Generic top-level message type for replies that signal failure or success. Convenient to use together with the
@@ -180,5 +181,5 @@ object StatusReply {
             ScalaFailure(new IllegalArgumentException(s"Unexpected status reply success value: $unexpected"))
         }
       case fail @ ScalaFailure(_) => fail.asInstanceOf[Try[T]]
-    }(ExecutionContexts.parasitic)
+    }(ExecutionContext.parasitic)
 }

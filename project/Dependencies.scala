@@ -21,12 +21,9 @@ object Dependencies {
   object Protobuf {
     // https://protobuf.dev/support/version-support/
     // protobuf-java 4.29 corresponds with protoc 29.x
-    val protobufJavaVersion = "4.32.0"
+    val protobufJavaVersion = "4.32.1"
     val protocVersion = "32.0"
   }
-
-  lazy val java8CompatVersion = settingKey[String]("The version of scala-java8-compat to use.")
-    .withRank(KeyRanks.Invisible) // avoid 'unused key' warning
 
   val junitVersion = "4.13.2"
   val junit5Version = "5.13.4"
@@ -36,33 +33,29 @@ object Dependencies {
   // needs to be inline with the aeron version, check
   // https://github.com/aeron-io/aeron/blob/master/gradle/libs.versions.toml
   val agronaVersion = "2.2.4"
-  val nettyVersion = "4.2.4.Final"
+  val nettyVersion = "4.2.6.Final"
   val logbackVersion = "1.5.18"
 
-  val jacksonCoreVersion = "2.19.2"
+  val jacksonAnnotationsVersion = "2.20"
+  val jacksonCoreVersion = "2.20.0"
   val jacksonDatabindVersion = jacksonCoreVersion
 
-  val scala212Version = "2.12.20"
   val scala213Version = "2.13.16"
   val scala3Version = "3.3.7-RC2"
-  val allScalaVersions = Seq(scala213Version, scala212Version, scala3Version)
+  val allScalaVersions = Seq(scala213Version, scala3Version)
 
   val reactiveStreamsVersion = "1.0.4"
-
-  val sslConfigVersion = "0.6.1"
 
   val scalaTestVersion = "3.2.19"
   val scalaTestScalaCheckVersion = "1-18"
   val scalaCheckVersion = "1.18.0"
 
-  val Versions =
-    Seq(crossScalaVersions := allScalaVersions, scalaVersion := allScalaVersions.head,
-      java8CompatVersion := "1.0.2")
+  val Versions = Seq(crossScalaVersions := allScalaVersions, scalaVersion := allScalaVersions.head)
 
   object Compile {
     // Compile
 
-    val config = "com.typesafe" % "config" % "1.4.4"
+    val config = "com.typesafe" % "config" % "1.4.5"
     val `netty-transport` = "io.netty" % "netty-transport" % nettyVersion
     val `netty-handler` = "io.netty" % "netty-handler" % nettyVersion
 
@@ -82,18 +75,10 @@ object Dependencies {
     // reactive streams
     val reactiveStreams = "org.reactivestreams" % "reactive-streams" % reactiveStreamsVersion
 
-    // ssl-config
-    val sslConfigCore = "com.typesafe" %% "ssl-config-core" % sslConfigVersion
-
     val lmdb = "org.lmdbjava" % "lmdbjava" % "0.9.1"
 
     val junit = "junit" % "junit" % junitVersion
     val junit5 = "org.junit.jupiter" % "junit-jupiter-engine" % junit5Version
-
-    // For Java 8 Conversions
-    lazy val java8Compat = Def.setting {
-      "org.scala-lang.modules" %% "scala-java8-compat" % java8CompatVersion.value
-    }
 
     val aeronDriver = "io.aeron" % "aeron-driver" % aeronVersion
     val aeronClient = "io.aeron" % "aeron-client" % aeronVersion
@@ -103,7 +88,7 @@ object Dependencies {
     val asnOne = ("com.hierynomus" % "asn-one" % "0.6.0").exclude("org.slf4j", "slf4j-api")
 
     val jacksonCore = "com.fasterxml.jackson.core" % "jackson-core" % jacksonCoreVersion
-    val jacksonAnnotations = "com.fasterxml.jackson.core" % "jackson-annotations" % jacksonCoreVersion
+    val jacksonAnnotations = "com.fasterxml.jackson.core" % "jackson-annotations" % jacksonAnnotationsVersion
     val jacksonDatabind = "com.fasterxml.jackson.core" % "jackson-databind" % jacksonDatabindVersion
     val jacksonJdk8 = "com.fasterxml.jackson.datatype" % "jackson-datatype-jdk8" % jacksonCoreVersion
     val jacksonJsr310 = "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310" % jacksonCoreVersion
@@ -117,7 +102,7 @@ object Dependencies {
 
     object Docs {
       val sprayJson = "io.spray" %% "spray-json" % "1.3.6" % Test
-      val gson = "com.google.code.gson" % "gson" % "2.13.1" % Test
+      val gson = "com.google.code.gson" % "gson" % "2.13.2" % Test
     }
 
     object TestDependencies {
@@ -165,8 +150,8 @@ object Dependencies {
         "com.fasterxml.jackson.datatype" % "jackson-datatype-guava" % jacksonCoreVersion % Test)
 
       // metrics, measurements, perf testing
-      val metrics = "io.dropwizard.metrics" % "metrics-core" % "4.2.34" % Test
-      val metricsJvm = "io.dropwizard.metrics" % "metrics-jvm" % "4.2.34" % Test
+      val metrics = "io.dropwizard.metrics" % "metrics-core" % "4.2.37" % Test
+      val metricsJvm = "io.dropwizard.metrics" % "metrics-jvm" % "4.2.37" % Test
       val latencyUtils = "org.latencyutils" % "LatencyUtils" % "2.0.3" % Test
       val hdrHistogram = "org.hdrhistogram" % "HdrHistogram" % "2.2.2" % Test
       val metricsAll = Seq(metrics, metricsJvm, latencyUtils, hdrHistogram)
@@ -212,13 +197,7 @@ object Dependencies {
   // TODO check if `l ++=` everywhere expensive?
   lazy val l = libraryDependencies
 
-  lazy val actor = l ++= (CrossVersion.partialVersion(scalaVersion.value) match {
-    // java8-compat is only used in a couple of places for 2.13,
-    // it is probably possible to remove the dependency if needed.
-    case Some((2, n)) if n == 12 =>
-      List("org.scala-lang.modules" %% "scala-java8-compat" % java8CompatVersion.value)
-    case _ => List.empty
-  }) ++ Seq(config)
+  lazy val actor = l ++= Seq(config)
 
   val actorTyped = l ++= Seq(slf4jApi)
 
@@ -355,7 +334,7 @@ object Dependencies {
 
   // pekko stream
 
-  lazy val stream = l ++= Seq[sbt.ModuleID](reactiveStreams, sslConfigCore, TestDependencies.scalatest)
+  lazy val stream = l ++= Seq[sbt.ModuleID](reactiveStreams, TestDependencies.scalatest)
 
   lazy val streamTestkit = l ++= Seq(
     TestDependencies.scalatest,

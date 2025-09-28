@@ -14,10 +14,11 @@
 package org.apache.pekko.cluster
 
 import scala.annotation.nowarn
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 
 import org.apache.pekko.actor.Address
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 class ReachabilityPerfSpec extends AnyWordSpec with Matchers {
 

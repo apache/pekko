@@ -30,7 +30,6 @@ import pekko.dispatch.{ Envelope, MessageDispatcher }
 import pekko.dispatch.sysmsg._
 import pekko.event.Logging.{ Debug, Error, LogEvent }
 import pekko.japi.function.Procedure
-import pekko.util.unused
 
 /**
  * The actor context - the view of the actor cell from the actor.
@@ -240,7 +239,7 @@ trait ActorContext extends ActorRefFactory with ClassicActorContextProvider {
   /**
    * ActorContexts shouldn't be Serializable
    */
-  final protected def writeObject(@unused o: ObjectOutputStream): Unit =
+  final protected def writeObject(@nowarn("msg=never used") o: ObjectOutputStream): Unit =
     throw new NotSerializableException("ActorContext is not serializable!")
 }
 

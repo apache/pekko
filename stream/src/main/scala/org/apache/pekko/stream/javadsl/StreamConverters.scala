@@ -17,6 +17,8 @@ import java.io.{ InputStream, OutputStream }
 import java.util.concurrent.CompletionStage
 import java.util.stream.Collector
 
+import scala.jdk.DurationConverters._
+
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.japi.function
@@ -25,7 +27,6 @@ import pekko.stream.IOResult
 import pekko.stream.scaladsl.SinkToCompletionStage
 import pekko.stream.scaladsl.SourceToCompletionStage
 import pekko.util.ByteString
-import pekko.util.JavaDurationConverters._
 
 /**
  * Converters for interacting with the blocking `java.io` streams APIs and Java 8 Streams
@@ -101,7 +102,7 @@ object StreamConverters {
    * @param readTimeout the max time the read operation on the materialized InputStream should block
    */
   def asInputStream(readTimeout: java.time.Duration): Sink[ByteString, InputStream] =
-    new Sink(scaladsl.StreamConverters.asInputStream(readTimeout.asScala))
+    new Sink(scaladsl.StreamConverters.asInputStream(readTimeout.toScala))
 
   /**
    * Creates a Source from an [[java.io.InputStream]] created by the given function.
@@ -157,7 +158,7 @@ object StreamConverters {
    * @param writeTimeout the max time the write operation on the materialized OutputStream should block
    */
   def asOutputStream(writeTimeout: java.time.Duration): javadsl.Source[ByteString, OutputStream] =
-    new Source(scaladsl.StreamConverters.asOutputStream(writeTimeout.asScala))
+    new Source(scaladsl.StreamConverters.asOutputStream(writeTimeout.toScala))
 
   /**
    * Creates a Source which when materialized will return an [[java.io.OutputStream]] which it is possible

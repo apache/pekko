@@ -16,11 +16,14 @@ package org.apache.pekko.cluster.ddata.protobuf
 import java.io.NotSerializableException
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
+
 import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.concurrent.duration._
 import scala.concurrent.duration.Duration
 import scala.concurrent.duration.FiniteDuration
+import scala.jdk.CollectionConverters._
+
 import org.apache.pekko
 import pekko.actor.Address
 import pekko.actor.ExtendedActorSystem
@@ -41,13 +44,10 @@ import pekko.serialization.BaseSerializer
 import pekko.serialization.Serialization
 import pekko.serialization.SerializerWithStringManifest
 import pekko.util.{ ByteString => PekkoByteString }
-import pekko.util.ccompat._
-import pekko.util.ccompat.JavaConverters._
 
 /**
  * INTERNAL API
  */
-@ccompatUsedUntil213
 @InternalApi
 private[pekko] object ReplicatorMessageSerializer {
 

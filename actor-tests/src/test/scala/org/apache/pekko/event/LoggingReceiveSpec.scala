@@ -15,15 +15,16 @@ package org.apache.pekko.event
 
 import scala.annotation.tailrec
 import scala.concurrent.duration._
-
-import com.typesafe.config.ConfigFactory
-import org.scalatest.BeforeAndAfterAll
-import org.scalatest.wordspec.AnyWordSpec
+import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
 import pekko.actor._
 import pekko.testkit._
-import pekko.util.ccompat.JavaConverters._
+
+import org.scalatest.BeforeAndAfterAll
+import org.scalatest.wordspec.AnyWordSpec
+
+import com.typesafe.config.ConfigFactory
 
 object LoggingReceiveSpec {
   class TestLogActor extends Actor {
@@ -103,6 +104,7 @@ class LoggingReceiveSpec extends AnyWordSpec with BeforeAndAfterAll {
           case null =>
         }
 
+        @scala.annotation.nowarn("msg=inferred structural type")
         val actor = TestActorRef(new Actor {
           def switch: Actor.Receive = { case "becomenull" => context.become(r, false) }
           def receive =

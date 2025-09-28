@@ -14,28 +14,31 @@
 package org.apache.pekko.cluster
 
 import java.util.concurrent.atomic.AtomicBoolean
+
+import scala.annotation.nowarn
 import scala.concurrent.duration._
-import com.typesafe.config.ConfigFactory
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
+import scala.util.control.NonFatal
+
 import org.apache.pekko
 import pekko.ConfigurationException
 import pekko.actor.ActorSystem
 import pekko.actor.Props
 import pekko.testkit.TestKit.awaitCond
 import pekko.testkit.TestKit.shutdownActorSystem
-import pekko.util.unused
 
-import scala.util.control.NonFatal
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class FailingDowningProvider(@unused system: ActorSystem) extends DowningProvider {
+import com.typesafe.config.ConfigFactory
+
+class FailingDowningProvider(@nowarn("msg=never used") system: ActorSystem) extends DowningProvider {
   override val downRemovalMargin: FiniteDuration = 20.seconds
   override def downingActorProps: Option[Props] = {
     throw new ConfigurationException("this provider never works")
   }
 }
 
-class DummyDowningProvider(@unused system: ActorSystem) extends DowningProvider {
+class DummyDowningProvider(@nowarn("msg=never used") system: ActorSystem) extends DowningProvider {
   override val downRemovalMargin: FiniteDuration = 20.seconds
 
   val actorPropsAccessed = new AtomicBoolean(false)

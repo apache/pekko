@@ -13,15 +13,17 @@
 
 package org.apache.pekko.remote.classic
 
-import scala.concurrent.duration._
 import scala.annotation.nowarn
-import com.typesafe.config._
+import scala.concurrent.duration._
+
 import org.apache.pekko
 import pekko.actor._
 import pekko.remote.EndpointException
 import pekko.remote.NotAllowedClassRemoteDeploymentAttemptException
 import pekko.remote.transport._
 import pekko.testkit._
+
+import com.typesafe.config._
 
 // relies on test transport
 object RemoteDeploymentAllowListSpec {

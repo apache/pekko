@@ -15,16 +15,17 @@ package org.apache.pekko.dispatch
 
 import java.util.concurrent.{ BlockingQueue, ConcurrentLinkedQueue }
 
+import scala.annotation.nowarn
 import scala.concurrent.{ Await, ExecutionContext, Future }
 import scala.concurrent.duration._
-
-import com.typesafe.config.{ Config, ConfigFactory }
-import org.scalatest.{ BeforeAndAfterAll, BeforeAndAfterEach }
 
 import org.apache.pekko
 import pekko.actor._
 import pekko.testkit.{ EventFilter, PekkoSpec }
-import pekko.util.unused
+
+import org.scalatest.{ BeforeAndAfterAll, BeforeAndAfterEach }
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 abstract class MailboxSpec extends PekkoSpec with BeforeAndAfterAll with BeforeAndAfterEach {
   def name: String
@@ -240,14 +241,15 @@ object CustomMailboxSpec {
     }
     """
 
-  class MyMailboxType(@unused settings: ActorSystem.Settings, @unused config: Config) extends MailboxType {
+  class MyMailboxType(@nowarn("msg=never used") settings: ActorSystem.Settings,
+      @nowarn("msg=never used") config: Config) extends MailboxType {
     override def create(owner: Option[ActorRef], system: Option[ActorSystem]) = owner match {
       case Some(o) => new MyMailbox(o)
       case None    => throw new Exception("no mailbox owner given")
     }
   }
 
-  class MyMailbox(@unused owner: ActorRef) extends UnboundedQueueBasedMessageQueue {
+  class MyMailbox(@nowarn("msg=never used") owner: ActorRef) extends UnboundedQueueBasedMessageQueue {
     final val queue = new ConcurrentLinkedQueue[Envelope]()
   }
 }

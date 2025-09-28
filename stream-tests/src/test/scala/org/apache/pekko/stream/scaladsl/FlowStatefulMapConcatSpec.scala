@@ -21,10 +21,8 @@ import pekko.stream.ActorAttributes
 import pekko.stream.Supervision
 import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.TestSink
-import pekko.util.ccompat._
 
 @nowarn("msg=deprecated")
-@ccompatUsedUntil213
 class FlowStatefulMapConcatSpec extends StreamSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 2
   """) with ScriptedTest {

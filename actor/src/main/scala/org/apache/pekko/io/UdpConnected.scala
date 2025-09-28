@@ -16,16 +16,14 @@ package org.apache.pekko.io
 import java.lang.{ Iterable => JIterable }
 import java.net.InetSocketAddress
 
-import scala.collection.immutable
-
 import scala.annotation.nowarn
+import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.actor._
 import pekko.io.Inet.SocketOption
 import pekko.io.Udp.UdpSettings
 import pekko.util.ByteString
-import pekko.util.ccompat._
 
 /**
  * UDP Extension for Akka’s IO layer.
@@ -39,7 +37,6 @@ import pekko.util.ccompat._
  *
  * The Java API for generating UDP commands is available at [[UdpConnectedMessage]].
  */
-@ccompatUsedUntil213
 object UdpConnected extends ExtensionId[UdpConnectedExt] with ExtensionIdProvider {
 
   override def lookup = UdpConnected
@@ -269,7 +266,7 @@ object UdpConnectedMessage {
   def resumeReading: Command = ResumeReading
 
   implicit private def fromJava[T](coll: JIterable[T]): immutable.Iterable[T] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     coll.asScala.to(immutable.Iterable)
   }
 }

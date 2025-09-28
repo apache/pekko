@@ -13,11 +13,11 @@
 
 package org.apache.pekko.stream.tck
 
-import org.reactivestreams._
-
 import org.apache.pekko
 import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.Source
+
+import org.reactivestreams._
 
 class IterablePublisherTest extends PekkoPublisherVerification[Int] {
 

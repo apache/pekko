@@ -15,8 +15,6 @@ package org.apache.pekko.util
 
 import scala.collection.immutable
 
-import org.apache.pekko.util.ccompat._
-
 /**
  * Typeclass which describes a classification hierarchy. Observe the contract between `isEqual` and `isSubclass`!
  */
@@ -88,7 +86,6 @@ private[pekko] object SubclassifiedIndex {
  * cache, e.g. HashMap, is faster than tree traversal which must use linear
  * scan at each level. Therefore, no value traversals are published.
  */
-@ccompatUsedUntil213
 private[pekko] class SubclassifiedIndex[K, V] private (protected var values: Set[V])(
     implicit sc: Subclassification[K]) {
 

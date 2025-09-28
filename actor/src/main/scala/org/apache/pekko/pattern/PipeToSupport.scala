@@ -15,6 +15,7 @@ package org.apache.pekko.pattern
 
 import java.util.concurrent.CompletionStage
 
+import scala.annotation.nowarn
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.{ Failure, Success }
 
@@ -23,7 +24,6 @@ import language.implicitConversions
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorRef, Status }
 import pekko.actor.ActorSelection
-import pekko.util.unused
 
 trait PipeToSupport {
 
@@ -53,7 +53,7 @@ trait PipeToSupport {
   }
 
   final class PipeableCompletionStage[T](val future: CompletionStage[T])(
-      implicit @unused executionContext: ExecutionContext) {
+      implicit @nowarn("msg=never used") executionContext: ExecutionContext) {
     def pipeTo(recipient: ActorRef)(implicit sender: ActorRef = Actor.noSender): CompletionStage[T] = {
       future.whenComplete((t: T, ex: Throwable) => {
         if (t != null) recipient ! t

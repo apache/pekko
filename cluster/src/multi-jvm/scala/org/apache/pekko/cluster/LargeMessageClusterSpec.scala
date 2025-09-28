@@ -16,9 +16,9 @@ package org.apache.pekko.cluster
 import java.io.NotSerializableException
 import java.nio.charset.StandardCharsets
 
+import scala.annotation.nowarn
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
 import org.apache.pekko
 import pekko.actor.ActorIdentity
 import pekko.actor.ActorRef
@@ -31,7 +31,8 @@ import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.serialization.SerializerWithStringManifest
 import pekko.testkit._
-import pekko.util.unused
+
+import com.typesafe.config.ConfigFactory
 
 object LargeMessageClusterMultiJvmSpec extends MultiNodeConfig {
   val first = role("first")
@@ -75,7 +76,7 @@ object LargeMessageClusterMultiJvmSpec extends MultiNodeConfig {
 
   final case class Slow(payload: Array[Byte])
 
-  class SlowSerializer(@unused system: ExtendedActorSystem) extends SerializerWithStringManifest {
+  class SlowSerializer(@nowarn("msg=never used") system: ExtendedActorSystem) extends SerializerWithStringManifest {
     override def identifier = 999
     override def manifest(o: AnyRef) = "a"
     override def toBinary(o: AnyRef) = o match {

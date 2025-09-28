@@ -13,7 +13,6 @@
 
 package org.apache.pekko.actor.typed.internal
 
-import scala.annotation.nowarn
 import scala.util.control.NonFatal
 
 import org.apache.pekko
@@ -26,19 +25,21 @@ import pekko.util.OptionVal
 @InternalApi
 private[pekko] object LoggerClass {
 
-  // just to get access to the class context
-  @nowarn("msg=deprecated")
-  private final class TrickySecurityManager extends SecurityManager {
-    def getClassStack: Array[Class[_]] = getClassContext
-  }
-
   private val defaultPrefixesToSkip = List("scala.runtime", "org.apache.pekko.actor.typed.internal")
+  private val OPTIONS: java.util.Set[StackWalker.Option] = java.util.Set.of(
+    StackWalker.Option.RETAIN_CLASS_REFERENCE, StackWalker.Option.SHOW_HIDDEN_FRAMES)
+  private val CLASS_STACK_WALKER: java.util.function.Function[
+    java.util.stream.Stream[StackWalker.StackFrame], Array[Class[_]]] =
+    (frames: java.util.stream.Stream[StackWalker.StackFrame]) =>
+      frames.map(frame => frame.getDeclaringClass)
+        .toArray[Class[_]]((size: Int) => new Array[Class[_]](size))
+
+  private def getClassStack: Array[Class[_]] = StackWalker.getInstance(OPTIONS).walk(CLASS_STACK_WALKER)
 
   /**
    * Try to extract a logger class from the call stack, if not possible the provided default is used
    */
   def detectLoggerClassFromStack(default: Class[_], additionalPrefixesToSkip: List[String] = Nil): Class[_] = {
-    // TODO use stack walker API when we no longer need to support Java 8
     try {
       def skip(name: String): Boolean = {
         def loop(skipList: List[String]): Boolean = skipList match {
@@ -51,7 +52,7 @@ private[pekko] object LoggerClass {
         loop(additionalPrefixesToSkip ::: defaultPrefixesToSkip)
       }
 
-      val trace = new TrickySecurityManager().getClassStack
+      val trace = getClassStack
       var suitableClass: OptionVal[Class[_]] = OptionVal.None
       var idx = 1 // skip this method/class and right away
       while (suitableClass.isEmpty && idx < trace.length) {

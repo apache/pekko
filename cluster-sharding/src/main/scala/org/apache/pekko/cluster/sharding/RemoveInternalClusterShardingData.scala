@@ -13,11 +13,13 @@
 
 package org.apache.pekko.cluster.sharding
 
+import scala.annotation.nowarn
 import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.util.Failure
 import scala.util.Success
 import scala.util.Try
+
 import org.apache.pekko
 import pekko.actor.Actor
 import pekko.actor.ActorLogging
@@ -29,8 +31,6 @@ import pekko.actor.Terminated
 import pekko.persistence._
 import pekko.persistence.journal.leveldb.SharedLeveldbJournal
 import pekko.persistence.journal.leveldb.SharedLeveldbStore
-
-import scala.annotation.nowarn
 
 /**
  * Utility program that removes the internal data stored with Pekko Persistence

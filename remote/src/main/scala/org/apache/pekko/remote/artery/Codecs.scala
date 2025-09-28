@@ -15,6 +15,7 @@ package org.apache.pekko.remote.artery
 
 import java.util.concurrent.TimeUnit
 
+import scala.annotation.nowarn
 import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.concurrent.duration._
@@ -22,8 +23,8 @@ import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.EmptyLocalActorRef
 import pekko.actor._
+import pekko.actor.EmptyLocalActorRef
 import pekko.event.Logging
 import pekko.remote.MessageSerializer
 import pekko.remote.OversizedPayloadException
@@ -35,8 +36,8 @@ import pekko.remote.artery.Decoder.InboundCompressionAccess
 import pekko.remote.artery.Decoder.InboundCompressionAccessImpl
 import pekko.remote.artery.OutboundHandshake.HandshakeReq
 import pekko.remote.artery.SystemMessageDelivery.SystemMessageEnvelope
-import pekko.remote.artery.compress.CompressionProtocol._
 import pekko.remote.artery.compress._
+import pekko.remote.artery.compress.CompressionProtocol._
 import pekko.remote.serialization.AbstractActorRefResolveCache
 import pekko.serialization.Serialization
 import pekko.serialization.SerializationExtension
@@ -44,7 +45,6 @@ import pekko.serialization.Serializers
 import pekko.stream._
 import pekko.stream.stage._
 import pekko.util.OptionVal
-import pekko.util.unused
 
 /**
  * INTERNAL API
@@ -65,7 +65,7 @@ private[remote] class Encoder(
     system: ExtendedActorSystem,
     outboundEnvelopePool: ObjectPool[ReusableOutboundEnvelope],
     bufferPool: EnvelopeBufferPool,
-    @unused streamId: Int,
+    @nowarn("msg=never used") streamId: Int,
     debugLogSend: Boolean,
     version: Byte)
     extends GraphStageWithMaterializedValue[
@@ -643,7 +643,7 @@ private[remote] class Decoder(
  * INTERNAL API
  */
 private[remote] class Deserializer(
-    @unused inboundContext: InboundContext,
+    @nowarn("msg=never used") inboundContext: InboundContext,
     system: ExtendedActorSystem,
     bufferPool: EnvelopeBufferPool)
     extends GraphStage[FlowShape[InboundEnvelope, InboundEnvelope]] {

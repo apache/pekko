@@ -16,6 +16,7 @@ package org.apache.pekko.cluster
 import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.collection.immutable.{ SortedSet, VectorBuilder }
+import scala.jdk.CollectionConverters._
 import scala.runtime.AbstractFunction5
 
 import org.apache.pekko
@@ -27,8 +28,6 @@ import pekko.cluster.ClusterSettings.DataCenter
 import pekko.cluster.MemberStatus._
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.event.EventStream
-import pekko.util.ccompat._
-import pekko.util.ccompat.JavaConverters._
 
 /**
  * Domain events published to the event bus.
@@ -411,7 +410,6 @@ object ClusterEvent {
    * The nodes that have seen current version of the Gossip.
    */
   @InternalApi
-  @ccompatUsedUntil213
   private[cluster] final case class SeenChanged(convergence: Boolean, seenBy: Set[Address]) extends ClusterDomainEvent
 
   /**

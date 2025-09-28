@@ -16,15 +16,15 @@ package org.apache.pekko.stream.scaladsl
 import java.util.Optional
 import java.util.concurrent.CompletionStage
 
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
+import scala.jdk.FutureConverters._
+import scala.jdk.OptionConverters._
 
 import org.apache.pekko
 import pekko.Done
 import pekko.annotation.InternalApi
-import pekko.dispatch.ExecutionContexts
 import pekko.stream.QueueOfferResult
-import pekko.util.FutureConverters._
-import pekko.util.OptionConverters._
 
 /**
  * This trait allows to have a queue as a data source for some stream.
@@ -157,7 +157,7 @@ object SinkQueueWithCancel {
       queue: SinkQueueWithCancel[T]): pekko.stream.javadsl.SinkQueueWithCancel[T] =
     new pekko.stream.javadsl.SinkQueueWithCancel[T] {
       override def pull(): CompletionStage[Optional[T]] =
-        queue.pull().map(_.toJava)(ExecutionContexts.parasitic).asJava
+        queue.pull().map(_.toJava)(ExecutionContext.parasitic).asJava
       override def cancel(): Unit = queue.cancel()
     }
 }

@@ -20,9 +20,8 @@ import scala.concurrent.{ Await, Awaitable }
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
-import com.typesafe.config.{ Config, ConfigFactory, ConfigObject }
-import io.netty.channel.ChannelException
 import language.implicitConversions
+
 import org.apache.pekko
 import pekko.actor._
 import pekko.actor.RootActorPath
@@ -34,12 +33,14 @@ import pekko.testkit._
 import pekko.testkit.TestEvent._
 import pekko.testkit.TestKit
 import pekko.util.Timeout
-import pekko.util.ccompat._
+
+import io.netty.channel.ChannelException
+
+import com.typesafe.config.{ Config, ConfigFactory, ConfigObject }
 
 /**
  * Configure the role names and participants of the test, including configuration settings.
  */
-@ccompatUsedUntil213
 abstract class MultiNodeConfig {
 
   private var _commonConf: Option[Config] = None
@@ -276,7 +277,7 @@ object MultiNodeSpec {
       """)
 
   private def mapToConfig(map: Map[String, Any]): Config = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     ConfigFactory.parseMap(map.asJava)
   }
 
@@ -523,7 +524,7 @@ abstract class MultiNodeSpec(
               base.replace(tag, replaceWith)
           }
       }
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       ConfigFactory.parseString(deployString).root.asScala.foreach {
         case (key, value: ConfigObject) => deployer.parseConfig(key, value.toConfig).foreach(deployer.deploy)
         case (key, x)                   =>

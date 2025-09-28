@@ -32,7 +32,6 @@ import pekko.event.ActorWithLogClass
 import pekko.event.Logging
 import pekko.remote.FailureDetectorRegistry
 import pekko.remote.HeartbeatMessage
-import pekko.util.ccompat._
 
 /**
  * INTERNAL API.
@@ -40,7 +39,6 @@ import pekko.util.ccompat._
  * Receives Heartbeat messages and replies.
  */
 @InternalApi
-@ccompatUsedUntil213
 private[cluster] final class ClusterHeartbeatReceiver(getCluster: () => Cluster) extends Actor {
   import ClusterHeartbeatSender._
 

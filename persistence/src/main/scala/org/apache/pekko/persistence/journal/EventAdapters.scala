@@ -21,17 +21,15 @@ import scala.collection.mutable.ArrayBuffer
 import scala.reflect.ClassTag
 import scala.util.Try
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.event.{ Logging, LoggingAdapter }
-import pekko.util.ccompat._
+
+import com.typesafe.config.Config
 
 /**
  * `EventAdapters` serves as a per-journal collection of bound event adapters.
  */
-@ccompatUsedUntil213
 class EventAdapters(
     map: ConcurrentHashMap[Class[_], EventAdapter],
     bindings: immutable.Seq[(Class[_], EventAdapter)],
@@ -173,14 +171,14 @@ private[pekko] object EventAdapters {
       .to(immutable.Seq)
 
   private final def configToMap(config: Config, path: String): Map[String, String] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     if (config.hasPath(path)) {
       config.getConfig(path).root.unwrapped.asScala.toMap.map { case (k, v) => k -> v.toString }
     } else Map.empty
   }
 
   private final def configToListMap(config: Config, path: String): Map[String, immutable.Seq[String]] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     if (config.hasPath(path)) {
       config.getConfig(path).root.unwrapped.asScala.toMap.map {
         case (k, v: util.ArrayList[_]) if v.isInstanceOf[util.ArrayList[_]] => k -> v.asScala.map(_.toString).toList

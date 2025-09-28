@@ -13,10 +13,10 @@
 
 package org.apache.pekko.persistence.typed
 
+import org.apache.pekko.actor.testkit.typed.scaladsl.LogCapturing
+
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-
-import org.apache.pekko.actor.testkit.typed.scaladsl.LogCapturing
 
 class PersistenceIdSpec extends AnyWordSpec with Matchers with LogCapturing {
 

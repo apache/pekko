@@ -91,7 +91,7 @@ final case class SeveralRoutees(routees: immutable.IndexedSeq[Routee]) extends R
    * Java API
    */
   def getRoutees(): java.util.List[Routee] = {
-    import org.apache.pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     routees.asJava
   }
 

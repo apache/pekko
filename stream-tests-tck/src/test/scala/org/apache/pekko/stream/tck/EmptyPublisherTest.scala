@@ -13,9 +13,9 @@
 
 package org.apache.pekko.stream.tck
 
-import org.reactivestreams.Publisher
-
 import org.apache.pekko.stream.impl.EmptyPublisher
+
+import org.reactivestreams.Publisher
 
 class EmptyPublisherTest extends PekkoPublisherVerification[Int] {
 

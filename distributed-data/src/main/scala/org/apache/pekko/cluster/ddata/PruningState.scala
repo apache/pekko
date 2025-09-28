@@ -13,12 +13,13 @@
 
 package org.apache.pekko.cluster.ddata
 
+import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.actor.Address
 import pekko.annotation.InternalApi
 import pekko.cluster.Member
 import pekko.cluster.UniqueAddress
-import pekko.util.unused
 
 /**
  * INTERNAL API
@@ -33,7 +34,7 @@ import pekko.util.unused
   }
   final case class PruningPerformed(obsoleteTime: Long) extends PruningState {
     def isObsolete(currentTime: Long): Boolean = obsoleteTime <= currentTime
-    def addSeen(@unused node: Address): PruningState = this
+    def addSeen(@nowarn("msg=never used") node: Address): PruningState = this
     def estimatedSize: Int = EstimatedSize.LongValue
   }
 }

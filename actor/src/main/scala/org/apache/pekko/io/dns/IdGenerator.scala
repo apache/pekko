@@ -17,11 +17,11 @@
 
 package org.apache.pekko.io.dns
 
-import org.apache.pekko.annotation.InternalApi
-
 import java.security.SecureRandom
 import java.util.Random
 import java.util.concurrent.ThreadLocalRandom
+
+import org.apache.pekko.annotation.InternalApi
 
 /**
  * INTERNAL API

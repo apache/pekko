@@ -1,0 +1,36 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# Remove ssl-config dependency and deprecated methods related to it
+ProblemFilters.exclude[MissingClassProblem]("com.typesafe.sslconfig.pekko.DefaultSSLEngineConfigurator")
+ProblemFilters.exclude[MissingClassProblem]("com.typesafe.sslconfig.pekko.PekkoSSLConfig")
+ProblemFilters.exclude[MissingClassProblem]("com.typesafe.sslconfig.pekko.PekkoSSLConfig$")
+ProblemFilters.exclude[MissingClassProblem]("com.typesafe.sslconfig.pekko.SSLEngineConfigurator")
+ProblemFilters.exclude[MissingClassProblem]("com.typesafe.sslconfig.pekko.util.PekkoLoggerBridge")
+ProblemFilters.exclude[MissingClassProblem]("com.typesafe.sslconfig.pekko.util.PekkoLoggerFactory")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.javadsl.TLS.create")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.javadsl.Tcp.outgoingConnection")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.javadsl.Tcp.outgoingTlsConnection")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.javadsl.Tcp.bindTls")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.scaladsl.TLS.apply")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.scaladsl.TLS.apply$*")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.scaladsl.Tcp.outgoingTlsConnection")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.scaladsl.Tcp.outgoingTlsConnection$*")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.scaladsl.Tcp.bindTls")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.scaladsl.Tcp.bindTls$*")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.scaladsl.Tcp.bindAndHandleTls")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.scaladsl.Tcp.bindAndHandleTls$*")

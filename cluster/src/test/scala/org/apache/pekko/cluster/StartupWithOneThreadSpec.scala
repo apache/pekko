@@ -20,8 +20,8 @@ import pekko.actor.Actor
 import pekko.actor.ActorLogging
 import pekko.actor.Address
 import pekko.actor.Props
-import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
+import pekko.testkit.PekkoSpec
 
 object StartupWithOneThreadSpec {
   val config = """

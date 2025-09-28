@@ -16,8 +16,6 @@ package org.apache.pekko.remote
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.Actor
 import pekko.actor.ActorIdentity
@@ -31,6 +29,8 @@ import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.transport.ThrottlerTransportAdapter.Direction
 import pekko.testkit._
+
+import com.typesafe.config.ConfigFactory
 
 class RemoteNodeRestartDeathWatchConfig(artery: Boolean) extends MultiNodeConfig {
   val first = role("first")

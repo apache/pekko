@@ -13,7 +13,8 @@
 
 package org.apache.pekko.persistence.typed.scaladsl
 
-import com.typesafe.config.Config
+import scala.annotation.tailrec
+
 import org.apache.pekko
 import pekko.actor.typed.BackoffSupervisorStrategy
 import pekko.actor.typed.Behavior
@@ -30,7 +31,7 @@ import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.SnapshotAdapter
 import pekko.persistence.typed.internal._
 
-import scala.annotation.tailrec
+import com.typesafe.config.Config
 
 object EventSourcedBehavior {
 

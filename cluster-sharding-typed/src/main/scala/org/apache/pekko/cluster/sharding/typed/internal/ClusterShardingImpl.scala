@@ -19,7 +19,10 @@ import java.time.Duration
 import java.util.concurrent.CompletionStage
 import java.util.concurrent.ConcurrentHashMap
 
+import scala.annotation.nowarn
 import scala.concurrent.Future
+import scala.jdk.DurationConverters._
+import scala.jdk.FutureConverters._
 
 import org.apache.pekko
 import pekko.actor.ActorRefProvider
@@ -49,9 +52,7 @@ import pekko.japi.function.{ Function => JFunction }
 import pekko.pattern.AskTimeoutException
 import pekko.pattern.PromiseActorRef
 import pekko.pattern.StatusReply
-import pekko.util.{ unused, ByteString, Timeout }
-import pekko.util.FutureConverters._
-import pekko.util.JavaDurationConverters._
+import pekko.util.{ ByteString, Timeout }
 
 /**
  * INTERNAL API
@@ -147,7 +148,7 @@ import pekko.util.JavaDurationConverters._
 
   // javadsl impl
   override def init[M, E](entity: javadsl.Entity[M, E]): ActorRef[E] = {
-    import pekko.util.OptionConverters._
+    import scala.jdk.OptionConverters._
     init(
       new scaladsl.Entity(
         createBehavior = (ctx: EntityContext[M]) =>
@@ -346,13 +347,13 @@ import pekko.util.JavaDurationConverters._
   }
 
   override def ask[U](message: JFunction[ActorRef[U], M], timeout: Duration): CompletionStage[U] =
-    ask[U](replyTo => message.apply(replyTo))(timeout.asScala).asJava
+    ask[U](replyTo => message.apply(replyTo))(timeout.toScala).asJava
 
   override def askWithStatus[Res](f: ActorRef[StatusReply[Res]] => M)(implicit timeout: Timeout): Future[Res] =
     StatusReply.flattenStatusFuture(ask[StatusReply[Res]](f))
 
   override def askWithStatus[Res](f: ActorRef[StatusReply[Res]] => M, timeout: Duration): CompletionStage[Res] =
-    askWithStatus(f.apply)(timeout.asScala).asJava
+    askWithStatus(f.apply)(timeout.toScala).asJava
 
   /** Similar to [[pekko.actor.typed.scaladsl.AskPattern.PromiseRef]] but for an `EntityRef` target. */
   @InternalApi
@@ -396,7 +397,7 @@ import pekko.util.JavaDurationConverters._
         shardRegion: pekko.actor.ActorRef,
         entityId: String,
         message: T,
-        @unused timeout: Timeout): Future[U] = {
+        @nowarn("msg=never used") timeout: Timeout): Future[U] = {
       shardRegion ! ShardingEnvelope(entityId, message)
       future
     }

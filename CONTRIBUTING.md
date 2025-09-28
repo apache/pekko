@@ -236,7 +236,7 @@ Pekko uses [MiMa](https://github.com/lightbend/mima) to validate the binary comp
 PR fails due to binary compatibility issues, you may see an error like this:
 
 ```
-[info] stream: found 1 potential binary incompatibilities while checking against org.apache.pekko:pekko-stream_2.12:2.4.2  (filtered 222)
+[info] stream: found 1 potential binary incompatibilities while checking against org.apache.pekko:pekko-stream_2.13:2.4.2  (filtered 222)
 [error]  * method foldAsync(java.lang.Object,scala.Function2)org.apache.pekko.stream.scaladsl.FlowOps in trait org.apache.pekko.stream.scaladsl.FlowOps is present only in current version
 [error]    filter with: ProblemFilters.exclude[ReversedMissingMethodProblem]("org.apache.pekko.stream.scaladsl.FlowOps.foldAsync")
 ```
@@ -529,11 +529,11 @@ Scala has proven the most viable way to do it, as long as you keep the following
 1. If the underlying Scala code requires an `ExecutionContext`, make the Java API take an `Executor` and use
    `ExecutionContext.fromExecutor(executor)` for conversion.
 
-1. Use `org.apache.pekko.util.FutureConverters` to translate `Future`s to `CompletionStage`s (or vice versa).
+1. Use `scala.jdk.FutureConverters` to translate `Future`s to `CompletionStage`s (or vice versa).
 
-1. Use `org.apache.pekko.util.OptionConverters` to translate `Option`s to Java `Optional`s (or vice versa).
+1. Use `scala.jdk.javaapi.OptionConverters` to translate `Option`s to Java `Optional`s (or vice versa).
 
-1. Use `org.apache.pekko.util.FunctionConverters` to translate Scala Functions to Java Functions (or vice versa).
+1. Use `scala.jdk.javapi.FunctionConverters` to translate Scala Functions to Java Functions (or vice versa).
  
 1. Make sure there are Java tests or sample code touching all parts of the API
 
@@ -552,16 +552,16 @@ Scala has proven the most viable way to do it, as long as you keep the following
 
 #### Overview of Scala types and their Java counterparts
 
-| Scala | Java |
-|-------|------|
-| `scala.Option[T]` | `java.util.Optional<T>` (`OptionalDouble`, ...) |
-| `scala.collection.immutable.Seq[T]` | `java.util.List<T>` |
-| `scala.concurrent.Future[T]` | `java.util.concurrent.CompletionStage<T>` |
-| `scala.concurrent.Promise[T]` | `java.util.concurrent.CompletableFuture<T>` |
-| `scala.concurrent.duration.FiniteDuration` | `java.time.Duration` (use `org.apache.pekko.util.JavaDurationConverters`) |
-| `T => Unit` | `java.util.function.Consumer<T>` |
-| `() => R` (`scala.Function0[R]`) | `java.util.function.Supplier<R>` |
-| `T => R` (`scala.Function1[T, R]`) | `java.util.function.Function<T, R>` |
+| Scala | Java                                                           |
+|-------|----------------------------------------------------------------|
+| `scala.Option[T]` | `java.util.Optional<T>` (`OptionalDouble`, ...)                |
+| `scala.collection.immutable.Seq[T]` | `java.util.List<T>`                                            |
+| `scala.concurrent.Future[T]` | `java.util.concurrent.CompletionStage<T>`                      |
+| `scala.concurrent.Promise[T]` | `java.util.concurrent.CompletableFuture<T>`                    |
+| `scala.concurrent.duration.FiniteDuration` | `java.time.Duration` (use `scala.jdk.javaapi.DurationConverters`) |
+| `T => Unit` | `java.util.function.Consumer<T>`                               |
+| `() => R` (`scala.Function0[R]`) | `java.util.function.Supplier<R>`                               |
+| `T => R` (`scala.Function1[T, R]`) | `java.util.function.Function<T, R>`                            |
 
 ### Contributing new Pekko Streams operators
 

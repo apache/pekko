@@ -23,12 +23,12 @@ import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.annotation.InternalStableApi
+import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.dispatch.affinity.AffinityPoolConfigurator
 import pekko.dispatch.sysmsg._
 import pekko.event.EventStream
 import pekko.event.Logging.{ emptyMDC, Debug, Error, LogEventException, Warning }
-import pekko.util.{ unused, Index }
+import pekko.util.Index
 
 import com.typesafe.config.Config
 
@@ -161,7 +161,7 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
    */
   final def attach(actor: ActorCell): Unit = {
     register(actor)
-    registerForExecution(actor.mailbox, false, true)
+    registerForExecution(actor.mailbox, hasMessageHint = false, hasSystemMessageHint = true)
   }
 
   /**
@@ -289,7 +289,7 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
   protected[pekko] def resume(actor: ActorCell): Unit = {
     val mbox = actor.mailbox
     if ((mbox.actor eq actor) && (mbox.dispatcher eq this) && mbox.resume())
-      registerForExecution(mbox, false, false)
+      registerForExecution(mbox, hasMessageHint = false, hasSystemMessageHint = false)
   }
 
   /**
@@ -350,7 +350,8 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
 /**
  * An ExecutorServiceConfigurator is a class that given some prerequisites and a configuration can create instances of ExecutorService
  */
-abstract class ExecutorServiceConfigurator(@unused config: Config, @unused prerequisites: DispatcherPrerequisites)
+abstract class ExecutorServiceConfigurator(@nowarn("msg=never used") config: Config,
+    @nowarn("msg=never used") prerequisites: DispatcherPrerequisites)
     extends ExecutorServiceFactoryProvider
 
 /**
@@ -411,14 +412,14 @@ abstract class MessageDispatcherConfigurator(_config: Config, val prerequisites:
 
 final class VirtualThreadExecutorConfigurator(config: Config, prerequisites: DispatcherPrerequisites)
     extends ExecutorServiceConfigurator(config, prerequisites) {
-  override def isVirtualized: Boolean = true
-
+  override def isVirtualized: Boolean = VirtualThreadSupport.isSupported
+  override def virtualThreadStartNumber: Int = config.getInt("virtual-thread-start-number")
   override def createExecutorServiceFactory(id: String, threadFactory: ThreadFactory): ExecutorServiceFactory = {
     import VirtualThreadSupport._
     val tf: ThreadFactory = threadFactory match {
       case MonitorableThreadFactory(name, _, contextClassLoader, exceptionHandler, _) =>
         new ThreadFactory {
-          private val vtFactory = newVirtualThreadFactory(name + "-" + id)
+          private val vtFactory = newVirtualThreadFactory(name + "-" + id, virtualThreadStartNumber)
 
           override def newThread(r: Runnable): Thread = {
             val vt = vtFactory.newThread(r)
@@ -427,7 +428,7 @@ final class VirtualThreadExecutorConfigurator(config: Config, prerequisites: Dis
             vt
           }
         }
-      case _ => newVirtualThreadFactory(prerequisites.settings.name + "-" + id);
+      case _ => newVirtualThreadFactory(prerequisites.settings.name + "-" + id, virtualThreadStartNumber);
     }
     new ExecutorServiceFactory {
       override def createExecutorService: ExecutorService with LoadMetrics = {
@@ -464,19 +465,66 @@ final class VirtualThreadExecutorConfigurator(config: Config, prerequisites: Dis
   }
 }
 
+/**
+ * INTERNAL API
+ */
+@InternalApi
+trait ThreadPoolExecutorServiceFactoryProvider extends ExecutorServiceFactoryProvider {
+  def threadPoolConfig: ThreadPoolConfig
+  def createExecutorServiceFactory(id: String, threadFactory: ThreadFactory): ExecutorServiceFactory = {
+
+    object ThreadPoolExecutorServiceFactory extends ExecutorServiceFactory {
+      def createExecutorService: ExecutorService = {
+        val tf = threadFactory match {
+          case m: MonitorableThreadFactory => m.withName(m.name + "-" + id)
+          case _                           => threadFactory
+        }
+        val poolThreadFactory = tf match {
+          case m: MonitorableThreadFactory if isVirtualized => m.withName(m.name + "-" + "CarrierThread")
+          case _                                            => tf
+        }
+
+        val config = threadPoolConfig
+        val pool = new ThreadPoolExecutor(
+          config.corePoolSize,
+          config.maxPoolSize,
+          config.threadTimeout.length,
+          config.threadTimeout.unit,
+          config.queueFactory(),
+          poolThreadFactory,
+          config.rejectionPolicy) with LoadMetrics {
+          def atFullThrottle(): Boolean = this.getActiveCount >= this.getPoolSize
+        }
+        pool.allowCoreThreadTimeOut(config.allowCorePoolTimeout)
+
+        if (isVirtualized) {
+          val prefixName = threadFactory match {
+            case m: MonitorableThreadFactory => m.name + "-" + id
+            case _                           => id
+          }
+          createVirtualized(tf, pool, prefixName, virtualThreadStartNumber)
+        } else pool
+      }
+    }
+    ThreadPoolExecutorServiceFactory
+  }
+}
+
 class ThreadPoolExecutorConfigurator(config: Config, prerequisites: DispatcherPrerequisites)
-    extends ExecutorServiceConfigurator(config, prerequisites) {
-
-  val threadPoolConfig: ThreadPoolConfig = createThreadPoolConfigBuilder(config, prerequisites).config
-
+    extends ExecutorServiceConfigurator(config, prerequisites)
+    with ThreadPoolExecutorServiceFactoryProvider {
+  override val threadPoolConfig: ThreadPoolConfig = createThreadPoolConfigBuilder(config, prerequisites).config
+  override val isVirtualized: Boolean = threadPoolConfig.isVirtualized && VirtualThreadSupport.isSupported
+  override def virtualThreadStartNumber: Int = config.getInt("virtual-thread-start-number")
   protected def createThreadPoolConfigBuilder(
       config: Config,
-      @unused prerequisites: DispatcherPrerequisites): ThreadPoolConfigBuilder = {
+      @nowarn("msg=never used") prerequisites: DispatcherPrerequisites): ThreadPoolConfigBuilder = {
     import org.apache.pekko.util.Helpers.ConfigOps
     val builder =
       ThreadPoolConfigBuilder(ThreadPoolConfig())
         .setKeepAliveTime(config.getMillisDuration("keep-alive-time"))
         .setAllowCoreThreadTimeout(config.getBoolean("allow-core-timeout"))
+        .isVirtualized(config.getBoolean("virtualize"))
         .configure(Some(config.getInt("task-queue-size")).flatMap {
           case size if size > 0 =>
             Some(config.getString("task-queue-type"))
@@ -505,9 +553,6 @@ class ThreadPoolExecutorConfigurator(config: Config, prerequisites: DispatcherPr
     else
       builder.setFixedPoolSize(config.getInt("fixed-pool-size"))
   }
-
-  def createExecutorServiceFactory(id: String, threadFactory: ThreadFactory): ExecutorServiceFactory =
-    threadPoolConfig.createExecutorServiceFactory(id, threadFactory)
 }
 
 class DefaultExecutorServiceConfigurator(

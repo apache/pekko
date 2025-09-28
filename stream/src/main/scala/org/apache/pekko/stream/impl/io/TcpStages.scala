@@ -20,13 +20,13 @@ import java.util.concurrent.atomic.{ AtomicBoolean, AtomicLong }
 import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent.{ Future, Promise }
+import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.{ Duration, FiniteDuration }
 
 import org.apache.pekko
 import pekko.{ Done, NotUsed }
 import pekko.actor.{ ActorRef, Terminated }
 import pekko.annotation.InternalApi
-import pekko.dispatch.ExecutionContexts
 import pekko.io.Inet.SocketOption
 import pekko.io.Tcp
 import pekko.io.Tcp._
@@ -64,6 +64,7 @@ import pekko.util.ByteString
     throw new UnsupportedOperationException("Not used")
 
   // TODO: Timeout on bind
+  @nowarn("msg=inferred structural type")
   override def createLogicAndMaterializedValue(inheritedAttributes: Attributes, eagerMaterialzer: Materializer) = {
     val bindingPromise = Promise[ServerBinding]()
 
@@ -99,7 +100,7 @@ import pekko.util.ByteString
                   thisStage.tell(Unbind, thisStage)
                 }
                 unbindPromise.future
-              }, unbindPromise.future.map(_ => Done)(ExecutionContexts.parasitic)))
+              }, unbindPromise.future.map(_ => Done)(ExecutionContext.parasitic)))
           case f: CommandFailed =>
             val ex = new BindFailedException {
               // cannot modify the actual exception class for compatibility reasons
@@ -591,7 +592,7 @@ private[stream] object ConnectionSourceStage {
       remoteAddress,
       eagerMaterializer)
 
-    (logic, localAddressPromise.future.map(OutgoingConnection(remoteAddress, _))(ExecutionContexts.parasitic))
+    (logic, localAddressPromise.future.map(OutgoingConnection(remoteAddress, _))(ExecutionContext.parasitic))
   }
 
   override def toString = s"TCP-to($remoteAddress)"

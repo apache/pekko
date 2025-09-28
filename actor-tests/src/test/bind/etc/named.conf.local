@@ -4,14 +4,14 @@
 
 // Consider adding the 1918 zones here, if they are not used in your
 // organization
-include "/etc/bind/zones.rfc1918";
+include "/etc/bind/local-config/zones.rfc1918";
 
 zone "bar.example" {
 	type master;
-	file "/etc/bind/db.bar.example";
+	file "/etc/bind/local-config/db.bar.example";
 };
 
 zone "foo.test" {
 	type master;
-	file "/etc/bind/db.foo.test";
+	file "/etc/bind/local-config/db.foo.test";
 };

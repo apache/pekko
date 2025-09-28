@@ -17,11 +17,9 @@ import java.util.Arrays
 import java.util.concurrent.ThreadLocalRandom
 import java.util.concurrent.atomic.AtomicReference
 
+import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.collection.immutable
-
-import scala.annotation.nowarn
-import com.typesafe.config.Config
 
 import org.apache.pekko
 import pekko.actor.Actor
@@ -36,6 +34,8 @@ import pekko.cluster.routing.ClusterRouterSettingsBase
 import pekko.dispatch.Dispatchers
 import pekko.japi.Util.immutableSeq
 import pekko.routing._
+
+import com.typesafe.config.Config
 
 /**
  * Load balancing of messages to cluster nodes based on cluster metric data.

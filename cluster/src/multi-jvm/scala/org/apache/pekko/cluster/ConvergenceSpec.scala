@@ -15,12 +15,12 @@ package org.apache.pekko.cluster
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.Address
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.testkit._
+
+import com.typesafe.config.ConfigFactory
 
 final case class ConvergenceMultiNodeConfig(failureDetectorPuppet: Boolean) extends MultiNodeConfig {
   val first = role("first")

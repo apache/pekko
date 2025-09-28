@@ -17,7 +17,7 @@ import MultiJvmPlugin.autoImport._
 
 import sbt.{ Def, _ }
 import sbt.Keys._
-import de.heikoseeberger.sbtheader.HeaderPlugin.autoImport._
+import sbtheader.HeaderPlugin.autoImport._
 import org.scalafmt.sbt.ScalafmtPlugin.scalafmtConfigSettings
 import sbtassembly.MergeStrategy
 import sbtassembly.AssemblyKeys._
@@ -52,7 +52,7 @@ object MultiNode extends AutoPlugin {
   override lazy val projectSettings: Seq[Def.Setting[_]] = multiJvmSettings
 
   private lazy val defaultMultiJvmOptions: Seq[String] = {
-    import scala.collection.JavaConverters._
+    import scala.jdk.CollectionConverters._
     // multinode.D= and multinode.X= makes it possible to pass arbitrary
     // -D or -X arguments to the forked jvm, e.g.
     // -Dmultinode.Djava.net.preferIPv4Stack=true -Dmultinode.Xmx512m -Dmultinode.XX:MaxPermSize=256M

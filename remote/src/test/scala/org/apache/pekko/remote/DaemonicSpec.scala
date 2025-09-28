@@ -14,16 +14,14 @@
 package org.apache.pekko.remote
 
 import scala.concurrent.duration._
-
-import com.typesafe.config.ConfigFactory
+import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
 import pekko.actor.{ ActorSystem, Address }
 import pekko.testkit._
-import pekko.util.ccompat._
-import pekko.util.ccompat.JavaConverters._
 
-@ccompatUsedUntil213
+import com.typesafe.config.ConfigFactory
+
 class DaemonicSpec extends PekkoSpec {
 
   "Remoting configured with daemonic = on" must {

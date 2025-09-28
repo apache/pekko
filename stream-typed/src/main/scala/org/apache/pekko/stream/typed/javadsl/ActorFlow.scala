@@ -13,15 +13,16 @@
 
 package org.apache.pekko.stream.typed.javadsl
 
-import java.util.function.BiFunction
 import scala.concurrent.duration._
+import scala.jdk.DurationConverters.JavaDurationOps
+
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.actor.typed.ActorRef
 import pekko.japi.Pair
+import pekko.japi.function
 import pekko.pattern.StatusReply
 import pekko.stream.javadsl.Flow
-import pekko.util.JavaDurationConverters
 
 /**
  * Collection of Flows aimed at integrating with typed Actors.
@@ -68,10 +69,10 @@ object ActorFlow {
   def ask[I, Q, A](
       ref: ActorRef[Q],
       timeout: java.time.Duration,
-      makeMessage: BiFunction[I, ActorRef[A], Q]): Flow[I, A, NotUsed] =
+      makeMessage: function.Function2[I, ActorRef[A], Q]): Flow[I, A, NotUsed] =
     org.apache.pekko.stream.typed.scaladsl.ActorFlow
       .ask[I, Q, A](parallelism = 2)(ref)((i, ref) => makeMessage(i, ref))(
-        JavaDurationConverters.asFiniteDuration(timeout))
+        timeout.toScala)
       .asJava
 
   /**
@@ -82,10 +83,10 @@ object ActorFlow {
   def askWithStatus[I, Q, A](
       ref: ActorRef[Q],
       timeout: java.time.Duration,
-      makeMessage: BiFunction[I, ActorRef[StatusReply[A]], Q]): Flow[I, A, NotUsed] =
+      makeMessage: function.Function2[I, ActorRef[StatusReply[A]], Q]): Flow[I, A, NotUsed] =
     org.apache.pekko.stream.typed.scaladsl.ActorFlow
       .askWithStatus[I, Q, A](parallelism = 2)(ref)((i, ref) => makeMessage(i, ref))(
-        JavaDurationConverters.asFiniteDuration(timeout))
+        timeout.toScala)
       .asJava
 
   /**
@@ -139,7 +140,7 @@ object ActorFlow {
       parallelism: Int,
       ref: ActorRef[Q],
       timeout: java.time.Duration,
-      makeMessage: BiFunction[I, ActorRef[StatusReply[A]], Q]): Flow[I, A, NotUsed] =
+      makeMessage: function.Function2[I, ActorRef[StatusReply[A]], Q]): Flow[I, A, NotUsed] =
     org.apache.pekko.stream.typed.scaladsl.ActorFlow
       .askWithStatus[I, Q, A](parallelism)(ref)((i, ref) => makeMessage(i, ref))(timeout.toMillis.millis)
       .asJava
@@ -150,14 +151,14 @@ object ActorFlow {
   def askWithContext[I, Q, A, Ctx](
       ref: ActorRef[Q],
       timeout: java.time.Duration,
-      makeMessage: BiFunction[I, ActorRef[A], Q]): Flow[Pair[I, Ctx], Pair[A, Ctx], NotUsed] =
+      makeMessage: function.Function2[I, ActorRef[A], Q]): Flow[Pair[I, Ctx], Pair[A, Ctx], NotUsed] =
     org.apache.pekko.stream.scaladsl
       .Flow[Pair[I, Ctx]]
       .map(_.toScala)
       .via(
         org.apache.pekko.stream.typed.scaladsl.ActorFlow
           .askWithContext[I, Q, A, Ctx](parallelism = 2)(ref)((i, ref) => makeMessage(i, ref))(
-            JavaDurationConverters.asFiniteDuration(timeout))
+            timeout.toScala)
           .map { case (a, ctx) => Pair(a, ctx) })
       .asJava
 
@@ -169,14 +170,14 @@ object ActorFlow {
   def askWithStatusAndContext[I, Q, A, Ctx](
       ref: ActorRef[Q],
       timeout: java.time.Duration,
-      makeMessage: BiFunction[I, ActorRef[StatusReply[A]], Q]): Flow[Pair[I, Ctx], Pair[A, Ctx], NotUsed] =
+      makeMessage: function.Function2[I, ActorRef[StatusReply[A]], Q]): Flow[Pair[I, Ctx], Pair[A, Ctx], NotUsed] =
     org.apache.pekko.stream.scaladsl
       .Flow[Pair[I, Ctx]]
       .map(_.toScala)
       .via(
         org.apache.pekko.stream.typed.scaladsl.ActorFlow
           .askWithStatusAndContext[I, Q, A, Ctx](parallelism = 2)(ref)((i, ref) => makeMessage(i, ref))(
-            JavaDurationConverters.asFiniteDuration(timeout))
+            timeout.toScala)
           .map { case (a, ctx) => Pair(a, ctx) })
       .asJava
 
@@ -187,14 +188,14 @@ object ActorFlow {
       parallelism: Int,
       ref: ActorRef[Q],
       timeout: java.time.Duration,
-      makeMessage: BiFunction[I, ActorRef[A], Q]): Flow[Pair[I, Ctx], Pair[A, Ctx], NotUsed] = {
+      makeMessage: function.Function2[I, ActorRef[A], Q]): Flow[Pair[I, Ctx], Pair[A, Ctx], NotUsed] = {
     org.apache.pekko.stream.scaladsl
       .Flow[Pair[I, Ctx]]
       .map(_.toScala)
       .via(
         org.apache.pekko.stream.typed.scaladsl.ActorFlow
           .askWithContext[I, Q, A, Ctx](parallelism)(ref)((i, ref) => makeMessage(i, ref))(
-            JavaDurationConverters.asFiniteDuration(timeout))
+            timeout.toScala)
           .map { case (a, ctx) => Pair(a, ctx) })
       .asJava
   }

@@ -14,23 +14,21 @@
 package org.apache.pekko.persistence.journal.japi
 
 import scala.collection.immutable
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
+import scala.jdk.CollectionConverters._
+import scala.jdk.FutureConverters._
 import scala.util.Failure
 import scala.util.Try
 
 import org.apache.pekko
-import pekko.dispatch.ExecutionContexts
 import pekko.persistence._
 import pekko.persistence.journal.{ AsyncWriteJournal => SAsyncWriteJournal }
 import pekko.util.ConstantFun.scalaAnyToUnit
-import pekko.util.FutureConverters._
-import pekko.util.ccompat._
-import pekko.util.ccompat.JavaConverters._
 
 /**
  * Java API: abstract journal, optimized for asynchronous, non-blocking writes.
  */
-@ccompatUsedUntil213
 abstract class AsyncWriteJournal extends AsyncRecovery with SAsyncWriteJournal with AsyncWritePlugin {
   import SAsyncWriteJournal.successUnit
 
@@ -42,9 +40,9 @@ abstract class AsyncWriteJournal extends AsyncRecovery with SAsyncWriteJournal w
           else successUnit
         }
         .to(immutable.IndexedSeq)
-    }(ExecutionContexts.parasitic)
+    }(ExecutionContext.parasitic)
 
   final def asyncDeleteMessagesTo(persistenceId: String, toSequenceNr: Long): Future[Unit] = {
-    doAsyncDeleteMessagesTo(persistenceId, toSequenceNr).asScala.map(scalaAnyToUnit)(ExecutionContexts.parasitic)
+    doAsyncDeleteMessagesTo(persistenceId, toSequenceNr).asScala.map(scalaAnyToUnit)(ExecutionContext.parasitic)
   }
 }

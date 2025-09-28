@@ -209,7 +209,7 @@ final class ORMap[A, B <: ReplicatedData] private[pekko] (
    * Java API: All entries of the map.
    */
   def getEntries(): java.util.Map[A, B] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     entries.asJava
   }
 

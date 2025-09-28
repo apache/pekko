@@ -24,12 +24,10 @@ import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.cluster.ClusterSettings.DataCenter
 import pekko.cluster.MemberStatus._
-import pekko.util.ccompat._
 
 /**
  * INTERNAL API
  */
-@ccompatUsedUntil213
 @InternalApi private[pekko] object MembershipState {
   import MemberStatus._
   private val leaderMemberStatus = Set[MemberStatus](Up, Leaving, PreparingForShutdown, ReadyForShutdown)

@@ -17,8 +17,11 @@ import java.{ lang => jl }
 import java.io.{ ByteArrayInputStream, ByteArrayOutputStream, ObjectOutputStream }
 import java.io.NotSerializableException
 import java.util.zip.{ GZIPInputStream, GZIPOutputStream }
+
 import scala.annotation.tailrec
 import scala.collection.immutable
+import scala.jdk.CollectionConverters._
+
 import org.apache.pekko
 import pekko.actor.{ Address, ExtendedActorSystem }
 import pekko.cluster.metrics._
@@ -27,13 +30,10 @@ import pekko.dispatch.Dispatchers
 import pekko.protobufv3.internal.MessageLite
 import pekko.remote.ByteStringUtils
 import pekko.serialization.{ BaseSerializer, SerializationExtension, SerializerWithStringManifest, Serializers }
-import pekko.util.ccompat._
-import pekko.util.ccompat.JavaConverters._
 
 /**
  * Protobuf serializer for [[pekko.cluster.metrics.ClusterMetricsMessage]] types.
  */
-@ccompatUsedUntil213
 class MessageSerializer(val system: ExtendedActorSystem) extends SerializerWithStringManifest with BaseSerializer {
 
   private final val BufferSize = 4 * 1024

@@ -23,6 +23,7 @@ import pekko.persistence.typed.crdt.ORSet
 import pekko.persistence.typed.internal.PublishedEventImpl
 import pekko.persistence.typed.internal.ReplicatedPublishedEventMetaData
 import pekko.persistence.typed.internal.VersionVector
+
 import org.scalatest.wordspec.AnyWordSpecLike
 
 class ReplicatedEventSourcingSerializerSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with LogCapturing {

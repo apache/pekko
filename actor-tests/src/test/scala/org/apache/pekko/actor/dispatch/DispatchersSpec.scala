@@ -16,10 +16,8 @@ package org.apache.pekko.actor.dispatch
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicBoolean
 
+import scala.annotation.nowarn
 import scala.reflect.ClassTag
-
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.ConfigurationException
@@ -27,7 +25,9 @@ import pekko.actor._
 import pekko.dispatch._
 import pekko.routing.FromConfig
 import pekko.testkit.{ ImplicitSender, PekkoSpec }
-import pekko.util.unused
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 object DispatchersSpec {
   val config = """
@@ -84,7 +84,8 @@ object DispatchersSpec {
     }
   }
 
-  class OneShotMailboxType(@unused settings: ActorSystem.Settings, @unused config: Config)
+  class OneShotMailboxType(@nowarn("msg=never used") settings: ActorSystem.Settings,
+      @nowarn("msg=never used") config: Config)
       extends MailboxType
       with ProducesMessageQueue[DoublingMailbox] {
     val created = new AtomicBoolean(false)
@@ -135,7 +136,7 @@ class DispatchersSpec extends PekkoSpec(DispatchersSpec.config) with ImplicitSen
   val defaultDispatcherConfig = settings.config.getConfig("pekko.actor.default-dispatcher")
 
   lazy val allDispatchers: Map[String, MessageDispatcher] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
 
     validTypes
       .map(t => (t, from(ConfigFactory.parseMap(Map(tipe -> t, id -> t).asJava).withFallback(defaultDispatcherConfig))))
@@ -175,7 +176,7 @@ class DispatchersSpec extends PekkoSpec(DispatchersSpec.config) with ImplicitSen
     }
 
     "throw ConfigurationException if type does not exist" in {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       intercept[ConfigurationException] {
         from(
           ConfigFactory

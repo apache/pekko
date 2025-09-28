@@ -16,12 +16,10 @@ package org.apache.pekko.persistence
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicInteger
 
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent.duration.FiniteDuration
 import scala.util.control.NonFatal
-
-import scala.annotation.nowarn
-import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorCell, DeadLetter, StashOverflowException }
@@ -29,6 +27,8 @@ import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.dispatch.Envelope
 import pekko.event.{ Logging, LoggingAdapter }
 import pekko.util.Helpers.ConfigOps
+
+import com.typesafe.config.ConfigFactory
 
 /** INTERNAL API */
 @InternalApi
@@ -628,6 +628,7 @@ private[persistence] trait Eventsourced
    * @param replayMax maximum number of messages to replay.
    * @param timeout recovery event timeout
    */
+  @nowarn("msg=inferred structural type")
   private def recoveryStarted(replayMax: Long, timeout: FiniteDuration) = new State {
 
     val timeoutCancellable = {
@@ -745,6 +746,7 @@ private[persistence] trait Eventsourced
    *
    * All incoming messages are stashed.
    */
+  @nowarn("msg=inferred structural type")
   private def recovering(recoveryBehavior: Receive, timeout: FiniteDuration) =
     new State {
 

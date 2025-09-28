@@ -15,19 +15,20 @@ package org.apache.pekko.persistence.testkit
 
 import java.util.UUID
 
-import com.typesafe.config.ConfigFactory
-import org.scalatest.wordspec.AnyWordSpecLike
-
 import org.apache.pekko
 import pekko.actor.{ ActorRef, ActorSystem }
 import pekko.persistence._
 import pekko.testkit.TestKitBase
 
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.ConfigFactory
+
 trait CommonUtils extends AnyWordSpecLike with TestKitBase {
 
   protected def randomPid() = UUID.randomUUID().toString
 
-  import pekko.util.ccompat.JavaConverters._
+  import scala.jdk.CollectionConverters._
 
   def initSystemWithEnabledPlugin(name: String, serializeMessages: Boolean, serializeSnapshots: Boolean) =
     ActorSystem(

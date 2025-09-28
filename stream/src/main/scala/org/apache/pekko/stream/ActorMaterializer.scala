@@ -15,7 +15,6 @@ package org.apache.pekko.stream
 
 import java.util.concurrent.TimeUnit
 
-import scala.annotation.nowarn
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
@@ -25,9 +24,7 @@ import pekko.actor.ActorRef
 import pekko.actor.ActorRefFactory
 import pekko.actor.ActorSystem
 import pekko.actor.ExtendedActorSystem
-import pekko.actor.Props
 import pekko.annotation.InternalApi
-import pekko.event.LoggingAdapter
 import pekko.stream.impl._
 import pekko.stream.stage.GraphStageLogic
 import pekko.util.Helpers.toRootLowerCase
@@ -54,7 +51,7 @@ private[pekko] object ActorMaterializer {
     "Use the system wide materializer with stream attributes or configuration settings to change defaults",
     "Akka 2.6.0")
   def apply(materializerSettings: Option[ActorMaterializerSettings] = None, namePrefix: Option[String] = None)(
-      implicit context: ActorRefFactory): ActorMaterializer = {
+      implicit context: ActorRefFactory): Materializer = {
     val system = actorSystemOf(context)
 
     val settings = materializerSettings.getOrElse(SystemMaterializer(system).materializerSettings)
@@ -77,14 +74,14 @@ private[pekko] object ActorMaterializer {
     "Use the system wide materializer with stream attributes or configuration settings to change defaults",
     "Akka 2.6.0")
   def apply(materializerSettings: ActorMaterializerSettings, namePrefix: String)(
-      implicit context: ActorRefFactory): ActorMaterializer = {
+      implicit context: ActorRefFactory): Materializer = {
 
     context match {
       case system: ActorSystem =>
         // system level materializer, defer to the system materializer extension
         SystemMaterializer(system)
           .createAdditionalLegacySystemMaterializer(namePrefix, materializerSettings)
-          .asInstanceOf[ActorMaterializer]
+          .asInstanceOf[Materializer]
 
       case context: ActorContext =>
         // actor context level materializer, will live as a child of this actor
@@ -110,7 +107,7 @@ private[pekko] object ActorMaterializer {
   @deprecated(
     "Use the system wide materializer or Materializer.apply(actorContext) with stream attributes or configuration settings to change defaults",
     "Akka 2.6.0")
-  def apply(materializerSettings: ActorMaterializerSettings)(implicit context: ActorRefFactory): ActorMaterializer =
+  def apply(materializerSettings: ActorMaterializerSettings)(implicit context: ActorRefFactory): Materializer =
     apply(Some(materializerSettings), None)
 
   /**
@@ -127,7 +124,7 @@ private[pekko] object ActorMaterializer {
   @deprecated(
     "Use the system wide materializer or Materializer.create(actorContext) with stream attributes or configuration settings to change defaults",
     "Akka 2.6.0")
-  def create(context: ActorRefFactory): ActorMaterializer =
+  def create(context: ActorRefFactory): Materializer =
     apply()(context)
 
   private def actorSystemOf(context: ActorRefFactory): ActorSystem = {
@@ -141,53 +138,6 @@ private[pekko] object ActorMaterializer {
     }
     system
   }
-
-}
-
-/**
- * An ActorMaterializer takes a stream blueprint and turns it into a running stream.
- */
-
-@InternalApi
-@deprecated("The Materializer now has all methods the ActorMaterializer used to have", "Akka 2.6.0")
-private[pekko] abstract class ActorMaterializer extends Materializer with MaterializerLoggingProvider {
-
-  @deprecated(
-    "Use attributes to access settings from stages, see https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
-    "Akka 2.6.0")
-  def settings: ActorMaterializerSettings
-
-  /**
-   * Shuts down this materializer and all the operators that have been materialized through this materializer. After
-   * having shut down, this materializer cannot be used again. Any attempt to materialize operators after having
-   * shut down will result in an IllegalStateException being thrown at materialization time.
-   */
-  def shutdown(): Unit
-
-  /**
-   * Indicates if the materializer has been shut down.
-   */
-  def isShutdown: Boolean
-
-  /**
-   * INTERNAL API
-   */
-  private[pekko] def actorOf(context: MaterializationContext, props: Props): ActorRef
-
-  /**
-   * INTERNAL API
-   */
-  def system: ActorSystem
-
-  /**
-   * INTERNAL API
-   */
-  private[pekko] def logger: LoggingAdapter
-
-  /**
-   * INTERNAL API
-   */
-  private[pekko] def supervisor: ActorRef
 
 }
 
@@ -270,7 +220,6 @@ private[pekko] object ActorMaterializerSettings {
  *
  * The constructor is not public API, use create or apply on the [[ActorMaterializerSettings]] companion instead.
  */
-@nowarn("msg=deprecated")
 final class ActorMaterializerSettings @InternalApi private (
     /*
      * Important note: `initialInputBufferSize`, `maxInputBufferSize`, `dispatcher` and
@@ -278,31 +227,20 @@ final class ActorMaterializerSettings @InternalApi private (
      * since these settings allow for overriding using [[Attributes]]. They must always be gotten from the effective
      * attributes.
      */
-    @deprecated("Use attribute 'Attributes.InputBuffer' to read the concrete setting value", "Akka 2.6.0")
-    val initialInputBufferSize: Int,
-    @deprecated("Use attribute 'Attributes.InputBuffer' to read the concrete setting value", "Akka 2.6.0")
-    val maxInputBufferSize: Int,
-    @deprecated("Use attribute 'ActorAttributes.Dispatcher' to read the concrete setting value", "Akka 2.6.0")
-    val dispatcher: String,
-    @deprecated("Use attribute 'ActorAttributes.SupervisionStrategy' to read the concrete setting value", "Akka 2.6.0")
-    val supervisionDecider: Supervision.Decider,
+    private[stream] val initialInputBufferSize: Int,
+    private[stream] val maxInputBufferSize: Int,
+    private[stream] val dispatcher: String,
+    private[stream] val supervisionDecider: Supervision.Decider,
     val subscriptionTimeoutSettings: StreamSubscriptionTimeoutSettings,
-    @deprecated("Use attribute 'ActorAttributes.DebugLogging' to read the concrete setting value", "Akka 2.6.0")
-    val debugLogging: Boolean,
-    @deprecated("Use attribute 'ActorAttributes.OutputBurstLimit' to read the concrete setting value", "Akka 2.6.0")
-    val outputBurstLimit: Int,
-    @deprecated("Use attribute 'ActorAttributes.FuzzingMode' to read the concrete setting value", "Akka 2.6.0")
-    val fuzzingMode: Boolean,
-    @deprecated("No longer has any effect", "Akka 2.6.0")
-    val autoFusing: Boolean,
-    @deprecated("Use attribute 'ActorAttributes.MaxFixedBufferSize' to read the concrete setting value", "Akka 2.6.0")
-    val maxFixedBufferSize: Int,
-    @deprecated("Use attribute 'ActorAttributes.SyncProcessingLimit' to read the concrete setting value", "Akka 2.6.0")
-    val syncProcessingLimit: Int,
+    private[stream] val debugLogging: Boolean,
+    private[stream] val outputBurstLimit: Int,
+    private[stream] val fuzzingMode: Boolean,
+    private[stream] val autoFusing: Boolean,
+    private[stream] val maxFixedBufferSize: Int,
+    private[stream] val syncProcessingLimit: Int,
     val ioSettings: IOSettings,
     val streamRefSettings: StreamRefSettings,
-    @deprecated("Use attribute 'ActorAttributes.BlockingIoDispatcher' to read the concrete setting value", "Akka 2.6.0")
-    val blockingIoDispatcher: String) {
+    private[stream] val blockingIoDispatcher: String) {
 
   require(initialInputBufferSize > 0, "initialInputBufferSize must be > 0")
   require(syncProcessingLimit > 0, "syncProcessingLimit must be > 0")
@@ -414,7 +352,7 @@ final class ActorMaterializerSettings @InternalApi private (
    * INTERNAL API
    */
   @InternalApi
-  private[pekko] def toAttributes: Attributes =
+  private[pekko] lazy val toAttributes: Attributes =
     Attributes(
       // these are the core stream/materializer settings, ad hoc handling of defaults for the stage specific ones
       // for stream refs and io live with the respective stages
@@ -430,7 +368,6 @@ final class ActorMaterializerSettings @InternalApi private (
       ActorAttributes.FuzzingMode(fuzzingMode) ::
       ActorAttributes.MaxFixedBufferSize(maxFixedBufferSize) ::
       ActorAttributes.SyncProcessingLimit(syncProcessingLimit) ::
-
       Nil)
 
   override def toString: String =
@@ -450,10 +387,8 @@ private[pekko] object IOSettings {
       coalesceWrites = config.getInt("tcp.coalesce-writes"))
 }
 
-@nowarn("msg=deprecated")
 final class IOSettings private (
-    @deprecated("Use attribute 'TcpAttributes.TcpWriteBufferSize' to read the concrete setting value", "Akka 2.6.0")
-    val tcpWriteBufferSize: Int,
+    private[stream] val tcpWriteBufferSize: Int,
     val coalesceWrites: Int) {
 
   // constructor for binary compatibility with version 2.6.15 and earlier
@@ -522,15 +457,9 @@ object StreamSubscriptionTimeoutSettings {
  * Leaked publishers and subscribers are cleaned up when they are not used within a given
  * deadline, configured by [[StreamSubscriptionTimeoutSettings]].
  */
-@nowarn("msg=deprecated")
 final class StreamSubscriptionTimeoutSettings(
-    @deprecated(
-      "Use attribute 'ActorAttributes.StreamSubscriptionTimeoutMode' to read the concrete setting value",
-      "Akka 2.6.0")
-    val mode: StreamSubscriptionTimeoutTerminationMode,
-    @deprecated("Use attribute 'ActorAttributes.StreamSubscriptionTimeout' to read the concrete setting value",
-      "Akka 2.6.0")
-    val timeout: FiniteDuration) {
+    private[stream] val mode: StreamSubscriptionTimeoutTerminationMode,
+    private[stream] val timeout: FiniteDuration) {
   override def equals(other: Any): Boolean = other match {
     case s: StreamSubscriptionTimeoutSettings => s.mode == mode && s.timeout == timeout
     case _                                    => false

@@ -19,6 +19,8 @@ import java.util.concurrent.CountDownLatch
 import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.concurrent.duration._
+import scala.jdk.CollectionConverters._
+import scala.jdk.DurationConverters._
 import scala.reflect.ClassTag
 
 import org.apache.pekko
@@ -34,9 +36,6 @@ import pekko.stream._
 import pekko.stream.impl._
 import pekko.testkit.{ TestActor, TestProbe }
 import pekko.testkit.TestActor.AutoPilot
-import pekko.util.JavaDurationConverters._
-import pekko.util.ccompat._
-import pekko.util.ccompat.JavaConverters._
 
 import org.reactivestreams.{ Publisher, Subscriber, Subscription }
 
@@ -120,7 +119,6 @@ object TestPublisher {
 
     type Self <: ManualProbe[I]
 
-    @ccompatUsedUntil213
     private val probe: TestProbe = TestProbe()
 
     // this is a way to pause receiving message from probe until subscription is done
@@ -198,7 +196,7 @@ object TestPublisher {
      * Expect no messages for a given duration.
      * @since 1.1.0
      */
-    def expectNoMessage(max: java.time.Duration): Self = expectNoMessage(max.asScala)
+    def expectNoMessage(max: java.time.Duration): Self = expectNoMessage(max.toScala)
 
     /**
      * Receive messages for a given duration or until one does not match a given partial function.
@@ -220,7 +218,7 @@ object TestPublisher {
         idle: java.time.Duration,
         messages: Int,
         f: PartialFunction[PublisherEvent, T]): java.util.List[T] =
-      receiveWhile(max.asScala, idle.asScala, messages)(f).asJava
+      receiveWhile(max.toScala, idle.toScala, messages)(f).asJava
 
     def expectEventPF[T](f: PartialFunction[PublisherEvent, T]): T =
       executeAfterSubscription {
@@ -272,7 +270,7 @@ object TestPublisher {
     def within[T](min: java.time.Duration,
         max: java.time.Duration,
         creator: function.Creator[T]): T =
-      within(min.asScala, max.asScala)(creator.create())
+      within(min.toScala, max.toScala)(creator.create())
 
     /**
      * Same as calling `within(0 seconds, max)(f)`.
@@ -288,7 +286,7 @@ object TestPublisher {
      * @since 1.1.0
      */
     def within[T](max: java.time.Duration,
-        creator: function.Creator[T]): T = within(max.asScala)(creator.create())
+        creator: function.Creator[T]): T = within(max.toScala)(creator.create())
   }
 
   object Probe {
@@ -455,7 +453,7 @@ object TestSubscriber {
      * Expect and return [[SubscriberEvent]] (any of: `OnSubscribe`, `OnNext`, `OnError` or `OnComplete`).
      * @since 1.1.0
      */
-    def expectEvent(max: java.time.Duration): SubscriberEvent = expectEvent(max.asScala)
+    def expectEvent(max: java.time.Duration): SubscriberEvent = expectEvent(max.toScala)
 
     /**
      * Fluent DSL
@@ -492,7 +490,7 @@ object TestSubscriber {
      * Expect and return a stream element during specified time or timeout.
      * @since 1.1.0
      */
-    def expectNext(d: java.time.Duration): I = expectNext(d.asScala)
+    def expectNext(d: java.time.Duration): I = expectNext(d.toScala)
 
     /**
      * Fluent DSL
@@ -522,7 +520,7 @@ object TestSubscriber {
      * Expect a stream element during specified time or timeout.
      * @since 1.1.0
      */
-    def expectNext(d: java.time.Duration, element: I): Self = expectNext(d.asScala, element)
+    def expectNext(d: java.time.Duration, element: I): Self = expectNext(d.toScala, element)
 
     /**
      * Fluent DSL
@@ -792,7 +790,7 @@ object TestSubscriber {
      * Java API: Assert that no message is received for the specified time.
      */
     def expectNoMessage(remaining: java.time.Duration): Self = {
-      probe.expectNoMessage(remaining.asScala)
+      probe.expectNoMessage(remaining.toScala)
       self
     }
 
@@ -823,7 +821,7 @@ object TestSubscriber {
      * @since 1.1.0
      */
     def expectNextWithTimeoutPF[T](max: java.time.Duration, f: PartialFunction[Any, T]): T =
-      expectEventWithTimeoutPF(max.asScala, f)
+      expectEventWithTimeoutPF(max.toScala, f)
 
     /**
      * Expect a stream element during specified time or timeout and test it with partial function.
@@ -846,7 +844,7 @@ object TestSubscriber {
      * @since 1.1.0
      */
     def expectNextChainingPF(max: java.time.Duration, f: PartialFunction[Any, Any]): Self =
-      expectNextChainingPF(max.asScala, f)
+      expectNextChainingPF(max.toScala, f)
 
     /**
      * Expect a stream element during specified time or timeout and test it with partial function.
@@ -864,7 +862,7 @@ object TestSubscriber {
      * @since 1.1.0
      */
     def expectEventWithTimeoutPF[T](max: java.time.Duration, f: PartialFunction[SubscriberEvent, T]): T =
-      expectEventWithTimeoutPF(max.asScala, f)
+      expectEventWithTimeoutPF(max.toScala, f)
 
     def expectEventPF[T](f: PartialFunction[SubscriberEvent, T]): T =
       expectEventWithTimeoutPF(Duration.Undefined, f)
@@ -889,7 +887,7 @@ object TestSubscriber {
         idle: java.time.Duration,
         messages: Int,
         f: PartialFunction[SubscriberEvent, T]): java.util.List[T] =
-      receiveWhile(max.asScala, idle.asScala, messages)(f).asJava
+      receiveWhile(max.toScala, idle.toScala, messages)(f).asJava
 
     /**
      * Drains a given number of messages
@@ -909,7 +907,7 @@ object TestSubscriber {
      * @since 1.1.0
      */
     def receiveWithin(max: java.time.Duration, messages: Int): java.util.List[I] =
-      receiveWithin(max.asScala, messages).asJava
+      receiveWithin(max.toScala, messages).asJava
 
     /**
      * Attempt to drain the stream into a strict collection (by requesting `Long.MaxValue` elements).
@@ -950,7 +948,7 @@ object TestSubscriber {
      * @since 1.1.0
      */
     def toStrict(atMost: java.time.Duration): java.util.List[I] =
-      toStrict(atMost.asScala).asJava
+      toStrict(atMost.toScala).asJava
 
     /**
      * Execute code block while bounding its execution time between `min` and
@@ -992,7 +990,7 @@ object TestSubscriber {
      */
     def within[T](min: java.time.Duration,
         max: java.time.Duration,
-        creator: function.Creator[T]): T = within(min.asScala, max.asScala)(creator.create())
+        creator: function.Creator[T]): T = within(min.toScala, max.toScala)(creator.create())
 
     /**
      * Same as calling `within(0 seconds, max)(f)`.
@@ -1005,7 +1003,7 @@ object TestSubscriber {
      * Same as calling `within(Duration.ofSeconds(0), max)(f)`.
      * @since 1.1.0
      */
-    def within[T](max: java.time.Duration)(creator: function.Creator[T]): T = within(max.asScala)(creator.create())
+    def within[T](max: java.time.Duration)(creator: function.Creator[T]): T = within(max.toScala)(creator.create())
 
     def onSubscribe(subscription: Subscription): Unit = probe.ref ! OnSubscribe(subscription)
     def onNext(element: I): Unit = probe.ref ! OnNext(element)
@@ -1089,7 +1087,7 @@ object TestSubscriber {
      * Request and expect a stream element during the specified time or timeout.
      * @since 1.1.0
      */
-    def requestNext(d: java.time.Duration): T = requestNext(d.asScala)
+    def requestNext(d: java.time.Duration): T = requestNext(d.toScala)
   }
 }
 

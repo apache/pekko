@@ -15,8 +15,6 @@ package org.apache.pekko.cluster.singleton
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.Actor
 import pekko.actor.ActorSystem
@@ -27,6 +25,8 @@ import pekko.cluster.MemberStatus
 import pekko.cluster.UniqueAddress
 import pekko.testkit.PekkoSpec
 import pekko.testkit.TestProbe
+
+import com.typesafe.config.ConfigFactory
 
 object ClusterSingletonRestart2Spec {
   def singletonActorProps: Props = Props(new Singleton)
@@ -69,8 +69,6 @@ class ClusterSingletonRestart2Spec
     ConfigFactory.parseString("pekko.cluster.roles = [other]").withFallback(system.settings.config))
   var sys4: ActorSystem = null
 
-  import pekko.util.ccompat._
-  @ccompatUsedUntil213
   def join(from: ActorSystem, to: ActorSystem): Unit = {
     if (Cluster(from).selfRoles.contains("singleton"))
       from.actorOf(

@@ -17,15 +17,16 @@ import java.util.concurrent.TimeUnit
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-import org.scalatest.Assertions
-
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.actor.ExtendedActorSystem
 import pekko.event.DefaultLoggingFilter
 import pekko.event.Logging.DefaultLogger
 import pekko.testkit.PekkoSpec
+
+import org.scalatest.Assertions
+
+import com.typesafe.config.ConfigFactory
 
 class ConfigSpec extends PekkoSpec(ConfigFactory.defaultReference(ActorSystem.findClassLoader())) with Assertions {
 

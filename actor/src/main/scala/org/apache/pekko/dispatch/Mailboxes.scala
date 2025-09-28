@@ -21,8 +21,6 @@ import scala.annotation.tailrec
 import scala.concurrent.duration.Duration
 import scala.util.control.NonFatal
 
-import com.typesafe.config.{ Config, ConfigFactory }
-
 import org.apache.pekko
 import pekko.ConfigurationException
 import pekko.actor.{ Actor, ActorRef, ActorSystem, DeadLetter, Deploy, DynamicAccess, Props }
@@ -36,6 +34,8 @@ import pekko.dispatch.sysmsg.{
 import pekko.event.EventStream
 import pekko.event.Logging.Warning
 import pekko.util.Reflect
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 object Mailboxes {
   final val DefaultMailboxId = "pekko.actor.default-mailbox"
@@ -74,7 +74,7 @@ private[pekko] class Mailboxes(
   private val mailboxTypeConfigurators = new ConcurrentHashMap[String, MailboxType]
 
   private val mailboxBindings: Map[Class[_ <: Any], String] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     settings.config
       .getConfig("pekko.actor.mailbox.requirements")
       .root
@@ -285,7 +285,7 @@ private[pekko] class Mailboxes(
 
   // INTERNAL API
   private def config(id: String): Config = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     ConfigFactory
       .parseMap(Map("id" -> id).asJava)
       .withFallback(settings.config.getConfig(id))

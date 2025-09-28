@@ -18,13 +18,13 @@ import scala.concurrent.Await
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.ConfigurationException
 import pekko.actor._
 import pekko.pattern.{ ask, pipe }
 import pekko.testkit._
+
+import com.typesafe.config.ConfigFactory
 
 object RoutingSpec {
 

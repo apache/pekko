@@ -16,8 +16,6 @@ package org.apache.pekko.cluster.singleton
 import scala.collection.immutable
 import scala.concurrent.duration._
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.actor._
 import pekko.actor.NoSerializationVerificationNeeded
@@ -33,6 +31,8 @@ import pekko.cluster.ClusterSettings.DataCenter
 import pekko.dispatch.Dispatchers
 import pekko.event.Logging
 import pekko.util.MessageBuffer
+
+import com.typesafe.config.Config
 
 object ClusterSingletonProxySettings {
 

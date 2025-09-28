@@ -15,15 +15,15 @@ package org.apache.pekko.actor
 
 import java.util.concurrent.atomic.AtomicReference
 
-import scala.annotation.tailrec
-
 import scala.annotation.nowarn
-import com.typesafe.config._
+import scala.annotation.tailrec
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.routing._
 import pekko.util.WildcardIndex
+
+import com.typesafe.config._
 
 object Deploy {
   final val NoDispatcherGiven = ""
@@ -224,7 +224,7 @@ case object NoScopeGiven extends NoScopeGiven {
  */
 private[pekko] class Deployer(val settings: ActorSystem.Settings, val dynamicAccess: DynamicAccess) {
 
-  import pekko.util.ccompat.JavaConverters._
+  import scala.jdk.CollectionConverters._
 
   private val resizerEnabled: Config = ConfigFactory.parseString("resizer.enabled=on")
   private val deployments = new AtomicReference(WildcardIndex[Deploy]())

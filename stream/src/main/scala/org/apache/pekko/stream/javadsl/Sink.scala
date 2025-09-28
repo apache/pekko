@@ -15,25 +15,24 @@ package org.apache.pekko.stream.javadsl
 
 import java.util.Optional
 import java.util.concurrent.{ CompletableFuture, CompletionStage }
-import java.util.function.BiFunction
 import java.util.stream.Collector
 
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable
+import scala.concurrent.ExecutionContext
+import scala.jdk.FutureConverters._
+import scala.jdk.OptionConverters._
 import scala.util.Try
 
 import org.apache.pekko
 import pekko._
 import pekko.actor.{ ActorRef, ClassicActorSystemProvider, Status }
-import pekko.dispatch.ExecutionContexts
 import pekko.japi.function
 import pekko.japi.function.Creator
 import pekko.stream._
 import pekko.stream.impl.LinearTraversalBuilder
 import pekko.stream.scaladsl.SinkToCompletionStage
 import pekko.util.ConstantFun.scalaAnyToUnit
-import pekko.util.FutureConverters._
-import pekko.util.OptionConverters._
 
 import org.reactivestreams.{ Publisher, Subscriber }
 
@@ -95,9 +94,9 @@ object Sink {
    * @since 1.1.0
    */
   def forall[In](p: function.Predicate[In]): javadsl.Sink[In, CompletionStage[java.lang.Boolean]] = {
-    import pekko.util.FutureConverters._
+    import scala.jdk.FutureConverters._
     new Sink(scaladsl.Sink.forall[In](p.test)
-      .mapMaterializedValue(_.map(Boolean.box)(ExecutionContexts.parasitic).asJava))
+      .mapMaterializedValue(_.map(Boolean.box)(ExecutionContext.parasitic).asJava))
   }
 
   /**
@@ -120,9 +119,9 @@ object Sink {
    * @since 1.2.0
    */
   def none[In](p: function.Predicate[In]): javadsl.Sink[In, CompletionStage[java.lang.Boolean]] = {
-    import pekko.util.FutureConverters._
+    import scala.jdk.FutureConverters._
     new Sink(scaladsl.Sink.none[In](p.test)
-      .mapMaterializedValue(_.map(Boolean.box)(ExecutionContexts.parasitic).asJava))
+      .mapMaterializedValue(_.map(Boolean.box)(ExecutionContext.parasitic).asJava))
   }
 
   /**
@@ -145,9 +144,9 @@ object Sink {
    * @since 1.1.0
    */
   def exists[In](p: function.Predicate[In]): javadsl.Sink[In, CompletionStage[java.lang.Boolean]] = {
-    import pekko.util.FutureConverters._
+    import scala.jdk.FutureConverters._
     new Sink(scaladsl.Sink.exists[In](p.test)
-      .mapMaterializedValue(_.map(Boolean.box)(ExecutionContexts.parasitic).asJava))
+      .mapMaterializedValue(_.map(Boolean.box)(ExecutionContext.parasitic).asJava))
   }
 
   /**
@@ -214,6 +213,20 @@ object Sink {
     new Sink(scaladsl.Sink.asPublisher(fanout == AsPublisher.WITH_FANOUT))
 
   /**
+   * A `Sink` that materializes this `Sink` itself as a `Source`.
+   * The returned `Source` is a "live view" onto the `Sink` and only supports a single `Subscriber`.
+   *
+   * Use [[BroadcastHub#sink]] if you need a `Source` that allows multiple subscribers.
+   *
+   * Note: even if the `Source` is directly connected to the `Sink`, there is still an asynchronous boundary
+   * between them; performance may be improved in the future.
+   *
+   * @since 2.0.0
+   */
+  def source[T](): Sink[T, Source[T, NotUsed]] = new Sink(scaladsl.Sink.source[T])
+    .mapMaterializedValue(src => src.asJava)
+
+  /**
    * A `Sink` that will invoke the given procedure for each received element. The sink is materialized
    * into a [[java.util.concurrent.CompletionStage]] which will be completed with `Success` when reaching the
    * normal end of the stream, or completed with `Failure` if there is a failure signaled in
@@ -232,7 +245,7 @@ object Sink {
       f: function.Function[T, CompletionStage[Void]]): Sink[T, CompletionStage[Done]] =
     new Sink(
       scaladsl.Sink
-        .foreachAsync(parallelism)((x: T) => f(x).asScala.map(scalaAnyToUnit)(ExecutionContexts.parasitic))
+        .foreachAsync(parallelism)((x: T) => f(x).asScala.map(scalaAnyToUnit)(ExecutionContext.parasitic))
         .toCompletionStage())
 
   /**
@@ -261,7 +274,7 @@ object Sink {
    * See also [[head]].
    */
   def headOption[In](): Sink[In, CompletionStage[Optional[In]]] =
-    new Sink(scaladsl.Sink.headOption[In].mapMaterializedValue(_.map(_.toJava)(ExecutionContexts.parasitic).asJava))
+    new Sink(scaladsl.Sink.headOption[In].mapMaterializedValue(_.map(_.toJava)(ExecutionContext.parasitic).asJava))
 
   /**
    * A `Sink` that materializes into a `CompletionStage` of the last value received.
@@ -281,7 +294,7 @@ object Sink {
    * See also [[head]], [[takeLast]].
    */
   def lastOption[In](): Sink[In, CompletionStage[Optional[In]]] =
-    new Sink(scaladsl.Sink.lastOption[In].mapMaterializedValue(_.map(_.toJava)(ExecutionContexts.parasitic).asJava))
+    new Sink(scaladsl.Sink.lastOption[In].mapMaterializedValue(_.map(_.toJava)(ExecutionContext.parasitic).asJava))
 
   /**
    * A `Sink` that materializes into a `CompletionStage` of `List<In>` containing the last `n` collected elements.
@@ -291,11 +304,11 @@ object Sink {
    * If there is a failure signaled in the stream the `CompletionStage` will be completed with failure.
    */
   def takeLast[In](n: Int): Sink[In, CompletionStage[java.util.List[In]]] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     new Sink(
       scaladsl.Sink
         .takeLast[In](n)
-        .mapMaterializedValue(fut => fut.map(sq => sq.asJava)(ExecutionContexts.parasitic).asJava))
+        .mapMaterializedValue(fut => fut.map(sq => sq.asJava)(ExecutionContext.parasitic).asJava))
   }
 
   /**
@@ -309,10 +322,31 @@ object Sink {
    * See also [[Flow.limit]], [[Flow.limitWeighted]], [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
    */
   def seq[In]: Sink[In, CompletionStage[java.util.List[In]]] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     new Sink(
-      scaladsl.Sink.seq[In].mapMaterializedValue(fut => fut.map(sq => sq.asJava)(ExecutionContexts.parasitic).asJava))
+      scaladsl.Sink.seq[In].mapMaterializedValue(fut => fut.map(sq => sq.asJava)(ExecutionContext.parasitic).asJava))
   }
+
+  /**
+   * A `Sink` that counts all incoming elements until upstream terminates.
+   *
+   * Since upstream may be unbounded, consider using `Flow[T].take` or the stricter `Flow[T].limit`
+   * (and their variants) to ensure boundedness. The sink materializes into a `CompletionStage` of `Long`
+   * containing the total count of elements that passed through.
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Backpressures when''' never (counting is a lightweight operation)
+   *
+   * '''Cancels when''' never
+   *
+   * @return a `Sink` that materializes to a `CompletionStage[Long]` with the element count
+   * @since 2.0.0
+   *
+   * See also [[Flow.limit]], [[Flow.limitWeighted]], [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
+   */
+  def count[In]: Sink[In, CompletionStage[java.lang.Long]] = new Sink(
+    scaladsl.Sink.count[In].mapMaterializedValue(_.asJava.asInstanceOf[CompletionStage[java.lang.Long]]))
 
   /**
    * Sends the elements of the stream to the given `ActorRef`.
@@ -391,7 +425,8 @@ object Sink {
    * exposes [[Materializer]] which is going to be used during materialization and
    * [[Attributes]] of the [[Sink]] returned by this method.
    */
-  def fromMaterializer[T, M](factory: BiFunction[Materializer, Attributes, Sink[T, M]]): Sink[T, CompletionStage[M]] =
+  def fromMaterializer[T, M](
+      factory: function.Function2[Materializer, Attributes, Sink[T, M]]): Sink[T, CompletionStage[M]] =
     scaladsl.Sink.fromMaterializer((mat, attr) => factory(mat, attr).asScala).mapMaterializedValue(_.asJava).asJava
 
   /**
@@ -403,7 +438,7 @@ object Sink {
       rest: java.util.List[Sink[U, _]],
       fanOutStrategy: function.Function[java.lang.Integer, Graph[UniformFanOutShape[T, U], NotUsed]])
       : Sink[T, NotUsed] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     val seq = if (rest ne null) rest.asScala.map(_.asScala).toSeq else immutable.Seq()
     new Sink(scaladsl.Sink.combine(output1.asScala, output2.asScala, seq: _*)(num => fanOutStrategy.apply(num)))
   }
@@ -435,7 +470,7 @@ object Sink {
       case other                                  => other
     }
     else immutable.Seq()
-    import org.apache.pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     new Sink(scaladsl.Sink.combine(seq)(size => fanOutStrategy(size)).mapMaterializedValue(_.asJava))
   }
 
@@ -512,7 +547,7 @@ object Sink {
    */
   def lazyCompletionStageSink[T, M](create: Creator[CompletionStage[Sink[T, M]]]): Sink[T, CompletionStage[M]] =
     new Sink(scaladsl.Sink.lazyFutureSink { () =>
-      create.create().asScala.map(_.asScala)(ExecutionContexts.parasitic)
+      create.create().asScala.map(_.asScala)(ExecutionContext.parasitic)
     }).mapMaterializedValue(_.asJava)
 }
 

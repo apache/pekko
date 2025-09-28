@@ -13,6 +13,8 @@
 
 package org.apache.pekko.cluster.sharding.typed
 
+import java.util.{ Map => JMap }
+
 import org.apache.pekko
 import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.Extension
@@ -21,7 +23,6 @@ import pekko.annotation.DoNotInherit
 import pekko.cluster.sharding.typed.internal.ReplicatedShardingExtensionImpl
 import pekko.cluster.sharding.typed.scaladsl.EntityRef
 import pekko.persistence.typed.ReplicaId
-import java.util.{ Map => JMap }
 
 /**
  * Extension for running Replicated Event Sourcing in sharding by starting one separate instance of sharding per replica.

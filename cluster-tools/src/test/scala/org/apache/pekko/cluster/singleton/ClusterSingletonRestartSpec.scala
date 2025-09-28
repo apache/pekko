@@ -15,8 +15,6 @@ package org.apache.pekko.cluster.singleton
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.actor.PoisonPill
@@ -25,6 +23,8 @@ import pekko.cluster.MemberStatus
 import pekko.testkit.PekkoSpec
 import pekko.testkit.TestActors
 import pekko.testkit.TestProbe
+
+import com.typesafe.config.ConfigFactory
 
 class ClusterSingletonRestartSpec
     extends PekkoSpec("""
@@ -48,8 +48,6 @@ class ClusterSingletonRestartSpec
   val sys2 = ActorSystem(system.name, system.settings.config)
   var sys3: ActorSystem = null
 
-  import pekko.util.ccompat._
-  @ccompatUsedUntil213
   def join(from: ActorSystem, to: ActorSystem): Unit = {
     from.actorOf(
       ClusterSingletonManager.props(

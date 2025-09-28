@@ -18,10 +18,10 @@ import java.nio.ByteBuffer
 import java.util.concurrent.TimeUnit
 
 import scala.concurrent.duration._
+import scala.jdk.CollectionConverters._
 import scala.util.Try
 import scala.util.control.NonFatal
 
-import com.typesafe.config.Config
 import org.lmdbjava.Dbi
 import org.lmdbjava.DbiFlags
 import org.lmdbjava.Env
@@ -43,7 +43,8 @@ import pekko.serialization.SerializationExtension
 import pekko.serialization.SerializerWithStringManifest
 import pekko.util.ByteString
 import pekko.util.OptionVal
-import pekko.util.ccompat.JavaConverters._
+
+import com.typesafe.config.Config
 
 /**
  * An actor implementing the durable store for the Distributed Data `Replicator`
@@ -312,7 +313,7 @@ final class LmdbDurableStore(config: Config) extends Actor with ActorLogging {
             TimeUnit.NANOSECONDS.toMillis(System.nanoTime - t0))
       } catch {
         case NonFatal(e) =>
-          import pekko.util.ccompat.JavaConverters._
+          import scala.jdk.CollectionConverters._
           log.error(e, "failed to store [{}]", pending.keySet.asScala.mkString(","))
           tx.abort()
       } finally {

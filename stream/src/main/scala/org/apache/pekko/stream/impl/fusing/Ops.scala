@@ -24,6 +24,7 @@ import scala.concurrent.duration.{ FiniteDuration, _ }
 import scala.util.{ Failure, Success, Try }
 import scala.util.control.{ NoStackTrace, NonFatal }
 import scala.util.control.Exception.Catcher
+
 import org.apache.pekko
 import pekko.actor.{ ActorRef, Terminated }
 import pekko.annotation.InternalApi
@@ -52,8 +53,7 @@ import pekko.stream.scaladsl.{
   StatefulMapConcatAccumulatorFactory
 }
 import pekko.stream.stage._
-import pekko.util.{ unused, ConstantFun, OptionVal }
-import pekko.util.ccompat._
+import pekko.util.{ ConstantFun, OptionVal }
 
 /**
  * INTERNAL API
@@ -469,7 +469,7 @@ private[stream] object Collect {
 @InternalApi private[pekko] final case class ScanAsync[In, Out](zero: Out, f: (Out, In) => Future[Out])
     extends GraphStage[FlowShape[In, Out]] {
 
-  import pekko.dispatch.ExecutionContexts
+  import scala.concurrent.ExecutionContext
 
   val in = Inlet[In]("ScanAsync.in")
   val out = Outlet[Out]("ScanAsync.out")
@@ -561,7 +561,7 @@ private[stream] object Collect {
 
           eventualCurrent.value match {
             case Some(result) => futureCB(result)
-            case _            => eventualCurrent.onComplete(futureCB)(ExecutionContexts.parasitic)
+            case _            => eventualCurrent.onComplete(futureCB)(ExecutionContext.parasitic)
           }
         } catch {
           case NonFatal(ex) =>
@@ -661,7 +661,7 @@ private[stream] object Collect {
 @InternalApi private[pekko] final class FoldAsync[In, Out](zero: Out, f: (Out, In) => Future[Out])
     extends GraphStage[FlowShape[In, Out]] {
 
-  import pekko.dispatch.ExecutionContexts
+  import scala.concurrent.ExecutionContext
 
   val in = Inlet[In]("FoldAsync.in")
   val out = Outlet[Out]("FoldAsync.out")
@@ -678,7 +678,7 @@ private[stream] object Collect {
       private var aggregator: Out = zero
       private var aggregating: Future[Out] = Future.successful(aggregator)
 
-      private def onRestart(@unused t: Throwable): Unit = {
+      private def onRestart(@nowarn("msg=never used") t: Throwable): Unit = {
         aggregator = zero
       }
 
@@ -741,7 +741,7 @@ private[stream] object Collect {
       private def handleAggregatingValue(): Unit = {
         aggregating.value match {
           case Some(result) => futureCB(result) // already completed
-          case _            => aggregating.onComplete(futureCB)(ExecutionContexts.parasitic)
+          case _            => aggregating.onComplete(futureCB)(ExecutionContext.parasitic)
         }
       }
 
@@ -1322,7 +1322,7 @@ private[stream] object Collect {
           buffer.enqueue(holder)
 
           future.value match {
-            case None    => future.onComplete(holder)(pekko.dispatch.ExecutionContexts.parasitic)
+            case None    => future.onComplete(holder)(scala.concurrent.ExecutionContext.parasitic)
             case Some(v) =>
               // #20217 the future is already here, optimization: avoid scheduling it on the dispatcher and
               // run the logic directly on this thread
@@ -1439,7 +1439,7 @@ private[stream] object Collect {
           val future = f(grab(in))
           inFlight += 1
           future.value match {
-            case None    => future.onComplete(invokeFutureCB)(pekko.dispatch.ExecutionContexts.parasitic)
+            case None    => future.onComplete(invokeFutureCB)(scala.concurrent.ExecutionContext.parasitic)
             case Some(v) => futureCompleted(v)
           }
         } catch {
@@ -2325,7 +2325,6 @@ private[pekko] final class StatefulMap[S, In, Out](create: () => S, f: (S, In) =
  * INTERNAL API
  */
 @InternalApi
-@ccompatUsedUntil213
 private[pekko] final class StatefulMapConcat[In, Out](val factory: StatefulMapConcatAccumulatorFactory[In, Out])
     extends GraphStage[FlowShape[In, Out]] {
   val in = Inlet[In]("StatefulMapConcat.in")

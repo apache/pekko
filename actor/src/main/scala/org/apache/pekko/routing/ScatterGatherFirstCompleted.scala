@@ -16,24 +16,24 @@ package org.apache.pekko.routing
 import java.util.concurrent.TimeoutException
 
 import scala.collection.immutable
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.concurrent.duration.FiniteDuration
-
-import com.typesafe.config.Config
+import scala.jdk.DurationConverters._
 
 import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.actor.ActorSystem
 import pekko.actor.SupervisorStrategy
 import pekko.dispatch.Dispatchers
-import pekko.dispatch.ExecutionContexts
 import pekko.japi.Util.immutableSeq
 import pekko.pattern.ask
 import pekko.pattern.pipe
 import pekko.util.Helpers.ConfigOps
-import pekko.util.JavaDurationConverters._
 import pekko.util.Timeout
+
+import com.typesafe.config.Config
 
 /**
  * Broadcasts the message to all routees, and replies with the first response.
@@ -57,7 +57,7 @@ private[pekko] final case class ScatterGatherFirstCompletedRoutees(
     extends Routee {
 
   override def send(message: Any, sender: ActorRef): Unit = {
-    implicit val ec = ExecutionContexts.parasitic
+    implicit val ec = ExecutionContext.parasitic
     if (routees.isEmpty) {
       val reply = Future.failed(new TimeoutException("Timeout due to no routees"))
       reply.pipeTo(sender)
@@ -142,7 +142,7 @@ final case class ScatterGatherFirstCompletedPool(
    * @param within expecting at least one reply within this duration, otherwise
    *   it will reply with [[pekko.pattern.AskTimeoutException]] in a [[pekko.actor.Status.Failure]]
    */
-  def this(nr: Int, within: java.time.Duration) = this(nr, within.asScala)
+  def this(nr: Int, within: java.time.Duration) = this(nr, within.toScala)
 
   override def createRouter(system: ActorSystem): Router = new Router(ScatterGatherFirstCompletedRoutingLogic(within))
 
@@ -218,7 +218,7 @@ final case class ScatterGatherFirstCompletedGroup(
    *   it will reply with [[pekko.pattern.AskTimeoutException]] in a [[pekko.actor.Status.Failure]]
    */
   def this(routeePaths: java.lang.Iterable[String], within: java.time.Duration) =
-    this(immutableSeq(routeePaths), within.asScala)
+    this(immutableSeq(routeePaths), within.toScala)
 
   override def paths(system: ActorSystem): immutable.Iterable[String] = this.paths
 

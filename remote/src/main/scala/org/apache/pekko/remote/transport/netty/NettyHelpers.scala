@@ -20,7 +20,6 @@ import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.PekkoException
-import pekko.util.unused
 
 import io.netty.buffer.ByteBuf
 import io.netty.channel.{ ChannelHandlerContext, ChannelInboundHandlerAdapter }
@@ -30,15 +29,17 @@ import io.netty.channel.{ ChannelHandlerContext, ChannelInboundHandlerAdapter }
  */
 private[netty] trait NettyHelpers {
 
-  protected def onConnect(@unused ctx: ChannelHandlerContext): Unit = ()
+  protected def onConnect(@nowarn("msg=never used") ctx: ChannelHandlerContext): Unit = ()
 
-  protected def onDisconnect(@unused ctx: ChannelHandlerContext): Unit = ()
+  protected def onDisconnect(@nowarn("msg=never used") ctx: ChannelHandlerContext): Unit = ()
 
-  protected def onOpen(@unused ctx: ChannelHandlerContext): Unit = ()
+  protected def onOpen(@nowarn("msg=never used") ctx: ChannelHandlerContext): Unit = ()
 
-  protected def onMessage(@unused ctx: ChannelHandlerContext, @unused msg: ByteBuf): Unit = ()
+  protected def onMessage(@nowarn("msg=never used") ctx: ChannelHandlerContext, @nowarn("msg=never used") msg: ByteBuf)
+      : Unit = ()
 
-  protected def onException(@unused ctx: ChannelHandlerContext, @unused e: Throwable): Unit = ()
+  protected def onException(@nowarn("msg=never used") ctx: ChannelHandlerContext,
+      @nowarn("msg=never used") e: Throwable): Unit = ()
 
   final protected def transformException(ctx: ChannelHandlerContext, ex: Throwable): Unit = {
     val cause = if (ex ne null) ex else new PekkoException("Unknown cause")

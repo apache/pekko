@@ -22,9 +22,7 @@ import pekko.actor.Cancellable
 import pekko.actor.DeadLetterSuppression
 import pekko.annotation.InternalApi
 import pekko.persistence.serialization.Message
-import pekko.util.ccompat._
 
-@ccompatUsedUntil213
 object AtLeastOnceDelivery {
 
   /**
@@ -43,7 +41,7 @@ object AtLeastOnceDelivery {
      * Java API
      */
     def getUnconfirmedDeliveries: java.util.List[UnconfirmedDelivery] = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       unconfirmedDeliveries.asJava
     }
 
@@ -59,7 +57,7 @@ object AtLeastOnceDelivery {
      * Java API
      */
     def getUnconfirmedDeliveries: java.util.List[UnconfirmedDelivery] = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       unconfirmedDeliveries.asJava
     }
   }

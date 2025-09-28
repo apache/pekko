@@ -17,6 +17,7 @@ import java.net.URLEncoder
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeoutException
 
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.collection.immutable.{ HashMap, Seq }
 import scala.concurrent.{ Await, Future, Promise }
@@ -24,13 +25,9 @@ import scala.concurrent.duration._
 import scala.util.{ Failure, Success }
 import scala.util.control.NonFatal
 
-import scala.annotation.nowarn
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.Done
 import pekko.actor._
-import pekko.actor.ActorInitializationException
 import pekko.actor.SupervisorStrategy._
 import pekko.annotation.InternalStableApi
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
@@ -44,7 +41,8 @@ import pekko.remote.transport.PekkoPduCodec.Message
 import pekko.remote.transport.Transport.{ ActorAssociationEventListener, AssociationEventListener, InboundAssociation }
 import pekko.util.ByteString.UTF_8
 import pekko.util.OptionVal
-import pekko.util.ccompat._
+
+import com.typesafe.config.Config
 
 /**
  * INTERNAL API
@@ -145,7 +143,6 @@ private[remote] object Remoting {
  * INTERNAL API
  */
 @nowarn("msg=deprecated")
-@ccompatUsedUntil213
 private[remote] class Remoting(_system: ExtendedActorSystem, _provider: RemoteActorRefProvider)
     extends RemoteTransport(_system, _provider) {
 
@@ -680,7 +677,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
     case ManagementCommand(cmd) =>
       val allStatuses: immutable.Seq[Future[Boolean]] =
         transportMapping.values.iterator.map(transport => transport.managementCommand(cmd)).to(immutable.IndexedSeq)
-      pekko.compat.Future.fold(allStatuses)(true)(_ && _).map(ManagementCommandAck.apply).pipeTo(sender())
+      Future.foldLeft(allStatuses)(true)(_ && _).map(ManagementCommandAck.apply).pipeTo(sender())
 
     case Quarantine(address, uidToQuarantineOption) =>
       // Stop writers

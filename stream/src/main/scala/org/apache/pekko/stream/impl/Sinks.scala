@@ -17,6 +17,7 @@ import java.util.function.BinaryOperator
 
 import scala.collection.immutable
 import scala.collection.mutable
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.util.Failure
@@ -28,7 +29,6 @@ import org.apache.pekko
 import pekko.NotUsed
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
-import pekko.dispatch.ExecutionContexts
 import pekko.event.Logging
 import pekko.stream._
 import pekko.stream.ActorAttributes.StreamSubscriptionTimeout
@@ -40,7 +40,6 @@ import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.StreamLayout.AtomicModule
 import pekko.stream.scaladsl.{ Keep, Sink, SinkQueueWithCancel, Source }
 import pekko.stream.stage._
-import pekko.util.ccompat._
 
 import org.reactivestreams.Publisher
 import org.reactivestreams.Subscriber
@@ -245,7 +244,8 @@ import org.reactivestreams.Subscriber
 /**
  * INTERNAL API
  */
-@InternalApi private[pekko] final class SeqStage[T, That](implicit cbf: Factory[T, That with immutable.Iterable[_]])
+@InternalApi private[pekko] final class SeqStage[T, That](
+    implicit cbf: scala.collection.Factory[T, That with immutable.Iterable[_]])
     extends GraphStageWithMaterializedValue[SinkShape[T], Future[That]] {
   val in = Inlet[T]("seq.in")
 
@@ -255,6 +255,7 @@ import org.reactivestreams.Subscriber
 
   override protected def initialAttributes: Attributes = DefaultAttributes.seqSink
 
+  @scala.annotation.nowarn("msg=inferred structural type")
   override def createLogicAndMaterializedValue(inheritedAttributes: Attributes) = {
     val p: Promise[That] = Promise()
     val logic = new GraphStageLogic(shape) with InHandler {
@@ -312,6 +313,7 @@ import org.reactivestreams.Subscriber
 
   override def toString: String = "QueueSink"
 
+  @scala.annotation.nowarn("msg=inferred structural type")
   override def createLogicAndMaterializedValue(inheritedAttributes: Attributes) = {
     val stageLogic = new GraphStageLogic(shape) with InHandler with SinkQueueWithCancel[T] {
 
@@ -385,7 +387,7 @@ import org.reactivestreams.Subscriber
           .foreach {
             case NonFatal(e) => p.tryFailure(e)
             case _           => ()
-          }(pekko.dispatch.ExecutionContexts.parasitic)
+          }(scala.concurrent.ExecutionContext.parasitic)
         p.future
       }
       override def cancel(): Unit = {
@@ -561,7 +563,7 @@ import org.reactivestreams.Subscriber
               failStage(e)
           }
         try {
-          sinkFactory(element).onComplete(cb.invoke)(ExecutionContexts.parasitic)
+          sinkFactory(element).onComplete(cb.invoke)(ExecutionContext.parasitic)
         } catch {
           case NonFatal(e) =>
             promise.failure(e)

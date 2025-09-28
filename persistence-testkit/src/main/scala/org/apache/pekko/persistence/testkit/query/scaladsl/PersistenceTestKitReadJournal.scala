@@ -12,10 +12,15 @@
  */
 
 package org.apache.pekko.persistence.testkit.query.scaladsl
+import scala.annotation.nowarn
+import scala.collection.immutable
+
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.actor.ExtendedActorSystem
+import pekko.persistence.Persistence
 import pekko.persistence.journal.Tagged
+import pekko.persistence.query.{ EventEnvelope, Sequence }
 import pekko.persistence.query.NoOffset
 import pekko.persistence.query.Offset
 import pekko.persistence.query.scaladsl.{
@@ -25,30 +30,28 @@ import pekko.persistence.query.scaladsl.{
   PagedPersistenceIdsQuery,
   ReadJournal
 }
-import pekko.persistence.query.{ EventEnvelope, Sequence }
-import pekko.persistence.testkit.EventStorage
-import pekko.persistence.testkit.internal.InMemStorageExtension
-import pekko.persistence.testkit.query.internal.EventsByPersistenceIdStage
-import pekko.stream.scaladsl.Source
-import pekko.util.unused
-import com.typesafe.config.Config
-import org.slf4j.LoggerFactory
-import pekko.persistence.Persistence
+import pekko.persistence.query.scaladsl.EventsByTagQuery
 import pekko.persistence.query.typed
 import pekko.persistence.query.typed.scaladsl.CurrentEventsBySliceQuery
 import pekko.persistence.query.typed.scaladsl.EventsBySliceQuery
-import pekko.persistence.typed.PersistenceId
-import pekko.persistence.query.scaladsl.EventsByTagQuery
-import pekko.persistence.testkit.query.internal.EventsByTagStage
+import pekko.persistence.testkit.EventStorage
+import pekko.persistence.testkit.internal.InMemStorageExtension
+import pekko.persistence.testkit.query.internal.EventsByPersistenceIdStage
 import pekko.persistence.testkit.query.internal.EventsBySliceStage
+import pekko.persistence.testkit.query.internal.EventsByTagStage
+import pekko.persistence.typed.PersistenceId
+import pekko.stream.scaladsl.Source
 
-import scala.collection.immutable
+import org.slf4j.LoggerFactory
+
+import com.typesafe.config.Config
 
 object PersistenceTestKitReadJournal {
   val Identifier = "pekko.persistence.testkit.query"
 }
 
-final class PersistenceTestKitReadJournal(system: ExtendedActorSystem, @unused config: Config, configPath: String)
+final class PersistenceTestKitReadJournal(system: ExtendedActorSystem, @nowarn("msg=never used") config: Config,
+    configPath: String)
     extends ReadJournal
     with EventsByPersistenceIdQuery
     with CurrentEventsByPersistenceIdQuery

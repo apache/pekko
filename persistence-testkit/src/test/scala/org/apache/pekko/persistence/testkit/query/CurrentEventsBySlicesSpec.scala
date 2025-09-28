@@ -13,8 +13,6 @@
 
 package org.apache.pekko.persistence.testkit.query
 
-import org.scalatest.wordspec.AnyWordSpecLike
-
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
@@ -27,6 +25,8 @@ import pekko.persistence.testkit.query.EventsByPersistenceIdSpec.Command
 import pekko.persistence.testkit.query.EventsByPersistenceIdSpec.testBehaviour
 import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
 import pekko.stream.scaladsl.Sink
+
+import org.scalatest.wordspec.AnyWordSpecLike
 
 class CurrentEventsBySlicesSpec
     extends ScalaTestWithActorTestKit(EventsByPersistenceIdSpec.config)

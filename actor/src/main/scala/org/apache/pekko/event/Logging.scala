@@ -15,14 +15,14 @@ package org.apache.pekko.event
 
 import java.util.concurrent.TimeoutException
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.locks.ReentrantLock
 
 import scala.annotation.implicitNotFound
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent.Await
 import scala.language.existentials
 import scala.util.control.{ NoStackTrace, NonFatal }
-
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.{ ConfigurationException, PekkoException }
@@ -31,9 +31,8 @@ import pekko.actor.ActorSystem.Settings
 import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.dispatch.RequiresMessageQueue
 import pekko.event.Logging._
-import pekko.util.{ Helpers, ReentrantGuard }
+import pekko.util.Helpers
 import pekko.util.Timeout
-import pekko.util.unused
 
 /**
  * This trait brings log level handling to the EventStream: it reads the log
@@ -50,7 +49,7 @@ trait LoggingBus extends ActorEventBus {
 
   import Logging._
 
-  private val guard = new ReentrantGuard
+  private val guard = new ReentrantLock()
   private var loggers = Seq.empty[ActorRef]
   @volatile private var _logLevel: LogLevel = _
 
@@ -69,21 +68,26 @@ trait LoggingBus extends ActorEventBus {
    * will not participate in the automatic management of log level
    * subscriptions!
    */
-  def setLogLevel(level: LogLevel): Unit = guard.withGuard {
-    val logLvl = _logLevel // saves (2 * AllLogLevel.size - 1) volatile reads (because of the loops below)
-    for {
-      l <- AllLogLevels
-      // subscribe if previously ignored and now requested
-      if l > logLvl && l <= level
-      log <- loggers
-    } subscribe(log, classFor(l))
-    for {
-      l <- AllLogLevels
-      // unsubscribe if previously registered and now ignored
-      if l <= logLvl && l > level
-      log <- loggers
-    } unsubscribe(log, classFor(l))
-    _logLevel = level
+  def setLogLevel(level: LogLevel): Unit = {
+    guard.lock()
+    try {
+      val logLvl = _logLevel // saves (2 * AllLogLevel.size - 1) volatile reads (because of the loops below)
+      for {
+        l <- AllLogLevels
+        // subscribe if previously ignored and now requested
+        if l > logLvl && l <= level
+        log <- loggers
+      } subscribe(log, classFor(l))
+      for {
+        l <- AllLogLevels
+        // unsubscribe if previously registered and now ignored
+        if l <= logLvl && l > level
+        log <- loggers
+      } unsubscribe(log, classFor(l))
+      _logLevel = level
+    } finally {
+      guard.unlock()
+    }
   }
 
   private def setUpStdoutLogger(config: Settings): Unit = {
@@ -98,9 +102,12 @@ trait LoggingBus extends ActorEventBus {
       ErrorLevel
     }
     AllLogLevels.filter(level >= _).foreach(l => subscribe(StandardOutLogger, classFor(l)))
-    guard.withGuard {
+    guard.lock()
+    try {
       loggers :+= StandardOutLogger
       _logLevel = level
+    } finally {
+      guard.unlock()
     }
   }
 
@@ -147,9 +154,12 @@ trait LoggingBus extends ActorEventBus {
             }
             .get
         }
-      guard.withGuard {
+      guard.lock()
+      try {
         loggers = myloggers
         _logLevel = level
+      } finally {
+        guard.unlock()
       }
       try {
         if (system.settings.DebugUnhandledMessage)
@@ -280,7 +290,7 @@ trait LoggingBus extends ActorEventBus {
   "Cannot find LogSource for ${T} please see ScalaDoc for LogSource for how to obtain or construct one.") trait LogSource[
     -T] {
   def genString(t: T): String
-  def genString(t: T, @unused system: ActorSystem): String = genString(t)
+  def genString(t: T, @nowarn("msg=never used") system: ActorSystem): String = genString(t)
   def getClazz(t: T): Class[_] = t.getClass
 }
 
@@ -476,7 +486,7 @@ object Logging {
   /**
    * INTERNAL API
    */
-  private[pekko] class LogExt(@unused system: ExtendedActorSystem) extends Extension {
+  private[pekko] class LogExt(@nowarn("msg=never used") system: ExtendedActorSystem) extends Extension {
     private val loggerId = new AtomicInteger
     def id() = loggerId.incrementAndGet()
   }
@@ -764,7 +774,7 @@ object Logging {
      * Java API: Retrieve the contents of the MDC.
      */
     def getMDC: java.util.Map[String, Any] = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       mdc.asJava
     }
   }
@@ -1211,7 +1221,8 @@ trait LoggingAdapter {
   protected def notifyError(message: String): Unit
   protected def notifyError(cause: Throwable, message: String): Unit
   protected def notifyWarning(message: String): Unit
-  protected def notifyWarning(@unused cause: Throwable, message: String): Unit = notifyWarning(message)
+  protected def notifyWarning(@nowarn("msg=never used") cause: Throwable, message: String): Unit =
+    notifyWarning(message)
   protected def notifyInfo(message: String): Unit
   protected def notifyDebug(message: String): Unit
 
@@ -1625,9 +1636,9 @@ trait DiagnosticLoggingAdapter extends LoggingAdapter {
 
   import java.{ util => ju }
 
-  import Logging._
+  import scala.jdk.CollectionConverters._
 
-  import pekko.util.ccompat.JavaConverters._
+  import Logging._
 
   private var _mdc = emptyMDC
 
@@ -1692,7 +1703,7 @@ class LogMarker(val name: String, val properties: Map[String, Any]) {
 
   /** Java API */
   def getProperties: java.util.Map[String, Object] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     properties.map { case (k, v) => (k, v.asInstanceOf[AnyRef]) }.asJava
   }
 
@@ -1713,7 +1724,7 @@ object LogMarker {
 
   /** Java API */
   def create(name: String, properties: java.util.Map[String, Any]): LogMarker = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     apply(name, properties.asScala.toMap)
   }
 

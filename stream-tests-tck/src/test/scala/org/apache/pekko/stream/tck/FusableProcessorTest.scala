@@ -13,11 +13,11 @@
 
 package org.apache.pekko.stream.tck
 
-import org.reactivestreams.Processor
-
 import org.apache.pekko
 import pekko.stream._
 import pekko.stream.scaladsl.Flow
+
+import org.reactivestreams.Processor
 
 class FusableProcessorTest extends PekkoIdentityProcessorVerification[Int] {
 

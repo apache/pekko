@@ -13,12 +13,12 @@
 
 package org.apache.pekko.cluster.ddata.typed.javadsl
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.scaladsl.adapter._
 import pekko.cluster.{ ddata => dd }
+
+import com.typesafe.config.Config
 
 object ReplicatorSettings {
 

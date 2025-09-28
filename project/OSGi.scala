@@ -51,7 +51,6 @@ object OSGi {
     // pekko-actor packages are not imported, as contained in the CP
     OsgiKeys.importPackage := (osgiOptionalImports.map(optionalResolution)) ++ Seq(
       "!sun.misc",
-      scalaJava8CompatImport(),
       scalaVersion(scalaImport).value,
       configImport(),
       "*"),
@@ -77,7 +76,6 @@ object OSGi {
   lazy val protobufV3 = osgiSettings ++ Seq(
     OsgiKeys.importPackage := Seq(
       "!sun.misc",
-      scalaJava8CompatImport(),
       scalaVersion(scalaImport).value,
       configImport(),
       "*"),
@@ -96,13 +94,8 @@ object OSGi {
 
   lazy val stream =
     exports(
-      packages = Seq("org.apache.pekko.stream.*", "com.typesafe.sslconfig.pekko.*"),
-      imports = Seq(
-        scalaJava8CompatImport(),
-        scalaParsingCombinatorImport(),
-        sslConfigCoreImport("com.typesafe.sslconfig.ssl.*"),
-        sslConfigCoreImport("com.typesafe.sslconfig.util.*"),
-        "!com.typesafe.sslconfig.pekko.*"))
+      packages = Seq("org.apache.pekko.stream.*"),
+      imports = Seq(scalaParsingCombinatorImport()))
 
   lazy val streamTestkit = exports(Seq("org.apache.pekko.stream.testkit.*"))
 
@@ -121,6 +114,8 @@ object OSGi {
   lazy val discovery = exports(Seq("org.apache.pekko.discovery.*"))
 
   lazy val coordination = exports(Seq("org.apache.pekko.coordination.*"))
+
+  lazy val pki = exports(Seq("org.apache.pekko.pki.*"))
 
   lazy val osgiOptionalImports = Seq(
     // needed because testkit is normally not used in the application bundle,
@@ -149,16 +144,8 @@ object OSGi {
     val ScalaVersion(epoch, major) = version
     versionedImport(packageName, s"$epoch.$major", s"$epoch.${major.toInt + 1}")
   }
-  def scalaJava8CompatImport(packageName: String = "scala.compat.java8.*") =
-    versionedImport(packageName, "1.0.2", "1.0.2")
   def scalaParsingCombinatorImport(packageName: String = "scala.util.parsing.combinator.*") =
     versionedImport(packageName, "1.1.0", "1.2.0")
-  def sslConfigCoreImport(packageName: String = "com.typesafe.sslconfig") =
-    versionedImport(packageName, "0.4.0", "1.0.0")
-  def sslConfigCoreSslImport(packageName: String = "com.typesafe.sslconfig.ssl.*") =
-    versionedImport(packageName, "0.4.0", "1.0.0")
-  def sslConfigCoreUtilImport(packageName: String = "com.typesafe.sslconfig.util.*") =
-    versionedImport(packageName, "0.4.0", "1.0.0")
   def kamonImport(packageName: String = "kamon.sigar.*") =
     optionalResolution(versionedImport(packageName, "1.6.5", "1.6.6"))
   def sigarImport(packageName: String = "org.hyperic.*") =

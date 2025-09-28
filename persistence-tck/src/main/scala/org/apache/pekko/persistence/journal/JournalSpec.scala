@@ -13,9 +13,8 @@
 
 package org.apache.pekko.persistence.journal
 
+import scala.annotation.nowarn
 import scala.concurrent.duration._
-
-import com.typesafe.config._
 
 import org.apache.pekko
 import pekko.actor._
@@ -23,7 +22,8 @@ import pekko.persistence._
 import pekko.persistence.JournalProtocol._
 import pekko.persistence.scalatest.{ MayVerb, OptionalTests }
 import pekko.testkit._
-import pekko.util.unused
+
+import com.typesafe.config._
 
 object JournalSpec {
   val config: Config = ConfigFactory.parseString(s"""
@@ -79,7 +79,7 @@ abstract class JournalSpec(config: Config)
    * test case. `pid` is the `persistenceId` that will be used in the test.
    * This method may be needed to clean pre-existing events from the log.
    */
-  def preparePersistenceId(@unused pid: String): Unit = ()
+  def preparePersistenceId(@nowarn("msg=never used") pid: String): Unit = ()
 
   /**
    * Implementation may override and return false if it does not

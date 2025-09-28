@@ -21,8 +21,6 @@ import scala.collection.immutable
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
-import com.typesafe.config.{ Config, ConfigFactory }
-
 import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.InternalApi
@@ -33,6 +31,8 @@ import pekko.persistence.journal.{ EventAdapters, IdentityEventAdapters }
 import pekko.util.Collections.EmptyImmutableSeq
 import pekko.util.Helpers.ConfigOps
 import pekko.util.Reflect
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 /**
  * Persistence configuration.
@@ -495,7 +495,7 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
    * return ranges (0 to 255), (256 to 511), (512 to 767) and (768 to 1023).
    */
   final def getSliceRanges(numberOfRanges: Int): java.util.List[Pair[Integer, Integer]] = {
-    import org.apache.pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     sliceRanges(numberOfRanges).map(range => Pair(Integer.valueOf(range.min), Integer.valueOf(range.max))).asJava
   }
 

@@ -13,11 +13,12 @@
 
 package org.apache.pekko.cluster.sharding.typed
 
+import scala.concurrent.duration._
+
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.TestProbe
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.Behavior
-import pekko.util.ccompat._
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.cluster.MemberStatus
 import pekko.cluster.MemberStatus.Removed
@@ -31,9 +32,8 @@ import pekko.cluster.typed.PrepareForFullClusterShutdown
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.testkit.MultiNodeSpec
 import pekko.serialization.jackson.CborSerializable
-import com.typesafe.config.ConfigFactory
 
-import scala.concurrent.duration._
+import com.typesafe.config.ConfigFactory
 
 object ClusterShardingPreparingForShutdownSpec extends MultiNodeConfig {
   val first = role("first")
@@ -71,7 +71,6 @@ class ClusterShardingPreparingForShutdownMultiJvmNode1 extends ClusterShardingPr
 class ClusterShardingPreparingForShutdownMultiJvmNode2 extends ClusterShardingPreparingForShutdownSpec
 class ClusterShardingPreparingForShutdownMultiJvmNode3 extends ClusterShardingPreparingForShutdownSpec
 
-@ccompatUsedUntil213
 class ClusterShardingPreparingForShutdownSpec
     extends MultiNodeSpec(ClusterShardingPreparingForShutdownSpec)
     with MultiNodeTypedClusterSpec {

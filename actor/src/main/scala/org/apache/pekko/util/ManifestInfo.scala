@@ -17,9 +17,8 @@ import java.io.IOException
 import java.util.jar.Attributes
 import java.util.jar.Manifest
 
-import scala.collection.immutable
-
 import scala.annotation.nowarn
+import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.actor.ActorSystem

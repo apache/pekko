@@ -13,9 +13,8 @@
 
 package org.apache.pekko.persistence.state
 
+import scala.annotation.nowarn
 import scala.reflect.ClassTag
-
-import com.typesafe.config.Config
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
@@ -29,7 +28,8 @@ import pekko.persistence.Persistence
 import pekko.persistence.PersistencePlugin
 import pekko.persistence.PluginProvider
 import pekko.persistence.state.scaladsl.DurableStateStore
-import pekko.util.unused
+
+import com.typesafe.config.Config
 
 /**
  * Persistence extension for queries.
@@ -96,7 +96,7 @@ class DurableStateStoreRegistry(system: ExtendedActorSystem)
    * configuration entry.
    */
   final def getDurableStateStoreFor[T <: javadsl.DurableStateStore[_]](
-      @unused clazz: Class[T], // FIXME generic Class could be problematic in Java
+      @nowarn("msg=never used") clazz: Class[T], // FIXME generic Class could be problematic in Java
       pluginId: String): T = {
     pluginFor(pluginIdOrDefault(pluginId), pluginConfig(pluginId)).javadslPlugin.asInstanceOf[T]
   }

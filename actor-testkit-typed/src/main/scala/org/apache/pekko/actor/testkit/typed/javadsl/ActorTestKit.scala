@@ -15,7 +15,7 @@ package org.apache.pekko.actor.testkit.typed.javadsl
 
 import java.time.Duration
 
-import com.typesafe.config.Config
+import scala.jdk.DurationConverters._
 
 import org.apache.pekko
 import pekko.actor.DeadLetter
@@ -29,8 +29,9 @@ import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.Behavior
 import pekko.actor.typed.Props
 import pekko.actor.typed.Scheduler
-import pekko.util.JavaDurationConverters._
 import pekko.util.Timeout
+
+import com.typesafe.config.Config
 
 object ActorTestKit {
 
@@ -123,7 +124,7 @@ object ActorTestKit {
    *                             no exception is thrown.
    */
   def shutdown(system: ActorSystem[_], duration: Duration, throwIfShutdownTimesOut: Boolean): Unit = {
-    TestKitUtils.shutdown(system, duration.asScala, throwIfShutdownTimesOut)
+    TestKitUtils.shutdown(system, duration.toScala, throwIfShutdownTimesOut)
   }
 
   /**
@@ -143,7 +144,7 @@ object ActorTestKit {
    */
   def shutdown(system: ActorSystem[_]): Unit = {
     val settings = TestKitSettings.create(system)
-    shutdown(system, settings.DefaultActorSystemShutdownTimeout.asJava, settings.ThrowOnShutdownTimeout)
+    shutdown(system, settings.DefaultActorSystemShutdownTimeout.toJava, settings.ThrowOnShutdownTimeout)
   }
 
   /**
@@ -222,7 +223,7 @@ final class ActorTestKit private[pekko] (delegate: pekko.actor.testkit.typed.sca
    * It can only be used for actors that were spawned by this `ActorTestKit`.
    * Other actors will not be stopped by this method.
    */
-  def stop[T](ref: ActorRef[T], max: Duration): Unit = delegate.stop(ref, max.asScala)
+  def stop[T](ref: ActorRef[T], max: Duration): Unit = delegate.stop(ref, max.toScala)
 
   /**
    * Shortcut for creating a new test probe for the testkit actor system

@@ -26,12 +26,13 @@ import scala.collection.mutable.Builder
 import org.apache.commons.codec.binary.Hex.encodeHex
 import org.scalacheck.{ Arbitrary, Gen }
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.scalacheck.Checkers
 
 import org.apache.pekko
 import pekko.util.ByteString.{ ByteString1, ByteString1C, ByteStrings }
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
 
@@ -665,6 +666,38 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       compact.indexOf('f') should ===(4)
       compact.indexOf('g') should ===(5)
 
+      val byteStringLong = ByteString1.fromString("abcdefghijklmnopqrstuvwxyz")
+      byteStringLong.indexOf('m') should ===(12)
+      byteStringLong.indexOf('z') should ===(25)
+      byteStringLong.indexOf('a') should ===(0)
+    }
+    "lastIndexOf" in {
+      ByteString.empty.indexOf(5) should ===(-1)
+      val byteString1 = ByteString1.fromString("abb")
+      byteString1.lastIndexOf('a') should ===(0)
+      byteString1.lastIndexOf('b') should ===(2)
+      byteString1.lastIndexOf('d') should ===(-1)
+
+      val byteStrings = ByteStrings(ByteString1.fromString("abb"), ByteString1.fromString("efg"))
+      byteStrings.lastIndexOf('a') should ===(0)
+      byteStrings.lastIndexOf('b') should ===(2)
+      byteStrings.lastIndexOf('d') should ===(-1)
+      byteStrings.lastIndexOf('e') should ===(3)
+      byteStrings.lastIndexOf('f') should ===(4)
+      byteStrings.lastIndexOf('g') should ===(5)
+
+      val compact = byteStrings.compact
+      compact.lastIndexOf('a') should ===(0)
+      compact.lastIndexOf('b') should ===(2)
+      compact.lastIndexOf('d') should ===(-1)
+      compact.lastIndexOf('e') should ===(3)
+      compact.lastIndexOf('f') should ===(4)
+      compact.lastIndexOf('g') should ===(5)
+
+      val byteStringLong = ByteString1.fromString("abcdefghijklmnopqrstuvwxyz")
+      byteStringLong.lastIndexOf('m') should ===(12)
+      byteStringLong.lastIndexOf('z') should ===(25)
+      byteStringLong.lastIndexOf('a') should ===(0)
     }
     "indexOf from offset" in {
       ByteString.empty.indexOf(5, -1) should ===(-1)
@@ -678,6 +711,16 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       byteString1.indexOf('a', -1) should ===(0)
       byteString1.indexOf('a', 0) should ===(0)
       byteString1.indexOf('a', 1) should ===(-1)
+
+      val array = Array[Byte]('x', 'y', 'z', 'a', 'b', 'c')
+      val byteString2 = ByteString1(array, 3, 3)
+      byteString2.indexOf('x', -1) should ===(-1)
+      byteString2.indexOf('x', 0) should ===(-1)
+      byteString2.indexOf('x', 1) should ===(-1)
+      byteString2.indexOf('x', 4) should ===(-1)
+      byteString2.indexOf('a', -1) should ===(0)
+      byteString2.indexOf('a', 0) should ===(0)
+      byteString2.indexOf('a', 1) should ===(-1)
 
       val byteStrings = ByteStrings(ByteString1.fromString("abc"), ByteString1.fromString("efg"))
       byteStrings.indexOf('c', -1) should ===(2)
@@ -716,6 +759,66 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       compact.indexOf('g', 4) should ===(5)
       compact.indexOf('g', 5) should ===(5)
       compact.indexOf('g', 6) should ===(-1)
+
+      val byteStringLong = ByteString1.fromString("abcdefghijklmnopqrstuvwxyz")
+      byteStringLong.indexOf('m', 2) should ===(12)
+      byteStringLong.indexOf('z', 2) should ===(25)
+      byteStringLong.indexOf('a', 2) should ===(-1)
+    }
+    "lastIndexOf from offset" in {
+      ByteString.empty.lastIndexOf(5, -1) should ===(-1)
+      ByteString.empty.lastIndexOf(5, 0) should ===(-1)
+      ByteString.empty.lastIndexOf(5, 1) should ===(-1)
+      val byteString1 = ByteString1.fromString("abb")
+      byteString1.lastIndexOf('d', -1) should ===(-1)
+      byteString1.lastIndexOf('d', 4) should ===(-1)
+      byteString1.lastIndexOf('d', 1) should ===(-1)
+      byteString1.lastIndexOf('d', 0) should ===(-1)
+      byteString1.lastIndexOf('a', -1) should ===(-1)
+      byteString1.lastIndexOf('a', 0) should ===(0)
+      byteString1.lastIndexOf('a', 1) should ===(0)
+      byteString1.lastIndexOf('b', 2) should ===(2)
+      byteString1.lastIndexOf('b', 1) should ===(1)
+      byteString1.lastIndexOf('b', 0) should ===(-1)
+
+      val array = Array[Byte]('x', 'y', 'z', 'a', 'b', 'b')
+      val byteString2 = ByteString1(array, 3, 3)
+      byteString2.lastIndexOf('x', -1) should ===(-1)
+      byteString2.lastIndexOf('x', 0) should ===(-1)
+      byteString2.lastIndexOf('x', 3) should ===(-1)
+      byteString2.lastIndexOf('x', 4) should ===(-1)
+      byteString2.lastIndexOf('a', -1) should ===(-1)
+      byteString2.lastIndexOf('a', 0) should ===(0)
+      byteString2.lastIndexOf('a', 1) should ===(0)
+      byteString2.lastIndexOf('b', 2) should ===(2)
+      byteString2.lastIndexOf('b', 1) should ===(1)
+      byteString2.lastIndexOf('b', 0) should ===(-1)
+
+      val byteStrings = ByteStrings(ByteString1.fromString("abb"), ByteString1.fromString("efg"))
+      byteStrings.lastIndexOf('e', 6) should ===(3)
+      byteStrings.lastIndexOf('e', 4) should ===(3)
+      byteStrings.lastIndexOf('e', 1) should ===(-1)
+      byteStrings.lastIndexOf('e', 0) should ===(-1)
+      byteStrings.lastIndexOf('e', -1) should ===(-1)
+
+      byteStrings.lastIndexOf('b', 6) should ===(2)
+      byteStrings.lastIndexOf('b', 4) should ===(2)
+      byteStrings.lastIndexOf('b', 1) should ===(1)
+      byteStrings.lastIndexOf('b', 0) should ===(-1)
+      byteStrings.lastIndexOf('b', -1) should ===(-1)
+
+      val compact = byteStrings.compact
+      compact.lastIndexOf('e', 6) should ===(3)
+      compact.lastIndexOf('e', 4) should ===(3)
+      compact.lastIndexOf('e', 1) should ===(-1)
+      compact.lastIndexOf('e', 0) should ===(-1)
+      compact.lastIndexOf('e', -1) should ===(-1)
+
+      compact.lastIndexOf('b', 6) should ===(2)
+      compact.lastIndexOf('b', 4) should ===(2)
+      compact.lastIndexOf('b', 1) should ===(1)
+      compact.lastIndexOf('b', 0) should ===(-1)
+      compact.lastIndexOf('b', -1) should ===(-1)
     }
     "indexOf (specialized)" in {
       ByteString.empty.indexOf(5.toByte) should ===(-1)
@@ -724,6 +827,14 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       byteString1.indexOf('b'.toByte) should ===(1)
       byteString1.indexOf('c'.toByte) should ===(2)
       byteString1.indexOf('d'.toByte) should ===(-1)
+
+      val array = Array[Byte]('x', 'y', 'z', 'a', 'b', 'c')
+      val byteString2 = ByteString1(array, 3, 2)
+      byteString2.indexOf('x'.toByte) should ===(-1)
+      byteString2.indexOf('a'.toByte) should ===(0)
+      byteString2.indexOf('b'.toByte) should ===(1)
+      byteString2.indexOf('c'.toByte) should ===(-1)
+      byteString2.indexOf('d'.toByte) should ===(-1)
 
       val byteStrings = ByteStrings(ByteString1.fromString("abc"), ByteString1.fromString("efg"))
       byteStrings.indexOf('a'.toByte) should ===(0)
@@ -754,6 +865,16 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       byteString1.indexOf('a'.toByte, -1) should ===(0)
       byteString1.indexOf('a'.toByte, 0) should ===(0)
       byteString1.indexOf('a'.toByte, 1) should ===(-1)
+
+      val array = Array[Byte]('x', 'y', 'z', 'a', 'b', 'c')
+      val byteString2 = ByteString1(array, 3, 2)
+      byteString2.indexOf('x'.toByte, -1) should ===(-1)
+      byteString2.indexOf('x'.toByte, 0) should ===(-1)
+      byteString2.indexOf('x'.toByte, 1) should ===(-1)
+      byteString2.indexOf('x'.toByte, 4) should ===(-1)
+      byteString2.indexOf('a'.toByte, -1) should ===(0)
+      byteString2.indexOf('a'.toByte, 0) should ===(0)
+      byteString2.indexOf('a'.toByte, 1) should ===(-1)
 
       val byteStrings = ByteStrings(ByteString1.fromString("abc"), ByteString1.fromString("efg"))
       byteStrings.indexOf('c'.toByte, -1) should ===(2)
@@ -792,6 +913,66 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       compact.indexOf('g'.toByte, 4) should ===(5)
       compact.indexOf('g'.toByte, 5) should ===(5)
       compact.indexOf('g'.toByte, 6) should ===(-1)
+
+      val byteStringLong = ByteString1.fromString("abcdefghijklmnopqrstuvwxyz")
+      byteStringLong.indexOf('m', 2) should ===(12)
+      byteStringLong.indexOf('z', 2) should ===(25)
+      byteStringLong.indexOf('a', 2) should ===(-1)
+    }
+    "indexOf from/to" in {
+      ByteString.empty.indexOf(5.toByte, -1, 10) should ===(-1)
+      ByteString.empty.indexOf(5.toByte, 0, 1) should ===(-1)
+      ByteString.empty.indexOf(5.toByte, 1, -1) should ===(-1)
+      val byteString1 = ByteString1.fromString("abc")
+      byteString1.indexOf('d'.toByte, -1, 1) should ===(-1)
+      byteString1.indexOf('a'.toByte, -1, 1) should ===(0)
+      byteString1.indexOf('a'.toByte, 0, 1) should ===(0)
+      byteString1.indexOf('a'.toByte, 0, 0) should ===(-1)
+      byteString1.indexOf('a'.toByte, 1, 2) should ===(-1)
+
+      val array = Array[Byte]('x', 'y', 'z', 'a', 'b', 'c')
+      val byteString2 = ByteString1(array, 3, 2)
+      byteString2.indexOf('x'.toByte, -1, 3) should ===(-1)
+      byteString2.indexOf('x'.toByte, 0, 3) should ===(-1)
+      byteString2.indexOf('a'.toByte, -1, 1) should ===(0)
+      byteString2.indexOf('a'.toByte, 0, 0) should ===(-1)
+      byteString2.indexOf('a'.toByte, 1, 2) should ===(-1)
+
+      val byteStrings = ByteStrings(ByteString1.fromString("abc"), ByteString1.fromString("efg"))
+      byteStrings.indexOf('c'.toByte, -1, 6) should ===(2)
+      byteStrings.indexOf('c'.toByte, 0, 6) should ===(2)
+      byteStrings.indexOf('c'.toByte, 2, 3) should ===(2)
+      byteStrings.indexOf('c'.toByte, 2, 2) should ===(-1)
+      byteStrings.indexOf('c'.toByte, 3, 4) should ===(-1)
+
+      byteStrings.indexOf('e'.toByte, -1, 6) should ===(3)
+      byteStrings.indexOf('e'.toByte, 0, 4) should ===(3)
+      byteStrings.indexOf('e'.toByte, 1, 4) should ===(3)
+      byteStrings.indexOf('e'.toByte, 4, 5) should ===(-1)
+
+      byteStrings.indexOf('g'.toByte, -1, 6) should ===(5)
+      byteStrings.indexOf('g'.toByte, 0, 5) should ===(-1)
+
+      val compact = byteStrings.compact
+      compact.indexOf('c'.toByte, -1, 6) should ===(2)
+      compact.indexOf('c'.toByte, 0, 6) should ===(2)
+      compact.indexOf('c'.toByte, 2, 3) should ===(2)
+      compact.indexOf('c'.toByte, 2, 2) should ===(-1)
+      compact.indexOf('c'.toByte, 3, 4) should ===(-1)
+
+      compact.indexOf('e'.toByte, -1, 6) should ===(3)
+      compact.indexOf('e'.toByte, 0, 4) should ===(3)
+      compact.indexOf('e'.toByte, 1, 4) should ===(3)
+      compact.indexOf('e'.toByte, 4, 5) should ===(-1)
+
+      compact.indexOf('g'.toByte, -1, 6) should ===(5)
+      compact.indexOf('g'.toByte, 0, 5) should ===(-1)
+
+      val byteStringLong = ByteString1.fromString("abcdefghijklmnopqrstuvwxyz")
+      byteStringLong.indexOf('m', 2, 24) should ===(12)
+      byteStringLong.indexOf('z', 2, 26) should ===(25)
+      byteStringLong.indexOf('z', 2, 24) should ===(-1)
+      byteStringLong.indexOf('a', 2, 24) should ===(-1)
     }
     "copyToArray" in {
       val byteString = ByteString(1, 2) ++ ByteString(3) ++ ByteString(4)
@@ -814,6 +995,34 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       verify(byteString.copyToArray(_, 1, 3))(0, 1, 2)
       verify(byteString.copyToArray(_, 2, 3))(0, 0, 1)
       verify(byteString.copyToArray(_, 3, 3))(0, 0, 0)
+    }
+    "containsSlice" in {
+      val slice0 = ByteString1.fromString("xyz")
+      val slice1 = ByteString1.fromString("xyzabc")
+      val notSlice = ByteString1.fromString("12345")
+      val byteStringLong = ByteString1.fromString("abcdefghijklmnopqrstuvwxyz")
+      val byteStrings = ByteStrings(byteStringLong, byteStringLong)
+      byteStringLong.containsSlice(slice0) should ===(true)
+      byteStringLong.containsSlice(slice1) should ===(false)
+      byteStringLong.containsSlice(notSlice) should ===(false)
+
+      byteStrings.containsSlice(slice0) should ===(true)
+      byteStrings.containsSlice(slice1) should ===(true)
+      byteStrings.containsSlice(notSlice) should ===(false)
+    }
+    "indexOfSlice" in {
+      val slice0 = ByteString1.fromString("xyz")
+      val slice1 = ByteString1.fromString("xyzabc")
+      val notSlice = ByteString1.fromString("12345")
+      val byteStringLong = ByteString1.fromString("abcdefghijklmnopqrstuvwxyz")
+      val byteStrings = ByteStrings(byteStringLong, byteStringLong)
+      byteStringLong.indexOfSlice(slice0) should ===(23)
+      byteStringLong.indexOfSlice(slice1) should ===(-1)
+      byteStringLong.indexOfSlice(notSlice) should ===(-1)
+
+      byteStrings.indexOfSlice(slice0) should ===(23)
+      byteStrings.indexOfSlice(slice1) should ===(23)
+      byteStrings.indexOfSlice(notSlice) should ===(-1)
     }
   }
 
@@ -923,7 +1132,7 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
           a.asByteBuffers.forall(_.isReadOnly)
         }
         check { (a: ByteString) =>
-          import pekko.util.ccompat.JavaConverters._
+          import scala.jdk.CollectionConverters._
           a.asByteBuffers.zip(a.getByteBuffers().asScala).forall(x => x._1 == x._2)
         }
       }
@@ -1080,19 +1289,6 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
     }
 
     "serialize correctly" when {
-      // note that this is serialization with Java serialization
-      // real serialization is in pekko-remote
-      if (util.Properties.versionNumberString.startsWith("2.12")) {
-        "parsing regular ByteString1C as compat" in {
-          val oldSerd =
-            "aced00057372002d6f72672e6170616368652e70656b6b6f2e7574696c2e42797465537472696e672442797465537472696e67314336e9eed0afcfe4a40200015b000562797465737400025b42787200276f72672e6170616368652e70656b6b6f2e7574696c2e436f6d7061637442797465537472696e67c819c2e689ed6cad0200007870757200025b42acf317f8060854e002000078700000000a74657374737472696e67"
-          val bs = ByteString("teststring", "UTF8")
-          val str = hexFromSer(bs)
-
-          str should be(oldSerd)
-        }
-      }
-
       "given all types of ByteString" in {
         check { (bs: ByteString) =>
           testSer(bs)

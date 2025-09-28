@@ -15,14 +15,14 @@ package org.apache.pekko.remote.testconductor
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorIdentity, Deploy, Identify, Props }
 import pekko.remote.RemotingMultiNodeSpec
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.transport.ThrottlerTransportAdapter.Direction
 import pekko.testkit.LongRunningTest
+
+import com.typesafe.config.ConfigFactory
 
 object TestConductorMultiJvmSpec extends MultiNodeConfig {
   commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString("""

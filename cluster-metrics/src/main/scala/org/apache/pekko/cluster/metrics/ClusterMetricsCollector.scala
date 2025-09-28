@@ -15,9 +15,8 @@ package org.apache.pekko.cluster.metrics
 
 import java.util.concurrent.ThreadLocalRandom
 
-import scala.collection.immutable
-
 import scala.annotation.nowarn
+import scala.collection.immutable
 
 import org.apache.pekko
 import pekko.actor.Actor
@@ -108,7 +107,7 @@ final case class ClusterMetricsChanged(nodeMetrics: Set[NodeMetrics]) extends Cl
   /** Java API */
   @nowarn("msg=deprecated")
   def getNodeMetrics: java.lang.Iterable[NodeMetrics] = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     nodeMetrics.asJava
   }
 }

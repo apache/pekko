@@ -13,11 +13,11 @@
 
 package org.apache.pekko.testkit
 
+import org.apache.pekko.actor.ActorSystem
+
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-
-import org.apache.pekko.actor.ActorSystem
 
 class ImplicitSenderSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll with TestKitBase with ImplicitSender {
 

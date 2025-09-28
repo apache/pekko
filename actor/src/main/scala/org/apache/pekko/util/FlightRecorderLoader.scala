@@ -12,6 +12,7 @@
  */
 
 package org.apache.pekko.util
+
 import scala.reflect.ClassTag
 import scala.util.{ Failure, Success }
 
@@ -26,7 +27,7 @@ import pekko.annotation.InternalApi
 private[pekko] object FlightRecorderLoader {
   def load[T: ClassTag](casp: ClassicActorSystemProvider, fqcn: String, fallback: T): T = {
     val system = casp.classicSystem.asInstanceOf[ExtendedActorSystem]
-    if (JavaVersion.majorVersion >= 11 && system.settings.config.getBoolean("pekko.java-flight-recorder.enabled")) {
+    if (system.settings.config.getBoolean("pekko.java-flight-recorder.enabled")) {
       // Dynamic instantiation to not trigger class load on earlier JDKs
       system.dynamicAccess.createInstanceFor[T](fqcn, Nil) match {
         case Success(jfr) =>
@@ -36,7 +37,6 @@ private[pekko] object FlightRecorderLoader {
           fallback
       } // fallback if not possible to dynamically load for some reason
     } else
-      // JFR not available on Java 8
       fallback
   }
 }

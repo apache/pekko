@@ -26,15 +26,13 @@ import scala.util.{ DynamicVariable, Failure, Try }
 import scala.util.Success
 import scala.util.control.NonFatal
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.InternalApi
 import pekko.event.{ LogMarker, Logging, LoggingAdapter }
-import pekko.util.ccompat._
 
-@ccompatUsedUntil213
+import com.typesafe.config.Config
+
 object Serialization {
 
   /**
@@ -57,7 +55,7 @@ object Serialization {
     }
 
     private final def configToMap(cfg: Config): Map[String, String] = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       cfg.root.unwrapped.asScala.toMap.map { case (k, v) => k -> v.toString }
     }
   }

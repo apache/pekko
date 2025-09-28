@@ -19,11 +19,11 @@ import sbt.librarymanagement.VersionNumber
 
 object JdkOptions extends AutoPlugin {
 
-  lazy val specificationVersion: String = sys.props("java.specification.version")
-
   object JavaVersion {
     val majorVersion: Int = java.lang.Runtime.version().feature()
   }
+
+  val targetJavaVersion = "17"
 
   lazy val versionSpecificJavaOptions =
     // for virtual threads
@@ -35,7 +35,9 @@ object JdkOptions extends AutoPlugin {
     "--add-opens=java.base/java.nio=ALL-UNNAMED" :: Nil
 
   def targetJdkScalacOptions(scalaVersion: String): Seq[String] =
-    Seq(if (scalaVersion.startsWith("3.")) "-Xtarget:17" else "release:17")
+    Seq("-release", JdkOptions.targetJavaVersion) ++ {
+      if (scalaVersion.startsWith("3.")) Seq(s"-Xtarget:${targetJavaVersion}") else Seq.empty
+    }
 
-  val targetJdkJavacOptions = Seq("-source", "17", "-target", "17")
+  val targetJdkJavacOptions = Seq("--release", targetJavaVersion)
 }

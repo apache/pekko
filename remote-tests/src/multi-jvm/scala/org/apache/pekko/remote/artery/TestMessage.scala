@@ -13,13 +13,13 @@
 
 package org.apache.pekko.remote.artery
 
+import java.io.NotSerializableException
+
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.protobufv3.internal.ByteString
 import pekko.remote.artery.protobuf.{ TestMessages => proto }
 import pekko.serialization.SerializerWithStringManifest
-
-import java.io.NotSerializableException
 
 object TestMessage {
   final case class Item(id: Long, name: String)
@@ -63,7 +63,7 @@ class TestMessageSerializer(val system: ExtendedActorSystem) extends SerializerW
 
   override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = {
     val protoMsg = proto.TestMessage.parseFrom(bytes)
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     val items = protoMsg.getItemsList.asScala.map { item =>
       TestMessage.Item(item.getId, item.getName)
     }.toVector

@@ -15,16 +15,15 @@ package org.apache.pekko.pattern
 
 import java.util.Optional
 import java.util.concurrent.{ Callable, CompletionStage, TimeUnit }
-import java.util.function.BiPredicate
+import java.util.function.IntFunction
 
+import scala.annotation.nowarn
 import scala.concurrent.ExecutionContext
+import scala.jdk.DurationConverters._
+import scala.jdk.FutureConverters._
 
 import org.apache.pekko
 import pekko.actor.{ ActorSelection, ClassicActorSystemProvider, Scheduler }
-import pekko.util.FutureConverters._
-import pekko.util.JavaDurationConverters._
-
-import scala.annotation.nowarn
 
 /**
  * Java API: for Pekko patterns such as `ask`, `pipe` and others which work with [[java.util.concurrent.CompletionStage]].
@@ -107,7 +106,7 @@ object Patterns {
    * }}}
    */
   def ask(actor: ActorRef, message: Any, timeout: java.time.Duration): CompletionStage[AnyRef] =
-    scalaAsk(actor, message)(timeout.asScala).asJava.asInstanceOf[CompletionStage[AnyRef]]
+    scalaAsk(actor, message)(timeout.toScala).asJava.asInstanceOf[CompletionStage[AnyRef]]
 
   /**
    * Use for messages whose response is known to be a [[pekko.pattern.StatusReply]]. When a [[pekko.pattern.StatusReply#success]] response
@@ -115,7 +114,7 @@ object Patterns {
    * failed.
    */
   def askWithStatus(actor: ActorRef, message: Any, timeout: java.time.Duration): CompletionStage[AnyRef] =
-    scalaAskWithStatus(actor, message)(timeout.asScala).asJava.asInstanceOf[CompletionStage[AnyRef]]
+    scalaAskWithStatus(actor, message)(timeout.toScala).asJava.asInstanceOf[CompletionStage[AnyRef]]
 
   /**
    * A variation of ask which allows to implement "replyTo" pattern by including
@@ -266,7 +265,7 @@ object Patterns {
    * }}}
    */
   def ask(selection: ActorSelection, message: Any, timeout: java.time.Duration): CompletionStage[AnyRef] =
-    scalaAsk(selection, message)(timeout.asScala).asJava.asInstanceOf[CompletionStage[AnyRef]]
+    scalaAsk(selection, message)(timeout.toScala).asJava.asInstanceOf[CompletionStage[AnyRef]]
 
   /**
    * <i>Java API for `org.apache.pekko.pattern.ask`:</i>
@@ -334,7 +333,7 @@ object Patterns {
       selection: ActorSelection,
       messageFactory: japi.function.Function[ActorRef, Any],
       timeout: java.time.Duration): CompletionStage[AnyRef] =
-    extended.ask(selection, messageFactory.apply _)(timeout.asScala).asJava.asInstanceOf[CompletionStage[AnyRef]]
+    extended.ask(selection, messageFactory.apply _)(timeout.toScala).asJava.asInstanceOf[CompletionStage[AnyRef]]
 
   /**
    * Register an onComplete callback on this [[scala.concurrent.Future]] to send
@@ -348,7 +347,7 @@ object Patterns {
    * {{{
    *   final Future<Object> f = Patterns.ask(worker, request, timeout);
    *   // apply some transformation (i.e. enrich with request info)
-   *   final Future<Object> transformed = f.map(new org.apache.pekko.japi.Function<Object, Object>() { ... });
+   *   final Future<Object> transformed = f.map(new org.apache.pekko.japi.function.Function<Object, Object>() { ... });
    *   // send it on to the next operator
    *   Patterns.pipe(transformed, context).to(nextActor);
    * }}}
@@ -399,7 +398,7 @@ object Patterns {
    * is completed with failure [[pekko.pattern.AskTimeoutException]].
    */
   def gracefulStop(target: ActorRef, timeout: java.time.Duration): CompletionStage[java.lang.Boolean] =
-    scalaGracefulStop(target, timeout.asScala).asJava.asInstanceOf[CompletionStage[java.lang.Boolean]]
+    scalaGracefulStop(target, timeout.toScala).asJava.asInstanceOf[CompletionStage[java.lang.Boolean]]
 
   /**
    * Returns a [[scala.concurrent.Future]] that will be completed with success (value `true`) when
@@ -434,7 +433,7 @@ object Patterns {
       target: ActorRef,
       timeout: java.time.Duration,
       stopMessage: Any): CompletionStage[java.lang.Boolean] =
-    scalaGracefulStop(target, timeout.asScala, stopMessage).asJava.asInstanceOf[CompletionStage[java.lang.Boolean]]
+    scalaGracefulStop(target, timeout.toScala, stopMessage).asJava.asInstanceOf[CompletionStage[java.lang.Boolean]]
 
   /**
    * Returns a [[scala.concurrent.Future]] that will be completed with the success or failure of the provided Callable
@@ -518,7 +517,7 @@ object Patterns {
    */
   def retry[T](
       attempt: Callable[CompletionStage[T]],
-      shouldRetry: BiPredicate[T, Throwable],
+      shouldRetry: japi.function.Predicate2[T, Throwable],
       attempts: Int,
       ec: ExecutionContext): CompletionStage[T] = {
     require(attempt != null, "Parameter attempt should not be null.")
@@ -585,7 +584,7 @@ object Patterns {
    */
   def retry[T](
       attempt: Callable[CompletionStage[T]],
-      shouldRetry: BiPredicate[T, Throwable],
+      shouldRetry: japi.function.Predicate2[T, Throwable],
       attempts: Int,
       minBackoff: java.time.Duration,
       maxBackoff: java.time.Duration,
@@ -628,7 +627,7 @@ object Patterns {
     require(attempt != null, "Parameter attempt should not be null.")
     require(minBackoff != null, "Parameter minBackoff should not be null.")
     require(maxBackoff != null, "Parameter minBackoff should not be null.")
-    scalaRetry(() => attempt.call().asScala, attempts, minBackoff.asScala, maxBackoff.asScala, randomFactor)(
+    scalaRetry(() => attempt.call().asScala, attempts, minBackoff.toScala, maxBackoff.toScala, randomFactor)(
       ec,
       scheduler).asJava
   }
@@ -662,7 +661,7 @@ object Patterns {
    */
   def retry[T](
       attempt: Callable[CompletionStage[T]],
-      shouldRetry: BiPredicate[T, Throwable],
+      shouldRetry: japi.function.Predicate2[T, Throwable],
       attempts: Int,
       minBackoff: java.time.Duration,
       maxBackoff: java.time.Duration,
@@ -675,7 +674,7 @@ object Patterns {
     scalaRetry(
       () => attempt.call().asScala,
       (t, e) => shouldRetry.test(t, e),
-      attempts, minBackoff.asScala, maxBackoff.asScala, randomFactor)(
+      attempts, minBackoff.toScala, maxBackoff.toScala, randomFactor)(
       ec,
       scheduler).asJava
   }
@@ -738,7 +737,7 @@ object Patterns {
    */
   def retry[T](
       attempt: Callable[CompletionStage[T]],
-      shouldRetry: BiPredicate[T, Throwable],
+      shouldRetry: japi.function.Predicate2[T, Throwable],
       attempts: Int,
       delay: java.time.Duration,
       system: ClassicActorSystemProvider): CompletionStage[T] =
@@ -760,7 +759,7 @@ object Patterns {
       scheduler: Scheduler,
       ec: ExecutionContext): CompletionStage[T] = {
     require(attempt != null, "Parameter attempt should not be null.")
-    scalaRetry(() => attempt.call().asScala, attempts, delay.asScala)(ec, scheduler).asJava
+    scalaRetry(() => attempt.call().asScala, attempts, delay.toScala)(ec, scheduler).asJava
   }
 
   /**
@@ -787,13 +786,13 @@ object Patterns {
    */
   def retry[T](
       attempt: Callable[CompletionStage[T]],
-      shouldRetry: BiPredicate[T, Throwable],
+      shouldRetry: japi.function.Predicate2[T, Throwable],
       attempts: Int,
       delay: java.time.Duration,
       scheduler: Scheduler,
       ec: ExecutionContext): CompletionStage[T] = {
     require(attempt != null, "Parameter attempt should not be null.")
-    scalaRetry(() => attempt.call().asScala, (t, e) => shouldRetry.test(t, e), attempts, delay.asScala)(ec,
+    scalaRetry(() => attempt.call().asScala, (t, e) => shouldRetry.test(t, e), attempts, delay.toScala)(ec,
       scheduler).asJava
   }
 
@@ -813,15 +812,15 @@ object Patterns {
   def retry[T](
       attempt: Callable[CompletionStage[T]],
       attempts: Int,
-      delayFunction: java.util.function.IntFunction[Optional[java.time.Duration]],
+      delayFunction: IntFunction[Optional[java.time.Duration]],
       scheduler: Scheduler,
       context: ExecutionContext): CompletionStage[T] = {
-    import pekko.util.OptionConverters._
+    import scala.jdk.OptionConverters._
     require(attempt != null, "Parameter attempt should not be null.")
     scalaRetry(
       () => attempt.call().asScala,
       attempts,
-      attempted => delayFunction.apply(attempted).toScala.map(_.asScala))(context, scheduler).asJava
+      attempted => delayFunction.apply(attempted).toScala.map(_.toScala))(context, scheduler).asJava
   }
 
   /**
@@ -852,17 +851,17 @@ object Patterns {
    */
   def retry[T](
       attempt: Callable[CompletionStage[T]],
-      shouldRetry: BiPredicate[T, Throwable],
+      shouldRetry: japi.function.Predicate2[T, Throwable],
       attempts: Int,
-      delayFunction: java.util.function.IntFunction[Optional[java.time.Duration]],
+      delayFunction: IntFunction[Optional[java.time.Duration]],
       scheduler: Scheduler,
       context: ExecutionContext): CompletionStage[T] = {
-    import pekko.util.OptionConverters._
+    import scala.jdk.OptionConverters._
     require(attempt != null, "Parameter attempt should not be null.")
     scalaRetry(
       () => attempt.call().asScala,
       (t, e) => shouldRetry.test(t, e),
       attempts,
-      attempted => delayFunction.apply(attempted).toScala.map(_.asScala))(context, scheduler).asJava
+      attempted => delayFunction.apply(attempted).toScala.map(_.toScala))(context, scheduler).asJava
   }
 }

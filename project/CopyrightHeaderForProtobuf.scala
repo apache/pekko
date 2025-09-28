@@ -12,7 +12,7 @@
  */
 
 import CopyrightHeader.cStyleComment
-import de.heikoseeberger.sbtheader.HeaderPlugin.autoImport.{ headerMappings, headerSources, HeaderFileType }
+import sbtheader.HeaderPlugin.autoImport.{ headerMappings, headerSources, HeaderFileType }
 import sbt.Keys.sourceDirectory
 import sbt.{ inConfig, Compile, Def, Test, _ }
 

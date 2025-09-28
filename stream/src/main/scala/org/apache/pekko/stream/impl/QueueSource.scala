@@ -50,6 +50,7 @@ import pekko.stream.stage._
   val out = Outlet[T]("queueSource.out")
   override val shape: SourceShape[T] = SourceShape.of(out)
 
+  @scala.annotation.nowarn("msg=inferred structural type")
   override def createLogicAndMaterializedValue(inheritedAttributes: Attributes) = {
     val completion = Promise[Done]()
     val name = inheritedAttributes.nameOrDefault(getClass.toString)
@@ -220,7 +221,7 @@ import pekko.stream.stage._
           .onComplete {
             case scala.util.Success(_) =>
             case scala.util.Failure(e) => p.tryFailure(e)
-          }(pekko.dispatch.ExecutionContexts.parasitic)
+          }(scala.concurrent.ExecutionContext.parasitic)
         p.future
       }
       override def complete(): Unit = callback.invoke(Completion)

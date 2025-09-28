@@ -13,6 +13,8 @@
 
 package org.apache.pekko.stream.impl
 
+import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.InternalApi
@@ -20,7 +22,6 @@ import pekko.event.Logging
 import pekko.stream.{ AbruptTerminationException, Attributes }
 import pekko.stream.ActorAttributes
 import pekko.stream.impl.ActorSubscriberMessage.{ OnComplete, OnError, OnNext, OnSubscribe }
-import pekko.util.unused
 
 import org.reactivestreams.{ Processor, Subscriber, Subscription }
 
@@ -165,7 +166,7 @@ import org.reactivestreams.{ Processor, Subscriber, Subscription }
     case OnSubscribe(_) => throw new IllegalStateException("onSubscribe called after onError or onComplete")
   }
 
-  protected def inputOnError(@unused e: Throwable): Unit = {
+  protected def inputOnError(@nowarn("msg=never used") e: Throwable): Unit = {
     clear()
   }
 

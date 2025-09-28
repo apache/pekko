@@ -13,11 +13,11 @@
 
 package org.apache.pekko.stream.tck
 
-import org.reactivestreams.Processor
-
 import org.apache.pekko
 import pekko.stream.impl.VirtualProcessor
 import pekko.stream.scaladsl.Flow
+
+import org.reactivestreams.Processor
 
 class VirtualProcessorTest extends PekkoIdentityProcessorVerification[Int] {
 

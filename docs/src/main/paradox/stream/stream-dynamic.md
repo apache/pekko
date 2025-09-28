@@ -219,7 +219,7 @@ It is possible to define how many initial consumers that are required before it 
 to the attached consumers. While not enough consumers have been attached messages are buffered and when the
 buffer is full the upstream producer is backpressured. No messages are dropped.
 
-The above example illustrate a stateless partition function. For more advanced stateful routing the @java[@javadoc[ofStateful](pekko.stream.javadsl.PartitionHub$#ofStateful(java.lang.Class,java.util.function.Supplier,int))]
+The above example illustrate a stateless partition function. For more advanced stateful routing the @java[@javadoc[ofStateful](pekko.stream.javadsl.PartitionHub$#ofStateful(java.lang.Class,org.apache.pekko.japi.function.Creator,int))]
 @scala[@scaladoc[statefulSink](pekko.stream.scaladsl.PartitionHub$#statefulSink[T](partitioner:()=%3E(org.apache.pekko.stream.scaladsl.PartitionHub.ConsumerInfo,T)=%3ELong,startAfterNrOfConsumers:Int,bufferSize:Int):org.apache.pekko.stream.scaladsl.Sink[T,org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.NotUsed]])] can be used. Here is an example of a stateful round-robin function:
 
 Scala

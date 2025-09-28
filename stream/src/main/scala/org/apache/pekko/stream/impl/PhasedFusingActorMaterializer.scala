@@ -60,7 +60,7 @@ import org.reactivestreams.Subscriber
  */
 @InternalApi private[pekko] object PhasedFusingActorMaterializer {
 
-  val Debug = false
+  final val Debug = false
 
   val MailboxConfigName: String = "pekko.stream.materializer.mailbox"
 

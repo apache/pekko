@@ -12,7 +12,7 @@
  */
 
 import CopyrightHeader.cStyleComment
-import de.heikoseeberger.sbtheader.HeaderPlugin.autoImport._
+import sbtheader.HeaderPlugin.autoImport._
 import sbt.Keys.sourceDirectory
 import sbt.{ inConfig, Compile, Def, Plugins, Test, _ }
 import spray.boilerplate.BoilerplatePlugin

@@ -16,8 +16,7 @@ package org.apache.pekko.actor.typed.internal.adapter
 import java.util.concurrent.CompletionStage
 
 import scala.concurrent.ExecutionContextExecutor
-
-import org.slf4j.{ Logger, LoggerFactory }
+import scala.jdk.FutureConverters._
 
 import org.apache.pekko
 import pekko.{ actor => classic }
@@ -42,7 +41,8 @@ import pekko.actor.typed.internal.PropsImpl.DispatcherSameAsParent
 import pekko.actor.typed.internal.SystemMessage
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.annotation.InternalApi
-import pekko.util.FutureConverters._
+
+import org.slf4j.{ Logger, LoggerFactory }
 
 /**
  * INTERNAL API. Lightweight wrapper for presenting a classic ActorSystem to a Behavior (via the context).
@@ -114,7 +114,7 @@ import pekko.util.FutureConverters._
   override def uptime: Long = classicSystem.uptime
   override def printTree: String = system.printTree
 
-  import org.apache.pekko.dispatch.ExecutionContexts.parasitic
+  import scala.concurrent.ExecutionContext.parasitic
 
   override def terminate(): Unit = system.terminate()
   override lazy val whenTerminated: scala.concurrent.Future[pekko.Done] =

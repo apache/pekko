@@ -27,7 +27,6 @@ import pekko.testkit.PekkoSpec
 import pekko.testkit.TestActors.EchoActor
 import pekko.testkit.TestProbe
 import pekko.testkit.WithLogCapturing
-import pekko.util.ccompat._
 
 object CoordinatedShutdownShardingSpec {
   val config =
@@ -50,7 +49,6 @@ object CoordinatedShutdownShardingSpec {
   }
 }
 
-@ccompatUsedUntil213
 class CoordinatedShutdownShardingSpec extends PekkoSpec(CoordinatedShutdownShardingSpec.config) with WithLogCapturing {
   import CoordinatedShutdownShardingSpec._
 

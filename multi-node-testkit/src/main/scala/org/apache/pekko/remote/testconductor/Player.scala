@@ -26,9 +26,6 @@ import scala.util.{ Failure, Success, Try }
 import scala.util.control.NoStackTrace
 import scala.util.control.NonFatal
 
-import io.netty.channel.{ Channel, ChannelHandlerContext, ChannelInboundHandlerAdapter }
-import io.netty.channel.ChannelHandler.Sharable
-
 import org.apache.pekko
 import pekko.actor._
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
@@ -37,9 +34,10 @@ import pekko.pattern.{ ask, AskTimeoutException }
 import pekko.remote.testconductor.RemoteConnection.getAddrString
 import pekko.remote.transport.ThrottlerTransportAdapter.{ Blackhole, SetThrottle, TokenBucket, Unthrottled }
 import pekko.util.Timeout
-import pekko.util.ccompat._
 
-@ccompatUsedUntil213
+import io.netty.channel.{ Channel, ChannelHandlerContext, ChannelInboundHandlerAdapter }
+import io.netty.channel.ChannelHandler.Sharable
+
 object Player {
 
   final class Waiter extends Actor with RequiresMessageQueue[UnboundedMessageQueueSemantics] {

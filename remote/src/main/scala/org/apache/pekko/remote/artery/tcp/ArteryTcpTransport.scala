@@ -33,7 +33,6 @@ import pekko.Done
 import pekko.NotUsed
 import pekko.actor.ActorSystem
 import pekko.actor.ExtendedActorSystem
-import pekko.dispatch.ExecutionContexts
 import pekko.event.Logging
 import pekko.remote.RemoteActorRefProvider
 import pekko.remote.RemoteLogMarker
@@ -59,7 +58,6 @@ import pekko.stream.scaladsl.Source
 import pekko.stream.scaladsl.Tcp
 import pekko.stream.scaladsl.Tcp.ServerBinding
 import pekko.util.{ ByteString, OptionVal }
-import pekko.util.ccompat._
 
 /**
  * INTERNAL API
@@ -77,7 +75,6 @@ private[remote] object ArteryTcpTransport {
 /**
  * INTERNAL API
  */
-@ccompatUsedUntil213
 private[remote] class ArteryTcpTransport(
     _system: ExtendedActorSystem,
     _provider: RemoteActorRefProvider,
@@ -281,7 +278,7 @@ private[remote] class ArteryTcpTransport(
                   s"Failed to bind TCP to [$bindHost:$bindPort] due to: " +
                   e.getMessage,
                   e))
-          }(ExecutionContexts.parasitic)
+          }(ExecutionContext.parasitic)
 
         // only on initial startup, when ActorSystem is starting
         val b = Await.result(binding, settings.Bind.BindTimeout)

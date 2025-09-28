@@ -13,6 +13,7 @@
 
 package org.apache.pekko.persistence.typed.state.internal
 
+import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.collection.immutable
 
@@ -29,7 +30,6 @@ import pekko.annotation.InternalApi
 import pekko.annotation.InternalStableApi
 import pekko.persistence.typed.state.internal.DurableStateBehaviorImpl.GetState
 import pekko.persistence.typed.state.scaladsl.Effect
-import pekko.util.unused
 
 /**
  * INTERNAL API
@@ -73,7 +73,8 @@ private[pekko] object Running {
     def nextRevision(): RunningState[State, Command] =
       copy(revision = revision + 1)
 
-    def applyState(@unused setup: BehaviorSetup[Command, State], updated: State): RunningState[State, Command] = {
+    def applyState(@nowarn("msg=never used") setup: BehaviorSetup[Command, State], updated: State)
+        : RunningState[State, Command] = {
       copy(state = updated)
     }
   }
@@ -360,8 +361,9 @@ private[pekko] object Running {
   }
 
   @InternalStableApi
-  private[pekko] def onWriteFailed(@unused ctx: ActorContext[_], @unused reason: Throwable): Unit = ()
+  private[pekko] def onWriteFailed(@nowarn("msg=never used") ctx: ActorContext[_],
+      @nowarn("msg=never used") reason: Throwable): Unit = ()
   @InternalStableApi
-  private[pekko] def onWriteSuccess(@unused ctx: ActorContext[_]): Unit = ()
+  private[pekko] def onWriteSuccess(@nowarn("msg=never used") ctx: ActorContext[_]): Unit = ()
 
 }

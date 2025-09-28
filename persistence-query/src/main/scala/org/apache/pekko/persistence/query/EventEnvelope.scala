@@ -16,6 +16,7 @@ package org.apache.pekko.persistence.query
 import java.util.Optional
 
 import scala.runtime.AbstractFunction5
+
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.util.HashCode
@@ -64,7 +65,7 @@ final class EventEnvelope(
    * Java API
    */
   def getEventMetaData(): Optional[Any] = {
-    import pekko.util.OptionConverters._
+    import scala.jdk.OptionConverters._
     eventMetadata.toJava
   }
 

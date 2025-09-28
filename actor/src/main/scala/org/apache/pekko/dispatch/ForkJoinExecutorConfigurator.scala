@@ -13,12 +13,9 @@
 
 package org.apache.pekko.dispatch
 
-import com.typesafe.config.Config
-import org.apache.pekko
-import pekko.dispatch.VirtualThreadSupport.newVirtualThreadFactory
-import pekko.util.JavaVersion
+import java.util.concurrent.{ ExecutorService, ForkJoinPool, ForkJoinTask, ThreadFactory, TimeUnit }
 
-import java.util.concurrent.{ Executor, ExecutorService, ForkJoinPool, ForkJoinTask, ThreadFactory, TimeUnit }
+import com.typesafe.config.Config
 
 object ForkJoinExecutorConfigurator {
 
@@ -73,7 +70,8 @@ object ForkJoinExecutorConfigurator {
 class ForkJoinExecutorConfigurator(config: Config, prerequisites: DispatcherPrerequisites)
     extends ExecutorServiceConfigurator(config, prerequisites) {
   import ForkJoinExecutorConfigurator._
-  final override val isVirtualized: Boolean = config.getBoolean("virtualize") && JavaVersion.majorVersion >= 21
+  final override val isVirtualized: Boolean = config.getBoolean("virtualize") && VirtualThreadSupport.isSupported
+  override def virtualThreadStartNumber: Int = config.getInt("virtual-thread-start-number")
 
   def validate(t: ThreadFactory): ForkJoinPool.ForkJoinWorkerThreadFactory = t match {
     case correct: ForkJoinPool.ForkJoinWorkerThreadFactory => correct
@@ -114,28 +112,8 @@ class ForkJoinExecutorConfigurator(config: Config, prerequisites: DispatcherPrer
       val pool = new PekkoForkJoinPool(parallelism, tf, maxPoolSize, MonitorableThreadFactory.doNothing, asyncMode)
 
       if (isVirtualized) {
-        // when virtualized, we need enhanced thread factory
-        val factory: ThreadFactory = threadFactory match {
-          case MonitorableThreadFactory(name, _, contextClassLoader, exceptionHandler, _) =>
-            new ThreadFactory {
-              private val vtFactory = newVirtualThreadFactory(name, pool) // use the pool as the scheduler
-
-              override def newThread(r: Runnable): Thread = {
-                val vt = vtFactory.newThread(r)
-                vt.setUncaughtExceptionHandler(exceptionHandler)
-                contextClassLoader.foreach(vt.setContextClassLoader)
-                vt
-              }
-            }
-          case _ => newVirtualThreadFactory(prerequisites.settings.name, pool); // use the pool as the scheduler
-        }
-        // wrap the pool with virtualized executor service
-        new VirtualizedExecutorService(
-          factory, // the virtual thread factory
-          pool, // the underlying pool
-          (_: Executor) => pool.atFullThrottle(), // the load metrics provider, we use the pool itself
-          cascadeShutdown = true // cascade shutdown
-        )
+        // we need to cast here,
+        createVirtualized(threadFactory.asInstanceOf[ThreadFactory], pool, id, virtualThreadStartNumber)
       } else {
         pool
       }

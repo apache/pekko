@@ -13,12 +13,14 @@
 
 package org.apache.pekko.persistence.testkit.javadsl
 
-import java.util.Optional
 import java.util.{ List => JList }
+import java.util.Optional
 import java.util.function.{ Function => JFunction }
 
+import scala.annotation.varargs
+import scala.jdk.CollectionConverters._
 import scala.reflect.ClassTag
-import com.typesafe.config.Config
+
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.ActorSystem
@@ -26,9 +28,8 @@ import pekko.actor.typed.Behavior
 import pekko.annotation.ApiMayChange
 import pekko.annotation.DoNotInherit
 import pekko.persistence.testkit.scaladsl
-import pekko.util.ccompat.JavaConverters._
 
-import scala.annotation.varargs
+import com.typesafe.config.Config
 
 /**
  * Testing of [[pekko.persistence.typed.javadsl.EventSourcedBehavior]] implementations.
@@ -226,7 +227,7 @@ final class EventSourcedBehaviorTestKit[Command, Event, State](
 
   private val _persistenceTestKit = new PersistenceTestKit(delegate.persistenceTestKit)
   private val _snapshotTestKit = {
-    import pekko.util.OptionConverters._
+    import scala.jdk.OptionConverters._
     delegate.snapshotTestKit.map(new SnapshotTestKit(_)).toJava
   }
 

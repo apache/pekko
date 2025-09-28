@@ -16,10 +16,9 @@ package org.apache.pekko.dispatch
 import java.util.concurrent.{ ExecutorService, RejectedExecutionException }
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater
 
+import scala.annotation.nowarn
 import scala.concurrent.duration.Duration
 import scala.concurrent.duration.FiniteDuration
-
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.actor.ActorCell
@@ -86,7 +85,7 @@ class Dispatcher(
   protected[pekko] def systemDispatch(receiver: ActorCell, invocation: SystemMessage): Unit = {
     val mbox = receiver.mailbox
     mbox.systemEnqueue(receiver.self, invocation)
-    registerForExecution(mbox, false, true)
+    registerForExecution(mbox, hasMessageHint = false, hasSystemMessageHint = true)
   }
 
   /**

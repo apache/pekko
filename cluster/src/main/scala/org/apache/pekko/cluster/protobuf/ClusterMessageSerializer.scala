@@ -15,10 +15,12 @@ package org.apache.pekko.cluster.protobuf
 
 import java.io.{ ByteArrayInputStream, ByteArrayOutputStream }
 import java.util.zip.{ GZIPInputStream, GZIPOutputStream }
+
 import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.concurrent.duration.Deadline
-import com.typesafe.config.{ Config, ConfigFactory, ConfigRenderOptions }
+import scala.jdk.CollectionConverters._
+
 import org.apache.pekko
 import pekko.actor.{ Address, ExtendedActorSystem }
 import pekko.annotation.InternalApi
@@ -31,14 +33,13 @@ import pekko.remote.ByteStringUtils
 import pekko.routing.Pool
 import pekko.serialization._
 import pekko.util.Version
-import pekko.util.ccompat._
-import pekko.util.ccompat.JavaConverters._
+
+import com.typesafe.config.{ Config, ConfigFactory, ConfigRenderOptions }
 
 /**
  * INTERNAL API
  */
 @InternalApi
-@ccompatUsedUntil213
 private[pekko] object ClusterMessageSerializer {
   // Kept for one version iteration from Akka 2.6.4 to allow rolling migration to short manifests
   // can be removed in Akka 2.6.6 or later.

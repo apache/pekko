@@ -17,10 +17,10 @@
 
 package org.apache.pekko.cluster
 
-import com.typesafe.config.{ Config, ConfigFactory }
-
 import org.apache.pekko
 import pekko.testkit.{ LongRunningTest, PekkoSpec }
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 object MixedProtocolClusterSpec {
 

@@ -16,6 +16,7 @@ package org.apache.pekko.stream.scaladsl
 import scala.annotation.tailrec
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.util.{ Failure, Success, Try }
 
@@ -23,13 +24,11 @@ import org.apache.pekko
 import pekko.{ util, Done, NotUsed }
 import pekko.actor.ActorRef
 import pekko.annotation.InternalApi
-import pekko.dispatch.ExecutionContexts
 import pekko.stream._
 import pekko.stream.impl._
 import pekko.stream.impl.Stages.DefaultAttributes
-import pekko.stream.impl.fusing.GraphStages
+import pekko.stream.impl.fusing.{ CountSink, GraphStages, SourceSink }
 import pekko.stream.stage._
-import pekko.util.ccompat._
 
 import org.reactivestreams.{ Publisher, Subscriber }
 
@@ -201,7 +200,7 @@ object Sink {
       .fromGraph(new HeadOptionStage[T])
       .withAttributes(DefaultAttributes.headSink)
       .mapMaterializedValue(e =>
-        e.map(_.getOrElse(throw new NoSuchElementException("head of empty stream")))(ExecutionContexts.parasitic))
+        e.map(_.getOrElse(throw new NoSuchElementException("head of empty stream")))(ExecutionContext.parasitic))
 
   /**
    * A `Sink` that materializes into a `Future` of the optional first value received.
@@ -223,7 +222,7 @@ object Sink {
   def last[T]: Sink[T, Future[T]] = {
     Sink.fromGraph(new TakeLastStage[T](1)).withAttributes(DefaultAttributes.lastSink).mapMaterializedValue { e =>
       e.map(_.headOption.getOrElse(throw new NoSuchElementException("last of empty stream")))(
-        ExecutionContexts.parasitic)
+        ExecutionContext.parasitic)
     }
   }
 
@@ -236,7 +235,7 @@ object Sink {
    */
   def lastOption[T]: Sink[T, Future[Option[T]]] = {
     Sink.fromGraph(new TakeLastStage[T](1)).withAttributes(DefaultAttributes.lastOptionSink).mapMaterializedValue { e =>
-      e.map(_.headOption)(ExecutionContexts.parasitic)
+      e.map(_.headOption)(ExecutionContext.parasitic)
     }
   }
 
@@ -263,6 +262,26 @@ object Sink {
   def seq[T]: Sink[T, Future[immutable.Seq[T]]] = Sink.fromGraph(new SeqStage[T, Vector[T]])
 
   /**
+   * A `Sink` that counts all incoming elements until upstream terminates.
+   *
+   * Since upstream may be unbounded, consider using `Flow[T].take` or the stricter `Flow[T].limit`
+   * (and their variants) to ensure boundedness. The sink materializes into a `Future` of `Long`
+   * containing the total count of elements that passed through.
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Backpressures when''' never (counting is a lightweight operation)
+   *
+   * '''Cancels when''' never
+   *
+   * @return a `Sink` that materializes to a `Future[Long]` with the element count
+   * @since 2.0.0
+   *
+   * See also [[Flow.limit]], [[Flow.limitWeighted]], [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
+   */
+  def count[T]: Sink[T, Future[Long]] = Sink.fromGraph(CountSink)
+
+  /**
    * A `Sink` that keeps on collecting incoming elements until upstream terminates.
    * As upstream may be unbounded, `Flow[T].take` or the stricter `Flow[T].limit` (and their variants)
    * may be used to ensure boundedness.
@@ -273,7 +292,8 @@ object Sink {
    *
    * See also [[Flow.limit]], [[Flow.limitWeighted]], [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
    */
-  def collection[T, That](implicit cbf: Factory[T, That with immutable.Iterable[_]]): Sink[T, Future[That]] =
+  def collection[T, That](
+      implicit cbf: scala.collection.Factory[T, That with immutable.Iterable[_]]): Sink[T, Future[That]] =
     Sink.fromGraph(new SeqStage[T, That])
 
   /**
@@ -291,6 +311,21 @@ object Sink {
     fromGraph(
       if (fanout) new FanoutPublisherSink[T](DefaultAttributes.fanoutPublisherSink, shape("FanoutPublisherSink"))
       else new PublisherSink[T](DefaultAttributes.publisherSink, shape("PublisherSink")))
+
+  /**
+   * A `Sink` that materializes this `Sink` itself as a `Source`.
+   * The returned `Source` is a "live view" onto the `Sink` and only supports a single `Subscriber`.
+   *
+   * Use [[BroadcastHub#sink]] if you need a `Source` that allows multiple subscribers.
+   *
+   * Note: even if the `Source` is directly connected to the `Sink`, there is still an asynchronous boundary
+   * between them; performance may be improved in the future.
+   *
+   * @since 2.0.0
+   */
+  def source[T]: Sink[T, Source[T, NotUsed]] = _sourceSink.asInstanceOf[Sink[T, Source[T, NotUsed]]]
+
+  private[this] val _sourceSink = fromGraph(SourceSink)
 
   /**
    * A `Sink` that will consume the stream and discard the elements.

@@ -22,11 +22,13 @@ import scala.reflect.ClassTag
 import scala.util.matching.Regex
 
 import com.codahale.metrics._
-import com.typesafe.config.Config
-import org.scalatest.Notifying
 
 import org.apache.pekko
 import pekko.testkit.metrics.reporter.PekkoConsoleReporter
+
+import org.scalatest.Notifying
+
+import com.typesafe.config.Config
 
 /**
  * Allows to easily measure performance / memory / file descriptor use in tests.
@@ -40,9 +42,9 @@ import pekko.testkit.metrics.reporter.PekkoConsoleReporter
 private[pekko] trait MetricsKit extends MetricsKitOps {
   this: Notifying =>
 
-  import MetricsKit._
+  import scala.jdk.CollectionConverters._
 
-  import pekko.util.ccompat.JavaConverters._
+  import MetricsKit._
 
   private var reporters: List[ScheduledReporter] = Nil
 
@@ -161,7 +163,7 @@ private[pekko] trait MetricsKit extends MetricsKitOps {
   }
 
   private[metrics] def getOrRegister[M <: Metric](key: String, metric: => M)(implicit tag: ClassTag[M]): M = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     registry.getMetrics.asScala.find(_._1 == key).map(_._2) match {
       case Some(existing: M) => existing
       case Some(_)           =>
@@ -190,6 +192,7 @@ private[pekko] object MetricsKit {
     override def matches(name: String, metric: Metric) = classOf[KnownOpsInTimespanTimer].isInstance(metric)
   }
 
+  @scala.annotation.nowarn("msg=inferred structural type")
   val GcMetricsFilter = new MetricFilter {
     val keyPattern = """.*\.gc\..*""".r.pattern
 
@@ -205,7 +208,7 @@ trait PekkoMetricRegistry {
   def getHdrHistograms = filterFor(classOf[HdrHistogram])
   def getAveragingGauges = filterFor(classOf[AveragingGauge])
 
-  import pekko.util.ccompat.JavaConverters._
+  import scala.jdk.CollectionConverters._
   private def filterFor[T](clazz: Class[T]): mutable.Iterable[(String, T)] =
     for {
       (key, metric) <- getMetrics.asScala

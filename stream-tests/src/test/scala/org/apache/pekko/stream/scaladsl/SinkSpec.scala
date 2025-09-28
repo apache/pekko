@@ -142,7 +142,7 @@ class SinkSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
 
     "combine many sinks to one" in {
       val source = Source(List(0, 1, 2, 3, 4, 5))
-      implicit val ex = org.apache.pekko.dispatch.ExecutionContexts.parasitic
+      implicit val ex = scala.concurrent.ExecutionContext.parasitic
       val sink = Sink
         .combine(
           List(
@@ -155,7 +155,7 @@ class SinkSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
     }
 
     "combine two sinks with combineMat" in {
-      implicit val ex = org.apache.pekko.dispatch.ExecutionContexts.parasitic
+      implicit val ex = scala.concurrent.ExecutionContext.parasitic
       Source(List(0, 1, 2, 3, 4, 5))
         .toMat(Sink.combineMat(Sink.reduce[Int]((a, b) => a + b), Sink.reduce[Int]((a, b) => a + b))(Broadcast[Int](_))(
           (f1, f2) => {
@@ -321,6 +321,20 @@ class SinkSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
       // 3
       // #seq-operator-example
       assert(seq == Vector(1, 2, 3))
+    }
+  }
+
+  "The count sink" must {
+    "count the number of elements in the stream" in {
+      // #count-operator-example
+      val source = Source(1 to 10)
+      val result = source.runWith(Sink.count)
+      val count = result.futureValue
+      println(count)
+      // will print
+      // 10
+      // #count-operator-example
+      assert(result.futureValue == 10)
     }
   }
 

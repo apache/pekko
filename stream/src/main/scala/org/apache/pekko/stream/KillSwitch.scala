@@ -70,7 +70,7 @@ object KillSwitches {
         case _            =>
           // callback.invoke is a simple actor send, so it is fine to run on the invoking thread
           terminationSignal.onComplete(getAsyncCallback[Try[Done]](onSwitch).invoke)(
-            pekko.dispatch.ExecutionContexts.parasitic)
+            scala.concurrent.ExecutionContext.parasitic)
       }
     }
 

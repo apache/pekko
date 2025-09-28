@@ -13,11 +13,10 @@
 
 package org.apache.pekko.io.dns.internal
 
+import scala.annotation.nowarn
 import scala.collection.GenTraversableOnce
 import scala.collection.immutable.Seq
 import scala.util.{ Failure, Success, Try }
-
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.annotation.InternalApi

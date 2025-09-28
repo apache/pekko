@@ -13,15 +13,16 @@
 
 package org.apache.pekko.actor
 
+import scala.annotation.nowarn
 import scala.concurrent.Await
 import scala.concurrent.duration._
-
-import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.event._
 import pekko.testkit._
-import pekko.util.{ unused, Timeout }
+import pekko.util.Timeout
+
+import com.typesafe.config.ConfigFactory
 
 object FSMActorSpec {
 
@@ -88,7 +89,7 @@ object FSMActorSpec {
     // verify that old-style does still compile
     onTransition(transitionHandler _)
 
-    def transitionHandler(@unused from: LockState, @unused to: LockState) = {
+    def transitionHandler(@nowarn("msg=never used") from: LockState, @nowarn("msg=never used") to: LockState) = {
       // dummy
     }
 
@@ -260,7 +261,7 @@ class FSMActorSpec extends PekkoSpec(Map("pekko.actor.debug.fsm" -> true)) with 
     }
 
     "log events and transitions if asked to do so" in {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       val config = ConfigFactory
         .parseMap(Map("pekko.loglevel" -> "DEBUG", "pekko.actor.debug.fsm" -> true).asJava)
         .withFallback(system.settings.config)

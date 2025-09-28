@@ -14,9 +14,10 @@
 package org.apache.pekko.remote.serialization
 
 import scala.collection.immutable
-import com.typesafe.config.{ Config, ConfigFactory }
+import scala.jdk.CollectionConverters._
 
 import util.{ Failure, Success }
+
 import org.apache.pekko
 import pekko.actor.{ Deploy, ExtendedActorSystem, NoScopeGiven, Props, Scope }
 import pekko.protobufv3.internal.ByteString
@@ -25,8 +26,8 @@ import pekko.remote.DaemonMsgCreate
 import pekko.remote.WireFormats.{ DaemonMsgCreateData, DeployData, PropsData }
 import pekko.routing.{ NoRouter, RouterConfig }
 import pekko.serialization.{ BaseSerializer, SerializationExtension, SerializerWithStringManifest }
-import pekko.util.ccompat._
-import pekko.util.ccompat.JavaConverters._
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 /**
  * Serializes Pekko's internal DaemonMsgCreate using protobuf
@@ -36,7 +37,6 @@ import pekko.util.ccompat.JavaConverters._
  *
  * INTERNAL API
  */
-@ccompatUsedUntil213
 private[pekko] final class DaemonMsgCreateSerializer(val system: ExtendedActorSystem) extends BaseSerializer {
   import Deploy.NoDispatcherGiven
   import ProtobufSerializer.deserializeActorRef
@@ -171,7 +171,7 @@ private[pekko] final class DaemonMsgCreateSerializer(val system: ExtendedActorSy
     }
 
     def props = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       val protoProps = proto.getProps
       val actorClass = system.dynamicAccess.getClassFor[AnyRef](protoProps.getClazz).get
       val args: Vector[AnyRef] =

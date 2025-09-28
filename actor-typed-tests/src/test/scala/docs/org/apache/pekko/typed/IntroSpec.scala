@@ -13,14 +13,12 @@
 
 package docs.org.apache.pekko.typed
 
-//#fiddle_code
 //#imports
 import org.apache.pekko
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.LoggerOps
 import pekko.actor.typed.{ ActorRef, ActorSystem, Behavior }
 //#imports
-//#fiddle_code
 
 import pekko.NotUsed
 import pekko.Done
@@ -35,17 +33,14 @@ import java.nio.charset.StandardCharsets
 
 object IntroSpec {
   //format: OFF
-  //#fiddle_code
-
+  
   //#hello-world-actor
   object HelloWorld {
     final case class Greet(whom: String, replyTo: ActorRef[Greeted])
     final case class Greeted(whom: String, from: ActorRef[Greet])
 
     def apply(): Behavior[Greet] = Behaviors.receive { (context, message) =>
-      //#fiddle_code
       context.log.info("Hello {}!", message.whom)
-      //#fiddle_code
       //#hello-world-actor
       println(s"Hello ${message.whom}!")
       //#hello-world-actor
@@ -65,9 +60,7 @@ object IntroSpec {
     private def bot(greetingCounter: Int, max: Int): Behavior[HelloWorld.Greeted] =
       Behaviors.receive { (context, message) =>
         val n = greetingCounter + 1
-        //#fiddle_code
         context.log.info2("Greeting {} for {}", n, message.whom)
-        //#fiddle_code
         //#hello-world-bot
         println(s"Greeting $n for ${message.whom}")
         //#hello-world-bot
@@ -111,7 +104,6 @@ object IntroSpec {
 
   // Entry point for the execution
   HelloWorldMain.main(Array.empty)
-  //#fiddle_code
   //format: ON
 
   object CustomDispatchersExample {

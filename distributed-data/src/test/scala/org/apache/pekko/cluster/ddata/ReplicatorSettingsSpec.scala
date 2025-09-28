@@ -13,11 +13,12 @@
 
 package org.apache.pekko.cluster.ddata
 
-import com.typesafe.config.ConfigFactory
+import org.apache.pekko.testkit.PekkoSpec
+
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.wordspec.AnyWordSpecLike
 
-import org.apache.pekko.testkit.PekkoSpec
+import com.typesafe.config.ConfigFactory
 
 object ReplicatorSettingsSpec {
 

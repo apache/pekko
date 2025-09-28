@@ -15,8 +15,6 @@ package org.apache.pekko.actor.testkit.typed.javadsl
 
 import java.time.Duration
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 import org.junit.Rule
 import org.junit.rules.ExternalResource
 
@@ -32,6 +30,9 @@ import pekko.actor.typed.Behavior
 import pekko.actor.typed.Props
 import pekko.actor.typed.Scheduler
 import pekko.util.Timeout
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 /**
  * A Junit external resource for the [[ActorTestKit]], making it possible to have Junit manage the lifecycle of the testkit.

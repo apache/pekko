@@ -19,14 +19,14 @@ import scala.concurrent.{ Await, Future, Promise }
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.actor._
 import pekko.event.LoggingAdapter
 import pekko.remote.transport.AssociationHandle._
 import pekko.remote.transport.Transport._
 import pekko.util.ByteString
+
+import com.typesafe.config.Config
 
 /**
  * Transport implementation to be used for testing.

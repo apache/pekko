@@ -14,6 +14,7 @@
 package org.apache.pekko.cluster
 
 import scala.concurrent.duration.FiniteDuration
+
 import org.apache.pekko
 import pekko.actor._
 import pekko.cluster.ClusterEvent.CurrentClusterState

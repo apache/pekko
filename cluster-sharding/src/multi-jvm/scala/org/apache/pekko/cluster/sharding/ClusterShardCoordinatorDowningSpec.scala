@@ -23,9 +23,7 @@ import pekko.cluster.MemberStatus
 import pekko.remote.transport.ThrottlerTransportAdapter.Direction
 import pekko.serialization.jackson.CborSerializable
 import pekko.testkit._
-import pekko.util.ccompat._
 
-@ccompatUsedUntil213
 object ClusterShardCoordinatorDowningSpec {
   case class Ping(id: String) extends CborSerializable
 
@@ -95,9 +93,8 @@ class DDataClusterShardCoordinatorDowningMultiJvmNode3 extends DDataClusterShard
 abstract class ClusterShardCoordinatorDowningSpec(multiNodeConfig: ClusterShardCoordinatorDowningSpecConfig)
     extends MultiNodeClusterShardingSpec(multiNodeConfig)
     with ImplicitSender {
-  import multiNodeConfig._
-
   import ClusterShardCoordinatorDowningSpec._
+  import multiNodeConfig._
 
   def startSharding(): Unit = {
     startSharding(

@@ -14,13 +14,13 @@
 package org.apache.pekko.cluster.sharding.typed
 
 import scala.concurrent.duration.FiniteDuration
+import scala.jdk.DurationConverters._
 
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
 import pekko.cluster.sharding.ShardRegion.ClusterShardingStats
 import pekko.cluster.sharding.ShardRegion.CurrentShardRegionState
 import pekko.cluster.sharding.typed.scaladsl.EntityTypeKey
-import pekko.util.JavaDurationConverters
 
 /**
  * Protocol for querying sharding state e.g. A ShardRegion's state
@@ -77,5 +77,5 @@ final case class GetClusterShardingStats(
       entityTypeKey: javadsl.EntityTypeKey[_],
       timeout: java.time.Duration,
       replyTo: ActorRef[ClusterShardingStats]) =
-    this(entityTypeKey.asScala, JavaDurationConverters.asFiniteDuration(timeout), replyTo)
+    this(entityTypeKey.asScala, timeout.toScala, replyTo)
 }

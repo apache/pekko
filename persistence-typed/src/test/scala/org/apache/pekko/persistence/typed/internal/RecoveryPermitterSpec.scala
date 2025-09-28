@@ -16,8 +16,6 @@ package org.apache.pekko.persistence.typed.internal
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
-import org.scalatest.wordspec.AnyWordSpecLike
-
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.actor.PoisonPill
@@ -34,6 +32,8 @@ import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.RecoveryCompleted
 import pekko.persistence.typed.scaladsl.{ Effect, EventSourcedBehavior }
 import pekko.persistence.typed.scaladsl.EventSourcedBehavior.CommandHandler
+
+import org.scalatest.wordspec.AnyWordSpecLike
 
 object RecoveryPermitterSpec {
 

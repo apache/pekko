@@ -25,7 +25,6 @@ import pekko.event.ActorWithLogClass
 import pekko.event.Logging
 import pekko.remote.FailureDetectorRegistry
 import pekko.util.ConstantFun
-import pekko.util.ccompat._
 
 /**
  * INTERNAL API
@@ -45,7 +44,6 @@ import pekko.util.ccompat._
  * nodes which aggressively come and go as the traffic in the service changes.
  */
 @InternalApi
-@ccompatUsedUntil213
 private[cluster] class CrossDcHeartbeatSender extends Actor {
   import CrossDcHeartbeatSender._
 

@@ -15,7 +15,7 @@ package org.apache.pekko.cluster.typed.internal.receptionist
 
 import scala.concurrent.duration._
 import scala.concurrent.duration.{ FiniteDuration, MILLISECONDS }
-import com.typesafe.config.Config
+
 import org.apache.pekko
 import pekko.actor.typed.ActorSystem
 import pekko.annotation.InternalApi
@@ -24,6 +24,8 @@ import pekko.cluster.ddata.Replicator
 import pekko.cluster.ddata.Replicator.WriteConsistency
 import pekko.cluster.ddata.ReplicatorSettings
 import pekko.util.Helpers.toRootLowerCase
+
+import com.typesafe.config.Config
 
 /**
  * Internal API

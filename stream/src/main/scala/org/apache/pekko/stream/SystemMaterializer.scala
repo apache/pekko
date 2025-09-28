@@ -16,6 +16,7 @@ package org.apache.pekko.stream
 import scala.annotation.nowarn
 import scala.concurrent.Await
 import scala.concurrent.Promise
+import scala.jdk.DurationConverters._
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
@@ -29,7 +30,6 @@ import pekko.annotation.InternalApi
 import pekko.dispatch.Dispatchers
 import pekko.pattern.ask
 import pekko.stream.impl.MaterializerGuardian
-import pekko.util.JavaDurationConverters._
 import pekko.util.Timeout
 
 /**
@@ -59,7 +59,7 @@ final class SystemMaterializer(system: ExtendedActorSystem) extends Extension {
   private[pekko] val materializerSettings = ActorMaterializerSettings(system)
 
   private implicit val materializerTimeout: Timeout =
-    system.settings.config.getDuration("pekko.stream.materializer.creation-timeout").asScala
+    system.settings.config.getDuration("pekko.stream.materializer.creation-timeout").toScala
 
   @InternalApi @nowarn("msg=deprecated")
   private val materializerGuardian = system.systemActorOf(
@@ -96,7 +96,11 @@ final class SystemMaterializer(system: ExtendedActorSystem) extends Extension {
 
   val materializer: Materializer = {
     // block on async creation to make it effectively final
-    Await.result(systemMaterializerPromise.future, materializerTimeout.duration)
+    val future = systemMaterializerPromise.future
+    future.value match {
+      case Some(value) => value.get
+      case _           => Await.result(future, materializerTimeout.duration)
+    }
   }
 
 }

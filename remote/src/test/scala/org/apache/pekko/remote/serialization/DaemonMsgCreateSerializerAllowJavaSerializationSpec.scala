@@ -13,7 +13,7 @@
 
 package org.apache.pekko.remote.serialization
 
-import com.typesafe.config.ConfigFactory
+import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.actor.Actor
@@ -30,9 +30,10 @@ import pekko.routing.FromConfig
 import pekko.routing.RoundRobinPool
 import pekko.serialization.Serialization
 import pekko.serialization.SerializationExtension
-import pekko.testkit.PekkoSpec
 import pekko.testkit.JavaSerializable
-import pekko.util.unused
+import pekko.testkit.PekkoSpec
+
+import com.typesafe.config.ConfigFactory
 
 object DaemonMsgCreateSerializerAllowJavaSerializationSpec {
 
@@ -40,9 +41,10 @@ object DaemonMsgCreateSerializerAllowJavaSerializationSpec {
     def receive = Actor.emptyBehavior
   }
   class MyActor extends EmptyActor
-  class MyActorWithParam(@unused ignore: String) extends EmptyActor
-  class MyActorWithFunParam(@unused fun: Function1[Int, Int]) extends EmptyActor
-  class ActorWithDummyParameter(@unused javaSerialized: DummyParameter, @unused protoSerialized: ActorRef)
+  class MyActorWithParam(@nowarn("msg=never used") ignore: String) extends EmptyActor
+  class MyActorWithFunParam(@nowarn("msg=never used") fun: Function1[Int, Int]) extends EmptyActor
+  class ActorWithDummyParameter(@nowarn("msg=never used") javaSerialized: DummyParameter,
+      @nowarn("msg=never used") protoSerialized: ActorRef)
       extends EmptyActor
 }
 

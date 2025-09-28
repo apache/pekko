@@ -35,4 +35,5 @@ ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.japi.Predicate")
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.japi.Procedure")
 ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.pattern.Patterns.askWithReplyTo")
 ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.serialization.SerializationSetup.create")
+ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.pattern.Patterns.retry")
 

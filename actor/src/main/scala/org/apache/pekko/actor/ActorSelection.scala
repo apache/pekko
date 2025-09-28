@@ -16,30 +16,26 @@ package org.apache.pekko.actor
 import java.util.concurrent.CompletionStage
 import java.util.regex.Pattern
 
+import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.collection.immutable
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.concurrent.duration._
 import scala.language.implicitConversions
 import scala.util.Success
 
-import scala.annotation.nowarn
-
 import org.apache.pekko
-import pekko.dispatch.ExecutionContexts
 import pekko.pattern.ask
 import pekko.routing.MurmurHash
-import pekko.util.{ Helpers, JavaDurationConverters, Timeout }
-import pekko.util.ccompat._
-import pekko.util.FutureConverters
+import pekko.util.{ Helpers, Timeout }
 
 /**
  * An ActorSelection is a logical view of a section of an ActorSystem's tree of Actors,
  * allowing for broadcasting of messages to that section.
  */
 @SerialVersionUID(1L)
-@ccompatUsedUntil213
 abstract class ActorSelection extends Serializable {
   this: ScalaActorSelection =>
 
@@ -77,7 +73,7 @@ abstract class ActorSelection extends Serializable {
    * [[ActorRef]].
    */
   def resolveOne()(implicit timeout: Timeout): Future[ActorRef] = {
-    implicit val ec = ExecutionContexts.parasitic
+    implicit val ec = ExecutionContext.parasitic
     val p = Promise[ActorRef]()
     this.ask(Identify(None)).onComplete {
       case Success(ActorIdentity(_, Some(ref))) => p.success(ref)
@@ -108,9 +104,9 @@ abstract class ActorSelection extends Serializable {
    * supplied `timeout`.
    */
   def resolveOne(timeout: java.time.Duration): CompletionStage[ActorRef] = {
-    import FutureConverters._
-    import JavaDurationConverters._
-    resolveOne(timeout.asScala).asJava
+    import scala.jdk.DurationConverters._
+    import scala.jdk.FutureConverters._
+    resolveOne(timeout.toScala).asJava
   }
 
   override def toString: String = {

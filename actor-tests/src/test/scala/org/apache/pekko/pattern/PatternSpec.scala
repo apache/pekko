@@ -15,6 +15,7 @@ package org.apache.pekko.pattern
 
 import scala.concurrent.{ Await, ExecutionContextExecutor, Future, Promise, TimeoutException }
 import scala.concurrent.duration._
+
 import org.apache.pekko
 import pekko.actor.{ Actor, Props }
 import pekko.testkit.{ PekkoSpec, TestLatch }

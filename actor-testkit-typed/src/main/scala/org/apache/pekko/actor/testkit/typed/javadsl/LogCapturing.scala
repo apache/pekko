@@ -18,9 +18,10 @@ import scala.util.control.NonFatal
 import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
-import org.slf4j.LoggerFactory
 
 import org.apache.pekko.actor.testkit.typed.internal.CapturingAppender
+
+import org.slf4j.LoggerFactory
 
 /**
  * JUnit `TestRule` to make log lines appear only when the test failed.

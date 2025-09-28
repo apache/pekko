@@ -13,12 +13,11 @@
 
 package org.apache.pekko.remote
 
+import scala.annotation.nowarn
 import scala.concurrent.Future
 import scala.util.Failure
 import scala.util.control.Exception.Catcher
 import scala.util.control.NonFatal
-
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.ConfigurationException
@@ -47,7 +46,6 @@ import pekko.remote.serialization.ActorRefResolveThreadLocalCache
 import pekko.serialization.Serialization
 import pekko.util.ErrorMessages
 import pekko.util.OptionVal
-import pekko.util.unused
 
 /**
  * INTERNAL API
@@ -374,7 +372,8 @@ private[pekko] class RemoteActorRefProvider(
     warnOnUnsafe(s"Remote deploy of [$path] is not allowed, falling back to local.")
 
   /** Override to add any additional checks if using `RemoteActorRefProvider` as a superclass. */
-  protected def shouldCreateRemoteActorRef(@unused system: ActorSystem, @unused address: Address): Boolean = true
+  protected def shouldCreateRemoteActorRef(@nowarn("msg=never used") system: ActorSystem,
+      @nowarn("msg=never used") address: Address): Boolean = true
 
   def actorOf(
       system: ActorSystemImpl,

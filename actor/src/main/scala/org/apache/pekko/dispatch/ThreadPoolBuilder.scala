@@ -18,6 +18,7 @@ import java.util.concurrent.{
   ArrayBlockingQueue,
   BlockingQueue,
   Callable,
+  Executor,
   ExecutorService,
   ForkJoinPool,
   ForkJoinWorkerThread,
@@ -33,6 +34,10 @@ import java.util.concurrent.atomic.{ AtomicLong, AtomicReference }
 
 import scala.concurrent.{ BlockContext, CanAwait }
 import scala.concurrent.duration.Duration
+
+import org.apache.pekko
+import pekko.annotation.InternalApi
+import pekko.dispatch.VirtualThreadSupport.newVirtualThreadFactory
 
 object ThreadPoolConfig {
   type QueueFactory = () => BlockingQueue[Runnable]
@@ -72,20 +77,60 @@ trait ExecutorServiceFactory {
  */
 trait ExecutorServiceFactoryProvider {
   def createExecutorServiceFactory(id: String, threadFactory: ThreadFactory): ExecutorServiceFactory
+
+  /**
+   * Whether the executor service created by this factory should use virtual threads.
+   */
   def isVirtualized: Boolean = false // can be overridden by implementations
+
+  /**
+   * The starting number of the virtual thread name, if -1, the number will not be appended.
+   */
+  def virtualThreadStartNumber: Int = 0 // can be overridden by implementations
+
+  protected def createVirtualized(threadFactory: ThreadFactory,
+      pool: ExecutorService with LoadMetrics,
+      prefixName: String,
+      startNumber: Int): ExecutorService = {
+    // when virtualized, we need enhanced thread factory
+    val factory: ThreadFactory = threadFactory match {
+      case MonitorableThreadFactory(name, _, contextClassLoader, exceptionHandler, _) =>
+        new ThreadFactory {
+          private val vtFactory = newVirtualThreadFactory(name, startNumber, pool) // use the pool as the scheduler
+
+          override def newThread(r: Runnable): Thread = {
+            val vt = vtFactory.newThread(r)
+            vt.setUncaughtExceptionHandler(exceptionHandler)
+            contextClassLoader.foreach(vt.setContextClassLoader)
+            vt
+          }
+        }
+      case _ => newVirtualThreadFactory(prefixName, startNumber, pool); // use the pool as the scheduler
+    }
+    // wrap the pool with virtualized executor service
+    new VirtualizedExecutorService(
+      factory, // the virtual thread factory
+      pool, // the underlying pool
+      (_: Executor) => pool.atFullThrottle(), // the load metrics provider, we use the pool itself
+      cascadeShutdown = true // cascade shutdown
+    )
+  }
 }
 
 /**
- * A small configuration DSL to create ThreadPoolExecutors that can be provided as an ExecutorServiceFactoryProvider to Dispatcher
+ * INTERNAL API
+ *
+ * Configuration object for ThreadPoolExecutor
  */
+@InternalApi
 final case class ThreadPoolConfig(
     allowCorePoolTimeout: Boolean = ThreadPoolConfig.defaultAllowCoreThreadTimeout,
     corePoolSize: Int = ThreadPoolConfig.defaultCorePoolSize,
     maxPoolSize: Int = ThreadPoolConfig.defaultMaxPoolSize,
     threadTimeout: Duration = ThreadPoolConfig.defaultTimeout,
     queueFactory: ThreadPoolConfig.QueueFactory = ThreadPoolConfig.linkedBlockingQueue(),
-    rejectionPolicy: RejectedExecutionHandler = ThreadPoolConfig.defaultRejectionPolicy)
-    extends ExecutorServiceFactoryProvider {
+    rejectionPolicy: RejectedExecutionHandler = ThreadPoolConfig.defaultRejectionPolicy,
+    isVirtualized: Boolean = false) {
   // Written explicitly to permit non-inlined defn; this is necessary for downstream instrumentation that stores extra
   // context information on the config
   @noinline
@@ -95,35 +140,11 @@ final case class ThreadPoolConfig(
       maxPoolSize: Int = maxPoolSize,
       threadTimeout: Duration = threadTimeout,
       queueFactory: ThreadPoolConfig.QueueFactory = queueFactory,
-      rejectionPolicy: RejectedExecutionHandler = rejectionPolicy
+      rejectionPolicy: RejectedExecutionHandler = rejectionPolicy,
+      isVirtualized: Boolean = isVirtualized
   ): ThreadPoolConfig =
-    ThreadPoolConfig(allowCorePoolTimeout, corePoolSize, maxPoolSize, threadTimeout, queueFactory, rejectionPolicy)
-
-  class ThreadPoolExecutorServiceFactory(val threadFactory: ThreadFactory) extends ExecutorServiceFactory {
-    def createExecutorService: ExecutorService = {
-      val service: ThreadPoolExecutor = new ThreadPoolExecutor(
-        corePoolSize,
-        maxPoolSize,
-        threadTimeout.length,
-        threadTimeout.unit,
-        queueFactory(),
-        threadFactory,
-        rejectionPolicy) with LoadMetrics {
-        def atFullThrottle(): Boolean = this.getActiveCount >= this.getPoolSize
-      }
-      service.allowCoreThreadTimeOut(allowCorePoolTimeout)
-      service
-    }
-  }
-  def createExecutorServiceFactory(id: String, threadFactory: ThreadFactory): ExecutorServiceFactory = {
-    val tf = threadFactory match {
-      case m: MonitorableThreadFactory =>
-        // add the dispatcher id to the thread names
-        m.withName(m.name + "-" + id)
-      case other => other
-    }
-    new ThreadPoolExecutorServiceFactory(tf)
-  }
+    ThreadPoolConfig(allowCorePoolTimeout, corePoolSize, maxPoolSize, threadTimeout, queueFactory, rejectionPolicy,
+      isVirtualized)
 }
 
 /**
@@ -178,6 +199,9 @@ final case class ThreadPoolConfigBuilder(config: ThreadPoolConfig) {
 
   def setQueueFactory(newQueueFactory: QueueFactory): ThreadPoolConfigBuilder =
     this.copy(config = config.copy(queueFactory = newQueueFactory))
+
+  def isVirtualized(isVirtualized: Boolean): ThreadPoolConfigBuilder =
+    this.copy(config = config.copy(isVirtualized = isVirtualized))
 
   def configure(fs: Option[Function[ThreadPoolConfigBuilder, ThreadPoolConfigBuilder]]*): ThreadPoolConfigBuilder =
     fs.foldLeft(this)((c, f) => f.map(_(c)).getOrElse(c))

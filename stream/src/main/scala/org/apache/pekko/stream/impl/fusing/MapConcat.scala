@@ -28,13 +28,11 @@ import pekko.stream.Attributes.SourceLocation
 import pekko.stream.Supervision.Decider
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
-import pekko.util.ccompat._
 
 /**
  * INTERNAL API
  */
 @InternalApi
-@ccompatUsedUntil213
 private[pekko] final class MapConcat[In, Out](f: In => IterableOnce[Out])
     extends GraphStage[FlowShape[In, Out]] {
   require(f != null, "f function should not be null")

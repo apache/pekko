@@ -19,20 +19,19 @@ import java.util.concurrent.ThreadLocalRandom
 import java.util.concurrent.TimeUnit
 import java.util.function.{ Function => JFunction }
 
+import scala.annotation.nowarn
 import scala.annotation.varargs
 import scala.collection.immutable
 import scala.collection.immutable.TreeSet
 import scala.collection.mutable
 import scala.concurrent.duration._
 import scala.concurrent.duration.FiniteDuration
+import scala.jdk.DurationConverters._
 import scala.util.Failure
 import scala.util.Success
 import scala.util.Try
 import scala.util.control.NoStackTrace
 import scala.util.control.NonFatal
-
-import scala.annotation.nowarn
-import com.typesafe.config.Config
 
 import org.apache.pekko
 import pekko.actor.Actor
@@ -68,10 +67,9 @@ import pekko.remote.RARP
 import pekko.serialization.SerializationExtension
 import pekko.util.ByteString
 import pekko.util.Helpers.toRootLowerCase
-import pekko.util.JavaDurationConverters._
-import pekko.util.ccompat._
 
-@ccompatUsedUntil213
+import com.typesafe.config.Config
+
 object ReplicatorSettings {
 
   /**
@@ -98,7 +96,7 @@ object ReplicatorSettings {
       else Some(config.getBytes("log-data-size-exceeding").toInt)
     }
 
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     new ReplicatorSettings(
       roles = roleOption(config.getString("role")).toSet,
       gossipInterval = config.getDuration("gossip-interval", MILLISECONDS).millis,
@@ -233,7 +231,7 @@ final class ReplicatorSettings(
    * Java API
    */
   def withDurableKeys(durableKeys: java.util.Set[String]): ReplicatorSettings = {
-    import pekko.util.ccompat.JavaConverters._
+    import scala.jdk.CollectionConverters._
     withDurableKeys(durableKeys.asScala.toSet)
   }
 
@@ -309,7 +307,7 @@ object Replicator {
     /**
      * Java API
      */
-    def this(n: Int, timeout: java.time.Duration) = this(n, timeout.asScala)
+    def this(n: Int, timeout: java.time.Duration) = this(n, timeout.toScala)
   }
   final case class ReadMajority(timeout: FiniteDuration, minCap: Int = DefaultMajorityMinCap) extends ReadConsistency {
     def this(timeout: FiniteDuration) = this(timeout, DefaultMajorityMinCap)
@@ -317,7 +315,7 @@ object Replicator {
     /**
      * Java API
      */
-    def this(timeout: java.time.Duration) = this(timeout.asScala, DefaultMajorityMinCap)
+    def this(timeout: java.time.Duration) = this(timeout.toScala, DefaultMajorityMinCap)
   }
 
   /**
@@ -331,14 +329,14 @@ object Replicator {
     /**
      * Java API
      */
-    def this(timeout: java.time.Duration, additional: Int) = this(timeout.asScala, additional, DefaultMajorityMinCap)
+    def this(timeout: java.time.Duration, additional: Int) = this(timeout.toScala, additional, DefaultMajorityMinCap)
   }
   final case class ReadAll(timeout: FiniteDuration) extends ReadConsistency {
 
     /**
      * Java API
      */
-    def this(timeout: java.time.Duration) = this(timeout.asScala)
+    def this(timeout: java.time.Duration) = this(timeout.toScala)
   }
 
   sealed trait WriteConsistency {
@@ -353,7 +351,7 @@ object Replicator {
     /**
      * Java API
      */
-    def this(n: Int, timeout: java.time.Duration) = this(n, timeout.asScala)
+    def this(n: Int, timeout: java.time.Duration) = this(n, timeout.toScala)
   }
   final case class WriteMajority(timeout: FiniteDuration, minCap: Int = DefaultMajorityMinCap)
       extends WriteConsistency {
@@ -362,7 +360,7 @@ object Replicator {
     /**
      * Java API
      */
-    def this(timeout: java.time.Duration) = this(timeout.asScala, DefaultMajorityMinCap)
+    def this(timeout: java.time.Duration) = this(timeout.toScala, DefaultMajorityMinCap)
   }
 
   /**
@@ -376,14 +374,14 @@ object Replicator {
     /**
      * Java API
      */
-    def this(timeout: java.time.Duration, additional: Int) = this(timeout.asScala, additional, DefaultMajorityMinCap)
+    def this(timeout: java.time.Duration, additional: Int) = this(timeout.toScala, additional, DefaultMajorityMinCap)
   }
   final case class WriteAll(timeout: FiniteDuration) extends WriteConsistency {
 
     /**
      * Java API
      */
-    def this(timeout: java.time.Duration) = this(timeout.asScala)
+    def this(timeout: java.time.Duration) = this(timeout.toScala)
   }
 
   /**
@@ -410,7 +408,7 @@ object Replicator {
      * Java API
      */
     def getKeyIds: java.util.Set[String] = {
-      import pekko.util.ccompat.JavaConverters._
+      import scala.jdk.CollectionConverters._
       keyIds.asJava
     }
   }
@@ -1971,7 +1969,9 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
       to ! status
     } else {
       val totChunks = dataEntries.size / maxDeltaElements
-      for (_ <- 1 to math.min(totChunks, 10)) {
+      var i = 1
+      val maxLoop = math.min(totChunks, 10)
+      while (i <= maxLoop) {
         if (totChunks == statusTotChunks)
           statusCount += 1
         else {
@@ -1983,6 +1983,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
             case (key, (_, _)) if math.abs(key.hashCode % totChunks) == chunk => (key, getDigest(key))
           }, chunk, totChunks, toSystemUid, selfFromSystemUid)
         to ! status
+        i += 1
       }
     }
   }

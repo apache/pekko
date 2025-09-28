@@ -16,17 +16,16 @@ package org.apache.pekko.cluster.ddata.typed.javadsl
 import java.time.Duration
 import java.util.function.{ Function => JFunction }
 
+import scala.annotation.nowarn
+import scala.jdk.DurationConverters._
 import scala.util.Failure
 import scala.util.Success
-
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.javadsl.ActorContext
 import pekko.cluster.ddata.Key
 import pekko.cluster.ddata.ReplicatedData
-import pekko.util.JavaDurationConverters._
 import pekko.util.Timeout
 
 /**
@@ -66,7 +65,7 @@ class ReplicatorMessageAdapter[A, B <: ReplicatedData](
     replicator: ActorRef[Replicator.Command],
     unexpectedAskTimeout: Duration) {
 
-  private implicit val askTimeout: Timeout = Timeout(unexpectedAskTimeout.asScala)
+  private implicit val askTimeout: Timeout = Timeout(unexpectedAskTimeout.toScala)
 
   private var changedMessageAdapters: Map[Key[B], ActorRef[Replicator.SubscribeResponse[B]]] = Map.empty
 

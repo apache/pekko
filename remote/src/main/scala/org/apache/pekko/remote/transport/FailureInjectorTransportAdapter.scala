@@ -16,11 +16,11 @@ package org.apache.pekko.remote.transport
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ThreadLocalRandom
 
+import scala.annotation.nowarn
 import scala.concurrent.{ Future, Promise }
 import scala.util.control.NoStackTrace
 
 import FailureInjectorTransportAdapter._
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.PekkoException

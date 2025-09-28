@@ -26,7 +26,7 @@ jobs:
           java-version: 17
 
       - name: Install sbt
-        uses: sbt/setup-sbt@f20dc1bc1f8be605c44ffbcec6f17f708a4af9d1 # v1.1.12
+        uses: sbt/setup-sbt@17575ea4e18dd928fe5968dbe32294b97923d65b # v1.1.13
 
       - name: Cache Coursier cache
         uses: coursier/cache-action@4e2615869d13561d626ed48655e1a39e5b192b3c # v6.4.7
@@ -80,7 +80,7 @@ jobs:
           java-version: 17
 
       - name: Install sbt
-        uses: sbt/setup-sbt@f20dc1bc1f8be605c44ffbcec6f17f708a4af9d1 # v1.1.12
+        uses: sbt/setup-sbt@17575ea4e18dd928fe5968dbe32294b97923d65b # v1.1.13
 
       - name: Cache Coursier cache
         uses: coursier/cache-action@4e2615869d13561d626ed48655e1a39e5b192b3c # v6.4.7
@@ -114,7 +114,7 @@ jobs:
         # No need to specify the full Scala version. Only the Scala
         # binary version is required and Pekko build will set the right
         # full version from it.
-        scalaVersion: ["2.12.x", "2.13.x", "3.3.x"]
+        scalaVersion: ["2.13.x", "3.3.x"]
         javaVersion: [17, 21]
     env:
       DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
@@ -132,7 +132,7 @@ jobs:
           java-version: ${{ matrix.javaVersion }}
 
       - name: Install sbt
-        uses: sbt/setup-sbt@f20dc1bc1f8be605c44ffbcec6f17f708a4af9d1 # v1.1.12
+        uses: sbt/setup-sbt@17575ea4e18dd928fe5968dbe32294b97923d65b # v1.1.13
 
       - name: Cache Coursier cache
         uses: coursier/cache-action@4e2615869d13561d626ed48655e1a39e5b192b3c # v6.4.7
@@ -177,7 +177,7 @@ jobs:
 
       - name: Install scala-cli
         if: ${{ matrix.javaVersion == 11 }}
-        uses: VirtusLab/scala-cli-setup@54cd42adb92642fffd3b04cf9705d2806a3b8a92 # v1.8.5
+        uses: VirtusLab/scala-cli-setup@77834b5926f3eb70869d8009530c65585f7a039b # v1.9.1
         # run: |-
         #   curl -sS "https://virtuslab.github.io/scala-cli-packages/KEY.gpg" | sudo gpg --dearmor  -o /etc/apt/trusted.gpg.d/scala-cli.gpg 2>/dev/null
         #   sudo curl -s --compressed -o /etc/apt/sources.list.d/scala_cli_packages.list "https://virtuslab.github.io/scala-cli-packages/debian/scala_cli_packages.list"

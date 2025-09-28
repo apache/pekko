@@ -14,15 +14,13 @@
 package org.apache.pekko.remote.transport.netty
 
 import scala.annotation.nowarn
-
-import com.typesafe.config.Config
-import org.apache.pekko
-import pekko.util.ccompat.ccompatUsedUntil213
-import pekko.util.ccompat.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 import io.netty.channel.Channel
 import io.netty.handler.ssl.SslHandler
 import io.netty.util.concurrent.Future
+
+import com.typesafe.config.Config
 
 /**
  * INTERNAL API
@@ -56,7 +54,6 @@ private[pekko] class SSLSettings(config: Config) {
  * Used for adding SSL support to Netty pipeline.
  * The `SSLEngine` is created via the configured [[SSLEngineProvider]].
  */
-@ccompatUsedUntil213
 @nowarn("msg=deprecated")
 private[pekko] object NettySSLSupport {
 

@@ -17,10 +17,10 @@ import org.apache.pekko
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
+import pekko.persistence.typed.{ ReplicaId, ReplicationBaseSpec }
 import pekko.persistence.typed.ReplicationId
 import pekko.persistence.typed.crdt.CounterSpec.PlainCounter.{ Decrement, Get, Increment }
 import pekko.persistence.typed.scaladsl.{ Effect, EventSourcedBehavior, ReplicatedEventSourcing }
-import pekko.persistence.typed.{ ReplicaId, ReplicationBaseSpec }
 
 object CounterSpec {
 

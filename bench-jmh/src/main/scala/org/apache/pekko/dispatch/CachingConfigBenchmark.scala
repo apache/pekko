@@ -15,8 +15,9 @@ package org.apache.pekko.dispatch
 
 import java.util.concurrent.TimeUnit
 
-import com.typesafe.config.ConfigFactory
 import org.openjdk.jmh.annotations._
+
+import com.typesafe.config.ConfigFactory
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Array(Mode.Throughput))
