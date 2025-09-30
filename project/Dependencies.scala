@@ -32,7 +32,7 @@ object Dependencies {
   val aeronVersion = "1.48.6"
   // needs to be inline with the aeron version, check
   // https://github.com/aeron-io/aeron/blob/master/gradle/libs.versions.toml
-  val agronaVersion = "2.2.4"
+  val agronaVersion = "2.3.0"
   val nettyVersion = "4.2.6.Final"
   val logbackVersion = "1.5.18"
 
