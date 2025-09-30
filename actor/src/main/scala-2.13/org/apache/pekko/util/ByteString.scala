@@ -981,6 +981,7 @@ sealed abstract class ByteString
    *
    * @return this ByteString copied into a byte array
    */
+  @nowarn("msg=easy to mistake")
   protected[ByteString] def toArray: Array[Byte] = toArray[Byte]
 
   final override def toArray[B >: Byte](implicit arg0: ClassTag[B]): Array[B] = {

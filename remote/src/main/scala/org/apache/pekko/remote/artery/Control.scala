@@ -203,6 +203,7 @@ private[remote] class OutboundControlJunction(
   val out: Outlet[OutboundEnvelope] = Outlet("OutboundControlJunction.out")
   override val shape: FlowShape[OutboundEnvelope, OutboundEnvelope] = FlowShape(in, out)
 
+  @scala.annotation.nowarn("msg=inferred structural type")
   override def createLogicAndMaterializedValue(inheritedAttributes: Attributes) = {
 
     val logic = new GraphStageLogic(shape)
