@@ -40,7 +40,7 @@ object Dependencies {
   val jacksonCoreVersion = "2.20.0"
   val jacksonDatabindVersion = jacksonCoreVersion
 
-  val scala213Version = "2.13.16"
+  val scala213Version = "2.13.17"
   val scala3Version = "3.3.6"
   val allScalaVersions = Seq(scala213Version, scala3Version)
 
