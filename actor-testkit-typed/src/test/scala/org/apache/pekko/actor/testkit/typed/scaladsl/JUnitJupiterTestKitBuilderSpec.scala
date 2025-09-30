@@ -18,50 +18,50 @@
 package org.apache.pekko.actor.testkit.typed.scaladsl
 
 import org.apache.pekko
-import org.apache.pekko.actor.testkit.typed.javadsl.JUnit5TestKitBuilder
+import org.apache.pekko.actor.testkit.typed.javadsl.JUnitJupiterTestKitBuilder
 import pekko.actor.typed.ActorSystem
 
 import org.scalatest.wordspec.AnyWordSpec
 
 import com.typesafe.config.ConfigFactory
 
-class JUnit5TestKitBuilderSpec extends AnyWordSpec {
+class JUnitJupiterTestKitBuilderSpec extends AnyWordSpec {
 
-  "the JUnit5TestKitBuilder" should {
+  "the JUnitJupiterTestKitBuilder" should {
     "create a Testkit with name hello" in {
-      val actualTestKit = new JUnit5TestKitBuilder().withName("hello").build()
+      val actualTestKit = new JUnitJupiterTestKitBuilder().withName("hello").build()
 
       assertResult("hello")(actualTestKit.system.name)
     }
   }
 
-  "the JUnit5TestKitBuilder" should {
+  "the JUnitJupiterTestKitBuilder" should {
     "create a Testkit with the classname as name" in {
-      val actualTestKit = new JUnit5TestKitBuilder()
+      val actualTestKit = new JUnitJupiterTestKitBuilder()
         .build()
 
-      assertResult("JUnit5TestKitBuilderSpec")(actualTestKit.system.name)
+      assertResult("JUnitJupiterTestKitBuilderSpec")(actualTestKit.system.name)
     }
   }
 
-  "the JUnit5TestKitBuilder" should {
+  "the JUnitJupiterTestKitBuilder" should {
     "create a Testkit with a custom config" in {
 
       val conf = ConfigFactory.load("application.conf")
-      val actualTestKit = new JUnit5TestKitBuilder()
+      val actualTestKit = new JUnitJupiterTestKitBuilder()
         .withCustomConfig(conf)
         .build()
       assertResult("someValue")(actualTestKit.system.settings.config.getString("test.value"))
-      assertResult("JUnit5TestKitBuilderSpec")(actualTestKit.system.name)
+      assertResult("JUnitJupiterTestKitBuilderSpec")(actualTestKit.system.name)
 
     }
   }
 
-  "the JUnit5TestKitBuilder" should {
+  "the JUnitJupiterTestKitBuilder" should {
     "create a Testkit with a custom config and name" in {
 
       val conf = ConfigFactory.load("application.conf")
-      val actualTestKit = new JUnit5TestKitBuilder()
+      val actualTestKit = new JUnitJupiterTestKitBuilder()
         .withCustomConfig(conf)
         .withName("hello")
         .build()
@@ -71,12 +71,12 @@ class JUnit5TestKitBuilderSpec extends AnyWordSpec {
     }
   }
 
-  "the JUnit5TestKitBuilder" should {
+  "the JUnitJupiterTestKitBuilder" should {
     "create a Testkit with a custom system" in {
 
       val system: ActorSystem[GreeterMain.SayHello] = ActorSystem(GreeterMain(), "PekkoQuickStart")
 
-      val actualTestKit = new JUnit5TestKitBuilder()
+      val actualTestKit = new JUnitJupiterTestKitBuilder()
         .withSystem(system)
         .build()
       assertResult("PekkoQuickStart")(actualTestKit.system.name)
