@@ -26,7 +26,7 @@ object Dependencies {
   }
 
   val junitVersion = "4.13.2"
-  val junit5Version = "5.14.0"
+  val junit6Version = "6.0.0"
   val slf4jVersion = "2.0.17"
   // check agrona version when updating this
   val aeronVersion = "1.48.6"
@@ -78,7 +78,7 @@ object Dependencies {
     val lmdb = "org.lmdbjava" % "lmdbjava" % "0.9.1"
 
     val junit = "junit" % "junit" % junitVersion
-    val junit5 = "org.junit.jupiter" % "junit-jupiter-engine" % junit5Version
+    val junit6 = "org.junit.jupiter" % "junit-jupiter-engine" % junit6Version
 
     val aeronDriver = "io.aeron" % "aeron-driver" % aeronVersion
     val aeronClient = "io.aeron" % "aeron-client" % aeronVersion
@@ -109,7 +109,7 @@ object Dependencies {
       val commonsIo = "commons-io" % "commons-io" % "2.20.0" % Test
       val commonsCodec = "commons-codec" % "commons-codec" % "1.19.0" % Test
       val junit = "junit" % "junit" % junitVersion % Test
-      val junit5 = "org.junit.jupiter" % "junit-jupiter-engine" % junit5Version % Test
+      val junit6 = "org.junit.jupiter" % "junit-jupiter-engine" % junit6Version % Test
       val httpClient = "org.apache.httpcomponents" % "httpclient" % "4.5.14" % Test
 
       val logback = Compile.logback % Test
@@ -181,7 +181,7 @@ object Dependencies {
       val levelDBNative = "org.fusesource.leveldbjni" % "leveldbjni-all" % "1.8" % "optional;provided"
 
       val junit = Compile.junit % "optional;provided;test"
-      val junit5 = Compile.junit5 % "optional;provided;test"
+      val junit6 = Compile.junit6 % "optional;provided;test"
 
       val scalatest = "org.scalatest" %% "scalatest" % scalaTestVersion % "optional;provided;test"
 
@@ -220,7 +220,7 @@ object Dependencies {
   lazy val actorTestkitTyped = l ++= Seq(
     Provided.logback,
     Provided.junit,
-    Provided.junit5,
+    Provided.junit6,
     Provided.scalatest,
     TestDependencies.scalatestJUnit)
 
