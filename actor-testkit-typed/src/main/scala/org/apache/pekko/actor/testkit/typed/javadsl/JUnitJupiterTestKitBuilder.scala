@@ -24,25 +24,25 @@ import pekko.actor.typed.ActorSystem
 
 import com.typesafe.config.Config
 
-final class JUnit6TestKitBuilder() {
+final class JUnitJupiterTestKitBuilder() {
 
   var system: Option[ActorSystem[_]] = None
 
   var customConfig: Config = ApplicationTestConfig
 
-  var name: String = TestKitUtils.testNameFromCallStack(classOf[JUnit6TestKitBuilder])
+  var name: String = TestKitUtils.testNameFromCallStack(classOf[JUnitJupiterTestKitBuilder])
 
-  def withSystem(system: ActorSystem[_]): JUnit6TestKitBuilder = {
+  def withSystem(system: ActorSystem[_]): JUnitJupiterTestKitBuilder = {
     this.system = Some(system)
     this
   }
 
-  def withCustomConfig(customConfig: Config): JUnit6TestKitBuilder = {
+  def withCustomConfig(customConfig: Config): JUnitJupiterTestKitBuilder = {
     this.customConfig = customConfig
     this
   }
 
-  def withName(name: String): JUnit6TestKitBuilder = {
+  def withName(name: String): JUnitJupiterTestKitBuilder = {
     this.name = name
     this
   }

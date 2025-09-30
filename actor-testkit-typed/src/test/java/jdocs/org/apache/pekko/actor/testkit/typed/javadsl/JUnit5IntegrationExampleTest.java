@@ -15,7 +15,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.apache.pekko.actor.Address;
 import org.apache.pekko.actor.testkit.typed.annotations.JUnit5TestKit;
 import org.apache.pekko.actor.testkit.typed.javadsl.*;
-import org.apache.pekko.actor.testkit.typed.javadsl.JUnit5TestKitBuilder;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

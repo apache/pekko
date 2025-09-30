@@ -22,4 +22,4 @@ import java.lang.annotation.*;
 @Documented
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface JUnit6TestKit {}
+public @interface JUnitJupiterTestKit {}

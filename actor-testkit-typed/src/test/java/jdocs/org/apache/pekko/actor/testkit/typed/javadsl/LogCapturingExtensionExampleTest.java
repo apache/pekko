@@ -19,22 +19,23 @@ package jdocs.org.apache.pekko.actor.testkit.typed.javadsl;
 
 import static jdocs.org.apache.pekko.actor.testkit.typed.javadsl.AsyncTestingExampleTest.Echo;
 
-import org.apache.pekko.actor.testkit.typed.annotations.JUnit6TestKit;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
 import org.apache.pekko.actor.testkit.typed.javadsl.*;
-import org.apache.pekko.actor.testkit.typed.javadsl.JUnit6TestKitBuilder;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import jdocs.org.apache.pekko.actor.testkit.typed.javadsl.AsyncTestingExampleTest.Echo;
+
 // test code copied from LogCapturingExampleTest.java
 
-@DisplayName("JUnit6 log capturing")
-@ExtendWith(TestKitJUnit6Extension.class)
+@DisplayName("JUnitJupiter log capturing")
+@ExtendWith(TestKitJUnitJupiterExtension.class)
 @ExtendWith(LogCapturingExtension.class)
 class LogCapturingExtensionExampleTest {
 
-  @JUnit6TestKit public ActorTestKit testKit = new JUnit6TestKitBuilder().build();
+  @JUnitJupiterTestKit public ActorTestKit testKit = new JUnitJupiterTestKitBuilder().build();
 
   @Test
   void testSomething() {
@@ -52,4 +53,4 @@ class LogCapturingExtensionExampleTest {
     probe.expectMessage(new Echo.Pong("hello"));
   }
 }
-// #log-capturing-junit6
+// #log-capturing-junit-jupiter

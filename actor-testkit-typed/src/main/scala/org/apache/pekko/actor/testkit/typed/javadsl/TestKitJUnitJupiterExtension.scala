@@ -20,22 +20,22 @@ package org.apache.pekko.actor.testkit.typed.javadsl
 import org.junit.jupiter.api.extension.{ AfterAllCallback, BeforeTestExecutionCallback, ExtensionContext }
 import org.junit.platform.commons.support.AnnotationSupport
 
-import org.apache.pekko.actor.testkit.typed.annotations.JUnit6TestKit
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit
 
-final class TestKitJUnit6Extension() extends AfterAllCallback with BeforeTestExecutionCallback {
+final class TestKitJUnitJupiterExtension() extends AfterAllCallback with BeforeTestExecutionCallback {
 
   var testKit: Option[ActorTestKit] = None
 
   /**
-   * Get a reference to the field annotated with `@JUnit6Testkit` [[JUnit6TestKit]]
+   * Get a reference to the field annotated with `@JUnitJupiterTestKit` [[JUnitJupiterTestKit]]
    */
   override def beforeTestExecution(context: ExtensionContext): Unit = {
     val testInstance: Option[AnyRef] =
       if (context.getTestInstance.isPresent) Some(context.getTestInstance.get()) else None
     testInstance.map(instance => {
-      val annotations = AnnotationSupport.findAnnotatedFieldValues(instance, classOf[JUnit6TestKit])
+      val annotations = AnnotationSupport.findAnnotatedFieldValues(instance, classOf[JUnitJupiterTestKit])
       val fieldValue = annotations.stream().findFirst().orElseThrow(() =>
-        throw new IllegalArgumentException("Could not find field annotated with @JUnit6TestKit"))
+        throw new IllegalArgumentException("Could not find field annotated with @JUnitJupiterTestKit"))
       testKit = Some(fieldValue.asInstanceOf[ActorTestKit])
     })
   }

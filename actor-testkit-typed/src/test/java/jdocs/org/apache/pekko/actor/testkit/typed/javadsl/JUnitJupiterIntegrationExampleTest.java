@@ -13,23 +13,22 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.apache.pekko.actor.Address;
-import org.apache.pekko.actor.testkit.typed.annotations.JUnit6TestKit;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
 import org.apache.pekko.actor.testkit.typed.javadsl.*;
-import org.apache.pekko.actor.testkit.typed.javadsl.JUnit6TestKitBuilder;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-// #junit6-integration
-@DisplayName("JUnit6")
-@ExtendWith(TestKitJUnit6Extension.class)
-class JUnit6IntegrationExampleTest {
+// #junit-jupiter-integration
+@DisplayName("JUnitJupiter")
+@ExtendWith(TestKitJUnitJupiterExtension.class)
+class JUnitJupiterIntegrationExampleTest {
 
-  @JUnit6TestKit public ActorTestKit testKit = new JUnit6TestKitBuilder().build();
+  @JUnitJupiterTestKit public ActorTestKit testKit = new JUnitJupiterTestKitBuilder().build();
 
   @Test
-  void junit6Test() {
+  void junitJupiterTest() {
     Address address = testKit.system().address();
     assertNotNull(address);
   }
@@ -57,4 +56,4 @@ class JUnit6IntegrationExampleTest {
     assertEquals("hello", pong.message);
   }
 }
-// #junit6-integration
+// #junit-jupiter-integration
