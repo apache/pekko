@@ -41,7 +41,7 @@ class ReachabilityPerfSpec extends AnyWordSpec with Matchers {
   @nowarn
   private def addUnreachable(base: Reachability, count: Int): Reachability = {
     val observers = base.versions.keySet.take(count)
-    val subjects = Stream.continually(base.versions.keySet).flatten.iterator
+    val subjects = LazyList.continually(base.versions.keySet).flatten.iterator
     observers.foldLeft(base) {
       case (r, o) =>
         (1 to 5).foldLeft(r) { case (r, _) => r.unreachable(o, subjects.next()) }

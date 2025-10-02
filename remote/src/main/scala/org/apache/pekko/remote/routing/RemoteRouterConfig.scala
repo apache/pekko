@@ -52,7 +52,7 @@ final case class RemoteRouterConfig(local: Pool, nodes: Iterable[Address]) exten
   def this(local: Pool, nodes: Array[Address]) = this(local, nodes.toSeq)
 
   // need this iterator as instance variable since Resizer may call createRoutees several times
-  @nowarn @transient private val nodeAddressIter: Iterator[Address] = Stream.continually(nodes).flatten.iterator
+  @nowarn @transient private val nodeAddressIter: Iterator[Address] = LazyList.continually(nodes).flatten.iterator
   // need this counter as instance variable since Resizer may call createRoutees several times
   @transient private val childNameCounter = new AtomicInteger
 
