@@ -84,7 +84,7 @@ package object scaladsl {
       if (arr.isInstanceOf[Array[Object]])
         log.trace(format, arr.asInstanceOf[Array[Object]]: _*) // this seems to always be the case
       else
-        log.trace(format, arr.map(_.asInstanceOf[AnyRef]): _*)
+        log.trace(format, arr.asInstanceOf[Array[AnyRef]]: _*)
     }
 
     /**
@@ -105,7 +105,7 @@ package object scaladsl {
       if (arr.isInstanceOf[Array[Object]])
         log.trace(marker, format, arr.asInstanceOf[Array[Object]]: _*) // this seems to always be the case
       else
-        log.trace(marker, format, arr.map(_.asInstanceOf[AnyRef]): _*)
+        log.trace(marker, format, arr.asInstanceOf[Array[AnyRef]]: _*)
     }
 
     /**
@@ -155,7 +155,7 @@ package object scaladsl {
       if (arr.isInstanceOf[Array[Object]])
         log.debug(format, arr.asInstanceOf[Array[Object]]: _*) // this seems to always be the case
       else
-        log.debug(format, arr.map(_.asInstanceOf[AnyRef]): _*)
+        log.debug(format, arr.asInstanceOf[Array[AnyRef]]: _*)
     }
 
     /**
@@ -176,7 +176,7 @@ package object scaladsl {
       if (arr.isInstanceOf[Array[Object]])
         log.debug(marker, format, arr.asInstanceOf[Array[Object]]: _*) // this seems to always be the case
       else
-        log.debug(marker, format, arr.map(_.asInstanceOf[AnyRef]): _*)
+        log.debug(marker, format, arr.asInstanceOf[Array[AnyRef]]: _*)
     }
 
     /**
@@ -226,7 +226,7 @@ package object scaladsl {
       if (arr.isInstanceOf[Array[Object]])
         log.info(format, arr.asInstanceOf[Array[Object]]: _*) // this seems to always be the case
       else
-        log.info(format, arr.map(_.asInstanceOf[AnyRef]): _*)
+        log.info(format, arr.asInstanceOf[Array[AnyRef]]: _*)
     }
 
     /**
@@ -247,7 +247,7 @@ package object scaladsl {
       if (arr.isInstanceOf[Array[Object]])
         log.info(marker, format, arr.asInstanceOf[Array[Object]]: _*) // this seems to always be the case
       else
-        log.info(marker, format, arr.map(_.asInstanceOf[AnyRef]): _*)
+        log.info(marker, format, arr.asInstanceOf[Array[AnyRef]]: _*)
     }
 
     /**
@@ -297,7 +297,7 @@ package object scaladsl {
       if (arr.isInstanceOf[Array[Object]])
         log.warn(format, arr.asInstanceOf[Array[Object]]: _*) // this seems to always be the case
       else
-        log.warn(format, arr.map(_.asInstanceOf[AnyRef]): _*)
+        log.warn(format, arr.asInstanceOf[Array[AnyRef]]: _*)
     }
 
     /**
@@ -318,7 +318,7 @@ package object scaladsl {
       if (arr.isInstanceOf[Array[Object]])
         log.warn(marker, format, arr.asInstanceOf[Array[Object]]: _*) // this seems to always be the case
       else
-        log.warn(marker, format, arr.map(_.asInstanceOf[AnyRef]): _*)
+        log.warn(marker, format, arr.asInstanceOf[Array[AnyRef]]: _*)
     }
 
     /**
@@ -368,7 +368,7 @@ package object scaladsl {
       if (arr.isInstanceOf[Array[Object]])
         log.error(format, arr.asInstanceOf[Array[Object]]: _*) // this seems to always be the case
       else
-        log.error(format, arr.map(_.asInstanceOf[AnyRef]): _*)
+        log.error(format, arr.asInstanceOf[Array[AnyRef]]: _*)
     }
 
     /**
@@ -389,7 +389,7 @@ package object scaladsl {
       if (arr.isInstanceOf[Array[Object]])
         log.error(marker, format, arr.asInstanceOf[Array[Object]]: _*) // this seems to always be the case
       else
-        log.error(marker, format, arr.map(_.asInstanceOf[AnyRef]): _*)
+        log.error(marker, format, arr.asInstanceOf[Array[AnyRef]]: _*)
     }
 
   }

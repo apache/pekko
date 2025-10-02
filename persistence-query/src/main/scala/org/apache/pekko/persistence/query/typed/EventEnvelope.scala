@@ -102,7 +102,7 @@ final class EventEnvelope[Event](
    */
   def getEventMetaData(): Optional[AnyRef] = {
     import scala.jdk.OptionConverters._
-    eventMetadata.map(_.asInstanceOf[AnyRef]).toJava
+    eventMetadata.toJava.asInstanceOf[Optional[AnyRef]]
   }
 
   override def hashCode(): Int = {

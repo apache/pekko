@@ -67,7 +67,7 @@ final class ActorSystemSetup private[pekko] (@InternalApi private[pekko] val set
    * Java API: Extract a concrete [[pekko.actor.setup.Setup]] of type `T` if it is defined in the settings.
    */
   def get[T <: Setup](clazz: Class[T]): Optional[T] = {
-    setups.get(clazz).map(_.asInstanceOf[T]).toJava
+    setups.get(clazz).toJava.asInstanceOf[Optional[T]]
   }
 
   /**
@@ -75,7 +75,7 @@ final class ActorSystemSetup private[pekko] (@InternalApi private[pekko] val set
    */
   def get[T <: Setup: ClassTag]: Option[T] = {
     val clazz = implicitly[ClassTag[T]].runtimeClass
-    setups.get(clazz).map(_.asInstanceOf[T])
+    setups.get(clazz).asInstanceOf[Option[T]]
   }
 
   /**
