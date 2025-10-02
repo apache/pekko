@@ -120,8 +120,7 @@ class MapAsyncPartitionedSpec
     super.afterAll()
   }
 
-  @nowarn("msg=deprecated") // use Stream to support Scala 2.12
-  private def infiniteStream(): Stream[Int] = Stream.from(1)
+  private def infiniteStream(): LazyList[Int] = LazyList.from(1)
 
   @nowarn("msg=never used")
   private def f(i: Int, p: Int): Future[Int] =
