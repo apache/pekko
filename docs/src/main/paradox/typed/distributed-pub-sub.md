@@ -26,26 +26,26 @@ The identity of the topic is a tuple of the type of messages that can be publish
 to not define multiple topics with different types and the same topic name.
 
 Scala
-:  @@snip [PubSubExample.scala](/(/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/pubsub/PubSubExample.scala) { #start-topic }
+:  @@snip [PubSubExample.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/pubsub/PubSubExample.scala) { #start-topic }
 
 Java
-:  @@snip [PubSubExample.java](/(/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/pubsub/PubSubExample.java) { #start-topic }
+:  @@snip [PubSubExample.java](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/pubsub/PubSubExample.java) { #start-topic }
 
 Local actors can then subscribe to the topic (and unsubscribe from it):
 
 Scala
-:  @@snip [PubSubExample.scala](/(/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/pubsub/PubSubExample.scala) { #subscribe }
+:  @@snip [PubSubExample.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/pubsub/PubSubExample.scala) { #subscribe }
 
 Java
-:  @@snip [PubSubExample.java](/(/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/pubsub/PubSubExample.java) { #subscribe }
+:  @@snip [PubSubExample.java](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/pubsub/PubSubExample.java) { #subscribe }
 
 And publish messages to the topic:
 
 Scala
-:  @@snip [PubSubExample.scala](/(/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/pubsub/PubSubExample.scala) { #publish }
+:  @@snip [PubSubExample.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/pubsub/PubSubExample.scala) { #publish }
 
 Java
-:  @@snip [PubSubExample.java](/(/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/pubsub/PubSubExample.java) { #publish }
+:  @@snip [PubSubExample.java](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/pubsub/PubSubExample.java) { #publish }
 
 ## Pub Sub Scalability
 
@@ -64,6 +64,6 @@ for the topic will not be sent to it.
 As in @ref:[Message Delivery Reliability](../general/message-delivery-reliability.md) of Pekko, message delivery guarantee in distributed pub sub modes is **at-most-once delivery**. In other words, messages can be lost over the wire. In addition to that the registry of nodes which have subscribers is eventually consistent
 meaning that subscribing an actor on one node will have a short delay before it is known on other nodes and published to.
 
-If you are looking for at-least-once delivery guarantee, we recommend [Pekko Connector Kafka]($pekko.doc.dns$/docs/alp(/kafka/current/).
+If you are looking for at-least-once delivery guarantee, we recommend [Pekko Connector Kafka]($pekko.doc.dns$/docs/pekko-connectors-kafka/current/).
 
 
