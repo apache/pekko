@@ -13,10 +13,11 @@
 
 package org.apache.pekko.testkit
 
-import java.io.{ ByteArrayInputStream, ByteArrayOutputStream, ObjectOutputStream }
+import java.io.{ ByteArrayOutputStream, ObjectOutputStream }
 
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
+import pekko.io.UnsynchronizedByteArrayInputStream
 import pekko.serialization.{ BaseSerializer, JavaSerializer }
 import pekko.util.ClassLoaderObjectInputStream
 
@@ -43,9 +44,8 @@ class TestJavaSerializer(val system: ExtendedActorSystem) extends BaseSerializer
   }
 
   def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]): AnyRef = {
-    val in = new ClassLoaderObjectInputStream(system.dynamicAccess.classLoader, new ByteArrayInputStream(bytes))
-    val obj = JavaSerializer.currentSystem.withValue(system) { in.readObject }
-    in.close()
-    obj
+    val in = new ClassLoaderObjectInputStream(system.dynamicAccess.classLoader, new UnsynchronizedByteArrayInputStream(bytes))
+    try JavaSerializer.currentSystem.withValue(system) { in.readObject }
+    finally in.close()
   }
 }

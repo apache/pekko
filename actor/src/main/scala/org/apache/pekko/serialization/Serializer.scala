@@ -13,7 +13,6 @@
 
 package org.apache.pekko.serialization
 
-import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.NotSerializableException
 import java.io.ObjectOutputStream
@@ -28,6 +27,7 @@ import pekko.actor.ExtendedActorSystem
 import pekko.annotation.InternalApi
 import pekko.event.LogMarker
 import pekko.event.Logging
+import pekko.io.UnsynchronizedByteArrayInputStream
 import pekko.util.ClassLoaderObjectInputStream
 
 /**
@@ -354,10 +354,9 @@ class JavaSerializer(val system: ExtendedActorSystem) extends BaseSerializer {
 
   @throws(classOf[NotSerializableException])
   def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]): AnyRef = {
-    val in = new ClassLoaderObjectInputStream(system.dynamicAccess.classLoader, new ByteArrayInputStream(bytes))
-    val obj = JavaSerializer.currentSystem.withValue(system) { in.readObject }
-    in.close()
-    obj
+    val in = new ClassLoaderObjectInputStream(system.dynamicAccess.classLoader, new UnsynchronizedByteArrayInputStream(bytes))
+    try JavaSerializer.currentSystem.withValue(system) { in.readObject }
+    finally in.close()
   }
 }
 

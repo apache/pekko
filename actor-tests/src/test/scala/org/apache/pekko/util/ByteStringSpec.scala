@@ -13,7 +13,7 @@
 
 package org.apache.pekko.util
 
-import java.io.{ ByteArrayInputStream, ByteArrayOutputStream, ObjectInputStream, ObjectOutputStream }
+import java.io.{ ByteArrayOutputStream, ObjectInputStream, ObjectOutputStream }
 import java.lang.Double.doubleToRawLongBits
 import java.lang.Float.floatToRawIntBits
 import java.nio.{ ByteBuffer, ByteOrder }
@@ -29,6 +29,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.Checkers
 
 import org.apache.pekko
+import pekko.io.UnsynchronizedByteArrayInputStream
 import pekko.util.ByteString.{ ByteString1, ByteString1C, ByteStrings }
 
 import org.scalatest.matchers.should.Matchers
@@ -96,9 +97,9 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
   }
 
   def deserialize(bytes: Array[Byte]): AnyRef = {
-    val is = new ObjectInputStream(new ByteArrayInputStream(bytes))
-
-    is.readObject
+    val is = new ObjectInputStream(new UnsynchronizedByteArrayInputStream(bytes))
+    try is.readObject
+    finally is.close()
   }
 
   def testSer(obj: AnyRef) = {

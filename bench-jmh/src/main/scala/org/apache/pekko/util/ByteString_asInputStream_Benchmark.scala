@@ -17,9 +17,10 @@
 
 package org.apache.pekko.util
 
-import java.io.{ ByteArrayInputStream, InputStream }
+import java.io.InputStream
 import java.util.concurrent.TimeUnit
 
+import org.apache.pekko.io.UnsynchronizedByteArrayInputStream
 import org.openjdk.jmh.annotations._
 import org.openjdk.jmh.infra.Blackhole
 
@@ -67,12 +68,12 @@ class ByteString_asInputStream_Benchmark {
 
   @Benchmark
   def single_bs_bytes_to_input_stream(blackhole: Blackhole): Unit = {
-    blackhole.consume(countBytes(new ByteArrayInputStream(bs.toArray)))
+    blackhole.consume(countBytes(new UnsynchronizedByteArrayInputStream(bs.toArray)))
   }
 
   @Benchmark
   def composed_bs_bytes_to_input_stream(blackhole: Blackhole): Unit = {
-    blackhole.consume(countBytes(new ByteArrayInputStream(composed.toArray)))
+    blackhole.consume(countBytes(new UnsynchronizedByteArrayInputStream(composed.toArray)))
   }
 
   @Benchmark

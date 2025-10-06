@@ -13,7 +13,7 @@
 
 package org.apache.pekko.stream.io.compression
 
-import java.io.{ ByteArrayInputStream, ByteArrayOutputStream, InputStream, OutputStream }
+import java.io.{ ByteArrayOutputStream, InputStream, OutputStream }
 import java.util.concurrent.ThreadLocalRandom
 import java.util.zip.DataFormatException
 
@@ -186,7 +186,7 @@ abstract class CoderSpec(codecName: String) extends AnyWordSpec with CodecSpecSu
 
   def streamDecode(bytes: ByteString): ByteString = {
     val output = new ByteArrayOutputStream()
-    val input = newDecodedInputStream(new ByteArrayInputStream(bytes.toArray))
+    val input = newDecodedInputStream(bytes.asInputStream)
 
     val buffer = new Array[Byte](500)
     @tailrec def copy(from: InputStream, to: OutputStream): Unit = {

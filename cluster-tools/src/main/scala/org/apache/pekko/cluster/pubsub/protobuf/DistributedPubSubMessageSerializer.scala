@@ -13,7 +13,7 @@
 
 package org.apache.pekko.cluster.pubsub.protobuf
 
-import java.io.{ ByteArrayInputStream, ByteArrayOutputStream }
+import java.io.ByteArrayOutputStream
 import java.io.NotSerializableException
 import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
@@ -28,6 +28,7 @@ import pekko.actor.ActorRef
 import pekko.cluster.pubsub.DistributedPubSubMediator._
 import pekko.cluster.pubsub.DistributedPubSubMediator.Internal._
 import pekko.cluster.pubsub.protobuf.msg.{ DistributedPubSubMessages => dm }
+import pekko.io.UnsynchronizedByteArrayInputStream
 import pekko.protobufv3.internal.{ ByteString, MessageLite }
 import pekko.remote.ByteStringUtils
 import pekko.serialization._
@@ -97,7 +98,7 @@ private[pekko] class DistributedPubSubMessageSerializer(val system: ExtendedActo
   }
 
   private def decompress(bytes: Array[Byte]): Array[Byte] = {
-    val in = new GZIPInputStream(new ByteArrayInputStream(bytes))
+    val in = new GZIPInputStream(new UnsynchronizedByteArrayInputStream(bytes))
     val out = new ByteArrayOutputStream()
     val buffer = new Array[Byte](BufferSize)
 

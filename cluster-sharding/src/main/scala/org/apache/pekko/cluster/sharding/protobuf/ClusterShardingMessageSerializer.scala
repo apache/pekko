@@ -13,7 +13,7 @@
 
 package org.apache.pekko.cluster.sharding.protobuf
 
-import java.io.{ ByteArrayInputStream, ByteArrayOutputStream }
+import java.io.ByteArrayOutputStream
 import java.io.NotSerializableException
 import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
@@ -38,6 +38,7 @@ import pekko.cluster.sharding.internal.EventSourcedRememberEntitiesShardStore.{ 
 import pekko.cluster.sharding.internal.EventSourcedRememberEntitiesShardStore.{ State => EntityState }
 import pekko.cluster.sharding.protobuf.msg.{ ClusterShardingMessages => sm }
 import pekko.cluster.sharding.protobuf.msg.ClusterShardingMessages
+import pekko.io.UnsynchronizedByteArrayInputStream
 import pekko.protobufv3.internal.MessageLite
 import pekko.serialization.BaseSerializer
 import pekko.serialization.Serialization
@@ -623,7 +624,7 @@ private[pekko] class ClusterShardingMessageSerializer(val system: ExtendedActorS
   }
 
   private def decompress(bytes: Array[Byte]): Array[Byte] = {
-    val in = new GZIPInputStream(new ByteArrayInputStream(bytes))
+    val in = new GZIPInputStream(new UnsynchronizedByteArrayInputStream(bytes))
     val out = new ByteArrayOutputStream()
     val buffer = new Array[Byte](BufferSize)
 
