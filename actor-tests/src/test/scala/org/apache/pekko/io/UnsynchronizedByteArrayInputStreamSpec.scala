@@ -31,10 +31,22 @@ class UnsynchronizedByteArrayInputStreamSpec extends AnyWordSpec with Matchers {
       val stream = new UnsynchronizedByteArrayInputStream("abc".getBytes(StandardCharsets.UTF_8))
       stream.markSupported() should ===(true)
       stream.read() should ===('a')
-      stream.mark(1)
+      stream.mark(1) // the parameter value (a readAheadLimit) is ignored as it is in ByteArrayInputStream too
       stream.read() should ===('b')
       stream.reset()
       stream.read() should ===('b')
+      stream.close()
+    }
+    "support skip" in {
+      val stream = new UnsynchronizedByteArrayInputStream("abc".getBytes(StandardCharsets.UTF_8))
+      stream.skip(1) should ===(1)
+      stream.read() should ===('b')
+      stream.close()
+    }
+    "support skip with large value" in {
+      val stream = new UnsynchronizedByteArrayInputStream("abc".getBytes(StandardCharsets.UTF_8))
+      stream.skip(50) should ===(3) // only 3 bytes to skip
+      stream.read() should ===(-1)
       stream.close()
     }
   }
