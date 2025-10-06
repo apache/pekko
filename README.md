@@ -46,7 +46,6 @@ To use IntelliJ IDEA, you need to configure your project to use JDK 8. For a vis
 - `sbt publishLocal` will push the jars to your local Apache Ivy repository
 - `sbt publishM2` will push the jars to your local Apache Maven repository
 - `sbt docs/paradox` will build the docs (the ones describing the module features)
-     - Requires Java 11 minimum
      - `sbt docs/paradoxBrowse` does the same but will open the docs in your browser when complete
      - the `index.html` file will appear in `target/paradox/site/main/`
 - `sbt unidoc` will build the Javadocs for all the modules and load them to one place (may require Graphviz, see Prerequisites above)

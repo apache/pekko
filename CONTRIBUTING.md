@@ -18,6 +18,7 @@ Depending on which version (or sometimes module) you want to work on, you should
 * `1.0.x` – maintenance branch of Pekko 1.0
 * `1.1.x` – maintenance branch of Pekko 1.1
 * `1.2.x` – maintenance branch of Pekko 1.2
+* `1.3.x` – maintenance branch of Pekko 1.3 (unreleased but active development ongoing)
 
 ### Tags
 
@@ -348,7 +349,7 @@ If you'd like to check if your links and formatting look good in JavaDoc (and no
 sbt -Dpekko.genjavadoc.enabled=true Javaunidoc/doc
 ```
 
-Which will generate JavaDoc style docs in `./target/javaunidoc/index.html`. This requires a JDK version 11 or later.
+Which will generate JavaDoc style docs in `./target/javaunidoc/index.html`. This requires a JDK version 17 or later.
 
 #### Changing the project information page index
 
