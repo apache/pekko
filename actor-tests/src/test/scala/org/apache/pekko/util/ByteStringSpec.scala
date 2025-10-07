@@ -1051,6 +1051,20 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       byteStrings.indexOfSlice(slice1) should ===(23)
       byteStrings.indexOfSlice(notSlice) should ===(-1)
     }
+    "indexOfSlice (specialized)" in {
+      val slice0 = "xyz".getBytes(StandardCharsets.UTF_8)
+      val slice1 = "xyzabc".getBytes(StandardCharsets.UTF_8)
+      val notSlice = "12345".getBytes(StandardCharsets.UTF_8)
+      val byteStringLong = ByteString1.fromString("abcdefghijklmnopqrstuvwxyz")
+      val byteStrings = ByteStrings(byteStringLong, byteStringLong)
+      byteStringLong.indexOfSlice(slice0) should ===(23)
+      byteStringLong.indexOfSlice(slice1) should ===(-1)
+      byteStringLong.indexOfSlice(notSlice) should ===(-1)
+
+      byteStrings.indexOfSlice(slice0) should ===(23)
+      byteStrings.indexOfSlice(slice1) should ===(23)
+      byteStrings.indexOfSlice(notSlice) should ===(-1)
+    }
   }
 
   "A ByteString" must {
