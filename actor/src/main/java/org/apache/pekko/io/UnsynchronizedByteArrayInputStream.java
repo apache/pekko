@@ -127,12 +127,16 @@ public class UnsynchronizedByteArrayInputStream extends InputStream {
   @Override
   public int read(final byte[] dest) {
     Objects.requireNonNull(dest, "dest");
-    return read(dest, 0, dest.length);
+    return readLocal(dest, 0, dest.length);
   }
 
   @Override
   public int read(final byte[] dest, final int off, final int len) {
     checkFromIndexSize(dest, off, len);
+    return readLocal(dest, off, len);
+  }
+
+  private final int readLocal(final byte[] dest, final int off, final int len) {
     if (len == 0) {
       return 0;
     }
