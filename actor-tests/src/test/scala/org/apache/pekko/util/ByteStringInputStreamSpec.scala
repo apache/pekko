@@ -30,7 +30,7 @@ class ByteStringInputStreamSpec extends AnyWordSpec with Matchers {
   "ByteString1" must {
     "support asInputStream" in {
       ByteString1.empty.asInputStream.read() shouldEqual -1
-      ByteString1.empty.asInputStream.read(Array.empty) shouldEqual -1
+      ByteString1.empty.asInputStream.read(Array(1)) shouldEqual -1
       toUtf8String(ByteString1.empty.asInputStream) shouldEqual ""
       toUtf8String(ByteString1.fromString("abc").asInputStream) shouldEqual "abc"
     }
@@ -47,7 +47,7 @@ class ByteStringInputStreamSpec extends AnyWordSpec with Matchers {
     "support asInputStream" in {
       val empty = ByteStrings(ByteString1.fromString(""), ByteString1.fromString(""))
       empty.asInputStream.read() shouldEqual -1
-      empty.asInputStream.read(Array.empty) shouldEqual -1
+      empty.asInputStream.read(Array(1)) shouldEqual -1
       toUtf8String(empty.asInputStream) shouldEqual ""
       val abc = ByteStrings(ByteString1.fromString("a"), ByteString1.fromString("bc"))
       toUtf8String(abc.asInputStream) shouldEqual "abc"

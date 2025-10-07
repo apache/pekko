@@ -13,11 +13,14 @@
 
 package org.apache.pekko.util
 
-import java.io.{ ByteArrayInputStream, InputStream, ObjectInputStream, ObjectOutputStream, SequenceInputStream }
+import java.io.{ InputStream, ObjectInputStream, ObjectOutputStream, SequenceInputStream }
 import java.lang.{ Iterable => JIterable }
 import java.nio.{ ByteBuffer, ByteOrder }
 import java.nio.charset.{ Charset, StandardCharsets }
 import java.util.Base64
+
+import org.apache.pekko.io.UnsynchronizedByteArrayInputStream
+
 import scala.annotation.{ nowarn, tailrec, varargs }
 import scala.collection.{ immutable, mutable }
 import scala.collection.immutable.{ IndexedSeq, IndexedSeqOps, StrictOptimizedSeqOps, VectorBuilder }
@@ -302,7 +305,7 @@ object ByteString {
 
     override def toArrayUnsafe(): Array[Byte] = bytes
 
-    override def asInputStream: InputStream = new ByteArrayInputStream(bytes)
+    override def asInputStream: InputStream = new UnsynchronizedByteArrayInputStream(bytes)
   }
 
   /** INTERNAL API: ByteString backed by exactly one array, with start / end markers */
@@ -500,7 +503,7 @@ object ByteString {
     }
 
     override def asInputStream: InputStream =
-      new ByteArrayInputStream(bytes, startIndex, length)
+      new UnsynchronizedByteArrayInputStream(bytes, startIndex, length)
   }
 
   private[pekko] object ByteStrings extends Companion {

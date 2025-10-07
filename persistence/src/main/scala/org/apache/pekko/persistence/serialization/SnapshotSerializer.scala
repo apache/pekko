@@ -17,6 +17,7 @@ import java.io._
 
 import org.apache.pekko
 import pekko.actor._
+import pekko.io.UnsynchronizedByteArrayInputStream
 import pekko.serialization._
 import pekko.util.ByteString.UTF_8
 
@@ -89,7 +90,7 @@ class SnapshotSerializer(val system: ExtendedActorSystem) extends BaseSerializer
   }
 
   private def headerFromBinary(bytes: Array[Byte]): (Int, String) = {
-    val in = new ByteArrayInputStream(bytes)
+    val in = new UnsynchronizedByteArrayInputStream(bytes)
     val serializerId = readInt(in)
 
     if ((serializerId & 0xEDAC) == 0xEDAC) // Java Serialization magic value
@@ -163,7 +164,7 @@ class SnapshotSerializer(val system: ExtendedActorSystem) extends BaseSerializer
   }
 
   private def snapshotFromBinary(bytes: Array[Byte]): AnyRef = {
-    val headerLength = readInt(new ByteArrayInputStream(bytes))
+    val headerLength = readInt(new UnsynchronizedByteArrayInputStream(bytes))
     val headerBytes = bytes.slice(4, headerLength + 4)
     val snapshotBytes = bytes.drop(headerLength + 4)
 
