@@ -13,7 +13,7 @@
 
 package org.apache.pekko.serialization.jackson
 
-import java.io.{ ByteArrayInputStream, ByteArrayOutputStream, NotSerializableException }
+import java.io.{ ByteArrayOutputStream, NotSerializableException }
 import java.nio.ByteBuffer
 import java.util.zip.{ GZIPInputStream, GZIPOutputStream }
 
@@ -30,6 +30,7 @@ import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.annotation.InternalApi
 import pekko.event.{ LogMarker, Logging }
+import pekko.io.UnsynchronizedByteArrayInputStream
 import pekko.serialization.{ BaseSerializer, SerializationExtension, SerializerWithStringManifest }
 import pekko.util.Helpers.toRootLowerCase
 import pekko.util.OptionVal
@@ -533,7 +534,7 @@ import pekko.util.OptionVal
 
   def decompress(bytes: Array[Byte]): Array[Byte] = {
     if (isGZipped(bytes)) {
-      val in = new GZIPInputStream(new ByteArrayInputStream(bytes))
+      val in = new GZIPInputStream(new UnsynchronizedByteArrayInputStream(bytes))
       val out = new ByteArrayOutputStream()
       val buffer = new Array[Byte](BufferSize)
 

@@ -14,8 +14,7 @@
 package org.apache.pekko.cluster.metrics.protobuf
 
 import java.{ lang => jl }
-import java.io.{ ByteArrayInputStream, ByteArrayOutputStream, ObjectOutputStream }
-import java.io.NotSerializableException
+import java.io.{ ByteArrayOutputStream, NotSerializableException, ObjectOutputStream }
 import java.util.zip.{ GZIPInputStream, GZIPOutputStream }
 
 import scala.annotation.tailrec
@@ -27,6 +26,7 @@ import pekko.actor.{ Address, ExtendedActorSystem }
 import pekko.cluster.metrics._
 import pekko.cluster.metrics.protobuf.msg.{ ClusterMetricsMessages => cm }
 import pekko.dispatch.Dispatchers
+import pekko.io.UnsynchronizedByteArrayInputStream
 import pekko.protobufv3.internal.MessageLite
 import pekko.remote.ByteStringUtils
 import pekko.serialization.{ BaseSerializer, SerializationExtension, SerializerWithStringManifest, Serializers }
@@ -78,7 +78,7 @@ class MessageSerializer(val system: ExtendedActorSystem) extends SerializerWithS
   }
 
   def decompress(bytes: Array[Byte]): Array[Byte] = {
-    val in = new GZIPInputStream(new ByteArrayInputStream(bytes))
+    val in = new GZIPInputStream(new UnsynchronizedByteArrayInputStream(bytes))
     val out = new ByteArrayOutputStream()
     val buffer = new Array[Byte](BufferSize)
 
@@ -264,7 +264,7 @@ class MessageSerializer(val system: ExtendedActorSystem) extends SerializerWithS
         case NumberType.Serialized_VALUE =>
           val in = new NumberInputStream(
             system.dynamicAccess.classLoader,
-            new ByteArrayInputStream(number.getSerialized.toByteArray))
+            new UnsynchronizedByteArrayInputStream(number.getSerialized.toByteArray))
           val obj = in.readObject
           in.close()
           obj.asInstanceOf[jl.Number]

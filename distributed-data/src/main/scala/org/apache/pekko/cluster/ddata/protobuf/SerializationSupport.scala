@@ -13,7 +13,6 @@
 
 package org.apache.pekko.cluster.ddata.protobuf
 
-import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
@@ -29,6 +28,7 @@ import pekko.actor.ExtendedActorSystem
 import pekko.cluster.UniqueAddress
 import pekko.cluster.ddata.VersionVector
 import pekko.cluster.ddata.protobuf.msg.{ ReplicatorMessages => dm }
+import pekko.io.UnsynchronizedByteArrayInputStream
 import pekko.protobufv3.internal.ByteString
 import pekko.protobufv3.internal.MessageLite
 import pekko.remote.ByteStringUtils
@@ -76,7 +76,7 @@ trait SerializationSupport {
   }
 
   def decompress(bytes: Array[Byte]): Array[Byte] = {
-    val in = new GZIPInputStream(new ByteArrayInputStream(bytes))
+    val in = new GZIPInputStream(new UnsynchronizedByteArrayInputStream(bytes))
     val out = new ByteArrayOutputStream()
     val buffer = new Array[Byte](BufferSize)
 
