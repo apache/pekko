@@ -13,6 +13,7 @@ github:
     - distributed-actors
     - distributed-systems
     - high-performance
+    - message-driven
 
   protected_tags:
     - "v*.*.*"
