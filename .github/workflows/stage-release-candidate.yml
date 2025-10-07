@@ -1,0 +1,90 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+name: Stage release candidate
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  # Automating the step at https://github.com/apache/pekko-site/wiki/Pekko-Release-Process#build-the-source-release-candidate
+  # Partly based on https://github.com/apache/daffodil/blob/main/.github/workflows/release-candidate.yml
+  stage-release-candidate-to-svn:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check version parameter
+        run: |-
+          if [[ "$REF" != *"-RC"* ]]; then 
+            echo "Trigger this workflow on an RC tag"
+            exit 1
+          fi
+          export VERSION=$(echo $REF | sed -e "s/\(.*\)-.*/\\1/")
+          echo "Version: $VERSION"
+          echo "RC: $REF"
+        env:
+          REF: ${{ github.ref_name }}
+
+      - name: Checkout
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          persist-credentials: false
+
+      - name: Setup Java 17
+        uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 # v5.0.0
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Install sbt
+        uses: sbt/setup-sbt@17575ea4e18dd928fe5968dbe32294b97923d65b # v1.1.13
+
+      # We intentionally do not use the Coursier cache for release candidates,
+      # to reduce attack surface
+
+      # We intentionally postpone the signing to a separate step, to reduce
+      # attack surface
+
+      - name: Generate source dist
+        run: |-
+          export VERSION=$(echo $REF | sed -e "s/\(.*\)-.*/\\1/")
+          sbt "clean; set ThisBuild / version := \"$VERSION\"; sourceDistGenerate"
+        env:
+          REF: ${{ github.ref_name }}
+
+      - name: Sign source dist
+        run: |-
+          echo $PEKKO_GPG_SECRET_KEY | base64 -d | gpg --batch --import --import-options import-show
+          gpg -ab target/dist/*
+        env:
+          PEKKO_GPG_SECRET_KEY: ${{ secrets.PEKKO_GPG_SECRET_KEY }}
+
+      - name: Upload source dist
+        run: |-
+          svn checkout https://dist.apache.org/repos/dist/dev/pekko dist
+          cd dist
+          mkdir $REF
+          cp ../target/dist/* $REF
+          svn add $REF $REF/*
+          svn commit --username $PEKKO_SVN_DEV_USERNAME --password $PEKKO_SVN_DEV_PASSWORD --message "Stage Pekko $REF" $REF
+        env:
+          PEKKO_SVN_DEV_USERNAME: ${{ secrets.PEKKO_SVN_DEV_USERNAME }}
+          PEKKO_SVN_DEV_PASSWORD: ${{ secrets.PEKKO_SVN_DEV_PASSWORD }}
