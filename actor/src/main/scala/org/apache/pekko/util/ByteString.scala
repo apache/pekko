@@ -895,6 +895,23 @@ object ByteString {
       }
     }
 
+    override def indexOfSlice(bytes: Array[Byte], from: Int): Int = {
+      if (bytes.isEmpty) 0
+      else {
+        val startFrom = math.max(0, from)
+        val indexPos = indexOf(bytes.head, startFrom, length - bytes.length + 1)
+        if (indexPos == -1) -1
+        else {
+          val newByteString = drop(indexPos + 1)
+          if (newByteString.startsWith(bytes.tail)) indexPos
+          else {
+            val nextIndex = newByteString.indexOfSlice(bytes, 1)
+            if (nextIndex == -1) -1 else indexPos + 1 + nextIndex
+          }
+        }
+      }
+    }
+
     override def copyToArray[B >: Byte](dest: Array[B], start: Int, len: Int): Int = {
       if (bytestrings.size == 1) bytestrings.head.copyToArray(dest, start, len)
       else {
