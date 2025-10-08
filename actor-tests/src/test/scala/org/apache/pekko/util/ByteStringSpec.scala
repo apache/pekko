@@ -1073,6 +1073,21 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       byteStrings.indexOfSlice(pByte) should ===(15)
       byteStrings.indexOfSlice(pByte, 16) should ===(41)
     }
+    "startsWith (specialized)" in {
+      val slice0 = "abc".getBytes(StandardCharsets.UTF_8)
+      val slice1 = "xyz".getBytes(StandardCharsets.UTF_8)
+      val notSlice = "12345".getBytes(StandardCharsets.UTF_8)
+      val byteStringLong = ByteString1.fromString("abcdefghijklmnopqrstuvwxyz")
+      val byteStrings = ByteStrings(byteStringLong, byteStringLong)
+      byteStringLong.startsWith(slice0) should ===(true)
+      byteStringLong.startsWith(slice1, 23) should ===(true)
+      byteStringLong.startsWith(notSlice) should ===(false)
+
+      byteStrings.startsWith(slice0) should ===(true)
+      byteStrings.startsWith(slice1, 23) should ===(true)
+      byteStrings.startsWith(notSlice) should ===(false)
+    }
+
   }
 
   "A ByteString" must {
