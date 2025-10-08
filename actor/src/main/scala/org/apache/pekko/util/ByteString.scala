@@ -1056,6 +1056,15 @@ sealed abstract class ByteString
    */
   def indexOf(elem: Byte): Int = indexOf(elem, 0)
 
+  override def contains[B >: Byte](elem: B): Boolean = indexOf(elem, 0) != -1
+
+  /**
+   * Checks if this ByteString contains a specific byte.
+   * Similar to Seq's contains function, but it avoids boxing if the value is already a byte.
+   * @since 2.0.0
+   */
+  def contains(elem: Byte): Boolean = indexOf(elem, 0) != -1
+
   override def grouped(size: Int): Iterator[ByteString] = {
     if (size <= 0) {
       throw new IllegalArgumentException(s"size=$size must be positive")
