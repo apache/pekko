@@ -920,6 +920,32 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       byteStringLong.indexOf('z', 2) should ===(25)
       byteStringLong.indexOf('a', 2) should ===(-1)
     }
+    "contains" in {
+      ByteString.empty.contains(5) should ===(false)
+      val byteString1 = ByteString1.fromString("abc")
+      byteString1.contains('a') should ===(true)
+      byteString1.contains('c') should ===(true)
+      byteString1.contains('d') should ===(false)
+      val byteString2 = byteString1 ++ ByteString1.fromString("def")
+      byteString2.contains('a') should ===(true)
+      byteString2.contains('c') should ===(true)
+      byteString2.contains('d') should ===(true)
+      byteString2.contains('f') should ===(true)
+      byteString1.contains('z') should ===(false)
+    }
+    "contains (specialized)" in {
+      ByteString.empty.contains(5.toByte) should ===(false)
+      val byteString1 = ByteString1.fromString("abc")
+      byteString1.contains('a'.toByte) should ===(true)
+      byteString1.contains('c'.toByte) should ===(true)
+      byteString1.contains('d'.toByte) should ===(false)
+      val byteString2 = byteString1 ++ ByteString1.fromString("def")
+      byteString2.contains('a'.toByte) should ===(true)
+      byteString2.contains('c'.toByte) should ===(true)
+      byteString2.contains('d'.toByte) should ===(true)
+      byteString2.contains('f'.toByte) should ===(true)
+      byteString1.contains('z'.toByte) should ===(false)
+    }
     "indexOf from/to" in {
       ByteString.empty.indexOf(5.toByte, -1, 10) should ===(-1)
       ByteString.empty.indexOf(5.toByte, 0, 1) should ===(-1)
