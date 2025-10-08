@@ -31,7 +31,7 @@ jobs:
     steps:
       - name: Check version parameter
         run: |-
-          if [[ "$REF" != *"-RC"* ]]; then 
+          if [[ "$REF" != *"-RC"* ]]; then
             echo "Trigger this workflow on an RC tag"
             exit 1
           fi
@@ -56,9 +56,7 @@ jobs:
           TARBALL=$PREFIX-src-$DATE.tgz
 
           mkdir archive
-          echo git archive --format=tar.gz --output=archive/$TARBALL --prefix=$PREFIX/ HEAD
-          echo $(git --version)
-          git archive --format=tar.gz --output=archive/$TARBALL --prefix=$PREFIX/ HEAD
+          git archive --format=tar --prefix=$PREFIX/ HEAD | gzip -6 -n > archive/$TARBALL
           cd archive
           sha512sum $TARBALL > $TARBALL.sha512
         env:
