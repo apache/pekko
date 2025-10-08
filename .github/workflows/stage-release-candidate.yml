@@ -48,32 +48,26 @@ jobs:
           fetch-tags: true
           persist-credentials: false
 
-      - name: Setup Java 17
-        uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 # v5.0.0
-        with:
-          distribution: temurin
-          java-version: 17
-
-      - name: Install sbt
-        uses: sbt/setup-sbt@17575ea4e18dd928fe5968dbe32294b97923d65b # v1.1.13
-
-      # We intentionally do not use the Coursier cache for release candidates,
-      # to reduce attack surface
-
-      # We intentionally postpone the signing to a separate step, to reduce
-      # attack surface
-
-      - name: Generate source dist
+      - name: Generate source archive
         run: |-
-          export VERSION=$(echo $REF | sed -e "s/\(.*\)-.*/\\1/")
-          sbt "clean; set ThisBuild / version := \"$VERSION\"; sourceDistGenerate"
+          VERSION=$(echo $REF | sed -e "s/\(.*\)-.*/\\1/")
+          PREFIX=apache-pekko-$VERSION
+          DATE=$(git log -n1 --format=%cs | tr -d -)
+          TARBALL=$PREFIX-src-$DATE.tgz
+
+          mkdir archive
+          echo git archive --format=tar.gz --output=archive/$TARBALL --prefix=$PREFIX/ HEAD
+          echo $(git --version)
+          git archive --format=tar.gz --output=archive/$TARBALL --prefix=$PREFIX/ HEAD
+          cd archive
+          sha512sum $TARBALL > $TARBALL.sha512
         env:
           REF: ${{ github.ref_name }}
 
-      - name: Sign source dist
+      - name: Sign source archive
         run: |-
           echo $PEKKO_GPG_SECRET_KEY | base64 -d | gpg --batch --import --import-options import-show
-          gpg -ab target/dist/*
+          gpg -ab archive/*.tgz
         env:
           PEKKO_GPG_SECRET_KEY: ${{ secrets.PEKKO_GPG_SECRET_KEY }}
 
@@ -82,9 +76,10 @@ jobs:
           svn checkout https://dist.apache.org/repos/dist/dev/pekko dist
           cd dist
           mkdir $REF
-          cp ../target/dist/* $REF
+          cp ../archive/* $REF
           svn add $REF $REF/*
           svn commit --username $PEKKO_SVN_DEV_USERNAME --password $PEKKO_SVN_DEV_PASSWORD --message "Stage Pekko $REF" $REF
         env:
           PEKKO_SVN_DEV_USERNAME: ${{ secrets.PEKKO_SVN_DEV_USERNAME }}
           PEKKO_SVN_DEV_PASSWORD: ${{ secrets.PEKKO_SVN_DEV_PASSWORD }}
+          REF: ${{ github.ref_name }}
