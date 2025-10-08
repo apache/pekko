@@ -40,6 +40,7 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
+          persist-credentials: false
 
       - name: Setup Java 17
         uses: actions/setup-java@v5
@@ -74,10 +75,12 @@ jobs:
       # Create directory structure upfront since rsync does not create intermediate directories otherwise
       - name: Create nightly directory structure
         run: |-
-          mkdir -p target/nightly-docs/docs/pekko/${{ github.ref_name }}-snapshot/
-          mv docs/target/paradox/site/main/ target/nightly-docs/docs/pekko/${{ github.ref_name }}-snapshot/docs
-          mv target/scala-2.13/unidoc target/nightly-docs/docs/pekko/${{ github.ref_name }}-snapshot/api
-          mv target/javaunidoc target/nightly-docs/docs/pekko/${{ github.ref_name }}-snapshot/japi
+          mkdir -p target/nightly-docs/docs/pekko/$REF-snapshot/
+          mv docs/target/paradox/site/main/ target/nightly-docs/docs/pekko/$REF-snapshot/docs
+          mv target/scala-2.13/unidoc target/nightly-docs/docs/pekko/$REF-snapshot/api
+          mv target/javaunidoc target/nightly-docs/docs/pekko/$REF-snapshot/japi
+        env:
+          REF: ${{ github.ref_name }}
 
       - name: Upload nightly docs
         uses: ./.github/actions/sync-nightlies
