@@ -317,8 +317,9 @@ Copyright 2015 Ben Manes. All Rights Reserved.
 
 ---------------
 
-pekko-actor contains code in `org.apache.pekko.io.ByteBufferCleaner` which was based on code
-from Apache commons-io which was developed under the Apache 2.0 license.
+pekko-actor contains code from Apache commons-io which was developed under the
+Apache 2.0 license.
+- actor/src/main/java/org/apache/pekko/io/ByteBufferCleaner.java
 
 ---------------
 
