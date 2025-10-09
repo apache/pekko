@@ -126,7 +126,7 @@ object OSGi {
   def exports(packages: Seq[String] = Seq(), imports: Seq[String] = Nil) =
     osgiSettings ++ Seq(
       OsgiKeys.importPackage := imports ++ scalaVersion(defaultImports).value ++
-        Seq(version(v => pekkoImport(v)).value, "*"),
+      Seq(version(v => pekkoImport(v)).value, "*"),
       OsgiKeys.exportPackage := packages)
   def defaultImports(scalaVersion: String) =
     Seq(
