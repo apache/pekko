@@ -125,18 +125,22 @@ object OSGi {
 
   def exports(packages: Seq[String] = Seq(), imports: Seq[String] = Nil) =
     osgiSettings ++ Seq(
-      OsgiKeys.importPackage := imports ++ scalaVersion(defaultImports).value,
+      OsgiKeys.importPackage := imports ++ scalaVersion(defaultImports).value ++
+      Seq(version(v => pekkoImport(v)).value, "*"),
       OsgiKeys.exportPackage := packages)
   def defaultImports(scalaVersion: String) =
     Seq(
       "!sun.misc",
-      pekkoImport(),
       configImport(),
       "!scala.compat.java8.*",
       "!scala.util.parsing.*",
-      scalaImport(scalaVersion),
-      "*")
-  def pekkoImport(packageName: String = "org.apache.pekko.*") = versionedImport(packageName, "1.1", "1.2")
+      scalaImport(scalaVersion))
+  def pekkoImport(version: String, packageName: String = "org.apache.pekko.*") = {
+    val versionComponents = version.split('.')
+    val nextMinorVersion = versionComponents(1).toInt + 1
+    versionedImport(packageName, s"${versionComponents.head}.${versionComponents(1)}",
+      s"${versionComponents.head}.$nextMinorVersion")
+  }
   def configImport(packageName: String = "com.typesafe.config.*") = versionedImport(packageName, "1.4.0", "1.5.0")
   def scalaImport(version: String) = {
     val packageName = "scala.*"
