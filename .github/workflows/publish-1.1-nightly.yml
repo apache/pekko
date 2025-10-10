@@ -39,6 +39,7 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
+          persist-credentials: false
           ref: 1.1.x
 
       - name: Setup Java 11

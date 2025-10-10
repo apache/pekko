@@ -25,6 +25,7 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
+          persist-credentials: false
           ref: 1.2.x
 
       - name: Setup Java 11
@@ -80,6 +81,7 @@ jobs:
           # we don't know what commit the last tag was it's safer to get entire repo so previousStableVersion resolves
           fetch-depth: 0
           fetch-tags: true
+          persist-credentials: false
           ref: 1.2.x
 
       - name: Setup Java 11
@@ -131,6 +133,7 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
+          persist-credentials: false
           ref: 1.2.x
 
       - name: Setup Java ${{ matrix.javaVersion }}
