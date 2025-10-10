@@ -1,0 +1,91 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+name: Stage release candidate
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  # Automating the step at https://github.com/apache/pekko-site/wiki/Pekko-Release-Process#build-the-source-release-candidate
+  # Partly based on https://github.com/apache/daffodil/blob/main/.github/workflows/release-candidate.yml
+  stage-release-candidate-to-svn:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check version parameter
+        run: |-
+          if [[ "$REF" != "v"* ]]; then
+            echo "Trigger this workflow on a version tag"
+            exit 1
+          fi
+          if [[ "$REF" != *"-RC"* ]]; then
+            echo "Trigger this workflow on an RC tag"
+            exit 1
+          fi
+          export VERSION=$(echo $REF | sed -e "s/v\(.*\)-.*/\\1/")
+          export RC_VERSION=$(echo $REF | tail -c +2)
+          echo "Version: $VERSION"
+          echo "RC Version: $RC_VERSION"
+        env:
+          REF: ${{ github.ref_name }}
+
+      - name: Checkout
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          persist-credentials: false
+
+      - name: Generate source archive
+        run: |-
+          VERSION=$(echo $REF | sed -e "s/v\(.*\)-.*/\\1/")
+          PREFIX=apache-pekko-$VERSION
+          DATE=$(git log -n1 --format=%cs | tr -d -)
+          TARBALL=$PREFIX-src-$DATE.tgz
+
+          mkdir archive
+          git archive --format=tar --prefix=$PREFIX/ HEAD | gzip -6 -n > archive/$TARBALL
+          cd archive
+          sha512sum $TARBALL > $TARBALL.sha512
+        env:
+          REF: ${{ github.ref_name }}
+
+      - name: Sign source archive
+        run: |-
+          echo $PEKKO_GPG_SECRET_KEY | base64 -d | gpg --batch --import --import-options import-show
+          gpg -ab archive/*.tgz
+        env:
+          PEKKO_GPG_SECRET_KEY: ${{ secrets.PEKKO_GPG_SECRET_KEY }}
+
+      - name: Upload source dist
+        run: |-
+          svn checkout https://dist.apache.org/repos/dist/dev/pekko dist
+          cd dist
+
+          export RC_VERSION=$(echo $REF | tail -c +2)
+
+          mkdir $RC_VERSION
+          cp ../archive/* $RC_VERSION
+          svn add $RC_VERSION $RC_VERSION/*
+          svn commit --username $PEKKO_SVN_DEV_USERNAME --password $PEKKO_SVN_DEV_PASSWORD --message "Stage Pekko $RC_VERSION" $RC_VERSION
+        env:
+          PEKKO_SVN_DEV_USERNAME: ${{ secrets.PEKKO_SVN_DEV_USERNAME }}
+          PEKKO_SVN_DEV_PASSWORD: ${{ secrets.PEKKO_SVN_DEV_PASSWORD }}
+          REF: ${{ github.ref_name }}
