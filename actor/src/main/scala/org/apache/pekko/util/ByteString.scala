@@ -1100,7 +1100,7 @@ sealed abstract class ByteString
         i += 1
         j += 1
       }
-      j == slice.length
+      true
     }
     @tailrec def rec(from: Int): Int = {
       val startPos = indexOf(slice.head, from, length - slice.length + 1)
