@@ -240,7 +240,7 @@ object SupervisorHierarchySpec {
       case (_, x) =>
         log :+= Event("unhandled exception from " + sender() + Logging.stackTraceFor(x), identityHashCode(this))
         sender() ! Dump(0)
-        context.system.scheduler.scheduleOnce(1.second, self, Dump(0))(context.dispatcher)
+        context.system.scheduler.scheduleOnce(1.second, self, Dump(0))(context.dispatcher, self)
         Resume
     })
 
@@ -525,7 +525,7 @@ object SupervisorHierarchySpec {
 
     when(Stress) {
       case this.Event(Work, _) if idleChildren.isEmpty =>
-        context.system.scheduler.scheduleOnce(workSchedule, self, Work)(context.dispatcher)
+        context.system.scheduler.scheduleOnce(workSchedule, self, Work)(context.dispatcher, self)
         stay()
       case this.Event(Work, x) if x > 0 =>
         nextJob.next() match {
@@ -546,7 +546,7 @@ object SupervisorHierarchySpec {
             ref ! f
         }
         if (idleChildren.nonEmpty) self ! Work
-        else context.system.scheduler.scheduleOnce(workSchedule, self, Work)(context.dispatcher)
+        else context.system.scheduler.scheduleOnce(workSchedule, self, Work)(context.dispatcher, self)
         stay().using(x - 1)
       case this.Event(Work, _)       => if (pingChildren.isEmpty) goto(LastPing) else goto(Finishing)
       case this.Event(Died(path), _) =>
@@ -626,7 +626,7 @@ object SupervisorHierarchySpec {
           children = Vector.empty
           pingChildren = Set.empty
           idleChildren = Vector.empty
-          context.system.scheduler.scheduleOnce(workSchedule, self, GCcheck(weak))(context.dispatcher)
+          context.system.scheduler.scheduleOnce(workSchedule, self, GCcheck(weak))(context.dispatcher, self)
           System.gc()
           goto(GC)
         } else {
@@ -650,7 +650,7 @@ object SupervisorHierarchySpec {
       case this.Event(GCcheck(weak), _) =>
         val next = weak.filter(_.get ne null)
         if (next.nonEmpty) {
-          context.system.scheduler.scheduleOnce(workSchedule, self, GCcheck(next))(context.dispatcher)
+          context.system.scheduler.scheduleOnce(workSchedule, self, GCcheck(next))(context.dispatcher, self)
           System.gc()
           stay()
         } else {

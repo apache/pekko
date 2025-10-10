@@ -58,7 +58,7 @@ private[remote] class FlushBeforeDeathWatchNotification(
   private var remaining = -1
 
   private val timeoutTask =
-    context.system.scheduler.scheduleOnce(timeout, self, Timeout)(context.dispatcher)
+    context.system.scheduler.scheduleOnce(timeout, self, Timeout)(context.dispatcher, self)
 
   override def preStart(): Unit = {
     try {
