@@ -1067,7 +1067,7 @@ sealed abstract class ByteString
         i += 1
         j += 1
       }
-      j == slice.length
+      true
     }
     val headByte = slice.head.asInstanceOf[Byte]
     @tailrec def rec(from: Int): Int = {
