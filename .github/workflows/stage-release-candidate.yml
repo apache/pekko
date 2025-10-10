@@ -41,15 +41,16 @@ jobs:
     steps:
       - name: Check version parameter
         run: |-
-          if [[ "$REF" != "v"* ]]; then
-            echo "Trigger this workflow on a version tag"
-            exit 1
-          fi
+          # To be enabled after this workflow has been tested:
+          #if [[ "$REF" != "v"* ]]; then
+          #  echo "Trigger this workflow on a version tag"
+          #  exit 1
+          #fi
           if [[ "$REF" != *"-RC"* ]]; then
             echo "Trigger this workflow on an RC tag"
             exit 1
           fi
-          export VERSION=$(echo $REF | sed -e "s/v\(.*\)-.*/\\1/")
+          export VERSION=$(echo $REF | sed -e "s/.\(.*\)-.*/\\1/")
           export RC_VERSION=$(echo $REF | tail -c +2)
           echo "Version: $VERSION"
           echo "RC Version: $RC_VERSION"
@@ -65,7 +66,7 @@ jobs:
 
       - name: Generate source archive
         run: |-
-          VERSION=$(echo $REF | sed -e "s/v\(.*\)-.*/\\1/")
+          VERSION=$(echo $REF | sed -e "s/.\(.*\)-.*/\\1/")
           PREFIX=apache-pekko-$VERSION
           DATE=$(git log -n1 --format=%cs | tr -d -)
           TARBALL=$PREFIX-src-$DATE.tgz
@@ -106,10 +107,11 @@ jobs:
     steps:
       - name: Check version parameter
         run: |-
-          if [[ "$REF" != "v"* ]]; then
-            echo "Trigger this workflow on a version tag"
-            exit 1
-          fi
+          # To be enabled after this workflow has been tested:
+          #if [[ "$REF" != "v"* ]]; then
+          #  echo "Trigger this workflow on a version tag"
+          #  exit 1
+          #fi
           if [[ "$REF" != *"-RC"* ]]; then
             echo "Trigger this workflow on an RC tag"
             exit 1
@@ -145,7 +147,7 @@ jobs:
       # reducing attack surface, but this seems to be the state of the art:
       - name: Build, sign and stage artifacts
         run: |-
-          VERSION=$(echo $REF | sed -e "s/v\(.*\)-.*/\\1/")
+          VERSION=$(echo $REF | sed -e "s/.\(.*\)-.*/\\1/")
           PGP_PASSPHRASE=
 
           sbt "set ThisBuild / version := \"$VERSION\"; +publishSigned"
