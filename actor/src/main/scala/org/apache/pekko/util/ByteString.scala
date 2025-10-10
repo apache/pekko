@@ -1061,7 +1061,7 @@ sealed abstract class ByteString
     def check(startPos: Int): Boolean = {
       var i = startPos + 1
       var j = 1
-      // let's trust the calling code has ensured that we have enough bytes in this ByteString
+      // Bounds are guaranteed by the indexOf call limiting the search range, so startPos + slice.length <= length.
       while (j < slice.length) {
         if (apply(i) != slice(j)) return false
         i += 1
