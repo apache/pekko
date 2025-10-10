@@ -149,7 +149,7 @@ jobs:
           PGP_PASSPHRASE=
 
           sbt "set ThisBuild / version := \"$VERSION\"; +publishSigned"
-          sbt "set ThisBuild / version := \"$VERSION\"; sonatypePrepare; sonatypeBundleUpload; sonatypeClose"
+          sbt "set ThisBuild / version := \"$VERSION\"; sonatypePrepare; set ThisBuild / version := \"$VERSION\"; sonatypeBundleUpload; sonatypeClose"
         env:
           REF: ${{ github.ref_name }}
           PGP_SECRET: ${{ secrets.PEKKO_GPG_SECRET_KEY }}
