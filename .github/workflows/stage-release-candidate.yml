@@ -31,13 +31,18 @@ jobs:
     steps:
       - name: Check version parameter
         run: |-
+          if [[ "$REF" != "v"* ]]; then
+            echo "Trigger this workflow on a version tag"
+            exit 1
+          fi
           if [[ "$REF" != *"-RC"* ]]; then
             echo "Trigger this workflow on an RC tag"
             exit 1
           fi
-          export VERSION=$(echo $REF | sed -e "s/\(.*\)-.*/\\1/")
+          export VERSION=$(echo $REF | sed -e "s/v\(.*\)-.*/\\1/")
+          export RC_VERSION=$(echo $REF | tail -c +2)
           echo "Version: $VERSION"
-          echo "RC: $REF"
+          echo "RC Version: $RC_VERSION"
         env:
           REF: ${{ github.ref_name }}
 
@@ -50,7 +55,7 @@ jobs:
 
       - name: Generate source archive
         run: |-
-          VERSION=$(echo $REF | sed -e "s/\(.*\)-.*/\\1/")
+          VERSION=$(echo $REF | sed -e "s/v\(.*\)-.*/\\1/")
           PREFIX=apache-pekko-$VERSION
           DATE=$(git log -n1 --format=%cs | tr -d -)
           TARBALL=$PREFIX-src-$DATE.tgz
@@ -73,10 +78,13 @@ jobs:
         run: |-
           svn checkout https://dist.apache.org/repos/dist/dev/pekko dist
           cd dist
-          mkdir $REF
-          cp ../archive/* $REF
-          svn add $REF $REF/*
-          svn commit --username $PEKKO_SVN_DEV_USERNAME --password $PEKKO_SVN_DEV_PASSWORD --message "Stage Pekko $REF" $REF
+
+          export RC_VERSION=$(echo $REF | tail -c +2)
+
+          mkdir $RC_VERSION
+          cp ../archive/* $RC_VERSION
+          svn add $RC_VERSION $RC_VERSION/*
+          svn commit --username $PEKKO_SVN_DEV_USERNAME --password $PEKKO_SVN_DEV_PASSWORD --message "Stage Pekko $RC_VERSION" $RC_VERSION
         env:
           PEKKO_SVN_DEV_USERNAME: ${{ secrets.PEKKO_SVN_DEV_USERNAME }}
           PEKKO_SVN_DEV_PASSWORD: ${{ secrets.PEKKO_SVN_DEV_PASSWORD }}
