@@ -106,13 +106,18 @@ jobs:
     steps:
       - name: Check version parameter
         run: |-
+          if [[ "$REF" != "v"* ]]; then
+            echo "Trigger this workflow on a version tag"
+            exit 1
+          fi
           if [[ "$REF" != *"-RC"* ]]; then
             echo "Trigger this workflow on an RC tag"
             exit 1
           fi
           export VERSION=$(echo $REF | sed -e "s/\(.*\)-.*/\\1/")
+          export RC_VERSION=$(echo $REF | tail -c +2)
           echo "Version: $VERSION"
-          echo "RC: $REF"
+          echo "RC Version: $RC_VERSION"
         env:
           REF: ${{ github.ref_name }}
 
@@ -140,7 +145,7 @@ jobs:
       # reducing attack surface, but this seems to be the state of the art:
       - name: Build, sign and stage artifacts
         run: |-
-          VERSION=$(echo $REF | sed -e "s/\(.*\)-.*/\\1/")
+          VERSION=$(echo $REF | sed -e "s/v\(.*\)-.*/\\1/")
           PGP_PASSPHRASE=
 
           sbt "set ThisBuild / version := \"$VERSION\"; +publishSigned"
