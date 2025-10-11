@@ -314,6 +314,32 @@ object ByteString {
       else -1
     }
 
+    override def lastIndexOf[B >: Byte](elem: B, end: Int): Int = {
+      if (end < 0) -1
+      else {
+        var found = -1
+        var i = math.min(end, length - 1)
+        while (i >= 0 && found == -1) {
+          if (bytes(i) == elem) found = i
+          i -= 1
+        }
+        found
+      }
+    }
+
+    override def lastIndexOf(elem: Byte, end: Int): Int = {
+      if (end < 0) -1
+      else {
+        var found = -1
+        var i = math.min(end, length - 1)
+        while (i >= 0 && found == -1) {
+          if (bytes(i) == elem) found = i
+          i -= 1
+        }
+        found
+      }
+    }
+
     override def slice(from: Int, until: Int): ByteString =
       if (from <= 0 && until >= length) this
       else if (from >= length || until <= 0 || from >= until) ByteString.empty
@@ -554,7 +580,6 @@ object ByteString {
         i += 1
       }
       -1
-
     }
 
     // the calling code already adds the startIndex so this method does not need to
@@ -573,6 +598,32 @@ object ByteString {
       else if (byteCount == 6) -1
       else if (bytes(fromIndex + 6) == value) fromIndex + 6
       else -1
+    }
+
+    override def lastIndexOf[B >: Byte](elem: B, end: Int): Int = {
+      if (end < 0) -1
+      else {
+        var found = -1
+        var i = math.min(end, length - 1)
+        while (i >= 0 && found == -1) {
+          if (bytes(startIndex + i) == elem) found = i
+          i -= 1
+        }
+        found
+      }
+    }
+
+    override def lastIndexOf(elem: Byte, end: Int): Int = {
+      if (end < 0) -1
+      else {
+        var found = -1
+        var i = math.min(end, length - 1)
+        while (i >= 0 && found == -1) {
+          if (bytes(startIndex + i) == elem) found = i
+          i -= 1
+        }
+        found
+      }
     }
 
     override def copyToArray[B >: Byte](dest: Array[B], start: Int, len: Int): Int = {
@@ -895,6 +946,67 @@ object ByteString {
       }
     }
 
+    override def lastIndexOf[B >: Byte](elem: B, end: Int): Int = {
+      if (end < 0) -1
+      else {
+        val byteStringsLast = bytestrings.size - 1
+
+        @tailrec
+        def find(bsIdx: Int, relativeIndex: Int, len: Int): Int = {
+          if (bsIdx < 0) -1
+          else {
+            val bs = bytestrings(bsIdx)
+            val bsStartIndex = len - bs.length
+
+            if (relativeIndex < bsStartIndex || bs.isEmpty) {
+              if (bsIdx == 0) -1
+              else find(bsIdx - 1, relativeIndex, bsStartIndex)
+            } else {
+              val subIndexOf = bs.lastIndexOf(elem, relativeIndex)
+              if (subIndexOf < 0) {
+                if (bsIdx == 0) -1
+                else find(bsIdx - 1, relativeIndex, bsStartIndex)
+              } else subIndexOf + bsStartIndex
+            }
+          }
+        }
+
+        find(byteStringsLast, math.min(end, length), length)
+      }
+    }
+
+    override def lastIndexOf(elem: Byte, end: Int): Int = {
+      if (end < 0) -1
+      else {
+        if (end < 0) -1
+        else {
+          val byteStringsLast = bytestrings.size - 1
+
+          @tailrec
+          def find(bsIdx: Int, relativeIndex: Int, len: Int): Int = {
+            if (bsIdx < 0) -1
+            else {
+              val bs = bytestrings(bsIdx)
+              val bsStartIndex = len - bs.length
+
+              if (relativeIndex < bsStartIndex || bs.isEmpty) {
+                if (bsIdx == 0) -1
+                else find(bsIdx - 1, relativeIndex, bsStartIndex)
+              } else {
+                val subIndexOf = bs.lastIndexOf(elem, relativeIndex)
+                if (subIndexOf < 0) {
+                  if (bsIdx == 0) -1
+                  else find(bsIdx - 1, relativeIndex, bsStartIndex)
+                } else subIndexOf + bsStartIndex
+              }
+            }
+          }
+
+          find(byteStringsLast, math.min(end, length), length)
+        }
+      }
+    }
+
     override def copyToArray[B >: Byte](dest: Array[B], start: Int, len: Int): Int = {
       if (bytestrings.size == 1) bytestrings.head.copyToArray(dest, start, len)
       else {
@@ -1055,6 +1167,31 @@ sealed abstract class ByteString
    *  @since 1.1.0
    */
   def indexOf(elem: Byte): Int = indexOf(elem, 0)
+
+  /**
+   * Finds index of last occurrence of some byte in this ByteString before or at some end index.
+   *
+   * Similar to lastIndexOf, but it avoids boxing if the value is already a byte.
+   *
+   *  @param   elem   the element value to search for.
+   *  @param   end    the end index
+   *  @return  the index `<= end` of the last element of this ByteString that is equal (as determined by `==`)
+   *           to `elem`, or `-1`, if none exists.
+   *  @since 2.0.0
+   */
+  def lastIndexOf(elem: Byte, end: Int): Int = lastIndexOf[Byte](elem, end)
+
+  /**
+   * Finds index of last occurrence of some byte in this ByteString.
+   *
+   * Similar to lastIndexOf, but it avoids boxing if the value is already a byte.
+   *
+   *  @param   elem   the element value to search for.
+   *  @return  the index of the last element of this ByteString that is equal (as determined by `==`)
+   *           to `elem`, or `-1`, if none exists.
+   *  @since 2.0.0
+   */
+  def lastIndexOf(elem: Byte): Int = lastIndexOf(elem, length - 1)
 
   override def contains[B >: Byte](elem: B): Boolean = indexOf(elem, 0) != -1
 
