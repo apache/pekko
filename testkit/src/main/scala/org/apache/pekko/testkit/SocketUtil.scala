@@ -13,10 +13,9 @@
 
 package org.apache.pekko.testkit
 
-import java.net.{ DatagramSocket, InetSocketAddress, NetworkInterface, StandardProtocolFamily }
+import java.net.{ DatagramSocket, InetSocketAddress, NetworkInterface, StandardProtocolFamily, StandardSocketOptions }
 import java.nio.channels.DatagramChannel
 import java.nio.channels.ServerSocketChannel
-
 import scala.collection.immutable
 import scala.util.Random
 import scala.util.control.NonFatal
@@ -104,7 +103,10 @@ object SocketUtil {
             ds.bind(addr)
             (ds, new InetSocketAddress(address, ds.getLocalPort))
           } else {
-            val ss = ServerSocketChannel.open().socket()
+            val serverSocketChannel = ServerSocketChannel.open
+            serverSocketChannel.setOption(StandardSocketOptions.SO_REUSEADDR, java.lang.Boolean.TRUE)
+            serverSocketChannel.setOption(StandardSocketOptions.SO_REUSEPORT, java.lang.Boolean.TRUE)
+            val ss = serverSocketChannel.socket()
             ss.bind(addr)
             (ss, new InetSocketAddress(address, ss.getLocalPort))
           }
