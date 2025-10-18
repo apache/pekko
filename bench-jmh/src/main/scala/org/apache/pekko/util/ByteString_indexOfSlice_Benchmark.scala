@@ -26,11 +26,14 @@ class ByteString_indexOfSlice_Benchmark {
 
   val bs = bss.compact // compacted
   val xyz = "xyz".getBytes(StandardCharsets.UTF_8)
+  val hv = "hijklmnopqrstuv".getBytes(StandardCharsets.UTF_8)
 
   @Benchmark
   def bss_indexOfSlice: Int = bss.indexOfSlice(xyz, 1)
 
   @Benchmark
-  def bs_indexOfSlice: Int = bs.indexOfSlice(xyz, 1)
+  def bs_indexOfSlice_xyz: Int = bs.indexOfSlice(xyz, 1)
 
+  @Benchmark
+  def bs_indexOfSlice_hv: Int = bs.indexOfSlice(hv, 1)
 }
