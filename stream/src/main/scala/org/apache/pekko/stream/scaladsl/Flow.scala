@@ -19,6 +19,7 @@ import scala.collection.immutable
 import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
 import scala.reflect.ClassTag
+import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.Done
@@ -988,6 +989,67 @@ trait FlowOps[+Out, +Mat] {
           case true => Source.empty[Out]
         }: PartialFunction[Boolean, Graph[SourceShape[Out], NotUsed]]))
         .withAttributes(DefaultAttributes.onErrorComplete and SourceLocation.forLambda(pf)))
+
+  /**
+   * Continues the stream when an upstream error occurs.
+   *
+   * When an error is signaled from upstream, the `errorConsumer` function is invoked with the
+   * `Throwable`, and the stream resumes processing subsequent elements. The element that caused
+   * the error is dropped.
+   *
+   * '''Note:''' This operator requires stream operators to support supervision. If supervision
+   * is not supported, this operator will have no effect.
+   *
+   * '''Emits when''' an element is available from upstream
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @param errorConsumer function invoked when an error occurs
+   * @since 1.3.0
+   */
+  def onErrorContinue[T <: Throwable](errorConsumer: Throwable => Unit)(implicit tag: ClassTag[T]): Repr[Out] = {
+    this.withAttributes(ActorAttributes.supervisionStrategy {
+      case NonFatal(e) if tag.runtimeClass.isInstance(e) =>
+        errorConsumer(e)
+        Supervision.Resume
+      case _ => Supervision.Stop
+    })
+  }
+
+  /**
+   * Continues the stream when an upstream error occurs.
+   *
+   * When an error is signaled from upstream, the `errorConsumer` function is invoked with the
+   * `Throwable`, and the stream resumes processing subsequent elements. The element that caused
+   * the error is dropped.
+   *
+   * '''Note:''' This operator requires stream operators to support supervision. If supervision
+   * is not supported, this operator will have no effect.
+   *
+   * '''Emits when''' an element is available from upstream
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @param p predicate to determine which errors to handle
+   * @param errorConsumer function invoked when an error occurs
+   * @since 1.3.0
+   */
+  def onErrorContinue(p: Throwable => Boolean)(errorConsumer: Throwable => Unit): Repr[Out] = {
+    this.withAttributes(ActorAttributes.supervisionStrategy {
+      case NonFatal(e) if p(e) =>
+        errorConsumer(e)
+        Supervision.Resume
+      case _ => Supervision.Stop
+    })
+  }
 
   /**
    * While similar to [[recover]] this operator can be used to transform an error signal to a different one *without* logging

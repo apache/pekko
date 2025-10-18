@@ -14,6 +14,7 @@
 package org.apache.pekko.stream;
 
 import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.event.LoggingAdapter;
 import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.scalatestplus.junit.JUnitSuite;
 
@@ -22,5 +23,9 @@ public abstract class StreamTest extends JUnitSuite {
 
   protected StreamTest(PekkoJUnitActorSystemResource actorSystemResource) {
     system = actorSystemResource.getSystem();
+  }
+
+  protected LoggingAdapter logger() {
+    return system.log();
   }
 }
