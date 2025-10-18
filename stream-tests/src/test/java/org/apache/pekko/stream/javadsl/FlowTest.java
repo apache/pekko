@@ -1348,16 +1348,16 @@ public class FlowTest extends StreamTest {
   @Test
   public void mustBeAbleToOnErrorContinue() {
     Source.from(Arrays.asList(1, 2))
-        .map(
-            elem -> {
-              if (elem == 2) {
-                throw new RuntimeException("ex");
-              } else {
-                return elem;
-              }
-            })
         .via(
             Flow.of(Integer.class)
+                .map(
+                    elem -> {
+                      if (elem == 2) {
+                        throw new RuntimeException("ex");
+                      } else {
+                        return elem;
+                      }
+                    })
                 .onErrorContinue(error -> logger().error(error, "Error occurred")))
         .runWith(TestSink.probe(system), system)
         .request(2)
@@ -1405,16 +1405,16 @@ public class FlowTest extends StreamTest {
   @Test
   public void mustBeAbleToOnErrorContinueWithDedicatedException() {
     Source.from(Arrays.asList(1, 2))
-        .map(
-            elem -> {
-              if (elem == 2) {
-                throw new IllegalArgumentException("ex");
-              } else {
-                return elem;
-              }
-            })
         .via(
             Flow.of(Integer.class)
+                .map(
+                    elem -> {
+                      if (elem == 2) {
+                        throw new IllegalArgumentException("ex");
+                      } else {
+                        return elem;
+                      }
+                    })
                 .onErrorContinue(
                     IllegalArgumentException.class,
                     error -> logger().error(error, "Error occurred")))
@@ -1526,16 +1526,16 @@ public class FlowTest extends StreamTest {
   @Test
   public void mustBeAbleToOnErrorContinueWithPredicate() {
     Source.from(Arrays.asList(1, 2))
-        .map(
-            elem -> {
-              if (elem == 2) {
-                throw new IllegalArgumentException("Boom");
-              } else {
-                return elem;
-              }
-            })
         .via(
             Flow.of(Integer.class)
+                .map(
+                    elem -> {
+                      if (elem == 2) {
+                        throw new IllegalArgumentException("Boom");
+                      } else {
+                        return elem;
+                      }
+                    })
                 .onErrorContinue(
                     ex -> ex.getMessage().contains("Boom"),
                     error -> logger().error(error, "Error occurred")))
