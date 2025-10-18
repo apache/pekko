@@ -140,8 +140,7 @@ private[util] object SWARUtil {
         j += k
         k = 1
         p = j - ms
-      }
-      else if (a == b) if (k != p) k += 1
+      } else if (a == b) if (k != p) k += 1
       else {
         j += p
         k = 1

@@ -360,14 +360,12 @@ object ByteString {
             if (i <= memory) return j + bStartIndex
             j += per
             memory = m - per - 1
-          }
-          else {
+          } else {
             j += i - ell
             memory = -1
           }
         }
-      }
-      else {
+      } else {
         per = Math.max(ell + 1, m - ell - 1) + 1
         while (j <= n - m) {
           i = ell + 1
@@ -378,8 +376,7 @@ object ByteString {
             while (i >= 0 && (slice(i + aStartIndex) == bytes(i + j + bStartIndex))) i -= 1
             if (i < 0) return j + bStartIndex
             j += per
-          }
-          else j += i - ell
+          } else j += i - ell
         }
       }
       -1
@@ -702,14 +699,12 @@ object ByteString {
             if (i <= memory) return j + bStartIndex - startIndex
             j += per
             memory = m - per - 1
-          }
-          else {
+          } else {
             j += i - ell
             memory = -1
           }
         }
-      }
-      else {
+      } else {
         per = Math.max(ell + 1, m - ell - 1) + 1
         while (j <= n - m) {
           i = ell + 1
@@ -720,8 +715,7 @@ object ByteString {
             while (i >= 0 && (slice(i + aStartIndex) == bytes(i + j + bStartIndex))) i -= 1
             if (i < 0) return j + bStartIndex - startIndex
             j += per
-          }
-          else j += i - ell
+          } else j += i - ell
         }
       }
       -1
