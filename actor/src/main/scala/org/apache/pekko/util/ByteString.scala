@@ -1034,7 +1034,7 @@ sealed abstract class ByteString
   /**
    * Finds index of first occurrence of some byte in this ByteString after or at some start index.
    *
-   * Similar to indexOf, but it avoids boxing if the value is already a byte.
+   * Similar to Seq's indexOf, but it avoids boxing if the value is already a byte.
    *
    *  @param   elem   the element value to search for.
    *  @param   from   the start index
@@ -1047,7 +1047,7 @@ sealed abstract class ByteString
   /**
    * Finds index of first occurrence of some byte in this ByteString.
    *
-   * Similar to indexOf, but it avoids boxing if the value is already a byte.
+   * Similar to Seq's indexOf, but it avoids boxing if the value is already a byte.
    *
    *  @param   elem   the element value to search for.
    *  @return  the index `>= from` of the first element of this ByteString that is equal (as determined by `==`)
@@ -1055,6 +1055,78 @@ sealed abstract class ByteString
    *  @since 1.1.0
    */
   def indexOf(elem: Byte): Int = indexOf(elem, 0)
+
+  override def indexOfSlice[B >: Byte](slice: scala.collection.Seq[B], from: Int): Int = {
+    // this is only called if the first byte matches, so we can skip that check
+    def check(startPos: Int): Boolean = {
+      var i = startPos + 1
+      var j = 1
+      // Bounds are guaranteed by the indexOf call limiting the search range, so startPos + slice.length <= length.
+      while (j < slice.length) {
+        if (apply(i) != slice(j)) return false
+        i += 1
+        j += 1
+      }
+      true
+    }
+    val headByte = slice.head.asInstanceOf[Byte]
+    @tailrec def rec(from: Int): Int = {
+      val startPos = indexOf(headByte, from, length - slice.length + 1)
+      if (startPos == -1) -1
+      else if (check(startPos)) startPos
+      else rec(startPos + 1)
+    }
+    val sliceLength = slice.length
+    if (sliceLength == 0) 0
+    else if (sliceLength == 1) indexOf(headByte, from)
+    else rec(math.max(0, from))
+  }
+
+  /**
+   * Finds index of first occurrence of some slice in this ByteString.
+   *
+   * @param   slice   the slice to search for.
+   * @param   from    the start index
+   * @return  the index greater than or equal to `from` of the first element of this
+   *          ByteString that starts a slice equal (as determined by `==`)
+   *          to `slice`, or `-1`, if none exists.
+   * @since 2.0.0
+   */
+  def indexOfSlice(slice: Array[Byte], from: Int): Int = {
+    // this is only called if the first byte matches, so we can skip that check
+    def check(startPos: Int): Boolean = {
+      var i = startPos + 1
+      var j = 1
+      // let's trust the calling code has ensured that we have enough bytes in this ByteString
+      while (j < slice.length) {
+        if (apply(i) != slice(j)) return false
+        i += 1
+        j += 1
+      }
+      true
+    }
+    @tailrec def rec(from: Int): Int = {
+      val startPos = indexOf(slice.head, from, length - slice.length + 1)
+      if (startPos == -1) -1
+      else if (check(startPos)) startPos
+      else rec(startPos + 1)
+    }
+    val sliceLength = slice.length
+    if (sliceLength == 0) 0
+    else if (sliceLength == 1) indexOf(slice.head, from)
+    else rec(math.max(0, from))
+  }
+
+  /**
+   * Finds index of first occurrence of some slice in this ByteString.
+   *
+   * @param   slice   the slice to search for.
+   * @return  the index of the first element of this
+   *          ByteString that starts a slice equal (as determined by `==`)
+   *          to `slice`, or `-1`, if none exists.
+   * @since 2.0.0
+   */
+  def indexOfSlice(slice: Array[Byte]): Int = indexOfSlice(slice, 0)
 
   override def contains[B >: Byte](elem: B): Boolean = indexOf(elem, 0) != -1
 
@@ -1064,6 +1136,39 @@ sealed abstract class ByteString
    * @since 2.0.0
    */
   def contains(elem: Byte): Boolean = indexOf(elem, 0) != -1
+
+  /**
+   * Tests whether this ByteString starts with the given slice.
+   *
+   * @param bytes the slice to test
+   * @param offset the offset to start testing from
+   * @return true if this ByteString starts with the given slice
+   * @since 2.0.0
+   */
+  def startsWith(bytes: Array[Byte], offset: Int): Boolean = {
+    if (length - offset < bytes.length) false
+    else {
+      var i = offset
+      var j = 0
+      while (j < bytes.length) {
+        // we know that byteString is at least as long as bytes,
+        // so no need to check i < length
+        if (apply(i) != bytes(j)) return false
+        i += 1
+        j += 1
+      }
+      true
+    }
+  }
+
+  /**
+   * Tests whether this ByteString starts with the given slice.
+   *
+   * @param bytes the slice to test
+   * @return true if this ByteString starts with the given slice
+   * @since 2.0.0
+   */
+  def startsWith(bytes: Array[Byte]): Boolean = startsWith(bytes, 0)
 
   override def grouped(size: Int): Iterator[ByteString] = {
     if (size <= 0) {
