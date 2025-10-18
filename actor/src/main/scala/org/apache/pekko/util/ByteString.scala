@@ -617,7 +617,9 @@ object ByteString {
 
     // Derived from code in Netty
     // https://github.com/netty/netty/blob/d28a0fc6598b50fbe8f296831777cf4b653a475f/buffer/src/main/java/io/netty/buffer/ByteBufUtil.java#L366-L408
-    override private[util] def bytesMatch(fromIndex: Int, checkBytes: Array[Byte], bytesFromIndex: Int,
+    override private[util] def bytesMatch(fromIndex: Int,
+        checkBytes: Array[Byte],
+        bytesFromIndex: Int,
         checkLength: Int): Boolean = {
       var aIndex = fromIndex + startIndex
       var bIndex = bytesFromIndex
@@ -977,8 +979,10 @@ object ByteString {
       }
     }
 
-    private[util] def bytesMatch(fromIndex: Int, checkBytes: Array[Byte], checkBytesFromIndex: Int, checkLength: Int)
-        : Boolean = {
+    private[util] def bytesMatch(fromIndex: Int,
+        checkBytes: Array[Byte],
+        checkBytesFromIndex: Int,
+        checkLength: Int): Boolean = {
       if (checkLength > 1 && bytestrings.nonEmpty && bytestrings.head.length >= fromIndex + checkLength - 1) {
         bytestrings.head.bytesMatch(fromIndex, checkBytes, checkBytesFromIndex, checkLength)
       } else {
@@ -1230,8 +1234,10 @@ sealed abstract class ByteString
    * Tests whether the bytes in a segment of this ByteString match the provided bytes.
    * Internal use only. ByteString1 and ByteString1C have optimized versions.
    */
-  private[util] def bytesMatch(fromIndex: Int, checkBytes: Array[Byte], checkBytesFromIndex: Int, checkLength: Int)
-      : Boolean
+  private[util] def bytesMatch(fromIndex: Int,
+      checkBytes: Array[Byte],
+      checkBytesFromIndex: Int,
+      checkLength: Int): Boolean
 
   override def grouped(size: Int): Iterator[ByteString] = {
     if (size <= 0) {
