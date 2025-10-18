@@ -1076,7 +1076,10 @@ sealed abstract class ByteString
       else if (check(startPos)) startPos
       else rec(startPos + 1)
     }
-    if (slice.isEmpty) 0 else rec(math.max(0, from))
+    val sliceLength = slice.length
+    if (sliceLength == 0) 0
+    else if (sliceLength == 1) indexOf(headByte, from)
+    else rec(math.max(0, from))
   }
 
   /**
@@ -1108,7 +1111,10 @@ sealed abstract class ByteString
       else if (check(startPos)) startPos
       else rec(startPos + 1)
     }
-    if (slice.isEmpty) 0 else rec(math.max(0, from))
+    val sliceLength = slice.length
+    if (sliceLength == 0) 0
+    else if (sliceLength == 1) indexOf(slice.head, from)
+    else rec(math.max(0, from))
   }
 
   /**
