@@ -41,7 +41,7 @@ private[util] object SWARUtil {
   /**
    * Compiles given byte into a long pattern suitable for SWAR operations.
    */
-  def compilePattern(byteToFind: Byte): Long =
+  final def compilePattern(byteToFind: Byte): Long =
     (byteToFind & 0xFFL) * 0x101010101010101L
 
   /**
@@ -52,7 +52,7 @@ private[util] object SWARUtil {
    * @param pattern the pattern to apply
    * @return a word where each byte that matches the pattern has the highest bit set
    */
-  def applyPattern(word: Long, pattern: Long): Long = {
+  final def applyPattern(word: Long, pattern: Long): Long = {
     val input = word ^ pattern
     val tmp = (input & 0x7F7F7F7F7F7F7F7FL) + 0x7F7F7F7F7F7F7F7FL
     ~(tmp | input | 0x7F7F7F7F7F7F7F7FL)
@@ -66,7 +66,7 @@ private[util] object SWARUtil {
    * @return the index of the first occurrence of the specified pattern in the specified word.
    * If no pattern is found, returns 8.
    */
-  def getIndex(word: Long): Int =
+  final def getIndex(word: Long): Int =
     java.lang.Long.numberOfLeadingZeros(word) >>> 3
 
   /**
@@ -79,7 +79,7 @@ private[util] object SWARUtil {
    * @return the long value at the specified index
    * @throws IndexOutOfBoundsException if index is out of bounds
    */
-  def getLong(array: Array[Byte], index: Int): Long = {
+  final def getLong(array: Array[Byte], index: Int): Long = {
     if (longBeArrayViewSupported) {
       longBeArrayView.get(array, index)
     } else {
@@ -96,7 +96,7 @@ private[util] object SWARUtil {
 
   // Derived from code in Netty
   // https://github.com/netty/netty/blob/d28a0fc6598b50fbe8f296831777cf4b653a475f/buffer/src/main/java/io/netty/buffer/ByteBufUtil.java#L366-L408
-  def arrayBytesMatch(arrayBytes: Array[Byte],
+  final def arrayBytesMatch(arrayBytes: Array[Byte],
       fromIndex: Int,
       checkBytes: Array[Byte],
       bytesFromIndex: Int,
@@ -107,7 +107,7 @@ private[util] object SWARUtil {
     val byteCount = checkLength & 7
     var i = 0
     while (i < longCount) {
-      if (SWARUtil.getLong(arrayBytes, aIndex) != SWARUtil.getLong(checkBytes, bIndex)) return false
+      if (getLong(arrayBytes, aIndex) != getLong(checkBytes, bIndex)) return false
       aIndex += 8
       bIndex += 8
       i += 1
@@ -124,7 +124,7 @@ private[util] object SWARUtil {
 
   // Derived from code in Netty
   // https://github.com/netty/netty/blob/a5343227b10456ec889a3fdc5fa4246f036a216d/buffer/src/main/java/io/netty/buffer/ByteBufUtil.java#L327-L356
-  def maxSuf(arrayBytes: Array[Byte], m: Int, start: Int, isSuffix: Boolean): Long = {
+  final def maxSuf(arrayBytes: Array[Byte], m: Int, start: Int, isSuffix: Boolean): Long = {
     var p = 1
     var ms = -1
     var j = start
