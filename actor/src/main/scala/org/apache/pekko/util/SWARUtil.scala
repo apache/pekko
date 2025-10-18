@@ -93,4 +93,66 @@ private[util] object SWARUtil {
       (array(index + 7).toLong & 0xFF)
     }
   }
+
+  // Derived from code in Netty
+  // https://github.com/netty/netty/blob/d28a0fc6598b50fbe8f296831777cf4b653a475f/buffer/src/main/java/io/netty/buffer/ByteBufUtil.java#L366-L408
+  def arrayBytesMatch(arrayBytes: Array[Byte],
+      fromIndex: Int,
+      checkBytes: Array[Byte],
+      bytesFromIndex: Int,
+      checkLength: Int): Boolean = {
+    var aIndex = fromIndex
+    var bIndex = bytesFromIndex
+    val longCount = checkLength >>> 3
+    val byteCount = checkLength & 7
+    var i = 0
+    while (i < longCount) {
+      if (SWARUtil.getLong(arrayBytes, aIndex) != SWARUtil.getLong(checkBytes, bIndex)) return false
+      aIndex += 8
+      bIndex += 8
+      i += 1
+    }
+    i = 0
+    while (i < byteCount) {
+      if (arrayBytes(aIndex) != checkBytes(bIndex)) return false
+      aIndex += 1
+      bIndex += 1
+      i += 1
+    }
+    true
+  }
+
+  // Derived from code in Netty
+  // https://github.com/netty/netty/blob/a5343227b10456ec889a3fdc5fa4246f036a216d/buffer/src/main/java/io/netty/buffer/ByteBufUtil.java#L327-L356
+  def maxSuf(arrayBytes: Array[Byte], m: Int, start: Int, isSuffix: Boolean): Long = {
+    var p = 1
+    var ms = -1
+    var j = start
+    var k = 1
+    var a = 0
+    var b = 0
+    while (j + k < m) {
+      a = arrayBytes(j + k)
+      b = arrayBytes(ms + k)
+      val suffix = if (isSuffix) a < b
+      else a > b
+      if (suffix) {
+        j += k
+        k = 1
+        p = j - ms
+      }
+      else if (a == b) if (k != p) k += 1
+      else {
+        j += p
+        k = 1
+      }
+      else {
+        ms = j
+        j = ms + 1
+        k = 1
+        p = 1
+      }
+    }
+    (ms.toLong << 32) + p
+  }
 }

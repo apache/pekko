@@ -330,6 +330,62 @@ object ByteString {
     }
 
     // Derived from code in Netty
+    // https://github.com/netty/netty/blob/d28a0fc6598b50fbe8f296831777cf4b653a475f/buffer/src/main/java/io/netty/buffer/ByteBufUtil.java#L242-L325
+    override def indexOfSlice(slice: Array[Byte], from: Int): Int = {
+      val n = length - from
+      val m = slice.length
+      if (m == 0) return 0
+      // When the needle has only one byte that can be read,
+      // the indexOf() can be used
+      if (m == 1) return indexOf(slice.head, from)
+      var i = 0
+      var j = 0
+      val aStartIndex = 0
+      val bStartIndex = from
+      val suffixes = SWARUtil.maxSuf(slice, m, aStartIndex, true)
+      val prefixes = SWARUtil.maxSuf(slice, m, aStartIndex, false)
+      val ell = Math.max((suffixes >> 32).toInt, (prefixes >> 32).toInt)
+      var per = Math.max(suffixes.toInt, prefixes.toInt)
+      var memory = 0
+      val checkLen = Math.min(m - per, ell + 1)
+      if (SWARUtil.arrayBytesMatch(slice, aStartIndex, slice, aStartIndex + per, checkLen)) {
+        memory = -1
+        while (j <= n - m) {
+          i = Math.max(ell, memory) + 1
+          while (i < m && (slice(i + aStartIndex) == bytes(i + j + bStartIndex))) i += 1
+          if (i > n) return -1
+          if (i >= m) {
+            i = ell
+            while (i > memory && (slice(i + aStartIndex) == bytes(i + j + bStartIndex))) i -= 1
+            if (i <= memory) return j + bStartIndex
+            j += per
+            memory = m - per - 1
+          }
+          else {
+            j += i - ell
+            memory = -1
+          }
+        }
+      }
+      else {
+        per = Math.max(ell + 1, m - ell - 1) + 1
+        while (j <= n - m) {
+          i = ell + 1
+          while (i < m && (slice(i + aStartIndex) == bytes(i + j + bStartIndex))) i += 1
+          if (i > n) return -1
+          if (i >= m) {
+            i = ell
+            while (i >= 0 && (slice(i + aStartIndex) == bytes(i + j + bStartIndex))) i -= 1
+            if (i < 0) return j + bStartIndex
+            j += per
+          }
+          else j += i - ell
+        }
+      }
+      -1
+    }
+
+    // Derived from code in Netty
     // https://github.com/netty/netty/blob/d28a0fc6598b50fbe8f296831777cf4b653a475f/buffer/src/main/java/io/netty/buffer/ByteBufUtil.java#L366-L408
     override private[util] def bytesMatch(fromIndex: Int, checkBytes: Array[Byte], bytesFromIndex: Int,
         checkLength: Int): Boolean = {
@@ -613,6 +669,62 @@ object ByteString {
       else if (byteCount == 6) -1
       else if (bytes(fromIndex + 6) == value) fromIndex + 6
       else -1
+    }
+
+    // Derived from code in Netty
+    // https://github.com/netty/netty/blob/d28a0fc6598b50fbe8f296831777cf4b653a475f/buffer/src/main/java/io/netty/buffer/ByteBufUtil.java#L242-L325
+    override def indexOfSlice(slice: Array[Byte], from: Int): Int = {
+      val n = length - from
+      val m = slice.length
+      if (m == 0) return 0
+      // When the needle has only one byte that can be read,
+      // the indexOf() can be used
+      if (m == 1) return indexOf(slice.head, from)
+      var i = 0
+      var j = 0
+      val aStartIndex = 0
+      val bStartIndex = from + startIndex
+      val suffixes = SWARUtil.maxSuf(slice, m, aStartIndex, true)
+      val prefixes = SWARUtil.maxSuf(slice, m, aStartIndex, false)
+      val ell = Math.max((suffixes >> 32).toInt, (prefixes >> 32).toInt)
+      var per = Math.max(suffixes.toInt, prefixes.toInt)
+      var memory = 0
+      val checkLen = Math.min(m - per, ell + 1)
+      if (SWARUtil.arrayBytesMatch(slice, aStartIndex, slice, aStartIndex + per, checkLen)) {
+        memory = -1
+        while (j <= n - m) {
+          i = Math.max(ell, memory) + 1
+          while (i < m && (slice(i + aStartIndex) == bytes(i + j + bStartIndex))) i += 1
+          if (i > n) return -1
+          if (i >= m) {
+            i = ell
+            while (i > memory && (slice(i + aStartIndex) == bytes(i + j + bStartIndex))) i -= 1
+            if (i <= memory) return j + bStartIndex - startIndex
+            j += per
+            memory = m - per - 1
+          }
+          else {
+            j += i - ell
+            memory = -1
+          }
+        }
+      }
+      else {
+        per = Math.max(ell + 1, m - ell - 1) + 1
+        while (j <= n - m) {
+          i = ell + 1
+          while (i < m && (slice(i + aStartIndex) == bytes(i + j + bStartIndex))) i += 1
+          if (i > n) return -1
+          if (i >= m) {
+            i = ell
+            while (i >= 0 && (slice(i + aStartIndex) == bytes(i + j + bStartIndex))) i -= 1
+            if (i < 0) return j + bStartIndex - startIndex
+            j += per
+          }
+          else j += i - ell
+        }
+      }
+      -1
     }
 
     // Derived from code in Netty
