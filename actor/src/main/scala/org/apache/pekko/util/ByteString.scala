@@ -346,7 +346,7 @@ object ByteString {
       }
       i = 0
       while (i < byteCount) {
-        if (apply(aIndex) != checkBytes(bIndex)) return false
+        if (bytes(aIndex) != checkBytes(bIndex)) return false
         aIndex += 1
         bIndex += 1
         i += 1
@@ -634,7 +634,7 @@ object ByteString {
       }
       i = 0
       while (i < byteCount) {
-        if (apply(aIndex) != checkBytes(bIndex)) return false
+        if (bytes(aIndex) != checkBytes(bIndex)) return false
         aIndex += 1
         bIndex += 1
         i += 1
