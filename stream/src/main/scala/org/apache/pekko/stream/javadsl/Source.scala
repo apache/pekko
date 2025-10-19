@@ -2095,7 +2095,8 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
     new Source(delegate.wireTap(f(_)))
 
   /**
-   * Recover allows to send last element on failure and gracefully complete the stream
+   * Recover allows to send last element on failure and gracefully complete the stream.
+   *
    * Since the underlying failure signal onError arrives out-of-band, it might jump over existing elements.
    * This operator can recover the failure signal, but not the skipped elements, which will be dropped.
    *
@@ -2113,7 +2114,8 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
     new Source(delegate.recover(pf))
 
   /**
-   * Recover allows to send last element on failure and gracefully complete the stream
+   * Recover allows to send last element on failure and gracefully complete the stream.
+   *
    * Since the underlying failure signal onError arrives out-of-band, it might jump over existing elements.
    * This operator can recover the failure signal, but not the skipped elements, which will be dropped.
    *
@@ -2130,6 +2132,75 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
   def recover(clazz: Class[_ <: Throwable], creator: function.Creator[Out]): javadsl.Source[Out, Mat] =
     recover {
       case elem if clazz.isInstance(elem) => creator.create()
+    }
+
+  /**
+   * Recover allows to send last element on failure and gracefully complete the stream.
+   *
+   * Since the underlying failure signal onError arrives out-of-band, it might jump over existing elements.
+   * This operator can recover the failure signal, but not the skipped elements, which will be dropped.
+   *
+   * Throwing an exception inside `recover` _will_ be logged on ERROR level automatically.
+   *
+   * '''Emits when''' element is available from the upstream or upstream is failed and pf returns an element
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' upstream completes or upstream failed with exception pf can handle
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @since 1.3.0
+   */
+  def recover(clazz: Class[_ <: Throwable], fallbackValue: Out): javadsl.Source[Out, Mat] =
+    recover {
+      case elem if clazz.isInstance(elem) => fallbackValue
+    }
+
+  /**
+   * Recover allows to send last element on failure and gracefully complete the stream.
+   *
+   * Since the underlying failure signal onError arrives out-of-band, it might jump over existing elements.
+   * This operator can recover the failure signal, but not the skipped elements, which will be dropped.
+   *
+   * Throwing an exception inside `recover` _will_ be logged on ERROR level automatically.
+   *
+   * '''Emits when''' element is available from the upstream or upstream is failed and pf returns an element
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' upstream completes or upstream failed with exception pf can handle
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @since 1.3.0
+   */
+  def recover(p: function.Predicate[_ >: Throwable], creator: function.Creator[Out]): javadsl.Source[Out, Mat] =
+    recover {
+      case elem if p.test(elem) => creator.create()
+    }
+
+  /**
+   * Recover allows to send last element on failure and gracefully complete the stream.
+   *
+   * Since the underlying failure signal onError arrives out-of-band, it might jump over existing elements.
+   * This operator can recover the failure signal, but not the skipped elements, which will be dropped.
+   *
+   * Throwing an exception inside `recover` _will_ be logged on ERROR level automatically.
+   *
+   * '''Emits when''' element is available from the upstream or upstream is failed and pf returns an element
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' upstream completes or upstream failed with exception pf can handle
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @since 1.3.0
+   */
+  def recover(p: function.Predicate[_ >: Throwable], fallbackValue: Out): javadsl.Source[Out, Mat] =
+    recover {
+      case elem if p.test(elem) => fallbackValue
     }
 
   /**
