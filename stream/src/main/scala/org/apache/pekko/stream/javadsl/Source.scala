@@ -2541,6 +2541,82 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
     })
 
   /**
+   * Continues the stream when an upstream error occurs.
+   *
+   * When an error is signaled from upstream, the `errorConsumer` function is invoked with the
+   * `Throwable`, and the stream resumes processing subsequent elements. The element that caused
+   * the error is dropped.
+   *
+   * '''Note:''' This operator requires stream operators to support supervision. If supervision
+   * is not supported, this operator will have no effect.
+   *
+   * '''Emits when''' an element is available from upstream
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @param errorConsumer function invoked when an error occurs
+   * @since 1.3.0
+   */
+  def onErrorContinue(errorConsumer: function.Procedure[_ >: Throwable]): javadsl.Source[Out, Mat] =
+    new Source(delegate.onErrorContinue[Throwable](errorConsumer.apply))
+
+  /**
+   * Continues the stream when an upstream error occurs.
+   *
+   * When an error is signaled from upstream, the `errorConsumer` function is invoked with the
+   * `Throwable`, and the stream resumes processing subsequent elements. The element that caused
+   * the error is dropped.
+   *
+   * '''Note:''' This operator requires stream operators to support supervision. If supervision
+   * is not supported, this operator will have no effect.
+   *
+   * '''Emits when''' an element is available from upstream
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @param clazz the class of the failure cause
+   * @param errorConsumer function invoked when an error occurs
+   * @since 1.3.0
+   */
+  def onErrorContinue[T <: Throwable](clazz: Class[T], errorConsumer: function.Procedure[_ >: Throwable])
+      : javadsl.Source[Out, Mat] =
+    new Source(delegate.onErrorContinue(clazz.isInstance(_))(errorConsumer.apply(_)))
+
+  /**
+   * Continues the stream when an upstream error occurs.
+   *
+   * When an error is signaled from upstream, the `errorConsumer` function is invoked with the
+   * `Throwable`, and the stream resumes processing subsequent elements. The element that caused
+   * the error is dropped.
+   *
+   * '''Note:''' This operator requires stream operators to support supervision. If supervision
+   * is not supported, this operator will have no effect.
+   *
+   * '''Emits when''' an element is available from upstream
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @param p predicate which determines if the exception should be handled
+   * @param errorConsumer function invoked when an error occurs
+   * @since 1.3.0
+   */
+  def onErrorContinue[T <: Throwable](p: function.Predicate[_ >: Throwable],
+      errorConsumer: function.Procedure[_ >: Throwable]): javadsl.Source[Out, Mat] =
+    new Source(delegate.onErrorContinue(p.test(_))(errorConsumer.apply(_)))
+
+  /**
    * Transform a failure signal into a Source of elements provided by a factory function.
    * This allows to continue processing with another stream when a failure occurs.
    *
