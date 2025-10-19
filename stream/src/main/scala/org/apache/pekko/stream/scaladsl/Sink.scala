@@ -275,7 +275,7 @@ object Sink {
    * '''Cancels when''' never
    *
    * @return a `Sink` that materializes to a `Future[Long]` with the element count
-   * @since 2.0.0
+   * @since 1.3.0
    *
    * See also [[Flow.limit]], [[Flow.limitWeighted]], [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
    */
@@ -321,7 +321,7 @@ object Sink {
    * Note: even if the `Source` is directly connected to the `Sink`, there is still an asynchronous boundary
    * between them; performance may be improved in the future.
    *
-   * @since 2.0.0
+   * @since 1.3.0
    */
   def source[T]: Sink[T, Source[T, NotUsed]] = _sourceSink.asInstanceOf[Sink[T, Source[T, NotUsed]]]
 
