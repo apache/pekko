@@ -221,7 +221,7 @@ object Sink {
    * Note: even if the `Source` is directly connected to the `Sink`, there is still an asynchronous boundary
    * between them; performance may be improved in the future.
    *
-   * @since 2.0.0
+   * @since 1.3.0
    */
   def source[T](): Sink[T, Source[T, NotUsed]] = new Sink(scaladsl.Sink.source[T])
     .mapMaterializedValue(src => src.asJava)
