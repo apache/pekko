@@ -26,6 +26,7 @@ import scala.jdk.DurationConverters._
 import scala.jdk.FutureConverters._
 import scala.jdk.OptionConverters._
 import scala.reflect.ClassTag
+import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.Done
@@ -2198,11 +2199,11 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * '''Cancels when''' downstream cancels
    *
    * @param fallback Function which produces a Source to continue the stream
-   * @since 2.0.0
+   * @since 1.3.0
    */
   def onErrorResume[T >: Out](fallback: function.Function[_ >: Throwable, _ <: Graph[SourceShape[T], NotUsed]])
       : javadsl.Flow[In, T, Mat] = new Flow(delegate.recoverWith {
-    case ex: Throwable => fallback(ex)
+    case NonFatal(ex) => fallback(ex)
   })
 
   /**
@@ -2222,13 +2223,13 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * @param clazz the class object of the failure cause
    * @param fallback Function which produces a Source to continue the stream
-   * @since 2.0.0
+   * @since 1.3.0
    */
   def onErrorResume[T >: Out](
       clazz: Class[_ <: Throwable],
       fallback: function.Function[_ >: Throwable, _ <: Graph[SourceShape[T], NotUsed]])
       : javadsl.Flow[In, T, Mat] = new Flow(delegate.recoverWith {
-    case ex: Throwable if clazz.isInstance(ex) => fallback(ex)
+    case NonFatal(ex) if clazz.isInstance(ex) => fallback(ex)
   })
 
   /**
@@ -2247,14 +2248,14 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * '''Cancels when''' downstream cancels
    *
    * @param predicate Predicate which determines if the exception should be handled
-   * @param function Function which produces a Source to continue the stream
-   * @since 2.0.0
+   * @param fallback Function which produces a Source to continue the stream
+   * @since 1.3.0
    */
   def onErrorResume[T >: Out](
       predicate: function.Predicate[_ >: Throwable],
       fallback: function.Function[_ >: Throwable, _ <: Graph[SourceShape[T], NotUsed]])
       : javadsl.Flow[In, T, Mat] = new Flow(delegate.recoverWith {
-    case ex: Throwable if predicate.test(ex) => fallback(ex)
+    case NonFatal(ex) if predicate.test(ex) => fallback(ex)
   })
 
   /**
