@@ -1346,6 +1346,26 @@ public class FlowTest extends StreamTest {
   }
 
   @Test
+  public void mustBeAbleToOnErrorContinue() {
+    Source.from(Arrays.asList(1, 2))
+        .via(
+            Flow.of(Integer.class)
+                .map(
+                    elem -> {
+                      if (elem == 2) {
+                        throw new RuntimeException("ex");
+                      } else {
+                        return elem;
+                      }
+                    })
+                .onErrorContinue(error -> logger().error(error, "Error occurred")))
+        .runWith(TestSink.probe(system), system)
+        .request(2)
+        .expectNext(1)
+        .expectComplete();
+  }
+
+  @Test
   public void mustBeAbleToOnErrorResume() {
     Source.from(Arrays.asList(1, 2))
         .map(
@@ -1376,6 +1396,28 @@ public class FlowTest extends StreamTest {
               }
             })
         .via(Flow.of(Integer.class).onErrorComplete(IllegalArgumentException.class))
+        .runWith(TestSink.probe(system), system)
+        .request(2)
+        .expectNext(1)
+        .expectComplete();
+  }
+
+  @Test
+  public void mustBeAbleToOnErrorContinueWithDedicatedException() {
+    Source.from(Arrays.asList(1, 2))
+        .via(
+            Flow.of(Integer.class)
+                .map(
+                    elem -> {
+                      if (elem == 2) {
+                        throw new IllegalArgumentException("ex");
+                      } else {
+                        return elem;
+                      }
+                    })
+                .onErrorContinue(
+                    IllegalArgumentException.class,
+                    error -> logger().error(error, "Error occurred")))
         .runWith(TestSink.probe(system), system)
         .request(2)
         .expectNext(1)
@@ -1423,6 +1465,28 @@ public class FlowTest extends StreamTest {
   }
 
   @Test
+  public void mustBeAbleToFailWhenOnErrorContinueExceptionTypeNotMatch() {
+    final IllegalArgumentException ex = new IllegalArgumentException("ex");
+    Source.from(Arrays.asList(1, 2))
+        .map(
+            elem -> {
+              if (elem == 2) {
+                throw ex;
+              } else {
+                return elem;
+              }
+            })
+        .via(
+            Flow.of(Integer.class)
+                .onErrorContinue(
+                    TimeoutException.class, error -> logger().error(error, "Error occurred")))
+        .runWith(TestSink.probe(system), system)
+        .request(2)
+        .expectNext(1)
+        .expectError(ex);
+  }
+
+  @Test
   public void onErrorResumeMustBeAbleToFailWhenExceptionTypeNotMatch() {
     final IllegalArgumentException ex = new IllegalArgumentException("ex");
     Source.from(Arrays.asList(1, 2))
@@ -1453,6 +1517,28 @@ public class FlowTest extends StreamTest {
               }
             })
         .via(Flow.of(Integer.class).onErrorComplete(ex -> ex.getMessage().contains("Boom")))
+        .runWith(TestSink.probe(system), system)
+        .request(2)
+        .expectNext(1)
+        .expectComplete();
+  }
+
+  @Test
+  public void mustBeAbleToOnErrorContinueWithPredicate() {
+    Source.from(Arrays.asList(1, 2))
+        .via(
+            Flow.of(Integer.class)
+                .map(
+                    elem -> {
+                      if (elem == 2) {
+                        throw new IllegalArgumentException("Boom");
+                      } else {
+                        return elem;
+                      }
+                    })
+                .onErrorContinue(
+                    ex -> ex.getMessage().contains("Boom"),
+                    error -> logger().error(error, "Error occurred")))
         .runWith(TestSink.probe(system), system)
         .request(2)
         .expectNext(1)
