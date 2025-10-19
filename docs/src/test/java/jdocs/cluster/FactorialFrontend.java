@@ -13,13 +13,15 @@
 
 package jdocs.cluster;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.time.Duration;
-
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.actor.Props;
+import org.apache.pekko.actor.ReceiveTimeout;
 import org.apache.pekko.cluster.metrics.AdaptiveLoadBalancingGroup;
 import org.apache.pekko.cluster.metrics.AdaptiveLoadBalancingPool;
 import org.apache.pekko.cluster.metrics.HeapMetricsSelector;
@@ -28,9 +30,6 @@ import org.apache.pekko.cluster.routing.ClusterRouterGroup;
 import org.apache.pekko.cluster.routing.ClusterRouterGroupSettings;
 import org.apache.pekko.cluster.routing.ClusterRouterPool;
 import org.apache.pekko.cluster.routing.ClusterRouterPoolSettings;
-import org.apache.pekko.actor.ActorRef;
-import org.apache.pekko.actor.ReceiveTimeout;
-import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.event.Logging;
 import org.apache.pekko.event.LoggingAdapter;
 import org.apache.pekko.routing.FromConfig;

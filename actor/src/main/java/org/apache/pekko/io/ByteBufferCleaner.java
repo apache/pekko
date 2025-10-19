@@ -17,13 +17,13 @@
 
 package org.apache.pekko.io;
 
+import static java.lang.invoke.MethodType.methodType;
+
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
-
-import static java.lang.invoke.MethodType.methodType;
 
 /**
  * Cleans a direct {@link ByteBuffer}. Without manual intervention, direct ByteBuffers will be

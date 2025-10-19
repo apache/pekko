@@ -13,6 +13,9 @@
 
 package jdocs.stream.javadsl.cookbook;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletionStage;
 import org.apache.pekko.Done;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
@@ -22,10 +25,6 @@ import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CompletionStage;
 
 public class RecipeDroppyBroadcast extends RecipeTest {
   static ActorSystem system;

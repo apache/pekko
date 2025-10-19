@@ -14,10 +14,9 @@
 package jdocs.ddata.protobuf;
 
 // #serializer
-import jdocs.ddata.TwoPhaseSet;
 import docs.ddata.protobuf.msg.TwoPhaseSetMessages;
 import docs.ddata.protobuf.msg.TwoPhaseSetMessages.TwoPhaseSet2.Builder;
-
+import jdocs.ddata.TwoPhaseSet;
 import org.apache.pekko.actor.ExtendedActorSystem;
 import org.apache.pekko.cluster.ddata.GSet;
 import org.apache.pekko.cluster.ddata.protobuf.AbstractSerializationSupport;

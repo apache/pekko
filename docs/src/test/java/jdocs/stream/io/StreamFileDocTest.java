@@ -13,28 +13,26 @@
 
 package jdocs.stream.io;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.io.IOException;
 import java.util.concurrent.CompletionStage;
-
+import jdocs.AbstractJavaTest;
+import jdocs.stream.SilenceSystemOut;
 import org.apache.pekko.Done;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.stream.*;
 import org.apache.pekko.stream.ActorAttributes;
-import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.FileIO;
+import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
-import jdocs.AbstractJavaTest;
-import jdocs.stream.SilenceSystemOut;
 import org.apache.pekko.testkit.javadsl.TestKit;
+import org.apache.pekko.util.ByteString;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import org.apache.pekko.stream.*;
-import org.apache.pekko.util.ByteString;
 
 public class StreamFileDocTest extends AbstractJavaTest {
 

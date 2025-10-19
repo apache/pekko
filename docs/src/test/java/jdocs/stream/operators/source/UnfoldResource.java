@@ -13,11 +13,10 @@
 
 package jdocs.stream.operators.source;
 
+import java.util.Optional;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.stream.javadsl.Source;
-
-import java.util.Optional;
 
 interface UnfoldResource {
   // imaginary blocking API we need to use

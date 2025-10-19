@@ -13,10 +13,10 @@
 
 package jdocs.persistence;
 
-import org.apache.pekko.persistence.AbstractPersistentActor;
-import org.apache.pekko.persistence.RuntimePluginConfig;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import org.apache.pekko.persistence.AbstractPersistentActor;
+import org.apache.pekko.persistence.RuntimePluginConfig;
 
 public class PersistenceMultiDocTest {
 

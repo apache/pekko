@@ -16,19 +16,17 @@
 
 package org.apache.pekko.remote.artery.aeron;
 
-import org.apache.pekko.event.NoLogging;
 import io.aeron.CncFileDescriptor;
+import java.io.File;
+import java.nio.MappedByteBuffer;
+import java.util.concurrent.atomic.AtomicLong;
 import org.agrona.DirectBuffer;
 import org.agrona.IoUtil;
 import org.agrona.concurrent.AtomicBuffer;
 import org.agrona.concurrent.errors.ErrorLogReader;
-
 import org.apache.pekko.event.LoggingAdapter;
+import org.apache.pekko.event.NoLogging;
 import org.apache.pekko.util.Helpers;
-
-import java.io.File;
-import java.nio.MappedByteBuffer;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * INTERNAL API

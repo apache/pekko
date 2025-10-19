@@ -13,6 +13,8 @@
 
 package jdocs.org.apache.pekko.cluster.sharding.typed;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import java.math.BigDecimal;
 import org.apache.pekko.Done;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.cluster.sharding.typed.javadsl.EntityTypeKey;
@@ -25,9 +27,6 @@ import org.apache.pekko.persistence.typed.javadsl.EventHandlerBuilder;
 import org.apache.pekko.persistence.typed.javadsl.EventSourcedBehaviorWithEnforcedReplies;
 import org.apache.pekko.persistence.typed.javadsl.ReplyEffect;
 import org.apache.pekko.serialization.jackson.CborSerializable;
-import com.fasterxml.jackson.annotation.JsonCreator;
-
-import java.math.BigDecimal;
 
 /**
  * Bank account example illustrating: - different state classes representing the lifecycle of the

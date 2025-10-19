@@ -16,11 +16,9 @@ package jdocs.ddata;
 // #data-bot
 import java.time.Duration;
 import java.util.concurrent.ThreadLocalRandom;
-
 import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.actor.Cancellable;
-import org.apache.pekko.cluster.Cluster;
 import org.apache.pekko.cluster.ddata.DistributedData;
 import org.apache.pekko.cluster.ddata.Key;
 import org.apache.pekko.cluster.ddata.ORSet;

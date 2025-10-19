@@ -13,13 +13,22 @@
 
 package org.apache.pekko.pattern;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.apache.pekko.pattern.Patterns.ask;
+import static org.apache.pekko.pattern.Patterns.pipe;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.pekko.actor.*;
 import org.apache.pekko.dispatch.Futures;
 import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.testkit.TestProbe;
 import org.apache.pekko.util.Timeout;
-import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
@@ -27,17 +36,6 @@ import scala.concurrent.Await;
 import scala.concurrent.ExecutionContext;
 import scala.concurrent.Future;
 import scala.concurrent.duration.FiniteDuration;
-
-import java.util.Arrays;
-import java.util.concurrent.*;
-import java.time.Duration;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static org.apache.pekko.pattern.Patterns.ask;
-import static org.apache.pekko.pattern.Patterns.pipe;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /** Copyright (C) 2009-2018 Lightbend Inc. <https://www.lightbend.com> */
 public class PatternsTest extends JUnitSuite {

@@ -13,10 +13,9 @@
 
 package org.apache.pekko.stream.javadsl;
 
+import java.util.concurrent.CompletableFuture;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.stream.Materializer;
-
-import java.util.concurrent.CompletableFuture;
 
 public class SourceRunWithTest {
 

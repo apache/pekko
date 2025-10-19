@@ -13,14 +13,13 @@
 
 package jdocs.org.apache.pekko.persistence.typed;
 
+import static jdocs.org.apache.pekko.persistence.typed.WebStoreCustomerFSM.*;
+
+import java.time.Duration;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.javadsl.TimerScheduler;
 import org.apache.pekko.persistence.typed.*;
 import org.apache.pekko.persistence.typed.javadsl.*;
-
-import java.time.Duration;
-
-import static jdocs.org.apache.pekko.persistence.typed.WebStoreCustomerFSM.*;
 
 @Deprecated
 public class PersistentFsmToTypedMigrationCompileOnlyTest {

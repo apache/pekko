@@ -13,6 +13,7 @@
 
 package jdocs.stream.javadsl.cookbook;
 
+import java.time.Duration;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.stream.javadsl.Flow;
@@ -21,8 +22,6 @@ import org.apache.pekko.util.ByteString;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.time.Duration;
 
 public class RecipeKeepAlive extends RecipeTest {
   static ActorSystem system;

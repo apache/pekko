@@ -17,6 +17,8 @@
 
 package jdocs.org.apache.pekko.actor.testkit.typed.javadsl;
 
+import static jdocs.org.apache.pekko.actor.testkit.typed.javadsl.AsyncTestingExampleTest.Echo;
+
 import org.apache.pekko.actor.testkit.typed.annotations.JUnit5TestKit;
 import org.apache.pekko.actor.testkit.typed.javadsl.*;
 import org.apache.pekko.actor.testkit.typed.javadsl.JUnit5TestKitBuilder;
@@ -24,8 +26,6 @@ import org.apache.pekko.actor.typed.ActorRef;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
-import static jdocs.org.apache.pekko.actor.testkit.typed.javadsl.AsyncTestingExampleTest.Echo;
 
 // test code copied from LogCapturingExampleTest.java
 

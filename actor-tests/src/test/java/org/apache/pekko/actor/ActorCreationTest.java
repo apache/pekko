@@ -13,15 +13,13 @@
 
 package org.apache.pekko.actor;
 
-import static org.junit.Assert.*;
 import static java.util.stream.Collectors.toCollection;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.stream.IntStream;
-
 import org.junit.Assert;
 import org.junit.Test;
-
 import org.scalatestplus.junit.JUnitSuite;
 
 @SuppressWarnings("deprecation")

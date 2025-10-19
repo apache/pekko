@@ -13,21 +13,20 @@
 
 package org.apache.pekko.stream.javadsl;
 
+import static org.apache.pekko.Done.done;
+import static org.junit.Assert.*;
+
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.TimeUnit;
 import org.apache.pekko.Done;
 import org.apache.pekko.stream.*;
 import org.apache.pekko.stream.testkit.TestPublisher;
 import org.apache.pekko.stream.testkit.TestSubscriber;
 import org.apache.pekko.stream.testkit.Utils;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.TimeUnit;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
-
-import static org.apache.pekko.Done.done;
-import static org.junit.Assert.*;
 
 public class KillSwitchTest extends StreamTest {
   public KillSwitchTest() {

@@ -13,6 +13,14 @@
 
 package jdocs.stream;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.TimeUnit;
+import jdocs.AbstractJavaTest;
 import org.apache.pekko.Done;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorRef;
@@ -20,19 +28,10 @@ import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.japi.Pair;
 import org.apache.pekko.stream.*;
 import org.apache.pekko.stream.javadsl.*;
-import jdocs.AbstractJavaTest;
 import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.TimeUnit;
-
-import static org.junit.Assert.assertEquals;
 
 public class StreamPartialGraphDSLDocTest extends AbstractJavaTest {
 

@@ -13,6 +13,10 @@
 
 package jdocs.stream.javadsl.cookbook;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutionException;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.stream.javadsl.Sink;
@@ -21,11 +25,6 @@ import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ExecutionException;
 
 public class RecipeSplitter {
   private static ActorSystem system;

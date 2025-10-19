@@ -13,6 +13,8 @@
 
 package jdocs.persistence.testkit;
 
+import com.typesafe.config.ConfigFactory;
+import jdocs.AbstractJavaTest;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.persistence.testkit.JournalOperation;
@@ -24,8 +26,6 @@ import org.apache.pekko.persistence.testkit.StorageFailure;
 import org.apache.pekko.persistence.testkit.WriteEvents;
 import org.apache.pekko.persistence.testkit.javadsl.PersistenceTestKit;
 import org.apache.pekko.persistence.typed.PersistenceId;
-import com.typesafe.config.ConfigFactory;
-import jdocs.AbstractJavaTest;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;

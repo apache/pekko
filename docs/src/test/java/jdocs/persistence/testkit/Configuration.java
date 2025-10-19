@@ -13,14 +13,14 @@
 
 package jdocs.persistence.testkit;
 
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.persistence.testkit.PersistenceTestKitPlugin;
 import org.apache.pekko.persistence.testkit.PersistenceTestKitSnapshotPlugin;
 import org.apache.pekko.persistence.testkit.javadsl.PersistenceTestKit;
 import org.apache.pekko.persistence.testkit.javadsl.SnapshotTestKit;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 
 public class Configuration {
 

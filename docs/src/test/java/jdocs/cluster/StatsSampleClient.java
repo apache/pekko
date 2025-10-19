@@ -13,27 +13,26 @@
 
 package jdocs.cluster;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
+import java.util.concurrent.ThreadLocalRandom;
 import jdocs.cluster.StatsMessages.JobFailed;
 import jdocs.cluster.StatsMessages.StatsJob;
 import jdocs.cluster.StatsMessages.StatsResult;
-import java.util.concurrent.ThreadLocalRandom;
-import java.time.Duration;
+import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.actor.ActorSelection;
 import org.apache.pekko.actor.Address;
 import org.apache.pekko.actor.Cancellable;
-import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.cluster.Cluster;
-import org.apache.pekko.cluster.ClusterEvent.UnreachableMember;
-import org.apache.pekko.cluster.ClusterEvent.ReachableMember;
 import org.apache.pekko.cluster.ClusterEvent.CurrentClusterState;
 import org.apache.pekko.cluster.ClusterEvent.MemberEvent;
 import org.apache.pekko.cluster.ClusterEvent.MemberUp;
 import org.apache.pekko.cluster.ClusterEvent.ReachabilityEvent;
+import org.apache.pekko.cluster.ClusterEvent.ReachableMember;
+import org.apache.pekko.cluster.ClusterEvent.UnreachableMember;
 import org.apache.pekko.cluster.Member;
 import org.apache.pekko.cluster.MemberStatus;
 

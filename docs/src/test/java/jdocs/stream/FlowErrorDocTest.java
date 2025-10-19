@@ -14,25 +14,24 @@
 package jdocs.stream;
 
 import static org.junit.Assert.assertEquals;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-
-import org.apache.pekko.NotUsed;
-import org.apache.pekko.japi.pf.PFBuilder;
-import org.apache.pekko.stream.javadsl.*;
 import jdocs.AbstractJavaTest;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.japi.function.Function;
+import org.apache.pekko.japi.pf.PFBuilder;
+import org.apache.pekko.stream.ActorAttributes;
+import org.apache.pekko.stream.Supervision;
+import org.apache.pekko.stream.javadsl.*;
 import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import org.apache.pekko.actor.ActorSystem;
-import org.apache.pekko.stream.Supervision;
-import org.apache.pekko.stream.ActorAttributes;
-import org.apache.pekko.japi.function.Function;
 
 public class FlowErrorDocTest extends AbstractJavaTest {
 

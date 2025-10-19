@@ -13,13 +13,12 @@
 
 package jdocs.stream.operators.flow;
 
+import java.util.*;
+import java.util.stream.IntStream;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.japi.Pair;
 import org.apache.pekko.stream.javadsl.Flow;
 import org.apache.pekko.stream.javadsl.Source;
-
-import java.util.*;
-import java.util.stream.IntStream;
 
 public class StatefulMap {
   static final ActorSystem system = null;

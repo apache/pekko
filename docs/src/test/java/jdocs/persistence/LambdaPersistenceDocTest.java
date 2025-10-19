@@ -13,15 +13,14 @@
 
 package jdocs.persistence;
 
+import java.io.Serializable;
+import java.time.Duration;
+import java.util.Optional;
 import org.apache.pekko.actor.*;
 import org.apache.pekko.japi.Procedure;
 import org.apache.pekko.pattern.BackoffOpts;
 import org.apache.pekko.pattern.BackoffSupervisor;
 import org.apache.pekko.persistence.*;
-
-import java.io.Serializable;
-import java.time.Duration;
-import java.util.Optional;
 
 public class LambdaPersistenceDocTest {
 

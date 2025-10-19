@@ -14,8 +14,8 @@
 package org.apache.pekko.japi.pf;
 
 import scala.PartialFunction;
-import scala.runtime.BoxedUnit;
 import scala.Tuple2;
+import scala.runtime.BoxedUnit;
 
 /**
  * Builder used to create a partial function for {@link org.apache.pekko.actor.FSM#onTransition}.

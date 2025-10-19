@@ -13,12 +13,7 @@
 
 package org.apache.pekko.stream.javadsl;
 
-import org.apache.pekko.util.ByteString;
-import org.apache.pekko.stream.StreamTest;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
-import org.apache.pekko.testkit.PekkoSpec;
-import org.junit.ClassRule;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +21,12 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import static org.junit.Assert.assertEquals;
+import org.apache.pekko.stream.StreamTest;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoSpec;
+import org.apache.pekko.util.ByteString;
+import org.junit.ClassRule;
+import org.junit.Test;
 
 public class JsonFramingTest extends StreamTest {
   public JsonFramingTest() {

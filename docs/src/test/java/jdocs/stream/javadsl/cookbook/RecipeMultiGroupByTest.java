@@ -13,6 +13,14 @@
 
 package jdocs.stream.javadsl.cookbook;
 
+import static java.util.stream.Collectors.toList;
+import static junit.framework.TestCase.assertTrue;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.TimeUnit;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.japi.Function;
@@ -24,15 +32,6 @@ import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.TimeUnit;
-
-import static java.util.stream.Collectors.toList;
-import static junit.framework.TestCase.assertTrue;
 
 public class RecipeMultiGroupByTest extends RecipeTest {
   static ActorSystem system;

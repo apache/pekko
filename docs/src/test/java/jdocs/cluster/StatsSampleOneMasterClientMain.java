@@ -14,7 +14,6 @@
 package jdocs.cluster;
 
 import com.typesafe.config.ConfigFactory;
-
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.actor.Props;
 

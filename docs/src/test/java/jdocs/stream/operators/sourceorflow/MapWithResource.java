@@ -17,13 +17,12 @@
 
 package jdocs.stream.operators.sourceorflow;
 
-import org.apache.pekko.actor.ActorSystem;
-import org.apache.pekko.stream.javadsl.Source;
-
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.stream.javadsl.Source;
 
 public interface MapWithResource {
   // #mapWithResource-blocking-api

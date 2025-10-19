@@ -13,13 +13,12 @@
 
 package org.apache.pekko.persistence.fsm;
 
-import org.apache.pekko.actor.*;
-
 import java.io.Serializable;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.time.Duration;
+import org.apache.pekko.actor.*;
 
 @Deprecated
 public class AbstractPersistentFSMTest {

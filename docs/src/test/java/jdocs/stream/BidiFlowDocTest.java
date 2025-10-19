@@ -13,30 +13,29 @@
 
 package jdocs.stream;
 
+import static org.apache.pekko.util.ByteString.emptyByteString;
+import static org.junit.Assert.assertArrayEquals;
+
 import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
-
-import org.apache.pekko.NotUsed;
-import org.apache.pekko.stream.javadsl.GraphDSL;
 import jdocs.AbstractJavaTest;
-import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.japi.pf.PFBuilder;
 import org.apache.pekko.stream.*;
 import org.apache.pekko.stream.javadsl.*;
+import org.apache.pekko.stream.javadsl.GraphDSL;
 import org.apache.pekko.stream.stage.*;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import org.apache.pekko.util.ByteIterator;
 import org.apache.pekko.util.ByteString;
-import static org.apache.pekko.util.ByteString.emptyByteString;
 import org.apache.pekko.util.ByteStringBuilder;
-import static org.junit.Assert.assertArrayEquals;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class BidiFlowDocTest extends AbstractJavaTest {
 

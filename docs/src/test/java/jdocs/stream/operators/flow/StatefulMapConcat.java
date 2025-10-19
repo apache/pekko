@@ -13,13 +13,12 @@
 
 package jdocs.stream.operators.flow;
 
+import java.util.*;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.japi.Pair;
 import org.apache.pekko.stream.javadsl.Flow;
 import org.apache.pekko.stream.javadsl.Source;
-
-import java.util.*;
 
 public class StatefulMapConcat {
 

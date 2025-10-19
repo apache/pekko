@@ -13,10 +13,10 @@
 
 package jdocs.pattern;
 
+import java.time.Duration;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeoutException;
-import java.time.Duration;
-
+import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.actor.ActorKilledException;
 import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.actor.ActorRefFactory;
@@ -27,7 +27,6 @@ import org.apache.pekko.actor.Scheduler;
 import org.apache.pekko.actor.Status;
 import org.apache.pekko.actor.SupervisorStrategy;
 import org.apache.pekko.actor.Terminated;
-import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.pattern.Patterns;
 
 public class SupervisedAsk {

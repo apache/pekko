@@ -13,11 +13,10 @@
 
 package org.apache.pekko.persistence.fsm.japi.pf;
 
+import java.util.List;
 import org.apache.pekko.japi.pf.FI;
 import org.apache.pekko.japi.pf.PFBuilder;
 import scala.PartialFunction;
-
-import java.util.List;
 
 /**
  * Builder used to create a partial function for {@link org.apache.pekko.actor.FSM#whenUnhandled}.

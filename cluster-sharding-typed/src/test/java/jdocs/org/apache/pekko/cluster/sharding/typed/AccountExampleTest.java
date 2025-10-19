@@ -13,6 +13,18 @@
 
 package jdocs.org.apache.pekko.cluster.sharding.typed;
 
+import static jdocs.org.apache.pekko.cluster.sharding.typed.AccountExampleWithEventHandlersInState.AccountEntity;
+import static jdocs.org.apache.pekko.cluster.sharding.typed.AccountExampleWithEventHandlersInState.AccountEntity.*;
+import static org.apache.pekko.Done.done;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+import java.math.BigDecimal;
+import java.time.Duration;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.TimeUnit;
 import org.apache.pekko.Done;
 import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
@@ -24,23 +36,10 @@ import org.apache.pekko.cluster.typed.Cluster;
 import org.apache.pekko.cluster.typed.Join;
 import org.apache.pekko.pattern.StatusReply;
 import org.apache.pekko.persistence.typed.PersistenceId;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
-
-import java.math.BigDecimal;
-import java.time.Duration;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.TimeUnit;
-
-import static org.apache.pekko.Done.done;
-import static jdocs.org.apache.pekko.cluster.sharding.typed.AccountExampleWithEventHandlersInState.AccountEntity;
-import static jdocs.org.apache.pekko.cluster.sharding.typed.AccountExampleWithEventHandlersInState.AccountEntity.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class AccountExampleTest extends JUnitSuite {
 

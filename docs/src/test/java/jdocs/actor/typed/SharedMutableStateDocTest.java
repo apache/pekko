@@ -13,18 +13,17 @@
 
 package jdocs.actor.typed;
 
-import org.apache.pekko.actor.typed.ActorRef;
-import org.apache.pekko.actor.typed.Behavior;
-import org.apache.pekko.actor.typed.javadsl.AbstractBehavior;
-import org.apache.pekko.actor.typed.javadsl.ActorContext;
-import org.apache.pekko.actor.typed.javadsl.Receive;
-import org.apache.pekko.actor.typed.javadsl.AskPattern;
-
 import java.time.Duration;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import org.apache.pekko.actor.typed.ActorRef;
+import org.apache.pekko.actor.typed.Behavior;
+import org.apache.pekko.actor.typed.javadsl.AbstractBehavior;
+import org.apache.pekko.actor.typed.javadsl.ActorContext;
+import org.apache.pekko.actor.typed.javadsl.AskPattern;
+import org.apache.pekko.actor.typed.javadsl.Receive;
 
 interface SharedMutableStateDocTest {
 

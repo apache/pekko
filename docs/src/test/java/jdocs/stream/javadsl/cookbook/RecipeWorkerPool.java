@@ -13,6 +13,12 @@
 
 package jdocs.stream.javadsl.cookbook;
 
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.TimeUnit;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.stream.*;
@@ -22,13 +28,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import scala.concurrent.duration.FiniteDuration;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.TimeUnit;
-
-import static org.junit.Assert.assertTrue;
 
 public class RecipeWorkerPool extends RecipeTest {
   static ActorSystem system;

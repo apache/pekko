@@ -13,11 +13,10 @@
 
 package org.apache.pekko.util;
 
-import org.apache.pekko.annotation.InternalApi;
-
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import org.apache.pekko.annotation.InternalApi;
 
 /** INTERNAL API */
 @InternalApi

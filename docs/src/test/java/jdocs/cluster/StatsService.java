@@ -13,23 +13,22 @@
 
 package jdocs.cluster;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import jdocs.cluster.StatsMessages.StatsJob;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.Props;
 import org.apache.pekko.cluster.routing.ClusterRouterGroup;
 import org.apache.pekko.cluster.routing.ClusterRouterGroupSettings;
 import org.apache.pekko.cluster.routing.ClusterRouterPool;
 import org.apache.pekko.cluster.routing.ClusterRouterPoolSettings;
 import org.apache.pekko.routing.ConsistentHashingGroup;
 import org.apache.pekko.routing.ConsistentHashingPool;
-import jdocs.cluster.StatsMessages.StatsJob;
-import org.apache.pekko.actor.ActorRef;
-import org.apache.pekko.actor.Props;
-import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.routing.ConsistentHashingRouter.ConsistentHashableEnvelope;
 import org.apache.pekko.routing.FromConfig;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 // #service
 public class StatsService extends AbstractActor {

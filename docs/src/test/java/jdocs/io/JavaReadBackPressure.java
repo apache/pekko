@@ -13,18 +13,17 @@
 
 package jdocs.io;
 
+import java.net.InetSocketAddress;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.actor.Props;
-import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.io.Inet;
 import org.apache.pekko.io.Tcp;
 import org.apache.pekko.io.TcpMessage;
 import org.apache.pekko.util.ByteString;
-import java.time.Duration;
-
-import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.List;
 
 /** Copyright (C) 2009-2018 Lightbend Inc. <https://www.lightbend.com> */
 public class JavaReadBackPressure {

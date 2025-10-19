@@ -15,9 +15,9 @@ package org.apache.pekko.cluster.singleton;
 
 import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.cluster.singleton.TestSingletonMessages.*;
 import org.apache.pekko.event.Logging;
 import org.apache.pekko.event.LoggingAdapter;
-import org.apache.pekko.cluster.singleton.TestSingletonMessages.*;
 
 public class Consumer extends AbstractActor {
 

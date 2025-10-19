@@ -13,23 +13,20 @@
 
 package org.apache.pekko.actor.typed.javadsl;
 
+import static org.apache.pekko.Done.done;
+import static org.apache.pekko.actor.typed.javadsl.Behaviors.*;
+
+import java.time.Duration;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.pekko.Done;
 import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.typed.*;
 import org.junit.ClassRule;
 import org.junit.Rule;
-import org.scalatestplus.junit.JUnitSuite;
 import org.junit.Test;
-
-import org.apache.pekko.actor.typed.*;
-
-import java.time.Duration;
-
-import static org.apache.pekko.Done.done;
-import static org.apache.pekko.actor.typed.javadsl.Behaviors.*;
+import org.scalatestplus.junit.JUnitSuite;
 
 public class WatchTest extends JUnitSuite {
 

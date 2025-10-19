@@ -13,6 +13,11 @@
 
 package jdocs.stream;
 
+import java.time.Duration;
+import java.util.List;
+import java.util.concurrent.CompletionStage;
+import java.util.function.ToLongBiFunction;
+import jdocs.AbstractJavaTest;
 import org.apache.pekko.Done;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
@@ -22,15 +27,9 @@ import org.apache.pekko.stream.*;
 import org.apache.pekko.stream.javadsl.*;
 import org.apache.pekko.stream.javadsl.PartitionHub.ConsumerInfo;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import jdocs.AbstractJavaTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.time.Duration;
-import java.util.List;
-import java.util.concurrent.CompletionStage;
-import java.util.function.ToLongBiFunction;
 
 public class HubDocTest extends AbstractJavaTest {
 

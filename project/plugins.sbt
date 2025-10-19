@@ -9,7 +9,7 @@
 
 addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "2.2.0")
 
-addSbtPlugin("com.lightbend.sbt" % "sbt-java-formatter" % "0.7.0")
+addSbtPlugin("com.github.sbt" % "sbt-java-formatter" % "0.9.0")
 addSbtPlugin("com.lightbend.sbt" % "sbt-bill-of-materials" % "1.0.2")
 addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.5.5")
 addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.14.3")

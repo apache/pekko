@@ -13,6 +13,15 @@
 
 package jdocs.stream.javadsl.cookbook;
 
+import static org.apache.pekko.util.ByteString.emptyByteString;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.stream.*;
@@ -22,20 +31,10 @@ import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.stream.stage.*;
 import org.apache.pekko.testkit.javadsl.TestKit;
 import org.apache.pekko.util.ByteString;
-import static org.apache.pekko.util.ByteString.emptyByteString;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import scala.Tuple2;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class RecipeByteStrings extends RecipeTest {
   static ActorSystem system;

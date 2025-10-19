@@ -17,11 +17,10 @@
 
 package jdocs.stream.operators.sink;
 
+import java.util.concurrent.TimeUnit;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
-
-import java.util.concurrent.TimeUnit;
 
 public class NoneMatch {
   private ActorSystem system = null;
