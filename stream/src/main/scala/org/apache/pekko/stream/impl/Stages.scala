@@ -156,6 +156,7 @@ import pekko.stream.Attributes._
     val seqSink = name("seqSink")
     val countSink = name("countSink")
     val publisherSink = name("publisherSink")
+    val sourceSink = name("sourceSink")
     val fanoutPublisherSink = name("fanoutPublisherSink")
     val ignoreSink = name("ignoreSink")
     val neverSink = name("neverSink")
