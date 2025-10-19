@@ -931,7 +931,7 @@ sealed abstract class ByteString extends IndexedSeq[Byte] with IndexedSeqOptimiz
    */
   def indexOf(elem: Byte): Int = indexOf(elem, 0)
 
-  override def indexOfSlice[B >: Byte](slice: scala.collection.Seq[B], from: Int): Int = {
+  override def indexOfSlice[B >: Byte](slice: scala.collection.GenSeq[B], from: Int): Int = {
     // this is only called if the first byte matches, so we can skip that check
     def check(startPos: Int): Boolean = {
       var i = startPos + 1
@@ -956,6 +956,9 @@ sealed abstract class ByteString extends IndexedSeq[Byte] with IndexedSeqOptimiz
     else if (sliceLength == 1) indexOf(headByte, from)
     else rec(math.max(0, from))
   }
+
+  override def indexOfSlice[B >: Byte](slice: scala.collection.GenSeq[B]): Int =
+    indexOfSlice(slice, 0)
 
   override def contains[B >: Byte](elem: B): Boolean = indexOf(elem, 0) != -1
 
