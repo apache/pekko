@@ -24,6 +24,7 @@ import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable
 import scala.concurrent.duration.FiniteDuration
 import scala.reflect.ClassTag
+import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.Done
@@ -44,6 +45,7 @@ import pekko.util.OptionConverters._
 import pekko.util.Timeout
 import pekko.util.unused
 import pekko.util.ccompat._
+
 import org.reactivestreams.Processor
 
 object Flow {
@@ -2366,7 +2368,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    */
   def onErrorResume[T >: Out](fallback: function.Function[_ >: Throwable, _ <: Graph[SourceShape[T], NotUsed]])
       : javadsl.Flow[In, T, Mat] = new Flow(delegate.recoverWith {
-    case ex: Throwable => fallback(ex)
+    case NonFatal(ex) => fallback(ex)
   })
 
   /**
@@ -2392,7 +2394,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
       clazz: Class[_ <: Throwable],
       fallback: function.Function[_ >: Throwable, _ <: Graph[SourceShape[T], NotUsed]])
       : javadsl.Flow[In, T, Mat] = new Flow(delegate.recoverWith {
-    case ex: Throwable if clazz.isInstance(ex) => fallback(ex)
+    case NonFatal(ex) if clazz.isInstance(ex) => fallback(ex)
   })
 
   /**
@@ -2411,14 +2413,14 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * '''Cancels when''' downstream cancels
    *
    * @param predicate Predicate which determines if the exception should be handled
-   * @param function Function which produces a Source to continue the stream
+   * @param fallback Function which produces a Source to continue the stream
    * @since 1.3.0
    */
   def onErrorResume[T >: Out](
       predicate: function.Predicate[_ >: Throwable],
       fallback: function.Function[_ >: Throwable, _ <: Graph[SourceShape[T], NotUsed]])
       : javadsl.Flow[In, T, Mat] = new Flow(delegate.recoverWith {
-    case ex: Throwable if predicate.test(ex) => fallback(ex)
+    case NonFatal(ex) if predicate.test(ex) => fallback(ex)
   })
 
   /**

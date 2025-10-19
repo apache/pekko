@@ -24,6 +24,7 @@ import scala.collection.immutable
 import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration.FiniteDuration
 import scala.reflect.ClassTag
+import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.{ Done, NotUsed }
@@ -2637,7 +2638,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
   def onErrorResume[T >: Out](
       fallback: function.Function[_ >: Throwable, _ <: Graph[SourceShape[T], NotUsed]]): javadsl.Source[T, Mat] =
     new Source(delegate.recoverWith {
-      case ex: Throwable => fallback(ex)
+      case NonFatal(ex) => fallback(ex)
     })
 
   /**
@@ -2663,7 +2664,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
       clazz: Class[_ <: Throwable],
       fallback: function.Function[_ >: Throwable, _ <: Graph[SourceShape[T], NotUsed]]): javadsl.Source[T, Mat] =
     new Source(delegate.recoverWith {
-      case ex: Throwable if clazz.isInstance(ex) => fallback(ex)
+      case NonFatal(ex) if clazz.isInstance(ex) => fallback(ex)
     })
 
   /**
@@ -2689,7 +2690,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
       predicate: function.Predicate[_ >: Throwable],
       fallback: function.Function[_ >: Throwable, _ <: Graph[SourceShape[T], NotUsed]]): javadsl.Source[T, Mat] =
     new Source(delegate.recoverWith {
-      case ex: Throwable if predicate.test(ex) => fallback(ex)
+      case NonFatal(ex) if predicate.test(ex) => fallback(ex)
     })
 
   /**
