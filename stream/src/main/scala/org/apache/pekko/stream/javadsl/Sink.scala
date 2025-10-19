@@ -334,6 +334,27 @@ object Sink {
   }
 
   /**
+   * A `Sink` that counts all incoming elements until upstream terminates.
+   *
+   * Since upstream may be unbounded, consider using `Flow[T].take` or the stricter `Flow[T].limit`
+   * (and their variants) to ensure boundedness. The sink materializes into a `CompletionStage` of `Long`
+   * containing the total count of elements that passed through.
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Backpressures when''' never (counting is a lightweight operation)
+   *
+   * '''Cancels when''' never
+   *
+   * @return a `Sink` that materializes to a `CompletionStage[Long]` with the element count
+   * @since 1.3.0
+   *
+   * See also [[Flow.limit]], [[Flow.limitWeighted]], [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
+   */
+  def count[In]: Sink[In, CompletionStage[java.lang.Long]] = new Sink(
+    scaladsl.Sink.count[In].mapMaterializedValue(_.asJava.asInstanceOf[CompletionStage[java.lang.Long]]))
+
+  /**
    * Sends the elements of the stream to the given `ActorRef`.
    * If the target actor terminates the stream will be canceled.
    * When the stream is completed successfully the given `onCompleteMessage`

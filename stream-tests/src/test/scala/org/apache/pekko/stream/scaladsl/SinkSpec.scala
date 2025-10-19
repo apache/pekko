@@ -324,6 +324,20 @@ class SinkSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
     }
   }
 
+  "The count sink" must {
+    "count the number of elements in the stream" in {
+      // #count-operator-example
+      val source = Source(1 to 10)
+      val result = source.runWith(Sink.count)
+      val count = result.futureValue
+      println(count)
+      // will print
+      // 10
+      // #count-operator-example
+      assert(result.futureValue == 10)
+    }
+  }
+
   "The foreach sink" must {
     "illustrate println" in {
       // #foreach
