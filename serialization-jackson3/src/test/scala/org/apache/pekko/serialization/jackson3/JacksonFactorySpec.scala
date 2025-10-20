@@ -20,7 +20,7 @@ package org.apache.pekko.serialization.jackson3
 import tools.jackson.core.util.JsonRecyclerPools.BoundedPool
 
 import org.apache.pekko
-import pekko.actor.{ ActorSystem, ExtendedActorSystem }
+import pekko.actor.ActorSystem
 import pekko.testkit.TestKit
 
 import org.scalatest.BeforeAndAfterAll
@@ -33,7 +33,6 @@ class JacksonFactorySpec extends TestKit(ActorSystem("JacksonFactorySpec"))
     with AnyWordSpecLike with Matchers with BeforeAndAfterAll {
 
   private val defaultConfig = ConfigFactory.defaultReference()
-  private val dynamicAccess = system.asInstanceOf[ExtendedActorSystem].dynamicAccess
   private val objectMapperFactory = new JacksonObjectMapperFactory
 
   override def afterAll(): Unit = {
@@ -58,9 +57,9 @@ class JacksonFactorySpec extends TestKit(ActorSystem("JacksonFactorySpec"))
              |""".stripMargin)
         .withFallback(defaultConfig)
       val jacksonConfig = JacksonObjectMapperProvider.configForBinding(bindingName, config)
-      val mapper = JacksonObjectMapperProvider.createObjectMapper(
-        bindingName, None, objectMapperFactory, jacksonConfig, dynamicAccess, None)
-      val streamReadConstraints = mapper.getFactory.streamReadConstraints()
+      val factory = JacksonObjectMapperProvider.createJsonFactory(
+        bindingName, objectMapperFactory, jacksonConfig, None)
+      val streamReadConstraints = factory.streamReadConstraints()
       streamReadConstraints.getMaxNumberLength shouldEqual maxNumLen
       streamReadConstraints.getMaxStringLength shouldEqual maxStringLen
       streamReadConstraints.getMaxDocumentLength shouldEqual maxDocLen
@@ -75,18 +74,18 @@ class JacksonFactorySpec extends TestKit(ActorSystem("JacksonFactorySpec"))
         s"pekko.serialization.jackson.write.max-nesting-depth=$maxNestingDepth")
         .withFallback(defaultConfig)
       val jacksonConfig = JacksonObjectMapperProvider.configForBinding(bindingName, config)
-      val mapper = JacksonObjectMapperProvider.createObjectMapper(
-        bindingName, None, objectMapperFactory, jacksonConfig, dynamicAccess, None)
-      val streamWriteConstraints = mapper.getFactory.streamWriteConstraints()
+      val factory = JacksonObjectMapperProvider.createJsonFactory(
+        bindingName, objectMapperFactory, jacksonConfig, None)
+      val streamWriteConstraints = factory.streamWriteConstraints()
       streamWriteConstraints.getMaxNestingDepth shouldEqual maxNestingDepth
     }
 
     "support BufferRecycler (default)" in {
       val bindingName = "testJackson"
       val jacksonConfig = JacksonObjectMapperProvider.configForBinding(bindingName, defaultConfig)
-      val mapper = JacksonObjectMapperProvider.createObjectMapper(
-        bindingName, None, objectMapperFactory, jacksonConfig, dynamicAccess, None)
-      val recyclerPool = mapper.getFactory._getRecyclerPool()
+      val factory = JacksonObjectMapperProvider.createJsonFactory(
+        bindingName, objectMapperFactory, jacksonConfig, None)
+      val recyclerPool = factory._getRecyclerPool()
       recyclerPool.getClass.getSimpleName shouldEqual "ThreadLocalPool"
     }
 
@@ -100,9 +99,9 @@ class JacksonFactorySpec extends TestKit(ActorSystem("JacksonFactorySpec"))
            |""".stripMargin)
         .withFallback(defaultConfig)
       val jacksonConfig = JacksonObjectMapperProvider.configForBinding(bindingName, config)
-      val mapper = JacksonObjectMapperProvider.createObjectMapper(
-        bindingName, None, objectMapperFactory, jacksonConfig, dynamicAccess, None)
-      val recyclerPool = mapper.getFactory._getRecyclerPool()
+      val factory = JacksonObjectMapperProvider.createJsonFactory(
+        bindingName, objectMapperFactory, jacksonConfig, None)
+      val recyclerPool = factory._getRecyclerPool()
       recyclerPool.getClass.getSimpleName shouldEqual "BoundedPool"
       recyclerPool.asInstanceOf[BoundedPool].capacity() shouldEqual boundedPoolSize
     }

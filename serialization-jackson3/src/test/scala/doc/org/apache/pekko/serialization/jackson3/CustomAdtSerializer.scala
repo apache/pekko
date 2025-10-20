@@ -54,7 +54,7 @@ object CustomAdtSerializer {
     import Direction._
 
     override def deserialize(p: JsonParser, ctxt: DeserializationContext): Direction = {
-      p.getText match {
+      p.getString match {
         case "N" => North
         case "E" => East
         case "S" => South
