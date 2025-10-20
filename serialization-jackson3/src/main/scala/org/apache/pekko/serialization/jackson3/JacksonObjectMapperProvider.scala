@@ -72,7 +72,7 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
       baseConf
   }
 
-  private def createJsonFactory(
+  private[pekko] def createJsonFactory(
       bindingName: String,
       objectMapperFactory: JacksonObjectMapperFactory,
       config: Config,
