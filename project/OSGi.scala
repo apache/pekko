@@ -89,6 +89,8 @@ object OSGi {
     OsgiKeys.explodedJars := Seq(assembly.value))
 
   lazy val jackson = exports(Seq("org.apache.pekko.serialization.jackson.*"))
+  lazy val jackson3 = exports(Seq("org.apache.pekko.serialization.jackson3.*"))
+
 
   lazy val remote = exports(Seq("org.apache.pekko.remote.*"))
 
