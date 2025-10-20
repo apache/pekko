@@ -33,15 +33,15 @@ import scala.concurrent.duration.FiniteDuration
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
-import tools.jackson.core.JsonFactory
 import tools.jackson.core.JsonGenerator
 import tools.jackson.core.JsonParser
 import tools.jackson.core.StreamReadFeature
 import tools.jackson.core.StreamWriteFeature
+import tools.jackson.core.json.JsonFactory
 import tools.jackson.core.`type`.TypeReference
 import tools.jackson.databind.DeserializationFeature
+import tools.jackson.databind.JacksonModule
 import tools.jackson.databind.MapperFeature
-import tools.jackson.databind.Module
 import tools.jackson.databind.ObjectMapper
 import tools.jackson.databind.SerializationFeature
 import tools.jackson.databind.SerializationContext
@@ -51,7 +51,6 @@ import tools.jackson.databind.cfg.EnumFeature
 import tools.jackson.databind.exc.InvalidTypeIdException
 import tools.jackson.databind.json.JsonMapper
 import tools.jackson.databind.module.SimpleModule
-import tools.jackson.datatype.jsr310.JavaTimeModule
 import tools.jackson.module.scala.JsonScalaEnumeration
 
 import org.apache.pekko
@@ -528,7 +527,7 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
             bindingName: String,
             configuredModules: immutable.Seq[Module]): immutable.Seq[Module] =
           if (bindingName == "jackson-json")
-            configuredModules.filterNot(_.isInstanceOf[JavaTimeModule]) :+ customJavaTimeModule
+            configuredModules :+ customJavaTimeModule
           else
             super.overrideConfiguredModules(bindingName, configuredModules)
 

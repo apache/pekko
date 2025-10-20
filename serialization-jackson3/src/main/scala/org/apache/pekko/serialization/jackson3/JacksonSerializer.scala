@@ -160,7 +160,7 @@ import pekko.util.OptionVal
     extends JacksonSerializer(
       system,
       bindingName,
-      JacksonObjectMapperProvider(system).getOrCreate(bindingName, Some(new CBORFactory)))
+      JacksonObjectMapperProvider(system).getOrCreateCBOR(bindingName, Some(new CBORFactory)))
 
 @InternalApi object Compression {
   sealed trait Algorithm

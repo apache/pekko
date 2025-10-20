@@ -63,7 +63,7 @@ import pekko.annotation.InternalApi
 
   def deserialize(jp: JsonParser, ctxt: DeserializationContext): Address = {
     if (jp.currentTokenId() == JsonTokenId.ID_STRING) {
-      val serializedAddress = jp.getText()
+      val serializedAddress = jp.getString()
       AddressFromURIString(serializedAddress)
     } else
       ctxt.handleUnexpectedToken(handledType(), jp).asInstanceOf[Address]

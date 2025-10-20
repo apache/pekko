@@ -19,9 +19,9 @@ import tools.jackson.databind.node.ObjectNode
 
 object ScalaTestEventMigration {
   def upcastV1ToV2(root: ObjectNode): ObjectNode = {
-    root.set[JsonNode]("field1V2", root.get("field1"))
+    root.set("field1V2", root.get("field1"))
     root.remove("field1")
-    root.set[JsonNode]("field2", IntNode.valueOf(17))
+    root.set("field2", IntNode.valueOf(17))
     root
   }
 

@@ -74,7 +74,7 @@ import pekko.stream.StreamRefResolver
 
   def deserialize(jp: JsonParser, ctxt: DeserializationContext): SourceRef[_] = {
     if (jp.currentTokenId() == JsonTokenId.ID_STRING) {
-      val serializedSourceRef = jp.getText()
+      val serializedSourceRef = jp.getString()
       StreamRefResolver(currentSystem()).resolveSourceRef(serializedSourceRef)
     } else
       ctxt.handleUnexpectedToken(handledType(), jp).asInstanceOf[SourceRef[_]]
@@ -118,7 +118,7 @@ import pekko.stream.StreamRefResolver
 
   def deserialize(jp: JsonParser, ctxt: DeserializationContext): SinkRef[_] = {
     if (jp.currentTokenId() == JsonTokenId.ID_STRING) {
-      val serializedSinkref = jp.getText()
+      val serializedSinkref = jp.getString()
       StreamRefResolver(currentSystem()).resolveSinkRef(serializedSinkref)
     } else
       ctxt.handleUnexpectedToken(handledType(), jp).asInstanceOf[SinkRef[_]]

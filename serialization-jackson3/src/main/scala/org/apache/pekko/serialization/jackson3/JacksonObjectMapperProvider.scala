@@ -17,7 +17,7 @@ import java.util.Optional
 import java.util.concurrent.ConcurrentHashMap
 import scala.annotation.nowarn
 import scala.collection.immutable
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.jdk.OptionConverters._
 import scala.util.{ Failure, Success }
 
@@ -459,14 +459,27 @@ final class JacksonObjectMapperProvider(system: ExtendedActorSystem) extends Ext
    * modifications are not thread-safe.
    *
    * @param bindingName name of this `ObjectMapper`
-   * @param jsonFactory optional `JsonFactory` such as `CBORFactory`, for plain JSON `None` (defaults)
+   * @param jsonFactory optional `JsonFactory`, for plain JSON `None` (defaults)
    *                    can be used
    */
   def getOrCreate(bindingName: String, jsonFactory: Option[JsonFactory]): ObjectMapper = {
     objectMappers.computeIfAbsent(bindingName, _ => create(bindingName, jsonFactory))
   }
 
-  // TODo scaladoc
+  /**
+   * Scala API: Returns an existing Jackson `ObjectMapper` that was created previously with this method, or
+   * creates a new instance.
+   *
+   * The `ObjectMapper` is created with sensible defaults and modules configured
+   * in `pekko.serialization.jackson3.jackson-modules`. It's using [[JacksonObjectMapperProviderSetup]]
+   * if the `ActorSystem` is started with such [[pekko.actor.setup.ActorSystemSetup]].
+   *
+   * The returned `ObjectMapper` must not be modified, because it may already be in use and such
+   * modifications are not thread-safe.
+   *
+   * @param bindingName name of this `ObjectMapper`
+   * @param jsonFactory optional `CBORFactory`
+   */
   def getOrCreateCBOR(bindingName: String, jsonFactory: Option[CBORFactory]): ObjectMapper = {
     objectMappers.computeIfAbsent(bindingName, _ => createCBOR(bindingName, jsonFactory))
   }
@@ -487,7 +500,7 @@ final class JacksonObjectMapperProvider(system: ExtendedActorSystem) extends Ext
    *                    can be used
    */
   def getOrCreate(bindingName: String, jsonFactory: Optional[JsonFactory]): ObjectMapper =
-    getOrCreate(bindingName, jsonFactory.asScala)
+    getOrCreate(bindingName, jsonFactory.toScala)
 
   /**
    * Scala API: Creates a new instance of a Jackson `ObjectMapper` with sensible defaults and modules configured
@@ -495,7 +508,7 @@ final class JacksonObjectMapperProvider(system: ExtendedActorSystem) extends Ext
    * if the `ActorSystem` is started with such [[pekko.actor.setup.ActorSystemSetup]].
    *
    * @param bindingName name of this `ObjectMapper`
-   * @param jsonFactory optional `JsonFactory` such as `CBORFactory`, for plain JSON `None` (defaults)
+   * @param jsonFactory optional `JsonFactory`, for plain JSON `None` (defaults)
    *                    can be used
    * @see [[JacksonObjectMapperProvider#getOrCreate]]
    */
@@ -513,6 +526,15 @@ final class JacksonObjectMapperProvider(system: ExtendedActorSystem) extends Ext
     JacksonObjectMapperProvider.createObjectMapper(bindingName, jsonFactory, factory, config, dynamicAccess, Some(log))
   }
 
+  /**
+   * Scala API: Creates a new instance of a Jackson `ObjectMapper` with sensible defaults and modules configured
+   * in `pekko.serialization.jackson3.jackson-modules`. It's using [[JacksonObjectMapperProviderSetup]]
+   * if the `ActorSystem` is started with such [[pekko.actor.setup.ActorSystemSetup]].
+   *
+   * @param bindingName name of this `ObjectMapper`
+   * @param jsonFactory optional `CBORFactory`
+   * @see [[JacksonObjectMapperProvider#getOrCreate]]
+   */
   def createCBOR(bindingName: String, streamFactory: Option[CBORFactory]): ObjectMapper = {
     val log = Logging.getLogger(system, JacksonObjectMapperProvider.getClass)
     val dynamicAccess = system.dynamicAccess
@@ -538,7 +560,7 @@ final class JacksonObjectMapperProvider(system: ExtendedActorSystem) extends Ext
    * @see [[JacksonObjectMapperProvider#getOrCreate]]
    */
   def create(bindingName: String, jsonFactory: Optional[JsonFactory]): ObjectMapper =
-    create(bindingName, jsonFactory.asScala)
+    create(bindingName, jsonFactory.toScala)
 
 }
 

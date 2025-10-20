@@ -69,7 +69,7 @@ import pekko.annotation.InternalApi
 
   def deserialize(jp: JsonParser, ctxt: DeserializationContext): ActorRef = {
     if (jp.currentTokenId() == JsonTokenId.ID_STRING) {
-      val serializedActorRef = jp.getText()
+      val serializedActorRef = jp.getString()
       currentSystem().provider.resolveActorRef(serializedActorRef)
     } else
       ctxt.handleUnexpectedToken(handledType(), jp).asInstanceOf[ActorRef]

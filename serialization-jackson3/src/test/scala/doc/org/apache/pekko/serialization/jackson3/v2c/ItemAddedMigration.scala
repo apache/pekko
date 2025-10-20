@@ -25,7 +25,7 @@ class ItemAddedMigration extends JacksonMigration {
   override def transform(fromVersion: Int, json: JsonNode): JsonNode = {
     val root = json.asInstanceOf[ObjectNode]
     if (fromVersion <= 1) {
-      root.set[JsonNode]("itemId", root.get("productId"))
+      root.set("itemId", root.get("productId"))
       root.remove("productId")
     }
     root

@@ -29,7 +29,7 @@ class ItemAddedMigration extends JacksonMigration {
     val root = json.asInstanceOf[ObjectNode]
     if (fromVersion == 2) {
       // When receiving an event of version 2 we down-cast it to the version 1 of the schema
-      root.set[JsonNode]("productId", root.get("itemId"))
+      root.set("productId", root.get("itemId"))
       root.remove("itemId")
     }
     root
