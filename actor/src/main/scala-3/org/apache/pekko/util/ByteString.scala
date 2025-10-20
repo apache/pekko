@@ -965,6 +965,34 @@ sealed abstract class ByteString
    */
   def indexOf(elem: Byte): Int = indexOf(elem, 0)
 
+  override def indexOfSlice[B >: Byte](slice: scala.collection.Seq[B], from: Int): Int = {
+    // this is only called if the first byte matches, so we can skip that check
+    def check(startPos: Int): Boolean = {
+      var i = startPos + 1
+      var j = 1
+      // Bounds are guaranteed by the indexOf call limiting the search range, so startPos + slice.length <= length.
+      while (j < slice.length) {
+        if (apply(i) != slice(j)) return false
+        i += 1
+        j += 1
+      }
+      true
+    }
+    val headByte = slice.head.asInstanceOf[Byte]
+    @tailrec def rec(from: Int): Int = {
+      val startPos = indexOf(headByte, from, length - slice.length + 1)
+      if (startPos == -1) -1
+      else if (check(startPos)) startPos
+      else rec(startPos + 1)
+    }
+    val sliceLength = slice.length
+    if (sliceLength == 0) 0
+    else if (sliceLength == 1) indexOf(headByte, from)
+    else rec(math.max(0, from))
+  }
+
+  override def contains[B >: Byte](elem: B): Boolean = indexOf(elem, 0) != -1
+
   override def grouped(size: Int): Iterator[ByteString] = {
     if (size <= 0) {
       throw new IllegalArgumentException(s"size=$size must be positive")
