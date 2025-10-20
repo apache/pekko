@@ -18,14 +18,14 @@ import tools.jackson.core.util.VersionUtil
 import tools.jackson.databind.BeanDescription
 import tools.jackson.databind.DeserializationConfig
 import tools.jackson.databind.JavaType
-import tools.jackson.databind.ValueDeserializer
-import tools.jackson.databind.ValueSerializer
 import tools.jackson.databind.JacksonModule.SetupContext
 import tools.jackson.databind.SerializationConfig
+import tools.jackson.databind.ValueDeserializer
+import tools.jackson.databind.ValueSerializer
 import tools.jackson.databind.`type`.TypeModifier
 import tools.jackson.databind.deser.Deserializers
-import tools.jackson.databind.ser.BeanSerializerModifier
 import tools.jackson.databind.ser.Serializers
+import tools.jackson.databind.ser.ValueSerializerModifier
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
@@ -56,7 +56,8 @@ import pekko.annotation.InternalApi
 
   }
 
-  class DeserializerResolverByClass(clazz: Class[_], serializer: () => ValueDeserializer[_]) extends Deserializers.Base {
+  class DeserializerResolverByClass(clazz: Class[_], serializer: () => ValueDeserializer[_])
+      extends Deserializers.Base {
 
     override def findBeanDeserializer(
         javaType: JavaType,
@@ -106,6 +107,6 @@ import pekko.annotation.InternalApi
   protected def +=(ser: Serializers): this.type = this += (_.addSerializers(ser))
   protected def +=(deser: Deserializers): this.type = this += (_.addDeserializers(deser))
   protected def +=(typeMod: TypeModifier): this.type = this += (_.addTypeModifier(typeMod))
-  protected def +=(beanSerMod: BeanSerializerModifier): this.type = this += (_.addBeanSerializerModifier(beanSerMod))
+  protected def +=(beanSerMod: ValueSerializerModifier): this.type = this += (_.addSerializerModifier(beanSerMod))
 
 }

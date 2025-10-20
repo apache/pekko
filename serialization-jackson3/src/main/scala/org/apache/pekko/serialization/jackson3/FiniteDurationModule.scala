@@ -21,9 +21,9 @@ import tools.jackson.core.JsonParser
 import tools.jackson.databind.DeserializationContext
 import tools.jackson.databind.SerializationContext
 import tools.jackson.databind.deser.std.StdScalarDeserializer
+import tools.jackson.databind.ext.javatime.deser.DurationDeserializer
+import tools.jackson.databind.ext.javatime.ser.DurationSerializer
 import tools.jackson.databind.ser.std.StdScalarSerializer
-import tools.jackson.datatype.jsr310.deser.DurationDeserializer
-import tools.jackson.datatype.jsr310.ser.DurationSerializer
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
@@ -46,7 +46,7 @@ import pekko.annotation.InternalApi
 }
 
 /**
- * INTERNAL API: Delegates to DurationSerializer in `jackson-modules-java8`
+ * INTERNAL API: Delegates to DurationSerializer in `jackson-databind`
  */
 @InternalApi private[pekko] class FiniteDurationSerializer
     extends StdScalarSerializer[FiniteDuration](classOf[FiniteDuration]) {
@@ -63,7 +63,7 @@ import pekko.annotation.InternalApi
 }
 
 /**
- * INTERNAL API: Delegates to DurationDeserializer in `jackson-modules-java8`
+ * INTERNAL API: Delegates to DurationDeserializer in `jackson-databind`
  */
 @InternalApi private[pekko] class FiniteDurationDeserializer
     extends StdScalarDeserializer[FiniteDuration](classOf[FiniteDuration]) {

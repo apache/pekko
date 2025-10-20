@@ -13,7 +13,7 @@
 
 package org.apache.pekko.serialization.jackson3
 
-import tools.jackson.core.{ JsonGenerator, JsonParser, ObjectCodec }
+import tools.jackson.core.{ JsonGenerator, JsonParser }
 import tools.jackson.databind.{ DeserializationContext, JsonNode, SerializationContext }
 import tools.jackson.databind.deser.std.StdScalarDeserializer
 import tools.jackson.databind.ser.std.StdScalarSerializer
@@ -28,9 +28,12 @@ final class PekkoSerializationSerializer extends StdScalarSerializer[AnyRef](cla
     val manifest = Serializers.manifestFor(serializer, value)
     val serialized = serializer.toBinary(value)
     jgen.writeStartObject()
-    jgen.writeStringField("serId", serId.toString)
-    jgen.writeStringField("serManifest", manifest)
-    jgen.writeBinaryField("payload", serialized)
+    jgen.writeName("serId")
+    jgen.writeString(serId.toString)
+    jgen.writeName("serManifest")
+    jgen.writeString(manifest)
+    jgen.writeName("payload")
+    jgen.writeBinary(serialized)
     jgen.writeEndObject()
   }
 }
@@ -42,10 +45,9 @@ final class PekkoSerializationDeserializer
   def serialization = SerializationExtension(currentSystem())
 
   def deserialize(jp: JsonParser, ctxt: DeserializationContext): AnyRef = {
-    val codec: ObjectCodec = jp.getCodec()
-    val jsonNode = codec.readTree[JsonNode](jp)
-    val id = jsonNode.get("serId").textValue().toInt
-    val manifest = jsonNode.get("serManifest").textValue()
+    val jsonNode = jp.readValueAsTree[JsonNode]()
+    val id = jsonNode.get("serId").stringValue().toInt
+    val manifest = jsonNode.get("serManifest").stringValue()
     val payload = jsonNode.get("payload").binaryValue()
     serialization.deserialize(payload, id, manifest).get
   }
