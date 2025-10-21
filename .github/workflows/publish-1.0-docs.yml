@@ -61,7 +61,7 @@ jobs:
         env:
           DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
         run: |-
-          sbt -Dpekko.genjavadoc.enabled=true -Dpekko.genlicensereport.enabled=true "set ThisBuild / version := \"1.0.3\"; docs/paradox; unidoc"
+          sbt -Dpekko.genjavadoc.enabled=true "set ThisBuild / version := \"1.0.3\"; docs/paradox; unidoc"
 
       # Create directory structure upfront since rsync does not create intermediate directories otherwise
       - name: Create directory structure
