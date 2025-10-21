@@ -287,7 +287,9 @@ class SerializationDocSpec
       val blob = serializer.toBinary(event1)
       val event2 = serializer.fromBinary(blob, classOf[ItemAdded].getName).asInstanceOf[ItemAdded]
       event2.quantity should ===(event1.quantity)
-      event2.discount should ===(Optional.empty())
+      // the handling for Optional changed in jackson-databind 3.0.0 but will be fixed in 3.0.1
+      // https://github.com/FasterXML/jackson-databind/issues/5335
+      event2.discount should ===(null)
       event2.note should ===("")
 
       verifySerialization(new ItemAdded("123", "ab123", 2, Optional.of(0.1), "thanks"))
