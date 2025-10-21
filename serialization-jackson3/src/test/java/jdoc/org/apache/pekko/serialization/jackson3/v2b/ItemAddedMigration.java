@@ -14,10 +14,10 @@
 package jdoc.org.apache.pekko.serialization.jackson3.v2b;
 
 // #add-mandatory
+import org.apache.pekko.serialization.jackson3.JacksonMigration;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.node.DoubleNode;
 import tools.jackson.databind.node.ObjectNode;
-import org.apache.pekko.serialization.jackson3.JacksonMigration;
 
 public class ItemAddedMigration extends JacksonMigration {
 

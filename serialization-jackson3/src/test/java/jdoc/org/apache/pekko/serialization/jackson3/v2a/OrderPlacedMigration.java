@@ -13,8 +13,8 @@
 
 package jdoc.org.apache.pekko.serialization.jackson3.v2a;
 
-import tools.jackson.databind.JsonNode;
 import org.apache.pekko.serialization.jackson3.JacksonMigration;
+import tools.jackson.databind.JsonNode;
 
 // #rename-class
 public class OrderPlacedMigration extends JacksonMigration {
