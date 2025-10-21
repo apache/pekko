@@ -246,7 +246,7 @@ Scala
 Java
 :  @@snip [ItemAdded.java](/serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v2b/ItemAdded.java) { #add-mandatory }
 
-To add a new mandatory field we have to use a @apidoc[JacksonMigration] class and set the default value in the migration code.
+To add a new mandatory field we have to use a @apidoc[pekko.serialization.jackson.JacksonMigration] class and set the default value in the migration code.
 
 This is how a migration class would look like for adding a `discount` field:
 
@@ -461,8 +461,8 @@ the binding name (for example `jackson-cbor`).
 
 ## Using Pekko Serialization for embedded types
 
-For types that already have a Pekko Serializer defined that are embedded in types serialized with Jackson the @apidoc[PekkoSerializationSerializer] and
-@apidoc[PekkoSerializationDeserializer] can be used to Pekko Serialization for individual fields. 
+For types that already have a Pekko Serializer defined that are embedded in types serialized with Jackson the @apidoc[pekko.serialization.jackson.PekkoSerializationSerializer] and
+@apidoc[pekko.serialization.jackson.PekkoSerializationDeserializer] can be used to Pekko Serialization for individual fields. 
 
 The serializer/deserializer are not enabled automatically. The @javadoc[@JsonSerialize](com.fasterxml.jackson.databind.annotation.JsonSerialize) and @javadoc[@JsonDeserialize](com.fasterxml.jackson.databind.annotation.JsonDeserialize) annotation needs to be added
 to the fields containing the types to be serialized with Pekko Serialization.
