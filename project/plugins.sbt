@@ -28,7 +28,7 @@ addSbtPlugin("com.github.sbt" % "sbt-dynver" % "5.1.1")
 addSbtPlugin("com.github.pjfanning" % "sbt-source-dist" % "0.1.12")
 addSbtPlugin("com.github.pjfanning" % "sbt-pekko-build" % "0.4.5")
 addSbtPlugin("com.github.reibitto" % "sbt-welcome" % "0.5.0")
-addSbtPlugin("com.github.sbt" % "sbt-license-report" % "1.7.0")
+addSbtPlugin("com.github.sbt" % "sbt-license-report" % "1.9.0")
 addSbtPlugin("io.github.roiocam" % "sbt-depend-walker" % "0.1.1")
 addSbtPlugin("com.github.sbt" % "sbt-sbom" % "0.4.0")
 
