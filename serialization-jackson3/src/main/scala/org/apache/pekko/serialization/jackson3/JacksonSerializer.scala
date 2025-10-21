@@ -437,7 +437,7 @@ import pekko.util.OptionVal
       val warnMsg = s"Can't serialize/deserialize object of type [${clazz.getName}] in [${getClass.getName}]. " +
         "Only classes that are listed as allowed are allowed for security reasons. " +
         "Configure allowed classes with pekko.actor.serialization-bindings or " +
-        "pekko.serialization.jackson.allowed-class-prefix."
+        "pekko.serialization.jackson3.allowed-class-prefix."
       log.warning(LogMarker.Security, warnMsg)
       throw new IllegalArgumentException(warnMsg)
     }

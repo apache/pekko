@@ -54,7 +54,7 @@ object SerializationDocSpec {
 
   val configMigration = """
     #//#migrations-conf
-    pekko.serialization.jackson.migrations {
+    pekko.serialization.jackson3.migrations {
       "com.myservice.event.ItemAdded" = "com.myservice.event.ItemAddedMigration"
     }
     #//#migrations-conf
@@ -62,7 +62,7 @@ object SerializationDocSpec {
 
   val configMigrationRenamClass = """
     #//#migrations-conf-rename
-    pekko.serialization.jackson.migrations {
+    pekko.serialization.jackson3.migrations {
       "com.myservice.event.OrderAdded" = "com.myservice.event.OrderPlacedMigration"
     }
     #//#migrations-conf-rename
@@ -70,12 +70,12 @@ object SerializationDocSpec {
 
   val configSpecific = """
     #//#specific-config
-    pekko.serialization.jackson.jackson-json {
+    pekko.serialization.jackson3.jackson-json {
       serialization-features {
         WRITE_DATES_AS_TIMESTAMPS = off
       }
     }
-    pekko.serialization.jackson.jackson-cbor {
+    pekko.serialization.jackson3.jackson-cbor {
       serialization-features {
         WRITE_DATES_AS_TIMESTAMPS = on
       }
@@ -187,7 +187,7 @@ object SerializationDocSpec {
 
   val configDateTime = """
     #//#date-time
-    pekko.serialization.jackson.serialization-features {
+    pekko.serialization.jackson3.serialization-features {
       WRITE_DATES_AS_TIMESTAMPS = on
       WRITE_DURATIONS_AS_TIMESTAMPS = on
     }
@@ -196,7 +196,7 @@ object SerializationDocSpec {
 
   val configAllowList = """
     #//#allowed-class-prefix
-    pekko.serialization.jackson.allowed-class-prefix =
+    pekko.serialization.jackson3.allowed-class-prefix =
       ["com.myservice.event.OrderAdded", "com.myservice.command"]
     #//#allowed-class-prefix
   """
@@ -208,7 +208,7 @@ class SerializationDocSpec
       ActorSystem(
         "SerializationDocSpec",
         ConfigFactory.parseString(s"""
-    pekko.serialization.jackson.migrations {
+    pekko.serialization.jackson3.migrations {
         # migrations for Java classes
         "jdoc.org.apache.pekko.serialization.jackson3.v2b.ItemAdded" = "jdoc.org.apache.pekko.serialization.jackson3.v2b.ItemAddedMigration"
         "jdoc.org.apache.pekko.serialization.jackson3.v2c.ItemAdded" = "jdoc.org.apache.pekko.serialization.jackson3.v2c.ItemAddedMigration"

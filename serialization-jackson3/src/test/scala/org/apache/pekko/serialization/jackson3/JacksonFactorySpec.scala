@@ -49,12 +49,12 @@ class JacksonFactorySpec extends TestKit(ActorSystem("JacksonFactorySpec"))
       val maxNestingDepth = 5
       val maxTokenCount = 9876543210L
       val config = ConfigFactory.parseString(
-        s"""pekko.serialization.jackson.read.max-number-length=$maxNumLen
-             |pekko.serialization.jackson.read.max-string-length=$maxStringLen
-             |pekko.serialization.jackson.read.max-document-length=$maxDocLen
-             |pekko.serialization.jackson.read.max-nesting-depth=$maxNestingDepth
-             |pekko.serialization.jackson.read.max-token-count=$maxTokenCount
-             |""".stripMargin)
+        s"""pekko.serialization.jackson3.read.max-number-length=$maxNumLen
+           |pekko.serialization.jackson3.read.max-string-length=$maxStringLen
+           |pekko.serialization.jackson3.read.max-document-length=$maxDocLen
+           |pekko.serialization.jackson3.read.max-nesting-depth=$maxNestingDepth
+           |pekko.serialization.jackson3.read.max-token-count=$maxTokenCount
+           |""".stripMargin)
         .withFallback(defaultConfig)
       val jacksonConfig = JacksonObjectMapperProvider.configForBinding(bindingName, config)
       val factory = JacksonObjectMapperProvider.createJsonFactory(
@@ -71,7 +71,7 @@ class JacksonFactorySpec extends TestKit(ActorSystem("JacksonFactorySpec"))
       val bindingName = "testJackson"
       val maxNestingDepth = 54321
       val config = ConfigFactory.parseString(
-        s"pekko.serialization.jackson.write.max-nesting-depth=$maxNestingDepth")
+        s"pekko.serialization.jackson3.write.max-nesting-depth=$maxNestingDepth")
         .withFallback(defaultConfig)
       val jacksonConfig = JacksonObjectMapperProvider.configForBinding(bindingName, config)
       val factory = JacksonObjectMapperProvider.createJsonFactory(
@@ -94,8 +94,8 @@ class JacksonFactorySpec extends TestKit(ActorSystem("JacksonFactorySpec"))
       val poolInstance = "bounded"
       val boundedPoolSize = 1234
       val config = ConfigFactory.parseString(
-        s"""pekko.serialization.jackson.buffer-recycler.pool-instance=$poolInstance
-           |pekko.serialization.jackson.buffer-recycler.bounded-pool-size=$boundedPoolSize
+        s"""pekko.serialization.jackson3.buffer-recycler.pool-instance=$poolInstance
+           |pekko.serialization.jackson3.buffer-recycler.bounded-pool-size=$boundedPoolSize
            |""".stripMargin)
         .withFallback(defaultConfig)
       val jacksonConfig = JacksonObjectMapperProvider.configForBinding(bindingName, config)
