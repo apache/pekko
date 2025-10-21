@@ -246,7 +246,6 @@ lazy val docs = pekkoModule("docs")
     PekkoParadoxPlugin,
     NoPublish,
     ParadoxBrowse,
-    ProjectIndexGenerator,
     ScaladocNoVerificationOfDiagrams,
     StreamOperatorsIndexGenerator,
     Jdk9)
