@@ -71,4 +71,4 @@ jobs:
 
       - name: Build Documentation
         run: |-
-          sbt -Dpekko.genjavadoc.enabled=true -Dpekko.genlicensereport.enabled=true docs/paradox unidoc
+          sbt -Dpekko.genjavadoc.enabled=true docs/paradox unidoc
