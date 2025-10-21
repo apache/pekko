@@ -28,6 +28,6 @@ addSbtPlugin("com.dwijnand" % "sbt-dynver" % "4.1.1")
 addSbtPlugin("com.github.pjfanning" % "sbt-source-dist" % "0.1.12")
 addSbtPlugin("com.github.pjfanning" % "sbt-pekko-build" % "0.3.4")
 addSbtPlugin("com.github.reibitto" % "sbt-welcome" % "0.2.2")
-addSbtPlugin("com.github.sbt" % "sbt-license-report" % "1.5.0")
+addSbtPlugin("com.github.sbt" % "sbt-license-report" % "1.9.0")
 
 addSbtPlugin("org.apache.pekko" % "pekko-sbt-paradox" % "1.0.1")
