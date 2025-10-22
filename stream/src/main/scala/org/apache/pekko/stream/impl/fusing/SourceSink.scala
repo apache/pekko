@@ -47,7 +47,6 @@ import pekko.stream.stage.{
   override def createLogicAndMaterializedValue(
       inheritedAttributes: Attributes): (GraphStageLogic, Source[Any, NotUsed]) = {
 
-    
     // NOTE: in the current implementation of Pekko Stream,
     // We have to do materialization twice to do the piping, which means, even we can treat the Sink as a Source.
     //
