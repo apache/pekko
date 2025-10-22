@@ -67,6 +67,7 @@ lazy val userProjects: Seq[ProjectReference] = List[ProjectReference](
   discovery,
   distributedData,
   jackson,
+  jackson3,
   multiNodeTestkit,
   osgi,
   persistence,
@@ -258,6 +259,20 @@ lazy val jackson = pekkoModule("serialization-jackson")
   .settings(OSGi.jackson)
   .settings(javacOptions += "-parameters")
   .enablePlugins(ScaladocNoVerificationOfDiagrams, SbtOsgi)
+
+lazy val jackson3 = pekkoModule("serialization-jackson3")
+  .dependsOn(
+    actor,
+    actorTyped % "optional->compile",
+    stream % "optional->compile",
+    actorTests % "test->test",
+    testkit % "test->test")
+  .settings(Dependencies.jackson3)
+  .settings(AutomaticModuleName.settings("pekko.serialization.jackson3"))
+  .settings(OSGi.jackson3)
+  .settings(javacOptions += "-parameters")
+  .enablePlugins(ScaladocNoVerificationOfDiagrams, SbtOsgi)
+  .disablePlugins(MimaPlugin)
 
 lazy val multiNodeTestkit = pekkoModule("multi-node-testkit")
   .dependsOn(remote, testkit)

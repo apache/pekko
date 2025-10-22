@@ -37,8 +37,8 @@ object Dependencies {
   val logbackVersion = "1.5.19"
 
   val jacksonAnnotationsVersion = "2.20"
-  val jacksonCoreVersion = "2.20.0"
-  val jacksonDatabindVersion = jacksonCoreVersion
+  val jacksonVersion2 = "2.20.0"
+  val jacksonVersion3 = "3.0.1"
 
   val scala213Version = "2.13.17"
   val scala3Version = "3.3.7"
@@ -87,15 +87,22 @@ object Dependencies {
 
     val asnOne = ("com.hierynomus" % "asn-one" % "0.6.0").exclude("org.slf4j", "slf4j-api")
 
-    val jacksonCore = "com.fasterxml.jackson.core" % "jackson-core" % jacksonCoreVersion
+    val jacksonCore = "com.fasterxml.jackson.core" % "jackson-core" % jacksonVersion2
     val jacksonAnnotations = "com.fasterxml.jackson.core" % "jackson-annotations" % jacksonAnnotationsVersion
-    val jacksonDatabind = "com.fasterxml.jackson.core" % "jackson-databind" % jacksonDatabindVersion
-    val jacksonJdk8 = "com.fasterxml.jackson.datatype" % "jackson-datatype-jdk8" % jacksonCoreVersion
-    val jacksonJsr310 = "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310" % jacksonCoreVersion
-    val jacksonScala = ("com.fasterxml.jackson.module" %% "jackson-module-scala" % jacksonCoreVersion)
+    val jacksonDatabind = "com.fasterxml.jackson.core" % "jackson-databind" % jacksonVersion2
+    val jacksonJdk8 = "com.fasterxml.jackson.datatype" % "jackson-datatype-jdk8" % jacksonVersion2
+    val jacksonJsr310 = "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310" % jacksonVersion2
+    val jacksonScala = ("com.fasterxml.jackson.module" %% "jackson-module-scala" % jacksonVersion2)
       .excludeAll(ExclusionRule(organization = "org.scala-lang"))
-    val jacksonParameterNames = "com.fasterxml.jackson.module" % "jackson-module-parameter-names" % jacksonCoreVersion
-    val jacksonCbor = "com.fasterxml.jackson.dataformat" % "jackson-dataformat-cbor" % jacksonCoreVersion
+    val jacksonParameterNames = "com.fasterxml.jackson.module" % "jackson-module-parameter-names" % jacksonVersion2
+    val jacksonCbor = "com.fasterxml.jackson.dataformat" % "jackson-dataformat-cbor" % jacksonVersion2
+
+    val jacksonCore3 = "tools.jackson.core" % "jackson-core" % jacksonVersion3
+    val jacksonDatabind3 = "tools.jackson.core" % "jackson-databind" % jacksonVersion3
+    val jacksonScala3 = ("tools.jackson.module" %% "jackson-module-scala" % jacksonVersion3)
+      .excludeAll(ExclusionRule(organization = "org.scala-lang"))
+    val jacksonCbor3 = "tools.jackson.dataformat" % "jackson-dataformat-cbor" % jacksonVersion3
+
     val lz4Java = "org.lz4" % "lz4-java" % "1.8.0"
 
     val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
@@ -145,9 +152,9 @@ object Dependencies {
         jacksonCore % Test,
         jacksonAnnotations % Test,
         jacksonDatabind % Test,
-        "com.fasterxml.jackson.jaxrs" % "jackson-jaxrs-base" % jacksonCoreVersion % Test,
-        "com.fasterxml.jackson.jaxrs" % "jackson-jaxrs-json-provider" % jacksonCoreVersion % Test,
-        "com.fasterxml.jackson.datatype" % "jackson-datatype-guava" % jacksonCoreVersion % Test)
+        "com.fasterxml.jackson.jaxrs" % "jackson-jaxrs-base" % jacksonVersion2 % Test,
+        "com.fasterxml.jackson.jaxrs" % "jackson-jaxrs-json-provider" % jacksonVersion2 % Test,
+        "com.fasterxml.jackson.datatype" % "jackson-datatype-guava" % jacksonVersion2 % Test)
 
       // metrics, measurements, perf testing
       val metrics = "io.dropwizard.metrics" % "metrics-core" % "4.2.37" % Test
@@ -305,6 +312,16 @@ object Dependencies {
     jacksonParameterNames,
     jacksonCbor,
     jacksonScala,
+    lz4Java,
+    TestDependencies.junit,
+    TestDependencies.scalatest)
+
+  lazy val jackson3 = l ++= Seq(
+    jacksonCore3,
+    jacksonAnnotations,
+    jacksonDatabind3,
+    jacksonCbor3,
+    jacksonScala3,
     lz4Java,
     TestDependencies.junit,
     TestDependencies.scalatest)

@@ -246,7 +246,7 @@ Scala
 Java
 :  @@snip [ItemAdded.java](/serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v2b/ItemAdded.java) { #add-mandatory }
 
-To add a new mandatory field we have to use a @apidoc[JacksonMigration] class and set the default value in the migration code.
+To add a new mandatory field we have to use a @apidoc[pekko.serialization.jackson.JacksonMigration] class and set the default value in the migration code.
 
 This is how a migration class would look like for adding a `discount` field:
 
@@ -260,7 +260,7 @@ Override the @scala[@scaladoc[currentVersion](pekko.serialization.jackson.Jackso
 when no migration was used, is always 1. Increase this version number whenever you perform a change that is not
 backwards compatible without migration code.
 
-Implement the transformation of the old JSON structure to the new JSON structure in the @apidoc[transform(fromVersion, jsonNode)](JacksonMigration) {scala="#transform(fromVersion:Int,json:com.fasterxml.jackson.databind.JsonNode):com.fasterxml.jackson.databind.JsonNode" java="#transform(int,com.fasterxml.jackson.databind.JsonNode)"} method.
+Implement the transformation of the old JSON structure to the new JSON structure in the @apidoc[transform(fromVersion, jsonNode)](pekko.serialization.jackson.JacksonMigration) {scala="#transform(fromVersion:Int,json:com.fasterxml.jackson.databind.JsonNode):com.fasterxml.jackson.databind.JsonNode" java="#transform(int,com.fasterxml.jackson.databind.JsonNode)"} method.
 The @javadoc[JsonNode](com.fasterxml.jackson.databind.JsonNode)
 is mutable so you can add and remove fields, or change values. Note that you have to cast to specific sub-classes
 such as @javadoc[ObjectNode](com.fasterxml.jackson.databind.node.ObjectNode)
@@ -355,7 +355,7 @@ Scala
 Java
 :  @@snip [OrderPlacedMigration.java](/serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v2a/OrderPlacedMigration.java) { #rename-class }
 
-Note the override of the @apidoc[transformClassName(fromVersion, className)](JacksonMigration) {scala="#transformClassName(fromVersion:Int,className:String):String" java="#transformClassName(int,java.lang.String)"} method to define the new class name.
+Note the override of the @apidoc[transformClassName(fromVersion, className)](pekko.serialization.jackson.JacksonMigration) {scala="#transformClassName(fromVersion:Int,className:String):String" java="#transformClassName(int,java.lang.String)"} method to define the new class name.
 
 That type of migration must be configured with the old class name as key. The actual class can be removed.
 
@@ -461,8 +461,8 @@ the binding name (for example `jackson-cbor`).
 
 ## Using Pekko Serialization for embedded types
 
-For types that already have a Pekko Serializer defined that are embedded in types serialized with Jackson the @apidoc[PekkoSerializationSerializer] and
-@apidoc[PekkoSerializationDeserializer] can be used to Pekko Serialization for individual fields. 
+For types that already have a Pekko Serializer defined that are embedded in types serialized with Jackson the @apidoc[pekko.serialization.jackson.PekkoSerializationSerializer] and
+@apidoc[pekko.serialization.jackson.PekkoSerializationDeserializer] can be used to Pekko Serialization for individual fields. 
 
 The serializer/deserializer are not enabled automatically. The @javadoc[@JsonSerialize](com.fasterxml.jackson.databind.annotation.JsonSerialize) and @javadoc[@JsonDeserialize](com.fasterxml.jackson.databind.annotation.JsonDeserialize) annotation needs to be added
 to the fields containing the types to be serialized with Pekko Serialization.
