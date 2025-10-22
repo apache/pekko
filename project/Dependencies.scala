@@ -38,7 +38,7 @@ object Dependencies {
 
   val jacksonAnnotationsVersion = "2.20"
   val jacksonVersion2 = "2.20.0"
-  val jacksonVersion3 = "3.0.0"
+  val jacksonVersion3 = "3.0.1"
 
   val scala213Version = "2.13.17"
   val scala3Version = "3.3.7"
