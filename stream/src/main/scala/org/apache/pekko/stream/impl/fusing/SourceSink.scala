@@ -47,13 +47,11 @@ import pekko.stream.stage.{
   override def createLogicAndMaterializedValue(
       inheritedAttributes: Attributes): (GraphStageLogic, Source[Any, NotUsed]) = {
 
-    /**
-     * NOTE: in the current implementation of Pekko Stream,
-     * We have to materialization twice to do the piping, which means, even we can treat the Sink as a Source.
-     *
-     * In an idea word this stage should be purged out by the materializer optimization,
-     * and we can directly connect the upstream to the downstream.
-     */
+    // NOTE: in the current implementation of Pekko Stream,
+    // We have to do materialization twice to do the piping, which means, even we can treat the Sink as a Source.
+    //
+    // In an ideal world this stage should be purged out by the materializer optimization,
+    // and we can directly connect the upstream to the downstream.
     object logic extends TimerGraphStageLogic(shape) with InHandler with OutHandler { self =>
       val sinkSource = new SubSourceOutlet[Any]("sinkSource")
 
