@@ -80,6 +80,7 @@ private object ActorRefBackpressureSource {
             }
             tryPush()
           }
+        case _ => throw new RuntimeException() // compiler exhaustiveness check pleaser
       }.ref
 
       private def tryPush(): Unit = {
