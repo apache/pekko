@@ -22,7 +22,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 class ByteStringInitializationSpec extends AnyWordSpec with Matchers {
-  "ByteString intialization" should {
+  "ByteString initialization" should {
     "not get confused by initializing CompactByteString before ByteString" in {
       // a classloader that creates a new universe of classes for everything beneath akka
       // that prevents that this test interacts with any tests

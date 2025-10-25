@@ -40,7 +40,7 @@ class FlowCollectWhileSpec extends StreamSpec with ScriptedTest {
         .expectComplete()
     }
 
-    "complete with buffer even no explict request" in {
+    "complete with buffer even no explicit request" in {
       Source(List(2, 3, 5))
         .collectWhile {
           case elem if elem % 2 != 0 => elem

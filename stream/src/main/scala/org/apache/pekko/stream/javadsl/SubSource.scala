@@ -1521,7 +1521,7 @@ class SubSource[Out, Mat](
    *
    * '''Backpressures when''' downstream backpressures
    *
-   * '''Completes when''' upstream completes or failed with predicate return ture
+   * '''Completes when''' upstream completes or failed with predicate return true
    *
    * '''Cancels when''' downstream cancels
    *  @since 1.1.0

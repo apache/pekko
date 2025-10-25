@@ -2602,7 +2602,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * '''Backpressures when''' downstream backpressures
    *
-   * '''Completes when''' upstream completes or failed with predicate return ture
+   * '''Completes when''' upstream completes or failed with predicate return true
    *
    * '''Cancels when''' downstream cancels
    *  @since 1.1.0

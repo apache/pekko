@@ -40,10 +40,10 @@ object BalancingSpec {
         latch.countDown()
         if (id == 1) {
           if (!latch.isOpen) {
-            log.debug("Waiting for all routees to receieve a message")
+            log.debug("Waiting for all routees to receive a message")
             // wait for all routees to receive a message before processing
             Await.result(latch, 1.minute)
-            log.debug("All routees receieved a message, continuing")
+            log.debug("All routees received a message, continuing")
           }
         } else {
           if (!startOthers.isCompleted) {

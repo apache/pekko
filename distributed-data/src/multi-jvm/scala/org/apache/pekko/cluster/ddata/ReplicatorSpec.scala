@@ -455,7 +455,7 @@ class ReplicatorSpec extends MultiNodeSpec(ReplicatorSpec) with STMultiNodeSpec 
     enterBarrier("local-update-from-second")
 
     runOn(first) {
-      // ReadMajority should retrive the previous update from second, before applying the modification
+      // ReadMajority should retrieve the previous update from second, before applying the modification
       val probe1 = TestProbe()
       val probe2 = TestProbe()
       replicator.tell(Get(KeyE, readMajority), probe2.ref)

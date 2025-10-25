@@ -50,7 +50,7 @@ object DurableStateBehavior {
    * Create a `Behavior` for a persistent actor with durable storage of its state.
    *
    * @param persistenceId stable unique identifier for the `DurableStateBehavior`
-   * @param emptyState the intial state for the entity before any state has been stored
+   * @param emptyState the initial state for the entity before any state has been stored
    * @param commandHandler map commands to effects e.g. persisting state, replying to commands
    */
   def apply[Command, State](

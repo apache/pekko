@@ -262,7 +262,7 @@ object Framing {
           // Next possible position for the delimiter
           val possibleMatchPos = buffer.indexOf(firstSeparatorByte, from = nextPossibleMatch)
 
-          // Retrive previous position
+          // Retrieve previous position
           val previous = indices.lastOption match {
             case OptionVal.Some((_, i)) => i + separatorBytes.size
             case _                      => 0

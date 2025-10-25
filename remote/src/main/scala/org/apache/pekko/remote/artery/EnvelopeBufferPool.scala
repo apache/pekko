@@ -160,13 +160,13 @@ private[remote] sealed trait HeaderBuilder {
   def setSenderActorRef(ref: ActorRef): Unit
 
   /**
-   * Retrive the compressed ActorRef by the compressionId carried by this header.
+   * Retrieve the compressed ActorRef by the compressionId carried by this header.
    * Returns `None` if ActorRef was not compressed, and then the literal [[senderActorRefPath]] should be used.
    */
   def senderActorRef(originUid: Long): OptionVal[ActorRef]
 
   /**
-   * Retrive the raw literal actor path, instead of using the compressed value.
+   * Retrieve the raw literal actor path, instead of using the compressed value.
    * Returns `None` if ActorRef was compressed (!). To obtain the path in such case call [[senderActorRef]] and extract the path from it directly.
    */
   def senderActorRefPath: OptionVal[String]
@@ -180,13 +180,13 @@ private[remote] sealed trait HeaderBuilder {
   def setRecipientActorRef(ref: ActorRef): Unit
 
   /**
-   * Retrive the compressed ActorRef by the compressionId carried by this header.
+   * Retrieve the compressed ActorRef by the compressionId carried by this header.
    * Returns `None` if ActorRef was not compressed, and then the literal [[recipientActorRefPath]] should be used.
    */
   def recipientActorRef(originUid: Long): OptionVal[ActorRef]
 
   /**
-   * Retrive the raw literal actor path, instead of using the compressed value.
+   * Retrieve the raw literal actor path, instead of using the compressed value.
    * Returns `None` if ActorRef was compressed (!). To obtain the path in such case call [[recipientActorRefPath]] and extract the path from it directly.
    */
   def recipientActorRefPath: OptionVal[String]
