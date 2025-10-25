@@ -521,6 +521,21 @@ class SubSource[Out, Mat](
     new SubSource(delegate.filterNot(p.test))
 
   /**
+   * Run the given function when the first element is received.
+   *
+   * '''Emits when''' upstream emits an element
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @since 1.3.0
+   */
+  def doOnFirst(f: function.Procedure[Out]): SubSource[Out, Mat] = new SubSource(delegate.doOnFirst(f(_)))
+
+  /**
    * Only pass on those elements that are distinct from the previous element.
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
