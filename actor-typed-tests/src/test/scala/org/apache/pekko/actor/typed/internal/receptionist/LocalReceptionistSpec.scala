@@ -88,7 +88,7 @@ class LocalReceptionistSpec extends ScalaTestWithActorTestKit with AnyWordSpecLi
       }
     }
 
-    "unregister programatically" in {
+    "unregister programmatically" in {
       val subProbe = TestProbe[Any]()
       val receptionist = spawn(LocalReceptionist.behavior)
       receptionist ! Subscribe(ServiceKeyA, subProbe.ref)

@@ -133,7 +133,7 @@ The seed nodes are initial contact points for joining a cluster, which can be do
 
 * @ref:[automatically with Cluster Bootstrap](#joining-automatically-to-seed-nodes-with-cluster-bootstrap)
 * @ref:[with configuration of seed-nodes](#joining-configured-seed-nodes)
-* @ref:[programatically](#joining-programmatically-to-seed-nodes)
+* @ref:[programmatically](#joining-programmatically-to-seed-nodes)
  
 After the joining process the seed nodes are not special and they participate in the cluster in exactly the same
 way as other nodes.

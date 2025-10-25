@@ -301,7 +301,7 @@ abstract class ClusterRoundRobinSpec
       enterBarrier("after-7")
     }
 
-    "deploy programatically defined routees to the member nodes in the cluster" in {
+    "deploy programmatically defined routees to the member nodes in the cluster" in {
 
       runOn(first) {
         router2.isInstanceOf[RoutedActorRef] should ===(true)
@@ -352,7 +352,7 @@ abstract class ClusterRoundRobinSpec
       enterBarrier("after-9")
     }
 
-    "deploy programatically defined routees to other node when a node becomes down" in {
+    "deploy programmatically defined routees to other node when a node becomes down" in {
       muteMarkingAsUnreachable()
 
       runOn(first) {
