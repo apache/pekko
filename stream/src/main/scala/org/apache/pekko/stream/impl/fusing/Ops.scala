@@ -2247,9 +2247,19 @@ private[pekko] object TakeWithin {
  * INTERNAL API
  */
 @InternalApi
+private[pekko] object StatefulMap {
+  private final class NullStateException(msg: String) extends NullPointerException(msg)
+}
+
+/**
+ * INTERNAL API
+ */
+@InternalApi
 private[pekko] final class StatefulMap[S, In, Out](create: () => S, f: (S, In) => (S, Out),
     onComplete: S => Option[Out])
     extends GraphStage[FlowShape[In, Out]] {
+  import StatefulMap.NullStateException
+
   require(create != null, "create function should not be null")
   require(f != null, "f function should not be null")
   require(onComplete != null, "onComplete function should not be null")
@@ -2264,69 +2274,86 @@ private[pekko] final class StatefulMap[S, In, Out](create: () => S, f: (S, In) =
     new GraphStageLogic(shape) with InHandler with OutHandler {
       lazy val decider: Decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
 
-      private var state: S = _
-      private var needInvokeOnCompleteCallback: Boolean = false
+      private var state: OptionVal[S] = OptionVal.none
 
-      override def preStart(): Unit = {
-        state = create()
-        needInvokeOnCompleteCallback = true
-      }
+      override def preStart(): Unit =
+        createNewState()
 
-      override def onPush(): Unit =
+      override def onPush(): Unit = {
         try {
           val elem = grab(in)
-          val (newState, newElem) = f(state, elem)
-          state = newState
+          val (newState, newElem) = f(state.get, elem)
+          state = OptionVal.Some(newState)
+          throwIfNoState()
           push(out, newElem)
         } catch {
-          case NonFatal(ex) =>
+          case ex: NullStateException => throw ex // don't cover with supervision
+          case NonFatal(ex)           =>
             decider(ex) match {
               case Supervision.Stop    => closeStateAndFail(ex)
               case Supervision.Resume  => pull(in)
-              case Supervision.Restart => resetStateAndPull()
+              case Supervision.Restart => restartState()
             }
         }
-
-      override def onUpstreamFinish(): Unit = closeStateAndComplete()
-
-      override def onUpstreamFailure(ex: Throwable): Unit = closeStateAndFail(ex)
-
-      override def onDownstreamFinish(cause: Throwable): Unit = {
-        needInvokeOnCompleteCallback = false
-        onComplete(state)
-        super.onDownstreamFinish(cause)
       }
 
-      private def resetStateAndPull(): Unit = {
-        needInvokeOnCompleteCallback = false
-        onComplete(state)
-        state = create()
-        needInvokeOnCompleteCallback = true;
-        pull(in)
-      }
-
-      private def closeStateAndComplete(): Unit = {
-        needInvokeOnCompleteCallback = false
-        onComplete(state) match {
+      override def onUpstreamFinish(): Unit = {
+        completeStateIfNeeded() match {
           case Some(elem) => emit(out, elem, () => completeStage())
           case None       => completeStage()
         }
       }
 
-      private def closeStateAndFail(ex: Throwable): Unit = {
-        needInvokeOnCompleteCallback = false
-        onComplete(state) match {
+      override def onUpstreamFailure(ex: Throwable): Unit = closeStateAndFail(ex)
+
+      override def onDownstreamFinish(cause: Throwable): Unit = {
+        completeStateIfNeeded()
+        super.onDownstreamFinish(cause)
+      }
+
+      private def createNewState(): Unit = {
+        state = OptionVal.Some(create())
+        throwIfNoState()
+      }
+
+      private def restartState(): Unit = {
+        completeStateIfNeeded() match {
+          case Some(elem) =>
+            push(out, elem)
+            createNewState()
+          case None =>
+            createNewState()
+            // should always happen here but for good measure
+            if (!hasBeenPulled(in)) pull(in)
+        }
+      }
+
+      private def closeStateAndFail(ex: Throwable): Unit =
+        completeStateIfNeeded() match {
           case Some(elem) => emit(out, elem, () => failStage(ex))
           case None       => failStage(ex)
+        }
+
+      private def completeStateIfNeeded(): Option[Out] = {
+        state match {
+          case OptionVal.Some(s) =>
+            state = OptionVal.none[S]
+            onComplete(s)
+          case _ => None
         }
       }
 
       override def onPull(): Unit = pull(in)
 
       override def postStop(): Unit = {
-        if (needInvokeOnCompleteCallback) {
-          onComplete(state)
-        }
+        completeStateIfNeeded()
+      }
+
+      private def throwIfNoState(): Unit = {
+        if (state.isEmpty) // Note: no state == null because optionval
+          throw new NullStateException(
+            "State returned by stateFulMap create lambda or mapping function was null, which is not allowed. " +
+            "Use Option or Optional to represent presence of state if needed.")
       }
 
       setHandlers(in, out, this)
