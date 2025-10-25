@@ -36,6 +36,7 @@ import pekko.stream.Attributes._
     val filter = name("filter")
     val filterNot = name("filterNot")
     val doOnFirst = name("doOnFirst")
+    val doOnCancel = name("DoOnCancel")
     val collect = name("collect")
     val collectFirst = name("collectFirst")
     val collectWhile = name("collectWhile")

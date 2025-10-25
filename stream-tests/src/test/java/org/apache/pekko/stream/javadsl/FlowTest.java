@@ -136,6 +136,28 @@ public class FlowTest extends StreamTest {
   }
 
   @Test
+  public void mustBeAbleToUseDoOnCancel() throws Exception {
+    final var invoked = new AtomicInteger(0);
+    final var promise = new CompletableFuture<Done>();
+    final var future =
+        Source.range(1, 10)
+            .via(
+                Flow.of(Integer.class)
+                    .doOnCancel(
+                        (ex, wasCancelledNormally) -> {
+                          if (wasCancelledNormally) {
+                            invoked.incrementAndGet();
+                          }
+                          promise.complete(done());
+                        }))
+            .take(5)
+            .runWith(Sink.ignore(), system);
+    promise.get(3, TimeUnit.SECONDS);
+    future.toCompletableFuture().get(3, TimeUnit.SECONDS);
+    Assert.assertEquals(1, invoked.get());
+  }
+
+  @Test
   public void mustBeAbleToUseDoOnFirstOnEmptySource() throws Exception {
     final var invoked = new AtomicInteger(0);
     final var future =
