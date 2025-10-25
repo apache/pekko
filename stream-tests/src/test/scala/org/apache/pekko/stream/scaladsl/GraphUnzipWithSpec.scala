@@ -213,7 +213,7 @@ class GraphUnzipWithSpec extends StreamSpec("""
         .fromGraph(GraphDSL.create() { implicit b =>
           val source = Source
             .maybe[Int]
-            .watchTermination()(Keep.right)
+            .watchTermination(Keep.right)
             .mapMaterializedValue(termination =>
               // side effecting our way out of this
               probe.ref ! termination)

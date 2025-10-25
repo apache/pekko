@@ -61,7 +61,7 @@ class SubInletOutletSpec extends StreamSpec {
 
         override def preStart(): Unit = {
           sideChannel
-            .watchTermination() { (_, done) =>
+            .watchTermination { (_, done) =>
               done.onComplete(c => subCompletion = c)(ExecutionContext.parasitic)
               NotUsed
             }

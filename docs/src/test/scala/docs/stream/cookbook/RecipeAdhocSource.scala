@@ -54,7 +54,7 @@ class RecipeAdhocSource extends RecipeSpec {
 
     "shut down the source when the next demand times out" taggedAs TimingTest in {
       val shutdown = Promise[Done]()
-      val sink = adhocSource(Source.repeat("a").watchTermination() { (_, term) =>
+      val sink = adhocSource(Source.repeat("a").watchTermination { (_, term) =>
           shutdown.completeWith(term)
         }, 200.milliseconds, 3).runWith(TestSink[String]())
 
@@ -65,7 +65,7 @@ class RecipeAdhocSource extends RecipeSpec {
 
     "not shut down the source when there are still demands" taggedAs TimingTest in {
       val shutdown = Promise[Done]()
-      val sink = adhocSource(Source.repeat("a").watchTermination() { (_, term) =>
+      val sink = adhocSource(Source.repeat("a").watchTermination { (_, term) =>
           shutdown.completeWith(term)
         }, 200.milliseconds, 3).runWith(TestSink[String]())
 
@@ -89,7 +89,7 @@ class RecipeAdhocSource extends RecipeSpec {
 
       val source = Source.empty.mapMaterializedValue(_ => startedCount.incrementAndGet()).concat(Source.repeat("a"))
 
-      val sink = adhocSource(source.watchTermination() { (_, term) =>
+      val sink = adhocSource(source.watchTermination { (_, term) =>
           shutdown.completeWith(term)
         }, 200.milliseconds, 3).runWith(TestSink[String]())
 
@@ -105,7 +105,7 @@ class RecipeAdhocSource extends RecipeSpec {
 
       val source = Source.empty.mapMaterializedValue(_ => startedCount.incrementAndGet()).concat(Source.repeat("a"))
 
-      val sink = adhocSource(source.watchTermination() { (_, term) =>
+      val sink = adhocSource(source.watchTermination { (_, term) =>
           shutdown.completeWith(term)
         }, 200.milliseconds, 3).runWith(TestSink[String]())
 

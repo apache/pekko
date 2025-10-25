@@ -4625,7 +4625,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * where appropriate instead of manually writing functions that pass through one of the values.
    */
   def watchTermination[M](matF: function.Function2[Mat, CompletionStage[Done], M]): javadsl.Source[Out, M] =
-    new Source(delegate.watchTermination()((left, right) => matF(left, right.asJava)))
+    new Source(delegate.watchTermination((left, right) => matF(left, right.asJava)))
 
   /**
    * Materializes to `FlowMonitor[Out]` that allows monitoring of the current flow. All events are propagated

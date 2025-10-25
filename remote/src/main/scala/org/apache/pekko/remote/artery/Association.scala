@@ -856,7 +856,7 @@ private[remote] class Association(
         .via(streamKillSwitch.flow)
         .via(transport.outboundTestFlow(this))
         .viaMat(transport.outboundLane(this))(Keep.both)
-        .watchTermination()(Keep.both)
+        .watchTermination(Keep.both)
         // recover to avoid error logging by MergeHub
         .recoverWithRetries(-1, { case _: Throwable => Source.empty })
         .mapMaterializedValue {

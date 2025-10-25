@@ -64,7 +64,7 @@ class LazySourceSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
     "fail correctly when factory function fails" in {
       val failure = TE("couldn't create")
       val termination: Future[Done] =
-        Source.lazySingle(() => throw failure).watchTermination()(Keep.right).toMat(Sink.ignore)(Keep.left).run()
+        Source.lazySingle(() => throw failure).watchTermination(Keep.right).toMat(Sink.ignore)(Keep.left).run()
 
       termination.failed.futureValue should ===(failure)
     }
@@ -92,7 +92,7 @@ class LazySourceSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
           constructed.set(true)
           Future.successful(1)
         }
-        .watchTermination()(Keep.right)
+        .watchTermination(Keep.right)
         .toMat(Sink.cancelled)(Keep.left)
         .run()
 
@@ -103,7 +103,7 @@ class LazySourceSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
     "fail correctly when factory function fails" in {
       val failure = TE("couldn't create")
       val termination =
-        Source.lazyFuture(() => throw failure).watchTermination()(Keep.right).toMat(Sink.ignore)(Keep.left).run()
+        Source.lazyFuture(() => throw failure).watchTermination(Keep.right).toMat(Sink.ignore)(Keep.left).run()
 
       termination.failed.futureValue should ===(failure)
     }
@@ -113,7 +113,7 @@ class LazySourceSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
       val termination =
         Source
           .lazyFuture(() => Future.failed(failure))
-          .watchTermination()(Keep.right)
+          .watchTermination(Keep.right)
           .toMat(Sink.ignore)(Keep.left)
           .run()
 
@@ -124,7 +124,7 @@ class LazySourceSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
       val failure = TE("couldn't create")
       val promise = Promise[Int]()
       val termination =
-        Source.lazyFuture(() => promise.future).watchTermination()(Keep.right).toMat(Sink.ignore)(Keep.left).run()
+        Source.lazyFuture(() => promise.future).watchTermination(Keep.right).toMat(Sink.ignore)(Keep.left).run()
       promise.failure(failure)
       termination.failed.futureValue should ===(failure)
     }
@@ -143,7 +143,7 @@ class LazySourceSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
         .lazySource { () =>
           constructed.set(true); Source(List(1, 2, 3))
         }
-        .watchTermination()(Keep.both)
+        .watchTermination(Keep.both)
         .toMat(Sink.cancelled)(Keep.left)
         .run()
 
@@ -246,7 +246,7 @@ class LazySourceSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
       val (doneF, killswitch) =
         Source
           .lazySource(() =>
-            Source.maybe[Int].watchTermination()(Keep.right).mapMaterializedValue { done =>
+            Source.maybe[Int].watchTermination(Keep.right).mapMaterializedValue { done =>
               probe.ref ! Done
               done
             })
@@ -295,7 +295,7 @@ class LazySourceSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
             Source(List(1, 2, 3))
           };
         }
-        .watchTermination()(Keep.both)
+        .watchTermination(Keep.both)
         .toMat(Sink.cancelled)(Keep.left)
         .run()
 
@@ -424,7 +424,7 @@ class LazySourceSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
         Source
           .lazyFutureSource(() =>
             Future {
-              Source.maybe[Int].watchTermination()(Keep.right).mapMaterializedValue { done =>
+              Source.maybe[Int].watchTermination(Keep.right).mapMaterializedValue { done =>
                 probe.ref ! Done
                 done
               }

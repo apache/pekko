@@ -808,7 +808,7 @@ class TcpSpec extends StreamSpec("""
                     firstClientConnected.trySuccess(())
                     mat
                   }
-                  .watchTermination()(Keep.right))(Keep.right)
+                  .watchTermination(Keep.right))(Keep.right)
                 .run()
             } else {
               // just ignore it
