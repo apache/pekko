@@ -165,10 +165,11 @@ private[pekko] class ReplayingSnapshot[C, E, S](override val setup: BehaviorSetu
           state = setup.snapshotAdapter.fromJournal(snapshot)
           setup.internalLogger.debug("Loaded snapshot with metadata [{}]", metadata)
           metadata.metadata match {
-            case Some(rm: ReplicatedSnapshotMetadata) => (metadata.sequenceNr, rm.seenPerReplica, rm.version)
-            case _                                    => (metadata.sequenceNr, Map.empty[ReplicaId, Long].withDefaultValue(0L), VersionVector.empty)
+            case Some(rm: ReplicatedSnapshotMetadata) =>
+              (metadata.sequenceNr, rm.seenPerReplica, rm.version)
+            case _ => (metadata.sequenceNr, Map.empty[ReplicaId, Long], VersionVector.empty)
           }
-        case None => (0L, Map.empty[ReplicaId, Long].withDefaultValue(0L), VersionVector.empty)
+        case None => (0L, Map.empty[ReplicaId, Long], VersionVector.empty)
       }
 
       setup.internalLogger.debugN("Snapshot recovered from {} {} {}", seqNr, seenPerReplica, version)
