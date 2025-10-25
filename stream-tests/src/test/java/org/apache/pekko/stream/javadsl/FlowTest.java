@@ -125,6 +125,28 @@ public class FlowTest extends StreamTest {
   }
 
   @Test
+  public void mustBeAbleToUseDoOnFirst() throws Exception {
+    final var invoked = new AtomicInteger(0);
+    final var future =
+        Source.range(1, 10)
+            .via(Flow.of(Integer.class).doOnFirst(invoked::addAndGet))
+            .runWith(Sink.ignore(), system);
+    future.toCompletableFuture().get(3, TimeUnit.SECONDS);
+    Assert.assertEquals(1, invoked.get());
+  }
+
+  @Test
+  public void mustBeAbleToUseDoOnFirstOnEmptySource() throws Exception {
+    final var invoked = new AtomicInteger(0);
+    final var future =
+        Source.<Integer>empty()
+            .via(Flow.of(Integer.class).doOnFirst(invoked::addAndGet))
+            .runWith(Sink.ignore(), system);
+    future.toCompletableFuture().get(3, TimeUnit.SECONDS);
+    Assert.assertEquals(0, invoked.get());
+  }
+
+  @Test
   public void mustBeAbleToUseGroupedAdjacentBy() {
     Source.from(Arrays.asList("Hello", "Hi", "Greetings", "Hey"))
         .groupedAdjacentBy(str -> str.charAt(0))
