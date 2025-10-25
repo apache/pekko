@@ -473,7 +473,7 @@ class JacksonObjectMapperFactory {
 
   /**
    * After construction of the `ObjectMapper` the configured modules are added to
-   * the mapper. These modules can be amended programatically by overriding this method and
+   * the mapper. These modules can be amended programmatically by overriding this method and
    * return the modules that are to be applied to the `ObjectMapper`.
    *
    * When implementing a `JacksonObjectMapperFactory` with Java the `immutable.Seq` can be
@@ -490,7 +490,7 @@ class JacksonObjectMapperFactory {
 
   /**
    * After construction of the `ObjectMapper` the configured serialization features are applied to
-   * the mapper. These features can be amended programatically by overriding this method and
+   * the mapper. These features can be amended programmatically by overriding this method and
    * return the features that are to be applied to the `ObjectMapper`.
    *
    * When implementing a `JacksonObjectMapperFactory` with Java the `immutable.Seq` can be
@@ -508,7 +508,7 @@ class JacksonObjectMapperFactory {
 
   /**
    * After construction of the `ObjectMapper` the configured deserialization features are applied to
-   * the mapper. These features can be amended programatically by overriding this method and
+   * the mapper. These features can be amended programmatically by overriding this method and
    * return the features that are to be applied to the `ObjectMapper`.
    *
    * When implementing a `JacksonObjectMapperFactory` with Java the `immutable.Seq` can be
@@ -526,7 +526,7 @@ class JacksonObjectMapperFactory {
 
   /**
    * After construction of the `ObjectMapper` the configured enum features are applied to
-   * the mapper. These features can be amended programatically by overriding this method and
+   * the mapper. These features can be amended programmatically by overriding this method and
    * return the features that are to be applied to the `ObjectMapper`.
    *
    * When implementing a `JacksonObjectMapperFactory` with Java the `immutable.Seq` can be

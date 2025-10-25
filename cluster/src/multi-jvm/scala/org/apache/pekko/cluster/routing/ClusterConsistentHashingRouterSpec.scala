@@ -129,7 +129,7 @@ abstract class ClusterConsistentHashingRouterSpec
       enterBarrier("after-3")
     }
 
-    "deploy programatically defined routees to the member nodes in the cluster" in {
+    "deploy programmatically defined routees to the member nodes in the cluster" in {
       runOn(first) {
         val router2 = system.actorOf(
           ClusterRouterPool(
@@ -147,7 +147,7 @@ abstract class ClusterConsistentHashingRouterSpec
       enterBarrier("after-4")
     }
 
-    "handle combination of configured router and programatically defined hashMapping" in {
+    "handle combination of configured router and programmatically defined hashMapping" in {
       runOn(first) {
         def hashMapping: ConsistentHashMapping = {
           case s: String => s
@@ -164,7 +164,7 @@ abstract class ClusterConsistentHashingRouterSpec
       enterBarrier("after-5")
     }
 
-    "handle combination of configured router and programatically defined hashMapping and ClusterRouterConfig" in {
+    "handle combination of configured router and programmatically defined hashMapping and ClusterRouterConfig" in {
       runOn(first) {
         def hashMapping: ConsistentHashMapping = {
           case s: String => s

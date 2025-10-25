@@ -135,7 +135,7 @@ class BalancingSpec extends PekkoSpec("""
     // FIXME flaky, https://github.com/akka/akka/issues/30860
     pending
 
-    "deliver messages in a balancing fashion when defined programatically" in {
+    "deliver messages in a balancing fashion when defined programmatically" in {
       val latch = TestLatch(poolSize)
       val startOthers = Promise[Unit]()
       val pool = system.actorOf(
