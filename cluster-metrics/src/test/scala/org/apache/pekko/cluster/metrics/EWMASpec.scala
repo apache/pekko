@@ -28,13 +28,13 @@ class EWMASpec extends PekkoSpec(MetricsConfig.defaultEnabled) with MetricsColle
 
   "DataStream" must {
 
-    "calcualate same ewma for constant values" in {
+    "calculate same ewma for constant values" in {
       val ds = EWMA(value = 100.0, alpha = 0.18) :+
         100.0 :+ 100.0 :+ 100.0
       ds.value should ===(100.0 +- 0.001)
     }
 
-    "calcualate correct ewma for normal decay" in {
+    "calculate correct ewma for normal decay" in {
       val d0 = EWMA(value = 1000.0, alpha = 2.0 / (1 + 10))
       d0.value should ===(1000.0 +- 0.01)
       val d1 = d0 :+ 10.0
