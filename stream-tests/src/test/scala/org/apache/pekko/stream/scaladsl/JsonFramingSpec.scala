@@ -546,7 +546,7 @@ class JsonFramingSpec extends PekkoSpec {
       val input = List(
         """{ "name": "john" }""",
         """{ "name": "jack" }""",
-        """{ "name": "john2" }, { "name": "jack2" }, { "name": "john3" }, { "name": "jack3" }""",        
+        """{ "name": "john2" }, { "name": "jack2" }, { "name": "john3" }, { "name": "jack3" }""",
         """{ "name": "very very long name somehow. how did this happen?" }""").map(s => ByteString(s))
 
       val probe = Source(input).via(JsonFraming.objectScanner(48)).runWith(TestSink.probe)
