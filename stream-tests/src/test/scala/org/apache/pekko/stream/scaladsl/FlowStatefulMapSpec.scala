@@ -337,7 +337,6 @@ class FlowStatefulMapSpec extends StreamSpec {
             Some(buffer)
           })
         .filter(_.nonEmpty)
-        .alsoTo(Sink.foreach(println))
         .runWith(sink)
         .request(4)
         .expectNext(List("A"))
