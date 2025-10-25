@@ -344,7 +344,7 @@ import pekko.util.OptionVal
     stopBehavior: StoppedBehavior[T])
     extends ExtensibleBehavior[T] {
   override def receive(ctx: TypedActorContext[T], msg: T): Behavior[T] =
-    throw new IllegalStateException("Stopping, should never receieve a message")
+    throw new IllegalStateException("Stopping, should never receive a message")
   override def receiveSignal(ctx: TypedActorContext[T], msg: Signal): Behavior[T] = {
     if (msg != PostStop)
       throw new IllegalArgumentException(

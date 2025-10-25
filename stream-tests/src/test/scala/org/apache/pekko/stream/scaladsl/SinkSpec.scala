@@ -356,7 +356,7 @@ class SinkSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
 
   "The forall sink" must {
 
-    "completes with `ture` when all elements match" in {
+    "completes with `true` when all elements match" in {
       Source(1 to 4)
         .runWith(Sink.forall(_ > 0))
         .futureValue shouldBe true
@@ -397,7 +397,7 @@ class SinkSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
 
   "The none sink" must {
 
-    "completes with `ture` when all elements not match" in {
+    "completes with `true` when all elements not match" in {
       Source(1 to 4)
         .runWith(Sink.none(_ < 0))
         .futureValue shouldBe true
