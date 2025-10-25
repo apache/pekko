@@ -199,7 +199,7 @@ class RestartSpec
       val probe = RestartSource
         .withBackoff(shortRestartSettings) { () =>
           created.incrementAndGet()
-          Source.repeat("a").watchTermination() { (_, term) =>
+          Source.repeat("a").watchTermination { (_, term) =>
             promise.completeWith(term)
           }
         }
@@ -722,7 +722,7 @@ class RestartSpec
                   case "error" => throw TE("error")
                   case other   => other
                 }
-                .watchTermination()((_, term) =>
+                .watchTermination((_, term) =>
                   term.foreach(_ => {
                     flowInProbe.ref ! "out complete"
                   })))

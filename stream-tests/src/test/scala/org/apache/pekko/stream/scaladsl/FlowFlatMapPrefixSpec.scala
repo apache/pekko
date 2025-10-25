@@ -293,7 +293,7 @@ class FlowFlatMapPrefixSpec extends StreamSpec("pekko.loglevel = debug") {
         val subscriber = TestSubscriber.manualProbe[Int]()
 
         val ((srcWatchTermF, innerMatVal), sinkMatVal) = src10()
-          .watchTermination()(Keep.right)
+          .watchTermination(Keep.right)
           .flatMapPrefixMat(2) { prefix =>
             prefix should ===(0 until 2)
             Flow.fromSinkAndSource(Sink.fromSubscriber(subscriber), Source.fromPublisher(publisher))
@@ -329,10 +329,10 @@ class FlowFlatMapPrefixSpec extends StreamSpec("pekko.loglevel = debug") {
 
         val (srcWatchTermF, matFlowWatchTermFF) = Source
           .fromPublisher(publisher)
-          .watchTermination()(Keep.right)
+          .watchTermination(Keep.right)
           .flatMapPrefixMat(3) { prefix =>
             prefix should ===(0 until 3)
-            Flow[Int].watchTermination()(Keep.right)
+            Flow[Int].watchTermination(Keep.right)
           }(Keep.both)
           .to(Sink.fromSubscriber(subscriber))
           .withAttributes(attributes)
@@ -375,10 +375,10 @@ class FlowFlatMapPrefixSpec extends StreamSpec("pekko.loglevel = debug") {
 
         val (srcWatchTermF, matFlowWatchTermFF) = Source
           .fromPublisher(publisher)
-          .watchTermination()(Keep.right)
+          .watchTermination(Keep.right)
           .flatMapPrefixMat(3) { prefix =>
             prefix should ===(0 until 3)
-            Flow[Int].watchTermination()(Keep.right)
+            Flow[Int].watchTermination(Keep.right)
           }(Keep.both)
           .to(Sink.fromSubscriber(subscriber))
           .withAttributes(attributes)
@@ -419,7 +419,7 @@ class FlowFlatMapPrefixSpec extends StreamSpec("pekko.loglevel = debug") {
         val subscriber = TestSubscriber.manualProbe[Int]()
 
         val ((srcWatchTermF, notUsedF), suffixF) = src10()
-          .watchTermination()(Keep.right)
+          .watchTermination(Keep.right)
           .flatMapPrefixMat(2) { prefix =>
             prefix should ===(0 until 2)
             Flow.fromSinkAndSourceCoupled(Sink.fromSubscriber(subscriber), Source.fromPublisher(publisher))

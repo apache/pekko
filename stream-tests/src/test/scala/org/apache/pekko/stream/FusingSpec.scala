@@ -117,14 +117,14 @@ class FusingSpec extends StreamSpec {
       val slowInitSrc = UnfoldResourceNoAsyncBoundary(
         () => { Await.result(promise.future, 1.minute); () },
         (_: Unit) => Some(1),
-        (_: Unit) => ()).asSource.watchTermination()(Keep.right).async // commenting this out, makes the test pass
+        (_: Unit) => ()).asSource.watchTermination(Keep.right).async // commenting this out, makes the test pass
       val downstream = Flow[Int]
         .prepend(Source.single(1))
         .flatMapPrefix(0) {
           case Nil        => throw TE("I hate mondays")
           case unexpected => throw new RuntimeException(s"Unexpected: $unexpected")
         }
-        .watchTermination()(Keep.right)
+        .watchTermination(Keep.right)
         .to(Sink.ignore)
 
       val g = slowInitSrc.toMat(downstream)(Keep.both)
@@ -148,9 +148,9 @@ class FusingSpec extends StreamSpec {
       val slowInitSrc = UnfoldResourceNoAsyncBoundary(
         () => { Await.result(promise.future, 1.minute); () },
         (_: Unit) => Some(1),
-        (_: Unit) => ()).asSource.watchTermination()(Keep.right).async // commenting this out, makes the test pass
+        (_: Unit) => ()).asSource.watchTermination(Keep.right).async // commenting this out, makes the test pass
 
-      val failingSrc = Source.failed(TE("I hate mondays")).watchTermination()(Keep.right)
+      val failingSrc = Source.failed(TE("I hate mondays")).watchTermination(Keep.right)
 
       val g = slowInitSrc.zipMat(failingSrc)(Keep.both).to(Sink.ignore)
 

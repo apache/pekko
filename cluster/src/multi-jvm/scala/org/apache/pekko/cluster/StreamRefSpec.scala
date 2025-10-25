@@ -75,7 +75,7 @@ object StreamRefSpec extends MultiNodeConfig {
           Source
             .fromIterator(() => Iterator.from(1))
             .map(n => s"elem-$n")
-            .watchTermination()(Keep.right)
+            .watchTermination(Keep.right)
             .toMat(StreamRefs.sourceRef())(Keep.both)
             .mapMaterializedValue { m =>
               streamLifecycleProbe ! s"started-$streamId"
@@ -228,7 +228,7 @@ abstract class StreamRefSpec extends MultiNodeClusterSpec(StreamRefSpec) with Im
         Source
           .fromIterator(() => Iterator.from(1))
           .map(n => s"elem-$n")
-          .watchTermination()(Keep.right)
+          .watchTermination(Keep.right)
           .to(ready.sinkRef)
           .run()
           .onComplete {

@@ -62,7 +62,7 @@ object StreamRefsSpec {
       case "give-nothing-watch" =>
         val source: Source[String, NotUsed] = Source.future(Future.never.mapTo[String])
         val (done: Future[Done], ref: SourceRef[String]) =
-          source.watchTermination()(Keep.right).toMat(StreamRefs.sourceRef())(Keep.both).run()
+          source.watchTermination(Keep.right).toMat(StreamRefs.sourceRef())(Keep.both).run()
 
         sender() ! ref
 
@@ -72,7 +72,7 @@ object StreamRefsSpec {
       case "give-only-one-watch" =>
         val source: Source[String, NotUsed] = Source.single("hello").concat(Source.future(Future.never))
         val (done: Future[Done], ref: SourceRef[String]) =
-          source.watchTermination()(Keep.right).toMat(StreamRefs.sourceRef())(Keep.both).run()
+          source.watchTermination(Keep.right).toMat(StreamRefs.sourceRef())(Keep.both).run()
 
         sender() ! ref
 
@@ -95,7 +95,7 @@ object StreamRefsSpec {
 
       case "give-maybe" =>
         val ((maybe, termination), sourceRef) =
-          Source.maybe[String].watchTermination()(Keep.both).toMat(StreamRefs.sourceRef())(Keep.both).run()
+          Source.maybe[String].watchTermination(Keep.both).toMat(StreamRefs.sourceRef())(Keep.both).run()
         sender() ! (maybe -> sourceRef)
         termination.pipeTo(sender())
 
@@ -130,7 +130,7 @@ object StreamRefsSpec {
                 firstF.foreach(_ => ks.shutdown())(context.dispatcher)
                 sink
             }
-            .watchTermination()(Keep.both)
+            .watchTermination(Keep.both)
             .to(Sink.actorRef(probe, "<COMPLETE>", f => "<FAILED>: " + f.getMessage))
             .run()
         sender() ! sink
@@ -600,7 +600,7 @@ class StreamRefsSpec extends PekkoSpec(StreamRefsSpec.config()) {
       val remoteSink: SinkRef[String] = remoteProbe.expectMsgType[SinkRef[String]]
 
       val done =
-        Source.single("hello").concat(Source.future(Future.never)).watchTermination()(Keep.right).to(remoteSink).run()
+        Source.single("hello").concat(Source.future(Future.never)).watchTermination(Keep.right).to(remoteSink).run()
 
       elementProbe.expectMsg("hello")
       elementProbe.expectMsg("<COMPLETE>")

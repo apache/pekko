@@ -4185,7 +4185,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * where appropriate instead of manually writing functions that pass through one of the values.
    */
   def watchTermination[M](matF: function.Function2[Mat, CompletionStage[Done], M]): javadsl.Flow[In, Out, M] =
-    new Flow(delegate.watchTermination()((left, right) => matF(left, right.asJava)))
+    new Flow(delegate.watchTermination((left, right) => matF(left, right.asJava)))
 
   /**
    * Materializes to `FlowMonitor[Out]` that allows monitoring of the current flow. All events are propagated
