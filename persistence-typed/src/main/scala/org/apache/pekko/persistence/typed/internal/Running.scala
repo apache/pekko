@@ -417,7 +417,7 @@ private[pekko] object Running {
           replication.allReplicas.mkString(", "))
         this
       } else {
-        val expectedSequenceNumber = state.seenPerReplica(originReplicaId) + 1
+        val expectedSequenceNumber = state.seenPerReplica.getOrElse(originReplicaId, 0L) + 1
         if (expectedSequenceNumber > event.sequenceNumber) {
           // already seen
           if (log.isDebugEnabled)
@@ -471,7 +471,7 @@ private[pekko] object Running {
     }
 
     def onGetSeenSequenceNr(get: GetSeenSequenceNr): Behavior[InternalProtocol] = {
-      get.replyTo ! state.seenPerReplica(get.replica)
+      get.replyTo ! state.seenPerReplica.getOrElse(get.replica, 0L)
       this
     }
 
@@ -751,7 +751,7 @@ private[pekko] object Running {
     }
 
     def onGetSeenSequenceNr(get: GetSeenSequenceNr): PersistingEvents = {
-      get.replyTo ! state.seenPerReplica(get.replica)
+      get.replyTo ! state.seenPerReplica.getOrElse(get.replica, 0L)
       this
     }
 
