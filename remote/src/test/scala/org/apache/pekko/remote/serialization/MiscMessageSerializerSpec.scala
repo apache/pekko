@@ -193,7 +193,7 @@ class MiscMessageSerializerSpec extends PekkoSpec(MiscMessageSerializerSpec.test
         classOf[MiscMessageSerializer])
     }
 
-    "serialize and deserialze ActorInitializationException" in {
+    "serialize and deserialize ActorInitializationException" in {
       val aiex = ActorInitializationException(ref, "test", new TestException("err"))
       val serializer = new MiscMessageSerializer(system.asInstanceOf[ExtendedActorSystem])
       val deserialized = serializer
@@ -208,7 +208,7 @@ class MiscMessageSerializerSpec extends PekkoSpec(MiscMessageSerializerSpec.test
       deserialized.getCause.getMessage should ===(aiex.getCause.getMessage)
     }
 
-    "serialize and deserialze ActorInitializationException if ref is null" in {
+    "serialize and deserialize ActorInitializationException if ref is null" in {
       val aiex = ActorInitializationException(null, "test", new TestException("err"))
       val serializer = new MiscMessageSerializer(system.asInstanceOf[ExtendedActorSystem])
       val deserialized = serializer
@@ -223,7 +223,7 @@ class MiscMessageSerializerSpec extends PekkoSpec(MiscMessageSerializerSpec.test
       deserialized.getCause.getMessage should ===(aiex.getCause.getMessage)
     }
 
-    "serialize and deserialze ActorInitializationException if cause  is null" in {
+    "serialize and deserialize ActorInitializationException if cause  is null" in {
       val aiex = ActorInitializationException(ref, "test", null)
       val serializer = new MiscMessageSerializer(system.asInstanceOf[ExtendedActorSystem])
       val deserialized = serializer
@@ -237,7 +237,7 @@ class MiscMessageSerializerSpec extends PekkoSpec(MiscMessageSerializerSpec.test
       deserialized.getCause should be(null)
     }
 
-    "serialize and deserialze ActorInitializationException when cause is not serializable" in {
+    "serialize and deserialize ActorInitializationException when cause is not serializable" in {
       val aiex = ActorInitializationException(ref, "test", new IllegalStateException("err"))
       val serializer = new MiscMessageSerializer(system.asInstanceOf[ExtendedActorSystem])
       val deserialized = serializer
@@ -251,7 +251,7 @@ class MiscMessageSerializerSpec extends PekkoSpec(MiscMessageSerializerSpec.test
     }
   }
 
-  "serialize and deserialze ThrowableNotSerializableException" in {
+  "serialize and deserialize ThrowableNotSerializableException" in {
     val notExc = new ThrowableNotSerializableException(
       "test",
       classOf[IllegalStateException].getName,
@@ -266,7 +266,7 @@ class MiscMessageSerializerSpec extends PekkoSpec(MiscMessageSerializerSpec.test
     deserialized.getCause should ===(null)
   }
 
-  "serialize and deserialze Status.Failure with unknown exception" in {
+  "serialize and deserialize Status.Failure with unknown exception" in {
     val statusFailure = Status.Failure(new IllegalStateException("test"))
     val serializer = new MiscMessageSerializer(system.asInstanceOf[ExtendedActorSystem])
     val deserialized = serializer

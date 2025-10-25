@@ -40,10 +40,10 @@ object BalancingSpec {
         latch.countDown()
         if (id == 1) {
           if (!latch.isOpen) {
-            log.debug("Waiting for all routees to receieve a message")
+            log.debug("Waiting for all routees to receive a message")
             // wait for all routees to receive a message before processing
             Await.result(latch, 1.minute)
-            log.debug("All routees receieved a message, continuing")
+            log.debug("All routees received a message, continuing")
           }
         } else {
           if (!startOthers.isCompleted) {
@@ -135,7 +135,7 @@ class BalancingSpec extends PekkoSpec("""
     // FIXME flaky, https://github.com/akka/akka/issues/30860
     pending
 
-    "deliver messages in a balancing fashion when defined programatically" in {
+    "deliver messages in a balancing fashion when defined programmatically" in {
       val latch = TestLatch(poolSize)
       val startOthers = Promise[Unit]()
       val pool = system.actorOf(

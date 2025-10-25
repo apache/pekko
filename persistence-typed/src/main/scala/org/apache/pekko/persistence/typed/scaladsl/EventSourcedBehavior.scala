@@ -59,7 +59,7 @@ object EventSourcedBehavior {
    * Create a `Behavior` for a persistent actor.
    *
    * @param persistenceId stable unique identifier for the event sourced behavior
-   * @param emptyState the intial state for the entity before any events have been processed
+   * @param emptyState the initial state for the entity before any events have been processed
    * @param commandHandler map commands to effects e.g. persisting events, replying to commands
    * @param eventHandler compute the new state given the current state when an event has been persisted
    */

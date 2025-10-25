@@ -215,7 +215,7 @@ abstract class ClusterShardingRememberEntitiesPerfSpec
 
     "test latency when starting new entity and sending a few messages to it and stopping" in {
       val numberOfMessages = 800 * NrOfMessagesFactor
-      // 160 entities, and an extra one for the intialization
+      // 160 entities, and an extra one for the initialization
       // all but the first one are not removed
       runBench("start, few messages, stop") { (iteration, region, histogram) =>
         for (n <- 1 to numberOfMessages / 5; m <- 1 to 5) {

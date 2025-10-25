@@ -22,7 +22,7 @@ import org.apache.pekko.annotation.DoNotInherit
 sealed abstract class QueueOfferResult {
 
   /**
-   * Return ture if the element was already enqueued, otherwise false.
+   * Return true if the element was already enqueued, otherwise false.
    */
   def isEnqueued: Boolean
 }
