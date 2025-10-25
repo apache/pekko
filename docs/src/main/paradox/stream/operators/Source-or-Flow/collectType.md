@@ -27,7 +27,7 @@ Java
 
 
 From a stream of `Message` elements we would like to collect all elements of type `Ping` that have an `id != 0`,
-and then covert to `Pong` with same id.
+and then convert to `Pong` with same id.
 
 Scala
 :   @@snip [Collect.scala](/docs/src/test/scala/docs/stream/operators/sourceorflow/Collect.scala) { #collectType }

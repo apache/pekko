@@ -583,10 +583,10 @@ private class ShardingProducerControllerImpl[A: ClassTag](
 
   private def createRequestNext(s: State[A]): RequestNext[A] = {
     val entitiesWithDemand = s.out.valuesIterator.collect { case out if out.nextTo.nonEmpty => out.entityId }.toSet
-    val bufferedForEntitesWithoutDemand = s.out.valuesIterator.collect {
+    val bufferedForEntitiesWithoutDemand = s.out.valuesIterator.collect {
       case out if out.nextTo.isEmpty => out.entityId -> out.buffered.size
     }.toMap
-    RequestNext(msgAdapter, context.self, entitiesWithDemand, bufferedForEntitesWithoutDemand)
+    RequestNext(msgAdapter, context.self, entitiesWithDemand, bufferedForEntitiesWithoutDemand)
   }
 
   private def send(msg: A, outKey: OutKey, outSeqNr: OutSeqNr, nextTo: ProducerController.RequestNext[A]): Unit = {

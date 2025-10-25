@@ -31,7 +31,7 @@ object TestExtension extends ExtensionId[TestExtension] with ExtensionIdProvider
   def createExtension(s: ExtendedActorSystem) = new TestExtension(s)
 }
 
-// Dont't place inside ActorSystemSpec object, since it will not be garbage collected and reference to system remains
+// Don't place inside ActorSystemSpec object, since it will not be garbage collected and reference to system remains
 class TestExtension(val system: ExtendedActorSystem) extends Extension
 
 object FailingTestExtension extends ExtensionId[FailingTestExtension] with ExtensionIdProvider {
@@ -53,7 +53,7 @@ class InstanceCountingExtension extends Extension {
   InstanceCountingExtension.createCount.incrementAndGet()
 }
 
-// Dont't place inside ActorSystemSpec object, since it will not be garbage collected and reference to system remains
+// Don't place inside ActorSystemSpec object, since it will not be garbage collected and reference to system remains
 class FailingTestExtension(val system: ExtendedActorSystem) extends Extension {
   // create a named actor as a side effect of initializing this extension, relevant
   // for the 'handle extensions that fail to initialize' test.

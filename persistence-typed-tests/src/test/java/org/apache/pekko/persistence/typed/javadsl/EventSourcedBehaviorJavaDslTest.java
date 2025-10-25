@@ -675,7 +675,7 @@ public class EventSourcedBehaviorJavaDslTest extends JUnitSuite {
                       .none()
                       .thenRun(
                           (String wrongType) -> {
-                            // wont happen
+                            // won't happen
                           }))
           .build();
     }
