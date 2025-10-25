@@ -84,7 +84,7 @@ object ReplicatedEventSourcing {
 
   /**
    * Initialize a replicated event sourced behavior where all entity replicas are share the same journal configuration.
-   * This is typical if there is a shared database and no replica specific configuratin is required.
+   * This is typical if there is a shared database and no replica specific configuration is required.
    *
    * Events from each replica for the same entityId will be replicated to every copy.
    * Care must be taken to handle events in any order as events can happen concurrently at different replicas.
