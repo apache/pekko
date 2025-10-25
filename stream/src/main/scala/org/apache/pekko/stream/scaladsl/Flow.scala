@@ -1652,6 +1652,26 @@ trait FlowOps[+Out, +Mat] {
   def doOnFirst(f: Out => Unit): Repr[Out] = via(new DoOnFirst[Out](f))
 
   /**
+   * Run the given function when the downstream cancels.
+   *
+   * The first parameter is the cause of the cancellation, and the second parameter indicates whether
+   * the downstream was cancelled normally.
+   *
+   * '''Emits when''' upstream emits an element
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @param f function to be run on cancellation, the first parameter is the cause of the cancellation,
+   *          and the second parameter indicates whether the downstream was cancelled normally.
+   * @since 1.3.0
+   */
+  def doOnCancel(f: (Throwable, Boolean) => Unit): Repr[Out] = via(new DoOnCancel[Out](f))
+
+  /**
    * Only pass on those elements that are distinct from the previous element.
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
