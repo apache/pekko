@@ -2274,7 +2274,7 @@ private[pekko] final class StatefulMap[S, In, Out](create: () => S, f: (S, In) =
           push(out, newElem)
         } catch {
           case ex: NullStateException => throw ex // don't cover with supervision
-          case NonFatal(ex) =>
+          case NonFatal(ex)           =>
             decider(ex) match {
               case Supervision.Stop    => closeStateAndFail(ex)
               case Supervision.Resume  => pull(in)
@@ -2315,7 +2315,7 @@ private[pekko] final class StatefulMap[S, In, Out](create: () => S, f: (S, In) =
       }
 
       private def closeStateAndFail(ex: Throwable): Unit =
-       completeStateIfNeeded() match {
+        completeStateIfNeeded() match {
           case Some(elem) => emit(out, elem, () => failStage(ex))
           case None       => failStage(ex)
         }
