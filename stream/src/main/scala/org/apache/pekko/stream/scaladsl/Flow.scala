@@ -1637,6 +1637,21 @@ trait FlowOps[+Out, +Mat] {
     via(Flow[Out].filter(!p(_)).withAttributes(DefaultAttributes.filterNot and SourceLocation.forLambda(p)))
 
   /**
+   * Run the given function when the first element is received.
+   *
+   * '''Emits when''' upstream emits an element
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @since 1.3.0
+   */
+  def doOnFirst(f: Out => Unit): Repr[Out] = via(new DoOnFirst[Out](f))
+
+  /**
    * Only pass on those elements that are distinct from the previous element.
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
