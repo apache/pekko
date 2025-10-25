@@ -3002,6 +3002,27 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
   def doOnFirst(f: function.Procedure[Out]): javadsl.Source[Out, Mat] = new Source(delegate.doOnFirst(f(_)))
 
   /**
+   * Run the given function when the downstream cancels.
+   *
+   * The first parameter is the cause of the cancellation, and the second parameter indicates whether
+   * the downstream was cancelled normally.
+   *
+   * '''Emits when''' upstream emits an element
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @param f function to be run on cancellation, the first parameter is the cause of the cancellation,
+   *          and the second parameter indicates whether the downstream was cancelled normally.
+   * @since 1.3.0
+   */
+  def doOnCancel(f: function.Procedure2[_ >: Throwable, java.lang.Boolean]): javadsl.Source[Out, Mat] =
+    new Source(delegate.doOnCancel((ex: Throwable, wasCancelledNormally: Boolean) => f(ex, wasCancelledNormally)))
+
+  /**
    * Only pass on those elements that are distinct from the previous element.
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
