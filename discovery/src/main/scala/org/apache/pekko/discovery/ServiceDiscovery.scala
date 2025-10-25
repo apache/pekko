@@ -89,7 +89,7 @@ object ServiceDiscovery {
     /**
      * @param host the hostname or the IP address of the target
      * @param port optional port number
-     * @param address IP address of the target. This is used during cluster bootstap when available.
+     * @param address IP address of the target. This is used during cluster bootstrap when available.
      */
     def apply(host: String, port: Option[Int], address: Option[InetAddress]): ResolvedTarget =
       new ResolvedTarget(host, port, address)
@@ -99,7 +99,7 @@ object ServiceDiscovery {
    * Resolved target host, with optional port and the IP address.
    * @param host the hostname or the IP address of the target
    * @param port optional port number
-   * @param address optional IP address of the target. This is used during cluster bootstap when available.
+   * @param address optional IP address of the target. This is used during cluster bootstrap when available.
    */
   final class ResolvedTarget(val host: String, val port: Option[Int], val address: Option[InetAddress])
       extends NoSerializationVerificationNeeded {

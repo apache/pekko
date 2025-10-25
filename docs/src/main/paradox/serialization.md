@@ -129,7 +129,7 @@ rolling updates.
 
 @@@ div { .group-scala }
 
-If you prefer to define the identifier in cofiguration that is supported by the @apidoc[serialization.BaseSerializer] trait, which
+If you prefer to define the identifier in configuration that is supported by the @apidoc[serialization.BaseSerializer] trait, which
 implements the `def identifier` by reading it from configuration based on the serializer's class name:
 
 Scala
