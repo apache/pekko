@@ -4932,52 +4932,17 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * @param harvest     this is invoked before emit within the current stage/operator
    * @param emitOnTimer decide whether the current aggregated elements can be emitted, the custom function is invoked on every interval
    */
-  @deprecated("Use the overloaded one which accepts an Optional instead.", since = "1.2.0")
-  def aggregateWithBoundary[Agg, Emit](allocate: function.Creator[Agg],
-      aggregate: function.Function2[Agg, Out, Pair[Agg, Boolean]],
-      harvest: function.Function[Agg, Emit],
-      emitOnTimer: Pair[function.Predicate[Agg], java.time.Duration]): javadsl.Source[Emit, Mat] = {
-    asScala
-      .aggregateWithBoundary(() => allocate.create())(
-        aggregate = (agg, out) => aggregate.apply(agg, out).toScala,
-        harvest = agg => harvest.apply(agg),
-        emitOnTimer = Option(emitOnTimer).map {
-          case Pair(predicate, duration) => (agg => predicate.test(agg), duration.toScala)
-        })
-      .asJava
-  }
-
-  /**
-   * Aggregate input elements into an arbitrary data structure that can be completed and emitted downstream
-   * when custom condition is met which can be triggered by aggregate or timer.
-   * It can be thought of a more general [[groupedWeightedWithin]].
-   *
-   * '''Emits when''' the aggregation function decides the aggregate is complete or the timer function returns true
-   *
-   * '''Backpressures when''' downstream backpressures and the aggregate is complete
-   *
-   * '''Completes when''' upstream completes and the last aggregate has been emitted downstream
-   *
-   * '''Cancels when''' downstream cancels
-   *
-   * @param allocate    allocate the initial data structure for aggregated elements
-   * @param aggregate   update the aggregated elements, return true if ready to emit after update.
-   * @param harvest     this is invoked before emit within the current stage/operator
-   * @param emitOnTimer decide whether the current aggregated elements can be emitted, the custom function is invoked on every interval
-   */
   def aggregateWithBoundary[Agg, Emit](allocate: function.Creator[Agg],
       aggregate: function.Function2[Agg, Out, Pair[Agg, Boolean]],
       harvest: function.Function[Agg, Emit],
       emitOnTimer: Optional[Pair[function.Predicate[Agg], java.time.Duration]]): javadsl.Source[Emit, Mat] = {
     import scala.jdk.OptionConverters._
-    asScala
-      .aggregateWithBoundary(() => allocate.create())(
-        aggregate = (agg, out) => aggregate.apply(agg, out).toScala,
-        harvest = agg => harvest.apply(agg),
-        emitOnTimer = emitOnTimer.toScala.map {
-          case Pair(predicate, duration) => (agg => predicate.test(agg), duration.toScala)
-        })
-      .asJava
+    new Source(delegate.aggregateWithBoundary(() => allocate.create())(
+      aggregate = (agg, out) => aggregate.apply(agg, out).toScala,
+      harvest = agg => harvest.apply(agg),
+      emitOnTimer = emitOnTimer.toScala.map {
+        case Pair(predicate, duration) => (agg => predicate.test(agg), duration.toScala)
+      }))
   }
 
   override def getAttributes: Attributes = delegate.getAttributes

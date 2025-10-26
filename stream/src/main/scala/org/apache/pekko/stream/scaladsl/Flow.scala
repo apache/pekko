@@ -4069,7 +4069,6 @@ trait FlowOps[+Out, +Mat] {
    * @param harvest     this is invoked before emit within the current stage/operator
    * @param emitOnTimer decide whether the current aggregated elements can be emitted, the custom function is invoked on every interval
    */
-  @ApiMayChange
   def aggregateWithBoundary[Agg, Emit](allocate: () => Agg)(
       aggregate: (Agg, Out) => (Agg, Boolean),
       harvest: Agg => Emit,
