@@ -142,7 +142,6 @@ class InteractionPatterns3Spec extends ScalaTestWithActorTestKit with AnyWordSpe
 
         def apply(backend: ActorRef[Backend.Request]): Behavior[Command] = // (2)
           Behaviors.setup[CommandAndResponse] { context =>
-
             def active(inProgress: Map[Int, ActorRef[URI]], count: Int): Behavior[CommandAndResponse] = {
               Behaviors.receiveMessage[CommandAndResponse] {
                 case Translate(site, replyTo) =>
