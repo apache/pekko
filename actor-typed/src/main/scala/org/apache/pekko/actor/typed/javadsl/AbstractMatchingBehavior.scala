@@ -18,7 +18,7 @@ import pekko.actor.typed.{ Behavior, ExtensibleBehavior, MessageAdaptionFailure,
 
 /**
  * An actor `Behavior` can be implemented by extending this class and implementing the abstract
- * method [[AbstractOnMessageBehavior#onMessage]].  Mutable state can be defined as instance
+ * method [[AbstractMatchingBehavior#onMessage]].  Mutable state can be defined as instance
  * variables of the class.
  *
  * This is an object-oriented style of defining a `Behavior`.  A more functional style alternative
@@ -42,11 +42,11 @@ import pekko.actor.typed.{ Behavior, ExtensibleBehavior, MessageAdaptionFailure,
  *
  * @see [[Behaviors.setup]]
  */
-abstract class AbstractOnMessageBehavior[T](context: ActorContext[T]) extends ExtensibleBehavior[T] {
+abstract class AbstractMatchingBehavior[T](context: ActorContext[T]) extends ExtensibleBehavior[T] {
   if (context eq null)
     throw new IllegalArgumentException(
       "context must not be null.  Wrap in Behaviors.setup and " +
-      "pass the context to the constructor of AbstractOnMessageBehavior.")
+      "pass the context to the constructor of AbstractMatchingBehavior.")
 
   /**
    * Implement this to define how messages are processed.  To indicate no change in behavior beyond
@@ -84,7 +84,7 @@ abstract class AbstractOnMessageBehavior[T](context: ActorContext[T]) extends Ex
   private def checkRightContext(ctx: TypedActorContext[T]): Unit =
     if (ctx.asJava ne context)
       throw new IllegalStateException(
-        s"Actor [${ctx.asJava.getSelf}] of AbstractOnMessageBehavior class " +
+        s"Actor [${ctx.asJava.getSelf}] of AbstractMatchingBehavior class " +
         s"[${getClass.getName}] was created with the wrong ActorContext [${context.asJava.getSelf}]. " +
-        "Wrap in Behaviors.setup and pass the context to the constructor of AbstractOnMessageBehavior.")
+        "Wrap in Behaviors.setup and pass the context to the constructor of AbstractMatchingBehavior.")
 }

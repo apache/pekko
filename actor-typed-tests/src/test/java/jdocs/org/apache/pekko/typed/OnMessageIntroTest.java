@@ -26,7 +26,7 @@ import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.Terminated;
 import org.apache.pekko.actor.typed.javadsl.AbstractBehavior;
 // #imports
-import org.apache.pekko.actor.typed.javadsl.AbstractOnMessageBehavior;
+import org.apache.pekko.actor.typed.javadsl.AbstractMatchingBehavior;
 import org.apache.pekko.actor.typed.javadsl.ActorContext;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 // #imports
@@ -117,7 +117,7 @@ public interface OnMessageIntroTest {
       return Behaviors.setup(ChatRoomBehavior::new);
     }
 
-    public static class ChatRoomBehavior extends AbstractOnMessageBehavior<RoomCommand> {
+    public static class ChatRoomBehavior extends AbstractMatchingBehavior<RoomCommand> {
       final List<ActorRef<SessionCommand>> sessions = new ArrayList<>();
 
       private ChatRoomBehavior(ActorContext<RoomCommand> context) {
@@ -194,7 +194,7 @@ public interface OnMessageIntroTest {
       }
     }
 
-    static class SessionBehavior extends AbstractOnMessageBehavior<SessionCommand> {
+    static class SessionBehavior extends AbstractMatchingBehavior<SessionCommand> {
       private final ActorRef<RoomCommand> room;
       private final String screenName;
       private final ActorRef<SessionEvent> client;

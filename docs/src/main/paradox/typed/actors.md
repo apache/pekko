@@ -412,7 +412,7 @@ problematic, so passing an @scala[`ActorRef[PublishSessionMessage]`]@java[`Actor
 @scala[`ActorRef[RoomCommand]`]@java[`ActorRef<RoomCommand>`] is required will lead to a type error.
 
 @@@ div {.group-java}
-#### AbstractOnMessageBehavior API
+#### AbstractMatchingBehavior API
 
 The `AbstractBehavior` API makes use of a builder on receipt of the first message by the actor.  The `Receive` built
 by this builder performs `instanceof` checks and casts "behind the scenes".  Pattern-matching features introduced in Java
@@ -421,10 +421,10 @@ JVM languages (such as Kotlin) may also prefer to not use a builder while using 
 `AbstractBehavior` does not make use of builders).
 
 To support this "direct" style, an alternative API for defining behavior in an object-oriented style is available by
-extending @java[@javadoc[AbstractOnMessageBehavior](pekko.actor.typed.javadsl.AbstractOnMessageBehavior)] and
-implementing the @java[@javadoc[onMessage](pekko.actor.typed.javadsl.AbstractOnMessageBehavior#onMessage(T))] method.
+extending @java[@javadoc[AbstractMatchingBehavior](pekko.actor.typed.javadsl.AbstractMatchingBehavior)] and
+implementing the @java[@javadoc[onMessage](pekko.actor.typed.javadsl.AbstractMatchingBehavior#onMessage(T))] method.
 
-Here's the `AbstractOnMessageBehavior`-based implementation of the chat room protocol:
+Here's the `AbstractMatchingBehavior`-based implementation of the chat room protocol:
 
 Java
 : @@snip [OnMessageIntroTest.java](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/OnMessageIntroTest.java) {  #chatroom-behavior }
