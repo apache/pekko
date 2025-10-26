@@ -34,7 +34,7 @@ class FlowDoOnCancelSpec extends StreamSpec("""
         promise.success(Done)
       }
       Source(1 to 10)
-        .watchTermination()(Keep.right)
+        .watchTermination(Keep.right)
         .via(Flow[Int].doOnCancel(f))
         .toMat(Sink.cancelled)(Keep.left)
         .run()
