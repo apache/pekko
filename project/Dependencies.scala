@@ -34,7 +34,7 @@ object Dependencies {
   // https://github.com/aeron-io/aeron/blob/master/gradle/libs.versions.toml
   val agronaVersion = "2.3.0"
   val nettyVersion = "4.2.7.Final"
-  val logbackVersion = "1.5.19"
+  val logbackVersion = "1.5.20"
 
   val jacksonAnnotationsVersion = "2.20"
   val jacksonVersion2 = "2.20.0"
