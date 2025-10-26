@@ -2299,10 +2299,12 @@ private[pekko] final class StatefulMap[S, In, Out](create: () => S, f: (S, In) =
 
       private def resetStateAndPull(): Unit = {
         needInvokeOnCompleteCallback = false
-        onComplete(state)
+        onComplete(state) match {
+          case Some(elem) => push(out, elem)
+          case None       => pull(in)
+        }
         state = create()
         needInvokeOnCompleteCallback = true;
-        pull(in)
       }
 
       private def closeStateAndComplete(): Unit = {
