@@ -408,6 +408,27 @@ class FlowStatefulMapSpec extends StreamSpec {
       closedCounter.get() should ===(1)
     }
 
+    "will not call onComplete twice on cancel when `onComplete` fails" in {
+      val closedCounter = new AtomicInteger(0)
+      val (source, sink) = TestSource()
+        .viaMat(Flow[Int].statefulMap(() => 23)((s, elem) => (s, elem),
+          _ => {
+            closedCounter.incrementAndGet()
+            throw TE("boom")
+          }))(Keep.left)
+        .toMat(TestSink[Int]())(Keep.both)
+        .run()
+
+      EventFilter[TE](occurrences = 1).intercept {
+        sink.request(1)
+        source.sendNext(1)
+        sink.expectNext(1)
+        sink.cancel()
+        source.expectCancellation()
+      }
+      closedCounter.get() should ===(1)
+    }
+
     "will not call `onComplete` twice if `onComplete` fail on upstream complete" in {
       val closedCounter = new AtomicInteger(0)
       val (pub, sub) = TestSource[Int]()
@@ -499,41 +520,38 @@ class FlowStatefulMapSpec extends StreamSpec {
     source.expectCancellation()
   }
 
-  "not allow null state" in {
-    EventFilter[NullPointerException](occurrences = 1).intercept {
+  "allow null state" in {
+    EventFilter[NullPointerException](occurrences = 0).intercept {
       Source
         .single("one")
         .statefulMap(() => null: String)((s, t) => (s, t), _ => None)
         .runWith(Sink.head)
-        .failed
-        .futureValue shouldBe a[NullPointerException]
+        .futureValue shouldBe "one"
     }
   }
 
-  "not allow null next state" in {
-    EventFilter[NullPointerException](occurrences = 1).intercept {
+  "allow null next state" in {
+    EventFilter[NullPointerException](occurrences = 0).intercept {
       Source
         .single("one")
         .statefulMap(() => "state")((_, t) => (null, t), _ => None)
-        .runWith(Sink.seq)
-        .failed
-        .futureValue shouldBe a[NullPointerException]
+        .runWith(Sink.head)
+        .futureValue shouldBe "one"
     }
   }
 
-  "not allow null state on restart" in {
+  "allow null state on restart" in {
     val counter = new AtomicInteger(0)
-    EventFilter[NullPointerException](occurrences = 1).intercept {
+    EventFilter[NullPointerException](occurrences = 0).intercept {
       Source
         .single("one")
-        .statefulMap(() => if (counter.incrementAndGet() == 1) "state" else null)(
+        .statefulMap[String, String](() => if (counter.incrementAndGet() == 1) "state" else null)(
           (_, _) => throw TE("boom"),
           _ => None)
         .withAttributes(ActorAttributes.supervisionStrategy(Supervision.restartingDecider))
-        .runWith(Sink.head)
-        .failed
-        .futureValue shouldBe a[NullPointerException]
+        .runWith(Sink.seq)
+        .futureValue shouldBe Nil
     }
-  }
 
+  }
 }

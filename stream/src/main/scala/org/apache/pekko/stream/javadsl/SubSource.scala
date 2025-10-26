@@ -219,7 +219,7 @@ final class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    *
-   * @tparam S the type of the state
+   * @tparam S the type of the state, `null` is allowed as a valid state value
    * @tparam T the type of the output elements
    * @param create a function that creates the initial state
    * @param f a function that transforms the upstream element and the state into a pair of next state and output element
