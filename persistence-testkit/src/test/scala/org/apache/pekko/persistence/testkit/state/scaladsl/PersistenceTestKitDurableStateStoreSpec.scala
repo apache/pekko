@@ -17,15 +17,12 @@ import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import pekko.persistence.query.NoOffset
-import pekko.persistence.query.Sequence
-import pekko.persistence.query.UpdatedDurableState
+import pekko.persistence.query.{ DeletedDurableState, DurableStateChange, NoOffset, Sequence, UpdatedDurableState }
 import pekko.persistence.testkit.PersistenceTestKitDurableStateStorePlugin
 import pekko.stream.scaladsl.Sink
 import pekko.stream.testkit.scaladsl.TestSink
 
 import org.scalatest.wordspec.AnyWordSpecLike
-
 import com.typesafe.config.ConfigFactory
 
 object PersistenceTestKitDurableStateStoreSpec {
@@ -79,6 +76,26 @@ class PersistenceTestKitDurableStateStoreSpec
       secondStateChange.offset
         .asInstanceOf[Sequence]
         .value should be >= (firstStateChange.offset.asInstanceOf[Sequence].value)
+    }
+
+    "find tagged state changes for deleted object" in {
+      val stateStore = new PersistenceTestKitDurableStateStore[Record](classic.asInstanceOf[ExtendedActorSystem])
+      val record = Record(1, "name-1")
+      val tag = "tag-1"
+      val persistenceId = "record-1"
+      val testSink = stateStore.changes(tag, NoOffset).runWith(TestSink[DurableStateChange[Record]]())
+
+      stateStore.upsertObject(persistenceId, 1L, record, tag)
+      val updatedDurableState = testSink.request(1).expectNext().asInstanceOf[UpdatedDurableState[Record]]
+      updatedDurableState.persistenceId should be(persistenceId)
+      updatedDurableState.value should be(record)
+      updatedDurableState.revision should be(1L)
+
+      stateStore.deleteObject(persistenceId, 2L)
+      val deletedDurableState = testSink.request(1).expectNext().asInstanceOf[DeletedDurableState[Record]]
+      deletedDurableState.persistenceId should be(persistenceId)
+      deletedDurableState.revision should be(2L)
+      deletedDurableState.timestamp should be >= updatedDurableState.timestamp
     }
 
     "find tagged current state changes ordered by upsert" in {
