@@ -337,7 +337,6 @@ class FlowStatefulMapSpec extends StreamSpec {
             Some(buffer)
           })
         .filter(_.nonEmpty)
-        .alsoTo(Sink.foreach(println))
         .runWith(sink)
         .request(4)
         .expectNext(List("A"))
@@ -409,6 +408,27 @@ class FlowStatefulMapSpec extends StreamSpec {
       closedCounter.get() should ===(1)
     }
 
+    "will not call onComplete twice on cancel when `onComplete` fails" in {
+      val closedCounter = new AtomicInteger(0)
+      val (source, sink) = TestSource()
+        .viaMat(Flow[Int].statefulMap(() => 23)((s, elem) => (s, elem),
+          _ => {
+            closedCounter.incrementAndGet()
+            throw TE("boom")
+          }))(Keep.left)
+        .toMat(TestSink[Int]())(Keep.both)
+        .run()
+
+      EventFilter[TE](occurrences = 1).intercept {
+        sink.request(1)
+        source.sendNext(1)
+        sink.expectNext(1)
+        sink.cancel()
+        source.expectCancellation()
+      }
+      closedCounter.get() should ===(1)
+    }
+
     "will not call `onComplete` twice if `onComplete` fail on upstream complete" in {
       val closedCounter = new AtomicInteger(0)
       val (pub, sub) = TestSource[Int]()
@@ -455,4 +475,83 @@ class FlowStatefulMapSpec extends StreamSpec {
       .expectComplete()
   }
 
+  "will not call onComplete twice on cancel when `onComplete` fails" in {
+    val closedCounter = new AtomicInteger(0)
+    val (source, sink) = TestSource()
+      .viaMat(Flow[Int].statefulMap(() => 23)((s, elem) => (s, elem),
+        _ => {
+          closedCounter.incrementAndGet()
+          throw TE("boom")
+        }))(Keep.left)
+      .toMat(TestSink[Int]())(Keep.both)
+      .run()
+
+    EventFilter[TE](occurrences = 1).intercept {
+      sink.request(1)
+      source.sendNext(1)
+      sink.expectNext(1)
+      sink.cancel()
+      source.expectCancellation()
+    }
+    closedCounter.get() should ===(1)
+  }
+
+  "emit onClose return value before restarting" in {
+    val stateCounter = new AtomicInteger(0)
+    val (source, sink) = TestSource[String]()
+      .viaMat(Flow[String].statefulMap(() => stateCounter.incrementAndGet())({ (s, elem) =>
+          if (elem == "boom") throw TE("boom")
+          else (s, elem + s.toString)
+        }, _ => Some("onClose")))(Keep.left)
+      .withAttributes(ActorAttributes.supervisionStrategy(Supervision.restartingDecider))
+      .toMat(TestSink())(Keep.both)
+      .run()
+
+    sink.request(1)
+    source.sendNext("one")
+    sink.expectNext("one1")
+    sink.request(1)
+    source.sendNext("boom")
+    sink.expectNext("onClose")
+    sink.request(1)
+    source.sendNext("two")
+    sink.expectNext("two2")
+    sink.cancel()
+    source.expectCancellation()
+  }
+
+  "allow null state" in {
+    EventFilter[NullPointerException](occurrences = 0).intercept {
+      Source
+        .single("one")
+        .statefulMap(() => null: String)((s, t) => (s, t), _ => None)
+        .runWith(Sink.head)
+        .futureValue shouldBe "one"
+    }
+  }
+
+  "allow null next state" in {
+    EventFilter[NullPointerException](occurrences = 0).intercept {
+      Source
+        .single("one")
+        .statefulMap(() => "state")((_, t) => (null, t), _ => None)
+        .runWith(Sink.head)
+        .futureValue shouldBe "one"
+    }
+  }
+
+  "allow null state on restart" in {
+    val counter = new AtomicInteger(0)
+    EventFilter[NullPointerException](occurrences = 0).intercept {
+      Source
+        .single("one")
+        .statefulMap[String, String](() => if (counter.incrementAndGet() == 1) "state" else null)(
+          (_, _) => throw TE("boom"),
+          _ => None)
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.restartingDecider))
+        .runWith(Sink.seq)
+        .futureValue shouldBe Nil
+    }
+
+  }
 }
