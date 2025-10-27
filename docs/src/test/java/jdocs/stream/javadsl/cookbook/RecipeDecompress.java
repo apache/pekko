@@ -51,7 +51,7 @@ public class RecipeDecompress extends RecipeTest {
 
     // #decompress-gzip
     final Source<ByteString, NotUsed> decompressedStream =
-        compressedStream.via(Compression.gunzip(100));
+        compressedStream.via(Compression.gzipDecompress(100));
     // #decompress-gzip
 
     ByteString decompressedData =

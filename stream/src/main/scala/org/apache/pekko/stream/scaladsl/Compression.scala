@@ -45,7 +45,17 @@ object Compression {
    * Creates a Flow that decompresses a gzip-compressed stream of data.
    *
    * @param maxBytesPerChunk Maximum length of an output [[pekko.util.ByteString]] chunk.
+   * @since 1.3.0
    */
+  def gzipDecompress(maxBytesPerChunk: Int = MaxBytesPerChunkDefault): Flow[ByteString, ByteString, NotUsed] =
+    Flow[ByteString].via(new GzipDecompressor(maxBytesPerChunk)).named("gzipDecompress")
+
+  /**
+   * Creates a Flow that decompresses a gzip-compressed stream of data.
+   *
+   * @param maxBytesPerChunk Maximum length of an output [[pekko.util.ByteString]] chunk.
+   */
+  @deprecated("Use gzipDecompress instead", "Pekko 1.3.0")
   def gunzip(maxBytesPerChunk: Int = MaxBytesPerChunkDefault): Flow[ByteString, ByteString, NotUsed] =
     Flow[ByteString].via(new GzipDecompressor(maxBytesPerChunk)).named("gunzip")
 
