@@ -30,15 +30,6 @@ object Compression {
     scaladsl.Compression.gzipDecompress(maxBytesPerChunk).asJava
 
   /**
-   * Creates a Flow that decompresses gzip-compressed stream of data.
-   *
-   * @param maxBytesPerChunk Maximum length of the output [[pekko.util.ByteString]] chunk.
-   */
-  @deprecated("Use gzipDecompress instead", "Pekko 1.3.0")
-  def gunzip(maxBytesPerChunk: Int): Flow[ByteString, ByteString, NotUsed] =
-    gzipDecompress(maxBytesPerChunk)
-
-  /**
    * Creates a Flow that decompresses deflate-compressed stream of data.
    *
    * @param maxBytesPerChunk Maximum length of the output [[pekko.util.ByteString]] chunk.
