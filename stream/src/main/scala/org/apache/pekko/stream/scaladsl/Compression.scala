@@ -15,9 +15,12 @@ package org.apache.pekko.stream.scaladsl
 
 import java.util.zip.Deflater
 
+import com.github.luben.zstd._
+
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream.impl.io.compression._
+import pekko.stream.scaladsl.compression.ZstdDictionary
 import pekko.util.ByteString
 
 object Compression {
@@ -104,4 +107,68 @@ object Compression {
    */
   def inflate(maxBytesPerChunk: Int, nowrap: Boolean): Flow[ByteString, ByteString, NotUsed] =
     Flow[ByteString].via(new DeflateDecompressor(maxBytesPerChunk, nowrap)).named("inflate")
+
+  /**
+   * The minimum compression level supported by zstd
+   * @since 2.0.0
+   */
+  final val ZstdMinCompressionLevel: Int = Zstd.minCompressionLevel()
+
+  /**
+   * The maximum compression level supported by zstd
+   * @since 2.0.0
+   */
+  final val ZstdMaxCompressionLevel: Int = Zstd.maxCompressionLevel()
+
+  /**
+   * The zstd default compression level
+   * @since 2.0.0
+   */
+  final val ZstdDefaultCompressionLevel: Int = Zstd.defaultCompressionLevel()
+
+  /**
+   * @since 2.0.0
+   */
+  def zstd: Flow[ByteString, ByteString, NotUsed] = zstd(ZstdDefaultCompressionLevel, None)
+
+  /**
+   * Same as [[zstd]] with a custom level and an optional dictionary.
+   *
+   * @param level      The compression level, must be greater or equal to [[ZstdMinCompressionLevel]] and less than or equal
+   *                   to [[ZstdMaxCompressionLevel]]
+   * @param dictionary An optional dictionary that can be used for compression
+   * @since 2.0.0
+   */
+  def zstd(level: Int, dictionary: Option[ZstdDictionary]): Flow[ByteString, ByteString, NotUsed] = {
+    require(level <= ZstdMaxCompressionLevel && level >= ZstdMinCompressionLevel)
+    CompressionUtils.compressorFlow(() => new ZstdCompressor(level, dictionary.map(_.toImpl)))
+  }
+
+  /**
+   * Same as [[zstd]] with a custom level, optional dictionary and configurable flush mode.
+   *
+   * @param level      The compression level, must be greater or equal to [[ZstdMinCompressionLevel]] and less than or equal
+   *                   to [[ZstdMaxCompressionLevel]]
+   * @param dictionary An optional dictionary that can be used for compression
+   * @param autoFlush  If true will automatically flush after every single element in the stream.
+   * @since 2.0.0
+   */
+  def zstd(level: Int, dictionary: Option[ZstdDictionary], autoFlush: Boolean)
+      : Flow[ByteString, ByteString, NotUsed] = {
+    require(level <= ZstdMaxCompressionLevel && level >= ZstdMinCompressionLevel)
+    CompressionUtils.compressorFlow(() => new ZstdCompressor(level, dictionary.map(_.toImpl)), autoFlush)
+  }
+
+  /**
+   * The maximum block size used by zstd decompression
+   * @since 2.0.0
+   */
+  final val ZstdDecompressMaxBlockSize: Int = Zstd.blockSizeMax()
+
+  /**
+   * @since 2.0.0
+   */
+  def zstdDecompress(maxBytesPerChunk: Int = ZstdDecompressMaxBlockSize): Flow[ByteString, ByteString, NotUsed] =
+    Flow[ByteString].via(new ZstdDecompressor(maxBytesPerChunk)).named("zstdDecompress")
+
 }

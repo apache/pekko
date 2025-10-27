@@ -21,7 +21,7 @@ import pekko.stream.impl.io.compression.{ Compressor, DeflateCompressor }
 import pekko.stream.scaladsl.{ Compression, Flow }
 import pekko.util.ByteString
 
-class DeflateSpec extends CoderSpec("deflate") {
+class DeflateSpec extends CoderSpec[DataFormatException]("deflate") {
   import CompressionTestingTools._
 
   protected def newCompressor(): Compressor = new DeflateCompressor
