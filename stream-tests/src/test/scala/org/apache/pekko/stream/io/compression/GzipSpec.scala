@@ -15,14 +15,14 @@ package org.apache.pekko.stream.io.compression
 
 import java.io.{ InputStream, OutputStream }
 import java.nio.charset.StandardCharsets
-import java.util.zip.{ GZIPInputStream, GZIPOutputStream, ZipException }
+import java.util.zip.{ DataFormatException, GZIPInputStream, GZIPOutputStream, ZipException }
 
 import org.apache.pekko
 import pekko.stream.impl.io.compression.{ Compressor, GzipCompressor }
 import pekko.stream.scaladsl.{ Compression, Flow }
 import pekko.util.ByteString
 
-class GzipSpec extends CoderSpec("gzip") {
+class GzipSpec extends CoderSpec[DataFormatException]("gzip") {
   import CompressionTestingTools._
 
   protected def newCompressor(): Compressor = new GzipCompressor
