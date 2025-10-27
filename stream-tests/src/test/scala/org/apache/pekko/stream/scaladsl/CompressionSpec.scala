@@ -31,7 +31,8 @@ class CompressionSpec extends StreamSpec {
 
   "Gzip decompression" must {
     "be able to decompress a gzipped stream" in {
-      val source = Source.single(gzip(data)).via(Compression.gunzip()).map(_.decodeString(StandardCharsets.UTF_8))
+      val source =
+        Source.single(gzip(data)).via(Compression.gzipDecompress()).map(_.decodeString(StandardCharsets.UTF_8))
 
       val res = source.runFold("")(_ + _)
       res.futureValue should ===(data)

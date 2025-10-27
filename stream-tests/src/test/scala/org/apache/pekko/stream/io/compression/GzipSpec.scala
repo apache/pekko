@@ -28,7 +28,7 @@ class GzipSpec extends CoderSpec("gzip") {
   protected def newCompressor(): Compressor = new GzipCompressor
   protected val encoderFlow: Flow[ByteString, ByteString, Any] = Compression.gzip
   protected def decoderFlow(maxBytesPerChunk: Int): Flow[ByteString, ByteString, Any] =
-    Compression.gunzip(maxBytesPerChunk)
+    Compression.gzipDecompress(maxBytesPerChunk)
 
   protected def newDecodedInputStream(underlying: InputStream): InputStream =
     new GZIPInputStream(underlying)
