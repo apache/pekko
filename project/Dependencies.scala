@@ -385,7 +385,7 @@ object Dependencies {
 
   // pekko stream
 
-  lazy val stream = l ++= Seq[sbt.ModuleID](reactiveStreams, jspecify, TestDependencies.scalatest)
+  lazy val stream = l ++= Seq[sbt.ModuleID](reactiveStreams, jspecify, zstdJni, TestDependencies.scalatest)
 
   lazy val streamTyped = l ++= Seq[sbt.ModuleID](jspecify)
 
