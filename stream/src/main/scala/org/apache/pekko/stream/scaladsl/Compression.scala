@@ -15,6 +15,8 @@ package org.apache.pekko.stream.scaladsl
 
 import java.util.zip.Deflater
 
+import com.github.luben.zstd._
+
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream.impl.io.compression._
@@ -85,4 +87,28 @@ object Compression {
    */
   def inflate(maxBytesPerChunk: Int, nowrap: Boolean): Flow[ByteString, ByteString, NotUsed] =
     Flow[ByteString].via(new DeflateDecompressor(maxBytesPerChunk, nowrap)).named("inflate")
+
+  /**
+   * @since 2.0.0
+   */
+  def zstd: Flow[ByteString, ByteString, NotUsed] = zstd(Zstd.defaultCompressionLevel())
+
+  /**
+   * Same as [[zstd]] with a custom level and an optional dictionary.
+   * @param level The compression level, must be greater or equal to [[Zstd.minCompressionLevel]] and less than or equal
+   *              to [[Zstd.maxCompressionLevel]]
+   * @param dictionary An optional dictionary that can be used for compression
+   * @since 2.0.0
+   */
+  def zstd(level: Int, dictionary: Option[ZstdDictCompress] = None): Flow[ByteString, ByteString, NotUsed] = {
+    require(level <= Zstd.maxCompressionLevel() && level >= Zstd.minCompressionLevel())
+    CompressionUtils.compressorFlow(() => new ZstdCompressor(level, dictionary))
+  }
+
+  /**
+   * @since 2.0.0
+   */
+  def zstdDecompress(maxBytesPerChunk: Int = Zstd.blockSizeMax()): Flow[ByteString, ByteString, NotUsed] =
+    Flow[ByteString].via(new ZstdDecompressor(maxBytesPerChunk)).named("zstdDecompress")
+
 }
