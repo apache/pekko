@@ -36,6 +36,7 @@ import pekko.util.ccompat._
 
 @ccompatUsedUntil213
 object Serialization {
+  private final val PekkoPackagePrefix = "org.apache.pekko."
 
   /**
    * Tuple that represents mapping from Class to Serializer
@@ -318,9 +319,11 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
     serializerMap.get(clazz) match {
       case null => // bindings are ordered from most specific to least specific
         def unique(possibilities: immutable.Seq[(Class[_], Serializer)]): Boolean =
-          possibilities.size == 1 ||
-          (possibilities.forall(_._1.isAssignableFrom(possibilities(0)._1))) ||
-          (possibilities.forall(_._2 == possibilities(0)._2))
+          possibilities.size == 1 || {
+            val possibility = possibilities.head
+            possibilities.forall(_._1.isAssignableFrom(possibility._1)) ||
+            possibilities.forall(_._2 == possibility._2)
+          }
 
         val ser = {
           bindings.filter {
@@ -467,13 +470,14 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
   }
 
   private def warnUnexpectedNonPekkoSerializer(clazz: Class[_], ser: Serializer): Boolean = {
-    if (clazz.getName.startsWith("org.apache.pekko.") && !ser.getClass.getName.startsWith("org.apache.pekko.")) {
+    val clazzName = clazz.getName
+    if (clazzName.startsWith(PekkoPackagePrefix) && !ser.getClass.getName.startsWith(PekkoPackagePrefix)) {
       log.warning(
         "Using serializer [{}] for message [{}]. Note that this serializer " +
         "is not implemented by Apache Pekko. It's not recommended to replace serializers for messages " +
         "provided by Apache Pekko.",
         ser.getClass.getName,
-        clazz.getName)
+        clazzName)
       true
     } else false
   }
@@ -574,7 +578,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
 
     isJavaSerializationWarningEnabled &&
     (serializer.isInstanceOf[JavaSerializer] || serializer.isInstanceOf[DisabledJavaSerializer]) &&
-    !serializedClass.getName.startsWith("org.apache.pekko.") &&
+    !serializedClass.getName.startsWith(PekkoPackagePrefix) &&
     !serializedClass.getName.startsWith("java.lang.") &&
     !suppressWarningOnNonSerializationVerification(serializedClass)
   }
