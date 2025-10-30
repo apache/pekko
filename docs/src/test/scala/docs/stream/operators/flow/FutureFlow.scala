@@ -37,6 +37,7 @@ class FutureFlow {
         case (List(id: Int), tail) =>
           // base the Future flow creation on the first element
           tail.via(Flow.futureFlow(processingFlow(id)))
+        case _ => throw new RuntimeException() // compiler exhaustiveness check pleaser
       }
     // #base-on-first-element
   }
