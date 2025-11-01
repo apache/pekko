@@ -15,7 +15,7 @@ package org.apache.pekko.stream.scaladsl
 
 import java.util.concurrent.CompletionStage
 
-import scala.annotation.tailrec
+import scala.annotation.{ tailrec, varargs }
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.{ immutable, AbstractIterator }
 import scala.concurrent.{ Future, Promise }
@@ -421,6 +421,23 @@ object Source {
    */
   def single[T](element: T): Source[T, NotUsed] =
     fromGraph(new GraphStages.SingleSource(element))
+
+  /**
+   * Create a `Source` from the given elements.
+   *
+   * @since 1.3.0
+   */
+  @varargs
+  @SafeVarargs
+  def elements[T](elements: T*): Source[T, NotUsed] = {
+    if (elements.isEmpty) {
+      empty[T]
+    } else if (elements.length == 1) {
+      single(elements.head)
+    } else {
+      Source(elements)
+    }
+  }
 
   /**
    * Creates a `Source` from an array, if the array is empty, the stream is completed immediately,

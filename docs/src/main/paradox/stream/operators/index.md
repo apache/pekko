@@ -13,6 +13,7 @@ These built-in sources are available from @scala[`org.apache.pekko.stream.scalad
 |Source|<a name="completionstage"></a>@ref[completionStage](Source/completionStage.md)|Send the single value of the `CompletionStage` when it completes and there is demand.|
 |Source|<a name="completionstagesource"></a>@ref[completionStageSource](Source/completionStageSource.md)|Streams the elements of an asynchronous source once its given *completion* operator completes.|
 |Source|<a name="cycle"></a>@ref[cycle](Source/cycle.md)|Stream iterator in cycled manner.|
+|Source|<a name="elements"></a>@ref[elements](Source/elements.md)|Create a `Source` from the given elements.|
 |Source|<a name="empty"></a>@ref[empty](Source/empty.md)|Complete right away without ever emitting any elements.|
 |Source|<a name="failed"></a>@ref[failed](Source/failed.md)|Fail directly with a user specified exception.|
 |Source|<a name="from"></a>@ref[@scala[apply]@java[from]](Source/from.md)|Stream the values of an @scala[`immutable.Seq`]@java[`Iterable`].|
@@ -454,6 +455,7 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 * [dropRepeated](Source-or-Flow/dropRepeated.md)
 * [dropWhile](Source-or-Flow/dropWhile.md)
 * [dropWithin](Source-or-Flow/dropWithin.md)
+* [elements](Source/elements.md)
 * [empty](Source/empty.md)
 * [exists](Sink/exists.md)
 * [expand](Source-or-Flow/expand.md)
