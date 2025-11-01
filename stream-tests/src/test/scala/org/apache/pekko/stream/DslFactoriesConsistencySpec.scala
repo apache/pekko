@@ -64,6 +64,7 @@ class DslFactoriesConsistencySpec extends AnyWordSpec with Matchers {
       (classOf[scala.collection.Seq[_]],                   classOf[java.util.List[_]]) ::
       (classOf[scala.collection.immutable.Seq[_]],         classOf[java.util.List[_]]) ::
       (classOf[scala.collection.immutable.Set[_]],         classOf[java.util.Set[_]]) ::
+      (classOf[scala.Option[_]],                           classOf[java.util.Optional[_]]) ::
       (classOf[Boolean],                                   classOf[pekko.stream.javadsl.AsPublisher]) ::
       (classOf[scala.Function0[_]],                        classOf[pekko.japi.function.Creator[_]]) ::
       (classOf[scala.Function0[_]],                        classOf[java.util.concurrent.Callable[_]]) ::

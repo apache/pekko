@@ -22,6 +22,7 @@ These built-in sources are available from @scala[`org.apache.pekko.stream.scalad
 |Source|<a name="fromfuturesource"></a>@ref[fromFutureSource](Source/fromFutureSource.md)|Deprecated by @ref[`Source.futureSource`](Source/futureSource.md).|
 |Source|<a name="fromiterator"></a>@ref[fromIterator](Source/fromIterator.md)|Stream the values from an `Iterator`, requesting the next value when there is demand.|
 |Source|<a name="fromjavastream"></a>@ref[fromJavaStream](Source/fromJavaStream.md)|Stream the values from a Java 8 `Stream`, requesting the next value when there is demand.|
+|Source|<a name="fromoption"></a>@ref[fromOption](Source/fromOption.md)|Create a `Source` from an @scala[`Option[T]`] @java[`Optional<T>`] value, emitting the value if it is present.|
 |Source|<a name="frompublisher"></a>@ref[fromPublisher](Source/fromPublisher.md)|Integration with Reactive Streams, subscribes to a @javadoc[Publisher](java.util.concurrent.Flow.Publisher).|
 |Source|<a name="fromsourcecompletionstage"></a>@ref[fromSourceCompletionStage](Source/fromSourceCompletionStage.md)|Deprecated by @ref[`Source.completionStageSource`](Source/completionStageSource.md).|
 |Source|<a name="future"></a>@ref[future](Source/future.md)|Send the single value of the `Future` when it completes and there is demand.|
@@ -377,6 +378,7 @@ Flow operators to (de)compress.
 |Compression|<a name="deflate"></a>@ref[deflate](Compression/deflate.md)|Creates a flow that deflate-compresses a stream of ByteStrings. |
 |Compression|<a name="gunzip"></a>@ref[gunzip](Compression/gunzip.md)|Creates a flow that gzip-decompresses a stream of ByteStrings.  |
 |Compression|<a name="gzip"></a>@ref[gzip](Compression/gzip.md)|Creates a flow that gzip-compresses a stream of ByteStrings.  |
+|Compression|<a name="gzipdecompress"></a>@ref[gzipDecompress](Compression/gzipDecompress.md)|Creates a flow that gzip-decompresses a stream of ByteStrings.  |
 |Compression|<a name="inflate"></a>@ref[inflate](Compression/inflate.md)|Creates a flow that deflate-decompresses a stream of ByteStrings. |
 
 ## Error handling
@@ -498,6 +500,7 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 * [fromJavaStream](StreamConverters/fromJavaStream.md)
 * [fromMaterializer](Source-or-Flow/fromMaterializer.md)
 * [fromMaterializer](Sink/fromMaterializer.md)
+* [fromOption](Source/fromOption.md)
 * [fromOutputStream](StreamConverters/fromOutputStream.md)
 * [fromPath](FileIO/fromPath.md)
 * [fromPublisher](Source/fromPublisher.md)
@@ -516,8 +519,9 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 * [groupedWeighted](Source-or-Flow/groupedWeighted.md)
 * [groupedWeightedWithin](Source-or-Flow/groupedWeightedWithin.md)
 * [groupedWithin](Source-or-Flow/groupedWithin.md)
-* [gzipDecompress](Compression/gzipDecompress.md)
+* [gunzip](Compression/gunzip.md)
 * [gzip](Compression/gzip.md)
+* [gzipDecompress](Compression/gzipDecompress.md)
 * [head](Sink/head.md)
 * [headOption](Sink/headOption.md)
 * [idleTimeout](Source-or-Flow/idleTimeout.md)

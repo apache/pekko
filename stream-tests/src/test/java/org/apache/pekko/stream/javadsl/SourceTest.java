@@ -1870,4 +1870,21 @@ public class SourceTest extends StreamTest {
         .expectNext(0)
         .expectComplete();
   }
+
+  @Test
+  public void mustBeAbleToCreateFromOption() throws Exception {
+    final Integer value =
+        Source.fromOption(Optional.of(42))
+            .runWith(Sink.head(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS);
+    assertEquals((Integer) 42, value);
+    //
+    final Optional<Integer> empty =
+        Source.fromOption(Optional.<Integer>empty())
+            .runWith(Sink.headOption(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS);
+    assertEquals(Optional.empty(), empty);
+  }
 }

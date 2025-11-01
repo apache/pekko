@@ -204,6 +204,14 @@ object Source {
     new ArraySource[T](array)))
 
   /**
+   * Create a `Source` from an `Optional` value, emitting the value if it is present.
+   *
+   * @since 1.3.0
+   */
+  def fromOption[T](optional: Optional[T]): Source[T, NotUsed] =
+    if (optional.isPresent) single(optional.get()) else empty()
+
+  /**
    * Creates [[Source]] that represents integer values in range ''[start;end]'', step equals to 1.
    * It allows to create `Source` out of range as simply as on Scala `Source(1 to N)`
    *
