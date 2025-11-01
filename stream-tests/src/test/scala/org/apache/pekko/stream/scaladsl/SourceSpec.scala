@@ -561,4 +561,21 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
         .expectComplete()
     }
   }
+
+  "Source from option" must {
+    "produce one element when Some" in {
+      Source.fromOption(Some(42))
+        .runWith(TestSink[Int]())
+        .request(1)
+        .expectNext(42)
+        .expectComplete()
+    }
+
+    "complete immediately when None" in {
+      Source.fromOption(None)
+        .runWith(TestSink[Int]())
+        .request(1)
+        .expectComplete()
+    }
+  }
 }
