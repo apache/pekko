@@ -248,6 +248,24 @@ object Source {
     new Source(scaladsl.Source.single(element))
 
   /**
+   * Create a `Source` from the given elements.
+   *
+   * @since 1.3.0
+   */
+  @varargs
+  @SafeVarargs
+  @SuppressWarnings(Array("varargs"))
+  def items[T](items: T*): javadsl.Source[T, NotUsed] = {
+    if (items.isEmpty) {
+      empty()
+    } else if (items.length == 1) {
+      single(items.head)
+    } else {
+      new Source(scaladsl.Source(items))
+    }
+  }
+
+  /**
    * Create a `Source` that will continually emit the given element.
    */
   def repeat[T](element: T): Source[T, NotUsed] =

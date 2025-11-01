@@ -23,6 +23,7 @@ These built-in sources are available from @scala[`org.apache.pekko.stream.scalad
 |Source|<a name="frompublisher"></a>@ref[fromPublisher](Source/fromPublisher.md)|Integration with Reactive Streams, subscribes to a @javadoc[Publisher](java.util.concurrent.Flow.Publisher).|
 |Source|<a name="future"></a>@ref[future](Source/future.md)|Send the single value of the `Future` when it completes and there is demand.|
 |Source|<a name="futuresource"></a>@ref[futureSource](Source/futureSource.md)|Streams the elements of the given future source once it successfully completes.|
+|Source|<a name="items"></a>@ref[items](Source/items.md)|Create a `Source` from the given items.|
 |Source|<a name="iterate"></a>@ref[iterate](Source/iterate.md)|Creates a sequential `Source` by iterating with the given predicate, function and seed.|
 |Source|<a name="lazycompletionstage"></a>@ref[lazyCompletionStage](Source/lazyCompletionStage.md)|Defers creation of a future of a single element source until there is demand.|
 |Source|<a name="lazycompletionstagesource"></a>@ref[lazyCompletionStageSource](Source/lazyCompletionStageSource.md)|Defers creation of a future source until there is demand.|
@@ -512,6 +513,7 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 * [interleave](Source-or-Flow/interleave.md)
 * [interleaveAll](Source-or-Flow/interleaveAll.md)
 * [intersperse](Source-or-Flow/intersperse.md)
+* [items](Source/items.md)
 * [iterate](Source/iterate.md)
 * [javaCollector](StreamConverters/javaCollector.md)
 * [javaCollectorParallelUnordered](StreamConverters/javaCollectorParallelUnordered.md)
