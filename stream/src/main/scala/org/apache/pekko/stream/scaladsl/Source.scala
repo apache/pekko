@@ -481,6 +481,16 @@ object Source {
     fromGraph(new GraphStages.SingleSource(element))
 
   /**
+   * Create a `Source` from an `Option` value, emitting the value if it is defined.
+   *
+   * @since 1.3.0
+   */
+  def fromOption[T](option: Option[T]): Source[T, NotUsed] = option match {
+    case Some(value) => single(value)
+    case None        => empty
+  }
+
+  /**
    * Create a `Source` that will continually emit the given element.
    */
   def repeat[T](element: T): Source[T, NotUsed] = {
