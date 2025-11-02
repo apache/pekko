@@ -29,7 +29,7 @@ import pekko.annotation.InternalApi
 import pekko.stream._
 import pekko.stream.impl._
 import pekko.stream.impl.Stages.DefaultAttributes
-import pekko.stream.impl.fusing.{ GraphStages, IterableSource, LazyFutureSource, LazySingleSource }
+import pekko.stream.impl.fusing.{ ArraySource, GraphStages, IterableSource, LazyFutureSource, LazySingleSource }
 import pekko.stream.impl.fusing.GraphStages._
 import pekko.stream.stage.GraphStageWithMaterializedValue
 import pekko.util.ConstantFun
@@ -479,6 +479,22 @@ object Source {
    */
   def single[T](element: T): Source[T, NotUsed] =
     fromGraph(new GraphStages.SingleSource(element))
+
+  /**
+   * Creates a `Source` from an array, if the array is empty, the stream is completed immediately,
+   * otherwise, every element of the array will be emitted sequentially.
+   *
+   * @since 1.3.0
+   */
+  def apply[T](array: Array[T]): Source[T, NotUsed] = {
+    if (array.length == 0) {
+      empty
+    } else if (array.length == 1) {
+      single(array(0))
+    } else {
+      Source.fromGraph(new ArraySource[T](array))
+    }
+  }
 
   /**
    * Create a `Source` from an `Option` value, emitting the value if it is defined.

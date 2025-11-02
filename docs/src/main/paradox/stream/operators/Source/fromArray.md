@@ -6,7 +6,7 @@ Stream the values of an `array`.
 
 ## Signature
 
-@apidoc[Source.from](Source$) { java="#fromArray(java.lang.Object[])" }
+@apidoc[Source.fromArray](Source$) { scala="#apply[T](array:scala.Array[T]):org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.NotUsed]" java="#fromArray(java.lang.Object[])" }
 
 ## Description
 
