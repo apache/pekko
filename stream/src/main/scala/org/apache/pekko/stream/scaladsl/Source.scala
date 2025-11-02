@@ -406,6 +406,21 @@ object Source {
     fromGraph(new IterableSource[T](iterable)).withAttributes(DefaultAttributes.iterableSource)
 
   /**
+   * Creates a `Source` from an array, if the array is empty, the stream is completed immediately,
+   * otherwise, every element of the array will be emitted sequentially.
+   *
+   * @since 1.3.0
+   */
+  def apply[T](array: Array[T]): Source[T, NotUsed] = {
+    if (array.length == 0)
+      empty
+    else if (array.length == 1)
+      single(array(0))
+    else
+      Source.fromGraph(new ArraySource[T](array))
+  }
+
+  /**
    * Elements are emitted periodically with the specified interval.
    * The tick element will be delivered to downstream consumers that has requested any elements.
    * If a consumer has not requested any elements at the point in time when the tick
@@ -421,22 +436,6 @@ object Source {
    */
   def single[T](element: T): Source[T, NotUsed] =
     fromGraph(new GraphStages.SingleSource(element))
-
-  /**
-   * Creates a `Source` from an array, if the array is empty, the stream is completed immediately,
-   * otherwise, every element of the array will be emitted sequentially.
-   *
-   * @since 1.3.0
-   */
-  def fromArray[T](array: Array[T]): Source[T, NotUsed] = {
-    if (array.length == 0) {
-      empty
-    } else if (array.length == 1) {
-      single(array(0))
-    } else {
-      Source.fromGraph(new ArraySource[T](array))
-    }
-  }
 
   /**
    * Create a `Source` from an `Option` value, emitting the value if it is defined.

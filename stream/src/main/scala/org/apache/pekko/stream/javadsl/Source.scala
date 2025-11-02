@@ -199,7 +199,7 @@ object Source {
    *
    * @since 1.1.0
    */
-  def fromArray[T](array: Array[T]): javadsl.Source[T, NotUsed] = new Source(scaladsl.Source.fromArray(array))
+  def fromArray[T](array: Array[T]): javadsl.Source[T, NotUsed] = new Source(scaladsl.Source(array))
 
   /**
    * Create a `Source` from an `Optional` value, emitting the value if it is present.
