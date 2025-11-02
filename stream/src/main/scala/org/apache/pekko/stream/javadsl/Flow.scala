@@ -37,6 +37,7 @@ import pekko.japi.Pair
 import pekko.japi.function
 import pekko.japi.function.Creator
 import pekko.stream.{ javadsl, _ }
+import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.fusing.{ StatefulMapConcat, ZipWithIndexJava }
 import pekko.util.ConstantFun
 import pekko.util.FutureConverters._
@@ -747,6 +748,27 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    */
   def map[T](f: function.Function[Out, T]): javadsl.Flow[In, T, Mat] =
     new Flow(delegate.map(f.apply))
+
+  /**
+   * Transform each input element into an `Optional` of output element.
+   * If the mapping function returns `Optional.empty()`, the element is filtered out.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * '''Emits when''' the mapping function returns `Optional`
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @since 1.3.0
+   */
+  def mapOption[T](f: function.Function[Out, Optional[T]]): javadsl.Flow[In, T, Mat] =
+    new Flow(delegate.map(f(_)).collect {
+      case e if e.isPresent => e.get()
+    }.addAttributes(DefaultAttributes.mapOption))
 
   /**
    * This is a simplified version of `wireTap(Sink)` that takes only a simple procedure.

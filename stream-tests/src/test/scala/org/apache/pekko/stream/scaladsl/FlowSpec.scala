@@ -645,6 +645,15 @@ class FlowSpec extends StreamSpec(ConfigFactory.parseString("pekko.actor.debug.r
 
       source.runWith(Sink.head).futureValue should ===(List(2, 4, 6))
     }
+
+    "mapOption" in {
+      val flow = Flow[Int].mapOption {
+        case x if x % 2 == 0 => Some(x * 2)
+        case _               => None
+      }
+      val result = Source(1 to 5).via(flow).runWith(Sink.seq).futureValue
+      result should ===(Seq(4, 8))
+    }
   }
 
   object TestException extends RuntimeException with NoStackTrace
