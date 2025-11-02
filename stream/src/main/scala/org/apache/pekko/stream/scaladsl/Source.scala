@@ -428,7 +428,7 @@ object Source {
    *
    * @since 1.3.0
    */
-  def fromArray[T](array: Array[T]): Source[T, NotUsed] = {
+  def apply[T](array: Array[T]): Source[T, NotUsed] = {
     if (array.length == 0) {
       empty
     } else if (array.length == 1) {
