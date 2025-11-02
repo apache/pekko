@@ -15,6 +15,7 @@ package org.apache.pekko.serialization.jackson3
 
 import java.util.Optional
 import java.util.concurrent.ConcurrentHashMap
+
 import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.jdk.CollectionConverters._
@@ -22,7 +23,6 @@ import scala.jdk.OptionConverters._
 import scala.util.{ Failure, Success }
 
 import com.fasterxml.jackson.annotation.{ JsonAutoDetect, PropertyAccessor }
-import com.typesafe.config.Config
 import tools.jackson.core.{ StreamReadConstraints, StreamReadFeature, StreamWriteConstraints, StreamWriteFeature }
 import tools.jackson.core.json.{ JsonFactory, JsonReadFeature, JsonWriteFeature }
 import tools.jackson.core.util.{ BufferRecycler, JsonRecyclerPools, RecyclerPool }
@@ -37,6 +37,7 @@ import tools.jackson.databind.cfg.{ DateTimeFeature, EnumFeature, MapperBuilder 
 import tools.jackson.databind.introspect.VisibilityChecker
 import tools.jackson.databind.json.JsonMapper
 import tools.jackson.dataformat.cbor.{ CBORFactory, CBORMapper }
+
 import org.apache.pekko
 import pekko.actor.{
   ActorSystem,
@@ -50,6 +51,8 @@ import pekko.actor.{
 import pekko.actor.setup.Setup
 import pekko.annotation.InternalStableApi
 import pekko.event.{ Logging, LoggingAdapter }
+
+import com.typesafe.config.Config
 
 object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvider] with ExtensionIdProvider {
   override def get(system: ActorSystem): JacksonObjectMapperProvider = super.get(system)

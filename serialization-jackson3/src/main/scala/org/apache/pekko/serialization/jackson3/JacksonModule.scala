@@ -18,8 +18,8 @@ import tools.jackson.core.Version
 import tools.jackson.core.util.VersionUtil
 import tools.jackson.databind.BeanDescription
 import tools.jackson.databind.DeserializationConfig
-import tools.jackson.databind.JavaType
 import tools.jackson.databind.JacksonModule.SetupContext
+import tools.jackson.databind.JavaType
 import tools.jackson.databind.SerializationConfig
 import tools.jackson.databind.ValueDeserializer
 import tools.jackson.databind.ValueSerializer

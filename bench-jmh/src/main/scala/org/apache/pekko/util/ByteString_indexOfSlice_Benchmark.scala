@@ -13,8 +13,8 @@
 
 package org.apache.pekko.util
 
-import java.util.concurrent.TimeUnit
 import java.nio.charset.StandardCharsets
+import java.util.concurrent.TimeUnit
 
 import org.openjdk.jmh.annotations._
 
