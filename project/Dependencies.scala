@@ -40,7 +40,7 @@ object Dependencies {
   val logbackVersion = "1.3.15"
 
   val jacksonAnnotationsVersion = "2.20"
-  val jacksonCoreVersion = "2.20.0"
+  val jacksonCoreVersion = "2.20.1"
   val jacksonDatabindVersion = jacksonCoreVersion
 
   val scala212Version = "2.12.20"
