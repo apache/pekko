@@ -19,12 +19,12 @@ import java.util.function.BiFunction
 import java.util.function.Predicate
 import java.util.function.Supplier
 
+import scala.jdk.FunctionConverters._
+
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.persistence.typed.state.internal._
 import pekko.util.OptionVal
-
-import scala.jdk.FunctionConverters._
 
 /**
  * FunctionalInterface for reacting on commands

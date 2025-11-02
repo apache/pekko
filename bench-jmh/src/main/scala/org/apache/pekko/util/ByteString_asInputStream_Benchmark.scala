@@ -20,9 +20,10 @@ package org.apache.pekko.util
 import java.io.InputStream
 import java.util.concurrent.TimeUnit
 
-import org.apache.pekko.io.UnsynchronizedByteArrayInputStream
 import org.openjdk.jmh.annotations._
 import org.openjdk.jmh.infra.Blackhole
+
+import org.apache.pekko.io.UnsynchronizedByteArrayInputStream
 
 /**
  * Compares ByteString.asInputStream and new ByteStreamArray(ByteString.toArray).

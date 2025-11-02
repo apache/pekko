@@ -17,17 +17,20 @@
 
 package org.apache.pekko.stream
 
-import com.typesafe.config.ConfigFactory
+import java.util.concurrent.{ CountDownLatch, TimeUnit }
+
+import scala.concurrent.Await
+import scala.concurrent.duration._
+
+import org.openjdk.jmh.annotations._
+
 import org.apache.pekko.NotUsed
 import org.apache.pekko.actor.ActorSystem
 import org.apache.pekko.remote.artery.{ BenchTestSource, LatchSink }
 import org.apache.pekko.stream.scaladsl._
 import org.apache.pekko.stream.testkit.scaladsl.StreamTestKit
-import org.openjdk.jmh.annotations._
 
-import java.util.concurrent.{ CountDownLatch, TimeUnit }
-import scala.concurrent.Await
-import scala.concurrent.duration._
+import com.typesafe.config.ConfigFactory
 
 object BroadcastHubBenchmark {
   final val OperationsPerInvocation = 100000
