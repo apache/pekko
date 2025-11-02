@@ -1088,6 +1088,26 @@ trait FlowOps[+Out, +Mat] {
   def map[T](f: Out => T): Repr[T] = via(Map(f))
 
   /**
+   * Transform each input element into an `Option` of output element.
+   * If the function returns `Some(value)`, that value is emitted downstream.
+   * If the function returns `None`, no element is emitted downstream.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * '''Emits when''' the mapping function returns `Some(value)`
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @since 1.3.0
+   */
+  def mapOption[T](f: Out => Option[T]): Repr[T] =
+    map(f).collect { case Some(value) => value }.addAttributes(DefaultAttributes.mapOption)
+
+  /**
    * This is a simplified version of `wireTap(Sink)` that takes only a simple function.
    * Elements will be passed into this "side channel" function, and any of its results will be ignored.
    *
