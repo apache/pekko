@@ -1887,4 +1887,15 @@ public class SourceTest extends StreamTest {
             .get(3, TimeUnit.SECONDS);
     assertEquals(Optional.empty(), empty);
   }
+
+  @Test
+  public void mustBeAbleToMapOption() throws Exception {
+    final List<Integer> values =
+        Source.from(Arrays.asList(1, 2, 3, 4, 5))
+            .mapOption(i -> i % 2 == 0 ? Optional.of(i * 10) : Optional.empty())
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS);
+    assertEquals(Arrays.asList(20, 40), values);
+  }
 }
