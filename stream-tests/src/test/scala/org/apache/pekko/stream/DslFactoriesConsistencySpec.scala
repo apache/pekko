@@ -55,6 +55,7 @@ class DslFactoriesConsistencySpec extends AnyWordSpec with Matchers {
     ("apply" -> "fromGraph") ::
     ("apply" -> "fromIterator") ::
     ("apply" -> "fromFunctions") ::
+    ("apply" -> "fromArray") ::
     Nil
 
   // format: OFF

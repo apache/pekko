@@ -62,6 +62,18 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
       c.expectComplete()
     }
 
+    "product elements with Array" in {
+      val p = Source(Array(1, 2, 3)).runWith(Sink.asPublisher(false))
+      val c = TestSubscriber.manualProbe[Int]()
+      p.subscribe(c)
+      val sub = c.expectSubscription()
+      sub.request(3)
+      c.expectNext(1)
+      c.expectNext(2)
+      c.expectNext(3)
+      c.expectComplete()
+    }
+
     "reject later subscriber" in {
       val p = Source.single(1).runWith(Sink.asPublisher(false))
       val c1 = TestSubscriber.manualProbe[Int]()
