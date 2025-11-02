@@ -30,6 +30,7 @@ import pekko.stream.Attributes._
 
     // stage specific default attributes
     val map = name("map")
+    val mapOption = name("mapOption")
     val contramap = name("contramap")
     val dimap = name("dimap")
     val log = name("log")

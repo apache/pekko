@@ -176,6 +176,7 @@ depending on being backpressured by downstream or not.
 |Source/Flow|<a name="logwithmarker"></a>@ref[logWithMarker](Source-or-Flow/logWithMarker.md)|Log elements flowing through the stream as well as completion and erroring.|
 |Source/Flow|<a name="map"></a>@ref[map](Source-or-Flow/map.md)|Transform each element in the stream by calling a mapping function with it and passing the returned value downstream.|
 |Source/Flow|<a name="mapconcat"></a>@ref[mapConcat](Source-or-Flow/mapConcat.md)|Transform each element into zero or more elements that are individually passed downstream.|
+|Source/Flow|<a name="mapoption"></a>@ref[mapOption](Source-or-Flow/mapOption.md)|Transform each element in the stream by calling a mapping function with it and emits the contained item if present.|
 |Source/Flow|<a name="mapwithresource"></a>@ref[mapWithResource](Source-or-Flow/mapWithResource.md)|Map elements with the help of a resource that can be opened, transform each element (in a blocking way) and closed.|
 |Source/Flow|<a name="materializeintosource"></a>@ref[materializeIntoSource](Source-or-Flow/materializeIntoSource.md)|Materializes this Graph, immediately returning its materialized values into a new Source.|
 |Source/Flow|<a name="optionalvia"></a>@ref[optionalVia](Source-or-Flow/optionalVia.md)|For a stream containing optional elements, transforms each element by applying the given `viaFlow` and passing the value downstream as an optional value.|
@@ -540,6 +541,7 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 * [mapAsyncUnordered](Source-or-Flow/mapAsyncUnordered.md)
 * [mapConcat](Source-or-Flow/mapConcat.md)
 * [mapError](Source-or-Flow/mapError.md)
+* [mapOption](Source-or-Flow/mapOption.md)
 * [mapWithResource](Source-or-Flow/mapWithResource.md)
 * [materializeIntoSource](Source-or-Flow/materializeIntoSource.md)
 * [maybe](Source/maybe.md)

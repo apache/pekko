@@ -578,4 +578,18 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
         .expectComplete()
     }
   }
+
+  "Source mapOption" must {
+    "map and filter elements" in {
+      Source(1 to 5)
+        .mapOption { n =>
+          if (n % 2 == 0) Some(n * 10)
+          else None
+        }
+        .runWith(TestSink[Int]())
+        .request(5)
+        .expectNext(20, 40)
+        .expectComplete()
+    }
+  }
 }
