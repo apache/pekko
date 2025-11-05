@@ -30,9 +30,9 @@ import pekko.testkit.TestProbe
 import org.scalatest.concurrent.Eventually
 import org.scalatest.time.Span
 
+// pekko.remote.artery.propagate-harmless-quarantine-events defaults to off since Pekko 2.0.0
 class HarmlessQuarantineSpec extends ArteryMultiNodeSpec("""
   pekko.loglevel=INFO
-  pekko.remote.artery.propagate-harmless-quarantine-events = off
   pekko.remote.artery.advanced {
     stop-idle-outbound-after = 1 s
     connection-timeout = 2 s
