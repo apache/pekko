@@ -333,8 +333,8 @@ object BasicPersistentBehaviorCompileOnly {
     eventHandler = (state, evt) => throw new NotImplementedError("TODO: process the event return the next state"))
     .eventAdapter(new WrapperEventAdapter[Event])
     // #install-event-adapter
-    //#custom-stash-buffer
+    // #custom-stash-buffer
     .withStashCapacity(100)
-  //#custom-stash-buffer
+  // #custom-stash-buffer
 
 }
