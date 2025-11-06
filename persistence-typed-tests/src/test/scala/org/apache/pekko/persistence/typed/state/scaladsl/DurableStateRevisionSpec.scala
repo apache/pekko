@@ -136,5 +136,38 @@ class DurableStateRevisionSpec
       probe.expectMessage("2 onCommand") // second command
       probe.expectMessage("3 thenRun")
     }
+
+    "discard when custom stash has reached limit with default dropped setting" in {
+      val customLimit = 100
+      val probe = TestProbe[AnyRef]()
+      system.toClassic.eventStream.subscribe(probe.ref.toClassic, classOf[Dropped])
+      val durableState = spawn(behaviorWithCustomStashSize(PersistenceId.ofUniqueId("pid-4"), probe.ref, customLimit))
+      probe.expectMessage("0 onRecoveryComplete")
+
+      durableState ! "stash"
+
+      probe.expectMessage("0 stash")
+
+      LoggingTestKit.warn("Stash buffer is full, dropping message").expect {
+        (0 to customLimit).foreach { _ =>
+          durableState ! s"cmd"
+        }
+      }
+      probe.expectMessageType[Dropped]
+
+      durableState ! "unstash"
+      probe.expectMessage("1 unstash")
+
+      val lastSequenceId = 2
+      (lastSequenceId until customLimit + lastSequenceId).foreach { n =>
+        probe.expectMessage(s"$n onCommand")
+        probe.expectMessage(s"${n + 1} thenRun") // after persisting
+      }
+
+      durableState ! s"cmd"
+      probe.expectMessage(s"${102} onCommand")
+      probe.expectMessage(s"${103} thenRun")
+
+    }
   }
 }
