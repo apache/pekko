@@ -124,7 +124,7 @@ class EventSourcedBehaviorWatchSpec
       }
 
       Behaviors.setup[Command] { context =>
-        val settings = EventSourcedSettings(context.system, "", "")
+        val settings = EventSourcedSettings(context.system, "", "", None)
 
         setup(signalHandler, settings, context).onSignal("", RecoveryCompleted, false) shouldEqual true
         setup(PartialFunction.empty, settings, context).onSignal("", RecoveryCompleted, false) shouldEqual false
