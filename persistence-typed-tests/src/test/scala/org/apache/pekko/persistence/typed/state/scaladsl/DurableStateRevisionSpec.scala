@@ -15,11 +15,13 @@ package org.apache.pekko.persistence.typed.state.scaladsl
 
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
+import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.testkit.typed.scaladsl.TestProbe
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.Behavior
-import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors }
+import pekko.actor.typed.scaladsl.adapter._
 import pekko.persistence.testkit.PersistenceTestKitDurableStateStorePlugin
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.state.RecoveryCompleted
@@ -42,38 +44,45 @@ class DurableStateRevisionSpec
     with AnyWordSpecLike
     with LogCapturing {
 
+  private def durableState(ctx: ActorContext[String], pid: PersistenceId, probe: ActorRef[String]) = {
+    DurableStateBehavior[String, String](
+      pid,
+      "",
+      (state, command) =>
+        state match {
+          case "stashing" =>
+            command match {
+              case "unstash" =>
+                probe ! s"${DurableStateBehavior.lastSequenceNumber(ctx)} unstash"
+                Effect.persist("normal").thenUnstashAll()
+              case _ =>
+                Effect.stash()
+            }
+          case _ =>
+            command match {
+              case "cmd" =>
+                probe ! s"${DurableStateBehavior.lastSequenceNumber(ctx)} onCommand"
+                Effect.persist("state").thenRun(_ => probe ! s"${DurableStateBehavior.lastSequenceNumber(ctx)} thenRun")
+              case "stash" =>
+                probe ! s"${DurableStateBehavior.lastSequenceNumber(ctx)} stash"
+                Effect.persist("stashing")
+              case "snapshot" =>
+                Effect.persist("snapshot")
+            }
+        }).receiveSignal {
+      case (_, RecoveryCompleted) =>
+        probe ! s"${DurableStateBehavior.lastSequenceNumber(ctx)} onRecoveryComplete"
+    }
+  }
+
   private def behavior(pid: PersistenceId, probe: ActorRef[String]): Behavior[String] =
-    Behaviors.setup(ctx =>
-      DurableStateBehavior[String, String](
-        pid,
-        "",
-        (state, command) =>
-          state match {
-            case "stashing" =>
-              command match {
-                case "unstash" =>
-                  probe ! s"${DurableStateBehavior.lastSequenceNumber(ctx)} unstash"
-                  Effect.persist("normal").thenUnstashAll()
-                case _ =>
-                  Effect.stash()
-              }
-            case _ =>
-              command match {
-                case "cmd" =>
-                  probe ! s"${DurableStateBehavior.lastSequenceNumber(ctx)} onCommand"
-                  Effect
-                    .persist("state")
-                    .thenRun(_ => probe ! s"${DurableStateBehavior.lastSequenceNumber(ctx)} thenRun")
-                case "stash" =>
-                  probe ! s"${DurableStateBehavior.lastSequenceNumber(ctx)} stash"
-                  Effect.persist("stashing")
-                case "snapshot" =>
-                  Effect.persist("snapshot")
-              }
-          }).receiveSignal {
-        case (_, RecoveryCompleted) =>
-          probe ! s"${DurableStateBehavior.lastSequenceNumber(ctx)} onRecoveryComplete"
-      })
+    Behaviors.setup(ctx => durableState(ctx, pid, probe))
+
+  private def behaviorWithCustomStashSize(
+      pid: PersistenceId,
+      probe: ActorRef[String],
+      customStashSize: Int): Behavior[String] =
+    Behaviors.setup(ctx => durableState(ctx, pid, probe).withStashCapacity(customStashSize))
 
   "The revision number" must {
 
