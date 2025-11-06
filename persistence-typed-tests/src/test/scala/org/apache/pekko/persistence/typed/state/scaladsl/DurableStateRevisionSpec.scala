@@ -14,6 +14,7 @@
 package org.apache.pekko.persistence.typed.state.scaladsl
 
 import org.apache.pekko
+import pekko.actor.Dropped
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
