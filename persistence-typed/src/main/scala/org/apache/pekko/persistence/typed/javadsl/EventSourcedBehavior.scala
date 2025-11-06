@@ -257,6 +257,14 @@ abstract class EventSourcedBehavior[Command, Event, State] private[pekko] (
     scaladsl.EventSourcedBehavior.lastSequenceNumber(ctx.asScala)
   }
 
+
+  /**
+   * Override to define a custom stash capacity per entity.
+   * If not defined, the default `pekko.persistence.typed.stash-capacity` will be used.
+   * @since 1.3.0
+   */
+  def stashCapacity: Optional[java.lang.Integer] = Optional.empty()
+
 }
 
 /**

@@ -243,7 +243,7 @@ object EventSourcedBehavior {
 
   /**
    * Define a custom stash capacity per entity.
-   * If not defined, the default `akka.persistence.typed.stash-capacity` will be used.
+   * If not defined, the default `pekko.persistence.typed.stash-capacity` will be used.
    * @since 1.3.0
    */
   def withStashCapacity(size: Int): EventSourcedBehavior[Command, Event, State]
