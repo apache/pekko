@@ -97,7 +97,7 @@ class PersistencePluginDocSpec extends AnyWordSpec {
           # Class name of the plugin.
           class = "docs.persistence.MySnapshotStore"
           # Dispatcher for the plugin actor.
-          plugin-dispatcher = "pekko.persistence.dispatchers.default-plugin-dispatcher"
+          plugin-dispatcher = "pekko.actor.default-dispatcher"
         }
         //#snapshot-store-plugin-config
       """
