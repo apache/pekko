@@ -237,10 +237,17 @@ abstract class EventSourcedBehavior[Command, Event, State] private[pekko] (
       if (handler.isEmpty) behavior
       else behavior.receiveSignal(handler.handler)
 
-    if (onPersistFailure.isPresent)
-      behaviorWithSignalHandler.onPersistFailure(onPersistFailure.get)
-    else
-      behaviorWithSignalHandler
+    val withSignalHandler =
+      if (onPersistFailure.isPresent)
+        behaviorWithSignalHandler.onPersistFailure(onPersistFailure.get)
+      else
+        behaviorWithSignalHandler
+
+    if (stashCapacity.isPresent) {
+      withSignalHandler.withStashCapacity(stashCapacity.get)
+    } else {
+      withSignalHandler
+    }
   }
 
   /**

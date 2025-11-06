@@ -30,10 +30,16 @@ import com.typesafe.config.Config
  */
 @InternalApi private[pekko] object DurableStateSettings {
 
-  def apply(system: ActorSystem[_], durableStateStorePluginId: String): DurableStateSettings =
-    apply(system.settings.config, durableStateStorePluginId)
+  def apply(
+      system: ActorSystem[_],
+      durableStateStorePluginId: String,
+      customStashCapacity: Option[Int]): DurableStateSettings =
+    apply(system.settings.config, durableStateStorePluginId, customStashCapacity)
 
-  def apply(config: Config, durableStateStorePluginId: String): DurableStateSettings = {
+  def apply(
+      config: Config,
+      durableStateStorePluginId: String,
+      customStashCapacity: Option[Int]): DurableStateSettings = {
     val typedConfig = config.getConfig("pekko.persistence.typed")
 
     val stashOverflowStrategy = typedConfig.getString("stash-overflow-strategy").toLowerCase match {
@@ -43,7 +49,7 @@ import com.typesafe.config.Config
         throw new IllegalArgumentException(s"Unknown value for stash-overflow-strategy: [$unknown]")
     }
 
-    val stashCapacity = typedConfig.getInt("stash-capacity")
+    val stashCapacity = customStashCapacity.getOrElse(typedConfig.getInt("stash-capacity"))
     require(stashCapacity > 0, "stash-capacity MUST be > 0, unbounded buffering is not supported.")
 
     val logOnStashing = typedConfig.getBoolean("log-stashing")

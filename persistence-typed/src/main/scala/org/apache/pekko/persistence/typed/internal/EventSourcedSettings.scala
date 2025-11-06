@@ -27,25 +27,29 @@ import com.typesafe.config.Config
   def apply(
       system: ActorSystem[_],
       journalPluginId: String,
-      snapshotPluginId: String
+      snapshotPluginId: String,
+      customStashCapacity: Option[Int]
   ): EventSourcedSettings =
-    apply(system.settings.config, journalPluginId, snapshotPluginId, None, None)
+    apply(system.settings.config, journalPluginId, snapshotPluginId, None, None, customStashCapacity)
 
   def apply(
       system: ActorSystem[_],
       journalPluginId: String,
       snapshotPluginId: String,
       journalPluginConfig: Option[Config],
-      snapshotPluginConfig: Option[Config]
+      snapshotPluginConfig: Option[Config],
+      customStashCapacity: Option[Int]
   ): EventSourcedSettings =
-    apply(system.settings.config, journalPluginId, snapshotPluginId, journalPluginConfig, snapshotPluginConfig)
+    apply(system.settings.config, journalPluginId, snapshotPluginId, journalPluginConfig, snapshotPluginConfig,
+      customStashCapacity)
 
   def apply(
       config: Config,
       journalPluginId: String,
       snapshotPluginId: String,
       journalPluginConfig: Option[Config],
-      snapshotPluginConfig: Option[Config]
+      snapshotPluginConfig: Option[Config],
+      customStashCapacity: Option[Int]
   ): EventSourcedSettings = {
     val typedConfig = config.getConfig("pekko.persistence.typed")
 
@@ -56,7 +60,7 @@ import com.typesafe.config.Config
         throw new IllegalArgumentException(s"Unknown value for stash-overflow-strategy: [$unknown]")
     }
 
-    val stashCapacity = typedConfig.getInt("stash-capacity")
+    val stashCapacity = customStashCapacity.getOrElse(typedConfig.getInt("stash-capacity"))
     require(stashCapacity > 0, "stash-capacity MUST be > 0, unbounded buffering is not supported.")
 
     val logOnStashing = typedConfig.getBoolean("log-stashing")
