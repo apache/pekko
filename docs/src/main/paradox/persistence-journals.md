@@ -58,7 +58,7 @@ The plugin section of the actor system's config will be passed in the config con
 of the plugin is passed in the `String` parameter.
 
 The `plugin-dispatcher` is the dispatcher used for the plugin actor. If not specified, it defaults to
-`pekko.persistence.dispatchers.default-plugin-dispatcher`.
+`pekko.actor.default-dispatcher`.
 
 Don't run journal tasks/futures on the system default dispatcher, since that might starve other tasks.
 
@@ -90,7 +90,7 @@ The plugin section of the actor system's config will be passed in the config con
 of the plugin is passed in the `String` parameter.
 
 The `plugin-dispatcher` is the dispatcher used for the plugin actor. If not specified, it defaults to
-`pekko.persistence.dispatchers.default-plugin-dispatcher`.
+`pekko.actor.default-dispatcher`.
 
 Don't run snapshot store tasks/futures on the system default dispatcher, since that might starve other tasks.
 
