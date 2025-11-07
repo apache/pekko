@@ -65,7 +65,7 @@ class OutputStreamSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
 
   "OutputStreamSource" must {
     "read bytes from OutputStream" in {
-      val (outputStream, probe) = StreamConverters.asOutputStream().toMat(TestSink.probe[ByteString])(Keep.both).run()
+      val (outputStream, probe) = StreamConverters.asOutputStream().toMat(TestSink[ByteString]())(Keep.both).run()
       val s = probe.expectSubscription()
 
       outputStream.write(bytesArray)
@@ -90,7 +90,7 @@ class OutputStreamSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
     }
 
     "not block flushes when buffer is empty" in {
-      val (outputStream, probe) = StreamConverters.asOutputStream().toMat(TestSink.probe[ByteString])(Keep.both).run()
+      val (outputStream, probe) = StreamConverters.asOutputStream().toMat(TestSink[ByteString]())(Keep.both).run()
       val s = probe.expectSubscription()
 
       outputStream.write(bytesArray)
@@ -110,7 +110,7 @@ class OutputStreamSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
     "block writes when buffer is full" in {
       val (outputStream, probe) = StreamConverters
         .asOutputStream()
-        .toMat(TestSink.probe[ByteString])(Keep.both)
+        .toMat(TestSink[ByteString]())(Keep.both)
         .withAttributes(Attributes.inputBuffer(16, 16))
         .run()
       val s = probe.expectSubscription()
@@ -134,7 +134,7 @@ class OutputStreamSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
     }
 
     "throw error when write after stream is closed" in {
-      val (outputStream, probe) = StreamConverters.asOutputStream().toMat(TestSink.probe[ByteString])(Keep.both).run()
+      val (outputStream, probe) = StreamConverters.asOutputStream().toMat(TestSink[ByteString]())(Keep.both).run()
 
       probe.expectSubscription()
       outputStream.close()
@@ -143,7 +143,7 @@ class OutputStreamSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
     }
 
     "throw IOException when writing to the stream after the subscriber has cancelled the reactive stream" in {
-      val (outputStream, sink) = StreamConverters.asOutputStream().toMat(TestSink.probe[ByteString])(Keep.both).run()
+      val (outputStream, sink) = StreamConverters.asOutputStream().toMat(TestSink[ByteString]())(Keep.both).run()
 
       val s = sink.expectSubscription()
 
@@ -175,7 +175,7 @@ class OutputStreamSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
       assertNoBlockedThreads()
 
       val (_, probe) =
-        StreamConverters.asOutputStream(timeout).toMat(TestSink.probe[ByteString])(Keep.both).run()
+        StreamConverters.asOutputStream(timeout).toMat(TestSink[ByteString]())(Keep.both).run()
 
       val sub = probe.expectSubscription()
 
@@ -190,7 +190,7 @@ class OutputStreamSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
     "not leave blocked threads when materializer shutdown" in {
       val materializer2 = Materializer(system)
       val (_, probe) =
-        StreamConverters.asOutputStream(timeout).toMat(TestSink.probe[ByteString])(Keep.both).run()(materializer2)
+        StreamConverters.asOutputStream(timeout).toMat(TestSink[ByteString]())(Keep.both).run()(materializer2)
 
       val sub = probe.expectSubscription()
 
@@ -209,7 +209,7 @@ class OutputStreamSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
       val (outputStream, probe) = StreamConverters
         .asOutputStream(timeout)
         .addAttributes(Attributes.inputBuffer(bufSize, bufSize))
-        .toMat(TestSink.probe[ByteString])(Keep.both)
+        .toMat(TestSink[ByteString]())(Keep.both)
         .run()
 
       // fill the buffer up

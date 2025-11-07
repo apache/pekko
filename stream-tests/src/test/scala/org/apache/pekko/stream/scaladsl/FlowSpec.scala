@@ -559,7 +559,7 @@ class FlowSpec extends StreamSpec(ConfigFactory.parseString("pekko.actor.debug.r
           flow,
           Flow.fromFunction { (string: String) => string.toInt }
         )(Keep.none)
-      ).runWith(TestSink.probe[Option[Int]])
+      ).runWith(TestSink[Option[Int]])
         .request(4)
         .expectNext(Some(1), None, None, Some(4))
         .expectComplete()
@@ -590,7 +590,7 @@ class FlowSpec extends StreamSpec(ConfigFactory.parseString("pekko.actor.debug.r
   "Flow pre-materialization" must {
     "passing elements to downstream" in {
       val (counter, flow) = Flow.fromGraph(new CounterFlow[Int]).preMaterialize()
-      val probe = Source(List(1, 2, 3)).via(flow).reduce((a, b) => a + b).runWith(TestSink.probe[Int])
+      val probe = Source(List(1, 2, 3)).via(flow).reduce((a, b) => a + b).runWith(TestSink[Int]())
       probe.request(1)
       probe.expectNext(6)
       probe.request(1)
@@ -601,7 +601,7 @@ class FlowSpec extends StreamSpec(ConfigFactory.parseString("pekko.actor.debug.r
     "propagate failures to downstream" in {
       val (queue, source) = Source.queue[Int](1).preMaterialize()
       val (counter, flow) = Flow.fromGraph(new CounterFlow[Int]).preMaterialize()
-      val probe = source.via(flow).runWith(TestSink.probe[Int])
+      val probe = source.via(flow).runWith(TestSink[Int]())
       queue.offer(1)
       probe.request(1)
       probe.expectNext(1)
@@ -612,13 +612,13 @@ class FlowSpec extends StreamSpec(ConfigFactory.parseString("pekko.actor.debug.r
 
     "disallow materialize multiple times" in {
       val (counter, flow) = Flow.fromGraph(new CounterFlow[Int]).preMaterialize()
-      val probe1 = Source(List(1, 2, 3)).via(flow).reduce((a, b) => a + b).runWith(TestSink.probe[Int])
+      val probe1 = Source(List(1, 2, 3)).via(flow).reduce((a, b) => a + b).runWith(TestSink[Int]())
       probe1.request(1)
       probe1.expectNext(6)
       probe1.request(1)
       probe1.expectComplete()
       counter.get() should (be(3))
-      val probe2 = Source(List(1, 2, 3)).via(flow).reduce((a, b) => a + b).runWith(TestSink.probe[Int])
+      val probe2 = Source(List(1, 2, 3)).via(flow).reduce((a, b) => a + b).runWith(TestSink[Int]())
       probe2.request(1)
       probe2.expectError()
     }
@@ -633,7 +633,7 @@ class FlowSpec extends StreamSpec(ConfigFactory.parseString("pekko.actor.debug.r
 
     "propagate cancel to upstream" in {
       val (counter, flow) = Flow.fromGraph(new CounterFlow[Int]).preMaterialize()
-      val probSource = TestSource.probe[Int].via(flow).toMat(Sink.cancelled[Int])(Keep.left).run()
+      val probSource = TestSource[Int]().via(flow).toMat(Sink.cancelled[Int])(Keep.left).run()
       probSource.ensureSubscription()
       probSource.expectCancellation()
       counter.get() should (be(0))

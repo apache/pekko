@@ -274,7 +274,7 @@ class GraphBroadcastSpec extends StreamSpec("""
     }
 
     "alsoTo must broadcast" in {
-      val p, p2 = TestSink.probe[Int](system)
+      val p, p2 = TestSink[Int]()
       val (ps1, ps2) = Source(1 to 6).alsoToMat(p)(Keep.right).toMat(p2)(Keep.both).run()
       ps1.request(6)
       ps2.request(6)
@@ -285,8 +285,8 @@ class GraphBroadcastSpec extends StreamSpec("""
     }
 
     "cancel if alsoTo side branch cancels" in {
-      val in = TestSource.probe[Int](system)
-      val outSide = TestSink.probe[Int](system)
+      val in = TestSource[Int]()
+      val outSide = TestSink[Int]()
       val (pIn, pSide) = in.alsoToMat(outSide)(Keep.both).toMat(Sink.ignore)(Keep.left).run()
 
       pSide.cancel()
@@ -294,8 +294,8 @@ class GraphBroadcastSpec extends StreamSpec("""
     }
 
     "cancel if alsoTo main branch cancels" in {
-      val in = TestSource.probe[Int](system)
-      val outMain = TestSink.probe[Int](system)
+      val in = TestSource[Int]()
+      val outMain = TestSink[Int]()
       val (pIn, pMain) = in.alsoToMat(Sink.ignore)(Keep.left).toMat(outMain)(Keep.both).run()
 
       pMain.cancel()

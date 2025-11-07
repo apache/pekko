@@ -40,7 +40,7 @@ class FlowWithContextThrottleSpec extends StreamSpec("""
           .asSourceWithContext(m => m.offset)
           .via(throttle)
           .asSource
-          .runWith(TestSink.probe[(Message, Long)])
+          .runWith(TestSink[(Message, Long)]())
           .request(5)
           .expectNextN(expected)
           .expectComplete()
@@ -55,7 +55,7 @@ class FlowWithContextThrottleSpec extends StreamSpec("""
           .asSourceWithContext(m => m.offset)
           .via(throttle)
           .asSource
-          .runWith(TestSink.probe[(Message, Long)])
+          .runWith(TestSink[(Message, Long)]())
           .request(5)
           .expectNextN(expected)
           .expectComplete()
@@ -70,7 +70,7 @@ class FlowWithContextThrottleSpec extends StreamSpec("""
           .asSourceWithContext(m => m.offset)
           .via(throttle)
           .asSource
-          .runWith(TestSink.probe[(Message, Long)])
+          .runWith(TestSink[(Message, Long)]())
           .request(5)
           .expectNext(expected)
           .expectNoMessage(100.millis)
@@ -111,7 +111,7 @@ class FlowWithContextThrottleSpec extends StreamSpec("""
           .via(throttle)
           .asSource
           .map(_._1)
-          .runWith(TestSink.probe[Message])
+          .runWith(TestSink[Message]())
           .request(4)
           .expectNext(list(0))
           .expectNoMessage(300.millis)
@@ -133,7 +133,7 @@ class FlowWithContextThrottleSpec extends StreamSpec("""
           .asSourceWithContext(m => m.offset)
           .throttle(19, 1000.millis, -1, Shaping)
           .asSource
-          .runWith(TestSink.probe[(Message, Long)])
+          .runWith(TestSink[(Message, Long)]())
           .request(5)
           .expectNextN(expected)
           .expectComplete()
@@ -147,7 +147,7 @@ class FlowWithContextThrottleSpec extends StreamSpec("""
           .asSourceWithContext(m => m.offset)
           .throttle(1, 1.nanos, 0, Shaping)
           .asSource
-          .runWith(TestSink.probe[(Message, Long)])
+          .runWith(TestSink[(Message, Long)]())
           .request(5)
           .expectNextN(expected)
           .expectComplete()
@@ -161,7 +161,7 @@ class FlowWithContextThrottleSpec extends StreamSpec("""
           .asSourceWithContext(m => m.offset)
           .throttle(1, 100.days, 1, Shaping)
           .asSource
-          .runWith(TestSink.probe[(Message, Long)])
+          .runWith(TestSink[(Message, Long)]())
           .request(5)
           .expectNext(expected)
           .expectNoMessage(100.millis)
@@ -200,7 +200,7 @@ class FlowWithContextThrottleSpec extends StreamSpec("""
           .throttle(2, 200.millis, 0, _.data.length, Shaping)
           .asSource
           .map(_._1)
-          .runWith(TestSink.probe[Message])
+          .runWith(TestSink[Message]())
           .request(4)
           .expectNext(list(0))
           .expectNoMessage(300.millis)

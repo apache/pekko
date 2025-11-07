@@ -125,7 +125,7 @@ class ActorRefSourceSpec extends StreamSpec {
     "signal buffered elements and complete the stream after receiving a Status.Success with CompletionStrategy.Draining" in {
       val (ref, s) = Source
         .actorRef({ case "ok" => CompletionStrategy.draining }, PartialFunction.empty, 100, OverflowStrategy.fail)
-        .toMat(TestSink.probe[Int])(Keep.both)
+        .toMat(TestSink[Int]())(Keep.both)
         .run()
 
       for (n <- 1 to 20) ref ! n
@@ -142,7 +142,7 @@ class ActorRefSourceSpec extends StreamSpec {
     "not signal buffered elements but complete immediately the stream after receiving a Status.Success with CompletionStrategy.Immediately" in {
       val (ref, s) = Source
         .actorRef({ case "ok" => CompletionStrategy.immediately }, PartialFunction.empty, 100, OverflowStrategy.fail)
-        .toMat(TestSink.probe[Int])(Keep.both)
+        .toMat(TestSink[Int]())(Keep.both)
         .run()
 
       for (n <- 1 to 20) ref ! n

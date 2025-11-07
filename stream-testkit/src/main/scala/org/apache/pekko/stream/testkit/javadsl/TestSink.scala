@@ -23,15 +23,15 @@ import pekko.stream.testkit._
 object TestSink {
 
   /**
-   * A Sink that materialized to a [[pekko.stream.testkit.TestSubscriber.Probe]].
+   * A Sink that materialized to a [[pekko.stream.testkit.TestSubscriber]].
    */
-  def probe[T](system: ActorSystem): Sink[T, TestSubscriber.Probe[T]] =
-    new Sink(scaladsl.TestSink.probe[T](system))
+  @deprecated("Use `TestSink.create` with ClassicActorSystemProvider instead of ActorSystem", "1.3.0")
+  def probe[T](system: ActorSystem): Sink[T, TestSubscriber.Probe[T]] = create(system)
 
   /**
-   * A Sink that materialized to a [[pekko.stream.testkit.TestSubscriber.Probe]].
+   * A Sink that materialized to a [[pekko.stream.testkit.TestSubscriber]].
    */
   def create[T](system: ClassicActorSystemProvider): Sink[T, TestSubscriber.Probe[T]] =
-    probe(system.classicSystem)
+    new Sink(scaladsl.TestSink[T]()(system))
 
 }

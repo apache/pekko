@@ -269,7 +269,7 @@ class SinkSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
   "The never sink" should {
 
     "always backpressure" in {
-      val (source, doneFuture) = TestSource.probe[Int].toMat(Sink.never)(Keep.both).run()
+      val (source, doneFuture) = TestSource[Int]().toMat(Sink.never)(Keep.both).run()
       source.ensureSubscription()
       source.expectRequest()
       source.sendComplete()
@@ -277,7 +277,7 @@ class SinkSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
     }
 
     "can failed with upstream failure" in {
-      val (source, doneFuture) = TestSource.probe[Int].toMat(Sink.never)(Keep.both).run()
+      val (source, doneFuture) = TestSource[Int]().toMat(Sink.never)(Keep.both).run()
       source.ensureSubscription()
       source.expectRequest()
       source.sendError(new RuntimeException("Oops"))
@@ -481,7 +481,7 @@ class SinkSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
       val publisherSink: Sink[String, Publisher[String]] = Sink.asPublisher[String](false)
       val (matPub, sink) = publisherSink.preMaterialize()
 
-      val probe = Source.fromPublisher(matPub).runWith(TestSink.probe)
+      val probe = Source.fromPublisher(matPub).runWith(TestSink())
       probe.expectNoMessage(100.millis)
 
       Source.single("hello").runWith(sink)
@@ -494,8 +494,8 @@ class SinkSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
       val publisherSink: Sink[String, Publisher[String]] = Sink.asPublisher[String](fanout = true)
       val (matPub, sink) = publisherSink.preMaterialize()
 
-      val probe1 = Source.fromPublisher(matPub).runWith(TestSink.probe)
-      val probe2 = Source.fromPublisher(matPub).runWith(TestSink.probe)
+      val probe1 = Source.fromPublisher(matPub).runWith(TestSink())
+      val probe2 = Source.fromPublisher(matPub).runWith(TestSink())
 
       Source.single("hello").runWith(sink)
 
@@ -511,8 +511,8 @@ class SinkSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
       val publisherSink: Sink[String, Publisher[String]] = Sink.asPublisher[String](fanout = false)
       val (matPub, sink) = publisherSink.preMaterialize()
 
-      val probe1 = Source.fromPublisher(matPub).runWith(TestSink.probe)
-      val probe2 = Source.fromPublisher(matPub).runWith(TestSink.probe)
+      val probe1 = Source.fromPublisher(matPub).runWith(TestSink())
+      val probe2 = Source.fromPublisher(matPub).runWith(TestSink())
 
       Source.single("hello").runWith(sink)
 

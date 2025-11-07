@@ -67,7 +67,7 @@ class FlowMapAsyncUnorderedSpec extends StreamSpec {
       Source
         .single(1)
         .mapAsyncUnordered(1)(v => Future { Thread.sleep(20); v })
-        .runWith(TestSink.probe[Int])
+        .runWith(TestSink[Int]())
         .requestNext(1)
         .expectComplete()
     }
@@ -76,7 +76,7 @@ class FlowMapAsyncUnorderedSpec extends StreamSpec {
       Source
         .single(1)
         .mapAsyncUnordered(1)(v => Future.successful(v))
-        .runWith(TestSink.probe[Int])
+        .runWith(TestSink[Int]())
         .requestNext(1)
         .expectComplete()
     }
@@ -84,14 +84,14 @@ class FlowMapAsyncUnorderedSpec extends StreamSpec {
     "complete without requiring further demand (parallelism = 2)" in {
       import system.dispatcher
       val probe =
-        Source(1 :: 2 :: Nil).mapAsyncUnordered(2)(v => Future { Thread.sleep(20); v }).runWith(TestSink.probe[Int])
+        Source(1 :: 2 :: Nil).mapAsyncUnordered(2)(v => Future { Thread.sleep(20); v }).runWith(TestSink[Int]())
 
       probe.request(2).expectNextN(2)
       probe.expectComplete()
     }
 
     "complete without requiring further demand with already completed future (parallelism = 2)" in {
-      val probe = Source(1 :: 2 :: Nil).mapAsyncUnordered(2)(v => Future.successful(v)).runWith(TestSink.probe[Int])
+      val probe = Source(1 :: 2 :: Nil).mapAsyncUnordered(2)(v => Future.successful(v)).runWith(TestSink[Int]())
 
       probe.request(2).expectNextN(2)
       probe.expectComplete()
@@ -203,7 +203,7 @@ class FlowMapAsyncUnorderedSpec extends StreamSpec {
             else n
           })
         .withAttributes(supervisionStrategy(resumingDecider))
-        .runWith(TestSink.probe[Int])
+        .runWith(TestSink[Int]())
         .request(10)
         .expectNextUnordered(1, 2, 4, 5)
         .expectComplete()
@@ -248,7 +248,7 @@ class FlowMapAsyncUnorderedSpec extends StreamSpec {
           if (n == 3) throw new RuntimeException("err4") with NoStackTrace
           else Future(n))
         .withAttributes(supervisionStrategy(resumingDecider))
-        .runWith(TestSink.probe[Int])
+        .runWith(TestSink[Int]())
         .request(10)
         .expectNextUnordered(1, 2, 4, 5)
         .expectComplete()
