@@ -30,12 +30,6 @@ object TestSource {
   /**
    * A Source that materializes to a [[pekko.stream.testkit.TestPublisher]].
    */
-  @deprecated("Use `TestSource.apply` with implicit ClassicActorSystemProvider instead of ActorSystem", "1.3.0")
-  def probe[T](implicit system: ActorSystem): Source[T, TestPublisher.Probe[T]] = apply()
-
-  /**
-   * A Source that materializes to a [[pekko.stream.testkit.TestPublisher]].
-   */
   def apply[T]()(implicit system: ClassicActorSystemProvider): Source[T, TestPublisher.Probe[T]] = {
     implicit val sys: ActorSystem = system.classicSystem
     Source.fromGraph[T, TestPublisher.Probe[T]](new ProbeSource(none, SourceShape(Outlet("ProbeSource.out"))))

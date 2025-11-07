@@ -559,7 +559,7 @@ class FlowSpec extends StreamSpec(ConfigFactory.parseString("pekko.actor.debug.r
           flow,
           Flow.fromFunction { (string: String) => string.toInt }
         )(Keep.none)
-      ).runWith(TestSink[Option[Int]])
+      ).runWith(TestSink[Option[Int]]())
         .request(4)
         .expectNext(Some(1), None, None, Some(4))
         .expectComplete()

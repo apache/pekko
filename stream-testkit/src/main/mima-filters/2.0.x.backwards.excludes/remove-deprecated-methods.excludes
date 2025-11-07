@@ -18,3 +18,7 @@
 # Remove deprecated methods
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.testkit.TestPublisher#ManualProbe.expectNoMsg")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.testkit.TestSubscriber#ManualProbe.expectNoMsg")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.testkit.javadsl.TestSink.probe")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.testkit.javadsl.TestSource.probe")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.testkit.scaladsl.TestSink.probe")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.testkit.scaladsl.TestSource.probe")
