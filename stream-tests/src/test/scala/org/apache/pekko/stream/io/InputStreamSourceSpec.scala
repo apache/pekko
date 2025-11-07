@@ -141,7 +141,7 @@ class InputStreamSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
               }
             },
           chunkSize = 1)
-        .runWith(TestSink.probe)
+        .runWith(TestSink())
 
       probe.request(4)
       probe.expectNext(ByteString("M"))

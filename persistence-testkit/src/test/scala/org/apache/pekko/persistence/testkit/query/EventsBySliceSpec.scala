@@ -135,7 +135,7 @@ class EventsBySliceSpec
       val ackProbe = createTestProbe[Done]()
       val ref = setup("c")
       val src = queries.eventsBySlices[String]("Test", 0, numberOfSlices - 1, NoOffset)
-      val probe = src.map(_.event).runWith(TestSink.probe[String]).request(5).expectNext("c-1", "c-2", "c-3")
+      val probe = src.map(_.event).runWith(TestSink[String]()).request(5).expectNext("c-1", "c-2", "c-3")
 
       ref ! Command("c-4", ackProbe.ref)
       ackProbe.expectMessage(Done)
@@ -147,7 +147,7 @@ class EventsBySliceSpec
       val ackProbe = createTestProbe[Done]()
       val ref = setup("c")
       val src = queriesJava.eventsBySlices[String]("Test", 0, numberOfSlices - 1, NoOffset).asScala
-      val probe = src.map(_.event).runWith(TestSink.probe[String]).request(5).expectNext("c-1", "c-2", "c-3")
+      val probe = src.map(_.event).runWith(TestSink[String]()).request(5).expectNext("c-1", "c-2", "c-3")
 
       ref ! Command("c-4", ackProbe.ref)
       ackProbe.expectMessage(Done)
@@ -159,7 +159,7 @@ class EventsBySliceSpec
       val ackProbe = createTestProbe[Done]()
       val ref = setupBatched("d")
       val src = queries.eventsBySlices[String]("Test", 0, numberOfSlices - 1, NoOffset)
-      val probe = src.map(_.event).runWith(TestSink.probe[String]).request(5).expectNext("d-1", "d-2", "d-3")
+      val probe = src.map(_.event).runWith(TestSink[String]()).request(5).expectNext("d-1", "d-2", "d-3")
 
       ref ! Command("d-4", ackProbe.ref)
       ackProbe.expectMessage(Done)
@@ -172,7 +172,7 @@ class EventsBySliceSpec
       val ref = setup("e")
       val src = queries.eventsBySlices[String]("Test", 0, numberOfSlices - 1, NoOffset)
       val probe =
-        src.map(_.event).runWith(TestSink.probe[String]).request(2).expectNext("e-1", "e-2").expectNoMessage(100.millis)
+        src.map(_.event).runWith(TestSink[String]()).request(2).expectNext("e-1", "e-2").expectNoMessage(100.millis)
 
       ref ! Command("e-4", ackProbe.ref)
       ackProbe.expectMessage(Done)
@@ -184,7 +184,7 @@ class EventsBySliceSpec
       setup("n")
 
       val src = queries.eventsBySlices[String]("Test", 0, numberOfSlices - 1, NoOffset)
-      val probe = src.runWith(TestSink.probe[EventEnvelope[String]])
+      val probe = src.runWith(TestSink[EventEnvelope[String]]())
 
       probe.request(5)
       probe.expectNext().timestamp should be > 0L
@@ -196,7 +196,7 @@ class EventsBySliceSpec
       val ackProbe = createTestProbe[Done]()
       val src = queries.eventsBySlices[String]("Test", 0, numberOfSlices - 1, NoOffset)
       val probe =
-        src.map(_.event).runWith(TestSink.probe[String]).request(2)
+        src.map(_.event).runWith(TestSink[String]()).request(2)
 
       probe.expectNoMessage(200.millis) // must not complete
 
@@ -214,7 +214,7 @@ class EventsBySliceSpec
         .map { ee =>
           (ee.persistenceId, ee.event)
         }
-        .runWith(TestSink.probe[(String, Any)])
+        .runWith(TestSink[(String, Any)]())
 
       val ref2 = setupEmpty("f2")
       ref2 ! Command(Seq("f2-1", "f2-2"), ackProbe.ref)
@@ -245,7 +245,7 @@ class EventsBySliceSpec
           .map { ee =>
             (ee.persistenceId, ee.event)
           }
-          .runWith(TestSink.probe[(String, Any)])
+          .runWith(TestSink[(String, Any)]())
           .request(3)
           .expectNextN(Seq((fullPersistenceId, s"$persistenceId-1"), (fullPersistenceId, s"$persistenceId-2"),
             (fullPersistenceId, s"$persistenceId-3")))

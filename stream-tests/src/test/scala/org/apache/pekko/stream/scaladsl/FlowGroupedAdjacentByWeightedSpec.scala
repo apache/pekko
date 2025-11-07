@@ -29,7 +29,7 @@ class FlowGroupedAdjacentByWeightedSpec extends StreamSpec("""
     "produce no group when source is empty" in {
       Source.empty[String]
         .groupedAdjacentBy(identity(_))
-        .runWith(TestSink.probe[Seq[String]])
+        .runWith(TestSink[Seq[String]]())
         .request(1)
         .expectComplete()
     }
@@ -38,7 +38,7 @@ class FlowGroupedAdjacentByWeightedSpec extends StreamSpec("""
       val input = List("a", "a", "b", "b", "c", "c")
       Source(input)
         .groupedAdjacentBy(identity(_))
-        .runWith(TestSink.probe[Seq[String]])
+        .runWith(TestSink[Seq[String]]())
         .request(6)
         .expectNext(Seq("a", "a"))
         .expectNext(Seq("b", "b"))
@@ -50,7 +50,7 @@ class FlowGroupedAdjacentByWeightedSpec extends StreamSpec("""
       val input = List("Hello", "Hi", "Greetings", "Hey")
       Source(input)
         .groupedAdjacentBy(_.head)
-        .runWith(TestSink.probe[Seq[String]])
+        .runWith(TestSink[Seq[String]]())
         .request(4)
         .expectNext(Seq("Hello", "Hi"))
         .expectNext(Seq("Greetings"))
@@ -61,7 +61,7 @@ class FlowGroupedAdjacentByWeightedSpec extends StreamSpec("""
     "be able to act like bufferUntilChanged" in {
       Source(List(1, 1, 2, 2, 3, 3, 1))
         .groupedAdjacentBy(identity(_))
-        .runWith(TestSink.probe[Seq[Int]])
+        .runWith(TestSink[Seq[Int]]())
         .request(7)
         .expectNext(Seq(1, 1))
         .expectNext(Seq(2, 2))
@@ -73,7 +73,7 @@ class FlowGroupedAdjacentByWeightedSpec extends StreamSpec("""
     "Be able to limit the chunk size" in {
       Source(List("Hello", "Hi", "Hey", "Greetings", "Hey"))
         .groupedAdjacentByWeighted(_.head, 2)(_ => 1L)
-        .runWith(TestSink.probe[Seq[String]])
+        .runWith(TestSink[Seq[String]]())
         .request(5)
         .expectNext(Seq("Hello", "Hi"))
         .expectNext(Seq("Hey"))
@@ -85,7 +85,7 @@ class FlowGroupedAdjacentByWeightedSpec extends StreamSpec("""
     "Be able to handle single heavy weighted element" in {
       Source(List("Hello", "HiHi", "Hi", "Hi", "Greetings", "Hey"))
         .groupedAdjacentByWeighted(_.head, 4)(_.length)
-        .runWith(TestSink.probe[Seq[String]])
+        .runWith(TestSink[Seq[String]]())
         .request(6)
         .expectNext(Seq("Hello"))
         .expectNext(Seq("HiHi"))

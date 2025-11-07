@@ -456,7 +456,7 @@ class MapAsyncPartitionedSpec
 
   it should "support junction output ports with mapAsyncPartitioned" in {
     val source = Source(List((1, 1), (2, 2)))
-    val g = RunnableGraph.fromGraph(GraphDSL.createGraph(TestSink.probe[(Int, Int)](system.classicSystem)) {
+    val g = RunnableGraph.fromGraph(GraphDSL.createGraph(TestSink[(Int, Int)]()) {
       implicit b => sink =>
         import GraphDSL.Implicits._
         val unzip = b.add(Unzip[Int, Int]())
@@ -479,7 +479,7 @@ class MapAsyncPartitionedSpec
 
   it should "support junction output ports with mapAsyncPartitionedUnordered" in {
     val source = Source(List((1, 1), (2, 2)))
-    val g = RunnableGraph.fromGraph(GraphDSL.createGraph(TestSink.probe[(Int, Int)](system.classicSystem)) {
+    val g = RunnableGraph.fromGraph(GraphDSL.createGraph(TestSink[(Int, Int)]()) {
       implicit b => sink =>
         import GraphDSL.Implicits._
         val unzip = b.add(Unzip[Int, Int]())

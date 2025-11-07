@@ -506,8 +506,8 @@ class HubSpec extends StreamSpec {
 
     "remember completion for materialisations after completion" in {
 
-      val (sourceProbe, source) = TestSource.probe[Unit].toMat(BroadcastHub.sink)(Keep.both).run()
-      val sinkProbe = source.runWith(TestSink.probe[Unit])
+      val (sourceProbe, source) = TestSource[Unit]().toMat(BroadcastHub.sink)(Keep.both).run()
+      val sinkProbe = source.runWith(TestSink[Unit]())
 
       sourceProbe.sendComplete()
 
@@ -516,7 +516,7 @@ class HubSpec extends StreamSpec {
 
       // Materialize a second time. There was a race here, where we managed to enqueue our Source registration just
       // immediately before the Hub shut down.
-      val sink2Probe = source.runWith(TestSink.probe[Unit])
+      val sink2Probe = source.runWith(TestSink[Unit]())
 
       sink2Probe.request(1)
       sink2Probe.expectComplete()
@@ -580,7 +580,7 @@ class HubSpec extends StreamSpec {
       in.sendNext(15)
 
       // add a consumer to receive the first element
-      val sinkProbe0 = hubSource.runWith(TestSink.probe[Int])
+      val sinkProbe0 = hubSource.runWith(TestSink[Int]())
       sinkProbe0.request(1)
       sinkProbe0.expectNext(15)
       sinkProbe0.cancel()
@@ -592,11 +592,11 @@ class HubSpec extends StreamSpec {
 
       // Add another consumer and kill it during registration
 
-      sinkProbe1 = hubSource.runWith(TestSink.probe[Int])
+      sinkProbe1 = hubSource.runWith(TestSink[Int]())
       Thread.sleep(100)
 
       // Make sure that the element 16 isn't lost by reading it with a third consumer
-      val sinkProbe2 = hubSource.runWith(TestSink.probe[Int])
+      val sinkProbe2 = hubSource.runWith(TestSink[Int]())
       sinkProbe2.request(1)
       sinkProbe2.expectNext(16)
 
@@ -674,12 +674,11 @@ class HubSpec extends StreamSpec {
     }
 
     "route evenly" in {
-      val (testSource, hub) = TestSource
-        .probe[Int]
+      val (testSource, hub) = TestSource[Int]()
         .toMat(PartitionHub.sink((size, elem) => elem % size, startAfterNrOfConsumers = 2, bufferSize = 8))(Keep.both)
         .run()
-      val probe0 = hub.runWith(TestSink.probe[Int])
-      val probe1 = hub.runWith(TestSink.probe[Int])
+      val probe0 = hub.runWith(TestSink[Int]())
+      val probe1 = hub.runWith(TestSink[Int]())
       probe0.request(3)
       probe1.request(10)
       testSource.sendNext(0)
@@ -710,12 +709,11 @@ class HubSpec extends StreamSpec {
     }
 
     "route unevenly" in {
-      val (testSource, hub) = TestSource
-        .probe[Int]
+      val (testSource, hub) = TestSource[Int]()
         .toMat(PartitionHub.sink((_, elem) => (elem % 3) % 2, startAfterNrOfConsumers = 2, bufferSize = 8))(Keep.both)
         .run()
-      val probe0 = hub.runWith(TestSink.probe[Int])
-      val probe1 = hub.runWith(TestSink.probe[Int])
+      val probe0 = hub.runWith(TestSink[Int]())
+      val probe1 = hub.runWith(TestSink[Int]())
 
       // (_ % 3) % 2
       // 0 => 0
@@ -743,12 +741,11 @@ class HubSpec extends StreamSpec {
     }
 
     "backpressure" in {
-      val (testSource, hub) = TestSource
-        .probe[Int]
+      val (testSource, hub) = TestSource[Int]()
         .toMat(PartitionHub.sink((_, _) => 0, startAfterNrOfConsumers = 2, bufferSize = 4))(Keep.both)
         .run()
-      val probe0 = hub.runWith(TestSink.probe[Int])
-      val probe1 = hub.runWith(TestSink.probe[Int])
+      val probe0 = hub.runWith(TestSink[Int]())
+      val probe1 = hub.runWith(TestSink[Int]())
       probe0.request(10)
       probe1.request(10)
       testSource.sendNext(0)
@@ -838,8 +835,8 @@ class HubSpec extends StreamSpec {
     "remember completion for materialisations after completion" in {
 
       val (sourceProbe, source) =
-        TestSource.probe[Unit].toMat(PartitionHub.sink((_, _) => 0, startAfterNrOfConsumers = 0))(Keep.both).run()
-      val sinkProbe = source.runWith(TestSink.probe[Unit])
+        TestSource[Unit]().toMat(PartitionHub.sink((_, _) => 0, startAfterNrOfConsumers = 0))(Keep.both).run()
+      val sinkProbe = source.runWith(TestSink[Unit]())
 
       sourceProbe.sendComplete()
 
@@ -848,7 +845,7 @@ class HubSpec extends StreamSpec {
 
       // Materialize a second time. There was a race here, where we managed to enqueue our Source registration just
       // immediately before the Hub shut down.
-      val sink2Probe = source.runWith(TestSink.probe[Unit])
+      val sink2Probe = source.runWith(TestSink[Unit]())
 
       sink2Probe.request(1)
       sink2Probe.expectComplete()

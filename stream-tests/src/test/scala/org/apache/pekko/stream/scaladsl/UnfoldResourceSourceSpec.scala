@@ -166,7 +166,7 @@ class UnfoldResourceSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
           () => newBufferedReader(),
           reader => Option(reader.readLine()),
           reader => reader.close())
-        .runWith(TestSink.probe)
+        .runWith(TestSink())
 
       SystemMaterializer(system).materializer
         .asInstanceOf[PhasedFusingActorMaterializer]
@@ -218,7 +218,7 @@ class UnfoldResourceSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
           () => 23, // the best resource there is
           _ => throw TE("failing read"),
           _ => closedCounter.incrementAndGet())
-        .runWith(TestSink.probe[Int])
+        .runWith(TestSink[Int]())
 
       probe.request(1)
       probe.expectError(TE("failing read"))
@@ -236,7 +236,7 @@ class UnfoldResourceSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
             closedCounter.incrementAndGet()
             if (closedCounter.get == 1) throw TE("boom")
           })
-        .runWith(TestSink.probe[Int])
+        .runWith(TestSink[Int]())
 
       EventFilter[TE](occurrences = 1).intercept {
         probe.request(1)

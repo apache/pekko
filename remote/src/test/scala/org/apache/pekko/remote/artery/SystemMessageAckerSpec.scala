@@ -37,8 +37,7 @@ class SystemMessageAckerSpec extends PekkoSpec("""
 
   private def setupStream(inboundContext: InboundContext): (TestPublisher.Probe[AnyRef], TestSubscriber.Probe[Any]) = {
     val recipient = OptionVal.None // not used
-    TestSource
-      .probe[AnyRef]
+    TestSource[AnyRef]()
       .map {
         case sysMsg @ SystemMessageEnvelope(_, _, ackReplyTo) =>
           InboundEnvelope(recipient, sysMsg, OptionVal.None, ackReplyTo.uid, inboundContext.association(ackReplyTo.uid))
@@ -46,7 +45,7 @@ class SystemMessageAckerSpec extends PekkoSpec("""
       }
       .via(new SystemMessageAcker(inboundContext))
       .map { case env: InboundEnvelope => env.message }
-      .toMat(TestSink.probe[Any])(Keep.both)
+      .toMat(TestSink[Any]())(Keep.both)
       .run()
   }
 

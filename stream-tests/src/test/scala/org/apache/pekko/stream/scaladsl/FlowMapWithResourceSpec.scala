@@ -220,7 +220,7 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
             reader.close()
             None
           })
-        .runWith(TestSink.probe)
+        .runWith(TestSink())
 
       SystemMaterializer(system).materializer
         .asInstanceOf[PhasedFusingActorMaterializer]
@@ -244,7 +244,7 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
           Attributes.name("mapWithResourceCustomDispatcher") and
           ActorAttributes.dispatcher("pekko.actor.default-dispatcher")
         )
-        .runWith(TestSink.probe)
+        .runWith(TestSink())
 
       SystemMaterializer(system).materializer
         .asInstanceOf[PhasedFusingActorMaterializer]
@@ -300,7 +300,7 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
             closedCounter.incrementAndGet()
             None
           })
-        .runWith(TestSink.probe[Int])
+        .runWith(TestSink[Int]())
 
       probe.request(1)
       probe.expectError(TE("failing read"))
@@ -317,7 +317,7 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
             if (closedCounter.get == 1) throw TE("boom")
             None
           })
-        .runWith(TestSink.probe[Int])
+        .runWith(TestSink[Int]())
 
       EventFilter[TE](occurrences = 1).intercept {
         probe.request(1)
@@ -328,8 +328,7 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
 
     "will close the resource when upstream complete" in {
       val closedCounter = new AtomicInteger(0)
-      val (pub, sub) = TestSource
-        .probe[Int]
+      val (pub, sub) = TestSource[Int]()
         .mapWithResource(() => newBufferedReader())((reader, count) => readLines(reader, count),
           reader => {
             reader.close()
@@ -337,7 +336,7 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
             Some(List("End"))
           })
         .mapConcat(identity)
-        .toMat(TestSink.probe)(Keep.both)
+        .toMat(TestSink())(Keep.both)
         .run()
       sub.expectSubscription().request(2)
       pub.sendNext(1)
@@ -350,8 +349,7 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
 
     "will close the resource when upstream fail" in {
       val closedCounter = new AtomicInteger(0)
-      val (pub, sub) = TestSource
-        .probe[Int]
+      val (pub, sub) = TestSource[Int]()
         .mapWithResource(() => newBufferedReader())((reader, count) => readLines(reader, count),
           reader => {
             reader.close()
@@ -359,7 +357,7 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
             Some(List("End"))
           })
         .mapConcat(identity)
-        .toMat(TestSink.probe)(Keep.both)
+        .toMat(TestSink())(Keep.both)
         .run()
       sub.expectSubscription().request(2)
       pub.sendNext(1)
@@ -372,8 +370,7 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
 
     "will close the resource when downstream cancel" in {
       val closedCounter = new AtomicInteger(0)
-      val (pub, sub) = TestSource
-        .probe[Int]
+      val (pub, sub) = TestSource[Int]()
         .mapWithResource(() => newBufferedReader())((reader, count) => readLines(reader, count),
           reader => {
             reader.close()
@@ -381,7 +378,7 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
             Some(List("End"))
           })
         .mapConcat(identity)
-        .toMat(TestSink.probe)(Keep.both)
+        .toMat(TestSink())(Keep.both)
         .run()
       val subscription = sub.expectSubscription()
       subscription.request(2)
@@ -394,8 +391,7 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
 
     "will close the resource when downstream fail" in {
       val closedCounter = new AtomicInteger(0)
-      val (pub, sub) = TestSource
-        .probe[Int]
+      val (pub, sub) = TestSource[Int]()
         .mapWithResource(() => newBufferedReader())((reader, count) => readLines(reader, count),
           reader => {
             reader.close()
@@ -403,7 +399,7 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
             Some(List("End"))
           })
         .mapConcat(identity)
-        .toMat(TestSink.probe)(Keep.both)
+        .toMat(TestSink())(Keep.both)
         .run()
       sub.request(2)
       pub.sendNext(2)
@@ -441,10 +437,9 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
         new AutoCloseable {
           override def close(): Unit = closedCounter.incrementAndGet()
         }
-      val (pub, sub) = TestSource
-        .probe[Int]
+      val (pub, sub) = TestSource[Int]()
         .mapWithResource(create, (_: AutoCloseable, count) => count)
-        .toMat(TestSink.probe)(Keep.both)
+        .toMat(TestSink())(Keep.both)
         .run()
       sub.expectSubscription().request(2)
       closedCounter.get shouldBe 0
@@ -462,10 +457,9 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
         new AutoCloseable {
           override def close(): Unit = closedCounter.incrementAndGet()
         }
-      val (pub, sub) = TestSource
-        .probe[Int]
+      val (pub, sub) = TestSource[Int]()
         .mapWithResource(create, (_: AutoCloseable, count) => count)
-        .toMat(TestSink.probe)(Keep.both)
+        .toMat(TestSink())(Keep.both)
         .run()
       sub.expectSubscription().request(2)
       closedCounter.get shouldBe 0
@@ -483,10 +477,9 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
         new AutoCloseable {
           override def close(): Unit = closedCounter.incrementAndGet()
         }
-      val (pub, sub) = TestSource
-        .probe[Int]
+      val (pub, sub) = TestSource[Int]()
         .mapWithResource(create, (_: AutoCloseable, count) => count)
-        .toMat(TestSink.probe)(Keep.both)
+        .toMat(TestSink())(Keep.both)
         .run()
       val subscription = sub.expectSubscription()
       subscription.request(2)
@@ -505,10 +498,9 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
         new AutoCloseable {
           override def close(): Unit = closedCounter.incrementAndGet()
         }
-      val (pub, sub) = TestSource
-        .probe[Int]
+      val (pub, sub) = TestSource[Int]()
         .mapWithResource(create, (_: AutoCloseable, count) => count)
-        .toMat(TestSink.probe)(Keep.both)
+        .toMat(TestSink())(Keep.both)
         .run()
       sub.request(2)
       closedCounter.get shouldBe 0

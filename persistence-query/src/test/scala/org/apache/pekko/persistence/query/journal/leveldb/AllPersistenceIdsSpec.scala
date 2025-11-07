@@ -56,7 +56,7 @@ class AllPersistenceIdsSpec extends PekkoSpec(AllPersistenceIdsSpec.config) with
       expectMsg("c1-done")
 
       val src = queries.currentPersistenceIds()
-      val probe = src.runWith(TestSink.probe[String])
+      val probe = src.runWith(TestSink[String]())
       probe.within(10.seconds) {
         probe.request(5).expectNextUnordered("a", "b", "c").expectComplete()
       }
@@ -68,7 +68,7 @@ class AllPersistenceIdsSpec extends PekkoSpec(AllPersistenceIdsSpec.config) with
       expectMsg("d1-done")
 
       val src = queries.persistenceIds()
-      val probe = src.runWith(TestSink.probe[String])
+      val probe = src.runWith(TestSink[String]())
       probe.within(10.seconds) {
         probe.request(5).expectNextUnorderedN(List("a", "b", "c", "d"))
 

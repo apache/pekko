@@ -78,7 +78,7 @@ class SendQueueSpec extends PekkoSpec("""
     "deliver all messages" in {
       val queue = createQueue[String](128)
       val (sendQueue, downstream) =
-        Source.fromGraph(new SendQueue[String](sendToDeadLetters)).toMat(TestSink.probe)(Keep.both).run()
+        Source.fromGraph(new SendQueue[String](sendToDeadLetters)).toMat(TestSink())(Keep.both).run()
 
       downstream.request(10)
       sendQueue.inject(queue)
@@ -97,7 +97,7 @@ class SendQueueSpec extends PekkoSpec("""
       queue.offer("b")
 
       val (sendQueue, downstream) =
-        Source.fromGraph(new SendQueue[String](sendToDeadLetters)).toMat(TestSink.probe)(Keep.both).run()
+        Source.fromGraph(new SendQueue[String](sendToDeadLetters)).toMat(TestSink())(Keep.both).run()
 
       downstream.request(10)
       downstream.expectNoMessage(200.millis)
@@ -118,7 +118,7 @@ class SendQueueSpec extends PekkoSpec("""
         .fromGraph(new SendQueue[Int](sendToDeadLetters))
         .grouped(burstSize)
         .async
-        .toMat(TestSink.probe)(Keep.both)
+        .toMat(TestSink())(Keep.both)
         .run()
 
       downstream.request(10)
@@ -145,7 +145,7 @@ class SendQueueSpec extends PekkoSpec("""
       producers.foreach(_ ! ProduceToQueue(0, 100, queue))
 
       val (sendQueue, downstream) =
-        Source.fromGraph(new SendQueue[Msg](sendToDeadLetters)).toMat(TestSink.probe)(Keep.both).run()
+        Source.fromGraph(new SendQueue[Msg](sendToDeadLetters)).toMat(TestSink())(Keep.both).run()
 
       sendQueue.inject(queue)
       producers.foreach(_ ! ProduceToQueueValue(100, 200, sendQueue))
@@ -175,7 +175,7 @@ class SendQueueSpec extends PekkoSpec("""
         (1 to 100).foreach { _ =>
           val queue = createQueue[String](16)
           val (sendQueue, downstream) =
-            Source.fromGraph(new SendQueue[String](sendToDeadLetters)).toMat(TestSink.probe)(Keep.both).run()
+            Source.fromGraph(new SendQueue[String](sendToDeadLetters)).toMat(TestSink())(Keep.both).run()
 
           f(queue, sendQueue, downstream)
           downstream.expectNext("a")

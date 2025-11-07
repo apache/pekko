@@ -126,7 +126,7 @@ public class RateTransformationDocTest extends AbstractJavaTest {
     // #extrapolate-last
 
     final Pair<TestPublisher.Probe<Double>, CompletionStage<List<Double>>> probeFut =
-        TestSource.<Double>probe(system)
+        TestSource.<Double>create(system)
             .via(lastFlow)
             .grouped(10)
             .toMat(Sink.head(), Keep.both())
@@ -149,7 +149,7 @@ public class RateTransformationDocTest extends AbstractJavaTest {
     // #extrapolate-seed
 
     final CompletionStage<List<Double>> fut =
-        TestSource.<Double>probe(system)
+        TestSource.<Double>create(system)
             .via(lastFlow)
             .grouped(10)
             .toMat(Sink.head(), Keep.right())
@@ -187,9 +187,9 @@ public class RateTransformationDocTest extends AbstractJavaTest {
                 });
 
     final Pair<TestPublisher.Probe<Double>, TestSubscriber.Probe<Pair<Double, Integer>>> pubSub =
-        TestSource.<Double>probe(system)
+        TestSource.<Double>create(system)
             .via(realDriftFlow)
-            .toMat(TestSink.<Pair<Double, Integer>>probe(system), Keep.both())
+            .toMat(TestSink.<Pair<Double, Integer>>create(system), Keep.both())
             .run(system);
 
     final TestPublisher.Probe<Double> pub = pubSub.first();
@@ -225,9 +225,9 @@ public class RateTransformationDocTest extends AbstractJavaTest {
                 });
 
     final Pair<TestPublisher.Probe<Double>, TestSubscriber.Probe<Pair<Double, Integer>>> pubSub =
-        TestSource.<Double>probe(system)
+        TestSource.<Double>create(system)
             .via(realDriftFlow)
-            .toMat(TestSink.<Pair<Double, Integer>>probe(system), Keep.both())
+            .toMat(TestSink.<Pair<Double, Integer>>create(system), Keep.both())
             .run(system);
 
     final TestPublisher.Probe<Double> pub = pubSub.first();

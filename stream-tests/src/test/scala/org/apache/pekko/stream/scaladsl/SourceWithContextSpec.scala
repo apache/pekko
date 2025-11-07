@@ -31,7 +31,7 @@ class SourceWithContextSpec extends StreamSpec {
       val msg = Message("a", 1L)
       Source(Vector(msg))
         .asSourceWithContext(_.offset)
-        .toMat(TestSink.probe[(Message, Long)])(Keep.right)
+        .toMat(TestSink[(Message, Long)]())(Keep.right)
         .run()
         .request(1)
         .expectNext((msg, 1L))
@@ -43,7 +43,7 @@ class SourceWithContextSpec extends StreamSpec {
       SourceWithContext
         .fromTuples(Source(Vector((msg, msg.offset))))
         .asSource
-        .runWith(TestSink.probe[(Message, Long)])
+        .runWith(TestSink[(Message, Long)]())
         .request(1)
         .expectNext((msg, 1L))
         .expectComplete()
@@ -56,7 +56,7 @@ class SourceWithContextSpec extends StreamSpec {
         .map(_.data)
         .asSource
         .map { case (e, _) => e }
-        .runWith(TestSink.probe[String])
+        .runWith(TestSink[String]())
         .request(1)
         .expectNext("a")
         .expectComplete()
@@ -68,7 +68,7 @@ class SourceWithContextSpec extends StreamSpec {
         .map(_.data.toLowerCase)
         .filter(_ != "b")
         .filterNot(_ == "d")
-        .toMat(TestSink.probe[(String, Long)])(Keep.right)
+        .toMat(TestSink[(String, Long)]())(Keep.right)
         .run()
         .request(2)
         .expectNext(("a", 1L))
@@ -82,7 +82,7 @@ class SourceWithContextSpec extends StreamSpec {
       Source(messages)
         .asSourceWithContext(_.offset)
         .alsoTo(Sink.foreach(message => listBuffer.+=(message)))
-        .toMat(TestSink.probe[(Message, Long)])(Keep.right)
+        .toMat(TestSink[(Message, Long)]())(Keep.right)
         .run()
         .request(4)
         .expectNext((Message("A", 1L), 1L))
@@ -101,7 +101,7 @@ class SourceWithContextSpec extends StreamSpec {
       Source(messages)
         .asSourceWithContext(_.offset)
         .alsoToContext(Sink.foreach(offset => listBuffer.+=(offset)))
-        .toMat(TestSink.probe[(Message, Long)])(Keep.right)
+        .toMat(TestSink[(Message, Long)]())(Keep.right)
         .run()
         .request(4)
         .expectNext((Message("A", 1L), 1L))
@@ -120,7 +120,7 @@ class SourceWithContextSpec extends StreamSpec {
       Source(messages)
         .asSourceWithContext(_.offset)
         .wireTap(Sink.foreach(message => listBuffer.+=(message)))
-        .toMat(TestSink.probe[(Message, Long)])(Keep.right)
+        .toMat(TestSink[(Message, Long)]())(Keep.right)
         .run()
         .request(4)
         .expectNext((Message("A", 1L), 1L))
@@ -139,7 +139,7 @@ class SourceWithContextSpec extends StreamSpec {
       Source(messages)
         .asSourceWithContext(_.offset)
         .wireTapContext(Sink.foreach(offset => listBuffer.+=(offset)))
-        .toMat(TestSink.probe[(Message, Long)])(Keep.right)
+        .toMat(TestSink[(Message, Long)]())(Keep.right)
         .run()
         .request(4)
         .expectNext((Message("A", 1L), 1L))
@@ -160,7 +160,7 @@ class SourceWithContextSpec extends StreamSpec {
         .asSourceWithContext(_.offset)
         .map(_.data)
         .via(flowWithContext.map(s => s + "b"))
-        .runWith(TestSink.probe[(String, Long)])
+        .runWith(TestSink[(String, Long)]())
         .request(1)
         .expectNext(("ab", 1L))
         .expectComplete()
@@ -173,7 +173,7 @@ class SourceWithContextSpec extends StreamSpec {
         .mapConcat { str =>
           List(1, 2, 3).map(i => s"$str-$i")
         }
-        .runWith(TestSink.probe[(String, Long)])
+        .runWith(TestSink[(String, Long)]())
         .request(3)
         .expectNext(("a-1", 1L), ("a-2", 1L), ("a-3", 1L))
         .expectComplete()
@@ -187,7 +187,7 @@ class SourceWithContextSpec extends StreamSpec {
           List(1, 2, 3, 4).map(i => s"$str-$i")
         }
         .grouped(2)
-        .toMat(TestSink.probe[(Seq[String], Seq[Long])])(Keep.right)
+        .toMat(TestSink[(Seq[String], Seq[Long])]())(Keep.right)
         .run()
         .request(2)
         .expectNext((Seq("a-1", "a-2"), Seq(1L, 1L)), (Seq("a-3", "a-4"), Seq(1L, 1L)))
@@ -217,7 +217,7 @@ class SourceWithContextSpec extends StreamSpec {
         }
         .asSourceWithContext(_.offset)
         .mapError { case _: Throwable => boom }
-        .runWith(TestSink.probe[(Message, Long)])
+        .runWith(TestSink[(Message, Long)]())
         .request(3)
         .expectNext((Message("a", 1L), 1L))
         .expectNext((Message("a", 2L), 2L))
@@ -230,7 +230,7 @@ class SourceWithContextSpec extends StreamSpec {
       SourceWithContext
         .fromTuples(Source(data))
         .unsafeDataVia(Flow.fromFunction[String, Int] { _.toInt })
-        .runWith(TestSink.probe[(Int, Int)])
+        .runWith(TestSink[(Int, Int)]())
         .request(4)
         .expectNext((1, 1), (2, 2), (3, 3), (4, 4))
         .expectComplete()
@@ -246,7 +246,7 @@ class SourceWithContextSpec extends StreamSpec {
           source,
           Flow.fromFunction { (string: String) => string.toInt }
         )(Keep.none)
-          .runWith(TestSink.probe[(Option[Int], Int)])
+          .runWith(TestSink[(Option[Int], Int)]())
           .request(4)
           .expectNext((Some(1), 1), (None, 2), (None, 3), (Some(4), 4))
           .expectComplete()
