@@ -29,15 +29,17 @@ import pekko.stream.testkit.TestSubscriber.Probe
 object TestSink {
 
   /**
-   * A Sink that materialized to a [[pekko.stream.testkit.TestSubscriber.Probe]].
+   * A Sink that materialized to a [[pekko.stream.testkit.TestSubscriber]].
    */
-  def probe[T](implicit system: ActorSystem): Sink[T, Probe[T]] =
-    Sink.fromGraph[T, TestSubscriber.Probe[T]](new ProbeSink(none, SinkShape(Inlet("ProbeSink.in"))))
+  @deprecated("Use `TestSink.apply` with implicit ClassicActorSystemProvider instead of ActorSystem", "1.3.0")
+  def probe[T](implicit system: ActorSystem): Sink[T, Probe[T]] = apply()
 
   /**
-   * A Sink that materialized to a [[pekko.stream.testkit.TestSubscriber.Probe]].
+   * A Sink that materialized to a [[pekko.stream.testkit.TestSubscriber]].
    */
-  def apply[T]()(implicit system: ClassicActorSystemProvider): Sink[T, Probe[T]] =
-    probe(system.classicSystem)
+  def apply[T]()(implicit system: ClassicActorSystemProvider): Sink[T, Probe[T]] = {
+    implicit val sys: ActorSystem = system.classicSystem
+    Sink.fromGraph[T, TestSubscriber.Probe[T]](new ProbeSink(none, SinkShape(Inlet("ProbeSink.in"))))
+  }
 
 }

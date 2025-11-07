@@ -33,7 +33,7 @@ class FlowDropRepeatedSpec extends StreamSpec("""
     "remove duplicated elements" in {
       Source(List(1, 2, 2, 3, 3, 1, 4))
         .dropRepeated()
-        .runWith(TestSink.probe[Int])
+        .runWith(TestSink[Int]())
         .request(7)
         .expectNext(1, 2, 3, 1, 4)
         .expectComplete()
@@ -42,7 +42,7 @@ class FlowDropRepeatedSpec extends StreamSpec("""
     "only distinct with the previous element" in {
       Source(List(1, 2, 2, 3, 2, 3))
         .dropRepeated(_ == _)
-        .runWith(TestSink.probe[Int])
+        .runWith(TestSink[Int]())
         .request(6)
         .expectNext(1, 2, 3, 2, 3)
         .expectComplete()
@@ -55,7 +55,7 @@ class FlowDropRepeatedSpec extends StreamSpec("""
           else a == b
         })
         .withAttributes(supervisionStrategy(resumingDecider))
-        .runWith(TestSink.probe[Int])
+        .runWith(TestSink[Int]())
         .request(7)
         .expectNext(1, 3, 1, 4)
         .expectComplete()
@@ -68,7 +68,7 @@ class FlowDropRepeatedSpec extends StreamSpec("""
           else a == b
         })
         .withAttributes(supervisionStrategy(restartingDecider))
-        .runWith(TestSink.probe[Int])
+        .runWith(TestSink[Int]())
         .request(6)
         .expectNext(1, 2, 3, 1, 4)
         .expectComplete()

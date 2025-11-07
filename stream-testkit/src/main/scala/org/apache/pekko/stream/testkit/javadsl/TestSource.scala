@@ -23,15 +23,15 @@ import pekko.stream.testkit._
 object TestSource {
 
   /**
-   * A Source that materializes to a [[pekko.stream.testkit.TestPublisher.Probe]].
+   * A Source that materializes to a [[pekko.stream.testkit.TestPublisher]].
    */
-  def probe[T](system: ActorSystem): Source[T, TestPublisher.Probe[T]] =
-    new Source(scaladsl.TestSource.probe[T](system))
+  @deprecated("Use `TestSource.create` with ClassicActorSystemProvider instead of ActorSystem", "1.3.0")
+  def probe[T](system: ActorSystem): Source[T, TestPublisher.Probe[T]] = create(system)
 
   /**
-   * A Source that materializes to a [[pekko.stream.testkit.TestPublisher.Probe]].
+   * A Source that materializes to a [[pekko.stream.testkit.TestPublisher]].
    */
   def create[T](system: ClassicActorSystemProvider): Source[T, TestPublisher.Probe[T]] =
-    probe(system.classicSystem)
+    new Source(scaladsl.TestSource[T]()(system))
 
 }

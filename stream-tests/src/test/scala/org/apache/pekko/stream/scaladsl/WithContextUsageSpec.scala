@@ -37,7 +37,7 @@ class WithContextUsageSpec extends StreamSpec {
 
       src
         .map { case (e, _) => e }
-        .runWith(TestSink.probe[Record])
+        .runWith(TestSink[Record]())
         .request(input.size)
         .expectNextN(expectedRecords)
         .expectComplete()
@@ -63,7 +63,7 @@ class WithContextUsageSpec extends StreamSpec {
 
       src
         .map { case (e, _) => e }
-        .runWith(TestSink.probe[Record])
+        .runWith(TestSink[Record]())
         .request(input.size)
         .expectNextN(expectedRecords)
         .expectComplete()
@@ -89,7 +89,7 @@ class WithContextUsageSpec extends StreamSpec {
 
       src
         .map { case (e, _) => e }
-        .runWith(TestSink.probe[Record])
+        .runWith(TestSink[Record]())
         .request(expectedRecords.size)
         .expectNextN(expectedRecords)
         .expectComplete()
@@ -115,7 +115,7 @@ class WithContextUsageSpec extends StreamSpec {
 
       src
         .map { case (e, _) => e }
-        .runWith(TestSink.probe[MultiRecord])
+        .runWith(TestSink[MultiRecord]())
         .request(expectedMultiRecords.size)
         .expectNextN(expectedMultiRecords)
         .expectComplete()
@@ -150,7 +150,7 @@ class WithContextUsageSpec extends StreamSpec {
 
       src
         .map { case (e, _) => e }
-        .runWith(TestSink.probe[MultiRecord])
+        .runWith(TestSink[MultiRecord]())
         .request(expectedMultiRecords.size)
         .expectNextN(expectedMultiRecords)
         .expectComplete()
@@ -182,7 +182,6 @@ class WithContextUsageSpec extends StreamSpec {
 
   def commitOffsets = commit[Offset](Offset.Uninitialized)
   def commit[Ctx](uninitialized: Ctx): Sink[Ctx, Probe[Ctx]] = {
-    val testSink = TestSink.probe[Ctx]
     Flow[Ctx]
       .statefulMap(() => uninitialized)((prevCtx, ctx) => {
           if (prevCtx != uninitialized && ctx != prevCtx) {
@@ -192,7 +191,7 @@ class WithContextUsageSpec extends StreamSpec {
           }
         }, _ => None)
       .collect { case Some(ctx) => ctx }
-      .toMat(testSink)(Keep.right)
+      .toMat(TestSink[Ctx]())(Keep.right)
   }
 }
 

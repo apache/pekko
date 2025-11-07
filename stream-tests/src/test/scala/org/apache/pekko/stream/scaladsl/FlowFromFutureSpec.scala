@@ -46,7 +46,7 @@ class FlowFromFutureSpec extends StreamSpec {
     "fails flow from already failed Future even no demands" in {
       val ex = new RuntimeException("test") with NoStackTrace
       val sub = Source.fromFuture(Future.failed[Int](ex))
-        .runWith(TestSink.probe)
+        .runWith(TestSink())
       sub.expectSubscriptionAndError(ex)
     }
 

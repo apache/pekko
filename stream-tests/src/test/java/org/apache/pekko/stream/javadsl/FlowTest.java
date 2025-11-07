@@ -171,7 +171,7 @@ public class FlowTest extends StreamTest {
   public void mustBeAbleToUseGroupedAdjacentBy() {
     Source.from(Arrays.asList("Hello", "Hi", "Greetings", "Hey"))
         .groupedAdjacentBy(str -> str.charAt(0))
-        .runWith(TestSink.probe(system), system)
+        .runWith(TestSink.create(system), system)
         .request(4)
         .expectNext(Lists.newArrayList("Hello", "Hi"))
         .expectNext(Lists.newArrayList("Greetings"))
@@ -183,7 +183,7 @@ public class FlowTest extends StreamTest {
   public void mustBeAbleToUseGroupedAdjacentByWeighted() {
     Source.from(Arrays.asList("Hello", "HiHi", "Hi", "Hi", "Greetings", "Hey"))
         .groupedAdjacentByWeighted(str -> str.charAt(0), 4, str -> (long) str.length())
-        .runWith(TestSink.probe(system), system)
+        .runWith(TestSink.create(system), system)
         .request(6)
         .expectNext(Lists.newArrayList("Hello"))
         .expectNext(Lists.newArrayList("HiHi"))
@@ -1382,7 +1382,7 @@ public class FlowTest extends StreamTest {
               }
             })
         .via(Flow.of(Integer.class).onErrorComplete())
-        .runWith(TestSink.probe(system), system)
+        .runWith(TestSink.create(system), system)
         .request(2)
         .expectNext(1)
         .expectComplete();
@@ -1402,7 +1402,7 @@ public class FlowTest extends StreamTest {
                       }
                     })
                 .onErrorContinue(error -> logger().error(error, "Error occurred")))
-        .runWith(TestSink.probe(system), system)
+        .runWith(TestSink.create(system), system)
         .request(2)
         .expectNext(1)
         .expectComplete();
@@ -1420,7 +1420,7 @@ public class FlowTest extends StreamTest {
               }
             })
         .via(Flow.of(Integer.class).onErrorResume(e -> Source.single(0)))
-        .runWith(TestSink.probe(system), system)
+        .runWith(TestSink.create(system), system)
         .request(2)
         .expectNext(1)
         .expectNext(0)
@@ -1439,7 +1439,7 @@ public class FlowTest extends StreamTest {
               }
             })
         .via(Flow.of(Integer.class).onErrorComplete(IllegalArgumentException.class))
-        .runWith(TestSink.probe(system), system)
+        .runWith(TestSink.create(system), system)
         .request(2)
         .expectNext(1)
         .expectComplete();
@@ -1461,7 +1461,7 @@ public class FlowTest extends StreamTest {
                 .onErrorContinue(
                     IllegalArgumentException.class,
                     error -> logger().error(error, "Error occurred")))
-        .runWith(TestSink.probe(system), system)
+        .runWith(TestSink.create(system), system)
         .request(2)
         .expectNext(1)
         .expectComplete();
@@ -1481,7 +1481,7 @@ public class FlowTest extends StreamTest {
         .via(
             Flow.of(Integer.class)
                 .onErrorResume(IllegalArgumentException.class, e -> Source.single(0)))
-        .runWith(TestSink.probe(system), system)
+        .runWith(TestSink.create(system), system)
         .request(2)
         .expectNext(1)
         .expectNext(0)
@@ -1501,7 +1501,7 @@ public class FlowTest extends StreamTest {
               }
             })
         .via(Flow.of(Integer.class).onErrorComplete(TimeoutException.class))
-        .runWith(TestSink.probe(system), system)
+        .runWith(TestSink.create(system), system)
         .request(2)
         .expectNext(1)
         .expectError(ex);
@@ -1523,7 +1523,7 @@ public class FlowTest extends StreamTest {
             Flow.of(Integer.class)
                 .onErrorContinue(
                     TimeoutException.class, error -> logger().error(error, "Error occurred")))
-        .runWith(TestSink.probe(system), system)
+        .runWith(TestSink.create(system), system)
         .request(2)
         .expectNext(1)
         .expectError(ex);
@@ -1542,7 +1542,7 @@ public class FlowTest extends StreamTest {
               }
             })
         .via(Flow.of(Integer.class).onErrorResume(TimeoutException.class, e -> Source.single(0)))
-        .runWith(TestSink.probe(system), system)
+        .runWith(TestSink.create(system), system)
         .request(2)
         .expectNext(1)
         .expectError(ex);
@@ -1560,7 +1560,7 @@ public class FlowTest extends StreamTest {
               }
             })
         .via(Flow.of(Integer.class).onErrorComplete(ex -> ex.getMessage().contains("Boom")))
-        .runWith(TestSink.probe(system), system)
+        .runWith(TestSink.create(system), system)
         .request(2)
         .expectNext(1)
         .expectComplete();
@@ -1582,7 +1582,7 @@ public class FlowTest extends StreamTest {
                 .onErrorContinue(
                     ex -> ex.getMessage().contains("Boom"),
                     error -> logger().error(error, "Error occurred")))
-        .runWith(TestSink.probe(system), system)
+        .runWith(TestSink.create(system), system)
         .request(2)
         .expectNext(1)
         .expectComplete();
@@ -1602,7 +1602,7 @@ public class FlowTest extends StreamTest {
         .via(
             Flow.of(Integer.class)
                 .onErrorResume(ex -> ex.getMessage().contains("Boom"), e -> Source.single(0)))
-        .runWith(TestSink.probe(system), system)
+        .runWith(TestSink.create(system), system)
         .request(2)
         .expectNext(1)
         .expectNext(0)
@@ -1621,7 +1621,7 @@ public class FlowTest extends StreamTest {
 
     source
         .via(flow)
-        .runWith(TestSink.probe(system), system)
+        .runWith(TestSink.create(system), system)
         .request(2)
         .expectNext(head)
         .expectError(boom);
@@ -1635,7 +1635,7 @@ public class FlowTest extends StreamTest {
             .mapError(NoSuchElementException.class, IllegalArgumentException::new);
 
     final Throwable actual =
-        source.via(flow).runWith(TestSink.probe(system), system).request(1).expectError();
+        source.via(flow).runWith(TestSink.create(system), system).request(1).expectError();
     org.junit.Assert.assertTrue(actual instanceof IndexOutOfBoundsException);
   }
 
@@ -1651,7 +1651,7 @@ public class FlowTest extends StreamTest {
 
     source
         .via(flow)
-        .runWith(TestSink.probe(system), system)
+        .runWith(TestSink.create(system), system)
         .request(2)
         .expectNext(head)
         .expectError(boom);

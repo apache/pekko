@@ -195,7 +195,7 @@ class BoundedSourceQueueSpec extends StreamSpec("""pekko.loglevel = debug
       // this test verifies that the wakeup signal is triggered correctly
       val burstSize = 100
       val (sendQueue, downstream) =
-        Source.fromGraph(Source.queue[Int](128)).grouped(burstSize).async.toMat(TestSink.probe)(Keep.both).run()
+        Source.fromGraph(Source.queue[Int](128)).grouped(burstSize).async.toMat(TestSink())(Keep.both).run()
 
       downstream.request(10)
 
@@ -230,7 +230,7 @@ class BoundedSourceQueueSpec extends StreamSpec("""pekko.loglevel = debug
         queue.offer("b")
         queue.complete()
       })
-        .toMat(TestSink.probe[String])(Keep.right)
+        .toMat(TestSink[String]())(Keep.right)
         .run()
         .ensureSubscription()
         .request(2)

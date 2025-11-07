@@ -526,7 +526,7 @@ class JsonFramingSpec extends PekkoSpec {
         """{ "name": "jack" }""",
         """{ "name": "very very long name somehow. how did this happen?" }""").map(s => ByteString(s))
 
-      val probe = Source(input).via(JsonFraming.objectScanner(48)).runWith(TestSink.probe)
+      val probe = Source(input).via(JsonFraming.objectScanner(48)).runWith(TestSink())
 
       probe.ensureSubscription()
       probe
@@ -539,7 +539,7 @@ class JsonFramingSpec extends PekkoSpec {
 
     "fail when completing inside an object" in {
       val input = ByteString("{")
-      val probe = Source.single(input).via(JsonFraming.objectScanner(48)).runWith(TestSink.probe)
+      val probe = Source.single(input).via(JsonFraming.objectScanner(48)).runWith(TestSink())
 
       probe.ensureSubscription()
       probe.request(1).expectError() shouldBe a[PartialObjectException]
@@ -547,7 +547,7 @@ class JsonFramingSpec extends PekkoSpec {
 
     "complete when completing inside an empty chars" in {
       val input = ByteString("   ")
-      val probe = Source.single(input).via(JsonFraming.objectScanner(48)).runWith(TestSink.probe)
+      val probe = Source.single(input).via(JsonFraming.objectScanner(48)).runWith(TestSink())
 
       probe.ensureSubscription()
       probe.request(1).expectComplete()
@@ -555,7 +555,7 @@ class JsonFramingSpec extends PekkoSpec {
 
     "complete when completing with an empty byte string" in {
       val input = ByteString()
-      val probe = Source.single(input).via(JsonFraming.objectScanner(48)).runWith(TestSink.probe)
+      val probe = Source.single(input).via(JsonFraming.objectScanner(48)).runWith(TestSink())
 
       probe.ensureSubscription()
       probe.request(1).expectComplete()

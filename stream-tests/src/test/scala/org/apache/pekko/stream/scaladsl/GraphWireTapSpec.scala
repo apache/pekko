@@ -24,7 +24,7 @@ class GraphWireTapSpec extends StreamSpec("""
   "A wire tap" must {
 
     "wireTap must broadcast to the tap" in {
-      val tp, mp = TestSink.probe[Int](system)
+      val tp, mp = TestSink[Int]()
       val (tps, mps) = Source(1 to 2).wireTapMat(tp)(Keep.right).toMat(mp)(Keep.both).run()
       tps.request(2)
       mps.requestNext(1)
@@ -35,7 +35,7 @@ class GraphWireTapSpec extends StreamSpec("""
     }
 
     "wireTap must drop elements while the tap has no demand, buffering up to one element" in {
-      val tp, mp = TestSink.probe[Int](system)
+      val tp, mp = TestSink[Int]()
       val (tps, mps) = Source(1 to 6).wireTapMat(tp)(Keep.right).toMat(mp)(Keep.both).run()
       mps.request(3)
       mps.expectNext(1, 2, 3)
@@ -49,7 +49,7 @@ class GraphWireTapSpec extends StreamSpec("""
     }
 
     "wireTap must cancel if main sink cancels" in {
-      val tp, mp = TestSink.probe[Int](system)
+      val tp, mp = TestSink[Int]()
       val (tps, mps) = Source(1 to 6).wireTapMat(tp)(Keep.right).toMat(mp)(Keep.both).run()
       tps.request(6)
       mps.cancel()
@@ -57,7 +57,7 @@ class GraphWireTapSpec extends StreamSpec("""
     }
 
     "wireTap must continue if tap sink cancels" in {
-      val tp, mp = TestSink.probe[Int](system)
+      val tp, mp = TestSink[Int]()
       val (tps, mps) = Source(1 to 6).wireTapMat(tp)(Keep.right).toMat(mp)(Keep.both).run()
       tps.cancel()
       mps.request(6)

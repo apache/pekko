@@ -39,10 +39,10 @@ class SourceSinkSpec extends StreamSpec("""
     }
 
     "Can cancel when down stream cancel" in {
-      val (pub, source) = TestSource.probe[Int]
+      val (pub, source) = TestSource[Int]()
         .toMat(Sink.source)(Keep.both)
         .run()
-      val sub = source.runWith(TestSink.probe[Int])
+      val sub = source.runWith(TestSink[Int]())
       pub.ensureSubscription()
       sub.ensureSubscription()
       sub.cancel()
@@ -51,7 +51,7 @@ class SourceSinkSpec extends StreamSpec("""
 
     "Can timeout when no subscription" in {
       import scala.concurrent.duration._
-      val (pub, source) = TestSource.probe[Int]
+      val (pub, source) = TestSource[Int]()
         .toMat(Sink.source)(Keep.both)
         .addAttributes(Attributes(
           StreamSubscriptionTimeout(
@@ -62,14 +62,14 @@ class SourceSinkSpec extends StreamSpec("""
         .run()
       pub.expectCancellation()
       Thread.sleep(1000) // wait a bit
-      val sub = source.runWith(TestSink.probe)
+      val sub = source.runWith(TestSink())
       sub.expectSubscription()
       sub.expectError()
     }
 
     "Can backpressure" in {
       Source.iterate(1)(_ => true, _ + 1)
-        .runWith(Sink.source).runWith(TestSink.probe[Int])
+        .runWith(Sink.source).runWith(TestSink[Int]())
         .request(3)
         .expectNext(1, 2, 3)
         .request(2)
