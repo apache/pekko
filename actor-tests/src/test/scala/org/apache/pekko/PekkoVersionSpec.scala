@@ -29,21 +29,36 @@ class PekkoVersionSpec extends AnyWordSpec with Matchers {
     "succeed if version is RC and ok" in {
       PekkoVersion.require("PekkoVersionSpec", "2.5.6", "2.5.7-RC10")
       PekkoVersion.require("PekkoVersionSpec", "2.6.0-RC1", "2.6.0-RC1")
+      PekkoVersion.require("PekkoVersionSpec", "2.6.0-RC1", "2.6.0-RC2")
+      PekkoVersion.require("PekkoVersionSpec", "2.6.0-RC1", "2.7.0")
     }
 
     "fail if version is RC and not ok" in {
       intercept[UnsupportedPekkoVersion] {
         PekkoVersion.require("PekkoVersionSpec", "2.5.6", "2.5.6-RC1")
       }
+      intercept[UnsupportedPekkoVersion] {
+        PekkoVersion.require("PekkoVersionSpec", "2.5.6-RC2", "2.5.6-RC1")
+      }
     }
 
     "succeed if version is milestone and ok" in {
       PekkoVersion.require("PekkoVersionSpec", "2.5.6", "2.5.7-M10")
+      PekkoVersion.require("PekkoVersionSpec", "2.5.7-M9", "2.5.7-M9")
+      PekkoVersion.require("PekkoVersionSpec", "2.5.7-M9", "2.5.7-M10")
+      PekkoVersion.require("PekkoVersionSpec", "2.5.7-M9", "2.5.8")
+      PekkoVersion.require("PekkoVersionSpec", "2.5.7-M9", "2.5.7-RC1")
     }
 
     "fail if version is milestone and not ok" in {
       intercept[UnsupportedPekkoVersion] {
         PekkoVersion.require("PekkoVersionSpec", "2.5.6", "2.5.6-M1")
+      }
+      intercept[UnsupportedPekkoVersion] {
+        PekkoVersion.require("PekkoVersionSpec", "2.5.7-M10", "2.5.7-M9")
+      }
+      intercept[UnsupportedPekkoVersion] {
+        PekkoVersion.require("PekkoVersionSpec", "2.5.7-RC1", "2.5.7-M9")
       }
     }
 
