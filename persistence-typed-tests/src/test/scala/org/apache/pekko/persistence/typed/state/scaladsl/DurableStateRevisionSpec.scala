@@ -18,12 +18,15 @@ import com.typesafe.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
+import pekko.actor.Dropped
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
+import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.testkit.typed.scaladsl.TestProbe
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.Behavior
-import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.scaladsl.{ ActorContext, Behaviors }
+import pekko.actor.typed.scaladsl.adapter._
 import pekko.persistence.testkit.PersistenceTestKitDurableStateStorePlugin
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.state.RecoveryCompleted
@@ -41,38 +44,45 @@ class DurableStateRevisionSpec
     with AnyWordSpecLike
     with LogCapturing {
 
+  private def durableState(ctx: ActorContext[String], pid: PersistenceId, probe: ActorRef[String]) = {
+    DurableStateBehavior[String, String](
+      pid,
+      "",
+      (state, command) =>
+        state match {
+          case "stashing" =>
+            command match {
+              case "unstash" =>
+                probe ! s"${DurableStateBehavior.lastSequenceNumber(ctx)} unstash"
+                Effect.persist("normal").thenUnstashAll()
+              case _ =>
+                Effect.stash()
+            }
+          case _ =>
+            command match {
+              case "cmd" =>
+                probe ! s"${DurableStateBehavior.lastSequenceNumber(ctx)} onCommand"
+                Effect.persist("state").thenRun(_ => probe ! s"${DurableStateBehavior.lastSequenceNumber(ctx)} thenRun")
+              case "stash" =>
+                probe ! s"${DurableStateBehavior.lastSequenceNumber(ctx)} stash"
+                Effect.persist("stashing")
+              case "snapshot" =>
+                Effect.persist("snapshot")
+            }
+        }).receiveSignal {
+      case (_, RecoveryCompleted) =>
+        probe ! s"${DurableStateBehavior.lastSequenceNumber(ctx)} onRecoveryComplete"
+    }
+  }
+
   private def behavior(pid: PersistenceId, probe: ActorRef[String]): Behavior[String] =
-    Behaviors.setup(ctx =>
-      DurableStateBehavior[String, String](
-        pid,
-        "",
-        (state, command) =>
-          state match {
-            case "stashing" =>
-              command match {
-                case "unstash" =>
-                  probe ! s"${DurableStateBehavior.lastSequenceNumber(ctx)} unstash"
-                  Effect.persist("normal").thenUnstashAll()
-                case _ =>
-                  Effect.stash()
-              }
-            case _ =>
-              command match {
-                case "cmd" =>
-                  probe ! s"${DurableStateBehavior.lastSequenceNumber(ctx)} onCommand"
-                  Effect
-                    .persist("state")
-                    .thenRun(_ => probe ! s"${DurableStateBehavior.lastSequenceNumber(ctx)} thenRun")
-                case "stash" =>
-                  probe ! s"${DurableStateBehavior.lastSequenceNumber(ctx)} stash"
-                  Effect.persist("stashing")
-                case "snapshot" =>
-                  Effect.persist("snapshot")
-              }
-          }).receiveSignal {
-        case (_, RecoveryCompleted) =>
-          probe ! s"${DurableStateBehavior.lastSequenceNumber(ctx)} onRecoveryComplete"
-      })
+    Behaviors.setup(ctx => durableState(ctx, pid, probe))
+
+  private def behaviorWithCustomStashSize(
+      pid: PersistenceId,
+      probe: ActorRef[String],
+      customStashSize: Int): Behavior[String] =
+    Behaviors.setup(ctx => durableState(ctx, pid, probe).withStashCapacity(customStashSize))
 
   "The revision number" must {
 
@@ -134,6 +144,39 @@ class DurableStateRevisionSpec
       probe.expectMessage("1 thenRun")
       probe.expectMessage("2 onCommand") // second command
       probe.expectMessage("3 thenRun")
+    }
+
+    "discard when custom stash has reached limit with default dropped setting" in {
+      val customLimit = 100
+      val probe = TestProbe[AnyRef]()
+      system.toClassic.eventStream.subscribe(probe.ref.toClassic, classOf[Dropped])
+      val durableState = spawn(behaviorWithCustomStashSize(PersistenceId.ofUniqueId("pid-4"), probe.ref, customLimit))
+      probe.expectMessage("0 onRecoveryComplete")
+
+      durableState ! "stash"
+
+      probe.expectMessage("0 stash")
+
+      LoggingTestKit.warn("Stash buffer is full, dropping message").expect {
+        (0 to customLimit).foreach { _ =>
+          durableState ! s"cmd"
+        }
+      }
+      probe.expectMessageType[Dropped]
+
+      durableState ! "unstash"
+      probe.expectMessage("1 unstash")
+
+      val lastSequenceId = 2
+      (lastSequenceId until customLimit + lastSequenceId).foreach { n =>
+        probe.expectMessage(s"$n onCommand")
+        probe.expectMessage(s"${n + 1} thenRun") // after persisting
+      }
+
+      durableState ! s"cmd"
+      probe.expectMessage(s"${102} onCommand")
+      probe.expectMessage(s"${103} thenRun")
+
     }
   }
 }

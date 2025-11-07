@@ -62,7 +62,8 @@ private[pekko] final case class DurableStateBehaviorImpl[Command, State](
     tag: String = "",
     snapshotAdapter: SnapshotAdapter[State] = NoOpSnapshotAdapter.instance[State],
     supervisionStrategy: SupervisorStrategy = SupervisorStrategy.stop,
-    override val signalHandler: PartialFunction[(State, Signal), Unit] = PartialFunction.empty)
+    override val signalHandler: PartialFunction[(State, Signal), Unit] = PartialFunction.empty,
+    customStashCapacity: Option[Int] = None)
     extends DurableStateBehavior[Command, State] {
 
   if (persistenceId eq null)
@@ -78,7 +79,7 @@ private[pekko] final case class DurableStateBehaviorImpl[Command, State](
       case _                                => false
     }
     if (!hasCustomLoggerName) ctx.setLoggerName(loggerClass)
-    val settings = DurableStateSettings(ctx.system, durableStateStorePluginId.getOrElse(""))
+    val settings = DurableStateSettings(ctx.system, durableStateStorePluginId.getOrElse(""), customStashCapacity)
 
     // stashState outside supervise because StashState should survive restarts due to persist failures
     val stashState = new StashState(ctx.asInstanceOf[ActorContext[InternalProtocol]], settings)
@@ -177,6 +178,8 @@ private[pekko] final case class DurableStateBehaviorImpl[Command, State](
   override def onPersistFailure(backoffStrategy: BackoffSupervisorStrategy): DurableStateBehavior[Command, State] =
     copy(supervisionStrategy = backoffStrategy)
 
+  override def withStashCapacity(size: Int): DurableStateBehavior[Command, State] =
+    copy(customStashCapacity = Some(size))
 }
 
 /** Protocol used internally by the DurableStateBehavior. */
