@@ -119,7 +119,8 @@ private[pekko] final case class EventSourcedBehaviorImpl[Command, Event, State](
     supervisionStrategy: SupervisorStrategy = SupervisorStrategy.stop,
     override val signalHandler: PartialFunction[(State, Signal), Unit] = PartialFunction.empty,
     replication: Option[ReplicationSetup] = None,
-    publishEvents: Boolean = true)
+    publishEvents: Boolean = true,
+    customStashCapacity: Option[Int] = None)
     extends EventSourcedBehavior[Command, Event, State] {
 
   import EventSourcedBehaviorImpl.WriterIdentity
@@ -138,7 +139,7 @@ private[pekko] final case class EventSourcedBehaviorImpl[Command, Event, State](
     }
     if (!hasCustomLoggerName) ctx.setLoggerName(loggerClass)
     val settings = EventSourcedSettings(ctx.system, journalPluginId.getOrElse(""), snapshotPluginId.getOrElse(""),
-      journalPluginConfig, snapshotPluginConfig)
+      journalPluginConfig, snapshotPluginConfig, customStashCapacity)
 
     // stashState outside supervise because StashState should survive restarts due to persist failures
     val stashState = new StashState(ctx.asInstanceOf[ActorContext[InternalProtocol]], settings)
@@ -301,6 +302,9 @@ private[pekko] final case class EventSourcedBehaviorImpl[Command, Event, State](
   override def withEventPublishing(enabled: Boolean): EventSourcedBehavior[Command, Event, State] = {
     copy(publishEvents = enabled)
   }
+
+  override def withStashCapacity(size: Int): EventSourcedBehavior[Command, Event, State] =
+    copy(customStashCapacity = Some(size))
 
   override private[pekko] def withReplication(
       context: ReplicationContextImpl): EventSourcedBehavior[Command, Event, State] = {

@@ -39,6 +39,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class BasicPersistentBehaviorTest {
@@ -424,6 +425,12 @@ public class BasicPersistentBehaviorTest {
           throw new RuntimeException("TODO: process the event return the next state");
         };
       }
+
+      // #custom-stash-buffer
+      public Optional<Integer> stashCapacity() {
+        return Optional.of(100);
+      }
+      // #custom-stash-buffer
 
       // #wrapPersistentBehavior
       @Override

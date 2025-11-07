@@ -242,6 +242,13 @@ object EventSourcedBehavior {
   def withEventPublishing(enabled: Boolean): EventSourcedBehavior[Command, Event, State]
 
   /**
+   * Define a custom stash capacity per entity.
+   * If not defined, the default `pekko.persistence.typed.stash-capacity` will be used.
+   * @since 1.3.0
+   */
+  def withStashCapacity(size: Int): EventSourcedBehavior[Command, Event, State]
+
+  /**
    * INTERNAL API
    */
   @InternalApi
