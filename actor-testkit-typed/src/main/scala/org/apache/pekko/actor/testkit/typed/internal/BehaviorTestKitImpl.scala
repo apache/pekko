@@ -24,8 +24,8 @@ import org.apache.pekko
 import pekko.actor.ActorPath
 import pekko.actor.testkit.typed.{ CapturedLogEvent, Effect }
 import pekko.actor.testkit.typed.Effect._
-import pekko.actor.typed.internal.AdaptWithRegisteredMessageAdapter
 import pekko.actor.typed.{ ActorRef, Behavior, BehaviorInterceptor, PostStop, Signal, TypedActorContext }
+import pekko.actor.typed.internal.{ AdaptMessage, AdaptWithRegisteredMessageAdapter }
 import pekko.actor.typed.receptionist.Receptionist
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.annotation.InternalApi
@@ -44,7 +44,7 @@ private[pekko] final class BehaviorTestKitImpl[T](
 
   // really this should be private, make so when we port out tests that need it
   private[pekko] val context: EffectfulActorContext[T] =
-    new EffectfulActorContext[T](system, _path, () => currentBehavior)
+    new EffectfulActorContext[T](system, _path, () => currentBehavior, this)
 
   private[pekko] def as[U]: BehaviorTestKitImpl[U] = this.asInstanceOf[BehaviorTestKitImpl[U]]
 
@@ -204,6 +204,11 @@ private[pekko] object BehaviorTestKitImpl {
 
           val adaptedMsg = fn(msgToAdapt)
           target.apply(ctx, adaptedMsg)
+
+        case AdaptMessage(msgToAdapt, messageAdapter) =>
+          val adaptedMsg = messageAdapter(msgToAdapt)
+          target.apply(ctx, adaptedMsg)
+
         case t => target.apply(ctx, t)
       }
     }
