@@ -15,7 +15,6 @@ package jdocs.stream.operators.source;
 
 // #imports
 import java.util.concurrent.Flow.Publisher;
-import java.util.concurrent.Flow.Subscriber;
 import org.apache.pekko.NotUsed;
 // #imports
 import org.apache.pekko.stream.javadsl.Source;

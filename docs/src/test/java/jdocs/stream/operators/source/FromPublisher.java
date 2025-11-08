@@ -41,8 +41,7 @@ public interface FromPublisher {
       // A new subscriber will subscribe to the supplied publisher for each
       // materialization, so depending on whether the database client supports
       // this the Source can be materialized more than once.
-      return Source.<Row>fromPublisher(databaseClient.fetchRows())
-          .map(row -> row.getField("name"));
+      return Source.<Row>fromPublisher(databaseClient.fetchRows()).map(row -> row.getField("name"));
     }
   }
   // #example
