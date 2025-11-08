@@ -14,19 +14,12 @@
 package org.apache.pekko.stream.testkit.javadsl
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
 import pekko.actor.ClassicActorSystemProvider
 import pekko.stream.javadsl.Source
 import pekko.stream.testkit._
 
 /** Java API */
 object TestSource {
-
-  /**
-   * A Source that materializes to a [[pekko.stream.testkit.TestPublisher]].
-   */
-  @deprecated("Use `TestSource.create` with ClassicActorSystemProvider instead of ActorSystem", "1.3.0")
-  def probe[T](system: ActorSystem): Source[T, TestPublisher.Probe[T]] = create(system)
 
   /**
    * A Source that materializes to a [[pekko.stream.testkit.TestPublisher]].

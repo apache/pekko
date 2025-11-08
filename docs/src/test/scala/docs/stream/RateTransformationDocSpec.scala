@@ -67,7 +67,7 @@ class RateTransformationDocSpec extends PekkoSpec {
     val lastFlow = Flow[Double].extrapolate(Iterator.continually(_))
     // #extrapolate-last
 
-    val (probe, fut) = TestSource[Double].via(lastFlow).grouped(10).toMat(Sink.head)(Keep.both).run()
+    val (probe, fut) = TestSource[Double]().via(lastFlow).grouped(10).toMat(Sink.head)(Keep.both).run()
 
     probe.sendNext(1.0)
     val extrapolated = fut.futureValue
@@ -81,7 +81,7 @@ class RateTransformationDocSpec extends PekkoSpec {
     val seedFlow = Flow[Double].extrapolate(Iterator.continually(_), Some(initial))
     // #extrapolate-seed
 
-    val fut = TestSource[Double].via(seedFlow).grouped(10).runWith(Sink.head)
+    val fut = TestSource[Double]().via(seedFlow).grouped(10).runWith(Sink.head)
 
     val extrapolated = fut.futureValue
     extrapolated.size shouldBe 10
@@ -97,7 +97,7 @@ class RateTransformationDocSpec extends PekkoSpec {
       case (d, _) => latch.countDown(); Iterator.from(1).map(d -> _)
     }
 
-    val (pub, sub) = TestSource[Double].via(realDriftFlow).toMat(TestSink[(Double, Int)]())(Keep.both).run()
+    val (pub, sub) = TestSource[Double]().via(realDriftFlow).toMat(TestSink[(Double, Int)]())(Keep.both).run()
 
     sub.request(1)
     pub.sendNext(1.0)
@@ -118,7 +118,7 @@ class RateTransformationDocSpec extends PekkoSpec {
     val latch = TestLatch(2)
     val realDriftFlow = Flow[Double].expand(d => { latch.countDown(); Iterator.from(0).map(d -> _) })
 
-    val (pub, sub) = TestSource[Double].via(realDriftFlow).toMat(TestSink[(Double, Int)]())(Keep.both).run()
+    val (pub, sub) = TestSource[Double]().via(realDriftFlow).toMat(TestSink[(Double, Int)]())(Keep.both).run()
 
     sub.request(1)
     pub.sendNext(1.0)
