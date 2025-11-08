@@ -51,6 +51,7 @@ These built-in sinks are available from @scala[`org.apache.pekko.stream.scaladsl
 
 | |Operator|Description|
 |--|--|--|
+|Sink|<a name="asjavapublisher"></a>@ref[asPublisher](Sink/asJavaPublisher.md)|Integration with Java Flow, materializes into a `java.util.concurrent.Flow.Publisher`.|
 |Sink|<a name="aspublisher"></a>@ref[asPublisher](Sink/asPublisher.md)|Integration with Reactive Streams, materializes into a `org.reactivestreams.Publisher`.|
 |Sink|<a name="cancelled"></a>@ref[cancelled](Sink/cancelled.md)|Immediately cancel the stream|
 |Sink|<a name="collect"></a>@ref[collect](Sink/collect.md)|Collect all input elements using a Java @javadoc[Collector](java.util.stream.Collector).|
@@ -410,6 +411,7 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 * [askWithContext](ActorFlow/askWithContext.md)
 * [askWithStatus](ActorFlow/askWithStatus.md)
 * [askWithStatusAndContext](ActorFlow/askWithStatusAndContext.md)
+* [asJavaPublisher](Sink/asJavaPublisher.md)
 * [asOutputStream](StreamConverters/asOutputStream.md)
 * [asPublisher](Sink/asPublisher.md)
 * [asSourceWithContext](Source/asSourceWithContext.md)
