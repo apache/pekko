@@ -20,7 +20,6 @@ import java.util.concurrent.Flow.Publisher
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream.scaladsl.Source
-import pekko.stream.scaladsl.JavaFlowSupport
 
 //#imports
 
@@ -35,7 +34,7 @@ object AsSubscriber {
 
   // #example
   val rowSource: Source[Row, NotUsed] =
-    JavaFlowSupport.Source.asSubscriber
+    Source.asJavaSubscriber
       .mapMaterializedValue((subscriber: Subscriber[Row]) => {
         // For each materialization, fetch the rows from the database:
         val rows: Publisher[Row] = databaseClient.fetchRows()

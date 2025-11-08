@@ -17,26 +17,10 @@ package jdocs.stream.operators.source;
 import java.util.concurrent.Flow.Publisher;
 import java.util.concurrent.Flow.Subscriber;
 import org.apache.pekko.NotUsed;
-import org.apache.pekko.stream.javadsl.JavaFlowSupport;
 // #imports
 import org.apache.pekko.stream.javadsl.Source;
 
 public interface AsSubscriber {
-  // We are 'faking' the JavaFlowSupport API here so we can include the signature as a snippet in
-  // the API,
-  // because we're not publishing those (jdk9+) classes in our API docs yet.
-  static class JavaFlowSupport {
-    public static final class Source {
-      public
-      // #api
-      static <T> org.apache.pekko.stream.javadsl.Source<T, Subscriber<T>> asSubscriber()
-            // #api
-          {
-        return org.apache.pekko.stream.javadsl.JavaFlowSupport.Source.<T>asSubscriber();
-      }
-    }
-  }
-
   static class Row {
     public String getField(String fieldName) {
       throw new UnsupportedOperationException("Not implemented in sample");
@@ -54,7 +38,7 @@ public interface AsSubscriber {
   // #example
   class Example {
     Source<Row, NotUsed> rowSource =
-        JavaFlowSupport.Source.<Row>asSubscriber()
+        Source.<Row>asJavaSubscriber()
             .mapMaterializedValue(
                 subscriber -> {
                   // For each materialization, fetch the rows from the database:
