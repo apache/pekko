@@ -67,7 +67,7 @@ class FlowStatefulMapConcatSpec extends StreamSpec("""
           }
         })
         .withAttributes(ActorAttributes.supervisionStrategy(Supervision.restartingDecider))
-        .runWith(TestSink.probe[Int])
+        .runWith(TestSink[Int]())
         .request(2)
         .expectNext(1, 1)
         .request(4)
@@ -92,7 +92,7 @@ class FlowStatefulMapConcatSpec extends StreamSpec("""
           }
         })
         .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
-        .runWith(TestSink.probe[Int])
+        .runWith(TestSink[Int]())
         .request(2)
         .expectNext(1, 1)
         .requestNext(4)
@@ -126,7 +126,7 @@ class FlowStatefulMapConcatSpec extends StreamSpec("""
               result
             }
           })
-        .runWith(TestSink.probe[Int])
+        .runWith(TestSink[Int]())
         .request(5)
         .expectNext(1, 2, 3, 4, 5)
         .expectComplete()

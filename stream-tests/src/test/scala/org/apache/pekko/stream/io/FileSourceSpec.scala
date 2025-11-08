@@ -127,7 +127,7 @@ class FileSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
       val (future, p) = FileIO
         .fromPath(testFile, chunkSize)
         .addAttributes(Attributes.inputBuffer(1, 2))
-        .toMat(TestSink.probe)(Keep.both)
+        .toMat(TestSink())(Keep.both)
         .run()(mat)
       p.request(1)
       p.expectNext().utf8String should ===(TestText.splitAt(chunkSize)._1)
@@ -168,7 +168,7 @@ class FileSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
       val (future, p) = FileIO
         .fromPath(testFile, chunkSize)
         .addAttributes(Attributes.inputBuffer(1, 2))
-        .toMat(TestSink.probe)(Keep.both)
+        .toMat(TestSink())(Keep.both)
         .run()
       p.request(1)
       p.expectNext().utf8String should ===(TestText.splitAt(chunkSize)._1)
@@ -264,7 +264,7 @@ class FileSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
       val sys = ActorSystem("dispatcher-testing", UnboundedMailboxConfig)
       val materializer = ActorMaterializer()(sys)
       try {
-        val p = FileIO.fromPath(manyLines).runWith(TestSink.probe)(materializer)
+        val p = FileIO.fromPath(manyLines).runWith(TestSink())(materializer)
 
         materializer
           .asInstanceOf[PhasedFusingActorMaterializer]
@@ -284,7 +284,7 @@ class FileSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
         val p = FileIO
           .fromPath(manyLines)
           .addAttributes(ActorAttributes.dispatcher("pekko.actor.default-dispatcher"))
-          .runWith(TestSink.probe)(materializer)
+          .runWith(TestSink())(materializer)
 
         materializer
           .asInstanceOf[PhasedFusingActorMaterializer]
@@ -299,7 +299,7 @@ class FileSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
     "not signal onComplete more than once" in {
       FileIO
         .fromPath(testFile, 2 * TestText.length)
-        .runWith(TestSink.probe)
+        .runWith(TestSink())
         .requestNext(ByteString(TestText, UTF_8.name))
         .expectComplete()
         .expectNoMessage(1.second)

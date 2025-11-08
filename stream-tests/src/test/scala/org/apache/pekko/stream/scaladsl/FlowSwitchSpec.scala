@@ -66,7 +66,7 @@ class FlowSwitchSpec extends StreamSpec {
 
     "complete if upstream completes after last substream" in {
       val (mainPub, probe) =
-        TestSource.probe[Source[Int, NotUsed]].switchMap(identity).toMat(TestSink.probe)(Keep.both).run()
+        TestSource[Source[Int, NotUsed]]().switchMap(identity).toMat(TestSink())(Keep.both).run()
 
       def nextSubstream(): TestPublisher.Probe[Int] = {
         val p = TestPublisher.probe[Int]()
@@ -139,7 +139,7 @@ class FlowSwitchSpec extends StreamSpec {
     // copied (with modifications) from org.apache.pekko.stream.scaladsl.FlowFlattenMergeSpec
     "cancel substream when failing from main stream" in {
       val (mainPub, probe) =
-        TestSource.probe[Source[Int, NotUsed]].switchMap(identity).toMat(TestSink.probe)(Keep.both).run()
+        TestSource[Source[Int, NotUsed]]().switchMap(identity).toMat(TestSink())(Keep.both).run()
       val subPub = TestPublisher.probe[Int]()
 
       probe.request(1)
@@ -171,7 +171,7 @@ class FlowSwitchSpec extends StreamSpec {
       val p = TestPublisher.probe[Int]()
       val sink = (Source(List(Source.fromPublisher(p))) ++ Source.never)
         .switchMap(identity)
-        .runWith(TestSink.probe)
+        .runWith(TestSink())
       sink.request(1)
       p.expectRequest()
       sink.cancel()
@@ -180,7 +180,7 @@ class FlowSwitchSpec extends StreamSpec {
 
     "cancel previous substream once a next substream arrives" in {
       val (mainPub, probe) =
-        TestSource.probe[Source[Int, NotUsed]].switchMap(identity).toMat(TestSink.probe)(Keep.both).run()
+        TestSource[Source[Int, NotUsed]]().switchMap(identity).toMat(TestSink())(Keep.both).run()
 
       def nextSubstream(): TestPublisher.Probe[Int] = {
         val p = TestPublisher.probe[Int]()
@@ -213,7 +213,7 @@ class FlowSwitchSpec extends StreamSpec {
 
     "respect backpressure when emitting items from substream that is faster than downstream" in {
       val (mainPub, probe) =
-        TestSource.probe[Source[Long, NotUsed]].switchMap(identity).toMat(TestSink.probe)(Keep.both).run()
+        TestSource[Source[Long, NotUsed]]().switchMap(identity).toMat(TestSink())(Keep.both).run()
 
       def nextSubstream(): TestPublisher.Probe[Long] = {
         val p = TestPublisher.probe[Long]()
@@ -245,7 +245,7 @@ class FlowSwitchSpec extends StreamSpec {
 
     "never backpressure to upstream" in {
       val (mainPub, probe) =
-        TestSource.probe[Source[Int, NotUsed]].switchMap(identity).toMat(TestSink.probe)(Keep.both).run()
+        TestSource[Source[Int, NotUsed]]().switchMap(identity).toMat(TestSink())(Keep.both).run()
 
       for (_ <- 0 until 10) {
         for (_ <- 0L until mainPub.expectRequest()) {

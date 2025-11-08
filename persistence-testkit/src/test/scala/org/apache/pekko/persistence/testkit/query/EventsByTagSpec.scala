@@ -118,7 +118,7 @@ class EventsByTagSpec
       val tag = "c-tag"
       val ref = setup("c", Set(tag))
       val src = queries.eventsByTag(tag)
-      val probe = src.map(_.event).runWith(TestSink.probe[Any]).request(5).expectNext("c-1", "c-2", "c-3")
+      val probe = src.map(_.event).runWith(TestSink[Any]()).request(5).expectNext("c-1", "c-2", "c-3")
 
       ref ! Command("c-4", ackProbe.ref)
       ackProbe.expectMessage(Done)
@@ -131,7 +131,7 @@ class EventsByTagSpec
       val tag = "c-tag"
       val ref = setup("c", Set(tag))
       val src = queriesJava.eventsByTag(tag, NoOffset).asScala
-      val probe = src.map(_.event).runWith(TestSink.probe[Any]).request(5).expectNext("c-1", "c-2", "c-3")
+      val probe = src.map(_.event).runWith(TestSink[Any]()).request(5).expectNext("c-1", "c-2", "c-3")
 
       ref ! Command("c-4", ackProbe.ref)
       ackProbe.expectMessage(Done)
@@ -144,7 +144,7 @@ class EventsByTagSpec
       val tag = "d-tag"
       val ref = setupBatched("d", Set(tag))
       val src = queries.eventsByTag(tag)
-      val probe = src.map(_.event).runWith(TestSink.probe[Any]).request(5).expectNext("d-1", "d-2", "d-3")
+      val probe = src.map(_.event).runWith(TestSink[Any]()).request(5).expectNext("d-1", "d-2", "d-3")
 
       ref ! Command("d-4", ackProbe.ref)
       ackProbe.expectMessage(Done)
@@ -158,7 +158,7 @@ class EventsByTagSpec
       val ref = setup("e", Set("e-tag"))
       val src = queries.eventsByTag(tag)
       val probe =
-        src.map(_.event).runWith(TestSink.probe[Any]).request(2).expectNext("e-1", "e-2").expectNoMessage(100.millis)
+        src.map(_.event).runWith(TestSink[Any]()).request(2).expectNext("e-1", "e-2").expectNoMessage(100.millis)
 
       ref ! Command("e-4", ackProbe.ref)
       ackProbe.expectMessage(Done)
@@ -171,7 +171,7 @@ class EventsByTagSpec
       setup("n", Set(tag))
 
       val src = queries.eventsByTag(tag)
-      val probe = src.runWith(TestSink.probe[EventEnvelope])
+      val probe = src.runWith(TestSink[EventEnvelope]())
 
       probe.request(5)
       probe.expectNext().timestamp should be > 0L
@@ -184,7 +184,7 @@ class EventsByTagSpec
       val ackProbe = createTestProbe[Done]()
       val src = queries.eventsByTag(tag)
       val probe =
-        src.map(_.event).runWith(TestSink.probe[Any]).request(2)
+        src.map(_.event).runWith(TestSink[Any]()).request(2)
 
       probe.expectNoMessage(200.millis) // must not complete
 
@@ -203,7 +203,7 @@ class EventsByTagSpec
         .map { ee =>
           (ee.persistenceId, ee.event)
         }
-        .runWith(TestSink.probe[(String, Any)])
+        .runWith(TestSink[(String, Any)]())
 
       val ref2 = setupEmpty("f2", Set(tag))
       ref2 ! Command(Seq("f2-1", "f2-2"), ackProbe.ref)
@@ -223,7 +223,7 @@ class EventsByTagSpec
       def setupProbe(tag: String) = {
         queries.eventsByTag(tag)
           .map(_.event)
-          .runWith(TestSink.probe[Any])
+          .runWith(TestSink[Any]())
       }
       val probe1 = setupProbe(tag1)
       probe1.request(1).expectNoMessage(100.millis)

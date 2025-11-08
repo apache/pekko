@@ -40,7 +40,7 @@ class FlowRecoverWithSpec extends StreamSpec {
           if (a == 3) throw ex else a
         }
         .recoverWith { case _: Throwable => Source(List(0, -1)) }
-        .runWith(TestSink.probe[Int])
+        .runWith(TestSink[Int]())
         .request(2)
         .expectNextN(1 to 2)
         .request(1)
@@ -109,7 +109,7 @@ class FlowRecoverWithSpec extends StreamSpec {
           if (a == 3) throw ex else a
         }
         .recoverWith { case _: Throwable => Source(List(0, -1)) }
-        .runWith(TestSink.probe[Int])
+        .runWith(TestSink[Int]())
         .request(2)
         .expectNextN(1 to 2)
         .request(1)
@@ -123,7 +123,7 @@ class FlowRecoverWithSpec extends StreamSpec {
           if (a == 2) throw ex else a
         }
         .recoverWith { case _: IndexOutOfBoundsException => Source.single(0) }
-        .runWith(TestSink.probe[Int])
+        .runWith(TestSink[Int]())
         .request(1)
         .expectNext(1)
         .request(1)
@@ -136,7 +136,7 @@ class FlowRecoverWithSpec extends StreamSpec {
       }
       src
         .recoverWith { case _: Throwable => src }
-        .runWith(TestSink.probe[Int])
+        .runWith(TestSink[Int]())
         .request(2)
         .expectNextN(1 to 2)
         .request(2)
@@ -150,7 +150,7 @@ class FlowRecoverWithSpec extends StreamSpec {
       Source(1 to 3)
         .map(identity)
         .recoverWith { case _: Throwable => Source.single(0) }
-        .runWith(TestSink.probe[Int])
+        .runWith(TestSink[Int]())
         .request(3)
         .expectNextN(1 to 3)
         .expectComplete()
@@ -161,7 +161,7 @@ class FlowRecoverWithSpec extends StreamSpec {
         .empty[Int]
         .map(identity)
         .recoverWith { case _: Throwable => Source.single(0) }
-        .runWith(TestSink.probe[Int])
+        .runWith(TestSink[Int]())
         .request(3)
         .expectComplete()
     }
@@ -176,7 +176,7 @@ class FlowRecoverWithSpec extends StreamSpec {
             Source(List(11, 22)).map(m => if (m == 22) throw new IllegalArgumentException() else m)
           case t: IllegalArgumentException => Source(List(33, 44))
         }
-        .runWith(TestSink.probe[Int])
+        .runWith(TestSink[Int]())
         .request(2)
         .expectNextN(List(1, 2))
         .request(2)
@@ -195,7 +195,7 @@ class FlowRecoverWithSpec extends StreamSpec {
           case t: IndexOutOfBoundsException =>
             Source(List(11, 22)).map(m => if (m == 22) throw ex else m)
         }
-        .runWith(TestSink.probe[Int])
+        .runWith(TestSink[Int]())
         .request(2)
         .expectNextN(List(1, 2))
         .request(1)
@@ -214,7 +214,7 @@ class FlowRecoverWithSpec extends StreamSpec {
             case t: Throwable =>
               Source(List(11, 22, 33)).map(m => if (m == 33) throw ex else m)
           })
-        .runWith(TestSink.probe[Int])
+        .runWith(TestSink[Int]())
         .request(100)
         .expectNextN(List(1, 2))
         .expectNextN(List(11, 22))
@@ -229,7 +229,7 @@ class FlowRecoverWithSpec extends StreamSpec {
           if (a == 3) throw ex else a
         }
         .recoverWithRetries(0, { case t: Throwable => Source(List(22, 33)) })
-        .runWith(TestSink.probe[Int])
+        .runWith(TestSink[Int]())
         .request(100)
         .expectNextN(List(1, 2))
         .expectError(ex)
@@ -242,7 +242,7 @@ class FlowRecoverWithSpec extends StreamSpec {
 
       oneThenBoom
         .recoverWithRetries(-1, { case t: Throwable => oneThenBoom })
-        .runWith(TestSink.probe[Int])
+        .runWith(TestSink[Int]())
         .request(5)
         .expectNextN(List(1, 2, 3, 4, 5).map(_ => 1))
         .cancel()
@@ -255,7 +255,7 @@ class FlowRecoverWithSpec extends StreamSpec {
 
       oneThenBoom
         .recoverWithRetries(-10, { case t: Throwable => oneThenBoom })
-        .runWith(TestSink.probe[Int])
+        .runWith(TestSink[Int]())
         .request(5)
         .expectNextN(List(1, 2, 3, 4, 5).map(_ => 1))
         .cancel()

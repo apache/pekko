@@ -48,7 +48,7 @@ class LazySinkSpec extends StreamSpec("""
 
   "A LazySink" must {
     "work in happy case" in {
-      val futureProbe = Source(0 to 10).runWith(Sink.lazyInitAsync(() => Future.successful(TestSink.probe[Int])))
+      val futureProbe = Source(0 to 10).runWith(Sink.lazyInitAsync(() => Future.successful(TestSink[Int]())))
       val probe = Await.result(futureProbe, remainingOrDefault).get
       probe.request(100)
       (0 to 10).foreach(probe.expectNext)
@@ -66,7 +66,7 @@ class LazySinkSpec extends StreamSpec("""
       sourceProbe.expectNoMessage(200.millis)
       a[TimeoutException] shouldBe thrownBy { Await.result(futureProbe, remainingOrDefault) }
 
-      p.success(TestSink.probe[Int])
+      p.success(TestSink[Int]())
       val probe = Await.result(futureProbe, remainingOrDefault).get
       probe.request(100)
       probe.expectNext(0)
@@ -84,7 +84,7 @@ class LazySinkSpec extends StreamSpec("""
     }
 
     "complete normally when upstream is completed" in {
-      val futureProbe = Source.single(1).runWith(Sink.lazyInitAsync(() => Future.successful(TestSink.probe[Int])))
+      val futureProbe = Source.single(1).runWith(Sink.lazyInitAsync(() => Future.successful(TestSink[Int]())))
       val futureResult = Await.result(futureProbe, remainingOrDefault).get
       futureResult.request(1).expectNext(1).expectComplete()
     }
@@ -103,7 +103,7 @@ class LazySinkSpec extends StreamSpec("""
     "fail gracefully when upstream failed" in {
       val sourceProbe = TestPublisher.manualProbe[Int]()
       val futureProbe =
-        Source.fromPublisher(sourceProbe).runWith(Sink.lazyInitAsync(() => Future.successful(TestSink.probe[Int])))
+        Source.fromPublisher(sourceProbe).runWith(Sink.lazyInitAsync(() => Future.successful(TestSink[Int]())))
 
       val sourceSub = sourceProbe.expectSubscription()
       sourceSub.expectRequest(1)
@@ -127,7 +127,7 @@ class LazySinkSpec extends StreamSpec("""
     "cancel upstream when internal sink is cancelled" in {
       val sourceProbe = TestPublisher.manualProbe[Int]()
       val futureProbe =
-        Source.fromPublisher(sourceProbe).runWith(Sink.lazyInitAsync(() => Future.successful(TestSink.probe[Int])))
+        Source.fromPublisher(sourceProbe).runWith(Sink.lazyInitAsync(() => Future.successful(TestSink[Int]())))
       val sourceSub = sourceProbe.expectSubscription()
       sourceSub.expectRequest(1)
       sourceSub.sendNext(0)

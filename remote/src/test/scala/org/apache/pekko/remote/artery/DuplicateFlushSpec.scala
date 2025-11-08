@@ -39,8 +39,7 @@ class DuplicateFlushSpec extends PekkoSpec("""
   private val addressB = UniqueAddress(Address("pekko", "sysB", "hostB", 1002), 2)
 
   private def setupStream(inboundContext: InboundContext): (TestPublisher.Probe[AnyRef], TestSubscriber.Probe[Any]) = {
-    TestSource
-      .probe[AnyRef]
+    TestSource[AnyRef]()
       .map { msg =>
         val association = inboundContext.association(addressA.uid)
         val ser = serialization.serializerFor(msg.getClass)
@@ -67,7 +66,7 @@ class DuplicateFlushSpec extends PekkoSpec("""
       }
       .via(new DuplicateFlush(numberOfLanes = 3, system.asInstanceOf[ExtendedActorSystem], pool))
       .map(env => env.message -> env.lane)
-      .toMat(TestSink.probe[Any])(Keep.both)
+      .toMat(TestSink[Any]())(Keep.both)
       .run()
   }
 
