@@ -654,7 +654,7 @@ object Source {
    * @see pekko.stream.scaladsl.JavaFlowSupport.Source#asSubscriber
    * @since 2.0.0
    */
-  def asSubscriber[T]: Source[T, java.util.concurrent.Flow.Subscriber[T]] = {
+  def asJavaSubscriber[T]: Source[T, java.util.concurrent.Flow.Subscriber[T]] = {
     import JavaFlowAndRsConverters.Implicits._
     asSubscriber[T].mapMaterializedValue(_.asJava)
   }

@@ -36,7 +36,7 @@ import pekko.event.{ LogMarker, LoggingAdapter, MarkerLoggingAdapter }
 import pekko.japi.{ function, JavaPartialFunction, Pair }
 import pekko.japi.function.Creator
 import pekko.stream._
-import pekko.stream.impl.{ LinearTraversalBuilder, UnfoldAsyncJava, UnfoldJava }
+import pekko.stream.impl.{ JavaFlowAndRsConverters, LinearTraversalBuilder, UnfoldAsyncJava, UnfoldJava }
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.fusing.{ StatefulMapConcat, ZipWithIndexJava }
 import pekko.util._
@@ -416,8 +416,11 @@ object Source {
 
   /**
    * Creates a `Source` that is materialized as a [[java.util.concurrent.Flow.Subscriber]]
+   *
+   * @see pekko.stream.javadsl.JavaFlowSupport.Source#asSubscriber
+   * @since 2.0.0
    */
-  def asSubscriber[T](): Source[T, java.util.concurrent.Flow.Subscriber[T]] = {
+  def asJavaSubscriber[T](): Source[T, java.util.concurrent.Flow.Subscriber[T]] = {
     import JavaFlowAndRsConverters.Implicits._
     asSubscriber[T]().mapMaterializedValue(_.asJava)
   }

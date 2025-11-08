@@ -49,7 +49,10 @@ public final class JavaFlowSupport {
      * <p>See also {@code Source.fromPublisher} if wanting to integrate with {@link
      * org.reactivestreams.Publisher} instead (which carries the same semantics, however existed
      * before RS's inclusion in Java 9).
+     *
+     * @deprecated Use {@code Source.fromPublisher} instead (since 2.0.0).
      */
+    @Deprecated
     public static <T> org.apache.pekko.stream.javadsl.Source<T, NotUsed> fromPublisher(
         java.util.concurrent.Flow.Publisher<T> publisher) {
       return org.apache.pekko.stream.javadsl.Source.<T>fromPublisher(
@@ -63,8 +66,11 @@ public final class JavaFlowSupport {
      * <p>See also {@code Source.asSubscriber} if wanting to integrate with {@link
      * org.reactivestreams.Subscriber} instead (which carries the same semantics, however existed
      * before RS's inclusion in Java 9).
+     *
+     * @deprecated Use {@code Source.asJavaSubscriber} instead (since 2.0.0).
      */
     // #asSubscriber
+    @Deprecated
     public static <T>
         org.apache.pekko.stream.javadsl.Source<T, java.util.concurrent.Flow.Subscriber<T>>
             asSubscriber() {
@@ -180,7 +186,10 @@ public final class JavaFlowSupport {
      *
      * <p>If {@code fanout} is {@code WITHOUT_FANOUT} then the materialized {@code Publisher} will
      * only support a single {@code Subscriber} and reject any additional {@code Subscriber}s.
+     *
+     * @deprecated Use {@code Sink.asJavaPublisher} instead (since 2.0.0).
      */
+    @Deprecated
     public static <T>
         org.apache.pekko.stream.javadsl.Sink<T, java.util.concurrent.Flow.Publisher<T>> asPublisher(
             AsPublisher fanout) {
@@ -188,7 +197,12 @@ public final class JavaFlowSupport {
           .mapMaterializedValue(JavaFlowAndRsConverters::asJava);
     }
 
-    /** Helper to create <<Sink>> from <<java.util.concurrent.Flow.Subscriber>>. */
+    /**
+     * Helper to create <<Sink>> from <<java.util.concurrent.Flow.Subscriber>>.
+     *
+     * @deprecated Use {@code Sink.fromSubscriber} instead (since 2.0.0).
+     */
+    @Deprecated
     public static <T> org.apache.pekko.stream.javadsl.Sink<T, NotUsed> fromSubscriber(
         java.util.concurrent.Flow.Subscriber<T> s) {
       return org.apache.pekko.stream.javadsl.Sink.fromSubscriber(JavaFlowAndRsConverters.asRs(s));

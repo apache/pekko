@@ -45,7 +45,7 @@ object JavaFlowSupport {
      * @see See also [[Source.fromPublisher]] if wanting to integrate with [[org.reactivestreams.Publisher]] instead
      *      (which carries the same semantics, however existed before RS's inclusion in Java 9).
      */
-    @deprecated("Use pekko.stream.[javadsl|scaladsl].Source.fromPublisher", "2.0.0")
+    @deprecated("Use pekko.stream.scaladsl.Source.fromPublisher", "2.0.0")
     final
     // #fromPublisher
     def fromPublisher[T](publisher: java.util.concurrent.Flow.Publisher[T]): Source[T, NotUsed] =
@@ -58,7 +58,7 @@ object JavaFlowSupport {
      * @see See also [[Source.asSubscriber]] if wanting to integrate with [[org.reactivestreams.Subscriber]] instead
      *      (which carries the same semantics, however existed before RS's inclusion in Java 9).
      */
-    @deprecated("Use pekko.stream.[javadsl|scaladsl].Source.asSubscriber", "2.0.0")
+    @deprecated("Use pekko.stream.scaladsl.Source.asSubscriber", "2.0.0")
     final
     // #asSubscriber
     def asSubscriber[T]: Source[T, java.util.concurrent.Flow.Subscriber[T]] =
@@ -96,8 +96,8 @@ object JavaFlowSupport {
      */
     def toProcessor[In, Out, Mat](
         self: Flow[In, Out, Mat]): RunnableGraph[juc.Flow.Processor[In @uncheckedVariance, Out @uncheckedVariance]] =
-      Source.asSubscriber[In].via(self)
-        .toMat(Sink.asPublisher[Out](fanout = false))(Keep.both)
+      scaladsl.Source.asJavaSubscriber[In].via(self)
+        .toMat(scaladsl.Sink.asJavaPublisher[Out](fanout = false))(Keep.both)
         .mapMaterializedValue {
           case (sub, pub) => new juc.Flow.Processor[In, Out] {
               override def onError(t: Throwable): Unit = sub.onError(t)
@@ -125,13 +125,14 @@ object JavaFlowSupport {
      * If `fanout` is `WITHOUT_FANOUT` then the materialized `Publisher` will only support a single `Subscriber` and
      * reject any additional `Subscriber`s.
      */
+    @deprecated("Use pekko.stream.scaladsl.Sink.asJavaPublisher", "2.0.0")
     final def asPublisher[T](fanout: Boolean): Sink[T, juc.Flow.Publisher[T]] =
       scaladsl.Sink.asPublisher[T](fanout).mapMaterializedValue(_.asJava)
 
     /**
      * Helper to create [[Sink]] from [[java.util.concurrent.Flow.Subscriber]].
      */
-    @deprecated("Use pekko.stream.[javadsl|scaladsl].Sink.fromSubscriber", "2.0.0")
+    @deprecated("Use pekko.stream.scaladsl.Sink.fromSubscriber", "2.0.0")
     final def fromSubscriber[T](s: juc.Flow.Subscriber[T]): Sink[T, NotUsed] =
       scaladsl.Sink.fromSubscriber(s.asRs)
   }

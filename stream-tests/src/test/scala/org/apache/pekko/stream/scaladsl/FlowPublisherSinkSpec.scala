@@ -25,7 +25,7 @@ class FlowPublisherSinkSpec extends StreamSpec {
 
     "work with SubscriberSource" in {
       val (sub, pub) =
-        Source.asSubscriber[Int].toMat(JavaFlowSupport.Sink.asPublisher(false))(Keep.both).run()
+        Source.asJavaSubscriber[Int].toMat(Sink.asJavaPublisher(false))(Keep.both).run()
       Source(1 to 100).to(Sink.fromSubscriber(sub)).run()
       Await.result(Source.fromPublisher(pub).limit(1000).runWith(Sink.seq), 3.seconds) should ===(
         1 to 100)
@@ -33,7 +33,7 @@ class FlowPublisherSinkSpec extends StreamSpec {
 
     "be able to use Publisher in materialized value transformation" in {
       val f = Source(1 to 3).runWith(
-        JavaFlowSupport.Sink.asPublisher[Int](false).mapMaterializedValue { p =>
+        Sink.asJavaPublisher[Int](false).mapMaterializedValue { p =>
           Source.fromPublisher(p).runFold(0)(_ + _)
         })
 
