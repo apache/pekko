@@ -49,13 +49,12 @@ private[pekko] object OptionVal {
 private[pekko] final class OptionVal[+A](val x: A) extends AnyVal {
 
   /**
-   * Returns true if the option is `OptionVal.None`, false otherwise.
+   * Returns `true` if the option is `OptionVal.None`, `false` otherwise.
    */
-  def isEmpty: Boolean =
-    x == null
+  def isEmpty: Boolean = x == null
 
   /**
-   * Returns true if the option is `OptionVal.None`, false otherwise.
+   * Returns `false` if the option is `OptionVal.None`, `true` otherwise.
    */
   def isDefined: Boolean = !isEmpty
 
