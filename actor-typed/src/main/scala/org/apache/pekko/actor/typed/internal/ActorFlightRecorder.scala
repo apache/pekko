@@ -70,8 +70,7 @@ private[pekko] trait ActorFlightRecorder extends Extension {
 }
 
 /**
- * JFR is only available under certain circumstances (JDK11 for now, possible OpenJDK 8 in the future) so therefore
- * the default on JDK 8 needs to be a no-op flight recorder.
+ * JFR is only available under certain circumstances (but is usually available since Java 9).
  *
  * INTERNAL
  */
