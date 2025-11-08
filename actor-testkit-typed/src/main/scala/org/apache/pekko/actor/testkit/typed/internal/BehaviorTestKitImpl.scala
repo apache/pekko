@@ -31,6 +31,9 @@ import pekko.actor.typed.internal.{ AdaptMessage, AdaptWithRegisteredMessageAdap
 import pekko.actor.typed.receptionist.Receptionist
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.annotation.InternalApi
+import pekko.japi.function.{ Function => JFunction }
+import pekko.pattern.StatusReply
+import pekko.util.OptionVal
 
 /**
  * INTERNAL API
@@ -61,6 +64,27 @@ private[pekko] final class BehaviorTestKitImpl[T](
 
   // execute any future tasks scheduled in Actor's constructor
   runAllTasks()
+
+  override def runAsk[Res](f: ActorRef[Res] => T): ReplyInboxImpl[Res] = {
+    val replyToInbox = TestInboxImpl[Res]("replyTo")
+
+    run(f(replyToInbox.ref))
+    new ReplyInboxImpl(OptionVal(replyToInbox))
+  }
+
+  override def runAsk[Res](messageFactory: JFunction[ActorRef[Res], T]): ReplyInboxImpl[Res] =
+    runAsk(messageFactory.apply _)
+
+  override def runAskWithStatus[Res](f: ActorRef[StatusReply[Res]] => T): StatusReplyInboxImpl[Res] = {
+    val replyToInbox = TestInboxImpl[StatusReply[Res]]("replyTo")
+
+    run(f(replyToInbox.ref))
+    new StatusReplyInboxImpl(OptionVal(replyToInbox))
+  }
+
+  override def runAskWithStatus[Res](
+      messageFactory: JFunction[ActorRef[StatusReply[Res]], T]): StatusReplyInboxImpl[Res] =
+    runAskWithStatus(messageFactory.apply _)
 
   override def retrieveEffect(): Effect = context.effectQueue.poll() match {
     case null => NoEffects
