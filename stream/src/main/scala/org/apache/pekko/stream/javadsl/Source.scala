@@ -80,7 +80,7 @@ object Source {
   }
 
   /**
-   * Helper to create [[Source]] from `Publisher`.
+   * Helper to create [[Source]] from `org.reactivestreams.Publisher`.
    *
    * Construct a transformation starting with given publisher. The transformation steps
    * are executed by a series of [[org.reactivestreams.Processor]] instances
@@ -88,6 +88,15 @@ object Source {
    * back-pressure upstream.
    */
   def fromPublisher[O](publisher: Publisher[O]): javadsl.Source[O, NotUsed] =
+    new Source(scaladsl.Source.fromPublisher(publisher))
+
+  /**
+   * Helper to create [[Source]] from `java.util.concurrent.Flow.Publisher`.
+   *
+   * @see pekko.stream.javadsl.JavaFlowSupport.Source#fromPublisher
+   * @since 2.0.0
+   */
+  def fromPublisher[O](publisher: java.util.concurrent.Flow.Publisher[O]): javadsl.Source[O, NotUsed] =
     new Source(scaladsl.Source.fromPublisher(publisher))
 
   /**
@@ -404,6 +413,14 @@ object Source {
    */
   def asSubscriber[T](): Source[T, Subscriber[T]] =
     new Source(scaladsl.Source.asSubscriber)
+
+  /**
+   * Creates a `Source` that is materialized as a [[java.util.concurrent.Flow.Subscriber]]
+   */
+  def asSubscriber[T](): Source[T, java.util.concurrent.Flow.Subscriber[T]] = {
+    import JavaFlowAndRsConverters.Implicits._
+    asSubscriber[T]().mapMaterializedValue(_.asJava)
+  }
 
   /**
    * Creates a `Source` that is materialized as an [[pekko.actor.ActorRef]].

@@ -181,6 +181,15 @@ object Sink {
     new Sink(scaladsl.Sink.fromSubscriber(subs))
 
   /**
+   * Helper to create [[Sink]] from `java.util.concurrent.Flow.Subscriber`.
+   *
+   * @see pekko.stream.javadsl.JavaFlowSupport.Sink#fromSubscriber
+   * @since 2.0.0
+   */
+  def fromSubscriber[In](subs: java.util.concurrent.Flow.Subscriber[In]): Sink[In, NotUsed] =
+    new Sink(scaladsl.Sink.fromSubscriber(subs))
+
+  /**
    * A `Sink` that immediately cancels its upstream after materialization.
    */
   def cancelled[T](): Sink[T, NotUsed] =

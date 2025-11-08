@@ -183,6 +183,17 @@ object Sink {
     fromGraph(new SubscriberSink(subscriber, DefaultAttributes.subscriberSink, shape("SubscriberSink")))
 
   /**
+   * Helper to create [[Sink]] from `java.util.concurrent.Flow.Subscriber`.
+   *
+   * @see pekko.stream.scaladsl.JavaFlowSupport.Sink#fromSubscriber
+   * @since 2.0.0
+   */
+  def fromSubscriber[T](subscriber: java.util.concurrent.Flow.Subscriber[T]) = {
+    import JavaFlowAndRsConverters.Implicits._
+    fromGraph(new SubscriberSink(subscriber.asRs, DefaultAttributes.subscriberSink, shape("SubscriberSink")))
+  }
+
+  /**
    * A `Sink` that immediately cancels its upstream after materialization.
    */
   def cancelled[T]: Sink[T, NotUsed] =
