@@ -45,6 +45,8 @@ abstract class CoderSpec(codecName: String) extends AnyWordSpec with CodecSpecSu
   case object AllDataAllowed extends Exception with NoStackTrace
   protected def corruptInputCheck: Boolean = true
 
+  protected def autoFlush: Boolean = true
+
   def extraTests(): Unit = {}
 
   s"The $codecName codec" should {
@@ -145,6 +147,7 @@ abstract class CoderSpec(codecName: String) extends AnyWordSpec with CodecSpecSu
     }
 
     "be able to decode chunk-by-chunk (depending on input chunks)" in {
+      assume(autoFlush)
       val minLength = 100
       val maxLength = 1000
       val numElements = 1000
