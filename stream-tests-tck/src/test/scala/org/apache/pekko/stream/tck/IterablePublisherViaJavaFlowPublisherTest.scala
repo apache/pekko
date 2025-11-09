@@ -17,7 +17,7 @@ import java.util.concurrent.{ Flow => JavaFlow }
 
 import org.apache.pekko
 import pekko.NotUsed
-import pekko.stream.scaladsl.{ JavaFlowSupport, Sink, Source }
+import pekko.stream.scaladsl.{ Sink, Source }
 
 import org.reactivestreams._
 
@@ -25,10 +25,10 @@ class IterablePublisherViaJavaFlowPublisherTest extends PekkoPublisherVerificati
 
   override def createPublisher(elements: Long): Publisher[Int] = {
     val sourceViaJavaFlowPublisher: JavaFlow.Publisher[Int] = Source(iterable(elements))
-      .runWith(JavaFlowSupport.Sink.asPublisher(fanout = false))
+      .runWith(Sink.asJavaPublisher(fanout = false))
 
     val javaFlowPublisherIntoPekkoSource: Source[Int, NotUsed] =
-      JavaFlowSupport.Source.fromPublisher(sourceViaJavaFlowPublisher)
+      Source.fromPublisher(sourceViaJavaFlowPublisher)
 
     javaFlowPublisherIntoPekkoSource
       .runWith(Sink.asPublisher(false)) // back as RS Publisher

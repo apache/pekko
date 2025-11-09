@@ -41,9 +41,9 @@ public class JavaFlowSupportCompileTest extends JUnitSuite {
         };
 
     final Source<String, Flow.Subscriber<String>> stringSubscriberSource =
-        JavaFlowSupport.Source.asSubscriber();
+        Source.asJavaSubscriber();
     final Source<String, NotUsed> stringNotUsedSource =
-        JavaFlowSupport.Source.fromPublisher(processor);
+        Source.fromPublisher(processor);
 
     final org.apache.pekko.stream.javadsl.Flow<String, String, NotUsed> stringStringNotUsedFlow =
         JavaFlowSupport.Flow.fromProcessor(() -> processor);
@@ -51,7 +51,7 @@ public class JavaFlowSupportCompileTest extends JUnitSuite {
         JavaFlowSupport.Flow.fromProcessorMat(() -> Pair.apply(processor, NotUsed.getInstance()));
 
     final Sink<String, Flow.Publisher<String>> stringPublisherSink =
-        JavaFlowSupport.Sink.asPublisher(AsPublisher.WITH_FANOUT);
-    final Sink<String, NotUsed> stringNotUsedSink = JavaFlowSupport.Sink.fromSubscriber(processor);
+        Sink.asJavaPublisher(AsPublisher.WITH_FANOUT);
+    final Sink<String, NotUsed> stringNotUsedSink = Sink.fromSubscriber(processor);
   }
 }

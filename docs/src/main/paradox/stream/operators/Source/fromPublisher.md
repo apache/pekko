@@ -1,6 +1,6 @@
 # Source.fromPublisher
 
-Integration with Reactive Streams, subscribes to a @javadoc[Publisher](java.util.concurrent.Flow.Publisher).
+Integration with Reactive Streams, subscribes to a @javadoc[Java Flow Publisher](java.util.concurrent.Flow.Publisher) or a @javadoc[org.reactivestreams Publisher](org.reactivestreams.Publisher).
 
 @ref[Source operators](../index.md#source-operators)
 
@@ -15,9 +15,7 @@ Java
 
 ## Description
 
-If you want to create a @apidoc[Source] that gets its elements from another library that supports
-[Reactive Streams](https://www.reactive-streams.org/), you can use `JavaFlowSupport.Source.fromPublisher`.
-This source will produce the elements from the @javadoc[Publisher](java.util.concurrent.Flow.Publisher),
+This source will produce the elements from the @javadoc[Java Flow Publisher](java.util.concurrent.Flow.Publisher) or the @javadoc[org.reactivestreams Publisher](org.reactivestreams.Publisher),
 and coordinate backpressure as needed.
 
 If the API you want to consume elements from accepts a @javadoc[Subscriber](java.util.concurrent.Flow.Subscriber) instead of providing a @javadoc[Publisher](java.util.concurrent.Flow.Publisher), see @ref[asJavaSubscriber](asJavaSubscriber.md).
