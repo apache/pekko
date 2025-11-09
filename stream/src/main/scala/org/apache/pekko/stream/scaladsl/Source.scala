@@ -277,6 +277,17 @@ object Source {
     fromGraph(new PublisherSource(publisher, DefaultAttributes.publisherSource, shape("PublisherSource")))
 
   /**
+   * Helper to create [[Source]] from `java.util.concurrent.Flow.Publisher`.
+   *
+   * @see pekko.stream.scaladsl.JavaFlowSupport.Source#fromPublisher
+   * @since 2.0.0
+   */
+  def fromPublisher[T](publisher: java.util.concurrent.Flow.Publisher[T]) = {
+    import JavaFlowAndRsConverters.Implicits._
+    fromGraph(new PublisherSource(publisher.asRs, DefaultAttributes.publisherSource, shape("PublisherSource")))
+  }
+
+  /**
    * Helper to create [[Source]] from `Iterator`.
    * Example usage: `Source.fromIterator(() => Iterator.from(0))`
    *
@@ -636,6 +647,17 @@ object Source {
    */
   def asSubscriber[T]: Source[T, Subscriber[T]] =
     fromGraph(new SubscriberSource[T](DefaultAttributes.subscriberSource, shape("SubscriberSource")))
+
+  /**
+   * Creates a `Source` that is materialized as a [[java.util.concurrent.Flow.Subscriber]]
+   *
+   * @see pekko.stream.scaladsl.JavaFlowSupport.Source#asSubscriber
+   * @since 2.0.0
+   */
+  def asJavaSubscriber[T]: Source[T, java.util.concurrent.Flow.Subscriber[T]] = {
+    import JavaFlowAndRsConverters.Implicits._
+    asSubscriber[T].mapMaterializedValue(_.asJava)
+  }
 
   /**
    * Creates a `Source` that is materialized as an [[pekko.actor.ActorRef]].

@@ -20,7 +20,6 @@ import java.util.concurrent.Flow.Publisher
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream.scaladsl.Source
-import pekko.stream.scaladsl.JavaFlowSupport
 
 //#imports
 
@@ -38,7 +37,7 @@ object FromPublisher {
     // A new subscriber will subscribe to the supplied publisher for each
     // materialization, so depending on whether the database client supports
     // this the Source can be materialized more than once.
-    JavaFlowSupport.Source.fromPublisher(databaseClient.fetchRows())
+    Source.fromPublisher(databaseClient.fetchRows())
       .map(row => row.name)
   // #example
 }

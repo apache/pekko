@@ -30,7 +30,7 @@ import pekko.actor.{ ActorRef, ClassicActorSystemProvider, Status }
 import pekko.japi.function
 import pekko.japi.function.Creator
 import pekko.stream._
-import pekko.stream.impl.LinearTraversalBuilder
+import pekko.stream.impl.{ JavaFlowAndRsConverters, LinearTraversalBuilder }
 import pekko.stream.scaladsl.SinkToCompletionStage
 import pekko.util.ConstantFun.scalaAnyToUnit
 
@@ -181,6 +181,15 @@ object Sink {
     new Sink(scaladsl.Sink.fromSubscriber(subs))
 
   /**
+   * Helper to create [[Sink]] from `java.util.concurrent.Flow.Subscriber`.
+   *
+   * @see pekko.stream.javadsl.JavaFlowSupport.Sink#fromSubscriber
+   * @since 2.0.0
+   */
+  def fromSubscriber[In](subs: java.util.concurrent.Flow.Subscriber[In]): Sink[In, NotUsed] =
+    new Sink(scaladsl.Sink.fromSubscriber(subs))
+
+  /**
    * A `Sink` that immediately cancels its upstream after materialization.
    */
   def cancelled[T](): Sink[T, NotUsed] =
@@ -211,6 +220,22 @@ object Sink {
    */
   def asPublisher[T](fanout: AsPublisher): Sink[T, Publisher[T]] =
     new Sink(scaladsl.Sink.asPublisher(fanout == AsPublisher.WITH_FANOUT))
+
+  /**
+   * A `Sink` that materializes into a [[java.util.concurrent.Flow.Publisher]].
+   *
+   * If `fanout` is `true`, the materialized `Publisher` will support multiple `Subscriber`s and
+   * the size of the `inputBuffer` configured for this operator becomes the maximum number of elements that
+   * the fastest [[java.util.concurrent.Flow.Subscriber]] can be ahead of the slowest one before slowing
+   * the processing down due to back pressure.
+   *
+   * If `fanout` is `false` then the materialized `Publisher` will only support a single `Subscriber` and
+   * reject any additional `Subscriber`s.
+   */
+  def asJavaPublisher[T](fanout: AsPublisher): Sink[T, java.util.concurrent.Flow.Publisher[T]] = {
+    import JavaFlowAndRsConverters.Implicits._
+    asPublisher[T](fanout).mapMaterializedValue(_.asJava)
+  }
 
   /**
    * A `Sink` that materializes this `Sink` itself as a `Source`.

@@ -63,15 +63,15 @@ object VerifyJDK9Classes {
       |object VerifyJDK9Classes {
       |  def main(args: Array[String]): Unit = {
       |    import org.apache.pekko.actor.ActorSystem
-      |    import org.apache.pekko.stream.scaladsl.{ JavaFlowSupport, Source }
+      |    import org.apache.pekko.stream.scaladsl.{ Sink, Source }
       |
       |    import java.lang.System.exit
       |    import scala.concurrent.Await
       |    import scala.concurrent.duration.DurationInt
       |    implicit val system: ActorSystem = ActorSystem.create("test")
       |    val future = Source(1 to 3).runWith(
-      |      JavaFlowSupport.Sink.asPublisher[Int](fanout = false).mapMaterializedValue { p =>
-      |        JavaFlowSupport.Source.fromPublisher(p).runFold(0)(_ + _)
+      |      Sink.asJavaPublisher[Int](fanout = false).mapMaterializedValue { p =>
+      |        Source.fromPublisher(p).runFold(0)(_ + _)
       |      })
       |
       |    val result = Await.result(future, 3.seconds)

@@ -183,6 +183,17 @@ object Sink {
     fromGraph(new SubscriberSink(subscriber, DefaultAttributes.subscriberSink, shape("SubscriberSink")))
 
   /**
+   * Helper to create [[Sink]] from `java.util.concurrent.Flow.Subscriber`.
+   *
+   * @see pekko.stream.scaladsl.JavaFlowSupport.Sink#fromSubscriber
+   * @since 2.0.0
+   */
+  def fromSubscriber[T](subscriber: java.util.concurrent.Flow.Subscriber[T]) = {
+    import JavaFlowAndRsConverters.Implicits._
+    fromGraph(new SubscriberSink(subscriber.asRs, DefaultAttributes.subscriberSink, shape("SubscriberSink")))
+  }
+
+  /**
    * A `Sink` that immediately cancels its upstream after materialization.
    */
   def cancelled[T]: Sink[T, NotUsed] =
@@ -311,6 +322,25 @@ object Sink {
     fromGraph(
       if (fanout) new FanoutPublisherSink[T](DefaultAttributes.fanoutPublisherSink, shape("FanoutPublisherSink"))
       else new PublisherSink[T](DefaultAttributes.publisherSink, shape("PublisherSink")))
+
+  /**
+   * A `Sink` that materializes into a [[java.util.concurrent.Flow.Publisher]].
+   *
+   * If `fanout` is `true`, the materialized `Publisher` will support multiple `Subscriber`s and
+   * the size of the `inputBuffer` configured for this operator becomes the maximum number of elements that
+   * the fastest [[java.util.concurrent.Flow.Subscriber]] can be ahead of the slowest one before slowing
+   * the processing down due to back pressure.
+   *
+   * If `fanout` is `false` then the materialized `Publisher` will only support a single `Subscriber` and
+   * reject any additional `Subscriber`s.
+   *
+   * @see pekko.stream.scaladsl.JavaFlowSupport.Sink#asPublisher
+   * @since 2.0.0
+   */
+  def asJavaPublisher[T](fanout: Boolean): Sink[T, java.util.concurrent.Flow.Publisher[T]] = {
+    import JavaFlowAndRsConverters.Implicits._
+    asPublisher[T](fanout).mapMaterializedValue(_.asJava)
+  }
 
   /**
    * A `Sink` that materializes this `Sink` itself as a `Source`.
