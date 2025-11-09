@@ -75,7 +75,7 @@ object Dependencies {
     // reactive streams
     val reactiveStreams = "org.reactivestreams" % "reactive-streams" % reactiveStreamsVersion
 
-    val lmdb = "org.lmdbjava" % "lmdbjava" % "0.9.1"
+    val lmdb = "org.lmdbjava" % "lmdbjava" % "0.9.2"
 
     val junit = "junit" % "junit" % junitVersion
     val junit6 = "org.junit.jupiter" % "junit-jupiter-engine" % junit6Version
