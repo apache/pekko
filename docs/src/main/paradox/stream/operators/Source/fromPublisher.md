@@ -1,6 +1,6 @@
 # Source.fromPublisher
 
-Integration with Reactive Streams, subscribes to a @javadoc[Publisher](org.reactivestreams.Publisher).
+Integration with Reactive Streams, subscribes to a `org.reactivestreams.Publisher`.
 
 @ref[Source operators](../index.md#source-operators)
 
@@ -17,10 +17,10 @@ Java
 
 If you want to create a @apidoc[Source] that gets its elements from another library that supports
 [Reactive Streams](https://www.reactive-streams.org/), you can use `Source.fromPublisher`.
-This source will produce the elements from the @javadoc[Publisher](org.reactivestreams.Publisher),
+This source will produce the elements from the `org.reactivestreams.Publisher`,
 and coordinate backpressure as needed.
 
-If the API you want to consume elements from accepts a @javadoc[Subscriber](org.reactivestreams.Subscriber) instead of providing a @javadoc[Publisher](org.reactivestreams.Publisher), see @ref[asSubscriber](asSubscriber.md).
+If the API you want to consume elements from accepts a `org.reactivestreams.Subscriber` instead of providing a `org.reactivestreams.Publisher`, see @ref[asSubscriber](asSubscriber.md).
 
 In Java 9, the Reactive Stream API was included in the JDK, and `Publisher` is available through [Flow.Publisher](https://docs.oracle.com/javase/9/docs/api/java/util/concurrent/Flow.Publisher.html).
 Since those APIs are identical but exist at different package namespaces and does not depend on the Reactive Streams package a separate API for those is available 

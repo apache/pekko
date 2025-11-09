@@ -1,6 +1,6 @@
 # Source.asSubscriber
 
-Integration with Reactive Streams, materializes into a @javadoc[Subscriber](org.reactivestreams.Subscriber).
+Integration with Reactive Streams, materializes into a `org.reactivestreams.Subscriber`.
 
 @ref[Source operators](../index.md#source-operators)
 
@@ -18,11 +18,11 @@ If you want to create a @apidoc[Source] that gets its elements from another libr
 [Reactive Streams](https://www.reactive-streams.org/), you can use `Source.asSubscriber`.
 Each time this @apidoc[Source] is materialized, it produces a materialized value of type
 @javadoc[org.reactivestreams.Subscriber](java.util.concurrent.Flow.Subscriber).
-This @javadoc[Subscriber](org.reactivestreams.Subscriber) can be attached to a
-[Reactive Streams](https://www.reactive-streams.org/) @javadoc[Publisher](org.reactivestreams.Publisher)
+This `org.reactivestreams.Subscriber` can be attached to a
+[Reactive Streams](https://www.reactive-streams.org/) `org.reactivestreams.Publisher`
 to populate it.
 
-If the API you want to consume elements from provides a @javadoc[Publisher](org.reactivestreams.Publisher) instead of accepting a @javadoc[Subscriber](org.reactivestreams.Subscriber), see @ref[fromPublisher](fromPublisher.md).
+If the API you want to consume elements from provides a `org.reactivestreams.Publisher` instead of accepting a `org.reactivestreams.Subscriber`, see @ref[fromPublisher](fromPublisher.md).
 
 In Java 9, the Reactive Stream API was included in the JDK, and `Subscriber` is available through [Flow.Subscriber](https://docs.oracle.com/javase/9/docs/api/java/util/concurrent/Flow.Subscriber.html).
 Since those APIs are identical but exist at different package namespaces and does not depend on the Reactive Streams package a separate API for those is available 
