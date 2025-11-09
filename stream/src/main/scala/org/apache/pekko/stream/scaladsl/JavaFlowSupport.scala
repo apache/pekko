@@ -58,7 +58,7 @@ object JavaFlowSupport {
      * @see See also [[Source.asSubscriber]] if wanting to integrate with [[org.reactivestreams.Subscriber]] instead
      *      (which carries the same semantics, however existed before RS's inclusion in Java 9).
      */
-    @deprecated("Use pekko.stream.scaladsl.Source.asSubscriber", "2.0.0")
+    @deprecated("Use pekko.stream.scaladsl.Source.asJavaSubscriber", "2.0.0")
     final
     // #asSubscriber
     def asSubscriber[T]: Source[T, java.util.concurrent.Flow.Subscriber[T]] =
