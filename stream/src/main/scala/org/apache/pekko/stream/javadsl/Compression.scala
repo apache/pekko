@@ -47,10 +47,10 @@ object Compression {
     scaladsl.Compression.inflate(maxBytesPerChunk, nowrap).asJava
 
   /**
-   * Creates a flow that gzip-compresses a stream of ByteStrings. Note that the compressor
-   * will SYNC_FLUSH after every [[pekko.util.ByteString]] so that it is guaranteed that every [[pekko.util.ByteString]]
-   * coming out of the flow can be fully decompressed without waiting for additional data. This may
-   * come at a compression performance cost for very small chunks.
+   * Creates a flow that gzip-compresses a stream of ByteStrings. Note that the compressor will
+   * flush after every single element in stream so that it is guaranteed that every [[pekko.util.ByteString]]
+   * coming out of the flow can be fully decompressed without waiting for additional data. This may come at
+   * a compression performance cost for very small chunks.
    */
   def gzip: Flow[ByteString, ByteString, NotUsed] =
     scaladsl.Compression.gzip.asJava
@@ -64,10 +64,21 @@ object Compression {
     scaladsl.Compression.gzip(level).asJava
 
   /**
-   * Creates a flow that deflate-compresses a stream of ByteString. Note that the compressor
-   * will SYNC_FLUSH after every [[pekko.util.ByteString]] so that it is guaranteed that every [[pekko.util.ByteString]]
-   * coming out of the flow can be fully decompressed without waiting for additional data. This may
-   * come at a compression performance cost for very small chunks.
+   * Same as [[gzip]] with a custom level and configurable flush mode.
+   *
+   * @param level Compression level (0-9)
+   * @param autoFlush If true will automatically flush after every single element in the stream.
+   *
+   * @since 1.3.0
+   */
+  def gzip(level: Int, autoFlush: Boolean): Flow[ByteString, ByteString, NotUsed] =
+    scaladsl.Compression.gzip(level, autoFlush).asJava
+
+  /**
+   * Creates a flow that deflate-compresses a stream of ByteString. Note that the compressor will
+   * flush after every single element in stream so that it is guaranteed that every [[pekko.util.ByteString]]
+   * coming out of the flow can be fully decompressed without waiting for additional data. This may come at
+   * a compression performance cost for very small chunks.
    */
   def deflate: Flow[ByteString, ByteString, NotUsed] =
     scaladsl.Compression.deflate.asJava
@@ -80,5 +91,17 @@ object Compression {
    */
   def deflate(level: Int, nowrap: Boolean): Flow[ByteString, ByteString, NotUsed] =
     scaladsl.Compression.deflate(level, nowrap).asJava
+
+  /**
+   * Same as [[deflate]] with configurable level, nowrap and autoFlush.
+   *
+   * @param level Compression level (0-9)
+   * @param nowrap if true then use GZIP compatible compression
+   * @param autoFlush If true will automatically flush after every single element in the stream.
+   *
+   * @since 1.3.0
+   */
+  def deflate(level: Int, nowrap: Boolean, autoFlush: Boolean): Flow[ByteString, ByteString, NotUsed] =
+    scaladsl.Compression.deflate(level, nowrap, autoFlush).asJava
 
 }
