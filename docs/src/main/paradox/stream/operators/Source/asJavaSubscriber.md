@@ -1,6 +1,6 @@
-# Source.asSubscriber
+# Source.asJavaSubscriber
 
-Integration with Reactive Streams, materializes into a @javadoc[Subscriber](org.reactivestreams.Subscriber).
+Integration with Java Flow API, materializes into a @javadoc[Subscriber](java.util.concurrent.Flow.Subscriber).
 
 @ref[Source operators](../index.md#source-operators)
 
@@ -15,24 +15,30 @@ Java
 ## Description
 
 If you want to create a @apidoc[Source] that gets its elements from another library that supports
-[Reactive Streams](https://www.reactive-streams.org/), you can use `Source.asSubscriber`.
+the Java Flow API, you can use `Source.asJavaSubscriber`.
 Each time this @apidoc[Source] is materialized, it produces a materialized value of type
-@javadoc[org.reactivestreams.Subscriber](org.reactivestreams.Subscriber).
-This @javadoc[Subscriber](org.reactivestreams.Subscriber) can be attached to a
-[Reactive Streams](https://www.reactive-streams.org/) @javadoc[Publisher](org.reactivestreams.Publisher)
+@javadoc[java.util.concurrent.Flow.Subscriber](java.util.concurrent.Flow.Subscriber).
+This @javadoc[Subscriber](java.util.concurrent.Flow.Subscriber) can be attached to a
+Java Flow @javadoc[Publisher](java.util.concurrent.Flow.Publisher)
 to populate it.
 
-If the API you want to consume elements from provides a @javadoc[Publisher](org.reactivestreams.Publisher) instead of accepting a @javadoc[Subscriber](org.reactivestreams.Subscriber), see @ref[fromPublisher](fromPublisher.md).
+If the API you want to consume elements from provides a @javadoc[Publisher](java.util.concurrent.Flow.Publisher) instead of accepting a @javadoc[Subscriber](java.util.concurrent.Flow.Subscriber), see @ref[fromPublisher](fromPublisher.md).
+
+@@@ note
+
+Reactive Streams users: we prefer @javadoc[java.util.concurrent.Flow](java.util.concurrent.Flow) but you may still use the [org.reactivestreams](https://github.com/reactive-streams/reactive-streams-jvm#reactive-streams) library with @apidoc[Source.asSubscriber](Source$) { scala="#asSubscriber[T]:org.apache.pekko.stream.scaladsl.Source[T,org.reactivestreams.Subscriber[T]]" java="#asSubscriber()" }.
+
+@@@
 
 ## Example
 
-Suppose we use a database client that supports [Reactive Streams](https://www.reactive-streams.org/),
+Suppose we use a database client that supports the Java Flow API,
 we could create a @apidoc[Source] that queries the database for its rows. That @apidoc[Source] can then
 be used for further processing, for example creating a @apidoc[Source] that contains the names of the
 rows.
 
 Note that since the database is queried for each materialization, the `rowSource` can be safely re-used.
-Because both the database driver and Pekko Streams support [Reactive Streams](https://www.reactive-streams.org/),
+Because both the database driver and Pekko Streams support Java Flow API,
 backpressure is applied throughout the stream, preventing us from running out of memory when the database
 rows are consumed slower than they are produced by the database.
 

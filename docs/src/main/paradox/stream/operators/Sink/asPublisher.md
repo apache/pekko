@@ -15,7 +15,7 @@ Integration with Reactive Streams, materializes into a `org.reactivestreams.Publ
 This method gives you the capability to publish the data from the `Sink` through a Reactive Streams [Publisher](https://www.reactive-streams.org/reactive-streams-1.0.3-javadoc/org/reactivestreams/Publisher.html).
 Generally, in Pekko Streams a `Sink` is considered a subscriber, which consumes the data from source. To integrate with other Reactive Stream implementations `Sink.asPublisher` provides a `Publisher` materialized value when run.
 Now, the data from this publisher can be consumed by subscribing to it. We can control if we allow more than one downstream subscriber from the single running Pekko stream through the `fanout` parameter.
-If you want to support [Flow.Publisher](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/Flow.Publisher.html), there is [Sink.asJavaPublisher](asJavaPublisher.md).
+If you want to support [Flow.Publisher](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/Flow.Publisher.html), there is @ref[Sink.asJavaPublisher](asJavaPublisher.md).
 
 ## Example
 

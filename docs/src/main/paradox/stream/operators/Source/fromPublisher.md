@@ -20,7 +20,7 @@ If you want to create a @apidoc[Source] that gets its elements from another libr
 This source will produce the elements from the @javadoc[Publisher](java.util.concurrent.Flow.Publisher),
 and coordinate backpressure as needed.
 
-If the API you want to consume elements from accepts a @javadoc[Subscriber](java.util.concurrent.Flow.Subscriber) instead of providing a @javadoc[Publisher](java.util.concurrent.Flow.Publisher), see @ref[asSubscriber](asSubscriber.md).
+If the API you want to consume elements from accepts a @javadoc[Subscriber](java.util.concurrent.Flow.Subscriber) instead of providing a @javadoc[Publisher](java.util.concurrent.Flow.Publisher), see @ref[asJavaSubscriber](asJavaSubscriber.md).
 
 @@@ note
 

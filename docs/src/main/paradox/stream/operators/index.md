@@ -7,8 +7,9 @@ These built-in sources are available from @scala[`org.apache.pekko.stream.scalad
 
 | |Operator|Description|
 |--|--|--|
+|Source|<a name="asjavasubscriber"></a>@ref[asJavaSubscriber](Source/asJavaSubscriber.md)|Integration with Java Flow API, materializes into a @javadoc[Subscriber](java.util.concurrent.Flow.Subscriber).|
 |Source|<a name="assourcewithcontext"></a>@ref[asSourceWithContext](Source/asSourceWithContext.md)|Extracts context data from the elements of a `Source` so that it can be turned into a `SourceWithContext` which can propagate that context per element along a stream.|
-|Source|<a name="assubscriber"></a>@ref[asSubscriber](Source/asSubscriber.md)|Integration with Reactive Streams, materializes into a @javadoc[Subscriber](java.util.concurrent.Flow.Subscriber).|
+|Source|<a name="assubscriber"></a>@ref[asSubscriber](Source/asSubscriber.md)|Integration with Reactive Streams, materializes into a @javadoc[Subscriber](org.reactivestreams.Subscriber).|
 |Source|<a name="combine"></a>@ref[combine](Source/combine.md)|Combine several sources, using a given strategy such as merge or concat, into one source.|
 |Source|<a name="completionstage"></a>@ref[completionStage](Source/completionStage.md)|Send the single value of the `CompletionStage` when it completes and there is demand.|
 |Source|<a name="completionstagesource"></a>@ref[completionStageSource](Source/completionStageSource.md)|Streams the elements of an asynchronous source once its given *completion* operator completes.|
@@ -51,7 +52,7 @@ These built-in sinks are available from @scala[`org.apache.pekko.stream.scaladsl
 
 | |Operator|Description|
 |--|--|--|
-|Sink|<a name="asjavapublisher"></a>@ref[asPublisher](Sink/asJavaPublisher.md)|Integration with Java Flow, materializes into a `java.util.concurrent.Flow.Publisher`.|
+|Sink|<a name="asjavapublisher"></a>@ref[asPublisher](Sink/asJavaPublisher.md)|Integration with Java Flow API, materializes into a `java.util.concurrent.Flow.Publisher`.|
 |Sink|<a name="aspublisher"></a>@ref[asPublisher](Sink/asPublisher.md)|Integration with Reactive Streams, materializes into a `org.reactivestreams.Publisher`.|
 |Sink|<a name="cancelled"></a>@ref[cancelled](Sink/cancelled.md)|Immediately cancel the stream|
 |Sink|<a name="collect"></a>@ref[collect](Sink/collect.md)|Collect all input elements using a Java @javadoc[Collector](java.util.stream.Collector).|
