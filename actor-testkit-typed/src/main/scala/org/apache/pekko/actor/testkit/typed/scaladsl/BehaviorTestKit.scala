@@ -19,6 +19,8 @@ import pekko.actor.testkit.typed.{ CapturedLogEvent, Effect }
 import pekko.actor.typed.receptionist.Receptionist
 import pekko.actor.typed.{ ActorRef, Behavior, Signal, TypedActorContext }
 import pekko.annotation.{ ApiMayChange, DoNotInherit }
+import pekko.pattern.StatusReply
+
 import com.typesafe.config.Config
 
 import java.util.concurrent.ThreadLocalRandom
@@ -54,6 +56,23 @@ object BehaviorTestKit {
 @DoNotInherit
 @ApiMayChange
 trait BehaviorTestKit[T] {
+
+  /**
+   * Constructs a message using the provided function to inject a single-use "reply to" [[akka.actor.typed.ActorRef]],
+   * and sends the constructed message to the behavior, recording any [[Effect]]s.
+   *
+   * The returned [[ReplyInbox]] allows the message sent to the "reply to" `ActorRef` to be asserted on.
+   *
+   * @since 1.3.0
+   */
+  def runAsk[Res](f: ActorRef[Res] => T): ReplyInbox[Res]
+
+  /**
+   * The same as [[runAsk]] but only for requests that result in a response of type [[akka.pattern.StatusReply]].
+   *
+   * @since 1.3.0
+   */
+  def runAskWithStatus[Res](f: ActorRef[StatusReply[Res]] => T): StatusReplyInbox[Res]
 
   // FIXME it is weird that this is public but it is used in BehaviorSpec, could we avoid that?
   private[pekko] def context: TypedActorContext[T]

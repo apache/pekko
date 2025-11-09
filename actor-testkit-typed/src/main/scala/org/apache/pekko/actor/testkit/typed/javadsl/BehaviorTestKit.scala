@@ -13,15 +13,20 @@
 
 package org.apache.pekko.actor.testkit.typed.javadsl
 
+import java.util.concurrent.ThreadLocalRandom
+
+import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.actor.testkit.typed.internal.{ ActorSystemStub, BehaviorTestKitImpl }
 import pekko.actor.testkit.typed.{ CapturedLogEvent, Effect }
 import pekko.actor.typed.receptionist.Receptionist
 import pekko.actor.typed.{ ActorRef, Behavior, Signal }
 import pekko.annotation.{ ApiMayChange, DoNotInherit }
-import com.typesafe.config.Config
+import pekko.japi.function.{ Function => JFunction }
+import pekko.pattern.StatusReply
 
-import java.util.concurrent.ThreadLocalRandom
+import com.typesafe.config.Config
 
 object BehaviorTestKit {
 
@@ -69,6 +74,56 @@ object BehaviorTestKit {
 @DoNotInherit
 @ApiMayChange
 abstract class BehaviorTestKit[T] {
+
+  /**
+   * Constructs a message using the provided 'messageFactory' to inject a single-use "reply to"
+   * [[akka.actor.typed.ActorRef]], and sends the constructed message to the behavior, recording any [[Effect]]s.
+   *
+   * The returned [[ReplyInbox]] allows the message sent to the "reply to" `ActorRef` to be asserted on.
+   *
+   * @since 1.3.0
+   */
+  def runAsk[Res](messageFactory: JFunction[ActorRef[Res], T]): ReplyInbox[Res]
+
+  /**
+   * The same as [[runAsk]], but with the response class specified.  This improves type inference in Java
+   * when asserting on the reply in the same statement as the `runAsk` as in:
+   *
+   * ```
+   * testkit.runAsk(Done.class, DoSomethingCommand::new).expectReply(Done.getInstance());
+   * ```
+   *
+   * If explicitly saving the [[ReplyInbox]] in a variable, the version without the class may be preferred.
+   *
+   * @since 1.3.0
+   */
+  @nowarn("msg=never used") // responseClass is a pretend param to guide inference
+  def runAsk[Res](responseClass: Class[Res], messageFactory: JFunction[ActorRef[Res], T]): ReplyInbox[Res] =
+    runAsk(messageFactory)
+
+  /**
+   * The same as [[runAsk]] but only for requests that result in a response of type [[akka.pattern.StatusReply]].
+   *
+   * @since 1.3.0
+   */
+  def runAskWithStatus[Res](messageFactory: JFunction[ActorRef[StatusReply[Res]], T]): StatusReplyInbox[Res]
+
+  /**
+   * The same as [[runAskWithStatus]], but with the response class specified.  This improves type inference in
+   * Java when asserting on the reply in the same statement as the `runAskWithStatus` as in:
+   *
+   * ```
+   * testkit.runAskWithStatus(Done.class, DoSomethingWithStatusCommand::new).expectValue(Done.getInstance());
+   * ```
+   *
+   * If explicitly saving the [[StatusReplyInbox]] in a variable, the version without the class may be preferred.
+   *
+   * @since 1.3.0
+   */
+  @nowarn("msg=never used") // responseClass is a pretend param to guide inference
+  def runAskWithStatus[Res](responseClass: Class[Res],
+      messageFactory: JFunction[ActorRef[StatusReply[Res]], T]): StatusReplyInbox[Res] =
+    runAskWithStatus(messageFactory)
 
   /**
    * Requests the oldest [[Effect]] or [[pekko.actor.testkit.typed.javadsl.Effects.noEffects]] if no effects
