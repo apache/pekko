@@ -1,6 +1,6 @@
 # Source.asSubscriber
 
-Integration with Reactive Streams, materializes into a @javadoc[Subscriber](java.util.concurrent.Flow.Subscriber).
+Integration with Reactive Streams, materializes into a @javadoc[Subscriber](org.reactivestreams.Subscriber).
 
 @ref[Source operators](../index.md#source-operators)
 
@@ -10,25 +10,23 @@ Scala
 :   @@snip[JavaFlowSupport.scala](/stream/src/main/scala/org/apache/pekko/stream/scaladsl/JavaFlowSupport.scala) { #asSubscriber }
 
 Java
-:   @@snip[JavaFlowSupport.java](/docs/src/test/java/jdocs/stream/operators/source/AsSubscriber.java) { #api }
+:   @@snip[AsSubscriber.java](/docs/src/test/java/jdocs/stream/operators/source/AsSubscriber.java) { #api }
 
 ## Description
 
 If you want to create a @apidoc[Source] that gets its elements from another library that supports
-[Reactive Streams](https://www.reactive-streams.org/), you can use `JavaFlowSupport.Source.asSubscriber`.
+[Reactive Streams](https://www.reactive-streams.org/), you can use `Source.asSubscriber`.
 Each time this @apidoc[Source] is materialized, it produces a materialized value of type
-@javadoc[java.util.concurrent.Flow.Subscriber](java.util.concurrent.Flow.Subscriber).
-This @javadoc[Subscriber](java.util.concurrent.Flow.Subscriber) can be attached to a
-[Reactive Streams](https://www.reactive-streams.org/) @javadoc[Publisher](java.util.concurrent.Flow.Publisher)
+@javadoc[org.reactivestreams.Subscriber](java.util.concurrent.Flow.Subscriber).
+This @javadoc[Subscriber](org.reactivestreams.Subscriber) can be attached to a
+[Reactive Streams](https://www.reactive-streams.org/) @javadoc[Publisher](org.reactivestreams.Publisher)
 to populate it.
 
-If the API you want to consume elements from provides a @javadoc[Publisher](java.util.concurrent.Flow.Publisher) instead of accepting a @javadoc[Subscriber](java.util.concurrent.Flow.Subscriber), see @ref[fromPublisher](fromPublisher.md).
+If the API you want to consume elements from provides a @javadoc[Publisher](org.reactivestreams.Publisher) instead of accepting a @javadoc[Subscriber](org.reactivestreams.Subscriber), see @ref[fromPublisher](fromPublisher.md).
 
-@@@ note
-
-Reactive Streams users: we prefer @javadoc[java.util.concurrent.Flow](java.util.concurrent.Flow) you may still use the [org.reactivestreams](https://github.com/reactive-streams/reactive-streams-jvm#reactive-streams) library with @apidoc[Source.asSubscriber](Source$) { scala="#asSubscriber[T]:org.apache.pekko.stream.scaladsl.Source[T,org.reactivestreams.Subscriber[T]]" java="#asSubscriber()" }.
-
-@@@
+In Java 9, the Reactive Stream API was included in the JDK, and `Subscriber` is available through [Flow.Subscriber](https://docs.oracle.com/javase/9/docs/api/java/util/concurrent/Flow.Subscriber.html).
+Since those APIs are identical but exist at different package namespaces and does not depend on the Reactive Streams package a separate publisher sink for those is available 
+through @scala[`org.apache.pekko.stream.scaladsl.JavaFlowSupport.Source#asSubscriber`]@java[`org.apache.pekko.stream.javadsl.JavaFlowSupport.Source#asSubscriber`].
 
 ## Example
 
