@@ -42,8 +42,7 @@ public class JavaFlowSupportCompileTest extends JUnitSuite {
 
     final Source<String, Flow.Subscriber<String>> stringSubscriberSource =
         Source.asJavaSubscriber();
-    final Source<String, NotUsed> stringNotUsedSource =
-        Source.fromPublisher(processor);
+    final Source<String, NotUsed> stringNotUsedSource = Source.fromPublisher(processor);
 
     final org.apache.pekko.stream.javadsl.Flow<String, String, NotUsed> stringStringNotUsedFlow =
         JavaFlowSupport.Flow.fromProcessor(() -> processor);
