@@ -28,7 +28,8 @@ import pekko.util.ByteString
   /**
    * Creates a flow from a compressor constructor.
    */
-  def compressorFlow(newCompressor: () => Compressor): Flow[ByteString, ByteString, NotUsed] =
+  def compressorFlow(newCompressor: () => Compressor, autoFlush: Boolean = true)
+      : Flow[ByteString, ByteString, NotUsed] =
     Flow.fromGraph {
       new SimpleLinearGraphStage[ByteString] {
         override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
@@ -36,7 +37,12 @@ import pekko.util.ByteString
             val compressor = newCompressor()
 
             override def onPush(): Unit = {
-              val data = compressor.compressAndFlush(grab(in))
+              val grabbed = grab(in)
+              val data = if (autoFlush)
+                compressor.compressAndFlush(grabbed)
+              else
+                compressor.compress(grabbed)
+
               if (data.nonEmpty) push(out, data)
               else pull(in)
             }
