@@ -17,7 +17,7 @@ Generally, in Pekko Streams a `Sink` is considered a subscriber, which consumes 
 Now, the data from this publisher can be consumed by subscribing to it. We can control if we allow more than one downstream subscriber from the single running Pekko stream through the `fanout` parameter.
 
 In Java 9, the Reactive Stream API was included in the JDK, and `Publisher` is available through [Flow.Publisher](https://docs.oracle.com/javase/9/docs/api/java/util/concurrent/Flow.Publisher.html).
-Since those APIs are identical but exist at different package namespaces and does not depend on the Reactive Streams package a separate publisher sink for those is available 
+Since those APIs are identical but exist at different package namespaces and does not depend on the Reactive Streams package a separate API for those is available 
 through @scala[`org.apache.pekko.stream.scaladsl.JavaFlowSupport.Sink#asPublisher`]@java[`org.apache.pekko.stream.javadsl.JavaFlowSupport.Sink#asPublisher`].
 
 
