@@ -28,11 +28,11 @@ object Dependencies {
   val junitVersion = "4.13.2"
   val junit6Version = "6.0.1"
   val slf4jVersion = "2.0.17"
-  // check agrona version when updating this
+  // also update agrona version when updating aeron:
   val aeronVersion = "1.48.7"
   // needs to be inline with the aeron version, check
-  // https://github.com/aeron-io/aeron/blob/master/gradle/libs.versions.toml
-  val agronaVersion = "2.3.2"
+  // https://github.com/aeron-io/aeron/blob/1.x.y/gradle/libs.versions.toml
+  val agronaVersion = "2.2.4"
   val nettyVersion = "4.2.7.Final"
   val logbackVersion = "1.5.20"
 
