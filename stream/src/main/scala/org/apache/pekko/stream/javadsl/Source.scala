@@ -36,7 +36,7 @@ import pekko.japi.function.Creator
 import pekko.stream._
 import pekko.stream.impl.{ LinearTraversalBuilder, UnfoldAsyncJava, UnfoldJava }
 import pekko.stream.impl.Stages.DefaultAttributes
-import pekko.stream.impl.fusing.{ ArraySource, StatefulMapConcat, ZipWithIndexJava }
+import pekko.stream.impl.fusing.{ StatefulMapConcat, ZipWithIndexJava }
 import pekko.util.{ unused, _ }
 import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
@@ -201,8 +201,7 @@ object Source {
    *
    * @since 1.1.0
    */
-  def fromArray[T](array: Array[T]): javadsl.Source[T, NotUsed] = new Source(scaladsl.Source.fromGraph(
-    new ArraySource[T](array)))
+  def fromArray[T](array: Array[T]): javadsl.Source[T, NotUsed] = new Source(scaladsl.Source(array))
 
   /**
    * Create a `Source` from an `Optional` value, emitting the value if it is present.
