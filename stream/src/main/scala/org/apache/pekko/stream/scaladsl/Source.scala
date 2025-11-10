@@ -424,6 +424,21 @@ object Source {
     fromGraph(new IterableSource[T](iterable)).withAttributes(DefaultAttributes.iterableSource)
 
   /**
+   * Creates a `Source` from an array, if the array is empty, the stream is completed immediately,
+   * otherwise, every element of the array will be emitted sequentially.
+   *
+   * @since 1.3.0
+   */
+  def apply[T](array: Array[T]): Source[T, NotUsed] = {
+    if (array.length == 0)
+      empty
+    else if (array.length == 1)
+      single(array(0))
+    else
+      Source.fromGraph(new ArraySource[T](array))
+  }
+
+  /**
    * Starts a new `Source` from the given `Future`. The stream will consist of
    * one element when the `Future` is completed with a successful value, which
    * may happen before or after materializing the `Flow`.
