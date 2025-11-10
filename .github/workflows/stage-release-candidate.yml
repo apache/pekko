@@ -80,7 +80,7 @@ jobs:
 
       - name: Sign source archive
         run: |-
-          echo $PEKKO_GPG_SECRET_KEY | base64 -d | gpg --batch --import --import-options import-show
+          echo $PEKKO_GPG_SECRET_KEY | gpg --batch --import --import-options import-show
           gpg -ab archive/*.tgz
         env:
           PEKKO_GPG_SECRET_KEY: ${{ secrets.PEKKO_GPG_SECRET_KEY }}
