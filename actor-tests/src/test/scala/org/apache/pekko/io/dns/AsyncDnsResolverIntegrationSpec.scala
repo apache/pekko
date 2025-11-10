@@ -72,7 +72,7 @@ class AsyncDnsResolverIntegrationSpec
       system.log.info("Docker available. Running DNS tests")
     }
 
-    "resolve single A record" in {
+    "resolve a single A record" in {
       val name = "a-single.foo.test"
       val answer = resolve(name, DnsProtocol.Ip(ipv6 = false))
       withClue(answer) {
