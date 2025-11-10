@@ -127,6 +127,27 @@ public class SourceTest extends StreamTest {
   }
 
   @Test
+  public void mustBeAbleToUseItems() {
+    Source.items("a", "b", "c")
+        .runWith(TestSink.create(system), system)
+        .ensureSubscription()
+        .request(3)
+        .expectNext("a")
+        .expectNext("b")
+        .expectNext("c")
+        .expectComplete();
+  }
+
+  @Test
+  public void mustBeAbleToUseItemsWhenEmpty() {
+    Source.<String>items()
+        .runWith(TestSink.create(system), system)
+        .ensureSubscription()
+        .request(1)
+        .expectComplete();
+  }
+
+  @Test
   public void mustBeAbleToUseVoidTypeInForeach() {
     final TestKit probe = new TestKit(system);
     final java.lang.Iterable<String> input = Arrays.asList("a", "b", "c");

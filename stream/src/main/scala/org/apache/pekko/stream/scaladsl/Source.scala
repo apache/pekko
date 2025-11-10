@@ -15,7 +15,7 @@ package org.apache.pekko.stream.scaladsl
 
 import java.util.concurrent.CompletionStage
 
-import scala.annotation.tailrec
+import scala.annotation.{ tailrec, varargs }
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.{ immutable, AbstractIterator }
 import scala.concurrent.{ Future, Promise }
@@ -436,6 +436,24 @@ object Source {
    */
   def single[T](element: T): Source[T, NotUsed] =
     fromGraph(new GraphStages.SingleSource(element))
+
+  /**
+   * Create a `Source` from the given elements.
+   *
+   * @since 1.3.0
+   */
+  @varargs
+  @SafeVarargs
+  @SuppressWarnings(Array("varargs"))
+  def items[T](items: T*): Source[T, NotUsed] = {
+    if (items.isEmpty) {
+      empty[T]
+    } else if (items.length == 1) {
+      single(items.head)
+    } else {
+      Source(items)
+    }
+  }
 
   /**
    * Create a `Source` from an `Option` value, emitting the value if it is defined.
