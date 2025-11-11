@@ -103,7 +103,7 @@ jobs:
 
   stage-jars-to-nexus:
     runs-on: ubuntu-24.04
-    if: ${{ inputs.source-tar }}
+    if: ${{ inputs.jars }}
     steps:
       - name: Check version parameter
         run: |-
