@@ -155,6 +155,7 @@ jobs:
         run: |-
           VERSION=$(echo $REF | sed -e "s/.\(.*\)-.*/\\1/")
           echo "$PEKKO_GPG_SECRET_KEY" | gpg --batch --import --import-options import-show
+          echo "$SONATYPE_USERNAME"
 
           sbt "set ThisBuild / version := \"$VERSION\"; +publishSigned"
           sbt "set ThisBuild / version := \"$VERSION\"; sonatypePrepare; set ThisBuild / version := \"$VERSION\"; sonatypeBundleUpload; sonatypeClose"
