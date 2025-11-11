@@ -153,12 +153,12 @@ jobs:
       - name: Build, sign and stage artifacts
         run: |-
           VERSION=$(echo $REF | sed -e "s/.\(.*\)-.*/\\1/")
-          PGP_PASSPHRASE=
+          echo "$PEKKO_GPG_SECRET_KEY" | gpg --batch --import --import-options import-show
 
           sbt "set ThisBuild / version := \"$VERSION\"; +publishSigned"
           sbt "set ThisBuild / version := \"$VERSION\"; sonatypePrepare; set ThisBuild / version := \"$VERSION\"; sonatypeBundleUpload; sonatypeClose"
         env:
           REF: ${{ github.ref_name }}
-          PGP_SECRET: ${{ secrets.PEKKO_GPG_SECRET_KEY }}
+          PEKKO_PGP_SECRET_KEY: ${{ secrets.PEKKO_GPG_SECRET_KEY }}
           SONATYPE_USERNAME: ${{ secrets.NEXUS_USER }}
           SONATYPE_PASSWORD: ${{ secrets.NEXUS_PW }}
