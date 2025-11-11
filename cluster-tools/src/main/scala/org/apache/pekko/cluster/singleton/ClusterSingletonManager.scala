@@ -821,7 +821,7 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
   def scheduleDelayedMemberRemoved(m: Member): Unit = {
     if (removalMargin > Duration.Zero) {
       log.debug("Schedule DelayedMemberRemoved for [{}]", m.address)
-      context.system.scheduler.scheduleOnce(removalMargin, self, DelayedMemberRemoved(m))(context.dispatcher)
+      context.system.scheduler.scheduleOnce(removalMargin, self, DelayedMemberRemoved(m))(context.dispatcher, self)
     } else
       self ! DelayedMemberRemoved(m)
   }
