@@ -85,6 +85,11 @@ jobs:
         env:
           PEKKO_GPG_SECRET_KEY: ${{ secrets.PEKKO_GPG_SECRET_KEY }}
 
+      - name: Install Apache Subversion
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y subversion
+
       - name: Upload source dist
         run: |-
           svn checkout https://dist.apache.org/repos/dist/dev/pekko dist
