@@ -159,6 +159,6 @@ jobs:
           sbt "set ThisBuild / version := \"$VERSION\"; sonatypePrepare; set ThisBuild / version := \"$VERSION\"; sonatypeBundleUpload; sonatypeClose"
         env:
           REF: ${{ github.ref_name }}
-          PEKKO_PGP_SECRET_KEY: ${{ secrets.PEKKO_GPG_SECRET_KEY }}
+          PEKKO_GPG_SECRET_KEY: ${{ secrets.PEKKO_GPG_SECRET_KEY }}
           SONATYPE_USERNAME: ${{ secrets.NEXUS_USER }}
           SONATYPE_PASSWORD: ${{ secrets.NEXUS_PW }}
