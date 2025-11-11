@@ -81,6 +81,8 @@ jobs:
       - name: Sign source archive
         run: |-
           echo "$PEKKO_GPG_SECRET_KEY" | gpg --batch --import --import-options import-show
+          # log public part of the key
+          gpg --export --armor
           gpg -ab archive/*.tgz
         env:
           PEKKO_GPG_SECRET_KEY: ${{ secrets.PEKKO_GPG_SECRET_KEY }}
