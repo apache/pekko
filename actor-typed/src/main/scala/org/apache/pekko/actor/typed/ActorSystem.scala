@@ -13,7 +13,7 @@
 
 package org.apache.pekko.actor.typed
 
-import java.util.concurrent.{ CompletionStage, ThreadFactory }
+import java.util.concurrent.{ CompletionStage, ThreadFactory, TimeoutException }
 
 import scala.concurrent.{ ExecutionContextExecutor, Future }
 
@@ -42,7 +42,7 @@ import com.typesafe.config.{ Config, ConfigFactory }
  * Not for user extension.
  */
 @DoNotInherit
-abstract class ActorSystem[-T] extends ActorRef[T] with Extensions with ClassicActorSystemProvider {
+abstract class ActorSystem[-T] extends ActorRef[T] with Extensions with ClassicActorSystemProvider with AutoCloseable {
   this: InternalRecipientRef[T] =>
 
   /**
@@ -146,6 +146,26 @@ abstract class ActorSystem[-T] extends ActorRef[T] with Extensions with ClassicA
    * actor system as they will have been shut down before this CompletionStage completes.
    */
   def getWhenTerminated: CompletionStage[Done]
+
+  /**
+   * Terminates this actor system by running [[pekko.actor.CoordinatedShutdown]] with reason
+   * [[pekko.actor.CoordinatedShutdown.ActorSystemTerminateReason]]. This method will block
+   * until either the actor system is terminated or
+   * `pekko.coordinated-shutdown.close-actor-system-timeout` timeout duration is
+   * passed, in which case a [[TimeoutException]] is thrown.
+   *
+   * If `pekko.coordinated-shutdown.run-by-actor-system-terminate` is configured to `off`
+   * it will not run `CoordinatedShutdown`, but the `ActorSystem` and its actors
+   * will still be terminated.
+   *
+   * This will stop the guardian actor, which in turn
+   * will recursively stop all its child actors, and finally the system guardian
+   * (below which the logging actors reside) and then execute all registered
+   * termination handlers (see [[pekko.actor.ActorSystem.registerOnTermination]]).
+   * @since 1.3.0
+   */
+  @throws(classOf[TimeoutException])
+  override def close(): Unit
 
   /**
    * The deadLetter address is a destination that will accept (and discard)

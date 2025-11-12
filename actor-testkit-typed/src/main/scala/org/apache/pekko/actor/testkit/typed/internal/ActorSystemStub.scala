@@ -113,6 +113,10 @@ import com.typesafe.config.{ Config, ConfigFactory }
   override def terminate(): Unit = terminationPromise.trySuccess(Done)
   override def whenTerminated: Future[Done] = terminationPromise.future
   override def getWhenTerminated: CompletionStage[Done] = whenTerminated.asJava
+  override def close(): Unit = {
+    terminate()
+    Await.result(whenTerminated, scala.concurrent.duration.Duration.Inf)
+  }
   override val startTime: Long = System.currentTimeMillis()
   override def uptime: Long = System.currentTimeMillis() - startTime
   override def threadFactory: java.util.concurrent.ThreadFactory = new ThreadFactory {

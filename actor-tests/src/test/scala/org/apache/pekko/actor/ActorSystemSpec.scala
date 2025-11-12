@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import scala.annotation.nowarn
 import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
+import scala.util.Using
 
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
@@ -263,7 +264,7 @@ class ActorSystemSpec extends PekkoSpec(ActorSystemSpec.config) with ImplicitSen
 
     "throw RejectedExecutionException when shutdown" in {
       val system2 = ActorSystem("RejectedExecution-1", PekkoSpec.testConf)
-      Await.ready(system2.terminate(), 10.seconds)
+      system2.close()
 
       intercept[RejectedExecutionException] {
         system2.registerOnTermination { println("IF YOU SEE THIS THEN THERE'S A BUG HERE") }
@@ -332,6 +333,20 @@ class ActorSystemSpec extends PekkoSpec(ActorSystemSpec.config) with ImplicitSen
         system.actorSelection("/user") ! Kill
         Await.ready(system.whenTerminated, Duration.Inf)
       }
+    }
+
+    "close method terminates ActorSystem" in {
+      val system = ActorSystem()
+      system.close()
+      system.whenTerminated.isCompleted should ===(true)
+    }
+
+    "Scala's Using automatically terminates ActorSystem" in {
+      var currentSystem: ActorSystem = null
+      Using(ActorSystem()) { system =>
+        currentSystem = system
+      }
+      currentSystem.whenTerminated.isCompleted should ===(true)
     }
 
     "allow configuration of guardian supervisor strategy" in {

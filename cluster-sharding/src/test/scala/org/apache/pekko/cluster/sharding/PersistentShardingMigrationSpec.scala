@@ -12,9 +12,9 @@
  */
 
 package org.apache.pekko.cluster.sharding
+
 import java.util.UUID
 
-import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
@@ -184,7 +184,7 @@ class PersistentShardingMigrationSpec extends PekkoSpec(PersistentShardingMigrat
           extractShardId(rememberedEntitiesProbe.ref))
         f(system, region, rememberedEntitiesProbe)
       } finally {
-        Await.ready(system.terminate(), 20.seconds)
+        system.close()
       }
     }
 

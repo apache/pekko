@@ -15,9 +15,6 @@ package org.apache.pekko.cluster.sharding
 
 import java.util.UUID
 
-import scala.concurrent.Await
-import scala.concurrent.duration._
-
 import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.actor.ActorSystem
@@ -145,7 +142,7 @@ class RememberEntitiesShardIdExtractorChangeSpec
         val region = ClusterSharding(system).start(TypeName, Props(new PA()), extractEntityId, extractShardId)
         f(system, region)
       } finally {
-        Await.ready(system.terminate(), 20.seconds)
+        system.close()
       }
     }
 

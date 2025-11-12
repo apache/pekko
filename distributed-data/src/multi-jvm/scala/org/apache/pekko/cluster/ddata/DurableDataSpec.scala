@@ -290,7 +290,7 @@ abstract class DurableDataSpec(multiNodeConfig: DurableDataSpecConfig)
           expectTerminated(r)
         }
       } finally {
-        Await.ready(sys1.terminate(), 10.seconds)
+        sys1.close()
       }
 
       val sys2 = ActorSystem(

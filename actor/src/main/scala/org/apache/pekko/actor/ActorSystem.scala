@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicReference
 
 import scala.annotation.tailrec
 import scala.collection.immutable
-import scala.concurrent.{ ExecutionContext, ExecutionContextExecutor, Future, Promise }
+import scala.concurrent.{ Await, ExecutionContext, ExecutionContextExecutor, Future, Promise }
 import scala.concurrent.blocking
 import scala.concurrent.duration.Duration
 import scala.jdk.CollectionConverters._
@@ -524,7 +524,7 @@ object ActorSystem {
  * extending [[pekko.actor.ExtendedActorSystem]] instead, but beware that you
  * are completely on your own in that case!
  */
-abstract class ActorSystem extends ActorRefFactory with ClassicActorSystemProvider {
+abstract class ActorSystem extends ActorRefFactory with ClassicActorSystemProvider with AutoCloseable {
   import ActorSystem._
 
   /**
@@ -676,6 +676,26 @@ abstract class ActorSystem extends ActorRefFactory with ClassicActorSystemProvid
    * future completes.
    */
   def terminate(): Future[Terminated]
+
+  /**
+   * Terminates this actor system by running [[CoordinatedShutdown]] with reason
+   * [[CoordinatedShutdown.ActorSystemTerminateReason]]. This method will block
+   * until either the actor system is terminated or
+   * `pekko.coordinated-shutdown.close-actor-system-timeout` timeout duration is
+   * passed, in which case a [[TimeoutException]] is thrown.
+   *
+   * If `pekko.coordinated-shutdown.run-by-actor-system-terminate` is configured to `off`
+   * it will not run `CoordinatedShutdown`, but the `ActorSystem` and its actors
+   * will still be terminated.
+   *
+   * This will stop the guardian actor, which in turn
+   * will recursively stop all its child actors, and finally the system guardian
+   * (below which the logging actors reside) and then execute all registered
+   * termination handlers (see [[ActorSystem#registerOnTermination]]).
+   * @since 1.3.0
+   */
+  @throws(classOf[TimeoutException])
+  override def close(): Unit
 
   /**
    * Returns a Future which will be completed after the ActorSystem has been terminated
@@ -1078,6 +1098,14 @@ private[pekko] class ActorSystemImpl(
       finalTerminate()
     }
     whenTerminated
+  }
+
+  override def close(): Unit = {
+    terminate()
+    val duration =
+      Duration(settings.config.getDuration("pekko.coordinated-shutdown.close-actor-system-timeout").toMillis,
+        TimeUnit.MILLISECONDS)
+    Await.result(whenTerminated, duration)
   }
 
   override private[pekko] def finalTerminate(): Unit = {
