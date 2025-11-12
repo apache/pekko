@@ -17,10 +17,11 @@
 
 package org.apache.pekko.persistence.journal
 
-import scala.collection.immutable
+import org.apache.pekko.persistence.journal.AsyncWriteJournalResponseOrderSpec._
+
+import scala.collection.{ immutable, mutable }
 import scala.concurrent.{ ExecutionContext, Future, Promise }
 import scala.util.Try
-
 import org.apache.pekko.persistence.{ AtomicWrite, JournalProtocol, PersistenceSpec, PersistentRepr }
 import org.apache.pekko.testkit.ImplicitSender
 
@@ -34,90 +35,103 @@ class AsyncWriteJournalResponseOrderSpec
       PersistenceSpec.config(
         plugin = "", // we will provide explicit plugin IDs later
         test = classOf[AsyncWriteJournalResponseOrderSpec].getSimpleName,
+        // using the default system dispatcher to make sure write-response-global-order works with it
+        // see: https://github.com/apache/pekko/pull/2434
         extraConfig = Some(
           s"""
-          |pekko.persistence.journal.reverse-plugin {
+          |${ControlledWriteCompletionPlugin.BaseId} {
           |  with-global-order {
-          |    class = "${classOf[AsyncWriteJournalResponseOrderSpec.ReversePlugin].getName}"
-          |    
+          |    class = "${classOf[ControlledWriteCompletionPlugin].getName}"
+          |    plugin-dispatcher = "pekko.actor.default-dispatcher"
           |    write-response-global-order = on
           |  }
           |  no-global-order {
-          |    class = "${classOf[AsyncWriteJournalResponseOrderSpec.ReversePlugin].getName}"
-          |    
+          |    class = "${classOf[ControlledWriteCompletionPlugin].getName}"
+          |    plugin-dispatcher = "pekko.actor.default-dispatcher"
           |    write-response-global-order = off
           |  }
           |}
           |""".stripMargin
         ))) with ImplicitSender {
 
-  import AsyncWriteJournalResponseOrderSpec._
-
   "AsyncWriteJournal" must {
     "return write responses in request order if global response order is enabled" in {
       val pluginRef =
-        extension.journalFor(journalPluginId = "pekko.persistence.journal.reverse-plugin.with-global-order")
+        extension.journalFor(journalPluginId = s"${ControlledWriteCompletionPlugin.BaseId}.with-global-order")
 
-      pluginRef ! mkWriteMessages(1)
-      pluginRef ! mkWriteMessages(2)
-      pluginRef ! mkWriteMessages(3)
-
-      pluginRef ! CompleteWriteOps
-
-      getMessageNumsFromResponses(receiveN(6)) shouldEqual Vector(1, 2, 3)
+      // request writes for persistence Ids 1..9
+      1.to(9).foreach { persistenceId =>
+        pluginRef ! mkWriteMessages(persistenceId = persistenceId)
+      }
+      // complete writes for all but the first persistence ID in reverse order
+      pluginRef ! CompleteWriteOps(persistenceIdsInOrder = 2.to(9).toVector.reverse)
+      // AsyncWriteJournal should hold the responses yet to preserve the response order
+      expectNoMessage()
+      // complete write for the first persistence ID
+      pluginRef ! CompleteWriteOps(persistenceIdsInOrder = Vector(1))
+      // now we should receive all responses in the order in which they have been requested
+      getPersistenceIdsFromResponses(receiveN(18)) shouldEqual 1.to(9).toVector
     }
 
-    "return write responses in completion order if global response order is disabled" in {
+    "return write responses as soon as the operation is complete if global response order is disabled" in {
       val pluginRef =
-        extension.journalFor(journalPluginId = "pekko.persistence.journal.reverse-plugin.no-global-order")
+        extension.journalFor(journalPluginId = s"${ControlledWriteCompletionPlugin.BaseId}.no-global-order")
 
-      pluginRef ! mkWriteMessages(1)
-      pluginRef ! mkWriteMessages(2)
-      pluginRef ! mkWriteMessages(3)
-
-      pluginRef ! CompleteWriteOps
-
-      getMessageNumsFromResponses(receiveN(6)) shouldEqual Vector(3, 2, 1)
+      // request writes for persistence Ids 1..9
+      1.to(9).foreach { persistenceId =>
+        pluginRef ! mkWriteMessages(persistenceId = persistenceId)
+      }
+      // complete writes for all but the first persistence ID in reverse order
+      pluginRef ! CompleteWriteOps(persistenceIdsInOrder = 2.to(9).toVector.reverse)
+      // AsyncWriteJournal sends out write responses for 2..9 right away without waiting
+      getPersistenceIdsFromResponses(receiveN(16)).toSet shouldEqual 2.to(9).toSet
+      // complete write for the first persistence ID
+      pluginRef ! CompleteWriteOps(persistenceIdsInOrder = Vector(1))
+      // and now we finally receive the response for persistence ID 1
+      getPersistenceIdsFromResponses(receiveN(2)) shouldEqual Vector(1)
     }
   }
 
-  private def mkWriteMessages(num: Int): JournalProtocol.WriteMessages = JournalProtocol.WriteMessages(
+  private def mkWriteMessages(persistenceId: Int): JournalProtocol.WriteMessages = JournalProtocol.WriteMessages(
     messages = Vector(AtomicWrite(PersistentRepr(
-      payload = num,
+      payload = "",
       sequenceNr = 0L,
-      persistenceId = num.toString
+      persistenceId = persistenceId.toString
     ))),
     persistentActor = self,
     actorInstanceId = 1
   )
 
-  private def getMessageNumsFromResponses(responses: Seq[AnyRef]): Vector[Int] = responses.collect {
+  private def getPersistenceIdsFromResponses(responses: Seq[AnyRef]): Vector[Int] = responses.collect {
     case successResponse: JournalProtocol.WriteMessageSuccess =>
-      successResponse.persistent.payload.asInstanceOf[Int]
+      successResponse.persistent.persistenceId.toInt
   }.toVector
 }
 
 private object AsyncWriteJournalResponseOrderSpec {
-  case object CompleteWriteOps
+  final case class CompleteWriteOps(persistenceIdsInOrder: Vector[Int])
 
   /**
-   * Accumulates asyncWriteMessages requests and completes them in reverse receive order on [[CompleteWriteOps]] command
+   * Accumulates asyncWriteMessages requests (one for each persistence ID is expected)
+   * and completes them in requested order on [[CompleteWriteOps]] command.
    */
-  class ReversePlugin extends AsyncWriteJournal {
+  final class ControlledWriteCompletionPlugin extends AsyncWriteJournal {
 
     private implicit val ec: ExecutionContext = context.dispatcher
 
-    private var pendingOps: Vector[Promise[Unit]] = Vector.empty
+    private val pendingOps: mutable.HashMap[Int, Promise[Unit]] = mutable.HashMap.empty
 
     override def receivePluginInternal: Receive = {
-      case CompleteWriteOps =>
-        pendingOps.reverse.foreach(_.success(()))
-        pendingOps = Vector.empty
+      case cmd: CompleteWriteOps =>
+        cmd.persistenceIdsInOrder.foreach { persistenceId =>
+          pendingOps(persistenceId).success(())
+          pendingOps -= persistenceId
+        }
     }
 
     override def asyncWriteMessages(messages: immutable.Seq[AtomicWrite]): Future[immutable.Seq[Try[Unit]]] = {
       val responsePromise = Promise[Unit]()
-      pendingOps = pendingOps :+ responsePromise
+      pendingOps.put(messages.head.persistenceId.toInt, responsePromise)
       responsePromise.future.map(_ => Vector.empty)
     }
 
@@ -127,5 +141,9 @@ private object AsyncWriteJournalResponseOrderSpec {
         recoveryCallback: PersistentRepr => Unit): Future[Unit] = ???
 
     override def asyncReadHighestSequenceNr(persistenceId: String, fromSequenceNr: Long): Future[Long] = ???
+  }
+
+  object ControlledWriteCompletionPlugin {
+    val BaseId: String = "pekko.persistence.journal.controlled-write-completion-plugin"
   }
 }
