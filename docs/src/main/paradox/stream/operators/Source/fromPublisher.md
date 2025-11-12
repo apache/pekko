@@ -38,7 +38,7 @@ backpressure is applied throughout the stream, preventing us from running out of
 rows are consumed slower than they are produced by the database.
 
 Scala
-:  @@snip [FromPublisher.scala](/docs/src/test/scala-jdk9/docs/stream/operators/source/FromPublisher.scala) { #imports #example }
+:  @@snip [FromPublisher.scala](/docs/src/test/scala-jdk9-only/docs/stream/operators/source/FromPublisher.scala) { #imports #example }
 
 Java
 :  @@snip [FromPublisher.java](/docs/src/test/java-jdk9-only/jdocs/stream/operators/source/FromPublisher.java) { #imports #example }
