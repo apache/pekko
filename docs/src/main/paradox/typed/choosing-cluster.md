@@ -59,7 +59,7 @@ very risky, such as a shared cluster, shared code and dependencies for service A
 database schema. There is a false sense of autonomy because of the physical separation of the code and
 deployment units, but you are likely to encounter problems because of changes in the implementation of
 one service leaking into the behavior of others. See Ben Christensen's
-[Don’t Build a Distributed Monolith](https://www.microservices.com/talks/dont-build-a-distributed-monolith/).
+[Don’t Build a Distributed Monolith](https://www.slideshare.net/slideshow/avoid-distributed-monoliths/58636003).
 
 Organizations that find themselves in this situation often react by trying to centrally coordinate deployment
 of multiple services, at which point you have lost the principal benefit of microservices while taking on
