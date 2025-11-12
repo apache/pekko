@@ -10,7 +10,7 @@ Scala
 :   @@snip[JavaFlowSupport.scala](/stream/src/main/scala/org/apache/pekko/stream/scaladsl/JavaFlowSupport.scala) { #fromPublisher }
 
 Java
-:   @@snip[JavaFlowSupport.java](/docs/src/test/java/jdocs/stream/operators/source/FromPublisher.java) { #api }
+:   @@snip[FromPublisher.java](/docs/src/test/java/jdocs/stream/operators/source/FromPublisher.java) { #api }
 
 
 ## Description
