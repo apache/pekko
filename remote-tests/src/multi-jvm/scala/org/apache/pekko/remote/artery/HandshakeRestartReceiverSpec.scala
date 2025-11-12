@@ -49,7 +49,7 @@ object HandshakeRestartReceiverSpec extends MultiNodeConfig {
 
   class Subject extends Actor {
     def receive = {
-      case "shutdown" => context.system.terminate()
+      case "shutdown" => context.system.closeAsync()
       case "identify" => sender() ! (AddressUidExtension(context.system).longAddressUid -> self)
     }
   }
@@ -130,14 +130,14 @@ abstract class HandshakeRestartReceiverSpec
 
         Await.result(system.whenTerminated, 10.seconds)
 
-        val freshSystem = ActorSystem(
+        val freshSystem = pekko.actor.scaladsl.ActorSystem(
           system.name,
           ConfigFactory.parseString(s"""
               pekko.remote.artery.canonical.port = ${address.port.get}
               """).withFallback(system.settings.config))
         freshSystem.actorOf(Props[Subject](), "subject2")
 
-        Await.result(freshSystem.whenTerminated, 45.seconds)
+        freshSystem.close()
       }
     }
 

@@ -210,7 +210,7 @@ abstract class ClusterShardingRememberEntitiesNewExtractorSpec(
 
       // no sharding nodes left of the original cluster, start a new nodes
       runOn(second, third) {
-        val sys2 = ActorSystem(system.name, system.settings.config)
+        val sys2 = pekko.actor.scaladsl.ActorSystem(system.name, system.settings.config)
         val probe2 = TestProbe()(sys2)
 
         if (persistenceIsNeeded) {

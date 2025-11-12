@@ -13,7 +13,6 @@
 
 package org.apache.pekko.remote
 
-import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
@@ -172,7 +171,7 @@ abstract class RemoteReDeploymentMultiJvmSpec(multiNodeConfig: RemoteReDeploymen
 
       // Start the second system again
       runOn(second) {
-        Await.ready(system.whenTerminated, 30.seconds)
+        system.close()
         expectNoMessage(sleepAfterKill)
         sys = startNewSystem()
       }
@@ -224,7 +223,7 @@ abstract class RemoteReDeploymentMultiJvmSpec(multiNodeConfig: RemoteReDeploymen
       enterBarrier("stopping")
 
       runOn(second) {
-        Await.result(sys.terminate(), 10.seconds)
+        sys.close()
       }
     }
 

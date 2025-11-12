@@ -19,7 +19,6 @@ import com.typesafe.config.ConfigFactory
 import org.apache.pekko
 import pekko.actor.ActorIdentity
 import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
 import pekko.actor.ExtendedActorSystem
 import pekko.actor.Identify
 import pekko.actor.RootActorPath
@@ -108,7 +107,7 @@ abstract class AbstractSerializationTransportInformationSpec(config: Config)
     if (RARP(system).provider.remoteSettings.Artery.Enabled) "pekko"
     else "pekko.tcp"
 
-  val system2 = ActorSystem(system.name, system.settings.config)
+  val system2 = pekko.actor.scaladsl.ActorSystem(system.name, system.settings.config)
   val system2Address = RARP(system2).provider.getDefaultAddress
 
   "Serialization of ActorRef in remote message" must {

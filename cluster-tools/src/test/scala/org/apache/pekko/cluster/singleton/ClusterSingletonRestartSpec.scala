@@ -18,7 +18,7 @@ import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
+import pekko.actor.scaladsl.ActorSystem
 import pekko.actor.PoisonPill
 import pekko.cluster.Cluster
 import pekko.cluster.MemberStatus

@@ -22,7 +22,8 @@ import scala.concurrent.duration._
 
 import org.openjdk.jmh.annotations._
 
-import org.apache.pekko.util.Timeout
+import org.apache.pekko
+import pekko.util.Timeout
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Array(Mode.Throughput))
@@ -30,7 +31,7 @@ import org.apache.pekko.util.Timeout
 @Warmup(iterations = 10, time = 1700, timeUnit = TimeUnit.MILLISECONDS)
 @Measurement(iterations = 20, time = 1700, timeUnit = TimeUnit.MILLISECONDS)
 class ScheduleBenchmark {
-  implicit val system: ActorSystem = ActorSystem()
+  implicit val system: ActorSystem = pekko.actor.scaladsl.ActorSystem()
   val scheduler: Scheduler = system.scheduler
   val interval: FiniteDuration = 25.millis
   val within: FiniteDuration = 2.seconds
@@ -53,8 +54,7 @@ class ScheduleBenchmark {
 
   @TearDown
   def shutdown(): Unit = {
-    system.terminate()
-    Await.ready(system.whenTerminated, 15.seconds)
+    system.close()
   }
 
   def op(idx: Int) = if (idx == winner) promise.trySuccess(idx) else idx

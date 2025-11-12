@@ -89,7 +89,7 @@ class ClassicWatchingTypedSpec extends AnyWordSpec with LogCapturing {
 
   "Classic -> Typed" must {
     "support creating, watching and messaging" in {
-      val system = classic.ActorSystem("Coexistence")
+      val system = classic.scaladsl.ActorSystem("Coexistence")
       // #create-classic
       val classicActor = system.actorOf(Classic.props())
       // #create-classic
@@ -102,7 +102,7 @@ class ClassicWatchingTypedSpec extends AnyWordSpec with LogCapturing {
     "support converting a classic actor system to an actor system" in {
       // #convert-classic
 
-      val system = pekko.actor.ActorSystem("ClassicToTypedSystem")
+      val system = pekko.actor.scaladsl.ActorSystem("ClassicToTypedSystem")
       val typedSystem: ActorSystem[Nothing] = system.toTyped
       // #convert-classic
       typedSystem.scheduler // remove compile warning

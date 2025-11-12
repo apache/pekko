@@ -17,7 +17,8 @@ import MessageLoggingSpec._
 import com.typesafe.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
-import pekko.actor.{ Actor, ActorIdentity, ActorSystem, ExtendedActorSystem, Identify, Props, RootActorPath }
+import pekko.actor.{ Actor, ActorIdentity, ExtendedActorSystem, Identify, Props, RootActorPath }
+import pekko.actor.scaladsl.ActorSystem
 import pekko.serialization.jackson.CborSerializable
 import pekko.testkit.EventFilter
 import pekko.testkit.TestActors

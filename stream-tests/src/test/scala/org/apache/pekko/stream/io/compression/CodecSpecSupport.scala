@@ -14,7 +14,7 @@
 package org.apache.pekko.stream.io.compression
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
+import pekko.actor.scaladsl.ActorSystem
 import pekko.testkit.TestKit
 import pekko.util.ByteString
 

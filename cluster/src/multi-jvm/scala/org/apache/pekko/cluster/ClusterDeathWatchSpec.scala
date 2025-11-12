@@ -23,6 +23,7 @@ import org.scalatest.concurrent.ScalaFutures
 
 import org.apache.pekko
 import pekko.actor._
+import pekko.actor.scaladsl.ActorSystem
 import pekko.cluster.MultiNodeClusterSpec.EndActor
 import pekko.remote.RemoteActorRef
 import pekko.remote.RemoteWatcher
@@ -280,7 +281,7 @@ abstract class ClusterDeathWatchSpec
         enterBarrier("first-unavailable")
 
         val timeout = remainingOrDefault
-        try Await.ready(system.whenTerminated, timeout)
+        try Await.ready(system.whenTerminatedImpl, timeout)
         catch {
           case _: TimeoutException =>
             fail(

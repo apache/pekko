@@ -18,7 +18,6 @@ import scala.concurrent.duration._
 import org.apache.pekko
 import pekko.actor.Actor
 import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
 import pekko.actor.Props
 import pekko.testkit._
 
@@ -42,7 +41,7 @@ class AddressTerminatedTopicBenchSpec extends PekkoSpec("pekko.loglevel=INFO") {
   "Subscribe and unsubscribe of AddressTerminated" must {
 
     "be quick" in {
-      val sys = ActorSystem(system.name + "2", system.settings.config)
+      val sys = pekko.actor.scaladsl.ActorSystem(system.name + "2", system.settings.config)
       try {
         val num = 20000
 

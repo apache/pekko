@@ -1035,8 +1035,8 @@ object TestKit {
       case f: FiniteDuration => f.dilated(actorSystem)
       case _                 => 10.seconds.dilated(actorSystem).min(10.seconds)
     }
-    actorSystem.terminate()
-    try Await.ready(actorSystem.whenTerminated, d)
+    actorSystem.terminateImpl()
+    try Await.ready(actorSystem.whenTerminatedImpl, d)
     catch {
       case _: TimeoutException =>
         val msg = "Failed to stop [%s] within [%s] \n%s".format(

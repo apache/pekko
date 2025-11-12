@@ -15,9 +15,6 @@ package org.apache.pekko.actor
 
 import java.util.concurrent.TimeUnit
 
-import scala.concurrent.Await
-import scala.concurrent.duration._
-
 import org.openjdk.jmh.annotations._
 
 /*
@@ -35,7 +32,7 @@ hand checking:
 @Warmup(iterations = 1000)
 @Measurement(iterations = 4000)
 class ActorCreationBenchmark {
-  implicit val system: ActorSystem = ActorSystem()
+  implicit val system: ActorSystem = org.apache.pekko.actor.scaladsl.ActorSystem()
 
   final val props = Props[MyActor]()
 
@@ -47,8 +44,7 @@ class ActorCreationBenchmark {
 
   @TearDown(Level.Trial)
   def shutdown(): Unit = {
-    system.terminate()
-    Await.ready(system.whenTerminated, 15.seconds)
+    system.close()
   }
 
   @Benchmark

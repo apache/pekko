@@ -615,7 +615,7 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
             settings.Advanced.InboundMaxRestarts,
             settings.Advanced.InboundRestartTimeout.toSeconds,
             cause.getMessage)
-          system.terminate()
+          system.terminateImpl()
         }
     }
   }

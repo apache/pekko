@@ -20,11 +20,11 @@ import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor.Actor
-import pekko.actor.ActorSystem
 import pekko.actor.Address
 import pekko.actor.Deploy
 import pekko.actor.Props
 import pekko.actor.RootActorPath
+import pekko.actor.scaladsl.ActorSystem
 import pekko.cluster.MemberStatus._
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.testkit.MultiNodeSpec

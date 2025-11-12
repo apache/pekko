@@ -106,7 +106,7 @@ abstract class RemoteNodeRestartGateSpec extends RemotingMultiNodeSpec(RemoteNod
 
         enterBarrier("gated")
 
-        Await.ready(system.whenTerminated, 10.seconds)
+        system.close()
 
         val freshSystem = ActorSystem(
           system.name,
@@ -133,7 +133,7 @@ abstract class RemoteNodeRestartGateSpec extends RemotingMultiNodeSpec(RemoteNod
         // Now the other system will be able to pass, too
         freshSystem.actorOf(Props[Subject](), "subject")
 
-        Await.ready(freshSystem.whenTerminated, 30.seconds)
+        freshSystem.close()
       }
 
     }

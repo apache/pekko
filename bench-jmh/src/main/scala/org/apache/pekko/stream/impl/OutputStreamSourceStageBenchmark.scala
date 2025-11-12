@@ -22,7 +22,7 @@ import org.openjdk.jmh.annotations._
 import org.openjdk.jmh.annotations.TearDown
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
+import pekko.actor.scaladsl.ActorSystem
 import pekko.stream.scaladsl.Keep
 import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.StreamConverters
@@ -58,7 +58,7 @@ class OutputStreamSourceStageBenchmark {
 
   @TearDown
   def shutdown(): Unit = {
-    Await.result(system.terminate(), 5.seconds)
+    system.close()
   }
 
 }

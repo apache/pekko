@@ -13,7 +13,7 @@
 
 package org.apache.pekko.testkit;
 
-import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.actor.javadsl.ActorSystem;
 
 import org.apache.pekko.testkit.javadsl.TestKit;
 import com.typesafe.config.Config;

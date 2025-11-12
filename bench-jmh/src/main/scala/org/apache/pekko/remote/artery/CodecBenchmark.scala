@@ -32,6 +32,7 @@ import org.apache.pekko
 import pekko.Done
 import pekko.NotUsed
 import pekko.actor._
+import pekko.actor.scaladsl.ActorSystem
 import pekko.remote._
 import pekko.remote.artery.Decoder.InboundCompressionAccess
 import pekko.remote.artery.compress._
@@ -197,8 +198,8 @@ class CodecBenchmark {
 
   @TearDown(Level.Trial)
   def tearDownTrial(): Unit = {
-    Await.result(system.terminate(), 5.seconds)
-    Await.result(systemB.terminate(), 5.seconds)
+    system.close()
+    systemB.close()
   }
 
   @Setup(Level.Iteration)

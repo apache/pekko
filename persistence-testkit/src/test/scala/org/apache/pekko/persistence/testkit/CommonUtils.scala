@@ -19,7 +19,8 @@ import com.typesafe.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
-import pekko.actor.{ ActorRef, ActorSystem }
+import pekko.actor.ActorRef
+import pekko.actor.scaladsl.ActorSystem
 import pekko.persistence._
 import pekko.testkit.TestKitBase
 

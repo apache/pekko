@@ -212,7 +212,8 @@ abstract class ClusterShardingRememberEntitiesSpec(multiNodeConfig: ClusterShard
         }
         // no nodes left of the original cluster, start a new cluster
 
-        val sys2 = ActorSystem(system.name, MultiNodeSpec.configureNextPortIfFixed(system.settings.config))
+        val sys2 =
+          pekko.actor.scaladsl.ActorSystem(system.name, MultiNodeSpec.configureNextPortIfFixed(system.settings.config))
         val entityProbe2 = TestProbe()(sys2)
 
         if (persistenceIsNeeded) setStore(sys2, storeOn = first)

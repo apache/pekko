@@ -18,7 +18,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
+import pekko.actor.scaladsl.ActorSystem
 import pekko.remote.RARP
 import pekko.remote.RemoteTransportException
 import pekko.testkit.SocketUtil

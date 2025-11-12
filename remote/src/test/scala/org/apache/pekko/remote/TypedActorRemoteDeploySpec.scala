@@ -21,7 +21,8 @@ import scala.annotation.nowarn
 import com.typesafe.config._
 
 import org.apache.pekko
-import pekko.actor.{ ActorSystem, Deploy, TypedActor, TypedProps }
+import pekko.actor.{ Deploy, TypedActor, TypedProps }
+import pekko.actor.scaladsl.ActorSystem
 import pekko.testkit.PekkoSpec
 
 object TypedActorRemoteDeploySpec {

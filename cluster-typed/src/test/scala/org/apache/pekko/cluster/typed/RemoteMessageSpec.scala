@@ -19,7 +19,7 @@ import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.{ ActorSystem => ClassicActorSystem }
+import pekko.actor.scaladsl.{ ActorSystem => ClassicActorSystem }
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.ActorRefResolver
 import pekko.actor.typed.scaladsl.Behaviors
@@ -87,7 +87,7 @@ class RemoteMessageSpec extends PekkoSpec(RemoteMessageSpec.config) {
         pongPromise.future.futureValue should ===(Done)
 
       } finally {
-        system2.terminate()
+        system2.closeAsync()
       }
     }
 

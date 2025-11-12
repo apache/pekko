@@ -23,7 +23,8 @@ import org.scalatest.BeforeAndAfterAll
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.apache.pekko
-import pekko.actor.{ ActorSystem, ExtendedActorSystem }
+import pekko.actor.ExtendedActorSystem
+import pekko.actor.scaladsl.ActorSystem
 import pekko.testkit.TestKit
 
 class JacksonFactorySpec extends TestKit(ActorSystem("JacksonFactorySpec"))
@@ -35,7 +36,7 @@ class JacksonFactorySpec extends TestKit(ActorSystem("JacksonFactorySpec"))
 
   override def afterAll(): Unit = {
     super.afterAll()
-    system.terminate()
+    system.close()
   }
 
   "Jackson Factory config" must {

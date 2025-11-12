@@ -62,11 +62,11 @@ class PingPongActorSystemActivatorTest extends AnyWordSpec with Matchers with Po
     "stop the ActorSystem when bundle stops" in {
       filterErrors() {
         val system = serviceForType[ActorSystem]
-        system.whenTerminated.isCompleted should be(false)
+        system.whenTerminatedImpl.isCompleted should be(false)
 
         bundleForName(TEST_BUNDLE_NAME).stop()
-        Await.ready(system.whenTerminated, Duration.Inf)
-        system.whenTerminated.isCompleted should be(true)
+        Await.ready(system.whenTerminatedImpl, Duration.Inf)
+        system.whenTerminatedImpl.isCompleted should be(true)
       }
     }
   }

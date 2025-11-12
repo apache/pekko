@@ -19,7 +19,7 @@ import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
+import pekko.actor.scaladsl.ActorSystem
 import pekko.cluster.ClusterEvent._
 import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig
@@ -261,7 +261,7 @@ abstract class MultiDcSplitBrainSpec extends MultiNodeClusterSpec(MultiDcSplitBr
         // actor system to be able to start new with same port
         val thirdAddress = address(third)
         enterBarrier("fifth-waiting-for-termination")
-        Await.ready(system.whenTerminated, remaining)
+        Await.ready(system.whenTerminatedImpl, remaining)
 
         val port = Cluster(system).selfAddress.port.get
         val restartedSystem = ActorSystem(
@@ -272,7 +272,7 @@ abstract class MultiDcSplitBrainSpec extends MultiNodeClusterSpec(MultiDcSplitBr
             pekko.coordinated-shutdown.terminate-actor-system = on
             """).withFallback(system.settings.config))
         Cluster(restartedSystem).join(thirdAddress)
-        Await.ready(restartedSystem.whenTerminated, remaining)
+        Await.ready(restartedSystem.whenTerminatedImpl, remaining)
       }
 
       // no multi-jvm test facilities on fifth after this

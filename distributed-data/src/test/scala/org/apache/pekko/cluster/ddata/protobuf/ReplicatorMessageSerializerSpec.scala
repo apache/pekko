@@ -21,10 +21,10 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
 import pekko.actor.Address
 import pekko.actor.ExtendedActorSystem
 import pekko.actor.Props
+import pekko.actor.scaladsl.ActorSystem
 import pekko.cluster.UniqueAddress
 import pekko.cluster.ddata.DurableStore.DurableDataEnvelope
 import pekko.cluster.ddata.GCounter

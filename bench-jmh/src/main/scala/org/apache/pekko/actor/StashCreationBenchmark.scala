@@ -15,13 +15,11 @@ package org.apache.pekko.actor
 
 import java.util.concurrent.TimeUnit
 
-import scala.concurrent.Await
-import scala.concurrent.duration._
-
 import com.typesafe.config.ConfigFactory
 import org.openjdk.jmh.annotations._
 
-import org.apache.pekko.testkit.TestProbe
+import org.apache.pekko
+import pekko.testkit.TestProbe
 
 object StashCreationBenchmark {
   class StashingActor extends Actor with Stash {
@@ -44,13 +42,12 @@ class StashCreationBenchmark {
       stash-capacity = 1000
     }
     """)
-  implicit val system: ActorSystem = ActorSystem("StashCreationBenchmark", conf)
+  implicit val system: ActorSystem = pekko.actor.scaladsl.ActorSystem("StashCreationBenchmark", conf)
   val probe = TestProbe()
 
   @TearDown(Level.Trial)
   def shutdown(): Unit = {
-    system.terminate()
-    Await.ready(system.whenTerminated, 15.seconds)
+    system.close()
   }
 
   @Benchmark

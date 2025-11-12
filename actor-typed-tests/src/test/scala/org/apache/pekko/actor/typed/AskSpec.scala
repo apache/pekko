@@ -192,7 +192,7 @@ class AskSpec extends ScalaTestWithActorTestKit("""
       // It's unlikely but possible that this happens, since the receiving actor would
       // have to accept a message with an actoref that accepts AnyRef or be doing crazy casting
       // For completeness sake though
-      implicit val classicSystem = pekko.actor.ActorSystem("AskSpec-classic-1")
+      implicit val classicSystem = pekko.actor.scaladsl.ActorSystem("AskSpec-classic-1")
       try {
         val ex = new RuntimeException("not good!")
 

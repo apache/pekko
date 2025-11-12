@@ -22,6 +22,7 @@ import org.scalatest.wordspec.AnyWordSpec
 
 import org.apache.pekko
 import pekko.actor._
+import pekko.actor.scaladsl.ActorSystem
 import pekko.testkit._
 import pekko.util.ccompat.JavaConverters._
 

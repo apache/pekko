@@ -21,7 +21,8 @@ import scala.util.control.NoStackTrace
 
 import org.apache.pekko
 import pekko.{ Done, NotUsed }
-import pekko.actor.{ Actor, ActorIdentity, ActorLogging, ActorRef, ActorSystem, ActorSystemImpl, Identify, Props }
+import pekko.actor.{ Actor, ActorIdentity, ActorLogging, ActorRef, ActorSystemImpl, Identify, Props }
+import pekko.actor.scaladsl.ActorSystem
 import pekko.actor.Status.Failure
 import pekko.pattern._
 import pekko.stream._

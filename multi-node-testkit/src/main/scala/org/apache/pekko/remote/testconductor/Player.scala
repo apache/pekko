@@ -80,7 +80,7 @@ trait Player { this: TestConductorExt =>
   private def client = _client match {
     case null =>
       throw new IllegalStateException("TestConductor client not yet started")
-    case _ if system.whenTerminated.isCompleted =>
+    case _ if system.whenTerminatedImpl.isCompleted =>
       throw new IllegalStateException(
         "TestConductor unavailable because system is terminated; you need to startNewSystem() before this point")
     case x => x
@@ -288,7 +288,7 @@ private[pekko] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress
           // FIXME: Currently ignoring, needs support from Remoting
           stay()
         case TerminateMsg(Left(false)) =>
-          context.system.terminate()
+          context.system.closeAsync()
           stop()
         case TerminateMsg(Left(true)) =>
           context.system.asInstanceOf[ActorSystemImpl].abort()

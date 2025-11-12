@@ -17,15 +17,12 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.CyclicBarrier
 import java.util.concurrent.TimeUnit
 
-import scala.concurrent.Await
-import scala.concurrent.duration._
-
 import com.typesafe.config.ConfigFactory
 import org.agrona.concurrent.ManyToOneConcurrentArrayQueue
 import org.openjdk.jmh.annotations._
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
+import pekko.actor.scaladsl.ActorSystem
 import pekko.stream.KillSwitches
 import pekko.stream.OverflowStrategy
 import pekko.stream.SystemMaterializer
@@ -52,7 +49,7 @@ class SendQueueBenchmark {
 
   @TearDown
   def shutdown(): Unit = {
-    Await.result(system.terminate(), 5.seconds)
+    system.close()
   }
 
   @Benchmark

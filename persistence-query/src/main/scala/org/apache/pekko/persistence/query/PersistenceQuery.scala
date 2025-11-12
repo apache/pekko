@@ -37,16 +37,19 @@ object PersistenceQuery extends ExtensionId[PersistenceQuery] with ExtensionIdPr
   def lookup: PersistenceQuery.type = PersistenceQuery
 
   @InternalApi
-  private[pekko] val pluginProvider: PluginProvider[ReadJournalProvider, ReadJournal, javadsl.ReadJournal] =
-    new PluginProvider[ReadJournalProvider, scaladsl.ReadJournal, javadsl.ReadJournal] {
+  private[pekko] val pluginProvider
+      : PluginProvider[ReadJournalProvider, ReadJournal, pekko.persistence.query.javadsl.ReadJournal] =
+    new PluginProvider[ReadJournalProvider, pekko.persistence.query.scaladsl.ReadJournal,
+      pekko.persistence.query.javadsl.ReadJournal] {
       override def scalaDsl(t: ReadJournalProvider): ReadJournal = t.scaladslReadJournal()
-      override def javaDsl(t: ReadJournalProvider): javadsl.ReadJournal = t.javadslReadJournal()
+      override def javaDsl(t: ReadJournalProvider): pekko.persistence.query.javadsl.ReadJournal = t.javadslReadJournal()
     }
 
 }
 
 class PersistenceQuery(system: ExtendedActorSystem)
-    extends PersistencePlugin[scaladsl.ReadJournal, javadsl.ReadJournal, ReadJournalProvider](system)(
+    extends PersistencePlugin[pekko.persistence.query.scaladsl.ReadJournal, pekko.persistence.query.javadsl.ReadJournal,
+      ReadJournalProvider](system)(
       ClassTag(classOf[ReadJournalProvider]),
       PersistenceQuery.pluginProvider)
     with Extension {
@@ -58,27 +61,29 @@ class PersistenceQuery(system: ExtendedActorSystem)
    * The provided readJournalPluginConfig will be used to configure the journal plugin instead of the actor system
    * config.
    */
-  final def readJournalFor[T <: scaladsl.ReadJournal](readJournalPluginId: String, readJournalPluginConfig: Config): T =
+  final def readJournalFor[T <: pekko.persistence.query.scaladsl.ReadJournal](readJournalPluginId: String,
+      readJournalPluginConfig: Config): T =
     pluginFor(readJournalPluginId, readJournalPluginConfig).scaladslPlugin.asInstanceOf[T]
 
   /**
    * Scala API: Returns the [[pekko.persistence.query.scaladsl.ReadJournal]] specified by the given
    * read journal configuration entry.
    */
-  final def readJournalFor[T <: scaladsl.ReadJournal](readJournalPluginId: String): T =
+  final def readJournalFor[T <: pekko.persistence.query.scaladsl.ReadJournal](readJournalPluginId: String): T =
     readJournalFor(readJournalPluginId, ConfigFactory.empty)
 
   /**
    * Java API: Returns the [[pekko.persistence.query.javadsl.ReadJournal]] specified by the given
    * read journal configuration entry.
    */
-  final def getReadJournalFor[T <: javadsl.ReadJournal](
+  final def getReadJournalFor[T <: pekko.persistence.query.javadsl.ReadJournal](
       @unused clazz: Class[T],
       readJournalPluginId: String,
       readJournalPluginConfig: Config): T =
     pluginFor(readJournalPluginId, readJournalPluginConfig).javadslPlugin.asInstanceOf[T]
 
-  final def getReadJournalFor[T <: javadsl.ReadJournal](clazz: Class[T], readJournalPluginId: String): T =
+  final def getReadJournalFor[T <: pekko.persistence.query.javadsl.ReadJournal](clazz: Class[T],
+      readJournalPluginId: String): T =
     getReadJournalFor[T](clazz, readJournalPluginId, ConfigFactory.empty())
 
 }

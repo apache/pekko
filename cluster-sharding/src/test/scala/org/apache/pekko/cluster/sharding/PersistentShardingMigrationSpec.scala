@@ -15,14 +15,14 @@ package org.apache.pekko.cluster.sharding
 import java.util.UUID
 
 import org.apache.pekko
-import pekko.actor.{ ActorRef, ActorSystem, Props }
+import pekko.actor.{ ActorRef, Props }
+import pekko.actor.scaladsl.ActorSystem
 import pekko.cluster.sharding.ShardRegion.CurrentRegions
 import pekko.cluster.{ Cluster, MemberStatus }
 import pekko.persistence.PersistentActor
 import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
 import com.typesafe.config.{ Config, ConfigFactory }
 
-import scala.concurrent.Await
 import scala.concurrent.duration._
 
 /**
@@ -183,7 +183,7 @@ class PersistentShardingMigrationSpec extends PekkoSpec(PersistentShardingMigrat
           extractShardId(rememberedEntitiesProbe.ref))
         f(system, region, rememberedEntitiesProbe)
       } finally {
-        Await.ready(system.terminate(), 20.seconds)
+        system.close()
       }
     }
 

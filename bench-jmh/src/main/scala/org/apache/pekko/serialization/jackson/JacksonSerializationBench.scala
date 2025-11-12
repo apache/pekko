@@ -19,7 +19,6 @@ import java.time.LocalDateTime
 import java.util
 import java.util.concurrent.TimeUnit
 
-import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import scala.annotation.nowarn
@@ -27,7 +26,7 @@ import com.typesafe.config.ConfigFactory
 import org.openjdk.jmh.annotations._
 
 import org.apache.pekko
-import pekko.actor._
+import pekko.actor.scaladsl.ActorSystem
 import pekko.serialization.Serialization
 import pekko.serialization.SerializationExtension
 import pekko.serialization.SerializerWithStringManifest
@@ -233,7 +232,7 @@ class JacksonSerializationBench {
 
   @TearDown(Level.Trial)
   def tearDownTrial(): Unit = {
-    Await.result(system.terminate(), 5.seconds)
+    system.close()
   }
 
   private var size = 0L

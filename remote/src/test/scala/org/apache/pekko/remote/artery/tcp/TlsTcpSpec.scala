@@ -195,7 +195,7 @@ class TlsTcpWithHostnameVerificationSpec
           system.actorSelection(rootB / "user" / "echo") ! Identify("echo")
         }
       expectNoMessage(2.seconds)
-      systemB.terminate()
+      systemB.terminateAsync()
     }
     "succeed when the name in the server certificate matches" in {
       if (!arteryTcpTlsEnabled())
@@ -221,7 +221,7 @@ class TlsTcpWithHostnameVerificationSpec
       id.ref.get ! "42"
       expectMsg("42")
 
-      systemB.terminate()
+      systemB.terminateAsync()
     }
   }
 }

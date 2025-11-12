@@ -17,17 +17,13 @@ import java.io.Closeable
 import java.util.Optional
 import java.util.concurrent._
 import java.util.concurrent.atomic.AtomicReference
-
 import scala.annotation.tailrec
 import scala.collection.immutable
-import scala.concurrent.{ ExecutionContext, ExecutionContextExecutor, Future, Promise }
-import scala.concurrent.blocking
+import scala.concurrent.{ blocking, Await, ExecutionContext, ExecutionContextExecutor, Future, Promise }
 import scala.concurrent.duration.Duration
 import scala.util.{ Failure, Success, Try }
 import scala.util.control.{ ControlThrowable, NonFatal }
-
 import com.typesafe.config.{ Config, ConfigFactory }
-
 import org.apache.pekko
 import pekko.ConfigurationException
 import pekko.actor.dungeon.ChildrenContainer
@@ -189,6 +185,7 @@ object ActorSystem {
    * associated with the ActorSystem class.
    * Then it loads the default reference configuration using the ClassLoader.
    */
+  @deprecated("Use org.apache.pekko.actor.javadsl.ActorSystem.create instead", "1.3.0")
   def create(): ActorSystem = apply()
 
   /**
@@ -198,18 +195,21 @@ object ActorSystem {
    * associated with the ActorSystem class.
    * Then it loads the default reference configuration using the ClassLoader.
    */
+  @deprecated("Use org.apache.pekko.actor.javadsl.ActorSystem.create instead", "1.3.0")
   def create(name: String): ActorSystem = apply(name)
 
   /**
    * Java API: Creates a new actor system with the specified name and settings
    * The core actor system settings are defined in [[BootstrapSetup]]
    */
+  @deprecated("Use org.apache.pekko.actor.javadsl.ActorSystem.create instead", "1.3.0")
   def create(name: String, setups: ActorSystemSetup): ActorSystem = apply(name, setups)
 
   /**
    * Java API: Shortcut for creating an actor system with custom bootstrap settings.
    * Same behavior as calling `ActorSystem.create(name, ActorSystemSetup.create(bootstrapSettings))`
    */
+  @deprecated("Use org.apache.pekko.actor.javadsl.ActorSystem.create instead", "1.3.0")
   def create(name: String, bootstrapSetup: BootstrapSetup): ActorSystem =
     create(name, ActorSystemSetup.create(bootstrapSetup))
 
@@ -221,6 +221,7 @@ object ActorSystem {
    *
    * @see <a href="https://lightbend.github.io/config/latest/api/index.html" target="_blank">The Typesafe Config Library API Documentation</a>
    */
+  @deprecated("Use org.apache.pekko.actor.javadsl.ActorSystem.create instead", "1.3.0")
   def create(name: String, config: Config): ActorSystem = apply(name, config)
 
   /**
@@ -228,6 +229,7 @@ object ActorSystem {
    *
    * @see <a href="https://lightbend.github.io/config/latest/api/index.html" target="_blank">The Typesafe Config Library API Documentation</a>
    */
+  @deprecated("Use org.apache.pekko.actor.javadsl.ActorSystem.create instead", "1.3.0")
   def create(name: String, config: Config, classLoader: ClassLoader): ActorSystem = apply(name, config, classLoader)
 
   /**
@@ -245,6 +247,7 @@ object ActorSystem {
    *
    * @see <a href="https://lightbend.github.io/config/latest/api/index.html" target="_blank">The Typesafe Config Library API Documentation</a>
    */
+  @deprecated("Use org.apache.pekko.actor.javadsl.ActorSystem.create instead", "1.3.0")
   def create(
       name: String,
       config: Config,
@@ -259,6 +262,7 @@ object ActorSystem {
    * associated with the ActorSystem class.
    * Then it loads the default reference configuration using the ClassLoader.
    */
+  @deprecated("Use org.apache.pekko.actor.scaladsl.ActorSystem.apply instead", "1.3.0")
   def apply(): ActorSystem = apply("default")
 
   /**
@@ -268,12 +272,14 @@ object ActorSystem {
    * associated with the ActorSystem class.
    * Then it loads the default reference configuration using the ClassLoader.
    */
+  @deprecated("Use org.apache.pekko.actor.scaladsl.ActorSystem.apply instead", "1.3.0")
   def apply(name: String): ActorSystem = apply(name, None, None, None)
 
   /**
    * Scala API: Creates a new actor system with the specified name and settings
    * The core actor system settings are defined in [[BootstrapSetup]]
    */
+  @deprecated("Use org.apache.pekko.actor.scaladsl.ActorSystem.apply instead", "1.3.0")
   def apply(name: String, setup: ActorSystemSetup): ActorSystem = {
     val bootstrapSettings = setup.get[BootstrapSetup]
     val cl = bootstrapSettings.flatMap(_.classLoader).getOrElse(findClassLoader())
@@ -287,6 +293,7 @@ object ActorSystem {
    * Scala API: Shortcut for creating an actor system with custom bootstrap settings.
    * Same behavior as calling `ActorSystem(name, ActorSystemSetup(bootstrapSetup))`
    */
+  @deprecated("Use org.apache.pekko.actor.scaladsl.ActorSystem.apply instead", "1.3.0")
   def apply(name: String, bootstrapSetup: BootstrapSetup): ActorSystem =
     create(name, ActorSystemSetup.create(bootstrapSetup))
 
@@ -298,6 +305,7 @@ object ActorSystem {
    *
    * @see <a href="https://lightbend.github.io/config/latest/api/index.html" target="_blank">The Typesafe Config Library API Documentation</a>
    */
+  @deprecated("Use org.apache.pekko.actor.scaladsl.ActorSystem.apply instead", "1.3.0")
   def apply(name: String, config: Config): ActorSystem = apply(name, Option(config), None, None)
 
   /**
@@ -305,6 +313,7 @@ object ActorSystem {
    *
    * @see <a href="https://lightbend.github.io/config/latest/api/index.html" target="_blank">The Typesafe Config Library API Documentation</a>
    */
+  @deprecated("Use org.apache.pekko.actor.scaladsl.ActorSystem.apply instead", "1.3.0")
   def apply(name: String, config: Config, classLoader: ClassLoader): ActorSystem =
     apply(name, Option(config), Option(classLoader), None)
 
@@ -319,6 +328,7 @@ object ActorSystem {
    *
    * @see <a href="https://lightbend.github.io/config/latest/api/index.html" target="_blank">The Typesafe Config Library API Documentation</a>
    */
+  @deprecated("Use org.apache.pekko.actor.scaladsl.ActorSystem.apply instead", "1.3.0")
   def apply(
       name: String,
       config: Option[Config] = None,
@@ -526,7 +536,7 @@ object ActorSystem {
  * extending [[pekko.actor.ExtendedActorSystem]] instead, but beware that you
  * are completely on your own in that case!
  */
-abstract class ActorSystem extends ActorRefFactory with ClassicActorSystemProvider {
+trait ActorSystem extends ActorRefFactory with ClassicActorSystemProvider with AutoCloseable {
   import ActorSystem._
 
   /**
@@ -677,7 +687,10 @@ abstract class ActorSystem extends ActorRefFactory with ClassicActorSystemProvid
    * using the dispatcher of this actor system as it will have been shut down before the
    * future completes.
    */
-  def terminate(): Future[Terminated]
+  @deprecated(
+    "Use .close() or the .terminateAsync() function on an ActorSystem created by org.apache.pekko.actor.scaladsl.ActorSystem.apply",
+    "1.3.0")
+  def terminate(): Future[Terminated] = terminateImpl()
 
   /**
    * Returns a Future which will be completed after the ActorSystem has been terminated
@@ -687,7 +700,7 @@ abstract class ActorSystem extends ActorRefFactory with ClassicActorSystemProvid
    * such as `onComplete`, on the dispatchers (`ExecutionContext`) of this actor system as they
    * will have been shut down before this future completes.
    */
-  def whenTerminated: Future[Terminated]
+  def whenTerminated: Future[Terminated] = whenTerminatedImpl
 
   /**
    * Returns a CompletionStage which will be completed after the ActorSystem has been terminated
@@ -697,7 +710,56 @@ abstract class ActorSystem extends ActorRefFactory with ClassicActorSystemProvid
    * such as `thenRunAsync`, on the dispatchers (`Executor`) of this actor system as they
    * will have been shut down before this CompletionStage completes.
    */
-  def getWhenTerminated: CompletionStage[Terminated]
+  @deprecated(
+    "Use the .getWhenTerminated() function on an ActorSystem created by org.apache.pekko.actor.javadsl.ActorSystem.create",
+    "1.3.0")
+  def getWhenTerminated: CompletionStage[Terminated] = whenTerminatedImpl.asJava
+
+  /**
+   * Terminates this actor system by running [[CoordinatedShutdown]] with reason
+   * [[CoordinatedShutdown.ActorSystemTerminateReason]]. This method will block
+   * until either the actor system is terminated or
+   * `pekko.coordinated-shutdown.close-actor-system-timeout` timeout duration is
+   * passed, in which case a [[TimeoutException]] is thrown.
+   *
+   * If `pekko.coordinated-shutdown.run-by-actor-system-terminate` is configured to `off`
+   * it will not run `CoordinatedShutdown`, but the `ActorSystem` and its actors
+   * will still be terminated.
+   *
+   * This will stop the guardian actor, which in turn
+   * will recursively stop all its child actors, and finally the system guardian
+   * (below which the logging actors reside) and then execute all registered
+   * termination handlers (see [[ActorSystem#registerOnTermination]]).
+   * @since 1.3.0
+   */
+  @throws(classOf[TimeoutException])
+  override def close(): Unit = {
+    terminateImpl()
+    Await.ready(whenTerminatedImpl,
+      Duration(settings.config.getDuration("coordinated-shutdown.close-actor-system-timeout").toMillis,
+        TimeUnit.MILLISECONDS))
+  }
+
+  /**
+   * Asynchronously terminates this actor system by running [[CoordinatedShutdown]] with reason
+   * [[CoordinatedShutdown.ActorSystemTerminateReason]]. This method will block
+   * until either the actor system is terminated or
+   * `pekko.coordinated-shutdown.close-actor-system-timeout` timeout duration is
+   * passed, in which case a [[TimeoutException]] is thrown.
+   *
+   * If `pekko.coordinated-shutdown.run-by-actor-system-terminate` is configured to `off`
+   * it will not run `CoordinatedShutdown`, but the `ActorSystem` and its actors
+   * will still be terminated.
+   *
+   * This will stop the guardian actor, which in turn
+   * will recursively stop all its child actors, and finally the system guardian
+   * (below which the logging actors reside) and then execute all registered
+   * termination handlers (see [[ActorSystem#registerOnTermination]]).
+   * @since 1.3.0
+   */
+  def closeAsync(): Unit = {
+    terminateImpl()
+  }
 
   /**
    * Registers the provided extension and creates its payload, if this extension isn't already registered
@@ -719,6 +781,10 @@ abstract class ActorSystem extends ActorRefFactory with ClassicActorSystemProvid
    * of the payload, if is in the process of registration from another Thread of execution
    */
   def hasExtension(ext: ExtensionId[_ <: Extension]): Boolean
+
+  @InternalApi private[pekko] def terminateImpl(): Future[Terminated]
+
+  @InternalApi private[pekko] def whenTerminatedImpl: Future[Terminated]
 }
 
 /**
@@ -855,7 +921,7 @@ private[pekko] class ActorSystemImpl(
               finally System.exit(-1)
             else
               try logFatalError("shutting down", cause, thread)
-              finally terminate()
+              finally terminateImpl()
         }
       }
 
@@ -978,8 +1044,7 @@ private[pekko] class ActorSystemImpl(
 
   private[this] final val terminationCallbacks = new TerminationCallbacks(provider.terminationFuture)(dispatcher)
 
-  override def whenTerminated: Future[Terminated] = terminationCallbacks.terminationFuture
-  override def getWhenTerminated: CompletionStage[Terminated] = whenTerminated.asJava
+  override def whenTerminatedImpl: Future[Terminated] = terminationCallbacks.terminationFuture
   def lookupRoot: InternalActorRef = provider.rootGuardian
   def guardian: LocalActorRef = provider.guardian
   def systemGuardian: LocalActorRef = provider.systemGuardian
@@ -1054,7 +1119,7 @@ private[pekko] class ActorSystemImpl(
       this
     } catch {
       case NonFatal(e) =>
-        try terminate()
+        try terminateImpl()
         catch { case NonFatal(_) => Try(stopScheduler()) }
         throw e
     }
@@ -1065,7 +1130,7 @@ private[pekko] class ActorSystemImpl(
 
   @volatile private var terminating = false
 
-  override def terminate(): Future[Terminated] = {
+  override def terminateImpl(): Future[Terminated] = {
     terminating = true
     if (settings.CoordinatedShutdownRunByActorSystemTerminate && !aborting) {
       // Note that the combination CoordinatedShutdownRunByActorSystemTerminate==true &&
@@ -1079,7 +1144,7 @@ private[pekko] class ActorSystemImpl(
     } else {
       finalTerminate()
     }
-    whenTerminated
+    whenTerminatedImpl
   }
 
   override private[pekko] def finalTerminate(): Unit = {
@@ -1103,7 +1168,7 @@ private[pekko] class ActorSystemImpl(
    */
   def abort(): Unit = {
     aborting = true
-    terminate()
+    terminateImpl()
   }
 
   // #create-scheduler

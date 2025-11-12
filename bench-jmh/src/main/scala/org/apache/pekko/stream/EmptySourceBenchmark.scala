@@ -21,7 +21,7 @@ import scala.concurrent.duration._
 import org.openjdk.jmh.annotations._
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
+import pekko.actor.scaladsl.ActorSystem
 import pekko.stream.scaladsl._
 
 @State(Scope.Benchmark)
@@ -32,7 +32,7 @@ class EmptySourceBenchmark {
 
   @TearDown
   def shutdown(): Unit = {
-    Await.result(system.terminate(), 5.seconds)
+    system.close()
   }
 
   val setup = Source.empty[String].toMat(Sink.ignore)(Keep.right)

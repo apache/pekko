@@ -13,7 +13,6 @@
 
 package org.apache.pekko.cluster.typed
 
-import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
@@ -67,7 +66,7 @@ class ClusterSingletonApiSpec
   val clusterNode1 = Cluster(system)
   val classicSystem1 = system.toClassic
 
-  val system2 = pekko.actor.ActorSystem(
+  val system2 = pekko.actor.scaladsl.ActorSystem(
     system.name,
     ConfigFactory.parseString("""
         pekko.cluster.roles = ["singleton"]
@@ -121,7 +120,7 @@ class ClusterSingletonApiSpec
 
   override def afterAll(): Unit = {
     super.afterAll()
-    Await.result(system2.terminate(), 3.seconds)
+    system2.close()
   }
 
 }

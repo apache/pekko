@@ -387,7 +387,7 @@ class TcpConnectionSpec extends PekkoSpec("""
       // override config to decrease default buffer size
       def config =
         ConfigFactory.parseString("pekko.io.tcp.direct-buffer-size = 1k").withFallback(PekkoSpec.testConf)
-      override implicit lazy val system: ActorSystem = ActorSystem("respectPullModeTest", config)
+      override implicit lazy val system: ActorSystem = pekko.actor.scaladsl.ActorSystem("respectPullModeTest", config)
 
       try run {
           val maxBufferSize = 1 * 1024

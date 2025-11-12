@@ -19,7 +19,7 @@ import scala.util.Random
 import com.typesafe.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
+import pekko.actor.scaladsl.ActorSystem
 import pekko.testkit.{ PekkoSpec, TestKitBase }
 
 /**

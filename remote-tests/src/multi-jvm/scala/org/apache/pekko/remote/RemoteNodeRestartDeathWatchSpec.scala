@@ -13,7 +13,6 @@
 
 package org.apache.pekko.remote
 
-import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
@@ -22,11 +21,11 @@ import org.apache.pekko
 import pekko.actor.Actor
 import pekko.actor.ActorIdentity
 import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
 import pekko.actor.ExtendedActorSystem
 import pekko.actor.Identify
 import pekko.actor.Props
 import pekko.actor.RootActorPath
+import pekko.actor.scaladsl.ActorSystem
 import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.remote.transport.ThrottlerTransportAdapter.Direction
@@ -65,7 +64,7 @@ object RemoteNodeRestartDeathWatchSpec {
     def receive = {
       case "shutdown" =>
         sender() ! "shutdown-ack"
-        context.system.terminate()
+        context.system.closeAsync()
       case msg => sender() ! msg
     }
   }
@@ -118,7 +117,7 @@ abstract class RemoteNodeRestartDeathWatchSpec(multiNodeConfig: RemoteNodeRestar
 
         enterBarrier("watch-established")
 
-        Await.ready(system.whenTerminated, 30.seconds)
+        system.close()
 
         val freshSystem = ActorSystem(
           system.name,
@@ -128,7 +127,7 @@ abstract class RemoteNodeRestartDeathWatchSpec(multiNodeConfig: RemoteNodeRestar
           """).withFallback(system.settings.config))
         freshSystem.actorOf(Props[Subject](), "subject")
 
-        Await.ready(freshSystem.whenTerminated, 30.seconds)
+        system.close()
       }
 
     }

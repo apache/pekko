@@ -15,9 +15,6 @@ package org.apache.pekko.cluster.ddata
 
 import java.util.concurrent.TimeUnit
 
-import scala.concurrent.Await
-import scala.concurrent.duration._
-
 import com.typesafe.config.ConfigFactory
 import org.openjdk.jmh.annotations.{ Scope => JmhScope }
 import org.openjdk.jmh.annotations.Benchmark
@@ -32,8 +29,8 @@ import org.openjdk.jmh.annotations.Warmup
 
 import org.apache.pekko
 import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
 import pekko.actor.Props
+import pekko.actor.scaladsl.ActorSystem
 import pekko.cluster.Cluster
 import pekko.serialization.SerializationExtension
 import pekko.serialization.Serializers
@@ -72,8 +69,8 @@ class ORSetSerializationBenchmark {
 
   @TearDown
   def shutdown(): Unit = {
-    Await.result(system1.terminate(), 5.seconds)
-    Await.result(system2.terminate(), 5.seconds)
+    system1.close()
+    system2.close()
   }
 
   @Benchmark

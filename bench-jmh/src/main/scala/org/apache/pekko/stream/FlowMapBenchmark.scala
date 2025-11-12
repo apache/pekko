@@ -16,8 +16,6 @@ package org.apache.pekko.stream
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
 
-import scala.concurrent.Await
-import scala.concurrent.duration._
 import scala.util.Success
 
 import com.typesafe.config.ConfigFactory
@@ -25,7 +23,7 @@ import org.openjdk.jmh.annotations._
 
 import org.apache.pekko
 import pekko.NotUsed
-import pekko.actor.ActorSystem
+import pekko.actor.scaladsl.ActorSystem
 import pekko.remote.artery.BenchTestSource
 import pekko.stream.impl.fusing.GraphStages
 import pekko.stream.scaladsl._
@@ -92,7 +90,7 @@ class FlowMapBenchmark {
 
   @TearDown
   def shutdown(): Unit = {
-    Await.result(system.terminate(), 5.seconds)
+    system.close()
   }
 
   @Benchmark

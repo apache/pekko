@@ -20,7 +20,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.apache.pekko
 import pekko.ConfigurationException
-import pekko.actor.ActorSystem
+import pekko.actor.scaladsl.ActorSystem
 import pekko.actor.Props
 import pekko.testkit.TestKit.awaitCond
 import pekko.testkit.TestKit.shutdownActorSystem

@@ -16,7 +16,6 @@ package org.apache.pekko.stream
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
-import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
@@ -26,8 +25,8 @@ import org.apache.pekko
 import pekko.NotUsed
 import pekko.actor.Actor
 import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
 import pekko.actor.Props
+import pekko.actor.scaladsl.ActorSystem
 import pekko.remote.artery.BenchTestSource
 import pekko.remote.artery.LatchSink
 import pekko.stream.scaladsl._
@@ -82,7 +81,7 @@ class AskBenchmark {
 
   @TearDown
   def shutdown(): Unit = {
-    Await.result(system.terminate(), 5.seconds)
+    system.close()
   }
 
   @Benchmark

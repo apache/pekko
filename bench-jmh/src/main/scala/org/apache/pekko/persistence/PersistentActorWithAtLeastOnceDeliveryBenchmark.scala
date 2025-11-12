@@ -15,7 +15,6 @@ package org.apache.pekko.persistence
 
 import java.io.File
 
-import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.commons.io.FileUtils
@@ -24,6 +23,7 @@ import org.openjdk.jmh.annotations.Scope
 
 import org.apache.pekko
 import pekko.actor._
+import pekko.actor.scaladsl.ActorSystem
 import pekko.testkit.TestProbe
 
 @State(Scope.Benchmark)
@@ -72,8 +72,7 @@ class PersistentActorWithAtLeastOnceDeliveryBenchmark {
 
   @TearDown
   def shutdown(): Unit = {
-    system.terminate()
-    Await.ready(system.whenTerminated, 15.seconds)
+    system.close()
 
     storageLocations.foreach(FileUtils.deleteDirectory)
   }

@@ -13,7 +13,7 @@
 
 package jdoc.org.apache.pekko.discovery;
 
-import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.actor.javadsl.ActorSystem;
 import org.apache.pekko.discovery.Lookup;
 import org.apache.pekko.discovery.Discovery;
 import org.apache.pekko.discovery.ServiceDiscovery;

@@ -80,7 +80,7 @@ object SerializationSetupSpec {
     None)
   val actorSystemSettings = ActorSystemSetup(bootstrapSettings, serializationSettings)
 
-  val noJavaSerializationSystem = ActorSystem(
+  val noJavaSerializationSystem = pekko.actor.scaladsl.ActorSystem(
     "SerializationSettingsSpec" + "NoJavaSerialization",
     ConfigFactory.parseString("""
     pekko {
@@ -96,7 +96,8 @@ object SerializationSetupSpec {
 }
 
 class SerializationSetupSpec
-    extends PekkoSpec(ActorSystem("SerializationSettingsSpec", SerializationSetupSpec.actorSystemSettings)) {
+    extends PekkoSpec(pekko.actor.scaladsl.ActorSystem("SerializationSettingsSpec",
+      SerializationSetupSpec.actorSystemSettings)) {
 
   import SerializationSetupSpec._
 
@@ -129,8 +130,8 @@ class SerializationSetupSpec
           """).withFallback(ConfigFactory.load())
 
       a[ClassNotFoundException] should be thrownBy {
-        val system = ActorSystem("SerializationSetupSpec-FailingSystem", config)
-        system.terminate()
+        val system = pekko.actor.scaladsl.ActorSystem("SerializationSetupSpec-FailingSystem", config)
+        system.terminateAsync()
       }
     }
 
@@ -163,7 +164,7 @@ class SerializationSetupSpec
     None)
 
   val addedJavaSerializationViaSettingsSystem =
-    ActorSystem(
+    pekko.actor.scaladsl.ActorSystem(
       "addedJavaSerializationSystem",
       ActorSystemSetup(addedJavaSerializationProgramaticallyButDisabledSettings, addedJavaSerializationSettings))
 

@@ -20,9 +20,9 @@ import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
 import pekko.actor.ExtendedActorSystem
 import pekko.actor.Props
+import pekko.actor.scaladsl.ActorSystem
 import pekko.cluster.MultiNodeClusterSpec.EndActor
 import pekko.remote.RARP
 import pekko.remote.testconductor.RoleName

@@ -113,7 +113,7 @@ class EventStreamSpec extends PekkoSpec(EventStreamSpec.config) {
     }
 
     "be able to log unhandled messages" in {
-      val sys = ActorSystem("EventStreamSpecUnhandled", configUnhandled)
+      val sys = pekko.actor.scaladsl.ActorSystem("EventStreamSpecUnhandled", configUnhandled)
       try {
         sys.eventStream.subscribe(testActor, classOf[AnyRef])
         val m = UnhandledMessage(42, sys.deadLetters, sys.deadLetters)
@@ -296,7 +296,7 @@ class EventStreamSpec extends PekkoSpec(EventStreamSpec.config) {
     }
 
     "unsubscribe an actor on its termination" in {
-      val sys = ActorSystem("EventStreamSpecUnsubscribeOnTerminated", configUnhandledWithDebug)
+      val sys = pekko.actor.scaladsl.ActorSystem("EventStreamSpecUnsubscribeOnTerminated", configUnhandledWithDebug)
 
       try {
         val es = sys.eventStream
@@ -325,7 +325,7 @@ class EventStreamSpec extends PekkoSpec(EventStreamSpec.config) {
     }
 
     "unsubscribe the actor, when it subscribes already in terminated state" in {
-      val sys = ActorSystem("EventStreamSpecUnsubscribeTerminated", configUnhandledWithDebug)
+      val sys = pekko.actor.scaladsl.ActorSystem("EventStreamSpecUnsubscribeTerminated", configUnhandledWithDebug)
 
       try {
         val es = sys.eventStream
@@ -356,7 +356,7 @@ class EventStreamSpec extends PekkoSpec(EventStreamSpec.config) {
     }
 
     "not allow initializing a TerminatedUnsubscriber twice" in {
-      val sys = ActorSystem("MustNotAllowDoubleInitOfTerminatedUnsubscriber")
+      val sys = pekko.actor.scaladsl.ActorSystem("MustNotAllowDoubleInitOfTerminatedUnsubscriber")
       // initializes an TerminatedUnsubscriber during start
 
       try {
@@ -373,7 +373,7 @@ class EventStreamSpec extends PekkoSpec(EventStreamSpec.config) {
     }
 
     "unwatch an actor from unsubscriber when that actor unsubscribes from the stream" in {
-      val sys = ActorSystem("MustUnregisterDuringUnsubscribe", configUnhandledWithDebug)
+      val sys = pekko.actor.scaladsl.ActorSystem("MustUnregisterDuringUnsubscribe", configUnhandledWithDebug)
 
       try {
         val es = sys.eventStream
@@ -393,7 +393,8 @@ class EventStreamSpec extends PekkoSpec(EventStreamSpec.config) {
     }
 
     "unwatch an actor from unsubscriber when that actor unsubscribes from channels it subscribed" in {
-      val sys = ActorSystem("MustUnregisterWhenNoMoreChannelSubscriptions", configUnhandledWithDebug)
+      val sys =
+        pekko.actor.scaladsl.ActorSystem("MustUnregisterWhenNoMoreChannelSubscriptions", configUnhandledWithDebug)
 
       try {
         val es = sys.eventStream

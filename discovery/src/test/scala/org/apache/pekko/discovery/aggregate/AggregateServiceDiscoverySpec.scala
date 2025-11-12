@@ -24,7 +24,8 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
-import pekko.actor.{ ActorSystem, ExtendedActorSystem }
+import pekko.actor.ExtendedActorSystem
+import pekko.actor.scaladsl.ActorSystem
 import pekko.discovery.{ Discovery, Lookup, ServiceDiscovery }
 import pekko.discovery.ServiceDiscovery.{ Resolved, ResolvedTarget }
 import pekko.testkit.TestKit

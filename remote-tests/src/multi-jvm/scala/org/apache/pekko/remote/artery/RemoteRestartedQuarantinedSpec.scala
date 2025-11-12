@@ -20,6 +20,7 @@ import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor.{ ActorIdentity, Identify, _ }
+import pekko.actor.scaladsl.ActorSystem
 import pekko.remote.{ AddressUidExtension, RARP, RemotingMultiNodeSpec }
 import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig
@@ -43,7 +44,7 @@ object RemoteRestartedQuarantinedSpec extends MultiNodeConfig {
 
   class Subject extends Actor {
     def receive = {
-      case "shutdown" => context.system.terminate()
+      case "shutdown" => context.system.close()
       case "identify" => sender() ! (AddressUidExtension(context.system).longAddressUid -> self)
     }
   }
@@ -122,7 +123,7 @@ abstract class RemoteRestartedQuarantinedSpec extends RemotingMultiNodeSpec(Remo
 
         enterBarrier("still-quarantined")
 
-        Await.result(system.whenTerminated, 10.seconds)
+        system.close()
 
         val freshSystem = ActorSystem(
           system.name,

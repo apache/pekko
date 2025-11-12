@@ -77,7 +77,7 @@ class ClusterSingletonLeavingSpeedSpec
 
   private val systems = (1 to 3).map { n =>
     val roleConfig = ConfigFactory.parseString(s"""pekko.cluster.roles=[role-${n % 3}]""")
-    ActorSystem(system.name, roleConfig.withFallback(system.settings.config))
+    pekko.actor.scaladsl.ActorSystem(system.name, roleConfig.withFallback(system.settings.config))
   }
   private val probes = systems.map(TestProbe()(_))
 

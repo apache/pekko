@@ -98,7 +98,7 @@ abstract class ActorSystemActivator extends BundleActivator {
    */
   def stop(context: BundleContext): Unit = {
     registration.foreach(_.unregister())
-    system.foreach(_.terminate())
+    system.foreach(_.terminateImpl())
   }
 
   /**

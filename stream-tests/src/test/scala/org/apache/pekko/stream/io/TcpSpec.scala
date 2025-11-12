@@ -549,7 +549,7 @@ class TcpSpec extends StreamSpec("""
     }
 
     "handle when connection actor terminates unexpectedly" in {
-      val system2 = ActorSystem(
+      val system2 = pekko.actor.scaladsl.ActorSystem(
         "TcpSpec-unexpected-system2",
         ConfigFactory.parseString("""
           pekko.loglevel = DEBUG # issue #21660
@@ -599,7 +599,7 @@ class TcpSpec extends StreamSpec("""
     }
 
     "provide full exceptions when connection attempt fails because name cannot be resolved" in {
-      val systemWithBrokenDns = ActorSystem(
+      val systemWithBrokenDns = pekko.actor.scaladsl.ActorSystem(
         "TcpSpec-resolution-failure",
         ConfigFactory.parseString("""
           pekko.io.dns.inet-address.provider-object = org.apache.pekko.stream.io.FailingDnsResolver
@@ -718,8 +718,8 @@ class TcpSpec extends StreamSpec("""
         pekko.stream.materializer.subscription-timeout.mode = cancel
         pekko.stream.materializer.subscription-timeout.timeout = 42s
       """)
-      val serverSystem = ActorSystem("server", config)
-      val clientSystem = ActorSystem("client", config)
+      val serverSystem = pekko.actor.scaladsl.ActorSystem("server", config)
+      val clientSystem = pekko.actor.scaladsl.ActorSystem("client", config)
 
       try {
 
@@ -853,7 +853,7 @@ class TcpSpec extends StreamSpec("""
     }
 
     "not thrown on unbind after system has been shut down" in {
-      val sys2 = ActorSystem("shutdown-test-system")
+      val sys2 = pekko.actor.scaladsl.ActorSystem("shutdown-test-system")
       implicit val materializer = SystemMaterializer(sys2).materializer
       try {
         val address = temporaryServerAddress()
@@ -865,11 +865,11 @@ class TcpSpec extends StreamSpec("""
         // and is possible to communicate with
         Source.single(ByteString(0)).via(Tcp().outgoingConnection(address)).runWith(Sink.ignore).futureValue
 
-        sys2.terminate().futureValue
+        sys2.close()
 
         val binding = bindingFuture.futureValue
         binding.unbind().futureValue
-      } finally sys2.terminate()
+      } finally sys2.terminateAsync()
     }
 
     "show host and port in bind exception message" in EventFilter[BindException](occurrences = 1).intercept {

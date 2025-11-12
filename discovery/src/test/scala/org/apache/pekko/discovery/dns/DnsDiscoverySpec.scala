@@ -18,7 +18,7 @@ import java.net.InetAddress
 import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
 import org.apache.pekko
-import pekko.actor.ActorSystem
+import pekko.actor.scaladsl.ActorSystem
 import pekko.discovery.{ Discovery, Lookup }
 import pekko.discovery.ServiceDiscovery
 import pekko.discovery.ServiceDiscovery.ResolvedTarget

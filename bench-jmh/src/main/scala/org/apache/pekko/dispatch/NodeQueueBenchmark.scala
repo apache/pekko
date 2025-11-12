@@ -15,14 +15,12 @@ package org.apache.pekko.dispatch
 
 import java.util.concurrent.TimeUnit
 
-import scala.concurrent.Await
-import scala.concurrent.duration._
-
 import com.typesafe.config.ConfigFactory
 import org.openjdk.jmh.annotations._
 
 import org.apache.pekko
 import pekko.actor._
+import pekko.actor.scaladsl.ActorSystem
 import pekko.testkit.TestProbe
 
 object NodeQueueBenchmark {
@@ -61,7 +59,7 @@ mailbox {
     }).withDispatcher("dispatcher").withMailbox("mailbox"), "receiver")
 
   @TearDown
-  def teardown(): Unit = Await.result(sys.terminate(), 5.seconds)
+  def teardown(): Unit = sys.close()
 
   @TearDown(Level.Invocation)
   def waitInBetween(): Unit = {

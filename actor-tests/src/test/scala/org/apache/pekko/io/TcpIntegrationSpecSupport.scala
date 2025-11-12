@@ -20,8 +20,7 @@ import Tcp._
 
 import org.apache.pekko
 import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
-import pekko.dispatch.ExecutionContexts
+import pekko.actor.scaladsl.ActorSystem
 import pekko.io.Inet.SocketOption
 import pekko.testkit.{ PekkoSpec, TestProbe }
 import pekko.testkit.SocketUtil.temporaryServerAddress
@@ -33,9 +32,9 @@ trait TcpIntegrationSpecSupport { this: PekkoSpec =>
       if (runClientInExtraSystem) {
         val res = ActorSystem("TcpIntegrationSpec-client", system.settings.config)
         // terminate clientSystem after server system
-        system.whenTerminated.onComplete { _ =>
-          res.terminate()
-        }(ExecutionContexts.parasitic)
+        system.registerOnTermination {
+          res.terminateAsync()
+        }
         res
       } else system
     val bindHandler = TestProbe()

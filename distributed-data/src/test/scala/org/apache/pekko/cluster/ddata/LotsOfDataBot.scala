@@ -22,8 +22,8 @@ import com.typesafe.config.ConfigFactory
 import org.apache.pekko
 import pekko.actor.Actor
 import pekko.actor.ActorLogging
-import pekko.actor.ActorSystem
 import pekko.actor.Props
+import pekko.actor.scaladsl.ActorSystem
 
 /**
  * This "sample" simulates lots of data entries, and can be used for

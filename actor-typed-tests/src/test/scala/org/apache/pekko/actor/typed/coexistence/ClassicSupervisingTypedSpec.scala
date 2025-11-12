@@ -61,7 +61,7 @@ class ClassicSupervisingTypedSpec extends AnyWordSpecLike with LogCapturing with
 
   import ClassicSupervisingTypedSpec._
 
-  val classicSystem = pekko.actor.ActorSystem(
+  val classicSystem = pekko.actor.scaladsl.ActorSystem(
     "ClassicSupervisingTypedSpec",
     ConfigFactory.parseString("""
       pekko.actor.testkit.typed.expect-no-message-default = 50 ms

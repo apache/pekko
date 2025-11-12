@@ -19,7 +19,7 @@ package org.apache.pekko.persistence.serialization
 
 import com.typesafe.config.ConfigFactory
 import org.apache.pekko
-import pekko.actor.ActorSystem
+import pekko.actor.scaladsl.ActorSystem
 import pekko.persistence.fsm.PersistentFSM.PersistentFSMSnapshot
 import pekko.serialization.SerializationExtension
 import pekko.testkit.PekkoSpec
@@ -64,7 +64,7 @@ class SnapshotSerializerMigrationAkkaSpec extends PekkoSpec(
           pekkoOnlySerialization.deserialize(bytes, classOf[Snapshot]).get
         }
       } finally {
-        pekkoOnlySystem.terminate()
+        pekkoOnlySystem.close()
       }
     }
   }

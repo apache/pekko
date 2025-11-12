@@ -18,7 +18,8 @@ import java.io.NotSerializableException
 import com.typesafe.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
-import pekko.actor.{ ActorSystem, ExtendedActorSystem, RootActorPath }
+import pekko.actor.{ ExtendedActorSystem, RootActorPath }
+import pekko.actor.scaladsl.ActorSystem
 import pekko.serialization.SerializerWithStringManifest
 import pekko.testkit.{ PekkoSpec, TestActors, TestKit }
 import pekko.util.unused

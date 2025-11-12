@@ -1057,7 +1057,7 @@ private[remote] class Association(
             advancedSettings.OutboundMaxRestarts,
             advancedSettings.OutboundRestartTimeout.toSeconds)
           cancelAllTimers()
-          transport.system.terminate()
+          transport.system.terminateImpl()
         }
     }
   }

@@ -21,12 +21,12 @@ import org.scalatest.wordspec.AnyWordSpecLike
 import org.apache.pekko
 import pekko.actor.ActorIdentity
 import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
 import pekko.actor.Address
 import pekko.actor.ExtendedActorSystem
 import pekko.actor.Identify
 import pekko.actor.Props
 import pekko.actor.RootActorPath
+import pekko.actor.scaladsl.ActorSystem
 import pekko.cluster.Cluster
 import pekko.cluster.UniqueAddress
 import pekko.cluster.ddata._

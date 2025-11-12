@@ -157,7 +157,7 @@ class LoggerSpec extends AnyWordSpec with Matchers {
   private def createSystemAndLogToBuffer(name: String, config: Config, shouldLog: Boolean) = {
     val out = new java.io.ByteArrayOutputStream()
     Console.withOut(out) {
-      implicit val system = ActorSystem(name, config)
+      implicit val system = pekko.actor.scaladsl.ActorSystem(name, config)
       try {
         val probe = TestProbe()
         system.eventStream.publish(SetTarget(probe.ref, qualifier = 1))
@@ -189,7 +189,7 @@ class LoggerSpec extends AnyWordSpec with Matchers {
     "drain logger queue on system.terminate" in {
       val out = new java.io.ByteArrayOutputStream()
       Console.withOut(out) {
-        val sys = ActorSystem("defaultLogger", slowConfig)
+        val sys = pekko.actor.scaladsl.ActorSystem("defaultLogger", slowConfig)
         sys.log.error("msg1")
         sys.log.error("msg2")
         sys.log.error("msg3")
@@ -218,7 +218,7 @@ class LoggerSpec extends AnyWordSpec with Matchers {
 
     "use several loggers" in {
       Console.withOut(new java.io.ByteArrayOutputStream()) {
-        implicit val system = ActorSystem("multipleLoggers", multipleConfig)
+        implicit val system = pekko.actor.scaladsl.ActorSystem("multipleLoggers", multipleConfig)
         try {
           val probe1 = TestProbe()
           val probe2 = TestProbe()
@@ -240,7 +240,7 @@ class LoggerSpec extends AnyWordSpec with Matchers {
   "Ticket 3671" must {
 
     "log message with given MDC values" in {
-      implicit val system = ActorSystem("ticket-3671", ticket3671Config)
+      implicit val system = pekko.actor.scaladsl.ActorSystem("ticket-3671", ticket3671Config)
       try {
         val probe = TestProbe()
         system.eventStream.publish(SetTarget(probe.ref, qualifier = 1))
@@ -346,7 +346,7 @@ class LoggerSpec extends AnyWordSpec with Matchers {
 
   "Ticket 3165 - serialize-messages and dual-entry serialization of LogEvent" must {
     "not cause StackOverflowError" in {
-      implicit val s = ActorSystem("foo", ticket3165Config)
+      implicit val s = pekko.actor.scaladsl.ActorSystem("foo", ticket3165Config)
       try {
         SerializationExtension(s).serialize(Warning("foo", classOf[String]))
       } finally {

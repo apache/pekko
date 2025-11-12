@@ -54,7 +54,8 @@ class ActorSystemDispatchersSpec extends PekkoSpec(ConfigFactory.parseString("""
       val ecProbe = TestProbe()
       val ec = new SnitchingExecutionContext(ecProbe.ref, ExecutionContexts.global())
 
-      val system2 = ActorSystem(name = "ActorSystemDispatchersSpec-passed-in-ec", defaultExecutionContext = Some(ec))
+      val system2 = pekko.actor.scaladsl.ActorSystem(name = "ActorSystemDispatchersSpec-passed-in-ec",
+        defaultExecutionContext = Some(ec))
 
       try {
         val ref = system2.actorOf(Props(new Actor {
@@ -79,7 +80,7 @@ class ActorSystemDispatchersSpec extends PekkoSpec(ConfigFactory.parseString("""
       val ec = new SnitchingExecutionContext(ecProbe.ref, ExecutionContexts.global())
 
       val config = ConfigFactory.parseString("pekko.actor.default-dispatcher.executor = \"fork-join-executor\"")
-      val system2 = ActorSystem(
+      val system2 = pekko.actor.scaladsl.ActorSystem(
         name = "ActorSystemDispatchersSpec-ec-configured",
         config = Some(config),
         defaultExecutionContext = Some(ec))
@@ -103,7 +104,7 @@ class ActorSystemDispatchersSpec extends PekkoSpec(ConfigFactory.parseString("""
     }
 
     "provide a single place to override the internal dispatcher" in {
-      val sys = ActorSystem(
+      val sys = pekko.actor.scaladsl.ActorSystem(
         "ActorSystemDispatchersSpec-override-internal-disp",
         ConfigFactory.parseString("""
              pekko.actor.internal-dispatcher = pekko.actor.default-dispatcher
@@ -124,7 +125,7 @@ class ActorSystemDispatchersSpec extends PekkoSpec(ConfigFactory.parseString("""
 
       // using the default for internal dispatcher and passing a pre-existing execution context
       val system2 =
-        ActorSystem(
+        pekko.actor.scaladsl.ActorSystem(
           name = "ActorSystemDispatchersSpec-passed-in-ec-for-internal",
           config = Some(ConfigFactory.parseString("""
             pekko.actor.internal-dispatcher = pekko.actor.default-dispatcher

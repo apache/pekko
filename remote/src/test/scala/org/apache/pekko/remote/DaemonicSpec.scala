@@ -18,7 +18,8 @@ import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
-import pekko.actor.{ ActorSystem, Address }
+import pekko.actor.Address
+import pekko.actor.scaladsl.ActorSystem
 import pekko.testkit._
 import pekko.util.ccompat._
 import pekko.util.ccompat.JavaConverters._

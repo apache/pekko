@@ -22,6 +22,7 @@ import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor._
+import pekko.actor.scaladsl.ActorSystem
 import pekko.actor.dungeon.ChildrenContainer
 import pekko.remote.{ AddressUidExtension, RARP }
 import pekko.remote.transport.ThrottlerTransportAdapter.ForceDisassociate
@@ -111,10 +112,8 @@ class ActorsLeakSpec extends PekkoSpec(ActorsLeakSpec.config) with ImplicitSende
           probe.expectMsgType[ActorIdentity].ref.nonEmpty should be(true)
 
         } finally {
-          remoteSystem.terminate()
+          remoteSystem.close()
         }
-
-        Await.result(remoteSystem.whenTerminated, 10.seconds)
       }
 
       // Quarantine an old incarnation case
@@ -154,10 +153,8 @@ class ActorsLeakSpec extends PekkoSpec(ActorsLeakSpec.config) with ImplicitSende
           assertResult(beforeQuarantineActors)(afterQuarantineActors)
 
         } finally {
-          remoteSystem.terminate()
+          remoteSystem.close()
         }
-
-        Await.result(remoteSystem.whenTerminated, 10.seconds)
 
       }
 
@@ -183,13 +180,13 @@ class ActorsLeakSpec extends PekkoSpec(ActorsLeakSpec.config) with ImplicitSende
           Await.result(RARP(system).provider.transport.managementCommand(ForceDisassociate(remoteAddress)), 3.seconds)
 
         } finally {
-          remoteSystem.terminate()
+          remoteSystem.terminateAsync()
         }
 
         EventFilter
           .warning(start = s"Association with remote system [$remoteAddress] has failed", occurrences = 1)
           .intercept {
-            Await.result(remoteSystem.whenTerminated, 10.seconds)
+            remoteSystem.close()
           }
       }
 
@@ -218,10 +215,9 @@ class ActorsLeakSpec extends PekkoSpec(ActorsLeakSpec.config) with ImplicitSende
         Await.result(RARP(system).provider.transport.managementCommand(ForceDisassociate(remoteAddress)), 3.seconds)
 
       } finally {
-        remoteSystem.terminate()
+        remoteSystem.close()
       }
 
-      Await.result(remoteSystem.whenTerminated, 10.seconds)
       awaitAssert(assertResult(initialActors)(targets.flatMap(collectLiveActors).toSet), 10.seconds)
     }
 

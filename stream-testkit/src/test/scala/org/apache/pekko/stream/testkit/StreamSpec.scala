@@ -17,7 +17,8 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.{ ActorRef, ActorSystem }
+import pekko.actor.ActorRef
+import pekko.actor.scaladsl.ActorSystem
 import pekko.stream.Materializer
 import pekko.stream.impl.PhasedFusingActorMaterializer
 import pekko.stream.impl.StreamSupervisor
