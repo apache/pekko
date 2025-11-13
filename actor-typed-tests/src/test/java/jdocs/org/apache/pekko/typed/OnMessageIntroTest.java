@@ -128,40 +128,26 @@ public interface OnMessageIntroTest {
       public Behavior<RoomCommand> onMessage(RoomCommand msg) throws UnsupportedEncodingException {
         // #chatroom-behavior
         /* From Java 16 onward, various features broadly described as "pattern matching"
-         * may prove useful here in lieu of the explicit instanceof checks and casts:
+         * prove useful here in lieu of the explicit instanceof checks and casts:
          *
-         * Java 16 onward: JEP 394 (https://openjdk.java.net/jeps/394) =>
-         *   if (msg instanceof GetSession gs) {
-         *     return onGetSession(gs);
-         *   } else if (msg instanceof PublishSessionMessage psm) {
-         *     return onPublishSessionMessage(psm);
-         *   }
-         *
-         * Java 17 onward: JEP 406 (https://openjdk.org/jeps/406) =>
+         * Java 21 onward: JEP 441 (https://openjdk.org/jeps/441) =>
          // #chatroom-behavior
-        // uses Java 17-onward features
+        // uses Java 21-onward features
         switch(msg) {
-          // NB: JEP 409 (https://openjdk.org/jeps/409) may allow not including a default clause
           case GetSession gs:
             return onGetSession(gs);
 
           case PublishSessionMessage psm:
             return onPublishSessionMessage(psm);
 
-          default:
-            // for completeness, should never happen
         }
         // #chatroom-behavior
          *
-         * JEPs 420 and 427 make possibly-useful extensions to JEP 406 in post-17 Java versions.
-         *
-         * TODO: when we're comfortable with requiring JDK17 for development, replace this with
-         * JEP406 example
          */
-        if (msg instanceof GetSession) {
-          return onGetSession((GetSession) msg);
-        } else if (msg instanceof PublishSessionMessage) {
-          return onPublishSessionMessage((PublishSessionMessage) msg);
+        if (msg instanceof GetSession gs) {
+          return onGetSession(gs);
+        } else if (msg instanceof PublishSessionMessage psm) {
+          return onPublishSessionMessage(psm);
         }
 
         // for completeness
@@ -218,20 +204,21 @@ public interface OnMessageIntroTest {
       @Override
       public Behavior<SessionCommand> onMessage(SessionCommand msg) {
         // #chatroom-behavior
-        // TODO: JEP406ify
-        if (msg instanceof PostMessage) {
+        // In Java 21, you could use a switch expression here (see commented example below)
+        if (msg instanceof PostMessage pm) {
           // from client, publish to others via the room
-          room.tell(new PublishSessionMessage(screenName, ((PostMessage) msg).message));
+          room.tell(new PublishSessionMessage(screenName, pm.message));
           return Behaviors.same();
-        } else if (msg instanceof NotifyClient) {
+        } else if (msg instanceof NotifyClient nc) {
           // published from the room
-          client.tell(((NotifyClient) msg).message);
+          client.tell(nc.message);
           return Behaviors.same();
         }
 
         // for completeness
         /*
         // #chatroom-behavior
+        // Java 21 onward: JEP 441 (https://openjdk.org/jeps/441) =>
         switch (msg) {
           case PostMessage pm:
             // from client, publish to others via the room
@@ -243,8 +230,6 @@ public interface OnMessageIntroTest {
             client.tell(nc.message);
             return Behaviors.same();
 
-          default:
-            // for completeness, should never happen
         }
         // #chatroom-behavior
         */
