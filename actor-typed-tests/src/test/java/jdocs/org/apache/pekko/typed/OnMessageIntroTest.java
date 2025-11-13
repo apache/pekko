@@ -137,7 +137,7 @@ public interface OnMessageIntroTest {
          *     return onPublishSessionMessage(psm);
          *   }
          *
-         * Java 21 onward: JEP 441 (https://openjdk.org/jeps/441 =>
+         * Java 21 onward: JEP 441 (https://openjdk.org/jeps/441) =>
          // #chatroom-behavior
         // uses Java 21-onward features
         switch(msg) {
