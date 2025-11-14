@@ -42,22 +42,23 @@ public interface OnMessageIntroTest {
     static sealed interface RoomCommand permits GetSession, PublishSessionMessage {}
 
     public static final record GetSession(String screenName, ActorRef<SessionEvent> replyTo)
-      implements RoomCommand {}
+        implements RoomCommand {}
 
     // #chatroom-protocol
     private static final record PublishSessionMessage(String screenName, String message)
-      implements RoomCommand {}
+        implements RoomCommand {}
 
     // #chatroom-protocol
 
     static sealed interface SessionEvent permits SessionGranted, SessionDenied, MessagePosted {}
 
     public static final record SessionGranted(ActorRef<PostMessage> handle)
-      implements SessionEvent {}
+        implements SessionEvent {}
 
     public static final record SessionDenied(String reason) implements SessionEvent {}
 
-    public static final record MessagePosted(String screenName, String message) implements SessionEvent {}
+    public static final record MessagePosted(String screenName, String message)
+        implements SessionEvent {}
 
     static sealed interface SessionCommand permits PostMessage, NotifyClient {}
 
