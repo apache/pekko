@@ -1,7 +1,6 @@
 name: Nightly Builds
 
 on:
-  pull_request:
   schedule:
     - cron: "0 0 * * *"
   workflow_dispatch:
@@ -118,8 +117,7 @@ jobs:
         # binary version is required and Pekko build will set the right
         # full version from it.
         scalaVersion: ["2.13.x", "3.3.x"]
-        # temp remove 8, 11, 17, 21
-        javaVersion: [25]
+        javaVersion: [17, 21, 25]
     env:
       DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
     steps:
@@ -162,8 +160,7 @@ jobs:
             clean "++ ${{ matrix.scalaVersion }} test" checkTestsHaveRun
 
       - name: Docs
-        # Docs generation requires JDK 11.
-        if: ${{ matrix.javaVersion == 11 }}
+        if: ${{ matrix.javaVersion == 17 }}
         run: |-
           sudo apt-get install graphviz
           # genjavadoc does not support Scala 3.x
@@ -172,8 +169,7 @@ jobs:
             "++ ${{ matrix.scalaVersion }} doc"
 
       - name: Publish
-        # Publish (osgi bundle) not working with JDK 17, issue #31132
-        if: ${{ matrix.javaVersion == 11 }}
+        if: ${{ matrix.javaVersion == 17 }}
         run: |-
           sudo apt-get install graphviz
           sbt \
