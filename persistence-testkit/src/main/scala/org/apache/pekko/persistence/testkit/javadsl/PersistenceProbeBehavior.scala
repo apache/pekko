@@ -21,7 +21,7 @@ import org.apache.pekko
 import pekko.actor.testkit.typed.javadsl.BehaviorTestKit
 import pekko.actor.typed.Behavior
 import pekko.annotation.DoNotInherit
-import pekko.persistence.testkit.internal.{ PersistenceProbeImpl, PersistenceProbe }
+import pekko.persistence.testkit.internal.{ PersistenceProbe, PersistenceProbeImpl }
 
 /**
  * Factory methods to create PersistenceProbeBehavior instances for testing.

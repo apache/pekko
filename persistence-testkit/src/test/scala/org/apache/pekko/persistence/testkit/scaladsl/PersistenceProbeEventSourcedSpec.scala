@@ -203,24 +203,25 @@ class PersistenceProbeEventSourcedSpec extends AnyWordSpec with Matchers {
       val replyTo = TestInbox[Done]()
 
       // resource-style API
-      PersistenceProbeBehavior.fromEventSourced[Command, Event, State](behavior) { (testkit, eventProbe, snapshotProbe) =>
-        testkit.clearLog()
+      PersistenceProbeBehavior.fromEventSourced[Command, Event, State](behavior) {
+        (testkit, eventProbe, snapshotProbe) =>
+          testkit.clearLog()
 
-        testkit.run(PersistDomainEvent(replyTo.ref))
-        replyTo.expectMessage(Done)
-        eventProbe.expectPersisted(DomainEvent, Set("domain"))
-        snapshotProbe.drain() shouldBe empty
-        assert(!testkit.hasEffects(), "should have no effects")
-        testkit.clearLog()
+          testkit.run(PersistDomainEvent(replyTo.ref))
+          replyTo.expectMessage(Done)
+          eventProbe.expectPersisted(DomainEvent, Set("domain"))
+          snapshotProbe.drain() shouldBe empty
+          assert(!testkit.hasEffects(), "should have no effects")
+          testkit.clearLog()
 
-        testkit.run(SnapshotNow)
-        assert(!replyTo.hasMessages, "should not be a reply")
+          testkit.run(SnapshotNow)
+          assert(!replyTo.hasMessages, "should not be a reply")
 
-        val PersistenceEffect(_, seqNr, tags) = eventProbe.expectPersistedType[SnapshotMade.type]()
-        seqNr shouldBe 2
-        tags shouldBe empty
+          val PersistenceEffect(_, seqNr, tags) = eventProbe.expectPersistedType[SnapshotMade.type]()
+          seqNr shouldBe 2
+          tags shouldBe empty
 
-        snapshotProbe.expectPersisted(State(1, Map.empty, Int.MaxValue))
+          snapshotProbe.expectPersisted(State(1, Map.empty, Int.MaxValue))
       }
     }
 

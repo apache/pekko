@@ -19,7 +19,7 @@ import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.BehaviorTestKit
 import pekko.actor.typed.Behavior
 import pekko.annotation.DoNotInherit
-import pekko.persistence.testkit.internal.{ PersistenceProbeImpl, PersistenceProbe }
+import pekko.persistence.testkit.internal.{ PersistenceProbe, PersistenceProbeImpl }
 
 sealed trait PersistenceProbeBehavior[Command, State] {
   val behavior: Behavior[Command]
