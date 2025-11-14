@@ -19,10 +19,10 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
 // #test
-import pekko.persistence.testkit.scaladsl.UnpersistentBehavior
+import pekko.persistence.testkit.scaladsl.PersistenceProbeBehavior
 import pekko.persistence.typed.PersistenceId
 
-class AccountExampleUnpersistentDocSpec
+class AccountExamplePersistenceProbeDocSpec
     extends AnyWordSpecLike
     // #test
     with Matchers
@@ -71,25 +71,25 @@ class AccountExampleUnpersistentDocSpec
   }
   // #test
 
-  // #unpersistent-behavior
+  // #persistenceProbe-behavior
   private def onAnEmptyAccount
-      : UnpersistentBehavior.EventSourced[AccountEntity.Command, AccountEntity.Event, AccountEntity.Account] =
-    UnpersistentBehavior.fromEventSourced(AccountEntity("1", PersistenceId("Account", "1")))
-  // #unpersistent-behavior
+      : PersistenceProbeBehavior.EventSourced[AccountEntity.Command, AccountEntity.Event, AccountEntity.Account] =
+    PersistenceProbeBehavior.fromEventSourced(AccountEntity("1", PersistenceId("Account", "1")))
+  // #persistenceProbe-behavior
 
-  // #unpersistent-behavior-provided-state
+  // #persistenceProbe-behavior-provided-state
   private def onAnOpenedAccount
-      : UnpersistentBehavior.EventSourced[AccountEntity.Command, AccountEntity.Event, AccountEntity.Account] =
-    UnpersistentBehavior.fromEventSourced(
+      : PersistenceProbeBehavior.EventSourced[AccountEntity.Command, AccountEntity.Event, AccountEntity.Account] =
+    PersistenceProbeBehavior.fromEventSourced(
       AccountEntity("1", PersistenceId("Account", "1")),
       Some(
         AccountEntity.EmptyAccount.applyEvent(AccountEntity.AccountCreated) -> // reuse the event handler
         1L // assume that CreateAccount was the first command
       ))
-  // #unpersistent-behavior-provided-state
+  // #persistenceProbe-behavior-provided-state
 
   private def onAnAccountWithBalance(balance: BigDecimal) =
-    UnpersistentBehavior.fromEventSourced(
+    PersistenceProbeBehavior.fromEventSourced(
       AccountEntity("1", PersistenceId("Account", "1")),
       Some(AccountEntity.OpenedAccount(balance) -> 2L))
   // #test

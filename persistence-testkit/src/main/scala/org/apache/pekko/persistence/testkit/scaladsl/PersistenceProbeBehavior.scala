@@ -19,9 +19,9 @@ import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.BehaviorTestKit
 import pekko.actor.typed.Behavior
 import pekko.annotation.DoNotInherit
-import pekko.persistence.testkit.internal.{ PersistenceProbeImpl, Unpersistent }
+import pekko.persistence.testkit.internal.{ PersistenceProbeImpl, PersistenceProbe }
 
-sealed trait UnpersistentBehavior[Command, State] {
+sealed trait PersistenceProbeBehavior[Command, State] {
   val behavior: Behavior[Command]
   lazy val behaviorTestKit = BehaviorTestKit(behavior)
 
@@ -29,11 +29,11 @@ sealed trait UnpersistentBehavior[Command, State] {
 }
 
 /**
- * Factory methods to create UnpersistentBehavior instances for testing.
+ * Factory methods to create PersistenceProbeBehavior instances for testing.
  *
  * @since 1.3.0
  */
-object UnpersistentBehavior {
+object PersistenceProbeBehavior {
 
   /**
    * Given an EventSourcedBehavior, produce a non-persistent Behavior which synchronously publishes events and snapshots
@@ -50,7 +50,7 @@ object UnpersistentBehavior {
     val eventProbe = new PersistenceProbeImpl[Event]
     val snapshotProbe = new PersistenceProbeImpl[State]
     val resultingBehavior =
-      Unpersistent.eventSourced(behavior, initialStateAndSequenceNr) {
+      PersistenceProbe.eventSourced(behavior, initialStateAndSequenceNr) {
         (event: Event, sequenceNr: Long, tags: Set[String]) =>
           eventProbe.persist((event, sequenceNr, tags))
       } { (snapshot, sequenceNr) =>
@@ -71,7 +71,7 @@ object UnpersistentBehavior {
     val probe = new PersistenceProbeImpl[State]
 
     val resultingBehavior =
-      Unpersistent.durableState(behavior, initialState) { (state, version, tag) =>
+      PersistenceProbe.durableState(behavior, initialState) { (state, version, tag) =>
         probe.persist((state, version, if (tag.isEmpty) Set.empty else Set(tag)))
       }
 
@@ -82,7 +82,7 @@ object UnpersistentBehavior {
       override val behavior: Behavior[Command],
       val eventProbe: PersistenceProbe[Event],
       override val stateProbe: PersistenceProbe[State])
-      extends UnpersistentBehavior[Command, State] {
+      extends PersistenceProbeBehavior[Command, State] {
     def apply(f: (BehaviorTestKit[Command], PersistenceProbe[Event], PersistenceProbe[State]) => Unit): Unit =
       f(behaviorTestKit, eventProbe, stateProbe)
 
@@ -92,7 +92,7 @@ object UnpersistentBehavior {
   final case class DurableState[Command, State](
       override val behavior: Behavior[Command],
       override val stateProbe: PersistenceProbe[State])
-      extends UnpersistentBehavior[Command, State] {
+      extends PersistenceProbeBehavior[Command, State] {
     def apply(f: (BehaviorTestKit[Command], PersistenceProbe[State]) => Unit): Unit =
       f(behaviorTestKit, stateProbe)
   }

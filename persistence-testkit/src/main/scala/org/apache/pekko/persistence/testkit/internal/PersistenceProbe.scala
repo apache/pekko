@@ -37,7 +37,7 @@ import pekko.util.ConstantFun.{ scalaAnyToUnit => doNothing }
  * INTERNAL API
  */
 @InternalApi
-private[pekko] object Unpersistent {
+private[pekko] object PersistenceProbe {
 
   def eventSourced[Command, Event, State](behavior: Behavior[Command], fromStateAndSequenceNr: Option[(State, Long)])(
       onEvent: (Event, Long, Set[String]) => Unit)(onSnapshot: (State, Long) => Unit): Behavior[Command] = {

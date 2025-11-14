@@ -23,7 +23,7 @@ import pekko.persistence.typed.scaladsl._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-object UnpersistentEventSourcedSpec {
+object PersistenceProbeEventSourcedSpec {
   object BehaviorUnderTest {
     sealed trait Command
 
@@ -154,14 +154,14 @@ object UnpersistentEventSourcedSpec {
   }
 }
 
-class UnpersistentEventSourcedSpec extends AnyWordSpec with Matchers {
-  import UnpersistentEventSourcedSpec._
+class PersistenceProbeEventSourcedSpec extends AnyWordSpec with Matchers {
+  import PersistenceProbeEventSourcedSpec._
 
   import pekko.actor.testkit.typed.scaladsl._
 
   import org.slf4j.event.Level
 
-  "Unpersistent EventSourcedBehavior" must {
+  "PersistenceProbe EventSourcedBehavior" must {
     "generate a failing behavior from a non-EventSourcedBehavior" in {
       val notEventSourced =
         Behaviors.receive[Any] { (context, msg) =>
@@ -169,10 +169,10 @@ class UnpersistentEventSourcedSpec extends AnyWordSpec with Matchers {
           Behaviors.same
         }
 
-      val unpersistent = UnpersistentBehavior.fromEventSourced[Any, Any, Any](notEventSourced)
-      an[AssertionError] shouldBe thrownBy { unpersistent.behaviorTestKit }
-      an[AssertionError] shouldBe thrownBy { unpersistent.eventProbe.extract() }
-      an[AssertionError] shouldBe thrownBy { unpersistent.snapshotProbe.extract() }
+      val persistenceProbe = PersistenceProbeBehavior.fromEventSourced[Any, Any, Any](notEventSourced)
+      an[AssertionError] shouldBe thrownBy { persistenceProbe.behaviorTestKit }
+      an[AssertionError] shouldBe thrownBy { persistenceProbe.eventProbe.extract() }
+      an[AssertionError] shouldBe thrownBy { persistenceProbe.snapshotProbe.extract() }
     }
 
     "generate a Behavior from an EventSourcedBehavior and process RecoveryCompleted" in {
@@ -182,10 +182,10 @@ class UnpersistentEventSourcedSpec extends AnyWordSpec with Matchers {
       val behavior = BehaviorUnderTest("test-1", recoveryDone.ref)
 
       // accessor API
-      val unpersistent = UnpersistentBehavior.fromEventSourced[Command, Event, State](behavior)
-      val testkit = unpersistent.behaviorTestKit
-      val eventProbe = unpersistent.eventProbe
-      val snapshotProbe = unpersistent.snapshotProbe
+      val persistenceProbe = PersistenceProbeBehavior.fromEventSourced[Command, Event, State](behavior)
+      val testkit = persistenceProbe.behaviorTestKit
+      val eventProbe = persistenceProbe.eventProbe
+      val snapshotProbe = persistenceProbe.snapshotProbe
 
       assert(!eventProbe.hasEffects, "should not be events")
       assert(!snapshotProbe.hasEffects, "should not be snapshots")
@@ -203,7 +203,7 @@ class UnpersistentEventSourcedSpec extends AnyWordSpec with Matchers {
       val replyTo = TestInbox[Done]()
 
       // resource-style API
-      UnpersistentBehavior.fromEventSourced[Command, Event, State](behavior) { (testkit, eventProbe, snapshotProbe) =>
+      PersistenceProbeBehavior.fromEventSourced[Command, Event, State](behavior) { (testkit, eventProbe, snapshotProbe) =>
         testkit.clearLog()
 
         testkit.run(PersistDomainEvent(replyTo.ref))
@@ -240,7 +240,7 @@ class UnpersistentEventSourcedSpec extends AnyWordSpec with Matchers {
             if (evt == 1) throw new RuntimeException("Kaboom!")
           })
 
-      UnpersistentBehavior.fromEventSourced[Int, Int, Unit](behavior) { (testkit, eventProbe, _) =>
+      PersistenceProbeBehavior.fromEventSourced[Int, Int, Unit](behavior) { (testkit, eventProbe, _) =>
         val oneException = the[RuntimeException] thrownBy testkit.run(1)
         oneException.getMessage shouldBe "Kaboom!"
         eventProbe.hasEffects shouldBe false
@@ -262,7 +262,7 @@ class UnpersistentEventSourcedSpec extends AnyWordSpec with Matchers {
         Seq(ObserverAdded(3, notify3.ref), SnapshotMade, DomainEvent, DomainEvent)
           .foldLeft(State(0, Map.empty, Int.MaxValue))(applyEvent _)
 
-      UnpersistentBehavior.fromEventSourced[Command, Event, State](behavior, Some(initialState -> 41L)) {
+      PersistenceProbeBehavior.fromEventSourced[Command, Event, State](behavior, Some(initialState -> 41L)) {
         (testkit, eventProbe, snapshotProbe) =>
           recoveryDone.expectMessage(Done)
           val logs = testkit.logEntries()
@@ -289,7 +289,7 @@ class UnpersistentEventSourcedSpec extends AnyWordSpec with Matchers {
 
       val behavior = BehaviorUnderTest("test-1", TestInbox[Done]().ref)
 
-      UnpersistentBehavior.fromEventSourced[Command, Event, State](behavior, None) {
+      PersistenceProbeBehavior.fromEventSourced[Command, Event, State](behavior, None) {
         (testkit, eventProbe, snapshotProbe) =>
           val replyTo1 = TestInbox[Done]()
           val pde = PersistDomainEvent(TestInbox[Done]().ref)
@@ -322,7 +322,7 @@ class UnpersistentEventSourcedSpec extends AnyWordSpec with Matchers {
           case x             => x
         }
 
-      UnpersistentBehavior.fromEventSourced[Command, Event, State](behavior,
+      PersistenceProbeBehavior.fromEventSourced[Command, Event, State](behavior,
         Some(initialState -> randomStartingOffset)) {
         (testkit, eventProbe, snapshotProbe) =>
           val replyTo = TestInbox[Long]()
