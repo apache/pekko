@@ -39,76 +39,31 @@ public interface OnMessageIntroTest {
   public class ChatRoom {
     // #chatroom-behavior
     // #chatroom-protocol
-    static interface RoomCommand {}
+    static sealed interface RoomCommand permits GetSession, PublishSessionMessage {}
 
-    public static final class GetSession implements RoomCommand {
-      public final String screenName;
-      public final ActorRef<SessionEvent> replyTo;
-
-      public GetSession(String screenName, ActorRef<SessionEvent> replyTo) {
-        this.screenName = screenName;
-        this.replyTo = replyTo;
-      }
-    }
+    public static final record GetSession(String screenName, ActorRef<SessionEvent> replyTo)
+      implements RoomCommand {}
 
     // #chatroom-protocol
-    private static final class PublishSessionMessage implements RoomCommand {
-      public final String screenName;
-      public final String message;
-
-      public PublishSessionMessage(String screenName, String message) {
-        this.screenName = screenName;
-        this.message = message;
-      }
-    }
+    private static final record PublishSessionMessage(String screenName, String message)
+      implements RoomCommand {}
 
     // #chatroom-protocol
 
-    static interface SessionEvent {}
+    static sealed interface SessionEvent permits SessionGranted, SessionDenied, MessagePosted {}
 
-    public static final class SessionGranted implements SessionEvent {
-      public final ActorRef<PostMessage> handle;
+    public static final record SessionGranted(ActorRef<PostMessage> handle)
+      implements SessionEvent {}
 
-      public SessionGranted(ActorRef<PostMessage> handle) {
-        this.handle = handle;
-      }
-    }
+    public static final record SessionDenied(String reason) implements SessionEvent {}
 
-    public static final class SessionDenied implements SessionEvent {
-      public final String reason;
+    public static final record MessagePosted(String screenName, String message) implements SessionEvent {}
 
-      public SessionDenied(String reason) {
-        this.reason = reason;
-      }
-    }
+    static sealed interface SessionCommand permits PostMessage, NotifyClient {}
 
-    public static final class MessagePosted implements SessionEvent {
-      public final String screenName;
-      public final String message;
+    public static final record PostMessage(String message) implements SessionCommand {}
 
-      public MessagePosted(String screenName, String message) {
-        this.screenName = screenName;
-        this.message = message;
-      }
-    }
-
-    static interface SessionCommand {}
-
-    public static final class PostMessage implements SessionCommand {
-      public final String message;
-
-      public PostMessage(String message) {
-        this.message = message;
-      }
-    }
-
-    private static final class NotifyClient implements SessionCommand {
-      final MessagePosted message;
-
-      NotifyClient(MessagePosted message) {
-        this.message = message;
-      }
-    }
+    private static final record NotifyClient(MessagePosted message) implements SessionCommand {}
 
     // #chatroom-protocol
     // #chatroom-behavior
