@@ -21,7 +21,7 @@ import org.apache.pekko
 import pekko.actor.testkit.typed.javadsl.BehaviorTestKit
 import pekko.actor.typed.Behavior
 import pekko.annotation.DoNotInherit
-import pekko.persistence.testkit.internal.{ PersistenceProbe, PersistenceProbeImpl }
+import pekko.persistence.testkit.internal.PersistenceProbeImpl
 
 /**
  * Factory methods to create PersistenceProbeBehavior instances for testing.
@@ -55,7 +55,7 @@ object PersistenceProbeBehavior {
     val snapshotProbe = new PersistenceProbeImpl[State]
 
     val b =
-      PersistenceProbe.eventSourced(behavior, initialStateAndSequenceNr) {
+      PersistenceProbeImpl.eventSourced(behavior, initialStateAndSequenceNr) {
         (event: Event, sequenceNr: Long, tags: ScalaSet[String]) =>
           eventProbe.persist((event, sequenceNr, tags))
       } { (snapshot, sequenceNr) =>
@@ -74,7 +74,7 @@ object PersistenceProbeBehavior {
       initialState: State): PersistenceProbeBehavior[Command, Void, State] = {
     val probe = new PersistenceProbeImpl[State]
     val b =
-      PersistenceProbe.durableState(behavior, Option(initialState)) { (state, version, tag) =>
+      PersistenceProbeImpl.durableState(behavior, Option(initialState)) { (state, version, tag) =>
         probe.persist((state, version, if (tag == "") ScalaSet.empty else ScalaSet(tag)))
       }
 

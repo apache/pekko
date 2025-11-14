@@ -19,7 +19,7 @@ import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.BehaviorTestKit
 import pekko.actor.typed.Behavior
 import pekko.annotation.DoNotInherit
-import pekko.persistence.testkit.internal.{ PersistenceProbe, PersistenceProbeImpl }
+import pekko.persistence.testkit.internal.PersistenceProbeImpl
 
 sealed trait PersistenceProbeBehavior[Command, State] {
   val behavior: Behavior[Command]
@@ -50,7 +50,7 @@ object PersistenceProbeBehavior {
     val eventProbe = new PersistenceProbeImpl[Event]
     val snapshotProbe = new PersistenceProbeImpl[State]
     val resultingBehavior =
-      PersistenceProbe.eventSourced(behavior, initialStateAndSequenceNr) {
+      PersistenceProbeImpl.eventSourced(behavior, initialStateAndSequenceNr) {
         (event: Event, sequenceNr: Long, tags: Set[String]) =>
           eventProbe.persist((event, sequenceNr, tags))
       } { (snapshot, sequenceNr) =>
@@ -71,7 +71,7 @@ object PersistenceProbeBehavior {
     val probe = new PersistenceProbeImpl[State]
 
     val resultingBehavior =
-      PersistenceProbe.durableState(behavior, initialState) { (state, version, tag) =>
+      PersistenceProbeImpl.durableState(behavior, initialState) { (state, version, tag) =>
         probe.persist((state, version, if (tag.isEmpty) Set.empty else Set(tag)))
       }
 
