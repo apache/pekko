@@ -122,6 +122,8 @@ import pekko.util.FutureConverters._
   override lazy val getWhenTerminated: CompletionStage[pekko.Done] =
     whenTerminated.asJava
 
+  override def close(): Unit = system.close()
+
   override def systemActorOf[U](behavior: Behavior[U], name: String, props: Props): ActorRef[U] = {
     val ref = system.systemActorOf(
       PropsAdapter(

@@ -184,7 +184,7 @@ class SystemMessageDeliverySpec extends AbstractSystemMessageDeliverySpec(System
         watch(remoteRef)
         remoteRef ! "hello"
         expectMsg("hello")
-        Await.ready(systemC.terminate(), 10.seconds)
+        systemC.close()
         system.log.debug("systemC terminated")
         // DeathWatchNotification is sent from systemC, failure detection takes longer than 3 seconds
         expectTerminated(remoteRef, 10.seconds)

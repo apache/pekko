@@ -90,6 +90,6 @@ class PullReadingSpec extends PekkoSpec with ImplicitSender {
     client.send(connection, ResumeReading)
     client.expectMsg(Received(ByteString("hello")))
 
-    Await.ready(system.terminate(), Duration.Inf)
+    system.close()
   }
 }

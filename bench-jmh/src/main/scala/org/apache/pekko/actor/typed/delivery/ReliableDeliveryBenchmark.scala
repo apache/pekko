@@ -236,10 +236,8 @@ class ReliableDeliveryBenchmark {
   }
 
   @TearDown(Level.Trial)
-  def shutdown(): Unit = {
-    system.terminate()
-    Await.ready(system.whenTerminated, 15.seconds)
-  }
+  def shutdown(): Unit =
+    system.close()
 
   @Benchmark
   @OperationsPerInvocation(messagesPerOperation)

@@ -262,7 +262,7 @@ class ActorSystemSpec extends PekkoSpec(ActorSystemSpec.config) with ImplicitSen
 
     "throw RejectedExecutionException when shutdown" in {
       val system2 = ActorSystem("RejectedExecution-1", PekkoSpec.testConf)
-      Await.ready(system2.terminate(), 10.seconds)
+      system2.close()
 
       intercept[RejectedExecutionException] {
         system2.registerOnTermination { println("IF YOU SEE THIS THEN THERE'S A BUG HERE") }
