@@ -27,9 +27,6 @@ import pekko.testkit.ImplicitSender
 import pekko.testkit.TestProbe
 import com.typesafe.config.ConfigFactory
 
-import scala.concurrent.Await
-import scala.concurrent.duration._
-
 /**
  * Covers that remembered entities is correctly migrated when used and the shard id extractor
  * is changed so that entities should live on other shards after a full restart of the cluster.
@@ -144,7 +141,7 @@ class RememberEntitiesShardIdExtractorChangeSpec
         val region = ClusterSharding(system).start(TypeName, Props(new PA()), extractEntityId, extractShardId)
         f(system, region)
       } finally {
-        Await.ready(system.terminate(), 20.seconds)
+        system.close()
       }
     }
 
