@@ -24,7 +24,7 @@ import pekko.persistence.typed.state.scaladsl._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-object UnpersistentDurableStateSpec {
+object PersistenceProbeDurableStateSpec {
   object BehaviorUnderTest {
     sealed trait Command
 
@@ -136,14 +136,14 @@ object UnpersistentDurableStateSpec {
   }
 }
 
-class UnpersistentDurableStateSpec extends AnyWordSpec with Matchers {
-  import UnpersistentDurableStateSpec._
+class PersistenceProbeDurableStateSpec extends AnyWordSpec with Matchers {
+  import PersistenceProbeDurableStateSpec._
 
   import pekko.actor.testkit.typed.scaladsl._
 
   import org.slf4j.event.Level
 
-  "Unpersistent DurableStateBehavior" must {
+  "PersistenceProbe DurableStateBehavior" must {
     "generate a fail-fast behavior from a non-DurableStateBehavior" in {
       val notDurableState =
         Behaviors.receive[Any] { (context, msg) =>
@@ -151,9 +151,9 @@ class UnpersistentDurableStateSpec extends AnyWordSpec with Matchers {
           Behaviors.same
         }
 
-      val unpersistent = UnpersistentBehavior.fromDurableState[Any, Any](notDurableState)
-      an[AssertionError] shouldBe thrownBy { unpersistent.behaviorTestKit }
-      assert(!unpersistent.stateProbe.hasEffects, "should be no persistence effects")
+      val persistenceProbe = PersistenceProbeBehavior.fromDurableState[Any, Any](notDurableState)
+      an[AssertionError] shouldBe thrownBy { persistenceProbe.behaviorTestKit }
+      assert(!persistenceProbe.stateProbe.hasEffects, "should be no persistence effects")
     }
 
     "generate a Behavior from a DurableStateBehavior and process RecoveryCompleted" in {
@@ -163,9 +163,9 @@ class UnpersistentDurableStateSpec extends AnyWordSpec with Matchers {
       val behavior = BehaviorUnderTest("test-1", recoveryDone.ref)
 
       // accessor-style API
-      val unpersistent = UnpersistentBehavior.fromDurableState[Command, State](behavior)
-      val probe = unpersistent.stateProbe
-      val testkit = unpersistent.behaviorTestKit
+      val persistenceProbe = PersistenceProbeBehavior.fromDurableState[Command, State](behavior)
+      val probe = persistenceProbe.stateProbe
+      val testkit = persistenceProbe.behaviorTestKit
 
       assert(!probe.hasEffects, "should not be persistence yet")
       recoveryDone.expectMessage(Done)
@@ -182,7 +182,7 @@ class UnpersistentDurableStateSpec extends AnyWordSpec with Matchers {
       val replyTo = TestInbox[Done]()
 
       // and the more functional-style API
-      UnpersistentBehavior.fromDurableState[Command, State](behavior) { (testkit, probe) =>
+      PersistenceProbeBehavior.fromDurableState[Command, State](behavior) { (testkit, probe) =>
         testkit.run(Add(1, replyTo.ref))
         replyTo.expectMessage(Done)
         probe.expectPersisted(State(1, Map.empty, Int.MaxValue), tag = "count")
@@ -197,7 +197,7 @@ class UnpersistentDurableStateSpec extends AnyWordSpec with Matchers {
       val notify3 = TestInbox[Done]()
       val initialState = State(1, Map(3 -> notify3.ref), 3)
 
-      UnpersistentBehavior.fromDurableState[Command, State](behavior, Some(initialState)) { (testkit, probe) =>
+      PersistenceProbeBehavior.fromDurableState[Command, State](behavior, Some(initialState)) { (testkit, probe) =>
         val logs = testkit.logEntries()
 
         logs.size shouldBe 1
@@ -230,7 +230,7 @@ class UnpersistentDurableStateSpec extends AnyWordSpec with Matchers {
       val replyTo1 = TestInbox[Done]()
       val add = Add(1, TestInbox[Done]().ref)
 
-      UnpersistentBehavior.fromDurableState[Command, State](behavior) { (testkit, probe) =>
+      PersistenceProbeBehavior.fromDurableState[Command, State](behavior) { (testkit, probe) =>
         // stashes
         testkit.run(AddWhenAtLeast(1, 1, replyTo1.ref))
         assert(!probe.hasEffects, "should be no persistence effect")
@@ -254,7 +254,7 @@ class UnpersistentDurableStateSpec extends AnyWordSpec with Matchers {
       val behavior = BehaviorUnderTest("test-1", TestInbox[Done]().ref)
 
       val replyTo = TestInbox[Long]()
-      UnpersistentBehavior.fromDurableState[Command, State](behavior) { (testkit, probe) =>
+      PersistenceProbeBehavior.fromDurableState[Command, State](behavior) { (testkit, probe) =>
         testkit.run(GetRevisionNumber(replyTo.ref))
         (the[AssertionError] thrownBy (probe.extract())).getMessage shouldBe "No persistence effects in probe"
         replyTo.expectMessage(0)
