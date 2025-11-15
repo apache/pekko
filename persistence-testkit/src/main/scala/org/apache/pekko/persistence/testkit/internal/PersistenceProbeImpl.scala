@@ -37,7 +37,7 @@ import pekko.util.ccompat.JavaConverters._
  * INTERNAL API
  */
 @InternalApi
-private[pekko] object Unpersistent {
+private[pekko] object PersistenceProbeImpl {
 
   def eventSourced[Command, Event, State](behavior: Behavior[Command], fromStateAndSequenceNr: Option[(State, Long)])(
       onEvent: (Event, Long, Set[String]) => Unit)(onSnapshot: (State, Long) => Unit): Behavior[Command] = {

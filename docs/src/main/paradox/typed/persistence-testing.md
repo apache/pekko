@@ -21,28 +21,28 @@ To use Pekko Persistence TestKit, add the module to your project:
 
 ## Unit testing with the BehaviorTestKit
 
-**Note!** The `UnpersistentBehavior` is a new feature: the API may have changes breaking source compatibility in future versions.
+**Note!** The `PersistenceProbeBehavior` is a new feature: the API may have changes breaking source compatibility in future versions.
 
-Unit testing of `EventSourcedBehavior` can be performed by converting it into an @apidoc[UnpersistentBehavior]. Instead of
-persisting events and snapshots, the `UnpersistentBehavior` exposes @apidoc[PersistenceProbe]s for events and snapshots which
+Unit testing of `EventSourcedBehavior` can be performed by converting it into an @apidoc[PersistenceProbeBehavior]. Instead of
+persisting events and snapshots, the `PersistenceProbeBehavior` exposes @apidoc[PersistenceProbe]s for events and snapshots which
 can be asserted on.
 
 Scala
-: @@snip [AccountExampleUnpersistentDocSpec.scala](/cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/AccountExampleUnpersistentDocSpec.scala) { #unpersistent-behavior }
+: @@snip [AccountExamplePersistenceProbeDocSpec.scala](/cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/AccountExamplePersistenceProbeDocSpec.scala) { #persistenceProbe-behavior }
 
 Java
-: @@snip [AccountExampleUnpersistentDocTest.java](/cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/AccountExampleUnpersistentDocTest.java) { #unpersistent-behavior }
+: @@snip [AccountExamplePersistenceProbeDocTest.java](/cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/AccountExamplePersistenceProbeDocTest.java) { #persistenceProbe-behavior }
 
-The `UnpersistentBehavior` can be initialized with arbitrary states:
+The `PersistenceProbeBehavior` can be initialized with arbitrary states:
 
 Scala
-: @@snip [AccountExampleUnpersistentDocSpec.scala](/cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/AccountExampleUnpersistentDocSpec.scala) { #unpersistent-behavior-provided-state }
+: @@snip [AccountExamplePersistenceProbeDocSpec.scala](/cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/AccountExamplePersistenceProbeDocSpec.scala) { #persistenceProbe-behavior-provided-state }
 
 Java
-: @@snip [AccountExampleUnpersistentDocTest.java](/cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/AccountExampleUnpersistentDocTest.java) { #unpersistent-behavior-provided-state }
+: @@snip [AccountExamplePersistenceProbeDocTest.java](/cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/AccountExamplePersistenceProbeDocTest.java) { #persistenceProbe-behavior-provided-state }
 
-The `UnpersistentBehavior` is especially well-suited to the synchronous @ref:[`BehaviorTestKit`](testing-sync.md#synchronous-behavior-testing):
-the `UnpersistentBehavior` can directly construct a `BehaviorTestKit` wrapping the behavior.  When commands are run by `BehaviorTestKit`,
+The `PersistenceProbeBehavior` is especially well-suited to the synchronous @ref:[`BehaviorTestKit`](testing-sync.md#synchronous-behavior-testing):
+the `PersistenceProbeBehavior` can directly construct a `BehaviorTestKit` wrapping the behavior.  When commands are run by `BehaviorTestKit`,
 they are processed in the calling thread (viz. the test suite), so when the run returns, the suite can be sure that the message has been
 fully processed.  The internal state of the `EventSourcedBehavior` is not exposed to the suite except to the extent that it affects how
 the behavior responds to commands or the events it persists (in addition, any snapshots made by the behavior are available through a
@@ -51,12 +51,12 @@ the behavior responds to commands or the events it persists (in addition, any sn
 A full test for the `AccountEntity`, which is shown in the @ref:[Persistence Style Guide](persistence-style.md) might look like:
 
 Scala
-: @@snip [AccountExampleUnpersistentDocSpec.scala](/cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/AccountExampleUnpersistentDocSpec.scala) { #test }
+: @@snip [AccountExamplePersistenceProbeDocSpec.scala](/cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/AccountExamplePersistenceProbeDocSpec.scala) { #test }
 
 Java
-: @@snip [AccountExampleUnpersistentDocTest.java](/cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/AccountExampleUnpersistentDocTest.java) { #test }
+: @@snip [AccountExamplePersistenceProbeDocTest.java](/cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/AccountExamplePersistenceProbeDocTest.java) { #test }
 
-`UnpersistentBehavior` does not require any configuration.  It therefore does not verify the serialization of commands, events, or state.
+`PersistenceProbeBehavior` does not require any configuration.  It therefore does not verify the serialization of commands, events, or state.
 If using this style, it is advised to independently test serialization for those classes.
 
 ## Unit testing with the the ActorTestKit and EventSourcedBehaviorTestKit

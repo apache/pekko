@@ -21,14 +21,14 @@ import org.apache.pekko
 import pekko.actor.testkit.typed.javadsl.BehaviorTestKit
 import pekko.actor.typed.Behavior
 import pekko.annotation.DoNotInherit
-import pekko.persistence.testkit.internal.{ PersistenceProbeImpl, Unpersistent }
+import pekko.persistence.testkit.internal.PersistenceProbeImpl
 
 /**
- * Factory methods to create UnpersistentBehavior instances for testing.
+ * Factory methods to create PersistenceProbeBehavior instances for testing.
  *
  * @since 1.3.0
  */
-object UnpersistentBehavior {
+object PersistenceProbeBehavior {
 
   /**
    * Given an EventSourcedBehavior, produce a non-persistent Behavior which synchronously publishes events and snapshots
@@ -39,15 +39,15 @@ object UnpersistentBehavior {
    *  The returned Behavior does not intrinsically depend on configuration: it therefore does not serialize and
    *  assumes an unbounded stash for commands.
    *
-   *  @param behavior a (possibly wrapped) EventSourcedBehavior to serve as the basis for the unpersistent behavior
-   *  @param initialState start the unpersistent behavior with this state; if null, behavior's initialState will be used
-   *  @param initialSequenceNr start the unpersistent behavior with this sequence number; only applies if initialState is non-null
-   *  @return an UnpersistentBehavior based on an EventSourcedBehavior
+   *  @param behavior a (possibly wrapped) EventSourcedBehavior to serve as the basis for the persistenceProbe behavior
+   *  @param initialState start the persistenceProbe behavior with this state; if null, behavior's initialState will be used
+   *  @param initialSequenceNr start the persistenceProbe behavior with this sequence number; only applies if initialState is non-null
+   *  @return an PersistenceProbeBehavior based on an EventSourcedBehavior
    */
   def fromEventSourced[Command, Event, State](
       behavior: Behavior[Command],
       initialState: State,
-      initialSequenceNr: Long): UnpersistentBehavior[Command, Event, State] = {
+      initialSequenceNr: Long): PersistenceProbeBehavior[Command, Event, State] = {
     require(initialSequenceNr >= 0, "initialSequenceNr must be at least zero")
 
     val initialStateAndSequenceNr = Option(initialState).map(_ -> initialSequenceNr)
@@ -55,33 +55,33 @@ object UnpersistentBehavior {
     val snapshotProbe = new PersistenceProbeImpl[State]
 
     val b =
-      Unpersistent.eventSourced(behavior, initialStateAndSequenceNr) {
+      PersistenceProbeImpl.eventSourced(behavior, initialStateAndSequenceNr) {
         (event: Event, sequenceNr: Long, tags: ScalaSet[String]) =>
           eventProbe.persist((event, sequenceNr, tags))
       } { (snapshot, sequenceNr) =>
         snapshotProbe.persist((snapshot, sequenceNr, ScalaSet.empty))
       }
 
-    new UnpersistentBehavior(b, eventProbe.asJava, snapshotProbe.asJava)
+    new PersistenceProbeBehavior(b, eventProbe.asJava, snapshotProbe.asJava)
   }
 
   def fromEventSourced[Command, Event, State](
-      behavior: Behavior[Command]): UnpersistentBehavior[Command, Event, State] =
+      behavior: Behavior[Command]): PersistenceProbeBehavior[Command, Event, State] =
     fromEventSourced(behavior, null.asInstanceOf[State], 0)
 
   def fromDurableState[Command, State](
       behavior: Behavior[Command],
-      initialState: State): UnpersistentBehavior[Command, Void, State] = {
+      initialState: State): PersistenceProbeBehavior[Command, Void, State] = {
     val probe = new PersistenceProbeImpl[State]
     val b =
-      Unpersistent.durableState(behavior, Option(initialState)) { (state, version, tag) =>
+      PersistenceProbeImpl.durableState(behavior, Option(initialState)) { (state, version, tag) =>
         probe.persist((state, version, if (tag == "") ScalaSet.empty else ScalaSet(tag)))
       }
 
-    new UnpersistentBehavior(b, noEventProbe, probe.asJava)
+    new PersistenceProbeBehavior(b, noEventProbe, probe.asJava)
   }
 
-  def fromDurableState[Command, State](behavior: Behavior[Command]): UnpersistentBehavior[Command, Void, State] =
+  def fromDurableState[Command, State](behavior: Behavior[Command]): PersistenceProbeBehavior[Command, Void, State] =
     fromDurableState(behavior, null.asInstanceOf[State])
 
   private val noEventProbe: PersistenceProbe[Void] =
@@ -101,7 +101,7 @@ object UnpersistentBehavior {
     }
 }
 
-final class UnpersistentBehavior[Command, Event, State] private (
+final class PersistenceProbeBehavior[Command, Event, State] private (
     behavior: Behavior[Command],
     eventProbe: PersistenceProbe[Event],
     stateProbe: PersistenceProbe[State]) {
