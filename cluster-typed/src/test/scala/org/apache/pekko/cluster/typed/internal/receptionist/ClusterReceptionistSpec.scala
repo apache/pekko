@@ -205,8 +205,7 @@ class ClusterReceptionistSpec extends AnyWordSpec with Matchers with LogCapturin
 
         if (down) {
           // abrupt termination
-          system2.terminate()
-          Await.ready(system2.whenTerminated, 10.seconds)
+          system2.close()
           clusterNode1.manager ! Down(clusterNode2.selfMember.address)
         } else {
           clusterNode1.manager ! Leave(clusterNode2.selfMember.address)
@@ -368,8 +367,7 @@ class ClusterReceptionistSpec extends AnyWordSpec with Matchers with LogCapturin
 
         // abrupt termination but then a node with the same host:port comes online quickly
         system1.log.debug("Terminating system2: [{}]", clusterNode2.selfMember.uniqueAddress)
-        system2.terminate()
-        Await.ready(system2.whenTerminated, 10.seconds)
+        system2.close()
 
         val testKit3 = ActorTestKit(
           system1.name,

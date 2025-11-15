@@ -18,6 +18,7 @@
 package org.apache.pekko.actor.typed
 
 import scala.annotation.nowarn
+import scala.util.Using
 
 import org.apache.pekko
 import pekko.actor.typed.scaladsl.Behaviors
@@ -44,6 +45,20 @@ class ActorSystemSpec extends PekkoSpec {
       } finally {
         system.terminate()
       }
+    }
+
+    "close method terminates ActorSystem" in {
+      val system = ActorSystem(Behaviors.empty[String], "close-terminates-system")
+      system.close()
+      system.whenTerminated.isCompleted should ===(true)
+    }
+
+    "Scala's Using automatically terminates ActorSystem" in {
+      var currentSystem: ActorSystem[Nothing] = null
+      Using(ActorSystem(Behaviors.empty[String], "using-terminates-system")) { system =>
+        currentSystem = system
+      }
+      currentSystem.whenTerminated.isCompleted should ===(true)
     }
   }
 }

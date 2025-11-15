@@ -17,8 +17,6 @@ import java.io.File
 import java.util.concurrent.TimeUnit
 
 import scala.annotation.nowarn
-import scala.concurrent.Await
-import scala.concurrent.duration._
 
 import org.apache.commons.io.FileUtils
 import org.openjdk.jmh.annotations._
@@ -75,8 +73,7 @@ class LevelDbBatchingBenchmark {
     store ! PoisonPill
     Thread.sleep(500)
 
-    sys.terminate()
-    Await.ready(sys.whenTerminated, 10.seconds)
+    sys.close()
   }
 
   @Benchmark

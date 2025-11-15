@@ -15,6 +15,7 @@ package org.apache.pekko.actor;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.CompletionStage;
 import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
@@ -46,5 +47,15 @@ public class ActorSystemTest extends JUnitSuite {
   @Test
   public void testGetWhenTerminatedWithoutTermination() {
     assertFalse(system.getWhenTerminated().toCompletableFuture().isDone());
+  }
+
+  @Test
+  public void testTryWithResources() throws Exception {
+    ActorSystem system = null;
+    try (ActorSystem actorSystem = ActorSystem.create()) {
+      system = actorSystem;
+    }
+    final CompletionStage<Terminated> cs = system.getWhenTerminated();
+    assertTrue(cs.toCompletableFuture().isDone());
   }
 }
