@@ -32,6 +32,7 @@ This release includes a number of changes from Akka 2.7.0, which have recently b
 * persistence-typed: custom stash support ([PR2433](https://github.com/apache/pekko/pull/2433))
 * Add effectful asking support in typed BehaviorTestKit ([PR2450](https://github.com/apache/pekko/pull/2450))
 * Add asking support to BehaviorTestKit ([PR2453](https://github.com/apache/pekko/pull/2453))
+* Add Source#apply for Array ([PR2474](https://github.com/apache/pekko/pull/2474))
 * Add PersistenceProbeBehavior for testing Persistence Behaviors ([PR2456](https://github.com/apache/pekko/pull/2456), [PR2494](https://github.com/apache/pekko/pull/2494))
 
 ### Changes
