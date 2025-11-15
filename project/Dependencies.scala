@@ -144,7 +144,7 @@ object Dependencies {
       // in-memory filesystem for file related tests
       val jimfs = "com.google.jimfs" % "jimfs" % "1.3.1" % Test
 
-      val dockerClientVersion = "3.6.0"
+      val dockerClientVersion = "3.7.0"
       val dockerClient = Seq(
         "com.github.docker-java" % "docker-java-core" % dockerClientVersion % Test,
         "com.github.docker-java" % "docker-java-transport-httpclient5" % dockerClientVersion % Test)
