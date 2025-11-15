@@ -50,6 +50,6 @@ This release includes a number of changes from Akka 2.7.0, which have recently b
 
 * netty 4.2.7.Final
 * jackson 2.20.1
-* protobuf-java 4.33.0
+* protobuf-java 4.33.1
 * ssl-config 0.7.1
 * scala 2.13.17, 3.3.7
