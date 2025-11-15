@@ -19,7 +19,7 @@ import org.reactivestreams.Publisher
 import org.testng.annotations.{ AfterClass, BeforeClass }
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
+import pekko.actor.scaladsl.ActorSystem
 import pekko.event.Logging
 import pekko.stream.scaladsl.{ FileIO, Sink }
 import pekko.stream.testkit.Utils._

@@ -19,9 +19,9 @@ import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor.Actor
-import pekko.actor.ActorSystem
 import pekko.actor.PoisonPill
 import pekko.actor.Props
+import pekko.actor.scaladsl.ActorSystem
 import pekko.cluster.Cluster
 import pekko.cluster.MemberStatus
 import pekko.cluster.UniqueAddress

@@ -17,7 +17,7 @@ import com.typesafe.config.{ Config, ConfigFactory }
 import org.osgi.framework.BundleContext
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
+import pekko.actor.scaladsl.ActorSystem
 import pekko.util.unused
 
 /**

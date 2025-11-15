@@ -24,7 +24,7 @@ import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
+import pekko.actor.scaladsl.ActorSystem
 import pekko.actor.ActorSystemImpl
 import pekko.event.Logging
 import pekko.testkit.PekkoSpec
@@ -50,7 +50,7 @@ trait ActorSystemLifecycle {
   @AfterClass
   def shutdownActorSystem(): Unit = {
     try {
-      Await.ready(system.terminate(), shutdownTimeout)
+      Await.ready(system.terminateAsync(), shutdownTimeout)
     } catch {
       case _: TimeoutException =>
         val msg = "Failed to stop [%s] within [%s] \n%s".format(

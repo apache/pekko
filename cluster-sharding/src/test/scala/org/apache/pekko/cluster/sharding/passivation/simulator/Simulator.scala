@@ -15,7 +15,7 @@ package org.apache.pekko.cluster.sharding.passivation.simulator
 
 import org.apache.pekko
 import pekko.NotUsed
-import pekko.actor.ActorSystem
+import pekko.actor.scaladsl.ActorSystem
 import pekko.cluster.sharding.internal.ActiveEntities
 import pekko.cluster.sharding.internal.AdmissionFilter
 import pekko.cluster.sharding.internal.AdmissionOptimizer
@@ -81,10 +81,10 @@ object Simulator {
             results.name +: DataTable.row(results.stats.totals)
           }
           PrintData(DataTable(DataTable.Headers.RunStats, summary))
-          system.terminate()
+          system.terminateAsync()
         case Failure(exception) =>
           println(s"Failed to run simulations: $exception")
-          system.terminate()
+          system.terminateAsync()
       }
   }
 

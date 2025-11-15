@@ -132,7 +132,7 @@ class ClusterDeathWatchNotificationSpec
     receiverProbe3.expectMsg("echo3")
 
     system2.log.debug("terminating")
-    system2.terminate()
+    system2.terminateAsync()
     receiverProbe1.receiveN(messages.size, 5.seconds).toVector shouldBe messages
     receiverProbe1.expectTerminated(sender1)
     receiverProbe2.receiveN(messages.size).toVector shouldBe messages

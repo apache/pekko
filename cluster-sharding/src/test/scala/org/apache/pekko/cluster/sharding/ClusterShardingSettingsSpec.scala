@@ -14,7 +14,7 @@
 package org.apache.pekko.cluster.sharding
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
+import pekko.actor.scaladsl.ActorSystem
 import pekko.testkit.{ PekkoSpec, TestKit }
 import com.typesafe.config.ConfigFactory
 import org.scalatest.matchers.should.Matchers

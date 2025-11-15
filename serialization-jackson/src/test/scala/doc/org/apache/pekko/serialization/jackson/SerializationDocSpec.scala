@@ -16,7 +16,7 @@ package doc.org.apache.pekko.serialization.jackson
 import java.util.Optional
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
+import pekko.actor.scaladsl.ActorSystem
 import pekko.serialization.Serialization
 import pekko.serialization.SerializationExtension
 import pekko.serialization.SerializerWithStringManifest

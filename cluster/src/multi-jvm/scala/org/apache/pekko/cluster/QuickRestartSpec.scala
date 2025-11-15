@@ -21,7 +21,8 @@ import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
-import pekko.actor.{ ActorSystem, Address }
+import pekko.actor.Address
+import pekko.actor.scaladsl.ActorSystem
 import pekko.remote.testkit.{ MultiNodeConfig, MultiNodeSpec }
 import pekko.testkit._
 
@@ -116,7 +117,7 @@ abstract class QuickRestartSpec extends MultiNodeClusterSpec(QuickRestartMultiJv
 
         enterBarrier("before-terminate-" + n)
         runOn(second) {
-          restartingSystem.terminate().await
+          restartingSystem.terminateAsync().await
         }
         // don't wait for it to be removed, new incarnation will join in next round
         enterBarrier("terminated-" + n)

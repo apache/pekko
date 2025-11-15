@@ -118,7 +118,7 @@ class ShardRegionSpec extends PekkoSpec(ShardRegionSpec.config) with WithLogCapt
   system.eventStream.publish(Mute(DeadLettersFilter[Any]))
 
   private val sysA = system
-  private val sysB = ActorSystem(system.name, system.settings.config)
+  private val sysB = pekko.actor.scaladsl.ActorSystem(system.name, system.settings.config)
 
   private val p1 = TestProbe()(sysA)
   private val p2 = TestProbe()(sysB)

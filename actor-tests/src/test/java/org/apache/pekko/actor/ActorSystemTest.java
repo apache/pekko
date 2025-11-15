@@ -13,6 +13,7 @@
 
 package org.apache.pekko.actor;
 
+import org.apache.pekko.actor.javadsl.ActorSystem;
 import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.junit.Before;
 import org.junit.Rule;
@@ -39,7 +40,7 @@ public class ActorSystemTest extends JUnitSuite {
 
   @Test
   public void testGetWhenTerminated() throws Exception {
-    system.terminate();
+    system.terminateAsync();
     final CompletionStage<Terminated> cs = system.getWhenTerminated();
     cs.toCompletableFuture().get(2, SECONDS);
   }

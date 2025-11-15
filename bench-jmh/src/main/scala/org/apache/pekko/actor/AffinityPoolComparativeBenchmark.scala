@@ -56,7 +56,7 @@ class AffinityPoolComparativeBenchmark {
         s"""default-mailbox.mailbox-type = "${classOf[pekko.dispatch.SingleConsumerOnlyUnboundedMailbox].getName}""""
     }
 
-    system = ActorSystem(
+    system = pekko.actor.scaladsl.ActorSystem(
       "AffinityPoolComparativeBenchmark",
       ConfigFactory.parseString(s"""| pekko {
           |   log-dead-letters = off

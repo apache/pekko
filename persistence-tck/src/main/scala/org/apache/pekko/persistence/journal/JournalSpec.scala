@@ -19,6 +19,7 @@ import com.typesafe.config._
 
 import org.apache.pekko
 import pekko.actor._
+import pekko.actor.scaladsl.ActorSystem
 import pekko.persistence._
 import pekko.persistence.JournalProtocol._
 import pekko.persistence.scalatest.{ MayVerb, OptionalTests }

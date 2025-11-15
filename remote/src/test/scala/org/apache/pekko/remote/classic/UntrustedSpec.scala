@@ -22,7 +22,6 @@ import pekko.actor.Actor
 import pekko.actor.ActorIdentity
 import pekko.actor.ActorRef
 import pekko.actor.ActorSelection
-import pekko.actor.ActorSystem
 import pekko.actor.Deploy
 import pekko.actor.ExtendedActorSystem
 import pekko.actor.Identify
@@ -30,6 +29,7 @@ import pekko.actor.PoisonPill
 import pekko.actor.Props
 import pekko.actor.RootActorPath
 import pekko.actor.Terminated
+import pekko.actor.scaladsl.ActorSystem
 import pekko.event.Logging
 import pekko.testkit.PekkoSpec
 import pekko.testkit.EventFilter

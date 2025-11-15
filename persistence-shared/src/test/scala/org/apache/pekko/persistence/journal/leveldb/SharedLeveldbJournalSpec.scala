@@ -17,6 +17,7 @@ import scala.annotation.nowarn
 import com.typesafe.config.ConfigFactory
 import org.apache.pekko
 import pekko.actor._
+import pekko.actor.scaladsl.ActorSystem
 import pekko.persistence._
 import pekko.testkit.{ PekkoSpec, TestProbe }
 

@@ -27,7 +27,7 @@ import org.openjdk.jmh.annotations.Scope
 import org.openjdk.jmh.annotations.State
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
+import pekko.actor.scaladsl.ActorSystem
 import pekko.stream.IOResult
 import pekko.stream.scaladsl._
 import pekko.util.ByteString
@@ -79,7 +79,7 @@ class FileSourcesScaleBenchmark {
 
   @TearDown
   def shutdown(): Unit = {
-    Await.result(system.terminate(), Duration.Inf)
+    system.close()
   }
 
   @Benchmark

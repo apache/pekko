@@ -46,7 +46,7 @@ class FlushOnShutdownSpec extends ArteryMultiNodeSpec(ArterySpecSupport.defaultC
               receiverRef ! "msg1"
               receiverRef ! "msg2"
               receiverRef ! "msg3"
-              context.system.terminate()
+              context.system.closeAsync()
           }
         }), "sender")
 

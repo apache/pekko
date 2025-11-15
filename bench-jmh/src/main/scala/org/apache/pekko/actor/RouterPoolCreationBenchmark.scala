@@ -15,7 +15,6 @@ package org.apache.pekko.actor
 
 import java.util.concurrent.TimeUnit
 
-import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.openjdk.jmh.annotations._
@@ -31,7 +30,7 @@ import pekko.testkit.TestProbe
 @Warmup(iterations = 20)
 @Measurement(iterations = 100)
 class RouterPoolCreationBenchmark {
-  implicit val system: ActorSystem = ActorSystem()
+  implicit val system: ActorSystem = pekko.actor.scaladsl.ActorSystem()
   val probe = TestProbe()
 
   Props[TestActors.EchoActor]()
@@ -41,8 +40,7 @@ class RouterPoolCreationBenchmark {
 
   @TearDown(Level.Trial)
   def shutdown(): Unit = {
-    system.terminate()
-    Await.ready(system.whenTerminated, 15.seconds)
+    system.close()
   }
 
   @Benchmark

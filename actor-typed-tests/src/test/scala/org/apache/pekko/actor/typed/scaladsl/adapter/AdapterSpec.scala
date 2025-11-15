@@ -196,7 +196,7 @@ object AdapterSpec {
 class AdapterSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll with LogCapturing {
   import AdapterSpec._
 
-  implicit val system: classic.ActorSystem = pekko.actor.ActorSystem("AdapterSpec")
+  implicit val system: classic.ActorSystem = pekko.actor.scaladsl.ActorSystem("AdapterSpec")
   def typedSystem: ActorSystem[Nothing] = system.toTyped
 
   "ActorSystem adaption" must {

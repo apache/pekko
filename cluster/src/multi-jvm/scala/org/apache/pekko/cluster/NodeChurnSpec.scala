@@ -20,6 +20,7 @@ import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor._
+import pekko.actor.scaladsl.ActorSystem
 import pekko.event.Logging.Info
 import pekko.remote.RARP
 import pekko.remote.testkit.MultiNodeConfig

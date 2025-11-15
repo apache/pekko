@@ -65,15 +65,15 @@ abstract class ArteryMultiNodeSpec(config: Config)
   def newRemoteSystem(
       extraConfig: Option[String] = None,
       name: Option[String] = None,
-      setup: Option[ActorSystemSetup] = None): ActorSystem = {
+      setup: Option[ActorSystemSetup] = None): pekko.actor.scaladsl.ActorSystem = {
     val config =
       extraConfig.fold(localSystem.settings.config)(str =>
         ConfigFactory.parseString(str).withFallback(localSystem.settings.config))
     val sysName = name.getOrElse(nextGeneratedSystemName)
 
     val remoteSystem = setup match {
-      case None    => ActorSystem(sysName, config)
-      case Some(s) => ActorSystem(sysName, s.and(BootstrapSetup.apply(config)))
+      case None    => pekko.actor.scaladsl.ActorSystem(sysName, config)
+      case Some(s) => pekko.actor.scaladsl.ActorSystem(sysName, s.and(BootstrapSetup.apply(config)))
     }
 
     remoteSystems = remoteSystems :+ remoteSystem

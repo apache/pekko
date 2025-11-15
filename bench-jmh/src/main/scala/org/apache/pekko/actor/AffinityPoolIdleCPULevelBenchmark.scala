@@ -18,7 +18,8 @@ import java.util.concurrent.TimeUnit
 import com.typesafe.config.ConfigFactory
 import org.openjdk.jmh.annotations._
 
-import org.apache.pekko.actor.BenchmarkActors._
+import org.apache.pekko
+import pekko.actor.BenchmarkActors._
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Array(Mode.Throughput))
@@ -45,7 +46,7 @@ class AffinityPoolIdleCPULevelBenchmark {
 
     requireRightNumberOfCores(numThreads)
 
-    system = ActorSystem(
+    system = pekko.actor.scaladsl.ActorSystem(
       "AffinityPoolWaitingStrategyBenchmark",
       ConfigFactory.parseString(s""" | pekko {
          |   log-dead-letters = off

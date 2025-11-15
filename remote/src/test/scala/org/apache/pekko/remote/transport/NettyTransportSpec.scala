@@ -27,8 +27,6 @@ import org.scalatest.wordspec.AnyWordSpec
 
 import java.net.{ InetAddress, InetSocketAddress }
 import java.nio.channels.ServerSocketChannel
-import scala.concurrent.Await
-import scala.concurrent.duration.Duration
 
 object NettyTransportSpec {
   val commonConfig = ConfigFactory.parseString("""
@@ -65,11 +63,11 @@ class NettyTransportSpec extends AnyWordSpec with Matchers with BindBehavior {
           port = 0
         }
         """)
-      implicit val sys = ActorSystem("sys", bindConfig.withFallback(commonConfig))
+      implicit val sys = pekko.actor.scaladsl.ActorSystem("sys", bindConfig.withFallback(commonConfig))
 
       getInternal() should contain(getExternal().withProtocol("tcp"))
 
-      Await.result(sys.terminate(), Duration.Inf)
+      sys.close()
     }
 
     "bind to a random port but remoting accepts from a specified port" in {
@@ -84,12 +82,12 @@ class NettyTransportSpec extends AnyWordSpec with Matchers with BindBehavior {
           bind-port = 0
         }
         """)
-        implicit val sys = ActorSystem("sys", bindConfig.withFallback(commonConfig))
+        implicit val sys = pekko.actor.scaladsl.ActorSystem("sys", bindConfig.withFallback(commonConfig))
 
         getExternal() should ===(address.toAkkaAddress("pekko.tcp"))
         getInternal() should not contain address.toAkkaAddress("tcp")
 
-        Await.result(sys.terminate(), Duration.Inf)
+        sys.close()
       } finally {
         openSS.close()
       }
@@ -112,12 +110,12 @@ class NettyTransportSpec extends AnyWordSpec with Matchers with BindBehavior {
           bind-port = ${address.getPort}
         }
         """)
-      implicit val sys = ActorSystem("sys", bindConfig.withFallback(commonConfig))
+      implicit val sys = pekko.actor.scaladsl.ActorSystem("sys", bindConfig.withFallback(commonConfig))
 
       getExternal() should ===(address.toAkkaAddress("pekko.tcp"))
       getInternal() should contain(address.toAkkaAddress("tcp"))
 
-      Await.result(sys.terminate(), Duration.Inf)
+      sys.close()
     }
 
     "bind to all interfaces" in {
@@ -127,12 +125,12 @@ class NettyTransportSpec extends AnyWordSpec with Matchers with BindBehavior {
           netty.tcp.bind-hostname = "0.0.0.0"
         }
         """)
-      implicit val sys = ActorSystem("sys", bindConfig.withFallback(commonConfig))
+      implicit val sys = pekko.actor.scaladsl.ActorSystem("sys", bindConfig.withFallback(commonConfig))
 
       getInternal().flatMap(_.port) should contain(getExternal().port.get)
       getInternal().map(x => (x.host.get should include).regex("0.0.0.0".r)) // regexp dot is intentional to match IPv4 and 6 addresses
 
-      Await.result(sys.terminate(), Duration.Inf)
+      sys.close()
     }
 
     "be able to specify byte buffer allocator" in {
@@ -181,12 +179,12 @@ trait BindBehavior {
           enabled-transports = ["pekko.remote.classic.netty.tcp"]
         }
         """)
-      implicit val sys = ActorSystem("sys", bindConfig.withFallback(commonConfig))
+      implicit val sys = pekko.actor.scaladsl.ActorSystem("sys", bindConfig.withFallback(commonConfig))
 
       getExternal() should ===(address.toAkkaAddress(s"pekko.tcp"))
       getInternal() should contain(address.toAkkaAddress("tcp"))
 
-      Await.result(sys.terminate(), Duration.Inf)
+      sys.close()
     }
 
     s"bind to specified tcp address" in {
@@ -213,12 +211,12 @@ trait BindBehavior {
           enabled-transports = ["pekko.remote.classic.netty.tcp"]
         }
         """)
-      implicit val sys = ActorSystem("sys", bindConfig.withFallback(commonConfig))
+      implicit val sys = pekko.actor.scaladsl.ActorSystem("sys", bindConfig.withFallback(commonConfig))
 
       getExternal() should ===(address.toAkkaAddress(s"pekko.tcp"))
       getInternal() should contain(bindAddress.toAkkaAddress("tcp"))
 
-      Await.result(sys.terminate(), Duration.Inf)
+      sys.close()
     }
   }
 }

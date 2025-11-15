@@ -14,8 +14,6 @@
 package org.apache.pekko.actor
 
 import scala.collection.immutable
-import scala.concurrent.Await
-import scala.concurrent.duration._
 import scala.util.{ Failure, Success, Try }
 
 import org.scalatest.BeforeAndAfterAll
@@ -32,7 +30,7 @@ class TestClassWithDefaultConstructor extends TestSuperclass {
 }
 
 class DynamicAccessSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll {
-  val system = ActorSystem()
+  val system = org.apache.pekko.actor.scaladsl.ActorSystem()
 
   "The DynamicAccess of a system" should {
     val dynamicAccess = system.asInstanceOf[ExtendedActorSystem].dynamicAccess
@@ -88,7 +86,7 @@ class DynamicAccessSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll
   }
 
   override def afterAll() = {
-    Await.result(system.terminate(), 10.seconds)
+    system.close()
     super.afterAll()
   }
 }

@@ -19,6 +19,7 @@ import com.typesafe.config._
 
 import org.apache.pekko
 import pekko.actor._
+import pekko.actor.scaladsl.ActorSystem
 import pekko.remote.routing._
 import pekko.routing._
 import pekko.testkit._

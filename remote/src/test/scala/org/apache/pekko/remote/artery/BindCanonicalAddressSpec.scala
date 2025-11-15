@@ -15,15 +15,13 @@ package org.apache.pekko.remote.artery
 
 import java.net.InetAddress
 
-import scala.concurrent.Await
-import scala.concurrent.duration.Duration
-
 import com.typesafe.config.ConfigFactory
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 import org.apache.pekko
-import pekko.actor.{ ActorSystem, Address }
+import pekko.actor.Address
+import pekko.actor.scaladsl.ActorSystem
 import pekko.remote.transport.NettyTransportSpec._
 import pekko.testkit.SocketUtil
 
@@ -41,7 +39,7 @@ trait BindCanonicalAddressBehaviors {
       implicit val sys = ActorSystem("sys", config.withFallback(commonConfig))
 
       getInternal() should contain(getExternal())
-      Await.result(sys.terminate(), Duration.Inf)
+      sys.close()
     }
 
     "bind to a random port but remoting accepts from a specified port" in {
@@ -60,13 +58,13 @@ trait BindCanonicalAddressBehaviors {
         if (getInternal().collect { case Address(_, _, _, Some(port)) => port }.toSeq.contains(address.getPort)) {
           val sys2 = ActorSystem("sys", config.withFallback(commonConfig))
           val secondInternals = getInternal()(sys2)
-          Await.result(sys2.terminate(), Duration.Inf)
+          sys2.close()
           secondInternals
         } else {
           getInternal()
         }
       internals should not contain address.toAkkaAddress("pekko")
-      Await.result(sys.terminate(), Duration.Inf)
+      sys.close()
     }
 
     "bind to a specified bind hostname and remoting aspects from canonical hostname" in {
@@ -106,7 +104,7 @@ trait BindCanonicalAddressBehaviors {
       getInternal().flatMap(_.port) should contain(getExternal().port.get)
       getInternal().map(x => (x.host.get should include).regex("0.0.0.0".r)) // regexp dot is intentional to match IPv4 and 6 addresses
 
-      Await.result(sys.terminate(), Duration.Inf)
+      sys.close()
     }
   }
 }

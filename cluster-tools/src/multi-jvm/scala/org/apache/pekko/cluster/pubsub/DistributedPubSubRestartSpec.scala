@@ -22,10 +22,10 @@ import org.apache.pekko
 import pekko.actor.Actor
 import pekko.actor.ActorIdentity
 import pekko.actor.ActorRef
-import pekko.actor.ActorSystem
 import pekko.actor.Identify
 import pekko.actor.Props
 import pekko.actor.RootActorPath
+import pekko.actor.scaladsl.ActorSystem
 import pekko.cluster.Cluster
 import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig
@@ -51,7 +51,7 @@ object DistributedPubSubRestartSpec extends MultiNodeConfig {
 
   class Shutdown extends Actor {
     def receive = {
-      case "shutdown" => context.system.terminate()
+      case "shutdown" => context.system.closeAsync()
     }
   }
 
@@ -146,7 +146,7 @@ class DistributedPubSubRestartSpec
       }
 
       runOn(third) {
-        Await.result(system.whenTerminated, 10.seconds)
+        Await.result(system.whenTerminatedImpl, 10.seconds)
         val newSystem = {
           val port = Cluster(system).selfAddress.port.get
           val config = ConfigFactory.parseString(s"""
@@ -171,8 +171,8 @@ class DistributedPubSubRestartSpec
           probe.expectMsg(0L)
 
           newSystem.actorOf(Props[Shutdown](), "shutdown")
-          Await.ready(newSystem.whenTerminated, 20.seconds)
-        } finally newSystem.terminate()
+          newSystem.close()
+        } finally newSystem.terminateAsync()
       }
 
     }

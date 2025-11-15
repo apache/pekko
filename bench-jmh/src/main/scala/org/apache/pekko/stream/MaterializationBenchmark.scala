@@ -24,7 +24,7 @@ import org.openjdk.jmh.annotations._
 import org.apache.pekko
 import pekko.Done
 import pekko.NotUsed
-import pekko.actor.ActorSystem
+import pekko.actor.scaladsl.ActorSystem
 import pekko.stream.scaladsl._
 
 object MaterializationBenchmark {
@@ -129,7 +129,7 @@ class MaterializationBenchmark {
 
   @TearDown
   def shutdown(): Unit = {
-    Await.result(system.terminate(), 5.seconds)
+    system.close()
   }
 
   @Benchmark

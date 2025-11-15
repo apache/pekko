@@ -533,7 +533,7 @@ class CoordinatedShutdownSpec
     }
 
     "terminate ActorSystem" in {
-      val sys = ActorSystem(system.name, system.settings.config)
+      val sys = pekko.actor.scaladsl.ActorSystem(system.name, system.settings.config)
       try {
         Await.result(CoordinatedShutdown(sys).run(CustomReason), 10.seconds) should ===(Done)
         sys.whenTerminated.isCompleted should ===(true)
@@ -544,9 +544,9 @@ class CoordinatedShutdownSpec
     }
 
     "be run by ActorSystem.terminate" in {
-      val sys = ActorSystem(system.name, system.settings.config)
+      val sys = pekko.actor.scaladsl.ActorSystem(system.name, system.settings.config)
       try {
-        Await.result(sys.terminate(), 10.seconds)
+        Await.result(sys.terminateAsync(), 10.seconds)
         sys.whenTerminated.isCompleted should ===(true)
         CoordinatedShutdown(sys).shutdownReason() should ===(Some(CoordinatedShutdown.ActorSystemTerminateReason))
       } finally {
@@ -555,13 +555,13 @@ class CoordinatedShutdownSpec
     }
 
     "not be run by ActorSystem.terminate when run-by-actor-system-terminate=off" in {
-      val sys = ActorSystem(
+      val sys = pekko.actor.scaladsl.ActorSystem(
         system.name,
         ConfigFactory
           .parseString("pekko.coordinated-shutdown.run-by-actor-system-terminate = off")
           .withFallback(system.settings.config))
       try {
-        Await.result(sys.terminate(), 10.seconds)
+        Await.result(sys.terminateAsync(), 10.seconds)
         sys.whenTerminated.isCompleted should ===(true)
         CoordinatedShutdown(sys).shutdownReason() should ===(None)
       } finally {
@@ -571,7 +571,7 @@ class CoordinatedShutdownSpec
 
     "not allow terminate-actor-system=off && run-by-actor-system-terminate=on" in {
       intercept[ConfigurationException] {
-        val sys = ActorSystem(
+        val sys = pekko.actor.scaladsl.ActorSystem(
           system.name,
           ConfigFactory
             .parseString("pekko.coordinated-shutdown.terminate-actor-system = off")
@@ -659,7 +659,7 @@ class CoordinatedShutdownSpec
     }
 
     def withCoordinatedShutdown(block: (ActorSystem, CoordinatedShutdown) => Unit): Unit = {
-      val system = ActorSystem(
+      val system = pekko.actor.scaladsl.ActorSystem(
         s"CoordinatedShutdownSpec-terminated-${System.currentTimeMillis()}",
         ConfigFactory.parseString("""
           pekko.coordinated-shutdown.phases {
@@ -761,7 +761,8 @@ class CoordinatedShutdownSpec
     def withSystemRunning(system: ActorSystem, cs: CoordinatedShutdown): Unit
 
     private val newSystem =
-      ActorSystem(systemName, systemConfig.withFallback(system.settings.config)).asInstanceOf[ExtendedActorSystem]
+      pekko.actor.scaladsl.ActorSystem(systemName, systemConfig.withFallback(system.settings.config)).asInstanceOf[
+        ExtendedActorSystem]
     private var shutdownHooks = Set.empty[Thread]
     private val mockRuntime = new JVMShutdownHooks {
       override def addHook(t: Thread): Unit = synchronized {

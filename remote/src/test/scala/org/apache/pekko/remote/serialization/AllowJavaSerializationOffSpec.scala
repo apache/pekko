@@ -56,7 +56,7 @@ object AllowJavaSerializationOffSpec {
     None)
   val actorSystemSettings = ActorSystemSetup(bootstrapSettings, serializationSettings)
 
-  val noJavaSerializationSystem = ActorSystem(
+  val noJavaSerializationSystem = pekko.actor.scaladsl.ActorSystem(
     "AllowJavaSerializationOffSpec" + "NoJavaSerialization",
     ConfigFactory.parseString("""
     pekko {
@@ -72,7 +72,8 @@ object AllowJavaSerializationOffSpec {
 }
 
 class AllowJavaSerializationOffSpec
-    extends PekkoSpec(ActorSystem("AllowJavaSerializationOffSpec", AllowJavaSerializationOffSpec.actorSystemSettings)) {
+    extends PekkoSpec(pekko.actor.scaladsl.ActorSystem("AllowJavaSerializationOffSpec",
+      AllowJavaSerializationOffSpec.actorSystemSettings)) {
 
   import AllowJavaSerializationOffSpec._
 
@@ -103,7 +104,7 @@ class AllowJavaSerializationOffSpec
     None)
 
   val dontAllowJavaSystem =
-    ActorSystem(
+    pekko.actor.scaladsl.ActorSystem(
       "addedJavaSerializationSystem",
       ActorSystemSetup(addedJavaSerializationProgramaticallyButDisabledSettings, addedJavaSerializationSettings))
 

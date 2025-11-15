@@ -17,13 +17,13 @@ import org.scalatest.BeforeAndAfterAll
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.actor.scaladsl.ActorSystem
 
 class DefaultTimeoutSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll with TestKitBase with DefaultTimeout {
 
   implicit lazy val system: ActorSystem = ActorSystem("PekkoCustomSpec")
 
-  override def afterAll() = system.terminate()
+  override def afterAll() = system.close()
 
   "A spec with DefaultTimeout" should {
     "use timeout from settings" in {

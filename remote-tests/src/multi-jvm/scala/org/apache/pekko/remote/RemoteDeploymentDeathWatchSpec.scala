@@ -104,7 +104,7 @@ abstract class RemoteDeploymentDeathWatchSpec(multiNodeConfig: RemoteDeploymentD
         // if the remote deployed actor is not removed the system will not shutdown
 
         val timeout = remainingOrDefault
-        try Await.ready(system.whenTerminated, timeout)
+        try Await.ready(system.whenTerminatedImpl, timeout)
         catch {
           case _: TimeoutException =>
             fail(

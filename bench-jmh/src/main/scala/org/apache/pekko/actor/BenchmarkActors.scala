@@ -183,8 +183,8 @@ object BenchmarkActors {
   }
 
   def tearDownSystem()(implicit system: ActorSystem): Unit = {
-    system.terminate()
-    Await.ready(system.whenTerminated, timeout)
+    system.terminateImpl()
+    Await.ready(system.whenTerminatedImpl, timeout)
   }
 
 }

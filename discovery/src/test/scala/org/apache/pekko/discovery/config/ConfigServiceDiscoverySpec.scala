@@ -22,7 +22,7 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
-import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.actor.scaladsl.ActorSystem
 import org.apache.pekko.discovery.Discovery
 import org.apache.pekko.discovery.ServiceDiscovery.ResolvedTarget
 import org.apache.pekko.testkit.TestKit

@@ -17,7 +17,7 @@ import com.typesafe.config.ConfigFactory
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.apache.pekko
-import pekko.actor.ActorSystem
+import pekko.actor.scaladsl.ActorSystem
 import pekko.testkit.SocketUtil
 
 import java.net.BindException
@@ -48,7 +48,7 @@ class RemotingFailedToBindSpec extends AnyWordSpec with Matchers {
         }
         ex.getMessage should startWith("Address already in use")
       } finally {
-        as.terminate()
+        as.close()
       }
     }
   }

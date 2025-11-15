@@ -87,7 +87,7 @@ abstract class PekkoSpec(_system: ActorSystem)
 
   def this(config: Config) =
     this(
-      ActorSystem(
+      pekko.actor.scaladsl.ActorSystem(
         TestKitUtils.testNameFromCallStack(classOf[PekkoSpec], "".r),
         ConfigFactory.load(config.withFallback(PekkoSpec.testConf))))
 
@@ -95,7 +95,8 @@ abstract class PekkoSpec(_system: ActorSystem)
 
   def this(configMap: Map[String, _]) = this(PekkoSpec.mapToConfig(configMap))
 
-  def this() = this(ActorSystem(TestKitUtils.testNameFromCallStack(classOf[PekkoSpec], "".r), PekkoSpec.testConf))
+  def this() = this(pekko.actor.scaladsl.ActorSystem(TestKitUtils.testNameFromCallStack(classOf[PekkoSpec], "".r),
+    PekkoSpec.testConf))
 
   implicit val patience: PatienceConfig =
     PatienceConfig(testKitSettings.SingleExpectDefaultTimeout.dilated, Span(100, Millis))

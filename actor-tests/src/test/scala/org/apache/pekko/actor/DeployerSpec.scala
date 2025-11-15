@@ -156,7 +156,7 @@ class DeployerSpec extends PekkoSpec(DeployerSpec.deployerConf) {
             ConfigParseOptions.defaults)
           .withFallback(PekkoSpec.testConf)
 
-        shutdown(ActorSystem("invalid-number-of-instances", invalidDeployerConf))
+        shutdown(pekko.actor.scaladsl.ActorSystem("invalid-number-of-instances", invalidDeployerConf))
       }
     }
 
@@ -175,7 +175,7 @@ class DeployerSpec extends PekkoSpec(DeployerSpec.deployerConf) {
             ConfigParseOptions.defaults)
           .withFallback(PekkoSpec.testConf)
 
-        shutdown(ActorSystem("invalid-path", invalidDeployerConf))
+        shutdown(pekko.actor.scaladsl.ActorSystem("invalid-path", invalidDeployerConf))
       }
       e.getMessage should include("[ubåt]")
       e.getMessage should include("[/gul/ubåt]")

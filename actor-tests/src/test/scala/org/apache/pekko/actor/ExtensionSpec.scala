@@ -69,7 +69,7 @@ class ExtensionSpec extends AnyWordSpec with Matchers {
 
     "support extensions" in {
       val config = ConfigFactory.parseString("""pekko.extensions = ["org.apache.pekko.actor.TestExtension"]""")
-      val system = ActorSystem("extensions", config)
+      val system = pekko.actor.scaladsl.ActorSystem("extensions", config)
 
       // TestExtension is configured and should be loaded at startup
       system.hasExtension(TestExtension) should ===(true)
@@ -80,7 +80,7 @@ class ExtensionSpec extends AnyWordSpec with Matchers {
     }
 
     "handle extensions that fail to initialize" in {
-      val system = ActorSystem("extensions")
+      val system = pekko.actor.scaladsl.ActorSystem("extensions")
 
       // First attempt, an actor is created and after that
       // an exception is thrown:
@@ -98,7 +98,7 @@ class ExtensionSpec extends AnyWordSpec with Matchers {
 
     "fail the actor system if an extension listed in pekko.extensions fails to start" in {
       intercept[RuntimeException] {
-        val system = ActorSystem(
+        val system = pekko.actor.scaladsl.ActorSystem(
           "failing",
           ConfigFactory.parseString("""
             pekko.extensions = ["org.apache.pekko.actor.FailingTestExtension"]
@@ -109,7 +109,7 @@ class ExtensionSpec extends AnyWordSpec with Matchers {
     }
 
     "log an error if an extension listed in pekko.extensions cannot be loaded" in {
-      val system = ActorSystem(
+      val system = pekko.actor.scaladsl.ActorSystem(
         "failing",
         ConfigFactory.parseString("""
           pekko.extensions = ["org.apache.pekko.actor.MissingExtension"]
@@ -123,7 +123,7 @@ class ExtensionSpec extends AnyWordSpec with Matchers {
       import pekko.util.ccompat.JavaConverters._
       // could be initialized by other tests, but assuming tests are not running in parallel
       val countBefore = InstanceCountingExtension.createCount.get()
-      val system = ActorSystem("extensions")
+      val system = pekko.actor.scaladsl.ActorSystem("extensions")
       val listedExtensions = system.settings.config.getStringList("pekko.library-extensions").asScala
       listedExtensions.count(_.contains("InstanceCountingExtension")) should ===(1)
 
@@ -136,7 +136,7 @@ class ExtensionSpec extends AnyWordSpec with Matchers {
       import pekko.util.ccompat.JavaConverters._
       // could be initialized by other tests, but assuming tests are not running in parallel
       val countBefore = InstanceCountingExtension.createCount.get()
-      val system = ActorSystem(
+      val system = pekko.actor.scaladsl.ActorSystem(
         "extensions",
         ConfigFactory.parseString(
           """
@@ -152,7 +152,7 @@ class ExtensionSpec extends AnyWordSpec with Matchers {
 
     "fail the actor system if a library-extension fails to start" in {
       intercept[FailingTestExtension.TestException] {
-        ActorSystem(
+        pekko.actor.scaladsl.ActorSystem(
           "failing",
           ConfigFactory.parseString("""
             pekko.library-extensions += "org.apache.pekko.actor.FailingTestExtension"
@@ -163,7 +163,7 @@ class ExtensionSpec extends AnyWordSpec with Matchers {
 
     "fail the actor system if a library-extension cannot be loaded" in {
       intercept[RuntimeException] {
-        ActorSystem(
+        pekko.actor.scaladsl.ActorSystem(
           "failing",
           ConfigFactory.parseString("""
             pekko.library-extensions += "org.apache.pekko.actor.MissingExtension"

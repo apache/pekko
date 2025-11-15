@@ -264,7 +264,7 @@ class FSMActorSpec extends PekkoSpec(Map("pekko.actor.debug.fsm" -> true)) with 
       val config = ConfigFactory
         .parseMap(Map("pekko.loglevel" -> "DEBUG", "pekko.actor.debug.fsm" -> true).asJava)
         .withFallback(system.settings.config)
-      val fsmEventSystem = ActorSystem("fsmEvent", config)
+      val fsmEventSystem = pekko.actor.scaladsl.ActorSystem("fsmEvent", config)
       try {
         new TestKit(fsmEventSystem) {
           EventFilter.debug(occurrences = 5).intercept {
@@ -351,7 +351,7 @@ class FSMActorSpec extends PekkoSpec(Map("pekko.actor.debug.fsm" -> true)) with 
     }
 
     "allow cancelling stateTimeout by issuing forMax(Duration.Inf)" taggedAs TimingTest in {
-      val sys = ActorSystem("fsmEvent")
+      val sys = pekko.actor.scaladsl.ActorSystem("fsmEvent")
       val p = TestProbe()(sys)
 
       val OverrideTimeoutToInf = "override-timeout-to-inf"

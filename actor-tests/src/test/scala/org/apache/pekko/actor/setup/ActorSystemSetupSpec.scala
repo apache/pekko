@@ -68,7 +68,7 @@ class ActorSystemSetupSpec extends AnyWordSpec with Matchers {
       var system: ActorSystem = null
       try {
         val setup = DummySetup("Tad Moore")
-        system = ActorSystem("name", ActorSystemSetup(setup))
+        system = pekko.actor.scaladsl.ActorSystem("name", ActorSystemSetup(setup))
 
         (system.settings.setup.get[DummySetup]: Option[Setup]) should ===(Some(setup))
 

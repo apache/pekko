@@ -73,7 +73,7 @@ object RemoveInternalClusterShardingData {
     if (args.isEmpty)
       println("Specify the Cluster Sharding type names to remove in program arguments")
     else {
-      val system = ActorSystem("RemoveInternalClusterShardingData")
+      val system = pekko.actor.scaladsl.ActorSystem("RemoveInternalClusterShardingData")
       val remove2dot3Data = args(0) == "-2.3"
       val typeNames = if (remove2dot3Data) args.tail.toSet else args.toSet
       if (typeNames.isEmpty)
@@ -82,7 +82,7 @@ object RemoveInternalClusterShardingData {
         val journalPluginId = system.settings.config.getString("pekko.cluster.sharding.journal-plugin-id")
         import system.dispatcher
         remove(system, journalPluginId, typeNames, remove2dot3Data).onComplete { _ =>
-          system.terminate()
+          system.terminateAsync()
         }
       }
     }

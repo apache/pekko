@@ -60,7 +60,7 @@ class ClusterApiSpec extends ScalaTestWithActorTestKit(ClusterApiSpec.config) wi
 
     "join a cluster and observe events from both sides" in {
 
-      val system2 = pekko.actor.ActorSystem(system.name, system.settings.config)
+      val system2 = pekko.actor.scaladsl.ActorSystem(system.name, system.settings.config)
       val adaptedSystem2 = system2.toTyped
 
       try {

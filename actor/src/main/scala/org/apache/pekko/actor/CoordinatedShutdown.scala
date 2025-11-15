@@ -254,7 +254,7 @@ object CoordinatedShutdown extends ExtensionId[CoordinatedShutdown] with Extensi
         val timeout = coord.timeout(PhaseActorSystemTerminate)
         val t = new Thread {
           override def run(): Unit = {
-            if (Try(Await.ready(system.whenTerminated, timeout)).isFailure && !runningJvmHook)
+            if (Try(Await.ready(system.whenTerminatedImpl, timeout)).isFailure && !runningJvmHook)
               System.exit(exitCode)
           }
         }
@@ -264,7 +264,7 @@ object CoordinatedShutdown extends ExtensionId[CoordinatedShutdown] with Extensi
 
       if (terminateActorSystem) {
         system.finalTerminate()
-        system.whenTerminated.map { _ =>
+        system.whenTerminatedImpl.map { _ =>
           if (exitJvm && !runningJvmHook) System.exit(exitCode)
           Done
         }(ExecutionContexts.parasitic)
@@ -281,7 +281,7 @@ object CoordinatedShutdown extends ExtensionId[CoordinatedShutdown] with Extensi
     if (runByJvmShutdownHook) {
       coord.actorSystemJvmHook = OptionVal.Some(coord.addCancellableJvmShutdownHook {
         runningJvmHook = true // avoid System.exit from PhaseActorSystemTerminate task
-        if (!system.whenTerminated.isCompleted) {
+        if (!system.whenTerminatedImpl.isCompleted) {
           coord.log.debug("Starting coordinated shutdown from JVM shutdown hook")
           try {
             // totalTimeout will be 0 when no tasks registered, so at least 3.seconds

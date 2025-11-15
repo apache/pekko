@@ -280,7 +280,7 @@ abstract class RotatingKeysSSLEngineProviderSpec(extraConfig: String)
   override def beforeTermination(): Unit = {
     systemsToTerminate.foreach { systemToTerminate =>
       system.log.info(s"Terminating $systemToTerminate...")
-      systemToTerminate.terminate()
+      systemToTerminate.terminateImpl()
     }
     systemsToTerminate.foreach(shutdown(_, verifySystemShutdown = true))
     super.beforeTermination()

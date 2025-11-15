@@ -18,8 +18,8 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
 import pekko.actor.Address
+import pekko.actor.scaladsl.ActorSystem
 import pekko.cluster.UniqueAddress
 import pekko.testkit.TestKit
 

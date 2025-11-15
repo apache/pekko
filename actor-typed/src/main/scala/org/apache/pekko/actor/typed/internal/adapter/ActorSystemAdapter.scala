@@ -116,9 +116,9 @@ import pekko.util.FutureConverters._
 
   import org.apache.pekko.dispatch.ExecutionContexts.parasitic
 
-  override def terminate(): Unit = system.terminate()
+  override def terminate(): Unit = system.terminateImpl()
   override lazy val whenTerminated: scala.concurrent.Future[pekko.Done] =
-    system.whenTerminated.map(_ => Done)(parasitic)
+    system.whenTerminatedImpl.map(_ => Done)(parasitic)
   override lazy val getWhenTerminated: CompletionStage[pekko.Done] =
     whenTerminated.asJava
 

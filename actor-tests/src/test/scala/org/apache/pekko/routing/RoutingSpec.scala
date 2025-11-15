@@ -23,6 +23,7 @@ import com.typesafe.config.ConfigFactory
 import org.apache.pekko
 import pekko.ConfigurationException
 import pekko.actor._
+import pekko.actor.scaladsl.ActorSystem
 import pekko.pattern.{ ask, pipe }
 import pekko.testkit._
 

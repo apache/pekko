@@ -20,6 +20,7 @@ import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor._
+import pekko.actor.scaladsl.ActorSystem
 import pekko.remote.testconductor.RoleName
 import pekko.remote.testkit.MultiNodeConfig
 import pekko.testkit._
@@ -52,7 +53,7 @@ class ArteryRemoteQuarantinePiercingMultiJvmNode2
 object RemoteQuarantinePiercingSpec {
   class Subject extends Actor {
     def receive = {
-      case "shutdown" => context.system.terminate()
+      case "shutdown" => context.system.closeAsync()
       case "identify" => sender() ! (AddressUidExtension(context.system).longAddressUid -> self)
     }
   }
@@ -120,7 +121,7 @@ abstract class RemoteQuarantinePiercingSpec(multiNodeConfig: RemoteQuarantinePie
 
         enterBarrier("actor-identified")
 
-        Await.ready(system.whenTerminated, 30.seconds)
+        system.close()
 
         val freshSystem = ActorSystem(
           system.name,
@@ -130,7 +131,7 @@ abstract class RemoteQuarantinePiercingSpec(multiNodeConfig: RemoteQuarantinePie
           """).withFallback(system.settings.config))
         freshSystem.actorOf(Props[Subject](), "subject")
 
-        Await.ready(freshSystem.whenTerminated, 30.seconds)
+        freshSystem.close()
       }
 
     }

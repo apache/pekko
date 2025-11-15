@@ -109,8 +109,9 @@ class PersistencePluginProxySpec
     with Cleanup {
   import PersistencePluginProxySpec._
 
-  val systemA = ActorSystem("SysA", config)
-  val systemB = ActorSystem("SysB", targetAddressConfig(system).withFallback(PersistencePluginProxySpec.config))
+  val systemA = pekko.actor.scaladsl.ActorSystem("SysA", config)
+  val systemB = pekko.actor.scaladsl.ActorSystem("SysB",
+    targetAddressConfig(system).withFallback(PersistencePluginProxySpec.config))
 
   override protected def afterTermination(): Unit = {
     shutdown(systemA)

@@ -15,9 +15,6 @@ package org.apache.pekko.persistence
 
 import java.io.File
 
-import scala.concurrent.Await
-import scala.concurrent.duration._
-
 import org.apache.commons.io.FileUtils
 import org.openjdk.jmh.annotations._
 import org.openjdk.jmh.annotations.Scope
@@ -51,7 +48,7 @@ class PersistentActorThroughputBenchmark {
 
   @Setup
   def setup(): Unit = {
-    system = ActorSystem("test", config)
+    system = pekko.actor.scaladsl.ActorSystem("test", config)
 
     probe = TestProbe()(system)
 
@@ -69,8 +66,7 @@ class PersistentActorThroughputBenchmark {
 
   @TearDown
   def shutdown(): Unit = {
-    system.terminate()
-    Await.ready(system.whenTerminated, 15.seconds)
+    system.close()
 
     storageLocations.foreach(FileUtils.deleteDirectory)
   }

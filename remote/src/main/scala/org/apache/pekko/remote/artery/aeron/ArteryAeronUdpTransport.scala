@@ -235,7 +235,7 @@ private[remote] class ArteryAeronUdpTransport(_system: ExtendedActorSystem, _pro
             taskRunner.stop()
             aeronErrorLogTask.cancel()
             if (settings.Advanced.Aeron.LogAeronCounters) aeronCounterTask.cancel()
-            system.terminate()
+            system.terminateImpl()
             throw new AeronTerminated(cause)
           }
         } else

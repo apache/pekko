@@ -70,7 +70,7 @@ object ClusterClientSpec extends MultiNodeConfig {
   class TestService(testActor: ActorRef) extends Actor {
     def receive = {
       case "shutdown" =>
-        context.system.terminate()
+        context.system.closeAsync()
       case msg =>
         testActor.forward(msg)
         sender() ! Reply(s"$msg-ack", Cluster(context.system).selfAddress)

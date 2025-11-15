@@ -18,7 +18,7 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.ActorSystem
+import pekko.actor.scaladsl.ActorSystem
 import pekko.actor.CoordinatedShutdown
 import pekko.actor.Props
 import pekko.cluster.Cluster
@@ -177,7 +177,7 @@ class CoordinatedShutdownShardingSpec extends PekkoSpec(CoordinatedShutdownShard
       within(10.seconds) {
         awaitAssert {
           Cluster(sys3).isTerminated should ===(true)
-          sys3.whenTerminated.isCompleted should ===(true)
+          sys3.whenTerminatedImpl.isCompleted should ===(true)
         }
       }
 

@@ -16,8 +16,6 @@ package org.apache.pekko.stream
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
 
-import scala.concurrent.Await
-import scala.concurrent.duration._
 import scala.util.Random
 
 import com.typesafe.config.Config
@@ -26,7 +24,7 @@ import org.openjdk.jmh.annotations._
 
 import org.apache.pekko
 import pekko.NotUsed
-import pekko.actor.ActorSystem
+import pekko.actor.scaladsl.ActorSystem
 import pekko.remote.artery.BenchTestSourceSameElement
 import pekko.stream.scaladsl.Framing
 import pekko.stream.scaladsl.Sink
@@ -87,7 +85,7 @@ class FramingBenchmark {
 
   @TearDown
   def shutdown(): Unit = {
-    Await.result(system.terminate(), 5.seconds)
+    system.close()
   }
 
   @Benchmark

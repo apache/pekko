@@ -305,7 +305,7 @@ class ActorLoggingSpec extends ScalaTestWithActorTestKit("""
     }
 
     "by default be amended to use Slf4jLogger when starting classic ActorSystem" in {
-      val classicSys = pekko.actor.ActorSystem(system.name)
+      val classicSys = pekko.actor.scaladsl.ActorSystem(system.name)
       try {
         classicSys.settings.config.getStringList("pekko.loggers").size() should ===(1)
         classicSys.settings.config.getStringList("pekko.loggers").get(0) should ===(classOf[Slf4jLogger].getName)

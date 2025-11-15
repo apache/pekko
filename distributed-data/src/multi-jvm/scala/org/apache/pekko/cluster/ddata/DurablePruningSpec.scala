@@ -13,7 +13,6 @@
 
 package org.apache.pekko.cluster.ddata
 
-import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import com.typesafe.config.ConfigFactory
@@ -85,7 +84,8 @@ class DurablePruningSpec extends MultiNodeSpec(DurablePruningSpec) with STMultiN
       join(first, first)
       join(second, first)
 
-      val sys2 = ActorSystem(system.name, MultiNodeSpec.configureNextPortIfFixed(system.settings.config))
+      val sys2 =
+        pekko.actor.scaladsl.ActorSystem(system.name, MultiNodeSpec.configureNextPortIfFixed(system.settings.config))
       val cluster2 = Cluster(sys2)
       val distributedData2 = DistributedData(sys2)
       val replicator2 = startReplicator(sys2)
@@ -149,7 +149,7 @@ class DurablePruningSpec extends MultiNodeSpec(DurablePruningSpec) with STMultiN
       }
       enterBarrier("removed")
       runOn(first) {
-        Await.ready(sys2.terminate(), 5.seconds)
+        sys2.close()
       }
 
       within(15.seconds) {
@@ -168,7 +168,7 @@ class DurablePruningSpec extends MultiNodeSpec(DurablePruningSpec) with STMultiN
 
       runOn(first) {
         val address = cluster2.selfAddress
-        val sys3 = ActorSystem(
+        val sys3 = pekko.actor.scaladsl.ActorSystem(
           system.name,
           ConfigFactory.parseString(s"""
                   pekko.remote.artery.canonical.port = ${address.port.get}

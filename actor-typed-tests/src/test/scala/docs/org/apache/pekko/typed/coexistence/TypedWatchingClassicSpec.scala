@@ -84,7 +84,7 @@ class TypedWatchingClassicSpec extends AnyWordSpec with LogCapturing {
   "Typed -> Classic" must {
     "support creating, watching and messaging" in {
       // #create
-      val system = classic.ActorSystem("TypedWatchingClassic")
+      val system = classic.scaladsl.ActorSystem("TypedWatchingClassic")
       val typed = system.spawn(Typed.behavior, "Typed")
       // #create
       val probe = TestProbe()(system)

@@ -23,6 +23,7 @@ import org.scalatest.BeforeAndAfterEach
 
 import org.apache.pekko
 import pekko.actor._
+import pekko.actor.scaladsl.ActorSystem
 import pekko.cluster.Cluster
 import pekko.cluster.ClusterSettings.DataCenter
 import pekko.cluster.ClusterSettings.DefaultDataCenter

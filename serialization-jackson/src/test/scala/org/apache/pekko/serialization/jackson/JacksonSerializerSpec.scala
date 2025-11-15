@@ -750,7 +750,7 @@ object JacksonSerializerSpec {
 
 abstract class JacksonSerializerSpec(serializerName: String)
     extends TestKit(
-      ActorSystem(
+      pekko.actor.scaladsl.ActorSystem(
         "JacksonJsonSerializerSpec",
         ConfigFactory.parseString(JacksonSerializerSpec.baseConfig(serializerName))))
     with AnyWordSpecLike
@@ -764,14 +764,15 @@ abstract class JacksonSerializerSpec(serializerName: String)
   }
 
   def withSystem[T](config: String)(block: ActorSystem => T): T = {
-    val sys = ActorSystem(system.name, ConfigFactory.parseString(config).withFallback(system.settings.config))
+    val sys = pekko.actor.scaladsl.ActorSystem(system.name,
+      ConfigFactory.parseString(config).withFallback(system.settings.config))
     try {
       block(sys)
     } finally shutdown(sys)
   }
 
   def withSystem[T](setup: ActorSystemSetup)(block: ActorSystem => T): T = {
-    val sys = ActorSystem(system.name, setup)
+    val sys = pekko.actor.scaladsl.ActorSystem(system.name, setup)
     try {
       block(sys)
     } finally shutdown(sys)
@@ -1278,7 +1279,7 @@ abstract class JacksonSerializerSpec(serializerName: String)
         val className = clazz.getName
         withClue(className) {
           intercept[IllegalArgumentException] {
-            val sys = ActorSystem(
+            val sys = pekko.actor.scaladsl.ActorSystem(
               system.name,
               ConfigFactory.parseString(s"""
               pekko.actor.serialization-bindings {

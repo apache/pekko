@@ -204,7 +204,7 @@ class ExtensionsSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with
     "load registered extensions eagerly even for classic system" in {
       import pekko.actor.typed.scaladsl.adapter._
       val beforeCreation = InstanceCountingExtension.createCount.get()
-      val classicSystem = pekko.actor.ActorSystem("as", ExtensionsSpec.config)
+      val classicSystem = pekko.actor.scaladsl.ActorSystem("as", ExtensionsSpec.config)
       try {
         val before = InstanceCountingExtension.createCount.get()
         InstanceCountingExtension(classicSystem.toTyped)
@@ -215,13 +215,13 @@ class ExtensionsSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with
         before shouldEqual beforeCreation + 1
         after shouldEqual before
       } finally {
-        classicSystem.terminate().futureValue
+        classicSystem.close()
       }
     }
 
     "not create an extension multiple times when using the ActorSystemAdapter" in {
       import pekko.actor.typed.scaladsl.adapter._
-      val classicSystem = pekko.actor.ActorSystem()
+      val classicSystem = pekko.actor.scaladsl.ActorSystem()
       try {
         val ext1 = DummyExtension1(classicSystem.toTyped)
         val ext2 = DummyExtension1(classicSystem.toTyped)
@@ -229,7 +229,7 @@ class ExtensionsSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with
         (ext1 should be).theSameInstanceAs(ext2)
 
       } finally {
-        classicSystem.terminate().futureValue
+        classicSystem.close()
       }
     }
 

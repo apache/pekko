@@ -219,7 +219,8 @@ class PersistentFsmToTypedMigrationSpec extends AnyWordSpec with ScalaFutures wi
 
   "PersistentFSM migration to Persistence Typed" must {
     "work when snapshot is not current" in {
-      val classicActorSystem = pekko.actor.ActorSystem("ClassicSystem", PersistentFsmToTypedMigrationSpec.config)
+      val classicActorSystem =
+        pekko.actor.scaladsl.ActorSystem("ClassicSystem", PersistentFsmToTypedMigrationSpec.config)
       val shirt = Item("1", "Shirt", 59.99f)
       val shoes = Item("2", "Shoes", 89.99f)
       val coat = Item("3", "Coat", 119.99f)
@@ -239,7 +240,7 @@ class PersistentFsmToTypedMigrationSpec extends AnyWordSpec with ScalaFutures wi
         fsmRef ! PoisonPill
         classicProbe.expectTerminated(fsmRef)
       } finally {
-        classicActorSystem.terminate().futureValue
+        classicActorSystem.close()
       }
 
       val typedTestKit = ActorTestKit("System", PersistentFsmToTypedMigrationSpec.config)
@@ -260,7 +261,8 @@ class PersistentFsmToTypedMigrationSpec extends AnyWordSpec with ScalaFutures wi
     }
 
     "work if snapshot is current" in {
-      val classicActorSystem = pekko.actor.ActorSystem("CLassicSystem", PersistentFsmToTypedMigrationSpec.config)
+      val classicActorSystem =
+        pekko.actor.scaladsl.ActorSystem("CLassicSystem", PersistentFsmToTypedMigrationSpec.config)
       val shirt = Item("1", "Shirt", 59.99f)
       val pid = "current-shapshot"
       try {
@@ -277,7 +279,7 @@ class PersistentFsmToTypedMigrationSpec extends AnyWordSpec with ScalaFutures wi
         fsmRef.tell(GetCurrentCart, classicProbe.ref)
         classicProbe.expectMsg(NonEmptyShoppingCart(Seq(shirt)))
       } finally {
-        classicActorSystem.terminate().futureValue
+        classicActorSystem.close()
       }
 
       val typedTestKit = ActorTestKit("TypedSystem", PersistentFsmToTypedMigrationSpec.config)

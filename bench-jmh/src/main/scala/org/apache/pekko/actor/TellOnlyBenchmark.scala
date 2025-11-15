@@ -15,7 +15,6 @@ package org.apache.pekko.actor
 
 import java.util.concurrent.TimeUnit
 
-import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import com.typesafe.config.{ Config, ConfigFactory }
@@ -39,7 +38,7 @@ class TellOnlyBenchmark {
 
   @Setup(Level.Trial)
   def setup(): Unit = {
-    system = ActorSystem(
+    system = pekko.actor.scaladsl.ActorSystem(
       "TellOnlyBenchmark",
       ConfigFactory.parseString(s"""| pekko {
           |   log-dead-letters = off
@@ -65,8 +64,7 @@ class TellOnlyBenchmark {
 
   @TearDown(Level.Trial)
   def shutdown(): Unit = {
-    system.terminate()
-    Await.ready(system.whenTerminated, 15.seconds)
+    system.close()
   }
 
   var actor: ActorRef = _

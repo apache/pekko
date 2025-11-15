@@ -257,7 +257,8 @@ abstract class DurableDataSpec(multiNodeConfig: DurableDataSpecConfig)
   "handle Update before load" in {
     runOn(first) {
 
-      val sys1 = ActorSystem("AdditionalSys", MultiNodeSpec.configureNextPortIfFixed(system.settings.config))
+      val sys1 = pekko.actor.scaladsl.ActorSystem("AdditionalSys",
+        MultiNodeSpec.configureNextPortIfFixed(system.settings.config))
       val address = Cluster(sys1).selfAddress
       try {
         Cluster(sys1).join(address)
@@ -289,10 +290,10 @@ abstract class DurableDataSpec(multiNodeConfig: DurableDataSpecConfig)
           expectTerminated(r)
         }
       } finally {
-        Await.ready(sys1.terminate(), 10.seconds)
+        sys1.close()
       }
 
-      val sys2 = ActorSystem(
+      val sys2 = pekko.actor.scaladsl.ActorSystem(
         "AdditionalSys",
         // use the same port
         ConfigFactory.parseString(s"""
@@ -320,7 +321,7 @@ abstract class DurableDataSpec(multiNodeConfig: DurableDataSpecConfig)
           expectMsgType[GetSuccess[GCounter]].dataValue.value.toInt should be(2)
         }
       } finally {
-        Await.ready(sys1.terminate(), 10.seconds)
+        sys1.close()
       }
 
     }

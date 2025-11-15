@@ -787,7 +787,8 @@ abstract class StressSpec extends MultiNodeClusterSpec(StressMultiJvmSpec) with 
                 previousAS.foreach { as =>
                   TestKit.shutdownActorSystem(as)
                 }
-                val sys = ActorSystem(system.name, MultiNodeSpec.configureNextPortIfFixed(system.settings.config))
+                val sys = pekko.actor.scaladsl.ActorSystem(system.name,
+                  MultiNodeSpec.configureNextPortIfFixed(system.settings.config))
                 muteLog(sys)
                 Cluster(sys).joinSeedNodes(seedNodes.toIndexedSeq.map(address))
                 Some(sys)

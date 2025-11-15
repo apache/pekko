@@ -20,9 +20,9 @@ import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
 import pekko.actor.Actor
-import pekko.actor.ActorSystem
 import pekko.actor.Props
 import pekko.actor.Stash
+import pekko.actor.scaladsl.ActorSystem
 import pekko.testkit.ImplicitSender
 import pekko.testkit.TestKit
 

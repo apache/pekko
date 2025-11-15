@@ -22,11 +22,11 @@ import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
 import pekko.actor.Address
 import pekko.actor.CoordinatedShutdown
 import pekko.actor.ExtendedActorSystem
 import pekko.actor.Props
+import pekko.actor.scaladsl.ActorSystem
 import pekko.cluster.ClusterEvent._
 import pekko.cluster.ClusterEvent.MemberEvent
 import pekko.cluster.InternalClusterAction._

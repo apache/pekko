@@ -332,12 +332,12 @@ abstract class MultiNodeSpec(
         val name = TestKitUtils.testNameFromCallStack(classOf[MultiNodeSpec], "".r)
         config =>
           try {
-            ActorSystem(name, config)
+            pekko.actor.scaladsl.ActorSystem(name, config)
           } catch {
             // Retry creating the system once as when using port = 0 two systems may try and use the same one.
             // RTE is for aeron, CE for netty
-            case _: RemoteTransportException => ActorSystem(name, config)
-            case _: ChannelException         => ActorSystem(name, config)
+            case _: RemoteTransportException => pekko.actor.scaladsl.ActorSystem(name, config)
+            case _: ChannelException         => pekko.actor.scaladsl.ActorSystem(name, config)
           }
       })
 
@@ -554,7 +554,7 @@ abstract class MultiNodeSpec(
     val config = ConfigFactory
       .parseString(s"pekko.remote.classic.netty.tcp{port=${myAddress.port.get}\nhostname=${myAddress.host.get}}")
       .withFallback(system.settings.config)
-    val sys = ActorSystem(system.name, config)
+    val sys = pekko.actor.scaladsl.ActorSystem(system.name, config)
     injectDeployments(sys, myself)
     attachConductor(TestConductor(sys))
     sys

@@ -129,7 +129,7 @@ object SerializationTests {
   def mostlyReferenceSystem: ActorSystem = {
     val referenceConf = ConfigFactory.defaultReference()
     val mostlyReferenceConf = PekkoSpec.testConf.withFallback(referenceConf)
-    ActorSystem("SerializationSystem", mostlyReferenceConf)
+    pekko.actor.scaladsl.ActorSystem("SerializationSystem", mostlyReferenceConf)
   }
 
   def allowJavaSerializationSystem: ActorSystem = {
@@ -141,7 +141,7 @@ object SerializationTests {
       """)
       .withFallback(ConfigFactory.parseString(serializeConf))
       .withFallback(PekkoSpec.testConf.withFallback(referenceConf))
-    ActorSystem("SerializationSystem", conf)
+    pekko.actor.scaladsl.ActorSystem("SerializationSystem", conf)
   }
 
   val systemMessageMultiSerializerConf = """
@@ -282,7 +282,7 @@ class SerializeSpec extends PekkoSpec(SerializationTests.serializeConf) {
 
     "detect duplicate serializer ids" in {
       (intercept[IllegalArgumentException] {
-        val sys = ActorSystem(
+        val sys = pekko.actor.scaladsl.ActorSystem(
           "SerializeSpec",
           ConfigFactory.parseString(s"""
           pekko {
@@ -491,7 +491,7 @@ class AllowJavaSerializationSpec extends PekkoSpec(SerializationTests.allowJavaS
     "serialize DeadLetterActorRef" in {
       val outbuf = new ByteArrayOutputStream()
       val out = new ObjectOutputStream(outbuf)
-      val a = ActorSystem("SerializeDeadLeterActorRef", PekkoSpec.testConf)
+      val a = pekko.actor.scaladsl.ActorSystem("SerializeDeadLeterActorRef", PekkoSpec.testConf)
       try {
         out.writeObject(a.deadLetters)
         out.flush()
@@ -568,7 +568,7 @@ class SerializerDeadlockSpec extends PekkoSpec {
 
     "not be accessed from constructor of serializer" in {
       intercept[IllegalStateException] {
-        val sys = ActorSystem(
+        val sys = pekko.actor.scaladsl.ActorSystem(
           "SerializerDeadlockSpec",
           ConfigFactory.parseString("""
           pekko {
