@@ -11,6 +11,7 @@ This release includes a number of changes from Akka 2.7.0, which have recently b
 ### Bug Fixes
 
 * Fix issues with OSGi imports for Pekko packages ([PR2312](https://github.com/apache/pekko/pull/2312))
+* Fix close in cancel for statefulMap ([PR2388](https://github.com/apache/pekko/pull/2388))
 
 ### Additions
 
@@ -23,6 +24,11 @@ This release includes a number of changes from Akka 2.7.0, which have recently b
 * Add missing onErrorResume to SubFlow and SubSource ([PR2336](https://github.com/apache/pekko/pull/2336))
 * Add more recover operators for Java DSL ([PR2337](https://github.com/apache/pekko/pull/2337))
 * Add doOnFirst operator ([PR2363](https://github.com/apache/pekko/pull/2363))
+* Add doOnCancel operator ([PR2375](https://github.com/apache/pekko/pull/2375))
+* Add actor-typed Java DSL AbstractMatchingBehavior ([PR2379](https://github.com/apache/pekko/pull/2379))
+* Add fromOption operator ([PR2413](https://github.com/apache/pekko/pull/2413))
+* Add mapOption operator ([PR2414](https://github.com/apache/pekko/pull/2414))
+* Add Source#items ([PR2429](https://github.com/apache/pekko/pull/2429))
 * persistence-typed: custom stash support ([PR2433](https://github.com/apache/pekko/pull/2433))
 * Add effectful asking support in typed BehaviorTestKit ([PR2450](https://github.com/apache/pekko/pull/2450))
 * Add asking support to BehaviorTestKit ([PR2453](https://github.com/apache/pekko/pull/2453))
@@ -32,6 +38,8 @@ This release includes a number of changes from Akka 2.7.0, which have recently b
 
 * Some ByteString performance improvements ([PR2346](https://github.com/apache/pekko/pull/2346), [PR2347](https://github.com/apache/pekko/pull/2347))
 * Change pekko.ssl-config.protocol default to TLSv1.3 ([PR2360](https://github.com/apache/pekko/pull/2360))
+* Persistence Testkit: emit DeletedDurableState for deleted objects ([PR2397](https://github.com/apache/pekko/pull/2397))
+* Rename gunzip to gzipDecompress ([PR2405](https://github.com/apache/pekko/pull/2405))
 * Regenerate Protobuf based source files with 4.33 ([PR2410](https://github.com/apache/pekko/pull/2410))
 * Deprecate stream testkit's probe methods ([PR2439](https://github.com/apache/pekko/pull/2439))
 * Compare required RC and M versions if present ([PR2441](https://github.com/apache/pekko/pull/2441))
