@@ -10,7 +10,7 @@ This release includes a number of changes from Akka 2.7.0, which have recently b
 
 ### Bug Fixes
 
-* Fix issues with OSGi imports for Pekko packages ([PR2312](https://github.com/apache/pekko/pull/2312))
+* Fix issues with OSGi imports for Pekko packages ([#2312](https://github.com/apache/pekko/issues/2312))
 * Fix close in cancel for statefulMap ([PR2388](https://github.com/apache/pekko/pull/2388))
 
 ### Additions
