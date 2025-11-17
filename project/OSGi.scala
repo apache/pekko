@@ -138,9 +138,22 @@ object OSGi {
       scalaImport(scalaVersion))
   def pekkoImport(version: String, packageName: String = "org.apache.pekko.*") = {
     val versionComponents = version.split('.')
-    val nextMinorVersion = versionComponents(1).toInt + 1
-    versionedImport(packageName, s"${versionComponents.head}.${versionComponents(1)}",
-      s"${versionComponents.head}.$nextMinorVersion")
+    if (versionComponents.length < 2) {
+      useDefaultImportRange(version, packageName)
+    } else {
+      try {
+        val nextMinorVersion = versionComponents(1).toInt + 1
+        versionedImport(packageName, s"${versionComponents.head}.${versionComponents(1)}",
+          s"${versionComponents.head}.$nextMinorVersion")
+      } catch {
+        case _: NumberFormatException =>
+          useDefaultImportRange(version, packageName)
+      }
+    }
+  }
+  private def useDefaultImportRange(version: String, packageName: String) = {
+    System.err.println(s"Invalid Pekko version: $version for OSGi import package versioning, defaulting to [0.0,10.0)")
+    versionedImport(packageName, "0.0", "10.0")
   }
   def configImport(packageName: String = "com.typesafe.config.*") = versionedImport(packageName, "1.4.0", "1.5.0")
   def scalaImport(version: String) = {
