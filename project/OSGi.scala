@@ -137,6 +137,8 @@ object OSGi {
       "!scala.util.parsing.*",
       scalaImport(scalaVersion))
   def pekkoImport(version: String, packageName: String = "org.apache.pekko.*") = {
+    // see https://github.com/apache/pekko/issues/2509 for background
+    // on why the version that is input might not be in the expected format
     val versionComponents = version.split('.')
     if (versionComponents.length < 2) {
       useDefaultImportRange(version, packageName)
