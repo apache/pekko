@@ -13,6 +13,8 @@
 
 package org.apache.pekko.coordination.lease.javadsl
 
+import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.actor.{ ActorSystem, ExtendedActorSystem, Extension, ExtensionId, ExtensionIdProvider }
 import pekko.actor.ClassicActorSystemProvider
@@ -28,6 +30,7 @@ object LeaseProvider extends ExtensionId[LeaseProvider] with ExtensionIdProvider
 
   override def createExtension(system: ExtendedActorSystem): LeaseProvider = new LeaseProvider(system)
 
+  @nowarn("msg=never used")
   private final case class LeaseKey(leaseName: String, configPath: String, clientName: String)
 }
 
