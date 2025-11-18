@@ -121,6 +121,7 @@ private[pekko] object Shard {
 
   private final case class EntityTerminated(ref: ActorRef)
 
+  @nowarn("msg=never used")
   private final case class RememberedEntityIds(ids: Set[EntityId])
   private final case class RememberEntityStoreCrashed(store: ActorRef)
 
