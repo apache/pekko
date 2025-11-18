@@ -41,6 +41,7 @@ import pekko.japi.Util.immutableSeq
 import pekko.serialization.SerializationExtension
 import pekko.util._
 import pekko.util.FutureConverters._
+import pekko.util.JavaDurationConverters._
 import pekko.util.OptionConverters._
 import pekko.util.Helpers.toRootLowerCase
 import pekko.util.ccompat.JavaConverters._
@@ -1104,10 +1105,8 @@ private[pekko] class ActorSystemImpl(
 
   override def close(): Unit = {
     terminate()
-    val duration =
-      Duration(settings.config.getDuration("pekko.coordinated-shutdown.close-actor-system-timeout").toMillis,
-        TimeUnit.MILLISECONDS)
-    Await.result(whenTerminated, duration)
+    Await.result(whenTerminated,
+      settings.config.getDuration("pekko.coordinated-shutdown.close-actor-system-timeout").asScala)
   }
 
   override private[pekko] def finalTerminate(): Unit = {
