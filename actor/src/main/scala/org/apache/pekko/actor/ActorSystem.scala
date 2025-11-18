@@ -24,6 +24,7 @@ import scala.concurrent.{ Await, ExecutionContext, ExecutionContextExecutor, Fut
 import scala.concurrent.blocking
 import scala.concurrent.duration.Duration
 import scala.jdk.CollectionConverters._
+import scala.jdk.DurationConverters._
 import scala.jdk.FutureConverters._
 import scala.jdk.OptionConverters._
 import scala.util.{ Failure, Success, Try }
@@ -1102,10 +1103,8 @@ private[pekko] class ActorSystemImpl(
 
   override def close(): Unit = {
     terminate()
-    val duration =
-      Duration(settings.config.getDuration("pekko.coordinated-shutdown.close-actor-system-timeout").toMillis,
-        TimeUnit.MILLISECONDS)
-    Await.result(whenTerminated, duration)
+    Await.result(whenTerminated,
+      settings.config.getDuration("pekko.coordinated-shutdown.close-actor-system-timeout").toScala)
   }
 
   override private[pekko] def finalTerminate(): Unit = {
