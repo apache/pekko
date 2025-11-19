@@ -6,6 +6,8 @@ Apache Pekko 1.3.x releases support Java 8 and above.
 
 Pekko 1.3.0 has some bug fixes, new features, performance updates and dependency upgrades. See the [GitHub Milestone for 1.3.0](https://github.com/apache/pekko/milestone/21?closed=1) for a fuller list of changes.
 
+With work on 2.0.0 commencing, we have deprecated some methods that we plan to remove in 2.0.0. These are mainly in testkit libs.
+
 This release includes a number of changes from Akka 2.7.0, which have recently become available under the Apache License, Version 2.0.
 
 ### Bug Fixes
