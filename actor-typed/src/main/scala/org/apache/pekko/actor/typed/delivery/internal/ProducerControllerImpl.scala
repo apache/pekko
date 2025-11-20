@@ -15,6 +15,7 @@ package org.apache.pekko.actor.typed.delivery.internal
 
 import java.util.concurrent.TimeoutException
 
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.reflect.ClassTag
 import scala.util.Failure
@@ -119,6 +120,7 @@ object ProducerControllerImpl {
 
   private case class LoadStateReply[A](state: DurableProducerQueue.State[A]) extends InternalCommand
   private case class LoadStateFailed(attempt: Int) extends InternalCommand
+  @nowarn("msg=never used")
   private case class StoreMessageSentReply(ack: DurableProducerQueue.StoreMessageSentAck)
   private case class StoreMessageSentFailed[A](messageSent: DurableProducerQueue.MessageSent[A], attempt: Int)
       extends InternalCommand
