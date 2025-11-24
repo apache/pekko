@@ -164,5 +164,5 @@ jobs:
         env:
           REF: ${{ github.ref_name }}
           PEKKO_GPG_SECRET_KEY: ${{ secrets.PEKKO_GPG_SECRET_KEY }}
-          NEXUS_USER: ${{ secrets.NEXUS_USE }}
+          NEXUS_USEX: ${{ secrets.NEXUS_USER }}
           NEXUS_PW: ${{ secrets.NEXUS_PW }}
