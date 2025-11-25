@@ -28,6 +28,10 @@ on:
         description: "Stage the binary jars to nexus"
         default: true
         type: boolean
+      email-template:
+        description: "Generate vote email template"
+        default: true
+        type: boolean
 
 permissions:
   contents: read
@@ -162,3 +166,113 @@ jobs:
           PEKKO_GPG_SECRET_KEY: ${{ secrets.PEKKO_GPG_SECRET_KEY }}
           SONATYPE_USERNAME: ${{ secrets.NEXUS_STAGE_DEPLOYER_USER }}
           SONATYPE_PASSWORD: ${{ secrets.NEXUS_STAGE_DEPLOYER_PW }}
+
+  email-template:
+    runs-on: ubuntu-24.04
+    if: ${{ inputs.email-template }}
+    steps:
+      - name: Generate vote email template
+        run: |-
+          export MODULE="Pekko (Core)"
+          export VERSION=$(echo $REF | sed -e "s/.\(.*\)-.*/\\1/")
+          export RC_VERSION=$(echo $REF | tail -c +2)
+          echo "VERSION=$VERSION"
+          echo "RC_VERSION=$RC_VERSION"
+
+          export DISCUSS=$(curl 'https://lists.apache.org/api/stats.lua?list=dev&domain=pekko.apache.org' | jq ".emails.[] | .subject, .mid" | grep -A1 "$MODULE $VERSION" | tail -1 | tr -d \")
+          echo "DISCUSS=$DISCUSS"
+          export DISCUSS_THREAD=https://lists.apache.org/thread/$(curl "https://lists.apache.org/api/thread.lua?id=$DISCUSS&find_parent=true" | jq .thread.mid | tr -d \")
+          echo "DISCUSS_THREAD=$DISCUSS_THREAD"
+
+          export RELEASE_NOTES=https://github.com/apache/pekko/pull/$(curl https://api.github.com/repos/apache/pekko/pulls?state=all | jq ".[] | .title, .number" | grep -A1 "Release notes for $VERSION" | tail -1)
+          echo "RELEASE_NOTES=$RELEASE_NOTES"
+
+          export SENDER=$(curl "https://api.github.com/users/$ACTOR" | jq .name | tr -d \")
+          echo "SENDER=$SENDER"
+
+          echo "This template can be used to start a vote, either via manual email or via https://release-test.apache.org/compose/pekko/$VERSION"
+          echo
+          cat <<EOF;
+          Subject: [VOTE] Release Apache $MODULE $RC_VERSION
+
+          Hello Pekko Community,
+
+          This is a call for a vote to release Apache $MODULE version $RC_VERSION
+
+          The discussion thread:
+          
+          $DISCUSS_THREAD
+          
+          The release candidate:
+          
+          https://dist.apache.org/repos/dist/dev/pekko/$RC_VERSION
+          https://release-test.apache.org/vote/pekko/$VERSION
+          
+          This release has been signed with a PGP key available here:
+          
+          https://downloads.apache.org/pekko/KEYS
+          
+          Release Notes:
+          
+          $RELEASE_NOTES
+          
+          Git branch for the release:
+          
+          https://github.com/apache/pekko/tree/v$RC_VERSION
+          Git commit ID: $COMMIT_SHA
+          
+          Please download, verify, and test.
+          
+          We have also staged jars in the Apache Nexus Repository. These were built with the same code
+          as appears in this Source Release Candidate. We would appreciate if users could test with these too.
+          If anyone finds any serious problems with these jars, please also notify us on this thread.
+          
+          https://repository.apache.org/content/groups/staging/org/apache/pekko/
+          
+          You can add this resolver to sbt with 'resolvers += Resolver.ApacheMavenStagingRepo'
+          
+          The VOTE will pass if we have more positive votes than negative votes
+          and there must be a minimum of 3 approvals from Pekko PMC members.
+          Anyone voting in favour of the release, could you please provide a list of the checks you have done?
+          The vote will be left open until <insert date/time here>.
+          
+          [ ] +1 approve
+          [ ] +0 no opinion
+          [ ] -1 disapprove with the reason
+          
+          To learn more about Apache Pekko, please see https://pekko.apache.org/
+          
+          Checklist for reference:
+          
+          [ ] Download links are valid.
+          [ ] Checksums and signatures.
+          [ ] LICENSE/NOTICE files exist
+          [ ] No unexpected binary files
+          [ ] All source files have ASF headers
+          [ ] Can compile from source
+          [ ] Can verify the binary build
+          
+          To compile from the source, please refer to:
+          
+          https://github.com/apache/pekko/blob/main/README.md#building-from-source
+          
+          To verify the binary build, please refer to:
+          
+          https://github.com/apache/pekko-site/wiki/Pekko-Release-Process#verifying-the-binary-build
+          
+          Some notes about verifying downloads can be found at:
+          
+          https://pekko.apache.org/download.html#verifying-downloads
+          
+          You can vote on ATR at https://release-test.apache.org/vote/pekko/$VERSION
+          or manually by replying to this email.
+
+          
+          Thanks,
+          
+          $SENDER (Apache Pekko PMC member)
+          EOF
+        env:
+          REF: ${{ github.ref_name }}
+          COMMIT_SHA: ${{ github.sha }}
+          ACTOR: ${{ github.actor }}
