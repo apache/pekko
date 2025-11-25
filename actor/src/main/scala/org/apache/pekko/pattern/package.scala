@@ -14,7 +14,7 @@
 package org.apache.pekko
 
 /**
- * == Commonly Used Patterns With Akka ==
+ * == Commonly Used Patterns With Pekko ==
  *
  * This package is used as a collection point for usage patterns which involve
  * actors, futures, etc. but are loosely enough coupled to (multiple of) them
