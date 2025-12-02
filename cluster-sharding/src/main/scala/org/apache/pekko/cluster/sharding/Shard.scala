@@ -48,6 +48,7 @@ import pekko.util.OptionVal
 import pekko.util.PrettyDuration._
 import pekko.util.unused
 
+import scala.annotation.nowarn
 import scala.collection.immutable.Set
 import scala.concurrent.duration._
 
@@ -120,6 +121,7 @@ private[pekko] object Shard {
 
   private final case class EntityTerminated(ref: ActorRef)
 
+  @nowarn("msg=never used")
   private final case class RememberedEntityIds(ids: Set[EntityId])
   private final case class RememberEntityStoreCrashed(store: ActorRef)
 
