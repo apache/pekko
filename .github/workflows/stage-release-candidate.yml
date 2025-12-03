@@ -234,7 +234,7 @@ jobs:
           The VOTE will pass if we have more positive votes than negative votes
           and there must be a minimum of 3 approvals from Pekko PMC members.
           Anyone voting in favour of the release, could you please provide a list of the checks you have done?
-          The vote will be left open until <insert date/time here>.
+          The vote will be left open until [VOTE_ENDS_UTC].
           
           [ ] +1 approve
           [ ] +0 no opinion
