@@ -21,7 +21,7 @@ jobs:
     if: github.repository == 'apache/pekko'
     steps:
       - name: Checkout
-        uses: actions/checkout@v6.0.0
+        uses: actions/checkout@v6.0.1
         with:
           persist-credentials: false
 
