@@ -57,6 +57,9 @@ jobs:
     runs-on: ubuntu-22.04
     env:
       DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
+    strategy:
+      matrix:
+        scalaVersion: ["2.13.x", "3.3.x"]
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.1
@@ -94,7 +97,7 @@ jobs:
           -Dpekko.test.multi-node=false \
           -Dsbt.log.noformat=false \
           -Dpekko.log.timestamps=true \
-          validateCompile
+          "++ ${{ matrix.scalaVersion }} validateCompile"
 
       - name: sbt validatePullRequest
         run: |-
@@ -110,7 +113,7 @@ jobs:
           -Dsbt.log.noformat=false \
           -Dpekko.log.timestamps=true \
           -Dio.netty.leakDetection.level=PARANOID \
-          validatePullRequest
+          "++ ${{ matrix.scalaVersion }} validatePullRequest"
 
   pekko-classic-remoting-tests:
     name: Pekko Classic Remoting Tests
