@@ -8,7 +8,7 @@ Pekko 1.4.0 has a dependency change and some bug fixes. See the [GitHub Mileston
 
 ### Dependency Changes
 
-* Switch to at.yawk.lz4:lz4-java. The org.lz4:lz4-java jar is unmaintained. The forked jar is a drop in replacement but with important bug fixes [#2536](https://github.com/apache/pekko/issues/2536)
+* pekko-serialization-jackson: switch to at.yawk.lz4:lz4-java. The org.lz4:lz4-java jar is unmaintained. The forked jar is a drop in replacement but with important bug fixes. Lz4 is only used if you override the default configs for pekko-serialization-jackson. [#2536](https://github.com/apache/pekko/issues/2536)
 * Scala 2.13.18
 
 ### Bug Fixes
