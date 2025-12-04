@@ -202,10 +202,11 @@ trait SchedulerSpec extends BeforeAndAfterEach with DefaultTimeout with Implicit
         }
         val latencies = within(10.seconds) {
           for (i <- 1 to N)
-            yield try expectMsgType[Long]
-            catch {
-              case NonFatal(e) => throw new Exception(s"failed expecting the $i-th latency", e)
-            }
+            yield
+              try expectMsgType[Long]
+              catch {
+                case NonFatal(e) => throw new Exception(s"failed expecting the $i-th latency", e)
+              }
         }
         val histogram = latencies.groupBy(_ / 100000000L)
         for (k <- histogram.keys.toSeq.sorted) {
@@ -507,10 +508,11 @@ class LightArrayRevolverSchedulerSpec extends PekkoSpec(SchedulerSpec.testConfRe
         println(cancelled)
         val latencies = within(10.seconds) {
           for (i <- 1 to (N - cancelled))
-            yield try expectMsgType[Long]
-            catch {
-              case NonFatal(e) => throw new Exception(s"failed expecting the $i-th latency", e)
-            }
+            yield
+              try expectMsgType[Long]
+              catch {
+                case NonFatal(e) => throw new Exception(s"failed expecting the $i-th latency", e)
+              }
         }
         val histogram = latencies.groupBy(_ / 100000000L)
         for (k <- histogram.keys.toSeq.sorted) {
