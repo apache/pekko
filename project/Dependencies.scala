@@ -104,7 +104,7 @@ object Dependencies {
       .excludeAll(ExclusionRule(organization = "org.scala-lang"))
     val jacksonCbor3 = "tools.jackson.dataformat" % "jackson-dataformat-cbor" % jacksonVersion3
 
-    val lz4Java = "at.yawk.lz4" % "lz4-java" % "1.10.0"
+    val lz4Java = "at.yawk.lz4" % "lz4-java" % "1.10.1"
 
     val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
 
