@@ -27,7 +27,6 @@ import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
 import org.junit.ClassRule;
 import org.junit.Test;
-import scala.concurrent.Future;
 
 public class LazyAndFutureSourcesTest extends StreamTest {
 
@@ -40,14 +39,6 @@ public class LazyAndFutureSourcesTest extends StreamTest {
   }
 
   // note these are minimal happy path tests to cover API, more thorough tests are on the Scala side
-
-  @Test
-  public void future() throws Exception {
-    CompletionStage<List<String>> result =
-        Source.future(Future.successful("one")).runWith(Sink.seq(), system);
-
-    assertEquals(Arrays.asList("one"), result.toCompletableFuture().get(3, TimeUnit.SECONDS));
-  }
 
   @Test
   public void completionStage() throws Exception {
