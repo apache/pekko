@@ -199,6 +199,15 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
         immutable.Seq(1, 2, 3, 10, 20, 30))
     }
 
+    "combine using Concat strategy 3 inputs with simplified API" in {
+      val first = Source(List[String]())
+      val second = Source(List("a"))
+      val others = Source(List("b", "c"))
+      Source.combine(first, second, others)(x => Concat[String](x))
+        .runWith(Sink.seq)
+        .futureValue should ===(immutable.Seq("a", "b", "c"))
+    }
+
     "combine from two inputs with combinedMat and take a materialized value" in {
       val queueSource = Source.queue[Int](3)
       val intSeqSource = Source(1 to 3)
