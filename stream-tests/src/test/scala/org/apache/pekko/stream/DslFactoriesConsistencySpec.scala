@@ -56,6 +56,7 @@ class DslFactoriesConsistencySpec extends AnyWordSpec with Matchers {
     ("apply" -> "fromIterator") ::
     ("apply" -> "fromFunctions") ::
     ("apply" -> "fromArray") ::
+    ("future" -> "completionStage") ::
     Nil
 
   // format: OFF
@@ -75,6 +76,7 @@ class DslFactoriesConsistencySpec extends AnyWordSpec with Matchers {
       (classOf[scala.Function2[_, _, _]],                  classOf[java.util.function.BiFunction[_, _, _]]) :: // setup
       (classOf[scala.Function1[scala.Function1[_, _], _]], classOf[pekko.japi.function.Function2[_, _, _]]) ::
       (classOf[scala.concurrent.duration.FiniteDuration],  classOf[java.time.Duration]) ::
+      (classOf[scala.concurrent.Future[_]],                classOf[java.util.concurrent.CompletionStage[_]]) ::
       (classOf[pekko.stream.scaladsl.Source[_, _]],        classOf[pekko.stream.javadsl.Source[_, _]]) ::
       (classOf[pekko.stream.scaladsl.Sink[_, _]],          classOf[pekko.stream.javadsl.Sink[_, _]]) ::
       (classOf[pekko.stream.scaladsl.Flow[_, _, _]],       classOf[pekko.stream.javadsl.Flow[_, _, _]]) ::
