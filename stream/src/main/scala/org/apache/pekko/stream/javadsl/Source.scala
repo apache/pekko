@@ -187,10 +187,15 @@ object Source {
     // this adapter is not immutable if the underlying java.lang.Iterable is modified
     // but there is not anything we can do to prevent that from happening.
     // ConcurrentModificationException will be thrown in some cases.
-    val scalaIterable = new immutable.Iterable[O] {
-      override def iterator: Iterator[O] = iterable.iterator().asScala
+    iterable match {
+      case c: java.util.Collection[O] if c.isEmpty     => empty()
+      case c: java.util.Collection[O] if c.size() == 1 => single(c.iterator().next())
+      case _                                           =>
+        val scalaIterable = new immutable.Iterable[O] {
+          override def iterator: Iterator[O] = iterable.iterator().asScala
+        }
+        new Source(scaladsl.Source(scalaIterable))
     }
-    new Source(scaladsl.Source(scalaIterable))
   }
 
   /**
