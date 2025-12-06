@@ -112,7 +112,8 @@ object Dependencies {
       .excludeAll(ExclusionRule(organization = "org.scala-lang"))
     val jacksonParameterNames = "com.fasterxml.jackson.module" % "jackson-module-parameter-names" % jacksonCoreVersion
     val jacksonCbor = "com.fasterxml.jackson.dataformat" % "jackson-dataformat-cbor" % jacksonCoreVersion
-    val lz4Java = "at.yawk.lz4" % "lz4-java" % "1.9.0"
+
+    val lz4Java = "at.yawk.lz4" % "lz4-java" % "1.10.1"
 
     val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
 
