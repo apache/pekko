@@ -664,7 +664,7 @@ class FlowFlatMapPrefixSpec extends StreamSpec("pekko.loglevel = debug") {
       }
 
       "complete when downstream cancels before pulling and upstream does not produce" in {
-        val fSeq = Source(List.empty[Int])
+        val fSeq = Source.lazySource(() => Source(List.empty[Int]))
           .flatMapPrefixMat(1) { prefix =>
             Flow[Int].mapMaterializedValue(_ => prefix)
           }(Keep.right)
@@ -680,7 +680,7 @@ class FlowFlatMapPrefixSpec extends StreamSpec("pekko.loglevel = debug") {
       }
 
       "complete when downstream cancels before pulling and upstream does not produce, prefix=0" in {
-        val fSeq = Source(List.empty[Int])
+        val fSeq = Source.lazySource(() => Source(List.empty[Int]))
           .flatMapPrefixMat(0) { prefix =>
             Flow[Int].mapMaterializedValue(_ => prefix)
           }(Keep.right)

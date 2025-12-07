@@ -85,6 +85,21 @@ public class SourceTest extends StreamTest {
   }
 
   @Test
+  public void mustBeAbleToUseFromIterable() throws Exception {
+    final var result =
+        Source.combine(
+                Source.from(Collections.<String>emptyList()),
+                Source.from(Collections.singleton("a")),
+                List.of(Source.from(List.of("b", "c"))),
+                x -> Concat.<String>create(x, false))
+            .toMat(Sink.seq(), Keep.right())
+            .run(system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS);
+    assertEquals(List.of("a", "b", "c"), result);
+  }
+
+  @Test
   public void mustBeAbleToUseSimpleOperators() {
     final TestKit probe = new TestKit(system);
     final String[] lookup = {"a", "b", "c", "d", "e", "f"};

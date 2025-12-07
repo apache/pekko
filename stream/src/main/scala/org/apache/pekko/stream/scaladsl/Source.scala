@@ -15,7 +15,7 @@ package org.apache.pekko.stream.scaladsl
 
 import java.util.concurrent.CompletionStage
 
-import scala.annotation.{ tailrec, varargs }
+import scala.annotation.{ switch, tailrec, varargs }
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.{ immutable, AbstractIterator }
 import scala.concurrent.{ Future, Promise }
@@ -402,8 +402,14 @@ object Source {
    * stream will see an individual flow of elements (always starting from the
    * beginning) regardless of when they subscribed.
    */
-  def apply[T](iterable: immutable.Iterable[T]): Source[T, NotUsed] =
-    fromGraph(new IterableSource[T](iterable)).withAttributes(DefaultAttributes.iterableSource)
+  def apply[T](iterable: immutable.Iterable[T]): Source[T, NotUsed] = {
+    (iterable.knownSize: @switch) match {
+      case 0 => empty
+      case 1 => single(iterable.head)
+      case _ =>
+        fromGraph(new IterableSource[T](iterable)).withAttributes(DefaultAttributes.iterableSource)
+    }
+  }
 
   /**
    * Creates a `Source` from an array, if the array is empty, the stream is completed immediately,
