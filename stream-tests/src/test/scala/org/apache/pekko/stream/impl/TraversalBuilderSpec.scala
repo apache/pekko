@@ -521,7 +521,7 @@ class TraversalBuilderSpec extends PekkoSpec {
   }
 
   "find Source.iterable via TraversalBuilder with getValuePresentedSource" in {
-    val iterable = List("a")
+    val iterable = List("a", "b", "c")
     TraversalBuilder.getValuePresentedSource(Source(iterable)).get.asInstanceOf[IterableSource[
       String]].elements should ===(
       iterable)

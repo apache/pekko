@@ -402,13 +402,15 @@ object Source {
    * stream will see an individual flow of elements (always starting from the
    * beginning) regardless of when they subscribed.
    */
-  def apply[T](iterable: immutable.Iterable[T]): Source[T, NotUsed] = {
-    (iterable.knownSize: @switch) match {
-      case 0 => empty
-      case 1 => single(iterable.head)
-      case _ =>
-        fromGraph(new IterableSource[T](iterable)).withAttributes(DefaultAttributes.iterableSource)
-    }
+  def apply[T](iterable: immutable.Iterable[T]): Source[T, NotUsed] = iterable match {
+    case immutable.Seq()                   => empty[T]
+    case immutable.Seq(elem: T @unchecked) => single(elem)
+    case other                             => (other.knownSize: @switch) match {
+        case 0 => empty
+        case 1 => single(iterable.head)
+        case _ =>
+          fromGraph(new IterableSource[T](iterable)).withAttributes(DefaultAttributes.iterableSource)
+      }
   }
 
   /**
