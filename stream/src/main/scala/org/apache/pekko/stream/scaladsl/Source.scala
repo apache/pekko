@@ -417,7 +417,7 @@ object Source {
    * Helper to create [[Source]] from `Seq`.
    * Example usage: `Source(Seq(1,2,3))`
    *
-   * Starts a new `Source` from the given `Iterable`. This is like starting from an
+   * Starts a new `Source` from the given `Seq`. This is like starting from an
    * Iterator, but every Subscriber directly attached to the Publisher of this
    * stream will see an individual flow of elements (always starting from the
    * beginning) regardless of when they subscribed.
