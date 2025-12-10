@@ -161,6 +161,12 @@ class DslFactoriesConsistencySpec extends AnyWordSpec with Matchers {
         _ == "apply",
         _ == 1,
         _ == List(classOf[pekko.stream.impl.SourceModule[_, _]])),
+      // no Java equivalent for this Scala only convenience method
+      Ignore(
+        _ == pekko.stream.scaladsl.Source.getClass,
+        _ == "apply",
+        _ == 1,
+        _ == List(classOf[scala.collection.immutable.Seq[_]])),
       // corresponding matches on java side would need to have Function23
       Ignore(_ == pekko.stream.scaladsl.Source.getClass, _ == "apply", _ == 24, _ => true),
       Ignore(_ == pekko.stream.scaladsl.Flow.getClass, _ == "apply", _ == 24, _ => true),
