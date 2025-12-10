@@ -11,6 +11,21 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
+/*
+ * Copyright 2012 The Netty Project
+ *
+ * The Netty Project licenses this file to you under the Apache License, version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License. You may obtain a
+ * copy of the License at:
+ *
+ * https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
 package org.apache.pekko.util
 
 import java.io.{ InputStream, ObjectInputStream, ObjectOutputStream, SequenceInputStream }
@@ -314,6 +329,84 @@ object ByteString {
       else -1
     }
 
+    // Derived from code in Netty
+    // https://github.com/netty/netty/blob/d28a0fc6598b50fbe8f296831777cf4b653a475f/buffer/src/main/java/io/netty/buffer/ByteBufUtil.java#L242-L325
+    override def indexOfSlice(slice: Array[Byte], from: Int): Int = {
+      val n = length - from
+      val m = slice.length
+      if (m == 0) return 0
+      // When the needle has only one byte that can be read,
+      // the indexOf() can be used
+      if (m == 1) return indexOf(slice.head, from)
+      var i = 0
+      var j = 0
+      val aStartIndex = 0
+      val bStartIndex = from
+      val suffixes = SWARUtil.maxSuf(slice, m, aStartIndex, true)
+      val prefixes = SWARUtil.maxSuf(slice, m, aStartIndex, false)
+      val ell = Math.max((suffixes >> 32).toInt, (prefixes >> 32).toInt)
+      var per = Math.max(suffixes.toInt, prefixes.toInt)
+      var memory = 0
+      val checkLen = Math.min(m - per, ell + 1)
+      if (SWARUtil.arrayBytesMatch(slice, aStartIndex, slice, aStartIndex + per, checkLen)) {
+        memory = -1
+        while (j <= n - m) {
+          i = Math.max(ell, memory) + 1
+          while (i < m && (slice(i + aStartIndex) == bytes(i + j + bStartIndex))) i += 1
+          if (i > n) return -1
+          if (i >= m) {
+            i = ell
+            while (i > memory && (slice(i + aStartIndex) == bytes(i + j + bStartIndex))) i -= 1
+            if (i <= memory) return j + bStartIndex
+            j += per
+            memory = m - per - 1
+          } else {
+            j += i - ell
+            memory = -1
+          }
+        }
+      } else {
+        per = Math.max(ell + 1, m - ell - 1) + 1
+        while (j <= n - m) {
+          i = ell + 1
+          while (i < m && (slice(i + aStartIndex) == bytes(i + j + bStartIndex))) i += 1
+          if (i > n) return -1
+          if (i >= m) {
+            i = ell
+            while (i >= 0 && (slice(i + aStartIndex) == bytes(i + j + bStartIndex))) i -= 1
+            if (i < 0) return j + bStartIndex
+            j += per
+          } else j += i - ell
+        }
+      }
+      -1
+    }
+
+    // Derived from code in Netty
+    // https://github.com/netty/netty/blob/d28a0fc6598b50fbe8f296831777cf4b653a475f/buffer/src/main/java/io/netty/buffer/ByteBufUtil.java#L366-L408
+    override private[util] def bytesMatch(fromIndex: Int, checkBytes: Array[Byte], bytesFromIndex: Int,
+        checkLength: Int): Boolean = {
+      var aIndex = fromIndex
+      var bIndex = bytesFromIndex
+      val longCount = checkLength >>> 3
+      val byteCount = checkLength & 7
+      var i = 0
+      while (i < longCount) {
+        if (SWARUtil.getLong(bytes, aIndex) != SWARUtil.getLong(checkBytes, bIndex)) return false
+        aIndex += 8
+        bIndex += 8
+        i += 1
+      }
+      i = 0
+      while (i < byteCount) {
+        if (bytes(aIndex) != checkBytes(bIndex)) return false
+        aIndex += 1
+        bIndex += 1
+        i += 1
+      }
+      true
+    }
+
     override def slice(from: Int, until: Int): ByteString =
       if (from <= 0 && until >= length) this
       else if (from >= length || until <= 0 || from >= until) ByteString.empty
@@ -573,6 +666,86 @@ object ByteString {
       else if (byteCount == 6) -1
       else if (bytes(fromIndex + 6) == value) fromIndex + 6
       else -1
+    }
+
+    // Derived from code in Netty
+    // https://github.com/netty/netty/blob/d28a0fc6598b50fbe8f296831777cf4b653a475f/buffer/src/main/java/io/netty/buffer/ByteBufUtil.java#L242-L325
+    override def indexOfSlice(slice: Array[Byte], from: Int): Int = {
+      val n = length - from
+      val m = slice.length
+      if (m == 0) return 0
+      // When the needle has only one byte that can be read,
+      // the indexOf() can be used
+      if (m == 1) return indexOf(slice.head, from)
+      var i = 0
+      var j = 0
+      val aStartIndex = 0
+      val bStartIndex = from + startIndex
+      val suffixes = SWARUtil.maxSuf(slice, m, aStartIndex, true)
+      val prefixes = SWARUtil.maxSuf(slice, m, aStartIndex, false)
+      val ell = Math.max((suffixes >> 32).toInt, (prefixes >> 32).toInt)
+      var per = Math.max(suffixes.toInt, prefixes.toInt)
+      var memory = 0
+      val checkLen = Math.min(m - per, ell + 1)
+      if (SWARUtil.arrayBytesMatch(slice, aStartIndex, slice, aStartIndex + per, checkLen)) {
+        memory = -1
+        while (j <= n - m) {
+          i = Math.max(ell, memory) + 1
+          while (i < m && (slice(i + aStartIndex) == bytes(i + j + bStartIndex))) i += 1
+          if (i > n) return -1
+          if (i >= m) {
+            i = ell
+            while (i > memory && (slice(i + aStartIndex) == bytes(i + j + bStartIndex))) i -= 1
+            if (i <= memory) return j + bStartIndex - startIndex
+            j += per
+            memory = m - per - 1
+          } else {
+            j += i - ell
+            memory = -1
+          }
+        }
+      } else {
+        per = Math.max(ell + 1, m - ell - 1) + 1
+        while (j <= n - m) {
+          i = ell + 1
+          while (i < m && (slice(i + aStartIndex) == bytes(i + j + bStartIndex))) i += 1
+          if (i > n) return -1
+          if (i >= m) {
+            i = ell
+            while (i >= 0 && (slice(i + aStartIndex) == bytes(i + j + bStartIndex))) i -= 1
+            if (i < 0) return j + bStartIndex - startIndex
+            j += per
+          } else j += i - ell
+        }
+      }
+      -1
+    }
+
+    // Derived from code in Netty
+    // https://github.com/netty/netty/blob/d28a0fc6598b50fbe8f296831777cf4b653a475f/buffer/src/main/java/io/netty/buffer/ByteBufUtil.java#L366-L408
+    override private[util] def bytesMatch(fromIndex: Int,
+        checkBytes: Array[Byte],
+        bytesFromIndex: Int,
+        checkLength: Int): Boolean = {
+      var aIndex = fromIndex + startIndex
+      var bIndex = bytesFromIndex
+      val longCount = checkLength >>> 3
+      val byteCount = checkLength & 7
+      var i = 0
+      while (i < longCount) {
+        if (SWARUtil.getLong(bytes, aIndex) != SWARUtil.getLong(checkBytes, bIndex)) return false
+        aIndex += 8
+        bIndex += 8
+        i += 1
+      }
+      i = 0
+      while (i < byteCount) {
+        if (bytes(aIndex) != checkBytes(bIndex)) return false
+        aIndex += 1
+        bIndex += 1
+        i += 1
+      }
+      true
     }
 
     override def copyToArray[B >: Byte](dest: Array[B], start: Int, len: Int): Int = {
@@ -912,6 +1085,22 @@ object ByteString {
       }
     }
 
+    private[util] def bytesMatch(fromIndex: Int,
+        checkBytes: Array[Byte],
+        checkBytesFromIndex: Int,
+        checkLength: Int): Boolean = {
+      if (checkLength > 1 && bytestrings.nonEmpty && bytestrings.head.length >= fromIndex + checkLength - 1) {
+        bytestrings.head.bytesMatch(fromIndex, checkBytes, checkBytesFromIndex, checkLength)
+      } else {
+        var i = 0
+        while (i < checkLength) {
+          if (apply(fromIndex + i) != checkBytes(checkBytesFromIndex + i)) return false
+          i += 1
+        }
+        true
+      }
+    }
+
     protected def writeReplace(): AnyRef = new SerializationProxy(this)
   }
 
@@ -1093,22 +1282,10 @@ sealed abstract class ByteString
    * @since 2.0.0
    */
   def indexOfSlice(slice: Array[Byte], from: Int): Int = {
-    // this is only called if the first byte matches, so we can skip that check
-    def check(startPos: Int): Boolean = {
-      var i = startPos + 1
-      var j = 1
-      // let's trust the calling code has ensured that we have enough bytes in this ByteString
-      while (j < slice.length) {
-        if (apply(i) != slice(j)) return false
-        i += 1
-        j += 1
-      }
-      true
-    }
     @tailrec def rec(from: Int): Int = {
       val startPos = indexOf(slice.head, from, length - slice.length + 1)
       if (startPos == -1) -1
-      else if (check(startPos)) startPos
+      else if (bytesMatch(startPos, slice, 0, slice.length)) startPos
       else rec(startPos + 1)
     }
     val sliceLength = slice.length
@@ -1147,18 +1324,7 @@ sealed abstract class ByteString
    */
   def startsWith(bytes: Array[Byte], offset: Int): Boolean = {
     if (length - offset < bytes.length) false
-    else {
-      var i = offset
-      var j = 0
-      while (j < bytes.length) {
-        // we know that byteString is at least as long as bytes,
-        // so no need to check i < length
-        if (apply(i) != bytes(j)) return false
-        i += 1
-        j += 1
-      }
-      true
-    }
+    else bytesMatch(offset, bytes, 0, bytes.length)
   }
 
   /**
@@ -1169,6 +1335,15 @@ sealed abstract class ByteString
    * @since 2.0.0
    */
   def startsWith(bytes: Array[Byte]): Boolean = startsWith(bytes, 0)
+
+  /**
+   * Tests whether the bytes in a segment of this ByteString match the provided bytes.
+   * Internal use only. ByteString1 and ByteString1C have optimized versions.
+   */
+  private[util] def bytesMatch(fromIndex: Int,
+      checkBytes: Array[Byte],
+      checkBytesFromIndex: Int,
+      checkLength: Int): Boolean
 
   override def grouped(size: Int): Iterator[ByteString] = {
     if (size <= 0) {
