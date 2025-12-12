@@ -21,7 +21,7 @@ object Dependencies {
   object Protobuf {
     // https://protobuf.dev/support/version-support/
     // protobuf-java 4.x corresponds with protoc 26.x-33.x
-    val protobufJavaVersion = "4.33.1"
+    val protobufJavaVersion = "4.33.2"
     val protocVersion = "33.0"
   }
 
@@ -104,7 +104,7 @@ object Dependencies {
       .excludeAll(ExclusionRule(organization = "org.scala-lang"))
     val jacksonCbor3 = "tools.jackson.dataformat" % "jackson-dataformat-cbor" % jacksonVersion3
 
-    val lz4Java = "at.yawk.lz4" % "lz4-java" % "1.10.0"
+    val lz4Java = "at.yawk.lz4" % "lz4-java" % "1.10.1"
 
     val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
 

@@ -15,7 +15,7 @@ package org.apache.pekko.stream.scaladsl
 
 import java.util.concurrent.CompletionStage
 
-import scala.annotation.{ tailrec, varargs }
+import scala.annotation.{ switch, tailrec, varargs }
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.{ immutable, AbstractIterator }
 import scala.concurrent.{ Future, Promise }
@@ -395,15 +395,43 @@ object Source {
 
   /**
    * Helper to create [[Source]] from `Iterable`.
-   * Example usage: `Source(Seq(1,2,3))`
+   * Example usage: `Source(Set(1,2,3))`
    *
    * Starts a new `Source` from the given `Iterable`. This is like starting from an
    * Iterator, but every Subscriber directly attached to the Publisher of this
    * stream will see an individual flow of elements (always starting from the
    * beginning) regardless of when they subscribed.
+   * @see [[apply(immutable.Seq)]]
    */
-  def apply[T](iterable: immutable.Iterable[T]): Source[T, NotUsed] =
-    fromGraph(new IterableSource[T](iterable)).withAttributes(DefaultAttributes.iterableSource)
+  def apply[T](iterable: immutable.Iterable[T]): Source[T, NotUsed] = {
+    // unknown size is -1
+    (iterable.knownSize: @switch) match {
+      case 0 => empty
+      case 1 => single(iterable.head)
+      case _ =>
+        fromGraph(new IterableSource[T](iterable)).withAttributes(DefaultAttributes.iterableSource)
+    }
+  }
+
+  /**
+   * Helper to create [[Source]] from `Seq`.
+   * Example usage: `Source(Seq(1,2,3))`
+   *
+   * Starts a new `Source` from the given `Seq`. This is like starting from an
+   * Iterator, but every Subscriber directly attached to the Publisher of this
+   * stream will see an individual flow of elements (always starting from the
+   * beginning) regardless of when they subscribed.
+   * @see [[apply(immutable.Iterable)]]
+   * @since 2.0.0
+   */
+  def apply[T](seq: immutable.Seq[T]): Source[T, NotUsed] = {
+    seq match {
+      case immutable.Seq()                   => empty[T]
+      case immutable.Seq(elem: T @unchecked) => single(elem)
+      case _                                 =>
+        fromGraph(new IterableSource[T](seq)).withAttributes(DefaultAttributes.iterableSource)
+    }
+  }
 
   /**
    * Creates a `Source` from an array, if the array is empty, the stream is completed immediately,

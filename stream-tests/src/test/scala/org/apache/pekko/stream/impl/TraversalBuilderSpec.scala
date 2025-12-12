@@ -521,7 +521,20 @@ class TraversalBuilderSpec extends PekkoSpec {
   }
 
   "find Source.iterable via TraversalBuilder with getValuePresentedSource" in {
-    val iterable = List("a")
+    val iterable = Set("a", "b", "c")
+    TraversalBuilder.getValuePresentedSource(Source(iterable)).get.asInstanceOf[IterableSource[
+      String]].elements should ===(
+      iterable)
+    val iterableSource = new IterableSource(iterable)
+    TraversalBuilder.getValuePresentedSource(iterableSource) should be(OptionVal.Some(iterableSource))
+
+    TraversalBuilder.getValuePresentedSource(Source(iterable).async) should be(OptionVal.None)
+    TraversalBuilder.getValuePresentedSource(Source(iterable).mapMaterializedValue(_ => "Mat")) should be(
+      OptionVal.None)
+  }
+
+  "find Source.iterable via TraversalBuilder with getValuePresentedSource (Seq input)" in {
+    val iterable = Seq("a", "b", "c")
     TraversalBuilder.getValuePresentedSource(Source(iterable)).get.asInstanceOf[IterableSource[
       String]].elements should ===(
       iterable)
