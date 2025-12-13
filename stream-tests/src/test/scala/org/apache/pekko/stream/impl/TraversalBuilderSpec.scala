@@ -13,7 +13,7 @@
 
 package org.apache.pekko.stream.impl
 
-import scala.concurrent.Future
+import scala.concurrent.Promise
 
 import org.apache.pekko
 import pekko.NotUsed
@@ -508,7 +508,8 @@ class TraversalBuilderSpec extends PekkoSpec {
   }
 
   "find Source.future via TraversalBuilder with getValuePresentedSource" in {
-    val future = Future.successful("a")
+    val promise = Promise[String]()
+    val future = promise.future
     TraversalBuilder.getValuePresentedSource(Source.future(future)).get.asInstanceOf[FutureSource[
       String]].future should ===(
       future)
