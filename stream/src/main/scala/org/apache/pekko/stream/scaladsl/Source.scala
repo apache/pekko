@@ -593,7 +593,7 @@ object Source {
     val maybeValue = futureElement.value
     if (maybeValue eq None) {
       fromGraph(new FutureSource[T](futureElement))
-    } else futureElement.value match {
+    } else maybeValue match {
       case Some(scala.util.Success(null)) => empty[T]
       case Some(scala.util.Success(elem)) => single(elem)
       case Some(scala.util.Failure(ex))   => failed[T](ex)
