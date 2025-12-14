@@ -20,6 +20,30 @@ import scala.collection.immutable
  * INTERNAL API
  */
 private[pekko] object Collections {
+  // Cached function that can be used with PartialFunction.applyOrElse to ensure that A) the guard is only applied once,
+  // and the caller can check the returned value with Collect.notApplied to query whether the PF was applied or not.
+  // Prior art: https://github.com/scala/scala/blob/v2.11.4/src/library/scala/collection/immutable/List.scala#L458
+  private object NotApplied extends (Any => Any) {
+    final override def apply(v1: Any): Any = this
+  }
+
+  implicit class IterableOps[T](val iterable: java.lang.Iterable[T]) extends AnyVal {
+    def collectToImmutableSeq[R](pf: PartialFunction[T, R]): immutable.Seq[R] = {
+      val builder = immutable.Seq.newBuilder[R]
+      iterable.forEach((t: T) => {
+        // 1. `applyOrElse` is faster than (`pf.isDefinedAt` and then `pf.apply`)
+        // 2. using reference comparing here instead of pattern matching can generate less and quicker bytecode,
+        //   eg: just a simple `IF_ACMPNE`, and you can find the same trick in `CollectWhile` operator.
+        //   If you interest, you can check the associated PR for this change and the
+        //   current implementation of `scala.collection.IterableOnceOps.collectFirst`.
+        pf.applyOrElse(t, NotApplied) match {
+          case _: NotApplied.type => // do nothing
+          case r: R @unchecked    => builder += r
+        }
+      })
+      builder.result()
+    }
+  }
 
   case object EmptyImmutableSeq extends immutable.Seq[Nothing] {
     override final def iterator = Iterator.empty
