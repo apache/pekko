@@ -42,6 +42,7 @@ import pekko.stream.SystemMaterializer
 import pekko.stream.TLSClosing
 import pekko.stream.scaladsl
 import pekko.util.ByteString
+import pekko.japi.Util.immutableSeq
 
 object Tcp extends ExtensionId[Tcp] with ExtensionIdProvider {
 
@@ -177,7 +178,7 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
       idleTimeout: Optional[java.time.Duration]): Source[IncomingConnection, CompletionStage[ServerBinding]] =
     Source.fromGraph(
       delegate
-        .bind(interface, port, backlog, CollectionUtil.toSeq(options), halfClose, optionalDurationToScala(idleTimeout))
+        .bind(interface, port, backlog, immutableSeq(options), halfClose, optionalDurationToScala(idleTimeout))
         .map(new IncomingConnection(_))
         .mapMaterializedValue(_.map(new ServerBinding(_))(parasitic).asJava))
 
@@ -228,7 +229,7 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
         .outgoingConnection(
           remoteAddress,
           localAddress.toScala,
-          CollectionUtil.toSeq(options),
+          immutableSeq(options),
           halfClose,
           optionalDurationToScala(connectTimeout),
           optionalDurationToScala(idleTimeout))
@@ -291,7 +292,7 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
           remoteAddress,
           createSSLEngine = () => createSSLEngine.create(),
           localAddress.toScala,
-          CollectionUtil.toSeq(options),
+          immutableSeq(options),
           optionalDurationToScala(connectTimeout),
           optionalDurationToScala(idleTimeout),
           session =>
@@ -342,7 +343,7 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
           port,
           createSSLEngine = () => createSSLEngine.create(),
           backlog,
-          CollectionUtil.toSeq(options),
+          immutableSeq(options),
           optionalDurationToScala(idleTimeout),
           session =>
             verifySession.apply(session).toScala match {

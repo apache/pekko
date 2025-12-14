@@ -2334,7 +2334,8 @@ final class SubSource[Out, Mat](
   def mergeAll(
       those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
       eagerComplete: Boolean): SubSource[Out, Mat] = {
-    val seq = if (those ne null) CollectionUtil.toSeq(those).collect {
+    import pekko.util.Collections._
+    val seq = if (those ne null) those.collectToImmutableSeq {
       case source: Source[Out @unchecked, _] => source.asScala
       case other                             => other
     }
@@ -2393,7 +2394,8 @@ final class SubSource[Out, Mat](
       those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
       segmentSize: Int,
       eagerClose: Boolean): SubSource[Out, Mat] = {
-    val seq = if (those ne null) CollectionUtil.toSeq(those).collect {
+    import pekko.util.Collections._
+    val seq = if (those ne null) those.collectToImmutableSeq {
       case source: Source[Out @unchecked, _] => source.asScala
       case other                             => other
     }

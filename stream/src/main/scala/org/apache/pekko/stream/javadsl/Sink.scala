@@ -465,7 +465,8 @@ object Sink {
       sinks: java.util.List[_ <: Graph[SinkShape[U], M]],
       fanOutStrategy: function.Function[java.lang.Integer, Graph[UniformFanOutShape[T, U], NotUsed]])
       : Sink[T, java.util.List[M]] = {
-    val seq = if (sinks ne null) CollectionUtil.toSeq(sinks).collect {
+    import pekko.util.Collections._
+    val seq = if (sinks ne null) sinks.collectToImmutableSeq {
       case sink: Sink[U @unchecked, M @unchecked] => sink.asScala
       case other                                  => other
     }
