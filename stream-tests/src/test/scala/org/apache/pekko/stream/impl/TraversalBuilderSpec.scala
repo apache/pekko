@@ -13,6 +13,8 @@
 
 package org.apache.pekko.stream.impl
 
+import scala.concurrent.Promise
+
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream._
@@ -22,8 +24,6 @@ import pekko.stream.impl.fusing.GraphStages.{ FutureSource, SingleSource }
 import pekko.stream.scaladsl.{ Keep, Source }
 import pekko.util.OptionVal
 import pekko.testkit.PekkoSpec
-
-import scala.concurrent.Future
 
 class TraversalBuilderSpec extends PekkoSpec {
 
@@ -508,7 +508,8 @@ class TraversalBuilderSpec extends PekkoSpec {
   }
 
   "find Source.future via TraversalBuilder with getValuePresentedSource" in {
-    val future = Future.successful("a")
+    val promise = Promise[String]()
+    val future = promise.future
     TraversalBuilder.getValuePresentedSource(Source.future(future)).get.asInstanceOf[FutureSource[
       String]].future should ===(
       future)

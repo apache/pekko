@@ -639,8 +639,12 @@ object Source {
    * Emits a single value when the given `Future` is successfully completed and then completes the stream.
    * The stream fails if the `Future` is completed with a failure.
    */
-  def future[T](futureElement: Future[T]): Source[T, NotUsed] =
-    fromGraph(new FutureSource[T](futureElement))
+  def future[T](futureElement: Future[T]): Source[T, NotUsed] = futureElement.value match {
+    case None                           => fromGraph(new FutureSource[T](futureElement))
+    case Some(scala.util.Success(null)) => empty[T]
+    case Some(scala.util.Success(elem)) => single(elem)
+    case Some(scala.util.Failure(ex))   => failed[T](ex)
+  }
 
   /**
    * Never emits any elements, never completes and never fails.
@@ -662,8 +666,14 @@ object Source {
    * Turn a `Future[Source]` into a source that will emit the values of the source when the future completes successfully.
    * If the `Future` is completed with a failure the stream is failed.
    */
-  def futureSource[T, M](futureSource: Future[Source[T, M]]): Source[T, Future[M]] =
-    fromGraph(new FutureFlattenSource(futureSource))
+  def futureSource[T, M](futureSource: Future[Source[T, M]]): Source[T, Future[M]] = futureSource.value match {
+    case None                           => fromGraph(new FutureFlattenSource(futureSource))
+    case Some(scala.util.Success(null)) =>
+      val exception = new NullPointerException("futureSource completed with null")
+      Source.failed(exception).mapMaterializedValue(_ => Future.failed[M](exception))
+    case Some(scala.util.Success(source)) => source.mapMaterializedValue(Future.successful)
+    case Some(scala.util.Failure(ex))     => Source.failed[T](ex).mapMaterializedValue(_ => Future.failed[M](ex))
+  }
 
   /**
    * Defers invoking the `create` function to create a single element until there is downstream demand.
