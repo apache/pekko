@@ -2491,7 +2491,8 @@ class SubFlow[In, Out, Mat](
   def mergeAll(
       those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
       eagerComplete: Boolean): SubFlow[In, Out, Mat] = {
-    val seq = if (those != null) CollectionUtil.toSeq(those).collect {
+    import pekko.util.Collections._
+    val seq = if (those ne null) those.collectToImmutableSeq {
       case source: Source[Out @unchecked, _] => source.asScala
       case other                             => other
     }
@@ -2549,7 +2550,8 @@ class SubFlow[In, Out, Mat](
       those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
       segmentSize: Int,
       eagerClose: Boolean): SubFlow[In, Out, Mat] = {
-    val seq = if (those != null) CollectionUtil.toSeq(those).collect {
+    import pekko.util.Collections._
+    val seq = if (those ne null) those.collectToImmutableSeq {
       case source: Source[Out @unchecked, _] => source.asScala
       case other                             => other
     }

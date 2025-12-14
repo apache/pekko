@@ -745,7 +745,7 @@ object Source {
       @deprecatedName(Symbol("strategy"))
       fanInStrategy: function.Function[java.lang.Integer, _ <: Graph[UniformFanInShape[T, U], NotUsed]])
       : Source[U, NotUsed] = {
-    val seq = if (rest != null) CollectionUtil.toSeq(rest).map(_.asScala) else immutable.Seq()
+    val seq = if (rest ne null) rest.asScala.map(_.asScala).toSeq else immutable.Seq()
     new Source(scaladsl.Source.combine(first.asScala, second.asScala, seq: _*)(num => fanInStrategy.apply(num)))
   }
 
@@ -772,7 +772,8 @@ object Source {
       sources: java.util.List[_ <: Graph[SourceShape[T], M]],
       fanInStrategy: function.Function[java.lang.Integer, Graph[UniformFanInShape[T, U], NotUsed]])
       : Source[U, java.util.List[M]] = {
-    val seq = if (sources != null) CollectionUtil.toSeq(sources).collect {
+    import pekko.util.Collections._
+    val seq = if (sources ne null) sources.collectToImmutableSeq {
       case source: Source[T @unchecked, M @unchecked] => source.asScala
       case other                                      => other
     }
@@ -784,7 +785,7 @@ object Source {
    * Combine the elements of multiple streams into a stream of lists.
    */
   def zipN[T](sources: java.util.List[Source[T, _ <: Any]]): Source[java.util.List[T], NotUsed] = {
-    val seq = if (sources != null) CollectionUtil.toSeq(sources).map(_.asScala) else immutable.Seq()
+    val seq = if (sources ne null) sources.asScala.map(_.asScala).toVector else immutable.Seq()
     new Source(scaladsl.Source.zipN(seq).map(_.asJava))
   }
 
@@ -794,7 +795,7 @@ object Source {
   def zipWithN[T, O](
       zipper: function.Function[java.util.List[T], O],
       sources: java.util.List[Source[T, _ <: Any]]): Source[O, NotUsed] = {
-    val seq = if (sources != null) CollectionUtil.toSeq(sources).map(_.asScala) else immutable.Seq()
+    val seq = if (sources ne null) sources.asScala.map(_.asScala).toVector else immutable.Seq()
     new Source(scaladsl.Source.zipWithN[T, O](seq => zipper.apply(seq.asJava))(seq))
   }
 
@@ -1039,8 +1040,8 @@ object Source {
       sourcesAndPriorities: java.util.List[Pair[Source[T, _ <: Any], java.lang.Integer]],
       eagerComplete: Boolean): javadsl.Source[T, NotUsed] = {
     val seq =
-      if (sourcesAndPriorities != null)
-        CollectionUtil.toSeq(sourcesAndPriorities).map(pair => (pair.first.asScala, pair.second.intValue()))
+      if (sourcesAndPriorities ne null)
+        sourcesAndPriorities.asScala.map(pair => (pair.first.asScala, pair.second.intValue())).toVector
       else
         immutable.Seq()
     new Source(scaladsl.Source.mergePrioritizedN(seq, eagerComplete))
@@ -1820,7 +1821,8 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
       those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
       segmentSize: Int,
       eagerClose: Boolean): javadsl.Source[Out, Mat] = {
-    val seq = if (those != null) CollectionUtil.toSeq(those).collect {
+    import pekko.util.Collections._
+    val seq = if (those ne null) those.collectToImmutableSeq {
       case source: Source[Out @unchecked, _] => source.asScala
       case other                             => other
     }
@@ -1900,7 +1902,8 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
   def mergeAll(
       those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
       eagerComplete: Boolean): javadsl.Source[Out, Mat] = {
-    val seq = if (those != null) CollectionUtil.toSeq(those).collect {
+    import pekko.util.Collections._
+    val seq = if (those ne null) those.collectToImmutableSeq {
       case source: Source[Out @unchecked, _] => source.asScala
       case other                             => other
     }
