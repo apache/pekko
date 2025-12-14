@@ -201,7 +201,7 @@ Java
 
 ### DurableStateBehavior receiveSignal/signalHandler
 
-DurableStateBehavior supports receiveSignal/signalHandler in a similar way to EventSourcedBehavior but the signal classes are in the `org.apache.pekko.persistence.typed.state` package not the `org.apache.pekko.persistence.typed` package. These are the only `DurableStateSignal` and note that the class names match equivalent `EventSourcedSignal` classes but you need to use these ones for DurableStateBehavior:
+DurableStateBehavior supports receiveSignal/signalHandler in a similar way to EventSourcedBehavior but the signal classes are in the `org.apache.pekko.persistence.typed.state` package not the `org.apache.pekko.persistence.typed` package. These are the only `DurableStateSignal` signals and note that the class names match equivalent `EventSourcedSignal` classes but you need to use these ones for DurableStateBehavior:
 
 * @apidoc[pekko.persistence.typed.state.RecoveryCompleted] signal
 * @apidoc[pekko.persistence.typed.state.RecoveryFailed] signal
