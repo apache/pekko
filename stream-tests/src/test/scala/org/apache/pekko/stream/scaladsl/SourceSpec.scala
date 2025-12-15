@@ -547,8 +547,49 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
     }
   }
 
-  "Source.futureSource" must {
+  "Source.future" must {
+    "work as empty source when the future source completes with null" in {
+      val source = Source.future(Future.successful(null.asInstanceOf[String]))
+      val probe = source.runWith(TestSink[String]())
 
+      probe.request(1)
+      probe.expectComplete()
+    }
+
+    "work with a successful future" in {
+      val source = Source.future(Future.successful(42))
+      val probe = source.runWith(TestSink[Int]())
+
+      probe.request(1)
+      probe.expectNext(42)
+      probe.expectComplete()
+    }
+
+    "work with a failed future" in {
+      val ex = new RuntimeException("boom")
+      val source = Source.future(Future.failed(ex))
+      val probe = source.runWith(TestSink[Int]())
+
+      probe.request(1)
+      probe.expectError().getMessage should ===("boom")
+    }
+
+    "work with a delayed future" in {
+      val promise = scala.concurrent.Promise[Int]()
+      val source = Source.future(promise.future)
+      val probe = source.runWith(TestSink[Int]())
+
+      probe.request(1)
+      probe.expectNoMessage(500.millis)
+
+      promise.success(42)
+
+      probe.expectNext(42)
+      probe.expectComplete()
+    }
+  }
+
+  "Source.futureSource" must {
     "not cancel substream twice" in {
       val result = Source
         .futureSource(pekko.pattern.after(2.seconds)(Future.successful(Source(1 to 2))))
@@ -557,6 +598,46 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
         .runWith(Sink.ignore)
 
       Await.result(result, 4.seconds) shouldBe Done
+    }
+
+    "fail when the future completes with null" in {
+      val source = Source.futureSource(Future.successful(null.asInstanceOf[Source[Int, NotUsed]]))
+      val probe = source.runWith(TestSink[Int]())
+
+      probe.request(1)
+      probe.expectError().getMessage should include("futureSource completed with null")
+    }
+
+    "work with a successful future" in {
+      val source = Source.futureSource(Future.successful(Source(1 to 3)))
+      val probe = source.runWith(TestSink[Int]())
+
+      probe.request(3)
+      probe.expectNext(1, 2, 3)
+      probe.expectComplete()
+    }
+
+    "work with a failed future source" in {
+      val ex = new RuntimeException("boom")
+      val source = Source.futureSource(Future.failed(ex))
+      val probe = source.runWith(TestSink[Int]())
+
+      probe.request(1)
+      probe.expectError().getMessage should ===("boom")
+    }
+
+    "work with a delayed future source" in {
+      val promise = scala.concurrent.Promise[Source[Int, NotUsed]]()
+      val source = Source.futureSource(promise.future)
+      val probe = source.runWith(TestSink[Int]())
+
+      probe.request(3)
+      probe.expectNoMessage(500.millis)
+
+      promise.success(Source(1 to 3))
+
+      probe.expectNext(1, 2, 3)
+      probe.expectComplete()
     }
   }
 
