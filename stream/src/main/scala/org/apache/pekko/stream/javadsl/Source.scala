@@ -20,7 +20,7 @@ import java.util.concurrent.{ CompletableFuture, CompletionStage }
 import scala.annotation.{ nowarn, varargs }
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable
-import scala.concurrent.{ Future, Promise }
+import scala.concurrent.Promise
 import scala.concurrent.ExecutionContext
 import scala.jdk.CollectionConverters._
 import scala.jdk.DurationConverters._
@@ -317,15 +317,6 @@ object Source {
     new Source(scaladsl.Source.failed(cause))
 
   /**
-   * Emits a single value when the given Scala `Future` is successfully completed and then completes the stream.
-   * The stream fails if the `Future` is completed with a failure.
-   *
-   * Here for Java interoperability, the normal use from Java should be [[Source.completionStage]]
-   */
-  def future[T](futureElement: Future[T]): Source[T, NotUsed] =
-    scaladsl.Source.future(futureElement).asJava
-
-  /**
    * Never emits any elements, never completes and never fails.
    * This stream could be useful in tests.
    */
@@ -337,7 +328,7 @@ object Source {
    * If the `CompletionStage` is completed with a failure the stream is failed.
    */
   def completionStage[T](completionStage: CompletionStage[T]): Source[T, NotUsed] =
-    future(completionStage.asScala)
+    new Source(scaladsl.Source.future(completionStage.asScala))
 
   /**
    * Turn a `CompletionStage[Source]` into a source that will emit the values of the source when the future completes successfully.
