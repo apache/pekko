@@ -20,7 +20,6 @@ import org.apache.pekko.actor.typed.javadsl.ActorContext;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.apache.pekko.persistence.typed.DeleteEventsFailed;
 import org.apache.pekko.persistence.typed.DeleteSnapshotsFailed;
-import org.apache.pekko.persistence.typed.RecoveryCompleted;
 import org.apache.pekko.persistence.typed.SnapshotFailed;
 import org.apache.pekko.persistence.typed.SnapshotSelectionCriteria;
 import org.apache.pekko.persistence.typed.javadsl.CommandHandler;
@@ -347,7 +346,7 @@ public class BasicPersistentBehaviorTest {
       public SignalHandler<State> signalHandler() {
         return newSignalHandlerBuilder()
             .onSignal(
-                RecoveryCompleted.instance(),
+                org.apache.pekko.persistence.typed.RecoveryCompleted.instance(),
                 state -> {
                   throw new RuntimeException("TODO: add some end-of-recovery side-effect here");
                 })
