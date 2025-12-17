@@ -42,6 +42,7 @@ public class LazyAndFutureSourcesTest extends StreamTest {
   // note these are minimal happy path tests to cover API, more thorough tests are on the Scala side
 
   @Test
+  @SuppressWarnings("deprecation")
   public void future() throws Exception {
     CompletionStage<List<String>> result =
         Source.future(Future.successful("one")).runWith(Sink.seq(), system);
