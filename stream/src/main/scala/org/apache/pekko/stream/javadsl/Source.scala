@@ -391,7 +391,7 @@ object Source {
    *
    * Here for Java interoperability, the normal use from Java should be [[Source.completionStage]]
    */
-  @deprecated("Use 'Source.completionStage' instead", "Pekko 1.5.0")
+  @deprecated("Use 'Source.completionStage' or 'scaladsl.Source.future' instead", "1.5.0")
   def future[T](futureElement: Future[T]): Source[T, NotUsed] =
     scaladsl.Source.future(futureElement).asJava
 
