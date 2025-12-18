@@ -322,6 +322,7 @@ object Source {
    *
    * Here for Java interoperability, the normal use from Java should be [[Source.completionStage]]
    */
+  @deprecated("Use 'Source.completionStage' or 'scaladsl.Source.future' instead", "1.5.0")
   def future[T](futureElement: Future[T]): Source[T, NotUsed] =
     scaladsl.Source.future(futureElement).asJava
 
@@ -337,7 +338,7 @@ object Source {
    * If the `CompletionStage` is completed with a failure the stream is failed.
    */
   def completionStage[T](completionStage: CompletionStage[T]): Source[T, NotUsed] =
-    future(completionStage.asScala)
+    new Source(scaladsl.Source.future(completionStage.asScala))
 
   /**
    * Turn a `CompletionStage[Source]` into a source that will emit the values of the source when the future completes successfully.
