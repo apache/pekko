@@ -471,7 +471,7 @@ pekko.persistence.max-concurrent-recoveries = 50
 The @ref:[event handler](#event-handler) is used for updating the state when replaying the journaled events.
 
 It is strongly discouraged to perform side effects in the event handler, so side effects should be performed
-once recovery has completed as a reaction to the @apidoc[typed.RecoveryCompleted] signal @scala[in the @scaladoc[receiveSignal](pekko.persistence.typed.scaladsl.EventSourcedBehavior#receiveSignal(signalHandler:PartialFunction[(State,org.apache.pekko.actor.typed.Signal),Unit]):org.apache.pekko.persistence.typed.scaladsl.EventSourcedBehavior[Command,Event,State]) handler] @java[by overriding @javadoc[receiveSignal](pekko.persistence.typed.javadsl.SignalHandlerBuilder#onSignal(java.lang.Class,java.util.function.BiConsumer))]
+once recovery has completed as a reaction to the @apidoc[typed.RecoveryCompleted] signal @scala[in the @scaladoc[receiveSignal](pekko.persistence.typed.scaladsl.EventSourcedBehavior#receiveSignal(signalHandler:PartialFunction[(State,org.apache.pekko.actor.typed.Signal),Unit]):org.apache.pekko.persistence.typed.scaladsl.EventSourcedBehavior[Command,Event,State]) handler] @java[by overriding @javadoc[signalHandler](pekko.persistence.typed.javadsl.SignalHandlerBuilder#onSignal(java.lang.Class,java.util.function.BiConsumer))]
 
 Scala
 :  @@snip [BasicPersistentBehaviorCompileOnly.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #recovery }
@@ -481,7 +481,7 @@ Java
 
 The `RecoveryCompleted` contains the current `State`.
 
-The actor will always receive a `RecoveryCompleted` signal, even if there are no events
+The actor will always receive a @apidoc[typed.RecoveryCompleted] signal, even if there are no events
 in the journal and the snapshot store is empty, or if it's a new persistent actor with a previously
 unused `PersistenceId`.
 
