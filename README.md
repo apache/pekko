@@ -9,6 +9,7 @@ Pekko uses the Actor Model to provide more intuitive high-level abstractions for
 Using these abstractions, Pekko also provides libraries for persistence, streams, HTTP, and more.
 
 Pekko is a fork of [Akka](https://github.com/akka/akka) 2.6.x, prior to the Akka project's adoption of the Business Source License.
+Pekko now contains some features from Akka 2.7.0 (Apache 2.0 Licensed now)
 
 ## Reference Documentation
 
