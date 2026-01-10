@@ -35,6 +35,8 @@ import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.fusing.{ StatefulMapConcat, ZipWithIndexJava }
 import pekko.util.ConstantFun
 
+import org.jspecify.annotations.Nullable
+
 /**
  * * Upcast a stream of elements to a stream of supertypes of that element. Useful in combination with
  * fan-in operators where you do not want to pay the cost of casting each element in a `map`.
@@ -2332,7 +2334,7 @@ final class SubSource[Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def mergeAll(
-      those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
+      @Nullable those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
       eagerComplete: Boolean): SubSource[Out, Mat] = {
     import pekko.util.Collections._
     val seq = if (those ne null) those.collectToImmutableSeq {
@@ -2391,7 +2393,7 @@ final class SubSource[Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def interleaveAll(
-      those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
+      @Nullable those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
       segmentSize: Int,
       eagerClose: Boolean): SubSource[Out, Mat] = {
     import pekko.util.Collections._
@@ -2883,7 +2885,7 @@ final class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def log(name: String, extract: function.Function[Out, Any], log: LoggingAdapter): SubSource[Out, Mat] =
+  def log(name: String, extract: function.Function[Out, Any], @Nullable log: LoggingAdapter): SubSource[Out, Mat] =
     new SubSource(delegate.log(name, e => extract.apply(e))(log))
 
   /**
@@ -2924,7 +2926,7 @@ final class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def log(name: String, log: LoggingAdapter): SubSource[Out, Mat] =
+  def log(name: String, @Nullable log: LoggingAdapter): SubSource[Out, Mat] =
     this.log(name, ConstantFun.javaIdentityFunction[Out], log)
 
   /**
@@ -2971,7 +2973,7 @@ final class SubSource[Out, Mat](
       name: String,
       marker: function.Function[Out, LogMarker],
       extract: function.Function[Out, Any],
-      log: MarkerLoggingAdapter): SubSource[Out, Mat] =
+      @Nullable log: MarkerLoggingAdapter): SubSource[Out, Mat] =
     new SubSource(delegate.logWithMarker(name, e => marker.apply(e), e => extract.apply(e))(log))
 
   /**
@@ -3018,7 +3020,7 @@ final class SubSource[Out, Mat](
   def logWithMarker(
       name: String,
       marker: function.Function[Out, LogMarker],
-      log: MarkerLoggingAdapter): SubSource[Out, Mat] =
+      @Nullable log: MarkerLoggingAdapter): SubSource[Out, Mat] =
     this.logWithMarker(name, marker, ConstantFun.javaIdentityFunction[Out], log)
 
   /**
