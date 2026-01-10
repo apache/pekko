@@ -29,6 +29,8 @@ import pekko.japi.{ function, Pair }
 import pekko.stream._
 import pekko.util.ConstantFun
 
+import org.jspecify.annotations.Nullable
+
 object FlowWithContext {
 
   def create[In, Ctx](): FlowWithContext[In, Ctx, In, Ctx, pekko.NotUsed] =
@@ -304,7 +306,7 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
   def log(
       name: String,
       extract: function.Function[Out, Any],
-      log: LoggingAdapter): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
+      @Nullable log: LoggingAdapter): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
     viaScala(_.log(name, e => extract.apply(e))(log))
 
   /**
@@ -320,7 +322,7 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    *
    * @see [[pekko.stream.javadsl.Flow.log]]
    */
-  def log(name: String, log: LoggingAdapter): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
+  def log(name: String, @Nullable log: LoggingAdapter): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
     this.log(name, ConstantFun.javaIdentityFunction[Out], log)
 
   /**
@@ -340,7 +342,7 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
       name: String,
       marker: function.Function2[Out, CtxOut, LogMarker],
       extract: function.Function[Out, Any],
-      log: MarkerLoggingAdapter): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
+      @Nullable log: MarkerLoggingAdapter): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
     viaScala(_.logWithMarker(name, (e, c) => marker.apply(e, c), e => extract.apply(e))(log))
 
   /**
@@ -362,7 +364,7 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
   def logWithMarker(
       name: String,
       marker: function.Function2[Out, CtxOut, LogMarker],
-      log: MarkerLoggingAdapter): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
+      @Nullable log: MarkerLoggingAdapter): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
     this.logWithMarker(name, marker, ConstantFun.javaIdentityFunction[Out], log)
 
   /**
