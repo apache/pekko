@@ -717,7 +717,8 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
     }
   }
 
-  private def withRetriesTest(originSource: Source[ByteString, Any])(fallbackTo: Long => Source[ByteString, NotUsed])(shouldRetry: Throwable => Boolean = { _ => true }): Source[ByteString, NotUsed] =
+  private def withRetriesTest(originSource: Source[ByteString, Any])(fallbackTo: Long => Source[ByteString, NotUsed])(
+      shouldRetry: Throwable => Boolean = { _ => true }): Source[ByteString, NotUsed] =
     originSource.recoverWithRetries(
       -1,
       {
