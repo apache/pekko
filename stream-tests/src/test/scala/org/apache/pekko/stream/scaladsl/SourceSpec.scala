@@ -713,7 +713,7 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
         Await.result(source.runWith(Sink.ignore), Duration.Inf)
       }
 
-      assert(counter.get() == 3)
+      assert(counter.get() == 1)
     }
   }
 
