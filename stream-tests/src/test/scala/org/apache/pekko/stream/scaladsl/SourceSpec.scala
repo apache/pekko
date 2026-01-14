@@ -696,8 +696,26 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
     }
   }
 
-  "FailedSource" must {
-    "not be retried" in {
+  "recoverWithRetries" must {
+    "retry when exceptions occur" in {
+      val counter = new java.util.concurrent.atomic.AtomicInteger()
+
+      val source =
+        withRetriesTest(failedSource("origin")) { _ =>
+          counter.incrementAndGet()
+          exceptionSource()
+        } { _ =>
+          counter.get() < 3
+        }
+
+      assertThrows[ArithmeticException] {
+        Await.result(source.runWith(Sink.ignore), Duration.Inf)
+      }
+
+      assert(counter.get() == 3)
+    }
+
+    "not retry FailedSources" in {
       // https://github.com/apache/pekko/issues/2620
       val counter = new java.util.concurrent.atomic.AtomicInteger()
 
@@ -730,4 +748,7 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
   private def failedSource(message: String): Source[ByteString, NotUsed] =
     Source.failed(new ArithmeticException(message))
 
+  // has adivide by zero exception
+  private def exceptionSource(): Source[ByteString, NotUsed] =
+    Source.single(5).map(_ / 0).map(s => ByteString.fromString(s.toString))
 }
