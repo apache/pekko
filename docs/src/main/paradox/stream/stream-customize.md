@@ -64,7 +64,7 @@ In order to emit from a @apidoc[stream.*.Source] in a backpressured stream one n
 To receive the necessary events one needs to register a subclass of @scala[@scaladoc[OutHandler](pekko.stream.stage.OutHandler)] @java[@javadoc[AbstractOutHandler](pekko.stream.stage.AbstractOutHandler)] with the output port
 (@apidoc[stream.Outlet]). This handler will receive events related to the lifecycle of the port. In our case we need to
 override `onPull()` which indicates that we are free to emit a single element. There is another callback,
-`onDownstreamFinish()` which is called if the downstream cancelled. Since the default behavior of that callback is
+`onDownstreamFinish(cause)` which is called if the downstream cancelled. Since the default behavior of that callback is
 to stop the operator, we don't need to override it. In the `onPull` callback we will emit the next number. This
 is how it looks like in the end:
 
