@@ -43,6 +43,7 @@ import pekko.stream.impl.fusing.{ StatefulMapConcat, ZipWithIndexJava }
 import pekko.util.ConstantFun
 import pekko.util.Timeout
 
+import org.jspecify.annotations.Nullable
 import org.reactivestreams.Processor
 
 object Flow {
@@ -3492,7 +3493,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * '''Cancels when''' downstream cancels
    */
   def interleaveAll(
-      those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
+      @Nullable those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
       segmentSize: Int,
       eagerClose: Boolean): javadsl.Flow[In, Out, Mat] = {
     import pekko.util.Collections._
@@ -3576,7 +3577,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * '''Cancels when''' downstream cancels
    */
   def mergeAll(
-      those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
+      @Nullable those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
       eagerComplete: Boolean): javadsl.Flow[In, Out, Mat] = {
     import pekko.util.Collections._
     val seq = if (those ne null) those.collectToImmutableSeq {
@@ -4318,7 +4319,8 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
-  def log(name: String, extract: function.Function[Out, Any], log: LoggingAdapter): javadsl.Flow[In, Out, Mat] =
+  def log(name: String, extract: function.Function[Out, Any], @Nullable log: LoggingAdapter)
+      : javadsl.Flow[In, Out, Mat] =
     new Flow(delegate.log(name, e => extract.apply(e))(log))
 
   /**
@@ -4359,7 +4361,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
-  def log(name: String, log: LoggingAdapter): javadsl.Flow[In, Out, Mat] =
+  def log(name: String, @Nullable log: LoggingAdapter): javadsl.Flow[In, Out, Mat] =
     this.log(name, ConstantFun.javaIdentityFunction[Out], log)
 
   /**
@@ -4406,7 +4408,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
       name: String,
       marker: function.Function[Out, LogMarker],
       extract: function.Function[Out, Any],
-      log: MarkerLoggingAdapter): javadsl.Flow[In, Out, Mat] =
+      @Nullable log: MarkerLoggingAdapter): javadsl.Flow[In, Out, Mat] =
     new Flow(delegate.logWithMarker(name, e => marker.apply(e), e => extract.apply(e))(log))
 
   /**
@@ -4453,7 +4455,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
   def logWithMarker(
       name: String,
       marker: function.Function[Out, LogMarker],
-      log: MarkerLoggingAdapter): javadsl.Flow[In, Out, Mat] =
+      @Nullable log: MarkerLoggingAdapter): javadsl.Flow[In, Out, Mat] =
     this.logWithMarker(name, marker, ConstantFun.javaIdentityFunction[Out], log)
 
   /**
