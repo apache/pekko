@@ -39,7 +39,8 @@ abstract class MembershipChangeListenerUpSpec extends MultiNodeClusterSpec(Membe
 
   "A set of connected cluster systems" must {
 
-    "(when two nodes) after cluster convergence updates the membership table then all MembershipChangeListeners should be triggered" taggedAs LongRunningTest in {
+    "(when two nodes) after cluster convergence updates the membership table then all MembershipChangeListeners should be triggered" taggedAs
+    LongRunningTest in {
 
       awaitClusterUp(first)
 
@@ -70,7 +71,8 @@ abstract class MembershipChangeListenerUpSpec extends MultiNodeClusterSpec(Membe
       enterBarrier("after-1")
     }
 
-    "(when three nodes) after cluster convergence updates the membership table then all MembershipChangeListeners should be triggered" taggedAs LongRunningTest in {
+    "(when three nodes) after cluster convergence updates the membership table then all MembershipChangeListeners should be triggered" taggedAs
+    LongRunningTest in {
 
       val latch = TestLatch()
       val expectedAddresses = Set(first, second, third).map(address)

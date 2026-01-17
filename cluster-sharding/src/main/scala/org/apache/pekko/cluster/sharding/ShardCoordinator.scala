@@ -34,9 +34,7 @@ import pekko.cluster.ddata.Replicator._
 import pekko.cluster.ddata.SelfUniqueAddress
 import pekko.cluster.sharding.ShardRegion.ShardId
 import pekko.cluster.sharding.internal.{
-  EventSourcedRememberEntitiesCoordinatorStore,
-  RememberEntitiesCoordinatorStore,
-  RememberEntitiesProvider
+  EventSourcedRememberEntitiesCoordinatorStore, RememberEntitiesCoordinatorStore, RememberEntitiesProvider
 }
 import pekko.cluster.sharding.internal.AbstractLeastShardAllocationStrategy
 import pekko.cluster.sharding.internal.AbstractLeastShardAllocationStrategy.RegionEntry
@@ -1205,7 +1203,8 @@ abstract class ShardCoordinator(
       state.shards.get(shard) match {
         case Some(ref) => getShardHomeSender ! ShardHome(shard, ref)
         case None      =>
-          if (state.regions.contains(region) && !gracefulShutdownInProgress(region) && !regionTerminationInProgress
+          if (state.regions.contains(region) && !gracefulShutdownInProgress(region) &&
+            !regionTerminationInProgress
               .contains(region)) {
             update(ShardHomeAllocated(shard, region)) { evt =>
               state = state.updated(evt)

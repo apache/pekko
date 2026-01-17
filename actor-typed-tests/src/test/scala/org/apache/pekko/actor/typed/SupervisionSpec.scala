@@ -461,7 +461,8 @@ class SupervisionSpec extends ScalaTestWithActorTestKit("""
           .onFailure[Exception](SupervisorStrategy.restart)
     }(ReceivedSignal(PostStop))
 
-    "support nesting exceptions with outer restart and inner backoff strategies" in throwIOExceptionThenIllegalArgumentException {
+    "support nesting exceptions with outer restart and inner backoff strategies" in
+    throwIOExceptionThenIllegalArgumentException {
       probeRef =>
         supervise(
           supervise(targetBehavior(probeRef))
@@ -469,14 +470,16 @@ class SupervisionSpec extends ScalaTestWithActorTestKit("""
           .onFailure[IOException](SupervisorStrategy.restart)
     }()
 
-    "support flattening exceptions with outer restart and inner backoff strategies" in throwIOExceptionThenIllegalArgumentException {
+    "support flattening exceptions with outer restart and inner backoff strategies" in
+    throwIOExceptionThenIllegalArgumentException {
       probeRef =>
         supervise(targetBehavior(probeRef))
           .onFailure[IllegalArgumentException](SupervisorStrategy.restartWithBackoff(10.millis, 10.millis, 0.0))
           .onFailure[IOException](SupervisorStrategy.restart)
     }()
 
-    "support nesting exceptions with inner restart and outer backoff strategies" in throwIOExceptionThenIllegalArgumentException {
+    "support nesting exceptions with inner restart and outer backoff strategies" in
+    throwIOExceptionThenIllegalArgumentException {
       probeRef =>
         supervise(
           supervise(targetBehavior(probeRef))
@@ -484,7 +487,8 @@ class SupervisionSpec extends ScalaTestWithActorTestKit("""
           .onFailure[IOException](SupervisorStrategy.restartWithBackoff(10.millis, 10.millis, 0.0))
     }()
 
-    "support flattening exceptions with inner restart and outer backoff strategies" in throwIOExceptionThenIllegalArgumentException {
+    "support flattening exceptions with inner restart and outer backoff strategies" in
+    throwIOExceptionThenIllegalArgumentException {
       probeRef =>
         supervise(targetBehavior(probeRef))
           .onFailure[IllegalArgumentException](SupervisorStrategy.restart)
@@ -1135,7 +1139,8 @@ class SupervisionSpec extends ScalaTestWithActorTestKit("""
       }
     }
 
-    "fail instead of restart with exponential backoff when deferred factory throws unhandled" in new FailingUnhandledTestSetup(
+    "fail instead of restart with exponential backoff when deferred factory throws unhandled" in
+    new FailingUnhandledTestSetup(
       strategy = SupervisorStrategy.restartWithBackoff(minBackoff = 100.millis.dilated, maxBackoff = 1.second, 0)) {
 
       LoggingTestKit.error[ActorInitializationException].expect {

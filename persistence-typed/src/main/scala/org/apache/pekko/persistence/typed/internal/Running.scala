@@ -47,19 +47,9 @@ import pekko.persistence.journal.Tagged
 import pekko.persistence.query.{ EventEnvelope, PersistenceQuery }
 import pekko.persistence.query.scaladsl.EventsByPersistenceIdQuery
 import pekko.persistence.typed.{
-  DeleteEventsCompleted,
-  DeleteEventsFailed,
-  DeleteSnapshotsCompleted,
-  DeleteSnapshotsFailed,
-  DeletionTarget,
-  EventRejectedException,
-  JournalPersistFailed,
-  JournalPersistRejected,
-  PersistenceId,
-  SnapshotCompleted,
-  SnapshotFailed,
-  SnapshotMetadata,
-  SnapshotSelectionCriteria
+  DeleteEventsCompleted, DeleteEventsFailed, DeleteSnapshotsCompleted, DeleteSnapshotsFailed, DeletionTarget,
+  EventRejectedException, JournalPersistFailed, JournalPersistRejected, PersistenceId, SnapshotCompleted,
+  SnapshotFailed, SnapshotMetadata, SnapshotSelectionCriteria
 }
 import pekko.persistence.typed.ReplicaId
 import pekko.persistence.typed.ReplicationId

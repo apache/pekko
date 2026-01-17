@@ -441,12 +441,11 @@ private[remote] class ArteryTcpTransport(
             .run()(materializer)
 
         val lane = inboundSink(envelopeBufferPool)
-        val completedValues: Vector[Future[Done]] =
-          (0 until inboundLanes).iterator
-            .map { _ =>
-              laneHub.toMat(lane)(Keep.right).run()(materializer)
-            }
-            .to(immutable.Vector)
+        val completedValues: Vector[Future[Done]] = (0 until inboundLanes).iterator
+          .map { _ =>
+            laneHub.toMat(lane)(Keep.right).run()(materializer)
+          }
+          .to(immutable.Vector)
 
         implicit val ec = system.dispatchers.internalDispatcher
 

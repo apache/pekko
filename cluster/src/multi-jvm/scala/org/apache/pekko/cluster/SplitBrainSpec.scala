@@ -75,7 +75,8 @@ abstract class SplitBrainSpec(multiNodeConfig: SplitBrainMultiNodeConfig)
       enterBarrier("after-1")
     }
 
-    "detect network partition and mark nodes on other side as unreachable and form new cluster" taggedAs LongRunningTest in within(
+    "detect network partition and mark nodes on other side as unreachable and form new cluster" taggedAs
+    LongRunningTest in within(
       30.seconds) {
       enterBarrier("before-split")
 

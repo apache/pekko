@@ -27,10 +27,7 @@ import pekko.event.Logging
 import pekko.stream._
 import pekko.stream.Supervision.Decider
 import pekko.stream.impl.fusing.GraphInterpreter.{
-  Connection,
-  DownstreamBoundaryStageLogic,
-  Failed,
-  UpstreamBoundaryStageLogic
+  Connection, DownstreamBoundaryStageLogic, Failed, UpstreamBoundaryStageLogic
 }
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler, _ }
 import pekko.stream.testkit.StreamSpec

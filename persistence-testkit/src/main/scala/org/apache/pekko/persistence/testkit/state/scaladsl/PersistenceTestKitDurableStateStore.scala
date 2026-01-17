@@ -23,12 +23,7 @@ import pekko.{ Done, NotUsed }
 import pekko.actor.ExtendedActorSystem
 import pekko.persistence.Persistence
 import pekko.persistence.query.{
-  DeletedDurableState,
-  DurableStateChange,
-  NoOffset,
-  Offset,
-  Sequence,
-  UpdatedDurableState
+  DeletedDurableState, DurableStateChange, NoOffset, Offset, Sequence, UpdatedDurableState
 }
 import pekko.persistence.query.scaladsl.{ DurableStateStorePagedPersistenceIdsQuery, DurableStateStoreQuery }
 import pekko.persistence.query.typed.scaladsl.DurableStateStoreBySliceQuery

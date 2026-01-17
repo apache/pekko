@@ -239,7 +239,8 @@ class RemoteWatcherSpec
       expectNoMessage(2.seconds)
     }
 
-    "generate AddressTerminated for new watch after broken connection that was re-established and broken again" taggedAs LongRunningTest in {
+    "generate AddressTerminated for new watch after broken connection that was re-established and broken again" taggedAs
+    LongRunningTest in {
       val p = TestProbe()
       val q = TestProbe()
       system.eventStream.subscribe(p.ref, classOf[TestRemoteWatcher.AddressTerm])

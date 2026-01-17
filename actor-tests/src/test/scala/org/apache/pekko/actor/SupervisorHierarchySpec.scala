@@ -559,7 +559,8 @@ object SupervisorHierarchySpec {
       case this.Event(StateTimeout, todo) =>
         log.info("dumping state due to StateTimeout")
         log.info(
-          "children: " + children.size + " pinged: " + pingChildren.size + " idle: " + idleChildren.size + " work: " + todo)
+          "children: " + children.size + " pinged: " + pingChildren.size + " idle: " + idleChildren.size + " work: " +
+          todo)
         pingChildren.foreach(println)
         println(system.asInstanceOf[ActorSystemImpl].printTree)
         pingChildren.foreach(getErrorsUp)

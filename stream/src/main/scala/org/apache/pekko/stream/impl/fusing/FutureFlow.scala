@@ -21,12 +21,7 @@ import scala.util.control.NonFatal
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.stream.{
-  AbruptStageTerminationException,
-  Attributes,
-  FlowShape,
-  Inlet,
-  NeverMaterializedException,
-  Outlet
+  AbruptStageTerminationException, Attributes, FlowShape, Inlet, NeverMaterializedException, Outlet
 }
 import pekko.stream.Attributes.SourceLocation
 import pekko.stream.impl.Stages.DefaultAttributes

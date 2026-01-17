@@ -24,10 +24,7 @@ import pekko.persistence.query.{ EventEnvelope, Sequence }
 import pekko.persistence.query.NoOffset
 import pekko.persistence.query.Offset
 import pekko.persistence.query.scaladsl.{
-  CurrentEventsByPersistenceIdQuery,
-  CurrentEventsByTagQuery,
-  EventsByPersistenceIdQuery,
-  PagedPersistenceIdsQuery,
+  CurrentEventsByPersistenceIdQuery, CurrentEventsByTagQuery, EventsByPersistenceIdQuery, PagedPersistenceIdsQuery,
   ReadJournal
 }
 import pekko.persistence.query.scaladsl.EventsByTagQuery

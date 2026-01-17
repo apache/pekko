@@ -138,7 +138,8 @@ object ReplicatedAuctionExampleSpec {
         // If timestamps are equal, choose by dc where the offer was submitted
         // In real auctions, this last comparison should be deterministic but unpredictable, so that submitting to a
         // particular DC would not be an advantage.
-        (first.offer == second.offer && first.timestamp.equals(second.timestamp) && first.originReplica.id
+        (first.offer == second.offer && first.timestamp.equals(second.timestamp) &&
+        first.originReplica.id
           .compareTo(second.originReplica.id) < 0)
     }
     // #state
@@ -279,7 +280,8 @@ object ReplicatedAuctionExampleSpec {
     }
 
     private def shouldClose(state: AuctionState): Boolean = {
-      responsibleForClosing && (state.phase match {
+      responsibleForClosing &&
+      (state.phase match {
         case Closing(alreadyFinishedAtDc) =>
           val allDone = allReplicas.diff(alreadyFinishedAtDc).isEmpty
           if (!allDone) {

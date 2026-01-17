@@ -35,12 +35,8 @@ object Patterns {
   import pekko.actor.ActorRef
   import pekko.japi
   import pekko.pattern.{
-    after => scalaAfter,
-    ask => scalaAsk,
-    askWithStatus => scalaAskWithStatus,
-    gracefulStop => scalaGracefulStop,
-    pipe => scalaPipe,
-    retry => scalaRetry
+    after => scalaAfter, ask => scalaAsk, askWithStatus => scalaAskWithStatus, gracefulStop => scalaGracefulStop,
+    pipe => scalaPipe, retry => scalaRetry
   }
   import pekko.util.Timeout
 

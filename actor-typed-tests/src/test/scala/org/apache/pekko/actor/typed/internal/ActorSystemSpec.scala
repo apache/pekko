@@ -191,7 +191,8 @@ class ActorSystemSpec
         "guardian-mailbox",
         Behaviors.receive[WhatsYourMailbox] {
           case (context, WhatsYourMailbox(replyTo)) =>
-            replyTo ! context
+            replyTo !
+            context
               .asInstanceOf[ActorContextImpl[_]]
               .classicActorContext
               .asInstanceOf[Dispatch]

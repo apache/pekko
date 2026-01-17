@@ -23,23 +23,13 @@ import scala.util.{ Failure, Success }
 
 import com.fasterxml.jackson.annotation.{ JsonAutoDetect, JsonCreator, PropertyAccessor }
 import com.fasterxml.jackson.core.{
-  JsonFactory,
-  JsonFactoryBuilder,
-  JsonGenerator,
-  JsonParser,
-  StreamReadConstraints,
-  StreamReadFeature,
-  StreamWriteConstraints,
-  StreamWriteFeature
+  JsonFactory, JsonFactoryBuilder, JsonGenerator, JsonParser, StreamReadConstraints, StreamReadFeature,
+  StreamWriteConstraints, StreamWriteFeature
 }
 import com.fasterxml.jackson.core.json.{ JsonReadFeature, JsonWriteFeature }
 import com.fasterxml.jackson.core.util.{ BufferRecycler, JsonRecyclerPools, RecyclerPool }
 import com.fasterxml.jackson.databind.{
-  DeserializationFeature,
-  MapperFeature,
-  Module,
-  ObjectMapper,
-  SerializationFeature
+  DeserializationFeature, MapperFeature, Module, ObjectMapper, SerializationFeature
 }
 import com.fasterxml.jackson.databind.cfg.EnumFeature
 import com.fasterxml.jackson.databind.json.JsonMapper
@@ -47,12 +37,7 @@ import com.fasterxml.jackson.module.paramnames.ParameterNamesModule
 
 import org.apache.pekko
 import pekko.actor.{
-  ActorSystem,
-  ClassicActorSystemProvider,
-  DynamicAccess,
-  ExtendedActorSystem,
-  Extension,
-  ExtensionId,
+  ActorSystem, ClassicActorSystemProvider, DynamicAccess, ExtendedActorSystem, Extension, ExtensionId,
   ExtensionIdProvider
 }
 import pekko.actor.setup.Setup

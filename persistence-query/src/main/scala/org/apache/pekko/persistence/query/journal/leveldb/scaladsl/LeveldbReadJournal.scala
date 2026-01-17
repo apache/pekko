@@ -69,7 +69,8 @@ class LeveldbReadJournal(system: ExtendedActorSystem, config: Config)
     else
       writeJournalPluginId
   require(
-    resolvedWriteJournalPluginId.nonEmpty && system.settings.config
+    resolvedWriteJournalPluginId.nonEmpty &&
+    system.settings.config
       .getConfig(resolvedWriteJournalPluginId)
       .getString("class") == "org.apache.pekko.persistence.journal.leveldb.LeveldbJournal",
     s"Leveldb read journal can only work with a Leveldb write journal. Current plugin [$resolvedWriteJournalPluginId] is not a LeveldbJournal")

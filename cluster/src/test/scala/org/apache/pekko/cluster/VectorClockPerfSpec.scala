@@ -21,12 +21,12 @@ import org.scalatest.wordspec.AnyWordSpec
 object VectorClockPerfSpec {
   import VectorClock._
 
-  def createVectorClockOfSize(size: Int): (VectorClock, SortedSet[Node]) =
-    (1 to size).foldLeft((VectorClock(), SortedSet.empty[Node])) {
-      case ((vc, nodes), i) =>
-        val node = Node(i.toString)
-        (vc :+ node, nodes + node)
-    }
+  def createVectorClockOfSize(
+      size: Int): (VectorClock, SortedSet[Node]) = (1 to size).foldLeft((VectorClock(), SortedSet.empty[Node])) {
+    case ((vc, nodes), i) =>
+      val node = Node(i.toString)
+      (vc :+ node, nodes + node)
+  }
 
   def copyVectorClock(vc: VectorClock): VectorClock = {
     val versions = vc.versions.foldLeft(TreeMap.empty[Node, Long]) {

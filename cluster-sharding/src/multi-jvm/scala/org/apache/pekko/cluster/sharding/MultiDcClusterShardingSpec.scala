@@ -96,7 +96,8 @@ abstract class MultiDcClusterShardingSpec
       to, {
         startSharding()
         withClue(
-          s"Failed waiting for ${cluster.selfUniqueAddress} to be up. Current state: ${cluster.state}" + cluster.state) {
+          s"Failed waiting for ${cluster.selfUniqueAddress} to be up. Current state: ${cluster.state}" +
+          cluster.state) {
           within(15.seconds) {
             awaitAssert(cluster.state.members.exists { m =>
               m.uniqueAddress == cluster.selfUniqueAddress && m.status == MemberStatus.Up

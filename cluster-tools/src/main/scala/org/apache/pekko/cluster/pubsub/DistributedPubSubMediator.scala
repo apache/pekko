@@ -831,9 +831,10 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
   def put(key: String, valueOption: Option[ActorRef]): Unit = {
     val bucket = registry(selfAddress)
     val v = nextVersion()
-    registry += (selfAddress -> bucket.copy(
-      version = v,
-      content = bucket.content + (key -> ValueHolder(v, valueOption))))
+    registry +=
+      (selfAddress -> bucket.copy(
+        version = v,
+        content = bucket.content + (key -> ValueHolder(v, valueOption))))
   }
 
   def getCurrentTopics(): Set[String] = {

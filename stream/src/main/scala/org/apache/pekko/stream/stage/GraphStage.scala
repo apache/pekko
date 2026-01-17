@@ -773,8 +773,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
   /**
    * Return true if the given output port is ready to be pushed.
    */
-  final def isAvailable[T](out: Outlet[T]): Boolean =
-    (conn(out).portState & (OutReady | OutClosed)) == OutReady
+  final def isAvailable[T](out: Outlet[T]): Boolean = (conn(out).portState & (OutReady | OutClosed)) == OutReady
 
   /**
    * Indicates whether the port has been closed. A closed port cannot be pushed.

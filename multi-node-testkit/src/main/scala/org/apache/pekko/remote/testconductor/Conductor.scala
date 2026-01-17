@@ -29,17 +29,8 @@ import org.apache.pekko
 import pekko.ConfigurationException
 import pekko.PekkoException
 import pekko.actor.{
-  Actor,
-  ActorRef,
-  Address,
-  DeadLetterSuppression,
-  Deploy,
-  LoggingFSM,
-  NoSerializationVerificationNeeded,
-  OneForOneStrategy,
-  Props,
-  Status,
-  SupervisorStrategy
+  Actor, ActorRef, Address, DeadLetterSuppression, Deploy, LoggingFSM, NoSerializationVerificationNeeded,
+  OneForOneStrategy, Props, Status, SupervisorStrategy
 }
 import pekko.event.{ Logging, LoggingAdapter }
 import pekko.event.LoggingReceive

@@ -89,7 +89,8 @@ object StreamOperatorsIndexGenerator extends AutoPlugin {
   // FIXME document these methods as well
   val pendingTestCases = Map(
     "Source" -> pendingSourceOrFlow,
-    "Flow" -> (pendingSourceOrFlow ++ Seq(
+    "Flow" ->
+    (pendingSourceOrFlow ++ Seq(
       "fromProcessorMat",
       "toProcessor",
       "fromProcessor",

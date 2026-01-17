@@ -235,7 +235,8 @@ class FlowGroupedWithinSpec extends StreamSpec with ScriptedTest {
       downstream.expectComplete()
     }
 
-    "append zero weighted elements to a full group before timeout received, if downstream hasn't pulled yet" taggedAs TimingTest in {
+    "append zero weighted elements to a full group before timeout received, if downstream hasn't pulled yet" taggedAs
+    TimingTest in {
       val upstream = TestPublisher.probe[String]()
       val downstream = TestSubscriber.probe[immutable.Seq[String]]()
       Source

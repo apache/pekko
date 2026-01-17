@@ -21,17 +21,8 @@ import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.actor.{
-  Actor,
-  ActorPath,
-  ActorPathExtractor,
-  ActorRef,
-  ActorSystemImpl,
-  AddressTerminated,
-  Deploy,
-  InternalActorRef,
-  Nobody,
-  Props,
-  VirtualPathContainer
+  Actor, ActorPath, ActorPathExtractor, ActorRef, ActorSystemImpl, AddressTerminated, Deploy, InternalActorRef, Nobody,
+  Props, VirtualPathContainer
 }
 import pekko.actor.ActorIdentity
 import pekko.actor.ActorRefScope

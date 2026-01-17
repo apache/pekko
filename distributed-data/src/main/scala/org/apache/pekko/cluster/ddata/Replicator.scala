@@ -1839,7 +1839,8 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
     }
 
   def isNodeRemoved(node: UniqueAddress, keys: Iterable[KeyId]): Boolean = {
-    removedNodes.contains(node) || (keys.exists(key =>
+    removedNodes.contains(node) ||
+    (keys.exists(key =>
       dataEntries.get(key) match {
         case Some((DataEnvelope(_, pruning, _), _)) => pruning.contains(node)
         case None                                   => false

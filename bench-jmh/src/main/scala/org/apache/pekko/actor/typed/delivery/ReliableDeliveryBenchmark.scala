@@ -122,8 +122,9 @@ object WorkPullingProducer {
     Behaviors.setup { context =>
       val requestNextAdapter =
         context.messageAdapter[WorkPullingProducerController.RequestNext[Consumer.Command]](WrappedRequestNext(_))
-      var remaining = numberOfMessages + context.system.settings.config
-        .getInt("pekko.reliable-delivery.consumer-controller.flow-control-window")
+      var remaining = numberOfMessages +
+        context.system.settings.config
+          .getInt("pekko.reliable-delivery.consumer-controller.flow-control-window")
 
       Behaviors.receiveMessagePartial {
         case WrappedRequestNext(next) =>

@@ -38,20 +38,10 @@ import pekko.util.Helpers.Requiring
 
 import io.netty.bootstrap.{ Bootstrap => ClientBootstrap, ServerBootstrap }
 import io.netty.buffer.{
-  AdaptiveByteBufAllocator,
-  ByteBufAllocator,
-  PooledByteBufAllocator,
-  Unpooled,
-  UnpooledByteBufAllocator
+  AdaptiveByteBufAllocator, ByteBufAllocator, PooledByteBufAllocator, Unpooled, UnpooledByteBufAllocator
 }
 import io.netty.channel.{
-  Channel,
-  ChannelFuture,
-  ChannelHandlerContext,
-  ChannelInitializer,
-  ChannelOption,
-  ChannelPipeline,
-  EventLoopGroup,
+  Channel, ChannelFuture, ChannelHandlerContext, ChannelInitializer, ChannelOption, ChannelPipeline, EventLoopGroup,
   MultiThreadIoEventLoopGroup
 }
 import io.netty.channel.group.{ ChannelGroup, ChannelGroupFuture, ChannelMatchers, DefaultChannelGroup }

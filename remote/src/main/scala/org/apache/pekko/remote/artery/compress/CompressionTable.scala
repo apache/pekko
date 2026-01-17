@@ -49,7 +49,8 @@ private[remote] final class CompressionTable[T](
       import scala.jdk.CollectionConverters._
       require(
         _dictionary.values.iterator().asScala.min == 0,
-        "Compression table should start allocating from 0, yet lowest allocated id was " + _dictionary.values
+        "Compression table should start allocating from 0, yet lowest allocated id was " +
+        _dictionary.values
           .iterator()
           .asScala
           .min)

@@ -88,7 +88,8 @@ private[pekko] final class BehaviorSetup[C, E, S](
   val isSnapshotOptional: Boolean =
     Persistence(context.system.classicSystem).configFor(snapshotStore).getBoolean("snapshot-is-optional")
 
-  if (isSnapshotOptional && (retention match {
+  if (isSnapshotOptional &&
+    (retention match {
       case SnapshotCountRetentionCriteriaImpl(_, _, true) => true
       case _                                              => false
     })) {

@@ -38,10 +38,7 @@ import pekko.remote.EndpointWriter.{ FlushAndStop, StoppedReading }
 import pekko.remote.WireFormats.SerializedMessage
 import pekko.remote.transport._
 import pekko.remote.transport.AssociationHandle.{
-  ActorHandleEventListener,
-  DisassociateInfo,
-  Disassociated,
-  InboundPayload
+  ActorHandleEventListener, DisassociateInfo, Disassociated, InboundPayload
 }
 import pekko.remote.transport.PekkoPduCodec.Message
 import pekko.remote.transport.Transport.InvalidAssociationException
@@ -108,7 +105,8 @@ private[remote] class DefaultMessageDispatcher(
         logMessageReceived("local message")
         payload match {
           case sel: ActorSelectionMessage =>
-            if (UntrustedMode && (!TrustedSelectionPaths.contains(sel.elements.mkString("/", "/", "")) ||
+            if (UntrustedMode &&
+              (!TrustedSelectionPaths.contains(sel.elements.mkString("/", "/", "")) ||
               sel.msg.isInstanceOf[PossiblyHarmful] || l != provider.rootGuardian))
               log.debug(
                 LogMarker.Security,

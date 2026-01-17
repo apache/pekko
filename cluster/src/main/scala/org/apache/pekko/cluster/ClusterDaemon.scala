@@ -911,7 +911,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
   def leaving(address: Address): Unit = {
     // only try to update if the node is available (in the member ring)
     latestGossip.members.find(_.address == address).foreach { existingMember =>
-      if (existingMember.status == Joining || existingMember.status == WeaklyUp || existingMember
+      if (existingMember.status == Joining || existingMember.status == WeaklyUp ||
+        existingMember
           .status == Up || existingMember.status == PreparingForShutdown || existingMember.status == ReadyForShutdown) {
         // mark node as LEAVING
         val newMembers = latestGossip.members - existingMember + existingMember.copy(status = Leaving)
@@ -1290,7 +1291,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
       } else {
         leaderActionCounter += 1
         import cluster.settings.{ AllowWeaklyUpMembers, LeaderActionsInterval, WeaklyUpAfter }
-        if (AllowWeaklyUpMembers && LeaderActionsInterval * leaderActionCounter >= WeaklyUpAfter && !preparingForShutdown)
+        if (AllowWeaklyUpMembers && LeaderActionsInterval * leaderActionCounter >= WeaklyUpAfter &&
+          !preparingForShutdown)
           moveJoiningToWeaklyUp()
 
         if (leaderActionCounter == firstNotice || leaderActionCounter % periodicNotice == 0)
@@ -1316,7 +1318,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
 
   def checkForPrepareForShutdown(): Unit = {
     if (MembershipState.allowedToPrepareToShutdown(
-        latestGossip.member(selfUniqueAddress).status) && latestGossip.members
+        latestGossip.member(selfUniqueAddress).status) &&
+      latestGossip.members
         .exists(m => MembershipState.prepareForShutdownStates(m.status))) {
       logDebug("Detected full cluster shutdown")
       self ! ClusterUserAction.PrepareForShutdown

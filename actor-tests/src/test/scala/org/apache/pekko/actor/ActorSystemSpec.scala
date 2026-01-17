@@ -43,11 +43,12 @@ object ActorSystemSpec {
     def receive = {
       case n: Int =>
         master = sender()
-        terminaters = Set() ++ (for (_ <- 1 to n) yield {
-          val man = context.watch(context.system.actorOf(Props[Terminater]()))
-          man ! "run"
-          man
-        })
+        terminaters = Set() ++
+          (for (_ <- 1 to n) yield {
+            val man = context.watch(context.system.actorOf(Props[Terminater]()))
+            man ! "run"
+            man
+          })
       case Terminated(child) if terminaters contains child =>
         terminaters -= child
         if (terminaters.isEmpty) {

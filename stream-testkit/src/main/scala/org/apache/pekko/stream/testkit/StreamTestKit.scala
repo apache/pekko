@@ -25,11 +25,7 @@ import scala.reflect.ClassTag
 
 import org.apache.pekko
 import pekko.actor.{
-  ActorRef,
-  ActorSystem,
-  ClassicActorSystemProvider,
-  DeadLetterSuppression,
-  NoSerializationVerificationNeeded
+  ActorRef, ActorSystem, ClassicActorSystemProvider, DeadLetterSuppression, NoSerializationVerificationNeeded
 }
 import pekko.japi._
 import pekko.stream._

@@ -21,8 +21,7 @@ import pekko.actor.typed._
 import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.cluster.ClusterSettings.DataCenter
 import pekko.cluster.singleton.{
-  ClusterSingletonManagerSettings => ClassicClusterSingletonManagerSettings,
-  ClusterSingletonProxySettings
+  ClusterSingletonManagerSettings => ClassicClusterSingletonManagerSettings, ClusterSingletonProxySettings
 }
 import pekko.cluster.typed.internal.AdaptedClusterSingletonImpl
 import pekko.coordination.lease.LeaseUsageSettings

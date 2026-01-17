@@ -29,14 +29,13 @@ class ReachabilityPerfSpec extends AnyWordSpec with Matchers {
   val address = Address("pekko", "sys", "a", 7355)
   val node = Address("pekko", "sys", "a", 7355)
 
-  private def createReachabilityOfSize(base: Reachability, size: Int): Reachability =
-    (1 to size).foldLeft(base) {
-      case (r, i) =>
-        val observer = UniqueAddress(address.copy(host = Some("node-" + i)), i.toLong)
-        val j = if (i == size) 1 else i + 1
-        val subject = UniqueAddress(address.copy(host = Some("node-" + j)), j.toLong)
-        r.unreachable(observer, subject).reachable(observer, subject)
-    }
+  private def createReachabilityOfSize(base: Reachability, size: Int): Reachability = (1 to size).foldLeft(base) {
+    case (r, i) =>
+      val observer = UniqueAddress(address.copy(host = Some("node-" + i)), i.toLong)
+      val j = if (i == size) 1 else i + 1
+      val subject = UniqueAddress(address.copy(host = Some("node-" + j)), j.toLong)
+      r.unreachable(observer, subject).reachable(observer, subject)
+  }
 
   @nowarn
   private def addUnreachable(base: Reachability, count: Int): Reachability = {

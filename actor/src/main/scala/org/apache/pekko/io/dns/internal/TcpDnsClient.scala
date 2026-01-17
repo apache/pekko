@@ -102,8 +102,7 @@ private[internal] object TcpDnsClient {
   def encodeLength(length: Int): ByteString =
     ByteString((length / 256).toByte, length.toByte)
 
-  def decodeLength(data: ByteString): Int =
-    ((data(0).toInt + 256) % 256) * 256 + ((data(1) + 256) % 256)
+  def decodeLength(data: ByteString): Int = ((data(0).toInt + 256) % 256) * 256 + ((data(1) + 256) % 256)
 
   def throwFailure(message: String, cause: Option[Throwable]): Unit =
     cause match {

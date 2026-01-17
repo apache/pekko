@@ -108,7 +108,8 @@ abstract class MultiNodeClusterShardingConfig(
         "").replace("_", "")}"
 
   val persistenceConfig: Config =
-    if (mode == ClusterShardingSettings.StateStoreModeDData && rememberEntitiesStore != ClusterShardingSettings.RememberEntitiesStoreEventsourced)
+    if (mode == ClusterShardingSettings.StateStoreModeDData &&
+      rememberEntitiesStore != ClusterShardingSettings.RememberEntitiesStoreEventsourced)
       ConfigFactory.empty
     else MultiNodeClusterShardingConfig.persistenceConfig(targetDir)
 

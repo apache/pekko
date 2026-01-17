@@ -29,11 +29,7 @@ import com.fasterxml.jackson.annotation.{ JsonIgnore, JsonSubTypes, JsonTypeInfo
 import tools.jackson.core.{ JsonGenerator, StreamReadFeature, StreamWriteFeature }
 import tools.jackson.core.`type`.TypeReference
 import tools.jackson.databind.{
-  DeserializationFeature,
-  JacksonModule,
-  MapperFeature,
-  SerializationContext,
-  SerializationFeature
+  DeserializationFeature, JacksonModule, MapperFeature, SerializationContext, SerializationFeature
 }
 import tools.jackson.databind.annotation.{ JsonDeserialize, JsonSerialize }
 import tools.jackson.databind.cfg.DateTimeFeature

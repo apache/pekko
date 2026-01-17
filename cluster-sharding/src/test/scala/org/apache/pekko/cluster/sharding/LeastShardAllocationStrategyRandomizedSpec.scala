@@ -30,11 +30,7 @@ import pekko.testkit.PekkoSpec
 
 class LeastShardAllocationStrategyRandomizedSpec extends PekkoSpec("pekko.loglevel = INFO") {
   import LeastShardAllocationStrategySpec.{
-    afterRebalance,
-    countShards,
-    countShardsPerRegion,
-    newFakeRegion,
-    newUpMember
+    afterRebalance, countShards, countShardsPerRegion, newFakeRegion, newUpMember
   }
 
   @volatile var clusterMembers: SortedSet[Member] = SortedSet.empty
