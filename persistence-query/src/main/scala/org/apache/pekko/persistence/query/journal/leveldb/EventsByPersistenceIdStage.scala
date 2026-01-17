@@ -132,7 +132,8 @@ final private[pekko] class EventsByPersistenceIdStage(
               nextSequenceNr,
               toSequenceNr,
               bufferSize)
-            if (bufferEmpty && (nextSequenceNr > toSequenceNr || (nextSequenceNr == fromSequenceNr && isCurrentQuery()))) {
+            if (bufferEmpty &&
+              (nextSequenceNr > toSequenceNr || (nextSequenceNr == fromSequenceNr && isCurrentQuery()))) {
               completeStage()
             } else if (nextSequenceNr < toSequenceNr) {
               // need further requests to the journal

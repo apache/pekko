@@ -42,8 +42,9 @@ private[sharding] object Murmur2 {
     val length4 = length / 4
     for (i <- 0 until length4) {
       val i4 = i * 4
-      var k = (data(i4 + 0) & 0xFF) + ((data(i4 + 1) & 0xFF) << 8) + ((data(i4 + 2) & 0xFF) << 16) + ((data(
-        i4 + 3) & 0xFF) << 24)
+      var k = (data(i4 + 0) & 0xFF) + ((data(i4 + 1) & 0xFF) << 8) + ((data(i4 + 2) & 0xFF) << 16) +
+        ((data(
+          i4 + 3) & 0xFF) << 24)
       k *= m
       k ^= k >>> r
       k *= m

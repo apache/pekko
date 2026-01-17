@@ -34,8 +34,8 @@ class TcpFramingSpec extends PekkoSpec("""
 
   private val payload5 = ByteString((1 to 5).map(_.toByte).toArray)
 
-  private def frameBytes(numberOfFrames: Int): ByteString =
-    (1 to numberOfFrames).foldLeft(ByteString.empty)((acc, _) => acc ++ encodeFrameHeader(payload5.size) ++ payload5)
+  private def frameBytes(numberOfFrames: Int): ByteString = (1 to numberOfFrames).foldLeft(ByteString.empty)((acc, _) =>
+    acc ++ encodeFrameHeader(payload5.size) ++ payload5)
 
   private val rndSeed = System.currentTimeMillis()
   private val rnd = new Random(rndSeed)

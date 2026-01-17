@@ -66,14 +66,16 @@ class StartupWithOneThreadSpec(startTime: Long) extends PekkoSpec(StartupWithOne
       // dispatcher threads.
       // Note that the Cluster extension is started via ClusterActorRefProvider
       // before ActorSystem.apply returns, i.e. in the constructor of PekkoSpec.
-      (System.nanoTime - startTime).nanos.toMillis should be <
+      (System.nanoTime - startTime).nanos.toMillis should
+      be <
       (system.settings.CreationTimeout.duration - 2.second).toMillis
       system.actorOf(testProps) ! "hello"
       system.actorOf(testProps) ! "hello"
       system.actorOf(testProps) ! "hello"
 
       Cluster(system)
-      (System.nanoTime - startTime).nanos.toMillis should be <
+      (System.nanoTime - startTime).nanos.toMillis should
+      be <
       (system.settings.CreationTimeout.duration - 2.second).toMillis
 
       expectMsg("hello")

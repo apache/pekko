@@ -41,8 +41,7 @@ private[util] object SWARUtil {
   /**
    * Compiles given byte into a long pattern suitable for SWAR operations.
    */
-  def compilePattern(byteToFind: Byte): Long =
-    (byteToFind & 0xFFL) * 0x101010101010101L
+  def compilePattern(byteToFind: Byte): Long = (byteToFind & 0xFFL) * 0x101010101010101L
 
   /**
    * Applies a compiled pattern to given word.

@@ -16,15 +16,7 @@ package org.apache.pekko.persistence.testkit.scaladsl
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
 import pekko.persistence.testkit.{
-  Cmd,
-  CommonUtils,
-  EmptyState,
-  Evt,
-  NonEmptyState,
-  Passivate,
-  Recovered,
-  Stopped,
-  TestCommand
+  Cmd, CommonUtils, EmptyState, Evt, NonEmptyState, Passivate, Recovered, Stopped, TestCommand
 }
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.RecoveryCompleted

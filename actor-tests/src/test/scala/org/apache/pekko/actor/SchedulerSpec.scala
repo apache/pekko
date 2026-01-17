@@ -819,10 +819,11 @@ class LightArrayRevolverSchedulerSpec extends PekkoSpec(SchedulerSpec.testConfRe
       override protected def waitNanos(ns: Long): Unit = {
         // println(s"waiting $ns")
         prb.ref ! ns
-        try time += (lbq.get match {
-            case q: LinkedBlockingQueue[Long] => q.take()
-            case null                         => 0L
-          })
+        try time +=
+            (lbq.get match {
+              case q: LinkedBlockingQueue[Long] => q.take()
+              case null                         => 0L
+            })
         catch {
           case _: InterruptedException => Thread.currentThread.interrupt()
         }

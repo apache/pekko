@@ -349,8 +349,10 @@ object ActorSystem {
       val configuredLoggingFilter = config.getString(loggingFilterConfKey)
 
       val loggingFilterAlreadyConfigured =
-        configuredLoggingFilter == slf4jLoggingFilterClassName || configuredLoggingFilter != classOf[
-          DefaultLoggingFilter].getName
+        configuredLoggingFilter == slf4jLoggingFilterClassName ||
+        configuredLoggingFilter !=
+          classOf[
+            DefaultLoggingFilter].getName
 
       def newLoggingFilterConfStr = s"""$loggingFilterConfKey = "$slf4jLoggingFilterClassName""""
 
@@ -1276,7 +1278,8 @@ private[pekko] class ActorSystemImpl(
             case real: ActorCell => " status=" + real.mailbox.currentStatus
             case _               => ""
           }) +
-          " " + (cell.childrenRefs match {
+          " " +
+          (cell.childrenRefs match {
             case ChildrenContainer.TerminatingChildrenContainer(_, toDie, reason) =>
               "Terminating(" + reason + ")" +
               (toDie.toSeq.sorted.mkString("\n" + indent + "   |    toDie: ", "\n" + indent + "   |           ", ""))

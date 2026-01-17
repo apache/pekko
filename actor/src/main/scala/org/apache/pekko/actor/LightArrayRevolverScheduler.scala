@@ -271,11 +271,12 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
         node.value.ticks match {
           case 0     => node.value.executeTask()
           case ticks =>
-            val futureTick = ((
-              time - start + // calculate the nanos since timer start
-              (ticks * tickNanos) + // adding the desired delay
-              tickNanos - 1 // rounding up
-            ) / tickNanos).toInt // and converting to slot number
+            val futureTick =
+              ((
+                time - start + // calculate the nanos since timer start
+                (ticks * tickNanos) + // adding the desired delay
+                tickNanos - 1 // rounding up
+              ) / tickNanos).toInt // and converting to slot number
             // tick is an Int that will wrap around, but toInt of futureTick gives us modulo operations
             // and the difference (offset) will be correct in any case
             val offset = futureTick - tick

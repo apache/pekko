@@ -102,9 +102,11 @@ class DslConsistencySpec extends AnyWordSpec with Matchers {
     jFlowClass -> (graphHelpers ++ forComprehensions),
     jSourceClass -> (graphHelpers ++ forComprehensions ++ Set("watch", "ask")),
     // Java subflows can only be nested using .via and .to (due to type system restrictions)
-    jSubFlowClass -> (graphHelpers ++ forComprehensions ++ Set("groupBy", "splitAfter", "splitWhen", "subFlow", "watch",
+    jSubFlowClass ->
+    (graphHelpers ++ forComprehensions ++ Set("groupBy", "splitAfter", "splitWhen", "subFlow", "watch",
       "ask")),
-    jSubSourceClass -> (graphHelpers ++ forComprehensions ++ Set("groupBy", "splitAfter", "splitWhen", "subFlow",
+    jSubSourceClass ->
+    (graphHelpers ++ forComprehensions ++ Set("groupBy", "splitAfter", "splitWhen", "subFlow",
       "watch", "ask")),
     sFlowClass -> Set("of"),
     sSourceClass -> Set("adapt", "from", "watch"),

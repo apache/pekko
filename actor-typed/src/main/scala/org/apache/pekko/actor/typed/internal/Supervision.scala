@@ -44,7 +44,8 @@ import org.slf4j.event.Level
  */
 @InternalApi private[pekko] object Supervisor {
   def apply[T, Thr <: Throwable: ClassTag](initialBehavior: Behavior[T], strategy: SupervisorStrategy): Behavior[T] = {
-    if (initialBehavior.isInstanceOf[scaladsl.AbstractBehavior[_]] || initialBehavior
+    if (initialBehavior.isInstanceOf[scaladsl.AbstractBehavior[_]] ||
+      initialBehavior
         .isInstanceOf[javadsl.AbstractBehavior[_]]) {
       throw new IllegalArgumentException(
         "The supervised Behavior must not be a AbstractBehavior instance directly," +

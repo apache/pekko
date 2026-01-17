@@ -82,7 +82,8 @@ class RemoteScatterGatherSpec(multiNodeConfig: RemoteScatterGatherConfig)
   def initialParticipants = roles.size
 
   "A remote ScatterGatherFirstCompleted pool" must {
-    "be locally instantiated on a remote node and be able to communicate through its RemoteActorRef" taggedAs LongRunningTest in {
+    "be locally instantiated on a remote node and be able to communicate through its RemoteActorRef" taggedAs
+    LongRunningTest in {
 
       system.eventStream.publish(Mute(EventFilter.warning(pattern = ".*received dead letter from.*")))
 

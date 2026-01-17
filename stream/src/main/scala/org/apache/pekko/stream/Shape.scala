@@ -167,7 +167,8 @@ final class Outlet[T] private (val s: String) extends OutPort {
    * checks the size of 1 in an optimized way.
    */
   def hasOnePort(ports: immutable.Seq[_]): Boolean = {
-    ports.nonEmpty && (ports match {
+    ports.nonEmpty &&
+    (ports match {
       case l: List[_] => l.tail.isEmpty // assuming List is most common
       case _          => ports.size == 1 // e.g. Vector
     })

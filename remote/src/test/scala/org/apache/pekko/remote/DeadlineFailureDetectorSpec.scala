@@ -65,7 +65,8 @@ class DeadlineFailureDetectorSpec extends PekkoSpec {
       // 1000 regular intervals, 5 minute pause, and then a short pause again that should trigger unreachable again
       val regularIntervals = 0L +: Vector.fill(999)(1000L)
       val timeIntervals =
-        regularIntervals :+ (5 * 60 * 1000L) :+ 100L :+ 900L :+ 100L :+ 7000L :+ 100L :+ 900L :+ 100L :+ 900L
+        regularIntervals :+
+        (5 * 60 * 1000L) :+ 100L :+ 900L :+ 100L :+ 7000L :+ 100L :+ 900L :+ 100L :+ 900L
       val fd = createFailureDetector(acceptableLostDuration = 4.seconds, clock = fakeTimeGenerator(timeIntervals))
 
       for (_ <- 0 until 1000) fd.heartbeat()

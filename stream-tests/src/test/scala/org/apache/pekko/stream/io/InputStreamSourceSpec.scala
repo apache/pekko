@@ -22,11 +22,7 @@ import scala.util.Success
 import org.apache.pekko
 import pekko.Done
 import pekko.stream.{
-  AbruptStageTerminationException,
-  ActorMaterializer,
-  ActorMaterializerSettings,
-  IOResult,
-  Materializer
+  AbruptStageTerminationException, ActorMaterializer, ActorMaterializerSettings, IOResult, Materializer
 }
 import pekko.stream.scaladsl.{ Keep, Sink, StreamConverters }
 import pekko.stream.testkit._

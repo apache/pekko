@@ -78,8 +78,7 @@ import org.reactivestreams.{ Subscriber, Subscription }
     private var receivedInput = false
     private var completedCounter = 0
 
-    private[this] final def hasState(index: Int, flag: Int): Boolean =
-      (states(index) & flag) != 0
+    private[this] final def hasState(index: Int, flag: Int): Boolean = (states(index) & flag) != 0
     private[this] final def setState(index: Int, flag: Int, on: Boolean): Unit =
       states(index) = if (on) (states(index) | flag).toByte else (states(index) & ~flag).toByte
 

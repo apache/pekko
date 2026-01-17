@@ -227,7 +227,8 @@ object ClusterEvent {
 
     override def equals(other: Any): Boolean = other match {
       case that: CurrentClusterState =>
-        (this eq that) || (members == that.members &&
+        (this eq that) ||
+        (members == that.members &&
         unreachable == that.unreachable &&
         seenBy == that.seenBy &&
         leader == that.leader &&

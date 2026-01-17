@@ -16,15 +16,8 @@ package org.apache.pekko.stream.scaladsl
 import org.apache.pekko
 import pekko.{ Done, NotUsed }
 import pekko.stream.{
-  AbruptStageTerminationException,
-  AbruptTerminationException,
-  Attributes,
-  FlowShape,
-  Inlet,
-  Materializer,
-  NeverMaterializedException,
-  Outlet,
-  SubscriptionWithCancelException
+  AbruptStageTerminationException, AbruptTerminationException, Attributes, FlowShape, Inlet, Materializer,
+  NeverMaterializedException, Outlet, SubscriptionWithCancelException
 }
 import pekko.stream.Attributes.Attribute
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }

@@ -87,19 +87,18 @@ import pekko.util.Timeout
                   case t                       => t.toScala + additionalAskTimeout
                 })
                 import ctx.executionContext
-                val reply =
-                  (classicReplicator ? dd.Replicator.Get(cmd.key, cmd.consistency.toClassic))
-                    .mapTo[dd.Replicator.GetResponse[d]]
-                    .map {
-                      case rsp: dd.Replicator.GetSuccess[d] =>
-                        JReplicator.GetSuccess(rsp.key)(rsp.dataValue)
-                      case rsp: dd.Replicator.NotFound[d]       => JReplicator.NotFound(rsp.key)
-                      case rsp: dd.Replicator.GetFailure[d]     => JReplicator.GetFailure(rsp.key)
-                      case rsp: dd.Replicator.GetDataDeleted[d] => JReplicator.GetDataDeleted(rsp.key)
-                    }
-                    .recover {
-                      case _ => JReplicator.GetFailure(cmd.key)
-                    }
+                val reply = (classicReplicator ? dd.Replicator.Get(cmd.key, cmd.consistency.toClassic))
+                  .mapTo[dd.Replicator.GetResponse[d]]
+                  .map {
+                    case rsp: dd.Replicator.GetSuccess[d] =>
+                      JReplicator.GetSuccess(rsp.key)(rsp.dataValue)
+                    case rsp: dd.Replicator.NotFound[d]       => JReplicator.NotFound(rsp.key)
+                    case rsp: dd.Replicator.GetFailure[d]     => JReplicator.GetFailure(rsp.key)
+                    case rsp: dd.Replicator.GetDataDeleted[d] => JReplicator.GetDataDeleted(rsp.key)
+                  }
+                  .recover {
+                    case _ => JReplicator.GetFailure(cmd.key)
+                  }
                 reply.foreach { cmd.replyTo ! _ }
                 Behaviors.same
 
@@ -182,19 +181,18 @@ import pekko.util.Timeout
                   case t                       => t.toScala + additionalAskTimeout
                 })
                 import ctx.executionContext
-                val reply =
-                  (classicReplicator ? dd.Replicator.Delete(cmd.key, cmd.consistency.toClassic))
-                    .mapTo[dd.Replicator.DeleteResponse[d]]
-                    .map {
-                      case rsp: dd.Replicator.DeleteSuccess[d]            => JReplicator.DeleteSuccess(rsp.key)
-                      case rsp: dd.Replicator.ReplicationDeleteFailure[d] =>
-                        JReplicator.DeleteFailure(rsp.key)
-                      case rsp: dd.Replicator.DataDeleted[d]  => JReplicator.DataDeleted(rsp.key)
-                      case rsp: dd.Replicator.StoreFailure[d] => JReplicator.StoreFailure(rsp.key)
-                    }
-                    .recover {
-                      case _ => JReplicator.DeleteFailure(cmd.key)
-                    }
+                val reply = (classicReplicator ? dd.Replicator.Delete(cmd.key, cmd.consistency.toClassic))
+                  .mapTo[dd.Replicator.DeleteResponse[d]]
+                  .map {
+                    case rsp: dd.Replicator.DeleteSuccess[d]            => JReplicator.DeleteSuccess(rsp.key)
+                    case rsp: dd.Replicator.ReplicationDeleteFailure[d] =>
+                      JReplicator.DeleteFailure(rsp.key)
+                    case rsp: dd.Replicator.DataDeleted[d]  => JReplicator.DataDeleted(rsp.key)
+                    case rsp: dd.Replicator.StoreFailure[d] => JReplicator.StoreFailure(rsp.key)
+                  }
+                  .recover {
+                    case _ => JReplicator.DeleteFailure(cmd.key)
+                  }
                 reply.foreach { cmd.replyTo ! _ }
                 Behaviors.same
 
@@ -205,10 +203,9 @@ import pekko.util.Timeout
               case JReplicator.GetReplicaCount(replyTo) =>
                 implicit val timeout = Timeout(localAskTimeout)
                 import ctx.executionContext
-                val reply =
-                  (classicReplicator ? dd.Replicator.GetReplicaCount)
-                    .mapTo[dd.Replicator.ReplicaCount]
-                    .map(rsp => JReplicator.ReplicaCount(rsp.n))
+                val reply = (classicReplicator ? dd.Replicator.GetReplicaCount)
+                  .mapTo[dd.Replicator.ReplicaCount]
+                  .map(rsp => JReplicator.ReplicaCount(rsp.n))
                 reply.foreach { replyTo ! _ }
                 Behaviors.same
 

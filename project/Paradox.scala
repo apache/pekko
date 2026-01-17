@@ -27,7 +27,8 @@ object Paradox {
   lazy val propertiesSettings = Seq(
     Compile / paradoxProperties ++= Map(
       "canonical.base_url" -> s"$pekkoBaseURL/docs/pekko/current",
-      "github.base_url" -> GitHub
+      "github.base_url" ->
+      GitHub
         .url(version.value), // for links like this: @github[#1](#1) or @github[83986f9](83986f9)
       "extref.pekko.http.base_url" -> s"$pekkoBaseURL/docs/pekko-http/current/%s",
       "extref.pekko-management.base_url" -> s"$pekkoBaseURL/docs/pekko-management/current/%s",
@@ -50,9 +51,11 @@ object Paradox {
       "javadoc.org.apache.pekko.link_style" -> "direct",
       "javadoc.org.apache.pekko.http.base_url" -> s"$pekkoBaseURL/japi/pekko-http/current",
       "javadoc.org.apache.pekko.http.link_style" -> "frames",
-      "javadoc.com.fasterxml.jackson.annotation.base_url" -> "https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-annotations/latest/",
+      "javadoc.com.fasterxml.jackson.annotation.base_url" ->
+      "https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-annotations/latest/",
       "javadoc.com.fasterxml.jackson.annotation.link_style" -> "direct",
-      "javadoc.com.fasterxml.jackson.databind.base_url" -> "https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-databind/latest/",
+      "javadoc.com.fasterxml.jackson.databind.base_url" ->
+      "https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-databind/latest/",
       "javadoc.com.fasterxml.jackson.databind.link_style" -> "direct",
       "javadoc.com.google.protobuf.base_url" -> "https://javadoc.io/doc/com.google.protobuf/protobuf-java/latest/",
       "javadoc.com.google.protobuf.link_style" -> "direct",

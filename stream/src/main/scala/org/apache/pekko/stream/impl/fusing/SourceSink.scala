@@ -25,11 +25,7 @@ import pekko.stream.{ ActorAttributes, Attributes, Inlet, SinkShape, StreamSubsc
 import pekko.stream.ActorAttributes.StreamSubscriptionTimeout
 import pekko.stream.scaladsl.Source
 import pekko.stream.stage.{
-  GraphStageLogic,
-  GraphStageWithMaterializedValue,
-  InHandler,
-  OutHandler,
-  TimerGraphStageLogic
+  GraphStageLogic, GraphStageWithMaterializedValue, InHandler, OutHandler, TimerGraphStageLogic
 }
 
 /**

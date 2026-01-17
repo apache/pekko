@@ -188,7 +188,8 @@ class DslFactoriesConsistencySpec extends AnyWordSpec with Matchers {
 
     ignores.foldLeft(false) {
       case (acc, i) =>
-        acc || (i.cls(m.declaringClass) && i.name(m.name) && i.parameters(m.parameterTypes.length) && i.paramTypes(
+        acc ||
+        (i.cls(m.declaringClass) && i.name(m.name) && i.parameters(m.parameterTypes.length) && i.paramTypes(
           m.parameterTypes))
     }
   }
@@ -234,11 +235,13 @@ class DslFactoriesConsistencySpec extends AnyWordSpec with Matchers {
         }
       } else if (matches.length == 1) {
         info(
-          "Matched: Scala:" + row._1.name + "(" + row._1.parameterTypes
+          "Matched: Scala:" + row._1.name + "(" +
+          row._1.parameterTypes
             .map(_.getName)
             .mkString(",") + "): " + returnTypeString(row._1) +
           " == " +
-          "Java:" + matches.head.j.name + "(" + matches.head.j.parameterTypes
+          "Java:" + matches.head.j.name + "(" +
+          matches.head.j.parameterTypes
             .map(_.getName)
             .mkString(",") + "): " + returnTypeString(matches.head.j))
       } else {

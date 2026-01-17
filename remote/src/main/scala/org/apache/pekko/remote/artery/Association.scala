@@ -1024,7 +1024,8 @@ private[remote] class Association(
         }
 
         def isConnectException: Boolean =
-          cause.isInstanceOf[StreamTcpException] && (cause.getCause ne null) && cause.getCause
+          cause.isInstanceOf[StreamTcpException] && (cause.getCause ne null) &&
+          cause.getCause
             .isInstanceOf[ConnectException]
 
         if (stoppedIdle) {

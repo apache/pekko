@@ -35,7 +35,8 @@ abstract class NodeMembershipSpec extends MultiNodeClusterSpec(NodeMembershipMul
 
   "A set of connected cluster systems" must {
 
-    "(when two nodes) start gossiping to each other so that both nodes gets the same gossip info" taggedAs LongRunningTest in {
+    "(when two nodes) start gossiping to each other so that both nodes gets the same gossip info" taggedAs
+    LongRunningTest in {
 
       // make sure that the node-to-join is started before other join
       runOn(first) {
@@ -53,7 +54,8 @@ abstract class NodeMembershipSpec extends MultiNodeClusterSpec(NodeMembershipMul
       enterBarrier("after-1")
     }
 
-    "(when three nodes) start gossiping to each other so that all nodes gets the same gossip info" taggedAs LongRunningTest in {
+    "(when three nodes) start gossiping to each other so that all nodes gets the same gossip info" taggedAs
+    LongRunningTest in {
 
       runOn(third) {
         cluster.join(first)

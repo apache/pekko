@@ -306,7 +306,8 @@ import pekko.cluster.MemberStatus._
         latestGossip.members.iterator
           .collect {
             case m
-                if m.dataCenter == state.selfDc && !latestGossip.seenByNode(m.uniqueAddress) && state
+                if m.dataCenter == state.selfDc && !latestGossip.seenByNode(m.uniqueAddress) &&
+                state
                   .validNodeForGossip(m.uniqueAddress) =>
               m.uniqueAddress
           }

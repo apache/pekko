@@ -17,10 +17,7 @@
 
 import com.gradle.develocity.agent.sbt.DevelocityPlugin
 import com.gradle.develocity.agent.sbt.DevelocityPlugin.autoImport.{
-  develocityConfiguration,
-  FlakyTestPolicy,
-  ProjectId,
-  Publishing
+  develocityConfiguration, FlakyTestPolicy, ProjectId, Publishing
 }
 import sbt.{ inConfig, url, AutoPlugin, Def, PluginTrigger, Plugins, Setting }
 import sbt.Keys.insideCI

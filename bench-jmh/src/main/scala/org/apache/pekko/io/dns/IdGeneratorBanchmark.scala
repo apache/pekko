@@ -21,16 +21,7 @@ import java.security.SecureRandom
 import java.util.concurrent.{ ThreadLocalRandom, TimeUnit }
 
 import org.openjdk.jmh.annotations.{
-  Benchmark,
-  BenchmarkMode,
-  Fork,
-  Measurement,
-  Mode,
-  OutputTimeUnit,
-  Scope,
-  State,
-  Threads,
-  Warmup
+  Benchmark, BenchmarkMode, Fork, Measurement, Mode, OutputTimeUnit, Scope, State, Threads, Warmup
 }
 
 @BenchmarkMode(Array(Mode.Throughput))

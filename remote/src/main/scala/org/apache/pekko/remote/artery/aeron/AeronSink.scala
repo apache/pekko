@@ -80,7 +80,8 @@ private[remote] object AeronSink {
       } else if (result == Publication.CLOSED) {
         onPublicationClosed.invoke(())
         true
-      } else if (giveUpAfterNanos >= 0 && (n & TimerCheckMask) == 0 && (System
+      } else if (giveUpAfterNanos >= 0 && (n & TimerCheckMask) == 0 &&
+        (System
           .nanoTime() - startTime) > giveUpAfterNanos) {
         // the task is invoked by the spinning thread, only check nanoTime each 8192th invocation
         n = 0L

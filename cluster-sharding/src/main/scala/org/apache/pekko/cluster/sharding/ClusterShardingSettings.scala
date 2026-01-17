@@ -975,7 +975,8 @@ final class ClusterShardingSettings(
 
   import ClusterShardingSettings.{ RememberEntitiesStoreCustom, StateStoreModeDData, StateStoreModePersistence }
   require(
-    stateStoreMode == StateStoreModePersistence || stateStoreMode == StateStoreModeDData || stateStoreMode == RememberEntitiesStoreCustom,
+    stateStoreMode == StateStoreModePersistence || stateStoreMode == StateStoreModeDData ||
+    stateStoreMode == RememberEntitiesStoreCustom,
     s"Unknown 'state-store-mode' [$stateStoreMode], valid values are '$StateStoreModeDData' or '$StateStoreModePersistence'")
 
   /** If true, this node should run the shard region, otherwise just a shard proxy should started on this node. */

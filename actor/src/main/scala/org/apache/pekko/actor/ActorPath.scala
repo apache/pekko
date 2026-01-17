@@ -127,10 +127,15 @@ object ActorPath {
     if (s.isEmpty) EmptyPathCode
     else {
       def isValidChar(c: Char): Boolean =
-        (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || (ValidSymbols.indexOf(c) != -1)
+        (c >= 'a' && c <= 'z') ||
+        (c >= 'A' && c <= 'Z') ||
+        (c >= '0' && c <= '9') ||
+        (ValidSymbols.indexOf(c) != -1)
 
       def isHexChar(c: Char): Boolean =
-        (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F') || (c >= '0' && c <= '9')
+        (c >= 'a' && c <= 'f') ||
+        (c >= 'A' && c <= 'F') ||
+        (c >= '0' && c <= '9')
 
       val len = s.length
       def validate(pos: Int): Int =

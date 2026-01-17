@@ -370,8 +370,9 @@ lazy val protobufV3 = pekkoModule("protobuf-v3")
     assembly / assemblyOption := (assembly / assemblyOption).value.withIncludeScala(false).withIncludeBin(true),
     autoScalaLibrary := false, // do not include scala dependency in pom
     exportJars := true, // in dependent projects, use assembled and shaded jar
-    makePomConfiguration := makePomConfiguration.value
-      .withConfigurations(Vector(Compile)), // prevent original dependency to be added to pom as runtime dep
+    makePomConfiguration :=
+      makePomConfiguration.value
+        .withConfigurations(Vector(Compile)), // prevent original dependency to be added to pom as runtime dep
     Compile / packageBin / packagedArtifact := Scoped.mkTuple2(
       (Compile / packageBin / artifact).value,
       ReproducibleBuildsPlugin.postProcessJar(OsgiKeys.bundle.value)),
@@ -392,7 +393,8 @@ lazy val protobufV3 = pekkoModule("protobuf-v3")
     // redefining the fullClasspath with just what we need to avoid the cyclic task dependency
     assembly / fullClasspath := (Runtime / managedClasspath).value ++ (Compile / products).value.map(Attributed.blank),
     assembly / test := {}, // assembly runs tests for unknown reason which introduces another cyclic dependency to packageBin via exportedJars
-    description := s"Apache Pekko Protobuf V3 is a shaded version of the protobuf runtime. Original POM: https://github.com/protocolbuffers/protobuf/blob/v${Dependencies.Protobuf.protobufJavaVersion}/java/pom.xml")
+    description :=
+      s"Apache Pekko Protobuf V3 is a shaded version of the protobuf runtime. Original POM: https://github.com/protocolbuffers/protobuf/blob/v${Dependencies.Protobuf.protobufJavaVersion}/java/pom.xml")
 
 lazy val pki =
   pekkoModule("pki")

@@ -66,9 +66,11 @@ class ReliableDeliverySerializerSpec extends ScalaTestWithActorTestKit with AnyW
           DurableProducerQueue.MessageSent(15L, "msg15", true, "q4", timestamp),
           DurableProducerQueue.MessageSent(16L, "msg16", true, "q4", timestamp))),
       "DurableProducerQueue.Cleanup" -> DurableProducerQueue.Cleanup(Set("q1", "q2", "q3")),
-      "SequencedMessage-chunked-1" -> ConsumerController.SequencedMessage
+      "SequencedMessage-chunked-1" ->
+      ConsumerController.SequencedMessage
         .fromChunked("prod-1", 1L, ChunkedMessage(ByteString.fromString("abc"), true, true, 20, ""), true, true, ref),
-      "SequencedMessage-chunked-2" -> ConsumerController.SequencedMessage
+      "SequencedMessage-chunked-2" ->
+      ConsumerController.SequencedMessage
         .fromChunked("prod-1", 1L, ChunkedMessage(ByteString(1, 2, 3), true, false, 123456, "A"), false, false, ref),
       "DurableProducerQueue.MessageSent-chunked" -> DurableProducerQueue.MessageSent.fromChunked(
         3L,

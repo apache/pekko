@@ -89,8 +89,9 @@ class LoggingReceive(source: Option[AnyRef], r: Receive, label: Option[String], 
     if (context.system.eventStream.logLevel >= logLevel) {
       val src = source.getOrElse(context.asInstanceOf[ActorCell].actor)
       val (str, clazz) = LogSource.fromAnyRef(src)
-      val message = "received " + (if (handled) "handled" else "unhandled") + " message " + o + " from " + context
-        .sender() +
+      val message = "received " + (if (handled) "handled" else "unhandled") + " message " + o + " from " +
+        context
+          .sender() +
         (label match {
           case Some(l) => " in state " + l
           case _       => ""

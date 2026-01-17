@@ -111,7 +111,8 @@ class CancellationStrategySpec extends StreamSpec("""pekko.loglevel = DEBUG
     }
 
     "cancellation races with BidiStacks" should {
-      "accidentally convert errors to completions when CompleteStage strategy is chosen (2.5 default)" in new RaceTestSetup(
+      "accidentally convert errors to completions when CompleteStage strategy is chosen (2.5 default)" in
+      new RaceTestSetup(
         CancellationStrategy.CompleteStage) {
         val theError = TE("Duck meowed")
         killSwitch.abort(theError)

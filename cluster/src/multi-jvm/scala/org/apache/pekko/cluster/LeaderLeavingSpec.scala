@@ -49,7 +49,8 @@ abstract class LeaderLeavingSpec extends MultiNodeClusterSpec(LeaderLeavingMulti
 
   "A LEADER that is LEAVING" must {
 
-    "be moved to LEAVING, then to EXITING, then to REMOVED, then be shut down and then a new LEADER should be elected" taggedAs LongRunningTest in {
+    "be moved to LEAVING, then to EXITING, then to REMOVED, then be shut down and then a new LEADER should be elected" taggedAs
+    LongRunningTest in {
 
       awaitClusterUp(first, second, third)
 
