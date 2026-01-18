@@ -23,7 +23,9 @@ import pekko.remote.artery.Flush
 import pekko.remote.artery.FlushAck
 import pekko.remote.artery.OutboundHandshake.{ HandshakeReq, HandshakeRsp }
 import pekko.remote.artery.compress.CompressionProtocol.{
-  ActorRefCompressionAdvertisement, ActorRefCompressionAdvertisementAck, ClassManifestCompressionAdvertisement,
+  ActorRefCompressionAdvertisement,
+  ActorRefCompressionAdvertisementAck,
+  ClassManifestCompressionAdvertisement,
   ClassManifestCompressionAdvertisementAck
 }
 import pekko.remote.artery.compress.CompressionTable

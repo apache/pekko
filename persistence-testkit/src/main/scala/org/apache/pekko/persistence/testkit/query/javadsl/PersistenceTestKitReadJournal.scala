@@ -19,7 +19,11 @@ import pekko.japi.Pair
 import pekko.persistence.query.EventEnvelope
 import pekko.persistence.query.Offset
 import pekko.persistence.query.javadsl.{
-  CurrentEventsByPersistenceIdQuery, CurrentEventsByTagQuery, EventsByPersistenceIdQuery, EventsByTagQuery, ReadJournal
+  CurrentEventsByPersistenceIdQuery,
+  CurrentEventsByTagQuery,
+  EventsByPersistenceIdQuery,
+  EventsByTagQuery,
+  ReadJournal
 }
 import pekko.persistence.query.typed
 import pekko.persistence.query.typed.javadsl.{ CurrentEventsBySliceQuery, EventsBySliceQuery }

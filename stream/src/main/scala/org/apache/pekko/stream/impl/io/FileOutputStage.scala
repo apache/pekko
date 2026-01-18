@@ -25,7 +25,12 @@ import scala.util.control.NonFatal
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.stream.{
-  AbruptStageTerminationException, Attributes, IOOperationIncompleteException, IOResult, Inlet, SinkShape
+  AbruptStageTerminationException,
+  Attributes,
+  IOOperationIncompleteException,
+  IOResult,
+  Inlet,
+  SinkShape
 }
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.stage.{ GraphStageLogic, GraphStageWithMaterializedValue, InHandler }

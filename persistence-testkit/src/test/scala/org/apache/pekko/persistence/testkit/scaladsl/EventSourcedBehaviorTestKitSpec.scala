@@ -26,7 +26,8 @@ import pekko.actor.typed.Behavior
 import pekko.actor.typed.scaladsl.ActorContext
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.persistence.testkit.scaladsl.EventSourcedBehaviorTestKitSpec.TestCounter.{
-  NotSerializableState, NullState
+  NotSerializableState,
+  NullState
 }
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.internal.JournalFailureException

@@ -20,7 +20,10 @@ import org.apache.pekko
 import pekko.PekkoException
 import pekko.annotation.InternalStableApi
 import pekko.dispatch.{
-  DequeBasedMessageQueueSemantics, Envelope, RequiresMessageQueue, UnboundedDequeBasedMessageQueueSemantics
+  DequeBasedMessageQueueSemantics,
+  Envelope,
+  RequiresMessageQueue,
+  UnboundedDequeBasedMessageQueueSemantics
 }
 
 /**

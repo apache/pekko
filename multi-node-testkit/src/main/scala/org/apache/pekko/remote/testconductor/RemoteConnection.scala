@@ -30,7 +30,10 @@ import io.netty.channel.nio.NioIoHandler
 import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.{ NioServerSocketChannel, NioSocketChannel }
 import io.netty.handler.codec.{
-  LengthFieldBasedFrameDecoder, LengthFieldPrepender, MessageToMessageDecoder, MessageToMessageEncoder
+  LengthFieldBasedFrameDecoder,
+  LengthFieldPrepender,
+  MessageToMessageDecoder,
+  MessageToMessageEncoder
 }
 
 /**

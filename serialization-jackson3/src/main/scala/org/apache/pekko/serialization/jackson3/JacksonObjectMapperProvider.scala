@@ -27,7 +27,11 @@ import tools.jackson.core.{ StreamReadConstraints, StreamReadFeature, StreamWrit
 import tools.jackson.core.json.{ JsonFactory, JsonReadFeature, JsonWriteFeature }
 import tools.jackson.core.util.{ BufferRecycler, JsonRecyclerPools, RecyclerPool }
 import tools.jackson.databind.{
-  DeserializationFeature, JacksonModule, MapperFeature, ObjectMapper, SerializationFeature
+  DeserializationFeature,
+  JacksonModule,
+  MapperFeature,
+  ObjectMapper,
+  SerializationFeature
 }
 import tools.jackson.databind.cfg.{ DateTimeFeature, EnumFeature, MapperBuilder }
 import tools.jackson.databind.introspect.VisibilityChecker
@@ -36,7 +40,12 @@ import tools.jackson.dataformat.cbor.{ CBORFactory, CBORMapper }
 
 import org.apache.pekko
 import pekko.actor.{
-  ActorSystem, ClassicActorSystemProvider, DynamicAccess, ExtendedActorSystem, Extension, ExtensionId,
+  ActorSystem,
+  ClassicActorSystemProvider,
+  DynamicAccess,
+  ExtendedActorSystem,
+  Extension,
+  ExtensionId,
   ExtensionIdProvider
 }
 import pekko.actor.setup.Setup
