@@ -37,12 +37,20 @@ import pekko.stream.Attributes.SourceLocation
 import pekko.stream.OverflowStrategies._
 import pekko.stream.Supervision.Decider
 import pekko.stream.impl.{
-  Buffer => BufferImpl, ContextPropagation, FailedSource, JavaStreamSource, ReactiveStreamsCompliance, TraversalBuilder
+  Buffer => BufferImpl,
+  ContextPropagation,
+  FailedSource,
+  JavaStreamSource,
+  ReactiveStreamsCompliance,
+  TraversalBuilder
 }
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.fusing.GraphStages.{ FutureSource, SimpleLinearGraphStage, SingleSource }
 import pekko.stream.scaladsl.{
-  DelayStrategy, Source, StatefulMapConcatAccumulator, StatefulMapConcatAccumulatorFactory
+  DelayStrategy,
+  Source,
+  StatefulMapConcatAccumulator,
+  StatefulMapConcatAccumulatorFactory
 }
 import pekko.stream.stage._
 import pekko.util.{ ConstantFun, OptionVal }

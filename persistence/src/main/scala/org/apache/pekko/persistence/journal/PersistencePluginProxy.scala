@@ -21,8 +21,15 @@ import scala.concurrent.duration._
 import org.apache.pekko
 import pekko.actor._
 import pekko.persistence.{
-  AtomicWrite, DeleteMessagesFailure, DeleteSnapshotFailure, DeleteSnapshotsFailure, JournalProtocol, NonPersistentRepr,
-  Persistence, SaveSnapshotFailure, SnapshotProtocol
+  AtomicWrite,
+  DeleteMessagesFailure,
+  DeleteSnapshotFailure,
+  DeleteSnapshotsFailure,
+  JournalProtocol,
+  NonPersistentRepr,
+  Persistence,
+  SaveSnapshotFailure,
+  SnapshotProtocol
 }
 import pekko.util.Helpers.Requiring
 

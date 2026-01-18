@@ -20,7 +20,13 @@ import pekko.actor.{ OneForOneStrategy, _ }
 import pekko.actor.SupervisorStrategy._
 import pekko.annotation.InternalApi
 import pekko.pattern.{
-  BackoffReset, BackoffSupervisor, ForwardDeathLetters, ForwardTo, HandleBackoff, HandlingWhileStopped, ReplyWith,
+  BackoffReset,
+  BackoffSupervisor,
+  ForwardDeathLetters,
+  ForwardTo,
+  HandleBackoff,
+  HandlingWhileStopped,
+  ReplyWith,
   RetrySupport
 }
 

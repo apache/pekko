@@ -24,11 +24,24 @@ import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.actor.{
-  ActorCell, ActorInitializationException, ActorRef, ExtendedActorSystem, Extension, ExtensionId, ExtensionIdProvider
+  ActorCell,
+  ActorInitializationException,
+  ActorRef,
+  ExtendedActorSystem,
+  Extension,
+  ExtensionId,
+  ExtensionIdProvider
 }
 import pekko.dispatch.{
-  DefaultSystemMessageQueue, DispatcherPrerequisites, Envelope, Mailbox, MailboxType, MessageDispatcher,
-  MessageDispatcherConfigurator, MessageQueue, TaskInvocation
+  DefaultSystemMessageQueue,
+  DispatcherPrerequisites,
+  Envelope,
+  Mailbox,
+  MailboxType,
+  MessageDispatcher,
+  MessageDispatcherConfigurator,
+  MessageQueue,
+  TaskInvocation
 }
 import pekko.dispatch.sysmsg.{ Resume, Suspend, SystemMessage }
 import pekko.util.Switch

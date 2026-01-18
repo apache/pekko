@@ -40,7 +40,11 @@ class DeviceGroup(context: ActorContext[DeviceGroup.Command], groupId: String)
     extends AbstractBehavior[DeviceGroup.Command](context) {
   import DeviceGroup._
   import DeviceManager.{
-    DeviceRegistered, ReplyDeviceList, RequestAllTemperatures, RequestDeviceList, RequestTrackDevice
+    DeviceRegistered,
+    ReplyDeviceList,
+    RequestAllTemperatures,
+    RequestDeviceList,
+    RequestTrackDevice
   }
 
   private var deviceIdToActor = Map.empty[String, ActorRef[Device.Command]]

@@ -38,7 +38,10 @@ import pekko.remote.EndpointWriter.{ FlushAndStop, StoppedReading }
 import pekko.remote.WireFormats.SerializedMessage
 import pekko.remote.transport._
 import pekko.remote.transport.AssociationHandle.{
-  ActorHandleEventListener, DisassociateInfo, Disassociated, InboundPayload
+  ActorHandleEventListener,
+  DisassociateInfo,
+  Disassociated,
+  InboundPayload
 }
 import pekko.remote.transport.PekkoPduCodec.Message
 import pekko.remote.transport.Transport.InvalidAssociationException

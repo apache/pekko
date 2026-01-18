@@ -34,7 +34,9 @@ import pekko.cluster.ddata.Replicator._
 import pekko.cluster.ddata.SelfUniqueAddress
 import pekko.cluster.sharding.ShardRegion.ShardId
 import pekko.cluster.sharding.internal.{
-  EventSourcedRememberEntitiesCoordinatorStore, RememberEntitiesCoordinatorStore, RememberEntitiesProvider
+  EventSourcedRememberEntitiesCoordinatorStore,
+  RememberEntitiesCoordinatorStore,
+  RememberEntitiesProvider
 }
 import pekko.cluster.sharding.internal.AbstractLeastShardAllocationStrategy
 import pekko.cluster.sharding.internal.AbstractLeastShardAllocationStrategy.RegionEntry

@@ -17,7 +17,16 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor.{
-  Actor, ActorIdentity, ActorLogging, ActorRef, ActorRefScope, ActorSelection, Identify, PoisonPill, Props, Terminated
+  Actor,
+  ActorIdentity,
+  ActorLogging,
+  ActorRef,
+  ActorRefScope,
+  ActorSelection,
+  Identify,
+  PoisonPill,
+  Props,
+  Terminated
 }
 import pekko.testkit.{ ImplicitSender, TestActors }
 import pekko.testkit.JavaSerializable

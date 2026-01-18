@@ -19,7 +19,9 @@ import org.apache.pekko
 import pekko.actor.Address
 import pekko.actor.typed.{ ActorRef, Behavior }
 import pekko.actor.typed.internal.receptionist.{
-  AbstractServiceKey, ReceptionistBehaviorProvider, ReceptionistMessages
+  AbstractServiceKey,
+  ReceptionistBehaviorProvider,
+  ReceptionistMessages
 }
 import pekko.actor.typed.receptionist.Receptionist.Command
 import pekko.actor.typed.receptionist.ServiceKey

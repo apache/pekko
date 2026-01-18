@@ -26,7 +26,10 @@ import pekko.ConfigurationException
 import pekko.actor.{ Actor, ActorRef, ActorSystem, DeadLetter, Deploy, DynamicAccess, Props }
 import pekko.annotation.InternalStableApi
 import pekko.dispatch.sysmsg.{
-  EarliestFirstSystemMessageList, LatestFirstSystemMessageList, SystemMessage, SystemMessageList
+  EarliestFirstSystemMessageList,
+  LatestFirstSystemMessageList,
+  SystemMessage,
+  SystemMessageList
 }
 import pekko.event.EventStream
 import pekko.event.Logging.Warning

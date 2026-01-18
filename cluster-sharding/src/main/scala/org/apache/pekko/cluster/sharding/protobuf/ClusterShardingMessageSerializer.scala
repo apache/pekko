@@ -31,7 +31,8 @@ import pekko.cluster.sharding.Shard
 import pekko.cluster.sharding.ShardCoordinator
 import pekko.cluster.sharding.ShardRegion._
 import pekko.cluster.sharding.internal.EventSourcedRememberEntitiesCoordinatorStore.{
-  MigrationMarker, State => RememberShardsState
+  MigrationMarker,
+  State => RememberShardsState
 }
 import pekko.cluster.sharding.internal.EventSourcedRememberEntitiesShardStore.{ EntitiesStarted, EntitiesStopped }
 import pekko.cluster.sharding.internal.EventSourcedRememberEntitiesShardStore.{ State => EntityState }

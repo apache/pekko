@@ -26,7 +26,10 @@ import pekko.remote.{ FailureDetector, WireFormats }
 import pekko.remote.classic.transport.PekkoProtocolSpec.TestFailureDetector
 import pekko.remote.transport.{ AssociationRegistry => _, _ }
 import pekko.remote.transport.AssociationHandle.{
-  ActorHandleEventListener, DisassociateInfo, Disassociated, InboundPayload
+  ActorHandleEventListener,
+  DisassociateInfo,
+  Disassociated,
+  InboundPayload
 }
 import pekko.remote.transport.PekkoPduCodec.{ Associate, Disassociate, Heartbeat }
 import pekko.remote.transport.ProtocolStateActor
