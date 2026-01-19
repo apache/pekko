@@ -31,9 +31,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-
 import javax.xml.transform.Source;
-
 import org.apache.pekko.Done;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorRef;
@@ -128,7 +126,7 @@ public class SourceTest extends StreamTest {
   @Test
   public void mustBeAbleToCompleteWhenArrayIsEmpty() {
     Source.fromArray(new String[] {})
-    .runWith(TestSink.<String>create(system), system)
+        .runWith(TestSink.<String>create(system), system)
         .ensureSubscription()
         .expectComplete();
   }
