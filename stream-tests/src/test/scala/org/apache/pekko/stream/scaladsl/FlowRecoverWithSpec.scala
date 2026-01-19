@@ -73,11 +73,39 @@ class FlowRecoverWithSpec extends StreamSpec {
     }
 
     "recover with a failed future source" in {
-      Source.failed(ex)
-        .recoverWith { case _: Throwable => Source.future(Future.failed(ex)) }
+      val counter = new java.util.concurrent.atomic.AtomicInteger(0)
+      Source.failed[Int](ex)
+        .recoverWith {
+          case _: Throwable =>
+            if (counter.incrementAndGet() < 100) {
+              Source.future(Future.failed(ex))
+            } else {
+              Source.single(101)
+            }
+        }
         .runWith(TestSink[Int]())
-        .request(1)
-        .expectError(ex)
+        .request(100)
+        .expectNext(101)
+        .expectComplete()
+      counter.get() shouldBe 100
+    }
+
+    "recover with a failed source" in {
+      val counter = new java.util.concurrent.atomic.AtomicInteger(0)
+      Source.failed[Int](ex)
+        .recoverWith {
+          case _: Throwable =>
+            if (counter.incrementAndGet() < 100) {
+              Source.failed(ex)
+            } else {
+              Source.single(101)
+            }
+        }
+        .runWith(TestSink[Int]())
+        .request(100)
+        .expectNext(101)
+        .expectComplete()
+      counter.get() shouldBe 100
     }
 
     "recover with a java stream source" in {

@@ -692,7 +692,7 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
       val counter = new java.util.concurrent.atomic.AtomicInteger()
 
       val source =
-        withRetriesTest(failedSource("origin")) { _ =>
+        withRetriesTest(failedSource("origin")) { () =>
           counter.incrementAndGet()
           exceptionSource()
         } { _ =>
@@ -706,33 +706,30 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
       assert(counter.get() == 3)
     }
 
-    "not retry FailedSources" in {
-      // https://github.com/apache/pekko/issues/2620
+    "should retry on a failed source" in {
       val counter = new java.util.concurrent.atomic.AtomicInteger()
 
       val source =
-        withRetriesTest(failedSource("origin")) { _ =>
-          counter.incrementAndGet()
-          failedSource("does not work")
-        } { _ =>
-          counter.get() < 3
-        }
+        withRetriesTest(failedSource("origin")) { () =>
+          if (counter.incrementAndGet() < 3) {
+            failedSource("does not work")
+          } else Source.single(ByteString.fromString("ok"))
+        } { _ => true }
+          .runWith(Sink.head)
+      val result = Await.result(source, Duration.Inf)
+      assert(result.utf8String == "ok")
 
-      assertThrows[ArithmeticException] {
-        Await.result(source.runWith(Sink.ignore), Duration.Inf)
-      }
-
-      assert(counter.get() == 1)
+      assert(counter.get() == 3)
     }
   }
 
-  private def withRetriesTest(originSource: Source[ByteString, Any])(fallbackTo: Long => Source[ByteString, NotUsed])(
+  private def withRetriesTest(originSource: Source[ByteString, Any])(fallbackTo: () => Source[ByteString, NotUsed])(
       shouldRetry: Throwable => Boolean = { _ => true }): Source[ByteString, NotUsed] =
     originSource.recoverWithRetries(
       -1,
       {
         case e: Throwable if shouldRetry(e) =>
-          fallbackTo(0)
+          fallbackTo()
       }
     ).mapMaterializedValue(_ => NotUsed)
 
