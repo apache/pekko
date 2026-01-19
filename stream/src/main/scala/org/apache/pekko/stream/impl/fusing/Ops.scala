@@ -2183,6 +2183,7 @@ private[pekko] object TakeWithin {
       override def onPull(): Unit = pull(in)
 
       @nowarn("msg=Any")
+      @tailrec
       def onFailure(ex: Throwable): Unit = {
         import Collect.NotApplied
         if (maximumRetries < 0 || attempt < maximumRetries) {
@@ -2194,10 +2195,10 @@ private[pekko] object TakeWithin {
               TraversalBuilder.getValuePresentedSource(source) match {
                 case OptionVal.Some(graph) => graph match {
                     case singleSource: SingleSource[T @unchecked] => emit(out, singleSource.elem, () => completeStage())
-                    case failed: FailedSource[T @unchecked]       => failStage(failed.failure)
+                    case failed: FailedSource[T @unchecked]       => onFailure(failed.failure)
                     case futureSource: FutureSource[T @unchecked] => futureSource.future.value match {
                         case Some(Success(elem)) => emit(out, elem, () => completeStage())
-                        case Some(Failure(ex))   => failStage(ex)
+                        case Some(Failure(ex))   => onFailure(ex)
                         case None                =>
                           switchTo(source)
                           attempt += 1
