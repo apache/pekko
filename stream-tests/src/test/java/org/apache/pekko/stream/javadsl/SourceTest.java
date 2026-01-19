@@ -2,7 +2,7 @@
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * license agreements; and to You under the Apache License, version 2.0:
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * This file is part of the Apache Pekko project, which was derived from Akka.
  */
@@ -123,16 +123,16 @@ public class SourceTest extends StreamTest {
 
   @Test
   public void mustBeAbleToCompleteWhenArrayIsEmpty() {
-    Source.fromArray(new String[] {})
-        .runWith(TestSink.create(system), system)
+    Source.<String>fromArray(new String[] {})
+        .runWith(TestSink.<String>create(system), system)
         .ensureSubscription()
         .expectComplete();
   }
 
   @Test
   public void mustBeAbleToEmitEveryArrayElementSequentially() {
-    Source.fromArray(new String[] {"a", "b", "c"})
-        .runWith(TestSink.create(system), system)
+    Source.<String>fromArray(new String[] {"a", "b", "c"})
+        .runWith(TestSink.<String>create(system), system)
         .ensureSubscription()
         .request(3)
         .expectNext("a")
@@ -143,8 +143,8 @@ public class SourceTest extends StreamTest {
 
   @Test
   public void mustBeAbleToUseItems() {
-    Source.items("a", "b", "c")
-        .runWith(TestSink.create(system), system)
+    Source.<String>items("a", "b", "c")
+        .runWith(TestSink.<String>create(system), system)
         .ensureSubscription()
         .request(3)
         .expectNext("a")
@@ -156,7 +156,7 @@ public class SourceTest extends StreamTest {
   @Test
   public void mustBeAbleToUseItemsWhenEmpty() {
     Source.<String>items()
-        .runWith(TestSink.create(system), system)
+        .runWith(TestSink.<String>create(system), system)
         .ensureSubscription()
         .request(1)
         .expectComplete();
@@ -348,7 +348,7 @@ public class SourceTest extends StreamTest {
   public void mustBeAbleToConcatEmptySource() {
     Source.from(Arrays.asList("A", "B", "C"))
         .concat(Source.empty())
-        .runWith(TestSink.create(system), system)
+        .runWith(TestSink.<String>create(system), system)
         .ensureSubscription()
         .request(3)
         .expectNext("A", "B", "C")
@@ -361,7 +361,7 @@ public class SourceTest extends StreamTest {
     final Source<Integer, NotUsed> sourceB = Source.from(Arrays.asList(4, 5, 6));
     final Source<Integer, NotUsed> sourceC = Source.from(Arrays.asList(7, 8, 9));
     final TestSubscriber.Probe<Integer> sub =
-        sourceA.concatAllLazy(sourceB, sourceC).runWith(TestSink.create(system), system);
+        sourceA.concatAllLazy(sourceB, sourceC).runWith(TestSink.<Integer>create(system), system);
     sub.expectSubscription().request(9);
     sub.expectNext(1, 2, 3, 4, 5, 6, 7, 8, 9).expectComplete();
   }
@@ -880,7 +880,7 @@ public class SourceTest extends StreamTest {
             },
             Function.identity(),
             Optional.empty())
-        .runWith(TestSink.create(system), system)
+        .runWith(TestSink.<List<Integer>>create(system), system)
         .ensureSubscription()
         .request(6)
         .expectNext(
@@ -928,7 +928,7 @@ public class SourceTest extends StreamTest {
               gate.set(false);
               return Optional.of("end");
             })
-        .runWith(TestSink.create(system), system)
+        .runWith(TestSink.<String>create(system), system)
         .request(4)
         .expectNext("1", "2", "3", "end")
         .expectComplete();
@@ -1013,7 +1013,7 @@ public class SourceTest extends StreamTest {
     final TestSubscriber.Probe<Integer> sub =
         sourceA
             .interleaveAll(Arrays.asList(sourceB, sourceC), 2, false)
-            .runWith(TestSink.create(system), system);
+            .runWith(TestSink.<Integer>create(system), system);
     sub.expectSubscription().request(9);
     sub.expectNext(1, 2, 3, 4, 5, 6, 7, 8, 9).expectComplete();
   }
@@ -1361,7 +1361,7 @@ public class SourceTest extends StreamTest {
     final TestSubscriber.Probe<Integer> sub =
         sourceA
             .mergeAll(Arrays.asList(sourceB, sourceC), false)
-            .runWith(TestSink.create(system), system);
+            .runWith(TestSink.<Integer>create(system), system);
     sub.expectSubscription().request(9);
     sub.expectNextUnorderedN(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9)).expectComplete();
   }
@@ -1677,7 +1677,7 @@ public class SourceTest extends StreamTest {
               queue.offer("Message2");
               queue.complete();
             })
-        .runWith(TestSink.create(system), system)
+        .runWith(TestSink.<String>create(system), system)
         .ensureSubscription()
         .request(2)
         .expectNext("Message1", "Message2")
@@ -1696,7 +1696,7 @@ public class SourceTest extends StreamTest {
               }
             })
         .onErrorComplete()
-        .runWith(TestSink.create(system), system)
+        .runWith(TestSink.<Integer>create(system), system)
         .request(2)
         .expectNext(1)
         .expectComplete();
@@ -1714,7 +1714,7 @@ public class SourceTest extends StreamTest {
               }
             })
         .onErrorContinue(e -> logger().error(e, "Error encountered"))
-        .runWith(TestSink.create(system), system)
+        .runWith(TestSink.<Integer>create(system), system)
         .request(2)
         .expectNext(1)
         .expectComplete();
@@ -1732,7 +1732,7 @@ public class SourceTest extends StreamTest {
               }
             })
         .onErrorResume(e -> Source.single(0))
-        .runWith(TestSink.create(system), system)
+        .runWith(TestSink.<Integer>create(system), system)
         .request(2)
         .expectNext(1)
         .expectNext(0)
@@ -1751,7 +1751,7 @@ public class SourceTest extends StreamTest {
               }
             })
         .onErrorComplete(IllegalArgumentException.class)
-        .runWith(TestSink.create(system), system)
+        .runWith(TestSink.<Integer>create(system), system)
         .request(2)
         .expectNext(1)
         .expectComplete();
@@ -1770,7 +1770,7 @@ public class SourceTest extends StreamTest {
             })
         .onErrorContinue(
             IllegalArgumentException.class, e -> logger().error(e, "Error encountered"))
-        .runWith(TestSink.create(system), system)
+        .runWith(TestSink.<Integer>create(system), system)
         .request(2)
         .expectNext(1)
         .expectComplete();
@@ -1788,7 +1788,7 @@ public class SourceTest extends StreamTest {
               }
             })
         .onErrorResume(IllegalArgumentException.class, e -> Source.single(0))
-        .runWith(TestSink.create(system), system)
+        .runWith(TestSink.<Integer>create(system), system)
         .request(2)
         .expectNext(1)
         .expectNext(0)
@@ -1808,7 +1808,7 @@ public class SourceTest extends StreamTest {
               }
             })
         .onErrorComplete(TimeoutException.class)
-        .runWith(TestSink.create(system), system)
+        .runWith(TestSink.<Integer>create(system), system)
         .request(2)
         .expectNext(1)
         .expectError(ex);
@@ -1827,7 +1827,7 @@ public class SourceTest extends StreamTest {
               }
             })
         .onErrorContinue(TimeoutException.class, e -> logger().error(e, "Error encountered"))
-        .runWith(TestSink.create(system), system)
+        .runWith(TestSink.<Integer>create(system), system)
         .request(2)
         .expectNext(1)
         .expectError(ex);
@@ -1846,7 +1846,7 @@ public class SourceTest extends StreamTest {
               }
             })
         .onErrorResume(TimeoutException.class, e -> Source.single(0))
-        .runWith(TestSink.create(system), system)
+        .runWith(TestSink.<Integer>create(system), system)
         .request(2)
         .expectNext(1)
         .expectError(ex);
@@ -1864,7 +1864,7 @@ public class SourceTest extends StreamTest {
               }
             })
         .onErrorComplete(ex -> ex.getMessage().contains("Boom"))
-        .runWith(TestSink.create(system), system)
+        .runWith(TestSink.<Integer>create(system), system)
         .request(2)
         .expectNext(1)
         .expectComplete();
@@ -1883,7 +1883,7 @@ public class SourceTest extends StreamTest {
             })
         .onErrorContinue(
             ex -> ex.getMessage().contains("Boom"), e -> logger().error(e, "Error encountered"))
-        .runWith(TestSink.create(system), system)
+        .runWith(TestSink.<Integer>create(system), system)
         .request(2)
         .expectNext(1)
         .expectComplete();
@@ -1901,7 +1901,7 @@ public class SourceTest extends StreamTest {
               }
             })
         .onErrorResume(ex -> ex.getMessage().contains("Boom"), e -> Source.single(0))
-        .runWith(TestSink.create(system), system)
+        .runWith(TestSink.<Integer>create(system), system)
         .request(2)
         .expectNext(1)
         .expectNext(0)
