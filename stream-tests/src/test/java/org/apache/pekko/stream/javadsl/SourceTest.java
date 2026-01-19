@@ -27,9 +27,13 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+import javax.xml.transform.Source;
+
 import org.apache.pekko.Done;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorRef;
@@ -123,8 +127,8 @@ public class SourceTest extends StreamTest {
 
   @Test
   public void mustBeAbleToCompleteWhenArrayIsEmpty() {
-    Source.<String>fromArray(new String[] {})
-        .runWith(TestSink.<String>create(system), system)
+    Source.fromArray(new String[] {})
+    .runWith(TestSink.<String>create(system), system)
         .ensureSubscription()
         .expectComplete();
   }
