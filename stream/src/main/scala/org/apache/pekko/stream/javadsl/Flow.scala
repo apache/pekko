@@ -2078,6 +2078,8 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * Throwing an exception inside `recoverWith` _will_ be logged on ERROR level automatically.
    *
+   * It will keep trying to recover indefinitely, if you want to limit the number of attempts, use `recoverWithRetries`.
+   *
    * '''Emits when''' element is available from the upstream or upstream is failed and element is available
    * from alternative Source
    *
@@ -2099,6 +2101,8 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * This operator can recover the failure signal, but not the skipped elements, which will be dropped.
    *
    * Throwing an exception inside `recoverWith` _will_ be logged on ERROR level automatically.
+   *
+   * It will keep trying to recover indefinitely, if you want to limit the number of attempts, use `recoverWithRetries`.
    *
    * '''Emits when''' element is available from the upstream or upstream is failed and element is available
    * from alternative Source
