@@ -1399,6 +1399,8 @@ final class SubSource[Out, Mat](
    * Since the underlying failure signal onError arrives out-of-band, it might jump over existing elements.
    * This operator can recover the failure signal, but not the skipped elements, which will be dropped.
    *
+   * It will keep trying to recover indefinitely, if you want to limit the number of attempts, use `recoverWithRetries`.
+   *
    * '''Emits when''' element is available from the upstream or upstream is failed and element is available
    * from alternative Source
    *
