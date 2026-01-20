@@ -1,0 +1,98 @@
+[
+  {
+    "name": "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.cluster.ClusterActorRefProvider",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.lang.String",
+          "org.apache.pekko.actor.ActorSystem$Settings",
+          "org.apache.pekko.event.EventStream",
+          "org.apache.pekko.actor.DynamicAccess"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.cluster.NoDowning",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.cluster.Cluster$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.cluster.protobuf.ClusterMessageSerializer",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.cluster.routing.ClusterRouterPool"
+  },
+  {
+    "name": "org.apache.pekko.cluster.ClusterMessage"
+  },
+  {
+    "name": "org.apache.pekko.cluster.Cluster$$anon$1",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "com.typesafe.config.Config",
+          "org.apache.pekko.event.LoggingAdapter",
+          "java.util.concurrent.ThreadFactory"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.cluster.routing.ClusterRouterGroup"
+  },
+  {
+    "name": "org.apache.pekko.cluster.routing.ClusterRouterPool"
+  },
+  {
+    "name": "org.apache.pekko.cluster.JoinConfigCompatCheckCluster",
+    "methods": [
+      {
+        "name": "<init>"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.cluster.JoinConfigCompatChecker$CompositeChecker",
+    "methods": [
+      {
+        "name": "<init>"
+      }
+    ]
+  }
+]
