@@ -33,7 +33,7 @@ jobs:
       # to submit dependencies
       contents: write
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@v6.0.2
         with:
           persist-credentials: false
       - name: Install sbt
