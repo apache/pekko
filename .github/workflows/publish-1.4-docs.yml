@@ -50,7 +50,7 @@ jobs:
         uses: sbt/setup-sbt@a627500d27445f8c5021755a439829b6e78e3358 # v1.1.15
 
       - name: Cache Coursier cache
-        uses: coursier/cache-action@bebeeb0e6f48ebad66d3783946588ecf43114433 # 6.4.8
+        uses: coursier/cache-action@c5ca79321d170b8a18c288d9cadc2a6037166d0f # 8.0.0
 
       - name: Install Graphviz
         run: |-

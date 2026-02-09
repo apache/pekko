@@ -37,7 +37,7 @@ jobs:
         uses: sbt/setup-sbt@a627500d27445f8c5021755a439829b6e78e3358 # v1.1.15
 
       - name: Cache Coursier cache
-        uses: coursier/cache-action@bebeeb0e6f48ebad66d3783946588ecf43114433 # v7.0.0
+        uses: coursier/cache-action@c5ca79321d170b8a18c288d9cadc2a6037166d0f # v8.0.0
 
       - name: Enable jvm-opts
         run: cp .jvmopts-ci .jvmopts
@@ -93,7 +93,7 @@ jobs:
         uses: sbt/setup-sbt@a627500d27445f8c5021755a439829b6e78e3358 # v1.1.15
 
       - name: Cache Coursier cache
-        uses: coursier/cache-action@bebeeb0e6f48ebad66d3783946588ecf43114433 # v7.0.0
+        uses: coursier/cache-action@c5ca79321d170b8a18c288d9cadc2a6037166d0f # v8.0.0
 
       - name: Enable jvm-opts
         run: cp .jvmopts-ci .jvmopts
@@ -148,7 +148,7 @@ jobs:
         uses: sbt/setup-sbt@a627500d27445f8c5021755a439829b6e78e3358 # v1.1.15
 
       - name: Cache Coursier cache
-        uses: coursier/cache-action@bebeeb0e6f48ebad66d3783946588ecf43114433 # v7.0.0
+        uses: coursier/cache-action@c5ca79321d170b8a18c288d9cadc2a6037166d0f # v8.0.0
 
       - name: Enable jvm-opts
         run: cp .jvmopts-ci .jvmopts
