@@ -218,7 +218,7 @@ Applications should use standard Protobuf dependency and not `pekko-protobuf-v3`
 
 ## Java serialization
 
-Java serialization is known to be slow and [prone to attacks](https://community.microfocus.com/cyberres/fortify/f/fortify-discussions/317555/the-perils-of-java-deserialization)
+Java serialization is known to be slow and [prone to attacks](https://docs.oracle.com/en/java/javase/25/core/addressing-serialization-vulnerabilities.html")
 of various kinds - it never was designed for high throughput messaging after all.
 One may think that network bandwidth and latency limit the performance of remote messaging, but serialization is a more typical bottleneck.
 
