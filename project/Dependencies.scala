@@ -352,7 +352,8 @@ object Dependencies {
 
   // pekko stream
 
-  lazy val stream = l ++= Seq[sbt.ModuleID](reactiveStreams, TestDependencies.scalatest)
+  lazy val stream =
+    l ++= Seq[sbt.ModuleID](reactiveStreams, "com.github.luben" % "zstd-jni" % "1.5.7-6", TestDependencies.scalatest)
 
   lazy val streamTestkit = l ++= Seq(
     TestDependencies.scalatest,
