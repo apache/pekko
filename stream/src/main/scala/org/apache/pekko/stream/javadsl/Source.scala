@@ -41,6 +41,7 @@ import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.fusing.{ StatefulMapConcat, ZipWithIndexJava }
 import pekko.util._
 
+import org.jspecify.annotations.Nullable
 import org.reactivestreams.{ Publisher, Subscriber }
 
 /** Java API */
@@ -547,7 +548,7 @@ object Source {
   def combine[T, U](
       first: Source[T, _ <: Any],
       second: Source[T, _ <: Any],
-      rest: java.util.List[Source[T, _ <: Any]],
+      @Nullable rest: java.util.List[Source[T, _ <: Any]],
       fanInStrategy: function.Function[java.lang.Integer, _ <: Graph[UniformFanInShape[T, U], NotUsed]])
       : Source[U, NotUsed] = {
     import scala.jdk.CollectionConverters._
@@ -573,7 +574,7 @@ object Source {
    * @since 1.1.0
    */
   def combine[T, U, M](
-      sources: java.util.List[_ <: Graph[SourceShape[T], M]],
+      @Nullable sources: java.util.List[_ <: Graph[SourceShape[T], M]],
       fanInStrategy: function.Function[java.lang.Integer, Graph[UniformFanInShape[T, U], NotUsed]])
       : Source[U, java.util.List[M]] = {
     import pekko.util.Collections._
@@ -588,7 +589,7 @@ object Source {
   /**
    * Combine the elements of multiple streams into a stream of lists.
    */
-  def zipN[T](sources: java.util.List[Source[T, _ <: Any]]): Source[java.util.List[T], NotUsed] = {
+  def zipN[T](@Nullable sources: java.util.List[Source[T, _ <: Any]]): Source[java.util.List[T], NotUsed] = {
     import scala.jdk.CollectionConverters._
     val seq = if (sources ne null) sources.asScala.map(_.asScala).toSeq else immutable.Seq()
     new Source(scaladsl.Source.zipN(seq).map(_.asJava))
@@ -599,7 +600,7 @@ object Source {
    */
   def zipWithN[T, O](
       zipper: function.Function[java.util.List[T], O],
-      sources: java.util.List[Source[T, _ <: Any]]): Source[O, NotUsed] = {
+      @Nullable sources: java.util.List[Source[T, _ <: Any]]): Source[O, NotUsed] = {
     import scala.jdk.CollectionConverters._
     val seq = if (sources ne null) sources.asScala.map(_.asScala).toSeq else immutable.Seq()
     new Source(scaladsl.Source.zipWithN[T, O](seq => zipper.apply(seq.asJava))(seq))
@@ -847,7 +848,7 @@ object Source {
    * '''Cancels when''' downstream cancels
    */
   def mergePrioritizedN[T](
-      sourcesAndPriorities: java.util.List[Pair[Source[T, _ <: Any], java.lang.Integer]],
+      @Nullable sourcesAndPriorities: java.util.List[Pair[Source[T, _ <: Any], java.lang.Integer]],
       eagerComplete: Boolean): javadsl.Source[T, NotUsed] = {
     import scala.jdk.CollectionConverters._
     val seq =
@@ -1628,7 +1629,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Cancels when''' downstream cancels
    */
   def interleaveAll(
-      those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
+      @Nullable those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
       segmentSize: Int,
       eagerClose: Boolean): javadsl.Source[Out, Mat] = {
     import pekko.util.Collections._
@@ -1710,7 +1711,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Cancels when''' downstream cancels
    */
   def mergeAll(
-      those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
+      @Nullable those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
       eagerComplete: Boolean): javadsl.Source[Out, Mat] = {
     import pekko.util.Collections._
     val seq = if (those ne null) those.collectToImmutableSeq {
@@ -4815,7 +4816,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * '''Cancels when''' downstream cancels
    */
-  def log(name: String, extract: function.Function[Out, Any], log: LoggingAdapter): javadsl.Source[Out, Mat] =
+  def log(name: String, extract: function.Function[Out, Any], @Nullable log: LoggingAdapter): javadsl.Source[Out, Mat] =
     new Source(delegate.log(name, e => extract.apply(e))(log))
 
   /**
@@ -4856,7 +4857,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * '''Cancels when''' downstream cancels
    */
-  def log(name: String, log: LoggingAdapter): javadsl.Source[Out, Mat] =
+  def log(name: String, @Nullable log: LoggingAdapter): javadsl.Source[Out, Mat] =
     this.log(name, ConstantFun.javaIdentityFunction[Out], log)
 
   /**
@@ -4903,7 +4904,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
       name: String,
       marker: function.Function[Out, LogMarker],
       extract: function.Function[Out, Any],
-      log: MarkerLoggingAdapter): javadsl.Source[Out, Mat] =
+      @Nullable log: MarkerLoggingAdapter): javadsl.Source[Out, Mat] =
     new Source(delegate.logWithMarker(name, e => marker.apply(e), e => extract.apply(e))(log))
 
   /**
@@ -4950,7 +4951,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
   def logWithMarker(
       name: String,
       marker: function.Function[Out, LogMarker],
-      log: MarkerLoggingAdapter): javadsl.Source[Out, Mat] =
+      @Nullable log: MarkerLoggingAdapter): javadsl.Source[Out, Mat] =
     this.logWithMarker(name, marker, ConstantFun.javaIdentityFunction[Out], log)
 
   /**
