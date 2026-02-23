@@ -36,16 +36,9 @@ import pekko.stream.Attributes.{ InputBuffer, LogLevels }
 import pekko.stream.Attributes.SourceLocation
 import pekko.stream.OverflowStrategies._
 import pekko.stream.Supervision.Decider
-import pekko.stream.impl.{
-  Buffer => BufferImpl,
-  ContextPropagation,
-  FailedSource,
-  JavaStreamSource,
-  ReactiveStreamsCompliance,
-  TraversalBuilder
-}
+import pekko.stream.impl.{ Buffer => BufferImpl, ContextPropagation, ReactiveStreamsCompliance, TraversalBuilder }
 import pekko.stream.impl.Stages.DefaultAttributes
-import pekko.stream.impl.fusing.GraphStages.{ FutureSource, SimpleLinearGraphStage, SingleSource }
+import pekko.stream.impl.fusing.GraphStages.SimpleLinearGraphStage
 import pekko.stream.scaladsl.{
   DelayStrategy,
   Source,
@@ -2173,7 +2166,7 @@ private[pekko] object TakeWithin {
         import Collect.NotApplied
         if (maximumRetries < 0 || attempt < maximumRetries) {
           pf.applyOrElse(ex, NotApplied) match {
-            case _: NotApplied.type => failStage(ex)
+            case _: NotApplied.type                                                                               => failStage(ex)
             case source: Graph[SourceShape[T] @unchecked, M @unchecked] if TraversalBuilder.isEmptySource(source) =>
               completeStage()
             case other: Graph[SourceShape[T] @unchecked, M @unchecked] =>
