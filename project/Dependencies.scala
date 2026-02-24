@@ -21,7 +21,7 @@ object Dependencies {
   object Protobuf {
     // https://protobuf.dev/support/version-support/
     // protobuf-java 4.x corresponds with protoc 26.x-33.x
-    val protobufJavaVersion = "4.33.1"
+    val protobufJavaVersion = "4.33.5"
     val protocVersion = "33.0"
   }
 
@@ -36,11 +36,11 @@ object Dependencies {
   // needs to be inline with the aeron version, check
   // https://github.com/real-logic/aeron/blob/1.x.y/build.gradle
   val agronaVersion = "1.22.0"
-  val nettyVersion = "4.2.9.Final"
+  val nettyVersion = "4.2.10.Final"
   val logbackVersion = "1.3.15"
 
-  val jacksonAnnotationsVersion = "2.20"
-  val jacksonCoreVersion = "2.20.1"
+  val jacksonAnnotationsVersion = "2.21"
+  val jacksonCoreVersion = "2.21.1"
   val jacksonDatabindVersion = jacksonCoreVersion
 
   val scala212Version = "2.12.21"
