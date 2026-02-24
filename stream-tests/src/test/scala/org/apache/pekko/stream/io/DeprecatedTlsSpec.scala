@@ -345,30 +345,16 @@ class DeprecatedTlsSpec extends StreamSpec(DeprecatedTlsSpec.configOverrides) wi
       }
     }
 
-    object SessionRenegotiationFirstOne extends PayloadScenario {
-      override def flow = logCipherSuite
-      def inputs = NegotiateNewSession.withCipherSuites("TLS_RSA_WITH_AES_128_CBC_SHA") :: send("hello") :: Nil
-      def output = ByteString("TLS_RSA_WITH_AES_128_CBC_SHAhello")
-    }
-
     object SessionRenegotiationFirstTwo extends PayloadScenario {
       override def flow = logCipherSuite
       def inputs = NegotiateNewSession.withCipherSuites("TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA") :: send("hello") :: Nil
       def output = ByteString("TLS_ECDHE_RSA_WITH_AES_128_CBC_SHAhello")
     }
 
-    val renegotiationScenarios = if (JavaVersion.majorVersion <= 21)
-      Seq(
-        SessionRenegotiationBySender,
-        SessionRenegotiationByReceiver,
-        SessionRenegotiationFirstOne,
-        SessionRenegotiationFirstTwo)
-    else
-      // skip SessionRenegotiationFirstOne as it uses a weak cipher suite and the test will fail
-      Seq(
-        SessionRenegotiationBySender,
-        SessionRenegotiationByReceiver,
-        SessionRenegotiationFirstTwo)
+    val renegotiationScenarios = Seq(
+      SessionRenegotiationBySender,
+      SessionRenegotiationByReceiver,
+      SessionRenegotiationFirstTwo)
 
     val scenarios =
       Seq(
