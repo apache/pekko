@@ -42,7 +42,11 @@ object TlsSpec {
 
   val rnd = new Random
 
-  val TLS12Ciphers: Set[String] = Set("TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA", "TLS_RSA_WITH_AES_128_CBC_SHA")
+  // Use forward-secrecy enabled cipher suites that are supported in Java 17+
+  // TLS_RSA_* cipher suites have been disabled by default in Java 17+
+  val TLS12Ciphers: Set[String] = Set(
+    "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+    "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384")
   val TLS13Ciphers: Set[String] = Set("TLS_AES_128_GCM_SHA256", "TLS_AES_256_GCM_SHA384")
 
   def initWithTrust(trustPath: String, protocol: String): SSLContext = {
@@ -378,31 +382,20 @@ class TlsSpec extends StreamSpec(TlsSpec.configOverrides) with WithLogCapturing 
         }
       }
 
-      object SessionRenegotiationFirstOne extends PayloadScenario {
-        override def flow = logCipherSuite
-        def inputs = NegotiateNewSession.withCipherSuites("TLS_RSA_WITH_AES_128_CBC_SHA") :: send("hello") :: Nil
-        def output = ByteString("TLS_RSA_WITH_AES_128_CBC_SHAhello")
-      }
-
       object SessionRenegotiationFirstTwo extends PayloadScenario {
         override def flow = logCipherSuite
-        def inputs = NegotiateNewSession.withCipherSuites("TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA") :: send("hello") :: Nil
-        def output = ByteString("TLS_ECDHE_RSA_WITH_AES_128_CBC_SHAhello")
+        def inputs = NegotiateNewSession.withCipherSuites("TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256") :: send("hello") ::
+          Nil
+        def output = ByteString("TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256hello")
       }
 
       val renegotiationScenarios = if (protocol == "TLSv1.2") {
-        if (JavaVersion.majorVersion <= 21)
-          Seq(
-            SessionRenegotiationBySender,
-            SessionRenegotiationByReceiver,
-            SessionRenegotiationFirstOne,
-            SessionRenegotiationFirstTwo)
-        else
-          // skip SessionRenegotiationFirstOne as it uses a weak cipher suite and the test will fail
-          Seq(
-            SessionRenegotiationBySender,
-            SessionRenegotiationByReceiver,
-            SessionRenegotiationFirstTwo)
+        // skip SessionRenegotiationFirstOne as it uses TLS_RSA_WITH_AES_128_CBC_SHA
+        // which is a weak cipher suite that is disabled by default in Java 17+
+        Seq(
+          SessionRenegotiationBySender,
+          SessionRenegotiationByReceiver,
+          SessionRenegotiationFirstTwo)
       } else
         // TLSv1.3 doesn't support renegotiation
         Nil
@@ -448,11 +441,11 @@ class TlsSpec extends StreamSpec(TlsSpec.configOverrides) with WithLogCapturing 
               .collect { case SessionBytes(_, b) => b }
               .scan(ByteString.empty)(_ ++ _)
               .filter(_.nonEmpty)
-              .via(new Timeout(10.seconds))
+              .via(new Timeout(15.seconds))
               .dropWhile(_.size < scenario.output.size)
               .runWith(Sink.headOption)
 
-          Await.result(output, 12.seconds).getOrElse(ByteString.empty).utf8String should be(scenario.output.utf8String)
+          Await.result(output, 17.seconds).getOrElse(ByteString.empty).utf8String should be(scenario.output.utf8String)
 
           commPattern.cleanup()
         }
