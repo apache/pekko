@@ -172,8 +172,6 @@ jobs:
     if: ${{ inputs.email-template }}
     steps:
       - name: Generate vote email template
-        env:
-          REF: ${{ github.ref_name }}
         run: |-
           export MODULE="Pekko (Core)"
           export VERSION=$(echo $REF | sed -e "s/.\(.*\)-.*/\\1/")
@@ -256,7 +254,7 @@ jobs:
           
           To compile from the source, please refer to:
           
-          https://github.com/apache/pekko/blob/$REF/README.md#building-from-source
+          https://github.com/apache/pekko/blob/1.5.x/README.md#building-from-source
           
           To verify the binary build, please refer to:
           
