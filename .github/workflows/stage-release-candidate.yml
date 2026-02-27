@@ -1,0 +1,281 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+name: Stage release candidate
+
+on:
+  workflow_dispatch:
+    inputs:
+      source-tar:
+        description: "Stage the source tarball to svn"
+        default: true
+        type: boolean
+      jars:
+        description: "Stage the binary jars to nexus"
+        default: true
+        type: boolean
+      email-template:
+        description: "Generate vote email template"
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  # Automating the step at https://github.com/apache/pekko-site/wiki/Pekko-Release-Process#build-the-source-release-candidate
+  # Partly based on https://github.com/apache/daffodil/blob/main/.github/workflows/release-candidate.yml
+  stage-release-candidate-to-svn:
+    runs-on: ubuntu-24.04
+    if: ${{ inputs.source-tar }}
+    steps:
+      - name: Check version parameter
+        run: |-
+          # To be enabled after this workflow has been tested:
+          #if [[ "$REF" != "v"* ]]; then
+          #  echo "Trigger this workflow on a version tag"
+          #  exit 1
+          #fi
+          if [[ "$REF" != *"-RC"* ]]; then
+            echo "Trigger this workflow on an RC tag"
+            exit 1
+          fi
+          export VERSION=$(echo $REF | sed -e "s/.\(.*\)-.*/\\1/")
+          export RC_VERSION=$(echo $REF | tail -c +2)
+          echo "Version: $VERSION"
+          echo "RC Version: $RC_VERSION"
+        env:
+          REF: ${{ github.ref_name }}
+
+      - name: Checkout
+        uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98 # v5.0.1
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          persist-credentials: false
+          ref: ${{ github.ref_name }}
+
+      - name: Generate source archive
+        run: |-
+          VERSION=$(echo $REF | sed -e "s/.\(.*\)-.*/\\1/")
+          PREFIX=apache-pekko-$VERSION
+          DATE=$(git log -n1 --format=%cs | tr -d -)
+          TARBALL=$PREFIX-src-$DATE.tgz
+
+          mkdir archive
+          git archive --format=tar --prefix=$PREFIX/ HEAD | gzip -6 -n > archive/$TARBALL
+          cd archive
+          sha512sum $TARBALL > $TARBALL.sha512
+        env:
+          REF: ${{ github.ref_name }}
+
+      - name: Sign source archive
+        run: |-
+          echo "$PEKKO_GPG_SECRET_KEY" | gpg --batch --import --import-options import-show
+          gpg -ab archive/*.tgz
+        env:
+          PEKKO_GPG_SECRET_KEY: ${{ secrets.PEKKO_GPG_SECRET_KEY }}
+
+      - name: Install Apache Subversion
+        run: |-
+          sudo apt-get update
+          sudo apt-get install -y subversion
+
+      - name: Upload source dist
+        run: |-
+          svn checkout https://dist.apache.org/repos/dist/dev/pekko dist
+          cd dist
+
+          export RC_VERSION=$(echo $REF | tail -c +2)
+
+          mkdir $RC_VERSION
+          cp ../archive/* $RC_VERSION
+          svn add $RC_VERSION
+          svn commit --username "$PEKKO_SVN_DEV_USERNAME" --password "$PEKKO_SVN_DEV_PASSWORD" --message "Stage Pekko $RC_VERSION" $RC_VERSION
+        env:
+          PEKKO_SVN_DEV_USERNAME: ${{ secrets.PEKKO_SVN_DEV_USERNAME }}
+          PEKKO_SVN_DEV_PASSWORD: ${{ secrets.PEKKO_SVN_DEV_PASSWORD }}
+          REF: ${{ github.ref_name }}
+
+  stage-jars-to-nexus:
+    runs-on: ubuntu-24.04
+    if: ${{ inputs.jars }}
+    steps:
+      - name: Check version parameter
+        run: |-
+          # To be enabled after this workflow has been tested:
+          #if [[ "$REF" != "v"* ]]; then
+          #  echo "Trigger this workflow on a version tag"
+          #  exit 1
+          #fi
+          if [[ "$REF" != *"-RC"* ]]; then
+            echo "Trigger this workflow on an RC tag"
+            exit 1
+          fi
+          export VERSION=$(echo $REF | sed -e "s/\(.*\)-.*/\\1/")
+          export RC_VERSION=$(echo $REF | tail -c +2)
+          echo "Version: $VERSION"
+          echo "RC Version: $RC_VERSION"
+        env:
+          REF: ${{ github.ref_name }}
+
+      - name: Checkout
+        uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98 # v5.0.1
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          persist-credentials: false
+          ref: ${{ github.ref_name }}
+      - name: Setup Java 17
+        uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 # v5.0.0
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Install sbt
+        uses: sbt/setup-sbt@06192244f17880c9bf69ccd8de5b2e8785822be5 # v1.1.17
+
+      # We intentionally do not use the Coursier cache for release candiates,
+      # to reduce attack surface
+
+      # It would be better to split this into 3 steps, where only the first
+      # uses sbt and the signing/staging are done with well-known tools
+      # reducing attack surface, but this seems to be the state of the art:
+      - name: Build, sign and stage artifacts
+        run: |-
+          VERSION=$(echo $REF | sed -e "s/.\(.*\)-.*/\\1/")
+          echo "$PEKKO_GPG_SECRET_KEY" | gpg --batch --import --import-options import-show
+
+          sbt "set ThisBuild / version := \"$VERSION\"; +publishSigned"
+          sbt "set ThisBuild / version := \"$VERSION\"; sonatypePrepare; set ThisBuild / version := \"$VERSION\"; sonatypeBundleUpload; sonatypeClose"
+        env:
+          REF: ${{ github.ref_name }}
+          PEKKO_GPG_SECRET_KEY: ${{ secrets.PEKKO_GPG_SECRET_KEY }}
+          SONATYPE_USERNAME: ${{ secrets.NEXUS_STAGE_DEPLOYER_USER }}
+          SONATYPE_PASSWORD: ${{ secrets.NEXUS_STAGE_DEPLOYER_PW }}
+
+  email-template:
+    runs-on: ubuntu-24.04
+    if: ${{ inputs.email-template }}
+    steps:
+      - name: Generate vote email template
+        env:
+          REF: ${{ github.ref_name }}
+        run: |-
+          export MODULE="Pekko (Core)"
+          export VERSION=$(echo $REF | sed -e "s/.\(.*\)-.*/\\1/")
+          export RC_VERSION=$(echo $REF | tail -c +2)
+          echo "VERSION=$VERSION"
+          echo "RC_VERSION=$RC_VERSION"
+
+          export DISCUSS=$(curl 'https://lists.apache.org/api/stats.lua?list=dev&domain=pekko.apache.org' | jq ".emails.[] | .subject, .mid" | grep -A1 "$MODULE $VERSION" | tail -1 | tr -d \")
+          echo "DISCUSS=$DISCUSS"
+          export DISCUSS_THREAD=https://lists.apache.org/thread/$(curl "https://lists.apache.org/api/thread.lua?id=$DISCUSS&find_parent=true" | jq .thread.mid | tr -d \")
+          echo "DISCUSS_THREAD=$DISCUSS_THREAD"
+
+          export RELEASE_NOTES=https://github.com/apache/pekko/pull/$(curl https://api.github.com/repos/apache/pekko/pulls?state=all | jq ".[] | .title, .number" | grep -A1 "Release notes for $VERSION" | tail -1)
+          echo "RELEASE_NOTES=$RELEASE_NOTES"
+
+          export SENDER=$(curl "https://api.github.com/users/$ACTOR" | jq .name | tr -d \")
+          echo "SENDER=$SENDER"
+
+          echo "This template can be used to start a vote, either via manual email or via https://release-test.apache.org/compose/pekko/$VERSION"
+          echo
+          cat <<EOF;
+          Subject: [VOTE] Release Apache $MODULE $RC_VERSION
+
+          Hello Pekko Community,
+
+          This is a call for a vote to release Apache $MODULE version $RC_VERSION
+
+          The discussion thread:
+          
+          $DISCUSS_THREAD
+          
+          The release candidate:
+          
+          https://dist.apache.org/repos/dist/dev/pekko/$RC_VERSION
+          https://release-test.apache.org/vote/pekko/$VERSION
+          
+          This release has been signed with a PGP key available here:
+          
+          https://downloads.apache.org/pekko/KEYS
+          
+          Release Notes:
+          
+          $RELEASE_NOTES
+          
+          Git branch for the release:
+          
+          https://github.com/apache/pekko/tree/v$RC_VERSION
+          Git commit ID: $COMMIT_SHA
+          
+          Please download, verify, and test.
+          
+          We have also staged jars in the Apache Nexus Repository. These were built with the same code
+          as appears in this Source Release Candidate. We would appreciate if users could test with these too.
+          If anyone finds any serious problems with these jars, please also notify us on this thread.
+          
+          https://repository.apache.org/content/groups/staging/org/apache/pekko/
+          
+          You can add this resolver to sbt with 'resolvers += Resolver.ApacheMavenStagingRepo'
+          
+          The VOTE will pass if we have more positive votes than negative votes
+          and there must be a minimum of 3 approvals from Pekko PMC members.
+          Anyone voting in favour of the release, could you please provide a list of the checks you have done?
+          The vote will be left open until [VOTE_ENDS_UTC].
+          
+          [ ] +1 approve
+          [ ] +0 no opinion
+          [ ] -1 disapprove with the reason
+          
+          To learn more about Apache Pekko, please see https://pekko.apache.org/
+          
+          Checklist for reference:
+          
+          [ ] Download links are valid.
+          [ ] Checksums and signatures.
+          [ ] LICENSE/NOTICE files exist
+          [ ] No unexpected binary files
+          [ ] All source files have ASF headers
+          [ ] Can compile from source
+          [ ] Can verify the binary build
+          
+          To compile from the source, please refer to:
+          
+          https://github.com/apache/pekko/blob/$REF/README.md#building-from-source
+          
+          To verify the binary build, please refer to:
+          
+          https://github.com/apache/pekko-site/wiki/Pekko-Release-Process#verifying-the-binary-build
+          
+          Some notes about verifying downloads can be found at:
+          
+          https://pekko.apache.org/download.html#verifying-downloads
+          
+          You can vote on ATR at https://release-test.apache.org/vote/pekko/$VERSION
+          or manually by replying to this email.
+
+          
+          Thanks,
+          
+          $SENDER (Apache Pekko PMC member)
+          EOF
+        env:
+          REF: ${{ github.ref_name }}
+          COMMIT_SHA: ${{ github.sha }}
+          ACTOR: ${{ github.actor }}
