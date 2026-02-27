@@ -148,6 +148,10 @@ jobs:
       - name: Install sbt
         uses: sbt/setup-sbt@06192244f17880c9bf69ccd8de5b2e8785822be5 # v1.1.17
 
+      - name: Install Graphviz
+        run: |-
+          sudo apt-get install graphviz
+
       # We intentionally do not use the Coursier cache for release candiates,
       # to reduce attack surface
 
