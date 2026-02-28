@@ -14,6 +14,12 @@ Streams the elements to the given future sink once it successfully completes.
 Streams the elements through the given future flow once it successfully completes. 
 If the future fails the stream is failed.
 
+`futureSink` uses the same lazy materialization semantics as @ref:[lazyFutureSink](lazyFutureSink.md): the nested sink
+is not materialized until the first upstream element arrives. If the stream completes before the first element, the
+materialized value fails with `org.apache.pekko.stream.NeverMaterializedException`.
+
+If you want this to work for empty streams as well, use @ref:[eagerFutureSink](eagerFutureSink.md).
+
 ## Reactive Streams semantics
 
 @@@div { .callout }

@@ -40,6 +40,7 @@ import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.StreamLayout.AtomicModule
 import pekko.stream.scaladsl.{ Keep, Sink, SinkQueueWithCancel, Source }
 import pekko.stream.stage._
+import pekko.util.OptionVal
 
 import org.reactivestreams.Publisher
 import org.reactivestreams.Subscriber
@@ -657,6 +658,133 @@ import org.reactivestreams.Subscriber
         matVal
       }
 
+    }
+    (stageLogic, promise.future)
+  }
+}
+
+/**
+ * INTERNAL API
+ *
+ * Dedicated stage for [[pekko.stream.scaladsl.Sink.eagerFutureSink]] that materializes the inner sink
+ * when the future completes rather than waiting for the first element. Unlike [[LazySink]], this
+ * correctly handles empty streams by materializing the inner sink and completing it normally.
+ */
+@InternalApi final private[stream] class EagerFutureSink[T, M](future: Future[Sink[T, M]])
+    extends GraphStageWithMaterializedValue[SinkShape[T], Future[M]] {
+  val in = Inlet[T]("eagerFutureSink.in")
+  override def initialAttributes = DefaultAttributes.eagerFutureSink
+  override val shape: SinkShape[T] = SinkShape.of(in)
+
+  override def toString: String = "EagerFutureSink"
+
+  override def createLogicAndMaterializedValue(inheritedAttributes: Attributes): (GraphStageLogic, Future[M]) = {
+    val promise = Promise[M]()
+    val stageLogic = new GraphStageLogic(shape) with InHandler {
+      private var bufferedElement: OptionVal[T] = OptionVal.none
+      private var upstreamFailed: OptionVal[Throwable] = OptionVal.none
+      private var upstreamClosed = false
+
+      override def preStart(): Unit = {
+        pull(in)
+        val cb = getAsyncCallback[Try[Sink[T, M]]] {
+          case Success(sink) => onSinkReady(sink)
+          case Failure(e)    =>
+            promise.tryFailure(e)
+            failStage(e)
+        }
+        try {
+          future.onComplete(cb.invoke)(ExecutionContext.parasitic)
+        } catch {
+          case NonFatal(e) =>
+            promise.tryFailure(e)
+            failStage(e)
+        }
+        setKeepGoing(true)
+      }
+
+      override def onPush(): Unit = {
+        bufferedElement = OptionVal.Some(grab(in))
+      }
+
+      override def onUpstreamFinish(): Unit = {
+        upstreamClosed = true
+      }
+
+      override def onUpstreamFailure(ex: Throwable): Unit = {
+        upstreamFailed = OptionVal.Some(ex)
+        upstreamClosed = true
+      }
+
+      private def onSinkReady(sink: Sink[T, M]): Unit = {
+        if (promise.isCompleted) return
+        try {
+          val subOutlet = new SubSourceOutlet[T]("EagerFutureSink")
+          val matVal = interpreter.subFusingMaterializer
+            .materialize(Source.fromGraph(subOutlet.source).toMat(sink)(Keep.right), inheritedAttributes)
+          promise.trySuccess(matVal)
+
+          setHandler(
+            in,
+            new InHandler {
+              override def onPush(): Unit = subOutlet.push(grab(in))
+              override def onUpstreamFinish(): Unit = {
+                subOutlet.complete()
+                completeStage()
+              }
+              override def onUpstreamFailure(ex: Throwable): Unit = {
+                subOutlet.fail(ex)
+                failStage(ex)
+              }
+            })
+
+          subOutlet.setHandler(new OutHandler {
+            override def onPull(): Unit = {
+              bufferedElement match {
+                case OptionVal.Some(elem) =>
+                  bufferedElement = OptionVal.none
+                  subOutlet.push(elem)
+                  if (upstreamClosed) {
+                    subOutlet.complete()
+                    completeStage()
+                  }
+                case _ =>
+                  if (upstreamClosed) {
+                    subOutlet.complete()
+                    completeStage()
+                  } else if (!isClosed(in)) {
+                    pull(in)
+                  }
+              }
+            }
+            override def onDownstreamFinish(cause: Throwable): Unit = {
+              if (!isClosed(in)) cancel(in, cause)
+              completeStage()
+            }
+          })
+
+          upstreamFailed match {
+            case OptionVal.Some(ex) =>
+              subOutlet.fail(ex)
+              failStage(ex)
+            case _ =>
+              if (upstreamClosed && bufferedElement.isEmpty) {
+                subOutlet.complete()
+                setKeepGoing(false)
+              }
+          }
+        } catch {
+          case NonFatal(e) =>
+            promise.tryFailure(e)
+            failStage(e)
+        }
+      }
+
+      override def postStop(): Unit = {
+        if (!promise.isCompleted) promise.failure(new AbruptStageTerminationException(this))
+      }
+
+      setHandler(in, this)
     }
     (stageLogic, promise.future)
   }
