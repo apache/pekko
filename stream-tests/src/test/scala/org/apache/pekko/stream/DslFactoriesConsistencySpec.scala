@@ -41,6 +41,7 @@ class DslFactoriesConsistencySpec extends AnyWordSpec with Matchers {
       "lazyFutureFlow", // lazyCompletionStageFlow
       "futureFlow", // completionStageFlow
       "futureSink", // completionStageSink
+      "eagerFutureSink", // eagerCompletionStageSink
       "lazyFutureSink", // lazyCompletionStageSink
       "createGraph" // renamed/overload of create for getting type inference working in Scala 3
     )
