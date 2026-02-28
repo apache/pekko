@@ -20,7 +20,7 @@ jobs:
           fetch-tags: true
 
       - name: Setup Java 11
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 11
@@ -74,7 +74,7 @@ jobs:
           fetch-tags: true
 
       - name: Setup Java 11
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 11
@@ -126,7 +126,7 @@ jobs:
           fetch-tags: true
 
       - name: Setup Java ${{ matrix.javaVersion }}
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: ${{ matrix.javaVersion }}
