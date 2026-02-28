@@ -33,7 +33,7 @@ jobs:
     steps:
       # TODO we will need to change to use a release tag in future
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           fetch-tags: true
