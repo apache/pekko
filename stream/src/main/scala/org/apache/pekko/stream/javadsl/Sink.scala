@@ -526,6 +526,24 @@ object Sink {
     lazyCompletionStageSink[T, M](() => future)
 
   /**
+   * Turn a `CompletionStage[Sink]` into a Sink that will consume the values of the source when the future completes
+   * successfully. If the `CompletionStage` is completed with a failure the stream is failed.
+   *
+   * Unlike [[completionStageSink]] and [[lazyCompletionStageSink]], this operator materializes the inner sink as
+   * soon as the future completes, even if no elements have arrived yet. This means empty streams complete normally
+   * rather than failing with [[NeverMaterializedException]]. Elements that arrive before the future completes
+   * are buffered.
+   *
+   * The materialized future value is completed with the materialized value of the future sink or failed if the
+   * future fails, upstream fails, or downstream cancels before the inner sink is materialized.
+   *
+   * @since 1.5.0
+   */
+  def eagerCompletionStageSink[T, M](future: CompletionStage[Sink[T, M]]): Sink[T, CompletionStage[M]] =
+    new Sink(scaladsl.Sink.eagerFutureSink(future.asScala.map(_.asScala)(ExecutionContext.parasitic)))
+      .mapMaterializedValue(_.asJava)
+
+  /**
    * Defers invoking the `create` function to create a sink until there is a first element passed from upstream.
    *
    * The materialized future value is completed with the materialized value of the created sink when that has successfully
