@@ -49,7 +49,7 @@ jobs:
           java-version: 11
 
       - name: Install sbt
-        uses: sbt/setup-sbt@06192244f17880c9bf69ccd8de5b2e8785822be5 # v1.1.17
+        uses: sbt/setup-sbt@1cad58d595b729a71ca2254cdf5b43dd6f42d4bb # v1.1.18
 
       - name: Cache Coursier cache
         uses: coursier/cache-action@e47d7d35a0d3a2c7f649ca5c63dfc2bbfaa002e7 # 8.0.1
