@@ -63,6 +63,18 @@ class FlowRecoverWithSpec extends StreamSpec {
         .expectComplete()
     }
 
+    "recover with on single source input" in {
+      Source.single(1)
+        .map { _ =>
+          throw ex
+        }
+        .recoverWith { case _: Throwable => Source.single(42) }
+        .runWith(TestSink[Int]())
+        .request(1)
+        .expectNext(42)
+        .expectComplete()
+    }
+
     "recover with a completed future source" in {
       Source.failed(ex)
         .recoverWith { case _: Throwable => Source.future(Future.successful(3)) }
