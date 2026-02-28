@@ -36,9 +36,16 @@ import pekko.stream.Attributes.{ InputBuffer, LogLevels }
 import pekko.stream.Attributes.SourceLocation
 import pekko.stream.OverflowStrategies._
 import pekko.stream.Supervision.Decider
-import pekko.stream.impl.{ Buffer => BufferImpl, ContextPropagation, ReactiveStreamsCompliance, TraversalBuilder }
+import pekko.stream.impl.{
+  Buffer => BufferImpl,
+  ContextPropagation,
+  FailedSource,
+  JavaStreamSource,
+  ReactiveStreamsCompliance,
+  TraversalBuilder
+}
 import pekko.stream.impl.Stages.DefaultAttributes
-import pekko.stream.impl.fusing.GraphStages.SimpleLinearGraphStage
+import pekko.stream.impl.fusing.GraphStages.{ FutureSource, SimpleLinearGraphStage, SingleSource }
 import pekko.stream.scaladsl.{
   DelayStrategy,
   Source,
@@ -2162,6 +2169,7 @@ private[pekko] object TakeWithin {
       override def onPull(): Unit = pull(in)
 
       @nowarn("msg=Any")
+      @tailrec
       def onFailure(ex: Throwable): Unit = {
         import Collect.NotApplied
         if (maximumRetries < 0 || attempt < maximumRetries) {
@@ -2169,12 +2177,28 @@ private[pekko] object TakeWithin {
             case _: NotApplied.type                                                                               => failStage(ex)
             case source: Graph[SourceShape[T] @unchecked, M @unchecked] if TraversalBuilder.isEmptySource(source) =>
               completeStage()
-            case other: Graph[SourceShape[T] @unchecked, M @unchecked] =>
-              TraversalBuilder.getSingleSource(other) match {
-                case OptionVal.Some(singleSource) =>
-                  emit(out, singleSource.elem.asInstanceOf[T], () => completeStage())
+            case source: Graph[SourceShape[T] @unchecked, M @unchecked] =>
+              TraversalBuilder.getValuePresentedSource(source) match {
+                case OptionVal.Some(graph) => graph match {
+                    case singleSource: SingleSource[T @unchecked] => emit(out, singleSource.elem, () => completeStage())
+                    case failed: FailedSource[T @unchecked]       => onFailure(failed.failure)
+                    case futureSource: FutureSource[T @unchecked] => futureSource.future.value match {
+                        case Some(Success(elem)) => emit(out, elem, () => completeStage())
+                        case Some(Failure(ex))   => onFailure(ex)
+                        case None                =>
+                          switchTo(source)
+                          attempt += 1
+                      }
+                    case iterableSource: IterableSource[T @unchecked] =>
+                      emitMultiple(out, iterableSource.elements, () => completeStage())
+                    case javaStreamSource: JavaStreamSource[T @unchecked, _] =>
+                      emitMultiple(out, javaStreamSource.open().spliterator(), () => completeStage())
+                    case _ =>
+                      switchTo(source)
+                      attempt += 1
+                  }
                 case _ =>
-                  switchTo(other)
+                  switchTo(source)
                   attempt += 1
               }
             case _ => throw new IllegalStateException() // won't happen, compiler exhaustiveness check pleaser
