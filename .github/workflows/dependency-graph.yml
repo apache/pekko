@@ -36,7 +36,7 @@ jobs:
       - uses: actions/checkout@v6
       - name: Install sbt
         uses: sbt/setup-sbt@1cad58d595b729a71ca2254cdf5b43dd6f42d4bb # v1.1.18
-      - uses: scalacenter/sbt-dependency-submission@64084844d2b0a9b6c3765f33acde2fbe3f5ae7d3 # v3.1.0
+      - uses: scalacenter/sbt-dependency-submission@f43202114d7522a4b233e052f82c2eea8d658134 # v3.2.1
         with:
           configs-ignore: provided optional test TestJdk9 compile-internal runtime-internal pr-validation multi-jvm scala-tool scala-doc-tool
           modules-ignore: pekko-bench-jmh_2.12 pekko-docs_2.12 pekko-bench-jmh_2.13 pekko-docs_2.13 pekko-bench-jmh_3 pekko-docs_3
