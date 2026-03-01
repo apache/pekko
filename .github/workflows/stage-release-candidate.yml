@@ -180,8 +180,14 @@ jobs:
           export MODULE="Pekko (Core)"
           export VERSION=$(echo $REF | sed -e "s/.\(.*\)-.*/\\1/")
           export RC_VERSION=$(echo $REF | tail -c +2)
+          if [[ "$VERSION" =~ ^1\.([0-9]+)\.[0-9]+$ ]]; then
+            export BRANCH="1.${BASH_REMATCH[1]}.x"
+          else
+            export BRANCH="main"
+          fi
           echo "VERSION=$VERSION"
           echo "RC_VERSION=$RC_VERSION"
+          echo "BRANCH=$BRANCH"
 
           export DISCUSS=$(curl 'https://lists.apache.org/api/stats.lua?list=dev&domain=pekko.apache.org' | jq ".emails.[] | .subject, .mid" | grep -A1 "$MODULE $VERSION" | tail -1 | tr -d \")
           echo "DISCUSS=$DISCUSS"
@@ -238,7 +244,7 @@ jobs:
           The VOTE will pass if we have more positive votes than negative votes
           and there must be a minimum of 3 approvals from Pekko PMC members.
           Anyone voting in favour of the release, could you please provide a list of the checks you have done?
-          The vote will be left open until [VOTE_ENDS_UTC].
+          The vote will be left open for 72hrs.
           
           [ ] +1 approve
           [ ] +0 no opinion
@@ -258,7 +264,7 @@ jobs:
           
           To compile from the source, please refer to:
           
-          https://github.com/apache/pekko/blob/1.5.x/README.md#building-from-source
+          https://github.com/apache/pekko/blob/$BRANCH/README.md#building-from-source
           
           To verify the binary build, please refer to:
           
