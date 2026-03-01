@@ -31,6 +31,8 @@ import pekko.japi.function
 import pekko.stream._
 import pekko.util.ConstantFun
 
+import org.jspecify.annotations.Nullable
+
 object SourceWithContext {
 
   /**
@@ -290,7 +292,8 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    *
    * @see [[pekko.stream.javadsl.Source.log]]
    */
-  def log(name: String, extract: function.Function[Out, Any], log: LoggingAdapter): SourceWithContext[Out, Ctx, Mat] =
+  def log(name: String, extract: function.Function[Out, Any], @Nullable log: LoggingAdapter)
+      : SourceWithContext[Out, Ctx, Mat] =
     viaScala(_.log(name, e => extract.apply(e))(log))
 
   /**
@@ -306,7 +309,7 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    *
    * @see [[pekko.stream.javadsl.Flow.log]]
    */
-  def log(name: String, log: LoggingAdapter): SourceWithContext[Out, Ctx, Mat] =
+  def log(name: String, @Nullable log: LoggingAdapter): SourceWithContext[Out, Ctx, Mat] =
     this.log(name, ConstantFun.javaIdentityFunction[Out], log)
 
   /**
@@ -326,7 +329,7 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
       name: String,
       marker: function.Function2[Out, Ctx, LogMarker],
       extract: function.Function[Out, Any],
-      log: MarkerLoggingAdapter): SourceWithContext[Out, Ctx, Mat] =
+      @Nullable log: MarkerLoggingAdapter): SourceWithContext[Out, Ctx, Mat] =
     viaScala(_.logWithMarker(name, (e, c) => marker.apply(e, c), e => extract.apply(e))(log))
 
   /**
@@ -348,7 +351,7 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
   def logWithMarker(
       name: String,
       marker: function.Function2[Out, Ctx, LogMarker],
-      log: MarkerLoggingAdapter): SourceWithContext[Out, Ctx, Mat] =
+      @Nullable log: MarkerLoggingAdapter): SourceWithContext[Out, Ctx, Mat] =
     this.logWithMarker(name, marker, ConstantFun.javaIdentityFunction[Out], log)
 
   /**

@@ -35,6 +35,8 @@ import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.fusing.{ StatefulMapConcat, ZipWithIndexJava }
 import pekko.util.ConstantFun
 
+import org.jspecify.annotations.Nullable
+
 object SubFlow {
 
   /**
@@ -2368,7 +2370,7 @@ final class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def mergeAll(
-      those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
+      @Nullable those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
       eagerComplete: Boolean): SubFlow[In, Out, Mat] = {
     import pekko.util.Collections._
     val seq = if (those ne null) those.collectToImmutableSeq {
@@ -2426,7 +2428,7 @@ final class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def interleaveAll(
-      those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
+      @Nullable those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
       segmentSize: Int,
       eagerClose: Boolean): SubFlow[In, Out, Mat] = {
     import pekko.util.Collections._
@@ -2918,7 +2920,7 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def log(name: String, extract: function.Function[Out, Any], log: LoggingAdapter): SubFlow[In, Out, Mat] =
+  def log(name: String, extract: function.Function[Out, Any], @Nullable log: LoggingAdapter): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.log(name, e => extract.apply(e))(log))
 
   /**
@@ -2959,7 +2961,7 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def log(name: String, log: LoggingAdapter): SubFlow[In, Out, Mat] =
+  def log(name: String, @Nullable log: LoggingAdapter): SubFlow[In, Out, Mat] =
     this.log(name, ConstantFun.javaIdentityFunction[Out], log)
 
   /**
@@ -3006,7 +3008,7 @@ final class SubFlow[In, Out, Mat](
       name: String,
       marker: function.Function[Out, LogMarker],
       extract: function.Function[Out, Any],
-      log: MarkerLoggingAdapter): SubFlow[In, Out, Mat] =
+      @Nullable log: MarkerLoggingAdapter): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.logWithMarker(name, e => marker.apply(e), e => extract.apply(e))(log))
 
   /**
@@ -3053,7 +3055,7 @@ final class SubFlow[In, Out, Mat](
   def logWithMarker(
       name: String,
       marker: function.Function[Out, LogMarker],
-      log: MarkerLoggingAdapter): SubFlow[In, Out, Mat] =
+      @Nullable log: MarkerLoggingAdapter): SubFlow[In, Out, Mat] =
     this.logWithMarker(name, marker, ConstantFun.javaIdentityFunction[Out], log)
 
   /**
