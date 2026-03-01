@@ -1,0 +1,1055 @@
+[
+  {
+    "name": "sun.misc.Unsafe",
+    "methods": [
+      {
+        "name": "arrayBaseOff",
+        "parameterTypes": [
+          "java.lang.Class"
+        ]
+      },
+      {
+        "name": "arrayIndexScale",
+        "parameterTypes": [
+          "java.lang.Class"
+        ]
+      },
+      {
+        "name": "copyMemory",
+        "parameterTypes": [
+          "long",
+          "long",
+          "long"
+        ]
+      },
+      {
+        "name": "copyMemory",
+        "parameterTypes": [
+          "java.lang.Object",
+          "long",
+          "java.lang.Object",
+          "long",
+          "long"
+        ]
+      },
+      {
+        "name": "getAndAddLong",
+        "parameterTypes": [
+          "java.lang.Object",
+          "long",
+          "long"
+        ]
+      },
+      {
+        "name": "getAndSetObject",
+        "parameterTypes": [
+          "java.lang.Object",
+          "long",
+          "java.lang.Object"
+        ]
+      },
+      {
+        "name": "getBoolean",
+        "parameterTypes": [
+          "java.lang.Object",
+          "long"
+        ]
+      },
+      {
+        "name": "getByte",
+        "parameterTypes": [
+          "long"
+        ]
+      },
+      {
+        "name": "getByte",
+        "parameterTypes": [
+          "java.lang.Object",
+          "long"
+        ]
+      },
+      {
+        "name": "getDouble",
+        "parameterTypes": [
+          "java.lang.Object",
+          "long"
+        ]
+      },
+      {
+        "name": "getFloat",
+        "parameterTypes": [
+          "java.lang.Object",
+          "long"
+        ]
+      },
+      {
+        "name": "getInt",
+        "parameterTypes": [
+          "long"
+        ]
+      },
+      {
+        "name": "getInt",
+        "parameterTypes": [
+          "java.lang.Object",
+          "long"
+        ]
+      },
+      {
+        "name": "getLong",
+        "parameterTypes": [
+          "long"
+        ]
+      },
+      {
+        "name": "getLong",
+        "parameterTypes": [
+          "java.lang.Object",
+          "long"
+        ]
+      },
+      {
+        "name": "getObject",
+        "parameterTypes": [
+          "java.lang.Object",
+          "long"
+        ]
+      },
+      {
+        "name": "invokeCleaner",
+        "parameterTypes": [
+          "java.nio.ByteBuffer"
+        ]
+      },
+      {
+        "name": "objectFieldOffset",
+        "parameterTypes": [
+          "java.lang.reflect.Field"
+        ]
+      },
+      {
+        "name": "putBoolean",
+        "parameterTypes": [
+          "java.lang.Object",
+          "long",
+          "boolean"
+        ]
+      },
+      {
+        "name": "putByte",
+        "parameterTypes": [
+          "long",
+          "byte"
+        ]
+      },
+      {
+        "name": "putByte",
+        "parameterTypes": [
+          "java.lang.Object",
+          "long",
+          "byte"
+        ]
+      },
+      {
+        "name": "putDouble",
+        "parameterTypes": [
+          "java.lang.Object",
+          "long",
+          "double"
+        ]
+      },
+      {
+        "name": "putFloat",
+        "parameterTypes": [
+          "java.lang.Object",
+          "long",
+          "float"
+        ]
+      },
+      {
+        "name": "putInt",
+        "parameterTypes": [
+          "long",
+          "int"
+        ]
+      },
+      {
+        "name": "putInt",
+        "parameterTypes": [
+          "java.lang.Object",
+          "long",
+          "int"
+        ]
+      },
+      {
+        "name": "putLong",
+        "parameterTypes": [
+          "long",
+          "long"
+        ]
+      },
+      {
+        "name": "putLong",
+        "parameterTypes": [
+          "java.lang.Object",
+          "long",
+          "long"
+        ]
+      },
+      {
+        "name": "putObject",
+        "parameterTypes": [
+          "java.lang.Object",
+          "long",
+          "java.lang.Object"
+        ]
+      },
+      {
+        "name": "storeFence"
+      }
+    ],
+    "allDeclaredFields": true
+  },
+  {
+    "name": "org.apache.pekko.actor.ActorCell",
+    "fields": [
+      {
+        "name": "org$apache$pekko$actor$dungeon$Children$$_childrenRefsDoNotCallMeDirectly"
+      },
+      {
+        "name": "org$apache$pekko$actor$dungeon$Children$$_functionRefsDoNotCallMeDirectly"
+      },
+      {
+        "name": "org$apache$pekko$actor$dungeon$Children$$_nextNameDoNotCallMeDirectly"
+      },
+      {
+        "name": "org$apache$pekko$actor$dungeon$Dispatch$$_mailboxDoNotCallMeDirectly"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.actor.RepointableRef",
+    "fields": [
+      {
+        "name": "_cellDoNotCallMeDirectly"
+      },
+      {
+        "name": "_lookupDoNotCallMeDirectly"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.pattern.CircuitBreaker",
+    "fields": [
+      {
+        "name": "_currentResetTimeoutDoNotCallMeDirectly"
+      },
+      {
+        "name": "_currentStateDoNotCallMeDirectly"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.pattern.PromiseActorRef",
+    "fields": [
+      {
+        "name": "_stateDoNotCallMeDirectly"
+      },
+      {
+        "name": "_watchedByDoNotCallMeDirectly"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.actor.LightArrayRevolverScheduler$TaskHolder",
+    "fields": [
+      {
+        "name": "task"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.actor.LocalActorRefProvider$Guardian",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.SupervisorStrategy"
+        ]
+      }
+    ],
+    "queryAllDeclaredConstructors": true
+  },
+  {
+    "name": "org.apache.pekko.actor.LocalActorRefProvider$SystemGuardian",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.SupervisorStrategy",
+          "org.apache.pekko.actor.ActorRef"
+        ]
+      }
+    ],
+    "queryAllDeclaredConstructors": true
+  },
+  {
+    "name": "org.apache.pekko.actor.LocalActorRefProvider",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.lang.String",
+          "org.apache.pekko.actor.ActorSystem$Settings",
+          "org.apache.pekko.event.EventStream",
+          "org.apache.pekko.actor.DynamicAccess"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.actor.Props$EmptyActor",
+    "methods": [
+      {
+        "name": "<init>"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.dispatch.affinity.ThrowOnOverflowRejectionHandler",
+    "methods": [
+      {
+        "name": "<init>"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.dispatch.affinity.FairDistributionHashCache",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "com.typesafe.config.Config"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.event.Logging$DefaultLogger",
+    "methods": [
+      {
+        "name": "<init>"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.event.DefaultLoggingFilter",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ActorSystem$Settings",
+          "org.apache.pekko.event.EventStream"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.io.InetAddressDnsProvider",
+    "methods": [
+      {
+        "name": "<init>"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.io.SimpleDnsManager",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.io.DnsExt"
+        ]
+      }
+    ],
+    "queryAllDeclaredConstructors": true
+  },
+  {
+    "name": "org.apache.pekko.io.dns.internal.AsyncDnsProvider",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.io.DnsExt"
+        ]
+      }
+    ],
+    "queryAllDeclaredConstructors": true
+  },
+  {
+    "name": "org.apache.pekko.io.InetAddressDnsResolver",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.io.SimpleDnsCache",
+          "com.typesafe.config.Config"
+        ]
+      }
+    ],
+    "queryAllDeclaredConstructors": true
+  },
+  {
+    "name": "org.apache.pekko.io.dns.internal.AsyncDnsResolver",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.io.SimpleDnsCache",
+          "com.typesafe.config.Config",
+          "scala.Function2<org.apache.pekko.actor.ActorRefFactory,scala.collection.immutable.List<java.net.InetSocketAddress>,scala.collection.immutable.List<org.apache.pekko.actor.ActorRef>>"
+        ]
+      }
+    ],
+    "queryAllDeclaredConstructors": true
+  },
+  {
+    "name": "org.apache.pekko.io.SimpleDnsManager",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.io.DnsExt"
+        ]
+      }
+    ],
+    "queryAllDeclaredConstructors": true
+  },
+  {
+    "name": "org.apache.pekko.io.dns.internal.AsyncDnsManager",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.io.DnsExt"
+        ]
+      }
+    ],
+    "queryAllDeclaredConstructors": true
+  },
+  {
+    "name": "org.apache.pekko.routing.RoutedActorCell$RouterActorCreator",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.routing.RouterConfig"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "jdk.jfr.Recording",
+    "methods": [
+      {
+        "name": "<init>"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.dispatch.BoundedControlAwareMailbox",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ActorSystem$Settings",
+          "com.typesafe.config.Config"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.dispatch.BoundedDequeBasedMailbox",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ActorSystem$Settings",
+          "com.typesafe.config.Config"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.dispatch.BoundedMailbox",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ActorSystem$Settings",
+          "com.typesafe.config.Config"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.dispatch.BoundedPriorityMailbox",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ActorSystem$Settings",
+          "com.typesafe.config.Config"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.dispatch.BoundedStablePriorityMailbox",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ActorSystem$Settings",
+          "com.typesafe.config.Config"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.dispatch.NonBlockingBoundedMailbox",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ActorSystem$Settings",
+          "com.typesafe.config.Config"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.dispatch.SingleConsumerOnlyUnboundedMailbox",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ActorSystem$Settings",
+          "com.typesafe.config.Config"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.dispatch.UnboundedControlAwareMailbox",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ActorSystem$Settings",
+          "com.typesafe.config.Config"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.dispatch.UnboundedDequeBasedMailbox",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ActorSystem$Settings",
+          "com.typesafe.config.Config"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.dispatch.UnboundedMailbox",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ActorSystem$Settings",
+          "com.typesafe.config.Config"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.dispatch.UnboundedPriorityMailbox",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ActorSystem$Settings",
+          "com.typesafe.config.Config"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.dispatch.UnboundedStablePriorityMailbox",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ActorSystem$Settings",
+          "com.typesafe.config.Config"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.event.LoggerMailboxType",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ActorSystem$Settings",
+          "com.typesafe.config.Config"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.actor.CoordinatedShutdown$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.event.AddressTerminatedTopic$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.event.Logging$LogExt$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.io.Dns$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.io.Tcp$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.io.Udp$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.io.UdpConnected$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.pattern.CircuitBreakersRegistry$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.serialization.SerializationExtension$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.util.Clock$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.util.ManifestInfo$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.serialization.BooleanSerializer",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.serialization.ByteArraySerializer",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.serialization.ByteStringSerializer",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.serialization.DisabledJavaSerializer",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.serialization.IntSerializer",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.serialization.JavaSerializer",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.serialization.LongSerializer",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.serialization.NullSerializer",
+    "methods": [
+      {
+        "name": "<init>"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.serialization.NullSerializer$",
+    "methods": [
+      {
+        "name": "<init>"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.serialization.StringSerializer",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "scala.Int"
+  },
+  {
+    "name": "java.io.Serializable"
+  },
+  {
+    "name": "org.apache.pekko.util.ByteString$ByteString1C"
+  },
+  {
+    "name": "scala.Long"
+  },
+  {
+    "name": "java.lang.String"
+  },
+  {
+    "name": "scala.Boolean"
+  },
+  {
+    "name": "java.lang.Boolean"
+  },
+  {
+    "name": "org.apache.pekko.util.ByteString$ByteString1"
+  },
+  {
+    "name": "java.lang.Long"
+  },
+  {
+    "name": "[B"
+  },
+  {
+    "name": "java.lang.Integer"
+  },
+  {
+    "name": "org.apache.pekko.util.ByteString$ByteStrings"
+  },
+  {
+    "name": "org.apache.pekko.actor.LightArrayRevolverScheduler",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "com.typesafe.config.Config",
+          "org.apache.pekko.event.LoggingAdapter",
+          "java.util.concurrent.ThreadFactory"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.routing.BalancingPool",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "com.typesafe.config.Config"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.routing.BroadcastGroup",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "com.typesafe.config.Config"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.routing.BroadcastPool",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "com.typesafe.config.Config"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.routing.ConsistentHashingGroup",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "com.typesafe.config.Config"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.routing.ConsistentHashingPool",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "com.typesafe.config.Config"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.routing.FromConfig"
+  },
+  {
+    "name": "org.apache.pekko.routing.FromConfig$"
+  },
+  {
+    "name": "org.apache.pekko.routing.NoRouter$"
+  },
+  {
+    "name": "org.apache.pekko.routing.RandomGroup",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "com.typesafe.config.Config"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.routing.RandomPool",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "com.typesafe.config.Config"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.routing.RoundRobinGroup",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "com.typesafe.config.Config"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.routing.RoundRobinPool",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "com.typesafe.config.Config"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.routing.ScatterGatherFirstCompletedGroup",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "com.typesafe.config.Config"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.routing.ScatterGatherFirstCompletedPool",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "com.typesafe.config.Config"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.routing.SmallestMailboxPool",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "com.typesafe.config.Config"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.routing.TailChoppingGroup",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "com.typesafe.config.Config"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.routing.TailChoppingPool",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "com.typesafe.config.Config"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.event.DefaultLoggingFilter",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ActorSystem$Settings",
+          "org.apache.pekko.event.EventStream"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.event.LoggingFilterWithMarkerWrapper",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ActorSystem$Settings",
+          "org.apache.pekko.event.EventStream"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.event.jul.JavaLoggingFilter",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ActorSystem$Settings",
+          "org.apache.pekko.event.EventStream"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,61 @@
+[
+  {
+    "name": "org.apache.pekko.persistence.typed.serialization.ReplicatedEventSourcingSerializer",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.persistence.typed.crdt.ORSet$DeltaOp"
+  },
+  {
+    "name": "org.apache.pekko.persistence.typed.internal.VersionVector"
+  },
+  {
+    "name": "org.apache.pekko.persistence.typed.crdt.Counter"
+  },
+  {
+    "name": "org.apache.pekko.persistence.typed.crdt.Counter$Updated"
+  },
+  {
+    "name": "org.apache.pekko.persistence.typed.internal.ReplicatedEventMetadata"
+  },
+  {
+    "name": "org.apache.pekko.persistence.typed.internal.PublishedEventImpl"
+  },
+  {
+    "name": "org.apache.pekko.persistence.typed.crdt.ORSet"
+  },
+  {
+    "name": "org.apache.pekko.persistence.typed.internal.ReplicatedSnapshotMetadata"
+  },
+  {
+    "name": "org.apache.pekko.persistence.typed.internal.EventWriterExtension$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.persistence.typed.telemetry.DurableStateBehaviorInstrumentationProvider$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.persistence.typed.telemetry.EventSourcedBehaviorInstrumentationProvider$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  }
+]

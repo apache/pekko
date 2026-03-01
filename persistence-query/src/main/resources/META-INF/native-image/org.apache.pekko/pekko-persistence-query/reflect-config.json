@@ -1,0 +1,35 @@
+[
+  {
+    "name": "org.apache.pekko.persistence.query.PersistenceQuery$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.persistence.query.typed.internal.EventsBySliceFirehose$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.persistence.query.internal.QuerySerializer",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.persistence.query.typed.EventEnvelope"
+  },
+  {
+    "name": "org.apache.pekko.persistence.query.Offset"
+  }
+]
