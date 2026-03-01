@@ -272,6 +272,8 @@ Some of the challenges that HTTP tackles:
 
 This library provides an implementation of gRPC that integrates nicely with the @ref:[HTTP](#http) and @ref:[Streams](#streams) modules.  It is capable of generating both client and server-side artifacts from protobuf service definitions, which can then be exposed using Pekko HTTP, and handled using Streams.
 
+A sample using the gRPC module can be found at: @extref[gRPC on Kubernetes example project](samples:pekko-sample-grpc-kubernetes-scala)
+
 Some of the challenges that Pekko gRPC tackles:
 
 * Exposing services with all the benefits of gRPC & protobuf:  
