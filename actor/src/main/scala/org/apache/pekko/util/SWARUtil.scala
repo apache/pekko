@@ -76,6 +76,7 @@ private[util] object SWARUtil {
    * @param array the byte array to read from
    * @param index the index to read from
    * @return the long value at the specified index
+   * @throws IndexOutOfBoundsException if index is out of bounds
    */
   def getLong(array: Array[Byte], index: Int): Long = {
     if (longBeArrayViewSupported) {
