@@ -2190,20 +2190,20 @@ private[pekko] object TakeWithin {
                           attempt += 1
                           onFailure(ex)
                         case None =>
-                          switchTo(source)
                           attempt += 1
+                          switchTo(source)
                       }
                     case iterableSource: IterableSource[T @unchecked] =>
                       emitMultiple(out, iterableSource.elements, () => completeStage())
                     case javaStreamSource: JavaStreamSource[T @unchecked, _] =>
                       emitMultiple(out, javaStreamSource.open().spliterator(), () => completeStage())
                     case _ =>
-                      switchTo(source)
                       attempt += 1
+                      switchTo(source)
                   }
                 case _ =>
-                  switchTo(source)
                   attempt += 1
+                  switchTo(source)
               }
             case _ => throw new IllegalStateException() // won't happen, compiler exhaustiveness check pleaser
           }
