@@ -14,7 +14,8 @@
 package org.apache.pekko.stream.scaladsl
 
 import scala.annotation.nowarn
-import scala.concurrent.Future
+import scala.concurrent.{ Future, Promise }
+import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
@@ -251,6 +252,102 @@ class FlowRecoverWithSpec extends StreamSpec {
         .expectError(ex)
     }
 
+    "terminate with exception after set number of retries with failed source" in {
+      Source
+        .failed[Int](ex)
+        .recoverWithRetries(3,
+          {
+            case _: Throwable => Source.failed(ex)
+          })
+        .runWith(TestSink[Int]())
+        .request(1)
+        .expectError(ex)
+    }
+
+    "terminate with exception after set number of retries with failed future source" in {
+      Source
+        .failed[Int](ex)
+        .recoverWithRetries(3,
+          {
+            case _: Throwable => Source.future(Future.failed(ex))
+          })
+        .runWith(TestSink[Int]())
+        .request(1)
+        .expectError(ex)
+    }
+
+    "count retries correctly with failed source" in {
+      val counter = new java.util.concurrent.atomic.AtomicInteger(0)
+      Source
+        .failed[Int](ex)
+        .recoverWithRetries(5,
+          {
+            case _: Throwable =>
+              if (counter.incrementAndGet() < 5) {
+                Source.failed(ex)
+              } else {
+                Source.single(42)
+              }
+          })
+        .runWith(TestSink[Int]())
+        .request(1)
+        .expectNext(42)
+        .expectComplete()
+      counter.get() shouldBe 5
+    }
+
+    "count retries correctly with failed future source" in {
+      val counter = new java.util.concurrent.atomic.AtomicInteger(0)
+      Source
+        .failed[Int](ex)
+        .recoverWithRetries(5,
+          {
+            case _: Throwable =>
+              if (counter.incrementAndGet() < 5) {
+                Source.future(Future.failed(ex))
+              } else {
+                Source.single(42)
+              }
+          })
+        .runWith(TestSink[Int]())
+        .request(1)
+        .expectNext(42)
+        .expectComplete()
+      counter.get() shouldBe 5
+    }
+
+    "exhaust retries with failed source and then fail" in {
+      val counter = new java.util.concurrent.atomic.AtomicInteger(0)
+      Source
+        .failed[Int](ex)
+        .recoverWithRetries(3,
+          {
+            case _: Throwable =>
+              counter.incrementAndGet()
+              Source.failed(ex)
+          })
+        .runWith(TestSink[Int]())
+        .request(1)
+        .expectError(ex)
+      counter.get() shouldBe 3
+    }
+
+    "exhaust retries with failed future source and then fail" in {
+      val counter = new java.util.concurrent.atomic.AtomicInteger(0)
+      Source
+        .failed[Int](ex)
+        .recoverWithRetries(3,
+          {
+            case _: Throwable =>
+              counter.incrementAndGet()
+              Source.future(Future.failed(ex))
+          })
+        .runWith(TestSink[Int]())
+        .request(1)
+        .expectError(ex)
+      counter.get() shouldBe 3
+    }
+
     "not attempt recovering when attempts is zero" in {
       Source(1 to 3)
         .map { a =>
@@ -309,6 +406,303 @@ class FlowRecoverWithSpec extends StreamSpec {
 
       result.failed.futureValue should ===(matFail)
 
+    }
+
+    "fail when failed source carries an exception not matched by the partial function" in {
+      val ex2 = new IllegalArgumentException("ex2") with NoStackTrace
+      Source
+        .failed[Int](ex)
+        .recoverWithRetries(3,
+          {
+            case _: RuntimeException => Source.failed(ex2)
+          })
+        .runWith(TestSink[Int]())
+        .request(1)
+        .expectError(ex2)
+    }
+
+    "allow exactly one retry with recoverWithRetries(1, ...)" in {
+      val counter = new java.util.concurrent.atomic.AtomicInteger(0)
+      Source
+        .failed[Int](ex)
+        .recoverWithRetries(1,
+          {
+            case _: Throwable =>
+              counter.incrementAndGet()
+              Source.single(42)
+          })
+        .runWith(TestSink[Int]())
+        .request(1)
+        .expectNext(42)
+        .expectComplete()
+      counter.get() shouldBe 1
+    }
+
+    "fail after exactly one retry with failed source and recoverWithRetries(1, ...)" in {
+      val counter = new java.util.concurrent.atomic.AtomicInteger(0)
+      Source
+        .failed[Int](ex)
+        .recoverWithRetries(1,
+          {
+            case _: Throwable =>
+              counter.incrementAndGet()
+              Source.failed(ex)
+          })
+        .runWith(TestSink[Int]())
+        .request(1)
+        .expectError(ex)
+      counter.get() shouldBe 1
+    }
+
+    "recover with iterable source from failed source" in {
+      Source
+        .failed[Int](ex)
+        .recoverWith { case _: Throwable => Source(List(1, 2, 3)) }
+        .runWith(TestSink[Int]())
+        .request(4)
+        .expectNextN(List(1, 2, 3))
+        .expectComplete()
+    }
+
+    "terminate after set number of retries with iterable source" in {
+      Source(1 to 3)
+        .map { a =>
+          if (a == 3) throw ex else a
+        }
+        .recoverWithRetries(2, { case _: Throwable => Source(List(11, 22, 33)).map(m => if (m == 33) throw ex else m) })
+        .runWith(TestSink[Int]())
+        .request(100)
+        .expectNextN(List(1, 2))
+        .expectNextN(List(11, 22))
+        .expectNextN(List(11, 22))
+        .expectError(ex)
+    }
+
+    "recover with a pending future source" in {
+      val promise = Promise[Int]()
+      val probe = Source
+        .failed[Int](ex)
+        .recoverWith { case _: Throwable => Source.future(promise.future) }
+        .runWith(TestSink[Int]())
+      probe.request(1)
+      probe.expectNoMessage(200.millis)
+      promise.success(42)
+      probe
+        .expectNext(42)
+        .expectComplete()
+    }
+
+    "recover infinitely with failed source when negative (-1) number of attempts given" in {
+      val counter = new java.util.concurrent.atomic.AtomicInteger(0)
+      Source
+        .failed[Int](ex)
+        .recoverWithRetries(-1,
+          {
+            case _: Throwable =>
+              if (counter.incrementAndGet() < 100) {
+                Source.failed(ex)
+              } else {
+                Source.single(42)
+              }
+          })
+        .runWith(TestSink[Int]())
+        .request(1)
+        .expectNext(42)
+        .expectComplete()
+      counter.get() shouldBe 100
+    }
+
+    "recover infinitely with failed future source when negative (-1) number of attempts given" in {
+      val counter = new java.util.concurrent.atomic.AtomicInteger(0)
+      Source
+        .failed[Int](ex)
+        .recoverWithRetries(-1,
+          {
+            case _: Throwable =>
+              if (counter.incrementAndGet() < 100) {
+                Source.future(Future.failed(ex))
+              } else {
+                Source.single(42)
+              }
+          })
+        .runWith(TestSink[Int]())
+        .request(1)
+        .expectNext(42)
+        .expectComplete()
+      counter.get() shouldBe 100
+    }
+
+    "count retries correctly with mixed failed source and failed future source" in {
+      val counter = new java.util.concurrent.atomic.AtomicInteger(0)
+      Source
+        .failed[Int](ex)
+        .recoverWithRetries(5,
+          {
+            case _: Throwable =>
+              val count = counter.incrementAndGet()
+              if (count < 5) {
+                if (count % 2 == 1) Source.failed(ex)
+                else Source.future(Future.failed(ex))
+              } else {
+                Source.single(42)
+              }
+          })
+        .runWith(TestSink[Int]())
+        .request(1)
+        .expectNext(42)
+        .expectComplete()
+      counter.get() shouldBe 5
+    }
+
+    "recover with failed source then iterable source" in {
+      val counter = new java.util.concurrent.atomic.AtomicInteger(0)
+      Source
+        .failed[Int](ex)
+        .recoverWith {
+          case _: Throwable =>
+            if (counter.incrementAndGet() < 3) {
+              Source.failed(ex)
+            } else {
+              Source(List(10, 20, 30))
+            }
+        }
+        .runWith(TestSink[Int]())
+        .request(4)
+        .expectNextN(List(10, 20, 30))
+        .expectComplete()
+      counter.get() shouldBe 3
+    }
+
+    "recover with failed source then java stream source" in {
+      val counter = new java.util.concurrent.atomic.AtomicInteger(0)
+      Source
+        .failed[Int](ex)
+        .recoverWith {
+          case _: Throwable =>
+            if (counter.incrementAndGet() < 3) {
+              Source.failed(ex)
+            } else {
+              Source.fromJavaStream(() => java.util.stream.Stream.of(10, 20))
+            }
+        }
+        .runWith(TestSink[Int]())
+        .request(3)
+        .expectNextN(List(10, 20))
+        .expectComplete()
+      counter.get() shouldBe 3
+    }
+
+    "recover with failed source then empty source" in {
+      val counter = new java.util.concurrent.atomic.AtomicInteger(0)
+      Source
+        .failed[Int](ex)
+        .recoverWith {
+          case _: Throwable =>
+            if (counter.incrementAndGet() < 3) {
+              Source.failed(ex)
+            } else {
+              Source.empty
+            }
+        }
+        .runWith(TestSink[Int]())
+        .request(1)
+        .expectComplete()
+      counter.get() shouldBe 3
+    }
+
+    "recover with failed source then single source" in {
+      val counter = new java.util.concurrent.atomic.AtomicInteger(0)
+      Source
+        .failed[Int](ex)
+        .recoverWith {
+          case _: Throwable =>
+            if (counter.incrementAndGet() < 3) {
+              Source.failed(ex)
+            } else {
+              Source.single(99)
+            }
+        }
+        .runWith(TestSink[Int]())
+        .request(1)
+        .expectNext(99)
+        .expectComplete()
+      counter.get() shouldBe 3
+    }
+
+    "recover with failed source then completed future source" in {
+      val counter = new java.util.concurrent.atomic.AtomicInteger(0)
+      Source
+        .failed[Int](ex)
+        .recoverWith {
+          case _: Throwable =>
+            if (counter.incrementAndGet() < 3) {
+              Source.failed(ex)
+            } else {
+              Source.future(Future.successful(77))
+            }
+        }
+        .runWith(TestSink[Int]())
+        .request(1)
+        .expectNext(77)
+        .expectComplete()
+      counter.get() shouldBe 3
+    }
+
+    "recover with failed source carrying different exception types" in {
+      val ex2 = new IllegalStateException("ex2") with NoStackTrace
+      val counter = new java.util.concurrent.atomic.AtomicInteger(0)
+      Source
+        .failed[Int](ex)
+        .recoverWithRetries(5,
+          {
+            case _: RuntimeException =>
+              if (counter.incrementAndGet() < 3) {
+                Source.failed(ex2)
+              } else {
+                Source.single(42)
+              }
+          })
+        .runWith(TestSink[Int]())
+        .request(1)
+        .expectNext(42)
+        .expectComplete()
+      counter.get() shouldBe 3
+    }
+
+    "recover on a Flow" in {
+      Source(1 to 4)
+        .via(
+          Flow[Int]
+            .map { a =>
+              if (a == 3) throw ex else a
+            }
+            .recoverWith { case _: Throwable => Source.single(99) })
+        .runWith(TestSink[Int]())
+        .request(3)
+        .expectNextN(List(1, 2, 99))
+        .expectComplete()
+    }
+
+    "recover on a Flow with failed source retries" in {
+      val counter = new java.util.concurrent.atomic.AtomicInteger(0)
+      Source
+        .failed[Int](ex)
+        .via(
+          Flow[Int]
+            .recoverWithRetries(5,
+              {
+                case _: Throwable =>
+                  if (counter.incrementAndGet() < 3) {
+                    Source.failed(ex)
+                  } else {
+                    Source.single(42)
+                  }
+              }))
+        .runWith(TestSink[Int]())
+        .request(1)
+        .expectNext(42)
+        .expectComplete()
+      counter.get() shouldBe 3
     }
   }
 }
