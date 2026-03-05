@@ -20,8 +20,12 @@ name: Stage release candidate
 on:
   workflow_dispatch:
     inputs:
-      source-tar:
-        description: "Stage the source tarball to svn"
+      source-tar-to-svn:
+        description: "Stage the source tarball to svn (old)"
+        default: true
+        type: boolean
+      source-tar-to-atr:
+        description: "Stage the source tarball to ATR (new)"
         default: true
         type: boolean
       jars:
@@ -41,7 +45,7 @@ jobs:
   # Partly based on https://github.com/apache/daffodil/blob/main/.github/workflows/release-candidate.yml
   stage-release-candidate-to-svn:
     runs-on: ubuntu-24.04
-    if: ${{ inputs.source-tar }}
+    if: ${{ inputs.source-tar-to-svn }}
     steps:
       - name: Check version parameter
         run: |-
@@ -109,6 +113,67 @@ jobs:
           PEKKO_SVN_DEV_USERNAME: ${{ secrets.PEKKO_SVN_DEV_USERNAME }}
           PEKKO_SVN_DEV_PASSWORD: ${{ secrets.PEKKO_SVN_DEV_PASSWORD }}
           REF: ${{ github.ref_name }}
+
+  stage-release-candidate-to-atr:
+    permissions:
+      id-token: write
+      contents: read
+    runs-on: ubuntu-24.04
+    if: ${{ inputs.source-tar-to-atr }}
+    steps:
+      - name: Check version parameter
+        run: |-
+          # To be enabled after this workflow has been tested:
+          #if [[ "$REF" != "v"* ]]; then
+          #  echo "Trigger this workflow on a version tag"
+          #  exit 1
+          #fi
+          if [[ "$REF" != *"-RC"* ]]; then
+            echo "Trigger this workflow on an RC tag"
+            exit 1
+          fi
+          export VERSION=$(echo $REF | sed -e "s/.\(.*\)-.*/\\1/")
+          export RC_VERSION=$(echo $REF | tail -c +2)
+          echo "Version: $VERSION"
+          echo "RC Version: $RC_VERSION"
+        env:
+          REF: ${{ github.ref_name }}
+
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5.0.1
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          persist-credentials: false
+
+      - name: Generate source archive
+        id: generate-source-archive
+        run: |-
+          VERSION=$(echo $REF | sed -e "s/.\(.*\)-.*/\\1/")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          PREFIX=apache-pekko-$VERSION
+          DATE=$(git log -n1 --format=%cs | tr -d -)
+          TARBALL=$PREFIX-src-$DATE.tgz
+
+          mkdir dist
+          git archive --format=tar --prefix=$PREFIX/ HEAD | gzip -6 -n > dist/$TARBALL
+          cd dist
+          sha512sum $TARBALL > $TARBALL.sha512
+        env:
+          REF: ${{ github.ref_name }}
+
+      - name: Sign source archive
+        run: |-
+          echo "$PEKKO_GPG_SECRET_KEY" | gpg --batch --import --import-options import-show
+          gpg -ab dist/*.tgz
+        env:
+          PEKKO_GPG_SECRET_KEY: ${{ secrets.PEKKO_GPG_SECRET_KEY }}
+
+      - name: Upload source dist
+        uses: apache/tooling-actions/upload-to-atr@ca6ed9e095c40db61c42a90db2599bb2fbc2319f
+        with:
+          project: pekko
+          version: ${{ steps.generate-source-archive.outputs.version }}
 
   stage-jars-to-nexus:
     runs-on: ubuntu-24.04
@@ -244,7 +309,7 @@ jobs:
           The VOTE will pass if we have more positive votes than negative votes
           and there must be a minimum of 3 approvals from Pekko PMC members.
           Anyone voting in favour of the release, could you please provide a list of the checks you have done?
-          The vote will be left open for 72hrs.
+          The vote will be left open for at least 72hrs.
           
           [ ] +1 approve
           [ ] +0 no opinion
