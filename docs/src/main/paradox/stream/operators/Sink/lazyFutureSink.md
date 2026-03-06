@@ -20,7 +20,9 @@ and failed with a `org.apache.pekko.stream.NeverMaterializedException` if the st
 
 Can be combined with @ref:[prefixAndTail](../Source-or-Flow/prefixAndTail.md) to base the sink on the first element.
 
-See also @ref:[lazySink](lazySink.md).
+If you need empty streams to complete normally, use @ref:[eagerFutureSink](eagerFutureSink.md).
+
+See also @ref:[lazySink](lazySink.md), @ref:[futureSink](futureSink.md).
 
 ## Reactive Streams semantics
 
