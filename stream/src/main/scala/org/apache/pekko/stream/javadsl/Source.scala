@@ -20,7 +20,7 @@ import java.util.concurrent.{ CompletableFuture, CompletionStage }
 import scala.annotation.{ nowarn, varargs }
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable
-import scala.concurrent.{ Future, Promise }
+import scala.concurrent.Promise
 import scala.concurrent.ExecutionContext
 import scala.jdk.CollectionConverters._
 import scala.jdk.DurationConverters._
@@ -315,16 +315,6 @@ object Source {
    */
   def failed[T](cause: Throwable): Source[T, NotUsed] =
     new Source(scaladsl.Source.failed(cause))
-
-  /**
-   * Emits a single value when the given Scala `Future` is successfully completed and then completes the stream.
-   * The stream fails if the `Future` is completed with a failure.
-   *
-   * Here for Java interoperability, the normal use from Java should be [[Source.completionStage]]
-   */
-  @deprecated("Use 'Source.completionStage' or 'scaladsl.Source.future' instead", "1.5.0")
-  def future[T](futureElement: Future[T]): Source[T, NotUsed] =
-    scaladsl.Source.future(futureElement).asJava
 
   /**
    * Never emits any elements, never completes and never fails.
