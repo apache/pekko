@@ -447,7 +447,9 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
 
   private def warnUnexpectedNonPekkoSerializer(clazz: Class[_], ser: Serializer): Boolean = {
     val clazzName = clazz.getName
-    if (clazzName.startsWith(PekkoPackagePrefix) && !ser.getClass.getName.startsWith(PekkoPackagePrefix)) {
+    if (clazzName.startsWith(PekkoPackagePrefix) && !ser.getClass.getName.startsWith(PekkoPackagePrefix) &&
+      // pekko-grpc and pekko-http don't bundle serializers in pekko-actor, so skip the warning for those
+      !(clazzName.startsWith("org.apache.pekko.grpc") || clazzName.startsWith("org.apache.pekko.http"))) {
       log.warning(
         "Using serializer [{}] for message [{}]. Note that this serializer " +
         "is not implemented by Apache Pekko. It's not recommended to replace serializers for messages " +
