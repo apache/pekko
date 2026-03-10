@@ -59,6 +59,8 @@ These built-in sinks are available from @scala[`org.apache.pekko.stream.scaladsl
 |Sink|<a name="combine"></a>@ref[combine](Sink/combine.md)|Combine several sinks into one using a user specified strategy|
 |Sink|<a name="completionstagesink"></a>@ref[completionStageSink](Sink/completionStageSink.md)|Streams the elements to the given future sink once it successfully completes. |
 |Sink|<a name="count"></a>@ref[count](Sink/count.md)|Counts all incoming elements until upstream terminates.|
+|Sink|<a name="eagercompletionstagesink"></a>@ref[eagerCompletionStageSink](Sink/eagerCompletionStageSink.md)|Materializes the inner sink when the future completes, even if no elements have arrived yet.|
+|Sink|<a name="eagerfuturesink"></a>@ref[eagerFutureSink](Sink/eagerFutureSink.md)|Materializes the inner sink when the future completes, even if no elements have arrived yet.|
 |Sink|<a name="exists"></a>@ref[exists](Sink/exists.md)|A `Sink` that will test the given predicate `p` for every received element and completes with the result.|
 |Sink|<a name="fold"></a>@ref[fold](Sink/fold.md)|Fold over emitted elements with a function, where each invocation will get the new element and the result from the previous fold invocation.|
 |Sink|<a name="foldwhile"></a>@ref[foldWhile](Sink/foldWhile.md)|Fold over emitted elements with a function, where each invocation will get the new element and the result from the previous fold invocation.|
@@ -455,6 +457,8 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 * [dropRepeated](Source-or-Flow/dropRepeated.md)
 * [dropWhile](Source-or-Flow/dropWhile.md)
 * [dropWithin](Source-or-Flow/dropWithin.md)
+* [eagerCompletionStageSink](Sink/eagerCompletionStageSink.md)
+* [eagerFutureSink](Sink/eagerFutureSink.md)
 * [empty](Source/empty.md)
 * [exists](Sink/exists.md)
 * [expand](Source-or-Flow/expand.md)

@@ -734,6 +734,24 @@ object Sink {
     lazyFutureSink[T, M](() => future)
 
   /**
+   * Turn a `Future[Sink]` into a Sink that will consume the values of the source when the future completes
+   * successfully. If the `Future` is completed with a failure the stream is failed.
+   *
+   * Unlike [[futureSink]] and [[lazyFutureSink]], this operator materializes the inner sink as soon as the future
+   * completes, even if no elements have arrived yet. This means empty streams complete normally rather than failing
+   * with [[NeverMaterializedException]]. At most one element that arrives before the future completes is buffered.
+   *
+   * The materialized future value is completed with the materialized value of the inner sink once it has been
+   * materialized, or failed if the future itself fails or if materialization of the inner sink fails. Upstream
+   * failures or downstream cancellations that occur before the inner sink is materialized are propagated through
+   * the inner sink rather than failing the materialized value directly.
+   *
+   * @since 1.5.0
+   */
+  def eagerFutureSink[T, M](future: Future[Sink[T, M]]): Sink[T, Future[M]] =
+    Sink.fromGraph(new EagerFutureSink(future))
+
+  /**
    * Defers invoking the `create` function to create a sink until there is a first element passed from upstream.
    *
    * The materialized future value is completed with the materialized value of the created sink when that has successfully
