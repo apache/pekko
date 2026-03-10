@@ -167,6 +167,7 @@ import pekko.stream.Attributes._
     val actorRefWithBackpressureSink = name("actorRefWithBackpressureSink")
     val queueSink = name("queueSink")
     val lazySink = name("lazySink")
+    val eagerFutureSink = name("eagerFutureSink")
     val lazyFlow = name("lazyFlow")
     val futureFlow = name("futureFlow")
     val lazySource = name("lazySource")
