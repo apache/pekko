@@ -636,7 +636,7 @@ object Sink {
    * @since 1.5.0
    */
   def eagerCompletionStageSink[T, M](future: CompletionStage[Sink[T, M]]): Sink[T, CompletionStage[M]] =
-    new Sink(scaladsl.Sink.eagerFutureSink(future.asScala.map(_.asScala)(ExecutionContext.parasitic)))
+    new Sink(scaladsl.Sink.eagerFutureSink(future.asScala.map(_.asScala)(ExecutionContexts.parasitic)))
       .mapMaterializedValue(_.asJava)
 
   /**
