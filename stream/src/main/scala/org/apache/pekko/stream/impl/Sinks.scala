@@ -694,7 +694,7 @@ import org.reactivestreams.Subscriber
             failStage(e)
         }
         try {
-          future.onComplete(cb.invoke)(ExecutionContext.parasitic)
+          future.onComplete(cb.invoke)(ExecutionContexts.parasitic)
         } catch {
           case NonFatal(e) =>
             promise.tryFailure(e)
