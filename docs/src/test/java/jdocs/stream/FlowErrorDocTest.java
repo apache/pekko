@@ -13,7 +13,7 @@
 
 package jdocs.stream;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,38 +29,43 @@ import org.apache.pekko.stream.ActorAttributes;
 import org.apache.pekko.stream.Supervision;
 import org.apache.pekko.stream.javadsl.*;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class FlowErrorDocTest extends AbstractJavaTest {
 
   private static ActorSystem system;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     system = ActorSystem.create("FlowDocTest");
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     TestKit.shutdownActorSystem(system);
     system = null;
   }
 
-  @Test(expected = ExecutionException.class)
-  public void demonstrateFailStream() throws Exception {
-    // #stop
-    final Source<Integer, NotUsed> source =
-        Source.from(Arrays.asList(0, 1, 2, 3, 4, 5)).map(elem -> 100 / elem);
-    final Sink<Integer, CompletionStage<Integer>> fold =
-        Sink.<Integer, Integer>fold(0, (acc, elem) -> acc + elem);
-    final CompletionStage<Integer> result = source.runWith(fold, system);
-    // division by zero will fail the stream and the
-    // result here will be a CompletionStage failed with ArithmeticException
-    // #stop
+  @Test
+  public void demonstrateFailStream() {
+    Assertions.assertThrows(
+        ExecutionException.class,
+        () -> {
+          // #stop
+          final Source<Integer, NotUsed> source =
+              Source.from(Arrays.asList(0, 1, 2, 3, 4, 5)).map(elem -> 100 / elem);
+          final Sink<Integer, CompletionStage<Integer>> fold =
+              Sink.<Integer, Integer>fold(0, (acc, elem) -> acc + elem);
+          final CompletionStage<Integer> result = source.runWith(fold, system);
+          // division by zero will fail the stream and the
+          // result here will be a CompletionStage failed with ArithmeticException
+          // #stop
 
-    result.toCompletableFuture().get(3, TimeUnit.SECONDS);
+          result.toCompletableFuture().get(3, TimeUnit.SECONDS);
+        });
   }
 
   @Test

@@ -14,8 +14,8 @@
 package jdocs.stream.javadsl.cookbook;
 
 import static org.apache.pekko.util.ByteString.emptyByteString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,20 +31,20 @@ import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.stream.stage.*;
 import org.apache.pekko.testkit.javadsl.TestKit;
 import org.apache.pekko.util.ByteString;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import scala.Tuple2;
 
 public class RecipeByteStrings extends RecipeTest {
   static ActorSystem system;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     system = ActorSystem.create("RecipeByteStrings");
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     TestKit.shutdownActorSystem(system);
     system = null;
@@ -270,7 +270,7 @@ public class RecipeByteStrings extends RecipeTest {
           assertEquals(ex.getCause().getClass(), IllegalStateException.class);
           thrown = true;
         }
-        assertTrue("Expected IllegalStateException to be thrown", thrown);
+        assertTrue(thrown, "Expected IllegalStateException to be thrown");
       }
     };
   }

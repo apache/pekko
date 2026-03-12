@@ -13,7 +13,7 @@
 
 package jdocs.stream.javadsl.cookbook;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -26,19 +26,19 @@ import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.stream.stage.*;
 import org.apache.pekko.testkit.javadsl.TestKit;
 import org.apache.pekko.util.ByteString;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class RecipeDigest extends RecipeTest {
   static ActorSystem system;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     system = ActorSystem.create("RecipeDigest");
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     TestKit.shutdownActorSystem(system);
     system = null;

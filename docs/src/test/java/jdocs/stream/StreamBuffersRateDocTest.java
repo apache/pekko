@@ -22,9 +22,9 @@ import org.apache.pekko.actor.Cancellable;
 import org.apache.pekko.stream.*;
 import org.apache.pekko.stream.javadsl.*;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class StreamBuffersRateDocTest extends AbstractJavaTest {
 
@@ -32,12 +32,12 @@ public class StreamBuffersRateDocTest extends AbstractJavaTest {
 
   static ActorSystem system;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     system = ActorSystem.create("StreamBuffersDocTest");
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     TestKit.shutdownActorSystem(system);
     system = null;

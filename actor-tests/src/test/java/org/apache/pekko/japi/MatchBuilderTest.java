@@ -13,17 +13,15 @@
 
 package org.apache.pekko.japi;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.apache.pekko.japi.function.Function;
 import org.apache.pekko.japi.function.Predicate;
 import org.apache.pekko.japi.pf.Match;
-import org.junit.Assert;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
 import scala.MatchError;
 
-public class MatchBuilderTest extends JUnitSuite {
+public class MatchBuilderTest {
 
   @Test
   public void shouldPassBasicMatchTest() {
@@ -46,15 +44,14 @@ public class MatchBuilderTest extends JUnitSuite {
                       }
                     }));
 
-    assertTrue(
-        "An integer should be multiplied by 10",
-        Double.valueOf(47110).equals(pf.match(Integer.valueOf(4711))));
-    assertTrue(
-        "A double should be multiplied by -10",
-        Double.valueOf(-47110).equals(pf.match(Double.valueOf(4711))));
+    org.junit.jupiter.api.Assertions.assertTrue(
+        Double.valueOf(47110).equals(pf.match(Integer.valueOf(4711))),
+        "An integer should be multiplied by 10");
+    org.junit.jupiter.api.Assertions.assertTrue(
+        Double.valueOf(-47110).equals(pf.match(Double.valueOf(4711))),
+        "A double should be multiplied by -10");
 
-    Assert.assertThrows(
-        "A string should throw a MatchError", MatchError.class, () -> pf.match("4711"));
+    assertThrows(MatchError.class, () -> pf.match("4711"));
   }
 
   static class GenericClass<T> {
@@ -78,10 +75,10 @@ public class MatchBuilderTest extends JUnitSuite {
                   }
                 }));
 
-    assertEquals(
-        "String value should be extract from GenericMessage",
+    org.junit.jupiter.api.Assertions.assertEquals(
         "A",
-        pf.match(new GenericClass<>("A")));
+        pf.match(new GenericClass<>("A")),
+        "String value should be extract from GenericMessage");
   }
 
   @Test
@@ -103,9 +100,6 @@ public class MatchBuilderTest extends JUnitSuite {
                   }
                 }));
 
-    Assert.assertThrows(
-        "empty GenericMessage should throw match error",
-        MatchError.class,
-        () -> pf.match(new GenericClass<>("")));
+    assertThrows(MatchError.class, () -> pf.match(new GenericClass<>("")));
   }
 }

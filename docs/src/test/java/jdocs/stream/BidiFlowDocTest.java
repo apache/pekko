@@ -14,7 +14,7 @@
 package jdocs.stream;
 
 import static org.apache.pekko.util.ByteString.emptyByteString;
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import java.nio.ByteOrder;
 import java.util.Arrays;
@@ -33,20 +33,20 @@ import org.apache.pekko.testkit.javadsl.TestKit;
 import org.apache.pekko.util.ByteIterator;
 import org.apache.pekko.util.ByteString;
 import org.apache.pekko.util.ByteStringBuilder;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class BidiFlowDocTest extends AbstractJavaTest {
 
   static ActorSystem system;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     system = ActorSystem.create("FlowDocTest");
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     TestKit.shutdownActorSystem(system);
     system = null;

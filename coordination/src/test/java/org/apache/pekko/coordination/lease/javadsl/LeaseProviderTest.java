@@ -13,23 +13,23 @@
 
 package org.apache.pekko.coordination.lease.javadsl;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.coordination.lease.scaladsl.LeaseProviderSpec;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class LeaseProviderTest {
-  @Rule
-  public PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource("LoggingAdapterTest", LeaseProviderSpec.config());
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource("LoggingAdapterTest", LeaseProviderSpec.config());
 
   private ActorSystem system = null;
 
-  @Before
+  @BeforeEach
   public void before() {
     system = actorSystemResource.getSystem();
   }

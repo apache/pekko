@@ -33,7 +33,7 @@ import java.util.concurrent.ExecutionException;
 
 import jdocs.AbstractJavaTest;
 
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * This class is not meant to be run as a test in the test suite, but it is set up such that it can

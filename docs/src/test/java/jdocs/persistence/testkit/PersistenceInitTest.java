@@ -13,12 +13,15 @@
 
 package jdocs.persistence.testkit;
 
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.JUnitJupiterTestKitBuilder;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitJupiterExtension;
 
 import com.typesafe.config.ConfigFactory;
 import jdocs.AbstractJavaTest;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.UUID;
 
@@ -32,18 +35,19 @@ import java.util.concurrent.TimeUnit;
 
 // #imports
 
+@ExtendWith(TestKitJUnitJupiterExtension.class)
 public class PersistenceInitTest extends AbstractJavaTest {
-  @ClassRule
-  public static final TestKitJunitResource testKit =
-      new TestKitJunitResource(
-          ConfigFactory.parseString(
+  @JUnitJupiterTestKit
+  public ActorTestKit testKit = new JUnitJupiterTestKitBuilder()
+      .withCustomConfig(ConfigFactory.parseString(
                   "pekko.persistence.journal.plugin = \"pekko.persistence.journal.inmem\" \n"
                       + "pekko.persistence.journal.inmem.test-serialization = on \n"
                       + "pekko.persistence.snapshot-store.plugin = \"pekko.persistence.snapshot-store.local\" \n"
                       + "pekko.persistence.snapshot-store.local.dir = \"target/snapshot-"
                       + UUID.randomUUID().toString()
                       + "\" \n")
-              .withFallback(ConfigFactory.defaultApplication()));
+              .withFallback(ConfigFactory.defaultApplication()))
+      .build();
 
   @Test
   public void testInit() throws Exception {

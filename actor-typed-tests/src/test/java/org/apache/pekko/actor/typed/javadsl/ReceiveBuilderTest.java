@@ -15,23 +15,24 @@ package org.apache.pekko.actor.typed.javadsl;
 
 import static org.apache.pekko.actor.typed.javadsl.Behaviors.same;
 
-import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.JUnitJupiterTestKitBuilder;
+import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturingExtension;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitJupiterExtension;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.PostStop;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /** Test creating [[MutableActor]]s using [[ReceiveBuilder]] */
-public class ReceiveBuilderTest extends JUnitSuite {
+@ExtendWith(TestKitJUnitJupiterExtension.class)
+@ExtendWith(LogCapturingExtension.class)
+public class ReceiveBuilderTest {
 
-  @ClassRule public static final TestKitJunitResource testKit = new TestKitJunitResource();
-
-  @Rule public final LogCapturing logCapturing = new LogCapturing();
+  @JUnitJupiterTestKit public ActorTestKit testKit = new JUnitJupiterTestKitBuilder().build();
 
   @Test
   public void testMutableCounter() {

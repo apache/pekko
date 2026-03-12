@@ -13,7 +13,7 @@
 
 package org.apache.pekko.stream.javadsl;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,27 +27,27 @@ import org.apache.pekko.japi.Pair;
 import org.apache.pekko.japi.function.Function;
 import org.apache.pekko.stream.Attributes;
 import org.apache.pekko.stream.Graph;
-import org.apache.pekko.stream.StreamTest;
+import org.apache.pekko.stream.StreamTestJupiter;
 import org.apache.pekko.stream.UniformFanOutShape;
 import org.apache.pekko.stream.testkit.TestSubscriber;
 import org.apache.pekko.stream.testkit.javadsl.TestSink;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.Assert;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscription;
 
-public class SinkTest extends StreamTest {
+public class SinkTest extends StreamTestJupiter {
   public SinkTest() {
     super(actorSystemResource);
   }
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource("SinkTest", PekkoSpec.testConf());
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource("SinkTest", PekkoSpec.testConf());
 
   @Test
   public void mustBeAbleToUseFanoutPublisher() throws Exception {
@@ -267,7 +267,7 @@ public class SinkTest extends StreamTest {
   @Test
   public void sinkMustBeAbleToUseCount() {
     CompletionStage<Long> cs = Source.range(1, 10).runWith(Sink.count(), system);
-    Assert.assertEquals(10, cs.toCompletableFuture().join().longValue());
+    Assertions.assertEquals(10, cs.toCompletableFuture().join().longValue());
   }
 
   @Test

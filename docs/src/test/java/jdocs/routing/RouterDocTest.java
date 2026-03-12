@@ -13,14 +13,14 @@
 
 package jdocs.routing;
 
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 
 import jdocs.AbstractJavaTest;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.typesafe.config.ConfigFactory;
 
@@ -75,9 +75,9 @@ import org.apache.pekko.routing.TailChoppingPool;
 
 public class RouterDocTest extends AbstractJavaTest {
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource(
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource(
           "RouterDocTest", ConfigFactory.parseString(docs.routing.RouterDocSpec.config()));
 
   private final ActorSystem system = actorSystemResource.getSystem();

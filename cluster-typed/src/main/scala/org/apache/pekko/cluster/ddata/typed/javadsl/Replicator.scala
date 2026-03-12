@@ -314,6 +314,11 @@ object Replicator {
   final case class Deleted[A <: ReplicatedData](key: Key[A]) extends SubscribeResponse[A]
 
   /**
+   * @see [[Replicator.Subscribe]]
+   */
+  final case class Expired[A <: ReplicatedData](key: Key[A]) extends SubscribeResponse[A]
+
+  /**
    * Send this message to the local `Replicator` to delete a data value for the
    * given `key`. The `Replicator` will reply with one of the [[DeleteResponse]] messages.
    */

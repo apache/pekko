@@ -14,25 +14,28 @@
 package org.apache.pekko.persistence.typed;
 
 import static org.apache.pekko.Done.done;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.typesafe.config.ConfigFactory;
 import java.util.*;
 import org.apache.pekko.Done;
-import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.JUnitJupiterTestKitBuilder;
+import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturingExtension;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitJupiterExtension;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.persistence.testkit.PersistenceTestKitPlugin;
 import org.apache.pekko.persistence.testkit.query.javadsl.PersistenceTestKitReadJournal;
 import org.apache.pekko.persistence.typed.javadsl.*;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-public class ReplicatedEventSourcingTest extends JUnitSuite {
+@ExtendWith(TestKitJUnitJupiterExtension.class)
+@ExtendWith(LogCapturingExtension.class)
+public class ReplicatedEventSourcingTest {
 
   static final class TestBehavior
       extends ReplicatedEventSourcedBehavior<TestBehavior.Command, String, Set<String>> {
@@ -150,15 +153,15 @@ public class ReplicatedEventSourcingTest extends JUnitSuite {
     }
   }
 
-  @ClassRule
-  public static final TestKitJunitResource testKit =
-      new TestKitJunitResource(
-          ConfigFactory.parseString(
-                  "pekko.loglevel = INFO\n"
-                      + "pekko.loggers = [\"org.apache.pekko.testkit.TestEventListener\"]")
-              .withFallback(PersistenceTestKitPlugin.getInstance().config()));
-
-  @Rule public final LogCapturing logCapturing = new LogCapturing();
+  @JUnitJupiterTestKit
+  public ActorTestKit testKit =
+      new JUnitJupiterTestKitBuilder()
+          .withCustomConfig(
+              ConfigFactory.parseString(
+                      "pekko.loglevel = INFO\n"
+                          + "pekko.loggers = [\"org.apache.pekko.testkit.TestEventListener\"]")
+                  .withFallback(PersistenceTestKitPlugin.getInstance().config()))
+          .build();
 
   // minimal test, full coverage over in ReplicatedEventSourcingSpec
   @Test

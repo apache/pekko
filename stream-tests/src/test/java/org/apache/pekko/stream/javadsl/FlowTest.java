@@ -15,7 +15,7 @@ package org.apache.pekko.stream.javadsl;
 
 import static org.apache.pekko.Done.done;
 import static org.apache.pekko.stream.testkit.StreamTestKit.PublisherProbeSubscription;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -44,23 +44,23 @@ import org.apache.pekko.stream.scaladsl.FlowSpec;
 import org.apache.pekko.stream.stage.*;
 import org.apache.pekko.stream.testkit.TestPublisher;
 import org.apache.pekko.stream.testkit.javadsl.TestSink;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.Assert;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.reactivestreams.Publisher;
 
 @SuppressWarnings("serial")
-public class FlowTest extends StreamTest {
+public class FlowTest extends StreamTestJupiter {
   public FlowTest() {
     super(actorSystemResource);
   }
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource("FlowTest", PekkoSpec.testConf());
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource("FlowTest", PekkoSpec.testConf());
 
   interface Fruit {}
 
@@ -132,7 +132,7 @@ public class FlowTest extends StreamTest {
             .via(Flow.of(Integer.class).doOnFirst(invoked::addAndGet))
             .runWith(Sink.ignore(), system);
     future.toCompletableFuture().get(3, TimeUnit.SECONDS);
-    Assert.assertEquals(1, invoked.get());
+    Assertions.assertEquals(1, invoked.get());
   }
 
   @Test
@@ -154,7 +154,7 @@ public class FlowTest extends StreamTest {
             .runWith(Sink.ignore(), system);
     promise.get(3, TimeUnit.SECONDS);
     future.toCompletableFuture().get(3, TimeUnit.SECONDS);
-    Assert.assertEquals(1, invoked.get());
+    Assertions.assertEquals(1, invoked.get());
   }
 
   @Test
@@ -165,7 +165,7 @@ public class FlowTest extends StreamTest {
             .via(Flow.of(Integer.class).doOnFirst(invoked::addAndGet))
             .runWith(Sink.ignore(), system);
     future.toCompletableFuture().get(3, TimeUnit.SECONDS);
-    Assert.assertEquals(0, invoked.get());
+    Assertions.assertEquals(0, invoked.get());
   }
 
   @Test
@@ -287,7 +287,8 @@ public class FlowTest extends StreamTest {
 
     final CompletionStage<String> grouped =
         source.via(flow).runFold("", (acc, elem) -> acc + elem, system);
-    Assert.assertEquals("[1, 2][3, 4][5]", grouped.toCompletableFuture().get(3, TimeUnit.SECONDS));
+    Assertions.assertEquals(
+        "[1, 2][3, 4][5]", grouped.toCompletableFuture().get(3, TimeUnit.SECONDS));
   }
 
   @Test
@@ -307,7 +308,7 @@ public class FlowTest extends StreamTest {
         .request(4)
         .expectNext("1", "2", "3", "end")
         .expectComplete();
-    Assert.assertFalse(gate.get());
+    Assertions.assertFalse(gate.get());
   }
 
   @Test
@@ -324,7 +325,7 @@ public class FlowTest extends StreamTest {
         .get(3, TimeUnit.SECONDS);
 
     probe.expectMsgAllOf("1", "2", "3");
-    Assert.assertEquals(closed.get(), 1);
+    Assertions.assertEquals(1, closed.get());
   }
 
   @Test
@@ -336,7 +337,7 @@ public class FlowTest extends StreamTest {
             .run(system)
             .toCompletableFuture()
             .get(1, TimeUnit.SECONDS);
-    Assert.assertEquals(10, result);
+    Assertions.assertEquals(10, result);
   }
 
   @Test
@@ -1637,7 +1638,7 @@ public class FlowTest extends StreamTest {
 
     final Throwable actual =
         source.via(flow).runWith(TestSink.create(system), system).request(1).expectError();
-    org.junit.Assert.assertTrue(actual instanceof IndexOutOfBoundsException);
+    assertTrue(actual instanceof IndexOutOfBoundsException);
   }
 
   @Test
@@ -1801,7 +1802,7 @@ public class FlowTest extends StreamTest {
   @Test
   public void mustBeAbleToUseInitialTimeout() {
     ExecutionException executionException =
-        Assert.assertThrows(
+        Assertions.assertThrows(
             ExecutionException.class,
             () ->
                 Source.<Integer>maybe()
@@ -1810,14 +1811,14 @@ public class FlowTest extends StreamTest {
                     .toCompletableFuture()
                     .get(3, TimeUnit.SECONDS));
     assertTrue(
-        "A TimeoutException was expected",
-        TimeoutException.class.isAssignableFrom(executionException.getCause().getClass()));
+        TimeoutException.class.isAssignableFrom(executionException.getCause().getClass()),
+        "A TimeoutException was expected");
   }
 
   @Test
   public void mustBeAbleToUseCompletionTimeout() {
     ExecutionException executionException =
-        Assert.assertThrows(
+        Assertions.assertThrows(
             ExecutionException.class,
             () ->
                 Source.<Integer>maybe()
@@ -1826,14 +1827,14 @@ public class FlowTest extends StreamTest {
                     .toCompletableFuture()
                     .get(3, TimeUnit.SECONDS));
     assertTrue(
-        "A TimeoutException was expected",
-        TimeoutException.class.isAssignableFrom(executionException.getCause().getClass()));
+        TimeoutException.class.isAssignableFrom(executionException.getCause().getClass()),
+        "A TimeoutException was expected");
   }
 
   @Test
   public void mustBeAbleToUseIdleTimeout() {
     ExecutionException executionException =
-        Assert.assertThrows(
+        Assertions.assertThrows(
             ExecutionException.class,
             () ->
                 Source.<Integer>maybe()
@@ -1842,8 +1843,8 @@ public class FlowTest extends StreamTest {
                     .toCompletableFuture()
                     .get(3, TimeUnit.SECONDS));
     assertTrue(
-        "A TimeoutException was expected",
-        TimeoutException.class.isAssignableFrom(executionException.getCause().getClass()));
+        TimeoutException.class.isAssignableFrom(executionException.getCause().getClass()),
+        "A TimeoutException was expected");
   }
 
   @Test
@@ -1947,7 +1948,7 @@ public class FlowTest extends StreamTest {
             .runWith(Sink.seq(), system)
             .toCompletableFuture()
             .join();
-    Assert.assertEquals(Arrays.asList(1, 2), resultList);
+    Assertions.assertEquals(Arrays.asList(1, 2), resultList);
   }
 
   @Test
@@ -1962,7 +1963,7 @@ public class FlowTest extends StreamTest {
             .runWith(Sink.collect(Collectors.toSet()), system)
             .toCompletableFuture()
             .join();
-    Assert.assertEquals(Sets.newHashSet(1, 2), resultSet);
+    Assertions.assertEquals(Sets.newHashSet(1, 2), resultSet);
   }
 
   @Test
@@ -1991,7 +1992,7 @@ public class FlowTest extends StreamTest {
             .toCompletableFuture()
             .join();
 
-    Assert.assertEquals(
+    Assertions.assertEquals(
         new HashSet<>(
             Arrays.asList(
                 Pair.create(1, 0L),

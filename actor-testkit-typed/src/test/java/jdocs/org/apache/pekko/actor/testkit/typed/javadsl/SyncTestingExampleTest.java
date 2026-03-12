@@ -14,8 +14,8 @@
 package jdocs.org.apache.pekko.actor.testkit.typed.javadsl;
 
 // #imports
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.typesafe.config.Config;
 import java.time.Duration;
@@ -28,13 +28,12 @@ import org.apache.pekko.actor.testkit.typed.javadsl.BehaviorTestKit;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestInbox;
 import org.apache.pekko.actor.typed.*;
 import org.apache.pekko.actor.typed.javadsl.*;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
 import org.slf4j.event.Level;
 
 // #imports
 
-public class SyncTestingExampleTest extends JUnitSuite {
+public class SyncTestingExampleTest {
 
   // #child
   public static class Child {
@@ -315,20 +314,20 @@ public class SyncTestingExampleTest extends JUnitSuite {
 
     // Completing/timing-out the ask is processed synchronously
     List<CapturedLogEvent> allLogEntries = test.getAllLogEntries();
-    assertEquals(allLogEntries.size(), 1);
+    assertEquals(1, allLogEntries.size());
 
     // The message, including the synthesized "replyTo", can be inspected from the effect
     assertEquals(question, effect.askMessage());
 
     // The response adaptation can be tested as many times as you want without completing the ask
     Hello.Command response1 = effect.adaptResponse(new Hello.Answer("No.  Who are you?"));
-    assertEquals(((Hello.GotAnAnswer) response1).answer, "No.  Who are you?");
+    assertEquals("No.  Who are you?", ((Hello.GotAnAnswer) response1).answer);
 
     // ... as can the message sent on a timeout
     assertTrue(effect.adaptTimeout() instanceof Hello.NoAnswerFrom);
 
     // The response timeout is captured
-    assertEquals(effect.responseTimeout().toSeconds(), 10L);
+    assertEquals(10L, effect.responseTimeout().toSeconds());
     // #test-contextual-ask
   }
 

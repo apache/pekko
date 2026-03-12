@@ -13,24 +13,22 @@
 
 package org.apache.pekko.actor.testkit.typed.javadsl;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collections;
 import java.util.Optional;
 import org.apache.pekko.actor.testkit.typed.LoggingEvent;
 import org.apache.pekko.actor.testkit.typed.TestException;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.event.Level;
 
-public class LoggingTestKitTest extends JUnitSuite {
+@ExtendWith({TestKitJUnitJupiterExtension.class, LogCapturingExtension.class})
+public class LoggingTestKitTest {
 
-  @ClassRule public static TestKitJunitResource testKit = new TestKitJunitResource();
-
-  @Rule public final LogCapturing logCapturing = new LogCapturing();
+  @JUnitJupiterTestKit public ActorTestKit testKit = new JUnitJupiterTestKitBuilder().build();
 
   private LoggingEvent errorNoCause() {
     return LoggingEvent.create(

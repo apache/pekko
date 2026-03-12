@@ -229,7 +229,7 @@ import pekko.util.OptionVal
       super.unhandled(other)
   }
 
-  override val supervisorStrategy = classic.OneForOneStrategy(loggingEnabled = false) {
+  final override def supervisorStrategy = classic.OneForOneStrategy(loggingEnabled = false) {
     case ex =>
       ctx.setCurrentActorThread()
       try ex match {

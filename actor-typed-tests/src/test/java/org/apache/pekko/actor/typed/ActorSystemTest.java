@@ -14,16 +14,15 @@
 package org.apache.pekko.actor.typed;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.concurrent.CompletionStage;
 import org.apache.pekko.Done;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
 
-public class ActorSystemTest extends JUnitSuite {
+public class ActorSystemTest {
 
   @Test
   public void testGetWhenTerminated() throws Exception {

@@ -13,22 +13,22 @@
 
 package org.apache.pekko.cluster.sharding.typed.javadsl;
 
-import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.JUnitJupiterTestKitBuilder;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitJupiterExtension;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.cluster.typed.Cluster;
 import org.apache.pekko.cluster.typed.Join;
 import org.apache.pekko.persistence.typed.PersistenceId;
 import org.apache.pekko.persistence.typed.javadsl.*;
-import org.junit.ClassRule;
-import org.junit.Rule;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(TestKitJUnitJupiterExtension.class)
 public class ShardingEventSourcedEntityWithEnforcedRepliesCompileOnlyTest {
 
-  @ClassRule public static final TestKitJunitResource testKit = new TestKitJunitResource();
-
-  @Rule public final LogCapturing logCapturing = new LogCapturing();
+  @JUnitJupiterTestKit public ActorTestKit testKit = new JUnitJupiterTestKitBuilder().build();
 
   interface Command {}
 

@@ -18,7 +18,7 @@ import static org.apache.pekko.stream.testkit.StreamTestKit.PublisherProbeSubscr
 import static org.apache.pekko.stream.testkit.TestPublisher.ManualProbe;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
@@ -49,23 +49,23 @@ import org.apache.pekko.stream.stage.GraphStageLogic;
 import org.apache.pekko.stream.testkit.TestPublisher;
 import org.apache.pekko.stream.testkit.TestSubscriber;
 import org.apache.pekko.stream.testkit.javadsl.TestSink;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.Assert;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import scala.util.Try;
 
 @SuppressWarnings("serial")
-public class SourceTest extends StreamTest {
+public class SourceTest extends StreamTestJupiter {
   public SourceTest() {
     super(actorSystemResource);
   }
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource("SourceTest", PekkoSpec.testConf());
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource("SourceTest", PekkoSpec.testConf());
 
   interface Fruit {}
 
@@ -850,7 +850,8 @@ public class SourceTest extends StreamTest {
             .filterNot(List::isEmpty)
             .map(String::valueOf)
             .runFold("", (acc, elem) -> acc + elem, system);
-    Assert.assertEquals("[1, 2][3, 4][5]", grouped.toCompletableFuture().get(3, TimeUnit.SECONDS));
+    Assertions.assertEquals(
+        "[1, 2][3, 4][5]", grouped.toCompletableFuture().get(3, TimeUnit.SECONDS));
   }
 
   @Test
@@ -858,7 +859,7 @@ public class SourceTest extends StreamTest {
     final java.lang.Iterable<Integer> input = Arrays.asList(1, 1, 1, 2, 3, 3, 3, 4, 1, 5, 5, 5);
     final CompletionStage<String> result =
         Source.from(input).dropRepeated().runFold("", (acc, elem) -> acc + elem, system);
-    Assert.assertEquals("123415", result.toCompletableFuture().get(3, TimeUnit.SECONDS));
+    Assertions.assertEquals("123415", result.toCompletableFuture().get(3, TimeUnit.SECONDS));
   }
 
   @Test
@@ -914,7 +915,7 @@ public class SourceTest extends StreamTest {
             .filter(Optional::isPresent)
             .map(Optional::get)
             .runFold("", (acc, elem) -> acc + elem, system);
-    Assert.assertEquals("12345", result.toCompletableFuture().get(3, TimeUnit.SECONDS));
+    Assertions.assertEquals("12345", result.toCompletableFuture().get(3, TimeUnit.SECONDS));
   }
 
   @Test
@@ -932,7 +933,7 @@ public class SourceTest extends StreamTest {
         .request(4)
         .expectNext("1", "2", "3", "end")
         .expectComplete();
-    Assert.assertFalse(gate.get());
+    Assertions.assertFalse(gate.get());
   }
 
   @Test
@@ -946,7 +947,7 @@ public class SourceTest extends StreamTest {
         .get(3, TimeUnit.SECONDS);
 
     probe.expectMsgAllOf("1", "2", "3");
-    Assert.assertEquals(closed.get(), 1);
+    Assertions.assertEquals(1, closed.get());
   }
 
   @Test
@@ -958,7 +959,7 @@ public class SourceTest extends StreamTest {
             .run(system)
             .toCompletableFuture()
             .get(1, TimeUnit.SECONDS);
-    Assert.assertEquals(10, result);
+    Assertions.assertEquals(10, result);
   }
 
   @Test
@@ -1263,8 +1264,7 @@ public class SourceTest extends StreamTest {
   @Test
   public void cycleSourceMustThrow() {
     ExecutionException exception =
-        Assert.assertThrows(
-            "CompletableFuture.get() should throw ExecutionException",
+        Assertions.assertThrows(
             ExecutionException.class,
             () -> {
               // #cycle-error
@@ -1275,11 +1275,12 @@ public class SourceTest extends StreamTest {
                   // #cycle-error
                   .toCompletableFuture()
                   .get();
-            });
+            },
+            "CompletableFuture.get() should throw ExecutionException");
     assertEquals(
-        "The cause of ExecutionException should be IllegalArgumentException",
         IllegalArgumentException.class,
-        exception.getCause().getClass());
+        exception.getCause().getClass(),
+        "The cause of ExecutionException should be IllegalArgumentException");
   }
 
   @Test
@@ -1384,52 +1385,52 @@ public class SourceTest extends StreamTest {
   @Test
   public void mustBeAbleToUseInitialTimeout() {
     ExecutionException exception =
-        Assert.assertThrows(
-            "CompletableFuture.get() should throw ExecutionException",
+        Assertions.assertThrows(
             ExecutionException.class,
             () ->
                 Source.maybe()
                     .initialTimeout(Duration.ofSeconds(1))
                     .runWith(Sink.head(), system)
                     .toCompletableFuture()
-                    .get(3, TimeUnit.SECONDS));
+                    .get(3, TimeUnit.SECONDS),
+            "CompletableFuture.get() should throw ExecutionException");
     assertTrue(
-        "The cause of ExecutionException should be TimeoutException",
-        TimeoutException.class.isAssignableFrom(exception.getCause().getClass()));
+        TimeoutException.class.isAssignableFrom(exception.getCause().getClass()),
+        "The cause of ExecutionException should be TimeoutException");
   }
 
   @Test
   public void mustBeAbleToUseCompletionTimeout() {
     ExecutionException exception =
-        Assert.assertThrows(
-            "CompletableFuture.get() should throw ExecutionException",
+        Assertions.assertThrows(
             ExecutionException.class,
             () ->
                 Source.maybe()
                     .completionTimeout(Duration.ofSeconds(1))
                     .runWith(Sink.head(), system)
                     .toCompletableFuture()
-                    .get(3, TimeUnit.SECONDS));
+                    .get(3, TimeUnit.SECONDS),
+            "CompletableFuture.get() should throw ExecutionException");
     assertTrue(
-        "The cause of ExecutionException should be TimeoutException",
-        TimeoutException.class.isAssignableFrom(exception.getCause().getClass()));
+        TimeoutException.class.isAssignableFrom(exception.getCause().getClass()),
+        "The cause of ExecutionException should be TimeoutException");
   }
 
   @Test
   public void mustBeAbleToUseIdleTimeout() {
     ExecutionException exception =
-        Assert.assertThrows(
-            "CompletableFuture.get() should throw ExecutionException",
+        Assertions.assertThrows(
             ExecutionException.class,
             () ->
                 Source.maybe()
                     .idleTimeout(Duration.ofSeconds(1))
                     .runWith(Sink.head(), system)
                     .toCompletableFuture()
-                    .get(3, TimeUnit.SECONDS));
+                    .get(3, TimeUnit.SECONDS),
+            "CompletableFuture.get() should throw ExecutionException");
     assertTrue(
-        "The cause of ExecutionException should be TimeoutException",
-        TimeoutException.class.isAssignableFrom(exception.getCause().getClass()));
+        TimeoutException.class.isAssignableFrom(exception.getCause().getClass()),
+        "The cause of ExecutionException should be TimeoutException");
   }
 
   @Test
@@ -1612,7 +1613,7 @@ public class SourceTest extends StreamTest {
             .via(Flow.flattenOptional())
             .runWith(Sink.seq(), system);
     // #flattenOptional
-    Assert.assertEquals(
+    Assertions.assertEquals(
         Arrays.asList(2, 4, 6, 8, 10), resultList.toCompletableFuture().get(3, TimeUnit.SECONDS));
   }
 
@@ -1627,7 +1628,7 @@ public class SourceTest extends StreamTest {
             .runWith(Sink.seq(), system)
             .toCompletableFuture()
             .get(3, TimeUnit.SECONDS);
-    Assert.assertEquals(Arrays.asList(2, 4, 6, 8, 10), resultList);
+    Assertions.assertEquals(Arrays.asList(2, 4, 6, 8, 10), resultList);
   }
 
   @Test
@@ -1638,7 +1639,7 @@ public class SourceTest extends StreamTest {
             .runWith(Sink.seq(), system)
             .toCompletableFuture()
             .join();
-    Assert.assertEquals(Arrays.asList(1, 2), resultList);
+    Assertions.assertEquals(Arrays.asList(1, 2), resultList);
   }
 
   @Test
@@ -1651,7 +1652,7 @@ public class SourceTest extends StreamTest {
             .runWith(Sink.collect(Collectors.toSet()), system)
             .toCompletableFuture()
             .join();
-    Assert.assertEquals(Sets.newHashSet(1, 2), resultSet);
+    Assertions.assertEquals(Sets.newHashSet(1, 2), resultSet);
   }
 
   @Test
@@ -1672,7 +1673,7 @@ public class SourceTest extends StreamTest {
             .runWith(Sink.collect(Collectors.toSet()), system)
             .toCompletableFuture()
             .join();
-    Assert.assertEquals(
+    Assertions.assertEquals(
         new HashSet<>(
             Arrays.asList(
                 Pair.create(1, 0L),

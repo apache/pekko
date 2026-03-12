@@ -15,7 +15,10 @@ package jdocs.persistence.testkit;
 
 import com.typesafe.config.ConfigFactory;
 import jdocs.AbstractJavaTest;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.JUnitJupiterTestKitBuilder;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitJupiterExtension;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.persistence.testkit.JournalOperation;
 import org.apache.pekko.persistence.testkit.PersistenceTestKitPlugin;
@@ -26,23 +29,26 @@ import org.apache.pekko.persistence.testkit.StorageFailure;
 import org.apache.pekko.persistence.testkit.WriteEvents;
 import org.apache.pekko.persistence.testkit.javadsl.PersistenceTestKit;
 import org.apache.pekko.persistence.typed.PersistenceId;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 // #policy-test
+@ExtendWith(TestKitJUnitJupiterExtension.class)
 public class PersistenceTestKitPolicySampleTest extends AbstractJavaTest {
 
-  @ClassRule
-  public static final TestKitJunitResource testKit =
-      new TestKitJunitResource(
-          PersistenceTestKitPlugin.getInstance()
-              .config()
-              .withFallback(ConfigFactory.defaultApplication()));
+  @JUnitJupiterTestKit
+  public ActorTestKit testKit =
+      new JUnitJupiterTestKitBuilder()
+          .withCustomConfig(
+              PersistenceTestKitPlugin.getInstance()
+                  .config()
+                  .withFallback(ConfigFactory.defaultApplication()))
+          .build();
 
   PersistenceTestKit persistenceTestKit = PersistenceTestKit.create(testKit.system());
 
-  @Before
+  @BeforeEach
   public void beforeEach() {
     persistenceTestKit.clearAll();
     persistenceTestKit.resetPolicy();

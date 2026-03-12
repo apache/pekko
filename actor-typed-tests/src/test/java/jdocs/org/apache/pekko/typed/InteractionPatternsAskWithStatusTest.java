@@ -13,8 +13,6 @@
 
 package jdocs.org.apache.pekko.typed;
 
-import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.actor.typed.Behavior;
@@ -24,19 +22,22 @@ import org.apache.pekko.actor.typed.javadsl.*;
 import org.apache.pekko.pattern.StatusReply;
 
 // #actor-ask-with-status
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitJupiterExtension;
+import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturingExtension;
+import org.apache.pekko.actor.testkit.typed.javadsl.JUnitJupiterTestKitBuilder;
+import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
 
 import java.time.Duration;
 import java.util.concurrent.CompletionStage;
 
-public class InteractionPatternsAskWithStatusTest extends JUnitSuite {
+@ExtendWith(TestKitJUnitJupiterExtension.class)
+@ExtendWith(LogCapturingExtension.class)
+public class InteractionPatternsAskWithStatusTest {
 
-  @ClassRule public static final TestKitJunitResource testKit = new TestKitJunitResource();
-
-  @Rule public final LogCapturing logCapturing = new LogCapturing();
+  @JUnitJupiterTestKit public ActorTestKit testKit = new JUnitJupiterTestKitBuilder().build();
 
   // separate from InteractionPatternsTest to avoid name clashes while keeping the ask samples
   // almost identical

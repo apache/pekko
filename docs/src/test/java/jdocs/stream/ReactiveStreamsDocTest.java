@@ -26,9 +26,9 @@ import org.apache.pekko.japi.function.Creator;
 import org.apache.pekko.stream.javadsl.*;
 import org.apache.pekko.testkit.TestProbe;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 // #imports
 import org.reactivestreams.Processor;
 import org.reactivestreams.Publisher;
@@ -43,14 +43,14 @@ public class ReactiveStreamsDocTest extends AbstractJavaTest {
   static TestProbe storageProbe;
   static TestProbe alertProbe;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     system = ActorSystem.create("ReactiveStreamsDocTest");
     storageProbe = new TestProbe(system);
     alertProbe = new TestProbe(system);
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     TestKit.shutdownActorSystem(system);
     system = null;

@@ -13,17 +13,16 @@
 
 package org.apache.pekko.japi;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.concurrent.Callable;
 import org.apache.pekko.actor.ExtendedActorSystem;
 import org.apache.pekko.event.LoggingAdapter;
 import org.apache.pekko.event.NoLogging;
 import org.apache.pekko.serialization.JavaSerializer;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
 
-public class JavaAPITestBase extends JUnitSuite {
+public class JavaAPITestBase {
 
   @Test
   public void mustBeAbleToGetNoLogging() {

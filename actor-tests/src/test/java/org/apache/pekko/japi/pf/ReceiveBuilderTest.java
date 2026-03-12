@@ -13,17 +13,16 @@
 
 package org.apache.pekko.japi.pf;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.List;
 import org.apache.pekko.actor.AbstractActor.Receive;
-import org.junit.Before;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("serial")
-public class ReceiveBuilderTest extends JUnitSuite {
+public class ReceiveBuilderTest {
 
   public static interface Msg {}
 
@@ -80,7 +79,7 @@ public class ReceiveBuilderTest extends JUnitSuite {
     result = r;
   }
 
-  @Before
+  @BeforeEach
   public void beforeEach() {
     result = "";
   }
@@ -270,7 +269,7 @@ public class ReceiveBuilderTest extends JUnitSuite {
     assertEquals("match List", result());
   }
 
-  @Test(expected = ClassCastException.class)
+  @Test
   public void shouldThrowWhenUncheckedWithWrongTypes() {
     // note that this doesn't compile with ordinary match
     Receive rcv =
@@ -282,6 +281,6 @@ public class ReceiveBuilderTest extends JUnitSuite {
                 })
             .build();
     assertTrue(rcv.onMessage().isDefinedAt("foo"));
-    rcv.onMessage().apply("foo");
+    assertThrows(ClassCastException.class, () -> rcv.onMessage().apply("foo"));
   }
 }

@@ -13,19 +13,18 @@
 
 package org.apache.pekko.actor.typed;
 
-import static junit.framework.TestCase.assertSame;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import java.util.function.Function;
 import org.apache.pekko.actor.setup.ActorSystemSetup;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
 
-public class ExtensionsTest extends JUnitSuite {
+public class ExtensionsTest {
 
   public static class MyExtImpl implements Extension {}
 

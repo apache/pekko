@@ -39,6 +39,6 @@ package org.apache.pekko.stream
  * correct behavior for unknown or third-party fan-out strategies that may transform
  * the element type.
  *
- * @since 1.2.0
+ * @since 1.5.0
  */
 trait TypePreservingFanOut

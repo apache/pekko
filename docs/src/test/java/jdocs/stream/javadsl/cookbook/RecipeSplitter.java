@@ -22,9 +22,9 @@ import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class RecipeSplitter {
   private static ActorSystem system;
@@ -76,12 +76,12 @@ public class RecipeSplitter {
     // #Aggregate-Split
   }
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() throws Exception {
     system = ActorSystem.create();
   }
 
-  @AfterClass
+  @AfterAll
   public static void teardown() throws Exception {
     TestKit.shutdownActorSystem(system);
   }

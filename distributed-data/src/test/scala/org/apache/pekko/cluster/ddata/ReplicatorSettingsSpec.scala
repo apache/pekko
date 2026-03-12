@@ -41,5 +41,21 @@ class ReplicatorSettingsSpec
     "have the prefixed replicator name" in {
       ReplicatorSettings.name(system, Some("other")) should ===("otherDdataReplicator")
     }
+    "parse expire-keys-after-inactivity config" in {
+      val config = ConfigFactory.parseString("""
+        pekko.cluster.distributed-data.expire-keys-after-inactivity {
+          "key-1" = 10 minutes
+          "cache-*" = 2 minutes
+        }
+        """).withFallback(ReplicatorSettingsSpec.config).withFallback(system.settings.config)
+      val settings = ReplicatorSettings(config.getConfig("pekko.cluster.distributed-data"))
+      settings.expiryKeys should have size 2
+      settings.expiryKeys("key-1").toMinutes should ===(10L)
+      settings.expiryKeys("cache-*").toMinutes should ===(2L)
+    }
+    "have empty expiry keys by default" in {
+      val settings = ReplicatorSettings(system)
+      settings.expiryKeys should be(empty)
+    }
   }
 }

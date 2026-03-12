@@ -31,7 +31,7 @@ import org.apache.pekko.japi.pf.ReceiveBuilder;
 import org.apache.pekko.util.ByteString;
 
 // #imports
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 
 public class UdpConnectedDocTest {

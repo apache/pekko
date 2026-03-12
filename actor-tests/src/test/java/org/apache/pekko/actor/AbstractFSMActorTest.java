@@ -13,14 +13,13 @@
 
 package org.apache.pekko.actor;
 
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.testkit.TestProbe;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-public class AbstractFSMActorTest extends JUnitSuite {
+public class AbstractFSMActorTest {
 
   // javac produces an `unchecked` warning about `akka$actor$FSM$$transitionEvent`
   // https://github.com/lampepfl/dotty/issues/6350
@@ -42,9 +41,9 @@ public class AbstractFSMActorTest extends JUnitSuite {
     }
   }
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource("AbstractFSMActorTest", PekkoSpec.testConf());
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource("AbstractFSMActorTest", PekkoSpec.testConf());
 
   private final ActorSystem system = actorSystemResource.getSystem();
 

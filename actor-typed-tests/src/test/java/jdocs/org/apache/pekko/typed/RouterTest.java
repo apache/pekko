@@ -17,7 +17,11 @@ package jdocs.org.apache.pekko.typed;
  * Copyright (C) 2009-2019 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.JUnitJupiterTestKitBuilder;
+import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturingExtension;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitJupiterExtension;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.ActorSystem;
@@ -32,15 +36,16 @@ import org.apache.pekko.actor.typed.javadsl.PoolRouter;
 import org.apache.pekko.actor.typed.javadsl.Routers;
 import org.apache.pekko.actor.typed.receptionist.Receptionist;
 import org.apache.pekko.actor.typed.receptionist.ServiceKey;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 // #pool
 
-public class RouterTest extends JUnitSuite {
+@ExtendWith(TestKitJUnitJupiterExtension.class)
+@ExtendWith(LogCapturingExtension.class)
+public class RouterTest {
 
-  @ClassRule public static final TestKitJunitResource testKit = new TestKitJunitResource();
+  @JUnitJupiterTestKit public ActorTestKit testKit = new JUnitJupiterTestKitBuilder().build();
 
   static // #routee
   class Worker {

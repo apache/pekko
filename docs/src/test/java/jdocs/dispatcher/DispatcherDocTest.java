@@ -22,8 +22,8 @@ import docs.dispatcher.DispatcherDocSpec;
 import jdocs.AbstractJavaTest;
 import jdocs.actor.MyBoundedActor;
 import jdocs.actor.MyActor;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.Test;
 import scala.concurrent.ExecutionContextExecutor;
 
 // #imports
@@ -38,7 +38,7 @@ import org.apache.pekko.event.LoggingAdapter;
 // #imports-prio-mailbox
 import org.apache.pekko.dispatch.PriorityGenerator;
 import org.apache.pekko.dispatch.UnboundedStablePriorityMailbox;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 import com.typesafe.config.Config;
 
 // #imports-prio-mailbox
@@ -49,9 +49,9 @@ import com.typesafe.config.Config;
 
 public class DispatcherDocTest extends AbstractJavaTest {
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource(
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource(
           "DispatcherDocTest",
           ConfigFactory.parseString(DispatcherDocSpec.javaConfig())
               .withFallback(ConfigFactory.parseString(DispatcherDocSpec.config()))

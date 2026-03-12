@@ -123,29 +123,42 @@ class ReplicatorMessageSerializerSpec
       checkSerialization(ReadResult(None))
       checkSerialization(
         Status(
-          Map("A" -> ByteString.fromString("a"), "B" -> ByteString.fromString("b")),
+          Map("A" -> (ByteString.fromString("a") -> 0L), "B" -> (ByteString.fromString("b") -> 0L)),
           chunk = 3,
           totChunks = 10,
           Some(17),
           Some(19)))
       checkSerialization(
         Status(
-          Map("A" -> ByteString.fromString("a"), "B" -> ByteString.fromString("b")),
+          Map("A" -> (ByteString.fromString("a") -> 0L), "B" -> (ByteString.fromString("b") -> 0L)),
           chunk = 3,
           totChunks = 10,
           None, // can be None when sending back to a node of version 2.5.21
           Some(19)))
       checkSerialization(
+        Status(
+          Map("A" -> (ByteString.fromString("a") -> 12345L), "B" -> (ByteString.fromString("b") -> 67890L)),
+          chunk = 3,
+          totChunks = 10,
+          Some(17),
+          Some(19)))
+      checkSerialization(
         Gossip(
-          Map("A" -> DataEnvelope(data1), "B" -> DataEnvelope(GSet() + "b" + "c")),
+          Map("A" -> (DataEnvelope(data1) -> 0L), "B" -> (DataEnvelope(GSet() + "b" + "c") -> 0L)),
           sendBack = true,
           Some(17),
           Some(19)))
       checkSerialization(
         Gossip(
-          Map("A" -> DataEnvelope(data1), "B" -> DataEnvelope(GSet() + "b" + "c")),
+          Map("A" -> (DataEnvelope(data1) -> 0L), "B" -> (DataEnvelope(GSet() + "b" + "c") -> 0L)),
           sendBack = true,
           None, // can be None when sending back to a node of version 2.5.21
+          Some(19)))
+      checkSerialization(
+        Gossip(
+          Map("A" -> (DataEnvelope(data1) -> 12345L), "B" -> (DataEnvelope(GSet() + "b" + "c") -> 67890L)),
+          sendBack = true,
+          Some(17),
           Some(19)))
       checkSerialization(
         DeltaPropagation(

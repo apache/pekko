@@ -14,10 +14,9 @@
 package jdocs.org.apache.pekko.cluster.sharding.typed;
 
 import org.apache.pekko.Done;
-import org.scalatestplus.junit.JUnitSuite;
 
 import static jdocs.org.apache.pekko.cluster.sharding.typed.AccountExampleWithEventHandlersInState.AccountEntity;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 // #test
 import java.math.BigDecimal;
@@ -28,11 +27,11 @@ import org.apache.pekko.actor.testkit.typed.javadsl.StatusReplyInbox;
 import org.apache.pekko.persistence.testkit.javadsl.PersistenceProbeBehavior;
 import org.apache.pekko.persistence.testkit.javadsl.PersistenceEffect;
 import org.apache.pekko.persistence.typed.PersistenceId;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class AccountExamplePersistenceProbeDocTest
     // #test
-    extends JUnitSuite
+   
 // #test
 {
     @Test

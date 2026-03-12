@@ -16,8 +16,8 @@ package jdocs.serialization;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.apache.pekko.cluster.Cluster;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 // #imports
 import org.apache.pekko.actor.*;

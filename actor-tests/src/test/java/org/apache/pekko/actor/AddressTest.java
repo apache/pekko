@@ -13,13 +13,12 @@
 
 package org.apache.pekko.actor;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Optional;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
 
-public class AddressTest extends JUnitSuite {
+public class AddressTest {
 
   @Test
   public void portAddressAccessible() {

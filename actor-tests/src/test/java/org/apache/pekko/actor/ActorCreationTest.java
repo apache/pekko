@@ -14,16 +14,15 @@
 package org.apache.pekko.actor;
 
 import static java.util.stream.Collectors.toCollection;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.stream.IntStream;
 import org.apache.pekko.japi.function.Creator;
-import org.junit.Assert;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-public class ActorCreationTest extends JUnitSuite {
+public class ActorCreationTest {
 
   static class C implements Creator<AbstractActor> {
     @Override
@@ -178,7 +177,7 @@ public class ActorCreationTest extends JUnitSuite {
   @Test
   public void testWrongAnonymousInPlaceCreator() {
     IllegalArgumentException exception =
-        Assert.assertThrows(
+        Assertions.assertThrows(
             IllegalArgumentException.class,
             () ->
                 Props.create(
@@ -205,7 +204,7 @@ public class ActorCreationTest extends JUnitSuite {
   @Test
   public void testWrongAbstractActorClass() {
     IllegalArgumentException exception =
-        Assert.assertThrows(IllegalArgumentException.class, () -> Props.create(H.class, "a"));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> Props.create(H.class, "a"));
     assertEquals(
         String.format("Actor class [%s] must not be abstract", H.class.getName()),
         exception.getMessage());

@@ -12,6 +12,9 @@ import net.bzzt.reproduciblebuilds.ReproducibleBuildsPlugin.reproducibleBuildsCh
 scalaVersion := Dependencies.allScalaVersions.head
 
 ThisBuild / versionScheme := Some(VersionScheme.SemVerSpec)
+// Add  (Jupiter) test runtime to all modules for sbt-jupiter-interface discovery
+ThisBuild / libraryDependencies +=
+  "com.github.sbt.junit" % "jupiter-interface" % JupiterKeys.jupiterVersion.value % Test
 sourceDistName := "apache-pekko"
 sourceDistIncubating := false
 

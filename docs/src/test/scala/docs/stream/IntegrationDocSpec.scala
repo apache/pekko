@@ -115,7 +115,7 @@ object IntegrationDocSpec {
     private val runningCount = new AtomicInteger
 
     def convert(s: String): Future[String] = {
-      println(s"running: $s (${runningCount.incrementAndGet()})")
+      println(s"running: $s (${runningCount.incrementAndGet()}")
       Future {
         if (s.nonEmpty && s.head.isLower)
           Thread.sleep(500)

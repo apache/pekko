@@ -26,10 +26,9 @@ import org.apache.pekko.actor.typed.javadsl.Adapter;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.apache.pekko.actor.typed.javadsl.Receive;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
 
-public class TypedWatchingClassicTest extends JUnitSuite {
+public class TypedWatchingClassicTest {
 
   // #typed
   public static class Typed extends AbstractBehavior<Typed.Command> {

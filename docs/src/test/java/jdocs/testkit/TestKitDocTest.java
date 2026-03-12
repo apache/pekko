@@ -13,7 +13,7 @@
 
 package jdocs.testkit;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.typesafe.config.ConfigFactory;
 import java.time.Duration;
@@ -33,22 +33,22 @@ import org.apache.pekko.actor.UntypedAbstractActorWithTimers;
 import org.apache.pekko.japi.JavaPartialFunction;
 import org.apache.pekko.pattern.Patterns;
 import org.apache.pekko.testkit.CallingThreadDispatcher;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 import org.apache.pekko.testkit.TestActor;
 import org.apache.pekko.testkit.TestActor.AutoPilot;
 import org.apache.pekko.testkit.TestActorRef;
 import org.apache.pekko.testkit.TestProbe;
 import org.apache.pekko.testkit.javadsl.EventFilter;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.Assert;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class TestKitDocTest extends AbstractJavaTest {
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource(
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource(
           "TestKitDocTest",
           ConfigFactory.parseString(
               "pekko.loggers = [org.apache.pekko.testkit.TestEventListener]"));
@@ -148,7 +148,7 @@ public class TestKitDocTest extends AbstractJavaTest {
     final TestActorRef<MyActor> ref = TestActorRef.create(system, props, "myActor");
     try {
       ref.receive(new Exception("expected"));
-      Assert.fail("expected an exception to be thrown");
+      Assertions.fail("expected an exception to be thrown");
     } catch (Exception e) {
       assertEquals("expected", e.getMessage());
     }
@@ -259,7 +259,7 @@ public class TestKitDocTest extends AbstractJavaTest {
             Duration.ofSeconds(1),
             Duration.ofMillis(100),
             () -> {
-              assertEquals(msgAvailable(), true);
+              assertEquals(true, msgAvailable());
               return null;
             });
       }
@@ -326,7 +326,7 @@ public class TestKitDocTest extends AbstractJavaTest {
       {
         final Duration original = Duration.ofSeconds(1);
         final Duration stretched = dilated(original);
-        assertTrue("dilated", stretched.compareTo(original) >= 0);
+        assertTrue(stretched.compareTo(original) >= 0, "dilated");
       }
     };
     // #duration-dilation

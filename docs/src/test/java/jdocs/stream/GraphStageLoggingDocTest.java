@@ -26,7 +26,7 @@ import org.apache.pekko.stream.stage.GraphStageLogicWithLogging;
 
 // #stage-with-logging
 import jdocs.AbstractJavaTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.ThreadLocalRandom;
 
