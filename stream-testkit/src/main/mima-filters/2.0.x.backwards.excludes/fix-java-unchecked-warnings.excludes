@@ -1,0 +1,46 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# Fix Java unchecked warnings by using this.type return types (#2625)
+# Changed fluent API methods from abstract type member Self to this.type,
+# which adds parameterized generic Signature attributes to bytecode.
+# Only the generic Signature metadata changes — erased JVM types are unchanged.
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.testkit.TestPublisher#ManualProbe.expectNoMessage")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.testkit.TestPublisher#ManualProbe.expectRequest")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.testkit.TestSubscriber#ManualProbe.expectComplete")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.testkit.TestSubscriber#ManualProbe.expectError")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.testkit.TestSubscriber#ManualProbe.expectEvent")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.testkit.TestSubscriber#ManualProbe.expectNext")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.testkit.TestSubscriber#ManualProbe.expectNextChainingPF")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.testkit.TestSubscriber#ManualProbe.expectNextN")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.testkit.TestSubscriber#ManualProbe.expectNextOrComplete")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.testkit.TestSubscriber#ManualProbe.expectNextUnordered")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.testkit.TestSubscriber#ManualProbe.expectNextUnorderedN")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.testkit.TestSubscriber#ManualProbe.expectNoMessage")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.testkit.TestSubscriber#ManualProbe.expectSubscriptionAndComplete")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.testkit.TestSubscriber#ManualProbe.expectSubscriptionAndError")
+# Probe subclass methods — Scala 3 cross-build also changes these signatures
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.testkit.TestPublisher#Probe.sendNext")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.testkit.TestPublisher#Probe.unsafeSendNext")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.testkit.TestPublisher#Probe.sendComplete")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.testkit.TestPublisher#Probe.sendError")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.testkit.TestPublisher#Probe.expectCancellation")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.testkit.TestPublisher#Probe.expectCancellationWithCause")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.testkit.TestSubscriber#Probe.ensureSubscription")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.testkit.TestSubscriber#Probe.request")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.testkit.TestSubscriber#Probe.requestNext")
+ProblemFilters.exclude[IncompatibleSignatureProblem]("org.apache.pekko.stream.testkit.TestSubscriber#Probe.cancel")
