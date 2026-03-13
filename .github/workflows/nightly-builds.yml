@@ -148,12 +148,18 @@ jobs:
 
       - name: Compile and Test
         # note that this is not running any multi-jvm tests because multi-in-test=false
+        # JDK 25 ForkJoinPool scheduling changes need a higher timefactor (see #2573)
         run: |-
+          if [ "${{ matrix.javaVersion }}" -ge 25 ]; then
+            TIMEFACTOR=3
+          else
+            TIMEFACTOR=2
+          fi
           sbt \
             -Dpekko.cluster.assert=on \
             -Dpekko.log.timestamps=true \
-            -Dpekko.test.timefactor=2 \
-            -Dpekko.actor.testkit.typed.timefactor=2 \
+            -Dpekko.test.timefactor=$TIMEFACTOR \
+            -Dpekko.actor.testkit.typed.timefactor=$TIMEFACTOR \
             -Dpekko.test.tags.exclude=gh-exclude,timing \
             -Dpekko.test.multi-in-test=false \
             -Dio.netty.leakDetection.level=PARANOID \

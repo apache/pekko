@@ -33,9 +33,17 @@ import pekko.stream._
 import pekko.stream.testkit.{ ScriptedTest, StreamSpec }
 import pekko.stream.testkit.scaladsl.TestSink
 
+import org.scalatest.time.{ Seconds, Span }
+
 class FlowFlatMapConcatParallelismSpec extends StreamSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 2
   """) with ScriptedTest with FutureTimeoutSupport {
+
+  // 100K-element tests need extra headroom, especially on JDK 25+ where
+  // ForkJoinPool scheduling changes slow down highly-parallel workloads (#2573)
+  override implicit val patience: PatienceConfig =
+    PatienceConfig(timeout = Span(30, Seconds), interval = Span(1, Seconds))
+
   val toSeq = Flow[Int].grouped(1000).toMat(Sink.head)(Keep.right)
 
   class BoomException extends RuntimeException("BOOM~~") with NoStackTrace

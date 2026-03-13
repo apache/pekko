@@ -107,8 +107,10 @@ class MapAsyncPartitionedSpec
 
   import MapAsyncPartitionedSpec.TestData._
 
+  // Property-based tests with blocking operations need extra headroom,
+  // especially on JDK 25+ with ForkJoinPool scheduling changes (#2573)
   override implicit def patienceConfig: PatienceConfig = PatienceConfig(
-    timeout = 5.seconds,
+    timeout = 15.seconds,
     interval = 100.millis)
 
   private implicit val system: ActorSystem[_] = ActorSystem(Behaviors.empty, "test-system")
