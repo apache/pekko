@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import org.apache.pekko.Done;
-import org.apache.pekko.actor.testkit.typed.annotations.JUnit5TestKit;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,11 +25,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.scalatestplus.junit.JUnitSuite;
 
 @DisplayName("ActorTestKitTestJUnit5")
-@ExtendWith(TestKitJUnit5Extension.class)
+@ExtendWith(TestKitJUnitJupiterExtension.class)
 @ExtendWith(LogCapturingExtension.class)
 class ActorTestKitJUnit5Test extends JUnitSuite {
 
-  @JUnit5TestKit public ActorTestKit testKit = new JUnit5TestKitBuilder().build();
+  @JUnitJupiterTestKit public ActorTestKit testKit = new JUnitJupiterTestKit().build();
 
   @Test
   void systemNameShouldComeFromTestClassViaJunitResource() {
