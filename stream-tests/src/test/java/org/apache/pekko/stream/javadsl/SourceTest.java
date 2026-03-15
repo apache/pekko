@@ -1156,6 +1156,21 @@ public class SourceTest extends StreamTest {
     assertEquals(6, result.toCompletableFuture().get(3, TimeUnit.SECONDS).intValue());
   }
 
+  // Regression test for https://github.com/apache/pekko/issues/2723
+  // Verifies that Source.combine with a single source correctly applies
+  // type-transforming strategies (like MergeLatest), rather than bypassing
+  // them with an unsafe asInstanceOf cast.
+  @Test
+  public void mustBeAbleToCombineSingleSourceWithMergeLatest() throws Exception {
+    final List<Source<Integer, NotUsed>> sources = Collections.singletonList(Source.single(1));
+    final List<List<Integer>> result =
+        Source.<Integer, List<Integer>, NotUsed>combine(sources, MergeLatest::create)
+            .runWith(Sink.collect(Collectors.toList()), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS);
+    assertEquals(Collections.singletonList(Collections.singletonList(1)), result);
+  }
+
   @SuppressWarnings("unchecked")
   @Test
   public void mustBeAbleToZipN() throws Exception {
