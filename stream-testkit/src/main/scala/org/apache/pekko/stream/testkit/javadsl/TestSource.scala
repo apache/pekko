@@ -22,7 +22,7 @@ import pekko.stream.testkit._
 object TestSource {
 
   /**
-   * A Source that materializes to a [[pekko.stream.testkit.TestPublisher]].
+   * A Source that materializes to a [[pekko.stream.testkit.TestPublisher.Probe]].
    */
   def create[T](system: ClassicActorSystemProvider): Source[T, TestPublisher.Probe[T]] =
     new Source(scaladsl.TestSource[T]()(system))
