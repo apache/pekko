@@ -13,7 +13,12 @@
 
 package org.apache.pekko.stream.impl
 
+import scala.concurrent.Await
+import scala.concurrent.duration._
+
 import org.apache.pekko
+import pekko.stream.ActorAttributes
+import pekko.stream.StreamSubscriptionTimeoutTerminationMode
 import pekko.stream.scaladsl.Keep
 import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.Source
@@ -106,6 +111,32 @@ class FanoutProcessorSpec extends StreamSpec {
       probe.watch(publisherRef)
       Source.fromPublisher(publisher).map(_ => throw TE("boom")).runWith(Sink.ignore)
       probe.expectTerminated(publisherRef)
+    }
+
+    // #2645
+    "fail with SubscriptionTimeoutException instead of AbruptTerminationException on subscriber timeout" in {
+      val shortTimeout = 300.millis
+      val timeoutAttributes = ActorAttributes.streamSubscriptionTimeout(
+        shortTimeout, StreamSubscriptionTimeoutTerminationMode.CancelTermination)
+
+      val (_, publisher) = Source.maybe[Int]
+        .toMat(Sink.asPublisher(true).addAttributes(timeoutAttributes))(Keep.both)
+        .run()
+
+      // Do NOT subscribe — let the timeout fire
+      val probe = TestProbe()
+      val publisherRef = publisher.asInstanceOf[ActorPublisher[Int]].impl
+      probe.watch(publisherRef)
+
+      // The actor should terminate after the subscription timeout
+      probe.expectTerminated(publisherRef, shortTimeout + 3.seconds)
+
+      // Now try to subscribe after timeout and verify the error type
+      val result = Source.fromPublisher(publisher).runWith(Sink.head)
+      val ex = intercept[SubscriptionTimeoutException] {
+        Await.result(result, 3.seconds)
+      }
+      ex.getMessage should include("Subscription timeout expired")
     }
 
   }

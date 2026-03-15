@@ -13,6 +13,8 @@
 
 package org.apache.pekko.stream.impl
 
+import scala.util.control.NoStackTrace
+
 import org.apache.pekko
 import pekko.actor.Actor
 import pekko.actor.ActorRef
@@ -172,8 +174,11 @@ import org.reactivestreams.Subscriber
       if (!primaryOutputs.subscribed) {
         timeoutMode match {
           case CancelTermination =>
-            primaryInputs.cancel()
-            context.stop(self)
+            // Use fail() to propagate a SubscriptionTimeoutException downstream instead of
+            // stopping abruptly, which would only produce a non-informative AbruptTerminationException
+            log.warning("Subscription timeout expired for [{}], no subscriber attached in time", self)
+            fail(new SubscriptionTimeoutException(
+              s"Subscription timeout expired, no subscriber attached to [$self]") with NoStackTrace)
           case WarnTermination =>
             log.warning("Subscription timeout for {}", this)
           case NoopTermination => // won't happen
