@@ -96,7 +96,9 @@ object Merge {
  *
  * '''Cancels when''' downstream cancels
  */
-final class Merge[T](val inputPorts: Int, val eagerComplete: Boolean) extends GraphStage[UniformFanInShape[T, T]] {
+final class Merge[T](val inputPorts: Int, val eagerComplete: Boolean)
+    extends GraphStage[UniformFanInShape[T, T]]
+    with pekko.stream.TypePreservingFanIn {
   // one input might seem counter intuitive but saves us from special handling in other places
   require(inputPorts >= 1, "A Merge must have one or more input ports")
 
@@ -338,7 +340,8 @@ object MergePrioritized {
  * '''Cancels when''' downstream cancels
  */
 final class MergePrioritized[T] private (val priorities: Seq[Int], val eagerComplete: Boolean)
-    extends GraphStage[UniformFanInShape[T, T]] {
+    extends GraphStage[UniformFanInShape[T, T]]
+    with pekko.stream.TypePreservingFanIn {
   require(priorities.nonEmpty, "A Merge must have one or more input ports")
   require(priorities.forall(_ > 0), "Priorities should be positive integers")
 
@@ -463,8 +466,12 @@ object Interleave {
  * '''Cancels when''' downstream cancels
  */
 final class Interleave[T](val inputPorts: Int, val segmentSize: Int, val eagerClose: Boolean)
-    extends GraphStage[UniformFanInShape[T, T]] {
-  require(inputPorts > 1, "input ports must be > 1")
+    extends GraphStage[UniformFanInShape[T, T]]
+    with pekko.stream.TypePreservingFanIn {
+  // Relaxed from > 1 to >= 1: single-input Interleave is semantically valid (pass-through).
+  // This enables Source.combine to route single-source cases through the stage without
+  // needing a try-catch fallback. See #2723.
+  require(inputPorts >= 1, "input ports must be >= 1")
   require(segmentSize > 0, "segmentSize must be > 0")
 
   val in: immutable.IndexedSeq[Inlet[T]] = Vector.tabulate(inputPorts)(i => Inlet[T]("Interleave.in" + i))
@@ -1313,8 +1320,13 @@ object Concat {
  *
  * '''Cancels when''' downstream cancels
  */
-final class Concat[T](val inputPorts: Int) extends GraphStage[UniformFanInShape[T, T]] {
-  require(inputPorts > 1, "A Concat must have more than 1 input ports")
+final class Concat[T](val inputPorts: Int)
+    extends GraphStage[UniformFanInShape[T, T]]
+    with pekko.stream.TypePreservingFanIn {
+  // Relaxed from > 1 to >= 1: single-input Concat is semantically valid (pass-through).
+  // This enables Source.combine to route single-source cases through the stage without
+  // needing a try-catch fallback. See #2723.
+  require(inputPorts >= 1, "A Concat must have at least 1 input port")
   val in: immutable.IndexedSeq[Inlet[T]] = Vector.tabulate(inputPorts)(i => Inlet[T]("Concat.in" + i))
   val out: Outlet[T] = Outlet[T]("Concat.out")
   override def initialAttributes = DefaultAttributes.concat
@@ -1386,7 +1398,9 @@ object OrElse {
  * '''Cancels when''' downstream cancels
  */
 @InternalApi
-private[stream] final class OrElse[T] extends GraphStage[UniformFanInShape[T, T]] {
+private[stream] final class OrElse[T]
+    extends GraphStage[UniformFanInShape[T, T]]
+    with pekko.stream.TypePreservingFanIn {
   val primary = Inlet[T]("OrElse.primary")
   val secondary = Inlet[T]("OrElse.secondary")
   val out = Outlet[T]("OrElse.out")
@@ -1486,7 +1500,15 @@ object MergeSequence {
  */
 final class MergeSequence[T](val inputPorts: Int)(extractSequence: T => Long)
     extends GraphStage[UniformFanInShape[T, T]] {
-  require(inputPorts > 1, "A MergeSequence must have more than 1 input ports")
+  // Note: MergeSequence is type-preserving (T → T) but does NOT extend TypePreservingFanIn
+  // because it has semantic side effects beyond type preservation: it validates sequence ordering
+  // (expects elements starting from 0, incrementing by 1). For Source.combine with a single source,
+  // MergeSequence should still run to apply its sequence validation logic. See #2723.
+  //
+  // Relaxed from > 1 to >= 1: single-input MergeSequence is semantically valid.
+  // This enables Source.combine to route single-source cases through the stage without
+  // needing a try-catch fallback.
+  require(inputPorts >= 1, "A MergeSequence must have at least 1 input port")
   private val in: IndexedSeq[Inlet[T]] = Vector.tabulate(inputPorts)(i => Inlet[T]("MergeSequence.in" + i))
   private val out: Outlet[T] = Outlet("MergeSequence.out")
   override val shape: UniformFanInShape[T, T] = UniformFanInShape(out, in: _*)

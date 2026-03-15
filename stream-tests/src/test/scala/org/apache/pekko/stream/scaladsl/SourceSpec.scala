@@ -171,6 +171,106 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
       sub.request(5).expectNextN(0 to 4).expectComplete()
     }
 
+    // Regression tests for https://github.com/apache/pekko/issues/2723
+    // Source.combine with a single source must apply type-transforming fan-in strategies
+    // (like MergeLatest) correctly, rather than bypassing them with an unsafe cast.
+    // The TypePreservingFanIn trait marks strategies where T == U, enabling safe bypass.
+    // Strategies without this trait (MergeLatest, ZipWithN) are always routed through
+    // the fan-in graph even for a single source.
+
+    "combine single source with MergeLatest should emit wrapped elements" in {
+      Source
+        .combine(immutable.Seq(Source.single(1)))(MergeLatest(_))
+        .runWith(Sink.seq)
+        .futureValue should ===(immutable.Seq(List(1)))
+    }
+
+    "combine single source with MergeLatest should emit all wrapped elements" in {
+      Source
+        .combine(immutable.Seq(Source(List(1, 2, 3))))(MergeLatest(_))
+        .runWith(Sink.seq)
+        .futureValue should ===(immutable.Seq(List(1), List(2), List(3)))
+    }
+
+    "combine single source with ZipWithN should apply zipper function" in {
+      Source
+        .combine(immutable.Seq(Source(List(1, 2, 3))))(n => ZipWithN[Int, Int](_.sum)(n))
+        .runWith(Sink.seq)
+        .futureValue should ===(immutable.Seq(1, 2, 3))
+    }
+
+    "combine single source with Merge should still work (type-preserving)" in {
+      Source
+        .combine(immutable.Seq(Source.single(1)))(Merge(_))
+        .runWith(Sink.seq)
+        .futureValue should ===(immutable.Seq(1))
+    }
+
+    "combine single source with Concat should still work (type-preserving)" in {
+      Source
+        .combine(immutable.Seq(Source(List(1, 2, 3))))(Concat(_))
+        .runWith(Sink.seq)
+        .futureValue should ===(immutable.Seq(1, 2, 3))
+    }
+
+    "combine single source with Interleave should still work (type-preserving)" in {
+      Source
+        .combine(immutable.Seq(Source(List(1, 2, 3))))(Interleave(_, 1))
+        .runWith(Sink.seq)
+        .futureValue should ===(immutable.Seq(1, 2, 3))
+    }
+
+    "combine single source with wrapped Merge (.named) should still work" in {
+      // When Merge is wrapped via .named(), the TypePreservingFanIn trait is lost
+      // (GenericGraphWithChangedAttributes does not extend it). The code correctly
+      // routes through the fan-in graph instead of bypassing — functionally correct,
+      // just slightly less optimal.
+      Source
+        .combine(immutable.Seq(Source(List(1, 2, 3))))(n => Merge[Int](n).named("my-merge"))
+        .runWith(Sink.seq)
+        .futureValue should ===(immutable.Seq(1, 2, 3))
+    }
+
+    "combine single source with wrapped MergeLatest (.named) should emit wrapped elements" in {
+      Source
+        .combine(immutable.Seq(Source(List(1, 2, 3))))(n => MergeLatest[Int](n).named("my-merge-latest"))
+        .runWith(Sink.seq)
+        .futureValue should ===(immutable.Seq(List(1), List(2), List(3)))
+    }
+
+    "combine single source with MergeSequence should route through strategy (validates sequences)" in {
+      // MergeSequence does NOT have TypePreservingFanIn because it validates sequence ordering
+      // (not a pure pass-through). With a single source, it still runs and validates sequences.
+      Source
+        .combine(immutable.Seq(Source(List(0L, 1L, 2L))))(n => MergeSequence[Long](n)(identity))
+        .runWith(Sink.seq)
+        .futureValue should ===(immutable.Seq(0L, 1L, 2L))
+    }
+
+    "combine single source with MergePrioritized should still work (type-preserving)" in {
+      Source
+        .combine(immutable.Seq(Source(List(1, 2, 3))))(n => MergePrioritized(Seq.fill(n)(1)))
+        .runWith(Sink.seq)
+        .futureValue should ===(immutable.Seq(1, 2, 3))
+    }
+
+    "combine single source materialized value should be a singleton list" in {
+      val (mat, result) = Source
+        .combine(immutable.Seq(Source.single(1).mapMaterializedValue(_ => "mat-value")))(MergeLatest(_))
+        .toMat(Sink.seq)(Keep.both)
+        .run()
+      mat should ===(immutable.Seq("mat-value"))
+      result.futureValue should ===(immutable.Seq(List(1)))
+    }
+
+    "combine empty sources list should produce empty source" in {
+      val result = Source
+        .combine(immutable.Seq.empty[Source[Int, NotUsed]])(MergeLatest(_))
+        .runWith(Sink.seq)
+        .futureValue
+      result should ===(immutable.Seq.empty)
+    }
+
     "combine from two inputs with simplified API" in {
       val probes = immutable.Seq.fill(2)(TestPublisher.manualProbe[Int]())
       val source = Source.fromPublisher(probes(0)) :: Source.fromPublisher(probes(1)) :: Nil
