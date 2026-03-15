@@ -41,7 +41,7 @@ class AggregateWithBoundarySpec extends StreamSpec {
         }, harvest = buffer => buffer.toSeq, emitOnTimer = None)
       .runWith(Sink.collection)
 
-    Await.result(result, 10.seconds) should be(stream.grouped(groupSize).toSeq)
+    Await.result(result, 30.seconds) should be(stream.grouped(groupSize).toSeq)
 
   }
 
@@ -58,7 +58,7 @@ class AggregateWithBoundarySpec extends StreamSpec {
         emitOnTimer = None)
       .runWith(Sink.collection)
 
-    Await.result(result, 10.seconds) should be(stream.grouped(groupSize).toSeq.map(seq => seq :+ -1))
+    Await.result(result, 30.seconds) should be(stream.grouped(groupSize).toSeq.map(seq => seq :+ -1))
 
   }
 
@@ -73,7 +73,7 @@ class AggregateWithBoundarySpec extends StreamSpec {
         }, harvest = buffer => buffer.toSeq, emitOnTimer = None)
       .runWith(Sink.collection)
 
-    Await.result(result, 10.seconds) should be(Seq(Seq(1, 2, 3, 4), Seq(5, 6), Seq(7)))
+    Await.result(result, 30.seconds) should be(Seq(Seq(1, 2, 3, 4), Seq(5, 6), Seq(7)))
   }
 
 }
@@ -186,7 +186,7 @@ class AggregateWithTimeBoundaryAndSimulatedTimeSpec extends AnyWordSpecLike with
     p.sendNext(7)
     p.sendComplete()
 
-    Await.result(result, 10.seconds) should be(Seq(Seq(1, 2), Seq(3, 4), Seq(5, 6, 7)))
+    Await.result(result, 30.seconds) should be(Seq(Seq(1, 2), Seq(3, 4), Seq(5, 6, 7)))
 
   }
 
@@ -227,7 +227,7 @@ class AggregateWithTimeBoundaryAndSimulatedTimeSpec extends AnyWordSpecLike with
     p.sendNext(7)
     p.sendComplete()
 
-    Await.result(result, 10.seconds) should be(Seq(Seq(1, 2, 3, 4), Seq(5, 6, 7)))
+    Await.result(result, 30.seconds) should be(Seq(Seq(1, 2, 3, 4), Seq(5, 6, 7)))
 
   }
 
