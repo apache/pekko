@@ -29,7 +29,7 @@ import org.scalatestplus.junit.JUnitSuite;
 @ExtendWith(LogCapturingExtension.class)
 class ActorTestKitJUnit5Test extends JUnitSuite {
 
-  @JUnitJupiterTestKit public ActorTestKit testKit = new JUnitJupiterTestKit().build();
+  @JUnitJupiterTestKit public ActorTestKit testKit = new JUnitJupiterTestKitBuilder().build();
 
   @Test
   void systemNameShouldComeFromTestClassViaJunitResource() {

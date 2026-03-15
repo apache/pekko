@@ -25,7 +25,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(TestKitJUnitJupiterExtension.class)
 class JUnit5IntegrationExampleTest {
 
-  @JUnitJupiterTestKit public ActorTestKit testKit = new JUnitJupiterTestKit().build();
+  @JUnitJupiterTestKit public ActorTestKit testKit = new JUnitJupiterTestKitBuilder().build();
 
   @Test
   void junit5Test() {
