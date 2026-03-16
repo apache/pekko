@@ -19,11 +19,14 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.Done
+import pekko.dispatch.ExecutionContexts
 import pekko.stream._
 import pekko.stream.ActorAttributes.supervisionStrategy
 import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
 import pekko.testkit.DefaultTimeout
+
+import scala.collection.immutable
 
 import org.reactivestreams.Publisher
 
@@ -190,6 +193,44 @@ class SinkSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
         p.expectNextN(List(1, 2))
         p.expectComplete()
       }
+    }
+
+    // Regression tests for Sink.combine single-sink case — mirrors Source.combine fix (#2723).
+    // The single-sink case previously used an unsafe asInstanceOf cast.
+
+    "combine single sink with Broadcast should work (type-preserving bypass)" in {
+      // Broadcast has TypePreservingFanOut, so the single-sink case is safely bypassed.
+      implicit val ex: scala.concurrent.ExecutionContext = ExecutionContexts.parasitic
+      val result = Source(List(1, 2, 3))
+        .runWith(Sink.combine(immutable.Seq(Sink.seq[Int]))(Broadcast[Int](_)))
+      Future.sequence(result).futureValue should ===(List(immutable.Seq(1, 2, 3)))
+    }
+
+    "combine single sink with Balance should work (type-preserving bypass)" in {
+      // Balance has TypePreservingFanOut, so the single-sink case is safely bypassed.
+      implicit val ex: scala.concurrent.ExecutionContext = ExecutionContexts.parasitic
+      val result = Source(List(1, 2, 3))
+        .runWith(Sink.combine(immutable.Seq(Sink.seq[Int]))(Balance[Int](_)))
+      Future.sequence(result).futureValue should ===(List(immutable.Seq(1, 2, 3)))
+    }
+
+    "combine single sink with Partition should route through strategy (not type-preserving)" in {
+      // Partition intentionally does NOT have TypePreservingFanOut — its partitioner function
+      // provides user-specified routing semantics that would be lost if bypassed.
+      // Single-sink Partition goes through the fan-out graph, honoring partitioner semantics.
+      implicit val ex: scala.concurrent.ExecutionContext = ExecutionContexts.parasitic
+      val result = Source(List(1, 2, 3))
+        .runWith(Sink.combine(immutable.Seq(Sink.seq[Int]))(Partition[Int](_, _ => 0)))
+      Future.sequence(result).futureValue should ===(List(immutable.Seq(1, 2, 3)))
+    }
+
+    "combine single sink with wrapped Broadcast (.named) should still work" in {
+      // Even if the fan-out strategy loses the TypePreservingFanOut trait via wrapping
+      // (e.g., .named()), routing through the strategy is still correct.
+      implicit val ex: scala.concurrent.ExecutionContext = ExecutionContexts.parasitic
+      val result = Source(List(1, 2, 3))
+        .runWith(Sink.combine(immutable.Seq(Sink.seq[Int]))(n => Broadcast[Int](n).named("myBroadcast")))
+      Future.sequence(result).futureValue should ===(List(immutable.Seq(1, 2, 3)))
     }
 
     "suitably override attribute handling methods" in {

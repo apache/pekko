@@ -413,8 +413,26 @@ object Sink {
       fanOutStrategy: Int => Graph[UniformFanOutShape[T, U], NotUsed]): Sink[T, immutable.Seq[M]] =
     sinks match {
       case immutable.Seq()     => Sink.cancelled.mapMaterializedValue(_ => Nil)
-      case immutable.Seq(sink) => sink.asInstanceOf[Sink[T, M]].mapMaterializedValue(_ :: Nil)
-      case _                   =>
+      case immutable.Seq(sink) =>
+        // Single-sink optimization: bypass the fan-out strategy if and only if the strategy
+        // is type-preserving (T == U), marked by the TypePreservingFanOut trait.
+        // For type-transforming strategies, we MUST route through the strategy even for a
+        // single sink. Same design as Source.combine — see #2723.
+        val strategyGraph = fanOutStrategy(1)
+        strategyGraph match {
+          case _: pekko.stream.TypePreservingFanOut =>
+            // Type-preserving (T == U): safe to bypass the strategy with a direct pass-through.
+            Sink.fromGraph(sink).asInstanceOf[Sink[T, M]].mapMaterializedValue(_ :: Nil)
+          case _ =>
+            // Not type-preserving or unknown: route through the fan-out strategy.
+            Sink.fromGraph(GraphDSL.create(sinks) { implicit b => shapes =>
+              import GraphDSL.Implicits._
+              val c = b.add(strategyGraph)
+              c.out(0) ~> shapes.head
+              SinkShape(c.in)
+            })
+        }
+      case _ =>
         Sink.fromGraph(GraphDSL.create(sinks) { implicit b => shapes =>
           import GraphDSL.Implicits._
           val c = b.add(fanOutStrategy(sinks.size))
