@@ -1930,7 +1930,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
       settings.expiryKeys.get(key) match {
         case Some(d)                         => d
         case None if expiryWildcards.isEmpty => Duration.Zero
-        case None =>
+        case None                            =>
           expiryWildcards
             .collectFirst {
               case (k, v) if key.startsWith(k) => v
@@ -2114,8 +2114,8 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
     val toSystemUid = Some(address.longUid)
     if (dataEntries.size <= maxDeltaElements) {
       val status = Status(dataEntries.map {
-        case (key, (_, _, usedTimestamp)) => (key, (getDigest(key), usedTimestamp))
-      }, chunk = 0, totChunks = 1, toSystemUid, selfFromSystemUid)
+          case (key, (_, _, usedTimestamp)) => (key, (getDigest(key), usedTimestamp))
+        }, chunk = 0, totChunks = 1, toSystemUid, selfFromSystemUid)
       to ! status
     } else {
       val totChunks = dataEntries.size / maxDeltaElements
@@ -2130,9 +2130,9 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
         }
         val chunk = (statusCount % totChunks).toInt
         val status = Status(dataEntries.collect {
-          case (key, (_, _, usedTimestamp)) if math.abs(key.hashCode % totChunks) == chunk =>
-            (key, (getDigest(key), usedTimestamp))
-        }, chunk, totChunks, toSystemUid, selfFromSystemUid)
+            case (key, (_, _, usedTimestamp)) if math.abs(key.hashCode % totChunks) == chunk =>
+              (key, (getDigest(key), usedTimestamp))
+          }, chunk, totChunks, toSystemUid, selfFromSystemUid)
         to ! status
         i += 1
       }
