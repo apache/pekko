@@ -69,7 +69,7 @@ class EventSourcedBehaviorRecoveryTimeoutSpec
   import EventSourcedBehaviorRecoveryTimeoutSpec._
 
   val pidCounter = new AtomicInteger(0)
-  private def nextPid(): PersistenceId = PersistenceId.ofUniqueId(s"c${pidCounter.incrementAndGet()})")
+  private def nextPid(): PersistenceId = PersistenceId.ofUniqueId(s"c${pidCounter.incrementAndGet()}")
 
   import org.apache.pekko.actor.typed.scaladsl.adapter._
   // needed for SteppingInmemJournal.step
