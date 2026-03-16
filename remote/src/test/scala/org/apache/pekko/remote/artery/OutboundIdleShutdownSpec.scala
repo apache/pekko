@@ -30,6 +30,7 @@ import pekko.testkit.TestProbe
 
 import org.scalatest.concurrent.Eventually
 import org.scalatest.time.Span
+import org.scalatest.time.Span.convertSpanToDuration
 
 class OutboundIdleShutdownSpec extends ArteryMultiNodeSpec("""
   pekko.loglevel=INFO
@@ -284,7 +285,8 @@ class OutboundIdleShutdownSpec extends ArteryMultiNodeSpec("""
 
         def remoteEcho = system.actorSelection(RootActorPath(remoteAddress) / "user" / "echo")
 
-        val echoRef = remoteEcho.resolveOne(remainingOrDefault).futureValue
+        // use a little less resolve timeout than the patience timeout for good error messages
+        val echoRef = remoteEcho.resolveOne(convertSpanToDuration(patience.timeout) - 200.millis).futureValue
         val localProbe = new TestProbe(localSystem)
 
         echoRef.tell("ping", localProbe.ref)

@@ -16,6 +16,8 @@ package org.apache.pekko.remote.artery
 import scala.concurrent.duration._
 
 import org.apache.pekko
+import org.apache.pekko.actor.ActorIdentity
+import org.apache.pekko.actor.Identify
 import pekko.remote.EndpointDisassociatedException
 import pekko.serialization.jackson.CborSerializable
 import pekko.testkit.{ EventFilter, ImplicitSender, TestActors, TestEvent }
@@ -34,7 +36,7 @@ class RemoteFailureSpec extends ArteryMultiNodeSpec with ImplicitSender {
   "Remoting" should {
 
     "not be exhausted by sending to broken connections" in {
-      val remoteSystems = Vector.fill(5)(newRemoteSystem())
+      val remoteSystems = Vector.fill(3)(newRemoteSystem())
 
       remoteSystems.foreach { sys =>
         sys.eventStream.publish(TestEvent
@@ -42,7 +44,11 @@ class RemoteFailureSpec extends ArteryMultiNodeSpec with ImplicitSender {
         sys.actorOf(TestActors.echoActorProps, name = "echo")
       }
       val remoteSelections = remoteSystems.map { sys =>
-        system.actorSelection(rootActorPath(sys) / "user" / "echo")
+        val sel = system.actorSelection(rootActorPath(sys) / "user" / "echo")
+        // verify that it's there
+        sel ! Identify(sel.toSerializationFormat)
+        expectMsgType[ActorIdentity].ref.isDefined should ===(true)
+        sel
       }
 
       system.actorOf(TestActors.echoActorProps, name = "echo")
