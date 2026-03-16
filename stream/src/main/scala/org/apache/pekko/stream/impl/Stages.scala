@@ -126,11 +126,9 @@ import pekko.stream.Attributes._
     val iterateSource = name("iterateSource")
     val cycledSource = name("cycledSource")
     val futureSource = name("futureSource")
-    val lazyFutureSource = name("lazyFutureSource")
     val futureFlattenSource = name("futureFlattenSource")
     val tickSource = name("tickSource")
     val singleSource = name("singleSource")
-    val lazySingleSource = name("lazySingleSource")
     val emptySource = name("emptySource")
     val maybeSource = name("MaybeSource")
     val neverSource = name("neverSource")
@@ -171,6 +169,8 @@ import pekko.stream.Attributes._
     val lazyFlow = name("lazyFlow")
     val futureFlow = name("futureFlow")
     val lazySource = name("lazySource")
+    val lazyFuture = name("lazyFuture")
+    val lazySingle = name("lazySingle")
     val outputStreamSink = name("outputStreamSink") and IODispatcher
     val inputStreamSink = name("inputStreamSink")
     val fileSink = name("fileSink") and IODispatcher

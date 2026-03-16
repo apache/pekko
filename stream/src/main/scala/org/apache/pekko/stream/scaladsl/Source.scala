@@ -30,7 +30,7 @@ import pekko.annotation.InternalApi
 import pekko.stream._
 import pekko.stream.impl._
 import pekko.stream.impl.Stages.DefaultAttributes
-import pekko.stream.impl.fusing.{ ArraySource, GraphStages, IterableSource, LazyFutureSource, LazySingleSource }
+import pekko.stream.impl.fusing.{ ArraySource, GraphStages, IterableSource }
 import pekko.stream.impl.fusing.GraphStages._
 import pekko.stream.stage.GraphStageWithMaterializedValue
 import pekko.util.ConstantFun
@@ -634,7 +634,7 @@ object Source {
    * the laziness and will trigger the factory immediately.
    */
   def lazySingle[T](create: () => T): Source[T, NotUsed] =
-    fromGraph(new LazySingleSource(create))
+    single(()).map(_ => create()).withAttributes(DefaultAttributes.lazySingle)
 
   /**
    * Defers invoking the `create` function to create a future element until there is downstream demand.
@@ -646,7 +646,7 @@ object Source {
    * the laziness and will trigger the factory immediately.
    */
   def lazyFuture[T](create: () => Future[T]): Source[T, NotUsed] =
-    fromGraph(new LazyFutureSource(create))
+    single(()).mapAsyncUnordered(1)(_ => create()).withAttributes(DefaultAttributes.lazyFuture)
 
   /**
    * Defers invoking the `create` function to create a future source until there is downstream demand.
