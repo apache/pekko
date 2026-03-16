@@ -1192,6 +1192,7 @@ private[pekko] class Shard(
 
   override def postStop(): Unit = {
     passivateIntervalTask.foreach(_.cancel())
+    lease.foreach(_.release())
     log.debug("{}: Shard [{}] shutting down", typeName, shardId)
   }
 
