@@ -285,10 +285,10 @@ class FlowMapAsyncPartitionedSpec extends StreamSpec with WithLogCapturing {
 
       // we don't know when the third promise will be failed
       probe.expectNextOrError() match {
-        case Left(ex) => ex.getMessage shouldBe failure.getMessage // fine, error can overtake elements
+        case Left(ex)   => ex.getMessage shouldBe failure.getMessage // fine, error can overtake elements
         case Right('A') =>
           probe.expectNextOrError() match {
-            case Left(ex) => ex.getMessage shouldBe failure.getMessage // fine, error can overtake elements
+            case Left(ex)   => ex.getMessage shouldBe failure.getMessage // fine, error can overtake elements
             case Right('B') =>
               probe.expectNextOrError() match {
                 case Left(ex) => ex.getMessage shouldBe failure.getMessage // fine, error can overtake elements
@@ -449,8 +449,7 @@ class FlowMapAsyncPartitionedSpec extends StreamSpec with WithLogCapturing {
       val partitioner: Int => Int = _ % numPartitions
 
       val globalCounter = new AtomicInteger
-      val partitionCounters =
-        (0 until numPartitions).map(_ -> new AtomicInteger).toMap: Map[Int, AtomicInteger]
+      val partitionCounters = (0 until numPartitions).map(_ -> new AtomicInteger).toMap: Map[Int, AtomicInteger]
       val queue = new LinkedBlockingQueue[(Int, Promise[Int], Long)]
 
       val timer = new Thread {
