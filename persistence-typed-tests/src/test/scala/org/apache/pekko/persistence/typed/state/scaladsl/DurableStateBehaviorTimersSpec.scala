@@ -86,7 +86,7 @@ class DurableStateBehaviorTimersSpec
   import DurableStateBehaviorTimersSpec._
 
   val pidCounter = new AtomicInteger(0)
-  private def nextPid(): PersistenceId = PersistenceId.ofUniqueId(s"c${pidCounter.incrementAndGet()})")
+  private def nextPid(): PersistenceId = PersistenceId.ofUniqueId(s"c${pidCounter.incrementAndGet()}")
 
   "DurableStateBehavior withTimers" must {
 
