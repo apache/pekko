@@ -1953,15 +1953,21 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
     }
   }
 
-  def isExpired(key: KeyId): Boolean =
-    isExpired(key, getUsedTimestamp(key))
+  def isExpired(key: KeyId): Boolean = {
+    val now = System.currentTimeMillis()
+    isExpired(key, getUsedTimestamp(key), now)
+  }
 
   def isExpired(key: KeyId, timestamp: Timestamp): Boolean = {
-    expiryEnabled && timestamp != 0L && timestamp <= System.currentTimeMillis() - getExpiryDuration(key).toMillis
+    isExpired(key, timestamp, System.currentTimeMillis())
+  }
+
+  def isExpired(key: KeyId, timestamp: Timestamp, now: Long): Boolean = {
+    expiryEnabled && timestamp != 0L && timestamp <= now - getExpiryDuration(key).toMillis
   }
 
   def updateUsedTimestamp(key: KeyId, timestamp: Timestamp): Unit = {
-    if (expiryEnabled && timestamp != 0) {
+    if (expiryEnabled && timestamp != 0L) {
       dataEntries.get(key).foreach {
         case (existingEnvelope, existingDigest, existingTimestamp) =>
           if (timestamp > existingTimestamp)
@@ -2173,9 +2179,10 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
       if (totChunks == 1) dataEntries.keySet
       else dataEntries.keysIterator.filter(key => math.abs(key.hashCode % totChunks) == chunk).toSet
     val otherMissingKeys =
-      if (expiryEnabled)
-        myKeys.diff(otherKeys).filterNot(key => isExpired(key))
-      else
+      if (expiryEnabled) {
+        val now = System.currentTimeMillis()
+        myKeys.diff(otherKeys).filterNot(key => isExpired(key, getUsedTimestamp(key), now))
+      } else
         myKeys.diff(otherKeys)
     val keys = (otherDifferentKeys ++ otherMissingKeys).take(maxDeltaElements)
     if (keys.nonEmpty) {
@@ -2260,9 +2267,10 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
     if (log.isDebugEnabled)
       log.debug("Received gossip from [{}], containing [{}].", replyTo.path.address, updatedData.keys.mkString(", "))
     var replyKeys = Set.empty[KeyId]
+    val now = if (expiryEnabled) System.currentTimeMillis() else 0L
     updatedData.foreach {
       case (key, (envelope, usedTimestamp)) =>
-        if (!isExpired(key, usedTimestamp)) {
+        if (!isExpired(key, usedTimestamp, now)) {
           val hadData = dataEntries.contains(key)
           writeAndStore(key, envelope, reply = false)
           updateUsedTimestamp(key, usedTimestamp)

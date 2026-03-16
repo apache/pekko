@@ -357,8 +357,7 @@ final class LmdbDurableStore(config: Config) extends Actor with ActorLogging {
           TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - t0))
     } catch {
       case NonFatal(e) =>
-        import scala.jdk.CollectionConverters._
-        log.error(e, "failed to delete [{}]", pending.keySet.asScala.mkString(","))
+        log.error(e, "failed to delete [{}]", keys.mkString(","))
         tx.abort()
     } finally {
       l.keyBuffer.clear()
