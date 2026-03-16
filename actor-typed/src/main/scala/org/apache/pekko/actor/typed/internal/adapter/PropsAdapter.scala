@@ -43,7 +43,7 @@ import pekko.dispatch.Mailboxes
             // specific support in classic Mailboxes
             DefaultTypedDeploy.copy(mailbox = s"${Mailboxes.BoundedCapacityPrefix}$capacity")
           case MailboxFromConfigSelector(path, _) => DefaultTypedDeploy.copy(mailbox = path)
-          case unknown                             => throw new RuntimeException(s"Unsupported mailbox selector: $unknown")
+          case unknown                            => throw new RuntimeException(s"Unsupported mailbox selector: $unknown")
         }
 
         val deployWithDispatcher = props.firstOrElse[DispatcherSelector](DispatcherDefault.empty) match {
