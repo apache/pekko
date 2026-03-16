@@ -803,8 +803,45 @@ object Source {
       fanInStrategy: Int => Graph[UniformFanInShape[T, U], NotUsed]): Source[U, immutable.Seq[M]] =
     sources match {
       case immutable.Seq()       => Source.empty.mapMaterializedValue(_ => Nil)
-      case immutable.Seq(source) => source.asInstanceOf[Source[U, M]].mapMaterializedValue(_ :: Nil)
-      case _                     =>
+      case immutable.Seq(source) =>
+        // Single-source optimization: bypass the fan-in strategy if and only if the strategy
+        // is type-preserving (T == U), marked by the TypePreservingFanIn trait.
+        //
+        // For type-transforming strategies (e.g., MergeLatest: T => List[T], ZipWithN: A => O),
+        // we MUST route through the strategy even for a single source to ensure correct output
+        // types. Without this check, the asInstanceOf cast would silently produce incorrect
+        // results at runtime (see #2723).
+        //
+        // Design: "safe default" — strategies WITHOUT TypePreservingFanIn always go through
+        // the full fan-in graph. This correctly handles unknown or third-party strategies.
+        // Built-in type-preserving fan-in stages (Merge, MergePrioritized) directly return
+        // the stage class from their factory methods, so the trait check fires and enables
+        // the bypass. Other stages (Concat, Interleave, MergeSequence) are wrapped by
+        // withDetachedInputs in their factory methods, which loses the trait — they always
+        // route through the graph, which is correct because their require constraints have
+        // been relaxed to accept inputPorts >= 1.
+        //
+        // Note: fanInStrategy(1) is always invoked here to determine the strategy's trait.
+        // Third-party strategies that reject n=1 will surface their exception immediately,
+        // which is preferable to silently returning an incorrectly-typed stream.
+        val strategyGraph = fanInStrategy(1)
+        strategyGraph match {
+          case _: pekko.stream.TypePreservingFanIn =>
+            // Type-preserving (T == U): safe to bypass the strategy with a direct pass-through.
+            // Use Source.fromGraph to handle non-Source Graph inputs safely (the sources parameter
+            // accepts Graph[SourceShape[T], M], not just Source[T, M]).
+            Source.fromGraph(source).asInstanceOf[Source[U, M]].mapMaterializedValue(_ :: Nil)
+          case _ =>
+            // Not type-preserving or unknown: route through the fan-in strategy.
+            // This ensures type-transforming strategies correctly transform the output.
+            Source.fromGraph(GraphDSL.create(sources) { implicit b => shapes =>
+              import GraphDSL.Implicits._
+              val c = b.add(strategyGraph)
+              shapes.head ~> c.in(0)
+              SourceShape(c.out)
+            })
+        }
+      case _ =>
         Source.fromGraph(GraphDSL.create(sources) { implicit b => shapes =>
           import GraphDSL.Implicits._
           val c = b.add(fanInStrategy(sources.size))
