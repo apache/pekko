@@ -11578,6 +11578,17 @@ public final class ReplicatorMessages extends org.apache.pekko.protobufv3.intern
        * @return The digest.
        */
       org.apache.pekko.protobufv3.internal.ByteString getDigest();
+
+      /**
+       * <code>optional sint64 usedTimestamp = 3;</code>
+       * @return Whether the usedTimestamp field is set.
+       */
+      boolean hasUsedTimestamp();
+      /**
+       * <code>optional sint64 usedTimestamp = 3;</code>
+       * @return The usedTimestamp.
+       */
+      long getUsedTimestamp();
     }
     /**
      * Protobuf type {@code org.apache.pekko.cluster.ddata.Status.Entry}
@@ -11687,6 +11698,25 @@ public final class ReplicatorMessages extends org.apache.pekko.protobufv3.intern
         return digest_;
       }
 
+      public static final int USEDTIMESTAMP_FIELD_NUMBER = 3;
+      private long usedTimestamp_;
+      /**
+       * <code>optional sint64 usedTimestamp = 3;</code>
+       * @return Whether the usedTimestamp field is set.
+       */
+      @java.lang.Override
+      public boolean hasUsedTimestamp() {
+        return ((bitField0_ & 0x00000004) != 0);
+      }
+      /**
+       * <code>optional sint64 usedTimestamp = 3;</code>
+       * @return The usedTimestamp.
+       */
+      @java.lang.Override
+      public long getUsedTimestamp() {
+        return usedTimestamp_;
+      }
+
       private byte memoizedIsInitialized = -1;
       @java.lang.Override
       public final boolean isInitialized() {
@@ -11715,6 +11745,9 @@ public final class ReplicatorMessages extends org.apache.pekko.protobufv3.intern
         if (((bitField0_ & 0x00000002) != 0)) {
           output.writeBytes(2, digest_);
         }
+        if (((bitField0_ & 0x00000004) != 0)) {
+          output.writeSInt64(3, usedTimestamp_);
+        }
         getUnknownFields().writeTo(output);
       }
 
@@ -11730,6 +11763,10 @@ public final class ReplicatorMessages extends org.apache.pekko.protobufv3.intern
         if (((bitField0_ & 0x00000002) != 0)) {
           size += org.apache.pekko.protobufv3.internal.CodedOutputStream
             .computeBytesSize(2, digest_);
+        }
+        if (((bitField0_ & 0x00000004) != 0)) {
+          size += org.apache.pekko.protobufv3.internal.CodedOutputStream
+            .computeSInt64Size(3, usedTimestamp_);
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSize = size;
@@ -11756,6 +11793,11 @@ public final class ReplicatorMessages extends org.apache.pekko.protobufv3.intern
           if (!getDigest()
               .equals(other.getDigest())) return false;
         }
+        if (hasUsedTimestamp() != other.hasUsedTimestamp()) return false;
+        if (hasUsedTimestamp()) {
+          if (getUsedTimestamp()
+              != other.getUsedTimestamp()) return false;
+        }
         if (!getUnknownFields().equals(other.getUnknownFields())) return false;
         return true;
       }
@@ -11774,6 +11816,11 @@ public final class ReplicatorMessages extends org.apache.pekko.protobufv3.intern
         if (hasDigest()) {
           hash = (37 * hash) + DIGEST_FIELD_NUMBER;
           hash = (53 * hash) + getDigest().hashCode();
+        }
+        if (hasUsedTimestamp()) {
+          hash = (37 * hash) + USEDTIMESTAMP_FIELD_NUMBER;
+          hash = (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashLong(
+              getUsedTimestamp());
         }
         hash = (29 * hash) + getUnknownFields().hashCode();
         memoizedHashCode = hash;
@@ -11908,6 +11955,7 @@ public final class ReplicatorMessages extends org.apache.pekko.protobufv3.intern
           bitField0_ = 0;
           key_ = "";
           digest_ = org.apache.pekko.protobufv3.internal.ByteString.EMPTY;
+          usedTimestamp_ = 0L;
           return this;
         }
 
@@ -11950,6 +11998,10 @@ public final class ReplicatorMessages extends org.apache.pekko.protobufv3.intern
             result.digest_ = digest_;
             to_bitField0_ |= 0x00000002;
           }
+          if (((from_bitField0_ & 0x00000004) != 0)) {
+            result.usedTimestamp_ = usedTimestamp_;
+            to_bitField0_ |= 0x00000004;
+          }
           result.bitField0_ |= to_bitField0_;
         }
 
@@ -11972,6 +12024,9 @@ public final class ReplicatorMessages extends org.apache.pekko.protobufv3.intern
           }
           if (other.hasDigest()) {
             setDigest(other.getDigest());
+          }
+          if (other.hasUsedTimestamp()) {
+            setUsedTimestamp(other.getUsedTimestamp());
           }
           this.mergeUnknownFields(other.getUnknownFields());
           onChanged();
@@ -12015,6 +12070,11 @@ public final class ReplicatorMessages extends org.apache.pekko.protobufv3.intern
                   bitField0_ |= 0x00000002;
                   break;
                 } // case 18
+                case 24: {
+                  usedTimestamp_ = input.readSInt64();
+                  bitField0_ |= 0x00000004;
+                  break;
+                } // case 24
                 default: {
                   if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                     done = true; // was an endgroup tag
@@ -12148,6 +12208,45 @@ public final class ReplicatorMessages extends org.apache.pekko.protobufv3.intern
         public Builder clearDigest() {
           bitField0_ = (bitField0_ & ~0x00000002);
           digest_ = getDefaultInstance().getDigest();
+          onChanged();
+          return this;
+        }
+
+        private long usedTimestamp_;
+        /**
+         * <code>optional sint64 usedTimestamp = 3;</code>
+         * @return Whether the usedTimestamp field is set.
+         */
+        @java.lang.Override
+        public boolean hasUsedTimestamp() {
+          return ((bitField0_ & 0x00000004) != 0);
+        }
+        /**
+         * <code>optional sint64 usedTimestamp = 3;</code>
+         * @return The usedTimestamp.
+         */
+        @java.lang.Override
+        public long getUsedTimestamp() {
+          return usedTimestamp_;
+        }
+        /**
+         * <code>optional sint64 usedTimestamp = 3;</code>
+         * @param value The usedTimestamp to set.
+         * @return This builder for chaining.
+         */
+        public Builder setUsedTimestamp(long value) {
+          usedTimestamp_ = value;
+          bitField0_ |= 0x00000004;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional sint64 usedTimestamp = 3;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearUsedTimestamp() {
+          bitField0_ = (bitField0_ & ~0x00000004);
+          usedTimestamp_ = 0L;
           onChanged();
           return this;
         }
@@ -13393,6 +13492,17 @@ public final class ReplicatorMessages extends org.apache.pekko.protobufv3.intern
        * <code>required .org.apache.pekko.cluster.ddata.DataEnvelope envelope = 2;</code>
        */
       org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.DataEnvelopeOrBuilder getEnvelopeOrBuilder();
+
+      /**
+       * <code>optional sint64 usedTimestamp = 3;</code>
+       * @return Whether the usedTimestamp field is set.
+       */
+      boolean hasUsedTimestamp();
+      /**
+       * <code>optional sint64 usedTimestamp = 3;</code>
+       * @return The usedTimestamp.
+       */
+      long getUsedTimestamp();
     }
     /**
      * Protobuf type {@code org.apache.pekko.cluster.ddata.Gossip.Entry}
@@ -13508,6 +13618,25 @@ public final class ReplicatorMessages extends org.apache.pekko.protobufv3.intern
         return envelope_ == null ? org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.DataEnvelope.getDefaultInstance() : envelope_;
       }
 
+      public static final int USEDTIMESTAMP_FIELD_NUMBER = 3;
+      private long usedTimestamp_;
+      /**
+       * <code>optional sint64 usedTimestamp = 3;</code>
+       * @return Whether the usedTimestamp field is set.
+       */
+      @java.lang.Override
+      public boolean hasUsedTimestamp() {
+        return ((bitField0_ & 0x00000004) != 0);
+      }
+      /**
+       * <code>optional sint64 usedTimestamp = 3;</code>
+       * @return The usedTimestamp.
+       */
+      @java.lang.Override
+      public long getUsedTimestamp() {
+        return usedTimestamp_;
+      }
+
       private byte memoizedIsInitialized = -1;
       @java.lang.Override
       public final boolean isInitialized() {
@@ -13540,6 +13669,9 @@ public final class ReplicatorMessages extends org.apache.pekko.protobufv3.intern
         if (((bitField0_ & 0x00000002) != 0)) {
           output.writeMessage(2, getEnvelope());
         }
+        if (((bitField0_ & 0x00000004) != 0)) {
+          output.writeSInt64(3, usedTimestamp_);
+        }
         getUnknownFields().writeTo(output);
       }
 
@@ -13555,6 +13687,10 @@ public final class ReplicatorMessages extends org.apache.pekko.protobufv3.intern
         if (((bitField0_ & 0x00000002) != 0)) {
           size += org.apache.pekko.protobufv3.internal.CodedOutputStream
             .computeMessageSize(2, getEnvelope());
+        }
+        if (((bitField0_ & 0x00000004) != 0)) {
+          size += org.apache.pekko.protobufv3.internal.CodedOutputStream
+            .computeSInt64Size(3, usedTimestamp_);
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSize = size;
@@ -13581,6 +13717,11 @@ public final class ReplicatorMessages extends org.apache.pekko.protobufv3.intern
           if (!getEnvelope()
               .equals(other.getEnvelope())) return false;
         }
+        if (hasUsedTimestamp() != other.hasUsedTimestamp()) return false;
+        if (hasUsedTimestamp()) {
+          if (getUsedTimestamp()
+              != other.getUsedTimestamp()) return false;
+        }
         if (!getUnknownFields().equals(other.getUnknownFields())) return false;
         return true;
       }
@@ -13599,6 +13740,11 @@ public final class ReplicatorMessages extends org.apache.pekko.protobufv3.intern
         if (hasEnvelope()) {
           hash = (37 * hash) + ENVELOPE_FIELD_NUMBER;
           hash = (53 * hash) + getEnvelope().hashCode();
+        }
+        if (hasUsedTimestamp()) {
+          hash = (37 * hash) + USEDTIMESTAMP_FIELD_NUMBER;
+          hash = (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashLong(
+              getUsedTimestamp());
         }
         hash = (29 * hash) + getUnknownFields().hashCode();
         memoizedHashCode = hash;
@@ -13743,6 +13889,7 @@ public final class ReplicatorMessages extends org.apache.pekko.protobufv3.intern
             envelopeBuilder_.dispose();
             envelopeBuilder_ = null;
           }
+          usedTimestamp_ = 0L;
           return this;
         }
 
@@ -13787,6 +13934,10 @@ public final class ReplicatorMessages extends org.apache.pekko.protobufv3.intern
                 : envelopeBuilder_.build();
             to_bitField0_ |= 0x00000002;
           }
+          if (((from_bitField0_ & 0x00000004) != 0)) {
+            result.usedTimestamp_ = usedTimestamp_;
+            to_bitField0_ |= 0x00000004;
+          }
           result.bitField0_ |= to_bitField0_;
         }
 
@@ -13809,6 +13960,9 @@ public final class ReplicatorMessages extends org.apache.pekko.protobufv3.intern
           }
           if (other.hasEnvelope()) {
             mergeEnvelope(other.getEnvelope());
+          }
+          if (other.hasUsedTimestamp()) {
+            setUsedTimestamp(other.getUsedTimestamp());
           }
           this.mergeUnknownFields(other.getUnknownFields());
           onChanged();
@@ -13857,6 +14011,11 @@ public final class ReplicatorMessages extends org.apache.pekko.protobufv3.intern
                   bitField0_ |= 0x00000002;
                   break;
                 } // case 18
+                case 24: {
+                  usedTimestamp_ = input.readSInt64();
+                  bitField0_ |= 0x00000004;
+                  break;
+                } // case 24
                 default: {
                   if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                     done = true; // was an endgroup tag
@@ -14076,6 +14235,45 @@ public final class ReplicatorMessages extends org.apache.pekko.protobufv3.intern
         }
 
         // @@protoc_insertion_point(builder_scope:org.apache.pekko.cluster.ddata.Gossip.Entry)
+
+        private long usedTimestamp_;
+        /**
+         * <code>optional sint64 usedTimestamp = 3;</code>
+         * @return Whether the usedTimestamp field is set.
+         */
+        @java.lang.Override
+        public boolean hasUsedTimestamp() {
+          return ((bitField0_ & 0x00000004) != 0);
+        }
+        /**
+         * <code>optional sint64 usedTimestamp = 3;</code>
+         * @return The usedTimestamp.
+         */
+        @java.lang.Override
+        public long getUsedTimestamp() {
+          return usedTimestamp_;
+        }
+        /**
+         * <code>optional sint64 usedTimestamp = 3;</code>
+         * @param value The usedTimestamp to set.
+         * @return This builder for chaining.
+         */
+        public Builder setUsedTimestamp(long value) {
+          usedTimestamp_ = value;
+          bitField0_ |= 0x00000004;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional sint64 usedTimestamp = 3;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearUsedTimestamp() {
+          bitField0_ = (bitField0_ & ~0x00000004);
+          usedTimestamp_ = 0L;
+          onChanged();
+          return this;
+        }
       }
 
       // @@protoc_insertion_point(class_scope:org.apache.pekko.cluster.ddata.Gossip.Entry)
