@@ -15,6 +15,8 @@ package org.apache.pekko.actor.typed.internal.adapter
 
 import org.apache.pekko
 import pekko.actor.Deploy
+import pekko.actor.LocalScope
+import pekko.actor.TypedCreatorFunctionConsumer
 import pekko.actor.typed.ActorTags
 import pekko.actor.typed.Behavior
 import pekko.actor.typed.DispatcherSelector
@@ -28,31 +30,43 @@ import pekko.dispatch.Mailboxes
  * INTERNAL API
  */
 @InternalApi private[pekko] object PropsAdapter {
+  private final val TypedCreatorFunctionConsumerClazz = classOf[TypedCreatorFunctionConsumer]
+  private final val DefaultTypedDeploy = Deploy.local.copy(mailbox = "pekko.actor.typed.default-mailbox")
+
   def apply[T](behavior: () => Behavior[T], props: Props, rethrowTypedFailure: Boolean): pekko.actor.Props = {
-    val classicProps = pekko.actor.Props(new ActorAdapter(behavior(), rethrowTypedFailure))
+    val deploy =
+      if (props eq Props.empty) DefaultTypedDeploy // optimized case with no props specified
+      else {
+        val deployWithMailbox = props.firstOrElse[MailboxSelector](MailboxSelector.default()) match {
+          case _: DefaultMailboxSelector           => DefaultTypedDeploy
+          case BoundedMailboxSelector(capacity, _) =>
+            // specific support in classic Mailboxes
+            DefaultTypedDeploy.copy(mailbox = s"${Mailboxes.BoundedCapacityPrefix}$capacity")
+          case MailboxFromConfigSelector(path, _) => DefaultTypedDeploy.copy(mailbox = path)
+          case unknown                            => throw new RuntimeException(s"Unsupported mailbox selector: $unknown")
+        }
 
-    val dispatcherProps = (props.firstOrElse[DispatcherSelector](DispatcherDefault.empty) match {
-      case _: DispatcherDefault          => classicProps
-      case DispatcherFromConfig(name, _) => classicProps.withDispatcher(name)
-      case _: DispatcherSameAsParent     => classicProps.withDispatcher(Deploy.DispatcherSameAsParent)
-      case unknown                       => throw new RuntimeException(s"Unsupported dispatcher selector: $unknown")
-    }).withDeploy(Deploy.local) // disallow remote deployment for typed actors
+        val deployWithDispatcher = props.firstOrElse[DispatcherSelector](DispatcherDefault.empty) match {
+          case _: DispatcherDefault          => deployWithMailbox
+          case DispatcherFromConfig(name, _) => deployWithMailbox.copy(dispatcher = name)
+          case _: DispatcherSameAsParent     => deployWithMailbox.copy(dispatcher = Deploy.DispatcherSameAsParent)
+          case unknown                       => throw new RuntimeException(s"Unsupported dispatcher selector: $unknown")
+        }
 
-    val mailboxProps = props.firstOrElse[MailboxSelector](MailboxSelector.default()) match {
-      case _: DefaultMailboxSelector           => dispatcherProps
-      case BoundedMailboxSelector(capacity, _) =>
-        // specific support in classic Mailboxes
-        dispatcherProps.withMailbox(s"${Mailboxes.BoundedCapacityPrefix}$capacity")
-      case MailboxFromConfigSelector(path, _) =>
-        dispatcherProps.withMailbox(path)
-      case unknown => throw new RuntimeException(s"Unsupported mailbox selector: $unknown")
-    }
+        val tags = props.firstOrElse[ActorTags](ActorTagsImpl.empty).tags
+        val deployWithTags =
+          if (tags.isEmpty) deployWithDispatcher else deployWithDispatcher.withTags(tags)
 
-    val localDeploy = mailboxProps.withDeploy(Deploy.local) // disallow remote deployment for typed actors
+        if (deployWithTags.scope != LocalScope) // only replace if changed, withDeploy is expensive
+          deployWithTags.copy(scope = Deploy.local.scope) // disallow remote deployment for typed actors
+        else deployWithTags
+      }
 
-    val tags = props.firstOrElse[ActorTags](ActorTagsImpl.empty).tags
-    if (tags.isEmpty) localDeploy
-    else localDeploy.withActorTags(tags)
+    // avoid the apply methods and also avoid copying props, for performance reasons
+    new pekko.actor.Props(
+      deploy,
+      TypedCreatorFunctionConsumerClazz,
+      classOf[ActorAdapter[_]] :: (() => new ActorAdapter(behavior(), rethrowTypedFailure)) :: Nil)
   }
 
 }

@@ -15,6 +15,8 @@ package org.apache.pekko.actor.typed.internal.adpater
 
 import org.apache.pekko
 import pekko.actor
+import pekko.actor.typed.ActorTags
+import pekko.actor.typed.MailboxSelector
 import pekko.actor.typed.Props
 import pekko.actor.typed.internal.adapter.PropsAdapter
 import pekko.actor.typed.scaladsl.Behaviors
@@ -28,7 +30,36 @@ class PropsAdapterSpec extends AnyWordSpec with Matchers {
     "default to org.apache.pekko.dispatch.SingleConsumerOnlyUnboundedMailbox" in {
       val props: Props = Props.empty
       val pa: actor.Props = PropsAdapter(() => Behaviors.empty, props, rethrowTypedFailure = false)
-      pa.mailbox shouldEqual "pekko.actor.typed.default-mailbox"
+      pa.mailbox should ===("pekko.actor.typed.default-mailbox")
+
+      val props2: Props = MailboxSelector.defaultMailbox()
+      val pa2: actor.Props = PropsAdapter(() => Behaviors.empty, props2, rethrowTypedFailure = false)
+      pa2.mailbox should ===("pekko.actor.typed.default-mailbox")
+    }
+    "adapt dispatcher from config" in {
+      val props: Props = Props.empty.withDispatcherFromConfig("some.path")
+      val pa: actor.Props = PropsAdapter(() => Behaviors.empty, props, rethrowTypedFailure = false)
+      pa.dispatcher should ===("some.path")
+    }
+    "adapt dispatcher same as parent" in {
+      val props: Props = Props.empty.withDispatcherSameAsParent
+      val pa: actor.Props = PropsAdapter(() => Behaviors.empty, props, rethrowTypedFailure = false)
+      pa.dispatcher should ===("..")
+    }
+    "adapt mailbox from config" in {
+      val props: Props = MailboxSelector.fromConfig("some.path")
+      val pa: actor.Props = PropsAdapter(() => Behaviors.empty, props, rethrowTypedFailure = false)
+      pa.mailbox should ===("some.path")
+    }
+    "adapt bounded mailbox" in {
+      val props: Props = MailboxSelector.bounded(24)
+      val pa: actor.Props = PropsAdapter(() => Behaviors.empty, props, rethrowTypedFailure = false)
+      pa.mailbox should ===("bounded-capacity:24")
+    }
+    "adapt tags" in {
+      val props: Props = ActorTags.create("my-tag")
+      val pa: actor.Props = PropsAdapter(() => Behaviors.empty, props, rethrowTypedFailure = false)
+      pa.deploy.tags should ===(Set("my-tag"))
     }
   }
 }
