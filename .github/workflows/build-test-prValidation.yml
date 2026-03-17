@@ -58,7 +58,7 @@ jobs:
       DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
     strategy:
       matrix:
-        scalaVersion: ["2.13.x", "3.3.x"]
+        scalaVersion: ["2.12.x", "2.13.x", "3.3.x"]
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.2
