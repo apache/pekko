@@ -1314,7 +1314,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
   val serializer = SerializationExtension(context.system).serializerFor(classOf[DataEnvelope])
   val maxPruningDisseminationNanos = maxPruningDissemination.toNanos
 
-  val expiryWildcards = settings.expiryKeys.collect { case (k, v) if k.endsWith("*") => k.dropRight(1) -> v }
+  val expiryWildcards = settings.expiryKeys.collect { case (k, v) if isWildcard(k) => dropWildcard(k) -> v }
   val expiryEnabled: Boolean = settings.expiryKeys.nonEmpty
   // updated on the gossip tick to avoid too many calls to `currentTimeMillis()`
   private var currentUsedTimestamp = if (expiryEnabled) System.currentTimeMillis() else 0L
@@ -1969,7 +1969,12 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
   }
 
   def isExpired(key: KeyId, timestamp: Timestamp, now: Long): Boolean = {
-    expiryEnabled && timestamp != 0L && timestamp <= now - getExpiryDuration(key).toMillis
+    if (expiryEnabled && timestamp != 0L) {
+      val expiryDuration = getExpiryDuration(key)
+      expiryDuration != Duration.Zero && timestamp <= now - expiryDuration.toMillis
+    } else {
+      false
+    }
   }
 
   def updateUsedTimestamp(key: KeyId, timestamp: Timestamp): Unit = {
@@ -1999,7 +2004,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
 
   @nowarn("msg=deprecated")
   def receiveFlushChanges(): Unit = {
-    def notify(keyId: KeyId, subs: Iterator[ActorRef]): Unit = {
+    def notify(keyId: KeyId, subs: Iterator[ActorRef], sendExpiredIfMissing: Boolean): Unit = {
       val key = subscriptionKeys.get(keyId) match {
         case Some(r) => r
         case None    =>
@@ -2024,21 +2029,21 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
 
     if (subscribers.nonEmpty || wildcardSubscribers.nonEmpty) {
       changed.foreach { key =>
-        if (hasSubscriber(key)) notify(key, getSubscribersIterator(key))
+        if (hasSubscriber(key)) notify(key, getSubscribersIterator(key), sendExpiredIfMissing = true)
       }
     }
 
     // Changed event is sent to new subscribers even though the key has not changed,
-    // i.e. send current value.
+    // i.e. send current value. Expired is not sent to new subscribers as the first event.
     if (newSubscribers.nonEmpty) {
       for ((key, subs) <- newSubscribers) {
         if (isWildcard(key)) {
           dataEntries.keysIterator.filter(_.startsWith(dropWildcard(key))).foreach { matchingKey =>
-            notify(matchingKey, subs.iterator)
+            notify(matchingKey, subs.iterator, sendExpiredIfMissing = false)
           }
           subs.foreach { wildcardSubscribers.addBinding(dropWildcard(key), _) }
         } else {
-          notify(key, subs.iterator)
+          notify(key, subs.iterator, sendExpiredIfMissing = false)
           subs.foreach { subscribers.addBinding(key, _) }
         }
       }
