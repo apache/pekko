@@ -95,7 +95,7 @@ Scala
 Java
 :  @@snip [BasicPersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #retentionCriteria #snapshottingPredicate }
 
-Snapshot deletion is triggered after saving a new snapshot.
+Snapshot deletion is triggered after successfully saving a new snapshot.
 
 The above example will save snapshots automatically every `numberOfEvents = 100`. Snapshots that have sequence
 number less than the sequence number of the saved snapshot minus `keepNSnapshots * numberOfEvents` (`100 * 2`) are automatically
