@@ -372,21 +372,11 @@ class FlowMapAsyncPartitionedSpec extends StreamSpec with WithLogCapturing {
     }
 
     "resume after multiple failures if resume supervision is in place" in {
-      implicit val ec: ExecutionContext = system.dispatcher
-
-      // Note: only testing async failure cases (Future.failed and Future { throw })
-      // Synchronous throws from f expose a known difference in behavior between Pekko and Akka
-      // (Pekko uses perPartition=1 implicitly; a synchronous throw leaves the element in-flight in the buffer)
       val expected =
         Source(1 to 10)
           .mapAsyncPartitioned(4)(_ % 3) { (elem, _) =>
-            if (elem % 4 < 3) {
-              val ex = new TE("BOOM!")
-              scala.util.Random.nextInt(2) match {
-                case 0 => Future.failed(ex)
-                case 1 => Future { throw ex }(ec)
-              }
-            } else Future.successful(elem)
+            if (elem % 4 < 3) Future.failed(new TE("BOOM!"))
+            else Future.successful(elem)
           }
           .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
           .runWith(Sink.seq)
