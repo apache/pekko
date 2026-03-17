@@ -85,8 +85,13 @@ final class EventEnvelope(
     case _ => false
   }
 
-  override def toString: String =
-    s"EventEnvelope($offset,$persistenceId,$sequenceNr,$event,$timestamp,$eventMetadata)"
+  override def toString: String = {
+    val metaStr = eventMetadata match {
+      case Some(meta) => meta.getClass.getName
+      case None       => ""
+    }
+    s"EventEnvelope($offset,$persistenceId,$sequenceNr,${event.getClass.getName},$timestamp,$metaStr)"
+  }
 
   // for binary compatibility (used to be a case class)
   def copy(
