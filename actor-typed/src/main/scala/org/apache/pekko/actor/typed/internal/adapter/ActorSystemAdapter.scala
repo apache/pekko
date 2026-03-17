@@ -148,7 +148,7 @@ private[pekko] object ActorSystemAdapter {
         // Optimization to cut out going through adapter lookup if possible
         system.typedSystem match {
           case OptionVal.Some(typedSystem: ActorSystem[_]) => typedSystem
-          case _ =>
+          case _                                           =>
             val typedSystem: ActorSystem[_] = AdapterExtension(system).adapter
             system.typedSystem = OptionVal.Some(typedSystem)
             typedSystem

@@ -142,7 +142,8 @@ private[pekko] object ActorContextAdapter {
   override private[pekko] def internalSpawnMessageAdapter[U](f: U => T, _name: String): ActorRef[U] = {
     val cell = classicActorContext.asInstanceOf[pekko.actor.ActorCell]
     // apply the function inside the actor by wrapping the msg and f, handled by ActorAdapter
-    val ref = cell.addFunctionRef((_, msg) => classicActorContext.self ! AdaptMessage[U, T](msg.asInstanceOf[U], f), _name)
+    val ref =
+      cell.addFunctionRef((_, msg) => classicActorContext.self ! AdaptMessage[U, T](msg.asInstanceOf[U], f), _name)
     ActorRefAdapter[U](ref)
   }
 
