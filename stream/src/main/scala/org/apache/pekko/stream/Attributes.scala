@@ -391,7 +391,7 @@ object Attributes {
   // for binary compatibility
 
   @deprecated("Use explicit methods on Attributes to interact, not the synthetic case class ones", "Pekko 1.2.0")
-  def unapply(attrs: Attributes): Option[(List[Attribute])] =
+  def unapply(attrs: Attributes): Option[List[Attribute]] =
     Some(attrs.attributeList)
 
   final case class Name(n: String) extends Attribute
