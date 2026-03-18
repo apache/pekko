@@ -24,6 +24,7 @@ import pekko.actor.typed.ActorSystem
 
 import com.typesafe.config.Config
 
+@deprecated("Use JUnitJupiterTestKitBuilder instead", "2.0.0")
 final class JUnit5TestKitBuilder() {
 
   var system: Option[ActorSystem[_]] = None

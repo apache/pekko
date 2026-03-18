@@ -22,6 +22,7 @@ import org.junit.platform.commons.support.AnnotationSupport
 
 import org.apache.pekko.actor.testkit.typed.annotations.JUnit5TestKit
 
+@deprecated("Use TestKitJUnitJupiterExtension instead", "2.0.0")
 final class TestKitJUnit5Extension() extends AfterAllCallback with BeforeTestExecutionCallback {
 
   var testKit: Option[ActorTestKit] = None
