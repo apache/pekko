@@ -301,4 +301,3 @@ private[pekko] final class ShardedDaemonProcessImpl(system: ActorSystem[_])
       supportsRescale = true)(classTag)
   }
 }
-

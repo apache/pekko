@@ -36,7 +36,7 @@ private[pekko] object ShardedDaemonProcessId {
   def decodeEntityId(id: String, initialNumberOfProcesses: Int) =
     id.split(Separator) match {
       case Array(rev, count, n) => DecodedId(rev.toLong, count.toInt, n.toInt)
-      case Array(n) =>
+      case Array(n)             =>
         DecodedId(0L, initialNumberOfProcesses, n.toInt) // ping from old/supportsRescale=false node during rolling upgrade
       case _ => throw new IllegalArgumentException(s"Unexpected id for sharded daemon process: '$id'")
     }
@@ -65,8 +65,8 @@ private[pekko] object ShardedDaemonProcessId {
     def unwrapMessage(message: ShardingEnvelope[T]): T = message.message
   }
 
-  def sortedIdentitiesFor(revision: Long, numberOfProcesses: Int): Vector[String] =
-    (0 until numberOfProcesses).map(n => DecodedId(revision, numberOfProcesses, n).encodeEntityId()).toVector.sorted
+  def sortedIdentitiesFor(revision: Long, numberOfProcesses: Int): Vector[String] = (0 until numberOfProcesses).map(n =>
+    DecodedId(revision, numberOfProcesses, n).encodeEntityId()).toVector.sorted
 
   def allShardsFor(revision: Long, numberOfProcesses: Int): Set[String] = {
     val messageExtractor = new MessageExtractor[Unit]()

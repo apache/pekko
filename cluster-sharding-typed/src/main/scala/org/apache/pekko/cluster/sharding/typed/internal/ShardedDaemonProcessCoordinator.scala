@@ -148,12 +148,12 @@ private final class ShardedDaemonProcessCoordinator private (
     context.system.settings.config.getInt("pekko.cluster.sharding.distributed-data.majority-min-cap")
   private val stateReadConsistency = shardingSettings.tuningParameters.coordinatorStateReadMajorityPlus match {
     case Int.MaxValue => ReadAll(shardingSettings.tuningParameters.waitingForStateTimeout)
-    case additional =>
+    case additional   =>
       ReadMajorityPlus(shardingSettings.tuningParameters.waitingForStateTimeout, additional, majorityMinCap)
   }
   private val stateWriteConsistency = shardingSettings.tuningParameters.coordinatorStateWriteMajorityPlus match {
     case Int.MaxValue => WriteAll(shardingSettings.tuningParameters.updatingStateTimeout)
-    case additional =>
+    case additional   =>
       WriteMajorityPlus(shardingSettings.tuningParameters.updatingStateTimeout, additional, majorityMinCap)
   }
 
