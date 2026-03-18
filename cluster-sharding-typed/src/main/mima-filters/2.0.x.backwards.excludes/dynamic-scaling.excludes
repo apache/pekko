@@ -18,3 +18,4 @@
 # Dynamic scaling of ShardedDaemonProcess instances
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.cluster.sharding.typed.internal.ShardedDaemonProcessImpl$*")
 ProblemFilters.exclude[ReversedMissingMethodProblem]("org.apache.pekko.cluster.sharding.typed.javadsl.ShardedDaemonProcess.initWithContext")
+ProblemFilters.exclude[ReversedMissingMethodProblem]("org.apache.pekko.cluster.sharding.typed.scaladsl.ShardedDaemonProcess.initWithContext")
