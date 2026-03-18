@@ -68,13 +68,13 @@ private[pekko] trait DurableStateStoreInteractions[C, S] {
 
   protected def internalDelete(
       ctx: ActorContext[InternalProtocol],
-      cmd: Any,
+      @nowarn("msg=never used") cmd: Any,
       state: Running.RunningState[S, C]): Running.RunningState[S, C] = {
 
     val newRunningState: Running.RunningState[S, C] = state.nextRevision().copy(state = setup.emptyState)
     val persistenceId = setup.persistenceId.id
 
-    onDeleteInitiated(ctx, cmd)
+    // TODO Might need to call hook method for Telemetry
 
     ctx.pipeToSelf[Done](setup.durableStateStore.deleteObject(persistenceId, newRunningState.revision)) {
       case Success(_)     => InternalProtocol.DeleteSuccess
@@ -84,12 +84,9 @@ private[pekko] trait DurableStateStoreInteractions[C, S] {
     newRunningState
   }
 
-  // FIXME These hook methods are for Telemetry. What more parameters are needed? persistenceId?
+  // TODO These hook methods are for Telemetry. What more parameters are needed? persistenceId?
   @InternalStableApi
   private[pekko] def onWriteInitiated(@nowarn("msg=never used") ctx: ActorContext[_],
-      @nowarn("msg=never used") cmd: Any): Unit = ()
-
-  private[pekko] def onDeleteInitiated(@nowarn("msg=never used") ctx: ActorContext[_],
       @nowarn("msg=never used") cmd: Any): Unit = ()
 
   protected def requestRecoveryPermit(): Unit = {
