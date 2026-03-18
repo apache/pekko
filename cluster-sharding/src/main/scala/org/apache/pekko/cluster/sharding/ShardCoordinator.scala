@@ -541,8 +541,6 @@ object ShardCoordinator {
 
   private final case class DelayedShardRegionTerminated(region: ActorRef)
 
-  private final case class StopShardTimeout(requestId: java.util.UUID)
-
   /**
    * Result of `allocateShard` is piped to self with this message.
    */
