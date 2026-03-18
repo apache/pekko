@@ -17,6 +17,8 @@
 
 package org.apache.pekko.actor.testkit.typed.scaladsl
 
+import scala.annotation.nowarn
+
 import org.apache.pekko
 import org.apache.pekko.actor.testkit.typed.javadsl.JUnit5TestKitBuilder
 import pekko.actor.typed.ActorSystem
@@ -25,6 +27,7 @@ import org.scalatest.wordspec.AnyWordSpec
 
 import com.typesafe.config.ConfigFactory
 
+@nowarn("msg=deprecated")
 class JUnit5TestKitBuilderSpec extends AnyWordSpec {
 
   "the JUnit5TestKitBuilder" should {
