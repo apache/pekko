@@ -23,20 +23,19 @@ import scala.concurrent.duration.Duration;
 
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.japi.*;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
-import org.junit.ClassRule;
-import org.scalatestplus.junit.JUnitSuite;
-import org.junit.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.pekko.japi.Util.classTag;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class JavaFutureTests extends JUnitSuite {
+public class JavaFutureTests {
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource("JavaFutureTests", PekkoSpec.testConf());
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource("JavaFutureTests", PekkoSpec.testConf());
 
   private final ActorSystem system = actorSystemResource.getSystem();
   private final Duration timeout = Duration.create(5, TimeUnit.SECONDS);

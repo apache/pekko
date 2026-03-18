@@ -14,14 +14,17 @@
 package org.apache.pekko.cluster.sharding.typed;
 
 import static org.apache.pekko.cluster.sharding.typed.ReplicatedShardingTest.ProxyActor.ALL_REPLICAS;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.typesafe.config.ConfigFactory;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
-import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.JUnitJupiterTestKitBuilder;
+import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturingExtension;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitJupiterExtension;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
@@ -39,12 +42,12 @@ import org.apache.pekko.persistence.testkit.query.javadsl.PersistenceTestKitRead
 import org.apache.pekko.persistence.typed.ReplicaId;
 import org.apache.pekko.persistence.typed.ReplicationId;
 import org.apache.pekko.persistence.typed.javadsl.*;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-public class ReplicatedShardingTest extends JUnitSuite {
+@ExtendWith(TestKitJUnitJupiterExtension.class)
+@ExtendWith(LogCapturingExtension.class)
+public class ReplicatedShardingTest {
 
   static class MyReplicatedStringSet
       extends ReplicatedEventSourcedBehavior<MyReplicatedStringSet.Command, String, Set<String>> {
@@ -215,21 +218,21 @@ public class ReplicatedShardingTest extends JUnitSuite {
     }
   }
 
-  @ClassRule
-  public static final TestKitJunitResource testKit =
-      new TestKitJunitResource(
-          ConfigFactory.parseString(
-                  " pekko.loglevel = DEBUG\n"
-                      + "      pekko.loggers ="
-                      + " [\"org.apache.pekko.testkit.SilenceAllTestEventListener\"]\n"
-                      + "      pekko.actor.provider = \"cluster\"\n"
-                      + "      # pretend we're a node in all dc:s\n"
-                      + "      pekko.cluster.roles = [\"DC-A\", \"DC-B\", \"DC-C\"]\n"
-                      + "      pekko.remote.classic.netty.tcp.port = 0\n"
-                      + "      pekko.remote.artery.canonical.port = 0")
-              .withFallback(PersistenceTestKitPlugin.getInstance().config()));
-
-  @Rule public final LogCapturing logCapturing = new LogCapturing();
+  @JUnitJupiterTestKit
+  public ActorTestKit testKit =
+      new JUnitJupiterTestKitBuilder()
+          .withCustomConfig(
+              ConfigFactory.parseString(
+                      " pekko.loglevel = DEBUG\n"
+                          + "      pekko.loggers ="
+                          + " [\"org.apache.pekko.testkit.SilenceAllTestEventListener\"]\n"
+                          + "      pekko.actor.provider = \"cluster\"\n"
+                          + "      # pretend we're a node in all dc:s\n"
+                          + "      pekko.cluster.roles = [\"DC-A\", \"DC-B\", \"DC-C\"]\n"
+                          + "      pekko.remote.classic.netty.tcp.port = 0\n"
+                          + "      pekko.remote.artery.canonical.port = 0")
+                  .withFallback(PersistenceTestKitPlugin.getInstance().config()))
+          .build();
 
   @Test
   public void formClusterAndInteractWithReplicas() {

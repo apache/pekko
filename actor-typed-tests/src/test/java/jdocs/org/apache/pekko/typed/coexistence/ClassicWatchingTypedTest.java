@@ -26,11 +26,10 @@ import org.apache.pekko.actor.typed.javadsl.Behaviors;
 // In java use the static methods on Adapter to convert from typed to classic
 import org.apache.pekko.testkit.TestProbe;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
 import scala.concurrent.duration.Duration;
 
-public class ClassicWatchingTypedTest extends JUnitSuite {
+public class ClassicWatchingTypedTest {
 
   // #classic-watch
   public static class Classic extends AbstractActor {

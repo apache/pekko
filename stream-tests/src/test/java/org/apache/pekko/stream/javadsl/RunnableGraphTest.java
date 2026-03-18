@@ -13,24 +13,24 @@
 
 package org.apache.pekko.stream.javadsl;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.apache.pekko.NotUsed;
-import org.apache.pekko.stream.StreamTest;
+import org.apache.pekko.stream.StreamTestJupiter;
 import org.apache.pekko.stream.SystemMaterializer;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-public class RunnableGraphTest extends StreamTest {
+public class RunnableGraphTest extends StreamTestJupiter {
   public RunnableGraphTest() {
     super(actorSystemResource);
   }
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource("RunnableGraphTest", PekkoSpec.testConf());
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource("RunnableGraphTest", PekkoSpec.testConf());
 
   @Test
   public void beAbleToConvertFromJavaToScala() {

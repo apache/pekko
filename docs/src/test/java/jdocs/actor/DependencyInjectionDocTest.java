@@ -15,9 +15,9 @@ package jdocs.actor;
 
 import jdocs.AbstractJavaTest;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.actor.ActorRef;
@@ -53,12 +53,12 @@ public class DependencyInjectionDocTest extends AbstractJavaTest {
 
   static ActorSystem system = null;
 
-  @BeforeClass
+  @BeforeAll
   public static void beforeClass() {
     system = ActorSystem.create("DependencyInjectionDocTest");
   }
 
-  @AfterClass
+  @AfterAll
   public static void afterClass() {
     TestKit.shutdownActorSystem(system);
   }

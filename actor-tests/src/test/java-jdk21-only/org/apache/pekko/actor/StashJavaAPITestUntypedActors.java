@@ -13,7 +13,7 @@
 
 package org.apache.pekko.actor;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class StashJavaAPITestUntypedActors {
     private static int testReceive(Object msg, int count, ActorRef sender, ActorRef self, UnrestrictedStash stash) {

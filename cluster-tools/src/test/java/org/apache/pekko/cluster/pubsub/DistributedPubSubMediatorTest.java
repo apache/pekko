@@ -20,16 +20,15 @@ import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.actor.Props;
 import org.apache.pekko.event.Logging;
 import org.apache.pekko.event.LoggingAdapter;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-public class DistributedPubSubMediatorTest extends JUnitSuite {
+public class DistributedPubSubMediatorTest {
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource(
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource(
           "DistributedPubSubMediatorTest",
           ConfigFactory.parseString(
               "pekko.actor.provider = \"cluster\"\n"

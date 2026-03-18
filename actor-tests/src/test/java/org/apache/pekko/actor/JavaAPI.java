@@ -13,7 +13,7 @@
 
 package org.apache.pekko.actor;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.apache.pekko.event.Logging;
 import org.apache.pekko.event.Logging.LoggerInitialized;
@@ -24,18 +24,17 @@ import org.apache.pekko.japi.tuple.Tuple4;
 import org.apache.pekko.routing.FromConfig;
 import org.apache.pekko.routing.GetRoutees;
 import org.apache.pekko.routing.NoRouter;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.testkit.TestProbe;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-public class JavaAPI extends JUnitSuite {
+public class JavaAPI {
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource("JavaAPI", PekkoSpec.testConf());
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource("JavaAPI", PekkoSpec.testConf());
 
   private final ActorSystem system = actorSystemResource.getSystem();
 

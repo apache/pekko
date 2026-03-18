@@ -14,10 +14,10 @@
 package org.apache.pekko.event;
 
 import static org.apache.pekko.event.Logging.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
@@ -28,24 +28,23 @@ import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.actor.Props;
 import org.apache.pekko.event.ActorWithMDC.Log;
 import org.apache.pekko.event.Logging.Error;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-public class LoggingAdapterTest extends JUnitSuite {
+public class LoggingAdapterTest {
 
   private static final Config config = ConfigFactory.parseString("pekko.loglevel = DEBUG\n");
 
-  @Rule
-  public PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource("LoggingAdapterTest", config);
+  @RegisterExtension
+  PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource("LoggingAdapterTest", config);
 
   private ActorSystem system = null;
 
-  @Before
+  @BeforeEach
   public void beforeEach() {
     system = actorSystemResource.getSystem();
   }

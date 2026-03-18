@@ -13,27 +13,27 @@
 
 package org.apache.pekko.stream.javadsl;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 import org.apache.pekko.stream.Attributes;
-import org.apache.pekko.stream.StreamTest;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.stream.StreamTestJupiter;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-public class AttributesTest extends StreamTest {
+public class AttributesTest extends StreamTestJupiter {
 
   public AttributesTest() {
     super(actorSystemResource);
   }
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource("AttributesTest", PekkoSpec.testConf());
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource("AttributesTest", PekkoSpec.testConf());
 
   final Attributes attributes =
       Attributes.name("a").and(Attributes.name("b")).and(Attributes.inputBuffer(1, 2));

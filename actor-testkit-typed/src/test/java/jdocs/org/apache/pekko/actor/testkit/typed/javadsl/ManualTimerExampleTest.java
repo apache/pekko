@@ -16,23 +16,21 @@ package jdocs.org.apache.pekko.actor.testkit.typed.javadsl;
 // #manual-scheduling-simple
 
 import java.time.Duration;
-import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturingExtension;
 import org.apache.pekko.actor.testkit.typed.javadsl.ManualTime;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitJupiterExtension;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-public class ManualTimerExampleTest extends JUnitSuite {
+@ExtendWith({TestKitJUnitJupiterExtension.class, LogCapturingExtension.class})
+public class ManualTimerExampleTest {
 
-  @ClassRule
-  public static final TestKitJunitResource testKit = new TestKitJunitResource(ManualTime.config());
-
-  @Rule public final LogCapturing logCapturing = new LogCapturing();
+  @JUnitJupiterTestKit public ActorTestKit testKit = ActorTestKit.create(ManualTime.config());
 
   private final ManualTime manualTime = ManualTime.get(testKit.system());
 

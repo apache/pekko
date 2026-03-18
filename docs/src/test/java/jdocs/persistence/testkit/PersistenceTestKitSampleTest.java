@@ -16,7 +16,10 @@ package jdocs.persistence.testkit;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.typesafe.config.ConfigFactory;
 import jdocs.AbstractJavaTest;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.JUnitJupiterTestKitBuilder;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitJupiterExtension;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
@@ -27,23 +30,26 @@ import org.apache.pekko.persistence.typed.javadsl.CommandHandler;
 import org.apache.pekko.persistence.typed.javadsl.EventHandler;
 import org.apache.pekko.persistence.typed.javadsl.EventSourcedBehavior;
 import org.apache.pekko.serialization.jackson.CborSerializable;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 // #test
+@ExtendWith(TestKitJUnitJupiterExtension.class)
 public class PersistenceTestKitSampleTest extends AbstractJavaTest {
 
-  @ClassRule
-  public static final TestKitJunitResource testKit =
-      new TestKitJunitResource(
-          PersistenceTestKitPlugin.getInstance()
-              .config()
-              .withFallback(ConfigFactory.defaultApplication()));
+  @JUnitJupiterTestKit
+  public ActorTestKit testKit =
+      new JUnitJupiterTestKitBuilder()
+          .withCustomConfig(
+              PersistenceTestKitPlugin.getInstance()
+                  .config()
+                  .withFallback(ConfigFactory.defaultApplication()))
+          .build();
 
   PersistenceTestKit persistenceTestKit = PersistenceTestKit.create(testKit.system());
 
-  @Before
+  @BeforeEach
   public void beforeEach() {
     persistenceTestKit.clearAll();
   }

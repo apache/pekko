@@ -48,13 +48,8 @@ public class PekkoJUnitActorSystemResource extends ExternalResource {
   private final Config config;
 
   private ActorSystem createSystem(String name, Config config) {
-    try {
-      if (config == null) return ActorSystem.create(name);
-      else return ActorSystem.create(name, config);
-    } catch (Exception e) {
-      e.printStackTrace();
-      return null;
-    }
+    if (config == null) return ActorSystem.create(name);
+    else return ActorSystem.create(name, config);
   }
 
   public PekkoJUnitActorSystemResource(String name, Config config) {

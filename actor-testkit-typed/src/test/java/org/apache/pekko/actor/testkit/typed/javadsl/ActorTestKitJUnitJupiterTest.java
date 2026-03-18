@@ -22,25 +22,24 @@ import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.scalatestplus.junit.JUnitSuite;
 
-@DisplayName("ActorTestKitTestJUnit5")
+@DisplayName("ActorTestKitTestJUnitJupiter")
 @ExtendWith(TestKitJUnitJupiterExtension.class)
 @ExtendWith(LogCapturingExtension.class)
-class ActorTestKitJUnit5Test extends JUnitSuite {
+class ActorTestKitJUnitJupiterTest {
 
   @JUnitJupiterTestKit public ActorTestKit testKit = new JUnitJupiterTestKitBuilder().build();
 
   @Test
   void systemNameShouldComeFromTestClassViaJunitResource() {
-    assertEquals("ActorTestKitJUnit5Test", testKit.system().name());
+    assertEquals("ActorTestKitJUnitJupiterTest", testKit.system().name());
   }
 
   @Test
   void systemNameShouldComeFromTestClass() {
     final ActorTestKit testKit2 = ActorTestKit.create();
     try {
-      assertEquals("ActorTestKitJUnit5Test", testKit2.system().name());
+      assertEquals("ActorTestKitJUnitJupiterTest", testKit2.system().name());
     } finally {
       testKit2.shutdownTestKit();
     }

@@ -29,20 +29,20 @@ import org.apache.pekko.stream.javadsl.Flow;
 import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class RecipeReduceByKeyTest extends RecipeTest {
   static ActorSystem system;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     system = ActorSystem.create("RecipeReduceByKey");
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     TestKit.shutdownActorSystem(system);
     system = null;
@@ -79,7 +79,7 @@ public class RecipeReduceByKeyTest extends RecipeTest {
         expected.add(new Pair<>("world", 1));
         expected.add(new Pair<>("and", 1));
         expected.add(new Pair<>("pekko", 1));
-        Assert.assertEquals(expected, result);
+        Assertions.assertEquals(expected, result);
       }
     };
   }
@@ -129,7 +129,7 @@ public class RecipeReduceByKeyTest extends RecipeTest {
         expected.add(new Pair<>("world", 1));
         expected.add(new Pair<>("and", 1));
         expected.add(new Pair<>("pekko", 1));
-        Assert.assertEquals(expected, result);
+        Assertions.assertEquals(expected, result);
       }
     };
   }

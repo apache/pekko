@@ -22,23 +22,26 @@ import static jdocs.typed.tutorial_5.DeviceManager.RespondAllTemperatures;
 import static jdocs.typed.tutorial_5.DeviceManager.Temperature;
 import static jdocs.typed.tutorial_5.DeviceManager.TemperatureNotAvailable;
 import static jdocs.typed.tutorial_5.DeviceManager.TemperatureReading;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.JUnitJupiterTestKitBuilder;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitJupiterExtension;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorRef;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-public class DeviceGroupTest extends JUnitSuite {
+@ExtendWith(TestKitJUnitJupiterExtension.class)
+public class DeviceGroupTest {
 
-  @ClassRule public static final TestKitJunitResource testKit = new TestKitJunitResource();
+  @JUnitJupiterTestKit public ActorTestKit testKit = new JUnitJupiterTestKitBuilder().build();
 
   @Test
   public void testReplyToRegistrationRequests() {

@@ -23,7 +23,7 @@ import org.apache.pekko.actor.Props;
 import org.apache.pekko.stream.*;
 import org.apache.pekko.stream.javadsl.*;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import scala.concurrent.duration.FiniteDuration;
 
 public class FlowStreamRefsDocTest extends AbstractJavaTest {

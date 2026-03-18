@@ -13,8 +13,9 @@
 
 package jdocs.stream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -35,18 +36,20 @@ import org.apache.pekko.stream.javadsl.*;
 import org.apache.pekko.stream.testkit.*;
 import org.apache.pekko.stream.testkit.javadsl.*;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class StreamTestKitDocTest extends AbstractJavaTest {
 
   static ActorSystem system;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     system = ActorSystem.create("StreamTestKitDocTest");
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     TestKit.shutdownActorSystem(system);
     system = null;
@@ -202,7 +205,7 @@ public class StreamTestKitDocTest extends AbstractJavaTest {
     probe.sendError(new Exception("boom"));
 
     ExecutionException exception =
-        Assert.assertThrows(
+        assertThrows(
             ExecutionException.class, () -> future.toCompletableFuture().get(3, TimeUnit.SECONDS));
     assertEquals("boom", exception.getCause().getMessage());
     // #injecting-failure

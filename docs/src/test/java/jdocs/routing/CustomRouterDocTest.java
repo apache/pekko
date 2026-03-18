@@ -14,7 +14,7 @@
 package jdocs.routing;
 
 import static org.apache.pekko.japi.Util.immutableIndexedSeq;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.typesafe.config.ConfigFactory;
 import docs.routing.CustomRouterDocSpec;
@@ -33,18 +33,18 @@ import org.apache.pekko.routing.RoutingLogic;
 import org.apache.pekko.routing.SeveralRoutees;
 
 // #imports1
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.Test;
 import scala.collection.immutable.IndexedSeq;
 
 
 public class CustomRouterDocTest extends AbstractJavaTest {
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource(
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource(
           "CustomRouterDocTest", ConfigFactory.parseString(CustomRouterDocSpec.jconfig()));
 
   private final ActorSystem system = actorSystemResource.getSystem();

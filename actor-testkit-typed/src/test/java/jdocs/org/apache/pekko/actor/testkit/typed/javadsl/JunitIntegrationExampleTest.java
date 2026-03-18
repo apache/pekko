@@ -15,24 +15,23 @@ package jdocs.org.apache.pekko.actor.testkit.typed.javadsl;
 
 import static jdocs.org.apache.pekko.actor.testkit.typed.javadsl.AsyncTestingExampleTest.Echo;
 
-import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
-import org.junit.Rule;
+import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturingExtension;
 
 // #junit-integration
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.JUnitJupiterTestKitBuilder;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitJupiterExtension;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
 import org.apache.pekko.actor.typed.ActorRef;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(TestKitJUnitJupiterExtension.class)
+@ExtendWith(LogCapturingExtension.class)
 public class JunitIntegrationExampleTest {
 
-  @ClassRule public static final TestKitJunitResource testKit = new TestKitJunitResource();
-
-  // #junit-integration
-  // this is shown in LogCapturingExampleTest
-  @Rule public final LogCapturing logCapturing = new LogCapturing();
-  // #junit-integration
+  @JUnitJupiterTestKit public ActorTestKit testKit = new JUnitJupiterTestKitBuilder().build();
 
   @Test
   public void testSomething() {

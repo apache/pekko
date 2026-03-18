@@ -14,13 +14,16 @@
 package jdocs.org.apache.pekko.cluster.ddata.typed.javadsl;
 
 import static jdocs.org.apache.pekko.cluster.ddata.typed.javadsl.ReplicatorDocSample.Counter;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import java.time.Duration;
-import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.JUnitJupiterTestKitBuilder;
+import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturingExtension;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitJupiterExtension;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.cluster.ddata.GCounter;
@@ -28,12 +31,12 @@ import org.apache.pekko.cluster.ddata.GCounterKey;
 import org.apache.pekko.cluster.ddata.Key;
 import org.apache.pekko.cluster.ddata.typed.javadsl.DistributedData;
 import org.apache.pekko.cluster.ddata.typed.javadsl.Replicator;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-public class ReplicatorDocTest extends JUnitSuite {
+@ExtendWith(TestKitJUnitJupiterExtension.class)
+@ExtendWith(LogCapturingExtension.class)
+public class ReplicatorDocTest {
 
   static Config config =
       ConfigFactory.parseString(
@@ -42,9 +45,8 @@ public class ReplicatorDocTest extends JUnitSuite {
               + "pekko.remote.artery.canonical.port = 0 \n"
               + "pekko.remote.artery.canonical.hostname = 127.0.0.1 \n");
 
-  @ClassRule public static TestKitJunitResource testKit = new TestKitJunitResource(config);
-
-  @Rule public final LogCapturing logCapturing = new LogCapturing();
+  @JUnitJupiterTestKit
+  public ActorTestKit testKit = new JUnitJupiterTestKitBuilder().withCustomConfig(config).build();
 
   @Test
   public void shouldHaveApiForUpdateAndGet() {

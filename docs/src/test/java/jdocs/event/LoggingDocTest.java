@@ -31,7 +31,7 @@ import org.apache.pekko.event.Logging.Debug;
 
 import jdocs.AbstractJavaTest;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import java.util.Optional;
 
 // #imports-mdc

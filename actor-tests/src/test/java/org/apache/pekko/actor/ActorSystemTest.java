@@ -14,25 +14,24 @@
 package org.apache.pekko.actor;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.concurrent.CompletionStage;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-public class ActorSystemTest extends JUnitSuite {
+public class ActorSystemTest {
 
-  @Rule
-  public final PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource("ActorSystemTest");
+  @RegisterExtension
+  PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource("ActorSystemTest");
 
   private ActorSystem system = null;
 
-  @Before
+  @BeforeEach
   public void beforeEach() {
     system = actorSystemResource.getSystem();
   }

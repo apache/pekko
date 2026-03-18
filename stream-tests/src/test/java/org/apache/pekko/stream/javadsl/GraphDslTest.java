@@ -13,7 +13,7 @@
 
 package org.apache.pekko.stream.javadsl;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,20 +24,20 @@ import org.apache.pekko.Done;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.japi.Pair;
 import org.apache.pekko.stream.*;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
-import org.junit.Assert;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-public class GraphDslTest extends StreamTest {
+public class GraphDslTest extends StreamTestJupiter {
   public GraphDslTest() {
     super(actorSystemResource);
   }
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource("GraphDslTest", PekkoSpec.testConf());
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource("GraphDslTest", PekkoSpec.testConf());
 
   @Test
   public void demonstrateBuildSimpleGraph() throws Exception {
@@ -84,8 +84,7 @@ public class GraphDslTest extends StreamTest {
   @SuppressWarnings("unused")
   public void demonstrateConnectErrors() {
     IllegalStateException exception =
-        Assert.assertThrows(
-            "expected IllegalStateException",
+        Assertions.assertThrows(
             IllegalStateException.class,
             () -> {
               // #simple-graph
@@ -107,7 +106,8 @@ public class GraphDslTest extends StreamTest {
               // inlets []
               // and outlets [ZipWith2.out]"
               // #simple-graph
-            });
+            },
+            "expected IllegalStateException");
     assertNotNull(exception.getMessage());
     assertTrue(exception.getMessage().contains("ZipWith2.out"));
   }

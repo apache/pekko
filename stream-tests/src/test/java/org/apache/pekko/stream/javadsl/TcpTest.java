@@ -18,11 +18,11 @@ import org.apache.pekko.japi.function.Function2;
 import org.apache.pekko.japi.function.Procedure;
 import org.apache.pekko.stream.BindFailedException;
 import org.apache.pekko.stream.StreamTcpException;
-import org.apache.pekko.stream.StreamTest;
+import org.apache.pekko.stream.StreamTestJupiter;
 
 import org.apache.pekko.stream.javadsl.Tcp.IncomingConnection;
 import org.apache.pekko.stream.javadsl.Tcp.ServerBinding;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.testkit.SocketUtil;
 import org.apache.pekko.testkit.javadsl.EventFilter;
@@ -30,9 +30,9 @@ import org.apache.pekko.testkit.javadsl.TestKit;
 import org.apache.pekko.util.ByteString;
 import static org.apache.pekko.util.ByteString.emptyByteString;
 
-import org.junit.Assert;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.BindException;
@@ -48,8 +48,8 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // #setting-up-ssl-engine
 // imports
@@ -63,14 +63,14 @@ import org.apache.pekko.stream.TLSRole;
 
 // #setting-up-ssl-engine
 
-public class TcpTest extends StreamTest {
+public class TcpTest extends StreamTestJupiter {
   public TcpTest() {
     super(actorSystemResource);
   }
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource("TcpTest", PekkoSpec.testConf());
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource("TcpTest", PekkoSpec.testConf());
 
   final Sink<IncomingConnection, CompletionStage<Done>> echoHandler =
       Sink.foreach(
@@ -139,18 +139,18 @@ public class TcpTest extends StreamTest {
             .intercept(
                 () -> {
                   ExecutionException executionException =
-                      Assert.assertThrows(
-                          "CompletableFuture.get() should throw ExecutionException",
+                      Assertions.assertThrows(
                           ExecutionException.class,
                           () ->
                               binding
                                   .to(echoHandler)
                                   .run(system)
                                   .toCompletableFuture()
-                                  .get(5, TimeUnit.SECONDS));
-                  assertTrue(
-                      "The cause of ExecutionException should be instanceof BindFailedException",
-                      executionException.getCause() instanceof BindFailedException);
+                                  .get(5, TimeUnit.SECONDS),
+                          "CompletableFuture.get() should throw ExecutionException");
+                  Assertions.assertTrue(
+                      executionException.getCause() instanceof BindFailedException,
+                      "The cause of ExecutionException should be instanceof BindFailedException");
                   b.unbind();
                   return null;
                 });
@@ -162,8 +162,7 @@ public class TcpTest extends StreamTest {
   public void mustReportClientConnectFailure() {
     final InetSocketAddress serverAddress = SocketUtil.notBoundServerAddress();
     ExecutionException executionException =
-        Assert.assertThrows(
-            "CompletableFuture.get() should throw ExecutionException",
+        Assertions.assertThrows(
             ExecutionException.class,
             () ->
                 Source.from(testInput)
@@ -175,11 +174,12 @@ public class TcpTest extends StreamTest {
                     .to(Sink.ignore())
                     .run(system)
                     .toCompletableFuture()
-                    .get(5, TimeUnit.SECONDS));
-    assertEquals(
-        "The cause of ExecutionException should be StreamTcpException",
+                    .get(5, TimeUnit.SECONDS),
+            "CompletableFuture.get() should throw ExecutionException");
+    Assertions.assertEquals(
         StreamTcpException.class,
-        executionException.getCause().getClass());
+        executionException.getCause().getClass(),
+        "The cause of ExecutionException should be StreamTcpException");
   }
 
   // compile only sample

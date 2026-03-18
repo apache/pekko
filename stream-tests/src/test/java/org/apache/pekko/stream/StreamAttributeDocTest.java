@@ -24,20 +24,20 @@ import org.apache.pekko.stream.javadsl.RunnableGraph;
 import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.stream.scaladsl.TcpAttributes;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-public class StreamAttributeDocTest extends StreamTest {
+public class StreamAttributeDocTest extends StreamTestJupiter {
 
   public StreamAttributeDocTest() {
     super(actorSystemResource);
   }
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource(
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource(
           "StreamAttributeDocTest",
           ConfigFactory.parseString("my-stream-dispatcher = pekko.test.stream-dispatcher")
               .withFallback(PekkoSpec.testConf()));

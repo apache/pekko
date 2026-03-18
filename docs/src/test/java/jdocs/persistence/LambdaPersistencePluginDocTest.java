@@ -33,8 +33,6 @@ import org.apache.pekko.persistence.journal.leveldb.SharedLeveldbStore;
 import org.apache.pekko.persistence.snapshot.japi.*;
 // #plugin-imports
 import org.iq80.leveldb.util.FileUtils;
-import org.junit.runner.RunWith;
-import org.scalatestplus.junit.JUnitRunner;
 
 public class LambdaPersistencePluginDocTest {
 
@@ -142,7 +140,6 @@ public class LambdaPersistencePluginDocTest {
   static Object o2 =
       new Object() {
         // #journal-tck-java
-        @RunWith(JUnitRunner.class)
         class MyJournalSpecTest extends JavaJournalSpec {
 
           public MyJournalSpecTest() {
@@ -163,7 +160,6 @@ public class LambdaPersistencePluginDocTest {
   static Object o3 =
       new Object() {
         // #snapshot-store-tck-java
-        @RunWith(JUnitRunner.class)
         class MySnapshotStoreTest extends JavaSnapshotStoreSpec {
 
           public MySnapshotStoreTest() {
@@ -180,7 +176,6 @@ public class LambdaPersistencePluginDocTest {
       new Object() {
         // https://github.com/pekko/pekko/issues/26826
         // #journal-tck-before-after-java
-        @RunWith(JUnitRunner.class)
         class MyJournalSpecTest extends JavaJournalSpec {
 
           List<File> storageLocations = new ArrayList<File>();

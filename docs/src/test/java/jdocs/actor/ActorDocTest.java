@@ -27,10 +27,10 @@ import java.util.concurrent.TimeUnit;
 import java.time.Duration;
 import org.apache.pekko.testkit.TestActors;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 // #import-props
 import org.apache.pekko.actor.Props;
@@ -72,12 +72,12 @@ public class ActorDocTest extends AbstractJavaTest {
 
   static ActorSystem system = null;
 
-  @BeforeClass
+  @BeforeAll
   public static void beforeClass() {
     system = ActorSystem.create("ActorDocTest", config);
   }
 
-  @AfterClass
+  @AfterAll
   public static void afterClass() {
     TestKit.shutdownActorSystem(system);
   }

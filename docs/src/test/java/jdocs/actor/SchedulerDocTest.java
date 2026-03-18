@@ -27,14 +27,17 @@ import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.testkit.PekkoSpec;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
-import org.junit.*;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class SchedulerDocTest extends AbstractJavaTest {
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource("SchedulerDocTest", PekkoSpec.testConf());
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource("SchedulerDocTest", PekkoSpec.testConf());
 
   private final ActorSystem system = actorSystemResource.getSystem();
   private ActorRef testActor = system.actorOf(Props.create(MyActor.class));

@@ -118,6 +118,9 @@ object Dependencies {
       val commonsCodec = "commons-codec" % "commons-codec" % "1.21.0" % Test
       val junit = "junit" % "junit" % junitVersion % Test
       val junit6 = "org.junit.jupiter" % "junit-jupiter-engine" % junit6Version % Test
+      val junitPlatformLauncher = "org.junit.platform" % "junit-platform-launcher" % junit6Version % Test
+      val junitInterface = "com.github.sbt" % "junit-interface" % "0.13.3" % Test
+      val jupiterInterface = "com.github.sbt.junit" % "jupiter-interface" % "0.17.0" % Test
       val httpClient = "org.apache.httpcomponents" % "httpclient" % "4.5.14" % Test
 
       val logback = Compile.logback % Test
@@ -213,7 +216,11 @@ object Dependencies {
 
   val coordination = l ++= Seq(TestDependencies.junit, TestDependencies.scalatest)
 
-  val testkit = l ++= Seq(TestDependencies.junit, TestDependencies.scalatest) ++ TestDependencies.metricsAll
+  val testkit = l ++= Seq(
+    TestDependencies.junit,
+    TestDependencies.junit6,
+    TestDependencies.junitPlatformLauncher,
+    TestDependencies.scalatest) ++ TestDependencies.metricsAll
 
   // TestDependencies.dockerClient brings in older versions of jackson libs that have CVEs
   val actorTests = l ++= Seq(
@@ -229,6 +236,8 @@ object Dependencies {
     Provided.logback,
     Provided.junit,
     Provided.junit6,
+    TestDependencies.junitPlatformLauncher,
+    TestDependencies.junitInterface,
     Provided.scalatest,
     TestDependencies.scalatestJUnit)
 

@@ -16,11 +16,12 @@ package jdocs.future;
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.dispatch.CompletionStages;
 import org.apache.pekko.pattern.Patterns;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
 import jdocs.AbstractJavaTest;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -37,41 +38,43 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class FutureDocTest extends AbstractJavaTest {
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource("FutureDocTest", PekkoSpec.testConf());
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource("FutureDocTest", PekkoSpec.testConf());
 
   private final ActorSystem<Void> system = toTyped(actorSystemResource.getSystem());
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   @SuppressWarnings("deprecation")
-  public void useAfter() throws Exception {
-    // #after
-    CompletionStage<String> failWithException =
-        CompletableFuture.supplyAsync(
-            () -> {
-              throw new IllegalStateException("OHNOES1");
-            });
-    CompletionStage<String> delayed =
-        Patterns.after(Duration.ofMillis(200), system, () -> failWithException);
-    // #after
-    CompletionStage<String> future =
-        CompletableFuture.supplyAsync(
-            () -> {
-              try {
-                Thread.sleep(1000);
-              } catch (Throwable ex) {
-                // ignore
-              }
-              return "foo";
-            });
-    CompletionStage<String> result =
-        CompletionStages.firstCompletedOf(Arrays.asList(future, delayed));
-    try {
-      result.toCompletableFuture().get(2, SECONDS);
-    } catch (Throwable ex) {
-      throw (Exception) ex.getCause();
-    }
+  public void useAfter() {
+    Assertions.assertThrows(IllegalStateException.class, () -> {
+      // #after
+      CompletionStage<String> failWithException =
+          CompletableFuture.supplyAsync(
+              () -> {
+                throw new IllegalStateException("OHNOES1");
+              });
+      CompletionStage<String> delayed =
+          Patterns.after(Duration.ofMillis(200), system, () -> failWithException);
+      // #after
+      CompletionStage<String> future =
+          CompletableFuture.supplyAsync(
+              () -> {
+                try {
+                  Thread.sleep(1000);
+                } catch (Throwable ex) {
+                  // ignore
+                }
+                return "foo";
+              });
+      CompletionStage<String> result =
+          CompletionStages.firstCompletedOf(Arrays.asList(future, delayed));
+      try {
+        result.toCompletableFuture().get(2, SECONDS);
+      } catch (Throwable ex) {
+        throw (Exception) ex.getCause();
+      }
+    });
   }
 
   @Test

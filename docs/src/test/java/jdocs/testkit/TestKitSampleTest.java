@@ -21,10 +21,10 @@ import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.actor.Props;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class TestKitSampleTest extends AbstractJavaTest {
 
@@ -52,12 +52,12 @@ public class TestKitSampleTest extends AbstractJavaTest {
 
   static ActorSystem system;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     system = ActorSystem.create();
   }
 
-  @AfterClass
+  @AfterAll
   public static void teardown() {
     TestKit.shutdownActorSystem(system);
     system = null;
@@ -96,7 +96,7 @@ public class TestKitSampleTest extends AbstractJavaTest {
               expectMsg(Duration.ZERO, "world");
               // check that the probe we injected earlier got the msg
               probe.expectMsg(Duration.ZERO, "hello");
-              Assert.assertEquals(getRef(), probe.getLastSender());
+              Assertions.assertEquals(getRef(), probe.getLastSender());
 
               // Will wait for the rest of the 3 seconds
               expectNoMessage();

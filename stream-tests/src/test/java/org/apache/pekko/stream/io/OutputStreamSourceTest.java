@@ -13,31 +13,32 @@
 
 package org.apache.pekko.stream.io;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.OutputStream;
 import java.time.Duration;
 import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.japi.function.Procedure;
-import org.apache.pekko.stream.StreamTest;
+import org.apache.pekko.stream.StreamTestJupiter;
 import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.stream.javadsl.StreamConverters;
 import org.apache.pekko.stream.testkit.Utils;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 import org.apache.pekko.testkit.javadsl.TestKit;
 import org.apache.pekko.util.ByteString;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-public class OutputStreamSourceTest extends StreamTest {
+public class OutputStreamSourceTest extends StreamTestJupiter {
   public OutputStreamSourceTest() {
     super(actorSystemResource);
   }
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource("OutputStreamSourceTest", Utils.UnboundedMailboxConfig());
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource(
+          "OutputStreamSourceTest", Utils.UnboundedMailboxConfig());
 
   @Test
   public void mustSendEventsViaOutputStream() throws Exception {

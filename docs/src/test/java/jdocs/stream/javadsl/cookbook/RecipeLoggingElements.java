@@ -25,15 +25,15 @@ import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.testkit.DebugFilter;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import scala.runtime.AbstractFunction0;
 
 public class RecipeLoggingElements extends RecipeTest {
   static ActorSystem system;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     system =
         ActorSystem.create(
@@ -43,7 +43,7 @@ public class RecipeLoggingElements extends RecipeTest {
                     + "pekko.loggers = [org.apache.pekko.testkit.TestEventListener]"));
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     TestKit.shutdownActorSystem(system);
     system = null;

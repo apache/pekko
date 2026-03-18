@@ -13,7 +13,7 @@
 
 package org.apache.pekko.actor.testkit.typed.javadsl;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -27,12 +27,11 @@ import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.Props;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.event.Level;
 
-public class BehaviorTestKitTest extends JUnitSuite {
+public class BehaviorTestKitTest {
 
   public interface Command {}
 
@@ -279,7 +278,7 @@ public class BehaviorTestKitTest extends JUnitSuite {
     BehaviorTestKit<Command> test = BehaviorTestKit.create(behavior);
     test.run(new SpawnChildren(1));
     Effect.Spawned spawned = test.expectEffectClass(Effect.Spawned.class);
-    assertEquals(spawned.childName(), "child0");
+    assertEquals("child0", spawned.childName());
   }
 
   @Test
@@ -323,7 +322,7 @@ public class BehaviorTestKitTest extends JUnitSuite {
   }
 
   @Test
-  @Ignore("Not supported for Java API")
+  @Disabled("Not supported for Java API")
   public void allowAssertionsUsingPartialFunctions() {}
 
   @Test

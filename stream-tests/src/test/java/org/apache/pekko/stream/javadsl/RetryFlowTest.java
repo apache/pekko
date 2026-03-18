@@ -13,33 +13,33 @@
 
 package org.apache.pekko.stream.javadsl;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.Duration;
 import java.util.Optional;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.japi.Pair;
-import org.apache.pekko.stream.StreamTest;
+import org.apache.pekko.stream.StreamTestJupiter;
 import org.apache.pekko.stream.testkit.TestPublisher;
 import org.apache.pekko.stream.testkit.TestSubscriber;
 import org.apache.pekko.stream.testkit.javadsl.TestSink;
 import org.apache.pekko.stream.testkit.javadsl.TestSource;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import scala.util.Failure;
 import scala.util.Success;
 import scala.util.Try;
 
-public class RetryFlowTest extends StreamTest {
+public class RetryFlowTest extends StreamTestJupiter {
   public RetryFlowTest() {
     super(actorSystemResource);
   }
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource("RetryFlowTest", PekkoSpec.testConf());
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource("RetryFlowTest", PekkoSpec.testConf());
 
   public static
   // #withBackoff-signature

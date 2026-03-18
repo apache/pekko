@@ -20,9 +20,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import jdocs.AbstractJavaTest;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 // #join-seed-nodes-imports
 import org.apache.pekko.actor.Address;
@@ -36,7 +36,7 @@ public class ClusterDocTest extends AbstractJavaTest {
 
   static ActorSystem system;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     system =
         ActorSystem.create(
@@ -44,7 +44,7 @@ public class ClusterDocTest extends AbstractJavaTest {
             ConfigFactory.parseString(scala.docs.cluster.ClusterDocSpec.config()));
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     TestKit.shutdownActorSystem(system);
     system = null;

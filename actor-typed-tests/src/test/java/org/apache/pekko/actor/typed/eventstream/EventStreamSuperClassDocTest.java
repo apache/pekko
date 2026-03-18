@@ -25,8 +25,7 @@ import org.apache.pekko.actor.typed.javadsl.AbstractBehavior;
 import org.apache.pekko.actor.typed.javadsl.ActorContext;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.apache.pekko.actor.typed.javadsl.Receive;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
 
 // #listen-to-super-class-imports
 import org.apache.pekko.actor.DeadLetter;
@@ -36,7 +35,7 @@ import org.apache.pekko.actor.SuppressedDeadLetter;
 import org.apache.pekko.actor.UnhandledMessage;
 // #listen-to-super-class-imports
 
-public class EventStreamSuperClassDocTest extends JUnitSuite {
+public class EventStreamSuperClassDocTest {
 
   @Test
   public void listenToDeadLetters() {

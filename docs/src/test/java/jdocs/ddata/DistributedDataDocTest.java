@@ -14,7 +14,7 @@
 package jdocs.ddata;
 
 import static org.apache.pekko.cluster.ddata.Replicator.*;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.typesafe.config.ConfigFactory;
 import docs.ddata.DistributedDataDocSpec;
@@ -29,23 +29,23 @@ import org.apache.pekko.actor.*;
 import org.apache.pekko.cluster.ddata.*;
 import org.apache.pekko.japi.pf.ReceiveBuilder;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings({"unchecked", "unused"})
 public class DistributedDataDocTest extends AbstractJavaTest {
 
   static ActorSystem system;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     system =
         ActorSystem.create(
             "DistributedDataDocTest", ConfigFactory.parseString(DistributedDataDocSpec.config()));
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     TestKit.shutdownActorSystem(system);
     system = null;

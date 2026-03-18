@@ -13,15 +13,15 @@
 
 package org.apache.pekko.actor;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.typesafe.config.ConfigFactory;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
-import org.junit.*;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-public class JavaExtension extends JUnitSuite {
+public class JavaExtension {
 
   static class TestExtensionId extends AbstractExtensionId<TestExtension>
       implements ExtensionIdProvider {
@@ -70,9 +70,9 @@ public class JavaExtension extends JUnitSuite {
     }
   }
 
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource(
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource(
           "JavaExtension",
           ConfigFactory.parseString(
                   "pekko.extensions = [ \"org.apache.pekko.actor.JavaExtension$TestExtensionId\" ]")

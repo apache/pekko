@@ -13,20 +13,18 @@
 
 package org.apache.pekko.actor.typed.javadsl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.function.Function;
 import org.apache.pekko.actor.testkit.typed.internal.StubbedActorContext;
-import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
+import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturingExtension;
 import org.apache.pekko.actor.typed.internal.StashBufferImpl;
-import org.junit.Rule;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-public class StashBufferTest extends JUnitSuite {
-
-  @Rule public final LogCapturing logCapturing = new LogCapturing();
+@ExtendWith(LogCapturingExtension.class)
+public class StashBufferTest {
 
   StubbedActorContext<String> context =
       new StubbedActorContext<String>(

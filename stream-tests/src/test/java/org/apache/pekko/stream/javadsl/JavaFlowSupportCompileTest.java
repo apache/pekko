@@ -16,10 +16,9 @@ package org.apache.pekko.stream.javadsl;
 import java.util.concurrent.Flow;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.japi.Pair;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import org.junit.jupiter.api.Test;
 
-public class JavaFlowSupportCompileTest extends JUnitSuite {
+public class JavaFlowSupportCompileTest {
   @Test
   public void shouldCompile() throws Exception {
     final Flow.Processor<String, String> processor =

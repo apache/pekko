@@ -19,16 +19,16 @@ import jdocs.AbstractJavaTest;
 import org.apache.pekko.actor.*;
 import org.apache.pekko.japi.function.Creator;
 import org.apache.pekko.japi.function.Function;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 import org.apache.pekko.testkit.TestProbe;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class ParentChildTest extends AbstractJavaTest {
-  @ClassRule
-  public static PekkoJUnitActorSystemResource actorSystemResource =
-      new PekkoJUnitActorSystemResource(
+  @RegisterExtension
+  static PekkoJUnitJupiterActorSystemResource actorSystemResource =
+      new PekkoJUnitJupiterActorSystemResource(
           "TestKitDocTest",
           ConfigFactory.parseString(
               "pekko.loggers = [org.apache.pekko.testkit.TestEventListener]"));
