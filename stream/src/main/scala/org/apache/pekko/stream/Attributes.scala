@@ -64,7 +64,7 @@ final class Attributes private[pekko] (
   def this(attributeList: List[Attributes.Attribute] = Nil) =
     this(
       attributeList,
-      (attributeList.reverseIterator
+      attributeList.reverseIterator
         .foldLeft(Map.newBuilder[Class[AnyRef], Attributes.MandatoryAttribute]) {
           case (builder, attribute) =>
             attribute match {
@@ -73,7 +73,7 @@ final class Attributes private[pekko] (
                 builder
               case _ => builder
             }
-        })
+        }
         .result())
 
   /**
