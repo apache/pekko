@@ -41,6 +41,7 @@ import pekko.actor.typed.internal.PropsImpl.DispatcherSameAsParent
 import pekko.actor.typed.internal.SystemMessage
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.annotation.InternalApi
+import pekko.util.OptionVal
 
 import org.slf4j.{ Logger, LoggerFactory }
 
@@ -141,7 +142,21 @@ import org.slf4j.{ Logger, LoggerFactory }
 }
 
 private[pekko] object ActorSystemAdapter {
-  def apply(system: classic.ActorSystem): ActorSystem[Nothing] = AdapterExtension(system).adapter
+  def apply(system: classic.ActorSystem): ActorSystem[Nothing] = {
+    system match {
+      case system: classic.ActorSystemImpl =>
+        // Optimization to cut out going through adapter lookup if possible
+        system.typedSystem match {
+          case OptionVal.Some(typedSystem: ActorSystem[_]) => typedSystem
+          case _                                           =>
+            val typedSystem: ActorSystem[_] = AdapterExtension(system).adapter
+            system.typedSystem = OptionVal.Some(typedSystem)
+            typedSystem
+        }
+      case _ =>
+        AdapterExtension(system).adapter
+    }
+  }
 
   // to make sure we do never create more than one adapter for the same actor system
   class AdapterExtension(system: classic.ExtendedActorSystem) extends classic.Extension {
