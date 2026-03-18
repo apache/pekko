@@ -22,8 +22,13 @@ import pekko.actor.typed.ActorRef
 import pekko.actor.typed.Behavior
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.cluster.MemberStatus
+import pekko.cluster.ddata.typed.scaladsl.DistributedData
+import pekko.cluster.ddata.typed.scaladsl.Replicator
+import pekko.cluster.sharding.typed.ClusterShardingSettings
 import pekko.cluster.sharding.typed.ShardedDaemonProcessSettings
-import pekko.cluster.sharding.typed.internal.ShardedDaemonProcessImpl.KeepAlivePinger
+import pekko.cluster.sharding.typed.internal.ShardedDaemonProcessCoordinator
+import pekko.cluster.sharding.typed.internal.ShardedDaemonProcessState
+import pekko.cluster.sharding.typed.internal.ShardedDaemonProcessStateKey
 import pekko.cluster.typed.Cluster
 import pekko.cluster.typed.Join
 
@@ -117,7 +122,7 @@ class ShardedDaemonProcessSpec
 
   }
 
-  "KeepAlivePinger" must {
+  "Coordinator" must {
     "have a single node cluster running first" in {
       val probe = createTestProbe()
       Cluster(system).manager ! Join(Cluster(system).selfMember.address)
@@ -126,18 +131,61 @@ class ShardedDaemonProcessSpec
         }, 3.seconds)
     }
 
+    "send keep alive messages to original id scheme when revision is 0" in {
+      val shardingProbe = createTestProbe[Any]()
+      val settings = ShardedDaemonProcessSettings(system)
+      val shardingSettings = ClusterShardingSettings(system)
+      val pinger =
+        spawn(ShardedDaemonProcessCoordinator(settings, shardingSettings, 3, "throttle-a", shardingProbe.ref))
+      // note that StartEntity.apply is actually a ShardingEnvelope wrapping the StartEntity message
+      // See ShardedDaemonProcessId for details about entity id format
+      shardingProbe.expectMessage(StartEntity("0"))
+      shardingProbe.expectMessage(StartEntity("1"))
+      shardingProbe.expectMessage(StartEntity("2"))
+      shardingProbe.expectMessage(StartEntity("0"))
+
+      testKit.stop(pinger)
+    }
+
+    "send keep alive messages with new scheme when revision is > 0" in {
+      val name = "throttle-b"
+      val key = ShardedDaemonProcessStateKey(name)
+      val ddataProbe = createTestProbe[Replicator.UpdateResponse[ShardedDaemonProcessState]]()
+      DistributedData(system).replicator.tell(
+        Replicator.Update(key, ShardedDaemonProcessState.initialState(2), Replicator.WriteLocal, ddataProbe.ref)(
+          state => state.startScalingTo(3).completeScaling()))
+      ddataProbe.expectMessageType[Replicator.UpdateSuccess[ShardedDaemonProcessState]]
+
+      val shardingProbe = createTestProbe[Any]()
+      val settings = ShardedDaemonProcessSettings(system)
+      val shardingSettings = ClusterShardingSettings(system)
+      val pinger =
+        spawn(ShardedDaemonProcessCoordinator(settings, shardingSettings, 3, name, shardingProbe.ref))
+      // note that StartEntity.apply is actually a ShardingEnvelope wrapping the StartEntity message
+      // See ShardedDaemonProcessId for details about entity id format
+      shardingProbe.expectMessage(StartEntity("1|3|0"))
+      shardingProbe.expectMessage(StartEntity("1|3|1"))
+      shardingProbe.expectMessage(StartEntity("1|3|2"))
+      shardingProbe.expectMessage(StartEntity("1|3|0"))
+
+      testKit.stop(pinger)
+    }
+
     "throttle keep alive messages" in {
       val shardingProbe = createTestProbe[Any]()
       val settings = ShardedDaemonProcessSettings(system).withKeepAliveThrottleInterval(1.second)
-      val pinger = spawn(KeepAlivePinger(settings, "throttle", Set("1", "2", "3"), shardingProbe.ref))
+      val shardingSettings = ClusterShardingSettings(system)
+      val pinger =
+        spawn(ShardedDaemonProcessCoordinator(settings, shardingSettings, 3, "throttle-c", shardingProbe.ref))
       // note that StartEntity.apply is actually a ShardingEnvelope wrapping the StartEntity message
+      // See ShardedDaemonProcessId for details about entity id format
+      shardingProbe.expectMessage(StartEntity("0"))
+      shardingProbe.expectNoMessage(100.millis)
       shardingProbe.expectMessage(StartEntity("1"))
       shardingProbe.expectNoMessage(100.millis)
       shardingProbe.expectMessage(StartEntity("2"))
       shardingProbe.expectNoMessage(100.millis)
-      shardingProbe.expectMessage(StartEntity("3"))
-      shardingProbe.expectNoMessage(100.millis)
-      shardingProbe.expectMessage(StartEntity("1"))
+      shardingProbe.expectMessage(StartEntity("0"))
 
       testKit.stop(pinger)
     }
