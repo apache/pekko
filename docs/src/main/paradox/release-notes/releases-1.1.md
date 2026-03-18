@@ -150,7 +150,7 @@ The Stream Testkit Java DSL has some extra functions.
 * Support Jackson StreamReadConstraints and StreamWriteConstraints ([PR564](https://github.com/apache/pekko/pull/564))
 * Support configuration for Jackson Recycler Pool ([PR1192](https://github.com/apache/pekko/pull/1192))
 * pekko-multi-node-testkit was changed to use Netty 4 instead of Netty 3 ([PR539](https://github.com/apache/pekko/pull/539))
-* add junit5 support to pekko-testkit-typed ([PR751](https://github.com/apache/pekko/pull/751))
+* add JunitJupiter support to pekko-testkit-typed ([PR751](https://github.com/apache/pekko/pull/751))
 * Fix maybe throw for MinimalStage (Stream Unfold). ([PR822](https://github.com/apache/pekko/pull/822))
 * Add dedicated stream timeout exceptions for timeout related operators ([PR861](https://github.com/apache/pekko/pull/861))
 * Reimplement MapConcat operator without statefulMapConcat ([PR902](https://github.com/apache/pekko/pull/902))

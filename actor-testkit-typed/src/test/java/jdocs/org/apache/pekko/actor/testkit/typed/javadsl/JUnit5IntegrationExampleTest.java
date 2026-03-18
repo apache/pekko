@@ -20,15 +20,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-// #junit5-integration
-@DisplayName("JUnit5")
+// #JunitJupiter-integration
+@DisplayName("JunitJupiter")
 @ExtendWith(TestKitJUnitJupiterExtension.class)
-class JUnit5IntegrationExampleTest {
+class JunitJupiterIntegrationExampleTest {
 
   @JUnitJupiterTestKit public ActorTestKit testKit = new JUnitJupiterTestKitBuilder().build();
 
   @Test
-  void junit5Test() {
+  void JunitJupiterTest() {
     Address address = testKit.system().address();
     assertNotNull(address);
   }
@@ -56,4 +56,4 @@ class JUnit5IntegrationExampleTest {
     assertEquals("hello", pong.message);
   }
 }
-// #junit5-integration
+// #JunitJupiter-integration
