@@ -17,3 +17,7 @@
 
 # Optimized mandatory attributes
 ProblemFilters.exclude[FinalClassProblem]("org.apache.pekko.stream.Attributes$NestedMaterializationCancellationPolicy")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.Attributes.fromProduct")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.stream.Attributes.unapply")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.stream.Attributes._1")
+ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.stream.Attributes$")
