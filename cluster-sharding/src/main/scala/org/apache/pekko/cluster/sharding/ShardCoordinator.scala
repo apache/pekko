@@ -1108,6 +1108,15 @@ abstract class ShardCoordinator(
 
     case DelayedShardRegionTerminated(ref) =>
       regionTerminated(ref)
+
+    case StopShards(shards) =>
+      val requestId = java.util.UUID.randomUUID()
+      shards.foreach { shard =>
+        waitingForShardsToStop = waitingForShardsToStop.updated(
+          shard,
+          waitingForShardsToStop.getOrElse(shard, Set.empty) + ((sender(), requestId)))
+      }
+      shutdownShards(self, shards.filter(state.shards.contains))
   }
 
   def update[E <: DomainEvent](evt: E)(f: E => Unit): Unit
@@ -1307,7 +1316,10 @@ abstract class ShardCoordinator(
 
   def shutdownShards(shuttingDownRegion: ActorRef, shards: Set[ShardId]): Unit = {
     if ((log: BusLogging).isInfoEnabled && (shards.nonEmpty)) {
-      log.info("{}: Starting shutting down shards [{}] due to region shutting down.", typeName, shards.mkString(","))
+      log.info(
+        "{}: Starting shutting down shards [{}] due to region shutting down or explicit stopping of shards.",
+        typeName,
+        shards.mkString(","))
     }
     shards.foreach { shard =>
       startShardRebalanceIfNeeded(shard, shuttingDownRegion, handOffTimeout, isRebalance = false)

@@ -20,6 +20,8 @@ import scala.jdk.DurationConverters._
 
 import org.apache.pekko
 import pekko.actor.typed.ActorSystem
+import pekko.annotation.ApiMayChange
+import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 
 import com.typesafe.config.Config
@@ -117,5 +119,25 @@ final class ShardedDaemonProcessSettings @InternalApi private[pekko] (
       keepAliveThrottleInterval: FiniteDuration = keepAliveThrottleInterval): ShardedDaemonProcessSettings =
     new ShardedDaemonProcessSettings(keepAliveInterval, shardingSettings, role, keepAliveFromNumberOfNodes,
       keepAliveThrottleInterval)
+
+}
+
+/**
+ * Context with details about the Sharded Daemon Process instance to use when starting it
+ *
+ * Not for user extension
+ */
+@DoNotInherit
+@ApiMayChange
+trait ShardedDaemonProcessContext {
+  def processNumber: Int
+  def totalProcesses: Int
+
+  /**
+   * The revision starts at 0 and each time the number of processes is changed, the revision increases with 1
+   */
+  def revision: Long
+
+  def name: String
 
 }
