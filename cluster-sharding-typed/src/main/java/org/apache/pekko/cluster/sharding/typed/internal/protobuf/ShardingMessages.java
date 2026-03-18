@@ -807,11 +807,2819 @@ public final class ShardingMessages extends org.apache.pekko.protobufv3.internal
 
   }
 
+  public interface DaemonProcessScaleStateOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:org.apache.pekko.cluster.sharding.typed.DaemonProcessScaleState)
+      org.apache.pekko.protobufv3.internal.MessageOrBuilder {
+
+    /**
+     * <code>required int64 revision = 1;</code>
+     * @return Whether the revision field is set.
+     */
+    boolean hasRevision();
+    /**
+     * <code>required int64 revision = 1;</code>
+     * @return The revision.
+     */
+    long getRevision();
+
+    /**
+     * <code>required int32 numberOfProcesses = 2;</code>
+     * @return Whether the numberOfProcesses field is set.
+     */
+    boolean hasNumberOfProcesses();
+    /**
+     * <code>required int32 numberOfProcesses = 2;</code>
+     * @return The numberOfProcesses.
+     */
+    int getNumberOfProcesses();
+
+    /**
+     * <code>required bool completed = 3;</code>
+     * @return Whether the completed field is set.
+     */
+    boolean hasCompleted();
+    /**
+     * <code>required bool completed = 3;</code>
+     * @return The completed.
+     */
+    boolean getCompleted();
+
+    /**
+     * <code>required int64 startedTimestampMillis = 4;</code>
+     * @return Whether the startedTimestampMillis field is set.
+     */
+    boolean hasStartedTimestampMillis();
+    /**
+     * <code>required int64 startedTimestampMillis = 4;</code>
+     * @return The startedTimestampMillis.
+     */
+    long getStartedTimestampMillis();
+  }
+  /**
+   * Protobuf type {@code org.apache.pekko.cluster.sharding.typed.DaemonProcessScaleState}
+   */
+  public static final class DaemonProcessScaleState extends
+      org.apache.pekko.protobufv3.internal.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:org.apache.pekko.cluster.sharding.typed.DaemonProcessScaleState)
+      DaemonProcessScaleStateOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      org.apache.pekko.protobufv3.internal.RuntimeVersion.validateProtobufGencodeVersion(
+        org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 33,
+        /* patch= */ 0,
+        /* suffix= */ "",
+        "DaemonProcessScaleState");
+    }
+    // Use DaemonProcessScaleState.newBuilder() to construct.
+    private DaemonProcessScaleState(org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private DaemonProcessScaleState() {
+    }
+
+    public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
+        getDescriptor() {
+      return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_org_apache_pekko_cluster_sharding_typed_DaemonProcessScaleState_descriptor;
+    }
+
+    @java.lang.Override
+    protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_org_apache_pekko_cluster_sharding_typed_DaemonProcessScaleState_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState.class, org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int REVISION_FIELD_NUMBER = 1;
+    private long revision_ = 0L;
+    /**
+     * <code>required int64 revision = 1;</code>
+     * @return Whether the revision field is set.
+     */
+    @java.lang.Override
+    public boolean hasRevision() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>required int64 revision = 1;</code>
+     * @return The revision.
+     */
+    @java.lang.Override
+    public long getRevision() {
+      return revision_;
+    }
+
+    public static final int NUMBEROFPROCESSES_FIELD_NUMBER = 2;
+    private int numberOfProcesses_ = 0;
+    /**
+     * <code>required int32 numberOfProcesses = 2;</code>
+     * @return Whether the numberOfProcesses field is set.
+     */
+    @java.lang.Override
+    public boolean hasNumberOfProcesses() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>required int32 numberOfProcesses = 2;</code>
+     * @return The numberOfProcesses.
+     */
+    @java.lang.Override
+    public int getNumberOfProcesses() {
+      return numberOfProcesses_;
+    }
+
+    public static final int COMPLETED_FIELD_NUMBER = 3;
+    private boolean completed_ = false;
+    /**
+     * <code>required bool completed = 3;</code>
+     * @return Whether the completed field is set.
+     */
+    @java.lang.Override
+    public boolean hasCompleted() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <code>required bool completed = 3;</code>
+     * @return The completed.
+     */
+    @java.lang.Override
+    public boolean getCompleted() {
+      return completed_;
+    }
+
+    public static final int STARTEDTIMESTAMPMILLIS_FIELD_NUMBER = 4;
+    private long startedTimestampMillis_ = 0L;
+    /**
+     * <code>required int64 startedTimestampMillis = 4;</code>
+     * @return Whether the startedTimestampMillis field is set.
+     */
+    @java.lang.Override
+    public boolean hasStartedTimestampMillis() {
+      return ((bitField0_ & 0x00000008) != 0);
+    }
+    /**
+     * <code>required int64 startedTimestampMillis = 4;</code>
+     * @return The startedTimestampMillis.
+     */
+    @java.lang.Override
+    public long getStartedTimestampMillis() {
+      return startedTimestampMillis_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      if (!hasRevision()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasNumberOfProcesses()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasCompleted()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasStartedTimestampMillis()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(org.apache.pekko.protobufv3.internal.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeInt64(1, revision_);
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        output.writeInt32(2, numberOfProcesses_);
+      }
+      if (((bitField0_ & 0x00000004) != 0)) {
+        output.writeBool(3, completed_);
+      }
+      if (((bitField0_ & 0x00000008) != 0)) {
+        output.writeInt64(4, startedTimestampMillis_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
+          .computeInt64Size(1, revision_);
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
+          .computeInt32Size(2, numberOfProcesses_);
+      }
+      if (((bitField0_ & 0x00000004) != 0)) {
+        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
+          .computeBoolSize(3, completed_);
+      }
+      if (((bitField0_ & 0x00000008) != 0)) {
+        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
+          .computeInt64Size(4, startedTimestampMillis_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState)) {
+        return super.equals(obj);
+      }
+      org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState other = (org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState) obj;
+
+      if (hasRevision() != other.hasRevision()) return false;
+      if (hasRevision()) {
+        if (getRevision()
+            != other.getRevision()) return false;
+      }
+      if (hasNumberOfProcesses() != other.hasNumberOfProcesses()) return false;
+      if (hasNumberOfProcesses()) {
+        if (getNumberOfProcesses()
+            != other.getNumberOfProcesses()) return false;
+      }
+      if (hasCompleted() != other.hasCompleted()) return false;
+      if (hasCompleted()) {
+        if (getCompleted()
+            != other.getCompleted()) return false;
+      }
+      if (hasStartedTimestampMillis() != other.hasStartedTimestampMillis()) return false;
+      if (hasStartedTimestampMillis()) {
+        if (getStartedTimestampMillis()
+            != other.getStartedTimestampMillis()) return false;
+      }
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasRevision()) {
+        hash = (37 * hash) + REVISION_FIELD_NUMBER;
+        hash = (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashLong(
+            getRevision());
+      }
+      if (hasNumberOfProcesses()) {
+        hash = (37 * hash) + NUMBEROFPROCESSES_FIELD_NUMBER;
+        hash = (53 * hash) + getNumberOfProcesses();
+      }
+      if (hasCompleted()) {
+        hash = (37 * hash) + COMPLETED_FIELD_NUMBER;
+        hash = (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashBoolean(
+            getCompleted());
+      }
+      if (hasStartedTimestampMillis()) {
+        hash = (37 * hash) + STARTEDTIMESTAMPMILLIS_FIELD_NUMBER;
+        hash = (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashLong(
+            getStartedTimestampMillis());
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState parseFrom(
+        java.nio.ByteBuffer data)
+        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState parseFrom(
+        java.nio.ByteBuffer data,
+        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState parseFrom(
+        org.apache.pekko.protobufv3.internal.ByteString data)
+        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState parseFrom(
+        org.apache.pekko.protobufv3.internal.ByteString data,
+        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState parseFrom(byte[] data)
+        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState parseFrom(
+        byte[] data,
+        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState parseFrom(
+        java.io.InputStream input,
+        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState parseDelimitedFrom(
+        java.io.InputStream input,
+        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState parseFrom(
+        org.apache.pekko.protobufv3.internal.CodedInputStream input)
+        throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState parseFrom(
+        org.apache.pekko.protobufv3.internal.CodedInputStream input,
+        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        org.apache.pekko.protobufv3.internal.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code org.apache.pekko.cluster.sharding.typed.DaemonProcessScaleState}
+     */
+    public static final class Builder extends
+        org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:org.apache.pekko.cluster.sharding.typed.DaemonProcessScaleState)
+        org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleStateOrBuilder {
+      public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
+          getDescriptor() {
+        return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_org_apache_pekko_cluster_sharding_typed_DaemonProcessScaleState_descriptor;
+      }
+
+      @java.lang.Override
+      protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_org_apache_pekko_cluster_sharding_typed_DaemonProcessScaleState_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState.class, org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState.Builder.class);
+      }
+
+      // Construct using org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          org.apache.pekko.protobufv3.internal.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        revision_ = 0L;
+        numberOfProcesses_ = 0;
+        completed_ = false;
+        startedTimestampMillis_ = 0L;
+        return this;
+      }
+
+      @java.lang.Override
+      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
+          getDescriptorForType() {
+        return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_org_apache_pekko_cluster_sharding_typed_DaemonProcessScaleState_descriptor;
+      }
+
+      @java.lang.Override
+      public org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState getDefaultInstanceForType() {
+        return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState build() {
+        org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState buildPartial() {
+        org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState result = new org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState result) {
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.revision_ = revision_;
+          to_bitField0_ |= 0x00000001;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.numberOfProcesses_ = numberOfProcesses_;
+          to_bitField0_ |= 0x00000002;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.completed_ = completed_;
+          to_bitField0_ |= 0x00000004;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.startedTimestampMillis_ = startedTimestampMillis_;
+          to_bitField0_ |= 0x00000008;
+        }
+        result.bitField0_ |= to_bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
+        if (other instanceof org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState) {
+          return mergeFrom((org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState other) {
+        if (other == org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState.getDefaultInstance()) return this;
+        if (other.hasRevision()) {
+          setRevision(other.getRevision());
+        }
+        if (other.hasNumberOfProcesses()) {
+          setNumberOfProcesses(other.getNumberOfProcesses());
+        }
+        if (other.hasCompleted()) {
+          setCompleted(other.getCompleted());
+        }
+        if (other.hasStartedTimestampMillis()) {
+          setStartedTimestampMillis(other.getStartedTimestampMillis());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        if (!hasRevision()) {
+          return false;
+        }
+        if (!hasNumberOfProcesses()) {
+          return false;
+        }
+        if (!hasCompleted()) {
+          return false;
+        }
+        if (!hasStartedTimestampMillis()) {
+          return false;
+        }
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          org.apache.pekko.protobufv3.internal.CodedInputStream input,
+          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                revision_ = input.readInt64();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 8
+              case 16: {
+                numberOfProcesses_ = input.readInt32();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
+              case 24: {
+                completed_ = input.readBool();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 24
+              case 32: {
+                startedTimestampMillis_ = input.readInt64();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 32
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private long revision_ ;
+      /**
+       * <code>required int64 revision = 1;</code>
+       * @return Whether the revision field is set.
+       */
+      @java.lang.Override
+      public boolean hasRevision() {
+        return ((bitField0_ & 0x00000001) != 0);
+      }
+      /**
+       * <code>required int64 revision = 1;</code>
+       * @return The revision.
+       */
+      @java.lang.Override
+      public long getRevision() {
+        return revision_;
+      }
+      /**
+       * <code>required int64 revision = 1;</code>
+       * @param value The revision to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRevision(long value) {
+
+        revision_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required int64 revision = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRevision() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        revision_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private int numberOfProcesses_ ;
+      /**
+       * <code>required int32 numberOfProcesses = 2;</code>
+       * @return Whether the numberOfProcesses field is set.
+       */
+      @java.lang.Override
+      public boolean hasNumberOfProcesses() {
+        return ((bitField0_ & 0x00000002) != 0);
+      }
+      /**
+       * <code>required int32 numberOfProcesses = 2;</code>
+       * @return The numberOfProcesses.
+       */
+      @java.lang.Override
+      public int getNumberOfProcesses() {
+        return numberOfProcesses_;
+      }
+      /**
+       * <code>required int32 numberOfProcesses = 2;</code>
+       * @param value The numberOfProcesses to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNumberOfProcesses(int value) {
+
+        numberOfProcesses_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required int32 numberOfProcesses = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNumberOfProcesses() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        numberOfProcesses_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private boolean completed_ ;
+      /**
+       * <code>required bool completed = 3;</code>
+       * @return Whether the completed field is set.
+       */
+      @java.lang.Override
+      public boolean hasCompleted() {
+        return ((bitField0_ & 0x00000004) != 0);
+      }
+      /**
+       * <code>required bool completed = 3;</code>
+       * @return The completed.
+       */
+      @java.lang.Override
+      public boolean getCompleted() {
+        return completed_;
+      }
+      /**
+       * <code>required bool completed = 3;</code>
+       * @param value The completed to set.
+       * @return This builder for chaining.
+       */
+      public Builder setCompleted(boolean value) {
+
+        completed_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required bool completed = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearCompleted() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        completed_ = false;
+        onChanged();
+        return this;
+      }
+
+      private long startedTimestampMillis_ ;
+      /**
+       * <code>required int64 startedTimestampMillis = 4;</code>
+       * @return Whether the startedTimestampMillis field is set.
+       */
+      @java.lang.Override
+      public boolean hasStartedTimestampMillis() {
+        return ((bitField0_ & 0x00000008) != 0);
+      }
+      /**
+       * <code>required int64 startedTimestampMillis = 4;</code>
+       * @return The startedTimestampMillis.
+       */
+      @java.lang.Override
+      public long getStartedTimestampMillis() {
+        return startedTimestampMillis_;
+      }
+      /**
+       * <code>required int64 startedTimestampMillis = 4;</code>
+       * @param value The startedTimestampMillis to set.
+       * @return This builder for chaining.
+       */
+      public Builder setStartedTimestampMillis(long value) {
+
+        startedTimestampMillis_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required int64 startedTimestampMillis = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearStartedTimestampMillis() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        startedTimestampMillis_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:org.apache.pekko.cluster.sharding.typed.DaemonProcessScaleState)
+    }
+
+    // @@protoc_insertion_point(class_scope:org.apache.pekko.cluster.sharding.typed.DaemonProcessScaleState)
+    private static final org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState();
+    }
+
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final org.apache.pekko.protobufv3.internal.Parser<DaemonProcessScaleState>
+        PARSER = new org.apache.pekko.protobufv3.internal.AbstractParser<DaemonProcessScaleState>() {
+      @java.lang.Override
+      public DaemonProcessScaleState parsePartialFrom(
+          org.apache.pekko.protobufv3.internal.CodedInputStream input,
+          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (org.apache.pekko.protobufv3.internal.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static org.apache.pekko.protobufv3.internal.Parser<DaemonProcessScaleState> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public org.apache.pekko.protobufv3.internal.Parser<DaemonProcessScaleState> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.DaemonProcessScaleState getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface ChangeNumberOfProcessesOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:org.apache.pekko.cluster.sharding.typed.ChangeNumberOfProcesses)
+      org.apache.pekko.protobufv3.internal.MessageOrBuilder {
+
+    /**
+     * <code>required int32 newNumberOfProcesses = 1;</code>
+     * @return Whether the newNumberOfProcesses field is set.
+     */
+    boolean hasNewNumberOfProcesses();
+    /**
+     * <code>required int32 newNumberOfProcesses = 1;</code>
+     * @return The newNumberOfProcesses.
+     */
+    int getNewNumberOfProcesses();
+
+    /**
+     * <code>required string replyTo = 2;</code>
+     * @return Whether the replyTo field is set.
+     */
+    boolean hasReplyTo();
+    /**
+     * <code>required string replyTo = 2;</code>
+     * @return The replyTo.
+     */
+    java.lang.String getReplyTo();
+    /**
+     * <code>required string replyTo = 2;</code>
+     * @return The bytes for replyTo.
+     */
+    org.apache.pekko.protobufv3.internal.ByteString
+        getReplyToBytes();
+  }
+  /**
+   * Protobuf type {@code org.apache.pekko.cluster.sharding.typed.ChangeNumberOfProcesses}
+   */
+  public static final class ChangeNumberOfProcesses extends
+      org.apache.pekko.protobufv3.internal.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:org.apache.pekko.cluster.sharding.typed.ChangeNumberOfProcesses)
+      ChangeNumberOfProcessesOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      org.apache.pekko.protobufv3.internal.RuntimeVersion.validateProtobufGencodeVersion(
+        org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 33,
+        /* patch= */ 0,
+        /* suffix= */ "",
+        "ChangeNumberOfProcesses");
+    }
+    // Use ChangeNumberOfProcesses.newBuilder() to construct.
+    private ChangeNumberOfProcesses(org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private ChangeNumberOfProcesses() {
+      replyTo_ = "";
+    }
+
+    public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
+        getDescriptor() {
+      return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_org_apache_pekko_cluster_sharding_typed_ChangeNumberOfProcesses_descriptor;
+    }
+
+    @java.lang.Override
+    protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_org_apache_pekko_cluster_sharding_typed_ChangeNumberOfProcesses_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses.class, org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int NEWNUMBEROFPROCESSES_FIELD_NUMBER = 1;
+    private int newNumberOfProcesses_ = 0;
+    /**
+     * <code>required int32 newNumberOfProcesses = 1;</code>
+     * @return Whether the newNumberOfProcesses field is set.
+     */
+    @java.lang.Override
+    public boolean hasNewNumberOfProcesses() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>required int32 newNumberOfProcesses = 1;</code>
+     * @return The newNumberOfProcesses.
+     */
+    @java.lang.Override
+    public int getNewNumberOfProcesses() {
+      return newNumberOfProcesses_;
+    }
+
+    public static final int REPLYTO_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object replyTo_ = "";
+    /**
+     * <code>required string replyTo = 2;</code>
+     * @return Whether the replyTo field is set.
+     */
+    @java.lang.Override
+    public boolean hasReplyTo() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>required string replyTo = 2;</code>
+     * @return The replyTo.
+     */
+    @java.lang.Override
+    public java.lang.String getReplyTo() {
+      java.lang.Object ref = replyTo_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        org.apache.pekko.protobufv3.internal.ByteString bs = 
+            (org.apache.pekko.protobufv3.internal.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          replyTo_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string replyTo = 2;</code>
+     * @return The bytes for replyTo.
+     */
+    @java.lang.Override
+    public org.apache.pekko.protobufv3.internal.ByteString
+        getReplyToBytes() {
+      java.lang.Object ref = replyTo_;
+      if (ref instanceof java.lang.String) {
+        org.apache.pekko.protobufv3.internal.ByteString b = 
+            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        replyTo_ = b;
+        return b;
+      } else {
+        return (org.apache.pekko.protobufv3.internal.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      if (!hasNewNumberOfProcesses()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasReplyTo()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(org.apache.pekko.protobufv3.internal.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeInt32(1, newNumberOfProcesses_);
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        org.apache.pekko.protobufv3.internal.GeneratedMessage.writeString(output, 2, replyTo_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
+          .computeInt32Size(1, newNumberOfProcesses_);
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        size += org.apache.pekko.protobufv3.internal.GeneratedMessage.computeStringSize(2, replyTo_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses)) {
+        return super.equals(obj);
+      }
+      org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses other = (org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses) obj;
+
+      if (hasNewNumberOfProcesses() != other.hasNewNumberOfProcesses()) return false;
+      if (hasNewNumberOfProcesses()) {
+        if (getNewNumberOfProcesses()
+            != other.getNewNumberOfProcesses()) return false;
+      }
+      if (hasReplyTo() != other.hasReplyTo()) return false;
+      if (hasReplyTo()) {
+        if (!getReplyTo()
+            .equals(other.getReplyTo())) return false;
+      }
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasNewNumberOfProcesses()) {
+        hash = (37 * hash) + NEWNUMBEROFPROCESSES_FIELD_NUMBER;
+        hash = (53 * hash) + getNewNumberOfProcesses();
+      }
+      if (hasReplyTo()) {
+        hash = (37 * hash) + REPLYTO_FIELD_NUMBER;
+        hash = (53 * hash) + getReplyTo().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses parseFrom(
+        java.nio.ByteBuffer data)
+        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses parseFrom(
+        java.nio.ByteBuffer data,
+        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses parseFrom(
+        org.apache.pekko.protobufv3.internal.ByteString data)
+        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses parseFrom(
+        org.apache.pekko.protobufv3.internal.ByteString data,
+        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses parseFrom(byte[] data)
+        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses parseFrom(
+        byte[] data,
+        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses parseFrom(
+        java.io.InputStream input,
+        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses parseDelimitedFrom(
+        java.io.InputStream input,
+        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses parseFrom(
+        org.apache.pekko.protobufv3.internal.CodedInputStream input)
+        throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses parseFrom(
+        org.apache.pekko.protobufv3.internal.CodedInputStream input,
+        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        org.apache.pekko.protobufv3.internal.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code org.apache.pekko.cluster.sharding.typed.ChangeNumberOfProcesses}
+     */
+    public static final class Builder extends
+        org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:org.apache.pekko.cluster.sharding.typed.ChangeNumberOfProcesses)
+        org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcessesOrBuilder {
+      public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
+          getDescriptor() {
+        return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_org_apache_pekko_cluster_sharding_typed_ChangeNumberOfProcesses_descriptor;
+      }
+
+      @java.lang.Override
+      protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_org_apache_pekko_cluster_sharding_typed_ChangeNumberOfProcesses_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses.class, org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses.Builder.class);
+      }
+
+      // Construct using org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          org.apache.pekko.protobufv3.internal.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        newNumberOfProcesses_ = 0;
+        replyTo_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
+          getDescriptorForType() {
+        return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_org_apache_pekko_cluster_sharding_typed_ChangeNumberOfProcesses_descriptor;
+      }
+
+      @java.lang.Override
+      public org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses getDefaultInstanceForType() {
+        return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses build() {
+        org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses buildPartial() {
+        org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses result = new org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses result) {
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.newNumberOfProcesses_ = newNumberOfProcesses_;
+          to_bitField0_ |= 0x00000001;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.replyTo_ = replyTo_;
+          to_bitField0_ |= 0x00000002;
+        }
+        result.bitField0_ |= to_bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
+        if (other instanceof org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses) {
+          return mergeFrom((org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses other) {
+        if (other == org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses.getDefaultInstance()) return this;
+        if (other.hasNewNumberOfProcesses()) {
+          setNewNumberOfProcesses(other.getNewNumberOfProcesses());
+        }
+        if (other.hasReplyTo()) {
+          replyTo_ = other.replyTo_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        if (!hasNewNumberOfProcesses()) {
+          return false;
+        }
+        if (!hasReplyTo()) {
+          return false;
+        }
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          org.apache.pekko.protobufv3.internal.CodedInputStream input,
+          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                newNumberOfProcesses_ = input.readInt32();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 8
+              case 18: {
+                replyTo_ = input.readBytes();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private int newNumberOfProcesses_ ;
+      /**
+       * <code>required int32 newNumberOfProcesses = 1;</code>
+       * @return Whether the newNumberOfProcesses field is set.
+       */
+      @java.lang.Override
+      public boolean hasNewNumberOfProcesses() {
+        return ((bitField0_ & 0x00000001) != 0);
+      }
+      /**
+       * <code>required int32 newNumberOfProcesses = 1;</code>
+       * @return The newNumberOfProcesses.
+       */
+      @java.lang.Override
+      public int getNewNumberOfProcesses() {
+        return newNumberOfProcesses_;
+      }
+      /**
+       * <code>required int32 newNumberOfProcesses = 1;</code>
+       * @param value The newNumberOfProcesses to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNewNumberOfProcesses(int value) {
+
+        newNumberOfProcesses_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required int32 newNumberOfProcesses = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNewNumberOfProcesses() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        newNumberOfProcesses_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object replyTo_ = "";
+      /**
+       * <code>required string replyTo = 2;</code>
+       * @return Whether the replyTo field is set.
+       */
+      public boolean hasReplyTo() {
+        return ((bitField0_ & 0x00000002) != 0);
+      }
+      /**
+       * <code>required string replyTo = 2;</code>
+       * @return The replyTo.
+       */
+      public java.lang.String getReplyTo() {
+        java.lang.Object ref = replyTo_;
+        if (!(ref instanceof java.lang.String)) {
+          org.apache.pekko.protobufv3.internal.ByteString bs =
+              (org.apache.pekko.protobufv3.internal.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            replyTo_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string replyTo = 2;</code>
+       * @return The bytes for replyTo.
+       */
+      public org.apache.pekko.protobufv3.internal.ByteString
+          getReplyToBytes() {
+        java.lang.Object ref = replyTo_;
+        if (ref instanceof String) {
+          org.apache.pekko.protobufv3.internal.ByteString b = 
+              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          replyTo_ = b;
+          return b;
+        } else {
+          return (org.apache.pekko.protobufv3.internal.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string replyTo = 2;</code>
+       * @param value The replyTo to set.
+       * @return This builder for chaining.
+       */
+      public Builder setReplyTo(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        replyTo_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string replyTo = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearReplyTo() {
+        replyTo_ = getDefaultInstance().getReplyTo();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string replyTo = 2;</code>
+       * @param value The bytes for replyTo to set.
+       * @return This builder for chaining.
+       */
+      public Builder setReplyToBytes(
+          org.apache.pekko.protobufv3.internal.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        replyTo_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:org.apache.pekko.cluster.sharding.typed.ChangeNumberOfProcesses)
+    }
+
+    // @@protoc_insertion_point(class_scope:org.apache.pekko.cluster.sharding.typed.ChangeNumberOfProcesses)
+    private static final org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses();
+    }
+
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final org.apache.pekko.protobufv3.internal.Parser<ChangeNumberOfProcesses>
+        PARSER = new org.apache.pekko.protobufv3.internal.AbstractParser<ChangeNumberOfProcesses>() {
+      @java.lang.Override
+      public ChangeNumberOfProcesses parsePartialFrom(
+          org.apache.pekko.protobufv3.internal.CodedInputStream input,
+          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (org.apache.pekko.protobufv3.internal.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static org.apache.pekko.protobufv3.internal.Parser<ChangeNumberOfProcesses> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public org.apache.pekko.protobufv3.internal.Parser<ChangeNumberOfProcesses> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ChangeNumberOfProcesses getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface GetNumberOfProcessesOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:org.apache.pekko.cluster.sharding.typed.GetNumberOfProcesses)
+      org.apache.pekko.protobufv3.internal.MessageOrBuilder {
+
+    /**
+     * <code>required string replyTo = 1;</code>
+     * @return Whether the replyTo field is set.
+     */
+    boolean hasReplyTo();
+    /**
+     * <code>required string replyTo = 1;</code>
+     * @return The replyTo.
+     */
+    java.lang.String getReplyTo();
+    /**
+     * <code>required string replyTo = 1;</code>
+     * @return The bytes for replyTo.
+     */
+    org.apache.pekko.protobufv3.internal.ByteString
+        getReplyToBytes();
+  }
+  /**
+   * Protobuf type {@code org.apache.pekko.cluster.sharding.typed.GetNumberOfProcesses}
+   */
+  public static final class GetNumberOfProcesses extends
+      org.apache.pekko.protobufv3.internal.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:org.apache.pekko.cluster.sharding.typed.GetNumberOfProcesses)
+      GetNumberOfProcessesOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      org.apache.pekko.protobufv3.internal.RuntimeVersion.validateProtobufGencodeVersion(
+        org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 33,
+        /* patch= */ 0,
+        /* suffix= */ "",
+        "GetNumberOfProcesses");
+    }
+    // Use GetNumberOfProcesses.newBuilder() to construct.
+    private GetNumberOfProcesses(org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private GetNumberOfProcesses() {
+      replyTo_ = "";
+    }
+
+    public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
+        getDescriptor() {
+      return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_org_apache_pekko_cluster_sharding_typed_GetNumberOfProcesses_descriptor;
+    }
+
+    @java.lang.Override
+    protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_org_apache_pekko_cluster_sharding_typed_GetNumberOfProcesses_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses.class, org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int REPLYTO_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object replyTo_ = "";
+    /**
+     * <code>required string replyTo = 1;</code>
+     * @return Whether the replyTo field is set.
+     */
+    @java.lang.Override
+    public boolean hasReplyTo() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>required string replyTo = 1;</code>
+     * @return The replyTo.
+     */
+    @java.lang.Override
+    public java.lang.String getReplyTo() {
+      java.lang.Object ref = replyTo_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        org.apache.pekko.protobufv3.internal.ByteString bs = 
+            (org.apache.pekko.protobufv3.internal.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          replyTo_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string replyTo = 1;</code>
+     * @return The bytes for replyTo.
+     */
+    @java.lang.Override
+    public org.apache.pekko.protobufv3.internal.ByteString
+        getReplyToBytes() {
+      java.lang.Object ref = replyTo_;
+      if (ref instanceof java.lang.String) {
+        org.apache.pekko.protobufv3.internal.ByteString b = 
+            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        replyTo_ = b;
+        return b;
+      } else {
+        return (org.apache.pekko.protobufv3.internal.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      if (!hasReplyTo()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(org.apache.pekko.protobufv3.internal.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) != 0)) {
+        org.apache.pekko.protobufv3.internal.GeneratedMessage.writeString(output, 1, replyTo_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += org.apache.pekko.protobufv3.internal.GeneratedMessage.computeStringSize(1, replyTo_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses)) {
+        return super.equals(obj);
+      }
+      org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses other = (org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses) obj;
+
+      if (hasReplyTo() != other.hasReplyTo()) return false;
+      if (hasReplyTo()) {
+        if (!getReplyTo()
+            .equals(other.getReplyTo())) return false;
+      }
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasReplyTo()) {
+        hash = (37 * hash) + REPLYTO_FIELD_NUMBER;
+        hash = (53 * hash) + getReplyTo().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses parseFrom(
+        java.nio.ByteBuffer data)
+        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses parseFrom(
+        java.nio.ByteBuffer data,
+        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses parseFrom(
+        org.apache.pekko.protobufv3.internal.ByteString data)
+        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses parseFrom(
+        org.apache.pekko.protobufv3.internal.ByteString data,
+        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses parseFrom(byte[] data)
+        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses parseFrom(
+        byte[] data,
+        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses parseFrom(
+        java.io.InputStream input,
+        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses parseDelimitedFrom(
+        java.io.InputStream input,
+        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses parseFrom(
+        org.apache.pekko.protobufv3.internal.CodedInputStream input)
+        throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses parseFrom(
+        org.apache.pekko.protobufv3.internal.CodedInputStream input,
+        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        org.apache.pekko.protobufv3.internal.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code org.apache.pekko.cluster.sharding.typed.GetNumberOfProcesses}
+     */
+    public static final class Builder extends
+        org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:org.apache.pekko.cluster.sharding.typed.GetNumberOfProcesses)
+        org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesOrBuilder {
+      public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
+          getDescriptor() {
+        return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_org_apache_pekko_cluster_sharding_typed_GetNumberOfProcesses_descriptor;
+      }
+
+      @java.lang.Override
+      protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_org_apache_pekko_cluster_sharding_typed_GetNumberOfProcesses_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses.class, org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses.Builder.class);
+      }
+
+      // Construct using org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          org.apache.pekko.protobufv3.internal.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        replyTo_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
+          getDescriptorForType() {
+        return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_org_apache_pekko_cluster_sharding_typed_GetNumberOfProcesses_descriptor;
+      }
+
+      @java.lang.Override
+      public org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses getDefaultInstanceForType() {
+        return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses build() {
+        org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses buildPartial() {
+        org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses result = new org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses result) {
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.replyTo_ = replyTo_;
+          to_bitField0_ |= 0x00000001;
+        }
+        result.bitField0_ |= to_bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
+        if (other instanceof org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses) {
+          return mergeFrom((org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses other) {
+        if (other == org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses.getDefaultInstance()) return this;
+        if (other.hasReplyTo()) {
+          replyTo_ = other.replyTo_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        if (!hasReplyTo()) {
+          return false;
+        }
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          org.apache.pekko.protobufv3.internal.CodedInputStream input,
+          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                replyTo_ = input.readBytes();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object replyTo_ = "";
+      /**
+       * <code>required string replyTo = 1;</code>
+       * @return Whether the replyTo field is set.
+       */
+      public boolean hasReplyTo() {
+        return ((bitField0_ & 0x00000001) != 0);
+      }
+      /**
+       * <code>required string replyTo = 1;</code>
+       * @return The replyTo.
+       */
+      public java.lang.String getReplyTo() {
+        java.lang.Object ref = replyTo_;
+        if (!(ref instanceof java.lang.String)) {
+          org.apache.pekko.protobufv3.internal.ByteString bs =
+              (org.apache.pekko.protobufv3.internal.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            replyTo_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string replyTo = 1;</code>
+       * @return The bytes for replyTo.
+       */
+      public org.apache.pekko.protobufv3.internal.ByteString
+          getReplyToBytes() {
+        java.lang.Object ref = replyTo_;
+        if (ref instanceof String) {
+          org.apache.pekko.protobufv3.internal.ByteString b = 
+              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          replyTo_ = b;
+          return b;
+        } else {
+          return (org.apache.pekko.protobufv3.internal.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string replyTo = 1;</code>
+       * @param value The replyTo to set.
+       * @return This builder for chaining.
+       */
+      public Builder setReplyTo(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        replyTo_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string replyTo = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearReplyTo() {
+        replyTo_ = getDefaultInstance().getReplyTo();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string replyTo = 1;</code>
+       * @param value The bytes for replyTo to set.
+       * @return This builder for chaining.
+       */
+      public Builder setReplyToBytes(
+          org.apache.pekko.protobufv3.internal.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        replyTo_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:org.apache.pekko.cluster.sharding.typed.GetNumberOfProcesses)
+    }
+
+    // @@protoc_insertion_point(class_scope:org.apache.pekko.cluster.sharding.typed.GetNumberOfProcesses)
+    private static final org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses();
+    }
+
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final org.apache.pekko.protobufv3.internal.Parser<GetNumberOfProcesses>
+        PARSER = new org.apache.pekko.protobufv3.internal.AbstractParser<GetNumberOfProcesses>() {
+      @java.lang.Override
+      public GetNumberOfProcesses parsePartialFrom(
+          org.apache.pekko.protobufv3.internal.CodedInputStream input,
+          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (org.apache.pekko.protobufv3.internal.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static org.apache.pekko.protobufv3.internal.Parser<GetNumberOfProcesses> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public org.apache.pekko.protobufv3.internal.Parser<GetNumberOfProcesses> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcesses getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface GetNumberOfProcessesReplyOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:org.apache.pekko.cluster.sharding.typed.GetNumberOfProcessesReply)
+      org.apache.pekko.protobufv3.internal.MessageOrBuilder {
+
+    /**
+     * <code>required int64 revision = 1;</code>
+     * @return Whether the revision field is set.
+     */
+    boolean hasRevision();
+    /**
+     * <code>required int64 revision = 1;</code>
+     * @return The revision.
+     */
+    long getRevision();
+
+    /**
+     * <code>required int32 numberOfProcesses = 2;</code>
+     * @return Whether the numberOfProcesses field is set.
+     */
+    boolean hasNumberOfProcesses();
+    /**
+     * <code>required int32 numberOfProcesses = 2;</code>
+     * @return The numberOfProcesses.
+     */
+    int getNumberOfProcesses();
+
+    /**
+     * <code>required bool rescaleInProgress = 3;</code>
+     * @return Whether the rescaleInProgress field is set.
+     */
+    boolean hasRescaleInProgress();
+    /**
+     * <code>required bool rescaleInProgress = 3;</code>
+     * @return The rescaleInProgress.
+     */
+    boolean getRescaleInProgress();
+
+    /**
+     * <code>required int64 startedTimestampMillis = 4;</code>
+     * @return Whether the startedTimestampMillis field is set.
+     */
+    boolean hasStartedTimestampMillis();
+    /**
+     * <code>required int64 startedTimestampMillis = 4;</code>
+     * @return The startedTimestampMillis.
+     */
+    long getStartedTimestampMillis();
+  }
+  /**
+   * Protobuf type {@code org.apache.pekko.cluster.sharding.typed.GetNumberOfProcessesReply}
+   */
+  public static final class GetNumberOfProcessesReply extends
+      org.apache.pekko.protobufv3.internal.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:org.apache.pekko.cluster.sharding.typed.GetNumberOfProcessesReply)
+      GetNumberOfProcessesReplyOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      org.apache.pekko.protobufv3.internal.RuntimeVersion.validateProtobufGencodeVersion(
+        org.apache.pekko.protobufv3.internal.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 33,
+        /* patch= */ 0,
+        /* suffix= */ "",
+        "GetNumberOfProcessesReply");
+    }
+    // Use GetNumberOfProcessesReply.newBuilder() to construct.
+    private GetNumberOfProcessesReply(org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private GetNumberOfProcessesReply() {
+    }
+
+    public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
+        getDescriptor() {
+      return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_org_apache_pekko_cluster_sharding_typed_GetNumberOfProcessesReply_descriptor;
+    }
+
+    @java.lang.Override
+    protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_org_apache_pekko_cluster_sharding_typed_GetNumberOfProcessesReply_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply.class, org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int REVISION_FIELD_NUMBER = 1;
+    private long revision_ = 0L;
+    /**
+     * <code>required int64 revision = 1;</code>
+     * @return Whether the revision field is set.
+     */
+    @java.lang.Override
+    public boolean hasRevision() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>required int64 revision = 1;</code>
+     * @return The revision.
+     */
+    @java.lang.Override
+    public long getRevision() {
+      return revision_;
+    }
+
+    public static final int NUMBEROFPROCESSES_FIELD_NUMBER = 2;
+    private int numberOfProcesses_ = 0;
+    /**
+     * <code>required int32 numberOfProcesses = 2;</code>
+     * @return Whether the numberOfProcesses field is set.
+     */
+    @java.lang.Override
+    public boolean hasNumberOfProcesses() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>required int32 numberOfProcesses = 2;</code>
+     * @return The numberOfProcesses.
+     */
+    @java.lang.Override
+    public int getNumberOfProcesses() {
+      return numberOfProcesses_;
+    }
+
+    public static final int RESCALEINPROGRESS_FIELD_NUMBER = 3;
+    private boolean rescaleInProgress_ = false;
+    /**
+     * <code>required bool rescaleInProgress = 3;</code>
+     * @return Whether the rescaleInProgress field is set.
+     */
+    @java.lang.Override
+    public boolean hasRescaleInProgress() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <code>required bool rescaleInProgress = 3;</code>
+     * @return The rescaleInProgress.
+     */
+    @java.lang.Override
+    public boolean getRescaleInProgress() {
+      return rescaleInProgress_;
+    }
+
+    public static final int STARTEDTIMESTAMPMILLIS_FIELD_NUMBER = 4;
+    private long startedTimestampMillis_ = 0L;
+    /**
+     * <code>required int64 startedTimestampMillis = 4;</code>
+     * @return Whether the startedTimestampMillis field is set.
+     */
+    @java.lang.Override
+    public boolean hasStartedTimestampMillis() {
+      return ((bitField0_ & 0x00000008) != 0);
+    }
+    /**
+     * <code>required int64 startedTimestampMillis = 4;</code>
+     * @return The startedTimestampMillis.
+     */
+    @java.lang.Override
+    public long getStartedTimestampMillis() {
+      return startedTimestampMillis_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      if (!hasRevision()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasNumberOfProcesses()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasRescaleInProgress()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasStartedTimestampMillis()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(org.apache.pekko.protobufv3.internal.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeInt64(1, revision_);
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        output.writeInt32(2, numberOfProcesses_);
+      }
+      if (((bitField0_ & 0x00000004) != 0)) {
+        output.writeBool(3, rescaleInProgress_);
+      }
+      if (((bitField0_ & 0x00000008) != 0)) {
+        output.writeInt64(4, startedTimestampMillis_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
+          .computeInt64Size(1, revision_);
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
+          .computeInt32Size(2, numberOfProcesses_);
+      }
+      if (((bitField0_ & 0x00000004) != 0)) {
+        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
+          .computeBoolSize(3, rescaleInProgress_);
+      }
+      if (((bitField0_ & 0x00000008) != 0)) {
+        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
+          .computeInt64Size(4, startedTimestampMillis_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply)) {
+        return super.equals(obj);
+      }
+      org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply other = (org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply) obj;
+
+      if (hasRevision() != other.hasRevision()) return false;
+      if (hasRevision()) {
+        if (getRevision()
+            != other.getRevision()) return false;
+      }
+      if (hasNumberOfProcesses() != other.hasNumberOfProcesses()) return false;
+      if (hasNumberOfProcesses()) {
+        if (getNumberOfProcesses()
+            != other.getNumberOfProcesses()) return false;
+      }
+      if (hasRescaleInProgress() != other.hasRescaleInProgress()) return false;
+      if (hasRescaleInProgress()) {
+        if (getRescaleInProgress()
+            != other.getRescaleInProgress()) return false;
+      }
+      if (hasStartedTimestampMillis() != other.hasStartedTimestampMillis()) return false;
+      if (hasStartedTimestampMillis()) {
+        if (getStartedTimestampMillis()
+            != other.getStartedTimestampMillis()) return false;
+      }
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasRevision()) {
+        hash = (37 * hash) + REVISION_FIELD_NUMBER;
+        hash = (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashLong(
+            getRevision());
+      }
+      if (hasNumberOfProcesses()) {
+        hash = (37 * hash) + NUMBEROFPROCESSES_FIELD_NUMBER;
+        hash = (53 * hash) + getNumberOfProcesses();
+      }
+      if (hasRescaleInProgress()) {
+        hash = (37 * hash) + RESCALEINPROGRESS_FIELD_NUMBER;
+        hash = (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashBoolean(
+            getRescaleInProgress());
+      }
+      if (hasStartedTimestampMillis()) {
+        hash = (37 * hash) + STARTEDTIMESTAMPMILLIS_FIELD_NUMBER;
+        hash = (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashLong(
+            getStartedTimestampMillis());
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply parseFrom(
+        java.nio.ByteBuffer data)
+        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply parseFrom(
+        java.nio.ByteBuffer data,
+        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply parseFrom(
+        org.apache.pekko.protobufv3.internal.ByteString data)
+        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply parseFrom(
+        org.apache.pekko.protobufv3.internal.ByteString data,
+        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply parseFrom(byte[] data)
+        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply parseFrom(
+        byte[] data,
+        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply parseFrom(
+        java.io.InputStream input,
+        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply parseDelimitedFrom(
+        java.io.InputStream input,
+        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply parseFrom(
+        org.apache.pekko.protobufv3.internal.CodedInputStream input)
+        throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply parseFrom(
+        org.apache.pekko.protobufv3.internal.CodedInputStream input,
+        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        org.apache.pekko.protobufv3.internal.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code org.apache.pekko.cluster.sharding.typed.GetNumberOfProcessesReply}
+     */
+    public static final class Builder extends
+        org.apache.pekko.protobufv3.internal.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:org.apache.pekko.cluster.sharding.typed.GetNumberOfProcessesReply)
+        org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReplyOrBuilder {
+      public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
+          getDescriptor() {
+        return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_org_apache_pekko_cluster_sharding_typed_GetNumberOfProcessesReply_descriptor;
+      }
+
+      @java.lang.Override
+      protected org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_org_apache_pekko_cluster_sharding_typed_GetNumberOfProcessesReply_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply.class, org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply.Builder.class);
+      }
+
+      // Construct using org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          org.apache.pekko.protobufv3.internal.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        revision_ = 0L;
+        numberOfProcesses_ = 0;
+        rescaleInProgress_ = false;
+        startedTimestampMillis_ = 0L;
+        return this;
+      }
+
+      @java.lang.Override
+      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
+          getDescriptorForType() {
+        return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_org_apache_pekko_cluster_sharding_typed_GetNumberOfProcessesReply_descriptor;
+      }
+
+      @java.lang.Override
+      public org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply getDefaultInstanceForType() {
+        return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply build() {
+        org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply buildPartial() {
+        org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply result = new org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply result) {
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.revision_ = revision_;
+          to_bitField0_ |= 0x00000001;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.numberOfProcesses_ = numberOfProcesses_;
+          to_bitField0_ |= 0x00000002;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.rescaleInProgress_ = rescaleInProgress_;
+          to_bitField0_ |= 0x00000004;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.startedTimestampMillis_ = startedTimestampMillis_;
+          to_bitField0_ |= 0x00000008;
+        }
+        result.bitField0_ |= to_bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
+        if (other instanceof org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply) {
+          return mergeFrom((org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply other) {
+        if (other == org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply.getDefaultInstance()) return this;
+        if (other.hasRevision()) {
+          setRevision(other.getRevision());
+        }
+        if (other.hasNumberOfProcesses()) {
+          setNumberOfProcesses(other.getNumberOfProcesses());
+        }
+        if (other.hasRescaleInProgress()) {
+          setRescaleInProgress(other.getRescaleInProgress());
+        }
+        if (other.hasStartedTimestampMillis()) {
+          setStartedTimestampMillis(other.getStartedTimestampMillis());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        if (!hasRevision()) {
+          return false;
+        }
+        if (!hasNumberOfProcesses()) {
+          return false;
+        }
+        if (!hasRescaleInProgress()) {
+          return false;
+        }
+        if (!hasStartedTimestampMillis()) {
+          return false;
+        }
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          org.apache.pekko.protobufv3.internal.CodedInputStream input,
+          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                revision_ = input.readInt64();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 8
+              case 16: {
+                numberOfProcesses_ = input.readInt32();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
+              case 24: {
+                rescaleInProgress_ = input.readBool();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 24
+              case 32: {
+                startedTimestampMillis_ = input.readInt64();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 32
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private long revision_ ;
+      /**
+       * <code>required int64 revision = 1;</code>
+       * @return Whether the revision field is set.
+       */
+      @java.lang.Override
+      public boolean hasRevision() {
+        return ((bitField0_ & 0x00000001) != 0);
+      }
+      /**
+       * <code>required int64 revision = 1;</code>
+       * @return The revision.
+       */
+      @java.lang.Override
+      public long getRevision() {
+        return revision_;
+      }
+      /**
+       * <code>required int64 revision = 1;</code>
+       * @param value The revision to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRevision(long value) {
+
+        revision_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required int64 revision = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRevision() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        revision_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private int numberOfProcesses_ ;
+      /**
+       * <code>required int32 numberOfProcesses = 2;</code>
+       * @return Whether the numberOfProcesses field is set.
+       */
+      @java.lang.Override
+      public boolean hasNumberOfProcesses() {
+        return ((bitField0_ & 0x00000002) != 0);
+      }
+      /**
+       * <code>required int32 numberOfProcesses = 2;</code>
+       * @return The numberOfProcesses.
+       */
+      @java.lang.Override
+      public int getNumberOfProcesses() {
+        return numberOfProcesses_;
+      }
+      /**
+       * <code>required int32 numberOfProcesses = 2;</code>
+       * @param value The numberOfProcesses to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNumberOfProcesses(int value) {
+
+        numberOfProcesses_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required int32 numberOfProcesses = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNumberOfProcesses() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        numberOfProcesses_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private boolean rescaleInProgress_ ;
+      /**
+       * <code>required bool rescaleInProgress = 3;</code>
+       * @return Whether the rescaleInProgress field is set.
+       */
+      @java.lang.Override
+      public boolean hasRescaleInProgress() {
+        return ((bitField0_ & 0x00000004) != 0);
+      }
+      /**
+       * <code>required bool rescaleInProgress = 3;</code>
+       * @return The rescaleInProgress.
+       */
+      @java.lang.Override
+      public boolean getRescaleInProgress() {
+        return rescaleInProgress_;
+      }
+      /**
+       * <code>required bool rescaleInProgress = 3;</code>
+       * @param value The rescaleInProgress to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRescaleInProgress(boolean value) {
+
+        rescaleInProgress_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required bool rescaleInProgress = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRescaleInProgress() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        rescaleInProgress_ = false;
+        onChanged();
+        return this;
+      }
+
+      private long startedTimestampMillis_ ;
+      /**
+       * <code>required int64 startedTimestampMillis = 4;</code>
+       * @return Whether the startedTimestampMillis field is set.
+       */
+      @java.lang.Override
+      public boolean hasStartedTimestampMillis() {
+        return ((bitField0_ & 0x00000008) != 0);
+      }
+      /**
+       * <code>required int64 startedTimestampMillis = 4;</code>
+       * @return The startedTimestampMillis.
+       */
+      @java.lang.Override
+      public long getStartedTimestampMillis() {
+        return startedTimestampMillis_;
+      }
+      /**
+       * <code>required int64 startedTimestampMillis = 4;</code>
+       * @param value The startedTimestampMillis to set.
+       * @return This builder for chaining.
+       */
+      public Builder setStartedTimestampMillis(long value) {
+
+        startedTimestampMillis_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required int64 startedTimestampMillis = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearStartedTimestampMillis() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        startedTimestampMillis_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:org.apache.pekko.cluster.sharding.typed.GetNumberOfProcessesReply)
+    }
+
+    // @@protoc_insertion_point(class_scope:org.apache.pekko.cluster.sharding.typed.GetNumberOfProcessesReply)
+    private static final org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply();
+    }
+
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final org.apache.pekko.protobufv3.internal.Parser<GetNumberOfProcessesReply>
+        PARSER = new org.apache.pekko.protobufv3.internal.AbstractParser<GetNumberOfProcessesReply>() {
+      @java.lang.Override
+      public GetNumberOfProcessesReply parsePartialFrom(
+          org.apache.pekko.protobufv3.internal.CodedInputStream input,
+          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (org.apache.pekko.protobufv3.internal.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static org.apache.pekko.protobufv3.internal.Parser<GetNumberOfProcessesReply> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public org.apache.pekko.protobufv3.internal.Parser<GetNumberOfProcessesReply> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.GetNumberOfProcessesReply getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
     internal_static_org_apache_pekko_cluster_sharding_typed_ShardingEnvelope_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
       internal_static_org_apache_pekko_cluster_sharding_typed_ShardingEnvelope_fieldAccessorTable;
+  private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
+    internal_static_org_apache_pekko_cluster_sharding_typed_DaemonProcessScaleState_descriptor;
+  private static final 
+    org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
+      internal_static_org_apache_pekko_cluster_sharding_typed_DaemonProcessScaleState_fieldAccessorTable;
+  private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
+    internal_static_org_apache_pekko_cluster_sharding_typed_ChangeNumberOfProcesses_descriptor;
+  private static final 
+    org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
+      internal_static_org_apache_pekko_cluster_sharding_typed_ChangeNumberOfProcesses_fieldAccessorTable;
+  private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
+    internal_static_org_apache_pekko_cluster_sharding_typed_GetNumberOfProcesses_descriptor;
+  private static final 
+    org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
+      internal_static_org_apache_pekko_cluster_sharding_typed_GetNumberOfProcesses_fieldAccessorTable;
+  private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
+    internal_static_org_apache_pekko_cluster_sharding_typed_GetNumberOfProcessesReply_descriptor;
+  private static final 
+    org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable
+      internal_static_org_apache_pekko_cluster_sharding_typed_GetNumberOfProcessesReply_fieldAccessorTable;
 
   public static org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
       getDescriptor() {
@@ -824,9 +3632,18 @@ public final class ShardingMessages extends org.apache.pekko.protobufv3.internal
       "\n\026ShardingMessages.proto\022\'org.apache.pek" +
       "ko.cluster.sharding.typed\032\026ContainerForm" +
       "ats.proto\"?\n\020ShardingEnvelope\022\020\n\010entityI" +
-      "d\030\001 \002(\t\022\031\n\007message\030\002 \002(\0132\010.PayloadB=\n9or" +
-      "g.apache.pekko.cluster.sharding.typed.in" +
-      "ternal.protobufH\001"
+      "d\030\001 \002(\t\022\031\n\007message\030\002 \002(\0132\010.Payload\"y\n\027Da" +
+      "emonProcessScaleState\022\020\n\010revision\030\001 \002(\003\022" +
+      "\031\n\021numberOfProcesses\030\002 \002(\005\022\021\n\tcompleted\030" +
+      "\003 \002(\010\022\036\n\026startedTimestampMillis\030\004 \002(\003\"H\n" +
+      "\027ChangeNumberOfProcesses\022\034\n\024newNumberOfP" +
+      "rocesses\030\001 \002(\005\022\017\n\007replyTo\030\002 \002(\t\"\'\n\024GetNu" +
+      "mberOfProcesses\022\017\n\007replyTo\030\001 \002(\t\"\203\001\n\031Get" +
+      "NumberOfProcessesReply\022\020\n\010revision\030\001 \002(\003" +
+      "\022\031\n\021numberOfProcesses\030\002 \002(\005\022\031\n\021rescaleIn" +
+      "Progress\030\003 \002(\010\022\036\n\026startedTimestampMillis" +
+      "\030\004 \002(\003B=\n9org.apache.pekko.cluster.shard" +
+      "ing.typed.internal.protobufH\001"
     };
     descriptor = org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -839,6 +3656,30 @@ public final class ShardingMessages extends org.apache.pekko.protobufv3.internal
       org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
         internal_static_org_apache_pekko_cluster_sharding_typed_ShardingEnvelope_descriptor,
         new java.lang.String[] { "EntityId", "Message", });
+    internal_static_org_apache_pekko_cluster_sharding_typed_DaemonProcessScaleState_descriptor =
+      getDescriptor().getMessageType(1);
+    internal_static_org_apache_pekko_cluster_sharding_typed_DaemonProcessScaleState_fieldAccessorTable = new
+      org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
+        internal_static_org_apache_pekko_cluster_sharding_typed_DaemonProcessScaleState_descriptor,
+        new java.lang.String[] { "Revision", "NumberOfProcesses", "Completed", "StartedTimestampMillis", });
+    internal_static_org_apache_pekko_cluster_sharding_typed_ChangeNumberOfProcesses_descriptor =
+      getDescriptor().getMessageType(2);
+    internal_static_org_apache_pekko_cluster_sharding_typed_ChangeNumberOfProcesses_fieldAccessorTable = new
+      org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
+        internal_static_org_apache_pekko_cluster_sharding_typed_ChangeNumberOfProcesses_descriptor,
+        new java.lang.String[] { "NewNumberOfProcesses", "ReplyTo", });
+    internal_static_org_apache_pekko_cluster_sharding_typed_GetNumberOfProcesses_descriptor =
+      getDescriptor().getMessageType(3);
+    internal_static_org_apache_pekko_cluster_sharding_typed_GetNumberOfProcesses_fieldAccessorTable = new
+      org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
+        internal_static_org_apache_pekko_cluster_sharding_typed_GetNumberOfProcesses_descriptor,
+        new java.lang.String[] { "ReplyTo", });
+    internal_static_org_apache_pekko_cluster_sharding_typed_GetNumberOfProcessesReply_descriptor =
+      getDescriptor().getMessageType(4);
+    internal_static_org_apache_pekko_cluster_sharding_typed_GetNumberOfProcessesReply_fieldAccessorTable = new
+      org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
+        internal_static_org_apache_pekko_cluster_sharding_typed_GetNumberOfProcessesReply_descriptor,
+        new java.lang.String[] { "Revision", "NumberOfProcesses", "RescaleInProgress", "StartedTimestampMillis", });
     descriptor.resolveAllFeaturesImmutable();
     org.apache.pekko.remote.ContainerFormats.getDescriptor();
   }
