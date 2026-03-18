@@ -304,6 +304,7 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
   private val ORMultiMapManifest = "K"
   private val ORMultiMapKeyManifest = "k"
   private val VersionVectorManifest = "L"
+  private val UnspecificKeyManifest = "m"
 
   private val fromBinaryMap = collection.immutable.HashMap[String, Array[Byte] => AnyRef](
     GSetManifest -> gsetFromBinary,
@@ -336,7 +337,8 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
     ORMapKeyManifest -> (bytes => ORMapKey(keyIdFromBinary(bytes))),
     LWWMapKeyManifest -> (bytes => LWWMapKey(keyIdFromBinary(bytes))),
     PNCounterMapKeyManifest -> (bytes => PNCounterMapKey(keyIdFromBinary(bytes))),
-    ORMultiMapKeyManifest -> (bytes => ORMultiMapKey(keyIdFromBinary(bytes))))
+    ORMultiMapKeyManifest -> (bytes => ORMultiMapKey(keyIdFromBinary(bytes))),
+    UnspecificKeyManifest -> (bytes => Key.UnspecificKey(keyIdFromBinary(bytes))))
 
   override def manifest(obj: AnyRef): String = obj match {
     case _: ORSet[_]                     => ORSetManifest
@@ -368,6 +370,7 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
     case _: LWWMapKey[_, _]     => LWWMapKeyManifest
     case _: PNCounterMapKey[_]  => PNCounterMapKeyManifest
     case _: ORMultiMapKey[_, _] => ORMultiMapKeyManifest
+    case _: Key.UnspecificKey   => UnspecificKeyManifest
 
     case _: ORSet.DeltaGroup[_]       => ORSetDeltaGroupManifest
     case _: ORMap.DeltaGroup[_, _]    => ORMapDeltaGroupManifest
