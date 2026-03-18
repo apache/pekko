@@ -59,7 +59,7 @@ final class Attributes private[pekko] (
   import Attributes._
 
   // for binary compatibility (used to be a case class)
-  @deprecated("Use factories on companion object instead", since = "Pekko 1.2.0")
+  @deprecated("Use factories on companion object instead", since = "2.0.0")
   @nowarn("msg=deprecated")
   def this(attributeList: List[Attributes.Attribute] = Nil) =
     this(
@@ -338,16 +338,16 @@ final class Attributes private[pekko] (
 
   // for binary compatibility (used to be a case class)
 
-  @deprecated("Use explicit methods on Attributes to interact, not the ones provided by Product", "Pekko 1.2.0")
+  @deprecated("Use explicit methods on Attributes to interact, not the ones provided by Product", "2.0.0")
   override def productArity: Int = 1
 
-  @deprecated("Use explicit methods on Attributes to interact, not the ones provided by Product", "Pekko 1.2.0")
+  @deprecated("Use explicit methods on Attributes to interact, not the ones provided by Product", "2.0.0")
   override def productElement(n: Int): Any = n match {
     case 0 => attributeList
     case _ => throw new IllegalArgumentException()
   }
 
-  @deprecated("Don't use copy on Attributes", "Pekko 1.2.0")
+  @deprecated("Don't use copy on Attributes", "2.0.0")
   @nowarn("msg=deprecated")
   def copy(attributeList: List[Attribute] = attributeList): Attributes =
     new Attributes(attributeList)
@@ -390,7 +390,7 @@ object Attributes {
 
   // for binary compatibility
 
-  @deprecated("Use explicit methods on Attributes to interact, not the synthetic case class ones", "Pekko 1.2.0")
+  @deprecated("Use explicit methods on Attributes to interact, not the synthetic case class ones", "2.0.0")
   def unapply(attrs: Attributes): Option[List[Attribute]] =
     Some(attrs.attributeList)
 
