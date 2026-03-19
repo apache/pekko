@@ -15,6 +15,9 @@ package org.apache.pekko.persistence.typed.delivery
 
 import java.util.UUID
 
+import scala.concurrent.duration._
+import scala.util.Try
+
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl._
 import pekko.actor.typed.ActorRef
@@ -203,14 +206,35 @@ class ReliableDeliveryWithEventSourcedProducerQueueSpec(config: Config)
 
       // Phase 2: restart — must NOT crash, and must resume from the persisted sequence number.
       val (pc2, cc2) = startProducerAndConsumer(producerId, producerProbe, consumerProbe)
+
+      // If StoreMessageConfirmed was not yet persisted when pc1 stopped, pc2 restarts with
+      // non-empty unconfirmed and re-delivers the earlier message(s) BEFORE emitting RequestNext.
+      // Causal ordering: cc2 enqueues a Delivery to consumerProbe in the same handler that
+      // it enqueues a Request to pc2; pc2 only emits RequestNext after processing that Request.
+      // Therefore, if any redelivery is coming, it arrives at consumerProbe before RequestNext
+      // reaches producerProbe. Draining it first (short timeout) prevents producerProbe from
+      // having to wait for the full redelivery round-trip before RequestNext arrives.
+      // The timeout only applies to the no-redelivery (confirmation-persisted) case, where it
+      // adds a small, bounded delay rather than an indefinite block.
+      // 500 ms is generous for local actor messaging (typically < 10 ms) but short enough
+      // that in the no-redelivery case the timeout does not slow down the test noticeably.
+      Try(consumerProbe.receiveMessage(500.millis)).foreach { redelivery =>
+        // A delivery before we have sent msg-2 can only be a redelivery of msg-1.
+        redelivery.message should ===("msg-1")
+        redelivery.confirmTo ! ConsumerController.Confirmed
+      }
+
+      // RequestNext now arrives quickly in both cases:
+      //   - confirmed:     pc2 emitted it immediately from becomeActive (empty unconfirmed)
+      //   - not confirmed: pc2 emitted it after cc2's initial Request (triggered by the redelivery)
       val req2 = producerProbe.receiveMessage()
       // The bug caused requestedSeqNr to be hardcoded to 1 regardless of the persisted state,
       // so currentSeqNr > requestedSeqNr and the controller crashed on the next message.
       req2.currentSeqNr should ===(nextSeqNr)
       req2.sendNextTo ! "msg-2"
-      // StoreMessageConfirmed is write-behind: if it was not yet persisted when pc1 was stopped,
-      // pc2 may re-deliver the earlier message before delivering the new one.
-      // Drain any such redelivery and confirm it so the ConsumerController can advance.
+      // For the chunked-message case, pc2 may have re-delivered only the first chunk via
+      // ResendFirst before RequestNext was sent. Sending msg-2 triggers a Resend cycle for
+      // the remaining chunks, so the assembled msg-1 may arrive at consumerProbe before msg-2.
       val firstDelivery = consumerProbe.receiveMessage()
       if (firstDelivery.message != "msg-2") {
         firstDelivery.message should ===("msg-1") // sanity-check: only msg-1 can be redelivered
