@@ -14,11 +14,13 @@ If you have questions about the contribution process or discuss specific issues,
 
 Depending on which version (or sometimes module) you want to work on, you should target a specific branch as explained below:
 
-* `main` – active development branch of Pekko
+* `main` – active development branch of Pekko (2.0.x)
 * `1.0.x` – maintenance branch of Pekko 1.0
 * `1.1.x` – maintenance branch of Pekko 1.1
 * `1.2.x` – maintenance branch of Pekko 1.2
-* `1.3.x` – maintenance branch of Pekko 1.3 (unreleased but active development ongoing)
+* `1.3.x` – maintenance branch of Pekko 1.3
+* `1.4.x` – maintenance branch of Pekko 1.4
+* `1.5.x` – maintenance branch of Pekko 1.5 (unreleased but active development ongoing)
 
 ### Tags
 
@@ -290,7 +292,8 @@ For a pull request to be considered at all, it has to meet these requirements:
 1. A pull request must be [linked to the issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue) it aims to resolve in the PR's description (or comments). This can be achieved by writing "Fixes #1234" or similar in PR description.
 1. Licensing rules:
    - Existing files with copyright statements must leave those copyright statements intact
-   - New files should have an Apache license header instead. For an example of this, see [this file](https://github.com/apache/spark/blob/master/core/src/main/scala/org/apache/spark/SparkContext.scala).
+   - If you create a new file but copy in code from other files then you must add the source headers from those original files. If in doubt, leave a comment in your PR and explain where you took the code from.
+   - New files that have new code should have a standard Apache license header instead. For an example of this, see [this file](https://github.com/apache/spark/blob/master/core/src/main/scala/org/apache/spark/SparkContext.scala). Do not put the special Pekko license header that mentions Akka in it on the file unless you are copying code from an existing file that contains Akka derived code.
 
 #### Additional guidelines
 
