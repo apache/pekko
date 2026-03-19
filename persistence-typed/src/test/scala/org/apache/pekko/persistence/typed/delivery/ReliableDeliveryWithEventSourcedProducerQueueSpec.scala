@@ -184,33 +184,52 @@ class ReliableDeliveryWithEventSourcedProducerQueueSpec(config: Config)
       val producerProbe = createTestProbe[ProducerController.RequestNext[String]]()
       val consumerProbe = createTestProbe[ConsumerController.Delivery[String]]()
 
-      // Phase 1: send one message and confirm it fully, then stop
-      val pc1 = startProducerAndConsumer(producerId, producerProbe, consumerProbe)
+      // Phase 1: send one message and confirm it fully, then stop both controllers cleanly.
+      val (pc1, cc1) = startProducerAndConsumer(producerId, producerProbe, consumerProbe)
       producerProbe.receiveMessage().sendNextTo ! "msg-1"
       val del1 = consumerProbe.receiveMessage()
       del1.confirmTo ! ConsumerController.Confirmed
-      // Wait until the controller has processed the confirmation and issued a new RequestNext
-      // (unconfirmed buffer is now empty, state persisted at seqNr=2)
-      producerProbe.receiveMessage()
+      // Wait for the ProducerController to process the confirmation and issue a new RequestNext.
+      // The seqNr is captured dynamically: for non-chunked messages it will be 2; for chunked
+      // messages each byte is a separate seqNr, so it will be higher (e.g. 6 for a 5-byte string).
+      // Note: StoreMessageConfirmed is intentionally write-behind (fire-and-forget, no reply), so
+      // the confirmation may not yet be persisted to the journal when pc1 is stopped below.
+      // If that happens, pc2 will re-deliver the earlier message — Phase 2 handles this case.
+      val nextSeqNr = producerProbe.receiveMessage().currentSeqNr
       testKit.stop(pc1)
+      producerProbe.expectTerminated(pc1)
+      testKit.stop(cc1)
+      consumerProbe.expectTerminated(cc1)
 
-      // Phase 2: restart — must NOT crash, and must request seqNr 2
-      val pc2 = startProducerAndConsumer(producerId, producerProbe, consumerProbe)
+      // Phase 2: restart — must NOT crash, and must resume from the persisted sequence number.
+      val (pc2, cc2) = startProducerAndConsumer(producerId, producerProbe, consumerProbe)
       val req2 = producerProbe.receiveMessage()
-      req2.currentSeqNr should ===(2L) // fails without the fix (would be 1)
-      req2.sendNextTo ! "msg-2" // would throw IllegalStateException without the fix
-      consumerProbe.receiveMessage().message should ===("msg-2")
+      // The bug caused requestedSeqNr to be hardcoded to 1 regardless of the persisted state,
+      // so currentSeqNr > requestedSeqNr and the controller crashed on the next message.
+      req2.currentSeqNr should ===(nextSeqNr)
+      req2.sendNextTo ! "msg-2"
+      // StoreMessageConfirmed is write-behind: if it was not yet persisted when pc1 was stopped,
+      // pc2 may re-deliver the earlier message before delivering the new one.
+      // Drain any such redelivery and confirm it so the ConsumerController can advance.
+      val firstDelivery = consumerProbe.receiveMessage()
+      if (firstDelivery.message != "msg-2") {
+        firstDelivery.message should ===("msg-1") // sanity-check: only msg-1 can be redelivered
+        firstDelivery.confirmTo ! ConsumerController.Confirmed
+        consumerProbe.receiveMessage().message should ===("msg-2")
+      }
       testKit.stop(pc2)
+      testKit.stop(cc2)
     }
 
   }
 
-  // Helper to start a ProducerController (with EventSourcedProducerQueue) and a ConsumerController
+  // Helper to start a ProducerController (with EventSourcedProducerQueue) and a ConsumerController.
+  // Returns both refs so callers can stop them independently.
   private def startProducerAndConsumer(
       producerId: String,
       producerProbe: TestProbe[ProducerController.RequestNext[String]],
       consumerProbe: TestProbe[ConsumerController.Delivery[String]]
-  ): ActorRef[ProducerController.Command[String]] = {
+  ): (ActorRef[ProducerController.Command[String]], ActorRef[ConsumerController.Command[String]]) = {
 
     val persistenceId = PersistenceId.ofUniqueId(producerId)
     val durableQueue = EventSourcedProducerQueue[String](persistenceId)
@@ -224,7 +243,7 @@ class ReliableDeliveryWithEventSourcedProducerQueueSpec(config: Config)
     producerController ! ProducerController.Start(producerProbe.ref)
     consumerController ! ConsumerController.Start(consumerProbe.ref)
 
-    producerController
+    (producerController, consumerController)
   }
 
 }
