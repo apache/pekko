@@ -17,6 +17,7 @@ import java.util.UUID
 
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl._
+import pekko.actor.typed.ActorRef
 import pekko.actor.typed.delivery.ConsumerController
 import pekko.actor.typed.delivery.ProducerController
 import pekko.persistence.typed.PersistenceId
@@ -178,6 +179,52 @@ class ReliableDeliveryWithEventSourcedProducerQueueSpec(config: Config)
       testKit.stop(consumerController)
     }
 
+    "resume correctly after restart when all messages were confirmed" in {
+      val producerId = "p-restart-clean"
+      val producerProbe = createTestProbe[ProducerController.RequestNext[String]]()
+      val consumerProbe = createTestProbe[ConsumerController.Delivery[String]]()
+
+      // Phase 1: send one message and confirm it fully, then stop
+      val pc1 = startProducerAndConsumer(producerId, producerProbe, consumerProbe)
+      producerProbe.receiveMessage().sendNextTo ! "msg-1"
+      val del1 = consumerProbe.receiveMessage()
+      del1.confirmTo ! ConsumerController.Confirmed
+      // Wait until the controller has processed the confirmation and issued a new RequestNext
+      // (unconfirmed buffer is now empty, state persisted at seqNr=2)
+      producerProbe.receiveMessage()
+      testKit.stop(pc1)
+
+      // Phase 2: restart — must NOT crash, and must request seqNr 2
+      val pc2 = startProducerAndConsumer(producerId, producerProbe, consumerProbe)
+      val req2 = producerProbe.receiveMessage()
+      req2.currentSeqNr should ===(2L) // fails without the fix (would be 1)
+      req2.sendNextTo ! "msg-2" // would throw IllegalStateException without the fix
+      consumerProbe.receiveMessage().message should ===("msg-2")
+      testKit.stop(pc2)
+    }
+
+  }
+
+  // Helper to start a ProducerController (with EventSourcedProducerQueue) and a ConsumerController
+  private def startProducerAndConsumer(
+      producerId: String,
+      producerProbe: TestProbe[ProducerController.RequestNext[String]],
+      consumerProbe: TestProbe[ConsumerController.Delivery[String]]
+  ): ActorRef[ProducerController.Command[String]] = {
+
+    val persistenceId = PersistenceId.ofUniqueId(producerId)
+    val durableQueue = EventSourcedProducerQueue[String](persistenceId)
+
+    val producerController = spawn(
+      ProducerController[String](producerId, Some(durableQueue)))
+
+    val consumerController = spawn(ConsumerController[String]())
+
+    producerController ! ProducerController.RegisterConsumer(consumerController)
+    producerController ! ProducerController.Start(producerProbe.ref)
+    consumerController ! ConsumerController.Start(consumerProbe.ref)
+
+    producerController
   }
 
 }
