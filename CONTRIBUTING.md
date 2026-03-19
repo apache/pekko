@@ -292,8 +292,10 @@ For a pull request to be considered at all, it has to meet these requirements:
 1. A pull request must be [linked to the issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue) it aims to resolve in the PR's description (or comments). This can be achieved by writing "Fixes #1234" or similar in PR description.
 1. Licensing rules:
    - Existing files with copyright statements must leave those copyright statements intact
-   - If you create a new file but copy in code from other files then you must add the source headers from those original files. If in doubt, leave a comment in your PR and explain where you took the code from.
+   - If you create a new file but copy in code from other files then you must add the source headers from those original files. If in doubt, leave a comment in your PR and explain where you took the code from. If the copied source comes from an external project, we will need to know about this so that we can decide if the code has an incompatible license and if it's ok, we will still need to mention it in our LICENSE file.
    - New files that have new code should have a standard Apache license header instead. For an example of this, see [this file](https://github.com/apache/spark/blob/master/core/src/main/scala/org/apache/spark/SparkContext.scala). Do not put the special Pekko license header that mentions Akka in it on the file unless you are copying code from an existing file that contains Akka derived code.
+   - `sbt headerCreate` adds headers to new files - but the command does not know about the origin of the code in the new files
+   - `sbt headerCheck` runs a check to see if files are missing headers
 
 #### Additional guidelines
 
