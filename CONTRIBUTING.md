@@ -18,9 +18,9 @@ Depending on which version (or sometimes module) you want to work on, you should
 * `1.0.x` – maintenance branch of Pekko 1.0
 * `1.1.x` – maintenance branch of Pekko 1.1
 * `1.2.x` – maintenance branch of Pekko 1.2
-* `1.3.x` – maintenance branch of Pekko 1.3
-* `1.4.x` – maintenance branch of Pekko 1.4
-* `1.5.x` – maintenance branch of Pekko 1.5 (unreleased but active development ongoing)
+* there are other `1.N.x` branches for newer minor versions of Pekko
+
+Generally, PRs should start on the `main` branch and we can choose to backport them once merged there.
 
 ### Tags
 
