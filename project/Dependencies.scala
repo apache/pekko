@@ -120,7 +120,7 @@ object Dependencies {
       val junit6 = "org.junit.jupiter" % "junit-jupiter-engine" % junit6Version % Test
       val junitPlatformLauncher = "org.junit.platform" % "junit-platform-launcher" % junit6Version % Test
       val junitInterface = "com.github.sbt" % "junit-interface" % "0.13.3" % Test
-      val jupiterInterface = "com.github.sbt.junit" % "jupiter-interface" % "0.17.1" % Test
+      val jupiterInterface = "com.github.sbt.junit" % "jupiter-interface" % "0.18.0" % Test
       val httpClient = "org.apache.httpcomponents" % "httpclient" % "4.5.14" % Test
 
       val logback = Compile.logback % Test
