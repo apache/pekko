@@ -289,6 +289,39 @@ class DurableProducerControllerSpec
 
       testKit.stop(producerController)
     }
+
+    "resume correctly after restart with empty unconfirmed buffer" in {
+      nextId()
+      val consumerControllerProbe = createTestProbe[ConsumerController.Command[TestConsumer.Job]]()
+
+      // Simulate a restart where all messages up to seqNr 4 were confirmed before shutdown.
+      // The unconfirmed buffer is empty.
+      val durable = TestDurableProducerQueue[TestConsumer.Job](
+        Duration.Zero,
+        DurableProducerQueue.State(
+          currentSeqNr = 5,
+          highestConfirmedSeqNr = 4,
+          confirmedSeqNr = Map(NoQualifier -> (4L -> TestTimestamp)),
+          unconfirmed = Vector.empty[DurableProducerQueue.MessageSent[TestConsumer.Job]]))
+
+      val producerController =
+        spawn(ProducerController[TestConsumer.Job](producerId, Some(durable)), s"producerController-$idCount")
+          .unsafeUpcast[ProducerControllerImpl.InternalCommand]
+      val producerProbe = createTestProbe[ProducerController.RequestNext[TestConsumer.Job]]()
+      producerController ! ProducerController.Start(producerProbe.ref)
+      producerController ! ProducerController.RegisterConsumer(consumerControllerProbe.ref)
+
+      // With the fix: RequestNext should carry the restored seqNr (5), not 1.
+      val requestNext = producerProbe.receiveMessage()
+      requestNext.currentSeqNr should ===(5L)
+
+      // Sending a message must succeed without crashing and must be delivered with seqNr 5.
+      requestNext.sendNextTo ! TestConsumer.Job("msg-5")
+      consumerControllerProbe.expectMessage(sequencedMessage(producerId, 5, producerController).asFirst)
+
+      testKit.stop(producerController)
+    }
+
   }
 
 }

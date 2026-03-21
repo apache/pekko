@@ -251,7 +251,7 @@ object ProducerControllerImpl {
       requested = false,
       currentSeqNr = loadedState.currentSeqNr,
       confirmedSeqNr = loadedState.highestConfirmedSeqNr,
-      requestedSeqNr = 1L,
+      requestedSeqNr = loadedState.currentSeqNr,
       replyAfterStore = Map.empty,
       supportResend = true,
       unconfirmed = unconfirmed,
@@ -330,8 +330,8 @@ object ProducerControllerImpl {
         val msgAdapter: ActorRef[A] = context.messageAdapter(msg => Msg(msg))
         val requested =
           if (state.unconfirmed.isEmpty) {
-            flightRecorder.producerRequestNext(producerId, 1L, 0)
-            state.producer ! RequestNext(producerId, 1L, 0L, msgAdapter, context.self)
+            flightRecorder.producerRequestNext(producerId, state.currentSeqNr, state.confirmedSeqNr)
+            state.producer ! RequestNext(producerId, state.currentSeqNr, state.confirmedSeqNr, msgAdapter, context.self)
             true
           } else {
             context.log.debug("Starting with [{}] unconfirmed.", state.unconfirmed.size)
