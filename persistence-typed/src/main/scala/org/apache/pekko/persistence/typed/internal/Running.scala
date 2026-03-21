@@ -1015,7 +1015,7 @@ private[pekko] object Running {
       case DeleteMessagesSuccess(toSequenceNr) =>
         setup.internalLogger.debug("Persistent events to sequenceNr [{}] deleted successfully.", toSequenceNr)
         setup.retention match {
-          case DisabledRetentionCriteria => // no further actions
+          case DisabledRetentionCriteria             => // no further actions
           case s: SnapshotCountRetentionCriteriaImpl =>
             if (!setup.isOnlyOneSnapshot) {
               // The reason for -1 is that a snapshot at the exact toSequenceNr is still useful and the events
