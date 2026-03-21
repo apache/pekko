@@ -51,14 +51,13 @@ class ScheduledClockSpec extends PekkoSpec {
       val clock = new ScheduledClock(interval, system.scheduler, system.dispatcher)
 
       // run a few threads updating in the background
-      val backgroundTasks =
-        (1 to 3).map { _ =>
-          system.scheduler.scheduleWithFixedDelay(10.millis, 10.millis) { () =>
-            (1 to 1000).foreach { _ =>
-              clock.currentTime()
-            }
-          }(system.dispatcher)
-        }
+      val backgroundTasks = (1 to 3).map { _ =>
+        system.scheduler.scheduleWithFixedDelay(10.millis, 10.millis) { () =>
+          (1 to 1000).foreach { _ =>
+            clock.currentTime()
+          }
+        }(system.dispatcher)
+      }
       try {
         var t = clock.currentTime()
         (1 to 1000000).foreach { n =>
