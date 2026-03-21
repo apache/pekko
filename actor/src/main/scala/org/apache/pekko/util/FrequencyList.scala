@@ -27,8 +27,8 @@ private[pekko] object FrequencyList {
     new FrequencyList[A](dynamicAging, clock = OptionVal.None)
 
   object withOverallRecency {
-    def empty[A](dynamicAging: Boolean = false): FrequencyList[A] =
-      new FrequencyList[A](dynamicAging, OptionVal.Some(new RecencyList.NanoClock))
+    def empty[A](clock: Clock, dynamicAging: Boolean = false): FrequencyList[A] =
+      new FrequencyList[A](dynamicAging, OptionVal.Some(clock))
   }
 
   private final class FrequencyNode[A](val priority: Long) {
@@ -60,7 +60,7 @@ private[pekko] object FrequencyList {
  * Dynamic aging can be enabled for least frequently used policies, to automatically 'age' the whole cache on evictions.
  */
 @InternalApi
-private[pekko] final class FrequencyList[A](dynamicAging: Boolean, clock: OptionVal[RecencyList.Clock]) {
+private[pekko] final class FrequencyList[A](dynamicAging: Boolean, clock: OptionVal[Clock]) {
   import FrequencyList.{ FrequencyNode, Node }
 
   private val frequency = new DoubleLinkedList[FrequencyNode[A]](

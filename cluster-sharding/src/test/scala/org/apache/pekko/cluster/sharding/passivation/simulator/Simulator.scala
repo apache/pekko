@@ -44,6 +44,7 @@ import pekko.cluster.sharding.internal.SegmentedLeastRecentlyUsedEntityPassivati
 import pekko.cluster.sharding.internal.SegmentedLeastRecentlyUsedReplacementPolicy
 import pekko.stream.scaladsl.Flow
 import pekko.stream.scaladsl.Source
+import pekko.util.Clock
 import pekko.util.OptionVal
 
 import com.typesafe.config.ConfigFactory
@@ -63,8 +64,8 @@ object Simulator {
   final case class Results(name: String, stats: ShardingStats)
 
   def run(settings: SimulatorSettings): Unit = {
-    val simulations = settings.runs.map(Simulation.apply)
     implicit val system: ActorSystem = ActorSystem("simulator")
+    val simulations = settings.runs.map(s => Simulation(s, () => Clock(system)))
     implicit val ec: ExecutionContext = system.dispatcher
     Source(simulations)
       .runFoldAsync(Seq.empty[Results]) { (results, simulation) =>
@@ -97,13 +98,13 @@ object Simulator {
       strategyCreator: StrategyCreator)
 
   object Simulation {
-    def apply(runSettings: SimulatorSettings.RunSettings): Simulation =
+    def apply(runSettings: SimulatorSettings.RunSettings, clock: () => Clock): Simulation =
       Simulation(
         name = runSettings.name,
         numberOfShards = runSettings.shards,
         numberOfRegions = runSettings.regions,
         accessPattern = accessPattern(runSettings.pattern),
-        strategyCreator = strategyCreator(runSettings))
+        strategyCreator = strategyCreator(runSettings, clock))
 
     def accessPattern(patternSettings: SimulatorSettings.PatternSettings): AccessPattern = patternSettings match {
       case SimulatorSettings.PatternSettings.Synthetic(generator, events) =>
@@ -138,18 +139,18 @@ object Simulator {
         new JoinedAccessPatterns(patterns.map(accessPattern))
     }
 
-    def strategyCreator(runSettings: SimulatorSettings.RunSettings): StrategyCreator =
+    def strategyCreator(runSettings: SimulatorSettings.RunSettings, clock: () => Clock): StrategyCreator =
       runSettings.strategy match {
         case SimulatorSettings.StrategySettings.Optimal(perRegionLimit) =>
           new ClairvoyantStrategyCreator(perRegionLimit)
         case SimulatorSettings.StrategySettings.LeastRecentlyUsed(perRegionLimit, segmented) =>
-          new LeastRecentlyUsedStrategyCreator(perRegionLimit, segmented)
+          new LeastRecentlyUsedStrategyCreator(perRegionLimit, segmented, clock)
         case SimulatorSettings.StrategySettings.MostRecentlyUsed(perRegionLimit) =>
-          new MostRecentlyUsedStrategyCreator(perRegionLimit)
+          new MostRecentlyUsedStrategyCreator(perRegionLimit, clock())
         case SimulatorSettings.StrategySettings.LeastFrequentlyUsed(perRegionLimit, dynamicAging) =>
-          new LeastFrequentlyUsedStrategyCreator(perRegionLimit, dynamicAging)
+          new LeastFrequentlyUsedStrategyCreator(perRegionLimit, dynamicAging, clock)
         case settings: SimulatorSettings.StrategySettings.Composite =>
-          new CompositeStrategyCreator(settings)
+          new CompositeStrategyCreator(settings, clock)
         case SimulatorSettings.StrategySettings.NoStrategy =>
           DisabledStrategyCreator
       }
@@ -305,32 +306,35 @@ object Simulator {
     override def preprocess(access: Access): Access = access
   }
 
-  final class LeastRecentlyUsedStrategyCreator(perRegionLimit: Int, segmented: immutable.Seq[Double])
+  final class LeastRecentlyUsedStrategyCreator(
+      perRegionLimit: Int,
+      segmented: immutable.Seq[Double],
+      clock: () => Clock)
       extends PassivationStrategyCreator {
     override def create(shardId: ShardId): SimulatedStrategy =
       new PassivationStrategy(
         if (segmented.nonEmpty)
-          new SegmentedLeastRecentlyUsedEntityPassivationStrategy(perRegionLimit, segmented, idleCheck = None)
-        else new LeastRecentlyUsedEntityPassivationStrategy(perRegionLimit, idleCheck = None))
+          new SegmentedLeastRecentlyUsedEntityPassivationStrategy(perRegionLimit, segmented, idleCheck = None, clock)
+        else new LeastRecentlyUsedEntityPassivationStrategy(perRegionLimit, idleCheck = None, clock()))
   }
 
-  final class MostRecentlyUsedStrategyCreator(perRegionLimit: Int) extends PassivationStrategyCreator {
+  final class MostRecentlyUsedStrategyCreator(perRegionLimit: Int, clock: Clock) extends PassivationStrategyCreator {
     override def create(shardId: ShardId): SimulatedStrategy =
-      new PassivationStrategy(new MostRecentlyUsedEntityPassivationStrategy(perRegionLimit, idleCheck = None))
+      new PassivationStrategy(new MostRecentlyUsedEntityPassivationStrategy(perRegionLimit, idleCheck = None, clock))
   }
 
-  final class LeastFrequentlyUsedStrategyCreator(perRegionLimit: Int, dynamicAging: Boolean)
+  final class LeastFrequentlyUsedStrategyCreator(perRegionLimit: Int, dynamicAging: Boolean, clock: () => Clock)
       extends PassivationStrategyCreator {
     override def create(shardId: ShardId): SimulatedStrategy =
       new PassivationStrategy(
-        new LeastFrequentlyUsedEntityPassivationStrategy(perRegionLimit, dynamicAging, idleCheck = None))
+        new LeastFrequentlyUsedEntityPassivationStrategy(perRegionLimit, dynamicAging, idleCheck = None, clock))
   }
 
-  final class CompositeStrategyCreator(settings: SimulatorSettings.StrategySettings.Composite)
+  final class CompositeStrategyCreator(settings: SimulatorSettings.StrategySettings.Composite, clock: () => Clock)
       extends PassivationStrategyCreator {
     override def create(shardId: ShardId): SimulatedStrategy = {
-      val main = activeEntities(settings.main)
-      val window = activeEntities(settings.window)
+      val main = activeEntities(settings.main, clock)
+      val window = activeEntities(settings.window, clock)
       val initialWindowProportion = if (window eq NoActiveEntities) 0.0 else settings.initialWindowProportion
       val minimumWindowProportion = if (window eq NoActiveEntities) 0.0 else settings.minimumWindowProportion
       val maximumWindowProportion = if (window eq NoActiveEntities) 0.0 else settings.maximumWindowProportion
@@ -351,16 +355,18 @@ object Simulator {
           idleCheck = None))
     }
 
-    private def activeEntities(strategySettings: SimulatorSettings.StrategySettings): ActiveEntities =
+    private def activeEntities(
+        strategySettings: SimulatorSettings.StrategySettings,
+        clock: () => Clock): ActiveEntities =
       strategySettings match {
         case SimulatorSettings.StrategySettings.LeastRecentlyUsed(perRegionLimit, segmented) if segmented.isEmpty =>
-          new LeastRecentlyUsedReplacementPolicy(perRegionLimit)
+          new LeastRecentlyUsedReplacementPolicy(perRegionLimit, clock())
         case SimulatorSettings.StrategySettings.LeastRecentlyUsed(perRegionLimit, segmented) =>
-          new SegmentedLeastRecentlyUsedReplacementPolicy(perRegionLimit, segmented, idleEnabled = false)
+          new SegmentedLeastRecentlyUsedReplacementPolicy(perRegionLimit, segmented, idleEnabled = false, clock)
         case SimulatorSettings.StrategySettings.MostRecentlyUsed(perRegionLimit) =>
-          new MostRecentlyUsedReplacementPolicy(perRegionLimit)
+          new MostRecentlyUsedReplacementPolicy(perRegionLimit, clock())
         case SimulatorSettings.StrategySettings.LeastFrequentlyUsed(perRegionLimit, dynamicAging) =>
-          new LeastFrequentlyUsedReplacementPolicy(perRegionLimit, dynamicAging, idleEnabled = false)
+          new LeastFrequentlyUsedReplacementPolicy(perRegionLimit, dynamicAging, idleEnabled = false, clock)
         case _ => NoActiveEntities
       }
 
