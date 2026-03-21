@@ -181,7 +181,8 @@ object PersistenceTestKitSnapshotPlugin {
     Map(
       "pekko.persistence.snapshot-store.plugin" -> PluginId,
       s"$PluginId.class" -> classOf[PersistenceTestKitSnapshotPlugin].getName,
-      s"$PluginId.snapshot-is-optional" -> false // fallback isn't used by the testkit
+      s"$PluginId.snapshot-is-optional" -> false, // fallback isn't used by the testkit
+      s"$PluginId.only-one-snapshot" -> false // fallback isn't used by the testkit
     ).asJava)
 
 }
