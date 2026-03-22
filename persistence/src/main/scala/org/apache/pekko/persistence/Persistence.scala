@@ -25,6 +25,7 @@ import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.InternalApi
 import pekko.annotation.InternalStableApi
+import pekko.dispatch.{ DequeBasedMessageQueueSemantics, RequiresMessageQueue }
 import pekko.event.{ Logging, LoggingAdapter }
 import pekko.japi.Pair
 import pekko.persistence.journal.{ EventAdapters, IdentityEventAdapters }
@@ -114,7 +115,8 @@ trait PersistenceRecovery {
   // #persistence-recovery
 }
 
-trait PersistenceStash extends Stash with StashFactory {
+trait PersistenceStash extends Actor with StashSupport with RequiresMessageQueue[DequeBasedMessageQueueSemantics]
+    with StashFactory {
 
   /**
    * The returned [[pekko.persistence.StashOverflowStrategy]] object determines how to handle the message failed to stash

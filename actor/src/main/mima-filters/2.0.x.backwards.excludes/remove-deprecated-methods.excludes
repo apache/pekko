@@ -158,3 +158,9 @@ ProblemFilters.exclude[ReversedMissingMethodProblem]("org.apache.pekko.event.Log
 ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.util.ReentrantGuard")
 ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.japi.Util.option")
 
+# Stash trait refactoring - these traits were replaced with StashSupport
+ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.actor.AbstractActorWithStash")
+ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.actor.AbstractActorWithUnboundedStash")
+ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.actor.AbstractActorWithUnrestrictedStash")
+ProblemFilters.exclude[FinalMethodProblem]("org.apache.pekko.actor.AbstractActor.preRestart")
+

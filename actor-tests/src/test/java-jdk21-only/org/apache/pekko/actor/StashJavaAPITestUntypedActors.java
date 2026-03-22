@@ -16,7 +16,7 @@ package org.apache.pekko.actor;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class StashJavaAPITestUntypedActors {
-    private static int testReceive(Object msg, int count, ActorRef sender, ActorRef self, UnrestrictedStash stash) {
+    private static int testReceive(Object msg, int count, ActorRef sender, ActorRef self, StashSupport stash) {
         switch (msg) {
             case String s when count < 0 -> {
                 sender.tell(s.length(), self);
