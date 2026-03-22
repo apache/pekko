@@ -27,3 +27,18 @@ ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.persistenc
 ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.persistence.fsm.japi.pf.FSMStateFunctionBuilder.anyEvent")
 ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.persistence.fsm.japi.pf.FSMStopBuilder.stop")
 ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.pekko.persistence.fsm.AbstractPersistentFSMBase.onTransition")
+
+# Stash trait refactoring - these traits were replaced with StashSupport
+ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.persistence.AbstractPersistentActor")
+ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.persistence.AbstractPersistentActorWithAtLeastOnceDelivery")
+ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.persistence.AbstractPersistentActorWithTimers")
+ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.persistence.AtLeastOnceDelivery")
+ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.persistence.AtLeastOnceDeliveryLike")
+ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.persistence.PersistenceStash")
+ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.persistence.PersistentActor")
+ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.persistence.fsm.AbstractPersistentFSM")
+ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.persistence.fsm.AbstractPersistentLoggingFSM")
+ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.persistence.fsm.PersistentFSM")
+
+# AbstractActor.preRestart is now final
+ProblemFilters.exclude[FinalMethodProblem]("org.apache.pekko.actor.AbstractActor.preRestart")
