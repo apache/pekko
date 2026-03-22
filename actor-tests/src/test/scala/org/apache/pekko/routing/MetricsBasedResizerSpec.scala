@@ -187,8 +187,13 @@ class MetricsBasedResizerSpec extends PekkoSpec(ResizerSpec.config) with Default
         underutilizationStreak = Some(UnderUtilizationStreak(start = LocalDateTime.now, highestUtilization = 1)))
 
       val router = TestRouter(routees(3))
+      // Send messages to routee 0 and 1, await ensures the actor started processing
       router.mockSend(await = true, routeeIdx = 0)
       router.mockSend(await = true, routeeIdx = 1)
+      // Send additional messages to ensure mailbox is non-empty when checked,
+      // avoiding a race condition where currentMessage could be null momentarily
+      router.mockSend(await = false, routeeIdx = 0)
+      router.mockSend(await = false, routeeIdx = 1)
 
       resizer.reportMessageCount(router.routees, router.msgs.size)
       resizer.record.underutilizationStreak.get.highestUtilization shouldBe 2
