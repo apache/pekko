@@ -303,7 +303,7 @@ class LeastFrequentlyUsedWithIdleSpec
     "passivate entities when they haven't seen messages for the configured timeout" in {
       val region = start()
 
-      val lastSendNanoTime1 = System.nanoTime()
+      val lastSendNanoTime1 = clock.currentTime()
       region ! Envelope(shard = 1, id = 1, message = "A")
       region ! Envelope(shard = 1, id = 2, message = "B")
 
@@ -314,7 +314,7 @@ class LeastFrequentlyUsedWithIdleSpec
       Thread.sleep((configuredIdleTimeout / 2).toMillis)
       region ! Envelope(shard = 1, id = 3, message = "E")
       Thread.sleep((configuredIdleTimeout / 2).toMillis)
-      val lastSendNanoTime2 = System.nanoTime()
+      val lastSendNanoTime2 = clock.currentTime()
       region ! Envelope(shard = 1, id = 3, message = "F")
 
       expectReceived(id = 1, message = "A")

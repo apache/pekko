@@ -27,8 +27,8 @@ private[pekko] object SegmentedRecencyList {
     new SegmentedRecencyList[A](limits, OptionVal.None)
 
   object withOverallRecency {
-    def empty[A](limits: immutable.Seq[Int]): SegmentedRecencyList[A] =
-      new SegmentedRecencyList[A](limits, OptionVal.Some(new RecencyList.NanoClock))
+    def empty[A](clock: Clock, limits: immutable.Seq[Int]): SegmentedRecencyList[A] =
+      new SegmentedRecencyList[A](limits, OptionVal.Some(clock))
   }
 
   private final class Node[A](val value: A) {
@@ -47,9 +47,7 @@ private[pekko] object SegmentedRecencyList {
  * Implemented using doubly-linked lists plus hash map for lookup, so that all operations are constant time.
  */
 @InternalApi
-private[pekko] final class SegmentedRecencyList[A](
-    initialLimits: immutable.Seq[Int],
-    clock: OptionVal[RecencyList.Clock]) {
+private[pekko] final class SegmentedRecencyList[A](initialLimits: immutable.Seq[Int], clock: OptionVal[Clock]) {
   import SegmentedRecencyList.Node
 
   private var limits: immutable.IndexedSeq[Int] = initialLimits.toIndexedSeq

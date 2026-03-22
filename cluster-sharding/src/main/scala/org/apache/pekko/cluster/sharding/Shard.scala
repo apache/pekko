@@ -48,6 +48,7 @@ import pekko.coordination.lease.scaladsl.Lease
 import pekko.coordination.lease.scaladsl.LeaseProvider
 import pekko.event.LoggingAdapter
 import pekko.pattern.pipe
+import pekko.util.Clock
 import pekko.util.MessageBufferMap
 import pekko.util.OptionVal
 import pekko.util.PrettyDuration._
@@ -470,7 +471,7 @@ private[pekko] class Shard(
   private var handOffStopper: Option[ActorRef] = None
   private var preparingForShutdown = false
 
-  private val passivationStrategy = EntityPassivationStrategy(settings)
+  private val passivationStrategy = EntityPassivationStrategy(settings, clock = () => Clock(context.system))
 
   import context.dispatcher
   private val passivateIntervalTask = passivationStrategy.scheduledInterval.map { interval =>
