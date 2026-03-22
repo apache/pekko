@@ -16,13 +16,17 @@ package org.apache.pekko.cluster.sharding.typed.scaladsl
 import scala.reflect.ClassTag
 
 import org.apache.pekko
+import pekko.actor.typed.ActorRef
 import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.Behavior
 import pekko.actor.typed.Extension
 import pekko.actor.typed.ExtensionId
+import pekko.annotation.ApiMayChange
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 import pekko.cluster.sharding.ShardCoordinator.ShardAllocationStrategy
+import pekko.cluster.sharding.typed.ShardedDaemonProcessCommand
+import pekko.cluster.sharding.typed.ShardedDaemonProcessContext
 import pekko.cluster.sharding.typed.ShardedDaemonProcessSettings
 import pekko.cluster.sharding.typed.internal.ShardedDaemonProcessImpl
 import pekko.cluster.sharding.typed.javadsl
@@ -92,6 +96,57 @@ trait ShardedDaemonProcess extends Extension { javadslSelf: javadsl.ShardedDaemo
       settings: ShardedDaemonProcessSettings,
       stopMessage: Option[T],
       shardAllocationStrategy: Option[ShardAllocationStrategy])(implicit classTag: ClassTag[T]): Unit
+
+  /**
+   * Start a specific number of actors, each with a unique numeric id in the set, that is then kept alive in the cluster.
+   * The number of processing actors can be rescaled by interacting with the returned actor.
+   *
+   * @param behaviorFactory Given a unique sharded daemon process context containing the total number of workers and the id
+   *                        the specific worker being started, create the behavior for that actor.
+   */
+  @ApiMayChange
+  def initWithContext[T](
+      name: String,
+      initialNumberOfInstances: Int,
+      behaviorFactory: ShardedDaemonProcessContext => Behavior[T])(
+      implicit classTag: ClassTag[T]): ActorRef[ShardedDaemonProcessCommand]
+
+  /**
+   * Start a specific number of actors, each with a unique numeric id in the set, that is then kept alive in the cluster.
+   * The number of processing actors can be rescaled by interacting with the returned actor.
+   *
+   * @param behaviorFactory Given a unique sharded daemon process context containing the total number of workers and the id
+   *                        the specific worker being started, create the behavior for that actor.
+   * @param stopMessage     Sent to the actors when they need to stop because of a worker resize, re-balance across the
+   *                        nodes of the cluster or cluster shutdown.
+   */
+  @ApiMayChange
+  def initWithContext[T](
+      name: String,
+      initialNumberOfInstances: Int,
+      behaviorFactory: ShardedDaemonProcessContext => Behavior[T],
+      settings: ShardedDaemonProcessSettings,
+      stopMessage: T)(implicit classTag: ClassTag[T]): ActorRef[ShardedDaemonProcessCommand]
+
+  /**
+   * Start a specific number of actors, each with a unique numeric id in the set, that is then kept alive in the cluster.
+   * The number of processing actors can be rescaled by interacting with the returned actor.
+   *
+   * @param behaviorFactory         Given a unique sharded daemon process context containing the total number of workers
+   *                                and the id the specific worker being started, create the behavior for that actor.
+   * @param stopMessage             If defined, sent to the actors when they need to stop because of a worker resize,
+   *                                re-balance across the nodes of the cluster or cluster shutdown.
+   * @param shardAllocationStrategy If defined, used by entities to control the shard allocation.
+   */
+  @ApiMayChange
+  def initWithContext[T](
+      name: String,
+      numberOfInstances: Int,
+      behaviorFactory: ShardedDaemonProcessContext => Behavior[T],
+      settings: ShardedDaemonProcessSettings,
+      stopMessage: Option[T],
+      shardAllocationStrategy: Option[ShardAllocationStrategy])(
+      implicit classTag: ClassTag[T]): ActorRef[ShardedDaemonProcessCommand]
 
   /**
    * INTERNAL API

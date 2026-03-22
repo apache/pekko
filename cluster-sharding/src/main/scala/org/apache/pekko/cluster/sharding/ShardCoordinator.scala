@@ -427,6 +427,11 @@ object ShardCoordinator {
     @SerialVersionUID(1L) final case class RegionStopped(shardRegion: ActorRef) extends CoordinatorCommand
 
     /**
+     * Stop all the listed shards, sender will get a ShardStopped ack for each shard once stopped
+     */
+    final case class StopShards(shards: Set[ShardId]) extends CoordinatorCommand
+
+    /**
      * `ShardRegion` requests full handoff to be able to shutdown gracefully.
      */
     @SerialVersionUID(1L) final case class GracefulShutdownReq(shardRegion: ActorRef)
@@ -690,6 +695,7 @@ abstract class ShardCoordinator(
   var rebalanceInProgress = Map.empty[ShardId, Set[ActorRef]]
   var rebalanceWorkers: Set[ActorRef] = Set.empty
   var unAckedHostShards = Map.empty[ShardId, Cancellable]
+  var waitingForShardsToStop: Map[ShardId, Set[(ActorRef, java.util.UUID)]] = Map.empty
   // regions that have requested handoff, for graceful shutdown
   var gracefulShutdownInProgress = Set.empty[ActorRef]
   var waitingForLocalRegionToTerminate = false
@@ -843,6 +849,14 @@ abstract class ShardCoordinator(
 
         if (ok) {
           log.debug("{}: Shard [{}] deallocation completed successfully.", typeName, shard)
+
+          // ack to external trigger of rebalance/stop
+          waitingForShardsToStop.get(shard) match {
+            case Some(waiting) =>
+              waiting.foreach { case (replyTo, _) => replyTo ! ShardStopped(shard) }
+              waitingForShardsToStop -= shard
+            case None =>
+          }
 
           // The shard could have been removed by ShardRegionTerminated
           if (state.shards.contains(shard)) {
@@ -1092,6 +1106,15 @@ abstract class ShardCoordinator(
 
     case DelayedShardRegionTerminated(ref) =>
       regionTerminated(ref)
+
+    case StopShards(shards) =>
+      val requestId = java.util.UUID.randomUUID()
+      shards.foreach { shard =>
+        waitingForShardsToStop = waitingForShardsToStop.updated(
+          shard,
+          waitingForShardsToStop.getOrElse(shard, Set.empty) + ((sender(), requestId)))
+      }
+      shutdownShards(self, shards.filter(state.shards.contains))
   }
 
   def update[E <: DomainEvent](evt: E)(f: E => Unit): Unit
@@ -1291,7 +1314,10 @@ abstract class ShardCoordinator(
 
   def shutdownShards(shuttingDownRegion: ActorRef, shards: Set[ShardId]): Unit = {
     if ((log: BusLogging).isInfoEnabled && (shards.nonEmpty)) {
-      log.info("{}: Starting shutting down shards [{}] due to region shutting down.", typeName, shards.mkString(","))
+      log.info(
+        "{}: Starting shutting down shards [{}] due to region shutting down or explicit stopping of shards.",
+        typeName,
+        shards.mkString(","))
     }
     shards.foreach { shard =>
       startShardRebalanceIfNeeded(shard, shuttingDownRegion, handOffTimeout, isRebalance = false)

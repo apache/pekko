@@ -17,6 +17,7 @@ import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.actor.{ InvalidMessageException, WrappedMessage }
+import pekko.cluster.sharding.typed.internal.ClusterShardingTypedSerializable
 
 object ShardingMessageExtractor {
 
@@ -121,6 +122,8 @@ abstract class HashCodeNoEnvelopeMessageExtractor[M](val numberOfShards: Int) ex
  * @param message The message to be send to the entity.
  * @throws [[pekko.actor.InvalidMessageException]] if message is null.
  */
-final case class ShardingEnvelope[M](entityId: String, message: M) extends WrappedMessage {
+final case class ShardingEnvelope[M](entityId: String, message: M)
+    extends WrappedMessage
+    with ClusterShardingTypedSerializable {
   if (message == null) throw InvalidMessageException("[null] is not an allowed message")
 }

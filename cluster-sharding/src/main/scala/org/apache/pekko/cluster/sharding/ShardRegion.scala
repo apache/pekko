@@ -765,6 +765,7 @@ private[pekko] class ShardRegion(
     case msg: RestartShard                       => deliverMessage(msg, sender())
     case msg: StartEntity                        => deliverStartEntity(msg, sender())
     case msg: SetActiveEntityLimit               => deliverToAllShards(msg, sender())
+    case cmd: CoordinatorCommand                 => deliverCoordinatorCommand(cmd, sender())
     case msg if extractEntityId.isDefinedAt(msg) => deliverMessage(msg, sender())
     case unknownMsg                              =>
       log.warning("{}: Message does not have an extractor defined in shard so it was ignored: {}", typeName, unknownMsg)
@@ -956,6 +957,10 @@ private[pekko] class ShardRegion(
       context.stop(self)
 
     case _ => unhandled(cmd)
+  }
+
+  def deliverCoordinatorCommand(cmd: CoordinatorCommand, snd: ActorRef): Unit = {
+    coordinator.foreach(_.tell(cmd, snd))
   }
 
   def receiveQuery(query: ShardRegionQuery): Unit = query match {

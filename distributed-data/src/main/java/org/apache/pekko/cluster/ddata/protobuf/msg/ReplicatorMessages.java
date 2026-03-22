@@ -11699,7 +11699,7 @@ public final class ReplicatorMessages extends org.apache.pekko.protobufv3.intern
       }
 
       public static final int USEDTIMESTAMP_FIELD_NUMBER = 3;
-      private long usedTimestamp_;
+      private long usedTimestamp_ = 0L;
       /**
        * <code>optional sint64 usedTimestamp = 3;</code>
        * @return Whether the usedTimestamp field is set.
@@ -12212,7 +12212,7 @@ public final class ReplicatorMessages extends org.apache.pekko.protobufv3.intern
           return this;
         }
 
-        private long usedTimestamp_;
+        private long usedTimestamp_ ;
         /**
          * <code>optional sint64 usedTimestamp = 3;</code>
          * @return Whether the usedTimestamp field is set.
@@ -12235,6 +12235,7 @@ public final class ReplicatorMessages extends org.apache.pekko.protobufv3.intern
          * @return This builder for chaining.
          */
         public Builder setUsedTimestamp(long value) {
+
           usedTimestamp_ = value;
           bitField0_ |= 0x00000004;
           onChanged();
@@ -13619,7 +13620,7 @@ public final class ReplicatorMessages extends org.apache.pekko.protobufv3.intern
       }
 
       public static final int USEDTIMESTAMP_FIELD_NUMBER = 3;
-      private long usedTimestamp_;
+      private long usedTimestamp_ = 0L;
       /**
        * <code>optional sint64 usedTimestamp = 3;</code>
        * @return Whether the usedTimestamp field is set.
@@ -14234,9 +14235,7 @@ public final class ReplicatorMessages extends org.apache.pekko.protobufv3.intern
           return envelopeBuilder_;
         }
 
-        // @@protoc_insertion_point(builder_scope:org.apache.pekko.cluster.ddata.Gossip.Entry)
-
-        private long usedTimestamp_;
+        private long usedTimestamp_ ;
         /**
          * <code>optional sint64 usedTimestamp = 3;</code>
          * @return Whether the usedTimestamp field is set.
@@ -14259,6 +14258,7 @@ public final class ReplicatorMessages extends org.apache.pekko.protobufv3.intern
          * @return This builder for chaining.
          */
         public Builder setUsedTimestamp(long value) {
+
           usedTimestamp_ = value;
           bitField0_ |= 0x00000004;
           onChanged();
@@ -14274,6 +14274,8 @@ public final class ReplicatorMessages extends org.apache.pekko.protobufv3.intern
           onChanged();
           return this;
         }
+
+        // @@protoc_insertion_point(builder_scope:org.apache.pekko.cluster.ddata.Gossip.Entry)
       }
 
       // @@protoc_insertion_point(class_scope:org.apache.pekko.cluster.ddata.Gossip.Entry)
@@ -22729,41 +22731,42 @@ public final class ReplicatorMessages extends org.apache.pekko.protobufv3.intern
       ".apache.pekko.cluster.ddata.UniqueAddres" +
       "s\022\021\n\tperformed\030\003 \002(\010\0225\n\004seen\030\004 \003(\0132\'.org" +
       ".apache.pekko.cluster.ddata.Address\022\024\n\014o" +
-      "bsoleteTime\030\005 \001(\022\"\273\001\n\006Status\022\r\n\005chunk\030\001 " +
+      "bsoleteTime\030\005 \001(\022\"\322\001\n\006Status\022\r\n\005chunk\030\001 " +
       "\002(\r\022\021\n\ttotChunks\030\002 \002(\r\022=\n\007entries\030\003 \003(\0132" +
       ",.org.apache.pekko.cluster.ddata.Status." +
       "Entry\022\023\n\013toSystemUid\030\004 \001(\020\022\025\n\rfromSystem" +
-      "Uid\030\005 \001(\020\032$\n\005Entry\022\013\n\003key\030\001 \002(\t\022\016\n\006diges" +
-      "t\030\002 \002(\014\"\333\001\n\006Gossip\022\020\n\010sendBack\030\001 \002(\010\022=\n\007" +
-      "entries\030\002 \003(\0132,.org.apache.pekko.cluster" +
-      ".ddata.Gossip.Entry\022\023\n\013toSystemUid\030\003 \001(\020" +
-      "\022\025\n\rfromSystemUid\030\004 \001(\020\032T\n\005Entry\022\013\n\003key\030" +
-      "\001 \002(\t\022>\n\010envelope\030\002 \002(\0132,.org.apache.pek" +
-      "ko.cluster.ddata.DataEnvelope\"\245\002\n\020DeltaP" +
-      "ropagation\022?\n\010fromNode\030\001 \002(\0132-.org.apach" +
-      "e.pekko.cluster.ddata.UniqueAddress\022G\n\007e" +
-      "ntries\030\002 \003(\01326.org.apache.pekko.cluster." +
-      "ddata.DeltaPropagation.Entry\022\r\n\005reply\030\003 " +
-      "\001(\010\032x\n\005Entry\022\013\n\003key\030\001 \002(\t\022>\n\010envelope\030\002 " +
-      "\002(\0132,.org.apache.pekko.cluster.ddata.Dat" +
-      "aEnvelope\022\021\n\tfromSeqNr\030\003 \002(\003\022\017\n\007toSeqNr\030" +
-      "\004 \001(\003\"d\n\rUniqueAddress\0228\n\007address\030\001 \002(\0132" +
-      "\'.org.apache.pekko.cluster.ddata.Address" +
-      "\022\013\n\003uid\030\002 \002(\017\022\014\n\004uid2\030\003 \001(\017\")\n\007Address\022\020" +
-      "\n\010hostname\030\001 \002(\t\022\014\n\004port\030\002 \002(\r\"\254\001\n\rVersi" +
-      "onVector\022D\n\007entries\030\001 \003(\01323.org.apache.p" +
-      "ekko.cluster.ddata.VersionVector.Entry\032U" +
-      "\n\005Entry\022;\n\004node\030\001 \002(\0132-.org.apache.pekko" +
-      ".cluster.ddata.UniqueAddress\022\017\n\007version\030" +
-      "\002 \002(\003\"V\n\014OtherMessage\022\027\n\017enclosedMessage" +
-      "\030\001 \002(\014\022\024\n\014serializerId\030\002 \002(\005\022\027\n\017messageM" +
-      "anifest\030\004 \001(\014\"\036\n\nStringGSet\022\020\n\010elements\030" +
-      "\001 \003(\t\"\235\001\n\023DurableDataEnvelope\022:\n\004data\030\001 " +
-      "\002(\0132,.org.apache.pekko.cluster.ddata.Oth" +
-      "erMessage\022J\n\007pruning\030\002 \003(\01329.org.apache." +
-      "pekko.cluster.ddata.DataEnvelope.Pruning" +
-      "EntryB/\n+org.apache.pekko.cluster.ddata." +
-      "protobuf.msgH\001"
+      "Uid\030\005 \001(\020\032;\n\005Entry\022\013\n\003key\030\001 \002(\t\022\016\n\006diges" +
+      "t\030\002 \002(\014\022\025\n\rusedTimestamp\030\003 \001(\022\"\362\001\n\006Gossi" +
+      "p\022\020\n\010sendBack\030\001 \002(\010\022=\n\007entries\030\002 \003(\0132,.o" +
+      "rg.apache.pekko.cluster.ddata.Gossip.Ent" +
+      "ry\022\023\n\013toSystemUid\030\003 \001(\020\022\025\n\rfromSystemUid" +
+      "\030\004 \001(\020\032k\n\005Entry\022\013\n\003key\030\001 \002(\t\022>\n\010envelope" +
+      "\030\002 \002(\0132,.org.apache.pekko.cluster.ddata." +
+      "DataEnvelope\022\025\n\rusedTimestamp\030\003 \001(\022\"\245\002\n\020" +
+      "DeltaPropagation\022?\n\010fromNode\030\001 \002(\0132-.org" +
+      ".apache.pekko.cluster.ddata.UniqueAddres" +
+      "s\022G\n\007entries\030\002 \003(\01326.org.apache.pekko.cl" +
+      "uster.ddata.DeltaPropagation.Entry\022\r\n\005re" +
+      "ply\030\003 \001(\010\032x\n\005Entry\022\013\n\003key\030\001 \002(\t\022>\n\010envel" +
+      "ope\030\002 \002(\0132,.org.apache.pekko.cluster.dda" +
+      "ta.DataEnvelope\022\021\n\tfromSeqNr\030\003 \002(\003\022\017\n\007to" +
+      "SeqNr\030\004 \001(\003\"d\n\rUniqueAddress\0228\n\007address\030" +
+      "\001 \002(\0132\'.org.apache.pekko.cluster.ddata.A" +
+      "ddress\022\013\n\003uid\030\002 \002(\017\022\014\n\004uid2\030\003 \001(\017\")\n\007Add" +
+      "ress\022\020\n\010hostname\030\001 \002(\t\022\014\n\004port\030\002 \002(\r\"\254\001\n" +
+      "\rVersionVector\022D\n\007entries\030\001 \003(\01323.org.ap" +
+      "ache.pekko.cluster.ddata.VersionVector.E" +
+      "ntry\032U\n\005Entry\022;\n\004node\030\001 \002(\0132-.org.apache" +
+      ".pekko.cluster.ddata.UniqueAddress\022\017\n\007ve" +
+      "rsion\030\002 \002(\003\"V\n\014OtherMessage\022\027\n\017enclosedM" +
+      "essage\030\001 \002(\014\022\024\n\014serializerId\030\002 \002(\005\022\027\n\017me" +
+      "ssageManifest\030\004 \001(\014\"\036\n\nStringGSet\022\020\n\010ele" +
+      "ments\030\001 \003(\t\"\235\001\n\023DurableDataEnvelope\022:\n\004d" +
+      "ata\030\001 \002(\0132,.org.apache.pekko.cluster.dda" +
+      "ta.OtherMessage\022J\n\007pruning\030\002 \003(\01329.org.a" +
+      "pache.pekko.cluster.ddata.DataEnvelope.P" +
+      "runingEntryB/\n+org.apache.pekko.cluster." +
+      "ddata.protobuf.msgH\001"
     };
     descriptor = org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -22858,7 +22861,7 @@ public final class ReplicatorMessages extends org.apache.pekko.protobufv3.intern
     internal_static_org_apache_pekko_cluster_ddata_Status_Entry_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
         internal_static_org_apache_pekko_cluster_ddata_Status_Entry_descriptor,
-        new java.lang.String[] { "Key", "Digest", });
+        new java.lang.String[] { "Key", "Digest", "UsedTimestamp", });
     internal_static_org_apache_pekko_cluster_ddata_Gossip_descriptor =
       getDescriptor().getMessageType(13);
     internal_static_org_apache_pekko_cluster_ddata_Gossip_fieldAccessorTable = new
@@ -22870,7 +22873,7 @@ public final class ReplicatorMessages extends org.apache.pekko.protobufv3.intern
     internal_static_org_apache_pekko_cluster_ddata_Gossip_Entry_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessage.FieldAccessorTable(
         internal_static_org_apache_pekko_cluster_ddata_Gossip_Entry_descriptor,
-        new java.lang.String[] { "Key", "Envelope", });
+        new java.lang.String[] { "Key", "Envelope", "UsedTimestamp", });
     internal_static_org_apache_pekko_cluster_ddata_DeltaPropagation_descriptor =
       getDescriptor().getMessageType(14);
     internal_static_org_apache_pekko_cluster_ddata_DeltaPropagation_fieldAccessorTable = new
