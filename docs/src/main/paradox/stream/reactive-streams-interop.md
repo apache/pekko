@@ -136,5 +136,5 @@ An incomplete list of other implementations:
 
  * [Reactor (1.1+)](https://github.com/reactor/reactor)
  * [RxJava](https://github.com/ReactiveX/RxJavaReactiveStreams)
- * [Ratpack](https://ratpack.io/manual/current/streams.html)
+ * [Ratpack](https://github.com/ratpack/ratpack)
  * [Slick](https://scala-slick.org/)
