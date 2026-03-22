@@ -63,6 +63,7 @@ object EventSourcedBehaviorRetentionSpec extends Matchers {
       persistenceId: PersistenceId,
       probe: Option[ActorRef[(State, Event)]] = None,
       snapshotSignalProbe: Option[ActorRef[WrappedSignal]] = None,
+      deleteSnapshotSignalProbe: Option[ActorRef[WrappedSignal]] = None,
       eventSignalProbe: Option[ActorRef[Try[EventSourcedSignal]]] = None)
       : EventSourcedBehavior[Command, Event, State] = {
     EventSourcedBehavior[Command, Event, State](
@@ -96,9 +97,9 @@ object EventSourcedBehaviorRetentionSpec extends Matchers {
       case (_, sf: SnapshotFailed) =>
         snapshotSignalProbe.foreach(_ ! WrappedSignal(sf))
       case (_, dc: DeleteSnapshotsCompleted) =>
-        snapshotSignalProbe.foreach(_ ! WrappedSignal(dc))
+        deleteSnapshotSignalProbe.orElse(snapshotSignalProbe).foreach(_ ! WrappedSignal(dc))
       case (_, dsf: DeleteSnapshotsFailed) =>
-        snapshotSignalProbe.foreach(_ ! WrappedSignal(dsf))
+        deleteSnapshotSignalProbe.orElse(snapshotSignalProbe).foreach(_ ! WrappedSignal(dsf))
       case (_, e: EventSourcedSignal) =>
         eventSignalProbe.foreach(_ ! Success(e))
     }

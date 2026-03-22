@@ -85,8 +85,10 @@ private[pekko] final class BehaviorSetup[C, E, S](
   val snapshotStore: ClassicActorRef = persistence
     .snapshotStoreFor(settings.snapshotPluginId, settings.snapshotPluginConfig.getOrElse(ConfigFactory.empty))
 
-  val isSnapshotOptional: Boolean =
-    Persistence(context.system.classicSystem).configFor(snapshotStore).getBoolean("snapshot-is-optional")
+  val (isSnapshotOptional: Boolean, isOnlyOneSnapshot: Boolean) = {
+    val snapshotStoreConfig = Persistence(context.system.classicSystem).configFor(snapshotStore)
+    (snapshotStoreConfig.getBoolean("snapshot-is-optional"), snapshotStoreConfig.getBoolean("only-one-snapshot"))
+  }
 
   if (isSnapshotOptional &&
     (retention match {
@@ -103,6 +105,21 @@ private[pekko] final class BehaviorSetup[C, E, S](
   def selfClassic: ClassicActorRef = context.self.toClassic
 
   private var mdcPhase = PersistenceMdc.Initializing
+
+  if (isOnlyOneSnapshot) {
+    retention match {
+      case SnapshotCountRetentionCriteriaImpl(_, keepNSnapshots, _) if keepNSnapshots > 1 =>
+        // not using internalLogger because it's probably not good to use mdc from the constructor
+        internalLoggerFactory().warn(
+          "Retention has been defined with keepNSnapshots [{}] for persistenceId [{}]," +
+          "but the snapshot store [{}] will only keep one snapshot. You can silence this warning and benefit from " +
+          "a performance optimization by defining the retention criteria without the keepNSnapshots parameter.",
+          keepNSnapshots,
+          persistenceId,
+          settings.snapshotPluginId)
+      case _ =>
+    }
+  }
 
   def internalLogger: Logger = {
     PersistenceMdc.setMdc(persistenceId, mdcPhase)
