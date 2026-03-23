@@ -42,7 +42,7 @@ jobs:
         uses: coursier/cache-action@90c37294538be80a558fd665531fcdc2b467b475 # v8.1.0
     
       - name: Setup Coursier
-        uses: coursier/setup-action@7acb5c9ea69bc1a1bb185ec45ebce2ac114f3628 # v2.0.3
+        uses: coursier/setup-action@fd1707a76b027efdfb66ca79318b4d29b72e5a02 # v3.0.0
 
       - name: Create the Pekko site
         env:
