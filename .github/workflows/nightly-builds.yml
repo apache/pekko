@@ -177,7 +177,7 @@ jobs:
 
       - name: Install scala-cli
         if: ${{ matrix.javaVersion == 11 }}
-        uses: VirtusLab/scala-cli-setup@59e308800210b0414d2d7190068c80021e1b3e5d # v1.12.4
+        uses: VirtusLab/scala-cli-setup@14e5155ee896fcc200f66f92c9eb7a3dd9b58e0d # v1.12.5
         # run: |-
         #   curl -sS "https://virtuslab.github.io/scala-cli-packages/KEY.gpg" | sudo gpg --dearmor  -o /etc/apt/trusted.gpg.d/scala-cli.gpg 2>/dev/null
         #   sudo curl -s --compressed -o /etc/apt/sources.list.d/scala_cli_packages.list "https://virtuslab.github.io/scala-cli-packages/debian/scala_cli_packages.list"
