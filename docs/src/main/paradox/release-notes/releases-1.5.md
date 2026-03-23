@@ -25,7 +25,7 @@ Pekko 1.5.0 has some bug fixes and small enhancements. See the [GitHub Milestone
 ### Dependency Changes
 
 * netty 4.2.10.Final
-* jackson 2.21.1
+* jackson 2.21.2
 * protobuf-java 4.33.5
 * config 1.4.6
 * lz4-java 1.10.4
