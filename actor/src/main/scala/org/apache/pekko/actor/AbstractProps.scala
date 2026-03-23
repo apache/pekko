@@ -48,7 +48,7 @@ private[pekko] trait AbstractProps {
     new Props(deploy = Props.defaultDeploy, clazz = clazz, args = args.toList)
 
   /**
-   * Create new Props from the given [[pekko.japi.Creator]] with the type set to the given actorClass.
+   * Create new Props from the given [[pekko.japi.function.Creator]] with the type set to the given actorClass.
    */
   def create[T <: Actor](actorClass: Class[T], creator: Creator[T]): Props = {
     checkCreatorClosingOver(creator.getClass)

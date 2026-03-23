@@ -37,7 +37,7 @@ import org.slf4j.Logger
  *  - designate the behavior for the next message
  *
  * In Pekko, the first capability is accessed by using the `tell` method
- * on an [[ActorRef]], the second is provided by [[ActorContext#spawn]]
+ * on an [[ActorRef]], the second is provided by `spawn`
  * and the third is implicit in the signature of [[Behavior]] in that the next
  * behavior is always returned from the message processing logic.
  *
@@ -163,7 +163,7 @@ trait ActorContext[T] extends TypedActorContext[T] with ClassicActorContextProvi
    * using [[Behavior.interpretMessage]] or [[Behavior.interpretSignal]]
    *
    * note: if given [[pekko.actor.typed.Behavior]] resulting [[Behaviors.same]] that will cause context switching to the given behavior
-   * and if result is [[Behaviors.unhandled]] that will trigger the [[pekko.actor.typed.scaladsl.ActorContext.onUnhandled]]
+   * and if result is [[Behaviors.unhandled]] that will mark the message as unhandled
    * then switching to the given behavior.
    */
   def delegate(delegator: Behavior[T], msg: T): Behavior[T]
@@ -323,7 +323,7 @@ trait ActorContext[T] extends TypedActorContext[T] with ClassicActorContextProvi
   /**
    * The same as [[ask]] but only for requests that result in a response of type [[pekko.pattern.StatusReply]].
    * If the response is a [[pekko.pattern.StatusReply#success]] the returned future is completed successfully with the wrapped response.
-   * If the status response is a [[pekko.pattern.StatusReply#error]] the returned future will be failed with the
+   * If the status response is an error reply the returned future will be failed with the
    * exception in the error (normally a [[pekko.pattern.StatusReply.ErrorMessage]]).
    */
   def askWithStatus[Req, Res](

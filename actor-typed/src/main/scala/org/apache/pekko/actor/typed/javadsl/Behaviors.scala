@@ -38,7 +38,7 @@ object Behaviors {
 
   /**
    * `setup` is a factory for a behavior. Creation of the behavior instance is deferred until
-   * the actor is started, as opposed to [[Behaviors#receive]] that creates the behavior instance
+   * the actor is started, as opposed to `receive` that creates the behavior instance
    * immediately before the actor is running. The `factory` function pass the `ActorContext`
    * as parameter and that can for example be used for spawning child actors.
    *
@@ -125,7 +125,7 @@ object Behaviors {
     new BehaviorImpl.ReceiveBehavior((ctx, msg) => onMessage.apply(ctx.asJava, msg))
 
   /**
-   * Simplified version of [[receive]] with only a single argument - the message
+   * Simplified version of `receive` with only a single argument - the message
    * to be handled. Useful for when the context is already accessible by other means,
    * like being wrapped in an [[setup]] or similar.
    *
