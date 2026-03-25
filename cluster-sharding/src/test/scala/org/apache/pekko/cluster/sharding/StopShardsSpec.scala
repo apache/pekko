@@ -43,6 +43,7 @@ object StopShardsSpec {
         pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
         pekko.actor.provider = "cluster"
         pekko.remote.artery.canonical.port = 0
+        pekko.remote.classic.netty.tcp.port = 0
         pekko.test.single-expect-default = 5 s
         pekko.cluster.sharding.distributed-data.durable.keys = []
         pekko.cluster.sharding.remember-entities = off

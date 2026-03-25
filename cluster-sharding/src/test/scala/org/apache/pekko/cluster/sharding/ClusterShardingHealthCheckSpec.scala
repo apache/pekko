@@ -32,6 +32,7 @@ object ClusterShardingHealthCheckSpec {
     pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
     pekko.actor.provider = cluster
     pekko.remote.artery.canonical.port = 0
+    pekko.remote.classic.netty.tcp.port = 0
     """)
 }
 
