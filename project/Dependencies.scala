@@ -48,8 +48,8 @@ object Dependencies {
   val reactiveStreamsVersion = "1.0.4"
 
   val scalaTestVersion = "3.2.19"
-  val scalaTestScalaCheckVersion = "1-18"
-  val scalaCheckVersion = "1.18.0"
+  val scalaTestScalaCheckVersion = "1-19"
+  val scalaCheckVersion = "1.19.0"
 
   val Versions = Seq(crossScalaVersions := allScalaVersions, scalaVersion := allScalaVersions.head)
 
@@ -131,11 +131,11 @@ object Dependencies {
       // but the version of each module starts with the scalatest
       // version it was intended to work with
       val scalatestJUnit = "org.scalatestplus" %% "junit-4-13" % (scalaTestVersion + ".0") % Test
-      val scalatestTestNG = "org.scalatestplus" %% "testng-7-5" % "3.2.17.0" % Test
+      val scalatestTestNG = "org.scalatestplus" %% "testng-7-10" % (scalaTestVersion + ".0") % Test
       val scalatestScalaCheck =
         "org.scalatestplus" %% s"scalacheck-$scalaTestScalaCheckVersion" % (scalaTestVersion + ".0") % Test
       // https://github.com/scalatest/scalatest/issues/2311
-      val scalatestMockito = "org.scalatestplus" %% "mockito-4-11" % "3.2.18.0" % Test
+      val scalatestMockito = "org.scalatestplus" %% "mockito-5-21" % (scalaTestVersion + ".0") % Test
 
       val pojosr = "com.googlecode.pojosr" % "de.kalpatec.pojosr.framework" % "0.2.1" % Test
       val tinybundles = "org.ops4j.pax.tinybundles" % "tinybundles" % "4.0.1" % Test
