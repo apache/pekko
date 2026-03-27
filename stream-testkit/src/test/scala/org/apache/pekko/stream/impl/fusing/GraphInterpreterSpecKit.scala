@@ -40,7 +40,7 @@ import pekko.stream.testkit.Utils.TE
  * INTERNAL API
  */
 @InternalApi
-private[pekko] object NoMaterializer extends Materializer {
+private[pekko] case class NoMaterializer(override val system: ActorSystem) extends Materializer {
   override def withNamePrefix(name: String): Materializer =
     throw new UnsupportedOperationException("NoMaterializer cannot be named")
   override def materialize[Mat](runnable: Graph[ClosedShape, Mat]): Mat =
@@ -69,9 +69,6 @@ private[pekko] object NoMaterializer extends Materializer {
   override def shutdown(): Unit = throw new UnsupportedOperationException("NoMaterializer cannot shutdown")
 
   override def isShutdown: Boolean = throw new UnsupportedOperationException("NoMaterializer cannot shutdown")
-
-  override def system: ActorSystem =
-    throw new UnsupportedOperationException("NoMaterializer does not have an actorsystem")
 
   override private[pekko] def logger = throw new UnsupportedOperationException("NoMaterializer does not have a logger")
 
@@ -336,7 +333,7 @@ trait GraphInterpreterSpecKit extends StreamSpec {
       }
 
       _interpreter = new GraphInterpreter(
-        NoMaterializer,
+        NoMaterializer(system),
         logger,
         logics,
         connections,

@@ -22,6 +22,7 @@ import org.apache.pekko
 import pekko.Done
 import pekko.actor.ActorRef
 import pekko.annotation.{ InternalApi, InternalStableApi }
+import pekko.event.Logging
 import pekko.event.LoggingAdapter
 import pekko.stream._
 import pekko.stream.Attributes.LogLevels
@@ -244,6 +245,8 @@ import pekko.stream.stage._
   private[this] val finalizedMark = Array.fill(logics.length)(false)
 
   private[this] var _subFusingMaterializer: Materializer = _
+  private[this] lazy val defaultErrorReportingLogLevel = LogLevels.defaultErrorLevel(materializer.system)
+
   def subFusingMaterializer: Materializer = _subFusingMaterializer
 
   // An event queue implemented as a circular buffer
@@ -378,12 +381,21 @@ import pekko.stream.stage._
         def reportStageError(e: Throwable): Unit = {
           if (activeStage eq null) throw e
           else {
-            val loggingEnabled = activeStage.attributes.get[LogLevels] match {
-              case Some(levels) => levels.onFailure != LogLevels.Off
-              case None         => true
+            val logAt: Logging.LogLevel = activeStage.attributes.get[LogLevels] match {
+              case Some(levels) => levels.onFailure
+              case None         => defaultErrorReportingLogLevel
             }
-            if (loggingEnabled)
-              log.error(e, "Error in stage [{}]: {}", activeStage.toString, e.getMessage)
+            logAt match {
+              case Logging.ErrorLevel =>
+                log.error(e, "Error in stage [{}]: {}", activeStage.toString, e.getMessage)
+              case Logging.WarningLevel =>
+                log.warning(e, "Error in stage [{}]: {}", activeStage.toString, e.getMessage)
+              case Logging.InfoLevel =>
+                log.info("Error in stage [{}]: {}", activeStage.toString, e.getMessage)
+              case Logging.DebugLevel =>
+                log.debug("Error in stage [{}]: {}", activeStage.toString, e.getMessage)
+              case _ => // Off, nop
+            }
             activeStage.failStage(e)
 
             // Abort chasing

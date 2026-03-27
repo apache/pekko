@@ -26,6 +26,7 @@ import scala.reflect.{ classTag, ClassTag }
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+import pekko.actor.ActorSystem
 import pekko.annotation.ApiMayChange
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
@@ -33,6 +34,7 @@ import pekko.event.Logging
 import pekko.japi.function
 import pekko.stream.impl.TraversalBuilder
 import pekko.util.ByteString
+import pekko.util.Helpers
 import pekko.util.LineNumbers
 
 /**
@@ -720,6 +722,23 @@ object Attributes {
 
     /** Use to enable logging at DEBUG level for certain operations when configuring [[Attributes#logLevels]] */
     final val Debug: Logging.LogLevel = Logging.DebugLevel
+
+    /** INTERNAL API */
+    @InternalApi
+    private[pekko] def defaultErrorLevel(system: ActorSystem): Logging.LogLevel =
+      fromString(system.settings.config.getString("pekko.stream.materializer.stage-errors-default-log-level"))
+
+    /** INTERNAL API */
+    @InternalApi
+    private[pekko] def fromString(str: String): Logging.LogLevel = {
+      Helpers.toRootLowerCase(str) match {
+        case "off"     => Off
+        case "error"   => Error
+        case "warning" => Warning
+        case "info"    => Info
+        case "debug"   => Debug
+      }
+    }
   }
 
   /** Java API: Use to disable logging on certain operations when configuring [[Attributes#createLogLevels]] */
