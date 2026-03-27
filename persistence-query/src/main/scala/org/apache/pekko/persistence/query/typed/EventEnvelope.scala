@@ -31,6 +31,28 @@ object EventEnvelope {
       slice: Int): EventEnvelope[Event] =
     new EventEnvelope(offset, persistenceId, sequenceNr, Option(event), timestamp, None, entityType, slice)
 
+  def apply[Event](
+      offset: Offset,
+      persistenceId: String,
+      sequenceNr: Long,
+      event: Event,
+      timestamp: Long,
+      entityType: String,
+      slice: Int,
+      filtered: Boolean,
+      source: String): EventEnvelope[Event] =
+    new EventEnvelope(
+      offset,
+      persistenceId,
+      sequenceNr,
+      Option(event),
+      timestamp,
+      None,
+      entityType,
+      slice,
+      filtered,
+      source)
+
   def create[Event](
       offset: Offset,
       persistenceId: String,
@@ -40,6 +62,18 @@ object EventEnvelope {
       entityType: String,
       slice: Int): EventEnvelope[Event] =
     apply(offset, persistenceId, sequenceNr, event, timestamp, entityType, slice)
+
+  def create[Event](
+      offset: Offset,
+      persistenceId: String,
+      sequenceNr: Long,
+      event: Event,
+      timestamp: Long,
+      entityType: String,
+      slice: Int,
+      filtered: Boolean,
+      source: String): EventEnvelope[Event] =
+    apply(offset, persistenceId, sequenceNr, event, timestamp, entityType, slice, filtered, source)
 
   def unapply[Event](arg: EventEnvelope[Event]): Option[(Offset, String, Long, Option[Event], Long)] =
     Some((arg.offset, arg.persistenceId, arg.sequenceNr, arg.eventOption, arg.timestamp))
@@ -68,7 +102,20 @@ final class EventEnvelope[Event](
     val timestamp: Long,
     val eventMetadata: Option[Any],
     val entityType: String,
-    val slice: Int) {
+    val slice: Int,
+    val filtered: Boolean,
+    val source: String) {
+
+  def this(
+      offset: Offset,
+      persistenceId: String,
+      sequenceNr: Long,
+      eventOption: Option[Event],
+      timestamp: Long,
+      eventMetadata: Option[Any],
+      entityType: String,
+      slice: Int) =
+    this(offset, persistenceId, sequenceNr, eventOption, timestamp, eventMetadata, entityType, slice, false, "")
 
   def event: Event =
     eventOption match {
@@ -117,7 +164,7 @@ final class EventEnvelope[Event](
     case other: EventEnvelope[_] =>
       offset == other.offset && persistenceId == other.persistenceId && sequenceNr == other.sequenceNr &&
       eventOption == other.eventOption && timestamp == other.timestamp && eventMetadata == other.eventMetadata &&
-      entityType == other.entityType && slice == other.slice
+      entityType == other.entityType && slice == other.slice && filtered == other.filtered
     case _ => false
   }
 
@@ -130,6 +177,6 @@ final class EventEnvelope[Event](
       case Some(meta) => meta.getClass.getName
       case None       => ""
     }
-    s"EventEnvelope($offset,$persistenceId,$sequenceNr,$eventStr,$timestamp,$metaStr,$entityType,$slice)"
+    s"EventEnvelope($offset,$persistenceId,$sequenceNr,$eventStr,$timestamp,$metaStr,$entityType,$slice,$filtered,$source)"
   }
 }

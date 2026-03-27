@@ -77,6 +77,20 @@ class QuerySerializerSpec extends PekkoSpec {
         EventEnvelope(timeUuidOffset, "TestEntity|id1", 3L, "event1", System.currentTimeMillis(), "TestEntity", 5))
     }
 
+    "serialize EventEnvelope with filtered and source" in {
+      verifySerialization(
+        EventEnvelope(
+          Sequence(1L),
+          "TestEntity|id1",
+          3L,
+          "event1",
+          System.currentTimeMillis(),
+          "TestEntity",
+          5,
+          filtered = true,
+          source = "backtracking"))
+    }
+
     "serialize Sequence Offset" in {
       verifySerialization(Sequence(0))
     }

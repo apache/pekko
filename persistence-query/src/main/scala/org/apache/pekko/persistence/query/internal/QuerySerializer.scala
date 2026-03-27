@@ -86,6 +86,11 @@ import pekko.serialization.Serializers
       env.eventOption.foreach(event => builder.setEvent(payloadBuilder(event, serialization, log)))
       env.eventMetadata.foreach(meta => builder.setMetadata(payloadBuilder(meta, serialization, log)))
 
+      if (env.filtered)
+        builder.setFiltered(true)
+      if (env.source.nonEmpty)
+        builder.setSource(env.source)
+
       builder.build().toByteArray()
 
     case offset: Offset =>
@@ -108,6 +113,9 @@ import pekko.serialization.Serializers
         if (env.hasMetadata) Option(deserializePayload(env.getMetadata, serialization))
         else None
 
+      val filtered = env.hasFiltered && env.getFiltered
+      val source = if (env.hasSource) env.getSource else ""
+
       new EventEnvelope(
         offset,
         env.getPersistenceId,
@@ -116,7 +124,9 @@ import pekko.serialization.Serializers
         env.getTimestamp,
         metaOption,
         env.getEntityType,
-        env.getSlice)
+        env.getSlice,
+        filtered,
+        source)
 
     case _ =>
       fromStorageRepresentation(new String(bytes, UTF_8), manifest)
