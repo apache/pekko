@@ -15,17 +15,14 @@ package org.apache.pekko.stream.testkit
 
 import java.util.concurrent.TimeUnit
 
-import scala.concurrent.Future
-import scala.concurrent.duration._
+import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
-import pekko.actor.{ ActorRef, ActorSystem }
+import pekko.actor.ActorSystem
 import pekko.stream.Materializer
 import pekko.stream.impl.PhasedFusingActorMaterializer
-import pekko.stream.impl.StreamSupervisor
-import pekko.stream.snapshot.{ MaterializerState, StreamSnapshotImpl }
-import pekko.stream.testkit.scaladsl.StreamTestKit.{ assertNoChildren, stopAllChildren }
-import pekko.testkit.{ PekkoSpec, TestProbe }
+import pekko.stream.testkit.scaladsl.StreamTestKit.{ assertNoChildren, printDebugDump, stopAllChildren }
+import pekko.testkit.PekkoSpec
 import pekko.testkit.TestKitUtils
 
 import org.scalatest.Failed
@@ -49,31 +46,22 @@ abstract class StreamSpec(_system: ActorSystem) extends PekkoSpec(_system) with 
   override def withFixture(test: NoArgTest) = {
     super.withFixture(test) match {
       case failed: Failed =>
-        implicit val ec = system.dispatcher
-        val probe = TestProbe()(system)
-        // FIXME I don't think it always runs under /user anymore (typed)
-        // FIXME correction - I'm not sure this works at _all_ - supposed to dump stream state if test fails
-        val streamSupervisors = system.actorSelection("/user/" + StreamSupervisor.baseName + "*")
-        streamSupervisors.tell(StreamSupervisor.GetChildren, probe.ref)
-        val children: Seq[ActorRef] = probe
-          .receiveWhile(2.seconds) {
-            case StreamSupervisor.Children(children) => children
-          }
-          .flatten
-        println("--- Stream actors debug dump ---")
-        if (children.isEmpty) println("Stream is completed. No debug information is available")
-        else {
-          println("Stream actors alive: " + children)
-          Future
-            .sequence(children.map(MaterializerState.requestFromChild))
-            .foreach(snapshots =>
-              snapshots.foreach(s =>
-                pekko.stream.testkit.scaladsl.StreamTestKit.snapshotString(s.asInstanceOf[StreamSnapshotImpl])))
+        Materializer(_system) match {
+          case impl: PhasedFusingActorMaterializer =>
+            implicit val ec = impl.system.dispatcher
+            println("--- Stream actors debug dump (only works for tests using system materializer) ---")
+            printDebugDump(impl.supervisor)
+            println("--- Stream actors debug dump end ---")
+            stopAllChildren(impl.system, impl.supervisor)
+          case _ =>
         }
         failed
       case other =>
         Materializer(_system) match {
           case impl: PhasedFusingActorMaterializer =>
+            // Note that this is different from assertAllStages stopped since it tries to
+            // *kill* all streams first, before checking if any is stuck. It also does not
+            // work for tests starting their own materializers.
             stopAllChildren(impl.system, impl.supervisor)
             val result = test.apply()
             assertNoChildren(impl.system, impl.supervisor,

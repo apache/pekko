@@ -26,6 +26,7 @@ import pekko.Done
 import pekko.stream.ActorAttributes
 import pekko.stream.Materializer
 import pekko.stream.Supervision
+import pekko.stream.SystemMaterializer
 import pekko.stream.impl.PhasedFusingActorMaterializer
 import pekko.stream.impl.StreamSupervisor
 import pekko.stream.impl.StreamSupervisor.Children
@@ -325,9 +326,6 @@ class UnfoldResourceAsyncSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
     }
 
     "use dedicated blocking-io-dispatcher by default" in {
-      // use a separate materializer to ensure we know what child is our stream
-      implicit val materializer = Materializer(system)
-
       Source
         .unfoldResourceAsync[String, Unit](
           () => Promise[Unit]().future, // never complete
@@ -335,7 +333,8 @@ class UnfoldResourceAsyncSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
           _ => ???)
         .runWith(Sink.ignore)
 
-      materializer.asInstanceOf[PhasedFusingActorMaterializer].supervisor.tell(StreamSupervisor.GetChildren, testActor)
+      SystemMaterializer(system).materializer.asInstanceOf[PhasedFusingActorMaterializer].supervisor.tell(
+        StreamSupervisor.GetChildren, testActor)
       val ref = expectMsgType[Children].children.find(_.path.toString contains "unfoldResourceSourceAsync").get
       assertDispatcher(ref, ActorAttributes.IODispatcher.dispatcher)
     }
