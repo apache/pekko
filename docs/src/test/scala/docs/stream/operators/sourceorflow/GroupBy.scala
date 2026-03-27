@@ -22,12 +22,13 @@ object GroupBy {
     implicit val system: ActorSystem = ???
     // #groupBy
     Source(1 to 10)
-      .groupBy(maxSubstreams = 2, _ % 2 == 0) // create two sub-streams with odd and even numbers
+      .groupBy(maxSubstreams = 2, _ % 2) // create two sub-streams with odd and even numbers
       .reduce(_ + _) // for each sub-stream, sum its elements
       .mergeSubstreams // merge back into a stream
       .runForeach(println)
-    // 25
-    // 30
+    // 30 (even: 2+4+6+8+10)
+    // 25 (odd: 1+3+5+7+9)
+    // Note: output order may vary since mergeSubstreams is non-deterministic
     // #groupBy
   }
 
