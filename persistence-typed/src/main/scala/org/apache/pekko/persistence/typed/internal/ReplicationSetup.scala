@@ -27,6 +27,14 @@ import pekko.util.WallClock
  * INTERNAL API
  */
 @InternalApi
+private[pekko] object ReplicationContextImpl {
+  val NoPlugin = "no-plugin"
+}
+
+/**
+ * INTERNAL API
+ */
+@InternalApi
 private[pekko] final class ReplicationContextImpl(
     val replicationId: ReplicationId,
     val replicasAndQueryPlugins: Map[ReplicaId, String])

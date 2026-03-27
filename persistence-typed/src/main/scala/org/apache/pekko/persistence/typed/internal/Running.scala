@@ -361,7 +361,7 @@ private[pekko] object Running {
           "Saving event [{}] from [{}] as first time",
           envelope.event.originSequenceNr,
           envelope.event.originReplica)
-        handleExternalReplicatedEventPersist(replication, envelope.event)
+        handleExternalReplicatedEventPersist(replication, envelope.event, None)
       } else {
         setup.internalLogger.debug(
           "Filtering event [{}] from [{}] as it was already seen",
@@ -382,7 +382,9 @@ private[pekko] object Running {
         case Some(replication) =>
           event.replicatedMetaData match {
             case None =>
-              setup.internalLogger.warn("Received published event for [{}] but with no replicated metadata, dropping")
+              setup.internalLogger.warn(
+                "Received published event for [{}] but with no replicated metadata, dropping",
+                event.persistenceId)
               this
             case Some(replicatedEventMetaData) =>
               onPublishedEvent(state, replication, replicatedEventMetaData, event)
@@ -409,6 +411,7 @@ private[pekko] object Running {
             "Ignoring published replicated event with seqNr [{}] from our own replica id [{}]",
             event.sequenceNumber,
             originReplicaId)
+        event.replyTo.foreach(_ ! pekko.Done) // probably won't happen
         this
       } else if (!replication.allReplicas.contains(originReplicaId)) {
         log.warnN(
@@ -417,18 +420,20 @@ private[pekko] object Running {
           replication.allReplicas.mkString(", "))
         this
       } else {
-        val expectedSequenceNumber = state.seenPerReplica.getOrElse(originReplicaId, 0L) + 1
-        if (expectedSequenceNumber > event.sequenceNumber) {
-          // already seen
+        val seenSequenceNr = state.seenPerReplica.getOrElse(originReplicaId, 0L)
+        if (seenSequenceNr >= event.sequenceNumber) {
+          // already seen/deduplication
           if (log.isDebugEnabled)
             log.debugN(
-              "Ignoring published replicated event with seqNr [{}] from replica [{}] because it was already seen ([{}])",
+              "Ignoring published replicated event with seqNr [{}] from replica [{}] because it was already seen (version: {})",
               event.sequenceNumber,
               originReplicaId,
-              expectedSequenceNumber)
+              state.seenPerReplica)
+          event.replyTo.foreach(_ ! pekko.Done)
           this
-        } else if (expectedSequenceNumber != event.sequenceNumber) {
-          // gap in sequence numbers (message lost or query and direct replication out of sync, should heal up by itself
+        } else if (event.lossyTransport && event.sequenceNumber != (seenSequenceNr + 1)) {
+          // Lossy transport/opportunistic replication cannot allow gaps in sequence
+          // numbers (message lost or query and direct replication out of sync, should heal up by itself
           // once the query catches up)
           if (log.isDebugEnabled) {
             log.debugN(
@@ -436,7 +441,7 @@ private[pekko] object Running {
               "because expected replication seqNr was [{}] ",
               event.sequenceNumber,
               originReplicaId,
-              expectedSequenceNumber)
+              seenSequenceNr + 1)
           }
           this
         } else {
@@ -458,7 +463,8 @@ private[pekko] object Running {
               event.event.asInstanceOf[E],
               originReplicaId,
               event.sequenceNumber,
-              replicatedMetadata.version))
+              replicatedMetadata.version),
+            event.replyTo)
         }
 
       }
@@ -477,7 +483,8 @@ private[pekko] object Running {
 
     private def handleExternalReplicatedEventPersist(
         replication: ReplicationSetup,
-        event: ReplicatedEvent[E]): Behavior[InternalProtocol] = {
+        event: ReplicatedEvent[E],
+        ackToOnPersisted: Option[pekko.actor.typed.ActorRef[pekko.Done]]): Behavior[InternalProtocol] = {
       _currentSequenceNumber = state.seqNr + 1
       val isConcurrent: Boolean = event.originVersion <> state.version
       val updatedVersion = event.originVersion.merge(state.version)
@@ -499,6 +506,14 @@ private[pekko] object Running {
 
       replication.clearContext()
 
+      val sideEffects = ackToOnPersisted match {
+        case None      => Nil
+        case Some(ref) =>
+          SideEffect[S] { _ =>
+            ref ! pekko.Done
+          } :: Nil
+      }
+
       val newState2: RunningState[S, C] = internalPersist(
         setup.context,
         null,
@@ -516,7 +531,7 @@ private[pekko] object Running {
         numberOfEvents = 1,
         shouldSnapshotAfterPersist,
         shouldPublish = false,
-        Nil)
+        sideEffects)
     }
 
     private def handleEventPersist(
@@ -789,7 +804,7 @@ private[pekko] object Running {
           val meta = setup.replication.map(replication =>
             new ReplicatedPublishedEventMetaData(replication.replicaId, state.version))
           context.system.eventStream ! EventStream.Publish(
-            PublishedEventImpl(setup.persistenceId, p.sequenceNr, p.payload, p.timestamp, meta))
+            PublishedEventImpl(setup.persistenceId, p.sequenceNr, p.payload, p.timestamp, meta, None))
         }
 
         // only once all things are applied we can revert back

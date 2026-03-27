@@ -23,6 +23,8 @@ import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
+import pekko.actor.typed.ActorRefResolver
+import pekko.actor.typed.scaladsl.adapter.ClassicActorSystemOps
 import pekko.annotation.InternalApi
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.ReplicaId
@@ -74,6 +76,9 @@ import pekko.serialization.{ BaseSerializer, SerializerWithStringManifest }
     with BaseSerializer {
 
   private val wrappedSupport = new WrappedPayloadSupport(system)
+  // lazy because Serializers are initialized early on. `toTyped` might then try to
+  // initialize the classic ActorSystemAdapter extension.
+  private lazy val resolver = ActorRefResolver(system.toTyped)
 
   private val CrdtCounterManifest = "AA"
   private val CrdtCounterUpdatedManifest = "AB"
@@ -163,9 +168,7 @@ import pekko.serialization.{ BaseSerializer, SerializerWithStringManifest }
       .setPayload(wrappedSupport.payloadBuilder(impl.payload))
       .setTimestamp(impl.timestamp)
 
-    (impl.replicatedMetaData match {
-      case None =>
-        builder
+    impl.replicatedMetaData match {
       case Some(m) =>
         builder.setMetadata(
           ReplicatedEventSourcing.ReplicatedPublishedEventMetaData
@@ -173,7 +176,15 @@ import pekko.serialization.{ BaseSerializer, SerializerWithStringManifest }
             .setReplicaId(m.replicaId.id)
             .setVersionVector(versionVectorToProto(m.version))
             .build())
-    }).build().toByteArray
+      case None =>
+    }
+
+    impl.replyTo match {
+      case Some(ref) => builder.setReplyTo(resolver.toSerializationFormat(ref))
+      case None      =>
+    }
+
+    builder.build().toByteArray
   }
 
   def publishedEventFromBinary(bytes: Array[Byte]): PublishedEventImpl = {
@@ -189,7 +200,9 @@ import pekko.serialization.{ BaseSerializer, SerializerWithStringManifest }
           new ReplicatedPublishedEventMetaData(
             ReplicaId(protoMeta.getReplicaId),
             versionVectorFromProto(protoMeta.getVersionVector)))
-      } else None)
+      } else None,
+      if (!p.hasReplyTo) None
+      else Some(resolver.resolveActorRef(p.getReplyTo)))
   }
 
   def counterFromBinary(bytes: Array[Byte]): Counter =
