@@ -74,6 +74,42 @@ class StatusReplySpec extends PekkoSpec with ScalaFutures {
         TestException("boo"))
 
     }
+
+    "create from Try success" in {
+      import scala.util.Success
+      val reply = StatusReply.fromTry(Success("woho"))
+      reply.isSuccess should ===(true)
+      reply.getValue should ===("woho")
+    }
+
+    "create from Try failure with message" in {
+      import scala.util.Failure
+      val reply = StatusReply.fromTry(Failure(TestException("boo")))
+      reply.isError should ===(true)
+      reply.getError.getMessage should ===("boo")
+      reply.getError shouldBe a[StatusReply.ErrorMessage]
+    }
+
+    "create from Try failure keeping exception" in {
+      import scala.util.Failure
+      val reply = StatusReply.fromTryKeepException(Failure(TestException("boo")))
+      reply.isError should ===(true)
+      reply.getError should ===(TestException("boo"))
+    }
+
+    "create from Try success via fromTryKeepException" in {
+      import scala.util.Success
+      val reply = StatusReply.fromTryKeepException(Success("woho"))
+      reply.isSuccess should ===(true)
+      reply.getValue should ===("woho")
+    }
+
+    "create from Try failure with null message" in {
+      import scala.util.Failure
+      val reply = StatusReply.fromTry(Failure(new RuntimeException()))
+      reply.isError should ===(true)
+      reply.getError.getMessage should ===("java.lang.RuntimeException")
+    }
   }
 
   "askWithStatus" should {
