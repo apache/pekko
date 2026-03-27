@@ -70,6 +70,8 @@ import pekko.util.ByteString
 
   import TLSActor._
 
+  private var stopped = false
+
   private val maxTLSIterations = 1000
   private var unwrapPutBackCounter: Int = 0
   protected val outputBunch = new OutputBunch(outputCount = 2, self, this)
@@ -500,12 +502,21 @@ import pekko.util.ByteString
       outputBunch.error(TransportOut, e)
     }
     outputBunch.error(UserOut, e)
+    stopped = true
     pump()
   }
 
-  // FIXME: what happens if this actor dies unexpectedly?
   override def postStop(): Unit = {
-    if (tracing) log.debug("postStop")
+    if (!stopped) {
+      val e = new RuntimeException(
+        s"Unexpected termination of TLS actor for connection to ${engine.getPeerHost}:${engine.getPeerPort}")
+      log.warning(e.getMessage)
+      inputBunch.cancel()
+      outputBunch.error(TransportOut, e)
+      outputBunch.error(UserOut, e)
+    } else if (tracing) {
+      log.debug("postStop")
+    }
     super.postStop()
   }
 
@@ -515,6 +526,7 @@ import pekko.util.ByteString
     inputBunch.cancel()
     outputBunch.complete()
     if (tracing) log.debug(s"STOP Outbound Closed: ${engine.isOutboundDone} Inbound closed: ${engine.isInboundDone}")
+    stopped = true
     context.stop(self)
   }
 }
