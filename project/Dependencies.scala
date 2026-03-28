@@ -22,7 +22,7 @@ object Dependencies {
     // https://protobuf.dev/support/version-support/
     // protobuf-java 4.x corresponds with protoc 26.x-33.x
     val protobufJavaVersion = "4.34.1"
-    val protocVersion = "33.0"
+    val protocVersion = "34.1"
   }
 
   val junitVersion = "4.13.2"
