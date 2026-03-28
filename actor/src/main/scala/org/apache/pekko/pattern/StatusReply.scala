@@ -111,6 +111,8 @@ object StatusReply {
    * Transforms exceptions into status reply errors containing just the exception message string.
    *
    * See [[#fromTryKeepException]] for passing the exception along as is.
+   *
+   * @since 2.0.0
    */
   def fromTry[T](status: Try[T]): StatusReply[T] = status match {
     case ScalaSuccess(value) => success(value)
@@ -128,6 +130,8 @@ object StatusReply {
    * set of response messages may be a better alternative to encoding them as generic exceptions.
    *
    * Also note that Pekko does not contain pre-built serializers for arbitrary exceptions.
+   *
+   * @since 2.0.0
    */
   def fromTryKeepException[T](status: Try[T]): StatusReply[T] = new StatusReply(status)
 
