@@ -110,6 +110,37 @@ class StatusReplySpec extends PekkoSpec with ScalaFutures {
       reply.isError should ===(true)
       reply.getError.getMessage should ===("java.lang.RuntimeException")
     }
+
+    "create from Callable success" in {
+      val reply = StatusReply.fromCallable[String](() => "woho")
+      reply.isSuccess should ===(true)
+      reply.getValue should ===("woho")
+    }
+
+    "create from Callable failure with message" in {
+      val reply = StatusReply.fromCallable[String](() => throw TestException("boo"))
+      reply.isError should ===(true)
+      reply.getError.getMessage should ===("boo")
+      reply.getError shouldBe a[StatusReply.ErrorMessage]
+    }
+
+    "create from CallableKeepException success" in {
+      val reply = StatusReply.fromCallableKeepException[String](() => "woho")
+      reply.isSuccess should ===(true)
+      reply.getValue should ===("woho")
+    }
+
+    "create from CallableKeepException failure keeping exception" in {
+      val reply = StatusReply.fromCallableKeepException[String](() => throw TestException("boo"))
+      reply.isError should ===(true)
+      reply.getError should ===(TestException("boo"))
+    }
+
+    "create from Callable failure with null message" in {
+      val reply = StatusReply.fromCallable[String](() => throw new RuntimeException())
+      reply.isError should ===(true)
+      reply.getError.getMessage should ===("java.lang.RuntimeException")
+    }
   }
 
   "askWithStatus" should {

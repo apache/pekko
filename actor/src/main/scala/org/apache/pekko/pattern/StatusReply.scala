@@ -18,7 +18,7 @@ import scala.concurrent.Future
 import scala.util.{ Failure => ScalaFailure }
 import scala.util.{ Success => ScalaSuccess }
 import scala.util.Try
-import scala.util.control.NoStackTrace
+import scala.util.control.{ NoStackTrace, NonFatal }
 
 import org.apache.pekko
 import pekko.Done
@@ -134,6 +134,41 @@ object StatusReply {
    * @since 2.0.0
    */
   def fromTryKeepException[T](status: Try[T]): StatusReply[T] = new StatusReply(status)
+
+  /**
+   * Java API: Convert the result of a [[java.util.concurrent.Callable]] into a [[StatusReply]].
+   *
+   * If the callable completes successfully, wraps the result in a successful reply.
+   * If it throws an exception, converts the exception message to an error reply
+   * (discarding the original exception type, making it safe for remote serialization).
+   *
+   * This is the Java-friendly equivalent of [[#fromTry]].
+   *
+   * @since 2.0.0
+   */
+  def fromCallable[T](callable: java.util.concurrent.Callable[T]): StatusReply[T] =
+    try success(callable.call())
+    catch {
+      case NonFatal(e) => error[T](Option(e.getMessage).getOrElse(e.getClass.getName))
+    }
+
+  /**
+   * Java API: Convert the result of a [[java.util.concurrent.Callable]] into a [[StatusReply]],
+   * keeping the original exception in case of failure.
+   *
+   * Unlike [[#fromCallable]], this preserves the full exception object. This is useful when
+   * callers need to match on exception types, but requires that serializers are configured
+   * for the exception types used when communicating with remote actors.
+   *
+   * This is the Java-friendly equivalent of [[#fromTryKeepException]].
+   *
+   * @since 2.0.0
+   */
+  def fromCallableKeepException[T](callable: java.util.concurrent.Callable[T]): StatusReply[T] =
+    try success(callable.call())
+    catch {
+      case NonFatal(e) => error[T](e)
+    }
 
   /**
    * Carrier exception used for textual error descriptions.
