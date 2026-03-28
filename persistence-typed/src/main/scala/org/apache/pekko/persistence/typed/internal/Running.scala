@@ -814,10 +814,14 @@ private[pekko] object Running {
         } else {
           visibleState = state
           def skipRetention(): Boolean = {
-            // only one retention process at a time
+            // Only one retention process (snapshot + optional event/snapshot deletion) at a time.
+            // When retention is already in progress, both the snapshot and the subsequent
+            // deletion steps are skipped together. This keeps retention state simple and avoids
+            // transiently exceeding the intended snapshot count. The next retention cycle at a
+            // higher seqNr will cover the range of the skipped one, so no data is lost.
             val inProgress = shouldSnapshotAfterPersist == SnapshotWithRetention && setup.isRetentionInProgress()
             if (inProgress)
-              setup.internalLogger.info(
+              setup.internalLogger.debug(
                 "Skipping retention at seqNr [{}] because previous retention has not completed yet. " +
                 "Next retention will cover skipped retention.",
                 state.seqNr)

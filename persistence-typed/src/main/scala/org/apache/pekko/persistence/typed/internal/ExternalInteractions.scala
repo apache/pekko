@@ -223,7 +223,11 @@ private[pekko] trait SnapshotInteractions[C, E, S] {
     }
   }
 
-  /** Deletes the snapshots up to and including the `sequenceNr`. */
+  /**
+   * Deletes the snapshots up to and including the `sequenceNr`.
+   * Uses `minSequenceNr = 0L` to always delete from the beginning, which simplifies
+   * the retention bookkeeping by removing the need to track a separate lower bound.
+   */
   protected def internalDeleteSnapshots(toSequenceNr: Long): Unit = {
     if (toSequenceNr > 0) {
       val snapshotCriteria = SnapshotSelectionCriteria(minSequenceNr = 0L, maxSequenceNr = toSequenceNr)
