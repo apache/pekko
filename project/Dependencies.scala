@@ -20,7 +20,8 @@ object Dependencies {
 
   object Protobuf {
     // https://protobuf.dev/support/version-support/
-    // protobuf-java 4.x corresponds with protoc 26.x-33.x
+    // The protoc version can be inferred from the Protobuf Java minor version number.
+    // Example: Protobuf Java version 3.25.x uses protoc version 25.x.
     val protobufJavaVersion = "4.34.1"
     val protocVersion = "34.1"
   }
