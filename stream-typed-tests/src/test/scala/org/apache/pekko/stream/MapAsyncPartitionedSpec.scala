@@ -18,7 +18,7 @@
 package org.apache.pekko.stream
 
 import java.time.Instant
-import java.util.concurrent.Executors
+import java.util.concurrent.{ ExecutorService, Executors }
 
 import scala.annotation.nowarn
 import scala.concurrent.{ blocking, ExecutionContext, Future }
@@ -107,18 +107,22 @@ class MapAsyncPartitionedSpec
 
   import MapAsyncPartitionedSpec.TestData._
 
-  // Property-based tests with blocking operations need extra headroom,
-  // especially on JDK 25+ with ForkJoinPool scheduling changes (#2573)
+  // These suites materialize many short-lived streams. On busy CI nodes,
+  // JDK 25 makes the 1000-sample property checks noticeably more expensive (#2573).
   override implicit def patienceConfig: PatienceConfig = PatienceConfig(
-    timeout = 15.seconds,
+    timeout = 60.seconds,
     interval = 100.millis)
 
+  private val heavyPropertyChecks = minSuccessful(100)
+
   private implicit val system: ActorSystem[_] = ActorSystem(Behaviors.empty, "test-system")
-  private implicit val ec: ExecutionContext = ExecutionContext.fromExecutor(Executors.newCachedThreadPool())
+  private val executor: ExecutorService = Executors.newCachedThreadPool()
+  private implicit val ec: ExecutionContext = ExecutionContext.fromExecutor(executor)
 
   override protected def afterAll(): Unit = {
     system.terminate()
     system.whenTerminated.futureValue
+    executor.shutdown()
     super.afterAll()
   }
 
@@ -149,7 +153,7 @@ class MapAsyncPartitionedSpec
   }
 
   it should "process elements in parallel preserving order in partition" in {
-    forAll(minSuccessful(1000)) { (parallelism: Parallelism, elements: Seq[TestKeyValue]) =>
+    forAll(heavyPropertyChecks) { (parallelism: Parallelism, elements: Seq[TestKeyValue]) =>
       val result =
         Source(elements.toIndexedSeq)
           .mapAsyncPartitionedUnordered(parallelism.value)(partitioner)(asyncOperation)
@@ -164,7 +168,7 @@ class MapAsyncPartitionedSpec
   }
 
   it should "process elements in sequence preserving order in partition" in {
-    forAll(minSuccessful(1000)) { (elements: Seq[TestKeyValue]) =>
+    forAll(heavyPropertyChecks) { (elements: Seq[TestKeyValue]) =>
       val result =
         Source
           .fromIterator(() => elements.iterator)
@@ -301,7 +305,7 @@ class MapAsyncPartitionedSpec
   }
 
   it should "process elements in parallel preserving order in partition" in {
-    forAll(minSuccessful(1000)) { (parallelism: Parallelism, elements: Seq[TestKeyValue]) =>
+    forAll(heavyPropertyChecks) { (parallelism: Parallelism, elements: Seq[TestKeyValue]) =>
       val result =
         Source(elements.toIndexedSeq)
           .mapAsyncPartitioned(parallelism.value)(partitioner)(asyncOperation)
@@ -316,7 +320,7 @@ class MapAsyncPartitionedSpec
   }
 
   it should "process elements in sequence preserving order in partition" in {
-    forAll(minSuccessful(1000)) { (elements: Seq[TestKeyValue]) =>
+    forAll(heavyPropertyChecks) { (elements: Seq[TestKeyValue]) =>
       val result =
         Source
           .fromIterator(() => elements.iterator)

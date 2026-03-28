@@ -42,7 +42,7 @@ class FlowFlatMapConcatParallelismSpec extends StreamSpec("""
   // 100K-element tests need extra headroom, especially on JDK 25+ where
   // ForkJoinPool scheduling changes slow down highly-parallel workloads (#2573)
   override implicit val patience: PatienceConfig =
-    PatienceConfig(timeout = Span(30, Seconds), interval = Span(1, Seconds))
+    PatienceConfig(timeout = Span(60, Seconds), interval = Span(1, Seconds))
 
   val toSeq = Flow[Int].grouped(1000).toMat(Sink.head)(Keep.right)
 

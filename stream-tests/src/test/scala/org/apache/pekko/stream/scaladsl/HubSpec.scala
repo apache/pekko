@@ -38,7 +38,7 @@ class HubSpec extends StreamSpec {
   // Long-stream tests (20K elements) need extra headroom on JDK 25+
   // where ForkJoinPool scheduling changes cause slower throughput (#2573)
   override implicit val patience: PatienceConfig =
-    PatienceConfig(timeout = Span(30, Seconds), interval = Span(1, Seconds))
+    PatienceConfig(timeout = Span(60, Seconds), interval = Span(1, Seconds))
 
   "MergeHub" must {
 
