@@ -24,7 +24,7 @@ import pekko.annotation.{ InternalApi, InternalStableApi }
 /**
  * INTERNAL API
  *
- * First (of four) behavior of an PersistentBehaviour.
+ * First (of four) behavior of an EventSourcedBehavior.
  *
  * Requests a permit to start replaying this actor; this is tone to avoid
  * hammering the journal with too many concurrently replaying actors.
