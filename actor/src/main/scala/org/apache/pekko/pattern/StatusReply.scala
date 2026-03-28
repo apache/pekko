@@ -109,6 +109,8 @@ object StatusReply {
    * Scala API: Turn a [[scala.util.Try]] into a status reply.
    *
    * Transforms exceptions into status reply errors containing just the exception message string.
+   * This makes it safe for use with remote actors since Pekko includes built-in serializers
+   * for text-based error messages, unlike arbitrary exception types.
    *
    * See [[#fromTryKeepException]] for passing the exception along as is.
    *
@@ -120,14 +122,14 @@ object StatusReply {
   }
 
   /**
-   * Scala API: Turn a [[scala.util.Try]] into a status reply.
+   * Scala API: Turn a [[scala.util.Try]] into a status reply, keeping the original exception.
    *
-   * Prefer the string based error response over this one when possible to avoid tightly coupled logic across
-   * actors and passing internal failure details on to callers that can not do much to handle them. [[#fromTry]]
-   * provides a convenience factory doing that for [[scala.util.Try]].
+   * Unlike [[#fromTry]], this preserves the full exception object. This is useful when callers
+   * need to match on exception types, but requires that serializers are configured for the
+   * exception types used when communicating with remote actors.
    *
-   * For cases where types are needed to identify errors and behave differently enumerating them with a specific
-   * set of response messages may be a better alternative to encoding them as generic exceptions.
+   * Prefer [[#fromTry]] (string-based errors) when possible to avoid tightly coupled logic across
+   * actors and passing internal failure details on to callers that can not do much to handle them.
    *
    * Also note that Pekko does not contain pre-built serializers for arbitrary exceptions.
    *
