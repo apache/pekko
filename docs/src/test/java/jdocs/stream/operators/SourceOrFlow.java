@@ -693,12 +693,12 @@ class SourceOrFlow {
   void groupByExample() {
     // #groupBy
     Source.range(1, 10)
-        .groupBy(2, i -> i % 2 == 0) // create two sub-streams with odd and even numbers
+        .groupBy(2, i -> i % 2) // create two sub-streams with odd and even numbers
         .reduce(Integer::sum) // for each sub-stream, sum its elements
         .mergeSubstreams() // merge back into a stream
         .runForeach(System.out::println, system);
-    // 25
-    // 30
+    // 30 (even: 2+4+6+8+10)
+    // 25 (odd: 1+3+5+7+9)
     // #groupBy
   }
 
