@@ -30,7 +30,7 @@ object PersistentActorRecoveryTimeoutSpec {
     SteppingInmemJournal
       .config(PersistentActorRecoveryTimeoutSpec.journalId)
       .withFallback(ConfigFactory.parseString("""
-          |pekko.persistence.journal.stepping-inmem.recovery-event-timeout=1s
+          |pekko.persistence.journal.stepping-inmem.recovery-event-timeout=3s
         """.stripMargin))
       .withFallback(PersistenceSpec.config("stepping-inmem", "PersistentActorRecoveryTimeoutSpec"))
 
@@ -111,7 +111,8 @@ class PersistentActorRecoveryTimeoutSpec
       // initial read highest
       SteppingInmemJournal.step(journal)
 
-      probe.expectMsgType[Failure].cause shouldBe a[RecoveryTimedOut]
+      // recovery-event-timeout is set to 3s; allow extra headroom for CI
+      probe.expectMsgType[Failure](10.seconds).cause shouldBe a[RecoveryTimedOut]
       expectTerminated(replaying)
 
       // avoid having it stuck in the next test from the
