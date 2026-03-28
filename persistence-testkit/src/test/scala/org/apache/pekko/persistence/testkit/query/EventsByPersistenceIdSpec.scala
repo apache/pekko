@@ -41,7 +41,7 @@ object EventsByPersistenceIdSpec {
   case class Command(evt: String, ack: ActorRef[Done])
   case class State()
 
-  def testBehaviour(persistenceId: String) = {
+  def testBehavior(persistenceId: String) = {
     EventSourcedBehavior[Command, String, State](
       PersistenceId.ofUniqueId(persistenceId),
       State(),
@@ -78,7 +78,7 @@ class EventsByPersistenceIdSpec
   }
 
   def setupEmpty(persistenceId: String): ActorRef[Command] = {
-    spawn(testBehaviour(persistenceId))
+    spawn(testBehavior(persistenceId))
   }
 
   "Persistent test kit live query EventsByPersistenceId" must {

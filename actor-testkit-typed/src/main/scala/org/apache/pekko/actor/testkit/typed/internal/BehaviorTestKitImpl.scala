@@ -173,7 +173,7 @@ private[pekko] final class BehaviorTestKitImpl[T](
       context.setCurrentActorThread()
       try {
         // we need this to handle message adapters related messages
-        val intercepted = BehaviorTestKitImpl.Interceptor.inteceptBehaviour(current, context)
+        val intercepted = BehaviorTestKitImpl.Interceptor.inteceptBehavior(current, context)
         currentUncanonical = Behavior.interpretMessage(intercepted, context, message)
         // notice we pass current and not intercepted, this way Behaviors.same will be resolved to current which will be intercepted again on the next message
         // otherwise we would have risked intercepting an already intercepted behavior (or would have had to explicitly check if the current behavior is already intercepted by us)
@@ -238,7 +238,7 @@ private[pekko] object BehaviorTestKitImpl {
       }
     }
 
-    def inteceptBehaviour[T](behavior: Behavior[T], ctx: TypedActorContext[T]): Behavior[T] =
+    def inteceptBehavior[T](behavior: Behavior[T], ctx: TypedActorContext[T]): Behavior[T] =
       Behavior
         .start(Behaviors.intercept { () =>
             this.asInstanceOf[BehaviorInterceptor[Any, T]]

@@ -57,7 +57,7 @@ object EventsByTagSpec {
   }
   case class State()
 
-  def testBehaviour(persistenceId: String, tags: Set[String]) = {
+  def testBehavior(persistenceId: String, tags: Set[String]) = {
     EventSourcedBehavior[Command, String, State](
       PersistenceId.ofUniqueId(persistenceId),
       State(),
@@ -111,7 +111,7 @@ class EventsByTagSpec
   }
 
   def setupEmpty(persistenceId: String, tags: Set[String]): ActorRef[Command] = {
-    spawn(testBehaviour(persistenceId, tags))
+    spawn(testBehavior(persistenceId, tags))
   }
 
   "Persistent test kit live query EventsByTag" must {

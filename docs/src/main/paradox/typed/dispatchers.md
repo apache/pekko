@@ -244,7 +244,7 @@ The orange portion of the thread shows that it is idle. Idle threads are fine -
 they're ready to accept new work. However, a large number of turquoise (blocked, or sleeping as in our example) threads
 leads to thread starvation.
 
-![dispatcher-behaviour-on-bad-code.png](../images/dispatcher-behaviour-on-bad-code.png)
+![dispatcher-behavior-on-bad-code.png](../images/dispatcher-behavior-on-bad-code.png)
 
 In the above example we put the code under load by sending hundreds of messages to blocking actors
 which causes threads of the default dispatcher to be blocked.
@@ -316,7 +316,7 @@ Java
 
 The thread pool behavior is shown in the below diagram.
 
-![dispatcher-behaviour-on-good-code.png](../images/dispatcher-behaviour-on-good-code.png)
+![dispatcher-behavior-on-good-code.png](../images/dispatcher-behavior-on-good-code.png)
 
 Messages sent to @scala[`SeparateDispatcherFutureActor`]@java[`SeparateDispatcherCompletionStageActor`] and `PrintActor` are handled by the default dispatcher - the
 green lines, which represent the actual execution.

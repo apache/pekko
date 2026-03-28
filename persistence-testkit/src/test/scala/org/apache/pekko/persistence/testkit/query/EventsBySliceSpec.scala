@@ -59,7 +59,7 @@ object EventsBySliceSpec {
   }
   case class State()
 
-  def testBehaviour(persistenceId: String) = {
+  def testBehavior(persistenceId: String) = {
     EventSourcedBehavior[Command, String, State](
       PersistenceId.ofUniqueId(makeFullPersistenceId(persistenceId)),
       State(),
@@ -117,7 +117,7 @@ class EventsBySliceSpec
   }
 
   def setupEmpty(persistenceId: String): ActorRef[Command] = {
-    spawn(testBehaviour(persistenceId))
+    spawn(testBehavior(persistenceId))
   }
 
   private lazy val persistence = Persistence(system)

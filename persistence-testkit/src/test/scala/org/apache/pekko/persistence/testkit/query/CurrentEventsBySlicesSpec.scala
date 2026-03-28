@@ -22,7 +22,7 @@ import pekko.persistence.Persistence
 import pekko.persistence.query.NoOffset
 import pekko.persistence.query.PersistenceQuery
 import pekko.persistence.testkit.query.EventsByPersistenceIdSpec.Command
-import pekko.persistence.testkit.query.EventsByPersistenceIdSpec.testBehaviour
+import pekko.persistence.testkit.query.EventsByPersistenceIdSpec.testBehavior
 import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
 import pekko.stream.scaladsl.Sink
 
@@ -40,7 +40,7 @@ class CurrentEventsBySlicesSpec
 
   def setup(persistenceId: String): ActorRef[Command] = {
     val probe = createTestProbe[Done]()
-    val ref = spawn(testBehaviour(persistenceId))
+    val ref = spawn(testBehavior(persistenceId))
     ref ! Command(s"$persistenceId-1", probe.ref)
     ref ! Command(s"$persistenceId-2", probe.ref)
     ref ! Command(s"$persistenceId-3", probe.ref)
@@ -54,8 +54,8 @@ class CurrentEventsBySlicesSpec
 
     "find eventsBySlices ordered by insert time" in {
       val probe = createTestProbe[Done]()
-      val ref1 = spawn(testBehaviour("Test|pid-1"))
-      val ref2 = spawn(testBehaviour("Test|pid-2"))
+      val ref1 = spawn(testBehavior("Test|pid-1"))
+      val ref2 = spawn(testBehavior("Test|pid-2"))
       ref1 ! Command("evt-1", probe.ref)
       ref1 ! Command("evt-2", probe.ref)
       ref1 ! Command("evt-3", probe.ref)

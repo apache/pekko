@@ -21,7 +21,7 @@ import pekko.actor.typed.ActorRef
 import pekko.persistence.query.NoOffset
 import pekko.persistence.query.PersistenceQuery
 import pekko.persistence.testkit.query.EventsByPersistenceIdSpec.Command
-import pekko.persistence.testkit.query.EventsByPersistenceIdSpec.testBehaviour
+import pekko.persistence.testkit.query.EventsByPersistenceIdSpec.testBehavior
 import pekko.persistence.testkit.query.scaladsl.PersistenceTestKitReadJournal
 import pekko.stream.scaladsl.Sink
 
@@ -39,7 +39,7 @@ class CurrentEventsByTagSpec
 
   def setupEmpty(persistenceId: String): ActorRef[Command] = {
     spawn(
-      testBehaviour(persistenceId).withTagger(evt =>
+      testBehavior(persistenceId).withTagger(evt =>
         if (evt.indexOf('-') > 0) Set(evt.split('-')(1), "all")
         else Set("all")))
   }
