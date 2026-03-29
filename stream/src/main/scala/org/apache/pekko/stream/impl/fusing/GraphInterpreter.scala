@@ -13,7 +13,7 @@
 
 package org.apache.pekko.stream.impl.fusing
 
-import java.util.concurrent.ThreadLocalRandom
+import java.util.concurrent.{ ThreadLocalRandom, TimeUnit }
 
 import scala.concurrent.Promise
 import scala.util.control.NonFatal
@@ -246,6 +246,26 @@ import pekko.stream.stage._
   private[this] var _subFusingMaterializer: Materializer = _
   def subFusingMaterializer: Materializer = _subFusingMaterializer
 
+  // Throttle state for stage error logging
+  private[this] lazy val throttlePeriodNanos: Long = {
+    try {
+      val config = materializer.system.settings.config
+      val path = "pekko.stream.materializer.stage-errors-log-throttle-period"
+      val value = config.getString(path)
+      if (pekko.util.Helpers.toRootLowerCase(value) == "off") 0L
+      else {
+        val nanos = config.getDuration(path, TimeUnit.NANOSECONDS)
+        require(nanos > 0L, s"$path must be a positive duration or 'off', got: $value")
+        nanos
+      }
+    } catch {
+      case _: UnsupportedOperationException => 0L // NoMaterializer in tests
+    }
+  }
+  private[this] var lastErrorLogTime: Long = 0L
+  private[this] var errorLogInitialized: Boolean = false
+  private[this] var suppressedErrorCount: Int = 0
+
   // An event queue implemented as a circular buffer
   // FIXME: This calculates the maximum size ever needed, but most assemblies can run on a smaller queue
   private[this] val eventQueue = new Array[Connection](1 << (32 - Integer.numberOfLeadingZeros(connections.length - 1)))
@@ -332,6 +352,12 @@ import pekko.stream.stage._
    * Finalizes the state of all operators by calling postStop() (if necessary).
    */
   def finish(): Unit = {
+    // Flush any suppressed error count so operators know errors were throttled
+    if (suppressedErrorCount > 0) {
+      log.warning("{} additional stage error(s) were suppressed during throttle period",
+        suppressedErrorCount)
+      suppressedErrorCount = 0
+    }
     var i = 0
     while (i < logics.length) {
       val logic = logics(i)
@@ -382,8 +408,27 @@ import pekko.stream.stage._
               case Some(levels) => levels.onFailure != LogLevels.Off
               case None         => true
             }
-            if (loggingEnabled)
-              log.error(e, "Error in stage [{}]: {}", activeStage.toString, e.getMessage)
+            if (loggingEnabled) {
+              val shouldLog = if (throttlePeriodNanos > 0L) {
+                val now = System.nanoTime()
+                if (!errorLogInitialized || now - lastErrorLogTime >= throttlePeriodNanos) {
+                  if (suppressedErrorCount > 0) {
+                    log.warning("{} additional stage error(s) were suppressed during throttle period",
+                      suppressedErrorCount)
+                  }
+                  errorLogInitialized = true
+                  lastErrorLogTime = now
+                  suppressedErrorCount = 0
+                  true
+                } else {
+                  suppressedErrorCount += 1
+                  false
+                }
+              } else true
+
+              if (shouldLog)
+                log.error(e, "Error in stage [{}]: {}", activeStage.toString, e.getMessage)
+            }
             activeStage.failStage(e)
 
             // Abort chasing
