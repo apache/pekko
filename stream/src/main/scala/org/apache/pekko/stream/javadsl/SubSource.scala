@@ -337,6 +337,36 @@ final class SubSource[Out, Mat](
       })
 
   /**
+   * Transform each input element into zero or more output elements without requiring tuple or collection allocations
+   * imposed by the operator API itself.
+   *
+   * A new [[Gatherer]] is created for each materialization and can keep mutable state in fields.
+   * `onComplete` is invoked on upstream completion, upstream failure, downstream cancellation,
+   * abrupt stage termination, and supervision restart.
+   *
+   * @since 1.3.0
+   */
+  def gather[T](create: function.Creator[javadsl.Gatherer[Out, T]]): javadsl.SubSource[T, Mat] =
+    new SubSource(delegate.gather(() =>
+      new scaladsl.Gatherer[Out, T] {
+        private val gatherer = create.create()
+        private var currentCollector: scaladsl.GatherCollector[T] = _
+        private val javaCollector = new javadsl.GatherCollector[T] {
+          override def push(elem: T): Unit = currentCollector.push(elem)
+        }
+
+        override def apply(in: Out, collector: scaladsl.GatherCollector[T]): Unit = {
+          currentCollector = collector
+          gatherer.apply(in, javaCollector)
+        }
+
+        override def onComplete(collector: scaladsl.GatherCollector[T]): Unit = {
+          currentCollector = collector
+          gatherer.onComplete(javaCollector)
+        }
+      }))
+
+  /**
    * Transform each input element into an `Iterable` of output elements that is
    * then flattened into the output stream. The transformation is meant to be stateful,
    * which is enabled by creating the transformation function anew for every materialization —
