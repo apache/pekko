@@ -97,7 +97,8 @@ class DispatcherActorSpec extends PekkoSpec(DispatcherActorSpec.config) with Def
         }
       }).withDispatcher(throughputDispatcher))
 
-      assert(Await.result(slowOne ? "hogexecutor", timeout.duration) === "OK")
+      val slowResult = Await.result(slowOne ? "hogexecutor", timeout.duration)
+      assert(slowResult === "OK")
       (1 to 100).foreach { _ =>
         slowOne ! "ping"
       }
