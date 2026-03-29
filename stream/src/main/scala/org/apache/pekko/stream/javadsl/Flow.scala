@@ -694,7 +694,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    *
-   * @since 1.3.0
+   * @since 2.0.0
    */
   def mapOption[T](f: function.Function[Out, Optional[T]]): javadsl.Flow[In, T, Mat] =
     new Flow(delegate.map(f(_)).collect {

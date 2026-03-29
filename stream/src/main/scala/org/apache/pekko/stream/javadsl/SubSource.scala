@@ -161,7 +161,7 @@ final class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    *
-   * @since 1.3.0
+   * @since 2.0.0
    */
   def mapOption[T](f: function.Function[Out, Optional[T]]): SubSource[T, Mat] =
     new SubSource(delegate.map(f(_)).collect {

@@ -20,6 +20,13 @@ Patterns such as `zipWithIndex`, `bufferUntilChanged`, and `distinctUntilChanged
 state inside the gatherer and pushing outputs directly, instead of returning a new state/output wrapper for every
 element.
 
+Compared with `statefulMap`, `gather` covers the same common stateful streaming patterns used in this PR's test suite:
+happy-path stateful mapping, delayed completion output, restart/stop supervision behavior, and backpressure-sensitive
+one-output transformations. The main difference is that `statefulMap` exposes state as an explicit return value,
+including `null` state transitions, while `gather` keeps state inside the gatherer instance itself. Because of that,
+`statefulMap` tests about `null` state do not translate one-to-one; the equivalent `gather` coverage focuses on the
+observable stream behavior instead.
+
 When the stage terminates or restarts, the gatherer's `onComplete` callback is invoked. Elements pushed from
 `onComplete` are emitted before upstream-failure propagation, normal completion, or supervision restart, and are
 ignored on downstream cancellation or abrupt termination.

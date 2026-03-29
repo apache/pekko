@@ -210,7 +210,7 @@ object Source {
   /**
    * Create a `Source` from an `Optional` value, emitting the value if it is present.
    *
-   * @since 1.3.0
+   * @since 2.0.0
    */
   def fromOption[T](optional: Optional[T]): Source[T, NotUsed] =
     if (optional.isPresent) single(optional.get()) else empty()

@@ -1013,7 +1013,7 @@ trait FlowOps[+Out, +Mat] {
    * '''Cancels when''' downstream cancels
    *
    * @param errorConsumer function invoked when an error occurs
-   * @since 1.3.0
+   * @since 2.0.0
    */
   def onErrorContinue[T <: Throwable](errorConsumer: Throwable => Unit)(implicit tag: ClassTag[T]): Repr[Out] = {
     this.withAttributes(ActorAttributes.supervisionStrategy {
