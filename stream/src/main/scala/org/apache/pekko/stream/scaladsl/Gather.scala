@@ -24,7 +24,7 @@ import org.apache.pekko.annotation.DoNotInherit
  *
  * The collector is only valid while the current [[Gatherer]] callback is running.
  *
- * @since 1.3.0
+ * @since 2.0.0
  */
 @DoNotInherit
 trait GatherCollector[-Out] {
@@ -37,7 +37,7 @@ trait GatherCollector[-Out] {
  * A new gatherer instance is created for each materialization and on each supervision restart.
  * It can keep mutable state in fields or closures.
  *
- * @since 1.3.0
+ * @since 2.0.0
  */
 @FunctionalInterface
 trait Gatherer[-In, +Out] {

@@ -168,7 +168,7 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    *
-   * @since 1.3.0
+   * @since 2.0.0
    */
   def mapOption[T](f: function.Function[Out, Optional[T]]): SubFlow[In, T, Mat] =
     new SubFlow(delegate.map(f(_)).collect {
