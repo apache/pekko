@@ -49,7 +49,7 @@ class FlowFlatMapConcatParallelismSpec extends StreamSpec("""
   class BoomException extends RuntimeException("BOOM~~") with NoStackTrace
 
   val checkValues = List(1, 2, 4, 8, 16, 32, 64, 128)
-  
+
   "A flatMapConcat" must {
 
     for (i <- checkValues) {
