@@ -86,3 +86,14 @@ trait SnapshotStoreCapabilityFlags extends CapabilityFlags {
   protected def supportsMetadata: CapabilityFlag
 }
 //#snapshot-store-flags
+
+//#durable-state-store-flags
+trait DurableStateStoreCapabilityFlags extends CapabilityFlags {
+
+  /**
+   * When `true` enables tests which check if the durable state store properly rejects
+   * a `deleteObject` call when the revision does not match the stored revision.
+   */
+  protected def supportsDeleteWithRevisionCheck: CapabilityFlag
+}
+//#durable-state-store-flags
