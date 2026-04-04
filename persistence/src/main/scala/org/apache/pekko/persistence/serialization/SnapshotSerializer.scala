@@ -17,9 +17,9 @@ import java.io._
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.io.UnsynchronizedByteArrayInputStream
 import pekko.serialization._
 import pekko.util.ByteString.UTF_8
+import pekko.util.SWARUtil
 
 /**
  * Wrapper for snapshot `data`. Snapshot `data` are the actual snapshot objects captured by
@@ -90,18 +90,18 @@ class SnapshotSerializer(val system: ExtendedActorSystem) extends BaseSerializer
   }
 
   private def headerFromBinary(bytes: Array[Byte]): (Int, String) = {
-    val in = new UnsynchronizedByteArrayInputStream(bytes)
-    val serializerId = readInt(in)
+    if (bytes.length < 4) throw new IllegalArgumentException("Invalid snapshot header, too short")
+    val serializerId = SWARUtil.getInt(bytes, 0, false)
 
     if ((serializerId & 0xEDAC) == 0xEDAC) // Java Serialization magic value
       throw new NotSerializableException(s"Replaying snapshot from akka 2.3.x version is not supported any more")
 
-    val remaining = in.available
+    val remaining = bytes.length - 4
     val manifest =
       if (remaining == 0) ""
       else {
         val manifestBytes = new Array[Byte](remaining)
-        in.read(manifestBytes)
+        System.arraycopy(bytes, 4, manifestBytes, 0, remaining)
         migrateManifestToPekkoIfNecessary(new String(manifestBytes, UTF_8))
       }
     (serializerId, manifest)
@@ -164,7 +164,7 @@ class SnapshotSerializer(val system: ExtendedActorSystem) extends BaseSerializer
   }
 
   private def snapshotFromBinary(bytes: Array[Byte]): AnyRef = {
-    val headerLength = readInt(new UnsynchronizedByteArrayInputStream(bytes))
+    val headerLength = SWARUtil.getInt(bytes, 0, false)
     val headerBytes = bytes.slice(4, headerLength + 4)
     val snapshotBytes = bytes.drop(headerLength + 4)
 
@@ -181,16 +181,4 @@ class SnapshotSerializer(val system: ExtendedActorSystem) extends BaseSerializer
     out.write(i >>> 16)
     out.write(i >>> 24)
   }
-
-  private def readInt(in: InputStream): Int = {
-    val b1 = in.read
-    val b2 = in.read
-    val b3 = in.read
-    val b4 = in.read
-
-    if ((b1 | b2 | b3 | b3) == -1) throw new EOFException
-
-    (b4 << 24) | (b3 << 16) | (b2 << 8) | b1
-  }
-
 }

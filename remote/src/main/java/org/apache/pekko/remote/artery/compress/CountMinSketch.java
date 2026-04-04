@@ -14,6 +14,7 @@
 package org.apache.pekko.remote.artery.compress;
 
 import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.util.SWARUtil;
 
 /**
  * INTERNAL API: Count-Min Sketch datastructure.
@@ -198,11 +199,7 @@ public class CountMinSketch {
       // Body
       int i = 0;
       while (len >= 4) {
-        int k = data[i] & 0xFF;
-        k |= (data[i + 1] & 0xFF) << 8;
-        k |= (data[i + 2] & 0xFF) << 16;
-        k |= (data[i + 3] & 0xFF) << 24;
-
+        int k = SWARUtil.getInt(data, i, false);
         h = mix(h, k);
 
         i += 4;
