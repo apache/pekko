@@ -1106,7 +1106,24 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       val slice3 = "cdefghijklmn".getBytes(StandardCharsets.UTF_8)
       byteStringWithOffset.startsWith(slice3) should ===(true)
     }
-
+    "return same hashCode" in {
+      val slice0 = ByteString1.fromString("xyz")
+      val slice1 = ByteString1.fromString("xyzabc")
+      val slice2 = ByteString1.fromString("12345")
+      val byteStringLong = ByteString1.fromString("abcdefghijklmnopqrstuvwxyz")
+      val byteStringLong2 = ByteString1.fromString("abcdefghijklmnopqrstuvwxyz")
+      val byteStrings = ByteStrings(byteStringLong, byteStringLong)
+      val byteStrings2 = ByteStrings(byteStringLong, byteStringLong)
+      slice0.hashCode should ===(slice0.hashCode)
+      slice1.hashCode should ===(slice1.hashCode)
+      slice2.hashCode should ===(slice2.hashCode)
+      byteStringLong.hashCode should ===(byteStringLong.hashCode)
+      byteStringLong.hashCode should ===(byteStringLong2.hashCode)
+      byteStringLong2.equals(byteStringLong) should ===(true)
+      byteStrings.hashCode should ===(byteStrings.hashCode)
+      byteStrings.hashCode should ===(byteStrings2.hashCode)
+      byteStrings2.equals(byteStrings) should ===(true)
+    }
   }
 
   "A ByteString" must {
