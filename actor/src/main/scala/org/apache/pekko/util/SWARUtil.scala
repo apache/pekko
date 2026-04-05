@@ -108,14 +108,7 @@ private[pekko] object SWARUtil {
     if (longBeArrayViewSupported) {
       longBeArrayView.get(array, index)
     } else {
-      (array(index).toLong & 0xFF) << 56 |
-      (array(index + 1).toLong & 0xFF) << 48 |
-      (array(index + 2).toLong & 0xFF) << 40 |
-      (array(index + 3).toLong & 0xFF) << 32 |
-      (array(index + 4).toLong & 0xFF) << 24 |
-      (array(index + 5).toLong & 0xFF) << 16 |
-      (array(index + 6).toLong & 0xFF) << 8 |
-      (array(index + 7).toLong & 0xFF)
+      getLongBEWithoutMethodHandle(array, index)
     }
   }
 
@@ -131,19 +124,10 @@ private[pekko] object SWARUtil {
   def getLong(array: Array[Byte], index: Int, bigEndian: Boolean): Long = {
     if (bigEndian) {
       getLong(array, index)
+    } else if (longLeArrayViewSupported) {
+      longLeArrayView.get(array, index)
     } else {
-      if (longLeArrayViewSupported) {
-        longLeArrayView.get(array, index)
-      } else {
-        (array(index).toLong & 0xFF) |
-        (array(index + 1).toLong & 0xFF) << 8 |
-        (array(index + 2).toLong & 0xFF) << 16 |
-        (array(index + 3).toLong & 0xFF) << 24 |
-        (array(index + 4).toLong & 0xFF) << 32 |
-        (array(index + 5).toLong & 0xFF) << 40 |
-        (array(index + 6).toLong & 0xFF) << 48 |
-        (array(index + 7).toLong & 0xFF) << 56
-      }
+      getLongLEWithoutMethodHandle(array, index)
     }
   }
 
@@ -160,10 +144,7 @@ private[pekko] object SWARUtil {
     if (intBeArrayViewSupported) {
       intBeArrayView.get(array, index)
     } else {
-      (array(index) & 0xFF) << 24 |
-      (array(index + 1) & 0xFF) << 16 |
-      (array(index + 2) & 0xFF) << 8 |
-      (array(index + 3) & 0xFF)
+      getIntBEWithoutMethodHandle(array, index)
     }
   }
 
@@ -180,15 +161,47 @@ private[pekko] object SWARUtil {
   def getInt(array: Array[Byte], index: Int, bigEndian: Boolean): Int = {
     if (bigEndian) {
       getInt(array, index)
+    } else if (intLeArrayViewSupported) {
+      intLeArrayView.get(array, index)
     } else {
-      if (intLeArrayViewSupported) {
-        intLeArrayView.get(array, index)
-      } else {
-        (array(index) & 0xFF) |
-        (array(index + 1) & 0xFF) << 8 |
-        (array(index + 2) & 0xFF) << 16 |
-        (array(index + 3) & 0xFF) << 24
-      }
+      getIntLEWithoutMethodHandle(array, index)
     }
   }
+
+  private[pekko] def getLongBEWithoutMethodHandle(array: Array[Byte], index: Int): Long = {
+    (array(index).toLong & 0xFF) << 56 |
+    (array(index + 1).toLong & 0xFF) << 48 |
+    (array(index + 2).toLong & 0xFF) << 40 |
+    (array(index + 3).toLong & 0xFF) << 32 |
+    (array(index + 4).toLong & 0xFF) << 24 |
+    (array(index + 5).toLong & 0xFF) << 16 |
+    (array(index + 6).toLong & 0xFF) << 8 |
+    (array(index + 7).toLong & 0xFF)
+  }
+
+  private[pekko] def getLongLEWithoutMethodHandle(array: Array[Byte], index: Int): Long = {
+    (array(index).toLong & 0xFF) |
+    (array(index + 1).toLong & 0xFF) << 8 |
+    (array(index + 2).toLong & 0xFF) << 16 |
+    (array(index + 3).toLong & 0xFF) << 24 |
+    (array(index + 4).toLong & 0xFF) << 32 |
+    (array(index + 5).toLong & 0xFF) << 40 |
+    (array(index + 6).toLong & 0xFF) << 48 |
+    (array(index + 7).toLong & 0xFF) << 56
+  }
+
+  private[pekko] def getIntBEWithoutMethodHandle(array: Array[Byte], index: Int): Int = {
+    (array(index) & 0xFF) << 24 |
+    (array(index + 1) & 0xFF) << 16 |
+    (array(index + 2) & 0xFF) << 8 |
+    (array(index + 3) & 0xFF)
+  }
+
+  private[pekko] def getIntLEWithoutMethodHandle(array: Array[Byte], index: Int): Int = {
+    (array(index) & 0xFF) |
+    (array(index + 1) & 0xFF) << 8 |
+    (array(index + 2) & 0xFF) << 16 |
+    (array(index + 3) & 0xFF) << 24
+  }
+
 }

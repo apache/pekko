@@ -29,17 +29,25 @@ class SWARUtilSpec extends AnyWordSpec with Matchers {
       SWARUtil.getLong(testData, 0) should ===(0x0001020304050607L)
       SWARUtil.getLong(testData, 0, true) should ===(0x0001020304050607L)
       SWARUtil.getLong(testData, 0, false) should ===(0x0706050403020100L)
+      SWARUtil.getLongBEWithoutMethodHandle(testData, 0) should ===(0x0001020304050607L)
+      SWARUtil.getLongLEWithoutMethodHandle(testData, 0) should ===(0x0706050403020100L)
       SWARUtil.getLong(testData, 8) should ===(0x08090A0B0C0D0E0FL)
       SWARUtil.getLong(testData, 8, true) should ===(0x08090A0B0C0D0E0FL)
       SWARUtil.getLong(testData, 8, false) should ===(0x0F0E0D0C0B0A0908L)
+      SWARUtil.getLongBEWithoutMethodHandle(testData, 8) should ===(0x08090A0B0C0D0E0FL)
+      SWARUtil.getLongLEWithoutMethodHandle(testData, 8) should ===(0x0F0E0D0C0B0A0908L)
     }
     "getInt" in {
       SWARUtil.getInt(testData, 0) should ===(0x00010203)
       SWARUtil.getInt(testData, 0, true) should ===(0x00010203)
       SWARUtil.getInt(testData, 0, false) should ===(0x03020100)
+      SWARUtil.getIntBEWithoutMethodHandle(testData, 0) should ===(0x00010203)
+      SWARUtil.getIntLEWithoutMethodHandle(testData, 0) should ===(0x03020100)
       SWARUtil.getInt(testData, 4) should ===(0x04050607)
       SWARUtil.getInt(testData, 4, true) should ===(0x04050607)
       SWARUtil.getInt(testData, 4, false) should ===(0x07060504)
+      SWARUtil.getIntBEWithoutMethodHandle(testData, 4) should ===(0x04050607)
+      SWARUtil.getIntLEWithoutMethodHandle(testData, 4) should ===(0x07060504)
     }
   }
 
