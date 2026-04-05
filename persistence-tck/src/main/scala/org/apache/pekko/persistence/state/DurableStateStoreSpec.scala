@@ -71,7 +71,7 @@ abstract class DurableStateStoreSpec(config: Config)
 
     "persist a state and retrieve it" in {
       val value = s"state-${pid}"
-      Await.result(durableStateStore().upsertObject(pid, 1L, value, ""), timeout)
+      Await.result(durableStateStore().upsertObject(pid, 1L, value, "test-tag"), timeout)
       val result = Await.result(durableStateStore().getObject(pid), timeout)
       result.value shouldBe Some(value)
       result.revision shouldBe 1L
@@ -81,8 +81,8 @@ abstract class DurableStateStoreSpec(config: Config)
       val store = durableStateStore()
       val value1 = s"state-1-${pid}"
       val value2 = s"state-2-${pid}"
-      Await.result(store.upsertObject(pid, 1L, value1, ""), timeout)
-      Await.result(store.upsertObject(pid, 2L, value2, ""), timeout)
+      Await.result(store.upsertObject(pid, 1L, value1, "test-tag"), timeout)
+      Await.result(store.upsertObject(pid, 2L, value2, "test-tag"), timeout)
       val result = Await.result(store.getObject(pid), timeout)
       result.value shouldBe Some(value2)
       result.revision shouldBe 2L
@@ -91,7 +91,7 @@ abstract class DurableStateStoreSpec(config: Config)
     "delete a state" in {
       val store = durableStateStore()
       val value = s"state-${pid}"
-      Await.result(store.upsertObject(pid, 1L, value, ""), timeout)
+      Await.result(store.upsertObject(pid, 1L, value, "test-tag"), timeout)
       Await.result(store.deleteObject(pid, 2L), timeout)
       val result = Await.result(store.getObject(pid), timeout)
       result.value shouldBe None
@@ -102,8 +102,8 @@ abstract class DurableStateStoreSpec(config: Config)
       val pid2 = pid + "-2"
       val value1 = s"state-${pid}"
       val value2 = s"state-${pid2}"
-      Await.result(store.upsertObject(pid, 1L, value1, ""), timeout)
-      Await.result(store.upsertObject(pid2, 1L, value2, ""), timeout)
+      Await.result(store.upsertObject(pid, 1L, value1, "test-tag"), timeout)
+      Await.result(store.upsertObject(pid2, 1L, value2, "test-tag"), timeout)
 
       val result1 = Await.result(store.getObject(pid), timeout)
       val result2 = Await.result(store.getObject(pid2), timeout)
@@ -118,7 +118,7 @@ abstract class DurableStateStoreSpec(config: Config)
       "fail to delete a state when the revision does not match" in {
         val store = durableStateStore()
         val value = s"state-${pid}"
-        Await.result(store.upsertObject(pid, 1L, value, ""), timeout)
+        Await.result(store.upsertObject(pid, 1L, value, "test-tag"), timeout)
         val deleteResult = store.deleteObject(pid, 99L)
         intercept[Exception] {
           Await.result(deleteResult, timeout)
