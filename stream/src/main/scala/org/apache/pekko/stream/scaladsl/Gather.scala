@@ -53,6 +53,41 @@ trait Gatherer[-In, +Out] {
   def onComplete(collector: GatherCollector[Out]): Unit = ()
 }
 
+/** Factory methods for [[Gatherer]]. */
+object Gatherer {
+
+  /**
+   * Creates a specialized `Gatherer` for one-to-one transformations (exactly one output per input).
+   *
+   * This variant avoids the overhead of the `GatherCollector` indirection and achieves the
+   * same performance as the native `map` operator while still supporting mutable state and
+   * the `onComplete` callback.
+   *
+   * @param f the one-to-one transformation function
+   * @since 1.3.0
+   */
+  def oneToOne[In, Out](f: In => Out): Gatherer[In, Out] =
+    new OneToOneGathererImpl(f)
+
+  /**
+   * Creates a specialized `Gatherer` for one-to-one transformations with an `onComplete` callback.
+   *
+   * @param f the one-to-one transformation function
+   * @param onComplete callback invoked when the stage terminates or restarts
+   * @since 1.3.0
+   */
+  def oneToOne[In, Out](f: In => Out, onComplete: () => Unit): Gatherer[In, Out] =
+    new OneToOneGathererImpl(f, onComplete)
+
+  private final class OneToOneGathererImpl[In, Out](
+      f: In => Out,
+      onCompleteCallback: () => Unit = () => ())
+      extends OneToOneGatherer[In, Out] {
+    override def applyOne(in: In): Out = f(in)
+    override def onComplete(collector: GatherCollector[Out]): Unit = onCompleteCallback()
+  }
+}
+
 /**
  * INTERNAL API
  */
