@@ -15,11 +15,11 @@ package org.apache.pekko.stream.io.compression
 
 import java.io.{ ByteArrayOutputStream, InputStream, OutputStream }
 import java.util.concurrent.ThreadLocalRandom
-import java.util.zip.DataFormatException
 
 import scala.annotation.tailrec
 import scala.concurrent.Await
 import scala.concurrent.duration._
+import scala.reflect.ClassTag
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
@@ -31,7 +31,8 @@ import pekko.util.ByteString
 import org.scalatest.Inspectors
 import org.scalatest.wordspec.AnyWordSpec
 
-abstract class CoderSpec(codecName: String) extends AnyWordSpec with CodecSpecSupport with Inspectors {
+abstract class CoderSpec[CorruptInputException: ClassTag](codecName: String) extends AnyWordSpec with CodecSpecSupport
+    with Inspectors {
   import CompressionTestingTools._
 
   protected def newCompressor(): Compressor
@@ -85,7 +86,7 @@ abstract class CoderSpec(codecName: String) extends AnyWordSpec with CodecSpecSu
       "throw an error on corrupt input" in {
         (the[RuntimeException] thrownBy {
           ourDecode(corruptContent)
-        }).ultimateCause should be(a[DataFormatException])
+        }).ultimateCause should be(a[CorruptInputException])
       }
     }
 

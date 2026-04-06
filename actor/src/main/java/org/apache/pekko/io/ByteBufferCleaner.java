@@ -23,6 +23,7 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
+import org.apache.pekko.annotation.InternalStableApi;
 
 /**
  * Cleans a direct {@link ByteBuffer}. Without manual intervention, direct ByteBuffers will be
@@ -36,7 +37,8 @@ import java.nio.ByteBuffer;
  *
  * <p>See <a href=https://bugs.openjdk.java.net/browse/JDK-4724038>JDK-4724038</a>
  */
-final class ByteBufferCleaner {
+@InternalStableApi
+public final class ByteBufferCleaner {
 
   // adapted from
   // https://github.com/apache/commons-io/blob/441115a4b5cd63ae808dd4c40fc238cb52c8048f/src/main/java/org/apache/commons/io/input/ByteBufferCleaner.java
@@ -75,7 +77,7 @@ final class ByteBufferCleaner {
    * @param buffer to release.
    * @throws IllegalStateException on internal failure.
    */
-  static void clean(final ByteBuffer buffer) {
+  public static void clean(final ByteBuffer buffer) {
     try {
       INSTANCE.clean(buffer);
     } catch (final Throwable t) {
@@ -116,7 +118,7 @@ final class ByteBufferCleaner {
    *
    * @return {@code true} if cleaning is supported, {@code false} otherwise.
    */
-  static boolean isSupported() {
+  public static boolean isSupported() {
     return INSTANCE != null;
   }
 }
