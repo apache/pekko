@@ -1,29 +1,37 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * license agreements; and to You under the Apache License, version 2.0:
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
- * This file is part of the Apache Pekko project, which was derived from Akka.
- */
-
-/*
- * Copyright (C) 2022 Lightbend Inc. <https://www.lightbend.com>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package jdocs.stream.operators.flow;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.stream.javadsl.GatherCollector;
 import org.apache.pekko.stream.javadsl.Gatherer;
+import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
 
 public class Gather {
+
   static final ActorSystem system = null;
 
-  public void zipWithIndex() {
+  static void zipWithIndex() {
     // #zipWithIndex
     Source.from(Arrays.asList("A", "B", "C", "D"))
         .gather(
@@ -37,7 +45,7 @@ public class Gather {
                     index += 1;
                   }
                 })
-        .runForeach(System.out::println, system);
+        .runWith(Sink.foreach(System.out::println), system);
     // prints
     // (A,0)
     // (B,1)
@@ -46,36 +54,61 @@ public class Gather {
     // #zipWithIndex
   }
 
-  public void grouped() {
-    // #grouped
-    Source.from(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+  static void bufferUntilChanged() {
+    // #bufferUntilChanged
+    Source.from(Arrays.asList("A", "B", "B", "C", "C", "C", "D"))
         .gather(
             () ->
-                new Gatherer<Integer, String>() {
-                  private final ArrayList<Integer> buffer = new ArrayList<>(3);
+                new Gatherer<String, List<String>>() {
+                  private final List<String> buffer = new ArrayList<>();
 
                   @Override
-                  public void apply(Integer elem, GatherCollector<String> collector) {
-                    buffer.add(elem);
-                    if (buffer.size() == 3) {
-                      collector.push(buffer.toString());
+                  public void apply(String elem, GatherCollector<List<String>> collector) {
+                    if (!buffer.isEmpty() && !buffer.get(0).equals(elem)) {
+                      collector.push(new ArrayList<>(buffer));
                       buffer.clear();
                     }
+                    buffer.add(elem);
                   }
 
                   @Override
-                  public void onComplete(GatherCollector<String> collector) {
+                  public void onComplete(GatherCollector<List<String>> collector) {
                     if (!buffer.isEmpty()) {
-                      collector.push(buffer.toString());
+                      collector.push(new ArrayList<>(buffer));
                     }
                   }
                 })
-        .runForeach(System.out::println, system);
+        .runWith(Sink.foreach(System.out::println), system);
     // prints
-    // [1, 2, 3]
-    // [4, 5, 6]
-    // [7, 8, 9]
-    // [10]
-    // #grouped
+    // [A]
+    // [B, B]
+    // [C, C, C]
+    // [D]
+    // #bufferUntilChanged
+  }
+
+  static void distinctUntilChanged() {
+    // #distinctUntilChanged
+    Source.from(Arrays.asList("A", "B", "B", "C", "C", "C", "D"))
+        .gather(
+            () ->
+                new Gatherer<String, String>() {
+                  private String lastElement = null;
+
+                  @Override
+                  public void apply(String elem, GatherCollector<String> collector) {
+                    if (!elem.equals(lastElement)) {
+                      lastElement = elem;
+                      collector.push(elem);
+                    }
+                  }
+                })
+        .runWith(Sink.foreach(System.out::println), system);
+    // prints
+    // A
+    // B
+    // C
+    // D
+    // #distinctUntilChanged
   }
 }

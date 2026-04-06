@@ -1,14 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * license agreements; and to You under the Apache License, version 2.0:
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
- * This file is part of the Apache Pekko project, which was derived from Akka.
- */
-
-/*
- * Copyright (C) 2022 Lightbend Inc. <https://www.lightbend.com>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package docs.stream.operators.flow
@@ -23,13 +27,15 @@ object Gather {
   def zipWithIndex(): Unit = {
     // #zipWithIndex
     Source(List("A", "B", "C", "D"))
-      .gather(() => {
-        var index = 0L
-        (elem: String, collector: GatherCollector[(String, Long)]) => {
-          collector.push((elem, index))
-          index += 1
-        }
-      })
+      .gather(() =>
+        new Gatherer[String, (String, Long)] {
+          private var index = 0L
+
+          override def apply(elem: String, collector: GatherCollector[(String, Long)]): Unit = {
+            collector.push((elem, index))
+            index += 1
+          }
+        })
       .runForeach(println)
     // prints
     // (A,0)
@@ -39,31 +45,56 @@ object Gather {
     // #zipWithIndex
   }
 
-  def grouped(): Unit = {
-    // #grouped
-    Source(1 to 10)
+  def bufferUntilChanged(): Unit = {
+    // #bufferUntilChanged
+    Source("A" :: "B" :: "B" :: "C" :: "C" :: "C" :: "D" :: Nil)
       .gather(() =>
-        new Gatherer[Int, List[Int]] {
-          private var buffer = List.empty[Int]
+        new Gatherer[String, List[String]] {
+          private var buffer = List.empty[String]
 
-          override def apply(elem: Int, collector: GatherCollector[List[Int]]): Unit = {
-            buffer = elem :: buffer
-            if (buffer.size == 3) {
-              collector.push(buffer.reverse)
-              buffer = Nil
+          override def apply(elem: String, collector: GatherCollector[List[String]]): Unit =
+            buffer match {
+              case head :: _ if head != elem =>
+                collector.push(buffer.reverse)
+                buffer = elem :: Nil
+              case _ =>
+                buffer = elem :: buffer
             }
-          }
 
-          override def onComplete(collector: GatherCollector[List[Int]]): Unit =
+          override def onComplete(collector: GatherCollector[List[String]]): Unit =
             if (buffer.nonEmpty)
               collector.push(buffer.reverse)
         })
       .runForeach(println)
     // prints
-    // List(1, 2, 3)
-    // List(4, 5, 6)
-    // List(7, 8, 9)
-    // List(10)
-    // #grouped
+    // List(A)
+    // List(B, B)
+    // List(C, C, C)
+    // List(D)
+    // #bufferUntilChanged
+  }
+
+  def distinctUntilChanged(): Unit = {
+    // #distinctUntilChanged
+    Source("A" :: "B" :: "B" :: "C" :: "C" :: "C" :: "D" :: Nil)
+      .gather(() =>
+        new Gatherer[String, String] {
+          private var lastElement: Option[String] = None
+
+          override def apply(elem: String, collector: GatherCollector[String]): Unit =
+            lastElement match {
+              case Some(last) if last == elem =>
+              case _ =>
+                lastElement = Some(elem)
+                collector.push(elem)
+            }
+        })
+      .runForeach(println)
+    // prints
+    // A
+    // B
+    // C
+    // D
+    // #distinctUntilChanged
   }
 }
