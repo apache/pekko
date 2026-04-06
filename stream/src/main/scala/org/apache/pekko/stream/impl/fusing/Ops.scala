@@ -2477,7 +2477,7 @@ private[pekko] final class Gather[In, Out](factory: () => Gatherer[In, Out]) ext
 
       private def onPushOneToOne(): Unit = {
         val elem = oneToOneGatherer match {
-          case s: OneToOneGatherer[In, Out] @unchecked   => s.applyOne(grab(in))
+          case s: OneToOneGatherer[In, Out] @unchecked            => s.applyOne(grab(in))
           case j: JGatherers.OneToOneGatherer[In, Out] @unchecked => j.applyOne(grab(in))
         }
         ReactiveStreamsCompliance.requireNonNullElement(elem)
@@ -2561,9 +2561,9 @@ private[pekko] final class Gather[In, Out](factory: () => Gatherer[In, Out]) ext
           throw new IllegalStateException("Gatherer factory must not return null")
         gatherer = newGatherer
         oneToOneGatherer = gatherer match {
-          case _: OneToOneGatherer[?, ?]                            => gatherer
-          case _: JGatherers.OneToOneGatherer[?, ?]                 => gatherer
-          case _                                                    => null
+          case _: OneToOneGatherer[?, ?]            => gatherer
+          case _: JGatherers.OneToOneGatherer[?, ?] => gatherer
+          case _                                    => null
         }
         multiMode = false
         pendingOverflow = null
