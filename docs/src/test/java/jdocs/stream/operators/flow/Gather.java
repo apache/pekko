@@ -20,7 +20,6 @@ package jdocs.stream.operators.flow;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.stream.javadsl.GatherCollector;
 import org.apache.pekko.stream.javadsl.Gatherer;
