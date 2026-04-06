@@ -84,7 +84,7 @@ object Gather {
           override def apply(elem: String, collector: GatherCollector[String]): Unit =
             lastElement match {
               case Some(last) if last == elem =>
-              case _ =>
+              case _                          =>
                 lastElement = Some(elem)
                 collector.push(elem)
             }

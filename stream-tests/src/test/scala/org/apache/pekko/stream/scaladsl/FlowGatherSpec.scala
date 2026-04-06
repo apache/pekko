@@ -26,11 +26,17 @@ import scala.util.Success
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko.Done
-import org.apache.pekko.stream.{ AbruptStageTerminationException, ActorAttributes, ActorMaterializer, ClosedShape, Supervision }
+import org.apache.pekko.stream.{
+  AbruptStageTerminationException,
+  ActorAttributes,
+  ActorMaterializer,
+  ClosedShape,
+  Supervision
+}
 import org.apache.pekko.stream.testkit.{ StreamSpec, TestSubscriber }
 import org.apache.pekko.stream.testkit.Utils.TE
 import org.apache.pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
-import org.apache.pekko.stream.scaladsl.{ Keep, Flow }
+import org.apache.pekko.stream.scaladsl.{ Flow, Keep }
 import org.apache.pekko.testkit.EventFilter
 
 class FlowGatherSpec extends StreamSpec {
@@ -286,7 +292,7 @@ class FlowGatherSpec extends StreamSpec {
             override def apply(elem: String, collector: GatherCollector[String]): Unit =
               lastElement match {
                 case Some(last) if last == elem =>
-                case _ =>
+                case _                          =>
                   lastElement = Some(elem)
                   collector.push(elem)
               }
@@ -329,16 +335,16 @@ class FlowGatherSpec extends StreamSpec {
       val generation = new AtomicInteger(0)
       val (source, sink) = TestSource[String]()
         .viaMat(Flow[String].gather(() => {
-            val currentGeneration = generation.incrementAndGet()
-            new Gatherer[String, String] {
-              override def apply(elem: String, collector: GatherCollector[String]): Unit =
-                if (elem == "boom") throw TE("boom")
-                else collector.push(s"$elem$currentGeneration")
+          val currentGeneration = generation.incrementAndGet()
+          new Gatherer[String, String] {
+            override def apply(elem: String, collector: GatherCollector[String]): Unit =
+              if (elem == "boom") throw TE("boom")
+              else collector.push(s"$elem$currentGeneration")
 
-              override def onComplete(collector: GatherCollector[String]): Unit =
-                collector.push(s"onClose$currentGeneration")
-            }
-          }))(Keep.left)
+            override def onComplete(collector: GatherCollector[String]): Unit =
+              collector.push(s"onClose$currentGeneration")
+          }
+        }))(Keep.left)
         .withAttributes(ActorAttributes.supervisionStrategy(Supervision.restartingDecider))
         .toMat(TestSink())(Keep.both)
         .run()
@@ -688,15 +694,15 @@ class FlowGatherSpec extends StreamSpec {
       val closedCounter = new AtomicInteger(0)
       val (source, sink) = TestSource[Int]()
         .viaMat(Flow[Int].gather(() =>
-            new Gatherer[Int, Int] {
-              override def apply(elem: Int, collector: GatherCollector[Int]): Unit =
-                collector.push(elem)
+          new Gatherer[Int, Int] {
+            override def apply(elem: Int, collector: GatherCollector[Int]): Unit =
+              collector.push(elem)
 
-              override def onComplete(collector: GatherCollector[Int]): Unit = {
-                closedCounter.incrementAndGet()
-                throw TE("boom")
-              }
-            }))(Keep.left)
+            override def onComplete(collector: GatherCollector[Int]): Unit = {
+              closedCounter.incrementAndGet()
+              throw TE("boom")
+            }
+          }))(Keep.left)
         .toMat(TestSink[Int]())(Keep.both)
         .run()
 
@@ -822,12 +828,13 @@ class FlowGatherSpec extends StreamSpec {
       import GraphDSL.Implicits._
       val unzip = b.add(Unzip[Int, Int]())
       val zip = b.add(Zip[Int, Int]())
-      val gather = b.add(Flow[(Int, Int)].gather(() => (elem: (Int, Int), collector: GatherCollector[(Int, Int)]) => collector.push(elem)))
+      val gather = b.add(Flow[(Int, Int)].gather(() =>
+        (elem: (Int, Int), collector: GatherCollector[(Int, Int)]) => collector.push(elem)))
 
-      source ~> unzip.in
+      source     ~> unzip.in
       unzip.out0 ~> zip.in0
       unzip.out1 ~> zip.in1
-      zip.out ~> gather ~> sink.in
+      zip.out    ~> gather ~> sink.in
 
       ClosedShape
     })
