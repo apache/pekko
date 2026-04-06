@@ -55,6 +55,7 @@ import pekko.stream.scaladsl.{
   StatefulMapConcatAccumulator,
   StatefulMapConcatAccumulatorFactory
 }
+import pekko.stream.javadsl.{ Gatherers => JGatherers }
 import pekko.stream.stage._
 import pekko.util.{ ConstantFun, OptionVal }
 
@@ -2364,17 +2365,25 @@ private[pekko] final class Gather[In, Out](factory: () => Gatherer[In, Out]) ext
       private val singleCollector = new GatherCollector[Out] {
         override def push(elem: Out): Unit = {
           ReactiveStreamsCompliance.requireNonNullElement(elem)
-          val cb = callbackFirst
-          if (cb.asInstanceOf[AnyRef] eq null) {
-            callbackFirst = elem
-          } else {
-            pendingFirst = cb
-            hasPendingFirst = true
-            callbackFirst = null.asInstanceOf[Out]
-            multiMode = true
+          if (hasPendingFirst) {
+            // Already in multi mode: all pushes go directly to overflow queue.
             if (pendingOverflow eq null)
               pendingOverflow = new java.util.ArrayDeque[Out]()
             pendingOverflow.addLast(elem)
+          } else {
+            val cb = callbackFirst
+            if (cb.asInstanceOf[AnyRef] eq null) {
+              callbackFirst = elem
+            } else {
+              // Second output from this gather call: transition to multi mode.
+              pendingFirst = cb
+              hasPendingFirst = true
+              callbackFirst = null.asInstanceOf[Out]
+              multiMode = true
+              if (pendingOverflow eq null)
+                pendingOverflow = new java.util.ArrayDeque[Out]()
+              pendingOverflow.addLast(elem)
+            }
           }
         }
       }
@@ -2391,7 +2400,8 @@ private[pekko] final class Gather[In, Out](factory: () => Gatherer[In, Out]) ext
       private var hasPendingFirst = false
       private var multiMode = false
       private var gatherer: Gatherer[In, Out] = _
-      private var oneToOneGatherer: OneToOneGatherer[In, Out] = _
+      // Hot-path handle for one-to-one mappings. Supports both Scala and Java DSL implementations.
+      private var oneToOneGatherer: AnyRef = _
       private var finalAction = FinalAction.None
       private var finalFailure: Throwable = null
       private var needInvokeOnCompleteCallback = false
@@ -2466,7 +2476,10 @@ private[pekko] final class Gather[In, Out](factory: () => Gatherer[In, Out]) ext
       }
 
       private def onPushOneToOne(): Unit = {
-        val elem = oneToOneGatherer.applyOne(grab(in))
+        val elem = oneToOneGatherer match {
+          case s: OneToOneGatherer[In, Out] @unchecked   => s.applyOne(grab(in))
+          case j: JGatherers.OneToOneGatherer[In, Out] @unchecked => j.applyOne(grab(in))
+        }
         ReactiveStreamsCompliance.requireNonNullElement(elem)
         if (isAvailable(out))
           push(out, elem)
@@ -2543,12 +2556,17 @@ private[pekko] final class Gather[In, Out](factory: () => Gatherer[In, Out]) ext
           pull(in)
 
       private def restartGatherer(): Unit = {
-        gatherer = factory()
+        val newGatherer = factory()
+        if (newGatherer eq null)
+          throw new IllegalStateException("Gatherer factory must not return null")
+        gatherer = newGatherer
         oneToOneGatherer = gatherer match {
-          case specialized: OneToOneGatherer[In, Out] @unchecked => specialized
-          case _                                                  => null
+          case _: OneToOneGatherer[?, ?]                            => gatherer
+          case _: JGatherers.OneToOneGatherer[?, ?]                 => gatherer
+          case _                                                    => null
         }
         multiMode = false
+        pendingOverflow = null
         needInvokeOnCompleteCallback = true
       }
 

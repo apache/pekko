@@ -738,6 +738,84 @@ class FlowGatherSpec extends StreamSpec {
     }
   }
 
+  "create independent gatherer instances per materialization" in {
+    val stateCounter = new AtomicInteger(0)
+    val flow = Flow[Int]
+      .gather(() => {
+        stateCounter.incrementAndGet()
+        new Gatherer[Int, Int] {
+          private var acc = 0
+          override def apply(elem: Int, collector: GatherCollector[Int]): Unit = {
+            acc += elem
+            collector.push(acc)
+          }
+        }
+      })
+
+    val source1 = Source(1 to 3).via(flow).runWith(TestSink[Int]())
+    val source2 = Source(10 to 12).via(flow).runWith(TestSink[Int]())
+
+    source1.request(3)
+      .expectNext(1, 3, 6)
+      .expectComplete()
+    source2.request(3)
+      .expectNext(10, 21, 33)
+      .expectComplete()
+
+    // Factory should be called once per materialization
+    stateCounter.get() shouldBe 2
+  }
+
+  "call onComplete for empty upstream" in {
+    val gate = BeenCalledTimesGate()
+    Source.empty[Int]
+      .gather(() =>
+        new Gatherer[Int, Int] {
+          override def apply(elem: Int, collector: GatherCollector[Int]): Unit =
+            collector.push(elem)
+
+          override def onComplete(collector: GatherCollector[Int]): Unit =
+            gate.mark()
+        })
+      .runWith(TestSink[Int]())
+      .request(1)
+      .expectComplete()
+    gate.ensure()
+  }
+
+  "fail when onComplete emits null" in {
+    Source.single(1)
+      .gather(() =>
+        new Gatherer[Int, String] {
+          override def apply(elem: Int, collector: GatherCollector[String]): Unit = ()
+          override def onComplete(collector: GatherCollector[String]): Unit =
+            collector.push(null.asInstanceOf[String])
+        })
+      .runWith(TestSink[String]())
+      .request(1)
+      .expectError() shouldBe a[NullPointerException]
+  }
+
+  "handle 3+ outputs with backpressure mid-drain" in {
+    Source.single(1)
+      .gather(() =>
+        new Gatherer[Int, Int] {
+          override def apply(elem: Int, collector: GatherCollector[Int]): Unit = {
+            collector.push(elem)
+            collector.push(elem + 1)
+            collector.push(elem + 2)
+            collector.push(elem + 3)
+          }
+        })
+      .runWith(TestSink[Int]())
+      .request(2)
+      .expectNext(1, 2)
+      .expectNoMessage(200.millis)
+      .request(2)
+      .expectNext(3, 4)
+      .expectComplete()
+  }
+
   "support junction output ports" in {
     val source = Source(List((1, 1), (2, 2)))
     val graph = RunnableGraph.fromGraph(GraphDSL.createGraph(TestSink[(Int, Int)]()) { implicit b => sink =>

@@ -2765,7 +2765,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * Transform each input element into zero or more output elements without requiring tuple or collection allocations
    * imposed by the operator API itself.
    *
-   * A new [[Gatherer]] is created for each materialization and can keep mutable state in fields.
+   * A new [[Gatherer]] is created for each materialization and can keep mutable state in fields or via captured variables.
    * The provided [[GatherCollector]] can emit zero or more output elements for each input element.
    *
    * The collector is only valid while the callback is running. Emitted elements MUST NOT be `null`.
