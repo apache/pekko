@@ -25,7 +25,7 @@ import org.apache.pekko.japi.function
  *
  * The collector is only valid while the current [[Gatherer]] callback is running.
  *
- * @since 2.0.0
+ * @since 1.3.0
  */
 @DoNotInherit
 trait GatherCollector[-Out] extends function.Procedure[Out] {
@@ -40,7 +40,7 @@ trait GatherCollector[-Out] extends function.Procedure[Out] {
  * A new gatherer instance is created for each materialization and on each supervision restart.
  * It can keep mutable state in fields.
  *
- * @since 2.0.0
+ * @since 1.3.0
  */
 @FunctionalInterface
 trait Gatherer[-In, Out] extends function.Procedure2[In, GatherCollector[Out]] {

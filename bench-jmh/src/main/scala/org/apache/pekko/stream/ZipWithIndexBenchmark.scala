@@ -28,7 +28,7 @@ import org.openjdk.jmh.annotations._
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
-import pekko.stream.scaladsl._
+import pekko.stream.scaladsl.{ GatherCollector, Gatherer, Keep, OneToOneGatherer, Sink, Source }
 
 import com.typesafe.config.ConfigFactory
 

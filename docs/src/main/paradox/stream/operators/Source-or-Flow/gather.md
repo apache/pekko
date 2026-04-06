@@ -1,44 +1,35 @@
 # gather
 
-Transform each input element into zero or more output elements with a stateful gatherer.
+Transform each input element into zero or more output elements using a stateful gatherer.
 
 @ref[Simple operators](../index.md#simple-operators)
 
 ## Signature
 
-@apidoc[Flow.gather](Flow)
+@apidoc[Flow.gather](Flow) { scala="#gather%5BT%5D%28create%3A%28%29%3D%3EGatherer%5BOut%2CT%5D%29%3ARepr%5BT%5D" java="#gather(org.apache.pekko.japi.function.Creator)" }
 
 ## Description
 
-`gather` creates a new gatherer for each materialization. The gatherer can keep mutable state and emit zero or more
-elements for each incoming element by calling `push` on the provided collector.
+Transform each input element into zero or more output elements without requiring tuple or collection allocations
+imposed by the operator API itself.
 
-Unlike `statefulMap` and `statefulMapConcat`, the operator API itself does not require returning tuples or collections
-for each input element. This makes `gather` a good fit for allocation-sensitive stateful transformations.
+A new `Gatherer` is created for each materialization and can keep mutable state in fields or closures.
+The provided `GatherCollector` can emit zero or more output elements for each input element.
 
-Patterns such as `zipWithIndex`, `bufferUntilChanged`, and `distinctUntilChanged` can be expressed by keeping mutable
-state inside the gatherer and pushing outputs directly, instead of returning a new state/output wrapper for every
-element.
+The collector is only valid while the callback is running. Emitted elements MUST NOT be `null`.
 
-Compared with `statefulMap`, `gather` covers the same common stateful streaming patterns used in this PR's test suite:
-happy-path stateful mapping, delayed completion output, restart/stop supervision behavior, and backpressure-sensitive
-one-output transformations. The main difference is that `statefulMap` exposes state as an explicit return value,
-including `null` state transitions, while `gather` keeps state inside the gatherer instance itself. Because of that,
-`statefulMap` tests about `null` state do not translate one-to-one; the equivalent `gather` coverage focuses on the
-observable stream behavior instead.
+The `onComplete` callback is invoked once whenever the stage terminates or restarts: on upstream completion,
+upstream failure, downstream cancellation, abrupt stage termination, or supervision restart.
+Elements emitted from `onComplete` are emitted before upstream-failure propagation, completion, or restart,
+and are ignored on downstream cancellation and abrupt termination.
 
-When the stage terminates or restarts, the gatherer's `onComplete` callback is invoked. Elements pushed from
-`onComplete` are emitted before upstream-failure propagation, normal completion, or supervision restart, and are
-ignored on downstream cancellation or abrupt termination.
+The `gather` operator adheres to the @ref:[ActorAttributes.SupervisionStrategy](../../actors.md) attribute.
 
-The `gather` operator adheres to the ActorAttributes.SupervisionStrategy attribute.
-
-For one-to-one stateful mapping see @ref:[statefulMap](statefulMap.md). For iterable-based fan-out see
-@ref:[statefulMapConcat](statefulMapConcat.md).
+For a simpler stateless mapping, use @ref:[map](map.md) or @ref:[mapConcat](mapConcat.md).
 
 ## Examples
 
-In the first example, we implement a `zipWithIndex`-like transformation.
+In the first example, we implement a `zipWithIndex` operator like @ref:[zipWithIndex](zipWithIndex.md):
 
 Scala
 :  @@snip [Gather.scala](/docs/src/test/scala/docs/stream/operators/flow/Gather.scala) { #zipWithIndex }
@@ -46,23 +37,31 @@ Scala
 Java
 :   @@snip [Gather.java](/docs/src/test/java/jdocs/stream/operators/flow/Gather.java) { #zipWithIndex }
 
-In the second example, we group incoming elements in batches of three and emit the trailing batch from `onComplete`.
+In the second example, elements are buffered until a different element arrives, then emitted:
 
 Scala
-:  @@snip [Gather.scala](/docs/src/test/scala/docs/stream/operators/flow/Gather.scala) { #grouped }
+:  @@snip [Gather.scala](/docs/src/test/scala/docs/stream/operators/flow/Gather.scala) { #bufferUntilChanged }
 
 Java
-:   @@snip [Gather.java](/docs/src/test/java/jdocs/stream/operators/flow/Gather.java) { #grouped }
+:   @@snip [Gather.java](/docs/src/test/java/jdocs/stream/operators/flow/Gather.java) { #bufferUntilChanged }
+
+In the third example, repeated incoming elements are only emitted once:
+
+Scala
+:  @@snip [Gather.scala](/docs/src/test/scala/docs/stream/operators/flow/Gather.scala) { #distinctUntilChanged }
+
+Java
+:   @@snip [Gather.java](/docs/src/test/java/jdocs/stream/operators/flow/Gather.java) { #distinctUntilChanged }
 
 ## Reactive Streams semantics
 
 @@@div { .callout }
 
-**emits** the gatherer emits an element and downstream is ready to consume it
+**emits** when the gatherer emits an element and downstream is ready to consume it
 
-**backpressures** downstream backpressures
+**backpressures** when downstream backpressures
 
-**completes** upstream completes and all gathered elements have been emitted
+**completes** upstream completes and the gatherer has emitted all pending elements, including `onComplete`
 
 **cancels** downstream cancels
 

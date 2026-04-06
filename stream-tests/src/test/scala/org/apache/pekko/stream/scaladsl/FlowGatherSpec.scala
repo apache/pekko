@@ -30,6 +30,7 @@ import org.apache.pekko.stream.{ AbruptStageTerminationException, ActorAttribute
 import org.apache.pekko.stream.testkit.{ StreamSpec, TestSubscriber }
 import org.apache.pekko.stream.testkit.Utils.TE
 import org.apache.pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
+import org.apache.pekko.stream.scaladsl.{ Keep, Flow }
 import org.apache.pekko.testkit.EventFilter
 
 class FlowGatherSpec extends StreamSpec {
@@ -285,7 +286,6 @@ class FlowGatherSpec extends StreamSpec {
             override def apply(elem: String, collector: GatherCollector[String]): Unit =
               lastElement match {
                 case Some(last) if last == elem =>
-                  lastElement = Some(elem)
                 case _ =>
                   lastElement = Some(elem)
                   collector.push(elem)
