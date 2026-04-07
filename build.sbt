@@ -573,6 +573,7 @@ lazy val streamTyped = pekkoModule("stream-typed")
     streamTestkit % "test->test",
     actorTestkitTyped % "test->test",
     actorTypedTests % "test->test")
+  .settings(Dependencies.streamTyped)
   .settings(AutomaticModuleName.settings("pekko.stream.typed"))
   .enablePlugins(ScaladocNoVerificationOfDiagrams)
 

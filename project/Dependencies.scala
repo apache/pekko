@@ -366,6 +366,8 @@ object Dependencies {
 
   lazy val stream = l ++= Seq[sbt.ModuleID](reactiveStreams, jspecify, TestDependencies.scalatest)
 
+  lazy val streamTyped = l ++= Seq[sbt.ModuleID](jspecify)
+
   lazy val streamTestkit = l ++= Seq(
     TestDependencies.scalatest,
     TestDependencies.scalatestScalaCheck,
