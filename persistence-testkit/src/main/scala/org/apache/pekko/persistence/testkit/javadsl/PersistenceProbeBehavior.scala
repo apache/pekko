@@ -22,6 +22,7 @@ import pekko.actor.testkit.typed.javadsl.BehaviorTestKit
 import pekko.actor.typed.Behavior
 import pekko.annotation.DoNotInherit
 import pekko.persistence.testkit.internal.PersistenceProbeImpl
+import org.jspecify.annotations.Nullable
 
 /**
  * Factory methods to create PersistenceProbeBehavior instances for testing.
@@ -46,7 +47,7 @@ object PersistenceProbeBehavior {
    */
   def fromEventSourced[Command, Event, State](
       behavior: Behavior[Command],
-      initialState: State,
+      @Nullable initialState: State,
       initialSequenceNr: Long): PersistenceProbeBehavior[Command, Event, State] = {
     require(initialSequenceNr >= 0, "initialSequenceNr must be at least zero")
 

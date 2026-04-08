@@ -28,6 +28,7 @@ import pekko.persistence.typed.SnapshotAdapter
 import pekko.persistence.typed.state.internal
 import pekko.persistence.typed.state.internal._
 import pekko.persistence.typed.state.scaladsl
+import org.jspecify.annotations.Nullable
 
 /**
  * A `Behavior` for a persistent actor with durable storage of its state.
@@ -55,7 +56,7 @@ abstract class DurableStateBehavior[Command, State] private[pekko] (
    * @param persistenceId stable unique identifier for the `DurableStateBehavior`
    * @param onPersistFailure BackoffSupervisionStrategy for persist failures
    */
-  def this(persistenceId: PersistenceId, onPersistFailure: BackoffSupervisorStrategy) = {
+  def this(persistenceId: PersistenceId, @Nullable onPersistFailure: BackoffSupervisorStrategy) = {
     this(persistenceId, Optional.ofNullable(onPersistFailure))
   }
 
@@ -175,7 +176,7 @@ abstract class DurableStateBehaviorWithEnforcedReplies[Command, State](
     this(persistenceId, Optional.empty[BackoffSupervisorStrategy])
   }
 
-  def this(persistenceId: PersistenceId, backoffSupervisorStrategy: BackoffSupervisorStrategy) = {
+  def this(persistenceId: PersistenceId, @Nullable backoffSupervisorStrategy: BackoffSupervisorStrategy) = {
     this(persistenceId, Optional.ofNullable(backoffSupervisorStrategy))
   }
 

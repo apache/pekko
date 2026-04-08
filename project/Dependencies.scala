@@ -289,6 +289,7 @@ object Dependencies {
   lazy val slf4j = l ++= Seq(slf4jApi, TestDependencies.logback)
 
   lazy val persistence = l ++= Seq(
+    jspecify,
     Provided.levelDB,
     Provided.levelDBNative,
     TestDependencies.scalatest,
@@ -298,6 +299,7 @@ object Dependencies {
     TestDependencies.commonsCodec)
 
   lazy val persistenceQuery = l ++= Seq(
+    jspecify,
     TestDependencies.scalatest,
     TestDependencies.junit,
     TestDependencies.commonsIo,
@@ -310,11 +312,18 @@ object Dependencies {
     Provided.levelDB,
     Provided.levelDBNative)
 
-  lazy val persistenceTestKit = l ++= Seq(TestDependencies.scalatest, TestDependencies.logback)
+  lazy val persistenceTestKit = l ++= Seq(
+    jspecify,
+    TestDependencies.scalatest,
+    TestDependencies.logback)
 
   lazy val persistenceTypedTests = l ++= Seq(TestDependencies.scalatest, TestDependencies.logback)
 
-  lazy val persistenceShared = l ++= Seq(Provided.levelDB, Provided.levelDBNative, TestDependencies.logback)
+  lazy val persistenceShared = l ++= Seq(
+    jspecify,
+    Provided.levelDB,
+    Provided.levelDBNative,
+    TestDependencies.logback)
 
   lazy val jackson = l ++= Seq(
     jacksonCore,
