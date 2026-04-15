@@ -234,14 +234,18 @@ object ByteString {
       else toByteString1.drop(n)
 
     override def indexOf[B >: Byte](elem: B, from: Int): Int = {
-      if (from >= length) -1
-      else {
-        var i = math.max(from, 0)
-        while (i < length) {
-          if (bytes(i) == elem) return i
-          i += 1
-        }
-        -1
+      elem match {
+        case byte: Byte => indexOf(byte, from)
+        case _          =>
+          if (from >= length) -1
+          else {
+            var i = math.max(from, 0)
+            while (i < length) {
+              if (bytes(i) == elem) return i
+              i += 1
+            }
+            -1
+          }
       }
     }
 
@@ -562,14 +566,18 @@ object ByteString {
     }
 
     override def indexOf[B >: Byte](elem: B, from: Int): Int = {
-      if (from >= length) -1
-      else {
-        var i = math.max(from, 0)
-        while (i < length) {
-          if (bytes(startIndex + i) == elem) return i
-          i += 1
-        }
-        -1
+      elem match {
+        case byte: Byte => indexOf(byte, from)
+        case _          =>
+          if (from >= length) -1
+          else {
+            var i = math.max(from, 0)
+            while (i < length) {
+              if (bytes(startIndex + i) == elem) return i
+              i += 1
+            }
+            -1
+          }
       }
     }
 
