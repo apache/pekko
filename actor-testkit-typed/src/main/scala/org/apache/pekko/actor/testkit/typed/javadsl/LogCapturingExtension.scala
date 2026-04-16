@@ -21,7 +21,7 @@ final class LogCapturingExtension extends InvocationInterceptor {
 
   private val capturingAppender = CapturingAppender.get("")
 
-  private val myLogger = LoggerFactory.getLogger(classOf[LogCapturing])
+  private val myLogger = LoggerFactory.getLogger(classOf[LogCapturingExtension])
 
   @throws[Throwable]
   override def interceptTestMethod(invocation: Invocation[Void], invocationContext: ReflectiveInvocationContext[Method],
