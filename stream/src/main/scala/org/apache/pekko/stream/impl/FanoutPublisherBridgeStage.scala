@@ -30,7 +30,13 @@ import pekko.stream.Attributes.InputBuffer
 import pekko.stream.StreamSubscriptionTimeoutTerminationMode
 import pekko.stream._
 import pekko.stream.impl.Stages.DefaultAttributes
-import pekko.stream.stage.{ AsyncCallback, GraphStageLogic, GraphStageWithMaterializedValue, InHandler, TimerGraphStageLogic }
+import pekko.stream.stage.{
+  AsyncCallback,
+  GraphStageLogic,
+  GraphStageWithMaterializedValue,
+  InHandler,
+  TimerGraphStageLogic
+}
 
 import org.reactivestreams.{ Publisher, Subscriber }
 
@@ -174,7 +180,8 @@ import org.reactivestreams.{ Publisher, Subscriber }
 /**
  * INTERNAL API
  */
-@InternalApi private[pekko] final class FanoutPublisherBridgePublisher[T](registerPendingSubscribers: AsyncCallback[Unit])
+@InternalApi private[pekko] final class FanoutPublisherBridgePublisher[T](
+    registerPendingSubscribers: AsyncCallback[Unit])
     extends Publisher[T] {
   import ReactiveStreamsCompliance._
 
@@ -211,7 +218,7 @@ import org.reactivestreams.{ Publisher, Subscriber }
     if (shutdownStarted.compareAndSet(false, true)) {
       shutdownReason = reason
       pendingSubscribers.getAndSet(null) match {
-        case null => // already shut down
+        case null    => // already shut down
         case pending =>
           pending.foreach(reportSubscribeFailure)
       }
@@ -220,7 +227,7 @@ import org.reactivestreams.{ Publisher, Subscriber }
   private def reportSubscribeFailure(subscriber: Subscriber[_ >: T]): Unit =
     try shutdownReason match {
         case Some(_: ReactiveStreamsCompliance.SpecViolation) => // ok, not allowed to call onError
-        case Some(e)                =>
+        case Some(e)                                          =>
           tryOnSubscribe(subscriber, CancelledSubscription)
           tryOnError(subscriber, e)
         case None =>
