@@ -164,9 +164,9 @@ private[pekko] class RemoteWatcher(
     case Stats =>
       val watchSet = watching.iterator
         .flatMap {
-          case (we, wers) =>
+          case (wee, wers) =>
             wers.map { wer =>
-              we -> wer
+              wee -> wer
             }
         }
         .toSet[(ActorRef, ActorRef)]

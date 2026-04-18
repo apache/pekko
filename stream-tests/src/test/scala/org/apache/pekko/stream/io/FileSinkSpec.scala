@@ -225,7 +225,7 @@ class FileSinkSpec extends StreamSpec(UnboundedMailboxConfig) with ScalaFutures 
 
     "complete with failure when file cannot be open" in {
       val completion =
-        Source.single(ByteString("42")).runWith(FileIO.toPath(fs.getPath("/I/hope/this/file/does/not/exist.txt")))
+        Source.single(ByteString("42")).runWith(FileIO.toPath(fs.getPath("/I/hope/this/file/doesnt/exist.txt")))
 
       completion.failed.futureValue.getCause shouldBe an[NoSuchFileException]
     }
