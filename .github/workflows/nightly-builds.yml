@@ -148,10 +148,10 @@ jobs:
 
       - name: Compile and Test
         # note that this is not running any multi-jvm tests because multi-in-test=false
-        # JDK 25 ForkJoinPool scheduling changes need a higher timefactor (see #2573)
+        # JDK 25 ForkJoinPool scheduling changes need a higher timefactor (see #2573, #2870)
         run: |-
           if [ "${{ matrix.javaVersion }}" -ge 25 ]; then
-            TIMEFACTOR=3
+            TIMEFACTOR=4
           else
             TIMEFACTOR=2
           fi
