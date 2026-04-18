@@ -233,7 +233,7 @@ private[pekko] final class DDataRememberEntitiesShardStore(
   }
 
   private def waitingForUpdates(
-      requestor: ActorRef,
+      requester: ActorRef,
       update: RememberEntitiesShardStore.Update,
       allUpdates: Map[Set[Evt], (Update[ORSet[EntityId]], Int)]): Receive = {
 
@@ -243,7 +243,7 @@ private[pekko] final class DDataRememberEntitiesShardStore(
         log.debug("Remember entities shard store state was successfully updated for [{}]", evts)
         val remainingAfterThis = updatesLeft - evts
         if (remainingAfterThis.isEmpty) {
-          requestor ! RememberEntitiesShardStore.UpdateDone(update.started, update.stopped)
+          requester ! RememberEntitiesShardStore.UpdateDone(update.started, update.stopped)
           context.become(idle)
         } else {
           context.become(next(remainingAfterThis))

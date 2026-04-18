@@ -120,7 +120,7 @@ abstract class RollingUpdateShardAllocationSpec
       runOn(first, second) {
 
         // make sure both regions have completed registration before triggering entity allocation
-        // so the folloing allocations end up as one on each node
+        // so the following allocations end up as one on each node
         awaitAssert {
           shardRegion ! ShardRegion.GetCurrentRegions
           expectMsgType[ShardRegion.CurrentRegions].regions should have size 2

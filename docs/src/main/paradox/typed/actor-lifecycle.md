@@ -203,7 +203,7 @@ An alternative to @apidoc[watch](typed.*.ActorContext) {scala="#watch[U](other:o
 This is often preferred over using `watch` and the `Terminated` signal because additional information can
 be included in the message that can be used later when receiving it.
 
-Similar example as above, but using `watchWith` and replies to the original requestor when the job has finished.
+Similar example as above, but using `watchWith` and replies to the original requester when the job has finished.
 
 Scala
 :  @@snip [IntroSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/GracefulStopDocSpec.scala) { #master-actor-watchWith }

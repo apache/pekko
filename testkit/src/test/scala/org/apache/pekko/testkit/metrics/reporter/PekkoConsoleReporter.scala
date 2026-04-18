@@ -23,7 +23,7 @@ import org.apache.pekko
 import pekko.testkit.metrics._
 
 /**
- * Used to report `org.apache.pekko.testkit.metric.Metric` types that the original `com.codahale.metrics.ConsoleReporter` is unaware of (cannot re-use directly because of private constructor).
+ * Used to report `org.apache.pekko.testkit.metric.Metric` types that the original `com.codahale.metrics.ConsoleReporter` is unaware of (cannot reuse directly because of private constructor).
  */
 class PekkoConsoleReporter(registry: PekkoMetricRegistry, verbose: Boolean, output: PrintStream = System.out)
     extends ScheduledReporter(

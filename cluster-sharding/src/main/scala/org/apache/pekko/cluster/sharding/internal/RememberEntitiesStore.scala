@@ -90,5 +90,5 @@ private[pekko] object RememberEntitiesCoordinatorStore {
    */
   case object GetShards extends Command
   final case class RememberedShards(entities: Set[ShardId])
-  // No message for failed load since we eager lod the set of shards, may need to change in the future
+  // No message for failed load since we eager load the set of shards, may need to change in the future
 }

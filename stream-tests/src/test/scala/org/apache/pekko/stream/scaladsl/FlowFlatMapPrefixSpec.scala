@@ -612,7 +612,7 @@ class FlowFlatMapPrefixSpec extends StreamSpec("pekko.loglevel = debug") {
             log.debug("closing sink")
             closeSink()
             log.debug("sink closed")
-            // closing the sink before returning means that it's higly probably
+            // closing the sink before returning means that it's highly probably
             // for the flatMapPrefix stage to receive the downstream cancellation before the actor graph interpreter
             // gets a chance to complete the new interpreter shell's registration.
             // this in turn exposes a bug in the actor graph interpreter when all active flows complete

@@ -18,7 +18,7 @@ To use Pekko Streams, add the module to your project:
 In Pekko Streams, computation graphs are not expressed using a fluent DSL like linear computations are, instead they are
 written in a more graph-resembling DSL which aims to make translating graph drawings (e.g. from notes taken
 from design discussions, or illustrations in protocol specifications) to and from code simpler. In this section we'll
-dive into the multiple ways of constructing and re-using graphs, as well as explain common pitfalls and how to avoid them.
+dive into the multiple ways of constructing and reusing graphs, as well as explain common pitfalls and how to avoid them.
 
 Graphs are needed whenever you want to perform any kind of fan-in ("multiple inputs") or fan-out ("multiple outputs") operations.
 Considering linear Flows to be like roads, we can picture graph operations as junctions: multiple flows being connected at a single point.
@@ -86,9 +86,9 @@ By looking at the snippets above, it should be apparent that the @scala[`GraphDS
 The reason for this design choice is to enable simpler creation of complex graphs, which may even contain cycles.
 Once the GraphDSL has been constructed though, the @scala[`GraphDSL`]@java[`RunnableGraph`] instance *is immutable, thread-safe, and freely shareable*.
 The same is true of all operators—sources, sinks, and flows—once they are constructed.
-This means that you can safely re-use one given Flow or junction in multiple places in a processing graph.
+This means that you can safely reuse one given Flow or junction in multiple places in a processing graph.
 
-We have seen examples of such re-use already above: the merge and broadcast junctions were imported
+We have seen examples of such reuse already above: the merge and broadcast junctions were imported
 into the graph using `builder.add(...)`, an operation that will make a copy of the blueprint that
 is passed to it and return the inlets and outlets of the resulting copy so that they can be wired up.
 Another alternative is to pass existing graphs—of any shape—into the factory method that produces a
@@ -97,7 +97,7 @@ materialized value of the imported graph while importing via the factory method 
 for more details see @ref[Stream Materialization](stream-flows-and-basics.md#stream-materialization).
 
 In the example below, we prepare a graph that consists of two parallel streams,
-in which we re-use the same instance of `Flow`, yet it will properly be
+in which we reuse the same instance of `Flow`, yet it will properly be
 materialized as two connections between the corresponding Sources and Sinks:
 
 Scala

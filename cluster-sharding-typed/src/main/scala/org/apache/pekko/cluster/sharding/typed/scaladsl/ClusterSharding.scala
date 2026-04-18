@@ -129,7 +129,7 @@ object ClusterSharding extends ExtensionId[ClusterSharding] {
  * persistent (durable), e.g. with `pekko-persistence`, so that it can be recovered at the new
  * location.
  *
- * The logic that decides which shards to rebalance is defined in a plugable shard
+ * The logic that decides which shards to rebalance is defined in a pluggable shard
  * allocation strategy. The default implementation [[pekko.cluster.sharding.ShardCoordinator.LeastShardAllocationStrategy]]
  * picks shards for handoff from the `ShardRegion` with most number of previously allocated shards.
  * They will then be allocated to the `ShardRegion` with least number of previously allocated shards,

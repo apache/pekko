@@ -220,9 +220,9 @@ Java
 :  @@snip [InteractionPatternsTest.java](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/InteractionPatternsTest.java) { #standalone-ask }
 
 Note that validation errors are also explicit in the message protocol. The `GiveMeCookies` request can reply
-with `Cookies` or `InvalidRequest`. The requestor has to decide how to handle an `InvalidRequest` reply. Sometimes
+with `Cookies` or `InvalidRequest`. The requester has to decide how to handle an `InvalidRequest` reply. Sometimes
 it should be treated as a failed @scala[@scaladoc[Future](scala.concurrent.Future)]@java[@javadoc[CompletionStage](java.util.concurrent.CompletionStage)] and for that the reply can be mapped on the
-requestor side. See also the [Generic response wrapper](#generic-response-wrapper) for replies that are either a success or an error.
+requester side. See also the [Generic response wrapper](#generic-response-wrapper) for replies that are either a success or an error.
 
 Scala
 :  @@snip [InteractionPatternsSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/InteractionPatternsSpec.scala) { #standalone-ask-fail-future }

@@ -277,7 +277,7 @@ class ReplicatorMessageSerializerSpec
       cache.get(c) should be("C")
     }
 
-    "suppory getOrAdd" in {
+    "support getOrAdd" in {
       var n = 0
       def createValue(@nowarn("msg=never used") a: Read): AnyRef = {
         n += 1

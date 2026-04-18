@@ -242,7 +242,7 @@ class GraphMatValueSpec extends StreamSpec {
       matValue should ===(NotUsed)
     }
 
-    "not ignore materialized value of indentity flow which is optimized away" in {
+    "not ignore materialized value of identity flow which is optimized away" in {
       val (m1, m2) = Source.single(1).viaMat(Flow[Int])(Keep.both).to(Sink.ignore).run()
       m1 should ===(NotUsed)
       m2 should ===(NotUsed)

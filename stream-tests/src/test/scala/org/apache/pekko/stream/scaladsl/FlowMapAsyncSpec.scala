@@ -203,7 +203,7 @@ class FlowMapAsyncSpec extends StreamSpec {
               }
             case unexpected => fail(s"unexpected $unexpected")
           }
-        case unexpeced => fail(s"unexpected $unexpeced")
+        case unexpected => fail(s"unexpected $unexpected")
       }
     }
 

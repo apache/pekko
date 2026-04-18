@@ -217,7 +217,7 @@ private[cluster] final case class Gossip(
   def isReachable(fromAddress: UniqueAddress, toAddress: UniqueAddress): Boolean =
     if (!hasMember(toAddress)) false
     else {
-      // as it looks for specific unreachable entires for the node pair we don't have to filter on data center
+      // as it looks for specific unreachable entries for the node pair we don't have to filter on data center
       overview.reachability.isReachable(fromAddress, toAddress)
     }
 

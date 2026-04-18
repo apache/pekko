@@ -4705,7 +4705,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
   /**
    * Materializes to `FlowMonitor[Out]` that allows monitoring of the current flow. All events are propagated
    * by the monitor unchanged. Note that the monitor inserts a memory barrier every time it processes an
-   * event, and may therefor affect performance.
+   * event, and may therefore affect performance.
    * The `combine` function is used to combine the `FlowMonitor` with this flow's materialized value.
    */
   def monitorMat[M](combine: function.Function2[Mat, FlowMonitor[Out], M]): javadsl.Source[Out, M] =
@@ -4719,7 +4719,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * The `FlowMonitor` allows monitoring of the current flow. All events are propagated
    * by the monitor unchanged. Note that the monitor inserts a memory barrier every time it processes an
-   * event, and may therefor affect performance.
+   * event, and may therefore affect performance.
    */
   def monitor(): Source[Out, Pair[Mat, FlowMonitor[Out]]] =
     monitorMat(Keep.both)

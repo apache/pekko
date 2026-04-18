@@ -15,8 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
-# PR4682 renames an internal class called Algoritm (a typo)
-ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.serialization.jackson.Compression$Algoritm")
+# PR4682 renames an internal class called Algorithm (a typo)
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.serialization.jackson.Compression$Algorithm")
 ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.serialization.jackson.Compression$GZip")
 ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.serialization.jackson.Compression$LZ4")
 ProblemFilters.exclude[MissingTypesProblem]("org.apache.pekko.serialization.jackson.Compression$Off$")

@@ -26,7 +26,7 @@ private[cluster] object DowningProvider {
 
   /**
    * @param fqcn Fully qualified class name of the implementation to be loaded.
-   * @param system Actor system used to load the implemntation
+   * @param system Actor system used to load the implementation
    * @return the provider or throws a [[pekko.ConfigurationException]] if loading it fails
    */
   def load(fqcn: String, system: ActorSystem): DowningProvider = {

@@ -214,7 +214,7 @@ To use the task, simply type `validatePullRequest`, and the output should includ
 ```shell
 > validatePullRequest
 [info] Diffing [HEAD] to determine changed modules in PR...
-[info] Detected uncomitted changes in directories (including in dependency analysis): [protobuf,project]
+[info] Detected uncommitted changes in directories (including in dependency analysis): [protobuf,project]
 [info] Detected changes in directories: [actor-tests, project, stream, docs, persistence]
 ```
 

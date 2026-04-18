@@ -41,7 +41,7 @@ As an escape hatch, there is a `via` operator that allows you to
 insert an arbitrary @apidoc[Flow] that can process the
 @scala[tuples]@java[pairs] of elements and context in any way
 desired. When using this operator, it is the responsibility of the
-implementor to make sure this @apidoc[Flow] does not perform
+implementer to make sure this @apidoc[Flow] does not perform
 any operations (such as reordering) that might break assumptions
 made by the @apidoc[Sink] consuming the context elements.
 

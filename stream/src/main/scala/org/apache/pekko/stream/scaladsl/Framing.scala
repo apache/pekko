@@ -227,7 +227,7 @@ object Framing {
 
         // We use an efficient unsafe array implementation and must be use with caution.
         // It contains all indices computed during search phase.
-        // The capacity is fixed at 256 to preserve fairness and prevent uneccessary allocation during parsing phase.
+        // The capacity is fixed at 256 to preserve fairness and prevent unnecessary allocation during parsing phase.
         // This array provide a way to check remaining capacity and must be use to prevent out of bounds exception.
         // In this use case, we compute all possibles indices up to 256 and then parse everything.
         private val indices = new LightArray[(Int, Int)](256)

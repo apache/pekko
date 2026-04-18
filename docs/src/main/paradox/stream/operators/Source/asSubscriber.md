@@ -35,7 +35,7 @@ we could create a @apidoc[Source] that queries the database for its rows. That @
 be used for further processing, for example creating a @apidoc[Source] that contains the names of the
 rows.
 
-Note that since the database is queried for each materialization, the `rowSource` can be safely re-used.
+Note that since the database is queried for each materialization, the `rowSource` can be safely reused.
 Because both the database driver and Pekko Streams support [Reactive Streams](https://www.reactive-streams.org/),
 backpressure is applied throughout the stream, preventing us from running out of memory when the database
 rows are consumed slower than they are produced by the database.

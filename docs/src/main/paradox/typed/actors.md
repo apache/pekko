@@ -24,7 +24,7 @@ To use Pekko Actors, add the following dependency in your project:
 
 Both the Java and Scala DSLs of Pekko modules are bundled in the same JAR. For a smooth development experience,
 when using an IDE such as Eclipse or IntelliJ, you can disable the auto-importer from suggesting `javadsl`
-imports when working in Scala, or viceversa. See @ref:[IDE Tips](../additional/ide.md). 
+imports when working in Scala, or vice-versa. See @ref:[IDE Tips](../additional/ide.md). 
 
 @@project-info{ projectId="actor-typed" }
 

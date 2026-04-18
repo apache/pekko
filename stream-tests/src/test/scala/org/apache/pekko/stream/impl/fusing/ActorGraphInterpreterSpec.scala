@@ -158,7 +158,7 @@ class ActorGraphInterpreterSpec extends StreamSpec {
 
     }
 
-    "be able to interpret and resuse a simple bidi stage" in {
+    "be able to interpret and reuse a simple bidi stage" in {
       val identityBidi = new GraphStage[BidiShape[Int, Int, Int, Int]] {
         val in1 = Inlet[Int]("in1")
         val in2 = Inlet[Int]("in2")

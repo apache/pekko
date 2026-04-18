@@ -43,7 +43,7 @@ Pekko Cluster can efficiently be used for building such distributed application.
 In this case, you have a single deployment unit, built from a single code base (or using traditional binary
 dependency management to modularize) but deployed across many nodes using a single cluster.
 Tighter coupling is OK, because there is a central point of deployment and control. In some cases, nodes may
-have specialized runtime roles which means that the cluster is not totally homogenous (e.g., "front-end" and
+have specialized runtime roles which means that the cluster is not totally homogeneous (e.g., "front-end" and
 "back-end" nodes, or dedicated master/worker nodes) but if these are run from the same built artifacts this
 is just a runtime behavior and doesn't cause the same kind of problems you might get from tight coupling of
 totally separate artifacts.

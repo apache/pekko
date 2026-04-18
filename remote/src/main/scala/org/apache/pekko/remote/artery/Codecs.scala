@@ -255,7 +255,7 @@ private[remote] object Decoder {
 
   private object Tick
 
-  /** Materialized value of [[Encoder]] which allows safely calling into the operator to interfact with compression tables. */
+  /** Materialized value of [[Encoder]] which allows safely calling into the operator to interact with compression tables. */
   private[remote] trait InboundCompressionAccess {
     def confirmActorRefCompressionAdvertisementAck(ack: ActorRefCompressionAdvertisementAck): Future[Done]
     def confirmClassManifestCompressionAdvertisementAck(ack: ClassManifestCompressionAdvertisementAck): Future[Done]

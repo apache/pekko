@@ -115,7 +115,7 @@ private[cluster] class CrossDcHeartbeatSender extends Actor {
    * In this state no cross-datacenter heartbeats are sent by this actor.
    * This may be because one of those reasons:
    *   - no nodes in other DCs were detected yet
-   *   - nodes in other DCs are present, but this node is not tht n-th oldest in this DC (see
+   *   - nodes in other DCs are present, but this node is not the n-th oldest in this DC (see
    *     `number-of-cross-datacenter-monitoring-actors`), so it does not have to monitor that other data centers
    *
    * In this state it will however listen to cluster events to eventually take over monitoring other DCs

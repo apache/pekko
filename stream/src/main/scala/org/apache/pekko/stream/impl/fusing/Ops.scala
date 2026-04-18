@@ -1252,7 +1252,7 @@ private[stream] object Collect {
   final class Holder[T](var elem: Try[T], val cb: AsyncCallback[Holder[T]]) extends (Try[T] => Unit) {
 
     // To support both fail-fast when the supervision directive is Stop
-    // and not calling the decider multiple times (#23888) we need to cache the decider result and re-use that
+    // and not calling the decider multiple times (#23888) we need to cache the decider result and reuse that
     private var cachedSupervisionDirective: OptionVal[Supervision.Directive] = OptionVal.None
 
     def supervisionDirectiveFor(decider: Supervision.Decider, ex: Throwable): Supervision.Directive = {

@@ -65,7 +65,7 @@ public interface AsSubscriber {
                 });
 
     public Source<String, NotUsed> names() {
-      // rowSource can be re-used, since it will start a new
+      // rowSource can be reused, since it will start a new
       // query for each materialization, fully supporting backpressure
       // for each materialized stream:
       return rowSource.map(row -> row.getField("name"));

@@ -44,7 +44,7 @@ private[persistence] object JournalProtocol {
    * Request to write messages.
    *
    * @param messages messages to be written.
-   * @param persistentActor write requestor.
+   * @param persistentActor write requester.
    */
   final case class WriteMessages(
       messages: immutable.Seq[PersistentEnvelope],
@@ -54,13 +54,13 @@ private[persistence] object JournalProtocol {
       with NoSerializationVerificationNeeded
 
   /**
-   * Reply message to a successful [[WriteMessages]] request. This reply is sent to the requestor
+   * Reply message to a successful [[WriteMessages]] request. This reply is sent to the requester
    * before all subsequent [[WriteMessageSuccess]] replies.
    */
   case object WriteMessagesSuccessful extends Response
 
   /**
-   * Reply message to a failed [[WriteMessages]] request. This reply is sent to the requestor
+   * Reply message to a failed [[WriteMessages]] request. This reply is sent to the requester
    * before all subsequent [[WriteMessageFailure]] replies.
    *
    * @param cause failure cause.
@@ -70,7 +70,7 @@ private[persistence] object JournalProtocol {
 
   /**
    * Reply message to a successful [[WriteMessages]] request. For each contained [[PersistentRepr]] message
-   * in the request, a separate reply is sent to the requestor.
+   * in the request, a separate reply is sent to the requester.
    *
    * @param persistent successfully written message.
    */
@@ -79,7 +79,7 @@ private[persistence] object JournalProtocol {
   /**
    * Reply message to a rejected [[WriteMessages]] request. The write of this message was rejected before
    * it was stored, e.g. because it could not be serialized. For each contained [[PersistentRepr]] message
-   * in the request, a separate reply is sent to the requestor.
+   * in the request, a separate reply is sent to the requester.
    *
    * @param message message rejected to be written.
    * @param cause failure cause.
@@ -90,7 +90,7 @@ private[persistence] object JournalProtocol {
 
   /**
    * Reply message to a failed [[WriteMessages]] request. For each contained [[PersistentRepr]] message
-   * in the request, a separate reply is sent to the requestor.
+   * in the request, a separate reply is sent to the requester.
    *
    * @param message message failed to be written.
    * @param cause failure cause.
@@ -126,7 +126,7 @@ private[persistence] object JournalProtocol {
       extends Request
 
   /**
-   * Reply message to a [[ReplayMessages]] request. A separate reply is sent to the requestor for each
+   * Reply message to a [[ReplayMessages]] request. A separate reply is sent to the requester for each
    * replayed message.
    *
    * @param persistent replayed message.
@@ -137,7 +137,7 @@ private[persistence] object JournalProtocol {
       with NoSerializationVerificationNeeded
 
   /**
-   * Reply message to a successful [[ReplayMessages]] request. This reply is sent to the requestor
+   * Reply message to a successful [[ReplayMessages]] request. This reply is sent to the requester
    * after all [[ReplayedMessage]] have been sent (if any).
    *
    * It includes the highest stored sequence number of a given persistent actor. Note that the
@@ -148,7 +148,7 @@ private[persistence] object JournalProtocol {
   case class RecoverySuccess(highestSequenceNr: Long) extends Response with DeadLetterSuppression
 
   /**
-   * Reply message to a failed [[ReplayMessages]] request. This reply is sent to the requestor
+   * Reply message to a failed [[ReplayMessages]] request. This reply is sent to the requester
    * if a replay could not be successfully completed.
    */
   final case class ReplayMessagesFailure(cause: Throwable) extends Response with DeadLetterSuppression

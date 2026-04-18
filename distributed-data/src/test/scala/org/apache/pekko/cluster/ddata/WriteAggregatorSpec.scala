@@ -394,7 +394,7 @@ class WriteAggregatorSpec extends PekkoSpec(s"""
       probe.expectMsgType[DeltaPropagation]
       // nack
       probe.lastSender ! DeltaNack
-      // the nack will triggger an immediate Write
+      // the nack will trigger an immediate Write
       probe.expectMsgType[Write]
       // no reply
 

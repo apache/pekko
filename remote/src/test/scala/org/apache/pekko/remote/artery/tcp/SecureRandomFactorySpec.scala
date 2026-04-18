@@ -64,7 +64,7 @@ abstract class SecureRandomFactorySpec(alg: String) extends PekkoSpec {
         }
       }
 
-      "have random numbers that are not compressable, because then they are not random" in {
+      "have random numbers that are not compressible, because then they are not random" in {
         val randomData = new Array[Byte](1024 * 1024)
         prng.nextBytes(randomData)
 

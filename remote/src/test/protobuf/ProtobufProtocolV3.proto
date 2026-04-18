@@ -12,7 +12,7 @@
  */
 
 // Generated with protoc 3 compiler and copied do test src
-// doesen't use protobufGenerate yet as that replaces google packages
+// doesn't use protobufGenerate yet as that replaces google packages
 // with akka
 syntax = "proto3";
 

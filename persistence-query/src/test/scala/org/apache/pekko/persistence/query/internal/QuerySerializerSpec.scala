@@ -34,8 +34,8 @@ class QuerySerializerSpec extends PekkoSpec {
     val serializer = serialization.findSerializerFor(obj).asInstanceOf[SerializerWithStringManifest]
     val manifest = serializer.manifest(obj)
     val bytes = serialization.serialize(obj).get
-    val deserialzied = serialization.deserialize(bytes, serializer.identifier, manifest).get
-    deserialzied shouldBe obj
+    val deserialized = serialization.deserialize(bytes, serializer.identifier, manifest).get
+    deserialized shouldBe obj
   }
 
   "Query serializer" should {

@@ -29,7 +29,7 @@ private[pekko] case class CacheStatistics(entries: Int, maxProbeDistance: Int, a
  * with backshift (https://codecapsule.com/2013/11/17/robin-hood-hashing-backward-shift-deletion/).
  *
  * The main modification compared to an RH hashmap is that it never grows the map (no rehashes) instead it is allowed
- * to kick out entires that are considered old. The implementation tries to keep the map close to full, only evicting
+ * to kick out entries that are considered old. The implementation tries to keep the map close to full, only evicting
  * old entries when needed.
  */
 private[pekko] abstract class LruBoundedCache[K <: AnyRef: ClassTag, V <: AnyRef: ClassTag](

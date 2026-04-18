@@ -479,7 +479,7 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
       }
     }
 
-    "fail subsequent barriers after foreced failure" taggedAs TimingTest in {
+    "fail subsequent barriers after forced failure" taggedAs TimingTest in {
       withController(2) { barrier =>
         val a, b = TestProbe()
         val nodeA = NodeInfo(A, AddressFromURIString("pekko://sys"), a.ref)

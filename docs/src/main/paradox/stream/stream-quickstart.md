@@ -16,7 +16,7 @@ To use Pekko Streams, add the module to your project:
 @@@ note
 
 Both the Java and Scala DSLs of Pekko Streams are bundled in the same JAR. For a smooth development experience, when using an IDE such as Eclipse or IntelliJ, you can disable the auto-importer from suggesting `javadsl` imports when working in Scala,
-or viceversa. See @ref:[IDE Tips](../additional/ide.md). 
+or vice-versa. See @ref:[IDE Tips](../additional/ide.md). 
 @@@
 
 ## First steps

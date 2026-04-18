@@ -319,7 +319,7 @@ private[io] abstract class TcpConnection(val tcp: TcpExt, val channel: SocketCha
   def handleClose(info: ConnectionInfo, closeCommander: Option[ActorRef], closedEvent: ConnectionClosed): Unit =
     closedEvent match {
       case Aborted =>
-        if (TraceLogging) log.debug("Got Abort command. RESETing connection.")
+        if (TraceLogging) log.debug("Got Abort command. Resetting connection.")
         doCloseConnection(info.handler, closeCommander, closedEvent)
       case PeerClosed if info.keepOpenOnPeerClosed =>
         // report that peer closed the connection

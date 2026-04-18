@@ -475,7 +475,7 @@ Java
 
 ## Thread safety of custom operators
 
-All of the above custom operators (linear or graph) provide a few simple guarantees that implementors can rely on.
+All of the above custom operators (linear or graph) provide a few simple guarantees that implementers can rely on.
 : 
  * The callbacks exposed by all of these classes are never called concurrently.
  * The state encapsulated by these classes can be safely modified from the provided callbacks, without any further

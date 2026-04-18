@@ -38,7 +38,7 @@ import pekko.util.OptionVal
  * Part of the monitoring SPI which allows attaching metadata to outbound remote messages,
  * and reading in metadata from incoming messages.
  *
- * Multiple instruments are automatically handled, however they MUST NOT overlap in their idenfitiers.
+ * Multiple instruments are automatically handled, however they MUST NOT overlap in their identifiers.
  *
  * Instances of `RemoteInstrument` are created from configuration. A new instance of RemoteInstrument
  * will be created for each encoder and decoder. It's only called from the operator, so if it doesn't

@@ -356,7 +356,7 @@ import pekko.serialization.{ BaseSerializer, SerializerWithStringManifest }
         else if (entry.getOperation == ReplicatedEventSourcing.ORSetDeltaOp.Full)
           ORSet.FullStateDeltaOp(orsetFromProto(entry.getUnderlying))
         else
-          throw new NotSerializableException(s"Unknow ORSet delta operation ${entry.getOperation}")
+          throw new NotSerializableException(s"Unknown ORSet delta operation ${entry.getOperation}")
       }.toVector
     ORSet.DeltaGroup(ops)
   }

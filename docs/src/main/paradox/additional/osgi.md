@@ -22,7 +22,7 @@ and on occasion to the structure of the overall application, OSGi can be used to
 back as JDK 1.2, usually with no changes at all to the binaries.
 
 These legacy capabilities are OSGi's major strength and its major weakness. The creators of OSGi realized early on that
-implementors would be unlikely to rush to support OSGi metadata in existing JARs. There were already a handful of new
+implementers would be unlikely to rush to support OSGi metadata in existing JARs. There were already a handful of new
 concepts to learn in the JRE and the added value to teams that were managing well with straight J2EE was not obvious.
 Facilities emerged to "wrap" binary JARs so they could be used as bundles, but this functionality was only used in limited
 situations. An application of the "80/20 Rule" here would have that "80% of the complexity is with 20% of the configuration",
@@ -45,7 +45,7 @@ exports across bundles through these classloaders is the process of resolution, 
 FSM of a bundle in an OSGi container:
 
  1. INSTALLED: A bundle that is installed has been loaded from disk and a classloader instantiated with its capabilities.
-Bundles are iteratively installed manually or through container-specific descriptors. For those familiar with legacy packging
+Bundles are iteratively installed manually or through container-specific descriptors. For those familiar with legacy packaging
 such as EJB, the modular nature of OSGi means that bundles may be used by multiple applications with overlapping dependencies.
 By resolving them individually from repositories, these overlaps can be de-duplicated across multiple deployments to
 the same container.

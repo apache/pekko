@@ -873,7 +873,7 @@ public class InteractionPatternsTest {
       private Behavior<Command> onUpdateResult(WrappedUpdateResult wrapped) {
         // decrease operationsInProgress counter
         operationsInProgress--;
-        // send result to original requestor
+        // send result to original requester
         wrapped.replyTo.tell(wrapped.result);
         return this;
       }

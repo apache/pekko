@@ -19,7 +19,7 @@ part of the actor protocol than make the actor throw exceptions.
 
 A **failure** is instead something unexpected or outside the control of the actor itself, for example a database connection
 that broke. Opposite to validation errors, it is seldom useful to model failures as part of the protocol as a sending actor
-can very seldomly do anything useful about it.
+can very seldom do anything useful about it.
 
 For failures it is useful to apply the "let it crash" philosophy: instead of mixing fine grained recovery and correction
 of internal state that may have become partially invalid because of the failure with the business logic we move that

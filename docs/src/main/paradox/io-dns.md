@@ -41,7 +41,7 @@ To select which `DnsProvider` to use set `pekko.io.dns.resolver` to the location
 There are currently two implementations:
 
 * `inet-address` - Based on the JDK's `InetAddress`. Using this will be subject to both the JVM's DNS cache and its built in one.
-* `async-dns` - A native implemention of the DNS protocol that does not use any JDK classes or caches.
+* `async-dns` - A native implementation of the DNS protocol that does not use any JDK classes or caches.
 
 `inet-address` is the default implementation as it pre-dates `async-dns`, `async-dns` will likely become the default in the next major release.
 

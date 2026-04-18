@@ -143,7 +143,7 @@ object TestKitUsageSpec {
   /**
    * An actor that sends a sequence of messages with a random head list, an
    * interesting value and a random tail list. The idea is that you would
-   * like to test that the interesting value is received and that you cant
+   * like to test that the interesting value is received and that you can't
    * be bothered with the rest
    */
   class SequencingActor(next: ActorRef, head: immutable.Seq[String], tail: immutable.Seq[String]) extends Actor {

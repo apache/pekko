@@ -4546,7 +4546,7 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
   /**
    * Materializes to `FlowMonitor[Out]` that allows monitoring of the current flow. All events are propagated
    * by the monitor unchanged. Note that the monitor inserts a memory barrier every time it processes an
-   * event, and may therefor affect performance.
+   * event, and may therefore affect performance.
    *
    * The `combine` function is used to combine the `FlowMonitor` with this flow's materialized value.
    */
@@ -4561,7 +4561,7 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    *
    * The `FlowMonitor[Out]` allows monitoring of the current flow. All events are propagated
    * by the monitor unchanged. Note that the monitor inserts a memory barrier every time it processes an
-   * event, and may therefor affect performance.
+   * event, and may therefore affect performance.
    */
   def monitor: ReprMat[Out, (Mat, FlowMonitor[Out])] =
     monitorMat(Keep.both)

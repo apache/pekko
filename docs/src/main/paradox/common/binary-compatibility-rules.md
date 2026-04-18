@@ -87,7 +87,7 @@ you might want to add `pekko-persistence-query` dependency for 1.0.6.
 
 @@@ note
 
-We recommend keeping an `pekkoVersion` variable in your build file, and re-use it for all
+We recommend keeping an `pekkoVersion` variable in your build file, and reuse it for all
 included modules, so when you upgrade you can simply change it in this one place.
 
 @@@

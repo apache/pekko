@@ -63,7 +63,7 @@ Journal implementers are encouraged to put this identifier in a variable known t
 
 ### Predefined queries
 
-Pekko persistence query comes with a number of query interfaces built in and suggests Journal implementors to implement
+Pekko persistence query comes with a number of query interfaces built in and suggests Journal implementers to implement
 them according to the semantics described below. It is important to notice that while these query types are very common
 a journal is not obliged to implement all of them - for example because in a given journal such query would be
 significantly inefficient.

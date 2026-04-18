@@ -341,7 +341,7 @@ More advanced routing among the replicas is currently left as an exercise for th
 ## Tagging events and running projections
 
 Just like for regular `EventSourcedBehavior`s it is possible to tag events along with persisting them. 
-This is useful for later retrival of events for a given tag. The same @ref[API for tagging provided for EventSourcedBehavior](persistence.md#tagging) can 
+This is useful for later retrieval of events for a given tag. The same @ref[API for tagging provided for EventSourcedBehavior](persistence.md#tagging) can 
 be used for replicated event sourced behaviors as well.
 Tagging is useful in practice to build queries that lead to other data representations or aggregations of these event 
 streams that can more directly serve user queries – known as building the “read side” in @ref[CQRS](cqrs.md) based applications.

@@ -453,7 +453,7 @@ You would like to configure this to a short duration to have quick failover, but
 risk of having multiple singleton/sharded instances running at the same time and it may take a different
 amount of time to act on the decision (dissemination of the down/removal). The duration is by default
 the same as the `stable-after` property (see @ref:[Stable after](#stable-after) above). It is recommended to
-leave this value as is, but it can also be separately overriden with the `pekko.cluster.down-removal-margin` property.
+leave this value as is, but it can also be separately overridden with the `pekko.cluster.down-removal-margin` property.
 
 Another concern for setting this `stable-after`/`pekko.cluster.down-removal-margin` is dealing with JVM pauses e.g.
 garbage collection. When a node is unresponsive it is not known if it is due to a pause, overload, a crash or a 

@@ -83,7 +83,7 @@ import pekko.stream.stage._
   val singleNoAttribute: Array[Attributes] = Array(Attributes.none)
 
   /**
-   * INERNAL API
+   * INTERNAL API
    *
    * Contains all the necessary information for the GraphInterpreter to be able to implement a connection
    * between an output and input ports.

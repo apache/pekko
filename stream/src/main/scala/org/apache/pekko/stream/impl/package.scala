@@ -359,7 +359,7 @@ package org.apache.pekko.stream
  *  [[org.apache.pekko.stream.impl.PhasedFusingActorMaterializer]] and its [[org.apache.pekko.stream.impl.IslandTracking]] helper comes into
  *  the picture. These classes do the heavy-lifting of traversing the traversal and then mapping global slots to
  *  slots local to the island, delegating then the local wiring to [[org.apache.pekko.stream.impl.PhaseIsland]] implementations.
- *  For example the [[org.apache.pekko.stream.impl.GraphStageIsland]] sees only a contigous slot-space and hence it can directly
+ *  For example the [[org.apache.pekko.stream.impl.GraphStageIsland]] sees only a contiguous slot-space and hence it can directly
  *  construct the array for the interpreter. It is not aware of the presence of other islands or how it is represented
  *  in the global slot-space.
  *

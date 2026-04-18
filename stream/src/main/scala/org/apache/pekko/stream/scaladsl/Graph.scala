@@ -1278,7 +1278,7 @@ class ZipWithN[A, O](zipper: immutable.Seq[A] => O)(n: Int) extends GraphStage[U
 
 object Concat {
 
-  // two streams is so common that we can re-use a single instance to avoid some allocations
+  // two streams is so common that we can reuse a single instance to avoid some allocations
   private val _concatTwo = new Concat[Any](2)
   private def concatTwo[T]: GraphStage[UniformFanInShape[T, T]] =
     _concatTwo.asInstanceOf[GraphStage[UniformFanInShape[T, T]]]

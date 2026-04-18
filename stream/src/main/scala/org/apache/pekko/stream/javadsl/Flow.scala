@@ -4218,7 +4218,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
   /**
    * Materializes to `FlowMonitor[Out]` that allows monitoring of the current flow. All events are propagated
    * by the monitor unchanged. Note that the monitor inserts a memory barrier every time it processes an
-   * event, and may therefor affect performance.
+   * event, and may therefore affect performance.
    *
    * The `combine` function is used to combine the `FlowMonitor` with this flow's materialized value.
    */
@@ -4233,7 +4233,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * The `FlowMonitor[Out]` allows monitoring of the current flow. All events are propagated
    * by the monitor unchanged. Note that the monitor inserts a memory barrier every time it processes an
-   * event, and may therefor affect performance.
+   * event, and may therefore affect performance.
    */
   def monitor(): Flow[In, Out, Pair[Mat, FlowMonitor[Out]]] =
     monitorMat(Keep.both)

@@ -183,7 +183,7 @@ object TypedBenchmarkActors {
   private def newPingPongBehavior(messagesPerPair: Int, latch: CountDownLatch): Behavior[Message] =
     Behaviors.setup { ctx =>
       var left = messagesPerPair / 2
-      val pong = Message(ctx.self) // we re-use a single pong to avoid alloc on each msg
+      val pong = Message(ctx.self) // we reuse a single pong to avoid alloc on each msg
       Behaviors.receiveMessage[Message] {
         case Message(replyTo) =>
           replyTo ! pong
