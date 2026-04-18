@@ -415,8 +415,7 @@ object ByteString {
 
     /** INTERNAL API: Specialized for internal use, writing multiple ByteString1C into the same ByteBuffer. */
     private[pekko] def writeToBuffer(buffer: ByteBuffer, offset: Int): Int = {
-      val available = length - offset
-      val copyLength = Math.min(buffer.remaining, available)
+      val copyLength = Math.min(buffer.remaining, length - offset)
       if (copyLength > 0) {
         buffer.put(bytes, offset, copyLength)
       }
