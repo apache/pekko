@@ -38,20 +38,20 @@ object ActorSystemSpec {
 
   class Waves extends Actor {
     var master: ActorRef = _
-    var terminaters = Set[ActorRef]()
+    var terminators = Set[ActorRef]()
 
     def receive = {
       case n: Int =>
         master = sender()
-        terminaters = Set() ++
+        terminators = Set() ++
           (for (_ <- 1 to n) yield {
-            val man = context.watch(context.system.actorOf(Props[Terminater]()))
+            val man = context.watch(context.system.actorOf(Props[Terminator]()))
             man ! "run"
             man
           })
-      case Terminated(child) if terminaters contains child =>
-        terminaters -= child
-        if (terminaters.isEmpty) {
+      case Terminated(child) if terminators contains child =>
+        terminators -= child
+        if (terminators.isEmpty) {
           master ! "done"
           context.stop(self)
         }
@@ -65,7 +65,7 @@ object ActorSystemSpec {
     }
   }
 
-  class Terminater extends Actor {
+  class Terminator extends Actor {
     def receive = {
       case "run" => context.stop(self)
     }
@@ -169,7 +169,7 @@ class ActorSystemSpec extends PekkoSpec(ActorSystemSpec.config) with ImplicitSen
         ActorSystem("LogDeadLetters", ConfigFactory.parseString("pekko.loglevel=INFO").withFallback(PekkoSpec.testConf))
       try {
         val probe = TestProbe()(sys)
-        val a = sys.actorOf(Props[ActorSystemSpec.Terminater]())
+        val a = sys.actorOf(Props[ActorSystemSpec.Terminator]())
         probe.watch(a)
         a.tell("run", probe.ref)
         probe.expectTerminated(a)
@@ -193,7 +193,7 @@ class ActorSystemSpec extends PekkoSpec(ActorSystemSpec.config) with ImplicitSen
         ActorSystem("LogDeadLetters", ConfigFactory.parseString("pekko.loglevel=INFO").withFallback(PekkoSpec.testConf))
       try {
         val probe = TestProbe()(sys)
-        val a = sys.actorOf(Props[ActorSystemSpec.Terminater]())
+        val a = sys.actorOf(Props[ActorSystemSpec.Terminator]())
         probe.watch(a)
         a.tell("run", probe.ref)
         probe.expectTerminated(a)
@@ -308,7 +308,7 @@ class ActorSystemSpec extends PekkoSpec(ActorSystemSpec.config) with ImplicitSen
       var created = Vector.empty[ActorRef]
       while (!system.whenTerminated.isCompleted) {
         try {
-          val t = system.actorOf(Props[ActorSystemSpec.Terminater]())
+          val t = system.actorOf(Props[ActorSystemSpec.Terminator]())
           failing should not be true // because once failing => always failing (it’s due to shutdown)
           created :+= t
           if (created.size % 1000 == 0) Thread.sleep(50) // in case of unfair thread scheduling

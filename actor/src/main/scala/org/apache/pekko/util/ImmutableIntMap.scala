@@ -42,7 +42,7 @@ import org.apache.pekko.annotation.InternalApi
   }
 
   private[this] final def indexForKey(key: Int): Int = {
-    // Custom implementation of binary search since we encode key + value in consecutive indicies.
+    // Custom implementation of binary search since we encode key + value in consecutive indices.
     // We do the binary search on half the size of the array then project to the full size.
     // >>> 1 for division by 2: https://research.googleblog.com/2006/06/extra-extra-read-all-about-it-nearly.html
     @tailrec def find(lo: Int, hi: Int): Int =

@@ -58,7 +58,7 @@ private[util] object SWARUtil {
   }
 
   /**
-   * Returns the index of the first occurrence of byte that specificied in the pattern.
+   * Returns the index of the first occurrence of byte specified in the pattern.
    * If no pattern is found, returns 8. Currently only supports big endian.
    *
    * @param word     the return value of {@link #applyPattern(long, long)}

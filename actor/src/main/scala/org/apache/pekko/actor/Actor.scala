@@ -304,7 +304,7 @@ final case class UnhandledMessage(
     with AllDeadLetters
 
 /**
- * Superseeded by [[pekko.pattern.StatusReply]], prefer that when possible.
+ * Superseded by [[pekko.pattern.StatusReply]], prefer that when possible.
  *
  * Classes for passing status back to the sender.
  * Used for internal ACKing protocol. But exposed as utility class for user-specific ACKing protocols as well.
@@ -353,7 +353,7 @@ trait ActorLogging { this: Actor =>
 /**
  * Scala API: Mix in DiagnosticActorLogging into your Actor to easily obtain a reference to a logger with MDC support,
  * which is available under the name "log".
- * In the example bellow "the one who knocks" will be available under the key "iam" for using it in the logback pattern.
+ * In the example below "the one who knocks" will be available under the key "iam" for using it in the logback pattern.
  *
  * {{{
  * class MyActor extends Actor with DiagnosticActorLogging {

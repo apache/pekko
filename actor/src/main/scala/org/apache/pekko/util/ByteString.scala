@@ -798,7 +798,7 @@ object ByteString {
 
     private def drop0(n: Int): ByteString = {
       // impl note: could be optimised a bit by using VectorIterator instead,
-      //            however then we're forced to call .toVector which halfs performance
+      //            however then we're forced to call .toVector which halves performance
       //            We can work around that, as there's a Scala private method "remainingVector" which is fast,
       //            but let's not go into calling private APIs here just yet.
       @tailrec def findSplit(fullDrops: Int, remainingToDrop: Int): (Int, Int) = {
@@ -991,7 +991,7 @@ sealed abstract class ByteString
     throw new UnsupportedOperationException("Method take is not implemented in ByteString")
   override def takeRight(n: Int): ByteString = slice(length - n, length)
 
-  // these methods are optimized in derived classes utilising the maximum knowlage about data layout available to them:
+  // these methods are optimized in derived classes utilising the maximum knowledge about data layout available to them:
   // *must* be overridden by derived classes.
   override def slice(from: Int, until: Int): ByteString =
     throw new UnsupportedOperationException("Method slice is not implemented in ByteString")
@@ -1427,7 +1427,7 @@ object CompactByteString {
 /**
  * A compact ByteString.
  *
- * The ByteString is guarantied to be contiguous in memory and to use only
+ * The ByteString is guaranteed to be contiguous in memory and to use only
  * as much memory as required for its contents.
  */
 sealed abstract class CompactByteString extends ByteString with Serializable {

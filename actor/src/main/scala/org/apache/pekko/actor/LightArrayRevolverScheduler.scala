@@ -338,7 +338,7 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
         }
         executeBucket()
         wheel(bucket) = putBack
-        // we know tasks is empty now, so we can re-use it next tick
+        // we know tasks is empty now, so we can reuse it next tick
         spareTaskQueue = tasks
 
         tick += 1

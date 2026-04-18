@@ -116,7 +116,7 @@ class DispatchersSpec extends PekkoSpec(DispatchersSpec.config) with ImplicitSen
   val df = system.dispatchers
   import df._
 
-  val tipe = "type"
+  val typ = "type"
   val keepalivems = "keep-alive-time"
   val corepoolsizefactor = "core-pool-size-factor"
   val maxpoolsizefactor = "max-pool-size-factor"
@@ -139,7 +139,7 @@ class DispatchersSpec extends PekkoSpec(DispatchersSpec.config) with ImplicitSen
     import scala.jdk.CollectionConverters._
 
     validTypes
-      .map(t => (t, from(ConfigFactory.parseMap(Map(tipe -> t, id -> t).asJava).withFallback(defaultDispatcherConfig))))
+      .map(t => (t, from(ConfigFactory.parseMap(Map(typ -> t, id -> t).asJava).withFallback(defaultDispatcherConfig))))
       .toMap
   }
 
@@ -180,7 +180,7 @@ class DispatchersSpec extends PekkoSpec(DispatchersSpec.config) with ImplicitSen
       intercept[ConfigurationException] {
         from(
           ConfigFactory
-            .parseMap(Map(tipe -> "typedoesntexist", id -> "invalid-dispatcher").asJava)
+            .parseMap(Map(typ -> "typedoesntexist", id -> "invalid-dispatcher").asJava)
             .withFallback(defaultDispatcherConfig))
       }
     }

@@ -1665,7 +1665,7 @@ trait DiagnosticLoggingAdapter extends LoggingAdapter {
    * Mapped Diagnostic Context for application defined values
    * which can be used in PatternLayout when `org.apache.pekko.event.slf4j.Slf4jLogger` is configured.
    * Visit <a href="https://logback.qos.ch/manual/mdc.html">Logback Docs: MDC</a> for more information.
-   * Note tha it returns a <b>COPY</b> of the actual MDC values.
+   * Note that it returns a <b>COPY</b> of the actual MDC values.
    * You cannot modify any value by changing the returned Map.
    * Code like the following won't have any effect unless you set back the modified Map.
    *
