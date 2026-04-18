@@ -36,11 +36,11 @@ class HubSpec extends StreamSpec {
   implicit val ec: ExecutionContext = system.dispatcher
 
   // Long-stream tests (20K elements) need extra headroom on JDK 25+
-  // where ForkJoinPool scheduling changes cause slower throughput (#2573).
-  // Multiply by testKitSettings.TestTimeFactor so nightly CI (TIMEFACTOR=3) gets 180 s.
+  // where ForkJoinPool scheduling changes cause slower actor dispatch throughput.
+  // Base of 120 s × testKitSettings.TestTimeFactor so nightly CI (TIMEFACTOR=3) gets 360 s.
   override implicit val patience: PatienceConfig =
     PatienceConfig(
-      timeout = Span((60 * testKitSettings.TestTimeFactor).toLong, Seconds),
+      timeout = Span((120 * testKitSettings.TestTimeFactor).toLong, Seconds),
       interval = Span(1, Seconds))
 
   "MergeHub" must {
@@ -161,8 +161,9 @@ class HubSpec extends StreamSpec {
     }
 
     "work with long streams when buffer size is 1" in {
-      // buffer=1 requires one actor round-trip per element; use a small count to avoid
-      // excessive latency on JDK 25 where each ForkJoinPool dispatch can take ~30ms
+      // bufferSize=1 exercises the per-element actor hand-off path. Even 2K elements still timed
+      // out after 360 seconds on JDK 25 with pekko.test.timefactor=3, so keep the count small
+      // while still covering the same per-element backpressure behavior.
       val (sink, result) = MergeHub.source[Int](1).take(200).toMat(Sink.seq)(Keep.both).run()
       Source(1 to 100).runWith(sink)
       Source(101 to 200).runWith(sink)
@@ -171,35 +172,40 @@ class HubSpec extends StreamSpec {
     }
 
     "work with long streams when consumer is slower" in {
-      // Use burst=200 to pass the first 200 elements immediately; only the remaining 200
-      // consume scheduler ticks, keeping total wall-clock time low on JDK 25 where each
-      // ForkJoinPool-dispatched timer callback can be significantly delayed.
+      // Keep a larger stream size but avoid throttle timers, whose callbacks are highly sensitive
+      // to ForkJoinPool scheduling on JDK 25.
       val (sink, result) =
         MergeHub
           .source[Int](16)
-          .take(400)
-          .throttle(10, 1.millisecond, 200, ThrottleMode.shaping)
+          .take(2000)
+          .map { n =>
+            Thread.sleep(1)
+            n
+          }
           .toMat(Sink.seq)(Keep.both)
           .run()
 
-      Source(1 to 200).runWith(sink)
-      Source(201 to 400).runWith(sink)
+      Source(1 to 1000).runWith(sink)
+      Source(1001 to 2000).runWith(sink)
 
-      result.futureValue.sorted should ===(1 to 400)
+      result.futureValue.sorted should ===(1 to 2000)
     }
 
     "work with long streams if one of the producers is slower" in {
-      // Set burst equal to the throttled source's element count so that no scheduler ticks
-      // are needed; this avoids ForkJoinPool starvation on JDK 25 where timer callbacks
-      // can be delayed indefinitely under load.  The test still verifies MergeHub correctness
-      // (all 400 elements from two concurrent sources arrive and are correctly merged).
+      // Simulate a slower producer without throttle timers so the test still checks concurrent
+      // merging behavior but no longer depends on JDK-specific timer scheduling.
       val (sink, result) =
-        MergeHub.source[Int](16).take(400).toMat(Sink.seq)(Keep.both).run()
+        MergeHub.source[Int](16).take(2000).toMat(Sink.seq)(Keep.both).run()
 
-      Source(1 to 200).throttle(10, 1.millisecond, 200, ThrottleMode.shaping).runWith(sink)
-      Source(201 to 400).runWith(sink)
+      Source(1 to 1000)
+        .map { n =>
+          Thread.sleep(1)
+          n
+        }
+        .runWith(sink)
+      Source(1001 to 2000).runWith(sink)
 
-      result.futureValue.sorted should ===(1 to 400)
+      result.futureValue.sorted should ===(1 to 2000)
     }
 
     "work with different producers separated over time" in {

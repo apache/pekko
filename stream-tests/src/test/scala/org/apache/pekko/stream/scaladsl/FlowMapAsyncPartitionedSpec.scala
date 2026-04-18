@@ -385,10 +385,14 @@ class FlowMapAsyncPartitionedSpec extends StreamSpec with WithLogCapturing {
     }
 
     "ignore null-completed futures" in {
-      // Use a fixed set whose values are in the range 1-10 so null filtering is actually exercised.
-      // A random set with values 0-9 could produce {0} which means no element in 1-10 returns null,
-      // making the test non-deterministic and effectively a no-op for null handling.
-      val shouldBeNull = Set(2, 5, 8)
+      val shouldBeNull = {
+        val n = scala.util.Random.nextInt(10) + 1
+        // +1 shifts the range from 0..9 to 1..10, matching the element values in Source(1 to 10)
+        // so the null path is always exercised for at least one element.
+        (1 to n).foldLeft(Set.empty[Int]) { (set, _) =>
+          set + (scala.util.Random.nextInt(10) + 1)
+        }
+      }
 
       val f: (Int, Int) => Future[String] = { (elem, _) =>
         if (shouldBeNull(elem)) Future.successful(null)
