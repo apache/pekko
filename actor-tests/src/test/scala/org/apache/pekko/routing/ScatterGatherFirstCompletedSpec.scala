@@ -34,7 +34,7 @@ object ScatterGatherFirstCompletedSpec {
 
   final case class Stop(id: Option[Int] = None)
 
-  def newActor(id: Int, shudownLatch: Option[TestLatch] = None)(implicit system: ActorSystem) =
+  def newActor(id: Int, shutdownLatch: Option[TestLatch] = None)(implicit system: ActorSystem) =
     system.actorOf(
       Props(new Actor {
         def receive = {
@@ -48,7 +48,7 @@ object ScatterGatherFirstCompletedSpec {
         }
 
         override def postStop() = {
-          shudownLatch.foreach(_.countDown())
+          shutdownLatch.foreach(_.countDown())
         }
       }),
       "Actor:" + id)
