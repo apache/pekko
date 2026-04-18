@@ -2091,6 +2091,161 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       an[IndexOutOfBoundsException] should be thrownBy bss.readLongBE(-1)
       an[IndexOutOfBoundsException] should be thrownBy bss.readLongLE(-1)
     }
+
+    "have correct takeRight behaviour for boundary values" in {
+      // empty ByteString
+      ByteString.empty.takeRight(-1) should ===(ByteString.empty)
+      ByteString.empty.takeRight(0) should ===(ByteString.empty)
+      ByteString.empty.takeRight(1) should ===(ByteString.empty)
+      // n <= 0
+      ByteString1.fromString("abc").takeRight(-1) should ===(ByteString.empty)
+      ByteString1.fromString("abc").takeRight(0) should ===(ByteString.empty)
+      ByteString1C.fromString("abc").takeRight(-1) should ===(ByteString.empty)
+      ByteString1C.fromString("abc").takeRight(0) should ===(ByteString.empty)
+      val bssTR = ByteStrings(ByteString1.fromString("ab"), ByteString1.fromString("cd"))
+      bssTR.takeRight(-1) should ===(ByteString.empty)
+      bssTR.takeRight(0) should ===(ByteString.empty)
+      // n >= length
+      ByteString1.fromString("abc").takeRight(3) should ===(ByteString("abc"))
+      ByteString1.fromString("abc").takeRight(100) should ===(ByteString("abc"))
+      ByteString1C.fromString("abc").takeRight(3) should ===(ByteString("abc"))
+      ByteString1C.fromString("abc").takeRight(100) should ===(ByteString("abc"))
+      bssTR.takeRight(4) should ===(ByteString("abcd"))
+      bssTR.takeRight(100) should ===(ByteString("abcd"))
+      // n in range
+      ByteString1.fromString("abcde").takeRight(2) should ===(ByteString("de"))
+      ByteString1C.fromString("abcde").takeRight(2) should ===(ByteString("de"))
+      bssTR.takeRight(3) should ===(ByteString("bcd"))
+    }
+
+    "throw IndexOutOfBoundsException when apply is called with an out-of-bounds index" in {
+      val bs1C = ByteString1C(Array[Byte](1, 2, 3))
+      an[IndexOutOfBoundsException] should be thrownBy bs1C(-1)
+      an[IndexOutOfBoundsException] should be thrownBy bs1C(3)
+      val bs1 = ByteString1(Array[Byte](0, 1, 2, 3, 4), 1, 3)
+      an[IndexOutOfBoundsException] should be thrownBy bs1(-1)
+      an[IndexOutOfBoundsException] should be thrownBy bs1(3)
+      val bss = ByteStrings(ByteString1.fromString("ab"), ByteString1.fromString("cd"))
+      an[IndexOutOfBoundsException] should be thrownBy bss(-1)
+      an[IndexOutOfBoundsException] should be thrownBy bss(4)
+      an[IndexOutOfBoundsException] should be thrownBy ByteString.empty(0)
+    }
+
+    "return 0 from copyToArray when start >= destination length" in {
+      val bs1C = ByteString1C(Array[Byte](1, 2, 3))
+      val dest1C = new Array[Byte](3)
+      bs1C.copyToArray(dest1C, 3, 2) should ===(0)
+      bs1C.copyToArray(dest1C, 5, 2) should ===(0)
+      val bs1 = ByteString1(Array[Byte](0, 1, 2, 3, 4), 1, 3)
+      val dest1 = new Array[Byte](3)
+      bs1.copyToArray(dest1, 3, 2) should ===(0)
+      bs1.copyToArray(dest1, 5, 2) should ===(0)
+      val bss = ByteStrings(ByteString1.fromString("ab"), ByteString1.fromString("cd"))
+      val destBss = new Array[Byte](4)
+      bss.copyToArray(destBss, 4, 2) should ===(0)
+      bss.copyToArray(destBss, 6, 2) should ===(0)
+    }
+
+    "correctly handle sizeHint with value smaller than already committed bytes" in {
+      val builder = ByteString.newBuilder
+      builder.putBytes(Array[Byte](1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+      // sizeHint smaller than already written should not throw or shrink
+      noException should be thrownBy builder.sizeHint(3)
+      noException should be thrownBy builder.sizeHint(0)
+      noException should be thrownBy builder.sizeHint(-1)
+      builder.result().length should ===(10)
+    }
+
+    "correctly handle grouped with size larger than length" in {
+      val bs = ByteString1.fromString("abc")
+      bs.grouped(10).toList should ===(List(ByteString("abc")))
+      bs.grouped(3).toList should ===(List(ByteString("abc")))
+      ByteString.empty.grouped(5).toList should ===(List.empty)
+      val bss = ByteStrings(ByteString1.fromString("ab"), ByteString1.fromString("cd"))
+      bss.grouped(100).toList should ===(List(ByteString("abcd")))
+    }
+
+    "map bytes correctly on each concrete type" in {
+      val inc: Byte => Byte = b => (b + 1).toByte
+      // ByteString1C
+      ByteString1C(Array[Byte](1, 2, 3)).map(inc) should ===(ByteString(Array[Byte](2, 3, 4)))
+      // ByteString1 with offset
+      ByteString1(Array[Byte](0, 1, 2, 3, 4), 1, 3).map(inc) should ===(ByteString(Array[Byte](2, 3, 4)))
+      // ByteStrings
+      val bss = ByteStrings(ByteString1.fromString("ab"), ByteString1.fromString("cd"))
+      bss.map(b => (b + 1).toByte) should ===(ByteString("bcde"))
+      // empty
+      ByteString.empty.map(inc) should ===(ByteString.empty)
+    }
+
+    "foreach visits each byte in order on each concrete type" in {
+      def collect(bs: ByteString): Seq[Byte] = {
+        val buf = scala.collection.mutable.ArrayBuffer.empty[Byte]
+        bs.foreach(buf += _)
+        buf.toSeq
+      }
+      // ByteString1C
+      collect(ByteString1C(Array[Byte](10, 20, 30))) should ===(Seq[Byte](10, 20, 30))
+      // ByteString1 with internal offset
+      collect(ByteString1(Array[Byte](0, 10, 20, 30, 40), 1, 3)) should ===(Seq[Byte](10, 20, 30))
+      // ByteStrings (multi-segment)
+      collect(ByteStrings(ByteString1.fromString("ab"), ByteString1.fromString("cd"))) should ===(
+        Seq[Byte]('a', 'b', 'c', 'd'))
+      // empty
+      collect(ByteString.empty) should ===(Seq.empty[Byte])
+    }
+
+    "slice returns correct result on ByteString1 with all boundary combinations" in {
+      val bs = ByteString1.fromString("abcde")
+      bs.slice(0, 5) should ===(ByteString("abcde"))
+      (bs.slice(0, 5) eq bs) should ===(true) // identity when full range
+      bs.slice(1, 4) should ===(ByteString("bcd"))
+      bs.slice(0, 0) should ===(ByteString.empty)
+      bs.slice(-5, 3) should ===(ByteString("abc"))
+      bs.slice(3, 100) should ===(ByteString("de"))
+      bs.slice(-5, -1) should ===(ByteString.empty)
+      bs.slice(4, 2) should ===(ByteString.empty) // from > until
+      // ByteString1 with internal offset
+      val bs2 = ByteString1(Array[Byte](0, 1, 2, 3, 4, 5, 6), 2, 4) // [2,3,4,5]
+      bs2.slice(1, 3) should ===(ByteString(Array[Byte](3, 4)))
+      bs2.slice(0, 4) should ===(ByteString(Array[Byte](2, 3, 4, 5)))
+      (bs2.slice(0, 4) eq bs2) should ===(true)
+      bs2.slice(-1, 2) should ===(ByteString(Array[Byte](2, 3)))
+    }
+
+    "indexOfSlice handles non-Byte typed Seq safely" in {
+      // Seq[Int] is B >: Byte; should not throw ClassCastException
+      val bs = ByteString("abc")
+      // 'a'.toInt == 97 — value semantics comparison works for Byte == Int through ==
+      val result = bs.indexOfSlice(Seq[Int](97, 98)) // 'a'=97, 'b'=98
+      result should ===(0)
+      bs.indexOfSlice(Seq[Int](99)) should ===(2) // 'c'=99
+      bs.indexOfSlice(Seq[Int](100)) should ===(-1) // 'd'=100 not present
+    }
+
+    "lastIndexOfSlice handles non-Byte typed Seq safely" in {
+      val bs = ByteString("aabb")
+      val result = bs.lastIndexOfSlice(Seq[Int](97, 97)) // 'a'=97
+      result should ===(0)
+      bs.lastIndexOfSlice(Seq[Int](98)) should ===(3) // 'b'=98
+      bs.lastIndexOfSlice(Seq[Int](100)) should ===(-1) // 'd'=100 not present
+    }
+
+    "ByteString1.apply factory returns canonical empty for non-positive length" in {
+      ByteString1(Array[Byte](1, 2, 3), 0, 0) should be theSameInstanceAs ByteString1.empty
+      ByteString1(Array[Byte](1, 2, 3), 0, -1) should be theSameInstanceAs ByteString1.empty
+      ByteString1(Array[Byte](1, 2, 3), 0, Int.MinValue) should be theSameInstanceAs ByteString1.empty
+    }
+
+    "ByteStringBuilder.sizeHint does not shrink existing capacity" in {
+      val builder = ByteString.newBuilder
+      builder.sizeHint(100)
+      builder.putByte(42)
+      // sizeHint smaller than current capacity — should not fail or lose data
+      noException should be thrownBy builder.sizeHint(10)
+      noException should be thrownBy builder.sizeHint(0)
+      builder.result() should ===(ByteString(42.toByte))
+    }
   }
 
   "A ByteStringIterator" must {
