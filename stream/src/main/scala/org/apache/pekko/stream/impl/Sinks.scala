@@ -115,11 +115,13 @@ import org.reactivestreams.Subscriber
     extends SinkModule[In, Publisher[In]](shape) {
 
   override def create(context: MaterializationContext): (Subscriber[In], Publisher[In]) = {
-    val impl = context.materializer.actorOf(context, FanoutProcessorImpl.props(context.effectiveAttributes))
-    val fanoutProcessor = new ActorProcessor[In, In](impl)
-    // Resolve cyclic dependency with actor. This MUST be the first message no matter what.
-    impl ! ExposedPublisher(fanoutProcessor.asInstanceOf[ActorPublisher[Any]])
-    (fanoutProcessor, fanoutProcessor)
+    context.materializer.materialize(
+      Source
+        // Keep the SinkModule ABI but route the runtime through the new GraphStage bridge instead
+        // of reviving the legacy FanoutProcessorImpl / ActorPublisher path.
+        .asSubscriber[In]
+        .toMat(Sink.fromGraph(new FanoutPublisherBridgeStage[In]))(Keep.both),
+      context.effectiveAttributes)
   }
 
   override def withAttributes(attr: Attributes): SinkModule[In, Publisher[In]] =
