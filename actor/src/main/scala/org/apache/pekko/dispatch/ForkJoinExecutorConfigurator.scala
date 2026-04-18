@@ -27,9 +27,10 @@ object ForkJoinExecutorConfigurator {
       threadFactory: ForkJoinPool.ForkJoinWorkerThreadFactory,
       maximumPoolSize: Int,
       unhandledExceptionHandler: Thread.UncaughtExceptionHandler,
-      asyncMode: Boolean)
+      asyncMode: Boolean,
+      minimumRunnable: Int = 1)
       extends ForkJoinPool(parallelism, threadFactory, unhandledExceptionHandler, asyncMode,
-        0, maximumPoolSize, 1, null, ForkJoinPoolConstants.DefaultKeepAliveMillis, TimeUnit.MILLISECONDS)
+        0, maximumPoolSize, minimumRunnable, null, ForkJoinPoolConstants.DefaultKeepAliveMillis, TimeUnit.MILLISECONDS)
       with LoadMetrics {
 
     override def execute(r: Runnable): Unit =
@@ -85,7 +86,8 @@ class ForkJoinExecutorConfigurator(config: Config, prerequisites: DispatcherPrer
       val threadFactory: ForkJoinPool.ForkJoinWorkerThreadFactory,
       val parallelism: Int,
       val asyncMode: Boolean,
-      val maxPoolSize: Int)
+      val maxPoolSize: Int,
+      val minimumRunnable: Int = 1)
       extends ExecutorServiceFactory {
     def this(threadFactory: ForkJoinPool.ForkJoinWorkerThreadFactory,
         parallelism: Int,
@@ -109,7 +111,8 @@ class ForkJoinExecutorConfigurator(config: Config, prerequisites: DispatcherPrer
         }
       } else threadFactory
 
-      val pool = new PekkoForkJoinPool(parallelism, tf, maxPoolSize, MonitorableThreadFactory.doNothing, asyncMode)
+      val pool = new PekkoForkJoinPool(parallelism, tf, maxPoolSize, MonitorableThreadFactory.doNothing, asyncMode,
+        minimumRunnable)
 
       if (isVirtualized) {
         // we need to cast here,
@@ -145,7 +148,8 @@ class ForkJoinExecutorConfigurator(config: Config, prerequisites: DispatcherPrer
         config.getDouble("parallelism-factor"),
         config.getInt("parallelism-max")),
       asyncMode,
-      config.getInt("maximum-pool-size")
+      config.getInt("maximum-pool-size"),
+      config.getInt("minimum-runnable")
     )
   }
 }
