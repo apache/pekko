@@ -36,9 +36,12 @@ class HubSpec extends StreamSpec {
   implicit val ec: ExecutionContext = system.dispatcher
 
   // Long-stream tests (20K elements) need extra headroom on JDK 25+
-  // where ForkJoinPool scheduling changes cause slower throughput (#2573)
+  // where ForkJoinPool scheduling changes cause slower throughput (#2573).
+  // Multiply by testKitSettings.TestTimeFactor so nightly CI (TIMEFACTOR=3) gets 180 s.
   override implicit val patience: PatienceConfig =
-    PatienceConfig(timeout = Span(60, Seconds), interval = Span(1, Seconds))
+    PatienceConfig(
+      timeout = Span((60 * testKitSettings.TestTimeFactor).toLong, Seconds),
+      interval = Span(1, Seconds))
 
   "MergeHub" must {
 

@@ -165,7 +165,7 @@ class AggregateWithTimeBoundaryAndSimulatedTimeSpec extends AnyWordSpecLike with
         maxGap = Some(maxGap), // elements with longer gap will put put to next aggregator
         maxDuration = None,
         currentTimeMs = schedulerTimeMs,
-        interval = 1.milli)
+        interval = 1.second)
       .buffer(1, OverflowStrategy.backpressure)
       .runWith(Sink.collection)
 
@@ -209,7 +209,7 @@ class AggregateWithTimeBoundaryAndSimulatedTimeSpec extends AnyWordSpecLike with
         maxGap = None,
         maxDuration = Some(maxDuration), // elements with longer gap will put put to next aggregator
         currentTimeMs = schedulerTimeMs,
-        interval = 1.milli)
+        interval = 1.second)
       .buffer(1, OverflowStrategy.backpressure)
       .runWith(Sink.collection)
 
