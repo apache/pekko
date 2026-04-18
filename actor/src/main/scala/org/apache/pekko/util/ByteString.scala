@@ -479,7 +479,7 @@ object ByteString {
     def apply(bytes: Array[Byte]): ByteString1 = apply(bytes, 0, bytes.length)
     def apply(bytes: Array[Byte], startIndex: Int, length: Int): ByteString1 =
       if (length <= 0) empty
-      else new ByteString1(bytes, Math.max(0, startIndex), length)
+      else new ByteString1(bytes, Math.max(0, startIndex), Math.max(0, length))
 
     val SerializationIdentity = 0.toByte
 
