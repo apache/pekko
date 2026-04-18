@@ -2232,9 +2232,9 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
     }
 
     "ByteString1.apply factory returns canonical empty for non-positive length" in {
-      ByteString1(Array[Byte](1, 2, 3), 0, 0) should be theSameInstanceAs ByteString1.empty
-      ByteString1(Array[Byte](1, 2, 3), 0, -1) should be theSameInstanceAs ByteString1.empty
-      ByteString1(Array[Byte](1, 2, 3), 0, Int.MinValue) should be theSameInstanceAs ByteString1.empty
+      (ByteString1(Array[Byte](1, 2, 3), 0, 0) should be).theSameInstanceAs(ByteString1.empty)
+      (ByteString1(Array[Byte](1, 2, 3), 0, -1) should be).theSameInstanceAs(ByteString1.empty)
+      (ByteString1(Array[Byte](1, 2, 3), 0, Int.MinValue) should be).theSameInstanceAs(ByteString1.empty)
     }
 
     "ByteStringBuilder.sizeHint does not shrink existing capacity" in {

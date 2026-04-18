@@ -1314,7 +1314,8 @@ sealed abstract class ByteString
   override def takeWhile(p: Byte => Boolean): ByteString = iterator.takeWhile(p).toByteString
   override def dropWhile(p: Byte => Boolean): ByteString = iterator.dropWhile(p).toByteString
   override def span(p: Byte => Boolean): (ByteString, ByteString) = {
-    val (a, b) = iterator.span(p); (a.toByteString, b.toByteString)
+    val (a, b) = iterator.span(p)
+    (a.toByteString, b.toByteString)
   }
 
   override def splitAt(n: Int): (ByteString, ByteString) = (take(n), drop(n))
