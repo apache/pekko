@@ -44,7 +44,7 @@ import pekko.util.ByteString
       case Some(value) =>
         value.trim.toLowerCase match {
           case "false" | "off" | "0" | "no" => false
-          case _                             => true
+          case _                            => true
         }
       case None => true
     }
@@ -326,70 +326,74 @@ private[stream] final class TlsGraphStage(
       private val drainTransportOutAsync = getAsyncCallback[Unit](_ => drainTransportOut())
       private val drainUserOutAsync = getAsyncCallback[Unit](_ => drainUserOut())
 
-      setHandler(plainIn, new InHandler {
-        override def onPush(): Unit = {
-          pendingUserIn = Some(grab(plainIn))
-          pump()
-        }
+      setHandler(plainIn,
+        new InHandler {
+          override def onPush(): Unit = {
+            pendingUserIn = Some(grab(plainIn))
+            pump()
+          }
 
-        override def onUpstreamFinish(): Unit = {
-          userInFinished = true
-          pump()
-        }
+          override def onUpstreamFinish(): Unit = {
+            userInFinished = true
+            pump()
+          }
 
-        override def onUpstreamFailure(ex: Throwable): Unit = failTls(ex)
-      })
+          override def onUpstreamFailure(ex: Throwable): Unit = failTls(ex)
+        })
 
-      setHandler(cipherIn, new InHandler {
-        override def onPush(): Unit = {
-          pendingTransportIn = Some(grab(cipherIn))
-          pump()
-        }
+      setHandler(cipherIn,
+        new InHandler {
+          override def onPush(): Unit = {
+            pendingTransportIn = Some(grab(cipherIn))
+            pump()
+          }
 
-        override def onUpstreamFinish(): Unit = {
-          transportInFinished = true
-          pump()
-        }
+          override def onUpstreamFinish(): Unit = {
+            transportInFinished = true
+            pump()
+          }
 
-        override def onUpstreamFailure(ex: Throwable): Unit = failTls(ex)
-      })
+          override def onUpstreamFailure(ex: Throwable): Unit = failTls(ex)
+        })
 
-      setHandler(cipherOut, new OutHandler {
-        override def onPull(): Unit =
-          if (!startupPending) {
-            if (!drainTransportOut()) {
-              if (completing) tryCompleteStage()
-              else pump()
+      setHandler(cipherOut,
+        new OutHandler {
+          override def onPull(): Unit =
+            if (!startupPending) {
+              if (!drainTransportOut()) {
+                if (completing) tryCompleteStage()
+                else pump()
+              }
+            }
+
+          override def onDownstreamFinish(cause: Throwable): Unit = {
+            transportOutCancelled = true
+            transportOutTerminated = true
+            pendingTransportOut = immutable.Queue.empty
+            pump()
+          }
+        })
+
+      setHandler(plainOut,
+        new OutHandler {
+          override def onPull(): Unit = {
+            // Flush any buffered user output before running the pump.
+            // This drains pendingUserOut (set by enqueueUser when isAvailable(plainOut) was false)
+            // and re-enables inbound processing (userOutAvailable.isReady = pendingUserOut.isEmpty).
+            if (!startupPending) {
+              if (!drainUserOut()) {
+                if (completing) tryCompleteStage()
+                else pump()
+              }
             }
           }
 
-        override def onDownstreamFinish(cause: Throwable): Unit = {
-          transportOutCancelled = true
-          transportOutTerminated = true
-          pendingTransportOut = immutable.Queue.empty
-          pump()
-        }
-      })
-
-      setHandler(plainOut, new OutHandler {
-        override def onPull(): Unit = {
-          // Flush any buffered user output before running the pump.
-          // This drains pendingUserOut (set by enqueueUser when isAvailable(plainOut) was false)
-          // and re-enables inbound processing (userOutAvailable.isReady = pendingUserOut.isEmpty).
-          if (!startupPending) {
-            if (!drainUserOut()) {
-              if (completing) tryCompleteStage()
-              else pump()
-            }
+          override def onDownstreamFinish(cause: Throwable): Unit = {
+            userOutCancelled = true
+            pendingUserOut = immutable.Queue.empty
+            pump()
           }
-        }
-
-        override def onDownstreamFinish(cause: Throwable): Unit = {
-          userOutCancelled = true
-          pendingUserOut = immutable.Queue.empty
-          pump()
-        }
-      })
+        })
 
       override def preStart(): Unit = {
         try {
@@ -538,8 +542,7 @@ private[stream] final class TlsGraphStage(
         }
 
       private def drainTransportOut(): Boolean =
-        if (
-          !startupPending &&
+        if (!startupPending &&
           !transportOutTerminated &&
           !pollBridgedInputFailures() &&
           isAvailable(cipherOut) &&
@@ -551,8 +554,7 @@ private[stream] final class TlsGraphStage(
         } else false
 
       private def drainUserOut(): Boolean =
-        if (
-          !startupPending &&
+        if (!startupPending &&
           !userOutTerminated &&
           !pollBridgedInputFailures() &&
           isAvailable(plainOut) &&
@@ -701,8 +703,7 @@ private[stream] final class TlsGraphStage(
       }
 
       private def tryCompleteStage(): Unit =
-        if (
-          completing &&
+        if (completing &&
           (transportOutTerminated || pendingTransportOut.isEmpty) &&
           (userOutCancelled || userOutTerminated || pendingUserOut.isEmpty)) {
           completeOutputs()
