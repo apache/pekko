@@ -30,6 +30,7 @@ import pekko.NotUsed
 import pekko.pattern.{ after => later }
 import pekko.stream._
 import pekko.stream.TLSProtocol._
+import pekko.stream.impl.io.TlsGraphStage
 import pekko.stream.impl.fusing.GraphStages.SimpleLinearGraphStage
 import pekko.stream.scaladsl._
 import pekko.stream.stage._
@@ -109,12 +110,38 @@ object TlsSpec {
       pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
       pekko.actor.debug.receive=off
     """
+
+  val graphStageConfigOverrides =
+    s"""$configOverrides
+       |pekko.stream.materializer.tls.use-legacy-actor = off
+       |""".stripMargin
+
+  def setLegacyActorPath(enabled: Boolean): Option[String] = {
+    val previous = Option(System.getProperty(TlsGraphStage.UseLegacyActorPath))
+    System.setProperty(TlsGraphStage.UseLegacyActorPath, if (enabled) "on" else "off")
+    previous
+  }
+
+  def restoreLegacyActorPath(previous: Option[String]): Unit =
+    previous match {
+      case Some(value) => System.setProperty(TlsGraphStage.UseLegacyActorPath, value)
+      case None        => System.clearProperty(TlsGraphStage.UseLegacyActorPath)
+    }
 }
 
-class TlsSpec extends StreamSpec(TlsSpec.configOverrides) with WithLogCapturing {
+abstract class TlsSpecBase(configOverrides: String, useLegacyActorPath: Boolean)
+    extends StreamSpec(configOverrides)
+    with WithLogCapturing {
   import GraphDSL.Implicits._
   import TlsSpec._
   import system.dispatcher
+
+  private val previousLegacyActorPath = setLegacyActorPath(useLegacyActorPath)
+
+  override protected def afterTermination(): Unit = {
+    restoreLegacyActorPath(previousLegacyActorPath)
+    super.afterTermination()
+  }
 
   "SslTls" must {
     "work for TLSv1.2" must { workFor("TLSv1.2", TLS12Ciphers) }
@@ -252,6 +279,7 @@ class TlsSpec extends StreamSpec(TlsSpec.configOverrides) with WithLogCapturing 
               case SessionBytes(_, b) => SendBytes(b)
             }
           }
+
         def leftClosing: TLSClosing = IgnoreComplete
         def rightClosing: TLSClosing = IgnoreComplete
 
@@ -605,3 +633,13 @@ class TlsSpec extends StreamSpec(TlsSpec.configOverrides) with WithLogCapturing 
   }
 
 }
+
+/**
+ * Tests TLS using the legacy TLSActor-based path (default).
+ */
+class TlsSpec extends TlsSpecBase(TlsSpec.configOverrides, useLegacyActorPath = true)
+
+/**
+ * Tests TLS using the new GraphStage-based path.
+ */
+class TlsGraphStageSpec extends TlsSpecBase(TlsSpec.configOverrides, useLegacyActorPath = false)

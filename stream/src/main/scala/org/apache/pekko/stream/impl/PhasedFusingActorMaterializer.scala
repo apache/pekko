@@ -37,6 +37,7 @@ import pekko.dispatch.Dispatchers
 import pekko.event.Logging
 import pekko.event.LoggingAdapter
 import pekko.stream._
+import pekko.stream.TLSProtocol.{ SslTlsInbound, SslTlsOutbound }
 import pekko.stream.Attributes.InputBuffer
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.StreamLayout.AtomicModule
@@ -45,15 +46,20 @@ import pekko.stream.impl.fusing.ActorGraphInterpreter.ActorOutputBoundary
 import pekko.stream.impl.fusing.ActorGraphInterpreter.BatchingActorInputBoundary
 import pekko.stream.impl.fusing.GraphInterpreter.Connection
 import pekko.stream.impl.io.TLSActor
+import pekko.stream.impl.io.TlsGraphStage
 import pekko.stream.impl.io.TlsModule
+import pekko.stream.scaladsl.{ GraphDSL, Sink, Source }
+import pekko.stream.scaladsl.RunnableGraph
 import pekko.stream.stage.GraphStageLogic
 import pekko.stream.stage.InHandler
 import pekko.stream.stage.OutHandler
+import pekko.util.ByteString
 import pekko.util.OptionVal
 
 import org.reactivestreams.Processor
 import org.reactivestreams.Publisher
 import org.reactivestreams.Subscriber
+import org.reactivestreams.Subscription
 
 /**
  * INTERNAL API
@@ -972,36 +978,109 @@ private[pekko] object GraphStageIsland {
     extends PhaseIsland[NotUsed] {
   def name: String = "TlsModulePhase"
 
+  private final class InputFailureTrackingSubscriber[T](delegate: Subscriber[T]) extends Subscriber[T] {
+    @volatile private var failure: Option[Throwable] = None
+
+    def currentFailure: Option[Throwable] = failure
+
+    override def onSubscribe(subscription: Subscription): Unit = delegate.onSubscribe(subscription)
+    override def onNext(elem: T): Unit = delegate.onNext(elem)
+    override def onError(cause: Throwable): Unit = {
+      failure = Some(cause)
+      delegate.onError(cause)
+    }
+    override def onComplete(): Unit = delegate.onComplete()
+  }
+
+  private var useLegacyActorPath = true
+  private var tlsModule: TlsModule = _
+  private var graphAttributes: Attributes = _
   private var tlsActor: ActorRef = _
   var publishers: Vector[ActorPublisher[Any]] = _
+  private var plainInputProcessor: VirtualProcessor[SslTlsOutbound] = _
+  private var cipherInputProcessor: VirtualProcessor[ByteString] = _
+  private var cipherOutputProcessor: VirtualProcessor[ByteString] = _
+  private var plainOutputProcessor: VirtualProcessor[SslTlsInbound] = _
+  private var plainInputTracker: InputFailureTrackingSubscriber[SslTlsOutbound] = _
+  private var cipherInputTracker: InputFailureTrackingSubscriber[ByteString] = _
 
   def materializeAtomic(mod: AtomicModule[Shape, Any], attributes: Attributes): (NotUsed, Any) = {
     val tls = mod.asInstanceOf[TlsModule]
+    tlsModule = tls
+    graphAttributes = attributes
+    useLegacyActorPath = materializer.system.settings.config.getBoolean(TlsGraphStage.UseLegacyActorPath)
 
-    val dispatcher = attributes.mandatoryAttribute[ActorAttributes.Dispatcher].dispatcher
-    val maxInputBuffer = attributes.mandatoryAttribute[Attributes.InputBuffer].max
+    if (useLegacyActorPath) {
+      val dispatcher = attributes.mandatoryAttribute[ActorAttributes.Dispatcher].dispatcher
+      val maxInputBuffer = attributes.mandatoryAttribute[Attributes.InputBuffer].max
 
-    val props =
-      TLSActor.props(maxInputBuffer, tls.createSSLEngine, tls.verifySession, tls.closing)
-        .withDispatcher(dispatcher)
-        .withMailbox(PhasedFusingActorMaterializer.MailboxConfigName)
+      val props =
+        TLSActor.props(maxInputBuffer, tls.createSSLEngine, tls.verifySession, tls.closing)
+          .withDispatcher(dispatcher)
+          .withMailbox(PhasedFusingActorMaterializer.MailboxConfigName)
 
-    tlsActor = materializer.actorOf(props, "TLS-for-" + islandName)
-    def factory(id: Int) = new ActorPublisher[Any](tlsActor) {
-      override val wakeUpMsg: FanOut.SubstreamSubscribePending = FanOut.SubstreamSubscribePending(id)
+      tlsActor = materializer.actorOf(props, "TLS-for-" + islandName)
+      def factory(id: Int) = new ActorPublisher[Any](tlsActor) {
+        override val wakeUpMsg: FanOut.SubstreamSubscribePending = FanOut.SubstreamSubscribePending(id)
+      }
+      publishers = Vector.tabulate(2)(factory)
+      tlsActor ! FanOut.ExposedPublishers(publishers)
+    } else {
+      plainInputProcessor = new VirtualProcessor[SslTlsOutbound]
+      cipherInputProcessor = new VirtualProcessor[ByteString]
+      cipherOutputProcessor = new VirtualProcessor[ByteString]
+      plainOutputProcessor = new VirtualProcessor[SslTlsInbound]
+      plainInputTracker = new InputFailureTrackingSubscriber[SslTlsOutbound](plainInputProcessor)
+      cipherInputTracker = new InputFailureTrackingSubscriber[ByteString](cipherInputProcessor)
+      materializeTlsGraph()
     }
-    publishers = Vector.tabulate(2)(factory)
-    tlsActor ! FanOut.ExposedPublishers(publishers)
     (NotUsed, NotUsed)
   }
   def assignPort(in: InPort, slot: Int, logic: NotUsed): Unit = ()
   def assignPort(out: OutPort, slot: Int, logic: NotUsed): Unit = ()
 
   def createPublisher(out: OutPort, logic: NotUsed): Publisher[Any] =
-    publishers(out.id)
+    if (useLegacyActorPath) publishers(out.id)
+    else if (out.id == 0) cipherOutputProcessor.asInstanceOf[Publisher[Any]]
+    else plainOutputProcessor.asInstanceOf[Publisher[Any]]
 
   override def takePublisher(slot: Int, publisher: Publisher[Any], attributes: Attributes): Unit =
-    publisher.subscribe(FanIn.SubInput[Any](tlsActor, 1 - slot))
+    if (useLegacyActorPath)
+      publisher.subscribe(FanIn.SubInput[Any](tlsActor, 1 - slot))
+    else {
+      if (slot == 0)
+        publisher.subscribe(plainInputTracker.asInstanceOf[Subscriber[Any]])
+      else
+        publisher.subscribe(cipherInputTracker.asInstanceOf[Subscriber[Any]])
+    }
+
+  private def materializeTlsGraph(): Unit = {
+    val tls = tlsModule
+    val runnable = RunnableGraph.fromGraph(GraphDSL.create() { implicit b =>
+      import GraphDSL.Implicits._
+
+      val tlsStage = b.add(
+        new TlsGraphStage(
+          tls.createSSLEngine,
+          tls.verifySession,
+          tls.closing,
+          () => plainInputTracker.currentFailure,
+          () => cipherInputTracker.currentFailure))
+      val plainSource = b.add(Source.fromPublisher(plainInputProcessor))
+      val cipherSource = b.add(Source.fromPublisher(cipherInputProcessor))
+      val cipherSink = b.add(Sink.fromSubscriber(cipherOutputProcessor))
+      val plainSink = b.add(Sink.fromSubscriber(plainOutputProcessor))
+
+      plainSource   ~> tlsStage.in1
+      tlsStage.out1 ~> cipherSink
+      cipherSource  ~> tlsStage.in2
+      tlsStage.out2 ~> plainSink
+
+      ClosedShape
+    })
+
+    materializer.materialize(runnable, graphAttributes)
+  }
 
   def onIslandReady(): Unit = ()
 }

@@ -13,18 +13,59 @@
 
 package org.apache.pekko.stream.snapshot
 
-import java.net.InetSocketAddress
-import javax.net.ssl.SSLContext
+import javax.net.ssl.{ SSLEngine, SSLSession }
 
 import scala.concurrent.Promise
+import scala.util.Try
 
 import org.apache.pekko
-import pekko.stream.{ FlowShape, Materializer }
-import pekko.stream.scaladsl.{ Flow, GraphDSL, Keep, Merge, Partition, Sink, Source, Tcp }
+import pekko.NotUsed
+import pekko.actor.ActorSystem
+import pekko.stream._
+import pekko.stream.TLSProtocol.{ SendBytes, SessionBytes, SslTlsInbound, SslTlsOutbound }
+import pekko.stream.io.TlsSpec
+import pekko.stream.scaladsl.{ Flow, GraphDSL, Keep, Merge, Partition, Sink, Source, TLS }
 import pekko.stream.testkit.scaladsl.TestSink
-import pekko.testkit.PekkoSpec
+import pekko.testkit.{ PekkoSpec, TestKit }
+import pekko.util.ByteString
 
 class MaterializerStateSpec extends PekkoSpec() {
+  private val previousLegacyActorPath = TlsSpec.setLegacyActorPath(true)
+
+  override protected def afterTermination(): Unit = {
+    TlsSpec.restoreLegacyActorPath(previousLegacyActorPath)
+    super.afterTermination()
+  }
+
+  private def localTlsFlow(protocol: String): Flow[SslTlsOutbound, SslTlsInbound, NotUsed] = {
+    val sslContext = TlsSpec.initSslContext(protocol)
+
+    val ciphers =
+      if (protocol == "TLSv1.3") TlsSpec.TLS13Ciphers.toArray
+      else TlsSpec.TLS12Ciphers.toArray
+
+    def createSSLEngine(role: TLSRole): SSLEngine = {
+      val engine = sslContext.createSSLEngine()
+      engine.setUseClientMode(role == Client)
+      engine.setEnabledCipherSuites(ciphers)
+      engine.setEnabledProtocols(Array(protocol))
+      engine
+    }
+
+    def passthroughTls =
+      Flow[SslTlsInbound].collect { case SessionBytes(_, bytes) => SendBytes(bytes) }
+
+    TLS(() => createSSLEngine(Client), verifySession = (_: SSLSession) => Try(()), IgnoreComplete)
+      .atop(TLS(() => createSSLEngine(Server), verifySession = (_: SSLSession) => Try(()), IgnoreComplete).reversed)
+      .join(passthroughTls)
+  }
+
+  private def startRunningTlsStream()(implicit mat: Materializer): Unit =
+    Source
+      .single[SslTlsOutbound](SendBytes(ByteString("ping")))
+      .concat(Source.maybe[SslTlsOutbound])
+      .via(localTlsFlow("TLSv1.2"))
+      .runWith(Sink.ignore)
 
   "The MaterializerSnapshotting" must {
 
@@ -59,19 +100,40 @@ class MaterializerStateSpec extends PekkoSpec() {
       promise.success(1)
     }
 
-    "snapshot a running stream that includes a TLSActor" in {
-      Source.never
-        .via(Tcp(system).outgoingConnectionWithTls(InetSocketAddress.createUnresolved("pekko.io", 443),
-          () => {
-            val engine = SSLContext.getDefault.createSSLEngine("pekko.io", 443)
-            engine.setUseClientMode(true)
-            engine
-          }))
-        .runWith(Sink.seq)
+    "snapshot a running stream that includes the legacy TLS path" in {
+      implicit val mat = Materializer(system)
+      try {
+        startRunningTlsStream()
 
-      val snapshots = MaterializerState.streamSnapshots(system).futureValue
-      snapshots.size should be(2)
-      snapshots.toString should include("TLS-")
+        awaitAssert({
+            val snapshots = MaterializerState.streamSnapshots(mat).futureValue
+            snapshots should have size 3
+            snapshots.count(_.toString.contains("TLS-for-flow-")) should be(2)
+          }, remainingOrDefault)
+      } finally {
+        mat.shutdown()
+      }
+    }
+
+    "snapshot a running stream that includes the async GraphStage TLS path" in {
+      val previousGraphStageSetting = TlsSpec.setLegacyActorPath(false)
+      val tlsSystem = ActorSystem("MaterializerStateGraphStageTlsSpec", PekkoSpec.testConf)
+
+      try {
+        implicit val mat = Materializer(tlsSystem)
+
+        startRunningTlsStream()
+
+        awaitAssert({
+            val snapshots = MaterializerState.streamSnapshots(mat).futureValue
+            snapshots should have size 3
+            snapshots.count(_.toString.contains("TlsGraphStage")) should be(2)
+            (snapshots.toString should not).include("TLS-for-flow-")
+          }, remainingOrDefault)
+      } finally {
+        TestKit.shutdownActorSystem(tlsSystem)
+        TlsSpec.restoreLegacyActorPath(previousGraphStageSetting)
+      }
     }
 
     "snapshot a stream that has a stopped stage" in {

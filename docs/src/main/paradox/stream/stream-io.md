@@ -159,6 +159,10 @@ Java
 
 The `SSLEngine` instance can then be used with the binding or outgoing connection factory methods.
 
+The TLS stage runs the `SSLEngine` state machine on a dedicated asynchronous stream runtime so the
+handshake and wrap/unwrap work stay isolated from the surrounding fused stream and the engine remains
+confined to a single stream execution context at a time.
+
 ## Streaming File IO
 
 Pekko Streams provide simple Sources and Sinks that can work with @apidoc[util.ByteString] instances to perform IO operations

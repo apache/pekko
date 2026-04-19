@@ -21,7 +21,7 @@ import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream._
 import pekko.stream.TLSProtocol._
-import pekko.stream.impl.io.TlsModule
+import pekko.stream.impl.io.{ TlsGraphStage, TlsModule }
 import pekko.util.ByteString
 
 /**
@@ -77,7 +77,10 @@ object TLS {
       verifySession: SSLSession => Try[Unit],
       closing: TLSClosing): scaladsl.BidiFlow[SslTlsOutbound, ByteString, ByteString, SslTlsInbound, NotUsed] =
     scaladsl.BidiFlow.fromGraph(
-      TlsModule(Attributes.none, () => createSSLEngine(), session => verifySession(session), closing))
+      if (TlsGraphStage.useLegacyActorPath)
+        TlsModule(Attributes.none, () => createSSLEngine(), session => verifySession(session), closing)
+      else
+        new TlsGraphStage(() => createSSLEngine(), session => verifySession(session), closing, () => None, () => None))
 
   /**
    * Create a StreamTls [[pekko.stream.scaladsl.BidiFlow]].
