@@ -181,12 +181,17 @@ import org.reactivestreams.{ Publisher, Subscriber }
  * INTERNAL API
  */
 @InternalApi private[pekko] final class FanoutPublisherBridgePublisher[T](
-    registerPendingSubscribers: AsyncCallback[Unit])
+    initialRegisterPendingSubscribers: AsyncCallback[Unit])
     extends Publisher[T] {
   import ReactiveStreamsCompliance._
 
   private val pendingSubscribers = new AtomicReference[immutable.Seq[Subscriber[_ >: T]]](Nil)
   private val shutdownStarted = new AtomicBoolean(false)
+  // WHY: the callback closes over the GraphStageLogic (and its buffer/subscriptions).
+  // Held in an AtomicReference so shutdown() can atomically clear it; otherwise user code
+  // retaining this Publisher after termination would prevent the stage state from being GC'd.
+  private val registerPendingSubscribers =
+    new AtomicReference[AsyncCallback[Unit]](initialRegisterPendingSubscribers)
 
   @volatile private var shutdownReason: Option[Throwable] = None
 
@@ -196,8 +201,12 @@ import org.reactivestreams.{ Publisher, Subscriber }
     @tailrec def doSubscribe(): Unit = {
       val current = pendingSubscribers.get()
       if (current eq null) reportSubscribeFailure(subscriber)
-      else if (pendingSubscribers.compareAndSet(current, subscriber +: current)) registerPendingSubscribers.invoke(())
-      else doSubscribe()
+      else if (pendingSubscribers.compareAndSet(current, subscriber +: current)) {
+        val cb = registerPendingSubscribers.get()
+        // cb may be null if shutdown raced past us; in that case the subscriber we just enqueued
+        // was already reaped by shutdown's getAndSet and reported via reportSubscribeFailure.
+        if (cb ne null) cb.invoke(())
+      } else doSubscribe()
     }
 
     doSubscribe()
@@ -222,6 +231,7 @@ import org.reactivestreams.{ Publisher, Subscriber }
         case pending =>
           pending.foreach(reportSubscribeFailure)
       }
+      registerPendingSubscribers.set(null)
     }
 
   private def reportSubscribeFailure(subscriber: Subscriber[_ >: T]): Unit =
