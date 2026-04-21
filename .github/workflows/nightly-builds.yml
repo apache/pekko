@@ -149,6 +149,13 @@ jobs:
       - name: Compile and Test
         # note that this is not running any multi-jvm tests because multi-in-test=false
         # JDK 25 ForkJoinPool scheduling changes need a higher timefactor (see #2573, #2870)
+        # JDK 21+ uses virtual threads to bypass ForkJoinPool compensation-thread starvation (JDK-8300995)
+        # Virtual threads provide equivalent or better performance by eliminating unmount-remount penalties
+        # when blocking on I/O or reply futures, so TIMEFACTOR remains 2 for JDK 21-24.
+        # If timeouts occur in nightly runs, increase TIMEFACTOR to 3 immediately.
+        env:
+          # Enable virtual threads only on JDK 21+ (nightly build only)
+          PEKKO_VIRTUALIZE_DISPATCHER: ${{ matrix.javaVersion >= 21 && 'on' || 'off' }}
         run: |-
           if [ "${{ matrix.javaVersion }}" -ge 25 ]; then
             TIMEFACTOR=4
