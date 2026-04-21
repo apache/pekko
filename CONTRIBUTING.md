@@ -200,6 +200,50 @@ Pekko, like most Scala projects, compiles faster with the Graal JIT enabled. The
 * Use a JDK > 10
 * Use the following JVM options for SBT e.g. by adding them to the `SBT_OPTS` environment variable: `-XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI -XX:+UseJVMCICompiler`
 
+### Virtual Threads Testing
+
+#### Testing Stream Dispatcher with Virtual Threads (JDK 21+)
+
+Virtual threads solve JDK-8300995 (ForkJoinPool compensation-thread starvation) 
+that causes sporadic test timeouts. See [#2870](https://github.com/apache/pekko/issues/2870).
+
+**Local Testing**:
+
+```bash
+# 1. Use JDK 21 or later
+sdk use java 21
+
+# 2. Enable JVM options for virtual thread support
+cp .jvmopts-ci .jvmopts
+
+# 3. Test with virtual threads enabled
+export PEKKO_VIRTUALIZE_DISPATCHER=on
+sbt 'actor-tests/scala-jdk21-only:testOnly *VirtualThread*'
+
+# IMPORTANT: Clean up after testing to avoid affecting subsequent test runs
+unset PEKKO_VIRTUALIZE_DISPATCHER
+```
+
+**Safe One-Liner** (prevents env var from persisting):
+```bash
+(export PEKKO_VIRTUALIZE_DISPATCHER=on; sbt 'actor-tests/scala-jdk21-only:testOnly *VirtualThread*') && unset PEKKO_VIRTUALIZE_DISPATCHER
+```
+
+**Environment Variable Values**:
+- `PEKKO_VIRTUALIZE_DISPATCHER=on` - Enable virtual threads for stream dispatcher tests
+- `PEKKO_VIRTUALIZE_DISPATCHER=off` - Disable virtual threads (default, safe for local testing)
+- Unset/any other value - Falls back to `off` (safe default)
+
+**CI Behavior**:
+- JDK 21/25 nightly builds: virtualize=on (virtual threads enabled)
+- JDK 17 tests: virtualize=off (falls back to ForkJoinPool)
+- PR tests: virtualize=off (for stability)
+
+**Design Notes**:
+- PR #2872: Virtual threads (this feature)
+- PR #2871: ForkJoinPool minimum-runnable tuning (alternative for older JDKs)
+- Both work together; use virtual threads when available (JDK 21+)
+
 ### The `validatePullRequest` task
 
 The Pekko build includes a special task called `validatePullRequest`, which investigates the changes made as well as dirty
