@@ -44,6 +44,7 @@ import pekko.stream.scaladsl.{
   Zip
 }
 import pekko.stream.testkit.scaladsl.TestSink
+import pekko.testkit.TestKitExtension
 
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.concurrent.ScalaFutures
@@ -107,17 +108,21 @@ class MapAsyncPartitionedSpec
 
   import MapAsyncPartitionedSpec.TestData._
 
-  // These suites materialize many short-lived streams. On busy CI nodes,
-  // JDK 25 makes the 1000-sample property checks noticeably more expensive (#2573).
-  override implicit def patienceConfig: PatienceConfig = PatienceConfig(
-    timeout = 60.seconds,
-    interval = 100.millis)
-
   private val heavyPropertyChecks = minSuccessful(100)
 
   private implicit val system: ActorSystem[_] = ActorSystem(Behaviors.empty, "test-system")
   private val executor: ExecutorService = Executors.newCachedThreadPool()
   private implicit val ec: ExecutionContext = ExecutionContext.fromExecutor(executor)
+
+  // These suites materialize many short-lived streams. On busy CI nodes,
+  // JDK 25 makes the property checks noticeably more expensive, so bind
+  // ScalaFutures patience to the test timefactor used by CI.
+  private val testTimeFactor = TestKitExtension(system.classicSystem).TestTimeFactor
+  private def dilated(duration: FiniteDuration): FiniteDuration =
+    FiniteDuration((duration.toNanos * testTimeFactor + 0.5).toLong, java.util.concurrent.TimeUnit.NANOSECONDS)
+  override implicit def patienceConfig: PatienceConfig = PatienceConfig(
+    timeout = dilated(60.seconds),
+    interval = dilated(100.millis))
 
   override protected def afterAll(): Unit = {
     system.terminate()
