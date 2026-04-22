@@ -18,7 +18,7 @@ package org.apache.pekko.stream.tck
  */
 object Timeouts {
 
-  // Scale timeouts by pekko.test.timefactor (set to 3 on JDK 25 nightly builds).
+  // Scale TCK timeouts by pekko.test.timefactor.
   private val timeFactor: Double =
     sys.props.get("pekko.test.timefactor").map(_.toDouble).getOrElse(1.0)
 
@@ -27,5 +27,7 @@ object Timeouts {
   def defaultTimeoutMillis: Int = (800 * timeFactor).toInt
 
   def defaultNoSignalsTimeoutMillis: Int = (200 * timeFactor).toInt
+
+  def actorSystemShutdownTimeoutMillis: Int = math.ceil(10000 * timeFactor).toInt
 
 }

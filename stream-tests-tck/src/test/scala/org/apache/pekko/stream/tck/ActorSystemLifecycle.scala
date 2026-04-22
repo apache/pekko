@@ -40,7 +40,7 @@ trait ActorSystemLifecycle {
 
   def additionalConfig: Config = ConfigFactory.empty()
 
-  def shutdownTimeout: FiniteDuration = 10.seconds
+  def shutdownTimeout: FiniteDuration = Timeouts.actorSystemShutdownTimeoutMillis.millis
 
   @BeforeClass
   def createActorSystem(): Unit = {
