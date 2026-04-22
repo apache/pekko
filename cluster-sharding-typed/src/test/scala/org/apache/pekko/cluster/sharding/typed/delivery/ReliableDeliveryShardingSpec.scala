@@ -19,6 +19,7 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.Done
+import pekko.actor.testkit.typed.scaladsl.FishingOutcomes
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
@@ -306,7 +307,19 @@ class ReliableDeliveryShardingSpec
 
       // when new demand the buffered messages will be be sent
       seq5.producerController ! ProducerControllerImpl.Request(confirmedSeqNr = 5L, requestUpToSeqNr = 10, true, false)
-      val seq6 = shardingProbe.receiveMessage().message
+      val seq6 = shardingProbe
+        .fishForMessage(testKit.testKitSettings.dilated(3.seconds), "waiting for buffered msg-6 after renewed demand") {
+          case ShardingEnvelope("entity-1", SequencedMessage(_, _, TestConsumer.Job("msg-6"), _, _)) =>
+            FishingOutcomes.complete
+          case ShardingEnvelope("entity-1", SequencedMessage(_, _, TestConsumer.Job(_), _, _)) =>
+            // A redelivery can race with the renewed demand, so tolerate buffered msg-6 arriving
+            // after duplicate earlier messages.
+            FishingOutcomes.continueAndIgnore
+          case other =>
+            FishingOutcomes.fail(s"Unexpected message while waiting for buffered msg-6: [$other]")
+        }
+        .last
+        .message
       seq6.message should ===(TestConsumer.Job("msg-6"))
 
       val next9 = producerProbe.receiveMessage()
