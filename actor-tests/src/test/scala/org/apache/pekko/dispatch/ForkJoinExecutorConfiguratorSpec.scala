@@ -28,7 +28,10 @@ import com.typesafe.config.{ Config, ConfigFactory }
 object ForkJoinExecutorConfiguratorSpec {
   // Keep the root config explicit so the dispatcher-config integration checks below
   // see exactly the values this spec is asserting on (and not whatever the project's
-  // global test configuration happens to set).
+  // global test configuration happens to set). In particular, the `fj-auto-*` dispatchers
+  // pin `minimum-runnable = -1` so they always exercise the JDK-aware auto policy even
+  // when a build pins `pekko.actor.default-dispatcher.fork-join-executor.minimum-runnable`
+  // via -D (the nightly CI does this on JDK 21+ for stability — see nightly-builds.yml).
   val config: Config = ConfigFactory.parseString("""
       |fj-auto-default-dispatcher {
       |  executor = "fork-join-executor"
@@ -36,6 +39,7 @@ object ForkJoinExecutorConfiguratorSpec {
       |    parallelism-min = 8
       |    parallelism-factor = 1.0
       |    parallelism-max = 64
+      |    minimum-runnable = -1
       |  }
       |}
       |fj-auto-small-dispatcher {
@@ -44,6 +48,7 @@ object ForkJoinExecutorConfiguratorSpec {
       |    parallelism-min = 1
       |    parallelism-factor = 1.0
       |    parallelism-max = 1
+      |    minimum-runnable = -1
       |  }
       |}
       |fj-explicit-zero-dispatcher {
