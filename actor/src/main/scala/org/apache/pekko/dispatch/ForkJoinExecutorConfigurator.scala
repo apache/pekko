@@ -17,7 +17,30 @@ import java.util.concurrent.{ ExecutorService, ForkJoinPool, ForkJoinTask, Threa
 
 import com.typesafe.config.Config
 
+import org.apache.pekko.annotation.InternalApi
+import org.apache.pekko.util.JavaVersion
+
 object ForkJoinExecutorConfigurator {
+
+  /**
+   * INTERNAL API
+   *
+   * Resolves the effective `minimum-runnable` value for a fork-join dispatcher.
+   *
+   * A negative value (default `-1` in reference.conf) selects the JDK-aware policy:
+   * on JDK 21+ the value is `min(8, max(1, parallelism / 2))` to mitigate the
+   * asyncMode (FIFO) compensation-thread regression tracked in
+   * JDK-8300995 / JDK-8321335; on older JDKs the value stays at `1` to preserve
+   * legacy behaviour. Non-negative configured values are honoured verbatim, so
+   * `0` still disables compensation entirely.
+   */
+  @InternalApi private[pekko] def resolveMinimumRunnable(
+      configured: Int,
+      parallelism: Int,
+      jdkMajorVersion: Int): Int =
+    if (configured >= 0) configured
+    else if (jdkMajorVersion >= 21) math.min(8, math.max(1, parallelism / 2))
+    else 1
 
   /**
    * INTERNAL PEKKO USAGE ONLY
@@ -140,16 +163,21 @@ class ForkJoinExecutorConfigurator(config: Config, prerequisites: DispatcherPrer
           """"task-peeking-mode" in "fork-join-executor" section could only set to "FIFO" or "LIFO".""")
     }
 
+    val parallelism = ThreadPoolConfig.scaledPoolSize(
+      config.getInt("parallelism-min"),
+      config.getDouble("parallelism-factor"),
+      config.getInt("parallelism-max"))
+
     new ForkJoinExecutorServiceFactory(
       id,
       validate(tf),
-      ThreadPoolConfig.scaledPoolSize(
-        config.getInt("parallelism-min"),
-        config.getDouble("parallelism-factor"),
-        config.getInt("parallelism-max")),
+      parallelism,
       asyncMode,
       config.getInt("maximum-pool-size"),
-      config.getInt("minimum-runnable")
+      ForkJoinExecutorConfigurator.resolveMinimumRunnable(
+        config.getInt("minimum-runnable"),
+        parallelism,
+        JavaVersion.majorVersion)
     )
   }
 }
