@@ -148,19 +148,17 @@ jobs:
 
       - name: Compile and Test
         # note that this is not running any multi-jvm tests because multi-in-test=false
-        # JDK 25 ForkJoinPool scheduling changes need a higher timefactor (see #2573, #2870)
-        # JDK 21+ uses virtual threads to bypass ForkJoinPool compensation-thread starvation (JDK-8300995)
-        # Virtual threads provide equivalent or better performance by eliminating unmount-remount penalties
-        # when blocking on I/O or reply futures, so TIMEFACTOR remains 2 for JDK 21-24.
-        # If timeouts occur in nightly runs, increase TIMEFACTOR to 3 immediately.
-        env:
-          # Enable virtual threads only on JDK 21+ (nightly build only)
-          PEKKO_VIRTUALIZE_DISPATCHER: ${{ matrix.javaVersion >= 21 && 'on' || 'off' }}
+        # JDK 21+ ForkJoinPool scheduling changes need a higher timefactor and a larger
+        # minimum-runnable to avoid compensation-thread starvation (see #2573, #2870).
         run: |-
+          EXTRA_JVM_OPTS=""
           if [ "${{ matrix.javaVersion }}" -ge 25 ]; then
             TIMEFACTOR=4
           else
             TIMEFACTOR=2
+          fi
+          if [ "${{ matrix.javaVersion }}" -ge 21 ]; then
+            EXTRA_JVM_OPTS="-Dpekko.actor.default-dispatcher.fork-join-executor.minimum-runnable=4 -Dpekko.remote.default-remote-dispatcher.fork-join-executor.minimum-runnable=4"
           fi
           sbt \
             -Dpekko.cluster.assert=on \
@@ -170,6 +168,7 @@ jobs:
             -Dpekko.test.tags.exclude=gh-exclude,timing \
             -Dpekko.test.multi-in-test=false \
             -Dio.netty.leakDetection.level=PARANOID \
+            $EXTRA_JVM_OPTS \
             clean "++ ${{ matrix.scalaVersion }} test" checkTestsHaveRun
 
       - name: Docs

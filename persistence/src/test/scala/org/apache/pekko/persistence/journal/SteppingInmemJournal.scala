@@ -38,7 +38,7 @@ object SteppingInmemJournal {
    * Allow the journal to do one operation, will block until that completes
    */
   def step(journal: ActorRef)(implicit system: ActorSystem): Unit = {
-    implicit val timeout: Timeout = 3.seconds.dilated
+    implicit val timeout: Timeout = 10.seconds.dilated
     Await.result(journal ? SteppingInmemJournal.Token, timeout.duration)
   }
 
