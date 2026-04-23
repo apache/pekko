@@ -17,14 +17,16 @@
 
 package org.apache.pekko.persistence.serialization
 
+import java.nio.ByteOrder
 import java.util.Base64
 
 import annotation.nowarn
 
 import org.apache.pekko
 import pekko.persistence.fsm.PersistentFSM.PersistentFSMSnapshot
-import pekko.serialization.SerializationExtension
+import pekko.serialization.{ SerializationExtension, Serializers }
 import pekko.testkit.PekkoSpec
+import pekko.util.SWARUtil
 
 @nowarn("msg=deprecated")
 private[serialization] object SnapshotSerializerTestData {
@@ -68,6 +70,46 @@ class SnapshotSerializerSpec extends PekkoSpec {
       deserialized shouldBe a[PersistentFSMSnapshot[_]]
       val persistentFSMSnapshot = deserialized.asInstanceOf[PersistentFSMSnapshot[_]]
       persistentFSMSnapshot shouldEqual fsmSnapshot
+    }
+    "produce binary format with header length in first 4 bytes (little-endian)" in {
+      val serialization = SerializationExtension(system)
+      val bytes = serialization.serialize(Snapshot(fsmSnapshot)).get
+      // bytes[0..3] = header length as little-endian int32
+      val headerLength = SWARUtil.getInt(bytes, 0, ByteOrder.LITTLE_ENDIAN)
+      headerLength should be > 0
+      headerLength should be < bytes.length
+      // header occupies bytes[4 .. 4+headerLength)
+      // remaining bytes are the snapshot payload
+      val payloadLength = bytes.length - 4 - headerLength
+      payloadLength should be > 0
+    }
+    "produce binary format with serializer ID in header (little-endian)" in {
+      val serialization = SerializationExtension(system)
+      val bytes = serialization.serialize(Snapshot(fsmSnapshot)).get
+      val headerLength = SWARUtil.getInt(bytes, 0, ByteOrder.LITTLE_ENDIAN)
+      // header bytes[4..7] = serializer ID as little-endian int32
+      val serializerId = SWARUtil.getInt(bytes, 4, ByteOrder.LITTLE_ENDIAN)
+      val snapshotSerializer = serialization.findSerializerFor(fsmSnapshot)
+      serializerId shouldEqual snapshotSerializer.identifier
+      // header bytes[8..4+headerLength) = manifest as UTF-8 string
+      val manifestBytes = bytes.slice(8, 4 + headerLength)
+      val manifest = new String(manifestBytes, "UTF-8")
+      manifest shouldEqual Serializers.manifestFor(snapshotSerializer, fsmSnapshot)
+    }
+    "serialize and deserialize a simple string snapshot" in {
+      val serialization = SerializationExtension(system)
+      val snapshot = Snapshot("hello pekko")
+      val bytes = serialization.serialize(snapshot).get
+      val result = serialization.deserialize(bytes, classOf[Snapshot]).get
+      result.data shouldEqual "hello pekko"
+    }
+    "serialized bytes start with header length followed by header" in {
+      val serialization = SerializationExtension(system)
+      val snapshot = Snapshot("test")
+      val bytes = serialization.serialize(snapshot).get
+      // verify overall structure: total = 4 (headerLenField) + headerLen + payloadLen
+      val headerLength = SWARUtil.getInt(bytes, 0, ByteOrder.LITTLE_ENDIAN)
+      bytes.length shouldEqual (4 + headerLength + serialization.findSerializerFor("test").toBinary("test").length)
     }
   }
 }
