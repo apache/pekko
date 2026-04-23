@@ -30,17 +30,26 @@ import pekko.stream.Supervision
 import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.stream.testkit.scaladsl.TestSource
+import pekko.testkit.TestDuration
 import pekko.testkit.TestLatch
 import pekko.testkit.TestProbe
 import pekko.testkit.WithLogCapturing
 
 import org.scalatest.compatible.Assertion
+import org.scalatest.time.Millis
+import org.scalatest.time.Span
 
 // Tests ported from akka/akka-core#31582 and akka/akka-core#31882,
 // adapted for Pekko's mapAsyncPartitioned API (no perPartition parameter).
 // Pekko's implementation always processes at most one element per partition at a time.
 class FlowMapAsyncPartitionedSpec extends StreamSpec with WithLogCapturing {
   import Utils.TE
+
+  // The default ScalaFutures patience of 6 seconds is too tight for the supervised-resume
+  // and bulk-throughput cases in this suite under JDK 25 nightly contention. Scale by the
+  // configured pekko.test.timefactor so CI dilation is honoured.
+  override implicit def patienceConfig: PatienceConfig =
+    PatienceConfig(timeout = 30.seconds.dilated, interval = Span(15, Millis))
 
   "A Flow with mapAsyncPartitioned" must {
     "produce future elements" in {
