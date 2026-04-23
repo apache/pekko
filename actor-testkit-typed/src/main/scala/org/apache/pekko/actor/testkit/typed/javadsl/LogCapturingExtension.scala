@@ -7,6 +7,10 @@
  * This file is part of the Apache Pekko project, which was derived from Akka.
  */
 
+/*
+ * Copyright (C) 2019-2022 Lightbend Inc. <https://www.lightbend.com>
+ */
+
 package org.apache.pekko.actor.testkit.typed.javadsl
 
 import java.lang.reflect.Method
