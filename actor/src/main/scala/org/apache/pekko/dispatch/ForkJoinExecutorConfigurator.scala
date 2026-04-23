@@ -28,18 +28,19 @@ object ForkJoinExecutorConfigurator {
    * Resolves the effective `minimum-runnable` value for a fork-join dispatcher.
    *
    * A negative value (default `-1` in reference.conf) selects the JDK-aware policy:
-   * on JDK 21+ the value is `min(8, max(1, parallelism / 2))` to mitigate the
+   * on JDK 25+ the value is `min(8, max(1, parallelism / 2))` to mitigate the
    * asyncMode (FIFO) compensation-thread regression tracked in
-   * JDK-8300995 / JDK-8321335; on older JDKs the value stays at `1` to preserve
-   * legacy behaviour. Non-negative configured values are honoured verbatim, so
-   * `0` still disables compensation entirely.
+   * JDK-8300995 / JDK-8321335 (the impact is most visible on the JDK 25 line in
+   * Pekko nightly tests); on older JDKs the value stays at `1` to preserve the
+   * pre-existing behaviour. Non-negative configured values are honoured verbatim,
+   * so `0` still disables compensation entirely.
    */
   @InternalApi private[pekko] def resolveMinimumRunnable(
       configured: Int,
       parallelism: Int,
       jdkMajorVersion: Int): Int =
     if (configured >= 0) configured
-    else if (jdkMajorVersion >= 21) math.min(8, math.max(1, parallelism / 2))
+    else if (jdkMajorVersion >= 25) math.min(8, math.max(1, parallelism / 2))
     else 1
 
   /**

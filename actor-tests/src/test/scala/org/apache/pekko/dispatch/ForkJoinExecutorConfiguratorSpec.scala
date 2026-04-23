@@ -1,10 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * license agreements; and to You under the Apache License, version 2.0:
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
- * This file is part of the Apache Pekko project.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.apache.pekko.dispatch
@@ -66,36 +74,40 @@ class ForkJoinExecutorConfiguratorSpec extends PekkoSpec(ForkJoinExecutorConfigu
   "ForkJoinExecutorConfigurator.resolveMinimumRunnable" must {
 
     "honour explicit zero (compensation disabled)" in {
-      resolveMinimumRunnable(configured = 0, parallelism = 16, jdkMajorVersion = 21) shouldBe 0
+      resolveMinimumRunnable(configured = 0, parallelism = 16, jdkMajorVersion = 25) shouldBe 0
       resolveMinimumRunnable(configured = 0, parallelism = 16, jdkMajorVersion = 17) shouldBe 0
     }
 
     "honour explicit positive overrides verbatim" in {
-      resolveMinimumRunnable(configured = 1, parallelism = 16, jdkMajorVersion = 21) shouldBe 1
-      resolveMinimumRunnable(configured = 7, parallelism = 16, jdkMajorVersion = 21) shouldBe 7
+      resolveMinimumRunnable(configured = 1, parallelism = 16, jdkMajorVersion = 25) shouldBe 1
+      resolveMinimumRunnable(configured = 7, parallelism = 16, jdkMajorVersion = 25) shouldBe 7
       resolveMinimumRunnable(configured = 100, parallelism = 16, jdkMajorVersion = 25) shouldBe 100
     }
 
-    "auto-resolve to 1 on JDK < 21 regardless of parallelism" in {
+    "auto-resolve to 1 on JDK < 25 regardless of parallelism (preserves legacy behaviour)" in {
+      // JDK 21 keeps the legacy default per reviewer guidance: only JDK 25 nightlies
+      // showed the compensation-thread regression badly enough to warrant a default change.
       resolveMinimumRunnable(configured = -1, parallelism = 1, jdkMajorVersion = 17) shouldBe 1
       resolveMinimumRunnable(configured = -1, parallelism = 8, jdkMajorVersion = 17) shouldBe 1
       resolveMinimumRunnable(configured = -1, parallelism = 64, jdkMajorVersion = 11) shouldBe 1
+      resolveMinimumRunnable(configured = -1, parallelism = 16, jdkMajorVersion = 21) shouldBe 1
     }
 
-    "auto-resolve using parallelism / 2 on JDK 21+ with min cap 1 and max cap 8" in {
-      resolveMinimumRunnable(configured = -1, parallelism = 1, jdkMajorVersion = 21) shouldBe 1
-      resolveMinimumRunnable(configured = -1, parallelism = 2, jdkMajorVersion = 21) shouldBe 1
-      resolveMinimumRunnable(configured = -1, parallelism = 4, jdkMajorVersion = 21) shouldBe 2
-      resolveMinimumRunnable(configured = -1, parallelism = 8, jdkMajorVersion = 21) shouldBe 4
-      resolveMinimumRunnable(configured = -1, parallelism = 16, jdkMajorVersion = 21) shouldBe 8
+    "auto-resolve using parallelism / 2 on JDK 25+ with min cap 1 and max cap 8" in {
+      resolveMinimumRunnable(configured = -1, parallelism = 1, jdkMajorVersion = 25) shouldBe 1
+      resolveMinimumRunnable(configured = -1, parallelism = 2, jdkMajorVersion = 25) shouldBe 1
+      resolveMinimumRunnable(configured = -1, parallelism = 4, jdkMajorVersion = 25) shouldBe 2
+      resolveMinimumRunnable(configured = -1, parallelism = 8, jdkMajorVersion = 25) shouldBe 4
+      resolveMinimumRunnable(configured = -1, parallelism = 16, jdkMajorVersion = 25) shouldBe 8
       resolveMinimumRunnable(configured = -1, parallelism = 64, jdkMajorVersion = 25) shouldBe 8
     }
 
-    "produce a strictly higher value on JDK 21+ than on JDK 17 for plausible dispatcher sizes" in {
-      // Directional check: the auto policy must move the needle for the JDKs that need it.
+    "produce a strictly higher value on JDK 25+ than on JDK 21 for plausible dispatcher sizes" in {
+      // Directional check: the auto policy must move the needle on the JDK line that needs it
+      // (and only on that line — JDK 21 stays at the legacy default per reviewer guidance).
       for (parallelism <- Seq(4, 8, 16, 32, 64)) {
-        val legacy = resolveMinimumRunnable(configured = -1, parallelism, jdkMajorVersion = 17)
-        val modern = resolveMinimumRunnable(configured = -1, parallelism, jdkMajorVersion = 21)
+        val legacy = resolveMinimumRunnable(configured = -1, parallelism, jdkMajorVersion = 21)
+        val modern = resolveMinimumRunnable(configured = -1, parallelism, jdkMajorVersion = 25)
         withClue(s"parallelism=$parallelism legacy=$legacy modern=$modern: ") {
           modern should be > legacy
         }
@@ -138,8 +150,8 @@ class ForkJoinExecutorConfiguratorSpec extends PekkoSpec(ForkJoinExecutorConfigu
       resolvedMinimumRunnable("fj-explicit-seven-dispatcher") shouldBe 7
     }
 
-    "auto-scale the default (minimum-runnable not set) on JDK 21+" in {
-      if (JavaVersion.majorVersion < 21) pending
+    "auto-scale the default (minimum-runnable not set) on JDK 25+" in {
+      if (JavaVersion.majorVersion < 25) pending
 
       val resolved = resolvedMinimumRunnable("fj-auto-default-dispatcher")
       // The dispatcher declares parallelism-min = 8 so effective parallelism is at
@@ -149,8 +161,8 @@ class ForkJoinExecutorConfiguratorSpec extends PekkoSpec(ForkJoinExecutorConfigu
       resolved should be <= 8
     }
 
-    "keep the legacy value of 1 on JDK < 21 when the default is left untouched" in {
-      if (JavaVersion.majorVersion >= 21) pending
+    "keep the legacy value of 1 on JDK < 25 when the default is left untouched" in {
+      if (JavaVersion.majorVersion >= 25) pending
 
       resolvedMinimumRunnable("fj-auto-default-dispatcher") shouldBe 1
     }
@@ -158,7 +170,7 @@ class ForkJoinExecutorConfiguratorSpec extends PekkoSpec(ForkJoinExecutorConfigu
     "never drop below 1 even for parallelism = 1 dispatchers" in {
       val resolved = resolvedMinimumRunnable("fj-auto-small-dispatcher")
       // parallelism = 1 implies parallelism/2 = 0, which the min-cap must lift to 1.
-      // On JDK < 21 the legacy value of 1 is already the expected answer.
+      // On JDK < 25 the legacy value of 1 is already the expected answer.
       resolved shouldBe 1
     }
   }

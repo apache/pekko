@@ -129,6 +129,14 @@ You can read more about parallelism in the JDK's [ForkJoinPool documentation](ht
 
 When Running on Java 9+, you can use `maximum-pool-size` to set the upper bound on the total number of threads allocated by the ForkJoinPool.
 
+When running on Java 25+, the `minimum-runnable` setting for the `fork-join-executor` defaults to a JDK-aware value
+(`min(8, max(1, parallelism / 2))`) instead of the historical `1`. This raises the number of compensation threads the
+pool will create when workers block, mitigating the asyncMode (FIFO) compensation regression tracked in
+[JDK-8300995](https://bugs.openjdk.org/browse/JDK-8300995) / [JDK-8321335](https://bugs.openjdk.org/browse/JDK-8321335)
+that, in Pekko nightly tests, surfaces most clearly on the JDK 25 line and can cause actor-heavy workloads to starve.
+Set `minimum-runnable` explicitly (any non-negative integer) to opt out of the auto-selection — for example
+`minimum-runnable = 1` restores the previous default, and `minimum-runnable = 0` disables compensation entirely.
+
 **Experimental**: When Running on Java 21+, you can use `virtualize=on` to enable the virtual threads feature.
 When using virtual threads, all virtual threads will use the same `unparker`, so you may want to
 increase the number of `jdk.unparker.maxPoolSize`.
