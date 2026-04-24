@@ -252,9 +252,17 @@ private[stream] final class MapAsyncPartitioned[In, Out, Partition](
 
       private def drainQueue(): Unit = {
         if (buffer.nonEmpty) {
-          buffer.foreach {
+          // Snapshot the buffer because processElement may complete a Future synchronously
+          // (the #20217 optimization), which re-enters pushNextIfPossible and either
+          // dequeues from the buffer (ordered) or rebuilds it via filter (unordered),
+          // invalidating any in-flight iterator over `buffer`. Items already started or
+          // already pushed during re-entry have holder.out set, so the NotYetThere
+          // guard ensures we never invoke processElement twice for the same Holder.
+          val snapshot = buffer.toList
+          snapshot.foreach {
             case (partition, wrappedInput) =>
-              if (canStartNextElement(partition)) {
+              val holder = wrappedInput.element
+              if ((holder.out eq NotYetThere) && canStartNextElement(partition)) {
                 wrappedInput.resume()
                 processElement(partition, wrappedInput)
               }
