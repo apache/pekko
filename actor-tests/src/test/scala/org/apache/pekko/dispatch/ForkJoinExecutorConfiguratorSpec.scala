@@ -150,6 +150,10 @@ class ForkJoinExecutorConfiguratorSpec extends PekkoSpec(ForkJoinExecutorConfigu
       resolvedMinimumRunnable("fj-explicit-seven-dispatcher") shouldBe 7
     }
 
+    "keep the built-in internal dispatcher on its explicit compensation floor" in {
+      resolvedMinimumRunnable("pekko.actor.internal-dispatcher") shouldBe 4
+    }
+
     "auto-scale the default (minimum-runnable not set) on JDK 25+" in {
       if (JavaVersion.majorVersion < 25) pending
 
