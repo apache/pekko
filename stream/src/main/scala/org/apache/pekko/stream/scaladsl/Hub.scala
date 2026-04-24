@@ -201,21 +201,6 @@ private[pekko] class MergeHub[T](perProducerBufferSize: Int, drainingEnabled: Bo
 
     setHandler(out, this)
 
-    // Returns true when we have not consumed demand, false otherwise
-    private def onEvent(ev: Event): Boolean = ev match {
-      case Element(id, elem) =>
-        demands(id).onElement()
-        push(out, elem)
-        false
-      case Register(id, callback) =>
-        demands.put(id, new InputState(callback))
-        true
-      case Deregister(id) =>
-        demands.remove(id)
-        if (drainingEnabled && draining) tryCompleteOnDraining()
-        true
-    }
-
     private def tryCompleteOnDraining(): Unit = {
       if (demands.isEmpty && (queue.peek() eq null)) {
         completeStage()
@@ -235,7 +220,19 @@ private[pekko] class MergeHub[T](perProducerBufferSize: Int, drainingEnabled: Bo
       // queue, but then we will eventually reach the Deregister message, too.
       if (nextElem ne null) {
         needWakeup = false
-        if (onEvent(nextElem)) tryProcessNext(firstAttempt = true)
+        nextElem match {
+          case Element(id, elem) =>
+            demands(id).onElement()
+            push(out, elem)
+          // demand consumed by push — exit and wait for the next onPull
+          case Register(id, callback) =>
+            demands.put(id, new InputState(callback))
+            tryProcessNext(firstAttempt = true)
+          case Deregister(id) =>
+            demands.remove(id)
+            if (drainingEnabled && draining) tryCompleteOnDraining()
+            tryProcessNext(firstAttempt = true)
+        }
       } else {
         needWakeup = true
         // additional poll() to grab any elements that might missed the needWakeup
