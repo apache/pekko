@@ -150,8 +150,17 @@ class ForkJoinExecutorConfiguratorSpec extends PekkoSpec(ForkJoinExecutorConfigu
       resolvedMinimumRunnable("fj-explicit-seven-dispatcher") shouldBe 7
     }
 
-    "keep the built-in internal dispatcher on its explicit compensation floor" in {
-      resolvedMinimumRunnable("pekko.actor.internal-dispatcher") shouldBe 4
+    "let the built-in internal dispatcher use its own auto policy" in {
+      val dispatcherConfig =
+        system.dispatchers.config("pekko.actor.internal-dispatcher").getConfig("fork-join-executor")
+      val parallelism = ThreadPoolConfig.scaledPoolSize(
+        dispatcherConfig.getInt("parallelism-min"),
+        dispatcherConfig.getDouble("parallelism-factor"),
+        dispatcherConfig.getInt("parallelism-max"))
+      resolvedMinimumRunnable("pekko.actor.internal-dispatcher") shouldBe resolveMinimumRunnable(
+        configured = dispatcherConfig.getInt("minimum-runnable"),
+        parallelism = parallelism,
+        jdkMajorVersion = JavaVersion.majorVersion)
     }
 
     "auto-scale the default (minimum-runnable not set) on JDK 25+" in {
