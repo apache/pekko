@@ -150,6 +150,10 @@ class MetricsBasedResizerSpec extends PekkoSpec(ResizerSpec.config) with Default
 
       val router = TestRouter(routees(2))
       router.sendToAll(await = true)
+      // Send additional messages to ensure mailbox is non-empty when checked,
+      // avoiding a race condition where currentMessage could be null momentarily
+      router.mockSend(await = false, routeeIdx = 0)
+      router.mockSend(await = false, routeeIdx = 1)
 
       resizer.reportMessageCount(router.routees, router.msgs.size)
       resizer.record.underutilizationStreak shouldBe empty
