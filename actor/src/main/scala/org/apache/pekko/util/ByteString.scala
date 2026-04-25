@@ -413,6 +413,10 @@ object ByteString {
     override def copyToBuffer(buffer: ByteBuffer): Int =
       writeToBuffer(buffer, offset = 0)
 
+    /** INTERNAL API: Specialized for internal use, copying from an offset without slicing. */
+    private[pekko] override def copyToBuffer(buffer: ByteBuffer, offset: Int): Int =
+      writeToBuffer(buffer, offset)
+
     /** INTERNAL API: Specialized for internal use, writing multiple ByteString1C into the same ByteBuffer. */
     private[pekko] def writeToBuffer(buffer: ByteBuffer, offset: Int): Int = {
       val copyLength = Math.max(0, Math.min(buffer.remaining, length - offset))
@@ -550,13 +554,17 @@ object ByteString {
     }
 
     override def copyToBuffer(buffer: ByteBuffer): Int =
-      writeToBuffer(buffer)
+      writeToBuffer(buffer, offset = 0)
+
+    /** INTERNAL API: Specialized for internal use, copying from an offset without slicing. */
+    private[pekko] override def copyToBuffer(buffer: ByteBuffer, offset: Int): Int =
+      writeToBuffer(buffer, offset)
 
     /** INTERNAL API: Specialized for internal use, writing multiple ByteString1C into the same ByteBuffer. */
-    private[pekko] def writeToBuffer(buffer: ByteBuffer): Int = {
-      val copyLength = Math.min(buffer.remaining, length)
+    private[pekko] def writeToBuffer(buffer: ByteBuffer, offset: Int): Int = {
+      val copyLength = Math.max(0, Math.min(buffer.remaining, length - offset))
       if (copyLength > 0) {
-        buffer.put(bytes, startIndex, copyLength)
+        buffer.put(bytes, startIndex + offset, copyLength)
       }
       copyLength
     }
@@ -944,12 +952,28 @@ object ByteString {
 
     def isCompact: Boolean = if (bytestrings.length == 1) bytestrings.head.isCompact else false
 
-    override def copyToBuffer(buffer: ByteBuffer): Int = {
-      val it = bytestrings.iterator
+    override def copyToBuffer(buffer: ByteBuffer): Int =
+      copyToBuffer(buffer, offset = 0)
+
+    /** INTERNAL API: Specialized for internal use, copying from an offset without slicing. */
+    private[pekko] override def copyToBuffer(buffer: ByteBuffer, offset: Int): Int = {
+      var remainingOffset = offset
       var written = 0
-      while (it.hasNext && buffer.hasRemaining) {
-        written += it.next().writeToBuffer(buffer)
+      var i = 0
+      val count = bytestrings.length
+
+      while (i < count && buffer.hasRemaining) {
+        val fragment = bytestrings(i)
+        val fragmentLength = fragment.length
+        if (remainingOffset >= fragmentLength) {
+          remainingOffset -= fragmentLength
+        } else {
+          written += fragment.writeToBuffer(buffer, remainingOffset)
+          remainingOffset = 0
+        }
+        i += 1
       }
+
       written
     }
 
@@ -1769,6 +1793,11 @@ sealed abstract class ByteString
    * @return the number of bytes actually copied
    */
   def copyToBuffer(@nowarn("msg=never used") buffer: ByteBuffer): Int
+
+  /** INTERNAL API: Copy bytes to a ByteBuffer from a ByteString offset without allocating a slice. */
+  private[pekko] def copyToBuffer(buffer: ByteBuffer, offset: Int): Int =
+    if (offset <= 0) copyToBuffer(buffer)
+    else drop(offset).copyToBuffer(buffer)
 
   /**
    * Create a new ByteString with all contents compacted into a single,

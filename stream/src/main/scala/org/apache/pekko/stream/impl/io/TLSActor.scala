@@ -107,7 +107,7 @@ import pekko.util.ByteString
      * with these characteristics, use `prepare()`.
      */
     def chopInto(b: ByteBuffer): Unit = {
-      b.compact()
+      TlsEngineHelpers.prepareForAppend(b)
       if (buffer.isEmpty) {
         buffer = inputBunch.dequeue(idx) match {
           // this class handles both UserIn and TransportIn
@@ -143,10 +143,7 @@ import pekko.util.ByteString
     /**
      * Prepare a fresh ByteBuffer for receiving a chop of data.
      */
-    def prepare(b: ByteBuffer): Unit = {
-      b.clear()
-      b.limit(0)
-    }
+    def prepare(b: ByteBuffer): Unit = TlsEngineHelpers.emptyReadBuffer(b)
   }
 
   // These are Netty's default values
@@ -283,7 +280,8 @@ import pekko.util.ByteString
   }
 
   def completeOrFlush(): Unit =
-    if (engine.isOutboundDone || (engine.isInboundDone && userInChoppingBlock.isEmpty)) nextPhase(completedPhase)
+    if (engine.isOutboundDone || (engine.isInboundDone && userInChoppingBlock.isEmpty && !userInBuffer.hasRemaining))
+      nextPhase(completedPhase)
     else nextPhase(flushingOutbound)
 
   private def doInbound(isOutboundClosed: Boolean, inboundState: TransferState): Boolean =
@@ -308,20 +306,22 @@ import pekko.util.ByteString
     } else if (inboundState.isReady) {
       transportInChoppingBlock.chopInto(transportInBuffer)
       try {
-        doUnwrap(ignoreOutput = false)
+        doUnwrap(ignoreOutput = (inboundState eq inboundHalfClosed) || outputBunch.isCancelled(UserOut))
         true
       } catch {
         case ex: SSLException =>
           if (tracing) log.debug(s"SSLException during doUnwrap: $ex")
           fail(ex, closeTransport = false)
-          engine.closeInbound() // we don't need to add lastHandshakeStatus check here because
+          try engine.closeInbound()
+          catch { case _: SSLException => () }
           completeOrFlush() // it doesn't make any sense to write anything to the network anymore
           false
       }
     } else true
 
   private def doOutbound(isInboundClosed: Boolean): Unit =
-    if (inputBunch.isDepleted(UserIn) && userInChoppingBlock.isEmpty && mayCloseOutbound) {
+    if (inputBunch.isDepleted(UserIn) && userInChoppingBlock.isEmpty && !userInBuffer.hasRemaining &&
+      mayCloseOutbound) {
       if (!isInboundClosed && closing.ignoreComplete) {
         if (tracing) log.debug("ignoring closeOutbound")
       } else {
@@ -444,7 +444,7 @@ import pekko.util.ByteString
               transportInBuffer.position() == oldInPosition =>
             throw new IllegalStateException("SSLEngine trying to loop NEED_UNWRAP without producing output")
           case _ =>
-            if (transportInBuffer.hasRemaining) doUnwrap(ignoreOutput = false)
+            if (transportInBuffer.hasRemaining) doUnwrap(ignoreOutput)
             else flushToUser()
         }
       case CLOSED =>
@@ -459,18 +459,12 @@ import pekko.util.ByteString
     }
   }
 
-  @tailrec
   private def runDelegatedTasks(): Unit = {
-    val task = engine.getDelegatedTask
-    if (task ne null) {
-      if (tracing) log.debug("running task")
-      task.run()
-      runDelegatedTasks()
-    } else {
-      val st = lastHandshakeStatus
-      lastHandshakeStatus = engine.getHandshakeStatus
-      if (tracing && st != lastHandshakeStatus) log.debug(s"handshake status after tasks: $lastHandshakeStatus")
-    }
+    val st = lastHandshakeStatus
+    val taskCount = TlsEngineHelpers.runDelegatedTasks(engine)
+    lastHandshakeStatus = engine.getHandshakeStatus
+    if (tracing && taskCount > 0) log.debug(s"ran $taskCount delegated TLS task(s)")
+    if (tracing && st != lastHandshakeStatus) log.debug(s"handshake status after tasks: $lastHandshakeStatus")
   }
 
   private def handshakeFinished(): Unit = {
