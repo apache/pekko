@@ -118,7 +118,7 @@ object Dependencies {
 
     object TestDependencies {
       val commonsIo = "commons-io" % "commons-io" % "2.22.0" % Test
-      val commonsCodec = "commons-codec" % "commons-codec" % "1.21.0" % Test
+      val commonsCodec = "commons-codec" % "commons-codec" % "1.22.0" % Test
       val junit = "junit" % "junit" % junitVersion % Test
       val junit6 = "org.junit.jupiter" % "junit-jupiter-engine" % junit6Version % Test
       val junitPlatformLauncher = "org.junit.platform" % "junit-platform-launcher" % junit6Version % Test
