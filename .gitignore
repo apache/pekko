@@ -103,3 +103,13 @@ native/
 
 .tmp
 
+# Local AI assistant workspace files
+.agents/
+.aider*
+.claude/
+.codex/
+.continue/
+.cursor/
+.gemini/
+.kiro/
+.windsurf/
