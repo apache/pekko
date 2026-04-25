@@ -188,12 +188,12 @@ private[stream] final class MapAsyncPartitioned[In, Out, Partition](
               case Success(elem) =>
                 if (elem != null) {
                   push(out, elem)
-                  pullIfNeeded()
-                } else {
-                  // elem is null
-                  pullIfNeeded()
                 }
-
+              // pullIfNeeded is deferred until after drainQueue below so that
+              // any FIFO-suspended waiter for the just-freed partition gets started
+              // before upstream is asked for a new element. Pulling early would
+              // synchronously trigger onPush, which would claim the partition slot
+              // (canStartNextElement returns true) and starve the older waiter.
               case Failure(NonFatal(ex)) =>
                 holder.supervisionDirectiveFor(decider, ex) match {
                   // this could happen if we are looping in pushNextIfPossible and end up on a failed future before the
@@ -209,6 +209,11 @@ private[stream] final class MapAsyncPartitioned[In, Out, Partition](
             }
           }
           drainQueue()
+          // Required even when no element was pushed (failure-resume path or
+          // exit on NotYetThere head): completes the stage when upstream is
+          // closed and the buffer drained, and triggers a tryPull when buffer
+          // shrunk via failures.
+          pullIfNeeded()
         }
 
       private def pushNextIfPossibleUnordered(): Unit =
