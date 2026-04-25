@@ -150,15 +150,36 @@ jobs:
         # note that this is not running any multi-jvm tests because multi-in-test=false
         # JDK 21+ ForkJoinPool scheduling changes need a higher timefactor and a larger
         # minimum-runnable to avoid compensation-thread starvation (see #2573, #2870).
+        # Run the internal fork-join dispatchers virtualized in nightly builds so
+        # blocking work can unmount from carrier threads. JDK 25 is more sensitive
+        # on the GitHub runners and needs the capped minimum-runnable value.
         run: |-
           EXTRA_JVM_OPTS=""
+          VIRTUAL_THREAD_JVM_OPTS=""
+          MINIMUM_RUNNABLE=4
           if [ "${{ matrix.javaVersion }}" -ge 25 ]; then
             TIMEFACTOR=4
+            MINIMUM_RUNNABLE=8
           else
             TIMEFACTOR=2
           fi
           if [ "${{ matrix.javaVersion }}" -ge 21 ]; then
-            EXTRA_JVM_OPTS="-Dpekko.actor.default-dispatcher.fork-join-executor.minimum-runnable=4 -Dpekko.remote.default-remote-dispatcher.fork-join-executor.minimum-runnable=4"
+            VIRTUAL_THREAD_JVM_OPTS="--add-opens=java.base/jdk.internal.misc=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED"
+            export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS:-} $VIRTUAL_THREAD_JVM_OPTS"
+            EXTRA_JVM_OPTS="$EXTRA_JVM_OPTS -Dpekko.actor.default-dispatcher.fork-join-executor.minimum-runnable=$MINIMUM_RUNNABLE"
+            EXTRA_JVM_OPTS="$EXTRA_JVM_OPTS -Dpekko.actor.internal-dispatcher.fork-join-executor.minimum-runnable=$MINIMUM_RUNNABLE"
+            EXTRA_JVM_OPTS="$EXTRA_JVM_OPTS -Dpekko.remote.default-remote-dispatcher.fork-join-executor.minimum-runnable=$MINIMUM_RUNNABLE"
+            EXTRA_JVM_OPTS="$EXTRA_JVM_OPTS -Dpekko.remote.classic.backoff-remote-dispatcher.fork-join-executor.minimum-runnable=$MINIMUM_RUNNABLE"
+            EXTRA_JVM_OPTS="$EXTRA_JVM_OPTS -Dpekko.persistence.dispatchers.default-replay-dispatcher.fork-join-executor.minimum-runnable=$MINIMUM_RUNNABLE"
+            EXTRA_JVM_OPTS="$EXTRA_JVM_OPTS -Dpekko.persistence.dispatchers.default-stream-dispatcher.fork-join-executor.minimum-runnable=$MINIMUM_RUNNABLE"
+            EXTRA_JVM_OPTS="$EXTRA_JVM_OPTS -Dpekko.test.stream-dispatcher.fork-join-executor.minimum-runnable=$MINIMUM_RUNNABLE"
+            EXTRA_JVM_OPTS="$EXTRA_JVM_OPTS -Dpekko.actor.default-dispatcher.fork-join-executor.virtualize=on"
+            EXTRA_JVM_OPTS="$EXTRA_JVM_OPTS -Dpekko.actor.internal-dispatcher.fork-join-executor.virtualize=on"
+            EXTRA_JVM_OPTS="$EXTRA_JVM_OPTS -Dpekko.remote.default-remote-dispatcher.fork-join-executor.virtualize=on"
+            EXTRA_JVM_OPTS="$EXTRA_JVM_OPTS -Dpekko.remote.classic.backoff-remote-dispatcher.fork-join-executor.virtualize=on"
+            EXTRA_JVM_OPTS="$EXTRA_JVM_OPTS -Dpekko.persistence.dispatchers.default-replay-dispatcher.fork-join-executor.virtualize=on"
+            EXTRA_JVM_OPTS="$EXTRA_JVM_OPTS -Dpekko.persistence.dispatchers.default-stream-dispatcher.fork-join-executor.virtualize=on"
+            EXTRA_JVM_OPTS="$EXTRA_JVM_OPTS -Dpekko.test.stream-dispatcher.fork-join-executor.virtualize=on"
           fi
           sbt \
             -Dpekko.cluster.assert=on \

@@ -22,6 +22,7 @@ import org.apache.pekko
 import pekko.stream.QueueOfferResult
 import pekko.stream.testkit.{ StreamSpec, TestSubscriber }
 import pekko.stream.testkit.scaladsl.TestSink
+import pekko.testkit.TestDuration
 import pekko.testkit.WithLogCapturing
 
 class BoundedSourceQueueSpec extends StreamSpec("""pekko.loglevel = debug
@@ -143,9 +144,9 @@ class BoundedSourceQueueSpec extends StreamSpec("""pekko.loglevel = debug
 
       class QueueingThread extends Thread {
         override def run(): Unit = {
-          var numElemsEnqueued = 0
-          var numElemsDropped = 0
-          def runLoop(): Unit = {
+          def runLoop(): (Int, Int) = {
+            var numElemsEnqueued = 0
+            var numElemsDropped = 0
             val r = ThreadLocalRandom.current()
 
             var done = false
@@ -164,11 +165,12 @@ class BoundedSourceQueueSpec extends StreamSpec("""pekko.loglevel = debug
                 done = true
               } else if (i % 100 == 0) Thread.sleep(1) // probabilistic producer throttling delay
             }
+            (numElemsEnqueued, numElemsDropped)
           }
 
           startBarrier.countDown()
           startBarrier.await() // wait for all threads being in this state before starting race
-          runLoop()
+          val (numElemsEnqueued, numElemsDropped) = runLoop()
           stopBarrier.countDown()
           log.debug(
             f"Thread $getName%-20s enqueued: $numElemsEnqueued%7d dropped: $numElemsDropped%7d before completion")
@@ -204,7 +206,7 @@ class BoundedSourceQueueSpec extends StreamSpec("""pekko.loglevel = debug
           if (sendQueue.offer(round * 1000 + n) != QueueOfferResult.Enqueued)
             fail(s"offer failed at round $round message $n")
         }
-        downstream.expectNext((1 to burstSize).map(_ + round * 1000).toList)
+        downstream.expectNext(30.seconds.dilated, (1 to burstSize).map(_ + round * 1000).toList)
         downstream.request(1)
       }
 

@@ -200,6 +200,34 @@ Pekko, like most Scala projects, compiles faster with the Graal JIT enabled. The
 * Use a JDK > 10
 * Use the following JVM options for SBT e.g. by adding them to the `SBT_OPTS` environment variable: `-XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI -XX:+UseJVMCICompiler`
 
+### JDK 21+ Nightly Virtual Threads
+
+The JDK nightly build enables virtual threads for selected dispatchers on JDK 21 and newer with system properties in
+`.github/workflows/nightly-builds.yml`. This is a CI-only opt-in; local runs, PR validation, and the reference
+configuration keep `virtualize = off` unless explicitly overridden.
+For fork-join dispatchers, `virtualize = on` uses each dispatcher's own fork-join pool as the virtual-thread scheduler,
+preserving dispatcher isolation rather than routing the selected dispatchers through the JVM-wide default virtual-thread
+scheduler.
+
+The nightly override covers:
+
+* `pekko.actor.default-dispatcher.fork-join-executor.virtualize=on`
+* `pekko.actor.internal-dispatcher.fork-join-executor.virtualize=on`
+* `pekko.remote.default-remote-dispatcher.fork-join-executor.virtualize=on`
+* `pekko.remote.classic.backoff-remote-dispatcher.fork-join-executor.virtualize=on`
+* `pekko.persistence.dispatchers.default-replay-dispatcher.fork-join-executor.virtualize=on`
+* `pekko.persistence.dispatchers.default-stream-dispatcher.fork-join-executor.virtualize=on`
+* `pekko.test.stream-dispatcher.fork-join-executor.virtualize=on`
+
+When reproducing this workflow locally on JDK 21+, use `cp .jvmopts-ci .jvmopts` for the CI launcher settings and add
+the same virtual-thread `--add-opens` options that the nightly workflow exports through `JDK_JAVA_OPTIONS`:
+
+* `--add-opens=java.base/jdk.internal.misc=ALL-UNNAMED`
+* `--add-opens=java.base/java.lang=ALL-UNNAMED`
+
+The nightly build also keeps the JDK 21+ `minimum-runnable` override because virtualized fork-join dispatchers still use
+carrier threads.
+
 ### The `validatePullRequest` task
 
 The Pekko build includes a special task called `validatePullRequest`, which investigates the changes made as well as dirty

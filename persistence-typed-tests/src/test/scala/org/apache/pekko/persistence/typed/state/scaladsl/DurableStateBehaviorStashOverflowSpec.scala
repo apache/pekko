@@ -129,7 +129,7 @@ class DurableStateBehaviorStashOverflowSpec
       journal.completeUpsertFuture()
 
       // exactly how many is racy but at least the first stash buffer full should complete
-      probe.receiveMessages(stashCapacity)
+      probe.receiveMessages(stashCapacity, 30.seconds)
     }
   }
 }

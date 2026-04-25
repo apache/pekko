@@ -53,8 +53,13 @@ Set `minimum-runnable` explicitly (any non-negative integer) to opt out of the a
 `minimum-runnable = 1` restores the previous default, and `minimum-runnable = 0` disables compensation entirely.
 
 **Experimental**: When Running on Java 21+, you can use `virtualize=on` to enable the virtual threads feature.
-When using virtual threads, all virtual threads will use the same `unparker`, so you may want to 
-increase the number of `jdk.unparker.maxPoolSize`. 
+When `virtualize=on` is used with a dispatcher executor such as `fork-join-executor` or `thread-pool-executor`, Pekko
+uses that dispatcher's own executor as the virtual-thread scheduler. This preserves dispatcher isolation instead of
+routing all virtual threads through the JVM-wide default virtual-thread scheduler. The JVM still uses a shared
+`unparker`, so you may want to increase the number of `jdk.unparker.maxPoolSize`.
+The setting can also be enabled with a system property such as
+`-Dpekko.actor.default-dispatcher.fork-join-executor.virtualize=on`. Pekko's reference configuration keeps it `off` by
+default; use an explicit application or test configuration when opting in.
 
 #### Requirements
 
@@ -107,4 +112,3 @@ So in this example it's a top-level section, but you could for instance put it a
 where you'd use periods to denote sub-sections, like this: `"foo.bar.my-dispatcher"`
 
 @@@
-
