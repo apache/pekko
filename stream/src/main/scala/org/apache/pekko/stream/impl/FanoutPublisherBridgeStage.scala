@@ -68,6 +68,7 @@ import org.reactivestreams.{ Publisher, Subscriber }
 
       private var everSubscribed = false
       private var requestedFromUpstream = 0L
+      private var terminationSignalled = false
 
       private val requestCallback = getAsyncCallback[(FanoutPublisherBridgeSubscription[T], Long)] {
         case (subscription, elements) =>
@@ -103,6 +104,7 @@ import org.reactivestreams.{ Publisher, Subscriber }
               materializer.logger.warning(
                 "Subscription timeout expired for [{}], no subscriber attached in time",
                 materializedPublisher)
+              terminationSignalled = true
               materializedPublisher.shutdown(Some(ex))
               failStage(ex)
             case WarnTermination =>
@@ -120,6 +122,7 @@ import org.reactivestreams.{ Publisher, Subscriber }
         if (!isClosed(in)) cancel(in)
 
       override protected def shutdown(completed: Boolean): Unit = {
+        terminationSignalled = true
         materializedPublisher.shutdown(if (completed) None else ActorPublisher.SomeNormalShutdownReason)
         completeStage()
       }
@@ -142,14 +145,18 @@ import org.reactivestreams.{ Publisher, Subscriber }
         completeDownstream()
 
       override def onUpstreamFailure(ex: Throwable): Unit = {
+        terminationSignalled = true
         abortDownstream(ex)
         materializedPublisher.shutdown(Some(ex))
         failStage(ex)
       }
 
       override def postStop(): Unit =
-        try abortDownstream(ActorPublisher.NormalShutdownReason)
-        finally materializedPublisher.shutdown(ActorPublisher.SomeNormalShutdownReason)
+        if (!terminationSignalled) {
+          val ex = new AbruptStageTerminationException(this)
+          try abortDownstream(ex)
+          finally materializedPublisher.shutdown(Some(ex))
+        }
 
       private def tryPullIfNeeded(): Unit =
         if (requestedFromUpstream > 0 && !hasBeenPulled(in) && !isClosed(in)) pull(in)
