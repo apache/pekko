@@ -29,7 +29,23 @@ import pekko.testkit.TestActorRef
 import pekko.testkit.TestProbe
 import pekko.util.SerializedSuspendableExecutionContext
 
-class ExecutionContextSpec extends PekkoSpec with DefaultTimeout {
+object ExecutionContextSpec {
+  val BatchingDispatcher = "pekko.test.batching-dispatcher"
+
+  val config = s"""
+    $BatchingDispatcher = $${pekko.actor.default-dispatcher}
+    $BatchingDispatcher.fork-join-executor.virtualize = off
+    """
+}
+
+class ExecutionContextSpec extends PekkoSpec(ExecutionContextSpec.config) with DefaultTimeout {
+  import ExecutionContextSpec._
+
+  def batchingDispatcher: ExecutionContextExecutor = {
+    val dispatcher = system.dispatchers.lookup(BatchingDispatcher)
+    dispatcher.isInstanceOf[BatchingExecutor] should ===(true)
+    dispatcher
+  }
 
   "An ExecutionContext" must {
 
@@ -53,9 +69,7 @@ class ExecutionContextSpec extends PekkoSpec with DefaultTimeout {
     }
 
     "be able to use Batching" in {
-      system.dispatcher.isInstanceOf[BatchingExecutor] should ===(true)
-
-      import system.dispatcher
+      implicit val dispatcher: ExecutionContextExecutor = batchingDispatcher
 
       def batchable[T](f: => T)(implicit ec: ExecutionContext): Unit =
         ec.execute(new Batchable {
@@ -83,8 +97,7 @@ class ExecutionContextSpec extends PekkoSpec with DefaultTimeout {
     }
 
     "be able to avoid starvation when Batching is used and Await/blocking is called" in {
-      system.dispatcher.isInstanceOf[BatchingExecutor] should ===(true)
-      import system.dispatcher
+      implicit val dispatcher: ExecutionContextExecutor = batchingDispatcher
 
       def batchable[T](f: => T)(implicit ec: ExecutionContext): Unit =
         ec.execute(new Batchable {
@@ -108,8 +121,7 @@ class ExecutionContextSpec extends PekkoSpec with DefaultTimeout {
     }
 
     "work with tasks that use blocking{} multiple times" in {
-      system.dispatcher.isInstanceOf[BatchingExecutor] should be(true)
-      import system.dispatcher
+      implicit val dispatcher: ExecutionContextExecutor = batchingDispatcher
 
       val f = Future(()).flatMap { _ =>
         // this needs to be within an OnCompleteRunnable so that things are added to the batch
@@ -135,8 +147,7 @@ class ExecutionContextSpec extends PekkoSpec with DefaultTimeout {
     }
 
     "work with tasks that block inside blocking" in {
-      system.dispatcher.isInstanceOf[BatchingExecutor] should be(true)
-      import system.dispatcher
+      implicit val dispatcher: ExecutionContextExecutor = batchingDispatcher
 
       val f = Future(()).flatMap { _ =>
         blocking {
