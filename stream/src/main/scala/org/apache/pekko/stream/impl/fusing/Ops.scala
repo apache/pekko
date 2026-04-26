@@ -45,7 +45,7 @@ import pekko.stream.impl.{
   TraversalBuilder
 }
 import pekko.stream.impl.Stages.DefaultAttributes
-import pekko.stream.impl.fusing.GraphStages.{ FutureSource, SimpleLinearGraphStage, SingleSource }
+import pekko.stream.impl.fusing.GraphStages.{ FutureSource, RepeatSource, SimpleLinearGraphStage, SingleSource }
 import pekko.stream.scaladsl.{
   DelayStrategy,
   Source,
@@ -2195,6 +2195,12 @@ private[pekko] object TakeWithin {
                       }
                     case iterableSource: IterableSource[T @unchecked] =>
                       emitMultiple(out, iterableSource.elements, () => completeStage())
+                    case iteratorSource: IteratorSource[T @unchecked] =>
+                      emitMultiple(out, iteratorSource.createIterator(), () => completeStage())
+                    case rangeSource: RangeSource[T @unchecked] =>
+                      emitMultiple(out, rangeSource.range.iterator.asInstanceOf[Iterator[T]], () => completeStage())
+                    case repeatSource: RepeatSource[T @unchecked] =>
+                      emitMultiple(out, Iterator.continually(repeatSource.elem), () => completeStage())
                     case javaStreamSource: JavaStreamSource[T @unchecked, _] =>
                       emitMultiple(out, javaStreamSource.open().spliterator(), () => completeStage())
                     case _ =>

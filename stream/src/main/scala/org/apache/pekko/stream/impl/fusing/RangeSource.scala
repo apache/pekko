@@ -1,0 +1,63 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.pekko.stream.impl.fusing
+
+import scala.collection.immutable
+
+import org.apache.pekko
+import pekko.annotation.InternalApi
+import pekko.stream.{ Attributes, Outlet, SourceShape }
+import pekko.stream.impl.ReactiveStreamsCompliance
+import pekko.stream.stage.{ GraphStage, GraphStageLogic, OutHandler }
+
+@InternalApi
+private[pekko] final class RangeSource[T](val range: immutable.Range, defaultAttributes: Attributes)
+    extends GraphStage[SourceShape[T]] {
+  ReactiveStreamsCompliance.requireNonNullElement(range)
+
+  override protected def initialAttributes: Attributes = defaultAttributes
+
+  private val out = Outlet[T]("RangeSource.out")
+  override val shape: SourceShape[T] = SourceShape(out)
+
+  override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
+    new GraphStageLogic(shape) with OutHandler {
+      private[this] val isEmptyRange = range.isEmpty
+      private[this] val rangeLast = if (isEmptyRange) 0 else range.last
+      private[this] val rangeStep = range.step
+      private[this] var nextElement = range.start
+
+      override def preStart(): Unit =
+        if (isEmptyRange) completeStage()
+
+      override def onPull(): Unit = {
+        val current = nextElement
+        val isLast = current == rangeLast
+        if (!isLast)
+          nextElement = current + rangeStep
+
+        push(out, current.asInstanceOf[T])
+        if (isLast)
+          completeStage()
+      }
+
+      setHandler(out, this)
+    }
+
+  override def toString: String = "RangeSource"
+}

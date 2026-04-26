@@ -369,6 +369,52 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
       // #repeat
       f.futureValue shouldBe Done
     }
+
+    "work when flattened through value-presented source fast path" in {
+      Source
+        .single("repeat")
+        .flatMapConcat(_ => Source.repeat(42))
+        .take(3)
+        .runWith(Sink.seq)
+        .futureValue should ===(immutable.Seq(42, 42, 42))
+    }
+
+    "work when recovered through value-presented source fast path" in {
+      Source
+        .failed[Int](TE("boom"))
+        .recoverWithRetries(1, { case _ => Source.repeat(42) })
+        .take(3)
+        .runWith(Sink.seq)
+        .futureValue should ===(immutable.Seq(42, 42, 42))
+    }
+  }
+
+  "Range Source" must {
+    "emit inclusive and exclusive ranges" in {
+      Source(1 to 4).runWith(Sink.seq).futureValue should ===(immutable.Seq(1, 2, 3, 4))
+      Source(1 until 4).runWith(Sink.seq).futureValue should ===(immutable.Seq(1, 2, 3))
+    }
+
+    "emit stepped and empty ranges" in {
+      Source(5 to 1 by -2).runWith(Sink.seq).futureValue should ===(immutable.Seq(5, 3, 1))
+      Source(1 to 5 by -1).runWith(Sink.seq).futureValue should ===(immutable.Seq.empty)
+    }
+
+    "work when flattened through value-presented source fast path" in {
+      Source
+        .single("range")
+        .flatMapConcat(_ => Source(1 to 3))
+        .runWith(Sink.seq)
+        .futureValue should ===(immutable.Seq(1, 2, 3))
+    }
+
+    "work when recovered through value-presented source fast path" in {
+      Source
+        .failed[Int](TE("boom"))
+        .recoverWithRetries(1, { case _ => Source(1 to 3) })
+        .runWith(Sink.seq)
+        .futureValue should ===(immutable.Seq(1, 2, 3))
+    }
   }
 
   "Unfold Source" must {
@@ -435,6 +481,22 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
     "properly iterate" in {
       Source.fromIterator(() => Iterator.iterate(false)(!_)).grouped(10).runWith(Sink.head).futureValue should ===(
         immutable.Seq(false, true, false, true, false, true, false, true, false, true))
+    }
+
+    "work when flattened through value-presented source fast path" in {
+      Source
+        .single("iterator")
+        .flatMapConcat(_ => Source.fromIterator(() => Iterator(1, 2, 3)))
+        .runWith(Sink.seq)
+        .futureValue should ===(immutable.Seq(1, 2, 3))
+    }
+
+    "work when recovered through value-presented source fast path" in {
+      Source
+        .failed[Int](TE("boom"))
+        .recoverWithRetries(1, { case _ => Source.fromIterator(() => Iterator(1, 2, 3)) })
+        .runWith(Sink.seq)
+        .futureValue should ===(immutable.Seq(1, 2, 3))
     }
 
     "fail stream when iterator throws" in {

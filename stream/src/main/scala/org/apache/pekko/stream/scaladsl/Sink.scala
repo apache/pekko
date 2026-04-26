@@ -150,13 +150,7 @@ object Sink {
       case s: Sink[T, M]                                       => s
       case s: javadsl.Sink[T, M] @unchecked                    => s.asScala
       case g: GraphStageWithMaterializedValue[SinkShape[T], M] =>
-        // move these from the stage itself to make the returned source
-        // behave as it is the stage with regards to attributes
-        val attrs = g.traversalBuilder.attributes
-        val noAttrStage = g.withAttributes(Attributes.none)
-        new Sink(
-          LinearTraversalBuilder.fromBuilder(noAttrStage.traversalBuilder, noAttrStage.shape, Keep.right),
-          noAttrStage.shape).withAttributes(attrs)
+        new Sink(LinearTraversalBuilder.fromGraphStage(g), g.shape)
 
       case other =>
         new Sink(LinearTraversalBuilder.fromBuilder(other.traversalBuilder, other.shape, Keep.right), other.shape)

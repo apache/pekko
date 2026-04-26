@@ -294,6 +294,20 @@ import pekko.stream.stage._
     override def toString: String = "SingleSource"
   }
 
+  final class RepeatSource[T](val elem: T) extends GraphStage[SourceShape[T]] {
+    override def initialAttributes: Attributes = DefaultAttributes.repeat
+    val out = Outlet[T]("repeat.out")
+    override val shape = SourceShape(out)
+    override def createLogic(attr: Attributes): GraphStageLogic =
+      new GraphStageLogic(shape) with OutHandler {
+        override def onPull(): Unit = push(out, elem)
+
+        setHandler(out, this)
+      }
+
+    override def toString: String = "RepeatSource"
+  }
+
   final class FutureFlattenSource[T, M](futureSource: Future[Graph[SourceShape[T], M]])
       extends GraphStageWithMaterializedValue[SourceShape[T], Future[M]] {
     ReactiveStreamsCompliance.requireNonNullElement(futureSource)

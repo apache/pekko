@@ -19,8 +19,9 @@ import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream._
 import pekko.stream.impl.TraversalTestUtils._
-import pekko.stream.impl.fusing.GraphStages.{ FutureSource, SingleSource }
-import pekko.stream.impl.fusing.IterableSource
+import pekko.stream.impl.Stages.DefaultAttributes
+import pekko.stream.impl.fusing.GraphStages.{ FutureSource, RepeatSource, SingleSource }
+import pekko.stream.impl.fusing.{ IterableSource, IteratorSource, RangeSource }
 import pekko.stream.scaladsl.{ Keep, Source }
 import pekko.testkit.PekkoSpec
 import pekko.util.OptionVal
@@ -544,6 +545,40 @@ class TraversalBuilderSpec extends PekkoSpec {
 
     TraversalBuilder.getValuePresentedSource(Source(iterable).async) should be(OptionVal.None)
     TraversalBuilder.getValuePresentedSource(Source(iterable).mapMaterializedValue(_ => "Mat")) should be(
+      OptionVal.None)
+  }
+
+  "find Source.fromIterator via TraversalBuilder with getValuePresentedSource" in {
+    val createIterator = () => Iterator("a", "b", "c")
+    TraversalBuilder.getValuePresentedSource(Source.fromIterator(createIterator)).get.asInstanceOf[IteratorSource[
+      String]].createIterator should ===(
+      createIterator)
+    val iteratorSource = new IteratorSource(createIterator, DefaultAttributes.iterableSource)
+    TraversalBuilder.getValuePresentedSource(iteratorSource) should be(OptionVal.Some(iteratorSource))
+
+    TraversalBuilder.getValuePresentedSource(Source.fromIterator(createIterator).async) should be(OptionVal.None)
+    TraversalBuilder.getValuePresentedSource(
+      Source.fromIterator(createIterator).mapMaterializedValue(_ => "Mat")) should be(OptionVal.None)
+  }
+
+  "find Source.range via TraversalBuilder with getValuePresentedSource" in {
+    val range = 1 to 4
+    TraversalBuilder.getValuePresentedSource(Source(range)).get.asInstanceOf[RangeSource[Int]].range should ===(range)
+    val rangeSource = new RangeSource[Int](range, DefaultAttributes.iterableSource)
+    TraversalBuilder.getValuePresentedSource(rangeSource) should be(OptionVal.Some(rangeSource))
+
+    TraversalBuilder.getValuePresentedSource(Source(range).async) should be(OptionVal.None)
+    TraversalBuilder.getValuePresentedSource(Source(range).mapMaterializedValue(_ => "Mat")) should be(OptionVal.None)
+  }
+
+  "find Source.repeat via TraversalBuilder with getValuePresentedSource" in {
+    TraversalBuilder.getValuePresentedSource(Source.repeat("a")).get.asInstanceOf[RepeatSource[String]].elem should ===(
+      "a")
+    val repeatSource = new RepeatSource("a")
+    TraversalBuilder.getValuePresentedSource(repeatSource) should be(OptionVal.Some(repeatSource))
+
+    TraversalBuilder.getValuePresentedSource(Source.repeat("c").async) should be(OptionVal.None)
+    TraversalBuilder.getValuePresentedSource(Source.repeat("d").mapMaterializedValue(_ => "Mat")) should be(
       OptionVal.None)
   }
 
