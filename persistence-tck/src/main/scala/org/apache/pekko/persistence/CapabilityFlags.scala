@@ -95,5 +95,24 @@ trait DurableStateStoreCapabilityFlags extends CapabilityFlags {
    * a `deleteObject` call when the revision does not match the stored revision.
    */
   protected def supportsDeleteWithRevisionCheck: CapabilityFlag
+
+  /**
+   * When `true` enables tests which check if the durable state store properly rejects
+   * an `upsertObject` call when the revision is stale (does not match the expected next revision).
+   * This is the optimistic concurrency check on writes.
+   */
+  protected def supportsUpsertWithRevisionCheck: CapabilityFlag
+
+  /**
+   * When `true` enables tests which check if the durable state store properly serializes
+   * and deserializes values via the configured Pekko serializer infrastructure.
+   */
+  protected def supportsSerialization: CapabilityFlag
+
+  /**
+   * When `true` enables tests which check the deprecated single-argument `deleteObject(persistenceId)`
+   * overload, which deletes regardless of the current revision.
+   */
+  protected def supportsSoftDelete: CapabilityFlag
 }
 //#durable-state-store-flags

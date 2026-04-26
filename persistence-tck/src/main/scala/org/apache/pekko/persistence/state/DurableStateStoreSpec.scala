@@ -13,22 +13,31 @@
 
 package org.apache.pekko.persistence.state
 
+import scala.annotation.nowarn
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
-import pekko.persistence.CapabilityFlag
-import pekko.persistence.DurableStateStoreCapabilityFlags
-import pekko.persistence.PluginSpec
+import pekko.persistence._
 import pekko.persistence.scalatest.{ MayVerb, OptionalTests }
 import pekko.persistence.state.scaladsl.DurableStateUpdateStore
+import pekko.testkit.TestProbe
 
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 
 object DurableStateStoreSpec {
-  val config: Config = ConfigFactory.empty()
+  val config: Config = ConfigFactory.parseString(s"""
+    pekko.actor {
+      serializers {
+        durable-state-tck-test = "${classOf[TestSerializer].getName}"
+      }
+      serialization-bindings {
+        "${classOf[TestPayload].getName}" = durable-state-tck-test
+      }
+    }
+    """)
 }
 
 /**
@@ -54,6 +63,25 @@ abstract class DurableStateStoreSpec(config: Config)
 
   override protected def supportsDeleteWithRevisionCheck: CapabilityFlag = CapabilityFlag.off()
 
+  override protected def supportsUpsertWithRevisionCheck: CapabilityFlag = CapabilityFlag.off()
+
+  override protected def supportsSerialization: CapabilityFlag = CapabilityFlag.on()
+
+  override protected def supportsSoftDelete: CapabilityFlag = CapabilityFlag.off()
+
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
+    preparePersistenceId(pid)
+  }
+
+  /**
+   * Overridable hook that is called before each test case.
+   * `pid` is the `persistenceId` that will be used in the test.
+   * This method may be needed to clean any pre-existing state from the store,
+   * for example when running against a shared external database.
+   */
+  def preparePersistenceId(@nowarn("msg=never used") pid: String): Unit = ()
+
   /**
    * Returns the `DurableStateUpdateStore` under test. By default, this uses the plugin
    * configured under `pekko.persistence.state.plugin` in the provided config.
@@ -61,7 +89,7 @@ abstract class DurableStateStoreSpec(config: Config)
   def durableStateStore(): DurableStateUpdateStore[Any] =
     DurableStateStoreRegistry(system).durableStateStoreFor[DurableStateUpdateStore[Any]]("")
 
-  private val timeout = 3.seconds
+  protected val timeout: FiniteDuration = 5.seconds
 
   "A durable state store" must {
     "not find a non-existing object" in {
@@ -111,6 +139,18 @@ abstract class DurableStateStoreSpec(config: Config)
       result1.value shouldBe Some(value1)
       result2.value shouldBe Some(value2)
     }
+
+    "upsert again after a deletion" in {
+      val store = durableStateStore()
+      val original = s"state-${pid}"
+      val recreated = s"state-${pid}-v2"
+      Await.result(store.upsertObject(pid, 1L, original, "test-tag"), timeout)
+      Await.result(store.deleteObject(pid, 2L), timeout)
+      Await.result(store.upsertObject(pid, 3L, recreated, "test-tag"), timeout)
+      val result = Await.result(store.getObject(pid), timeout)
+      result.value shouldBe Some(recreated)
+      result.revision shouldBe 3L
+    }
   }
 
   "A durable state store optionally".may {
@@ -127,6 +167,49 @@ abstract class DurableStateStoreSpec(config: Config)
         val result = Await.result(store.getObject(pid), timeout)
         result.value shouldBe Some(value)
         result.revision shouldBe 1L
+      }
+    }
+
+    optional(flag = supportsUpsertWithRevisionCheck) {
+      "fail to upsert a state when the revision is stale" in {
+        val store = durableStateStore()
+        val original = s"state-${pid}"
+        val stale = s"state-${pid}-stale"
+        Await.result(store.upsertObject(pid, 1L, original, "test-tag"), timeout)
+        // Re-using revision 1 should be rejected; the next valid revision is 2.
+        val staleUpsert = store.upsertObject(pid, 1L, stale, "test-tag")
+        intercept[Exception] {
+          Await.result(staleUpsert, timeout)
+        }
+        // The original state should still be accessible
+        val result = Await.result(store.getObject(pid), timeout)
+        result.value shouldBe Some(original)
+        result.revision shouldBe 1L
+      }
+    }
+
+    optional(flag = supportsSerialization) {
+      "serialize and deserialize values via the configured serializer" in {
+        val store = durableStateStore()
+        val probe = TestProbe()
+        val value = TestPayload(probe.ref)
+        Await.result(store.upsertObject(pid, 1L, value, "test-tag"), timeout)
+        val result = Await.result(store.getObject(pid), timeout)
+        result.value shouldBe Some(value)
+        result.revision shouldBe 1L
+      }
+    }
+
+    optional(flag = supportsSoftDelete) {
+      "delete a state via the deprecated deleteObject overload" in {
+        val store = durableStateStore()
+        val value = s"state-${pid}"
+        Await.result(store.upsertObject(pid, 1L, value, "test-tag"), timeout)
+        @nowarn("cat=deprecation")
+        val deleteResult = store.deleteObject(pid)
+        Await.result(deleteResult, timeout)
+        val result = Await.result(store.getObject(pid), timeout)
+        result.value shouldBe None
       }
     }
   }

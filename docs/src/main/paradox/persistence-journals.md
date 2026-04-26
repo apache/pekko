@@ -134,6 +134,14 @@ Scala
 Java
 :  @@snip [LambdaPersistencePluginDocTest.java](/docs/src/test/java/jdocs/persistence/LambdaPersistencePluginDocTest.java) { #snapshot-store-tck-java }
 
+To include the `DurableStateStore` TCK tests in your test suite simply extend the provided @scala[`DurableStateStoreSpec`]@java[`JavaDurableStateStoreSpec`]:
+
+Scala
+:  @@snip [PersistencePluginDocSpec.scala](/docs/src/test/scala/docs/persistence/PersistencePluginDocSpec.scala) { #durable-state-tck-scala }
+
+Java
+:  @@snip [LambdaPersistencePluginDocTest.java](/docs/src/test/java/jdocs/persistence/LambdaPersistencePluginDocTest.java) { #durable-state-tck-java }
+
 In case your plugin requires some setting up (starting a mock database, removing temporary files etc.) you can override the
 `beforeAll` and `afterAll` methods to hook into the tests lifecycle:
 

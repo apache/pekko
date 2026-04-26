@@ -33,4 +33,5 @@ object PersistenceTestKitDurableStateStoreTCKSpec {
 class PersistenceTestKitDurableStateStoreTCKSpec
     extends DurableStateStoreSpec(PersistenceTestKitDurableStateStoreTCKSpec.config) {
   override protected def supportsDeleteWithRevisionCheck: CapabilityFlag = CapabilityFlag.off()
+  override protected def supportsSerialization: CapabilityFlag = CapabilityFlag.off()
 }

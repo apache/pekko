@@ -38,6 +38,10 @@ import com.typesafe.config.Config
 class JavaDurableStateStoreSpec(config: Config) extends DurableStateStoreSpec(config) {
   override protected def supportsDeleteWithRevisionCheck: CapabilityFlag = CapabilityFlag.off()
 
+  override protected def supportsUpsertWithRevisionCheck: CapabilityFlag = CapabilityFlag.off()
+
+  override protected def supportsSoftDelete: CapabilityFlag = CapabilityFlag.off()
+
   override def runTests(testName: Option[String], args: Args): Status =
     super.runTests(testName, args)
 

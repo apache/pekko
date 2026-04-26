@@ -27,6 +27,7 @@ import org.apache.pekko.actor.*;
 import org.apache.pekko.persistence.*;
 import org.apache.pekko.persistence.japi.journal.JavaJournalSpec;
 import org.apache.pekko.persistence.japi.snapshot.JavaSnapshotStoreSpec;
+import org.apache.pekko.persistence.japi.state.JavaDurableStateStoreSpec;
 import org.apache.pekko.persistence.journal.japi.*;
 import org.apache.pekko.persistence.journal.leveldb.SharedLeveldbJournal;
 import org.apache.pekko.persistence.journal.leveldb.SharedLeveldbStore;
@@ -170,6 +171,30 @@ public class LambdaPersistencePluginDocTest {
           }
         }
         // #snapshot-store-tck-java
+      };
+
+  static Object o3b =
+      new Object() {
+        // #durable-state-tck-java
+        class MyDurableStateStoreTest extends JavaDurableStateStoreSpec {
+
+          public MyDurableStateStoreTest() {
+            super(
+                ConfigFactory.parseString(
+                    "pekko.persistence.state.plugin = \"my.durable-state.plugin\""));
+          }
+
+          @Override
+          public CapabilityFlag supportsDeleteWithRevisionCheck() {
+            return CapabilityFlag.on();
+          }
+
+          @Override
+          public CapabilityFlag supportsUpsertWithRevisionCheck() {
+            return CapabilityFlag.on();
+          }
+        }
+        // #durable-state-tck-java
       };
 
   static Object o4 =

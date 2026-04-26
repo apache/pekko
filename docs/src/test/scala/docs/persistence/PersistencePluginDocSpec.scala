@@ -222,6 +222,27 @@ object PersistenceTCKDoc {
     }
     // #snapshot-store-tck-scala
   }
+  object example2b {
+    import org.apache.pekko.persistence.state.DurableStateStoreSpec
+
+    // #durable-state-tck-scala
+    class MyDurableStateStoreSpec
+        extends DurableStateStoreSpec(
+          config = ConfigFactory.parseString("""
+        pekko.persistence.state.plugin = "my.durable-state.plugin"
+        """)) {
+
+      override def supportsDeleteWithRevisionCheck: CapabilityFlag =
+        true // or CapabilityFlag.on
+
+      override def supportsUpsertWithRevisionCheck: CapabilityFlag =
+        true // or CapabilityFlag.on
+
+      override def supportsSerialization: CapabilityFlag =
+        true // or CapabilityFlag.on
+    }
+    // #durable-state-tck-scala
+  }
   object example3 {
     import java.io.File
 
