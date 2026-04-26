@@ -22,14 +22,19 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.testkit.EventFilter
-import pekko.stream.Attributes
-import pekko.stream.ActorAttributes
-import pekko.stream.StreamSubscriptionTimeoutTerminationMode
+import pekko.stream.{
+  AbruptStageTerminationException,
+  ActorAttributes,
+  Attributes,
+  Materializer,
+  StreamSubscriptionTimeoutTerminationMode
+}
 import pekko.stream.scaladsl.Keep
 import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.Source
 import pekko.stream.testkit.TestPublisher
 import pekko.stream.testkit.StreamSpec
+import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.stream.testkit.Utils.TE
 
@@ -222,6 +227,25 @@ class FanoutPublisherBehaviorSpec extends StreamSpec {
       subscriber.expectNext(42)
       upstream.sendComplete()
       subscriber.expectComplete()
+    }
+
+  }
+
+  "FanoutPublisherBridgeStage" must {
+
+    "fail active and late subscribers on abrupt materializer shutdown" in {
+      val mat = Materializer(system)
+      val publisher = Source.maybe[Int].runWith(Sink.fromGraph(new FanoutPublisherBridgeStage[Int]))(mat)
+      val subscriber = TestSubscriber.manualProbe[Int]()
+
+      publisher.subscribe(subscriber)
+      subscriber.expectSubscription()
+      mat.shutdown()
+
+      subscriber.expectError() shouldBe an[AbruptStageTerminationException]
+      val lateSubscriber = TestSubscriber.manualProbe[Int]()
+      publisher.subscribe(lateSubscriber)
+      lateSubscriber.expectSubscriptionAndError() shouldBe an[AbruptStageTerminationException]
     }
 
   }

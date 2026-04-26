@@ -94,7 +94,9 @@ class Slf4jLoggerSpec extends PekkoSpec(Slf4jLoggerSpec.config) with BeforeAndAf
     output.reset()
   }
 
-  val sourceThreadRegex = "sourceThread=Slf4jLoggerSpec-pekko.actor.default-dispatcher-[1-9][0-9]*"
+  val dispatcherThreadSuffixRegex = "(?:[1-9][0-9]*|virtual-thread(?:-[0-9]+)?)"
+  val sourceThreadRegex =
+    s"sourceThread=Slf4jLoggerSpec-pekko\\.actor\\.default-dispatcher-$dispatcherThreadSuffixRegex"
 
   "Slf4jLogger" must {
 

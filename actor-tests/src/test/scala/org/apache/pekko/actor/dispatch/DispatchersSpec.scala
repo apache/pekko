@@ -15,6 +15,7 @@ package org.apache.pekko.actor.dispatch
 
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.regex.Pattern
 
 import scala.annotation.nowarn
 import scala.reflect.ClassTag
@@ -109,6 +110,11 @@ object DispatchersSpec {
     private val r = s.r
     def unapplySeq(arg: CharSequence) = r.unapplySeq(arg)
   }
+
+  private val DispatcherThreadSuffixRegex = "(?:[1-9][0-9]*|virtual-thread(?:-[0-9]+)?)"
+
+  def dispatcherThreadName(prefix: String): R =
+    R(s"(${Pattern.quote(prefix)}-$DispatcherThreadSuffixRegex)")
 }
 
 class DispatchersSpec extends PekkoSpec(DispatchersSpec.config) with ImplicitSender {
@@ -145,7 +151,7 @@ class DispatchersSpec extends PekkoSpec(DispatchersSpec.config) with ImplicitSen
 
   def assertMyDispatcherIsUsed(actor: ActorRef): Unit = {
     actor ! "what's the name?"
-    val Expected = R("(DispatchersSpec-myapp.mydispatcher-[1-9][0-9]*)")
+    val Expected = dispatcherThreadName("DispatchersSpec-myapp.mydispatcher")
     expectMsgPF() {
       case Expected(_) =>
     }
@@ -234,7 +240,7 @@ class DispatchersSpec extends PekkoSpec(DispatchersSpec.config) with ImplicitSen
 
     "include system name and dispatcher id in thread names for thread-pool-executor" in {
       system.actorOf(Props[ThreadNameEcho]().withDispatcher("myapp.thread-pool-dispatcher")) ! "what's the name?"
-      val Expected = R("(DispatchersSpec-myapp.thread-pool-dispatcher-[1-9][0-9]*)")
+      val Expected = dispatcherThreadName("DispatchersSpec-myapp.thread-pool-dispatcher")
       expectMsgPF() {
         case Expected(_) =>
       }
@@ -242,7 +248,7 @@ class DispatchersSpec extends PekkoSpec(DispatchersSpec.config) with ImplicitSen
 
     "include system name and dispatcher id in thread names for default-dispatcher" in {
       system.actorOf(Props[ThreadNameEcho]()) ! "what's the name?"
-      val Expected = R("(DispatchersSpec-pekko.actor.default-dispatcher-[1-9][0-9]*)")
+      val Expected = dispatcherThreadName("DispatchersSpec-pekko.actor.default-dispatcher")
       expectMsgPF() {
         case Expected(_) =>
       }
@@ -250,7 +256,7 @@ class DispatchersSpec extends PekkoSpec(DispatchersSpec.config) with ImplicitSen
 
     "include system name and dispatcher id in thread names for pinned dispatcher" in {
       system.actorOf(Props[ThreadNameEcho]().withDispatcher("myapp.my-pinned-dispatcher")) ! "what's the name?"
-      val Expected = R("(DispatchersSpec-myapp.my-pinned-dispatcher-[1-9][0-9]*)")
+      val Expected = dispatcherThreadName("DispatchersSpec-myapp.my-pinned-dispatcher")
       expectMsgPF() {
         case Expected(_) =>
       }
@@ -258,7 +264,7 @@ class DispatchersSpec extends PekkoSpec(DispatchersSpec.config) with ImplicitSen
 
     "include system name and dispatcher id in thread names for balancing dispatcher" in {
       system.actorOf(Props[ThreadNameEcho]().withDispatcher("myapp.balancing-dispatcher")) ! "what's the name?"
-      val Expected = R("(DispatchersSpec-myapp.balancing-dispatcher-[1-9][0-9]*)")
+      val Expected = dispatcherThreadName("DispatchersSpec-myapp.balancing-dispatcher")
       expectMsgPF() {
         case Expected(_) =>
       }
@@ -278,7 +284,7 @@ class DispatchersSpec extends PekkoSpec(DispatchersSpec.config) with ImplicitSen
       pool ! Identify(None)
       val routee = expectMsgType[ActorIdentity].ref.get
       routee ! "what's the name?"
-      val Expected = R("""(DispatchersSpec-pekko\.actor\.deployment\./pool1\.pool-dispatcher-[1-9][0-9]*)""")
+      val Expected = dispatcherThreadName("DispatchersSpec-pekko.actor.deployment./pool1.pool-dispatcher")
       expectMsgPF() {
         case Expected(_) =>
       }
@@ -286,7 +292,7 @@ class DispatchersSpec extends PekkoSpec(DispatchersSpec.config) with ImplicitSen
 
     "use balancing-pool router with special routees mailbox of deployment config" in {
       system.actorOf(FromConfig.props(Props[ThreadNameEcho]()), name = "balanced") ! "what's the name?"
-      val Expected = R("""(DispatchersSpec-BalancingPool-/balanced-[1-9][0-9]*)""")
+      val Expected = dispatcherThreadName("DispatchersSpec-BalancingPool-/balanced")
       expectMsgPF() {
         case Expected(_) =>
       }
