@@ -603,7 +603,8 @@ object Source {
    * Emits a single value when the given `Future` is successfully completed and then completes the stream.
    * The stream fails if the `Future` is completed with a failure.
    */
-  @inline def future[T](futureElement: Future[T]): Source[T, NotUsed] = futureElement.value match {
+  @inline
+  def future[T](futureElement: Future[T]): Source[T, NotUsed] = futureElement.value match {
     case None                           => fromGraphStage(new FutureSource[T](futureElement))
     case Some(scala.util.Success(null)) => empty[T]
     case Some(scala.util.Success(elem)) => single(elem)
@@ -630,7 +631,8 @@ object Source {
    * Turn a `Future[Source]` into a source that will emit the values of the source when the future completes successfully.
    * If the `Future` is completed with a failure the stream is failed.
    */
-  @inline def futureSource[T, M](futureSource: Future[Source[T, M]]): Source[T, Future[M]] = futureSource.value match {
+  @inline
+  def futureSource[T, M](futureSource: Future[Source[T, M]]): Source[T, Future[M]] = futureSource.value match {
     case None                           => fromGraphStage(new FutureFlattenSource(futureSource))
     case Some(scala.util.Success(null)) =>
       val exception = new NullPointerException("futureSource completed with null")
