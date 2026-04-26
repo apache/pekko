@@ -16,11 +16,19 @@ package org.apache.pekko.io
 import java.net.DatagramSocket
 import java.net.ServerSocket
 import java.net.Socket
+import java.net.StandardSocketOptions
 import java.nio.channels.DatagramChannel
+import java.nio.channels.NetworkChannel
 
 import scala.annotation.nowarn
 
 object Inet {
+
+  private def setReusePort(channel: NetworkChannel, on: Boolean): Unit =
+    if (channel eq null)
+      throw new UnsupportedOperationException("SO_REUSEPORT can only be set on channel-backed sockets")
+    else
+      channel.setOption(StandardSocketOptions.SO_REUSEPORT, java.lang.Boolean.valueOf(on))
 
   /**
    * SocketOption is a package of data (from the user) and associated
@@ -127,6 +135,17 @@ object Inet {
     }
 
     /**
+     * [[pekko.io.Inet.SocketOption]] to enable or disable SO_REUSEPORT
+     *
+     * For more information see [[java.net.StandardSocketOptions#SO_REUSEPORT]]
+     */
+    final case class ReusePort(on: Boolean) extends SocketOption {
+      override def beforeServerSocketBind(s: ServerSocket): Unit = setReusePort(s.getChannel, on)
+      override def beforeDatagramBind(s: DatagramSocket): Unit = setReusePort(s.getChannel, on)
+      override def beforeConnect(s: Socket): Unit = setReusePort(s.getChannel, on)
+    }
+
+    /**
      * [[pekko.io.Inet.SocketOption]] to set the SO_SNDBUF option.
      *
      * For more information see [[java.net.Socket#setSendBufferSize]]
@@ -199,6 +218,13 @@ object Inet {
      * For more information see [[java.net.Socket#setReuseAddress]]
      */
     def reuseAddress(on: Boolean) = ReuseAddress(on)
+
+    /**
+     * [[pekko.io.Inet.SocketOption]] to enable or disable SO_REUSEPORT
+     *
+     * For more information see [[java.net.StandardSocketOptions#SO_REUSEPORT]]
+     */
+    def reusePort(on: Boolean) = ReusePort(on)
 
     /**
      * [[pekko.io.Inet.SocketOption]] to set the SO_SNDBUF option.
