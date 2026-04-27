@@ -19,6 +19,7 @@ package org.apache.pekko.dispatch
 
 import java.util
 import java.util.concurrent.{ Callable, Executor, ExecutorService, Future, ThreadFactory, TimeUnit }
+import java.util.concurrent.atomic.AtomicBoolean
 
 import org.apache.pekko.annotation.InternalApi
 
@@ -40,34 +41,29 @@ final class VirtualizedExecutorService(
   require(loadMetricsProvider != null, "Load metrics provider must not be null")
 
   private val executor = VirtualThreadSupport.newThreadPerTaskExecutor(vtFactory)
+  private val underlyingShutdownScheduled = new AtomicBoolean(false)
+  private val underlyingShutdownStarted = new AtomicBoolean(false)
 
   override def atFullThrottle(): Boolean = loadMetricsProvider(this)
 
   override def shutdown(): Unit = {
     executor.shutdown()
-    if (cascadeShutdown && (underlying ne null)) {
-      underlying.shutdown()
-    }
+    shutdownUnderlyingWhenVirtualThreadsHaveTerminated()
   }
 
   override def shutdownNow(): util.List[Runnable] = {
-    val r = executor.shutdownNow()
-    if (cascadeShutdown && (underlying ne null)) {
-      underlying.shutdownNow()
-    }
-    r
+    val result = executor.shutdownNow()
+    shutdownUnderlyingWhenVirtualThreadsHaveTerminated()
+    result
   }
 
-  override def isShutdown: Boolean = {
-    if (cascadeShutdown) {
-      executor.isShutdown && ((underlying eq null) || underlying.isShutdown)
-    } else {
-      executor.isShutdown
-    }
-  }
+  override def isShutdown: Boolean = executor.isShutdown
 
   override def isTerminated: Boolean = {
     if (cascadeShutdown) {
+      if (executor.isTerminated) {
+        shutdownUnderlying()
+      }
       executor.isTerminated && ((underlying eq null) || underlying.isTerminated)
     } else {
       executor.isTerminated
@@ -76,42 +72,78 @@ final class VirtualizedExecutorService(
 
   override def awaitTermination(timeout: Long, unit: TimeUnit): Boolean = {
     if (cascadeShutdown) {
-      executor.awaitTermination(timeout, unit) && ((underlying eq null) || underlying.awaitTermination(timeout, unit))
+      val timeoutNanos = unit.toNanos(timeout)
+      val deadline = System.nanoTime() + timeoutNanos
+      executor.awaitTermination(timeout, unit) && {
+        shutdownUnderlying()
+        (underlying eq null) || {
+          val remainingNanos = deadline - System.nanoTime()
+          if (remainingNanos <= 0L) underlying.isTerminated
+          else underlying.awaitTermination(remainingNanos, TimeUnit.NANOSECONDS)
+        }
+      }
     } else {
       executor.awaitTermination(timeout, unit)
     }
   }
 
-  override def submit[T](task: Callable[T]): Future[T] = {
-    executor.submit(task)
+  private def shutdownUnderlyingWhenVirtualThreadsHaveTerminated(): Unit = {
+    if (cascadeShutdown && (underlying ne null) && underlyingShutdownScheduled.compareAndSet(false, true)) {
+      if (executor.isTerminated) {
+        shutdownUnderlying()
+      } else {
+        VirtualThreadSupport.startVirtualThread(
+          "pekko-virtualized-executor-shutdown",
+          new Runnable {
+            override def run(): Unit = {
+              var interrupted = false
+              try {
+                while (!executor.isTerminated) {
+                  try executor.awaitTermination(1L, TimeUnit.DAYS)
+                  catch {
+                    case _: InterruptedException => interrupted = true
+                  }
+                }
+              } finally {
+                shutdownUnderlying()
+                if (interrupted) {
+                  Thread.currentThread().interrupt()
+                }
+              }
+            }
+          })
+      }
+    }
   }
 
-  override def submit[T](task: Runnable, result: T): Future[T] = {
+  private def shutdownUnderlying(): Unit = {
+    if (cascadeShutdown && (underlying ne null) && underlyingShutdownStarted.compareAndSet(false, true)) {
+      underlying.shutdown()
+    }
+  }
+
+  override def submit[T](task: Callable[T]): Future[T] =
+    executor.submit(task)
+
+  override def submit[T](task: Runnable, result: T): Future[T] =
     executor.submit(task, result)
-  }
 
-  override def submit(task: Runnable): Future[_] = {
+  override def submit(task: Runnable): Future[_] =
     executor.submit(task)
-  }
 
-  override def invokeAll[T](tasks: util.Collection[_ <: Callable[T]]): util.List[Future[T]] = {
+  override def invokeAll[T](tasks: util.Collection[_ <: Callable[T]]): util.List[Future[T]] =
     executor.invokeAll(tasks)
-  }
 
   override def invokeAll[T](
-      tasks: util.Collection[_ <: Callable[T]], timeout: Long, unit: TimeUnit): util.List[Future[T]] = {
+      tasks: util.Collection[_ <: Callable[T]], timeout: Long, unit: TimeUnit): util.List[Future[T]] =
     executor.invokeAll(tasks, timeout, unit)
-  }
 
-  override def invokeAny[T](tasks: util.Collection[_ <: Callable[T]]): T = {
+  override def invokeAny[T](tasks: util.Collection[_ <: Callable[T]]): T =
     executor.invokeAny(tasks)
-  }
 
-  override def invokeAny[T](tasks: util.Collection[_ <: Callable[T]], timeout: Long, unit: TimeUnit): T = {
+  override def invokeAny[T](tasks: util.Collection[_ <: Callable[T]], timeout: Long, unit: TimeUnit): T =
     executor.invokeAny(tasks, timeout, unit)
-  }
 
-  override def execute(command: Runnable): Unit = {
+  override def execute(command: Runnable): Unit =
     executor.execute(command)
-  }
 }

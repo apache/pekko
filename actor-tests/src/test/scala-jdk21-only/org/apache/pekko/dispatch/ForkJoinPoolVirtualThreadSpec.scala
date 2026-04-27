@@ -17,6 +17,8 @@
 
 package org.apache.pekko.dispatch
 
+import java.util.concurrent.{ CountDownLatch, Executors, TimeUnit }
+
 import org.apache.pekko
 import pekko.actor.{ Actor, Props }
 import pekko.testkit.{ ImplicitSender, PekkoSpec }
@@ -83,6 +85,75 @@ class ForkJoinPoolVirtualThreadSpec extends PekkoSpec(ForkJoinPoolVirtualThreadS
         expectMsgPF() { case name: String =>
           name should include("ForkJoinPoolVirtualThreadSpec-custom.task-dispatcher-short-virtual-thread")
         }
+      }
+    }
+
+    "allow blocked virtual threads to finish after dispatcher shutdown" in {
+      val underlying = Executors.newFixedThreadPool(1)
+      val executor = new VirtualizedExecutorService(
+        VirtualThreadSupport.newVirtualThreadFactory("fork-join-pool-virtual-thread-spec", 0, underlying),
+        underlying,
+        _ => false,
+        cascadeShutdown = true)
+
+      val started = new CountDownLatch(1)
+      val release = new CountDownLatch(1)
+      val finished = new CountDownLatch(1)
+
+      try {
+        executor.execute(new Runnable {
+          override def run(): Unit = {
+            started.countDown()
+            release.await()
+            finished.countDown()
+          }
+        })
+
+        started.await(5, TimeUnit.SECONDS) should ===(true)
+        executor.shutdown()
+
+        release.countDown()
+        finished.await(5, TimeUnit.SECONDS) should ===(true)
+        executor.awaitTermination(5, TimeUnit.SECONDS) should ===(true)
+        underlying.isTerminated should ===(true)
+      } finally {
+        release.countDown()
+        executor.shutdownNow()
+        underlying.shutdownNow()
+      }
+    }
+
+    "interrupt blocked virtual threads on dispatcher shutdownNow" in {
+      val underlying = Executors.newFixedThreadPool(1)
+      val executor = new VirtualizedExecutorService(
+        VirtualThreadSupport.newVirtualThreadFactory("fork-join-pool-virtual-thread-spec", 0, underlying),
+        underlying,
+        _ => false,
+        cascadeShutdown = true)
+
+      val started = new CountDownLatch(1)
+      val interrupted = new CountDownLatch(1)
+
+      try {
+        executor.execute(new Runnable {
+          override def run(): Unit = {
+            started.countDown()
+            try Thread.sleep(TimeUnit.SECONDS.toMillis(30))
+            catch {
+              case _: InterruptedException => interrupted.countDown()
+            }
+          }
+        })
+
+        started.await(5, TimeUnit.SECONDS) should ===(true)
+        executor.shutdownNow()
+
+        interrupted.await(5, TimeUnit.SECONDS) should ===(true)
+        executor.awaitTermination(5, TimeUnit.SECONDS) should ===(true)
+        underlying.isTerminated should ===(true)
+      } finally {
+        executor.shutdownNow()
+        underlying.shutdownNow()
       }
     }
 
