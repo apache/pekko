@@ -13,6 +13,7 @@
 
 package org.apache.pekko.util
 
+import java.nio.ByteBuffer
 import java.util.concurrent.TimeUnit
 
 import org.openjdk.jmh.annotations._
@@ -27,6 +28,15 @@ import org.openjdk.jmh.infra.Blackhole
 class ByteString_append_Benchmark {
 
   private val bs = ByteString(Array.ofDim[Byte](10))
+  private val header = ByteString.fromArrayUnsafe(Array.tabulate[Byte](9)(i => (i + 1).toByte))
+  private val payload = ByteString.fromArrayUnsafe(Array.fill[Byte](4096)(42))
+  private val frame = header ++ payload
+  private val shortHeaderPrefix = ByteString.fromArrayUnsafe(Array[Byte](1, 2))
+  private val headerTailAndPayload = ByteString.fromArrayUnsafe(Array.tabulate[Byte](4096 + 7)(i => (i + 3).toByte))
+  private val crossBoundaryFrame = shortHeaderPrefix ++ headerTailAndPayload
+  private val compactFrame = frame.compact
+  private val outputBuffer = ByteBuffer.allocateDirect(9 + 4096)
+  private val outputArray = new Array[Byte](9 + 4096)
 
   @Benchmark
   @OperationsPerInvocation(10000)
@@ -55,6 +65,44 @@ class ByteString_append_Benchmark {
     }
     bh.consume(result)
   }
+
+  @Benchmark
+  def appendTwo(): ByteString =
+    header ++ payload
+
+  @Benchmark
+  def readTwoPartHeader(): Int =
+    frame.readIntBE(0) + frame.readIntBE(4) + frame(8)
+
+  @Benchmark
+  def readTwoPartCrossBoundaryHeader(): Int =
+    crossBoundaryFrame.readIntBE(0) + crossBoundaryFrame.readIntBE(2) + crossBoundaryFrame(8)
+
+  @Benchmark
+  def readCompactHeader(): Int =
+    compactFrame.readIntBE(0) + compactFrame.readIntBE(4) + compactFrame(8)
+
+  @Benchmark
+  def appendTwoAndReadHeader(): Int = {
+    val frame = header ++ payload
+    frame.readIntBE(0) + frame.readIntBE(4) + frame(8)
+  }
+
+  @Benchmark
+  def appendTwoAndReadCrossBoundaryHeader(): Int = {
+    val frame = shortHeaderPrefix ++ headerTailAndPayload
+    frame.readIntBE(0) + frame.readIntBE(2) + frame(8)
+  }
+
+  @Benchmark
+  def appendTwoAndCopyToBuffer(): Int = {
+    outputBuffer.clear()
+    (header ++ payload).copyToBuffer(outputBuffer)
+  }
+
+  @Benchmark
+  def appendTwoAndCopyToArray(): Int = (header ++ payload).copyToArray(outputArray, 0, outputArray.length)
+
   @Benchmark
   @OperationsPerInvocation(10000)
   def builderOne(bh: Blackhole): Unit = {
