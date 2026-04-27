@@ -30,7 +30,7 @@ import org.scalatestplus.scalacheck.Checkers
 
 import org.apache.pekko
 import pekko.io.UnsynchronizedByteArrayInputStream
-import pekko.util.ByteString.{ ByteString1, ByteString1C, ByteStrings }
+import pekko.util.ByteString.{ ByteString1, ByteString1C, ByteString2, ByteStrings }
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -2120,6 +2120,18 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       byteStrings.readLongLE(0) should ===(0x0807060504030201L)
       byteStrings.readLongBE(8) should ===(0x090A0B0C0D0E0F10L)
       byteStrings.readLongLE(8) should ===(0x100F0E0D0C0B0A09L)
+    }
+
+    "read primitive values across ByteString2 fragment boundaries" in {
+      val byteString2 =
+        (ByteString1C(Array[Byte](1, 2, 3)) ++ ByteString1C(Array[Byte](4, 5, 6, 7, 8))).asInstanceOf[ByteString2]
+
+      byteString2.readShortBE(2) should ===(0x0304.toShort)
+      byteString2.readShortLE(2) should ===(0x0403.toShort)
+      byteString2.readIntBE(1) should ===(0x02030405)
+      byteString2.readIntLE(1) should ===(0x05040302)
+      byteString2.readLongBE(0) should ===(0x0102030405060708L)
+      byteString2.readLongLE(0) should ===(0x0807060504030201L)
     }
 
     "throw IndexOutOfBoundsException for readShortBE/LE with insufficient data" in {

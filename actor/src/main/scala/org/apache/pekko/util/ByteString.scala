@@ -1280,61 +1280,69 @@ object ByteString {
     private[pekko] override def readShortBEUnchecked(offset: Int): Short = {
       if (offset + java.lang.Short.BYTES <= firstLength) first.readShortBEUnchecked(offset)
       else if (offset >= firstLength) second.readShortBEUnchecked(offset - firstLength)
-      else ((byteAt(offset, firstLength) & 0xFF) << 8 | (byteAt(offset + 1, firstLength) & 0xFF)).toShort
+      else SWARUtil.getShortBE(byteAt(offset, firstLength), byteAt(offset + 1, firstLength))
     }
 
     private[pekko] override def readShortLEUnchecked(offset: Int): Short = {
       if (offset + java.lang.Short.BYTES <= firstLength) first.readShortLEUnchecked(offset)
       else if (offset >= firstLength) second.readShortLEUnchecked(offset - firstLength)
-      else ((byteAt(offset, firstLength) & 0xFF) | (byteAt(offset + 1, firstLength) & 0xFF) << 8).toShort
+      else SWARUtil.getShortLE(byteAt(offset, firstLength), byteAt(offset + 1, firstLength))
     }
 
     private[pekko] override def readIntBEUnchecked(offset: Int): Int = {
       if (offset + java.lang.Integer.BYTES <= firstLength) first.readIntBEUnchecked(offset)
       else if (offset >= firstLength) second.readIntBEUnchecked(offset - firstLength)
-      else
-        (byteAt(offset, firstLength) & 0xFF) << 24 |
-        (byteAt(offset + 1, firstLength) & 0xFF) << 16 |
-        (byteAt(offset + 2, firstLength) & 0xFF) << 8 |
-        (byteAt(offset + 3, firstLength) & 0xFF)
+      else {
+        SWARUtil.getIntBE(
+          byteAt(offset, firstLength),
+          byteAt(offset + 1, firstLength),
+          byteAt(offset + 2, firstLength),
+          byteAt(offset + 3, firstLength))
+      }
     }
 
     private[pekko] override def readIntLEUnchecked(offset: Int): Int = {
       if (offset + java.lang.Integer.BYTES <= firstLength) first.readIntLEUnchecked(offset)
       else if (offset >= firstLength) second.readIntLEUnchecked(offset - firstLength)
-      else
-        (byteAt(offset, firstLength) & 0xFF) |
-        (byteAt(offset + 1, firstLength) & 0xFF) << 8 |
-        (byteAt(offset + 2, firstLength) & 0xFF) << 16 |
-        (byteAt(offset + 3, firstLength) & 0xFF) << 24
+      else {
+        SWARUtil.getIntLE(
+          byteAt(offset, firstLength),
+          byteAt(offset + 1, firstLength),
+          byteAt(offset + 2, firstLength),
+          byteAt(offset + 3, firstLength))
+      }
     }
 
     private[pekko] override def readLongBEUnchecked(offset: Int): Long = {
       if (offset + java.lang.Long.BYTES <= firstLength) first.readLongBEUnchecked(offset)
       else if (offset >= firstLength) second.readLongBEUnchecked(offset - firstLength)
-      else
-        (byteAt(offset, firstLength).toLong & 0xFFL) << 56 |
-        (byteAt(offset + 1, firstLength).toLong & 0xFFL) << 48 |
-        (byteAt(offset + 2, firstLength).toLong & 0xFFL) << 40 |
-        (byteAt(offset + 3, firstLength).toLong & 0xFFL) << 32 |
-        (byteAt(offset + 4, firstLength).toLong & 0xFFL) << 24 |
-        (byteAt(offset + 5, firstLength).toLong & 0xFFL) << 16 |
-        (byteAt(offset + 6, firstLength).toLong & 0xFFL) << 8 |
-        (byteAt(offset + 7, firstLength).toLong & 0xFFL)
+      else {
+        SWARUtil.getLongBE(
+          byteAt(offset, firstLength),
+          byteAt(offset + 1, firstLength),
+          byteAt(offset + 2, firstLength),
+          byteAt(offset + 3, firstLength),
+          byteAt(offset + 4, firstLength),
+          byteAt(offset + 5, firstLength),
+          byteAt(offset + 6, firstLength),
+          byteAt(offset + 7, firstLength))
+      }
     }
 
     private[pekko] override def readLongLEUnchecked(offset: Int): Long = {
       if (offset + java.lang.Long.BYTES <= firstLength) first.readLongLEUnchecked(offset)
       else if (offset >= firstLength) second.readLongLEUnchecked(offset - firstLength)
-      else
-        (byteAt(offset, firstLength).toLong & 0xFFL) |
-        (byteAt(offset + 1, firstLength).toLong & 0xFFL) << 8 |
-        (byteAt(offset + 2, firstLength).toLong & 0xFFL) << 16 |
-        (byteAt(offset + 3, firstLength).toLong & 0xFFL) << 24 |
-        (byteAt(offset + 4, firstLength).toLong & 0xFFL) << 32 |
-        (byteAt(offset + 5, firstLength).toLong & 0xFFL) << 40 |
-        (byteAt(offset + 6, firstLength).toLong & 0xFFL) << 48 |
-        (byteAt(offset + 7, firstLength).toLong & 0xFFL) << 56
+      else {
+        SWARUtil.getLongLE(
+          byteAt(offset, firstLength),
+          byteAt(offset + 1, firstLength),
+          byteAt(offset + 2, firstLength),
+          byteAt(offset + 3, firstLength),
+          byteAt(offset + 4, firstLength),
+          byteAt(offset + 5, firstLength),
+          byteAt(offset + 6, firstLength),
+          byteAt(offset + 7, firstLength))
+      }
     }
 
     private[pekko] def addFragmentsTo(builder: VectorBuilder[ByteString1]): Unit = {
