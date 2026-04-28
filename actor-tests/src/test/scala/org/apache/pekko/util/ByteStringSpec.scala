@@ -106,6 +106,12 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
     deserialize(serialize(obj)) == obj
   }
 
+  def expectByteString2(byteString: ByteString): ByteString2 =
+    byteString match {
+      case byteString2: ByteString2 => byteString2
+      case other                    => fail(s"Expected ByteString2, got [${other.getClass.getName}]")
+    }
+
   def hexFromSer(obj: AnyRef) = {
     val os = new ByteArrayOutputStream
     val bos = new ObjectOutputStream(os)
@@ -2038,6 +2044,15 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
         deserialize(serialize(bs1)) shouldEqual bs1
         deserialize(serialize(bss)) shouldEqual bss
       }
+
+      "given ByteString2" in {
+        val original = expectByteString2(ByteString1C(Array[Byte](1, 2, 3)) ++ ByteString1C(Array[Byte](4, 5)))
+
+        deserialize(serialize(original)) match {
+          case deserialized: ByteString2 => deserialized shouldEqual original
+          case other                     => fail(s"Expected deserialized ByteString2, got [${other.getClass.getName}]")
+        }
+      }
     }
 
     "unsafely wrap and unwrap bytes" in {
@@ -2124,7 +2139,7 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
 
     "read primitive values across ByteString2 fragment boundaries" in {
       val byteString2 =
-        (ByteString1C(Array[Byte](1, 2, 3)) ++ ByteString1C(Array[Byte](4, 5, 6, 7, 8))).asInstanceOf[ByteString2]
+        expectByteString2(ByteString1C(Array[Byte](1, 2, 3)) ++ ByteString1C(Array[Byte](4, 5, 6, 7, 8)))
 
       byteString2.readShortBE(2) should ===(0x0304.toShort)
       byteString2.readShortLE(2) should ===(0x0403.toShort)

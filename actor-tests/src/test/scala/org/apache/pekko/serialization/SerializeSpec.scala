@@ -408,6 +408,7 @@ class ReferenceSerializationSpec extends PekkoSpec(SerializationTests.mostlyRefe
       serializerMustBe(classOf[String], classOf[StringSerializer])
       serializerMustBe(classOf[ByteString.ByteString1], classOf[ByteStringSerializer])
       serializerMustBe(classOf[ByteString.ByteString1C], classOf[ByteStringSerializer])
+      serializerMustBe(classOf[ByteString.ByteString2], classOf[ByteStringSerializer])
       serializerMustBe(classOf[ByteString.ByteStrings], classOf[ByteStringSerializer])
 
     }
@@ -453,6 +454,9 @@ class AllowJavaSerializationSpec extends PekkoSpec(SerializationTests.allowJavaS
       serializerMustBe(classOf[java.lang.Integer], classOf[IntSerializer])
       serializerMustBe(classOf[String], classOf[StringSerializer])
       serializerMustBe(classOf[ByteString.ByteString1], classOf[ByteStringSerializer])
+      serializerMustBe(classOf[ByteString.ByteString1C], classOf[ByteStringSerializer])
+      serializerMustBe(classOf[ByteString.ByteString2], classOf[ByteStringSerializer])
+      serializerMustBe(classOf[ByteString.ByteStrings], classOf[ByteStringSerializer])
     }
 
     "not support serialization for other classes" in {

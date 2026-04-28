@@ -901,9 +901,14 @@ object ByteString {
 
     def apply(bytestrings: Vector[ByteString1], length: Int): ByteString =
       bytestrings.length match {
-        case 0 => ByteString.empty
-        case 1 => bytestrings.head
-        case 2 => ByteString2(bytestrings(0), bytestrings(1))
+        case 0 =>
+          assert(length == 0, s"empty ByteStrings length must be 0, was $length")
+          ByteString.empty
+        case 1 =>
+          val only = bytestrings.head
+          assert(only.length == length, s"single ByteString length ${only.length} did not match $length")
+          only
+        case 2 => ByteString2(bytestrings(0), bytestrings(1), length)
         case _ => new ByteStrings(bytestrings, length)
       }
 
@@ -994,7 +999,7 @@ object ByteString {
 
     val SerializationIdentity = 2.toByte
 
-    def readFromInputStream(is: ObjectInputStream): ByteStrings = {
+    def readFromInputStream(is: ObjectInputStream): ByteString = {
       val nByteStrings = is.readInt()
 
       val builder = new VectorBuilder[ByteString1]
@@ -1009,30 +1014,58 @@ object ByteString {
         length += bs.length
         i += 1
       }
-      new ByteStrings(builder.result(), length)
+      ByteStrings(builder.result(), length)
     }
   }
 
-  private[pekko] object ByteString2 {
-    private[ByteString] def fromNonEmptySimpleFragments(first: ByteString, second: ByteString): ByteString =
-      new ByteString2(first, second, first.length + second.length)
+  private[pekko] object ByteString2 extends Companion {
+    val SerializationIdentity = 3.toByte
 
-    def apply(first: ByteString, second: ByteString): ByteString = ByteStrings.compare(first, second) match {
-      case 3 =>
-        if (isSimpleFragment(first) && isSimpleFragment(second))
-          fromNonEmptySimpleFragments(first, second)
-        else
-          ByteStrings(ByteStrings.addFragments(first, second), first.length + second.length)
-      case 2 => second
-      case 1 => first
-      case 0 => ByteString.empty
+    private[ByteString] def fromNonEmptySimpleFragments(first: ByteString, second: ByteString): ByteString =
+      fromNonEmptySimpleFragments(first, second, first.length + second.length)
+
+    private[ByteString] def fromNonEmptySimpleFragments(
+        first: ByteString,
+        second: ByteString,
+        length: Int): ByteString = {
+      assert(isSimpleFragment(first), s"first must be a simple ByteString fragment, was ${first.getClass.getName}")
+      assert(isSimpleFragment(second), s"second must be a simple ByteString fragment, was ${second.getClass.getName}")
+      assert(first.nonEmpty, "first must not be empty")
+      assert(second.nonEmpty, "second must not be empty")
+      assert(first.length + second.length == length,
+        s"ByteString2 length ${first.length + second.length} did not match $length")
+      new ByteString2(first, second, length)
     }
+
+    def apply(first: ByteString, second: ByteString): ByteString =
+      apply(first, second, first.length + second.length)
+
+    private[ByteString] def apply(first: ByteString, second: ByteString, length: Int): ByteString =
+      ByteStrings.compare(first, second) match {
+        case 3 =>
+          if (isSimpleFragment(first) && isSimpleFragment(second))
+            fromNonEmptySimpleFragments(first, second, length)
+          else
+            ByteStrings(ByteStrings.addFragments(first, second), length)
+        case 2 =>
+          assert(second.length == length, s"second ByteString length ${second.length} did not match $length")
+          second
+        case 1 =>
+          assert(first.length == length, s"first ByteString length ${first.length} did not match $length")
+          first
+        case 0 =>
+          assert(length == 0, s"empty ByteString length must be 0, was $length")
+          ByteString.empty
+      }
 
     private def isSimpleFragment(byteString: ByteString): Boolean =
       byteString match {
         case _: ByteString1C | _: ByteString1 => true
         case _: ByteString2 | _: ByteStrings  => false
       }
+
+    def readFromInputStream(is: ObjectInputStream): ByteString =
+      ByteString2(ByteString1.readFromInputStream(is), ByteString1.readFromInputStream(is))
   }
 
   /**
@@ -1044,10 +1077,7 @@ object ByteString {
       val length: Int)
       extends ByteString
       with Serializable {
-    if (first.isEmpty) throw new IllegalArgumentException("first must not be empty")
-    if (second.isEmpty) throw new IllegalArgumentException("second must not be empty")
-
-    private[this] def firstLength: Int = first.length
+    private[this] val firstLength: Int = first.length
 
     def apply(idx: Int): Byte =
       if (0 <= idx && idx < length) {
@@ -1078,7 +1108,7 @@ object ByteString {
         }
     }
 
-    private[pekko] def byteStringCompanion = ByteStrings
+    private[pekko] def byteStringCompanion = ByteString2
 
     def isCompact: Boolean = false
 
@@ -1112,7 +1142,6 @@ object ByteString {
     override def encodeBase64: ByteString = compact.encodeBase64
 
     private[pekko] def writeToOutputStream(os: ObjectOutputStream): Unit = {
-      os.writeInt(2)
       first.writeToOutputStream(os)
       second.writeToOutputStream(os)
     }
@@ -1243,10 +1272,11 @@ object ByteString {
       val needleLen = bytes.length
       if (length - offset < needleLen) false
       else {
+        val firstLen = firstLength
         var i = offset
         var j = 0
         while (j < needleLen) {
-          if (byteAt(i, firstLength) != bytes(j)) return false
+          if (byteAt(i, firstLen) != bytes(j)) return false
           i += 1
           j += 1
         }
@@ -1258,10 +1288,11 @@ object ByteString {
       val needleLen = bytes.length
       if (length < needleLen) false
       else {
+        val firstLen = firstLength
         var i = length - needleLen
         var j = 0
         while (j < needleLen) {
-          if (byteAt(i, firstLength) != bytes(j)) return false
+          if (byteAt(i, firstLen) != bytes(j)) return false
           i += 1
           j += 1
         }
@@ -1278,70 +1309,76 @@ object ByteString {
     }
 
     private[pekko] override def readShortBEUnchecked(offset: Int): Short = {
-      if (offset + java.lang.Short.BYTES <= firstLength) first.readShortBEUnchecked(offset)
-      else if (offset >= firstLength) second.readShortBEUnchecked(offset - firstLength)
-      else SWARUtil.getShortBE(byteAt(offset, firstLength), byteAt(offset + 1, firstLength))
+      val firstLen = firstLength
+      if (offset + java.lang.Short.BYTES <= firstLen) first.readShortBEUnchecked(offset)
+      else if (offset >= firstLen) second.readShortBEUnchecked(offset - firstLen)
+      else SWARUtil.getShortBE(byteAt(offset, firstLen), byteAt(offset + 1, firstLen))
     }
 
     private[pekko] override def readShortLEUnchecked(offset: Int): Short = {
-      if (offset + java.lang.Short.BYTES <= firstLength) first.readShortLEUnchecked(offset)
-      else if (offset >= firstLength) second.readShortLEUnchecked(offset - firstLength)
-      else SWARUtil.getShortLE(byteAt(offset, firstLength), byteAt(offset + 1, firstLength))
+      val firstLen = firstLength
+      if (offset + java.lang.Short.BYTES <= firstLen) first.readShortLEUnchecked(offset)
+      else if (offset >= firstLen) second.readShortLEUnchecked(offset - firstLen)
+      else SWARUtil.getShortLE(byteAt(offset, firstLen), byteAt(offset + 1, firstLen))
     }
 
     private[pekko] override def readIntBEUnchecked(offset: Int): Int = {
-      if (offset + java.lang.Integer.BYTES <= firstLength) first.readIntBEUnchecked(offset)
-      else if (offset >= firstLength) second.readIntBEUnchecked(offset - firstLength)
+      val firstLen = firstLength
+      if (offset + java.lang.Integer.BYTES <= firstLen) first.readIntBEUnchecked(offset)
+      else if (offset >= firstLen) second.readIntBEUnchecked(offset - firstLen)
       else {
         SWARUtil.getIntBE(
-          byteAt(offset, firstLength),
-          byteAt(offset + 1, firstLength),
-          byteAt(offset + 2, firstLength),
-          byteAt(offset + 3, firstLength))
+          byteAt(offset, firstLen),
+          byteAt(offset + 1, firstLen),
+          byteAt(offset + 2, firstLen),
+          byteAt(offset + 3, firstLen))
       }
     }
 
     private[pekko] override def readIntLEUnchecked(offset: Int): Int = {
-      if (offset + java.lang.Integer.BYTES <= firstLength) first.readIntLEUnchecked(offset)
-      else if (offset >= firstLength) second.readIntLEUnchecked(offset - firstLength)
+      val firstLen = firstLength
+      if (offset + java.lang.Integer.BYTES <= firstLen) first.readIntLEUnchecked(offset)
+      else if (offset >= firstLen) second.readIntLEUnchecked(offset - firstLen)
       else {
         SWARUtil.getIntLE(
-          byteAt(offset, firstLength),
-          byteAt(offset + 1, firstLength),
-          byteAt(offset + 2, firstLength),
-          byteAt(offset + 3, firstLength))
+          byteAt(offset, firstLen),
+          byteAt(offset + 1, firstLen),
+          byteAt(offset + 2, firstLen),
+          byteAt(offset + 3, firstLen))
       }
     }
 
     private[pekko] override def readLongBEUnchecked(offset: Int): Long = {
-      if (offset + java.lang.Long.BYTES <= firstLength) first.readLongBEUnchecked(offset)
-      else if (offset >= firstLength) second.readLongBEUnchecked(offset - firstLength)
+      val firstLen = firstLength
+      if (offset + java.lang.Long.BYTES <= firstLen) first.readLongBEUnchecked(offset)
+      else if (offset >= firstLen) second.readLongBEUnchecked(offset - firstLen)
       else {
         SWARUtil.getLongBE(
-          byteAt(offset, firstLength),
-          byteAt(offset + 1, firstLength),
-          byteAt(offset + 2, firstLength),
-          byteAt(offset + 3, firstLength),
-          byteAt(offset + 4, firstLength),
-          byteAt(offset + 5, firstLength),
-          byteAt(offset + 6, firstLength),
-          byteAt(offset + 7, firstLength))
+          byteAt(offset, firstLen),
+          byteAt(offset + 1, firstLen),
+          byteAt(offset + 2, firstLen),
+          byteAt(offset + 3, firstLen),
+          byteAt(offset + 4, firstLen),
+          byteAt(offset + 5, firstLen),
+          byteAt(offset + 6, firstLen),
+          byteAt(offset + 7, firstLen))
       }
     }
 
     private[pekko] override def readLongLEUnchecked(offset: Int): Long = {
-      if (offset + java.lang.Long.BYTES <= firstLength) first.readLongLEUnchecked(offset)
-      else if (offset >= firstLength) second.readLongLEUnchecked(offset - firstLength)
+      val firstLen = firstLength
+      if (offset + java.lang.Long.BYTES <= firstLen) first.readLongLEUnchecked(offset)
+      else if (offset >= firstLen) second.readLongLEUnchecked(offset - firstLen)
       else {
         SWARUtil.getLongLE(
-          byteAt(offset, firstLength),
-          byteAt(offset + 1, firstLength),
-          byteAt(offset + 2, firstLength),
-          byteAt(offset + 3, firstLength),
-          byteAt(offset + 4, firstLength),
-          byteAt(offset + 5, firstLength),
-          byteAt(offset + 6, firstLength),
-          byteAt(offset + 7, firstLength))
+          byteAt(offset, firstLen),
+          byteAt(offset + 1, firstLen),
+          byteAt(offset + 2, firstLen),
+          byteAt(offset + 3, firstLen),
+          byteAt(offset + 4, firstLen),
+          byteAt(offset + 5, firstLen),
+          byteAt(offset + 6, firstLen),
+          byteAt(offset + 7, firstLen))
       }
     }
 
@@ -1770,7 +1807,7 @@ object ByteString {
   }
 
   private[pekko] object Companion {
-    private val companionMap = Seq(ByteString1, ByteString1C, ByteStrings)
+    private val companionMap = Seq(ByteString1, ByteString1C, ByteStrings, ByteString2)
       .map(x => x.SerializationIdentity -> x)
       .toMap
       .withDefault(x => throw new IllegalArgumentException("Invalid serialization id " + x))
