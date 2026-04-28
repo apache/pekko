@@ -105,7 +105,7 @@ final class VirtualizedExecutorService(
               var interrupted = false
               try {
                 while (!executor.isTerminated) {
-                  try executor.awaitTermination(1L, TimeUnit.DAYS)
+                  try executor.awaitTermination(Long.MaxValue, TimeUnit.NANOSECONDS)
                   catch {
                     case _: InterruptedException => interrupted = true
                   }
