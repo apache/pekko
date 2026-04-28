@@ -19,7 +19,7 @@ package org.apache.pekko.dispatch
 
 import java.util
 import java.util.concurrent.{ Callable, Executor, ExecutorService, Future, ThreadFactory, TimeUnit }
-import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.{ AtomicBoolean, AtomicInteger }
 
 import org.apache.pekko.annotation.InternalApi
 
@@ -40,9 +40,14 @@ final class VirtualizedExecutorService(
   require(vtFactory != null, "Virtual thread factory must not be null")
   require(loadMetricsProvider != null, "Load metrics provider must not be null")
 
+  private final val UnderlyingRunning = 0
+  private final val UnderlyingShutdown = 1
+  private final val UnderlyingShutdownNow = 2
+
   private val executor = VirtualThreadSupport.newThreadPerTaskExecutor(vtFactory)
   private val underlyingShutdownScheduled = new AtomicBoolean(false)
-  private val underlyingShutdownStarted = new AtomicBoolean(false)
+  private val underlyingShutdownNowRequested = new AtomicBoolean(false)
+  private val underlyingShutdownState = new AtomicInteger(UnderlyingRunning)
 
   override def atFullThrottle(): Boolean = loadMetricsProvider(this)
 
@@ -52,6 +57,7 @@ final class VirtualizedExecutorService(
   }
 
   override def shutdownNow(): util.List[Runnable] = {
+    underlyingShutdownNowRequested.set(true)
     val result = executor.shutdownNow()
     shutdownUnderlyingWhenVirtualThreadsHaveTerminated()
     result
@@ -88,10 +94,10 @@ final class VirtualizedExecutorService(
   }
 
   private def shutdownUnderlyingWhenVirtualThreadsHaveTerminated(): Unit = {
-    if (cascadeShutdown && (underlying ne null) && underlyingShutdownScheduled.compareAndSet(false, true)) {
+    if (cascadeShutdown && (underlying ne null)) {
       if (executor.isTerminated) {
         shutdownUnderlying()
-      } else {
+      } else if (underlyingShutdownScheduled.compareAndSet(false, true)) {
         VirtualThreadSupport.startVirtualThread(
           "pekko-virtualized-executor-shutdown",
           new Runnable {
@@ -117,33 +123,46 @@ final class VirtualizedExecutorService(
   }
 
   private def shutdownUnderlying(): Unit = {
-    if (cascadeShutdown && (underlying ne null) && underlyingShutdownStarted.compareAndSet(false, true)) {
+    if (cascadeShutdown && (underlying ne null) && underlyingShutdownNowRequested.get) {
+      if (underlyingShutdownState.getAndSet(UnderlyingShutdownNow) != UnderlyingShutdownNow) {
+        underlying.shutdownNow()
+      }
+    } else if (cascadeShutdown && (underlying ne null) &&
+      underlyingShutdownState.compareAndSet(UnderlyingRunning, UnderlyingShutdown)) {
       underlying.shutdown()
     }
   }
 
-  override def submit[T](task: Callable[T]): Future[T] =
+  override def submit[T](task: Callable[T]): Future[T] = {
     executor.submit(task)
+  }
 
-  override def submit[T](task: Runnable, result: T): Future[T] =
+  override def submit[T](task: Runnable, result: T): Future[T] = {
     executor.submit(task, result)
+  }
 
-  override def submit(task: Runnable): Future[_] =
+  override def submit(task: Runnable): Future[_] = {
     executor.submit(task)
+  }
 
-  override def invokeAll[T](tasks: util.Collection[_ <: Callable[T]]): util.List[Future[T]] =
+  override def invokeAll[T](tasks: util.Collection[_ <: Callable[T]]): util.List[Future[T]] = {
     executor.invokeAll(tasks)
+  }
 
   override def invokeAll[T](
-      tasks: util.Collection[_ <: Callable[T]], timeout: Long, unit: TimeUnit): util.List[Future[T]] =
+      tasks: util.Collection[_ <: Callable[T]], timeout: Long, unit: TimeUnit): util.List[Future[T]] = {
     executor.invokeAll(tasks, timeout, unit)
+  }
 
-  override def invokeAny[T](tasks: util.Collection[_ <: Callable[T]]): T =
+  override def invokeAny[T](tasks: util.Collection[_ <: Callable[T]]): T = {
     executor.invokeAny(tasks)
+  }
 
-  override def invokeAny[T](tasks: util.Collection[_ <: Callable[T]], timeout: Long, unit: TimeUnit): T =
+  override def invokeAny[T](tasks: util.Collection[_ <: Callable[T]], timeout: Long, unit: TimeUnit): T = {
     executor.invokeAny(tasks, timeout, unit)
+  }
 
-  override def execute(command: Runnable): Unit =
+  override def execute(command: Runnable): Unit = {
     executor.execute(command)
+  }
 }

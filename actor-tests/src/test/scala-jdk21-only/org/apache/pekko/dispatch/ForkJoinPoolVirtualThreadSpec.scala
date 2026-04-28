@@ -17,7 +17,9 @@
 
 package org.apache.pekko.dispatch
 
-import java.util.concurrent.{ CountDownLatch, Executors, TimeUnit }
+import java.util
+import java.util.concurrent.{ AbstractExecutorService, CountDownLatch, ExecutorService, Executors, TimeUnit }
+import java.util.concurrent.atomic.AtomicBoolean
 
 import org.apache.pekko
 import pekko.actor.{ Actor, Props }
@@ -63,6 +65,31 @@ object ForkJoinPoolVirtualThreadSpec {
     }
   }
 
+  final class TrackingExecutorService(delegate: ExecutorService) extends AbstractExecutorService {
+    val shutdownNowCalled = new AtomicBoolean(false)
+
+    override def shutdown(): Unit = {
+      delegate.shutdown()
+    }
+
+    override def shutdownNow(): util.List[Runnable] = {
+      shutdownNowCalled.set(true)
+      delegate.shutdownNow()
+    }
+
+    override def isShutdown: Boolean = delegate.isShutdown
+
+    override def isTerminated: Boolean = delegate.isTerminated
+
+    override def awaitTermination(timeout: Long, unit: TimeUnit): Boolean = {
+      delegate.awaitTermination(timeout, unit)
+    }
+
+    override def execute(command: Runnable): Unit = {
+      delegate.execute(command)
+    }
+  }
+
 }
 
 class ForkJoinPoolVirtualThreadSpec extends PekkoSpec(ForkJoinPoolVirtualThreadSpec.config) with ImplicitSender {
@@ -89,7 +116,7 @@ class ForkJoinPoolVirtualThreadSpec extends PekkoSpec(ForkJoinPoolVirtualThreadS
     }
 
     "allow blocked virtual threads to finish after dispatcher shutdown" in {
-      val underlying = Executors.newFixedThreadPool(1)
+      val underlying = new TrackingExecutorService(Executors.newFixedThreadPool(1))
       val executor = new VirtualizedExecutorService(
         VirtualThreadSupport.newVirtualThreadFactory("fork-join-pool-virtual-thread-spec", 0, underlying),
         underlying,
@@ -115,6 +142,7 @@ class ForkJoinPoolVirtualThreadSpec extends PekkoSpec(ForkJoinPoolVirtualThreadS
         release.countDown()
         finished.await(5, TimeUnit.SECONDS) should ===(true)
         executor.awaitTermination(5, TimeUnit.SECONDS) should ===(true)
+        underlying.shutdownNowCalled.get should ===(false)
         underlying.isTerminated should ===(true)
       } finally {
         release.countDown()
@@ -124,7 +152,7 @@ class ForkJoinPoolVirtualThreadSpec extends PekkoSpec(ForkJoinPoolVirtualThreadS
     }
 
     "interrupt blocked virtual threads on dispatcher shutdownNow" in {
-      val underlying = Executors.newFixedThreadPool(1)
+      val underlying = new TrackingExecutorService(Executors.newFixedThreadPool(1))
       val executor = new VirtualizedExecutorService(
         VirtualThreadSupport.newVirtualThreadFactory("fork-join-pool-virtual-thread-spec", 0, underlying),
         underlying,
@@ -150,6 +178,7 @@ class ForkJoinPoolVirtualThreadSpec extends PekkoSpec(ForkJoinPoolVirtualThreadS
 
         interrupted.await(5, TimeUnit.SECONDS) should ===(true)
         executor.awaitTermination(5, TimeUnit.SECONDS) should ===(true)
+        underlying.shutdownNowCalled.get should ===(true)
         underlying.isTerminated should ===(true)
       } finally {
         executor.shutdownNow()
