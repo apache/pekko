@@ -410,6 +410,8 @@ object ByteString {
     private[pekko] override def writeToOutputStream(os: ObjectOutputStream): Unit =
       toByteString1.writeToOutputStream(os)
 
+    protected def writeReplace(): AnyRef = new SerializationProxy(this)
+
     override def copyToBuffer(buffer: ByteBuffer): Int =
       writeToBuffer(buffer, offset = 0)
 

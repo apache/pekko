@@ -2007,6 +2007,37 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
 
         deserialize(serialize(original)) shouldEqual original
       }
+
+      "ByteString1C serializes via SerializationProxy not directly" in {
+        val bs1c = ByteString1C(Array[Byte](1, 2, 3))
+        val serialized = serialize(bs1c)
+        // The serialized form must use SerializationProxy, not serialize ByteString1C directly.
+        // When serialized directly the class descriptor "ByteString1C" appears in the stream;
+        // with writeReplace the proxy class name appears instead.
+        val streamContent = new String(serialized, StandardCharsets.ISO_8859_1)
+        (streamContent should not).include("ByteString1C")
+        deserialize(serialized) shouldEqual bs1c
+      }
+
+      "CompactByteString instances serialize via SerializationProxy" in {
+        val viaApply = CompactByteString(Array[Byte](10, 20, 30))
+        val viaString = CompactByteString("hello")
+        val serializedApply = serialize(viaApply)
+        val serializedString = serialize(viaString)
+        (new String(serializedApply, StandardCharsets.ISO_8859_1) should not).include("ByteString1C")
+        (new String(serializedString, StandardCharsets.ISO_8859_1) should not).include("ByteString1C")
+        deserialize(serializedApply) shouldEqual viaApply
+        deserialize(serializedString) shouldEqual viaString
+      }
+
+      "each ByteString concrete type round-trips via serialization" in {
+        val bs1c = ByteString1C(Array[Byte](1, 2, 3))
+        val bs1 = bs1c.toByteString1
+        val bss = bs1 ++ ByteString1C(Array[Byte](4, 5, 6))
+        deserialize(serialize(bs1c)) shouldEqual bs1c
+        deserialize(serialize(bs1)) shouldEqual bs1
+        deserialize(serialize(bss)) shouldEqual bss
+      }
     }
 
     "unsafely wrap and unwrap bytes" in {
