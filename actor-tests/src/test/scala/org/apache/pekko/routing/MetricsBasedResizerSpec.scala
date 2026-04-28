@@ -241,6 +241,9 @@ class MetricsBasedResizerSpec extends PekkoSpec(ResizerSpec.config) with Default
 
       router.mockSend(await = true, routeeIdx = 0)
       router.mockSend(await = false, routeeIdx = 1)
+      awaitAssert {
+        resizer.updatedStats(router.routees, router.msgs.size)._1.get(2) should not be empty
+      }
       resizer.reportMessageCount(router.routees, router.msgs.size)
       resizer.performanceLog.get(2) should not be empty
 

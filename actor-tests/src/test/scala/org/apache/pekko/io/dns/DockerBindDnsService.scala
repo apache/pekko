@@ -13,6 +13,8 @@
 
 package org.apache.pekko.io.dns
 
+import java.net.InetAddress
+
 import scala.concurrent.duration._
 import scala.jdk.CollectionConverters._
 import scala.util.Try
@@ -125,8 +127,11 @@ abstract class DockerBindDnsService(config: Config) extends PekkoSpec(config) wi
     eventually(timeout(25.seconds)) {
       import pekko.pattern.ask
       implicit val timeout: Timeout = 2.seconds
-      (IO(Dns) ? DnsProtocol.Resolve("a-single.foo.test", DnsProtocol.Ip(ipv6 = false))).mapTo[
+      val resolved = (IO(Dns) ? DnsProtocol.Resolve("a-single.foo.test", DnsProtocol.Ip(ipv6 = false))).mapTo[
         DnsProtocol.Resolved].futureValue
+      resolved.name shouldEqual "a-single.foo.test"
+      resolved.records.collect { case record: ARecord => record.ip } shouldEqual Seq(
+        InetAddress.getByName("192.168.1.20"))
     }
   }
 
