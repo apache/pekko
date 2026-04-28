@@ -1027,15 +1027,8 @@ object ByteString {
     private[ByteString] def fromNonEmptySimpleFragments(
         first: ByteString,
         second: ByteString,
-        length: Int): ByteString = {
-      assert(isSimpleFragment(first), s"first must be a simple ByteString fragment, was ${first.getClass.getName}")
-      assert(isSimpleFragment(second), s"second must be a simple ByteString fragment, was ${second.getClass.getName}")
-      assert(first.nonEmpty, "first must not be empty")
-      assert(second.nonEmpty, "second must not be empty")
-      assert(first.length + second.length == length,
-        s"ByteString2 length ${first.length + second.length} did not match $length")
+        length: Int): ByteString =
       new ByteString2(first, second, length)
-    }
 
     def apply(first: ByteString, second: ByteString): ByteString =
       apply(first, second, first.length + second.length)
@@ -1077,6 +1070,17 @@ object ByteString {
       val length: Int)
       extends ByteString
       with Serializable {
+    assert(ByteString2.isSimpleFragment(first),
+      s"first must be a simple ByteString fragment, was ${first.getClass.getName}")
+    assert(
+      ByteString2.isSimpleFragment(second),
+      s"second must be a simple ByteString fragment, was ${second.getClass.getName}")
+    assert(first.nonEmpty, "first must not be empty")
+    assert(second.nonEmpty, "second must not be empty")
+    assert(
+      first.length + second.length == length,
+      s"ByteString2 length ${first.length + second.length} did not match $length")
+
     private[this] val firstLength: Int = first.length
 
     def apply(idx: Int): Byte =
@@ -1151,13 +1155,13 @@ object ByteString {
       else if (n >= length) this
       else {
         if (n <= firstLength) first.take(n)
-        else ByteString2(first, second.take(n - firstLength))
+        else ByteString2(first, second.take(n - firstLength), n)
       }
 
     override def dropRight(n: Int): ByteString =
       if (0 < n && n < length) {
         val secondLength = length - firstLength
-        if (n < secondLength) ByteString2(first, second.dropRight(n))
+        if (n < secondLength) ByteString2(first, second.dropRight(n), length - n)
         else first.dropRight(n - secondLength)
       } else if (n >= length) ByteString.empty
       else this
@@ -1174,7 +1178,7 @@ object ByteString {
       if (n <= 0) this
       else if (n >= length) ByteString.empty
       else {
-        if (n < firstLength) ByteString2(first.drop(n), second)
+        if (n < firstLength) ByteString2(first.drop(n), second, length - n)
         else second.drop(n - firstLength)
       }
 
