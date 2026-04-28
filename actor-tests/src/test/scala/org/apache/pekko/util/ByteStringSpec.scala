@@ -112,6 +112,12 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       case other                    => fail(s"Expected ByteString2, got [${other.getClass.getName}]")
     }
 
+  def expectByteStrings(byteString: ByteString): ByteStrings =
+    byteString match {
+      case byteStrings: ByteStrings => byteStrings
+      case other                    => fail(s"Expected ByteStrings, got [${other.getClass.getName}]")
+    }
+
   def hexFromSer(obj: AnyRef) = {
     val os = new ByteArrayOutputStream
     val bos = new ObjectOutputStream(os)
@@ -1755,6 +1761,35 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       "dropping" in { check((a: ByteString, b: ByteString) => (a ++ b).drop(a.size) == b) }
     }
 
+    "preserve concatenation direction" when {
+      "creating ByteString2 from two simple fragments" in {
+        val compact = ByteString1C(Array[Byte](1, 2))
+        val sliced = ByteString1(Array[Byte](0, 3, 4, 5), 1, 2)
+
+        val forward = expectByteString2(compact ++ sliced)
+        forward should ===(ByteString(Array[Byte](1, 2, 3, 4)))
+        forward.asByteBuffers.map(_.remaining()).toSeq should ===(Seq(2, 2))
+
+        val reverse = expectByteString2(sliced ++ compact)
+        reverse should ===(ByteString(Array[Byte](3, 4, 1, 2)))
+        reverse.asByteBuffers.map(_.remaining()).toSeq should ===(Seq(2, 2))
+      }
+
+      "promoting ByteString2 to ByteStrings when prepending or appending another fragment" in {
+        val middle = expectByteString2(ByteString1C(Array[Byte](2, 3)) ++ ByteString1C(Array[Byte](4, 5)))
+        val prefix = ByteString1C(Array[Byte](1))
+        val suffix = ByteString1C(Array[Byte](6))
+
+        val prepended = expectByteStrings(prefix ++ middle)
+        prepended should ===(ByteString(Array[Byte](1, 2, 3, 4, 5)))
+
+        val appended = expectByteStrings(middle ++ suffix)
+        appended should ===(ByteString(Array[Byte](2, 3, 4, 5, 6)))
+
+        expectByteStrings(prepended ++ suffix) should ===(ByteString(Array[Byte](1, 2, 3, 4, 5, 6)))
+      }
+    }
+
     "be equal to the original" when {
       "compacting" in {
         check { (xs: ByteString) =>
@@ -2051,6 +2086,19 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
         deserialize(serialize(original)) match {
           case deserialized: ByteString2 => deserialized shouldEqual original
           case other                     => fail(s"Expected deserialized ByteString2, got [${other.getClass.getName}]")
+        }
+      }
+
+      "given ByteString2 with sliced fragments" in {
+        val left = ByteString1(Array[Byte](0, 1, 2, 3), 1, 2)
+        val right = ByteString1(Array[Byte](4, 5, 6, 0), 0, 3)
+        val original = expectByteString2(left ++ right)
+
+        deserialize(serialize(original)) match {
+          case deserialized: ByteString2 =>
+            deserialized shouldEqual ByteString(Array[Byte](1, 2, 4, 5, 6))
+            deserialized.asByteBuffers.map(_.remaining()).toSeq should ===(Seq(2, 3))
+          case other => fail(s"Expected deserialized ByteString2, got [${other.getClass.getName}]")
         }
       }
     }
