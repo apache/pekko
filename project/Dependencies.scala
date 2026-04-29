@@ -57,7 +57,7 @@ object Dependencies {
   object Compile {
     // Compile
 
-    val config = "com.typesafe" % "config" % "1.4.6"
+    val config = "com.typesafe" % "config" % "1.4.7"
     val `netty-transport` = "io.netty" % "netty-transport" % nettyVersion
     val `netty-handler` = "io.netty" % "netty-handler" % nettyVersion
 
