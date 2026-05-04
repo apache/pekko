@@ -56,6 +56,16 @@ private[dispatch] object VirtualThreadSupport {
   }
 
   /**
+   * Start a virtual thread using the default virtual thread scheduler.
+   */
+  def startVirtualThread(prefix: String, runnable: Runnable): Thread = {
+    require(runnable != null, "runnable should not be null.")
+    val thread = newVirtualThreadFactory(prefix, -1).newThread(runnable)
+    thread.start()
+    thread
+  }
+
+  /**
    * Create a virtual thread factory with the default Virtual Thread executor.
    * @param prefix the prefix of the virtual thread name.
    * @param start the starting number of the virtual thread name, if -1, the number will not be appended.

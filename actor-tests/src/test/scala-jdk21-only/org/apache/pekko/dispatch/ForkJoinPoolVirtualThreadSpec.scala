@@ -17,6 +17,10 @@
 
 package org.apache.pekko.dispatch
 
+import java.util
+import java.util.concurrent.{ AbstractExecutorService, CountDownLatch, ExecutorService, Executors, TimeUnit }
+import java.util.concurrent.atomic.AtomicBoolean
+
 import org.apache.pekko
 import pekko.actor.{ Actor, Props }
 import pekko.testkit.{ ImplicitSender, PekkoSpec }
@@ -61,6 +65,33 @@ object ForkJoinPoolVirtualThreadSpec {
     }
   }
 
+  final class TrackingExecutorService(delegate: ExecutorService) extends AbstractExecutorService {
+    val shutdownCalled = new AtomicBoolean(false)
+    val shutdownNowCalled = new AtomicBoolean(false)
+
+    override def shutdown(): Unit = {
+      shutdownCalled.set(true)
+      delegate.shutdown()
+    }
+
+    override def shutdownNow(): util.List[Runnable] = {
+      shutdownNowCalled.set(true)
+      delegate.shutdownNow()
+    }
+
+    override def isShutdown: Boolean = delegate.isShutdown
+
+    override def isTerminated: Boolean = delegate.isTerminated
+
+    override def awaitTermination(timeout: Long, unit: TimeUnit): Boolean = {
+      delegate.awaitTermination(timeout, unit)
+    }
+
+    override def execute(command: Runnable): Unit = {
+      delegate.execute(command)
+    }
+  }
+
 }
 
 class ForkJoinPoolVirtualThreadSpec extends PekkoSpec(ForkJoinPoolVirtualThreadSpec.config) with ImplicitSender {
@@ -83,6 +114,120 @@ class ForkJoinPoolVirtualThreadSpec extends PekkoSpec(ForkJoinPoolVirtualThreadS
         expectMsgPF() { case name: String =>
           name should include("ForkJoinPoolVirtualThreadSpec-custom.task-dispatcher-short-virtual-thread")
         }
+      }
+    }
+
+    "allow blocked virtual threads to finish after dispatcher shutdown" in {
+      val underlying = new TrackingExecutorService(Executors.newFixedThreadPool(1))
+      val executor = new VirtualizedExecutorService(
+        VirtualThreadSupport.newVirtualThreadFactory("fork-join-pool-virtual-thread-spec", 0, underlying),
+        underlying,
+        _ => false,
+        cascadeShutdown = true)
+
+      val started = new CountDownLatch(1)
+      val release = new CountDownLatch(1)
+      val finished = new CountDownLatch(1)
+
+      try {
+        executor.execute(new Runnable {
+          override def run(): Unit = {
+            started.countDown()
+            release.await()
+            finished.countDown()
+          }
+        })
+
+        started.await(5, TimeUnit.SECONDS) should ===(true)
+        executor.shutdown()
+        underlying.isShutdown should ===(false)
+
+        release.countDown()
+        finished.await(5, TimeUnit.SECONDS) should ===(true)
+        executor.awaitTermination(5, TimeUnit.SECONDS) should ===(true)
+        underlying.shutdownCalled.get should ===(true)
+        underlying.shutdownNowCalled.get should ===(false)
+        underlying.isTerminated should ===(true)
+      } finally {
+        release.countDown()
+        executor.shutdownNow()
+        underlying.shutdownNow()
+      }
+    }
+
+    "interrupt blocked virtual threads on dispatcher shutdownNow" in {
+      val underlying = new TrackingExecutorService(Executors.newFixedThreadPool(1))
+      val executor = new VirtualizedExecutorService(
+        VirtualThreadSupport.newVirtualThreadFactory("fork-join-pool-virtual-thread-spec", 0, underlying),
+        underlying,
+        _ => false,
+        cascadeShutdown = true)
+
+      val started = new CountDownLatch(1)
+      val release = new CountDownLatch(1)
+      val interrupted = new CountDownLatch(1)
+
+      try {
+        executor.execute(new Runnable {
+          override def run(): Unit = {
+            started.countDown()
+            try release.await()
+            catch {
+              case _: InterruptedException => interrupted.countDown()
+            }
+          }
+        })
+
+        started.await(5, TimeUnit.SECONDS) should ===(true)
+        executor.shutdownNow()
+
+        interrupted.await(5, TimeUnit.SECONDS) should ===(true)
+        executor.awaitTermination(5, TimeUnit.SECONDS) should ===(true)
+        underlying.shutdownNowCalled.get should ===(true)
+        underlying.isTerminated should ===(true)
+      } finally {
+        release.countDown()
+        executor.shutdownNow()
+        underlying.shutdownNow()
+      }
+    }
+
+    "escalate to underlying shutdownNow after dispatcher shutdown" in {
+      val underlying = new TrackingExecutorService(Executors.newFixedThreadPool(1))
+      val executor = new VirtualizedExecutorService(
+        VirtualThreadSupport.newVirtualThreadFactory("fork-join-pool-virtual-thread-spec", 0, underlying),
+        underlying,
+        _ => false,
+        cascadeShutdown = true)
+
+      val started = new CountDownLatch(1)
+      val release = new CountDownLatch(1)
+      val interrupted = new CountDownLatch(1)
+
+      try {
+        executor.execute(new Runnable {
+          override def run(): Unit = {
+            started.countDown()
+            try release.await()
+            catch {
+              case _: InterruptedException => interrupted.countDown()
+            }
+          }
+        })
+
+        started.await(5, TimeUnit.SECONDS) should ===(true)
+        executor.shutdown()
+        underlying.isShutdown should ===(false)
+
+        executor.shutdownNow()
+        interrupted.await(5, TimeUnit.SECONDS) should ===(true)
+        executor.awaitTermination(5, TimeUnit.SECONDS) should ===(true)
+        underlying.shutdownNowCalled.get should ===(true)
+        underlying.isTerminated should ===(true)
+      } finally {
+        release.countDown()
+        executor.shutdownNow()
+        underlying.shutdownNow()
       }
     }
 

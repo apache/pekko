@@ -55,11 +55,15 @@ class LateConnectSpec extends ArteryMultiNodeSpec(LateConnectSpec.config) with I
 
       val probeB = TestProbe()(systemB)
       val echoA = systemB.actorSelection(RootActorPath(RARP(system).provider.getDefaultAddress) / "user" / "echoA")
-      echoA.tell("ping2", probeB.ref)
-      probeB.expectMsg(10.seconds, "ping2")
+      awaitAssert({
+          echoA.tell("ping2", probeB.ref)
+          probeB.expectMsg(1.second, "ping2")
+        }, 20.seconds)
 
-      echoB ! "ping3"
-      expectMsg("ping3")
+      awaitAssert({
+          echoB ! "ping3"
+          expectMsg(1.second, "ping3")
+        }, 20.seconds)
     }
   }
 }

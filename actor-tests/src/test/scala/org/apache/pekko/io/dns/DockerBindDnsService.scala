@@ -13,6 +13,8 @@
 
 package org.apache.pekko.io.dns
 
+import java.net.{ InetAddress, InetSocketAddress }
+
 import scala.concurrent.duration._
 import scala.jdk.CollectionConverters._
 import scala.util.Try
@@ -25,7 +27,8 @@ import com.github.dockerjava.core.{ DefaultDockerClientConfig, DockerClientConfi
 import com.github.dockerjava.httpclient5.ApacheDockerHttpClient
 
 import org.apache.pekko
-import pekko.io.{ Dns, IO }
+import pekko.actor.Props
+import pekko.io.dns.internal.DnsClient
 import pekko.util.Timeout
 
 import pekko.testkit.PekkoSpec
@@ -122,11 +125,22 @@ abstract class DockerBindDnsService(config: Config) extends PekkoSpec(config) wi
 
       reader.toString should include("Starting BIND")
     }
-    eventually(timeout(25.seconds)) {
-      import pekko.pattern.ask
-      implicit val timeout: Timeout = 2.seconds
-      (IO(Dns) ? DnsProtocol.Resolve("a-single.foo.test", DnsProtocol.Ip(ipv6 = false))).mapTo[
-        DnsProtocol.Resolved].futureValue
+    val readinessNameserver = new InetSocketAddress(InetAddress.getByName("127.0.0.1"), hostPort)
+    val readinessClient = system.actorOf(Props(new DnsClient(readinessNameserver)))
+    try {
+      var requestId = 0
+      eventually(timeout(25.seconds)) {
+        import pekko.pattern.ask
+        implicit val timeout: Timeout = 2.seconds
+        requestId += 1
+        val answer = (readinessClient ? DnsClient.Question4(requestId.toShort, "a-single.foo.test"))
+          .mapTo[DnsClient.Answer]
+          .futureValue
+        answer.rrs.collect { case record: ARecord => record.ip } shouldEqual Seq(
+          InetAddress.getByName("192.168.1.20"))
+      }
+    } finally {
+      system.stop(readinessClient)
     }
   }
 

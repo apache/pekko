@@ -19,6 +19,7 @@ package org.apache.pekko.dispatch
 
 import java.util
 import java.util.concurrent.{ Callable, Executor, ExecutorService, Future, ThreadFactory, TimeUnit }
+import java.util.concurrent.atomic.{ AtomicBoolean, AtomicInteger }
 
 import org.apache.pekko.annotation.InternalApi
 
@@ -39,35 +40,36 @@ final class VirtualizedExecutorService(
   require(vtFactory != null, "Virtual thread factory must not be null")
   require(loadMetricsProvider != null, "Load metrics provider must not be null")
 
+  private final val UnderlyingRunning = 0
+  private final val UnderlyingShutdown = 1
+  private final val UnderlyingShutdownNow = 2
+
   private val executor = VirtualThreadSupport.newThreadPerTaskExecutor(vtFactory)
+  private val underlyingShutdownScheduled = new AtomicBoolean(false)
+  private val underlyingShutdownNowRequested = new AtomicBoolean(false)
+  private val underlyingShutdownState = new AtomicInteger(UnderlyingRunning)
 
   override def atFullThrottle(): Boolean = loadMetricsProvider(this)
 
   override def shutdown(): Unit = {
     executor.shutdown()
-    if (cascadeShutdown && (underlying ne null)) {
-      underlying.shutdown()
-    }
+    shutdownUnderlyingWhenVirtualThreadsHaveTerminated()
   }
 
   override def shutdownNow(): util.List[Runnable] = {
-    val r = executor.shutdownNow()
-    if (cascadeShutdown && (underlying ne null)) {
-      underlying.shutdownNow()
-    }
-    r
+    underlyingShutdownNowRequested.set(true)
+    val result = executor.shutdownNow()
+    shutdownUnderlyingWhenVirtualThreadsHaveTerminated()
+    result
   }
 
-  override def isShutdown: Boolean = {
-    if (cascadeShutdown) {
-      executor.isShutdown && ((underlying eq null) || underlying.isShutdown)
-    } else {
-      executor.isShutdown
-    }
-  }
+  override def isShutdown: Boolean = executor.isShutdown
 
   override def isTerminated: Boolean = {
     if (cascadeShutdown) {
+      if (executor.isTerminated) {
+        shutdownUnderlying()
+      }
       executor.isTerminated && ((underlying eq null) || underlying.isTerminated)
     } else {
       executor.isTerminated
@@ -76,9 +78,58 @@ final class VirtualizedExecutorService(
 
   override def awaitTermination(timeout: Long, unit: TimeUnit): Boolean = {
     if (cascadeShutdown) {
-      executor.awaitTermination(timeout, unit) && ((underlying eq null) || underlying.awaitTermination(timeout, unit))
+      val timeoutNanos = unit.toNanos(timeout)
+      val deadline = System.nanoTime() + timeoutNanos
+      executor.awaitTermination(timeout, unit) && {
+        shutdownUnderlying()
+        (underlying eq null) || {
+          val remainingNanos = deadline - System.nanoTime()
+          if (remainingNanos <= 0L) underlying.isTerminated
+          else underlying.awaitTermination(remainingNanos, TimeUnit.NANOSECONDS)
+        }
+      }
     } else {
       executor.awaitTermination(timeout, unit)
+    }
+  }
+
+  private def shutdownUnderlyingWhenVirtualThreadsHaveTerminated(): Unit = {
+    if (cascadeShutdown && (underlying ne null)) {
+      if (executor.isTerminated) {
+        shutdownUnderlying()
+      } else if (underlyingShutdownScheduled.compareAndSet(false, true)) {
+        VirtualThreadSupport.startVirtualThread(
+          "pekko-virtualized-executor-shutdown",
+          new Runnable {
+            override def run(): Unit = {
+              var interrupted = false
+              try {
+                while (!executor.isTerminated) {
+                  try executor.awaitTermination(Long.MaxValue, TimeUnit.NANOSECONDS)
+                  catch {
+                    case _: InterruptedException => interrupted = true
+                  }
+                }
+              } finally {
+                shutdownUnderlying()
+                if (interrupted) {
+                  Thread.currentThread().interrupt()
+                }
+              }
+            }
+          })
+      }
+    }
+  }
+
+  private def shutdownUnderlying(): Unit = {
+    if (cascadeShutdown && (underlying ne null) && underlyingShutdownNowRequested.get) {
+      if (underlyingShutdownState.getAndSet(UnderlyingShutdownNow) != UnderlyingShutdownNow) {
+        underlying.shutdownNow()
+      }
+    } else if (cascadeShutdown && (underlying ne null) &&
+      underlyingShutdownState.compareAndSet(UnderlyingRunning, UnderlyingShutdown)) {
+      underlying.shutdown()
     }
   }
 

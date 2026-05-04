@@ -381,11 +381,15 @@ class FlowMapAsyncPartitionedSpec extends StreamSpec with WithLogCapturing {
     }
 
     "resume after multiple failures if resume supervision is in place" in {
+      implicit val ec: ExecutionContext = system.dispatcher
+
       val expected =
         Source(1 to 10)
           .mapAsyncPartitioned(4)(_ % 3) { (elem, _) =>
-            if (elem % 4 < 3) Future.failed(new TE("BOOM!"))
-            else Future.successful(elem)
+            Future {
+              if (elem % 4 < 3) throw new TE("BOOM!")
+              else elem
+            }
           }
           .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
           .runWith(Sink.seq)
