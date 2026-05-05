@@ -30,7 +30,7 @@ object Dependencies {
   val junit6Version = "6.0.3"
   val slf4jVersion = "2.0.17"
   // also update agrona version when updating aeron:
-  val aeronVersion = "1.51.0"
+  val aeronVersion = "1.50.4"
   // Use the major+minor agrona versions matching aeron at
   // https://github.com/aeron-io/aeron/blob/1.x.y/gradle/libs.versions.toml
   // (remember to also update the scala-steward pin)
