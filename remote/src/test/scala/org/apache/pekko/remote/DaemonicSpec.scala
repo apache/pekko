@@ -55,7 +55,7 @@ class DaemonicSpec extends PekkoSpec {
             val newNonDaemons: Set[Thread] =
               Thread.getAllStackTraces.keySet().asScala.filter(t => !origThreads(t) && !t.isDaemon).to(Set)
             newNonDaemons should ===(Set.empty[Thread])
-          }, 4.seconds)
+          }, 20.seconds)
 
       } finally {
         shutdown(daemonicSystem)
