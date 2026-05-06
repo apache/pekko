@@ -19,12 +19,13 @@ import scala.concurrent.{ Future, Promise }
 import scala.util.control.NonFatal
 
 import io.aeron.{ Aeron, FragmentAssembler, Subscription }
-import io.aeron.exceptions.DriverTimeoutException
+import io.aeron.exceptions.{ AeronException, DriverTimeoutException }
 import io.aeron.logbuffer.FragmentHandler
 import io.aeron.logbuffer.Header
 import org.agrona.DirectBuffer
 
 import org.apache.pekko
+import pekko.remote.RemoteTransportException
 import pekko.stream.Attributes
 import pekko.stream.Outlet
 import pekko.stream.SourceShape
@@ -106,7 +107,14 @@ private[remote] class AeronSource(
   override def createLogicAndMaterializedValue(inheritedAttributes: Attributes) = {
     val logic = new GraphStageLogic(shape) with OutHandler with AeronLifecycle with StageLogging {
 
-      private val subscription = aeron.addSubscription(channel, streamId)
+      private val subscription = try {
+        aeron.addSubscription(channel, streamId)
+      } catch {
+        case e: AeronException =>
+          throw new RemoteTransportException(
+            s"Failed to create Aeron subscription for channel [$channel] and streamId [$streamId]",
+            e)
+      }
       private var backoffCount = spinning
       private var delegateTaskStartTime = 0L
       private var countBeforeDelegate = 0L
