@@ -114,7 +114,8 @@ class MapAsyncPartitionedSpec
     // JDK-8300995 / JDK-8321335) in a way that can stall the stream dispatcher on busy CI
     // runners long enough to time out.  20 iterations keep meaningful coverage while
     // reducing exposure; restore to 100 once the upstream JDK regression is resolved.
-    if (JavaVersion.majorVersion >= 21) minSuccessful(20) else minSuccessful(100)
+    // We don't see problems on JDK 21 but see them on JDK 25.
+    if (JavaVersion.majorVersion > 21) minSuccessful(20) else minSuccessful(100)
 
   private implicit val system: ActorSystem[_] = ActorSystem(Behaviors.empty, "test-system")
   private val executor: ExecutorService = Executors.newCachedThreadPool()
