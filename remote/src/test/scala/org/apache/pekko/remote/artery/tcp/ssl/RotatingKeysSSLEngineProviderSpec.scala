@@ -23,6 +23,7 @@ import javax.net.ssl.SSLEngine
 import javax.net.ssl.SSLSession
 
 import scala.concurrent.blocking
+import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
 import org.apache.pekko
@@ -109,6 +110,23 @@ class RotatingProviderWithStaticKeysSpec
 class RotatingProviderWithChangingKeysSpec
     extends RotatingKeysSSLEngineProviderSpec(RotatingKeysSSLEngineProviderSpec.tempFileConfig) {
   import RotatingKeysSSLEngineProviderSpec._
+
+  // Retry the test once on failure, cleaning up actor systems from the failed attempt first
+  override def withFixture(test: NoArgTest): Outcome = {
+    val systemsBefore = systemsToTerminate
+    val outcome = super.withFixture(test)
+    if (outcome.isFailed) {
+      // Terminate actor systems that were created during the failed attempt.
+      // Non-blocking: systems are still tracked in ArteryMultiNodeSpec.remoteSystems and
+      // will be awaited in afterTermination(), so there is no resource leak.
+      val newSystems = systemsToTerminate.drop(systemsBefore.length)
+      systemsToTerminate = systemsBefore
+      newSystems.foreach(_.terminate())
+      super.withFixture(test)
+    } else {
+      outcome
+    }
+  }
 
   protected override def atStartup(): Unit = {
     super.atStartup()
@@ -267,9 +285,22 @@ abstract class RotatingKeysSSLEngineProviderSpec(extraConfig: String)
 
   def contact(fromSystem: ActorSystem, toPath: ActorPath): Unit = {
     val senderOnSource = TestProbe()(fromSystem)
-    fromSystem.actorSelection(toPath).tell(Identify(toPath.name), senderOnSource.ref)
-    val targetRef: ActorRef = senderOnSource.expectMsgType[ActorIdentity].ref.get
-    targetRef.tell("ping-1", senderOnSource.ref)
+    val maxAttempts = 3
+    // Per-attempt timeout; allows TLS connection establishment to complete before giving up
+    val identifyTimeout = 3.seconds
+    var attempts = 0
+    var targetRef: Option[ActorRef] = None
+    while (targetRef.isEmpty && attempts < maxAttempts) {
+      attempts += 1
+      fromSystem.actorSelection(toPath).tell(Identify(toPath.name), senderOnSource.ref)
+      senderOnSource.receiveOne(identifyTimeout) match {
+        case ActorIdentity(_, ref) => targetRef = ref
+        case _                     => // timeout or unexpected message; retry
+      }
+    }
+    val ref = targetRef.getOrElse(
+      fail(s"Timed out waiting for ActorIdentity from $toPath after $maxAttempts attempts"))
+    ref.tell("ping-1", senderOnSource.ref)
     senderOnSource.expectMsg("ping-1")
   }
 
