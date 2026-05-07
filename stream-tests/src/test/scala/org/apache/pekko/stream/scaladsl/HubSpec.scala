@@ -406,12 +406,12 @@ class HubSpec extends StreamSpec {
       val firstConsumer = new AtomicReference[TestSubscriber.Probe[Int]]()
       val registrations = new AtomicInteger(0)
 
-      def cancelFirstConsumerOnSecondRegistration(_id: Long): Unit = {
+      def registerConsumerCallback(_id: Long): Unit = {
         if (registrations.incrementAndGet() == 2) Option(firstConsumer.get()).foreach(_.cancel())
       }
 
       val source =
-        Source(1 to 20).runWith(Sink.fromGraph(new BroadcastHub[Int](0, 8, cancelFirstConsumerOnSecondRegistration)))
+        Source(1 to 20).runWith(Sink.fromGraph(new BroadcastHub[Int](0, 8, registerConsumerCallback)))
 
       val initialConsumer = source.runWith(TestSink[Int]())
       firstConsumer.set(initialConsumer)
