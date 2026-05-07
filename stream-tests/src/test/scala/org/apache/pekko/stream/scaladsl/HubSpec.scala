@@ -401,18 +401,22 @@ class HubSpec extends StreamSpec {
     }
 
     "ensure that subsequent consumers see subsequent elements without gap" in {
-      var firstConsumer: TestSubscriber.Probe[Int] = null
+      var firstConsumer = Option.empty[TestSubscriber.Probe[Int]]
+      var registrations = 0
 
-      def registerConsumerCallback(id: Long): Unit = {
-        if (id == 1) firstConsumer.cancel()
+      def registerConsumerCallback(_id: Long): Unit = {
+        registrations += 1
+        if (registrations == 2) firstConsumer.foreach(_.cancel())
       }
 
       val source =
         Source(1 to 20).runWith(Sink.fromGraph(new BroadcastHub[Int](0, 8, registerConsumerCallback)))
 
-      firstConsumer = source.runWith(TestSink[Int]())
-      firstConsumer.request(10)
-      firstConsumer.expectNextN((1 to 10).toVector)
+      firstConsumer = Some(source.runWith(TestSink[Int]()))
+      firstConsumer.foreach { consumer =>
+        consumer.request(10)
+        consumer.expectNextN((1 to 10).toVector)
+      }
 
       val secondConsumer = source.runWith(TestSink[Int]())
       secondConsumer.request(10)
