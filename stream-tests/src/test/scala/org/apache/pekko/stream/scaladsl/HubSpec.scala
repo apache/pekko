@@ -13,9 +13,6 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import java.util.concurrent.atomic.{ AtomicInteger, AtomicReference }
-
-import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
 import scala.concurrent.duration._
@@ -404,21 +401,14 @@ class HubSpec extends StreamSpec {
     }
 
     "ensure that subsequent consumers see subsequent elements without gap" in {
-      val firstConsumer = new AtomicReference[TestSubscriber.Probe[Int]]()
-      val registrations = new AtomicInteger(0)
+      val source = Source(1 to 20).runWith(BroadcastHub.sink(8))
 
-      @nowarn("cat=unused")
-      def registerConsumerCallback(id: Long): Unit = {
-        if (registrations.incrementAndGet() == 2) Option(firstConsumer.get()).foreach(_.cancel())
-      }
-
-      val source =
-        Source(1 to 20).runWith(Sink.fromGraph(new BroadcastHub[Int](0, 8, registerConsumerCallback)))
-
-      val initialConsumer = source.runWith(TestSink[Int]())
-      firstConsumer.set(initialConsumer)
-      initialConsumer.request(10)
-      initialConsumer.expectNextN((1 to 10).toVector)
+      // Let the first consumer take exactly 10 elements and complete naturally.
+      // GraphStageLogic.internalCompleteStage cancels inlets before completing outlets,
+      // so the hub's UnRegister event is enqueued in the hub actor's mailbox before
+      // Sink.seq's postStop resolves the future. The second consumer's RegistrationPending
+      // is only sent after futureValue returns, guaranteeing UnRegister is processed first.
+      source.take(10).runWith(Sink.seq).futureValue should ===(1 to 10)
 
       val secondConsumer = source.runWith(TestSink[Int]())
       secondConsumer.request(10)
