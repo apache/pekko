@@ -15,6 +15,7 @@ package org.apache.pekko.stream.scaladsl
 
 import java.util.concurrent.atomic.{ AtomicInteger, AtomicReference }
 
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
 import scala.concurrent.duration._
@@ -406,7 +407,8 @@ class HubSpec extends StreamSpec {
       val firstConsumer = new AtomicReference[TestSubscriber.Probe[Int]]()
       val registrations = new AtomicInteger(0)
 
-      def registerConsumerCallback(_id: Long): Unit = {
+      @nowarn("cat=unused")
+      def registerConsumerCallback(id: Long): Unit = {
         if (registrations.incrementAndGet() == 2) Option(firstConsumer.get()).foreach(_.cancel())
       }
 
