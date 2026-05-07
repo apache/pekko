@@ -87,6 +87,13 @@ class TlsGraphStageEdgeCasesSpec extends StreamSpec(TlsGraphStageEdgeCasesSpec.c
         Attributes.InputBuffer(TlsGraphStage.InputBufferInitialSize, TlsGraphStage.InputBufferMaxSize))
     }
 
+    "name ports according to the plaintext and cipher sides" in {
+      val graph = new TlsGraphStage(() => engine(Client), _ => Success(()), IgnoreComplete)
+
+      graph.shape.inlets.map(_.s) shouldBe Seq("TlsGraphStage.plainIn", "TlsGraphStage.cipherIn")
+      graph.shape.outlets.map(_.s) shouldBe Seq("TlsGraphStage.cipherOut", "TlsGraphStage.plainOut")
+    }
+
     "be wrapped in its own async island via Attributes.asyncBoundary" in {
       val client = graphStageBidi(Client)
       val server = graphStageBidi(Server)

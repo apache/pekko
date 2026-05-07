@@ -51,8 +51,8 @@ import pekko.util.ByteString
     closing: TLSClosing)
     extends GraphStage[BidiShape[SslTlsOutbound, ByteString, ByteString, SslTlsInbound]] {
 
-  private val plainIn = Inlet[SslTlsOutbound]("TlsGraphStage.transportIn")
-  private val plainOut = Outlet[SslTlsInbound]("TlsGraphStage.transportOut")
+  private val plainIn = Inlet[SslTlsOutbound]("TlsGraphStage.plainIn")
+  private val plainOut = Outlet[SslTlsInbound]("TlsGraphStage.plainOut")
   private val cipherIn = Inlet[ByteString]("TlsGraphStage.cipherIn")
   private val cipherOut = Outlet[ByteString]("TlsGraphStage.cipherOut")
 
@@ -630,7 +630,8 @@ import pekko.util.ByteString
       private def completeStageIfReady(): Unit =
         if ((stateBits & StageCompletionPendingFlag) != 0 &&
           (stateBits & StageClosedFlag) == 0 &&
-          !userOutput.hasPending) {
+          !userOutput.hasPending &&
+          !transportOutput.hasPending) {
           stateBits |= StageClosedFlag
           completeStage()
         }
@@ -877,7 +878,9 @@ import pekko.util.ByteString
         def isPending: Boolean =
           unreadBufferHasRemaining || bytesRemaining > 0 || (stateBits & TransportInputHasPendingFlag) != 0
         def isDepleted: Boolean = (stateBits & TransportInputFinishedFlag) != 0 &&
-          (stateBits & TransportInputHasPendingFlag) == 0
+          (stateBits & TransportInputHasPendingFlag) == 0 &&
+          bytesRemaining == 0 &&
+          !unreadBufferHasRemaining
         def isCancelled: Boolean = (stateBits & TransportInputCancelledFlag) != 0
 
         override def onPush(): Unit = {
@@ -1021,6 +1024,7 @@ import pekko.util.ByteString
 
         override def onDownstreamFinish(cause: Throwable): Unit = {
           onCancel()
+          completeStageIfReady()
           runPump()
         }
 

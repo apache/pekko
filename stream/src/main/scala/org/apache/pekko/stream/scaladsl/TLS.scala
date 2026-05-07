@@ -16,9 +16,8 @@ package org.apache.pekko.stream.scaladsl
 import javax.net.ssl.{ SSLContext, SSLEngine, SSLSession }
 
 import scala.util.{ Success, Try }
-import scala.util.control.NonFatal
 
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{ ConfigException, ConfigFactory }
 
 import org.apache.pekko
 import pekko.NotUsed
@@ -68,26 +67,33 @@ object TLS {
    * INTERNAL API.
    *
    * Selects the Stream TLS engine. This is read once when [[TLS]] is initialized;
-   * the system property form of the key wins over configuration.
+   * the non-blank system property form of the key wins over configuration.
    */
   private sealed trait StreamTlsEngine
   private case object LegacyActorEngine extends StreamTlsEngine
   private case object GraphStageEngine extends StreamTlsEngine
 
+  private[scaladsl] final val LegacyActorEngineName = "legacy-actor"
+  private[scaladsl] final val GraphStageEngineName = "graph-stage"
+  private val TlsEngineKey = "pekko.stream.materializer.tls.engine"
+
+  private[scaladsl] def configuredEngineName(systemProperty: Option[String], configValue: => String): String =
+    systemProperty.map(_.trim).filter(_.nonEmpty).getOrElse(configValue.trim)
+
+  private def configuredEngineNameFromConfig: String =
+    try ConfigFactory.load().getString(TlsEngineKey)
+    catch { case _: ConfigException.Missing => LegacyActorEngineName }
+
   private val selectedEngine: StreamTlsEngine = {
-    val key = "pekko.stream.materializer.tls.engine"
-    val configured =
-      Option(System.getProperty(key)).getOrElse {
-        try ConfigFactory.load().getString(key)
-        catch { case NonFatal(_) => "legacy-actor" }
-      }
+    val configured = configuredEngineName(Option(System.getProperty(TlsEngineKey)), configuredEngineNameFromConfig)
 
     configured match {
-      case "legacy-actor" => LegacyActorEngine
-      case "graph-stage"  => GraphStageEngine
-      case other          =>
+      case LegacyActorEngineName => LegacyActorEngine
+      case GraphStageEngineName  => GraphStageEngine
+      case other                 =>
         throw new IllegalArgumentException(
-          s"Unsupported TLS engine [$other]. Expected one of [legacy-actor, graph-stage] for [$key].")
+          s"Unsupported TLS engine [$other]. Expected one of [$LegacyActorEngineName, $GraphStageEngineName] " +
+          s"for [$TlsEngineKey].")
     }
   }
 
