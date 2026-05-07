@@ -27,6 +27,33 @@ Follow `CONTRIBUTING.md`. If this file conflicts with `CONTRIBUTING.md`, follow 
 - Wire protocol changes must consider rolling upgrade compatibility.
 - Dependency changes must verify Apache-compatible licenses.
 
+## Package Requirements
+
+### Coursier
+
+Install Coursier (`cs` command).
+
+On x86-64 (aka AMD64)
+```
+curl -fL "https://github.com/coursier/launchers/raw/master/cs-x86_64-pc-linux.gz" | gzip -d > cs
+```
+On ARM64
+```
+curl -fL "https://github.com/VirtusLab/coursier-m1/releases/latest/download/cs-aarch64-pc-linux.gz" | gzip -d > cs
+```
+
+### sbt
+
+```
+cs setup
+```
+
+### scalafmt
+
+```
+cs install scalafmt
+```
+
 ## Formatting Rules
 
 - Prefer native scalafmt for changed Scala and SBT files when it is available.
