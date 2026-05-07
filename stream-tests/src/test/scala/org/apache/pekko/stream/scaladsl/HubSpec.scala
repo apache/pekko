@@ -13,6 +13,8 @@
 
 package org.apache.pekko.stream.scaladsl
 
+import java.util.concurrent.atomic.AtomicInteger
+
 import scala.collection.immutable
 import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
 import scala.concurrent.duration._
@@ -402,11 +404,10 @@ class HubSpec extends StreamSpec {
 
     "ensure that subsequent consumers see subsequent elements without gap" in {
       var firstConsumer = Option.empty[TestSubscriber.Probe[Int]]
-      var registrations = 0
+      val registrations = new AtomicInteger(0)
 
       def registerConsumerCallback(_id: Long): Unit = {
-        registrations += 1
-        if (registrations == 2) firstConsumer.foreach(_.cancel())
+        if (registrations.incrementAndGet() == 2) firstConsumer.foreach(_.cancel())
       }
 
       val source =
