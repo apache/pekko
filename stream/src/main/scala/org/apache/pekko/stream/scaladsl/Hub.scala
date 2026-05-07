@@ -516,8 +516,7 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
       extends HubState
   private case class Closed(failure: Option[Throwable]) extends HubState
 
-  private class BroadcastSinkLogic(_shape: Shape, registrationLock: AnyRef, pendingUnregistrations: AtomicInteger)
-      extends GraphStageLogic(_shape) with InHandler {
+  private class BroadcastSinkLogic(_shape: Shape) extends GraphStageLogic(_shape) with InHandler {
 
     private[this] val callbackPromise: Promise[AsyncCallback[HubEvent]] = Promise()
     private[this] val noRegistrationsState = Open(callbackPromise.future, Nil)
@@ -590,38 +589,25 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
           checkUnblock(previousOffset)
 
         case RegistrationPending =>
-          var shouldRetry = false
-          registrationLock.synchronized {
-            if (pendingUnregistrations.get() == 0) {
-              state.getAndSet(noRegistrationsState).asInstanceOf[Open].registrations.foreach { consumer =>
-                val startFrom = head
-                activeConsumers += 1
-                addConsumer(consumer, startFrom)
-                // add a callback hook so that we can control the interleaving in tests
-                registrationPendingCallback(consumer.id)
-                // in case the consumer is already stopped we need to undo registration
-                implicit val ec = materializer.executionContext
-                consumer.callback.invokeWithFeedback(Initialize(startFrom)).failed.foreach {
-                  case _: StreamDetachedException =>
-                    registrationLock.synchronized {
-                      pendingUnregistrations.incrementAndGet()
-                      callbackPromise.future.foreach(callback =>
-                        callback.invoke(UnRegister(consumer.id, startFrom, startFrom)))
-                    }
-                  case _ => ()
-                }
-              }
-              if (activeConsumers >= startAfterNrOfConsumers) {
-                initialized = true
-              }
-              tryPull()
-            } else {
-              shouldRetry = true
+          state.getAndSet(noRegistrationsState).asInstanceOf[Open].registrations.foreach { consumer =>
+            val startFrom = head
+            activeConsumers += 1
+            addConsumer(consumer, startFrom)
+            // add a callback hook so that we can control the interleaving in tests
+            registrationPendingCallback(consumer.id)
+            // in case the consumer is already stopped we need to undo registration
+            implicit val ec = materializer.executionContext
+            consumer.callback.invokeWithFeedback(Initialize(startFrom)).failed.foreach {
+              case _: StreamDetachedException =>
+                callbackPromise.future.foreach(callback =>
+                  callback.invoke(UnRegister(consumer.id, startFrom, startFrom)))
+              case _ => ()
             }
           }
-          if (shouldRetry) {
-            callbackPromise.future.foreach(_.invoke(RegistrationPending))(materializer.executionContext)
+          if (activeConsumers >= startAfterNrOfConsumers) {
+            initialized = true
           }
+          tryPull()
 
         case UnRegister(id, previousOffset, finalOffset) =>
           if (findAndRemoveConsumer(id, previousOffset) ne null)
@@ -636,9 +622,6 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
               tryPull()
             }
           } else checkUnblock(previousOffset)
-          registrationLock.synchronized {
-            pendingUnregistrations.decrementAndGet()
-          }
 
       }
     }
@@ -798,10 +781,7 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
       inheritedAttributes: Attributes): (GraphStageLogic, Source[T, NotUsed]) = {
     val idCounter = new AtomicLong()
 
-    val registrationLock = new AnyRef
-    val pendingUnregistrations = new AtomicInteger(0)
-
-    val logic = new BroadcastSinkLogic(shape, registrationLock, pendingUnregistrations)
+    val logic = new BroadcastSinkLogic(shape)
 
     val source = new GraphStage[SourceShape[T]] {
       val out: Outlet[T] = Outlet("BroadcastHub.out")
@@ -889,12 +869,8 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
             // upon which the `RegistrationPending` logic itself unregisters this consumer.
             // In particular, this client must not send the `Unregister` event itself because the values in
             // `previousPublishedOffset` and `offset` are wrong.
-            if ((hubCallback ne null) && offsetInitialized) {
-              registrationLock.synchronized {
-                pendingUnregistrations.incrementAndGet()
-                hubCallback.invoke(UnRegister(id, previousPublishedOffset, offset))
-              }
-            }
+            if ((hubCallback ne null) && offsetInitialized)
+              hubCallback.invoke(UnRegister(id, previousPublishedOffset, offset))
           }
 
           private def onCommand(cmd: ConsumerEvent): Unit = cmd match {

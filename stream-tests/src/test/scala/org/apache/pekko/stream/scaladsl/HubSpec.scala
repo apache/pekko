@@ -13,7 +13,7 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.{ AtomicInteger, AtomicReference }
 
 import scala.collection.immutable
 import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
@@ -403,21 +403,20 @@ class HubSpec extends StreamSpec {
     }
 
     "ensure that subsequent consumers see subsequent elements without gap" in {
-      var firstConsumer = Option.empty[TestSubscriber.Probe[Int]]
+      val firstConsumer = new AtomicReference[TestSubscriber.Probe[Int]]()
       val registrations = new AtomicInteger(0)
 
-      def registerConsumerCallback(_id: Long): Unit = {
-        if (registrations.incrementAndGet() == 2) firstConsumer.foreach(_.cancel())
+      def cancelFirstConsumerOnSecondRegistration(_id: Long): Unit = {
+        if (registrations.incrementAndGet() == 2) Option(firstConsumer.get()).foreach(_.cancel())
       }
 
       val source =
-        Source(1 to 20).runWith(Sink.fromGraph(new BroadcastHub[Int](0, 8, registerConsumerCallback)))
+        Source(1 to 20).runWith(Sink.fromGraph(new BroadcastHub[Int](0, 8, cancelFirstConsumerOnSecondRegistration)))
 
-      firstConsumer = Some(source.runWith(TestSink[Int]()))
-      firstConsumer.foreach { consumer =>
-        consumer.request(10)
-        consumer.expectNextN((1 to 10).toVector)
-      }
+      val initialConsumer = source.runWith(TestSink[Int]())
+      firstConsumer.set(initialConsumer)
+      initialConsumer.request(10)
+      initialConsumer.expectNextN((1 to 10).toVector)
 
       val secondConsumer = source.runWith(TestSink[Int]())
       secondConsumer.request(10)
