@@ -43,6 +43,13 @@ object SerializationTests {
           test = "org.apache.pekko.serialization.NoopSerializer"
           test2 = "org.apache.pekko.serialization.NoopSerializer2"
           other = "other.SerializerOutsidePekkoPackage"
+          constructor1 = "org.apache.pekko.serialization.Constructor1Serializer"
+          constructor2 = "org.apache.pekko.serialization.Constructor2Serializer"
+          constructor3 = "org.apache.pekko.serialization.Constructor3Serializer"
+          constructor4 = "org.apache.pekko.serialization.Constructor4Serializer"
+          constructor5 = "org.apache.pekko.serialization.Constructor5Serializer"
+          constructor6 = "org.apache.pekko.serialization.Constructor6Serializer"
+          constructor7 = "org.apache.pekko.serialization.Constructor7Serializer"
         }
 
         serialization-bindings {
@@ -55,6 +62,13 @@ object SerializationTests {
           "org.apache.pekko.serialization.SerializationTests$$D" = test
           "org.apache.pekko.serialization.SerializationTests$$Marker2" = test2
           "org.apache.pekko.serialization.SerializationTests$$AbstractOther" = other
+          "org.apache.pekko.serialization.ConstructorSerializer$$No1" = constructor1
+          "org.apache.pekko.serialization.ConstructorSerializer$$No2" = constructor2
+          "org.apache.pekko.serialization.ConstructorSerializer$$No3" = constructor3
+          "org.apache.pekko.serialization.ConstructorSerializer$$No4" = constructor4
+          "org.apache.pekko.serialization.ConstructorSerializer$$No5" = constructor5
+          "org.apache.pekko.serialization.ConstructorSerializer$$No6" = constructor6
+          "org.apache.pekko.serialization.ConstructorSerializer$$No7" = constructor7
         }
       }
     }
@@ -302,6 +316,16 @@ class SerializeSpec extends PekkoSpec(SerializationTests.serializeConf) {
           """))
         shutdown(sys)
       }.getMessage should include).regex("Serializer identifier \\[9999\\].*is not unique")
+    }
+
+    "look for various constructors" in {
+      ser.serializerFor(classOf[ConstructorSerializer.No1]).getClass should ===(classOf[Constructor1Serializer])
+      ser.serializerFor(classOf[ConstructorSerializer.No2]).getClass should ===(classOf[Constructor2Serializer])
+      ser.serializerFor(classOf[ConstructorSerializer.No3]).getClass should ===(classOf[Constructor3Serializer])
+      ser.serializerFor(classOf[ConstructorSerializer.No4]).getClass should ===(classOf[Constructor4Serializer])
+      ser.serializerFor(classOf[ConstructorSerializer.No5]).getClass should ===(classOf[Constructor5Serializer])
+      ser.serializerFor(classOf[ConstructorSerializer.No6]).getClass should ===(classOf[Constructor6Serializer])
+      ser.serializerFor(classOf[ConstructorSerializer.No7]).getClass should ===(classOf[Constructor7Serializer])
     }
   }
 }
@@ -631,3 +655,49 @@ class DeadlockSerializer(system: ExtendedActorSystem) extends Serializer {
 
   def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]): AnyRef = null
 }
+
+object ConstructorSerializer {
+  class No1
+  class No2
+  class No3
+  class No4
+  class No5
+  class No6
+  class No7
+}
+
+private[pekko] abstract class ConstructorSerializer extends SerializerWithStringManifest {
+
+  def toBinary(o: AnyRef): Array[Byte] =
+    Array.empty[Byte]
+
+  override def manifest(o: AnyRef): String = "test"
+
+  override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = "Test"
+}
+
+private[pekko] class Constructor1Serializer(@nowarn("msg=never used") system: ExtendedActorSystem)
+    extends ConstructorSerializer { override def identifier = 100001 }
+
+private[pekko] class Constructor2Serializer(@nowarn("msg=never used") system: ActorSystem)
+    extends ConstructorSerializer { override def identifier = 100002 }
+
+private[pekko] class Constructor3Serializer(@nowarn("msg=never used") system: ClassicActorSystemProvider)
+    extends ConstructorSerializer { override def identifier = 100003 }
+
+private[pekko] class Constructor4Serializer extends ConstructorSerializer { override def identifier = 100004 }
+
+private[pekko] class Constructor5Serializer(
+    @nowarn("msg=never used") system: ExtendedActorSystem,
+    @nowarn("msg=never used") binding: String)
+    extends ConstructorSerializer { override def identifier = 100005 }
+
+private[pekko] class Constructor6Serializer(
+    @nowarn("msg=never used") system: ActorSystem,
+    @nowarn("msg=never used") binding: String)
+    extends ConstructorSerializer { override def identifier = 100006 }
+
+private[pekko] class Constructor7Serializer(
+    @nowarn("msg=never used") system: ClassicActorSystemProvider,
+    @nowarn("msg=never used") binding: String)
+    extends ConstructorSerializer { override def identifier = 100007 }
