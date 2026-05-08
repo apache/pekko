@@ -80,7 +80,7 @@ private[cluster] object ClusterUserAction {
   /**
    * The `appVersion` is defined after system startup but before joining.
    * The `appVersion` is defined via the `SetAppVersion` message.
-   * Subsequent  `JoinTo` will be deferred until after `SetAppVersion` has been
+   * Subsequent `JoinTo` will be deferred until after `SetAppVersion` has been
    * received.
    */
   case object SetAppVersionLater

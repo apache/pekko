@@ -14,6 +14,7 @@
 package org.apache.pekko.cluster
 
 import scala.concurrent.Promise
+import scala.concurrent.duration._
 
 import org.apache.pekko.remote.testkit.MultiNodeConfig
 import org.apache.pekko.util.Version
@@ -40,8 +41,11 @@ abstract class AppVersionSpec extends MultiNodeClusterSpec(AppVersionMultiJvmSpe
       runOn(first) {
         cluster.join(first)
         // not joining until laterVersion has been completed
-        Thread.sleep(100)
-        cluster.selfMember.status should ===(MemberStatus.Removed)
+        val until = Deadline.now + 300.milliseconds
+        while (!until.isOverdue()) {
+          cluster.selfMember.status should ===(MemberStatus.Removed)
+          Thread.sleep(50)
+        }
         laterVersion.trySuccess(Version("2"))
         awaitAssert {
           cluster.selfMember.status should ===(MemberStatus.Up)
@@ -53,8 +57,11 @@ abstract class AppVersionSpec extends MultiNodeClusterSpec(AppVersionMultiJvmSpe
       runOn(second) {
         cluster.joinSeedNodes(List(address(first), address(second)))
         // not joining until laterVersion has been completed
-        Thread.sleep(100)
-        cluster.selfMember.status should ===(MemberStatus.Removed)
+        val until = Deadline.now + 300.milliseconds
+        while (!until.isOverdue()) {
+          cluster.selfMember.status should ===(MemberStatus.Removed)
+          Thread.sleep(50)
+        }
         laterVersion.trySuccess(Version("3"))
         awaitAssert {
           cluster.selfMember.status should ===(MemberStatus.Up)
