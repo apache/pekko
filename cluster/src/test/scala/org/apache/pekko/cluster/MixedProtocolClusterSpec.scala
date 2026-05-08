@@ -37,6 +37,8 @@ object MixedProtocolClusterSpec {
       pekko.remote.accept-protocol-names = ["pekko", "akka"]
       pekko.remote.enforce-strict-config-prefix-check-on-join = on
 
+      pekko.coordinated-shutdown.phases.actor-system-terminate.timeout = 30 s
+
       pekko.cluster.downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
       pekko.cluster.split-brain-resolver.active-strategy = keep-majority
       pekko.cluster.jmx.multi-mbeans-in-same-jvm = on""")
