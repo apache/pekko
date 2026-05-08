@@ -850,7 +850,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
    */
   def joining(joiningNode: UniqueAddress, roles: Set[String], appVersion: Version): Unit = {
     def isSelfAppVersionDefined = laterAppVersion match {
-      case None => true
+      case None          => true
       case Some(promise) =>
         promise.future.value match {
           case None    => false
