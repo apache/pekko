@@ -23,7 +23,7 @@ import scala.collection.immutable
 import scala.concurrent.Await
 import scala.concurrent.Future
 import scala.concurrent.duration._
-import scala.util.Random
+import scala.util.{ Random, Success }
 
 import org.apache.pekko
 import pekko.NotUsed
@@ -31,6 +31,7 @@ import pekko.pattern.{ after => later }
 import pekko.stream._
 import pekko.stream.TLSProtocol._
 import pekko.stream.impl.fusing.GraphStages.SimpleLinearGraphStage
+import pekko.stream.impl.io.{ TlsGraphStage, TlsModule }
 import pekko.stream.scaladsl._
 import pekko.stream.stage._
 import pekko.stream.testkit._
@@ -111,12 +112,34 @@ object TlsSpec {
     """
 }
 
-class TlsSpec extends StreamSpec(TlsSpec.configOverrides) with WithLogCapturing {
+class TlsSpec extends AbstractTlsSpec(useLegacyActor = true)
+class TlsGraphStageSpec extends AbstractTlsSpec(useLegacyActor = false)
+
+abstract class AbstractTlsSpec(useLegacyActor: Boolean)
+    extends StreamSpec(TlsSpec.configOverrides)
+    with WithLogCapturing {
   import GraphDSL.Implicits._
   import TlsSpec._
   import system.dispatcher
 
-  "SslTls" must {
+  /**
+   * Build a TLS BidiFlow without going through the global TLS engine setting so
+   * each subclass can independently exercise the legacy actor path or the GraphStage path
+   * within the same JVM.
+   */
+  protected def tlsBidi(
+      createSSLEngine: () => SSLEngine,
+      verifySession: SSLSession => scala.util.Try[Unit] = _ => Success(()),
+      closing: TLSClosing): BidiFlow[SslTlsOutbound, ByteString, ByteString, SslTlsInbound, NotUsed] =
+    if (useLegacyActor)
+      BidiFlow.fromGraph(
+        TlsModule(Attributes.none, () => createSSLEngine(), verifySession, closing))
+    else
+      BidiFlow
+        .fromGraph(new TlsGraphStage(createSSLEngine, verifySession, closing))
+        .withAttributes(TlsGraphStage.StreamTlsAttributes)
+
+  s"SslTls (${if (useLegacyActor) "legacy actor path" else "GraphStage path"})" must {
     "work for TLSv1.2" must { workFor("TLSv1.2", TLS12Ciphers) }
 
     "work for TLSv1.3" must { workFor("TLSv1.3", TLS13Ciphers) }
@@ -163,13 +186,13 @@ class TlsSpec extends StreamSpec(TlsSpec.configOverrides) with WithLogCapturing 
       }
 
       def clientTls(closing: TLSClosing) =
-        TLS(() => createSSLEngine(sslContext, Client), closing)
+        tlsBidi(() => createSSLEngine(sslContext, Client), closing = closing)
 
       def badClientTls(closing: TLSClosing) =
-        TLS(() => createSSLEngine(initWithTrust("/badtruststore", protocol), Client), closing)
+        tlsBidi(() => createSSLEngine(initWithTrust("/badtruststore", protocol), Client), closing = closing)
 
       def serverTls(closing: TLSClosing) =
-        TLS(() => createSSLEngine(sslContext, Server), closing)
+        tlsBidi(() => createSSLEngine(sslContext, Server), closing = closing)
 
       trait Named {
         def name: String =
@@ -567,9 +590,9 @@ class TlsSpec extends StreamSpec(TlsSpec.configOverrides) with WithLogCapturing 
             case SessionTruncated   => SendBytes(ByteString.empty)
             case SessionBytes(_, b) => SendBytes(b)
           }
-          val clientTls = TLS(
+          val clientTls = tlsBidi(
             () => createSSLEngine2(sslContext, Client, hostnameVerification = true, hostInfo = Some((hostName, 80))),
-            EagerClose)
+            closing = EagerClose)
 
           val flow = clientTls.atop(serverTls(EagerClose).reversed).join(rhs)
 

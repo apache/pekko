@@ -17,11 +17,13 @@ import javax.net.ssl.{ SSLContext, SSLEngine, SSLSession }
 
 import scala.util.{ Success, Try }
 
+import com.typesafe.config.{ ConfigException, ConfigFactory }
+
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream._
 import pekko.stream.TLSProtocol._
-import pekko.stream.impl.io.TlsModule
+import pekko.stream.impl.io.{ TlsGraphStage, TlsModule }
 import pekko.util.ByteString
 
 /**
@@ -62,6 +64,40 @@ import pekko.util.ByteString
 object TLS {
 
   /**
+   * INTERNAL API.
+   *
+   * Selects the Stream TLS engine. This is read once when [[TLS]] is initialized;
+   * the non-blank system property form of the key wins over configuration.
+   */
+  private sealed trait StreamTlsEngine
+  private case object LegacyActorEngine extends StreamTlsEngine
+  private case object GraphStageEngine extends StreamTlsEngine
+
+  private[scaladsl] final val LegacyActorEngineName = "legacy-actor"
+  private[scaladsl] final val GraphStageEngineName = "graph-stage"
+  private val TlsEngineKey = "pekko.stream.materializer.tls.engine"
+
+  private[scaladsl] def configuredEngineName(systemProperty: Option[String], configValue: => String): String =
+    systemProperty.map(_.trim).filter(_.nonEmpty).getOrElse(configValue.trim)
+
+  private def configuredEngineNameFromConfig: String =
+    try ConfigFactory.load().getString(TlsEngineKey)
+    catch { case _: ConfigException.Missing => LegacyActorEngineName }
+
+  private val selectedEngine: StreamTlsEngine = {
+    val configured = configuredEngineName(Option(System.getProperty(TlsEngineKey)), configuredEngineNameFromConfig)
+
+    configured match {
+      case LegacyActorEngineName => LegacyActorEngine
+      case GraphStageEngineName  => GraphStageEngine
+      case other                 =>
+        throw new IllegalArgumentException(
+          s"Unsupported TLS engine [$other]. Expected one of [$LegacyActorEngineName, $GraphStageEngineName] " +
+          s"for [$TlsEngineKey].")
+    }
+  }
+
+  /**
    * Create a StreamTls [[pekko.stream.scaladsl.BidiFlow]].
    *
    * You specify a factory to create an SSLEngine that must already be configured for
@@ -76,8 +112,16 @@ object TLS {
       createSSLEngine: () => SSLEngine,
       verifySession: SSLSession => Try[Unit],
       closing: TLSClosing): scaladsl.BidiFlow[SslTlsOutbound, ByteString, ByteString, SslTlsInbound, NotUsed] =
-    scaladsl.BidiFlow.fromGraph(
-      TlsModule(Attributes.none, () => createSSLEngine(), session => verifySession(session), closing))
+    selectedEngine match {
+      case LegacyActorEngine =>
+        scaladsl.BidiFlow.fromGraph(
+          TlsModule(Attributes.none, () => createSSLEngine(), session => verifySession(session), closing))
+
+      case GraphStageEngine =>
+        scaladsl.BidiFlow
+          .fromGraph(new TlsGraphStage(createSSLEngine, verifySession, closing))
+          .withAttributes(TlsGraphStage.StreamTlsAttributes)
+    }
 
   /**
    * Create a StreamTls [[pekko.stream.scaladsl.BidiFlow]].
