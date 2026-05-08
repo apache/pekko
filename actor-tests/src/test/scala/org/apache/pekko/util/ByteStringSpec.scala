@@ -2261,9 +2261,13 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       ByteString1C(Array[Byte](1, 2, 3)).map(inc) should ===(ByteString(Array[Byte](2, 3, 4)))
       // ByteString1 with offset
       ByteString1(Array[Byte](0, 1, 2, 3, 4), 1, 3).map(inc) should ===(ByteString(Array[Byte](2, 3, 4)))
-      // ByteStrings
+      // ByteStrings (2 segments)
       val bss = ByteStrings(ByteString1.fromString("ab"), ByteString1.fromString("cd"))
       bss.map(b => (b + 1).toByte) should ===(ByteString("bcde"))
+      // ByteStrings (3 segments, including negative byte values)
+      val bss3 = ByteString1(Array[Byte](-1, -2)) ++ ByteString1(Array[Byte](0, 1)) ++ ByteString1(
+        Array[Byte](126, 127))
+      bss3.map(b => (b + 1).toByte) should ===(ByteString(Array[Byte](0, -1, 1, 2, 127, -128)))
       // empty
       ByteString.empty.map(inc) should ===(ByteString.empty)
     }
@@ -2278,9 +2282,12 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       collect(ByteString1C(Array[Byte](10, 20, 30))) should ===(Seq[Byte](10, 20, 30))
       // ByteString1 with internal offset
       collect(ByteString1(Array[Byte](0, 10, 20, 30, 40), 1, 3)) should ===(Seq[Byte](10, 20, 30))
-      // ByteStrings (multi-segment)
+      // ByteStrings (multi-segment, 2 segments)
       collect(ByteStrings(ByteString1.fromString("ab"), ByteString1.fromString("cd"))) should ===(
         Seq[Byte]('a', 'b', 'c', 'd'))
+      // ByteStrings (multi-segment, 3+ segments, including negative byte values)
+      val bss3 = ByteString1(Array[Byte](-1, -128)) ++ ByteString1(Array[Byte](0)) ++ ByteString1(Array[Byte](127))
+      collect(bss3) should ===(Seq[Byte](-1, -128, 0, 127))
       // empty
       collect(ByteString.empty) should ===(Seq.empty[Byte])
     }

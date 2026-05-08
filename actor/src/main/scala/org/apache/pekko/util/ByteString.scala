@@ -402,6 +402,24 @@ object ByteString {
       java.util.Arrays.equals(this.bytes, hIdx, hIdx + (needleLen - nIdx), bytes, nIdx, needleLen)
     }
 
+    /**
+     * INTERNAL API: compare `len` bytes from this ByteString starting at `haystackOffset`
+     * against `needle[needleOffset..needleOffset+len)`.
+     */
+    private[pekko] def matchesAt(haystackOffset: Int, needle: Array[Byte], needleOffset: Int, len: Int): Boolean = {
+      var hIdx = haystackOffset
+      var nIdx = needleOffset
+      var remaining = len
+      while (remaining >= 8) {
+        if (SWARUtil.getLong(bytes, hIdx, ByteOrder.BIG_ENDIAN) !=
+            SWARUtil.getLong(needle, nIdx, ByteOrder.BIG_ENDIAN)) return false
+        hIdx += 8
+        nIdx += 8
+        remaining -= 8
+      }
+      java.util.Arrays.equals(bytes, hIdx, hIdx + remaining, needle, nIdx, nIdx + remaining)
+    }
+
     override def slice(from: Int, until: Int): ByteString =
       if (from <= 0 && until >= length) this
       else if (from >= length || until <= 0 || from >= until) ByteString.empty
@@ -796,6 +814,24 @@ object ByteString {
         nIdx += 8
       }
       java.util.Arrays.equals(this.bytes, hIdx, hIdx + (needleLen - nIdx), bytes, nIdx, needleLen)
+    }
+
+    /**
+     * INTERNAL API: compare `len` bytes from this ByteString starting at logical `haystackOffset`
+     * against `needle[needleOffset..needleOffset+len)`.
+     */
+    private[pekko] def matchesAt(haystackOffset: Int, needle: Array[Byte], needleOffset: Int, len: Int): Boolean = {
+      var hIdx = startIndex + haystackOffset
+      var nIdx = needleOffset
+      var remaining = len
+      while (remaining >= 8) {
+        if (SWARUtil.getLong(bytes, hIdx, ByteOrder.BIG_ENDIAN) !=
+            SWARUtil.getLong(needle, nIdx, ByteOrder.BIG_ENDIAN)) return false
+        hIdx += 8
+        nIdx += 8
+        remaining -= 8
+      }
+      java.util.Arrays.equals(bytes, hIdx, hIdx + remaining, needle, nIdx, nIdx + remaining)
     }
 
     override def copyToArray[B >: Byte](dest: Array[B], start: Int, len: Int): Int = {
@@ -1223,6 +1259,73 @@ object ByteString {
 
         find(byteStringsLast, math.min(end, length - 1), length)
       }
+    }
+
+    override def startsWith(bytes: Array[Byte], offset: Int): Boolean = {
+      val needleLen = bytes.length
+      if (length - offset < needleLen) return false
+      if (needleLen == 0) return true
+      // Locate the fragment that contains position `offset`
+      var fragIdx = 0
+      var fragOffset = offset
+      while (fragIdx < bytestrings.length && fragOffset >= bytestrings(fragIdx).length) {
+        fragOffset -= bytestrings(fragIdx).length
+        fragIdx += 1
+      }
+      // Compare needle against consecutive fragments without compacting
+      var nIdx = 0
+      while (nIdx < needleLen) {
+        val frag = bytestrings(fragIdx)
+        val toCmp = math.min(needleLen - nIdx, frag.length - fragOffset)
+        if (!frag.matchesAt(fragOffset, bytes, nIdx, toCmp)) return false
+        nIdx += toCmp
+        fragIdx += 1
+        fragOffset = 0
+      }
+      true
+    }
+
+    override def endsWith(bytes: Array[Byte]): Boolean = {
+      val needleLen = bytes.length
+      if (length < needleLen) return false
+      if (needleLen == 0) return true
+      // Locate the fragment containing `length - needleLen` by walking backward from the last
+      // fragment, so only the suffix fragments are touched (O(suffix fragments), not O(all fragments)).
+      var fragIdx = bytestrings.length - 1
+      var bytesFromTail = needleLen
+      while (fragIdx > 0 && bytesFromTail > bytestrings(fragIdx).length) {
+        bytesFromTail -= bytestrings(fragIdx).length
+        fragIdx -= 1
+      }
+      var fragOffset = bytestrings(fragIdx).length - bytesFromTail
+      // Compare needle against consecutive fragments without compacting
+      var nIdx = 0
+      while (nIdx < needleLen) {
+        val frag = bytestrings(fragIdx)
+        val toCmp = math.min(needleLen - nIdx, frag.length - fragOffset)
+        if (!frag.matchesAt(fragOffset, bytes, nIdx, toCmp)) return false
+        nIdx += toCmp
+        fragIdx += 1
+        fragOffset = 0
+      }
+      true
+    }
+
+    override def foreach[@specialized U](f: Byte => U): Unit =
+      bytestrings.foreach(_.foreach(f))
+
+    override def map[A](f: Byte => Byte): ByteString = {
+      val result = new Array[Byte](length)
+      var pos = 0
+      bytestrings.foreach { bs =>
+        var i = 0
+        while (i < bs.length) {
+          result(pos) = f(bs(i))
+          pos += 1
+          i += 1
+        }
+      }
+      ByteString1C(result)
     }
 
     override def copyToArray[B >: Byte](dest: Array[B], start: Int, len: Int): Int = {
