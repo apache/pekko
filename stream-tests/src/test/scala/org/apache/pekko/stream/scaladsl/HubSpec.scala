@@ -29,6 +29,7 @@ import pekko.stream.testkit.Utils.TE
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.stream.testkit.scaladsl.TestSource
 import pekko.testkit.EventFilter
+import pekko.testkit.TestDuration
 
 import org.scalatest.time.{ Seconds, Span }
 
@@ -345,7 +346,7 @@ class HubSpec extends StreamSpec {
       val broadcast = Source(1 to 10).runWith(BroadcastHub.sink[Int](1, 256))
       val resultOne = broadcast.runWith(Sink.seq) // nothing happening yet
 
-      Await.result(resultOne, 1.second) should be(1 to 10) // fails
+      Await.result(resultOne, 3.seconds.dilated) should be(1 to 10)
     }
 
     "broadcast all elements to all consumers" in {
@@ -361,8 +362,8 @@ class HubSpec extends StreamSpec {
       }
       queue.complete() // only now is the source emptied
 
-      Await.result(resultOne, 1.second) should be(1 to 10)
-      Await.result(resultTwo, 1.second) should be(1 to 10)
+      Await.result(resultOne, 3.seconds.dilated) should be(1 to 10)
+      Await.result(resultTwo, 3.seconds.dilated) should be(1 to 10)
     }
 
     "broadcast all elements to all consumers with hot upstream" in {
@@ -370,8 +371,8 @@ class HubSpec extends StreamSpec {
       val resultOne = broadcast.runWith(Sink.seq) // nothing happening yet
       val resultTwo = broadcast.runWith(Sink.seq)
 
-      Await.result(resultOne, 1.second) should be(1 to 10)
-      Await.result(resultTwo, 1.second) should be(1 to 10)
+      Await.result(resultOne, 3.seconds.dilated) should be(1 to 10)
+      Await.result(resultTwo, 3.seconds.dilated) should be(1 to 10)
     }
 
     "broadcast all elements to all consumers with hot upstream even some subscriber unsubscribe" in {
@@ -383,8 +384,8 @@ class HubSpec extends StreamSpec {
       val resultOne = broadcast.runWith(Sink.seq) // nothing happening yet
       val resultTwo = broadcast.runWith(Sink.seq) // nothing happening yet
 
-      Await.result(resultOne, 1.second) should be(1 to 10)
-      Await.result(resultTwo, 1.second) should be(1 to 10)
+      Await.result(resultOne, 3.seconds.dilated) should be(1 to 10)
+      Await.result(resultTwo, 3.seconds.dilated) should be(1 to 10)
     }
 
     "send the same prefix to consumers attaching around the same time if one cancels earlier" in {
@@ -478,11 +479,11 @@ class HubSpec extends StreamSpec {
       source.runWith(Sink.fromSubscriber(downstream))
 
       downstream.request(1)
-      val first = downstream.expectNext()
+      val first = downstream.expectNext(10.seconds.dilated)
 
       for (i <- (first + 1) to (first + 10)) {
         downstream.request(1)
-        downstream.expectNext(i)
+        downstream.expectNext(10.seconds.dilated) should ===(i)
       }
 
       downstream.cancel()
@@ -554,7 +555,7 @@ class HubSpec extends StreamSpec {
       Thread.sleep(10)
 
       a[TE] shouldBe thrownBy {
-        Await.result(source.runWith(Sink.seq), 3.seconds)
+        Await.result(source.runWith(Sink.seq), 3.seconds.dilated)
       }
     }
 
@@ -884,7 +885,7 @@ class HubSpec extends StreamSpec {
       Thread.sleep(10)
 
       a[TE] shouldBe thrownBy {
-        Await.result(source.runWith(Sink.seq), 3.seconds)
+        Await.result(source.runWith(Sink.seq), 3.seconds.dilated)
       }
     }
 

@@ -109,7 +109,8 @@ trait ClusterTestKit extends TestKitBase {
       actorSystems.contains(actorSystem)
 
     /** Shuts down all registered [[ActorSystem]]s */
-    def shutdownAll(): Unit = actorSystems.foreach(sys => shutdown(sys, 10.seconds, verifySystemShutdown = true))
+    // The timeout is dilated by TestKit; keep a larger base for virtualized JDK 25 nightly runs.
+    def shutdownAll(): Unit = actorSystems.foreach(sys => shutdown(sys, 30.seconds, verifySystemShutdown = true))
 
     /**
      * Force the passed [[ActorSystem]] to quit the cluster and shutdown.

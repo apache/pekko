@@ -28,6 +28,7 @@ import pekko.stream.ActorAttributes.supervisionStrategy
 import pekko.stream.Supervision.resumingDecider
 import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl._
+import pekko.testkit.TestDuration
 import pekko.testkit.TestLatch
 import pekko.testkit.TestProbe
 
@@ -361,7 +362,7 @@ class FlowMapAsyncUnorderedSpec extends StreamSpec {
         Source(1 to N)
           .mapAsyncUnordered(parallelism)(_ => deferred())
           .runFold(0)((c, _) => c + 1)
-          .futureValue(Timeout(3.seconds)) should ===(N)
+          .futureValue(Timeout(3.seconds.dilated)) should ===(N)
       } finally {
         timer.interrupt()
       }

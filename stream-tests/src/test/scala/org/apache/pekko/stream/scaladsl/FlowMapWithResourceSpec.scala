@@ -41,7 +41,7 @@ import pekko.stream.impl.StreamSupervisor.Children
 import pekko.stream.testkit.{ StreamSpec, TestSubscriber }
 import pekko.stream.testkit.Utils.{ assertDispatcher, TE, UnboundedMailboxConfig }
 import pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
-import pekko.testkit.EventFilter
+import pekko.testkit.{ EventFilter, TestDuration }
 import pekko.util.ByteString
 
 class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
@@ -414,21 +414,24 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
       @nowarn("msg=deprecated")
       val mat = ActorMaterializer()
       val promise = Promise[Done]()
+      val created = Promise[Done]()
       val matVal = Source
         .single(1)
         .mapWithResource(() => {
+          created.trySuccess(Done)
           newBufferedReader()
         })((reader, count) => readLines(reader, count),
           reader => {
             reader.close()
-            promise.complete(Success(Done))
+            promise.tryComplete(Success(Done))
             Some(List("End"))
           })
         .mapConcat(identity)
         .runWith(Sink.never)(mat)
+      Await.result(created.future, 3.seconds.dilated) shouldBe Done
       mat.shutdown()
       matVal.failed.futureValue shouldBe an[AbruptTerminationException]
-      Await.result(promise.future, 3.seconds) shouldBe Done
+      Await.result(promise.future, 3.seconds.dilated) shouldBe Done
     }
 
     "will close the autocloseable resource when upstream complete" in {
@@ -517,21 +520,25 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
       @nowarn("msg=deprecated")
       val mat = ActorMaterializer()
       val promise = Promise[Done]()
-      val create = () =>
+      val created = Promise[Done]()
+      val create = () => {
+        created.trySuccess(Done)
         new AutoCloseable {
           override def close(): Unit = {
             closedCounter.incrementAndGet()
-            promise.complete(Success(Done))
+            promise.tryComplete(Success(Done))
           }
         }
+      }
       val matVal = Source
         .single(1)
         .mapWithResource(create, (_: AutoCloseable, count) => count)
         .runWith(Sink.never)(mat)
+      Await.result(created.future, 3.seconds.dilated) shouldBe Done
       closedCounter.get shouldBe 0
       mat.shutdown()
       matVal.failed.futureValue shouldBe an[AbruptTerminationException]
-      Await.result(promise.future, 3.seconds) shouldBe Done
+      Await.result(promise.future, 3.seconds.dilated) shouldBe Done
       closedCounter.get shouldBe 1
     }
 
