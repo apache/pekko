@@ -1263,13 +1263,15 @@ object ByteString {
       val needleLen = bytes.length
       if (length < needleLen) return false
       if (needleLen == 0) return true
-      // Locate the fragment that contains position `length - needleLen`
-      var fragIdx = 0
-      var fragOffset = length - needleLen
-      while (fragIdx < bytestrings.length && fragOffset >= bytestrings(fragIdx).length) {
-        fragOffset -= bytestrings(fragIdx).length
-        fragIdx += 1
+      // Locate the fragment containing `length - needleLen` by walking backward from the last
+      // fragment, so only the suffix fragments are touched (O(suffix fragments), not O(all fragments)).
+      var fragIdx = bytestrings.length - 1
+      var bytesFromTail = needleLen
+      while (fragIdx > 0 && bytesFromTail > bytestrings(fragIdx).length) {
+        bytesFromTail -= bytestrings(fragIdx).length
+        fragIdx -= 1
       }
+      var fragOffset = bytestrings(fragIdx).length - bytesFromTail
       // Compare needle against consecutive fragments without compacting
       var nIdx = 0
       while (nIdx < needleLen) {
