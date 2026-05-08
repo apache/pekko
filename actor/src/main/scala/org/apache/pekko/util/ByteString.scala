@@ -433,8 +433,7 @@ object ByteString {
     override def copyToBuffer(buffer: ByteBuffer): Int =
       writeToBuffer(buffer, offset = 0)
 
-    /** INTERNAL API: Specialized for internal use, copying from an offset without slicing. */
-    private[pekko] override def copyToBuffer(buffer: ByteBuffer, offset: Int): Int =
+    override def copyToBuffer(buffer: ByteBuffer, offset: Int): Int =
       writeToBuffer(buffer, offset)
 
     /** INTERNAL API: Specialized for internal use, writing multiple ByteString1C into the same ByteBuffer. */
@@ -576,8 +575,7 @@ object ByteString {
     override def copyToBuffer(buffer: ByteBuffer): Int =
       writeToBuffer(buffer, offset = 0)
 
-    /** INTERNAL API: Specialized for internal use, copying from an offset without slicing. */
-    private[pekko] override def copyToBuffer(buffer: ByteBuffer, offset: Int): Int =
+    override def copyToBuffer(buffer: ByteBuffer, offset: Int): Int =
       writeToBuffer(buffer, offset)
 
     /** INTERNAL API: Specialized for internal use, writing multiple ByteString1C into the same ByteBuffer. */
@@ -993,8 +991,7 @@ object ByteString {
     override def copyToBuffer(buffer: ByteBuffer): Int =
       copyToBuffer(buffer, offset = 0)
 
-    /** INTERNAL API: Specialized for internal use, copying from an offset without slicing. */
-    private[pekko] override def copyToBuffer(buffer: ByteBuffer, offset: Int): Int = {
+    override def copyToBuffer(buffer: ByteBuffer, offset: Int): Int = {
       var remainingOffset = offset
       var written = 0
       var i = 0
@@ -1899,8 +1896,16 @@ sealed abstract class ByteString
    */
   def copyToBuffer(@nowarn("msg=never used") buffer: ByteBuffer): Int
 
-  /** INTERNAL API: Copy bytes to a ByteBuffer from a ByteString offset without allocating a slice. */
-  private[pekko] def copyToBuffer(buffer: ByteBuffer, offset: Int): Int =
+  /**
+   * Copy as many bytes as possible to a ByteBuffer, starting from a given offset within this ByteString
+   * and the buffer's current position. This method will not overflow the buffer.
+   *
+   * @param buffer a ByteBuffer to copy bytes to
+   * @param offset the offset within this ByteString to start copying from
+   * @return the number of bytes actually copied
+   * @since 2.0.0
+   */
+  def copyToBuffer(buffer: ByteBuffer, offset: Int): Int =
     if (offset <= 0) copyToBuffer(buffer)
     else drop(offset).copyToBuffer(buffer)
 
