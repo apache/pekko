@@ -70,13 +70,6 @@ object Tcp extends ExtensionId[TcpExt] with ExtensionIdProvider {
     // general socket options
 
     /**
-     * [[pekko.io.Inet.SocketOption]] to enable or disable SO_REUSEPORT
-     *
-     * For more information see [[java.net.StandardSocketOptions#SO_REUSEPORT]]
-     */
-    val ReusePort = Inet.SO.ReusePort
-
-    /**
      * [[pekko.io.Inet.SocketOption]] to enable or disable SO_KEEPALIVE
      *
      * For more information see `java.net.Socket.setKeepAlive`

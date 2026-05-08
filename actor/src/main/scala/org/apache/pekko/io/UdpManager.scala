@@ -63,7 +63,7 @@ private[io] class UdpManager(udp: UdpExt)
 
     case s: SimpleSender =>
       val commander = sender() // cache because we create a function that will run asynchly
-      registry => Props(classOf[UdpSender], udp, registry, commander, s.options)
+      registry => Props(classOf[UdpSender], udp, registry, commander, s)
   }
 
 }

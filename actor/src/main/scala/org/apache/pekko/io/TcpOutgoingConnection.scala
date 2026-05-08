@@ -50,10 +50,12 @@ private[io] class TcpOutgoingConnection(
 
   signDeathPact(commander)
 
-  options.foreach(_.beforeConnect(channel.socket))
-  localAddress.foreach(channel.socket.bind)
-  channelRegistry.register(channel, 0)
-  timeout.foreach(context.setReceiveTimeout) // Initiate connection timeout if supplied
+  reportConnectFailure {
+    options.foreach(_.beforeConnect(channel.socket))
+    localAddress.foreach(channel.socket.bind)
+    channelRegistry.register(channel, 0)
+    timeout.foreach(context.setReceiveTimeout) // Initiate connection timeout if supplied
+  }
 
   private def stop(cause: Throwable): Unit =
     stopWith(CloseInformation(Set(commander), CommandFailed(connect).withCause(cause)), shouldAbort = true)

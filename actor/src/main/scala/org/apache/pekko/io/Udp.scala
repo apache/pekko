@@ -195,13 +195,6 @@ object Udp extends ExtensionId[UdpExt] with ExtensionIdProvider {
   object SO extends Inet.SoForwarders {
 
     /**
-     * [[pekko.io.Inet.SocketOption]] to enable or disable SO_REUSEPORT
-     *
-     * For more information see [[java.net.StandardSocketOptions#SO_REUSEPORT]]
-     */
-    val ReusePort = Inet.SO.ReusePort
-
-    /**
      * [[pekko.io.Inet.SocketOption]] to set the SO_BROADCAST option
      *
      * For more information see [[java.net.DatagramSocket#setBroadcast]]

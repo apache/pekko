@@ -129,6 +129,15 @@ class UdpIntegrationSpec extends PekkoSpec("""
       commander.expectMsgType[Bound]
       assert(assertOption.openCalled === 1)
     }
+
+    "reply with CommandFailed when a simple sender socket option fails before registration" in {
+      val commander = TestProbe()
+      val command = SimpleSender(options = List(FailBeforeDatagramBind()))
+
+      commander.send(IO(Udp), command)
+
+      commander.expectMsg(CommandFailed(command))
+    }
   }
 
 }
@@ -161,4 +170,9 @@ private case class AssertOpenDatagramChannel() extends DatagramChannelCreator {
     openCalled += 1
     super.create()
   }
+}
+
+private case class FailBeforeDatagramBind() extends SocketOption {
+  override def beforeDatagramBind(ds: DatagramSocket): Unit =
+    throw new UnsupportedOperationException("boom")
 }

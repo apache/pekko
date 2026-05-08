@@ -138,6 +138,8 @@ object Inet {
      * [[pekko.io.Inet.SocketOption]] to enable or disable SO_REUSEPORT
      *
      * For more information see [[java.net.StandardSocketOptions#SO_REUSEPORT]]
+     *
+     * @since 2.0.0
      */
     final case class ReusePort(on: Boolean) extends SocketOption {
       override def beforeServerSocketBind(s: ServerSocket): Unit = setReusePort(s.getChannel, on)
@@ -186,6 +188,15 @@ object Inet {
     val ReuseAddress = SO.ReuseAddress
 
     /**
+     * [[pekko.io.Inet.SocketOption]] to enable or disable SO_REUSEPORT
+     *
+     * For more information see [[java.net.StandardSocketOptions#SO_REUSEPORT]]
+     *
+     * @since 2.0.0
+     */
+    def ReusePort = SO.ReusePort
+
+    /**
      * [[pekko.io.Inet.SocketOption]] to set the SO_SNDBUF option.
      *
      * For more information see [[java.net.Socket#setSendBufferSize]]
@@ -223,6 +234,8 @@ object Inet {
      * [[pekko.io.Inet.SocketOption]] to enable or disable SO_REUSEPORT
      *
      * For more information see [[java.net.StandardSocketOptions#SO_REUSEPORT]]
+     *
+     * @since 2.0.0
      */
     def reusePort(on: Boolean) = ReusePort(on)
 

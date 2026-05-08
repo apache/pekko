@@ -13,14 +13,15 @@
 
 package org.apache.pekko.io
 
+import java.nio.channels.DatagramChannel
+
 import scala.annotation.nowarn
-import scala.collection.immutable
 import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.actor._
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
-import pekko.io.Inet.{ DatagramChannelCreator, SocketOption }
+import pekko.io.Inet.DatagramChannelCreator
 import pekko.io.Udp._
 
 /**
@@ -31,29 +32,46 @@ private[io] class UdpSender(
     val udp: UdpExt,
     channelRegistry: ChannelRegistry,
     commander: ActorRef,
-    options: immutable.Traversable[SocketOption])
+    simpleSender: SimpleSender)
     extends Actor
     with ActorLogging
     with WithUdpSend
     with RequiresMessageQueue[UnboundedMessageQueueSemantics] {
 
-  val channel = {
-    val datagramChannel = options
-      .collectFirst {
-        case creator: DatagramChannelCreator => creator
-      }
-      .getOrElse(DatagramChannelCreator())
-      .create()
-    datagramChannel.configureBlocking(false)
-    val socket = datagramChannel.socket
-    options.foreach { _.beforeDatagramBind(socket) }
+  private val options = simpleSender.options
 
-    datagramChannel
+  val channel = {
+    var datagramChannel: DatagramChannel = null
+    try {
+      datagramChannel = options
+        .collectFirst {
+          case creator: DatagramChannelCreator => creator
+        }
+        .getOrElse(DatagramChannelCreator())
+        .create()
+      datagramChannel.configureBlocking(false)
+      val socket = datagramChannel.socket
+      options.foreach { _.beforeDatagramBind(socket) }
+      channelRegistry.register(datagramChannel, initialOps = 0)
+
+      datagramChannel
+    } catch {
+      case NonFatal(e) =>
+        if ((datagramChannel ne null) && datagramChannel.isOpen) {
+          try datagramChannel.close()
+          catch {
+            case NonFatal(closeError) => log.debug("Error closing DatagramChannel: {}", closeError)
+          }
+        }
+        commander ! CommandFailed(simpleSender)
+        log.debug("Failed to create UDP simple sender: {}", e)
+        context.stop(self)
+        null
+    }
   }
-  channelRegistry.register(channel, initialOps = 0)
 
   def receive: Receive = {
-    case registration: ChannelRegistration =>
+    case registration: ChannelRegistration if channel ne null =>
       options.foreach {
         case v2: Inet.SocketOptionV2 => v2.afterConnect(channel.socket)
         case _                       =>
@@ -62,7 +80,7 @@ private[io] class UdpSender(
       context.become(sendHandlers(registration))
   }
 
-  override def postStop(): Unit = if (channel.isOpen) {
+  override def postStop(): Unit = if ((channel ne null) && channel.isOpen) {
     log.debug("Closing DatagramChannel after being stopped")
     try channel.close()
     catch {
