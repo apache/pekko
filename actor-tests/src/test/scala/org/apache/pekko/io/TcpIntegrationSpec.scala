@@ -14,7 +14,7 @@
 package org.apache.pekko.io
 
 import java.io.IOException
-import java.net.{ InetSocketAddress, ServerSocket }
+import java.net.{ InetSocketAddress, ServerSocket, Socket }
 
 import scala.concurrent.duration._
 
@@ -182,6 +182,22 @@ class TcpIntegrationSpec extends PekkoSpec("""
       // expecting CommandFailed or no reply (within timeout)
       val replies = connectCommander.receiveWhile(1.second) { case m: Connected => m }
       replies should ===(Nil)
+    }
+
+    "reply with CommandFailed when a connect socket option fails before connect" in {
+      val connectCommander = TestProbe()
+      val failure = new UnsupportedOperationException("boom")
+      val failingOption = new Inet.SocketOption {
+        override def beforeConnect(s: Socket): Unit = throw failure
+      }
+      val endpoint = new InetSocketAddress("127.0.0.1", 1)
+      val command = Connect(endpoint, options = List(failingOption))
+
+      connectCommander.send(IO(Tcp), command)
+
+      val commandFailed = connectCommander.expectMsgType[CommandFailed]
+      commandFailed.cmd should ===(command)
+      commandFailed.cause should ===(Some(failure))
     }
 
     "handle tcp connection actor death properly" in new TestSetup(shouldBindServer = false) {
