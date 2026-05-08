@@ -2604,6 +2604,67 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
         ByteString.empty.copyToBuffer(ByteBuffer.allocate(10)) should ===(0)
       }
 
+      "copyToBuffer(buffer, offset) copies from the given offset for different ByteString types" in {
+        import java.nio.ByteBuffer
+
+        // ByteString1C — copy from offset 2
+        val bs1c = ByteString1C(Array[Byte](1, 2, 3, 4, 5))
+        val buf1 = ByteBuffer.allocate(5)
+        bs1c.copyToBuffer(buf1, 2) should ===(3)
+        buf1.flip()
+        val result1 = new Array[Byte](3)
+        buf1.get(result1)
+        result1.toSeq should ===(Seq[Byte](3, 4, 5))
+
+        // ByteString1C — offset beyond length copies nothing
+        val buf2 = ByteBuffer.allocate(5)
+        bs1c.copyToBuffer(buf2, 10) should ===(0)
+
+        // ByteString1C — offset 0 copies all
+        val buf3 = ByteBuffer.allocate(5)
+        bs1c.copyToBuffer(buf3, 0) should ===(5)
+
+        // ByteString1 — copy from offset 1 (internal startIndex + user offset)
+        val bs1 = ByteString1(Array[Byte](0, 10, 20, 30, 40, 50), 1, 4) // logical bytes [10, 20, 30, 40]
+        val buf4 = ByteBuffer.allocate(4)
+        bs1.copyToBuffer(buf4, 1) should ===(3)
+        buf4.flip()
+        val result4 = new Array[Byte](3)
+        buf4.get(result4)
+        result4.toSeq should ===(Seq[Byte](20, 30, 40))
+
+        // ByteString1 — offset 0 copies all logical bytes
+        val buf5 = ByteBuffer.allocate(4)
+        bs1.copyToBuffer(buf5, 0) should ===(4)
+        buf5.flip()
+        buf5.get() should ===(10.toByte)
+
+        // ByteStrings — copy from offset that skips first segment entirely
+        val bss = ByteStrings(ByteString1.fromString("abc"), ByteString1.fromString("def"))
+        val buf6 = ByteBuffer.allocate(10)
+        bss.copyToBuffer(buf6, 3) should ===(3)
+        buf6.flip()
+        val result6 = new Array[Byte](3)
+        buf6.get(result6)
+        result6.toSeq should ===(Seq[Byte]('d', 'e', 'f'))
+
+        // ByteStrings — copy from offset mid-first-segment
+        val buf7 = ByteBuffer.allocate(10)
+        bss.copyToBuffer(buf7, 1) should ===(5)
+        buf7.flip()
+        val result7 = new Array[Byte](5)
+        buf7.get(result7)
+        result7.toSeq should ===(Seq[Byte]('b', 'c', 'd', 'e', 'f'))
+
+        // ByteStrings — offset 0 copies all
+        val buf8 = ByteBuffer.allocate(6)
+        bss.copyToBuffer(buf8, 0) should ===(6)
+
+        // ByteString.empty — any offset copies nothing
+        ByteString.empty.copyToBuffer(ByteBuffer.allocate(10), 0) should ===(0)
+        ByteString.empty.copyToBuffer(ByteBuffer.allocate(10), 5) should ===(0)
+      }
+
       "copying chunks to an array" in {
         val iterator = (ByteString("123") ++ ByteString("456")).iterator
         val array = Array.ofDim[Byte](6)
