@@ -404,8 +404,9 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
           Failure(
             new NoSuchMethodException(
               s"None of the supported constructors were found for serializer [$fqn]. " +
-              s"Supported constructor shapes: (ExtendedActorSystem), (ActorSystem), (ClassicActorSystemProvider), " +
-              s"(), (ExtendedActorSystem, String), (ActorSystem, String), (ClassicActorSystemProvider, String)."))
+              s"Supported constructor shapes (tried in order): " +
+              s"(ExtendedActorSystem), (ActorSystem), (ClassicActorSystemProvider), (), " +
+              s"(ExtendedActorSystem, String), (ActorSystem, String), (ClassicActorSystemProvider, String)."))
         case args :: rest =>
           system.dynamicAccess.createInstanceFor[Serializer](fqn, args).recoverWith {
             case _: NoSuchMethodException => tryNext(rest)
