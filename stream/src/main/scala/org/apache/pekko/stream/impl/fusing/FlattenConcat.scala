@@ -265,7 +265,7 @@ private[pekko] final class FlattenConcat[T, M](parallelism: Int)
       private def addRepeatSource(elem: T): Unit = {
         val inflightSource = new InflightRepeatSource[T](elem)
         if (isAvailable(out) && queue.isEmpty)
-          push(out, inflightSource.next())
+          push(out, elem)
         queue.enqueue(inflightSource)
       }
 

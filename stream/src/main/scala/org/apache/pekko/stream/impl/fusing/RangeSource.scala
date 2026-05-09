@@ -36,13 +36,14 @@ private[pekko] final class RangeSource[T](val range: immutable.Range, defaultAtt
 
   private val out = Outlet[T]("RangeSource.out")
   override val shape: SourceShape[T] = SourceShape(out)
+  private[this] val isEmptyRange = range.isEmpty
+  private[this] val rangeStart = range.start
+  private[this] val rangeLast = if (isEmptyRange) 0 else range.last
+  private[this] val rangeStep = range.step
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new GraphStageLogic(shape) with OutHandler {
-      private[this] val isEmptyRange = range.isEmpty
-      private[this] val rangeLast = if (isEmptyRange) 0 else range.last
-      private[this] val rangeStep = range.step
-      private[this] var nextElement = range.start
+      private[this] var nextElement = rangeStart
 
       override def preStart(): Unit =
         if (isEmptyRange) completeStage()
