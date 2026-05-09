@@ -14,12 +14,12 @@ We strongly encourage people to report such problems to our private security mai
 
 Please follow the [guidelines](https://www.apache.org/security/) laid down by the Apache Security team.
 
-Ideally, any issues affecting Apache Pekko and Akka should be reported to Apache team first. We will share the
-report with the Lightbend Akka team.
+Ideally, any issues affecting Apache Pekko and its predecessor project should be reported to the Apache Pekko team
+first. We will coordinate responsible disclosure with the affected upstream maintainers when needed.
 
 ## Security Related Documentation
 
- * [Akka security fixes](https://akka.io/security)
+ * [Apache Pekko security announcements](https://pekko.apache.org/docs/pekko/current/security/)
  * @ref:[Java Serialization](../serialization.md#java-serialization)
  * @ref:[Remote deployment allow list](../remoting.md#remote-deployment-allow-list)
  * @ref:[Remote Security](../remote-security.md)
