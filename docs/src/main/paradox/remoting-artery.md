@@ -650,7 +650,7 @@ in case of heavy traffic by using a dedicated subchannel.
 specific events
  * Providing protocol stability across major Pekko versions to support rolling updates of large-scale systems
 
-The main incompatible change from the previous implementation that the protocol field of the string representation of an
+The main incompatible change from the previous implementation is that the protocol field of the string representation of an
 @apidoc[actor.ActorRef] is always *pekko* instead of the previously used *pekko.tcp* or *pekko.ssl.tcp*. Configuration properties
 are also different.
 
