@@ -17,12 +17,15 @@ import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.stream.{ Attributes, Outlet, SourceShape }
 import pekko.stream.impl.Stages.DefaultAttributes
+import pekko.stream.impl.fusing.GraphStages.ValuePresentedSource
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, OutHandler }
 
 /**
  * INTERNAL API
  */
-@InternalApi private[pekko] final class FailedSource[T](val failure: Throwable) extends GraphStage[SourceShape[T]] {
+@InternalApi private[pekko] final class FailedSource[T](val failure: Throwable)
+    extends GraphStage[SourceShape[T]]
+    with ValuePresentedSource {
   val out = Outlet[T]("FailedSource.out")
   override val shape = SourceShape(out)
 

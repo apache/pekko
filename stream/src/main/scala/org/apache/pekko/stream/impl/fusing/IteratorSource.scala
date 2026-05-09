@@ -23,13 +23,15 @@ import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.stream.ActorAttributes.SupervisionStrategy
 import pekko.stream.{ Attributes, Outlet, SourceShape, Supervision }
+import pekko.stream.impl.fusing.GraphStages.ValuePresentedSource
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, OutHandler }
 
 @InternalApi
 private[pekko] final class IteratorSource[T](
     val createIterator: () => Iterator[T],
     defaultAttributes: Attributes)
-    extends GraphStage[SourceShape[T]] {
+    extends GraphStage[SourceShape[T]]
+    with ValuePresentedSource {
 
   override protected def initialAttributes: Attributes = defaultAttributes
 
@@ -43,18 +45,37 @@ private[pekko] final class IteratorSource[T](
 
       override def onPull(): Unit =
         try {
-          if (currentIterator eq null)
+          if (currentIterator eq null) {
             currentIterator = createIterator()
+          }
           pushNextOrComplete()
         } catch {
           case NonFatal(ex) =>
-            decider(ex) match {
-              case Supervision.Stop    => failStage(ex)
-              case Supervision.Resume  => pushNextOrComplete()
-              case Supervision.Restart =>
-                currentIterator = createIterator()
-                pushNextOrComplete()
+            if (currentIterator eq null) handleIteratorCreationFailure(ex)
+            else handleIteratorFailure(ex)
+        }
+
+      private def handleIteratorCreationFailure(ex: Throwable): Unit =
+        decider(ex) match {
+          case Supervision.Stop   => failStage(ex)
+          case Supervision.Resume =>
+            completeStage()
+          case Supervision.Restart =>
+            try {
+              currentIterator = createIterator()
+              pushNextOrComplete()
+            } catch {
+              case NonFatal(restartEx) => failStage(restartEx)
             }
+        }
+
+      private def handleIteratorFailure(ex: Throwable): Unit =
+        decider(ex) match {
+          case Supervision.Stop    => failStage(ex)
+          case Supervision.Resume  => pushNextOrComplete()
+          case Supervision.Restart =>
+            currentIterator = createIterator()
+            pushNextOrComplete()
         }
 
       private def pushNextOrComplete(): Unit =

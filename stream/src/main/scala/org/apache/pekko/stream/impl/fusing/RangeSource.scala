@@ -23,11 +23,13 @@ import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.stream.{ Attributes, Outlet, SourceShape }
 import pekko.stream.impl.ReactiveStreamsCompliance
+import pekko.stream.impl.fusing.GraphStages.ValuePresentedSource
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, OutHandler }
 
 @InternalApi
 private[pekko] final class RangeSource[T](val range: immutable.Range, defaultAttributes: Attributes)
-    extends GraphStage[SourceShape[T]] {
+    extends GraphStage[SourceShape[T]]
+    with ValuePresentedSource {
   ReactiveStreamsCompliance.requireNonNullElement(range)
 
   override protected def initialAttributes: Attributes = defaultAttributes

@@ -19,12 +19,14 @@ import java.util.function.Consumer
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.stream._
+import pekko.stream.impl.fusing.GraphStages.ValuePresentedSource
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, OutHandler }
 
 /** INTERNAL API */
 @InternalApi private[stream] final class JavaStreamSource[T, S <: java.util.stream.BaseStream[T, S]](
     val open: () => java.util.stream.BaseStream[T, S])
-    extends GraphStage[SourceShape[T]] {
+    extends GraphStage[SourceShape[T]]
+    with ValuePresentedSource {
 
   val out: Outlet[T] = Outlet("JavaStreamSource")
   override val shape: SourceShape[T] = SourceShape(out)

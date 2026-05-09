@@ -22,8 +22,8 @@ import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.stream._
 import pekko.stream.impl.StreamLayout.AtomicModule
 import pekko.stream.impl.TraversalBuilder.{ AnyFunction1, AnyFunction2 }
-import pekko.stream.impl.fusing.{ GraphStageModule, IterableSource, IteratorSource, RangeSource }
-import pekko.stream.impl.fusing.GraphStages.{ FutureSource, RepeatSource, SingleSource }
+import pekko.stream.impl.fusing.GraphStageModule
+import pekko.stream.impl.fusing.GraphStages.{ SingleSource, ValuePresentedSource }
 import pekko.stream.scaladsl.Keep
 import pekko.stream.stage.GraphStageWithMaterializedValue
 import pekko.util.OptionVal
@@ -394,9 +394,7 @@ import pekko.util.OptionVal
   @InternalApi def getValuePresentedSource[A >: Null](
       graph: Graph[SourceShape[A], _]): OptionVal[Graph[SourceShape[A], _]] = {
     def isValuePresentedSource(graph: Graph[SourceShape[_ <: A], _]): Boolean = graph match {
-      case _: SingleSource[_] | _: FutureSource[_] | _: IterableSource[_] | _: IteratorSource[_] |
-          _: RangeSource[_] | _: RepeatSource[_] | _: JavaStreamSource[_, _] | _: FailedSource[_] =>
-        true
+      case _: ValuePresentedSource                 => true
       case maybeEmpty if isEmptySource(maybeEmpty) => true
       case _                                       => false
     }

@@ -358,6 +358,11 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
       f.futureValue.toSet should ===(Set(42))
     }
 
+    "reject null element at construction time" in {
+      val error = the[NullPointerException] thrownBy Source.repeat(null)
+      error.getMessage should ===("Element must not be null, rule 2.13")
+    }
+
     "repeat example" in {
       // #repeat
       val source: Source[Int, NotUsed] = Source.repeat(42)
@@ -577,6 +582,42 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
         .runWith(Sink.headOption)
         .failed
         .futureValue shouldBe a[TE]
+    }
+
+    "complete when iterator factory throws and decider resumes" in {
+      Source
+        .fromIterator[Int](() => throw TE("factory"))
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+        .runWith(Sink.seq)
+        .futureValue should ===(immutable.Seq.empty)
+    }
+
+    "restart iterator factory when iterator factory throws and decider restarts" in {
+      var attempts = 0
+      Source
+        .fromIterator { () =>
+          attempts += 1
+          if (attempts == 1) throw TE("factory")
+          else Iterator(1, 2, 3)
+        }
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.restartingDecider))
+        .runWith(Sink.seq)
+        .futureValue should ===(immutable.Seq(1, 2, 3))
+      attempts should ===(2)
+    }
+
+    "fail when restarted iterator factory throws again" in {
+      var attempts = 0
+      Source
+        .fromIterator[Int] { () =>
+          attempts += 1
+          throw TE(s"factory-$attempts")
+        }
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.restartingDecider))
+        .runWith(Sink.seq)
+        .failed
+        .futureValue shouldBe a[TE]
+      attempts should ===(2)
     }
   }
 
