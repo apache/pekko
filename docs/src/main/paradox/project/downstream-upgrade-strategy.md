@@ -4,7 +4,7 @@ project.description: Upgrade strategy for downstream libraries
 # Downstream upgrade strategy
 
 When a new Pekko version is released, downstream projects (such as
-[Pekko Management]($pekko.doc.dns$/docs/pekko-management/current/),
+@extref:[Pekko Management](pekko-management:),
 [Pekko HTTP]($pekko.doc.dns$/docs/pekko-http/current/) and
 [Pekko gRPC]($pekko.doc.dns$/docs/pekko-grpc/current/))
 do not need to update immediately: because of our
