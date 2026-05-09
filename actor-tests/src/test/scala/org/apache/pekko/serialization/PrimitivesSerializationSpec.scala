@@ -21,6 +21,7 @@ import scala.util.Random
 import org.apache.pekko
 import pekko.testkit.PekkoSpec
 import pekko.util.ByteString
+import pekko.util.ByteString.ByteString2
 
 import com.typesafe.config.ConfigFactory
 
@@ -60,6 +61,12 @@ class PrimitivesSerializationSpec extends PekkoSpec(PrimitivesSerializationSpec.
     buffer.rewind()
     serializer.fromBinary(buffer, "") should ===(msg)
   }
+
+  def expectByteString2(byteString: ByteString): ByteString2 =
+    byteString match {
+      case byteString2: ByteString2 => byteString2
+      case other                    => fail(s"Expected ByteString2, got [${other.getClass.getName}]")
+    }
 
   "LongSerializer" must {
     Seq(0L, 1L, -1L, Long.MinValue, Long.MinValue + 1L, Long.MaxValue, Long.MaxValue - 1L)
@@ -155,9 +162,13 @@ class PrimitivesSerializationSpec extends PekkoSpec(PrimitivesSerializationSpec.
   }
 
   "ByteStringSerializer" must {
+    val twoPartByteString =
+      expectByteString2(ByteString(Array[Byte](1, 2)) ++ ByteString(Array[Byte](3, 4, 5)))
+
     Seq(
       "empty string" -> ByteString.empty,
       "simple content" -> ByteString("hello"),
+      "two-part content" -> twoPartByteString,
       "concatenated content" -> (ByteString("hello") ++ ByteString("world")),
       "sliced content" -> ByteString("helloabc").take(5),
       "large concatenated" ->
@@ -175,6 +186,29 @@ class PrimitivesSerializationSpec extends PekkoSpec(PrimitivesSerializationSpec.
         s"serialize and de-serialize value [$scenario] using ByteBuffers" in {
           verifySerializationByteBuffer(item)
         }
+    }
+
+    "serialize ByteString2 as contiguous bytes" in {
+      val serializer = serialization.serializerFor(twoPartByteString.getClass)
+
+      ByteString(serializer.toBinary(twoPartByteString)) should ===(ByteString(Array[Byte](1, 2, 3, 4, 5)))
+    }
+
+    "de-serialize bytes to an equal ByteString" in {
+      val serializer = serialization.serializerFor(twoPartByteString.getClass)
+
+      serializer.fromBinary(Array[Byte](1, 2, 3, 4, 5), None) should ===(twoPartByteString)
+    }
+
+    "serialize and de-serialize ByteString2 using ByteBuffers" in {
+      val serializer =
+        serialization.serializerFor(twoPartByteString.getClass).asInstanceOf[Serializer with ByteBufferSerializer]
+
+      buffer.clear()
+      serializer.toBinary(twoPartByteString, buffer)
+      buffer.flip()
+
+      serializer.fromBinary(buffer, "") should ===(twoPartByteString)
     }
 
     "have right serializer id" in {

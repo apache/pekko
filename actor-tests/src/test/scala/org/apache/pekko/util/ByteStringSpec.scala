@@ -30,7 +30,7 @@ import org.scalatestplus.scalacheck.Checkers
 
 import org.apache.pekko
 import pekko.io.UnsynchronizedByteArrayInputStream
-import pekko.util.ByteString.{ ByteString1, ByteString1C, ByteStrings }
+import pekko.util.ByteString.{ ByteString1, ByteString1C, ByteString2, ByteStrings }
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -105,6 +105,18 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
   def testSer(obj: AnyRef) = {
     deserialize(serialize(obj)) == obj
   }
+
+  def expectByteString2(byteString: ByteString): ByteString2 =
+    byteString match {
+      case byteString2: ByteString2 => byteString2
+      case other                    => fail(s"Expected ByteString2, got [${other.getClass.getName}]")
+    }
+
+  def expectByteStrings(byteString: ByteString): ByteStrings =
+    byteString match {
+      case byteStrings: ByteStrings => byteStrings
+      case other                    => fail(s"Expected ByteStrings, got [${other.getClass.getName}]")
+    }
 
   def hexFromSer(obj: AnyRef) = {
     val os = new ByteArrayOutputStream
@@ -1749,6 +1761,35 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       "dropping" in { check((a: ByteString, b: ByteString) => (a ++ b).drop(a.size) == b) }
     }
 
+    "preserve concatenation direction" when {
+      "creating ByteString2 from two simple fragments" in {
+        val compact = ByteString1C(Array[Byte](1, 2))
+        val sliced = ByteString1(Array[Byte](0, 3, 4, 5), 1, 2)
+
+        val forward = expectByteString2(compact ++ sliced)
+        forward should ===(ByteString(Array[Byte](1, 2, 3, 4)))
+        forward.asByteBuffers.map(_.remaining()).toSeq should ===(Seq(2, 2))
+
+        val reverse = expectByteString2(sliced ++ compact)
+        reverse should ===(ByteString(Array[Byte](3, 4, 1, 2)))
+        reverse.asByteBuffers.map(_.remaining()).toSeq should ===(Seq(2, 2))
+      }
+
+      "promoting ByteString2 to ByteStrings when prepending or appending another fragment" in {
+        val middle = expectByteString2(ByteString1C(Array[Byte](2, 3)) ++ ByteString1C(Array[Byte](4, 5)))
+        val prefix = ByteString1C(Array[Byte](1))
+        val suffix = ByteString1C(Array[Byte](6))
+
+        val prepended = expectByteStrings(prefix ++ middle)
+        prepended should ===(ByteString(Array[Byte](1, 2, 3, 4, 5)))
+
+        val appended = expectByteStrings(middle ++ suffix)
+        appended should ===(ByteString(Array[Byte](2, 3, 4, 5, 6)))
+
+        expectByteStrings(prepended ++ suffix) should ===(ByteString(Array[Byte](1, 2, 3, 4, 5, 6)))
+      }
+    }
+
     "be equal to the original" when {
       "compacting" in {
         check { (xs: ByteString) =>
@@ -2038,6 +2079,28 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
         deserialize(serialize(bs1)) shouldEqual bs1
         deserialize(serialize(bss)) shouldEqual bss
       }
+
+      "given ByteString2" in {
+        val original = expectByteString2(ByteString1C(Array[Byte](1, 2, 3)) ++ ByteString1C(Array[Byte](4, 5)))
+
+        deserialize(serialize(original)) match {
+          case deserialized: ByteString2 => deserialized shouldEqual original
+          case other                     => fail(s"Expected deserialized ByteString2, got [${other.getClass.getName}]")
+        }
+      }
+
+      "given ByteString2 with sliced fragments" in {
+        val left = ByteString1(Array[Byte](0, 1, 2, 3), 1, 2)
+        val right = ByteString1(Array[Byte](4, 5, 6, 0), 0, 3)
+        val original = expectByteString2(left ++ right)
+
+        deserialize(serialize(original)) match {
+          case deserialized: ByteString2 =>
+            deserialized shouldEqual ByteString(Array[Byte](1, 2, 4, 5, 6))
+            deserialized.asByteBuffers.map(_.remaining()).toSeq should ===(Seq(2, 3))
+          case other => fail(s"Expected deserialized ByteString2, got [${other.getClass.getName}]")
+        }
+      }
     }
 
     "unsafely wrap and unwrap bytes" in {
@@ -2120,6 +2183,18 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       byteStrings.readLongLE(0) should ===(0x0807060504030201L)
       byteStrings.readLongBE(8) should ===(0x090A0B0C0D0E0F10L)
       byteStrings.readLongLE(8) should ===(0x100F0E0D0C0B0A09L)
+    }
+
+    "read primitive values across ByteString2 fragment boundaries" in {
+      val byteString2 =
+        expectByteString2(ByteString1C(Array[Byte](1, 2, 3)) ++ ByteString1C(Array[Byte](4, 5, 6, 7, 8)))
+
+      byteString2.readShortBE(2) should ===(0x0304.toShort)
+      byteString2.readShortLE(2) should ===(0x0403.toShort)
+      byteString2.readIntBE(1) should ===(0x02030405)
+      byteString2.readIntLE(1) should ===(0x05040302)
+      byteString2.readLongBE(0) should ===(0x0102030405060708L)
+      byteString2.readLongLE(0) should ===(0x0807060504030201L)
     }
 
     "throw IndexOutOfBoundsException for readShortBE/LE with insufficient data" in {
@@ -2342,6 +2417,132 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       noException should be thrownBy builder.sizeHint(10)
       noException should be thrownBy builder.sizeHint(0)
       builder.result() should ===(ByteString(42.toByte))
+    }
+
+    "ByteString2 must behave exactly like ByteString1C across every read/transform op" in {
+      // Build identical bytes as ByteString1C (reference) and as ByteString2 with several split points;
+      // every public read or transform op MUST return the same value. This guards against regressions
+      // in the iterator/normalize path (e.g. the LazyList -> List fix on ByteString2.iterator).
+      val totalSize = 23 // odd, large enough to exercise short/int/long reads at every fragment boundary
+      val bytes = Array.tabulate[Byte](totalSize)(i => ((i * 31 + 7) & 0xFF).toByte)
+      val reference = ByteString1C(bytes)
+
+      // Try every possible non-empty split: bs2 has fragments [0, split) ++ [split, totalSize)
+      for (split <- 1 until totalSize) {
+        val left = ByteString1C(java.util.Arrays.copyOfRange(bytes, 0, split))
+        val right = ByteString1C(java.util.Arrays.copyOfRange(bytes, split, totalSize))
+        val bs2 = expectByteString2(left ++ right)
+
+        withClue(s"split=$split: ") {
+          // basic contract
+          bs2.size should ===(reference.size)
+          bs2 should ===(reference)
+          bs2.hashCode should ===(reference.hashCode)
+          bs2.asByteBuffers.map(_.remaining()).toSeq should ===(Seq(split, totalSize - split))
+
+          // apply(idx) at every index
+          for (i <- 0 until totalSize) bs2(i) should ===(reference(i))
+
+          // iterator: byte-by-byte equality with reference
+          val refIt = reference.iterator
+          val bs2It = bs2.iterator
+          var idx = 0
+          while (refIt.hasNext) {
+            withClue(s"byte at $idx: ") { bs2It.next() should ===(refIt.next()) }
+            idx += 1
+          }
+          bs2It.hasNext should ===(false)
+
+          // iterator.getShort/getInt/getLong at every valid starting offset, BE and LE
+          for (off <- 0 to totalSize - 2) {
+            val r = reference.iterator.drop(off)
+            val b = bs2.iterator.drop(off)
+            r.getShort(BIG_ENDIAN) should ===(b.getShort(BIG_ENDIAN))
+
+            val r2 = reference.iterator.drop(off)
+            val b2 = bs2.iterator.drop(off)
+            r2.getShort(LITTLE_ENDIAN) should ===(b2.getShort(LITTLE_ENDIAN))
+          }
+          for (off <- 0 to totalSize - 4) {
+            val r = reference.iterator.drop(off)
+            val b = bs2.iterator.drop(off)
+            r.getInt(BIG_ENDIAN) should ===(b.getInt(BIG_ENDIAN))
+
+            val r2 = reference.iterator.drop(off)
+            val b2 = bs2.iterator.drop(off)
+            r2.getInt(LITTLE_ENDIAN) should ===(b2.getInt(LITTLE_ENDIAN))
+          }
+          for (off <- 0 to totalSize - 8) {
+            val r = reference.iterator.drop(off)
+            val b = bs2.iterator.drop(off)
+            r.getLong(BIG_ENDIAN) should ===(b.getLong(BIG_ENDIAN))
+
+            val r2 = reference.iterator.drop(off)
+            val b2 = bs2.iterator.drop(off)
+            r2.getLong(LITTLE_ENDIAN) should ===(b2.getLong(LITTLE_ENDIAN))
+          }
+
+          // direct readShort/Int/Long at every valid offset, BE and LE
+          for (off <- 0 to totalSize - 2) {
+            bs2.readShortBE(off) should ===(reference.readShortBE(off))
+            bs2.readShortLE(off) should ===(reference.readShortLE(off))
+          }
+          for (off <- 0 to totalSize - 4) {
+            bs2.readIntBE(off) should ===(reference.readIntBE(off))
+            bs2.readIntLE(off) should ===(reference.readIntLE(off))
+          }
+          for (off <- 0 to totalSize - 8) {
+            bs2.readLongBE(off) should ===(reference.readLongBE(off))
+            bs2.readLongLE(off) should ===(reference.readLongLE(off))
+          }
+
+          // take/drop/slice at every cut, including fragment boundary
+          for (n <- 0 to totalSize) {
+            bs2.take(n) should ===(reference.take(n))
+            bs2.drop(n) should ===(reference.drop(n))
+            bs2.takeRight(n) should ===(reference.takeRight(n))
+            bs2.dropRight(n) should ===(reference.dropRight(n))
+          }
+          for {
+            from <- 0 to totalSize
+            until <- from to totalSize
+          } bs2.slice(from, until) should ===(reference.slice(from, until))
+
+          // copyToBuffer
+          val refBuf = ByteBuffer.allocate(totalSize)
+          val bs2Buf = ByteBuffer.allocate(totalSize)
+          val refCopied = reference.copyToBuffer(refBuf)
+          val bs2Copied = bs2.copyToBuffer(bs2Buf)
+          bs2Copied should ===(refCopied)
+          refBuf.flip(); bs2Buf.flip()
+          bs2Buf should ===(refBuf)
+
+          // copyToArray with various (start, len) windows
+          for {
+            start <- 0 to totalSize
+            len <- 0 to totalSize - start
+          } {
+            val refArr = new Array[Byte](totalSize)
+            val bs2Arr = new Array[Byte](totalSize)
+            val nRef = reference.copyToArray(refArr, start, len)
+            val nBs2 = bs2.copyToArray(bs2Arr, start, len)
+            nBs2 should ===(nRef)
+            bs2Arr.toSeq should ===(refArr.toSeq)
+          }
+
+          // indexOf for every distinct byte value present, plus a few absent
+          val present = bytes.toSet
+          val candidates = present ++ Set[Byte](Byte.MinValue, 0.toByte, Byte.MaxValue)
+          for (b <- candidates) {
+            bs2.indexOf(b) should ===(reference.indexOf(b))
+            for (from <- 0 to totalSize) bs2.indexOf(b, from) should ===(reference.indexOf(b, from))
+          }
+
+          // compact yields equivalent ByteString1C
+          bs2.compact should ===(reference)
+          bs2.compact.isCompact should ===(true)
+        }
+      }
     }
   }
 

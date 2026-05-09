@@ -357,6 +357,56 @@ private[pekko] object SWARUtil {
   private[pekko] def getShortLEWithoutMethodHandle(array: Array[Byte], index: Int): Short =
     ((array(index) & 0xFF) | (array(index + 1) & 0xFF) << 8).toShort
 
+  private[pekko] def getShortBE(b0: Byte, b1: Byte): Short = ((b0 & 0xFF) << 8 | (b1 & 0xFF)).toShort
+
+  private[pekko] def getShortLE(b0: Byte, b1: Byte): Short = ((b0 & 0xFF) | (b1 & 0xFF) << 8).toShort
+
+  private[pekko] def getIntBE(b0: Byte, b1: Byte, b2: Byte, b3: Byte): Int = (b0 & 0xFF) << 24 |
+    (b1 & 0xFF) << 16 |
+    (b2 & 0xFF) << 8 |
+    (b3 & 0xFF)
+
+  private[pekko] def getIntLE(b0: Byte, b1: Byte, b2: Byte, b3: Byte): Int = (b0 & 0xFF) |
+    (b1 & 0xFF) << 8 |
+    (b2 & 0xFF) << 16 |
+    (b3 & 0xFF) << 24
+
+  private[pekko] def getLongBE(
+      b0: Byte,
+      b1: Byte,
+      b2: Byte,
+      b3: Byte,
+      b4: Byte,
+      b5: Byte,
+      b6: Byte,
+      b7: Byte): Long =
+    (b0.toLong & 0xFFL) << 56 |
+    (b1.toLong & 0xFFL) << 48 |
+    (b2.toLong & 0xFFL) << 40 |
+    (b3.toLong & 0xFFL) << 32 |
+    (b4.toLong & 0xFFL) << 24 |
+    (b5.toLong & 0xFFL) << 16 |
+    (b6.toLong & 0xFFL) << 8 |
+    (b7.toLong & 0xFFL)
+
+  private[pekko] def getLongLE(
+      b0: Byte,
+      b1: Byte,
+      b2: Byte,
+      b3: Byte,
+      b4: Byte,
+      b5: Byte,
+      b6: Byte,
+      b7: Byte): Long =
+    (b0.toLong & 0xFFL) |
+    (b1.toLong & 0xFFL) << 8 |
+    (b2.toLong & 0xFFL) << 16 |
+    (b3.toLong & 0xFFL) << 24 |
+    (b4.toLong & 0xFFL) << 32 |
+    (b5.toLong & 0xFFL) << 40 |
+    (b6.toLong & 0xFFL) << 48 |
+    (b7.toLong & 0xFFL) << 56
+
   private[pekko] def putIntBEWithoutMethodHandle(array: Array[Byte], index: Int, value: Int): Unit = {
     array(index) = (value >>> 24).toByte
     array(index + 1) = (value >>> 16).toByte
