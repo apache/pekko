@@ -712,14 +712,17 @@ import pekko.util.OptionVal
    * than its generic counterpart. It can be freely mixed with the generic builder in both ways.
    */
   def fromModule(module: AtomicModule[Shape, Any], attributes: Attributes): LinearTraversalBuilder = {
-    if (module.shape.inlets.size > 1)
+    val shape = module.shape
+    val inlets = shape.inlets
+    val outlets = shape.outlets
+    if (inlets.size > 1)
       throw new IllegalStateException("Modules with more than one input port cannot be linear.")
-    if (module.shape.outlets.size > 1)
+    if (outlets.size > 1)
       throw new IllegalStateException("Modules with more than one output port cannot be linear.")
-    TraversalBuilder.initShape(module.shape)
+    TraversalBuilder.initShape(shape)
 
-    val inPortOpt = OptionVal(module.shape.inlets.headOption.orNull)
-    val outPortOpt = OptionVal(module.shape.outlets.headOption.orNull)
+    val inPortOpt = OptionVal(if (inlets.isEmpty) null else inlets.head)
+    val outPortOpt = OptionVal(if (outlets.isEmpty) null else outlets.head)
 
     val wiring = if (outPortOpt.isDefined) wireBackward else noWire
 
