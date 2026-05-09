@@ -22,4 +22,4 @@ report with the Lightbend Akka team.
  * [Akka security fixes](https://akka.io/security)
  * @ref:[Java Serialization](../serialization.md#java-serialization)
  * @ref:[Remote deployment allow list](../remoting.md#remote-deployment-allow-list)
- * @ref:[Remote Security](../remoting-artery.md#remote-security)
+ * @ref:[Remote Security](../remote-security.md)
