@@ -379,17 +379,41 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
         classOf[DisabledJavaSerializer].getName
       } else serializerFQN
 
-    system.dynamicAccess.createInstanceFor[Serializer](fqn, List(classOf[ExtendedActorSystem] -> system)).recoverWith {
-      case _: NoSuchMethodException =>
-        system.dynamicAccess.createInstanceFor[Serializer](fqn, Nil).recoverWith {
-          case e: NoSuchMethodException =>
-            if (bindingName == "") throw e // compatibility with (public) serializerOf method without bindingName
-            else
-              system.dynamicAccess.createInstanceFor[Serializer](
-                fqn,
-                List(classOf[ExtendedActorSystem] -> system, classOf[String] -> bindingName))
-        }
-    }
+    // Try constructors in order of preference (most specific first)
+    val singleArgConstructors: List[List[(Class[_], AnyRef)]] =
+      List(
+        List(classOf[ExtendedActorSystem] -> system),
+        List(classOf[ActorSystem] -> system),
+        List(classOf[ClassicActorSystemProvider] -> (system: ClassicActorSystemProvider)),
+        Nil)
+
+    val twoArgConstructors: List[List[(Class[_], AnyRef)]] =
+      if (bindingName == "") Nil
+      else
+        List(
+          List(classOf[ExtendedActorSystem] -> system, classOf[String] -> bindingName),
+          List(classOf[ActorSystem] -> system, classOf[String] -> bindingName),
+          List(classOf[ClassicActorSystemProvider] -> (system: ClassicActorSystemProvider),
+            classOf[String] -> bindingName))
+
+    val allConstructors = singleArgConstructors ++ twoArgConstructors
+
+    def tryNext(remaining: List[List[(Class[_], AnyRef)]]): Try[Serializer] =
+      remaining match {
+        case Nil =>
+          Failure(
+            new NoSuchMethodException(
+              s"None of the supported constructors were found for serializer [$fqn]. " +
+              s"Supported constructor shapes (tried in order): " +
+              s"(ExtendedActorSystem), (ActorSystem), (ClassicActorSystemProvider), (), " +
+              s"(ExtendedActorSystem, String), (ActorSystem, String), (ClassicActorSystemProvider, String)."))
+        case args :: rest =>
+          system.dynamicAccess.createInstanceFor[Serializer](fqn, args).recoverWith {
+            case _: NoSuchMethodException => tryNext(rest)
+          }
+      }
+
+    tryNext(allConstructors)
   }
 
   /**
