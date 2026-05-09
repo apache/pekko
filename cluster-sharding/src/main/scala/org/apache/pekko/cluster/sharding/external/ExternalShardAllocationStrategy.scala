@@ -64,6 +64,12 @@ object ExternalShardAllocationStrategy {
   /**
    * Java API: Create an [[ExternalShardAllocationStrategy]]
    */
+  def create(systemProvider: ClassicActorSystemProvider, typeName: String): ExternalShardAllocationStrategy =
+    this.apply(systemProvider, typeName)
+
+  /**
+   * Java API: Create an [[ExternalShardAllocationStrategy]]
+   */
   def create(systemProvider: ClassicActorSystemProvider, typeName: String, timeout: java.time.Duration)
       : ExternalShardAllocationStrategy =
     this.apply(systemProvider, typeName, timeout.toScala)
