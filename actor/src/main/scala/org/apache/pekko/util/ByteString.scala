@@ -414,7 +414,8 @@ object ByteString {
      * INTERNAL API: compare `len` bytes from this ByteString starting at `haystackOffset`
      * against `needle[needleOffset..needleOffset+len)`.
      */
-    private[pekko] def matchesAt(haystackOffset: Int, needle: Array[Byte], needleOffset: Int, len: Int): Boolean = {
+    private[pekko] override def matchesAt(
+        haystackOffset: Int, needle: Array[Byte], needleOffset: Int, len: Int): Boolean = {
       var hIdx = haystackOffset
       var nIdx = needleOffset
       var remaining = len
@@ -829,7 +830,8 @@ object ByteString {
      * INTERNAL API: compare `len` bytes from this ByteString starting at logical `haystackOffset`
      * against `needle[needleOffset..needleOffset+len)`.
      */
-    private[pekko] def matchesAt(haystackOffset: Int, needle: Array[Byte], needleOffset: Int, len: Int): Boolean = {
+    private[pekko] override def matchesAt(
+        haystackOffset: Int, needle: Array[Byte], needleOffset: Int, len: Int): Boolean = {
       var hIdx = startIndex + haystackOffset
       var nIdx = needleOffset
       var remaining = len
@@ -1122,6 +1124,19 @@ object ByteString {
       else written
     }
 
+    override def copyToBuffer(buffer: ByteBuffer, offset: Int): Int =
+      if (offset <= 0) {
+        val written = first.copyToBuffer(buffer)
+        if (buffer.hasRemaining) written + second.copyToBuffer(buffer)
+        else written
+      } else if (offset >= firstLength) {
+        second.copyToBuffer(buffer, offset - firstLength)
+      } else {
+        val written = first.copyToBuffer(buffer, offset)
+        if (buffer.hasRemaining) written + second.copyToBuffer(buffer)
+        else written
+      }
+
     def compact: CompactByteString = {
       val ar = new Array[Byte](length)
       first.copyToArray(ar, 0, firstLength)
@@ -1274,34 +1289,53 @@ object ByteString {
 
     override def startsWith(bytes: Array[Byte], offset: Int): Boolean = {
       val needleLen = bytes.length
-      if (length - offset < needleLen) false
-      else {
-        val firstLen = firstLength
-        var i = offset
-        var j = 0
-        while (j < needleLen) {
-          if (byteAt(i, firstLen) != bytes(j)) return false
-          i += 1
-          j += 1
-        }
-        true
+      if (length - offset < needleLen) return false
+      if (needleLen == 0) return true
+      val lo = math.max(offset, 0)
+      if (lo >= firstLength) {
+        // range starts entirely in second
+        second.matchesAt(lo - firstLength, bytes, 0, needleLen)
+      } else if (lo + needleLen <= firstLength) {
+        // range ends entirely in first
+        first.matchesAt(lo, bytes, 0, needleLen)
+      } else {
+        // range spans both fragments
+        val firstPart = firstLength - lo
+        first.matchesAt(lo, bytes, 0, firstPart) &&
+        second.matchesAt(0, bytes, firstPart, needleLen - firstPart)
       }
     }
 
     override def endsWith(bytes: Array[Byte]): Boolean = {
       val needleLen = bytes.length
-      if (length < needleLen) false
-      else {
-        val firstLen = firstLength
-        var i = length - needleLen
-        var j = 0
-        while (j < needleLen) {
-          if (byteAt(i, firstLen) != bytes(j)) return false
-          i += 1
-          j += 1
-        }
-        true
+      if (length < needleLen) return false
+      if (needleLen == 0) return true
+      val startPos = length - needleLen
+      if (startPos >= firstLength) {
+        // range is entirely in second
+        second.matchesAt(startPos - firstLength, bytes, 0, needleLen)
+      } else {
+        // range spans both fragments
+        val firstPart = firstLength - startPos
+        first.matchesAt(startPos, bytes, 0, firstPart) &&
+        second.matchesAt(0, bytes, firstPart, needleLen - firstPart)
       }
+    }
+
+    override def map[A](f: Byte => Byte): ByteString = {
+      val result = new Array[Byte](length)
+      val secondLen = length - firstLength
+      var i = 0
+      while (i < firstLength) {
+        result(i) = f(first.byteAtUnchecked(i))
+        i += 1
+      }
+      var j = 0
+      while (j < secondLen) {
+        result(firstLength + j) = f(second.byteAtUnchecked(j))
+        j += 1
+      }
+      ByteString1C(result)
     }
 
     private[this] def byteAt(offset: Int, firstLength: Int): Byte =
@@ -2251,6 +2285,23 @@ sealed abstract class ByteString
       }
       true
     }
+  }
+
+  /**
+   * INTERNAL API: compare `len` bytes from this ByteString starting at `haystackOffset`
+   * against `needle[needleOffset..needleOffset+len)`.
+   * Overridden by ByteString1C and ByteString1 with SWAR-based 8-byte comparisons.
+   */
+  private[pekko] def matchesAt(haystackOffset: Int, needle: Array[Byte], needleOffset: Int, len: Int): Boolean = {
+    var hIdx = haystackOffset
+    var nIdx = needleOffset
+    val end = needleOffset + len
+    while (nIdx < end) {
+      if (apply(hIdx) != needle(nIdx)) return false
+      hIdx += 1
+      nIdx += 1
+    }
+    true
   }
 
   override def grouped(size: Int): Iterator[ByteString] = {
