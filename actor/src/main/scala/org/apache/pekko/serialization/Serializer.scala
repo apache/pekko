@@ -34,15 +34,19 @@ import pekko.util.ClassLoaderObjectInputStream
  * A Serializer represents a bimap between an object and an array of bytes representing that object.
  *
  * Serializers are loaded using reflection during [[pekko.actor.ActorSystem]]
- * start-up, where two constructors are tried in order:
+ * start-up, where constructors are tried in order:
  *
  * <ul>
  * <li>taking exactly one argument of type [[pekko.actor.ExtendedActorSystem]];
  * this should be the preferred one because all reflective loading of classes
  * during deserialization should use ExtendedActorSystem.dynamicAccess (see
- * [[pekko.actor.DynamicAccess]]), and</li>
- * <li>without arguments, which is only an option if the serializer does not
- * load classes using reflection.</li>
+ * [[pekko.actor.DynamicAccess]])</li>
+ * <li>taking exactly one argument of type [[pekko.actor.ActorSystem]]</li>
+ * <li>taking exactly one argument of type [[pekko.actor.ClassicActorSystemProvider]]</li>
+ * <li>without arguments</li>
+ * <li>taking two arguments of type [[pekko.actor.ExtendedActorSystem]] and `String`, where the second argument is the binding name</li>
+ * <li>taking two arguments of type [[pekko.actor.ActorSystem]] and `String`, where the second argument is the binding name</li>
+ * <li>taking two arguments of type [[pekko.actor.ClassicActorSystemProvider]] and `String`, where the second argument is the binding name</li>
  * </ul>
  *
  * <b>Be sure to always use the </b>[[pekko.actor.DynamicAccess]]<b> for loading classes!</b> This is necessary to
@@ -114,11 +118,19 @@ object Serializers {
  * you used `includeManifest=true`, otherwise it will be the empty string.
  *
  * Serializers are loaded using reflection during [[pekko.actor.ActorSystem]]
- * start-up, where two constructors are tried in order:
+ * start-up, where constructors are tried in order:
  *
  * <ul>
- * <li>taking exactly one argument of type [[pekko.actor.ExtendedActorSystem]], and</li>
+ * <li>taking exactly one argument of type [[pekko.actor.ExtendedActorSystem]];
+ * this should be the preferred one because all reflective loading of classes
+ * during deserialization should use ExtendedActorSystem.dynamicAccess (see
+ * [[pekko.actor.DynamicAccess]])</li>
+ * <li>taking exactly one argument of type [[pekko.actor.ActorSystem]]</li>
+ * <li>taking exactly one argument of type [[pekko.actor.ClassicActorSystemProvider]]</li>
  * <li>without arguments</li>
+ * <li>taking two arguments of type [[pekko.actor.ExtendedActorSystem]] and `String`, where the second argument is the binding name</li>
+ * <li>taking two arguments of type [[pekko.actor.ActorSystem]] and `String`, where the second argument is the binding name</li>
+ * <li>taking two arguments of type [[pekko.actor.ClassicActorSystemProvider]] and `String`, where the second argument is the binding name</li>
  * </ul>
  *
  * <b>Be sure to always use the </b>[[pekko.actor.DynamicAccess]]<b> for loading classes!</b> This is necessary to
