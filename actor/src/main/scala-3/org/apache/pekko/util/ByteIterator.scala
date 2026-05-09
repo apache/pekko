@@ -250,6 +250,36 @@ object ByteIterator {
       result
     }
 
+    // Fast path: when the current fragment has enough bytes for the requested primitive, delegate
+    // to the current ByteArrayIterator (which uses SWARUtil for a single read) instead of falling
+    // back to the byte-by-byte super impl. Cross-fragment reads keep the byte-by-byte path.
+    override def getShort(implicit byteOrder: ByteOrder): Short = {
+      val cur = current
+      if (cur.len >= java.lang.Short.BYTES) {
+        val r = cur.getShort(byteOrder)
+        normalize()
+        r
+      } else super.getShort(byteOrder)
+    }
+
+    override def getInt(implicit byteOrder: ByteOrder): Int = {
+      val cur = current
+      if (cur.len >= java.lang.Integer.BYTES) {
+        val r = cur.getInt(byteOrder)
+        normalize()
+        r
+      } else super.getInt(byteOrder)
+    }
+
+    override def getLong(implicit byteOrder: ByteOrder): Long = {
+      val cur = current
+      if (cur.len >= java.lang.Long.BYTES) {
+        val r = cur.getLong(byteOrder)
+        normalize()
+        r
+      } else super.getLong(byteOrder)
+    }
+
     final override def len: Int = iterators.foldLeft(0) { _ + _.len }
 
     final override def size: Int = {
