@@ -142,6 +142,10 @@ private[pekko] object AdapterClusterImpl {
         adaptedCluster.joinSeedNodes(addresses)
         Behaviors.same
 
+      case SetAppVersionLater(version) =>
+        adaptedCluster.setAppVersionLater(version)
+        Behaviors.same
+
       case PrepareForFullClusterShutdown =>
         adaptedCluster.prepareForFullClusterShutdown()
         Behaviors.same
