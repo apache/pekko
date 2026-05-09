@@ -1090,7 +1090,7 @@ object ByteString {
 
     /** Avoid `iterator` in performance sensitive code, call ops directly on ByteString instead */
     override def iterator: ByteIterator.MultiByteArrayIterator =
-      ByteIterator.MultiByteArrayIterator(LazyList(byteArrayIterator(first), byteArrayIterator(second)))
+      ByteIterator.MultiByteArrayIterator(byteArrayIterator(first) :: byteArrayIterator(second) :: Nil)
 
     private def byteArrayIterator(byteString: ByteString): ByteIterator.ByteArrayIterator =
       byteString match {
