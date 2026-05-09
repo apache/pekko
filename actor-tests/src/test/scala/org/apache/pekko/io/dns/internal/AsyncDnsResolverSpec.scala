@@ -97,6 +97,8 @@ class AsyncDnsResolverSpec extends PekkoSpec("""
     }
 
     "handle duplicate Ids in dnsClient" in new Setup {
+      override val r = resolver(List(dnsClient1.ref, dnsClient2.ref), defaultConfig, deterministicIds(1, 2))
+
       r ! Resolve("cats.com", Ip(ipv4 = true, ipv6 = false))
       val firstId = dnsClient1.expectMsgPF() {
         case q4: Question4 if q4.name == "cats.com" =>
@@ -317,6 +319,11 @@ class AsyncDnsResolverSpec extends PekkoSpec("""
     }
 
     "not reuse the request ids of pending requests" in new Setup {
+      override val r = resolver(
+        List(dnsClient1.ref, dnsClient2.ref),
+        defaultConfig,
+        deterministicIds((1 to 10).map(_.toShort): _*))
+
       // Send multiple resolves for different names so no in-flight deduplication applies
       val resolveCount = 10
       (1 to resolveCount).foreach { i =>
@@ -324,12 +331,71 @@ class AsyncDnsResolverSpec extends PekkoSpec("""
       }
 
       // Each resolve should have received a Question4 from dnsClient1 with a unique ID
-      val receivedIds = (1 to resolveCount).map { _ =>
-        dnsClient1.expectMsgPF(remainingOrDefault) {
+      val receivedQuestions = (1 to resolveCount).map { _ =>
+        val id = dnsClient1.expectMsgPF(remainingOrDefault) {
           case Question4(id, _) => id
         }
+        id -> dnsClient1.lastSender
       }
-      receivedIds.toSet.size shouldBe resolveCount
+      receivedQuestions.map(_._1).toSet.size shouldBe resolveCount
+
+      receivedQuestions.foreach {
+        case (id, replyTo) => replyTo ! Answer(id, im.Seq.empty)
+      }
+      (1 to resolveCount).foreach { _ =>
+        senderProbe.expectMsgType[Resolved]
+      }
+    }
+
+    "retry request ids that duplicate an in-flight request" in new Setup {
+      override val r = resolver(List(dnsClient1.ref), defaultConfig, deterministicIds(1, 1, 2))
+
+      val asker1 = TestProbe()
+      val asker2 = TestProbe()
+
+      r.tell(Resolve("host1.cats.com", Ip(ipv4 = true, ipv6 = false)), asker1.ref)
+      val firstQuestion = dnsClient1.expectMsgPF() {
+        case q: Question4 if q.name == "host1.cats.com" => q
+      }
+      val firstQuestionSender = dnsClient1.lastSender
+
+      r.tell(Resolve("host2.cats.com", Ip(ipv4 = true, ipv6 = false)), asker2.ref)
+      val duplicatedQuestion = dnsClient1.expectMsgPF() {
+        case q: Question4 if q.name == "host2.cats.com" && q.id == firstQuestion.id => q
+      }
+      dnsClient1.reply(DuplicateId(duplicatedQuestion.id))
+
+      val retriedQuestion = dnsClient1.expectMsgPF() {
+        case q: Question4 if q.name == "host2.cats.com" && q.id != duplicatedQuestion.id => q
+      }
+
+      firstQuestionSender ! Answer(firstQuestion.id, im.Seq.empty)
+      dnsClient1.reply(Answer(retriedQuestion.id, im.Seq.empty))
+
+      asker1.expectMsg(Resolved("host1.cats.com", im.Seq.empty))
+      asker2.expectMsg(Resolved("host2.cats.com", im.Seq.empty))
+    }
+
+    "allow duplicate id retries to use their own resolver timeout" in new Setup {
+      val config = defaultConfig.withValue("resolve-timeout", ConfigValueFactory.fromAnyRef("800 ms"))
+      override val r = resolver(List(dnsClient1.ref), config, deterministicIds(1, 2))
+
+      r ! Resolve("cats.com", Ip(ipv4 = true, ipv6 = false))
+      val firstQuestion = dnsClient1.expectMsgPF() {
+        case q: Question4 if q.name == "cats.com" => q
+      }
+
+      dnsClient1.expectNoMessage(500.millis)
+      dnsClient1.reply(DuplicateId(firstQuestion.id))
+
+      val retriedQuestion = dnsClient1.expectMsgPF() {
+        case q: Question4 if q.name == "cats.com" && q.id != firstQuestion.id => q
+      }
+
+      dnsClient1.expectNoMessage(450.millis)
+      dnsClient1.reply(Answer(retriedQuestion.id, im.Seq.empty))
+
+      senderProbe.expectMsg(Resolved("cats.com", im.Seq.empty))
     }
 
     "reuse in-progress resolutions" in new Setup {
@@ -355,11 +421,23 @@ class AsyncDnsResolverSpec extends PekkoSpec("""
     }
   }
 
-  def resolver(clients: List[ActorRef], config: Config): ActorRef = {
+  private def deterministicIds(ids: Short*): IdGenerator = new IdGenerator {
+    private var remainingIds = ids.toList
+
+    override def nextId(): Short = remainingIds match {
+      case nextId :: tail =>
+        remainingIds = tail
+        nextId
+      case Nil =>
+        throw new AssertionError("No deterministic DNS request ids remaining")
+    }
+  }
+
+  private def resolver(clients: List[ActorRef], config: Config, idGenerator: IdGenerator = IdGenerator()): ActorRef = {
     val settings = new DnsSettings(system.asInstanceOf[ExtendedActorSystem], config)
     system.actorOf(Props(new AsyncDnsResolver(settings, new SimpleDnsCache(),
       (_, _) => {
         clients
-      }, IdGenerator())))
+      }, idGenerator)))
   }
 }

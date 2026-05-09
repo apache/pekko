@@ -16,12 +16,12 @@ package org.apache.pekko.io.dns.internal
 import java.net.{ Inet4Address, Inet6Address, InetAddress, InetSocketAddress }
 
 import scala.collection.immutable
-import scala.concurrent.{ ExecutionContextExecutor, Future }
+import scala.concurrent.{ ExecutionContextExecutor, Future, Promise }
 import scala.concurrent.ExecutionContext.parasitic
 import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
-import pekko.actor.{ Actor, ActorLogging, ActorRef, ActorRefFactory, Props, Status }
+import pekko.actor.{ Actor, ActorLogging, ActorRef, ActorRefFactory, NoSerializationVerificationNeeded, Props, Status }
 import pekko.annotation.InternalApi
 import pekko.io.SimpleDnsCache
 import pekko.io.dns._
@@ -87,6 +87,7 @@ private[io] final class AsyncDnsResolver(
     settings.NDots)
 
   private val resolvers: List[ActorRef] = clientFactory(context, nameServers)
+  private val requestIdInjector: ActorRef = context.actorOf(RequestIdInjector.props(idGenerator), "requestIdInjector")
 
   // tracks in-flight resolutions by (name, requestType) -> list of senders waiting for the result
   private var inFlight: Map[(String, RequestType), List[ActorRef]] = Map.empty
@@ -126,7 +127,7 @@ private[io] final class AsyncDnsResolver(
             // spawn an actor to manage this resolution (apply search names, failover to other resolvers, etc.)
             inFlight = inFlight.updated((name, mode), List(sender()))
             context.actorOf(
-              DnsResolutionActor.props(settings, idGenerator, name, mode, self, resolvers))
+              DnsResolutionActor.props(settings, requestIdInjector, name, mode, self, resolvers))
           }
       }
 
@@ -185,22 +186,91 @@ private[pekko] object AsyncDnsResolver {
       mode: RequestType,
       result: Try[DnsProtocol.Resolved])
 
+  private sealed trait DnsQuestionPreInjection extends NoSerializationVerificationNeeded {
+    def requestId: Long
+    def resolver: ActorRef
+    def timeout: Timeout
+    def withId(id: Short): DnsQuestion
+  }
+
+  private final case class Question4PreInjection(requestId: Long, resolver: ActorRef, name: String, timeout: Timeout)
+      extends DnsQuestionPreInjection {
+    override def withId(id: Short): DnsQuestion = Question4(id, name)
+  }
+
+  private final case class Question6PreInjection(requestId: Long, resolver: ActorRef, name: String, timeout: Timeout)
+      extends DnsQuestionPreInjection {
+    override def withId(id: Short): DnsQuestion = Question6(id, name)
+  }
+
+  private final case class SrvQuestionPreInjection(requestId: Long, resolver: ActorRef, name: String, timeout: Timeout)
+      extends DnsQuestionPreInjection {
+    override def withId(id: Short): DnsQuestion = SrvQuestion(id, name)
+  }
+
+  private final case class DnsQuestionAnswer(
+      replyTo: ActorRef,
+      request: DnsQuestionPreInjection,
+      question: DnsQuestion,
+      result: Try[Any])
+      extends NoSerializationVerificationNeeded
+
+  private final case class InjectedDnsQuestionAnswer(requestId: Long, result: Try[Answer])
+      extends NoSerializationVerificationNeeded
+
+  private object RequestIdInjector {
+    def props(idGenerator: IdGenerator): Props = Props(new RequestIdInjector(idGenerator))
+  }
+
+  private class RequestIdInjector(idGenerator: IdGenerator) extends Actor {
+    private implicit val ec: ExecutionContextExecutor = context.dispatcher
+
+    override def receive: Receive = {
+      case question: DnsQuestionPreInjection =>
+        sendQuestion(sender(), question, question.withId(idGenerator.nextId()))
+
+      case DnsQuestionAnswer(replyTo, request, _, Success(result: Answer)) =>
+        replyTo ! InjectedDnsQuestionAnswer(request.requestId, Success(result))
+
+      case DnsQuestionAnswer(replyTo, request, question, Success(DuplicateId(_))) =>
+        sendQuestion(replyTo, request, question.withId(idGenerator.nextId()))
+
+      case DnsQuestionAnswer(replyTo, request, question, Failure(t)) =>
+        request.resolver ! DropRequest(question)
+        replyTo ! InjectedDnsQuestionAnswer(request.requestId, Failure(t))
+
+      case DnsQuestionAnswer(replyTo, request, question, Success(a)) =>
+        request.resolver ! DropRequest(question)
+        replyTo ! InjectedDnsQuestionAnswer(
+          request.requestId,
+          Failure(
+            new IllegalArgumentException("Unexpected response " + a.toString + " of type " + a.getClass.toString)))
+    }
+
+    private def sendQuestion(replyTo: ActorRef, request: DnsQuestionPreInjection, question: DnsQuestion): Unit = {
+      implicit val askTimeout: Timeout = request.timeout
+      (request.resolver ? question).onComplete { result =>
+        self ! DnsQuestionAnswer(replyTo, request, question, result)
+      }
+    }
+  }
+
   private object DnsResolutionActor {
     def props(
         settings: DnsSettings,
-        idGenerator: IdGenerator,
+        requestIdInjector: ActorRef,
         name: String,
         mode: RequestType,
         responseActor: ActorRef,
         resolvers: List[ActorRef]): Props =
-      Props(new DnsResolutionActor(settings, idGenerator, name, mode, responseActor, resolvers))
+      Props(new DnsResolutionActor(settings, requestIdInjector, name, mode, responseActor, resolvers))
   }
 
   // Per-request actor that manages DNS resolution: applies search domains, fails over to other resolvers.
   // Reports the final result back to `responseActor` (the AsyncDnsResolver) via `ResolutionAnswer`.
   private class DnsResolutionActor(
       settings: DnsSettings,
-      idGenerator: IdGenerator,
+      requestIdInjector: ActorRef,
       name: String,
       mode: RequestType,
       responseActor: ActorRef,
@@ -210,6 +280,8 @@ private[pekko] object AsyncDnsResolver {
 
     private implicit val timeout: Timeout = Timeout(settings.ResolveTimeout)
     private implicit val ec: ExecutionContextExecutor = context.dispatcher
+    private var nextRequestId = 0L
+    private var pendingQuestions = Map.empty[Long, Promise[Answer]]
 
     private def failToResolve(): Unit = {
       responseActor ! ResolutionAnswer(name, mode, Failure(AsyncDnsResolver.failToResolve(name, settings.NameServers)))
@@ -245,11 +317,17 @@ private[pekko] object AsyncDnsResolver {
     // safe, already verified that resolvers is non-empty
     startResolution(namesToResolve, resolvers.head, resolvers.tail)
 
+    private def questionAnswer: Receive = {
+      case InjectedDnsQuestionAnswer(requestId, result) =>
+        pendingQuestions.get(requestId).foreach(_.complete(result))
+        pendingQuestions -= requestId
+    }
+
     private def activelyResolving(
         searchName: String,
         resolver: ActorRef,
         nextNamesToTry: List[String],
-        nextResolversToTry: List[ActorRef]): Receive = {
+        nextResolversToTry: List[ActorRef]): Receive = questionAnswer.orElse {
       case resolved: DnsProtocol.Resolved =>
         if (resolved.records.isEmpty) {
           if (nextNamesToTry.nonEmpty) startResolution(nextNamesToTry, resolver, nextResolversToTry)
@@ -296,31 +374,24 @@ private[pekko] object AsyncDnsResolver {
       context.stop(self)
     }
 
-    private def sendQuestion(resolver: ActorRef, message: DnsQuestion): Future[Answer] = {
-      (resolver ? message).transformWith {
-        case Success(result: Answer) =>
-          Future.successful(result)
-        case Success(DuplicateId(_)) =>
-          sendQuestion(resolver, message.withId(idGenerator.nextId()))
-        case Failure(t) =>
-          resolver ! DropRequest(message)
-          Future.failed(t)
-        case Success(a) =>
-          resolver ! DropRequest(message)
-          Future.failed(
-            new IllegalArgumentException("Unexpected response " + a.toString + " of type " + a.getClass.toString))
-      }
+    private def sendQuestion(createQuestion: Long => DnsQuestionPreInjection): Future[Answer] = {
+      nextRequestId += 1
+      val requestId = nextRequestId
+      val promise = Promise[Answer]()
+      pendingQuestions += requestId -> promise
+      requestIdInjector.tell(createQuestion(requestId), self)
+      promise.future
     }
 
     private def resolvedFut(searchName: String, resolver: ActorRef): Future[DnsProtocol.Resolved] =
       mode match {
         case Ip(ipv4, ipv6) =>
           val ipv4Recs =
-            if (ipv4) sendQuestion(resolver, Question4(idGenerator.nextId(), searchName))
+            if (ipv4) sendQuestion(Question4PreInjection(_, resolver, searchName, timeout))
             else Empty
 
           val ipv6Recs =
-            if (ipv6) sendQuestion(resolver, Question6(idGenerator.nextId(), searchName))
+            if (ipv6) sendQuestion(Question6PreInjection(_, resolver, searchName, timeout))
             else Empty
 
           ipv4Recs.flatMap { v4 =>
@@ -330,7 +401,7 @@ private[pekko] object AsyncDnsResolver {
           }(parasitic)
 
         case Srv =>
-          sendQuestion(resolver, SrvQuestion(idGenerator.nextId(), searchName)).map { answer =>
+          sendQuestion(SrvQuestionPreInjection(_, resolver, searchName, timeout)).map { answer =>
             DnsProtocol.Resolved(searchName, answer.rrs, answer.additionalRecs)
           }(parasitic)
       }
