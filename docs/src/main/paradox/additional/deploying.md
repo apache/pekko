@@ -10,8 +10,8 @@ Deploy to Kubernetes according to the guide and example project for [Deploying a
 ### Cluster bootstrap
 
 To take advantage of running inside Kubernetes while forming a cluster, 
-[Pekko Cluster Bootstrap]($pekko.doc.dns$/docs/pekko-management/current/bootstrap/) helps forming or joining a cluster using Pekko Discovery to discover peer nodes. 
-with the Kubernetes API or Kubernetes via DNS.  
+[Pekko Cluster Bootstrap]($pekko.doc.dns$/docs/pekko-management/current/bootstrap/) helps forming or joining a cluster using Pekko Discovery with
+the Kubernetes API or Kubernetes via DNS to discover peer nodes.
 
 You can look at the
 @java[[Cluster with Kubernetes example project](https://github.com/apache/pekko-samples/tree/main/pekko-sample-cluster-kubernetes-java)]
@@ -29,7 +29,7 @@ that you will need to take special care with the network configuration when usin
 described here: @ref:[Pekko behind NAT or in a Docker container](../remoting-artery.md#remote-configuration-nat-artery)
 
 You can look at the
-@java[[Cluster with docker-compse example project](https://github.com/apache/pekko-samples/tree/main/pekko-sample-cluster-docker-compose-java)]
+@java[[Cluster with docker-compose example project](https://github.com/apache/pekko-samples/tree/main/pekko-sample-cluster-docker-compose-java)]
 @scala[[Cluster with docker-compose example project](https://github.com/apache/pekko-samples/tree/main/pekko-sample-cluster-docker-compose-scala)]
 to see what this looks like in practice.
 

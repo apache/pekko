@@ -32,7 +32,7 @@ See @ref:[Rolling Updates, Cluster Shutdown and Coordinated Shutdown](../additio
 
 There are several management tools for the cluster. 
 Complete information on running and managing Pekko applications can be found in 
-the @exref:[Pekko Management](pekko-management:) project documentation.
+the @extref:[Pekko Management](pekko-management:) project documentation.
 
 <a id="cluster-http"></a>
 ### HTTP
