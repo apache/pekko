@@ -235,15 +235,12 @@ class MetricsBasedResizerSpec extends PekkoSpec(ResizerSpec.config) with Default
     "record the performance log with the correct pool size" in {
       val resizer = DefaultOptimalSizeExploringResizer()
       val router = TestRouter(routees(2))
-      val msgs = router.sendToAll(await = true)
+      val msgs1 = router.sendToAll(await = true)
+      val msgs2 = router.sendToAll(await = false)
       resizer.reportMessageCount(router.routees, router.msgs.size)
-      msgs.head.second.open()
+      msgs1.head.second.open()
 
-      router.mockSend(await = true, routeeIdx = 0)
-      router.mockSend(await = false, routeeIdx = 1)
-      awaitAssert {
-        resizer.updatedStats(router.routees, router.msgs.size)._1.get(2) should not be empty
-      }
+      Await.ready(msgs2.head.first, timeout.duration)
       resizer.reportMessageCount(router.routees, router.msgs.size)
       resizer.performanceLog.get(2) should not be empty
 
