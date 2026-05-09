@@ -23,7 +23,7 @@ import org.apache.pekko.actor.Status.Failure
 import pekko.actor.Props
 import pekko.io.Udp
 import pekko.io.dns.{ ARecord, CachePolicy, RecordClass, RecordType }
-import pekko.io.dns.internal.DnsClient.{ Answer, DropRequest, DuplicateId, Question4 }
+import pekko.io.dns.internal.DnsClient.{ Answer, DropRequest, Dropped, DuplicateId, Question4, Question6 }
 import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
 
 class DnsClientSpec extends PekkoSpec with ImplicitSender {
@@ -150,9 +150,9 @@ class DnsClientSpec extends PekkoSpec with ImplicitSender {
         answerRecs = im.Seq(goodRecord))
       val goodAnswer = exampleRequestMessage.copy(flags = flags, answerRecs = im.Seq(goodRecord))
 
-      udpSocketProbe.reply(Udp.Received(internal.ByteResponse(badId), socket))
-      udpSocketProbe.reply(Udp.Received(internal.ByteResponse(badQuestion), socket))
-      udpSocketProbe.reply(Udp.Received(internal.ByteResponse(goodAnswer), socket))
+      udpSocketProbe.reply(Udp.Received(internal.ByteResponse(badId), dnsServerAddress))
+      udpSocketProbe.reply(Udp.Received(internal.ByteResponse(badQuestion), dnsServerAddress))
+      udpSocketProbe.reply(Udp.Received(internal.ByteResponse(goodAnswer), dnsServerAddress))
 
       val answer = Answer(exampleRequest.id, im.Seq(goodRecord), im.Seq())
       goodSenderProbe.expectMsg(answer)
@@ -182,6 +182,7 @@ class DnsClientSpec extends PekkoSpec with ImplicitSender {
       udpSend.payload shouldBe exampleRequestMessage.write()
 
       goodSenderProbe.send(client, DropRequest(exampleRequest.copy(id = 999)))
+      goodSenderProbe.expectMsg(Dropped(999))
 
       // duplicate shows inflight message not deleted
       goodSenderProbe.send(client, exampleRequest)
@@ -193,11 +194,57 @@ class DnsClientSpec extends PekkoSpec with ImplicitSender {
       goodSenderProbe.send(client, exampleRequest)
       goodSenderProbe.expectMsg(DuplicateId(exampleRequest.id))
 
+      goodSenderProbe.send(client, DropRequest(Question6(exampleRequest.id, exampleRequest.name)))
+
+      // duplicate shows inflight message not deleted
+      goodSenderProbe.send(client, exampleRequest)
+      goodSenderProbe.expectMsg(DuplicateId(exampleRequest.id))
+
       goodSenderProbe.send(client, DropRequest(exampleRequest))
+      goodSenderProbe.expectMsg(Dropped(exampleRequest.id))
 
       // no duplicate shows inflight message was deleted
       goodSenderProbe.send(client, exampleRequest)
       goodSenderProbe.expectNoMessage()
+    }
+
+    "Ignore DNS responses from unexpected remotes" in {
+      val udpExtensionProbe = TestProbe()
+      val udpSocketProbe = TestProbe()
+      val tcpClientProbe = TestProbe()
+      val goodSenderProbe = TestProbe()
+
+      val socket = InetSocketAddress.createUnresolved("localhost", 41325)
+      val unexpectedAddress = InetSocketAddress.createUnresolved("bar", 53)
+      val goodRecord = ARecord(exampleRequest.name, CachePolicy.Ttl.never, InetAddress.getLocalHost())
+
+      val client = system.actorOf(Props(new DnsClient(dnsServerAddress) {
+        override val udp = udpExtensionProbe.ref
+
+        override def createTcpClient() = tcpClientProbe.ref
+      }))
+
+      udpExtensionProbe.expectMsgType[Udp.Bind]
+      udpSocketProbe.send(udpExtensionProbe.lastSender, Udp.Bound(socket))
+
+      goodSenderProbe.send(client, exampleRequest)
+
+      val udpSend = udpSocketProbe.expectMsgType[Udp.Send]
+      udpSend.payload shouldBe exampleRequestMessage.write()
+
+      val flags = MessageFlags(true, authoritativeAnswer = true)
+      val goodAnswer = exampleRequestMessage.copy(flags = flags, answerRecs = im.Seq(goodRecord))
+
+      udpSocketProbe.reply(Udp.Received(internal.ByteResponse(goodAnswer), unexpectedAddress))
+
+      // duplicate shows unexpected remote did not complete or delete the inflight request
+      goodSenderProbe.send(client, exampleRequest)
+      goodSenderProbe.expectMsg(DuplicateId(exampleRequest.id))
+
+      udpSocketProbe.reply(Udp.Received(internal.ByteResponse(goodAnswer), dnsServerAddress))
+
+      val answer = Answer(exampleRequest.id, im.Seq(goodRecord), im.Seq())
+      goodSenderProbe.expectMsg(answer)
     }
 
     "Verify original question when processing UDP Failures" in {

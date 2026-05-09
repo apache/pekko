@@ -26,7 +26,7 @@ import pekko.io.dns.{ AAAARecord, ARecord, DnsSettings, IdGenerator, SRVRecord }
 import pekko.io.dns.CachePolicy.Ttl
 import pekko.io.dns.DnsProtocol._
 import pekko.io.dns.internal.AsyncDnsResolver.ResolveFailedException
-import pekko.io.dns.internal.DnsClient.{ Answer, DropRequest, DuplicateId, Question4, Question6, SrvQuestion }
+import pekko.io.dns.internal.DnsClient.{ Answer, DropRequest, Dropped, DuplicateId, Question4, Question6, SrvQuestion }
 import pekko.testkit.{ PekkoSpec, TestProbe, WithLogCapturing }
 
 import com.typesafe.config.{ Config, ConfigFactory, ConfigValueFactory }
@@ -322,7 +322,7 @@ class AsyncDnsResolverSpec extends PekkoSpec("""
       override val r = resolver(
         List(dnsClient1.ref, dnsClient2.ref),
         defaultConfig,
-        deterministicIds((1 to 10).map(_.toShort): _*))
+        deterministicIds(1, 2, 1, 3, 4, 5, 6, 7, 8, 9, 10))
 
       // Send multiple resolves for different names so no in-flight deduplication applies
       val resolveCount = 10
@@ -347,8 +347,35 @@ class AsyncDnsResolverSpec extends PekkoSpec("""
       }
     }
 
-    "retry request ids that duplicate an in-flight request" in new Setup {
-      override val r = resolver(List(dnsClient1.ref), defaultConfig, deterministicIds(1, 1, 2))
+    "reuse confirmed dropped request ids" in new Setup {
+      val config = defaultConfig.withValue("resolve-timeout", ConfigValueFactory.fromAnyRef("200 ms"))
+      override val r = resolver(List(dnsClient1.ref), config, deterministicIds(1, 1, 2))
+
+      r ! Resolve("host1.cats.com", Ip(ipv4 = true, ipv6 = false))
+      val timedOutQuestion = dnsClient1.expectMsgPF() {
+        case q: Question4 if q.name == "host1.cats.com" => q
+      }
+
+      val dropped = dnsClient1.expectMsgPF(remainingOrDefault) {
+        case DropRequest(question) if question == timedOutQuestion => question
+      }
+      dnsClient1.reply(Dropped(dropped.id))
+      senderProbe.expectMsgPF(remainingOrDefault) {
+        case Failure(ResolveFailedException(_)) =>
+      }
+
+      r ! Resolve("host2.cats.com", Ip(ipv4 = true, ipv6 = false))
+      val reusedQuestion = dnsClient1.expectMsgPF() {
+        case q: Question4 if q.name == "host2.cats.com" => q
+      }
+      reusedQuestion.id shouldBe timedOutQuestion.id
+      dnsClient1.reply(Answer(reusedQuestion.id, im.Seq.empty))
+
+      senderProbe.expectMsg(Resolved("host2.cats.com", im.Seq.empty))
+    }
+
+    "retry request ids that duplicate an untracked in-flight request" in new Setup {
+      override val r = resolver(List(dnsClient1.ref), defaultConfig, deterministicIds(1, 1, 2, 2, 3))
 
       val asker1 = TestProbe()
       val asker2 = TestProbe()
@@ -361,7 +388,7 @@ class AsyncDnsResolverSpec extends PekkoSpec("""
 
       r.tell(Resolve("host2.cats.com", Ip(ipv4 = true, ipv6 = false)), asker2.ref)
       val duplicatedQuestion = dnsClient1.expectMsgPF() {
-        case q: Question4 if q.name == "host2.cats.com" && q.id == firstQuestion.id => q
+        case q: Question4 if q.name == "host2.cats.com" && q.id != firstQuestion.id => q
       }
       dnsClient1.reply(DuplicateId(duplicatedQuestion.id))
 

@@ -15,10 +15,12 @@ package org.apache.pekko.io.dns.internal
 
 import java.net.{ Inet4Address, Inet6Address, InetAddress, InetSocketAddress }
 
+import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.concurrent.{ ExecutionContextExecutor, Future, Promise }
 import scala.concurrent.ExecutionContext.parasitic
 import scala.util.{ Failure, Success, Try }
+import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorLogging, ActorRef, ActorRefFactory, NoSerializationVerificationNeeded, Props, Status }
@@ -218,40 +220,90 @@ private[pekko] object AsyncDnsResolver {
   private final case class InjectedDnsQuestionAnswer(requestId: Long, result: Try[Answer])
       extends NoSerializationVerificationNeeded
 
+  private final case class DidntDrop(id: Short) extends NoSerializationVerificationNeeded
+
   private object RequestIdInjector {
+    private val MaxIdGenerationAttempts = 1 << 16
+
     def props(idGenerator: IdGenerator): Props = Props(new RequestIdInjector(idGenerator))
   }
 
-  private class RequestIdInjector(idGenerator: IdGenerator) extends Actor {
+  private class RequestIdInjector(idGenerator: IdGenerator) extends Actor with ActorLogging {
+    import RequestIdInjector._
+
     private implicit val ec: ExecutionContextExecutor = context.dispatcher
+    private var activeRequestIds = Set.empty[Short]
 
     override def receive: Receive = {
       case question: DnsQuestionPreInjection =>
-        sendQuestion(sender(), question, question.withId(idGenerator.nextId()))
+        sendQuestionWithNewId(sender(), question)
 
-      case DnsQuestionAnswer(replyTo, request, _, Success(result: Answer)) =>
+      case DnsQuestionAnswer(replyTo, request, question, Success(result: Answer)) =>
+        activeRequestIds -= question.id
         replyTo ! InjectedDnsQuestionAnswer(request.requestId, Success(result))
 
       case DnsQuestionAnswer(replyTo, request, question, Success(DuplicateId(_))) =>
-        sendQuestion(replyTo, request, question.withId(idGenerator.nextId()))
+        sendQuestionWithNewId(replyTo, request)
 
       case DnsQuestionAnswer(replyTo, request, question, Failure(t)) =>
-        request.resolver ! DropRequest(question)
         replyTo ! InjectedDnsQuestionAnswer(request.requestId, Failure(t))
+        dropQuestion(request.resolver, request.timeout, question)
 
       case DnsQuestionAnswer(replyTo, request, question, Success(a)) =>
-        request.resolver ! DropRequest(question)
         replyTo ! InjectedDnsQuestionAnswer(
           request.requestId,
           Failure(
             new IllegalArgumentException("Unexpected response " + a.toString + " of type " + a.getClass.toString)))
+        dropQuestion(request.resolver, request.timeout, question)
+
+      case Dropped(id) =>
+        activeRequestIds -= id
+
+      case DidntDrop(id) =>
+        log.warning("DNS request id [{}] could not be confirmed dropped, keeping it reserved", id)
     }
 
+    private def sendQuestionWithNewId(replyTo: ActorRef, request: DnsQuestionPreInjection): Unit =
+      nextAvailableRequestId() match {
+        case Success(id) =>
+          sendQuestion(replyTo, request, request.withId(id))
+        case Failure(t) =>
+          replyTo ! InjectedDnsQuestionAnswer(request.requestId, Failure(t))
+      }
+
     private def sendQuestion(replyTo: ActorRef, request: DnsQuestionPreInjection, question: DnsQuestion): Unit = {
+      activeRequestIds += question.id
       implicit val askTimeout: Timeout = request.timeout
       (request.resolver ? question).onComplete { result =>
         self ! DnsQuestionAnswer(replyTo, request, question, result)
       }
+    }
+
+    @tailrec
+    private def nextAvailableRequestId(attemptsLeft: Int = MaxIdGenerationAttempts): Try[Short] =
+      if (attemptsLeft == 0) {
+        Failure(new IllegalStateException("No non-active DNS request id could be generated"))
+      } else {
+        Try(idGenerator.nextId()) match {
+          case Failure(t)  => Failure(t)
+          case Success(id) =>
+            if (activeRequestIds.contains(id)) nextAvailableRequestId(attemptsLeft - 1)
+            else Success(id)
+        }
+      }
+
+    private def dropQuestion(resolver: ActorRef, timeout: Timeout, question: DnsQuestion): Unit = {
+      implicit val askTimeout: Timeout = timeout
+      (resolver ? DropRequest(question)).map {
+        case dropped: Dropped => dropped
+        case other            =>
+          log.warning("Unexpected response [{}] when dropping DNS request id [{}]", other, question.id)
+          DidntDrop(question.id)
+      }.recover {
+        case NonFatal(t) =>
+          log.warning("Drop request for DNS request id [{}] failed: {}", question.id, t.getMessage)
+          DidntDrop(question.id)
+      }.foreach(self ! _)
     }
   }
 
