@@ -11,7 +11,7 @@ See the [GitHub Milestone for 2.0.0-M2](https://github.com/apache/pekko/mileston
 
 ### Main changes
 
-* Added many Akka changes that have recently become Apache Licensed (up to Akka 2.8.1).
+* Added many Akka changes that have recently become Apache Licensed (up to Akka 2.8.2).
 * Some more deprecated code has been removed but the changes are significantly smaller in this area than in 2.0.0-M1.
 
 ## 2.0.0-M1
