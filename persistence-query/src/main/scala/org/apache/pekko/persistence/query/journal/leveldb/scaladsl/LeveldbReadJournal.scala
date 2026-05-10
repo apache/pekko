@@ -195,7 +195,7 @@ class LeveldbReadJournal(system: ExtendedActorSystem, config: Config)
    * `eventsByTag` is used for retrieving events that were marked with
    * a given tag, e.g. all events of an Aggregate Root type.
    *
-   * To tag events you create an [[pekko.persistence.journal.EventAdapter]] that wraps the events
+   * To tag events you create a [[pekko.persistence.journal.EventAdapter]] that wraps the events
    * in a [[pekko.persistence.journal.Tagged]] with the given `tags`.
    *
    * You can use `NoOffset` to retrieve all events with a given tag or retrieve a subset of all

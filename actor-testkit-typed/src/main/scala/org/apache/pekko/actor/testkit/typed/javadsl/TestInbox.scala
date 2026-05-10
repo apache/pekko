@@ -79,9 +79,9 @@ abstract class TestInbox[T] {
 }
 
 /**
- * Similar to an [[akka.actor.testkit.typed.javadsl.TestInbox]], but can only ever give access to a single message (a reply).
+ * Similar to a [[pekko.actor.testkit.typed.javadsl.TestInbox]], but can only ever give access to a single message (a reply).
  *
- * Not intended for user creation: the [[akka.actor.testkit.typed.javadsl.BehaviorTestKit]] will provide these to
+ * Not intended for user creation: the [[pekko.actor.testkit.typed.javadsl.BehaviorTestKit]] will provide these to
  * denote that at most a single reply is expected.
  *
  * @since 1.3.0
@@ -107,12 +107,12 @@ trait ReplyInbox[T] {
 }
 
 /**
- * A [[akka.actor.testkit.typed.javadsl.ReplyInbox]] which specially handles [[akka.pattern.StatusReply]].
+ * A [[pekko.actor.testkit.typed.javadsl.ReplyInbox]] which specially handles [[pekko.pattern.StatusReply]].
  *
  * Note that there is no provided ability to expect a specific `Throwable`, as it's recommended to prefer
  * a string error message or to enumerate failures with specific types.
  *
- * Not intended for user creation: the [[akka.actor.testkit.typed.javadsl.BehaviorTestKit]] will provide these to
+ * Not intended for user creation: the [[pekko.actor.testkit.typed.javadsl.BehaviorTestKit]] will provide these to
  * denote that at most a single reply is expected.
  */
 @DoNotInherit

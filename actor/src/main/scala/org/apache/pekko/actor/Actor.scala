@@ -651,7 +651,7 @@ trait Actor {
    * <p/>
    * Is called when a message isn't handled by the current behavior of the actor
    * by default it fails with either a [[pekko.actor.DeathPactException]] (in
-   * case of an unhandled [[pekko.actor.Terminated]] message) or publishes an [[pekko.actor.UnhandledMessage]]
+   * case of an unhandled [[pekko.actor.Terminated]] message) or publishes a [[pekko.actor.UnhandledMessage]]
    * to the actor's system's [[pekko.event.EventStream]]
    */
   def unhandled(message: Any): Unit = {

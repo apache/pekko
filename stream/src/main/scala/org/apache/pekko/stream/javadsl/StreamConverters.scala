@@ -73,7 +73,7 @@ object StreamConverters {
     new Sink(scaladsl.StreamConverters.fromOutputStream(() => f.create(), autoFlush).toCompletionStage())
 
   /**
-   * Creates a Sink which when materialized will return an [[java.io.InputStream]] which it is possible
+   * Creates a Sink which when materialized will return a [[java.io.InputStream]] which it is possible
    * to read the values produced by the stream this Sink is attached to.
    *
    * This method uses a default read timeout, use [[#inputStream(java.time.Duration)]] to explicitly
@@ -89,7 +89,7 @@ object StreamConverters {
   def asInputStream(): Sink[ByteString, InputStream] = new Sink(scaladsl.StreamConverters.asInputStream())
 
   /**
-   * Creates a Sink which when materialized will return an [[java.io.InputStream]] which it is possible
+   * Creates a Sink which when materialized will return a [[java.io.InputStream]] which it is possible
    * to read the values produced by the stream this Sink is attached to.
    *
    * This Sink is intended for inter-operation with legacy APIs since it is inherently blocking.
@@ -105,7 +105,7 @@ object StreamConverters {
     new Sink(scaladsl.StreamConverters.asInputStream(readTimeout.toScala))
 
   /**
-   * Creates a Source from an [[java.io.InputStream]] created by the given function.
+   * Creates a Source from a [[java.io.InputStream]] created by the given function.
    * Emitted elements are up to `chunkSize` sized [[pekko.util.ByteString]] elements.
    * The actual size of the emitted elements depends on how much data the underlying
    * [[java.io.InputStream]] returns on each read invocation. Such chunks will
@@ -126,7 +126,7 @@ object StreamConverters {
     new Source(scaladsl.StreamConverters.fromInputStream(() => in.create(), chunkSize).toCompletionStage())
 
   /**
-   * Creates a Source from an [[java.io.InputStream]] created by the given function.
+   * Creates a Source from a [[java.io.InputStream]] created by the given function.
    * Emitted elements are up to 8192 bytes sized [[pekko.util.ByteString]] elements.
    * The actual size of the emitted elements depends on how much data the underlying
    * [[java.io.InputStream]] returns on each read invocation. Such chunks will
@@ -144,7 +144,7 @@ object StreamConverters {
     fromInputStream(in, 8192)
 
   /**
-   * Creates a Source which when materialized will return an [[java.io.OutputStream]] which it is possible
+   * Creates a Source which when materialized will return a [[java.io.OutputStream]] which it is possible
    * to write the ByteStrings to the stream this Source is attached to.
    *
    * This Source is intended for inter-operation with legacy APIs since it is inherently blocking.
@@ -161,7 +161,7 @@ object StreamConverters {
     new Source(scaladsl.StreamConverters.asOutputStream(writeTimeout.toScala))
 
   /**
-   * Creates a Source which when materialized will return an [[java.io.OutputStream]] which it is possible
+   * Creates a Source which when materialized will return a [[java.io.OutputStream]] which it is possible
    * to write the ByteStrings to the stream this Source is attached to. The write timeout for OutputStreams
    * materialized will default to 5 seconds, @see [[#outputStream(java.time.Duration)]] if you want to override it.
    *

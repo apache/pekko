@@ -253,7 +253,7 @@ trait TestKitBase {
 
   /**
    * Obtain time remaining for execution of the innermost enclosing `within`
-   * block or throw an [[java.lang.AssertionError]] if no `within` block surrounds this
+   * block or throw a [[java.lang.AssertionError]] if no `within` block surrounds this
    * call.
    */
   def remaining: FiniteDuration = end match {

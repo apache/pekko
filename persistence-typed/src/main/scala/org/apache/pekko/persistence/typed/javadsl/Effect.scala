@@ -145,7 +145,7 @@ import pekko.persistence.typed.internal.SideEffect
    * @tparam NewState The type of the state after the event is persisted, when not specified will be the same as `State`
    *                  but if a known subtype of `State` is expected that can be specified instead (preferably by
    *                  explicitly typing the lambda parameter like so: `thenRun((SubState state) -> { ... })`).
-   *                  If the state is not of the expected type an [[java.lang.ClassCastException]] is thrown.
+   *                  If the state is not of the expected type a [[java.lang.ClassCastException]] is thrown.
    */
   final def thenRun[NewState <: State](callback: function.Procedure[NewState]): EffectBuilder[Event, State] =
     CompositeEffect(this, SideEffect[State](s => callback.apply(s.asInstanceOf[NewState])))

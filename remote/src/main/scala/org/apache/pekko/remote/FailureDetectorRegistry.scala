@@ -67,7 +67,7 @@ private[pekko] object FailureDetectorLoader {
 
   /**
    * Loads and instantiates a given [[FailureDetector]] implementation. The class to be loaded must have a constructor
-   * that accepts a [[com.typesafe.config.Config]] and an [[pekko.event.EventStream]] parameter. Will throw ConfigurationException
+   * that accepts a [[com.typesafe.config.Config]] and a [[pekko.event.EventStream]] parameter. Will throw ConfigurationException
    * if the implementation cannot be loaded.
    *
    * @param fqcn Fully qualified class name of the implementation to be loaded.
@@ -91,7 +91,7 @@ private[pekko] object FailureDetectorLoader {
 
   /**
    * Loads and instantiates a given [[FailureDetector]] implementation. The class to be loaded must have a constructor
-   * that accepts a [[com.typesafe.config.Config]] and an [[pekko.event.EventStream]] parameter. Will throw ConfigurationException
+   * that accepts a [[com.typesafe.config.Config]] and a [[pekko.event.EventStream]] parameter. Will throw ConfigurationException
    * if the implementation cannot be loaded. Use [[FailureDetectorLoader#load]] if no implicit [[pekko.actor.ActorContext]] is
    * available.
    *

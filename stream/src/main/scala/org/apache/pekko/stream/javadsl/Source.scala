@@ -423,7 +423,7 @@ object Source {
     new Source(scaladsl.Source.asSubscriber)
 
   /**
-   * Creates a `Source` that is materialized as an [[pekko.actor.ActorRef]].
+   * Creates a `Source` that is materialized as a [[pekko.actor.ActorRef]].
    * Messages sent to this actor will be emitted to the stream if there is demand from downstream,
    * otherwise they will be buffered until request for demand is received.
    *
@@ -481,7 +481,7 @@ object Source {
       }, bufferSize, overflowStrategy))
 
   /**
-   * Creates a `Source` that is materialized as an [[pekko.actor.ActorRef]].
+   * Creates a `Source` that is materialized as a [[pekko.actor.ActorRef]].
    * Messages sent to this actor will be emitted to the stream if there is demand from downstream,
    * and a new message will only be accepted after the previous messages has been consumed and acknowledged back.
    * The stream will complete with failure if a message is sent before the acknowledgement has been replied back.
@@ -599,7 +599,7 @@ object Source {
   }
 
   /**
-   * Creates a `Source` that is materialized as an [[pekko.stream.BoundedSourceQueue]].
+   * Creates a `Source` that is materialized as a [[pekko.stream.BoundedSourceQueue]].
    * You can push elements to the queue and they will be emitted to the stream if there is demand from downstream,
    * otherwise they will be buffered until request for demand is received. The buffer size is passed in as a parameter.
    * Elements in the buffer will be discarded if downstream is terminated.
@@ -660,7 +660,7 @@ object Source {
     scaladsl.Source.create(bufferSize)(producer(_)).asJava
 
   /**
-   * Creates a `Source` that is materialized as an [[pekko.stream.javadsl.SourceQueueWithComplete]].
+   * Creates a `Source` that is materialized as a [[pekko.stream.javadsl.SourceQueueWithComplete]].
    * You can push elements to the queue and they will be emitted to the stream if there is demand from downstream,
    * otherwise they will be buffered until request for demand is received. Elements in the buffer will be discarded
    * if downstream is terminated.
@@ -697,7 +697,7 @@ object Source {
       scaladsl.Source.queue[T](bufferSize, overflowStrategy, maxConcurrentOffers = 1).mapMaterializedValue(_.asJava))
 
   /**
-   * Creates a `Source` that is materialized as an [[pekko.stream.javadsl.SourceQueueWithComplete]].
+   * Creates a `Source` that is materialized as a [[pekko.stream.javadsl.SourceQueueWithComplete]].
    * You can push elements to the queue and they will be emitted to the stream if there is demand from downstream,
    * otherwise they will be buffered until request for demand is received. Elements in the buffer will be discarded
    * if downstream is terminated.
@@ -2779,7 +2779,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * as they are illegal as stream elements - according to the Reactive Streams specification.
    *
    * This operator doesn't handle upstream's completion signal since the state kept in the closure can be lost.
-   * Use [[FlowOps.statefulMap]], or return an [[StatefulMapConcatAccumulator]] instead.
+   * Use [[FlowOps.statefulMap]], or return a [[StatefulMapConcatAccumulator]] instead.
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *
@@ -2948,7 +2948,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * still be in the mailbox, so defaulting to sending the second one a bit earlier than when first ask has replied maintains
    * a slightly healthier throughput.
    *
-   * The operator fails with an [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated.
+   * The operator fails with a [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated.
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *
@@ -2978,7 +2978,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * Please note that the elements emitted by this operator are in-order with regards to the asks being issued
    * (i.e. same behavior as mapAsync).
    *
-   * The operator fails with an [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated.
+   * The operator fails with a [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated.
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *
@@ -2996,7 +2996,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
     new Source(delegate.ask[S](parallelism)(ref)(timeout, ClassTag(mapTo)))
 
   /**
-   * The operator fails with an [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated.
+   * The operator fails with a [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated.
    *
    * '''Emits when''' upstream emits
    *

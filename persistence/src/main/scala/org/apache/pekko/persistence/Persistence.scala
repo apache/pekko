@@ -296,7 +296,7 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
     verifyPluginConfigExists(pluginConfig.withFallback(system.settings.config), configPath, "Snapshot store")
 
   /**
-   * Returns an [[pekko.persistence.journal.EventAdapters]] object which serves as a per-journal collection of bound event adapters.
+   * Returns a [[pekko.persistence.journal.EventAdapters]] object which serves as a per-journal collection of bound event adapters.
    * If no adapters are registered for a given journal the EventAdapters object will simply return the identity
    * adapter for each class, otherwise the most specific adapter matching a given class will be returned.
    */
@@ -305,7 +305,7 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
   }
 
   /**
-   * Returns an [[pekko.persistence.journal.EventAdapters]] object which serves as a per-journal collection of bound event adapters.
+   * Returns a [[pekko.persistence.journal.EventAdapters]] object which serves as a per-journal collection of bound event adapters.
    * If no adapters are registered for a given journal the EventAdapters object will simply return the identity
    * adapter for each class, otherwise the most specific adapter matching a given class will be returned.
    *

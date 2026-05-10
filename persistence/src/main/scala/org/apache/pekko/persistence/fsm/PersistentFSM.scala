@@ -266,7 +266,7 @@ object PersistentFSM {
   final case class Transition[S](fsmRef: ActorRef, from: S, to: S, timeout: Option[FiniteDuration])
 
   /**
-   * Send this to an [[pekko.actor.FSM]] to request first the [[PersistentFSM.CurrentState]]
+   * Send this to a [[pekko.actor.FSM]] to request first the [[PersistentFSM.CurrentState]]
    * and then a series of [[PersistentFSM.Transition]] updates. Cancel the subscription
    * using [[PersistentFSM.UnsubscribeTransitionCallBack]].
    */

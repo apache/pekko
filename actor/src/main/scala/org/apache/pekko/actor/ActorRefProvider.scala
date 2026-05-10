@@ -246,7 +246,7 @@ trait ActorRefFactory {
   def actorOf(props: Props, name: String): ActorRef
 
   /**
-   * Construct an [[pekko.actor.ActorSelection]] from the given path, which is
+   * Construct a [[pekko.actor.ActorSelection]] from the given path, which is
    * parsed for wildcards (these are replaced by regular expressions
    * internally). No attempt is made to verify the existence of any part of
    * the supplied path, it is recommended to send a message and gather the
@@ -264,7 +264,7 @@ trait ActorRefFactory {
   }
 
   /**
-   * Construct an [[pekko.actor.ActorSelection]] from the given path, which is
+   * Construct a [[pekko.actor.ActorSelection]] from the given path, which is
    * parsed for wildcards (these are replaced by regular expressions
    * internally). No attempt is made to verify the existence of any part of
    * the supplied path, it is recommended to send a message and gather the

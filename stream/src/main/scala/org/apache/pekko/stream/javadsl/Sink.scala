@@ -477,7 +477,7 @@ object Sink {
   }
 
   /**
-   * Creates a `Sink` that is materialized as an [[pekko.stream.javadsl.SinkQueueWithCancel]].
+   * Creates a `Sink` that is materialized as a [[pekko.stream.javadsl.SinkQueueWithCancel]].
    * [[pekko.stream.javadsl.SinkQueueWithCancel.pull]] method is pulling element from the stream and returns ``CompletionStage[Option[T]]``.
    * `CompletionStage` completes when element is available.
    *
@@ -498,7 +498,7 @@ object Sink {
     new Sink(scaladsl.Sink.queue[T](maxConcurrentPulls).mapMaterializedValue(_.asJava))
 
   /**
-   * Creates a `Sink` that is materialized as an [[pekko.stream.javadsl.SinkQueueWithCancel]].
+   * Creates a `Sink` that is materialized as a [[pekko.stream.javadsl.SinkQueueWithCancel]].
    * [[pekko.stream.javadsl.SinkQueueWithCancel.pull]] method is pulling element from the stream and returns ``CompletionStage[Option[T]]``.
    * `CompletionStage` completes when element is available.
    *

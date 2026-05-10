@@ -118,7 +118,7 @@ object Util {
     if ((arr ne null) && arr.length > 0) arr.toIndexedSeq else Nil
 
   /**
-   * Turns an [[java.lang.Iterable]] into an immutable Scala sequence (by copying it).
+   * Turns a [[java.lang.Iterable]] into an immutable Scala sequence (by copying it).
    */
   def immutableSeq[T](iterable: java.lang.Iterable[T]): immutable.Seq[T] =
     iterable match {
@@ -144,7 +144,7 @@ object Util {
   }
 
   /**
-   * Turns an [[java.lang.Iterable]] into an immutable Scala IndexedSeq (by copying it).
+   * Turns a [[java.lang.Iterable]] into an immutable Scala IndexedSeq (by copying it).
    */
   def immutableIndexedSeq[T](iterable: java.lang.Iterable[T]): immutable.IndexedSeq[T] =
     immutableSeq(iterable).toVector

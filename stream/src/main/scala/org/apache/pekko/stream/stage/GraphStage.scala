@@ -1338,7 +1338,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
     _subInletsAndOutlets -= outlet
 
   /**
-   * Initialize a [[GraphStageLogic.StageActorRef]] which can be used to interact with from the outside world "as-if" an [[pekko.actor.Actor]].
+   * Initialize a [[GraphStageLogic.StageActorRef]] which can be used to interact with from the outside world "as-if" a [[pekko.actor.Actor]].
    * The messages are looped through the [[getAsyncCallback]] mechanism of [[GraphStage]] so they are safe to modify
    * internal state of this operator.
    *

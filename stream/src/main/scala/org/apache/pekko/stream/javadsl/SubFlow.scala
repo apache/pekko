@@ -362,7 +362,7 @@ final class SubFlow[In, Out, Mat](
    * as they are illegal as stream elements - according to the Reactive Streams specification.
    *
    * This operator doesn't handle upstream's completion signal since the state kept in the closure can be lost.
-   * Use [[FlowOps.statefulMap]], or return an [[StatefulMapConcatAccumulator]] instead.
+   * Use [[FlowOps.statefulMap]], or return a [[StatefulMapConcatAccumulator]] instead.
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *

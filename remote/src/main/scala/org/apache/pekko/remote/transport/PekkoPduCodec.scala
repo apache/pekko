@@ -72,7 +72,7 @@ private[remote] trait PekkoPduCodec {
   import PekkoPduCodec._
 
   /**
-   * Returns an [[pekko.remote.transport.PekkoPduCodec.PekkoPdu]] instance that represents the PDU contained in the raw
+   * Returns a [[pekko.remote.transport.PekkoPduCodec.PekkoPdu]] instance that represents the PDU contained in the raw
    * ByteString.
    *
    * @param raw
@@ -83,7 +83,7 @@ private[remote] trait PekkoPduCodec {
   def decodePdu(raw: ByteString): PekkoPdu
 
   /**
-   * Takes an [[pekko.remote.transport.PekkoPduCodec.PekkoPdu]] representation of a Pekko PDU and returns its encoded
+   * Takes a [[pekko.remote.transport.PekkoPduCodec.PekkoPdu]] representation of a Pekko PDU and returns its encoded
    * form as a [[pekko.util.ByteString]].
    *
    * For the same effect the constructXXX methods might be called directly, taking method parameters instead of the

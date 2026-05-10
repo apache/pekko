@@ -63,7 +63,7 @@ object ActorTestKit {
   /**
    * Create a testkit using the provided name.
    *
-   * It will create an [[pekko.actor.typed.ActorSystem]] with this name,
+   * It will create a [[pekko.actor.typed.ActorSystem]] with this name,
    * e.g. threads will include the name.
    * When the test has completed you should terminate the `ActorSystem` and
    * the testkit with [[ActorTestKit#shutdownTestKit]].
@@ -91,7 +91,7 @@ object ActorTestKit {
    * Create a test kit named based on the provided name,
    * and uses the provided custom config for the actor system.
    *
-   * It will create an [[pekko.actor.typed.ActorSystem]] with this name,
+   * It will create a [[pekko.actor.typed.ActorSystem]] with this name,
    * e.g. threads will include the name.
    *
    * It will also used the provided customConfig provided to create the `ActorSystem`
@@ -103,10 +103,10 @@ object ActorTestKit {
     new ActorTestKit(scaladsl.ActorTestKit(name, customConfig))
 
   /**
-   * Create an [[pekko.actor.typed.ActorSystem]] named based on the provided name,
+   * Create a [[pekko.actor.typed.ActorSystem]] named based on the provided name,
    * use the provided custom config for the actor system, and the testkit will use the provided setting.
    *
-   * It will create an [[pekko.actor.typed.ActorSystem]] with this name,
+   * It will create a [[pekko.actor.typed.ActorSystem]] with this name,
    * e.g. threads will include the name.
    *
    * It will also used the provided customConfig provided to create the `ActorSystem`, and provided setting.

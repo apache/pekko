@@ -77,7 +77,7 @@ abstract class BehaviorTestKit[T] {
 
   /**
    * Constructs a message using the provided 'messageFactory' to inject a single-use "reply to"
-   * [[akka.actor.typed.ActorRef]], and sends the constructed message to the behavior, recording any [[Effect]]s.
+   * [[pekko.actor.typed.ActorRef]], and sends the constructed message to the behavior, recording any [[Effect]]s.
    *
    * The returned [[ReplyInbox]] allows the message sent to the "reply to" `ActorRef` to be asserted on.
    *
@@ -102,7 +102,7 @@ abstract class BehaviorTestKit[T] {
     runAsk(messageFactory)
 
   /**
-   * The same as [[runAsk]] but only for requests that result in a response of type [[akka.pattern.StatusReply]].
+   * The same as [[runAsk]] but only for requests that result in a response of type [[pekko.pattern.StatusReply]].
    *
    * @since 1.3.0
    */

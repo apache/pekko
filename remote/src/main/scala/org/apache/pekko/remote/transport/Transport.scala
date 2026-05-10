@@ -76,7 +76,7 @@ object Transport {
  * underlying transmission mechanism and setting up logical links between transport entities.
  *
  * Transport implementations that are loaded dynamically by the remoting must have a constructor that accepts a
- * [[com.typesafe.config.Config]] and an [[pekko.actor.ExtendedActorSystem]] as parameters.
+ * [[com.typesafe.config.Config]] and a [[pekko.actor.ExtendedActorSystem]] as parameters.
  */
 @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 trait Transport {
@@ -112,7 +112,7 @@ trait Transport {
   /**
    * Asynchronously attempts to setup the transport layer to listen and accept incoming associations. The result of the
    * attempt is wrapped by a Future returned by this method. The pair contained in the future contains a Promise for an
-   * ActorRef. By completing this Promise with an [[pekko.remote.transport.Transport.AssociationEventListener]], that
+   * ActorRef. By completing this Promise with a [[pekko.remote.transport.Transport.AssociationEventListener]], that
    * listener becomes responsible for handling incoming associations. Until the Promise is not completed, no associations
    * are processed.
    *
@@ -130,14 +130,14 @@ trait Transport {
    * real transport-layer connection (TCP), more lightweight connections provided over datagram protocols (UDP with
    * additional services), substreams of multiplexed connections (SCTP) or physical links (serial port).
    *
-   * This call returns a future of an [[pekko.remote.transport.AssociationHandle]]. A failed future indicates that
+   * This call returns a future of a [[pekko.remote.transport.AssociationHandle]]. A failed future indicates that
    * the association attempt was unsuccessful. If the exception is [[pekko.remote.transport.Transport.InvalidAssociationException]]
    * then the association request was invalid, and it is impossible to recover.
    *
    * @param remoteAddress
    *   The address of the remote transport entity.
    * @return
-   *   A status instance representing failure or a success containing an [[pekko.remote.transport.AssociationHandle]]
+   *   A status instance representing failure or a success containing a [[pekko.remote.transport.AssociationHandle]]
    */
   def associate(remoteAddress: Address): Future[AssociationHandle]
 
@@ -166,7 +166,7 @@ trait Transport {
 object AssociationHandle {
 
   /**
-   * Trait for events that the registered listener for an [[pekko.remote.transport.AssociationHandle]] might receive.
+   * Trait for events that the registered listener for a [[pekko.remote.transport.AssociationHandle]] might receive.
    */
   sealed trait HandleEvent extends NoSerializationVerificationNeeded
 
@@ -199,7 +199,7 @@ object AssociationHandle {
   case object Quarantined extends DisassociateInfo
 
   /**
-   * An interface that needs to be implemented by the user of an [[pekko.remote.transport.AssociationHandle]]
+   * An interface that needs to be implemented by the user of a [[pekko.remote.transport.AssociationHandle]]
    * to listen to association events.
    */
   trait HandleEventListener {
@@ -249,7 +249,7 @@ trait AssociationHandle {
   def remoteAddress: Address
 
   /**
-   * The Promise returned by this call must be completed with an [[pekko.remote.transport.AssociationHandle.HandleEventListener]]
+   * The Promise returned by this call must be completed with a [[pekko.remote.transport.AssociationHandle.HandleEventListener]]
    * to register a listener responsible for handling incoming payload. Until the listener is not registered the
    * transport SHOULD buffer incoming messages.
    *

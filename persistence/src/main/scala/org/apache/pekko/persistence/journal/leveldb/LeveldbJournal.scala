@@ -113,7 +113,7 @@ private[persistence] object LeveldbJournal {
    * Used by query-side. The journal will send [[TaggedEventAppended]] messages to
    * the subscriber when `asyncWriteMessages` has been called.
    * Events are tagged by wrapping in [[pekko.persistence.journal.Tagged]]
-   * via an [[pekko.persistence.journal.EventAdapter]].
+   * via a [[pekko.persistence.journal.EventAdapter]].
    */
   final case class SubscribeTag(tag: String) extends SubscriptionCommand
   final case class TaggedEventAppended(tag: String) extends DeadLetterSuppression

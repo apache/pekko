@@ -197,7 +197,7 @@ private[pekko] trait SnapshotInteractions[C, E, S] {
   def setup: BehaviorSetup[C, E, S]
 
   /**
-   * Instructs the snapshot store to load the specified snapshot and send it via an [[SnapshotOffer]]
+   * Instructs the snapshot store to load the specified snapshot and send it via a [[SnapshotOffer]]
    * to the running [[PersistentActor]].
    */
   protected def loadSnapshot(criteria: SnapshotSelectionCriteria, toSequenceNr: Long): Unit = {

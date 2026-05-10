@@ -309,7 +309,7 @@ class DummyClassForStringSources
 /**
  * This object holds predefined formatting rules for log sources.
  *
- * In case an [[pekko.actor.ActorSystem]] is provided, the following apply:
+ * In case a [[pekko.actor.ActorSystem]] is provided, the following apply:
  * <ul>
  * <li>[[pekko.actor.Actor]] and [[pekko.actor.ActorRef]] will be represented by their absolute physical path</li>
  * <li>providing a `String` as source will append "(&lt;system address&gt;)" and use the result</li>

@@ -49,9 +49,6 @@ docs/_build/
 docs/exts/
 docs/rst_preprocessed/
 osgi/src/main/resources/*.conf
-akka.sublime-project
-akka.sublime-workspace
-akka.tmproj
 beanstalk/
 bin/
 data

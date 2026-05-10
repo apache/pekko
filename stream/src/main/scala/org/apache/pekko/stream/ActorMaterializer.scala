@@ -37,7 +37,7 @@ private[pekko] object ActorMaterializer {
   /**
    * Scala API: Creates an ActorMaterializer that can materialize stream blueprints as running streams.
    *
-   * The required [[pekko.actor.ActorRefFactory]] (which can be either an [[pekko.actor.ActorSystem]] or an [[pekko.actor.ActorContext]])
+   * The required [[pekko.actor.ActorRefFactory]] (which can be either a [[pekko.actor.ActorSystem]] or a [[pekko.actor.ActorContext]])
    * will be used to create one actor that in turn creates actors for the transformation steps.
    *
    * The materializer's [[pekko.stream.ActorMaterializerSettings]] will be obtained from the
@@ -62,7 +62,7 @@ private[pekko] object ActorMaterializer {
    * Scala API: Creates an ActorMaterializer that can materialize stream blueprints as running streams.
    *
    * The required [[pekko.actor.ActorRefFactory]]
-   * (which can be either an [[pekko.actor.ActorSystem]] or an [[pekko.actor.ActorContext]])
+   * (which can be either a [[pekko.actor.ActorSystem]] or a [[pekko.actor.ActorContext]])
    * will be used to create these actors, therefore it is *forbidden* to pass this object
    * to another actor if the factory is an ActorContext.
    *
@@ -96,7 +96,7 @@ private[pekko] object ActorMaterializer {
    * Scala API: Creates an ActorMaterializer that can materialize stream blueprints as running streams.
    *
    * The required [[pekko.actor.ActorRefFactory]]
-   * (which can be either an [[pekko.actor.ActorSystem]] or an [[pekko.actor.ActorContext]])
+   * (which can be either a [[pekko.actor.ActorSystem]] or a [[pekko.actor.ActorContext]])
    * will be used to create these actors, therefore it is *forbidden* to pass this object
    * to another actor if the factory is an ActorContext.
    *
@@ -114,7 +114,7 @@ private[pekko] object ActorMaterializer {
    * Java API: Creates an ActorMaterializer that can materialize stream blueprints as running streams.
    *
    * The required [[pekko.actor.ActorRefFactory]]
-   * (which can be either an [[pekko.actor.ActorSystem]] or an [[pekko.actor.ActorContext]])
+   * (which can be either a [[pekko.actor.ActorSystem]] or a [[pekko.actor.ActorContext]])
    * will be used to create these actors, therefore it is *forbidden* to pass this object
    * to another actor if the factory is an ActorContext.
    *
@@ -176,7 +176,7 @@ final class AbruptStageTerminationException(logic: GraphStageLogic)
 private[pekko] object ActorMaterializerSettings {
 
   /**
-   * Create [[ActorMaterializerSettings]] from the settings of an [[pekko.actor.ActorSystem]] (Scala).
+   * Create [[ActorMaterializerSettings]] from the settings of a [[pekko.actor.ActorSystem]] (Scala).
    *
    * Prefer using either config for defaults or attributes for per-stream config.
    * See migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html"

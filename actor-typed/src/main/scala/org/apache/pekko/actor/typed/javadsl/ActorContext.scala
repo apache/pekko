@@ -186,7 +186,7 @@ trait ActorContext[T] extends TypedActorContext[T] with ClassicActorContextProvi
    *
    * `watch` is idempotent if it is not mixed with `watchWith`.
    *
-   * It will fail with an [[java.lang.IllegalStateException]] if the same subject was watched before using `watchWith`.
+   * It will fail with a [[java.lang.IllegalStateException]] if the same subject was watched before using `watchWith`.
    * To clear the termination message, unwatch first.
    *
    * *Warning*: This method is not thread-safe and must not be accessed from threads other
@@ -201,7 +201,7 @@ trait ActorContext[T] extends TypedActorContext[T] with ClassicActorContextProvi
    *
    * `watchWith` is idempotent if it is called with the same `msg` and not mixed with `watch`.
    *
-   * It will fail with an [[java.lang.IllegalStateException]] if the same subject was watched before using `watch` or `watchWith` with
+   * It will fail with a [[java.lang.IllegalStateException]] if the same subject was watched before using `watch` or `watchWith` with
    * another termination message. To change the termination message, unwatch first.
    *
    * *Warning*: This method is not thread-safe and must not be accessed from threads other
@@ -292,7 +292,7 @@ trait ActorContext[T] extends TypedActorContext[T] with ClassicActorContextProvi
    * the protocol of this actor.
    *
    * The interaction has a timeout (to avoid a resource leak). If the timeout hits without any response it
-   * will be passed as an [[java.util.concurrent.TimeoutException]] to the `applyToResponse` function.
+   * will be passed as a [[java.util.concurrent.TimeoutException]] to the `applyToResponse` function.
    *
    * For other messaging patterns with other actors, see [[ActorContext#messageAdapter]].
    *

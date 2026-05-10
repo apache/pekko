@@ -59,7 +59,7 @@ object BehaviorTestKit {
 trait BehaviorTestKit[T] {
 
   /**
-   * Constructs a message using the provided function to inject a single-use "reply to" [[akka.actor.typed.ActorRef]],
+   * Constructs a message using the provided function to inject a single-use "reply to" [[pekko.actor.typed.ActorRef]],
    * and sends the constructed message to the behavior, recording any [[Effect]]s.
    *
    * The returned [[ReplyInbox]] allows the message sent to the "reply to" `ActorRef` to be asserted on.
@@ -69,7 +69,7 @@ trait BehaviorTestKit[T] {
   def runAsk[Res](f: ActorRef[Res] => T): ReplyInbox[Res]
 
   /**
-   * The same as [[runAsk]] but only for requests that result in a response of type [[akka.pattern.StatusReply]].
+   * The same as [[runAsk]] but only for requests that result in a response of type [[pekko.pattern.StatusReply]].
    *
    * @since 1.3.0
    */

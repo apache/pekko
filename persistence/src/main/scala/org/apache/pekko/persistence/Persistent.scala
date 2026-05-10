@@ -26,7 +26,7 @@ import pekko.util.HashCode
  *
  * Marks messages which can be resequenced by the [[pekko.persistence.journal.AsyncWriteJournal]].
  *
- * In essence it is either an [[NonPersistentRepr]] or [[AtomicWrite]].
+ * In essence it is either a [[NonPersistentRepr]] or [[AtomicWrite]].
  */
 private[persistence] sealed trait PersistentEnvelope {
   def payload: Any

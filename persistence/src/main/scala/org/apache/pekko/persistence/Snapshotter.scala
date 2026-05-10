@@ -36,7 +36,7 @@ trait Snapshotter extends Actor {
   def snapshotSequenceNr: Long
 
   /**
-   * Instructs the snapshot store to load the specified snapshot and send it via an [[pekko.persistence.SnapshotOffer SnapshotOffer]]
+   * Instructs the snapshot store to load the specified snapshot and send it via a [[pekko.persistence.SnapshotOffer SnapshotOffer]]
    * to the running [[pekko.persistence.PersistentActor PersistentActor]].
    */
   def loadSnapshot(persistenceId: String, criteria: SnapshotSelectionCriteria, toSequenceNr: Long): Unit =
@@ -46,7 +46,7 @@ trait Snapshotter extends Actor {
    * Saves a `snapshot` of this snapshotter's state.
    *
    * The [[pekko.persistence.PersistentActor PersistentActor]] will be notified about the success or failure of this
-   * via an [[pekko.persistence.SaveSnapshotSuccess SaveSnapshotSuccess]] or [[pekko.persistence.SaveSnapshotFailure SaveSnapshotFailure]] message.
+   * via a [[pekko.persistence.SaveSnapshotSuccess SaveSnapshotSuccess]] or [[pekko.persistence.SaveSnapshotFailure SaveSnapshotFailure]] message.
    */
   def saveSnapshot(snapshot: Any): Unit = {
     snapshotStore ! SaveSnapshot(SnapshotMetadata(snapshotterId, snapshotSequenceNr), snapshot)
@@ -56,7 +56,7 @@ trait Snapshotter extends Actor {
    * Deletes the snapshot identified by `sequenceNr`.
    *
    * The [[pekko.persistence.PersistentActor PersistentActor]] will be notified about the status of the deletion
-   * via an [[pekko.persistence.DeleteSnapshotSuccess DeleteSnapshotSuccess]] or [[pekko.persistence.DeleteSnapshotFailure DeleteSnapshotFailure]] message.
+   * via a [[pekko.persistence.DeleteSnapshotSuccess DeleteSnapshotSuccess]] or [[pekko.persistence.DeleteSnapshotFailure DeleteSnapshotFailure]] message.
    */
   def deleteSnapshot(sequenceNr: Long): Unit = {
     snapshotStore ! DeleteSnapshot(SnapshotMetadata(snapshotterId, sequenceNr))
@@ -66,7 +66,7 @@ trait Snapshotter extends Actor {
    * Deletes all snapshots matching `criteria`.
    *
    * The [[pekko.persistence.PersistentActor PersistentActor]] will be notified about the status of the deletion
-   * via an [[pekko.persistence.DeleteSnapshotsSuccess DeleteSnapshotsSuccess]] or [[pekko.persistence.DeleteSnapshotsFailure DeleteSnapshotsFailure]] message.
+   * via a [[pekko.persistence.DeleteSnapshotsSuccess DeleteSnapshotsSuccess]] or [[pekko.persistence.DeleteSnapshotsFailure DeleteSnapshotsFailure]] message.
    */
   def deleteSnapshots(criteria: SnapshotSelectionCriteria): Unit = {
     snapshotStore ! DeleteSnapshots(snapshotterId, criteria)

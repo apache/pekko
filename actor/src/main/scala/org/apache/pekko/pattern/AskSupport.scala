@@ -67,7 +67,7 @@ trait AskSupport {
    * holding the eventual reply message; this means that the target actor
    * needs to send the result to the `sender` reference provided.
    *
-   * The Future will be completed with an [[pekko.pattern.AskTimeoutException]] after the
+   * The Future will be completed with a [[pekko.pattern.AskTimeoutException]] after the
    * given timeout has expired; this is independent from any timeout applied
    * while awaiting a result for this future (i.e. in
    * `Await.result(..., timeout)`). A typical reason for `AskTimeoutException` is that the
@@ -133,7 +133,7 @@ trait AskSupport {
    * holding the eventual reply message; this means that the target actor
    * needs to send the result to the `sender` reference provided.
    *
-   * The Future will be completed with an [[pekko.pattern.AskTimeoutException]] after the
+   * The Future will be completed with a [[pekko.pattern.AskTimeoutException]] after the
    * given timeout has expired; this is independent from any timeout applied
    * while awaiting a result for this future (i.e. in
    * `Await.result(..., timeout)`). A typical reason for `AskTimeoutException` is that the
@@ -196,7 +196,7 @@ trait ExplicitAskSupport {
    * holding the eventual reply message; this means that the target actor
    * needs to send the result to the `sender` reference provided.
    *
-   * The Future will be completed with an [[pekko.pattern.AskTimeoutException]] after the
+   * The Future will be completed with a [[pekko.pattern.AskTimeoutException]] after the
    * given timeout has expired; this is independent from any timeout applied
    * while awaiting a result for this future (i.e. in
    * `Await.result(..., timeout)`). A typical reason for `AskTimeoutException` is that the
@@ -254,7 +254,7 @@ trait ExplicitAskSupport {
    * holding the eventual reply message; this means that the target actor
    * needs to send the result to the `sender` reference provided.
    *
-   * The Future will be completed with an [[pekko.pattern.AskTimeoutException]] after the
+   * The Future will be completed with a [[pekko.pattern.AskTimeoutException]] after the
    * given timeout has expired; this is independent from any timeout applied
    * while awaiting a result for this future (i.e. in
    * `Await.result(..., timeout)`). A typical reason for `AskTimeoutException` is that the

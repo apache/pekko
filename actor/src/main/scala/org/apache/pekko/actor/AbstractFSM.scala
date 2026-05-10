@@ -201,7 +201,7 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
     super.onTermination(stopBuilder.build().asInstanceOf[PartialFunction[StopEvent, Unit]])
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches on an event and data type and a predicate.
    *
@@ -219,7 +219,7 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
     new FSMStateFunctionBuilder[S, D]().event(eventType, dataType, predicate, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches on an event and data type.
    *
@@ -235,7 +235,7 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
     new FSMStateFunctionBuilder[S, D]().event(eventType, dataType, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches if the event type and predicate matches.
    *
@@ -251,7 +251,7 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
     new FSMStateFunctionBuilder[S, D]().event(eventType, predicate, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches if the event type matches.
    *
@@ -263,7 +263,7 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
     new FSMStateFunctionBuilder[S, D]().event(eventType, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches if the predicate matches.
    *
@@ -277,7 +277,7 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
     new FSMStateFunctionBuilder[S, D]().event(predicate, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches on the data type and if any of the event types
    * in the list match or any of the event instances in the list compares equal.
@@ -294,7 +294,7 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
     new FSMStateFunctionBuilder[S, D]().event(eventMatches, dataType, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches if any of the event types in the list match or any
    * of the event instances in the list compares equal.
@@ -307,7 +307,7 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
     new FSMStateFunctionBuilder[S, D]().event(eventMatches, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches on the data type and if the event compares equal.
    *
@@ -323,7 +323,7 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
     new FSMStateFunctionBuilder[S, D]().eventEquals(event, dataType, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches if the event compares equal.
    *
@@ -335,7 +335,7 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
     new FSMStateFunctionBuilder[S, D]().eventEquals(event, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches on any type of event.
    *
@@ -346,7 +346,7 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
     new FSMStateFunctionBuilder[S, D]().anyEvent(apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMTransitionHandlerBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMTransitionHandlerBuilder]] with the first case statement set.
    *
    * A case statement that matches on a from state and a to state.
    *
@@ -359,7 +359,7 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
     new FSMTransitionHandlerBuilder[S]().state(fromState, toState, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMTransitionHandlerBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMTransitionHandlerBuilder]] with the first case statement set.
    *
    * A case statement that matches on a from state and a to state.
    *
@@ -372,9 +372,9 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
     new FSMTransitionHandlerBuilder[S]().state(fromState, toState, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStopBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStopBuilder]] with the first case statement set.
    *
-   * A case statement that matches on an [[FSM.Reason]].
+   * A case statement that matches on a [[FSM.Reason]].
    *
    * @param reason  the reason for the termination
    * @param apply  an action to apply to the event and state data if there is a match
@@ -384,7 +384,7 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
     new FSMStopBuilder[S, D]().stop(reason, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStopBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStopBuilder]] with the first case statement set.
    *
    * A case statement that matches on a reason type.
    *
@@ -396,7 +396,7 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
     new FSMStopBuilder[S, D]().stop(reasonType, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStopBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStopBuilder]] with the first case statement set.
    *
    * A case statement that matches on a reason type and a predicate.
    *
