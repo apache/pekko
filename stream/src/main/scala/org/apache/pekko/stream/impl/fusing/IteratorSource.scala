@@ -17,27 +17,25 @@
 
 package org.apache.pekko.stream.impl.fusing
 
-import scala.collection.immutable
 import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.stream.{ Attributes, Outlet, SourceShape, Supervision }
 import pekko.stream.ActorAttributes.SupervisionStrategy
-import pekko.stream.impl.ReactiveStreamsCompliance
-import pekko.stream.impl.Stages.DefaultAttributes
+import pekko.stream.{ Attributes, Outlet, SourceShape, Supervision }
 import pekko.stream.impl.fusing.GraphStages.ValuePresentedSource
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, OutHandler }
 
 @InternalApi
-private[pekko] final class IterableSource[T](val elements: immutable.Iterable[T])
+private[pekko] final class IteratorSource[T](
+    val createIterator: () => Iterator[T],
+    defaultAttributes: Attributes)
     extends GraphStage[SourceShape[T]]
     with ValuePresentedSource {
-  ReactiveStreamsCompliance.requireNonNullElement(elements)
 
-  override protected def initialAttributes: Attributes = DefaultAttributes.iterableSource
+  override protected def initialAttributes: Attributes = defaultAttributes
 
-  private val out = Outlet[T]("IterableSource.out")
+  private val out = Outlet[T]("IteratorSource.out")
   override val shape: SourceShape[T] = SourceShape(out)
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
@@ -48,27 +46,44 @@ private[pekko] final class IterableSource[T](val elements: immutable.Iterable[T]
       override def onPull(): Unit =
         try {
           if (currentIterator eq null) {
-            currentIterator = elements.iterator
+            currentIterator = createIterator()
           }
-          tryPushNextOrComplete()
+          pushNextOrComplete()
         } catch {
           case NonFatal(ex) =>
-            decider(ex) match {
-              case Supervision.Stop    => failStage(ex)
-              case Supervision.Resume  => tryPushNextOrComplete()
-              case Supervision.Restart =>
-                currentIterator = elements.iterator
-                tryPushNextOrComplete()
+            if (currentIterator eq null) handleIteratorCreationFailure(ex)
+            else handleIteratorFailure(ex)
+        }
+
+      private def handleIteratorCreationFailure(ex: Throwable): Unit =
+        decider(ex) match {
+          case Supervision.Stop   => failStage(ex)
+          case Supervision.Resume =>
+            completeStage()
+          case Supervision.Restart =>
+            try {
+              currentIterator = createIterator()
+              pushNextOrComplete()
+            } catch {
+              case NonFatal(restartEx) => failStage(restartEx)
             }
         }
 
-      private def tryPushNextOrComplete(): Unit =
+      private def handleIteratorFailure(ex: Throwable): Unit =
+        decider(ex) match {
+          case Supervision.Stop    => failStage(ex)
+          case Supervision.Resume  => pushNextOrComplete()
+          case Supervision.Restart =>
+            currentIterator = createIterator()
+            pushNextOrComplete()
+        }
+
+      private def pushNextOrComplete(): Unit =
         if (currentIterator.hasNext) {
           if (isAvailable(out)) {
             push(out, currentIterator.next())
-            if (!currentIterator.hasNext) {
+            if (!currentIterator.hasNext)
               completeStage()
-            }
           }
         } else {
           completeStage()
@@ -77,5 +92,5 @@ private[pekko] final class IterableSource[T](val elements: immutable.Iterable[T]
       setHandler(out, this)
     }
 
-  override def toString: String = "IterableSource"
+  override def toString: String = "IteratorSource"
 }

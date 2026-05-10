@@ -505,13 +505,7 @@ object Flow {
       case f: Flow[I, O, M]                                       => f
       case f: javadsl.Flow[I, O, M] @unchecked                    => f.asScala
       case g: GraphStageWithMaterializedValue[FlowShape[I, O], M] =>
-        // move these from the operator itself to make the returned source
-        // behave as it is the operator with regards to attributes
-        val attrs = g.traversalBuilder.attributes
-        val noAttrStage = g.withAttributes(Attributes.none)
-        new Flow(
-          LinearTraversalBuilder.fromBuilder(noAttrStage.traversalBuilder, noAttrStage.shape, Keep.right),
-          noAttrStage.shape).withAttributes(attrs)
+        new Flow(LinearTraversalBuilder.fromGraphStage(g), g.shape)
 
       case _ => new Flow(LinearTraversalBuilder.fromBuilder(g.traversalBuilder, g.shape, Keep.right), g.shape)
     }

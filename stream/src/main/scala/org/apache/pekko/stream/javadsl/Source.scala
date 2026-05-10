@@ -38,7 +38,7 @@ import pekko.japi.function.Creator
 import pekko.stream._
 import pekko.stream.impl.{ LinearTraversalBuilder, UnfoldAsyncJava, UnfoldJava }
 import pekko.stream.impl.Stages.DefaultAttributes
-import pekko.stream.impl.fusing.{ StatefulMapConcat, ZipWithIndexJava }
+import pekko.stream.impl.fusing.{ RangeSource, StatefulMapConcat, ZipWithIndexJava }
 import pekko.util._
 
 import org.jspecify.annotations.Nullable
@@ -234,7 +234,9 @@ object Source {
    * @see [[scala.collection.immutable.Range.inclusive(Int, Int, Int)]]
    */
   def range(start: Int, end: Int, step: Int): javadsl.Source[Integer, NotUsed] =
-    new Source(scaladsl.Source(Range.inclusive(start, end, step).asInstanceOf[immutable.Iterable[Integer]]))
+    new Source(
+      scaladsl.Source.fromGraph(
+        new RangeSource[Integer](Range.inclusive(start, end, step), DefaultAttributes.iterableSource)))
 
   /**
    * Elements are emitted periodically with the specified interval.

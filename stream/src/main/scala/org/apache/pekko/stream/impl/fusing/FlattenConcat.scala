@@ -17,6 +17,7 @@
 
 package org.apache.pekko.stream.impl.fusing
 
+import scala.collection.immutable
 import scala.concurrent.Future
 import scala.util.{ Failure, Try }
 
@@ -25,7 +26,7 @@ import pekko.annotation.InternalApi
 import pekko.stream.{ Attributes, FlowShape, Graph, Inlet, Outlet, SourceShape, SubscriptionWithCancelException }
 import pekko.stream.impl.{ Buffer => BufferImpl, FailedSource, JavaStreamSource, TraversalBuilder }
 import pekko.stream.impl.Stages.DefaultAttributes
-import pekko.stream.impl.fusing.GraphStages.{ FutureSource, SingleSource }
+import pekko.stream.impl.fusing.GraphStages.{ FutureSource, RepeatSource, SingleSource }
 import pekko.stream.scaladsl.Source
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
 import pekko.util.OptionVal
@@ -52,6 +53,35 @@ private[pekko] object FlattenConcat {
     override def tryPull(): Unit = ()
     override def cancel(cause: Throwable): Unit = ()
     override def isClosed: Boolean = !hasNext
+  }
+
+  private final class InflightRangeSource[T](range: immutable.Range) extends InflightSource[T] {
+    private val isEmptyRange = range.isEmpty
+    private val rangeLast = if (isEmptyRange) 0 else range.last
+    private val rangeStep = range.step
+    private var nextElement = range.start
+    private var closed = isEmptyRange
+
+    override def hasNext: Boolean = !closed
+    override def next(): T =
+      if (closed) throw new NoSuchElementException("next called after completion")
+      else {
+        val current = nextElement
+        if (current == rangeLast) closed = true
+        else nextElement = current + rangeStep
+        current.asInstanceOf[T]
+      }
+    override def tryPull(): Unit = ()
+    override def cancel(cause: Throwable): Unit = ()
+    override def isClosed: Boolean = closed
+  }
+
+  private final class InflightRepeatSource[T](elem: T) extends InflightSource[T] {
+    override def hasNext: Boolean = true
+    override def next(): T = elem
+    override def tryPull(): Unit = ()
+    override def cancel(cause: Throwable): Unit = ()
+    override def isClosed: Boolean = false
   }
 
   private final class InflightCompletedFutureSource[T](result: Try[T]) extends InflightSource[T] {
@@ -219,6 +249,26 @@ private[pekko] final class FlattenConcat[T, M](parallelism: Int)
         }
       }
 
+      private def addRangeSource(range: immutable.Range): Unit = {
+        val inflightSource = new InflightRangeSource[T](range)
+        if (isAvailable(out) && queue.isEmpty) {
+          if (inflightSource.hasNext) {
+            push(out, inflightSource.next())
+            if (inflightSource.hasNext)
+              queue.enqueue(inflightSource)
+          }
+        } else if (inflightSource.hasNext) {
+          queue.enqueue(inflightSource)
+        }
+      }
+
+      private def addRepeatSource(elem: T): Unit = {
+        val inflightSource = new InflightRepeatSource[T](elem)
+        if (isAvailable(out) && queue.isEmpty)
+          push(out, elem)
+        queue.enqueue(inflightSource)
+      }
+
       private def addCompletedFutureElem(elem: Try[T]): Unit = {
         if (isAvailable(out) && queue.isEmpty) {
           elem match {
@@ -287,6 +337,9 @@ private[pekko] final class FlattenConcat[T, M](parallelism: Int)
                   case None       => addPendingFutureElem(future)
                 }
               case iterable: IterableSource[T] @unchecked        => addSourceElements(iterable.elements.iterator)
+              case iterator: IteratorSource[T] @unchecked        => addSourceElements(iterator.createIterator())
+              case range: RangeSource[T] @unchecked              => addRangeSource(range.range)
+              case repeat: RepeatSource[T] @unchecked            => addRepeatSource(repeat.elem)
               case javaStream: JavaStreamSource[T, _] @unchecked =>
                 import scala.jdk.CollectionConverters._
                 addSourceElements(javaStream.open().iterator.asScala)

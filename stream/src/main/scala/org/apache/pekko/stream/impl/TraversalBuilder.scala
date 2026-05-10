@@ -22,9 +22,10 @@ import pekko.annotation.{ DoNotInherit, InternalApi }
 import pekko.stream._
 import pekko.stream.impl.StreamLayout.AtomicModule
 import pekko.stream.impl.TraversalBuilder.{ AnyFunction1, AnyFunction2 }
-import pekko.stream.impl.fusing.{ GraphStageModule, IterableSource }
-import pekko.stream.impl.fusing.GraphStages.{ FutureSource, SingleSource }
+import pekko.stream.impl.fusing.GraphStageModule
+import pekko.stream.impl.fusing.GraphStages.{ SingleSource, ValuePresentedSource }
 import pekko.stream.scaladsl.Keep
+import pekko.stream.stage.GraphStageWithMaterializedValue
 import pekko.util.OptionVal
 
 /**
@@ -354,24 +355,29 @@ import pekko.util.OptionVal
    * performance optimization in FlattenMerge and possibly other places.
    */
   def getSingleSource[A >: Null](graph: Graph[SourceShape[A], _]): OptionVal[SingleSource[A]] = {
+    @inline def fromModule(module: AtomicModule[_, _]): OptionVal[SingleSource[A]] =
+      module match {
+        case m: GraphStageModule[_, _] =>
+          m.stage match {
+            case single: SingleSource[A] @unchecked => OptionVal.Some(single)
+            case _                                  => OptionVal.None
+          }
+        case _ => OptionVal.None
+      }
+
     graph match {
       case single: SingleSource[A] @unchecked => OptionVal.Some(single)
       case _                                  =>
         graph.traversalBuilder match {
-          case l: LinearTraversalBuilder =>
+          case l: LinearTraversalBuilder if !l.attributes.isAsync =>
             l.pendingBuilder match {
               case OptionVal.Some(a: AtomicTraversalBuilder) =>
-                a.module match {
-                  case m: GraphStageModule[_, _] =>
-                    m.stage match {
-                      case single: SingleSource[A] @unchecked =>
-                        // It would be != EmptyTraversal if mapMaterializedValue was used and then we can't optimize.
-                        if ((l.traversalSoFar eq EmptyTraversal) && !l.attributes.isAsync)
-                          OptionVal.Some(single)
-                        else OptionVal.None
-                      case _ => OptionVal.None
-                    }
-                  case _ => OptionVal.None
+                // It would be != EmptyTraversal if mapMaterializedValue was used and then we can't optimize.
+                if (l.traversalSoFar eq EmptyTraversal) fromModule(a.module) else OptionVal.None
+              case OptionVal.None =>
+                l.traversalSoFar match {
+                  case MaterializeAtomic(module, _) => fromModule(module)
+                  case _                            => OptionVal.None
                 }
               case _ => OptionVal.None
             }
@@ -388,30 +394,34 @@ import pekko.util.OptionVal
   @InternalApi def getValuePresentedSource[A >: Null](
       graph: Graph[SourceShape[A], _]): OptionVal[Graph[SourceShape[A], _]] = {
     def isValuePresentedSource(graph: Graph[SourceShape[_ <: A], _]): Boolean = graph match {
-      case _: SingleSource[_] | _: FutureSource[_] | _: IterableSource[_] | _: JavaStreamSource[_, _] |
-          _: FailedSource[_] =>
-        true
+      case _: ValuePresentedSource                 => true
       case maybeEmpty if isEmptySource(maybeEmpty) => true
       case _                                       => false
     }
+    @inline def fromModule(module: AtomicModule[_, _]): OptionVal[Graph[SourceShape[A], _]] =
+      module match {
+        case m: GraphStageModule[_, _] =>
+          m.stage match {
+            case _ if isValuePresentedSource(m.stage.asInstanceOf[Graph[SourceShape[A], _]]) =>
+              OptionVal.Some(m.stage.asInstanceOf[Graph[SourceShape[A], _]])
+            case _ => OptionVal.None
+          }
+        case _ => OptionVal.None
+      }
+
     graph match {
       case _ if isValuePresentedSource(graph) => OptionVal.Some(graph)
       case _                                  =>
         graph.traversalBuilder match {
-          case l: LinearTraversalBuilder =>
+          case l: LinearTraversalBuilder if !l.attributes.isAsync =>
             l.pendingBuilder match {
               case OptionVal.Some(a: AtomicTraversalBuilder) =>
-                a.module match {
-                  case m: GraphStageModule[_, _] =>
-                    m.stage match {
-                      case _ if isValuePresentedSource(m.stage.asInstanceOf[Graph[SourceShape[A], _]]) =>
-                        // It would be != EmptyTraversal if mapMaterializedValue was used and then we can't optimize.
-                        if ((l.traversalSoFar eq EmptyTraversal) && !l.attributes.isAsync)
-                          OptionVal.Some(m.stage.asInstanceOf[Graph[SourceShape[A], _]])
-                        else OptionVal.None
-                      case _ => OptionVal.None
-                    }
-                  case _ => OptionVal.None
+                // It would be != EmptyTraversal if mapMaterializedValue was used and then we can't optimize.
+                if (l.traversalSoFar eq EmptyTraversal) fromModule(a.module) else OptionVal.None
+              case OptionVal.None =>
+                l.traversalSoFar match {
+                  case MaterializeAtomic(module, _) => fromModule(module)
+                  case _                            => OptionVal.None
                 }
               case _ => OptionVal.None
             }
@@ -702,14 +712,17 @@ import pekko.util.OptionVal
    * than its generic counterpart. It can be freely mixed with the generic builder in both ways.
    */
   def fromModule(module: AtomicModule[Shape, Any], attributes: Attributes): LinearTraversalBuilder = {
-    if (module.shape.inlets.size > 1)
+    val shape = module.shape
+    val inlets = shape.inlets
+    val outlets = shape.outlets
+    if (inlets.size > 1)
       throw new IllegalStateException("Modules with more than one input port cannot be linear.")
-    if (module.shape.outlets.size > 1)
+    if (outlets.size > 1)
       throw new IllegalStateException("Modules with more than one output port cannot be linear.")
-    TraversalBuilder.initShape(module.shape)
+    TraversalBuilder.initShape(shape)
 
-    val inPortOpt = OptionVal(module.shape.inlets.headOption.orNull)
-    val outPortOpt = OptionVal(module.shape.outlets.headOption.orNull)
+    val inPortOpt = OptionVal(if (inlets.isEmpty) null else inlets.head)
+    val outPortOpt = OptionVal(if (outlets.isEmpty) null else outlets.head)
 
     val wiring = if (outPortOpt.isDefined) wireBackward else noWire
 
@@ -778,6 +791,22 @@ import pekko.util.OptionVal
           beforeBuilder = EmptyTraversal)
 
     }
+  }
+
+  @inline @InternalApi private[pekko] def fromGraphStage(
+      graphStage: GraphStageWithMaterializedValue[_ <: Shape, _]): LinearTraversalBuilder = {
+    val builder = graphStage.traversalBuilder
+    val attributes = builder.attributes
+    val linear = builder match {
+      case atomic: AtomicTraversalBuilder =>
+        LinearTraversalBuilder.fromModule(atomic.module, Attributes.none)
+      case _ =>
+        val builderWithoutAttributes =
+          if (attributes eq Attributes.none) builder else builder.setAttributes(Attributes.none)
+        fromBuilder(builderWithoutAttributes, graphStage.shape, Keep.right)
+    }
+
+    if (attributes eq Attributes.none) linear else linear.setAttributes(attributes)
   }
 }
 

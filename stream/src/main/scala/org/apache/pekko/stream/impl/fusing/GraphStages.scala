@@ -61,6 +61,11 @@ import pekko.stream.stage._
   /**
    * INTERNAL API
    */
+  @InternalApi private[pekko] trait ValuePresentedSource
+
+  /**
+   * INTERNAL API
+   */
   @InternalApi private[pekko] abstract class SimpleLinearGraphStage[T] extends GraphStage[FlowShape[T, T]] {
     val in = Inlet[T](Logging.simpleName(this) + ".in")
     val out = Outlet[T](Logging.simpleName(this) + ".out")
@@ -277,7 +282,7 @@ import pekko.stream.stage._
     override def toString: String = s"TickSource($initialDelay, $interval, $tick)"
   }
 
-  final class SingleSource[T](val elem: T) extends GraphStage[SourceShape[T]] {
+  final class SingleSource[T](val elem: T) extends GraphStage[SourceShape[T]] with ValuePresentedSource {
     override def initialAttributes: Attributes = DefaultAttributes.singleSource
     ReactiveStreamsCompliance.requireNonNullElement(elem)
     val out = Outlet[T]("single.out")
@@ -292,6 +297,21 @@ import pekko.stream.stage._
       }
 
     override def toString: String = "SingleSource"
+  }
+
+  final class RepeatSource[T](val elem: T) extends GraphStage[SourceShape[T]] with ValuePresentedSource {
+    override def initialAttributes: Attributes = DefaultAttributes.repeat
+    ReactiveStreamsCompliance.requireNonNullElement(elem)
+    val out = Outlet[T]("repeat.out")
+    override val shape = SourceShape(out)
+    override def createLogic(attr: Attributes): GraphStageLogic =
+      new GraphStageLogic(shape) with OutHandler {
+        override def onPull(): Unit = push(out, elem)
+
+        setHandler(out, this)
+      }
+
+    override def toString: String = "RepeatSource"
   }
 
   final class FutureFlattenSource[T, M](futureSource: Future[Graph[SourceShape[T], M]])
@@ -383,7 +403,7 @@ import pekko.stream.stage._
     override def toString: String = "FutureFlattenSource"
   }
 
-  final class FutureSource[T](val future: Future[T]) extends GraphStage[SourceShape[T]] {
+  final class FutureSource[T](val future: Future[T]) extends GraphStage[SourceShape[T]] with ValuePresentedSource {
     ReactiveStreamsCompliance.requireNonNullElement(future)
     val shape = SourceShape(Outlet[T]("FutureSource.out"))
     val out = shape.out

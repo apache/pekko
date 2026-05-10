@@ -748,6 +748,21 @@ public class SourceTest extends StreamTestJupiter {
   }
 
   @Test
+  public void mustWorkFromRangeWithNegativeStep() throws Exception {
+    CompletionStage<List<Integer>> f =
+        Source.range(5, 1, -2).grouped(20).runWith(Sink.head(), system);
+    final List<Integer> result = f.toCompletableFuture().get(3, TimeUnit.SECONDS);
+    assertEquals(Arrays.asList(5, 3, 1), result);
+  }
+
+  @Test
+  public void mustWorkFromEmptyRange() throws Exception {
+    CompletionStage<List<Integer>> f = Source.range(1, 5, -1).runWith(Sink.seq(), system);
+    final List<Integer> result = f.toCompletableFuture().get(3, TimeUnit.SECONDS);
+    assertEquals(0, result.size());
+  }
+
+  @Test
   public void mustRepeat() throws Exception {
     final CompletionStage<List<Integer>> f =
         Source.repeat(42).grouped(10000).runWith(Sink.head(), system);

@@ -18,6 +18,7 @@ import pekko.actor.ActorRef
 import pekko.annotation.InternalApi
 import pekko.stream._
 import pekko.stream.OverflowStrategies._
+import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.stage._
 import pekko.util.OptionVal
 
@@ -39,6 +40,7 @@ private object ActorRefSource {
   val out: Outlet[T] = Outlet[T]("actorRefSource.out")
 
   override val shape: SourceShape[T] = SourceShape.of(out)
+  override def initialAttributes: Attributes = DefaultAttributes.actorRefSource
 
   def createLogicAndMaterializedValue(inheritedAttributes: Attributes): (GraphStageLogic, ActorRef) =
     throw new IllegalStateException("Not supported")
