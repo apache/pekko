@@ -266,7 +266,7 @@ trait RetrySupport {
    *
    * A scheduler (eg context.system.scheduler) must be provided to delay each retry.
    * You could provide a function to generate the next delay duration after first attempt,
-   * this function should never return `null`, otherwise an [[java.lang.IllegalArgumentException]] will be through.
+   * this function should never return `null`, otherwise a [[java.lang.IllegalArgumentException]] will be through.
    *
    * If attempts are exhausted the returned future is simply the result of invoking attempt.
    * Note that the attempt function will be invoked on the given execution context for subsequent
@@ -301,7 +301,7 @@ trait RetrySupport {
    *
    * A scheduler (eg context.system.scheduler) must be provided to delay each retry.
    * You could provide a function to generate the next delay duration after first attempt,
-   * this function should never return `null`, otherwise an [[java.lang.IllegalArgumentException]] will be through.
+   * this function should never return `null`, otherwise a [[java.lang.IllegalArgumentException]] will be through.
    *
    * If attempts are exhausted the returned future is simply the result of invoking attempt.
    * Note that the attempt function will be invoked on the given execution context for subsequent

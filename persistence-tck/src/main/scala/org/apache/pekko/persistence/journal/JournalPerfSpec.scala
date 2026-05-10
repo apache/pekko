@@ -119,7 +119,7 @@ object JournalPerfSpec {
 }
 
 /**
- * This spec measures execution times of the basic operations that an [[pekko.persistence.PersistentActor]] provides,
+ * This spec measures execution times of the basic operations that a [[pekko.persistence.PersistentActor]] provides,
  * using the provided Journal (plugin).
  *
  * It is *NOT* meant to be a comprehensive benchmark, but rather aims to help plugin developers to easily determine

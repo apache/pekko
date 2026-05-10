@@ -43,7 +43,7 @@ private[pekko] object ActorContextAdapter {
 }
 
 /**
- * INTERNAL API. Wrapping an [[pekko.actor.ActorContext]] as an [[TypedActorContext]].
+ * INTERNAL API. Wrapping a [[pekko.actor.ActorContext]] as a [[TypedActorContext]].
  */
 @InternalApi private[pekko] final class ActorContextAdapter[T](adapter: ActorAdapter[T])
     extends ActorContextImpl[T] {

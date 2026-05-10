@@ -38,7 +38,7 @@ class EventStream(sys: ActorSystem, private val debug: Boolean) extends LoggingB
   type Event = Any
   type Classifier = Class[_]
 
-  /** Either the list of subscribed actors, or a ref to an [[pekko.event.EventStreamUnsubscriber]] */
+  /** Either the list of subscribed actors, or a ref to a [[pekko.event.EventStreamUnsubscriber]] */
   private val initiallySubscribedOrUnsubscriber = new AtomicReference[Either[Set[ActorRef], ActorRef]](Left(Set.empty))
 
   protected implicit val subclassification: Subclassification[Classifier] = new Subclassification[Class[_]] {

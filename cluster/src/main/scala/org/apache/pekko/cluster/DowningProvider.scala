@@ -43,7 +43,7 @@ private[cluster] object DowningProvider {
 
 /**
  * API for plugins that will handle downing of cluster nodes. Concrete plugins must subclass and
- * have a public one argument constructor accepting an [[pekko.actor.ActorSystem]].
+ * have a public one argument constructor accepting a [[pekko.actor.ActorSystem]].
  *
  * A custom `DowningProvider` can be configured with `pekko.cluster.downing-provider-class`
  *

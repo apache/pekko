@@ -696,7 +696,7 @@ object Sink {
     actorRefWithAck(ref, _ => identity, _ => onInitMessage, None, onCompleteMessage, onFailureMessage)
 
   /**
-   * Creates a `Sink` that is materialized as an [[pekko.stream.scaladsl.SinkQueueWithCancel]].
+   * Creates a `Sink` that is materialized as a [[pekko.stream.scaladsl.SinkQueueWithCancel]].
    * [[pekko.stream.scaladsl.SinkQueueWithCancel.pull]] method is pulling element from the stream and returns ``Future[Option[T]``.
    * `Future` completes when element is available.
    *
@@ -717,7 +717,7 @@ object Sink {
     Sink.fromGraph(new QueueSink(maxConcurrentPulls))
 
   /**
-   * Creates a `Sink` that is materialized as an [[pekko.stream.scaladsl.SinkQueueWithCancel]].
+   * Creates a `Sink` that is materialized as a [[pekko.stream.scaladsl.SinkQueueWithCancel]].
    * [[pekko.stream.scaladsl.SinkQueueWithCancel.pull]] method is pulling element from the stream and returns ``Future[Option[T]]``.
    * `Future` completes when element is available.
    *

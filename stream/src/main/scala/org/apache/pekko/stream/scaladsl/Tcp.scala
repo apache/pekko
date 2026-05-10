@@ -194,7 +194,7 @@ final class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
   }
 
   /**
-   * Creates an [[Tcp.OutgoingConnection]] instance representing a prospective TCP client connection to the given endpoint.
+   * Creates a [[Tcp.OutgoingConnection]] instance representing a prospective TCP client connection to the given endpoint.
    *
    * Note that the ByteString chunk boundaries are not retained across the network,
    * to achieve application level chunks you have to introduce explicit framing in your streams,
@@ -241,7 +241,7 @@ final class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
   }
 
   /**
-   * Creates an [[Tcp.OutgoingConnection]] without specifying options.
+   * Creates a [[Tcp.OutgoingConnection]] without specifying options.
    * It represents a prospective TCP client connection to the given endpoint.
    *
    * Note that the ByteString chunk boundaries are not retained across the network,
@@ -252,7 +252,7 @@ final class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
     outgoingConnection(InetSocketAddress.createUnresolved(host, port))
 
   /**
-   * Creates an [[Tcp.OutgoingConnection]] with TLS.
+   * Creates a [[Tcp.OutgoingConnection]] with TLS.
    * The returned flow represents a TCP client connection to the given endpoint where all bytes in and
    * out go through TLS.
    *
@@ -275,7 +275,7 @@ final class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
       closing = IgnoreComplete)
 
   /**
-   * Creates an [[Tcp.OutgoingConnection]] with TLS.
+   * Creates a [[Tcp.OutgoingConnection]] with TLS.
    * The returned flow represents a TCP client connection to the given endpoint where all bytes in and
    * out go through TLS.
    *

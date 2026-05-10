@@ -857,7 +857,7 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
     onTermination(stopBuilder.build().asInstanceOf[PartialFunction[StopEvent, Unit]])
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches on an event and data type and a predicate.
    *
@@ -875,7 +875,7 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
     new FSMStateFunctionBuilder[S, D, E]().event(eventType, dataType, predicate, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches on an event and data type.
    *
@@ -891,7 +891,7 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
     new FSMStateFunctionBuilder[S, D, E]().event(eventType, dataType, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches if the event type and predicate matches.
    *
@@ -907,7 +907,7 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
     new FSMStateFunctionBuilder[S, D, E]().event(eventType, predicate, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches if the event type matches.
    *
@@ -919,7 +919,7 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
     new FSMStateFunctionBuilder[S, D, E]().event(eventType, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches if the predicate matches.
    *
@@ -933,7 +933,7 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
     new FSMStateFunctionBuilder[S, D, E]().event(predicate, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches on the data type and if any of the event types
    * in the list match or any of the event instances in the list compares equal.
@@ -950,7 +950,7 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
     new FSMStateFunctionBuilder[S, D, E]().event(eventMatches, dataType, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches if any of the event types in the list match or any
    * of the event instances in the list compares equal.
@@ -964,7 +964,7 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
     new FSMStateFunctionBuilder[S, D, E]().event(eventMatches, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches on the data type and if the event compares equal.
    *
@@ -980,7 +980,7 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
     new FSMStateFunctionBuilder[S, D, E]().eventEquals(event, dataType, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches if the event compares equal.
    *
@@ -992,7 +992,7 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
     new FSMStateFunctionBuilder[S, D, E]().eventEquals(event, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStateFunctionBuilder]] with the first case statement set.
    *
    * A case statement that matches on any type of event.
    *
@@ -1003,7 +1003,7 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
     new FSMStateFunctionBuilder[S, D, E]().anyEvent(apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMTransitionHandlerBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMTransitionHandlerBuilder]] with the first case statement set.
    *
    * A case statement that matches on a from state and a to state.
    *
@@ -1016,7 +1016,7 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
     new FSMTransitionHandlerBuilder[S]().state(fromState, toState, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMTransitionHandlerBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMTransitionHandlerBuilder]] with the first case statement set.
    *
    * A case statement that matches on a from state and a to state.
    *
@@ -1029,9 +1029,9 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
     new FSMTransitionHandlerBuilder[S]().state(fromState, toState, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStopBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStopBuilder]] with the first case statement set.
    *
-   * A case statement that matches on an [[PersistentFSM.Reason]].
+   * A case statement that matches on a [[PersistentFSM.Reason]].
    *
    * @param reason  the reason for the termination
    * @param apply  an action to apply to the event and state data if there is a match
@@ -1041,7 +1041,7 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
     new FSMStopBuilder[S, D]().stop(reason, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStopBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStopBuilder]] with the first case statement set.
    *
    * A case statement that matches on a reason type.
    *
@@ -1053,7 +1053,7 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
     new FSMStopBuilder[S, D]().stop(reasonType, apply)
 
   /**
-   * Create an [[pekko.japi.pf.FSMStopBuilder]] with the first case statement set.
+   * Create a [[pekko.japi.pf.FSMStopBuilder]] with the first case statement set.
    *
    * A case statement that matches on a reason type and a predicate.
    *

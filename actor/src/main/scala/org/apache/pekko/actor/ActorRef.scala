@@ -46,7 +46,7 @@ object ActorRef {
 /**
  * Immutable and serializable handle to an actor, which may or may not reside
  * on the local host or inside the same [[pekko.actor.ActorSystem]]. An ActorRef
- * can be obtained from an [[pekko.actor.ActorRefFactory]], an interface which
+ * can be obtained from a [[pekko.actor.ActorRefFactory]], an interface which
  * is implemented by ActorSystem and [[pekko.actor.ActorContext]]. This means
  * actors can be created top-level in the ActorSystem or as children of an
  * existing actor, but only from within that actor.

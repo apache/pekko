@@ -33,7 +33,7 @@ import pekko.io.Udp._
  * To bind and listen to a local address, a [[pekko.io.Udp..Bind]] command must be sent to this actor. If the binding
  * was successful, the sender of the [[pekko.io.Udp.Bind]] will be notified with a [[pekko.io.Udp.Bound]]
  * message. The sender of the [[pekko.io.Udp.Bound]] message is the Listener actor (an internal actor responsible for
- * listening to server events). To unbind the port an [[pekko.io.Tcp.Unbind]] message must be sent to the Listener actor.
+ * listening to server events). To unbind the port a [[pekko.io.Tcp.Unbind]] message must be sent to the Listener actor.
  *
  * If the bind request is rejected because the Udp system is not able to register more channels (see the nr-of-selectors
  * and max-channels configuration options in the pekko.io.udp section of the configuration) the sender will be notified

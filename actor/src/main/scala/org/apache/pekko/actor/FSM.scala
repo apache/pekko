@@ -55,7 +55,7 @@ object FSM {
   final case class Transition[S](fsmRef: ActorRef, from: S, to: S)
 
   /**
-   * Send this to an [[pekko.actor.FSM]] to request first the [[FSM.CurrentState]]
+   * Send this to a [[pekko.actor.FSM]] to request first the [[FSM.CurrentState]]
    * and then a series of [[FSM.Transition]] updates. Cancel the subscription
    * using [[FSM.UnsubscribeTransitionCallBack]].
    */

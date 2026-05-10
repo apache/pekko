@@ -53,7 +53,7 @@ trait Routee {
 }
 
 /**
- * [[Routee]] that sends the messages to an [[pekko.actor.ActorRef]].
+ * [[Routee]] that sends the messages to a [[pekko.actor.ActorRef]].
  */
 final case class ActorRefRoutee(ref: ActorRef) extends Routee {
   override def send(message: Any, sender: ActorRef): Unit =
@@ -61,7 +61,7 @@ final case class ActorRefRoutee(ref: ActorRef) extends Routee {
 }
 
 /**
- * [[Routee]] that sends the messages to an [[pekko.actor.ActorSelection]].
+ * [[Routee]] that sends the messages to a [[pekko.actor.ActorSelection]].
  */
 final case class ActorSelectionRoutee(selection: ActorSelection) extends Routee {
   override def send(message: Any, sender: ActorRef): Unit =

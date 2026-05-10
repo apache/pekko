@@ -710,7 +710,7 @@ object Source {
     fromGraph(new SubscriberSource[T](DefaultAttributes.subscriberSource, shape("SubscriberSource")))
 
   /**
-   * Creates a `Source` that is materialized as an [[pekko.actor.ActorRef]].
+   * Creates a `Source` that is materialized as a [[pekko.actor.ActorRef]].
    * Messages sent to this actor will be emitted to the stream if there is demand from downstream,
    * otherwise they will be buffered until request for demand is received.
    *
@@ -769,7 +769,7 @@ object Source {
   }
 
   /**
-   * Creates a `Source` that is materialized as an [[pekko.actor.ActorRef]].
+   * Creates a `Source` that is materialized as a [[pekko.actor.ActorRef]].
    * Messages sent to this actor will be emitted to the stream if there is demand from downstream,
    * and a new message will only be accepted after the previous messages has been consumed and acknowledged back.
    * The stream will complete with failure if a message is sent before the acknowledgement has been replied back.
@@ -900,7 +900,7 @@ object Source {
   }
 
   /**
-   * Creates a `Source` that is materialized as an [[pekko.stream.BoundedSourceQueue]].
+   * Creates a `Source` that is materialized as a [[pekko.stream.BoundedSourceQueue]].
    * You can push elements to the queue and they will be emitted to the stream if there is demand from downstream,
    * otherwise they will be buffered until request for demand is received. The buffer size is passed in as a parameter.
    * Elements in the buffer will be discarded if downstream is terminated.
@@ -970,7 +970,7 @@ object Source {
     }).withAttributes(DefaultAttributes.create))
 
   /**
-   * Creates a `Source` that is materialized as an [[pekko.stream.scaladsl.SourceQueueWithComplete]].
+   * Creates a `Source` that is materialized as a [[pekko.stream.scaladsl.SourceQueueWithComplete]].
    * You can push elements to the queue and they will be emitted to the stream if there is demand from downstream,
    * otherwise they will be buffered until request for demand is received. Elements in the buffer will be discarded
    * if downstream is terminated.
@@ -1006,7 +1006,7 @@ object Source {
     queue(bufferSize, overflowStrategy, maxConcurrentOffers = 1)
 
   /**
-   * Creates a `Source` that is materialized as an [[pekko.stream.scaladsl.SourceQueueWithComplete]].
+   * Creates a `Source` that is materialized as a [[pekko.stream.scaladsl.SourceQueueWithComplete]].
    * You can push elements to the queue and they will be emitted to the stream if there is demand from downstream,
    * otherwise they will be buffered until request for demand is received. Elements in the buffer will be discarded
    * if downstream is terminated.

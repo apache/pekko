@@ -354,7 +354,7 @@ abstract class UntypedAbstractActor extends AbstractActor {
    * Recommended convention is to call this method if the message
    * isn't handled in [[#onReceive]] (e.g. unknown message type).
    * By default it fails with either a [[pekko.actor.DeathPactException]] (in
-   * case of an unhandled [[pekko.actor.Terminated]] message) or publishes an [[pekko.actor.UnhandledMessage]]
+   * case of an unhandled [[pekko.actor.Terminated]] message) or publishes a [[pekko.actor.UnhandledMessage]]
    * to the actor's system's [[pekko.event.EventStream]].
    */
   override def unhandled(message: Any): Unit = super.unhandled(message)

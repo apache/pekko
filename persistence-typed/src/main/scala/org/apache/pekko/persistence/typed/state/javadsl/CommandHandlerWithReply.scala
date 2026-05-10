@@ -340,7 +340,7 @@ final class CommandHandlerWithReplyBuilderByState[Command, S <: State, State] @I
    * Use this to declare a command handler that will match any command. This is particular useful when encoding
    * a finite state machine in which the final state is not supposed to handle any new command.
    *
-   * Use this when you just need to return an [[ReplyEffect]] without using any data from the state.
+   * Use this when you just need to return a [[ReplyEffect]] without using any data from the state.
    *
    * Note: command handlers are selected in the order they are added. Once a matching is found, it's selected for handling the command
    * and no further lookup is done. Therefore you must make sure that their matching conditions don't overlap,
@@ -365,7 +365,7 @@ final class CommandHandlerWithReplyBuilderByState[Command, S <: State, State] @I
    * Use this to declare a command handler that will match any command. This is particular useful when encoding
    * a finite state machine in which the final state is not supposed to handle any new command.
    *
-   * Use this when you just need to return an [[ReplyEffect]] without using any data from the command or from the state.
+   * Use this when you just need to return a [[ReplyEffect]] without using any data from the command or from the state.
    *
    * Note: command handlers are selected in the order they are added. Once a matching is found, it's selected for handling the command
    * and no further lookup is done. Therefore you must make sure that their matching conditions don't overlap,

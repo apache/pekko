@@ -19,7 +19,7 @@ import pekko.event.NoLogging
 import pekko.stream.MaterializerLoggingProvider
 
 /**
- * Simple way to obtain a [[pekko.event.LoggingAdapter]] when used together with an [[pekko.stream.Materializer]].
+ * Simple way to obtain a [[pekko.event.LoggingAdapter]] when used together with a [[pekko.stream.Materializer]].
  * If used with a different materializer [[pekko.event.NoLogging]] will be returned.
  *
  * Make sure to only access `log` from GraphStage callbacks (such as `pull`, `push` or the async-callback).

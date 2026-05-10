@@ -101,7 +101,7 @@ abstract class TestProbe[M] extends RecipientRef[M] { this: InternalRecipientRef
 
   /**
    * Obtain time remaining for execution of the innermost enclosing `within`
-   * block or throw an [[java.lang.AssertionError]] if no `within` block surrounds this
+   * block or throw a [[java.lang.AssertionError]] if no `within` block surrounds this
    * call.
    */
   def getRemaining: Duration
@@ -191,7 +191,7 @@ abstract class TestProbe[M] extends RecipientRef[M] { this: InternalRecipientRef
 
   /**
    * Receive one message of type `M`. Wait time is bounded by the `max` duration,
-   * with an [[java.lang.AssertionError]] raised in case of timeout.
+   * with a [[java.lang.AssertionError]] raised in case of timeout.
    */
   def receiveMessage(max: Duration): M
 
@@ -236,7 +236,7 @@ abstract class TestProbe[M] extends RecipientRef[M] { this: InternalRecipientRef
 
   /**
    * Expect the given actor to be stopped or stop within the given timeout or
-   * throw an [[java.lang.AssertionError]].
+   * throw a [[java.lang.AssertionError]].
    *
    * Note that the timeout is scaled using the configuration entry "pekko.actor.testkit.typed.timefactor".
    */

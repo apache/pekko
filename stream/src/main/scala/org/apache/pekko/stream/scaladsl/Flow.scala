@@ -1269,7 +1269,7 @@ trait FlowOps[+Out, +Mat] {
    * as they are illegal as stream elements - according to the Reactive Streams specification.
    *
    * This operator doesn't handle upstream's completion signal since the state kept in the closure can be lost.
-   * Use [[FlowOps.statefulMap]], or return an [[StatefulMapConcatAccumulator]] instead.
+   * Use [[FlowOps.statefulMap]], or return a [[StatefulMapConcatAccumulator]] instead.
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *
@@ -1453,7 +1453,7 @@ trait FlowOps[+Out, +Mat] {
    * Similar to the plain ask pattern, the target actor is allowed to reply with `org.apache.pekko.util.Status`.
    * An `org.apache.pekko.util.Status#Failure` will cause the operator to fail with the cause carried in the `Failure` message.
    *
-   * The operator fails with an [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated.
+   * The operator fails with a [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated.
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *
@@ -1487,8 +1487,8 @@ trait FlowOps[+Out, +Mat] {
    * Please note that the elements emitted by this operator are in-order with regards to the asks being issued
    * (i.e. same behavior as mapAsync).
    *
-   * The operator fails with an [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated,
-   * or with an [[java.util.concurrent.TimeoutException]] in case the ask exceeds the timeout passed in.
+   * The operator fails with a [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated,
+   * or with a [[java.util.concurrent.TimeoutException]] in case the ask exceeds the timeout passed in.
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *
@@ -1527,7 +1527,7 @@ trait FlowOps[+Out, +Mat] {
   }
 
   /**
-   * The operator fails with an [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated.
+   * The operator fails with a [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated.
    *
    * '''Emits when''' upstream emits
    *

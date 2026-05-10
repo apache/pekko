@@ -50,7 +50,7 @@ object Patterns {
    * holding the eventual reply message; this means that the target actor
    * needs to send the result to the `sender` reference provided.
    *
-   * The Future will be completed with an [[pekko.pattern.AskTimeoutException]] after the
+   * The Future will be completed with a [[pekko.pattern.AskTimeoutException]] after the
    * given timeout has expired; this is independent from any timeout applied
    * while awaiting a result for this future (i.e. in
    * `Await.result(..., timeout)`). A typical reason for `AskTimeoutException` is that the
@@ -84,7 +84,7 @@ object Patterns {
    * holding the eventual reply message; this means that the target actor
    * needs to send the result to the `sender` reference provided.
    *
-   * The CompletionStage will be completed with an [[pekko.pattern.AskTimeoutException]] after the
+   * The CompletionStage will be completed with a [[pekko.pattern.AskTimeoutException]] after the
    * given timeout has expired; this is independent from any timeout applied
    * while awaiting a result for this future (i.e. in
    * `Await.result(..., timeout)`). A typical reason for `AskTimeoutException` is that the
@@ -158,7 +158,7 @@ object Patterns {
    * holding the eventual reply message; this means that the target actor
    * needs to send the result to the `sender` reference provided.
    *
-   * The Future will be completed with an [[pekko.pattern.AskTimeoutException]] after the
+   * The Future will be completed with a [[pekko.pattern.AskTimeoutException]] after the
    * given timeout has expired; this is independent from any timeout applied
    * while awaiting a result for this future (i.e. in
    * `Await.result(..., timeout)`). A typical reason for `AskTimeoutException` is that the
@@ -209,7 +209,7 @@ object Patterns {
    * holding the eventual reply message; this means that the target [[pekko.actor.ActorSelection]]
    * needs to send the result to the `sender` reference provided.
    *
-   * The Future will be completed with an [[pekko.pattern.AskTimeoutException]] after the
+   * The Future will be completed with a [[pekko.pattern.AskTimeoutException]] after the
    * given timeout has expired; this is independent from any timeout applied
    * while awaiting a result for this future (i.e. in
    * `Await.result(..., timeout)`). A typical reason for `AskTimeoutException` is that the
@@ -243,7 +243,7 @@ object Patterns {
    * holding the eventual reply message; this means that the target [[pekko.actor.ActorSelection]]
    * needs to send the result to the `sender` reference provided.
    *
-   * The CompletionStage will be completed with an [[pekko.pattern.AskTimeoutException]] after the
+   * The CompletionStage will be completed with a [[pekko.pattern.AskTimeoutException]] after the
    * given timeout has expired; this is independent from any timeout applied
    * while awaiting a result for this future (i.e. in
    * `Await.result(..., timeout)`). A typical reason for `AskTimeoutException` is that the
@@ -273,7 +273,7 @@ object Patterns {
    * holding the eventual reply message; this means that the target [[pekko.actor.ActorSelection]]
    * needs to send the result to the `sender` reference provided.
    *
-   * The Future will be completed with an [[pekko.pattern.AskTimeoutException]] after the
+   * The Future will be completed with a [[pekko.pattern.AskTimeoutException]] after the
    * given timeout has expired; this is independent from any timeout applied
    * while awaiting a result for this future (i.e. in
    * `Await.result(..., timeout)`). A typical reason for `AskTimeoutException` is that the
@@ -803,7 +803,7 @@ object Patterns {
    * Return an empty [[Optional]] instance for no delay.
    * A scheduler (eg context.system.scheduler) must be provided to delay each retry.
    * You could provide a function to generate the next delay duration after first attempt,
-   * this function should never return `null`, otherwise an [[java.lang.IllegalArgumentException]] will be through.
+   * this function should never return `null`, otherwise a [[java.lang.IllegalArgumentException]] will be through.
    *
    * If attempts are exhausted the returned future is simply the result of invoking attempt.
    * Note that the attempt function will be invoked on the given execution context for subsequent tries and
@@ -833,7 +833,7 @@ object Patterns {
    *
    * A scheduler (eg context.system.scheduler) must be provided to delay each retry.
    * You could provide a function to generate the next delay duration after first attempt,
-   * this function should never return `null`, otherwise an [[java.lang.IllegalArgumentException]] will be through.
+   * this function should never return `null`, otherwise a [[java.lang.IllegalArgumentException]] will be through.
    *
    * If attempts are exhausted the returned future is simply the result of invoking attempt.
    * Note that the attempt function will be invoked on the given execution context for subsequent tries and

@@ -884,7 +884,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * as they are illegal as stream elements - according to the Reactive Streams specification.
    *
    * This operator doesn't handle upstream's completion signal since the state kept in the closure can be lost.
-   * Use [[FlowOps.statefulMap]], or return an [[StatefulMapConcatAccumulator]] instead.
+   * Use [[FlowOps.statefulMap]], or return a [[StatefulMapConcatAccumulator]] instead.
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *
@@ -1051,7 +1051,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * still be in the mailbox, so defaulting to sending the second one a bit earlier than when first ask has replied maintains
    * a slightly healthier throughput.
    *
-   * The operator fails with an [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated.
+   * The operator fails with a [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated.
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *
@@ -1081,7 +1081,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * Please note that the elements emitted by this operator are in-order with regards to the asks being issued
    * (i.e. same behavior as mapAsync).
    *
-   * The operator fails with an [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated.
+   * The operator fails with a [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated.
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *
@@ -1099,7 +1099,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
     new Flow(delegate.ask[S](parallelism)(ref)(timeout, ClassTag(mapTo)))
 
   /**
-   * The operator fails with an [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated.
+   * The operator fails with a [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated.
    *
    * '''Emits when''' upstream emits
    *
