@@ -2,10 +2,24 @@
 
 Apache Pekko 2.0.x releases support Java 17 and above.
 
+## 2.0.0-M2
+
+This is milestone release and is aimed at testing this new major version
+by early adopters. This is experimental. This release should not be used in production.
+
+See the [GitHub Milestone for 2.0.0-M2](https://github.com/apache/pekko/milestone/19?closed=1) for a fuller list of changes.
+
+### Main changes
+
+* Added many Akka changes that have recently become Apache Licensed (up to Akka 2.8.1).
+* Some more deprecated code has been removed but the changes are significantly smaller in this area than in 2.0.0-M1.
+
 ## 2.0.0-M1
 
 This is milestone release and is aimed at testing this new major version
 by early adopters. This is experimental. This release should not be used in production.
+
+See the [GitHub Milestone for 2.0.0-M1](https://github.com/apache/pekko/milestone/5?closed=1) for a fuller list of changes.
 
 ### Main changes
 
