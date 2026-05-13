@@ -28,7 +28,7 @@ object Dependencies {
 
   val junitVersion = "4.13.2"
   val junit6Version = "6.0.3"
-  val slf4jVersion = "2.0.17"
+  val slf4jVersion = "2.0.18"
   // also update agrona version when updating aeron:
   val aeronVersion = "1.50.4"
   // Use the major+minor agrona versions matching aeron at
