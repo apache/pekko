@@ -50,7 +50,7 @@ trait DurableStateUpdateStore[A] extends DurableStateStore[A] {
    * Delete the object with the given `persistenceId` and `revision`.
    *
    * <p>
-   * Since Pekko v1.1, if the revision does not match the expected revision
+   * If the revision does not match the expected revision
    * of the object, the delete operation will fail. The returned Future
    * will complete with a failed result wrapping the exception.
    * </p>
@@ -58,7 +58,7 @@ trait DurableStateUpdateStore[A] extends DurableStateStore[A] {
    * @param persistenceId the persistenceId of the object to delete
    * @param revision the expected next revision for the `persistenceId` — this must be one more than
    *                 the current (existing) revision of the object
-   * @return a Future that completes when the object has been deleted
+   * @return a Future that completes when the object has been deleted or fails if the revision does not match the expected revision of the object
    */
   def deleteObject(persistenceId: String, revision: Long): Future[Done]
 }
