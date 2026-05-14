@@ -41,7 +41,6 @@ trait DurableStateUpdateStore[A] extends DurableStateStore[A] {
    * function ignores whether the object is deleted or not.
    *
    * @param persistenceId the persistenceId of the object to delete
-   * @param revision the revision of the object to delete
    * @return a Future that completes when the object has been deleted
    */
   @deprecated(message = "Use the deleteObject overload with revision instead.", since = "Akka 2.6.20")
