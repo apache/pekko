@@ -209,3 +209,4 @@ Fixes #1234, Refs #1234, or None - <short context>
 - Never omit `Tests`.
 - Never omit `References`.
 - Use `Refs #...`, `Fixes #...`, or `None - <short context>`.
+- Do not add `Co-authored-by` or AI-assistant trailers to commits or PR descriptions.
