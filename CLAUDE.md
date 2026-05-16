@@ -13,3 +13,4 @@ Before opening or updating a PR, verify:
 - Commit messages follow the `AGENTS.md` format.
 - PR bodies follow the `AGENTS.md` format.
 - `Tests` and `References` are present.
+- No `Co-authored-by` or AI-assistant trailers are added to commits or PR descriptions.
