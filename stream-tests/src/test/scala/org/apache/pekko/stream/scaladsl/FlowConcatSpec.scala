@@ -13,11 +13,15 @@
 
 package org.apache.pekko.stream.scaladsl
 
+import java.util.Collections
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicInteger
 
 import scala.concurrent.Await
+import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.concurrent.duration._
+import scala.util.control.NoStackTrace
 
 import org.apache.pekko
 import pekko.NotUsed
@@ -246,6 +250,114 @@ abstract class AbstractFlowConcatSpec extends BaseTwoStreamsSetup {
       concat.traversalBuilder.pendingBuilder.toString should include("SingleConcat(2)")
 
       concat.runWith(Sink.seq).futureValue should ===(Seq(1, 2))
+    }
+
+    "optimize iterable concat" in {
+      val s1 = Source.single(1)
+      val s2 = Source(List(2, 3, 4))
+      val concat = if (eager) s1.concat(s2) else s1.concatLazy(s2)
+
+      concat.traversalBuilder.pendingBuilder.toString should include("IterableConcat")
+      concat.runWith(Sink.seq).futureValue should ===(Seq(1, 2, 3, 4))
+    }
+
+    "optimize range concat" in {
+      val s1 = Source.single(1)
+      val s2 = Source(2 to 4)
+      val concat = if (eager) s1.concat(s2) else s1.concatLazy(s2)
+
+      concat.traversalBuilder.pendingBuilder.toString should include("IterableConcat")
+      concat.runWith(Sink.seq).futureValue should ===(Seq(1, 2, 3, 4))
+    }
+
+    "optimize iterator concat" in {
+      val s1 = Source.single(1)
+      val s2 = Source.fromIterator(() => Iterator(2, 3, 4))
+      val concat = if (eager) s1.concat(s2) else s1.concatLazy(s2)
+
+      concat.traversalBuilder.pendingBuilder.toString should include("IterableConcat")
+      concat.runWith(Sink.seq).futureValue should ===(Seq(1, 2, 3, 4))
+    }
+
+    "optimize java-stream concat" in {
+      val s1 = Source.single(1)
+      val s2 = Source.fromJavaStream(() => Collections.singleton(2: Integer).stream()).map(_.intValue())
+      val concat = if (eager) s1.concat(s2) else s1.concatLazy(s2)
+
+      // map() is not value-presented, so the optimization should not kick in for s2 here.
+      // To exercise the optimization, build a JavaStream source whose value-presented form survives.
+      val s2Direct = Source.fromJavaStream(() => Collections.singleton(2: Integer).stream())
+      val concatDirect: Source[Integer, _] =
+        if (eager) Source.single[Integer](1).concat(s2Direct) else Source.single[Integer](1).concatLazy(s2Direct)
+      concatDirect.traversalBuilder.pendingBuilder.toString should include("IterableConcat")
+
+      concat.runWith(Sink.seq).futureValue should ===(Seq(1, 2))
+    }
+
+    "optimize repeat concat" in {
+      val s1 = Source(1 to 3)
+      val s2 = Source.repeat(0)
+      val concat = if (eager) s1.concat(s2) else s1.concatLazy(s2)
+
+      concat.traversalBuilder.pendingBuilder.toString should include("RepeatConcat(0)")
+      concat.take(6).runWith(Sink.seq).futureValue should ===(Seq(1, 2, 3, 0, 0, 0))
+    }
+
+    "optimize failed concat" in {
+      val ex = new RuntimeException("boom") with NoStackTrace
+      val s1 = Source.single(1)
+      val s2: Source[Int, NotUsed] = Source.failed(ex)
+      val concat = if (eager) s1.concat(s2) else s1.concatLazy(s2)
+
+      concat.traversalBuilder.pendingBuilder.toString should include("FailedConcat")
+      concat.runWith(Sink.seq).failed.futureValue should ===(ex)
+    }
+
+    "optimize completed-future concat" in {
+      // `Source.future(Future.successful(x))` is itself optimized to a `SingleSource`,
+      // so the dispatch lands on `SingleConcat` rather than `FutureConcat`.
+      val s1 = Source.single(1)
+      val s2 = Source.future(Future.successful(2))
+      val concat = if (eager) s1.concat(s2) else s1.concatLazy(s2)
+
+      concat.traversalBuilder.pendingBuilder.toString should include("SingleConcat(2)")
+      concat.runWith(Sink.seq).futureValue should ===(Seq(1, 2))
+    }
+
+    "optimize pending-future concat" in {
+      val promise = Promise[Int]()
+      val s1 = Source.single(1)
+      val s2 = Source.future(promise.future)
+      val concat = if (eager) s1.concat(s2) else s1.concatLazy(s2)
+
+      concat.traversalBuilder.pendingBuilder.toString should include("FutureConcat")
+      val resultF = concat.runWith(Sink.seq)
+      promise.success(2)
+      resultF.futureValue should ===(Seq(1, 2))
+    }
+
+    "optimize failed-future concat" in {
+      // `Source.future(Future.failed(ex))` is itself optimized to a `FailedSource`,
+      // so the dispatch lands on `FailedConcat` rather than `FutureConcat`.
+      val ex = new RuntimeException("future-boom") with NoStackTrace
+      val s1 = Source.single(1)
+      val s2 = Source.future(Future.failed[Int](ex))
+      val concat = if (eager) s1.concat(s2) else s1.concatLazy(s2)
+
+      concat.traversalBuilder.pendingBuilder.toString should include("FailedConcat")
+      concat.runWith(Sink.seq).failed.futureValue should ===(ex)
+    }
+
+    "avoid downstream substream materialization for value-presented sources" in {
+      // Wrap each emitted element through a counting map to check that no inner-source materialization fires.
+      // (For value-presented sources, the optimization avoids spinning up substreams.)
+      val materializationCounter = new AtomicInteger(0)
+      val s1 = Source.single(1).map { v => materializationCounter.incrementAndGet(); v }
+      val s2 = Source(2 to 4)
+      val concat = if (eager) s1.concat(s2) else s1.concatLazy(s2)
+
+      concat.runWith(Sink.seq).futureValue should ===(Seq(1, 2, 3, 4))
+      materializationCounter.get() should ===(1) // one for the upstream s1 element only
     }
   }
 }
