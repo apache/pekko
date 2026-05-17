@@ -32,8 +32,15 @@ import pekko.event.LoggingAdapter
 import pekko.event.MarkerLoggingAdapter
 import pekko.stream._
 import pekko.stream.Attributes.SourceLocation
+import pekko.stream.impl.FailedConcat
+import pekko.stream.impl.FailedSource
+import pekko.stream.impl.FutureConcat
+import pekko.stream.impl.IterableConcat
+import pekko.stream.impl.JavaStreamConcat
+import pekko.stream.impl.JavaStreamSource
 import pekko.stream.impl.LinearTraversalBuilder
 import pekko.stream.impl.ProcessorModule
+import pekko.stream.impl.RepeatConcat
 import pekko.stream.impl.SetupFlowStage
 import pekko.stream.impl.SingleConcat
 import pekko.stream.impl.Stages.DefaultAttributes
@@ -44,6 +51,7 @@ import pekko.stream.impl.TraversalBuilder
 import pekko.stream.impl.fusing
 import pekko.stream.impl.fusing._
 import pekko.stream.impl.fusing.FlattenMerge
+import pekko.stream.impl.fusing.GraphStages.{ FutureSource, RepeatSource, SingleSource }
 import pekko.stream.stage._
 import pekko.util.ConstantFun
 import pekko.util.OptionVal
@@ -3808,11 +3816,47 @@ trait FlowOps[+Out, +Mat] {
     that match {
       case source if TraversalBuilder.isEmptySource(source) => this.asInstanceOf[Repr[U]]
       case other                                            =>
-        TraversalBuilder.getSingleSource(other) match {
-          case OptionVal.Some(singleSource) =>
-            via(new SingleConcat(singleSource.elem.asInstanceOf[U]))
-          case _ => via(concatGraph(other, detached))
-        }
+        // DO NOT CHANGE
+        // WHY: only `concatLazy` (detached = false) takes the inlined fast path.
+        // `concat` (detached = true) relies on `Concat(_, detachedInputs = true)` which
+        // wraps each input port with `Detacher`. Detacher.preStart does an eager
+        // `tryPull(in)`, which (a) pulls the LHS upstream at materialization, (b) pulls
+        // the RHS source eagerly so its first element is produced and buffered before
+        // the LHS finishes, and (c) provides a one-element buffer that decouples
+        // upstream/downstream demand (also breaks deadlocks in cyclic graphs).
+        // Inlining the RHS into a single linear stage drops both eager-pull side-effect
+        // timing and the buffer, so for `detached = true` we keep the substream path.
+        if (!detached) {
+          TraversalBuilder.getValuePresentedSource(other) match {
+            case OptionVal.Some(graph) =>
+              // Attributes attached to the inlined source via `withAttributes` (notably
+              // `SupervisionStrategy`, dispatcher hints, log levels) are carried over to
+              // the optimized stage so the value-presented fast path stays behaviourally
+              // identical to the substream-materializing concatGraph path.
+              val sourceAttrs = other.traversalBuilder.attributes
+              graph match {
+                case single: SingleSource[U] @unchecked =>
+                  via(new SingleConcat(single.elem).addAttributes(sourceAttrs))
+                case iterable: IterableSource[U] @unchecked =>
+                  via(new IterableConcat[U](() => iterable.elements.iterator).addAttributes(sourceAttrs))
+                case iterator: IteratorSource[U] @unchecked =>
+                  via(new IterableConcat[U](iterator.createIterator).addAttributes(sourceAttrs))
+                case range: RangeSource[U] @unchecked =>
+                  via(new IterableConcat[U](() => range.range.iterator.asInstanceOf[Iterator[U]]).addAttributes(
+                    sourceAttrs))
+                case javaStream: JavaStreamSource[U, _] @unchecked =>
+                  via(new JavaStreamConcat[U](javaStream.open).addAttributes(sourceAttrs))
+                case repeat: RepeatSource[U] @unchecked =>
+                  via(new RepeatConcat[U](repeat.elem).addAttributes(sourceAttrs))
+                case futureSource: FutureSource[U] @unchecked =>
+                  via(new FutureConcat[U](futureSource.future).addAttributes(sourceAttrs))
+                case failed: FailedSource[U] @unchecked =>
+                  via(new FailedConcat[U](failed.failure).addAttributes(sourceAttrs))
+                case _ => via(concatGraph(other, detached))
+              }
+            case _ => via(concatGraph(other, detached))
+          }
+        } else via(concatGraph(other, detached))
     }
 
   private def internalConcatAll[U >: Out](those: Array[Graph[SourceShape[U], _]], detached: Boolean): Repr[U] =
