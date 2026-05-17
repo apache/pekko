@@ -18,8 +18,10 @@ import java.util.concurrent.atomic.AtomicReference
 
 import scala.annotation.{ nowarn, tailrec }
 import scala.collection.immutable
+import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
 import scala.jdk.CollectionConverters._
+import scala.util.{ Failure, Success, Try }
 import scala.util.control.NonFatal
 
 import org.apache.pekko
@@ -30,16 +32,97 @@ import pekko.stream.ActorAttributes.StreamSubscriptionTimeout
 import pekko.stream.ActorAttributes.SupervisionStrategy
 import pekko.stream.Attributes.SourceLocation
 import pekko.stream.Supervision.Decider
-import pekko.stream.impl.{ Buffer => BufferImpl }
+import pekko.stream.impl.{ Buffer => BufferImpl, FailedSource, JavaStreamSource }
 import pekko.stream.impl.ActorSubscriberMessage
 import pekko.stream.impl.ActorSubscriberMessage.OnError
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.SubscriptionTimeoutException
 import pekko.stream.impl.TraversalBuilder
-import pekko.stream.impl.fusing.GraphStages.SingleSource
+import pekko.stream.impl.fusing.GraphStages.{ FutureSource, RepeatSource, SingleSource }
 import pekko.stream.scaladsl._
 import pekko.stream.stage._
 import pekko.util.OptionVal
+
+/**
+ * INTERNAL API
+ */
+@InternalApi
+private[pekko] object FlattenMerge {
+  // Lightweight in-memory representation of a value-presented Source so the
+  // breadth slot can be occupied without paying for substream materialization.
+  private sealed abstract class InflightSource[T] {
+    def hasNext: Boolean
+    def next(): T
+    def isClosed: Boolean
+    def cancel(cause: Throwable): Unit = ()
+    def hasFailed: Boolean = failure.isDefined
+    def failure: Option[Throwable] = None
+  }
+
+  private final class InflightIteratorSource[T](iterator: Iterator[T]) extends InflightSource[T] {
+    override def hasNext: Boolean = iterator.hasNext
+    override def next(): T = iterator.next()
+    override def isClosed: Boolean = !hasNext
+  }
+
+  private final class InflightRangeSource[T](range: immutable.Range) extends InflightSource[T] {
+    private val isEmptyRange = range.isEmpty
+    private val rangeLast = if (isEmptyRange) 0 else range.last
+    private val rangeStep = range.step
+    private var nextElement = range.start
+    private var closed = isEmptyRange
+
+    override def hasNext: Boolean = !closed
+    override def next(): T =
+      if (closed) throw new NoSuchElementException("next called after completion")
+      else {
+        val current = nextElement
+        if (current == rangeLast) closed = true
+        else nextElement = current + rangeStep
+        current.asInstanceOf[T]
+      }
+    override def isClosed: Boolean = closed
+  }
+
+  private final class InflightRepeatSource[T](elem: T) extends InflightSource[T] {
+    override def hasNext: Boolean = true
+    override def next(): T = elem
+    override def isClosed: Boolean = false
+  }
+
+  private final class InflightCompletedFutureSource[T](result: Try[T]) extends InflightSource[T] {
+    private var _hasNext = result.isSuccess
+    override def hasNext: Boolean = _hasNext
+    override def next(): T =
+      if (_hasNext) {
+        _hasNext = false
+        result.get
+      } else throw new NoSuchElementException("next called after completion")
+    override def hasFailed: Boolean = result.isFailure
+    override def failure: Option[Throwable] = result.failed.toOption
+    override def isClosed: Boolean = !_hasNext
+  }
+
+  private final class InflightPendingFutureSource[T](cb: InflightSource[T] => Unit)
+      extends InflightSource[T]
+      with (Try[T] => Unit) {
+    private var result: Try[T] = MapAsync.NotYetThere
+    private var consumed = false
+    override def apply(result: Try[T]): Unit = {
+      this.result = result
+      cb(this)
+    }
+    override def hasNext: Boolean = (result ne MapAsync.NotYetThere) && !consumed && result.isSuccess
+    override def next(): T =
+      if (!consumed) {
+        consumed = true
+        result.get
+      } else throw new NoSuchElementException("next called after completion")
+    override def hasFailed: Boolean = (result ne MapAsync.NotYetThere) && result.isFailure
+    override def failure: Option[Throwable] = if (result eq MapAsync.NotYetThere) None else result.failed.toOption
+    override def isClosed: Boolean = consumed || hasFailed
+  }
+}
 
 /**
  * INTERNAL API
@@ -55,15 +138,35 @@ import pekko.util.OptionVal
 
   override def createLogic(enclosingAttributes: Attributes) =
     new GraphStageLogic(shape) with OutHandler with InHandler {
+      import FlattenMerge._
       var sources = Set.empty[SubSinkInlet[T]]
       var pendingSingleSources = 0
-      def activeSources = sources.size + pendingSingleSources
+      var pendingInflightSources = 0
+      def activeSources = sources.size + pendingSingleSources + pendingInflightSources
 
-      // To be able to optimize for SingleSource without materializing them the queue may hold either
-      // SubSinkInlet[T] or SingleSource
+      // To be able to optimize for value-presented sources without materializing them, the queue may hold
+      // SubSinkInlet[T], SingleSource, or InflightSource[T]
       var queue: BufferImpl[AnyRef] = _
 
       override def preStart(): Unit = queue = BufferImpl(breadth, enclosingAttributes)
+
+      private val invokeCb: InflightSource[T] => Unit =
+        getAsyncCallback[InflightSource[T]](inflightFutureCompleted).invoke
+
+      private def inflightFutureCompleted(source: InflightSource[T]): Unit = {
+        if (source.hasFailed) {
+          failStage(source.failure.get)
+        } else if (source.hasNext) {
+          if (isAvailable(out) && queue.isEmpty) {
+            push(out, source.next())
+            removeSource(source)
+          } else {
+            queue.enqueue(source)
+          }
+        } else {
+          removeSource(source)
+        }
+      }
 
       def pushOut(): Unit = {
         queue.dequeue() match {
@@ -74,6 +177,10 @@ import pekko.util.OptionVal
           case single: SingleSource[T] @unchecked =>
             push(out, single.elem)
             removeSource(single)
+          case inflight: InflightSource[T] @unchecked =>
+            push(out, inflight.next())
+            if (inflight.isClosed) removeSource(inflight)
+            else queue.enqueue(inflight)
           case other =>
             throw new IllegalStateException(s"Unexpected source type in queue: '${other.getClass}'")
         }
@@ -100,34 +207,97 @@ import pekko.util.OptionVal
       setHandlers(in, out, this)
 
       def addSource(source: Graph[SourceShape[T], M]): Unit = {
-        // If it's a SingleSource or wrapped such we can push the element directly instead of materializing it.
-        // Have to use AnyRef because of OptionVal null value.
-        TraversalBuilder.getSingleSource(source.asInstanceOf[Graph[SourceShape[AnyRef], M]]) match {
-          case OptionVal.Some(single) =>
-            if (isAvailable(out) && queue.isEmpty) {
-              push(out, single.elem.asInstanceOf[T])
-            } else {
-              queue.enqueue(single)
-              pendingSingleSources += 1
-            }
-          case _ =>
-            val sinkIn = new SubSinkInlet[T]("FlattenMergeSink")
-            sinkIn.setHandler(new InHandler {
-              override def onPush(): Unit = {
-                if (isAvailable(out)) {
-                  push(out, sinkIn.grab())
-                  sinkIn.pull()
-                } else {
-                  queue.enqueue(sinkIn)
+        // If it's a value-presented source (or wrapped such) we can avoid substream materialization.
+        TraversalBuilder.getValuePresentedSource(source) match {
+          case OptionVal.Some(graph) =>
+            graph match {
+              case single: SingleSource[T] @unchecked       => addSingleSource(single)
+              case futureSource: FutureSource[T] @unchecked =>
+                val future = futureSource.future
+                future.value match {
+                  case Some(elem) => addCompletedFutureElem(elem)
+                  case None       => addPendingFutureElem(future)
                 }
-              }
-              override def onUpstreamFinish(): Unit = if (!sinkIn.isAvailable) removeSource(sinkIn)
-            })
-            sinkIn.pull()
-            sources += sinkIn
-            val graph = Source.fromGraph(source).to(sinkIn.sink)
-            interpreter.subFusingMaterializer.materialize(graph, defaultAttributes = enclosingAttributes)
+              case iterable: IterableSource[T] @unchecked        => addInflightIteratorSource(iterable.elements.iterator)
+              case iterator: IteratorSource[T] @unchecked        => addInflightIteratorSource(iterator.createIterator())
+              case range: RangeSource[T] @unchecked              => addInflightRangeSource(range.range)
+              case repeat: RepeatSource[T] @unchecked            => addInflightRepeatSource(repeat.elem)
+              case javaStream: JavaStreamSource[T, _] @unchecked => addInflightIteratorSource(
+                  javaStream.open().iterator.asScala.asInstanceOf[Iterator[T]])
+              case failed: FailedSource[T] @unchecked                       => addCompletedFutureElem(Failure(failed.failure))
+              case maybeEmpty if TraversalBuilder.isEmptySource(maybeEmpty) => // Empty source is discarded
+              case _                                                        => attachAndMaterializeSource(source)
+            }
+          case _ => attachAndMaterializeSource(source)
         }
+      }
+
+      private def addSingleSource(single: SingleSource[T]): Unit = {
+        if (isAvailable(out) && queue.isEmpty) {
+          push(out, single.elem)
+        } else {
+          queue.enqueue(single)
+          pendingSingleSources += 1
+        }
+      }
+
+      private def addInflightSource(inflight: InflightSource[T]): Unit = {
+        if (isAvailable(out) && queue.isEmpty) {
+          push(out, inflight.next())
+          if (!inflight.isClosed) {
+            queue.enqueue(inflight)
+            pendingInflightSources += 1
+          }
+        } else {
+          queue.enqueue(inflight)
+          pendingInflightSources += 1
+        }
+      }
+
+      private def addInflightIteratorSource(iterator: Iterator[T]): Unit =
+        if (iterator.hasNext) addInflightSource(new InflightIteratorSource[T](iterator))
+
+      private def addInflightRangeSource(range: immutable.Range): Unit =
+        if (range.nonEmpty) addInflightSource(new InflightRangeSource[T](range))
+
+      private def addInflightRepeatSource(elem: T): Unit =
+        addInflightSource(new InflightRepeatSource[T](elem))
+
+      private def addCompletedFutureElem(elem: Try[T]): Unit = elem match {
+        case Success(value) =>
+          if (isAvailable(out) && queue.isEmpty) {
+            push(out, value)
+          } else {
+            queue.enqueue(new InflightCompletedFutureSource[T](elem))
+            pendingInflightSources += 1
+          }
+        case Failure(ex) => failStage(ex)
+      }
+
+      private def addPendingFutureElem(future: Future[T]): Unit = {
+        val inflightSource = new InflightPendingFutureSource[T](invokeCb)
+        future.onComplete(inflightSource)(scala.concurrent.ExecutionContext.parasitic)
+        // Future is not yet ready; occupy a breadth slot until completion
+        pendingInflightSources += 1
+      }
+
+      private def attachAndMaterializeSource(source: Graph[SourceShape[T], M]): Unit = {
+        val sinkIn = new SubSinkInlet[T]("FlattenMergeSink")
+        sinkIn.setHandler(new InHandler {
+          override def onPush(): Unit = {
+            if (isAvailable(out)) {
+              push(out, sinkIn.grab())
+              sinkIn.pull()
+            } else {
+              queue.enqueue(sinkIn)
+            }
+          }
+          override def onUpstreamFinish(): Unit = if (!sinkIn.isAvailable) removeSource(sinkIn)
+        })
+        sinkIn.pull()
+        sources += sinkIn
+        val graph = Source.fromGraph(source).to(sinkIn.sink)
+        interpreter.subFusingMaterializer.materialize(graph, defaultAttributes = enclosingAttributes)
       }
 
       def removeSource(src: AnyRef): Unit = {
@@ -137,6 +307,8 @@ import pekko.util.OptionVal
             sources -= sub
           case _: SingleSource[_] =>
             pendingSingleSources -= 1
+          case _: InflightSource[_] =>
+            pendingInflightSources -= 1
           case other => throw new IllegalArgumentException(s"Unexpected source type: '${other.getClass}'")
         }
         if (pullSuppressed) tryPull(in)
