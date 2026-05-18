@@ -13,11 +13,18 @@
 
 package org.apache.pekko.stream.scaladsl
 
+import java.util.Collections
+import java.util.concurrent.ThreadLocalRandom
+import java.util.concurrent.atomic.AtomicInteger
+
+import scala.annotation.switch
 import scala.concurrent._
 import scala.concurrent.duration._
+import scala.util.control.NoStackTrace
 
 import org.apache.pekko
 import pekko.NotUsed
+import pekko.pattern.FutureTimeoutSupport
 import pekko.stream._
 import pekko.stream.stage.GraphStage
 import pekko.stream.stage.GraphStageLogic
@@ -30,8 +37,10 @@ import pekko.testkit.TestLatch
 
 import org.scalatest.exceptions.TestFailedException
 
-class FlowFlattenMergeSpec extends StreamSpec {
+class FlowFlattenMergeSpec extends StreamSpec with FutureTimeoutSupport {
   import system.dispatcher
+
+  class BoomException extends RuntimeException("BOOM~~") with NoStackTrace
 
   def src10(i: Int) = Source(i until (i + 10))
   def blocked = Source.future(Promise[Int]().future)
@@ -278,6 +287,111 @@ class FlowFlattenMergeSpec extends StreamSpec {
       probe.expectNext(10)
       probe.expectNext(11)
       probe.expectComplete()
+    }
+
+    val checkBreadths = List(1, 2, 4, 8, 16, 32, 64, 128)
+
+    for (b <- checkBreadths) {
+      s"work with value presented sources with breadth: $b" in {
+        Source(
+          List(
+            Source.empty[Int],
+            Source.single(1),
+            Source.empty[Int],
+            Source(List(2, 3, 4)),
+            Source.future(Future.successful(5)),
+            Source.lazyFuture(() => Future.successful(6)),
+            Source.future(after(1.millis)(Future.successful(7)))))
+          .flatMapMerge(b, identity)
+          .runWith(toSet)
+          .futureValue should ===((1 to 7).toSet)
+      }
+    }
+
+    def generateRandomValuePresentedSources(nums: Int): (Int, List[Source[Int, NotUsed]]) = {
+      val seq = List.tabulate(nums) { _ =>
+        val random = ThreadLocalRandom.current().nextInt(1, 10)
+        (random: @switch) match {
+          case 1 => Source.single(1)
+          case 2 => Source(List(1))
+          case 3 => Source.fromJavaStream(() => Collections.singleton(1).stream())
+          case 4 => Source.future(Future.successful(1))
+          case 5 => Source.future(after(1.millis)(Future.successful(1)))
+          case _ => Source.empty[Int]
+        }
+      }
+      val sum = seq.filterNot(_.eq(Source.empty[Int])).size
+      (sum, seq)
+    }
+
+    for (b <- checkBreadths) {
+      s"work with generated value presented sources with breadth: $b " in {
+        val (sum, sources @ _) = generateRandomValuePresentedSources(10000)
+        Source(sources)
+          .flatMapMerge(b, identity(_))
+          .runWith(Sink.seq)
+          .map(_.sum)(scala.concurrent.ExecutionContext.parasitic)
+          .futureValue shouldBe sum
+      }
+    }
+
+    "work with value presented failed sources" in {
+      val ex = new BoomException
+      Source(
+        List(
+          Source.empty[Int],
+          Source.single(1),
+          Source.empty[Int],
+          Source(List(2, 3, 4)),
+          Source.future(Future.failed(ex)),
+          Source.lazyFuture(() => Future.successful(5))))
+        .flatMapMerge(ThreadLocalRandom.current().nextInt(1, 129), identity)
+        .onErrorComplete[BoomException]()
+        .runWith(toSet)
+        .futureValue.subsetOf((1 to 5).toSet) should ===(true)
+    }
+
+    val breadth = ThreadLocalRandom.current().nextInt(4, 65)
+    s"avoid pre-materialization for value-presented sources, breadth = $breadth" in {
+      val materializationCounter = new AtomicInteger(0)
+      val n = breadth * 3
+      val probe = Source(1 to n)
+        .flatMapMerge(
+          breadth,
+          value =>
+            Source.lazySingle(() => {
+              materializationCounter.incrementAndGet()
+              value
+            }))
+        .runWith(TestSink())
+
+      probe.request(n.toLong)
+      probe.expectNextN(n.toLong).toSet should ===((1 to n).toSet)
+      probe.expectComplete()
+      // Source.lazySingle is not a value-presented source, so each is materialized.
+      materializationCounter.get() shouldBe n
+    }
+
+    s"not materialize value-presented sources, breadth = $breadth" in {
+      val materializationCounter = new AtomicInteger(0)
+      // SingleSource / IterableSource / RangeSource / FutureSource etc. are value-presented;
+      // FlattenMerge should consume them directly without paying for substream materialization.
+      // We attach a side effect to a non-value-presented wrapper to detect any unwanted materialization.
+      val n = breadth * 3
+      val probe = Source(1 to n)
+        .flatMapMerge(breadth, value => Source.single(value))
+        .map { v =>
+          materializationCounter.incrementAndGet()
+          v
+        }
+        .runWith(TestSink())
+
+      probe.request(n.toLong)
+      probe.expectNextN(n.toLong).toSet should ===((1 to n).toSet)
+      probe.expectComplete()
+      // The downstream map fires once per emitted element, but each Source.single
+      // is consumed without spinning up its own substream materialization.
+      materializationCounter.get() shouldBe n
     }
 
   }

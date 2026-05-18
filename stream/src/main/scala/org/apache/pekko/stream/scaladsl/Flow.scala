@@ -32,8 +32,14 @@ import pekko.event.LoggingAdapter
 import pekko.event.MarkerLoggingAdapter
 import pekko.stream._
 import pekko.stream.Attributes.SourceLocation
+import pekko.stream.impl.FailedConcat
+import pekko.stream.impl.FailedSource
+import pekko.stream.impl.FutureConcat
+import pekko.stream.impl.IterableConcat
+import pekko.stream.impl.JavaStreamSource
 import pekko.stream.impl.LinearTraversalBuilder
 import pekko.stream.impl.ProcessorModule
+import pekko.stream.impl.RepeatConcat
 import pekko.stream.impl.SetupFlowStage
 import pekko.stream.impl.SingleConcat
 import pekko.stream.impl.Stages.DefaultAttributes
@@ -44,6 +50,7 @@ import pekko.stream.impl.TraversalBuilder
 import pekko.stream.impl.fusing
 import pekko.stream.impl.fusing._
 import pekko.stream.impl.fusing.FlattenMerge
+import pekko.stream.impl.fusing.GraphStages.{ FutureSource, RepeatSource, SingleSource }
 import pekko.stream.stage._
 import pekko.util.ConstantFun
 import pekko.util.OptionVal
@@ -3808,9 +3815,28 @@ trait FlowOps[+Out, +Mat] {
     that match {
       case source if TraversalBuilder.isEmptySource(source) => this.asInstanceOf[Repr[U]]
       case other                                            =>
-        TraversalBuilder.getSingleSource(other) match {
-          case OptionVal.Some(singleSource) =>
-            via(new SingleConcat(singleSource.elem.asInstanceOf[U]))
+        TraversalBuilder.getValuePresentedSource(other) match {
+          case OptionVal.Some(graph) =>
+            graph match {
+              case single: SingleSource[U] @unchecked =>
+                via(new SingleConcat(single.elem))
+              case iterable: IterableSource[U] @unchecked =>
+                via(new IterableConcat[U](() => iterable.elements.iterator))
+              case iterator: IteratorSource[U] @unchecked =>
+                via(new IterableConcat[U](iterator.createIterator))
+              case range: RangeSource[U] @unchecked =>
+                via(new IterableConcat[U](() => range.range.iterator.asInstanceOf[Iterator[U]]))
+              case javaStream: JavaStreamSource[U, _] @unchecked =>
+                import scala.jdk.CollectionConverters._
+                via(new IterableConcat[U](() => javaStream.open().iterator.asScala))
+              case repeat: RepeatSource[U] @unchecked =>
+                via(new RepeatConcat[U](repeat.elem))
+              case futureSource: FutureSource[U] @unchecked =>
+                via(new FutureConcat[U](futureSource.future))
+              case failed: FailedSource[U] @unchecked =>
+                via(new FailedConcat[U](failed.failure))
+              case _ => via(concatGraph(other, detached))
+            }
           case _ => via(concatGraph(other, detached))
         }
     }
