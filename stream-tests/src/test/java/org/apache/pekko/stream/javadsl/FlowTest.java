@@ -329,6 +329,64 @@ public class FlowTest extends StreamTestJupiter {
   }
 
   @Test
+  public void mustBeAbleToUseGather() throws Exception {
+    final java.lang.Iterable<Integer> input = Arrays.asList(1, 2, 3, 4, 5);
+    final CompletionStage<String> grouped =
+        Source.from(input)
+            .via(
+                Flow.of(Integer.class)
+                    .gather(
+                        () ->
+                            new Gatherer<Integer, String>() {
+                              private final ArrayList<Integer> buffer = new ArrayList<>(2);
+
+                              @Override
+                              public void apply(Integer elem, GatherCollector<String> collector) {
+                                buffer.add(elem);
+                                if (buffer.size() == 2) {
+                                  collector.push(buffer.toString());
+                                  buffer.clear();
+                                }
+                              }
+
+                              @Override
+                              public void onComplete(GatherCollector<String> collector) {
+                                if (!buffer.isEmpty()) {
+                                  collector.push(buffer.toString());
+                                }
+                              }
+                            }))
+            .runFold("", (acc, elem) -> acc + elem, system);
+
+    Assertions.assertEquals(
+        "[1, 2][3, 4][5]", grouped.toCompletableFuture().get(3, TimeUnit.SECONDS));
+  }
+
+  @Test
+  public void mustBeAbleToUseGatherAsDistinctUntilChanged() throws Exception {
+    final CompletionStage<String> result =
+        Source.from(Arrays.asList("A", "B", "B", "C", "C", "D"))
+            .via(
+                Flow.of(String.class)
+                    .gather(
+                        () ->
+                            new Gatherer<String, String>() {
+                              private String lastSeen = null;
+
+                              @Override
+                              public void apply(String elem, GatherCollector<String> collector) {
+                                if (!elem.equals(lastSeen)) {
+                                  collector.push(elem);
+                                  lastSeen = elem;
+                                }
+                              }
+                            }))
+            .runFold("", (acc, elem) -> acc + elem, system);
+
+    Assertions.assertEquals("ABCD", result.toCompletableFuture().get(3, TimeUnit.SECONDS));
+  }
+
+  @Test
   public void mustBeAbleToUseFoldWhile() throws Exception {
     final int result =
         Source.range(1, 10)
