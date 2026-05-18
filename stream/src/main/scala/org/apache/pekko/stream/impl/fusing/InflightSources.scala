@@ -89,9 +89,15 @@ private[fusing] object InflightSources {
     override def next(): T =
       if (closed) throw new NoSuchElementException("next called after completion")
       else {
-        val elem = iterator.next()
-        if (!iterator.hasNext) closeStream()
-        elem
+        try {
+          val elem = iterator.next()
+          if (!iterator.hasNext) closeStream()
+          elem
+        } catch {
+          case NonFatal(ex) =>
+            closeStream()
+            throw ex
+        }
       }
     override def isClosed: Boolean = closed
     override def cancel(cause: Throwable): Unit = closeStream()
