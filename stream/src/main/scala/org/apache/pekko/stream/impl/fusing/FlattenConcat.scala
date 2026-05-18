@@ -176,9 +176,8 @@ private[pekko] final class FlattenConcat[T, M](parallelism: Int)
         queue.enqueue(inflightSource)
       }
 
-      private def addJavaStreamSource[S <: java.util.stream.BaseStream[T, S]](
-          javaStream: JavaStreamSource[T, S]): Unit = {
-        val inflightSource = new InflightJavaStreamSource[T, S](javaStream.open)
+      private def addJavaStreamSource(javaStream: JavaStreamSource[T, _]): Unit = {
+        val inflightSource = new InflightJavaStreamSource[T](javaStream.open)
         if (isAvailable(out) && queue.isEmpty) {
           if (inflightSource.hasNext) {
             push(out, inflightSource.next())

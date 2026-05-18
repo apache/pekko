@@ -181,9 +181,8 @@ import pekko.util.OptionVal
       private def addInflightRepeatSource(elem: T): Unit =
         addInflightSource(new InflightRepeatSource[T](elem))
 
-      private def addInflightJavaStreamSource[S <: java.util.stream.BaseStream[T, S]](
-          javaStream: JavaStreamSource[T, S]): Unit = {
-        val inflight = new InflightJavaStreamSource[T, S](javaStream.open)
+      private def addInflightJavaStreamSource(javaStream: JavaStreamSource[T, _]): Unit = {
+        val inflight = new InflightJavaStreamSource[T](javaStream.open)
         if (inflight.hasNext) addInflightSource(inflight)
       }
 

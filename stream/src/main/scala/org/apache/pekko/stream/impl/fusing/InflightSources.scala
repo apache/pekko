@@ -62,10 +62,17 @@ private[fusing] object InflightSources {
    * substream materialization while still honoring the close contract: the
    * underlying stream is closed on exhaustion, on `cancel`, and eagerly when
    * the spliterator advertises it as empty.
+   *
+   * The recursive `S <: BaseStream[T, S]` bound that [[JavaStreamSource]]
+   * carries is intentionally dropped here: only `iterator()` and `close()`
+   * are invoked internally, and both are available on `BaseStream[T, _]`.
+   * Keeping the bound would force callers to skolemize the existential
+   * captured by pattern matching `JavaStreamSource[T, _]`, which Scala 3
+   * does not do implicitly.
    */
-  private[fusing] final class InflightJavaStreamSource[T, S <: java.util.stream.BaseStream[T, S]](
-      open: () => java.util.stream.BaseStream[T, S]) extends InflightSource[T] {
-    private val stream: java.util.stream.BaseStream[T, S] = open()
+  private[fusing] final class InflightJavaStreamSource[T](
+      open: () => java.util.stream.BaseStream[T, _]) extends InflightSource[T] {
+    private val stream: java.util.stream.BaseStream[T, _] = open()
     private val iterator: java.util.Iterator[T] = stream.iterator()
     private var closed: Boolean = false
     // Eagerly close empty streams so we don't leak the resource for empty inner sources.
