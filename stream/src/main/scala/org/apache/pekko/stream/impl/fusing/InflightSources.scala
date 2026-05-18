@@ -19,6 +19,7 @@ package org.apache.pekko.stream.impl.fusing
 
 import scala.collection.immutable
 import scala.util.Try
+import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
@@ -54,6 +55,39 @@ private[fusing] object InflightSources {
     override def hasNext: Boolean = iterator.hasNext
     override def next(): T = iterator.next()
     override def isClosed: Boolean = !hasNext
+  }
+
+  /**
+   * Wraps a [[java.util.stream.BaseStream]] so it can be consumed without
+   * substream materialization while still honoring the close contract: the
+   * underlying stream is closed on exhaustion, on `cancel`, and eagerly when
+   * the spliterator advertises it as empty.
+   */
+  private[fusing] final class InflightJavaStreamSource[T, S <: java.util.stream.BaseStream[T, S]](
+      open: () => java.util.stream.BaseStream[T, S]) extends InflightSource[T] {
+    private val stream: java.util.stream.BaseStream[T, S] = open()
+    private val iterator: java.util.Iterator[T] = stream.iterator()
+    private var closed: Boolean = false
+    // Eagerly close empty streams so we don't leak the resource for empty inner sources.
+    if (!iterator.hasNext) closeStream()
+
+    private def closeStream(): Unit =
+      if (!closed) {
+        closed = true
+        try stream.close()
+        catch { case NonFatal(_) => () }
+      }
+
+    override def hasNext: Boolean = !closed
+    override def next(): T =
+      if (closed) throw new NoSuchElementException("next called after completion")
+      else {
+        val elem = iterator.next()
+        if (!iterator.hasNext) closeStream()
+        elem
+      }
+    override def isClosed: Boolean = closed
+    override def cancel(cause: Throwable): Unit = closeStream()
   }
 
   private[fusing] final class InflightRangeSource[T](range: immutable.Range) extends InflightSource[T] {

@@ -176,6 +176,21 @@ private[pekko] final class FlattenConcat[T, M](parallelism: Int)
         queue.enqueue(inflightSource)
       }
 
+      private def addJavaStreamSource[S <: java.util.stream.BaseStream[T, S]](
+          javaStream: JavaStreamSource[T, S]): Unit = {
+        val inflightSource = new InflightJavaStreamSource[T, S](javaStream.open)
+        if (isAvailable(out) && queue.isEmpty) {
+          if (inflightSource.hasNext) {
+            push(out, inflightSource.next())
+            if (inflightSource.hasNext) {
+              queue.enqueue(inflightSource)
+            }
+          }
+        } else if (inflightSource.hasNext) {
+          queue.enqueue(inflightSource)
+        }
+      }
+
       private def addCompletedFutureElem(elem: Try[T]): Unit = {
         if (isAvailable(out) && queue.isEmpty) {
           elem match {
@@ -243,13 +258,11 @@ private[pekko] final class FlattenConcat[T, M](parallelism: Int)
                   case Some(elem) => addCompletedFutureElem(elem)
                   case None       => addPendingFutureElem(future)
                 }
-              case iterable: IterableSource[T] @unchecked        => addSourceElements(iterable.elements.iterator)
-              case iterator: IteratorSource[T] @unchecked        => addSourceElements(iterator.createIterator())
-              case range: RangeSource[T] @unchecked              => addRangeSource(range.range)
-              case repeat: RepeatSource[T] @unchecked            => addRepeatSource(repeat.elem)
-              case javaStream: JavaStreamSource[T, _] @unchecked =>
-                import scala.jdk.CollectionConverters._
-                addSourceElements(javaStream.open().iterator.asScala)
+              case iterable: IterableSource[T] @unchecked                   => addSourceElements(iterable.elements.iterator)
+              case iterator: IteratorSource[T] @unchecked                   => addSourceElements(iterator.createIterator())
+              case range: RangeSource[T] @unchecked                         => addRangeSource(range.range)
+              case repeat: RepeatSource[T] @unchecked                       => addRepeatSource(repeat.elem)
+              case javaStream: JavaStreamSource[T, _] @unchecked            => addJavaStreamSource(javaStream)
               case failed: FailedSource[T] @unchecked                       => addCompletedFutureElem(Failure(failed.failure))
               case maybeEmpty if TraversalBuilder.isEmptySource(maybeEmpty) => // Empty source is discarded
               case _                                                        => attachAndMaterializeSource(source)

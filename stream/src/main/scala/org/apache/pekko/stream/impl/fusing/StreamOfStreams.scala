@@ -137,12 +137,11 @@ import pekko.util.OptionVal
                   case Some(elem) => addCompletedFutureElem(elem)
                   case None       => addPendingFutureElem(future)
                 }
-              case iterable: IterableSource[T] @unchecked        => addInflightIteratorSource(iterable.elements.iterator)
-              case iterator: IteratorSource[T] @unchecked        => addInflightIteratorSource(iterator.createIterator())
-              case range: RangeSource[T] @unchecked              => addInflightRangeSource(range.range)
-              case repeat: RepeatSource[T] @unchecked            => addInflightRepeatSource(repeat.elem)
-              case javaStream: JavaStreamSource[T, _] @unchecked => addInflightIteratorSource(
-                  javaStream.open().iterator.asScala.asInstanceOf[Iterator[T]])
+              case iterable: IterableSource[T] @unchecked                   => addInflightIteratorSource(iterable.elements.iterator)
+              case iterator: IteratorSource[T] @unchecked                   => addInflightIteratorSource(iterator.createIterator())
+              case range: RangeSource[T] @unchecked                         => addInflightRangeSource(range.range)
+              case repeat: RepeatSource[T] @unchecked                       => addInflightRepeatSource(repeat.elem)
+              case javaStream: JavaStreamSource[T, _] @unchecked            => addInflightJavaStreamSource(javaStream)
               case failed: FailedSource[T] @unchecked                       => addCompletedFutureElem(Failure(failed.failure))
               case maybeEmpty if TraversalBuilder.isEmptySource(maybeEmpty) => // Empty source is discarded
               case _                                                        => attachAndMaterializeSource(source)
@@ -181,6 +180,12 @@ import pekko.util.OptionVal
 
       private def addInflightRepeatSource(elem: T): Unit =
         addInflightSource(new InflightRepeatSource[T](elem))
+
+      private def addInflightJavaStreamSource[S <: java.util.stream.BaseStream[T, S]](
+          javaStream: JavaStreamSource[T, S]): Unit = {
+        val inflight = new InflightJavaStreamSource[T, S](javaStream.open)
+        if (inflight.hasNext) addInflightSource(inflight)
+      }
 
       private def addCompletedFutureElem(elem: Try[T]): Unit = elem match {
         case Success(value) =>
@@ -234,7 +239,18 @@ import pekko.util.OptionVal
         if (activeSources == 0 && isClosed(in)) completeStage()
       }
 
-      override def postStop(): Unit = sources.foreach(_.cancel())
+      override def postStop(): Unit = {
+        sources.foreach(_.cancel())
+        // Cancel any queued inflight sources so close-sensitive resources (e.g. JavaStream
+        // backed by IO) are released even if downstream cancels mid-flight.
+        while (queue.nonEmpty) {
+          queue.dequeue() match {
+            case inflight: InflightSource[T] @unchecked =>
+              inflight.cancel(SubscriptionWithCancelException.NoMoreElementsNeeded)
+            case _ => // SubSinkInlet already cancelled above; SingleSource needs no cleanup
+          }
+        }
+      }
 
     }
 

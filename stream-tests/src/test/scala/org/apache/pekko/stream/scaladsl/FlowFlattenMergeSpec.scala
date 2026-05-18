@@ -372,26 +372,69 @@ class FlowFlattenMergeSpec extends StreamSpec with FutureTimeoutSupport {
       materializationCounter.get() shouldBe n
     }
 
-    s"not materialize value-presented sources, breadth = $breadth" in {
+    s"only materialize non-value-presented inner sources, breadth = $breadth" in {
       val materializationCounter = new AtomicInteger(0)
-      // SingleSource / IterableSource / RangeSource / FutureSource etc. are value-presented;
-      // FlattenMerge should consume them directly without paying for substream materialization.
-      // We attach a side effect to a non-value-presented wrapper to detect any unwanted materialization.
       val n = breadth * 3
-      val probe = Source(1 to n)
-        .flatMapMerge(breadth, value => Source.single(value))
-        .map { v =>
-          materializationCounter.incrementAndGet()
-          v
-        }
+      // Mix value-presented (Source.single, fast path) with non-value-presented
+      // (lazySingle.buffer, slow path). The counter sits inside the lazySingle
+      // factory and only fires when the inner source is materialized as a substream.
+      val probe = Source(1 to (n * 2))
+        .flatMapMerge(
+          breadth,
+          value =>
+            if (value % 2 == 0) Source.single(value)
+            else
+              Source
+                .lazySingle(() => {
+                  materializationCounter.incrementAndGet()
+                  value
+                })
+                .buffer(1, overflowStrategy = OverflowStrategy.backpressure))
         .runWith(TestSink())
 
-      probe.request(n.toLong)
-      probe.expectNextN(n.toLong).toSet should ===((1 to n).toSet)
+      probe.request(n.toLong * 2)
+      probe.expectNextN(n.toLong * 2).toSet should ===((1 to (n * 2)).toSet)
       probe.expectComplete()
-      // The downstream map fires once per emitted element, but each Source.single
-      // is consumed without spinning up its own substream materialization.
+      // Only odd values (non-VP) take the substream materialization path.
       materializationCounter.get() shouldBe n
+    }
+
+    "close JavaStream-backed inner sources on exhaustion" in {
+      val closeCount = new AtomicInteger(0)
+      val streams = (1 to 4).toList
+      Source(streams)
+        .flatMapMerge(
+          4,
+          (n: Int) =>
+            Source.fromJavaStream(() =>
+              java.util.stream.Stream.of((1 to n).map(Integer.valueOf): _*).onClose(() =>
+                closeCount.incrementAndGet())))
+        .runWith(Sink.ignore)
+        .futureValue
+      closeCount.get() shouldBe streams.size
+    }
+
+    "close JavaStream-backed inner sources on downstream cancel" in {
+      val closeCount = new AtomicInteger(0)
+      // Endless inner streams; when downstream cancels, the inflight wrappers
+      // queued in FlattenMerge must close their underlying Java streams.
+      val probe = Source
+        .repeat(())
+        .flatMapMerge(
+          4,
+          _ =>
+            Source.fromJavaStream(() =>
+              java.util.stream.Stream
+                .generate[Integer](() => 1)
+                .onClose(() => closeCount.incrementAndGet())))
+        .runWith(TestSink())
+
+      probe.request(8)
+      probe.expectNextN(8)
+      probe.cancel()
+      awaitAssert {
+        closeCount.get() should be >= 1
+      }
     }
 
   }
