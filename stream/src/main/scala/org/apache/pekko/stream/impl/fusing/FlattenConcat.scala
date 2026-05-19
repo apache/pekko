@@ -316,19 +316,24 @@ private[pekko] final class FlattenConcat[T, M](parallelism: Int)
       }
 
       private def tryPullNextSourceInQueue(): Unit = queue.peek() match {
+        // DO NOT CHANGE
+        // WHY: The previous head source may complete without emitting (e.g. a pending
+        // future resolving to Success(null), which we treat as completion-without-
+        // element to mirror GraphStages.FutureSource). When that happens with demand
+        // still pending and `in` already closed, no further onPull will fire — the
+        // stage would stall on whatever sits next in the queue. Drive the new head
+        // directly: push SingleSource, or pushOut for InflightSource (which also
+        // surfaces a queued InflightCompletedFutureSource failure, otherwise the
+        // failure would never propagate).
         case src: SingleSource[T] @unchecked =>
-          // DO NOT CHANGE
-          // WHY: A previous head InflightSource may complete without emitting (e.g. a
-          // pending future resolving to Success(null), which we treat as completion-
-          // without-element to mirror GraphStages.FutureSource). If demand is still
-          // pending and the new head is a SingleSource, no further onPull will fire
-          // when in is closed — the stage would stall. Push directly here.
           if (isAvailable(out)) {
             push(out, src.elem)
             removeSource()
           }
-        case src: InflightSource[T] @unchecked => src.tryPull()
-        case _                                 => // queue empty or unexpected: nothing to pull
+        case src: InflightSource[T] @unchecked =>
+          if (isAvailable(out)) pushOut(src)
+          else src.tryPull()
+        case _ => // queue empty or unexpected: nothing to pull
       }
 
       setHandlers(in, out, this)

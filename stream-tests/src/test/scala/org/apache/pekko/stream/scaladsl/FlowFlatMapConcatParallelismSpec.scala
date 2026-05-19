@@ -165,6 +165,37 @@ class FlowFlatMapConcatParallelismSpec extends StreamSpec("""
         .futureValue should ===(Seq[Integer](1, 2))
     }
 
+    "propagate inner-source failure queued behind a Success(null) pending future" in {
+      // Regression: tryPullNextSourceInQueue used to call src.tryPull() for
+      // InflightSource heads, which is a no-op for already-settled sources
+      // (e.g. InflightCompletedFutureSource(Failure(_))). Once the pending
+      // Success(null) head was removed, the failure sat in the queue forever
+      // because nothing surfaced it. Drive the head via pushOut instead.
+      val ex = new BoomException
+      val probe = Source(
+        List[Source[Integer, NotUsed]](
+          Source.future(after(1.millis)(Future.successful[Integer](null))),
+          Source.failed[Integer](ex)))
+        .flatMapConcat(parallelism = 4, identity)
+        .runWith(TestSink())
+      probe.request(1)
+      probe.expectError() should ===(ex)
+    }
+
+    "emit completed future queued behind a Success(null) pending future" in {
+      // Same root cause as above: an InflightCompletedFutureSource(Success(_))
+      // queued behind a Success(null) pending future was stranded because
+      // tryPull() is a no-op on already-settled sources.
+      val toIntegerSeq = Flow[Integer].grouped(1000).toMat(Sink.head)(Keep.right)
+      Source(
+        List[Source[Integer, NotUsed]](
+          Source.future(after(1.millis)(Future.successful[Integer](null))),
+          Source.future(Future.successful[Integer](42))))
+        .flatMapConcat(parallelism = 4, identity)
+        .runWith(toIntegerSeq)
+        .futureValue should ===(Seq[Integer](42))
+    }
+
     "work with value presented sources when demands slow" in {
       val prob = Source(
         List(Source.empty[Int], Source.single(1), Source(List(2, 3, 4)), Source.lazyFuture(() => Future.successful(5))))
