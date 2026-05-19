@@ -57,7 +57,9 @@ private[pekko] final class FlattenConcat[T, M](parallelism: Int)
       private def futureSourceCompleted(futureSource: InflightSource[T]): Unit = {
         if (queue.peek() eq futureSource) {
           if (isAvailable(out) && futureSource.hasNext) {
-            push(out, futureSource.next()) // TODO should filter out the `null` here?
+            // Success(null) is filtered out via InflightPendingFutureSource.hasNext to stay
+            // consistent with GraphStages.FutureSource (which treats Success(null) as completion).
+            push(out, futureSource.next())
             if (futureSource.isClosed) {
               handleCurrentSourceClosed(futureSource)
             }
@@ -190,15 +192,27 @@ private[pekko] final class FlattenConcat[T, M](parallelism: Int)
         }
       }
 
-      private def addCompletedFutureElem(elem: Try[T]): Unit = {
-        if (isAvailable(out) && queue.isEmpty) {
-          elem match {
-            case scala.util.Success(value) => push(out, value)
-            case scala.util.Failure(ex)    => onUpstreamFailure(ex)
+      private def addCompletedFutureElem(elem: Try[T]): Unit = elem match {
+        // DO NOT CHANGE
+        // WHY: GraphStages.FutureSource treats Success(null) as completion-without-element
+        // (see FutureSource.handle: `case Success(null) => completeStage()`). The fast path
+        // here MUST mirror that — pushing null would violate Reactive Streams' no-null rule
+        // and diverge from the materialized FutureSource behaviour.
+        // How to apply: keep this branch in sync with FutureSource semantics; if FutureSource
+        // ever changes how it treats Success(null), update here too.
+        case scala.util.Success(null)  => // empty inner source: discard, slot is freed when caller dequeues
+        case scala.util.Success(value) =>
+          if (isAvailable(out) && queue.isEmpty) {
+            push(out, value)
+          } else {
+            queue.enqueue(new InflightCompletedFutureSource(elem))
           }
-        } else {
-          queue.enqueue(new InflightCompletedFutureSource(elem))
-        }
+        case scala.util.Failure(ex) =>
+          if (isAvailable(out) && queue.isEmpty) {
+            onUpstreamFailure(ex)
+          } else {
+            queue.enqueue(new InflightCompletedFutureSource(elem))
+          }
       }
 
       private def addPendingFutureElem(future: Future[T]): Unit = {
@@ -301,12 +315,20 @@ private[pekko] final class FlattenConcat[T, M](parallelism: Int)
         }
       }
 
-      private def tryPullNextSourceInQueue(): Unit = {
-        // pull the new emitting source
-        val nextSource = queue.peek()
-        if (nextSource.isInstanceOf[InflightSource[T] @unchecked]) {
-          nextSource.asInstanceOf[InflightSource[T]].tryPull()
-        }
+      private def tryPullNextSourceInQueue(): Unit = queue.peek() match {
+        case src: SingleSource[T] @unchecked =>
+          // DO NOT CHANGE
+          // WHY: A previous head InflightSource may complete without emitting (e.g. a
+          // pending future resolving to Success(null), which we treat as completion-
+          // without-element to mirror GraphStages.FutureSource). If demand is still
+          // pending and the new head is a SingleSource, no further onPull will fire
+          // when in is closed — the stage would stall. Push directly here.
+          if (isAvailable(out)) {
+            push(out, src.elem)
+            removeSource()
+          }
+        case src: InflightSource[T] @unchecked => src.tryPull()
+        case _                                 => // queue empty or unexpected: nothing to pull
       }
 
       setHandlers(in, out, this)

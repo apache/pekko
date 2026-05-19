@@ -18,7 +18,7 @@
 package org.apache.pekko.stream.impl.fusing
 
 import scala.collection.immutable
-import scala.util.Try
+import scala.util.{ Success, Try }
 import scala.util.control.NonFatal
 
 import org.apache.pekko
@@ -89,9 +89,18 @@ private[fusing] object InflightSources {
     override def next(): T =
       if (closed) throw new NoSuchElementException("next called after completion")
       else {
-        val elem = iterator.next()
-        if (!iterator.hasNext) closeStream()
-        elem
+        try {
+          val elem = iterator.next()
+          if (!iterator.hasNext) closeStream()
+          elem
+        } catch {
+          case NonFatal(ex) =>
+            // If user code in iterator.next() throws, ensure the BaseStream is
+            // closed before propagating the failure: postStop on the enclosing
+            // FlattenMerge/FlattenConcat may not have a chance to cancel us.
+            closeStream()
+            throw ex
+        }
       }
     override def isClosed: Boolean = closed
     override def cancel(cause: Throwable): Unit = closeStream()
@@ -122,8 +131,20 @@ private[fusing] object InflightSources {
     override def isClosed: Boolean = false
   }
 
+  // DO NOT CHANGE
+  // WHY: GraphStages.FutureSource treats Success(null) as completion-without-element
+  // (see FutureSource.handle: `case Success(null) => completeStage()`). The inflight
+  // wrappers below MUST stay consistent with that behaviour, otherwise the optimized
+  // value-presented fast path would emit null — violating Reactive Streams' no-null
+  // rule and diverging from the materialized FutureSource. If FutureSource semantics
+  // are ever changed, these wrappers must be updated in lock-step.
+  private def hasFutureElement[T](result: Try[T]): Boolean = result match {
+    case Success(v) => v != null
+    case _          => false
+  }
+
   private[fusing] final class InflightCompletedFutureSource[T](result: Try[T]) extends InflightSource[T] {
-    private var _hasNext = result.isSuccess
+    private var _hasNext = hasFutureElement(result)
     override def hasNext: Boolean = _hasNext
     override def next(): T =
       if (_hasNext) {
@@ -146,7 +167,7 @@ private[fusing] object InflightSources {
       this.result = result
       cb(this)
     }
-    override def hasNext: Boolean = (result ne MapAsync.NotYetThere) && !consumed && result.isSuccess
+    override def hasNext: Boolean = (result ne MapAsync.NotYetThere) && !consumed && hasFutureElement(result)
     override def next(): T =
       if (!consumed) {
         consumed = true
@@ -154,6 +175,7 @@ private[fusing] object InflightSources {
       } else throw new NoSuchElementException("next called after completion")
     override def hasFailed: Boolean = (result ne MapAsync.NotYetThere) && result.isFailure
     override def failure: Option[Throwable] = if (result eq MapAsync.NotYetThere) None else result.failed.toOption
-    override def isClosed: Boolean = consumed || hasFailed
+    override def isClosed: Boolean = consumed || hasFailed ||
+      ((result ne MapAsync.NotYetThere) && !hasFutureElement(result))
   }
 }

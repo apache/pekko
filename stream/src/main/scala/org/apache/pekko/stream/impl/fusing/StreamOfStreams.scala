@@ -187,6 +187,14 @@ import pekko.util.OptionVal
       }
 
       private def addCompletedFutureElem(elem: Try[T]): Unit = elem match {
+        // DO NOT CHANGE
+        // WHY: GraphStages.FutureSource treats Success(null) as completion-without-element
+        // (see FutureSource.handle: `case Success(null) => completeStage()`). The fast path
+        // here MUST mirror that — pushing null would violate Reactive Streams' no-null rule
+        // and diverge from the materialized FutureSource behaviour.
+        // How to apply: keep this branch in sync with FutureSource semantics; if FutureSource
+        // ever changes how it treats Success(null), update here too.
+        case Success(null)  => // empty inner source: discard, slot is freed by caller
         case Success(value) =>
           if (isAvailable(out) && queue.isEmpty) {
             push(out, value)

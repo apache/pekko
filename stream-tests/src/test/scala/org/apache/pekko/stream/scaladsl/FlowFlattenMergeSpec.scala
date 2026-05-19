@@ -351,6 +351,22 @@ class FlowFlattenMergeSpec extends StreamSpec with FutureTimeoutSupport {
         .futureValue.subsetOf((1 to 5).toSet) should ===(true)
     }
 
+    "treat Success(null) future inner sources as completion-without-element" in {
+      // Mirrors GraphStages.FutureSource semantics: Success(null) completes the inner
+      // source without emitting. The optimized fast path must match this.
+      val toIntegerSet = Flow[Integer].grouped(1000).toMat(Sink.head)(Keep.right).mapMaterializedValue(_.map(_.toSet))
+      Source(
+        List[Source[Integer, NotUsed]](
+          Source.future(Future.successful[Integer](null)),
+          Source.single[Integer](1),
+          Source.future(after(1.millis)(Future.successful[Integer](null))),
+          Source.lazyFuture(() => Future.successful[Integer](null)),
+          Source.single[Integer](2)))
+        .flatMapMerge(ThreadLocalRandom.current().nextInt(1, 129), identity)
+        .runWith(toIntegerSet)
+        .futureValue should ===(Set[Integer](1, 2))
+    }
+
     val breadth = ThreadLocalRandom.current().nextInt(4, 65)
     s"avoid pre-materialization for value-presented sources, breadth = $breadth" in {
       val materializationCounter = new AtomicInteger(0)

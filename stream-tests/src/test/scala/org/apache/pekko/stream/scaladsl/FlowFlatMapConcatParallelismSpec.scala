@@ -149,6 +149,22 @@ class FlowFlatMapConcatParallelismSpec extends StreamSpec("""
         .futureValue should ===(1 to 4)
     }
 
+    "treat Success(null) future inner sources as completion-without-element" in {
+      // Mirrors GraphStages.FutureSource semantics: Success(null) completes the inner
+      // source without emitting. The optimized fast path must match this.
+      val toIntegerSeq = Flow[Integer].grouped(1000).toMat(Sink.head)(Keep.right)
+      Source(
+        List[Source[Integer, NotUsed]](
+          Source.future(Future.successful[Integer](null)),
+          Source.single[Integer](1),
+          Source.future(after(1.millis)(Future.successful[Integer](null))),
+          Source.lazyFuture(() => Future.successful[Integer](null)),
+          Source.single[Integer](2)))
+        .flatMapConcat(ThreadLocalRandom.current().nextInt(1, 129), identity)
+        .runWith(toIntegerSeq)
+        .futureValue should ===(Seq[Integer](1, 2))
+    }
+
     "work with value presented sources when demands slow" in {
       val prob = Source(
         List(Source.empty[Int], Source.single(1), Source(List(2, 3, 4)), Source.lazyFuture(() => Future.successful(5))))
