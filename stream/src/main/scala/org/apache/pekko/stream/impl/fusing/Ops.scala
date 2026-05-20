@@ -414,22 +414,36 @@ private[stream] object Collect {
   override def toString: String = "Scan"
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
-    new GraphStageLogic(shape) with InHandler with OutHandler {
+    new GraphStageLogic(shape) with InHandler with OutHandler { self =>
       private var aggregator = zero
-      private var initialized = false
       private lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
 
       import Supervision.{ Restart, Resume, Stop }
       import shape.{ in, out }
 
-      override def onPull(): Unit = {
-        if (!initialized) {
-          initialized = true
-          push(out, aggregator)
-        } else {
-          pull(in)
-        }
-      }
+      // Initial behavior makes sure that the zero gets flushed if upstream is empty
+      setHandlers(
+        in,
+        out,
+        new InHandler with OutHandler {
+          override def onPush(): Unit = ()
+
+          override def onUpstreamFinish(): Unit =
+            setHandler(out,
+              new OutHandler {
+                override def onPull(): Unit = {
+                  push(out, aggregator)
+                  completeStage()
+                }
+              })
+
+          override def onPull(): Unit = {
+            push(out, aggregator)
+            setHandlers(in, out, self)
+          }
+        })
+
+      override def onPull(): Unit = pull(in)
 
       override def onPush(): Unit = {
         try {
@@ -446,17 +460,6 @@ private[stream] object Collect {
             }
         }
       }
-
-      override def onUpstreamFinish(): Unit = {
-        if (!initialized) {
-          // zero hasn't been pushed yet, emit it before completing
-          emit(out, aggregator, () => completeStage())
-        } else {
-          completeStage()
-        }
-      }
-
-      setHandlers(in, out, this)
     }
 }
 
@@ -477,12 +480,31 @@ private[stream] object Collect {
   override val toString: String = "ScanAsync"
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
-    new GraphStageLogic(shape) with InHandler with OutHandler {
+    new GraphStageLogic(shape) with InHandler with OutHandler { self =>
       private var current: Out = zero
       private var elementHandled: Boolean = false
-      private var initialized: Boolean = false
 
       private lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
+
+      private val ZeroHandler: OutHandler with InHandler = new OutHandler with InHandler {
+        override def onPush(): Unit =
+          throw new IllegalStateException("No push should happen before zero value has been consumed")
+
+        override def onPull(): Unit = {
+          elementHandled = true
+          push(out, current)
+          setHandlers(in, out, self)
+        }
+
+        override def onUpstreamFinish(): Unit =
+          setHandler(out,
+            new OutHandler {
+              override def onPull(): Unit = {
+                push(out, current)
+                completeStage()
+              }
+            })
+      }
 
       private def onRestart(): Unit = {
         current = zero
@@ -527,15 +549,9 @@ private[stream] object Collect {
         case Failure(t) => doSupervision(t)
       }.invoke _
 
-      def onPull(): Unit = {
-        if (!initialized) {
-          initialized = true
-          elementHandled = true
-          push(out, current)
-        } else {
-          safePull()
-        }
-      }
+      setHandlers(in, out, ZeroHandler)
+
+      def onPull(): Unit = safePull()
 
       def onPush(): Unit = {
         try {
@@ -564,8 +580,6 @@ private[stream] object Collect {
           completeStage()
         }
       }
-
-      setHandlers(in, out, this)
 
       override val toString: String = s"ScanAsync.Logic(completed=$elementHandled)"
     }
@@ -747,34 +761,35 @@ private[stream] object Collect {
   if (start.isDefined) ReactiveStreamsCompliance.requireNonNullElement(start.get)
   if (end.isDefined) ReactiveStreamsCompliance.requireNonNullElement(end.get)
 
-  override def createLogic(attr: Attributes): GraphStageLogic =
-    new GraphStageLogic(shape) with InHandler with OutHandler {
-      private var started = false
-
+  override def createLogic(attr: Attributes): GraphStageLogic = new GraphStageLogic(shape) with OutHandler {
+    val startInHandler = new InHandler {
       override def onPush(): Unit = {
-        if (!started) {
-          started = true
-          // if else (to avoid using Iterator[T].flatten in hot code)
-          if (start.isDefined) emitMultiple(out, Iterator(start.get, grab(in)))
-          else emit(out, grab(in))
-        } else {
-          emitMultiple(out, Iterator(inject, grab(in)))
-        }
+        // if else (to avoid using Iterator[T].flatten in hot code)
+        if (start.isDefined) emitMultiple(out, Iterator(start.get, grab(in)))
+        else emit(out, grab(in))
+        setHandler(in, restInHandler) // switch handler
       }
 
       override def onUpstreamFinish(): Unit = {
-        if (!started) {
-          emitMultiple(out, Iterator(start, end).flatten)
-        } else {
-          if (end.isDefined) emit(out, end.get)
-        }
+        emitMultiple(out, Iterator(start, end).flatten)
         completeStage()
       }
-
-      override def onPull(): Unit = pull(in)
-
-      setHandlers(in, out, this)
     }
+
+    val restInHandler = new InHandler {
+      override def onPush(): Unit = emitMultiple(out, Iterator(inject, grab(in)))
+
+      override def onUpstreamFinish(): Unit = {
+        if (end.isDefined) emit(out, end.get)
+        completeStage()
+      }
+    }
+
+    def onPull(): Unit = pull(in)
+
+    setHandler(in, startInHandler)
+    setHandler(out, this)
+  }
 }
 
 /**
@@ -2044,14 +2059,17 @@ private[pekko] object TakeWithin {
 
       private val startNanoTime = System.nanoTime()
       private val timeoutInNano = timeout.toNanos
-      private var timedOut = false
 
       def onPush(): Unit = {
-        if (!timedOut && System.nanoTime() - startNanoTime <= timeoutInNano) {
+        if (System.nanoTime() - startNanoTime <= timeoutInNano) {
           pull(in)
         } else {
-          timedOut = true
           push(out, grab(in))
+          // change the in handler to avoid System.nanoTime call after timeout
+          setHandler(in,
+            new InHandler {
+              def onPush() = push(out, grab(in))
+            })
         }
       }
 
@@ -2076,47 +2094,54 @@ private[pekko] object TakeWithin {
 
       private var aggregator: T = _
       private val empty: T = aggregator
-      private var hasFirst: Boolean = false
 
       private def decider =
         inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
 
+      def setInitialInHandler(): Unit = {
+        // Initial input handler
+        setHandler(in,
+          new InHandler {
+            override def onPush(): Unit = {
+              aggregator = grab(in)
+              pull(in)
+              setHandler(in, self)
+            }
+
+            override def onUpstreamFinish(): Unit =
+              failStage(new NoSuchElementException("reduce over empty stream"))
+          })
+      }
+
+      @nowarn // compiler complaining about aggregator = _: T
       override def onPush(): Unit = {
-        if (!hasFirst) {
-          hasFirst = true
-          aggregator = grab(in)
-          pull(in)
-        } else {
-          val elem = grab(in)
-          try {
-            aggregator = f(aggregator, elem)
-          } catch {
-            case NonFatal(ex) =>
-              decider(ex) match {
-                case Supervision.Stop    => failStage(ex)
-                case Supervision.Restart =>
-                  aggregator = empty
-                  hasFirst = false
-                case _ => ()
-              }
-          } finally {
-            if (!isClosed(in)) pull(in)
-          }
+        val elem = grab(in)
+        try {
+          aggregator = f(aggregator, elem)
+        } catch {
+          case NonFatal(ex) =>
+            decider(ex) match {
+              case Supervision.Stop    => failStage(ex)
+              case Supervision.Restart =>
+                aggregator = empty
+                setInitialInHandler()
+              case _ => ()
+
+            }
+        } finally {
+          if (!isClosed(in)) pull(in)
         }
       }
 
       override def onPull(): Unit = pull(in)
 
       override def onUpstreamFinish(): Unit = {
-        if (hasFirst) {
-          push(out, aggregator)
-          completeStage()
-        } else {
-          failStage(new NoSuchElementException("reduce over empty stream"))
-        }
+        push(out, aggregator)
+        completeStage()
       }
 
-      setHandlers(in, out, this)
+      setInitialInHandler()
+      setHandler(out, self)
     }
 
   override def toString = "Reduce"
