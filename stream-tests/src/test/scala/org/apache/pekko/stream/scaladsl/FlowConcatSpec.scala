@@ -515,7 +515,7 @@ abstract class AbstractFlowConcatSpec extends BaseTwoStreamsSetup {
       val s2 = Source(List(2, 3))
       val eagerStr = s1.concat(s2).traversalBuilder.pendingBuilder.toString
       val lazyStr = s1.concatLazy(s2).traversalBuilder.pendingBuilder.toString
-      eagerStr should not include "IterableConcat"
+      (eagerStr should not).include("IterableConcat")
       lazyStr should include("IterableConcat")
     }
 
