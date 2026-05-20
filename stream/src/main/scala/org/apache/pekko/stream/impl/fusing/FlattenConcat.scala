@@ -27,102 +27,10 @@ import pekko.stream.{ Attributes, FlowShape, Graph, Inlet, Outlet, SourceShape, 
 import pekko.stream.impl.{ Buffer => BufferImpl, FailedSource, JavaStreamSource, TraversalBuilder }
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.fusing.GraphStages.{ FutureSource, RepeatSource, SingleSource }
+import pekko.stream.impl.fusing.InflightSources._
 import pekko.stream.scaladsl.Source
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
 import pekko.util.OptionVal
-
-/**
- * INTERNAL API
- */
-@InternalApi
-private[pekko] object FlattenConcat {
-  private sealed abstract class InflightSource[T] {
-    def hasNext: Boolean
-    def next(): T
-    def tryPull(): Unit
-    def cancel(cause: Throwable): Unit
-    def isClosed: Boolean
-    def hasFailed: Boolean = failure.isDefined
-    def failure: Option[Throwable] = None
-    def materialize(): Unit = ()
-  }
-
-  private final class InflightIteratorSource[T](iterator: Iterator[T]) extends InflightSource[T] {
-    override def hasNext: Boolean = iterator.hasNext
-    override def next(): T = iterator.next()
-    override def tryPull(): Unit = ()
-    override def cancel(cause: Throwable): Unit = ()
-    override def isClosed: Boolean = !hasNext
-  }
-
-  private final class InflightRangeSource[T](range: immutable.Range) extends InflightSource[T] {
-    private val isEmptyRange = range.isEmpty
-    private val rangeLast = if (isEmptyRange) 0 else range.last
-    private val rangeStep = range.step
-    private var nextElement = range.start
-    private var closed = isEmptyRange
-
-    override def hasNext: Boolean = !closed
-    override def next(): T =
-      if (closed) throw new NoSuchElementException("next called after completion")
-      else {
-        val current = nextElement
-        if (current == rangeLast) closed = true
-        else nextElement = current + rangeStep
-        current.asInstanceOf[T]
-      }
-    override def tryPull(): Unit = ()
-    override def cancel(cause: Throwable): Unit = ()
-    override def isClosed: Boolean = closed
-  }
-
-  private final class InflightRepeatSource[T](elem: T) extends InflightSource[T] {
-    override def hasNext: Boolean = true
-    override def next(): T = elem
-    override def tryPull(): Unit = ()
-    override def cancel(cause: Throwable): Unit = ()
-    override def isClosed: Boolean = false
-  }
-
-  private final class InflightCompletedFutureSource[T](result: Try[T]) extends InflightSource[T] {
-    private var _hasNext = result.isSuccess
-    override def hasNext: Boolean = _hasNext
-    override def next(): T = {
-      if (_hasNext) {
-        _hasNext = false
-        result.get
-      } else throw new NoSuchElementException("next called after completion")
-    }
-    override def hasFailed: Boolean = result.isFailure
-    override def failure: Option[Throwable] = result.failed.toOption
-    override def tryPull(): Unit = ()
-    override def cancel(cause: Throwable): Unit = ()
-    override def isClosed: Boolean = true
-  }
-
-  private final class InflightPendingFutureSource[T](cb: InflightSource[T] => Unit)
-      extends InflightSource[T]
-      with (Try[T] => Unit) {
-    private var result: Try[T] = MapAsync.NotYetThere
-    private var consumed = false
-    override def apply(result: Try[T]): Unit = {
-      this.result = result
-      cb(this)
-    }
-    override def hasNext: Boolean = (result ne MapAsync.NotYetThere) && !consumed && result.isSuccess
-    override def next(): T = {
-      if (!consumed) {
-        consumed = true
-        result.get
-      } else throw new NoSuchElementException("next called after completion")
-    }
-    override def hasFailed: Boolean = (result ne MapAsync.NotYetThere) && result.isFailure
-    override def failure: Option[Throwable] = if (result eq MapAsync.NotYetThere) None else result.failed.toOption
-    override def tryPull(): Unit = ()
-    override def cancel(cause: Throwable): Unit = ()
-    override def isClosed: Boolean = consumed || hasFailed
-  }
-}
 
 /**
  * INTERNAL API
@@ -138,7 +46,6 @@ private[pekko] final class FlattenConcat[T, M](parallelism: Int)
   override val shape: FlowShape[Graph[SourceShape[T], M], T] = FlowShape(in, out)
   override def createLogic(enclosingAttributes: Attributes) = {
     object FlattenConcatLogic extends GraphStageLogic(shape) with InHandler with OutHandler {
-      import FlattenConcat._
       // InflightSource[T] or SingleSource[T]
       // AnyRef here to avoid lift the SingleSource[T] to InflightSource[T]
       private var queue: BufferImpl[AnyRef] = _
@@ -150,7 +57,9 @@ private[pekko] final class FlattenConcat[T, M](parallelism: Int)
       private def futureSourceCompleted(futureSource: InflightSource[T]): Unit = {
         if (queue.peek() eq futureSource) {
           if (isAvailable(out) && futureSource.hasNext) {
-            push(out, futureSource.next()) // TODO should filter out the `null` here?
+            // Success(null) is filtered out via InflightPendingFutureSource.hasNext to stay
+            // consistent with GraphStages.FutureSource (which treats Success(null) as completion).
+            push(out, futureSource.next())
             if (futureSource.isClosed) {
               handleCurrentSourceClosed(futureSource)
             }
@@ -269,15 +178,41 @@ private[pekko] final class FlattenConcat[T, M](parallelism: Int)
         queue.enqueue(inflightSource)
       }
 
-      private def addCompletedFutureElem(elem: Try[T]): Unit = {
+      private def addJavaStreamSource(javaStream: JavaStreamSource[T, _]): Unit = {
+        val inflightSource = new InflightJavaStreamSource[T](javaStream.open)
         if (isAvailable(out) && queue.isEmpty) {
-          elem match {
-            case scala.util.Success(value) => push(out, value)
-            case scala.util.Failure(ex)    => onUpstreamFailure(ex)
+          if (inflightSource.hasNext) {
+            push(out, inflightSource.next())
+            if (inflightSource.hasNext) {
+              queue.enqueue(inflightSource)
+            }
           }
-        } else {
-          queue.enqueue(new InflightCompletedFutureSource(elem))
+        } else if (inflightSource.hasNext) {
+          queue.enqueue(inflightSource)
         }
+      }
+
+      private def addCompletedFutureElem(elem: Try[T]): Unit = elem match {
+        // DO NOT CHANGE
+        // WHY: GraphStages.FutureSource treats Success(null) as completion-without-element
+        // (see FutureSource.handle: `case Success(null) => completeStage()`). The fast path
+        // here MUST mirror that — pushing null would violate Reactive Streams' no-null rule
+        // and diverge from the materialized FutureSource behaviour.
+        // How to apply: keep this branch in sync with FutureSource semantics; if FutureSource
+        // ever changes how it treats Success(null), update here too.
+        case scala.util.Success(null)  => // empty inner source: discard, slot is freed when caller dequeues
+        case scala.util.Success(value) =>
+          if (isAvailable(out) && queue.isEmpty) {
+            push(out, value)
+          } else {
+            queue.enqueue(new InflightCompletedFutureSource(elem))
+          }
+        case scala.util.Failure(ex) =>
+          if (isAvailable(out) && queue.isEmpty) {
+            onUpstreamFailure(ex)
+          } else {
+            queue.enqueue(new InflightCompletedFutureSource(elem))
+          }
       }
 
       private def addPendingFutureElem(future: Future[T]): Unit = {
@@ -336,13 +271,11 @@ private[pekko] final class FlattenConcat[T, M](parallelism: Int)
                   case Some(elem) => addCompletedFutureElem(elem)
                   case None       => addPendingFutureElem(future)
                 }
-              case iterable: IterableSource[T] @unchecked        => addSourceElements(iterable.elements.iterator)
-              case iterator: IteratorSource[T] @unchecked        => addSourceElements(iterator.createIterator())
-              case range: RangeSource[T] @unchecked              => addRangeSource(range.range)
-              case repeat: RepeatSource[T] @unchecked            => addRepeatSource(repeat.elem)
-              case javaStream: JavaStreamSource[T, _] @unchecked =>
-                import scala.jdk.CollectionConverters._
-                addSourceElements(javaStream.open().iterator.asScala)
+              case iterable: IterableSource[T] @unchecked                   => addSourceElements(iterable.elements.iterator)
+              case iterator: IteratorSource[T] @unchecked                   => addSourceElements(iterator.createIterator())
+              case range: RangeSource[T] @unchecked                         => addRangeSource(range.range)
+              case repeat: RepeatSource[T] @unchecked                       => addRepeatSource(repeat.elem)
+              case javaStream: JavaStreamSource[T, _] @unchecked            => addJavaStreamSource(javaStream)
               case failed: FailedSource[T] @unchecked                       => addCompletedFutureElem(Failure(failed.failure))
               case maybeEmpty if TraversalBuilder.isEmptySource(maybeEmpty) => // Empty source is discarded
               case _                                                        => attachAndMaterializeSource(source)
@@ -382,12 +315,25 @@ private[pekko] final class FlattenConcat[T, M](parallelism: Int)
         }
       }
 
-      private def tryPullNextSourceInQueue(): Unit = {
-        // pull the new emitting source
-        val nextSource = queue.peek()
-        if (nextSource.isInstanceOf[InflightSource[T] @unchecked]) {
-          nextSource.asInstanceOf[InflightSource[T]].tryPull()
-        }
+      private def tryPullNextSourceInQueue(): Unit = queue.peek() match {
+        // DO NOT CHANGE
+        // WHY: The previous head source may complete without emitting (e.g. a pending
+        // future resolving to Success(null), which we treat as completion-without-
+        // element to mirror GraphStages.FutureSource). When that happens with demand
+        // still pending and `in` already closed, no further onPull will fire — the
+        // stage would stall on whatever sits next in the queue. Drive the new head
+        // directly: push SingleSource, or pushOut for InflightSource (which also
+        // surfaces a queued InflightCompletedFutureSource failure, otherwise the
+        // failure would never propagate).
+        case src: SingleSource[T] @unchecked =>
+          if (isAvailable(out)) {
+            push(out, src.elem)
+            removeSource()
+          }
+        case src: InflightSource[T] @unchecked =>
+          if (isAvailable(out)) pushOut(src)
+          else src.tryPull()
+        case _ => // queue empty or unexpected: nothing to pull
       }
 
       setHandlers(in, out, this)
