@@ -36,18 +36,21 @@ import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
 
   override def createLogic(inheritedAttributes: org.apache.pekko.stream.Attributes) =
     new GraphStageLogic(shape) with InHandler with OutHandler {
-      self =>
-      final override def onPush(): Unit = push(out, grab(in))
+      private var isFirst = true
+
+      final override def onPush(): Unit = {
+        if (isFirst) {
+          isFirst = false
+          val elem = grab(in)
+          f(elem)
+          push(out, elem)
+        } else {
+          push(out, grab(in))
+        }
+      }
+
       final override def onPull(): Unit = pull(in)
-      setHandler(out, this)
-      setHandler(in,
-        new InHandler {
-          override def onPush(): Unit = {
-            setHandler(in, self)
-            val elem = grab(in)
-            f(elem)
-            push(out, elem)
-          }
-        })
+
+      setHandlers(in, out, this)
     }
 }
