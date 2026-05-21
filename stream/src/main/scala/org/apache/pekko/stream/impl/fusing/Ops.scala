@@ -761,35 +761,36 @@ private[stream] object Collect {
   if (start.isDefined) ReactiveStreamsCompliance.requireNonNullElement(start.get)
   if (end.isDefined) ReactiveStreamsCompliance.requireNonNullElement(end.get)
 
-  override def createLogic(attr: Attributes): GraphStageLogic = new GraphStageLogic(shape) with OutHandler {
-    val startInHandler = new InHandler {
-      override def onPush(): Unit = {
-        // if else (to avoid using Iterator[T].flatten in hot code)
-        if (start.isDefined) emitMultiple(out, Iterator(start.get, grab(in)))
-        else emit(out, grab(in))
-        setHandler(in, restInHandler) // switch handler
+  override def createLogic(attr: Attributes): GraphStageLogic =
+    new GraphStageLogic(shape) with InHandler with OutHandler { self =>
+      // Cold path - only used once for the first element
+      val startInHandler = new InHandler {
+        override def onPush(): Unit = {
+          // if else (to avoid using Iterator[T].flatten in hot code)
+          if (start.isDefined) emitMultiple(out, Iterator(start.get, grab(in)))
+          else emit(out, grab(in))
+          setHandler(in, self) // only switch in handler, don't touch out handler
+        }
+
+        override def onUpstreamFinish(): Unit = {
+          emitMultiple(out, Iterator(start, end).flatten)
+          completeStage()
+        }
       }
 
-      override def onUpstreamFinish(): Unit = {
-        emitMultiple(out, Iterator(start, end).flatten)
-        completeStage()
-      }
-    }
-
-    val restInHandler = new InHandler {
+      // Hot path - fused into GraphStageLogic, no separate object allocation
       override def onPush(): Unit = emitMultiple(out, Iterator(inject, grab(in)))
 
       override def onUpstreamFinish(): Unit = {
         if (end.isDefined) emit(out, end.get)
         completeStage()
       }
+
+      override def onPull(): Unit = pull(in)
+
+      setHandler(in, startInHandler)
+      setHandler(out, this)
     }
-
-    def onPull(): Unit = pull(in)
-
-    setHandler(in, startInHandler)
-    setHandler(out, this)
-  }
 }
 
 /**
