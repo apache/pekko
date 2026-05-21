@@ -23,7 +23,6 @@ import org.openjdk.jmh.annotations._
 import org.apache.pekko
 import pekko.stream.impl.fusing.GraphInterpreter.{ DownstreamBoundaryStageLogic, UpstreamBoundaryStageLogic }
 import pekko.stream.impl.fusing.GraphInterpreterSpecKit
-import pekko.stream.impl.fusing.GraphStages
 import pekko.stream.stage._
 
 @State(Scope.Benchmark)
@@ -52,7 +51,7 @@ class InterpreterBenchmark extends GraphInterpreterSpecKit {
   @OperationsPerInvocation(100000)
   def graph_interpreter_100k_elements(): Unit = {
     new TestSetup {
-      val identities = Vector.fill(numberOfIds)(GraphStages.identity[Int])
+      val identities = Vector.fill(numberOfIds)(new IdentityStage[Int])
       val source = new GraphDataSource("source", data100k)
       val sink = new GraphDataSink[Int]("sink", data100k.size)
 
@@ -71,6 +70,25 @@ class InterpreterBenchmark extends GraphInterpreterSpecKit {
 }
 
 object InterpreterBenchmark {
+
+  /**
+   * Per-instance identity stage. Cannot reuse [[GraphStages.identity]] because it is a singleton
+   * whose Inlet/Outlet shape is shared across all references — chaining N copies of the singleton
+   * collapses to a single shape and mis-wires the assembly (manifests as `Cannot pull port twice`).
+   */
+  final class IdentityStage[T] extends GraphStage[FlowShape[T, T]] {
+    val in = Inlet[T]("Identity.in")
+    val out = Outlet[T]("Identity.out")
+    override val shape: FlowShape[T, T] = FlowShape(in, out)
+
+    override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
+      new GraphStageLogic(shape) with InHandler with OutHandler {
+        override def onPush(): Unit = push(out, grab(in))
+        override def onPull(): Unit = pull(in)
+        setHandler(in, this)
+        setHandler(out, this)
+      }
+  }
 
   case class GraphDataSource[T](override val toString: String, data: Vector[T]) extends UpstreamBoundaryStageLogic[T] {
     var idx: Int = 0
