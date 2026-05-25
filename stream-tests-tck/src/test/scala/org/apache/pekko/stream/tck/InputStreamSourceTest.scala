@@ -15,6 +15,8 @@ package org.apache.pekko.stream.tck
 
 import java.io.InputStream
 
+import com.typesafe.config.{ Config, ConfigFactory }
+
 import org.apache.pekko
 import pekko.stream.ActorAttributes
 import pekko.stream.scaladsl.{ Sink, StreamConverters }
@@ -23,6 +25,17 @@ import pekko.util.ByteString
 import org.reactivestreams.Publisher
 
 class InputStreamSourceTest extends PekkoPublisherVerification[ByteString] {
+
+  // The test's InputStream is CPU-busy (each read() returns a fresh byte without
+  // blocking or yielding), so cancellation propagation through `take(elements)` can
+  // be slow when `pekko.test.stream-dispatcher` is virtualized in JDK 21+/JDK 25
+  // nightly runs. Extend the actor-system-terminate phase timeout so that the
+  // CoordinatedShutdown phase has enough headroom for any lingering flow actors to
+  // finish terminating before the outer shutdown await fires.
+  override def additionalConfig: Config =
+    ConfigFactory
+      .parseString("pekko.coordinated-shutdown.phases.actor-system-terminate.timeout = 30 s")
+      .withFallback(super.additionalConfig)
 
   def createPublisher(elements: Long): Publisher[ByteString] = {
     StreamConverters
