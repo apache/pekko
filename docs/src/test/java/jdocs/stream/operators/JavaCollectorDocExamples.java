@@ -32,8 +32,7 @@ public class JavaCollectorDocExamples {
     ActorSystem system = null;
 
     // #javaCollector
-    Source<String, NotUsed> source =
-        Source.from(Arrays.asList("Apache", "Pekko", "Streams"));
+    Source<String, NotUsed> source = Source.from(Arrays.asList("Apache", "Pekko", "Streams"));
 
     CompletionStage<List<String>> result =
         source.runWith(StreamConverters.javaCollector(Collectors::toList), system);
