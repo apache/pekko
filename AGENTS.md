@@ -12,6 +12,18 @@ Follow `CONTRIBUTING.md`. If this file conflicts with `CONTRIBUTING.md`, follow 
 - Read neighboring code before editing.
 - Preserve existing license and copyright notices.
 - Do not add `@author` tags.
+- Follow the Licensing Rules below for every new file.
+
+## Licensing Rules
+
+- Do not hand-write or invent license headers. Let sbt manage them.
+- For new files, run `sbt headerCreateAll` to add the correct header. Do not manually paste header text.
+- Run `sbt +headerCheckAll` to verify all files carry the expected header.
+- Existing files with copyright statements must keep those copyright statements intact. Never delete or rewrite an existing copyright notice; only add information.
+- New files containing new code must use the standard Apache license header. Do not add the special Pekko header that mentions Akka unless you are copying code from an existing Akka-derived file.
+- If you copy code from another file in this repository, preserve that file's original headers in the new file.
+- If you copy code from an external project, do not commit it silently. Note the source in the PR description so maintainers can verify license compatibility and update `LICENSE` if needed.
+- `sbt headerCreateAll` does not know the origin of new code; you must still record copied-code provenance in the PR.
 
 ## PR Rules
 
