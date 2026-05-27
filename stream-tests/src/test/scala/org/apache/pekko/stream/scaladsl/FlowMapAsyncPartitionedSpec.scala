@@ -15,6 +15,7 @@ package org.apache.pekko.stream.scaladsl
 
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.locks.LockSupport
 
 import scala.collection.immutable
 import scala.concurrent.Await
@@ -462,7 +463,15 @@ class FlowMapAsyncPartitionedSpec extends StreamSpec with WithLogCapturing {
             try {
               val (partition, promise, enqueued) = queue.take()
               val wakeup = enqueued + delay()
-              while (System.nanoTime() < wakeup) {}
+              @annotation.tailrec
+              def waitUntilWakeup(): Unit = {
+                val remaining = wakeup - System.nanoTime()
+                if (remaining > 0) {
+                  LockSupport.parkNanos(remaining)
+                  waitUntilWakeup()
+                }
+              }
+              waitUntilWakeup()
               globalCounter.decrementAndGet()
               partitionCounters(partition).decrementAndGet()
               promise.success(count)

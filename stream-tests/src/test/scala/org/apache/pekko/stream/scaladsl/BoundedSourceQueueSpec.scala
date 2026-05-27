@@ -203,7 +203,7 @@ class BoundedSourceQueueSpec extends StreamSpec("""pekko.loglevel = debug
 
       downstream.request(10)
 
-      for (round <- 1 to 10000) {
+      for (round <- 1 to 100000) {
         for (n <- 1 to burstSize) {
           if (sendQueue.offer(round * 1000 + n) != QueueOfferResult.Enqueued)
             fail(s"offer failed at round $round message $n")
