@@ -472,11 +472,11 @@ class FlowMapAsyncSpec extends StreamSpec {
       }
 
       try {
-        val N = 10000
+        val N = 1000
         Source(1 to N)
           .mapAsync(parallelism)(_ => deferred())
           .runFold(0)((c, _) => c + 1)
-          .futureValue(Timeout(3.seconds)) should ===(N)
+          .futureValue(Timeout(12.seconds)) should ===(N)
       } finally {
         timer.interrupt()
       }

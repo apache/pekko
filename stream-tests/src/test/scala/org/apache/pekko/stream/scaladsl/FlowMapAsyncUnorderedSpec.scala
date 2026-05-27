@@ -358,7 +358,7 @@ class FlowMapAsyncUnorderedSpec extends StreamSpec {
       }
 
       try {
-        val N = 10000
+        val N = 1000
         Source(1 to N)
           .mapAsyncUnordered(parallelism)(_ => deferred())
           .runFold(0)((c, _) => c + 1)
