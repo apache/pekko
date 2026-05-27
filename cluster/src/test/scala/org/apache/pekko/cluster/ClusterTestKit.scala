@@ -109,8 +109,11 @@ trait ClusterTestKit extends TestKitBase {
       actorSystems.contains(actorSystem)
 
     /** Shuts down all registered [[ActorSystem]]s */
+    // Shut down joining nodes before the first seed node so cluster leave and remoting
+    // termination can complete while the seed is still available.
     // The timeout is dilated by TestKit; keep a larger base for virtualized JDK 25 nightly runs.
-    def shutdownAll(): Unit = actorSystems.foreach(sys => shutdown(sys, 30.seconds, verifySystemShutdown = true))
+    def shutdownAll(): Unit =
+      actorSystems.reverse.foreach(sys => shutdown(sys, 30.seconds, verifySystemShutdown = true))
 
     /**
      * Force the passed [[ActorSystem]] to quit the cluster and shutdown.
