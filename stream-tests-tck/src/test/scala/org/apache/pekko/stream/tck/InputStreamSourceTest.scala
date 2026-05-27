@@ -15,8 +15,6 @@ package org.apache.pekko.stream.tck
 
 import java.io.InputStream
 
-import com.typesafe.config.{ Config, ConfigFactory }
-
 import org.apache.pekko
 import pekko.stream.ActorAttributes
 import pekko.stream.scaladsl.{ Sink, StreamConverters }
@@ -26,29 +24,21 @@ import org.reactivestreams.Publisher
 
 class InputStreamSourceTest extends PekkoPublisherVerification[ByteString] {
 
-  // The test's InputStream is CPU-busy (each read() returns a fresh byte without
-  // blocking or yielding), so cancellation propagation through `take(elements)` can
-  // be slow when `pekko.test.stream-dispatcher` is virtualized in JDK 21+/JDK 25
-  // nightly runs. Extend the actor-system-terminate phase timeout so that the
-  // CoordinatedShutdown phase has enough headroom for any lingering flow actors to
-  // finish terminating before the outer shutdown await fires.
-  override def additionalConfig: Config =
-    ConfigFactory
-      .parseString("pekko.coordinated-shutdown.phases.actor-system-terminate.timeout = 30 s")
-      .withFallback(super.additionalConfig)
-
   def createPublisher(elements: Long): Publisher[ByteString] = {
+    def inputStream = new InputStream {
+      private var remaining = elements
+      override def read(): Int = {
+        if (remaining > 0) {
+          remaining -= 1
+          1
+        } else -1
+      }
+    }
+
     StreamConverters
-      .fromInputStream(() =>
-        new InputStream {
-          @volatile var num = 0
-          override def read(): Int = {
-            num += 1
-            num
-          }
-        })
+      // The TCK counts publisher elements, so emit one byte per ByteString.
+      .fromInputStream(() => inputStream, chunkSize = 1)
       .withAttributes(ActorAttributes.dispatcher("pekko.test.stream-dispatcher"))
-      .take(elements)
       .runWith(Sink.asPublisher(false))
   }
 }
