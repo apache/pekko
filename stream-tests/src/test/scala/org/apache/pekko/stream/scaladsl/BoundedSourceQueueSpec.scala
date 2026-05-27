@@ -25,6 +25,8 @@ import pekko.stream.testkit.scaladsl.TestSink
 import pekko.testkit.TestDuration
 import pekko.testkit.WithLogCapturing
 
+import org.scalatest.concurrent.PatienceConfiguration.Timeout
+
 class BoundedSourceQueueSpec extends StreamSpec("""pekko.loglevel = debug
     |pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
     |""".stripMargin) with WithLogCapturing {
@@ -189,7 +191,7 @@ class BoundedSourceQueueSpec extends StreamSpec("""pekko.loglevel = debug
       queue.complete()
       queue.isCompleted shouldBe true
 
-      result.futureValue should be(counter.get())
+      result.futureValue(Timeout(15.seconds.dilated)) should be(counter.get())
     }
 
     // copied from pekko-remote SendQueueSpec

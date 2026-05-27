@@ -16,6 +16,7 @@ package org.apache.pekko.stream.scaladsl
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.ThreadLocalRandom
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.locks.LockSupport
 
 import scala.annotation.tailrec
 import scala.concurrent.Await
@@ -32,6 +33,7 @@ import pekko.stream.Supervision.resumingDecider
 import pekko.stream.testkit._
 import pekko.stream.testkit.Utils._
 import pekko.stream.testkit.scaladsl.TestSink
+import pekko.testkit.TestDuration
 import pekko.testkit.TestLatch
 import pekko.testkit.TestProbe
 
@@ -449,7 +451,14 @@ class FlowMapAsyncSpec extends StreamSpec {
             try {
               val (promise, enqueued) = queue.take()
               val wakeup = enqueued + delay
-              while (System.nanoTime() < wakeup) {}
+              @tailrec def waitUntilWakeup(): Unit = {
+                val remaining = wakeup - System.nanoTime()
+                if (remaining > 0) {
+                  LockSupport.parkNanos(remaining)
+                  waitUntilWakeup()
+                }
+              }
+              waitUntilWakeup()
               counter.decrementAndGet()
               promise.success(count)
               count += 1
@@ -476,7 +485,7 @@ class FlowMapAsyncSpec extends StreamSpec {
         Source(1 to N)
           .mapAsync(parallelism)(_ => deferred())
           .runFold(0)((c, _) => c + 1)
-          .futureValue(Timeout(3.seconds)) should ===(N)
+          .futureValue(Timeout(3.seconds.dilated)) should ===(N)
       } finally {
         timer.interrupt()
       }

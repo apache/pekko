@@ -15,6 +15,7 @@ package org.apache.pekko.stream.scaladsl
 
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.locks.LockSupport
 
 import scala.annotation.tailrec
 import scala.concurrent.Await
@@ -335,7 +336,14 @@ class FlowMapAsyncUnorderedSpec extends StreamSpec {
             try {
               val (promise, enqueued) = queue.take()
               val wakeup = enqueued + delay
-              while (System.nanoTime() < wakeup) {}
+              @tailrec def waitUntilWakeup(): Unit = {
+                val remaining = wakeup - System.nanoTime()
+                if (remaining > 0) {
+                  LockSupport.parkNanos(remaining)
+                  waitUntilWakeup()
+                }
+              }
+              waitUntilWakeup()
               counter.decrementAndGet()
               promise.success(count)
               count += 1
