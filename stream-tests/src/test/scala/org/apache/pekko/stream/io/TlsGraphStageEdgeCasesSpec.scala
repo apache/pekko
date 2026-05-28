@@ -68,14 +68,24 @@ class TlsGraphStageEdgeCasesSpec extends StreamSpec(TlsGraphStageEdgeCasesSpec.c
   private def collectExactly(
       stream: Source[SslTlsInbound, NotUsed],
       expectedBytes: Int,
-      timeout: FiniteDuration = 30.seconds): ByteString =
-    Await.result(
-      stream
-        .collect { case SessionBytes(_, b) => b }
-        .scan(ByteString.empty)(_ ++ _)
-        .dropWhile(_.size < expectedBytes)
-        .runWith(Sink.headOption),
-      timeout.dilated).getOrElse(ByteString.empty)
+      timeout: FiniteDuration = 30.seconds): ByteString = {
+    val ((killSwitch, streamDone), result) = stream
+      .viaMat(KillSwitches.single)(Keep.right)
+      .watchTermination(Keep.both)
+      .toMat(
+        Flow[SslTlsInbound]
+          .collect { case SessionBytes(_, b) => b }
+          .scan(ByteString.empty)(_ ++ _)
+          .dropWhile(_.size < expectedBytes)
+          .toMat(Sink.headOption)(Keep.right))(Keep.both)
+      .run()
+
+    try Await.result(result, timeout.dilated).getOrElse(ByteString.empty)
+    finally {
+      killSwitch.shutdown()
+      Await.result(streamDone, timeout.dilated)
+    }
+  }
 
   "TlsGraphStage" must {
 
