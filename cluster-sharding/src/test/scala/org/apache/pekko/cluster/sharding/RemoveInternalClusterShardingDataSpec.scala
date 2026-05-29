@@ -190,8 +190,11 @@ class RemoveInternalClusterShardingDataSpec
       watch(rm)
       expectMsg(Result(Success(Removals(events = true, snapshots = true))))
       expectTerminated(rm)
-      hasSnapshots("type2") should ===(false)
-      hasEvents("type2") should ===(false)
+      awaitAssert {
+        // deletion may not be visible to a fresh read immediately after the removal completes
+        hasSnapshots("type2") should ===(false)
+        hasEvents("type2") should ===(false)
+      }
     }
   }
 
