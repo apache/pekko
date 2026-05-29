@@ -358,7 +358,6 @@ class StreamRefsSpec extends PekkoSpec(StreamRefsSpec.config()) {
       remoteProbe.expectMsg(Done)
     }
 
-    // FIXME https://github.com/akka/akka/issues/30844
     "pass cancellation upstream across remoting before elements has been emitted" in {
       val remoteProbe = TestProbe()(remoteSystem)
       remoteActor.tell("give-nothing-watch", remoteProbe.ref)
