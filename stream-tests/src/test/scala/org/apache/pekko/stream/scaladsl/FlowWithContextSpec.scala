@@ -13,8 +13,10 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import scala.collection.mutable.ListBuffer
+import java.util.concurrent.ConcurrentLinkedQueue
+
 import scala.concurrent.duration._
+import scala.jdk.CollectionConverters._
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
@@ -80,14 +82,17 @@ class FlowWithContextSpec extends StreamSpec {
     }
 
     "pass through all data when using alsoTo" in {
-      val listBuffer = new ListBuffer[String]()
+      // alsoTo feeds an asynchronous side Sink, which may still be draining when the
+      // main stream completes. Poll until it has observed every element instead of
+      // asserting once (the single assertion raced under JDK 25 scheduling).
+      val received = new ConcurrentLinkedQueue[String]()
       Source(Vector(Message("A", 1L), Message("B", 2L), Message("D", 3L), Message("C", 4L)))
         .asSourceWithContext(_.offset)
         .via(
           FlowWithContext.fromTuples(Flow.fromFunction[(Message, Long), (String, Long)] { case (data, offset) =>
             (data.data.toLowerCase, offset)
           })
-            .alsoTo(Sink.foreach(string => listBuffer.+=(string)))
+            .alsoTo(Sink.foreach(string => received.add(string)))
         )
         .toMat(TestSink[(String, Long)]())(Keep.right)
         .run()
@@ -97,20 +102,18 @@ class FlowWithContextSpec extends StreamSpec {
         .expectNext(("d", 3L))
         .expectNext(("c", 4L))
         .expectComplete()
-        .within(10.seconds) {
-          listBuffer should contain theSameElementsInOrderAs List("a", "b", "d", "c")
-        }
+      awaitAssert(received.asScala.toList should contain theSameElementsInOrderAs List("a", "b", "d", "c"), 10.seconds)
     }
 
     "pass through all data when using alsoToContext" in {
-      val listBuffer = new ListBuffer[Long]()
+      val received = new ConcurrentLinkedQueue[Long]()
       Source(Vector(Message("A", 1L), Message("B", 2L), Message("D", 3L), Message("C", 4L)))
         .asSourceWithContext(_.offset)
         .via(
           FlowWithContext.fromTuples(Flow.fromFunction[(Message, Long), (String, Long)] { case (data, offset) =>
             (data.data.toLowerCase, offset)
           })
-            .alsoToContext(Sink.foreach(offset => listBuffer.+=(offset)))
+            .alsoToContext(Sink.foreach(offset => received.add(offset)))
         )
         .toMat(TestSink[(String, Long)]())(Keep.right)
         .run()
@@ -120,19 +123,17 @@ class FlowWithContextSpec extends StreamSpec {
         .expectNext(("d", 3L))
         .expectNext(("c", 4L))
         .expectComplete()
-        .within(10.seconds) {
-          listBuffer should contain theSameElementsInOrderAs List(1L, 2L, 3L, 4L)
-        }
+      awaitAssert(received.asScala.toList should contain theSameElementsInOrderAs List(1L, 2L, 3L, 4L), 10.seconds)
     }
 
     "pass through all data when using wireTap" in {
-      val listBuffer = new ListBuffer[String]()
+      val received = new ConcurrentLinkedQueue[String]()
       Source(Vector(Message("A", 1L), Message("B", 2L), Message("D", 3L), Message("C", 4L)))
         .asSourceWithContext(_.offset)
         .via(
           FlowWithContext.fromTuples(Flow.fromFunction[(Message, Long), (String, Long)] { case (data, offset) =>
             (data.data.toLowerCase, offset)
-          }).wireTap(Sink.foreach(string => listBuffer.+=(string)))
+          }).wireTap(Sink.foreach(string => received.add(string)))
         )
         .toMat(TestSink[(String, Long)]())(Keep.right)
         .run()
@@ -142,19 +143,17 @@ class FlowWithContextSpec extends StreamSpec {
         .expectNext(("d", 3L))
         .expectNext(("c", 4L))
         .expectComplete()
-        .within(10.seconds) {
-          listBuffer should contain atLeastOneElementOf List("a", "b", "d", "c")
-        }
+      awaitAssert(received.asScala.toList should contain atLeastOneElementOf List("a", "b", "d", "c"), 10.seconds)
     }
 
     "pass through all data when using wireTapContext" in {
-      val listBuffer = new ListBuffer[Long]()
+      val received = new ConcurrentLinkedQueue[Long]()
       Source(Vector(Message("A", 1L), Message("B", 2L), Message("D", 3L), Message("C", 4L)))
         .asSourceWithContext(_.offset)
         .via(
           FlowWithContext.fromTuples(Flow.fromFunction[(Message, Long), (String, Long)] { case (data, offset) =>
             (data.data.toLowerCase, offset)
-          }).wireTapContext(Sink.foreach(offset => listBuffer.+=(offset)))
+          }).wireTapContext(Sink.foreach(offset => received.add(offset)))
         )
         .toMat(TestSink[(String, Long)]())(Keep.right)
         .run()
@@ -164,9 +163,7 @@ class FlowWithContextSpec extends StreamSpec {
         .expectNext(("d", 3L))
         .expectNext(("c", 4L))
         .expectComplete()
-        .within(10.seconds) {
-          listBuffer should contain atLeastOneElementOf List(1L, 2L, 3L, 4L)
-        }
+      awaitAssert(received.asScala.toList should contain atLeastOneElementOf List(1L, 2L, 3L, 4L), 10.seconds)
     }
 
     "keep the same order for data and context when using unsafeDataVia" in {
