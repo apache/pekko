@@ -121,7 +121,10 @@ private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
   @volatile
   protected var _systemQueueDoNotCallMeDirectly: SystemMessage = _ // null by default
 
-  final def currentStatus: Mailbox.Status = AbstractMailbox.mailboxStatusHandle.get(this)
+  // volatile read: the status is published across threads via compareAndSet/setVolatile
+  // below; a plain VarHandle.get could observe a stale status (e.g. miss a Scheduled or
+  // Closed transition). Restores the getIntVolatile semantics from before the VarHandle migration.
+  final def currentStatus: Mailbox.Status = AbstractMailbox.mailboxStatusHandle.getVolatile(this)
 
   final def shouldProcessMessage: Boolean = (currentStatus & shouldNotProcessMask) == 0
 
@@ -137,7 +140,9 @@ private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
     AbstractMailbox.mailboxStatusHandle.compareAndSet(this, oldStatus, newStatus)
 
   protected final def setStatus(newStatus: Status): Unit =
-    AbstractMailbox.mailboxStatusHandle.set(this, newStatus)
+    // volatile write: ordered against the concurrent reads in currentStatus; restores the
+    // putIntVolatile semantics from before the VarHandle migration
+    AbstractMailbox.mailboxStatusHandle.setVolatile(this, newStatus)
 
   /**
    * Reduce the suspend count by one. Caller does not need to worry about whether
@@ -209,7 +214,9 @@ private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
   protected final def systemQueueGet: LatestFirstSystemMessageList =
     // Note: contrary how it looks, there is no allocation here, as SystemMessageList is a value class and as such
     // it just exists as a typed view during compile-time. The actual return type is still SystemMessage.
-    new LatestFirstSystemMessageList(AbstractMailbox.systemMessageHandle.get(this))
+    // volatile read: the system message queue head is published across threads via compareAndSet
+    // in systemQueuePut; restores the getObjectVolatile semantics from before the VarHandle migration.
+    new LatestFirstSystemMessageList(AbstractMailbox.systemMessageHandle.getVolatile(this))
 
   protected final def systemQueuePut(_old: LatestFirstSystemMessageList, _new: LatestFirstSystemMessageList): Boolean =
     (_old.head eq _new.head) ||

@@ -547,7 +547,8 @@ private[pekko] final class PromiseActorRef(
     _watchedByDoNotCallMeDirectly
   }
 
-  private[this] def watchedBy: Set[ActorRef] = watchedByHandle.get(this)
+  // volatile read: published across threads via compareAndSet in updateWatchedBy
+  private[this] def watchedBy: Set[ActorRef] = watchedByHandle.getVolatile(this)
 
   private[this] def updateWatchedBy(oldWatchedBy: Set[ActorRef], newWatchedBy: Set[ActorRef]): Boolean =
     watchedByHandle.compareAndSet(this, oldWatchedBy, newWatchedBy)
@@ -570,12 +571,15 @@ private[pekko] final class PromiseActorRef(
     case other => if (!updateWatchedBy(other, null)) clearWatchers() else other
   }
 
-  private[this] def state: AnyRef = stateHandle.get(this)
+  // volatile read: published across threads via compareAndSet/setVolatile below
+  private[this] def state: AnyRef = stateHandle.getVolatile(this)
 
   private[this] def updateState(oldState: AnyRef, newState: AnyRef): Boolean =
     stateHandle.compareAndSet(this, oldState, newState)
 
-  private[this] def setState(newState: AnyRef): Unit = stateHandle.set(this, newState)
+  // volatile write: ordered against the concurrent reads in state; restores the
+  // putObjectVolatile semantics this had before the VarHandle migration
+  private[this] def setState(newState: AnyRef): Unit = stateHandle.setVolatile(this, newState)
 
   override def getParent: InternalActorRef = provider.tempContainer
 
