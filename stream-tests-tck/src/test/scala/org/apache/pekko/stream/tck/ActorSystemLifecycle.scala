@@ -42,9 +42,19 @@ trait ActorSystemLifecycle {
 
   def shutdownTimeout: FiniteDuration = Timeouts.actorSystemShutdownTimeoutMillis.millis
 
+  // Always-applied baseline for TCK ActorSystems. The default Pekko
+  // `actor-system-terminate` phase timeout is 10s, which is occasionally too
+  // tight on JDK 25 nightly runs (virtualized dispatchers + heavy stochastic
+  // TCK iterations leave stream actors mid-shutdown). Widening the phase
+  // timeout gives the outer 40s shutdown await (see Timeouts) enough room to
+  // drain leftover materializations cleanly instead of aborting the suite.
+  private def baselineConfig: Config =
+    ConfigFactory.parseString("pekko.coordinated-shutdown.phases.actor-system-terminate.timeout = 30 s")
+
   @BeforeClass
   def createActorSystem(): Unit = {
-    _system = ActorSystem(Logging.simpleName(getClass), additionalConfig.withFallback(PekkoSpec.testConf))
+    val config = additionalConfig.withFallback(baselineConfig).withFallback(PekkoSpec.testConf)
+    _system = ActorSystem(Logging.simpleName(getClass), config)
     _system.eventStream.publish(TestEvent.Mute(EventFilter[RuntimeException]("Test exception")))
   }
 
