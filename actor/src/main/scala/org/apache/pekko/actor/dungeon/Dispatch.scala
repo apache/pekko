@@ -51,7 +51,10 @@ private[pekko] trait Dispatch { this: ActorCell =>
   }
 
   final def mailbox: Mailbox =
-    AbstractActorCell.mailboxHandle.get(this)
+    // volatile read: the mailbox is published across threads via the compareAndSet in
+    // swapMailbox; a plain VarHandle.get could observe a stale mailbox (restores the
+    // getObjectVolatile semantics this had before the VarHandle migration)
+    AbstractActorCell.mailboxHandle.getVolatile(this)
 
   @tailrec
   final def swapMailbox(newMailbox: Mailbox): Mailbox = {

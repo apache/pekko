@@ -136,10 +136,12 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
     ret
   }
 
-  final def inhabitants: Long = inhabitantsHandle.get(this)
+  // volatile read: published across threads via getAndAdd in addInhabitants
+  final def inhabitants: Long = inhabitantsHandle.getVolatile(this)
 
   private final def shutdownSchedule: Int =
-    shutdownScheduleHandle.get(this)
+    // volatile read: published across threads via compareAndSet in updateShutdownSchedule
+    shutdownScheduleHandle.getVolatile(this)
   private final def updateShutdownSchedule(expect: Int, update: Int): Boolean =
     shutdownScheduleHandle.compareAndSet(this, expect, update)
 

@@ -274,7 +274,9 @@ private[remote] class Association(
    * @return Reference to current shared state
    */
   def associationState: AssociationState =
-    AbstractAssociation.sharedStateHandle.get(this)
+    // volatile read: published across threads via compareAndSet in swapState; restores the
+    // getObjectVolatile semantics this had before the VarHandle migration
+    AbstractAssociation.sharedStateHandle.getVolatile(this)
 
   def setControlIdleKillSwitch(killSwitch: OptionVal[SharedKillSwitch]): Unit = {
     val current = associationState

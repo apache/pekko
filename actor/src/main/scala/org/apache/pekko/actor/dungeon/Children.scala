@@ -39,7 +39,9 @@ private[pekko] trait Children { this: ActorCell =>
   private var _childrenRefsDoNotCallMeDirectly: ChildrenContainer = EmptyChildrenContainer
 
   def childrenRefs: ChildrenContainer =
-    AbstractActorCell.childrenHandle.get(this)
+    // volatile read: children is published across threads via compareAndSet/setVolatile;
+    // restores the getObjectVolatile semantics this had before the VarHandle migration
+    AbstractActorCell.childrenHandle.getVolatile(this)
 
   final def children: immutable.Iterable[ActorRef] = childrenRefs.children
   final def getChildren(): java.lang.Iterable[ActorRef] = {
@@ -65,7 +67,8 @@ private[pekko] trait Children { this: ActorCell =>
 
   @nowarn @volatile private var _functionRefsDoNotCallMeDirectly = immutable.Map.empty[String, FunctionRef]
   private def functionRefs: Map[String, FunctionRef] =
-    AbstractActorCell.functionRefsHandle.get(this)
+    // volatile read: published across threads via compareAndSet in addFunctionRef/removeFunctionRef
+    AbstractActorCell.functionRefsHandle.getVolatile(this)
 
   private[pekko] def getFunctionRefOrNobody(name: String, uid: Int = ActorCell.undefinedUid): InternalActorRef =
     functionRefs.getOrElse(name, Children.GetNobody()) match {
@@ -184,7 +187,10 @@ private[pekko] trait Children { this: ActorCell =>
   }
 
   final protected def setTerminated(): Unit =
-    AbstractActorCell.childrenHandle.set(this, TerminatedChildrenContainer)
+    // volatile write: this publishes the terminal container to concurrent readers of
+    // childrenRefs; restores the putObjectVolatile semantics this had before the
+    // VarHandle migration (a plain set would not be ordered against those reads)
+    AbstractActorCell.childrenHandle.setVolatile(this, TerminatedChildrenContainer)
 
   /*
    * ActorCell-internal API

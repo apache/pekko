@@ -64,8 +64,11 @@ private[pekko] class RepointableActorRef(
     _lookupDoNotCallMeDirectly
   }
 
-  def underlying: Cell = cellHandle.get(this)
-  def lookup: Cell = lookupHandle.get(this)
+  // volatile reads: cell/lookup are published across threads via compareAndSet in
+  // swapCell/swapLookup; restores the getObjectVolatile semantics these had before
+  // the VarHandle migration
+  def underlying: Cell = cellHandle.getVolatile(this)
+  def lookup: Cell = lookupHandle.getVolatile(this)
 
   @tailrec
   final def swapCell(next: Cell): Cell = {

@@ -291,7 +291,9 @@ class CircuitBreaker(
    * @return Reference to current state
    */
   private[this] def currentState: State =
-    AbstractCircuitBreaker.stateHandle.get(this)
+    // volatile read: state is published across threads via compareAndSet in swapState;
+    // restores the getObjectVolatile semantics this had before the VarHandle migration
+    AbstractCircuitBreaker.stateHandle.getVolatile(this)
 
   /**
    * Helper method for updating the underlying resetTimeout via VarHandle
@@ -303,7 +305,8 @@ class CircuitBreaker(
    * Helper method for accessing to the underlying resetTimeout via VarHandle
    */
   private[this] def currentResetTimeout: FiniteDuration =
-    AbstractCircuitBreaker.resetTimeoutHandle.get(this)
+    // volatile read: see currentState; published via compareAndSet in swapResetTimeout
+    AbstractCircuitBreaker.resetTimeoutHandle.getVolatile(this)
 
   /**
    * Wraps invocations of asynchronous calls that need to be protected.
