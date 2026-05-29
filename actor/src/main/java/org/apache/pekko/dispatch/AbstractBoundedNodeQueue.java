@@ -50,7 +50,10 @@ public abstract class AbstractBoundedNodeQueue<T> {
     }
 
     private Node<T> getEnq() {
-        return (Node<T>) enqHandle.get(this);
+        // Volatile read: this field is published across threads via casEnq; a plain read
+        // (VarHandle.get) carries no ordering even on a volatile field and may observe a
+        // stale node or be hoisted out of the spin loops in peekNode/pollNode.
+        return (Node<T>) enqHandle.getVolatile(this);
     }
 
     private boolean casEnq(Node<T> old, Node<T> nju) {
@@ -62,7 +65,8 @@ public abstract class AbstractBoundedNodeQueue<T> {
     }
 
     private Node<T> getDeq() {
-        return (Node<T>) deqHandle.get(this);
+        // Volatile read: see getEnq. Published across threads via casDeq.
+        return (Node<T>) deqHandle.getVolatile(this);
     }
 
     private boolean casDeq(Node<T> old, Node<T> nju) {
@@ -75,6 +79,9 @@ public abstract class AbstractBoundedNodeQueue<T> {
           final Node<T> next = deq.next();
           if (next != null || getEnq() == deq)
             return next;
+          // spinning until the producer that already advanced enq finishes linking next;
+          // onSpinWait reduces busy-wait power/pipeline cost and yields to an SMT sibling.
+          Thread.onSpinWait();
         }
     }
 
@@ -204,7 +211,13 @@ public abstract class AbstractBoundedNodeQueue<T> {
 
         @SuppressWarnings("unchecked")
         public final Node<T> next() {
-            return (Node<T>) nextHandle.get(this);
+            // Acquire load to pair with the release store in setNext: it establishes the
+            // happens-before that publishes the node and prevents the read from being hoisted
+            // out of the spin loops in peekNode/pollNode (a plain VarHandle.get carries no
+            // ordering even on a volatile field and may be hoisted, yielding an endless spin).
+            // getAcquire is sufficient here (release/acquire pairing) and is no costlier than
+            // getVolatile for a load, so the stronger sequential consistency is not needed.
+            return (Node<T>) nextHandle.getAcquire(this);
         }
 
         protected final void setNext(final Node<T> newNext) {
