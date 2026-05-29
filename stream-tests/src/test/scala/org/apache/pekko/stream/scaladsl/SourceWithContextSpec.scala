@@ -13,8 +13,10 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import scala.collection.mutable.ListBuffer
+import java.util.concurrent.ConcurrentLinkedQueue
+
 import scala.concurrent.duration._
+import scala.jdk.CollectionConverters._
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
@@ -77,11 +79,14 @@ class SourceWithContextSpec extends StreamSpec {
     }
 
     "pass through all data when using alsoTo" in {
-      val listBuffer = new ListBuffer[Message]()
+      // alsoTo feeds an asynchronous side Sink, which may still be draining when the
+      // main stream completes. Poll until it has observed every element instead of
+      // asserting once (the single assertion raced under JDK 25 scheduling).
+      val received = new ConcurrentLinkedQueue[Message]()
       val messages = Vector(Message("A", 1L), Message("B", 2L), Message("D", 3L), Message("C", 4L))
       Source(messages)
         .asSourceWithContext(_.offset)
-        .alsoTo(Sink.foreach(message => listBuffer.+=(message)))
+        .alsoTo(Sink.foreach(message => received.add(message)))
         .toMat(TestSink[(Message, Long)]())(Keep.right)
         .run()
         .request(4)
@@ -90,17 +95,15 @@ class SourceWithContextSpec extends StreamSpec {
         .expectNext((Message("D", 3L), 3L))
         .expectNext((Message("C", 4L), 4L))
         .expectComplete()
-        .within(10.seconds) {
-          listBuffer.toVector shouldBe messages
-        }
+      awaitAssert(received.asScala.toVector shouldBe messages, 10.seconds)
     }
 
     "pass through all data when using alsoToContext" in {
-      val listBuffer = new ListBuffer[Long]()
+      val received = new ConcurrentLinkedQueue[Long]()
       val messages = Vector(Message("A", 1L), Message("B", 2L), Message("D", 3L), Message("C", 4L))
       Source(messages)
         .asSourceWithContext(_.offset)
-        .alsoToContext(Sink.foreach(offset => listBuffer.+=(offset)))
+        .alsoToContext(Sink.foreach(offset => received.add(offset)))
         .toMat(TestSink[(Message, Long)]())(Keep.right)
         .run()
         .request(4)
@@ -109,17 +112,15 @@ class SourceWithContextSpec extends StreamSpec {
         .expectNext((Message("D", 3L), 3L))
         .expectNext((Message("C", 4L), 4L))
         .expectComplete()
-        .within(10.seconds) {
-          listBuffer.toVector shouldBe messages.map(_.offset)
-        }
+      awaitAssert(received.asScala.toVector shouldBe messages.map(_.offset), 10.seconds)
     }
 
     "pass through all data when using wireTap" in {
-      val listBuffer = new ListBuffer[Message]()
+      val received = new ConcurrentLinkedQueue[Message]()
       val messages = Vector(Message("A", 1L), Message("B", 2L), Message("D", 3L), Message("C", 4L))
       Source(messages)
         .asSourceWithContext(_.offset)
-        .wireTap(Sink.foreach(message => listBuffer.+=(message)))
+        .wireTap(Sink.foreach(message => received.add(message)))
         .toMat(TestSink[(Message, Long)]())(Keep.right)
         .run()
         .request(4)
@@ -128,17 +129,15 @@ class SourceWithContextSpec extends StreamSpec {
         .expectNext((Message("D", 3L), 3L))
         .expectNext((Message("C", 4L), 4L))
         .expectComplete()
-        .within(10.seconds) {
-          listBuffer.toVector should contain atLeastOneElementOf messages
-        }
+      awaitAssert(received.asScala.toVector should contain atLeastOneElementOf messages, 10.seconds)
     }
 
     "pass through all data when using wireTapContext" in {
-      val listBuffer = new ListBuffer[Long]()
+      val received = new ConcurrentLinkedQueue[Long]()
       val messages = Vector(Message("A", 1L), Message("B", 2L), Message("D", 3L), Message("C", 4L))
       Source(messages)
         .asSourceWithContext(_.offset)
-        .wireTapContext(Sink.foreach(offset => listBuffer.+=(offset)))
+        .wireTapContext(Sink.foreach(offset => received.add(offset)))
         .toMat(TestSink[(Message, Long)]())(Keep.right)
         .run()
         .request(4)
@@ -147,9 +146,7 @@ class SourceWithContextSpec extends StreamSpec {
         .expectNext((Message("D", 3L), 3L))
         .expectNext((Message("C", 4L), 4L))
         .expectComplete()
-        .within(10.seconds) {
-          listBuffer.toVector should contain atLeastOneElementOf (messages.map(_.offset))
-        }
+      awaitAssert(received.asScala.toVector should contain atLeastOneElementOf (messages.map(_.offset)), 10.seconds)
     }
 
     "pass through contexts via a FlowWithContext" in {
