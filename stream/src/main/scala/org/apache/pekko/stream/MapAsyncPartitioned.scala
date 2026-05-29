@@ -209,6 +209,11 @@ private[stream] final class MapAsyncPartitioned[In, Out, Partition](
             }
           }
           drainQueue()
+          // The while-loop's Failure (resume) branch dequeues elements without calling pullIfNeeded(),
+          // so when the final buffered elements are resumed failures the buffer empties here without any
+          // completion check. pullIfNeeded() is the only path that runs completeStage() once upstream has
+          // finished, so it must run after draining or the stage hangs forever (mirrors the unordered branch).
+          pullIfNeeded()
         }
 
       private def pushNextIfPossibleUnordered(): Unit =
