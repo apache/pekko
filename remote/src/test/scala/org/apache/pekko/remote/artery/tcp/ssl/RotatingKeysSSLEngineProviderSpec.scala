@@ -302,7 +302,10 @@ abstract class RotatingKeysSSLEngineProviderSpec(extraConfig: String)
     val ref = targetRef.getOrElse(
       fail(s"Timed out waiting for ActorIdentity from $toPath after $maxAttempts attempts"))
     ref.tell("ping-1", senderOnSource.ref)
-    senderOnSource.expectMsg("ping-1")
+    senderOnSource.fishForMessage(identifyTimeout, hint = "waiting for ping-1") {
+      case "ping-1"            => true
+      case ActorIdentity(_, _) => false
+    }
   }
 
   /**
