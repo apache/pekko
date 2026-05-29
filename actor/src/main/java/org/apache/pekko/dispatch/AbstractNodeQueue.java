@@ -54,12 +54,15 @@ public abstract class AbstractNodeQueue<T> extends AtomicReference<AbstractNodeQ
      */
     @SuppressWarnings("unchecked")
     protected final Node<T> peekNode() {
-        final Node<T> tail = (Node<T>) tailHandle.get(this);
+        final Node<T> tail = (Node<T>) tailHandle.getAcquire(this);
         Node<T> next = tail.next();
         if (next == null && get() != tail) {
             // if tail != head this is not going to change until producer makes progress
-            // we can avoid reading the head and just spin on next until it shows up
+            // we can avoid reading the head and just spin on next until it shows up.
+            // onSpinWait hints the CPU we are busy-waiting: it cuts spin power/pipeline cost
+            // and yields the core to an SMT sibling (which may be the producer linking next).
             do {
+                Thread.onSpinWait();
                 next = tail.next();
             } while (next == null);
         }
@@ -110,7 +113,7 @@ public abstract class AbstractNodeQueue<T> extends AtomicReference<AbstractNodeQ
      * @return true if queue was empty at some point in the past
      */
     public final boolean isEmpty() {
-        return tailHandle.get(this) == get();
+        return tailHandle.getAcquire(this) == get();
     }
 
     /**
@@ -126,7 +129,7 @@ public abstract class AbstractNodeQueue<T> extends AtomicReference<AbstractNodeQ
     public final int count() {
         int count = 0;
         final Node<T> head = get();
-        for(Node<T> n = ((Node<T>) tailHandle.get(this)).next();
+        for(Node<T> n = ((Node<T>) tailHandle.getAcquire(this)).next();
             n != null && count < Integer.MAX_VALUE; 
             n = n.next()) {
           ++count;
@@ -162,12 +165,15 @@ public abstract class AbstractNodeQueue<T> extends AtomicReference<AbstractNodeQ
      */
     @SuppressWarnings("unchecked")
     public final Node<T> pollNode() {
-      final Node<T> tail = (Node<T>) tailHandle.get(this);
+      final Node<T> tail = (Node<T>) tailHandle.getAcquire(this);
       Node<T> next = tail.next();
       if (next == null && get() != tail) {
           // if tail != head this is not going to change until producer makes progress
-          // we can avoid reading the head and just spin on next until it shows up
+          // we can avoid reading the head and just spin on next until it shows up.
+          // onSpinWait hints the CPU we are busy-waiting: it cuts spin power/pipeline cost
+          // and yields the core to an SMT sibling (which may be the producer linking next).
           do {
+              Thread.onSpinWait();
               next = tail.next();
           } while (next == null);
       }
@@ -208,7 +214,13 @@ public abstract class AbstractNodeQueue<T> extends AtomicReference<AbstractNodeQ
         }
 
         public final Node<T> next() {
-            return (Node<T>) nextHandle.get(this);
+            // Acquire load to pair with the release store in setNext: it establishes the
+            // happens-before that publishes the node and prevents the read from being hoisted
+            // out of the spin loops in peekNode/pollNode (a plain VarHandle.get carries no
+            // ordering even on a volatile field and may be hoisted, yielding an endless spin).
+            // getAcquire is sufficient here (release/acquire pairing) and is no costlier than
+            // getVolatile for a load, so the stronger sequential consistency is not needed.
+            return (Node<T>) nextHandle.getAcquire(this);
         }
 
         protected final void setNext(final Node<T> newNext) {
