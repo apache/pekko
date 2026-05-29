@@ -398,6 +398,26 @@ class FlowMapAsyncPartitionedSpec extends StreamSpec with WithLogCapturing {
       expected.futureValue should contain theSameElementsInOrderAs (1 to 10).filter(_ % 4 == 3)
     }
 
+    "resume (unordered) after multiple failures if resume supervision is in place" in {
+      implicit val ec: ExecutionContext = system.dispatcher
+
+      // Mirrors the ordered case: the final elements (8, 9, 10) all fail under the resuming
+      // decider, so the stage must still complete once the buffer drains after upstream finish.
+      // Guards the unordered completion path against the regression fixed for the ordered path.
+      val expected =
+        Source(1 to 10)
+          .mapAsyncPartitionedUnordered(4)(_ % 3) { (elem, _) =>
+            Future {
+              if (elem % 4 < 3) throw new TE("BOOM!")
+              else elem
+            }
+          }
+          .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+          .runWith(Sink.seq)
+
+      expected.futureValue should contain theSameElementsAs (1 to 10).filter(_ % 4 == 3)
+    }
+
     "ignore null-completed futures" in {
       val shouldBeNull = {
         val n = scala.util.Random.nextInt(10) + 1
