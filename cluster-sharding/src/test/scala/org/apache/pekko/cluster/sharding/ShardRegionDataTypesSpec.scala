@@ -56,9 +56,8 @@ class ShardRegionDataTypesSpec extends AnyWordSpec with Matchers {
     "support pattern matching" in {
       val s = ShardRegionStats(Map("s1" -> 1), Set("s2"))
       s match {
-        case ShardRegionStats(stats, failed) =>
+        case ShardRegionStats(stats) =>
           stats shouldBe Map("s1" -> 1)
-          failed shouldBe Set("s2")
       }
     }
 
@@ -94,17 +93,16 @@ class ShardRegionDataTypesSpec extends AnyWordSpec with Matchers {
 
     "support copy" in {
       val original = CurrentShardRegionState(Set(ShardState("s1", Set("e1"))), Set("s2"))
-      val copied = original.copy(failed = Set("s3"))
-      copied.shards shouldBe Set(ShardState("s1", Set("e1")))
-      copied.failed shouldBe Set("s3")
+      val copied = original.copy(shards = Set(ShardState("s1", Set("e2"))))
+      copied.shards shouldBe Set(ShardState("s1", Set("e2")))
+      copied.failed shouldBe Set("s2")
     }
 
     "support pattern matching" in {
       val state = CurrentShardRegionState(Set(ShardState("s1", Set("e1"))), Set("s2"))
       state match {
-        case CurrentShardRegionState(shards, failed) =>
+        case CurrentShardRegionState(shards) =>
           shards shouldBe Set(ShardState("s1", Set("e1")))
-          failed shouldBe Set("s2")
       }
     }
 
