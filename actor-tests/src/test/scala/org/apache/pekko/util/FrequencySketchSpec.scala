@@ -264,6 +264,28 @@ class FrequencySketchSpec extends AnyWordSpec with Matchers {
       sketch.frequency("foo") shouldBe 2
       sketch.frequency("bar") shouldBe 2
     }
+
+    "reject capacity that would cause width to overflow Int" in {
+      // capacity > 536,870,912 with default widthMultiplier=4: ceilingPowerOfTwo gives 2^30=1073741824, times 4 overflows
+      an[IllegalArgumentException] should be thrownBy FrequencySketch[String](capacity = 536_870_913)
+    }
+
+    "detect width overflow that would have been missed by Int arithmetic" in {
+      // before the fix, widthMultiplier * ceilingPowerOfTwo(capacity) was computed in Int and could silently overflow
+      val capacity = 536_870_913
+      val widthMultiplier = 4
+      // the old Int multiplication silently overflows to a non-power-of-two or zero/negative value
+      val widthInt = widthMultiplier * FrequencySketch.Bits.ceilingPowerOfTwo(capacity)
+      widthInt should be <= 0 // negative or zero due to Int overflow (old broken behavior)
+      // the new Long multiplication correctly identifies the overflow
+      val widthLong = widthMultiplier.toLong * FrequencySketch.Bits.ceilingPowerOfTwo(capacity).toLong
+      widthLong should be > Int.MaxValue.toLong
+    }
+
+    "reject capacity that would cause width to overflow Int with custom widthMultiplier" in {
+      an[IllegalArgumentException] should be thrownBy
+      FrequencySketch[String](capacity = 100, widthMultiplier = Int.MaxValue)
+    }
   }
 
   "FastFrequencySketch" must {
@@ -369,6 +391,26 @@ class FrequencySketchSpec extends AnyWordSpec with Matchers {
       }
       val accuracy = correct.toDouble / comparisons
       accuracy should be > 0.95 // note: depends on the hash collisions, and random distribution
+    }
+
+    "reject capacity that would cause width to overflow Int" in {
+      // capacity > 536,870,912 with default widthMultiplier=4: ceilingPowerOfTwo gives 2^30=1073741824, times 4 overflows
+      an[IllegalArgumentException] should be thrownBy FastFrequencySketch[String](capacity = 536_870_913)
+    }
+
+    "detect width overflow that would have been missed by Int arithmetic" in {
+      // before the fix, widthMultiplier * ceilingPowerOfTwo(capacity) was computed in Int and could silently overflow
+      val capacity = 536_870_913
+      val widthMultiplier = 4
+      val widthInt = widthMultiplier * FrequencySketch.Bits.ceilingPowerOfTwo(capacity)
+      widthInt should be <= 0 // negative or zero due to Int overflow (old broken behavior)
+      val widthLong = widthMultiplier.toLong * FrequencySketch.Bits.ceilingPowerOfTwo(capacity).toLong
+      widthLong should be > Int.MaxValue.toLong
+    }
+
+    "reject capacity that would cause width to overflow Int with custom widthMultiplier" in {
+      an[IllegalArgumentException] should be thrownBy
+      FastFrequencySketch[String](capacity = 100, widthMultiplier = Int.MaxValue)
     }
   }
 }
