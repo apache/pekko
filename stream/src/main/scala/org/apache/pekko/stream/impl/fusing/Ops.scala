@@ -1319,19 +1319,30 @@ private[stream] object Collect {
       override def onPush(): Unit = {
         try {
           val future = f(grab(in))
-          val holder = new Holder[Out](NotYetThere, futureCB)
-          buffer.enqueue(holder)
-
           future.value match {
-            case None    => future.onComplete(holder)(scala.concurrent.ExecutionContext.parasitic)
+            // Not-yet-completed future: reserve this element's ordered slot with a Holder. Listed first so
+            // the pending path costs only a single type check and never evaluates the fast-path guard below
+            // (behaviourally and cost-wise identical to before this fast path was introduced).
+            case None =>
+              val holder = new Holder[Out](NotYetThere, futureCB)
+              buffer.enqueue(holder)
+              future.onComplete(holder)(scala.concurrent.ExecutionContext.parasitic)
+            // Zero-allocation fast path: the future is already completed with a non-null element and
+            // nothing is buffered ahead of it, so ordering is already satisfied and downstream demand is
+            // present. Push straight through, skipping the Holder allocation and the buffer round-trip.
+            case Some(Success(elem)) if (elem != null) && buffer.isEmpty && isAvailable(out) =>
+              push(out, elem)
             case Some(v) =>
+              val holder = new Holder[Out](NotYetThere, futureCB)
+              buffer.enqueue(holder)
               // #20217 the future is already here, optimization: avoid scheduling it on the dispatcher and
               // run the logic directly on this thread
               holder.setElem(v)
               v match {
                 // this optimization also requires us to stop the stage to fail fast if the decider says so:
-                case Failure(ex) if holder.supervisionDirectiveFor(decider, ex) == Supervision.Stop => failStage(ex)
-                case _                                                                              => pushNextIfPossible()
+                case Failure(ex) if holder.supervisionDirectiveFor(decider, ex) == Supervision.Stop =>
+                  failStage(ex)
+                case _ => pushNextIfPossible()
               }
           }
 
