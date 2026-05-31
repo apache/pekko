@@ -22,6 +22,14 @@ ThisBuild / reproducibleBuildsCheckResolver := Resolver.ApacheMavenStagingRepo
 
 ThisBuild / pekkoCoreProject := true
 
+Global / excludeLintKeys ++= Set(
+  projectInfoVersion,
+  logManager,
+  unidocProjectFilter,
+  fork,
+  javacOptions
+)
+
 enablePlugins(
   UnidocRoot,
   UnidocWithPrValidation,
