@@ -22,7 +22,7 @@ import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.collection.{ immutable, mutable }
 import scala.concurrent.{ Await, Future, Promise }
-import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.duration.{ Duration, FiniteDuration }
 
 import org.apache.pekko
 import pekko.{ Done, NotUsed }
@@ -889,7 +889,81 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
       case AfterDelay(_, andThen) =>
         // delay handled at the stage that sends the delay. See `def cancel(in, cause)`.
         internalCancelStage(cause, andThen)
+      case BidirectionalGracefulShutdown(delay) =>
+        // For bidirectional graceful shutdown:
+        // 1. First complete all output ports (regularly or with error)
+        // 2. Wait for grace period to allow error to propagate through counterpart
+        // 3. Then cancel all input ports
+        internalBidirectionalGracefulShutdown(cause, delay)
     }
+  }
+
+  /**
+   * Implements bidirectional graceful shutdown for bidirectional components.
+   *
+   * This method first completes all output ports, then waits for a grace period
+   * to allow the completion/error signal to propagate through the counterpart,
+   * and finally cancels all input ports.
+   *
+   * This addresses the race condition in bidirectional components where cancelling
+   * the upstream side might prevent the error from being properly propagated downstream.
+   */
+  private def internalBidirectionalGracefulShutdown(cause: Throwable, delay: FiniteDuration): Unit = {
+    import SubscriptionWithCancelException._
+
+    // Determine if this should be a failure or regular completion based on the cause
+    val isFailure = cause match {
+      case NoMoreElementsNeeded | StageWasCompleted => false
+      case _                                        => true
+    }
+
+    // Step 1: Complete all output ports first
+    var i = inCount // Start from output ports (after input ports in portToConn)
+    while (i < portToConn.length) {
+      if (isFailure)
+        interpreter.fail(portToConn(i), cause)
+      else
+        handlers(i) match {
+          case e: Emitting[Any @unchecked] => e.addFollowUp(new EmittingCompletion[Any](e.out, e.previous))
+          case _                           => interpreter.complete(portToConn(i))
+        }
+      i += 1
+    }
+
+    // Step 2: Schedule cancellation of input ports after delay
+    if (delay == Duration.Zero) {
+      // If delay is zero, cancel immediately
+      cancelAllInputPorts(cause)
+    } else {
+      // Install handlers to ignore incoming elements on input ports during grace period
+      var j = 0
+      while (j < inCount) {
+        val connection = portToConn(j)
+        connection.inHandler = EagerTerminateInput
+        j += 1
+      }
+
+      // Schedule the actual cancellation after the delay
+      val callback = getAsyncCallback[Throwable] { cancelCause =>
+        cancelAllInputPorts(cancelCause)
+      }
+      materializer.scheduleOnce(delay, () => callback.invoke(cause))
+    }
+
+    cleanUpSubstreams(if (isFailure) OptionVal.Some(cause) else OptionVal.None)
+    setKeepGoing(true) // Keep stage alive during grace period
+  }
+
+  /**
+   * Cancels all input ports with the given cause.
+   */
+  private def cancelAllInputPorts(cause: Throwable): Unit = {
+    var i = 0
+    while (i < inCount) {
+      doCancel(portToConn(i), cause)
+      i += 1
+    }
+    setKeepGoing(false) // Allow stage to complete after cancellation
   }
 
   /**
