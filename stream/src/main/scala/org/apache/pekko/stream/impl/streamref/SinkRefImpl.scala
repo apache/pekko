@@ -81,6 +81,16 @@ private[stream] final class SinkRefStageImpl[In] private[pekko] (val initialPart
         inheritedAttributes.get[StreamRefAttributes.SubscriptionTimeout](
           SubscriptionTimeout(settings.subscriptionTimeout))
       }
+
+      @nowarn("msg=deprecated") // can't remove this settings access without breaking compat
+      private[this] val finalTerminationSignalDeadline = {
+        import StreamRefAttributes._
+        val settings = eagerMaterializer.settings.streamRefSettings
+        inheritedAttributes
+          .get[StreamRefAttributes.FinalTerminationSignalDeadline](
+            FinalTerminationSignalDeadline(settings.finalTerminationSignalDeadline))
+          .timeout
+      }
       // end of settings ---
 
       override protected val stageActorName: String = streamRefsMaster.nextSinkRefStageName()
@@ -97,6 +107,7 @@ private[stream] final class SinkRefStageImpl[In] private[pekko] (val initialPart
         }
 
       val SubscriptionTimeoutTimerKey = "SubscriptionTimeoutKey"
+      val TerminationDeadlineTimerKey = "TerminationDeadlineKey"
 
       // demand management ---
       private var remoteCumulativeDemandReceived: Long = 0L
@@ -152,10 +163,18 @@ private[stream] final class SinkRefStageImpl[In] private[pekko] (val initialPart
               case OptionVal.Some(_ /* known to be Success*/ ) =>
                 completeStage() // other side has terminated (in response to a completion message) so we can safely terminate
               case _ =>
-                failStage(
-                  RemoteStreamRefActorTerminatedException(
-                    s"Remote target receiver of data $partnerRef terminated. " +
-                    s"Local stream terminating, message loss (on remote side) may have happened."))
+                // The partner may have cancelled or completed gracefully and a RemoteStreamCompleted
+                // or RemoteStreamFailure can still be in flight on the ordinary message lane while the
+                // Terminated (system message lane) overtakes it on transports such as Artery. Wait for
+                // that final signal up to finalTerminationSignalDeadline before assuming message loss,
+                // mirroring the SourceRef side. See https://github.com/akka/akka/issues/30844
+                log.debug(
+                  "[{}] Partner [{}] terminated before final signal, waiting [{}] for an in-flight completion",
+                  stageActorName,
+                  partnerRef,
+                  PrettyDuration.format(finalTerminationSignalDeadline))
+                scheduleOnce(TerminationDeadlineTimerKey, finalTerminationSignalDeadline)
+                setKeepGoing(true)
             }
 
         case (sender, StreamRefsProtocol.CumulativeDemand(d)) =>
@@ -218,6 +237,17 @@ private[stream] final class SinkRefStageImpl[In] private[pekko] (val initialPart
             s"within subscription timeout: ${PrettyDuration.format(subscriptionTimeout.timeout)}!")
 
           throw ex
+
+        case TerminationDeadlineTimerKey =>
+          log.debug(
+            "[{}] No final completion signal arrived from terminated partner [{}] within deadline, " +
+            "assuming message loss",
+            stageActorName,
+            partnerRef)
+          failStage(
+            RemoteStreamRefActorTerminatedException(
+              s"Remote target receiver of data $partnerRef terminated. " +
+              s"Local stream terminating, message loss (on remote side) may have happened."))
 
         case other => throw new IllegalArgumentException(s"Unknown timer key: $other")
       }
