@@ -61,7 +61,7 @@ private[pekko] object FrequencySketch {
       depth: Int = 4,
       counterBits: Int = 4)(implicit hasher: Hasher[A]): FrequencySketch[A] = {
     val width = widthMultiplier * Bits.ceilingPowerOfTwo(capacity)
-    val resetSize = (resetMultiplier * capacity).toInt
+    val resetSize = math.min(Int.MaxValue.toLong, (resetMultiplier * capacity).toLong).toInt
     new FrequencySketch(depth, width, counterBits, resetSize, hasher)
   }
 
@@ -257,7 +257,7 @@ private[pekko] object FastFrequencySketch {
    */
   def apply[A](capacity: Int, widthMultiplier: Int = 4, resetMultiplier: Double = 10): FastFrequencySketch[A] = {
     val width = widthMultiplier * FrequencySketch.Bits.ceilingPowerOfTwo(capacity)
-    val resetSize = (resetMultiplier * capacity).toInt
+    val resetSize = math.min(Int.MaxValue.toLong, (resetMultiplier * capacity).toLong).toInt
     new FastFrequencySketch(width, resetSize)
   }
 }

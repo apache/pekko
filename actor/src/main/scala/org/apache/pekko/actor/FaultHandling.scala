@@ -544,7 +544,8 @@ case class AllForOneStrategy(
    *  across actors and thus this field does not take up much space
    */
   private val retriesWindow =
-    (maxNrOfRetriesOption(maxNrOfRetries), withinTimeRangeOption(withinTimeRange).map(_.toMillis.toInt))
+    (maxNrOfRetriesOption(maxNrOfRetries),
+      withinTimeRangeOption(withinTimeRange).map(d => math.min(Int.MaxValue.toLong, d.toMillis).toInt))
 
   def handleChildTerminated(context: ActorContext, child: ActorRef, children: Iterable[ActorRef]): Unit = ()
 
@@ -656,7 +657,8 @@ case class OneForOneStrategy(
    */
   private val retriesWindow = (
     SupervisorStrategy.maxNrOfRetriesOption(maxNrOfRetries),
-    SupervisorStrategy.withinTimeRangeOption(withinTimeRange).map(_.toMillis.toInt))
+    SupervisorStrategy.withinTimeRangeOption(withinTimeRange).map(d =>
+      math.min(Int.MaxValue.toLong, d.toMillis).toInt))
 
   def handleChildTerminated(context: ActorContext, child: ActorRef, children: Iterable[ActorRef]): Unit = ()
 
