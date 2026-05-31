@@ -565,6 +565,44 @@ object Attributes {
      */
     @ApiMayChange
     def afterDelay(delay: java.time.Duration, strategy: Strategy): Strategy = AfterDelay(delay.toScala, strategy)
+
+    /**
+     * Strategy that ensures graceful shutdown for bidirectional components.
+     *
+     * When `cancelStage` is invoked, this strategy first completes all output ports (regularly or with an error),
+     * then waits for a grace period to allow the completion/error signal to propagate through the counterpart,
+     * and finally cancels all input ports.
+     *
+     * This addresses the race condition in bidirectional components where cancelling the upstream side might
+     * prevent the error from being properly propagated downstream. By completing outputs first and waiting,
+     * the error has a chance to bubble through the counterpart before the upstream is cancelled.
+     *
+     * This strategy is particularly useful in stacks of BidiFlows where different layers are connected
+     * through both inputs and outputs, and error propagation is important for proper diagnostics.
+     *
+     * @param delay the grace period to wait after completing outputs before cancelling inputs
+     */
+    @ApiMayChange
+    final case class BidirectionalGracefulShutdown(delay: FiniteDuration) extends Strategy
+
+    /**
+     * Java API
+     *
+     * Strategy that ensures graceful shutdown for bidirectional components.
+     *
+     * When `cancelStage` is invoked, this strategy first completes all output ports (regularly or with an error),
+     * then waits for a grace period to allow the completion/error signal to propagate through the counterpart,
+     * and finally cancels all input ports.
+     *
+     * This addresses the race condition in bidirectional components where cancelling the upstream side might
+     * prevent the error from being properly propagated downstream. By completing outputs first and waiting,
+     * the error has a chance to bubble through the counterpart before the upstream is cancelled.
+     *
+     * @param delay the grace period to wait after completing outputs before cancelling inputs
+     */
+    @ApiMayChange
+    def bidirectionalGracefulShutdown(delay: java.time.Duration): Strategy =
+      BidirectionalGracefulShutdown(delay.toScala)
   }
 
   /**
@@ -628,6 +666,26 @@ object Attributes {
       delay: FiniteDuration,
       strategy: CancellationStrategy.Strategy): CancellationStrategy.Strategy =
     CancellationStrategy.AfterDelay(delay, strategy)
+
+  /**
+   * Java API
+   *
+   * Strategy that ensures graceful shutdown for bidirectional components.
+   *
+   * When `cancelStage` is invoked, this strategy first completes all output ports (regularly or with an error),
+   * then waits for a grace period to allow the completion/error signal to propagate through the counterpart,
+   * and finally cancels all input ports.
+   *
+   * This addresses the race condition in bidirectional components where cancelling the upstream side might
+   * prevent the error from being properly propagated downstream. By completing outputs first and waiting,
+   * the error has a chance to bubble through the counterpart before the upstream is cancelled.
+   *
+   * @param delay the grace period to wait after completing outputs before cancelling inputs
+   */
+  @ApiMayChange
+  def cancellationStrategyBidirectionalGracefulShutdown(
+      delay: FiniteDuration): CancellationStrategy.Strategy =
+    CancellationStrategy.BidirectionalGracefulShutdown(delay)
 
   /**
    * Nested materialization cancellation strategy provides a way to configure the cancellation behavior of stages that materialize a nested flow.
