@@ -28,6 +28,7 @@ import pekko.actor.InternalActorRef
 import pekko.event.Logging
 import pekko.event.LoggingAdapter
 import pekko.remote.artery._
+import pekko.util.FastFrequencySketch
 import pekko.util.OptionVal
 
 /**
@@ -352,7 +353,7 @@ private[remote] abstract class InboundCompression[T >: Null](
   private[this] var resendCount = 0
   private[this] val maxResendCount = 3
 
-  private[this] val cms = new CountMinSketch(16, 1024, System.currentTimeMillis().toInt)
+  private[this] val frequencySketch = FastFrequencySketch[T](capacity = settings.ActorRefs.Max)
 
   log.debug("Initializing {} for originUid [{}]", Logging.simpleName(getClass), originUid)
 
@@ -442,8 +443,13 @@ private[remote] abstract class InboundCompression[T >: Null](
    * Empty keys are omitted.
    */
   def increment(@nowarn("msg=never used") remoteAddress: Address, value: T, n: Long): Unit = {
-    val count = cms.addObjectAndEstimateCount(value, n)
-    addAndCheckIfheavyHitterDetected(value, count)
+    var i = 0
+    while (i < n) {
+      frequencySketch.increment(value)
+      i += 1
+    }
+    val frequency = frequencySketch.frequency(value)
+    addAndCheckIfheavyHitterDetected(value, frequency)
     alive = true
   }
 
@@ -537,7 +543,7 @@ private[remote] abstract class InboundCompression[T >: Null](
   }
 
   override def toString =
-    s"""${Logging.simpleName(getClass)}(countMinSketch: $cms, heavyHitters: $heavyHitters)"""
+    s"""${Logging.simpleName(getClass)}(frequencySketch: $frequencySketch, heavyHitters: $heavyHitters)"""
 
 }
 

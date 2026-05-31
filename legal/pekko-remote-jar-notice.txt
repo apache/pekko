@@ -9,12 +9,3 @@ Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
 
 Apache Pekko is derived from Akka 2.6.x, the last version that was distributed under the
 Apache License, Version 2.0 License.
-
----------------
-
-pekko-remote contains CountMinSketch.java which was developed under an Apache 2.0 license.
-
-stream-lib
-Copyright 2016 AddThis
-
-This product includes software developed by AddThis.
