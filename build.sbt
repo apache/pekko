@@ -7,7 +7,6 @@
  * This file is part of the Apache Pekko project, which was derived from Akka.
  */
 
-import com.typesafe.tools.mima.core._
 import net.bzzt.reproduciblebuilds.ReproducibleBuildsPlugin.reproducibleBuildsCheckResolver
 
 scalaVersion := Dependencies.allScalaVersions.head
@@ -424,9 +423,6 @@ lazy val remote =
     .settings(OSGi.remote)
     .settings(Protobuf.settings)
     .settings(Test / parallelExecution := false)
-    .settings(mimaBinaryIssueFilters ++= Seq(
-      // CountMinSketch was INTERNAL API, replaced by FastFrequencySketch
-      ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.remote.artery.compress.CountMinSketch")))
     .enablePlugins(DependWalkerPlugin, SbtOsgi)
 
 lazy val remoteTests = pekkoModule("remote-tests")

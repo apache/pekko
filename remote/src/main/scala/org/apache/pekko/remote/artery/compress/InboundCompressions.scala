@@ -33,6 +33,50 @@ import pekko.util.OptionVal
 
 /**
  * INTERNAL API
+ *
+ * Abstraction over frequency sketch implementations used for heavy hitter detection in Artery compression.
+ */
+private[remote] trait FrequencySketch[T] {
+  def increment(value: T): Unit
+  def frequency(value: T): Long
+}
+
+/**
+ * INTERNAL API
+ *
+ * Wrapper around CountMinSketch that implements the FrequencySketch interface.
+ */
+private[remote] final class CountMinSketchFrequencySketch[T](depth: Int, width: Int, seed: Int) extends FrequencySketch[T] {
+  private val cms = new CountMinSketch(depth, width, seed)
+
+  override def increment(value: T): Unit = {
+    cms.addObjectAndEstimateCount(value, 1)
+  }
+
+  override def frequency(value: T): Long = {
+    cms.estimateCount(value)
+  }
+}
+
+/**
+ * INTERNAL API
+ *
+ * Wrapper around FastFrequencySketch that implements the FrequencySketch interface.
+ */
+private[remote] final class FastFrequencySketchWrapper[T](capacity: Int) extends FrequencySketch[T] {
+  private val sketch = FastFrequencySketch[T](capacity)
+
+  override def increment(value: T): Unit = {
+    sketch.increment(value)
+  }
+
+  override def frequency(value: T): Long = {
+    sketch.frequency(value).toLong
+  }
+}
+
+/**
+ * INTERNAL API
  * Decompress and cause compression advertisements.
  *
  * One per inbound message stream thus must demux by originUid to use the right tables.
@@ -353,7 +397,14 @@ private[remote] abstract class InboundCompression[T >: Null](
   private[this] var resendCount = 0
   private[this] val maxResendCount = 3
 
-  private[this] val frequencySketch = FastFrequencySketch[T](capacity = settings.ActorRefs.Max)
+  private[this] val frequencySketch: FrequencySketch[T] = settings.FrequencySketchImplementation match {
+    case "count-min-sketch" =>
+      new CountMinSketchFrequencySketch[T](depth = 16, width = 1024, seed = System.currentTimeMillis().toInt)
+    case "fast-frequency-sketch" =>
+      new FastFrequencySketchWrapper[T](capacity = settings.ActorRefs.Max)
+    case other =>
+      throw new IllegalStateException(s"Unknown frequency-sketch-implementation: $other")
+  }
 
   log.debug("Initializing {} for originUid [{}]", Logging.simpleName(getClass), originUid)
 

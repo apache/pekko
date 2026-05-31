@@ -18,37 +18,41 @@ import java.util.Random
 import org.openjdk.jmh.annotations._
 import org.openjdk.jmh.infra.Blackhole
 
-import org.apache.pekko.util.FastFrequencySketch
-
 @State(Scope.Benchmark)
 @BenchmarkMode(Array(Mode.Throughput))
 @Fork(2)
 class CountMinSketchBenchmark {
 
-  @Param(Array("256", "1024", "4096"))
-  var capacity: Int = _
+  //  @Param(Array("4", "8", "12", "16"))
+  @Param(Array("16", "256", "4096", "65536"))
+  var w: Int = _
+  @Param(Array("16", "128", "1024"))
+  var d: Int = _
 
-  val rand = new Random(20160726)
+  private val seed: Int = 20160726
 
-  val preallocatedIds = Array.ofDim[Int](8192)
+  val rand = new Random(seed)
 
-  var frequencySketch: FastFrequencySketch[Int] = _
+  val preallocateIds = Array.ofDim[Int](8192)
+  val preallocateValues = Array.ofDim[Long](8192)
+
+  var countMinSketch: CountMinSketch = _
 
   @Setup
   def init(): Unit = {
-    frequencySketch = FastFrequencySketch[Int](capacity)
+    countMinSketch = new CountMinSketch(d, w, seed)
     (0 to 8191).foreach { index =>
-      preallocatedIds(index) = rand.nextInt()
+      preallocateIds(index) = rand.nextInt()
+      preallocateValues(index) = Math.abs(rand.nextInt())
     }
   }
 
   @Benchmark
   @OperationsPerInvocation(8192)
-  def incrementAndFrequency(blackhole: Blackhole): Unit = {
+  def updateRandomNumbers(blackhole: Blackhole): Unit = {
     var i: Int = 0
     while (i < 8192) {
-      frequencySketch.increment(preallocatedIds(i))
-      blackhole.consume(frequencySketch.frequency(preallocatedIds(i)))
+      blackhole.consume(countMinSketch.addObjectAndEstimateCount(preallocateIds(i), preallocateValues(i)))
       i += 1
     }
   }
