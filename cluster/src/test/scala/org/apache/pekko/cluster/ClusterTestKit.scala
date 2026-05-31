@@ -111,9 +111,16 @@ trait ClusterTestKit extends TestKitBase {
     /** Shuts down all registered [[ActorSystem]]s */
     // Shut down joining nodes before the first seed node so cluster leave and remoting
     // termination can complete while the seed is still available.
-    // The timeout is dilated by TestKit; keep a larger base for virtualized JDK 25 nightly runs.
+    //
+    // This outer await is the binding deadline: the `actor-system-terminate` CoordinatedShutdown
+    // phase only fires `system.finalTerminate()` and recovers if its own (non-dilated) phase
+    // timeout elapses, so termination keeps draining in the background and this await on
+    // `whenTerminated` is what actually decides pass/fail. The base is dilated by `pekko.test.timefactor`
+    // (TestKit), so 60s yields ~120s on a timeFactor=2 lane and ~240s on the timeFactor=4 JDK 25 nightly.
+    // The aeron-udp transport is the slowest to drain (embedded media driver + stacked Aeron liveness
+    // timeouts), so keep this base generous; healthy shutdowns still complete in well under a second.
     def shutdownAll(): Unit =
-      actorSystems.reverse.foreach(sys => shutdown(sys, 30.seconds, verifySystemShutdown = true))
+      actorSystems.reverse.foreach(sys => shutdown(sys, 60.seconds, verifySystemShutdown = true))
 
     /**
      * Force the passed [[ActorSystem]] to quit the cluster and shutdown.

@@ -37,7 +37,11 @@ object MixedProtocolClusterSpec {
       pekko.remote.accept-protocol-names = ["pekko", "akka"]
       pekko.remote.enforce-strict-config-prefix-check-on-join = on
 
-      pekko.coordinated-shutdown.phases.actor-system-terminate.timeout = 30 s
+      # Inner CoordinatedShutdown phase timeout. This is NOT dilated by pekko.test.timefactor, so it is
+      # intentionally non-binding: on a timeout it only logs a WARN and recovers while finalTerminate keeps
+      # draining the (slow) aeron-udp streams in the background. The real deadline is ClusterTestUtil.shutdownAll's
+      # dilated await on whenTerminated. Kept at 60s (aligned with that await's base) to avoid spurious WARN noise.
+      pekko.coordinated-shutdown.phases.actor-system-terminate.timeout = 60 s
 
       pekko.cluster.downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
       pekko.cluster.split-brain-resolver.active-strategy = keep-majority
