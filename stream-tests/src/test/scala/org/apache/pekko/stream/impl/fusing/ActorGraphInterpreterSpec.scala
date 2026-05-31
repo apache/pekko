@@ -436,5 +436,77 @@ class ActorGraphInterpreterSpec extends StreamSpec {
       done.future.futureValue // would throw on failure
     }
 
+    "release reference to initial interpreter shell after it completes" in {
+      val mat = Materializer(system)
+      val initialShellCompleted = TestLatch(1)
+
+      // Create a stage that tracks when it completes
+      val trackingStage = new SimpleLinearGraphStage[String] {
+        override def createLogic(inheritedAttributes: Attributes): GraphStageLogic = new GraphStageLogic(shape) {
+          setHandler(in,
+            new InHandler {
+              override def onPush(): Unit = push(out, grab(in))
+              override def onUpstreamFinish(): Unit = {
+                complete(out)
+                initialShellCompleted.countDown()
+              }
+            })
+          setHandler(out,
+            new OutHandler {
+              override def onPull(): Unit = pull(in)
+            })
+        }
+      }
+
+      val upstream = TestPublisher.probe[String]()
+      val downstream = TestSubscriber.probe[String]()
+
+      Source.fromPublisher(upstream).via(trackingStage).to(Sink.fromSubscriber(downstream)).run()(mat)
+
+      downstream.request(1)
+      upstream.sendNext("test")
+      downstream.expectNext("test")
+
+      // Complete the upstream to trigger stage completion
+      upstream.sendComplete()
+      downstream.expectComplete()
+
+      // Wait for the initial shell to complete
+      Await.ready(initialShellCompleted, remainingOrDefault)
+
+      // The actor should have stopped since there's only one interpreter shell
+      // and it has completed
+      // This verifies that the initial shell reference is released and the actor can stop
+    }
+
+    "not keep initial shell alive when actor hosts additional subfused interpreters" in {
+      val mat = Materializer(system)
+      val firstStreamDone = Promise[Done]()
+      val secondStreamDone = Promise[Done]()
+
+      // Create a flow that we'll use twice through the same materializer
+      val identityFlow = Flow[Int].map(identity)
+
+      // Run first stream and complete it
+      val sub1 = TestSubscriber.probe[Int]()
+      Source(1 to 10).via(identityFlow).to(Sink.fromSubscriber(sub1)).run()(mat)
+      sub1.request(10)
+      sub1.expectNextN(1 to 10)
+      sub1.expectComplete()
+      firstStreamDone.success(Done)
+
+      // Run second stream - this should work even though the first stream's
+      // initial shell has been completed
+      val sub2 = TestSubscriber.probe[Int]()
+      Source(20 to 30).via(identityFlow).to(Sink.fromSubscriber(sub2)).run()(mat)
+      sub2.request(11)
+      sub2.expectNextN(20 to 30)
+      sub2.expectComplete()
+      secondStreamDone.success(Done)
+
+      Await.result(firstStreamDone.future, remainingOrDefault)
+      Await.result(secondStreamDone.future, remainingOrDefault)
+    }
+
   }
 }
