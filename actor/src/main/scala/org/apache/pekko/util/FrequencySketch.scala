@@ -61,7 +61,8 @@ private[pekko] object FrequencySketch {
       depth: Int = 4,
       counterBits: Int = 4)(implicit hasher: Hasher[A]): FrequencySketch[A] = {
     val widthLong = widthMultiplier.toLong * Bits.ceilingPowerOfTwo(capacity).toLong
-    require(widthLong <= Int.MaxValue, s"computed width ($widthLong) exceeds Int.MaxValue; reduce capacity or widthMultiplier")
+    require(widthLong <= Int.MaxValue,
+      s"computed width ($widthLong) exceeds Int.MaxValue; reduce capacity or widthMultiplier")
     val width = widthLong.toInt
     val resetSize = math.min(Int.MaxValue.toLong, (resetMultiplier * capacity).toLong).toInt
     new FrequencySketch(depth, width, counterBits, resetSize, hasher)
@@ -259,7 +260,8 @@ private[pekko] object FastFrequencySketch {
    */
   def apply[A](capacity: Int, widthMultiplier: Int = 4, resetMultiplier: Double = 10): FastFrequencySketch[A] = {
     val widthLong = widthMultiplier.toLong * FrequencySketch.Bits.ceilingPowerOfTwo(capacity).toLong
-    require(widthLong <= Int.MaxValue, s"computed width ($widthLong) exceeds Int.MaxValue; reduce capacity or widthMultiplier")
+    require(widthLong <= Int.MaxValue,
+      s"computed width ($widthLong) exceeds Int.MaxValue; reduce capacity or widthMultiplier")
     val width = widthLong.toInt
     val resetSize = math.min(Int.MaxValue.toLong, (resetMultiplier * capacity).toLong).toInt
     new FastFrequencySketch(width, resetSize)

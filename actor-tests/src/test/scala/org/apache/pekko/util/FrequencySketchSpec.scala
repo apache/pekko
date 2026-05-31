@@ -283,7 +283,8 @@ class FrequencySketchSpec extends AnyWordSpec with Matchers {
     }
 
     "reject capacity that would cause width to overflow Int with custom widthMultiplier" in {
-      an[IllegalArgumentException] should be thrownBy FrequencySketch[String](capacity = 100, widthMultiplier = Int.MaxValue)
+      an[IllegalArgumentException] should be thrownBy
+      FrequencySketch[String](capacity = 100, widthMultiplier = Int.MaxValue)
     }
   }
 
@@ -408,7 +409,8 @@ class FrequencySketchSpec extends AnyWordSpec with Matchers {
     }
 
     "reject capacity that would cause width to overflow Int with custom widthMultiplier" in {
-      an[IllegalArgumentException] should be thrownBy FastFrequencySketch[String](capacity = 100, widthMultiplier = Int.MaxValue)
+      an[IllegalArgumentException] should be thrownBy
+      FastFrequencySketch[String](capacity = 100, widthMultiplier = Int.MaxValue)
     }
   }
 }
