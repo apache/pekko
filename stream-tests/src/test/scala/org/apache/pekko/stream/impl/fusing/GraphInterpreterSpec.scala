@@ -315,6 +315,80 @@ class GraphInterpreterSpec extends StreamSpec with GraphInterpreterSpecKit {
       interpreter.isSuspended should be(false)
     }
 
+    "release references to completed stage logics to prevent memory leaks" in new TestSetup {
+      val source = new UpstreamProbe[Int]("source")
+      val sink = new DownstreamProbe[Int]("sink")
+
+      builder(GraphStages.identity[Int])
+        .connect(source, GraphStages.identity[Int].in)
+        .connect(GraphStages.identity[Int].out, sink)
+        .init()
+
+      lastEvents() should ===(Set.empty[TestEvent])
+
+      sink.requestOne()
+      lastEvents() should ===(Set(RequestOne(source)))
+
+      source.onNext(1)
+      lastEvents() should ===(Set(OnNext(sink, 1)))
+
+      // Get reference to the logics array
+      val logicsField = interpreter.getClass.getDeclaredField("logics")
+      logicsField.setAccessible(true)
+      val logics = logicsField.get(interpreter).asInstanceOf[Array[org.apache.pekko.stream.stage.GraphStageLogic]]
+
+      // All logics should be non-null initially
+      logics.foreach(logic => logic should not be null)
+
+      // Complete the source to trigger shutdown of stages
+      source.onComplete()
+      lastEvents() should ===(Set(OnComplete(sink)))
+
+      // After finish() is called, all logics should be released
+      interpreter.finish()
+
+      // After finish(), all stage logics should have been released (set to null)
+      logics.foreach(logic => logic should be(null))
+    }
+
+    "release references to completed stage logics when some stages complete early" in new TestSetup {
+      val source = new UpstreamProbe[Int]("source")
+      val detachStage = detacher[Int]
+      val identityStage = GraphStages.identity[Int]
+      val sink = new DownstreamProbe[Int]("sink")
+
+      builder(detachStage, identityStage)
+        .connect(source, detachStage.shape.in)
+        .connect(detachStage.shape.out, identityStage.in)
+        .connect(identityStage.out, sink)
+        .init()
+
+      lastEvents() should ===(Set.empty[TestEvent])
+
+      sink.requestOne()
+      lastEvents() should ===(Set(RequestOne(source)))
+
+      // Get reference to the logics array
+      val logicsField = interpreter.getClass.getDeclaredField("logics")
+      logicsField.setAccessible(true)
+      val logics = logicsField.get(interpreter).asInstanceOf[Array[org.apache.pekko.stream.stage.GraphStageLogic]]
+
+      // All logics should be non-null initially
+      logics.foreach(logic => logic should not be null)
+
+      source.onNext(1)
+      lastEvents() should ===(Set(OnNext(sink, 1), RequestOne(source)))
+
+      // Complete the source - this should trigger completion of detacher and identity stages
+      source.onComplete()
+
+      // After finish() is called, all logics should be released
+      interpreter.finish()
+
+      // After finish(), all stage logics should have been released (set to null)
+      logics.foreach(logic => logic should be(null))
+    }
+
   }
 
 }
