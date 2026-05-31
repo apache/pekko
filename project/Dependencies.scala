@@ -38,7 +38,7 @@ object Dependencies {
   val nettyVersion = "4.2.14.Final"
   val logbackVersion = "1.5.33"
 
-  val jacksonAnnotationsVersion = "2.21"
+  val jacksonAnnotationsVersion = "2.22"
   val jacksonVersion2 = "2.21.4"
   val jacksonVersion3 = "3.1.3"
 
