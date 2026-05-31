@@ -105,7 +105,7 @@ import pekko.pattern.{
 
   def onTerminated: Receive = {
     case Terminated(c) =>
-      log.debug(s"Terminating, because child [$c] terminated itself")
+      log.debug("Terminating, because child [{}] terminated itself", c)
       stop(self)
   }
 

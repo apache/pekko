@@ -52,7 +52,7 @@ class EventAdapters(
         }
         map.putIfAbsent(clazz, value) match {
           case null =>
-            log.debug(s"Using EventAdapter: {} for event [{}]", value.getClass.getName, clazz.getName)
+            log.debug("Using EventAdapter: {} for event [{}]", value.getClass.getName, clazz.getName)
             value
           case some => some
         }

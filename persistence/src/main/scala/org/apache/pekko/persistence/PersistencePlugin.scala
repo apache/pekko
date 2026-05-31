@@ -83,7 +83,7 @@ private[pekko] abstract class PersistencePlugin[ScalaDsl, JavaDsl, T: ClassTag](
       s"'reference.conf' is missing persistence plugin config path: '$configPath'")
     val pluginConfig = mergedConfig.getConfig(configPath)
     val pluginClassName = pluginConfig.getString("class")
-    log.debug(s"Create plugin: $configPath $pluginClassName")
+    log.debug("Create plugin: {} {}", configPath, pluginClassName)
     val pluginClass = system.dynamicAccess.getClassFor[AnyRef](pluginClassName).get
 
     def instantiate(args: collection.immutable.Seq[(Class[_], AnyRef)]) =

@@ -470,18 +470,18 @@ private[pekko] class LocalActorRefProvider private[pekko] (
       if (isWalking)
         message match {
           case null => throw InvalidMessageException("Message is null")
-          case _    => log.error(s"$this received unexpected message [$message]")
+          case _    => log.error("{} received unexpected message [{}]", this, message)
         }
 
     override def sendSystemMessage(message: SystemMessage): Unit = if (isWalking) {
       message match {
         case Failed(child: InternalActorRef, ex, _) =>
-          log.error(ex, s"guardian $child failed, shutting down!")
+          log.error(ex, "guardian {} failed, shutting down!", child)
           causeOfTermination.tryFailure(ex)
           child.stop()
         case Supervise(_, _)           => // TODO register child in some map to keep track of it and enable shutdown after all dead
         case _: DeathWatchNotification => stop()
-        case _                         => log.error(s"$this received unexpected system message [$message]")
+        case _                         => log.error("{} received unexpected system message [{}]", this, message)
       }
     }
   }

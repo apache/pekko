@@ -1096,7 +1096,7 @@ private[pekko] class ShardRegion(
 
     Future.traverse(shards.toSeq) { case (shardId, shard) => askOne(shard, msg, shardId) }.map { ps =>
       val qr = ShardsQueryResult[T](ps, this.shards.size, timeout.duration)
-      if (qr.failed.nonEmpty) log.warning(s"{}: $qr", typeName)
+      if (qr.failed.nonEmpty) log.warning("{}: {}", typeName, qr)
       qr
     }
   }

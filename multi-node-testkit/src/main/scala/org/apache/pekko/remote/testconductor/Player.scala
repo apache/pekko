@@ -313,7 +313,7 @@ private[pekko] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress
       } catch {
         case NonFatal(ex) =>
           // silence this one to not make tests look like they failed, it's not really critical
-          log.debug(s"Failed closing channel with ${ex.getClass.getName} ${ex.getMessage}")
+          log.debug("Failed closing channel with {} {}", ex.getClass.getName, ex.getMessage)
       }
   }
 

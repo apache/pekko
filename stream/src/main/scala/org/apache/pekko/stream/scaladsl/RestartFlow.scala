@@ -371,7 +371,7 @@ object RestartWithBackoffFlow {
         }
 
         override protected def onTimer(timerKey: Any): Unit = {
-          log.debug(s"Stage was canceled after delay of $delay")
+          log.debug("Stage was canceled after delay of {}", delay)
           cause match {
             case OptionVal.Some(ex) =>
               cancelStage(ex)

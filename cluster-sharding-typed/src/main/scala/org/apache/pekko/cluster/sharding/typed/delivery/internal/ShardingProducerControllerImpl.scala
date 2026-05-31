@@ -408,7 +408,7 @@ private class ShardingProducerControllerImpl[A: ClassTag](
         context.log.error(errorMessage)
         throw new TimeoutException(errorMessage)
       } else {
-        context.log.info(s"StoreMessageSent seqNr [{}] failed, attempt [{}], retrying.", f.messageSent.seqNr, f.attempt)
+        context.log.info("StoreMessageSent seqNr [{}] failed, attempt [{}], retrying.", f.messageSent.seqNr, f.attempt)
         // retry
         storeMessageSent(f.messageSent, attempt = f.attempt + 1)
         Behaviors.same

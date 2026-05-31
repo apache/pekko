@@ -190,13 +190,13 @@ private[remote] class ArteryAeronUdpTransport(_system: ExtendedActorSystem, _pro
     ctx.availableImageHandler(new AvailableImageHandler {
       override def onAvailableImage(img: Image): Unit = {
         if (log.isDebugEnabled)
-          log.debug(s"onAvailableImage from ${img.sourceIdentity} session ${img.sessionId}")
+          log.debug("onAvailableImage from {} session {}", img.sourceIdentity, img.sessionId)
       }
     })
     ctx.unavailableImageHandler(new UnavailableImageHandler {
       override def onUnavailableImage(img: Image): Unit = {
         if (log.isDebugEnabled)
-          log.debug(s"onUnavailableImage from ${img.sourceIdentity} session ${img.sessionId}")
+          log.debug("onUnavailableImage from {} session {}", img.sourceIdentity, img.sessionId)
 
         // freeSessionBuffer in AeronSource FragmentAssembler
         streamMatValues.get.valuesIterator.foreach {
