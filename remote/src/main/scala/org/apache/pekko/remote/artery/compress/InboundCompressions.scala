@@ -46,7 +46,8 @@ private[remote] trait FrequencySketch[T] {
  *
  * Wrapper around CountMinSketch that implements the FrequencySketch interface.
  */
-private[remote] final class CountMinSketchFrequencySketch[T](depth: Int, width: Int, seed: Int) extends FrequencySketch[T] {
+private[remote] final class CountMinSketchFrequencySketch[T](depth: Int, width: Int, seed: Int)
+    extends FrequencySketch[T] {
   private val cms = new CountMinSketch(depth, width, seed)
 
   override def increment(value: T): Unit = {

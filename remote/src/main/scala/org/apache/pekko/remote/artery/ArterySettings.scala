@@ -279,9 +279,9 @@ private[pekko] object ArterySettings {
     private[pekko] final val Enabled = ActorRefs.Enabled || Manifests.Enabled
 
     val FrequencySketchImplementation: String = toRootLowerCase(getString("frequency-sketch-implementation")) match {
-      case "count-min-sketch"       => "count-min-sketch"
-      case "fast-frequency-sketch"  => "fast-frequency-sketch"
-      case other                    => throw new IllegalArgumentException(s"Unknown frequency-sketch-implementation: $other")
+      case "count-min-sketch"      => "count-min-sketch"
+      case "fast-frequency-sketch" => "fast-frequency-sketch"
+      case other                   => throw new IllegalArgumentException(s"Unknown frequency-sketch-implementation: $other")
     }
 
     object ActorRefs {
