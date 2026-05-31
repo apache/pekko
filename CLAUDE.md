@@ -10,7 +10,7 @@ Before opening or updating a PR, verify:
 - `sbt headerCreateAll` was run to add headers for new files. Never hand-write or invent license headers; let sbt manage them, and preserve existing copyright notices intact.
 - For copied code, the source file or external project is noted in the PR (see Licensing Rules in `AGENTS.md`).
 - Binary compatibility is preserved, and the GitHub `Check / Binary Compatibility` job passes before merge.
-- `sbt +mimaReportBinaryIssues` was run for public API, binary shape, serialization, or MiMa-sensitive internal changes.
+- `sbt +mimaReportBinaryIssues` was run for public API, binary shape, serialization, or MiMa-sensitive internal changes, and ALL reported issues were fixed before creating or updating the PR.
 - Commit messages follow the `AGENTS.md` format.
 - PR bodies follow the `AGENTS.md` format.
 - `Tests` and `References` are present.
