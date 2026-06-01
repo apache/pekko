@@ -722,7 +722,7 @@ final class CoordinatedShutdown private[pekko] (
           case Nil                                                  => Future.successful(Done)
           case phaseName :: remaining if !phases(phaseName).enabled =>
             tasks.get(phaseName).foreach { phaseDef =>
-              log.info(s"Phase [{}] disabled through configuration, skipping [{}] tasks.", phaseName, phaseDef.size)
+              log.info("Phase [{}] disabled through configuration, skipping [{}] tasks.", phaseName, phaseDef.size)
             }
             loop(remaining)
           case phaseName :: remaining =>

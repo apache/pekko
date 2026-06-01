@@ -64,7 +64,7 @@ private[pekko] object ActorTestKitGuardian {
       reply: ActorRef[ActorRef[T]],
       props: Props): Catcher[Behavior[TestKitCommand]] = {
     case NonFatal(e) =>
-      context.log.error(s"Spawn failed, props [$props]", e)
+      context.log.error("Spawn failed, props [{}]", props, e)
       reply ! context.spawnAnonymous(Behaviors.stopped)
       Behaviors.same
   }

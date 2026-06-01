@@ -71,7 +71,7 @@ private[metrics] object MetricsCollector {
     val useInternal = CollectorFallback && CollectorProvider == ""
 
     def create(provider: String) = TryNative {
-      log.debug(s"Trying $provider.")
+      log.debug("Trying {}.", provider)
       system
         .asInstanceOf[ExtendedActorSystem]
         .dynamicAccess

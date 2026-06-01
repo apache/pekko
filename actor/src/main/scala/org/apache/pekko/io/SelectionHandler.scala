@@ -200,12 +200,12 @@ private[io] object SelectionHandler {
     executionContext.execute(select) // start selection "loop"
 
     def register(channel: SelectableChannel, initialOps: Int)(implicit channelActor: ActorRef): Unit = {
-      if (settings.TraceLogging) log.debug(s"Scheduling Registering channel $channel with initialOps $initialOps")
+      if (settings.TraceLogging) log.debug("Scheduling Registering channel {} with initialOps {}", channel, initialOps)
       execute {
         new Task {
           def tryRun(): Unit =
             try {
-              if (settings.TraceLogging) log.debug(s"Registering channel $channel with initialOps $initialOps")
+              if (settings.TraceLogging) log.debug("Registering channel {} with initialOps {}", channel, initialOps)
               val key = channel.register(selector, initialOps, channelActor)
               channelActor ! new ChannelRegistration {
                 def enableInterest(ops: Int): Unit = enableInterestOps(key, ops)
@@ -244,7 +244,7 @@ private[io] object SelectionHandler {
       execute {
         new Task {
           def tryRun(): Unit = {
-            if (settings.TraceLogging) log.debug(s"Enabling $ops on $key")
+            if (settings.TraceLogging) log.debug("Enabling {} on {}", ops, key)
             val currentOps = key.interestOps
             val newOps = currentOps | ops
             if (newOps != currentOps) key.interestOps(newOps)
