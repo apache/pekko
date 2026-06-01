@@ -27,7 +27,6 @@ import org.apache.pekko
 import pekko.Done
 import pekko.actor._
 import pekko.annotation.{ InternalApi, InternalStableApi }
-import pekko.annotation.ApiMayChange
 import pekko.cluster.Cluster
 import pekko.cluster.ClusterEvent._
 import pekko.cluster.ClusterSettings
@@ -501,11 +500,8 @@ object ShardRegion {
       with DeadLetterSuppression
 
   /**
-   * API MAY CHANGE: Messages for passivation strategies may change after additional testing and feedback.
-   *
    * When limit-based automatic passivation is enabled, set a new active entity limit for a shard region.
    */
-  @ApiMayChange
   final case class SetActiveEntityLimit(perRegionLimit: Int)
 
   /**
@@ -700,12 +696,6 @@ private[pekko] class ShardRegion(
   }
 
   private def logPassivationStrategy(): Unit = {
-    if (settings.passivationStrategySettings.oldSettingUsed) {
-      log.warning(
-        "The `pekko.cluster.sharding.passivate-idle-entity-after` setting and associated methods are deprecated. " +
-        "Use the `pekko.cluster.sharding.passivation.default-idle-strategy.idle-entity.timeout` setting instead. " +
-        "See the documentation and reference config for more information on automatic passivation strategies.")
-    }
     if (settings.rememberEntities) {
       log.debug("{}: Entities will not be passivated automatically because 'rememberEntities' is enabled.", typeName)
     } else {
