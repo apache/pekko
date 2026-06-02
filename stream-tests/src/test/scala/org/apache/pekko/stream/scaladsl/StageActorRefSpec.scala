@@ -184,7 +184,7 @@ class StageActorRefSpec extends StreamSpec with ImplicitSender {
       res.futureValue should ===(42)
     }
 
-    "run non-eager stage actor messages in the graph interpreter actor" in {
+    "run non-eager stage actor messages in the graph interpreter" in {
       val (_, res) = Source.maybe[Int].toMat(sumStage(testActor))(Keep.both).run()
 
       val stageRef = expectMsgType[ActorRef]
@@ -194,7 +194,8 @@ class StageActorRefSpec extends StreamSpec with ImplicitSender {
       stageRef ! ReportStageActorInterpreter
       val location = expectMsgType[StageActorLocation]
 
-      location.stageActorParent should ===(location.interpreter)
+      location.stageActorParent should ===(location.supervisor)
+      location.interpreter should !==(location.supervisor)
 
       stageRef ! StopNow
       res.futureValue should ===(1)
@@ -244,7 +245,7 @@ object StageActorRefSpec {
     case object ReportStageActorInterpreter extends NoSerializationVerificationNeeded
     case object ReportEagerStageActorInterpreter extends NoSerializationVerificationNeeded
     case object CompleteNow extends NoSerializationVerificationNeeded
-    final case class StageActorLocation(stageActorParent: ActorPath, interpreter: ActorPath)
+    final case class StageActorLocation(stageActorParent: ActorPath, supervisor: ActorPath, interpreter: ActorPath)
         extends NoSerializationVerificationNeeded
     final case class EagerStageActorLocation(stageActorParent: ActorPath, supervisor: ActorPath, interpreter: ActorPath)
         extends NoSerializationVerificationNeeded
@@ -276,7 +277,10 @@ object StageActorRefSpec {
             case (_, PullNow)                          => pull(in)
             case (sender, CallInitStageActorRef)       => sender ! getStageActor(behavior).ref
             case (sender, ReportStageActorInterpreter) =>
-              sender ! StageActorLocation(stageActor.ref.path.parent, GraphInterpreter.currentInterpreter.context.path)
+              sender ! StageActorLocation(
+                stageActor.ref.path.parent,
+                interpreter.materializer.supervisor.path,
+                GraphInterpreter.currentInterpreter.context.path)
             case (_, BecomeStringEcho) =>
               getStageActor {
                 case (theSender, msg) => theSender ! msg.toString

@@ -236,7 +236,7 @@ object GraphStageLogic {
         materializer,
         initialReceive,
         name,
-        StageActor.localCell(interpreter.context, "Graph interpreter"),
+        StageActor.localCell(materializer.supervisor, "Stream supervisor"),
         // Coalesce per-tell mailbox traffic: N tells produce 1 AsyncInput envelope (amortized).
         receive =>
           new StageActor.LazyDispatch(
