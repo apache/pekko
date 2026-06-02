@@ -370,11 +370,24 @@ object GraphStageLogic {
       private[this] val drainCallback: Any => Unit = (_: Any) => drain()
 
       override def apply(pair: (ActorRef, Any)): Unit = {
+        // Producer-side completion guard. `runAsyncInput` short-circuits the drain handler when the stage
+        // is completed, so without this check a CAS-winning producer would leave state=SCHEDULED forever
+        // and subsequent producers would skip the mailbox push, growing the queue unbounded. Dropping
+        // post-completion sends here matches the original per-tell behaviour where `runAsyncInput`
+        // silently ignored them. The read is racy against the interpreter thread that flips
+        // `shutdownCounter`, but eventually visible — enough to bound the leak to messages enqueued
+        // before completion becomes visible to this thread.
+        if (interpreter.isStageCompleted(logic)) return
         add(pair) // Vyukov producer path: getAndSet + release-store, no CAS spin
         // Double-checked CAS: uncontended fast path is one volatile read; only the IDLE->SCHEDULED winner
         // pays a CAS + mailbox push.
-        if (state.get() == SchedStateIdle && state.compareAndSet(SchedStateIdle, SchedStateScheduled))
-          scheduleDrain()
+        if (state.get() == SchedStateIdle && state.compareAndSet(SchedStateIdle, SchedStateScheduled)) {
+          // Re-check after winning election: if completion landed between the initial guard and the CAS,
+          // `scheduleDrain` would post an envelope that `runAsyncInput` skips, leaving state=SCHEDULED.
+          // Reset to IDLE and skip the schedule.
+          if (interpreter.isStageCompleted(logic)) state.set(SchedStateIdle)
+          else scheduleDrain()
+        }
       }
 
       private def scheduleDrain(): Unit =
