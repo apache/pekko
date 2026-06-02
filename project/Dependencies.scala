@@ -36,7 +36,7 @@ object Dependencies {
   // (remember to also update the scala-steward pin)
   val agronaVersion = "2.4.1"
   val nettyVersion = "4.2.14.Final"
-  val logbackVersion = "1.5.33"
+  val logbackVersion = "1.5.34"
 
   val jacksonAnnotationsVersion = "2.21"
   val jacksonVersion2 = "2.21.4"
