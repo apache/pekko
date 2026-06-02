@@ -15,15 +15,13 @@ package org.apache.pekko.dispatch
 
 import com.typesafe.config.Config
 import org.apache.pekko
+import pekko.annotation.InternalApi
 import pekko.dispatch.VirtualThreadSupport.newVirtualThreadFactory
 import pekko.util.JavaVersion
 
 import java.lang.invoke.{ MethodHandle, MethodHandles, MethodType }
 import java.util.concurrent.{ Executor, ExecutorService, ForkJoinPool, ForkJoinTask, ThreadFactory }
 import scala.util.Try
-
-import org.apache.pekko.annotation.InternalApi
-import org.apache.pekko.util.JavaVersion
 
 object ForkJoinExecutorConfigurator {
 
@@ -116,7 +114,8 @@ class ForkJoinExecutorConfigurator(config: Config, prerequisites: DispatcherPrer
       val threadFactory: ForkJoinPool.ForkJoinWorkerThreadFactory,
       val parallelism: Int,
       val asyncMode: Boolean,
-      val maxPoolSize: Int)
+      val maxPoolSize: Int,
+      val minimumRunnable: Int = 1)
       extends ExecutorServiceFactory {
     def this(threadFactory: ForkJoinPool.ForkJoinWorkerThreadFactory,
         parallelism: Int,
@@ -139,7 +138,8 @@ class ForkJoinExecutorConfigurator(config: Config, prerequisites: DispatcherPrer
           val methodHandleLookup = MethodHandles.lookup()
           val mt = MethodType.methodType(classOf[Unit], classOf[Int],
             classOf[ForkJoinPool.ForkJoinWorkerThreadFactory],
-            classOf[Int], classOf[Thread.UncaughtExceptionHandler], classOf[Boolean])
+            classOf[Int], classOf[Thread.UncaughtExceptionHandler],
+            classOf[Boolean], classOf[Int])
           methodHandleLookup.findConstructor(clz, mt)
         }
       }
@@ -160,7 +160,7 @@ class ForkJoinExecutorConfigurator(config: Config, prerequisites: DispatcherPrer
       val pool = pekkoJdk9ForkJoinPoolHandleOpt match {
         case Some(handle) =>
           // carrier Thread only exists in JDK 17+
-          handle.invoke(parallelism, tf, maxPoolSize, MonitorableThreadFactory.doNothing, asyncMode)
+          handle.invoke(parallelism, tf, maxPoolSize, MonitorableThreadFactory.doNothing, asyncMode, minimumRunnable)
             .asInstanceOf[ExecutorService with LoadMetrics]
         case _ =>
           new PekkoForkJoinPool(parallelism, tf, MonitorableThreadFactory.doNothing, asyncMode)
