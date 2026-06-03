@@ -1,0 +1,48 @@
+[
+  {
+    "name": "org.apache.pekko.cluster.sharding.typed.internal.ShardingSerializer",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.pekko.actor.ExtendedActorSystem"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.cluster.sharding.typed.internal.ClusterShardingTypedSerializable"
+  },
+  {
+    "name": "org.apache.pekko.cluster.sharding.typed.internal.JoinConfigCompatCheckerClusterSharding",
+    "methods": [
+      {
+        "name": "<init>"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.cluster.sharding.typed.ReplicatedShardingExtension$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.cluster.sharding.typed.scaladsl.ClusterSharding$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  },
+  {
+    "name": "org.apache.pekko.cluster.sharding.typed.scaladsl.ShardedDaemonProcess$",
+    "fields": [
+      {
+        "name": "MODULE$"
+      }
+    ]
+  }
+]
