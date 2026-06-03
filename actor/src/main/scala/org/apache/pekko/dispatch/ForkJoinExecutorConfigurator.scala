@@ -31,7 +31,7 @@ object ForkJoinExecutorConfigurator {
    * Resolves the effective `minimum-runnable` value for a fork-join dispatcher.
    * In Pekko 1.x, the default value for `minimum-runnable` is `1` for backsward
    * compatibility, but this is not ideal on newer JDKs.
-   * 
+   *
    * A negative value selects the JDK-aware policy:
    * on JDK 25+ the value is `min(8, max(1, parallelism / 2))` to mitigate the
    * asyncMode (FIFO) compensation-thread regression tracked in
