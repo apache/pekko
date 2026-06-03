@@ -14,8 +14,9 @@
 package org.apache.pekko.stream.stage
 
 import java.util.Spliterator
+import java.lang.invoke.{ MethodHandles, VarHandle }
 import java.util.concurrent.{ CompletionStage, ConcurrentHashMap }
-import java.util.concurrent.atomic.{ AtomicInteger, AtomicReference }
+import java.util.concurrent.atomic.AtomicReference
 
 import scala.annotation.nowarn
 import scala.annotation.tailrec
@@ -344,7 +345,11 @@ object GraphStageLogic {
      *    FunctionRef call site.
      *  - Extends `AbstractNodeQueue` directly so the queue head atomic and the dispatch function share one
      *    object (one allocation per StageActor, one fewer field deref on the producer hot path).
-     *  - All hot-path state is `private[this]` → direct field access, no accessor methods.
+     *  - Implements `Any => Unit` directly — serves as both the producer callback and the drain callback,
+     *    eliminating the separate `drainCallback` lambda allocation.
+     *  - `state` is a plain `@volatile var Int` driven by a static `VarHandle` in the companion object
+     *    (via `MethodHandles.privateLookupIn`), same pattern as `AbstractNodeQueue` itself;
+     *    avoids per-instance `AtomicInteger`.
      *  - `drainBatchSize` is read once into a stack-local at the top of `drain` so the JIT can treat the loop
      *    bound as a constant.
      *  - Per-tell allocation = 1 Node (`AbstractNodeQueue.Node`, ~24 bytes) + 1 Tuple2 (~24 bytes). The
@@ -359,17 +364,18 @@ object GraphStageLogic {
         handler: Any => Unit,
         drainBatchSize: Int)
         extends AbstractNodeQueue[(ActorRef, Any)]
-        with (((ActorRef, Any)) => Unit) {
+        with (Any => Unit) {
 
-      // IDLE/SCHEDULED election state. AtomicInteger gives us volatile read + CAS without the cross-Scala
-      // VarHandle / field-updater access fuss; the wrapper costs one extra reference per StageActor, which
-      // is negligible against the per-tell mailbox traffic we are saving.
-      private[this] val state = new AtomicInteger(SchedStateIdle)
+      // IDLE/SCHEDULED election state. VarHandle avoids per-instance AtomicInteger;
+      // the handle lives in the companion object (true JVM static), same pattern as
+      // AbstractNodeQueue._tailDoNotCallMeDirectly.
+      @volatile var state: Int = SchedStateIdle
 
-      // Reused across all drain batches; allocated once at construction.
-      private[this] val drainCallback: Any => Unit = (_: Any) => drain()
-
-      override def apply(pair: (ActorRef, Any)): Unit = {
+      override def apply(msg: Any): Unit = {
+        // Drain path: onAsyncInput passes null as the message when scheduling a drain envelope.
+        if (msg.asInstanceOf[AnyRef] eq null) { drain(); return }
+        // Producer path: msg is an (ActorRef, Any) tuple from the FunctionRef.
+        val pair = msg.asInstanceOf[(ActorRef, Any)]
         // Producer-side completion guard. `runAsyncInput` short-circuits the drain handler when the stage
         // is completed, so without this check a CAS-winning producer would leave state=SCHEDULED forever
         // and subsequent producers would skip the mailbox push, growing the queue unbounded. Dropping
@@ -381,20 +387,23 @@ object GraphStageLogic {
         add(pair) // Vyukov producer path: getAndSet + release-store, no CAS spin
         // Double-checked CAS: uncontended fast path is one volatile read; only the IDLE->SCHEDULED winner
         // pays a CAS + mailbox push.
-        if (state.get() == SchedStateIdle && state.compareAndSet(SchedStateIdle, SchedStateScheduled)) {
+        val u = LazyDispatch.stateHandle
+        if (u.get(this) == SchedStateIdle && u.compareAndSet(this, SchedStateIdle, SchedStateScheduled)) {
           // Re-check after winning election: if completion landed between the initial guard and the CAS,
           // `scheduleDrain` would post an envelope that `runAsyncInput` skips, leaving state=SCHEDULED.
           // Reset to IDLE and skip the schedule.
-          if (interpreter.isStageCompleted(logic)) state.set(SchedStateIdle)
+          if (interpreter.isStageCompleted(logic)) u.set(this, SchedStateIdle)
           else scheduleDrain()
         }
       }
 
       private def scheduleDrain(): Unit =
         // 1 AsyncInput + 1 Envelope per drain batch (amortized across up to drainBatchSize tells).
-        interpreter.onAsyncInput(logic, null, NoPromise, drainCallback)
+        // `this` serves as the drain callback (Any => Unit); onAsyncInput calls apply(null).
+        interpreter.onAsyncInput(logic, null, NoPromise, this)
 
       private def drain(): Unit = {
+        val u = LazyDispatch.stateHandle
         val limit = drainBatchSize // hoisted to a local so JIT treats it as a loop-invariant constant
         var processed = 0
         while (processed < limit) {
@@ -402,15 +411,15 @@ object GraphStageLogic {
             // Stage completed mid-drain; drop the remainder (matches the original per-tell behaviour where
             // runAsyncInput silently skipped completed stages). Don't reschedule — no future drain will run.
             while (poll() ne null) ()
-            state.set(SchedStateIdle)
+            u.set(this, SchedStateIdle)
             return
           }
           val item = poll()
           if (item eq null) {
-            state.set(SchedStateIdle)
+            u.set(this, SchedStateIdle)
             // Recheck race: a producer may have added between `poll == null` and the IDLE publish above.
             // That producer saw state=SCHEDULED and skipped the mailbox send, so we must re-elect.
-            if (!isEmpty && state.compareAndSet(SchedStateIdle, SchedStateScheduled))
+            if (!isEmpty && u.compareAndSet(this, SchedStateIdle, SchedStateScheduled))
               scheduleDrain()
             return
           }
@@ -423,13 +432,20 @@ object GraphStageLogic {
         // mid-loop branch: drain remainder, publish IDLE, do not reschedule.
         if (interpreter.isStageCompleted(logic)) {
           while (poll() ne null) ()
-          state.set(SchedStateIdle)
+          u.set(this, SchedStateIdle)
           return
         }
         // Re-schedule another envelope so other BoundaryEvents (pull/push/complete) can interleave via
         // the actor mailbox. `state` stays SCHEDULED: concurrent producers observe SCHEDULED and skip;
         // the new envelope will drain.
         scheduleDrain()
+      }
+    }
+
+    object LazyDispatch {
+      private val stateHandle: VarHandle = {
+        val lookup = MethodHandles.privateLookupIn(classOf[LazyDispatch], MethodHandles.lookup())
+        lookup.findVarHandle(classOf[LazyDispatch], "state", Integer.TYPE)
       }
     }
   }
