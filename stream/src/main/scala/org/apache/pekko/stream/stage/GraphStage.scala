@@ -365,7 +365,9 @@ object GraphStageLogic {
      *    is forced by the public `StageActorRef.Receive` type. No AsyncInput / Envelope per tell — those are
      *    amortized across the batch.
      */
-    private final class LazyDispatch(
+    // Not marked `private` so that `class StageActor`'s aux constructor (compiled outside of the companion
+    // object on Scala 3) can reference it; the enclosing `object StageActor` is itself private.
+    final class LazyDispatch(
         interpreter: GraphInterpreter,
         logic: GraphStageLogic,
         handler: Any => Unit,
@@ -386,7 +388,10 @@ object GraphStageLogic {
         add(pair) // Vyukov producer path: getAndSet + release-store, no CAS spin
         // Double-checked CAS: uncontended fast path is one acquire-load; only the IDLE->SCHEDULED winner
         // pays a CAS + mailbox push.
-        if (schedStateHandle.getAcquire(this).asInstanceOf[Int] == SchedStateIdle &&
+        // The typed local witnesses the Int-returning signature-polymorphic overload of getAcquire —
+        // Scala 3's strict inference otherwise defaults the return to Object and rejects the comparison.
+        val cur: Int = schedStateHandle.getAcquire(this)
+        if (cur == SchedStateIdle &&
           schedStateHandle.compareAndSet(this, SchedStateIdle, SchedStateScheduled))
           scheduleDrain()
       }
