@@ -417,9 +417,18 @@ object GraphStageLogic {
           handler(item)
           processed += 1
         }
-        // Hit batch cap with items potentially still queued. Re-schedule another envelope so other
-        // BoundaryEvents (pull/push/complete) can interleave via the actor mailbox. `scheduledState` stays
-        // SCHEDULED: concurrent producers correctly observe SCHEDULED and skip; the new envelope will drain.
+        // Hit batch cap with items potentially still queued. The last `handler(item)` call may have
+        // completed the stage (e.g. user code called `completeStage()`); a fresh `scheduleDrain` would
+        // post an envelope that `runAsyncInput` skips, leaving state=SCHEDULED forever. Mirror the
+        // mid-loop branch: drain remainder, publish IDLE, do not reschedule.
+        if (interpreter.isStageCompleted(logic)) {
+          while (poll() ne null) ()
+          state.set(SchedStateIdle)
+          return
+        }
+        // Re-schedule another envelope so other BoundaryEvents (pull/push/complete) can interleave via
+        // the actor mailbox. `state` stays SCHEDULED: concurrent producers observe SCHEDULED and skip;
+        // the new envelope will drain.
         scheduleDrain()
       }
     }
