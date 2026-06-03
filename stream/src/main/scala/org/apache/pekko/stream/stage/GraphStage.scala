@@ -388,7 +388,12 @@ object GraphStageLogic {
         // Double-checked CAS: uncontended fast path is one volatile read; only the IDLE->SCHEDULED winner
         // pays a CAS + mailbox push.
         val u = LazyDispatch.stateHandle
-        if (u.get(this) == SchedStateIdle && u.compareAndSet(this, SchedStateIdle, SchedStateScheduled)) {
+        // Scala 3's strict inference cannot pick the Int-returning signature-polymorphic overload of
+        // `VarHandle.get` without explicit return-type context — a typed local witnesses it. On Scala 2
+        // this is a no-op. Keep the double-checked plain read fast path: under producer contention
+        // only the IDLE→SCHEDULED winner pays a CAS, the rest just read.
+        val cur: Int = u.get(this)
+        if (cur == SchedStateIdle && u.compareAndSet(this, SchedStateIdle, SchedStateScheduled)) {
           // Re-check after winning election: if completion landed between the initial guard and the CAS,
           // `scheduleDrain` would post an envelope that `runAsyncInput` skips, leaving state=SCHEDULED.
           // Reset to IDLE and skip the schedule.
