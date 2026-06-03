@@ -23,7 +23,7 @@ object Dependencies {
     // The protoc version can be inferred from the Protobuf Java minor version number.
     // Example: Protobuf Java version 3.25.x uses protoc version 25.x.
     val protobufJavaVersion = "4.35.0"
-    val protocVersion = "34.1"
+    val protocVersion = "35.0"
   }
 
   val junitVersion = "4.13.2"
