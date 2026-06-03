@@ -223,7 +223,7 @@ object GraphStageLogic {
       val f: (ActorRef, Any) => Unit = {
         case (_, m @ (PoisonPill | Kill)) =>
           materializer.logger.warning(
-            "{} message sent to StageActor({}) will be ignored, since it is not a real Actor." +
+            "{} message sent to StageActor({}) will be ignored, since it is not a real Actor. " +
             "Use a custom message type to communicate with it instead.",
             m,
             functionRef.path)
