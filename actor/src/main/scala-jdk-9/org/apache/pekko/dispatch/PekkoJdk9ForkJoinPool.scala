@@ -35,9 +35,10 @@ private[dispatch] final class PekkoJdk9ForkJoinPool(
     threadFactory: ForkJoinPool.ForkJoinWorkerThreadFactory,
     maximumPoolSize: Int,
     unhandledExceptionHandler: Thread.UncaughtExceptionHandler,
-    asyncMode: Boolean)
+    asyncMode: Boolean,
+    minimumRunnable: Int)
     extends ForkJoinPool(parallelism, threadFactory, unhandledExceptionHandler, asyncMode,
-      0, maximumPoolSize, 1, null, ForkJoinPoolConstants.DefaultKeepAliveMillis, TimeUnit.MILLISECONDS)
+      0, maximumPoolSize, minimumRunnable, null, ForkJoinPoolConstants.DefaultKeepAliveMillis, TimeUnit.MILLISECONDS)
     with LoadMetrics {
 
   override def execute(r: Runnable): Unit =
