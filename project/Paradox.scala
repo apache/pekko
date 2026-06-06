@@ -13,8 +13,11 @@
 
 import com.lightbend.paradox.sbt.ParadoxPlugin
 import com.lightbend.paradox.sbt.ParadoxPlugin.autoImport.*
-import com.lightbend.paradox.apidoc.ApidocPlugin
-import com.lightbend.paradox.projectinfo.ParadoxProjectInfoPluginKeys.projectInfoVersion
+// TODO [sbt2-migration] ApidocPlugin not available in paradox 0.11.0-M4
+// import com.lightbend.paradox.apidoc.ApidocPlugin
+// TODO [sbt2-migration] Blocked on sbt-paradox-project-info sbt 2 support
+// import com.lightbend.paradox.projectinfo.ParadoxProjectInfoPluginKeys.projectInfoVersion
+import PekkoBuild.projectInfoVersion
 // TODO [sbt2-migration] Blocked on pekko-sbt-paradox sbt 2 support
 // import org.apache.pekko.PekkoParadoxPlugin.autoImport._
 import sbt.Keys.*
@@ -26,7 +29,7 @@ import scala.concurrent.duration.*
 object Paradox {
   val pekkoBaseURL = "https://pekko.apache.org"
   lazy val propertiesSettings = Seq(
-    Compile / paradoxProperties ++= Map(
+    Compile / paradoxProperties := Def.uncached { (Compile / paradoxProperties).value ++ Map(
       "canonical.base_url" -> s"$pekkoBaseURL/docs/pekko/current",
       "github.base_url" ->
       GitHub
@@ -71,7 +74,7 @@ object Paradox {
       "sigar_loader.version" -> "1.6.6-rev002",
       "aeron_version" -> Dependencies.aeronVersion,
       "netty_version" -> Dependencies.nettyVersion,
-      "logback_version" -> Dependencies.logbackVersion))
+      "logback_version" -> Dependencies.logbackVersion) })
 
   lazy val rootsSettings = Seq(
     paradoxRoots := List(
@@ -102,7 +105,7 @@ object Paradox {
     Compile / paradoxMarkdownToHtml / sourceGenerators += Def.taskDyn {
       val targetFile = (Compile / paradox / sourceManaged).value / "project" / "license-report.md"
       (LocalRootProject / dumpLicenseReportAggregate).map { dir =>
-        IO.copy(List(dir / "pekko-root-licenses.md" -> targetFile)).toList
+        IO.copy(List(dir / "pekko-root-licenses.md" -> targetFile)).toSeq
       }
     }.taskValue)
 
@@ -116,7 +119,8 @@ object Paradox {
     sourceGeneratorSettings ++
     Seq(
       Compile / paradox / name := "Pekko",
-      ApidocPlugin.autoImport.apidocRootPackage := "org.apache.pekko",
+      // TODO [sbt2-migration] ApidocPlugin not available in paradox 0.11.0-M4
+      // ApidocPlugin.autoImport.apidocRootPackage := "org.apache.pekko",
       // TODO [sbt2-migration] Blocked on pekko-sbt-paradox sbt 2 support
       // Global / pekkoParadoxIncubatorNotice := None
       )

@@ -24,13 +24,14 @@ object CopyrightHeaderForJdk9 extends AutoPlugin {
     for {
       dir <- additionalSourceDirectories.value ++ additionalTestSourceDirectories.value
       language <- List("java", "scala")
-      file <- (dir ** s"*.$language").get
+      file <- (dir ** s"*.$language").get()
     } yield file
   }
 
   override lazy val projectSettings: Seq[Def.Setting[?]] = {
 
-    Seq(Compile / headerSources ++= additionalFiles.value,
-      Test / headerSources ++= additionalFiles.value)
+    Seq(
+      Compile / headerSources := Def.uncached { (Compile / headerSources).value ++ additionalFiles.value },
+      Test / headerSources := Def.uncached { (Test / headerSources).value ++ additionalFiles.value })
   }
 }

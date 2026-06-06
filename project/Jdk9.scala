@@ -64,9 +64,9 @@ object Jdk9 extends AutoPlugin {
     unmanagedSourceDirectories := additionalTestSourceDirectories.value,
     scalacOptions := PekkoBuild.DefaultScalacOptions.value ++ Seq("-release", majorVersion.toString),
     javacOptions := PekkoBuild.DefaultJavacOptions ++ Seq("--release", majorVersion.toString),
-    compile := compile.dependsOn(CompileJdk9 / compile).value,
-    classpathConfiguration := TestJdk9,
-    externalDependencyClasspath := (Test / externalDependencyClasspath).value)
+    compile := Def.uncached { compile.dependsOn(CompileJdk9 / compile).value },
+    classpathConfiguration := Def.uncached { TestJdk9 },
+    externalDependencyClasspath := Def.uncached { (Test / externalDependencyClasspath).value })
 
   lazy val compileSettings = Seq(
     // It might have been more 'neat' to add the jdk9 products to the jar via packageBin/mappings, but that doesn't work with the OSGi plugin,
@@ -76,11 +76,14 @@ object Jdk9 extends AutoPlugin {
     // Since sbt-osgi upgrade to 0.9.5, the fullClasspath is no longer used on packaging when use sbt-osgi, so we have to
     // add jdk9 products to dependencyClasspathAsJars instead.
     //    Compile / fullClasspath ++= (CompileJdk9 / exportedProducts).value)
-    Compile / dependencyClasspathAsJars ++= (CompileJdk9 / exportedProducts).value)
+    Compile / dependencyClasspathAsJars := Def.uncached {
+      (Compile / dependencyClasspathAsJars).value ++ (CompileJdk9 / exportedProducts).value
+    })
 
+  // In sbt 2, `test` is an InputTask; use toTask("") to convert to a Task
   lazy val testSettings = Seq((Test / test) := {
-    (Test / test).value
-    (TestJdk9 / test).value
+    (Test / test).toTask("").value
+    (TestJdk9 / test).toTask("").value
   })
 
   override lazy val trigger = noTrigger

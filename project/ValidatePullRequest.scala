@@ -94,9 +94,12 @@ object MultiNodeWithPrValidation extends AutoPlugin {
 
   override lazy val trigger = allRequirements
   override lazy val requires = PekkoValidatePullRequest && MultiNode
-  override lazy val projectSettings =
-    if (MultiNode.multiNodeTestInTest) Seq(additionalTasks += MultiNode.multiTest)
-    else Seq.empty
+  // TODO [sbt2-migration] MultiNode.multiTest type incompatible with Seq[TaskKey[?]] in sbt 2
+  // (test is now InputTask[TestResult] instead of Task[Unit])
+  // override lazy val projectSettings =
+  //   if (MultiNode.multiNodeTestInTest) Seq(additionalTasks += MultiNode.multiTest)
+  //   else Seq.empty
+  override lazy val projectSettings = Seq.empty
 }
 
 /**
@@ -109,7 +112,7 @@ object MimaWithPrValidation extends AutoPlugin {
   override lazy val trigger = allRequirements
   override lazy val requires = PekkoValidatePullRequest && MimaPlugin
   override lazy val projectSettings =
-    CliOptions.mimaEnabled.ifTrue(additionalTasks += mimaReportBinaryIssues).toList
+    CliOptions.mimaEnabled.ifTrue(additionalTasks := Def.uncached { additionalTasks.value :+ mimaReportBinaryIssues }).toList
 }
 
 /**
@@ -121,12 +124,12 @@ object ParadoxWithPrValidation extends AutoPlugin {
 
   override lazy val trigger = allRequirements
   override lazy val requires = PekkoValidatePullRequest && ParadoxPlugin
-  override lazy val projectSettings = Seq(additionalTasks += Compile / paradox)
+  override lazy val projectSettings = Seq(additionalTasks := Def.uncached { additionalTasks.value :+ (Compile / paradox) })
 }
 
 object UnidocWithPrValidation extends AutoPlugin {
   import PekkoValidatePullRequest.*
 
   override lazy val trigger = noTrigger
-  override lazy val projectSettings = Seq(additionalTasks += Compile / unidoc)
+  override lazy val projectSettings = Seq(additionalTasks := Def.uncached { additionalTasks.value :+ (Compile / unidoc) })
 }

@@ -11,9 +11,10 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import MultiJvmPlugin.autoImport.MultiJvm
+import sbt.MultiJvmPlugin.autoImport.MultiJvm
 
-import com.lightbend.paradox.projectinfo.ParadoxProjectInfoPluginKeys.*
+// TODO [sbt2-migration] Blocked on sbt-paradox-project-info sbt 2 support
+// import com.lightbend.paradox.projectinfo.ParadoxProjectInfoPluginKeys.*
 import sbt.Def
 import sbt.Keys.*
 import sbt.*
@@ -26,6 +27,10 @@ import java.io.InputStreamReader
 import java.util.Properties
 
 object PekkoBuild {
+
+  // TODO [sbt2-migration] Blocked on sbt-paradox-project-info sbt 2 support
+  // This key was previously provided by ParadoxProjectInfoPluginKeys
+  val projectInfoVersion = settingKey[String]("The version to use in project info")
 
   object CliOptions {
     // CI is the env var defined by Github Actions and Travis:
@@ -72,16 +77,19 @@ object PekkoBuild {
           resolver,
           Seq(
             otherResolvers := resolver :: publishTo.value.toList,
-            publishM2Configuration := Classpaths.publishConfig(
+            publishM2Configuration := Def.uncached { Classpaths.publishConfig(
               publishMavenStyle.value,
               deliverPattern(crossTarget.value),
               if (isSnapshot.value) "integration" else "release",
               ivyConfigurations.value.map(c => ConfigRef(c.name)).toVector,
-              artifacts = packagedArtifacts.value.toVector,
+              // TODO [sbt2-migration] packagedArtifacts now returns HashedVirtualFileRef instead of File
+              artifacts = packagedArtifacts.value.map { case (a, ref) =>
+                (a, new File(ref.id))
+              }.toVector,
               resolverName = resolver.name,
               checksums = (publishM2 / checksums).value.toVector,
               logging = ivyLoggingLevel.value,
-              overwrite = true)))
+              overwrite = true) }))
     }
 
   lazy val resolverSettings = Def.settings(
@@ -152,7 +160,7 @@ object PekkoBuild {
       }
     },
     ThisBuild / ivyLoggingLevel := UpdateLogging.Quiet,
-    licenses := Seq(("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))),
+    licenses := Seq(License("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))),
     homepage := Some(url("https://pekko.apache.org/")),
     description :=
       "Apache Pekko is a toolkit for building highly concurrent, distributed, and resilient message-driven applications for Java and Scala.",
@@ -222,7 +230,7 @@ object PekkoBuild {
     },
     // with forked tests the working directory is set to each module's home directory
     // rather than the Pekko root, some tests depend on Pekko root being working dir, so reset
-    Test / testGrouping := {
+    Test / testGrouping := Def.uncached {
       val original: Seq[Tests.Group] = (Test / testGrouping).value
 
       original.map { group =>
@@ -247,11 +255,12 @@ object PekkoBuild {
     docLintingSettings,
     // a workaround for https://github.com/akka/akka/issues/27661
     // see also project/Protobuf.scala that introduces /../ to make "intellij happy"
-    MultiJvm / assembly / fullClasspath := {
+    MultiJvm / assembly / fullClasspath := Def.uncached {
       val old = (MultiJvm / assembly / fullClasspath).value.toVector
-      val files = old.map(_.data.getCanonicalFile).distinct
+      val conv = fileConverter.value
+      val files = old.map(af => conv.toPath(af.data).toFile.getCanonicalFile).distinct
       files.map { x =>
-        Attributed.blank(x)
+        Attributed.blank(conv.toVirtualFile(x.toPath))
       }
     })
 

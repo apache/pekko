@@ -39,7 +39,7 @@ object PekkoDevelocityPlugin extends AutoPlugin {
   // TODO [sbt2-migration] Blocked on sbt-develocity sbt 2 support
   // override lazy val trigger: PluginTrigger = allRequirements
   // override lazy val requires: Plugins = DevelocityPlugin
-  override lazy val requires: Plugins = plugins.JvmPlugin
+  override lazy val requires: Plugins = sbt.plugins.JvmPlugin
 
   // TODO [sbt2-migration] Blocked on sbt-develocity sbt 2 support — restore buildSettings
   // override lazy val buildSettings: Seq[Setting[?]] = Def.settings(
@@ -85,7 +85,7 @@ object PekkoDevelocityJdk9TestSettingsPlugin extends AutoPlugin {
   // TODO [sbt2-migration] Blocked on sbt-develocity sbt 2 support
   // override lazy val trigger: PluginTrigger = allRequirements
   // override lazy val requires: Plugins = DevelocityPlugin && Jdk9
-  override lazy val requires: Plugins = plugins.JvmPlugin
+  override lazy val requires: Plugins = sbt.plugins.JvmPlugin
 
   // TODO [sbt2-migration] Blocked on sbt-develocity sbt 2 support
   // See https://docs.gradle.com/develocity/sbt-plugin/#enabling_build_cache_in_a_custom_sbt_configuration

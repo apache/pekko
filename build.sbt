@@ -16,13 +16,15 @@ ThisBuild / versionScheme := Some(VersionScheme.SemVerSpec)
 // Add  (Jupiter) test runtime to all modules for sbt-jupiter-interface discovery
 ThisBuild / libraryDependencies +=
   "com.github.sbt.junit" % "jupiter-interface" % JupiterKeys.jupiterVersion.value % Test
-sourceDistName := "apache-pekko"
-sourceDistIncubating := false
+// TODO [sbt2-migration] requires sbt-source-dist
+// sourceDistName := "apache-pekko"
+// sourceDistIncubating := false
 
 // TODO [sbt2-migration] requires sbt-reproducible-builds
 // ThisBuild / reproducibleBuildsCheckResolver := Resolver.ApacheMavenStagingRepo
 
-ThisBuild / pekkoCoreProject := true
+// TODO [sbt2-migration] requires sbt-pekko-build
+// ThisBuild / pekkoCoreProject := true
 
 Global / excludeLintKeys ++= Set(
   projectInfoVersion,
@@ -112,10 +114,10 @@ lazy val aggregatedProjects: Seq[ProjectReference] = userProjects ++ List[Projec
   streamTestsTck)
 
 lazy val root = Project(id = "pekko", base = file("."))
-  .aggregate(aggregatedProjects: _*)
+  .aggregate(aggregatedProjects*)
   .settings(
     name := "pekko-root")
-  .settings(rootSettings: _*)
+  .settings(rootSettings*)
   .settings(
     UnidocRoot.autoImport.unidocRootIgnoreProjects := Seq(
       remoteTests,
@@ -124,7 +126,7 @@ lazy val root = Project(id = "pekko", base = file("."))
       pekkoScalaNightly,
       docs))
   .settings(
-    Compile / headerCreate / unmanagedSources := (baseDirectory.value / "project").**("*.scala").get)
+    Compile / headerCreate / unmanagedSources := (baseDirectory.value / "project").**("*.scala").get())
   .settings(PekkoBuild.welcomeSettings)
   .enablePlugins(CopyrightHeaderForBuild)
 
@@ -144,14 +146,14 @@ lazy val actorTests = pekkoModule("actor-tests")
   .disablePlugins(MimaPlugin)
 
 lazy val pekkoScalaNightly = pekkoModule("scala-nightly")
-  .aggregate(aggregatedProjects: _*)
+  .aggregate(aggregatedProjects*)
   .disablePlugins(MimaPlugin)
   // TODO [sbt2-migration] ValidatePullRequest requires sbt-pull-request-validator
   // .disablePlugins(ValidatePullRequest, MimaPlugin)
 
 lazy val benchJmh = pekkoModule("bench-jmh")
   .dependsOn(Seq(actor, actorTyped, stream, streamTestkit, persistence, distributedData, jackson, testkit).map(
-    _ % "compile->compile;compile->test"): _*)
+    _ % "compile->compile;compile->test")*)
   .settings(Dependencies.benchJmh)
   .settings(javacOptions += "-parameters") // for Jackson
   .enablePlugins(JmhPlugin, ScaladocNoVerificationOfDiagrams, NoPublish)
@@ -263,7 +265,7 @@ lazy val docs = pekkoModule("docs")
     ScaladocNoVerificationOfDiagrams,
     StreamOperatorsIndexGenerator)
   .disablePlugins(MimaPlugin)
-  .disablePlugins((if (ScalafixSupport.fixTestScope) Nil else Seq(ScalafixPlugin)): _*)
+  .disablePlugins((if (ScalafixSupport.fixTestScope) Nil else Seq(ScalafixPlugin))*)
 
 lazy val jackson = pekkoModule("serialization-jackson")
   .dependsOn(
@@ -399,6 +401,7 @@ lazy val protobufV3 = pekkoModule("protobuf-v3")
     Compile / packageBin := Def.taskDyn {
       val store = streams.value.cacheStoreFactory.make("shaded-output")
       val uberJarLocation = (assembly / assemblyOutputPath).value
+      val conv = fileConverter.value
       val tracker = Tracked.outputChanged(store) { (changed: Boolean, file: File) =>
         if (changed) {
           Def.task {
@@ -407,14 +410,17 @@ lazy val protobufV3 = pekkoModule("protobuf-v3")
             // ReproducibleBuildsPlugin.postProcessJar(uberJar)
             uberJar
           }
-        } else Def.task { file }
+        } else Def.task { conv.toVirtualFile(file.toPath) }
       }
       tracker(() => uberJarLocation)
     }.value,
     // Prevent cyclic task dependencies, see https://github.com/sbt/sbt-assembly/issues/365 by
     // redefining the fullClasspath with just what we need to avoid the cyclic task dependency
-    assembly / fullClasspath := (Runtime / managedClasspath).value ++ (Compile / products).value.map(Attributed.blank),
-    assembly / test := {}, // assembly runs tests for unknown reason which introduces another cyclic dependency to packageBin via exportedJars
+    assembly / fullClasspath := Def.uncached {
+      val conv = fileConverter.value
+      (Runtime / managedClasspath).value ++ (Compile / products).value.map(f => Attributed.blank(conv.toVirtualFile(f.toPath)))
+    },
+    assembly / test := sbt.protocol.testing.TestResult.Passed, // assembly runs tests for unknown reason which introduces another cyclic dependency to packageBin via exportedJars
     description :=
       s"Apache Pekko Protobuf V3 is a shaded version of the protobuf runtime. Original POM: https://github.com/protocolbuffers/protobuf/blob/v${Dependencies.Protobuf.protobufJavaVersion}/java/pom.xml")
 
@@ -646,7 +652,12 @@ def pekkoModule(moduleName: String): Project =
   Project(id = moduleName, base = file(moduleName))
     // TODO [sbt2-migration] requires sbt-reproducible-builds
     // .enablePlugins(ReproducibleBuildsPlugin)
-    .disablePlugins(WelcomePlugin)
+    // TODO [sbt2-migration] requires sbt-welcome
+    // .disablePlugins(WelcomePlugin)
+    .settings(
+      // sbt 2 changed exportJars default from false to true; assembly requires false
+      exportJars := false,
+      assembly / exportJars := false)
     .settings(PekkoBuild.defaultSettings)
     .settings(
       name := s"pekko-$moduleName")

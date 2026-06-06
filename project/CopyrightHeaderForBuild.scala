@@ -24,8 +24,11 @@ object CopyrightHeaderForBuild extends AutoPlugin {
     Seq(Compile, Test).flatMap { config =>
       inConfig(config) {
         Seq(
-          config / headerSources ++= (((config / baseDirectory).value / "project") ** ("*.scala" || "*.sbt")).get,
-          config / headerSources ++= ((config / baseDirectory).value ** "*.sbt").get,
+          config / headerSources := Def.uncached {
+            (config / headerSources).value ++
+              (((config / baseDirectory).value / "project") ** ("*.scala" || "*.sbt")).get() ++
+              ((config / baseDirectory).value ** "*.sbt").get()
+          },
           headerMappings := headerMappings.value ++ Map(HeaderFileType("sbt") -> cStyleComment),
           headerMappings := headerMappings.value ++ Map(HeaderFileType.scala -> cStyleComment))
       }

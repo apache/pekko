@@ -26,7 +26,7 @@ object OSGi {
   // a pain. Create bundles but publish them to the normal .../jars directory.
   lazy val osgiSettings =
     defaultOsgiSettings ++ Seq(
-      Compile / packageBin := {
+      Compile / packageBin := Def.uncached {
         val bundle = OsgiKeys.bundle.value
         // This normally happens automatically when loading the
         // sbt-reproducible-builds plugin, but because we replace
@@ -89,7 +89,11 @@ object OSGi {
     // is a fatjar from sbt-assembly we don't have to worry about incorrect osgi
     // Import-Package header since the protobuf-V3 sbt-project has no real dependencies
     // (including typical ones such as scala runtime)
-    OsgiKeys.explodedJars := Seq(assembly.value))
+    // In sbt 2, assembly returns HashedVirtualFileRef; convert to File via fileConverter
+    OsgiKeys.explodedJars := Def.uncached {
+      val conv = fileConverter.value
+      Seq(conv.toPath(assembly.value).toFile)
+    })
 
   lazy val jackson = exports(Seq("org.apache.pekko.serialization.jackson.*"))
   lazy val jackson3 = exports(Seq("org.apache.pekko.serialization.jackson3.*"))
