@@ -836,17 +836,10 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
       try {
         muteSystem(thisSystem)
         val thisProbe = new TestProbe(thisSystem)
-        val thisSender = thisProbe.ref
         thisSystem.actorOf(Props[Echo2](), "echo")
-        val otherAddress = temporaryServerAddress()
-        val otherConfig = ConfigFactory.parseString(s"""
-              pekko.remote.classic.netty.tcp.port = ${otherAddress.getPort}
-              """).withFallback(config)
-        val otherSelection =
-          thisSystem.actorSelection(s"pekko.tcp://other-system@localhost:${otherAddress.getPort}/user/echo")
-        otherSelection.tell("ping", thisSender)
-        thisProbe.expectNoMessage(1.seconds)
-        val otherSystem = ActorSystem("other-system", otherConfig)
+        // selectionAndBind retries on a fresh port, since the temporaryServerAddress can be taken
+        // by the time the new actor system binds (see #1679)
+        val (otherSystem, _) = selectionAndBind(config, thisSystem, thisProbe)
         try {
           muteSystem(otherSystem)
           thisProbe.expectNoMessage(2.seconds)
