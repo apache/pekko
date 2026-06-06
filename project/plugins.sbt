@@ -34,7 +34,8 @@ addSbtPlugin("com.github.sbt" % "sbt-dynver" % "5.1.1")
 // addSbtPlugin("com.github.pjfanning" % "sbt-source-dist" % "0.1.13")
 // TODO [sbt2-migration] sbt-pekko-build: needs sbt 2 migration (Pekko-internal)
 // addSbtPlugin("com.github.pjfanning" % "sbt-pekko-build" % "0.4.7")
-addSbtPlugin("com.github.reibitto" % "sbt-welcome" % "0.5.0")
+// TODO [sbt2-migration] sbt-welcome: only published for sbt 2.0.0-M1, not RC14
+// addSbtPlugin("com.github.reibitto" % "sbt-welcome" % "0.5.0")
 addSbtPlugin("com.github.sbt" % "sbt-license-report" % "1.9.0")
 // TODO [sbt2-migration] sbt-depend-walker: no sbt 2 support
 // addSbtPlugin("io.github.roiocam" % "sbt-depend-walker" % "0.1.1")

@@ -18,7 +18,8 @@ import sbt.Def
 import sbt.Keys.*
 import sbt.*
 import sbtassembly.AssemblyPlugin.autoImport.*
-import sbtwelcome.WelcomePlugin.autoImport.*
+// TODO [sbt2-migration] Blocked on sbt-welcome sbt 2 support
+// import sbtwelcome.WelcomePlugin.autoImport.*
 
 import java.io.FileInputStream
 import java.io.InputStreamReader
@@ -254,43 +255,44 @@ object PekkoBuild {
       }
     })
 
-  lazy val welcomeSettings: Seq[Setting[?]] = Def.settings {
-    import sbtwelcome.*
-    Seq(
-      logo := {
-        raw"""
-           |________     ______ ______        
-           |___  __ \_______  /____  /_______ 
-           |__  /_/ /  _ \_  //_/_  //_/  __ \
-           |_  ____//  __/  ,<  _  ,<  / /_/ /
-           |/_/     \___//_/|_| /_/|_| \____/   ${version.value}
-           |
-           |""".stripMargin
-
-      },
-      logoColor := scala.Console.BLUE,
-      usefulTasks := Seq(
-        UsefulTask("compile", "Compile the current project"),
-        UsefulTask("test", "Run all the tests"),
-        UsefulTask("testQuick",
-          "Runs all the tests. When run multiple times will only run previously failing tests (shell mode only)"),
-        UsefulTask("testOnly *.AnySpec", "Only run a selected test"),
-        UsefulTask("TestJdk9 / testOnly *.AnySpec", "Only run a Jdk9+ selected test"),
-        UsefulTask("testQuick *.AnySpec",
-          "Only run a selected test. When run multiple times will only run previously failing tests (shell mode only)"),
-        UsefulTask("testQuickUntilPassed", "Runs all tests in a continuous loop until all tests pass"),
-        UsefulTask("publishLocal", "Publish current snapshot version to local ~/.ivy2 repo"),
-        UsefulTask("verifyCodeStyle", "Verify code style"),
-        UsefulTask("applyCodeStyle", "Apply code style"),
-        UsefulTask("sortImports", "Sort the imports"),
-        UsefulTask("mimaReportBinaryIssues ", "Check binary issues"),
-        UsefulTask("validatePullRequest ", "Validate pull request"),
-        UsefulTask("docs/paradox", "Build documentation"),
-        UsefulTask("docs/paradoxBrowse", "Browse the generated documentation"),
-        UsefulTask("tips:", "prefix commands with `+` to run against cross Scala versions."),
-        UsefulTask("Contributing guide:", "https://github.com/apache/pekko/blob/main/CONTRIBUTING.md")).map(
-        _.noAlias))
-  }
+  // TODO [sbt2-migration] Blocked on sbt-welcome sbt 2 support
+  // lazy val welcomeSettings: Seq[Setting[?]] = Def.settings {
+  //   import sbtwelcome.*
+  //   Seq(
+  //     logo := {
+  //       raw"""
+  //          |________     ______ ______
+  //          |___  __ \_______  /____  /_______
+  //          |__  /_/ /  _ \_  //_/_  //_/  __ \
+  //          |_  ____//  __/  ,<  _  ,<  / /_/ /
+  //          |/_/     \___//_/|_| /_/|_| \____/   ${version.value}
+  //          |
+  //          |""".stripMargin
+  //     },
+  //     logoColor := scala.Console.BLUE,
+  //     usefulTasks := Seq(
+  //       UsefulTask("compile", "Compile the current project"),
+  //       UsefulTask("test", "Run all the tests"),
+  //       UsefulTask("testQuick",
+  //         "Runs all the tests. When run multiple times will only run previously failing tests (shell mode only)"),
+  //       UsefulTask("testOnly *.AnySpec", "Only run a selected test"),
+  //       UsefulTask("TestJdk9 / testOnly *.AnySpec", "Only run a Jdk9+ selected test"),
+  //       UsefulTask("testQuick *.AnySpec",
+  //         "Only run a selected test. When run multiple times will only run previously failing tests (shell mode only)"),
+  //       UsefulTask("testQuickUntilPassed", "Runs all tests in a continuous loop until all tests pass"),
+  //       UsefulTask("publishLocal", "Publish current snapshot version to local ~/.ivy2 repo"),
+  //       UsefulTask("verifyCodeStyle", "Verify code style"),
+  //       UsefulTask("applyCodeStyle", "Apply code style"),
+  //       UsefulTask("sortImports", "Sort the imports"),
+  //       UsefulTask("mimaReportBinaryIssues ", "Check binary issues"),
+  //       UsefulTask("validatePullRequest ", "Validate pull request"),
+  //       UsefulTask("docs/paradox", "Build documentation"),
+  //       UsefulTask("docs/paradoxBrowse", "Browse the generated documentation"),
+  //       UsefulTask("tips:", "prefix commands with `+` to run against cross Scala versions."),
+  //       UsefulTask("Contributing guide:", "https://github.com/apache/pekko/blob/main/CONTRIBUTING.md")).map(
+  //       _.noAlias))
+  // }
+  lazy val welcomeSettings: Seq[Setting[?]] = Seq.empty
 
   private def optionalDir(path: String): Option[File] =
     Option(path).filter(_.nonEmpty).map { path =>
