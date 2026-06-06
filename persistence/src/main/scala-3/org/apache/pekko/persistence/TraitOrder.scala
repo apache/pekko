@@ -23,6 +23,6 @@ private[persistence] object TraitOrder {
   val canBeChecked = false
 
   // No-op on Scala 3
-  def checkBefore(clazz: Class[_], one: Class[_], other: Class[_]): Unit =
+  def checkBefore(clazz: Class[?], one: Class[?], other: Class[?]): Unit =
     ()
 }

@@ -98,7 +98,7 @@ import pekko.stream.scaladsl.Sink
 
   import EventSourcedBehaviorTestKitImpl._
 
-  private def system: ActorSystem[_] = actorTestKit.system
+  private def system: ActorSystem[?] = actorTestKit.system
   if (system.settings.config.getBoolean("pekko.persistence.testkit.events.serialize") ||
     system.settings.config.getBoolean("pekko.persistence.testkit.snapshots.serialize")) {
     system.log.warn(
@@ -177,7 +177,7 @@ import pekko.stream.scaladsl.Sink
   }
 
   private def getHighestSeqNr(): Long = {
-    implicit val sys: ActorSystem[_] = system
+    implicit val sys: ActorSystem[?] = system
     val result =
       queries.currentEventsByPersistenceId(persistenceId.id, 0L, toSequenceNr = Long.MaxValue).runWith(Sink.lastOption)
 
@@ -188,7 +188,7 @@ import pekko.stream.scaladsl.Sink
   }
 
   private def getEvents(fromSeqNr: Long): immutable.Seq[Event] = {
-    implicit val sys: ActorSystem[_] = system
+    implicit val sys: ActorSystem[?] = system
     val result =
       queries.currentEventsByPersistenceId(persistenceId.id, fromSeqNr, toSequenceNr = Long.MaxValue).runWith(Sink.seq)
 

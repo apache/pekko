@@ -30,7 +30,7 @@ import docs.org.apache.pekko.cluster.sharding.typed.ShardingCompileOnlySpec.Basi
 import scala.concurrent.Future
 
 class ExternalShardAllocationCompileOnlySpec {
-  val system: ActorSystem[_] = ???
+  val system: ActorSystem[?] = ???
 
   val sharding = ClusterSharding(system)
 

@@ -117,7 +117,7 @@ class MapAsyncPartitionedSpec
     // We don't see problems on JDK 21 but see them on JDK 25.
     if (JavaVersion.majorVersion > 21) minSuccessful(20) else minSuccessful(100)
 
-  private implicit val system: ActorSystem[_] = ActorSystem(Behaviors.empty, "test-system")
+  private implicit val system: ActorSystem[?] = ActorSystem(Behaviors.empty, "test-system")
   private val executor: ExecutorService = Executors.newCachedThreadPool()
   private implicit val ec: ExecutionContext = ExecutionContext.fromExecutor(executor)
 

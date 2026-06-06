@@ -16,7 +16,7 @@ package org.apache.pekko.util
 object BoxedType {
   import java.{ lang => jl }
 
-  private val toBoxed = Map[Class[_], Class[_]](
+  private val toBoxed = Map[Class[?], Class[?]](
     classOf[Boolean] -> classOf[jl.Boolean],
     classOf[Byte] -> classOf[jl.Byte],
     classOf[Char] -> classOf[jl.Character],
@@ -27,5 +27,5 @@ object BoxedType {
     classOf[Double] -> classOf[jl.Double],
     classOf[Unit] -> classOf[scala.runtime.BoxedUnit])
 
-  final def apply(c: Class[_]): Class[_] = if (c.isPrimitive) toBoxed(c) else c
+  final def apply(c: Class[?]): Class[?] = if (c.isPrimitive) toBoxed(c) else c
 }

@@ -181,7 +181,7 @@ import pekko.stream.stage._
 
   private class FlowMonitorImpl[T] extends AtomicReference[Any](Initialized) with FlowMonitor[T] {
     override def state = get match {
-      case s: StreamState[_] => s.asInstanceOf[StreamState[T]]
+      case s: StreamState[?] => s.asInstanceOf[StreamState[T]]
       case msg               => Received(msg.asInstanceOf[T])
     }
   }
@@ -199,7 +199,7 @@ import pekko.stream.stage._
         def onPush(): Unit = {
           val msg = grab(in)
           push(out, msg)
-          monitor.set(if (msg.isInstanceOf[StreamState[_]]) Received(msg) else msg)
+          monitor.set(if (msg.isInstanceOf[StreamState[?]]) Received(msg) else msg)
         }
 
         override def onUpstreamFinish(): Unit = {

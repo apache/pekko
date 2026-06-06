@@ -26,7 +26,7 @@ class FlatMapConcatDoubleSubscriberTest extends PekkoSubscriberBlackboxVerificat
     val subscriber = Promise[Subscriber[Int]]()
     Source
       .single(Source.fromPublisher(new Publisher[Int] {
-        def subscribe(s: Subscriber[_ >: Int]): Unit =
+        def subscribe(s: Subscriber[? >: Int]): Unit =
           subscriber.success(s.asInstanceOf[Subscriber[Int]])
       }))
       .flatten

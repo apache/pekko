@@ -27,7 +27,7 @@ class GraphMergeSequenceSpec extends TwoStreamsSetup {
 
   override type Outputs = Int
 
-  override def fixture(b: GraphDSL.Builder[_]): Fixture = new Fixture {
+  override def fixture(b: GraphDSL.Builder[?]): Fixture = new Fixture {
     val merge = b.add(MergeSequence[Outputs](2)(i => i))
 
     override def left: Inlet[Outputs] = merge.in(0)

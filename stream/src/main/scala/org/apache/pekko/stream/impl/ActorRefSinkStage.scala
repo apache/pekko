@@ -39,7 +39,7 @@ final private[pekko] class ActorRefSinkStage[T](
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new GraphStageLogic(shape) with InHandler with StageLogging {
 
-      override protected def logSource: Class[_] = classOf[ActorRefSinkStage[_]]
+      override protected def logSource: Class[?] = classOf[ActorRefSinkStage[?]]
 
       var completionSignalled = false
 

@@ -33,7 +33,7 @@ import com.typesafe.config.Config
 object ClusterShardingSettings {
 
   /** Scala API: Creates new cluster sharding settings object */
-  def apply(system: ActorSystem[_]): ClusterShardingSettings =
+  def apply(system: ActorSystem[?]): ClusterShardingSettings =
     fromConfig(system.settings.config.getConfig("pekko.cluster.sharding"))
 
   def fromConfig(config: Config): ClusterShardingSettings = {
@@ -43,7 +43,7 @@ object ClusterShardingSettings {
   }
 
   /** Java API: Creates new cluster sharding settings object */
-  def create(system: ActorSystem[_]): ClusterShardingSettings =
+  def create(system: ActorSystem[?]): ClusterShardingSettings =
     apply(system)
 
   /** INTERNAL API: Intended only for internal use, it is not recommended to keep converting between the setting types */

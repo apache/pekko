@@ -98,7 +98,7 @@ class DurableProducerControllerSpec
       val durable = TestDurableProducerQueue[TestConsumer.Job](
         Duration.Zero,
         stateHolder,
-        (_: DurableProducerQueue.Command[_]) => false)
+        (_: DurableProducerQueue.Command[?]) => false)
 
       val producerController =
         spawn(ProducerController[TestConsumer.Job](producerId, Some(durable)), s"producerController-$idCount")
@@ -183,7 +183,7 @@ class DurableProducerControllerSpec
         TestDurableProducerQueue[TestConsumer.Job](
           Duration.Zero,
           stateHolder,
-          (_: DurableProducerQueue.Command[_]) => false)
+          (_: DurableProducerQueue.Command[?]) => false)
 
       val producerController =
         spawn(

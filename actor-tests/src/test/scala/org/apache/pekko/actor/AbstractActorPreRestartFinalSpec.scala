@@ -75,7 +75,7 @@ class AbstractActorPreRestartFinalSpec extends PekkoSpec with ImplicitSender {
 
     "be declared final via reflection" in {
       val method = classOf[AbstractActor].getDeclaredMethod(
-        "preRestart", classOf[Throwable], classOf[Option[_]])
+        "preRestart", classOf[Throwable], classOf[Option[?]])
       assert(
         java.lang.reflect.Modifier.isFinal(method.getModifiers),
         "preRestart(Throwable, Option[Any]) should be final in AbstractActor")
@@ -103,7 +103,7 @@ class AbstractActorPreRestartFinalSpec extends PekkoSpec with ImplicitSender {
     "not be overridable in AbstractActor subclass (preRestart with Optional is the extension point)" in {
       // Verify that preRestart(Throwable, Optional[Any]) is NOT final
       val optionalMethod = classOf[AbstractActor].getDeclaredMethod(
-        "preRestart", classOf[Throwable], classOf[Optional[_]])
+        "preRestart", classOf[Throwable], classOf[Optional[?]])
       assert(
         !java.lang.reflect.Modifier.isFinal(optionalMethod.getModifiers),
         "preRestart(Throwable, Optional[Any]) should NOT be final in AbstractActor")
@@ -146,7 +146,7 @@ class AbstractActorPreRestartFinalSpec extends PekkoSpec with ImplicitSender {
 
     "also have final preRestart(Throwable, Option[Any]) (inherited from AbstractActor)" in {
       val method = classOf[UntypedAbstractActor].getMethod(
-        "preRestart", classOf[Throwable], classOf[Option[_]])
+        "preRestart", classOf[Throwable], classOf[Option[?]])
       assert(
         java.lang.reflect.Modifier.isFinal(method.getModifiers),
         "preRestart(Throwable, Option[Any]) should be final in UntypedAbstractActor")

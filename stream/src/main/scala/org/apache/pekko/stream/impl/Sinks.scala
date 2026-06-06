@@ -248,7 +248,7 @@ import org.reactivestreams.Subscriber
  * INTERNAL API
  */
 @InternalApi private[pekko] final class SeqStage[T, That](
-    implicit cbf: scala.collection.Factory[T, That with immutable.Iterable[_]])
+    implicit cbf: scala.collection.Factory[T, That with immutable.Iterable[?]])
     extends GraphStageWithMaterializedValue[SinkShape[T], Future[That]] {
   val in = Inlet[T]("seq.in")
 
@@ -350,7 +350,7 @@ import org.reactivestreams.Subscriber
         val e = buffer.dequeue()
         promise.complete(e)
         e match {
-          case Success(_: Some[_]) => // do nothing
+          case Success(_: Some[?]) => // do nothing
           case Success(None)       => completeStage()
           case Failure(t)          => failStage(t)
         }

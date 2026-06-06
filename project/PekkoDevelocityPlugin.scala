@@ -34,7 +34,7 @@ object PekkoDevelocityPlugin extends AutoPlugin {
   override lazy val trigger: PluginTrigger = allRequirements
   override lazy val requires: Plugins = DevelocityPlugin
 
-  override lazy val buildSettings: Seq[Setting[_]] = Def.settings(
+  override lazy val buildSettings: Seq[Setting[?]] = Def.settings(
     develocityConfiguration := {
       val isInsideCI = insideCI.value
 

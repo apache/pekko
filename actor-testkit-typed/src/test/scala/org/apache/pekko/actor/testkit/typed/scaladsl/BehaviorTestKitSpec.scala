@@ -210,7 +210,7 @@ class BehaviorTestKitSpec extends AnyWordSpec with Matchers with LogCapturing {
     "allow assertions on effect type" in {
       val testkit = BehaviorTestKit[Parent.Command](Parent.init)
       testkit.run(SpawnAnonymous(1))
-      val spawnAnonymous = testkit.expectEffectType[Effect.SpawnedAnonymous[_]]
+      val spawnAnonymous = testkit.expectEffectType[Effect.SpawnedAnonymous[?]]
       spawnAnonymous.props should ===(Props.empty)
     }
 
@@ -401,7 +401,7 @@ class BehaviorTestKitSpec extends AnyWordSpec with Matchers with LogCapturing {
       val sessionRef =
         testkit.runAsk[ActorRef[String]](SpawnSession(_, h.ref)).receiveReply()
 
-      val s = testkit.expectEffectType[SpawnedAnonymous[_]]
+      val s = testkit.expectEffectType[SpawnedAnonymous[?]]
       // must be able to get the created ref, even without explicit reply
       s.ref shouldBe sessionRef
 
@@ -423,7 +423,7 @@ class BehaviorTestKitSpec extends AnyWordSpec with Matchers with LogCapturing {
       testkit.expectEffect(Stopped(child.childName))
 
       testkit.run(SpawnChild)
-      val newChild = testkit.expectEffectType[Spawned[_]]
+      val newChild = testkit.expectEffectType[Spawned[?]]
       child.childName shouldBe newChild.childName
     }
   }

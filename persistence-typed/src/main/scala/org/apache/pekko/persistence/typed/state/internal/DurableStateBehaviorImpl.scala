@@ -58,7 +58,7 @@ private[pekko] final case class DurableStateBehaviorImpl[Command, State](
     persistenceId: PersistenceId,
     emptyState: State,
     commandHandler: DurableStateBehavior.CommandHandler[Command, State],
-    loggerClass: Class[_],
+    loggerClass: Class[?],
     durableStateStorePluginId: Option[String] = None,
     tag: String = "",
     snapshotAdapter: SnapshotAdapter[State] = NoOpSnapshotAdapter.instance[State],
@@ -76,7 +76,7 @@ private[pekko] final case class DurableStateBehaviorImpl[Command, State](
   override def apply(context: typed.TypedActorContext[Command]): Behavior[Command] = {
     val ctx = context.asScala
     val hasCustomLoggerName = ctx match {
-      case internalCtx: ActorContextImpl[_] => internalCtx.hasCustomLoggerName
+      case internalCtx: ActorContextImpl[?] => internalCtx.hasCustomLoggerName
       case _                                => false
     }
     if (!hasCustomLoggerName) ctx.setLoggerName(loggerClass)
@@ -160,7 +160,7 @@ private[pekko] final case class DurableStateBehaviorImpl[Command, State](
   }
 
   @InternalStableApi
-  private[pekko] def initialize(@nowarn("msg=never used") context: ActorContext[_]): Unit = ()
+  private[pekko] def initialize(@nowarn("msg=never used") context: ActorContext[?]): Unit = ()
 
   override def receiveSignal(handler: PartialFunction[(State, Signal), Unit]): DurableStateBehavior[Command, State] =
     copy(signalHandler = handler)

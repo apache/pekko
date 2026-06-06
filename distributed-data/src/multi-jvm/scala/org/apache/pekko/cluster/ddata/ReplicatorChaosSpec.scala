@@ -85,8 +85,8 @@ class ReplicatorChaosSpec extends MultiNodeSpec(ReplicatorChaosSpec) with STMult
             g.dataValue match {
               case c: GCounter  => c.value
               case c: PNCounter => c.value
-              case c: GSet[_]   => c.elements
-              case c: ORSet[_]  => c.elements
+              case c: GSet[?]   => c.elements
+              case c: ORSet[?]  => c.elements
               case _            => fail()
             }
         }
@@ -125,7 +125,7 @@ class ReplicatorChaosSpec extends MultiNodeSpec(ReplicatorChaosSpec) with STMult
           replicator ! Update(KeyB, PNCounter(), WriteLocal)(_.decrement(1))
           replicator ! Update(KeyC, GCounter(), WriteAll(timeout))(_ :+ 1)
         }
-        receiveN(15).map(_.getClass).toSet should be(Set(classOf[UpdateSuccess[_]]))
+        receiveN(15).map(_.getClass).toSet should be(Set(classOf[UpdateSuccess[?]]))
       }
 
       runOn(second) {

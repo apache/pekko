@@ -78,7 +78,7 @@ trait Serializer {
    * the class should be loaded using ActorSystem.dynamicAccess.
    */
   @throws(classOf[NotSerializableException])
-  def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef
+  def fromBinary(bytes: Array[Byte], manifest: Option[Class[?]]): AnyRef
 
   /**
    * Java API: deserialize without type hint
@@ -89,7 +89,7 @@ trait Serializer {
    * Java API: deserialize with type hint
    */
   @throws(classOf[NotSerializableException])
-  final def fromBinary(bytes: Array[Byte], clazz: Class[_]): AnyRef = fromBinary(bytes, Option(clazz))
+  final def fromBinary(bytes: Array[Byte], clazz: Class[?]): AnyRef = fromBinary(bytes, Option(clazz))
 }
 
 object Serializers {
@@ -175,7 +175,7 @@ abstract class SerializerWithStringManifest extends Serializer {
   @throws(classOf[NotSerializableException])
   def fromBinary(bytes: Array[Byte], manifest: String): AnyRef
 
-  final def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef = {
+  final def fromBinary(bytes: Array[Byte], manifest: Option[Class[?]]): AnyRef = {
     val manifestString = manifest match {
       case Some(c) => c.getName
       case None    => ""
@@ -286,7 +286,7 @@ object BaseSerializer {
 
   /** INTERNAL API */
   @InternalApi
-  private[pekko] def identifierFromConfig(clazz: Class[_], system: ExtendedActorSystem): Int =
+  private[pekko] def identifierFromConfig(clazz: Class[?], system: ExtendedActorSystem): Int =
     system.settings.config.getInt(s"""$SerializationIdentifiers."${clazz.getName}"""")
 
   /** INTERNAL API */
@@ -304,13 +304,13 @@ object BaseSerializer {
 abstract class JSerializer extends Serializer {
 
   @throws(classOf[NotSerializableException])
-  final def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef =
+  final def fromBinary(bytes: Array[Byte], manifest: Option[Class[?]]): AnyRef =
     fromBinaryJava(bytes, manifest.orNull)
 
   /**
    * This method must be implemented, manifest may be null.
    */
-  protected def fromBinaryJava(bytes: Array[Byte], manifest: Class[_]): AnyRef
+  protected def fromBinaryJava(bytes: Array[Byte], manifest: Class[?]): AnyRef
 }
 
 object NullSerializer extends NullSerializer
@@ -365,7 +365,7 @@ class JavaSerializer(val system: ExtendedActorSystem) extends BaseSerializer {
   }
 
   @throws(classOf[NotSerializableException])
-  def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]): AnyRef = {
+  def fromBinary(bytes: Array[Byte], clazz: Option[Class[?]]): AnyRef = {
     val in =
       new ClassLoaderObjectInputStream(system.dynamicAccess.classLoader, new UnsynchronizedByteArrayInputStream(bytes))
     try JavaSerializer.currentSystem.withValue(system) { in.readObject }
@@ -398,7 +398,7 @@ final case class DisabledJavaSerializer(system: ExtendedActorSystem) extends Ser
   }
 
   @throws(classOf[NotSerializableException])
-  override def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]): AnyRef = {
+  override def fromBinary(bytes: Array[Byte], clazz: Option[Class[?]]): AnyRef = {
     log.warning(
       LogMarker.Security,
       "Incoming message attempted to use Java Serialization even though `pekko.actor.allow-java-serialization = off` was set!")
@@ -438,7 +438,7 @@ class NullSerializer extends Serializer {
   def identifier = 0
   def toBinary(o: AnyRef): Array[Byte] = nullAsBytes
   @throws(classOf[NotSerializableException])
-  def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]): AnyRef = null
+  def fromBinary(bytes: Array[Byte], clazz: Option[Class[?]]): AnyRef = null
 }
 
 /**
@@ -457,7 +457,7 @@ class ByteArraySerializer(val system: ExtendedActorSystem) extends BaseSerialize
   }
 
   @throws(classOf[NotSerializableException])
-  def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]): AnyRef = bytes
+  def fromBinary(bytes: Array[Byte], clazz: Option[Class[?]]): AnyRef = bytes
 
   override def toBinary(o: AnyRef, buf: ByteBuffer): Unit =
     o match {

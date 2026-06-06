@@ -30,9 +30,9 @@ import pekko.annotation.InternalApi
  * Actor system extensions registry
  */
 @InternalApi
-private[pekko] trait ExtensionsImpl extends Extensions { self: ActorSystem[_] with InternalRecipientRef[_] =>
+private[pekko] trait ExtensionsImpl extends Extensions { self: ActorSystem[?] with InternalRecipientRef[?] =>
 
-  private val extensions = new ConcurrentHashMap[ExtensionId[_], AnyRef]
+  private val extensions = new ConcurrentHashMap[ExtensionId[?], AnyRef]
 
   /**
    * Hook for ActorSystem to load extensions on startup
@@ -54,7 +54,7 @@ private[pekko] trait ExtensionsImpl extends Extensions { self: ActorSystem[_] wi
       }
 
       idTry match {
-        case Success(id: ExtensionId[_]) => registerExtension(id)
+        case Success(id: ExtensionId[?]) => registerExtension(id)
         case Success(_)                  =>
           if (!throwOnLoadFail) log.error("[{}] is not an 'ExtensionId', skipping...", extensionIdFQCN)
           else throw new RuntimeException(s"[$extensionIdFQCN] is not an 'ExtensionId'")
@@ -68,14 +68,14 @@ private[pekko] trait ExtensionsImpl extends Extensions { self: ActorSystem[_] wi
 
   private def idFromJavaSingletonAccessor(extensionIdFQCN: String): Try[ExtensionId[Extension]] =
     dynamicAccess.getClassFor[ExtensionId[Extension]](extensionIdFQCN).flatMap[ExtensionId[Extension]] {
-      (clazz: Class[_]) =>
+      (clazz: Class[?]) =>
         Try {
           val singletonAccessor = clazz.getDeclaredMethod("getInstance")
           singletonAccessor.invoke(null).asInstanceOf[ExtensionId[Extension]]
         }
     }
 
-  final override def hasExtension(ext: ExtensionId[_ <: Extension]): Boolean = findExtension(ext) != null
+  final override def hasExtension(ext: ExtensionId[? <: Extension]): Boolean = findExtension(ext) != null
 
   final override def extension[T <: Extension](ext: ExtensionId[T]): T = findExtension(ext) match {
     case null => throw new IllegalArgumentException(s"Trying to get non-registered extension [$ext]")
@@ -96,7 +96,7 @@ private[pekko] trait ExtensionsImpl extends Extensions { self: ActorSystem[_] wi
           // Create and initialize the extension, first look for ExtensionSetup
           val instance = self.settings.setup.setups
             .collectFirst {
-              case (_, extSetup: ExtensionSetup[_]) if extSetup.extId == ext => extSetup.createExtension(self)
+              case (_, extSetup: ExtensionSetup[?]) if extSetup.extId == ext => extSetup.createExtension(self)
             }
             .getOrElse(ext.createExtension(self))
           instance match {

@@ -205,7 +205,7 @@ class ReplicatorSpec extends MultiNodeSpec(ReplicatorSpec) with STMultiNodeSpec 
   "reply with ModifyFailure if exception is thrown by modify function" in {
     val e = new RuntimeException("errr")
     replicator ! Update(KeyA, GCounter(), WriteLocal)(_ => throw e)
-    expectMsgType[ModifyFailure[_]].cause should be(e)
+    expectMsgType[ModifyFailure[?]].cause should be(e)
   }
 
   "replicate values to new node" in {
@@ -459,7 +459,7 @@ class ReplicatorSpec extends MultiNodeSpec(ReplicatorSpec) with STMultiNodeSpec 
       val probe1 = TestProbe()
       val probe2 = TestProbe()
       replicator.tell(Get(KeyE, readMajority), probe2.ref)
-      probe2.expectMsgType[GetSuccess[_]]
+      probe2.expectMsgType[GetSuccess[?]]
       replicator.tell(Update(KeyE, GCounter(), writeMajority, None) { data =>
           probe1.ref ! data.value
           data :+ 1
@@ -478,7 +478,7 @@ class ReplicatorSpec extends MultiNodeSpec(ReplicatorSpec) with STMultiNodeSpec 
     runOn(second) {
       val probe1 = TestProbe()
       replicator.tell(Get(KeyE, readMajority), probe1.ref)
-      probe1.expectMsgType[GetSuccess[_]]
+      probe1.expectMsgType[GetSuccess[?]]
       replicator.tell(Update(KeyE, GCounter(), writeMajority, Some(153))(_ :+ 1), probe1.ref)
       // verify read your own writes, without waiting for the UpdateSuccess reply
       // note that the order of the replies are not defined, and therefore we use separate probes
@@ -527,7 +527,7 @@ class ReplicatorSpec extends MultiNodeSpec(ReplicatorSpec) with STMultiNodeSpec 
         replicator ! Update(KeyF, GCounter(), writeTwo)(_ :+ 1)
       }
       val results = receiveN(100)
-      results.map(_.getClass).toSet should be(Set(classOf[UpdateSuccess[_]]))
+      results.map(_.getClass).toSet should be(Set(classOf[UpdateSuccess[?]]))
     }
     enterBarrier("100-updates-done")
     runOn(first, second, third) {
@@ -541,7 +541,7 @@ class ReplicatorSpec extends MultiNodeSpec(ReplicatorSpec) with STMultiNodeSpec 
   "read-repair happens before GetSuccess" in {
     runOn(first) {
       replicator ! Update(KeyG, ORSet(), writeTwo)(_ :+ "a" :+ "b")
-      expectMsgType[UpdateSuccess[_]]
+      expectMsgType[UpdateSuccess[?]]
     }
     enterBarrier("a-b-added-to-G")
     runOn(second) {

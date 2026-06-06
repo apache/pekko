@@ -135,7 +135,7 @@ import com.typesafe.config.{ Config, ConfigFactory }
   override def extension[T <: Extension](ext: ExtensionId[T]): T =
     throw new UnsupportedOperationException("ActorSystemStub cannot register extensions")
 
-  override def hasExtension(ext: ExtensionId[_ <: Extension]): Boolean =
+  override def hasExtension(ext: ExtensionId[? <: Extension]): Boolean =
     throw new UnsupportedOperationException("ActorSystemStub cannot register extensions")
 
   override def log: Logger = LoggerFactory.getLogger(getClass)

@@ -100,14 +100,14 @@ import pekko.util.{ ByteString, Timeout }
 }
 
 /** INTERNAL API */
-@InternalApi private[pekko] final class ClusterShardingImpl(system: ActorSystem[_])
+@InternalApi private[pekko] final class ClusterShardingImpl(system: ActorSystem[?])
     extends javadsl.ClusterSharding
     with scaladsl.ClusterSharding {
 
   import pekko.actor.typed.scaladsl.adapter._
 
   require(
-    system.isInstanceOf[ActorSystemAdapter[_]],
+    system.isInstanceOf[ActorSystemAdapter[?]],
     "only adapted classic actor systems can be used for cluster features")
 
   private val cluster = Cluster(system)
@@ -327,7 +327,7 @@ import pekko.util.{ ByteString, Timeout }
 
   override def equals(other: Any): Boolean =
     other match {
-      case eri: EntityRefImpl[_] =>
+      case eri: EntityRefImpl[?] =>
         (eri.entityId == entityId) &&
         (eri.typeKey == typeKey) &&
         (eri.dataCenter == dataCenter)
@@ -406,13 +406,13 @@ import pekko.util.{ ByteString, Timeout }
   // impl InternalRecipientRef
   override def provider: ActorRefProvider = {
     import pekko.actor.typed.scaladsl.adapter._
-    shardRegion.toTyped.asInstanceOf[InternalRecipientRef[_]].provider
+    shardRegion.toTyped.asInstanceOf[InternalRecipientRef[?]].provider
   }
 
   // impl InternalRecipientRef
   def isTerminated: Boolean = {
     import pekko.actor.typed.scaladsl.adapter._
-    shardRegion.toTyped.asInstanceOf[InternalRecipientRef[_]].isTerminated
+    shardRegion.toTyped.asInstanceOf[InternalRecipientRef[?]].isTerminated
   }
 
   override def toString: String = s"EntityRef($typeKey, $entityId)"
@@ -435,7 +435,7 @@ import pekko.util.{ ByteString, Timeout }
   import pekko.cluster.sharding.ShardRegion.{ Passivate => ClassicPassivate }
 
   def behavior(stopMessage: Any): Behavior[scaladsl.ClusterSharding.ShardCommand] = {
-    def sendClassicPassivate(entity: ActorRef[_], classicSystem: actor.ActorSystem): Unit = {
+    def sendClassicPassivate(entity: ActorRef[?], classicSystem: actor.ActorSystem): Unit = {
       val classicRef = entity.toClassic
       val pathToShard = classicRef.path.elements.take(4).mkString("/")
       classicSystem.actorSelection(pathToShard).tell(ClassicPassivate(stopMessage), classicRef)

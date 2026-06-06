@@ -321,7 +321,7 @@ class ActorGraphInterpreterSpec extends StreamSpec {
 
     "be able to handle Publisher spec violations without leaking" in {
       val filthyPublisher = new Publisher[Int] {
-        override def subscribe(s: Subscriber[_ >: Int]): Unit = {
+        override def subscribe(s: Subscriber[? >: Int]): Unit = {
           s.onSubscribe(new Subscription {
             override def cancel(): Unit = ()
             override def request(n: Long): Unit = throw TE("violating your spec")
@@ -417,7 +417,7 @@ class ActorGraphInterpreterSpec extends StreamSpec {
       val done = Promise[Done]()
       Source
         .single(Source.fromPublisher(new Publisher[Int] {
-          def subscribe(s: Subscriber[_ >: Int]): Unit = {
+          def subscribe(s: Subscriber[? >: Int]): Unit = {
             s.onSubscribe(new Subscription {
               def cancel(): Unit = ()
               def request(n: Long): Unit = ()

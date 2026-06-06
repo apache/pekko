@@ -161,7 +161,7 @@ object TypedBenchmarkActors {
   }
 
   private def startPingPongActorPairs(
-      ctx: ActorContext[_],
+      ctx: ActorContext[?],
       messagesPerPair: Int,
       numPairs: Int,
       dispatcher: String): (Vector[(ActorRef[Message], ActorRef[Message])], CountDownLatch) = {

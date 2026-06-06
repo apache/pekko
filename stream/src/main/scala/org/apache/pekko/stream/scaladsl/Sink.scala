@@ -287,7 +287,7 @@ object Sink {
    * See also [[Flow.limit]], [[Flow.limitWeighted]], [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
    */
   def collection[T, That](
-      implicit cbf: scala.collection.Factory[T, That with immutable.Iterable[_]]): Sink[T, Future[That]] =
+      implicit cbf: scala.collection.Factory[T, That with immutable.Iterable[?]]): Sink[T, Future[That]] =
     Sink.fromGraph(new SeqStage[T, That])
 
   /**
@@ -353,7 +353,7 @@ object Sink {
   /**
    * Combine several sinks with fan-out strategy like `Broadcast` or `Balance` and returns `Sink`.
    */
-  def combine[T, U](first: Sink[U, _], second: Sink[U, _], rest: Sink[U, _]*)(
+  def combine[T, U](first: Sink[U, ?], second: Sink[U, ?], rest: Sink[U, ?]*)(
       fanOutStrategy: Int => Graph[UniformFanOutShape[T, U], NotUsed]): Sink[T, NotUsed] =
     Sink.fromGraph(GraphDSL.create() { implicit b =>
       import GraphDSL.Implicits._
@@ -361,7 +361,7 @@ object Sink {
       d.out(0) ~> first
       d.out(1) ~> second
 
-      @tailrec def combineRest(idx: Int, i: Iterator[Sink[U, _]]): SinkShape[T] =
+      @tailrec def combineRest(idx: Int, i: Iterator[Sink[U, ?]]): SinkShape[T] =
         if (i.hasNext) {
           d.out(idx) ~> i.next()
           combineRest(idx + 1, i)
