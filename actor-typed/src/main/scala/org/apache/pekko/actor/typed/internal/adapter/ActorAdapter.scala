@@ -180,7 +180,7 @@ import pekko.util.OptionVal
   }
 
   private def adaptAndHandle(msg: Any): Unit = {
-    @tailrec def handle(adapters: List[(Class[_], Any => T)]): Unit = {
+    @tailrec def handle(adapters: List[(Class[?], Any => T)]): Unit = {
       adapters match {
         case Nil =>
           // no adapter function registered for message class
@@ -240,7 +240,7 @@ import pekko.util.OptionVal
           case _ =>
             val isTypedActor = sender() match {
               case afwc: ActorRefWithCell =>
-                afwc.underlying.props.producer.actorClass == classOf[ActorAdapter[_]]
+                afwc.underlying.props.producer.actorClass == classOf[ActorAdapter[?]]
               case _ =>
                 false
             }
@@ -326,7 +326,7 @@ import pekko.util.OptionVal
     try {
       ctx.cancelAllTimers()
       behavior match {
-        case _: DeferredBehavior[_] =>
+        case _: DeferredBehavior[?] =>
         // Do not undefer a DeferredBehavior as that may cause creation side-effects, which we do not want on termination.
         case b => Behavior.interpretSignal(b, ctx, PostStop)
       }
@@ -352,7 +352,7 @@ import pekko.util.OptionVal
     // first pass the signal to the previous behavior, so that it and potential interceptors
     // will get the PostStop signal, unless it is deferred, we don't start a behavior while stopping
     lastBehavior match {
-      case _: DeferredBehavior[_] => // no starting of behaviors on actor stop
+      case _: DeferredBehavior[?] => // no starting of behaviors on actor stop
       case nonDeferred            => Behavior.interpretSignal(nonDeferred, ctx, PostStop)
     }
     // and then to the potential stop hook, which can have a call back or not

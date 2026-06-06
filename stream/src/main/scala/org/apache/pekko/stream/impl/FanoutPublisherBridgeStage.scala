@@ -127,7 +127,7 @@ import org.reactivestreams.{ Publisher, Subscriber }
         completeStage()
       }
 
-      override protected def createSubscription(subscriber: Subscriber[_ >: T]): S = {
+      override protected def createSubscription(subscriber: Subscriber[? >: T]): S = {
         everSubscribed = true
         cancelTimer(SubscriptionTimerKey)
         new FanoutPublisherBridgeSubscription[T](subscriber, requestCallback, cancelCallback)
@@ -172,7 +172,7 @@ import org.reactivestreams.{ Publisher, Subscriber }
  * INTERNAL API
  */
 @InternalApi private[pekko] final class FanoutPublisherBridgeSubscription[T](
-    override val subscriber: Subscriber[_ >: T],
+    override val subscriber: Subscriber[? >: T],
     requestCallback: AsyncCallback[(FanoutPublisherBridgeSubscription[T], Long)],
     cancelCallback: AsyncCallback[FanoutPublisherBridgeSubscription[T]])
     extends SubscriptionWithCursor[T] {
@@ -192,12 +192,12 @@ import org.reactivestreams.{ Publisher, Subscriber }
     extends Publisher[T] {
   import ReactiveStreamsCompliance._
 
-  private val pendingSubscribers = new AtomicReference[immutable.Seq[Subscriber[_ >: T]]](Nil)
+  private val pendingSubscribers = new AtomicReference[immutable.Seq[Subscriber[? >: T]]](Nil)
   private val shutdownStarted = new AtomicBoolean(false)
 
   @volatile private var shutdownReason: Option[Throwable] = None
 
-  override def subscribe(subscriber: Subscriber[_ >: T]): Unit = {
+  override def subscribe(subscriber: Subscriber[? >: T]): Unit = {
     requireNonNullSubscriber(subscriber)
 
     @tailrec def doSubscribe(): Unit = {
@@ -210,8 +210,8 @@ import org.reactivestreams.{ Publisher, Subscriber }
     doSubscribe()
   }
 
-  def takePendingSubscribers(): immutable.Seq[Subscriber[_ >: T]] = {
-    @tailrec def swapPendingSubscribers(): immutable.Seq[Subscriber[_ >: T]] = {
+  def takePendingSubscribers(): immutable.Seq[Subscriber[? >: T]] = {
+    @tailrec def swapPendingSubscribers(): immutable.Seq[Subscriber[? >: T]] = {
       val current = pendingSubscribers.get()
       if (current eq null) Nil
       else if (pendingSubscribers.compareAndSet(current, Nil)) current.reverse
@@ -231,7 +231,7 @@ import org.reactivestreams.{ Publisher, Subscriber }
       }
     }
 
-  private def reportSubscribeFailure(subscriber: Subscriber[_ >: T]): Unit =
+  private def reportSubscribeFailure(subscriber: Subscriber[? >: T]): Unit =
     try shutdownReason match {
         case Some(_: ReactiveStreamsCompliance.SpecViolation) => // ok, not allowed to call onError
         case Some(e)                                          =>

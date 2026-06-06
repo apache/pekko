@@ -49,7 +49,7 @@ object MultiNode extends AutoPlugin {
   override lazy val trigger = noTrigger
   override lazy val requires = plugins.JvmPlugin && MultiJvmPlugin
 
-  override lazy val projectSettings: Seq[Def.Setting[_]] = multiJvmSettings
+  override lazy val projectSettings: Seq[Def.Setting[?]] = multiJvmSettings
 
   private lazy val defaultMultiJvmOptions: Seq[String] = {
     import scala.jdk.CollectionConverters._

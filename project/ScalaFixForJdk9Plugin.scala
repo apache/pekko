@@ -22,9 +22,9 @@ object ScalaFixForJdk9Plugin extends AutoPlugin with ScalafixSupport {
   import ScalafixPlugin.autoImport.scalafixConfigSettings
   import sbt._
 
-  lazy val scalafixIgnoredSetting: Seq[Setting[_]] = Seq(ignore(TestJdk9))
+  lazy val scalafixIgnoredSetting: Seq[Setting[?]] = Seq(ignore(TestJdk9))
 
-  override lazy val projectSettings: Seq[Def.Setting[_]] =
+  override lazy val projectSettings: Seq[Def.Setting[?]] =
     Seq(CompileJdk9, TestJdk9).flatMap(c => inConfig(c)(scalafixConfigSettings(c))) ++
     scalafixIgnoredSetting ++ Seq(
       updateProjectCommands(

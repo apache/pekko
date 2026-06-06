@@ -29,12 +29,12 @@ import com.typesafe.config.Config
 object ShardedDaemonProcessSettings {
 
   /** Scala API: Create default settings for system */
-  def apply(system: ActorSystem[_]): ShardedDaemonProcessSettings = {
+  def apply(system: ActorSystem[?]): ShardedDaemonProcessSettings = {
     fromConfig(system.settings.config.getConfig("pekko.cluster.sharded-daemon-process"))
   }
 
   /** Java API: Create default settings for system */
-  def create(system: ActorSystem[_]): ShardedDaemonProcessSettings =
+  def create(system: ActorSystem[?]): ShardedDaemonProcessSettings =
     apply(system)
 
   /**

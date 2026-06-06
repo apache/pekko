@@ -105,7 +105,7 @@ import org.slf4j.{ Logger, LoggerFactory }
   }
   override def dynamicAccess: classic.DynamicAccess = system.dynamicAccess
   implicit override def executionContext: scala.concurrent.ExecutionContextExecutor = classicSystem.dispatcher
-  override val log: Logger = LoggerFactory.getLogger(classOf[ActorSystem[_]])
+  override val log: Logger = LoggerFactory.getLogger(classOf[ActorSystem[?]])
   override def logConfiguration(): Unit = classicSystem.logConfiguration()
   override def name: String = classicSystem.name
   override val scheduler: Scheduler = new SchedulerAdapter(classicSystem.scheduler)
@@ -147,9 +147,9 @@ private[pekko] object ActorSystemAdapter {
       case system: classic.ActorSystemImpl =>
         // Optimization to cut out going through adapter lookup if possible
         system.typedSystem match {
-          case OptionVal.Some(typedSystem: ActorSystem[_]) => typedSystem
+          case OptionVal.Some(typedSystem: ActorSystem[?]) => typedSystem
           case _                                           =>
-            val typedSystem: ActorSystem[_] = AdapterExtension(system).adapter
+            val typedSystem: ActorSystem[?] = AdapterExtension(system).adapter
             system.typedSystem = OptionVal.Some(typedSystem)
             typedSystem
         }
@@ -182,10 +182,10 @@ private[pekko] object ActorSystemAdapter {
   }
 
   object LoadTypedExtensions extends classic.ExtensionId[LoadTypedExtensions] with classic.ExtensionIdProvider {
-    override def lookup: actor.ExtensionId[_ <: actor.Extension] = this
+    override def lookup: actor.ExtensionId[? <: actor.Extension] = this
     override def createExtension(system: ExtendedActorSystem): LoadTypedExtensions =
       new LoadTypedExtensions(system)
   }
 
-  def toClassic[U](sys: ActorSystem[_]): classic.ActorSystem = sys.classicSystem
+  def toClassic[U](sys: ActorSystem[?]): classic.ActorSystem = sys.classicSystem
 }

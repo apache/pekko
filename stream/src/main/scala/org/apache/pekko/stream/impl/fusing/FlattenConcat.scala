@@ -178,7 +178,7 @@ private[pekko] final class FlattenConcat[T, M](parallelism: Int)
         queue.enqueue(inflightSource)
       }
 
-      private def addJavaStreamSource(javaStream: JavaStreamSource[T, _]): Unit = {
+      private def addJavaStreamSource(javaStream: JavaStreamSource[T, ?]): Unit = {
         val inflightSource = new InflightJavaStreamSource[T](javaStream.open)
         if (isAvailable(out) && queue.isEmpty) {
           if (inflightSource.hasNext) {
@@ -275,7 +275,7 @@ private[pekko] final class FlattenConcat[T, M](parallelism: Int)
               case iterator: IteratorSource[T] @unchecked                   => addSourceElements(iterator.createIterator())
               case range: RangeSource[T] @unchecked                         => addRangeSource(range.range)
               case repeat: RepeatSource[T] @unchecked                       => addRepeatSource(repeat.elem)
-              case javaStream: JavaStreamSource[T, _] @unchecked            => addJavaStreamSource(javaStream)
+              case javaStream: JavaStreamSource[T, ?] @unchecked            => addJavaStreamSource(javaStream)
               case failed: FailedSource[T] @unchecked                       => addCompletedFutureElem(Failure(failed.failure))
               case maybeEmpty if TraversalBuilder.isEmptySource(maybeEmpty) => // Empty source is discarded
               case _                                                        => attachAndMaterializeSource(source)

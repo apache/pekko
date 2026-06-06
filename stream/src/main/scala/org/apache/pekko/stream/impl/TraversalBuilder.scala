@@ -354,10 +354,10 @@ import pekko.util.OptionVal
    * Try to find `SingleSource` or wrapped such. This is used as a
    * performance optimization in FlattenMerge and possibly other places.
    */
-  def getSingleSource[A >: Null](graph: Graph[SourceShape[A], _]): OptionVal[SingleSource[A]] = {
-    @inline def fromModule(module: AtomicModule[_, _]): OptionVal[SingleSource[A]] =
+  def getSingleSource[A >: Null](graph: Graph[SourceShape[A], ?]): OptionVal[SingleSource[A]] = {
+    @inline def fromModule(module: AtomicModule[?, ?]): OptionVal[SingleSource[A]] =
       module match {
-        case m: GraphStageModule[_, _] =>
+        case m: GraphStageModule[?, ?] =>
           m.stage match {
             case single: SingleSource[A] @unchecked => OptionVal.Some(single)
             case _                                  => OptionVal.None
@@ -392,18 +392,18 @@ import pekko.util.OptionVal
    * @since 1.2.0
    */
   @InternalApi def getValuePresentedSource[A >: Null](
-      graph: Graph[SourceShape[A], _]): OptionVal[Graph[SourceShape[A], _]] = {
-    def isValuePresentedSource(graph: Graph[SourceShape[_ <: A], _]): Boolean = graph match {
+      graph: Graph[SourceShape[A], ?]): OptionVal[Graph[SourceShape[A], ?]] = {
+    def isValuePresentedSource(graph: Graph[SourceShape[? <: A], ?]): Boolean = graph match {
       case _: ValuePresentedSource                 => true
       case maybeEmpty if isEmptySource(maybeEmpty) => true
       case _                                       => false
     }
-    @inline def fromModule(module: AtomicModule[_, _]): OptionVal[Graph[SourceShape[A], _]] =
+    @inline def fromModule(module: AtomicModule[?, ?]): OptionVal[Graph[SourceShape[A], ?]] =
       module match {
-        case m: GraphStageModule[_, _] =>
+        case m: GraphStageModule[?, ?] =>
           m.stage match {
-            case _ if isValuePresentedSource(m.stage.asInstanceOf[Graph[SourceShape[A], _]]) =>
-              OptionVal.Some(m.stage.asInstanceOf[Graph[SourceShape[A], _]])
+            case _ if isValuePresentedSource(m.stage.asInstanceOf[Graph[SourceShape[A], ?]]) =>
+              OptionVal.Some(m.stage.asInstanceOf[Graph[SourceShape[A], ?]])
             case _ => OptionVal.None
           }
         case _ => OptionVal.None
@@ -433,9 +433,9 @@ import pekko.util.OptionVal
   /**
    * Test if a Graph is an empty Source.
    */
-  def isEmptySource(graph: Graph[SourceShape[_], _]): Boolean = graph match {
-    case source: scaladsl.Source[_, _] if source eq scaladsl.Source.empty => true
-    case source: javadsl.Source[_, _] if source eq javadsl.Source.empty() => true
+  def isEmptySource(graph: Graph[SourceShape[?], ?]): Boolean = graph match {
+    case source: scaladsl.Source[?, ?] if source eq scaladsl.Source.empty => true
+    case source: javadsl.Source[?, ?] if source eq javadsl.Source.empty() => true
     case EmptySource                                                      => true
     case _                                                                => false
   }
@@ -794,7 +794,7 @@ import pekko.util.OptionVal
   }
 
   @inline @InternalApi private[pekko] def fromGraphStage(
-      graphStage: GraphStageWithMaterializedValue[_ <: Shape, _]): LinearTraversalBuilder = {
+      graphStage: GraphStageWithMaterializedValue[? <: Shape, ?]): LinearTraversalBuilder = {
     val builder = graphStage.traversalBuilder
     val attributes = builder.attributes
     val linear = builder match {

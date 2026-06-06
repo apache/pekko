@@ -61,5 +61,5 @@ import pekko.annotation.InternalApi
 
   override def isSame(other: BehaviorInterceptor[Any, Any]): Boolean =
     // only one interceptor per behavior stack is needed
-    other.isInstanceOf[PoisonPillInterceptor[_]]
+    other.isInstanceOf[PoisonPillInterceptor[?]]
 }

@@ -62,7 +62,7 @@ object TestPublisher {
    * Publisher that subscribes the subscriber and completes after the first request.
    */
   def lazyEmpty[T]: Publisher[T] = new Publisher[T] {
-    override def subscribe(subscriber: Subscriber[_ >: T]): Unit =
+    override def subscribe(subscriber: Subscriber[? >: T]): Unit =
       subscriber.onSubscribe(CompletedSubscription(subscriber))
   }
 
@@ -75,7 +75,7 @@ object TestPublisher {
    * Publisher that subscribes the subscriber and signals error after the first request.
    */
   def lazyError[T](cause: Throwable): Publisher[T] = new Publisher[T] {
-    override def subscribe(subscriber: Subscriber[_ >: T]): Unit =
+    override def subscribe(subscriber: Subscriber[? >: T]): Unit =
       subscriber.onSubscribe(FailedSubscription(subscriber, cause))
   }
 
@@ -132,7 +132,7 @@ object TestPublisher {
     /**
      * Subscribes a given [[org.reactivestreams.Subscriber]] to this probe publisher.
      */
-    def subscribe(subscriber: Subscriber[_ >: I]): Unit = {
+    def subscribe(subscriber: Subscriber[? >: I]): Unit = {
       val subscription: PublisherProbeSubscription[I] = new PublisherProbeSubscription[I](subscriber, probe)
       probe.ref ! Subscribe(subscription)
       if (autoOnSubscribe) subscriber.onSubscribe(subscription)
@@ -1105,7 +1105,7 @@ private[stream] object StreamTestKit {
     override def cancel(): Unit = ()
   }
 
-  final case class PublisherProbeSubscription[I](subscriber: Subscriber[_ >: I], publisherProbe: TestProbe)
+  final case class PublisherProbeSubscription[I](subscriber: Subscriber[? >: I], publisherProbe: TestProbe)
       extends Subscription
       with SubscriptionWithCancelException {
     def request(elements: Long): Unit = publisherProbe.ref ! RequestMore(this, elements)

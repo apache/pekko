@@ -32,7 +32,7 @@ import com.typesafe.config.Config
  */
 @InternalApi
 private[pekko] object ClusterReceptionistSettings {
-  def apply(system: ActorSystem[_]): ClusterReceptionistSettings =
+  def apply(system: ActorSystem[?]): ClusterReceptionistSettings =
     apply(system.settings.config.getConfig("pekko.cluster.typed.receptionist"))
 
   def apply(config: Config): ClusterReceptionistSettings = {

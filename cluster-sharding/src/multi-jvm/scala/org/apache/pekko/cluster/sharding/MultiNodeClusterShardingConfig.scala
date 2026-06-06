@@ -24,7 +24,7 @@ import com.typesafe.config.{ Config, ConfigFactory }
 
 object MultiNodeClusterShardingConfig {
 
-  private[sharding] def testNameFromCallStack(classToStartFrom: Class[_]): String = {
+  private[sharding] def testNameFromCallStack(classToStartFrom: Class[?]): String = {
 
     def isAbstractClass(className: String): Boolean = {
       try {

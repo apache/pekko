@@ -705,7 +705,7 @@ private[cluster] final class ClusterDomainEventPublisher
     receiver ! state
   }
 
-  def subscribe(subscriber: ActorRef, initMode: SubscriptionInitialStateMode, to: Set[Class[_]]): Unit = {
+  def subscribe(subscriber: ActorRef, initMode: SubscriptionInitialStateMode, to: Set[Class[?]]): Unit = {
     initMode match {
       case InitialStateAsEvents =>
         def pub(event: AnyRef): Unit = {
@@ -720,7 +720,7 @@ private[cluster] final class ClusterDomainEventPublisher
     to.foreach { eventStream.subscribe(subscriber, _) }
   }
 
-  def unsubscribe(subscriber: ActorRef, to: Option[Class[_]]): Unit = to match {
+  def unsubscribe(subscriber: ActorRef, to: Option[Class[?]]): Unit = to match {
     case None    => eventStream.unsubscribe(subscriber)
     case Some(c) => eventStream.unsubscribe(subscriber, c)
   }

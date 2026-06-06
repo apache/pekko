@@ -33,7 +33,7 @@ object Protobuf {
   lazy val protocVersion = SettingKey[String]("protobuf-protoc-version", "The version of the protoc executable.")
   lazy val protobufGenerate = TaskKey[Unit]("protobufGenerate", "Compile the protobuf sources and do all processing.")
 
-  lazy val settings: Seq[Setting[_]] = Seq(
+  lazy val settings: Seq[Setting[?]] = Seq(
     paths := Seq((Compile / sourceDirectory).value, (Test / sourceDirectory).value).map(_ / "protobuf"),
     outputPaths := Seq((Compile / sourceDirectory).value, (Test / sourceDirectory).value).map(_ / "java"),
     importPath := None,

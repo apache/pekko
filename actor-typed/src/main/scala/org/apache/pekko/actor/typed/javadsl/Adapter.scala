@@ -108,10 +108,10 @@ object Adapter {
   def toTyped(sys: pekko.actor.ActorSystem): ActorSystem[Void] =
     sys.toTyped.asInstanceOf[ActorSystem[Void]]
 
-  def toClassic(sys: ActorSystem[_]): pekko.actor.ActorSystem =
+  def toClassic(sys: ActorSystem[?]): pekko.actor.ActorSystem =
     sys.toClassic
 
-  def toClassic(ctx: ActorContext[_]): actor.ActorContext =
+  def toClassic(ctx: ActorContext[?]): actor.ActorContext =
     ActorContextAdapter.toClassic(ctx)
 
   def watch[U](ctx: pekko.actor.ActorContext, other: ActorRef[U]): Unit =
@@ -120,25 +120,25 @@ object Adapter {
   def unwatch[U](ctx: pekko.actor.ActorContext, other: ActorRef[U]): Unit =
     ctx.unwatch(other)
 
-  def stop(ctx: pekko.actor.ActorContext, child: ActorRef[_]): Unit =
+  def stop(ctx: pekko.actor.ActorContext, child: ActorRef[?]): Unit =
     ctx.stop(child)
 
-  def watch[U](ctx: ActorContext[_], other: pekko.actor.ActorRef): Unit =
+  def watch[U](ctx: ActorContext[?], other: pekko.actor.ActorRef): Unit =
     ctx.watch(other)
 
-  def unwatch[U](ctx: ActorContext[_], other: pekko.actor.ActorRef): Unit =
+  def unwatch[U](ctx: ActorContext[?], other: pekko.actor.ActorRef): Unit =
     ctx.unwatch(other)
 
-  def stop(ctx: ActorContext[_], child: pekko.actor.ActorRef): Unit =
+  def stop(ctx: ActorContext[?], child: pekko.actor.ActorRef): Unit =
     ctx.stop(child)
 
-  def actorOf(ctx: ActorContext[_], props: pekko.actor.Props): pekko.actor.ActorRef =
+  def actorOf(ctx: ActorContext[?], props: pekko.actor.Props): pekko.actor.ActorRef =
     ActorContextAdapter.toClassic(ctx).actorOf(props)
 
-  def actorOf(ctx: ActorContext[_], props: pekko.actor.Props, name: String): pekko.actor.ActorRef =
+  def actorOf(ctx: ActorContext[?], props: pekko.actor.Props, name: String): pekko.actor.ActorRef =
     ActorContextAdapter.toClassic(ctx).actorOf(props, name)
 
-  def toClassic(ref: ActorRef[_]): pekko.actor.ActorRef =
+  def toClassic(ref: ActorRef[?]): pekko.actor.ActorRef =
     ref.toClassic
 
   def toTyped[T](ref: pekko.actor.ActorRef): ActorRef[T] =

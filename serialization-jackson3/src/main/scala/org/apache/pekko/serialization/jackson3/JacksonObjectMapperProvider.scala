@@ -320,9 +320,9 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
 
   private def configureObjectVisibility(
       bindingName: String,
-      builder: MapperBuilder[ObjectMapper, _],
+      builder: MapperBuilder[ObjectMapper, ?],
       objectMapperFactory: JacksonObjectMapperFactory,
-      config: Config): MapperBuilder[ObjectMapper, _] = {
+      config: Config): MapperBuilder[ObjectMapper, ?] = {
 
     val configuredVisibility: immutable.Seq[(PropertyAccessor, JsonAutoDetect.Visibility)] =
       configPairs(config, "visibility").map {
@@ -340,17 +340,17 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
           case (property, visibility) => localVc = localVc.withVisibility(property, visibility)
         }
         localVc
-      }).asInstanceOf[MapperBuilder[ObjectMapper, _]]
+      }).asInstanceOf[MapperBuilder[ObjectMapper, ?]]
     }
   }
 
   private def configureObjectMapperModules(
       bindingName: String,
-      builder: MapperBuilder[ObjectMapper, _],
+      builder: MapperBuilder[ObjectMapper, ?],
       objectMapperFactory: JacksonObjectMapperFactory,
       config: Config,
       dynamicAccess: DynamicAccess,
-      log: Option[LoggingAdapter]): MapperBuilder[ObjectMapper, _] = {
+      log: Option[LoggingAdapter]): MapperBuilder[ObjectMapper, ?] = {
 
     val configuredModules = config.getStringList("jackson-modules").asScala
     val modules = configuredModules.flatMap { fqcn =>
@@ -402,9 +402,9 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
     val configuredJsonFactory = createJsonFactory(bindingName, objectMapperFactory, config, jsonFactory)
     val builder = objectMapperFactory.newObjectMapperBuilder(configuredJsonFactory)
     configureObjectMapperFeatures(bindingName, builder, objectMapperFactory, config)
-    configureObjectMapperModules(bindingName, builder.asInstanceOf[MapperBuilder[ObjectMapper, _]],
+    configureObjectMapperModules(bindingName, builder.asInstanceOf[MapperBuilder[ObjectMapper, ?]],
       objectMapperFactory, config, dynamicAccess, log)
-    configureObjectVisibility(bindingName, builder.asInstanceOf[MapperBuilder[ObjectMapper, _]],
+    configureObjectVisibility(bindingName, builder.asInstanceOf[MapperBuilder[ObjectMapper, ?]],
       objectMapperFactory, config)
     builder.build()
   }
@@ -420,10 +420,10 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
     val configuredJsonFactory = createCBORFactory(bindingName, objectMapperFactory, config, streamFactory)
     val builder = objectMapperFactory.newCBORMapperBuilder(configuredJsonFactory)
     configureCBORMapperFeatures(bindingName, builder, objectMapperFactory, config)
-    configureObjectMapperModules(bindingName, builder.asInstanceOf[MapperBuilder[ObjectMapper, _]],
+    configureObjectMapperModules(bindingName, builder.asInstanceOf[MapperBuilder[ObjectMapper, ?]],
       objectMapperFactory, config,
       dynamicAccess, log)
-    configureObjectVisibility(bindingName, builder.asInstanceOf[MapperBuilder[ObjectMapper, _]],
+    configureObjectVisibility(bindingName, builder.asInstanceOf[MapperBuilder[ObjectMapper, ?]],
       objectMapperFactory, config)
     builder.build()
   }

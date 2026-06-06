@@ -79,7 +79,7 @@ private[pekko] class RequestingRecoveryPermit[C, E, S](override val setup: Behav
   }
 
   @InternalStableApi
-  def onRequestingRecoveryPermit(@nowarn("msg=never used") context: ActorContext[_]): Unit = ()
+  def onRequestingRecoveryPermit(@nowarn("msg=never used") context: ActorContext[?]): Unit = ()
 
   private def becomeReplaying(receivedPoisonPill: Boolean): Behavior[InternalProtocol] = {
     setup.internalLogger.debug(s"Initializing snapshot recovery: {}", setup.recovery)

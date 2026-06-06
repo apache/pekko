@@ -178,7 +178,7 @@ final class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
    *                  for servers, and therefore it is the default setting.
    */
   def bindAndHandle(
-      handler: Flow[ByteString, ByteString, _],
+      handler: Flow[ByteString, ByteString, ?],
       interface: String,
       port: Int,
       backlog: Int = defaultBacklog,
@@ -359,7 +359,7 @@ final class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
    * @see [[Tcp.bindAndHandle]]
    */
   def bindAndHandleWithTls(
-      handler: Flow[ByteString, ByteString, _],
+      handler: Flow[ByteString, ByteString, ?],
       interface: String,
       port: Int,
       createSSLEngine: () => SSLEngine)(implicit m: Materializer): Future[ServerBinding] =
@@ -385,7 +385,7 @@ final class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
    * @see [[Tcp.bindAndHandle]]
    */
   def bindAndHandleWithTls(
-      handler: Flow[ByteString, ByteString, _],
+      handler: Flow[ByteString, ByteString, ?],
       interface: String,
       port: Int,
       createSSLEngine: () => SSLEngine,

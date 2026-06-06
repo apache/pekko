@@ -104,7 +104,7 @@ object LoggingDocExamples {
   }
 
   def withMdc(): Unit = {
-    val system: ActorSystem[_] = ???
+    val system: ActorSystem[?] = ???
 
     // #withMdc
     val staticMdc = Map("startTime" -> system.startTime.toString)
@@ -118,7 +118,7 @@ object LoggingDocExamples {
   }
 
   def logging(): Unit = {
-    implicit val system: ActorSystem[_] = ???
+    implicit val system: ActorSystem[?] = ???
     final case class Message(s: String)
     val ref: ActorRef[Message] = ???
 

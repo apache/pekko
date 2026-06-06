@@ -55,16 +55,16 @@ object FishingOutcomes {
 
 object TestProbe {
 
-  def create[M](system: ActorSystem[_]): TestProbe[M] =
+  def create[M](system: ActorSystem[?]): TestProbe[M] =
     create(name = "testProbe", system)
 
-  def create[M](@nowarn("msg=never used") clazz: Class[M], system: ActorSystem[_]): TestProbe[M] =
+  def create[M](@nowarn("msg=never used") clazz: Class[M], system: ActorSystem[?]): TestProbe[M] =
     create(system)
 
-  def create[M](name: String, system: ActorSystem[_]): TestProbe[M] =
+  def create[M](name: String, system: ActorSystem[?]): TestProbe[M] =
     new TestProbeImpl[M](name, system)
 
-  def create[M](name: String, @nowarn("msg=never used") clazz: Class[M], system: ActorSystem[_]): TestProbe[M] =
+  def create[M](name: String, @nowarn("msg=never used") clazz: Class[M], system: ActorSystem[?]): TestProbe[M] =
     new TestProbeImpl[M](name, system)
 }
 

@@ -51,7 +51,7 @@ import pekko.util.ByteString
     result
   }
 
-  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef = {
+  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[?]]): AnyRef = {
     var result = 0L
     var i = 7
     while (i >= 0) {
@@ -89,7 +89,7 @@ import pekko.util.ByteString
     result
   }
 
-  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef = {
+  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[?]]): AnyRef = {
     var result = 0
     var i = 3
     while (i >= 0) {
@@ -121,7 +121,7 @@ import pekko.util.ByteString
 
   override def toBinary(o: AnyRef): Array[Byte] = o.asInstanceOf[String].getBytes(StandardCharsets.UTF_8)
 
-  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef =
+  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[?]]): AnyRef =
     new String(bytes, StandardCharsets.UTF_8)
 
 }
@@ -154,7 +154,7 @@ import pekko.util.ByteString
     result
   }
 
-  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef = {
+  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[?]]): AnyRef = {
     ByteString(bytes)
   }
 
@@ -204,7 +204,7 @@ import pekko.util.ByteString
     result
   }
 
-  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef = {
+  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[?]]): AnyRef = {
     bytes(0) match {
       case TrueB  => TRUE
       case FalseB => FALSE

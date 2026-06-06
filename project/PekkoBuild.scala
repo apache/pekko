@@ -114,7 +114,7 @@ object PekkoBuild {
 
   final val DefaultJavacOptions = Seq("-encoding", "UTF-8", "-Xlint:unchecked")
 
-  lazy val defaultSettings: Seq[Setting[_]] = Def.settings(
+  lazy val defaultSettings: Seq[Setting[?]] = Def.settings(
     projectInfoVersion := (if (isSnapshot.value) "snapshot" else version.value),
     Dependencies.Versions,
     resolverSettings,
@@ -254,7 +254,7 @@ object PekkoBuild {
       }
     })
 
-  lazy val welcomeSettings: Seq[Setting[_]] = Def.settings {
+  lazy val welcomeSettings: Seq[Setting[?]] = Def.settings {
     import sbtwelcome._
     Seq(
       logo := {

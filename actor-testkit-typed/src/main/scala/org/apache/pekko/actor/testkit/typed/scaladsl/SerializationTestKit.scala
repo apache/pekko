@@ -22,7 +22,7 @@ import pekko.serialization.Serializers
 /**
  * Utilities to test serialization.
  */
-class SerializationTestKit(system: ActorSystem[_]) {
+class SerializationTestKit(system: ActorSystem[?]) {
 
   private val serialization = SerializationExtension(system.toClassic)
 

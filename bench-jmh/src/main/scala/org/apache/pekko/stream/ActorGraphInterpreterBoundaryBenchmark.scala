@@ -47,7 +47,7 @@ object ActorGraphInterpreterBoundaryBenchmark {
   final val CancelAfter = ElementCount / 2
 
   final class SynchronousPublisher(elements: Array[MutableElement]) extends Publisher[MutableElement] {
-    override def subscribe(subscriber: Subscriber[_ >: MutableElement]): Unit = {
+    override def subscribe(subscriber: Subscriber[? >: MutableElement]): Unit = {
       if (subscriber eq null) throw new NullPointerException("subscriber")
 
       subscriber.onSubscribe(new Subscription {

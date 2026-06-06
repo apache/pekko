@@ -383,7 +383,7 @@ private final class ShardedDaemonProcessCoordinator private (
       sortedIdentities.foreach(id => shardingRef ! StartEntity(id))
       None
     } else {
-      implicit val system: ActorSystem[_] = context.system
+      implicit val system: ActorSystem[?] = context.system
       Some(
         Source(sortedIdentities)
           .viaMat(KillSwitches.single)(Keep.right)

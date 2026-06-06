@@ -82,7 +82,7 @@ class DynamicAccessSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll
         case Failure(_: NoSuchMethodException) =>
           dynamicAccess
             .createInstanceFor[TestSuperclass](fqcn, immutable.Seq((classOf[String], "string ctor argument")))
-        case f: Failure[_] => f
+        case f: Failure[?] => f
       }
 
   }

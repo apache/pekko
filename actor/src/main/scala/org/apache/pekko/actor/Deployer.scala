@@ -293,7 +293,7 @@ private[pekko] class Deployer(val settings: ActorSystem.Settings, val dynamicAcc
 
       val fqn = routerTypeMapping.getOrElse(routerType, routerType)
 
-      def throwCannotInstantiateRouter(args: Seq[(Class[_], AnyRef)], cause: Throwable) =
+      def throwCannotInstantiateRouter(args: Seq[(Class[?], AnyRef)], cause: Throwable) =
         throw new IllegalArgumentException(
           s"Cannot instantiate router [$fqn], defined in [$key], " +
           s"make sure it extends [${classOf[RouterConfig]}] and has constructor with " +

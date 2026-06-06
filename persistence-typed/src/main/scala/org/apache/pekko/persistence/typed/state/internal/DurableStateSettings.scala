@@ -31,7 +31,7 @@ import com.typesafe.config.Config
 @InternalApi private[pekko] object DurableStateSettings {
 
   def apply(
-      system: ActorSystem[_],
+      system: ActorSystem[?],
       durableStateStorePluginId: String,
       customStashCapacity: Option[Int]): DurableStateSettings =
     apply(system.settings.config, durableStateStorePluginId, customStashCapacity)
