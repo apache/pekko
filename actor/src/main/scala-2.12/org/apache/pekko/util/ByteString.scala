@@ -1317,7 +1317,7 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
           _builder += ByteString.ByteString1(copied)
           _length += seq.length
         }
-      case seq: collection.IndexedSeq[_] =>
+      case seq: collection.IndexedSeq[?] =>
         if (seq.nonEmpty) {
           ensureTempSize(_tempLength + xs.size)
           xs.copyToArray(_temp, _tempLength)

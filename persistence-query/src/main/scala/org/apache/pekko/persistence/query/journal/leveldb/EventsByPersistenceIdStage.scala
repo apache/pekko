@@ -72,7 +72,7 @@ final private[pekko] class EventsByPersistenceIdStage(
       var nextSequenceNr = fromSequenceNr
       var toSequenceNr = initialToSequenceNr
 
-      override protected def logSource: Class[_] = classOf[EventsByPersistenceIdStage]
+      override protected def logSource: Class[?] = classOf[EventsByPersistenceIdStage]
 
       override def preStart(): Unit = {
         stageActorRef = getStageActor(journalInteraction).ref
@@ -131,7 +131,8 @@ final private[pekko] class EventsByPersistenceIdStage(
               nextSequenceNr,
               toSequenceNr,
               bufferSize)
-            if (bufferEmpty && (nextSequenceNr > toSequenceNr || (nextSequenceNr == fromSequenceNr && isCurrentQuery()))) {
+            if (bufferEmpty &&
+              (nextSequenceNr > toSequenceNr || (nextSequenceNr == fromSequenceNr && isCurrentQuery()))) {
               completeStage()
             } else if (nextSequenceNr < toSequenceNr) {
               // need further requests to the journal

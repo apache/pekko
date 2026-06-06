@@ -45,7 +45,8 @@ abstract class JoinInProgressSpec extends MultiNodeClusterSpec(JoinInProgressMul
   import JoinInProgressMultiJvmSpec._
 
   "A cluster node" must {
-    "send heartbeats immediately when joining to avoid false failure detection due to delayed gossip" taggedAs LongRunningTest in {
+    "send heartbeats immediately when joining to avoid false failure detection due to delayed gossip" taggedAs
+    LongRunningTest in {
 
       runOn(first) {
         startClusterNode()

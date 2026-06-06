@@ -395,7 +395,9 @@ private[pekko] object FrequencySketchUtil {
     val indexDigits = digits(rowWidth)
     val counterDigits = math.max(2, digits(counterMax))
     def divider(start: String, line: String, separator1: String, separator: String, end: String): String =
-      start + (line * (indexDigits + 2)) + separator1 + (line * (counterDigits + 2)) +
+      start +
+      (line * (indexDigits + 2)) + separator1 +
+      (line * (counterDigits + 2)) +
       ((separator + (line * (counterDigits + 2))) * (slots - 1)) + end + "\n"
     val builder = new StringBuilder
     builder ++= divider("╔", "═", "╦", "╤", "╗")
@@ -407,8 +409,9 @@ private[pekko] object FrequencySketchUtil {
     builder ++= "║\n"
     for (row <- matrix.indices) {
       for (column <- matrix(0).indices) {
-        builder ++= (if (column == 0) divider("╠", "═", "╬", "╪", "╣")
-                     else divider("╟", "─", "╫", "┼", "╢"))
+        builder ++=
+          (if (column == 0) divider("╠", "═", "╬", "╪", "╣")
+           else divider("╟", "─", "╫", "┼", "╢"))
         builder ++= s"║ %${indexDigits}d ".format(column)
         var shift = 0
         while (shift < 64) {

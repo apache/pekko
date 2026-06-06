@@ -77,7 +77,7 @@ import pekko.util.Timeout
         Behaviors
           .receive[SReplicator.Command] { (ctx, msg) =>
             msg match {
-              case cmd: SReplicator.Get[_] =>
+              case cmd: SReplicator.Get[?] =>
                 classicReplicator.tell(dd.Replicator.Get(cmd.key, cmd.consistency), sender = cmd.replyTo.toClassic)
                 Behaviors.same
 
@@ -87,23 +87,22 @@ import pekko.util.Timeout
                   case t                       => t.asScala + additionalAskTimeout
                 })
                 import ctx.executionContext
-                val reply =
-                  (classicReplicator ? dd.Replicator.Get(cmd.key, cmd.consistency.toClassic))
-                    .mapTo[dd.Replicator.GetResponse[d]]
-                    .map {
-                      case rsp: dd.Replicator.GetSuccess[d] =>
-                        JReplicator.GetSuccess(rsp.key)(rsp.dataValue)
-                      case rsp: dd.Replicator.NotFound[d]       => JReplicator.NotFound(rsp.key)
-                      case rsp: dd.Replicator.GetFailure[d]     => JReplicator.GetFailure(rsp.key)
-                      case rsp: dd.Replicator.GetDataDeleted[d] => JReplicator.GetDataDeleted(rsp.key)
-                    }
-                    .recover {
-                      case _ => JReplicator.GetFailure(cmd.key)
-                    }
+                val reply = (classicReplicator ? dd.Replicator.Get(cmd.key, cmd.consistency.toClassic))
+                  .mapTo[dd.Replicator.GetResponse[d]]
+                  .map {
+                    case rsp: dd.Replicator.GetSuccess[d] =>
+                      JReplicator.GetSuccess(rsp.key)(rsp.dataValue)
+                    case rsp: dd.Replicator.NotFound[d]       => JReplicator.NotFound(rsp.key)
+                    case rsp: dd.Replicator.GetFailure[d]     => JReplicator.GetFailure(rsp.key)
+                    case rsp: dd.Replicator.GetDataDeleted[d] => JReplicator.GetDataDeleted(rsp.key)
+                  }
+                  .recover {
+                    case _ => JReplicator.GetFailure(cmd.key)
+                  }
                 reply.foreach { cmd.replyTo ! _ }
                 Behaviors.same
 
-              case cmd: SReplicator.Update[_] =>
+              case cmd: SReplicator.Update[?] =>
                 classicReplicator.tell(
                   dd.Replicator.Update(cmd.key, cmd.writeConsistency, None)(cmd.modify),
                   sender = cmd.replyTo.toClassic)
@@ -132,7 +131,7 @@ import pekko.util.Timeout
                 reply.foreach { cmd.replyTo ! _ }
                 Behaviors.same
 
-              case cmd: SReplicator.Subscribe[_] =>
+              case cmd: SReplicator.Subscribe[?] =>
                 // For the Scala API the SubscribeResponse messages can be sent directly to the subscriber
                 classicReplicator.tell(
                   dd.Replicator.Subscribe(cmd.key, cmd.subscriber.toClassic),
@@ -158,12 +157,12 @@ import pekko.util.Timeout
 
               case InternalSubscribeResponse(rsp, subscriber) =>
                 rsp match {
-                  case chg: dd.Replicator.Changed[_] => subscriber ! JReplicator.Changed(chg.key)(chg.dataValue)
-                  case del: dd.Replicator.Deleted[_] => subscriber ! JReplicator.Deleted(del.key)
+                  case chg: dd.Replicator.Changed[?] => subscriber ! JReplicator.Changed(chg.key)(chg.dataValue)
+                  case del: dd.Replicator.Deleted[?] => subscriber ! JReplicator.Deleted(del.key)
                 }
                 Behaviors.same
 
-              case cmd: SReplicator.Unsubscribe[_] =>
+              case cmd: SReplicator.Unsubscribe[?] =>
                 classicReplicator.tell(
                   dd.Replicator.Unsubscribe(cmd.key, cmd.subscriber.toClassic),
                   sender = cmd.subscriber.toClassic)
@@ -172,7 +171,7 @@ import pekko.util.Timeout
               case cmd: JReplicator.Unsubscribe[ReplicatedData] @unchecked =>
                 stopSubscribeAdapter(cmd.subscriber)
 
-              case cmd: SReplicator.Delete[_] =>
+              case cmd: SReplicator.Delete[?] =>
                 classicReplicator.tell(dd.Replicator.Delete(cmd.key, cmd.consistency), sender = cmd.replyTo.toClassic)
                 Behaviors.same
 
@@ -182,19 +181,18 @@ import pekko.util.Timeout
                   case t                       => t.asScala + additionalAskTimeout
                 })
                 import ctx.executionContext
-                val reply =
-                  (classicReplicator ? dd.Replicator.Delete(cmd.key, cmd.consistency.toClassic))
-                    .mapTo[dd.Replicator.DeleteResponse[d]]
-                    .map {
-                      case rsp: dd.Replicator.DeleteSuccess[d]            => JReplicator.DeleteSuccess(rsp.key)
-                      case rsp: dd.Replicator.ReplicationDeleteFailure[d] =>
-                        JReplicator.DeleteFailure(rsp.key)
-                      case rsp: dd.Replicator.DataDeleted[d]  => JReplicator.DataDeleted(rsp.key)
-                      case rsp: dd.Replicator.StoreFailure[d] => JReplicator.StoreFailure(rsp.key)
-                    }
-                    .recover {
-                      case _ => JReplicator.DeleteFailure(cmd.key)
-                    }
+                val reply = (classicReplicator ? dd.Replicator.Delete(cmd.key, cmd.consistency.toClassic))
+                  .mapTo[dd.Replicator.DeleteResponse[d]]
+                  .map {
+                    case rsp: dd.Replicator.DeleteSuccess[d]            => JReplicator.DeleteSuccess(rsp.key)
+                    case rsp: dd.Replicator.ReplicationDeleteFailure[d] =>
+                      JReplicator.DeleteFailure(rsp.key)
+                    case rsp: dd.Replicator.DataDeleted[d]  => JReplicator.DataDeleted(rsp.key)
+                    case rsp: dd.Replicator.StoreFailure[d] => JReplicator.StoreFailure(rsp.key)
+                  }
+                  .recover {
+                    case _ => JReplicator.DeleteFailure(cmd.key)
+                  }
                 reply.foreach { cmd.replyTo ! _ }
                 Behaviors.same
 
@@ -205,10 +203,9 @@ import pekko.util.Timeout
               case JReplicator.GetReplicaCount(replyTo) =>
                 implicit val timeout = Timeout(localAskTimeout)
                 import ctx.executionContext
-                val reply =
-                  (classicReplicator ? dd.Replicator.GetReplicaCount)
-                    .mapTo[dd.Replicator.ReplicaCount]
-                    .map(rsp => JReplicator.ReplicaCount(rsp.n))
+                val reply = (classicReplicator ? dd.Replicator.GetReplicaCount)
+                  .mapTo[dd.Replicator.ReplicaCount]
+                  .map(rsp => JReplicator.ReplicaCount(rsp.n))
                 reply.foreach { replyTo ! _ }
                 Behaviors.same
 

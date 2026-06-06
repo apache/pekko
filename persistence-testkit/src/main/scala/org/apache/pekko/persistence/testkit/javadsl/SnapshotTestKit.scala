@@ -278,6 +278,6 @@ object SnapshotTestKit {
 
   def create(system: ActorSystem): SnapshotTestKit = new SnapshotTestKit(system)
 
-  def create(system: TypedActorSystem[_]): SnapshotTestKit = create(system.classicSystem)
+  def create(system: TypedActorSystem[?]): SnapshotTestKit = create(system.classicSystem)
 
 }

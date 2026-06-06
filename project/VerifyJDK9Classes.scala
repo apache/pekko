@@ -19,7 +19,7 @@ object VerifyJDK9Classes {
   import sbt._
   import sbt.Keys._
 
-  lazy val settings: Seq[Setting[_]] = inConfig(Compile) {
+  lazy val settings: Seq[Setting[?]] = inConfig(Compile) {
     Seq {
       sourceGenerators += {
         generateAndWriteScalaCLIScript(target)

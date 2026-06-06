@@ -56,7 +56,7 @@ object RestartSink {
   @deprecated("Use the overloaded method which accepts org.apache.pekko.stream.RestartSettings instead.",
     since = "Akka 2.6.10")
   def withBackoff[T](minBackoff: FiniteDuration, maxBackoff: FiniteDuration, randomFactor: Double)(
-      sinkFactory: () => Sink[T, _]): Sink[T, NotUsed] = {
+      sinkFactory: () => Sink[T, ?]): Sink[T, NotUsed] = {
     val settings = RestartSettings(minBackoff, maxBackoff, randomFactor)
     withBackoff(settings)(sinkFactory)
   }
@@ -90,7 +90,7 @@ object RestartSink {
   @deprecated("Use the overloaded method which accepts org.apache.pekko.stream.RestartSettings instead.",
     since = "Akka 2.6.10")
   def withBackoff[T](minBackoff: FiniteDuration, maxBackoff: FiniteDuration, randomFactor: Double, maxRestarts: Int)(
-      sinkFactory: () => Sink[T, _]): Sink[T, NotUsed] = {
+      sinkFactory: () => Sink[T, ?]): Sink[T, NotUsed] = {
     val settings = RestartSettings(minBackoff, maxBackoff, randomFactor).withMaxRestarts(maxRestarts, minBackoff)
     withBackoff(settings)(sinkFactory)
   }
@@ -114,11 +114,11 @@ object RestartSink {
    * @param settings [[RestartSettings]] defining restart configuration
    * @param sinkFactory A factory for producing the [[Sink]] to wrap.
    */
-  def withBackoff[T](settings: RestartSettings)(sinkFactory: () => Sink[T, _]): Sink[T, NotUsed] =
+  def withBackoff[T](settings: RestartSettings)(sinkFactory: () => Sink[T, ?]): Sink[T, NotUsed] =
     Sink.fromGraph(new RestartWithBackoffSink(sinkFactory, settings))
 }
 
-private final class RestartWithBackoffSink[T](sinkFactory: () => Sink[T, _], restartSettings: RestartSettings)
+private final class RestartWithBackoffSink[T](sinkFactory: () => Sink[T, ?], restartSettings: RestartSettings)
     extends GraphStage[SinkShape[T]] { self =>
 
   val in = Inlet[T]("RestartWithBackoffSink.in")

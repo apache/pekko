@@ -215,7 +215,7 @@ object PersistentActorSpec {
 
   class SnapshottingPersistentActor(name: String, probe: ActorRef) extends ExamplePersistentActor(name) {
     override def receiveRecover = super.receiveRecover.orElse {
-      case SnapshotOffer(_, events: List[_]) =>
+      case SnapshotOffer(_, events: List[?]) =>
         probe ! "offered"
         this.events = events
     }

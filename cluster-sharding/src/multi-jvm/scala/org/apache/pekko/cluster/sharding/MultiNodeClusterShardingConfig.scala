@@ -24,7 +24,7 @@ import pekko.remote.testkit.MultiNodeConfig
 
 object MultiNodeClusterShardingConfig {
 
-  private[sharding] def testNameFromCallStack(classToStartFrom: Class[_]): String = {
+  private[sharding] def testNameFromCallStack(classToStartFrom: Class[?]): String = {
 
     def isAbstractClass(className: String): Boolean = {
       try {
@@ -108,7 +108,8 @@ abstract class MultiNodeClusterShardingConfig(
         "").replace("_", "")}"
 
   val persistenceConfig: Config =
-    if (mode == ClusterShardingSettings.StateStoreModeDData && rememberEntitiesStore != ClusterShardingSettings.RememberEntitiesStoreEventsourced)
+    if (mode == ClusterShardingSettings.StateStoreModeDData &&
+      rememberEntitiesStore != ClusterShardingSettings.RememberEntitiesStoreEventsourced)
       ConfigFactory.empty
     else MultiNodeClusterShardingConfig.persistenceConfig(targetDir)
 

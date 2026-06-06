@@ -514,7 +514,8 @@ class SplitBrainResolverSpec
       assertDowningSide(side2, Set(memberB, memberC, memberD, memberE))
     }
 
-    "down indirectly connected on minority side, when combined with clean partition: {A, (B, C)} | {D, E, F, G} => {D, E, F, G}" in new Setup2(
+    "down indirectly connected on minority side, when combined with clean partition: {A, (B, C)} | {D, E, F, G} => {D, E, F, G}" in
+    new Setup2(
       role = None) {
       side1 = Set(memberA, memberB, memberC)
       side2 = Set(memberD, memberE, memberF, memberG)
@@ -534,7 +535,8 @@ class SplitBrainResolverSpec
       assertDowningSide(side2, Set(memberA, memberB, memberC))
     }
 
-    "down indirectly connected on majority side, when combined with clean partition: {A, B, C} | {(D, E), F, G} => {F, G}" in new Setup2(
+    "down indirectly connected on majority side, when combined with clean partition: {A, B, C} | {(D, E), F, G} => {F, G}" in
+    new Setup2(
       role = None) {
       side1 = Set(memberA, memberB, memberC)
       side2 = Set(memberD, memberE, memberF, memberG)
@@ -568,7 +570,8 @@ class SplitBrainResolverSpec
       assertDowningSide(side2, Set(memberA, memberB, memberC, memberE, memberF))
     }
 
-    "down indirectly connected, detected via seen, combined with clean partition: {A, B, C} | {(D, E), (F, G)} => {}" in new Setup2(
+    "down indirectly connected, detected via seen, combined with clean partition: {A, B, C} | {(D, E), (F, G)} => {}" in
+    new Setup2(
       role = None) {
       side1 = Set(memberA, memberB, memberC)
       side2 = Set(memberD, memberE, memberF, memberG)
@@ -581,7 +584,8 @@ class SplitBrainResolverSpec
       assertDowningSide(side2, Set(memberA, memberB, memberC, memberD, memberE, memberF, memberG))
     }
 
-    "double DownIndirectlyConnected when indirectly connected happens before clean partition: {A, B, C} | {(D, E), (F, G)} => {}" in new Setup2(
+    "double DownIndirectlyConnected when indirectly connected happens before clean partition: {A, B, C} | {(D, E), (F, G)} => {}" in
+    new Setup2(
       role = None) {
       side1 = Set(memberA, memberB, memberC)
       side2 = Set(memberD, memberE, memberF, memberG)
@@ -774,7 +778,8 @@ class SplitBrainResolverSpec
       assertDowning(Set(memberA, memberB))
     }
 
-    "down indirectly connected on younger side, when combined with clean partition: {A, (B, C)} | {D, E, F, G} => {D, E, F, G}" in new Setup2 {
+    "down indirectly connected on younger side, when combined with clean partition: {A, (B, C)} | {D, E, F, G} => {D, E, F, G}" in
+    new Setup2 {
       side1 = Set(memberA, memberB, memberC)
       side2 = Set(memberD, memberE, memberF, memberG)
       indirectlyConnected = List(memberB -> memberC, memberC -> memberB)
@@ -793,7 +798,8 @@ class SplitBrainResolverSpec
       assertDowningSide(side2, Set(memberA, memberB, memberC))
     }
 
-    "down indirectly connected on oldest side, when combined with clean partition: {A, B, C} | {(D, E), F, G} => {F, G}" in new Setup2 {
+    "down indirectly connected on oldest side, when combined with clean partition: {A, B, C} | {(D, E), F, G} => {F, G}" in
+    new Setup2 {
       side1 = Set(memberA, memberB, memberC)
       side2 = Set(memberD, memberE, memberF, memberG)
 
@@ -950,7 +956,8 @@ class SplitBrainResolverSpec
       strategy3.nodesToDown(reverseDecision3) should ===(Set(memberB, memberC, memberD, memberE).map(_.uniqueAddress))
     }
 
-    "down indirectly connected to already downed node during partition: {A, B, C, D} | {(E, F)} => {A, B, C, D}" in new Setup2(
+    "down indirectly connected to already downed node during partition: {A, B, C, D} | {(E, F)} => {A, B, C, D}" in
+    new Setup2(
       role = None) {
       val memberELeaving = leaving(memberE)
       val memberFDown = downed(memberF)

@@ -57,7 +57,7 @@ object RestartFlow {
       minBackoff: FiniteDuration,
       maxBackoff: FiniteDuration,
       randomFactor: Double,
-      flowFactory: Creator[Flow[In, Out, _]]): Flow[In, Out, NotUsed] = {
+      flowFactory: Creator[Flow[In, Out, ?]]): Flow[In, Out, NotUsed] = {
     val settings = RestartSettings(minBackoff, maxBackoff, randomFactor)
     withBackoff(settings, flowFactory)
   }
@@ -91,7 +91,7 @@ object RestartFlow {
       minBackoff: java.time.Duration,
       maxBackoff: java.time.Duration,
       randomFactor: Double,
-      flowFactory: Creator[Flow[In, Out, _]]): Flow[In, Out, NotUsed] = {
+      flowFactory: Creator[Flow[In, Out, ?]]): Flow[In, Out, NotUsed] = {
     val settings = RestartSettings.create(minBackoff, maxBackoff, randomFactor)
     withBackoff(settings, flowFactory)
   }
@@ -127,7 +127,7 @@ object RestartFlow {
       maxBackoff: FiniteDuration,
       randomFactor: Double,
       maxRestarts: Int,
-      flowFactory: Creator[Flow[In, Out, _]]): Flow[In, Out, NotUsed] = {
+      flowFactory: Creator[Flow[In, Out, ?]]): Flow[In, Out, NotUsed] = {
     val settings = RestartSettings(minBackoff, maxBackoff, randomFactor).withMaxRestarts(maxRestarts, minBackoff)
     withBackoff(settings, flowFactory)
   }
@@ -164,7 +164,7 @@ object RestartFlow {
       maxBackoff: java.time.Duration,
       randomFactor: Double,
       maxRestarts: Int,
-      flowFactory: Creator[Flow[In, Out, _]]): Flow[In, Out, NotUsed] = {
+      flowFactory: Creator[Flow[In, Out, ?]]): Flow[In, Out, NotUsed] = {
     val settings = RestartSettings.create(minBackoff, maxBackoff, randomFactor).withMaxRestarts(maxRestarts, minBackoff)
     withBackoff(settings, flowFactory)
   }
@@ -187,7 +187,7 @@ object RestartFlow {
    * @param settings [[RestartSettings]] defining restart configuration
    * @param flowFactory A factory for producing the [[Flow]] to wrap.
    */
-  def withBackoff[In, Out](settings: RestartSettings, flowFactory: Creator[Flow[In, Out, _]]): Flow[In, Out, NotUsed] =
+  def withBackoff[In, Out](settings: RestartSettings, flowFactory: Creator[Flow[In, Out, ?]]): Flow[In, Out, NotUsed] =
     pekko.stream.scaladsl.RestartFlow
       .withBackoff(settings) { () =>
         flowFactory.create().asScala
@@ -225,7 +225,7 @@ object RestartFlow {
       maxBackoff: FiniteDuration,
       randomFactor: Double,
       maxRestarts: Int,
-      flowFactory: Creator[Flow[In, Out, _]]): Flow[In, Out, NotUsed] = {
+      flowFactory: Creator[Flow[In, Out, ?]]): Flow[In, Out, NotUsed] = {
     val settings = RestartSettings(minBackoff, maxBackoff, randomFactor).withMaxRestarts(maxRestarts, minBackoff)
     onFailuresWithBackoff(settings, flowFactory)
   }
@@ -262,7 +262,7 @@ object RestartFlow {
       maxBackoff: java.time.Duration,
       randomFactor: Double,
       maxRestarts: Int,
-      flowFactory: Creator[Flow[In, Out, _]]): Flow[In, Out, NotUsed] = {
+      flowFactory: Creator[Flow[In, Out, ?]]): Flow[In, Out, NotUsed] = {
     val settings = RestartSettings.create(minBackoff, maxBackoff, randomFactor).withMaxRestarts(maxRestarts, minBackoff)
     onFailuresWithBackoff(settings, flowFactory)
   }
@@ -287,7 +287,7 @@ object RestartFlow {
    */
   def onFailuresWithBackoff[In, Out](
       settings: RestartSettings,
-      flowFactory: Creator[Flow[In, Out, _]]): Flow[In, Out, NotUsed] =
+      flowFactory: Creator[Flow[In, Out, ?]]): Flow[In, Out, NotUsed] =
     pekko.stream.scaladsl.RestartFlow
       .onFailuresWithBackoff(settings) { () =>
         flowFactory.create().asScala

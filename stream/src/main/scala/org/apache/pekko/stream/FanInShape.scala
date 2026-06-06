@@ -19,14 +19,14 @@ import scala.collection.immutable
 object FanInShape {
   sealed trait Init[O] {
     def outlet: Outlet[O]
-    def inlets: immutable.Seq[Inlet[_]]
+    def inlets: immutable.Seq[Inlet[?]]
     def name: String
   }
   final case class Name[O](override val name: String) extends Init[O] {
     override def outlet: Outlet[O] = Outlet(s"$name.out")
-    override def inlets: immutable.Seq[Inlet[_]] = Nil
+    override def inlets: immutable.Seq[Inlet[?]] = Nil
   }
-  final case class Ports[O](override val outlet: Outlet[O], override val inlets: immutable.Seq[Inlet[_]])
+  final case class Ports[O](override val outlet: Outlet[O], override val inlets: immutable.Seq[Inlet[?]])
       extends Init[O] {
     override def name: String = "FanIn"
   }
@@ -34,7 +34,7 @@ object FanInShape {
 
 abstract class FanInShape[+O] private (
     _out: Outlet[O @uncheckedVariance],
-    _registered: Iterator[Inlet[_]],
+    _registered: Iterator[Inlet[?]],
     _name: String)
     extends Shape {
   import FanInShape._
@@ -47,12 +47,12 @@ abstract class FanInShape[+O] private (
   /**
    * Not meant for overriding outside of Apache Pekko.
    */
-  override def inlets: immutable.Seq[Inlet[_]] = _inlets
+  override def inlets: immutable.Seq[Inlet[?]] = _inlets
 
   /**
    * Performance of subclass `UniformFanInShape` relies on `_inlets` being a `Vector`, not a `List`.
    */
-  private var _inlets: Vector[Inlet[_]] = Vector.empty
+  private var _inlets: Vector[Inlet[?]] = Vector.empty
   protected def newInlet[T](name: String): Inlet[T] = {
     val p = if (_registered.hasNext) _registered.next().asInstanceOf[Inlet[T]] else Inlet[T](s"${_name}.$name")
     _inlets :+= p

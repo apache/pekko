@@ -86,9 +86,9 @@ private[pekko] trait DurableStateStoreInteractions[C, S] {
 
   // FIXME These hook methods are for Telemetry. What more parameters are needed? persistenceId?
   @InternalStableApi
-  private[pekko] def onWriteInitiated(@unused ctx: ActorContext[_], @unused cmd: Any): Unit = ()
+  private[pekko] def onWriteInitiated(@unused ctx: ActorContext[?], @unused cmd: Any): Unit = ()
 
-  private[pekko] def onDeleteInitiated(@unused ctx: ActorContext[_], @unused cmd: Any): Unit = ()
+  private[pekko] def onDeleteInitiated(@unused ctx: ActorContext[?], @unused cmd: Any): Unit = ()
 
   protected def requestRecoveryPermit(): Unit = {
     setup.persistence.recoveryPermitter.tell(RecoveryPermitter.RequestRecoveryPermit, setup.selfClassic)

@@ -27,7 +27,7 @@ private[pekko] object LoggerClass {
 
   // just to get access to the class context
   private final class TrickySecurityManager extends SecurityManager {
-    def getClassStack: Array[Class[_]] = getClassContext
+    def getClassStack: Array[Class[?]] = getClassContext
   }
 
   private val defaultPrefixesToSkip = List("scala.runtime", "org.apache.pekko.actor.typed.internal")
@@ -35,7 +35,7 @@ private[pekko] object LoggerClass {
   /**
    * Try to extract a logger class from the call stack, if not possible the provided default is used
    */
-  def detectLoggerClassFromStack(default: Class[_], additionalPrefixesToSkip: List[String] = Nil): Class[_] = {
+  def detectLoggerClassFromStack(default: Class[?], additionalPrefixesToSkip: List[String] = Nil): Class[?] = {
     // TODO use stack walker API when we no longer need to support Java 8
     try {
       def skip(name: String): Boolean = {
@@ -50,7 +50,7 @@ private[pekko] object LoggerClass {
       }
 
       val trace = new TrickySecurityManager().getClassStack
-      var suitableClass: OptionVal[Class[_]] = OptionVal.None
+      var suitableClass: OptionVal[Class[?]] = OptionVal.None
       var idx = 1 // skip this method/class and right away
       while (suitableClass.isEmpty && idx < trace.length) {
         val clazz = trace(idx)

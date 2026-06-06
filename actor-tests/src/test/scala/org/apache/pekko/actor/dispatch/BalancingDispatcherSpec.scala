@@ -95,7 +95,8 @@ class BalancingDispatcherSpec extends PekkoSpec(BalancingDispatcherSpec.config) 
       fast.underlying.asInstanceOf[ActorCell].mailbox.hasMessages should ===(false)
       slow.underlying.asInstanceOf[ActorCell].mailbox.hasMessages should ===(false)
       fast.underlying.asInstanceOf[ActorCell].actor.asInstanceOf[DelayableActor].invocationCount should be > sentToFast
-      fast.underlying.asInstanceOf[ActorCell].actor.asInstanceOf[DelayableActor].invocationCount should be >
+      fast.underlying.asInstanceOf[ActorCell].actor.asInstanceOf[DelayableActor].invocationCount should
+      be >
       slow.underlying.asInstanceOf[ActorCell].actor.asInstanceOf[DelayableActor].invocationCount
       system.stop(slow)
       system.stop(fast)

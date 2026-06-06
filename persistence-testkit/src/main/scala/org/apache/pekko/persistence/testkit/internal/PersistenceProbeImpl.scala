@@ -46,7 +46,7 @@ private[pekko] object PersistenceProbeImpl {
         b: Behavior[Command],
         context: ActorContext[Command]): Option[EventSourcedBehaviorImpl[Command, Event, State]] = {
       b match {
-        case es: EventSourcedBehaviorImpl[Command, _, _] =>
+        case es: EventSourcedBehaviorImpl[Command, ?, ?] =>
           Some(es.asInstanceOf[EventSourcedBehaviorImpl[Command, Event, State]])
 
         case deferred: DeferredBehavior[Command] =>
@@ -74,7 +74,7 @@ private[pekko] object PersistenceProbeImpl {
         b: Behavior[Command],
         context: ActorContext[Command]): Option[DurableStateBehaviorImpl[Command, State]] =
       b match {
-        case ds: DurableStateBehaviorImpl[Command, _] =>
+        case ds: DurableStateBehaviorImpl[Command, ?] =>
           Some(ds.asInstanceOf[DurableStateBehaviorImpl[Command, State]])
 
         case deferred: DeferredBehavior[Command] => findDurableStateBehavior(deferred(context), context)
@@ -186,7 +186,7 @@ private[pekko] object PersistenceProbeImpl {
           effect match {
             case _: Stop.type       => shouldStop = true
             case _: UnstashAll.type => shouldUnstash = true
-            case cb: Callback[_]    => cb.sideEffect(state)
+            case cb: Callback[?]    => cb.sideEffect(state)
           }
         }
 
@@ -256,7 +256,7 @@ private[pekko] object PersistenceProbeImpl {
       @tailrec
       def applyEffects(curEffect: EffectImpl[State], sideEffects: immutable.Seq[SideEffect[State]]): Unit =
         curEffect match {
-          case CompositeEffect(eff: EffectImpl[_], se) =>
+          case CompositeEffect(eff: EffectImpl[?], se) =>
             applyEffects(eff.asInstanceOf[EffectImpl[State]], se ++ sideEffects)
 
           case Persist(st) =>
@@ -280,7 +280,7 @@ private[pekko] object PersistenceProbeImpl {
           effect match {
             case _: Stop.type       => shouldStop = true
             case _: UnstashAll.type => shouldUnstash = true
-            case cb: Callback[_]    => cb.sideEffect(state)
+            case cb: Callback[?]    => cb.sideEffect(state)
           }
         }
 

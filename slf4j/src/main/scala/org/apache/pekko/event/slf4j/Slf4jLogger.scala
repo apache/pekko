@@ -46,7 +46,7 @@ object Logger {
    * @param logSource - the textual representation of the source of this log stream
    * @return a Logger for the specified parameters
    */
-  def apply(logClass: Class[_], logSource: String): SLFLogger = logClass match {
+  def apply(logClass: Class[?], logSource: String): SLFLogger = logClass match {
     case c if c == classOf[DummyClassForStringSources] => apply(logSource)
     case _                                             => SLFLoggerFactory.getLogger(logClass)
   }
@@ -170,13 +170,13 @@ class Slf4jLogger extends Actor with SLF4JLogging with RequiresMessageQueue[Logg
  */
 class Slf4jLoggingFilter(@unused settings: ActorSystem.Settings, eventStream: EventStream)
     extends LoggingFilterWithMarker {
-  def isErrorEnabled(logClass: Class[_], logSource: String) =
+  def isErrorEnabled(logClass: Class[?], logSource: String) =
     (eventStream.logLevel >= ErrorLevel) && Logger(logClass, logSource).isErrorEnabled
-  def isWarningEnabled(logClass: Class[_], logSource: String) =
+  def isWarningEnabled(logClass: Class[?], logSource: String) =
     (eventStream.logLevel >= WarningLevel) && Logger(logClass, logSource).isWarnEnabled
-  def isInfoEnabled(logClass: Class[_], logSource: String) =
+  def isInfoEnabled(logClass: Class[?], logSource: String) =
     (eventStream.logLevel >= InfoLevel) && Logger(logClass, logSource).isInfoEnabled
-  def isDebugEnabled(logClass: Class[_], logSource: String) =
+  def isDebugEnabled(logClass: Class[?], logSource: String) =
     (eventStream.logLevel >= DebugLevel) && Logger(logClass, logSource).isDebugEnabled
 
   private def slf4jMarker(marker: LogMarker) = marker match {
@@ -185,13 +185,13 @@ class Slf4jLoggingFilter(@unused settings: ActorSystem.Settings, eventStream: Ev
     case marker                      => MarkerFactory.getMarker(marker.name)
   }
 
-  override def isErrorEnabled(logClass: Class[_], logSource: String, marker: LogMarker): Boolean =
+  override def isErrorEnabled(logClass: Class[?], logSource: String, marker: LogMarker): Boolean =
     (eventStream.logLevel >= ErrorLevel) && Logger(logClass, logSource).isErrorEnabled(slf4jMarker(marker))
-  override def isWarningEnabled(logClass: Class[_], logSource: String, marker: LogMarker): Boolean =
+  override def isWarningEnabled(logClass: Class[?], logSource: String, marker: LogMarker): Boolean =
     (eventStream.logLevel >= WarningLevel) && Logger(logClass, logSource).isWarnEnabled(slf4jMarker(marker))
-  override def isInfoEnabled(logClass: Class[_], logSource: String, marker: LogMarker): Boolean =
+  override def isInfoEnabled(logClass: Class[?], logSource: String, marker: LogMarker): Boolean =
     (eventStream.logLevel >= InfoLevel) && Logger(logClass, logSource).isInfoEnabled(slf4jMarker(marker))
-  override def isDebugEnabled(logClass: Class[_], logSource: String, marker: LogMarker): Boolean =
+  override def isDebugEnabled(logClass: Class[?], logSource: String, marker: LogMarker): Boolean =
     (eventStream.logLevel >= DebugLevel) && Logger(logClass, logSource).isDebugEnabled(slf4jMarker(marker))
 
 }

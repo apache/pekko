@@ -105,7 +105,7 @@ object EventSourcedBehaviorTestKit {
    * Factory method to create a new EventSourcedBehaviorTestKit.
    */
   def apply[Command, Event, State](
-      system: ActorSystem[_],
+      system: ActorSystem[?],
       behavior: Behavior[Command]): EventSourcedBehaviorTestKit[Command, Event, State] =
     apply(system, behavior, SerializationSettings.enabled)
 
@@ -116,7 +116,7 @@ object EventSourcedBehaviorTestKit {
    * `verifyEquality` is enabled.
    */
   def apply[Command, Event, State](
-      system: ActorSystem[_],
+      system: ActorSystem[?],
       behavior: Behavior[Command],
       serializationSettings: SerializationSettings): EventSourcedBehaviorTestKit[Command, Event, State] =
     new EventSourcedBehaviorTestKitImpl(ActorTestKit(system), behavior, serializationSettings)

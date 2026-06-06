@@ -160,7 +160,8 @@ class RestartSpec
       probe.cancel()
     }
 
-    "reset exponential backoff back to minimum when source runs for at least minimum backoff without completing" taggedAs TimingTest in {
+    "reset exponential backoff back to minimum when source runs for at least minimum backoff without completing" taggedAs
+    TimingTest in {
       val created = new AtomicInteger()
       val probe = RestartSource
         .withBackoff(restartSettings) { () =>
@@ -464,7 +465,8 @@ class RestartSpec
       probe.sendComplete()
     }
 
-    "reset exponential backoff back to minimum when sink runs for at least minimum backoff without completing" taggedAs TimingTest in {
+    "reset exponential backoff back to minimum when sink runs for at least minimum backoff without completing" taggedAs
+    TimingTest in {
       val created = new AtomicInteger()
       val (queue, sinkProbe) = TestSource[String]().toMat(TestSink())(Keep.both).run()
       val probe = TestSource[String]()
@@ -666,7 +668,7 @@ class RestartSpec
     // helps reuse all the setupFlow code for both methods: withBackoff, and onlyOnFailuresWithBackoff
     def RestartFlowFactory[In, Out](
         onlyOnFailures: Boolean,
-        settings: RestartSettings): (() => Flow[In, Out, _]) => Flow[In, Out, NotUsed] =
+        settings: RestartSettings): (() => Flow[In, Out, ?]) => Flow[In, Out, NotUsed] =
       if (onlyOnFailures) RestartFlow.onFailuresWithBackoff(settings)
       else RestartFlow.withBackoff(settings)
 

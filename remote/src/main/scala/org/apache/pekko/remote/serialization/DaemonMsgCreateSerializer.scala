@@ -106,7 +106,7 @@ private[pekko] final class DaemonMsgCreateSerializer(val system: ExtendedActorSy
         "Can't serialize a non-DaemonMsgCreate message using DaemonMsgCreateSerializer [%s]".format(obj))
   }
 
-  def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]): AnyRef = {
+  def fromBinary(bytes: Array[Byte], clazz: Option[Class[?]]): AnyRef = {
     val proto = DaemonMsgCreateData.parseFrom(bytes)
 
     def deploy(protoDeploy: DeployData): Deploy = {

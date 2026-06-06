@@ -485,7 +485,8 @@ class InterpreterSpec extends StreamSpec with GraphInterpreterSpecKit {
       lastEvents() should be(Set(OnNext(1), OnComplete))
     }
 
-    "work with pushAndFinish if upstream completes with pushAndFinish and downstream immediately pulls" in new OneBoundedSetup[
+    "work with pushAndFinish if upstream completes with pushAndFinish and downstream immediately pulls" in
+    new OneBoundedSetup[
       Int](new PushFinishStage, Fold(0, (x: Int, y: Int) => x + y)) {
 
       lastEvents() should be(Set.empty)

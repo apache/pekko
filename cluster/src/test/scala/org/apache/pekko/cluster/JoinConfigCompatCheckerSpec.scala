@@ -112,7 +112,8 @@ class JoinConfigCompatCheckerSpec extends PekkoSpec with ClusterTestKit {
 
     }
 
-    "NOT be allowed to join a cluster when one of its required properties are not available on cluster side" taggedAs LongRunningTest in {
+    "NOT be allowed to join a cluster when one of its required properties are not available on cluster side" taggedAs
+    LongRunningTest in {
 
       // this config is NOT compatible with the cluster config
       // because there is one missing required configuration property.
@@ -153,7 +154,8 @@ class JoinConfigCompatCheckerSpec extends PekkoSpec with ClusterTestKit {
 
     }
 
-    "NOT be allowed to join a cluster when one of the cluster required properties are not available on the joining side" taggedAs LongRunningTest in {
+    "NOT be allowed to join a cluster when one of the cluster required properties are not available on the joining side" taggedAs
+    LongRunningTest in {
 
       // this config is NOT compatible with the cluster config
       // because there is one missing required configuration property.
@@ -190,7 +192,8 @@ class JoinConfigCompatCheckerSpec extends PekkoSpec with ClusterTestKit {
 
     }
 
-    "be allowed to join a cluster when one of its required properties are not available on cluster side but it's configured to NOT enforce it" taggedAs LongRunningTest in {
+    "be allowed to join a cluster when one of its required properties are not available on cluster side but it's configured to NOT enforce it" taggedAs
+    LongRunningTest in {
 
       // this config is NOT compatible with the cluster config
       // because there is one missing required configuration property.
@@ -228,7 +231,8 @@ class JoinConfigCompatCheckerSpec extends PekkoSpec with ClusterTestKit {
 
     }
 
-    "be allowed to join a cluster when its configuration is incompatible but it's configured to NOT enforce it" taggedAs LongRunningTest in {
+    "be allowed to join a cluster when its configuration is incompatible but it's configured to NOT enforce it" taggedAs
+    LongRunningTest in {
       // this config is NOT compatible with the cluster config,
       // but node will ignore the the config check and join anyway
       val joinNodeConfig =
@@ -263,7 +267,8 @@ class JoinConfigCompatCheckerSpec extends PekkoSpec with ClusterTestKit {
     }
 
     /** This test verifies the built-in JoinConfigCompatCheckerPekkoCluster */
-    "NOT be allowed to join a cluster using a different value for pekko.cluster.downing-provider-class" taggedAs LongRunningTest in {
+    "NOT be allowed to join a cluster using a different value for pekko.cluster.downing-provider-class" taggedAs
+    LongRunningTest in {
 
       val joinNodeConfig =
         ConfigFactory.parseString("""
@@ -372,7 +377,8 @@ class JoinConfigCompatCheckerSpec extends PekkoSpec with ClusterTestKit {
 
     }
 
-    "NOT be allowed to re-join a cluster when one of its required properties are not available on cluster side" taggedAs LongRunningTest in {
+    "NOT be allowed to re-join a cluster when one of its required properties are not available on cluster side" taggedAs
+    LongRunningTest in {
 
       // this config is NOT compatible with the cluster config
       // because there is one missing required configuration property.
@@ -420,7 +426,8 @@ class JoinConfigCompatCheckerSpec extends PekkoSpec with ClusterTestKit {
 
     }
 
-    "NOT be allowed to re-join a cluster when one of the cluster required properties are not available on the joining side" taggedAs LongRunningTest in {
+    "NOT be allowed to re-join a cluster when one of the cluster required properties are not available on the joining side" taggedAs
+    LongRunningTest in {
 
       // this config is NOT compatible with the cluster config
       // because there is one missing required configuration property.
@@ -464,7 +471,8 @@ class JoinConfigCompatCheckerSpec extends PekkoSpec with ClusterTestKit {
 
     }
 
-    "be allowed to re-join a cluster when one of its required properties are not available on cluster side but it's configured to NOT enforce it" taggedAs LongRunningTest in {
+    "be allowed to re-join a cluster when one of its required properties are not available on cluster side but it's configured to NOT enforce it" taggedAs
+    LongRunningTest in {
 
       // this config is NOT compatible with the cluster config
       // because there is one missing required configuration property.
@@ -512,7 +520,8 @@ class JoinConfigCompatCheckerSpec extends PekkoSpec with ClusterTestKit {
 
     }
 
-    "be allowed to re-join a cluster when its configuration is incompatible but it's configured to NOT enforce it" taggedAs LongRunningTest in {
+    "be allowed to re-join a cluster when its configuration is incompatible but it's configured to NOT enforce it" taggedAs
+    LongRunningTest in {
       // this config is NOT compatible with the cluster config,
       // but node will ignore the the config check and join anyway
       val joinNodeConfig =

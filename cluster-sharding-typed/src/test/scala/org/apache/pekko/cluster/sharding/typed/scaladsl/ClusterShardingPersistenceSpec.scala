@@ -166,7 +166,7 @@ class ClusterShardingPersistenceSpec
     _entityId.toString
   }
 
-  private def awaitEntityTerminatedAndRemoved(ref: ActorRef[_], entityId: String): Unit = {
+  private def awaitEntityTerminatedAndRemoved(ref: ActorRef[?], entityId: String): Unit = {
     val p = TestProbe[Any]()
     p.expectTerminated(ref, p.remainingOrDefault)
 

@@ -56,7 +56,7 @@ final class StatusReply[+T] private (private val status: Try[T]) {
   def isSuccess: Boolean = status.isSuccess
 
   override def equals(other: Any): Boolean = other match {
-    case that: StatusReply[_] => status == that.status
+    case that: StatusReply[?] => status == that.status
     case _                    => false
   }
 
@@ -161,7 +161,7 @@ object StatusReply {
      * Also note that Pekko does not contain pre-build serializers for arbitrary exceptions.
      */
     def apply[T](exception: Throwable): StatusReply[T] = new StatusReply(ScalaFailure(exception))
-    def unapply(status: StatusReply[_]): Option[Throwable] =
+    def unapply(status: StatusReply[?]): Option[Throwable] =
       if (status != null && status.isError) Some(status.getError)
       else None
   }

@@ -265,7 +265,8 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
       system.stop(timeoutActor)
     }
 
-    "work correctly if the timeout is changed multiple times while handling a NotInfluenceReceiveTimeout message" taggedAs TimingTest in {
+    "work correctly if the timeout is changed multiple times while handling a NotInfluenceReceiveTimeout message" taggedAs
+    TimingTest in {
       val probe = TestProbe()
       val initialTimeout = 500.millis
 

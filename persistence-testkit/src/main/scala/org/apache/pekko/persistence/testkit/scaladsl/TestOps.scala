@@ -26,7 +26,7 @@ import pekko.util
 import pekko.util.BoxedType
 
 private[testkit] trait RejectSupport[U] {
-  this: PolicyOpsTestKit[U] with HasStorage[U, _] =>
+  this: PolicyOpsTestKit[U] with HasStorage[U, ?] =>
 
   /**
    * Reject `n` following journal operations depending on the condition `cond`.
@@ -67,7 +67,7 @@ private[testkit] trait RejectSupport[U] {
 }
 
 private[testkit] trait PolicyOpsTestKit[P] {
-  this: HasStorage[P, _] =>
+  this: HasStorage[P, ?] =>
 
   private[testkit] val Policies: DefaultPolicies[P]
 
@@ -124,7 +124,7 @@ private[testkit] trait PolicyOpsTestKit[P] {
 }
 
 private[testkit] trait ExpectOps[U] {
-  this: HasStorage[_, U] =>
+  this: HasStorage[?, U] =>
 
   private[testkit] val probe: TestKitBase
 
@@ -265,7 +265,7 @@ private[testkit] trait ExpectOps[U] {
 }
 
 private[testkit] trait ClearOps {
-  this: HasStorage[_, _] =>
+  this: HasStorage[?, ?] =>
 
   /**
    * Clear all data from the storage.
@@ -294,7 +294,7 @@ private[testkit] trait ClearOps {
 }
 
 private[testkit] trait ClearPreservingSeqNums {
-  this: HasStorage[_, _] =>
+  this: HasStorage[?, ?] =>
 
   /**
    * Clear all data in the storage preserving sequence numbers.

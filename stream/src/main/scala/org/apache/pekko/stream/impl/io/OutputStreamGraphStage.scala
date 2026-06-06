@@ -44,7 +44,7 @@ private[pekko] final class OutputStreamGraphStage(factory: () => OutputStream, a
       var outputStream: OutputStream = _
       var bytesWritten: Long = 0L
 
-      override protected def logSource: Class[_] = classOf[OutputStreamGraphStage]
+      override protected def logSource: Class[?] = classOf[OutputStreamGraphStage]
 
       override def preStart(): Unit = {
         try {

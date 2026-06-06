@@ -1204,7 +1204,8 @@ abstract class ShardCoordinator(
       state.shards.get(shard) match {
         case Some(ref) => getShardHomeSender ! ShardHome(shard, ref)
         case None      =>
-          if (state.regions.contains(region) && !gracefulShutdownInProgress(region) && !regionTerminationInProgress
+          if (state.regions.contains(region) && !gracefulShutdownInProgress(region) &&
+            !regionTerminationInProgress
               .contains(region)) {
             update(ShardHomeAllocated(shard, region)) { evt =>
               state = state.updated(evt)

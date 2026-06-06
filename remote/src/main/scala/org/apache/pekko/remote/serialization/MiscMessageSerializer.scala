@@ -47,7 +47,7 @@ class MiscMessageSerializer(val system: ExtendedActorSystem) extends SerializerW
     case identity: ActorIdentity               => serializeActorIdentity(identity)
     case Some(value)                           => serializeSome(value)
     case None                                  => ParameterlessSerializedMessage
-    case o: Optional[_]                        => serializeOptional(o)
+    case o: Optional[?]                        => serializeOptional(o)
     case r: ActorRef                           => serializeActorRef(r)
     case s: Status.Success                     => serializeStatusSuccess(s)
     case f: Status.Failure                     => serializeStatusFailure(f)
@@ -103,7 +103,7 @@ class MiscMessageSerializer(val system: ExtendedActorSystem) extends SerializerW
   private def serializeSome(someValue: Any): Array[Byte] =
     ContainerFormats.Option.newBuilder().setValue(payloadSupport.payloadBuilder(someValue)).build().toByteArray
 
-  private def serializeOptional(opt: Optional[_]): Array[Byte] = {
+  private def serializeOptional(opt: Optional[?]): Array[Byte] = {
     if (opt.isPresent)
       ContainerFormats.Option.newBuilder().setValue(payloadSupport.payloadBuilder(opt.get)).build().toByteArray
     else
@@ -136,7 +136,7 @@ class MiscMessageSerializer(val system: ExtendedActorSystem) extends SerializerW
     // no specific message, serialized id and manifest together with payload is enough (no wrapping overhead)
     payloadSupport.payloadBuilder(r.getValue).build().toByteArray
 
-  def serializeStatusReplyError(r: StatusReply[_]): Array[Byte] = {
+  def serializeStatusReplyError(r: StatusReply[?]): Array[Byte] = {
     r.getError match {
       case em: StatusReply.ErrorMessage =>
         // somewhat optimized for the recommended usage, avoiding the additional payload metadata
@@ -386,7 +386,7 @@ class MiscMessageSerializer(val system: ExtendedActorSystem) extends SerializerW
       case _: Identify                                    => IdentifyManifest
       case _: ActorIdentity                               => ActorIdentityManifest
       case _: Option[Any]                                 => OptionManifest
-      case _: Optional[_]                                 => OptionalManifest
+      case _: Optional[?]                                 => OptionalManifest
       case _: ActorRef                                    => ActorRefManifest
       case _: Status.Success                              => StatusSuccessManifest
       case _: Status.Failure                              => StatusFailureManifest
@@ -477,13 +477,13 @@ class MiscMessageSerializer(val system: ExtendedActorSystem) extends SerializerW
   private def deserializeStatusFailure(bytes: Array[Byte]): Status.Failure =
     Status.Failure(payloadSupport.deserializePayload(ContainerFormats.Payload.parseFrom(bytes)).asInstanceOf[Throwable])
 
-  private def deserializeStatusReplySuccess(bytes: Array[Byte]): StatusReply[_] =
+  private def deserializeStatusReplySuccess(bytes: Array[Byte]): StatusReply[?] =
     StatusReply.success(payloadSupport.deserializePayload(ContainerFormats.Payload.parseFrom(bytes)))
 
-  private def deserializeStatusReplyErrorMessage(bytes: Array[Byte]): StatusReply[_] =
+  private def deserializeStatusReplyErrorMessage(bytes: Array[Byte]): StatusReply[?] =
     StatusReply.error(ContainerFormats.StatusReplyErrorMessage.parseFrom(bytes).getErrorMessage)
 
-  private def deserializeStatusReplyErrorException(bytes: Array[Byte]): StatusReply[_] =
+  private def deserializeStatusReplyErrorException(bytes: Array[Byte]): StatusReply[?] =
     StatusReply.error(
       payloadSupport.deserializePayload(ContainerFormats.Payload.parseFrom(bytes)).asInstanceOf[Throwable])
 

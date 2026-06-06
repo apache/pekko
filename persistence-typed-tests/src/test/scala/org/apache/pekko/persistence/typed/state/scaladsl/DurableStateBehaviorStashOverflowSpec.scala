@@ -41,8 +41,8 @@ object DurableStateBehaviorStashOverflowSpec {
   }
 
   object TestDurableStateStorePlugin {
-    @volatile var instance: Option[TestDurableStateStorePlugin[_]] = None
-    def getInstance(): TestDurableStateStorePlugin[_] = instance.get
+    @volatile var instance: Option[TestDurableStateStorePlugin[?]] = None
+    def getInstance(): TestDurableStateStorePlugin[?] = instance.get
   }
 
   class TestDurableStateStorePlugin[A] extends DurableStateUpdateStore[A] {

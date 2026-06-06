@@ -22,7 +22,7 @@ import org.openjdk.jmh.annotations.{ Benchmark, Measurement, Scope, State }
 class StackBench {
 
   class CustomSecurtyManager extends SecurityManager {
-    def getTrace: Array[Class[_]] =
+    def getTrace: Array[Class[?]] =
       getClassContext
   }
 
@@ -32,7 +32,7 @@ class StackBench {
   }
 
   @Benchmark
-  def securityManager(): Array[Class[_]] = {
+  def securityManager(): Array[Class[?]] = {
     (new CustomSecurtyManager).getTrace
   }
 

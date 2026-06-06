@@ -102,18 +102,20 @@ object PekkoDisciplinePlugin extends AutoPlugin {
   lazy val docs =
     Seq(
       Compile / scalacOptions -= defaultScalaOptions.value,
-      Compile / scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value).get match {
-        case (3, _)  => Nil
-        case (2, 13) => Seq("-Wconf:any:e,cat=unused:s,cat=deprecation:s,cat=unchecked:s")
-        case (2, 12) => Seq("-Wconf:cat=unused:s,cat=deprecation:s,cat=unchecked:s,any:e")
-      }),
+      Compile / scalacOptions ++=
+        (CrossVersion.partialVersion(scalaVersion.value).get match {
+          case (3, _)  => Nil
+          case (2, 13) => Seq("-Wconf:any:e,cat=unused:s,cat=deprecation:s,cat=unchecked:s")
+          case (2, 12) => Seq("-Wconf:cat=unused:s,cat=deprecation:s,cat=unchecked:s,any:e")
+        }),
       Test / scalacOptions --= Seq("-Xlint", "-unchecked", "-deprecation"),
       Test / scalacOptions -= defaultScalaOptions.value,
-      Test / scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value).get match {
-        case (3, _)  => Nil
-        case (2, 13) => Seq("-Wconf:any:e,cat=unused:s,cat=deprecation:s,cat=unchecked:s")
-        case (2, 12) => Seq("-Wconf:cat=unused:s,cat=deprecation:s,cat=unchecked:s,any:e")
-      }),
+      Test / scalacOptions ++=
+        (CrossVersion.partialVersion(scalaVersion.value).get match {
+          case (3, _)  => Nil
+          case (2, 13) => Seq("-Wconf:any:e,cat=unused:s,cat=deprecation:s,cat=unchecked:s")
+          case (2, 12) => Seq("-Wconf:cat=unused:s,cat=deprecation:s,cat=unchecked:s,any:e")
+        }),
       Compile / doc / scalacOptions := Seq())
 
   lazy val disciplineSettings =
@@ -129,21 +131,22 @@ object PekkoDisciplinePlugin extends AutoPlugin {
           }
         ),
         Compile / doc / javacOptions := Seq("-Xdoclint:none"),
-        Compile / scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {
-          case Some((2, 13)) =>
-            disciplineScalacOptions -- Set(
-              "-Ywarn-inaccessible",
-              "-Ywarn-infer-any",
-              "-Ywarn-nullary-override",
-              "-Ywarn-nullary-unit",
-              "-Ypartial-unification",
-              "-Yno-adapted-args") ++ Set(
-              "-Xlint:-strict-unsealed-patmat")
-          case Some((2, 12)) =>
-            disciplineScalacOptions
-          case _ =>
-            Seq("-Wconf:cat=deprecation:s")
-        }).toSeq,
+        Compile / scalacOptions ++=
+          (CrossVersion.partialVersion(scalaVersion.value) match {
+            case Some((2, 13)) =>
+              disciplineScalacOptions -- Set(
+                "-Ywarn-inaccessible",
+                "-Ywarn-infer-any",
+                "-Ywarn-nullary-override",
+                "-Ywarn-nullary-unit",
+                "-Ypartial-unification",
+                "-Yno-adapted-args") ++ Set(
+                "-Xlint:-strict-unsealed-patmat")
+            case Some((2, 12)) =>
+              disciplineScalacOptions
+            case _ =>
+              Seq("-Wconf:cat=deprecation:s")
+          }).toSeq,
         Compile / scalacOptions --=
           (if (looseProjects.contains(name.value)) undisciplineScalacOptions.toSeq
            else Seq.empty),

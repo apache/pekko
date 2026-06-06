@@ -495,7 +495,7 @@ final class ORSet[A] private[pekko] (
   override def toString: String = s"OR$elements"
 
   override def equals(o: Any): Boolean = o match {
-    case other: ORSet[_] =>
+    case other: ORSet[?] =>
       originReplica == other.originReplica && vvector == other.vvector && elementsMap == other.elementsMap
     case _ => false
   }

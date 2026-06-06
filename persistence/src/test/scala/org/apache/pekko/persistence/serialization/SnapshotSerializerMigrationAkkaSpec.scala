@@ -39,8 +39,8 @@ class SnapshotSerializerMigrationAkkaSpec extends PekkoSpec(
       val bytes = Base64.getDecoder.decode(akkaSnapshotData)
       val result = serialization.deserialize(bytes, classOf[Snapshot]).get
       val deserialized = result.data
-      deserialized shouldBe a[PersistentFSMSnapshot[_]]
-      val persistentFSMSnapshot = deserialized.asInstanceOf[PersistentFSMSnapshot[_]]
+      deserialized shouldBe a[PersistentFSMSnapshot[?]]
+      val persistentFSMSnapshot = deserialized.asInstanceOf[PersistentFSMSnapshot[?]]
       persistentFSMSnapshot shouldEqual fsmSnapshot
     }
     "deserialize pekko snapshots" in {
@@ -48,8 +48,8 @@ class SnapshotSerializerMigrationAkkaSpec extends PekkoSpec(
       val bytes = serialization.serialize(Snapshot(fsmSnapshot)).get
       val result = serialization.deserialize(bytes, classOf[Snapshot]).get
       val deserialized = result.data
-      deserialized shouldBe a[PersistentFSMSnapshot[_]]
-      val persistentFSMSnapshot = deserialized.asInstanceOf[PersistentFSMSnapshot[_]]
+      deserialized shouldBe a[PersistentFSMSnapshot[?]]
+      val persistentFSMSnapshot = deserialized.asInstanceOf[PersistentFSMSnapshot[?]]
       persistentFSMSnapshot shouldEqual fsmSnapshot
     }
     "serialize snapshot with Akka class name" in {

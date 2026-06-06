@@ -2020,7 +2020,8 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
     }
 
   def isNodeRemoved(node: UniqueAddress, keys: Iterable[KeyId]): Boolean = {
-    removedNodes.contains(node) || (keys.exists(key =>
+    removedNodes.contains(node) ||
+    (keys.exists(key =>
       dataEntries.get(key) match {
         case Some((DataEnvelope(_, pruning, _), _)) => pruning.contains(node)
         case None                                   => false
@@ -2675,10 +2676,10 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
       // Try again with the full state
       sender() ! writeMsg
 
-    case _: Replicator.UpdateSuccess[_] =>
+    case _: Replicator.UpdateSuccess[?] =>
       gotLocalStoreReply = true
       if (isDone) reply(isTimeout = false)
-    case _: Replicator.StoreFailure[_] =>
+    case _: Replicator.StoreFailure[?] =>
       gotLocalStoreReply = true
       gotWriteNackFrom += selfUniqueAddress.address
       if (isDone) reply(isTimeout = false)

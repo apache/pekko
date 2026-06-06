@@ -136,11 +136,11 @@ private[pekko] class Recovering[C, S](
   }
 
   @InternalStableApi
-  def onRecoveryStart(@unused context: ActorContext[_]): Unit = ()
+  def onRecoveryStart(@unused context: ActorContext[?]): Unit = ()
   @InternalStableApi
-  def onRecoveryComplete(@unused context: ActorContext[_]): Unit = ()
+  def onRecoveryComplete(@unused context: ActorContext[?]): Unit = ()
   @InternalStableApi
-  def onRecoveryFailed(@unused context: ActorContext[_], @unused reason: Throwable): Unit = ()
+  def onRecoveryFailed(@unused context: ActorContext[?], @unused reason: Throwable): Unit = ()
 
   private def onRecoveryTimeout(): Behavior[InternalProtocol] = {
     val ex = new RecoveryTimedOut(s"Recovery timed out, didn't get state within ${setup.settings.recoveryTimeout}")

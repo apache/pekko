@@ -336,7 +336,7 @@ import org.reactivestreams.Subscription
           outputBunch.enqueue(0, a)
           outputBunch.enqueue(1, b)
 
-        case t: pekko.japi.Pair[_, _] =>
+        case t: pekko.japi.Pair[?, ?] =>
           outputBunch.enqueue(0, t.first)
           outputBunch.enqueue(1, t.second)
 

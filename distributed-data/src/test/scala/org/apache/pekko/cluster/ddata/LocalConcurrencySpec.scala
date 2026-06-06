@@ -87,7 +87,7 @@ class LocalConcurrencySpec(_system: ActorSystem)
       val expected = ((1 to numMessages).map("a" + _) ++ (1 to numMessages).map("b" + _)).toSet
       awaitAssert {
         replicator ! Replicator.Get(Updater.key, Replicator.ReadLocal)
-        val elements = expectMsgType[Replicator.GetSuccess[_]].get(Updater.key) match {
+        val elements = expectMsgType[Replicator.GetSuccess[?]].get(Updater.key) match {
           case ORSet(e) => e
           case _        => fail()
         }

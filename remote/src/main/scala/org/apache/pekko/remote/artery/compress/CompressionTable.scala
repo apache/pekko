@@ -49,7 +49,8 @@ private[remote] final class CompressionTable[T](
       import pekko.util.ccompat.JavaConverters._
       require(
         _dictionary.values.iterator().asScala.min == 0,
-        "Compression table should start allocating from 0, yet lowest allocated id was " + _dictionary.values
+        "Compression table should start allocating from 0, yet lowest allocated id was " +
+        _dictionary.values
           .iterator()
           .asScala
           .min)
@@ -90,7 +91,7 @@ private[remote] final class CompressionTable[T](
   }
 
   override def equals(obj: Any): Boolean = obj match {
-    case other: CompressionTable[_] =>
+    case other: CompressionTable[?] =>
       originUid == other.originUid && version == other.version && _dictionary == other._dictionary
     case _ => false
   }

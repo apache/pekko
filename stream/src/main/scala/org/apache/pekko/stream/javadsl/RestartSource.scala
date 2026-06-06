@@ -54,7 +54,7 @@ object RestartSource {
       minBackoff: FiniteDuration,
       maxBackoff: FiniteDuration,
       randomFactor: Double,
-      sourceFactory: Creator[Source[T, _]]): Source[T, NotUsed] = {
+      sourceFactory: Creator[Source[T, ?]]): Source[T, NotUsed] = {
     val settings = RestartSettings(minBackoff, maxBackoff, randomFactor)
     withBackoff(settings, sourceFactory)
   }
@@ -85,7 +85,7 @@ object RestartSource {
       minBackoff: java.time.Duration,
       maxBackoff: java.time.Duration,
       randomFactor: Double,
-      sourceFactory: Creator[Source[T, _]]): Source[T, NotUsed] = {
+      sourceFactory: Creator[Source[T, ?]]): Source[T, NotUsed] = {
     val settings = RestartSettings.create(minBackoff, maxBackoff, randomFactor)
     withBackoff(settings, sourceFactory)
   }
@@ -119,7 +119,7 @@ object RestartSource {
       maxBackoff: FiniteDuration,
       randomFactor: Double,
       maxRestarts: Int,
-      sourceFactory: Creator[Source[T, _]]): Source[T, NotUsed] = {
+      sourceFactory: Creator[Source[T, ?]]): Source[T, NotUsed] = {
     val settings = RestartSettings(minBackoff, maxBackoff, randomFactor).withMaxRestarts(maxRestarts, minBackoff)
     withBackoff(settings, sourceFactory)
   }
@@ -154,7 +154,7 @@ object RestartSource {
       maxBackoff: java.time.Duration,
       randomFactor: Double,
       maxRestarts: Int,
-      sourceFactory: Creator[Source[T, _]]): Source[T, NotUsed] = {
+      sourceFactory: Creator[Source[T, ?]]): Source[T, NotUsed] = {
     val settings = RestartSettings.create(minBackoff, maxBackoff, randomFactor).withMaxRestarts(maxRestarts, minBackoff)
     withBackoff(settings, sourceFactory)
   }
@@ -175,7 +175,7 @@ object RestartSource {
    * @param settings [[RestartSettings]] defining restart configuration
    * @param sourceFactory A factory for producing the [[Source]] to wrap.
    */
-  def withBackoff[T](settings: RestartSettings, sourceFactory: Creator[Source[T, _]]): Source[T, NotUsed] =
+  def withBackoff[T](settings: RestartSettings, sourceFactory: Creator[Source[T, ?]]): Source[T, NotUsed] =
     pekko.stream.scaladsl.RestartSource
       .withBackoff(settings) { () =>
         sourceFactory.create().asScala
@@ -206,7 +206,7 @@ object RestartSource {
       minBackoff: FiniteDuration,
       maxBackoff: FiniteDuration,
       randomFactor: Double,
-      sourceFactory: Creator[Source[T, _]]): Source[T, NotUsed] = {
+      sourceFactory: Creator[Source[T, ?]]): Source[T, NotUsed] = {
     val settings = RestartSettings(minBackoff, maxBackoff, randomFactor)
     onFailuresWithBackoff(settings, sourceFactory)
   }
@@ -236,7 +236,7 @@ object RestartSource {
       minBackoff: java.time.Duration,
       maxBackoff: java.time.Duration,
       randomFactor: Double,
-      sourceFactory: Creator[Source[T, _]]): Source[T, NotUsed] = {
+      sourceFactory: Creator[Source[T, ?]]): Source[T, NotUsed] = {
     val settings = RestartSettings.create(minBackoff, maxBackoff, randomFactor)
     onFailuresWithBackoff(settings, sourceFactory)
   }
@@ -268,7 +268,7 @@ object RestartSource {
       maxBackoff: FiniteDuration,
       randomFactor: Double,
       maxRestarts: Int,
-      sourceFactory: Creator[Source[T, _]]): Source[T, NotUsed] = {
+      sourceFactory: Creator[Source[T, ?]]): Source[T, NotUsed] = {
     val settings = RestartSettings(minBackoff, maxBackoff, randomFactor).withMaxRestarts(maxRestarts, minBackoff)
     onFailuresWithBackoff(settings, sourceFactory)
   }
@@ -301,7 +301,7 @@ object RestartSource {
       maxBackoff: java.time.Duration,
       randomFactor: Double,
       maxRestarts: Int,
-      sourceFactory: Creator[Source[T, _]]): Source[T, NotUsed] = {
+      sourceFactory: Creator[Source[T, ?]]): Source[T, NotUsed] = {
     val settings = RestartSettings.create(minBackoff, maxBackoff, randomFactor).withMaxRestarts(maxRestarts, minBackoff)
     onFailuresWithBackoff(settings, sourceFactory)
   }
@@ -320,7 +320,7 @@ object RestartSource {
    * @param settings [[RestartSettings]] defining restart configuration
    * @param sourceFactory A factory for producing the [[Source]] to wrap.
    */
-  def onFailuresWithBackoff[T](settings: RestartSettings, sourceFactory: Creator[Source[T, _]]): Source[T, NotUsed] =
+  def onFailuresWithBackoff[T](settings: RestartSettings, sourceFactory: Creator[Source[T, ?]]): Source[T, NotUsed] =
     pekko.stream.scaladsl.RestartSource
       .onFailuresWithBackoff(settings) { () =>
         sourceFactory.create().asScala

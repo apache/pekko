@@ -138,13 +138,13 @@ object RemoteInstrumentsSerializationSpec {
   class Filter(@unused settings: ActorSystem.Settings, stream: EventStream) extends LoggingFilter {
     stream.publish(Mute(EventFilter.debug()))
 
-    override def isErrorEnabled(logClass: Class[_], logSource: String): Boolean = true
+    override def isErrorEnabled(logClass: Class[?], logSource: String): Boolean = true
 
-    override def isWarningEnabled(logClass: Class[_], logSource: String): Boolean = true
+    override def isWarningEnabled(logClass: Class[?], logSource: String): Boolean = true
 
-    override def isInfoEnabled(logClass: Class[_], logSource: String): Boolean = true
+    override def isInfoEnabled(logClass: Class[?], logSource: String): Boolean = true
 
-    override def isDebugEnabled(logClass: Class[_], logSource: String): Boolean = logSource == "DebugSource"
+    override def isDebugEnabled(logClass: Class[?], logSource: String): Boolean = logSource == "DebugSource"
   }
 
   def testInstrument(

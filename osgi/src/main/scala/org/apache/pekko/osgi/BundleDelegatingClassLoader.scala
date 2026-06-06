@@ -50,8 +50,8 @@ class BundleDelegatingClassLoader(bundle: Bundle, fallBackClassLoader: ClassLoad
 
   private val bundles = findTransitiveBundles(bundle).toList
 
-  override def findClass(name: String): Class[_] = {
-    @tailrec def find(remaining: List[Bundle]): Class[_] = {
+  override def findClass(name: String): Class[?] = {
+    @tailrec def find(remaining: List[Bundle]): Class[?] = {
       if (remaining.isEmpty) throw new ClassNotFoundException(name)
       else
         Try { remaining.head.loadClass(name) } match {

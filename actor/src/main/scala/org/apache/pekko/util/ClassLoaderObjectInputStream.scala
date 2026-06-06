@@ -23,7 +23,7 @@ import java.io.{ InputStream, ObjectInputStream, ObjectStreamClass }
  * @param is - the InputStream that is wrapped
  */
 class ClassLoaderObjectInputStream(classLoader: ClassLoader, is: InputStream) extends ObjectInputStream(is) {
-  override protected def resolveClass(objectStreamClass: ObjectStreamClass): Class[_] =
+  override protected def resolveClass(objectStreamClass: ObjectStreamClass): Class[?] =
     try Class.forName(objectStreamClass.getName, false, classLoader)
     catch {
       case _: ClassNotFoundException => super.resolveClass(objectStreamClass)

@@ -78,7 +78,7 @@ private[pekko] class RemoteMetricsOn(system: ExtendedActorSystem) extends Remote
   private val logFrameSizeExceeding: Int =
     RARP(system).provider.remoteSettings.LogFrameSizeExceeding.getOrElse(Int.MaxValue)
   private val log = Logging(system, classOf[RemoteMetrics])
-  private val maxPayloadBytes: ConcurrentHashMap[Class[_], Integer] = new ConcurrentHashMap
+  private val maxPayloadBytes: ConcurrentHashMap[Class[?], Integer] = new ConcurrentHashMap
 
   override def logPayloadBytes(msg: Any, payloadBytes: Int): Unit =
     if (payloadBytes >= logFrameSizeExceeding) {

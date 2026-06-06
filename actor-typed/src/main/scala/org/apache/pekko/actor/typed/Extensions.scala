@@ -120,12 +120,12 @@ abstract class ExtensionId[T <: Extension] {
   /**
    * Create the extension, will be invoked at most one time per actor system where the extension is registered.
    */
-  def createExtension(system: ActorSystem[_]): T
+  def createExtension(system: ActorSystem[?]): T
 
   /**
    * Lookup or create an instance of the extension identified by this id.
    */
-  final def apply(system: ActorSystem[_]): T = system.registerExtension(this)
+  final def apply(system: ActorSystem[?]): T = system.registerExtension(this)
 
   override final def hashCode: Int = System.identityHashCode(this)
   override final def equals(other: Any): Boolean = this eq other.asInstanceOf[AnyRef]
@@ -163,7 +163,7 @@ trait Extensions {
    * Returns whether the specified extension is already registered, this method can potentially block, waiting for the initialization
    * of the payload, if is in the process of registration from another Thread of execution
    */
-  def hasExtension(ext: ExtensionId[_ <: Extension]): Boolean
+  def hasExtension(ext: ExtensionId[? <: Extension]): Boolean
 }
 
 /**
@@ -174,7 +174,7 @@ trait Extensions {
  */
 abstract class ExtensionSetup[T <: Extension](
     val extId: ExtensionId[T],
-    val createExtension: java.util.function.Function[ActorSystem[_], T])
+    val createExtension: java.util.function.Function[ActorSystem[?], T])
     extends Setup
 
 /**
@@ -183,5 +183,5 @@ abstract class ExtensionSetup[T <: Extension](
  * implementation of the extension. Intended for tests that need to replace
  * extension with stub/mock implementations.
  */
-abstract class AbstractExtensionSetup[T <: Extension](extId: ExtensionId[T], createExtension: ActorSystem[_] => T)
+abstract class AbstractExtensionSetup[T <: Extension](extId: ExtensionId[T], createExtension: ActorSystem[?] => T)
     extends ExtensionSetup[T](extId, createExtension.apply)

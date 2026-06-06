@@ -154,7 +154,7 @@ object WorkPullingProducerController {
      * Scala API: Factory method from config `pekko.reliable-delivery.work-pulling.producer-controller`
      * of the `ActorSystem`.
      */
-    def apply(system: ActorSystem[_]): Settings =
+    def apply(system: ActorSystem[?]): Settings =
       apply(system.settings.config.getConfig("pekko.reliable-delivery.work-pulling.producer-controller"))
 
     /**
@@ -172,7 +172,7 @@ object WorkPullingProducerController {
      * Java API: Factory method from config `pekko.reliable-delivery.work-pulling.producer-controller`
      * of the `ActorSystem`.
      */
-    def create(system: ActorSystem[_]): Settings =
+    def create(system: ActorSystem[?]): Settings =
       apply(system)
 
     /**

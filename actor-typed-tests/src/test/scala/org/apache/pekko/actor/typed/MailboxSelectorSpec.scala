@@ -44,7 +44,7 @@ class MailboxSelectorSpec extends ScalaTestWithActorTestKit("""
       Behaviors.receiveMessage[WhatsYourMailbox] {
         case WhatsYourMailbox(replyTo) =>
           val mailbox = context match {
-            case adapter: ActorContextAdapter[_] =>
+            case adapter: ActorContextAdapter[?] =>
               adapter.classicContext match {
                 case cell: ActorCell =>
                   cell.mailbox.messageQueue

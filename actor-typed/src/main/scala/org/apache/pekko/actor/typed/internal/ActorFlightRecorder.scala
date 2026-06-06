@@ -25,7 +25,7 @@ import pekko.util.FlightRecorderLoader
 @InternalApi
 object ActorFlightRecorder extends ExtensionId[ActorFlightRecorder] {
 
-  override def createExtension(system: ActorSystem[_]): ActorFlightRecorder =
+  override def createExtension(system: ActorSystem[?]): ActorFlightRecorder =
     FlightRecorderLoader.load[ActorFlightRecorder](
       system,
       "org.apache.pekko.actor.typed.internal.jfr.JFRActorFlightRecorder",

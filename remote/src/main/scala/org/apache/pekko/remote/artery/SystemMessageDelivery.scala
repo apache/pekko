@@ -111,7 +111,7 @@ import pekko.util.PrettyDuration.PrettyPrintableDuration
       private def remoteAddressLogParam: String =
         outboundContext.associationState.uniqueRemoteAddress().getOrElse(remoteAddress).toString
 
-      override protected def logSource: Class[_] = classOf[SystemMessageDelivery]
+      override protected def logSource: Class[?] = classOf[SystemMessageDelivery]
 
       override def preStart(): Unit = {
         val callback = getAsyncCallback[Done] { _ =>
@@ -351,7 +351,7 @@ import pekko.util.PrettyDuration.PrettyPrintableDuration
 
       def localAddress = inboundContext.localAddress
 
-      override protected def logSource: Class[_] = classOf[SystemMessageAcker]
+      override protected def logSource: Class[?] = classOf[SystemMessageAcker]
 
       // InHandler
       override def onPush(): Unit = {

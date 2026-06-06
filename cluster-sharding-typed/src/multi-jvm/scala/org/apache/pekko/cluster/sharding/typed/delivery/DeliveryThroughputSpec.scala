@@ -207,8 +207,9 @@ object DeliveryThroughputSpec extends MultiNodeConfig {
         val requestNextAdapter =
           context.messageAdapter[WorkPullingProducerController.RequestNext[Consumer.Command]](WrappedRequestNext(_))
         var startTime = System.nanoTime()
-        var remaining = numberOfMessages + context.system.settings.config
-          .getInt("pekko.reliable-delivery.consumer-controller.flow-control-window")
+        var remaining = numberOfMessages +
+          context.system.settings.config
+            .getInt("pekko.reliable-delivery.consumer-controller.flow-control-window")
 
         Behaviors.receiveMessage {
           case WrappedRequestNext(next) =>
@@ -254,8 +255,9 @@ object DeliveryThroughputSpec extends MultiNodeConfig {
           val requestNextAdapter =
             context.messageAdapter[ShardingProducerController.RequestNext[Consumer.Command]](WrappedRequestNext(_))
           var startTime = System.nanoTime()
-          var remaining = numberOfMessages + context.system.settings.config
-            .getInt("pekko.reliable-delivery.sharding.consumer-controller.flow-control-window")
+          var remaining = numberOfMessages +
+            context.system.settings.config
+              .getInt("pekko.reliable-delivery.sharding.consumer-controller.flow-control-window")
           var latestDemand: ShardingProducerController.RequestNext[Consumer.Command] = null
           var messagesSentToEachEntity: Map[String, Long] = Map.empty[String, Long].withDefaultValue(0L)
 

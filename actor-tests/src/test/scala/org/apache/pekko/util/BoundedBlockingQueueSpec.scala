@@ -740,7 +740,7 @@ trait BlockingHelpers {
   /**
    * Check that a Future does not complete within a set timespan.
    */
-  def mustBlockFor(timeout: Span, action: Future[_])(implicit pos: Position): Unit =
+  def mustBlockFor(timeout: Span, action: Future[?])(implicit pos: Position): Unit =
     Exception.ignoring(classOf[TimeoutException]) {
       Await.ready(action, timeout)
       fail("Expected action to block for at least " + timeout.prettyString + " but it completed.")

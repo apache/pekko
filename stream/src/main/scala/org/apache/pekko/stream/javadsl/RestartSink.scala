@@ -58,7 +58,7 @@ object RestartSink {
       minBackoff: FiniteDuration,
       maxBackoff: FiniteDuration,
       randomFactor: Double,
-      sinkFactory: Creator[Sink[T, _]]): Sink[T, NotUsed] = {
+      sinkFactory: Creator[Sink[T, ?]]): Sink[T, NotUsed] = {
     val settings = RestartSettings(minBackoff, maxBackoff, randomFactor)
     withBackoff(settings, sinkFactory)
   }
@@ -93,7 +93,7 @@ object RestartSink {
       minBackoff: java.time.Duration,
       maxBackoff: java.time.Duration,
       randomFactor: Double,
-      sinkFactory: Creator[Sink[T, _]]): Sink[T, NotUsed] = {
+      sinkFactory: Creator[Sink[T, ?]]): Sink[T, NotUsed] = {
     val settings = RestartSettings.create(minBackoff, maxBackoff, randomFactor)
     withBackoff(settings, sinkFactory)
   }
@@ -130,7 +130,7 @@ object RestartSink {
       maxBackoff: FiniteDuration,
       randomFactor: Double,
       maxRestarts: Int,
-      sinkFactory: Creator[Sink[T, _]]): Sink[T, NotUsed] = {
+      sinkFactory: Creator[Sink[T, ?]]): Sink[T, NotUsed] = {
     val settings = RestartSettings(minBackoff, maxBackoff, randomFactor).withMaxRestarts(maxRestarts, minBackoff)
     withBackoff(settings, sinkFactory)
   }
@@ -168,7 +168,7 @@ object RestartSink {
       maxBackoff: java.time.Duration,
       randomFactor: Double,
       maxRestarts: Int,
-      sinkFactory: Creator[Sink[T, _]]): Sink[T, NotUsed] = {
+      sinkFactory: Creator[Sink[T, ?]]): Sink[T, NotUsed] = {
     val settings = RestartSettings.create(minBackoff, maxBackoff, randomFactor).withMaxRestarts(maxRestarts, minBackoff)
     withBackoff(settings, sinkFactory)
   }
@@ -192,7 +192,7 @@ object RestartSink {
    * @param settings [[RestartSettings]] defining restart configuration
    * @param sinkFactory A factory for producing the [[Sink]] to wrap.
    */
-  def withBackoff[T](settings: RestartSettings, sinkFactory: Creator[Sink[T, _]]): Sink[T, NotUsed] =
+  def withBackoff[T](settings: RestartSettings, sinkFactory: Creator[Sink[T, ?]]): Sink[T, NotUsed] =
     pekko.stream.scaladsl.RestartSink
       .withBackoff(settings) { () =>
         sinkFactory.create().asScala

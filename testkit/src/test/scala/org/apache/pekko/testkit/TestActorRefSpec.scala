@@ -69,7 +69,7 @@ object TestActorRefSpec {
       case "work" =>
         sender() ! "workDone"
         context.stop(self)
-      case replyTo: Promise[_] => replyTo.asInstanceOf[Promise[Any]].success("complexReply")
+      case replyTo: Promise[?] => replyTo.asInstanceOf[Promise[Any]].success("complexReply")
       case replyTo: ActorRef   => replyTo ! "complexReply"
     }
 

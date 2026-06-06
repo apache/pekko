@@ -33,16 +33,16 @@ class ExpensiveDatabaseConnection {
 //#extension-id
 object DatabasePool extends ExtensionId[DatabasePool] {
   // will only be called once
-  def createExtension(system: ActorSystem[_]): DatabasePool = new DatabasePool(system)
+  def createExtension(system: ActorSystem[?]): DatabasePool = new DatabasePool(system)
 
   // Java API
-  def get(system: ActorSystem[_]): DatabasePool = apply(system)
+  def get(system: ActorSystem[?]): DatabasePool = apply(system)
 }
 //#extension-id
 
 @nowarn
 //#extension
-class DatabasePool(system: ActorSystem[_]) extends Extension {
+class DatabasePool(system: ActorSystem[?]) extends Extension {
   // database configuration can be loaded from config
   // from the actor system
   private val _connection = new ExpensiveDatabaseConnection()

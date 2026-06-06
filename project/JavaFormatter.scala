@@ -28,7 +28,7 @@ object JavaFormatter extends AutoPlugin {
   import sbt._
   import sbt.io._
 
-  override lazy val projectSettings: Seq[Def.Setting[_]] =
+  override lazy val projectSettings: Seq[Def.Setting[?]] =
     Seq(
       // below is for sbt java formatter
       javafmt / excludeFilter := {

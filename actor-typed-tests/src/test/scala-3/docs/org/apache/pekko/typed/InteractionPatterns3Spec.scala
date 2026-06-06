@@ -16,7 +16,7 @@ package docs.org.apache.pekko.typed
 import java.net.URI
 
 import scala.concurrent.Future
-import scala.concurrent.duration._
+import scala.concurrent.duration.*
 import scala.util.Failure
 import scala.util.Success
 import org.apache.pekko
@@ -45,7 +45,7 @@ object DummyData3 {
 }
 
 class InteractionPatterns3Spec extends ScalaTestWithActorTestKit with AnyWordSpecLike with LogCapturing {
-  import DummyData3._
+  import DummyData3.*
   private class DummyContext[T](val self: ActorRef[T])
 
   "The interaction patterns docs" must {
@@ -140,7 +140,6 @@ class InteractionPatterns3Spec extends ScalaTestWithActorTestKit with AnyWordSpe
 
         def apply(backend: ActorRef[Backend.Request]): Behavior[Command] = // (2)
           Behaviors.setup[CommandAndResponse] { context =>
-
             def active(inProgress: Map[Int, ActorRef[URI]], count: Int): Behavior[CommandAndResponse] = {
               Behaviors.receiveMessage[CommandAndResponse] {
                 case Translate(site, replyTo) =>
@@ -205,7 +204,7 @@ class InteractionPatterns3Spec extends ScalaTestWithActorTestKit with AnyWordSpe
         target: ActorRef[Buncher.Batch],
         after: FiniteDuration,
         maxSize: Int) {
-      import Buncher._
+      import Buncher.*
 
       private def idle(): Behavior[Command] = {
         Behaviors.receiveMessage[Command] { message =>
@@ -221,7 +220,7 @@ class InteractionPatterns3Spec extends ScalaTestWithActorTestKit with AnyWordSpe
             idle()
           case m =>
             val newBuffer = buffer :+ m
-            if (newBuffer.size == maxSize) {
+            if newBuffer.size == maxSize then {
               timers.cancel(TimerKey)
               target ! Batch(newBuffer)
               idle()
@@ -472,7 +471,7 @@ class InteractionPatterns3Spec extends ScalaTestWithActorTestKit with AnyWordSpe
 
       def apply(): Behaviors.Receive[CookieFabric.GiveMeCookies] =
         Behaviors.receiveMessage { message =>
-          if (message.count >= 5)
+          if message.count >= 5 then
             message.replyTo ! InvalidRequest("Too many cookies.")
           else
             message.replyTo ! Cookies(message.count)
@@ -489,14 +488,14 @@ class InteractionPatterns3Spec extends ScalaTestWithActorTestKit with AnyWordSpe
     // #standalone-ask
 
     import org.apache.pekko
-    import pekko.actor.typed.scaladsl.AskPattern._
+    import pekko.actor.typed.scaladsl.AskPattern.*
     import pekko.util.Timeout
 
     // asking someone requires a timeout if the timeout hits without response
     // the ask is failed with a TimeoutException
     implicit val timeout: Timeout = 3.seconds
     // implicit ActorSystem in scope
-    implicit val system: ActorSystem[_] = theSystem
+    implicit val system: ActorSystem[?] = theSystem
 
     val result: Future[CookieFabric.Reply] = cookieFabric.ask(ref => CookieFabric.GiveMeCookies(3, ref))
 
@@ -537,7 +536,7 @@ class InteractionPatterns3Spec extends ScalaTestWithActorTestKit with AnyWordSpe
 
       def apply(): Behaviors.Receive[CookieFabric.GiveMeCookies] =
         Behaviors.receiveMessage { message =>
-          if (message.count >= 5)
+          if message.count >= 5 then
             message.replyTo ! StatusReply.Error("Too many cookies.")
           else
             message.replyTo ! StatusReply.Success(Cookies(message.count))
@@ -554,14 +553,14 @@ class InteractionPatterns3Spec extends ScalaTestWithActorTestKit with AnyWordSpe
     // #standalone-ask-with-status
 
     import org.apache.pekko
-    import pekko.actor.typed.scaladsl.AskPattern._
+    import pekko.actor.typed.scaladsl.AskPattern.*
     import pekko.util.Timeout
 
     // asking someone requires a timeout if the timeout hits without response
     // the ask is failed with a TimeoutException
     implicit val timeout: Timeout = 3.seconds
     // implicit ActorSystem in scope
-    implicit val system: ActorSystem[_] = theSystem
+    implicit val system: ActorSystem[?] = theSystem
 
     val result: Future[CookieFabric.Cookies] = cookieFabric.askWithStatus(ref => CookieFabric.GiveMeCookies(3, ref))
 
@@ -621,7 +620,7 @@ class InteractionPatterns3Spec extends ScalaTestWithActorTestKit with AnyWordSpe
         Behaviors.receive { (context, command) =>
           command match {
             case Update(value, replyTo) =>
-              if (operationsInProgress == MaxOperationsInProgress) {
+              if operationsInProgress == MaxOperationsInProgress then {
                 replyTo ! UpdateFailure(value.id, s"Max $MaxOperationsInProgress concurrent operations supported")
                 Behaviors.same
               } else {

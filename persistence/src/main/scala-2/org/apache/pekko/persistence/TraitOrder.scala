@@ -22,7 +22,7 @@ import org.apache.pekko.annotation.InternalApi
 private[persistence] object TraitOrder {
   val canBeChecked = true
 
-  def checkBefore(clazz: Class[_], one: Class[_], other: Class[_]): Unit = {
+  def checkBefore(clazz: Class[?], one: Class[?], other: Class[?]): Unit = {
     val interfaces = clazz.getInterfaces
     val i = interfaces.indexOf(other)
     val j = interfaces.indexOf(one)

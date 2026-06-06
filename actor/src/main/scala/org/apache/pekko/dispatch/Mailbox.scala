@@ -214,10 +214,10 @@ private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
 
   protected final def systemQueuePut(_old: LatestFirstSystemMessageList, _new: LatestFirstSystemMessageList): Boolean =
     (_old.head eq _new.head) ||
-      // Note: calling .head is not actually existing on the bytecode level as the parameters _old and _new
-      // are SystemMessage instances hidden during compile time behind the SystemMessageList value class.
-      // Without calling .head the parameters would be boxed in SystemMessageList wrapper.
-      Unsafe.instance.compareAndSwapObject(this, AbstractMailbox.systemMessageOffset, _old.head, _new.head): @nowarn(
+    // Note: calling .head is not actually existing on the bytecode level as the parameters _old and _new
+    // are SystemMessage instances hidden during compile time behind the SystemMessageList value class.
+    // Without calling .head the parameters would be boxed in SystemMessageList wrapper.
+    Unsafe.instance.compareAndSwapObject(this, AbstractMailbox.systemMessageOffset, _old.head, _new.head): @nowarn(
       "cat=deprecation")
 
   final def canBeScheduledForExecution(hasMessageHint: Boolean, hasSystemMessageHint: Boolean): Boolean =

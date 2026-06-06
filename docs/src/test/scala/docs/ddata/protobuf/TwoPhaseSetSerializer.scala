@@ -36,7 +36,7 @@ class TwoPhaseSetSerializer(val system: ExtendedActorSystem) extends Serializer 
     case _              => throw new IllegalArgumentException(s"Can't serialize object of type ${obj.getClass}")
   }
 
-  override def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]): AnyRef = {
+  override def fromBinary(bytes: Array[Byte], clazz: Option[Class[?]]): AnyRef = {
     twoPhaseSetFromBinary(bytes)
   }
 
@@ -78,7 +78,7 @@ class TwoPhaseSetSerializerWithCompression(system: ExtendedActorSystem) extends 
     case _              => throw new IllegalArgumentException(s"Can't serialize object of type ${obj.getClass}")
   }
 
-  override def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]): AnyRef = {
+  override def fromBinary(bytes: Array[Byte], clazz: Option[Class[?]]): AnyRef = {
     twoPhaseSetFromBinary(decompress(bytes))
   }
   // #compression

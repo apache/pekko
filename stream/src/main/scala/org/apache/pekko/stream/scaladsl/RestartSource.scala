@@ -52,7 +52,7 @@ object RestartSource {
   @deprecated("Use the overloaded method which accepts org.apache.pekko.stream.RestartSettings instead.",
     since = "Akka 2.6.10")
   def withBackoff[T](minBackoff: FiniteDuration, maxBackoff: FiniteDuration, randomFactor: Double)(
-      sourceFactory: () => Source[T, _]): Source[T, NotUsed] = {
+      sourceFactory: () => Source[T, ?]): Source[T, NotUsed] = {
     val settings = RestartSettings(minBackoff, maxBackoff, randomFactor)
     withBackoff(settings)(sourceFactory)
   }
@@ -83,7 +83,7 @@ object RestartSource {
   @deprecated("Use the overloaded method which accepts org.apache.pekko.stream.RestartSettings instead.",
     since = "Akka 2.6.10")
   def withBackoff[T](minBackoff: FiniteDuration, maxBackoff: FiniteDuration, randomFactor: Double, maxRestarts: Int)(
-      sourceFactory: () => Source[T, _]): Source[T, NotUsed] = {
+      sourceFactory: () => Source[T, ?]): Source[T, NotUsed] = {
     val settings = RestartSettings(minBackoff, maxBackoff, randomFactor).withMaxRestarts(maxRestarts, minBackoff)
     withBackoff(settings)(sourceFactory)
   }
@@ -104,7 +104,7 @@ object RestartSource {
    * @param settings [[RestartSettings]] defining restart configuration
    * @param sourceFactory A factory for producing the [[Source]] to wrap.
    */
-  def withBackoff[T](settings: RestartSettings)(sourceFactory: () => Source[T, _]): Source[T, NotUsed] =
+  def withBackoff[T](settings: RestartSettings)(sourceFactory: () => Source[T, ?]): Source[T, NotUsed] =
     Source.fromGraph(new RestartWithBackoffSource(sourceFactory, settings, onlyOnFailures = false))
 
   /**
@@ -130,7 +130,7 @@ object RestartSource {
   @deprecated("Use the overloaded method which accepts org.apache.pekko.stream.RestartSettings instead.",
     since = "Akka 2.6.10")
   def onFailuresWithBackoff[T](minBackoff: FiniteDuration, maxBackoff: FiniteDuration, randomFactor: Double)(
-      sourceFactory: () => Source[T, _]): Source[T, NotUsed] = {
+      sourceFactory: () => Source[T, ?]): Source[T, NotUsed] = {
     val settings = RestartSettings(minBackoff, maxBackoff, randomFactor)
     onFailuresWithBackoff(settings)(sourceFactory)
   }
@@ -163,7 +163,7 @@ object RestartSource {
       minBackoff: FiniteDuration,
       maxBackoff: FiniteDuration,
       randomFactor: Double,
-      maxRestarts: Int)(sourceFactory: () => Source[T, _]): Source[T, NotUsed] = {
+      maxRestarts: Int)(sourceFactory: () => Source[T, ?]): Source[T, NotUsed] = {
     val settings = RestartSettings(minBackoff, maxBackoff, randomFactor).withMaxRestarts(maxRestarts, minBackoff)
     onFailuresWithBackoff(settings)(sourceFactory)
   }
@@ -183,12 +183,12 @@ object RestartSource {
    * @param settings [[RestartSettings]] defining restart configuration
    * @param sourceFactory A factory for producing the [[Source]] to wrap.
    */
-  def onFailuresWithBackoff[T](settings: RestartSettings)(sourceFactory: () => Source[T, _]): Source[T, NotUsed] =
+  def onFailuresWithBackoff[T](settings: RestartSettings)(sourceFactory: () => Source[T, ?]): Source[T, NotUsed] =
     Source.fromGraph(new RestartWithBackoffSource(sourceFactory, settings, onlyOnFailures = true))
 }
 
 private final class RestartWithBackoffSource[T](
-    sourceFactory: () => Source[T, _],
+    sourceFactory: () => Source[T, ?],
     settings: RestartSettings,
     onlyOnFailures: Boolean)
     extends GraphStage[SourceShape[T]] { self =>

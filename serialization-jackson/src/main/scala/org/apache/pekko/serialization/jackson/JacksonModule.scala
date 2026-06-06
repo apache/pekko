@@ -43,12 +43,12 @@ import pekko.annotation.InternalApi
     VersionUtil.parseVersion(version, groupId, artifactId)
   }
 
-  class SerializerResolverByClass(clazz: Class[_], deserializer: () => JsonSerializer[_]) extends Serializers.Base {
+  class SerializerResolverByClass(clazz: Class[?], deserializer: () => JsonSerializer[?]) extends Serializers.Base {
 
     override def findSerializer(
         config: SerializationConfig,
         javaType: JavaType,
-        beanDesc: BeanDescription): JsonSerializer[_] = {
+        beanDesc: BeanDescription): JsonSerializer[?] = {
       if (clazz.isAssignableFrom(javaType.getRawClass))
         deserializer()
       else
@@ -57,12 +57,12 @@ import pekko.annotation.InternalApi
 
   }
 
-  class DeserializerResolverByClass(clazz: Class[_], serializer: () => JsonDeserializer[_]) extends Deserializers.Base {
+  class DeserializerResolverByClass(clazz: Class[?], serializer: () => JsonDeserializer[?]) extends Deserializers.Base {
 
     override def findBeanDeserializer(
         javaType: JavaType,
         config: DeserializationConfig,
-        beanDesc: BeanDescription): JsonDeserializer[_] = {
+        beanDesc: BeanDescription): JsonDeserializer[?] = {
       if (clazz.isAssignableFrom(javaType.getRawClass))
         serializer()
       else
@@ -94,9 +94,9 @@ import pekko.annotation.InternalApi
   }
 
   def addSerializer(
-      clazz: Class[_],
-      serializer: () => JsonSerializer[_],
-      deserializer: () => JsonDeserializer[_]): this.type = {
+      clazz: Class[?],
+      serializer: () => JsonSerializer[?],
+      deserializer: () => JsonDeserializer[?]): this.type = {
     this += { ctx =>
       ctx.addSerializers(new SerializerResolverByClass(clazz, serializer))
       ctx.addDeserializers(new DeserializerResolverByClass(clazz, deserializer))

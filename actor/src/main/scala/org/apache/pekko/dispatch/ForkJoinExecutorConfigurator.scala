@@ -43,7 +43,7 @@ object ForkJoinExecutorConfigurator {
     override def execute(r: Runnable): Unit =
       if (r ne null)
         super.execute(
-          (if (r.isInstanceOf[ForkJoinTask[_]]) r else new PekkoForkJoinTask(r)).asInstanceOf[ForkJoinTask[Any]])
+          (if (r.isInstanceOf[ForkJoinTask[?]]) r else new PekkoForkJoinTask(r)).asInstanceOf[ForkJoinTask[Any]])
       else
         throw new NullPointerException("Runnable was null")
 
@@ -104,7 +104,7 @@ class ForkJoinExecutorConfigurator(config: Config, prerequisites: DispatcherPrer
         parallelism: Int,
         asyncMode: Boolean) = this(threadFactory, parallelism, asyncMode, ForkJoinPoolConstants.MaxCap)
 
-    private def pekkoJdk9ForkJoinPoolClassOpt: Option[Class[_]] =
+    private def pekkoJdk9ForkJoinPoolClassOpt: Option[Class[?]] =
       Try(Class.forName("org.apache.pekko.dispatch.PekkoJdk9ForkJoinPool")).toOption
 
     private lazy val pekkoJdk9ForkJoinPoolHandleOpt: Option[MethodHandle] = {

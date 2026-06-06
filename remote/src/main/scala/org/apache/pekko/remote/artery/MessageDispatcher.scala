@@ -70,7 +70,8 @@ private[remote] class MessageDispatcher(system: ExtendedActorSystem, provider: R
           log.debug("received message [{}] to [{}] from [{}]", message, recipient, senderOption.getOrElse(""))
         message match {
           case sel: ActorSelectionMessage =>
-            if (UntrustedMode && (!TrustedSelectionPaths.contains(sel.elements.mkString("/", "/", "")) ||
+            if (UntrustedMode &&
+              (!TrustedSelectionPaths.contains(sel.elements.mkString("/", "/", "")) ||
               sel.msg.isInstanceOf[PossiblyHarmful] || l != provider.rootGuardian)) {
               if (debugLogEnabled)
                 log.debug(

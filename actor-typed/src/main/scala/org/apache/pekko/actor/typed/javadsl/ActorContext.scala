@@ -103,7 +103,7 @@ trait ActorContext[T] extends TypedActorContext[T] with ClassicActorContextProvi
    * *Warning*: This method is not thread-safe and must not be accessed from threads other
    * than the ordinary actor message processing thread, such as [[java.util.concurrent.CompletionStage]] callbacks.
    */
-  def setLoggerName(clazz: Class[_]): Unit
+  def setLoggerName(clazz: Class[?]): Unit
 
   /**
    * The list of child Actors created by this Actor during its lifetime that

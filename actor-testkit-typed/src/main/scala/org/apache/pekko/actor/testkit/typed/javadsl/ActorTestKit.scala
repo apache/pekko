@@ -56,7 +56,7 @@ object ActorTestKit {
    * Config loaded from the provided actor if that exists, otherwise
    * using default configuration from the reference.conf resources that ship with the Akka libraries.
    */
-  def create(system: ActorSystem[_]): ActorTestKit =
+  def create(system: ActorSystem[?]): ActorTestKit =
     new ActorTestKit(scaladsl.ActorTestKit(system))
 
   /**
@@ -122,7 +122,7 @@ object ActorTestKit {
    *                             an error is printed to stdout when the system did not shutdown but
    *                             no exception is thrown.
    */
-  def shutdown(system: ActorSystem[_], duration: Duration, throwIfShutdownTimesOut: Boolean): Unit = {
+  def shutdown(system: ActorSystem[?], duration: Duration, throwIfShutdownTimesOut: Boolean): Unit = {
     TestKitUtils.shutdown(system, duration.asScala, throwIfShutdownTimesOut)
   }
 
@@ -131,7 +131,7 @@ object ActorTestKit {
    * if more time than `system-shutdown-default` passes an exception is thrown
    * (can be configured with `throw-on-shutdown-timeout`).
    */
-  def shutdown(system: ActorSystem[_], duration: Duration): Unit = {
+  def shutdown(system: ActorSystem[?], duration: Duration): Unit = {
     val settings = TestKitSettings.create(system)
     shutdown(system, duration, settings.ThrowOnShutdownTimeout)
   }
@@ -141,7 +141,7 @@ object ActorTestKit {
    * if more time than `system-shutdown-default` passes an exception is thrown
    * (can be configured with `throw-on-shutdown-timeout`).
    */
-  def shutdown(system: ActorSystem[_]): Unit = {
+  def shutdown(system: ActorSystem[?]): Unit = {
     val settings = TestKitSettings.create(system)
     shutdown(system, settings.DefaultActorSystemShutdownTimeout.asJava, settings.ThrowOnShutdownTimeout)
   }

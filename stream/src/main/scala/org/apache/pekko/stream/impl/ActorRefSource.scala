@@ -50,7 +50,7 @@ private object ActorRefSource {
       with OutHandler
       with StageLogging
       with ActorRefStage {
-      override protected def logSource: Class[_] = classOf[ActorRefSource[_]]
+      override protected def logSource: Class[?] = classOf[ActorRefSource[?]]
 
       private val buffer: OptionVal[Buffer[T]] =
         if (maxBuffer != 0)

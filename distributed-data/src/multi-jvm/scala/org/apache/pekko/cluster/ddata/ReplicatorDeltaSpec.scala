@@ -251,8 +251,8 @@ class ReplicatorDeltaSpec extends MultiNodeSpec(ReplicatorDeltaSpec) with STMult
         val p1 = TestProbe()
         fullStateReplicator.tell(Update(KeyD, ORSet.empty[String], writeAll)(_ :+ "A"), p1.ref)
         deltaReplicator.tell(Update(KeyD, ORSet.empty[String], writeAll)(_ :+ "A"), p1.ref)
-        p1.expectMsgType[UpdateSuccess[_]]
-        p1.expectMsgType[UpdateSuccess[_]]
+        p1.expectMsgType[UpdateSuccess[?]]
+        p1.expectMsgType[UpdateSuccess[?]]
       }
       enterBarrier("write-1")
 
@@ -268,9 +268,9 @@ class ReplicatorDeltaSpec extends MultiNodeSpec(ReplicatorDeltaSpec) with STMult
         deltaReplicator.tell(Update(KeyD, ORSet.empty[String], writeAll)(_ :+ "B"), p1.ref)
         deltaReplicator.tell(Update(KeyD, ORSet.empty[String], writeAll)(_ :+ "C"), p1.ref)
         deltaReplicator.tell(Update(KeyD, ORSet.empty[String], writeAll)(_ :+ "D"), p1.ref)
-        p1.expectMsgType[UpdateSuccess[_]]
-        p1.expectMsgType[UpdateSuccess[_]]
-        p1.expectMsgType[UpdateSuccess[_]]
+        p1.expectMsgType[UpdateSuccess[?]]
+        p1.expectMsgType[UpdateSuccess[?]]
+        p1.expectMsgType[UpdateSuccess[?]]
       }
       enterBarrier("write-2")
       deltaReplicator.tell(Get(KeyD, ReadLocal), p.ref)
@@ -280,7 +280,7 @@ class ReplicatorDeltaSpec extends MultiNodeSpec(ReplicatorDeltaSpec) with STMult
       runOn(first) {
         val p1 = TestProbe()
         fullStateReplicator.tell(Update(KeyD, ORSet.empty[String], writeAll)(_ :+ "A" :+ "B" :+ "C" :+ "D"), p1.ref)
-        p1.expectMsgType[UpdateSuccess[_]]
+        p1.expectMsgType[UpdateSuccess[?]]
       }
       enterBarrier("write-3")
       fullStateReplicator.tell(Get(KeyD, ReadLocal), p.ref)
@@ -293,7 +293,7 @@ class ReplicatorDeltaSpec extends MultiNodeSpec(ReplicatorDeltaSpec) with STMult
       runOn(first) {
         val p1 = TestProbe()
         deltaReplicator.tell(Update(KeyHigh, Highest(0), WriteLocal)(_.incr(1)), p1.ref)
-        p1.expectMsgType[UpdateSuccess[_]]
+        p1.expectMsgType[UpdateSuccess[?]]
       }
       enterBarrier("write-1")
 
@@ -316,11 +316,11 @@ class ReplicatorDeltaSpec extends MultiNodeSpec(ReplicatorDeltaSpec) with STMult
       runOn(first) {
         val p1 = TestProbe()
         deltaReplicator.tell(Update(KeyHigh, Highest(0), writeAll)(_.incr(2)), p1.ref)
-        p1.expectMsgType[UpdateSuccess[_]]
+        p1.expectMsgType[UpdateSuccess[?]]
         deltaReplicator.tell(Update(KeyHigh, Highest(0), WriteLocal)(_.incrNoDelta(5)), p1.ref)
         deltaReplicator.tell(Update(KeyHigh, Highest(0), WriteLocal)(_.incr(10)), p1.ref)
-        p1.expectMsgType[UpdateSuccess[_]]
-        p1.expectMsgType[UpdateSuccess[_]]
+        p1.expectMsgType[UpdateSuccess[?]]
+        p1.expectMsgType[UpdateSuccess[?]]
       }
       enterBarrier("write-2")
 
@@ -347,7 +347,7 @@ class ReplicatorDeltaSpec extends MultiNodeSpec(ReplicatorDeltaSpec) with STMult
         // delta versions again. Same would happen via full state gossip.
         // Thereafter delta can be propagated and applied again.
         deltaReplicator.tell(Update(KeyHigh, Highest(0), writeAll)(_.incr(100)), p1.ref)
-        p1.expectMsgType[UpdateSuccess[_]]
+        p1.expectMsgType[UpdateSuccess[?]]
         // Flush the deltaPropagation buffer, otherwise it will contain
         // NoDeltaPlaceholder from previous updates and the incr(4) delta will also
         // be folded into NoDeltaPlaceholder and not propagated as delta. A few DeltaPropagationTick
@@ -356,7 +356,7 @@ class ReplicatorDeltaSpec extends MultiNodeSpec(ReplicatorDeltaSpec) with STMult
           deltaReplicator ! Replicator.Internal.DeltaPropagationTick
         }
         deltaReplicator.tell(Update(KeyHigh, Highest(0), WriteLocal)(_.incr(4)), p1.ref)
-        p1.expectMsgType[UpdateSuccess[_]]
+        p1.expectMsgType[UpdateSuccess[?]]
       }
       enterBarrier("write-3")
 

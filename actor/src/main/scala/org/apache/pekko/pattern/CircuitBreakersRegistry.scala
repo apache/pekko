@@ -42,7 +42,7 @@ object CircuitBreakersRegistry extends ExtensionId[CircuitBreakersRegistry] with
   /**
    * Returns the canonical ExtensionId for this Extension
    */
-  override def lookup: ExtensionId[_ <: Extension] = CircuitBreakersRegistry
+  override def lookup: ExtensionId[? <: Extension] = CircuitBreakersRegistry
 
   /**
    * Returns an instance of the extension identified by this ExtensionId instance.

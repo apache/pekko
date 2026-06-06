@@ -451,6 +451,6 @@ object PersistenceTestKit {
 
   def create(system: ActorSystem): PersistenceTestKit = new PersistenceTestKit(system)
 
-  def create(system: TypedActorSystem[_]): PersistenceTestKit = create(system.classicSystem)
+  def create(system: TypedActorSystem[?]): PersistenceTestKit = create(system.classicSystem)
 
 }
