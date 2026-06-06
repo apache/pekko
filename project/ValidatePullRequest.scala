@@ -112,7 +112,8 @@ object MimaWithPrValidation extends AutoPlugin {
   override lazy val trigger = allRequirements
   override lazy val requires = PekkoValidatePullRequest && MimaPlugin
   override lazy val projectSettings =
-    CliOptions.mimaEnabled.ifTrue(additionalTasks := Def.uncached { additionalTasks.value :+ mimaReportBinaryIssues }).toList
+    CliOptions.mimaEnabled.ifTrue(
+      additionalTasks := Def.uncached { additionalTasks.value :+ mimaReportBinaryIssues }).toList
 }
 
 /**
@@ -124,12 +125,16 @@ object ParadoxWithPrValidation extends AutoPlugin {
 
   override lazy val trigger = allRequirements
   override lazy val requires = PekkoValidatePullRequest && ParadoxPlugin
-  override lazy val projectSettings = Seq(additionalTasks := Def.uncached { additionalTasks.value :+ (Compile / paradox) })
+  override lazy val projectSettings = Seq(additionalTasks := Def.uncached {
+    additionalTasks.value :+ (Compile / paradox)
+  })
 }
 
 object UnidocWithPrValidation extends AutoPlugin {
   import PekkoValidatePullRequest.*
 
   override lazy val trigger = noTrigger
-  override lazy val projectSettings = Seq(additionalTasks := Def.uncached { additionalTasks.value :+ (Compile / unidoc) })
+  override lazy val projectSettings = Seq(additionalTasks := Def.uncached {
+    additionalTasks.value :+ (Compile / unidoc)
+  })
 }

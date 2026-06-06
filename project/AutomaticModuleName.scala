@@ -11,7 +11,7 @@
  * Copyright (C) 2016-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import sbt.{ Def, * }
+import sbt.{ *, Def }
 import sbt.Keys.*
 
 /**

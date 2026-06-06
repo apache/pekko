@@ -12,7 +12,7 @@
  */
 
 import sbt.*
-import Keys.{ scalacOptions, * }
+import Keys.{ *, scalacOptions }
 import sbt.plugins.JvmPlugin
 
 object PekkoDisciplinePlugin extends AutoPlugin {

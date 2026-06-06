@@ -114,10 +114,10 @@ lazy val aggregatedProjects: Seq[ProjectReference] = userProjects ++ List[Projec
   streamTestsTck)
 
 lazy val root = Project(id = "pekko", base = file("."))
-  .aggregate(aggregatedProjects*)
+  .aggregate(aggregatedProjects *)
   .settings(
     name := "pekko-root")
-  .settings(rootSettings*)
+  .settings(rootSettings *)
   .settings(
     UnidocRoot.autoImport.unidocRootIgnoreProjects := Seq(
       remoteTests,
@@ -146,14 +146,14 @@ lazy val actorTests = pekkoModule("actor-tests")
   .disablePlugins(MimaPlugin)
 
 lazy val pekkoScalaNightly = pekkoModule("scala-nightly")
-  .aggregate(aggregatedProjects*)
+  .aggregate(aggregatedProjects *)
   .disablePlugins(MimaPlugin)
-  // TODO [sbt2-migration] ValidatePullRequest requires sbt-pull-request-validator
-  // .disablePlugins(ValidatePullRequest, MimaPlugin)
+// TODO [sbt2-migration] ValidatePullRequest requires sbt-pull-request-validator
+// .disablePlugins(ValidatePullRequest, MimaPlugin)
 
 lazy val benchJmh = pekkoModule("bench-jmh")
   .dependsOn(Seq(actor, actorTyped, stream, streamTestkit, persistence, distributedData, jackson, testkit).map(
-    _ % "compile->compile;compile->test")*)
+    _ % "compile->compile;compile->test") *)
   .settings(Dependencies.benchJmh)
   .settings(javacOptions += "-parameters") // for Jackson
   .enablePlugins(JmhPlugin, ScaladocNoVerificationOfDiagrams, NoPublish)
@@ -265,7 +265,7 @@ lazy val docs = pekkoModule("docs")
     ScaladocNoVerificationOfDiagrams,
     StreamOperatorsIndexGenerator)
   .disablePlugins(MimaPlugin)
-  .disablePlugins((if (ScalafixSupport.fixTestScope) Nil else Seq(ScalafixPlugin))*)
+  .disablePlugins((if (ScalafixSupport.fixTestScope) Nil else Seq(ScalafixPlugin)) *)
 
 lazy val jackson = pekkoModule("serialization-jackson")
   .dependsOn(
@@ -418,7 +418,8 @@ lazy val protobufV3 = pekkoModule("protobuf-v3")
     // redefining the fullClasspath with just what we need to avoid the cyclic task dependency
     assembly / fullClasspath := Def.uncached {
       val conv = fileConverter.value
-      (Runtime / managedClasspath).value ++ (Compile / products).value.map(f => Attributed.blank(conv.toVirtualFile(f.toPath)))
+      (Runtime / managedClasspath).value ++ (Compile / products).value.map(f =>
+        Attributed.blank(conv.toVirtualFile(f.toPath)))
     },
     assembly / test := sbt.protocol.testing.TestResult.Passed, // assembly runs tests for unknown reason which introduces another cyclic dependency to packageBin via exportedJars
     description :=

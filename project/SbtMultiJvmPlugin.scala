@@ -121,16 +121,22 @@ object MultiJvmPlugin extends AutoPlugin {
       scalatestOptions := defaultScalatestOptions,
       scalatestClasspath := Def.uncached { managedClasspath.value.filter(_.data.name.contains("scalatest")) },
       multiRunCopiedClassLocation := new File(target.value, "multi-run-copied-libraries"),
-      scalatestScalaOptions := Def.uncached { scalaOptionsForScalatest(
-        scalatestRunner.value,
-        scalatestOptions.value,
-        fullClasspath.value,
-        multiRunCopiedClassLocation.value) },
-      scalatestMultiNodeScalaOptions := Def.uncached { scalaMultiNodeOptionsForScalatest(
-        scalatestRunner.value,
-        scalatestOptions.value) },
+      scalatestScalaOptions := Def.uncached {
+        scalaOptionsForScalatest(
+          scalatestRunner.value,
+          scalatestOptions.value,
+          fullClasspath.value,
+          multiRunCopiedClassLocation.value)
+      },
+      scalatestMultiNodeScalaOptions := Def.uncached {
+        scalaMultiNodeOptionsForScalatest(
+          scalatestRunner.value,
+          scalatestOptions.value)
+      },
       multiTestOptions := Def.uncached { Options(jvmOptions.value, extraOptions.value, scalatestScalaOptions.value) },
-      multiNodeTestOptions := Def.uncached { Options(jvmOptions.value, extraOptions.value, scalatestMultiNodeScalaOptions.value) },
+      multiNodeTestOptions := Def.uncached {
+        Options(jvmOptions.value, extraOptions.value, scalatestMultiNodeScalaOptions.value)
+      },
       appScalaOptions := Def.uncached { scalaOptionsForApps(fullClasspath.value) },
       connectInput := true,
       multiRunOptions := Def.uncached { Options(jvmOptions.value, extraOptions.value, appScalaOptions.value) },
@@ -575,7 +581,9 @@ object MultiJvmPlugin extends AutoPlugin {
       classes.toIndexedSeq,
       padSeqOrDefaultTo(hostsAndUsers, "localhost", max),
       padSeqOrDefaultTo(javas, defaultJava, max))
-    tuple._1.lazyZip(tuple._2).lazyZip(tuple._3).map { case (className: String, hostAndUser: String, _java: String) => (className, hostAndUser, _java) }
+    tuple._1.lazyZip(tuple._2).lazyZip(tuple._3).map { case (className: String, hostAndUser: String, _java: String) =>
+      (className, hostAndUser, _java)
+    }
   }
 
   private def getMultiNodeCommandLineOptions(hosts: Seq[String], index: Int, maxNodes: Int): Seq[String] = {

@@ -17,7 +17,7 @@
 
 import sbt.*
 import sbt.Keys.*
-import sbt.Result.{Inc, Value}
+import sbt.Result.{ Inc, Value }
 import sbt.plugins.JvmPlugin
 
 object TestQuickUntilPassed extends AutoPlugin {

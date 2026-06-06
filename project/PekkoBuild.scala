@@ -77,19 +77,21 @@ object PekkoBuild {
           resolver,
           Seq(
             otherResolvers := resolver :: publishTo.value.toList,
-            publishM2Configuration := Def.uncached { Classpaths.publishConfig(
-              publishMavenStyle.value,
-              deliverPattern(crossTarget.value),
-              if (isSnapshot.value) "integration" else "release",
-              ivyConfigurations.value.map(c => ConfigRef(c.name)).toVector,
-              // TODO [sbt2-migration] packagedArtifacts now returns HashedVirtualFileRef instead of File
-              artifacts = packagedArtifacts.value.map { case (a, ref) =>
-                (a, new File(ref.id))
-              }.toVector,
-              resolverName = resolver.name,
-              checksums = (publishM2 / checksums).value.toVector,
-              logging = ivyLoggingLevel.value,
-              overwrite = true) }))
+            publishM2Configuration := Def.uncached {
+              Classpaths.publishConfig(
+                publishMavenStyle.value,
+                deliverPattern(crossTarget.value),
+                if (isSnapshot.value) "integration" else "release",
+                ivyConfigurations.value.map(c => ConfigRef(c.name)).toVector,
+                // TODO [sbt2-migration] packagedArtifacts now returns HashedVirtualFileRef instead of File
+                artifacts = packagedArtifacts.value.map { case (a, ref) =>
+                  (a, new File(ref.id))
+                }.toVector,
+                resolverName = resolver.name,
+                checksums = (publishM2 / checksums).value.toVector,
+                logging = ivyLoggingLevel.value,
+                overwrite = true)
+            }))
     }
 
   lazy val resolverSettings = Def.settings(

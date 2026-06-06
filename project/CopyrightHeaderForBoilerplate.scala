@@ -14,7 +14,7 @@
 import CopyrightHeader.cStyleComment
 import sbtheader.HeaderPlugin.autoImport.*
 import sbt.Keys.sourceDirectory
-import sbt.{ inConfig, Compile, Def, Plugins, Test, * }
+import sbt.{ *, inConfig, Compile, Def, Plugins, Test }
 import spray.boilerplate.BoilerplatePlugin
 
 object CopyrightHeaderForBoilerplate extends AutoPlugin {
@@ -27,7 +27,7 @@ object CopyrightHeaderForBoilerplate extends AutoPlugin {
         Seq(
           config / headerSources := Def.uncached {
             (config / headerSources).value ++
-              (((config / sourceDirectory).value / "boilerplate") ** "*.template").get()
+            (((config / sourceDirectory).value / "boilerplate") ** "*.template").get()
           },
           headerMappings := headerMappings.value ++ Map(HeaderFileType("template") -> cStyleComment))
       }

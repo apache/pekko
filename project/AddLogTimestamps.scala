@@ -15,7 +15,7 @@ import java.io.PrintWriter
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import sbt.{ Def, * }
+import sbt.{ *, Def }
 import Keys.*
 import sbt.internal.LogManager
 import sbt.internal.util.ConsoleOut

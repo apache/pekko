@@ -16,7 +16,7 @@ import TestExtras.Filter.Keys.*
 import sbt.MultiJvmPlugin.autoImport.multiJvmCreateLogger
 import sbt.MultiJvmPlugin.autoImport.*
 
-import sbt.{ Def, * }
+import sbt.{ *, Def }
 import sbt.Keys.*
 import sbtheader.HeaderPlugin.autoImport.*
 import org.scalafmt.sbt.ScalafmtPlugin.scalafmtConfigSettings
@@ -45,9 +45,9 @@ object MultiNode extends AutoPlugin {
 
   // sbt 2: use if/else instead of ifTrue/getOrElse to avoid Configuration `/` overload ambiguity
   lazy val multiExecuteTests =
-    if (CliOptions.multiNode.get) (MultiJvm / multiNodeExecuteTests) else (MultiJvm / executeTests)
+    if (CliOptions.multiNode.get) MultiJvm / multiNodeExecuteTests else MultiJvm / executeTests
   lazy val multiTest =
-    if (CliOptions.multiNode.get) (MultiJvm / multiNodeTest) else (MultiJvm / test)
+    if (CliOptions.multiNode.get) MultiJvm / multiNodeTest else MultiJvm / test
 
   override lazy val trigger = noTrigger
   override lazy val requires = plugins.JvmPlugin && sbt.MultiJvmPlugin
@@ -80,7 +80,8 @@ object MultiNode extends AutoPlugin {
     Seq(
       // Hack because 'provided' dependencies by default are not picked up by the multi-jvm plugin:
       MultiJvm / managedClasspath := Def.uncached {
-        (MultiJvm / managedClasspath).value ++ (Compile / managedClasspath).value.filter(_.data.name.contains("silencer-lib"))
+        (MultiJvm / managedClasspath).value ++ (Compile / managedClasspath).value.filter(
+          _.data.name.contains("silencer-lib"))
       },
       MultiJvm / jvmOptions := defaultMultiJvmOptions,
       MultiJvm / scalacOptions := (Test / scalacOptions).value,
@@ -118,7 +119,9 @@ object MultiNode extends AutoPlugin {
     Def.settings((MultiJvm / compile) := Def.uncached {
       (MultiJvm / headerCreate).value
       (MultiJvm / compile).value
-    }) ++ headerSettings(MultiJvm) ++ Seq(validateCompile := Def.uncached { compile.?.all(anyConfigsInThisProject).value })
+    }) ++ headerSettings(MultiJvm) ++ Seq(validateCompile := Def.uncached {
+      compile.?.all(anyConfigsInThisProject).value
+    })
 
   implicit class TestResultOps(val self: TestResult) extends AnyVal {
     def id: Int = self match {

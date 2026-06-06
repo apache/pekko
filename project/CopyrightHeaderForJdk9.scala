@@ -12,7 +12,7 @@
  */
 
 import sbtheader.HeaderPlugin.autoImport.headerSources
-import sbt.{ Compile, Def, Test, * }
+import sbt.{ *, Compile, Def, Test }
 
 object CopyrightHeaderForJdk9 extends AutoPlugin {
 
