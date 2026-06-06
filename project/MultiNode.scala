@@ -11,23 +11,23 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import TestExtras.Filter.Keys._
+import TestExtras.Filter.Keys.*
 import MultiJvmPlugin.autoImport.multiJvmCreateLogger
-import MultiJvmPlugin.autoImport._
+import MultiJvmPlugin.autoImport.*
 
-import sbt.{ Def, _ }
-import sbt.Keys._
-import sbtheader.HeaderPlugin.autoImport._
+import sbt.{ Def, * }
+import sbt.Keys.*
+import sbtheader.HeaderPlugin.autoImport.*
 import org.scalafmt.sbt.ScalafmtPlugin.scalafmtConfigSettings
 import sbtassembly.MergeStrategy
-import sbtassembly.AssemblyKeys._
+import sbtassembly.AssemblyKeys.*
 
 object MultiNode extends AutoPlugin {
 
   object autoImport {
     lazy val validateCompile = taskKey[Unit]("Validates compile for any project it is enabled")
   }
-  import autoImport._
+  import autoImport.*
 
   // MultiJvm tests can be excluded from normal test target an validatePullRequest
   // with -Dpekko.test.multi-in-test=false
@@ -52,7 +52,7 @@ object MultiNode extends AutoPlugin {
   override lazy val projectSettings: Seq[Def.Setting[?]] = multiJvmSettings
 
   private lazy val defaultMultiJvmOptions: Seq[String] = {
-    import scala.jdk.CollectionConverters._
+    import scala.jdk.CollectionConverters.*
     // multinode.D= and multinode.X= makes it possible to pass arbitrary
     // -D or -X arguments to the forked jvm, e.g.
     // -Dmultinode.Djava.net.preferIPv4Stack=true -Dmultinode.Xmx512m -Dmultinode.XX:MaxPermSize=256M

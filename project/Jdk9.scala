@@ -11,11 +11,11 @@
  * Copyright (C) 2017-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import sbt.Keys._
-import sbt._
+import sbt.Keys.*
+import sbt.*
 
 object Jdk9 extends AutoPlugin {
-  import JdkOptions.JavaVersion._
+  import JdkOptions.JavaVersion.*
 
   // The version 21 is special for any Java versions >= 21
   private val supportedJavaLTSVersions = List("21")

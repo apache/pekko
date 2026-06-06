@@ -18,6 +18,7 @@ case class CliOption[T](private val value: T) {
 object CliOption {
   def apply[T](path: String, default: T)(implicit ev: CliOptionParser[T]): CliOption[T] = ev.parse(path, default)
 
+  // TODO [sbt2-migration] Consider extension methods for Scala 3 style
   implicit class BooleanCliOption(cliOption: CliOption[Boolean]) {
     def ifTrue[A](a: => A): Option[A] = if (cliOption.get) Some(a) else None
   }

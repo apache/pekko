@@ -14,7 +14,7 @@
 import CopyrightHeader.cStyleComment
 import sbtheader.HeaderPlugin.autoImport.{ headerMappings, headerSources, HeaderFileType }
 import sbt.Keys.baseDirectory
-import sbt.{ inConfig, Compile, Def, PluginTrigger, Test, _ }
+import sbt.{ inConfig, Compile, Def, PluginTrigger, Test, * }
 
 object CopyrightHeaderForBuild extends AutoPlugin {
   override lazy val requires: Plugins = CopyrightHeader

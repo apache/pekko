@@ -12,15 +12,15 @@
  */
 
 import scala.sys.process.Process
-import sjsonnew.BasicJsonProtocol._
-import sbt._
-import Keys._
+import sjsonnew.BasicJsonProtocol.*
+import sbt.*
+import Keys.*
 
 import java.io.File
 import java.lang.Boolean.getBoolean
 import sbtassembly.AssemblyPlugin.assemblySettings
 import sbtassembly.{ AssemblyKeys, MergeStrategy }
-import AssemblyKeys._
+import AssemblyKeys.*
 
 object MultiJvmPlugin extends AutoPlugin {
 
@@ -76,7 +76,7 @@ object MultiJvmPlugin extends AutoPlugin {
 
   val autoImport = MultiJvmKeys
 
-  import MultiJvmKeys._
+  import MultiJvmKeys.*
 
   override lazy val requires = plugins.JvmPlugin
 
@@ -141,7 +141,7 @@ object MultiJvmPlugin extends AutoPlugin {
       multiJvmTestJar := (assembly / assemblyOutputPath).map(_.getAbsolutePath).dependsOn(assembly).value,
       multiJvmTestJarName := (assembly / assemblyOutputPath).value.getAbsolutePath,
       multiNodeTest := {
-        implicit val display = Project.showContextKey(state.value)
+        implicit val display: Show[ScopedKey[?]] = Project.showContextKey(state.value)
         showResults(streams.value.log, multiNodeExecuteTests.value, noTestsMessage(resolvedScoped.value))
       },
       multiNodeExecuteTests := multiNodeExecuteTestsTask.value,
@@ -274,6 +274,7 @@ object MultiJvmPlugin extends AutoPlugin {
       streams.value.log)
   }
 
+  // TODO [sbt2-migration] InputTask.createDyn/loadForParser API may need rework for sbt 2
   def multiJvmTestOnly: Def.Initialize[sbt.InputTask[Unit]] =
     InputTask.createDyn(loadForParser(multiJvmTestNames)((s, i) => Defaults.testOnlyParser(s, i.getOrElse(Nil)))) {
       Def.task {
@@ -318,6 +319,7 @@ object MultiJvmPlugin extends AutoPlugin {
       results.map(result => Tests.Summary("multi-jvm", result._1)))
   }
 
+  // TODO [sbt2-migration] InputTask.createDyn/loadForParser API may need rework for sbt 2
   def multiJvmRun: Def.Initialize[sbt.InputTask[Unit]] =
     InputTask.createDyn(loadForParser(multiJvmAppNames)((s, i) => runParser(s, i.getOrElse(Nil)))) {
       Def.task {
@@ -341,7 +343,7 @@ object MultiJvmPlugin extends AutoPlugin {
     }
 
   def runParser: (State, Seq[String]) => complete.Parser[String] = {
-    import complete.DefaultParsers._
+    import complete.DefaultParsers.*
     (state, appClasses) => Space ~> token(NotSpace.examples(appClasses.toSet))
   }
 
@@ -407,6 +409,7 @@ object MultiJvmPlugin extends AutoPlugin {
       streams.value.log)
   }
 
+  // TODO [sbt2-migration] InputTask.createDyn/loadForParser API may need rework for sbt 2
   def multiNodeTestOnlyTask: Def.Initialize[InputTask[Unit]] =
     InputTask.createDyn(loadForParser(multiJvmTestNames)((s, i) => Defaults.testOnlyParser(s, i.getOrElse(Nil)))) {
       Def.task {
@@ -554,7 +557,7 @@ object MultiJvmPlugin extends AutoPlugin {
       classes.toIndexedSeq,
       padSeqOrDefaultTo(hostsAndUsers, "localhost", max),
       padSeqOrDefaultTo(javas, defaultJava, max))
-    tuple.zipped.map { case (className: String, hostAndUser: String, _java: String) => (className, hostAndUser, _java) }
+    tuple._1.lazyZip(tuple._2).lazyZip(tuple._3).map { case (className: String, hostAndUser: String, _java: String) => (className, hostAndUser, _java) }
   }
 
   private def getMultiNodeCommandLineOptions(hosts: Seq[String], index: Int, maxNodes: Int): Seq[String] = {
@@ -570,7 +573,7 @@ object MultiJvmPlugin extends AutoPlugin {
       hosts: Seq[String],
       hostsFileName: String,
       defaultJava: String,
-      s: Types.Id[Keys.TaskStreams]): (IndexedSeq[String], IndexedSeq[String]) = {
+      s: Keys.TaskStreams): (IndexedSeq[String], IndexedSeq[String]) = {
     val hostsFile = new File(hostsFileName)
     val theHosts: IndexedSeq[String] =
       if (hosts.isEmpty) {

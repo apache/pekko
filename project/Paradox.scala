@@ -12,15 +12,16 @@
  */
 
 import com.lightbend.paradox.sbt.ParadoxPlugin
-import com.lightbend.paradox.sbt.ParadoxPlugin.autoImport._
+import com.lightbend.paradox.sbt.ParadoxPlugin.autoImport.*
 import com.lightbend.paradox.apidoc.ApidocPlugin
 import com.lightbend.paradox.projectinfo.ParadoxProjectInfoPluginKeys.projectInfoVersion
-import org.apache.pekko.PekkoParadoxPlugin.autoImport._
-import sbt.Keys._
-import sbt._
+// TODO [sbt2-migration] Blocked on pekko-sbt-paradox sbt 2 support
+// import org.apache.pekko.PekkoParadoxPlugin.autoImport._
+import sbt.Keys.*
+import sbt.*
 import sbtlicensereport.SbtLicenseReport.autoImportImpl.dumpLicenseReportAggregate
 
-import scala.concurrent.duration._
+import scala.concurrent.duration.*
 
 object Paradox {
   val pekkoBaseURL = "https://pekko.apache.org"
@@ -78,8 +79,10 @@ object Paradox {
       // TODO page not linked to
       "fault-tolerance-sample.html"))
 
-  lazy val themeSettings = Seq(
-    pekkoParadoxGithub := Some("https://github.com/apache/pekko"))
+  // TODO [sbt2-migration] Blocked on pekko-sbt-paradox sbt 2 support
+  // lazy val themeSettings = Seq(
+  //   pekkoParadoxGithub := Some("https://github.com/apache/pekko"))
+  lazy val themeSettings = Seq.empty
 
   // FIXME https://github.com/lightbend/paradox/issues/350
   // Exclusions from direct compilation for includes dirs/files not belonging in a TOC
@@ -114,5 +117,7 @@ object Paradox {
     Seq(
       Compile / paradox / name := "Pekko",
       ApidocPlugin.autoImport.apidocRootPackage := "org.apache.pekko",
-      Global / pekkoParadoxIncubatorNotice := None)
+      // TODO [sbt2-migration] Blocked on pekko-sbt-paradox sbt 2 support
+      // Global / pekkoParadoxIncubatorNotice := None
+      )
 }

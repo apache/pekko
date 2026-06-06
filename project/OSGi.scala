@@ -12,11 +12,12 @@
  */
 
 import com.github.sbt.osgi.OsgiKeys
-import com.github.sbt.osgi.SbtOsgi._
-import sbt._
-import sbt.Keys._
+import com.github.sbt.osgi.SbtOsgi.*
+import sbt.*
+import sbt.Keys.*
 import sbtassembly.AssemblyKeys.assembly
-import net.bzzt.reproduciblebuilds.ReproducibleBuildsPlugin
+// TODO [sbt2-migration] Blocked on sbt-reproducible-builds sbt 2 support
+// import net.bzzt.reproduciblebuilds.ReproducibleBuildsPlugin
 
 object OSGi {
 
@@ -32,7 +33,9 @@ object OSGi {
         // `packageBin` wholesale here we need to invoke the post-processing
         // manually. See also
         // https://github.com/raboof/sbt-reproducible-builds#sbt-osgi
-        ReproducibleBuildsPlugin.postProcessJar(bundle)
+        // TODO [sbt2-migration] Blocked on sbt-reproducible-builds sbt 2 support
+        // ReproducibleBuildsPlugin.postProcessJar(bundle)
+        bundle
       },
       // This will fail the build instead of accidentally removing classes from the resulting artifact.
       // Each package contained in a project MUST be known to be private or exported, if it's undecided we MUST resolve this

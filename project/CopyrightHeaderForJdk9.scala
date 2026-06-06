@@ -12,7 +12,7 @@
  */
 
 import sbtheader.HeaderPlugin.autoImport.headerSources
-import sbt.{ Compile, Def, Test, _ }
+import sbt.{ Compile, Def, Test, * }
 
 object CopyrightHeaderForJdk9 extends AutoPlugin {
 
@@ -20,7 +20,7 @@ object CopyrightHeaderForJdk9 extends AutoPlugin {
   override lazy val trigger = allRequirements
 
   private lazy val additionalFiles = Def.setting {
-    import Jdk9._
+    import Jdk9.*
     for {
       dir <- additionalSourceDirectories.value ++ additionalTestSourceDirectories.value
       language <- List("java", "scala")

@@ -11,15 +11,16 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import com.github.sbt.pullrequestvalidator.ValidatePullRequest
-import com.github.sbt.pullrequestvalidator.ValidatePullRequest.PathGlobFilter
+// TODO [sbt2-migration] Blocked on sbt-pull-request-validator sbt 2 support
+// import com.github.sbt.pullrequestvalidator.ValidatePullRequest
+// import com.github.sbt.pullrequestvalidator.ValidatePullRequest.PathGlobFilter
 import com.lightbend.paradox.sbt.ParadoxPlugin
 import com.lightbend.paradox.sbt.ParadoxPlugin.autoImport.paradox
 import com.typesafe.tools.mima.plugin.MimaKeys.mimaReportBinaryIssues
 import com.typesafe.tools.mima.plugin.MimaPlugin
 import sbtunidoc.BaseUnidocPlugin.autoImport.unidoc
-import sbt.Keys._
-import sbt._
+import sbt.Keys.*
+import sbt.*
 
 object PekkoValidatePullRequest extends AutoPlugin {
 
@@ -27,10 +28,13 @@ object PekkoValidatePullRequest extends AutoPlugin {
     lazy val mimaEnabled = CliOption("pekko.mima.enabled", true)
   }
 
-  import ValidatePullRequest.autoImport._
+  // TODO [sbt2-migration] Blocked on sbt-pull-request-validator sbt 2 support
+  // import ValidatePullRequest.autoImport._
 
   override lazy val trigger = allRequirements
-  override lazy val requires = ValidatePullRequest
+  // TODO [sbt2-migration] Blocked on sbt-pull-request-validator sbt 2 support
+  // override lazy val requires = ValidatePullRequest
+  override lazy val requires = plugins.JvmPlugin
 
   lazy val ValidatePR = config("pr-validation").extend(Test)
 
@@ -45,33 +49,35 @@ object PekkoValidatePullRequest extends AutoPlugin {
       }
     }, additionalTasks := Seq.empty)
 
-  override lazy val buildSettings = Seq(
-    validatePullRequest / includeFilter := {
-      val ignoredProjects = List(
-        "pekko", // This is the root project
-        "serialVersionRemoverPlugin")
+  // TODO [sbt2-migration] Blocked on sbt-pull-request-validator sbt 2 support
+  // override lazy val buildSettings = Seq(
+  //   validatePullRequest / includeFilter := {
+  //     val ignoredProjects = List(
+  //       "pekko", // This is the root project
+  //       "serialVersionRemoverPlugin")
+  //
+  //     loadedBuild.value.allProjectRefs.collect {
+  //       case (_, project) if !ignoredProjects.contains(project.id) =>
+  //         val directory = project.base.getPath.split(java.io.File.separatorChar).last
+  //         PathGlobFilter(s"$directory/**")
+  //     }.fold(FileFilter.nothing)(_ || _)
+  //   },
+  //   validatePullRequestBuildAll / excludeFilter := PathGlobFilter("project/MiMa.scala"),
+  //   prValidatorGithubRepository := Some("apache/pekko"),
+  //   prValidatorTargetBranch := "origin/main")
 
-      loadedBuild.value.allProjectRefs.collect {
-        case (_, project) if !ignoredProjects.contains(project.id) =>
-          val directory = project.base.getPath.split(java.io.File.separatorChar).last
-          PathGlobFilter(s"$directory/**")
-      }.fold(FileFilter.nothing)(_ || _)
-    },
-    validatePullRequestBuildAll / excludeFilter := PathGlobFilter("project/MiMa.scala"),
-    prValidatorGithubRepository := Some("apache/pekko"),
-    prValidatorTargetBranch := "origin/main")
-
-  override lazy val projectSettings = inConfig(ValidatePR)(Defaults.testTasks) ++ Seq(
-    ValidatePR / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-l", "performance"),
-    ValidatePR / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-l", "long-running"),
-    ValidatePR / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-l", "timing"),
-    ValidatePR / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-l", "gh-exclude"),
-    // make it fork just like regular test running
-    ValidatePR / fork := (Test / fork).value,
-    ValidatePR / testGrouping := (Test / testGrouping).value,
-    ValidatePR / javaOptions := (Test / javaOptions).value,
-    prValidatorTasks := Seq(ValidatePR / test) ++ additionalTasks.value,
-    prValidatorEnforcedBuildAllTasks := Seq(Test / test) ++ additionalTasks.value)
+  // TODO [sbt2-migration] Blocked on sbt-pull-request-validator sbt 2 support
+  // override lazy val projectSettings = inConfig(ValidatePR)(Defaults.testTasks) ++ Seq(
+  //   ValidatePR / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-l", "performance"),
+  //   ValidatePR / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-l", "long-running"),
+  //   ValidatePR / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-l", "timing"),
+  //   ValidatePR / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-l", "gh-exclude"),
+  //   // make it fork just like regular test running
+  //   ValidatePR / fork := (Test / fork).value,
+  //   ValidatePR / testGrouping := (Test / testGrouping).value,
+  //   ValidatePR / javaOptions := (Test / javaOptions).value,
+  //   prValidatorTasks := Seq(ValidatePR / test) ++ additionalTasks.value,
+  //   prValidatorEnforcedBuildAllTasks := Seq(Test / test) ++ additionalTasks.value)
 }
 
 /**
@@ -84,7 +90,7 @@ object PekkoValidatePullRequest extends AutoPlugin {
  * autoplugin would trigger only on projects which have both of these plugins enabled.
  */
 object MultiNodeWithPrValidation extends AutoPlugin {
-  import PekkoValidatePullRequest._
+  import PekkoValidatePullRequest.*
 
   override lazy val trigger = allRequirements
   override lazy val requires = PekkoValidatePullRequest && MultiNode
@@ -98,7 +104,7 @@ object MultiNodeWithPrValidation extends AutoPlugin {
  * when a project has MimaPlugin autoplugin enabled.
  */
 object MimaWithPrValidation extends AutoPlugin {
-  import PekkoValidatePullRequest._
+  import PekkoValidatePullRequest.*
 
   override lazy val trigger = allRequirements
   override lazy val requires = PekkoValidatePullRequest && MimaPlugin
@@ -111,7 +117,7 @@ object MimaWithPrValidation extends AutoPlugin {
  * when a project has ParadoxPlugin autoplugin enabled.
  */
 object ParadoxWithPrValidation extends AutoPlugin {
-  import PekkoValidatePullRequest._
+  import PekkoValidatePullRequest.*
 
   override lazy val trigger = allRequirements
   override lazy val requires = PekkoValidatePullRequest && ParadoxPlugin
@@ -119,7 +125,7 @@ object ParadoxWithPrValidation extends AutoPlugin {
 }
 
 object UnidocWithPrValidation extends AutoPlugin {
-  import PekkoValidatePullRequest._
+  import PekkoValidatePullRequest.*
 
   override lazy val trigger = noTrigger
   override lazy val projectSettings = Seq(additionalTasks += Compile / unidoc)

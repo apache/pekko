@@ -12,9 +12,9 @@
  */
 
 import com.lightbend.paradox.sbt.ParadoxPlugin
-import com.lightbend.paradox.sbt.ParadoxPlugin.autoImport._
-import sbt.Keys._
-import sbt._
+import com.lightbend.paradox.sbt.ParadoxPlugin.autoImport.*
+import sbt.Keys.*
+import sbt.*
 
 object ParadoxBrowse extends AutoPlugin {
 

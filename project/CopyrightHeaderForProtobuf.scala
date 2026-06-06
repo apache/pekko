@@ -14,7 +14,7 @@
 import CopyrightHeader.cStyleComment
 import sbtheader.HeaderPlugin.autoImport.{ headerMappings, headerSources, HeaderFileType }
 import sbt.Keys.sourceDirectory
-import sbt.{ inConfig, Compile, Def, Test, _ }
+import sbt.{ inConfig, Compile, Def, Test, * }
 
 object CopyrightHeaderForProtobuf extends AutoPlugin {
 

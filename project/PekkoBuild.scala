@@ -13,12 +13,12 @@
 
 import MultiJvmPlugin.autoImport.MultiJvm
 
-import com.lightbend.paradox.projectinfo.ParadoxProjectInfoPluginKeys._
+import com.lightbend.paradox.projectinfo.ParadoxProjectInfoPluginKeys.*
 import sbt.Def
-import sbt.Keys._
-import sbt._
-import sbtassembly.AssemblyPlugin.autoImport._
-import sbtwelcome.WelcomePlugin.autoImport._
+import sbt.Keys.*
+import sbt.*
+import sbtassembly.AssemblyPlugin.autoImport.*
+import sbtwelcome.WelcomePlugin.autoImport.*
 
 import java.io.FileInputStream
 import java.io.InputStreamReader
@@ -255,7 +255,7 @@ object PekkoBuild {
     })
 
   lazy val welcomeSettings: Seq[Setting[?]] = Def.settings {
-    import sbtwelcome._
+    import sbtwelcome.*
     Seq(
       logo := {
         raw"""
@@ -306,7 +306,7 @@ object PekkoBuild {
     doc / javacOptions ++= Seq("-Xdoclint:none", "--ignore-source-errors"))
 
   def loadSystemProperties(fileName: String): Unit = {
-    import scala.jdk.CollectionConverters._
+    import scala.jdk.CollectionConverters.*
     val file = new File(fileName)
     if (file.exists()) {
       println("Loading system properties from file `" + fileName + "`")

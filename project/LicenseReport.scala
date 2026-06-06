@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-import sbt._
+import sbt.*
 import sbtlicensereport.SbtLicenseReport
-import sbtlicensereport.SbtLicenseReport.autoImportImpl._
+import sbtlicensereport.SbtLicenseReport.autoImportImpl.*
 import sbtlicensereport.license.{ DepModuleInfo, MarkDown }
 
 object LicenseReport extends AutoPlugin {

@@ -14,7 +14,7 @@
 import java.io.File
 import java.lang.{ ProcessBuilder => JProcessBuilder }
 
-import sbt._
+import sbt.*
 import scala.sys.process.Process
 
 object Jvm {

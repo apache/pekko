@@ -11,8 +11,8 @@
  * Copyright (C) 2016-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import sbt.Keys._
-import sbt._
+import sbt.Keys.*
+import sbt.*
 
 object TestExtras {
   object Filter {
@@ -27,7 +27,7 @@ object TestExtras {
       lazy val checkTestsHaveRun = taskKey[Unit]("Verify a number of notable tests have actually run")
     }
 
-    import Keys._
+    import Keys.*
 
     private[Filter] object Params {
       lazy val testNamesExclude = systemPropertyAsSeq("pekko.test.names.exclude").toSet

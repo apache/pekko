@@ -12,9 +12,9 @@
  */
 
 import CopyrightHeader.cStyleComment
-import sbtheader.HeaderPlugin.autoImport._
+import sbtheader.HeaderPlugin.autoImport.*
 import sbt.Keys.sourceDirectory
-import sbt.{ inConfig, Compile, Def, Plugins, Test, _ }
+import sbt.{ inConfig, Compile, Def, Plugins, Test, * }
 import spray.boilerplate.BoilerplatePlugin
 
 object CopyrightHeaderForBoilerplate extends AutoPlugin {

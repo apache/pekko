@@ -11,12 +11,12 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import sbt._
+import sbt.*
 import sbtunidoc.BaseUnidocPlugin.autoImport.{ unidoc, unidocAllSources, unidocProjectFilter }
 import sbtunidoc.JavaUnidocPlugin.autoImport.JavaUnidoc
 import sbtunidoc.ScalaUnidocPlugin.autoImport.ScalaUnidoc
-import sbtunidoc.GenJavadocPlugin.autoImport._
-import sbt.Keys._
+import sbtunidoc.GenJavadocPlugin.autoImport.*
+import sbt.Keys.*
 import sbt.File
 import scala.annotation.tailrec
 
@@ -128,7 +128,7 @@ object UnidocRoot extends AutoPlugin {
   object autoImport {
     lazy val unidocRootIgnoreProjects = settingKey[Seq[ProjectReference]]("Projects to ignore when generating unidoc")
   }
-  import autoImport._
+  import autoImport.*
 
   override lazy val trigger = noTrigger
   override lazy val requires =
