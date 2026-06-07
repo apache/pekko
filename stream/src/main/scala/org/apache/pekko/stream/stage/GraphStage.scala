@@ -371,36 +371,29 @@ object GraphStageLogic {
       // AbstractNodeQueue._tailDoNotCallMeDirectly.
       @volatile var state: Int = SchedStateIdle
 
-      override def apply(msg: Any): Unit = {
-        // Drain path: onAsyncInput passes null as the message when scheduling a drain envelope.
-        if (msg.asInstanceOf[AnyRef] eq null) { drain(); return }
-        // Producer path: msg is an (ActorRef, Any) tuple from the FunctionRef.
-        val pair = msg.asInstanceOf[(ActorRef, Any)]
-        // Producer-side completion guard. `runAsyncInput` short-circuits the drain handler when the stage
-        // is completed, so without this check a CAS-winning producer would leave state=SCHEDULED forever
-        // and subsequent producers would skip the mailbox push, growing the queue unbounded. Dropping
-        // post-completion sends here matches the original per-tell behaviour where `runAsyncInput`
-        // silently ignored them. The read is racy against the interpreter thread that flips
-        // `shutdownCounter`, but eventually visible — enough to bound the leak to messages enqueued
-        // before completion becomes visible to this thread.
-        if (interpreter.isStageCompleted(logic)) return
-        add(pair) // Vyukov producer path: getAndSet + release-store, no CAS spin
-        // Double-checked CAS: uncontended fast path is one volatile read; only the IDLE->SCHEDULED winner
-        // pays a CAS + mailbox push.
-        val u = LazyDispatch.stateHandle
-        // Scala 3's strict inference cannot pick the Int-returning signature-polymorphic overload of
-        // `VarHandle.get` without explicit return-type context — a typed local witnesses it. On Scala 2
-        // this is a no-op. Keep the double-checked plain read fast path: under producer contention
-        // only the IDLE→SCHEDULED winner pays a CAS, the rest just read.
-        val cur: Int = u.get(this)
-        if (cur == SchedStateIdle && u.compareAndSet(this, SchedStateIdle, SchedStateScheduled)) {
-          // Re-check after winning election: if completion landed between the initial guard and the CAS,
-          // `scheduleDrain` would post an envelope that `runAsyncInput` skips, leaving state=SCHEDULED.
-          // Reset to IDLE and skip the schedule.
-          if (interpreter.isStageCompleted(logic)) u.set(this, SchedStateIdle)
-          else scheduleDrain()
-        }
+      // Typed local witnesses the Int-returning signature-polymorphic VarHandle.get overload
+      // (required for Scala 3 cross-compile; on Scala 2 this is a no-op).
+      private def getState(): Int = {
+        val v: Int = LazyDispatch.stateHandle.get(this)
+        v
       }
+      private def setState(v: Int): Unit = LazyDispatch.stateHandle.set(this, v)
+      private def casState(expect: Int, update: Int): Boolean =
+        LazyDispatch.stateHandle.compareAndSet(this, expect, update)
+
+      // null msg = drain signal from onAsyncInput; non-null = (ActorRef, Any) tuple from FunctionRef.
+      override def apply(msg: Any): Unit =
+        if (msg == null) drain()
+        else {
+          val pair = msg.asInstanceOf[(ActorRef, Any)]
+          if (!interpreter.isStageCompleted(logic)) {
+            add(pair)
+            if (getState() == SchedStateIdle && casState(SchedStateIdle, SchedStateScheduled)) {
+              if (interpreter.isStageCompleted(logic)) setState(SchedStateIdle)
+              else scheduleDrain()
+            }
+          }
+        }
 
       private def scheduleDrain(): Unit =
         // 1 AsyncInput + 1 Envelope per drain batch (amortized across up to drainBatchSize tells).
@@ -408,41 +401,31 @@ object GraphStageLogic {
         interpreter.onAsyncInput(logic, null, NoPromise, this)
 
       private def drain(): Unit = {
-        val u = LazyDispatch.stateHandle
-        val limit = drainBatchSize // hoisted to a local so JIT treats it as a loop-invariant constant
+        val limit = drainBatchSize
         var processed = 0
         while (processed < limit) {
           if (interpreter.isStageCompleted(logic)) {
-            // Stage completed mid-drain; drop the remainder (matches the original per-tell behaviour where
-            // runAsyncInput silently skipped completed stages). Don't reschedule — no future drain will run.
             while (poll() ne null) ()
-            u.set(this, SchedStateIdle)
+            setState(SchedStateIdle)
             return
           }
           val item = poll()
           if (item eq null) {
-            u.set(this, SchedStateIdle)
+            setState(SchedStateIdle)
             // Recheck race: a producer may have added between `poll == null` and the IDLE publish above.
-            // That producer saw state=SCHEDULED and skipped the mailbox send, so we must re-elect.
-            if (!isEmpty && u.compareAndSet(this, SchedStateIdle, SchedStateScheduled))
+            if (!isEmpty && casState(SchedStateIdle, SchedStateScheduled))
               scheduleDrain()
             return
           }
           handler(item)
           processed += 1
         }
-        // Hit batch cap with items potentially still queued. The last `handler(item)` call may have
-        // completed the stage (e.g. user code called `completeStage()`); a fresh `scheduleDrain` would
-        // post an envelope that `runAsyncInput` skips, leaving state=SCHEDULED forever. Mirror the
-        // mid-loop branch: drain remainder, publish IDLE, do not reschedule.
+        // The last handler(item) may have completed the stage; check before re-scheduling.
         if (interpreter.isStageCompleted(logic)) {
           while (poll() ne null) ()
-          u.set(this, SchedStateIdle)
+          setState(SchedStateIdle)
           return
         }
-        // Re-schedule another envelope so other BoundaryEvents (pull/push/complete) can interleave via
-        // the actor mailbox. `state` stays SCHEDULED: concurrent producers observe SCHEDULED and skip;
-        // the new envelope will drain.
         scheduleDrain()
       }
     }
