@@ -196,7 +196,7 @@ object LineNumbers {
     }
   }
 
-  private def getStreamForClass(c: Class[_]): Option[(InputStream, None.type)] = {
+  private def getStreamForClass(c: Class[?]): Option[(InputStream, None.type)] = {
     val resource = c.getName.replace('.', '/') + ".class"
     val cl = c.getClassLoader
     val r = cl.getResourceAsStream(resource)

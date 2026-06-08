@@ -163,8 +163,8 @@ class ClusterHeartbeatSenderStateSpec extends AnyWordSpec with Matchers {
 
     "behave correctly for random operations" in {
       val rnd = ThreadLocalRandom.current
-      val nodes =
-        (1 to rnd.nextInt(10, 200)).map(n => UniqueAddress(Address("pekko", "sys", "n" + n, 7355), n.toLong)).toVector
+      val nodes = (1 to rnd.nextInt(10, 200)).map(n =>
+        UniqueAddress(Address("pekko", "sys", "n" + n, 7355), n.toLong)).toVector
       def rndNode() = nodes(rnd.nextInt(0, nodes.size))
       val selfUniqueAddress = rndNode()
       var state = emptyState(selfUniqueAddress)

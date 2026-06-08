@@ -359,7 +359,8 @@ private[stream] object ConnectionSourceStage {
           // round trip to the connection actor, or if reaching the configured maximum number of round trips, or
           // if writeBuffer capacity has been exceeded.
           writeDelayCountDown -= 1
-          if (writeDelayCountDown == 0 || previousWriteBufferSize == writeBuffer.length || writeBuffer.length >= writeBufferSize)
+          if (writeDelayCountDown == 0 || previousWriteBufferSize == writeBuffer.length ||
+            writeBuffer.length >= writeBufferSize)
             sendWriteBuffer()
           else
             sendWriteDelay()

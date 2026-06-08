@@ -42,7 +42,8 @@ class TransportAdapters(system: ExtendedActorSystem) extends Extension {
   val settings = RARP(system).provider.remoteSettings
 
   private val adaptersTable: Map[String, TransportAdapterProvider] = for ((name, fqn) <- settings.Adapters) yield {
-    name -> system.dynamicAccess
+    name ->
+    system.dynamicAccess
       .createInstanceFor[TransportAdapterProvider](fqn, immutable.Seq.empty)
       .recover {
         case e => throw new IllegalArgumentException(s"Cannot instantiate transport adapter [$fqn]", e)

@@ -115,7 +115,7 @@ object StreamConverters {
    * Note that a flow can be materialized multiple times, so the function producing the ``Collector`` must be able
    * to handle multiple invocations.
    */
-  def javaCollector[T, R](collectorFactory: () => java.util.stream.Collector[T, _ <: Any, R]): Sink[T, Future[R]] =
+  def javaCollector[T, R](collectorFactory: () => java.util.stream.Collector[T, ? <: Any, R]): Sink[T, Future[R]] =
     Flow[T]
       .fold {
         new FirstCollectorState[T,
@@ -139,7 +139,7 @@ object StreamConverters {
    * to handle multiple invocations.
    */
   def javaCollectorParallelUnordered[T, R](parallelism: Int)(
-      collectorFactory: () => java.util.stream.Collector[T, _ <: Any, R]): Sink[T, Future[R]] = {
+      collectorFactory: () => java.util.stream.Collector[T, ? <: Any, R]): Sink[T, Future[R]] = {
     if (parallelism == 1) javaCollector[T, R](collectorFactory)
     else {
       Sink

@@ -43,7 +43,7 @@ private[pekko] final class StreamRefSerializer(val system: ExtendedActorSystem)
 
   override def manifest(o: AnyRef): String = o match {
     // protocol
-    case _: StreamRefsProtocol.SequencedOnNext[_] => SequencedOnNextManifest
+    case _: StreamRefsProtocol.SequencedOnNext[?] => SequencedOnNextManifest
     case _: StreamRefsProtocol.CumulativeDemand   => CumulativeDemandManifest
     // handshake
     case _: StreamRefsProtocol.OnSubscribeHandshake => OnSubscribeHandshakeManifest
@@ -51,9 +51,9 @@ private[pekko] final class StreamRefSerializer(val system: ExtendedActorSystem)
     case _: StreamRefsProtocol.RemoteStreamFailure   => RemoteSinkFailureManifest
     case _: StreamRefsProtocol.RemoteStreamCompleted => RemoteSinkCompletedManifest
     // refs
-    case _: SourceRefImpl[_] => SourceRefManifest
+    case _: SourceRefImpl[?] => SourceRefManifest
     //    case _: MaterializedSourceRef[_]                 => SourceRefManifest
-    case _: SinkRefImpl[_] => SinkRefManifest
+    case _: SinkRefImpl[?] => SinkRefManifest
     //    case _: MaterializedSinkRef[_]                   => SinkRefManifest
     case StreamRefsProtocol.Ack => AckManifest
     case unknown                => throw new IllegalArgumentException(s"Unsupported object ${unknown.getClass}")
@@ -61,7 +61,7 @@ private[pekko] final class StreamRefSerializer(val system: ExtendedActorSystem)
 
   override def toBinary(o: AnyRef): Array[Byte] = o match {
     // protocol
-    case o: StreamRefsProtocol.SequencedOnNext[_] => serializeSequencedOnNext(o).toByteArray
+    case o: StreamRefsProtocol.SequencedOnNext[?] => serializeSequencedOnNext(o).toByteArray
     case d: StreamRefsProtocol.CumulativeDemand   => serializeCumulativeDemand(d).toByteArray
     // handshake
     case h: StreamRefsProtocol.OnSubscribeHandshake => serializeOnSubscribeHandshake(h).toByteArray
@@ -69,9 +69,9 @@ private[pekko] final class StreamRefSerializer(val system: ExtendedActorSystem)
     case d: StreamRefsProtocol.RemoteStreamFailure   => serializeRemoteSinkFailure(d).toByteArray
     case d: StreamRefsProtocol.RemoteStreamCompleted => serializeRemoteSinkCompleted(d).toByteArray
     // refs
-    case ref: SinkRefImpl[_] => serializeSinkRef(ref).toByteArray
+    case ref: SinkRefImpl[?] => serializeSinkRef(ref).toByteArray
     //    case ref: MaterializedSinkRef[_]                 => ??? // serializeSinkRef(ref).toByteArray
-    case ref: SourceRefImpl[_] => serializeSourceRef(ref).toByteArray
+    case ref: SourceRefImpl[?] => serializeSourceRef(ref).toByteArray
     //    case ref: MaterializedSourceRef[_]               => serializeSourceRef(ref.).toByteArray
     case StreamRefsProtocol.Ack => Array.emptyByteArray
     case unknown                => throw new IllegalArgumentException(s"Unsupported object ${unknown.getClass}")
@@ -121,7 +121,7 @@ private[pekko] final class StreamRefSerializer(val system: ExtendedActorSystem)
       .build()
   }
 
-  private def serializeSequencedOnNext(o: StreamRefsProtocol.SequencedOnNext[_]) = {
+  private def serializeSequencedOnNext(o: StreamRefsProtocol.SequencedOnNext[?]) = {
     val p = o.payload.asInstanceOf[AnyRef]
     val msgSerializer = serialization.findSerializerFor(p)
 
@@ -136,7 +136,7 @@ private[pekko] final class StreamRefSerializer(val system: ExtendedActorSystem)
     StreamRefMessages.SequencedOnNext.newBuilder().setSeqNr(o.seqNr).setPayload(payloadBuilder.build()).build()
   }
 
-  private def serializeSinkRef(sink: SinkRefImpl[_]): StreamRefMessages.SinkRef = {
+  private def serializeSinkRef(sink: SinkRefImpl[?]): StreamRefMessages.SinkRef = {
     StreamRefMessages.SinkRef
       .newBuilder()
       .setTargetRef(
@@ -144,7 +144,7 @@ private[pekko] final class StreamRefSerializer(val system: ExtendedActorSystem)
       .build()
   }
 
-  private def serializeSourceRef(source: SourceRefImpl[_]): StreamRefMessages.SourceRef = {
+  private def serializeSourceRef(source: SourceRefImpl[?]): StreamRefMessages.SourceRef = {
     StreamRefMessages.SourceRef
       .newBuilder()
       .setOriginRef(

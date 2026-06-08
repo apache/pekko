@@ -1003,7 +1003,8 @@ private[pekko] class ShardRegion(
       shardsByRef = shardsByRef - ref
       shards = shards - shardId
       startingShards -= shardId
-      if (settings.passivationStrategy != ClusterShardingSettings.NoPassivationStrategy && !gracefulShutdownInProgress) {
+      if (settings.passivationStrategy != ClusterShardingSettings.NoPassivationStrategy &&
+        !gracefulShutdownInProgress) {
         val update = ShardsUpdated(shards.size)
         shards.values.foreach(_ ! update)
       }
@@ -1084,11 +1085,10 @@ private[pekko] class ShardRegion(
   }
 
   private def askOne[T: ClassTag](shard: ActorRef, msg: Any, shardId: ShardId)(
-      implicit timeout: Timeout): Future[Either[ShardId, T]] =
-    (shard ? msg).mapTo[T].transform {
-      case Success(t) => Success(Right(t))
-      case Failure(_) => Success(Left(shardId))
-    }
+      implicit timeout: Timeout): Future[Either[ShardId, T]] = (shard ? msg).mapTo[T].transform {
+    case Success(t) => Success(Right(t))
+    case Failure(_) => Success(Left(shardId))
+  }
 
   private def tryCompleteGracefulShutdownIfInProgress(): Unit =
     if (gracefulShutdownInProgress && shards.isEmpty && shardBuffers.isEmpty) {

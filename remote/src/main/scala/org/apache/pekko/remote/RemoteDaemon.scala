@@ -285,7 +285,7 @@ private[pekko] class RemoteSystemDaemon(
 }
 
 /** INTERNAL API */
-final class NotAllowedClassRemoteDeploymentAttemptException(illegal: Class[_], allowedClassNames: immutable.Set[String])
+final class NotAllowedClassRemoteDeploymentAttemptException(illegal: Class[?], allowedClassNames: immutable.Set[String])
     extends RuntimeException(
       s"Attempted to deploy Actor class: " +
       s"[$illegal], " +

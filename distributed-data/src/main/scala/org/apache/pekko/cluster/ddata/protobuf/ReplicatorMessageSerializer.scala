@@ -224,14 +224,14 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
     case _: ReadResult          => ReadResultManifest
     case _: DeltaPropagation    => DeltaPropagationManifest
     case _: Status              => StatusManifest
-    case _: Get[_]              => GetManifest
-    case _: GetSuccess[_]       => GetSuccessManifest
+    case _: Get[?]              => GetManifest
+    case _: GetSuccess[?]       => GetSuccessManifest
     case _: DurableDataEnvelope => DurableDataEnvelopeManifest
-    case _: Changed[_]          => ChangedManifest
-    case _: NotFound[_]         => NotFoundManifest
-    case _: GetFailure[_]       => GetFailureManifest
-    case _: Subscribe[_]        => SubscribeManifest
-    case _: Unsubscribe[_]      => UnsubscribeManifest
+    case _: Changed[?]          => ChangedManifest
+    case _: NotFound[?]         => NotFoundManifest
+    case _: GetFailure[?]       => GetFailureManifest
+    case _: Subscribe[?]        => SubscribeManifest
+    case _: Unsubscribe[?]      => UnsubscribeManifest
     case _: Gossip              => GossipManifest
     case WriteNack              => WriteNackManifest
     case DeltaNack              => DeltaNackManifest
@@ -247,14 +247,14 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
     case m: ReadResult          => readResultToProto(m).toByteArray
     case m: Status              => statusToProto(m).toByteArray
     case m: DeltaPropagation    => deltaPropagationToProto(m).toByteArray
-    case m: Get[_]              => getToProto(m).toByteArray
-    case m: GetSuccess[_]       => getSuccessToProto(m).toByteArray
+    case m: Get[?]              => getToProto(m).toByteArray
+    case m: GetSuccess[?]       => getSuccessToProto(m).toByteArray
     case m: DurableDataEnvelope => durableDataEnvelopeToProto(m).toByteArray
-    case m: Changed[_]          => changedToProto(m).toByteArray
-    case m: NotFound[_]         => notFoundToProto(m).toByteArray
-    case m: GetFailure[_]       => getFailureToProto(m).toByteArray
-    case m: Subscribe[_]        => subscribeToProto(m).toByteArray
-    case m: Unsubscribe[_]      => unsubscribeToProto(m).toByteArray
+    case m: Changed[?]          => changedToProto(m).toByteArray
+    case m: NotFound[?]         => notFoundToProto(m).toByteArray
+    case m: GetFailure[?]       => getFailureToProto(m).toByteArray
+    case m: Subscribe[?]        => subscribeToProto(m).toByteArray
+    case m: Unsubscribe[?]      => unsubscribeToProto(m).toByteArray
     case m: Gossip              => compress(gossipToProto(m))
     case WriteNack              => dm.Empty.getDefaultInstance.toByteArray
     case DeltaNack              => dm.Empty.getDefaultInstance.toByteArray
@@ -353,7 +353,7 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
       }.toMap)
   }
 
-  private def getToProto(get: Get[_]): dm.Get = {
+  private def getToProto(get: Get[?]): dm.Get = {
     val timoutInMillis = get.consistency.timeout.toMillis
     require(timoutInMillis <= 0xFFFFFFFFL, "Timeouts must fit in a 32-bit unsigned int")
 
@@ -380,7 +380,7 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
     b.build()
   }
 
-  private def getFromBinary(bytes: Array[Byte]): Get[_] = {
+  private def getFromBinary(bytes: Array[Byte]): Get[?] = {
     val get = dm.Get.parseFrom(bytes)
     val key = otherMessageFromProto(get.getKey).asInstanceOf[KeyR]
     val request = if (get.hasRequest()) Some(otherMessageFromProto(get.getRequest)) else None
@@ -403,7 +403,7 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
     Get(key, consistency, request)
   }
 
-  private def getSuccessToProto(getSuccess: GetSuccess[_]): dm.GetSuccess = {
+  private def getSuccessToProto(getSuccess: GetSuccess[?]): dm.GetSuccess = {
     val b = dm.GetSuccess
       .newBuilder()
       .setKey(otherMessageToProto(getSuccess.key))
@@ -413,7 +413,7 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
     b.build()
   }
 
-  private def getSuccessFromBinary(bytes: Array[Byte]): GetSuccess[_] = {
+  private def getSuccessFromBinary(bytes: Array[Byte]): GetSuccess[?] = {
     val getSuccess = dm.GetSuccess.parseFrom(bytes)
     val key = otherMessageFromProto(getSuccess.getKey).asInstanceOf[KeyR]
     val request = if (getSuccess.hasRequest()) Some(otherMessageFromProto(getSuccess.getRequest)) else None
@@ -421,66 +421,66 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
     GetSuccess(key, request)(data)
   }
 
-  private def notFoundToProto(notFound: NotFound[_]): dm.NotFound = {
+  private def notFoundToProto(notFound: NotFound[?]): dm.NotFound = {
     val b = dm.NotFound.newBuilder().setKey(otherMessageToProto(notFound.key))
     notFound.request.foreach(o => b.setRequest(otherMessageToProto(o)))
     b.build()
   }
 
-  private def notFoundFromBinary(bytes: Array[Byte]): NotFound[_] = {
+  private def notFoundFromBinary(bytes: Array[Byte]): NotFound[?] = {
     val notFound = dm.NotFound.parseFrom(bytes)
     val request = if (notFound.hasRequest()) Some(otherMessageFromProto(notFound.getRequest)) else None
     val key = otherMessageFromProto(notFound.getKey).asInstanceOf[KeyR]
     NotFound(key, request)
   }
 
-  private def getFailureToProto(getFailure: GetFailure[_]): dm.GetFailure = {
+  private def getFailureToProto(getFailure: GetFailure[?]): dm.GetFailure = {
     val b = dm.GetFailure.newBuilder().setKey(otherMessageToProto(getFailure.key))
     getFailure.request.foreach(o => b.setRequest(otherMessageToProto(o)))
     b.build()
   }
 
-  private def getFailureFromBinary(bytes: Array[Byte]): GetFailure[_] = {
+  private def getFailureFromBinary(bytes: Array[Byte]): GetFailure[?] = {
     val getFailure = dm.GetFailure.parseFrom(bytes)
     val request = if (getFailure.hasRequest()) Some(otherMessageFromProto(getFailure.getRequest)) else None
     val key = otherMessageFromProto(getFailure.getKey).asInstanceOf[KeyR]
     GetFailure(key, request)
   }
 
-  private def subscribeToProto(subscribe: Subscribe[_]): dm.Subscribe =
+  private def subscribeToProto(subscribe: Subscribe[?]): dm.Subscribe =
     dm.Subscribe
       .newBuilder()
       .setKey(otherMessageToProto(subscribe.key))
       .setRef(Serialization.serializedActorPath(subscribe.subscriber))
       .build()
 
-  private def subscribeFromBinary(bytes: Array[Byte]): Subscribe[_] = {
+  private def subscribeFromBinary(bytes: Array[Byte]): Subscribe[?] = {
     val subscribe = dm.Subscribe.parseFrom(bytes)
     val key = otherMessageFromProto(subscribe.getKey).asInstanceOf[KeyR]
     Subscribe(key, resolveActorRef(subscribe.getRef))
   }
 
-  private def unsubscribeToProto(unsubscribe: Unsubscribe[_]): dm.Unsubscribe =
+  private def unsubscribeToProto(unsubscribe: Unsubscribe[?]): dm.Unsubscribe =
     dm.Unsubscribe
       .newBuilder()
       .setKey(otherMessageToProto(unsubscribe.key))
       .setRef(Serialization.serializedActorPath(unsubscribe.subscriber))
       .build()
 
-  private def unsubscribeFromBinary(bytes: Array[Byte]): Unsubscribe[_] = {
+  private def unsubscribeFromBinary(bytes: Array[Byte]): Unsubscribe[?] = {
     val unsubscribe = dm.Unsubscribe.parseFrom(bytes)
     val key = otherMessageFromProto(unsubscribe.getKey).asInstanceOf[KeyR]
     Unsubscribe(key, resolveActorRef(unsubscribe.getRef))
   }
 
-  private def changedToProto(changed: Changed[_]): dm.Changed =
+  private def changedToProto(changed: Changed[?]): dm.Changed =
     dm.Changed
       .newBuilder()
       .setKey(otherMessageToProto(changed.key))
       .setData(otherMessageToProto(changed.dataValue))
       .build()
 
-  private def changedFromBinary(bytes: Array[Byte]): Changed[_] = {
+  private def changedFromBinary(bytes: Array[Byte]): Changed[?] = {
     val changed = dm.Changed.parseFrom(bytes)
     val data = otherMessageFromProto(changed.getData).asInstanceOf[ReplicatedData]
     val key = otherMessageFromProto(changed.getKey).asInstanceOf[KeyR]

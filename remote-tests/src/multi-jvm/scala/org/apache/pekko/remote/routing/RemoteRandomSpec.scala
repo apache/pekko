@@ -78,7 +78,8 @@ class RemoteRandomSpec(multiNodeConfig: RemoteRandomConfig)
   def initialParticipants = roles.size
 
   "A remote random pool" must {
-    "be locally instantiated on a remote node and be able to communicate through its RemoteActorRef" taggedAs LongRunningTest in {
+    "be locally instantiated on a remote node and be able to communicate through its RemoteActorRef" taggedAs
+    LongRunningTest in {
 
       runOn(first, second, third) {
         enterBarrier("start", "broadcast-end", "end", "done")

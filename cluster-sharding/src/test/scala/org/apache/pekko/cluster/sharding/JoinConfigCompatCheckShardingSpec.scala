@@ -48,7 +48,8 @@ class JoinConfigCompatCheckShardingSpec extends PekkoSpec() with WithLogCapturin
   "A Joining Node" must {
 
     /** This test verifies the built-in JoinConfigCompatCheckerSharding */
-    "NOT be allowed to join a cluster using a different value for pekko.cluster.sharding.state-store-mode" taggedAs LongRunningTest in {
+    "NOT be allowed to join a cluster using a different value for pekko.cluster.sharding.state-store-mode" taggedAs
+    LongRunningTest in {
 
       val joinNodeConfig =
         ConfigFactory.parseString("""

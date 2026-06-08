@@ -76,7 +76,7 @@ final class ReceiveBuilder[T] private (
    * @param handler action to apply when the type matches
    * @return this behavior builder
    */
-  def onMessageUnchecked[M <: T](`type`: Class[_ <: T], handler: JFunction[M, Behavior[T]]): ReceiveBuilder[T] =
+  def onMessageUnchecked[M <: T](`type`: Class[? <: T], handler: JFunction[M, Behavior[T]]): ReceiveBuilder[T] =
     withMessage[M](OptionVal.Some(`type`.asInstanceOf[Class[M]]), OptionVal.None, handler)
 
   /**
@@ -173,7 +173,7 @@ object ReceiveBuilder {
   /** INTERNAL API */
   @InternalApi
   private[javadsl] final case class Case[BT, MT](
-      `type`: OptionVal[Class[_ <: MT]],
+      `type`: OptionVal[Class[? <: MT]],
       test: OptionVal[JPredicate[MT]],
       handler: JFunction[MT, Behavior[BT]])
 

@@ -127,7 +127,8 @@ class LifecycleInterpreterSpec extends StreamSpec with GraphInterpreterSpecKit {
       expectMsg("stop")
     }
 
-    "postStop when pushAndFinish called with pushAndFinish if indirect upstream completes with pushAndFinish" in new OneBoundedSetup[
+    "postStop when pushAndFinish called with pushAndFinish if indirect upstream completes with pushAndFinish" in
+    new OneBoundedSetup[
       String](Map((x: Any) => x), new PushFinishStage(onPostStop = () => testActor ! "stop"), Map((x: Any) => x)) {
 
       lastEvents() should be(Set.empty)
@@ -140,7 +141,8 @@ class LifecycleInterpreterSpec extends StreamSpec with GraphInterpreterSpecKit {
       expectMsg("stop")
     }
 
-    "postStop when pushAndFinish called with pushAndFinish if upstream completes with pushAndFinish and downstream immediately pulls" in new OneBoundedSetup[
+    "postStop when pushAndFinish called with pushAndFinish if upstream completes with pushAndFinish and downstream immediately pulls" in
+    new OneBoundedSetup[
       String](new PushFinishStage(onPostStop = () => testActor ! "stop"), Fold("", (x: String, y: String) => x + y)) {
 
       lastEvents() should be(Set.empty)

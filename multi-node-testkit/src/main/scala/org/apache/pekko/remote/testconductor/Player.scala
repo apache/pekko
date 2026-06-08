@@ -56,11 +56,11 @@ object Player {
       case Transition(_, f: ClientFSM.State, t: ClientFSM.State)
           if f == AwaitDone && t == Connected => // SI-5900 workaround
         waiting ! Done; context.stop(self)
-      case t: Transition[_] =>
+      case t: Transition[?] =>
         waiting ! Status.Failure(new RuntimeException("unexpected transition: " + t)); context.stop(self)
       case CurrentState(_, s: ClientFSM.State) if s == Connected => // SI-5900 workaround
         waiting ! Done; context.stop(self)
-      case _: CurrentState[_] =>
+      case _: CurrentState[?] =>
     }
 
   }

@@ -84,10 +84,10 @@ object MultiJvmPlugin extends AutoPlugin {
 
   override lazy val projectSettings = multiJvmSettings
 
-  private[this] def noTestsMessage(scoped: ScopedKey[_])(implicit display: Show[ScopedKey[_]]): String =
+  private[this] def noTestsMessage(scoped: ScopedKey[?])(implicit display: Show[ScopedKey[?]]): String =
     "No tests to run for " + display.show(scoped)
 
-  lazy val multiJvmSettings: Seq[Def.Setting[_]] =
+  lazy val multiJvmSettings: Seq[Def.Setting[?]] =
     inConfig(MultiJvm)(Defaults.configSettings ++ internalMultiJvmSettings)
 
   // https://github.com/sbt/sbt/blob/v0.13.15/main/actions/src/main/scala/sbt/Tests.scala#L296-L298
@@ -248,7 +248,8 @@ object MultiJvmPlugin extends AutoPlugin {
       .foreach(classpathFile =>
         IO.copyFile(classpathFile, new File(multiRunCopiedClassDir, classpathFile.getName), true))
     val cp =
-      directoryBasedClasspathEntries.absString + File.pathSeparator + multiRunCopiedClassDir.getAbsolutePath + File
+      directoryBasedClasspathEntries.absString + File.pathSeparator + multiRunCopiedClassDir.getAbsolutePath +
+      File
         .separator + "*"
     (testClass: String) => { Seq("-cp", cp, runner, "-s", testClass) ++ options }
   }
@@ -494,7 +495,7 @@ object MultiJvmPlugin extends AutoPlugin {
     val hosts = classesHostsJavas.map(_._2)
     // TODO move this out, maybe to the hosts string as well?
     val syncProcesses = classesHostsJavas.map {
-      case ((testClass, hostAndUser, java)) =>
+      case (testClass, hostAndUser, java) =>
         (testClass + " sync", Jvm.syncJar(testJar, hostAndUser, targetDir, log))
     }
     val syncResult = processExitCodes(name, syncProcesses, log)

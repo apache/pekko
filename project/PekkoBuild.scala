@@ -41,9 +41,10 @@ object PekkoBuild {
   lazy val rootSettings = Def.settings(
     UnidocRoot.pekkoSettings,
     Protobuf.settings,
-    GlobalScope / parallelExecution := System
-      .getProperty("pekko.parallelExecution", parallelExecutionByDefault.toString)
-      .toBoolean,
+    GlobalScope / parallelExecution :=
+      System
+        .getProperty("pekko.parallelExecution", parallelExecutionByDefault.toString)
+        .toBoolean,
     // used for linking to API docs (overwrites `project-info.version`)
     ThisBuild / projectInfoVersion := { if (isSnapshot.value) "snapshot" else version.value })
 
@@ -122,7 +123,7 @@ object PekkoBuild {
   // -XDignore.symbol.file suppresses sun.misc.Unsafe warnings
   final val DefaultJavacOptions = Seq("-encoding", "UTF-8", "-Xlint:unchecked", "-XDignore.symbol.file")
 
-  lazy val defaultSettings: Seq[Setting[_]] = Def.settings(
+  lazy val defaultSettings: Seq[Setting[?]] = Def.settings(
     projectInfoVersion := (if (isSnapshot.value) "snapshot" else version.value),
     Dependencies.Versions,
     resolverSettings,
@@ -170,7 +171,8 @@ object PekkoBuild {
     ThisBuild / ivyLoggingLevel := UpdateLogging.Quiet,
     licenses := Seq(("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))),
     homepage := Some(url("https://pekko.apache.org/")),
-    description := "Apache Pekko is a toolkit for building highly concurrent, distributed, and resilient message-driven applications for Java and Scala.",
+    description :=
+      "Apache Pekko is a toolkit for building highly concurrent, distributed, and resilient message-driven applications for Java and Scala.",
     scmInfo := Some(
       ScmInfo(
         url("https://github.com/apache/pekko"),
@@ -218,7 +220,8 @@ object PekkoBuild {
         // faster random source
         "-Djava.security.egd=file:/dev/./urandom")
 
-      defaults ++ CliOptions.runningOnCi
+      defaults ++
+      CliOptions.runningOnCi
         .ifTrue(jvmGCLogOptions(JdkOptions.isJdk11orHigher, JdkOptions.isJdk8))
         .getOrElse(Nil) ++
       JdkOptions.versionSpecificJavaOptions
@@ -250,9 +253,10 @@ object PekkoBuild {
         }
       }
     },
-    Test / parallelExecution := System
-      .getProperty("pekko.parallelExecution", parallelExecutionByDefault.toString)
-      .toBoolean,
+    Test / parallelExecution :=
+      System
+        .getProperty("pekko.parallelExecution", parallelExecutionByDefault.toString)
+        .toBoolean,
     Test / logBuffered := System.getProperty("pekko.logBufferedTests", "false").toBoolean,
     // show full stack traces and test case durations
     Test / testOptions += Tests.Argument("-oDF"),
@@ -269,7 +273,7 @@ object PekkoBuild {
       }
     })
 
-  lazy val welcomeSettings: Seq[Setting[_]] = Def.settings {
+  lazy val welcomeSettings: Seq[Setting[?]] = Def.settings {
     import sbtwelcome._
     Seq(
       logo := {

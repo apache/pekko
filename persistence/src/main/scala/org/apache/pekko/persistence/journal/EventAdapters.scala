@@ -33,8 +33,8 @@ import pekko.util.ccompat._
  */
 @ccompatUsedUntil213
 class EventAdapters(
-    map: ConcurrentHashMap[Class[_], EventAdapter],
-    bindings: immutable.Seq[(Class[_], EventAdapter)],
+    map: ConcurrentHashMap[Class[?], EventAdapter],
+    bindings: immutable.Seq[(Class[?], EventAdapter)],
     log: LoggingAdapter) {
 
   /**
@@ -43,7 +43,7 @@ class EventAdapters(
    *
    * Falls back to [[IdentityEventAdapter]] if no adapter was defined for the given class.
    */
-  def get(clazz: Class[_]): EventAdapter = {
+  def get(clazz: Class[?]): EventAdapter = {
     map.get(clazz) match {
       case null => // bindings are ordered from most specific to least specific
         val value = bindings.filter {
@@ -72,7 +72,7 @@ private[pekko] object EventAdapters {
   type Name = String
   type BoundAdapters = immutable.Seq[String]
   type FQN = String
-  type ClassHandler = (Class[_], EventAdapter)
+  type ClassHandler = (Class[?], EventAdapter)
 
   def apply(system: ExtendedActorSystem, config: Config): EventAdapters = {
     val adapters = configToMap(config, "event-adapters")
@@ -116,7 +116,7 @@ private[pekko] object EventAdapters {
       sort(bs)
     }
 
-    val backing = bindings.foldLeft(new ConcurrentHashMap[Class[_], EventAdapter]) {
+    val backing = bindings.foldLeft(new ConcurrentHashMap[Class[?], EventAdapter]) {
       case (map, (c, s)) => map.put(c, s); map
     }
 
@@ -162,8 +162,8 @@ private[pekko] object EventAdapters {
    * Sort so that subtypes always precede their supertypes, but without
    * obeying any order between unrelated subtypes (insert sort).
    */
-  private def sort[T](in: Iterable[(Class[_], T)]): immutable.Seq[(Class[_], T)] =
-    in.foldLeft(new ArrayBuffer[(Class[_], T)](in.size)) { (buf, ca) =>
+  private def sort[T](in: Iterable[(Class[?], T)]): immutable.Seq[(Class[?], T)] =
+    in.foldLeft(new ArrayBuffer[(Class[?], T)](in.size)) { (buf, ca) =>
       buf.indexWhere(_._1.isAssignableFrom(ca._1)) match {
         case -1 => buf.append(ca)
         case x  => buf.insert(x, ca)
@@ -183,7 +183,7 @@ private[pekko] object EventAdapters {
     import pekko.util.ccompat.JavaConverters._
     if (config.hasPath(path)) {
       config.getConfig(path).root.unwrapped.asScala.toMap.map {
-        case (k, v: util.ArrayList[_]) if v.isInstanceOf[util.ArrayList[_]] => k -> v.asScala.map(_.toString).toList
+        case (k, v: util.ArrayList[?]) if v.isInstanceOf[util.ArrayList[?]] => k -> v.asScala.map(_.toString).toList
         case (k, v)                                                         => k -> List(v.toString)
       }
     } else Map.empty
@@ -192,6 +192,6 @@ private[pekko] object EventAdapters {
 }
 
 private[pekko] case object IdentityEventAdapters extends EventAdapters(null, null, null) {
-  override def get(clazz: Class[_]): EventAdapter = IdentityEventAdapter
+  override def get(clazz: Class[?]): EventAdapter = IdentityEventAdapter
   override def toString = Logging.simpleName(IdentityEventAdapters)
 }

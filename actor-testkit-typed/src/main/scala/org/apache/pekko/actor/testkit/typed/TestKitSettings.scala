@@ -29,7 +29,7 @@ object TestKitSettings {
   /**
    * Reads configuration settings from `pekko.actor.testkit.typed` section.
    */
-  def apply(system: ActorSystem[_]): TestKitSettings =
+  def apply(system: ActorSystem[?]): TestKitSettings =
     Ext(system).settings
 
   /**
@@ -42,7 +42,7 @@ object TestKitSettings {
   /**
    * Java API: Reads configuration settings from `pekko.actor.testkit.typed` section.
    */
-  def create(system: ActorSystem[_]): TestKitSettings =
+  def create(system: ActorSystem[?]): TestKitSettings =
     apply(system)
 
   /**
@@ -53,11 +53,11 @@ object TestKitSettings {
     new TestKitSettings(config)
 
   private object Ext extends ExtensionId[Ext] {
-    override def createExtension(system: ActorSystem[_]): Ext = new Ext(system)
-    def get(system: ActorSystem[_]): Ext = Ext.apply(system)
+    override def createExtension(system: ActorSystem[?]): Ext = new Ext(system)
+    def get(system: ActorSystem[?]): Ext = Ext.apply(system)
   }
 
-  private class Ext(system: ActorSystem[_]) extends Extension {
+  private class Ext(system: ActorSystem[?]) extends Extension {
     val settings: TestKitSettings = TestKitSettings(system.settings.config.getConfig("pekko.actor.testkit.typed"))
   }
 }

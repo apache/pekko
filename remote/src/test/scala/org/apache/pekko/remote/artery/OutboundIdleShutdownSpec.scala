@@ -262,7 +262,8 @@ class OutboundIdleShutdownSpec extends ArteryMultiNodeSpec("""
             localArtery.inboundCompressionAccess.get.currentCompressionOriginUids.futureValue should contain(remoteUid2)
           }
           eventually {
-            localArtery.inboundCompressionAccess.get.currentCompressionOriginUids.futureValue should not contain remoteUid
+            localArtery.inboundCompressionAccess.get.currentCompressionOriginUids.futureValue should not contain
+            remoteUid
           }
         } finally {
           shutdown(remoteSystem2)

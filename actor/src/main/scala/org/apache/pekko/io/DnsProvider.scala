@@ -36,12 +36,12 @@ trait DnsProvider {
    * DNS resolver actor. Should respond to [[pekko.io.dns.DnsProtocol.Resolve]] with
    * [[pekko.io.dns.DnsProtocol.Resolved]]
    */
-  def actorClass: Class[_ <: Actor]
+  def actorClass: Class[? <: Actor]
 
   /**
    * DNS manager class. Is responsible for creating resolvers and doing any cache cleanup.
    * The DNS extension will create one of these Actors. It should have a ctr that accepts
    * a [[DnsExt]]
    */
-  def managerClass: Class[_ <: Actor]
+  def managerClass: Class[? <: Actor]
 }

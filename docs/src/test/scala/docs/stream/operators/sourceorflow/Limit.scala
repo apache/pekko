@@ -22,7 +22,7 @@ import scala.concurrent.Future
 
 object Limit {
 
-  implicit val system: ActorSystem[_] = ???
+  implicit val system: ActorSystem[?] = ???
 
   def simple(): Unit = {
     // #simple

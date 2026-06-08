@@ -94,7 +94,7 @@ trait FlowWithContextOps[+Out, +Ctx, +Mat] {
    * @see [[pekko.stream.scaladsl.FlowOps.alsoTo]]
    * @since 1.1.0
    */
-  def alsoTo(that: Graph[SinkShape[Out], _]): Repr[Out, Ctx]
+  def alsoTo(that: Graph[SinkShape[Out], ?]): Repr[Out, Ctx]
 
   /**
    * Context variant of [[pekko.stream.scaladsl.FlowOps.alsoTo]]
@@ -102,7 +102,7 @@ trait FlowWithContextOps[+Out, +Ctx, +Mat] {
    * @see [[pekko.stream.scaladsl.FlowOps.alsoTo]]
    * @since 1.1.0
    */
-  def alsoToContext(that: Graph[SinkShape[Ctx], _]): Repr[Out, Ctx]
+  def alsoToContext(that: Graph[SinkShape[Ctx], ?]): Repr[Out, Ctx]
 
   /**
    * Data variant of [[pekko.stream.scaladsl.FlowOps.wireTap]]
@@ -110,7 +110,7 @@ trait FlowWithContextOps[+Out, +Ctx, +Mat] {
    * @see [[pekko.stream.scaladsl.FlowOps.wireTap]]
    * @since 1.1.0
    */
-  def wireTap(that: Graph[SinkShape[Out], _]): Repr[Out, Ctx]
+  def wireTap(that: Graph[SinkShape[Out], ?]): Repr[Out, Ctx]
 
   /**
    * Context variant of [[pekko.stream.scaladsl.FlowOps.wireTap]]
@@ -118,7 +118,7 @@ trait FlowWithContextOps[+Out, +Ctx, +Mat] {
    * @see [[pekko.stream.scaladsl.FlowOps.wireTap]]
    * @since 1.1.0
    */
-  def wireTapContext(that: Graph[SinkShape[Ctx], _]): Repr[Out, Ctx]
+  def wireTapContext(that: Graph[SinkShape[Ctx], ?]): Repr[Out, Ctx]
 
   /**
    * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.map]].

@@ -19,7 +19,7 @@ import sbt.Keys._
  */
 object VersionGenerator {
 
-  lazy val settings: Seq[Setting[_]] = inConfig(Compile)(
+  lazy val settings: Seq[Setting[?]] = inConfig(Compile)(
     Seq(
       resourceGenerators += generateVersion(
         resourceManaged, _ / "version.conf",

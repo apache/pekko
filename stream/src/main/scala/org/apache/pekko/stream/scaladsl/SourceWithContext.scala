@@ -163,16 +163,16 @@ final class SourceWithContext[+Out, +Ctx, +Mat] private[stream] (delegate: Sourc
   def toMat[Mat2, Mat3](sink: Graph[SinkShape[(Out, Ctx)], Mat2])(combine: (Mat, Mat2) => Mat3): RunnableGraph[Mat3] =
     delegate.toMat(sink)(combine)
 
-  override def alsoTo(that: Graph[SinkShape[Out], _]): Repr[Out, Ctx] =
+  override def alsoTo(that: Graph[SinkShape[Out], ?]): Repr[Out, Ctx] =
     SourceWithContext.fromTuples(delegate.alsoTo(Sink.contramapImpl(that, (in: (Out, Ctx)) => in._1)))
 
-  override def alsoToContext(that: Graph[SinkShape[Ctx], _]): Repr[Out, Ctx] =
+  override def alsoToContext(that: Graph[SinkShape[Ctx], ?]): Repr[Out, Ctx] =
     SourceWithContext.fromTuples(delegate.alsoTo(Sink.contramapImpl(that, (in: (Out, Ctx)) => in._2)))
 
-  override def wireTap(that: Graph[SinkShape[Out], _]): Repr[Out, Ctx] =
+  override def wireTap(that: Graph[SinkShape[Out], ?]): Repr[Out, Ctx] =
     SourceWithContext.fromTuples(delegate.wireTap(Sink.contramapImpl(that, (in: (Out, Ctx)) => in._1)))
 
-  override def wireTapContext(that: Graph[SinkShape[Ctx], _]): Repr[Out, Ctx] =
+  override def wireTapContext(that: Graph[SinkShape[Ctx], ?]): Repr[Out, Ctx] =
     SourceWithContext.fromTuples(delegate.wireTap(Sink.contramapImpl(that, (in: (Out, Ctx)) => in._2)))
 
   /**

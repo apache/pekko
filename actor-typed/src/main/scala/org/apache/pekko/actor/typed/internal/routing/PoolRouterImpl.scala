@@ -30,7 +30,7 @@ import java.util.function.Predicate
 private[pekko] final case class PoolRouterBuilder[T](
     poolSize: Int,
     behavior: Behavior[T],
-    logicFactory: ActorSystem[_] => RoutingLogic[T] = (_: ActorSystem[_]) => new RoutingLogics.RoundRobinLogic[T],
+    logicFactory: ActorSystem[?] => RoutingLogic[T] = (_: ActorSystem[?]) => new RoutingLogics.RoundRobinLogic[T],
     broadcastPredicate: T => Boolean = ConstantFun.anyToFalse,
     routeeProps: Props = Props.empty)
     extends javadsl.PoolRouter[T]

@@ -31,9 +31,9 @@ import pekko.cluster.ddata.SelfUniqueAddress
 import pekko.util.JavaDurationConverters._
 
 object DistributedData extends ExtensionId[DistributedData] {
-  def get(system: ActorSystem[_]): DistributedData = apply(system)
+  def get(system: ActorSystem[?]): DistributedData = apply(system)
 
-  override def createExtension(system: ActorSystem[_]): DistributedData =
+  override def createExtension(system: ActorSystem[?]): DistributedData =
     new DistributedData(system)
 
   /**
@@ -76,7 +76,7 @@ object DistributedData extends ExtensionId[DistributedData] {
  * [[pekko.cluster.ddata.DistributedData]] and that means that typed
  * and classic actors can share the same data.
  */
-class DistributedData(system: ActorSystem[_]) extends Extension {
+class DistributedData(system: ActorSystem[?]) extends Extension {
   import pekko.actor.typed.scaladsl.adapter._
 
   private val settings: ReplicatorSettings = ReplicatorSettings(system)

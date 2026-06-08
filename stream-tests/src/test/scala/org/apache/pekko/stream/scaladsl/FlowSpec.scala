@@ -58,13 +58,13 @@ class FlowSpec extends StreamSpec(ConfigFactory.parseString("pekko.actor.debug.r
   val identity: Flow[Any, Any, NotUsed] => Flow[Any, Any, NotUsed] = in => in.map(e => e)
   val identity2: Flow[Any, Any, NotUsed] => Flow[Any, Any, NotUsed] = in => identity(in)
 
-  val toPublisher: (Source[Any, _], Materializer) => Publisher[Any] =
+  val toPublisher: (Source[Any, ?], Materializer) => Publisher[Any] =
     (f, m) => f.runWith(Sink.asPublisher(false))(m)
 
-  def toFanoutPublisher[In, Out](elasticity: Int): (Source[Out, _], Materializer) => Publisher[Out] =
+  def toFanoutPublisher[In, Out](elasticity: Int): (Source[Out, ?], Materializer) => Publisher[Out] =
     (f, m) => f.runWith(Sink.asPublisher(true).withAttributes(Attributes.inputBuffer(elasticity, elasticity)))(m)
 
-  def materializeIntoSubscriberAndPublisher[In, Out](flow: Flow[In, Out, _]): (Subscriber[In], Publisher[Out]) = {
+  def materializeIntoSubscriberAndPublisher[In, Out](flow: Flow[In, Out, ?]): (Subscriber[In], Publisher[Out]) = {
     flow.runWith(Source.asSubscriber[In], Sink.asPublisher[Out](false))
   }
 
@@ -196,9 +196,9 @@ class FlowSpec extends StreamSpec(ConfigFactory.parseString("pekko.actor.debug.r
     }
 
     "subscribe Subscriber" in {
-      val flow: Flow[String, String, _] = Flow[String]
+      val flow: Flow[String, String, ?] = Flow[String]
       val c1 = TestSubscriber.manualProbe[String]()
-      val sink: Sink[String, _] = flow.to(Sink.fromSubscriber(c1))
+      val sink: Sink[String, ?] = flow.to(Sink.fromSubscriber(c1))
       val publisher: Publisher[String] = Source(List("1", "2", "3")).runWith(Sink.asPublisher(false))
       Source.fromPublisher(publisher).to(sink).run()
 
@@ -240,7 +240,7 @@ class FlowSpec extends StreamSpec(ConfigFactory.parseString("pekko.actor.debug.r
     "perform transformation operation and subscribe Subscriber" in {
       val flow = Flow[Int].map(_.toString)
       val c1 = TestSubscriber.manualProbe[String]()
-      val sink: Sink[Int, _] = flow.to(Sink.fromSubscriber(c1))
+      val sink: Sink[Int, ?] = flow.to(Sink.fromSubscriber(c1))
       val publisher: Publisher[Int] = Source(List(1, 2, 3)).runWith(Sink.asPublisher(false))
       Source.fromPublisher(publisher).to(sink).run()
 
@@ -286,18 +286,18 @@ class FlowSpec extends StreamSpec(ConfigFactory.parseString("pekko.actor.debug.r
     }
 
     "be covariant" in {
-      val f1: Source[Fruit, _] = Source.fromIterator[Fruit](fruits)
+      val f1: Source[Fruit, ?] = Source.fromIterator[Fruit](fruits)
       val p1: Publisher[Fruit] = Source.fromIterator[Fruit](fruits).runWith(Sink.asPublisher(false))
-      val f2: SubFlow[Fruit, _, Source[Fruit, NotUsed]#Repr, _] =
+      val f2: SubFlow[Fruit, ?, Source[Fruit, NotUsed]#Repr, ?] =
         Source.fromIterator[Fruit](fruits).splitWhen(_ => true)
-      val f3: SubFlow[Fruit, _, Source[Fruit, NotUsed]#Repr, _] =
+      val f3: SubFlow[Fruit, ?, Source[Fruit, NotUsed]#Repr, ?] =
         Source.fromIterator[Fruit](fruits).groupBy(2, _ => true)
-      val f4: Source[(immutable.Seq[Fruit], Source[Fruit, _]), _] = Source.fromIterator[Fruit](fruits).prefixAndTail(1)
-      val d1: SubFlow[Fruit, _, Flow[String, Fruit, NotUsed]#Repr, _] =
+      val f4: Source[(immutable.Seq[Fruit], Source[Fruit, ?]), ?] = Source.fromIterator[Fruit](fruits).prefixAndTail(1)
+      val d1: SubFlow[Fruit, ?, Flow[String, Fruit, NotUsed]#Repr, ?] =
         Flow[String].map(_ => new Apple).splitWhen(_ => true)
-      val d2: SubFlow[Fruit, _, Flow[String, Fruit, NotUsed]#Repr, _] =
+      val d2: SubFlow[Fruit, ?, Flow[String, Fruit, NotUsed]#Repr, ?] =
         Flow[String].map(_ => new Apple).groupBy(2, _ => true)
-      val d3: Flow[String, (immutable.Seq[Apple], Source[Fruit, _]), _] =
+      val d3: Flow[String, (immutable.Seq[Apple], Source[Fruit, ?]), ?] =
         Flow[String].map(_ => new Apple).prefixAndTail(1)
     }
 

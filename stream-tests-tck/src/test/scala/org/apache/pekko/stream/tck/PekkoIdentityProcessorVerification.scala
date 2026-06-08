@@ -46,7 +46,7 @@ abstract class PekkoIdentityProcessorVerification[T](env: TestEnvironment, publi
       override def onError(t: Throwable): Unit = sub.onError(t)
       override def onComplete(): Unit = sub.onComplete()
       override def onNext(t: T): Unit = sub.onNext(t)
-      override def subscribe(s: Subscriber[_ >: T]): Unit = pub.subscribe(s)
+      override def subscribe(s: Subscriber[? >: T]): Unit = pub.subscribe(s)
     }
   }
 

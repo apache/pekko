@@ -558,7 +558,8 @@ object SupervisorHierarchySpec {
       case this.Event(StateTimeout, todo) =>
         log.info("dumping state due to StateTimeout")
         log.info(
-          "children: " + children.size + " pinged: " + pingChildren.size + " idle: " + idleChildren.size + " work: " + todo)
+          "children: " + children.size + " pinged: " + pingChildren.size + " idle: " + idleChildren.size + " work: " +
+          todo)
         pingChildren.foreach(println)
         println(system.asInstanceOf[ActorSystemImpl].printTree)
         pingChildren.foreach(getErrorsUp)
@@ -927,8 +928,8 @@ class SupervisorHierarchySpec extends PekkoSpec(SupervisorHierarchySpec.config) 
 
       fsm ! FSM.SubscribeTransitionCallBack(system.actorOf(Props(new Actor {
         def receive = {
-          case s: FSM.CurrentState[_] => log.info("{}", s)
-          case t: FSM.Transition[_]   => log.info("{}", t)
+          case s: FSM.CurrentState[?] => log.info("{}", s)
+          case t: FSM.Transition[?]   => log.info("{}", t)
         }
       })))
 

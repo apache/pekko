@@ -93,17 +93,17 @@ import org.reactivestreams._
         cancellable
     }
 
-  private def cancel(target: Publisher[_], timeout: FiniteDuration): Unit = {
+  private def cancel(target: Publisher[?], timeout: FiniteDuration): Unit = {
     val millis = timeout.toMillis
     target match {
-      case p: Processor[_, _] =>
+      case p: Processor[?, ?] =>
         log.debug("Cancelling {} Processor's publisher and subscriber sides (after {} ms)", p, millis)
         handleSubscriptionTimeout(
           target,
           new SubscriptionTimeoutException(s"Publisher was not attached to upstream within deadline ($millis) ms")
             with NoStackTrace)
 
-      case p: Publisher[_] =>
+      case p: Publisher[?] =>
         log.debug("Cancelling {} (after: {} ms)", p, millis)
         handleSubscriptionTimeout(
           target,
@@ -113,7 +113,7 @@ import org.reactivestreams._
     }
   }
 
-  private def warn(target: Publisher[_], timeout: FiniteDuration): Unit = {
+  private def warn(target: Publisher[?], timeout: FiniteDuration): Unit = {
     log.warning(
       "Timed out {} detected (after {} ms)! You should investigate if you either cancel or consume all {} instances",
       target,
@@ -125,7 +125,7 @@ import org.reactivestreams._
    * Called by the actor when a subscription has timed out. Expects the actual `Publisher` or `Processor` target.
    */
   @nowarn("msg=deprecated")
-  protected def subscriptionTimedOut(target: Publisher[_]): Unit = subscriptionTimeoutSettings.mode match {
+  protected def subscriptionTimedOut(target: Publisher[?]): Unit = subscriptionTimeoutSettings.mode match {
     case NoopTermination   => // ignore...
     case WarnTermination   => warn(target, subscriptionTimeoutSettings.timeout)
     case CancelTermination => cancel(target, subscriptionTimeoutSettings.timeout)
@@ -134,7 +134,7 @@ import org.reactivestreams._
   /**
    * Callback that should ensure that the target is canceled with the given cause.
    */
-  protected def handleSubscriptionTimeout(target: Publisher[_], cause: Exception): Unit
+  protected def handleSubscriptionTimeout(target: Publisher[?], cause: Exception): Unit
 }
 
 /**

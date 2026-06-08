@@ -25,7 +25,7 @@ import pekko.annotation.InternalApi
 @InternalApi private[pekko] object EventSourcedSettings {
 
   def apply(
-      system: ActorSystem[_],
+      system: ActorSystem[?],
       journalPluginId: String,
       snapshotPluginId: String,
       customStashCapacity: Option[Int]
@@ -33,7 +33,7 @@ import pekko.annotation.InternalApi
     apply(system.settings.config, journalPluginId, snapshotPluginId, None, None, customStashCapacity)
 
   def apply(
-      system: ActorSystem[_],
+      system: ActorSystem[?],
       journalPluginId: String,
       snapshotPluginId: String,
       journalPluginConfig: Option[Config],

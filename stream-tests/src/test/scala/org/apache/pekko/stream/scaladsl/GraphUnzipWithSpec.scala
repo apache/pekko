@@ -41,7 +41,7 @@ class GraphUnzipWithSpec extends StreamSpec("""
   type LeftOutput = Int
   type RightOutput = String
 
-  abstract class Fixture(@unused b: GraphDSL.Builder[_]) {
+  abstract class Fixture(@unused b: GraphDSL.Builder[?]) {
     def in: Inlet[Int]
     def left: Outlet[LeftOutput]
     def right: Outlet[RightOutput]
@@ -49,7 +49,7 @@ class GraphUnzipWithSpec extends StreamSpec("""
 
   val f: (Int => (Int, String)) = b => (b + b, s"$b + $b")
 
-  def fixture(b: GraphDSL.Builder[_]): Fixture = new Fixture(b) {
+  def fixture(b: GraphDSL.Builder[?]): Fixture = new Fixture(b) {
     val unzip = b.add(UnzipWith[Int, Int, String](f))
 
     override def in: Inlet[Int] = unzip.in
@@ -232,7 +232,7 @@ class GraphUnzipWithSpec extends StreamSpec("""
           ClosedShape
         })
         .run()
-      val termination = probe.expectMsgType[Future[_]].asInstanceOf[Future[Done]]
+      val termination = probe.expectMsgType[Future[?]].asInstanceOf[Future[Done]]
       val killSwitch1 = probe.expectMsgType[UniqueKillSwitch]
       val killSwitch2 = probe.expectMsgType[UniqueKillSwitch]
       val boom = TE("Boom")

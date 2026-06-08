@@ -155,7 +155,7 @@ abstract class DurableStateBehavior[Command, State] private[pekko] (
   /**
    * The last sequence number that was persisted, can only be called from inside the handlers of a `DurableStateBehavior`
    */
-  final def lastSequenceNumber(ctx: ActorContext[_]): Long = {
+  final def lastSequenceNumber(ctx: ActorContext[?]): Long = {
     scaladsl.DurableStateBehavior.lastSequenceNumber(ctx.asScala)
   }
 

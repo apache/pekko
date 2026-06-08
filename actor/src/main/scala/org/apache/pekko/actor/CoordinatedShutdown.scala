@@ -319,7 +319,7 @@ object CoordinatedShutdown extends ExtensionId[CoordinatedShutdown] with Extensi
       depends-on = []
     """)
     phasesConf.root.unwrapped.asScala.toMap.map {
-      case (k, _: java.util.Map[_, _]) =>
+      case (k, _: java.util.Map[?, ?]) =>
         val c = phasesConf.getConfig(k).withFallback(defaultPhaseConfig)
         val dependsOn = c.getStringList("depends-on").asScala.toSet
         val timeout = c.getDuration("timeout", MILLISECONDS).millis

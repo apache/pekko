@@ -104,7 +104,7 @@ object JavaFlowSupport {
               override def onSubscribe(s: juc.Flow.Subscription): Unit = sub.onSubscribe(s)
               override def onComplete(): Unit = sub.onComplete()
               override def onNext(t: In): Unit = sub.onNext(t)
-              override def subscribe(s: juc.Flow.Subscriber[_ >: Out]): Unit = pub.subscribe(s)
+              override def subscribe(s: juc.Flow.Subscriber[? >: Out]): Unit = pub.subscribe(s)
             }
         }
   }

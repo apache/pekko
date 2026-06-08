@@ -614,8 +614,7 @@ private[pekko] trait ClusterRouterActor { this: RouterActor =>
     }
   }
 
-  def isAvailable(m: Member): Boolean =
-    (m.status == MemberStatus.Up || m.status == MemberStatus.WeaklyUp) &&
+  def isAvailable(m: Member): Boolean = (m.status == MemberStatus.Up || m.status == MemberStatus.WeaklyUp) &&
     satisfiesRoles(m.roles) &&
     (settings.allowLocalRoutees || m.address != cluster.selfAddress)
 

@@ -77,7 +77,7 @@ object PersistencePluginProxyExtension
     with ExtensionIdProvider {
   override def createExtension(system: ExtendedActorSystem): PersistencePluginProxyExtensionImpl =
     new PersistencePluginProxyExtensionImpl(system)
-  override def lookup: ExtensionId[_ <: Extension] = PersistencePluginProxyExtension
+  override def lookup: ExtensionId[? <: Extension] = PersistencePluginProxyExtension
   override def get(system: ActorSystem): PersistencePluginProxyExtensionImpl = super.get(system)
   override def get(system: ClassicActorSystemProvider): PersistencePluginProxyExtensionImpl = super.get(system)
 }

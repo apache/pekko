@@ -19,14 +19,14 @@ import scala.collection.immutable
 object FanOutShape {
   sealed trait Init[I] {
     def inlet: Inlet[I]
-    def outlets: immutable.Seq[Outlet[_]]
+    def outlets: immutable.Seq[Outlet[?]]
     def name: String
   }
   final case class Name[I](override val name: String) extends Init[I] {
     override def inlet: Inlet[I] = Inlet(s"$name.in")
-    override def outlets: immutable.Seq[Outlet[_]] = Nil
+    override def outlets: immutable.Seq[Outlet[?]] = Nil
   }
-  final case class Ports[I](override val inlet: Inlet[I], override val outlets: immutable.Seq[Outlet[_]])
+  final case class Ports[I](override val inlet: Inlet[I], override val outlets: immutable.Seq[Outlet[?]])
       extends Init[I] {
     override def name: String = "FanOut"
   }
@@ -34,7 +34,7 @@ object FanOutShape {
 
 abstract class FanOutShape[-I] private (
     _in: Inlet[I @uncheckedVariance],
-    _registered: Iterator[Outlet[_]],
+    _registered: Iterator[Outlet[?]],
     _name: String)
     extends Shape {
   import FanOutShape._
@@ -46,13 +46,13 @@ abstract class FanOutShape[-I] private (
   /**
    * Not meant for overriding outside of Apache Pekko.
    */
-  override def outlets: immutable.Seq[Outlet[_]] = _outlets
+  override def outlets: immutable.Seq[Outlet[?]] = _outlets
   final override def inlets: immutable.Seq[Inlet[I @uncheckedVariance]] = in :: Nil
 
   /**
    * Performance of subclass `UniformFanOutShape` relies on `_outlets` being a `Vector`, not a `List`.
    */
-  private var _outlets: Vector[Outlet[_]] = Vector.empty
+  private var _outlets: Vector[Outlet[?]] = Vector.empty
   protected def newOutlet[T](name: String): Outlet[T] = {
     val p = if (_registered.hasNext) _registered.next().asInstanceOf[Outlet[T]] else Outlet[T](s"${_name}.$name")
     _outlets :+= p

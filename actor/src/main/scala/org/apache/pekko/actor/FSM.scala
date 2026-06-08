@@ -229,13 +229,13 @@ object FSM {
 
     def canEqual(that: Any): Boolean = {
       that match {
-        case _: State[_, _] => true
+        case _: State[?, ?] => true
         case _              => false
       }
     }
 
     override def equals(that: Any) = that match {
-      case other: State[_, _] =>
+      case other: State[?, ?] =>
         other.canEqual(this) &&
         this.stateName == other.stateName &&
         this.stateData == other.stateData &&

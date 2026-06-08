@@ -78,7 +78,7 @@ import pekko.annotation.DoNotInherit
    * Matching events with an included `throwable` that is a class or subclass of the given
    * `Throwable` class.
    */
-  def withCause(newCause: Class[_ <: Throwable]): LoggingTestKit
+  def withCause(newCause: Class[? <: Throwable]): LoggingTestKit
 
   /**
    * Matching events with MDC containing all entries of the given `Map`.
@@ -109,7 +109,7 @@ import pekko.annotation.DoNotInherit
    *
    * Care is taken to remove the testkit when the block is finished or aborted.
    */
-  def expect[T](system: ActorSystem[_], code: Supplier[T]): T
+  def expect[T](system: ActorSystem[?], code: Supplier[T]): T
 
 }
 
@@ -198,7 +198,7 @@ object LoggingTestKit {
    *
    * More conditions can be added to the returned [LoggingEventFilter].
    */
-  def error(causeClass: Class[_ <: Throwable]): LoggingTestKit =
+  def error(causeClass: Class[? <: Throwable]): LoggingTestKit =
     empty.withLogLevel(Level.ERROR).withCause(causeClass)
 
   /**

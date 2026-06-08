@@ -13,7 +13,7 @@
 
 package org.apache.pekko.util
 
-import java.time.{ Duration => JDuration }
+import java.time.Duration as JDuration
 
 import scala.concurrent.duration.{ Duration, FiniteDuration }
 

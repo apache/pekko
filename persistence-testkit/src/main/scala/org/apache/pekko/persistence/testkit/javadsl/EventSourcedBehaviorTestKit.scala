@@ -102,7 +102,7 @@ object EventSourcedBehaviorTestKit {
    * Factory method to create a new EventSourcedBehaviorTestKit.
    */
   def create[Command, Event, State](
-      system: ActorSystem[_],
+      system: ActorSystem[?],
       behavior: Behavior[Command]): EventSourcedBehaviorTestKit[Command, Event, State] =
     create(system, behavior, enabledSerializationSettings)
 
@@ -112,7 +112,7 @@ object EventSourcedBehaviorTestKit {
    * Note that `equals` must be implemented in the commands, events and state if `verifyEquality` is enabled.
    */
   def create[Command, Event, State](
-      system: ActorSystem[_],
+      system: ActorSystem[?],
       behavior: Behavior[Command],
       serializationSettings: SerializationSettings): EventSourcedBehaviorTestKit[Command, Event, State] = {
     val scaladslSettings = new scaladsl.EventSourcedBehaviorTestKit.SerializationSettings(

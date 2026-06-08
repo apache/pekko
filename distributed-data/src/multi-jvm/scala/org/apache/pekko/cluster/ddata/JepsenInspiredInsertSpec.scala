@@ -135,8 +135,8 @@ class JepsenInspiredInsertSpec
         replicator.tell(Update(key, ORSet(), WriteLocal, Some(i))(_ :+ i), writeProbe.ref)
         writeProbe.receiveOne(3.seconds)
       }
-      val successWriteAcks = writeAcks.collect { case success: UpdateSuccess[_] => success }
-      val failureWriteAcks = writeAcks.collect { case fail: UpdateFailure[_] => fail }
+      val successWriteAcks = writeAcks.collect { case success: UpdateSuccess[?] => success }
+      val failureWriteAcks = writeAcks.collect { case fail: UpdateFailure[?] => fail }
       successWriteAcks.map(_.request.get).toSet should be(myData.toSet)
       successWriteAcks.size should be(myData.size)
       failureWriteAcks should be(Nil)
@@ -168,8 +168,8 @@ class JepsenInspiredInsertSpec
         replicator.tell(Update(key, ORSet(), writeMajority, Some(i))(_ :+ i), writeProbe.ref)
         writeProbe.receiveOne(timeout + 1.second)
       }
-      val successWriteAcks = writeAcks.collect { case success: UpdateSuccess[_] => success }
-      val failureWriteAcks = writeAcks.collect { case fail: UpdateFailure[_] => fail }
+      val successWriteAcks = writeAcks.collect { case success: UpdateSuccess[?] => success }
+      val failureWriteAcks = writeAcks.collect { case fail: UpdateFailure[?] => fail }
       successWriteAcks.map(_.request.get).toSet should be(myData.toSet)
       successWriteAcks.size should be(myData.size)
       failureWriteAcks should be(Nil)
@@ -212,8 +212,8 @@ class JepsenInspiredInsertSpec
         replicator.tell(Update(key, ORSet(), WriteLocal, Some(i))(_ :+ i), writeProbe.ref)
         writeProbe.receiveOne(3.seconds)
       }
-      val successWriteAcks = writeAcks.collect { case success: UpdateSuccess[_] => success }
-      val failureWriteAcks = writeAcks.collect { case fail: UpdateFailure[_] => fail }
+      val successWriteAcks = writeAcks.collect { case success: UpdateSuccess[?] => success }
+      val failureWriteAcks = writeAcks.collect { case fail: UpdateFailure[?] => fail }
       successWriteAcks.map(_.request.get).toSet should be(myData.toSet)
       successWriteAcks.size should be(myData.size)
       failureWriteAcks should be(Nil)
@@ -257,8 +257,8 @@ class JepsenInspiredInsertSpec
         replicator.tell(Update(key, ORSet(), writeMajority, Some(i))(_ :+ i), writeProbe.ref)
         writeProbe.receiveOne(timeout + 1.second)
       }
-      val successWriteAcks = writeAcks.collect { case success: UpdateSuccess[_] => success }
-      val failureWriteAcks = writeAcks.collect { case fail: UpdateFailure[_] => fail }
+      val successWriteAcks = writeAcks.collect { case success: UpdateSuccess[?] => success }
+      val failureWriteAcks = writeAcks.collect { case fail: UpdateFailure[?] => fail }
       runOn(n1, n4, n5) {
         successWriteAcks.map(_.request.get).toSet should be(myData.toSet)
         successWriteAcks.size should be(myData.size)

@@ -35,7 +35,7 @@ object DurableStateStoreQueryUsageCompileOnlySpec {
     val source: Source[DurableStateChange[Record], NotUsed] = durableStateStoreQuery.changes("tag", offset)
     source.map {
       case UpdatedDurableState(persistenceId, revision, value, offset, timestamp) => Some(value)
-      case _: DeletedDurableState[_]                                              => None
+      case _: DeletedDurableState[?]                                              => None
     }
     // #get-durable-state-store-query-example
   }

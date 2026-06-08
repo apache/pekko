@@ -14,7 +14,7 @@
 package org.apache.pekko.util
 
 import java.io.{ InputStream, ObjectInputStream, ObjectOutputStream, SequenceInputStream }
-import java.lang.{ Iterable => JIterable }
+import java.lang.Iterable as JIterable
 import java.nio.{ ByteBuffer, ByteOrder }
 import java.nio.charset.{ Charset, StandardCharsets }
 import java.util.Base64
@@ -25,7 +25,7 @@ import scala.annotation.{ nowarn, tailrec, varargs }
 import scala.collection.{ immutable, mutable }
 import scala.collection.immutable.{ IndexedSeq, IndexedSeqOps, StrictOptimizedSeqOps, VectorBuilder }
 import scala.collection.mutable.{ Builder, WrappedArray }
-import scala.jdk.CollectionConverters._
+import scala.jdk.CollectionConverters.*
 import scala.reflect.ClassTag
 
 object ByteString {
@@ -38,7 +38,7 @@ object ByteString {
   /**
    * Creates a new ByteString by copying bytes.
    */
-  def apply(bytes: Byte*): ByteString = CompactByteString(bytes: _*)
+  def apply(bytes: Byte*): ByteString = CompactByteString(bytes*)
 
   /**
    * Creates a new ByteString by iterating over bytes.
@@ -49,7 +49,7 @@ object ByteString {
    * Creates a new ByteString by converting from integral numbers to bytes.
    */
   def apply[T](bytes: T*)(implicit num: Integral[T]): ByteString =
-    CompactByteString(bytes: _*)(num)
+    CompactByteString(bytes*)(num)
 
   /**
    * Creates a new ByteString by copying bytes from a ByteBuffer.
@@ -123,7 +123,7 @@ object ByteString {
    */
   @varargs
   def fromInts(array: Int*): ByteString =
-    apply(array: _*)(scala.math.Numeric.IntIsIntegral)
+    apply(array*)(scala.math.Numeric.IntIsIntegral)
 
   /**
    * Creates a new ByteString which will contain the UTF-8 representation of the given String
@@ -203,42 +203,42 @@ object ByteString {
     override def asByteBuffers: scala.collection.immutable.Iterable[ByteBuffer] = List(asByteBuffer)
 
     override def decodeString(charset: String): String =
-      if (isEmpty) "" else new String(bytes, charset)
+      if isEmpty then "" else new String(bytes, charset)
 
     override def decodeString(charset: Charset): String =
-      if (isEmpty) "" else new String(bytes, charset)
+      if isEmpty then "" else new String(bytes, charset)
 
     override def decodeBase64: ByteString =
-      if (isEmpty) this else ByteString1C(Base64.getDecoder.decode(bytes))
+      if isEmpty then this else ByteString1C(Base64.getDecoder.decode(bytes))
 
     override def encodeBase64: ByteString =
-      if (isEmpty) this else ByteString1C(Base64.getEncoder.encode(bytes))
+      if isEmpty then this else ByteString1C(Base64.getEncoder.encode(bytes))
 
     override def ++(that: ByteString): ByteString = {
-      if (that.isEmpty) this
-      else if (this.isEmpty) that
+      if that.isEmpty then this
+      else if this.isEmpty then that
       else toByteString1 ++ that
     }
 
     override def take(n: Int): ByteString =
-      if (n <= 0) ByteString.empty
-      else if (n >= length) this
+      if n <= 0 then ByteString.empty
+      else if n >= length then this
       else toByteString1.take(n)
 
     override def dropRight(n: Int): ByteString =
-      if (n <= 0) this
+      if n <= 0 then this
       else toByteString1.dropRight(n)
 
     override def drop(n: Int): ByteString =
-      if (n <= 0) this
+      if n <= 0 then this
       else toByteString1.drop(n)
 
     override def indexOf[B >: Byte](elem: B, from: Int): Int = {
-      if (from >= length) -1
+      if from >= length then -1
       else {
         var i = math.max(from, 0)
-        while (i < length) {
-          if (bytes(i) == elem) return i
+        while i < length do {
+          if bytes(i) == elem then return i
           i += 1
         }
         -1
@@ -246,11 +246,11 @@ object ByteString {
     }
 
     override def indexOf(elem: Byte, from: Int): Int = {
-      if (from >= length) -1
+      if from >= length then -1
       else {
         var i = math.max(from, 0)
-        while (i < length) {
-          if (bytes(i) == elem) return i
+        while i < length do {
+          if bytes(i) == elem then return i
           i += 1
         }
         -1
@@ -258,12 +258,12 @@ object ByteString {
     }
 
     override def indexOf(elem: Byte, from: Int, to: Int): Int = {
-      if (from >= length || to <= from) -1
+      if from >= length || to <= from then -1
       else {
         val upto = math.min(to, length)
         var i = math.max(from, 0)
-        while (i < upto) {
-          if (bytes(i) == elem) return i
+        while i < upto do {
+          if bytes(i) == elem then return i
           i += 1
         }
         -1
@@ -271,8 +271,8 @@ object ByteString {
     }
 
     override def slice(from: Int, until: Int): ByteString =
-      if (from <= 0 && until >= length) this
-      else if (from >= length || until <= 0 || from >= until) ByteString.empty
+      if from <= 0 && until >= length then this
+      else if from >= length || until <= 0 || from >= until then ByteString.empty
       else toByteString1.slice(from, until)
 
     private[pekko] override def writeToOutputStream(os: ObjectOutputStream): Unit =
@@ -284,7 +284,7 @@ object ByteString {
     /** INTERNAL API: Specialized for internal use, writing multiple ByteString1C into the same ByteBuffer. */
     private[pekko] def writeToBuffer(buffer: ByteBuffer, offset: Int): Int = {
       val copyLength = Math.min(buffer.remaining, offset + length)
-      if (copyLength > 0) {
+      if copyLength > 0 then {
         buffer.put(bytes, offset, copyLength)
       }
       copyLength
@@ -297,7 +297,7 @@ object ByteString {
 
     override def copyToArray[B >: Byte](dest: Array[B], start: Int, len: Int): Int = {
       val toCopy = math.min(math.min(len, bytes.length), dest.length - start)
-      if (toCopy > 0) {
+      if toCopy > 0 then {
         Array.copy(bytes, 0, dest, start, toCopy)
       }
       toCopy
@@ -314,7 +314,7 @@ object ByteString {
     def fromString(s: String): ByteString1 = apply(s.getBytes(StandardCharsets.UTF_8))
     def apply(bytes: Array[Byte]): ByteString1 = apply(bytes, 0, bytes.length)
     def apply(bytes: Array[Byte], startIndex: Int, length: Int): ByteString1 =
-      if (length == 0) empty
+      if length == 0 then empty
       else new ByteString1(bytes, Math.max(0, startIndex), Math.max(0, length))
 
     val SerializationIdentity = 0.toByte
@@ -337,7 +337,7 @@ object ByteString {
       ByteIterator.ByteArrayIterator(bytes, startIndex, startIndex + length)
 
     private def checkRangeConvert(index: Int): Int = {
-      if (0 <= index && length > index)
+      if 0 <= index && length > index then
         index + startIndex
       else
         throw new IndexOutOfBoundsException(index.toString)
@@ -357,25 +357,25 @@ object ByteString {
 
     /** INTERNAL API */
     private[pekko] def dropRight1(n: Int): ByteString1 =
-      if (n <= 0) this
-      else if (length - n <= 0) ByteString1.empty
+      if n <= 0 then this
+      else if length - n <= 0 then ByteString1.empty
       else new ByteString1(bytes, startIndex, length - n)
 
     override def drop(n: Int): ByteString =
-      if (n <= 0) this else drop1(n)
+      if n <= 0 then this else drop1(n)
 
     /** INTERNAL API */
     private[pekko] def drop1(n: Int): ByteString1 = {
       val nextStartIndex = startIndex + n
-      if (nextStartIndex >= bytes.length) ByteString1.empty
+      if nextStartIndex >= bytes.length then ByteString1.empty
       else ByteString1(bytes, nextStartIndex, length - n)
     }
 
     override def take(n: Int): ByteString =
-      if (n <= 0) ByteString.empty else take1(n)
+      if n <= 0 then ByteString.empty else take1(n)
 
     private[pekko] def take1(n: Int): ByteString1 =
-      if (n >= length) this
+      if n >= length then this
       else ByteString1(bytes, startIndex, n)
 
     override def slice(from: Int, until: Int): ByteString =
@@ -387,61 +387,61 @@ object ByteString {
     /** INTERNAL API: Specialized for internal use, writing multiple ByteString1C into the same ByteBuffer. */
     private[pekko] def writeToBuffer(buffer: ByteBuffer): Int = {
       val copyLength = Math.min(buffer.remaining, length)
-      if (copyLength > 0) {
+      if copyLength > 0 then {
         buffer.put(bytes, startIndex, copyLength)
       }
       copyLength
     }
 
     def compact: CompactByteString =
-      if (isCompact) ByteString1C(bytes) else ByteString1C(toArray)
+      if isCompact then ByteString1C(bytes) else ByteString1C(toArray)
 
     def asByteBuffer: ByteBuffer = {
       val buffer = ByteBuffer.wrap(bytes, startIndex, length).asReadOnlyBuffer
-      if (buffer.remaining < bytes.length) buffer.slice
+      if buffer.remaining < bytes.length then buffer.slice
       else buffer
     }
 
     def asByteBuffers: scala.collection.immutable.Iterable[ByteBuffer] = List(asByteBuffer)
 
     override def decodeString(charset: String): String =
-      if (isEmpty) ""
+      if isEmpty then ""
       else new String(bytes, startIndex, length, charset)
 
     override def decodeString(charset: Charset): String = // avoids Charset.forName lookup in String internals
-      if (isEmpty) ""
+      if isEmpty then ""
       else new String(bytes, startIndex, length, charset)
 
     override def decodeBase64: ByteString =
-      if (isEmpty) this
-      else if (isCompact) ByteString1C(Base64.getDecoder.decode(bytes))
+      if isEmpty then this
+      else if isCompact then ByteString1C(Base64.getDecoder.decode(bytes))
       else {
         val dst = Base64.getDecoder.decode(ByteBuffer.wrap(bytes, startIndex, length))
-        if (dst.hasArray) {
-          if (dst.array.length == dst.remaining) ByteString1C(dst.array)
+        if dst.hasArray then {
+          if dst.array.length == dst.remaining then ByteString1C(dst.array)
           else ByteString1(dst.array, dst.arrayOffset + dst.position(), dst.remaining)
         } else CompactByteString(dst)
       }
 
     override def encodeBase64: ByteString =
-      if (isEmpty) this
-      else if (isCompact) ByteString1C(Base64.getEncoder.encode(bytes))
+      if isEmpty then this
+      else if isCompact then ByteString1C(Base64.getEncoder.encode(bytes))
       else {
         val dst = Base64.getEncoder.encode(ByteBuffer.wrap(bytes, startIndex, length))
-        if (dst.hasArray) {
-          if (dst.array.length == dst.remaining) ByteString1C(dst.array)
+        if dst.hasArray then {
+          if dst.array.length == dst.remaining then ByteString1C(dst.array)
           else ByteString1(dst.array, dst.arrayOffset + dst.position(), dst.remaining)
         } else CompactByteString(dst)
       }
 
     def ++(that: ByteString): ByteString = {
-      if (that.isEmpty) this
-      else if (this.isEmpty) that
+      if that.isEmpty then this
+      else if this.isEmpty then that
       else
         that match {
           case b: ByteString1C => ByteStrings(this, b.toByteString1)
           case b: ByteString1  =>
-            if ((bytes eq b.bytes) && (startIndex + length == b.startIndex))
+            if (bytes eq b.bytes) && (startIndex + length == b.startIndex) then
               new ByteString1(bytes, startIndex, length + b.length)
             else ByteStrings(this, b)
           case bs: ByteStrings => ByteStrings(this, bs)
@@ -449,11 +449,11 @@ object ByteString {
     }
 
     override def indexOf[B >: Byte](elem: B, from: Int): Int = {
-      if (from >= length) -1
+      if from >= length then -1
       else {
         var i = math.max(from, 0)
-        while (i < length) {
-          if (bytes(startIndex + i) == elem) return i
+        while i < length do {
+          if bytes(startIndex + i) == elem then return i
           i += 1
         }
         -1
@@ -461,11 +461,11 @@ object ByteString {
     }
 
     override def indexOf(elem: Byte, from: Int): Int = {
-      if (from >= length) -1
+      if from >= length then -1
       else {
         var i = math.max(from, 0)
-        while (i < length) {
-          if (bytes(startIndex + i) == elem) return i
+        while i < length do {
+          if bytes(startIndex + i) == elem then return i
           i += 1
         }
         -1
@@ -473,12 +473,12 @@ object ByteString {
     }
 
     override def indexOf(elem: Byte, from: Int, to: Int): Int = {
-      if (from >= length || to <= from) -1
+      if from >= length || to <= from then -1
       else {
         val upto = math.min(to, length)
         var i = math.max(from, 0)
-        while (i < upto) {
-          if (bytes(startIndex + i) == elem) return i
+        while i < upto do {
+          if bytes(startIndex + i) == elem then return i
           i += 1
         }
         -1
@@ -488,7 +488,7 @@ object ByteString {
     override def copyToArray[B >: Byte](dest: Array[B], start: Int, len: Int): Int = {
       // min of the bytes available to copy, bytes there is room for in dest and the requested number of bytes
       val toCopy = math.min(math.min(len, length), dest.length - start)
-      if (toCopy > 0) {
+      if toCopy > 0 then {
         Array.copy(bytes, startIndex, dest, start, toCopy)
       }
       toCopy
@@ -497,7 +497,7 @@ object ByteString {
     protected def writeReplace(): AnyRef = new SerializationProxy(this)
 
     override def toArrayUnsafe(): Array[Byte] = {
-      if (startIndex == 0 && length == bytes.length) bytes
+      if startIndex == 0 && length == bytes.length then bytes
       else toArray
     }
 
@@ -541,9 +541,9 @@ object ByteString {
 
     // 0: both empty, 1: 2nd empty, 2: 1st empty, 3: neither empty
     def compare(b1: ByteString, b2: ByteString): Int =
-      if (b1.isEmpty)
-        if (b2.isEmpty) 0 else 2
-      else if (b2.isEmpty) 1
+      if b1.isEmpty then
+        if b2.isEmpty then 0 else 2
+      else if b2.isEmpty then 1
       else 3
 
     val SerializationIdentity = 2.toByte
@@ -556,7 +556,7 @@ object ByteString {
 
       builder.sizeHint(nByteStrings)
 
-      for (_ <- 0 until nByteStrings) {
+      for _ <- 0 until nByteStrings do {
         val bs = ByteString1.readFromInputStream(is)
         builder += bs
         length += bs.length
@@ -572,15 +572,15 @@ object ByteString {
   final class ByteStrings private (private[pekko] val bytestrings: Vector[ByteString1], val length: Int)
       extends ByteString
       with Serializable {
-    if (bytestrings.isEmpty) throw new IllegalArgumentException("bytestrings must not be empty")
-    if (bytestrings.head.isEmpty) throw new IllegalArgumentException("bytestrings.head must not be empty")
+    if bytestrings.isEmpty then throw new IllegalArgumentException("bytestrings must not be empty")
+    if bytestrings.head.isEmpty then throw new IllegalArgumentException("bytestrings.head must not be empty")
 
     def apply(idx: Int): Byte = {
-      if (0 <= idx && idx < length) {
+      if 0 <= idx && idx < length then {
         var pos = 0
         var seen = 0
         var frag = bytestrings(pos)
-        while (idx >= seen + frag.length) {
+        while idx >= seen + frag.length do {
           seen += frag.length
           pos += 1
           frag = bytestrings(pos)
@@ -594,8 +594,8 @@ object ByteString {
       ByteIterator.MultiByteArrayIterator(bytestrings.to(LazyList).map { _.iterator })
 
     def ++(that: ByteString): ByteString = {
-      if (that.isEmpty) this
-      else if (this.isEmpty) that
+      if that.isEmpty then this
+      else if this.isEmpty then that
       else
         that match {
           case b: ByteString1C => ByteStrings(this, b.toByteString1)
@@ -606,18 +606,18 @@ object ByteString {
 
     private[pekko] def byteStringCompanion = ByteStrings
 
-    def isCompact: Boolean = if (bytestrings.length == 1) bytestrings.head.isCompact else false
+    def isCompact: Boolean = if bytestrings.length == 1 then bytestrings.head.isCompact else false
 
     override def copyToBuffer(buffer: ByteBuffer): Int = {
       @tailrec def copyItToTheBuffer(buffer: ByteBuffer, i: Int, written: Int): Int =
-        if (i < bytestrings.length) copyItToTheBuffer(buffer, i + 1, written + bytestrings(i).writeToBuffer(buffer))
+        if i < bytestrings.length then copyItToTheBuffer(buffer, i + 1, written + bytestrings(i).writeToBuffer(buffer))
         else written
 
       copyItToTheBuffer(buffer, 0, 0)
     }
 
     def compact: CompactByteString = {
-      if (isCompact) bytestrings.head.compact
+      if isCompact then bytestrings.head.compact
       else {
         val ar = new Array[Byte](length)
         var pos = 0
@@ -650,37 +650,37 @@ object ByteString {
     }
 
     override def take(n: Int): ByteString =
-      if (n <= 0) ByteString.empty
-      else if (n >= length) this
+      if n <= 0 then ByteString.empty
+      else if n >= length then this
       else take0(n)
 
     private[pekko] def take0(n: Int): ByteString = {
       @tailrec def go(last: Int, restToTake: Int): (Int, Int) = {
         val bs = bytestrings(last)
-        if (bs.length > restToTake) (last, restToTake)
+        if bs.length > restToTake then (last, restToTake)
         else go(last + 1, restToTake - bs.length)
       }
 
       val (last, restToTake) = go(0, n)
 
-      if (last == 0) bytestrings(last).take(restToTake)
-      else if (restToTake == 0) new ByteStrings(bytestrings.take(last), n)
+      if last == 0 then bytestrings(last).take(restToTake)
+      else if restToTake == 0 then new ByteStrings(bytestrings.take(last), n)
       else new ByteStrings(bytestrings.take(last) :+ bytestrings(last).take1(restToTake), n)
     }
 
     override def dropRight(n: Int): ByteString =
-      if (0 < n && n < length) dropRight0(n)
-      else if (n >= length) ByteString.empty
+      if 0 < n && n < length then dropRight0(n)
+      else if n >= length then ByteString.empty
       else this
 
     private def dropRight0(n: Int): ByteString = {
       val byteStringsSize = bytestrings.length
       @tailrec def dropRightWithFullDropsAndRemainig(fullDrops: Int, remainingToDrop: Int): ByteString = {
         val bs = bytestrings(byteStringsSize - fullDrops - 1)
-        if (bs.length > remainingToDrop) {
-          if (fullDrops == byteStringsSize - 1)
+        if bs.length > remainingToDrop then {
+          if fullDrops == byteStringsSize - 1 then
             bytestrings(0).dropRight(remainingToDrop)
-          else if (remainingToDrop == 0)
+          else if remainingToDrop == 0 then
             new ByteStrings(bytestrings.dropRight(fullDrops), length - n)
           else
             new ByteStrings(
@@ -696,13 +696,13 @@ object ByteString {
     }
 
     override def slice(from: Int, until: Int): ByteString =
-      if (from <= 0 && until >= length) this
-      else if (from > length || until <= from) ByteString.empty
+      if from <= 0 && until >= length then this
+      else if from > length || until <= from then ByteString.empty
       else drop(from).dropRight(length - until)
 
     override def drop(n: Int): ByteString =
-      if (n <= 0) this
-      else if (n >= length) ByteString.empty
+      if n <= 0 then this
+      else if n >= length then ByteString.empty
       else drop0(n)
 
     private def drop0(n: Int): ByteString = {
@@ -712,36 +712,36 @@ object ByteString {
       //            but let's not go into calling private APIs here just yet.
       @tailrec def findSplit(fullDrops: Int, remainingToDrop: Int): (Int, Int) = {
         val bs = bytestrings(fullDrops)
-        if (bs.length > remainingToDrop) (fullDrops, remainingToDrop)
+        if bs.length > remainingToDrop then (fullDrops, remainingToDrop)
         else findSplit(fullDrops + 1, remainingToDrop - bs.length)
       }
 
       val (fullDrops, remainingToDrop) = findSplit(0, n)
 
-      if (remainingToDrop == 0)
+      if remainingToDrop == 0 then
         new ByteStrings(bytestrings.drop(fullDrops), length - n)
-      else if (fullDrops == bytestrings.length - 1)
+      else if fullDrops == bytestrings.length - 1 then
         bytestrings(fullDrops).drop(remainingToDrop)
       else
         new ByteStrings(bytestrings(fullDrops).drop1(remainingToDrop) +: bytestrings.drop(fullDrops + 1), length - n)
     }
 
     override def indexOf[B >: Byte](elem: B, from: Int): Int = {
-      if (from >= length) -1
+      if from >= length then -1
       else {
         val byteStringsSize = bytestrings.size
 
         @tailrec
         def find(bsIdx: Int, relativeIndex: Int, bytesPassed: Int): Int = {
-          if (bsIdx >= byteStringsSize) -1
+          if bsIdx >= byteStringsSize then -1
           else {
             val bs = bytestrings(bsIdx)
 
-            if (bs.length <= relativeIndex) {
+            if bs.length <= relativeIndex then {
               find(bsIdx + 1, relativeIndex - bs.length, bytesPassed + bs.length)
             } else {
               val subIndexOf = bs.indexOf(elem, relativeIndex)
-              if (subIndexOf < 0) {
+              if subIndexOf < 0 then {
                 find(bsIdx + 1, relativeIndex - bs.length, bytesPassed + bs.length)
               } else subIndexOf + bytesPassed
             }
@@ -753,21 +753,21 @@ object ByteString {
     }
 
     override def indexOf(elem: Byte, from: Int): Int = {
-      if (from >= length) -1
+      if from >= length then -1
       else {
         val byteStringsSize = bytestrings.size
 
         @tailrec
         def find(bsIdx: Int, relativeIndex: Int, bytesPassed: Int): Int = {
-          if (bsIdx >= byteStringsSize) -1
+          if bsIdx >= byteStringsSize then -1
           else {
             val bs = bytestrings(bsIdx)
 
-            if (bs.length <= relativeIndex) {
+            if bs.length <= relativeIndex then {
               find(bsIdx + 1, relativeIndex - bs.length, bytesPassed + bs.length)
             } else {
               val subIndexOf = bs.indexOf(elem, relativeIndex)
-              if (subIndexOf < 0) {
+              if subIndexOf < 0 then {
                 find(bsIdx + 1, relativeIndex - bs.length, bytesPassed + bs.length)
               } else subIndexOf + bytesPassed
             }
@@ -779,21 +779,21 @@ object ByteString {
     }
 
     override def indexOf(elem: Byte, from: Int, to: Int): Int = {
-      if (from >= length || to <= from) -1
+      if from >= length || to <= from then -1
       else {
         val byteStringsSize = bytestrings.size
 
         @tailrec
         def find(bsIdx: Int, relativeIndex: Int, bytesPassed: Int): Int = {
-          if (bsIdx >= byteStringsSize) -1
+          if bsIdx >= byteStringsSize then -1
           else {
             val bs = bytestrings(bsIdx)
 
-            if (bs.length <= relativeIndex) {
+            if bs.length <= relativeIndex then {
               find(bsIdx + 1, relativeIndex - bs.length, bytesPassed + bs.length)
             } else {
               val subIndexOf = bs.indexOf(elem, relativeIndex, to - bytesPassed)
-              if (subIndexOf < 0) {
+              if subIndexOf < 0 then {
                 find(bsIdx + 1, relativeIndex - bs.length, bytesPassed + bs.length)
               } else subIndexOf + bytesPassed
             }
@@ -805,14 +805,14 @@ object ByteString {
     }
 
     override def copyToArray[B >: Byte](dest: Array[B], start: Int, len: Int): Int = {
-      if (bytestrings.size == 1) bytestrings.head.copyToArray(dest, start, len)
+      if bytestrings.size == 1 then bytestrings.head.copyToArray(dest, start, len)
       else {
         // min of the bytes available to copy, bytes there is room for in dest and the requested number of bytes
         val totalToCopy = math.min(math.min(len, length), dest.length - start)
-        if (totalToCopy > 0) {
+        if totalToCopy > 0 then {
           val bsIterator = bytestrings.iterator
           var copied = 0
-          while (copied < totalToCopy) {
+          while copied < totalToCopy do {
             val current = bsIterator.next()
             copied += current.copyToArray(dest, start + copied, totalToCopy - copied)
           }
@@ -971,8 +971,8 @@ sealed abstract class ByteString
       var i = startPos + 1
       var j = 1
       // Bounds are guaranteed by the indexOf call limiting the search range, so startPos + slice.length <= length.
-      while (j < slice.length) {
-        if (apply(i) != slice(j)) return false
+      while j < slice.length do {
+        if apply(i) != slice(j) then return false
         i += 1
         j += 1
       }
@@ -981,20 +981,20 @@ sealed abstract class ByteString
     val headByte = slice.head.asInstanceOf[Byte]
     @tailrec def rec(from: Int): Int = {
       val startPos = indexOf(headByte, from, length - slice.length + 1)
-      if (startPos == -1) -1
-      else if (check(startPos)) startPos
+      if startPos == -1 then -1
+      else if check(startPos) then startPos
       else rec(startPos + 1)
     }
     val sliceLength = slice.length
-    if (sliceLength == 0) 0
-    else if (sliceLength == 1) indexOf(headByte, from)
+    if sliceLength == 0 then 0
+    else if sliceLength == 1 then indexOf(headByte, from)
     else rec(math.max(0, from))
   }
 
   override def contains[B >: Byte](elem: B): Boolean = indexOf(elem, 0) != -1
 
   override def grouped(size: Int): Iterator[ByteString] = {
-    if (size <= 0) {
+    if size <= 0 then {
       throw new IllegalArgumentException(s"size=$size must be positive")
     }
 
@@ -1003,7 +1003,7 @@ sealed abstract class ByteString
 
   override def toString(): String = {
     val maxSize = 100
-    if (size > maxSize)
+    if size > maxSize then
       take(maxSize).toString + s"... and [${size - maxSize}] more"
     else
       super.toString
@@ -1167,13 +1167,13 @@ object CompactByteString {
    * Creates a new CompactByteString by copying a byte array.
    */
   def apply(bytes: Array[Byte]): CompactByteString =
-    if (bytes.isEmpty) empty else ByteString.ByteString1C(bytes.clone)
+    if bytes.isEmpty then empty else ByteString.ByteString1C(bytes.clone)
 
   /**
    * Creates a new CompactByteString by copying bytes.
    */
   def apply(bytes: Byte*): CompactByteString = {
-    if (bytes.isEmpty) empty
+    if bytes.isEmpty then empty
     else {
       val ar = new Array[Byte](bytes.size)
       bytes.copyToArray(ar)
@@ -1186,7 +1186,7 @@ object CompactByteString {
    */
   def apply(bytes: IterableOnce[Byte]): CompactByteString = {
     val it = bytes.iterator
-    if (it.isEmpty) empty
+    if it.isEmpty then empty
     else ByteString.ByteString1C(it.toArray)
   }
 
@@ -1194,7 +1194,7 @@ object CompactByteString {
    * Creates a new CompactByteString by converting from integral numbers to bytes.
    */
   def apply[T](bytes: T*)(implicit num: Integral[T]): CompactByteString = {
-    if (bytes.isEmpty) empty
+    if bytes.isEmpty then empty
     else ByteString.ByteString1C(bytes.iterator.map(x => num.toInt(x).toByte).to(Array))
   }
 
@@ -1202,7 +1202,7 @@ object CompactByteString {
    * Creates a new CompactByteString by copying bytes from a ByteBuffer.
    */
   def apply(bytes: ByteBuffer): CompactByteString = {
-    if (bytes.remaining < 1) empty
+    if bytes.remaining < 1 then empty
     else {
       val ar = new Array[Byte](bytes.remaining)
       bytes.get(ar)
@@ -1219,13 +1219,13 @@ object CompactByteString {
    * Creates a new CompactByteString by encoding a String with a charset.
    */
   def apply(string: String, charset: String): CompactByteString =
-    if (string.isEmpty) empty else ByteString.ByteString1C(string.getBytes(charset))
+    if string.isEmpty then empty else ByteString.ByteString1C(string.getBytes(charset))
 
   /**
    * Creates a new CompactByteString by encoding a String with a charset.
    */
   def apply(string: String, charset: Charset): CompactByteString =
-    if (string.isEmpty) empty else ByteString.ByteString1C(string.getBytes(charset))
+    if string.isEmpty then empty else ByteString.ByteString1C(string.getBytes(charset))
 
   /**
    * Creates a new CompactByteString by copying length bytes starting at offset from
@@ -1234,7 +1234,7 @@ object CompactByteString {
   def fromArray(array: Array[Byte], offset: Int, length: Int): CompactByteString = {
     val copyOffset = Math.max(offset, 0)
     val copyLength = Math.max(Math.min(array.length - copyOffset, length), 0)
-    if (copyLength == 0) empty
+    if copyLength == 0 then empty
     else {
       val copyArray = new Array[Byte](copyLength)
       System.arraycopy(array, copyOffset, copyArray, 0, copyLength)
@@ -1295,7 +1295,7 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
   }
 
   private def clearTemp(): Unit = {
-    if (_tempLength > 0) {
+    if _tempLength > 0 then {
       val arr = new Array[Byte](_tempLength)
       System.arraycopy(_temp, 0, arr, 0, _tempLength)
       _builder += ByteString1(arr)
@@ -1305,7 +1305,7 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
 
   private def resizeTemp(size: Int): Unit = {
     val newtemp = new Array[Byte](size)
-    if (_tempLength > 0) System.arraycopy(_temp, 0, newtemp, 0, _tempLength)
+    if _tempLength > 0 then System.arraycopy(_temp, 0, newtemp, 0, _tempLength)
     _temp = newtemp
     _tempCapacity = _temp.length
   }
@@ -1313,9 +1313,9 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
   private def shouldResizeTempFor(size: Int): Boolean = _tempCapacity < size || _tempCapacity == 0
 
   private def ensureTempSize(size: Int): Unit = {
-    if (shouldResizeTempFor(size)) {
-      var newSize = if (_tempCapacity == 0) 16 else _tempCapacity * 2
-      while (newSize < size) newSize *= 2
+    if shouldResizeTempFor(size) then {
+      var newSize = if _tempCapacity == 0 then 16 else _tempCapacity * 2
+      while newSize < size do newSize *= 2
       resizeTemp(newSize)
     }
   }
@@ -1334,7 +1334,7 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
 
   def ++=(bytes: ByteString): this.type = addAll(bytes)
   def addAll(bytes: ByteString): this.type = {
-    if (bytes.nonEmpty) {
+    if bytes.nonEmpty then {
       clearTemp()
       bytes match {
         case b: ByteString1C =>
@@ -1355,9 +1355,9 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
     xs match {
       case bs: ByteString          => addAll(bs)
       case xs: WrappedArray.ofByte =>
-        if (xs.nonEmpty) putByteArrayUnsafe(xs.array.clone)
+        if xs.nonEmpty then putByteArrayUnsafe(xs.array.clone)
       case seq: collection.IndexedSeq[Byte] if shouldResizeTempFor(seq.length) =>
-        if (seq.nonEmpty) {
+        if seq.nonEmpty then {
           val copied = Array.from(xs)
 
           clearTemp()
@@ -1365,7 +1365,7 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
           _length += seq.length
         }
       case seq: collection.IndexedSeq[Byte] =>
-        if (seq.nonEmpty) {
+        if seq.nonEmpty then {
           ensureTempSize(_tempLength + seq.size)
           seq.copyToArray(_temp, _tempLength)
           _tempLength += seq.length
@@ -1387,7 +1387,7 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
   /**
    * Java API: append a ByteString to this builder.
    */
-  def append(bs: ByteString): this.type = if (bs.isEmpty) this else this ++= bs
+  def append(bs: ByteString): this.type = if bs.isEmpty then this else this ++= bs
 
   /**
    * Add a single Byte to this builder.
@@ -1398,10 +1398,10 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
    * Add a single Short to this builder.
    */
   def putShort(x: Int)(implicit byteOrder: ByteOrder): this.type = {
-    if (byteOrder == ByteOrder.BIG_ENDIAN) {
+    if byteOrder == ByteOrder.BIG_ENDIAN then {
       this += (x >>> 8).toByte
       this += (x >>> 0).toByte
-    } else if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
+    } else if byteOrder == ByteOrder.LITTLE_ENDIAN then {
       this += (x >>> 0).toByte
       this += (x >>> 8).toByte
     } else throw new IllegalArgumentException("Unknown byte order " + byteOrder)
@@ -1412,12 +1412,12 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
    */
   def putInt(x: Int)(implicit byteOrder: ByteOrder): this.type = {
     fillArray(4) { (target, offset) =>
-      if (byteOrder == ByteOrder.BIG_ENDIAN) {
+      if byteOrder == ByteOrder.BIG_ENDIAN then {
         target(offset + 0) = (x >>> 24).toByte
         target(offset + 1) = (x >>> 16).toByte
         target(offset + 2) = (x >>> 8).toByte
         target(offset + 3) = (x >>> 0).toByte
-      } else if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
+      } else if byteOrder == ByteOrder.LITTLE_ENDIAN then {
         target(offset + 0) = (x >>> 0).toByte
         target(offset + 1) = (x >>> 8).toByte
         target(offset + 2) = (x >>> 16).toByte
@@ -1432,7 +1432,7 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
    */
   def putLong(x: Long)(implicit byteOrder: ByteOrder): this.type = {
     fillArray(8) { (target, offset) =>
-      if (byteOrder == ByteOrder.BIG_ENDIAN) {
+      if byteOrder == ByteOrder.BIG_ENDIAN then {
         target(offset + 0) = (x >>> 56).toByte
         target(offset + 1) = (x >>> 48).toByte
         target(offset + 2) = (x >>> 40).toByte
@@ -1441,7 +1441,7 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
         target(offset + 5) = (x >>> 16).toByte
         target(offset + 6) = (x >>> 8).toByte
         target(offset + 7) = (x >>> 0).toByte
-      } else if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
+      } else if byteOrder == ByteOrder.LITTLE_ENDIAN then {
         target(offset + 0) = (x >>> 0).toByte
         target(offset + 1) = (x >>> 8).toByte
         target(offset + 2) = (x >>> 16).toByte
@@ -1460,12 +1460,12 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
    */
   def putLongPart(x: Long, n: Int)(implicit byteOrder: ByteOrder): this.type = {
     fillArray(n) { (target, offset) =>
-      if (byteOrder == ByteOrder.BIG_ENDIAN) {
+      if byteOrder == ByteOrder.BIG_ENDIAN then {
         val start = n * 8 - 8
         (0 until n).foreach { i =>
           target(offset + i) = (x >>> start - 8 * i).toByte
         }
-      } else if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
+      } else if byteOrder == ByteOrder.LITTLE_ENDIAN then {
         (0 until n).foreach { i =>
           target(offset + i) = (x >>> 8 * i).toByte
         }
@@ -1564,11 +1564,11 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
   }
 
   def result(): ByteString =
-    if (_length == 0) ByteString.empty
+    if _length == 0 then ByteString.empty
     else {
       clearTemp()
       val bytestrings = _builder.result()
-      if (bytestrings.size == 1)
+      if bytestrings.size == 1 then
         bytestrings.head
       else
         ByteStrings(bytestrings, _length)

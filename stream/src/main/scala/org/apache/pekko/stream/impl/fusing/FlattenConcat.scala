@@ -287,7 +287,7 @@ private[pekko] final class FlattenConcat[T, M](parallelism: Int)
                   case None       => addPendingFutureElem(future)
                 }
               case iterable: IterableSource[T] @unchecked        => addSourceElements(iterable.elements.iterator)
-              case javaStream: JavaStreamSource[T, _] @unchecked =>
+              case javaStream: JavaStreamSource[T, ?] @unchecked =>
                 import pekko.util.ccompat.JavaConverters._
                 addSourceElements(javaStream.open().iterator.asScala)
               case failed: FailedSource[T] @unchecked                       => addCompletedFutureElem(Failure(failed.failure))

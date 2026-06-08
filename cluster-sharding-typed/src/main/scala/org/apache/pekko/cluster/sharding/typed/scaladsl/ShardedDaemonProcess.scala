@@ -28,7 +28,7 @@ import pekko.cluster.sharding.typed.internal.ShardedDaemonProcessImpl
 import pekko.cluster.sharding.typed.javadsl
 
 object ShardedDaemonProcess extends ExtensionId[ShardedDaemonProcess] {
-  override def createExtension(system: ActorSystem[_]): ShardedDaemonProcess = new ShardedDaemonProcessImpl(system)
+  override def createExtension(system: ActorSystem[?]): ShardedDaemonProcess = new ShardedDaemonProcessImpl(system)
 }
 
 /**

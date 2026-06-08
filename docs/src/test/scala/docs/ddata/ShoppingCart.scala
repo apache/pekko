@@ -118,9 +118,9 @@ class ShoppingCart(userId: String) extends Actor {
   // #remove-item
 
   def receiveOther: Receive = {
-    case _: UpdateSuccess[_] | _: UpdateTimeout[_] =>
+    case _: UpdateSuccess[?] | _: UpdateTimeout[?] =>
     // UpdateTimeout, will eventually be replicated
-    case e: UpdateFailure[_] => throw new IllegalStateException("Unexpected failure: " + e)
+    case e: UpdateFailure[?] => throw new IllegalStateException("Unexpected failure: " + e)
   }
 
 }

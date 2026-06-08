@@ -537,7 +537,7 @@ class TraversalBuilderSpec extends PekkoSpec {
   "find Source.javaStreamSource via TraversalBuilder with getValuePresentedSource" in {
     val javaStream = java.util.stream.Stream.empty[String]()
     TraversalBuilder.getValuePresentedSource(Source.fromJavaStream(() => javaStream)).get
-      .asInstanceOf[JavaStreamSource[String, _]].open() shouldEqual javaStream
+      .asInstanceOf[JavaStreamSource[String, ?]].open() shouldEqual javaStream
     val streamSource = new JavaStreamSource(() => javaStream)
     TraversalBuilder.getValuePresentedSource(streamSource) should be(OptionVal.Some(streamSource))
 

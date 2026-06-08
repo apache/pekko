@@ -686,7 +686,8 @@ class LinearTraversalBuilderSpec extends PekkoSpec {
         List(
           sink -> (Attributes.name("test") and Attributes.name("sink")),
           flow1 -> (Attributes.name("test") and Attributes.name("flow")),
-          compositeSource -> (Attributes.name("test") and Attributes.name("source-outer") and Attributes.name(
+          compositeSource ->
+          (Attributes.name("test") and Attributes.name("source-outer") and Attributes.name(
             "source"))))
     }
 

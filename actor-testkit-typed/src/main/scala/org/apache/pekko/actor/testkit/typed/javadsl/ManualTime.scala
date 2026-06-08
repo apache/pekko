@@ -73,7 +73,7 @@ final class ManualTime(delegate: pekko.testkit.ExplicitlyTriggeredScheduler) {
   def timePasses(amount: Duration): Unit = delegate.timePasses(amount.asScala)
 
   @varargs
-  def expectNoMessageFor(duration: Duration, on: TestProbe[_]*): Unit = {
+  def expectNoMessageFor(duration: Duration, on: TestProbe[?]*): Unit = {
     delegate.timePasses(duration.asScala)
     on.foreach(_.expectNoMessage(Duration.ZERO))
   }

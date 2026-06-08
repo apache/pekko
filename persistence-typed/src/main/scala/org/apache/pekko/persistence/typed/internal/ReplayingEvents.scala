@@ -97,11 +97,11 @@ private[pekko] final class ReplayingEvents[C, E, S](
   onRecoveryStart(setup.context)
 
   @InternalStableApi
-  def onRecoveryStart(@unused context: ActorContext[_]): Unit = ()
+  def onRecoveryStart(@unused context: ActorContext[?]): Unit = ()
   @InternalStableApi
-  def onRecoveryComplete(@unused context: ActorContext[_]): Unit = ()
+  def onRecoveryComplete(@unused context: ActorContext[?]): Unit = ()
   @InternalStableApi
-  def onRecoveryFailed(@unused context: ActorContext[_], @unused reason: Throwable, @unused event: Option[Any]): Unit =
+  def onRecoveryFailed(@unused context: ActorContext[?], @unused reason: Throwable, @unused event: Option[Any]): Unit =
     ()
 
   override def onMessage(msg: InternalProtocol): Behavior[InternalProtocol] = {
@@ -204,7 +204,7 @@ private[pekko] final class ReplayingEvents[C, E, S](
           Behaviors.unhandled
       }
     } catch {
-      case ex: UnstashException[_] =>
+      case ex: UnstashException[?] =>
         // let supervisor handle it, don't treat it as recovery failure
         throw ex
       case NonFatal(cause) =>

@@ -118,7 +118,8 @@ class ByteStringParserSpec extends StreamSpec {
 
       (the[IllegalStateException] thrownBy Await.result(
         Source.single(ByteString("abc")).via(SpinningLogic).runWith(Sink.ignore),
-        3.seconds)).getMessage shouldBe "Parsing logic didn't produce result after 10 steps. " +
+        3.seconds)).getMessage shouldBe
+      "Parsing logic didn't produce result after 10 steps. " +
       "Aborting processing to avoid infinite cycles. In the unlikely case that the parsing logic needs more recursion, " +
       "override ParsingLogic.recursionLimit."
     }

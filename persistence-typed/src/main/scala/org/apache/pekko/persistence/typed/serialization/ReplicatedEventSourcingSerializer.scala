@@ -92,11 +92,11 @@ import scala.collection.immutable.TreeMap
   private val PublishedEventManifest = "PA"
 
   def manifest(o: AnyRef) = o match {
-    case _: ORSet[_]                  => ORSetManifest
-    case _: ORSet.AddDeltaOp[_]       => ORSetAddManifest
-    case _: ORSet.RemoveDeltaOp[_]    => ORSetRemoveManifest
-    case _: ORSet.DeltaGroup[_]       => ORSetDeltaGroupManifest
-    case _: ORSet.FullStateDeltaOp[_] => ORSetFullManifest
+    case _: ORSet[?]                  => ORSetManifest
+    case _: ORSet.AddDeltaOp[?]       => ORSetAddManifest
+    case _: ORSet.RemoveDeltaOp[?]    => ORSetRemoveManifest
+    case _: ORSet.DeltaGroup[?]       => ORSetDeltaGroupManifest
+    case _: ORSet.FullStateDeltaOp[?] => ORSetFullManifest
 
     case _: Counter         => CrdtCounterManifest
     case _: Counter.Updated => CrdtCounterUpdatedManifest
@@ -117,11 +117,11 @@ import scala.collection.immutable.TreeMap
 
     case m: VersionVector => versionVectorToProto(m).toByteArray
 
-    case m: ORSet[_]                  => orsetToProto(m).toByteArray
-    case m: ORSet.AddDeltaOp[_]       => orsetToProto(m.underlying).toByteArray
-    case m: ORSet.RemoveDeltaOp[_]    => orsetToProto(m.underlying).toByteArray
-    case m: ORSet.DeltaGroup[_]       => orsetDeltaGroupToProto(m).toByteArray
-    case m: ORSet.FullStateDeltaOp[_] => orsetToProto(m.underlying).toByteArray
+    case m: ORSet[?]                  => orsetToProto(m).toByteArray
+    case m: ORSet.AddDeltaOp[?]       => orsetToProto(m.underlying).toByteArray
+    case m: ORSet.RemoveDeltaOp[?]    => orsetToProto(m.underlying).toByteArray
+    case m: ORSet.DeltaGroup[?]       => orsetDeltaGroupToProto(m).toByteArray
+    case m: ORSet.FullStateDeltaOp[?] => orsetToProto(m.underlying).toByteArray
 
     case m: Counter         => counterToProtoByteArray(m)
     case m: Counter.Updated => counterUpdatedToProtoBufByteArray(m)
@@ -212,7 +212,7 @@ import scala.collection.immutable.TreeMap
       .build()
       .toByteArray
 
-  def orsetToProto(orset: ORSet[_]): ReplicatedEventSourcing.ORSet =
+  def orsetToProto(orset: ORSet[?]): ReplicatedEventSourcing.ORSet =
     orsetToProtoImpl(orset.asInstanceOf[ORSet[Any]])
 
   private def orsetToProtoImpl(orset: ORSet[Any]): ReplicatedEventSourcing.ORSet = {
@@ -238,7 +238,7 @@ import scala.collection.immutable.TreeMap
         otherElementsMap = otherElementsMap.updated(enclosedMsg, other)
     }
 
-    def addDots(elements: ArrayList[_]): Unit = {
+    def addDots(elements: ArrayList[?]): Unit = {
       // add corresponding dots in same order
       val iter = elements.iterator
       while (iter.hasNext) {
@@ -313,8 +313,8 @@ import scala.collection.immutable.TreeMap
   private def orsetFullFromBinary(bytes: Array[Byte]): ORSet.FullStateDeltaOp[Any] =
     new ORSet.FullStateDeltaOp(orsetFromProto(ReplicatedEventSourcing.ORSet.parseFrom(bytes)))
 
-  private def orsetDeltaGroupToProto(deltaGroup: ORSet.DeltaGroup[_]): ReplicatedEventSourcing.ORSetDeltaGroup = {
-    def createEntry(opType: ReplicatedEventSourcing.ORSetDeltaOp, u: ORSet[_]) = {
+  private def orsetDeltaGroupToProto(deltaGroup: ORSet.DeltaGroup[?]): ReplicatedEventSourcing.ORSetDeltaGroup = {
+    def createEntry(opType: ReplicatedEventSourcing.ORSetDeltaOp, u: ORSet[?]) = {
       ReplicatedEventSourcing.ORSetDeltaGroup.Entry.newBuilder().setOperation(opType).setUnderlying(orsetToProto(u))
     }
 

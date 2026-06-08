@@ -90,24 +90,24 @@ final class VirtualizedExecutorService(
     executor.submit(task, result)
   }
 
-  override def submit(task: Runnable): Future[_] = {
+  override def submit(task: Runnable): Future[?] = {
     executor.submit(task)
   }
 
-  override def invokeAll[T](tasks: util.Collection[_ <: Callable[T]]): util.List[Future[T]] = {
+  override def invokeAll[T](tasks: util.Collection[? <: Callable[T]]): util.List[Future[T]] = {
     executor.invokeAll(tasks)
   }
 
   override def invokeAll[T](
-      tasks: util.Collection[_ <: Callable[T]], timeout: Long, unit: TimeUnit): util.List[Future[T]] = {
+      tasks: util.Collection[? <: Callable[T]], timeout: Long, unit: TimeUnit): util.List[Future[T]] = {
     executor.invokeAll(tasks, timeout, unit)
   }
 
-  override def invokeAny[T](tasks: util.Collection[_ <: Callable[T]]): T = {
+  override def invokeAny[T](tasks: util.Collection[? <: Callable[T]]): T = {
     executor.invokeAny(tasks)
   }
 
-  override def invokeAny[T](tasks: util.Collection[_ <: Callable[T]], timeout: Long, unit: TimeUnit): T = {
+  override def invokeAny[T](tasks: util.Collection[? <: Callable[T]], timeout: Long, unit: TimeUnit): T = {
     executor.invokeAny(tasks, timeout, unit)
   }
 

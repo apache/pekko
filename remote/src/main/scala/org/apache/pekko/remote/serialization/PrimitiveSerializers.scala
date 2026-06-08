@@ -30,7 +30,7 @@ class LongSerializer(val system: ExtendedActorSystem) extends BaseSerializer wit
   override def toBinary(o: AnyRef, buf: ByteBuffer): Unit = delegate.toBinary(o, buf)
   override def fromBinary(buf: ByteBuffer, manifest: String): AnyRef = delegate.fromBinary(buf, manifest)
   override def toBinary(o: AnyRef): Array[Byte] = delegate.toBinary(o)
-  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef = delegate.fromBinary(bytes, manifest)
+  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[?]]): AnyRef = delegate.fromBinary(bytes, manifest)
 }
 
 @deprecated("Moved to org.apache.pekko.serialization.IntSerializer in pekko-actor", "Akka 2.6.0")
@@ -43,7 +43,7 @@ class IntSerializer(val system: ExtendedActorSystem) extends BaseSerializer with
   override def toBinary(o: AnyRef, buf: ByteBuffer): Unit = delegate.toBinary(o, buf)
   override def fromBinary(buf: ByteBuffer, manifest: String): AnyRef = delegate.fromBinary(buf, manifest)
   override def toBinary(o: AnyRef): Array[Byte] = delegate.toBinary(o)
-  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef = delegate.fromBinary(bytes, manifest)
+  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[?]]): AnyRef = delegate.fromBinary(bytes, manifest)
 }
 
 @deprecated("Moved to org.apache.pekko.serialization.StringSerializer in pekko-actor", "Akka 2.6.0")
@@ -56,7 +56,7 @@ class StringSerializer(val system: ExtendedActorSystem) extends BaseSerializer w
   override def toBinary(o: AnyRef, buf: ByteBuffer): Unit = delegate.toBinary(o, buf)
   override def fromBinary(buf: ByteBuffer, manifest: String): AnyRef = delegate.fromBinary(buf, manifest)
   override def toBinary(o: AnyRef): Array[Byte] = delegate.toBinary(o)
-  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef = delegate.fromBinary(bytes, manifest)
+  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[?]]): AnyRef = delegate.fromBinary(bytes, manifest)
 }
 
 @deprecated("Moved to org.apache.pekko.serialization.ByteStringSerializer in pekko-actor", "Akka 2.6.0")
@@ -69,5 +69,5 @@ class ByteStringSerializer(val system: ExtendedActorSystem) extends BaseSerializ
   override def toBinary(o: AnyRef, buf: ByteBuffer): Unit = delegate.toBinary(o, buf)
   override def fromBinary(buf: ByteBuffer, manifest: String): AnyRef = delegate.fromBinary(buf, manifest)
   override def toBinary(o: AnyRef): Array[Byte] = delegate.toBinary(o)
-  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef = delegate.fromBinary(bytes, manifest)
+  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[?]]): AnyRef = delegate.fromBinary(bytes, manifest)
 }

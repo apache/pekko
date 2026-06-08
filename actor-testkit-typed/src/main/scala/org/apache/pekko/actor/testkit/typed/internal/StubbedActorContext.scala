@@ -88,7 +88,7 @@ private[pekko] final class FunctionRef[-T](override val path: ActorPath, send: (
   @InternalApi private[pekko] val selfInbox = new TestInboxImpl[T](path)
 
   override val self = selfInbox.ref
-  private var _children = TreeMap.empty[String, BehaviorTestKitImpl[_]]
+  private var _children = TreeMap.empty[String, BehaviorTestKitImpl[?]]
   private val childName = Iterator.from(0).map(Helpers.base64(_))
   private val substituteLoggerFactory = new SubstituteLoggerFactory
   private val logger: Logger = substituteLoggerFactory.getLogger("StubbedLogger")
@@ -228,7 +228,7 @@ private[pekko] final class FunctionRef[-T](override val path: ActorPath, send: (
     checkCurrentActorThread()
   }
 
-  override def setLoggerName(clazz: Class[_]): Unit = {
+  override def setLoggerName(clazz: Class[?]): Unit = {
     // nop as we don't track logger
     checkCurrentActorThread()
   }
