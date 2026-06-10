@@ -305,7 +305,7 @@ class ReliableDeliveryShardingSpec
       next8.entitiesWithDemand should ===(Set("entity-2"))
       next8.bufferedForEntitiesWithoutDemand should ===(Map("entity-1" -> 1))
 
-      // when new demand the buffered messages will be be sent
+      // when new demand the buffered messages will be sent
       seq5.producerController ! ProducerControllerImpl.Request(confirmedSeqNr = 5L, requestUpToSeqNr = 10, true, false)
       val seq6 = shardingProbe
         .fishForMessage(testKit.testKitSettings.dilated(3.seconds), "waiting for buffered msg-6 after renewed demand") {

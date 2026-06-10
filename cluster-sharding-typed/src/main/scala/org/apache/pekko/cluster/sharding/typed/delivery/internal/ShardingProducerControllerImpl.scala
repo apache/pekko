@@ -573,7 +573,7 @@ private class ShardingProducerControllerImpl[A: ClassTag](
 
       case AskTimeout(outKey, outSeqNr) =>
         context.log.debug(
-          "Message seqNr [{}] sent to entity [{}] timed out. It will be be redelivered.",
+          "Message seqNr [{}] sent to entity [{}] timed out. It will be redelivered.",
           outSeqNr,
           outKey)
         Behaviors.same

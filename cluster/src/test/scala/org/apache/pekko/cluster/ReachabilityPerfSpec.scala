@@ -92,7 +92,7 @@ class ReachabilityPerfSpec extends AnyWordSpec with Matchers {
 
   private def recordsFrom(r1: Reachability): Unit = {
     r1.allObservers.foreach { o =>
-      r1.recordsFrom(o) should not be be(null)
+      r1.recordsFrom(o) should not be (null)
     }
   }
 

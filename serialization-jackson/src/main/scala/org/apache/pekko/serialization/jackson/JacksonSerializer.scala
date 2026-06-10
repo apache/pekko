@@ -175,7 +175,7 @@ import pekko.util.OptionVal
  * Configuration in `pekko.serialization.jackson` section.
  * It will load Jackson modules defined in configuration `jackson-modules`.
  *
- * It will compress the payload if the compression `algorithm` is enabled and the the
+ * It will compress the payload if the compression `algorithm` is enabled and the
  * payload is larger than the configured `compress-larger-than` value.
  */
 @InternalApi private[pekko] abstract class JacksonSerializer(

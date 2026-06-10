@@ -392,7 +392,7 @@ import pekko.coordination.lease.scaladsl.Lease
  * INTERNAL API
  *
  * Down the unreachable nodes if the current node is in the majority part based the last known
- * membership information. Otherwise down the reachable nodes, i.e. the own part. If the the
+ * membership information. Otherwise down the reachable nodes, i.e. the own part. If the
  * parts are of equal size the part containing the node with the lowest address is kept.
  *
  * If the `role` is defined the decision is based only on members with that `role`.

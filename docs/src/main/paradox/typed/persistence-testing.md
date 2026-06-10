@@ -59,7 +59,7 @@ Java
 `PersistenceProbeBehavior` does not require any configuration.  It therefore does not verify the serialization of commands, events, or state.
 If using this style, it is advised to independently test serialization for those classes.
 
-## Unit testing with the the ActorTestKit and EventSourcedBehaviorTestKit
+## Unit testing with the ActorTestKit and EventSourcedBehaviorTestKit
 
 **Note!** The `EventSourcedBehaviorTestKit` is a new feature: the API may have changes breaking source compatibility in future versions.
 
