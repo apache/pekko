@@ -342,10 +342,13 @@ import pekko.stream.stage._
     var i = 0
     while (i < logics.length) {
       val logic = logics(i)
-      if (!isStageCompleted(logic) && !isStageFinalized(logic)) {
+      if ((logic ne null) && !isStageCompleted(logic) && !isStageFinalized(logic)) {
         markStageFinalized(logic)
         finalizeStage(logic)
       }
+      // Release reference to the stage logic so it can be garbage collected
+      // even if the GraphInterpreter is still alive due to other references
+      logics(i) = null
       i += 1
     }
   }
@@ -741,10 +744,12 @@ import pekko.stream.stage._
   def toSnapshot: RunningInterpreter = {
 
     val logicSnapshots = logics.zipWithIndex.map {
-      case (logic, idx) =>
+      case (logic, idx) if logic ne null =>
         LogicSnapshotImpl(idx, logic.toString, logic.attributes)
+      case (_, idx) =>
+        LogicSnapshotImpl(idx, "<completed>", Attributes.none)
     }
-    val logicIndexes = logics.zipWithIndex.map { case (stage, idx) => stage -> idx }.toMap
+    val logicIndexes = logics.zipWithIndex.collect { case (stage, idx) if stage ne null => stage -> idx }.toMap
     val connectionSnapshots = connections.filter(_ ne null).map { connection =>
       ConnectionSnapshotImpl(
         connection.id,
