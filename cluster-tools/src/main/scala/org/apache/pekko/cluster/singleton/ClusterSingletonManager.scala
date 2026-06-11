@@ -219,7 +219,7 @@ object ClusterSingletonManager {
     case object HandOverDone extends ClusterSingletonMessage
 
     /**
-     * Sent from from previous oldest to new oldest to
+     * Sent from previous oldest to new oldest to
      * initiate the normal hand-over process.
      * Especially useful when new node joins and becomes
      * oldest immediately, without knowing who was previous

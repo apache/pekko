@@ -223,7 +223,7 @@ class SerializeSpec extends PekkoSpec(SerializationTests.serializeConf) {
       ser.serializerFor(classOf[PlainMessage]).getClass should ===(classOf[NoopSerializer])
     }
 
-    "resolve serializer for message extending class with with binding" in {
+    "resolve serializer for message extending class with binding" in {
       ser.serializerFor(classOf[ExtendedPlainMessage]).getClass should ===(classOf[NoopSerializer])
     }
 

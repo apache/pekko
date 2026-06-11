@@ -158,7 +158,7 @@ Stream refs utilise normal actor messaging for their transport, and therefore pr
 
 - messages are sent over actor remoting
     - which relies on TCP (classic remoting or Artery TCP) or Aeron UDP for basic redelivery mechanisms
-- messages are guaranteed to to be in-order
+- messages are guaranteed to be in-order
 - messages can be lost, however:
     - a *dropped demand signal* will be re-delivered automatically (similar to system messages)
     - a *dropped element signal* will cause the stream to *fail*

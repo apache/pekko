@@ -452,7 +452,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
   /**
    * The supplied thunk will be run, once, when current cluster member is `Removed`.
    * If the cluster has already been shutdown the thunk will run on the caller thread immediately.
-   * If this is called "at the same time" as `shutdown()` there is a possibility that the the thunk
+   * If this is called "at the same time" as `shutdown()` there is a possibility that the thunk
    * is not invoked. It's often better to use [[pekko.actor.CoordinatedShutdown]] for this purpose.
    */
   def registerOnMemberRemoved[T](code: => T): Unit =
@@ -461,7 +461,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
   /**
    * Java API: The supplied thunk will be run, once, when current cluster member is `Removed`.
    * If the cluster has already been shutdown the thunk will run on the caller thread immediately.
-   * If this is called "at the same time" as `shutdown()` there is a possibility that the the thunk
+   * If this is called "at the same time" as `shutdown()` there is a possibility that the thunk
    * is not invoked. It's often better to use [[pekko.actor.CoordinatedShutdown]] for this purpose.
    */
   def registerOnMemberRemoved(callback: Runnable): Unit = {
