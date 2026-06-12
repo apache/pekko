@@ -35,6 +35,8 @@ import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.SnapshotAdapter
 import pekko.persistence.typed.state.scaladsl._
 
+import com.typesafe.config.Config
+
 import org.slf4j.LoggerFactory
 
 @InternalApi
@@ -60,6 +62,7 @@ private[pekko] final case class DurableStateBehaviorImpl[Command, State](
     commandHandler: DurableStateBehavior.CommandHandler[Command, State],
     loggerClass: Class[?],
     durableStateStorePluginId: Option[String] = None,
+    durableStateStorePluginConfig: Option[Config] = None,
     tag: String = "",
     snapshotAdapter: SnapshotAdapter[State] = NoOpSnapshotAdapter.instance[State],
     supervisionStrategy: SupervisorStrategy = SupervisorStrategy.stop,
@@ -80,7 +83,11 @@ private[pekko] final case class DurableStateBehaviorImpl[Command, State](
       case _                                => false
     }
     if (!hasCustomLoggerName) ctx.setLoggerName(loggerClass)
-    val settings = DurableStateSettings(ctx.system, durableStateStorePluginId.getOrElse(""), customStashCapacity)
+    val settings = DurableStateSettings(
+      ctx.system,
+      durableStateStorePluginId.getOrElse(""),
+      durableStateStorePluginConfig,
+      customStashCapacity)
 
     // stashState outside supervise because StashState should survive restarts due to persist failures
     val stashState = new StashState(ctx.asInstanceOf[ActorContext[InternalProtocol]], settings)
@@ -169,6 +176,9 @@ private[pekko] final case class DurableStateBehaviorImpl[Command, State](
     require(id != null, "DurableStateBehavior plugin id must not be null; use empty string for 'default' state store")
     copy(durableStateStorePluginId = if (id != "") Some(id) else None)
   }
+
+  override def withDurableStateStorePluginConfig(config: Option[Config]): DurableStateBehavior[Command, State] =
+    copy(durableStateStorePluginConfig = config)
 
   override def withTag(tag: String): DurableStateBehavior[Command, State] =
     copy(tag = tag)

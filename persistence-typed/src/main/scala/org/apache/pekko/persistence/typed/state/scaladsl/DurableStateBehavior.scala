@@ -15,6 +15,8 @@ package org.apache.pekko.persistence.typed.state.scaladsl
 
 import scala.annotation.tailrec
 
+import com.typesafe.config.Config
+
 import org.apache.pekko
 import pekko.actor.typed.BackoffSupervisorStrategy
 import pekko.actor.typed.Behavior
@@ -145,6 +147,14 @@ object DurableStateBehavior {
    * Change the `DurableStateStore` plugin id that this actor should use.
    */
   def withDurableStateStorePluginId(id: String): DurableStateBehavior[Command, State]
+
+  /**
+   * Change the `DurableStateStore` plugin config that this actor should use.
+   * This is useful when the same plugin class is configured for multiple, isolated stores at runtime.
+   *
+   * @since 2.0.0
+   */
+  def withDurableStateStorePluginConfig(config: Option[Config]): DurableStateBehavior[Command, State]
 
   /**
    * The tag that can used in persistence query
