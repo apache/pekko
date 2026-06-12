@@ -952,6 +952,46 @@ public class SourceTest extends StreamTestJupiter {
   }
 
   @Test
+  public void mustBeAbleToUseGather() throws Exception {
+    final CompletionStage<String> result =
+        Source.from(Arrays.asList(1, 2, 3, 4, 5))
+            .gather(
+                () ->
+                    new Gatherer<Integer, Integer>() {
+                      private int sum = 0;
+
+                      @Override
+                      public void apply(Integer elem, GatherCollector<Integer> collector) {
+                        sum += elem;
+                        collector.push(sum);
+                      }
+                    })
+            .runFold("", (acc, elem) -> acc + elem, system);
+
+    Assertions.assertEquals("1361015", result.toCompletableFuture().get(3, TimeUnit.SECONDS));
+  }
+
+  @Test
+  public void mustBeAbleToUseGatherAsZipWithIndex() throws Exception {
+    final CompletionStage<String> result =
+        Source.from(Arrays.asList("A", "B", "C", "D"))
+            .gather(
+                () ->
+                    new Gatherer<String, String>() {
+                      private long index = 0L;
+
+                      @Override
+                      public void apply(String elem, GatherCollector<String> collector) {
+                        collector.push(elem + ":" + index);
+                        index += 1;
+                      }
+                    })
+            .runFold("", (acc, elem) -> acc + elem, system);
+
+    Assertions.assertEquals("A:0B:1C:2D:3", result.toCompletableFuture().get(3, TimeUnit.SECONDS));
+  }
+
+  @Test
   public void mustBeAbleToUseMapWithAutoCloseableResource() throws Exception {
     final TestKit probe = new TestKit(system);
     final AtomicInteger closed = new AtomicInteger();
