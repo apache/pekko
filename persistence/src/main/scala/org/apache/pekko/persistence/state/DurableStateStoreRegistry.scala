@@ -30,6 +30,7 @@ import pekko.persistence.PluginProvider
 import pekko.persistence.state.scaladsl.DurableStateStore
 
 import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 /**
  * Persistence extension for queries.
@@ -67,9 +68,12 @@ class DurableStateStoreRegistry(system: ExtendedActorSystem)
     configPath
   }
 
-  private def pluginIdOrDefault(pluginId: String): String = {
+  private def pluginIdOrDefault(pluginId: String): String =
+    pluginIdOrDefault(pluginId, ConfigFactory.empty)
+
+  private def pluginIdOrDefault(pluginId: String, pluginConfig: Config): String = {
     val configPath = if (isEmpty(pluginId)) defaultPluginId else pluginId
-    Persistence.verifyPluginConfigExists(systemConfig, configPath, "DurableStateStore")
+    Persistence.verifyPluginConfigExists(pluginConfig.withFallback(systemConfig), configPath, "DurableStateStore")
     configPath
   }
 
@@ -92,6 +96,17 @@ class DurableStateStoreRegistry(system: ExtendedActorSystem)
   }
 
   /**
+   * Scala API: Returns the [[pekko.persistence.state.scaladsl.DurableStateStore]] specified by the given
+   * configuration entry. The provided `pluginConfig` is used to configure the plugin at runtime, taking
+   * precedence over the plugin configuration defined in the actor system configuration.
+   *
+   * @since 2.0.0
+   */
+  final def durableStateStoreFor[T <: scaladsl.DurableStateStore[?]](pluginId: String, pluginConfig: Config): T = {
+    pluginFor(pluginIdOrDefault(pluginId, pluginConfig), pluginConfig).scaladslPlugin.asInstanceOf[T]
+  }
+
+  /**
    * Java API: Returns the [[pekko.persistence.state.javadsl.DurableStateStore]] specified by the given
    * configuration entry.
    */
@@ -99,6 +114,20 @@ class DurableStateStoreRegistry(system: ExtendedActorSystem)
       @nowarn("msg=never used") clazz: Class[T], // FIXME generic Class could be problematic in Java
       pluginId: String): T = {
     pluginFor(pluginIdOrDefault(pluginId), pluginConfig(pluginId)).javadslPlugin.asInstanceOf[T]
+  }
+
+  /**
+   * Java API: Returns the [[pekko.persistence.state.javadsl.DurableStateStore]] specified by the given
+   * configuration entry. The provided `pluginConfig` is used to configure the plugin at runtime, taking
+   * precedence over the plugin configuration defined in the actor system configuration.
+   *
+   * @since 2.0.0
+   */
+  final def getDurableStateStoreFor[T <: javadsl.DurableStateStore[?]](
+      @nowarn("msg=never used") clazz: Class[T], // FIXME generic Class could be problematic in Java
+      pluginId: String,
+      pluginConfig: Config): T = {
+    pluginFor(pluginIdOrDefault(pluginId, pluginConfig), pluginConfig).javadslPlugin.asInstanceOf[T]
   }
 
 }
