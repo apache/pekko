@@ -97,11 +97,8 @@ object PekkoBuild {
         "-feature",
         "-unchecked",
         // 'blessed' since 2.13.1
-        "-language:higherKinds") ++
-      (CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((3, 3)) => Seq("-Yfuture-lazy-vals")
-        case _            => Nil
-      })
+        "-language:higherKinds",
+        "-Yfuture-lazy-vals")
     } else {
       Seq(
         "-encoding",
