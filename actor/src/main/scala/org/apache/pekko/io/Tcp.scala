@@ -395,7 +395,7 @@ object Tcp extends ExtensionId[TcpExt] with ExtensionIdProvider {
 
     def iterator: Iterator[SimpleWriteCommand] =
       new Iterator[SimpleWriteCommand] {
-        private[this] var current: WriteCommand = CompoundWrite.this
+        private var current: WriteCommand = CompoundWrite.this
         def hasNext: Boolean = current ne null
         def next(): SimpleWriteCommand =
           current match {
@@ -632,7 +632,7 @@ class TcpExt(system: ExtendedActorSystem) extends IO.Extension {
         case _      => getBoolean("windows-connection-abort-workaround-enabled")
       }
 
-    private[this] def getIntBytes(path: String): Int = {
+    private def getIntBytes(path: String): Int = {
       val size = getBytes(path)
       require(size < Int.MaxValue, s"$path must be < 2 GiB")
       require(size >= 0, s"$path must be non-negative")

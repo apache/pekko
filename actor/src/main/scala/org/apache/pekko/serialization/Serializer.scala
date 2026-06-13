@@ -382,9 +382,9 @@ final case class DisabledJavaSerializer(system: ExtendedActorSystem) extends Ser
   // use same identifier as JavaSerializer, since it's a replacement
   override val identifier: Int = BaseSerializer.identifierFromConfig(classOf[JavaSerializer], system)
 
-  private[this] val empty = Array.empty[Byte]
+  private val empty = Array.empty[Byte]
 
-  private[this] val log = Logging.withMarker(system, classOf[DisabledJavaSerializer])
+  private val log = Logging.withMarker(system, classOf[DisabledJavaSerializer])
 
   def includeManifest: Boolean = false
 

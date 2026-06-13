@@ -116,8 +116,8 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
   val mailboxes = prerequisites.mailboxes
   val eventStream = prerequisites.eventStream
 
-  @nowarn @volatile private[this] var _inhabitantsDoNotCallMeDirectly: Long = _ // DO NOT TOUCH!
-  @nowarn @volatile private[this] var _shutdownScheduleDoNotCallMeDirectly: Int = _ // DO NOT TOUCH!
+  @nowarn @volatile private var _inhabitantsDoNotCallMeDirectly: Long = _ // DO NOT TOUCH!
+  @nowarn @volatile private var _shutdownScheduleDoNotCallMeDirectly: Int = _ // DO NOT TOUCH!
   @nowarn private def _preventPrivateUnusedErasure = {
     _inhabitantsDoNotCallMeDirectly
     _shutdownScheduleDoNotCallMeDirectly

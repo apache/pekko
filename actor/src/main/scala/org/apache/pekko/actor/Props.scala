@@ -127,11 +127,11 @@ final case class Props(deploy: Deploy, clazz: Class[?], args: immutable.Seq[Any]
 
   // derived property, does not need to be serialized
   @transient
-  private[this] var _producer: IndirectActorProducer = _
+  private var _producer: IndirectActorProducer = null
 
   // derived property, does not need to be serialized
   @transient
-  private[this] var _cachedActorClass: Class[? <: Actor] = _
+  private var _cachedActorClass: Class[? <: Actor] = null
 
   /**
    * INTERNAL API
@@ -143,7 +143,7 @@ final case class Props(deploy: Deploy, clazz: Class[?], args: immutable.Seq[Any]
     _producer
   }
 
-  private[this] def cachedActorClass: Class[? <: Actor] = {
+  private def cachedActorClass: Class[? <: Actor] = {
     if (_cachedActorClass eq null)
       _cachedActorClass = producer.actorClass
 

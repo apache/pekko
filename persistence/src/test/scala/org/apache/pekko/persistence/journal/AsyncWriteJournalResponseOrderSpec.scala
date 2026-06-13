@@ -17,12 +17,12 @@
 
 package org.apache.pekko.persistence.journal
 
-import org.apache.pekko.persistence.journal.AsyncWriteJournalResponseOrderSpec._
-
 import scala.collection.{ immutable, mutable }
 import scala.concurrent.{ ExecutionContext, Future, Promise }
 import scala.util.Try
+
 import org.apache.pekko.persistence.{ AtomicWrite, JournalProtocol, PersistenceSpec, PersistentRepr }
+import org.apache.pekko.persistence.journal.AsyncWriteJournalResponseOrderSpec._
 import org.apache.pekko.testkit.ImplicitSender
 
 /**

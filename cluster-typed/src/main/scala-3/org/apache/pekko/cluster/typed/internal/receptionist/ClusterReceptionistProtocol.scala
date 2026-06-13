@@ -25,7 +25,7 @@ import pekko.annotation.InternalApi
 private[receptionist] object ClusterReceptionistProtocol {
   type Aux[P] = AbstractServiceKey { type Protocol = P }
 
-  type SubscriptionsKV[K <: Aux[_]] = K match {
+  type SubscriptionsKV[K <: Aux[?]] = K match {
     case Aux[t] => ActorRef[ReceptionistMessages.Listing[t]]
   }
 }

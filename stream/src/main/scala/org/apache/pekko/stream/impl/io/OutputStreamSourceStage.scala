@@ -24,7 +24,7 @@ import org.apache.pekko
 import pekko.stream.{ Attributes, Outlet, SourceShape }
 import pekko.stream.Attributes.InputBuffer
 import pekko.stream.impl.Stages.DefaultAttributes
-import pekko.stream.impl.io.OutputStreamSourceStage._
+import pekko.stream.impl.io.OutputStreamSourceStage.{ AdapterToStageMessage, Close, Send }
 import pekko.stream.stage._
 import pekko.util.ByteString
 
@@ -81,7 +81,7 @@ private[pekko] class OutputStreamAdapter(
     extends OutputStream {
 
   @scala.throws(classOf[IOException])
-  private[this] def sendData(data: ByteString): Unit = {
+  private def sendData(data: ByteString): Unit = {
     if (!unfulfilledDemand.tryAcquire(writeTimeout.toMillis, TimeUnit.MILLISECONDS)) {
       throw new IOException("Timed out trying to write data to stream")
     }

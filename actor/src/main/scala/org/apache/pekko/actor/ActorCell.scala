@@ -430,7 +430,7 @@ private[pekko] class ActorCell(
     with dungeon.DeathWatch
     with dungeon.FaultHandling {
 
-  private[this] var _props = _initialProps
+  private var _props = _initialProps
   def props: Props = _props
 
   import ActorCell._
@@ -445,11 +445,11 @@ private[pekko] class ActorCell(
   override final def classicActorContext: ActorContext = this
 
   protected def uid: Int = self.path.uid
-  private[this] var _actor: Actor = _
+  private var _actor: Actor = _
   def actor: Actor = _actor
   var currentMessage: Envelope = _
   private var behaviorStack: List[Actor.Receive] = emptyBehaviorStack
-  private[this] var sysmsgStash: LatestFirstSystemMessageList = SystemMessageList.LNil
+  private var sysmsgStash: LatestFirstSystemMessageList = SystemMessageList.LNil
 
   // Java API
   final def getParent() = parent

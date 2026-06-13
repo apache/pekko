@@ -35,10 +35,21 @@ object JdkOptions extends AutoPlugin {
     // for LevelDB
     "--add-opens=java.base/java.nio=ALL-UNNAMED" :: Nil
 
-  def targetJdkScalacOptions(scalaVersion: String): Seq[String] =
-    Seq("-release", JdkOptions.targetJavaVersion) ++ {
-      if (scalaVersion.startsWith("3.")) Seq(s"-Xtarget:${targetJavaVersion}") else Seq.empty
+  def targetJdkScalacOptions(scalaVersion: String): Seq[String] = {
+    val isScala3_8Plus = scalaVersion.startsWith("3.") && {
+      val parts = scalaVersion.split('.')
+      def safeToInt(s: String): Int = try { s.split('-').head.toInt }
+      catch { case _: NumberFormatException => 0 }
+      parts.length >= 2 && (safeToInt(parts(1)) >= 8 || safeToInt(parts(0)) > 3)
     }
+    if (isScala3_8Plus) {
+      Seq("-java-output-version", JdkOptions.targetJavaVersion)
+    } else {
+      Seq("-release", JdkOptions.targetJavaVersion) ++ {
+        if (scalaVersion.startsWith("3.")) Seq(s"-Xtarget:${targetJavaVersion}") else Seq.empty
+      }
+    }
+  }
 
   val targetJdkJavacOptions = Seq("--release", targetJavaVersion)
 }

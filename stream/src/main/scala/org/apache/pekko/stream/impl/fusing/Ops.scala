@@ -1422,7 +1422,7 @@ private[stream] object Collect {
       private var buffer: BufferImpl[Out] = _
       private val invokeFutureCB: Try[Out] => Unit = getAsyncCallback(futureCompleted).invoke
 
-      private[this] def todo: Int = inFlight + buffer.used
+      private def todo: Int = inFlight + buffer.used
 
       override def preStart(): Unit = buffer = BufferImpl(parallelism, inheritedAttributes)
 
@@ -1527,7 +1527,8 @@ private[stream] object Collect {
         log = logAdapter match {
           case Some(l) => l
           case _       =>
-            Logging(materializer.system, materializer)(fromMaterializer)
+            implicit val ls: LogSource[Materializer] = fromMaterializer
+            Logging(materializer.system, materializer)
         }
       }
 
@@ -1647,7 +1648,8 @@ private[stream] object Collect {
         log = logAdapter match {
           case Some(l) => l
           case _       =>
-            Logging.withMarker(materializer.system, materializer)(fromMaterializer)
+            implicit val ls: LogSource[Materializer] = fromMaterializer
+            Logging.withMarker(materializer.system, materializer)
         }
       }
 
@@ -1920,14 +1922,14 @@ private[stream] object Collect {
     new TimerGraphStageLogic(shape) with InHandler with OutHandler {
       import Delay._
 
-      private[this] val size = inheritedAttributes.mandatoryAttribute[InputBuffer].max
+      private val size = inheritedAttributes.mandatoryAttribute[InputBuffer].max
 
-      private[this] val delayStrategy = delayStrategySupplier()
+      private val delayStrategy = delayStrategySupplier()
 
       // buffer has pairs of timestamp of expected push and element
-      private[this] val buffer = BufferImpl[(Long, T)](size, inheritedAttributes)
+      private val buffer = BufferImpl[(Long, T)](size, inheritedAttributes)
 
-      private[this] val onPushWhenBufferFull: () => Unit = overflowStrategy match {
+      private val onPushWhenBufferFull: () => Unit = overflowStrategy match {
         case EmitEarly =>
           () => {
             if (isAvailable(out)) {

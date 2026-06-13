@@ -536,11 +536,11 @@ private[pekko] final class PromiseActorRef(
    */
   @volatile
   @nowarn("msg=is never updated")
-  private[this] var _stateDoNotCallMeDirectly: AnyRef = _
+  private var _stateDoNotCallMeDirectly: AnyRef = null
 
   @volatile
   @nowarn("msg=is never updated")
-  private[this] var _watchedByDoNotCallMeDirectly: immutable.Set[ActorRef] = ActorCell.emptyActorRefSet
+  private var _watchedByDoNotCallMeDirectly: immutable.Set[ActorRef] = ActorCell.emptyActorRefSet
 
   @nowarn private def _preventPrivateUnusedErasure = {
     _stateDoNotCallMeDirectly
@@ -548,38 +548,38 @@ private[pekko] final class PromiseActorRef(
   }
 
   // volatile read: published across threads via compareAndSet in updateWatchedBy
-  private[this] def watchedBy: Set[ActorRef] = watchedByHandle.getVolatile(this)
+  private def watchedBy: Set[ActorRef] = watchedByHandle.getVolatile(this)
 
-  private[this] def updateWatchedBy(oldWatchedBy: Set[ActorRef], newWatchedBy: Set[ActorRef]): Boolean =
+  private def updateWatchedBy(oldWatchedBy: Set[ActorRef], newWatchedBy: Set[ActorRef]): Boolean =
     watchedByHandle.compareAndSet(this, oldWatchedBy, newWatchedBy)
 
   @tailrec // Returns false if the Promise is already completed
-  private[this] final def addWatcher(watcher: ActorRef): Boolean = watchedBy match {
+  private final def addWatcher(watcher: ActorRef): Boolean = watchedBy match {
     case null  => false
     case other => updateWatchedBy(other, other + watcher) || addWatcher(watcher)
   }
 
   @tailrec
-  private[this] final def remWatcher(watcher: ActorRef): Unit = watchedBy match {
+  private final def remWatcher(watcher: ActorRef): Unit = watchedBy match {
     case null  => ()
     case other => if (!updateWatchedBy(other, other - watcher)) remWatcher(watcher)
   }
 
   @tailrec
-  private[this] final def clearWatchers(): Set[ActorRef] = watchedBy match {
+  private final def clearWatchers(): Set[ActorRef] = watchedBy match {
     case null  => ActorCell.emptyActorRefSet
     case other => if (!updateWatchedBy(other, null)) clearWatchers() else other
   }
 
   // volatile read: published across threads via compareAndSet/setVolatile below
-  private[this] def state: AnyRef = stateHandle.getVolatile(this)
+  private def state: AnyRef = stateHandle.getVolatile(this)
 
-  private[this] def updateState(oldState: AnyRef, newState: AnyRef): Boolean =
+  private def updateState(oldState: AnyRef, newState: AnyRef): Boolean =
     stateHandle.compareAndSet(this, oldState, newState)
 
   // volatile write: ordered against the concurrent reads in state; restores the
   // putObjectVolatile semantics this had before the VarHandle migration
-  private[this] def setState(newState: AnyRef): Unit = stateHandle.setVolatile(this, newState)
+  private def setState(newState: AnyRef): Unit = stateHandle.setVolatile(this, newState)
 
   override def getParent: InternalActorRef = provider.tempContainer
 

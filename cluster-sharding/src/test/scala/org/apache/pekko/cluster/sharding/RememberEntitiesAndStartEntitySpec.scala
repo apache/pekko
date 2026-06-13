@@ -13,6 +13,8 @@
 
 package org.apache.pekko.cluster.sharding
 
+import scala.concurrent.duration._
+
 import org.apache.pekko
 import pekko.actor.Actor
 import pekko.actor.ActorRef
@@ -30,7 +32,6 @@ import pekko.testkit.WithLogCapturing
 
 import org.scalatest.wordspec.AnyWordSpecLike
 
-import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
 
 object RememberEntitiesAndStartEntitySpec {

@@ -42,7 +42,7 @@ private[pekko] final case class AggregateWithBoundary[In, Agg, Out](
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new TimerGraphStageLogic(shape) with InHandler with OutHandler {
 
-      private[this] var aggregated: Agg = null.asInstanceOf[Agg]
+      private var aggregated: Agg = null.asInstanceOf[Agg]
 
       override def preStart(): Unit = {
         emitOnTimer.foreach {

@@ -13,8 +13,6 @@
 
 package org.apache.pekko.persistence.testkit
 
-import scala.util.Success
-
 import org.apache.pekko
 import pekko.actor.Extension
 import pekko.annotation.InternalApi
@@ -42,7 +40,6 @@ private[testkit] trait SnapshotStorage
       WriteSnapshot(SnapshotMeta(meta.sequenceNr, meta.timestamp), payload)) match {
       case ProcessingSuccess =>
         add(meta.persistenceId, (meta, payload))
-        Success(())
       case f: ProcessingFailure => throw f.error
 
     }

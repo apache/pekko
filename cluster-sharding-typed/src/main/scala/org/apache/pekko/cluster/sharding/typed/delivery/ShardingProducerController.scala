@@ -285,7 +285,8 @@ object ShardingProducerController {
       producerId: String,
       region: ActorRef[ShardingEnvelope[ConsumerController.SequencedMessage[A]]],
       durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]]): Behavior[Command[A]] = {
-    apply(producerId, region, durableQueueBehavior.toScala)(ClassTag(messageClass))
+    implicit val ct: ClassTag[A] = ClassTag(messageClass)
+    apply(producerId, region, durableQueueBehavior.toScala)
   }
 
   /**
@@ -297,7 +298,8 @@ object ShardingProducerController {
       region: ActorRef[ShardingEnvelope[ConsumerController.SequencedMessage[A]]],
       durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]],
       settings: Settings): Behavior[Command[A]] = {
-    apply(producerId, region, durableQueueBehavior.toScala, settings)(ClassTag(messageClass))
+    implicit val ct: ClassTag[A] = ClassTag(messageClass)
+    apply(producerId, region, durableQueueBehavior.toScala, settings)
   }
 
   // TODO maybe there is a need for variant taking message extractor instead of ShardingEnvelope

@@ -36,7 +36,7 @@ import pekko.stream.stage.{ GraphStage, GraphStageLogic, OutHandler }
   override def initialAttributes: Attributes = DefaultAttributes.unfold and SourceLocation.forLambda(f)
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new GraphStageLogic(shape) with OutHandler {
-      private[this] var state = s
+      private var state = s
 
       def onPull(): Unit = f(state) match {
         case Some((newState, v)) => {
@@ -91,8 +91,8 @@ private[pekko] final class UnfoldJava[S, E](s: S, f: function.Function[S, Option
   override def initialAttributes: Attributes = DefaultAttributes.unfoldAsync
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new GraphStageLogic(shape) with OutHandler {
-      private[this] var state = s
-      private[this] var asyncHandler: Try[Option[(S, E)]] => Unit = _
+      private var state = s
+      private var asyncHandler: Try[Option[(S, E)]] => Unit = _
 
       override def preStart(): Unit = {
         asyncHandler = getAsyncCallback[Try[Option[(S, E)]]](handle).invoke
@@ -135,8 +135,8 @@ private[pekko] final class UnfoldJava[S, E](s: S, f: function.Function[S, Option
   override def initialAttributes: Attributes = DefaultAttributes.unfoldAsync
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new GraphStageLogic(shape) with OutHandler {
-      private[this] var state = s
-      private[this] var asyncHandler: Try[Optional[Pair[S, E]]] => Unit = _
+      private var state = s
+      private var asyncHandler: Try[Optional[Pair[S, E]]] => Unit = _
 
       override def preStart(): Unit = {
         asyncHandler = getAsyncCallback[Try[Optional[Pair[S, E]]]](handle).invoke

@@ -41,7 +41,7 @@ import org.apache.pekko.annotation.InternalApi
     kvs(1) = value
   }
 
-  private[this] final def indexForKey(key: Int): Int = {
+  private final def indexForKey(key: Int): Int = {
     // Custom implementation of binary search since we encode key + value in consecutive indices.
     // We do the binary search on half the size of the array then project to the full size.
     // >>> 1 for division by 2: https://research.googleblog.com/2006/06/extra-extra-read-all-about-it-nearly.html
@@ -107,13 +107,13 @@ import org.apache.pekko.annotation.InternalApi
       } else insert(key, value, i)
     } else new ImmutableIntMap(key, value)
 
-  private[this] final def update(value: Int, valueIndex: Int): ImmutableIntMap = {
+  private final def update(value: Int, valueIndex: Int): ImmutableIntMap = {
     val newKvs = kvs.clone() // clone() can in theory be faster since it could do a malloc + memcpy iso. calloc etc
     newKvs(valueIndex) = value
     new ImmutableIntMap(newKvs, size)
   }
 
-  private[this] final def insert(key: Int, value: Int, index: Int): ImmutableIntMap = {
+  private final def insert(key: Int, value: Int, index: Int): ImmutableIntMap = {
     val at = ~index // ~n == -(n + 1): insert the entry at the right position—keep the array sorted
     val newKvs = new Array[Int](kvs.length + 2)
     System.arraycopy(kvs, 0, newKvs, 0, at)
