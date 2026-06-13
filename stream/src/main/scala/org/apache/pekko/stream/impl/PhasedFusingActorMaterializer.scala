@@ -199,7 +199,8 @@ private final case class SavedIslandData(
   private var segments: java.util.ArrayList[SegmentInfo] = _
   private var activePhases: java.util.ArrayList[PhaseIsland[Any]] = _
   // Forward wires stored as sorted parallel arrays by key (global offset).
-  // Avoids java.lang.Integer boxing and per-operation allocation.
+  // Avoids java.lang.Integer boxing, per-operation allocation, and provides
+  // better cache locality than IntMap's Patricia trie nodes.
   private var forwardWireKeys: Array[Int] = _
   private var forwardWireValues: Array[ForwardWire] = _
   private var forwardWireCount: Int = 0
