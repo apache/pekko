@@ -100,6 +100,7 @@ class JitSafeCompletionLatchInt extends GraphStageWithMaterializedValue[SinkShap
 
       override def preStart(): Unit = pull(in)
       override def onPush(): Unit = {
+        grab(in) // consume element
         count += 1
         pull(in)
       }
