@@ -108,6 +108,7 @@ class JitSafeCompletionLatchInt extends GraphStageWithMaterializedValue[SinkShap
       override def onUpstreamFinish(): Unit = {
         FusedGraphsBenchmark.blackhole.consume(count)
         latch.countDown()
+        completeStage()
       }
 
       override def onUpstreamFailure(ex: Throwable): Unit = {
