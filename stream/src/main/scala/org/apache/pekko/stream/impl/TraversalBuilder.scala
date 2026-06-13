@@ -213,6 +213,8 @@ import pekko.util.OptionVal
 
   private val cachedEmptyCompleted = CompletedTraversalBuilder(PushNotUsed, 0, Map.empty, Attributes.none)
 
+  private val emptyOutSlots: Array[Int] = Array.emptyIntArray
+
   /**
    * INTERNAL API
    *
@@ -269,7 +271,7 @@ import pekko.util.OptionVal
     val builder =
       if (module.shape.outlets.isEmpty) {
         val b = CompletedTraversalBuilder(
-          traversalSoFar = MaterializeAtomic(module, new Array[Int](module.shape.outlets.size)),
+          traversalSoFar = MaterializeAtomic(module, emptyOutSlots),
           inSlots = module.shape.inlets.size,
           inToOffset = module.shape.inlets.map(in => in -> in.id).toMap,
           Attributes.none)
