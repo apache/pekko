@@ -14,7 +14,7 @@
 import CopyrightHeader.cStyleComment
 import sbtheader.HeaderPlugin.autoImport.{ headerMappings, headerSources, HeaderFileType }
 import sbt.Keys.baseDirectory
-import sbt.{ inConfig, Compile, Def, PluginTrigger, Test, _ }
+import sbt.{ *, inConfig, Compile, Def, PluginTrigger, Test }
 
 object CopyrightHeaderForBuild extends AutoPlugin {
   override lazy val requires: Plugins = CopyrightHeader
@@ -24,8 +24,11 @@ object CopyrightHeaderForBuild extends AutoPlugin {
     Seq(Compile, Test).flatMap { config =>
       inConfig(config) {
         Seq(
-          config / headerSources ++= (((config / baseDirectory).value / "project") ** ("*.scala" || "*.sbt")).get,
-          config / headerSources ++= ((config / baseDirectory).value ** "*.sbt").get,
+          config / headerSources := Def.uncached {
+            (config / headerSources).value ++
+            (((config / baseDirectory).value / "project") ** ("*.scala" || "*.sbt")).get() ++
+            ((config / baseDirectory).value ** "*.sbt").get()
+          },
           headerMappings := headerMappings.value ++ Map(HeaderFileType("sbt") -> cStyleComment),
           headerMappings := headerMappings.value ++ Map(HeaderFileType.scala -> cStyleComment))
       }

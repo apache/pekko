@@ -14,7 +14,7 @@
 import CopyrightHeader.cStyleComment
 import sbtheader.HeaderPlugin.autoImport.{ headerMappings, headerSources, HeaderFileType }
 import sbt.Keys.sourceDirectory
-import sbt.{ inConfig, Compile, Def, Test, _ }
+import sbt.{ *, inConfig, Compile, Def, Test }
 
 object CopyrightHeaderForProtobuf extends AutoPlugin {
 
@@ -25,8 +25,10 @@ object CopyrightHeaderForProtobuf extends AutoPlugin {
     Seq(Compile, Test).flatMap { config =>
       inConfig(config) {
         Seq(
-          config / headerSources ++=
-            (((config / sourceDirectory).value / "protobuf") ** "*.proto").get,
+          config / headerSources := Def.uncached {
+            (config / headerSources).value ++
+            (((config / sourceDirectory).value / "protobuf") ** "*.proto").get()
+          },
           headerMappings := headerMappings.value ++ Map(HeaderFileType("proto") -> cStyleComment))
       }
     }

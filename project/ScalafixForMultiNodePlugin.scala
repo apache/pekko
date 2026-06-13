@@ -20,7 +20,7 @@ object ScalafixForMultiNodePlugin extends AutoPlugin with ScalafixSupport {
 
   override lazy val requires: Plugins = MultiNode && ScalafixPlugin
 
-  import MultiJvmPlugin.autoImport._
+  import sbt.MultiJvmPlugin.autoImport.*
 
   lazy val scalafixIgnoredSetting: Seq[Setting[?]] = Seq(ignore(MultiJvm))
 

@@ -13,7 +13,7 @@
 
 import java.io.File
 
-import sbt._
+import sbt.*
 import sbt.librarymanagement.SemanticSelector
 import sbt.librarymanagement.VersionNumber
 

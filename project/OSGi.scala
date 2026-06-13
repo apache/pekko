@@ -12,11 +12,12 @@
  */
 
 import com.github.sbt.osgi.OsgiKeys
-import com.github.sbt.osgi.SbtOsgi._
-import sbt._
-import sbt.Keys._
+import com.github.sbt.osgi.SbtOsgi.*
+import sbt.*
+import sbt.Keys.*
 import sbtassembly.AssemblyKeys.assembly
-import net.bzzt.reproduciblebuilds.ReproducibleBuildsPlugin
+// TODO [sbt2-migration] Blocked on sbt-reproducible-builds sbt 2 support
+// import net.bzzt.reproduciblebuilds.ReproducibleBuildsPlugin
 
 object OSGi {
 
@@ -25,14 +26,16 @@ object OSGi {
   // a pain. Create bundles but publish them to the normal .../jars directory.
   lazy val osgiSettings =
     defaultOsgiSettings ++ Seq(
-      Compile / packageBin := {
+      Compile / packageBin := Def.uncached {
         val bundle = OsgiKeys.bundle.value
         // This normally happens automatically when loading the
         // sbt-reproducible-builds plugin, but because we replace
         // `packageBin` wholesale here we need to invoke the post-processing
         // manually. See also
         // https://github.com/raboof/sbt-reproducible-builds#sbt-osgi
-        ReproducibleBuildsPlugin.postProcessJar(bundle)
+        // TODO [sbt2-migration] Blocked on sbt-reproducible-builds sbt 2 support
+        // ReproducibleBuildsPlugin.postProcessJar(bundle)
+        bundle
       },
       // This will fail the build instead of accidentally removing classes from the resulting artifact.
       // Each package contained in a project MUST be known to be private or exported, if it's undecided we MUST resolve this
@@ -86,7 +89,11 @@ object OSGi {
     // is a fatjar from sbt-assembly we don't have to worry about incorrect osgi
     // Import-Package header since the protobuf-V3 sbt-project has no real dependencies
     // (including typical ones such as scala runtime)
-    OsgiKeys.explodedJars := Seq(assembly.value))
+    // In sbt 2, assembly returns HashedVirtualFileRef; convert to File via fileConverter
+    OsgiKeys.explodedJars := Def.uncached {
+      val conv = fileConverter.value
+      Seq(conv.toPath(assembly.value).toFile)
+    })
 
   lazy val jackson = exports(Seq("org.apache.pekko.serialization.jackson.*"))
   lazy val jackson3 = exports(Seq("org.apache.pekko.serialization.jackson3.*"))

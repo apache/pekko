@@ -11,8 +11,8 @@
  * Copyright (C) 2019-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import sbt._
-import Keys.{ scalacOptions, _ }
+import sbt.*
+import Keys.{ *, scalacOptions }
 import sbt.plugins.JvmPlugin
 
 object PekkoDisciplinePlugin extends AutoPlugin {

@@ -7,7 +7,8 @@
  * This file is part of the Apache Pekko project, which was derived from Akka.
  */
 
-import net.bzzt.reproduciblebuilds.ReproducibleBuildsPlugin.reproducibleBuildsCheckResolver
+// TODO [sbt2-migration] requires sbt-reproducible-builds
+// import net.bzzt.reproduciblebuilds.ReproducibleBuildsPlugin.reproducibleBuildsCheckResolver
 
 scalaVersion := Dependencies.allScalaVersions.head
 
@@ -15,12 +16,15 @@ ThisBuild / versionScheme := Some(VersionScheme.SemVerSpec)
 // Add  (Jupiter) test runtime to all modules for sbt-jupiter-interface discovery
 ThisBuild / libraryDependencies +=
   "com.github.sbt.junit" % "jupiter-interface" % JupiterKeys.jupiterVersion.value % Test
-sourceDistName := "apache-pekko"
-sourceDistIncubating := false
+// TODO [sbt2-migration] requires sbt-source-dist
+// sourceDistName := "apache-pekko"
+// sourceDistIncubating := false
 
-ThisBuild / reproducibleBuildsCheckResolver := Resolver.ApacheMavenStagingRepo
+// TODO [sbt2-migration] requires sbt-reproducible-builds
+// ThisBuild / reproducibleBuildsCheckResolver := Resolver.ApacheMavenStagingRepo
 
-ThisBuild / pekkoCoreProject := true
+// TODO [sbt2-migration] requires sbt-pekko-build
+// ThisBuild / pekkoCoreProject := true
 
 Global / excludeLintKeys ++= Set(
   projectInfoVersion,
@@ -32,7 +36,8 @@ Global / excludeLintKeys ++= Set(
 
 enablePlugins(
   UnidocRoot,
-  UnidocWithPrValidation,
+  // TODO [sbt2-migration] requires sbt-pull-request-validator
+  // UnidocWithPrValidation,
   NoPublish,
   ScalafixIgnoreFilePlugin,
   JavaFormatterPlugin)
@@ -109,10 +114,10 @@ lazy val aggregatedProjects: Seq[ProjectReference] = userProjects ++ List[Projec
   streamTestsTck)
 
 lazy val root = Project(id = "pekko", base = file("."))
-  .aggregate(aggregatedProjects: _*)
+  .aggregate(aggregatedProjects *)
   .settings(
     name := "pekko-root")
-  .settings(rootSettings: _*)
+  .settings(rootSettings *)
   .settings(
     UnidocRoot.autoImport.unidocRootIgnoreProjects := Seq(
       remoteTests,
@@ -121,7 +126,7 @@ lazy val root = Project(id = "pekko", base = file("."))
       pekkoScalaNightly,
       docs))
   .settings(
-    Compile / headerCreate / unmanagedSources := (baseDirectory.value / "project").**("*.scala").get)
+    Compile / headerCreate / unmanagedSources := (baseDirectory.value / "project").**("*.scala").get())
   .settings(PekkoBuild.welcomeSettings)
   .enablePlugins(CopyrightHeaderForBuild)
 
@@ -141,17 +146,19 @@ lazy val actorTests = pekkoModule("actor-tests")
   .disablePlugins(MimaPlugin)
 
 lazy val pekkoScalaNightly = pekkoModule("scala-nightly")
-  .aggregate(aggregatedProjects: _*)
+  .aggregate(aggregatedProjects *)
   .disablePlugins(MimaPlugin)
-  .disablePlugins(ValidatePullRequest, MimaPlugin)
+// TODO [sbt2-migration] ValidatePullRequest requires sbt-pull-request-validator
+// .disablePlugins(ValidatePullRequest, MimaPlugin)
 
 lazy val benchJmh = pekkoModule("bench-jmh")
   .dependsOn(Seq(actor, actorTyped, stream, streamTestkit, persistence, distributedData, jackson, testkit).map(
-    _ % "compile->compile;compile->test"): _*)
+    _ % "compile->compile;compile->test") *)
   .settings(Dependencies.benchJmh)
   .settings(javacOptions += "-parameters") // for Jackson
   .enablePlugins(JmhPlugin, ScaladocNoVerificationOfDiagrams, NoPublish)
-  .disablePlugins(MimaPlugin, ValidatePullRequest)
+  // TODO [sbt2-migration] ValidatePullRequest requires sbt-pull-request-validator
+  .disablePlugins(MimaPlugin)
 
 lazy val cluster = pekkoModule("cluster")
   .dependsOn(
@@ -196,7 +203,8 @@ lazy val clusterSharding = pekkoModule("cluster-sharding")
   .settings(AutomaticModuleName.settings("pekko.cluster.sharding"))
   .settings(OSGi.clusterSharding)
   .settings(Protobuf.settings)
-  .enablePlugins(MultiNode, ScaladocNoVerificationOfDiagrams, DependWalkerPlugin, SbtOsgi)
+  // TODO [sbt2-migration] DependWalkerPlugin requires sbt-depend-walker
+  .enablePlugins(MultiNode, ScaladocNoVerificationOfDiagrams, SbtOsgi)
 
 lazy val clusterTools = pekkoModule("cluster-tools")
   .dependsOn(
@@ -250,13 +258,14 @@ lazy val docs = pekkoModule("docs")
   .settings(javacOptions += "-parameters") // for Jackson
   .enablePlugins(
     ParadoxPlugin,
-    PekkoParadoxPlugin,
+    // TODO [sbt2-migration] requires pekko-sbt-paradox
+    // PekkoParadoxPlugin,
     NoPublish,
     ParadoxBrowse,
     ScaladocNoVerificationOfDiagrams,
     StreamOperatorsIndexGenerator)
   .disablePlugins(MimaPlugin)
-  .disablePlugins((if (ScalafixSupport.fixTestScope) Nil else Seq(ScalafixPlugin)): _*)
+  .disablePlugins((if (ScalafixSupport.fixTestScope) Nil else Seq(ScalafixPlugin)) *)
 
 lazy val jackson = pekkoModule("serialization-jackson")
   .dependsOn(
@@ -386,24 +395,33 @@ lazy val protobufV3 = pekkoModule("protobuf-v3")
         .withConfigurations(Vector(Compile)), // prevent original dependency to be added to pom as runtime dep
     Compile / packageBin / packagedArtifact := Scoped.mkTuple2(
       (Compile / packageBin / artifact).value,
-      ReproducibleBuildsPlugin.postProcessJar(OsgiKeys.bundle.value)),
+      // TODO [sbt2-migration] requires sbt-reproducible-builds
+      // ReproducibleBuildsPlugin.postProcessJar(OsgiKeys.bundle.value)
+      OsgiKeys.bundle.value),
     Compile / packageBin := Def.taskDyn {
       val store = streams.value.cacheStoreFactory.make("shaded-output")
       val uberJarLocation = (assembly / assemblyOutputPath).value
+      val conv = fileConverter.value
       val tracker = Tracked.outputChanged(store) { (changed: Boolean, file: File) =>
         if (changed) {
           Def.task {
             val uberJar = (Compile / assembly).value
-            ReproducibleBuildsPlugin.postProcessJar(uberJar)
+            // TODO [sbt2-migration] requires sbt-reproducible-builds
+            // ReproducibleBuildsPlugin.postProcessJar(uberJar)
+            uberJar
           }
-        } else Def.task { file }
+        } else Def.task { conv.toVirtualFile(file.toPath) }
       }
       tracker(() => uberJarLocation)
     }.value,
     // Prevent cyclic task dependencies, see https://github.com/sbt/sbt-assembly/issues/365 by
     // redefining the fullClasspath with just what we need to avoid the cyclic task dependency
-    assembly / fullClasspath := (Runtime / managedClasspath).value ++ (Compile / products).value.map(Attributed.blank),
-    assembly / test := {}, // assembly runs tests for unknown reason which introduces another cyclic dependency to packageBin via exportedJars
+    assembly / fullClasspath := Def.uncached {
+      val conv = fileConverter.value
+      (Runtime / managedClasspath).value ++ (Compile / products).value.map(f =>
+        Attributed.blank(conv.toVirtualFile(f.toPath)))
+    },
+    assembly / test := sbt.protocol.testing.TestResult.Passed, // assembly runs tests for unknown reason which introduces another cyclic dependency to packageBin via exportedJars
     description :=
       s"Apache Pekko Protobuf V3 is a shaded version of the protobuf runtime. Original POM: https://github.com/protocolbuffers/protobuf/blob/v${Dependencies.Protobuf.protobufJavaVersion}/java/pom.xml")
 
@@ -431,7 +449,8 @@ lazy val remote =
     .settings(OSGi.remote)
     .settings(Protobuf.settings)
     .settings(Test / parallelExecution := false)
-    .enablePlugins(DependWalkerPlugin, SbtOsgi)
+    // TODO [sbt2-migration] DependWalkerPlugin requires sbt-depend-walker
+    .enablePlugins(SbtOsgi)
 
 lazy val remoteTests = pekkoModule("remote-tests")
   .dependsOn(
@@ -459,7 +478,8 @@ lazy val stream = pekkoModule("stream")
   .settings(AutomaticModuleName.settings("pekko.stream"))
   .settings(OSGi.stream)
   .settings(Protobuf.settings)
-  .enablePlugins(BoilerplatePlugin, DependWalkerPlugin, SbtOsgi)
+  // TODO [sbt2-migration] DependWalkerPlugin requires sbt-depend-walker
+  .enablePlugins(BoilerplatePlugin, SbtOsgi)
 
 lazy val streamTestkit = pekkoModule("stream-testkit")
   .dependsOn(stream, testkit % "compile->compile;test->test")
@@ -513,7 +533,8 @@ lazy val actorTyped = pekkoModule("actor-typed")
 
       implicit val timeout = Timeout(5 seconds)
     """)
-  .enablePlugins(DependWalkerPlugin, SbtOsgi)
+  // TODO [sbt2-migration] DependWalkerPlugin requires sbt-depend-walker
+  .enablePlugins(SbtOsgi)
 
 lazy val persistenceTyped = pekkoModule("persistence-typed")
   .dependsOn(
@@ -617,19 +638,27 @@ lazy val coordination = pekkoModule("coordination")
   .enablePlugins(SbtOsgi)
 
 lazy val billOfMaterials = Project("bill-of-materials", file("bill-of-materials"))
-  .enablePlugins(BillOfMaterialsPlugin)
+  // TODO [sbt2-migration] requires sbt-bill-of-materials
+  // .enablePlugins(BillOfMaterialsPlugin)
   .disablePlugins(MimaPlugin, PekkoDisciplinePlugin)
   // buildSettings and defaultSettings configure organization name, licenses, etc...
   .settings(PekkoBuild.defaultSettings)
   .settings(
     name := "pekko-bom",
-    bomIncludeProjects := userProjects,
+    // TODO [sbt2-migration] requires sbt-bill-of-materials
+    // bomIncludeProjects := userProjects,
     description := s"${description.value} (depending on Scala ${CrossVersion.binaryScalaVersion(scalaVersion.value)})")
 
 def pekkoModule(moduleName: String): Project =
   Project(id = moduleName, base = file(moduleName))
-    .enablePlugins(ReproducibleBuildsPlugin)
-    .disablePlugins(WelcomePlugin)
+    // TODO [sbt2-migration] requires sbt-reproducible-builds
+    // .enablePlugins(ReproducibleBuildsPlugin)
+    // TODO [sbt2-migration] requires sbt-welcome
+    // .disablePlugins(WelcomePlugin)
+    .settings(
+      // sbt 2 changed exportJars default from false to true; assembly requires false
+      exportJars := false,
+      assembly / exportJars := false)
     .settings(PekkoBuild.defaultSettings)
     .settings(
       name := s"pekko-$moduleName")

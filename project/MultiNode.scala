@@ -11,23 +11,24 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import TestExtras.Filter.Keys._
-import MultiJvmPlugin.autoImport.multiJvmCreateLogger
-import MultiJvmPlugin.autoImport._
+import TestExtras.Filter.Keys.*
+// sbt 2: MultiJvmPlugin is now in package sbt, qualify the import
+import sbt.MultiJvmPlugin.autoImport.multiJvmCreateLogger
+import sbt.MultiJvmPlugin.autoImport.*
 
-import sbt.{ Def, _ }
-import sbt.Keys._
-import sbtheader.HeaderPlugin.autoImport._
+import sbt.{ *, Def }
+import sbt.Keys.*
+import sbtheader.HeaderPlugin.autoImport.*
 import org.scalafmt.sbt.ScalafmtPlugin.scalafmtConfigSettings
 import sbtassembly.MergeStrategy
-import sbtassembly.AssemblyKeys._
+import sbtassembly.AssemblyKeys.*
 
 object MultiNode extends AutoPlugin {
 
   object autoImport {
     lazy val validateCompile = taskKey[Unit]("Validates compile for any project it is enabled")
   }
-  import autoImport._
+  import autoImport.*
 
   // MultiJvm tests can be excluded from normal test target an validatePullRequest
   // with -Dpekko.test.multi-in-test=false
@@ -42,17 +43,19 @@ object MultiNode extends AutoPlugin {
     lazy val targetDirName = sys.props.get("pekko.test.multi-node.targetDirName").toSeq
   }
 
+  // sbt 2: use if/else instead of ifTrue/getOrElse to avoid Configuration `/` overload ambiguity
   lazy val multiExecuteTests =
-    CliOptions.multiNode.ifTrue(MultiJvm / multiNodeExecuteTests).getOrElse(MultiJvm / executeTests)
-  lazy val multiTest = CliOptions.multiNode.ifTrue(MultiJvm / multiNodeTest).getOrElse(MultiJvm / test)
+    if (CliOptions.multiNode.get) MultiJvm / multiNodeExecuteTests else MultiJvm / executeTests
+  lazy val multiTest =
+    if (CliOptions.multiNode.get) MultiJvm / multiNodeTest else MultiJvm / test
 
   override lazy val trigger = noTrigger
-  override lazy val requires = plugins.JvmPlugin && MultiJvmPlugin
+  override lazy val requires = plugins.JvmPlugin && sbt.MultiJvmPlugin
 
   override lazy val projectSettings: Seq[Def.Setting[?]] = multiJvmSettings
 
   private lazy val defaultMultiJvmOptions: Seq[String] = {
-    import scala.jdk.CollectionConverters._
+    import scala.jdk.CollectionConverters.*
     // multinode.D= and multinode.X= makes it possible to pass arbitrary
     // -D or -X arguments to the forked jvm, e.g.
     // -Dmultinode.Djava.net.preferIPv4Stack=true -Dmultinode.Xmx512m -Dmultinode.XX:MaxPermSize=256M
@@ -72,11 +75,14 @@ object MultiNode extends AutoPlugin {
   private lazy val anyConfigsInThisProject = ScopeFilter(configurations = inAnyConfiguration)
 
   private lazy val multiJvmSettings =
-    MultiJvmPlugin.multiJvmSettings ++
+    sbt.MultiJvmPlugin.multiJvmSettings ++
     scalafmtConfigSettings(MultiJvm) ++
     Seq(
       // Hack because 'provided' dependencies by default are not picked up by the multi-jvm plugin:
-      MultiJvm / managedClasspath ++= (Compile / managedClasspath).value.filter(_.data.name.contains("silencer-lib")),
+      MultiJvm / managedClasspath := Def.uncached {
+        (MultiJvm / managedClasspath).value ++ (Compile / managedClasspath).value.filter(
+          _.data.name.contains("silencer-lib"))
+      },
       MultiJvm / jvmOptions := defaultMultiJvmOptions,
       MultiJvm / scalacOptions := (Test / scalacOptions).value,
       multiJvmCreateLogger / logLevel := Level.Debug, //  to see ssh establishment
@@ -86,7 +92,7 @@ object MultiNode extends AutoPlugin {
         case n if n.toLowerCase.matches("meta-inf.*\\.default") => MergeStrategy.first
         case n                                                  => (MultiJvm / assembly / assemblyMergeStrategy).value.apply(n)
       },
-      MultiJvm / multiJvmCreateLogger := { // to use normal sbt logging infra instead of custom sbt-multijvm-one
+      MultiJvm / multiJvmCreateLogger := Def.uncached { // to use normal sbt logging infra instead of custom sbt-multijvm-one
         val previous = (MultiJvm / multiJvmCreateLogger).value
         val logger = streams.value.log
         (name: String) =>
@@ -103,25 +109,19 @@ object MultiNode extends AutoPlugin {
     (if (multiNodeTestInTest) {
        // make sure that MultiJvm tests are executed by the default test target,
        // and combine the results from ordinary test and multi-jvm tests
-       (Test / executeTests) := {
+       (Test / executeTests) := Def.uncached {
          val testResults = (Test / executeTests).value
          val multiNodeResults = multiExecuteTests.value
-         val overall =
-           if (testResults.overall.id < multiNodeResults.overall.id)
-             multiNodeResults.overall
-           else
-             testResults.overall
-
-         Tests.Output(
-           overall,
-           testResults.events ++ multiNodeResults.events,
-           testResults.summaries ++ multiNodeResults.summaries)
+         // sbt 2: Tests.Output is private[sbt], use bridge from package sbt
+         sbt.TestsOutputBridge.mergeOutputs(testResults, multiNodeResults)
        }
      } else Nil) ++
-    Def.settings((MultiJvm / compile) := {
+    Def.settings((MultiJvm / compile) := Def.uncached {
       (MultiJvm / headerCreate).value
       (MultiJvm / compile).value
-    }) ++ headerSettings(MultiJvm) ++ Seq(validateCompile := compile.?.all(anyConfigsInThisProject).value)
+    }) ++ headerSettings(MultiJvm) ++ Seq(validateCompile := Def.uncached {
+      compile.?.all(anyConfigsInThisProject).value
+    })
 
   implicit class TestResultOps(val self: TestResult) extends AnyVal {
     def id: Int = self match {
@@ -143,7 +143,7 @@ object MultiNodeScalaTest extends AutoPlugin {
     Seq(
       MultiJvm / extraOptions := {
         val src = (MultiJvm / sourceDirectory).value
-        (name: String) => (src ** (name + ".conf")).get.headOption.map("-Dpekko.config=" + _.absolutePath).toSeq
+        (name: String) => (src ** (name + ".conf")).get().headOption.map("-Dpekko.config=" + _.absolutePath).toSeq
       },
       MultiJvm / scalatestOptions := {
         Seq("-C", "org.scalatest.extra.QuietReporter") ++

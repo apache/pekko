@@ -11,9 +11,10 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import sbt._
-import sbt.Keys._
-import org.mdedetrich.apache.sonatype.ApacheSonatypePlugin
+import sbt.*
+import sbt.Keys.*
+// TODO [sbt2-migration] Blocked on sbt-pekko-build sbt 2 support
+// import org.mdedetrich.apache.sonatype.ApacheSonatypePlugin
 import sbtdynver.DynVerPlugin
 import sbtdynver.DynVerPlugin.autoImport.dynverSonatypeSnapshots
 
@@ -33,7 +34,9 @@ object Publish extends AutoPlugin {
   override lazy val buildSettings = Seq(
     dynverSonatypeSnapshots := true)
 
-  override lazy val requires = ApacheSonatypePlugin && DynVerPlugin
+  // TODO [sbt2-migration] Blocked on sbt-pekko-build sbt 2 support
+  // override lazy val requires = ApacheSonatypePlugin && DynVerPlugin
+  override lazy val requires = DynVerPlugin
 }
 
 /**

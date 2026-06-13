@@ -11,12 +11,12 @@
  * Copyright (C) 2016-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import sbt._
-import Keys._
+import sbt.*
+import Keys.*
 import scala.language.implicitConversions
 
 object Dependencies {
-  import DependencyHelpers._
+  import DependencyHelpers.*
 
   object Protobuf {
     // https://protobuf.dev/support/version-support/
@@ -207,7 +207,7 @@ object Dependencies {
 
   }
 
-  import Compile._
+  import Compile.*
   // TODO check if `l ++=` everywhere expensive?
   lazy val l = libraryDependencies
 
@@ -405,6 +405,7 @@ object DependencyHelpers {
       ScalaVersionDependentModuleID(version => modules(version).map(_ % config))
   }
   object ScalaVersionDependentModuleID {
+    // TODO [sbt2-migration] Consider converting to Scala 3 given Conversion
     implicit def liftConstantModule(mod: ModuleID): ScalaVersionDependentModuleID = versioned(_ => mod)
 
     def versioned(f: String => ModuleID): ScalaVersionDependentModuleID = ScalaVersionDependentModuleID(v => Seq(f(v)))

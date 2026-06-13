@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 
-import sbt._
-import sbt.Keys._
+import sbt.*
+import sbt.Keys.*
+import sbt.Result.{ Inc, Value }
 import sbt.plugins.JvmPlugin
 
 object TestQuickUntilPassed extends AutoPlugin {
@@ -28,7 +29,7 @@ object TestQuickUntilPassed extends AutoPlugin {
     lazy val testQuickUntilPassed = inputKey[Unit]("runs testQuick continuously until it passes")
   }
 
-  import autoImport._
+  import autoImport.*
 
   private def testQuickRecursive(input: String): Def.Initialize[Task[Unit]] = Def.taskDyn {
     (Test / testQuick).toTask(input).result.value match {
