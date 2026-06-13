@@ -54,13 +54,7 @@ object Jdk9 extends AutoPlugin {
   }
 
   private def releaseOption(scalaVer: String): Seq[String] = {
-    val isScala3_8Plus = scalaVer.startsWith("3.") && {
-      val parts = scalaVer.split('.')
-      def safeToInt(s: String): Int = try { s.split('-').head.toInt }
-      catch { case _: NumberFormatException => 0 }
-      parts.length >= 2 && (safeToInt(parts(1)) >= 8 || safeToInt(parts(0)) > 3)
-    }
-    if (isScala3_8Plus) Seq("-java-output-version", majorVersion.toString)
+    if (JdkOptions.isScala3_8Plus(scalaVer)) Seq("-java-output-version", majorVersion.toString)
     else Seq("-release", majorVersion.toString)
   }
 

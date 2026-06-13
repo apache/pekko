@@ -661,8 +661,7 @@ abstract class ActorContextSpec extends ScalaTestWithActorTestKit with AnyWordSp
 
     "not allow null messages" in {
       // Scala 3 doesn't generate an implicit `ClassTag[Null]` (https://github.com/lampepfl/dotty/issues/9586)
-      @nowarn("msg=never used") implicit val ct: ClassTag[Null] = ClassTag.Null
-      val actor = spawn(decoration[Null].apply(Behaviors.empty[Null]))
+      val actor = spawn(decoration[Null](ClassTag.Null).apply(Behaviors.empty[Null]))
       intercept[InvalidMessageException] {
         actor ! null
       }

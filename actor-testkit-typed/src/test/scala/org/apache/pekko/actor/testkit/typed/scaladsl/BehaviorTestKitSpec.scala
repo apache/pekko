@@ -126,8 +126,8 @@ object BehaviorTestKitSpec {
               replyTo ! Done
               Behaviors.same
             case CreateMessageAdapter(messageClass, f, replyTo) =>
-              implicit val ct: ClassTag[Any] = ClassTag(messageClass)
-              val adaptor = context.messageAdapter[Any](f.asInstanceOf[Any => Command])
+              implicit val ct: ClassTag[U] = ClassTag(messageClass)
+              val adaptor = context.messageAdapter(f)
               replyTo.foreach(_ ! adaptor.unsafeUpcast)
               Behaviors.same
             case Log(what) =>
