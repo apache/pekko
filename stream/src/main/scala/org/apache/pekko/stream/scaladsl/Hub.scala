@@ -536,14 +536,17 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
      * of priorities always fall to a range
      *
      * This wheel tracks the position of Consumers relative to the slowest ones. Every slot
-     * contains a list of Consumers being known at that location (this might be out of date!).
+     * contains a map of Consumers being known at that location (this might be out of date!).
      * Consumers from time to time send Advance messages to indicate that they have progressed
      * by reading from the broadcast queue. Consumers that are blocked (due to reaching tail) request
      * a wakeup and update their position at the same time.
      *
+     * Each slot uses a LongMap keyed by Consumer.id for O(1) add/remove without Long boxing.
+     * Empty slots are null (no backing map allocated), reducing baseline memory and GC pressure.
+     * When a slot drains to zero consumers, its map is released (set to null).
      */
     private[this] val consumerWheel =
-      Array.fill[java.util.ArrayList[Consumer]](bufferSize * 2)(new util.ArrayList[Consumer]())
+      new Array[LongMap[Consumer]](bufferSize * 2)
     private[this] var activeConsumers = 0
 
     override def preStart(): Unit = {
@@ -574,15 +577,19 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
           val newOffset = previousOffset + DemandThreshold
           // Move the consumer from its last known offset to its new one. Check if we are unblocked.
           val consumer = findAndRemoveConsumer(id, previousOffset)
-          addConsumer(consumer, newOffset)
+          if (consumer ne null) {
+            addConsumer(consumer, newOffset)
+          }
           checkUnblock(previousOffset)
         case NeedWakeup(id, previousOffset, currentOffset) =>
           // Move the consumer from its last known offset to its new one. Check if we are unblocked.
           val consumer = findAndRemoveConsumer(id, previousOffset)
-          addConsumer(consumer, currentOffset)
+          if (consumer ne null) {
+            addConsumer(consumer, currentOffset)
 
-          // Also check if the consumer is now unblocked since we published an element since it went asleep.
-          if (currentOffset != tail) consumer.callback.invoke(Wakeup)
+            // Also check if the consumer is now unblocked since we published an element since it went asleep.
+            if (currentOffset != tail) consumer.callback.invoke(Wakeup)
+          }
           checkUnblock(previousOffset)
 
         case RegistrationPending =>
@@ -650,10 +657,14 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
         consumer.callback.invoke(failMessage)
       }
 
-      // Notify registered consumers
+      // Notify registered consumers — skip null (empty) slots
       var idx = 0
       while (idx < consumerWheel.length) {
-        consumerWheel(idx).forEach(_.callback.invoke(failMessage))
+        val bucket = consumerWheel(idx)
+        if (bucket ne null) {
+          val itr = bucket.valuesIterator
+          while (itr.hasNext) itr.next().callback.invoke(failMessage)
+        }
         idx += 1
       }
       failStage(ex)
@@ -664,21 +675,19 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
      *
      * NB: You cannot remove a consumer without knowing its last offset! Consumers on the Source side always must
      * track this so this can be a fast operation.
+     *
+     * Uses LongMap.getOrNull + -= to avoid Option allocation on the hot path.
      */
     private def findAndRemoveConsumer(id: Long, offset: Int): Consumer = {
-      // TODO: Try to eliminate modulo division somehow...
       val wheelSlot = offset & WheelMask
-      val consumersInSlot = consumerWheel(wheelSlot)
-      var removedConsumer: Consumer = null
-      if (consumersInSlot.size() > 0) {
-        consumersInSlot.removeIf(consumer => {
-          if (consumer.id == id) {
-            removedConsumer = consumer
-            true
-          } else false
-        })
+      val bucket = consumerWheel(wheelSlot)
+      if (bucket eq null) return null
+      val consumer = bucket.getOrNull(id)
+      if (consumer ne null) {
+        bucket -= id
+        if (bucket.isEmpty) consumerWheel(wheelSlot) = null
       }
-      removedConsumer
+      consumer
     }
 
     /*
@@ -697,7 +706,7 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
       if (offsetOfConsumerRemoved == head) {
         // Try to advance along the wheel. We can skip any wheel slots which have no waiting Consumers, until
         // we either find a nonempty one, or we reached the end of the buffer.
-        while (consumerWheel(head & WheelMask).isEmpty && head != tail) {
+        while (isConsumerWheelSlotEmpty(head & WheelMask) && head != tail) {
           queue(head & Mask) = null
           head += 1
           unblocked = true
@@ -706,18 +715,35 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
       unblocked
     }
 
+    private def isConsumerWheelSlotEmpty(slot: Int): Boolean = {
+      val bucket = consumerWheel(slot)
+      (bucket eq null) || bucket.isEmpty
+    }
+
     private def addConsumer(consumer: Consumer, offset: Int): Unit = {
       val slot = offset & WheelMask
-      consumerWheel(slot).add(consumer)
+      val bucket = consumerWheel(slot)
+      if (bucket ne null) bucket.update(consumer.id, consumer)
+      else {
+        val newBucket = LongMap.empty[Consumer]
+        newBucket.update(consumer.id, consumer)
+        consumerWheel(slot) = newBucket
+      }
     }
 
     /*
      * Send a wakeup signal to all the Consumers at a certain wheel index. Note, this needs the actual index,
      * which is offset modulo (bufferSize + 1).
+     *
+     * Enumeration order of the bucket is not semantically significant — every consumer receives the same
+     * wakeup signal independently.
      */
     private def wakeupIdx(idx: Int): Unit = {
-      val itr = consumerWheel(idx).iterator
-      while (itr.hasNext) itr.next().callback.invoke(Wakeup)
+      val bucket = consumerWheel(idx)
+      if (bucket ne null) {
+        val itr = bucket.valuesIterator
+        while (itr.hasNext) itr.next().callback.invoke(Wakeup)
+      }
     }
 
     private def complete(): Unit = {
