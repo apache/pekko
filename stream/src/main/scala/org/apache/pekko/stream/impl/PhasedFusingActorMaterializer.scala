@@ -291,6 +291,7 @@ private final case class SavedIslandData(
             System.arraycopy(forwardWireKeys, idx + 1, forwardWireKeys, idx, forwardWireCount - idx)
             System.arraycopy(forwardWireValues, idx + 1, forwardWireValues, idx, forwardWireCount - idx)
           }
+          forwardWireValues(forwardWireCount) = null
           fw
         } else null
       } else null
