@@ -113,7 +113,7 @@ class JitSafeCompletionLatchInt extends GraphStageWithMaterializedValue[SinkShap
 
       override def onUpstreamFailure(ex: Throwable): Unit = {
         latch.countDown()
-        throw ex
+        failStage(ex)
       }
 
       setHandler(in, this)
