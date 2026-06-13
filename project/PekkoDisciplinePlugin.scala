@@ -110,6 +110,22 @@ object PekkoDisciplinePlugin extends AutoPlugin {
     "-Wconf:cat=deprecation:s",
     "-Wconf:cat=unchecked:s") ++ scala3Suppressions
 
+  // cat=unused:s does not match subcategories (unused-imports, unused-locals, etc.)
+  // in Scala 2.13's -Wconf category matching (exact string match, not hierarchical).
+  // Add explicit rules for each subcategory plus message-based patterns as fallback.
+  private val docsScala2Suppressions = Seq(
+    "-Wconf:cat=unused:s",
+    "-Wconf:cat=unused-imports:s",
+    "-Wconf:cat=unused-locals:s",
+    "-Wconf:cat=unused-pat-vars:s",
+    "-Wconf:cat=unused-params:s",
+    "-Wconf:cat=unused-privates:s",
+    "-Wconf:cat=unused-explicits:s",
+    "-Wconf:msg=Unused import:s",
+    "-Wconf:msg=is never used:s",
+    "-Wconf:cat=deprecation:s",
+    "-Wconf:cat=unchecked:s")
+
   /**
    * We are a little less strict in docs
    */
@@ -119,16 +135,16 @@ object PekkoDisciplinePlugin extends AutoPlugin {
       Compile / scalacOptions ++=
         (CrossVersion.partialVersion(scalaVersion.value).get match {
           case (3, _)  => scala3DocSuppressions
-          case (2, 13) => Seq("-Wconf:any:e", "-Wconf:cat=unused:s", "-Wconf:cat=deprecation:s", "-Wconf:cat=unchecked:s")
-          case (2, 12) => Seq("-Wconf:cat=unused:s", "-Wconf:cat=deprecation:s", "-Wconf:cat=unchecked:s", "-Wconf:any:e")
+          case (2, 13) => docsScala2Suppressions
+          case (2, 12) => docsScala2Suppressions :+ "-Wconf:any:e"
         }),
       Test / scalacOptions --= Seq("-Xlint", "-unchecked", "-deprecation"),
       Test / scalacOptions --= defaultScalaOptions.value,
       Test / scalacOptions ++=
         (CrossVersion.partialVersion(scalaVersion.value).get match {
           case (3, _)  => scala3DocSuppressions
-          case (2, 13) => Seq("-Wconf:any:e", "-Wconf:cat=unused:s", "-Wconf:cat=deprecation:s", "-Wconf:cat=unchecked:s")
-          case (2, 12) => Seq("-Wconf:cat=unused:s", "-Wconf:cat=deprecation:s", "-Wconf:cat=unchecked:s", "-Wconf:any:e")
+          case (2, 13) => "-Wconf:any:e" +: docsScala2Suppressions
+          case (2, 12) => docsScala2Suppressions :+ "-Wconf:any:e"
         }),
       Compile / doc / scalacOptions := Seq())
 
