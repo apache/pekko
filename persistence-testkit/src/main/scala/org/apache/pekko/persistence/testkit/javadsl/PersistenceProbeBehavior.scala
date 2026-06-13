@@ -17,12 +17,13 @@ import java.util.{ List, Set }
 
 import scala.collection.immutable.{ Set => ScalaSet }
 
+import org.jspecify.annotations.Nullable
+
 import org.apache.pekko
 import pekko.actor.testkit.typed.javadsl.BehaviorTestKit
 import pekko.actor.typed.Behavior
 import pekko.annotation.DoNotInherit
 import pekko.persistence.testkit.internal.PersistenceProbeImpl
-import org.jspecify.annotations.Nullable
 
 /**
  * Factory methods to create PersistenceProbeBehavior instances for testing.

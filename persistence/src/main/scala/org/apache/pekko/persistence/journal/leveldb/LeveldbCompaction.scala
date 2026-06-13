@@ -71,7 +71,7 @@ private[persistence] trait CompactionSegmentManagement {
 
   import CompactionSegmentManagement._
 
-  private[this] var latestCompactionSegments = Map.empty[String, Long]
+  private var latestCompactionSegments = Map.empty[String, Long]
 
   def compactionIntervals: Map[String, Long]
 

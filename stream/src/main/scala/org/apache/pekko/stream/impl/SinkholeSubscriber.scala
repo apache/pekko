@@ -25,7 +25,7 @@ import org.reactivestreams.{ Subscriber, Subscription }
  * INTERNAL API
  */
 @InternalApi private[pekko] final class SinkholeSubscriber[T](whenComplete: Promise[Done]) extends Subscriber[T] {
-  private[this] var running: Boolean = false
+  private var running: Boolean = false
 
   override def onSubscribe(sub: Subscription): Unit = {
     ReactiveStreamsCompliance.requireNonNullSubscription(sub)

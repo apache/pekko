@@ -1083,7 +1083,7 @@ object ByteString {
       first.length + second.length == length,
       s"ByteString2 length ${first.length + second.length} did not match $length")
 
-    private[this] val firstLength: Int = first.length
+    private val firstLength: Int = first.length
 
     def apply(idx: Int): Byte =
       if (0 <= idx && idx < length) {
@@ -1338,7 +1338,7 @@ object ByteString {
       ByteString1C(result)
     }
 
-    private[this] def byteAt(offset: Int, firstLength: Int): Byte =
+    private def byteAt(offset: Int, firstLength: Int): Byte =
       if (offset < firstLength) first.byteAtUnchecked(offset) else second.byteAtUnchecked(offset - firstLength)
 
     private[pekko] override def byteAtUnchecked(offset: Int): Byte = {
@@ -2759,7 +2759,7 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
   import ByteString.{ ByteString1, ByteString1C, ByteString2, ByteStrings }
   private var _length: Int = 0
   private val _builder: VectorBuilder[ByteString1] = new VectorBuilder[ByteString1]()
-  private var _temp: Array[Byte] = _
+  private var _temp: Array[Byte] = null
   private var _tempLength: Int = 0
   private var _tempCapacity: Int = 0
 
@@ -2852,7 +2852,7 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
       case bs: ByteString          => addAll(bs)
       case xs: WrappedArray.ofByte =>
         if (xs.nonEmpty) putByteArrayUnsafe(xs.array.clone)
-      case seq: collection.IndexedSeq[Byte] if shouldResizeTempFor(seq.length) =>
+      case seq: (collection.IndexedSeq[Byte] @unchecked) if shouldResizeTempFor(seq.length) =>
         if (seq.nonEmpty) {
           val copied = Array.from(xs)
 
@@ -2860,7 +2860,7 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
           _builder += ByteString.ByteString1(copied)
           _length += seq.length
         }
-      case seq: collection.IndexedSeq[Byte] =>
+      case seq: (collection.IndexedSeq[Byte] @unchecked) =>
         if (seq.nonEmpty) {
           ensureTempSize(_tempLength + seq.size)
           seq.copyToArray(_temp, _tempLength)

@@ -18,9 +18,6 @@ import java.util.concurrent.atomic.AtomicInteger
 import scala.util.Success
 import scala.util.Try
 
-import com.typesafe.config.ConfigFactory
-import org.scalatest.wordspec.AnyWordSpecLike
-
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl._
 import pekko.actor.typed.scaladsl.Behaviors
@@ -29,6 +26,10 @@ import pekko.persistence.testkit.PersistenceTestKitSnapshotPlugin
 import pekko.persistence.typed.DeleteEventsCompleted
 import pekko.persistence.typed.EventSourcedSignal
 import pekko.persistence.typed.PersistenceId
+
+import org.scalatest.wordspec.AnyWordSpecLike
+
+import com.typesafe.config.ConfigFactory
 
 object EventSourcedBehaviorRetentionOnlyOneSnapshotSpec {
   private val config = ConfigFactory.parseString(s"""

@@ -170,8 +170,8 @@ import org.reactivestreams.Subscriber
   override def createLogicAndMaterializedValue(inheritedAttributes: Attributes) = {
     val p: Promise[immutable.Seq[T]] = Promise()
     (new GraphStageLogic(shape) with InHandler {
-        private[this] val buffer = mutable.Queue.empty[T]
-        private[this] var count = 0
+        private val buffer = mutable.Queue.empty[T]
+        private var count = 0
 
         override def preStart(): Unit = pull(in)
 

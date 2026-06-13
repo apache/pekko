@@ -22,14 +22,14 @@ import scala.jdk.DurationConverters._
 import scala.jdk.FutureConverters._
 import scala.jdk.OptionConverters._
 
+import org.jspecify.annotations.Nullable
+
 import org.apache.pekko
 import pekko.annotation.ApiMayChange
 import pekko.event.{ LogMarker, LoggingAdapter, MarkerLoggingAdapter }
 import pekko.japi.{ function, Pair }
 import pekko.stream._
 import pekko.util.ConstantFun
-
-import org.jspecify.annotations.Nullable
 
 object FlowWithContext {
 
@@ -428,7 +428,7 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
         .map { case (i, c) => Pair(i, c) }
         .viaMat(delegate.asScala.map(_.toScala))(scaladsl.Keep.right))
 
-  private[this] def viaScala[In2, CtxIn2, Out2, CtxOut2, Mat2](
+  private def viaScala[In2, CtxIn2, Out2, CtxOut2, Mat2](
       f: scaladsl.FlowWithContext[In, CtxIn, Out, CtxOut, Mat] => scaladsl.FlowWithContext[
         In2, CtxIn2, Out2, CtxOut2, Mat2]): FlowWithContext[In2, CtxIn2, Out2, CtxOut2, Mat2] =
     f(this.asScala).asJava

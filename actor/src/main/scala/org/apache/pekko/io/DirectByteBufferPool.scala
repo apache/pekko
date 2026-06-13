@@ -36,8 +36,8 @@ trait BufferPool {
  * benefit to wrapping in-heap JVM data when writing with NIO.
  */
 private[pekko] class DirectByteBufferPool(defaultBufferSize: Int, maxPoolEntries: Int) extends BufferPool {
-  private[this] val pool: Array[ByteBuffer] = new Array[ByteBuffer](maxPoolEntries)
-  private[this] var buffersInPool: Int = 0
+  private val pool: Array[ByteBuffer] = new Array[ByteBuffer](maxPoolEntries)
+  private var buffersInPool: Int = 0
 
   def acquire(): ByteBuffer =
     takeBufferFromPool()

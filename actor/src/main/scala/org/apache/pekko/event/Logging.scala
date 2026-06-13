@@ -51,7 +51,7 @@ trait LoggingBus extends ActorEventBus {
 
   private val guard = new ReentrantLock()
   private var loggers = Seq.empty[ActorRef]
-  @volatile private var _logLevel: LogLevel = _
+  @volatile private var _logLevel: LogLevel = OffLevel
 
   /**
    * Query currently set log level. See object Logging for more information.

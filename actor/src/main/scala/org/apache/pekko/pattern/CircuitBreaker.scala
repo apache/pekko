@@ -261,14 +261,14 @@ class CircuitBreaker(
    */
   @nowarn("msg=is never updated")
   @volatile
-  private[this] var _currentStateDoNotCallMeDirectly: State = Closed
+  private var _currentStateDoNotCallMeDirectly: State = Closed
 
   /**
    * Holds reference to current resetTimeout of CircuitBreaker - *access only via helper methods*
    */
   @nowarn("msg=is never updated")
   @volatile
-  private[this] var _currentResetTimeoutDoNotCallMeDirectly: FiniteDuration = resetTimeout
+  private var _currentResetTimeoutDoNotCallMeDirectly: FiniteDuration = resetTimeout
 
   @nowarn private def _preventPrivateUnusedErasure = {
     _currentStateDoNotCallMeDirectly
@@ -282,7 +282,7 @@ class CircuitBreaker(
    * @param newState Next state on transition
    * @return Whether the previous state matched correctly
    */
-  private[this] def swapState(oldState: State, newState: State): Boolean =
+  private def swapState(oldState: State, newState: State): Boolean =
     AbstractCircuitBreaker.stateHandle.compareAndSet(this, oldState, newState)
 
   /**
@@ -290,7 +290,7 @@ class CircuitBreaker(
    *
    * @return Reference to current state
    */
-  private[this] def currentState: State =
+  private def currentState: State =
     // volatile read: state is published across threads via compareAndSet in swapState;
     // restores the getObjectVolatile semantics this had before the VarHandle migration
     AbstractCircuitBreaker.stateHandle.getVolatile(this)
@@ -298,13 +298,13 @@ class CircuitBreaker(
   /**
    * Helper method for updating the underlying resetTimeout via VarHandle
    */
-  private[this] def swapResetTimeout(oldResetTimeout: FiniteDuration, newResetTimeout: FiniteDuration): Boolean =
+  private def swapResetTimeout(oldResetTimeout: FiniteDuration, newResetTimeout: FiniteDuration): Boolean =
     AbstractCircuitBreaker.resetTimeoutHandle.compareAndSet(this, oldResetTimeout, newResetTimeout)
 
   /**
    * Helper method for accessing to the underlying resetTimeout via VarHandle
    */
-  private[this] def currentResetTimeout: FiniteDuration =
+  private def currentResetTimeout: FiniteDuration =
     // volatile read: see currentState; published via compareAndSet in swapResetTimeout
     AbstractCircuitBreaker.resetTimeoutHandle.getVolatile(this)
 

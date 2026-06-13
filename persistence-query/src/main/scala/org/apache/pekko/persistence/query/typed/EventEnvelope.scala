@@ -13,8 +13,8 @@
 
 package org.apache.pekko.persistence.query.typed
 
-import java.util.Optional
 import java.util.{ Set => JSet }
+import java.util.Optional
 
 import org.apache.pekko
 import pekko.annotation.ApiMayChange

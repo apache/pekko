@@ -62,12 +62,11 @@ private[pekko] final class ShardedDaemonProcessImpl(system: ActorSystem[?])
 
   def init[T](name: String, numberOfInstances: Int, behaviorFactory: Int => Behavior[T])(
       implicit classTag: ClassTag[T]): Unit =
-    init(name, numberOfInstances, behaviorFactory, ShardedDaemonProcessSettings(system), None, None)(classTag)
+    init(name, numberOfInstances, behaviorFactory, ShardedDaemonProcessSettings(system), None, None)
 
   override def init[T](name: String, numberOfInstances: Int, behaviorFactory: Int => Behavior[T], stopMessage: T)(
       implicit classTag: ClassTag[T]): Unit =
-    init(name, numberOfInstances, behaviorFactory, ShardedDaemonProcessSettings(system), Some(stopMessage), None)(
-      classTag)
+    init(name, numberOfInstances, behaviorFactory, ShardedDaemonProcessSettings(system), Some(stopMessage), None)
 
   override def init[T](
       name: String,
@@ -214,22 +213,26 @@ private[pekko] final class ShardedDaemonProcessImpl(system: ActorSystem[?])
       messageClass: Class[T],
       name: String,
       numberOfInstances: Int,
-      behaviorFactory: IntFunction[Behavior[T]]): Unit =
-    init(name, numberOfInstances, n => behaviorFactory(n))(ClassTag(messageClass))
+      behaviorFactory: IntFunction[Behavior[T]]): Unit = {
+    implicit val ct: ClassTag[T] = ClassTag(messageClass)
+    init(name, numberOfInstances, n => behaviorFactory(n))
+  }
 
   override def init[T](
       messageClass: Class[T],
       name: String,
       numberOfInstances: Int,
       behaviorFactory: IntFunction[Behavior[T]],
-      stopMessage: T): Unit =
+      stopMessage: T): Unit = {
+    implicit val ct: ClassTag[T] = ClassTag(messageClass)
     init(
       name,
       numberOfInstances,
       n => behaviorFactory(n),
       ShardedDaemonProcessSettings(system),
       Some(stopMessage),
-      None)(ClassTag(messageClass))
+      None)
+  }
 
   override def init[T](
       messageClass: Class[T],
@@ -237,8 +240,10 @@ private[pekko] final class ShardedDaemonProcessImpl(system: ActorSystem[?])
       numberOfInstances: Int,
       behaviorFactory: IntFunction[Behavior[T]],
       settings: ShardedDaemonProcessSettings,
-      stopMessage: Optional[T]): Unit =
-    init(name, numberOfInstances, n => behaviorFactory(n), settings, stopMessage.toScala, None)(ClassTag(messageClass))
+      stopMessage: Optional[T]): Unit = {
+    implicit val ct: ClassTag[T] = ClassTag(messageClass)
+    init(name, numberOfInstances, n => behaviorFactory(n), settings, stopMessage.toScala, None)
+  }
 
   override def init[T](
       messageClass: Class[T],
@@ -247,14 +252,16 @@ private[pekko] final class ShardedDaemonProcessImpl(system: ActorSystem[?])
       behaviorFactory: IntFunction[Behavior[T]],
       settings: ShardedDaemonProcessSettings,
       stopMessage: Optional[T],
-      shardAllocationStrategy: Optional[ShardAllocationStrategy]): Unit =
+      shardAllocationStrategy: Optional[ShardAllocationStrategy]): Unit = {
+    implicit val ct: ClassTag[T] = ClassTag(messageClass)
     init(
       name,
       numberOfInstances,
       n => behaviorFactory(n),
       settings,
       stopMessage.toScala,
-      shardAllocationStrategy.toScala)(ClassTag(messageClass))
+      shardAllocationStrategy.toScala)
+  }
 
   override def initWithContext[T](
       messageClass: Class[T],
@@ -262,8 +269,8 @@ private[pekko] final class ShardedDaemonProcessImpl(system: ActorSystem[?])
       initialNumberOfInstances: Int,
       behaviorFactory: java.util.function.Function[ShardedDaemonProcessContext, Behavior[T]])
       : ActorRef[ShardedDaemonProcessCommand] = {
-    val classTag = ClassTag[T](messageClass)
-    internalInitWithContext[T](name, initialNumberOfInstances, behaviorFactory.apply, None, None, None, true)(classTag)
+    implicit val classTag: ClassTag[T] = ClassTag[T](messageClass)
+    internalInitWithContext[T](name, initialNumberOfInstances, behaviorFactory.apply, None, None, None, true)
   }
 
   override def initWithContext[T](
@@ -290,7 +297,7 @@ private[pekko] final class ShardedDaemonProcessImpl(system: ActorSystem[?])
       settings: ShardedDaemonProcessSettings,
       stopMessage: Optional[T],
       shardAllocationStrategy: Optional[ShardAllocationStrategy]): ActorRef[ShardedDaemonProcessCommand] = {
-    val classTag = ClassTag[T](messageClass)
+    implicit val classTag: ClassTag[T] = ClassTag[T](messageClass)
     internalInitWithContext(
       name,
       initialNumberOfInstances,
@@ -298,6 +305,6 @@ private[pekko] final class ShardedDaemonProcessImpl(system: ActorSystem[?])
       Some(settings),
       stopMessage.toScala,
       shardAllocationStrategy.toScala,
-      supportsRescale = true)(classTag)
+      supportsRescale = true)
   }
 }

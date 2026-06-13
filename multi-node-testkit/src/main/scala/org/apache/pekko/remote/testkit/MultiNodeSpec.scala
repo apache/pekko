@@ -342,7 +342,7 @@ abstract class MultiNodeSpec(
           }
       })
 
-  val log: LoggingAdapter = Logging(system, this)(_.getClass.getName)
+  val log: LoggingAdapter = Logging(system, classOf[MultiNodeSpec])
 
   /**
    * Enrich `.await()` onto all Awaitables, using remaining duration from the innermost

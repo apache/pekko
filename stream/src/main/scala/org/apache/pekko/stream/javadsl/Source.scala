@@ -20,14 +20,16 @@ import java.util.concurrent.{ CompletableFuture, CompletionStage }
 import scala.annotation.{ nowarn, varargs }
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable
-import scala.concurrent.Promise
 import scala.concurrent.ExecutionContext
+import scala.concurrent.Promise
 import scala.jdk.CollectionConverters._
 import scala.jdk.DurationConverters._
 import scala.jdk.FutureConverters._
 import scala.jdk.OptionConverters._
 import scala.reflect.ClassTag
 import scala.util.control.NonFatal
+
+import org.jspecify.annotations.Nullable
 
 import org.apache.pekko
 import pekko.{ Done, NotUsed }
@@ -41,12 +43,11 @@ import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.fusing.{ RangeSource, StatefulMapConcat, ZipWithIndexJava }
 import pekko.util._
 
-import org.jspecify.annotations.Nullable
 import org.reactivestreams.{ Publisher, Subscriber }
 
 /** Java API */
 object Source {
-  private[this] val _empty = new Source[Any, NotUsed](scaladsl.Source.empty)
+  private val _empty = new Source[Any, NotUsed](scaladsl.Source.empty)
 
   /**
    * Create a `Source` with no elements, i.e. an empty stream that is completed immediately

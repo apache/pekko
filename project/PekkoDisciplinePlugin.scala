@@ -75,20 +75,30 @@ object PekkoDisciplinePlugin extends AutoPlugin {
     "pekko-testkit")
 
   lazy val defaultScalaOptions = Def.setting(CrossVersion.partialVersion(scalaVersion.value).get match {
-    case (3, _)  => "-Wconf:cat=unused-nowarn:s,cat=other-shadowing:s,any:e"
-    case (2, 13) => "-Wconf:any:e,cat=unused-nowarn:s,cat=other-shadowing:s"
-    case (2, 12) => "-Wconf:cat=unused-nowarn:s,any:e"
+    case (3, _) =>
+      Seq(
+        "-Wconf:cat=unused-nowarn:s,cat=other-shadowing:s," +
+        "msg=Implicit parameters should be provided with a .using. clause:s," +
+        "msg=is no longer supported for vararg splices:s," +
+        "msg=with as a type operator has been deprecated:s," +
+        "msg=SerialVersionUID does nothing on a trait:s," +
+        "msg=has been deprecated.*use .= uninitialized. instead:s," +
+        "msg=trailing.*_.*for eta-expansion is unnecessary:s," +
+        "msg=is not declared infix:s," +
+        "msg=._. is deprecated for wildcard arguments of types:s," +
+        "msg=Ignoring ..this.. qualifier:s," +
+        "msg=Unreachable case except for null:s," +
+        "msg=Classic remoting is deprecated:s," +
+        "msg=Use EventSourcedBehavior:s," +
+        "msg=migration-to-pekko-grpc:s," +
+        "any:e")
+    case (2, 13) => Seq("-Wconf:any:e", "-Wconf:cat=unused-nowarn:s", "-Wconf:cat=other-shadowing:s")
+    case (2, 12) => Seq("-Wconf:cat=unused-nowarn:s", "-Wconf:any:e")
   })
 
   lazy val nowarnSettings = Seq(
-    Compile / scalacOptions ++= (
-      if (scalaVersion.value.startsWith("3.")) Nil
-      else Seq(defaultScalaOptions.value)
-    ),
-    Test / scalacOptions ++= (
-      if (scalaVersion.value.startsWith("3.")) Nil
-      else Seq(defaultScalaOptions.value)
-    ),
+    Compile / scalacOptions ++= defaultScalaOptions.value,
+    Test / scalacOptions ++= defaultScalaOptions.value,
     Compile / doc / scalacOptions := Seq())
 
   // ignore Scala compile warnings for Java 20+
@@ -101,20 +111,50 @@ object PekkoDisciplinePlugin extends AutoPlugin {
    */
   lazy val docs =
     Seq(
-      Compile / scalacOptions -= defaultScalaOptions.value,
+      Compile / scalacOptions --= defaultScalaOptions.value,
       Compile / scalacOptions ++=
         (CrossVersion.partialVersion(scalaVersion.value).get match {
-          case (3, _)  => Nil
-          case (2, 13) => Seq("-Wconf:any:e,cat=unused:s,cat=deprecation:s,cat=unchecked:s")
-          case (2, 12) => Seq("-Wconf:cat=unused:s,cat=deprecation:s,cat=unchecked:s,any:e")
+          case (3, _) =>
+            Seq(
+              "-Wconf:cat=unused:s",
+              "-Wconf:cat=deprecation:s",
+              "-Wconf:cat=unchecked:s",
+              "-Wconf:msg=Implicit parameters should be provided with a .using. clause:s",
+              "-Wconf:msg=is no longer supported for vararg splices:s",
+              "-Wconf:msg=with as a type operator has been deprecated:s",
+              "-Wconf:msg=SerialVersionUID does nothing on a trait:s",
+              "-Wconf:msg=has been deprecated.*use .= uninitialized. instead:s",
+              "-Wconf:msg=trailing.*_.*for eta-expansion is unnecessary:s",
+              "-Wconf:msg=is not declared infix:s",
+              "-Wconf:msg=._. is deprecated for wildcard arguments of types:s",
+              "-Wconf:msg=Ignoring ..this.. qualifier:s")
+          case (2, 13) =>
+            Seq("-Wconf:cat=unused:s", "-Wconf:cat=deprecation:s", "-Wconf:cat=unchecked:s", "-Wconf:any:e")
+          case (2, 12) =>
+            Seq("-Wconf:cat=unused:s", "-Wconf:cat=deprecation:s", "-Wconf:cat=unchecked:s", "-Wconf:any:e")
         }),
       Test / scalacOptions --= Seq("-Xlint", "-unchecked", "-deprecation"),
-      Test / scalacOptions -= defaultScalaOptions.value,
+      Test / scalacOptions --= defaultScalaOptions.value,
       Test / scalacOptions ++=
         (CrossVersion.partialVersion(scalaVersion.value).get match {
-          case (3, _)  => Nil
-          case (2, 13) => Seq("-Wconf:any:e,cat=unused:s,cat=deprecation:s,cat=unchecked:s")
-          case (2, 12) => Seq("-Wconf:cat=unused:s,cat=deprecation:s,cat=unchecked:s,any:e")
+          case (3, _) =>
+            Seq(
+              "-Wconf:cat=unused:s",
+              "-Wconf:cat=deprecation:s",
+              "-Wconf:cat=unchecked:s",
+              "-Wconf:msg=Implicit parameters should be provided with a .using. clause:s",
+              "-Wconf:msg=is no longer supported for vararg splices:s",
+              "-Wconf:msg=with as a type operator has been deprecated:s",
+              "-Wconf:msg=SerialVersionUID does nothing on a trait:s",
+              "-Wconf:msg=has been deprecated.*use .= uninitialized. instead:s",
+              "-Wconf:msg=trailing.*_.*for eta-expansion is unnecessary:s",
+              "-Wconf:msg=is not declared infix:s",
+              "-Wconf:msg=._. is deprecated for wildcard arguments of types:s",
+              "-Wconf:msg=Ignoring ..this.. qualifier:s")
+          case (2, 13) =>
+            Seq("-Wconf:cat=unused:s", "-Wconf:cat=deprecation:s", "-Wconf:cat=unchecked:s", "-Wconf:any:e")
+          case (2, 12) =>
+            Seq("-Wconf:cat=unused:s", "-Wconf:cat=deprecation:s", "-Wconf:cat=unchecked:s", "-Wconf:any:e")
         }),
       Compile / doc / scalacOptions := Seq())
 

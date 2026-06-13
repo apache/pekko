@@ -479,7 +479,7 @@ object Zip {
   def create[A, B]: Graph[FanInShape2[A, B, A Pair B], NotUsed] =
     ZipWith.create(_toPair.asInstanceOf[Function2[A, B, A Pair B]])
 
-  private[this] final val _toPair: Function2[Any, Any, Any Pair Any] = (a: Any, b: Any) => new Pair(a, b)
+  private final val _toPair: Function2[Any, Any, Any Pair Any] = (a: Any, b: Any) => new Pair(a, b)
 }
 
 /**
@@ -507,7 +507,7 @@ object ZipLatest {
   def create[A, B]: Graph[FanInShape2[A, B, A Pair B], NotUsed] =
     ZipLatestWith.create(_toPair.asInstanceOf[Function2[A, B, A Pair B]])
 
-  private[this] final val _toPair: Function2[Any, Any, Any Pair Any] = (a: Any, b: Any) => new Pair(a, b)
+  private final val _toPair: Function2[Any, Any, Any Pair Any] = (a: Any, b: Any) => new Pair(a, b)
 }
 
 /**

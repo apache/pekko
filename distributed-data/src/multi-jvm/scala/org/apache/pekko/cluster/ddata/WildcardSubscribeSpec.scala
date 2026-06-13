@@ -15,13 +15,13 @@ package org.apache.pekko.cluster.ddata
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko.cluster.Cluster
 import org.apache.pekko.remote.testconductor.RoleName
 import org.apache.pekko.remote.testkit.MultiNodeConfig
 import org.apache.pekko.remote.testkit.MultiNodeSpec
 import org.apache.pekko.testkit._
+
+import com.typesafe.config.ConfigFactory
 
 object WildcardSubscribeSpec extends MultiNodeConfig {
   val first = role("first")
@@ -45,8 +45,8 @@ class WildcardSubscribeSpecMultiJvmNode1 extends WildcardSubscribeSpec
 class WildcardSubscribeSpecMultiJvmNode2 extends WildcardSubscribeSpec
 
 class WildcardSubscribeSpec extends MultiNodeSpec(WildcardSubscribeSpec) with STMultiNodeSpec with ImplicitSender {
-  import WildcardSubscribeSpec._
   import Replicator._
+  import WildcardSubscribeSpec._
 
   override def initialParticipants: Int = roles.size
 

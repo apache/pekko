@@ -15,10 +15,10 @@ package org.apache.pekko.dispatch
 
 import java.util.concurrent.{ ExecutorService, ForkJoinPool, ForkJoinTask, ThreadFactory, TimeUnit }
 
-import com.typesafe.config.Config
-
 import org.apache.pekko.annotation.InternalApi
 import org.apache.pekko.util.JavaVersion
+
+import com.typesafe.config.Config
 
 object ForkJoinExecutorConfigurator {
 

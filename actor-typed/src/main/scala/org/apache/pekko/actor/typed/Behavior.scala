@@ -98,8 +98,10 @@ class SuperviseBehavior[T] private[pekko] (
    *
    * Only exceptions of the given type (and their subclasses) will be handled by this supervision behavior.
    */
-  def onFailure[Thr <: Throwable](clazz: Class[Thr], strategy: SupervisorStrategy): SuperviseBehavior[T] =
-    onFailure(strategy)(ClassTag(clazz))
+  def onFailure[Thr <: Throwable](clazz: Class[Thr], strategy: SupervisorStrategy): SuperviseBehavior[T] = {
+    implicit val ct: ClassTag[Thr] = ClassTag(clazz)
+    onFailure(strategy)
+  }
 
   private[pekko] def unwrap: Behavior[T] = wrapped
 }
