@@ -292,6 +292,10 @@ private final case class SavedIslandData(
             System.arraycopy(forwardWireValues, idx + 1, forwardWireValues, idx, forwardWireCount - idx)
           }
           forwardWireValues(forwardWireCount) = null
+          if (forwardWireCount == 0) {
+            forwardWireKeys = null
+            forwardWireValues = null
+          }
           fw
         } else null
       } else null
@@ -838,6 +842,7 @@ private[pekko] object GraphStageIsland {
       conn.id = i
       i += 1
     }
+    outConnections = null
 
     shell.connections = finalConnections
     shell.logics = logics.toArray(GraphStageIsland.emptyLogicArray)
