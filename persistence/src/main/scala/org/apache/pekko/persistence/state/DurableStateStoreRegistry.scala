@@ -97,13 +97,13 @@ class DurableStateStoreRegistry(system: ExtendedActorSystem)
 
   /**
    * Scala API: Returns the [[pekko.persistence.state.scaladsl.DurableStateStore]] specified by the given
-   * configuration entry. The provided `pluginConfig` is used to configure the plugin at runtime, taking
+   * configuration entry. The provided `runtimeConfig` is used to configure the plugin at runtime, taking
    * precedence over the plugin configuration defined in the actor system configuration.
    *
    * @since 2.0.0
    */
-  final def durableStateStoreFor[T <: scaladsl.DurableStateStore[?]](pluginId: String, pluginConfig: Config): T = {
-    pluginFor(pluginIdOrDefault(pluginId, pluginConfig), pluginConfig).scaladslPlugin.asInstanceOf[T]
+  final def durableStateStoreFor[T <: scaladsl.DurableStateStore[?]](pluginId: String, runtimeConfig: Config): T = {
+    pluginFor(pluginIdOrDefault(pluginId, runtimeConfig), runtimeConfig).scaladslPlugin.asInstanceOf[T]
   }
 
   /**
@@ -118,7 +118,7 @@ class DurableStateStoreRegistry(system: ExtendedActorSystem)
 
   /**
    * Java API: Returns the [[pekko.persistence.state.javadsl.DurableStateStore]] specified by the given
-   * configuration entry. The provided `pluginConfig` is used to configure the plugin at runtime, taking
+   * configuration entry. The provided `runtimeConfig` is used to configure the plugin at runtime, taking
    * precedence over the plugin configuration defined in the actor system configuration.
    *
    * @since 2.0.0
@@ -126,8 +126,8 @@ class DurableStateStoreRegistry(system: ExtendedActorSystem)
   final def getDurableStateStoreFor[T <: javadsl.DurableStateStore[?]](
       @nowarn("msg=never used") clazz: Class[T], // FIXME generic Class could be problematic in Java
       pluginId: String,
-      pluginConfig: Config): T = {
-    pluginFor(pluginIdOrDefault(pluginId, pluginConfig), pluginConfig).javadslPlugin.asInstanceOf[T]
+      runtimeConfig: Config): T = {
+    pluginFor(pluginIdOrDefault(pluginId, runtimeConfig), runtimeConfig).javadslPlugin.asInstanceOf[T]
   }
 
 }
