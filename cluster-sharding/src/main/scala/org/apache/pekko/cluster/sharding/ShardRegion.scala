@@ -50,7 +50,7 @@ object ShardRegion {
 
   /**
    * INTERNAL API
-   * Factory method for the [[pekko.actor.Props]] of the [[ShardRegion]] actor.
+   * Factory method for the [[pekko.actor.Props]] of the `ShardRegion` actor.
    */
   private[pekko] def props(
       typeName: String,
@@ -75,7 +75,7 @@ object ShardRegion {
 
   /**
    * INTERNAL API
-   * Factory method for the [[pekko.actor.Props]] of the [[ShardRegion]] actor
+   * Factory method for the [[pekko.actor.Props]] of the `ShardRegion` actor
    * when using it in proxy only mode.
    */
   private[pekko] def proxyProps(
@@ -113,7 +113,7 @@ object ShardRegion {
   type Msg = Any
 
   /**
-   * Interface of the partial function used by the [[ShardRegion]] to
+   * Interface of the partial function used by the `ShardRegion` to
    * extract the entity id and the message to send to the entity from an
    * incoming message. The implementation is application specific.
    * If the partial function does not match the message will be
@@ -125,7 +125,7 @@ object ShardRegion {
   type ExtractEntityId = PartialFunction[Msg, (EntityId, Msg)]
 
   /**
-   * Interface of the function used by the [[ShardRegion]] to
+   * Interface of the function used by the `ShardRegion` to
    * extract the shard id from an incoming message.
    * Only messages that passed the [[ExtractEntityId]] will be used
    * as input to this function.
