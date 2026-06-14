@@ -97,7 +97,8 @@ object PekkoBuild {
         "-feature",
         "-unchecked",
         // 'blessed' since 2.13.1
-        "-language:higherKinds")
+        "-language:higherKinds",
+        "-Yfuture-lazy-vals")
     } else {
       Seq(
         "-encoding",
