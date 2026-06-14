@@ -15,32 +15,27 @@ package jdocs.stream.operators;
 
 // #imports
 // #range-imports
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import org.apache.pekko.Done;
 import org.apache.pekko.NotUsed;
+import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.actor.testkit.typed.javadsl.ManualTime;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
-import org.apache.pekko.stream.javadsl.Source;
-// #range-imports
-
-// #actor-ref-imports
-import org.apache.pekko.actor.ActorRef;
-import org.apache.pekko.stream.OverflowStrategy;
 import org.apache.pekko.stream.CompletionStrategy;
-import org.apache.pekko.stream.javadsl.Sink;
-import org.apache.pekko.testkit.TestProbe;
-// #actor-ref-imports
-
-// #maybe
+import org.apache.pekko.stream.OverflowStrategy;
 import org.apache.pekko.stream.javadsl.RunnableGraph;
-import java.util.concurrent.CompletableFuture;
+import org.apache.pekko.stream.javadsl.Sink;
+import org.apache.pekko.stream.javadsl.Source;
+import org.apache.pekko.testkit.TestProbe;
+
+// #range-imports
+// #actor-ref-imports
+// #actor-ref-imports
 // #maybe
-
-import java.util.Arrays;
-import java.util.Optional;
-
-// #imports
-
+// #maybe
 public class SourceDocExamples {
 
   public static final TestKitJunitResource testKit = new TestKitJunitResource(ManualTime.config());

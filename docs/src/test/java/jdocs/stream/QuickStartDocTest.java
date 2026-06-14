@@ -14,27 +14,23 @@
 package jdocs.stream;
 
 // #stream-imports
-import org.apache.pekko.stream.*;
-import org.apache.pekko.stream.javadsl.*;
-// #stream-imports
-
-// #other-imports
-import org.apache.pekko.Done;
-import org.apache.pekko.NotUsed;
-import org.apache.pekko.actor.ActorSystem;
-import org.apache.pekko.util.ByteString;
-
-import java.nio.file.Paths;
 import java.math.BigInteger;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
-// #other-imports
-
 import jdocs.AbstractJavaTest;
-
+import org.apache.pekko.Done;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.stream.*;
+import org.apache.pekko.stream.javadsl.*;
+import org.apache.pekko.util.ByteString;
 import org.junit.jupiter.api.Test;
 
+// #stream-imports
+// #other-imports
+// #other-imports
 /**
  * This class is not meant to be run as a test in the test suite, but it is set up such that it can
  * be run interactively from within an IDE.

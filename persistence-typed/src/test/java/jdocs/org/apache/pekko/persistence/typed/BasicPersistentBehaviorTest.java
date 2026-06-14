@@ -13,6 +13,12 @@
 
 package jdocs.org.apache.pekko.persistence.typed;
 
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.SupervisorStrategy;
@@ -20,27 +26,19 @@ import org.apache.pekko.actor.typed.javadsl.ActorContext;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.apache.pekko.persistence.typed.DeleteEventsFailed;
 import org.apache.pekko.persistence.typed.DeleteSnapshotsFailed;
+import org.apache.pekko.persistence.typed.PersistenceId;
 import org.apache.pekko.persistence.typed.SnapshotFailed;
 import org.apache.pekko.persistence.typed.SnapshotSelectionCriteria;
 import org.apache.pekko.persistence.typed.javadsl.CommandHandler;
 import org.apache.pekko.persistence.typed.javadsl.Effect;
-import org.apache.pekko.persistence.typed.javadsl.Recovery;
 import org.apache.pekko.persistence.typed.javadsl.EventHandler;
-// #behavior
 import org.apache.pekko.persistence.typed.javadsl.EventSourcedBehavior;
-import org.apache.pekko.persistence.typed.PersistenceId;
-
-// #behavior
+import org.apache.pekko.persistence.typed.javadsl.Recovery;
 import org.apache.pekko.persistence.typed.javadsl.RetentionCriteria;
 import org.apache.pekko.persistence.typed.javadsl.SignalHandler;
 
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
+// #behavior
+// #behavior
 public class BasicPersistentBehaviorTest {
 
   interface Structure {
@@ -121,6 +119,7 @@ public class BasicPersistentBehaviorTest {
       public enum Cleared implements Event {
         INSTANCE
       }
+
       // #command
 
       // #state
@@ -143,6 +142,7 @@ public class BasicPersistentBehaviorTest {
           return new State(latest);
         }
       }
+
       // #state
 
       // #behavior
@@ -170,6 +170,7 @@ public class BasicPersistentBehaviorTest {
             .onCommand(Clear.class, command -> Effect().persist(Cleared.INSTANCE))
             .build();
       }
+
       // #command-handler
 
       // #event-handler
@@ -306,6 +307,7 @@ public class BasicPersistentBehaviorTest {
       interface Event {}
 
       public static class State {}
+
       // #supervision
 
       public static Behavior<Command> create(PersistenceId persistenceId) {
@@ -352,6 +354,7 @@ public class BasicPersistentBehaviorTest {
                 })
             .build();
       }
+
       // #recovery
 
       // #recovery-disabled
@@ -359,6 +362,7 @@ public class BasicPersistentBehaviorTest {
       public Recovery recovery() {
         return Recovery.disabled();
       }
+
       // #recovery-disabled
 
       // #tagging
@@ -388,6 +392,7 @@ public class BasicPersistentBehaviorTest {
       interface Event {}
 
       public static class State {}
+
       // #wrapPersistentBehavior
 
       public static Behavior<Command> create(PersistenceId persistenceId) {
@@ -429,6 +434,7 @@ public class BasicPersistentBehaviorTest {
       public Optional<Integer> stashCapacity() {
         return Optional.of(100);
       }
+
       // #custom-stash-buffer
 
       // #wrapPersistentBehavior
@@ -525,6 +531,7 @@ public class BasicPersistentBehaviorTest {
       public boolean shouldSnapshot(State state, Event event, long sequenceNr) {
         return event instanceof BookingCompleted;
       }
+
       // #snapshottingPredicate
 
       // #retentionCriteria
@@ -532,6 +539,7 @@ public class BasicPersistentBehaviorTest {
       public RetentionCriteria retentionCriteria() {
         return RetentionCriteria.snapshotEvery(100, 2);
       }
+
       // #retentionCriteria
 
       // #retentionCriteriaWithSignals
@@ -600,6 +608,7 @@ public class BasicPersistentBehaviorTest {
       interface Event {}
 
       public static class State {}
+
       // #actor-context
 
       public static Behavior<Command> create(PersistenceId persistenceId) {

@@ -16,12 +16,9 @@ package jdocs.org.apache.pekko.typed.pubsub;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
-
-// #start-topic
 import org.apache.pekko.actor.typed.pubsub.Topic;
 
 // #start-topic
-
 public class PubSubExample {
 
   static class Message {

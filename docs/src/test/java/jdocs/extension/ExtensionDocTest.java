@@ -14,14 +14,12 @@
 package jdocs.extension;
 
 // #imports
-import org.apache.pekko.actor.*;
 import java.util.concurrent.atomic.AtomicLong;
-
-// #imports
-
 import jdocs.AbstractJavaTest;
+import org.apache.pekko.actor.*;
 import org.junit.jupiter.api.Test;
 
+// #imports
 public class ExtensionDocTest extends AbstractJavaTest {
 
   public

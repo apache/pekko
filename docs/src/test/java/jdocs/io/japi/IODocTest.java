@@ -13,18 +13,15 @@
 
 package jdocs.io.japi;
 
-import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
-import jdocs.AbstractJavaTest;
-import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.jupiter.api.extension.RegisterExtension;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-// #imports
 import java.net.InetSocketAddress;
+import jdocs.AbstractJavaTest;
+import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.actor.Props;
-import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.io.Tcp;
 import org.apache.pekko.io.Tcp.Bound;
 import org.apache.pekko.io.Tcp.CommandFailed;
@@ -32,14 +29,15 @@ import org.apache.pekko.io.Tcp.Connected;
 import org.apache.pekko.io.Tcp.ConnectionClosed;
 import org.apache.pekko.io.Tcp.Received;
 import org.apache.pekko.io.TcpMessage;
-import org.apache.pekko.util.ByteString;
-// #imports
-
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
+import org.apache.pekko.testkit.javadsl.TestKit;
+import org.apache.pekko.util.ByteString;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
+// #imports
+// #imports
 public class IODocTest extends AbstractJavaTest {
 
   public
@@ -86,6 +84,7 @@ public class IODocTest extends AbstractJavaTest {
           .build();
     }
   }
+
   // #server
 
   public
@@ -109,6 +108,7 @@ public class IODocTest extends AbstractJavaTest {
           .build();
     }
   }
+
   // #simplistic-handler
 
   public
@@ -179,6 +179,7 @@ public class IODocTest extends AbstractJavaTest {
           .build();
     }
   }
+
   // #client
 
   @RegisterExtension

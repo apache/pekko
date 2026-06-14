@@ -13,21 +13,18 @@
 
 package jdocs.serialization;
 
-import org.apache.pekko.actor.typed.javadsl.Behaviors;
-import org.apache.pekko.cluster.Cluster;
-import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-
-// #imports
-import org.apache.pekko.actor.*;
-import org.apache.pekko.serialization.*;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import org.apache.pekko.actor.*;
+import org.apache.pekko.actor.typed.javadsl.Behaviors;
+import org.apache.pekko.cluster.Cluster;
+import org.apache.pekko.serialization.*;
+import org.apache.pekko.testkit.javadsl.TestKit;
+import org.junit.jupiter.api.Test;
 
 // #imports
-
 public class SerializationDocTest {
   public
   // #my-own-serializer
@@ -71,6 +68,7 @@ public class SerializationDocTest {
       // #...
     }
   }
+
   // #my-own-serializer
 
   static class Customer {
@@ -131,6 +129,7 @@ public class SerializationDocTest {
       else throw new IllegalArgumentException("Unknown manifest: " + manifest);
     }
   }
+
   // #my-own-serializer2
 
   @Test

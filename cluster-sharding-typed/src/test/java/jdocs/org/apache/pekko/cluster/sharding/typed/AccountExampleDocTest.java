@@ -13,46 +13,43 @@
 
 package jdocs.org.apache.pekko.cluster.sharding.typed;
 
-import org.apache.pekko.Done;
-import org.apache.pekko.pattern.StatusReply;
-
 import static jdocs.org.apache.pekko.cluster.sharding.typed.AccountExampleWithEventHandlersInState.AccountEntity;
 import static org.junit.jupiter.api.Assertions.*;
 
-// #test
 import java.math.BigDecimal;
+import org.apache.pekko.Done;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
 import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
 import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturingExtension;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitJupiterExtension;
-import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
 import org.apache.pekko.actor.typed.ActorRef;
+import org.apache.pekko.pattern.StatusReply;
 import org.apache.pekko.persistence.testkit.javadsl.EventSourcedBehaviorTestKit;
 import org.apache.pekko.persistence.testkit.javadsl.EventSourcedBehaviorTestKit.CommandResultWithReply;
 import org.apache.pekko.persistence.typed.PersistenceId;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 // #test
-
-// #test
 @ExtendWith(TestKitJUnitJupiterExtension.class)
 @ExtendWith(LogCapturingExtension.class)
 public class AccountExampleDocTest
-    // #test
-   
+// #test
+
 // #test
 {
 
   // #testkit
-  @JUnitJupiterTestKit public ActorTestKit testKit = ActorTestKit.create(EventSourcedBehaviorTestKit.config());
+  @JUnitJupiterTestKit
+  public ActorTestKit testKit = ActorTestKit.create(EventSourcedBehaviorTestKit.config());
 
   private EventSourcedBehaviorTestKit<
           AccountEntity.Command, AccountEntity.Event, AccountEntity.Account>
       eventSourcedTestKit =
           EventSourcedBehaviorTestKit.create(
               testKit.system(), AccountEntity.create("1", PersistenceId.of("Account", "1")));
+
   // #testkit
 
   @BeforeEach

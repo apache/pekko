@@ -13,26 +13,23 @@
 
 package jdocs.org.apache.pekko.typed;
 
+import java.time.Duration;
+import java.util.concurrent.CompletionStage;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.JUnitJupiterTestKitBuilder;
+import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturingExtension;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitJupiterExtension;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.javadsl.*;
-
-// #actor-ask-with-status
 import org.apache.pekko.pattern.StatusReply;
-
-// #actor-ask-with-status
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitJupiterExtension;
-import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturingExtension;
-import org.apache.pekko.actor.testkit.typed.javadsl.JUnitJupiterTestKitBuilder;
-import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
-import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
 
-import java.time.Duration;
-import java.util.concurrent.CompletionStage;
-
+// #actor-ask-with-status
+// #actor-ask-with-status
 @ExtendWith(TestKitJUnitJupiterExtension.class)
 @ExtendWith(LogCapturingExtension.class)
 public class InteractionPatternsAskWithStatusTest {
@@ -184,6 +181,7 @@ public class InteractionPatternsAskWithStatusTest {
         return this;
       }
     }
+
     // #standalone-ask-with-status
 
     static class NotShown {
@@ -209,6 +207,7 @@ public class InteractionPatternsAskWithStatusTest {
               else System.out.println("Boo! didn't get cookies in time. " + failure);
             });
       }
+
       // #standalone-ask-with-status
 
       public void askAndMapInvalid(

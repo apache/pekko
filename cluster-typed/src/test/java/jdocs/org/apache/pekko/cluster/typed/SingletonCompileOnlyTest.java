@@ -13,21 +13,17 @@
 
 package jdocs.org.apache.pekko.cluster.typed;
 
+import java.time.Duration;
 import org.apache.pekko.actor.typed.*;
 import org.apache.pekko.actor.typed.javadsl.AbstractBehavior;
 import org.apache.pekko.actor.typed.javadsl.ActorContext;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.apache.pekko.actor.typed.javadsl.Receive;
-
-import java.time.Duration;
-
-// #import
 import org.apache.pekko.cluster.typed.ClusterSingleton;
 import org.apache.pekko.cluster.typed.ClusterSingletonSettings;
 import org.apache.pekko.cluster.typed.SingletonActor;
 
 // #import
-
 public interface SingletonCompileOnlyTest {
 
   // #counter
@@ -85,6 +81,7 @@ public interface SingletonCompileOnlyTest {
       return this;
     }
   }
+
   // #counter
 
   ActorSystem system = ActorSystem.create(Behaviors.empty(), "SingletonExample");

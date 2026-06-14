@@ -13,25 +13,22 @@
 
 package jdocs.cluster;
 
-import org.apache.pekko.testkit.javadsl.TestKit;
 import com.typesafe.config.ConfigFactory;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import jdocs.AbstractJavaTest;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.actor.Address;
+import org.apache.pekko.cluster.Cluster;
+import org.apache.pekko.cluster.Member;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 // #join-seed-nodes-imports
-import org.apache.pekko.actor.Address;
-import org.apache.pekko.cluster.Cluster;
-
 // #join-seed-nodes-imports
-import org.apache.pekko.actor.ActorSystem;
-import org.apache.pekko.cluster.Member;
-
 public class ClusterDocTest extends AbstractJavaTest {
 
   static ActorSystem system;

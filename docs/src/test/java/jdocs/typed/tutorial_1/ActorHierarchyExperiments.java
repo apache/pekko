@@ -20,19 +20,18 @@ package com.example;
 //#print-refs
 */
 
-import org.apache.pekko.actor.typed.PreRestart;
-import org.apache.pekko.actor.typed.SupervisorStrategy;
-import org.apache.pekko.actor.typed.PostStop;
-
-// #print-refs
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.actor.typed.Behavior;
+import org.apache.pekko.actor.typed.PostStop;
+import org.apache.pekko.actor.typed.PreRestart;
+import org.apache.pekko.actor.typed.SupervisorStrategy;
 import org.apache.pekko.actor.typed.javadsl.AbstractBehavior;
 import org.apache.pekko.actor.typed.javadsl.ActorContext;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.apache.pekko.actor.typed.javadsl.Receive;
 
+// #print-refs
 class PrintMyActorRefActor extends AbstractBehavior<String> {
 
   static Behavior<String> create() {
@@ -54,6 +53,7 @@ class PrintMyActorRefActor extends AbstractBehavior<String> {
     return this;
   }
 }
+
 // #print-refs
 
 // #start-stop
@@ -105,6 +105,7 @@ class StartStopActor2 extends AbstractBehavior<String> {
     return this;
   }
 }
+
 // #start-stop
 
 // #supervise
@@ -170,6 +171,7 @@ class SupervisedActor extends AbstractBehavior<String> {
     return this;
   }
 }
+
 // #supervise
 
 // #print-refs
@@ -204,6 +206,7 @@ public class ActorHierarchyExperiments {
     testSystem.tell("start");
   }
 }
+
 // #print-refs
 
 class StartingActorHierarchyActors {

@@ -14,12 +14,11 @@
 package jdocs.actor;
 
 // #bytebufserializer-with-manifest
+import java.nio.ByteBuffer;
 import org.apache.pekko.serialization.ByteBufferSerializer;
 import org.apache.pekko.serialization.SerializerWithStringManifest;
 
 // #bytebufserializer-with-manifest
-import java.nio.ByteBuffer;
-
 public class ByteBufferSerializerDocTest {
 
   static // #bytebufserializer-with-manifest
@@ -64,6 +63,7 @@ public class ByteBufferSerializerDocTest {
       return null;
     }
   }
+
   // #bytebufserializer-with-manifest
 
   static class OnlyForDocInclude {

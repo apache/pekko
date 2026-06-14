@@ -14,27 +14,22 @@
 package jdocs.delivery;
 
 // #imports
+import java.math.BigInteger;
+import java.util.Optional;
+import java.util.UUID;
 import org.apache.pekko.actor.typed.ActorRef;
+import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.actor.typed.Behavior;
+import org.apache.pekko.actor.typed.delivery.ConsumerController;
 import org.apache.pekko.actor.typed.delivery.ProducerController;
 import org.apache.pekko.actor.typed.javadsl.AbstractBehavior;
 import org.apache.pekko.actor.typed.javadsl.ActorContext;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.apache.pekko.actor.typed.javadsl.Receive;
-import java.math.BigInteger;
-import java.util.Optional;
 
 // #imports
-
 // #consumer
-import org.apache.pekko.actor.typed.delivery.ConsumerController;
-
 // #consumer
-
-import org.apache.pekko.actor.typed.ActorSystem;
-
-import java.util.UUID;
-
 interface PointToPointDocExample {
 
   // #producer
@@ -92,6 +87,7 @@ interface PointToPointDocExample {
       }
     }
   }
+
   // #producer
 
   // #consumer
@@ -145,6 +141,7 @@ interface PointToPointDocExample {
       return this;
     }
   }
+
   // #consumer
 
   public class Guardian {

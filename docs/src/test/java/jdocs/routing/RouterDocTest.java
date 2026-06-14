@@ -13,45 +13,30 @@
 
 package jdocs.routing;
 
-import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
-
-import jdocs.AbstractJavaTest;
-import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.jupiter.api.extension.RegisterExtension;
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.typesafe.config.ConfigFactory;
-
 import java.io.Serializable;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.time.Duration;
-
-import org.apache.pekko.actor.ActorSystem;
-
-// #imports1
-import org.apache.pekko.actor.ActorRef;
-import org.apache.pekko.actor.Props;
-import org.apache.pekko.actor.Terminated;
+import jdocs.AbstractJavaTest;
 import org.apache.pekko.actor.AbstractActor;
-import org.apache.pekko.routing.ActorRefRoutee;
-import org.apache.pekko.routing.Routee;
-import org.apache.pekko.routing.Router;
-
-// #imports1
-
-// #imports2
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.actor.Address;
 import org.apache.pekko.actor.AddressFromURIString;
 import org.apache.pekko.actor.Kill;
-import org.apache.pekko.actor.PoisonPill;
-import org.apache.pekko.actor.SupervisorStrategy;
 import org.apache.pekko.actor.OneForOneStrategy;
+import org.apache.pekko.actor.PoisonPill;
+import org.apache.pekko.actor.Props;
+import org.apache.pekko.actor.SupervisorStrategy;
+import org.apache.pekko.actor.Terminated;
 import org.apache.pekko.remote.routing.RemoteRouterConfig;
+import org.apache.pekko.routing.ActorRefRoutee;
+import org.apache.pekko.routing.BalancingPool;
 import org.apache.pekko.routing.Broadcast;
 import org.apache.pekko.routing.BroadcastGroup;
 import org.apache.pekko.routing.BroadcastPool;
@@ -64,15 +49,21 @@ import org.apache.pekko.routing.RandomPool;
 import org.apache.pekko.routing.RoundRobinGroup;
 import org.apache.pekko.routing.RoundRobinPool;
 import org.apache.pekko.routing.RoundRobinRoutingLogic;
+import org.apache.pekko.routing.Routee;
+import org.apache.pekko.routing.Router;
 import org.apache.pekko.routing.ScatterGatherFirstCompletedGroup;
 import org.apache.pekko.routing.ScatterGatherFirstCompletedPool;
-import org.apache.pekko.routing.BalancingPool;
 import org.apache.pekko.routing.SmallestMailboxPool;
 import org.apache.pekko.routing.TailChoppingGroup;
 import org.apache.pekko.routing.TailChoppingPool;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
+import org.apache.pekko.testkit.javadsl.TestKit;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
+// #imports1
+// #imports1
 // #imports2
-
 public class RouterDocTest extends AbstractJavaTest {
 
   @RegisterExtension
@@ -173,6 +164,7 @@ public class RouterDocTest extends AbstractJavaTest {
       getContext().actorOf(Props.create(Worker.class), "w2");
       getContext().actorOf(Props.create(Worker.class), "w3");
     }
+
     // ...
     // #create-worker-actors
 
@@ -357,6 +349,7 @@ public class RouterDocTest extends AbstractJavaTest {
     ActorRef router31 =
         getContext()
             .actorOf(FromConfig.getInstance().props(Props.create(Worker.class)), "router31");
+
     // #optimal-size-exploring-resize-pool
 
     @Override

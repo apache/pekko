@@ -14,21 +14,19 @@
 package jdocs.extension;
 
 // #imports
-import org.apache.pekko.actor.Extension;
-import org.apache.pekko.actor.AbstractExtensionId;
-import org.apache.pekko.actor.ExtensionIdProvider;
-import org.apache.pekko.actor.ActorSystem;
-import org.apache.pekko.actor.ExtendedActorSystem;
 import com.typesafe.config.Config;
-import java.util.concurrent.TimeUnit;
 import java.time.Duration;
-
-// #imports
-
+import java.util.concurrent.TimeUnit;
 import jdocs.AbstractJavaTest;
 import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.actor.AbstractExtensionId;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.actor.ExtendedActorSystem;
+import org.apache.pekko.actor.Extension;
+import org.apache.pekko.actor.ExtensionIdProvider;
 import org.junit.jupiter.api.Test;
 
+// #imports
 public class SettingsExtensionDocTest extends AbstractJavaTest {
 
   public
@@ -85,6 +83,7 @@ public class SettingsExtensionDocTest extends AbstractJavaTest {
     }
     // #extension-usage-actor
   }
+
   // #extension-usage-actor
 
   public static class Connection {}

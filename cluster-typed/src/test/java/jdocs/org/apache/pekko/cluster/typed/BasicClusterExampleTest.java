@@ -14,28 +14,24 @@
 package jdocs.org.apache.pekko.cluster.typed;
 
 // #join-seed-nodes
-import org.apache.pekko.actor.Address;
-import org.apache.pekko.actor.AddressFromURIString;
-import org.apache.pekko.cluster.Member;
-import org.apache.pekko.cluster.typed.JoinSeedNodes;
-
-// #join-seed-nodes
-
-// #cluster-imports
-import org.apache.pekko.actor.typed.*;
-import org.apache.pekko.actor.typed.javadsl.*;
-import org.apache.pekko.cluster.ClusterEvent;
-import org.apache.pekko.cluster.typed.*;
-// #cluster-imports
-import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import org.apache.pekko.actor.Address;
+import org.apache.pekko.actor.AddressFromURIString;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
+import org.apache.pekko.actor.typed.*;
+import org.apache.pekko.actor.typed.javadsl.*;
+import org.apache.pekko.cluster.ClusterEvent;
+import org.apache.pekko.cluster.Member;
+import org.apache.pekko.cluster.typed.*;
+import org.apache.pekko.cluster.typed.JoinSeedNodes;
 
-// FIXME use awaitAssert to await cluster forming like in BasicClusterExampleSpec
+// #join-seed-nodes
+// #cluster-imports
+// #cluster-imports
 public class BasicClusterExampleTest { // {
 
   private Config clusterConfig =

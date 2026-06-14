@@ -14,15 +14,14 @@
 package jdocs.config;
 
 // #imports
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 
 // #imports
-import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
-
 public class ConfigDocTest {
 
   private Behavior<Void> rootBehavior = Behaviors.empty();

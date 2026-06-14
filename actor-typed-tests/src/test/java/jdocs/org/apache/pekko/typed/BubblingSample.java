@@ -13,10 +13,8 @@
 
 package jdocs.org.apache.pekko.typed;
 
-import org.apache.pekko.actor.typed.ActorSystem;
-
-// #bubbling-example
 import org.apache.pekko.actor.typed.ActorRef;
+import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.DeathPactException;
 import org.apache.pekko.actor.typed.SupervisorStrategy;
@@ -26,7 +24,6 @@ import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.apache.pekko.actor.typed.javadsl.Receive;
 
 // #bubbling-example
-
 public class BubblingSample {
   // #bubbling-example
   public interface Protocol {

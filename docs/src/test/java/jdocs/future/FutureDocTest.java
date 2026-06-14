@@ -13,15 +13,8 @@
 
 package jdocs.future;
 
-import org.apache.pekko.actor.typed.ActorSystem;
-import org.apache.pekko.dispatch.CompletionStages;
-import org.apache.pekko.pattern.Patterns;
-import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
-import org.apache.pekko.testkit.PekkoSpec;
-import jdocs.AbstractJavaTest;
-import org.junit.jupiter.api.extension.RegisterExtension;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.apache.pekko.actor.typed.javadsl.Adapter.toTyped;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -29,13 +22,18 @@ import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import jdocs.AbstractJavaTest;
+import org.apache.pekko.actor.typed.ActorSystem;
+import org.apache.pekko.dispatch.CompletionStages;
+import org.apache.pekko.pattern.Patterns;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
+import org.apache.pekko.testkit.PekkoSpec;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-import static org.apache.pekko.actor.typed.javadsl.Adapter.toTyped;
 // #imports
-
 // #imports
-import static java.util.concurrent.TimeUnit.SECONDS;
-
 public class FutureDocTest extends AbstractJavaTest {
 
   @RegisterExtension
@@ -47,34 +45,36 @@ public class FutureDocTest extends AbstractJavaTest {
   @Test
   @SuppressWarnings("deprecation")
   public void useAfter() {
-    Assertions.assertThrows(IllegalStateException.class, () -> {
-      // #after
-      CompletionStage<String> failWithException =
-          CompletableFuture.supplyAsync(
-              () -> {
-                throw new IllegalStateException("OHNOES1");
-              });
-      CompletionStage<String> delayed =
-          Patterns.after(Duration.ofMillis(200), system, () -> failWithException);
-      // #after
-      CompletionStage<String> future =
-          CompletableFuture.supplyAsync(
-              () -> {
-                try {
-                  Thread.sleep(1000);
-                } catch (Throwable ex) {
-                  // ignore
-                }
-                return "foo";
-              });
-      CompletionStage<String> result =
-          CompletionStages.firstCompletedOf(Arrays.asList(future, delayed));
-      try {
-        result.toCompletableFuture().get(2, SECONDS);
-      } catch (Throwable ex) {
-        throw (Exception) ex.getCause();
-      }
-    });
+    Assertions.assertThrows(
+        IllegalStateException.class,
+        () -> {
+          // #after
+          CompletionStage<String> failWithException =
+              CompletableFuture.supplyAsync(
+                  () -> {
+                    throw new IllegalStateException("OHNOES1");
+                  });
+          CompletionStage<String> delayed =
+              Patterns.after(Duration.ofMillis(200), system, () -> failWithException);
+          // #after
+          CompletionStage<String> future =
+              CompletableFuture.supplyAsync(
+                  () -> {
+                    try {
+                      Thread.sleep(1000);
+                    } catch (Throwable ex) {
+                      // ignore
+                    }
+                    return "foo";
+                  });
+          CompletionStage<String> result =
+              CompletionStages.firstCompletedOf(Arrays.asList(future, delayed));
+          try {
+            result.toCompletableFuture().get(2, SECONDS);
+          } catch (Throwable ex) {
+            throw (Exception) ex.getCause();
+          }
+        });
   }
 
   @Test
@@ -102,21 +102,21 @@ public class FutureDocTest extends AbstractJavaTest {
     retriedFuture.toCompletableFuture().get(2, SECONDS);
   }
 
-    @Test
-    public void useRetryWithPredicateWithIntFunction() throws Exception {
-        // #retry
-        Callable<CompletionStage<String>> attempt = () -> CompletableFuture.completedFuture("test");
+  @Test
+  public void useRetryWithPredicateWithIntFunction() throws Exception {
+    // #retry
+    Callable<CompletionStage<String>> attempt = () -> CompletableFuture.completedFuture("test");
 
-        CompletionStage<String> retriedFuture =
-            Patterns.retry(
-                attempt,
-                (notUsed, e) -> e != null,
-                3,
-                current -> Optional.of(java.time.Duration.ofMillis(200)),
-                system.classicSystem().scheduler(),
-                system.executionContext());
-        // #retry
+    CompletionStage<String> retriedFuture =
+        Patterns.retry(
+            attempt,
+            (notUsed, e) -> e != null,
+            3,
+            current -> Optional.of(java.time.Duration.ofMillis(200)),
+            system.classicSystem().scheduler(),
+            system.executionContext());
+    // #retry
 
-        retriedFuture.toCompletableFuture().get(2, SECONDS);
-    }
+    retriedFuture.toCompletableFuture().get(2, SECONDS);
+  }
 }

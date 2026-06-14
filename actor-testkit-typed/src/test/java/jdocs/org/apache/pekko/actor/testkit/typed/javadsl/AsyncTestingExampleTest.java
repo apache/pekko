@@ -13,39 +13,36 @@
 
 package jdocs.org.apache.pekko.actor.testkit.typed.javadsl;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.time.Duration;
+import java.util.Objects;
+import java.util.concurrent.CompletionStage;
+import java.util.stream.IntStream;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.JUnitJupiterTestKitBuilder;
+import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturingExtension;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitJupiterExtension;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.Scheduler;
 import org.apache.pekko.actor.typed.javadsl.AskPattern;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
-// #test-header
-import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
-import org.apache.pekko.actor.testkit.typed.javadsl.JUnitJupiterTestKitBuilder;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitJupiterExtension;
-import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturingExtension;
-
-// #test-header
-import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
-import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.time.Duration;
-import java.util.concurrent.CompletionStage;
-import java.util.stream.IntStream;
-
-import java.util.Objects;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+// #test-header
 // #test-header
 @ExtendWith({TestKitJUnitJupiterExtension.class, LogCapturingExtension.class})
 public class AsyncTestingExampleTest
-    // #test-header
+// #test-header
 
 // #test-header
 {
   @JUnitJupiterTestKit public ActorTestKit testKit = new JUnitJupiterTestKitBuilder().build();
+
   // #test-header
 
   // #under-test
@@ -93,6 +90,7 @@ public class AsyncTestingExampleTest
           .build();
     }
   }
+
   // #under-test
 
   // #under-test-2
@@ -129,6 +127,7 @@ public class AsyncTestingExampleTest
           scheduler);
     }
   }
+
   // #under-test-2
 
   // #test-shutdown

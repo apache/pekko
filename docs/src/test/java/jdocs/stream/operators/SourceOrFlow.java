@@ -13,6 +13,10 @@
 
 package jdocs.stream.operators;
 
+import java.time.Duration;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import org.apache.pekko.Done;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorRef;
@@ -23,26 +27,23 @@ import org.apache.pekko.japi.function.Function2;
 import org.apache.pekko.japi.pf.PFBuilder;
 import org.apache.pekko.stream.Attributes;
 import org.apache.pekko.stream.javadsl.Flow;
-
-// #zip
-// #zip-with
-// #zip-with-index
-// #or-else
-// #prepend
-// #prependLazy
-// #concat
-// #concatLazy
-// #concatAllLazy
-// #interleave
-// #interleaveAll
-// #merge
-// #merge-sorted
 import org.apache.pekko.stream.javadsl.Keep;
-import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.stream.javadsl.Sink;
+import org.apache.pekko.stream.javadsl.Source;
 
-import java.util.*;
-
+// #zip
+// #zip-with
+// #zip-with-index
+// #or-else
+// #prepend
+// #prependLazy
+// #concat
+// #concatLazy
+// #concatAllLazy
+// #interleave
+// #interleaveAll
+// #merge
+// #merge-sorted
 // #merge-sorted
 // #merge
 // #interleave
@@ -56,15 +57,8 @@ import java.util.*;
 // #zip-with-index
 // #zip-with
 // #zip
-
 // #log
-
 // #log
-
-import java.time.Duration;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-
 class SourceOrFlow {
   private static ActorSystem system = null;
 
@@ -327,6 +321,7 @@ class SourceOrFlow {
   CompletionStage<Integer> asyncFunction(int acc, int next) {
     return CompletableFuture.supplyAsync(() -> acc + next);
   }
+
   // #scan-async
 
   void scanAsyncExample() {
@@ -355,6 +350,7 @@ class SourceOrFlow {
       return new Summed(this.el + other.el);
     }
   }
+
   // #conflateWithSeed-type
 
   void conflateWithSeedExample() {
@@ -385,6 +381,7 @@ class SourceOrFlow {
       this.id = id;
     }
   }
+
   // #collect-elements
 
   void collectExample() {
@@ -516,6 +513,7 @@ class SourceOrFlow {
         return new Histogram(low, high + 1L);
       }
     }
+
     // #fold
 
     // #foldAsync
@@ -528,6 +526,7 @@ class SourceOrFlow {
     }
     // #fold
   }
+
   // #fold // #foldAsync
 
   void foldExample() {
@@ -597,8 +596,8 @@ class SourceOrFlow {
     Source<String, NotUsed> words =
         Source.from(
             Arrays.asList(
-                ("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt "
-                        + "ut labore et dolore magna aliqua")
+                ("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
+                     + " incididunt ut labore et dolore magna aliqua")
                     .split(" ")));
 
     Source<String, NotUsed> longWords = words.filter(w -> w.length() > 6);
@@ -616,8 +615,8 @@ class SourceOrFlow {
     Source<String, NotUsed> words =
         Source.from(
             Arrays.asList(
-                ("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt "
-                        + "ut labore et dolore magna aliqua")
+                ("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
+                     + " incididunt ut labore et dolore magna aliqua")
                     .split(" ")));
 
     Source<String, NotUsed> longWords = words.filterNot(w -> w.length() <= 6);

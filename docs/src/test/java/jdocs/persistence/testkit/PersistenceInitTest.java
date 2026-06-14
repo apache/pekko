@@ -13,41 +13,38 @@
 
 package jdocs.persistence.testkit;
 
-import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
+import com.typesafe.config.ConfigFactory;
+import java.time.Duration;
+import java.util.UUID;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.TimeUnit;
+import jdocs.AbstractJavaTest;
+import org.apache.pekko.Done;
 import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
 import org.apache.pekko.actor.testkit.typed.javadsl.JUnitJupiterTestKitBuilder;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitJupiterExtension;
-
-import com.typesafe.config.ConfigFactory;
-import jdocs.AbstractJavaTest;
+import org.apache.pekko.persistence.testkit.javadsl.PersistenceInit;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.util.UUID;
-
 // #imports
-import org.apache.pekko.persistence.testkit.javadsl.PersistenceInit;
-import org.apache.pekko.Done;
-
-import java.time.Duration;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.TimeUnit;
-
-// #imports
-
 @ExtendWith(TestKitJUnitJupiterExtension.class)
 public class PersistenceInitTest extends AbstractJavaTest {
   @JUnitJupiterTestKit
-  public ActorTestKit testKit = new JUnitJupiterTestKitBuilder()
-      .withCustomConfig(ConfigFactory.parseString(
-                  "pekko.persistence.journal.plugin = \"pekko.persistence.journal.inmem\" \n"
-                      + "pekko.persistence.journal.inmem.test-serialization = on \n"
-                      + "pekko.persistence.snapshot-store.plugin = \"pekko.persistence.snapshot-store.local\" \n"
-                      + "pekko.persistence.snapshot-store.local.dir = \"target/snapshot-"
-                      + UUID.randomUUID().toString()
-                      + "\" \n")
-              .withFallback(ConfigFactory.defaultApplication()))
-      .build();
+  public ActorTestKit testKit =
+      new JUnitJupiterTestKitBuilder()
+          .withCustomConfig(
+              ConfigFactory.parseString(
+                      "pekko.persistence.journal.plugin = \"pekko.persistence.journal.inmem\" \n"
+                          + "pekko.persistence.journal.inmem.test-serialization = on \n"
+                          + "pekko.persistence.snapshot-store.plugin ="
+                          + " \"pekko.persistence.snapshot-store.local\" \n"
+                          + "pekko.persistence.snapshot-store.local.dir = \"target/snapshot-"
+                          + UUID.randomUUID().toString()
+                          + "\" \n")
+                  .withFallback(ConfigFactory.defaultApplication()))
+          .build();
 
   @Test
   public void testInit() throws Exception {

@@ -14,37 +14,30 @@
 package jdocs.event;
 
 // #imports
-import org.apache.pekko.actor.*;
-import org.apache.pekko.event.Logging;
-import org.apache.pekko.event.LoggingAdapter;
-
-// #imports
-
-// #imports-listener
-import org.apache.pekko.event.Logging.InitializeLogger;
-import org.apache.pekko.event.Logging.Error;
-import org.apache.pekko.event.Logging.Warning;
-import org.apache.pekko.event.Logging.Info;
-import org.apache.pekko.event.Logging.Debug;
-
-// #imports-listener
-
-import jdocs.AbstractJavaTest;
-import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.jupiter.api.Test;
-import java.util.Optional;
-
-// #imports-mdc
-import org.apache.pekko.event.DiagnosticLoggingAdapter;
 import java.util.HashMap;
 import java.util.Map;
-// #imports-mdc
-
-// #imports-deadletter
+import java.util.Optional;
+import jdocs.AbstractJavaTest;
+import org.apache.pekko.actor.*;
 import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.actor.ActorSystem;
-// #imports-deadletter
+import org.apache.pekko.event.DiagnosticLoggingAdapter;
+import org.apache.pekko.event.Logging;
+import org.apache.pekko.event.Logging.Debug;
+import org.apache.pekko.event.Logging.Error;
+import org.apache.pekko.event.Logging.Info;
+import org.apache.pekko.event.Logging.InitializeLogger;
+import org.apache.pekko.event.Logging.Warning;
+import org.apache.pekko.event.LoggingAdapter;
+import org.apache.pekko.testkit.javadsl.TestKit;
+import org.junit.jupiter.api.Test;
 
+// #imports
+// #imports-listener
+// #imports-listener
+// #imports-mdc
+// #imports-mdc
+// #imports-deadletter
 public class LoggingDocTest extends AbstractJavaTest {
 
   @Test
@@ -105,6 +98,7 @@ public class LoggingDocTest extends AbstractJavaTest {
           .build();
     }
   }
+
   // #superclass-subscription-eventstream
 
   @Test
@@ -251,6 +245,7 @@ public class LoggingDocTest extends AbstractJavaTest {
           .build();
     }
   }
+
   // #my-event-listener
 
   public

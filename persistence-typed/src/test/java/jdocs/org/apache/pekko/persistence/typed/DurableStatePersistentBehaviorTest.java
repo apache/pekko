@@ -13,24 +13,21 @@
 
 package jdocs.org.apache.pekko.persistence.typed;
 
+import java.time.Duration;
+import org.apache.pekko.Done;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.SupervisorStrategy;
-import org.apache.pekko.persistence.typed.state.javadsl.CommandHandler;
 import org.apache.pekko.actor.typed.javadsl.ActorContext;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
-// #behavior
-import org.apache.pekko.persistence.typed.state.javadsl.DurableStateBehavior;
 import org.apache.pekko.persistence.typed.PersistenceId;
+import org.apache.pekko.persistence.typed.state.javadsl.CommandHandler;
+import org.apache.pekko.persistence.typed.state.javadsl.DurableStateBehavior;
 
 // #behavior
-
+// #behavior
 // #effects
-import org.apache.pekko.Done;
 // #effects
-
-import java.time.Duration;
-
 public class DurableStatePersistentBehaviorTest {
 
   interface Structure {
@@ -119,6 +116,7 @@ public class DurableStatePersistentBehaviorTest {
           return value;
         }
       }
+
       // #state
 
       // #behavior
@@ -234,6 +232,7 @@ public class DurableStatePersistentBehaviorTest {
       interface Command {}
 
       public static class State {}
+
       // #actor-context
 
       public static Behavior<Command> create(PersistenceId persistenceId) {
@@ -279,6 +278,7 @@ public class DurableStatePersistentBehaviorTest {
       interface Command {}
 
       public static class State {}
+
       // #supervision
 
       public static Behavior<Command> create(PersistenceId persistenceId) {
@@ -327,6 +327,7 @@ public class DurableStatePersistentBehaviorTest {
       interface Command {}
 
       public static class State {}
+
       // #wrapPersistentBehavior
 
       public static Behavior<Command> create(PersistenceId persistenceId) {

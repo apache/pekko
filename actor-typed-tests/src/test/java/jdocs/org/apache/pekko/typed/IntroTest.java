@@ -14,26 +14,23 @@
 package jdocs.org.apache.pekko.typed;
 
 // #imports
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.actor.typed.Behavior;
+import org.apache.pekko.actor.typed.DispatcherSelector;
+import org.apache.pekko.actor.typed.Props;
+import org.apache.pekko.actor.typed.Terminated;
 import org.apache.pekko.actor.typed.javadsl.AbstractBehavior;
 import org.apache.pekko.actor.typed.javadsl.ActorContext;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.apache.pekko.actor.typed.javadsl.Receive;
 
 // #imports
-
-import org.apache.pekko.actor.typed.Terminated;
-import org.apache.pekko.actor.typed.Props;
-import org.apache.pekko.actor.typed.DispatcherSelector;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-
 public interface IntroTest {
 
   // #hello-world-actor
@@ -78,6 +75,7 @@ public interface IntroTest {
       return this;
     }
   }
+
   // #hello-world-actor
 
   // #hello-world-bot
@@ -111,6 +109,7 @@ public interface IntroTest {
       }
     }
   }
+
   // #hello-world-bot
 
   // #hello-world-main
@@ -137,6 +136,7 @@ public interface IntroTest {
       super(context);
       greeter = context.spawn(HelloWorld.create(), "greeter");
     }
+
     // #hello-world-main-setup
 
     @Override
@@ -152,6 +152,7 @@ public interface IntroTest {
     }
     // #hello-world-main-setup
   }
+
   // #hello-world-main-setup
   // #hello-world-main
 
@@ -168,6 +169,7 @@ public interface IntroTest {
           this.name = name;
         }
       }
+
       // #hello-world-main-with-dispatchers
 
       public static Behavior<SayHello> create() {
@@ -224,6 +226,7 @@ public interface IntroTest {
         this.replyTo = replyTo;
       }
     }
+
     // #chatroom-protocol
     // #chatroom-behavior
     private static final class PublishSessionMessage implements RoomCommand {
@@ -235,6 +238,7 @@ public interface IntroTest {
         this.message = message;
       }
     }
+
     // #chatroom-behavior
     // #chatroom-protocol
 
@@ -283,6 +287,7 @@ public interface IntroTest {
         this.message = message;
       }
     }
+
     // #chatroom-protocol
     // #chatroom-behavior
 
@@ -351,6 +356,7 @@ public interface IntroTest {
       }
     }
   }
+
   // #chatroom-behavior
 
   // #chatroom-gabbler
@@ -390,6 +396,7 @@ public interface IntroTest {
       return Behaviors.stopped();
     }
   }
+
   // #chatroom-gabbler
 
   // #chatroom-main

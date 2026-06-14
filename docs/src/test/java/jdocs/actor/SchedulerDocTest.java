@@ -15,24 +15,20 @@ package jdocs.actor;
 
 // #imports1
 import java.time.Duration;
-// #imports1
-
-// #imports2
-import org.apache.pekko.actor.Cancellable;
-// #imports2
-
 import jdocs.AbstractJavaTest;
-import org.apache.pekko.actor.Props;
 import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.actor.ActorSystem;
-import org.apache.pekko.testkit.PekkoSpec;
+import org.apache.pekko.actor.Cancellable;
+import org.apache.pekko.actor.Props;
 import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
-import org.junit.jupiter.api.extension.RegisterExtension;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.apache.pekko.testkit.PekkoSpec;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
+// #imports1
+// #imports2
+// #imports2
 public class SchedulerDocTest extends AbstractJavaTest {
 
   @RegisterExtension

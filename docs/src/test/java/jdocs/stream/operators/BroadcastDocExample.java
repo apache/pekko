@@ -13,10 +13,9 @@
 
 package jdocs.stream.operators;
 
-import org.apache.pekko.actor.ActorSystem;
-
-// #import
+import java.util.concurrent.CompletionStage;
 import org.apache.pekko.NotUsed;
+import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.japi.tuple.Tuple3;
 import org.apache.pekko.stream.ClosedShape;
 import org.apache.pekko.stream.UniformFanOutShape;
@@ -27,9 +26,8 @@ import org.apache.pekko.stream.javadsl.Keep;
 import org.apache.pekko.stream.javadsl.RunnableGraph;
 import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
-import java.util.concurrent.CompletionStage;
-// #import
 
+// #import
 public class BroadcastDocExample {
 
   private final ActorSystem system = ActorSystem.create("BroadcastDocExample");

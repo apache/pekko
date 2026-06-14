@@ -13,40 +13,28 @@
 
 package jdocs.event;
 
-import org.apache.pekko.event.japi.EventBus;
-
 import java.time.Duration;
-
 import jdocs.AbstractJavaTest;
-import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.jupiter.api.extension.RegisterExtension;
-import org.junit.jupiter.api.Test;
-
-import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.actor.ActorRef;
-import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
-import org.apache.pekko.util.Subclassification;
-
-// #lookup-bus
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.event.japi.EventBus;
 import org.apache.pekko.event.japi.LookupEventBus;
+import org.apache.pekko.event.japi.ManagedActorEventBus;
+import org.apache.pekko.event.japi.ScanningEventBus;
+import org.apache.pekko.event.japi.SubchannelEventBus;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
+import org.apache.pekko.testkit.javadsl.TestKit;
+import org.apache.pekko.util.Subclassification;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 // #lookup-bus
-
+// #lookup-bus
 // #subchannel-bus
-import org.apache.pekko.event.japi.SubchannelEventBus;
-
 // #subchannel-bus
-
 // #scanning-bus
-import org.apache.pekko.event.japi.ScanningEventBus;
-
 // #scanning-bus
-
 // #actor-bus
-import org.apache.pekko.event.japi.ManagedActorEventBus;
-
-// #actor-bus
-
 public class EventBusDocTest extends AbstractJavaTest {
 
   public static class Event {}
@@ -145,6 +133,7 @@ public class EventBusDocTest extends AbstractJavaTest {
       return 128;
     }
   }
+
   // #lookup-bus
 
   public
@@ -191,6 +180,7 @@ public class EventBusDocTest extends AbstractJavaTest {
       subscriber.tell(event.payload, ActorRef.noSender());
     }
   }
+
   // #subchannel-bus
 
   public
@@ -228,6 +218,7 @@ public class EventBusDocTest extends AbstractJavaTest {
       subscriber.tell(event, ActorRef.noSender());
     }
   }
+
   // #scanning-bus
 
   public
@@ -266,6 +257,7 @@ public class EventBusDocTest extends AbstractJavaTest {
       return 128;
     }
   }
+
   // #actor-bus
 
   @RegisterExtension

@@ -13,41 +13,33 @@
 
 package jdocs.actor;
 
-import org.apache.pekko.actor.*;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.apache.pekko.japi.Util.immutableSeq;
+import static org.apache.pekko.pattern.Patterns.ask;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.apache.pekko.testkit.javadsl.TestKit;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import jdocs.AbstractJavaTest;
-import java.util.Optional;
 import java.time.Duration;
-
-import static org.apache.pekko.pattern.Patterns.ask;
-
-// #testkit
-import org.apache.pekko.testkit.TestProbe;
+import java.util.Optional;
+import jdocs.AbstractJavaTest;
+import org.apache.pekko.actor.*;
+import org.apache.pekko.actor.SupervisorStrategy;
+import org.apache.pekko.japi.pf.DeciderBuilder;
 import org.apache.pekko.testkit.ErrorFilter;
 import org.apache.pekko.testkit.EventFilter;
 import org.apache.pekko.testkit.TestEvent;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.apache.pekko.japi.Util.immutableSeq;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import org.apache.pekko.testkit.TestProbe;
+import org.apache.pekko.testkit.javadsl.TestKit;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import scala.concurrent.Await;
 
 // #testkit
-
-// #supervisor
-import org.apache.pekko.japi.pf.DeciderBuilder;
-import org.apache.pekko.actor.SupervisorStrategy;
-
-// #supervisor
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.AfterAll;
-
 // #testkit
+// #supervisor
+// #supervisor
 public class FaultHandlingTest extends AbstractJavaTest {
   // #testkit
 

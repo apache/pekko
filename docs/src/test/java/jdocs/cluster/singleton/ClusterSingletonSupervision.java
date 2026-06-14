@@ -15,16 +15,13 @@ package jdocs.cluster.singleton;
 
 import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.actor.ActorRef;
-import org.apache.pekko.actor.Props;
-import org.apache.pekko.actor.SupervisorStrategy;
-
-// #singleton-supervisor-actor-usage-imports
 import org.apache.pekko.actor.PoisonPill;
 import org.apache.pekko.actor.Props;
+import org.apache.pekko.actor.SupervisorStrategy;
 import org.apache.pekko.cluster.singleton.ClusterSingletonManager;
 import org.apache.pekko.cluster.singleton.ClusterSingletonManagerSettings;
-// #singleton-supervisor-actor-usage-imports
 
+// #singleton-supervisor-actor-usage-imports
 abstract class ClusterSingletonSupervision extends AbstractActor {
 
   public ActorRef createSingleton(String name, Props props, SupervisorStrategy supervisorStrategy) {

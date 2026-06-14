@@ -15,17 +15,14 @@ package jdocs.org.apache.pekko.cluster.sharding.typed;
 
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.persistence.query.DurableStateChange;
 import org.apache.pekko.persistence.query.Offset;
+import org.apache.pekko.persistence.query.UpdatedDurableState;
+import org.apache.pekko.persistence.query.javadsl.DurableStateStoreQuery;
+import org.apache.pekko.persistence.state.DurableStateStoreRegistry;
 import org.apache.pekko.stream.javadsl.Source;
 
 // #get-durable-state-store-query-example
-import org.apache.pekko.persistence.state.DurableStateStoreRegistry;
-import org.apache.pekko.persistence.query.javadsl.DurableStateStoreQuery;
-import org.apache.pekko.persistence.query.DurableStateChange;
-import org.apache.pekko.persistence.query.UpdatedDurableState;
-
-// #get-durable-state-store-query-example
-
 class DurableStateStoreQueryUsageCompileOnlySpec {
 
   @SuppressWarnings("unchecked")

@@ -16,7 +16,7 @@ package jdocs.org.apache.pekko.typed;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-
+import org.apache.pekko.actor.testkit.typed.javadsl.LoggingTestKit;
 import org.apache.pekko.actor.typed.*;
 import org.apache.pekko.actor.typed.javadsl.AbstractBehavior;
 import org.apache.pekko.actor.typed.javadsl.ActorContext;
@@ -24,17 +24,11 @@ import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.apache.pekko.actor.typed.javadsl.Receive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-// #logMessages
 import org.slf4j.event.Level;
 
 // #logMessages
-
+// #logMessages
 // #test-logging
-import org.apache.pekko.actor.testkit.typed.javadsl.LoggingTestKit;
-
-// #test-logging
-
 public interface LoggingDocExamples {
 
   // #context-log
@@ -58,6 +52,7 @@ public interface LoggingDocExamples {
       return this;
     }
   }
+
   // #context-log
 
   // #logger-name
@@ -86,6 +81,7 @@ public interface LoggingDocExamples {
       return this;
     }
   }
+
   // #logger-name
 
   // #logger-factory
@@ -106,6 +102,7 @@ public interface LoggingDocExamples {
           });
     }
   }
+
   // #logger-factory
 
   static void logMessages() {

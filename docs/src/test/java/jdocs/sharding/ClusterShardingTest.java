@@ -13,9 +13,8 @@
 
 package jdocs.sharding;
 
-import java.util.Optional;
 import java.time.Duration;
-
+import java.util.Optional;
 import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.actor.ActorInitializationException;
 import org.apache.pekko.actor.ActorRef;
@@ -23,22 +22,18 @@ import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.actor.OneForOneStrategy;
 import org.apache.pekko.actor.PoisonPill;
 import org.apache.pekko.actor.Props;
-import org.apache.pekko.actor.SupervisorStrategy;
 import org.apache.pekko.actor.ReceiveTimeout;
-// #counter-extractor
-import org.apache.pekko.cluster.sharding.ShardRegion;
-
-// #counter-extractor
-
-// #counter-start
+import org.apache.pekko.actor.SupervisorStrategy;
 import org.apache.pekko.cluster.sharding.ClusterSharding;
 import org.apache.pekko.cluster.sharding.ClusterShardingSettings;
-
-// #counter-start
-import org.apache.pekko.persistence.AbstractPersistentActor;
+import org.apache.pekko.cluster.sharding.ShardRegion;
 import org.apache.pekko.japi.pf.DeciderBuilder;
+import org.apache.pekko.persistence.AbstractPersistentActor;
 
-// Doc code, compile only
+// #counter-extractor
+// #counter-extractor
+// #counter-start
+// #counter-start
 public class ClusterShardingTest {
 
   ActorSystem system = null;
@@ -56,15 +51,13 @@ public class ClusterShardingTest {
           public String entityId(Object message) {
             if (message instanceof Counter.EntityEnvelope envelope)
               return String.valueOf(envelope.id);
-            else if (message instanceof Counter.Get get)
-              return String.valueOf(get.counterId);
+            else if (message instanceof Counter.Get get) return String.valueOf(get.counterId);
             else return null;
           }
 
           @Override
           public Object entityMessage(Object message) {
-            if (message instanceof Counter.EntityEnvelope envelope)
-              return envelope.payload;
+            if (message instanceof Counter.EntityEnvelope envelope) return envelope.payload;
             else return message;
           }
 
@@ -125,15 +118,13 @@ public class ClusterShardingTest {
           public String entityId(Object message) {
             if (message instanceof Counter.EntityEnvelope envelope)
               return String.valueOf(envelope.id);
-            else if (message instanceof Counter.Get get)
-              return String.valueOf(get.counterId);
+            else if (message instanceof Counter.Get get) return String.valueOf(get.counterId);
             else return null;
           }
 
           @Override
           public Object entityMessage(Object message) {
-            if (message instanceof Counter.EntityEnvelope envelope)
-              return envelope.payload;
+            if (message instanceof Counter.EntityEnvelope envelope) return envelope.payload;
             else return message;
           }
 

@@ -13,26 +13,20 @@
 
 package jdocs.org.apache.pekko.typed;
 
-import jdocs.org.apache.pekko.typed.IntroTest.HelloWorld;
-
 import java.time.Duration;
 import java.util.concurrent.CompletionStage;
-
-// #imports1
+import jdocs.org.apache.pekko.typed.IntroTest.HelloWorld;
+import org.apache.pekko.actor.typed.ActorRef;
+import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.actor.typed.Behavior;
+import org.apache.pekko.actor.typed.Props;
 import org.apache.pekko.actor.typed.SpawnProtocol;
+import org.apache.pekko.actor.typed.javadsl.AskPattern;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 
 // #imports1
-
+// #imports1
 // #imports2
-import org.apache.pekko.actor.typed.ActorRef;
-import org.apache.pekko.actor.typed.ActorSystem;
-import org.apache.pekko.actor.typed.Props;
-import org.apache.pekko.actor.typed.javadsl.AskPattern;
-
-// #imports2
-
 public interface SpawnProtocolDocTest {
 
   // #main
@@ -49,6 +43,7 @@ public interface SpawnProtocolDocTest {
           });
     }
   }
+
   // #main
 
   public static void main(String[] args) throws Exception {

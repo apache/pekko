@@ -13,53 +13,48 @@
 
 package jdocs.actor;
 
-import org.apache.pekko.actor.*;
-import org.apache.pekko.testkit.javadsl.TestKit;
+import static jdocs.actor.Messages.*;
+import static jdocs.actor.Messages.Swap.Swap;
+import static org.apache.pekko.pattern.Patterns.ask;
+import static org.apache.pekko.pattern.Patterns.gracefulStop;
+import static org.apache.pekko.pattern.Patterns.pipe;
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import jdocs.AbstractJavaTest;
-import static jdocs.actor.Messages.Swap.Swap;
-import static jdocs.actor.Messages.*;
-import org.apache.pekko.actor.CoordinatedShutdown;
-
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import java.time.Duration;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.TimeUnit;
+import jdocs.AbstractJavaTest;
+import org.apache.pekko.actor.*;
+import org.apache.pekko.actor.ActorIdentity;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.ActorSelection;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.actor.CoordinatedShutdown;
+import org.apache.pekko.actor.Identify;
+import org.apache.pekko.actor.Props;
+import org.apache.pekko.actor.Terminated;
+import org.apache.pekko.pattern.AskTimeoutException;
 import org.apache.pekko.testkit.TestActors;
-
+import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 
 // #import-props
-import org.apache.pekko.actor.Props;
 // #import-props
 // #import-actorRef
-import org.apache.pekko.actor.ActorRef;
-import org.apache.pekko.actor.ActorSystem;
 // #import-actorRef
 // #import-identify
-import org.apache.pekko.actor.ActorIdentity;
-import org.apache.pekko.actor.ActorSelection;
-import org.apache.pekko.actor.Identify;
 // #import-identify
 // #import-ask
-import static org.apache.pekko.pattern.Patterns.ask;
-import static org.apache.pekko.pattern.Patterns.pipe;
-
-import java.util.concurrent.CompletableFuture;
 // #import-ask
 // #import-gracefulStop
-import static org.apache.pekko.pattern.Patterns.gracefulStop;
-import org.apache.pekko.pattern.AskTimeoutException;
-import java.util.concurrent.CompletionStage;
-
 // #import-gracefulStop
 // #import-terminated
-import org.apache.pekko.actor.Terminated;
-// #import-terminated
-
 public class ActorDocTest extends AbstractJavaTest {
 
   public static Config config =
@@ -94,6 +89,7 @@ public class ActorDocTest extends AbstractJavaTest {
     }
     // #plus-some-behavior
   }
+
   // #context-actorOf
 
   public static class SomeActor extends AbstractActor {
@@ -136,6 +132,7 @@ public class ActorDocTest extends AbstractJavaTest {
       // actual work
     }
   }
+
   // #well-structured
 
   public
@@ -168,6 +165,7 @@ public class ActorDocTest extends AbstractJavaTest {
       // actual work
     }
   }
+
   // #optimized
 
   public static class ActorWithArgs extends AbstractActor {
@@ -223,6 +221,7 @@ public class ActorDocTest extends AbstractJavaTest {
   static class SomeOtherActor extends AbstractActor {
     // Props(new DemoActor(42)) would not be safe
     ActorRef demoActor = getContext().actorOf(DemoActor.props(42), "demo");
+
     // ...
     // #props-factory
     @Override
@@ -231,6 +230,7 @@ public class ActorDocTest extends AbstractJavaTest {
     }
     // #props-factory
   }
+
   // #props-factory
 
   public
@@ -260,6 +260,7 @@ public class ActorDocTest extends AbstractJavaTest {
           .build();
     }
   }
+
   // #messages-in-companion
 
   public static class LifecycleMethods extends AbstractActor {
@@ -307,6 +308,7 @@ public class ActorDocTest extends AbstractJavaTest {
     public void preStart() {
       target = getContext().actorOf(Props.create(MyActor.class, "target"));
     }
+
     // #preStart
     // #postStop
     @Override
@@ -324,6 +326,7 @@ public class ActorDocTest extends AbstractJavaTest {
       target = null;
       // #clean-up-some-resources
     }
+
     // #postStop
 
     // compilation test only
@@ -410,6 +413,7 @@ public class ActorDocTest extends AbstractJavaTest {
           .build();
     }
   }
+
   // #gracefulStop-actor
 
   @Test
@@ -477,6 +481,7 @@ public class ActorDocTest extends AbstractJavaTest {
       system.terminate();
     }
   }
+
   // #swapper
 
   @Test
@@ -549,6 +554,7 @@ public class ActorDocTest extends AbstractJavaTest {
   static class ReceiveTimeoutActor extends AbstractActor {
     // #receive-timeout
     ActorRef target = getContext().getSystem().deadLetters();
+
     // #receive-timeout
     public ReceiveTimeoutActor() {
       // To set an initial delay
@@ -580,6 +586,7 @@ public class ActorDocTest extends AbstractJavaTest {
           .build();
     }
   }
+
   // #receive-timeout
 
   @Test
@@ -678,6 +685,7 @@ public class ActorDocTest extends AbstractJavaTest {
           .build();
     }
   }
+
   // #hot-swap-actor
 
   @Test
@@ -730,6 +738,7 @@ public class ActorDocTest extends AbstractJavaTest {
           .build();
     }
   }
+
   // #stash
 
   @Test
@@ -765,6 +774,7 @@ public class ActorDocTest extends AbstractJavaTest {
           .build();
     }
   }
+
   // #watch
 
   @Test
@@ -816,6 +826,7 @@ public class ActorDocTest extends AbstractJavaTest {
           .build();
     }
   }
+
   // #identify
 
   @Test

@@ -13,35 +13,31 @@
 
 package jdocs.org.apache.pekko.cluster.sharding.typed;
 
-import org.apache.pekko.actor.typed.ActorRef;
-import org.apache.pekko.actor.typed.ActorSystem;
-import org.apache.pekko.actor.typed.Behavior;
-import org.apache.pekko.actor.typed.javadsl.ActorContext;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CompletionStage;
-
-// #persistent-entity-import
+import org.apache.pekko.actor.typed.ActorRef;
+import org.apache.pekko.actor.typed.ActorSystem;
+import org.apache.pekko.actor.typed.Behavior;
+import org.apache.pekko.actor.typed.javadsl.ActorContext;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
+import org.apache.pekko.cluster.sharding.typed.javadsl.ClusterSharding;
+import org.apache.pekko.cluster.sharding.typed.javadsl.Entity;
+import org.apache.pekko.cluster.sharding.typed.javadsl.EntityRef;
 import org.apache.pekko.cluster.sharding.typed.javadsl.EntityTypeKey;
 import org.apache.pekko.persistence.typed.PersistenceId;
 import org.apache.pekko.persistence.typed.javadsl.CommandHandler;
 import org.apache.pekko.persistence.typed.javadsl.Effect;
 import org.apache.pekko.persistence.typed.javadsl.EventHandler;
-// #persistent-entity-import
-
-// #persistent-entity-usage-import
-import org.apache.pekko.cluster.sharding.typed.javadsl.ClusterSharding;
-import org.apache.pekko.cluster.sharding.typed.javadsl.EntityRef;
-import org.apache.pekko.cluster.sharding.typed.javadsl.Entity;
 import org.apache.pekko.persistence.typed.javadsl.EventSourcedBehavior;
 import org.apache.pekko.serialization.jackson.CborSerializable;
-import org.apache.pekko.util.Timeout;
-import com.fasterxml.jackson.annotation.JsonCreator;
-// #persistent-entity-usage-import
 
+// #persistent-entity-import
+// #persistent-entity-import
+// #persistent-entity-usage-import
 public class HelloWorldPersistentEntityExample {
 
   // #persistent-entity-usage
@@ -76,6 +72,7 @@ public class HelloWorldPersistentEntityExample {
       return result.thenApply(greeting -> greeting.numberOfPeople);
     }
   }
+
   // #persistent-entity-usage
 
   // #persistent-entity
