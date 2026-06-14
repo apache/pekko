@@ -17,7 +17,7 @@ import java.io.{ ByteArrayOutputStream, NotSerializableException }
 import java.nio.ByteBuffer
 import java.util.zip.{ GZIPInputStream, GZIPOutputStream }
 
-import scala.annotation.tailrec
+import scala.annotation.{ nowarn, tailrec }
 import scala.util.{ Failure, Success }
 import scala.util.control.NonFatal
 
@@ -45,6 +45,7 @@ import pekko.util.OptionVal
    * Not nice to depend on implementation details of Jackson, but good to use the same
    * list to automatically have the list updated when new classes are added in Jackson.
    */
+  @nowarn("msg=deprecated")
   class GadgetClassDenyList extends SubTypeValidator {
 
     private def defaultNoDeserClassNames: java.util.Set[String] =
