@@ -34,7 +34,6 @@ import pekko.persistence.typed.state.scaladsl
 import scala.jdk.OptionConverters._
 
 import com.typesafe.config.Config
-import org.jspecify.annotations.Nullable
 
 /**
  * A `Behavior` for a persistent actor with durable storage of its state.
