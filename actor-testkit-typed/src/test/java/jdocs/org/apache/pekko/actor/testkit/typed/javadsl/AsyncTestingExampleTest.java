@@ -41,11 +41,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 // #test-header
 @ExtendWith({TestKitJUnitJupiterExtension.class, LogCapturingExtension.class})
 public class AsyncTestingExampleTest
-    // #test-header
+// #test-header
 
 // #test-header
 {
   @JUnitJupiterTestKit public ActorTestKit testKit = new JUnitJupiterTestKitBuilder().build();
+
   // #test-header
 
   // #under-test
@@ -93,6 +94,7 @@ public class AsyncTestingExampleTest
           .build();
     }
   }
+
   // #under-test
 
   // #under-test-2
@@ -129,6 +131,7 @@ public class AsyncTestingExampleTest
           scheduler);
     }
   }
+
   // #under-test-2
 
   // #test-shutdown

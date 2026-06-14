@@ -51,7 +51,7 @@ jobs:
           sbt \
           -Dsbt.override.build.repos=false \
           -Dsbt.log.noformat=false \
-          javafmtCheckAll
+          checkCodeStyle
   pull-request-validation:
     name: Check / Tests
     runs-on: ubuntu-22.04

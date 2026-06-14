@@ -86,6 +86,7 @@ public class IODocTest extends AbstractJavaTest {
           .build();
     }
   }
+
   // #server
 
   public
@@ -109,6 +110,7 @@ public class IODocTest extends AbstractJavaTest {
           .build();
     }
   }
+
   // #simplistic-handler
 
   public
@@ -179,6 +181,7 @@ public class IODocTest extends AbstractJavaTest {
           .build();
     }
   }
+
   // #client
 
   @RegisterExtension

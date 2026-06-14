@@ -29,8 +29,6 @@ import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class SchedulerDocTest extends AbstractJavaTest {

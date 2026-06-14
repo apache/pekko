@@ -33,6 +33,7 @@ import org.apache.pekko.actor.AllDeadLetters;
 import org.apache.pekko.actor.Dropped;
 import org.apache.pekko.actor.SuppressedDeadLetter;
 import org.apache.pekko.actor.UnhandledMessage;
+
 // #listen-to-super-class-imports
 
 public class EventStreamSuperClassDocTest {

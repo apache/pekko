@@ -23,6 +23,7 @@ import org.apache.pekko.actor.PoisonPill;
 import org.apache.pekko.actor.Props;
 import org.apache.pekko.cluster.singleton.ClusterSingletonManager;
 import org.apache.pekko.cluster.singleton.ClusterSingletonManagerSettings;
+
 // #singleton-supervisor-actor-usage-imports
 
 abstract class ClusterSingletonSupervision extends AbstractActor {

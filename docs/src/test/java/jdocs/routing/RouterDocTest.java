@@ -173,6 +173,7 @@ public class RouterDocTest extends AbstractJavaTest {
       getContext().actorOf(Props.create(Worker.class), "w2");
       getContext().actorOf(Props.create(Worker.class), "w3");
     }
+
     // ...
     // #create-worker-actors
 
@@ -357,6 +358,7 @@ public class RouterDocTest extends AbstractJavaTest {
     ActorRef router31 =
         getContext()
             .actorOf(FromConfig.getInstance().props(Props.create(Worker.class)), "router31");
+
     // #optimal-size-exploring-resize-pool
 
     @Override

@@ -327,6 +327,7 @@ class SourceOrFlow {
   CompletionStage<Integer> asyncFunction(int acc, int next) {
     return CompletableFuture.supplyAsync(() -> acc + next);
   }
+
   // #scan-async
 
   void scanAsyncExample() {
@@ -355,6 +356,7 @@ class SourceOrFlow {
       return new Summed(this.el + other.el);
     }
   }
+
   // #conflateWithSeed-type
 
   void conflateWithSeedExample() {
@@ -385,6 +387,7 @@ class SourceOrFlow {
       this.id = id;
     }
   }
+
   // #collect-elements
 
   void collectExample() {
@@ -516,6 +519,7 @@ class SourceOrFlow {
         return new Histogram(low, high + 1L);
       }
     }
+
     // #fold
 
     // #foldAsync
@@ -528,6 +532,7 @@ class SourceOrFlow {
     }
     // #fold
   }
+
   // #fold // #foldAsync
 
   void foldExample() {
@@ -597,8 +602,8 @@ class SourceOrFlow {
     Source<String, NotUsed> words =
         Source.from(
             Arrays.asList(
-                ("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt "
-                        + "ut labore et dolore magna aliqua")
+                ("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
+                        + " incididunt ut labore et dolore magna aliqua")
                     .split(" ")));
 
     Source<String, NotUsed> longWords = words.filter(w -> w.length() > 6);
@@ -616,8 +621,8 @@ class SourceOrFlow {
     Source<String, NotUsed> words =
         Source.from(
             Arrays.asList(
-                ("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt "
-                        + "ut labore et dolore magna aliqua")
+                ("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
+                        + " incididunt ut labore et dolore magna aliqua")
                     .split(" ")));
 
     Source<String, NotUsed> longWords = words.filterNot(w -> w.length() <= 6);

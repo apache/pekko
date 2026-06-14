@@ -92,6 +92,7 @@ interface PointToPointDocExample {
       }
     }
   }
+
   // #producer
 
   // #consumer
@@ -145,6 +146,7 @@ interface PointToPointDocExample {
       return this;
     }
   }
+
   // #consumer
 
   public class Guardian {

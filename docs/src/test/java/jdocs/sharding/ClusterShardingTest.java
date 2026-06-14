@@ -56,15 +56,13 @@ public class ClusterShardingTest {
           public String entityId(Object message) {
             if (message instanceof Counter.EntityEnvelope envelope)
               return String.valueOf(envelope.id);
-            else if (message instanceof Counter.Get get)
-              return String.valueOf(get.counterId);
+            else if (message instanceof Counter.Get get) return String.valueOf(get.counterId);
             else return null;
           }
 
           @Override
           public Object entityMessage(Object message) {
-            if (message instanceof Counter.EntityEnvelope envelope)
-              return envelope.payload;
+            if (message instanceof Counter.EntityEnvelope envelope) return envelope.payload;
             else return message;
           }
 
@@ -125,15 +123,13 @@ public class ClusterShardingTest {
           public String entityId(Object message) {
             if (message instanceof Counter.EntityEnvelope envelope)
               return String.valueOf(envelope.id);
-            else if (message instanceof Counter.Get get)
-              return String.valueOf(get.counterId);
+            else if (message instanceof Counter.Get get) return String.valueOf(get.counterId);
             else return null;
           }
 
           @Override
           public Object entityMessage(Object message) {
-            if (message instanceof Counter.EntityEnvelope envelope)
-              return envelope.payload;
+            if (message instanceof Counter.EntityEnvelope envelope) return envelope.payload;
             else return message;
           }
 

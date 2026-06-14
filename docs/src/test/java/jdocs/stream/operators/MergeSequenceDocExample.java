@@ -28,6 +28,7 @@ import org.apache.pekko.stream.javadsl.Partition;
 import org.apache.pekko.stream.javadsl.RunnableGraph;
 import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
+
 // #import
 
 public class MergeSequenceDocExample {

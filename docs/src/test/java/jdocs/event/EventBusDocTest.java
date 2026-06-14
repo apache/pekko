@@ -145,6 +145,7 @@ public class EventBusDocTest extends AbstractJavaTest {
       return 128;
     }
   }
+
   // #lookup-bus
 
   public
@@ -191,6 +192,7 @@ public class EventBusDocTest extends AbstractJavaTest {
       subscriber.tell(event.payload, ActorRef.noSender());
     }
   }
+
   // #subchannel-bus
 
   public
@@ -228,6 +230,7 @@ public class EventBusDocTest extends AbstractJavaTest {
       subscriber.tell(event, ActorRef.noSender());
     }
   }
+
   // #scanning-bus
 
   public
@@ -266,6 +269,7 @@ public class EventBusDocTest extends AbstractJavaTest {
       return 128;
     }
   }
+
   // #actor-bus
 
   @RegisterExtension

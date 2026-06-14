@@ -44,6 +44,7 @@ public class CoordinatedActorShutdownTest {
         this.replyTo = replyTo;
       }
     }
+
     // #coordinated-shutdown-addTask
 
     public static Behavior<Messages> create() {

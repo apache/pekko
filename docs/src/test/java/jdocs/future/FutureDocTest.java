@@ -47,34 +47,36 @@ public class FutureDocTest extends AbstractJavaTest {
   @Test
   @SuppressWarnings("deprecation")
   public void useAfter() {
-    Assertions.assertThrows(IllegalStateException.class, () -> {
-      // #after
-      CompletionStage<String> failWithException =
-          CompletableFuture.supplyAsync(
-              () -> {
-                throw new IllegalStateException("OHNOES1");
-              });
-      CompletionStage<String> delayed =
-          Patterns.after(Duration.ofMillis(200), system, () -> failWithException);
-      // #after
-      CompletionStage<String> future =
-          CompletableFuture.supplyAsync(
-              () -> {
-                try {
-                  Thread.sleep(1000);
-                } catch (Throwable ex) {
-                  // ignore
-                }
-                return "foo";
-              });
-      CompletionStage<String> result =
-          CompletionStages.firstCompletedOf(Arrays.asList(future, delayed));
-      try {
-        result.toCompletableFuture().get(2, SECONDS);
-      } catch (Throwable ex) {
-        throw (Exception) ex.getCause();
-      }
-    });
+    Assertions.assertThrows(
+        IllegalStateException.class,
+        () -> {
+          // #after
+          CompletionStage<String> failWithException =
+              CompletableFuture.supplyAsync(
+                  () -> {
+                    throw new IllegalStateException("OHNOES1");
+                  });
+          CompletionStage<String> delayed =
+              Patterns.after(Duration.ofMillis(200), system, () -> failWithException);
+          // #after
+          CompletionStage<String> future =
+              CompletableFuture.supplyAsync(
+                  () -> {
+                    try {
+                      Thread.sleep(1000);
+                    } catch (Throwable ex) {
+                      // ignore
+                    }
+                    return "foo";
+                  });
+          CompletionStage<String> result =
+              CompletionStages.firstCompletedOf(Arrays.asList(future, delayed));
+          try {
+            result.toCompletableFuture().get(2, SECONDS);
+          } catch (Throwable ex) {
+            throw (Exception) ex.getCause();
+          }
+        });
   }
 
   @Test
@@ -102,21 +104,21 @@ public class FutureDocTest extends AbstractJavaTest {
     retriedFuture.toCompletableFuture().get(2, SECONDS);
   }
 
-    @Test
-    public void useRetryWithPredicateWithIntFunction() throws Exception {
-        // #retry
-        Callable<CompletionStage<String>> attempt = () -> CompletableFuture.completedFuture("test");
+  @Test
+  public void useRetryWithPredicateWithIntFunction() throws Exception {
+    // #retry
+    Callable<CompletionStage<String>> attempt = () -> CompletableFuture.completedFuture("test");
 
-        CompletionStage<String> retriedFuture =
-            Patterns.retry(
-                attempt,
-                (notUsed, e) -> e != null,
-                3,
-                current -> Optional.of(java.time.Duration.ofMillis(200)),
-                system.classicSystem().scheduler(),
-                system.executionContext());
-        // #retry
+    CompletionStage<String> retriedFuture =
+        Patterns.retry(
+            attempt,
+            (notUsed, e) -> e != null,
+            3,
+            current -> Optional.of(java.time.Duration.ofMillis(200)),
+            system.classicSystem().scheduler(),
+            system.executionContext());
+    // #retry
 
-        retriedFuture.toCompletableFuture().get(2, SECONDS);
-    }
+    retriedFuture.toCompletableFuture().get(2, SECONDS);
+  }
 }

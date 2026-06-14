@@ -27,6 +27,7 @@ import org.apache.pekko.actor.Props;
 // #import
 import org.apache.pekko.actor.Actor;
 import org.apache.pekko.actor.IndirectActorProducer;
+
 // #import
 
 public class DependencyInjectionDocTest extends AbstractJavaTest {
@@ -93,6 +94,7 @@ public class DependencyInjectionDocTest extends AbstractJavaTest {
       return result;
     }
   }
+
   // #creating-indirectly
 
   @Test
