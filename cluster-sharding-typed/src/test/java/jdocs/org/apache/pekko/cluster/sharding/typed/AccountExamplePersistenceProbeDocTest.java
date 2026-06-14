@@ -13,20 +13,22 @@
 
 package jdocs.org.apache.pekko.cluster.sharding.typed;
 
+import org.apache.pekko.Done;
+
 import static jdocs.org.apache.pekko.cluster.sharding.typed.AccountExampleWithEventHandlersInState.AccountEntity;
 import static org.junit.jupiter.api.Assertions.*;
 
+// #test
 import java.math.BigDecimal;
-import org.apache.pekko.Done;
+
 import org.apache.pekko.actor.testkit.typed.javadsl.BehaviorTestKit;
 import org.apache.pekko.actor.testkit.typed.javadsl.ReplyInbox;
 import org.apache.pekko.actor.testkit.typed.javadsl.StatusReplyInbox;
-import org.apache.pekko.persistence.testkit.javadsl.PersistenceEffect;
 import org.apache.pekko.persistence.testkit.javadsl.PersistenceProbeBehavior;
+import org.apache.pekko.persistence.testkit.javadsl.PersistenceEffect;
 import org.apache.pekko.persistence.typed.PersistenceId;
 import org.junit.jupiter.api.Test;
 
-// #test
 public class AccountExamplePersistenceProbeDocTest
 // #test
 

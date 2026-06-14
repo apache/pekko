@@ -13,8 +13,10 @@
 
 package jdocs.stream.operators;
 
-import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
+
+// #import
+import org.apache.pekko.NotUsed;
 import org.apache.pekko.stream.Attributes;
 import org.apache.pekko.stream.ClosedShape;
 import org.apache.pekko.stream.UniformFanOutShape;
@@ -26,6 +28,7 @@ import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
 
 // #import
+
 public class PartitionDocExample {
 
   private final ActorSystem system = ActorSystem.create("PartitionDocExample");

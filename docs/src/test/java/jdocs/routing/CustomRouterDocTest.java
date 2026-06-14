@@ -25,19 +25,20 @@ import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.actor.Props;
+// #imports1
 import org.apache.pekko.routing.FromConfig;
 import org.apache.pekko.routing.RoundRobinRoutingLogic;
 import org.apache.pekko.routing.Routee;
 import org.apache.pekko.routing.RoutingLogic;
 import org.apache.pekko.routing.SeveralRoutees;
-import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
-import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
-import scala.collection.immutable.IndexedSeq;
 
 // #imports1
-// #imports1
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
+import org.apache.pekko.testkit.javadsl.TestKit;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.Test;
+import scala.collection.immutable.IndexedSeq;
+
 public class CustomRouterDocTest extends AbstractJavaTest {
 
   @RegisterExtension

@@ -13,12 +13,6 @@
 
 package jdocs.org.apache.pekko.persistence.typed;
 
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.SupervisorStrategy;
@@ -26,19 +20,27 @@ import org.apache.pekko.actor.typed.javadsl.ActorContext;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.apache.pekko.persistence.typed.DeleteEventsFailed;
 import org.apache.pekko.persistence.typed.DeleteSnapshotsFailed;
-import org.apache.pekko.persistence.typed.PersistenceId;
 import org.apache.pekko.persistence.typed.SnapshotFailed;
 import org.apache.pekko.persistence.typed.SnapshotSelectionCriteria;
 import org.apache.pekko.persistence.typed.javadsl.CommandHandler;
 import org.apache.pekko.persistence.typed.javadsl.Effect;
-import org.apache.pekko.persistence.typed.javadsl.EventHandler;
-import org.apache.pekko.persistence.typed.javadsl.EventSourcedBehavior;
 import org.apache.pekko.persistence.typed.javadsl.Recovery;
+import org.apache.pekko.persistence.typed.javadsl.EventHandler;
+// #behavior
+import org.apache.pekko.persistence.typed.javadsl.EventSourcedBehavior;
+import org.apache.pekko.persistence.typed.PersistenceId;
+
+// #behavior
 import org.apache.pekko.persistence.typed.javadsl.RetentionCriteria;
 import org.apache.pekko.persistence.typed.javadsl.SignalHandler;
 
-// #behavior
-// #behavior
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 public class BasicPersistentBehaviorTest {
 
   interface Structure {

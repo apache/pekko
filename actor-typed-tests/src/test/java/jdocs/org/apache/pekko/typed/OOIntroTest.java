@@ -14,15 +14,9 @@
 package jdocs.org.apache.pekko.typed;
 
 // #imports
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.actor.typed.Behavior;
-import org.apache.pekko.actor.typed.Terminated;
 import org.apache.pekko.actor.typed.javadsl.AbstractBehavior;
 import org.apache.pekko.actor.typed.javadsl.ActorContext;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
@@ -30,6 +24,15 @@ import org.apache.pekko.actor.typed.javadsl.Receive;
 import org.apache.pekko.actor.typed.javadsl.ReceiveBuilder;
 
 // #imports
+
+import org.apache.pekko.actor.typed.Terminated;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+
 public interface OOIntroTest {
 
   // #chatroom-behavior

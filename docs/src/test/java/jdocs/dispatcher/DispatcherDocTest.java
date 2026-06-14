@@ -13,31 +13,40 @@
 
 package jdocs.dispatcher;
 
-import com.typesafe.config.Config;
+import org.apache.pekko.dispatch.ControlMessage;
+import org.apache.pekko.dispatch.RequiresMessageQueue;
+import org.apache.pekko.testkit.PekkoSpec;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import com.typesafe.config.ConfigFactory;
 import docs.dispatcher.DispatcherDocSpec;
 import jdocs.AbstractJavaTest;
-import jdocs.actor.MyActor;
 import jdocs.actor.MyBoundedActor;
-import org.apache.pekko.actor.*;
-import org.apache.pekko.dispatch.ControlMessage;
-import org.apache.pekko.dispatch.PriorityGenerator;
-import org.apache.pekko.dispatch.RequiresMessageQueue;
-import org.apache.pekko.dispatch.UnboundedStablePriorityMailbox;
-import org.apache.pekko.event.Logging;
-import org.apache.pekko.event.LoggingAdapter;
-import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
-import org.apache.pekko.testkit.PekkoSpec;
-import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.jupiter.api.Test;
+import jdocs.actor.MyActor;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.Test;
 import scala.concurrent.ExecutionContextExecutor;
 
 // #imports
+import org.apache.pekko.actor.*;
 // #imports
 // #imports-prio
+import org.apache.pekko.event.Logging;
+import org.apache.pekko.event.LoggingAdapter;
+
 // #imports-prio
+
 // #imports-prio-mailbox
+import org.apache.pekko.dispatch.PriorityGenerator;
+import org.apache.pekko.dispatch.UnboundedStablePriorityMailbox;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
+import com.typesafe.config.Config;
+
+// #imports-prio-mailbox
+
+// #imports-required-mailbox
+
+// #imports-required-mailbox
+
 public class DispatcherDocTest extends AbstractJavaTest {
 
   @RegisterExtension

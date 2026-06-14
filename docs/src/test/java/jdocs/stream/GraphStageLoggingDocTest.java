@@ -13,21 +13,23 @@
 
 package jdocs.stream;
 
-import java.util.concurrent.ThreadLocalRandom;
-import jdocs.AbstractJavaTest;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.stream.Attributes;
 import org.apache.pekko.stream.Materializer;
 import org.apache.pekko.stream.Outlet;
 import org.apache.pekko.stream.SourceShape;
+// #stage-with-logging
 import org.apache.pekko.stream.stage.AbstractOutHandler;
 import org.apache.pekko.stream.stage.GraphStage;
 import org.apache.pekko.stream.stage.GraphStageLogic;
 import org.apache.pekko.stream.stage.GraphStageLogicWithLogging;
-import org.junit.jupiter.api.Test;
 
 // #stage-with-logging
-// #stage-with-logging
+import jdocs.AbstractJavaTest;
+import org.junit.jupiter.api.Test;
+
+import java.util.concurrent.ThreadLocalRandom;
+
 public class GraphStageLoggingDocTest extends AbstractJavaTest {
   static ActorSystem system;
   static Materializer mat;

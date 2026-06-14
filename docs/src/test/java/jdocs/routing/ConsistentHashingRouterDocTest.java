@@ -13,26 +13,33 @@
 
 package jdocs.routing;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import jdocs.AbstractJavaTest;
-import org.apache.pekko.actor.AbstractActor;
-import org.apache.pekko.actor.ActorRef;
-import org.apache.pekko.actor.ActorSystem;
-import org.apache.pekko.actor.Props;
-import org.apache.pekko.routing.ConsistentHashingPool;
-import org.apache.pekko.routing.ConsistentHashingRouter.ConsistentHashMapper;
-import org.apache.pekko.routing.ConsistentHashingRouter.ConsistentHashable;
-import org.apache.pekko.routing.ConsistentHashingRouter.ConsistentHashableEnvelope;
 import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
+
+import jdocs.AbstractJavaTest;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.Test;
+
+import org.apache.pekko.actor.ActorSystem;
 
 // #imports1
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.routing.ConsistentHashingRouter.ConsistentHashable;
+
+import java.util.Map;
+import java.util.HashMap;
+import java.io.Serializable;
 // #imports1
+
 // #imports2
+import org.apache.pekko.actor.Props;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.routing.ConsistentHashingPool;
+import org.apache.pekko.routing.ConsistentHashingRouter.ConsistentHashMapper;
+import org.apache.pekko.routing.ConsistentHashingRouter.ConsistentHashableEnvelope;
+
+// #imports2
+
 public class ConsistentHashingRouterDocTest extends AbstractJavaTest {
 
   @RegisterExtension

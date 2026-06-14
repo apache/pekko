@@ -13,11 +13,6 @@
 
 package jdocs.actor.typed;
 
-import static org.apache.pekko.actor.typed.javadsl.AskPattern.ask;
-
-import java.time.Duration;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
 import org.apache.pekko.Done;
 import org.apache.pekko.actor.Cancellable;
 import org.apache.pekko.actor.CoordinatedShutdown;
@@ -25,9 +20,15 @@ import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.javadsl.*;
+// #coordinated-shutdown-addTask
+import static org.apache.pekko.actor.typed.javadsl.AskPattern.ask;
 
 // #coordinated-shutdown-addTask
-// #coordinated-shutdown-addTask
+
+import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+
 public class CoordinatedActorShutdownTest {
 
   // #coordinated-shutdown-addTask

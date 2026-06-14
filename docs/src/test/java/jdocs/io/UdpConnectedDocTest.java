@@ -19,6 +19,7 @@ import static org.apache.pekko.util.ByteString.emptyByteString;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.actor.ActorSystem;
@@ -28,9 +29,10 @@ import org.apache.pekko.io.UdpConnectedMessage;
 import org.apache.pekko.io.UdpSO;
 import org.apache.pekko.japi.pf.ReceiveBuilder;
 import org.apache.pekko.util.ByteString;
-import org.junit.jupiter.api.Test;
 
 // #imports
+import org.junit.jupiter.api.Test;
+
 public class UdpConnectedDocTest {
 
   public static class Demo extends AbstractActor {

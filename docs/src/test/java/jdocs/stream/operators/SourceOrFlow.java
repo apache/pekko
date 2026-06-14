@@ -13,10 +13,6 @@
 
 package jdocs.stream.operators;
 
-import java.time.Duration;
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
 import org.apache.pekko.Done;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorRef;
@@ -27,9 +23,6 @@ import org.apache.pekko.japi.function.Function2;
 import org.apache.pekko.japi.pf.PFBuilder;
 import org.apache.pekko.stream.Attributes;
 import org.apache.pekko.stream.javadsl.Flow;
-import org.apache.pekko.stream.javadsl.Keep;
-import org.apache.pekko.stream.javadsl.Sink;
-import org.apache.pekko.stream.javadsl.Source;
 
 // #zip
 // #zip-with
@@ -44,6 +37,12 @@ import org.apache.pekko.stream.javadsl.Source;
 // #interleaveAll
 // #merge
 // #merge-sorted
+import org.apache.pekko.stream.javadsl.Keep;
+import org.apache.pekko.stream.javadsl.Source;
+import org.apache.pekko.stream.javadsl.Sink;
+
+import java.util.*;
+
 // #merge-sorted
 // #merge
 // #interleave
@@ -57,8 +56,15 @@ import org.apache.pekko.stream.javadsl.Source;
 // #zip-with-index
 // #zip-with
 // #zip
+
 // #log
+
 // #log
+
+import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+
 class SourceOrFlow {
   private static ActorSystem system = null;
 

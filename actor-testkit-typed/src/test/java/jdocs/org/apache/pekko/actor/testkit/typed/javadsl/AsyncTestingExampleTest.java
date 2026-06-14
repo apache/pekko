@@ -13,27 +13,31 @@
 
 package jdocs.org.apache.pekko.actor.testkit.typed.javadsl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.time.Duration;
-import java.util.Objects;
-import java.util.concurrent.CompletionStage;
-import java.util.stream.IntStream;
-import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
-import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
-import org.apache.pekko.actor.testkit.typed.javadsl.JUnitJupiterTestKitBuilder;
-import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturingExtension;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitJupiterExtension;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.Scheduler;
 import org.apache.pekko.actor.typed.javadsl.AskPattern;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
+// #test-header
+import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.JUnitJupiterTestKitBuilder;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitJupiterExtension;
+import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturingExtension;
+
+// #test-header
+import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-// #test-header
+import java.time.Duration;
+import java.util.concurrent.CompletionStage;
+import java.util.stream.IntStream;
+
+import java.util.Objects;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 // #test-header
 @ExtendWith({TestKitJUnitJupiterExtension.class, LogCapturingExtension.class})
 public class AsyncTestingExampleTest

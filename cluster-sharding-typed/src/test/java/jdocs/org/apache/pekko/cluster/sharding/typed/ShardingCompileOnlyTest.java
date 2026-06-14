@@ -14,7 +14,7 @@
 package jdocs.org.apache.pekko.cluster.sharding.typed;
 
 import java.time.Duration;
-import jdocs.org.apache.pekko.persistence.typed.BlogPostEntity;
+
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.actor.typed.Behavior;
@@ -22,23 +22,30 @@ import org.apache.pekko.actor.typed.javadsl.AbstractBehavior;
 import org.apache.pekko.actor.typed.javadsl.ActorContext;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.apache.pekko.actor.typed.javadsl.Receive;
-import org.apache.pekko.cluster.sharding.ShardRegion.ClusterShardingStats;
-import org.apache.pekko.cluster.sharding.ShardRegion.CurrentShardRegionState;
-import org.apache.pekko.cluster.sharding.typed.GetClusterShardingStats;
-import org.apache.pekko.cluster.sharding.typed.GetShardRegionState;
+
+// #import
 import org.apache.pekko.cluster.sharding.typed.ShardingEnvelope;
 import org.apache.pekko.cluster.sharding.typed.javadsl.ClusterSharding;
-import org.apache.pekko.cluster.sharding.typed.javadsl.Entity;
-import org.apache.pekko.cluster.sharding.typed.javadsl.EntityRef;
 import org.apache.pekko.cluster.sharding.typed.javadsl.EntityTypeKey;
+import org.apache.pekko.cluster.sharding.typed.javadsl.EntityRef;
+import org.apache.pekko.cluster.sharding.typed.javadsl.Entity;
 import org.apache.pekko.persistence.typed.PersistenceId;
 
 // #import
-// #import
+
 // #get-shard-region-state
+import org.apache.pekko.cluster.sharding.typed.GetShardRegionState;
+import org.apache.pekko.cluster.sharding.ShardRegion.CurrentShardRegionState;
+
 // #get-shard-region-state
 // #get-cluster-sharding-stats
+import org.apache.pekko.cluster.sharding.typed.GetClusterShardingStats;
+import org.apache.pekko.cluster.sharding.ShardRegion.ClusterShardingStats;
+
 // #get-cluster-sharding-stats
+
+import jdocs.org.apache.pekko.persistence.typed.BlogPostEntity;
+
 interface ShardingCompileOnlyTest {
 
   // #counter

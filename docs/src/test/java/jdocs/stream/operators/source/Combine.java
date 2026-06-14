@@ -13,16 +13,17 @@
 
 package jdocs.stream.operators.source;
 
-import java.util.Collections;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
+// #imports
 import org.apache.pekko.stream.javadsl.Concat;
 import org.apache.pekko.stream.javadsl.Merge;
 import org.apache.pekko.stream.javadsl.Source;
+// ...
 
 // #imports
-// ...
-// #imports
+import java.util.Collections;
+
 public class Combine {
 
   private static ActorSystem system;

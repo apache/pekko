@@ -13,48 +13,54 @@
 
 package jdocs.actor;
 
-import static jdocs.actor.Messages.*;
-import static jdocs.actor.Messages.Swap.Swap;
-import static org.apache.pekko.pattern.Patterns.ask;
-import static org.apache.pekko.pattern.Patterns.gracefulStop;
-import static org.apache.pekko.pattern.Patterns.pipe;
-import static org.junit.jupiter.api.Assertions.*;
-
+import org.apache.pekko.actor.*;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import java.time.Duration;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.TimeUnit;
 import jdocs.AbstractJavaTest;
-import org.apache.pekko.actor.*;
-import org.apache.pekko.actor.ActorIdentity;
-import org.apache.pekko.actor.ActorRef;
-import org.apache.pekko.actor.ActorSelection;
-import org.apache.pekko.actor.ActorSystem;
+import static jdocs.actor.Messages.Swap.Swap;
+import static jdocs.actor.Messages.*;
 import org.apache.pekko.actor.CoordinatedShutdown;
-import org.apache.pekko.actor.Identify;
-import org.apache.pekko.actor.Props;
-import org.apache.pekko.actor.Terminated;
-import org.apache.pekko.pattern.AskTimeoutException;
+
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 import org.apache.pekko.testkit.TestActors;
-import org.apache.pekko.testkit.javadsl.TestKit;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 // #import-props
+import org.apache.pekko.actor.Props;
 // #import-props
 // #import-actorRef
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.ActorSystem;
 // #import-actorRef
 // #import-identify
+import org.apache.pekko.actor.ActorIdentity;
+import org.apache.pekko.actor.ActorSelection;
+import org.apache.pekko.actor.Identify;
 // #import-identify
 // #import-ask
+import static org.apache.pekko.pattern.Patterns.ask;
+import static org.apache.pekko.pattern.Patterns.pipe;
+
+import java.util.concurrent.CompletableFuture;
 // #import-ask
 // #import-gracefulStop
+import static org.apache.pekko.pattern.Patterns.gracefulStop;
+import org.apache.pekko.pattern.AskTimeoutException;
+import java.util.concurrent.CompletionStage;
+
 // #import-gracefulStop
 // #import-terminated
+import org.apache.pekko.actor.Terminated;
+
+// #import-terminated
+
 public class ActorDocTest extends AbstractJavaTest {
 
   public static Config config =

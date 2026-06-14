@@ -13,35 +13,13 @@
 
 package org.apache.pekko.stream.javadsl;
 
-import static org.apache.pekko.util.ByteString.emptyByteString;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.io.IOException;
-import java.net.BindException;
-import java.net.InetSocketAddress;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLEngine;
-import javax.net.ssl.TrustManagerFactory;
 import org.apache.pekko.Done;
 import org.apache.pekko.japi.function.Function2;
 import org.apache.pekko.japi.function.Procedure;
 import org.apache.pekko.stream.BindFailedException;
 import org.apache.pekko.stream.StreamTcpException;
 import org.apache.pekko.stream.StreamTestJupiter;
-import org.apache.pekko.stream.TLSRole;
+
 import org.apache.pekko.stream.javadsl.Tcp.IncomingConnection;
 import org.apache.pekko.stream.javadsl.Tcp.ServerBinding;
 import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
@@ -50,12 +28,40 @@ import org.apache.pekko.testkit.SocketUtil;
 import org.apache.pekko.testkit.javadsl.EventFilter;
 import org.apache.pekko.testkit.javadsl.TestKit;
 import org.apache.pekko.util.ByteString;
+import static org.apache.pekko.util.ByteString.emptyByteString;
+
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.net.BindException;
+import java.net.InetSocketAddress;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // #setting-up-ssl-engine
 // imports
+import java.security.KeyStore;
+import java.security.SecureRandom;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.TrustManagerFactory;
+import org.apache.pekko.stream.TLSRole;
+
+// #setting-up-ssl-engine
+
 public class TcpTest extends StreamTestJupiter {
   public TcpTest() {
     super(actorSystemResource);

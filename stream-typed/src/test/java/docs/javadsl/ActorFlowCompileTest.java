@@ -13,8 +13,8 @@
 
 package docs.javadsl;
 
-import java.time.Duration;
 import org.apache.pekko.NotUsed;
+// #ask-actor
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.pattern.StatusReply;
@@ -24,7 +24,8 @@ import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.stream.typed.javadsl.ActorFlow;
 
 // #ask-actor
-// #ask-actor
+import java.time.Duration;
+
 public class ActorFlowCompileTest {
 
   final ActorSystem<String> system = null;

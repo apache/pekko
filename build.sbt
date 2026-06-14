@@ -39,10 +39,7 @@ enablePlugins(
 disablePlugins(MimaPlugin)
 
 ThisBuild / javafmtFormatterCompatibleJavaVersion := 17
-ThisBuild / javafmt / excludeFilter := new SimpleFileFilter(f => {
-  val p = f.getAbsolutePath
-  p.contains("/jdocs/") || p.contains("/test/java/docs/")
-})
+ThisBuild / javafmtSortImports := false
 
 addCommandAlias("checkCodeStyle", "scalafmtCheckAll; scalafmtSbtCheck; javafmtCheckAll; +headerCheckAll")
 addCommandAlias("applyCodeStyle", "+headerCreateAll; scalafmtAll; scalafmtSbt; javafmtAll")

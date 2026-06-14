@@ -13,8 +13,10 @@
 
 package jdocs.stream.operators;
 
-import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
+
+// #import
+import org.apache.pekko.NotUsed;
 import org.apache.pekko.japi.Pair;
 import org.apache.pekko.stream.ClosedShape;
 import org.apache.pekko.stream.UniformFanInShape;
@@ -28,6 +30,7 @@ import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
 
 // #import
+
 public class MergeSequenceDocExample {
 
   private final ActorSystem system = ActorSystem.create("MergeSequenceDocExample");

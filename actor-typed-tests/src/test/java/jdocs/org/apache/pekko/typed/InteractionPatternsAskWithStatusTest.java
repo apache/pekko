@@ -13,23 +13,26 @@
 
 package jdocs.org.apache.pekko.typed;
 
-import java.time.Duration;
-import java.util.concurrent.CompletionStage;
-import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
-import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
-import org.apache.pekko.actor.testkit.typed.javadsl.JUnitJupiterTestKitBuilder;
-import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturingExtension;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitJupiterExtension;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.javadsl.*;
-import org.apache.pekko.pattern.StatusReply;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 // #actor-ask-with-status
+import org.apache.pekko.pattern.StatusReply;
+
 // #actor-ask-with-status
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitJupiterExtension;
+import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturingExtension;
+import org.apache.pekko.actor.testkit.typed.javadsl.JUnitJupiterTestKitBuilder;
+import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
+
+import java.time.Duration;
+import java.util.concurrent.CompletionStage;
+
 @ExtendWith(TestKitJUnitJupiterExtension.class)
 @ExtendWith(LogCapturingExtension.class)
 public class InteractionPatternsAskWithStatusTest {

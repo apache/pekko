@@ -13,25 +13,28 @@
 
 package jdocs.remoting;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
+import org.apache.pekko.testkit.PekkoSpec;
+import jdocs.AbstractJavaTest;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.Test;
 
 import com.typesafe.config.ConfigFactory;
-import jdocs.AbstractJavaTest;
-import org.apache.pekko.actor.AbstractActor;
+
+// #import
 import org.apache.pekko.actor.ActorRef;
-import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.actor.Address;
 import org.apache.pekko.actor.AddressFromURIString;
 import org.apache.pekko.actor.Deploy;
 import org.apache.pekko.actor.Props;
+import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.remote.RemoteScope;
-import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
-import org.apache.pekko.testkit.PekkoSpec;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
+// #import
 
-// #import
-// #import
+import org.apache.pekko.actor.AbstractActor;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class RemoteDeploymentDocTest extends AbstractJavaTest {
 
   public static class SampleActor extends AbstractActor {

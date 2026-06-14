@@ -13,8 +13,9 @@
 
 package jdocs.sharding;
 
-import java.time.Duration;
 import java.util.Optional;
+import java.time.Duration;
+
 import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.actor.ActorInitializationException;
 import org.apache.pekko.actor.ActorRef;
@@ -22,18 +23,22 @@ import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.actor.OneForOneStrategy;
 import org.apache.pekko.actor.PoisonPill;
 import org.apache.pekko.actor.Props;
-import org.apache.pekko.actor.ReceiveTimeout;
 import org.apache.pekko.actor.SupervisorStrategy;
-import org.apache.pekko.cluster.sharding.ClusterSharding;
-import org.apache.pekko.cluster.sharding.ClusterShardingSettings;
+import org.apache.pekko.actor.ReceiveTimeout;
+// #counter-extractor
 import org.apache.pekko.cluster.sharding.ShardRegion;
-import org.apache.pekko.japi.pf.DeciderBuilder;
-import org.apache.pekko.persistence.AbstractPersistentActor;
 
 // #counter-extractor
-// #counter-extractor
+
 // #counter-start
+import org.apache.pekko.cluster.sharding.ClusterSharding;
+import org.apache.pekko.cluster.sharding.ClusterShardingSettings;
+
 // #counter-start
+import org.apache.pekko.persistence.AbstractPersistentActor;
+import org.apache.pekko.japi.pf.DeciderBuilder;
+
+// Doc code, compile only
 public class ClusterShardingTest {
 
   ActorSystem system = null;

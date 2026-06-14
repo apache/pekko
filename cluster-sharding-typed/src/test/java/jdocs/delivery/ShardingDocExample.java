@@ -14,34 +14,41 @@
 package jdocs.delivery;
 
 // #imports
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletionStage;
 import org.apache.pekko.Done;
 import org.apache.pekko.actor.Address;
 import org.apache.pekko.actor.typed.ActorRef;
-import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.delivery.ConsumerController;
 import org.apache.pekko.actor.typed.javadsl.AbstractBehavior;
 import org.apache.pekko.actor.typed.javadsl.ActorContext;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.apache.pekko.actor.typed.javadsl.Receive;
-import org.apache.pekko.cluster.sharding.typed.ShardingEnvelope;
-import org.apache.pekko.cluster.sharding.typed.delivery.ShardingConsumerController;
+
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletionStage;
+
+// #imports
+
+// #producer
 import org.apache.pekko.cluster.sharding.typed.delivery.ShardingProducerController;
+
+// #producer
+
+// #init
+import org.apache.pekko.cluster.sharding.typed.delivery.ShardingConsumerController;
+import org.apache.pekko.cluster.sharding.typed.ShardingEnvelope;
 import org.apache.pekko.cluster.sharding.typed.javadsl.ClusterSharding;
 import org.apache.pekko.cluster.sharding.typed.javadsl.Entity;
 import org.apache.pekko.cluster.sharding.typed.javadsl.EntityTypeKey;
 import org.apache.pekko.cluster.typed.Cluster;
+import org.apache.pekko.actor.typed.ActorSystem;
 
-// #imports
-// #producer
-// #producer
 // #init
+
 interface ShardingDocExample {
 
   // #consumer

@@ -13,22 +13,28 @@
 
 package jdocs.persistence.testkit;
 
-import com.typesafe.config.ConfigFactory;
-import java.time.Duration;
-import java.util.UUID;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.TimeUnit;
-import jdocs.AbstractJavaTest;
-import org.apache.pekko.Done;
-import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
 import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
 import org.apache.pekko.actor.testkit.typed.javadsl.JUnitJupiterTestKitBuilder;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitJupiterExtension;
-import org.apache.pekko.persistence.testkit.javadsl.PersistenceInit;
+
+import com.typesafe.config.ConfigFactory;
+import jdocs.AbstractJavaTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.util.UUID;
+
 // #imports
+import org.apache.pekko.persistence.testkit.javadsl.PersistenceInit;
+import org.apache.pekko.Done;
+
+import java.time.Duration;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.TimeUnit;
+
+// #imports
+
 @ExtendWith(TestKitJUnitJupiterExtension.class)
 public class PersistenceInitTest extends AbstractJavaTest {
   @JUnitJupiterTestKit

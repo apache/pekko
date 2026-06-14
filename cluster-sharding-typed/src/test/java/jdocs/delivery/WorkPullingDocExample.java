@@ -14,27 +14,34 @@
 package jdocs.delivery;
 
 // #imports
-import java.time.Duration;
-import java.util.Optional;
-import java.util.UUID;
-import org.apache.pekko.Done;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.delivery.ConsumerController;
 import org.apache.pekko.actor.typed.delivery.DurableProducerQueue;
-import org.apache.pekko.actor.typed.delivery.WorkPullingProducerController;
 import org.apache.pekko.actor.typed.javadsl.ActorContext;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
-import org.apache.pekko.actor.typed.javadsl.StashBuffer;
-import org.apache.pekko.actor.typed.receptionist.ServiceKey;
+
+import java.time.Duration;
+import java.util.Optional;
+import java.util.UUID;
+
+// #imports
+
+// #producer
+import org.apache.pekko.actor.typed.delivery.WorkPullingProducerController;
+import org.apache.pekko.Done;
+
+// #producer
+
+// #durable-queue
 import org.apache.pekko.persistence.typed.PersistenceId;
 import org.apache.pekko.persistence.typed.delivery.EventSourcedProducerQueue;
 
-// #imports
-// #producer
-// #producer
 // #durable-queue
-// #durable-queue
+
+import org.apache.pekko.actor.typed.javadsl.StashBuffer;
+import org.apache.pekko.actor.typed.receptionist.ServiceKey;
+
 interface WorkPullingDocExample {
 
   // #consumer

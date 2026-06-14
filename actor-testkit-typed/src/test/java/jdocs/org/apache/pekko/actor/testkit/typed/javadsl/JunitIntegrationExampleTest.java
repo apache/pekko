@@ -15,17 +15,18 @@ package jdocs.org.apache.pekko.actor.testkit.typed.javadsl;
 
 import static jdocs.org.apache.pekko.actor.testkit.typed.javadsl.AsyncTestingExampleTest.Echo;
 
-import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
+import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturingExtension;
+
+// #junit-integration
 import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
 import org.apache.pekko.actor.testkit.typed.javadsl.JUnitJupiterTestKitBuilder;
-import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturingExtension;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitJupiterExtension;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-// #junit-integration
 @ExtendWith(TestKitJUnitJupiterExtension.class)
 @ExtendWith(LogCapturingExtension.class)
 public class JunitIntegrationExampleTest {

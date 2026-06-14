@@ -17,11 +17,6 @@
 
 package org.apache.pekko.actor.typed.eventstream;
 
-import org.apache.pekko.actor.AllDeadLetters;
-import org.apache.pekko.actor.DeadLetter;
-import org.apache.pekko.actor.Dropped;
-import org.apache.pekko.actor.SuppressedDeadLetter;
-import org.apache.pekko.actor.UnhandledMessage;
 import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.ActorSystem;
@@ -33,6 +28,14 @@ import org.apache.pekko.actor.typed.javadsl.Receive;
 import org.junit.jupiter.api.Test;
 
 // #listen-to-super-class-imports
+import org.apache.pekko.actor.DeadLetter;
+import org.apache.pekko.actor.AllDeadLetters;
+import org.apache.pekko.actor.Dropped;
+import org.apache.pekko.actor.SuppressedDeadLetter;
+import org.apache.pekko.actor.UnhandledMessage;
+
+// #listen-to-super-class-imports
+
 public class EventStreamSuperClassDocTest {
 
   @Test

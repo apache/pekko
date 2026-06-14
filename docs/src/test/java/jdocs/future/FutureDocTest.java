@@ -13,8 +13,15 @@
 
 package jdocs.future;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.apache.pekko.actor.typed.javadsl.Adapter.toTyped;
+import org.apache.pekko.actor.typed.ActorSystem;
+import org.apache.pekko.dispatch.CompletionStages;
+import org.apache.pekko.pattern.Patterns;
+import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
+import org.apache.pekko.testkit.PekkoSpec;
+import jdocs.AbstractJavaTest;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -22,18 +29,13 @@ import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import jdocs.AbstractJavaTest;
-import org.apache.pekko.actor.typed.ActorSystem;
-import org.apache.pekko.dispatch.CompletionStages;
-import org.apache.pekko.pattern.Patterns;
-import org.apache.pekko.testkit.PekkoJUnitJupiterActorSystemResource;
-import org.apache.pekko.testkit.PekkoSpec;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
+
+import static org.apache.pekko.actor.typed.javadsl.Adapter.toTyped;
+// #imports
 
 // #imports
-// #imports
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 public class FutureDocTest extends AbstractJavaTest {
 
   @RegisterExtension

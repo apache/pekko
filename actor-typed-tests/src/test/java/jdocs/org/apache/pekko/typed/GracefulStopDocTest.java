@@ -16,17 +16,20 @@ package jdocs.org.apache.pekko.typed;
 // #imports
 
 import java.util.concurrent.TimeUnit;
-import org.apache.pekko.actor.typed.ActorRef;
+
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.PostStop;
-import org.apache.pekko.actor.typed.Terminated;
 import org.apache.pekko.actor.typed.javadsl.AbstractBehavior;
 import org.apache.pekko.actor.typed.javadsl.ActorContext;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.apache.pekko.actor.typed.javadsl.Receive;
 
 // #imports
+
+import org.apache.pekko.actor.typed.ActorRef;
+import org.apache.pekko.actor.typed.Terminated;
+
 interface GracefulStopDocTest {
 
   // #master-actor
