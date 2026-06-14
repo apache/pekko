@@ -17,14 +17,14 @@ import javax.net.ssl.{ SSLContext, SSLEngine, SSLSession }
 
 import scala.util.{ Success, Try }
 
-import com.typesafe.config.{ ConfigException, ConfigFactory }
-
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream._
 import pekko.stream.TLSProtocol._
 import pekko.stream.impl.io.{ TlsGraphStage, TlsModule }
 import pekko.util.ByteString
+
+import com.typesafe.config.{ ConfigException, ConfigFactory }
 
 /**
  * Stream cipher support based upon JSSE.

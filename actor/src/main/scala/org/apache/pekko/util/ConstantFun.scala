@@ -25,12 +25,12 @@ import pekko.japi.function.{ Function => JFun, Function2 => JFun2 }
  */
 @InternalApi private[pekko] object ConstantFun {
 
-  private[this] val JavaIdentityFunction = new JFun[Any, Any] {
+  private val JavaIdentityFunction = new JFun[Any, Any] {
     @throws(classOf[Exception]) override def apply(param: Any): Any = param
   }
 
-  val JavaPairFunction = new JFun2[AnyRef, AnyRef, AnyRef JPair AnyRef] {
-    def apply(p1: AnyRef, p2: AnyRef): AnyRef JPair AnyRef = JPair(p1, p2)
+  val JavaPairFunction = new JFun2[AnyRef, AnyRef, JPair[AnyRef, AnyRef]] {
+    def apply(p1: AnyRef, p2: AnyRef): JPair[AnyRef, AnyRef] = JPair(p1, p2)
   }
 
   def javaCreatePairFunction[A, B]: JFun2[A, B, JPair[A, B]] = JavaPairFunction.asInstanceOf[JFun2[A, B, JPair[A, B]]]

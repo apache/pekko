@@ -24,6 +24,8 @@ import scala.jdk.FutureConverters._
 import scala.jdk.OptionConverters._
 import scala.util.Try
 
+import org.jspecify.annotations.Nullable
+
 import org.apache.pekko
 import pekko._
 import pekko.actor.{ ActorRef, ClassicActorSystemProvider, Status }
@@ -34,7 +36,6 @@ import pekko.stream.impl.LinearTraversalBuilder
 import pekko.stream.scaladsl.SinkToCompletionStage
 import pekko.util.ConstantFun.scalaAnyToUnit
 
-import org.jspecify.annotations.Nullable
 import org.reactivestreams.{ Publisher, Subscriber }
 
 /** Java API */

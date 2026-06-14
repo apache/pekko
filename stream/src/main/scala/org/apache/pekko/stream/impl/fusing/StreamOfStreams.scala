@@ -851,7 +851,7 @@ import pekko.util.OptionVal
 
   override def createLogic(attr: Attributes) = new GraphStageLogic(shape) with InHandler {
     // check for previous materialization eagerly so we fail with a more useful stacktrace
-    private[this] val materializationException: OptionVal[IllegalStateException] =
+    private val materializationException: OptionVal[IllegalStateException] =
       if (status.get.isInstanceOf[AsyncCallback[?]])
         OptionVal.Some(createMaterializedTwiceException())
       else
@@ -946,7 +946,7 @@ import pekko.util.OptionVal
 
   override def createLogic(inheritedAttributes: Attributes) = new GraphStageLogic(shape) with OutHandler {
     // check for previous materialization eagerly so we fail with a more useful stacktrace
-    private[this] val materializationException: OptionVal[IllegalStateException] =
+    private val materializationException: OptionVal[IllegalStateException] =
       if (status.get.isInstanceOf[AsyncCallback[?]])
         OptionVal.Some(createMaterializedTwiceException())
       else

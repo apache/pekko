@@ -119,8 +119,8 @@ object AskPattern {
       // We do not currently use the implicit scheduler, but want to require it
       // because it might be needed when we move to a 'native' typed runtime, see #24219
       ref match {
-        case a: InternalRecipientRef[Req] => askClassic[Req, Res](a, timeout, replyTo)
-        case a                            =>
+        case a: (InternalRecipientRef[Req] @unchecked) => askClassic[Req, Res](a, timeout, replyTo)
+        case a                                         =>
           throw new IllegalStateException(
             "Only expect references to be RecipientRef, ActorRefAdapter or ActorSystemAdapter until " +
             "native system is implemented: " + a.getClass)
@@ -144,7 +144,7 @@ object AskPattern {
   private final class PromiseRef[U](target: InternalRecipientRef[?], timeout: Timeout) {
 
     // Note: _promiseRef mustn't have a type pattern, since it can be null
-    private[this] val (_ref: ActorRef[U], _future: Future[U], _promiseRef) =
+    private val (_ref: ActorRef[U], _future: Future[U], _promiseRef) =
       if (target.isTerminated)
         (
           adapt.ActorRefAdapter[U](target.provider.deadLetters),

@@ -51,8 +51,8 @@ private[pekko] trait PluginProvider[T, ScalaDsl, JavaDsl] {
  * INTERNAL API
  */
 @InternalApi
-private[pekko] abstract class PersistencePlugin[ScalaDsl, JavaDsl, T: ClassTag](system: ExtendedActorSystem)(
-    implicit ev: PluginProvider[T, ScalaDsl, JavaDsl]) {
+private[pekko] abstract class PersistencePlugin[ScalaDsl, JavaDsl, T](system: ExtendedActorSystem)(
+    implicit ct: ClassTag[T], ev: PluginProvider[T, ScalaDsl, JavaDsl]) {
 
   private val plugins = new AtomicReference[Map[String, ExtensionId[PluginHolder[ScalaDsl, JavaDsl]]]](Map.empty)
   private val log = Logging(system, classOf[PersistencePlugin[?, ?, ?]])

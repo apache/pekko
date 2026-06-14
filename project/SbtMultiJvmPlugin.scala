@@ -84,14 +84,14 @@ object MultiJvmPlugin extends AutoPlugin {
 
   override lazy val projectSettings = multiJvmSettings
 
-  private[this] def noTestsMessage(scoped: ScopedKey[?])(implicit display: Show[ScopedKey[?]]): String =
+  private def noTestsMessage(scoped: ScopedKey[?])(implicit display: Show[ScopedKey[?]]): String =
     "No tests to run for " + display.show(scoped)
 
   lazy val multiJvmSettings: Seq[Def.Setting[?]] =
     inConfig(MultiJvm)(Defaults.configSettings ++ internalMultiJvmSettings)
 
   // https://github.com/sbt/sbt/blob/v0.13.15/main/actions/src/main/scala/sbt/Tests.scala#L296-L298
-  private[this] def showResults(log: Logger, results: Tests.Output, noTestsMessage: => String): Unit =
+  private def showResults(log: Logger, results: Tests.Output, noTestsMessage: => String): Unit =
     TestResultLogger.Default.copy(printNoTests = TestResultLogger.const(_.info(noTestsMessage))).run(log, results, "")
 
   private def internalMultiJvmSettings =

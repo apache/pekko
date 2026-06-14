@@ -30,16 +30,16 @@ private[pekko] final class StreamRefSerializer(val system: ExtendedActorSystem)
     extends SerializerWithStringManifest
     with BaseSerializer {
 
-  private[this] lazy val serialization = SerializationExtension(system)
+  private lazy val serialization = SerializationExtension(system)
 
-  private[this] val SequencedOnNextManifest = "A"
-  private[this] val CumulativeDemandManifest = "B"
-  private[this] val RemoteSinkFailureManifest = "C"
-  private[this] val RemoteSinkCompletedManifest = "D"
-  private[this] val SourceRefManifest = "E"
-  private[this] val SinkRefManifest = "F"
-  private[this] val OnSubscribeHandshakeManifest = "G"
-  private[this] val AckManifest = "H"
+  private val SequencedOnNextManifest = "A"
+  private val CumulativeDemandManifest = "B"
+  private val RemoteSinkFailureManifest = "C"
+  private val RemoteSinkCompletedManifest = "D"
+  private val SourceRefManifest = "E"
+  private val SinkRefManifest = "F"
+  private val OnSubscribeHandshakeManifest = "G"
+  private val AckManifest = "H"
 
   override def manifest(o: AnyRef): String = o match {
     // protocol

@@ -319,7 +319,7 @@ object Sink {
    */
   def source[T]: Sink[T, Source[T, NotUsed]] = _sourceSink.asInstanceOf[Sink[T, Source[T, NotUsed]]]
 
-  private[this] val _sourceSink = fromGraph(SourceSink)
+  private val _sourceSink = fromGraph(SourceSink)
 
   /**
    * A `Sink` that will consume the stream and discard the elements.
@@ -330,7 +330,7 @@ object Sink {
    * A [[Sink]] that will always backpressure never cancel and never consume any elements from the stream.
    */
   def never: Sink[Any, Future[Done]] = _never
-  private[this] val _never: Sink[Any, Future[Done]] = fromGraph(GraphStages.NeverSink)
+  private val _never: Sink[Any, Future[Done]] = fromGraph(GraphStages.NeverSink)
 
   /**
    * A `Sink` that will invoke the given procedure for each received element. The sink is materialized

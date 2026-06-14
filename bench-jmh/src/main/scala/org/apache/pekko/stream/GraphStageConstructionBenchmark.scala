@@ -22,6 +22,14 @@ import java.util.concurrent.TimeUnit
 import scala.collection.immutable
 import scala.concurrent.Promise
 
+import org.openjdk.jmh.annotations.Benchmark
+import org.openjdk.jmh.annotations.BenchmarkMode
+import org.openjdk.jmh.annotations.Mode
+import org.openjdk.jmh.annotations.OutputTimeUnit
+import org.openjdk.jmh.annotations.Scope
+import org.openjdk.jmh.annotations.State
+import org.openjdk.jmh.infra.Blackhole
+
 import org.apache.pekko.NotUsed
 import org.apache.pekko.stream.impl.LinearTraversalBuilder
 import org.apache.pekko.stream.impl.Stages.DefaultAttributes
@@ -32,13 +40,6 @@ import org.apache.pekko.stream.scaladsl.Keep
 import org.apache.pekko.stream.scaladsl.Sink
 import org.apache.pekko.stream.scaladsl.Source
 import org.apache.pekko.stream.stage.GraphStageWithMaterializedValue
-import org.openjdk.jmh.annotations.Benchmark
-import org.openjdk.jmh.annotations.BenchmarkMode
-import org.openjdk.jmh.annotations.Mode
-import org.openjdk.jmh.annotations.OutputTimeUnit
-import org.openjdk.jmh.annotations.Scope
-import org.openjdk.jmh.annotations.State
-import org.openjdk.jmh.infra.Blackhole
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Array(Mode.Throughput))

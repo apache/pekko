@@ -93,18 +93,18 @@ private[pekko] trait SubscriberManagement[T] extends ResizableMultiReaderRingBuf
    */
   protected def createSubscription(subscriber: Subscriber[? >: T]): S
 
-  private[this] val buffer = new ResizableMultiReaderRingBuffer[T](initialBufferSize, maxBufferSize, this)
+  private val buffer = new ResizableMultiReaderRingBuffer[T](initialBufferSize, maxBufferSize, this)
 
   protected def bufferDebug: String = buffer.toString
 
   // optimize for small numbers of subscribers by keeping subscribers in a plain list
-  private[this] var subscriptions: Subscriptions = Nil
+  private var subscriptions: Subscriptions = Nil
 
   // number of elements already requested but not yet received from upstream
-  private[this] var pendingFromUpstream: Long = 0
+  private var pendingFromUpstream: Long = 0
 
   // if non-null, holds the end-of-stream state
-  private[this] var endOfStream: EndOfStream = NotReached
+  private var endOfStream: EndOfStream = NotReached
 
   def cursors = subscriptions
 
@@ -158,7 +158,7 @@ private[pekko] trait SubscriberManagement[T] extends ResizableMultiReaderRingBuf
       }
     }
 
-  private[this] final def requestFromUpstreamIfRequired(): Unit = {
+  private final def requestFromUpstreamIfRequired(): Unit = {
     @tailrec def maxRequested(remaining: Subscriptions, result: Long = 0): Long =
       remaining match {
         case head :: tail => maxRequested(tail, math.max(head.totalDemand, result))

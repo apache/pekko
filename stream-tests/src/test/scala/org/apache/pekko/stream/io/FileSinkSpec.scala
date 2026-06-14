@@ -26,13 +26,13 @@ import com.google.common.jimfs.{ Configuration, Jimfs }
 
 import org.apache.pekko
 import pekko.stream._
+import pekko.stream.SystemMaterializer
 import pekko.stream.impl.{ PhasedFusingActorMaterializer, StreamSupervisor }
 import pekko.stream.impl.StreamSupervisor.Children
 import pekko.stream.scaladsl.{ FileIO, Keep, Source }
 import pekko.stream.testkit._
 import pekko.stream.testkit.Utils._
 import pekko.util.ByteString
-import pekko.stream.SystemMaterializer
 
 import org.scalatest.concurrent.ScalaFutures
 

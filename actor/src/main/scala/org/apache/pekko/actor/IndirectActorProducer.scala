@@ -105,7 +105,7 @@ private[pekko] class TypedCreatorFunctionConsumer(clz: Class[? <: Actor], creato
  */
 private[pekko] class ArgsReflectConstructor(clz: Class[? <: Actor], args: immutable.Seq[Any])
     extends IndirectActorProducer {
-  private[this] val constructor = Reflect.findConstructor(clz, args)
+  private val constructor = Reflect.findConstructor(clz, args)
   override def actorClass = clz
   override def produce() = Reflect.instantiate(constructor, args)
 }

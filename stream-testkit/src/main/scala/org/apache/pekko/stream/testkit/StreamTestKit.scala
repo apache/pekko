@@ -370,8 +370,10 @@ object TestPublisher {
     /**
      * Java API
      */
-    def expectCancellationWithCause[E <: Throwable](causeClass: Class[E]): E =
-      expectCancellationWithCause()(ClassTag(causeClass))
+    def expectCancellationWithCause[E <: Throwable](causeClass: Class[E]): E = {
+      implicit val ct: ClassTag[E] = ClassTag(causeClass)
+      expectCancellationWithCause()
+    }
 
   }
 

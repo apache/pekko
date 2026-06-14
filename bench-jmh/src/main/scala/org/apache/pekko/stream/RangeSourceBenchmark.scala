@@ -42,7 +42,7 @@ final class IntCompletionLatch extends GraphStageWithMaterializedValue[SinkShape
   override def createLogicAndMaterializedValue(inheritedAttributes: Attributes): (GraphStageLogic, CountDownLatch) = {
     val latch = new CountDownLatch(1)
     val logic = new GraphStageLogic(shape) with InHandler {
-      private[this] var sum = 0
+      private var sum = 0
 
       override def preStart(): Unit = pull(in)
       override def onPush(): Unit = {
