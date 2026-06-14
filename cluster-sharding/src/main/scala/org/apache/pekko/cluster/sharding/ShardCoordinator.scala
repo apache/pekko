@@ -141,12 +141,12 @@ object ShardCoordinator {
     /**
      * Invoked when the location of a new shard is to be decided.
      *
-     * @param requester               actor reference to the [[ShardRegion]] that requested the location of the
+     * @param requester               actor reference to the `ShardRegion` that requested the location of the
      *                                shard, can be returned if preference should be given to the node where the shard was first accessed
      * @param shardId                 the id of the shard to allocate
      * @param currentShardAllocations all actor refs to `ShardRegion` and their current allocated shards,
      *                                in the order they were allocated
-     * @return a `Future` of the actor ref of the [[ShardRegion]] that is to be responsible for the shard, must be one of
+     * @return a `Future` of the actor ref of the `ShardRegion` that is to be responsible for the shard, must be one of
      *         the references included in the `currentShardAllocations` parameter
      */
     def allocateShard(
@@ -227,12 +227,12 @@ object ShardCoordinator {
     /**
      * Invoked when the location of a new shard is to be decided.
      *
-     * @param requester               actor reference to the [[ShardRegion]] that requested the location of the
+     * @param requester               actor reference to the `ShardRegion` that requested the location of the
      *                                shard, can be returned if preference should be given to the node where the shard was first accessed
      * @param shardId                 the id of the shard to allocate
      * @param currentShardAllocations all actor refs to `ShardRegion` and their current allocated shards,
      *                                in the order they were allocated
-     * @return a `Future` of the actor ref of the [[ShardRegion]] that is to be responsible for the shard, must be one of
+     * @return a `Future` of the actor ref of the `ShardRegion` that is to be responsible for the shard, must be one of
      *         the references included in the `currentShardAllocations` parameter
      */
     def allocateShard(
