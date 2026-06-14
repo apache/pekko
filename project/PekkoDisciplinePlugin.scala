@@ -90,7 +90,8 @@ object PekkoDisciplinePlugin extends AutoPlugin {
     "-Wconf:msg=migration-to-pekko-grpc:s")
 
   lazy val defaultScalaOptions = Def.setting(CrossVersion.partialVersion(scalaVersion.value).get match {
-    case (3, _)  => Seq("-Wconf:any:e", "-Wconf:cat=unused-nowarn:s", "-Wconf:cat=other-shadowing:s") ++ scala3Suppressions
+    case (3, _) => Seq("-Wconf:any:e", "-Wconf:cat=unused-nowarn:s", "-Wconf:cat=other-shadowing:s") ++
+      scala3Suppressions
     case (2, 13) => Seq("-Wconf:any:e", "-Wconf:cat=unused-nowarn:s", "-Wconf:cat=other-shadowing:s")
     case (2, 12) => Seq("-Wconf:cat=unused-nowarn:s", "-Wconf:any:e")
   })
