@@ -241,7 +241,8 @@ object WorkPullingProducerController {
       producerId: String,
       workerServiceKey: ServiceKey[ConsumerController.Command[A]],
       durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]]): Behavior[Command[A]] = {
-    apply(producerId, workerServiceKey, durableQueueBehavior.toScala)(ClassTag(messageClass))
+    implicit val ct: ClassTag[A] = ClassTag(messageClass)
+    apply(producerId, workerServiceKey, durableQueueBehavior.toScala)
   }
 
   /**
@@ -253,6 +254,7 @@ object WorkPullingProducerController {
       workerServiceKey: ServiceKey[ConsumerController.Command[A]],
       durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]],
       settings: Settings): Behavior[Command[A]] = {
-    apply(producerId, workerServiceKey, durableQueueBehavior.toScala, settings)(ClassTag(messageClass))
+    implicit val ct: ClassTag[A] = ClassTag(messageClass)
+    apply(producerId, workerServiceKey, durableQueueBehavior.toScala, settings)
   }
 }

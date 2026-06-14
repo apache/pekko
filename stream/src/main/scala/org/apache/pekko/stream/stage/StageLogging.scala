@@ -30,7 +30,7 @@ import pekko.stream.MaterializerLoggingProvider
  * these decisions have to be handled by the operator itself.
  */
 trait StageLogging { self: GraphStageLogic =>
-  private[this] var _log: LoggingAdapter = _
+  private var _log: LoggingAdapter = _
 
   /** Override to customise reported log source */
   protected def logSource: Class[?] = this.getClass

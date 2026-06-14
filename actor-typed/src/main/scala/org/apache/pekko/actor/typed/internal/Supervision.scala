@@ -43,7 +43,8 @@ import org.slf4j.event.Level
  * INTERNAL API
  */
 @InternalApi private[pekko] object Supervisor {
-  def apply[T, Thr <: Throwable: ClassTag](initialBehavior: Behavior[T], strategy: SupervisorStrategy): Behavior[T] = {
+  def apply[T, Thr <: Throwable](initialBehavior: Behavior[T], strategy: SupervisorStrategy)(
+      implicit ev: ClassTag[Thr]): Behavior[T] = {
     if (initialBehavior.isInstanceOf[scaladsl.AbstractBehavior[?]] ||
       initialBehavior
         .isInstanceOf[javadsl.AbstractBehavior[?]]) {

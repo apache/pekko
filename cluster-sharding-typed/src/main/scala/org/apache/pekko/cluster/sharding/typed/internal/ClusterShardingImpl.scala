@@ -361,7 +361,7 @@ import pekko.util.{ ByteString, Timeout }
     import pekko.actor.typed.internal.{ adapter => adapt }
 
     // Note: _promiseRef mustn't have a type pattern, since it can be null
-    private[this] val (_ref: ActorRef[U], _future: Future[U], _promiseRef) =
+    private val (_ref: ActorRef[U], _future: Future[U], _promiseRef) =
       if (classic.isTerminated)
         (
           adapt.ActorRefAdapter[U](classic.provider.deadLetters),

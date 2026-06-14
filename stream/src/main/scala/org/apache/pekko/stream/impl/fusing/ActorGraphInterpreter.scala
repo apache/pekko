@@ -403,7 +403,7 @@ import org.reactivestreams.Subscription
     private var downstreamDemand: Long = 0L
     // This flag is only used if complete/fail is called externally since this op turns into a Finished one inside the
     // interpreter (i.e. inside this op this flag has no effects since if it is completed the op will not be invoked)
-    private[this] var downstreamCompletionCause: Option[Throwable] = None
+    private var downstreamCompletionCause: Option[Throwable] = None
     def downstreamCompleted: Boolean = downstreamCompletionCause.isDefined
 
     // when upstream failed before we got the exposed publisher

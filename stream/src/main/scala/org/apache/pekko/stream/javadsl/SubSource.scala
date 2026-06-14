@@ -26,6 +26,8 @@ import scala.jdk.OptionConverters._
 import scala.reflect.ClassTag
 import scala.util.control.NonFatal
 
+import org.jspecify.annotations.Nullable
+
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.event.{ LogMarker, LoggingAdapter, MarkerLoggingAdapter }
@@ -34,8 +36,6 @@ import pekko.stream._
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.fusing.{ StatefulMapConcat, ZipWithIndexJava }
 import pekko.util.ConstantFun
-
-import org.jspecify.annotations.Nullable
 
 /**
  * * Upcast a stream of elements to a stream of supertypes of that element. Useful in combination with

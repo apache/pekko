@@ -638,7 +638,10 @@ private[pekko] class ShardRegion(
   // sort by age, oldest first
   val ageOrdering = Member.ageOrdering
   // membersByAge is only used for tracking where coordinator is running
-  var membersByAge: immutable.SortedSet[Member] = immutable.SortedSet.empty(ageOrdering)
+  var membersByAge: immutable.SortedSet[Member] = {
+    implicit val ord: Ordering[Member] = ageOrdering
+    immutable.SortedSet.empty[Member]
+  }
   // membersByAge contains members with these status
   private val memberStatusOfInterest: Set[MemberStatus] =
     Set(MemberStatus.Up, MemberStatus.Leaving, MemberStatus.Exiting)
@@ -772,9 +775,10 @@ private[pekko] class ShardRegion(
   }
 
   def receiveClusterState(state: CurrentClusterState): Unit = {
+    implicit val ord: Ordering[Member] = ageOrdering
     changeMembers(
       immutable.SortedSet
-        .empty(ageOrdering)
+        .empty[Member]
         .union(state.members.filter(m => memberStatusOfInterest(m.status) && matchingCoordinatorRole(m))))
   }
 

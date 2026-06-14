@@ -31,10 +31,10 @@ import pekko.japi.pf.PFBuilder
  */
 object Behaviors {
 
-  private[this] val _two2same = new JapiFunction2[ActorContext[Any], Any, Behavior[Any]] {
+  private val _two2same = new JapiFunction2[ActorContext[Any], Any, Behavior[Any]] {
     override def apply(context: ActorContext[Any], msg: Any): Behavior[Any] = same
   }
-  private[this] def two2same[T] = _two2same.asInstanceOf[JapiFunction2[ActorContext[T], T, Behavior[T]]]
+  private def two2same[T] = _two2same.asInstanceOf[JapiFunction2[ActorContext[T], T, Behavior[T]]]
 
   /**
    * `setup` is a factory for a behavior. Creation of the behavior instance is deferred until
@@ -234,8 +234,10 @@ object Behaviors {
    * @param monitor The messages will also be sent to this `ActorRef`
    * @param behavior The inner behavior that is decorated
    */
-  def monitor[T](interceptMessageClass: Class[T], monitor: ActorRef[T], behavior: Behavior[T]): Behavior[T] =
-    scaladsl.Behaviors.monitor(monitor, behavior)(ClassTag(interceptMessageClass))
+  def monitor[T](interceptMessageClass: Class[T], monitor: ActorRef[T], behavior: Behavior[T]): Behavior[T] = {
+    implicit val ct: ClassTag[T] = ClassTag(interceptMessageClass)
+    scaladsl.Behaviors.monitor(monitor, behavior)
+  }
 
   /**
    * Behavior decorator that logs all messages to the [[pekko.actor.typed.Behavior]] using the provided
@@ -332,8 +334,10 @@ object Behaviors {
   def transformMessages[Outer, Inner](
       interceptMessageClass: Class[Outer],
       behavior: Behavior[Inner],
-      selector: JFunction[PFBuilder[Outer, Inner], PFBuilder[Outer, Inner]]): Behavior[Outer] =
-    BehaviorImpl.transformMessages(behavior, selector.apply(new PFBuilder).build())(ClassTag(interceptMessageClass))
+      selector: JFunction[PFBuilder[Outer, Inner], PFBuilder[Outer, Inner]]): Behavior[Outer] = {
+    implicit val ct: ClassTag[Outer] = ClassTag(interceptMessageClass)
+    BehaviorImpl.transformMessages(behavior, selector.apply(new PFBuilder).build())
+  }
 
   /**
    * Support for scheduled `self` messages in an actor.
@@ -413,7 +417,8 @@ object Behaviors {
         asScalaMap(mdcForMessage.apply(message))
       }
 
-    WithMdcBehaviorInterceptor[T](asScalaMap(staticMdc), mdcForMessageFun, behavior)(ClassTag(interceptMessageClass))
+    implicit val ct: ClassTag[T] = ClassTag(interceptMessageClass)
+    WithMdcBehaviorInterceptor[T](asScalaMap(staticMdc), mdcForMessageFun, behavior)
   }
 
 }

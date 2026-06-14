@@ -53,16 +53,21 @@ object Jdk9 extends AutoPlugin {
       yield (task / sourceDirectory).value / sourceDirectoryName
   }
 
+  private def releaseOption(scalaVer: String): Seq[String] = {
+    if (JdkOptions.isScala3_8Plus(scalaVer)) Seq("-java-output-version", majorVersion.toString)
+    else Seq("-release", majorVersion.toString)
+  }
+
   lazy val compileJdk9Settings = Seq(
     // following the scala-2.12, scala-sbt-1.0, ... convention
     unmanagedSourceDirectories := additionalSourceDirectories.value,
-    scalacOptions := PekkoBuild.DefaultScalacOptions.value ++ Seq("-release", majorVersion.toString),
+    scalacOptions := PekkoBuild.DefaultScalacOptions.value ++ releaseOption(scalaVersion.value),
     javacOptions := PekkoBuild.DefaultJavacOptions ++ Seq("--release", majorVersion.toString))
 
   lazy val testJdk9Settings = Seq(
     // following the scala-2.12, scala-sbt-1.0, ... convention
     unmanagedSourceDirectories := additionalTestSourceDirectories.value,
-    scalacOptions := PekkoBuild.DefaultScalacOptions.value ++ Seq("-release", majorVersion.toString),
+    scalacOptions := PekkoBuild.DefaultScalacOptions.value ++ releaseOption(scalaVersion.value),
     javacOptions := PekkoBuild.DefaultJavacOptions ++ Seq("--release", majorVersion.toString),
     compile := compile.dependsOn(CompileJdk9 / compile).value,
     classpathConfiguration := TestJdk9,

@@ -29,9 +29,6 @@ import scala.concurrent.duration._
 import org.openjdk.jmh.annotations._
 import org.openjdk.jmh.annotations.OperationsPerInvocation
 import org.openjdk.jmh.infra.Blackhole
-import org.reactivestreams.Publisher
-import org.reactivestreams.Subscriber
-import org.reactivestreams.Subscription
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
@@ -39,6 +36,10 @@ import pekko.stream.scaladsl.Keep
 import pekko.stream.scaladsl.RunnableGraph
 import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.Source
+
+import org.reactivestreams.Publisher
+import org.reactivestreams.Subscriber
+import org.reactivestreams.Subscription
 
 import com.typesafe.config.ConfigFactory
 
@@ -51,8 +52,8 @@ object ActorGraphInterpreterBoundaryBenchmark {
       if (subscriber eq null) throw new NullPointerException("subscriber")
 
       subscriber.onSubscribe(new Subscription {
-        private[this] var cancelled = false
-        private[this] var index = 0
+        private var cancelled = false
+        private var index = 0
 
         override def request(n: Long): Unit =
           if (!cancelled) {
@@ -83,9 +84,9 @@ object ActorGraphInterpreterBoundaryBenchmark {
       latch: CountDownLatch,
       cancelAfter: Int)
       extends Subscriber[MutableElement] {
-    private[this] var subscription: Subscription = _
-    private[this] var seen = 0
-    private[this] val failure = new AtomicReference[Throwable]
+    private var subscription: Subscription = _
+    private var seen = 0
+    private val failure = new AtomicReference[Throwable]
 
     override def onSubscribe(subscription: Subscription): Unit = {
       this.subscription = subscription

@@ -979,7 +979,7 @@ private[pekko] class ActorSystemImpl(
     dynamicAccess.createInstanceFor[LoggingFilter](LoggingFilter, arguments).get
   }
 
-  private[this] val markerLogging =
+  private val markerLogging =
     new MarkerLoggingAdapter(eventStream, getClass.getName + "(" + name + ")", this.getClass, logFilter)
   val log: LoggingAdapter = markerLogging
 
@@ -1018,7 +1018,7 @@ private[pekko] class ActorSystemImpl(
 
   val dispatcher: ExecutionContextExecutor = dispatchers.defaultGlobalDispatcher
 
-  private[this] final val terminationCallbacks = new TerminationCallbacks(provider.terminationFuture)(dispatcher)
+  private final val terminationCallbacks = new TerminationCallbacks(provider.terminationFuture)(dispatcher)
 
   override def whenTerminated: Future[Terminated] = terminationCallbacks.terminationFuture
   override def getWhenTerminated: CompletionStage[Terminated] = whenTerminated.asJava
@@ -1323,8 +1323,8 @@ private[pekko] class ActorSystemImpl(
   }
 
   final class TerminationCallbacks[T](upStreamTerminated: Future[T])(implicit ec: ExecutionContext) {
-    private[this] final val done = Promise[T]()
-    private[this] final val ref = new AtomicReference(done)
+    private final val done = Promise[T]()
+    private final val ref = new AtomicReference(done)
 
     // onComplete never fires twice so safe to avoid null check
     upStreamTerminated.onComplete { t =>

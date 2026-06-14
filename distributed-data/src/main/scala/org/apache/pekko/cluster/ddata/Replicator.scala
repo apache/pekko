@@ -1374,7 +1374,10 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
 
   // cluster members sorted by age, oldest first,, doesn't contain selfAddress, doesn't contain joining and weaklyUp
   // only used when prefer-oldest is enabled
-  var membersByAge: immutable.SortedSet[Member] = immutable.SortedSet.empty(Member.ageOrdering)
+  var membersByAge: immutable.SortedSet[Member] = {
+    implicit val ord: Ordering[Member] = Member.ageOrdering
+    immutable.SortedSet.empty[Member]
+  }
 
   // cluster weaklyUp nodes, doesn't contain selfAddress
   var weaklyUpNodes: immutable.SortedSet[UniqueAddress] = immutable.SortedSet.empty
@@ -1393,7 +1396,10 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
 
   var removedNodes: Map[UniqueAddress, Long] = Map.empty
   // all nodes sorted with the leader first
-  var leader: TreeSet[Member] = TreeSet.empty(Member.leaderStatusOrdering)
+  var leader: TreeSet[Member] = {
+    implicit val ord: Ordering[Member] = Member.leaderStatusOrdering
+    TreeSet.empty[Member]
+  }
   def isLeader: Boolean =
     leader.nonEmpty && leader.head.address == selfAddress && leader.head.status == MemberStatus.Up
 

@@ -58,8 +58,8 @@ private[pekko] object Collections {
     final def iterator: Iterator[To] = {
       val superIterator = valuesIterator
       new Iterator[To] {
-        private[this] var _next: To = _
-        private[this] var _hasNext = false
+        private var _next: To = null.asInstanceOf[To]
+        private var _hasNext = false
 
         override final def hasNext: Boolean = {
           @tailrec def tailrecHasNext(): Boolean = {

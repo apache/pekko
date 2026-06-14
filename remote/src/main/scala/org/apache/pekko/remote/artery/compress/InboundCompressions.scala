@@ -73,8 +73,8 @@ private[remote] final class InboundCompressionsImpl(
     flightRecorder: RemotingFlightRecorder = NoOpRemotingFlightRecorder)
     extends InboundCompressions {
 
-  private[this] val _actorRefsIns = new Long2ObjectHashMap[InboundActorRefCompression]()
-  private[this] val _inboundActorRefsLog = Logging(system, classOf[InboundActorRefCompression])
+  private val _actorRefsIns = new Long2ObjectHashMap[InboundActorRefCompression]()
+  private val _inboundActorRefsLog = Logging(system, classOf[InboundActorRefCompression])
   private val createInboundActorRefsForOrigin = new LongFunction[InboundActorRefCompression] {
     override def apply(originUid: Long): InboundActorRefCompression = {
       val actorRefHitters = new TopHeavyHitters[ActorRef](settings.ActorRefs.Max)
@@ -84,9 +84,9 @@ private[remote] final class InboundCompressionsImpl(
   private def actorRefsIn(originUid: Long): InboundActorRefCompression =
     _actorRefsIns.computeIfAbsent(originUid, createInboundActorRefsForOrigin)
 
-  private[this] val _classManifestsIns = new Long2ObjectHashMap[InboundManifestCompression]()
+  private val _classManifestsIns = new Long2ObjectHashMap[InboundManifestCompression]()
 
-  private[this] val _inboundManifestLog = Logging(system, classOf[InboundManifestCompression])
+  private val _inboundManifestLog = Logging(system, classOf[InboundManifestCompression])
   private val createInboundManifestsForOrigin = new LongFunction[InboundManifestCompression] {
     override def apply(originUid: Long): InboundManifestCompression = {
       val manifestHitters = new TopHeavyHitters[String](settings.Manifests.Max)
@@ -345,14 +345,14 @@ private[remote] abstract class InboundCompression[T >: Null](
     inboundContext: InboundContext,
     val heavyHitters: TopHeavyHitters[T]) {
 
-  private[this] var tables: InboundCompression.Tables[T] = InboundCompression.Tables.empty
+  private var tables: InboundCompression.Tables[T] = InboundCompression.Tables.empty
 
   // We should not continue sending advertisements to an association that might be dead (not quarantined yet)
-  @volatile private[this] var alive = true
-  private[this] var resendCount = 0
-  private[this] val maxResendCount = 3
+  @volatile private var alive = true
+  private var resendCount = 0
+  private val maxResendCount = 3
 
-  private[this] val cms = new CountMinSketch(16, 1024, System.currentTimeMillis().toInt)
+  private val cms = new CountMinSketch(16, 1024, System.currentTimeMillis().toInt)
 
   log.debug("Initializing {} for originUid [{}]", Logging.simpleName(getClass), originUid)
 

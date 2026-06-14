@@ -693,8 +693,8 @@ import pekko.util.OptionVal
   private val cachedEmptyLinear =
     LinearTraversalBuilder(OptionVal.None, OptionVal.None, 0, 0, PushNotUsed, OptionVal.None, Attributes.none)
 
-  private[this] final val wireBackward: Array[Int] = Array(-1)
-  private[this] final val noWire: Array[Int] = Array()
+  private final val wireBackward: Array[Int] = Array(-1)
+  private final val noWire: Array[Int] = Array()
 
   def empty(attributes: Attributes = Attributes.none): LinearTraversalBuilder =
     if (attributes eq Attributes.none) cachedEmptyLinear

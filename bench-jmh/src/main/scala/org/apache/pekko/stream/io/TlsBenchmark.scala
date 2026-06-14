@@ -25,7 +25,6 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.{ Success, Try }
 
-import com.typesafe.config.{ Config, ConfigFactory }
 import org.openjdk.jmh.annotations._
 
 import org.apache.pekko
@@ -36,6 +35,8 @@ import pekko.stream.TLSProtocol._
 import pekko.stream.impl.io.{ TlsGraphStage, TlsModule }
 import pekko.stream.scaladsl._
 import pekko.util.ByteString
+
+import com.typesafe.config.{ Config, ConfigFactory }
 
 /**
  * JMH benchmark comparing the legacy actor-based TLS path (`TlsModule`) to the

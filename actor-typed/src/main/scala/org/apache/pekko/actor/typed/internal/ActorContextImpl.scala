@@ -123,7 +123,7 @@ import org.slf4j.LoggerFactory
       timer
   }
 
-  protected[this] def mkTimer(): TimerSchedulerCrossDslSupport[T] = new TimerSchedulerImpl[T](this)
+  protected def mkTimer(): TimerSchedulerCrossDslSupport[T] = new TimerSchedulerImpl[T](this)
 
   override private[pekko] def hasTimer: Boolean = _timer.isDefined
 

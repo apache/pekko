@@ -1415,8 +1415,8 @@ private[stream] final class OrElse[T]
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new GraphStageLogic(shape) with OutHandler with InHandler {
 
-      private[this] var currentIn = primary
-      private[this] var primaryPushed = false
+      private var currentIn = primary
+      private var primaryPushed = false
 
       override def onPull(): Unit = {
         pull(currentIn)

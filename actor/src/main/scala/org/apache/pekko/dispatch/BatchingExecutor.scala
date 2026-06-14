@@ -65,9 +65,9 @@ private[pekko] trait Batchable extends Runnable {
 private[pekko] trait BatchingExecutor extends Executor {
 
   // invariant: if "_tasksLocal.get ne null" then we are inside Batch.run; if it is null, we are outside
-  private[this] val _tasksLocal = new ThreadLocal[AbstractBatch]()
+  private val _tasksLocal = new ThreadLocal[AbstractBatch]()
 
-  private[this] abstract class AbstractBatch extends java.util.ArrayDeque[Runnable](4) with Runnable {
+  private abstract class AbstractBatch extends java.util.ArrayDeque[Runnable](4) with Runnable {
     @tailrec final def processBatch(batch: AbstractBatch): Unit =
       if ((batch eq this) && !batch.isEmpty) {
         batch.pollFirst().run()
@@ -84,7 +84,7 @@ private[pekko] trait BatchingExecutor extends Executor {
     }
   }
 
-  private[this] final class Batch extends AbstractBatch {
+  private final class Batch extends AbstractBatch {
     override final def run(): Unit = {
       require(_tasksLocal.get eq null)
       _tasksLocal.set(this) // Install ourselves as the current batch
@@ -97,9 +97,9 @@ private[pekko] trait BatchingExecutor extends Executor {
     }
   }
 
-  private[this] val _blockContext = new ThreadLocal[BlockContext]()
+  private val _blockContext = new ThreadLocal[BlockContext]()
 
-  private[this] final class BlockableBatch extends AbstractBatch with BlockContext {
+  private final class BlockableBatch extends AbstractBatch with BlockContext {
     // this method runs in the delegate ExecutionContext's thread
     override final def run(): Unit = {
       require(_tasksLocal.get eq null)

@@ -25,10 +25,10 @@ import scala.util.control.NoStackTrace
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
+import pekko.stream._
 import pekko.stream.ActorAttributes.StreamSubscriptionTimeout
 import pekko.stream.Attributes.InputBuffer
 import pekko.stream.StreamSubscriptionTimeoutTerminationMode
-import pekko.stream._
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.stage.{
   AsyncCallback,

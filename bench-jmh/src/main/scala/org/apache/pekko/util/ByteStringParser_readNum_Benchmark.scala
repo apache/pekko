@@ -19,10 +19,10 @@ package org.apache.pekko.util
 
 import java.util.concurrent.TimeUnit
 
+import org.openjdk.jmh.annotations._
+
 import org.apache.pekko
 import pekko.stream.impl.io.ByteStringParser
-
-import org.openjdk.jmh.annotations._
 
 @State(Scope.Benchmark)
 @Measurement(timeUnit = TimeUnit.MILLISECONDS)
