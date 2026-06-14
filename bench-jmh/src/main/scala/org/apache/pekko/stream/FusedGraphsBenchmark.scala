@@ -46,7 +46,7 @@ class TestSource(elems: Array[MutableElement]) extends GraphStage[SourceShape[Mu
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new GraphStageLogic(shape) with OutHandler {
-      private[this] var left = FusedGraphsBenchmark.ElementCount - 1
+      private var left = FusedGraphsBenchmark.ElementCount - 1
 
       override def onPull(): Unit = {
         if (left >= 0) {
@@ -66,7 +66,7 @@ class JitSafeCompletionLatch extends GraphStageWithMaterializedValue[SinkShape[M
   override def createLogicAndMaterializedValue(inheritedAttributes: Attributes): (GraphStageLogic, CountDownLatch) = {
     val latch = new CountDownLatch(1)
     val logic = new GraphStageLogic(shape) with InHandler {
-      private[this] var sum = 0
+      private var sum = 0
 
       override def preStart(): Unit = pull(in)
       override def onPush(): Unit = {

@@ -128,6 +128,7 @@ import pekko.cluster.MemberStatus._
    * @return Up to `crossDcConnections` oldest members for each DC
    */
   lazy val ageSortedTopOldestMembersPerDc: Map[DataCenter, immutable.SortedSet[Member]] = {
+    implicit val ord: Ordering[Member] = Member.ageOrdering
     latestGossip.members.foldLeft(Map.empty[DataCenter, immutable.SortedSet[Member]]) { (acc, member) =>
       acc.get(member.dataCenter) match {
         case Some(set) =>
@@ -141,7 +142,7 @@ import pekko.cluster.MemberStatus._
             }
           }
         case None =>
-          acc + (member.dataCenter -> (immutable.SortedSet.empty(Member.ageOrdering) + member))
+          acc + (member.dataCenter -> (immutable.SortedSet.empty[Member] + member))
       }
     }
   }

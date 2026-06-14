@@ -85,7 +85,10 @@ import pekko.coordination.lease.scaladsl.Lease
   protected def ordering: Ordering[Member] = Member.ordering
 
   // all members in self DC, both joining and up.
-  private var _allMembers: immutable.SortedSet[Member] = immutable.SortedSet.empty(ordering)
+  private var _allMembers: immutable.SortedSet[Member] = {
+    implicit val ord: Ordering[Member] = ordering
+    immutable.SortedSet.empty[Member]
+  }
 
   def role: Option[String]
 

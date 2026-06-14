@@ -20,8 +20,8 @@ private[pekko] abstract class TokenBucket(capacity: Long, nanosBetweenTokens: Lo
   require(capacity >= 0, "Capacity must be non-negative.")
   require(nanosBetweenTokens > 0, "Time between tokens must be larger than zero nanoseconds.")
 
-  private[this] var availableTokens: Long = _
-  private[this] var lastUpdate: Long = _
+  private var availableTokens: Long = 0L
+  private var lastUpdate: Long = 0L
 
   /**
    * This method must be called before the token bucket can be used.

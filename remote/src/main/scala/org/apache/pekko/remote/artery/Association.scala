@@ -181,7 +181,7 @@ private[remote] class Association(
   private val queueSize = advancedSettings.OutboundMessageQueueSize
   private val largeQueueSize = advancedSettings.OutboundLargeMessageQueueSize
 
-  private[this] val queues: Array[SendQueue.ProducerApi[OutboundEnvelope]] = new Array(2 + outboundLanes)
+  private val queues: Array[SendQueue.ProducerApi[OutboundEnvelope]] = new Array(2 + outboundLanes)
   queues(ControlQueueIndex) = QueueWrapperImpl(createQueue(controlQueueSize, ControlQueueIndex)) // control stream
   queues(LargeQueueIndex) =
     if (transport.largeMessageChannelEnabled) // large messages stream
@@ -192,19 +192,19 @@ private[remote] class Association(
   (0 until outboundLanes).foreach { i =>
     queues(OrdinaryQueueIndex + i) = QueueWrapperImpl(createQueue(queueSize, OrdinaryQueueIndex + i)) // ordinary messages stream
   }
-  @volatile private[this] var queuesVisibility = false
+  @volatile private var queuesVisibility = false
 
   private def controlQueue: SendQueue.ProducerApi[OutboundEnvelope] = queues(ControlQueueIndex)
 
-  @volatile private[this] var _outboundControlIngress: OptionVal[OutboundControlIngress] = OptionVal.None
-  @volatile private[this] var materializing = new CountDownLatch(1)
-  @volatile private[this] var outboundCompressionAccess: Vector[OutboundCompressionAccess] = Vector.empty
+  @volatile private var _outboundControlIngress: OptionVal[OutboundControlIngress] = OptionVal.None
+  @volatile private var materializing = new CountDownLatch(1)
+  @volatile private var outboundCompressionAccess: Vector[OutboundCompressionAccess] = Vector.empty
 
   // keyed by stream queue index
-  private[this] val streamMatValues = new AtomicReference(Map.empty[Int, OutboundStreamMatValues])
+  private val streamMatValues = new AtomicReference(Map.empty[Int, OutboundStreamMatValues])
 
-  private[this] val idleTimer = new AtomicReference[Option[Cancellable]](None)
-  private[this] val stopQuarantinedTimer = new AtomicReference[Option[Cancellable]](None)
+  private val idleTimer = new AtomicReference[Option[Cancellable]](None)
+  private val stopQuarantinedTimer = new AtomicReference[Option[Cancellable]](None)
 
   private[remote] def changeActorRefCompression(table: CompressionTable[ActorRef]): Future[Done] =
     updateOutboundCompression(c => c.changeActorRefCompression(table))
@@ -1132,8 +1132,8 @@ private[remote] class Association(
  * INTERNAL API
  */
 private[remote] class AssociationRegistry(createAssociation: Address => Association) {
-  private[this] val associationsByAddress = new AtomicReference[Map[Address, Association]](Map.empty)
-  private[this] val associationsByUid = new AtomicReference[ImmutableLongMap[Association]](ImmutableLongMap.empty)
+  private val associationsByAddress = new AtomicReference[Map[Address, Association]](Map.empty)
+  private val associationsByUid = new AtomicReference[ImmutableLongMap[Association]](ImmutableLongMap.empty)
 
   /**
    * @throws ShuttingDown if called while the transport is shutting down

@@ -18,10 +18,10 @@ import scala.concurrent.Promise
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream._
-import pekko.stream.impl.TraversalTestUtils._
 import pekko.stream.impl.Stages.DefaultAttributes
-import pekko.stream.impl.fusing.GraphStages.{ FutureSource, RepeatSource, SingleSource }
+import pekko.stream.impl.TraversalTestUtils._
 import pekko.stream.impl.fusing.{ IterableSource, IteratorSource, RangeSource }
+import pekko.stream.impl.fusing.GraphStages.{ FutureSource, RepeatSource, SingleSource }
 import pekko.stream.scaladsl.{ Keep, Source }
 import pekko.testkit.PekkoSpec
 import pekko.util.OptionVal

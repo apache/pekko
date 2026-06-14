@@ -28,13 +28,13 @@ import org.openjdk.jmh.annotations.Warmup
 @Warmup(iterations = 3, time = 20, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 3, time = 10, timeUnit = TimeUnit.SECONDS)
 class FrequencySketchBenchmark {
-  private[this] val Capacity = 10000
-  private[this] val GeneratedSize = 1 << 16
+  private val Capacity = 10000
+  private val GeneratedSize = 1 << 16
   private final val IndexMask = 0xFFFF
 
-  private[this] var sketch: FrequencySketch[String] = _
-  private[this] var generated: Array[String] = _
-  private[this] var index: Int = 0
+  private var sketch: FrequencySketch[String] = _
+  private var generated: Array[String] = _
+  private var index: Int = 0
 
   @Setup
   def setup(): Unit = {

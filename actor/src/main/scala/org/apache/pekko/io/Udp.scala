@@ -217,7 +217,7 @@ object Udp extends ExtensionId[UdpExt] with ExtensionIdProvider {
 
     override val MaxChannelsPerSelector: Int = if (MaxChannels == -1) -1 else math.max(MaxChannels / NrOfSelectors, 1)
 
-    private[this] def getIntBytes(path: String): Int = {
+    private def getIntBytes(path: String): Int = {
       val size = getBytes(path)
       require(size < Int.MaxValue, s"$path must be < 2 GiB")
       size.toInt

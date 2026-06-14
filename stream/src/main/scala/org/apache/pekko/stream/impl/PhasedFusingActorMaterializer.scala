@@ -451,7 +451,7 @@ private final case class SavedIslandData(
 
   override def withNamePrefix(name: String): PhasedFusingActorMaterializer = this.copy(flowNames = flowNames.copy(name))
 
-  private[this] def createFlowName(): String = flowNames.next()
+  private def createFlowName(): String = flowNames.next()
 
   // note that this will never be overridden on a per-graph-stage basis regardless of more specific attributes
   override lazy val executionContext: ExecutionContextExecutor =
@@ -725,7 +725,7 @@ private[pekko] object GraphStageIsland {
     islandName: String,
     subflowFuser: OptionVal[GraphInterpreterShell => ActorRef])
     extends PhaseIsland[GraphStageLogic] {
-  private[this] val logics = new util.ArrayList[GraphStageLogic](16)
+  private val logics = new util.ArrayList[GraphStageLogic](16)
 
   private var connections = new Array[Connection](16)
   private var maxConnections = 0
@@ -972,7 +972,7 @@ private[pekko] object GraphStageIsland {
  */
 @InternalApi private[pekko] final class ProcessorModulePhase() extends PhaseIsland[Processor[Any, Any]] {
   override def name: String = "ProcessorModulePhase"
-  private[this] var processor: Processor[Any, Any] = _
+  private var processor: Processor[Any, Any] = _
 
   override def materializeAtomic(mod: AtomicModule[Shape, Any], attributes: Attributes): (Processor[Any, Any], Any) = {
     val procAndMat = mod.asInstanceOf[ProcessorModule[Any, Any, Any]].createProcessor()

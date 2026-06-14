@@ -225,7 +225,7 @@ import pekko.stream.stage._
     val context: ActorRef) {
   import GraphInterpreter._
 
-  private[this] val ChaseLimit = if (fuzzingMode) 0 else 16
+  private val ChaseLimit = if (fuzzingMode) 0 else 16
 
   /**
    * INTERNAL API
@@ -234,35 +234,35 @@ import pekko.stream.stage._
 
   // The number of currently running stages. Once this counter reaches zero, the interpreter is considered to be
   // completed
-  private[this] var runningStages = logics.length
+  private var runningStages = logics.length
 
   // Counts how many active connections a stage has. Once it reaches zero, the stage is automatically stopped.
-  private[this] val shutdownCounter = Array.tabulate(logics.length) { i =>
+  private val shutdownCounter = Array.tabulate(logics.length) { i =>
     logics(i).handlers.length
   }
 
   // Marks whether a stage has been finalized (finalizeStage been called) or not
-  private[this] val finalizedMark = Array.fill(logics.length)(false)
+  private val finalizedMark = Array.fill(logics.length)(false)
 
-  private[this] var _subFusingMaterializer: Materializer = _
-  private[this] lazy val defaultErrorReportingLogLevel = LogLevels.defaultErrorLevel(materializer.system)
+  private var _subFusingMaterializer: Materializer = _
+  private lazy val defaultErrorReportingLogLevel = LogLevels.defaultErrorLevel(materializer.system)
 
   def subFusingMaterializer: Materializer = _subFusingMaterializer
 
   // An event queue implemented as a circular buffer
   // FIXME: This calculates the maximum size ever needed, but most assemblies can run on a smaller queue
-  private[this] val eventQueue = new Array[Connection](1 << (32 - Integer.numberOfLeadingZeros(connections.length - 1)))
-  private[this] val mask = eventQueue.length - 1
-  private[this] var queueHead: Int = 0
-  private[this] var queueTail: Int = 0
+  private val eventQueue = new Array[Connection](1 << (32 - Integer.numberOfLeadingZeros(connections.length - 1)))
+  private val mask = eventQueue.length - 1
+  private var queueHead: Int = 0
+  private var queueTail: Int = 0
 
-  private[this] var chaseCounter = 0 // the first events in preStart blocks should be not chased
-  private[this] var chasedPush: Connection = NoEvent
-  private[this] var chasedPull: Connection = NoEvent
+  private var chaseCounter = 0 // the first events in preStart blocks should be not chased
+  private var chasedPush: Connection = NoEvent
+  private var chasedPull: Connection = NoEvent
   // Set whenever a stage's shutdownCounter transitions to 0 (i.e. the stage just became completed and
   // needs finalization). Lets the chase / dispatch loops skip the per-iteration shutdownCounter array
   // load in afterStageHasRun when no stage has completed since the last finalization pass.
-  private[this] var pendingFinalization: Boolean = false
+  private var pendingFinalization: Boolean = false
 
   private def queueStatus: String = {
     val contents = (queueHead until queueTail).map(idx => {
@@ -271,7 +271,7 @@ import pekko.stream.stage._
     })
     s"(${eventQueue.length}, $queueHead, $queueTail)(${contents.mkString(", ")})"
   }
-  private[this] var _Name: String = _
+  private var _Name: String = _
   def Name: String =
     if (_Name eq null) {
       _Name = f"${System.identityHashCode(this)}%08X"

@@ -294,7 +294,8 @@ object ProducerController {
       messageClass: Class[A],
       producerId: String,
       durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]]): Behavior[Command[A]] = {
-    apply(producerId, durableQueueBehavior.toScala)(ClassTag(messageClass))
+    implicit val ct: ClassTag[A] = ClassTag(messageClass)
+    apply(producerId, durableQueueBehavior.toScala)
   }
 
   /**
@@ -305,7 +306,8 @@ object ProducerController {
       producerId: String,
       durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]],
       settings: Settings): Behavior[Command[A]] = {
-    apply(producerId, durableQueueBehavior.toScala, settings)(ClassTag(messageClass))
+    implicit val ct: ClassTag[A] = ClassTag(messageClass)
+    apply(producerId, durableQueueBehavior.toScala, settings)
   }
 
 }

@@ -240,7 +240,7 @@ private[remote] final class HeaderBuilderImpl(
     extends HeaderBuilder {
   import HeaderBuilder.DeadLettersCode
 
-  private[this] val toSerializationFormat: SerializationFormatCache = new SerializationFormatCache
+  private val toSerializationFormat: SerializationFormatCache = new SerializationFormatCache
 
   // Fields only available for EnvelopeBuffer
   var _version: Byte = 0

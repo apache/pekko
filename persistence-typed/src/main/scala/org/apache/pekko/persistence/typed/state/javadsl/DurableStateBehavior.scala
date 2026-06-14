@@ -15,6 +15,8 @@ package org.apache.pekko.persistence.typed.state.javadsl
 
 import java.util.Optional
 
+import org.jspecify.annotations.Nullable
+
 import org.apache.pekko
 import pekko.actor.typed
 import pekko.actor.typed.BackoffSupervisorStrategy

@@ -418,7 +418,7 @@ private[pekko] class LocalActorRefProvider private[pekko] (
 
   override val ignoreRef: ActorRef = new IgnoreActorRef(this)
 
-  private[this] final val terminationPromise: Promise[Terminated] = Promise[Terminated]()
+  private final val terminationPromise: Promise[Terminated] = Promise[Terminated]()
 
   def terminationFuture: Future[Terminated] = terminationPromise.future
 
@@ -494,7 +494,7 @@ private[pekko] class LocalActorRefProvider private[pekko] (
    * but it also requires these references to be @volatile and lazy.
    */
   @volatile
-  private var system: ActorSystemImpl = _
+  private var system: ActorSystemImpl = null
 
   @volatile
   private var extraNames: Map[String, InternalActorRef] = Map()

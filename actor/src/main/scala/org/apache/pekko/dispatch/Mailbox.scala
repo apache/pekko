@@ -88,7 +88,7 @@ private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
    * stay as it is.
    */
   @volatile
-  var actor: ActorCell = _
+  var actor: ActorCell = null
   def setActor(cell: ActorCell): Unit = actor = cell
 
   def dispatcher: MessageDispatcher = actor.dispatcher
@@ -116,10 +116,10 @@ private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
   def numberOfMessages: Int = messageQueue.numberOfMessages
 
   @volatile
-  protected var _statusDoNotCallMeDirectly: Status = _ // 0 by default
+  protected var _statusDoNotCallMeDirectly: Status = 0 // 0 by default
 
   @volatile
-  protected var _systemQueueDoNotCallMeDirectly: SystemMessage = _ // null by default
+  protected var _systemQueueDoNotCallMeDirectly: SystemMessage = null // null by default
 
   // volatile read: the status is published across threads via compareAndSet/setVolatile
   // below; a plain VarHandle.get could observe a stale status (e.g. miss a Scheduled or

@@ -113,8 +113,8 @@ class FixedBufferSpec extends StreamSpec {
 
         try {
           val cheat = buf.asInstanceOf[{ def readIdx_=(l: Long): Unit; def writeIdx_=(l: Long): Unit }]
-          cheat.readIdx_=(Int.MaxValue)
-          cheat.writeIdx_=(Int.MaxValue)
+          val _: Unit = cheat.readIdx_=(Int.MaxValue)
+          val _: Unit = cheat.writeIdx_=(Int.MaxValue)
 
           for (_ <- 1 to 10) {
             buf.isEmpty should be(true)
