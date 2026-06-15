@@ -241,7 +241,7 @@ object GraphStageLogic {
     def ref: ActorRef = functionRef
 
     @volatile
-    private[this] var behavior = initialReceive
+    private var behavior = initialReceive
 
     /** INTERNAL API */
     private[pekko] def internalReceive(pack: (ActorRef, Any)): Unit = {
@@ -376,7 +376,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
   /**
    * INTERNAL API
    */
-  private[this] var _interpreter: GraphInterpreter = _
+  private var _interpreter: GraphInterpreter = _
 
   /**
    * INTERNAL API

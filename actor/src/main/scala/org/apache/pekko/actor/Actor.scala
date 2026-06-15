@@ -339,7 +339,7 @@ object Status {
  * }}}
  */
 trait ActorLogging { this: Actor =>
-  private var _log: LoggingAdapter = _
+  private var _log: LoggingAdapter = null
 
   def log: LoggingAdapter = {
     // only used in Actor, i.e. thread safe

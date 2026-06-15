@@ -31,10 +31,10 @@ import pekko.japi.pf.PFBuilder
  */
 object Behaviors {
 
-  private[this] val _two2same = new JapiFunction2[ActorContext[Any], Any, Behavior[Any]] {
+  private val _two2same = new JapiFunction2[ActorContext[Any], Any, Behavior[Any]] {
     override def apply(context: ActorContext[Any], msg: Any): Behavior[Any] = same
   }
-  private[this] def two2same[T] = _two2same.asInstanceOf[JapiFunction2[ActorContext[T], T, Behavior[T]]]
+  private def two2same[T] = _two2same.asInstanceOf[JapiFunction2[ActorContext[T], T, Behavior[T]]]
 
   /**
    * `setup` is a factory for a behavior. Creation of the behavior instance is deferred until

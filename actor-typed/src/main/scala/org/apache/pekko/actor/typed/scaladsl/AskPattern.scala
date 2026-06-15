@@ -144,7 +144,7 @@ object AskPattern {
   private final class PromiseRef[U](target: InternalRecipientRef[?], timeout: Timeout) {
 
     // Note: _promiseRef mustn't have a type pattern, since it can be null
-    private[this] val (_ref: ActorRef[U], _future: Future[U], _promiseRef) =
+    private val (_ref: ActorRef[U], _future: Future[U], _promiseRef) =
       if (target.isTerminated)
         (
           adapt.ActorRefAdapter[U](target.provider.deadLetters),

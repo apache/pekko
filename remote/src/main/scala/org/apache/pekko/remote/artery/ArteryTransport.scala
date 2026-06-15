@@ -285,13 +285,13 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
   type LifeCycle
 
   // these vars are initialized once in the start method
-  @volatile private[this] var _localAddress: UniqueAddress = _
-  @volatile private[this] var _bindAddress: UniqueAddress = _
-  @volatile private[this] var _addresses: Set[Address] = _
+  @volatile private var _localAddress: UniqueAddress = _
+  @volatile private var _bindAddress: UniqueAddress = _
+  @volatile private var _addresses: Set[Address] = _
   @volatile protected var materializer: Materializer = _
   @volatile protected var controlMaterializer: Materializer = _
-  @volatile private[this] var controlSubject: ControlMessageSubject = _
-  @volatile private[this] var messageDispatcher: MessageDispatcher = _
+  @volatile private var controlSubject: ControlMessageSubject = _
+  @volatile private var messageDispatcher: MessageDispatcher = _
 
   override val log: MarkerLoggingAdapter = Logging.withMarker(system, classOf[ArteryTransport])
 
@@ -310,7 +310,7 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
     } else NoInboundCompressions
   }
 
-  @volatile private[this] var _inboundCompressionAccess: OptionVal[InboundCompressionAccess] = OptionVal.None
+  @volatile private var _inboundCompressionAccess: OptionVal[InboundCompressionAccess] = OptionVal.None
 
   /** Only access compression tables via the CompressionAccess */
   def inboundCompressionAccess: OptionVal[InboundCompressionAccess] = _inboundCompressionAccess
@@ -327,7 +327,7 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
 
   // keyed by the streamId
   protected val streamMatValues = new AtomicReference(Map.empty[Int, InboundStreamMatValues[LifeCycle]])
-  private[this] val hasBeenShutdown = new AtomicBoolean(false)
+  private val hasBeenShutdown = new AtomicBoolean(false)
 
   private val testState = new SharedTestState
 

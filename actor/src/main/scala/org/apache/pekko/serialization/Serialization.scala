@@ -150,7 +150,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
   val settings = new Settings(system.settings.config)
   val AllowJavaSerialization: Boolean = system.settings.AllowJavaSerialization
 
-  private[this] val _log = Logging.withMarker(system, getClass.getName)
+  private val _log = Logging.withMarker(system, getClass.getName)
   val log: LoggingAdapter = _log
   private val manifestCache = new AtomicReference[Map[String, Option[Class[?]]]](Map.empty[String, Option[Class[?]]])
 

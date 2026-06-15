@@ -60,15 +60,15 @@ import pekko.util.ByteString
 @InternalApi private[pekko] class JsonObjectParser(maximumObjectLength: Int = Int.MaxValue) {
   import JsonObjectParser._
 
-  private[this] var buffer: Array[Byte] = Array.empty
+  private var buffer: Array[Byte] = Array.empty
 
-  private[this] var pos = 0 // latest position of pointer while scanning for json object end
-  private[this] var start = 0 // number of chars to drop from the front of the bytestring before emitting (skip whitespace etc)
-  private[this] var depth = 0 // counter of object-nesting depth, once hits 0 an object should be emitted
+  private var pos = 0 // latest position of pointer while scanning for json object end
+  private var start = 0 // number of chars to drop from the front of the bytestring before emitting (skip whitespace etc)
+  private var depth = 0 // counter of object-nesting depth, once hits 0 an object should be emitted
 
-  private[this] var completedObject = false
-  private[this] var inStringExpression = false
-  private[this] var inBackslashEscape = false
+  private var completedObject = false
+  private var inStringExpression = false
+  private var inBackslashEscape = false
 
   /**
    * Appends input ByteString to internal buffer.
