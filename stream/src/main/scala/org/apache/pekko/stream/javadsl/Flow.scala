@@ -28,6 +28,8 @@ import scala.jdk.OptionConverters._
 import scala.reflect.ClassTag
 import scala.util.control.NonFatal
 
+import org.jspecify.annotations.Nullable
+
 import org.apache.pekko
 import pekko.Done
 import pekko.NotUsed
@@ -43,7 +45,6 @@ import pekko.stream.impl.fusing.{ StatefulMapConcat, ZipWithIndexJava }
 import pekko.util.ConstantFun
 import pekko.util.Timeout
 
-import org.jspecify.annotations.Nullable
 import org.reactivestreams.Processor
 
 object Flow {

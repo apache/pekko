@@ -256,28 +256,28 @@ object ByteIterator {
     override def getShort(implicit byteOrder: ByteOrder): Short = {
       val cur = current
       if cur.len >= java.lang.Short.BYTES then {
-        val r = cur.getShort(byteOrder)
+        val r = cur.getShort(using byteOrder)
         normalize()
         r
-      } else super.getShort(byteOrder)
+      } else super.getShort(using byteOrder)
     }
 
     override def getInt(implicit byteOrder: ByteOrder): Int = {
       val cur = current
       if cur.len >= java.lang.Integer.BYTES then {
-        val r = cur.getInt(byteOrder)
+        val r = cur.getInt(using byteOrder)
         normalize()
         r
-      } else super.getInt(byteOrder)
+      } else super.getInt(using byteOrder)
     }
 
     override def getLong(implicit byteOrder: ByteOrder): Long = {
       val cur = current
       if cur.len >= java.lang.Long.BYTES then {
-        val r = cur.getLong(byteOrder)
+        val r = cur.getLong(using byteOrder)
         normalize()
         r
-      } else super.getLong(byteOrder)
+      } else super.getLong(using byteOrder)
     }
 
     final override def len: Int = iterators.foldLeft(0) { _ + _.len }
@@ -417,19 +417,19 @@ object ByteIterator {
       getToArray(xs, offset, n, 1) { getByte } { current.getBytes(_, _, _) }
 
     def getShorts(xs: Array[Short], offset: Int, n: Int)(implicit byteOrder: ByteOrder): this.type =
-      getToArray(xs, offset, n, 2) { getShort(byteOrder) } { current.getShorts(_, _, _)(byteOrder) }
+      getToArray(xs, offset, n, 2) { getShort(using byteOrder) } { current.getShorts(_, _, _)(using byteOrder) }
 
     def getInts(xs: Array[Int], offset: Int, n: Int)(implicit byteOrder: ByteOrder): this.type =
-      getToArray(xs, offset, n, 4) { getInt(byteOrder) } { current.getInts(_, _, _)(byteOrder) }
+      getToArray(xs, offset, n, 4) { getInt(using byteOrder) } { current.getInts(_, _, _)(using byteOrder) }
 
     def getLongs(xs: Array[Long], offset: Int, n: Int)(implicit byteOrder: ByteOrder): this.type =
-      getToArray(xs, offset, n, 8) { getLong(byteOrder) } { current.getLongs(_, _, _)(byteOrder) }
+      getToArray(xs, offset, n, 8) { getLong(using byteOrder) } { current.getLongs(_, _, _)(using byteOrder) }
 
     def getFloats(xs: Array[Float], offset: Int, n: Int)(implicit byteOrder: ByteOrder): this.type =
-      getToArray(xs, offset, n, 8) { getFloat(byteOrder) } { current.getFloats(_, _, _)(byteOrder) }
+      getToArray(xs, offset, n, 8) { getFloat(using byteOrder) } { current.getFloats(_, _, _)(using byteOrder) }
 
     def getDoubles(xs: Array[Double], offset: Int, n: Int)(implicit byteOrder: ByteOrder): this.type =
-      getToArray(xs, offset, n, 8) { getDouble(byteOrder) } { current.getDoubles(_, _, _)(byteOrder) }
+      getToArray(xs, offset, n, 8) { getDouble(using byteOrder) } { current.getDoubles(_, _, _)(using byteOrder) }
 
     /** For performance sensitive code, call copyToBuffer() directly on ByteString (it's optimised there) */
     override def copyToBuffer(buffer: ByteBuffer): Int = {
@@ -649,10 +649,10 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
   }
 
   def getFloat(implicit byteOrder: ByteOrder): Float =
-    java.lang.Float.intBitsToFloat(getInt(byteOrder))
+    java.lang.Float.intBitsToFloat(getInt(using byteOrder))
 
   def getDouble(implicit byteOrder: ByteOrder): Double =
-    java.lang.Double.longBitsToDouble(getLong(byteOrder))
+    java.lang.Double.longBitsToDouble(getLong(using byteOrder))
 
   /**
    * Get a specific number of Bytes from this iterator. In contrast to
@@ -690,7 +690,7 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
    * Get a number of Shorts from this iterator.
    */
   def getShorts(xs: Array[Short])(implicit byteOrder: ByteOrder): this.type =
-    getShorts(xs, 0, xs.length)(byteOrder)
+    getShorts(xs, 0, xs.length)(using byteOrder)
 
   /**
    * Get a number of Shorts from this iterator.
@@ -701,7 +701,7 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
    * Get a number of Ints from this iterator.
    */
   def getInts(xs: Array[Int])(implicit byteOrder: ByteOrder): this.type =
-    getInts(xs, 0, xs.length)(byteOrder)
+    getInts(xs, 0, xs.length)(using byteOrder)
 
   /**
    * Get a number of Ints from this iterator.
@@ -712,7 +712,7 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
    * Get a number of Longs from this iterator.
    */
   def getLongs(xs: Array[Long])(implicit byteOrder: ByteOrder): this.type =
-    getLongs(xs, 0, xs.length)(byteOrder)
+    getLongs(xs, 0, xs.length)(using byteOrder)
 
   /**
    * Get a number of Longs from this iterator.
@@ -723,7 +723,7 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
    * Get a number of Floats from this iterator.
    */
   def getFloats(xs: Array[Float])(implicit byteOrder: ByteOrder): this.type =
-    getFloats(xs, 0, xs.length)(byteOrder)
+    getFloats(xs, 0, xs.length)(using byteOrder)
 
   /**
    * Get a number of Floats from this iterator.
@@ -734,7 +734,7 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
    * Get a number of Doubles from this iterator.
    */
   def getDoubles(xs: Array[Double])(implicit byteOrder: ByteOrder): this.type =
-    getDoubles(xs, 0, xs.length)(byteOrder)
+    getDoubles(xs, 0, xs.length)(using byteOrder)
 
   /**
    * Get a number of Doubles from this iterator.

@@ -129,7 +129,7 @@ object Patterns {
    */
   def askWithReplyTo(actor: ActorRef, messageFactory: japi.function.Function[ActorRef, Any], timeout: Timeout)
       : Future[AnyRef] =
-    extended.ask(actor, messageFactory.apply _)(timeout).asInstanceOf[Future[AnyRef]]
+    extended.ask(actor, ref => messageFactory.apply(ref))(timeout).asInstanceOf[Future[AnyRef]]
 
   /**
    * A variation of ask which allows to implement "replyTo" pattern by including
@@ -150,7 +150,8 @@ object Patterns {
       actor: ActorRef,
       messageFactory: japi.function.Function[ActorRef, Any],
       timeout: java.time.Duration): CompletionStage[AnyRef] =
-    extended.ask(actor, messageFactory.apply _)(Timeout.create(timeout)).asJava.asInstanceOf[CompletionStage[AnyRef]]
+    extended.ask(actor, ref => messageFactory.apply(ref))(Timeout.create(timeout)).asJava.asInstanceOf[CompletionStage[
+      AnyRef]]
 
   /**
    * <i>Java API for `org.apache.pekko.pattern.ask`:</i>
@@ -201,7 +202,7 @@ object Patterns {
       actor: ActorRef,
       messageFactory: japi.function.Function[ActorRef, Any],
       timeoutMillis: Long): Future[AnyRef] =
-    extended.ask(actor, messageFactory.apply _)(Timeout(timeoutMillis.millis)).asInstanceOf[Future[AnyRef]]
+    extended.ask(actor, ref => messageFactory.apply(ref))(Timeout(timeoutMillis.millis)).asInstanceOf[Future[AnyRef]]
 
   /**
    * <i>Java API for `org.apache.pekko.pattern.ask`:</i>
@@ -316,7 +317,8 @@ object Patterns {
       selection: ActorSelection,
       messageFactory: japi.function.Function[ActorRef, Any],
       timeoutMillis: Long): Future[AnyRef] =
-    extended.ask(selection, messageFactory.apply _)(Timeout(timeoutMillis.millis)).asInstanceOf[Future[AnyRef]]
+    extended.ask(selection, ref => messageFactory.apply(ref))(Timeout(timeoutMillis.millis)).asInstanceOf[Future[
+      AnyRef]]
 
   /**
    * A variation of ask which allows to implement "replyTo" pattern by including
@@ -333,7 +335,8 @@ object Patterns {
       selection: ActorSelection,
       messageFactory: japi.function.Function[ActorRef, Any],
       timeout: java.time.Duration): CompletionStage[AnyRef] =
-    extended.ask(selection, messageFactory.apply _)(timeout.toScala).asJava.asInstanceOf[CompletionStage[AnyRef]]
+    extended.ask(selection, ref => messageFactory.apply(ref))(timeout.toScala).asJava.asInstanceOf[CompletionStage[
+      AnyRef]]
 
   /**
    * Register an onComplete callback on this [[scala.concurrent.Future]] to send

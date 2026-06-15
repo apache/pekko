@@ -15,15 +15,15 @@ package org.apache.pekko.cluster.sharding
 
 import scala.concurrent.duration._
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.actor.PoisonPill
 import pekko.actor.Props
 import pekko.cluster.sharding.MultiNodeClusterShardingSpec.EntityActor
 import pekko.testkit._
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 class ClusterShardingCoordinatorRoleSpecConfig(
     mode: String,
