@@ -17,15 +17,12 @@
 
 package org.apache.pekko.stream.io
 
-import javax.net.ssl.{ SSLContext, SSLEngine, SSLSession }
-
 import java.util.concurrent.atomic.AtomicInteger
+import javax.net.ssl.{ SSLContext, SSLEngine, SSLSession }
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.{ Success, Try }
-
-import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.NotUsed
@@ -36,6 +33,8 @@ import pekko.stream.scaladsl._
 import pekko.stream.testkit.StreamSpec
 import pekko.testkit.TestDuration
 import pekko.util.ByteString
+
+import com.typesafe.config.ConfigFactory
 
 /**
  * Edge cases for the [[TlsGraphStage]] path that are awkward to express in the

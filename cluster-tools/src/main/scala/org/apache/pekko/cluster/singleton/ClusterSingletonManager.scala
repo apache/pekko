@@ -297,7 +297,10 @@ object ClusterSingletonManager {
       val cluster = Cluster(context.system)
       // sort by age, oldest first
       val ageOrdering = Member.ageOrdering
-      var membersByAge: immutable.SortedSet[Member] = immutable.SortedSet.empty(ageOrdering)
+      var membersByAge: immutable.SortedSet[Member] = {
+        implicit val ord: Ordering[Member] = ageOrdering
+        immutable.SortedSet.empty[Member]
+      }
 
       var changes = Vector.empty[AnyRef]
 
@@ -337,8 +340,9 @@ object ClusterSingletonManager {
 
       def handleInitial(state: CurrentClusterState): Unit = {
         // all members except Joining and WeaklyUp
+        implicit val ord: Ordering[Member] = ageOrdering
         membersByAge = immutable.SortedSet
-          .empty(ageOrdering)
+          .empty[Member]
           .union(state.members.filter(m => m.upNumber != Int.MaxValue && matchingRole(m)))
 
         // If there is some removal in progress of an older node it's not safe to immediately become oldest,
