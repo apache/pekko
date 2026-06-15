@@ -121,7 +121,6 @@ object PekkoDisciplinePlugin extends AutoPlugin {
     "-Wconf:cat=unused-pat-vars:s",
     "-Wconf:cat=unused-params:s",
     "-Wconf:cat=unused-privates:s",
-    "-Wconf:cat=unused-explicits:s",
     "-Wconf:msg=Unused import:s",
     "-Wconf:msg=is never used:s",
     "-Wconf:cat=deprecation:s",
