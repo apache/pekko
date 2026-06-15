@@ -317,7 +317,7 @@ class FlowPrefixAndTailSpec extends StreamSpec("""
       // tail Source is materialized, that element must be buffered and delivered as the
       // first element when the tail finally subscribes (akka #20008).
       val publisher = TestPublisher.manualProbe[Int]()
-      val subscriber = TestSubscriber.manualProbe[(immutable.Seq[Int], Source[Int, _])]()
+      val subscriber = TestSubscriber.manualProbe[(immutable.Seq[Int], Source[Int, ?])]()
 
       Source.fromPublisher(publisher).prefixAndTail(1).to(Sink.fromSubscriber(subscriber)).run()
 
