@@ -23,7 +23,7 @@ upstream failure, downstream cancellation, abrupt stage termination, or supervis
 Elements emitted from `onComplete` are emitted before upstream-failure propagation, completion, or restart,
 and are ignored on downstream cancellation and abrupt termination.
 
-The `gather` operator adheres to the @ref:[ActorAttributes.SupervisionStrategy](../../actors.md) attribute.
+The `gather` operator adheres to the @ref:[ActorAttributes.SupervisionStrategy](../../../actors.md) attribute.
 
 For a simpler stateless mapping, use @ref:[map](map.md) or @ref:[mapConcat](mapConcat.md).
 
