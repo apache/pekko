@@ -346,7 +346,11 @@ import pekko.util.OptionVal
       // Speculative pre-pull: lets us observe an empty tail (upstream finish before any
       // further element) immediately, instead of holding the substream open until the
       // subscription timeout fires when downstream discards the tail Source.
-      if (!hasBeenPulled(in) && !isClosed(in)) pull(in)
+      // Deferred via getAsyncCallback to avoid synchronous cascade when called inside
+      // a push() handler (e.g. when PrefixAndTail is used inside a Split operator).
+      if (!hasBeenPulled(in) && !isClosed(in)) {
+        getAsyncCallback[Unit](_ => if (!hasBeenPulled(in) && !isClosed(in)) pull(in)).invoke(())
+      }
       Source.fromGraph(tailSource.source)
     }
 
