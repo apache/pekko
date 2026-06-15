@@ -137,10 +137,10 @@ lazy val actor = pekkoModule("actor")
   .enablePlugins(BoilerplatePlugin, SbtOsgi)
 
 lazy val actorTests = pekkoModule("actor-tests")
-  .configs(Jdk9.TestJdk9)
+  .configs(Jdk21.TestJdk21)
   .dependsOn(testkit % "compile->compile;test->test", actor)
   .settings(Dependencies.actorTests)
-  .enablePlugins(NoPublish, Jdk9)
+  .enablePlugins(NoPublish, Jdk21)
   .disablePlugins(MimaPlugin)
 
 lazy val pekkoScalaNightly = pekkoModule("scala-nightly")

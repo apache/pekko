@@ -164,7 +164,7 @@ jobs:
           clean ${{ matrix.command }}
           
   jdk-21-extra-tests:
-    name: Java 21 Extra Tests (including all tests that need Java 9+)
+    name: Java 21 Extra Tests
     runs-on: ubuntu-22.04
     env:
       DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
@@ -192,7 +192,7 @@ jobs:
       - name: Enable jvm-opts
         run: cp .jvmopts-ci .jvmopts
 
-      - name: sbt TestJdk9/test
+      - name: sbt TestJdk21/test
         run: |-
           sbt \
           -Dpekko.mima.enabled=false \
@@ -206,4 +206,4 @@ jobs:
           -Dsbt.log.noformat=false \
           -Dpekko.log.timestamps=true \
           -Dio.netty.leakDetection.level=PARANOID \
-          TestJdk9/test        
+          TestJdk21/test
