@@ -361,6 +361,12 @@ class CallingThreadMailbox(_receiver: pekko.actor.Cell, val mailboxType: Mailbox
     }
   }
 
+  /**
+   * This is only a marker to be put in the messageQueue's stead to make error
+   * messages pertaining to violated mailbox type requirements less cryptic.
+   */
+  override val messageQueue: MessageQueue = q.get
+
   override def enqueue(receiver: ActorRef, msg: Envelope): Unit = q.get.enqueue(receiver, msg)
   override def dequeue(): Envelope =
     throw new UnsupportedOperationException("CallingThreadMailbox cannot dequeue normally")
