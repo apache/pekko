@@ -14,6 +14,7 @@
 package org.apache.pekko.stream.stage
 
 import java.util.Spliterator
+import java.lang.invoke.{ MethodHandles, VarHandle }
 import java.util.concurrent.{ CompletionStage, ConcurrentHashMap }
 import java.util.concurrent.atomic.AtomicReference
 
@@ -27,6 +28,7 @@ import org.apache.pekko
 import pekko.{ Done, NotUsed }
 import pekko.actor._
 import pekko.annotation.InternalApi
+import pekko.dispatch.AbstractNodeQueue
 import pekko.japi.function.{ Effect, Procedure }
 import pekko.stream._
 import pekko.stream.Attributes.SourceLocation
@@ -206,29 +208,61 @@ object GraphStageLogic {
    *
    * Not for user instantiation, use [[GraphStageLogic.getStageActor]].
    */
-  final class StageActor @InternalApi() private[pekko] (
+  final class StageActor @InternalApi() private (
       materializer: Materializer,
-      getAsyncCallback: StageActorRef.Receive => AsyncCallback[(ActorRef, Any)],
       initialReceive: StageActorRef.Receive,
-      name: String) {
+      name: String,
+      cell: ActorCell,
+      buildDispatch: StageActorRef.Receive => ((ActorRef, Any)) => Unit) {
 
-    private val callback = getAsyncCallback(internalReceive)
+    @InternalApi private[pekko] def this(
+        materializer: Materializer,
+        getAsyncCallback: StageActorRef.Receive => AsyncCallback[(ActorRef, Any)],
+        initialReceive: StageActorRef.Receive,
+        name: String) =
+      this(
+        materializer,
+        initialReceive,
+        name,
+        StageActor.localCell(materializer.supervisor, "Stream supervisor"),
+        receive => getAsyncCallback(receive).invoke)
 
-    private def cell = materializer.supervisor match {
-      case ref: LocalActorRef => ref.underlying
-      case unknown            =>
-        throw new IllegalStateException(s"Stream supervisor must be a local actor, was [${unknown.getClass.getName}]")
-    }
+    @InternalApi private[pekko] def this(
+        materializer: Materializer,
+        interpreter: GraphInterpreter,
+        logic: GraphStageLogic,
+        initialReceive: StageActorRef.Receive,
+        name: String) =
+      this(
+        materializer,
+        initialReceive,
+        name,
+        StageActor.localCell(materializer.supervisor, "Stream supervisor"),
+        // Coalesce per-tell mailbox traffic: N tells produce 1 AsyncInput envelope (amortized).
+        receive =>
+          new StageActor.LazyDispatch(
+            interpreter,
+            logic,
+            receive.asInstanceOf[Any => Unit],
+            StageActor.drainBatchSize(materializer)))
+
+    // Monomorphic Function1 captured once; JIT can inline the apply at the FunctionRef call site.
+    private val dispatch: ((ActorRef, Any)) => Unit = buildDispatch(internalReceive)
+
     private val functionRef: FunctionRef = {
-      val f: (ActorRef, Any) => Unit = {
-        case (_, m @ (PoisonPill | Kill)) =>
-          materializer.logger.warning(
-            "{} message sent to StageActor({}) will be ignored, since it is not a real Actor. " +
-            "Use a custom message type to communicate with it instead.",
-            m,
-            functionRef.path)
-        case pair => callback.invoke(pair)
-      }
+      // Explicit (sender, msg) lambda (not a pattern-match Function2 literal) so the PoisonPill / Kill
+      // branch matches on `msg` directly and does not allocate a Tuple2. The regular branch still
+      // constructs one tuple per tell, as required by the `((ActorRef, Any)) => Unit` public Receive type.
+      val f: (ActorRef, Any) => Unit = (sender, msg) =>
+        msg match {
+          case PoisonPill | Kill =>
+            materializer.logger.warning(
+              "{} message sent to StageActor({}) will be ignored, since it is not a real Actor. " +
+              "Use a custom message type to communicate with it instead.",
+              msg,
+              functionRef.path)
+          case _ => dispatch((sender, msg))
+        }
 
       cell.addFunctionRef(f, name)
     }
@@ -273,6 +307,135 @@ object GraphStageLogic {
   }
   object StageActorRef {
     type Receive = ((ActorRef, Any)) => Unit
+  }
+
+  private object StageActor {
+    def localCell(ref: ActorRef, description: String): ActorCell =
+      ref match {
+        case ref: LocalActorRef       => ref.underlying
+        case ref: RepointableActorRef =>
+          ref.underlying match {
+            case cell: ActorCell => cell
+            case unknown         =>
+              throw new IllegalStateException(s"$description must be a local actor, was [${unknown.getClass.getName}]")
+          }
+        case unknown =>
+          throw new IllegalStateException(s"$description must be a local actor, was [${unknown.getClass.getName}]")
+      }
+
+    /**
+     * Reads `pekko.stream.materializer.stage-actor-drain-batch` from the materializer's ActorSystem config.
+     * Called once per lazy StageActor construction (never on the hot path). Bounded to `>= 1`.
+     */
+    def drainBatchSize(materializer: Materializer): Int =
+      Math.max(1, materializer.system.settings.config.getInt("pekko.stream.materializer.stage-actor-drain-batch"))
+
+    private final val SchedStateIdle: Int = 0
+    private final val SchedStateScheduled: Int = 1
+
+    /**
+     * Lazy-path dispatch: producers enqueue into a Vyukov MPSC queue and elect a single drain via
+     * IDLE -> SCHEDULED CAS; only the elected producer pays a mailbox enqueue. The drain runs on the
+     * interpreter thread, polls in a tight loop bounded by `drainBatchSize`, then either publishes IDLE
+     * (with a recheck for the publish-window race) or re-schedules another envelope to yield to other
+     * BoundaryEvents.
+     *
+     * JIT/GC notes:
+     *  - `final class` + monomorphic per-StageActor instance → JIT devirtualizes the apply at the
+     *    FunctionRef call site.
+     *  - Extends `AbstractNodeQueue` directly so the queue head atomic and the dispatch function share one
+     *    object (one allocation per StageActor, one fewer field deref on the producer hot path).
+     *  - Implements `Any => Unit` directly — serves as both the producer callback and the drain callback,
+     *    eliminating the separate `drainCallback` lambda allocation.
+     *  - `state` is a plain `@volatile var Int` driven by a static `VarHandle` in the companion object
+     *    (via `MethodHandles.privateLookupIn`), same pattern as `AbstractNodeQueue` itself;
+     *    avoids per-instance `AtomicInteger`.
+     *  - `drainBatchSize` is read once into a stack-local at the top of `drain` so the JIT can treat the loop
+     *    bound as a constant.
+     *  - Per-tell allocation = 1 Node (`AbstractNodeQueue.Node`, ~24 bytes) + 1 Tuple2 (~24 bytes). The
+     *    Tuple2 is forced by the public `StageActorRef.Receive` type. No AsyncInput / Envelope per tell —
+     *    those are amortized across the batch.
+     */
+    // Not marked `private` so that `class StageActor`'s aux constructor (compiled outside of the companion
+    // object on Scala 3) can reference it; the enclosing `object StageActor` is itself private.
+    final class LazyDispatch(
+        interpreter: GraphInterpreter,
+        logic: GraphStageLogic,
+        handler: Any => Unit,
+        drainBatchSize: Int)
+        extends AbstractNodeQueue[(ActorRef, Any)]
+        with (Any => Unit) {
+
+      // IDLE/SCHEDULED election state. VarHandle avoids per-instance AtomicInteger;
+      // the handle lives in the companion object (true JVM static), same pattern as
+      // AbstractNodeQueue._tailDoNotCallMeDirectly.
+      @volatile var state: Int = SchedStateIdle
+
+      // Typed local witnesses the Int-returning signature-polymorphic VarHandle.get overload
+      // (required for Scala 3 cross-compile; on Scala 2 this is a no-op).
+      private def getState(): Int = {
+        val v: Int = LazyDispatch.stateHandle.get(this)
+        v
+      }
+      private def setState(v: Int): Unit = LazyDispatch.stateHandle.set(this, v)
+      private def casState(expect: Int, update: Int): Boolean =
+        LazyDispatch.stateHandle.compareAndSet(this, expect, update)
+
+      // null msg = drain signal from onAsyncInput; non-null = (ActorRef, Any) tuple from FunctionRef.
+      override def apply(msg: Any): Unit =
+        if (msg == null) drain()
+        else {
+          val pair = msg.asInstanceOf[(ActorRef, Any)]
+          if (!interpreter.isStageCompleted(logic)) {
+            add(pair)
+            if (getState() == SchedStateIdle && casState(SchedStateIdle, SchedStateScheduled)) {
+              if (interpreter.isStageCompleted(logic)) setState(SchedStateIdle)
+              else scheduleDrain()
+            }
+          }
+        }
+
+      private def scheduleDrain(): Unit =
+        // 1 AsyncInput + 1 Envelope per drain batch (amortized across up to drainBatchSize tells).
+        // `this` serves as the drain callback (Any => Unit); onAsyncInput calls apply(null).
+        interpreter.onAsyncInput(logic, null, NoPromise, this)
+
+      private def drain(): Unit = {
+        val limit = drainBatchSize
+        var processed = 0
+        while (processed < limit) {
+          if (interpreter.isStageCompleted(logic)) {
+            while (poll() ne null) ()
+            setState(SchedStateIdle)
+            return
+          }
+          val item = poll()
+          if (item eq null) {
+            setState(SchedStateIdle)
+            // Recheck race: a producer may have added between `poll == null` and the IDLE publish above.
+            if (!isEmpty && casState(SchedStateIdle, SchedStateScheduled))
+              scheduleDrain()
+            return
+          }
+          handler(item)
+          processed += 1
+        }
+        // The last handler(item) may have completed the stage; check before re-scheduling.
+        if (interpreter.isStageCompleted(logic)) {
+          while (poll() ne null) ()
+          setState(SchedStateIdle)
+          return
+        }
+        scheduleDrain()
+      }
+    }
+
+    object LazyDispatch {
+      private val stateHandle: VarHandle = {
+        val lookup = MethodHandles.privateLookupIn(classOf[LazyDispatch], MethodHandles.lookup())
+        lookup.findVarHandle(classOf[LazyDispatch], "state", Integer.TYPE)
+      }
+    }
   }
 
   /**
@@ -1339,8 +1502,8 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
 
   /**
    * Initialize a [[GraphStageLogic.StageActorRef]] which can be used to interact with from the outside world "as-if" a [[pekko.actor.Actor]].
-   * The messages are looped through the [[getAsyncCallback]] mechanism of [[GraphStage]] so they are safe to modify
-   * internal state of this operator.
+   * The messages are delivered through the owning stream interpreter so they are safe to modify internal state of this
+   * operator.
    *
    * This method must (the earliest) be called after the [[GraphStageLogic]] constructor has finished running,
    * for example from the [[preStart]] callback the graph operator logic provides.
@@ -1358,7 +1521,20 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
    * @return minimal actor with watch method
    */
   final protected def getStageActor(receive: ((ActorRef, Any)) => Unit): StageActor =
-    getEagerStageActor(interpreter.materializer)(receive)
+    _stageActor match {
+      case null =>
+        val currentInterpreter = interpreter
+        _stageActor = new StageActor(
+          currentInterpreter.materializer,
+          currentInterpreter,
+          this,
+          receive,
+          stageActorName)
+        _stageActor
+      case existing =>
+        existing.become(receive)
+        existing
+    }
 
   /**
    * INTERNAL API
@@ -1382,7 +1558,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
    * Override and return a name to be given to the StageActor of this operator.
    *
    * This method will be only invoked and used once, during the first [[getStageActor]]
-   * invocation whichc reates the actor, since subsequent `getStageActors` calls function
+   * invocation which creates the actor, since subsequent `getStageActor` calls function
    * like `become`, rather than creating new actors.
    *
    * Returns an empty string by default, which means that the name will a unique generated String (e.g. "$$a").
