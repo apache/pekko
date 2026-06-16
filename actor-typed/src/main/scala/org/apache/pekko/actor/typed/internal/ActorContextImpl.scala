@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory
   // single context for logging as there are a few things that are initialized
   // together that we can cache as long as the actor is alive
   object LoggingContext {
-    def apply(logger: Logger, tags: Set[String], ctx: ActorContextImpl[?]): LoggingContext = {
+    def apply(logger: Logger, tags: Set[String], ctx: ActorContextImpl[_]): LoggingContext = {
       val tagsString =
         // "" means no tags
         if (tags.isEmpty) ""
@@ -61,7 +61,7 @@ import org.slf4j.LoggerFactory
 
       val pekkoAddress =
         ctx.system match {
-          case adapter: ActorSystemAdapter[?] => adapter.provider.addressString
+          case adapter: ActorSystemAdapter[_] => adapter.provider.addressString
           case _                              => Address("pekko", ctx.system.name).toString
         }
 
@@ -105,7 +105,7 @@ import org.slf4j.LoggerFactory
   private var _logging: OptionVal[LoggingContext] = OptionVal.None
 
   private var messageAdapterRef: OptionVal[ActorRef[Any]] = OptionVal.None
-  private var _messageAdapters: List[(Class[?], Any => T)] = Nil
+  private var _messageAdapters: List[(Class[_], Any => T)] = Nil
   private var _timer: OptionVal[TimerSchedulerCrossDslSupport[T]] = OptionVal.None
 
   // _currentActorThread is on purpose not volatile. Used from `checkCurrentActorThread`.
@@ -164,7 +164,7 @@ import org.slf4j.LoggerFactory
     _logging match {
       case OptionVal.Some(l) => l
       case _                 =>
-        val logClass = LoggerClass.detectLoggerClassFromStack(classOf[Behavior[?]])
+        val logClass = LoggerClass.detectLoggerClassFromStack(classOf[Behavior[_]])
         val logger = LoggerFactory.getLogger(logClass.getName)
         val l = LoggingContext(logger, classicActorContext.props.deploy.tags, this)
         _logging = OptionVal.Some(l)
@@ -186,7 +186,7 @@ import org.slf4j.LoggerFactory
     _logging = OptionVal.Some(loggingContext().withLogger(LoggerFactory.getLogger(name)))
   }
 
-  override def setLoggerName(clazz: Class[?]): Unit =
+  override def setLoggerName(clazz: Class[_]): Unit =
     setLoggerName(clazz.getName)
 
   def hasCustomLoggerName: Boolean = loggingContext().hasCustomName
@@ -238,7 +238,7 @@ import org.slf4j.LoggerFactory
     ask(target, createRequest) {
       case Success(StatusReply.Success(t: Res)) => mapResponse(Success(t))
       case Success(StatusReply.Error(why))      => mapResponse(Failure(why))
-      case fail: Failure[?]                     => mapResponse(fail.asInstanceOf[Failure[Res]])
+      case fail: Failure[_]                     => mapResponse(fail.asInstanceOf[Failure[Res]])
       case _                                    => throw new RuntimeException() // won't happen, compiler exhaustiveness check pleaser
     }
 
@@ -335,7 +335,7 @@ import org.slf4j.LoggerFactory
   /**
    * INTERNAL API
    */
-  @InternalApi private[pekko] def messageAdapters: List[(Class[?], Any => T)] = _messageAdapters
+  @InternalApi private[pekko] def messageAdapters: List[(Class[_], Any => T)] = _messageAdapters
 
   /**
    * INTERNAL API

@@ -40,21 +40,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(TestKitJUnitJupiterExtension.class)
 @ExtendWith(LogCapturingExtension.class)
 public class AccountExampleDocTest
-// #test
-
+    // #test
+   
 // #test
 {
 
   // #testkit
-  @JUnitJupiterTestKit
-  public ActorTestKit testKit = ActorTestKit.create(EventSourcedBehaviorTestKit.config());
+  @JUnitJupiterTestKit public ActorTestKit testKit = ActorTestKit.create(EventSourcedBehaviorTestKit.config());
 
   private EventSourcedBehaviorTestKit<
           AccountEntity.Command, AccountEntity.Event, AccountEntity.Account>
       eventSourcedTestKit =
           EventSourcedBehaviorTestKit.create(
               testKit.system(), AccountEntity.create("1", PersistenceId.of("Account", "1")));
-
   // #testkit
 
   @BeforeEach

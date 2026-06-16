@@ -50,7 +50,7 @@ import pekko.serialization.SerializerWithStringManifest
   private val GetNumberOfProcessesReplyManifest = "e"
 
   override def manifest(o: AnyRef): String = o match {
-    case _: ShardingEnvelope[?]       => ShardingEnvelopeManifest
+    case _: ShardingEnvelope[_]       => ShardingEnvelopeManifest
     case _: ShardedDaemonProcessState => DaemonProcessStateManifest
     case _: ChangeNumberOfProcesses   => ChangeNumberOfProcessesManifest
     case _: GetNumberOfProcesses      => GetNumberOfProcessesManifest
@@ -60,7 +60,7 @@ import pekko.serialization.SerializerWithStringManifest
   }
 
   override def toBinary(o: AnyRef): Array[Byte] = o match {
-    case env: ShardingEnvelope[?] =>
+    case env: ShardingEnvelope[_] =>
       val builder = ShardingMessages.ShardingEnvelope.newBuilder()
       builder.setEntityId(env.entityId)
       builder.setMessage(payloadSupport.payloadBuilder(env.message))
@@ -143,7 +143,7 @@ import pekko.serialization.SerializerWithStringManifest
 
   // buffer based avoiding a copy for artery
   override def toBinary(o: AnyRef, buf: ByteBuffer): Unit = o match {
-    case env: ShardingEnvelope[?] =>
+    case env: ShardingEnvelope[_] =>
       val builder = ShardingMessages.ShardingEnvelope.newBuilder()
       builder.setEntityId(env.entityId)
       builder.setMessage(payloadSupport.payloadBuilder(env.message))

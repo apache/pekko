@@ -15,13 +15,13 @@ package org.apache.pekko.cluster.ddata
 
 import scala.concurrent.duration._
 
+import com.typesafe.config.ConfigFactory
+
 import org.apache.pekko.cluster.Cluster
 import org.apache.pekko.remote.testconductor.RoleName
 import org.apache.pekko.remote.testkit.MultiNodeConfig
 import org.apache.pekko.remote.testkit.MultiNodeSpec
 import org.apache.pekko.testkit._
-
-import com.typesafe.config.ConfigFactory
 
 object WildcardSubscribeSpec extends MultiNodeConfig {
   val first = role("first")
@@ -45,8 +45,8 @@ class WildcardSubscribeSpecMultiJvmNode1 extends WildcardSubscribeSpec
 class WildcardSubscribeSpecMultiJvmNode2 extends WildcardSubscribeSpec
 
 class WildcardSubscribeSpec extends MultiNodeSpec(WildcardSubscribeSpec) with STMultiNodeSpec with ImplicitSender {
-  import Replicator._
   import WildcardSubscribeSpec._
+  import Replicator._
 
   override def initialParticipants: Int = roles.size
 
@@ -76,26 +76,26 @@ class WildcardSubscribeSpec extends MultiNodeSpec(WildcardSubscribeSpec) with ST
         replicator ! Subscribe(GCounterKey("counter-*"), subscriberProbe.ref)
 
         replicator ! Update(KeyA, GCounter.empty, WriteLocal)(_ :+ 1)
-        expectMsgType[UpdateSuccess[?]]
+        expectMsgType[UpdateSuccess[_]]
         val chg1 = subscriberProbe.expectMsgType[Changed[GCounter]]
         chg1.key should ===(KeyA)
         chg1.key.getClass should ===(KeyA.getClass)
         chg1.get(KeyA).value should ===(1)
 
         replicator ! Update(KeyA, GCounter.empty, WriteLocal)(_ :+ 1)
-        expectMsgType[UpdateSuccess[?]]
+        expectMsgType[UpdateSuccess[_]]
         val chg2 = subscriberProbe.expectMsgType[Changed[GCounter]]
         chg2.key should ===(KeyA)
         chg2.get(KeyA).value should ===(2)
 
         replicator ! Update(KeyB, GCounter.empty, WriteLocal)(_ :+ 1)
-        expectMsgType[UpdateSuccess[?]]
+        expectMsgType[UpdateSuccess[_]]
         val chg3 = subscriberProbe.expectMsgType[Changed[GCounter]]
         chg3.key should ===(KeyB)
         chg3.get(KeyB).value should ===(1)
 
         replicator ! Update(KeyOtherA, GCounter.empty, WriteLocal)(_ :+ 17)
-        expectMsgType[UpdateSuccess[?]]
+        expectMsgType[UpdateSuccess[_]]
         subscriberProbe.expectNoMessage(200.millis)
 
         // a few more subscribers
@@ -122,7 +122,7 @@ class WildcardSubscribeSpec extends MultiNodeSpec(WildcardSubscribeSpec) with ST
         subscriberProbeOther.expectMsgType[Changed[GCounter]].get(KeyOtherA).value should ===(17)
 
         replicator ! Update(KeyB, GCounter.empty, WriteLocal)(_ :+ 10)
-        expectMsgType[UpdateSuccess[?]]
+        expectMsgType[UpdateSuccess[_]]
         val chg4 = subscriberProbe.expectMsgType[Changed[GCounter]]
         chg4.key should ===(KeyB)
         chg4.get(KeyB).value should ===(11)
@@ -133,7 +133,7 @@ class WildcardSubscribeSpec extends MultiNodeSpec(WildcardSubscribeSpec) with ST
         // unsubscribe
         replicator ! Unsubscribe(GCounterKey("counter-*"), subscriberProbe.ref)
         replicator ! Update(KeyB, GCounter.empty, WriteLocal)(_ :+ 5)
-        expectMsgType[UpdateSuccess[?]]
+        expectMsgType[UpdateSuccess[_]]
         subscriberProbe.expectNoMessage(200.millis)
         val chg6 = subscriberProbe2.expectMsgType[Changed[GCounter]]
         chg6.key should ===(KeyB)
@@ -149,7 +149,7 @@ class WildcardSubscribeSpec extends MultiNodeSpec(WildcardSubscribeSpec) with ST
         replicator ! Subscribe(GCounterKey("expiry-*"), subscriberProbe.ref)
 
         replicator ! Update(KeyExpiryA, GCounter.empty, WriteLocal)(_ :+ 1)
-        expectMsgType[UpdateSuccess[?]]
+        expectMsgType[UpdateSuccess[_]]
         subscriberProbe.expectMsgType[Changed[GCounter]]
 
         replicator ! Get(KeyExpiryA, ReadLocal)
@@ -162,7 +162,7 @@ class WildcardSubscribeSpec extends MultiNodeSpec(WildcardSubscribeSpec) with ST
 
         // same key can be used again
         replicator ! Update(KeyExpiryA, GCounter.empty, WriteLocal)(_ :+ 2)
-        expectMsgType[UpdateSuccess[?]]
+        expectMsgType[UpdateSuccess[_]]
         subscriberProbe.expectMsgType[Changed[GCounter]]
         replicator ! Get(KeyExpiryA, ReadLocal)
         expectMsgType[GetSuccess[GCounter]].get(KeyExpiryA).value should ===(2)
@@ -174,7 +174,7 @@ class WildcardSubscribeSpec extends MultiNodeSpec(WildcardSubscribeSpec) with ST
     "notify when changed from another node" in {
       runOn(first) {
         replicator ! Update(KeyOtherA, GCounter.empty, WriteLocal)(_ :+ 1)
-        expectMsgType[UpdateSuccess[?]]
+        expectMsgType[UpdateSuccess[_]]
         enterBarrier("updated-1")
 
         enterBarrier("second-joined")
@@ -182,7 +182,7 @@ class WildcardSubscribeSpec extends MultiNodeSpec(WildcardSubscribeSpec) with ST
         enterBarrier("received-1")
 
         replicator ! Update(KeyOtherA, GCounter.empty, WriteLocal)(_ :+ 1)
-        expectMsgType[UpdateSuccess[?]]
+        expectMsgType[UpdateSuccess[_]]
         enterBarrier("updated-2")
 
         enterBarrier("received-2")

@@ -117,7 +117,7 @@ class FlowConcatAllSpec extends StreamSpec("""
     }
 
     "on onError on opening substream, cancel the master stream and signal error " in {
-      val publisher = TestPublisher.manualProbe[Source[Int, ?]]()
+      val publisher = TestPublisher.manualProbe[Source[Int, _]]()
       val subscriber = TestSubscriber.manualProbe[Int]()
       Source.fromPublisher(publisher).flatMapConcat(_ => throw testException).to(Sink.fromSubscriber(subscriber)).run()
 

@@ -184,7 +184,6 @@ public class InteractionPatternsAskWithStatusTest {
         return this;
       }
     }
-
     // #standalone-ask-with-status
 
     static class NotShown {
@@ -210,7 +209,6 @@ public class InteractionPatternsAskWithStatusTest {
               else System.out.println("Boo! didn't get cookies in time. " + failure);
             });
       }
-
       // #standalone-ask-with-status
 
       public void askAndMapInvalid(

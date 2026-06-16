@@ -34,7 +34,7 @@ object PekkoDevelocityPlugin extends AutoPlugin {
   override lazy val trigger: PluginTrigger = allRequirements
   override lazy val requires: Plugins = DevelocityPlugin
 
-  override lazy val buildSettings: Seq[Setting[?]] = Def.settings(
+  override lazy val buildSettings: Seq[Setting[_]] = Def.settings(
     develocityConfiguration := {
       val isInsideCI = insideCI.value
 
@@ -70,12 +70,12 @@ object PekkoDevelocityPlugin extends AutoPlugin {
 }
 
 /**
- * An AutoPlugin to add Develocity test configuration to the TestJdk21 configuration.
+ * An AutoPlugin to add Develocity test configuration to the TestJdk9 configuration.
  */
-object PekkoDevelocityJdk21TestSettingsPlugin extends AutoPlugin {
+object PekkoDevelocityJdk9TestSettingsPlugin extends AutoPlugin {
   override lazy val trigger: PluginTrigger = allRequirements
-  override lazy val requires: Plugins = DevelocityPlugin && Jdk21
+  override lazy val requires: Plugins = DevelocityPlugin && Jdk9
 
   // See https://docs.gradle.com/develocity/sbt-plugin/#enabling_build_cache_in_a_custom_sbt_configuration
-  override lazy val projectSettings = DevelocityPlugin.develocitySettings(Jdk21.TestJdk21)
+  override lazy val projectSettings = DevelocityPlugin.develocitySettings(Jdk9.TestJdk9)
 }

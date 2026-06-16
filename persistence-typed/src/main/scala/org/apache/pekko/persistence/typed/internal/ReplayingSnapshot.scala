@@ -120,9 +120,9 @@ private[pekko] class ReplayingSnapshot[C, E, S](override val setup: BehaviorSetu
   }
 
   @InternalStableApi
-  def onRecoveryStart(@nowarn("msg=never used") context: ActorContext[?]): Unit = ()
+  def onRecoveryStart(@nowarn("msg=never used") context: ActorContext[_]): Unit = ()
   @InternalStableApi
-  def onRecoveryFailed(@nowarn("msg=never used") context: ActorContext[?], @nowarn("msg=never used") reason: Throwable)
+  def onRecoveryFailed(@nowarn("msg=never used") context: ActorContext[_], @nowarn("msg=never used") reason: Throwable)
       : Unit = ()
 
   private def onRecoveryTick(snapshot: Boolean): Behavior[InternalProtocol] =

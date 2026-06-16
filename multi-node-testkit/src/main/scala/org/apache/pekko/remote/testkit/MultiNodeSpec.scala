@@ -342,7 +342,7 @@ abstract class MultiNodeSpec(
           }
       })
 
-  val log: LoggingAdapter = Logging(system, classOf[MultiNodeSpec])
+  val log: LoggingAdapter = Logging(system, this)(_.getClass.getName)
 
   /**
    * Enrich `.await()` onto all Awaitables, using remaining duration from the innermost
@@ -465,9 +465,9 @@ abstract class MultiNodeSpec(
    */
   def node(role: RoleName): ActorPath = RootActorPath(testConductor.getAddressFor(role).await)
 
-  def muteDeadLetters(messageClasses: Class[?]*)(sys: ActorSystem = system): Unit =
+  def muteDeadLetters(messageClasses: Class[_]*)(sys: ActorSystem = system): Unit =
     if (!sys.log.isDebugEnabled) {
-      def mute(clazz: Class[?]): Unit =
+      def mute(clazz: Class[_]): Unit =
         sys.eventStream.publish(Mute(DeadLettersFilter(clazz)(occurrences = Int.MaxValue)))
       if (messageClasses.isEmpty) mute(classOf[AnyRef])
       else messageClasses.foreach(mute)

@@ -14,18 +14,18 @@
 import sbt.{ AutoPlugin, PluginTrigger, Plugins }
 import scalafix.sbt.ScalafixPlugin
 
-object ScalaFixForJdk21Plugin extends AutoPlugin with ScalafixSupport {
+object ScalaFixForJdk9Plugin extends AutoPlugin with ScalafixSupport {
   override lazy val trigger: PluginTrigger = allRequirements
-  import Jdk21._
-  override lazy val requires: Plugins = Jdk21 && ScalafixPlugin
+  import Jdk9._
+  override lazy val requires: Plugins = Jdk9 && ScalafixPlugin
 
   import ScalafixPlugin.autoImport.scalafixConfigSettings
   import sbt._
 
-  lazy val scalafixIgnoredSetting: Seq[Setting[?]] = Seq(ignore(TestJdk21))
+  lazy val scalafixIgnoredSetting: Seq[Setting[_]] = Seq(ignore(TestJdk9))
 
-  override lazy val projectSettings: Seq[Def.Setting[?]] =
-    Seq(CompileJdk21, TestJdk21).flatMap(c => inConfig(c)(scalafixConfigSettings(c))) ++
+  override lazy val projectSettings: Seq[Def.Setting[_]] =
+    Seq(CompileJdk9, TestJdk9).flatMap(c => inConfig(c)(scalafixConfigSettings(c))) ++
     scalafixIgnoredSetting ++ Seq(
       updateProjectCommands(
         alias = "fixall",

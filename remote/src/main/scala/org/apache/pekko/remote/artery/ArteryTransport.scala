@@ -599,7 +599,7 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
       case _: AeronTerminated  => // shutdown already in progress
       case cause if isShutdown =>
         // don't restart after shutdown, but log some details so we notice
-        log.warning("{} failed after shutdown. {}: {}", streamName, cause.getClass.getName, cause.getMessage)
+        log.warning(s"{} failed after shutdown. {}: {}", streamName, cause.getClass.getName, cause.getMessage)
       case _: AbruptTerminationException => // ActorSystem shutdown
       case cause                         =>
         if (restartCounter.restart()) {
@@ -630,7 +630,7 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
         else {
           val flushingPromise = Promise[Done]()
           if (log.isDebugEnabled)
-            log.debug("Flushing associations [{}]", allAssociations.map(_.remoteAddress).mkString(", "))
+            log.debug(s"Flushing associations [{}]", allAssociations.map(_.remoteAddress).mkString(", "))
           system.systemActorOf(
             FlushOnShutdown
               .props(flushingPromise, settings.Advanced.ShutdownFlushTimeout, allAssociations)

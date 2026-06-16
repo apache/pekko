@@ -141,12 +141,12 @@ object ShardCoordinator {
     /**
      * Invoked when the location of a new shard is to be decided.
      *
-     * @param requester               actor reference to the `ShardRegion` that requested the location of the
+     * @param requester               actor reference to the [[ShardRegion]] that requested the location of the
      *                                shard, can be returned if preference should be given to the node where the shard was first accessed
      * @param shardId                 the id of the shard to allocate
      * @param currentShardAllocations all actor refs to `ShardRegion` and their current allocated shards,
      *                                in the order they were allocated
-     * @return a `Future` of the actor ref of the `ShardRegion` that is to be responsible for the shard, must be one of
+     * @return a `Future` of the actor ref of the [[ShardRegion]] that is to be responsible for the shard, must be one of
      *         the references included in the `currentShardAllocations` parameter
      */
     def allocateShard(
@@ -171,7 +171,7 @@ object ShardCoordinator {
   /**
    * Shard allocation strategy where start is called by the shard coordinator before any calls to
    * rebalance or allocate shard. This can be used if there is any expensive initialization to be done
-   * that you do not want to do in the constructor as it will happen on every node rather than just
+   * that you do not want to to in the constructor as it will happen on every node rather than just
    * the node that hosts the ShardCoordinator
    */
   trait StartableAllocationStrategy extends ShardAllocationStrategy {
@@ -227,12 +227,12 @@ object ShardCoordinator {
     /**
      * Invoked when the location of a new shard is to be decided.
      *
-     * @param requester               actor reference to the `ShardRegion` that requested the location of the
+     * @param requester               actor reference to the [[ShardRegion]] that requested the location of the
      *                                shard, can be returned if preference should be given to the node where the shard was first accessed
      * @param shardId                 the id of the shard to allocate
      * @param currentShardAllocations all actor refs to `ShardRegion` and their current allocated shards,
      *                                in the order they were allocated
-     * @return a `Future` of the actor ref of the `ShardRegion` that is to be responsible for the shard, must be one of
+     * @return a `Future` of the actor ref of the [[ShardRegion]] that is to be responsible for the shard, must be one of
      *         the references included in the `currentShardAllocations` parameter
      */
     def allocateShard(

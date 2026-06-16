@@ -119,7 +119,6 @@ public class DurableStatePersistentBehaviorTest {
           return value;
         }
       }
-
       // #state
 
       // #behavior
@@ -235,7 +234,6 @@ public class DurableStatePersistentBehaviorTest {
       interface Command {}
 
       public static class State {}
-
       // #actor-context
 
       public static Behavior<Command> create(PersistenceId persistenceId) {
@@ -281,7 +279,6 @@ public class DurableStatePersistentBehaviorTest {
       interface Command {}
 
       public static class State {}
-
       // #supervision
 
       public static Behavior<Command> create(PersistenceId persistenceId) {
@@ -330,7 +327,6 @@ public class DurableStatePersistentBehaviorTest {
       interface Command {}
 
       public static class State {}
-
       // #wrapPersistentBehavior
 
       public static Behavior<Command> create(PersistenceId persistenceId) {

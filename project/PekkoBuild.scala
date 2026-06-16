@@ -97,8 +97,7 @@ object PekkoBuild {
         "-feature",
         "-unchecked",
         // 'blessed' since 2.13.1
-        "-language:higherKinds",
-        "-Yfuture-lazy-vals")
+        "-language:higherKinds")
     } else {
       Seq(
         "-encoding",
@@ -115,7 +114,7 @@ object PekkoBuild {
 
   final val DefaultJavacOptions = Seq("-encoding", "UTF-8", "-Xlint:unchecked")
 
-  lazy val defaultSettings: Seq[Setting[?]] = Def.settings(
+  lazy val defaultSettings: Seq[Setting[_]] = Def.settings(
     projectInfoVersion := (if (isSnapshot.value) "snapshot" else version.value),
     Dependencies.Versions,
     resolverSettings,
@@ -255,7 +254,7 @@ object PekkoBuild {
       }
     })
 
-  lazy val welcomeSettings: Seq[Setting[?]] = Def.settings {
+  lazy val welcomeSettings: Seq[Setting[_]] = Def.settings {
     import sbtwelcome._
     Seq(
       logo := {
@@ -276,7 +275,7 @@ object PekkoBuild {
         UsefulTask("testQuick",
           "Runs all the tests. When run multiple times will only run previously failing tests (shell mode only)"),
         UsefulTask("testOnly *.AnySpec", "Only run a selected test"),
-        UsefulTask("TestJdk21 / testOnly *.AnySpec", "Only run a Jdk21+ selected test"),
+        UsefulTask("TestJdk9 / testOnly *.AnySpec", "Only run a Jdk9+ selected test"),
         UsefulTask("testQuick *.AnySpec",
           "Only run a selected test. When run multiple times will only run previously failing tests (shell mode only)"),
         UsefulTask("testQuickUntilPassed", "Runs all tests in a continuous loop until all tests pass"),

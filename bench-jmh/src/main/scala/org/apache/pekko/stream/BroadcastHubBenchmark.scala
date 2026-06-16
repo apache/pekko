@@ -32,24 +32,8 @@ import org.apache.pekko.stream.testkit.scaladsl.StreamTestKit
 
 import com.typesafe.config.ConfigFactory
 
-/**
- * Benchmarks BroadcastHub throughput under high-fan-out lockstep consumer scenarios.
- *
- * The consumer wheel uses a LongMap per slot for O(1) keyed add/remove without Long boxing.
- * In lockstep, all consumers cluster in the same wheel slot, maximizing per-slot contention.
- * With a small buffer (64), the wheel has only 128 slots, so `consumerCount / 128` consumers
- * share each slot — the old ArrayList.removeIf was O(k) per removal, now O(1).
- *
- * The `broadcast` benchmark parameterizes over consumer count with a fixed small buffer,
- * measuring how throughput scales as wheel slot pressure increases.
- *
- * The `broadcastLargeBuffer` benchmark uses a larger buffer (256) for comparison,
- * showing how the optimization holds up when consumers are spread across more slots.
- */
 object BroadcastHubBenchmark {
   final val OperationsPerInvocation = 100000
-  final val SmallBufferSize = 64
-  final val LargeBufferSize = 256
 }
 
 @State(Scope.Benchmark)
@@ -72,7 +56,7 @@ class BroadcastHubBenchmark {
 
   var testSource: Source[java.lang.Integer, NotUsed] = _
 
-  @Param(Array("64", "256", "1000", "2000"))
+  @Param(Array("64", "256"))
   var parallelism = 0
 
   @Setup
@@ -87,40 +71,12 @@ class BroadcastHubBenchmark {
     Await.result(system.terminate(), 5.seconds)
   }
 
-  /**
-   * Lockstep broadcast with small buffer (64).
-   * All consumers stay at roughly the same wheel offset, clustering in the same slot.
-   * With 128 wheel slots and 2000 consumers, ~16 consumers share each slot on average;
-   * during NeedWakeup bursts, thousands cluster in a single slot.
-   * This maximizes the O(1) vs O(k) per-removal difference.
-   */
   @Benchmark
   @OperationsPerInvocation(OperationsPerInvocation)
   def broadcast(): Unit = {
     val latch = new CountDownLatch(parallelism)
     val broadcastSink =
-      BroadcastHub.sink[java.lang.Integer](bufferSize = SmallBufferSize, startAfterNrOfConsumers = parallelism)
-    val sink = new LatchSink(OperationsPerInvocation, latch)
-    val source = testSource.runWith(broadcastSink)
-    var idx = 0
-    while (idx < parallelism) {
-      source.runWith(sink)
-      idx += 1
-    }
-    awaitLatch(latch)
-  }
-
-  /**
-   * Lockstep broadcast with larger buffer (256) for comparison.
-   * The wheel has 512 slots, so consumers are spread more thinly.
-   * Shows how the optimization scales when per-slot pressure is lower.
-   */
-  @Benchmark
-  @OperationsPerInvocation(OperationsPerInvocation)
-  def broadcastLargeBuffer(): Unit = {
-    val latch = new CountDownLatch(parallelism)
-    val broadcastSink =
-      BroadcastHub.sink[java.lang.Integer](bufferSize = LargeBufferSize, startAfterNrOfConsumers = parallelism)
+      BroadcastHub.sink[java.lang.Integer](bufferSize = parallelism, startAfterNrOfConsumers = parallelism)
     val sink = new LatchSink(OperationsPerInvocation, latch)
     val source = testSource.runWith(broadcastSink)
     var idx = 0
@@ -132,7 +88,7 @@ class BroadcastHubBenchmark {
   }
 
   private def awaitLatch(latch: CountDownLatch): Unit = {
-    if (!latch.await(60, TimeUnit.SECONDS)) {
+    if (!latch.await(30, TimeUnit.SECONDS)) {
       StreamTestKit.printDebugDump(SystemMaterializer(system).materializer.supervisor)
       throw new RuntimeException("Latch didn't complete in time")
     }

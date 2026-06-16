@@ -86,7 +86,7 @@ private[pekko] trait DurableStateStoreInteractions[C, S] {
 
   // TODO These hook methods are for Telemetry. What more parameters are needed? persistenceId?
   @InternalStableApi
-  private[pekko] def onWriteInitiated(@nowarn("msg=never used") ctx: ActorContext[?],
+  private[pekko] def onWriteInitiated(@nowarn("msg=never used") ctx: ActorContext[_],
       @nowarn("msg=never used") cmd: Any): Unit = ()
 
   protected def requestRecoveryPermit(): Unit = {

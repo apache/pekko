@@ -20,7 +20,7 @@ object CopyrightHeaderForBuild extends AutoPlugin {
   override lazy val requires: Plugins = CopyrightHeader
   override lazy val trigger: PluginTrigger = noTrigger
 
-  override lazy val projectSettings: Seq[Def.Setting[?]] = {
+  override lazy val projectSettings: Seq[Def.Setting[_]] = {
     Seq(Compile, Test).flatMap { config =>
       inConfig(config) {
         Seq(

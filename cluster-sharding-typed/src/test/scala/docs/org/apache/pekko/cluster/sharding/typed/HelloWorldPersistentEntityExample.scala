@@ -32,7 +32,7 @@ object HelloWorldPersistentEntityExample {
   import pekko.cluster.sharding.typed.scaladsl.Entity
   import pekko.util.Timeout
 
-  class HelloWorldService(system: ActorSystem[?]) {
+  class HelloWorldService(system: ActorSystem[_]) {
     import system.executionContext
 
     private val sharding = ClusterSharding(system)

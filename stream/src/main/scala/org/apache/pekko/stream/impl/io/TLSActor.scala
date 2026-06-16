@@ -118,9 +118,9 @@ import pekko.util.ByteString
             ByteString.empty
           case _ => throw new RuntimeException() // won't happen, compiler exhaustiveness check pleaser
         }
-        if (tracing) log.debug("chopping from new chunk of {} into {} ({})", buffer.size, name, b.position())
+        if (tracing) log.debug(s"chopping from new chunk of ${buffer.size} into $name (${b.position()})")
       } else {
-        if (tracing) log.debug("chopping from old chunk of {} into {} ({})", buffer.size, name, b.position())
+        if (tracing) log.debug(s"chopping from old chunk of ${buffer.size} into $name (${b.position()})")
       }
       val copied = buffer.copyToBuffer(b)
       buffer = buffer.drop(copied)
@@ -134,7 +134,7 @@ import pekko.util.ByteString
      */
     def putBack(b: ByteBuffer): Unit =
       if (b.hasRemaining) {
-        if (tracing) log.debug("putting back {} bytes into {}", b.remaining, name)
+        if (tracing) log.debug(s"putting back ${b.remaining} bytes into $name")
         val bs = ByteString(b)
         if (bs.nonEmpty) buffer = bs ++ buffer
         prepare(b)
@@ -178,7 +178,7 @@ import pekko.util.ByteString
   var currentSession = engine.getSession
 
   def setNewSessionParameters(params: NegotiateNewSession): Unit = {
-    if (tracing) log.debug("applying {}", params)
+    if (tracing) log.debug(s"applying $params")
     currentSession.invalidate()
     TlsUtils.applySessionParameters(engine, params)
     engine.beginHandshake()
@@ -310,7 +310,7 @@ import pekko.util.ByteString
         true
       } catch {
         case ex: SSLException =>
-          if (tracing) log.debug("SSLException during doUnwrap: {}", ex)
+          if (tracing) log.debug(s"SSLException during doUnwrap: $ex")
           fail(ex, closeTransport = false)
           try engine.closeInbound()
           catch { case _: SSLException => () }
@@ -338,7 +338,7 @@ import pekko.util.ByteString
       try doWrap()
       catch {
         case ex: SSLException =>
-          if (tracing) log.debug("SSLException during doWrap: {}", ex)
+          if (tracing) log.debug(s"SSLException during doWrap: $ex")
           fail(ex, closeTransport = false)
           completeOrFlush()
       }
@@ -360,7 +360,7 @@ import pekko.util.ByteString
     if (transportOutBuffer.hasRemaining) {
       val bs = ByteString(transportOutBuffer)
       outputBunch.enqueue(TransportOut, bs)
-      if (tracing) log.debug("sending {} bytes", bs.size)
+      if (tracing) log.debug(s"sending ${bs.size} bytes")
     }
     transportOutBuffer.clear()
   }
@@ -463,8 +463,8 @@ import pekko.util.ByteString
     val st = lastHandshakeStatus
     val taskCount = TlsEngineHelpers.runDelegatedTasks(engine)
     lastHandshakeStatus = engine.getHandshakeStatus
-    if (tracing && taskCount > 0) log.debug("ran {} delegated TLS task(s)", taskCount)
-    if (tracing && st != lastHandshakeStatus) log.debug("handshake status after tasks: {}", lastHandshakeStatus)
+    if (tracing && taskCount > 0) log.debug(s"ran $taskCount delegated TLS task(s)")
+    if (tracing && st != lastHandshakeStatus) log.debug(s"handshake status after tasks: $lastHandshakeStatus")
   }
 
   private def handshakeFinished(): Unit = {
@@ -519,7 +519,7 @@ import pekko.util.ByteString
   override protected def pumpFinished(): Unit = {
     inputBunch.cancel()
     outputBunch.complete()
-    if (tracing) log.debug("STOP Outbound Closed: {} Inbound closed: {}", engine.isOutboundDone, engine.isInboundDone)
+    if (tracing) log.debug(s"STOP Outbound Closed: ${engine.isOutboundDone} Inbound closed: ${engine.isInboundDone}")
     stopped = true
     context.stop(self)
   }

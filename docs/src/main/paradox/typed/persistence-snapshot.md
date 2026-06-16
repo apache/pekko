@@ -52,7 +52,7 @@ events. This can be useful if snapshot serialization format has changed in an in
 not be used when events have been deleted.
 
 In order to use snapshots, a default snapshot-store (`pekko.persistence.snapshot-store.plugin`) must be configured,
-or you can pick a snapshot store for a specific `EventSourcedBehavior` by
+or you can pick a snapshot store for for a specific `EventSourcedBehavior` by
 @scala[defining it with `withSnapshotPluginId` of the `EventSourcedBehavior`]@java[overriding `snapshotPluginId` in
 the `EventSourcedBehavior`].
 

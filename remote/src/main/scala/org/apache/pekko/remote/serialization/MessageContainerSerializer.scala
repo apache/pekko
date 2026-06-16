@@ -72,7 +72,7 @@ class MessageContainerSerializer(val system: ExtendedActorSystem) extends BaseSe
     builder
   }
 
-  def fromBinary(bytes: Array[Byte], manifest: Option[Class[?]]): AnyRef = {
+  def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef = {
     val selectionEnvelope = ContainerFormats.SelectionEnvelope.parseFrom(bytes)
     val manifest = if (selectionEnvelope.hasMessageManifest) selectionEnvelope.getMessageManifest.toStringUtf8 else ""
     val msg = serialization

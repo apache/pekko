@@ -74,7 +74,7 @@ Pekko Discovery with DNS does always use the @ref[Pekko-native "async-dns" imple
 DNS discovery maps `Lookup` queries as follows:
 
 * `serviceName`, `portName` and `protocol` set: SRV query in the form: `_port._protocol.name` Where the `_`s are added.
-* Any query missing any of the fields is mapped to a A/AAAA query for the `serviceName`
+* Any query  missing any of the fields is mapped to a A/AAAA query for the `serviceName`
 
 The mapping between Pekko service discovery terminology and SRV terminology:
 

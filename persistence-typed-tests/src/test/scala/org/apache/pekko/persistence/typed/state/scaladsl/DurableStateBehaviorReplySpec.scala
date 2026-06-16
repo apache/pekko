@@ -47,11 +47,11 @@ object DurableStateBehaviorReplySpec {
 
   final case class State(value: Int) extends CborSerializable
 
-  def counter(persistenceId: PersistenceId): Behavior[Command[?]] =
+  def counter(persistenceId: PersistenceId): Behavior[Command[_]] =
     Behaviors.setup(ctx => counter(ctx, persistenceId))
 
-  def counter(ctx: ActorContext[Command[?]], persistenceId: PersistenceId): DurableStateBehavior[Command[?], State] = {
-    DurableStateBehavior.withEnforcedReplies[Command[?], State](
+  def counter(ctx: ActorContext[Command[_]], persistenceId: PersistenceId): DurableStateBehavior[Command[_], State] = {
+    DurableStateBehavior.withEnforcedReplies[Command[_], State](
       persistenceId,
       emptyState = State(0),
       commandHandler = (state, command) =>

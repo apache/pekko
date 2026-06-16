@@ -24,7 +24,7 @@ import org.apache.pekko.stream.javadsl.Source;
 public interface AsSubscriber {
   // We are 'faking' the JavaFlowSupport API here so we can include the signature as a snippet in
   // the API,
-  // because we're not publishing those (java.util.concurrent.Flow) classes in our API docs yet.
+  // because we're not publishing those (jdk9+) classes in our API docs yet.
   static class JavaFlowSupport {
     public static final class Source {
       public

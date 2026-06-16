@@ -196,7 +196,7 @@ object LineNumbers {
     }
   }
 
-  private def getStreamForClass(c: Class[?]): Option[(InputStream, None.type)] = {
+  private def getStreamForClass(c: Class[_]): Option[(InputStream, None.type)] = {
     val resource = c.getName.replace('.', '/') + ".class"
     val cl = c.getClassLoader
     val r = cl.getResourceAsStream(resource)
@@ -358,7 +358,7 @@ object LineNumbers {
   private def readAttributes(d: DataInputStream)(implicit c: Constants): Option[String] = {
     val count = d.readUnsignedShort()
     if (debug) println(s"LNB: reading $count attributes")
-    if (c.contains("SourceFile")) {
+    if (c contains "SourceFile") {
       val s = c("SourceFile")
       val attributes =
         for (_ <- 1 to count) yield {

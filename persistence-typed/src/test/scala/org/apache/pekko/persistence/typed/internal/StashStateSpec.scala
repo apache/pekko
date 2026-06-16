@@ -58,7 +58,7 @@ class StashStateSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with
               stashState.internalStashBuffer.stash(RecoveryPermitGranted)
               probe.ref ! stashState.internalStashBuffer.size
               Behaviors.same[InternalProtocol]
-            case _: IncomingCommand[?] => Behaviors.stopped
+            case _: IncomingCommand[_] => Behaviors.stopped
           }
           .receiveSignal {
             case (_, _) =>

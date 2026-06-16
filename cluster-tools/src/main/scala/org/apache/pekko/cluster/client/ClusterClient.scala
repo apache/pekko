@@ -516,7 +516,7 @@ final class ClusterClient(settings: ClusterClientSettings) extends Actor with Ac
       else if (contacts.size == 1) initialContactsSel.union(contacts)
       else contacts
     if (log.isDebugEnabled)
-      log.debug("Sending GetContacts to [{}]", sendTo.mkString(","))
+      log.debug(s"""Sending GetContacts to [${sendTo.mkString(",")}]""")
     sendTo.foreach { _ ! GetContacts }
   }
 

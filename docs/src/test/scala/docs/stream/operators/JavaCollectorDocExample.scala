@@ -30,7 +30,7 @@ object JavaCollectorDocExample {
   val source: Source[String, NotUsed] =
     Source(List("Apache", "Pekko", "Streams"))
 
-  val sink: Sink[String, ?] =
+  val sink: Sink[String, _] =
     StreamConverters.javaCollector(() => Collectors.toList[String]())
   // #javaCollector
 }

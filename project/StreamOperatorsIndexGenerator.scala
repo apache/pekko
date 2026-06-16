@@ -21,7 +21,7 @@ import scala.util.control.NonFatal
  */
 object StreamOperatorsIndexGenerator extends AutoPlugin {
 
-  override val projectSettings: Seq[Setting[?]] = inConfig(Compile)(
+  override val projectSettings: Seq[Setting[_]] = inConfig(Compile)(
     Seq(
       resourceGenerators +=
         generateAlphabeticalIndex(sourceDirectory, _ / "paradox" / "stream" / "operators" / "index.md")))

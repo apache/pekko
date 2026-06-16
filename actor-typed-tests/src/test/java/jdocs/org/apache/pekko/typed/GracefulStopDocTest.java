@@ -86,7 +86,6 @@ interface GracefulStopDocTest {
       return this;
     }
   }
-
   // #master-actor
 
   public static void main(String[] args) throws Exception {
@@ -131,7 +130,6 @@ interface GracefulStopDocTest {
       return this;
     }
   }
-
   // #worker-actor
 
   interface IllustrateWatch {

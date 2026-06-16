@@ -30,7 +30,6 @@ import pekko.persistence.PluginProvider
 import pekko.persistence.state.scaladsl.DurableStateStore
 
 import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
 /**
  * Persistence extension for queries.
@@ -46,16 +45,16 @@ object DurableStateStoreRegistry extends ExtensionId[DurableStateStoreRegistry] 
 
   @InternalApi
   private[pekko] val pluginProvider
-      : PluginProvider[DurableStateStoreProvider, DurableStateStore[?], javadsl.DurableStateStore[?]] =
-    new PluginProvider[DurableStateStoreProvider, scaladsl.DurableStateStore[?], javadsl.DurableStateStore[?]] {
-      override def scalaDsl(t: DurableStateStoreProvider): DurableStateStore[?] = t.scaladslDurableStateStore()
-      override def javaDsl(t: DurableStateStoreProvider): javadsl.DurableStateStore[?] = t.javadslDurableStateStore()
+      : PluginProvider[DurableStateStoreProvider, DurableStateStore[_], javadsl.DurableStateStore[_]] =
+    new PluginProvider[DurableStateStoreProvider, scaladsl.DurableStateStore[_], javadsl.DurableStateStore[_]] {
+      override def scalaDsl(t: DurableStateStoreProvider): DurableStateStore[_] = t.scaladslDurableStateStore()
+      override def javaDsl(t: DurableStateStoreProvider): javadsl.DurableStateStore[_] = t.javadslDurableStateStore()
     }
 
 }
 
 class DurableStateStoreRegistry(system: ExtendedActorSystem)
-    extends PersistencePlugin[scaladsl.DurableStateStore[?], javadsl.DurableStateStore[?], DurableStateStoreProvider](
+    extends PersistencePlugin[scaladsl.DurableStateStore[_], javadsl.DurableStateStore[_], DurableStateStoreProvider](
       system)(ClassTag(classOf[DurableStateStoreProvider]), DurableStateStoreRegistry.pluginProvider)
     with Extension {
 
@@ -68,12 +67,9 @@ class DurableStateStoreRegistry(system: ExtendedActorSystem)
     configPath
   }
 
-  private def pluginIdOrDefault(pluginId: String): String =
-    pluginIdOrDefault(pluginId, ConfigFactory.empty)
-
-  private def pluginIdOrDefault(pluginId: String, pluginConfig: Config): String = {
+  private def pluginIdOrDefault(pluginId: String): String = {
     val configPath = if (isEmpty(pluginId)) defaultPluginId else pluginId
-    Persistence.verifyPluginConfigExists(pluginConfig.withFallback(systemConfig), configPath, "DurableStateStore")
+    Persistence.verifyPluginConfigExists(systemConfig, configPath, "DurableStateStore")
     configPath
   }
 
@@ -91,43 +87,18 @@ class DurableStateStoreRegistry(system: ExtendedActorSystem)
    * Scala API: Returns the [[pekko.persistence.state.scaladsl.DurableStateStore]] specified by the given
    * configuration entry.
    */
-  final def durableStateStoreFor[T <: scaladsl.DurableStateStore[?]](pluginId: String): T = {
+  final def durableStateStoreFor[T <: scaladsl.DurableStateStore[_]](pluginId: String): T = {
     pluginFor(pluginIdOrDefault(pluginId), pluginConfig(pluginId)).scaladslPlugin.asInstanceOf[T]
-  }
-
-  /**
-   * Scala API: Returns the [[pekko.persistence.state.scaladsl.DurableStateStore]] specified by the given
-   * configuration entry. The provided `runtimeConfig` is used to configure the plugin at runtime, taking
-   * precedence over the plugin configuration defined in the actor system configuration.
-   *
-   * @since 2.0.0
-   */
-  final def durableStateStoreFor[T <: scaladsl.DurableStateStore[?]](pluginId: String, runtimeConfig: Config): T = {
-    pluginFor(pluginIdOrDefault(pluginId, runtimeConfig), runtimeConfig).scaladslPlugin.asInstanceOf[T]
   }
 
   /**
    * Java API: Returns the [[pekko.persistence.state.javadsl.DurableStateStore]] specified by the given
    * configuration entry.
    */
-  final def getDurableStateStoreFor[T <: javadsl.DurableStateStore[?]](
+  final def getDurableStateStoreFor[T <: javadsl.DurableStateStore[_]](
       @nowarn("msg=never used") clazz: Class[T], // FIXME generic Class could be problematic in Java
       pluginId: String): T = {
     pluginFor(pluginIdOrDefault(pluginId), pluginConfig(pluginId)).javadslPlugin.asInstanceOf[T]
-  }
-
-  /**
-   * Java API: Returns the [[pekko.persistence.state.javadsl.DurableStateStore]] specified by the given
-   * configuration entry. The provided `runtimeConfig` is used to configure the plugin at runtime, taking
-   * precedence over the plugin configuration defined in the actor system configuration.
-   *
-   * @since 2.0.0
-   */
-  final def getDurableStateStoreFor[T <: javadsl.DurableStateStore[?]](
-      @nowarn("msg=never used") clazz: Class[T], // FIXME generic Class could be problematic in Java
-      pluginId: String,
-      runtimeConfig: Config): T = {
-    pluginFor(pluginIdOrDefault(pluginId, runtimeConfig), runtimeConfig).javadslPlugin.asInstanceOf[T]
   }
 
 }

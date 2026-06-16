@@ -176,7 +176,7 @@ abstract class AbstractRemoteSendConsistencySpec(config: Config)
       system.actorOf(senderProps(remoteRefC))
       system.actorOf(senderProps(remoteRefA))
 
-      within(30.seconds) {
+      within(10.seconds) {
         expectMsg("success")
         expectMsg("success")
         expectMsg("success")
@@ -216,7 +216,7 @@ abstract class AbstractRemoteSendConsistencySpec(config: Config)
       system.actorOf(senderProps(selC))
       system.actorOf(senderProps(selA))
 
-      within(30.seconds) {
+      within(10.seconds) {
         expectMsg("success2")
         expectMsg("success2")
         expectMsg("success2")

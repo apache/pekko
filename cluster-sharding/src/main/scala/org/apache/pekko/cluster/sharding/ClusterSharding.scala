@@ -72,7 +72,7 @@ import pekko.util.ByteString
  * '''ShardRegion''':
  * Each entity actor runs only at one place, and messages can be sent to the entity without
  * requiring the sender to know the location of the destination actor. This is achieved by
- * sending the messages via a `ShardRegion` actor, provided by this extension. The `ShardRegion`
+ * sending the messages via a [[ShardRegion]] actor, provided by this extension. The [[ShardRegion]]
  * knows the shard mappings and routes inbound messages to the entity with the entity id.
  * Messages to the entities are always sent via the local `ShardRegion`.
  * The `ShardRegion` actor is started on each node in the cluster, or group of nodes
@@ -198,10 +198,10 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
 
   /**
    * Scala API: Register a named entity type by defining the [[pekko.actor.Props]] of the entity actor
-   * and functions to extract entity and shard identifier from messages. The `ShardRegion` actor
+   * and functions to extract entity and shard identifier from messages. The [[ShardRegion]] actor
    * for this type can later be retrieved with the [[shardRegion]] method.
    *
-   * This method will start a `ShardRegion` in proxy mode when there is no match between the roles of
+   * This method will start a [[ShardRegion]] in proxy mode when there is no match between the roles of
    * the current cluster node and the role specified in [[ClusterShardingSettings]] passed to this method.
    *
    * Some settings can be configured as described in the `pekko.cluster.sharding` section
@@ -219,7 +219,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    *   rebalancing logic
    * @param handOffStopMessage the message that will be sent to entities when they are to be stopped
    *   for a rebalance or graceful shutdown of a `ShardRegion`, e.g. `PoisonPill`.
-   * @return the actor ref of the `ShardRegion` that is to be responsible for the shard
+   * @return the actor ref of the [[ShardRegion]] that is to be responsible for the shard
    */
   def start(
       typeName: String,
@@ -242,10 +242,10 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
 
   /**
    * Scala API: Register a named entity type by defining the [[pekko.actor.Props]] of the entity actor
-   * and functions to extract entity and shard identifier from messages. The `ShardRegion` actor
+   * and functions to extract entity and shard identifier from messages. The [[ShardRegion]] actor
    * for this type can later be retrieved with the [[shardRegion]] method.
    *
-   * This method will start a `ShardRegion` in proxy mode when there is no match between the roles of
+   * This method will start a [[ShardRegion]] in proxy mode when there is no match between the roles of
    * the current cluster node and the role specified in [[ClusterShardingSettings]] passed to this method.
    *
    * Some settings can be configured as described in the `pekko.cluster.sharding` section
@@ -262,7 +262,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    *   rebalancing logic
    * @param handOffStopMessage the message that will be sent to entities when they are to be stopped
    *   for a rebalance or graceful shutdown of a `ShardRegion`, e.g. `PoisonPill`.
-   * @return the actor ref of the `ShardRegion` that is to be responsible for the shard
+   * @return the actor ref of the [[ShardRegion]] that is to be responsible for the shard
    */
   def start(
       typeName: String,
@@ -335,13 +335,13 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
 
   /**
    * Register a named entity type by defining the [[pekko.actor.Props]] of the entity actor and
-   * functions to extract entity and shard identifier from messages. The `ShardRegion` actor
+   * functions to extract entity and shard identifier from messages. The [[ShardRegion]] actor
    * for this type can later be retrieved with the [[shardRegion]] method.
    *
    * The default shard allocation strategy [[ShardCoordinator.LeastShardAllocationStrategy]]
    * is used. [[pekko.actor.PoisonPill]] is used as `handOffStopMessage`.
    *
-   * This method will start a `ShardRegion` in proxy mode when there is no match between the
+   * This method will start a [[ShardRegion]] in proxy mode when there is no match between the
    * node roles and the role specified in the [[ClusterShardingSettings]] passed to this method.
    *
    * Some settings can be configured as described in the `pekko.cluster.sharding` section
@@ -355,7 +355,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    *   be `unhandled`, i.e. posted as `Unhandled` messages on the event stream
    * @param extractShardId function to determine the shard id for an incoming message, only messages
    *   that passed the `extractEntityId` will be used
-   * @return the actor ref of the `ShardRegion` that is to be responsible for the shard
+   * @return the actor ref of the [[ShardRegion]] that is to be responsible for the shard
    */
   def start(
       typeName: String,
@@ -371,13 +371,13 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
 
   /**
    * Register a named entity type by defining the [[pekko.actor.Props]] of the entity actor and
-   * functions to extract entity and shard identifier from messages. The `ShardRegion` actor
+   * functions to extract entity and shard identifier from messages. The [[ShardRegion]] actor
    * for this type can later be retrieved with the [[shardRegion]] method.
    *
    * The default shard allocation strategy [[ShardCoordinator.LeastShardAllocationStrategy]]
    * is used. [[pekko.actor.PoisonPill]] is used as `handOffStopMessage`.
    *
-   * This method will start a `ShardRegion` in proxy mode when there is no match between the
+   * This method will start a [[ShardRegion]] in proxy mode when there is no match between the
    * node roles and the role specified in the [[ClusterShardingSettings]] passed to this method.
    *
    * Some settings can be configured as described in the `pekko.cluster.sharding` section
@@ -390,7 +390,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    *   be `unhandled`, i.e. posted as `Unhandled` messages on the event stream
    * @param extractShardId function to determine the shard id for an incoming message, only messages
    *   that passed the `extractEntityId` will be used
-   * @return the actor ref of the `ShardRegion` that is to be responsible for the shard
+   * @return the actor ref of the [[ShardRegion]] that is to be responsible for the shard
    */
   def start(
       typeName: String,
@@ -403,10 +403,10 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
 
   /**
    * Java/Scala API: Register a named entity type by defining the [[pekko.actor.Props]] of the entity actor
-   * and functions to extract entity and shard identifier from messages. The `ShardRegion` actor
+   * and functions to extract entity and shard identifier from messages. The [[ShardRegion]] actor
    * for this type can later be retrieved with the [[#shardRegion]] method.
    *
-   * This method will start a `ShardRegion` in proxy mode when there is no match between the
+   * This method will start a [[ShardRegion]] in proxy mode when there is no match between the
    * node roles and the role specified in the [[ClusterShardingSettings]] passed to this method.
    *
    * Some settings can be configured as described in the `pekko.cluster.sharding` section
@@ -421,7 +421,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    *   rebalancing logic
    * @param handOffStopMessage the message that will be sent to entities when they are to be stopped
    *   for a rebalance or graceful shutdown of a `ShardRegion`, e.g. `PoisonPill`.
-   * @return the actor ref of the `ShardRegion` that is to be responsible for the shard
+   * @return the actor ref of the [[ShardRegion]] that is to be responsible for the shard
    */
   def start(
       typeName: String,
@@ -446,13 +446,13 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
 
   /**
    * Java/Scala API: Register a named entity type by defining the [[pekko.actor.Props]] of the entity actor
-   * and functions to extract entity and shard identifier from messages. The `ShardRegion` actor
+   * and functions to extract entity and shard identifier from messages. The [[ShardRegion]] actor
    * for this type can later be retrieved with the [[#shardRegion]] method.
    *
    * The default shard allocation strategy [[ShardCoordinator.LeastShardAllocationStrategy]]
    * is used. [[pekko.actor.PoisonPill]] is used as `handOffStopMessage`.
    *
-   * This method will start a `ShardRegion` in proxy mode when there is no match between the
+   * This method will start a [[ShardRegion]] in proxy mode when there is no match between the
    * node roles and the role specified in the [[ClusterShardingSettings]] passed to this method.
    *
    * Some settings can be configured as described in the `pekko.cluster.sharding` section
@@ -463,7 +463,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    * @param settings configuration settings, see [[ClusterShardingSettings]]
    * @param messageExtractor functions to extract the entity id, shard id, and the message to send to the
    *   entity from the incoming message
-   * @return the actor ref of the `ShardRegion` that is to be responsible for the shard
+   * @return the actor ref of the [[ShardRegion]] that is to be responsible for the shard
    */
   def start(
       typeName: String,
@@ -478,13 +478,13 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
 
   /**
    * Java/Scala API: Register a named entity type by defining the [[pekko.actor.Props]] of the entity actor
-   * and functions to extract entity and shard identifier from messages. The `ShardRegion` actor
+   * and functions to extract entity and shard identifier from messages. The [[ShardRegion]] actor
    * for this type can later be retrieved with the [[#shardRegion]] method.
    *
    * The default shard allocation strategy [[ShardCoordinator.LeastShardAllocationStrategy]]
    * is used. [[pekko.actor.PoisonPill]] is used as `handOffStopMessage`.
    *
-   * This method will start a `ShardRegion` in proxy mode when there is no match between the
+   * This method will start a [[ShardRegion]] in proxy mode when there is no match between the
    * node roles and the role specified in the [[ClusterShardingSettings]] passed to this method.
    *
    * Some settings can be configured as described in the `pekko.cluster.sharding` section
@@ -494,7 +494,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    * @param entityProps the `Props` of the entity actors that will be created by the `ShardRegion`
    * @param messageExtractor functions to extract the entity id, shard id, and the message to send to the
    *   entity from the incoming message
-   * @return the actor ref of the `ShardRegion` that is to be responsible for the shard
+   * @return the actor ref of the [[ShardRegion]] that is to be responsible for the shard
    */
   def start(typeName: String, entityProps: Props, messageExtractor: ShardRegion.MessageExtractor): ActorRef = {
     start(typeName, entityProps, ClusterShardingSettings(system), messageExtractor)
@@ -503,7 +503,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
   /**
    * Scala API: Register a named entity type `ShardRegion` on this node that will run in proxy only mode,
    * i.e. it will delegate messages to other `ShardRegion` actors on other nodes, but not host any
-   * entity actors itself. The `ShardRegion` actor for this type can later be retrieved with the
+   * entity actors itself. The [[ShardRegion]] actor for this type can later be retrieved with the
    * [[#shardRegion]] method.
    *
    * Some settings can be configured as described in the `pekko.cluster.sharding` section
@@ -517,7 +517,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    *   be `unhandled`, i.e. posted as `Unhandled` messages on the event stream
    * @param extractShardId function to determine the shard id for an incoming message, only messages
    *   that passed the `extractEntityId` will be used
-   * @return the actor ref of the `ShardRegion` that is to be responsible for the shard
+   * @return the actor ref of the [[ShardRegion]] that is to be responsible for the shard
    */
   def startProxy(
       typeName: String,
@@ -529,7 +529,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
   /**
    * Scala API: Register a named entity type `ShardRegion` on this node that will run in proxy only mode,
    * i.e. it will delegate messages to other `ShardRegion` actors on other nodes, but not host any
-   * entity actors itself. The `ShardRegion` actor for this type can later be retrieved with the
+   * entity actors itself. The [[ShardRegion]] actor for this type can later be retrieved with the
    * [[#shardRegion]] method.
    *
    * Some settings can be configured as described in the `pekko.cluster.sharding` section
@@ -545,7 +545,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    *   be `unhandled`, i.e. posted as `Unhandled` messages on the event stream
    * @param extractShardId function to determine the shard id for an incoming message, only messages
    *   that passed the `extractEntityId` will be used
-   * @return the actor ref of the `ShardRegion` that is to be responsible for the shard
+   * @return the actor ref of the [[ShardRegion]] that is to be responsible for the shard
    */
   def startProxy(
       typeName: String,
@@ -578,7 +578,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
   /**
    * Java/Scala API: Register a named entity type `ShardRegion` on this node that will run in proxy only mode,
    * i.e. it will delegate messages to other `ShardRegion` actors on other nodes, but not host any
-   * entity actors itself. The `ShardRegion` actor for this type can later be retrieved with the
+   * entity actors itself. The [[ShardRegion]] actor for this type can later be retrieved with the
    * [[#shardRegion]] method.
    *
    * Some settings can be configured as described in the `pekko.cluster.sharding` section
@@ -589,7 +589,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    *   If the role is not specified all nodes in the cluster are used.
    * @param messageExtractor functions to extract the entity id, shard id, and the message to send to the
    *   entity from the incoming message
-   * @return the actor ref of the `ShardRegion` that is to be responsible for the shard
+   * @return the actor ref of the [[ShardRegion]] that is to be responsible for the shard
    */
   def startProxy(typeName: String, role: Optional[String], messageExtractor: ShardRegion.MessageExtractor): ActorRef =
     startProxy(typeName, role, dataCenter = Optional.empty(), messageExtractor)
@@ -597,7 +597,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
   /**
    * Java/Scala API: Register a named entity type `ShardRegion` on this node that will run in proxy only mode,
    * i.e. it will delegate messages to other `ShardRegion` actors on other nodes, but not host any
-   * entity actors itself. The `ShardRegion` actor for this type can later be retrieved with the
+   * entity actors itself. The [[ShardRegion]] actor for this type can later be retrieved with the
    * [[#shardRegion]] method.
    *
    * Some settings can be configured as described in the `pekko.cluster.sharding` section
@@ -610,7 +610,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    *   If None then the same data center as current node.
    * @param messageExtractor functions to extract the entity id, shard id, and the message to send to the
    *   entity from the incoming message
-   * @return the actor ref of the `ShardRegion` that is to be responsible for the shard
+   * @return the actor ref of the [[ShardRegion]] that is to be responsible for the shard
    */
   def startProxy(
       typeName: String,
@@ -637,7 +637,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
   def getShardTypeNames: java.util.Set[String] = regions.keySet()
 
   /**
-   * Retrieve the actor reference of the `ShardRegion` actor responsible for the named entity type.
+   * Retrieve the actor reference of the [[ShardRegion]] actor responsible for the named entity type.
    * The entity type must be registered with the [[#start]] or [[#startProxy]] method before it
    * can be used here. Messages to the entity is always sent via the `ShardRegion`.
    */
@@ -655,7 +655,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
   }
 
   /**
-   * Retrieve the actor reference of the `ShardRegion` actor that will act as a proxy to the
+   * Retrieve the actor reference of the [[ShardRegion]] actor that will act as a proxy to the
    * named entity type running in another data center. A proxy within the same data center can be accessed
    * with [[#shardRegion]] instead of this method. The entity type must be registered with the
    * [[#startProxy]] method before it can be used here. Messages to the entity is always sent
@@ -717,7 +717,7 @@ private[pekko] object ClusterShardingGuardian {
 }
 
 /**
- * INTERNAL API. `ShardRegion` and [[ShardCoordinator]] actors are created as children
+ * INTERNAL API. [[ShardRegion]] and [[ShardCoordinator]] actors are created as children
  * of this actor.
  */
 private[pekko] class ClusterShardingGuardian extends Actor {

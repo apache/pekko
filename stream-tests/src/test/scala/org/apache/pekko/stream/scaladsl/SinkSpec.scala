@@ -14,7 +14,6 @@
 package org.apache.pekko.stream.scaladsl
 
 import scala.annotation.nowarn
-import scala.collection.immutable
 import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
 
@@ -25,6 +24,8 @@ import pekko.stream.ActorAttributes.supervisionStrategy
 import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
 import pekko.testkit.DefaultTimeout
+
+import scala.collection.immutable
 
 import org.reactivestreams.Publisher
 

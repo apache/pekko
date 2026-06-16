@@ -821,5 +821,16 @@ class ClusterShardingSettingsSpec extends AnyWordSpec with Matchers {
         .passivationStrategy shouldBe ClusterShardingSettings.NoPassivationStrategy
     }
 
+    "support old `passivate-idle-entity-after` setting (overriding new strategy settings)" in {
+      settings("""
+        pekko.cluster.sharding {
+          passivate-idle-entity-after = 5 minutes
+          passivation.strategy = default-strategy
+        }
+      """).passivationStrategy shouldBe ClusterShardingSettings.IdlePassivationStrategy(
+        timeout = 5.minutes,
+        interval = 2.5.minutes)
+    }
+
   }
 }

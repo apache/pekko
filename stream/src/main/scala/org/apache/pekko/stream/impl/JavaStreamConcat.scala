@@ -37,7 +37,7 @@ import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
  * INTERNAL API
  */
 @InternalApi
-private[pekko] final class JavaStreamConcat[E](open: () => java.util.stream.BaseStream[E, ?])
+private[pekko] final class JavaStreamConcat[E](open: () => java.util.stream.BaseStream[E, _])
     extends GraphStage[FlowShape[E, E]] {
 
   val in = Inlet[E]("JavaStreamConcat.in")
@@ -47,7 +47,7 @@ private[pekko] final class JavaStreamConcat[E](open: () => java.util.stream.Base
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new GraphStageLogic(shape) with InHandler with OutHandler {
-      private var stream: java.util.stream.BaseStream[E, ?] = _
+      private var stream: java.util.stream.BaseStream[E, _] = _
       private var iterator: Iterator[E] = _
 
       // DO NOT CHANGE

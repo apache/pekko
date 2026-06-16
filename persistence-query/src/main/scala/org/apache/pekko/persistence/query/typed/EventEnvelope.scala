@@ -13,8 +13,8 @@
 
 package org.apache.pekko.persistence.query.typed
 
-import java.util.{ Set => JSet }
 import java.util.Optional
+import java.util.{ Set => JSet }
 
 import org.apache.pekko
 import pekko.annotation.ApiMayChange
@@ -235,7 +235,7 @@ final class EventEnvelope[Event](
   }
 
   override def equals(obj: Any): Boolean = obj match {
-    case other: EventEnvelope[?] =>
+    case other: EventEnvelope[_] =>
       offset == other.offset && persistenceId == other.persistenceId && sequenceNr == other.sequenceNr &&
       eventOption == other.eventOption && timestamp == other.timestamp && eventMetadata == other.eventMetadata &&
       entityType == other.entityType && slice == other.slice && filtered == other.filtered &&

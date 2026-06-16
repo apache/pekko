@@ -91,7 +91,7 @@ private[remote] final class CompressionTable[T](
   }
 
   override def equals(obj: Any): Boolean = obj match {
-    case other: CompressionTable[?] =>
+    case other: CompressionTable[_] =>
       originUid == other.originUid && version == other.version && _dictionary == other._dictionary
     case _ => false
   }

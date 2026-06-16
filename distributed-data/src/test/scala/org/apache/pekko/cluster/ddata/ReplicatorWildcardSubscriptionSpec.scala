@@ -66,7 +66,7 @@ class ReplicatorWildcardSubscriptionSpec(_system: ActorSystem)
 
       // Update a matching key
       replicator ! Update(KeyA1, GCounter.empty, WriteLocal)(_ :+ 1)
-      expectMsgType[UpdateSuccess[?]]
+      expectMsgType[UpdateSuccess[_]]
 
       val changed1 = probe.expectMsgType[Changed[GCounter]](5.seconds)
       changed1.key.id should ===("notif-counter-a1")
@@ -74,7 +74,7 @@ class ReplicatorWildcardSubscriptionSpec(_system: ActorSystem)
 
       // Update another matching key
       replicator ! Update(KeyA2, GCounter.empty, WriteLocal)(_ :+ 2)
-      expectMsgType[UpdateSuccess[?]]
+      expectMsgType[UpdateSuccess[_]]
 
       val changed2 = probe.expectMsgType[Changed[GCounter]](5.seconds)
       changed2.key.id should ===("notif-counter-a2")
@@ -82,7 +82,7 @@ class ReplicatorWildcardSubscriptionSpec(_system: ActorSystem)
 
       // Update a non-matching key - no notification expected
       replicator ! Update(KeyB, GCounter.empty, WriteLocal)(_ :+ 1)
-      expectMsgType[UpdateSuccess[?]]
+      expectMsgType[UpdateSuccess[_]]
 
       probe.expectNoMessage(500.millis)
     }
@@ -92,7 +92,7 @@ class ReplicatorWildcardSubscriptionSpec(_system: ActorSystem)
       val WildcardKey = GCounterKey("current-counter-*")
 
       replicator ! Update(KeyA, GCounter.empty, WriteLocal)(_ :+ 10)
-      expectMsgType[UpdateSuccess[?]]
+      expectMsgType[UpdateSuccess[_]]
 
       // Subscribe after the key already exists
       val subscribeProbe = TestProbe()
@@ -109,7 +109,7 @@ class ReplicatorWildcardSubscriptionSpec(_system: ActorSystem)
       val WildcardKey = GCounterKey("unsub-counter-*")
 
       replicator ! Update(KeyA, GCounter.empty, WriteLocal)(_ :+ 1)
-      expectMsgType[UpdateSuccess[?]]
+      expectMsgType[UpdateSuccess[_]]
 
       val probe = TestProbe()
       replicator ! Subscribe(WildcardKey, probe.ref)
@@ -122,7 +122,7 @@ class ReplicatorWildcardSubscriptionSpec(_system: ActorSystem)
 
       // Update a matching key - no notification expected after unsubscribe
       replicator ! Update(KeyA, GCounter.empty, WriteLocal)(_ :+ 100)
-      expectMsgType[UpdateSuccess[?]]
+      expectMsgType[UpdateSuccess[_]]
 
       probe.expectNoMessage(500.millis)
     }

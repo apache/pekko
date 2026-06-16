@@ -46,7 +46,7 @@ object RestartSink {
    * @param settings [[RestartSettings]] defining restart configuration
    * @param sinkFactory A factory for producing the [[Sink]] to wrap.
    */
-  def withBackoff[T](settings: RestartSettings, sinkFactory: Creator[Sink[T, ?]]): Sink[T, NotUsed] =
+  def withBackoff[T](settings: RestartSettings, sinkFactory: Creator[Sink[T, _]]): Sink[T, NotUsed] =
     pekko.stream.scaladsl.RestartSink
       .withBackoff(settings) { () =>
         sinkFactory.create().asScala

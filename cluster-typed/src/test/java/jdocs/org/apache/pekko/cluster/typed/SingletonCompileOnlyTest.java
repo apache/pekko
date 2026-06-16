@@ -85,7 +85,6 @@ public interface SingletonCompileOnlyTest {
       return this;
     }
   }
-
   // #counter
 
   ActorSystem system = ActorSystem.create(Behaviors.empty(), "SingletonExample");

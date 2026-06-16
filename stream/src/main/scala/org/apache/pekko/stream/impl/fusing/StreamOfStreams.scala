@@ -141,7 +141,7 @@ import pekko.util.OptionVal
               case iterator: IteratorSource[T] @unchecked                   => addInflightIteratorSource(iterator.createIterator())
               case range: RangeSource[T] @unchecked                         => addInflightRangeSource(range.range)
               case repeat: RepeatSource[T] @unchecked                       => addInflightRepeatSource(repeat.elem)
-              case javaStream: JavaStreamSource[T, ?] @unchecked            => addInflightJavaStreamSource(javaStream)
+              case javaStream: JavaStreamSource[T, _] @unchecked            => addInflightJavaStreamSource(javaStream)
               case failed: FailedSource[T] @unchecked                       => addCompletedFutureElem(Failure(failed.failure))
               case maybeEmpty if TraversalBuilder.isEmptySource(maybeEmpty) => // Empty source is discarded
               case _                                                        => attachAndMaterializeSource(source)
@@ -181,7 +181,7 @@ import pekko.util.OptionVal
       private def addInflightRepeatSource(elem: T): Unit =
         addInflightSource(new InflightRepeatSource[T](elem))
 
-      private def addInflightJavaStreamSource(javaStream: JavaStreamSource[T, ?]): Unit = {
+      private def addInflightJavaStreamSource(javaStream: JavaStreamSource[T, _]): Unit = {
         val inflight = new InflightJavaStreamSource[T](javaStream.open)
         if (inflight.hasNext) addInflightSource(inflight)
       }
@@ -236,9 +236,9 @@ import pekko.util.OptionVal
         src match {
           case sub: SubSinkInlet[T] @unchecked =>
             sources -= sub
-          case _: SingleSource[?] =>
+          case _: SingleSource[_] =>
             pendingSingleSources -= 1
-          case _: InflightSource[?] =>
+          case _: InflightSource[_] =>
             pendingInflightSources -= 1
           case other => throw new IllegalArgumentException(s"Unexpected source type: '${other.getClass}'")
         }
@@ -852,7 +852,7 @@ import pekko.util.OptionVal
   override def createLogic(attr: Attributes) = new GraphStageLogic(shape) with InHandler {
     // check for previous materialization eagerly so we fail with a more useful stacktrace
     private[this] val materializationException: OptionVal[IllegalStateException] =
-      if (status.get.isInstanceOf[AsyncCallback[?]])
+      if (status.get.isInstanceOf[AsyncCallback[_]])
         OptionVal.Some(createMaterializedTwiceException())
       else
         OptionVal.None
@@ -947,7 +947,7 @@ import pekko.util.OptionVal
   override def createLogic(inheritedAttributes: Attributes) = new GraphStageLogic(shape) with OutHandler {
     // check for previous materialization eagerly so we fail with a more useful stacktrace
     private[this] val materializationException: OptionVal[IllegalStateException] =
-      if (status.get.isInstanceOf[AsyncCallback[?]])
+      if (status.get.isInstanceOf[AsyncCallback[_]])
         OptionVal.Some(createMaterializedTwiceException())
       else
         OptionVal.None
@@ -959,7 +959,7 @@ import pekko.util.OptionVal
         case null                               => if (!status.compareAndSet(null, cb)) setCB(cb)
         case ActorSubscriberMessage.OnComplete  => completeStage()
         case ActorSubscriberMessage.OnError(ex) => failStage(ex)
-        case _: AsyncCallback[?]                =>
+        case _: AsyncCallback[_]                =>
           failStage(materializationException.getOrElse(createMaterializedTwiceException()))
         case _ => throw new RuntimeException() // won't happen, compiler exhaustiveness check pleaser
       }

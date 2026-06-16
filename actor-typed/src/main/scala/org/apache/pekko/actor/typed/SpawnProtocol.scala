@@ -47,7 +47,7 @@ object SpawnProtocol {
    * If `name` is an empty string an anonymous actor (with automatically generated name) will be created.
    *
    * If the `name` is already taken of an existing actor a unique name will be used by appending a suffix
-   * to the `name`. The exact format or value of the suffix is an implementation detail that is
+   * to the the `name`. The exact format or value of the suffix is an implementation detail that is
    * undefined. This means that reusing the same name for several actors will not result in
    * `InvalidActorNameException`, but it's better to use unique names to begin with.
    */

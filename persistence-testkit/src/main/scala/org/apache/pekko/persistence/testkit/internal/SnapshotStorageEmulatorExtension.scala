@@ -34,7 +34,7 @@ private[testkit] object SnapshotStorageEmulatorExtension extends ExtensionId[Sna
   override def createExtension(system: ExtendedActorSystem): SnapshotStorageEmulatorExtension =
     new SnapshotStorageEmulatorExtension(system)
 
-  override def lookup: ExtensionId[? <: Extension] =
+  override def lookup: ExtensionId[_ <: Extension] =
     SnapshotStorageEmulatorExtension
 }
 

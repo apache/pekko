@@ -71,8 +71,8 @@ private[fusing] object InflightSources {
    * does not do implicitly.
    */
   private[fusing] final class InflightJavaStreamSource[T](
-      open: () => java.util.stream.BaseStream[T, ?]) extends InflightSource[T] {
-    private val stream: java.util.stream.BaseStream[T, ?] = open()
+      open: () => java.util.stream.BaseStream[T, _]) extends InflightSource[T] {
+    private val stream: java.util.stream.BaseStream[T, _] = open()
     private val iterator: java.util.Iterator[T] = stream.iterator()
     private var closed: Boolean = false
     // Eagerly close empty streams so we don't leak the resource for empty inner sources.

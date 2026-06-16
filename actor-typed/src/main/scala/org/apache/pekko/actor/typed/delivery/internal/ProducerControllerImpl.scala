@@ -344,7 +344,7 @@ object ProducerControllerImpl {
     }
   }
 
-  def enforceLocalProducer(ref: ActorRef[?]): Unit = {
+  def enforceLocalProducer(ref: ActorRef[_]): Unit = {
     if (ref.path.address.hasGlobalScope)
       throw new IllegalArgumentException(s"Consumer [$ref] should be local.")
   }
@@ -807,7 +807,7 @@ private class ProducerControllerImpl[A: ClassTag](
           active(s.copy(remainingChunks = chunks, storeMessageSentInProgress = seqMsg.seqNr))
         }
 
-      case StoreMessageSentCompleted(sent: MessageSent[?]) =>
+      case StoreMessageSentCompleted(sent: MessageSent[_]) =>
         receiveStoreMessageSentCompleted(sent.seqNr)
 
       case f: StoreMessageSentFailed[A @unchecked] =>

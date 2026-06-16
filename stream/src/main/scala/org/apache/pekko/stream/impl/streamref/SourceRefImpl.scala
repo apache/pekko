@@ -128,7 +128,7 @@ private[stream] final class SourceRefStageImpl[Out](val initialPartnerRef: Optio
       eagerMaterializer: Materializer): (GraphStageLogic, SinkRef[Out]) = {
 
     val logic = new TimerGraphStageLogic(shape) with StageLogging with ActorRefStage with OutHandler {
-      override protected def logSource: Class[?] = classOf[SourceRefStageImpl[?]]
+      override protected def logSource: Class[_] = classOf[SourceRefStageImpl[_]]
 
       private[this] val streamRefsMaster = StreamRefsMaster(eagerMaterializer.system)
 
@@ -314,7 +314,7 @@ private[stream] final class SourceRefStageImpl[Out](val initialPartnerRef: Optio
           state match {
             case WaitingForCancelAck(partner, cause) =>
               verifyPartner(sender, partner)
-              log.debug("[{}] Got cancellation ack from remote, canceling", stageActorName)
+              log.debug(s"[{}] Got cancellation ack from remote, canceling", stageActorName)
               cancelStage(cause)
             case other =>
               throw new IllegalStateException(s"[$stageActorName] Got an Ack when in state $other")

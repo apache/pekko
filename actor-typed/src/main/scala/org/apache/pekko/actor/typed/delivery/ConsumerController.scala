@@ -204,7 +204,7 @@ object ConsumerController {
      * Scala API: Factory method from config `pekko.reliable-delivery.consumer-controller`
      * of the `ActorSystem`.
      */
-    def apply(system: ActorSystem[?]): Settings =
+    def apply(system: ActorSystem[_]): Settings =
       apply(system.settings.config.getConfig("pekko.reliable-delivery.consumer-controller"))
 
     /**
@@ -223,7 +223,7 @@ object ConsumerController {
      * Java API: Factory method from config `pekko.reliable-delivery.producer-controller`
      * of the `ActorSystem`.
      */
-    def create(system: ActorSystem[?]): Settings =
+    def create(system: ActorSystem[_]): Settings =
       apply(system)
 
     /**

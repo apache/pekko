@@ -22,7 +22,7 @@ import scala.concurrent.Future
 
 object LimitWeighted {
 
-  implicit val system: ActorSystem[?] = ???
+  implicit val system: ActorSystem[_] = ???
 
   def simple(): Unit = {
     // #simple

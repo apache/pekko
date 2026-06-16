@@ -41,7 +41,7 @@ trait EntityFactory[M] {
 }
 
 object ClusterSharding {
-  def get(system: ActorSystem[?]): ClusterSharding =
+  def get(system: ActorSystem[_]): ClusterSharding =
     scaladsl.ClusterSharding(system).asJava
 
   /**

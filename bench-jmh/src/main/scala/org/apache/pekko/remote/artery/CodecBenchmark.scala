@@ -295,7 +295,7 @@ object CodecBenchmark {
 
     override def toBinary(o: AnyRef): Array[Byte] = Preserialized
 
-    override def fromBinary(bytes: Array[Byte], manifest: Option[Class[?]]): AnyRef =
+    override def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef =
       fromBinary(ByteBuffer.wrap(bytes), "NoManifestForYou")
   }
 

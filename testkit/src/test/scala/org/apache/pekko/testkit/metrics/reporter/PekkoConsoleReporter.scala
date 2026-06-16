@@ -36,7 +36,7 @@ class PekkoConsoleReporter(registry: PekkoMetricRegistry, verbose: Boolean, outp
   private final val ConsoleWidth = 80
 
   override def report(
-      gauges: util.SortedMap[String, Gauge[?]],
+      gauges: util.SortedMap[String, Gauge[_]],
       counters: util.SortedMap[String, Counter],
       histograms: util.SortedMap[String, Histogram],
       meters: util.SortedMap[String, Meter],
@@ -82,7 +82,7 @@ class PekkoConsoleReporter(registry: PekkoMetricRegistry, verbose: Boolean, outp
     output.print("             count = %d%n".format(entry.getCount))
   }
 
-  private def printGauge(entry: Gauge[?]): Unit = {
+  private def printGauge(entry: Gauge[_]): Unit = {
     output.print("             value = %s%n".format(entry.getValue))
   }
 
@@ -168,7 +168,7 @@ class PekkoConsoleReporter(registry: PekkoMetricRegistry, verbose: Boolean, outp
   }
 
   /** Required for getting simple names of refined instances */
-  private def simpleName(clazz: Class[?]): String = {
+  private def simpleName(clazz: Class[_]): String = {
     val n = clazz.getName
     val i = n.lastIndexOf('.')
     n.substring(i + 1)

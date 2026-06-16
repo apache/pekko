@@ -35,8 +35,6 @@ import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.SnapshotAdapter
 import pekko.persistence.typed.state.scaladsl._
 
-import com.typesafe.config.Config
-
 import org.slf4j.LoggerFactory
 
 @InternalApi
@@ -60,9 +58,8 @@ private[pekko] final case class DurableStateBehaviorImpl[Command, State](
     persistenceId: PersistenceId,
     emptyState: State,
     commandHandler: DurableStateBehavior.CommandHandler[Command, State],
-    loggerClass: Class[?],
+    loggerClass: Class[_],
     durableStateStorePluginId: Option[String] = None,
-    durableStateStorePluginConfig: Option[Config] = None,
     tag: String = "",
     snapshotAdapter: SnapshotAdapter[State] = NoOpSnapshotAdapter.instance[State],
     supervisionStrategy: SupervisorStrategy = SupervisorStrategy.stop,
@@ -79,15 +76,11 @@ private[pekko] final case class DurableStateBehaviorImpl[Command, State](
   override def apply(context: typed.TypedActorContext[Command]): Behavior[Command] = {
     val ctx = context.asScala
     val hasCustomLoggerName = ctx match {
-      case internalCtx: ActorContextImpl[?] => internalCtx.hasCustomLoggerName
+      case internalCtx: ActorContextImpl[_] => internalCtx.hasCustomLoggerName
       case _                                => false
     }
     if (!hasCustomLoggerName) ctx.setLoggerName(loggerClass)
-    val settings = DurableStateSettings(
-      ctx.system,
-      durableStateStorePluginId.getOrElse(""),
-      durableStateStorePluginConfig,
-      customStashCapacity)
+    val settings = DurableStateSettings(ctx.system, durableStateStorePluginId.getOrElse(""), customStashCapacity)
 
     // stashState outside supervise because StashState should survive restarts due to persist failures
     val stashState = new StashState(ctx.asInstanceOf[ActorContext[InternalProtocol]], settings)
@@ -167,7 +160,7 @@ private[pekko] final case class DurableStateBehaviorImpl[Command, State](
   }
 
   @InternalStableApi
-  private[pekko] def initialize(@nowarn("msg=never used") context: ActorContext[?]): Unit = ()
+  private[pekko] def initialize(@nowarn("msg=never used") context: ActorContext[_]): Unit = ()
 
   override def receiveSignal(handler: PartialFunction[(State, Signal), Unit]): DurableStateBehavior[Command, State] =
     copy(signalHandler = handler)
@@ -176,9 +169,6 @@ private[pekko] final case class DurableStateBehaviorImpl[Command, State](
     require(id != null, "DurableStateBehavior plugin id must not be null; use empty string for 'default' state store")
     copy(durableStateStorePluginId = if (id != "") Some(id) else None)
   }
-
-  override def withDurableStateStorePluginConfig(config: Option[Config]): DurableStateBehavior[Command, State] =
-    copy(durableStateStorePluginConfig = config)
 
   override def withTag(tag: String): DurableStateBehavior[Command, State] =
     copy(tag = tag)

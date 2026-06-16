@@ -22,7 +22,7 @@ jobs:
     if: github.repository == 'apache/pekko'
     steps:
       - name: Checkout
-        uses: actions/checkout@v6.0.3
+        uses: actions/checkout@v6.0.2
         with:
           fetch-depth: 0
           fetch-tags: true
@@ -36,7 +36,7 @@ jobs:
           java-version: 11
 
       - name: Install sbt
-        uses: sbt/setup-sbt@af116cce31c00823d3903ce687f9cda3a4f19f1b # v1.2.1
+        uses: sbt/setup-sbt@2e222825582620cc38d2a54e674f3c01b7c14f5d # v1.1.24
 
       - name: Cache Coursier cache
         uses: coursier/cache-action@95e5b1029b6b86e7bac033ee44a0697d8a527d2d # v8.1.1
@@ -77,7 +77,7 @@ jobs:
           - cluster-typed/test cluster-sharding-typed/test
     steps:
       - name: Checkout
-        uses: actions/checkout@v6.0.3
+        uses: actions/checkout@v6.0.2
         with:
           # we don't know what commit the last tag was it's safer to get entire repo so previousStableVersion resolves
           fetch-depth: 0
@@ -92,7 +92,7 @@ jobs:
           java-version: 11
 
       - name: Install sbt
-        uses: sbt/setup-sbt@af116cce31c00823d3903ce687f9cda3a4f19f1b # v1.2.1
+        uses: sbt/setup-sbt@2e222825582620cc38d2a54e674f3c01b7c14f5d # v1.1.24
 
       - name: Cache Coursier cache
         uses: coursier/cache-action@95e5b1029b6b86e7bac033ee44a0697d8a527d2d # v8.1.1
@@ -130,7 +130,7 @@ jobs:
         javaVersion: [8, 11, 17, 21, 25]
     steps:
       - name: Checkout
-        uses: actions/checkout@v6.0.3
+        uses: actions/checkout@v6.0.2
         with:
           fetch-depth: 0
           fetch-tags: true
@@ -144,7 +144,7 @@ jobs:
           java-version: ${{ matrix.javaVersion }}
 
       - name: Install sbt
-        uses: sbt/setup-sbt@af116cce31c00823d3903ce687f9cda3a4f19f1b # v1.2.1
+        uses: sbt/setup-sbt@2e222825582620cc38d2a54e674f3c01b7c14f5d # v1.1.24
 
       - name: Cache Coursier cache
         uses: coursier/cache-action@95e5b1029b6b86e7bac033ee44a0697d8a527d2d # v8.1.1

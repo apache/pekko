@@ -100,7 +100,7 @@ object Effect {
       with Serializable {
 
     override def equals(other: Any) = other match {
-      case o: Spawned[?] =>
+      case o: Spawned[_] =>
         this.behavior == o.behavior &&
         this.childName == o.childName &&
         this.props == o.props
@@ -113,7 +113,7 @@ object Effect {
     override def _1: Behavior[T] = behavior
     override def _2: String = childName
     override def _3: Props = props
-    override def canEqual(o: Any) = o.isInstanceOf[Spawned[?]]
+    override def canEqual(o: Any) = o.isInstanceOf[Spawned[_]]
   }
 
   object Spawned {
@@ -131,7 +131,7 @@ object Effect {
       with Serializable {
 
     override def equals(other: Any) = other match {
-      case o: SpawnedAnonymous[?] => this.behavior == o.behavior && this.props == o.props
+      case o: SpawnedAnonymous[_] => this.behavior == o.behavior && this.props == o.props
       case _                      => false
     }
     override def hashCode: Int = behavior.## * 31 + props.##
@@ -140,7 +140,7 @@ object Effect {
     override def productPrefix = "SpawnedAnonymous"
     override def _1: Behavior[T] = behavior
     override def _2: Props = props
-    override def canEqual(o: Any) = o.isInstanceOf[SpawnedAnonymous[?]]
+    override def canEqual(o: Any) = o.isInstanceOf[SpawnedAnonymous[_]]
   }
 
   object SpawnedAnonymous {
@@ -160,7 +160,7 @@ object Effect {
       with Serializable {
 
     override def equals(other: Any) = other match {
-      case o: SpawnedAdapter[?] => this.name == o.name
+      case o: SpawnedAdapter[_] => this.name == o.name
       case _                    => false
     }
     override def hashCode: Int = name.##
@@ -168,7 +168,7 @@ object Effect {
 
     override def productPrefix = "SpawnedAdapter"
     override def _1: String = name
-    override def canEqual(o: Any) = o.isInstanceOf[SpawnedAdapter[?]]
+    override def canEqual(o: Any) = o.isInstanceOf[SpawnedAdapter[_]]
   }
 
   /**
@@ -192,17 +192,17 @@ object Effect {
       with Serializable {
 
     override def equals(other: Any): Boolean = other match {
-      case _: SpawnedAnonymousAdapter[?] => true
+      case _: SpawnedAnonymousAdapter[_] => true
       case _                             => false
     }
     override def hashCode: Int = Nil.##
     override def toString: String = "SpawnedAnonymousAdapter"
 
     override def productPrefix: String = "SpawnedAnonymousAdapter"
-    override def productIterator: Iterator[?] = Iterator.empty
+    override def productIterator: Iterator[_] = Iterator.empty
     override def productArity: Int = 0
     override def productElement(n: Int) = throw new NoSuchElementException
-    override def canEqual(o: Any): Boolean = o.isInstanceOf[SpawnedAnonymousAdapter[?]]
+    override def canEqual(o: Any): Boolean = o.isInstanceOf[SpawnedAnonymousAdapter[_]]
   }
 
   /**

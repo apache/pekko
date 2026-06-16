@@ -318,7 +318,7 @@ object CoordinatedShutdown extends ExtensionId[CoordinatedShutdown] with Extensi
       depends-on = []
     """)
     phasesConf.root.unwrapped.asScala.toMap.map {
-      case (k, _: java.util.Map[?, ?]) =>
+      case (k, _: java.util.Map[_, _]) =>
         val c = phasesConf.getConfig(k).withFallback(defaultPhaseConfig)
         val dependsOn = c.getStringList("depends-on").asScala.toSet
         val timeout = c.getDuration("timeout", MILLISECONDS).millis
@@ -722,7 +722,7 @@ final class CoordinatedShutdown private[pekko] (
           case Nil                                                  => Future.successful(Done)
           case phaseName :: remaining if !phases(phaseName).enabled =>
             tasks.get(phaseName).foreach { phaseDef =>
-              log.info("Phase [{}] disabled through configuration, skipping [{}] tasks.", phaseName, phaseDef.size)
+              log.info(s"Phase [{}] disabled through configuration, skipping [{}] tasks.", phaseName, phaseDef.size)
             }
             loop(remaining)
           case phaseName :: remaining =>

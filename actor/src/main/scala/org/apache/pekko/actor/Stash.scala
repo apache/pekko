@@ -254,7 +254,7 @@ private[pekko] trait StashSupport {
   /**
    * INTERNAL API.
    *
-   * Clears the stash and returns all envelopes that have not been unstashed.
+   * Clears the stash and and returns all envelopes that have not been unstashed.
    */
   @InternalStableApi
   private[pekko] def clearStash(): Vector[Envelope] = {

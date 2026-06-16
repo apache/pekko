@@ -139,5 +139,5 @@ trait ExtensionIdProvider {
   /**
    * Returns the canonical ExtensionId for this Extension
    */
-  def lookup: ExtensionId[? <: Extension]
+  def lookup: ExtensionId[_ <: Extension]
 }

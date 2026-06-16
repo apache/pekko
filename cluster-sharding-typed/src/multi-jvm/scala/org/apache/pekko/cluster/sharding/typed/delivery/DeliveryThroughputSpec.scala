@@ -67,7 +67,7 @@ object DeliveryThroughputSpec extends MultiNodeConfig {
        actor.allow-java-serialization = off
        # quicker dissemination the service keys
        cluster.typed.receptionist.distributed-data.write-consistency = all
-       cluster.sharding.passivation.default-idle-strategy.idle-entity.timeout = 5s
+       cluster.sharding.passivate-idle-entity-after = 5s
      }
     """)
 

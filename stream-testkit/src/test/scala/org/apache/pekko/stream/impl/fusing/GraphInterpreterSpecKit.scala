@@ -96,19 +96,19 @@ object GraphInterpreterSpecKit {
    * @return Created logics and the maps of all inlets respective outlets to those logics
    */
   private[stream] def createLogics(
-      stages: Array[GraphStageWithMaterializedValue[? <: Shape, ?]],
-      upstreams: Array[UpstreamBoundaryStageLogic[?]],
-      downstreams: Array[DownstreamBoundaryStageLogic[?]],
+      stages: Array[GraphStageWithMaterializedValue[_ <: Shape, _]],
+      upstreams: Array[UpstreamBoundaryStageLogic[_]],
+      downstreams: Array[DownstreamBoundaryStageLogic[_]],
       attributes: Array[Attributes] = Array.empty)(implicit system: ActorSystem)
-      : (Array[GraphStageLogic], SMap[Inlet[?], GraphStageLogic], SMap[Outlet[?], GraphStageLogic]) = {
+      : (Array[GraphStageLogic], SMap[Inlet[_], GraphStageLogic], SMap[Outlet[_], GraphStageLogic]) = {
     if (attributes.nonEmpty && attributes.length != stages.length)
       throw new IllegalArgumentException("Attributes must be either empty or one per stage")
 
     @nowarn("msg=deprecated")
     val defaultAttributes = ActorMaterializerSettings(system).toAttributes
 
-    var inOwners = SMap.empty[Inlet[?], GraphStageLogic]
-    var outOwners = SMap.empty[Outlet[?], GraphStageLogic]
+    var inOwners = SMap.empty[Inlet[_], GraphStageLogic]
+    var outOwners = SMap.empty[Outlet[_], GraphStageLogic]
 
     val logics = new Array[GraphStageLogic](upstreams.length + stages.length + downstreams.length)
     var idx = 0
@@ -206,9 +206,9 @@ object GraphInterpreterSpecKit {
    * Create interpreter connections for all the given `connectedPorts`.
    */
   private[stream] def createConnections(
-      connectedPorts: Seq[(Outlet[?], Inlet[?])],
-      inOwners: SMap[Inlet[?], GraphStageLogic],
-      outOwners: SMap[Outlet[?], GraphStageLogic]): Array[Connection] = {
+      connectedPorts: Seq[(Outlet[_], Inlet[_])],
+      inOwners: SMap[Inlet[_], GraphStageLogic],
+      outOwners: SMap[Outlet[_], GraphStageLogic]): Array[Connection] = {
 
     val connections = new Array[Connection](connectedPorts.size)
     connectedPorts.zipWithIndex.foreach {
@@ -239,7 +239,7 @@ object GraphInterpreterSpecKit {
     }
   }
 
-  private def setPortIds(stage: GraphStageWithMaterializedValue[? <: Shape, ?]): Unit = {
+  private def setPortIds(stage: GraphStageWithMaterializedValue[_ <: Shape, _]): Unit = {
     stage.shape.inlets.zipWithIndex.foreach { case (inlet, idx) => inlet.id = idx }
     stage.shape.outlets.zipWithIndex.foreach { case (inlet, idx) => inlet.id = idx }
   }
@@ -296,10 +296,10 @@ trait GraphInterpreterSpecKit extends StreamSpec {
       override def toString = "Downstream"
     }
 
-    class AssemblyBuilder(operators: Seq[GraphStageWithMaterializedValue[? <: Shape, ?]]) {
-      private var upstreams = Vector.empty[UpstreamBoundaryStageLogic[?]]
-      private var downstreams = Vector.empty[DownstreamBoundaryStageLogic[?]]
-      private var connectedPorts = Vector.empty[(Outlet[?], Inlet[?])]
+    class AssemblyBuilder(operators: Seq[GraphStageWithMaterializedValue[_ <: Shape, _]]) {
+      private var upstreams = Vector.empty[UpstreamBoundaryStageLogic[_]]
+      private var downstreams = Vector.empty[DownstreamBoundaryStageLogic[_]]
+      private var connectedPorts = Vector.empty[(Outlet[_], Inlet[_])]
 
       def connect[T](upstream: UpstreamBoundaryStageLogic[T], in: Inlet[T]): AssemblyBuilder = {
         upstreams :+= upstream
@@ -343,7 +343,7 @@ trait GraphInterpreterSpecKit extends StreamSpec {
       _interpreter.init(null)
     }
 
-    def builder(operators: GraphStageWithMaterializedValue[? <: Shape, ?]*): AssemblyBuilder =
+    def builder(operators: GraphStageWithMaterializedValue[_ <: Shape, _]*): AssemblyBuilder =
       new AssemblyBuilder(operators.toVector)
 
   }

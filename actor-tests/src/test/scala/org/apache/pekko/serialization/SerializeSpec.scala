@@ -223,7 +223,7 @@ class SerializeSpec extends PekkoSpec(SerializationTests.serializeConf) {
       ser.serializerFor(classOf[PlainMessage]).getClass should ===(classOf[NoopSerializer])
     }
 
-    "resolve serializer for message extending class with binding" in {
+    "resolve serializer for message extending class with with binding" in {
       ser.serializerFor(classOf[ExtendedPlainMessage]).getClass should ===(classOf[NoopSerializer])
     }
 
@@ -389,7 +389,7 @@ class VerifySerializabilitySpec extends PekkoSpec(SerializationTests.verifySeria
 class ReferenceSerializationSpec extends PekkoSpec(SerializationTests.mostlyReferenceSystem) {
 
   val ser = SerializationExtension(system)
-  def serializerMustBe(toSerialize: Class[?], expectedSerializer: Class[?]) =
+  def serializerMustBe(toSerialize: Class[_], expectedSerializer: Class[_]) =
     ser.serializerFor(toSerialize).getClass should ===(expectedSerializer)
 
   "Serialization settings from reference.conf" must {
@@ -428,7 +428,7 @@ class ReferenceSerializationSpec extends PekkoSpec(SerializationTests.mostlyRefe
 class AllowJavaSerializationSpec extends PekkoSpec(SerializationTests.allowJavaSerializationSystem) {
 
   val ser = SerializationExtension(system)
-  def serializerMustBe(toSerialize: Class[?], expectedSerializer: Class[?]) =
+  def serializerMustBe(toSerialize: Class[_], expectedSerializer: Class[_]) =
     ser.serializerFor(toSerialize).getClass should ===(expectedSerializer)
 
   val address = SerializationTests.Address("120", "Monroe Street", "Santa Clara", "95050")
@@ -624,7 +624,7 @@ protected[pekko] class NoopSerializer extends Serializer {
     Array.empty[Byte]
   }
 
-  def fromBinary(bytes: Array[Byte], clazz: Option[Class[?]]): AnyRef = null
+  def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]): AnyRef = null
 }
 
 protected[pekko] class NoopSerializer2 extends Serializer {
@@ -636,7 +636,7 @@ protected[pekko] class NoopSerializer2 extends Serializer {
     Array.empty[Byte]
   }
 
-  def fromBinary(bytes: Array[Byte], clazz: Option[Class[?]]): AnyRef = null
+  def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]): AnyRef = null
 }
 
 protected[pekko] class NoopSerializerSameId extends NoopSerializer
@@ -657,7 +657,7 @@ class DeadlockSerializer(system: ExtendedActorSystem) extends Serializer {
 
   def toBinary(o: AnyRef): Array[Byte] = Array.empty[Byte]
 
-  def fromBinary(bytes: Array[Byte], clazz: Option[Class[?]]): AnyRef = null
+  def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]): AnyRef = null
 }
 
 object ConstructorSerializer {

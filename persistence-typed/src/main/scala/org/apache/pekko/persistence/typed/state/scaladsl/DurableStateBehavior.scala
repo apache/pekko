@@ -15,8 +15,6 @@ package org.apache.pekko.persistence.typed.state.scaladsl
 
 import scala.annotation.tailrec
 
-import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.actor.typed.BackoffSupervisorStrategy
 import pekko.actor.typed.Behavior
@@ -46,7 +44,7 @@ object DurableStateBehavior {
    */
   type CommandHandler[Command, State] = (State, Command) => Effect[State]
 
-  private val logPrefixSkipList = classOf[DurableStateBehavior[?, ?]].getName :: Nil
+  private val logPrefixSkipList = classOf[DurableStateBehavior[_, _]].getName :: Nil
 
   /**
    * Create a `Behavior` for a persistent actor with durable storage of its state.
@@ -59,7 +57,7 @@ object DurableStateBehavior {
       persistenceId: PersistenceId,
       emptyState: State,
       commandHandler: (State, Command) => Effect[State]): DurableStateBehavior[Command, State] = {
-    val loggerClass = LoggerClass.detectLoggerClassFromStack(classOf[DurableStateBehavior[?, ?]], logPrefixSkipList)
+    val loggerClass = LoggerClass.detectLoggerClassFromStack(classOf[DurableStateBehavior[_, _]], logPrefixSkipList)
     DurableStateBehaviorImpl(persistenceId, emptyState, commandHandler, loggerClass)
   }
 
@@ -72,7 +70,7 @@ object DurableStateBehavior {
       persistenceId: PersistenceId,
       emptyState: State,
       commandHandler: (State, Command) => ReplyEffect[State]): DurableStateBehavior[Command, State] = {
-    val loggerClass = LoggerClass.detectLoggerClassFromStack(classOf[DurableStateBehavior[?, ?]], logPrefixSkipList)
+    val loggerClass = LoggerClass.detectLoggerClassFromStack(classOf[DurableStateBehavior[_, _]], logPrefixSkipList)
     DurableStateBehaviorImpl(persistenceId, emptyState, commandHandler, loggerClass)
   }
 
@@ -102,11 +100,11 @@ object DurableStateBehavior {
   /**
    * The last sequence number that was persisted, can only be called from inside the handlers of a `DurableStateBehavior`
    */
-  def lastSequenceNumber(context: ActorContext[?]): Long = {
+  def lastSequenceNumber(context: ActorContext[_]): Long = {
     @tailrec
-    def extractConcreteBehavior(beh: Behavior[?]): Behavior[?] =
+    def extractConcreteBehavior(beh: Behavior[_]): Behavior[_] =
       beh match {
-        case interceptor: InterceptorImpl[?, ?] => extractConcreteBehavior(interceptor.nestedBehavior)
+        case interceptor: InterceptorImpl[_, _] => extractConcreteBehavior(interceptor.nestedBehavior)
         case concrete                           => concrete
       }
 
@@ -147,14 +145,6 @@ object DurableStateBehavior {
    * Change the `DurableStateStore` plugin id that this actor should use.
    */
   def withDurableStateStorePluginId(id: String): DurableStateBehavior[Command, State]
-
-  /**
-   * Change the `DurableStateStore` plugin config that this actor should use.
-   * This is useful when the same plugin class is configured for multiple, isolated stores at runtime.
-   *
-   * @since 2.0.0
-   */
-  def withDurableStateStorePluginConfig(config: Option[Config]): DurableStateBehavior[Command, State]
 
   /**
    * The tag that can used in persistence query

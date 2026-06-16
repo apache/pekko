@@ -50,7 +50,6 @@ public interface OOIntroTest {
         this.replyTo = replyTo;
       }
     }
-
     // #chatroom-protocol
     // #chatroom-behavior
     private static final class PublishSessionMessage implements RoomCommand {
@@ -62,7 +61,6 @@ public interface OOIntroTest {
         this.message = message;
       }
     }
-
     // #chatroom-behavior
     // #chatroom-protocol
 
@@ -111,7 +109,6 @@ public interface OOIntroTest {
         this.message = message;
       }
     }
-
     // #chatroom-protocol
     // #chatroom-behavior
 
@@ -200,7 +197,6 @@ public interface OOIntroTest {
       }
     }
   }
-
   // #chatroom-behavior
 
   // #chatroom-gabbler
@@ -240,7 +236,6 @@ public interface OOIntroTest {
       return Behaviors.stopped();
     }
   }
-
   // #chatroom-gabbler
 
   // #chatroom-main

@@ -9,15 +9,15 @@
 
 addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "2.2.0")
 
-addSbtPlugin("com.github.sbt" % "sbt-java-formatter" % "0.12.0")
+addSbtPlugin("com.github.sbt" % "sbt-java-formatter" % "0.11.0")
 addSbtPlugin("com.github.sbt.junit" % "sbt-jupiter-interface" % "0.19.0")
 addSbtPlugin("com.lightbend.sbt" % "sbt-bill-of-materials" % "1.0.2")
 addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.6.1")
-addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.14.7")
+addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.14.6")
 addSbtPlugin("com.github.sbt" % "sbt-osgi" % "0.10.0")
 addSbtPlugin("com.typesafe" % "sbt-mima-plugin" % "1.1.5")
 addSbtPlugin("com.github.sbt" % "sbt-unidoc" % "0.6.1")
-addSbtPlugin("com.thoughtworks.sbt-api-mappings" % "sbt-api-mappings" % "3.0.3")
+addSbtPlugin("com.thoughtworks.sbt-api-mappings" % "sbt-api-mappings" % "3.0.2")
 addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.8")
 addSbtPlugin("com.github.sbt" % "sbt-boilerplate" % "0.8.0")
 

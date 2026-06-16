@@ -19,9 +19,9 @@ import sbt.ConsoleLogger
 class ProjectFileIgnoreSupport(ignoreConfigFile: File, descriptor: String) {
   private lazy val stdoutLogger = ConsoleLogger(System.out)
 
-  private val javaSourceDirectories = Set("java") ++ Jdk21.JavaSourceDirectories ++ Jdk21.JavaTestSourceDirectories
+  private val javaSourceDirectories = Set("java") ++ Jdk9.JavaSourceDirectories ++ Jdk9.JavaTestSourceDirectories
 
-  private val scalaSourceDirectories = Set("scala") ++ Jdk21.ScalaSourceDirectories ++ Jdk21.ScalaTestSourceDirectories
+  private val scalaSourceDirectories = Set("scala") ++ Jdk9.ScalaSourceDirectories ++ Jdk9.ScalaTestSourceDirectories
 
   private lazy val ignoreConfig = {
     require(

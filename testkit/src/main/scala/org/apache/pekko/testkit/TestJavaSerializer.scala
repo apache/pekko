@@ -43,7 +43,7 @@ class TestJavaSerializer(val system: ExtendedActorSystem) extends BaseSerializer
     bos.toByteArray
   }
 
-  def fromBinary(bytes: Array[Byte], clazz: Option[Class[?]]): AnyRef = {
+  def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]): AnyRef = {
     val in =
       new ClassLoaderObjectInputStream(system.dynamicAccess.classLoader, new UnsynchronizedByteArrayInputStream(bytes))
     try JavaSerializer.currentSystem.withValue(system) { in.readObject }

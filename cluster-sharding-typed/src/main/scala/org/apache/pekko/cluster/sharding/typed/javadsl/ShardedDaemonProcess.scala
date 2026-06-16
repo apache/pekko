@@ -14,8 +14,8 @@
 package org.apache.pekko.cluster.sharding.typed.javadsl
 
 import java.util.Optional
-import java.util.function.{ Function => JFunction }
 import java.util.function.IntFunction
+import java.util.function.{ Function => JFunction }
 
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
@@ -29,7 +29,7 @@ import pekko.cluster.sharding.typed.ShardedDaemonProcessContext
 import pekko.cluster.sharding.typed.ShardedDaemonProcessSettings
 
 object ShardedDaemonProcess {
-  def get(system: ActorSystem[?]): ShardedDaemonProcess =
+  def get(system: ActorSystem[_]): ShardedDaemonProcess =
     pekko.cluster.sharding.typed.scaladsl.ShardedDaemonProcess(system).asJava
 }
 

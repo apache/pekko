@@ -27,6 +27,7 @@ import org.apache.pekko
 import pekko.Done
 import pekko.actor._
 import pekko.annotation.{ InternalApi, InternalStableApi }
+import pekko.annotation.ApiMayChange
 import pekko.cluster.Cluster
 import pekko.cluster.ClusterEvent._
 import pekko.cluster.ClusterSettings
@@ -50,7 +51,7 @@ object ShardRegion {
 
   /**
    * INTERNAL API
-   * Factory method for the [[pekko.actor.Props]] of the `ShardRegion` actor.
+   * Factory method for the [[pekko.actor.Props]] of the [[ShardRegion]] actor.
    */
   private[pekko] def props(
       typeName: String,
@@ -75,7 +76,7 @@ object ShardRegion {
 
   /**
    * INTERNAL API
-   * Factory method for the [[pekko.actor.Props]] of the `ShardRegion` actor
+   * Factory method for the [[pekko.actor.Props]] of the [[ShardRegion]] actor
    * when using it in proxy only mode.
    */
   private[pekko] def proxyProps(
@@ -113,7 +114,7 @@ object ShardRegion {
   type Msg = Any
 
   /**
-   * Interface of the partial function used by the `ShardRegion` to
+   * Interface of the partial function used by the [[ShardRegion]] to
    * extract the entity id and the message to send to the entity from an
    * incoming message. The implementation is application specific.
    * If the partial function does not match the message will be
@@ -125,7 +126,7 @@ object ShardRegion {
   type ExtractEntityId = PartialFunction[Msg, (EntityId, Msg)]
 
   /**
-   * Interface of the function used by the `ShardRegion` to
+   * Interface of the function used by the [[ShardRegion]] to
    * extract the shard id from an incoming message.
    * Only messages that passed the [[ExtractEntityId]] will be used
    * as input to this function.
@@ -500,8 +501,11 @@ object ShardRegion {
       with DeadLetterSuppression
 
   /**
+   * API MAY CHANGE: Messages for passivation strategies may change after additional testing and feedback.
+   *
    * When limit-based automatic passivation is enabled, set a new active entity limit for a shard region.
    */
+  @ApiMayChange
   final case class SetActiveEntityLimit(perRegionLimit: Int)
 
   /**
@@ -638,10 +642,7 @@ private[pekko] class ShardRegion(
   // sort by age, oldest first
   val ageOrdering = Member.ageOrdering
   // membersByAge is only used for tracking where coordinator is running
-  var membersByAge: immutable.SortedSet[Member] = {
-    implicit val ord: Ordering[Member] = ageOrdering
-    immutable.SortedSet.empty[Member]
-  }
+  var membersByAge: immutable.SortedSet[Member] = immutable.SortedSet.empty(ageOrdering)
   // membersByAge contains members with these status
   private val memberStatusOfInterest: Set[MemberStatus] =
     Set(MemberStatus.Up, MemberStatus.Leaving, MemberStatus.Exiting)
@@ -699,6 +700,12 @@ private[pekko] class ShardRegion(
   }
 
   private def logPassivationStrategy(): Unit = {
+    if (settings.passivationStrategySettings.oldSettingUsed) {
+      log.warning(
+        "The `pekko.cluster.sharding.passivate-idle-entity-after` setting and associated methods are deprecated. " +
+        "Use the `pekko.cluster.sharding.passivation.default-idle-strategy.idle-entity.timeout` setting instead. " +
+        "See the documentation and reference config for more information on automatic passivation strategies.")
+    }
     if (settings.rememberEntities) {
       log.debug("{}: Entities will not be passivated automatically because 'rememberEntities' is enabled.", typeName)
     } else {
@@ -775,10 +782,9 @@ private[pekko] class ShardRegion(
   }
 
   def receiveClusterState(state: CurrentClusterState): Unit = {
-    implicit val ord: Ordering[Member] = ageOrdering
     changeMembers(
       immutable.SortedSet
-        .empty[Member]
+        .empty(ageOrdering)
         .union(state.members.filter(m => memberStatusOfInterest(m.status) && matchingCoordinatorRole(m))))
   }
 
@@ -1090,7 +1096,7 @@ private[pekko] class ShardRegion(
 
     Future.traverse(shards.toSeq) { case (shardId, shard) => askOne(shard, msg, shardId) }.map { ps =>
       val qr = ShardsQueryResult[T](ps, this.shards.size, timeout.duration)
-      if (qr.failed.nonEmpty) log.warning("{}: {}", typeName, qr)
+      if (qr.failed.nonEmpty) log.warning(s"{}: $qr", typeName)
       qr
     }
   }

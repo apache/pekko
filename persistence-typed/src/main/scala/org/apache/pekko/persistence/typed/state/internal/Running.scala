@@ -210,7 +210,7 @@ private[pekko] object Running {
         state: RunningState[S, C],
         effect: Effect[S],
         sideEffects: immutable.Seq[SideEffect[S]] = Nil): (Behavior[InternalProtocol], Boolean) = {
-      if (setup.internalLogger.isDebugEnabled && !effect.isInstanceOf[CompositeEffect[?]])
+      if (setup.internalLogger.isDebugEnabled && !effect.isInstanceOf[CompositeEffect[_]])
         setup.internalLogger.debugN(
           s"Handled command [{}], resulting effect: [{}], side effects: [{}]",
           msg.getClass.getName,
@@ -228,7 +228,7 @@ private[pekko] object Running {
         case _: PersistNothing.type =>
           (applySideEffects(sideEffects, state), true)
 
-        case _: Delete[?] =>
+        case _: Delete[_] =>
           handleDelete(msg, sideEffects)
 
         case _: Unhandled.type =>
@@ -284,7 +284,7 @@ private[pekko] object Running {
         case DeleteFailure(exc)                => onDeleteFailed(exc)
         case RecoveryTimeout                   => Behaviors.unhandled
         case RecoveryPermitGranted             => Behaviors.unhandled
-        case _: GetSuccess[?]                  => Behaviors.unhandled
+        case _: GetSuccess[_]                  => Behaviors.unhandled
         case _: GetFailure                     => Behaviors.unhandled
       }
     }
@@ -381,16 +381,16 @@ private[pekko] object Running {
         unstashAll()
         behavior
 
-      case callback: Callback[?] =>
+      case callback: Callback[_] =>
         callback.sideEffect(state.state)
         behavior
     }
   }
 
   @InternalStableApi
-  private[pekko] def onWriteFailed(@nowarn("msg=never used") ctx: ActorContext[?],
+  private[pekko] def onWriteFailed(@nowarn("msg=never used") ctx: ActorContext[_],
       @nowarn("msg=never used") reason: Throwable): Unit = ()
   @InternalStableApi
-  private[pekko] def onWriteSuccess(@nowarn("msg=never used") ctx: ActorContext[?]): Unit = ()
+  private[pekko] def onWriteSuccess(@nowarn("msg=never used") ctx: ActorContext[_]): Unit = ()
 
 }

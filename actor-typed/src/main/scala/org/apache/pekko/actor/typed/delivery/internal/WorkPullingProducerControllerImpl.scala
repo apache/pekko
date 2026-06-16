@@ -664,7 +664,7 @@ private class WorkPullingProducerControllerImpl[A: ClassTag](
 
       case AskTimeout(outKey, outSeqNr) =>
         context.log.debug(
-          "Message seqNr [{}] sent to worker [{}] timed out. It will be redelivered.",
+          "Message seqNr [{}] sent to worker [{}] timed out. It will be be redelivered.",
           outSeqNr,
           outKey)
         Behaviors.same

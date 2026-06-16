@@ -54,11 +54,11 @@ object Player {
       case Transition(_, f: ClientFSM.State, t: ClientFSM.State)
           if f == AwaitDone && t == Connected => // SI-5900 workaround
         waiting ! Done; context.stop(self)
-      case t: Transition[?] =>
+      case t: Transition[_] =>
         waiting ! Status.Failure(new RuntimeException("unexpected transition: " + t)); context.stop(self)
       case CurrentState(_, s: ClientFSM.State) if s == Connected => // SI-5900 workaround
         waiting ! Done; context.stop(self)
-      case _: CurrentState[?] =>
+      case _: CurrentState[_] =>
     }
 
   }
@@ -313,8 +313,7 @@ private[pekko] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress
       } catch {
         case NonFatal(ex) =>
           // silence this one to not make tests look like they failed, it's not really critical
-          if (log.isDebugEnabled)
-            log.debug("Failed closing channel with {} {}", ex.getClass.getName, ex.getMessage)
+          log.debug(s"Failed closing channel with ${ex.getClass.getName} ${ex.getMessage}")
       }
   }
 

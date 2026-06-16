@@ -1101,7 +1101,7 @@ object Replicator {
  *
  * For good introduction to the CRDT subject watch the
  * <a href="https://www.infoq.com/presentations/CRDT/">Eventually Consistent Data Structures</a>
- * talk by Sean Cribbs and the
+ * talk by Sean Cribbs and and the
  * <a href="https://www.microsoft.com/en-us/research/video/strong-eventual-consistency-and-conflict-free-replicated-data-types/">talk by Mark Shapiro</a>
  * and read the excellent paper <a href="https://hal.inria.fr/file/index/docid/555588/filename/techreport.pdf">
  * A comprehensive study of Convergent and Commutative Replicated Data Types</a>
@@ -1374,10 +1374,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
 
   // cluster members sorted by age, oldest first,, doesn't contain selfAddress, doesn't contain joining and weaklyUp
   // only used when prefer-oldest is enabled
-  var membersByAge: immutable.SortedSet[Member] = {
-    implicit val ord: Ordering[Member] = Member.ageOrdering
-    immutable.SortedSet.empty[Member]
-  }
+  var membersByAge: immutable.SortedSet[Member] = immutable.SortedSet.empty(Member.ageOrdering)
 
   // cluster weaklyUp nodes, doesn't contain selfAddress
   var weaklyUpNodes: immutable.SortedSet[UniqueAddress] = immutable.SortedSet.empty
@@ -1396,10 +1393,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
 
   var removedNodes: Map[UniqueAddress, Long] = Map.empty
   // all nodes sorted with the leader first
-  var leader: TreeSet[Member] = {
-    implicit val ord: Ordering[Member] = Member.leaderStatusOrdering
-    TreeSet.empty[Member]
-  }
+  var leader: TreeSet[Member] = TreeSet.empty(Member.leaderStatusOrdering)
   def isLeader: Boolean =
     leader.nonEmpty && leader.head.address == selfAddress && leader.head.status == MemberStatus.Up
 
@@ -2770,10 +2764,10 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
       // Try again with the full state
       sender() ! writeMsg
 
-    case _: Replicator.UpdateSuccess[?] =>
+    case _: Replicator.UpdateSuccess[_] =>
       gotLocalStoreReply = true
       if (isDone) reply(isTimeout = false)
-    case _: Replicator.StoreFailure[?] =>
+    case _: Replicator.StoreFailure[_] =>
       gotLocalStoreReply = true
       gotWriteNackFrom += selfUniqueAddress.address
       if (isDone) reply(isTimeout = false)

@@ -37,7 +37,6 @@ import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.routing.ConsistentHashingPool;
 import org.apache.pekko.routing.ConsistentHashingRouter.ConsistentHashMapper;
 import org.apache.pekko.routing.ConsistentHashingRouter.ConsistentHashableEnvelope;
-
 // #imports2
 
 public class ConsistentHashingRouterDocTest extends AbstractJavaTest {
@@ -122,7 +121,6 @@ public class ConsistentHashingRouterDocTest extends AbstractJavaTest {
   public
   // #cache-actor
   static final String NOT_FOUND = "NOT_FOUND";
-
   // #cache-actor
 
   @Test

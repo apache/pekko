@@ -18,7 +18,7 @@ import org.apache.pekko.stream.scaladsl.Source
 
 object Zip {
 
-  implicit val system: ActorSystem[?] = ???
+  implicit val system: ActorSystem[_] = ???
 
   def zipN(): Unit = {
     // #zipN-simple

@@ -30,134 +30,131 @@ import org.apache.pekko.persistence.typed.PersistenceId;
 import org.junit.jupiter.api.Test;
 
 public class AccountExamplePersistenceProbeDocTest
-// #test
-
+    // #test
+   
 // #test
 {
-  @Test
-  public void createWithEmptyBalance() {
-    PersistenceProbeBehavior<AccountEntity.Command, AccountEntity.Event, AccountEntity.Account>
-        persistenceProbe = emptyAccount();
+    @Test
+    public void createWithEmptyBalance() {
+        PersistenceProbeBehavior<AccountEntity.Command, AccountEntity.Event, AccountEntity.Account>
+            persistenceProbe = emptyAccount();
 
-    BehaviorTestKit<AccountEntity.Command> testkit = persistenceProbe.getBehaviorTestKit();
+        BehaviorTestKit<AccountEntity.Command> testkit = persistenceProbe.getBehaviorTestKit();
 
-    StatusReplyInbox<Done> ackInbox = testkit.runAskWithStatus(AccountEntity.CreateAccount::new);
+        StatusReplyInbox<Done> ackInbox = testkit.runAskWithStatus(AccountEntity.CreateAccount::new);
 
-    ackInbox.expectValue(Done.getInstance());
-    persistenceProbe.getEventProbe().expectPersisted(AccountEntity.AccountCreated.INSTANCE);
+        ackInbox.expectValue(Done.getInstance());
+        persistenceProbe.getEventProbe().expectPersisted(AccountEntity.AccountCreated.INSTANCE);
 
-    // internal state is only exposed by the behavior via responses to messages or if it happens
-    //  to snapshot.  This particular behavior never snapshots, so we query within the actor's
-    //  protocol
-    assertFalse(persistenceProbe.getSnapshotProbe().hasEffects());
+        // internal state is only exposed by the behavior via responses to messages or if it happens
+        //  to snapshot.  This particular behavior never snapshots, so we query within the actor's
+        //  protocol
+        assertFalse(persistenceProbe.getSnapshotProbe().hasEffects());
 
-    ReplyInbox<AccountEntity.CurrentBalance> currentBalanceInbox =
-        testkit.runAsk(AccountEntity.GetBalance::new);
+        ReplyInbox<AccountEntity.CurrentBalance> currentBalanceInbox =
+            testkit.runAsk(AccountEntity.GetBalance::new);
 
-    assertEquals(BigDecimal.ZERO, currentBalanceInbox.receiveReply().balance);
-  }
+        assertEquals(BigDecimal.ZERO, currentBalanceInbox.receiveReply().balance);
+    }
 
-  @Test
-  public void handleDepositAndWithdraw() {
-    PersistenceProbeBehavior<AccountEntity.Command, AccountEntity.Event, AccountEntity.Account>
-        persistenceProbe = openedAccount();
+    @Test
+    public void handleDepositAndWithdraw() {
+        PersistenceProbeBehavior<AccountEntity.Command, AccountEntity.Event, AccountEntity.Account>
+            persistenceProbe = openedAccount();
 
-    BehaviorTestKit<AccountEntity.Command> testkit = persistenceProbe.getBehaviorTestKit();
-    BigDecimal currentBalance;
+        BehaviorTestKit<AccountEntity.Command> testkit = persistenceProbe.getBehaviorTestKit();
+        BigDecimal currentBalance;
 
-    testkit
-        .runAskWithStatus(
-            Done.class, replyTo -> new AccountEntity.Deposit(BigDecimal.valueOf(100), replyTo))
-        .expectValue(Done.getInstance());
-
-    assertEquals(
-        BigDecimal.valueOf(100),
-        persistenceProbe
-            .getEventProbe()
-            .expectPersistedClass(AccountEntity.Deposited.class)
-            .persistedObject()
-            .amount);
-
-    currentBalance =
         testkit
-            .runAsk(AccountEntity.CurrentBalance.class, AccountEntity.GetBalance::new)
-            .receiveReply()
-            .balance;
+            .runAskWithStatus(
+                Done.class, replyTo -> new AccountEntity.Deposit(BigDecimal.valueOf(100), replyTo))
+            .expectValue(Done.getInstance());
 
-    assertEquals(BigDecimal.valueOf(100), currentBalance);
+        assertEquals(
+            BigDecimal.valueOf(100),
+            persistenceProbe
+                .getEventProbe()
+                .expectPersistedClass(AccountEntity.Deposited.class)
+                .persistedObject()
+                .amount);
 
-    testkit
-        .runAskWithStatus(
-            Done.class, replyTo -> new AccountEntity.Withdraw(BigDecimal.valueOf(10), replyTo))
-        .expectValue(Done.getInstance());
+        currentBalance =
+            testkit
+                .runAsk(AccountEntity.CurrentBalance.class, AccountEntity.GetBalance::new)
+                .receiveReply()
+                .balance;
 
-    // can save the persistence effect for in-depth inspection
-    PersistenceEffect<AccountEntity.Withdrawn> withdrawEffect =
-        persistenceProbe.getEventProbe().expectPersistedClass(AccountEntity.Withdrawn.class);
-    assertEquals(BigDecimal.valueOf(10), withdrawEffect.persistedObject().amount);
-    assertEquals(3L, withdrawEffect.sequenceNr());
-    assertTrue(withdrawEffect.tags().isEmpty());
+        assertEquals(BigDecimal.valueOf(100), currentBalance);
 
-    currentBalance =
         testkit
-            .runAsk(AccountEntity.CurrentBalance.class, AccountEntity.GetBalance::new)
-            .receiveReply()
-            .balance;
+            .runAskWithStatus(
+                Done.class, replyTo -> new AccountEntity.Withdraw(BigDecimal.valueOf(10), replyTo))
+            .expectValue(Done.getInstance());
 
-    assertEquals(BigDecimal.valueOf(90), currentBalance);
-  }
+        // can save the persistence effect for in-depth inspection
+        PersistenceEffect<AccountEntity.Withdrawn> withdrawEffect =
+            persistenceProbe.getEventProbe().expectPersistedClass(AccountEntity.Withdrawn.class);
+        assertEquals(BigDecimal.valueOf(10), withdrawEffect.persistedObject().amount);
+        assertEquals(3L, withdrawEffect.sequenceNr());
+        assertTrue(withdrawEffect.tags().isEmpty());
 
-  @Test
-  public void rejectWithdrawOverdraft() {
-    PersistenceProbeBehavior<AccountEntity.Command, AccountEntity.Event, AccountEntity.Account>
-        persistenceProbe = accountWithBalance(BigDecimal.valueOf(100));
+        currentBalance =
+            testkit
+                .runAsk(AccountEntity.CurrentBalance.class, AccountEntity.GetBalance::new)
+                .receiveReply()
+                .balance;
 
-    BehaviorTestKit<AccountEntity.Command> testkit = persistenceProbe.getBehaviorTestKit();
+        assertEquals(BigDecimal.valueOf(90), currentBalance);
+    }
 
-    testkit
-        .runAskWithStatus(
-            Done.class, replyTo -> new AccountEntity.Withdraw(BigDecimal.valueOf(110), replyTo))
-        .expectErrorMessage("not enough funds to withdraw 110");
+    @Test
+    public void rejectWithdrawOverdraft() {
+        PersistenceProbeBehavior<AccountEntity.Command, AccountEntity.Event, AccountEntity.Account>
+            persistenceProbe = accountWithBalance(BigDecimal.valueOf(100));
 
-    assertFalse(persistenceProbe.getEventProbe().hasEffects());
-  }
+        BehaviorTestKit<AccountEntity.Command> testkit = persistenceProbe.getBehaviorTestKit();
 
-  // #test
-  private PersistenceProbeBehavior<
-          AccountEntity.Command, AccountEntity.Event, AccountEntity.Account>
-      emptyAccount() {
-    return
-    // #persistenceProbe-behavior
-    PersistenceProbeBehavior.fromEventSourced(
-        AccountEntity.create("1", PersistenceId.of("Account", "1")),
-        null, // use the initial state
-        0 // initial sequence number
-        );
-    // #persistenceProbe-behavior
-  }
+        testkit
+            .runAskWithStatus(
+                Done.class, replyTo -> new AccountEntity.Withdraw(BigDecimal.valueOf(110), replyTo))
+            .expectErrorMessage("not enough funds to withdraw 110");
 
-  private PersistenceProbeBehavior<
-          AccountEntity.Command, AccountEntity.Event, AccountEntity.Account>
-      openedAccount() {
-    return
-    // #persistenceProbe-behavior-provided-state
-    PersistenceProbeBehavior.fromEventSourced(
-        AccountEntity.create("1", PersistenceId.of("Account", "1")),
-        new AccountEntity.EmptyAccount()
-            .openedAccount(), // duplicate the event handler for AccountCreated on an EmptyAccount
-        1 // assume that CreateAccount was the first command
-        );
-    // #persistenceProbe-behavior-provided-state
-  }
+        assertFalse(persistenceProbe.getEventProbe().hasEffects());
+    }
 
-  private PersistenceProbeBehavior<
-          AccountEntity.Command, AccountEntity.Event, AccountEntity.Account>
-      accountWithBalance(BigDecimal balance) {
-    return PersistenceProbeBehavior.fromEventSourced(
-        AccountEntity.create("1", PersistenceId.of("Account", "1")),
-        new AccountEntity.OpenedAccount(balance),
-        2);
-  }
-  // #test
+    // #test
+    private PersistenceProbeBehavior<AccountEntity.Command, AccountEntity.Event, AccountEntity.Account>
+    emptyAccount() {
+        return
+            // #persistenceProbe-behavior
+            PersistenceProbeBehavior.fromEventSourced(
+                AccountEntity.create("1", PersistenceId.of("Account", "1")),
+                null, // use the initial state
+                0 // initial sequence number
+            );
+        // #persistenceProbe-behavior
+    }
+
+    private PersistenceProbeBehavior<AccountEntity.Command, AccountEntity.Event, AccountEntity.Account>
+    openedAccount() {
+        return
+            // #persistenceProbe-behavior-provided-state
+            PersistenceProbeBehavior.fromEventSourced(
+                AccountEntity.create("1", PersistenceId.of("Account", "1")),
+                new AccountEntity.EmptyAccount()
+                    .openedAccount(), // duplicate the event handler for AccountCreated on an EmptyAccount
+                1 // assume that CreateAccount was the first command
+            );
+        // #persistenceProbe-behavior-provided-state
+    }
+
+    private PersistenceProbeBehavior<AccountEntity.Command, AccountEntity.Event, AccountEntity.Account>
+    accountWithBalance(BigDecimal balance) {
+        return PersistenceProbeBehavior.fromEventSourced(
+            AccountEntity.create("1", PersistenceId.of("Account", "1")),
+            new AccountEntity.OpenedAccount(balance),
+            2);
+    }
+    // #test
 }
 // #test

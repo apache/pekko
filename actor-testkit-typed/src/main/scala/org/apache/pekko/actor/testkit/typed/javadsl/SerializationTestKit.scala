@@ -20,7 +20,7 @@ import pekko.actor.typed.ActorSystem
 /**
  * Utilities to test serialization.
  */
-class SerializationTestKit(system: ActorSystem[?]) {
+class SerializationTestKit(system: ActorSystem[_]) {
 
   private val delegate = new scaladsl.SerializationTestKit(system)
 

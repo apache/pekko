@@ -400,7 +400,7 @@ class TestKit(system: ActorSystem) {
    * Same as `expectMsgAnyClassOf(remainingOrDefault, obj...)`, but correctly treating the timeFactor.
    */
   @varargs
-  def expectMsgAnyClassOf[T](objs: Class[?]*): T = tp.expectMsgAnyClassOf(objs: _*).asInstanceOf[T]
+  def expectMsgAnyClassOf[T](objs: Class[_]*): T = tp.expectMsgAnyClassOf(objs: _*).asInstanceOf[T]
 
   /**
    * Receive one message from the test actor and assert that it conforms to
@@ -408,7 +408,7 @@ class TestKit(system: ActorSystem) {
    * with an AssertionFailure being thrown in case of timeout.
    */
   @varargs
-  def expectMsgAnyClassOf[T](max: java.time.Duration, objs: Class[?]*): T =
+  def expectMsgAnyClassOf[T](max: java.time.Duration, objs: Class[_]*): T =
     tp.expectMsgAnyClassOf(max.toScala, objs: _*).asInstanceOf[T]
 
   /**

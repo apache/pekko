@@ -53,7 +53,7 @@ abstract class ScalaTestWithActorTestKit(override val testKit: ActorTestKit)
   /**
    * Use a custom [[pekko.actor.typed.ActorSystem]] for the actor system.
    */
-  def this(system: ActorSystem[?]) = this(ActorTestKit(system))
+  def this(system: ActorSystem[_]) = this(ActorTestKit(system))
 
   /**
    * Use a custom config for the actor system.
