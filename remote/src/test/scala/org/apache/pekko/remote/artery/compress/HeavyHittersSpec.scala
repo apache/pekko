@@ -170,6 +170,40 @@ class HeavyHittersSpec extends AnyWordSpecLike with Matchers {
       hitters.lowestHitterWeight should ===(3)
     }
 
+    "support weight decrease (e.g. from frequency sketch reset)" in {
+      val hitters = new TopHeavyHitters[String](2)
+      hitters.update("A", 10) should ===(true)
+      hitters.update("B", 20) should ===(true)
+      hitters.lowestHitterWeight should ===(10)
+
+      // Simulate frequency sketch reset: weight decreases
+      hitters.update("A", 5) should ===(false)
+      // A is now the lowest hitter
+      hitters.lowestHitterWeight should ===(5)
+
+      // A new item with weight > 5 should replace A
+      hitters.update("C", 8) should ===(true)
+      hitters.iterator.toSet should ===(Set("B", "C"))
+    }
+
+    "restore heap property upward when weight decreases" in {
+      val hitters = new TopHeavyHitters[String](4)
+      hitters.update("A", 10) should ===(true)
+      hitters.update("B", 20) should ===(true)
+      hitters.update("C", 30) should ===(true)
+      hitters.update("D", 40) should ===(true)
+      hitters.lowestHitterWeight should ===(10)
+
+      // Decrease D's weight significantly - it should bubble up to become the lowest
+      hitters.update("D", 1) should ===(false)
+      hitters.lowestHitterWeight should ===(1)
+      hitters.iterator.toSet should ===(Set("A", "B", "C", "D"))
+
+      // A new item should replace D (the new lowest)
+      hitters.update("E", 15) should ===(true)
+      hitters.iterator.toSet should ===(Set("A", "B", "C", "E"))
+    }
+
     "be disabled with max=0" in {
       val hitters = new TopHeavyHitters[String](0)
       hitters.update("A", 10) shouldBe true
