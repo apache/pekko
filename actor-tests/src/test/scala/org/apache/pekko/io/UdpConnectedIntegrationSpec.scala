@@ -162,7 +162,7 @@ class UdpConnectedIntegrationSpec extends PekkoSpec("""
       clientCommander ! UdpConnected.Send(ByteString("data to trigger fail"), 2)
       expectMsg(2)
 
-      // when a new server appears at the same port it should be able to receive
+      // when a new server appears at the same port it it should be able to receive
       val serverIncarnation2Handler = TestProbe()
       val serverIncarnation2 = bindUdp(serverAddress, serverIncarnation2Handler.ref)
       val dataToNewIncarnation = ByteString("Data to new incarnation")

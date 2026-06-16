@@ -101,7 +101,6 @@ interface WorkPullingDocExample {
       return Behaviors.same();
     }
   }
-
   // #consumer
 
   // #producer
@@ -290,7 +289,6 @@ interface WorkPullingDocExample {
                   resultId, convert.fromFormat, convert.toFormat, convert.image));
       return waitForNext();
     }
-
     // #producer
 
     Object askScope =

@@ -22,28 +22,28 @@ object Dependencies {
     // https://protobuf.dev/support/version-support/
     // The protoc version can be inferred from the Protobuf Java minor version number.
     // Example: Protobuf Java version 3.25.x uses protoc version 25.x.
-    val protobufJavaVersion = "4.35.1"
-    val protocVersion = "35.0"
+    val protobufJavaVersion = "4.35.0"
+    val protocVersion = "34.1"
   }
 
   val junitVersion = "4.13.2"
   val junit6Version = "6.1.0"
   val slf4jVersion = "2.0.18"
   // also update agrona version when updating aeron:
-  val aeronVersion = "1.51.0"
+  val aeronVersion = "1.50.4"
   // Use the major+minor agrona versions matching aeron at
   // https://github.com/aeron-io/aeron/blob/1.x.y/gradle/libs.versions.toml
   // (remember to also update the scala-steward pin)
   val agronaVersion = "2.4.1"
-  val nettyVersion = "4.2.15.Final"
-  val logbackVersion = "1.5.34"
+  val nettyVersion = "4.2.14.Final"
+  val logbackVersion = "1.5.33"
 
   val jacksonAnnotationsVersion = "2.21"
-  val jacksonVersion2 = "2.22.0"
-  val jacksonVersion3 = "3.2.0"
+  val jacksonVersion2 = "2.21.4"
+  val jacksonVersion3 = "3.1.4"
 
   val scala213Version = "2.13.18"
-  val scala3Version = "3.3.8"
+  val scala3Version = "3.3.7"
   val allScalaVersions = Seq(scala213Version, scala3Version)
 
   val reactiveStreamsVersion = "1.0.4"
@@ -57,7 +57,7 @@ object Dependencies {
   object Compile {
     // Compile
 
-    val config = "com.typesafe" % "config" % "1.4.9"
+    val config = "com.typesafe" % "config" % "1.4.8"
     val `netty-transport` = "io.netty" % "netty-transport" % nettyVersion
     val `netty-handler` = "io.netty" % "netty-handler" % nettyVersion
 
@@ -142,7 +142,7 @@ object Dependencies {
 
       val pojosr = "com.googlecode.pojosr" % "de.kalpatec.pojosr.framework" % "0.2.1" % Test
       val tinybundles = "org.ops4j.pax.tinybundles" % "tinybundles" % "4.0.1" % Test
-      val bndlib = "biz.aQute.bnd" % "biz.aQute.bndlib" % "7.3.0" % Test
+      val bndlib = "biz.aQute.bnd" % "biz.aQute.bndlib" % "7.2.3" % Test
       val `pax-exam` = "org.ops4j.pax.exam" % "pax-exam" % "4.14.0" % Test
       val `pax-exam-cm` = "org.ops4j.pax.exam" % "pax-exam-cm" % "4.14.0" % Test
       val `pax-exam-container-forked` = "org.ops4j.pax.exam" % "pax-exam-container-forked" % "4.14.0" % Test

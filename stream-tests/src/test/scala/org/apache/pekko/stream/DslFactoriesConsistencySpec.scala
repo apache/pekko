@@ -85,26 +85,26 @@ class DslFactoriesConsistencySpec extends AnyWordSpec with Matchers {
       (2 to 22) .map { i => (Class.forName(s"scala.Function$i"), Class.forName(s"org.apache.pekko.japi.function.Function$i")) }.toList
   // format: ON
 
-  val sSource = classOf[scaladsl.Source[?, ?]]
-  val jSource = classOf[javadsl.Source[?, ?]]
+  val sSource = classOf[scaladsl.Source[_, _]]
+  val jSource = classOf[javadsl.Source[_, _]]
 
-  val sSink = classOf[scaladsl.Sink[?, ?]]
-  val jSink = classOf[javadsl.Sink[?, ?]]
+  val sSink = classOf[scaladsl.Sink[_, _]]
+  val jSink = classOf[javadsl.Sink[_, _]]
 
-  val sFlow = classOf[scaladsl.Flow[?, ?, ?]]
-  val jFlow = classOf[javadsl.Flow[?, ?, ?]]
+  val sFlow = classOf[scaladsl.Flow[_, _, _]]
+  val jFlow = classOf[javadsl.Flow[_, _, _]]
 
-  val sRunnableGraph = classOf[scaladsl.RunnableGraph[?]]
-  val jRunnableGraph = classOf[javadsl.RunnableGraph[?]]
+  val sRunnableGraph = classOf[scaladsl.RunnableGraph[_]]
+  val jRunnableGraph = classOf[javadsl.RunnableGraph[_]]
 
-  val graph = classOf[Graph[?, ?]]
+  val graph = classOf[Graph[_, _]]
 
-  case class TestCase(name: String, sClass: Option[Class[?]], jClass: Option[Class[?]], jFactory: Option[Class[?]])
+  case class TestCase(name: String, sClass: Option[Class[_]], jClass: Option[Class[_]], jFactory: Option[Class[_]])
   object TestCase {
-    def apply(name: String, sClass: Class[?], jClass: Class[?], jFactory: Class[?]): TestCase =
+    def apply(name: String, sClass: Class[_], jClass: Class[_], jFactory: Class[_]): TestCase =
       TestCase(name, Some(sClass), Some(jClass), Some(jFactory))
 
-    def apply(name: String, sClass: Class[?], jClass: Class[?]): TestCase =
+    def apply(name: String, sClass: Class[_], jClass: Class[_]): TestCase =
       TestCase(name, Some(sClass), Some(jClass), None)
   }
 
@@ -142,19 +142,19 @@ class DslFactoriesConsistencySpec extends AnyWordSpec with Matchers {
 
   // here be dragons...
 
-  private def getJMethods(jClass: Class[?]): List[Method] =
+  private def getJMethods(jClass: Class[_]): List[Method] =
     jClass.getDeclaredMethods.filterNot(javaIgnore contains _.getName).map(toMethod).filterNot(ignore).toList
-  private def getSMethods(sClass: Class[?]): List[Method] =
+  private def getSMethods(sClass: Class[_]): List[Method] =
     sClass.getMethods.filterNot(scalaIgnore contains _.getName).map(toMethod).filterNot(ignore).toList
 
   private def toMethod(m: java.lang.reflect.Method): Method =
     Method(m.getName, List(m.getParameterTypes.toIndexedSeq: _*), m.getReturnType, m.getDeclaringClass)
 
   private case class Ignore(
-      cls: Class[?] => Boolean,
+      cls: Class[_] => Boolean,
       name: String => Boolean,
       parameters: Int => Boolean,
-      paramTypes: List[Class[?]] => Boolean)
+      paramTypes: List[Class[_]] => Boolean)
 
   private def ignore(m: Method): Boolean = {
     val ignores = Seq(
@@ -163,13 +163,13 @@ class DslFactoriesConsistencySpec extends AnyWordSpec with Matchers {
         _ == pekko.stream.scaladsl.Source.getClass,
         _ == "apply",
         _ == 1,
-        _ == List(classOf[pekko.stream.impl.SourceModule[?, ?]])),
+        _ == List(classOf[pekko.stream.impl.SourceModule[_, _]])),
       // no Java equivalent for this Scala only convenience method
       Ignore(
         _ == pekko.stream.scaladsl.Source.getClass,
         _ == "apply",
         _ == 1,
-        _ == List(classOf[scala.collection.immutable.Seq[?]])),
+        _ == List(classOf[scala.collection.immutable.Seq[_]])),
       // corresponding matches on java side would need to have Function23
       Ignore(_ == pekko.stream.scaladsl.Source.getClass, _ == "apply", _ == 24, _ => true),
       Ignore(_ == pekko.stream.scaladsl.Flow.getClass, _ == "apply", _ == 24, _ => true),
@@ -214,7 +214,7 @@ class DslFactoriesConsistencySpec extends AnyWordSpec with Matchers {
     case m if m.parameterTypes.size > 1 =>
       m.copy(
         name = m.name.filter(Character.isLetter),
-        parameterTypes = m.parameterTypes.dropRight(1) :+ classOf[pekko.japi.function.Function[?, ?]])
+        parameterTypes = m.parameterTypes.dropRight(1) :+ classOf[pekko.japi.function.Function[_, _]])
     case m => m
   }
 
@@ -270,7 +270,7 @@ class DslFactoriesConsistencySpec extends AnyWordSpec with Matchers {
   def returnTypeString(m: Method): String =
     m.returnType.getName.drop("pekko.stream.".length)
 
-  case class Method(name: String, parameterTypes: List[Class[?]], returnType: Class[?], declaringClass: Class[?])
+  case class Method(name: String, parameterTypes: List[Class[_]], returnType: Class[_], declaringClass: Class[_])
 
   sealed trait MatchResult {
     def j: Method
@@ -309,21 +309,21 @@ class DslFactoriesConsistencySpec extends AnyWordSpec with Matchers {
    * Keyed elements in scaladsl must also be keyed elements in javadsl.
    * If scaladsl is not a keyed type, javadsl shouldn't be as well.
    */
-  def returnTypeMatch(s: Class[?], j: Class[?]): Boolean =
+  def returnTypeMatch(s: Class[_], j: Class[_]): Boolean =
     (sSource.isAssignableFrom(s) && jSource.isAssignableFrom(j)) ||
     (sSink.isAssignableFrom(s) && jSink.isAssignableFrom(j)) ||
     (sFlow.isAssignableFrom(s) && jFlow.isAssignableFrom(j)) ||
     (sRunnableGraph.isAssignableFrom(s) && jRunnableGraph.isAssignableFrom(j)) ||
     (graph.isAssignableFrom(s) && graph.isAssignableFrom(j))
 
-  def typeMatch(scalaParams: List[Class[?]], javaParams: List[Class[?]]): Boolean =
+  def typeMatch(scalaParams: List[Class[_]], javaParams: List[Class[_]]): Boolean =
     (scalaParams, javaParams) match {
       case (s, j) if s == j                     => true
       case (s, j) if s.zip(j).forall(typeMatch) => true
       case _                                    => false
     }
 
-  def typeMatch(p: (Class[?], Class[?])): Boolean =
+  def typeMatch(p: (Class[_], Class[_])): Boolean =
     if (p._1 == p._2) true
     else if (`scala -> java types` contains p) true
     else false

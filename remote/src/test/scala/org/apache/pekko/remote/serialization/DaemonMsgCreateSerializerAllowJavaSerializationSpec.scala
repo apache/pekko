@@ -66,8 +66,8 @@ private[pekko] trait SerializationVerification { self: PekkoSpec =>
     got.props.args.length should ===(expected.props.args.length)
     got.props.args.zip(expected.props.args).foreach {
       case (g, e) =>
-        if (e.isInstanceOf[Function0[?]]) ()
-        else if (e.isInstanceOf[Function1[?, ?]]) ()
+        if (e.isInstanceOf[Function0[_]]) ()
+        else if (e.isInstanceOf[Function1[_, _]]) ()
         else g should ===(e)
     }
     got.props.deploy should ===(expected.props.deploy)

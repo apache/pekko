@@ -14,13 +14,13 @@
 import sbtheader.HeaderPlugin.autoImport.headerSources
 import sbt.{ Compile, Def, Test, _ }
 
-object CopyrightHeaderForJdk21 extends AutoPlugin {
+object CopyrightHeaderForJdk9 extends AutoPlugin {
 
-  override lazy val requires = CopyrightHeader && Jdk21
+  override lazy val requires = CopyrightHeader && Jdk9
   override lazy val trigger = allRequirements
 
   private lazy val additionalFiles = Def.setting {
-    import Jdk21._
+    import Jdk9._
     for {
       dir <- additionalSourceDirectories.value ++ additionalTestSourceDirectories.value
       language <- List("java", "scala")
@@ -28,7 +28,7 @@ object CopyrightHeaderForJdk21 extends AutoPlugin {
     } yield file
   }
 
-  override lazy val projectSettings: Seq[Def.Setting[?]] = {
+  override lazy val projectSettings: Seq[Def.Setting[_]] = {
 
     Seq(Compile / headerSources ++= additionalFiles.value,
       Test / headerSources ++= additionalFiles.value)

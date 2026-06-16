@@ -71,7 +71,6 @@ public class SerializationDocTest {
       // #...
     }
   }
-
   // #my-own-serializer
 
   static class Customer {
@@ -132,7 +131,6 @@ public class SerializationDocTest {
       else throw new IllegalArgumentException("Unknown manifest: " + manifest);
     }
   }
-
   // #my-own-serializer2
 
   @Test

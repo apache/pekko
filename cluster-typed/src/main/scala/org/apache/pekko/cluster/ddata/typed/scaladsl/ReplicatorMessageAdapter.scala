@@ -104,7 +104,7 @@ class ReplicatorMessageAdapter[A, B <: ReplicatedData](
    * `responseAdapter` function.
    *
    * Note that `createRequest` is a function that creates the `Update` message from the provided
-   * `ActorRef[UpdateResponse]` that the replicator will send the response message back through.
+   * `ActorRef[UpdateResponse]` that the the replicator will send the response message back through.
    * Use that `ActorRef[UpdateResponse]` as the `replyTo` parameter in the `Update` message.
    */
   def askUpdate(
@@ -123,7 +123,7 @@ class ReplicatorMessageAdapter[A, B <: ReplicatedData](
    * `responseAdapter` function.
    *
    * Note that `createRequest` is a function that creates the `Get` message from the provided
-   * `ActorRef[GetResponse]` that the replicator will send the response message back through.
+   * `ActorRef[GetResponse]` that the the replicator will send the response message back through.
    * Use that `ActorRef[GetResponse]` as the `replyTo` parameter in the `Get` message.
    */
   def askGet(
@@ -141,7 +141,7 @@ class ReplicatorMessageAdapter[A, B <: ReplicatedData](
    * `responseAdapter` function.
    *
    * Note that `createRequest` is a function that creates the `Delete` message from the provided
-   * `ActorRef[DeleteResponse]` that the replicator will send the response message back through.
+   * `ActorRef[DeleteResponse]` that the the replicator will send the response message back through.
    * Use that `ActorRef[DeleteResponse]` as the `replyTo` parameter in the `Delete` message.
    */
   def askDelete(
@@ -160,7 +160,7 @@ class ReplicatorMessageAdapter[A, B <: ReplicatedData](
    * `responseAdapter` function.
    *
    * Note that `createRequest` is a function that creates the `GetReplicaCount` message from the provided
-   * `ActorRef[ReplicaCount]` that the replicator will send the response message back through.
+   * `ActorRef[ReplicaCount]` that the the replicator will send the response message back through.
    * Use that `ActorRef[ReplicaCount]` as the `replyTo` parameter in the `GetReplicaCount` message.
    */
   def askReplicaCount(

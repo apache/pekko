@@ -38,8 +38,8 @@ import org.apache.pekko.cluster.sharding.typed.javadsl.EntityRef;
 import org.apache.pekko.cluster.sharding.typed.javadsl.Entity;
 import org.apache.pekko.persistence.typed.javadsl.EventSourcedBehavior;
 import org.apache.pekko.serialization.jackson.CborSerializable;
+import org.apache.pekko.util.Timeout;
 import com.fasterxml.jackson.annotation.JsonCreator;
-
 // #persistent-entity-usage-import
 
 public class HelloWorldPersistentEntityExample {
@@ -76,7 +76,6 @@ public class HelloWorldPersistentEntityExample {
       return result.thenApply(greeting -> greeting.numberOfPeople);
     }
   }
-
   // #persistent-entity-usage
 
   // #persistent-entity

@@ -66,7 +66,7 @@ import pekko.dispatch.Mailboxes
     new pekko.actor.Props(
       deploy,
       TypedCreatorFunctionConsumerClazz,
-      classOf[ActorAdapter[?]] :: (() => new ActorAdapter(behavior(), rethrowTypedFailure)) :: Nil)
+      classOf[ActorAdapter[_]] :: (() => new ActorAdapter(behavior(), rethrowTypedFailure)) :: Nil)
   }
 
 }

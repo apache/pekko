@@ -52,7 +52,7 @@ object EventSourcedProducerQueue {
      * Scala API: Factory method from config `pekko.reliable-delivery.producer-controller.event-sourced-durable-queue`
      * of the `ActorSystem`.
      */
-    def apply(system: ActorSystem[?]): Settings =
+    def apply(system: ActorSystem[_]): Settings =
       apply(system.settings.config.getConfig("pekko.reliable-delivery.producer-controller.event-sourced-durable-queue"))
 
     /**
@@ -74,7 +74,7 @@ object EventSourcedProducerQueue {
      * Java API: Factory method from config `pekko.reliable-delivery.producer-controller.event-sourced-durable-queue`
      * of the `ActorSystem`.
      */
-    def create(system: ActorSystem[?]): Settings =
+    def create(system: ActorSystem[_]): Settings =
       apply(system)
 
     /**
@@ -274,7 +274,7 @@ private class EventSourcedProducerQueue[A](
         case LoadState(replyTo) =>
           Effect.reply(replyTo)(state)
 
-        case _: CleanupTick[?] =>
+        case _: CleanupTick[_] =>
           onCleanupTick(state)
 
         case cmd =>
@@ -307,7 +307,7 @@ private class EventSourcedProducerQueue[A](
 
   def onCommandBeforeInitialCleanup(state: State[A], command: Command[A]): Effect[Event, State[A]] = {
     command match {
-      case _: CleanupTick[?] =>
+      case _: CleanupTick[_] =>
         val old = oldUnconfirmedToCleanup(state)
         val stateWithoutPartialChunkedMessages = state.cleanupPartialChunkedMessages()
         initialCleanupDone = true

@@ -97,7 +97,7 @@ class SystemMessageSerializer(val system: ExtendedActorSystem) extends BaseSeria
     builder.build().toByteArray
   }
 
-  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[?]]): AnyRef = {
+  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef = {
     deserializeSystemMessage(SystemMessageFormats.SystemMessage.parseFrom(bytes))
   }
 

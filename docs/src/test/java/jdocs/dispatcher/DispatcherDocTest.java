@@ -244,13 +244,11 @@ public class DispatcherDocTest extends AbstractJavaTest {
           });
     }
   }
-
   // #prio-mailbox
 
   public
   // #control-aware-mailbox-messages
   static class MyControlMessage implements ControlMessage {}
-
   // #control-aware-mailbox-messages
 
   @Test
@@ -271,7 +269,6 @@ public class DispatcherDocTest extends AbstractJavaTest {
     // #require-mailbox-on-actor
     // ...
   }
-
   // #require-mailbox-on-actor
 
   @Test

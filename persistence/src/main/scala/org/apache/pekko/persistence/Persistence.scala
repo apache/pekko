@@ -270,7 +270,7 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
     .getStringList("journal.auto-start-journals")
     .forEach(new Consumer[String] {
       override def accept(id: String): Unit = {
-        log.info("Auto-starting journal plugin `{}`", id)
+        log.info(s"Auto-starting journal plugin `$id`")
         journalFor(id)
       }
     })
@@ -278,7 +278,7 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
     .getStringList("snapshot-store.auto-start-snapshot-stores")
     .forEach(new Consumer[String] {
       override def accept(id: String): Unit = {
-        log.info("Auto-starting snapshot store `{}`", id)
+        log.info(s"Auto-starting snapshot store `$id`")
         snapshotStoreFor(id)
       }
     })
@@ -409,7 +409,7 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
     val pluginClassName = pluginConfig.getString("class")
     if (isEmpty(pluginClassName))
       throw new IllegalArgumentException(s"Plugin class name must be defined in config property [$configPath.class]")
-    log.debug("Create plugin: {} {}", pluginActorName, pluginClassName)
+    log.debug(s"Create plugin: $pluginActorName $pluginClassName")
     val pluginClass = system.dynamicAccess.getClassFor[Any](pluginClassName).get
     val pluginDispatcherId = pluginConfig.getString("plugin-dispatcher")
     val pluginActorArgs: List[AnyRef] =

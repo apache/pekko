@@ -46,11 +46,11 @@ object RestartSink {
    * @param settings [[RestartSettings]] defining restart configuration
    * @param sinkFactory A factory for producing the [[Sink]] to wrap.
    */
-  def withBackoff[T](settings: RestartSettings)(sinkFactory: () => Sink[T, ?]): Sink[T, NotUsed] =
+  def withBackoff[T](settings: RestartSettings)(sinkFactory: () => Sink[T, _]): Sink[T, NotUsed] =
     Sink.fromGraph(new RestartWithBackoffSink(sinkFactory, settings))
 }
 
-private final class RestartWithBackoffSink[T](sinkFactory: () => Sink[T, ?], restartSettings: RestartSettings)
+private final class RestartWithBackoffSink[T](sinkFactory: () => Sink[T, _], restartSettings: RestartSettings)
     extends GraphStage[SinkShape[T]] { self =>
 
   val in = Inlet[T]("RestartWithBackoffSink.in")

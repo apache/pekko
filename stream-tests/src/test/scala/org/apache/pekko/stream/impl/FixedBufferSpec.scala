@@ -113,8 +113,8 @@ class FixedBufferSpec extends StreamSpec {
 
         try {
           val cheat = buf.asInstanceOf[{ def readIdx_=(l: Long): Unit; def writeIdx_=(l: Long): Unit }]
-          val _: Unit = cheat.readIdx_=(Int.MaxValue)
-          val _: Unit = cheat.writeIdx_=(Int.MaxValue)
+          cheat.readIdx_=(Int.MaxValue)
+          cheat.writeIdx_=(Int.MaxValue)
 
           for (_ <- 1 to 10) {
             buf.isEmpty should be(true)
@@ -141,19 +141,19 @@ class FixedBufferSpec extends StreamSpec {
     }
 
     "produce BoundedBuffers when capacity > max-fixed-buffer-size" in {
-      Buffer(Int.MaxValue, default) shouldBe a[BoundedBuffer[?]]
+      Buffer(Int.MaxValue, default) shouldBe a[BoundedBuffer[_]]
     }
 
     "produce FixedSizeBuffers when capacity < max-fixed-buffer-size" in {
-      Buffer(1000, default) shouldBe a[FixedSizeBuffer.ModuloFixedSizeBuffer[?]]
-      Buffer(1024, default) shouldBe a[FixedSizeBuffer.PowerOfTwoFixedSizeBuffer[?]]
+      Buffer(1000, default) shouldBe a[FixedSizeBuffer.ModuloFixedSizeBuffer[_]]
+      Buffer(1024, default) shouldBe a[FixedSizeBuffer.PowerOfTwoFixedSizeBuffer[_]]
     }
 
     "produce FixedSizeBuffers when max-fixed-buffer-size < BoundedBufferSize" in {
       val settings = default and ActorAttributes.maxFixedBufferSize(9)
-      Buffer(5, settings) shouldBe a[FixedSizeBuffer.ModuloFixedSizeBuffer[?]]
-      Buffer(10, settings) shouldBe a[FixedSizeBuffer.ModuloFixedSizeBuffer[?]]
-      Buffer(16, settings) shouldBe a[FixedSizeBuffer.PowerOfTwoFixedSizeBuffer[?]]
+      Buffer(5, settings) shouldBe a[FixedSizeBuffer.ModuloFixedSizeBuffer[_]]
+      Buffer(10, settings) shouldBe a[FixedSizeBuffer.ModuloFixedSizeBuffer[_]]
+      Buffer(16, settings) shouldBe a[FixedSizeBuffer.PowerOfTwoFixedSizeBuffer[_]]
     }
 
   }

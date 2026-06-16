@@ -98,7 +98,7 @@ class FlowOnCompleteSpec extends StreamSpec("""
       proc.expectRequest()
       mat.shutdown()
 
-      onCompleteProbe.expectMsgType[Failure[?]]
+      onCompleteProbe.expectMsgType[Failure[_]]
     }
 
   }

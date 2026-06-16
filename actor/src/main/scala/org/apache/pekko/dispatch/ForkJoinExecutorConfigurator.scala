@@ -15,10 +15,10 @@ package org.apache.pekko.dispatch
 
 import java.util.concurrent.{ ExecutorService, ForkJoinPool, ForkJoinTask, ThreadFactory, TimeUnit }
 
+import com.typesafe.config.Config
+
 import org.apache.pekko.annotation.InternalApi
 import org.apache.pekko.util.JavaVersion
-
-import com.typesafe.config.Config
 
 object ForkJoinExecutorConfigurator {
 
@@ -60,7 +60,7 @@ object ForkJoinExecutorConfigurator {
     override def execute(r: Runnable): Unit =
       if (r ne null)
         super.execute(
-          (if (r.isInstanceOf[ForkJoinTask[?]]) r else new PekkoForkJoinTask(r)).asInstanceOf[ForkJoinTask[Any]])
+          (if (r.isInstanceOf[ForkJoinTask[_]]) r else new PekkoForkJoinTask(r)).asInstanceOf[ForkJoinTask[Any]])
       else
         throw new NullPointerException("Runnable was null")
 

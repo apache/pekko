@@ -61,7 +61,7 @@ trait TestInbox[T] {
   def receiveMessage(): T
 
   /**
-   * Assert and remove the oldest message.
+   * Assert and remove the the oldest message.
    */
   def expectMessage(expectedMessage: T): TestInbox[T]
 

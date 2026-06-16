@@ -776,7 +776,7 @@ Reasons for how this can happen:
 A lease can be a final backup that means that each shard won't create child entity actors unless it has the lease. 
 
 To use a lease for sharding set `pekko.cluster.sharding.use-lease` to the configuration location
-of the lease to use. Each shard will try and acquire a lease with the name `<actor system name>-shard-<type name>-<shard id>` and
+of the lease to use. Each shard will try and acquire a lease with with the name `<actor system name>-shard-<type name>-<shard id>` and
 the owner is set to the `Cluster(system).selfAddress.hostPort`.
 
 If a shard can't acquire a lease it will remain uninitialized so messages for entities it owns will

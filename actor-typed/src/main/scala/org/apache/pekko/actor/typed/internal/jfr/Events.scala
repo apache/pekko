@@ -21,7 +21,8 @@ import jdk.jfr.StackTrace
 
 import org.apache.pekko.annotation.InternalApi
 
-// requires jdk.jfr (available since JDK 9, project baseline is Java 17)
+// requires jdk9+ to compile
+// for editing these in IntelliJ, open module settings, change JDK dependency to 11 for only this module
 
 /** INTERNAL API */
 @InternalApi

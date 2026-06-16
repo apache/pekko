@@ -110,9 +110,9 @@ class GraphDSLDocSpec extends PekkoSpec {
 
       // It is important to provide the list of all input and output
       // ports with a stable order. Duplicates are not allowed.
-      override val inlets: immutable.Seq[Inlet[?]] =
+      override val inlets: immutable.Seq[Inlet[_]] =
         jobsIn :: priorityJobsIn :: Nil
-      override val outlets: immutable.Seq[Outlet[?]] =
+      override val outlets: immutable.Seq[Outlet[_]] =
         resultsOut :: Nil
 
       // A Shape must be able to create a copy of itself. Basically

@@ -18,19 +18,16 @@ import scala.concurrent.Promise
 import scala.concurrent.duration._
 
 import org.apache.pekko
-import pekko.actor.ActorPath
 import pekko.actor.ActorRef
 import pekko.actor.Kill
 import pekko.actor.NoSerializationVerificationNeeded
 import pekko.actor.PoisonPill
 import pekko.event.Logging
 import pekko.stream._
-import pekko.stream.impl.fusing.GraphInterpreter
 import pekko.stream.stage.GraphStageLogic
 import pekko.stream.stage.GraphStageWithMaterializedValue
 import pekko.stream.stage.InHandler
 import pekko.stream.testkit.StreamSpec
-import pekko.stream.testkit.scaladsl.TestSink
 import pekko.testkit.EventFilter
 import pekko.testkit.ImplicitSender
 import pekko.testkit.TestEvent
@@ -169,7 +166,7 @@ class StageActorRefSpec extends StreamSpec with ImplicitSender {
       stageRef ! PoisonPill // should log a warning, and NOT stop the stage.
       val actorName = """StageActorRef-[\d+]"""
       val expectedMsg =
-        s"[PoisonPill|Kill] message sent to StageActorRef($actorName) will be ignored, since it is not a real Actor. " +
+        s"[PoisonPill|Kill] message sent to StageActorRef($actorName) will be ignored,since it is not a real Actor. " +
         "Use a custom message type to communicate with it instead."
       expectMsgPF(1.second, expectedMsg) {
         case Logging.Warning(_, _, msg) => expectedMsg.r.pattern.matcher(msg.toString).matches()
@@ -182,51 +179,6 @@ class StageActorRefSpec extends StreamSpec with ImplicitSender {
 
       source.success(Some(2))
       res.futureValue should ===(42)
-    }
-
-    "run non-eager stage actor messages in the graph interpreter" in {
-      val (_, res) = Source.maybe[Int].toMat(sumStage(testActor))(Keep.both).run()
-
-      val stageRef = expectMsgType[ActorRef]
-      stageRef ! AddAndTell(1)
-      expectMsg(1)
-
-      stageRef ! ReportStageActorInterpreter
-      val location = expectMsgType[StageActorLocation]
-
-      location.stageActorParent should ===(location.supervisor)
-      location.interpreter should !==(location.supervisor)
-
-      stageRef ! StopNow
-      res.futureValue should ===(1)
-    }
-
-    "keep eagerly materialized stage actors usable before stream demand" in {
-      val (ref, probe) = Source
-        .actorRef[Int]({
-            case CompleteNow => CompletionStrategy.Immediately
-          }, PartialFunction.empty, bufferSize = 8, OverflowStrategy.fail)
-        .toMat(TestSink[Int]())(Keep.both)
-        .run()
-
-      ref ! 1
-      probe.request(1).expectNext(1)
-      ref ! CompleteNow
-      probe.expectComplete()
-    }
-
-    "keep eagerly materialized stage actors attached to the stream supervisor" in {
-      val (source, res) = Source.maybe[Int].toMat(eagerLocationStage(testActor))(Keep.both).run()
-
-      val stageRef = expectMsgType[ActorRef]
-      stageRef ! ReportEagerStageActorInterpreter
-      val location = expectMsgType[EagerStageActorLocation]
-
-      location.stageActorParent should ===(location.supervisor)
-      location.stageActorParent should !==(location.interpreter)
-
-      source.success(None)
-      res.futureValue should ===(0)
     }
 
   }
@@ -242,18 +194,9 @@ object StageActorRefSpec {
     case object BecomeStringEcho extends NoSerializationVerificationNeeded
     case object PullNow extends NoSerializationVerificationNeeded
     case object StopNow extends NoSerializationVerificationNeeded
-    case object ReportStageActorInterpreter extends NoSerializationVerificationNeeded
-    case object ReportEagerStageActorInterpreter extends NoSerializationVerificationNeeded
-    case object CompleteNow extends NoSerializationVerificationNeeded
-    final case class StageActorLocation(stageActorParent: ActorPath, supervisor: ActorPath, interpreter: ActorPath)
-        extends NoSerializationVerificationNeeded
-    final case class EagerStageActorLocation(stageActorParent: ActorPath, supervisor: ActorPath, interpreter: ActorPath)
-        extends NoSerializationVerificationNeeded
   }
 
   import ControlProtocol._
-
-  def eagerLocationStage(probe: ActorRef) = EagerLocationStage(probe)
 
   case class SumTestStage(probe: ActorRef) extends GraphStageWithMaterializedValue[SinkShape[Int], Future[Int]] {
     val in = Inlet[Int]("IntSum.in")
@@ -273,15 +216,10 @@ object StageActorRefSpec {
 
         def behavior(m: (ActorRef, Any)): Unit = {
           m match {
-            case (_, Add(n))                           => sum += n
-            case (_, PullNow)                          => pull(in)
-            case (sender, CallInitStageActorRef)       => sender ! getStageActor(behavior).ref
-            case (sender, ReportStageActorInterpreter) =>
-              sender ! StageActorLocation(
-                stageActor.ref.path.parent,
-                interpreter.materializer.supervisor.path,
-                GraphInterpreter.currentInterpreter.context.path)
-            case (_, BecomeStringEcho) =>
+            case (_, Add(n))                     => sum += n
+            case (_, PullNow)                    => pull(in)
+            case (sender, CallInitStageActorRef) => sender ! getStageActor(behavior).ref
+            case (_, BecomeStringEcho)           =>
               getStageActor {
                 case (theSender, msg) => theSender ! msg.toString
               }
@@ -306,54 +244,6 @@ object StageActorRefSpec {
 
             override def onUpstreamFinish(): Unit = {
               p.trySuccess(sum)
-              completeStage()
-            }
-
-            override def onUpstreamFailure(ex: Throwable): Unit = {
-              p.tryFailure(ex)
-              failStage(ex)
-            }
-          })
-      }
-
-      logic -> p.future
-    }
-  }
-
-  case class EagerLocationStage(probe: ActorRef) extends GraphStageWithMaterializedValue[SinkShape[Int], Future[Int]] {
-    val in = Inlet[Int]("EagerLocation.in")
-    override val shape: SinkShape[Int] = SinkShape.of(in)
-
-    override def createLogicAndMaterializedValue(inheritedAttributes: Attributes): (GraphStageLogic, Future[Int]) = {
-      val p: Promise[Int] = Promise()
-
-      val logic = new GraphStageLogic(shape) {
-        var stageRef: ActorRef = _
-        var interpreterPath: ActorPath = _
-        var supervisorPath: ActorPath = _
-
-        override def preStart(): Unit = {
-          interpreterPath = interpreter.context.path
-          supervisorPath = interpreter.materializer.supervisor.path
-          stageRef = getEagerStageActor(interpreter.materializer) {
-            case (sender, ReportEagerStageActorInterpreter) =>
-              sender ! EagerStageActorLocation(stageRef.path.parent, supervisorPath, interpreterPath)
-            case _ => throw new RuntimeException("unexpected message")
-          }.ref
-          pull(in)
-          probe ! stageRef
-        }
-
-        setHandler(
-          in,
-          new InHandler {
-            override def onPush(): Unit = {
-              p.trySuccess(grab(in))
-              completeStage()
-            }
-
-            override def onUpstreamFinish(): Unit = {
-              p.trySuccess(0)
               completeStage()
             }
 

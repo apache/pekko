@@ -75,7 +75,7 @@ object ActorTestKit {
    * Config loaded from the provided actor if that exists, otherwise
    * using default configuration from the reference.conf resources that ship with the Akka libraries.
    */
-  def apply(system: ActorSystem[?]): ActorTestKit = {
+  def apply(system: ActorSystem[_]): ActorTestKit = {
     val name = testKitGuardianCounter.incrementAndGet() match {
       case 1 => "test"
       case n => s"test-$n"
@@ -160,7 +160,7 @@ object ActorTestKit {
    * Shutdown the given [[pekko.actor.typed.ActorSystem]] and block until it shuts down,
    * if more time than `TestKitSettings.DefaultActorSystemShutdownTimeout` passes an exception is thrown
    */
-  def shutdown(system: ActorSystem[?]): Unit = {
+  def shutdown(system: ActorSystem[_]): Unit = {
     val settings = TestKitSettings(system)
     TestKitUtils.shutdown(system, settings.DefaultActorSystemShutdownTimeout, settings.ThrowOnShutdownTimeout)
   }
@@ -169,7 +169,7 @@ object ActorTestKit {
    * Shutdown the given [[pekko.actor.typed.ActorSystem]] and block until it shuts down
    * or the `duration` hits. If the timeout hits `verifySystemShutdown` decides
    */
-  def shutdown(system: ActorSystem[?], timeout: Duration, throwIfShutdownFails: Boolean = false): Unit =
+  def shutdown(system: ActorSystem[_], timeout: Duration, throwIfShutdownFails: Boolean = false): Unit =
     TestKitUtils.shutdown(system, timeout, throwIfShutdownFails)
 
   /**
@@ -193,7 +193,7 @@ object ActorTestKit {
  * For synchronous testing of a `Behavior` see [[BehaviorTestKit]]
  */
 final class ActorTestKit private[pekko] (
-    val internalSystem: ActorSystem[?],
+    val internalSystem: ActorSystem[_],
     internalTestKitGuardian: ActorRef[ActorTestKitGuardian.TestKitCommand],
     settings: Option[TestKitSettings]) {
 

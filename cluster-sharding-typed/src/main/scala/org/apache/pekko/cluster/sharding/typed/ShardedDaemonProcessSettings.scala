@@ -29,12 +29,12 @@ import com.typesafe.config.Config
 object ShardedDaemonProcessSettings {
 
   /** Scala API: Create default settings for system */
-  def apply(system: ActorSystem[?]): ShardedDaemonProcessSettings = {
+  def apply(system: ActorSystem[_]): ShardedDaemonProcessSettings = {
     fromConfig(system.settings.config.getConfig("pekko.cluster.sharded-daemon-process"))
   }
 
   /** Java API: Create default settings for system */
-  def create(system: ActorSystem[?]): ShardedDaemonProcessSettings =
+  def create(system: ActorSystem[_]): ShardedDaemonProcessSettings =
     apply(system)
 
   /**
@@ -88,7 +88,7 @@ final class ShardedDaemonProcessSettings @InternalApi private[pekko] (
   /**
    * Specifies that the ShardedDaemonProcess should run on nodes with a specific role.
    * If the role is not specified all nodes in the cluster are used. If the given role does
-   * not match the role of the current node the ShardedDaemonProcess will not be started.
+   * not match the role of the current node the the ShardedDaemonProcess will not be started.
    */
   def withRole(role: String): ShardedDaemonProcessSettings =
     copy(role = Option(role))

@@ -43,13 +43,13 @@ import pekko.annotation.InternalApi
     VersionUtil.parseVersion(version, groupId, artifactId)
   }
 
-  class SerializerResolverByClass(clazz: Class[?], deserializer: () => ValueSerializer[?]) extends Serializers.Base {
+  class SerializerResolverByClass(clazz: Class[_], deserializer: () => ValueSerializer[_]) extends Serializers.Base {
 
     override def findSerializer(
         config: SerializationConfig,
         javaType: JavaType,
         beanDesc: BeanDescription.Supplier,
-        formatOverrides: JsonFormat.Value): ValueSerializer[?] = {
+        formatOverrides: JsonFormat.Value): ValueSerializer[_] = {
       if (clazz.isAssignableFrom(javaType.getRawClass))
         deserializer()
       else
@@ -58,20 +58,20 @@ import pekko.annotation.InternalApi
 
   }
 
-  class DeserializerResolverByClass(clazz: Class[?], serializer: () => ValueDeserializer[?])
+  class DeserializerResolverByClass(clazz: Class[_], serializer: () => ValueDeserializer[_])
       extends Deserializers.Base {
 
     override def findBeanDeserializer(
         javaType: JavaType,
         config: DeserializationConfig,
-        beanDesc: BeanDescription.Supplier): ValueDeserializer[?] = {
+        beanDesc: BeanDescription.Supplier): ValueDeserializer[_] = {
       if (clazz.isAssignableFrom(javaType.getRawClass))
         serializer()
       else
         super.findBeanDeserializer(javaType, config, beanDesc)
     }
 
-    override def hasDeserializerFor(config: DeserializationConfig, valueType: Class[?]): Boolean =
+    override def hasDeserializerFor(config: DeserializationConfig, valueType: Class[_]): Boolean =
       clazz.isAssignableFrom(valueType)
   }
 }
@@ -98,9 +98,9 @@ import pekko.annotation.InternalApi
   }
 
   def addSerializer(
-      clazz: Class[?],
-      serializer: () => ValueSerializer[?],
-      deserializer: () => ValueDeserializer[?]): this.type = {
+      clazz: Class[_],
+      serializer: () => ValueSerializer[_],
+      deserializer: () => ValueDeserializer[_]): this.type = {
     this += { ctx =>
       ctx.addSerializers(new SerializerResolverByClass(clazz, serializer))
       ctx.addDeserializers(new DeserializerResolverByClass(clazz, deserializer))

@@ -193,7 +193,7 @@ class ActorSystemSpec
           case (context, WhatsYourMailbox(replyTo)) =>
             replyTo !
             context
-              .asInstanceOf[ActorContextImpl[?]]
+              .asInstanceOf[ActorContextImpl[_]]
               .classicActorContext
               .asInstanceOf[Dispatch]
               .mailbox

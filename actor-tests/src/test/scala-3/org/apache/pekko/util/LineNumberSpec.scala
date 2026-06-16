@@ -15,14 +15,14 @@ package org.apache.pekko.util
 
 import org.apache.pekko
 import pekko.testkit.PekkoSpec
-import pekko.util.LineNumbers.*
+import pekko.util.LineNumbers._
 
 class LineNumberSpec extends PekkoSpec {
 
   "LineNumbers" when {
 
     "writing Scala" must {
-      import LineNumberSpecCodeForScala.*
+      import LineNumberSpecCodeForScala._
 
       "work for small functions" in {
         LineNumbers(oneline) should ===(SourceFileLines("LineNumberSpecCodeForScala.scala", 22, 22))

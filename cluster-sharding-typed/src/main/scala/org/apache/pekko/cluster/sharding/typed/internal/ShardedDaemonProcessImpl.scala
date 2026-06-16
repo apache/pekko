@@ -46,7 +46,7 @@ import pekko.cluster.typed.SingletonActor
  * INTERNAL API
  */
 @InternalApi
-private[pekko] final class ShardedDaemonProcessImpl(system: ActorSystem[?])
+private[pekko] final class ShardedDaemonProcessImpl(system: ActorSystem[_])
     extends javadsl.ShardedDaemonProcess
     with scaladsl.ShardedDaemonProcess {
 

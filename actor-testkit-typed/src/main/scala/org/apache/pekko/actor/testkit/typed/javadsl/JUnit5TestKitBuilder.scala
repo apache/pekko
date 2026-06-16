@@ -27,13 +27,13 @@ import com.typesafe.config.Config
 @deprecated("Use JUnitJupiterTestKitBuilder instead", "2.0.0")
 final class JUnit5TestKitBuilder() {
 
-  var system: Option[ActorSystem[?]] = None
+  var system: Option[ActorSystem[_]] = None
 
   var customConfig: Config = ApplicationTestConfig
 
   var name: String = TestKitUtils.testNameFromCallStack(classOf[JUnit5TestKitBuilder])
 
-  def withSystem(system: ActorSystem[?]): JUnit5TestKitBuilder = {
+  def withSystem(system: ActorSystem[_]): JUnit5TestKitBuilder = {
     this.system = Some(system)
     this
   }

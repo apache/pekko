@@ -342,11 +342,24 @@ import pekko.stream.stage._
     var i = 0
     while (i < logics.length) {
       val logic = logics(i)
-      if (!isStageCompleted(logic) && !isStageFinalized(logic)) {
+      if ((logic ne null) && !isStageCompleted(logic) && !isStageFinalized(logic)) {
         markStageFinalized(logic)
         finalizeStage(logic)
       }
+      // Release reference to the stage logic so it can be garbage collected
+      // even if the GraphInterpreter is still alive due to other references
+      logics(i) = null
       i += 1
+    }
+    // Null connection handlers for all finalized stages to break handler-to-logic reference chains
+    var j = 0
+    while (j < connections.length) {
+      val conn = connections(j)
+      if (conn ne null) {
+        conn.inHandler = null
+        conn.outHandler = null
+      }
+      j += 1
     }
   }
 
@@ -357,10 +370,16 @@ import pekko.stream.stage._
   private def outOwnerName(connection: Connection): String = connection.outOwner.toString
 
   // Debug name for a connections input part
-  private def inLogicName(connection: Connection): String = logics(connection.inOwner.stageId).toString
+  private def inLogicName(connection: Connection): String = {
+    val logic = logics(connection.inOwner.stageId)
+    if (logic ne null) logic.toString else "<completed>"
+  }
 
   // Debug name for a connections output part
-  private def outLogicName(connection: Connection): String = logics(connection.outOwner.stageId).toString
+  private def outLogicName(connection: Connection): String = {
+    val logic = logics(connection.outOwner.stageId)
+    if (logic ne null) logic.toString else "<completed>"
+  }
 
   private def shutdownCounters: String =
     shutdownCounter.map(x => if (x >= KeepGoingFlag) s"${x & KeepGoingMask}(KeepGoing)" else x.toString).mkString(",")
@@ -620,12 +639,34 @@ import pekko.stream.stage._
     queueTail += 1
   }
 
-  def afterStageHasRun(logic: GraphStageLogic): Unit =
-    if (isStageCompleted(logic) && !isStageFinalized(logic)) {
-      markStageFinalized(logic)
-      runningStages -= 1
-      finalizeStage(logic)
+  @scala.annotation.nowarn("cat=unused-params")
+  def afterStageHasRun(logic: GraphStageLogic): Unit = {
+    var i = 0
+    while (i < logics.length) {
+      val l = logics(i)
+      if ((l ne null) && isStageCompleted(l) && !isStageFinalized(l)) {
+        markStageFinalized(l)
+        runningStages -= 1
+        finalizeStage(l)
+        logics(i) = null
+      }
+      i += 1
     }
+    // Null connection handlers for finalized stages to break handler-to-logic reference chains
+    var j = 0
+    while (j < connections.length) {
+      val conn = connections(j)
+      if (conn ne null) {
+        if (finalizedMark(conn.inOwner.stageId)) {
+          conn.inHandler = null
+        }
+        if (finalizedMark(conn.outOwner.stageId)) {
+          conn.outHandler = null
+        }
+      }
+      j += 1
+    }
+  }
 
   // Returns true if the given stage is already completed
   def isStageCompleted(stage: GraphStageLogic): Boolean = (stage ne null) && shutdownCounter(stage.stageId) == 0
@@ -741,15 +782,16 @@ import pekko.stream.stage._
   def toSnapshot: RunningInterpreter = {
 
     val logicSnapshots = logics.zipWithIndex.map {
-      case (logic, idx) =>
+      case (logic, idx) if logic ne null =>
         LogicSnapshotImpl(idx, logic.toString, logic.attributes)
+      case (_, idx) =>
+        LogicSnapshotImpl(idx, "<completed>", Attributes.none)
     }
-    val logicIndexes = logics.zipWithIndex.map { case (stage, idx) => stage -> idx }.toMap
     val connectionSnapshots = connections.filter(_ ne null).map { connection =>
       ConnectionSnapshotImpl(
         connection.id,
-        logicSnapshots(logicIndexes(connection.inOwner)),
-        logicSnapshots(logicIndexes(connection.outOwner)),
+        logicSnapshots(connection.inOwner.stageId),
+        logicSnapshots(connection.outOwner.stageId),
         connection.portState match {
           case InReady | Pushing                                           => ConnectionSnapshot.ShouldPull
           case OutReady | Pulling                                          => ConnectionSnapshot.ShouldPush

@@ -38,9 +38,6 @@ enablePlugins(
   JavaFormatterPlugin)
 disablePlugins(MimaPlugin)
 
-ThisBuild / javafmtFormatterCompatibleJavaVersion := 17
-ThisBuild / javafmtSortImports := false
-
 addCommandAlias("checkCodeStyle", "scalafmtCheckAll; scalafmtSbtCheck; javafmtCheckAll; +headerCheckAll")
 addCommandAlias("applyCodeStyle", "+headerCreateAll; scalafmtAll; scalafmtSbt; javafmtAll")
 
@@ -137,10 +134,10 @@ lazy val actor = pekkoModule("actor")
   .enablePlugins(BoilerplatePlugin, SbtOsgi)
 
 lazy val actorTests = pekkoModule("actor-tests")
-  .configs(Jdk21.TestJdk21)
+  .configs(Jdk9.TestJdk9)
   .dependsOn(testkit % "compile->compile;test->test", actor)
   .settings(Dependencies.actorTests)
-  .enablePlugins(NoPublish, Jdk21)
+  .enablePlugins(NoPublish, Jdk9)
   .disablePlugins(MimaPlugin)
 
 lazy val pekkoScalaNightly = pekkoModule("scala-nightly")

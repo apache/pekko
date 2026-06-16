@@ -54,12 +54,7 @@ class DaemonicSpec extends PekkoSpec {
         awaitAssert({
             val newNonDaemons: Set[Thread] =
               Thread.getAllStackTraces.keySet().asScala.filter(t => !origThreads(t) && !t.isDaemon).to(Set)
-            // Aeron 1.51.0 introduced its own non-daemon thread, so we have to ignore it here
-            // https://github.com/apache/pekko/issues/2939
-            if (newNonDaemons.nonEmpty) {
-              newNonDaemons should have size 1
-              newNonDaemons.head.getName should include("aeron")
-            }
+            newNonDaemons should ===(Set.empty[Thread])
           }, 4.seconds)
 
       } finally {

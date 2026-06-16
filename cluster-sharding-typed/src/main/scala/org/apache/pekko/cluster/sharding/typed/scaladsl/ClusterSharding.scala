@@ -39,7 +39,7 @@ import pekko.util.Timeout
 
 object ClusterSharding extends ExtensionId[ClusterSharding] {
 
-  override def createExtension(system: ActorSystem[?]): ClusterSharding =
+  override def createExtension(system: ActorSystem[_]): ClusterSharding =
     new ClusterShardingImpl(system)
 
   /**
@@ -539,7 +539,7 @@ object EntityTypeKey {
 }
 
 object ClusterShardingSetup {
-  def apply[T <: Extension](createExtension: ActorSystem[?] => ClusterSharding): ClusterShardingSetup =
+  def apply[T <: Extension](createExtension: ActorSystem[_] => ClusterSharding): ClusterShardingSetup =
     new ClusterShardingSetup(createExtension(_))
 
 }
@@ -549,5 +549,5 @@ object ClusterShardingSetup {
  * to replace the default implementation of the [[ClusterSharding]] extension. Intended
  * for tests that need to replace extension with stub/mock implementations.
  */
-final class ClusterShardingSetup(createExtension: java.util.function.Function[ActorSystem[?], ClusterSharding])
+final class ClusterShardingSetup(createExtension: java.util.function.Function[ActorSystem[_], ClusterSharding])
     extends ExtensionSetup[ClusterSharding](ClusterSharding, createExtension)

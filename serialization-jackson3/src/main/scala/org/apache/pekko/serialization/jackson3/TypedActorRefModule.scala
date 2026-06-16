@@ -31,7 +31,7 @@ import pekko.annotation.InternalApi
  * INTERNAL API: Adds support for serializing and deserializing [[pekko.actor.typed.ActorRef]].
  */
 @InternalApi private[pekko] trait TypedActorRefModule extends JacksonModule {
-  addSerializer(classOf[ActorRef[?]], () => TypedActorRefSerializer.instance, () => TypedActorRefDeserializer.instance)
+  addSerializer(classOf[ActorRef[_]], () => TypedActorRefSerializer.instance, () => TypedActorRefDeserializer.instance)
 }
 
 /**
@@ -45,9 +45,9 @@ import pekko.annotation.InternalApi
  * INTERNAL API
  */
 @InternalApi private[pekko] class TypedActorRefSerializer
-    extends StdScalarSerializer[ActorRef[?]](classOf[ActorRef[?]])
+    extends StdScalarSerializer[ActorRef[_]](classOf[ActorRef[_]])
     with ActorSystemAccess {
-  override def serialize(value: ActorRef[?], jgen: JsonGenerator, provider: SerializationContext): Unit = {
+  override def serialize(value: ActorRef[_], jgen: JsonGenerator, provider: SerializationContext): Unit = {
     val serializedActorRef = ActorRefResolver(currentSystem().toTyped).toSerializationFormat(value)
     jgen.writeString(serializedActorRef)
   }
@@ -64,14 +64,14 @@ import pekko.annotation.InternalApi
  * INTERNAL API
  */
 @InternalApi private[pekko] class TypedActorRefDeserializer
-    extends StdScalarDeserializer[ActorRef[?]](classOf[ActorRef[?]])
+    extends StdScalarDeserializer[ActorRef[_]](classOf[ActorRef[_]])
     with ActorSystemAccess {
 
-  def deserialize(jp: JsonParser, ctxt: DeserializationContext): ActorRef[?] = {
+  def deserialize(jp: JsonParser, ctxt: DeserializationContext): ActorRef[_] = {
     if (jp.currentTokenId() == JsonTokenId.ID_STRING) {
       val serializedActorRef = jp.getString()
       ActorRefResolver(currentSystem().toTyped).resolveActorRef(serializedActorRef)
     } else
-      ctxt.handleUnexpectedToken(handledType(), jp).asInstanceOf[ActorRef[?]]
+      ctxt.handleUnexpectedToken(handledType(), jp).asInstanceOf[ActorRef[_]]
   }
 }

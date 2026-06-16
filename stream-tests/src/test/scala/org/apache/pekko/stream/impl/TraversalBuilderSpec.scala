@@ -18,10 +18,10 @@ import scala.concurrent.Promise
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream._
-import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.TraversalTestUtils._
-import pekko.stream.impl.fusing.{ IterableSource, IteratorSource, RangeSource }
+import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.fusing.GraphStages.{ FutureSource, RepeatSource, SingleSource }
+import pekko.stream.impl.fusing.{ IterableSource, IteratorSource, RangeSource }
 import pekko.stream.scaladsl.{ Keep, Source }
 import pekko.testkit.PekkoSpec
 import pekko.util.OptionVal
@@ -585,7 +585,7 @@ class TraversalBuilderSpec extends PekkoSpec {
   "find Source.javaStreamSource via TraversalBuilder with getValuePresentedSource" in {
     val javaStream = java.util.stream.Stream.empty[String]()
     TraversalBuilder.getValuePresentedSource(Source.fromJavaStream(() => javaStream)).get
-      .asInstanceOf[JavaStreamSource[String, ?]].open() shouldEqual javaStream
+      .asInstanceOf[JavaStreamSource[String, _]].open() shouldEqual javaStream
     val streamSource = new JavaStreamSource(() => javaStream)
     TraversalBuilder.getValuePresentedSource(streamSource) should be(OptionVal.Some(streamSource))
 

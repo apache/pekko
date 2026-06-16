@@ -60,34 +60,34 @@ import pekko.serialization.SerializerWithStringManifest
   private val DurableQueueCleanupManifest = "i"
 
   override def manifest(o: AnyRef): String = o match {
-    case _: ConsumerController.SequencedMessage[?] => SequencedMessageManifest
+    case _: ConsumerController.SequencedMessage[_] => SequencedMessageManifest
     case _: ProducerControllerImpl.Ack             => AckManifest
     case _: ProducerControllerImpl.Request         => RequestManifest
     case _: ProducerControllerImpl.Resend          => ResendManifest
-    case _: ProducerController.RegisterConsumer[?] => RegisterConsumerManifest
-    case _: DurableProducerQueue.MessageSent[?]    => DurableQueueMessageSentManifest
+    case _: ProducerController.RegisterConsumer[_] => RegisterConsumerManifest
+    case _: DurableProducerQueue.MessageSent[_]    => DurableQueueMessageSentManifest
     case _: DurableProducerQueue.Confirmed         => DurableQueueConfirmedManifest
-    case _: DurableProducerQueue.State[?]          => DurableQueueStateManifest
+    case _: DurableProducerQueue.State[_]          => DurableQueueStateManifest
     case _: DurableProducerQueue.Cleanup           => DurableQueueCleanupManifest
     case _                                         =>
       throw new IllegalArgumentException(s"Can't serialize object of type ${o.getClass} in [${getClass.getName}]")
   }
 
   override def toBinary(o: AnyRef): Array[Byte] = o match {
-    case m: ConsumerController.SequencedMessage[?] => sequencedMessageToBinary(m)
+    case m: ConsumerController.SequencedMessage[_] => sequencedMessageToBinary(m)
     case m: ProducerControllerImpl.Ack             => ackToBinary(m)
     case m: ProducerControllerImpl.Request         => requestToBinary(m)
     case m: ProducerControllerImpl.Resend          => resendToBinary(m)
-    case m: ProducerController.RegisterConsumer[?] => registerConsumerToBinary(m)
-    case m: DurableProducerQueue.MessageSent[?]    => durableQueueMessageSentToBinary(m)
+    case m: ProducerController.RegisterConsumer[_] => registerConsumerToBinary(m)
+    case m: DurableProducerQueue.MessageSent[_]    => durableQueueMessageSentToBinary(m)
     case m: DurableProducerQueue.Confirmed         => durableQueueConfirmedToBinary(m)
-    case m: DurableProducerQueue.State[?]          => durableQueueStateToBinary(m)
+    case m: DurableProducerQueue.State[_]          => durableQueueStateToBinary(m)
     case m: DurableProducerQueue.Cleanup           => durableQueueCleanupToBinary(m)
     case _                                         =>
       throw new IllegalArgumentException(s"Cannot serialize object of type [${o.getClass.getName}]")
   }
 
-  private def sequencedMessageToBinary(m: ConsumerController.SequencedMessage[?]): Array[Byte] = {
+  private def sequencedMessageToBinary(m: ConsumerController.SequencedMessage[_]): Array[Byte] = {
     val b = ReliableDelivery.SequencedMessage.newBuilder()
     b.setProducerId(m.producerId)
     b.setSeqNr(m.seqNr)
@@ -136,17 +136,17 @@ import pekko.serialization.SerializerWithStringManifest
     b.build().toByteArray()
   }
 
-  private def registerConsumerToBinary(m: ProducerController.RegisterConsumer[?]): Array[Byte] = {
+  private def registerConsumerToBinary(m: ProducerController.RegisterConsumer[_]): Array[Byte] = {
     val b = ReliableDelivery.RegisterConsumer.newBuilder()
     b.setConsumerControllerRef(resolver.toSerializationFormat(m.consumerController))
     b.build().toByteArray()
   }
 
-  private def durableQueueMessageSentToBinary(m: DurableProducerQueue.MessageSent[?]): Array[Byte] = {
+  private def durableQueueMessageSentToBinary(m: DurableProducerQueue.MessageSent[_]): Array[Byte] = {
     durableQueueMessageSentToProto(m).toByteArray()
   }
 
-  private def durableQueueMessageSentToProto(m: DurableProducerQueue.MessageSent[?]): ReliableDelivery.MessageSent = {
+  private def durableQueueMessageSentToProto(m: DurableProducerQueue.MessageSent[_]): ReliableDelivery.MessageSent = {
     val b = ReliableDelivery.MessageSent.newBuilder()
     b.setSeqNr(m.seqNr)
     b.setQualifier(m.confirmationQualifier)
@@ -180,7 +180,7 @@ import pekko.serialization.SerializerWithStringManifest
     b.build()
   }
 
-  private def durableQueueStateToBinary(m: DurableProducerQueue.State[?]): Array[Byte] = {
+  private def durableQueueStateToBinary(m: DurableProducerQueue.State[_]): Array[Byte] = {
     val b = ReliableDelivery.State.newBuilder()
     b.setCurrentSeqNr(m.currentSeqNr)
     b.setHighestConfirmedSeqNr(m.highestConfirmedSeqNr)

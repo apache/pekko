@@ -27,7 +27,6 @@ import java.util.List;
 import org.apache.pekko.actor.AbstractFSM;
 import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.japi.pf.UnitMatch;
-
 // #simple-imports
 
 // #simple-fsm

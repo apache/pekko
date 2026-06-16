@@ -234,7 +234,7 @@ class JoinConfigCompatCheckerSpec extends PekkoSpec with ClusterTestKit {
     "be allowed to join a cluster when its configuration is incompatible but it's configured to NOT enforce it" taggedAs
     LongRunningTest in {
       // this config is NOT compatible with the cluster config,
-      // but node will ignore the config check and join anyway
+      // but node will ignore the the config check and join anyway
       val joinNodeConfig =
         ConfigFactory.parseString("""
             pekko.cluster {
@@ -523,7 +523,7 @@ class JoinConfigCompatCheckerSpec extends PekkoSpec with ClusterTestKit {
     "be allowed to re-join a cluster when its configuration is incompatible but it's configured to NOT enforce it" taggedAs
     LongRunningTest in {
       // this config is NOT compatible with the cluster config,
-      // but node will ignore the config check and join anyway
+      // but node will ignore the the config check and join anyway
       val joinNodeConfig =
         ConfigFactory.parseString("""
             pekko.cluster {

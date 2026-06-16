@@ -262,7 +262,7 @@ private[pekko] object Running {
 
     _currentSequenceNumber = state.seqNr
 
-    private def alreadySeen(e: ReplicatedEvent[?]): Boolean = {
+    private def alreadySeen(e: ReplicatedEvent[_]): Boolean = {
       e.originSequenceNr <= state.seenPerReplica.getOrElse(e.originReplica, 0L)
     }
 
@@ -665,7 +665,7 @@ private[pekko] object Running {
         state: RunningState[S, C],
         effect: Effect[E, S],
         sideEffects: immutable.Seq[SideEffect[S]] = Nil): (Behavior[InternalProtocol], Boolean) = {
-      if (setup.internalLogger.isDebugEnabled && !effect.isInstanceOf[CompositeEffect[?, ?]])
+      if (setup.internalLogger.isDebugEnabled && !effect.isInstanceOf[CompositeEffect[_, _]])
         setup.internalLogger.debugN(
           s"Handled command [{}], resulting effect: [{}], side effects: [{}]",
           msg.getClass.getName,
@@ -1036,7 +1036,7 @@ private[pekko] object Running {
         unstashAll()
         behavior
 
-      case callback: Callback[?] =>
+      case callback: Callback[_] =>
         callback.sideEffect(state.state)
         behavior
     }
@@ -1110,18 +1110,18 @@ private[pekko] object Running {
 
   @InternalStableApi
   private[pekko] def onWriteFailed(
-      @nowarn("msg=never used") ctx: ActorContext[?],
+      @nowarn("msg=never used") ctx: ActorContext[_],
       @nowarn("msg=never used") reason: Throwable,
       @nowarn("msg=never used") event: PersistentRepr): Unit = ()
   @InternalStableApi
   private[pekko] def onWriteRejected(
-      @nowarn("msg=never used") ctx: ActorContext[?],
+      @nowarn("msg=never used") ctx: ActorContext[_],
       @nowarn("msg=never used") reason: Throwable,
       @nowarn("msg=never used") event: PersistentRepr): Unit = ()
   @InternalStableApi
-  private[pekko] def onWriteSuccess(@nowarn("msg=never used") ctx: ActorContext[?],
+  private[pekko] def onWriteSuccess(@nowarn("msg=never used") ctx: ActorContext[_],
       @nowarn("msg=never used") event: PersistentRepr): Unit = ()
   @InternalStableApi
-  private[pekko] def onWriteDone(@nowarn("msg=never used") ctx: ActorContext[?],
+  private[pekko] def onWriteDone(@nowarn("msg=never used") ctx: ActorContext[_],
       @nowarn("msg=never used") event: PersistentRepr): Unit = ()
 }

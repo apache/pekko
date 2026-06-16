@@ -20,9 +20,9 @@ object ScalafixIgnoreFilePlugin extends AutoPlugin with ScalafixSupport {
 
   override lazy val requires: Plugins = JvmPlugin && ScalafixPlugin
   import sbt._
-  lazy val scalafixIgnoredSetting: Seq[Setting[?]] = if (ScalafixSupport.fixTestScope) Nil else Seq(ignore(Test))
+  lazy val scalafixIgnoredSetting: Seq[Setting[_]] = if (ScalafixSupport.fixTestScope) Nil else Seq(ignore(Test))
 
-  override lazy val projectSettings: Seq[Def.Setting[?]] =
+  override lazy val projectSettings: Seq[Def.Setting[_]] =
     scalafixIgnoredSetting ++ Seq(
       addProjectCommandsIfAbsent(alias = "fixall", value = ";scalafixEnable;scalafixAll;test:compile;reload"))
 }

@@ -24,7 +24,7 @@ will also be sent to all those @apidoc[Sink]s.
 
 **completes** when upstream completes
 
-**cancels** when downstream or any of the @apidoc[Sink]s cancels
+**cancels** when downstream or or any of the @apidoc[Sink]s cancels
 
 @@@
 

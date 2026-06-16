@@ -265,7 +265,7 @@ abstract class ReplicatedShardingSpec(replicationType: ReplicationType, configA:
     }
 
     "start replicated sharding on both nodes" in {
-      def start(sys: ActorSystem[?]) = {
+      def start(sys: ActorSystem[_]) = {
         ReplicatedShardingExtension(sys).init(MyReplicatedStringSet.provider(replicationType))
         ReplicatedShardingExtension(sys).init(MyReplicatedIntSet.provider(replicationType))
       }

@@ -56,7 +56,7 @@ class ActorTestKitSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike wi
     }
 
     "use name from given class name with replaced package name" in {
-      val testkit2 = ActorTestKit(classOf[Vector[?]].getName)
+      val testkit2 = ActorTestKit(classOf[Vector[_]].getName)
       try {
         // removing package name and such
         testkit2.system.name should ===("Vector")
@@ -171,7 +171,7 @@ class MyConcreteDerivateSpec extends MyBaseSpec {
     }
 
     "use name from given class name" in {
-      val testkit2 = ActorTestKit(classOf[Vector[?]].getName)
+      val testkit2 = ActorTestKit(classOf[Vector[_]].getName)
       try {
         testkit2.system.name should ===("Vector")
       } finally testkit2.shutdownTestKit()

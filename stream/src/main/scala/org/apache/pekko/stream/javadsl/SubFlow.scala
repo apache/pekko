@@ -26,8 +26,6 @@ import scala.jdk.OptionConverters._
 import scala.reflect.ClassTag
 import scala.util.control.NonFatal
 
-import org.jspecify.annotations.Nullable
-
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.event.{ LogMarker, LoggingAdapter, MarkerLoggingAdapter }
@@ -36,6 +34,8 @@ import pekko.stream._
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.fusing.{ StatefulMapConcat, ZipWithIndexJava }
 import pekko.util.ConstantFun
+
+import org.jspecify.annotations.Nullable
 
 object SubFlow {
 
@@ -136,7 +136,7 @@ final class SubFlow[In, Out, Mat](
    * Note that attributes set on the returned graph, including async boundaries are now for the entire graph and not
    * the `SubFlow`. for example `async` will not have any effect as the returned graph is the entire, closed graph.
    */
-  def to(sink: Graph[SinkShape[Out], ?]): Sink[In, Mat] =
+  def to(sink: Graph[SinkShape[Out], _]): Sink[In, Mat] =
     new Sink(delegate.to(sink))
 
   /**
@@ -582,7 +582,7 @@ final class SubFlow[In, Out, Mat](
    *          and the second parameter indicates whether the downstream was cancelled normally.
    * @since 1.3.0
    */
-  def doOnCancel(f: function.Procedure2[? >: Throwable, java.lang.Boolean]): SubFlow[In, Out, Mat] =
+  def doOnCancel(f: function.Procedure2[_ >: Throwable, java.lang.Boolean]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.doOnCancel((ex: Throwable, wasCancelledNormally: Boolean) => f(ex, wasCancelledNormally)))
 
   /**
@@ -1345,7 +1345,7 @@ final class SubFlow[In, Out, Mat](
    *
    * @since 1.3.0
    */
-  def recover(clazz: Class[? <: Throwable], creator: function.Creator[Out]): SubFlow[In, Out, Mat] =
+  def recover(clazz: Class[_ <: Throwable], creator: function.Creator[Out]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.recover {
       case elem if clazz.isInstance(elem) => creator.create()
     })
@@ -1368,7 +1368,7 @@ final class SubFlow[In, Out, Mat](
    *
    * @since 1.3.0
    */
-  def recover(clazz: Class[? <: Throwable], fallbackValue: Out): SubFlow[In, Out, Mat] =
+  def recover(clazz: Class[_ <: Throwable], fallbackValue: Out): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.recover {
       case elem if clazz.isInstance(elem) => fallbackValue
     })
@@ -1391,7 +1391,7 @@ final class SubFlow[In, Out, Mat](
    *
    * @since 1.3.0
    */
-  def recover(p: function.Predicate[? >: Throwable], creator: function.Creator[Out]): SubFlow[In, Out, Mat] =
+  def recover(p: function.Predicate[_ >: Throwable], creator: function.Creator[Out]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.recover {
       case elem if p.test(elem) => creator.create()
     })
@@ -1414,7 +1414,7 @@ final class SubFlow[In, Out, Mat](
    *
    * @since 1.3.0
    */
-  def recover(p: function.Predicate[? >: Throwable], fallbackValue: Out): SubFlow[In, Out, Mat] =
+  def recover(p: function.Predicate[_ >: Throwable], fallbackValue: Out): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.recover {
       case elem if p.test(elem) => fallbackValue
     })
@@ -1503,7 +1503,7 @@ final class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels
    *  @since 1.1.0
    */
-  def onErrorComplete(clazz: Class[? <: Throwable]): SubFlow[In, Out, Mat] = onErrorComplete(ex => clazz.isInstance(ex))
+  def onErrorComplete(clazz: Class[_ <: Throwable]): SubFlow[In, Out, Mat] = onErrorComplete(ex => clazz.isInstance(ex))
 
   /**
    * onErrorComplete allows to complete the stream when an upstream error occurs.
@@ -1520,7 +1520,7 @@ final class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels
    *  @since 1.1.0
    */
-  def onErrorComplete(predicate: function.Predicate[? >: Throwable]): SubFlow[In, Out, Mat] =
+  def onErrorComplete(predicate: function.Predicate[_ >: Throwable]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.onErrorComplete {
       case ex: Throwable if predicate.test(ex) => true
     })
@@ -1546,7 +1546,7 @@ final class SubFlow[In, Out, Mat](
    * @param errorConsumer function invoked when an error occurs
    * @since 1.3.0
    */
-  def onErrorContinue(errorConsumer: function.Procedure[? >: Throwable]): SubFlow[In, Out, Mat] =
+  def onErrorContinue(errorConsumer: function.Procedure[_ >: Throwable]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.onErrorContinue[Throwable](errorConsumer.apply))
 
   /**
@@ -1572,7 +1572,7 @@ final class SubFlow[In, Out, Mat](
    * @since 1.3.0
    */
   def onErrorContinue[T <: Throwable](clazz: Class[T],
-      errorConsumer: function.Procedure[? >: Throwable]): SubFlow[In, Out, Mat] =
+      errorConsumer: function.Procedure[_ >: Throwable]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.onErrorContinue(clazz.isInstance)(errorConsumer.apply))
 
   /**
@@ -1597,8 +1597,8 @@ final class SubFlow[In, Out, Mat](
    * @param errorConsumer function invoked when an error occurs
    * @since 1.3.0
    */
-  def onErrorContinue[T <: Throwable](p: function.Predicate[? >: Throwable],
-      errorConsumer: function.Procedure[? >: Throwable]): SubFlow[In, Out, Mat] =
+  def onErrorContinue[T <: Throwable](p: function.Predicate[_ >: Throwable],
+      errorConsumer: function.Procedure[_ >: Throwable]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.onErrorContinue(p.test)(errorConsumer.apply))
 
   /**
@@ -1620,7 +1620,7 @@ final class SubFlow[In, Out, Mat](
    * @since 1.3.0
    */
   def onErrorResume[T >: Out](
-      fallback: function.Function[? >: Throwable, ? <: Graph[SourceShape[T], NotUsed]]): SubFlow[In, T, Mat] =
+      fallback: function.Function[_ >: Throwable, _ <: Graph[SourceShape[T], NotUsed]]): SubFlow[In, T, Mat] =
     new SubFlow(delegate.recoverWith {
       case NonFatal(ex) => fallback(ex)
     })
@@ -1644,8 +1644,8 @@ final class SubFlow[In, Out, Mat](
    * @param fallback Function which produces a Source to continue the stream
    * @since 1.3.0
    */
-  def onErrorResume[T >: Out](clazz: Class[? <: Throwable],
-      fallback: function.Function[? >: Throwable, ? <: Graph[SourceShape[T], NotUsed]]): SubFlow[In, T, Mat] =
+  def onErrorResume[T >: Out](clazz: Class[_ <: Throwable],
+      fallback: function.Function[_ >: Throwable, _ <: Graph[SourceShape[T], NotUsed]]): SubFlow[In, T, Mat] =
     new SubFlow(delegate.recoverWith {
       case NonFatal(ex) if clazz.isInstance(ex) => fallback(ex)
     })
@@ -1670,8 +1670,8 @@ final class SubFlow[In, Out, Mat](
    * @since 1.3.0
    */
   def onErrorResume[T >: Out](
-      predicate: function.Predicate[? >: Throwable],
-      fallback: function.Function[? >: Throwable, ? <: Graph[SourceShape[T], NotUsed]]): SubFlow[In, T, Mat] =
+      predicate: function.Predicate[_ >: Throwable],
+      fallback: function.Function[_ >: Throwable, _ <: Graph[SourceShape[T], NotUsed]]): SubFlow[In, T, Mat] =
     new SubFlow(delegate.recoverWith {
       case NonFatal(ex) if predicate.test(ex) => fallback(ex)
     })
@@ -2064,7 +2064,7 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def flatMapConcat[T, M](f: function.Function[Out, ? <: Graph[SourceShape[T], M]]): SubFlow[In, T, Mat] =
+  def flatMapConcat[T, M](f: function.Function[Out, _ <: Graph[SourceShape[T], M]]): SubFlow[In, T, Mat] =
     new SubFlow(delegate.flatMapConcat(x => f(x)))
 
   /**
@@ -2084,7 +2084,7 @@ final class SubFlow[In, Out, Mat](
    */
   def flatMapConcat[T, M](
       parallelism: Int,
-      f: function.Function[Out, ? <: Graph[SourceShape[T], M]]): SubFlow[In, T, Mat] =
+      f: function.Function[Out, _ <: Graph[SourceShape[T], M]]): SubFlow[In, T, Mat] =
     new SubFlow(delegate.flatMapConcat(parallelism, x => f(x)))
 
   /**
@@ -2100,7 +2100,7 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def flatMapMerge[T, M](breadth: Int, f: function.Function[Out, ? <: Graph[SourceShape[T], M]]): SubFlow[In, T, Mat] =
+  def flatMapMerge[T, M](breadth: Int, f: function.Function[Out, _ <: Graph[SourceShape[T], M]]): SubFlow[In, T, Mat] =
     new SubFlow(delegate.flatMapMerge(breadth, o => f(o)))
 
   /**
@@ -2119,7 +2119,7 @@ final class SubFlow[In, Out, Mat](
    *
    * @since 1.2.0
    */
-  def switchMap[T, M](f: function.Function[Out, ? <: Graph[SourceShape[T], M]]): SubFlow[In, T, Mat] =
+  def switchMap[T, M](f: function.Function[Out, _ <: Graph[SourceShape[T], M]]): SubFlow[In, T, Mat] =
     new SubFlow(delegate.switchMap(o => f(o)))
 
   /**
@@ -2197,7 +2197,7 @@ final class SubFlow[In, Out, Mat](
    */
   @varargs
   @SafeVarargs
-  def concatAllLazy(those: Graph[SourceShape[Out], ?]*): SubFlow[In, Out, Mat] =
+  def concatAllLazy(those: Graph[SourceShape[Out], _]*): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.concatAllLazy(those: _*))
 
   /**
@@ -2286,7 +2286,7 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream or Sink cancels
    */
-  def alsoTo(that: Graph[SinkShape[Out], ?]): SubFlow[In, Out, Mat] =
+  def alsoTo(that: Graph[SinkShape[Out], _]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.alsoTo(that))
 
   /**
@@ -2305,7 +2305,7 @@ final class SubFlow[In, Out, Mat](
    */
   @varargs
   @SafeVarargs
-  def alsoToAll(those: Graph[SinkShape[Out], ?]*): SubFlow[In, Out, Mat] =
+  def alsoToAll(those: Graph[SinkShape[Out], _]*): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.alsoToAll(those: _*))
 
   /**
@@ -2320,7 +2320,7 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' any of the downstreams cancel
    */
-  def divertTo(that: Graph[SinkShape[Out], ?], when: function.Predicate[Out]): SubFlow[In, Out, Mat] =
+  def divertTo(that: Graph[SinkShape[Out], _], when: function.Predicate[Out]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.divertTo(that, when.test))
 
   /**
@@ -2339,7 +2339,7 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def wireTap(that: Graph[SinkShape[Out], ?]): SubFlow[In, Out, Mat] =
+  def wireTap(that: Graph[SinkShape[Out], _]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.wireTap(that))
 
   /**
@@ -2354,7 +2354,7 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def merge(that: Graph[SourceShape[Out], ?]): SubFlow[In, Out, Mat] =
+  def merge(that: Graph[SourceShape[Out], _]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.merge(that))
 
   /**
@@ -2370,11 +2370,11 @@ final class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def mergeAll(
-      @Nullable those: java.util.List[? <: Graph[SourceShape[Out], ? <: Any]],
+      @Nullable those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
       eagerComplete: Boolean): SubFlow[In, Out, Mat] = {
     import pekko.util.Collections._
     val seq = if (those ne null) those.collectToImmutableSeq {
-      case source: Source[Out @unchecked, ?] => source.asScala
+      case source: Source[Out @unchecked, _] => source.asScala
       case other                             => other
     }
     else immutable.Seq()
@@ -2404,7 +2404,7 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def interleave(that: Graph[SourceShape[Out], ?], segmentSize: Int): SubFlow[In, Out, Mat] =
+  def interleave(that: Graph[SourceShape[Out], _], segmentSize: Int): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.interleave(that, segmentSize))
 
   /**
@@ -2428,12 +2428,12 @@ final class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def interleaveAll(
-      @Nullable those: java.util.List[? <: Graph[SourceShape[Out], ? <: Any]],
+      @Nullable those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
       segmentSize: Int,
       eagerClose: Boolean): SubFlow[In, Out, Mat] = {
     import pekko.util.Collections._
     val seq = if (those ne null) those.collectToImmutableSeq {
-      case source: Source[Out @unchecked, ?] => source.asScala
+      case source: Source[Out @unchecked, _] => source.asScala
       case other                             => other
     }
     else immutable.Seq()
@@ -2515,7 +2515,7 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def zip[T](source: Graph[SourceShape[T], ?]): SubFlow[In, pekko.japi.Pair[Out @uncheckedVariance, T], Mat] =
+  def zip[T](source: Graph[SourceShape[T], _]): SubFlow[In, pekko.japi.Pair[Out @uncheckedVariance, T], Mat] =
     new SubFlow(delegate.zip(source).map { case (o, t) => pekko.japi.Pair.create(o, t) })
 
   /**
@@ -2530,7 +2530,7 @@ final class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def zipAll[U, A >: Out](
-      that: Graph[SourceShape[U], ?],
+      that: Graph[SourceShape[U], _],
       thisElem: A,
       thatElem: U): SubFlow[In, pekko.japi.Pair[A, U], Mat] =
     new SubFlow(delegate.zipAll(that, thisElem, thatElem).map { case (a, u) => Pair.create(a, u) })
@@ -2547,7 +2547,7 @@ final class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def zipLatest[T](source: Graph[SourceShape[T], ?]): SubFlow[In, pekko.japi.Pair[Out @uncheckedVariance, T], Mat] =
+  def zipLatest[T](source: Graph[SourceShape[T], _]): SubFlow[In, pekko.japi.Pair[Out @uncheckedVariance, T], Mat] =
     new SubFlow(delegate.zipLatest(source).map { case (o, t) => pekko.japi.Pair.create(o, t) })
 
   /**
@@ -2563,7 +2563,7 @@ final class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def zipWith[Out2, Out3](
-      that: Graph[SourceShape[Out2], ?],
+      that: Graph[SourceShape[Out2], _],
       combine: function.Function2[Out, Out2, Out3]): SubFlow[In, Out3, Mat] =
     new SubFlow(delegate.zipWith[Out2, Out3](that)(combinerToScala(combine)))
 
@@ -2581,7 +2581,7 @@ final class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def zipLatestWith[Out2, Out3](
-      that: Graph[SourceShape[Out2], ?],
+      that: Graph[SourceShape[Out2], _],
       combine: function.Function2[Out, Out2, Out3]): SubFlow[In, Out3, Mat] =
     new SubFlow(delegate.zipLatestWith[Out2, Out3](that)(combinerToScala(combine)))
 

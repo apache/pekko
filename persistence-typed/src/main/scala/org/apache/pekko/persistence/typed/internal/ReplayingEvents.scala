@@ -97,11 +97,11 @@ private[pekko] final class ReplayingEvents[C, E, S](
   onRecoveryStart(setup.context)
 
   @InternalStableApi
-  def onRecoveryStart(@nowarn("msg=never used") context: ActorContext[?]): Unit = ()
+  def onRecoveryStart(@nowarn("msg=never used") context: ActorContext[_]): Unit = ()
   @InternalStableApi
-  def onRecoveryComplete(@nowarn("msg=never used") context: ActorContext[?]): Unit = ()
+  def onRecoveryComplete(@nowarn("msg=never used") context: ActorContext[_]): Unit = ()
   @InternalStableApi
-  def onRecoveryFailed(@nowarn("msg=never used") context: ActorContext[?], @nowarn("msg=never used") reason: Throwable,
+  def onRecoveryFailed(@nowarn("msg=never used") context: ActorContext[_], @nowarn("msg=never used") reason: Throwable,
       @nowarn("msg=never used") event: Option[Any]): Unit =
     ()
 
@@ -205,7 +205,7 @@ private[pekko] final class ReplayingEvents[C, E, S](
           Behaviors.unhandled
       }
     } catch {
-      case ex: UnstashException[?] =>
+      case ex: UnstashException[_] =>
         // let supervisor handle it, don't treat it as recovery failure
         throw ex
       case NonFatal(cause) =>

@@ -14,7 +14,6 @@
 package org.apache.pekko.persistence.testkit.query.scaladsl
 import java.time.Instant
 import java.time.temporal.ChronoUnit
-
 import scala.annotation.nowarn
 import scala.collection.immutable
 

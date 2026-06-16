@@ -197,7 +197,7 @@ Strange behavior has been reported by users that have tried it.
 
 Pekko, like most Scala projects, compiles faster with the Graal JIT enabled. The easiest way to use it for compiling Pekko is to:
 
-* Use a JDK >= 17
+* Use a JDK > 10
 * Use the following JVM options for SBT e.g. by adding them to the `SBT_OPTS` environment variable: `-XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI -XX:+UseJVMCICompiler`
 
 ### JDK 21+ Nightly Virtual Threads

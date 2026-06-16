@@ -24,8 +24,6 @@ import scala.jdk.FutureConverters._
 import scala.jdk.OptionConverters._
 import scala.util.Try
 
-import org.jspecify.annotations.Nullable
-
 import org.apache.pekko
 import pekko._
 import pekko.actor.{ ActorRef, ClassicActorSystemProvider, Status }
@@ -36,6 +34,7 @@ import pekko.stream.impl.LinearTraversalBuilder
 import pekko.stream.scaladsl.SinkToCompletionStage
 import pekko.util.ConstantFun.scalaAnyToUnit
 
+import org.jspecify.annotations.Nullable
 import org.reactivestreams.{ Publisher, Subscriber }
 
 /** Java API */
@@ -158,7 +157,7 @@ object Sink {
    * result container, optionally transformed into a final representation after all input elements have been processed.
    * The ``Collector`` can also do reduction at the end. Reduction processing is performed sequentially.
    */
-  def collect[U, In](collector: Collector[In, ? <: Any, U]): Sink[In, CompletionStage[U]] =
+  def collect[U, In](collector: Collector[In, _ <: Any, U]): Sink[In, CompletionStage[U]] =
     StreamConverters.javaCollector(() => collector)
 
   /**
@@ -435,9 +434,9 @@ object Sink {
    * Combine several sinks with fan-out strategy like `Broadcast` or `Balance` and returns `Sink`.
    */
   def combine[T, U](
-      output1: Sink[U, ?],
-      output2: Sink[U, ?],
-      @Nullable rest: java.util.List[Sink[U, ?]],
+      output1: Sink[U, _],
+      output2: Sink[U, _],
+      @Nullable rest: java.util.List[Sink[U, _]],
       fanOutStrategy: function.Function[java.lang.Integer, Graph[UniformFanOutShape[T, U], NotUsed]])
       : Sink[T, NotUsed] = {
     import scala.jdk.CollectionConverters._
@@ -464,7 +463,7 @@ object Sink {
    * @since 1.1.0
    */
   def combine[T, U, M](
-      @Nullable sinks: java.util.List[? <: Graph[SinkShape[U], M]],
+      @Nullable sinks: java.util.List[_ <: Graph[SinkShape[U], M]],
       fanOutStrategy: function.Function[java.lang.Integer, Graph[UniformFanOutShape[T, U], NotUsed]])
       : Sink[T, java.util.List[M]] = {
     import pekko.util.Collections._

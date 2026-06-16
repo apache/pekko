@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory
  * INTERNAL API
  */
 @InternalApi
-private[pekko] final class ReplicatedShardingExtensionImpl(system: ActorSystem[?]) extends ReplicatedShardingExtension {
+private[pekko] final class ReplicatedShardingExtensionImpl(system: ActorSystem[_]) extends ReplicatedShardingExtension {
 
   private val counter = new AtomicLong(0)
 

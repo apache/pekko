@@ -22,9 +22,9 @@ object ScalafixForMultiNodePlugin extends AutoPlugin with ScalafixSupport {
 
   import MultiJvmPlugin.autoImport._
 
-  lazy val scalafixIgnoredSetting: Seq[Setting[?]] = Seq(ignore(MultiJvm))
+  lazy val scalafixIgnoredSetting: Seq[Setting[_]] = Seq(ignore(MultiJvm))
 
-  override lazy val projectSettings: Seq[Def.Setting[?]] =
+  override lazy val projectSettings: Seq[Def.Setting[_]] =
     Seq(MultiJvm).flatMap(c => inConfig(c)(scalafixConfigSettings(c))) ++
     scalafixIgnoredSetting ++ Seq(
       updateProjectCommands(alias = "fixall", value = ";scalafixEnable;scalafixAll;scalafmtAll"),

@@ -333,10 +333,7 @@ private[cluster] final case class CrossDcHeartbeatingState(
 private[cluster] object CrossDcHeartbeatingState {
 
   /** Sorted by age */
-  private def emptyMembersSortedSet: immutable.SortedSet[Member] = {
-    implicit val ord: Ordering[Member] = Member.ageOrdering
-    immutable.SortedSet.empty[Member]
-  }
+  private def emptyMembersSortedSet: immutable.SortedSet[Member] = immutable.SortedSet.empty[Member](Member.ageOrdering)
 
   // Since we need ordering of oldests guaranteed, we must only look at Up (or Leaving, Exiting...) nodes
   def atLeastInUpState(m: Member): Boolean =
@@ -359,8 +356,7 @@ private[cluster] object CrossDcHeartbeatingState {
           // we need to enforce the ageOrdering for the SortedSet in each DC
           groupedByDc.map {
             case (dc, ms) =>
-              implicit val ord: Ordering[Member] = Member.ageOrdering
-              dc -> immutable.SortedSet.empty[Member].union(ms)
+              dc -> immutable.SortedSet.empty[Member](Member.ageOrdering).union(ms)
           }
         }
       })

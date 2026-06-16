@@ -250,7 +250,6 @@ interface ShardingDocExample {
       }
     }
   }
-
   // #consumer
 
   // #producer
@@ -408,7 +407,6 @@ interface ShardingDocExample {
       }
     }
   }
-
   // #producer
 
   static void illustrateInit() {

@@ -19,7 +19,7 @@ import scala.jdk.DurationConverters._
 
 import org.apache.pekko
 import pekko.actor.typed.ActorSystem
-import pekko.annotation.InternalApi
+import pekko.annotation.{ ApiMayChange, InternalApi }
 import pekko.cluster.ClusterSettings.DataCenter
 import pekko.cluster.sharding.{ ClusterShardingSettings => ClassicShardingSettings }
 import pekko.cluster.singleton.{ ClusterSingletonManagerSettings => ClassicClusterSingletonManagerSettings }
@@ -33,7 +33,7 @@ import com.typesafe.config.Config
 object ClusterShardingSettings {
 
   /** Scala API: Creates new cluster sharding settings object */
-  def apply(system: ActorSystem[?]): ClusterShardingSettings =
+  def apply(system: ActorSystem[_]): ClusterShardingSettings =
     fromConfig(system.settings.config.getConfig("pekko.cluster.sharding"))
 
   def fromConfig(config: Config): ClusterShardingSettings = {
@@ -43,7 +43,7 @@ object ClusterShardingSettings {
   }
 
   /** Java API: Creates new cluster sharding settings object */
-  def create(system: ActorSystem[?]): ClusterShardingSettings =
+  def create(system: ActorSystem[_]): ClusterShardingSettings =
     apply(system)
 
   /** INTERNAL API: Intended only for internal use, it is not recommended to keep converting between the setting types */
@@ -174,22 +174,46 @@ object ClusterShardingSettings {
   }
   case object RememberEntitiesStoreModeDData extends RememberEntitiesStoreMode { override def name = "ddata" }
 
+  /**
+   * API MAY CHANGE: Settings for passivation strategies may change after additional testing and feedback.
+   */
+  @ApiMayChange
   final class PassivationStrategySettings private (
       val idleEntitySettings: Option[PassivationStrategySettings.IdleSettings],
       val activeEntityLimit: Option[Int],
       val replacementPolicySettings: Option[PassivationStrategySettings.PolicySettings],
-      val admissionSettings: Option[PassivationStrategySettings.AdmissionSettings]) {
+      val admissionSettings: Option[PassivationStrategySettings.AdmissionSettings],
+      private[pekko] val oldSettingUsed: Boolean) {
+
+    private[pekko] def this(
+        idleEntitySettings: Option[PassivationStrategySettings.IdleSettings],
+        activeEntityLimit: Option[Int],
+        replacementPolicySettings: Option[PassivationStrategySettings.PolicySettings],
+        oldSettingUsed: Boolean) =
+      this(idleEntitySettings, activeEntityLimit, replacementPolicySettings, admissionSettings = None, oldSettingUsed)
+
+    def this(
+        idleEntitySettings: Option[PassivationStrategySettings.IdleSettings],
+        activeEntityLimit: Option[Int],
+        replacementPolicySettings: Option[PassivationStrategySettings.PolicySettings],
+        admissionSettings: Option[PassivationStrategySettings.AdmissionSettings]) =
+      this(idleEntitySettings, activeEntityLimit, replacementPolicySettings, admissionSettings, oldSettingUsed = false)
 
     def this(
         idleEntitySettings: Option[PassivationStrategySettings.IdleSettings],
         activeEntityLimit: Option[Int],
         replacementPolicySettings: Option[PassivationStrategySettings.PolicySettings]) =
-      this(idleEntitySettings, activeEntityLimit, replacementPolicySettings, admissionSettings = None)
+      this(
+        idleEntitySettings,
+        activeEntityLimit,
+        replacementPolicySettings,
+        admissionSettings = None,
+        oldSettingUsed = false)
 
     import PassivationStrategySettings._
 
     def withIdleEntityPassivation(settings: IdleSettings): PassivationStrategySettings =
-      copy(idleEntitySettings = Some(settings))
+      copy(idleEntitySettings = Some(settings), oldSettingUsed = false)
 
     def withIdleEntityPassivation(timeout: FiniteDuration): PassivationStrategySettings =
       withIdleEntityPassivation(IdleSettings.defaults.withTimeout(timeout))
@@ -223,18 +247,32 @@ object ClusterShardingSettings {
     def withAdmission(settings: AdmissionSettings): PassivationStrategySettings =
       copy(admissionSettings = Some(settings))
 
+    private[pekko] def withOldIdleStrategy(timeout: FiniteDuration): PassivationStrategySettings =
+      copy(
+        idleEntitySettings = Some(new IdleSettings(timeout, None)),
+        activeEntityLimit = None,
+        replacementPolicySettings = None,
+        admissionSettings = None,
+        oldSettingUsed = true)
+
     private def copy(
         idleEntitySettings: Option[IdleSettings] = idleEntitySettings,
         activeEntityLimit: Option[Int] = activeEntityLimit,
         replacementPolicySettings: Option[PolicySettings] = replacementPolicySettings,
-        admissionSettings: Option[AdmissionSettings] = admissionSettings): PassivationStrategySettings =
+        admissionSettings: Option[AdmissionSettings] = admissionSettings,
+        oldSettingUsed: Boolean = oldSettingUsed): PassivationStrategySettings =
       new PassivationStrategySettings(
         idleEntitySettings,
         activeEntityLimit,
         replacementPolicySettings,
-        admissionSettings)
+        admissionSettings,
+        oldSettingUsed)
   }
 
+  /**
+   * API MAY CHANGE: Settings for passivation strategies may change after additional testing and feedback.
+   */
+  @ApiMayChange
   object PassivationStrategySettings {
     import ClassicShardingSettings.{ PassivationStrategySettings => ClassicPassivationStrategySettings }
 
@@ -242,7 +280,8 @@ object ClusterShardingSettings {
       idleEntitySettings = None,
       activeEntityLimit = None,
       replacementPolicySettings = None,
-      admissionSettings = None)
+      admissionSettings = None,
+      oldSettingUsed = false)
 
     val disabled: PassivationStrategySettings = defaults
 
@@ -251,14 +290,16 @@ object ClusterShardingSettings {
         classic.idleEntitySettings.map(IdleSettings.apply),
         classic.activeEntityLimit,
         classic.replacementPolicySettings.map(PolicySettings.apply),
-        classic.admissionSettings.map(AdmissionSettings.apply))
+        classic.admissionSettings.map(AdmissionSettings.apply),
+        classic.oldSettingUsed)
 
     def toClassic(settings: PassivationStrategySettings): ClassicPassivationStrategySettings =
       new ClassicPassivationStrategySettings(
         settings.idleEntitySettings.map(IdleSettings.toClassic),
         settings.activeEntityLimit,
         settings.replacementPolicySettings.map(PolicySettings.toClassic),
-        settings.admissionSettings.map(AdmissionSettings.toClassic))
+        settings.admissionSettings.map(AdmissionSettings.toClassic),
+        settings.oldSettingUsed)
 
     object IdleSettings {
       val defaults: IdleSettings = new IdleSettings(timeout = 2.minutes, interval = None)
@@ -608,6 +649,8 @@ object ClusterShardingSettings {
         new AdmissionSettings(filter, window)
     }
 
+    private[pekko] def oldDefault(idleTimeout: FiniteDuration): PassivationStrategySettings =
+      disabled.withOldIdleStrategy(idleTimeout)
   }
 
   // generated using kaze-class
@@ -830,6 +873,10 @@ final class ClusterShardingSettings(
       rememberEntitiesStoreMode: ClusterShardingSettings.RememberEntitiesStoreMode): ClusterShardingSettings =
     copy(rememberEntitiesStoreMode = rememberEntitiesStoreMode)
 
+  /**
+   * API MAY CHANGE: Settings for passivation strategies may change after additional testing and feedback.
+   */
+  @ApiMayChange
   def withPassivationStrategy(settings: ClusterShardingSettings.PassivationStrategySettings): ClusterShardingSettings =
     copy(passivationStrategySettings = settings)
 

@@ -39,6 +39,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.api.Test;
 import scala.collection.immutable.IndexedSeq;
 
+
 public class CustomRouterDocTest extends AbstractJavaTest {
 
   @RegisterExtension

@@ -62,14 +62,14 @@ import pekko.serialization.Serializers
   private val timestampOffsetSeparator = ';'
 
   override def manifest(o: AnyRef): String = o match {
-    case _: EventEnvelope[?] => EventEnvelopeManifest
+    case _: EventEnvelope[_] => EventEnvelopeManifest
     case offset: Offset      => toStorageRepresentation(offset)._2
     case _                   =>
       throw new IllegalArgumentException(s"Can't serialize object of type ${o.getClass} in [${getClass.getName}]")
   }
 
   override def toBinary(o: AnyRef): Array[Byte] = o match {
-    case env: EventEnvelope[?] =>
+    case env: EventEnvelope[_] =>
       val builder = QueryMessages.EventEnvelope.newBuilder()
 
       val (offset, offsetManifest) = toStorageRepresentation(env.offset)

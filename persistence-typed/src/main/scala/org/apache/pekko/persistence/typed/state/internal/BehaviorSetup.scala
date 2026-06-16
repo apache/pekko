@@ -30,8 +30,6 @@ import pekko.persistence.typed.state.internal.InternalProtocol.RecoveryTimeout
 import pekko.persistence.typed.state.scaladsl.DurableStateBehavior
 import pekko.util.OptionVal
 
-import com.typesafe.config.ConfigFactory
-
 import org.slf4j.Logger
 import org.slf4j.MDC
 
@@ -59,9 +57,7 @@ private[pekko] final class BehaviorSetup[C, S](
   // Any instead S because adapter may change the type
   val durableStateStore: DurableStateUpdateStore[Any] =
     DurableStateStoreRegistry(context.system.toClassic)
-      .durableStateStoreFor[DurableStateUpdateStore[Any]](
-        settings.durableStateStorePluginId,
-        settings.durableStateStorePluginConfig.getOrElse(ConfigFactory.empty))
+      .durableStateStoreFor[DurableStateUpdateStore[Any]](settings.durableStateStorePluginId)
 
   def selfClassic: ClassicActorRef = context.self.toClassic
 

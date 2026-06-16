@@ -85,7 +85,6 @@ public class SettingsExtensionDocTest extends AbstractJavaTest {
     }
     // #extension-usage-actor
   }
-
   // #extension-usage-actor
 
   public static class Connection {}

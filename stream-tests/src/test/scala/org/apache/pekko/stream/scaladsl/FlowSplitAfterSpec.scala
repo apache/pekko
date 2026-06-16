@@ -68,17 +68,17 @@ class FlowSplitAfterSpec extends StreamSpec("""
       .lift
       .withAttributes(ActorAttributes.supervisionStrategy(decider))
       .runWith(Sink.asPublisher(false))
-    val masterSubscriber = TestSubscriber.manualProbe[Source[Int, ?]]()
+    val masterSubscriber = TestSubscriber.manualProbe[Source[Int, _]]()
 
     groupStream.subscribe(masterSubscriber)
     val masterSubscription = masterSubscriber.expectSubscription()
 
-    def expectSubFlow(): Source[Int, ?] = {
+    def expectSubFlow(): Source[Int, _] = {
       masterSubscription.request(1)
       expectSubPublisher()
     }
 
-    def expectSubPublisher(): Source[Int, ?] = {
+    def expectSubPublisher(): Source[Int, _] = {
       val substream = masterSubscriber.expectNext()
       substream
     }

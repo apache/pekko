@@ -176,7 +176,7 @@ class RestartSpec
       probe.requestNext("a")
       probe.requestNext("b")
       probe.request(1)
-      // The probe should now be backing off again with increased backoff
+      // The probe should now be backing off again with with increased backoff
 
       // Now wait for the delay to pass, then it will start the new source, we also want to wait for the
       // subsequent backoff to pass, so it resets the restart count
@@ -314,7 +314,7 @@ class RestartSpec
       probe.requestNext("a")
       // There should be minBackoff delay
       probe.requestNext("a")
-      // The probe should now be backing off again with increased backoff
+      // The probe should now be backing off again with with increased backoff
 
       // Now wait for the delay to pass, then it will start the new source, we also want to wait for the
       // subsequent backoff to pass
@@ -668,7 +668,7 @@ class RestartSpec
     // helps reuse all the setupFlow code for both methods: withBackoff, and onlyOnFailuresWithBackoff
     def RestartFlowFactory[In, Out](
         onlyOnFailures: Boolean,
-        settings: RestartSettings): (() => Flow[In, Out, ?]) => Flow[In, Out, NotUsed] =
+        settings: RestartSettings): (() => Flow[In, Out, _]) => Flow[In, Out, NotUsed] =
       if (onlyOnFailures) RestartFlow.onFailuresWithBackoff(settings)
       else RestartFlow.withBackoff(settings)
 

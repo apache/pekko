@@ -233,10 +233,10 @@ class SyncTestingExampleSpec extends AnyWordSpec with Matchers {
 
       testKit.run(ConfigAware.SpawnChild(inbox.ref.narrow))
       val childTestKit = inbox.receiveMessage() match {
-        case ar: ActorRef[?] =>
+        case ar: ActorRef[_] =>
           testKit.childTestKit(ar.unsafeUpcast[Any].narrow[ConfigAware.Command])
         case unexpected =>
-          unexpected should be(a[ActorRef[?]])
+          unexpected should be(a[ActorRef[_]])
           ???
       }
 

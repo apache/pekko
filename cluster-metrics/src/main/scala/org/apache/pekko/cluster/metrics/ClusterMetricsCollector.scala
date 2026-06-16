@@ -84,10 +84,10 @@ private[metrics] class ClusterMetricsSupervisor extends Actor with ActorLogging 
       children.foreach(stop)
       collectorInstance += 1
       actorOf(Props(classOf[ClusterMetricsCollector]), collectorName)
-      log.debug("Collection started.")
+      log.debug(s"Collection started.")
     case CollectionStopMessage =>
       children.foreach(stop)
-      log.debug("Collection stopped.")
+      log.debug(s"Collection stopped.")
   }
 
 }

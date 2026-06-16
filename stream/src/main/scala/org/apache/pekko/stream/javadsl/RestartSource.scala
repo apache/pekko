@@ -43,7 +43,7 @@ object RestartSource {
    * @param settings [[RestartSettings]] defining restart configuration
    * @param sourceFactory A factory for producing the [[Source]] to wrap.
    */
-  def withBackoff[T](settings: RestartSettings, sourceFactory: Creator[Source[T, ?]]): Source[T, NotUsed] =
+  def withBackoff[T](settings: RestartSettings, sourceFactory: Creator[Source[T, _]]): Source[T, NotUsed] =
     pekko.stream.scaladsl.RestartSource
       .withBackoff(settings) { () =>
         sourceFactory.create().asScala
@@ -64,7 +64,7 @@ object RestartSource {
    * @param settings [[RestartSettings]] defining restart configuration
    * @param sourceFactory A factory for producing the [[Source]] to wrap.
    */
-  def onFailuresWithBackoff[T](settings: RestartSettings, sourceFactory: Creator[Source[T, ?]]): Source[T, NotUsed] =
+  def onFailuresWithBackoff[T](settings: RestartSettings, sourceFactory: Creator[Source[T, _]]): Source[T, NotUsed] =
     pekko.stream.scaladsl.RestartSource
       .onFailuresWithBackoff(settings) { () =>
         sourceFactory.create().asScala

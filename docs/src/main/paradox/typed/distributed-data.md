@@ -561,7 +561,7 @@ Note that the full state is occasionally also replicated for delta-CRDTs, for ex
 new nodes are added to the cluster or when deltas could not be propagated because
 of network partitions or similar problems.
 
-The delta propagation can be disabled with configuration property:
+The the delta propagation can be disabled with configuration property:
 
 ```
 pekko.cluster.distributed-data.delta-crdt.enabled=off

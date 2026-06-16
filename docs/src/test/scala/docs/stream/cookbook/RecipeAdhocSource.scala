@@ -27,7 +27,7 @@ import scala.concurrent.duration._
 class RecipeAdhocSource extends RecipeSpec {
 
   // #adhoc-source
-  def adhocSource[T](source: Source[T, ?], timeout: FiniteDuration, maxRetries: Int): Source[T, ?] =
+  def adhocSource[T](source: Source[T, _], timeout: FiniteDuration, maxRetries: Int): Source[T, _] =
     Source.lazySource(() =>
       source
         .backpressureTimeout(timeout)

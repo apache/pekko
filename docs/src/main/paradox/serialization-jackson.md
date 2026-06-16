@@ -18,7 +18,7 @@ To use Jackson Serialization, you must add the following dependency in your proj
 
 ## Introduction
 
-You find general concepts for Pekko serialization in the @ref:[Serialization](serialization.md) section.
+You find general concepts for for Pekko serialization in the @ref:[Serialization](serialization.md) section.
 This section describes how to use the Jackson serializer for application specific messages and persistent
 events and snapshots.
 

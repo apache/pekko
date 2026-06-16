@@ -66,7 +66,7 @@ jobs:
           REF: ${{ github.ref_name }}
 
       - name: Checkout
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v5.0.1
+        uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98 # v5.0.1
         with:
           fetch-depth: 0
           fetch-tags: true
@@ -140,7 +140,7 @@ jobs:
           REF: ${{ github.ref_name }}
 
       - name: Checkout
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v5.0.1
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5.0.1
         with:
           fetch-depth: 0
           fetch-tags: true
@@ -198,7 +198,7 @@ jobs:
           REF: ${{ github.ref_name }}
 
       - name: Checkout
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v5.0.1
+        uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98 # v5.0.1
         with:
           fetch-depth: 0
           fetch-tags: true
@@ -211,7 +211,7 @@ jobs:
           java-version: 17
 
       - name: Install sbt
-        uses: sbt/setup-sbt@af116cce31c00823d3903ce687f9cda3a4f19f1b # v1.2.1
+        uses: sbt/setup-sbt@2e222825582620cc38d2a54e674f3c01b7c14f5d # v1.1.24
 
       - name: Install Graphviz
         run: |-

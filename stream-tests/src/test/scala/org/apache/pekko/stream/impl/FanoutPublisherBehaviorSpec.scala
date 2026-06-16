@@ -21,6 +21,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
+import pekko.testkit.EventFilter
 import pekko.stream.{
   AbruptStageTerminationException,
   ActorAttributes,
@@ -31,12 +32,11 @@ import pekko.stream.{
 import pekko.stream.scaladsl.Keep
 import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.Source
-import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.TestPublisher
+import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.TestSubscriber
-import pekko.stream.testkit.Utils.TE
 import pekko.stream.testkit.scaladsl.TestSink
-import pekko.testkit.EventFilter
+import pekko.stream.testkit.Utils.TE
 
 class FanoutPublisherBehaviorSpec extends StreamSpec {
 

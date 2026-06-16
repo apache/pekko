@@ -109,7 +109,7 @@ class AskSpec extends ScalaTestWithActorTestKit("""
 
     "fail the future if the actor doesn't exist" in {
       val noSuchActor: ActorRef[Msg] = system match {
-        case adaptedSys: ActorSystemAdapter[?] =>
+        case adaptedSys: ActorSystemAdapter[_] =>
           import pekko.actor.typed.scaladsl.adapter._
           adaptedSys.system.provider.resolveActorRef("/foo/bar")
         case _ =>

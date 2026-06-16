@@ -74,7 +74,7 @@ private[pekko] object TestProbeImpl {
 }
 
 @InternalApi
-private[pekko] final class TestProbeImpl[M](name: String, system: ActorSystem[?])
+private[pekko] final class TestProbeImpl[M](name: String, system: ActorSystem[_])
     extends JavaTestProbe[M]
     with ScalaTestProbe[M]
     with InternalRecipientRef[M] {

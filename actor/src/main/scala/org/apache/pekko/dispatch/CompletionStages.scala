@@ -50,10 +50,10 @@ object CompletionStages {
    * @since 1.2.0
    */
   def find[T <: AnyRef](
-      stages: java.lang.Iterable[? <: CompletionStage[? <: T]],
+      stages: java.lang.Iterable[_ <: CompletionStage[_ <: T]],
       predicate: pekko.japi.function.Function[T, java.lang.Boolean]
   ): CompletionStage[Optional[T]] = {
-    def search(iterator: java.util.Iterator[? <: CompletionStage[? <: T]]): CompletionStage[Optional[T]] = {
+    def search(iterator: java.util.Iterator[_ <: CompletionStage[_ <: T]]): CompletionStage[Optional[T]] = {
       if (iterator.hasNext) {
         iterator.next().thenCompose { t =>
           if (predicate.apply(t)) {
@@ -79,7 +79,7 @@ object CompletionStages {
    *         with the same value or exception.
    * @since 1.2.0
    */
-  def firstCompletedOf[T <: AnyRef](stages: java.lang.Iterable[? <: CompletionStage[? <: T]]): CompletionStage[T] = {
+  def firstCompletedOf[T <: AnyRef](stages: java.lang.Iterable[_ <: CompletionStage[_ <: T]]): CompletionStage[T] = {
     val iterator = stages.iterator()
     if (!iterator.hasNext) {
       new CompletableFuture[T]() // never completes
@@ -102,7 +102,7 @@ object CompletionStages {
   }
 
   private def foldWithNext[T, R](
-      iterator: java.util.Iterator[? <: CompletionStage[? <: T]],
+      iterator: java.util.Iterator[_ <: CompletionStage[_ <: T]],
       previous: R,
       function: pekko.japi.function.Function2[R, T, R]): CompletionStage[R] = {
     if (iterator.hasNext) {
@@ -127,7 +127,7 @@ object CompletionStages {
    */
   def fold[T <: AnyRef, R](
       zero: R,
-      stages: java.lang.Iterable[? <: CompletionStage[? <: T]],
+      stages: java.lang.Iterable[_ <: CompletionStage[_ <: T]],
       function: pekko.japi.function.Function2[R, T, R]): CompletionStage[R] = {
     foldWithNext[T, R](stages.iterator(), zero, function)
   }
@@ -145,9 +145,9 @@ object CompletionStages {
    */
   @nowarn("msg=deprecated")
   def reduce[T <: AnyRef, R >: T](
-      stages: java.lang.Iterable[? <: CompletionStage[? <: T]],
+      stages: java.lang.Iterable[_ <: CompletionStage[_ <: T]],
       function: pekko.japi.function.Function2[R, T, R]): CompletionStage[R] = {
-    val iterator: java.util.Iterator[? <: CompletionStage[? <: T]] = stages.iterator()
+    val iterator: java.util.Iterator[_ <: CompletionStage[_ <: T]] = stages.iterator()
     if (iterator.hasNext) {
       iterator.next().thenCompose { v => foldWithNext[T, R](iterator, v, function) }
     } else {
@@ -165,7 +165,7 @@ object CompletionStages {
 
   private def combineNext[T](
       accumulate: CompletionStage[java.util.List[T]],
-      next: CompletionStage[? <: T],
+      next: CompletionStage[_ <: T],
       executor: Executor): CompletionStage[java.util.List[T]] = {
     if (executor eq null) {
       accumulate.thenCombine(next, addToListFunction())
@@ -185,7 +185,7 @@ object CompletionStages {
    * @since 1.2.0
    */
   def sequence[T](
-      stages: java.lang.Iterable[? <: CompletionStage[? <: T]],
+      stages: java.lang.Iterable[_ <: CompletionStage[_ <: T]],
       executor: Executor): CompletionStage[java.util.List[T]] = {
     var result: CompletionStage[java.util.List[T]] = CompletableFuture.completedFuture(new java.util.ArrayList[T]())
     val iterator = stages.iterator()

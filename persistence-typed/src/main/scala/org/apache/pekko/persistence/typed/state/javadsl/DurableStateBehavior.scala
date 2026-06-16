@@ -15,8 +15,6 @@ package org.apache.pekko.persistence.typed.state.javadsl
 
 import java.util.Optional
 
-import org.jspecify.annotations.Nullable
-
 import org.apache.pekko
 import pekko.actor.typed
 import pekko.actor.typed.BackoffSupervisorStrategy
@@ -30,10 +28,7 @@ import pekko.persistence.typed.SnapshotAdapter
 import pekko.persistence.typed.state.internal
 import pekko.persistence.typed.state.internal._
 import pekko.persistence.typed.state.scaladsl
-
-import scala.jdk.OptionConverters._
-
-import com.typesafe.config.Config
+import org.jspecify.annotations.Nullable
 
 /**
  * A `Behavior` for a persistent actor with durable storage of its state.
@@ -120,14 +115,6 @@ abstract class DurableStateBehavior[Command, State] private[pekko] (
   def durableStateStorePluginId: String = ""
 
   /**
-   * Override and define the `DurableStateStore` plugin config that this actor should use instead of the default.
-   * This is useful when the same plugin class is configured for multiple, isolated stores at runtime.
-   *
-   * @since 2.0.0
-   */
-  def durableStateStorePluginConfig: Optional[Config] = Optional.empty()
-
-  /**
    * The tag that can be used in persistence query.
    */
   def tag: String = ""
@@ -153,11 +140,7 @@ abstract class DurableStateBehavior[Command, State] private[pekko] (
       persistenceId,
       emptyState,
       (state, cmd) => commandHandler()(state, cmd).asInstanceOf[EffectImpl[State]],
-      getClass)
-      .withTag(tag)
-      .snapshotAdapter(snapshotAdapter())
-      .withDurableStateStorePluginId(durableStateStorePluginId)
-      .withDurableStateStorePluginConfig(durableStateStorePluginConfig.toScala)
+      getClass).withTag(tag).snapshotAdapter(snapshotAdapter()).withDurableStateStorePluginId(durableStateStorePluginId)
 
     val handler = signalHandler()
     val behaviorWithSignalHandler =
@@ -173,7 +156,7 @@ abstract class DurableStateBehavior[Command, State] private[pekko] (
   /**
    * The last sequence number that was persisted, can only be called from inside the handlers of a `DurableStateBehavior`
    */
-  final def lastSequenceNumber(ctx: ActorContext[?]): Long = {
+  final def lastSequenceNumber(ctx: ActorContext[_]): Long = {
     scaladsl.DurableStateBehavior.lastSequenceNumber(ctx.asScala)
   }
 

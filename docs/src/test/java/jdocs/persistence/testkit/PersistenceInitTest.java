@@ -38,19 +38,16 @@ import java.util.concurrent.TimeUnit;
 @ExtendWith(TestKitJUnitJupiterExtension.class)
 public class PersistenceInitTest extends AbstractJavaTest {
   @JUnitJupiterTestKit
-  public ActorTestKit testKit =
-      new JUnitJupiterTestKitBuilder()
-          .withCustomConfig(
-              ConfigFactory.parseString(
-                      "pekko.persistence.journal.plugin = \"pekko.persistence.journal.inmem\" \n"
-                          + "pekko.persistence.journal.inmem.test-serialization = on \n"
-                          + "pekko.persistence.snapshot-store.plugin ="
-                          + " \"pekko.persistence.snapshot-store.local\" \n"
-                          + "pekko.persistence.snapshot-store.local.dir = \"target/snapshot-"
-                          + UUID.randomUUID().toString()
-                          + "\" \n")
-                  .withFallback(ConfigFactory.defaultApplication()))
-          .build();
+  public ActorTestKit testKit = new JUnitJupiterTestKitBuilder()
+      .withCustomConfig(ConfigFactory.parseString(
+                  "pekko.persistence.journal.plugin = \"pekko.persistence.journal.inmem\" \n"
+                      + "pekko.persistence.journal.inmem.test-serialization = on \n"
+                      + "pekko.persistence.snapshot-store.plugin = \"pekko.persistence.snapshot-store.local\" \n"
+                      + "pekko.persistence.snapshot-store.local.dir = \"target/snapshot-"
+                      + UUID.randomUUID().toString()
+                      + "\" \n")
+              .withFallback(ConfigFactory.defaultApplication()))
+      .build();
 
   @Test
   public void testInit() throws Exception {

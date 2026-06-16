@@ -792,7 +792,7 @@ object Source {
   /**
    * Combines several sources with fan-in strategy like [[Merge]] or [[Concat]] into a single [[Source]].
    */
-  def combine[T, U](first: Source[T, ?], second: Source[T, ?], rest: Source[T, ?]*)(
+  def combine[T, U](first: Source[T, _], second: Source[T, _], rest: Source[T, _]*)(
       fanInStrategy: Int => Graph[UniformFanInShape[T, U], NotUsed]): Source[U, NotUsed] =
     Source.fromGraph(GraphDSL.create() { implicit b =>
       import GraphDSL.Implicits._
@@ -800,7 +800,7 @@ object Source {
       first  ~> c.in(0)
       second ~> c.in(1)
 
-      @tailrec def combineRest(idx: Int, i: Iterator[Source[T, ?]]): SourceShape[U] =
+      @tailrec def combineRest(idx: Int, i: Iterator[Source[T, _]]): SourceShape[U] =
         if (i.hasNext) {
           i.next() ~> c.in(idx)
           combineRest(idx + 1, i)
@@ -882,13 +882,13 @@ object Source {
   /**
    * Combine the elements of multiple streams into a stream of sequences.
    */
-  def zipN[T](sources: immutable.Seq[Source[T, ?]]): Source[immutable.Seq[T], NotUsed] =
+  def zipN[T](sources: immutable.Seq[Source[T, _]]): Source[immutable.Seq[T], NotUsed] =
     zipWithN(ConstantFun.scalaIdentityFunction[immutable.Seq[T]])(sources).addAttributes(DefaultAttributes.zipN)
 
   /**
    * Combine the elements of multiple streams into a stream of sequences using a combiner function.
    */
-  def zipWithN[T, O](zipper: immutable.Seq[T] => O)(sources: immutable.Seq[Source[T, ?]]): Source[O, NotUsed] = {
+  def zipWithN[T, O](zipper: immutable.Seq[T] => O)(sources: immutable.Seq[Source[T, _]]): Source[O, NotUsed] = {
     val source = sources match {
       case immutable.Seq()       => empty[O]
       case immutable.Seq(source) => source.map(t => zipper(immutable.Seq(t))).mapMaterializedValue(_ => NotUsed)
@@ -1119,7 +1119,7 @@ object Source {
    * '''Cancels when''' downstream cancels
    */
   def mergePrioritizedN[T](
-      sourcesAndPriorities: immutable.Seq[(Source[T, ?], Int)],
+      sourcesAndPriorities: immutable.Seq[(Source[T, _], Int)],
       eagerComplete: Boolean): Source[T, NotUsed] = {
     sourcesAndPriorities match {
       case immutable.Seq()            => Source.empty

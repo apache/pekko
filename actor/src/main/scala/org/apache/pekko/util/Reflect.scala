@@ -40,11 +40,11 @@ private[pekko] object Reflect {
    *
    * Hint: when comparing to Thread.currentThread().getStackTrace, add two levels.
    */
-  val getCallerClass: Option[Int => Class[?]] = {
+  val getCallerClass: Option[Int => Class[_]] = {
     try {
       val c = Class.forName("sun.reflect.Reflection")
       val m = c.getMethod("getCallerClass", Array(classOf[Int]): _*)
-      Some((i: Int) => m.invoke(null, Array[AnyRef](i.asInstanceOf[java.lang.Integer]): _*).asInstanceOf[Class[?]])
+      Some((i: Int) => m.invoke(null, Array[AnyRef](i.asInstanceOf[java.lang.Integer]): _*).asInstanceOf[Class[_]])
     } catch {
       case NonFatal(_) => None
     }
@@ -123,7 +123,7 @@ private[pekko] object Reflect {
     else constructor
   }
 
-  private def safeGetClass(a: Any): Class[?] =
+  private def safeGetClass(a: Any): Class[_] =
     if (a == null) classOf[AnyRef] else a.getClass
 
   /**
@@ -133,17 +133,17 @@ private[pekko] object Reflect {
    */
   private[pekko] def instantiator[T](clazz: Class[T]): () => T = () => instantiate(clazz)
 
-  def findMarker(root: Class[?], marker: Class[?]): Type = {
-    @tailrec def rec(curr: Class[?]): Type = {
+  def findMarker(root: Class[_], marker: Class[_]): Type = {
+    @tailrec def rec(curr: Class[_]): Type = {
       if ((curr.getSuperclass ne null) && marker.isAssignableFrom(curr.getSuperclass)) rec(curr.getSuperclass)
       else
         curr.getGenericInterfaces.collectFirst {
-          case c: Class[?] if marker.isAssignableFrom(c)                                            => c
-          case t: ParameterizedType if marker.isAssignableFrom(t.getRawType.asInstanceOf[Class[?]]) => t
+          case c: Class[_] if marker.isAssignableFrom(c)                                            => c
+          case t: ParameterizedType if marker.isAssignableFrom(t.getRawType.asInstanceOf[Class[_]]) => t
         } match {
           case None                       => throw new IllegalArgumentException(s"cannot find [$marker] in ancestors of [$root]")
-          case Some(c: Class[?])          => if (c == marker) c else rec(c)
-          case Some(t: ParameterizedType) => if (t.getRawType == marker) t else rec(t.getRawType.asInstanceOf[Class[?]])
+          case Some(c: Class[_])          => if (c == marker) c else rec(c)
+          case Some(t: ParameterizedType) => if (t.getRawType == marker) t else rec(t.getRawType.asInstanceOf[Class[_]])
           case _                          => ??? // cannot happen due to collectFirst
         }
     }
@@ -154,7 +154,7 @@ private[pekko] object Reflect {
    * INTERNAL API
    */
   private[pekko] def findClassLoader(): ClassLoader = {
-    def findCaller(get: Int => Class[?]): ClassLoader =
+    def findCaller(get: Int => Class[_]): ClassLoader =
       Iterator
         .from(2 /*is the magic number, promise*/ )
         .map(get)

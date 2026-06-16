@@ -42,7 +42,7 @@ object PersistentShardingMigrationSpec {
         remember-entities-store = "eventsourced"
 
         # this forces the remembered entity store to use persistence
-        # is deprecated
+        # is is deprecated
         state-store-mode = "persistence"
        
         # make sure we test snapshots

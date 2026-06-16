@@ -95,7 +95,6 @@ interface ShardingCompileOnlyTest {
       return this;
     }
   }
-
   // #counter
 
   // #counter-passivate
@@ -176,7 +175,6 @@ interface ShardingCompileOnlyTest {
       return Behaviors.stopped();
     }
   }
-
   // #counter-passivate
 
   public static void initPassivateExample() {

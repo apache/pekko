@@ -33,7 +33,7 @@ class SharedMutableStateDocSpec {
 
   class CleanUpActor extends Actor {
     def receive = {
-      case set: mutable.Set[?] => set.clear()
+      case set: mutable.Set[_] => set.clear()
     }
   }
 

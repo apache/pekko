@@ -54,7 +54,6 @@ class PrintMyActorRefActor extends AbstractBehavior<String> {
     return this;
   }
 }
-
 // #print-refs
 
 // #start-stop
@@ -106,7 +105,6 @@ class StartStopActor2 extends AbstractBehavior<String> {
     return this;
   }
 }
-
 // #start-stop
 
 // #supervise
@@ -172,7 +170,6 @@ class SupervisedActor extends AbstractBehavior<String> {
     return this;
   }
 }
-
 // #supervise
 
 // #print-refs
@@ -207,7 +204,6 @@ public class ActorHierarchyExperiments {
     testSystem.tell("start");
   }
 }
-
 // #print-refs
 
 class StartingActorHierarchyActors {

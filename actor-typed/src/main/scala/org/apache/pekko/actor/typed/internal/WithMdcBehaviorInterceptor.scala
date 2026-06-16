@@ -59,7 +59,7 @@ import org.slf4j.MDC
     // so we need to look through the stack and eliminate any MCD already existing
     def loop(next: Behavior[T]): Behavior[T] = {
       next match {
-        case i: InterceptorImpl[?, T @unchecked]
+        case i: InterceptorImpl[_, T @unchecked]
             if i.interceptor.isSame(this.asInstanceOf[BehaviorInterceptor[Any, Any]]) =>
           // eliminate that interceptor
           loop(i.nestedBehavior)
@@ -83,7 +83,7 @@ import org.slf4j.MDC
 
   // in the normal case, a new withMDC replaces the previous one
   override def isSame(other: BehaviorInterceptor[Any, Any]): Boolean = other match {
-    case _: WithMdcBehaviorInterceptor[?] => true
+    case _: WithMdcBehaviorInterceptor[_] => true
     case _                                => false
   }
 

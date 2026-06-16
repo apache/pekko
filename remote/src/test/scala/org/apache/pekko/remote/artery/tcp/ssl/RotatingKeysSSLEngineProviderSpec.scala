@@ -45,9 +45,8 @@ import pekko.testkit.TestActors
 import pekko.testkit.TestProbe
 import pekko.util.JavaVersion
 
-import org.scalatest.Outcome
-
 import com.typesafe.config.ConfigFactory
+import org.scalatest.Outcome
 
 // This is a simplification Spec. It doesn't rely on changing files.
 class RotatingProviderWithStaticKeysSpec
