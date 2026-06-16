@@ -63,15 +63,13 @@ object TestExtras {
           val baseList =
             List(
               "The java JavaExtension.java" ->
-              "actor-tests/target/test-reports/TEST-org.apache.pekko.actor.JavaExtension.xml")
-          val jdk9Only = List(
-            "The jdk9-only FlowPublisherSinkSpec.scala" ->
-            "stream-tests/target/test-reports/TEST-org.apache.pekko.stream.scaladsl.FlowPublisherSinkSpec.xml",
-            "The jdk9-only JavaFlowSupportCompileTest.java" ->
-            "stream-tests/target/test-reports/TEST-org.apache.pekko.stream.javadsl.JavaFlowSupportCompileTest.xml")
+              "actor-tests/target/test-reports/TEST-org.apache.pekko.actor.JavaExtension.xml",
+              "FlowPublisherSinkSpec.scala" ->
+              "stream-tests/target/test-reports/TEST-org.apache.pekko.stream.scaladsl.FlowPublisherSinkSpec.xml",
+              "JavaFlowSupportCompileTest.java" ->
+              "stream-tests/target/test-reports/TEST-org.apache.pekko.stream.javadsl.JavaFlowSupportCompileTest.xml")
 
-          val testsToCheck =
-            baseList ::: jdk9Only
+          val testsToCheck = baseList
 
           testsToCheck.foreach((shouldExist _).tupled)
         })

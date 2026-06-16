@@ -14,15 +14,14 @@
 import sbt.Keys._
 import sbt._
 
-object Jdk9 extends AutoPlugin {
+object Jdk21 extends AutoPlugin {
   import JdkOptions.JavaVersion._
 
-  // The version 21 is special for any Java versions >= 21
   private val supportedJavaLTSVersions = List("21")
 
-  lazy val CompileJdk9 = config("CompileJdk9").extend(Compile)
+  lazy val CompileJdk21 = config("CompileJdk21").extend(Compile)
 
-  lazy val TestJdk9 = config("TestJdk9").extend(Test).extend(CompileJdk9)
+  lazy val TestJdk21 = config("TestJdk21").extend(Test).extend(CompileJdk21)
 
   lazy val ScalaSourceDirectories: Seq[String] = getAdditionalSourceDirectoryNames("scala")
   lazy val ScalaTestSourceDirectories: Seq[String] = getAdditionalSourceDirectoryNames("scala", isTest = true)
@@ -53,43 +52,34 @@ object Jdk9 extends AutoPlugin {
       yield (task / sourceDirectory).value / sourceDirectoryName
   }
 
-  lazy val compileJdk9Settings = Seq(
-    // following the scala-2.12, scala-sbt-1.0, ... convention
+  lazy val compileJdk21Settings = Seq(
     unmanagedSourceDirectories := additionalSourceDirectories.value,
     scalacOptions := PekkoBuild.DefaultScalacOptions.value ++ Seq("-release", majorVersion.toString),
     javacOptions := PekkoBuild.DefaultJavacOptions ++ Seq("--release", majorVersion.toString))
 
-  lazy val testJdk9Settings = Seq(
-    // following the scala-2.12, scala-sbt-1.0, ... convention
+  lazy val testJdk21Settings = Seq(
     unmanagedSourceDirectories := additionalTestSourceDirectories.value,
     scalacOptions := PekkoBuild.DefaultScalacOptions.value ++ Seq("-release", majorVersion.toString),
     javacOptions := PekkoBuild.DefaultJavacOptions ++ Seq("--release", majorVersion.toString),
-    compile := compile.dependsOn(CompileJdk9 / compile).value,
-    classpathConfiguration := TestJdk9,
+    compile := compile.dependsOn(CompileJdk21 / compile).value,
+    classpathConfiguration := TestJdk21,
     externalDependencyClasspath := (Test / externalDependencyClasspath).value)
 
   lazy val compileSettings = Seq(
-    // It might have been more 'neat' to add the jdk9 products to the jar via packageBin/mappings, but that doesn't work with the OSGi plugin,
-    // so we add them to the fullClasspath instead.
-    //    Compile / packageBin / mappings
-    //      ++= (CompileJdk9 / products).value.flatMap(Path.allSubpaths),
-    // Since sbt-osgi upgrade to 0.9.5, the fullClasspath is no longer used on packaging when use sbt-osgi, so we have to
-    // add jdk9 products to dependencyClasspathAsJars instead.
-    //    Compile / fullClasspath ++= (CompileJdk9 / exportedProducts).value)
-    Compile / dependencyClasspathAsJars ++= (CompileJdk9 / exportedProducts).value)
+    Compile / dependencyClasspathAsJars ++= (CompileJdk21 / exportedProducts).value)
 
   lazy val testSettings = Seq((Test / test) := {
     (Test / test).value
-    (TestJdk9 / test).value
+    (TestJdk21 / test).value
   })
 
   override lazy val trigger = noTrigger
-  override lazy val projectConfigurations = Seq(CompileJdk9)
+  override lazy val projectConfigurations = Seq(CompileJdk21)
   override lazy val projectSettings =
-    inConfig(CompileJdk9)(Defaults.compileSettings) ++
-    inConfig(CompileJdk9)(compileJdk9Settings) ++
+    inConfig(CompileJdk21)(Defaults.compileSettings) ++
+    inConfig(CompileJdk21)(compileJdk21Settings) ++
     compileSettings ++
-    inConfig(TestJdk9)(Defaults.testSettings) ++
-    inConfig(TestJdk9)(testJdk9Settings) ++
+    inConfig(TestJdk21)(Defaults.testSettings) ++
+    inConfig(TestJdk21)(testJdk21Settings) ++
     testSettings
 }

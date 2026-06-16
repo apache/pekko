@@ -120,7 +120,7 @@ sbt "module-name / Test / testOnly fully.qualified.SpecName"
 - Use JDK-specific configs when relevant.
 
 ```shell
-sbt "module-name / TestJdk9 / testOnly fully.qualified.SpecName"
+sbt "module-name / TestJdk21 / testOnly fully.qualified.SpecName"
 ```
 
 - Run PR impact validation for non-trivial code changes.
