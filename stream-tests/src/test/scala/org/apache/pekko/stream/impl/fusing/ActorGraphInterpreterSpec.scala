@@ -436,5 +436,20 @@ class ActorGraphInterpreterSpec extends StreamSpec {
       done.future.futureValue // would throw on failure
     }
 
+    "continue working with subfused interpreters after initial shell reference is released" in {
+      val mat = Materializer(system)
+
+      // flatMapConcat triggers subfusing: the inner Source is materialized via
+      // SubFusingActorMaterializerImpl, which registers additional shells into
+      // the same ActorGraphInterpreter actor via registerShell.
+      // The actor must continue processing subfused shells correctly after
+      // the initial shell reference is released in preStart().
+      val result = Source(1 to 3)
+        .flatMapConcat(i => Source(List(i, i * 10)))
+        .runWith(Sink.seq)(mat)
+
+      result.futureValue should ===(Seq(1, 10, 2, 20, 3, 30))
+    }
+
   }
 }
