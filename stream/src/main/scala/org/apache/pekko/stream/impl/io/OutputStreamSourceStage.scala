@@ -81,7 +81,7 @@ private[pekko] class OutputStreamAdapter(
     extends OutputStream {
 
   @scala.throws(classOf[IOException])
-  private[this] def sendData(data: ByteString): Unit = {
+  private def sendData(data: ByteString): Unit = {
     if (!unfulfilledDemand.tryAcquire(writeTimeout.toMillis, TimeUnit.MILLISECONDS)) {
       throw new IOException("Timed out trying to write data to stream")
     }

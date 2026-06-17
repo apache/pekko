@@ -46,17 +46,17 @@ private[remote] final class TopHeavyHitters[T >: Null](val max: Int)(implicit cl
 
   // Contains the hash value for each entry in the hashmap. Used for quicker lookups (equality check can be avoided
   // if hashes don't match)
-  private[this] val hashes: Array[Int] = new Array(capacity)
+  private val hashes: Array[Int] = new Array(capacity)
   // Actual stored elements in the hashmap
-  private[this] val items: Array[T] = Array.ofDim[T](capacity)
+  private val items: Array[T] = Array.ofDim[T](capacity)
   // Index of stored element in the associated heap
-  private[this] val heapIndex: Array[Int] = Array.fill(capacity)(-1)
+  private val heapIndex: Array[Int] = Array.fill(capacity)(-1)
   // Weights associated with an entry in the hashmap. Used to maintain the heap property and give easy access to low
   // weight entries
-  private[this] val weights: Array[Long] = new Array(capacity)
+  private val weights: Array[Long] = new Array(capacity)
 
   // Heap structure containing indices to slots in the hashmap
-  private[this] val heap: Array[Int] = Array.fill(adjustedMax)(-1)
+  private val heap: Array[Int] = Array.fill(adjustedMax)(-1)
 
   /*
    * Invariants (apart from heap and hashmap invariants):

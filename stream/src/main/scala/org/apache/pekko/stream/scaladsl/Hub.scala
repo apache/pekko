@@ -146,7 +146,7 @@ private[pekko] class MergeHub[T](perProducerBufferSize: Int, drainingEnabled: Bo
   override val shape: SourceShape[T] = SourceShape(out)
 
   // Half of buffer size, rounded up
-  private[this] val DemandThreshold = (perProducerBufferSize / 2) + (perProducerBufferSize % 2)
+  private val DemandThreshold = (perProducerBufferSize / 2) + (perProducerBufferSize % 2)
 
   private sealed trait Event {
     def id: Long
@@ -180,12 +180,12 @@ private[pekko] class MergeHub[T](perProducerBufferSize: Int, drainingEnabled: Bo
      * processing of control messages. This causes no issues though, see the explanation in 'tryProcessNext'.
      */
     private val queue = new AbstractNodeQueue[Event] {}
-    @volatile private[this] var needWakeup = false
-    @volatile private[this] var shuttingDown = false
-    @volatile private[this] var draining = false
+    @volatile private var needWakeup = false
+    @volatile private var shuttingDown = false
+    @volatile private var draining = false
 
-    private[this] val demands = scala.collection.mutable.LongMap.empty[InputState]
-    private[this] val wakeupCallback = getAsyncCallback[NotUsed](_ =>
+    private val demands = scala.collection.mutable.LongMap.empty[InputState]
+    private val wakeupCallback = getAsyncCallback[NotUsed](_ =>
       // We are only allowed to dequeue if we are not backpressured. See comment in tryProcessNext() for details.
       if (isAvailable(out)) tryProcessNext(firstAttempt = true))
 
@@ -319,8 +319,8 @@ private[pekko] class MergeHub[T](perProducerBufferSize: Int, drainingEnabled: Bo
         new GraphStageLogic(shape) with InHandler {
           // Start from non-zero demand to avoid initial delays.
           // The HUB will expect this behavior.
-          private[this] var demand: Long = perProducerBufferSize
-          private[this] val id = idCounter.getAndIncrement()
+          private var demand: Long = perProducerBufferSize
+          private val id = idCounter.getAndIncrement()
 
           override def preStart(): Unit = {
             if (!logic.isDraining && !logic.isShuttingDown) {
@@ -495,7 +495,7 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
   override val shape: SinkShape[T] = SinkShape(in)
 
   // Half of buffer size, rounded up
-  private[this] val DemandThreshold = (bufferSize / 2) + (bufferSize % 2)
+  private val DemandThreshold = (bufferSize / 2) + (bufferSize % 2)
 
   private sealed trait HubEvent
 
@@ -515,22 +515,22 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
 
   private class BroadcastSinkLogic(_shape: Shape) extends GraphStageLogic(_shape) with InHandler {
 
-    private[this] val callbackPromise: Promise[AsyncCallback[HubEvent]] = Promise()
-    private[this] val noRegistrationsState = Open(callbackPromise.future, Nil)
+    private val callbackPromise: Promise[AsyncCallback[HubEvent]] = Promise()
+    private val noRegistrationsState = Open(callbackPromise.future, Nil)
     val state = new AtomicReference[HubState](noRegistrationsState)
     private var initialized = false
 
     // Start from values that will almost immediately overflow. This has no effect on performance, any starting
     // number will do, however, this protects from regressions as these values *almost surely* overflow and fail
     // tests if someone makes a mistake.
-    @volatile private[this] var tail = Int.MaxValue
-    private[this] var head = Int.MaxValue
+    @volatile private var tail = Int.MaxValue
+    private var head = Int.MaxValue
     /*
      * An Array with a published tail ("latest message") and a privately maintained head ("earliest buffered message").
      * Elements are published by simply putting them into the array and bumping the tail. If necessary, certain
      * consumers are sent a wakeup message through an AsyncCallback.
      */
-    private[this] val queue = new Array[AnyRef](bufferSize)
+    private val queue = new Array[AnyRef](bufferSize)
     /* This is basically a classic Bucket Queue: https://en.wikipedia.org/wiki/Bucket_queue
      * (in fact, this is the variant described in the Optimizations section, where the given set
      * of priorities always fall to a range
@@ -545,9 +545,9 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
      * Empty slots are null (no backing map allocated), reducing baseline memory and GC pressure.
      * When a slot drains to zero consumers, its map is released (set to null).
      */
-    private[this] val consumerWheel =
+    private val consumerWheel =
       new Array[LongMap[Consumer]](bufferSize * 2)
-    private[this] var activeConsumers = 0
+    private var activeConsumers = 0
 
     override def preStart(): Unit = {
       setKeepGoing(true)
@@ -812,10 +812,10 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
 
       override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
         new GraphStageLogic(shape) with OutHandler {
-          private[this] var untilNextAdvanceSignal = DemandThreshold
-          private[this] val id = idCounter.getAndIncrement()
-          private[this] var offsetInitialized = false
-          private[this] var hubCallback: AsyncCallback[HubEvent] = _
+          private var untilNextAdvanceSignal = DemandThreshold
+          private val id = idCounter.getAndIncrement()
+          private var offsetInitialized = false
+          private var hubCallback: AsyncCallback[HubEvent] = _
 
           /*
            * We need to track our last offset that we published to the Hub. The reason is, that for efficiency reasons,
@@ -823,8 +823,8 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
            * is needed, but it also means that we need to keep track of both our current offset, and the last one that
            * we published.
            */
-          private[this] var previousPublishedOffset = 0
-          private[this] var offset = 0
+          private var previousPublishedOffset = 0
+          private var offset = 0
 
           override def preStart(): Unit = {
             val callback = getAsyncCallback(onCommand)

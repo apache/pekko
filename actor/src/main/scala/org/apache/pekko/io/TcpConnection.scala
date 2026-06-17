@@ -48,12 +48,12 @@ private[io] abstract class TcpConnection(val tcp: TcpExt, val channel: SocketCha
   import tcp.Settings._
   import tcp.bufferPool
 
-  private[this] var pendingWrite: PendingWrite = EmptyPendingWrite
-  private[this] var peerClosed = false
-  private[this] var writingSuspended = false
-  private[this] var readingSuspended = pullMode
-  private[this] var interestedInResume: Option[ActorRef] = None
-  private[this] var closedMessage: Option[CloseInformation] = None // for ConnectionClosed message in postStop
+  private var pendingWrite: PendingWrite = EmptyPendingWrite
+  private var peerClosed = false
+  private var writingSuspended = false
+  private var readingSuspended = pullMode
+  private var interestedInResume: Option[ActorRef] = None
+  private var closedMessage: Option[CloseInformation] = None // for ConnectionClosed message in postStop
   private var watchedActor: ActorRef = context.system.deadLetters
   private var registration: Option[ChannelRegistration] = None
 
@@ -364,7 +364,7 @@ private[io] abstract class TcpConnection(val tcp: TcpExt, val channel: SocketCha
       case _: SocketException => false
     }
 
-  @tailrec private[this] def extractMsg(t: Throwable): String =
+  @tailrec private def extractMsg(t: Throwable): String =
     if (t eq null) "unknown"
     else {
       t.getMessage match {

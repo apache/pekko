@@ -131,7 +131,7 @@ object FSM {
   private[pekko] final case class Timer(name: String, msg: Any, mode: TimerMode, generation: Int, owner: AnyRef)(
       context: ActorContext)
       extends NoSerializationVerificationNeeded {
-    private var ref: Option[Cancellable] = _
+    private var ref: Option[Cancellable] = None
     private val scheduler = context.system.scheduler
     private implicit val executionContext: ExecutionContextExecutor = context.dispatcher
 
@@ -733,9 +733,9 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
   /*
    * FSM State data and current timeout handling
    */
-  private var currentState: State = _
+  private var currentState: State = null
   private var timeoutFuture: Option[Cancellable] = None
-  private var nextState: State = _
+  private var nextState: State = null
   private var generation: Long = 0L
 
   /*

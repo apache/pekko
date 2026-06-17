@@ -140,7 +140,7 @@ class NettyTransportSettings(config: Config) {
     case dispatcher => Some(dispatcher)
   }
 
-  private[this] def optionSize(s: String): Option[Int] = getBytes(s).toInt match {
+  private def optionSize(s: String): Option[Int] = getBytes(s).toInt match {
     case 0          => None
     case x if x < 0 => throw new ConfigurationException(s"Setting '$s' must be 0 or positive (and fit in an Int)")
     case other      => Some(other)

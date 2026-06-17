@@ -428,7 +428,7 @@ object Flow {
   private[stream] val identityTraversalBuilder =
     LinearTraversalBuilder.fromBuilder(GraphStages.identity.traversalBuilder, GraphStages.identity.shape, Keep.right)
 
-  private[this] val identity: Flow[Any, Any, NotUsed] =
+  private val identity: Flow[Any, Any, NotUsed] =
     new Flow[Any, Any, NotUsed](identityTraversalBuilder, GraphStages.identity.shape)
 
   /**

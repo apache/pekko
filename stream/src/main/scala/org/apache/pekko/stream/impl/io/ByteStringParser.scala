@@ -191,7 +191,7 @@ import pekko.util.ByteString
 
   class ByteReader(input: ByteString) {
 
-    private[this] var off = 0
+    private var off = 0
 
     def hasRemaining: Boolean = off < input.length
     def remainingSize: Int = input.length - off

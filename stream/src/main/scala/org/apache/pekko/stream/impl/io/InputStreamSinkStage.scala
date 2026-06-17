@@ -135,7 +135,7 @@ private[stream] object InputStreamSinkStage {
   var detachedChunk: Option[ByteString] = None
 
   @scala.throws(classOf[IOException])
-  private[this] def executeIfNotClosed[T](f: () => T): T =
+  private def executeIfNotClosed[T](f: () => T): T =
     if (isActive.get()) {
       waitIfNotInitialized()
       f()
@@ -190,7 +190,7 @@ private[stream] object InputStreamSinkStage {
         } else -1)
   }
 
-  private[this] def readBytes(a: Array[Byte], begin: Int, length: Int): Int = {
+  private def readBytes(a: Array[Byte], begin: Int, length: Int): Int = {
     require(detachedChunk.nonEmpty, "Chunk must be pulled from shared buffer")
     val availableInChunk = detachedChunk.get.size
     val readBytes = getData(a, begin, length, 0)
@@ -207,7 +207,7 @@ private[stream] object InputStreamSinkStage {
   }
 
   @tailrec
-  private[this] def getData(arr: Array[Byte], begin: Int, length: Int, gotBytes: Int): Int = {
+  private def getData(arr: Array[Byte], begin: Int, length: Int, gotBytes: Int): Int = {
     grabDataChunk() match {
       case Some(data) =>
         val size = data.size
@@ -227,7 +227,7 @@ private[stream] object InputStreamSinkStage {
     }
   }
 
-  private[this] def waitIfNotInitialized(): Unit = {
+  private def waitIfNotInitialized(): Unit = {
     if (!isInitialized) {
       sharedBuffer.poll(readTimeout.toMillis, TimeUnit.MILLISECONDS) match {
         case Initialized => isInitialized = true
@@ -237,7 +237,7 @@ private[stream] object InputStreamSinkStage {
     }
   }
 
-  private[this] def grabDataChunk(): Option[ByteString] = {
+  private def grabDataChunk(): Option[ByteString] = {
     detachedChunk match {
       case None =>
         sharedBuffer.poll() match {

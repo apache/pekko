@@ -71,11 +71,11 @@ private[stream] final class SinkRefStageImpl[In] private[pekko] (val initialPart
     val logic = new TimerGraphStageLogic(shape) with StageLogging with ActorRefStage with InHandler {
       override protected def logSource: Class[?] = classOf[SinkRefStageImpl[?]]
 
-      private[this] val streamRefsMaster = StreamRefsMaster(eagerMaterializer.system)
+      private val streamRefsMaster = StreamRefsMaster(eagerMaterializer.system)
 
       // settings ---
       @nowarn("msg=deprecated") // can't remove this settings access without breaking compat
-      private[this] val subscriptionTimeout = {
+      private val subscriptionTimeout = {
         import StreamRefAttributes._
         val settings = eagerMaterializer.settings.streamRefSettings
         inheritedAttributes.get[StreamRefAttributes.SubscriptionTimeout](
@@ -83,7 +83,7 @@ private[stream] final class SinkRefStageImpl[In] private[pekko] (val initialPart
       }
 
       @nowarn("msg=deprecated") // can't remove this settings access without breaking compat
-      private[this] val finalTerminationSignalDeadline = {
+      private val finalTerminationSignalDeadline = {
         import StreamRefAttributes._
         val settings = eagerMaterializer.settings.streamRefSettings
         inheritedAttributes
@@ -94,7 +94,7 @@ private[stream] final class SinkRefStageImpl[In] private[pekko] (val initialPart
       // end of settings ---
 
       override protected val stageActorName: String = streamRefsMaster.nextSinkRefStageName()
-      private[this] val self: GraphStageLogic.StageActor =
+      private val self: GraphStageLogic.StageActor =
         getEagerStageActor(eagerMaterializer)(initialReceive)
       override val ref: ActorRef = self.ref
       implicit def selfSender: ActorRef = ref
@@ -119,7 +119,7 @@ private[stream] final class SinkRefStageImpl[In] private[pekko] (val initialPart
       // When this side of the stream has completed/failed, and we await the Terminated() signal back from the partner
       // so we can safely shut down completely; This is to avoid *our* Terminated() signal to reach the partner before the
       // Complete/Fail message does, which can happen on transports such as Artery which use a dedicated lane for system messages (Terminated)
-      private[this] var finishedWithAwaitingPartnerTermination: OptionVal[Try[Done]] = OptionVal.None
+      private var finishedWithAwaitingPartnerTermination: OptionVal[Try[Done]] = OptionVal.None
 
       override def preStart(): Unit = {
         initialPartnerRef match {

@@ -130,29 +130,29 @@ private[stream] final class SourceRefStageImpl[Out](val initialPartnerRef: Optio
     val logic = new TimerGraphStageLogic(shape) with StageLogging with ActorRefStage with OutHandler {
       override protected def logSource: Class[?] = classOf[SourceRefStageImpl[?]]
 
-      private[this] val streamRefsMaster = StreamRefsMaster(eagerMaterializer.system)
+      private val streamRefsMaster = StreamRefsMaster(eagerMaterializer.system)
 
       // settings ---
       import StreamRefAttributes._
       @nowarn("msg=deprecated") // can't remove this settings access without breaking compat
-      private[this] val settings = eagerMaterializer.settings.streamRefSettings
+      private val settings = eagerMaterializer.settings.streamRefSettings
 
       @nowarn("msg=deprecated") // can't remove this settings access without breaking compat
-      private[this] val subscriptionTimeout = inheritedAttributes.get[StreamRefAttributes.SubscriptionTimeout](
+      private val subscriptionTimeout = inheritedAttributes.get[StreamRefAttributes.SubscriptionTimeout](
         SubscriptionTimeout(settings.subscriptionTimeout))
 
       @nowarn("msg=deprecated") // can't remove this settings access without breaking compat
-      private[this] val bufferCapacity = inheritedAttributes
+      private val bufferCapacity = inheritedAttributes
         .get[StreamRefAttributes.BufferCapacity](StreamRefAttributes.BufferCapacity(settings.bufferCapacity))
         .capacity
 
       @nowarn("msg=deprecated") // can't remove this settings access without breaking compat
-      private[this] val demandRedeliveryInterval = inheritedAttributes
+      private val demandRedeliveryInterval = inheritedAttributes
         .get[StreamRefAttributes.DemandRedeliveryInterval](DemandRedeliveryInterval(settings.demandRedeliveryInterval))
         .timeout
 
       @nowarn("msg=deprecated") // can't remove this settings access without breaking compat
-      private[this] val finalTerminationSignalDeadline =
+      private val finalTerminationSignalDeadline =
         inheritedAttributes
           .get[StreamRefAttributes.FinalTerminationSignalDeadline](
             FinalTerminationSignalDeadline(settings.finalTerminationSignalDeadline))
@@ -160,10 +160,10 @@ private[stream] final class SourceRefStageImpl[Out](val initialPartnerRef: Optio
       // end of settings ---
 
       override protected val stageActorName: String = streamRefsMaster.nextSourceRefStageName()
-      private[this] val self: GraphStageLogic.StageActor =
+      private val self: GraphStageLogic.StageActor =
         getEagerStageActor(eagerMaterializer)(receiveRemoteMessage)
       override val ref: ActorRef = self.ref
-      private[this] implicit def selfSender: ActorRef = ref
+      private implicit def selfSender: ActorRef = ref
 
       // demand management ---
       private var state: State = initialPartnerRef match {

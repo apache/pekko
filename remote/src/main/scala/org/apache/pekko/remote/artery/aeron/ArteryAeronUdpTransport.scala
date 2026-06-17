@@ -69,11 +69,11 @@ private[remote] class ArteryAeronUdpTransport(_system: ExtendedActorSystem, _pro
 
   override type LifeCycle = AeronLifecycle
 
-  private[this] val mediaDriver = new AtomicReference[Option[MediaDriver]](None)
-  @volatile private[this] var aeron: Aeron = _
-  @volatile private[this] var aeronCounterTask: Cancellable = _
-  @volatile private[this] var aeronErrorLogTask: Cancellable = _
-  @volatile private[this] var aeronErrorLog: AeronErrorLog = _
+  private val mediaDriver = new AtomicReference[Option[MediaDriver]](None)
+  @volatile private var aeron: Aeron = _
+  @volatile private var aeronCounterTask: Cancellable = _
+  @volatile private var aeronErrorLogTask: Cancellable = _
+  @volatile private var aeronErrorLog: AeronErrorLog = _
 
   private val taskRunner = new TaskRunner(system, settings.Advanced.Aeron.IdleCpuLevel)
 

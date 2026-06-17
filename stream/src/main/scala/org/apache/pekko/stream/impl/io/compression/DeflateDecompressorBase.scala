@@ -37,7 +37,7 @@ import pekko.util.ByteString
      * buffer around avoids reallocating a buffer that may be too big in many
      * cases for every call of `parse`.
      */
-    private[this] val buffer = new Array[Byte](maxBytesPerChunk)
+    private val buffer = new Array[Byte](maxBytesPerChunk)
 
     abstract class Inflate(noPostProcessing: Boolean) extends ParseStep[ByteString] {
       override def canWorkWithPartialData = true

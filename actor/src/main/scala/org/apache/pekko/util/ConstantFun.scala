@@ -25,7 +25,7 @@ import pekko.japi.function.{ Function => JFun, Function2 => JFun2 }
  */
 @InternalApi private[pekko] object ConstantFun {
 
-  private[this] val JavaIdentityFunction = new JFun[Any, Any] {
+  private val JavaIdentityFunction = new JFun[Any, Any] {
     @throws(classOf[Exception]) override def apply(param: Any): Any = param
   }
 

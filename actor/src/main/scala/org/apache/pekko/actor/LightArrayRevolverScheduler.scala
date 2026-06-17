@@ -357,7 +357,7 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
 }
 
 object LightArrayRevolverScheduler {
-  private[this] val taskHandle: VarHandle = {
+  private val taskHandle: VarHandle = {
     val lookup = MethodHandles.privateLookupIn(classOf[TaskHolder], MethodHandles.lookup())
     lookup.findVarHandle(classOf[TaskHolder], "task", classOf[Runnable])
   }
@@ -417,8 +417,8 @@ object LightArrayRevolverScheduler {
     override def isCancelled: Boolean = task eq CancelledTask
   }
 
-  private[this] val CancelledTask = new Runnable { def run = () }
-  private[this] val ExecutedTask = new Runnable { def run = () }
+  private val CancelledTask = new Runnable { def run = () }
+  private val ExecutedTask = new Runnable { def run = () }
 
   private val NotCancellable: TimerTask = new TimerTask {
     def cancel(): Boolean = false

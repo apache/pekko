@@ -70,7 +70,7 @@ import org.reactivestreams.{ Subscriber, Subscription }
       }
     }
 
-    private[this] final val states = new Array[State](inputCount)
+    private final val states = new Array[State](inputCount)
     private var markCount = 0
     private var markedPending = 0
     private var markedDepleted = 0
@@ -78,27 +78,27 @@ import org.reactivestreams.{ Subscriber, Subscription }
     private var receivedInput = false
     private var completedCounter = 0
 
-    private[this] final def hasState(index: Int, flag: Int): Boolean = (states(index) & flag) != 0
-    private[this] final def setState(index: Int, flag: Int, on: Boolean): Unit =
+    private final def hasState(index: Int, flag: Int): Boolean = (states(index) & flag) != 0
+    private final def setState(index: Int, flag: Int, on: Boolean): Unit =
       states(index) = if (on) (states(index) | flag).toByte else (states(index) & ~flag).toByte
 
-    private[this] final def cancelled(index: Int): Boolean = hasState(index, Cancelled)
-    private[this] final def cancelled(index: Int, on: Boolean): Unit = setState(index, Cancelled, on)
+    private final def cancelled(index: Int): Boolean = hasState(index, Cancelled)
+    private final def cancelled(index: Int, on: Boolean): Unit = setState(index, Cancelled, on)
 
-    private[this] final def completed(index: Int): Boolean = hasState(index, Completed)
-    private[this] final def registerCompleted(index: Int): Unit = {
+    private final def completed(index: Int): Boolean = hasState(index, Completed)
+    private final def registerCompleted(index: Int): Unit = {
       completedCounter += 1
       setState(index, Completed, true)
     }
 
-    private[this] final def depleted(index: Int): Boolean = hasState(index, Depleted)
-    private[this] final def depleted(index: Int, on: Boolean): Unit = setState(index, Depleted, on)
+    private final def depleted(index: Int): Boolean = hasState(index, Depleted)
+    private final def depleted(index: Int, on: Boolean): Unit = setState(index, Depleted, on)
 
-    private[this] final def pending(index: Int): Boolean = hasState(index, Pending)
-    private[this] final def pending(index: Int, on: Boolean): Unit = setState(index, Pending, on)
+    private final def pending(index: Int): Boolean = hasState(index, Pending)
+    private final def pending(index: Int, on: Boolean): Unit = setState(index, Pending, on)
 
-    private[this] final def marked(index: Int): Boolean = hasState(index, Marked)
-    private[this] final def marked(index: Int, on: Boolean): Unit = setState(index, Marked, on)
+    private final def marked(index: Int): Boolean = hasState(index, Marked)
+    private final def marked(index: Int, on: Boolean): Unit = setState(index, Marked, on)
 
     override def toString: String =
       s"""|InputBunch

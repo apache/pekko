@@ -51,7 +51,7 @@ object SteppingInmemJournal {
 
   // keep it in a thread safe:d global so that tests can get their
   // hand on the actor ref and send Steps to it
-  private[this] var _current: Map[String, ActorRef] = Map()
+  private var _current: Map[String, ActorRef] = Map()
 
   // shhh don't tell anyone I sinn-croniz-ed
   /** get the actor ref to the journal for a given instance id, throws exception if not found */

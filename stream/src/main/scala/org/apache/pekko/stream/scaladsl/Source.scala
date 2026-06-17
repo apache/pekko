@@ -575,7 +575,7 @@ object Source {
    * A `Source` with no elements, i.e. an empty stream that is completed immediately for every connected `Sink`.
    */
   def empty[T]: Source[T, NotUsed] = _empty
-  private[this] val _empty: Source[Nothing, NotUsed] =
+  private val _empty: Source[Nothing, NotUsed] =
     fromGraphStage(EmptySource)
 
   /**
@@ -616,7 +616,7 @@ object Source {
    * This stream could be useful in tests.
    */
   def never[T]: Source[T, NotUsed] = _never
-  private[this] val _never: Source[Nothing, NotUsed] = fromGraphStage(GraphStages.NeverSource)
+  private val _never: Source[Nothing, NotUsed] = fromGraphStage(GraphStages.NeverSource)
 
   /**
    * Emits a single value when the given `CompletionStage` is successfully completed and then completes the stream.
