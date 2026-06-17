@@ -43,7 +43,7 @@ object Dependencies {
   val jacksonVersion3 = "3.2.0"
 
   val scala213Version = "2.13.18"
-  val scala3Version = "3.3.8"
+  val scala3Version = "3.9.0-RC1"
   val allScalaVersions = Seq(scala213Version, scala3Version)
 
   val reactiveStreamsVersion = "1.0.4"
