@@ -65,4 +65,6 @@ class JavaJournalPerfSpec(config: Config) extends JournalPerfSpec(config) {
   override protected def supportsRejectingNonSerializableObjects: CapabilityFlag = CapabilityFlag.on()
 
   override protected def supportsSerialization: CapabilityFlag = CapabilityFlag.on()
+
+  override protected def supportsReplayWindowSpanningDeletedPrefix: CapabilityFlag = CapabilityFlag.on()
 }

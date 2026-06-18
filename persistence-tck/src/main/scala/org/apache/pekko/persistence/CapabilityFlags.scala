@@ -67,6 +67,16 @@ trait JournalCapabilityFlags extends CapabilityFlags {
    */
   protected def supportsMetadata: CapabilityFlag
 
+  /**
+   * When `true` enables tests which check if the Journal supports a replay window that
+   * spans a deleted prefix.
+   * <p>
+   *   Relates to https://github.com/apache/pekko-persistence-jdbc/pull/517.
+   *   pekko-persistence-dynamodb doesn't yet fully support this.
+   * </p>
+   */
+  protected def supportsReplayWindowSpanningDeletedPrefix: CapabilityFlag
+
 }
 //#journal-flags
 
