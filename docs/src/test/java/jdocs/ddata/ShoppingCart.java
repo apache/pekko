@@ -45,68 +45,13 @@ public class ShoppingCart extends AbstractActor {
 
   public static final String GET_CART = "getCart";
 
-  public static class AddItem {
-    public final LineItem item;
+  public record AddItem(LineItem item) {}
 
-    public AddItem(LineItem item) {
-      this.item = item;
-    }
-  }
+  public record RemoveItem(String productId) {}
 
-  public static class RemoveItem {
-    public final String productId;
+  public record Cart(Set<LineItem> items) {}
 
-    public RemoveItem(String productId) {
-      this.productId = productId;
-    }
-  }
-
-  public static class Cart {
-    public final Set<LineItem> items;
-
-    public Cart(Set<LineItem> items) {
-      this.items = items;
-    }
-  }
-
-  public static class LineItem implements Serializable {
-    private static final long serialVersionUID = 1L;
-    public final String productId;
-    public final String title;
-    public final int quantity;
-
-    public LineItem(String productId, String title, int quantity) {
-      this.productId = productId;
-      this.title = title;
-      this.quantity = quantity;
-    }
-
-    @Override
-    public int hashCode() {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + ((productId == null) ? 0 : productId.hashCode());
-      result = prime * result + quantity;
-      result = prime * result + ((title == null) ? 0 : title.hashCode());
-      return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-      if (this == obj) return true;
-      if (obj == null) return false;
-      if (getClass() != obj.getClass()) return false;
-      LineItem other = (LineItem) obj;
-      if (productId == null) {
-        if (other.productId != null) return false;
-      } else if (!productId.equals(other.productId)) return false;
-      if (quantity != other.quantity) return false;
-      if (title == null) {
-        if (other.title != null) return false;
-      } else if (!title.equals(other.title)) return false;
-      return true;
-    }
-
+  public record LineItem(String productId, String title, int quantity) implements Serializable {
     @Override
     public String toString() {
       return "LineItem [productId="
@@ -200,20 +145,20 @@ public class ShoppingCart extends AbstractActor {
 
   private void receiveAddItem(AddItem add) {
     Update<LWWMap<String, LineItem>> update =
-        new Update<>(dataKey, LWWMap.create(), writeMajority, cart -> updateCart(cart, add.item));
+        new Update<>(dataKey, LWWMap.create(), writeMajority, cart -> updateCart(cart, add.item()));
     replicator.tell(update, getSelf());
   }
 
   // #add-item
 
   private LWWMap<String, LineItem> updateCart(LWWMap<String, LineItem> data, LineItem item) {
-    if (data.contains(item.productId)) {
-      LineItem existingItem = data.get(item.productId).get();
-      int newQuantity = existingItem.quantity + item.quantity;
-      LineItem newItem = new LineItem(item.productId, item.title, newQuantity);
-      return data.put(node, item.productId, newItem);
+    if (data.contains(item.productId())) {
+      LineItem existingItem = data.get(item.productId()).get();
+      int newQuantity = existingItem.quantity() + item.quantity();
+      LineItem newItem = new LineItem(item.productId(), item.title(), newQuantity);
+      return data.put(node, item.productId(), newItem);
     } else {
-      return data.put(node, item.productId, item);
+      return data.put(node, item.productId(), item);
     }
   }
 
@@ -248,13 +193,13 @@ public class ShoppingCart extends AbstractActor {
 
   private void receiveRemoveItemGetSuccess(GetSuccess<LWWMap<String, LineItem>> g) {
     RemoveItem rm = (RemoveItem) g.getRequest().get();
-    removeItem(rm.productId);
+    removeItem(rm.productId());
   }
 
   private void receiveRemoveItemGetFailure(GetFailure<LWWMap<String, LineItem>> f) {
     // ReadMajority failed, fall back to best effort local value
     RemoveItem rm = (RemoveItem) f.getRequest().get();
-    removeItem(rm.productId);
+    removeItem(rm.productId());
   }
 
   private void removeItem(String productId) {

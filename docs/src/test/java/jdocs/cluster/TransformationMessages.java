@@ -18,52 +18,16 @@ import java.io.Serializable;
 // #messages
 public interface TransformationMessages {
 
-  public static class TransformationJob implements Serializable {
-    private final String text;
+  public record TransformationJob(String text) implements Serializable {}
 
-    public TransformationJob(String text) {
-      this.text = text;
-    }
-
-    public String getText() {
-      return text;
-    }
-  }
-
-  public static class TransformationResult implements Serializable {
-    private final String text;
-
-    public TransformationResult(String text) {
-      this.text = text;
-    }
-
-    public String getText() {
-      return text;
-    }
-
+  public record TransformationResult(String text) implements Serializable {
     @Override
     public String toString() {
       return "TransformationResult(" + text + ")";
     }
   }
 
-  public static class JobFailed implements Serializable {
-    private final String reason;
-    private final TransformationJob job;
-
-    public JobFailed(String reason, TransformationJob job) {
-      this.reason = reason;
-      this.job = job;
-    }
-
-    public String getReason() {
-      return reason;
-    }
-
-    public TransformationJob getJob() {
-      return job;
-    }
-
+  public record JobFailed(String reason, TransformationJob job) implements Serializable {
     @Override
     public String toString() {
       return "JobFailed(" + reason + ")";
