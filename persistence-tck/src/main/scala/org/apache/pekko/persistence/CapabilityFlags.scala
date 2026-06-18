@@ -72,7 +72,7 @@ trait JournalCapabilityFlags extends CapabilityFlags {
    * spans a deleted prefix.
    * <p>
    *   Relates to https://github.com/apache/pekko-persistence-jdbc/pull/517.
-   *   pekko-persistence-dynamodb doesn't yet fully support this. 
+   *   pekko-persistence-dynamodb doesn't yet fully support this.
    * </p>
    */
   protected def supportsReplayWindowSpanningDeletedPrefix: CapabilityFlag
