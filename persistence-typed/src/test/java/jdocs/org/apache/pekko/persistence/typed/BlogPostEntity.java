@@ -31,33 +31,11 @@ public class BlogPostEntity
   // #event
   public interface Event {}
 
-  public static class PostAdded implements Event {
-    private final String postId;
-    private final PostContent content;
+  public record PostAdded(String postId, PostContent content) implements Event {}
 
-    public PostAdded(String postId, PostContent content) {
-      this.postId = postId;
-      this.content = content;
-    }
-  }
+  public record BodyChanged(String postId, String newBody) implements Event {}
 
-  public static class BodyChanged implements Event {
-    private final String postId;
-    private final String newBody;
-
-    public BodyChanged(String postId, String newBody) {
-      this.postId = postId;
-      this.newBody = newBody;
-    }
-  }
-
-  public static class Published implements Event {
-    private final String postId;
-
-    public Published(String postId) {
-      this.postId = postId;
-    }
-  }
+  public record Published(String postId) implements Event {}
 
   // #event
 
@@ -80,11 +58,11 @@ public class BlogPostEntity
     }
 
     DraftState withBody(String newBody) {
-      return withContent(new PostContent(postId(), content.title, newBody));
+      return withContent(new PostContent(postId(), content.title(), newBody));
     }
 
     String postId() {
-      return content.postId;
+      return content.postId();
     }
   }
 
@@ -100,11 +78,11 @@ public class BlogPostEntity
     }
 
     PublishedState withBody(String newBody) {
-      return withContent(new PostContent(postId(), content.title, newBody));
+      return withContent(new PostContent(postId(), content.title(), newBody));
     }
 
     String postId() {
-      return content.postId;
+      return content.postId();
     }
   }
 
@@ -114,62 +92,18 @@ public class BlogPostEntity
   public interface Command {}
 
   // #reply-command
-  public static class AddPost implements Command {
-    final PostContent content;
-    final ActorRef<AddPostDone> replyTo;
+  public record AddPost(PostContent content, ActorRef<AddPostDone> replyTo) implements Command {}
 
-    public AddPost(PostContent content, ActorRef<AddPostDone> replyTo) {
-      this.content = content;
-      this.replyTo = replyTo;
-    }
-  }
-
-  public static class AddPostDone implements Command {
-    final String postId;
-
-    public AddPostDone(String postId) {
-      this.postId = postId;
-    }
-  }
+  public record AddPostDone(String postId) implements Command {}
 
   // #reply-command
-  public static class GetPost implements Command {
-    final ActorRef<PostContent> replyTo;
+  public record GetPost(ActorRef<PostContent> replyTo) implements Command {}
 
-    public GetPost(ActorRef<PostContent> replyTo) {
-      this.replyTo = replyTo;
-    }
-  }
+  public record ChangeBody(String newBody, ActorRef<Done> replyTo) implements Command {}
 
-  public static class ChangeBody implements Command {
-    final String newBody;
-    final ActorRef<Done> replyTo;
+  public record Publish(ActorRef<Done> replyTo) implements Command {}
 
-    public ChangeBody(String newBody, ActorRef<Done> replyTo) {
-      this.newBody = newBody;
-      this.replyTo = replyTo;
-    }
-  }
-
-  public static class Publish implements Command {
-    final ActorRef<Done> replyTo;
-
-    public Publish(ActorRef<Done> replyTo) {
-      this.replyTo = replyTo;
-    }
-  }
-
-  public static class PostContent implements Command {
-    final String postId;
-    final String title;
-    final String body;
-
-    public PostContent(String postId, String title, String body) {
-      this.postId = postId;
-      this.title = title;
-      this.body = body;
-    }
-  }
+  public record PostContent(String postId, String title, String body) implements Command {}
 
   // #commands
 
@@ -218,21 +152,21 @@ public class BlogPostEntity
 
   private Effect<Event, State> onAddPost(AddPost cmd) {
     // #reply
-    PostAdded event = new PostAdded(cmd.content.postId, cmd.content);
+    PostAdded event = new PostAdded(cmd.content().postId(), cmd.content());
     return Effect()
         .persist(event)
-        .thenRun(() -> cmd.replyTo.tell(new AddPostDone(cmd.content.postId)));
+        .thenRun(() -> cmd.replyTo().tell(new AddPostDone(cmd.content().postId())));
     // #reply
   }
 
   private Effect<Event, State> onChangeBody(DraftState state, ChangeBody cmd) {
-    BodyChanged event = new BodyChanged(state.postId(), cmd.newBody);
-    return Effect().persist(event).thenRun(() -> cmd.replyTo.tell(Done.getInstance()));
+    BodyChanged event = new BodyChanged(state.postId(), cmd.newBody());
+    return Effect().persist(event).thenRun(() -> cmd.replyTo().tell(Done.getInstance()));
   }
 
   private Effect<Event, State> onChangeBody(PublishedState state, ChangeBody cmd) {
-    BodyChanged event = new BodyChanged(state.postId(), cmd.newBody);
-    return Effect().persist(event).thenRun(() -> cmd.replyTo.tell(Done.getInstance()));
+    BodyChanged event = new BodyChanged(state.postId(), cmd.newBody());
+    return Effect().persist(event).thenRun(() -> cmd.replyTo().tell(Done.getInstance()));
   }
 
   private Effect<Event, State> onPublish(DraftState state, Publish cmd) {
@@ -241,17 +175,17 @@ public class BlogPostEntity
         .thenRun(
             () -> {
               System.out.println("Blog post published: " + state.postId());
-              cmd.replyTo.tell(Done.getInstance());
+              cmd.replyTo().tell(Done.getInstance());
             });
   }
 
   private Effect<Event, State> onGetPost(DraftState state, GetPost cmd) {
-    cmd.replyTo.tell(state.content);
+    cmd.replyTo().tell(state.content);
     return Effect().none();
   }
 
   private Effect<Event, State> onGetPost(PublishedState state, GetPost cmd) {
-    cmd.replyTo.tell(state.content);
+    cmd.replyTo().tell(state.content);
     return Effect().none();
   }
 
@@ -265,16 +199,16 @@ public class BlogPostEntity
 
     builder
         .forStateType(BlankState.class)
-        .onEvent(PostAdded.class, event -> new DraftState(event.content));
+        .onEvent(PostAdded.class, event -> new DraftState(event.content()));
 
     builder
         .forStateType(DraftState.class)
-        .onEvent(BodyChanged.class, (state, chg) -> state.withBody(chg.newBody))
+        .onEvent(BodyChanged.class, (state, chg) -> state.withBody(chg.newBody()))
         .onEvent(Published.class, (state, event) -> new PublishedState(state.content));
 
     builder
         .forStateType(PublishedState.class)
-        .onEvent(BodyChanged.class, (state, chg) -> state.withBody(chg.newBody));
+        .onEvent(BodyChanged.class, (state, chg) -> state.withBody(chg.newBody()));
 
     return builder.build();
   }
