@@ -126,7 +126,7 @@ pekko.actor.warn-about-java-serializer-usage = off
     // Synthesize an ActorRef to a remote system this one has never talked to before.
     // This forces ReliableDeliverySupervisor to start with unknown remote system UID.
     val extinctPath = RootActorPath(Address(protocol, "extinct-system", "localhost",
-      SocketUtil.temporaryLocalPort())) / "user" / "no one"
+      SocketUtil.temporaryLocalPort())) / "user" / "noone"
     val transport = RARP(system).provider.transport
     val extinctRef = new RemoteActorRef(
       transport,
