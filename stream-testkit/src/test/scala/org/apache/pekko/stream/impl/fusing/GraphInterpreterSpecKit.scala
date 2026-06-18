@@ -524,8 +524,8 @@ trait GraphInterpreterSpecKit extends StreamSpec {
 
     def testException = TE("test")
 
-    private val stagein = Inlet[Int]("sandwitch.in")
-    private val stageout = Outlet[Int]("sandwitch.out")
+    private val stagein = Inlet[Int]("sandwich.in")
+    private val stageout = Outlet[Int]("sandwich.out")
     private val stageshape = FlowShape(stagein, stageout)
 
     // Must be lazy because I turned this stage "inside-out" therefore changing initialization order
