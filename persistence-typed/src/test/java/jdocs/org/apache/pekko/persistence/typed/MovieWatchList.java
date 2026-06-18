@@ -29,47 +29,17 @@ public class MovieWatchList
 
   interface Command {}
 
-  public static class AddMovie implements Command {
-    public final String movieId;
+  public record AddMovie(String movieId) implements Command {}
 
-    public AddMovie(String movieId) {
-      this.movieId = movieId;
-    }
-  }
-
-  public static class RemoveMovie implements Command {
-    public final String movieId;
-
-    public RemoveMovie(String movieId) {
-      this.movieId = movieId;
-    }
-  }
+  public record RemoveMovie(String movieId) implements Command {}
 
   interface Event {}
 
-  public static class MovieAdded implements Event {
-    public final String movieId;
+  public record MovieAdded(String movieId) implements Event {}
 
-    public MovieAdded(String movieId) {
-      this.movieId = movieId;
-    }
-  }
+  public record MovieRemoved(String movieId) implements Event {}
 
-  public static class MovieRemoved implements Event {
-    public final String movieId;
-
-    public MovieRemoved(String movieId) {
-      this.movieId = movieId;
-    }
-  }
-
-  public static class GetMovieList implements Command {
-    public final ActorRef<MovieList> replyTo;
-
-    public GetMovieList(ActorRef<MovieList> replyTo) {
-      this.replyTo = replyTo;
-    }
-  }
+  public record GetMovieList(ActorRef<MovieList> replyTo) implements Command {}
 
   public static class MovieList {
     public final Set<String> movieIds;
@@ -111,17 +81,17 @@ public class MovieWatchList
         .onCommand(
             AddMovie.class,
             (state, cmd) -> {
-              return Effect().persist(new MovieAdded(cmd.movieId));
+              return Effect().persist(new MovieAdded(cmd.movieId()));
             })
         .onCommand(
             RemoveMovie.class,
             (state, cmd) -> {
-              return Effect().persist(new MovieRemoved(cmd.movieId));
+              return Effect().persist(new MovieRemoved(cmd.movieId()));
             })
         .onCommand(
             GetMovieList.class,
             (state, cmd) -> {
-              cmd.replyTo.tell(state);
+              cmd.replyTo().tell(state);
               return Effect().none();
             })
         .build();
@@ -131,8 +101,8 @@ public class MovieWatchList
   public EventHandler<MovieList, Event> eventHandler() {
     return newEventHandlerBuilder()
         .forAnyState()
-        .onEvent(MovieAdded.class, (state, event) -> state.add(event.movieId))
-        .onEvent(MovieRemoved.class, (state, event) -> state.remove(event.movieId))
+        .onEvent(MovieAdded.class, (state, event) -> state.add(event.movieId()))
+        .onEvent(MovieRemoved.class, (state, event) -> state.remove(event.movieId()))
         .build();
   }
 }
