@@ -32,4 +32,7 @@ class LeveldbJournalJavaSpec
   override def supportsRejectingNonSerializableObjects = true
 
   override def supportsSerialization = true
+
+  override def supportsReplayWindowSpanningDeletedPrefix = true
+
 }

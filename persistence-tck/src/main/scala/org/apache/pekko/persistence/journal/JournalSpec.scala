@@ -66,6 +66,8 @@ abstract class JournalSpec(config: Config)
 
   override protected def supportsMetadata: CapabilityFlag = false
 
+  override protected def supportsReplayWindowSpanningDeletedPrefix: CapabilityFlag = false
+
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     senderProbe = TestProbe()
@@ -259,16 +261,6 @@ abstract class JournalSpec(config: Config)
       receiverProbe.expectMsg(RecoverySuccess(highestSequenceNr = 5L))
     }
 
-    "replay surviving messages within bounds when the replay window spans a deleted prefix" in {
-      val deleteProbe = TestProbe()
-      journal ! DeleteMessagesTo(pid, 3L, deleteProbe.ref)
-      deleteProbe.expectMsg(DeleteMessagesSuccess(3L))
-
-      journal ! ReplayMessages(1, 4, Long.MaxValue, pid, receiverProbe.ref)
-      receiverProbe.expectMsg(replayedMessage(4))
-      receiverProbe.expectMsg(RecoverySuccess(highestSequenceNr = 5L))
-    }
-
     "return only recovery success when the upper bound falls within a deleted prefix" in {
       val deleteProbe = TestProbe()
       journal ! DeleteMessagesTo(pid, 3L, deleteProbe.ref)
@@ -407,6 +399,18 @@ abstract class JournalSpec(config: Config)
         }
         receiverProbe.expectMsg(RecoverySuccess(6L))
 
+      }
+    }
+
+    optional(flag = supportsReplayWindowSpanningDeletedPrefix) {
+      "replay surviving messages within bounds when the replay window spans a deleted prefix" in {
+        val deleteProbe = TestProbe()
+        journal ! DeleteMessagesTo(pid, 3L, deleteProbe.ref)
+        deleteProbe.expectMsg(DeleteMessagesSuccess(3L))
+
+        journal ! ReplayMessages(1, 4, Long.MaxValue, pid, receiverProbe.ref)
+        receiverProbe.expectMsg(replayedMessage(4))
+        receiverProbe.expectMsg(RecoverySuccess(highestSequenceNr = 5L))
       }
     }
   }

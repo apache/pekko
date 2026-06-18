@@ -33,4 +33,6 @@ class LeveldbJournalNativeSpec
 
   override def supportsSerialization = true
 
+  override def supportsReplayWindowSpanningDeletedPrefix = true
+
 }
