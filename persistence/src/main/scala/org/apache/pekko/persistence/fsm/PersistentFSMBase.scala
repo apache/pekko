@@ -466,7 +466,7 @@ trait PersistentFSMBase[S, D, E] extends Actor with Listeners with ActorLogging 
   /*
    * unhandled event handler
    */
-  private val handleEventDefault: StateFunction = {
+  private def handleEventDefault: StateFunction = {
     case Event(value, _) =>
       log.warning("unhandled event " + value + " in state " + stateName)
       stay()
