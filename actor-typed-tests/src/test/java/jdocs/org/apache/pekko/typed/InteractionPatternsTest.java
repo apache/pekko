@@ -44,13 +44,7 @@ public class InteractionPatternsTest {
 
     // #fire-and-forget-definition
     public class Printer {
-      public static class PrintMe {
-        public final String message;
-
-        public PrintMe(String message) {
-          this.message = message;
-        }
-      }
+      public record PrintMe(String message) {}
 
       public static Behavior<PrintMe> create() {
         return Behaviors.setup(
@@ -59,7 +53,7 @@ public class InteractionPatternsTest {
                     .onMessage(
                         PrintMe.class,
                         printMe -> {
-                          context.getLog().info(printMe.message);
+                          context.getLog().info(printMe.message());
                           return Behaviors.same();
                         })
                     .build());
@@ -70,23 +64,9 @@ public class InteractionPatternsTest {
 
     public class CookieFabric {
       // #request-response-protocol
-      public static class Request {
-        public final String query;
-        public final ActorRef<Response> replyTo;
+      public record Request(String query, ActorRef<Response> replyTo) {}
 
-        public Request(String query, ActorRef<Response> replyTo) {
-          this.query = query;
-          this.replyTo = replyTo;
-        }
-      }
-
-      public static class Response {
-        public final String result;
-
-        public Response(String result) {
-          this.result = result;
-        }
-      }
+      public record Response(String result) {}
 
       // #request-response-protocol
 
@@ -100,7 +80,7 @@ public class InteractionPatternsTest {
 
       private static Behavior<Request> onRequest(Request request) {
         // ... process request ...
-        request.replyTo.tell(new Response("Here are the cookies for " + request.query));
+        request.replyTo().tell(new Response("Here are the cookies for " + request.query()));
         return Behaviors.same();
       }
 
@@ -126,70 +106,25 @@ public class InteractionPatternsTest {
     public class Backend {
       public interface Request {}
 
-      public static class StartTranslationJob implements Request {
-        public final int taskId;
-        public final URI site;
-        public final ActorRef<Response> replyTo;
-
-        public StartTranslationJob(int taskId, URI site, ActorRef<Response> replyTo) {
-          this.taskId = taskId;
-          this.site = site;
-          this.replyTo = replyTo;
-        }
-      }
+      public record StartTranslationJob(int taskId, URI site, ActorRef<Response> replyTo)
+          implements Request {}
 
       public interface Response {}
 
-      public static class JobStarted implements Response {
-        public final int taskId;
+      public record JobStarted(int taskId) implements Response {}
 
-        public JobStarted(int taskId) {
-          this.taskId = taskId;
-        }
-      }
+      public record JobProgress(int taskId, double progress) implements Response {}
 
-      public static class JobProgress implements Response {
-        public final int taskId;
-        public final double progress;
-
-        public JobProgress(int taskId, double progress) {
-          this.taskId = taskId;
-          this.progress = progress;
-        }
-      }
-
-      public static class JobCompleted implements Response {
-        public final int taskId;
-        public final URI result;
-
-        public JobCompleted(int taskId, URI result) {
-          this.taskId = taskId;
-          this.result = result;
-        }
-      }
+      public record JobCompleted(int taskId, URI result) implements Response {}
     }
 
     public class Frontend {
 
       public interface Command {}
 
-      public static class Translate implements Command {
-        public final URI site;
-        public final ActorRef<URI> replyTo;
+      public record Translate(URI site, ActorRef<URI> replyTo) implements Command {}
 
-        public Translate(URI site, ActorRef<URI> replyTo) {
-          this.site = site;
-          this.replyTo = replyTo;
-        }
-      }
-
-      private static class WrappedBackendResponse implements Command {
-        final Backend.Response response;
-
-        public WrappedBackendResponse(Backend.Response response) {
-          this.response = response;
-        }
-      }
+      private record WrappedBackendResponse(Backend.Response response) implements Command {}
 
       public static class Translator extends AbstractBehavior<Command> {
         private final ActorRef<Backend.Request> backend;
@@ -215,22 +150,22 @@ public class InteractionPatternsTest {
 
         private Behavior<Command> onTranslate(Translate cmd) {
           taskIdCounter += 1;
-          inProgress.put(taskIdCounter, cmd.replyTo);
+          inProgress.put(taskIdCounter, cmd.replyTo());
           backend.tell(
-              new Backend.StartTranslationJob(taskIdCounter, cmd.site, backendResponseAdapter));
+              new Backend.StartTranslationJob(taskIdCounter, cmd.site(), backendResponseAdapter));
           return this;
         }
 
         private Behavior<Command> onWrappedBackendResponse(WrappedBackendResponse wrapped) {
-          Backend.Response response = wrapped.response;
+          Backend.Response response = wrapped.response();
           if (response instanceof Backend.JobStarted rsp) {
-            getContext().getLog().info("Started {}", rsp.taskId);
+            getContext().getLog().info("Started {}", rsp.taskId());
           } else if (response instanceof Backend.JobProgress rsp) {
-            getContext().getLog().info("Progress {}", rsp.taskId);
+            getContext().getLog().info("Progress {}", rsp.taskId());
           } else if (response instanceof Backend.JobCompleted rsp) {
-            getContext().getLog().info("Completed {}", rsp.taskId);
-            inProgress.get(rsp.taskId).tell(rsp.result);
-            inProgress.remove(rsp.taskId);
+            getContext().getLog().info("Completed {}", rsp.taskId());
+            inProgress.get(rsp.taskId()).tell(rsp.result());
+            inProgress.remove(rsp.taskId());
           } else {
             return Behaviors.unhandled();
           }
@@ -478,44 +413,28 @@ public class InteractionPatternsTest {
     public class Wallet {}
 
     public class KeyCabinet {
-      public static class GetKeys {
-        public final String whoseKeys;
-        public final ActorRef<Keys> replyTo;
-
-        public GetKeys(String whoseKeys, ActorRef<Keys> respondTo) {
-          this.whoseKeys = whoseKeys;
-          this.replyTo = respondTo;
-        }
-      }
+      public record GetKeys(String whoseKeys, ActorRef<Keys> replyTo) {}
 
       public static Behavior<GetKeys> create() {
         return Behaviors.receiveMessage(KeyCabinet::onGetKeys);
       }
 
       private static Behavior<GetKeys> onGetKeys(GetKeys message) {
-        message.replyTo.tell(new Keys());
+        message.replyTo().tell(new Keys());
         return Behaviors.same();
       }
     }
 
     public class Drawer {
 
-      public static class GetWallet {
-        public final String whoseWallet;
-        public final ActorRef<Wallet> replyTo;
-
-        public GetWallet(String whoseWallet, ActorRef<Wallet> replyTo) {
-          this.whoseWallet = whoseWallet;
-          this.replyTo = replyTo;
-        }
-      }
+      public record GetWallet(String whoseWallet, ActorRef<Wallet> replyTo) {}
 
       public static Behavior<GetWallet> create() {
         return Behaviors.receiveMessage(Drawer::onGetWallet);
       }
 
       private static Behavior<GetWallet> onGetWallet(GetWallet message) {
-        message.replyTo.tell(new Wallet());
+        message.replyTo().tell(new Wallet());
         return Behaviors.same();
       }
     }
@@ -524,27 +443,10 @@ public class InteractionPatternsTest {
 
       public interface Command {}
 
-      public static class LeaveHome implements Command {
-        public final String who;
-        public final ActorRef<ReadyToLeaveHome> respondTo;
+      public record LeaveHome(String who, ActorRef<ReadyToLeaveHome> respondTo)
+          implements Command {}
 
-        public LeaveHome(String who, ActorRef<ReadyToLeaveHome> respondTo) {
-          this.who = who;
-          this.respondTo = respondTo;
-        }
-      }
-
-      public static class ReadyToLeaveHome {
-        public final String who;
-        public final Keys keys;
-        public final Wallet wallet;
-
-        public ReadyToLeaveHome(String who, Keys keys, Wallet wallet) {
-          this.who = who;
-          this.keys = keys;
-          this.wallet = wallet;
-        }
-      }
+      public record ReadyToLeaveHome(String who, Keys keys, Wallet wallet) {}
 
       private final ActorContext<Command> context;
 
@@ -565,8 +467,8 @@ public class InteractionPatternsTest {
 
       private Behavior<Command> onLeaveHome(LeaveHome message) {
         context.spawn(
-            PrepareToLeaveHome.create(message.who, message.respondTo, keyCabinet, drawer),
-            "leaving" + message.who);
+            PrepareToLeaveHome.create(message.who(), message.respondTo(), keyCabinet, drawer),
+            "leaving" + message.who());
         return Behaviors.same();
       }
 
@@ -644,33 +546,13 @@ public class InteractionPatternsTest {
 
       interface Command {}
 
-      public static class GiveMeCookies implements Command {
-        public final int count;
-        public final ActorRef<Reply> replyTo;
-
-        public GiveMeCookies(int count, ActorRef<Reply> replyTo) {
-          this.count = count;
-          this.replyTo = replyTo;
-        }
-      }
+      public record GiveMeCookies(int count, ActorRef<Reply> replyTo) implements Command {}
 
       interface Reply {}
 
-      public static class Cookies implements Reply {
-        public final int count;
+      public record Cookies(int count) implements Reply {}
 
-        public Cookies(int count) {
-          this.count = count;
-        }
-      }
-
-      public static class InvalidRequest implements Reply {
-        public final String reason;
-
-        public InvalidRequest(String reason) {
-          this.reason = reason;
-        }
-      }
+      public record InvalidRequest(String reason) implements Reply {}
 
       public static Behavior<Command> create() {
         return Behaviors.setup(CookieFabric::new);
@@ -686,8 +568,8 @@ public class InteractionPatternsTest {
       }
 
       private Behavior<Command> onGiveMeCookies(GiveMeCookies request) {
-        if (request.count >= 5) request.replyTo.tell(new InvalidRequest("Too many cookies."));
-        else request.replyTo.tell(new Cookies(request.count));
+        if (request.count() >= 5) request.replyTo().tell(new InvalidRequest("Too many cookies."));
+        else request.replyTo().tell(new Cookies(request.count()));
 
         return this;
       }
@@ -713,9 +595,9 @@ public class InteractionPatternsTest {
         result.whenComplete(
             (reply, failure) -> {
               if (reply instanceof CookieFabric.Cookies cookiesReply)
-                System.out.println("Yay, " + cookiesReply.count + " cookies!");
+                System.out.println("Yay, " + cookiesReply.count() + " cookies!");
               else if (reply instanceof CookieFabric.InvalidRequest invalidRequest)
-                System.out.println("No cookies for me. " + invalidRequest.reason);
+                System.out.println("No cookies for me. " + invalidRequest.reason());
               else System.out.println("Boo! didn't get cookies in time. " + failure);
             });
       }
@@ -750,7 +632,7 @@ public class InteractionPatternsTest {
         cookies.whenComplete(
             (cookiesReply, failure) -> {
               if (cookiesReply != null)
-                System.out.println("Yay, " + cookiesReply.count + " cookies!");
+                System.out.println("Yay, " + cookiesReply.count() + " cookies!");
               else System.out.println("Boo! didn't get cookies in time. " + failure);
             });
         // #standalone-ask-fail-future
@@ -784,45 +666,17 @@ public class InteractionPatternsTest {
 
       interface Command {}
 
-      public static class Update implements Command {
-        public final Customer customer;
-        public final ActorRef<OperationResult> replyTo;
-
-        public Update(Customer customer, ActorRef<OperationResult> replyTo) {
-          this.customer = customer;
-          this.replyTo = replyTo;
-        }
-      }
+      public record Update(Customer customer, ActorRef<OperationResult> replyTo)
+          implements Command {}
 
       interface OperationResult {}
 
-      public static class UpdateSuccess implements OperationResult {
-        public final String id;
+      public record UpdateSuccess(String id) implements OperationResult {}
 
-        public UpdateSuccess(String id) {
-          this.id = id;
-        }
-      }
+      public record UpdateFailure(String id, String reason) implements OperationResult {}
 
-      public static class UpdateFailure implements OperationResult {
-        public final String id;
-        public final String reason;
-
-        public UpdateFailure(String id, String reason) {
-          this.id = id;
-          this.reason = reason;
-        }
-      }
-
-      private static class WrappedUpdateResult implements Command {
-        public final OperationResult result;
-        public final ActorRef<OperationResult> replyTo;
-
-        private WrappedUpdateResult(OperationResult result, ActorRef<OperationResult> replyTo) {
-          this.result = result;
-          this.replyTo = replyTo;
-        }
-      }
+      private record WrappedUpdateResult(OperationResult result, ActorRef<OperationResult> replyTo)
+          implements Command {}
 
       public static Behavior<Command> create(CustomerDataAccess dataAccess) {
         return Behaviors.setup(context -> new CustomerRepository(context, dataAccess));
@@ -846,25 +700,27 @@ public class InteractionPatternsTest {
 
       private Behavior<Command> onUpdate(Update command) {
         if (operationsInProgress == MAX_OPERATIONS_IN_PROGRESS) {
-          command.replyTo.tell(
-              new UpdateFailure(
-                  command.customer.id,
-                  "Max " + MAX_OPERATIONS_IN_PROGRESS + " concurrent operations supported"));
+          command
+              .replyTo()
+              .tell(
+                  new UpdateFailure(
+                      command.customer().id,
+                      "Max " + MAX_OPERATIONS_IN_PROGRESS + " concurrent operations supported"));
         } else {
           // increase operationsInProgress counter
           operationsInProgress++;
-          CompletionStage<Done> futureResult = dataAccess.update(command.customer);
+          CompletionStage<Done> futureResult = dataAccess.update(command.customer());
           getContext()
               .pipeToSelf(
                   futureResult,
                   (ok, exc) -> {
                     if (exc == null)
                       return new WrappedUpdateResult(
-                          new UpdateSuccess(command.customer.id), command.replyTo);
+                          new UpdateSuccess(command.customer().id), command.replyTo());
                     else
                       return new WrappedUpdateResult(
-                          new UpdateFailure(command.customer.id, exc.getMessage()),
-                          command.replyTo);
+                          new UpdateFailure(command.customer().id, exc.getMessage()),
+                          command.replyTo());
                   });
         }
         return this;
@@ -874,7 +730,7 @@ public class InteractionPatternsTest {
         // decrease operationsInProgress counter
         operationsInProgress--;
         // send result to original requester
-        wrapped.replyTo.tell(wrapped.result);
+        wrapped.replyTo().tell(wrapped.result());
         return this;
       }
     }
