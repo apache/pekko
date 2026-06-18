@@ -126,7 +126,7 @@ public class AccountExampleTest {
     TestProbe<CurrentBalance> getProbe = testKit.createTestProbe(CurrentBalance.class);
     ref.tell(new GetBalance(getProbe.getRef()));
     assertEquals(
-        BigDecimal.valueOf(100), getProbe.expectMessageClass(CurrentBalance.class).balance);
+        BigDecimal.valueOf(100), getProbe.expectMessageClass(CurrentBalance.class).balance());
   }
 
   @Test
@@ -153,7 +153,7 @@ public class AccountExampleTest {
 
     BigDecimal balance =
         ref.ask(GetBalance::new, timeout)
-            .thenApply(currentBalance -> currentBalance.balance)
+            .thenApply(currentBalance -> currentBalance.balance())
             .toCompletableFuture()
             .get(3, TimeUnit.SECONDS);
     assertEquals(BigDecimal.valueOf(90), balance);
@@ -167,8 +167,8 @@ public class AccountExampleTest {
         testKit
             .serializationTestKit()
             .verifySerialization(new Deposit(BigDecimal.valueOf(100), opProbe.getRef()), false);
-    assertEquals(BigDecimal.valueOf(100), deposit2.amount);
-    assertEquals(opProbe.getRef(), deposit2.replyTo);
+    assertEquals(BigDecimal.valueOf(100), deposit2.amount());
+    assertEquals(opProbe.getRef(), deposit2.replyTo());
     testKit
         .serializationTestKit()
         .verifySerialization(new Withdraw(BigDecimal.valueOf(90), opProbe.getRef()), false);
