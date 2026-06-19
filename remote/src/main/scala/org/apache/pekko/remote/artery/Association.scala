@@ -424,8 +424,26 @@ private[remote] class Association(
             }(materializer.executionContext)
           case _: SystemMessage =>
             sendSystemMessage(outboundEnvelope)
-          case ActorSelectionMessage(_: PriorityMessage, _, _) | _: ControlMessage | _: ClearSystemMessageDelivery =>
-            // ActorSelectionMessage with PriorityMessage is used by cluster and remote failure detector heartbeating
+          case sel: ActorSelectionMessage =>
+            sel.msg match {
+              case _: PriorityMessage =>
+                // ActorSelectionMessage with PriorityMessage is used by cluster and remote failure detector heartbeating
+                if (!controlQueue.offer(outboundEnvelope)) {
+                  dropped(ControlQueueIndex, controlQueueSize, outboundEnvelope)
+                }
+              case _ =>
+                // Distribute ActorSelection messages across lanes based on the target
+                // path hash rather than the anchor's (typically root guardian, UID=0).
+                // Without this, all ActorSelection messages concentrate on a single
+                // outbound lane, creating a throughput bottleneck.
+                val queueIndex =
+                  if (outboundLanes == 1) OrdinaryQueueIndex
+                  else OrdinaryQueueIndex + ((sel.elements.hashCode() & Int.MaxValue) % outboundLanes)
+                val queue = queues(queueIndex)
+                if (!queue.offer(outboundEnvelope))
+                  dropped(queueIndex, queueSize, outboundEnvelope)
+            }
+          case _: ControlMessage | _: ClearSystemMessageDelivery =>
             if (!controlQueue.offer(outboundEnvelope)) {
               dropped(ControlQueueIndex, controlQueueSize, outboundEnvelope)
             }
