@@ -1638,7 +1638,7 @@ public class FlowTest extends StreamTestJupiter {
 
     final Throwable actual =
         source.via(flow).runWith(TestSink.create(system), system).request(1).expectError();
-    assertTrue(actual instanceof IndexOutOfBoundsException);
+    assertInstanceOf(IndexOutOfBoundsException.class, actual);
   }
 
   @Test

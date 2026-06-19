@@ -17,8 +17,8 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.apache.pekko.pattern.Patterns.ask;
 import static org.apache.pekko.pattern.Patterns.pipe;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -545,7 +545,7 @@ public class PatternsTest {
     try {
       delayedStage.toCompletableFuture().get(3, SECONDS);
     } catch (ExecutionException e) {
-      assertTrue(e.getCause() instanceof IllegalStateException);
+      assertInstanceOf(IllegalStateException.class, e.getCause());
       assertEquals("Illegal!", e.getCause().getMessage());
     }
   }
@@ -558,7 +558,7 @@ public class PatternsTest {
     try {
       delayedStage.toCompletableFuture().get(3, SECONDS);
     } catch (ExecutionException e) {
-      assertTrue(e.getCause() instanceof TimeoutException);
+      assertInstanceOf(TimeoutException.class, e.getCause());
       assertEquals("Timeout of PT0.2S expired", e.getCause().getMessage());
     }
   }

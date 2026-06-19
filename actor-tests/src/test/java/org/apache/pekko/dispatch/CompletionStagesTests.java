@@ -27,8 +27,8 @@ import java.util.*;
 import java.util.concurrent.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CompletionStagesTests {
     private final Duration timeout = Duration.create(5, TimeUnit.SECONDS);
@@ -101,7 +101,7 @@ public class CompletionStagesTests {
         try {
             reducedEmpty.toCompletableFuture().get(3, TimeUnit.SECONDS);
         } catch (Exception e) {
-            assertTrue(e.getCause() instanceof NoSuchElementException);
+            assertInstanceOf(NoSuchElementException.class, e.getCause());
             assertEquals("reduce of an empty iterable of CompletionStages", e.getCause().getMessage());
         }
     }
