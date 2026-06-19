@@ -518,7 +518,6 @@ class IntegrationDocSpec extends PekkoSpec(IntegrationDocSpec.config) {
 
     val fastElements = 1 to 10
 
-    implicit val ec = system.dispatcher
     fastElements.foreach { x =>
       queue.offer(x) match {
         case QueueOfferResult.Enqueued    => println(s"enqueued $x")
