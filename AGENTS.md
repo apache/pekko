@@ -16,6 +16,8 @@ Follow `CONTRIBUTING.md`. If this file conflicts with `CONTRIBUTING.md`, follow 
 
 ## Licensing Rules
 
+> **⚠️ Mandatory workflow for new files:** Create the file without any header → run `sbt headerCreateAll` → sbt adds the correct header automatically. Never hand-write or copy-paste a license header.
+
 - Do not hand-write or invent license headers. Let sbt manage them.
 - For new files, run `sbt headerCreateAll` to add the correct header. Do not manually paste header text.
 - Run `sbt +headerCheckAll` to verify all files carry the expected header.
