@@ -195,7 +195,7 @@ abstract class AbstractRemoteSendConsistencySpec(config: Config)
 
       def senderProps(sel: ActorSelection) =
         Props(new Actor {
-          var counter = 100
+          var counter = 1000
           sel ! counter
 
           override def receive: Receive = {
