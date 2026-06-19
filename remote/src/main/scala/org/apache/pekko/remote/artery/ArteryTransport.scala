@@ -13,6 +13,7 @@
 
 package org.apache.pekko.remote.artery
 
+import java.nio.ByteBuffer
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicLong
@@ -25,7 +26,7 @@ import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.concurrent.duration._
 import scala.util.Try
-import scala.util.control.NoStackTrace
+import scala.util.control.{ NoStackTrace, NonFatal }
 
 import org.apache.pekko
 import pekko.Done
@@ -36,6 +37,7 @@ import pekko.dispatch.Dispatchers
 import pekko.event.Logging
 import pekko.event.MarkerLoggingAdapter
 import pekko.remote.AddressUidExtension
+import pekko.remote.ContainerFormats
 import pekko.remote.RemoteActorRef
 import pekko.remote.RemoteActorRefProvider
 import pekko.remote.RemoteTransport
@@ -54,6 +56,7 @@ import pekko.stream._
 import pekko.stream.scaladsl.Flow
 import pekko.stream.scaladsl.Keep
 import pekko.stream.scaladsl.Sink
+import pekko.serialization.SerializationExtension
 import pekko.util.OptionVal
 import pekko.util.WildcardIndex
 
@@ -333,6 +336,9 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
 
   protected val inboundLanes = settings.Advanced.InboundLanes
 
+  private lazy val actorSelectionMessageSerializerId =
+    SerializationExtension(system).serializerFor(classOf[pekko.actor.ActorSelectionMessage]).identifier
+
   val largeMessageChannelEnabled: Boolean =
     !settings.LargeMessageDestinations.wildcardTree.isEmpty ||
     !settings.LargeMessageDestinations.doubleWildcardTree.isEmpty
@@ -460,14 +466,16 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
 
   // Select inbound lane based on destination to preserve message order,
   // Also include the uid of the sending system in the hash to spread
-  // "hot" destinations, e.g. ActorSelection anchor.
+  // "hot" destinations. For ActorSelection, the recipient is typically the
+  // root guardian, so use the selected target path as the destination key.
   protected val inboundLanePartitioner: InboundEnvelope => Int = env => {
     env.recipient match {
       case OptionVal.Some(r) =>
-        val a = r.path.uid
-        val b = env.originUid
-        val hashA = 23 + a
-        val hash: Int = 23 * hashA + java.lang.Long.hashCode(b)
+        val destinationHash =
+          if (env.serializer == actorSelectionMessageSerializerId && (env.envelopeBuffer ne null))
+            ArteryTransport.actorSelectionMessagePathHash(env.envelopeBuffer.byteBuffer).getOrElse(r.path.uid)
+          else r.path.uid
+        val hash = ArteryTransport.inboundLanePartitionHash(destinationHash, env.originUid)
         math.abs(hash % inboundLanes)
       case _ =>
         // the lane is set by the DuplicateHandshakeReq stage, otherwise 0
@@ -985,5 +993,32 @@ private[remote] object ArteryTransport {
       case LargeStreamId   => "large message"
       case _               => "message"
     }
+
+  def inboundLanePartitionHash(destinationHash: Int, originUid: Long): Int = {
+    val hashA = 23 + destinationHash
+    23 * hashA + java.lang.Long.hashCode(originUid)
+  }
+
+  def actorSelectionMessagePathHash(byteBuffer: ByteBuffer): Option[Int] = {
+    val copy = byteBuffer.asReadOnlyBuffer()
+    try Some(actorSelectionMessagePathHash(ContainerFormats.SelectionEnvelope.parseFrom(copy)))
+    catch {
+      case NonFatal(_) => None
+    }
+  }
+
+  def actorSelectionMessagePathHash(selectionEnvelope: ContainerFormats.SelectionEnvelope): Int = {
+    var hash = 23
+    val patterns = selectionEnvelope.getPatternList
+    var i = 0
+    while (i < patterns.size) {
+      val pattern = patterns.get(i)
+      hash = 23 * hash + pattern.getType.getNumber
+      if (pattern.hasMatcher)
+        hash = 23 * hash + pattern.getMatcher.hashCode
+      i += 1
+    }
+    hash
+  }
 
 }
