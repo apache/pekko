@@ -15,7 +15,7 @@ package org.apache.pekko.stream.scaladsl
 
 import java.util.concurrent.CompletionStage
 
-import scala.annotation.{ switch, tailrec, varargs }
+import scala.annotation.{ nowarn, switch, tailrec, varargs }
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.{ immutable, AbstractIterator }
 import scala.concurrent.{ Future, Promise }
@@ -1007,6 +1007,7 @@ object Source {
     "(dropping the newest element when the buffer is full). For backpressure, use Source.actorRefWithBackpressure " +
     "or MergeHub.source instead. See the Pekko Streams documentation for the Source.queue migration guide.",
     since = "2.0.0")
+  @nowarn("msg=deprecated")
   def queue[T](bufferSize: Int, overflowStrategy: OverflowStrategy): Source[T, SourceQueueWithComplete[T]] =
     queue(bufferSize, overflowStrategy, maxConcurrentOffers = 1)
 

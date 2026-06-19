@@ -697,6 +697,7 @@ object Source {
     "(dropping the newest element when the buffer is full). For backpressure, use Source.actorRefWithBackpressure " +
     "or MergeHub.source instead. See the Pekko Streams documentation for the Source.queue migration guide.",
     since = "2.0.0")
+  @nowarn("msg=deprecated")
   def queue[T](bufferSize: Int, overflowStrategy: OverflowStrategy): Source[T, SourceQueueWithComplete[T]] =
     new Source(
       scaladsl.Source.queue[T](bufferSize, overflowStrategy, maxConcurrentOffers = 1).mapMaterializedValue(_.asJava))
@@ -740,6 +741,7 @@ object Source {
     "(dropping the newest element when the buffer is full). For backpressure, use Source.actorRefWithBackpressure " +
     "or MergeHub.source instead. See the Pekko Streams documentation for the Source.queue migration guide.",
     since = "2.0.0")
+  @nowarn("msg=deprecated")
   def queue[T](
       bufferSize: Int,
       overflowStrategy: OverflowStrategy,
