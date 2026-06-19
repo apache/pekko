@@ -14,11 +14,12 @@
 package org.apache.pekko.stream.scaladsl
 
 import scala.annotation.nowarn
+import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.{ ActorRef, Status }
+import pekko.actor.{ ActorRef, ActorSystem, Status }
 import pekko.stream.{ OverflowStrategy, _ }
 import pekko.stream.testkit._
 import pekko.stream.testkit.Utils._
@@ -225,6 +226,26 @@ class ActorRefSourceSpec extends StreamSpec {
         val (_: ActorRef, _: Publisher[String]) =
           source.toMat(Sink.asPublisher(false))(Keep.both).run()(mat)
         mat.shutdown()
+      }
+    }
+
+    "materialize even when the stream supervisor is not yet started" in {
+      // Regression: the first Source.actorRef materialization on a fresh ActorSystem
+      // can race the async supervisor startup, hitting an UnstartedCell in StageActor.localCell.
+      // The fix force-starts the supervisor via Ask(Identify) before returning the cell.
+      (1 to 20).foreach { i =>
+        val sys = ActorSystem(s"ActorRefSource-startup-race-$i")
+        try {
+          val mat = Materializer(sys)
+          val ref = Source
+            .actorRef[Int]({ case "ok" => CompletionStrategy.draining }, PartialFunction.empty, 8, OverflowStrategy.fail)
+            .to(Sink.ignore)
+            .run()(mat)
+          ref should not be null
+          ref ! "ok"
+        } finally {
+          Await.result(sys.terminate(), 10.seconds)
+        }
       }
     }
   }
