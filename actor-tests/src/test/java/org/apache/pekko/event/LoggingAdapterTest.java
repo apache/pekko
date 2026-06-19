@@ -15,6 +15,7 @@ package org.apache.pekko.event;
 
 import static org.apache.pekko.event.Logging.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
@@ -164,7 +165,7 @@ public class LoggingAdapterTest {
             assertEquals(level, log.level());
             assertEquals(mdc, log.getMDC().toString());
             if (cause != null) {
-              assertIInstanceOf(LogEventWithCause.class, event);
+              assertInstanceOf(LogEventWithCause.class, event);
               LogEventWithCause causedEvent = (LogEventWithCause) event;
               assertSame(cause, causedEvent.cause());
             }
