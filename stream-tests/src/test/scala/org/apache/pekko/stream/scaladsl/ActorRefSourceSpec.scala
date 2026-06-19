@@ -238,7 +238,8 @@ class ActorRefSourceSpec extends StreamSpec {
         try {
           val mat = Materializer(sys)
           val (ref, done) = Source
-            .actorRef[Int]({ case "ok" => CompletionStrategy.draining }, PartialFunction.empty, 8, OverflowStrategy.fail)
+            .actorRef[Int]({ case "ok" => CompletionStrategy.draining }, PartialFunction.empty, 8,
+              OverflowStrategy.fail)
             .toMat(Sink.ignore)(Keep.both)
             .run()(mat)
           ref should not be null

@@ -314,16 +314,16 @@ object GraphStageLogic {
   private object StageActor {
     def localCell(ref: ActorRef, description: String): ActorCell =
       ref match {
-        case ref: LocalActorRef => ref.underlying
+        case ref: LocalActorRef     => ref.underlying
         case r: RepointableActorRef =>
           r.underlying match {
-            case cell: ActorCell => cell
+            case cell: ActorCell  => cell
             case _: UnstartedCell =>
               implicit val timeout: Timeout = r.system.settings.CreationTimeout
               Await.result(r ? Identify(null), timeout.duration)
               r.underlying match {
                 case cell: ActorCell => cell
-                case unknown =>
+                case unknown         =>
                   throw new IllegalStateException(
                     s"$description must be a local actor, was [${unknown.getClass.getName}]")
               }
