@@ -13,8 +13,10 @@
 
 package org.apache.pekko.stream.impl
 
+import scala.util.control.NonFatal
+
 import org.apache.pekko
-import pekko.actor.ActorRef
+import pekko.actor.{ ActorRef, FunctionRef, Kill, PoisonPill }
 import pekko.annotation.InternalApi
 import pekko.stream._
 import pekko.stream.OverflowStrategies._
@@ -62,85 +64,123 @@ private object ActorRefSource {
         }
       private var isCompleting: Boolean = false
 
-      override protected def stageActorName: String = inheritedAttributes.nameForActorRef(super.stageActorName)
-
       private val name = inheritedAttributes.nameOrDefault(getClass.toString)
-      override val ref: ActorRef = getEagerStageActor(eagerMaterializer) {
-        case (_, m) if failureMatcher.isDefinedAt(m) =>
-          failStage(failureMatcher(m))
-        case (_, m) if completionMatcher.isDefinedAt(m) =>
-          completionMatcher(m) match {
+
+      private val cell = resolveSupervisorCell(eagerMaterializer)
+
+      private val callback = getAsyncCallback[Any](onMessage)
+
+      private val functionRef: FunctionRef = {
+        val actorName = inheritedAttributes.nameForActorRef(super.stageActorName)
+        val systemLog = eagerMaterializer.system.log
+        cell.addFunctionRef(
+          (_, msg) =>
+            msg match {
+              case PoisonPill | Kill =>
+                systemLog.warning(
+                  "{} message sent to ActorRefSource({}) will be ignored, since it is not a real Actor. " +
+                  "Use a custom message type to communicate with it instead.",
+                  msg,
+                  functionRef.path)
+              case _ => callback.invoke(msg)
+            },
+          actorName)
+      }
+
+      override val ref: ActorRef = functionRef
+
+      override def postStop(): Unit = {
+        try cell.removeFunctionRef(functionRef)
+        catch { case NonFatal(_) => () }
+        super.postStop()
+      }
+
+      private def onMessage(msg: Any): Unit = {
+        if (failureMatcher.isDefinedAt(msg)) {
+          failStage(failureMatcher(msg))
+        } else if (completionMatcher.isDefinedAt(msg)) {
+          completionMatcher(msg) match {
             case CompletionStrategy.Draining =>
               isCompleting = true
               tryPush()
             case CompletionStrategy.Immediately =>
               completeStage()
           }
-        case (_, m: T @unchecked) =>
-          buffer match {
-            case OptionVal.Some(buf) =>
-              if (isCompleting) {
-                log.warning(
-                  "Dropping element because Status.Success received already, only draining already buffered elements: [{}] (pending: [{}] in stream [{}])",
-                  m,
-                  buf.used,
-                  name)
-              } else if (!buf.isFull) {
-                buf.enqueue(m)
-                tryPush()
-              } else
-                overflowStrategy match {
-                  case s: DropHead =>
-                    log.log(
-                      s.logLevel,
-                      "Dropping the head element because buffer is full and overflowStrategy is: [DropHead] in stream [{}]",
+        } else {
+          msg match {
+            case m: T @unchecked =>
+              buffer match {
+                case OptionVal.Some(buf) =>
+                  if (isCompleting) {
+                    log.warning(
+                      "Dropping element because Status.Success received already, only draining already buffered elements: [{}] (pending: [{}] in stream [{}])",
+                      m,
+                      buf.used,
                       name)
-                    buf.dropHead()
+                  } else if (buf.isEmpty && isAvailable(out)) {
+                    // Direct-push fast path: safe to skip tryPush() because isCompleting
+                    // is checked above, and completion is driven by the completionMatcher branch.
+                    push(out, m)
+                  } else if (!buf.isFull) {
                     buf.enqueue(m)
                     tryPush()
-                  case s: DropTail =>
-                    log.log(
-                      s.logLevel,
-                      "Dropping the tail element because buffer is full and overflowStrategy is: [DropTail] in stream [{}]",
+                  } else
+                    overflowStrategy match {
+                      case s: DropHead =>
+                        log.log(
+                          s.logLevel,
+                          "Dropping the head element because buffer is full and overflowStrategy is: [DropHead] in stream [{}]",
+                          name)
+                        buf.dropHead()
+                        buf.enqueue(m)
+                        tryPush()
+                      case s: DropTail =>
+                        log.log(
+                          s.logLevel,
+                          "Dropping the tail element because buffer is full and overflowStrategy is: [DropTail] in stream [{}]",
+                          name)
+                        buf.dropTail()
+                        buf.enqueue(m)
+                        tryPush()
+                      case s: DropBuffer =>
+                        log.log(
+                          s.logLevel,
+                          "Dropping all the buffered elements because buffer is full and overflowStrategy is: [DropBuffer] in stream [{}]",
+                          name)
+                        buf.clear()
+                        buf.enqueue(m)
+                        tryPush()
+                      case s: Fail =>
+                        log.log(
+                          s.logLevel,
+                          "Failing because buffer is full and overflowStrategy is: [Fail] in stream [{}]",
+                          name)
+                        val bufferOverflowException =
+                          BufferOverflowException(s"Buffer overflow (max capacity was: $maxBuffer)!")
+                        failStage(bufferOverflowException)
+                      case _: Backpressure =>
+                        failStage(new IllegalStateException("Backpressure is not supported"))
+                    }
+                case _ =>
+                  if (isCompleting) {
+                    log.warning(
+                      "Dropping element because Status.Success received already: [{}] in stream [{}]",
+                      m,
                       name)
-                    buf.dropTail()
-                    buf.enqueue(m)
-                    tryPush()
-                  case s: DropBuffer =>
-                    log.log(
-                      s.logLevel,
-                      "Dropping all the buffered elements because buffer is full and overflowStrategy is: [DropBuffer] in stream [{}]",
+                  } else if (isAvailable(out)) {
+                    push(out, m)
+                  } else {
+                    log.debug(
+                      "Dropping element because there is no downstream demand and no buffer: [{}] in stream [{}]",
+                      m,
                       name)
-                    buf.clear()
-                    buf.enqueue(m)
-                    tryPush()
-                  case s: Fail =>
-                    log.log(
-                      s.logLevel,
-                      "Failing because buffer is full and overflowStrategy is: [Fail] in stream [{}]",
-                      name)
-                    val bufferOverflowException =
-                      BufferOverflowException(s"Buffer overflow (max capacity was: $maxBuffer)!")
-                    failStage(bufferOverflowException)
-                  case _: Backpressure =>
-                    // there is a precondition check in Source.actorRefSource factory method to not allow backpressure as strategy
-                    failStage(new IllegalStateException("Backpressure is not supported"))
-                }
-            case _ =>
-              if (isCompleting) {
-                log.warning("Dropping element because Status.Success received already: [{}] in stream [{}]", m, name)
-              } else if (isAvailable(out)) {
-                push(out, m)
-              } else {
-                log.debug(
-                  "Dropping element because there is no downstream demand and no buffer: [{}] in stream [{}]",
-                  m,
-                  name)
+                  }
               }
+            case unexpected =>
+              log.debug("Dropping unexpected non-data message [{}] in stream [{}]", unexpected, name)
           }
-
-        case _ => throw new IllegalArgumentException() // won't happen, compiler exhaustiveness check pleaser
-      }.ref
+        }
+      }
 
       private def tryPush(): Unit = {
         if (isAvailable(out) && buffer.isDefined && buffer.get.nonEmpty) {

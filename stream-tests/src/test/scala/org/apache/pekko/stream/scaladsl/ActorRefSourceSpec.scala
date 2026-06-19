@@ -14,11 +14,12 @@
 package org.apache.pekko.stream.scaladsl
 
 import scala.annotation.nowarn
+import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.{ ActorRef, Status }
+import pekko.actor.{ ActorRef, ActorSystem, Kill, PoisonPill, Status }
 import pekko.stream.{ OverflowStrategy, _ }
 import pekko.stream.testkit._
 import pekko.stream.testkit.Utils._
@@ -226,6 +227,92 @@ class ActorRefSourceSpec extends StreamSpec {
           source.toMat(Sink.asPublisher(false))(Keep.both).run()(mat)
         mat.shutdown()
       }
+    }
+
+    "materialize even when the stream supervisor is not yet started" in {
+      // Regression: the first Source.actorRef materialization on a fresh ActorSystem
+      // can race the async supervisor startup, hitting an UnstartedCell in StageActor.localCell.
+      // The fix force-starts the supervisor via Ask(Identify) before returning the cell.
+      (1 to 5).foreach { i =>
+        val sys = ActorSystem(s"ActorRefSource-startup-race-$i")
+        try {
+          val mat = Materializer(sys)
+          val (ref, done) = Source
+            .actorRef[Int]({ case "ok" => CompletionStrategy.draining }, PartialFunction.empty, 8,
+              OverflowStrategy.fail)
+            .toMat(Sink.ignore)(Keep.both)
+            .run()(mat)
+          ref should not be null
+          ref ! "ok"
+          Await.result(done, 5.seconds) should be(Done)
+        } finally {
+          Await.result(sys.terminate(), 10.seconds)
+        }
+      }
+    }
+    "push directly without buffer round-trip when buffer is empty and demand exists" in {
+      val s = TestSubscriber.manualProbe[Int]()
+      val ref = Source
+        .actorRef({ case "ok" => CompletionStrategy.draining }, PartialFunction.empty, 100, OverflowStrategy.fail)
+        .to(Sink.fromSubscriber(s))
+        .run()
+      val sub = s.expectSubscription()
+      // Request enough demand upfront so every element hits the direct-push fast path
+      sub.request(10)
+      // Send elements one at a time — each should push directly without buffering
+      for (n <- 1 to 10) {
+        ref ! n
+        s.expectNext(n)
+      }
+      ref ! "ok"
+      s.expectComplete()
+    }
+
+    "ignore PoisonPill and not emit it as a data element" in {
+      val s = TestSubscriber.manualProbe[Any]()
+      val ref = Source
+        .actorRef[Any]({ case "ok" => CompletionStrategy.draining }, PartialFunction.empty, 10, OverflowStrategy.fail)
+        .to(Sink.fromSubscriber(s))
+        .run()
+      val sub = s.expectSubscription()
+      sub.request(10)
+      ref ! PoisonPill
+      // PoisonPill must not be emitted and must not complete the stream
+      s.expectNoMessage(300.millis)
+      ref ! "real-element"
+      s.expectNext("real-element")
+      ref ! "ok"
+      s.expectComplete()
+    }
+
+    "ignore Kill and not emit it as a data element" in {
+      val s = TestSubscriber.manualProbe[Any]()
+      val ref = Source
+        .actorRef[Any]({ case "ok" => CompletionStrategy.draining }, PartialFunction.empty, 10, OverflowStrategy.fail)
+        .to(Sink.fromSubscriber(s))
+        .run()
+      val sub = s.expectSubscription()
+      sub.request(10)
+      ref ! Kill
+      // Kill must not be emitted and must not complete the stream
+      s.expectNoMessage(300.millis)
+      ref ! "real-element"
+      s.expectNext("real-element")
+      ref ! "ok"
+      s.expectComplete()
+    }
+
+    "not fail when messages are sent after stream completion" in {
+      val (ref, done) = Source
+        .actorRef[Int]({ case "ok" => CompletionStrategy.draining }, PartialFunction.empty, 10, OverflowStrategy.fail)
+        .toMat(Sink.ignore)(Keep.both)
+        .run()
+      ref ! "ok"
+      Await.result(done, 5.seconds) should be(Done)
+      // After completion, FunctionRef should be removed; messages go to dead letters
+      ref ! 42
+      ref ! 43
+      // No exception should be thrown
     }
   }
 }

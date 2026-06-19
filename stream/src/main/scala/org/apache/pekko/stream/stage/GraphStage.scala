@@ -21,13 +21,15 @@ import java.util.concurrent.atomic.AtomicReference
 import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.collection.{ immutable, mutable }
-import scala.concurrent.{ Future, Promise }
+import scala.concurrent.{ Await, Future, Promise }
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
 import pekko.{ Done, NotUsed }
 import pekko.actor._
 import pekko.annotation.InternalApi
+import pekko.pattern.ask
+import pekko.util.Timeout
 import pekko.dispatch.AbstractNodeQueue
 import pekko.japi.function.{ Effect, Procedure }
 import pekko.stream._
@@ -312,12 +314,22 @@ object GraphStageLogic {
   private object StageActor {
     def localCell(ref: ActorRef, description: String): ActorCell =
       ref match {
-        case ref: LocalActorRef       => ref.underlying
-        case ref: RepointableActorRef =>
-          ref.underlying match {
-            case cell: ActorCell => cell
-            case unknown         =>
-              throw new IllegalStateException(s"$description must be a local actor, was [${unknown.getClass.getName}]")
+        case ref: LocalActorRef     => ref.underlying
+        case r: RepointableActorRef =>
+          r.underlying match {
+            case cell: ActorCell  => cell
+            case _: UnstartedCell =>
+              implicit val timeout: Timeout = r.system.settings.CreationTimeout
+              Await.result(r ? Identify(null), timeout.duration)
+              r.underlying match {
+                case cell: ActorCell => cell
+                case unknown         =>
+                  throw new IllegalStateException(
+                    s"$description must be a local actor, was [${unknown.getClass.getName}]")
+              }
+            case unknown =>
+              throw new IllegalStateException(
+                s"$description must be a local actor, was [${unknown.getClass.getName}]")
           }
         case unknown =>
           throw new IllegalStateException(s"$description must be a local actor, was [${unknown.getClass.getName}]")
@@ -1553,6 +1565,17 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
         existing.become(receive)
         existing
     }
+
+  /**
+   * INTERNAL API
+   *
+   * Resolves the stream supervisor's [[ActorCell]] so a caller can host a FunctionRef on it.
+   * If the supervisor is a [[RepointableActorRef]] that has not yet been started (its cell is still
+   * an [[UnstartedCell]]), it is force-started via Ask(Identify) before the cell is returned.
+   */
+  @InternalApi
+  private[pekko] def resolveSupervisorCell(materializer: Materializer): ActorCell =
+    StageActor.localCell(materializer.supervisor, "Stream supervisor")
 
   /**
    * Override and return a name to be given to the StageActor of this operator.
