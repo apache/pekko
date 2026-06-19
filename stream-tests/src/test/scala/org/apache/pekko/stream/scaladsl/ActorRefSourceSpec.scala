@@ -248,5 +248,22 @@ class ActorRefSourceSpec extends StreamSpec {
         }
       }
     }
+    "push directly without buffer round-trip when buffer is empty and demand exists" in {
+      val s = TestSubscriber.manualProbe[Int]()
+      val ref = Source
+        .actorRef({ case "ok" => CompletionStrategy.draining }, PartialFunction.empty, 100, OverflowStrategy.fail)
+        .to(Sink.fromSubscriber(s))
+        .run()
+      val sub = s.expectSubscription()
+      // Request enough demand upfront so every element hits the direct-push fast path
+      sub.request(10)
+      // Send elements one at a time — each should push directly without buffering
+      for (n <- 1 to 10) {
+        ref ! n
+        s.expectNext(n)
+      }
+      ref ! "ok"
+      s.expectComplete()
+    }
   }
 }

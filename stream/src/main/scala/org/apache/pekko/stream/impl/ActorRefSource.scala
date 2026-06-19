@@ -85,6 +85,8 @@ private object ActorRefSource {
                   m,
                   buf.used,
                   name)
+              } else if (buf.isEmpty && isAvailable(out)) {
+                push(out, m)
               } else if (!buf.isFull) {
                 buf.enqueue(m)
                 tryPush()
