@@ -1567,6 +1567,17 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
     }
 
   /**
+   * INTERNAL API
+   *
+   * Resolves the stream supervisor's [[ActorCell]] so a caller can host a FunctionRef on it.
+   * If the supervisor is a [[RepointableActorRef]] that has not yet been started (its cell is still
+   * an [[UnstartedCell]]), it is force-started via Ask(Identify) before the cell is returned.
+   */
+  @InternalApi
+  private[pekko] def resolveSupervisorCell(materializer: Materializer): ActorCell =
+    StageActor.localCell(materializer.supervisor, "Stream supervisor")
+
+  /**
    * Override and return a name to be given to the StageActor of this operator.
    *
    * This method will be only invoked and used once, during the first [[getStageActor]]

@@ -13,17 +13,16 @@
 
 package org.apache.pekko.stream.impl
 
-import scala.concurrent.Await
+import scala.util.control.NonFatal
 
 import org.apache.pekko
-import pekko.actor.{ ActorCell, ActorRef, FunctionRef, Kill, LocalActorRef, PoisonPill, RepointableActorRef, UnstartedCell }
+import pekko.actor.{ ActorRef, FunctionRef, Kill, PoisonPill }
 import pekko.annotation.InternalApi
-import pekko.pattern.ask
 import pekko.stream._
 import pekko.stream.OverflowStrategies._
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.stage._
-import pekko.util.{ OptionVal, Timeout }
+import pekko.util.OptionVal
 
 private object ActorRefSource {
   private sealed trait ActorRefStage { def ref: ActorRef }
@@ -67,48 +66,34 @@ private object ActorRefSource {
 
       private val name = inheritedAttributes.nameOrDefault(getClass.toString)
 
-      private val cell: ActorCell = {
-        val supervisor = eagerMaterializer.supervisor
-        supervisor match {
-          case ref: LocalActorRef => ref.underlying
-          case r: RepointableActorRef =>
-            r.underlying match {
-              case c: ActorCell => c
-              case _: UnstartedCell =>
-                implicit val timeout: Timeout = r.system.settings.CreationTimeout
-                Await.result(r ? pekko.actor.Identify(null), timeout.duration)
-                r.underlying match {
-                  case c: ActorCell => c
-                  case unknown =>
-                    throw new IllegalStateException(
-                      s"Stream supervisor must be a local actor, was [${unknown.getClass.getName}]")
-                }
-              case unknown =>
-                throw new IllegalStateException(
-                  s"Stream supervisor must be a local actor, was [${unknown.getClass.getName}]")
-            }
-          case unknown =>
-            throw new IllegalStateException(
-              s"Stream supervisor must be a local actor, was [${unknown.getClass.getName}]")
-        }
-      }
+      private val cell = resolveSupervisorCell(eagerMaterializer)
 
       private val callback = getAsyncCallback[Any](onMessage)
 
       private val functionRef: FunctionRef = {
         val actorName = inheritedAttributes.nameForActorRef(super.stageActorName)
+        val systemLog = eagerMaterializer.system.log
         cell.addFunctionRef(
           (_, msg) =>
             msg match {
-              case PoisonPill | Kill => // ignored — stage actor lifecycle messages are not honored
-              case _                 => callback.invoke(msg)
+              case PoisonPill | Kill =>
+                systemLog.warning(
+                  "{} message sent to ActorRefSource({}) will be ignored, since it is not a real Actor. " +
+                  "Use a custom message type to communicate with it instead.",
+                  msg,
+                  functionRef.path)
+              case _ => callback.invoke(msg)
             },
           actorName)
       }
 
       override val ref: ActorRef = functionRef
 
-      override def postStop(): Unit = cell.removeFunctionRef(functionRef)
+      override def postStop(): Unit = {
+        try cell.removeFunctionRef(functionRef)
+        catch { case NonFatal(_) => () }
+        super.postStop()
+      }
 
       private def onMessage(msg: Any): Unit = {
         if (failureMatcher.isDefinedAt(msg)) {
@@ -133,6 +118,8 @@ private object ActorRefSource {
                       buf.used,
                       name)
                   } else if (buf.isEmpty && isAvailable(out)) {
+                    // Direct-push fast path: safe to skip tryPush() because isCompleting
+                    // is checked above, and completion is driven by the completionMatcher branch.
                     push(out, m)
                   } else if (!buf.isFull) {
                     buf.enqueue(m)
@@ -189,7 +176,8 @@ private object ActorRefSource {
                       name)
                   }
               }
-            case _ => // unmatched message, ignore
+            case unexpected =>
+              log.debug("Dropping unexpected non-data message [{}] in stream [{}]", unexpected, name)
           }
         }
       }

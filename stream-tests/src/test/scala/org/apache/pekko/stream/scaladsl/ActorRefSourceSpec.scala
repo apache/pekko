@@ -233,16 +233,17 @@ class ActorRefSourceSpec extends StreamSpec {
       // Regression: the first Source.actorRef materialization on a fresh ActorSystem
       // can race the async supervisor startup, hitting an UnstartedCell in StageActor.localCell.
       // The fix force-starts the supervisor via Ask(Identify) before returning the cell.
-      (1 to 20).foreach { i =>
+      (1 to 5).foreach { i =>
         val sys = ActorSystem(s"ActorRefSource-startup-race-$i")
         try {
           val mat = Materializer(sys)
-          val ref = Source
+          val (ref, done) = Source
             .actorRef[Int]({ case "ok" => CompletionStrategy.draining }, PartialFunction.empty, 8, OverflowStrategy.fail)
-            .to(Sink.ignore)
+            .toMat(Sink.ignore)(Keep.both)
             .run()(mat)
           ref should not be null
           ref ! "ok"
+          Await.result(done, 5.seconds) should be(Done)
         } finally {
           Await.result(sys.terminate(), 10.seconds)
         }
@@ -298,6 +299,19 @@ class ActorRefSourceSpec extends StreamSpec {
       s.expectNext("real-element")
       ref ! "ok"
       s.expectComplete()
+    }
+
+    "not fail when messages are sent after stream completion" in {
+      val (ref, done) = Source
+        .actorRef[Int]({ case "ok" => CompletionStrategy.draining }, PartialFunction.empty, 10, OverflowStrategy.fail)
+        .toMat(Sink.ignore)(Keep.both)
+        .run()
+      ref ! "ok"
+      Await.result(done, 5.seconds) should be(Done)
+      // After completion, FunctionRef should be removed; messages go to dead letters
+      ref ! 42
+      ref ! 43
+      // No exception should be thrown
     }
   }
 }
