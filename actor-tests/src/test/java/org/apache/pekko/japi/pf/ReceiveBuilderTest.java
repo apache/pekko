@@ -33,33 +33,7 @@ public class ReceiveBuilderTest {
     }
   }
 
-  public static class Msg2 implements Msg {
-    public final String value;
-
-    public Msg2(String value) {
-      this.value = value;
-    }
-
-    @Override
-    public int hashCode() {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + ((value == null) ? 0 : value.hashCode());
-      return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-      if (this == obj) return true;
-      if (obj == null) return false;
-      if (getClass() != obj.getClass()) return false;
-      Msg2 other = (Msg2) obj;
-      if (value == null) {
-        if (other.value != null) return false;
-      } else if (!value.equals(other.value)) return false;
-      return true;
-    }
-
+  public record Msg2(String value) implements Msg {
     @Override
     public String toString() {
       return "Msg2 [value=" + value + "]";
