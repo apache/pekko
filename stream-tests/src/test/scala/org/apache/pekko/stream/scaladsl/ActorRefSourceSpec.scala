@@ -19,7 +19,7 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.Done
-import pekko.actor.{ ActorRef, ActorSystem, Status }
+import pekko.actor.{ ActorRef, ActorSystem, Kill, PoisonPill, Status }
 import pekko.stream.{ OverflowStrategy, _ }
 import pekko.stream.testkit._
 import pekko.stream.testkit.Utils._
@@ -262,6 +262,40 @@ class ActorRefSourceSpec extends StreamSpec {
         ref ! n
         s.expectNext(n)
       }
+      ref ! "ok"
+      s.expectComplete()
+    }
+
+    "ignore PoisonPill and not emit it as a data element" in {
+      val s = TestSubscriber.manualProbe[Any]()
+      val ref = Source
+        .actorRef[Any]({ case "ok" => CompletionStrategy.draining }, PartialFunction.empty, 10, OverflowStrategy.fail)
+        .to(Sink.fromSubscriber(s))
+        .run()
+      val sub = s.expectSubscription()
+      sub.request(10)
+      ref ! PoisonPill
+      // PoisonPill must not be emitted and must not complete the stream
+      s.expectNoMessage(300.millis)
+      ref ! "real-element"
+      s.expectNext("real-element")
+      ref ! "ok"
+      s.expectComplete()
+    }
+
+    "ignore Kill and not emit it as a data element" in {
+      val s = TestSubscriber.manualProbe[Any]()
+      val ref = Source
+        .actorRef[Any]({ case "ok" => CompletionStrategy.draining }, PartialFunction.empty, 10, OverflowStrategy.fail)
+        .to(Sink.fromSubscriber(s))
+        .run()
+      val sub = s.expectSubscription()
+      sub.request(10)
+      ref ! Kill
+      // Kill must not be emitted and must not complete the stream
+      s.expectNoMessage(300.millis)
+      ref ! "real-element"
+      s.expectNext("real-element")
       ref ! "ok"
       s.expectComplete()
     }
