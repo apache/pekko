@@ -65,7 +65,7 @@ public class CountMinSketch {
   }
 
   /**
-   * Similar to {@code add}, however we reuse the fact that the hask buckets have to be calculated
+   * Similar to {@code add}, however we reuse the fact that the hash buckets have to be calculated
    * for {@code add} already, and a separate {@code estimateCount} operation would have to calculate
    * them again, so we do it all in one go.
    */

@@ -11,7 +11,7 @@
  * Copyright (C) 2019-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package org.apache.pekko.actor.typed.internal.adpater
+package org.apache.pekko.actor.typed.internal.adapter
 
 import org.apache.pekko
 import pekko.actor
