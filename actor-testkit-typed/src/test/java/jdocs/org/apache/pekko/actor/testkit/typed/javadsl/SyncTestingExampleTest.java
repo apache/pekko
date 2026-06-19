@@ -263,8 +263,8 @@ public class SyncTestingExampleTest {
 
     // The response adaptation can be tested as many times as you want without completing the ask
     Hello.Command response1 = effect.adaptResponse(new Hello.Answer("No.  Who are you?"));
-    assertTrue(response1 instanceof Hello.GotAnAnswer);
-    assertEquals("No.  Who are you?", ((Hello.GotAnAnswer) response1).answer());
+    Hello.GotAnAnswer gotAnAnswer = assertInstanceOf(Hello.GotAnAnswer.class, response1);
+    assertEquals("No.  Who are you?", gotAnAnswer.answer());
 
     // ... as can the message sent on a timeout
     assertInstanceOf(Hello.NoAnswerFrom.class, effect.adaptTimeout());
