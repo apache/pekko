@@ -15,7 +15,7 @@ package jdocs.org.apache.pekko.actor.testkit.typed.javadsl;
 
 // #imports
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 import com.typesafe.config.Config;
 import java.time.Duration;
@@ -324,7 +324,7 @@ public class SyncTestingExampleTest {
     assertEquals("No.  Who are you?", ((Hello.GotAnAnswer) response1).answer);
 
     // ... as can the message sent on a timeout
-    assertTrue(effect.adaptTimeout() instanceof Hello.NoAnswerFrom);
+    assertInstanceOf(Hello.NoAnswerFrom.class, effect.adaptTimeout());
 
     // The response timeout is captured
     assertEquals(10L, effect.responseTimeout().toSeconds());

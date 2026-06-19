@@ -55,9 +55,9 @@ object JavaPartialFunction {
  * {{{
  * new JavaPartialFunction<Object, String>() {
  *   public String apply(Object in, boolean isCheck) {
- *     if (in instanceof TheThing) {
+ *     if (in instanceof TheThing theThing) {
  *       if (isCheck) return null; // to spare the expensive or side-effecting code
- *       return doSomethingWithTheThing((TheThing) in);
+ *       return doSomethingWithTheThing(theThing);
  *     } else {
  *       throw noMatch();
  *     }

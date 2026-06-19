@@ -147,8 +147,9 @@ public class TcpTest extends StreamTestJupiter {
                                   .toCompletableFuture()
                                   .get(5, TimeUnit.SECONDS),
                           "CompletableFuture.get() should throw ExecutionException");
-                  Assertions.assertTrue(
-                      executionException.getCause() instanceof BindFailedException,
+                  Assertions.assertInstanceOf(
+                      BindFailedException.class,
+                      executionException.getCause(),
                       "The cause of ExecutionException should be instanceof BindFailedException");
                   b.unbind();
                   return null;
@@ -175,9 +176,9 @@ public class TcpTest extends StreamTestJupiter {
                     .toCompletableFuture()
                     .get(5, TimeUnit.SECONDS),
             "CompletableFuture.get() should throw ExecutionException");
-    Assertions.assertEquals(
+    Assertions.assertInstanceOf(
         StreamTcpException.class,
-        executionException.getCause().getClass(),
+        executionException.getCause(),
         "The cause of ExecutionException should be StreamTcpException");
   }
 
