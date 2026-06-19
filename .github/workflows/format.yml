@@ -20,8 +20,7 @@ name: Scalafmt
 permissions: {}
 
 on:
-  pull_request:
-    branches: ['**']
+  workflow_dispatch:
 
 jobs:
   build:
