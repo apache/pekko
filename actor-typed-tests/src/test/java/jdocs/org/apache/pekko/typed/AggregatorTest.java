@@ -95,66 +95,24 @@ public class AggregatorTest {
   interface IllustrateUsage {
     // #usage
     public class Hotel1 {
-      public static class RequestQuote {
-        public final ActorRef<Quote> replyTo;
+      public record RequestQuote(ActorRef<Quote> replyTo) {}
 
-        public RequestQuote(ActorRef<Quote> replyTo) {
-          this.replyTo = replyTo;
-        }
-      }
-
-      public static class Quote {
-        public final String hotel;
-        public final BigDecimal price;
-
-        public Quote(String hotel, BigDecimal price) {
-          this.hotel = hotel;
-          this.price = price;
-        }
-      }
+      public record Quote(String hotel, BigDecimal price) {}
     }
 
     public class Hotel2 {
-      public static class RequestPrice {
-        public final ActorRef<Price> replyTo;
+      public record RequestPrice(ActorRef<Price> replyTo) {}
 
-        public RequestPrice(ActorRef<Price> replyTo) {
-          this.replyTo = replyTo;
-        }
-      }
-
-      public static class Price {
-        public final String hotel;
-        public final BigDecimal price;
-
-        public Price(String hotel, BigDecimal price) {
-          this.hotel = hotel;
-          this.price = price;
-        }
-      }
+      public record Price(String hotel, BigDecimal price) {}
     }
 
     public class HotelCustomer extends AbstractBehavior<HotelCustomer.Command> {
 
       interface Command {}
 
-      public static class Quote {
-        public final String hotel;
-        public final BigDecimal price;
+      public record Quote(String hotel, BigDecimal price) {}
 
-        public Quote(String hotel, BigDecimal price) {
-          this.hotel = hotel;
-          this.price = price;
-        }
-      }
-
-      public static class AggregatedQuotes implements Command {
-        public final List<Quote> quotes;
-
-        public AggregatedQuotes(List<Quote> quotes) {
-          this.quotes = quotes;
-        }
-      }
+      public record AggregatedQuotes(List<Quote> quotes) implements Command {}
 
       public static Behavior<Command> create(
           ActorRef<Hotel1.RequestQuote> hotel1, ActorRef<Hotel2.RequestPrice> hotel2) {
@@ -193,14 +151,14 @@ public class AggregatorTest {
                       // The hotels have different protocols with different replies,
                       // convert them to `HotelCustomer.Quote` that this actor understands.
                       if (r instanceof Hotel1.Quote q) {
-                        return new Quote(q.hotel, q.price);
+                        return new Quote(q.hotel(), q.price());
                       } else if (r instanceof Hotel2.Price p) {
-                        return new Quote(p.hotel, p.price);
+                        return new Quote(p.hotel(), p.price());
                       } else {
                         throw new IllegalArgumentException("Unknown reply " + r);
                       }
                     })
-                .sorted((a, b) -> a.price.compareTo(b.price))
+                .sorted((a, b) -> a.price().compareTo(b.price()))
                 .collect(Collectors.toList());
 
         return new AggregatedQuotes(quotes);
@@ -214,8 +172,8 @@ public class AggregatorTest {
       }
 
       private Behavior<Command> onAggregatedQuotes(AggregatedQuotes aggregated) {
-        if (aggregated.quotes.isEmpty()) getContext().getLog().info("Best Quote N/A");
-        else getContext().getLog().info("Best {}", aggregated.quotes.get(0));
+        if (aggregated.quotes().isEmpty()) getContext().getLog().info("Best Quote N/A");
+        else getContext().getLog().info("Best {}", aggregated.quotes().get(0));
         return this;
       }
     }
@@ -235,12 +193,12 @@ public class AggregatorTest {
             spy.getRef(),
             HotelCustomer.create(hotel1.getRef(), hotel2.getRef())));
 
-    hotel1.receiveMessage().replyTo.tell(new Hotel1.Quote("#1", new BigDecimal(100)));
-    hotel2.receiveMessage().replyTo.tell(new Hotel2.Price("#2", new BigDecimal(95)));
+    hotel1.receiveMessage().replyTo().tell(new Hotel1.Quote("#1", new BigDecimal(100)));
+    hotel2.receiveMessage().replyTo().tell(new Hotel2.Price("#2", new BigDecimal(95)));
     List<HotelCustomer.Quote> quotes =
-        spy.expectMessageClass(HotelCustomer.AggregatedQuotes.class).quotes;
-    assertEquals("#2", quotes.get(0).hotel);
-    assertEquals("#1", quotes.get(1).hotel);
+        spy.expectMessageClass(HotelCustomer.AggregatedQuotes.class).quotes();
+    assertEquals("#2", quotes.get(0).hotel());
+    assertEquals("#1", quotes.get(1).hotel());
     assertEquals(2, quotes.size());
   }
 }

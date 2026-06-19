@@ -32,23 +32,9 @@ public class BubblingSample {
   public interface Protocol {
     public interface Command {}
 
-    public static class Fail implements Command {
-      public final String text;
+    public record Fail(String text) implements Command {}
 
-      public Fail(String text) {
-        this.text = text;
-      }
-    }
-
-    public static class Hello implements Command {
-      public final String text;
-      public final ActorRef<String> replyTo;
-
-      public Hello(String text, ActorRef<String> replyTo) {
-        this.text = text;
-        this.replyTo = replyTo;
-      }
-    }
+    public record Hello(String text, ActorRef<String> replyTo) implements Command {}
   }
 
   public static class Worker extends AbstractBehavior<Protocol.Command> {
@@ -70,11 +56,11 @@ public class BubblingSample {
     }
 
     private Behavior<Protocol.Command> onFail(Protocol.Fail message) {
-      throw new RuntimeException(message.text);
+      throw new RuntimeException(message.text());
     }
 
     private Behavior<Protocol.Command> onHello(Protocol.Hello message) {
-      message.replyTo.tell(message.text);
+      message.replyTo().tell(message.text());
       return this;
     }
   }

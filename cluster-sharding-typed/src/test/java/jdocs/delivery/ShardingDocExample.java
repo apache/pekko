@@ -62,37 +62,14 @@ interface ShardingDocExample {
   public class TodoList {
     interface Command {}
 
-    public static class AddTask implements Command {
-      public final String item;
+    public record AddTask(String item) implements Command {}
 
-      public AddTask(String item) {
-        this.item = item;
-      }
-    }
+    public record CompleteTask(String item) implements Command {}
 
-    public static class CompleteTask implements Command {
-      public final String item;
+    private record InitialState(State state) implements Command {}
 
-      public CompleteTask(String item) {
-        this.item = item;
-      }
-    }
-
-    private static class InitialState implements Command {
-      final State state;
-
-      private InitialState(State state) {
-        this.state = state;
-      }
-    }
-
-    private static class SaveSuccess implements Command {
-      final ActorRef<ConsumerController.Confirmed> confirmTo;
-
-      private SaveSuccess(ActorRef<ConsumerController.Confirmed> confirmTo) {
-        this.confirmTo = confirmTo;
-      }
-    }
+    private record SaveSuccess(ActorRef<ConsumerController.Confirmed> confirmTo)
+        implements Command {}
 
     private static class DBError implements Command {
       final Exception cause;
@@ -103,15 +80,8 @@ interface ShardingDocExample {
       }
     }
 
-    private static class CommandDelivery implements Command {
-      final Command command;
-      final ActorRef<ConsumerController.Confirmed> confirmTo;
-
-      private CommandDelivery(Command command, ActorRef<ConsumerController.Confirmed> confirmTo) {
-        this.command = command;
-        this.confirmTo = confirmTo;
-      }
-    }
+    private record CommandDelivery(
+        Command command, ActorRef<ConsumerController.Confirmed> confirmTo) implements Command {}
 
     public static class State {
       public final List<String> tasks;
@@ -221,13 +191,13 @@ interface ShardingDocExample {
       }
 
       private Behavior<Command> onDelivery(CommandDelivery delivery) {
-        if (delivery.command instanceof AddTask addTask) {
-          state = state.add(addTask.item);
-          save(state, delivery.confirmTo);
+        if (delivery.command() instanceof AddTask addTask) {
+          state = state.add(addTask.item());
+          save(state, delivery.confirmTo());
           return this;
-        } else if (delivery.command instanceof CompleteTask completeTask) {
-          state = state.remove(completeTask.item);
-          save(state, delivery.confirmTo);
+        } else if (delivery.command() instanceof CompleteTask completeTask) {
+          state = state.remove(completeTask.item());
+          save(state, delivery.confirmTo());
           return this;
         } else {
           return Behaviors.unhandled();
@@ -245,7 +215,7 @@ interface ShardingDocExample {
       }
 
       private Behavior<Command> onSaveSuccess(SaveSuccess success) {
-        success.confirmTo.tell(ConsumerController.confirmed());
+        success.confirmTo().tell(ConsumerController.confirmed());
         return this;
       }
     }
@@ -258,19 +228,9 @@ interface ShardingDocExample {
 
     interface Command {}
 
-    public static class UpdateTodo implements Command {
-      public final String listId;
-      public final String item;
-      public final boolean completed;
-      public final ActorRef<Response> replyTo;
-
-      public UpdateTodo(String listId, String item, boolean completed, ActorRef<Response> replyTo) {
-        this.listId = listId;
-        this.item = item;
-        this.completed = completed;
-        this.replyTo = replyTo;
-      }
-    }
+    public record UpdateTodo(
+        String listId, String item, boolean completed, ActorRef<Response> replyTo)
+        implements Command {}
 
     public enum Response {
       ACCEPTED,
@@ -278,29 +238,12 @@ interface ShardingDocExample {
       MAYBE_ACCEPTED
     }
 
-    private static class Confirmed implements Command {
-      final ActorRef<Response> originalReplyTo;
+    private record Confirmed(ActorRef<Response> originalReplyTo) implements Command {}
 
-      private Confirmed(ActorRef<Response> originalReplyTo) {
-        this.originalReplyTo = originalReplyTo;
-      }
-    }
+    private record TimedOut(ActorRef<Response> originalReplyTo) implements Command {}
 
-    private static class TimedOut implements Command {
-      final ActorRef<Response> originalReplyTo;
-
-      private TimedOut(ActorRef<Response> originalReplyTo) {
-        this.originalReplyTo = originalReplyTo;
-      }
-    }
-
-    private static class WrappedRequestNext implements Command {
-      final ShardingProducerController.RequestNext<TodoList.Command> next;
-
-      private WrappedRequestNext(ShardingProducerController.RequestNext<TodoList.Command> next) {
-        this.next = next;
-      }
-    }
+    private record WrappedRequestNext(ShardingProducerController.RequestNext<TodoList.Command> next)
+        implements Command {}
 
     public static Behavior<Command> create(
         ActorRef<ShardingProducerController.Command<TodoList.Command>> producerController) {
@@ -330,12 +273,12 @@ interface ShardingDocExample {
       @Override
       public Receive<Command> createReceive() {
         return newReceiveBuilder()
-            .onMessage(WrappedRequestNext.class, w -> Active.create(w.next))
+            .onMessage(WrappedRequestNext.class, w -> Active.create(w.next()))
             .onMessage(
                 UpdateTodo.class,
                 command -> {
                   // not hooked up with shardingProducerController yet
-                  command.replyTo.tell(Response.REJECTED);
+                  command.replyTo().tell(Response.REJECTED);
                   return this;
                 })
             .build();
@@ -369,18 +312,18 @@ interface ShardingDocExample {
       }
 
       private Behavior<Command> onRequestNext(WrappedRequestNext w) {
-        requestNext = w.next;
+        requestNext = w.next();
         return this;
       }
 
       private Behavior<Command> onUpdateTodo(UpdateTodo command) {
-        Integer buffered = requestNext.getBufferedForEntitiesWithoutDemand().get(command.listId);
+        Integer buffered = requestNext.getBufferedForEntitiesWithoutDemand().get(command.listId());
         if (buffered != null && buffered >= 100) {
-          command.replyTo.tell(Response.REJECTED);
+          command.replyTo().tell(Response.REJECTED);
         } else {
           TodoList.Command requestMsg;
-          if (command.completed) requestMsg = new TodoList.CompleteTask(command.item);
-          else requestMsg = new TodoList.AddTask(command.item);
+          if (command.completed()) requestMsg = new TodoList.CompleteTask(command.item());
+          else requestMsg = new TodoList.AddTask(command.item());
           getContext()
               .ask(
                   Done.class,
@@ -388,22 +331,22 @@ interface ShardingDocExample {
                   Duration.ofSeconds(5),
                   askReplyTo ->
                       new ShardingProducerController.MessageWithConfirmation<>(
-                          command.listId, requestMsg, askReplyTo),
+                          command.listId(), requestMsg, askReplyTo),
                   (done, exc) -> {
-                    if (exc == null) return new Confirmed(command.replyTo);
-                    else return new TimedOut(command.replyTo);
+                    if (exc == null) return new Confirmed(command.replyTo());
+                    else return new TimedOut(command.replyTo());
                   });
         }
         return this;
       }
 
       private Behavior<Command> onConfirmed(Confirmed confirmed) {
-        confirmed.originalReplyTo.tell(Response.ACCEPTED);
+        confirmed.originalReplyTo().tell(Response.ACCEPTED);
         return this;
       }
 
       private Behavior<Command> onTimedOut(TimedOut timedOut) {
-        timedOut.originalReplyTo.tell(Response.MAYBE_ACCEPTED);
+        timedOut.originalReplyTo().tell(Response.MAYBE_ACCEPTED);
         return this;
       }
     }

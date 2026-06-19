@@ -41,43 +41,17 @@ interface StashDocSample {
 
     public interface Command {}
 
-    public static class Save implements Command {
-      public final String payload;
-      public final ActorRef<Done> replyTo;
+    public record Save(String payload, ActorRef<Done> replyTo) implements Command {}
 
-      public Save(String payload, ActorRef<Done> replyTo) {
-        this.payload = payload;
-        this.replyTo = replyTo;
-      }
-    }
+    public record Get(ActorRef<String> replyTo) implements Command {}
 
-    public static class Get implements Command {
-      public final ActorRef<String> replyTo;
-
-      public Get(ActorRef<String> replyTo) {
-        this.replyTo = replyTo;
-      }
-    }
-
-    private static class InitialState implements Command {
-      public final String value;
-
-      InitialState(String value) {
-        this.value = value;
-      }
-    }
+    private record InitialState(String value) implements Command {}
 
     private enum SaveSuccess implements Command {
       INSTANCE
     }
 
-    private static class DBError implements Command {
-      public final RuntimeException cause;
-
-      DBError(RuntimeException cause) {
-        this.cause = cause;
-      }
-    }
+    private record DBError(RuntimeException cause) implements Command {}
 
     private final ActorContext<Command> context;
     private final StashBuffer<Command> buffer;
@@ -119,11 +93,11 @@ interface StashDocSample {
 
     private Behavior<Command> onInitialState(InitialState message) {
       // now we are ready to handle stashed messages if any
-      return buffer.unstashAll(active(message.value));
+      return buffer.unstashAll(active(message.value()));
     }
 
     private Behavior<Command> onDBError(DBError message) {
-      throw message.cause;
+      throw message.cause();
     }
 
     private Behavior<Command> stashOtherCommand(Command message) {
@@ -140,18 +114,18 @@ interface StashDocSample {
     }
 
     private Behavior<Command> onGet(String state, Get message) {
-      message.replyTo.tell(state);
+      message.replyTo().tell(state);
       return Behaviors.same();
     }
 
     private Behavior<Command> onSave(Save message) {
       context.pipeToSelf(
-          db.save(id, message.payload),
+          db.save(id, message.payload()),
           (value, cause) -> {
             if (cause == null) return SaveSuccess.INSTANCE;
             else return new DBError(asRuntimeException(cause));
           });
-      return saving(message.payload, message.replyTo);
+      return saving(message.payload(), message.replyTo());
     }
 
     private Behavior<Command> saving(String state, ActorRef<Done> replyTo) {
