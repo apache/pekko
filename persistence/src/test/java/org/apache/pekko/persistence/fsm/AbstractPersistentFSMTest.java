@@ -77,42 +77,10 @@ public class AbstractPersistentFSMTest {
       }
     }
 
-    public static class Item implements Serializable {
-      private final String id;
-      private final String name;
-      private final float price;
-
-      Item(String id, String name, float price) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-      }
-
-      public String getId() {
-        return id;
-      }
-
-      public float getPrice() {
-        return price;
-      }
-
-      public String getName() {
-        return name;
-      }
-
+    public record Item(String id, String name, float price) implements Serializable {
       @Override
       public String toString() {
         return String.format("Item{id=%s, name=%s, price=%s}", id, price, name);
-      }
-
-      @Override
-      public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Item item = (Item) o;
-
-        return item.price == price && id.equals(item.id) && name.equals(item.name);
       }
     }
 
@@ -121,17 +89,7 @@ public class AbstractPersistentFSMTest {
     public interface Command {}
 
     // #customer-commands
-    public static final class AddItem implements Command {
-      private final Item item;
-
-      public AddItem(Item item) {
-        this.item = item;
-      }
-
-      public Item getItem() {
-        return item;
-      }
-    }
+    public record AddItem(Item item) implements Command {}
 
     public enum Buy implements Command {
       INSTANCE
@@ -150,17 +108,7 @@ public class AbstractPersistentFSMTest {
     public interface DomainEvent extends Serializable {}
 
     // #customer-domain-events
-    public static final class ItemAdded implements DomainEvent {
-      private final Item item;
-
-      public ItemAdded(Item item) {
-        this.item = item;
-      }
-
-      public Item getItem() {
-        return item;
-      }
-    }
+    public record ItemAdded(Item item) implements DomainEvent {}
 
     public enum OrderExecuted implements DomainEvent {
       INSTANCE
@@ -179,17 +127,7 @@ public class AbstractPersistentFSMTest {
     // Side effects - report events to be sent to some "Report Actor"
     public interface ReportEvent {}
 
-    public static final class PurchaseWasMade implements ReportEvent {
-      private final List<Item> items;
-
-      public PurchaseWasMade(List<Item> items) {
-        this.items = Collections.unmodifiableList(items);
-      }
-
-      public List<Item> getItems() {
-        return items;
-      }
-    }
+    public record PurchaseWasMade(List<Item> items) implements ReportEvent {}
 
     public enum ShoppingCardDiscarded implements ReportEvent {
       INSTANCE
@@ -223,7 +161,7 @@ public class AbstractPersistentFSMTest {
                   AddItem.class,
                   (event, data) ->
                       goTo(UserState.SHOPPING)
-                          .applying(new ItemAdded(event.getItem()))
+                          .applying(new ItemAdded(event.item()))
                           .forMax(Duration.ofSeconds(1)))
               .event(GetCurrentCart.class, (event, data) -> stay().replying(data)));
 
@@ -232,7 +170,7 @@ public class AbstractPersistentFSMTest {
           matchEvent(
                   AddItem.class,
                   (event, data) ->
-                      stay().applying(new ItemAdded(event.getItem())).forMax(Duration.ofSeconds(1)))
+                      stay().applying(new ItemAdded(event.item())).forMax(Duration.ofSeconds(1)))
               .event(
                   Buy.class,
                   // #customer-andthen-example
@@ -272,7 +210,7 @@ public class AbstractPersistentFSMTest {
                   AddItem.class,
                   (event, data) ->
                       goTo(UserState.SHOPPING)
-                          .applying(new ItemAdded(event.getItem()))
+                          .applying(new ItemAdded(event.item()))
                           .forMax(Duration.ofSeconds(1)))
               .event(GetCurrentCart.class, (event, data) -> stay().replying(data))
               .event(
@@ -302,7 +240,7 @@ public class AbstractPersistentFSMTest {
     @Override
     public ShoppingCart applyEvent(DomainEvent event, ShoppingCart currentData) {
       if (event instanceof ItemAdded itemAdded) {
-        currentData.addItem(itemAdded.getItem());
+        currentData.addItem(itemAdded.item());
         return currentData;
       } else if (event instanceof OrderExecuted) {
         return currentData;

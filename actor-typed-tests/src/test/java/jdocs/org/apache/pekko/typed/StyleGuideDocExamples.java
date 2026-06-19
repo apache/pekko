@@ -41,21 +41,9 @@ interface StyleGuideDocExamples {
         INSTANCE
       }
 
-      public static class GetValue implements Command {
-        public final ActorRef<Value> replyTo;
+      public record GetValue(ActorRef<Value> replyTo) implements Command {}
 
-        public GetValue(ActorRef<Value> replyTo) {
-          this.replyTo = replyTo;
-        }
-      }
-
-      public static class Value {
-        public final int value;
-
-        public Value(int value) {
-          this.value = value;
-        }
-      }
+      public record Value(int value) {}
 
       public static Behavior<Command> create() {
         return Behaviors.setup(context -> counter(context, 0));
@@ -76,7 +64,7 @@ interface StyleGuideDocExamples {
       }
 
       private static Behavior<Command> onGetValue(int n, GetValue command) {
-        command.replyTo.tell(new Value(n));
+        command.replyTo().tell(new Value(n));
         return Behaviors.same();
       }
     }
@@ -99,21 +87,9 @@ interface StyleGuideDocExamples {
 
       // #message-enum
 
-      public static class GetValue implements Command {
-        public final ActorRef<Value> replyTo;
+      public record GetValue(ActorRef<Value> replyTo) implements Command {}
 
-        public GetValue(ActorRef<Value> replyTo) {
-          this.replyTo = replyTo;
-        }
-      }
-
-      public static class Value {
-        public final int value;
-
-        public Value(int value) {
-          this.value = value;
-        }
-      }
+      public record Value(int value) {}
 
       // #messages
 
@@ -144,7 +120,7 @@ interface StyleGuideDocExamples {
       }
 
       private Behavior<Command> onGetValue(GetValue command) {
-        command.replyTo.tell(new Value(n));
+        command.replyTo().tell(new Value(n));
         return this;
       }
       // #messages
@@ -161,33 +137,15 @@ interface StyleGuideDocExamples {
     public class Counter {
       public interface Command {}
 
-      public static class IncrementRepeatedly implements Command {
-        public final Duration interval;
-
-        public IncrementRepeatedly(Duration interval) {
-          this.interval = interval;
-        }
-      }
+      public record IncrementRepeatedly(Duration interval) implements Command {}
 
       public enum Increment implements Command {
         INSTANCE
       }
 
-      public static class GetValue implements Command {
-        public final ActorRef<Value> replyTo;
+      public record GetValue(ActorRef<Value> replyTo) implements Command {}
 
-        public GetValue(ActorRef<Value> replyTo) {
-          this.replyTo = replyTo;
-        }
-      }
-
-      public static class Value {
-        public final int value;
-
-        public Value(int value) {
-          this.value = value;
-        }
-      }
+      public record Value(int value) {}
 
       public static Behavior<Command> create(String name) {
         return Behaviors.setup(
@@ -220,9 +178,9 @@ interface StyleGuideDocExamples {
             .debug(
                 "[{}] Starting repeated increments with interval [{}], current count is [{}]",
                 name,
-                command.interval,
+                command.interval(),
                 n);
-        timers.startTimerWithFixedDelay(Increment.INSTANCE, command.interval);
+        timers.startTimerWithFixedDelay(Increment.INSTANCE, command.interval());
         return Behaviors.same();
       }
 
@@ -234,7 +192,7 @@ interface StyleGuideDocExamples {
       }
 
       private static Behavior<Command> onGetValue(int n, GetValue command) {
-        command.replyTo.tell(new Value(n));
+        command.replyTo().tell(new Value(n));
         return Behaviors.same();
       }
     }
@@ -250,47 +208,20 @@ interface StyleGuideDocExamples {
       // #fun-style-setup-params2
       public interface Command {}
 
-      public static class IncrementRepeatedly implements Command {
-        public final Duration interval;
-
-        public IncrementRepeatedly(Duration interval) {
-          this.interval = interval;
-        }
-      }
+      public record IncrementRepeatedly(Duration interval) implements Command {}
 
       public enum Increment implements Command {
         INSTANCE
       }
 
-      public static class GetValue implements Command {
-        public final ActorRef<Value> replyTo;
+      public record GetValue(ActorRef<Value> replyTo) implements Command {}
 
-        public GetValue(ActorRef<Value> replyTo) {
-          this.replyTo = replyTo;
-        }
-      }
-
-      public static class Value {
-        public final int value;
-
-        public Value(int value) {
-          this.value = value;
-        }
-      }
+      public record Value(int value) {}
 
       // #fun-style-setup-params2
 
-      private static class Setup {
-        final String name;
-        final ActorContext<Command> context;
-        final TimerScheduler<Command> timers;
-
-        private Setup(String name, ActorContext<Command> context, TimerScheduler<Command> timers) {
-          this.name = name;
-          this.context = context;
-          this.timers = timers;
-        }
-      }
+      private record Setup(
+          String name, ActorContext<Command> context, TimerScheduler<Command> timers) {}
 
       public static Behavior<Command> create(String name) {
         return Behaviors.setup(
@@ -311,25 +242,25 @@ interface StyleGuideDocExamples {
       private static Behavior<Command> onIncrementRepeatedly(
           Setup setup, int n, IncrementRepeatedly command) {
         setup
-            .context
+            .context()
             .getLog()
             .debug(
                 "[{}] Starting repeated increments with interval [{}], current count is [{}]",
-                setup.name,
-                command.interval,
+                setup.name(),
+                command.interval(),
                 n);
-        setup.timers.startTimerWithFixedDelay(Increment.INSTANCE, command.interval);
+        setup.timers().startTimerWithFixedDelay(Increment.INSTANCE, command.interval());
         return Behaviors.same();
       }
 
       private static Behavior<Command> onIncrement(Setup setup, int n) {
         int newValue = n + 1;
-        setup.context.getLog().debug("[{}] Incremented counter to [{}]", setup.name, newValue);
+        setup.context().getLog().debug("[{}] Incremented counter to [{}]", setup.name(), newValue);
         return counter(setup, newValue);
       }
 
       private static Behavior<Command> onGetValue(int n, GetValue command) {
-        command.replyTo.tell(new Value(n));
+        command.replyTo().tell(new Value(n));
         return Behaviors.same();
       }
     }
@@ -345,33 +276,15 @@ interface StyleGuideDocExamples {
       // #fun-style-setup-params3
       public interface Command {}
 
-      public static class IncrementRepeatedly implements Command {
-        public final Duration interval;
-
-        public IncrementRepeatedly(Duration interval) {
-          this.interval = interval;
-        }
-      }
+      public record IncrementRepeatedly(Duration interval) implements Command {}
 
       public enum Increment implements Command {
         INSTANCE
       }
 
-      public static class GetValue implements Command {
-        public final ActorRef<Value> replyTo;
+      public record GetValue(ActorRef<Value> replyTo) implements Command {}
 
-        public GetValue(ActorRef<Value> replyTo) {
-          this.replyTo = replyTo;
-        }
-      }
-
-      public static class Value {
-        public final int value;
-
-        public Value(int value) {
-          this.value = value;
-        }
-      }
+      public record Value(int value) {}
 
       // #fun-style-setup-params3
 
@@ -405,9 +318,9 @@ interface StyleGuideDocExamples {
             .debug(
                 "[{}] Starting repeated increments with interval [{}], current count is [{}]",
                 name,
-                command.interval,
+                command.interval(),
                 n);
-        timers.startTimerWithFixedDelay(Increment.INSTANCE, command.interval);
+        timers.startTimerWithFixedDelay(Increment.INSTANCE, command.interval());
         return Behaviors.same();
       }
 
@@ -418,7 +331,7 @@ interface StyleGuideDocExamples {
       }
 
       private Behavior<Command> onGetValue(int n, GetValue command) {
-        command.replyTo.tell(new Value(n));
+        command.replyTo().tell(new Value(n));
         return Behaviors.same();
       }
     }
@@ -490,25 +403,9 @@ interface StyleGuideDocExamples {
     interface CounterProtocol {
       interface Command {}
 
-      public static class Increment implements Command {
-        public final int delta;
-        private final ActorRef<OperationResult> replyTo;
+      public record Increment(int delta, ActorRef<OperationResult> replyTo) implements Command {}
 
-        public Increment(int delta, ActorRef<OperationResult> replyTo) {
-          this.delta = delta;
-          this.replyTo = replyTo;
-        }
-      }
-
-      public static class Decrement implements Command {
-        public final int delta;
-        private final ActorRef<OperationResult> replyTo;
-
-        public Decrement(int delta, ActorRef<OperationResult> replyTo) {
-          this.delta = delta;
-          this.replyTo = replyTo;
-        }
-      }
+      public record Decrement(int delta, ActorRef<OperationResult> replyTo) implements Command {}
 
       interface OperationResult {}
 
@@ -516,13 +413,7 @@ interface StyleGuideDocExamples {
         INSTANCE
       }
 
-      public static class Rejected implements OperationResult {
-        public final String reason;
-
-        public Rejected(String reason) {
-          this.reason = reason;
-        }
-      }
+      public record Rejected(String reason) implements OperationResult {}
     }
     // #message-protocol
   }
@@ -540,21 +431,9 @@ interface StyleGuideDocExamples {
         INSTANCE
       }
 
-      public static class GetValue implements Command {
-        public final ActorRef<Value> replyTo;
+      public record GetValue(ActorRef<Value> replyTo) implements Command {}
 
-        public GetValue(ActorRef<Value> replyTo) {
-          this.replyTo = replyTo;
-        }
-      }
-
-      public static class Value {
-        public final int value;
-
-        public Value(int value) {
-          this.value = value;
-        }
-      }
+      public record Value(int value) {}
 
       // Tick is private so can't be sent from the outside
       private enum Tick implements Command {
@@ -618,7 +497,7 @@ interface StyleGuideDocExamples {
 
       // #on-message-method-ref
       private Behavior<Command> onGetValue(GetValue command) {
-        command.replyTo.tell(new Value(count));
+        command.replyTo().tell(new Value(count));
         return this;
       }
 
@@ -648,7 +527,7 @@ interface StyleGuideDocExamples {
             .onMessage(
                 GetValue.class,
                 command -> {
-                  command.replyTo.tell(new Value(count));
+                  command.replyTo().tell(new Value(count));
                   return this;
                 })
             .build();
@@ -675,21 +554,9 @@ interface StyleGuideDocExamples {
         INSTANCE
       }
 
-      public static class GetValue implements Command {
-        public final ActorRef<Value> replyTo;
+      public record GetValue(ActorRef<Value> replyTo) implements Command {}
 
-        public GetValue(ActorRef<Value> replyTo) {
-          this.replyTo = replyTo;
-        }
-      }
-
-      public static class Value {
-        public final int value;
-
-        public Value(int value) {
-          this.value = value;
-        }
-      }
+      public record Value(int value) {}
 
       // The type of the Counter actor's internal messages.
       interface PrivateCommand extends Message {}
@@ -742,7 +609,7 @@ interface StyleGuideDocExamples {
       }
 
       private Behavior<Message> onGetValue(GetValue command) {
-        command.replyTo.tell(new Value(count));
+        command.replyTo().tell(new Value(count));
         return this;
       }
     }

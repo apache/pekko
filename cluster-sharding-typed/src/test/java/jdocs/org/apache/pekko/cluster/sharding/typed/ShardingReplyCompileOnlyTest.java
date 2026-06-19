@@ -32,13 +32,7 @@ interface ShardingReplyCompileOnlyTest {
 
     public interface Command {}
 
-    public static class NewCount implements Command {
-      public final long value;
-
-      public NewCount(long value) {
-        this.value = value;
-      }
-    }
+    public record NewCount(long value) implements Command {}
   }
 
   // a sharded counter that sends responses to another sharded actor
@@ -52,13 +46,7 @@ interface ShardingReplyCompileOnlyTest {
       INSTANCE
     }
 
-    public static class GetValue implements Command {
-      public final String replyToEntityId;
-
-      public GetValue(String replyToEntityId) {
-        this.replyToEntityId = replyToEntityId;
-      }
-    }
+    public record GetValue(String replyToEntityId) implements Command {}
 
     public static Behavior<Command> create() {
       return Behaviors.setup(Counter::new);
@@ -87,7 +75,7 @@ interface ShardingReplyCompileOnlyTest {
 
     private Behavior<Command> onGetValue(GetValue msg) {
       EntityRef<CounterConsumer.Command> entityRef =
-          sharding.entityRefFor(CounterConsumer.typeKey, msg.replyToEntityId);
+          sharding.entityRefFor(CounterConsumer.typeKey, msg.replyToEntityId());
       entityRef.tell(new CounterConsumer.NewCount(value));
       return this;
     }

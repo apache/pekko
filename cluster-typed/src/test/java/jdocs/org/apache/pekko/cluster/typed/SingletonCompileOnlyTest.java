@@ -39,13 +39,7 @@ public interface SingletonCompileOnlyTest {
       INSTANCE
     }
 
-    public static class GetValue implements Command {
-      private final ActorRef<Integer> replyTo;
-
-      public GetValue(ActorRef<Integer> replyTo) {
-        this.replyTo = replyTo;
-      }
-    }
+    public record GetValue(ActorRef<Integer> replyTo) implements Command {}
 
     public enum GoodByeCounter implements Command {
       INSTANCE
@@ -76,7 +70,7 @@ public interface SingletonCompileOnlyTest {
     }
 
     private Behavior<Command> onGetValue(GetValue msg) {
-      msg.replyTo.tell(value);
+      msg.replyTo().tell(value);
       return this;
     }
 

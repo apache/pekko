@@ -91,7 +91,7 @@ public class AccountExampleDocTest
                 replyTo -> new AccountEntity.Deposit(BigDecimal.valueOf(100), replyTo));
     assertEquals(StatusReply.ack(), result1.reply());
     assertEquals(
-        BigDecimal.valueOf(100), result1.eventOfType(AccountEntity.Deposited.class).amount);
+        BigDecimal.valueOf(100), result1.eventOfType(AccountEntity.Deposited.class).amount());
     assertEquals(
         BigDecimal.valueOf(100), result1.stateOfType(AccountEntity.OpenedAccount.class).balance);
 
@@ -101,7 +101,8 @@ public class AccountExampleDocTest
             eventSourcedTestKit.runCommand(
                 replyTo -> new AccountEntity.Withdraw(BigDecimal.valueOf(10), replyTo));
     assertEquals(StatusReply.ack(), result2.reply());
-    assertEquals(BigDecimal.valueOf(10), result2.eventOfType(AccountEntity.Withdrawn.class).amount);
+    assertEquals(
+        BigDecimal.valueOf(10), result2.eventOfType(AccountEntity.Withdrawn.class).amount());
     assertEquals(
         BigDecimal.valueOf(90), result2.stateOfType(AccountEntity.OpenedAccount.class).balance);
   }
@@ -135,7 +136,7 @@ public class AccountExampleDocTest
             AccountEntity.Account,
             AccountEntity.CurrentBalance>
         result = eventSourcedTestKit.runCommand(AccountEntity.GetBalance::new);
-    assertEquals(BigDecimal.valueOf(100), result.reply().balance);
+    assertEquals(BigDecimal.valueOf(100), result.reply().balance());
   }
 }
 // #test

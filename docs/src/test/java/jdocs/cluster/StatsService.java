@@ -45,9 +45,9 @@ public class StatsService extends AbstractActor {
     return receiveBuilder()
         .match(
             StatsJob.class,
-            job -> !job.getText().isEmpty(),
+            job -> !job.text().isEmpty(),
             job -> {
-              String[] words = job.getText().split(" ");
+              String[] words = job.text().split(" ");
               ActorRef replyTo = getSender();
 
               // create actor that collects replies from workers

@@ -57,13 +57,7 @@ interface ShardingCompileOnlyTest {
       INSTANCE
     }
 
-    public static class GetValue implements Command {
-      private final ActorRef<Integer> replyTo;
-
-      public GetValue(ActorRef<Integer> replyTo) {
-        this.replyTo = replyTo;
-      }
-    }
+    public record GetValue(ActorRef<Integer> replyTo) implements Command {}
 
     public static Behavior<Command> create(String entityId) {
       return Behaviors.setup(context -> new Counter(context, entityId));
@@ -91,7 +85,7 @@ interface ShardingCompileOnlyTest {
     }
 
     private Behavior<Command> onGetValue(GetValue msg) {
-      msg.replyTo.tell(value);
+      msg.replyTo().tell(value);
       return this;
     }
   }
@@ -115,13 +109,7 @@ interface ShardingCompileOnlyTest {
       INSTANCE
     }
 
-    public static class GetValue implements Command {
-      private final ActorRef<Integer> replyTo;
-
-      public GetValue(ActorRef<Integer> replyTo) {
-        this.replyTo = replyTo;
-      }
-    }
+    public record GetValue(ActorRef<Integer> replyTo) implements Command {}
 
     public static Behavior<Command> create(
         ActorRef<ClusterSharding.ShardCommand> shard, String entityId) {
@@ -161,7 +149,7 @@ interface ShardingCompileOnlyTest {
     }
 
     private Behavior<Command> onGetValue(GetValue msg) {
-      msg.replyTo.tell(value);
+      msg.replyTo().tell(value);
       return this;
     }
 

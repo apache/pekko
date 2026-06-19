@@ -54,7 +54,7 @@ public class AccountExamplePersistenceProbeDocTest
     ReplyInbox<AccountEntity.CurrentBalance> currentBalanceInbox =
         testkit.runAsk(AccountEntity.GetBalance::new);
 
-    assertEquals(BigDecimal.ZERO, currentBalanceInbox.receiveReply().balance);
+    assertEquals(BigDecimal.ZERO, currentBalanceInbox.receiveReply().balance());
   }
 
   @Test
@@ -76,13 +76,13 @@ public class AccountExamplePersistenceProbeDocTest
             .getEventProbe()
             .expectPersistedClass(AccountEntity.Deposited.class)
             .persistedObject()
-            .amount);
+            .amount());
 
     currentBalance =
         testkit
             .runAsk(AccountEntity.CurrentBalance.class, AccountEntity.GetBalance::new)
             .receiveReply()
-            .balance;
+            .balance();
 
     assertEquals(BigDecimal.valueOf(100), currentBalance);
 
@@ -94,7 +94,7 @@ public class AccountExamplePersistenceProbeDocTest
     // can save the persistence effect for in-depth inspection
     PersistenceEffect<AccountEntity.Withdrawn> withdrawEffect =
         persistenceProbe.getEventProbe().expectPersistedClass(AccountEntity.Withdrawn.class);
-    assertEquals(BigDecimal.valueOf(10), withdrawEffect.persistedObject().amount);
+    assertEquals(BigDecimal.valueOf(10), withdrawEffect.persistedObject().amount());
     assertEquals(3L, withdrawEffect.sequenceNr());
     assertTrue(withdrawEffect.tags().isEmpty());
 
@@ -102,7 +102,7 @@ public class AccountExamplePersistenceProbeDocTest
         testkit
             .runAsk(AccountEntity.CurrentBalance.class, AccountEntity.GetBalance::new)
             .receiveReply()
-            .balance;
+            .balance();
 
     assertEquals(BigDecimal.valueOf(90), currentBalance);
   }

@@ -77,23 +77,9 @@ interface TypedSample {
 
     public interface Command {}
 
-    public static class DelegateToChild implements Command {
-      public final String name;
-      public final Child.Command message;
+    public record DelegateToChild(String name, Child.Command message) implements Command {}
 
-      public DelegateToChild(String name, Child.Command message) {
-        this.name = name;
-        this.message = message;
-      }
-    }
-
-    private static class ChildTerminated implements Command {
-      final String name;
-
-      ChildTerminated(String name) {
-        this.name = name;
-      }
-    }
+    private record ChildTerminated(String name) implements Command {}
 
     public static Behavior<Command> create() {
       return Behaviors.setup(Parent::new);
@@ -114,13 +100,13 @@ interface TypedSample {
     }
 
     private Behavior<Command> onDelegateToChild(DelegateToChild command) {
-      ActorRef<Child.Command> ref = children.get(command.name);
+      ActorRef<Child.Command> ref = children.get(command.name());
       if (ref == null) {
-        ref = getContext().spawn(Child.create(), command.name);
-        getContext().watchWith(ref, new ChildTerminated(command.name));
-        children.put(command.name, ref);
+        ref = getContext().spawn(Child.create(), command.name());
+        getContext().watchWith(ref, new ChildTerminated(command.name()));
+        children.put(command.name(), ref);
       }
-      ref.tell(command.message);
+      ref.tell(command.message());
       return this;
     }
 

@@ -49,89 +49,31 @@ public class SyncTestingExampleTest {
 
     public interface Command {}
 
-    public static class CreateAChild implements Command {
-      public final String childName;
-
-      public CreateAChild(String childName) {
-        this.childName = childName;
-      }
-    }
+    public record CreateAChild(String childName) implements Command {}
 
     public enum CreateAnAnonymousChild implements Command {
       INSTANCE
     }
 
-    public static class SayHelloToChild implements Command {
-      public final String childName;
-
-      public SayHelloToChild(String childName) {
-        this.childName = childName;
-      }
-    }
+    public record SayHelloToChild(String childName) implements Command {}
 
     public enum SayHelloToAnonymousChild implements Command {
       INSTANCE
     }
 
-    public static class SayHello implements Command {
-      public final ActorRef<String> who;
+    public record SayHello(ActorRef<String> who) implements Command {}
 
-      public SayHello(ActorRef<String> who) {
-        this.who = who;
-      }
-    }
+    public record LogAndSayHello(ActorRef<String> who) implements Command {}
 
-    public static class LogAndSayHello implements Command {
-      public final ActorRef<String> who;
+    public record AskAQuestion(ActorRef<Question> who) implements Command {}
 
-      public LogAndSayHello(ActorRef<String> who) {
-        this.who = who;
-      }
-    }
+    public record GotAnAnswer(String answer, ActorRef<Question> from) implements Command {}
 
-    public static class AskAQuestion implements Command {
-      public final ActorRef<Question> who;
+    public record NoAnswerFrom(ActorRef<Question> whom) implements Command {}
 
-      public AskAQuestion(ActorRef<Question> who) {
-        this.who = who;
-      }
-    }
+    public record Question(String q, ActorRef<Answer> replyTo) {}
 
-    public static class GotAnAnswer implements Command {
-      public final String answer;
-      public final ActorRef<Question> from;
-
-      public GotAnAnswer(String answer, ActorRef<Question> from) {
-        this.answer = answer;
-        this.from = from;
-      }
-    }
-
-    public static class NoAnswerFrom implements Command {
-      public final ActorRef<Question> whom;
-
-      public NoAnswerFrom(ActorRef<Question> whom) {
-        this.whom = whom;
-      }
-    }
-
-    public static class Question {
-      public final String q;
-      public final ActorRef<Answer> replyTo;
-
-      public Question(String q, ActorRef<Answer> replyTo) {
-        this.q = q;
-        this.replyTo = replyTo;
-      }
-    }
-
-    public static class Answer {
-      public final String a;
-
-      public Answer(String a) {
-        this.a = a;
-      }
-    }
+    public record Answer(String a) {}
 
     public static Behavior<Command> create() {
       return Behaviors.setup(Hello::new);
@@ -157,7 +99,7 @@ public class SyncTestingExampleTest {
     }
 
     private Behavior<Command> onCreateAChild(CreateAChild message) {
-      getContext().spawn(Child.create(), message.childName);
+      getContext().spawn(Child.create(), message.childName());
       return Behaviors.same();
     }
 
@@ -167,7 +109,7 @@ public class SyncTestingExampleTest {
     }
 
     private Behavior<Command> onSayHelloToChild(SayHelloToChild message) {
-      ActorRef<String> child = getContext().spawn(Child.create(), message.childName);
+      ActorRef<String> child = getContext().spawn(Child.create(), message.childName());
       child.tell("hello");
       return Behaviors.same();
     }
@@ -179,13 +121,13 @@ public class SyncTestingExampleTest {
     }
 
     private Behavior<Command> onSayHello(SayHello message) {
-      message.who.tell("hello");
+      message.who().tell("hello");
       return Behaviors.same();
     }
 
     private Behavior<Command> onLogAndSayHello(LogAndSayHello message) {
-      getContext().getLog().info("Saying hello to {}", message.who.path().name());
-      message.who.tell("hello");
+      getContext().getLog().info("Saying hello to {}", message.who().path().name());
+      message.who().tell("hello");
       return Behaviors.same();
     }
 
@@ -193,26 +135,26 @@ public class SyncTestingExampleTest {
       getContext()
           .ask(
               Answer.class,
-              message.who,
+              message.who(),
               Duration.ofSeconds(10),
               (ActorRef<Answer> ref) -> new Question("do you know who I am?", ref),
               (response, throwable) -> {
                 if (response != null) {
-                  return new GotAnAnswer(response.a, message.who);
+                  return new GotAnAnswer(response.a(), message.who());
                 } else {
-                  return new NoAnswerFrom(message.who);
+                  return new NoAnswerFrom(message.who());
                 }
               });
       return Behaviors.same();
     }
 
     private Behavior<Command> onGotAnAnswer(GotAnAnswer message) {
-      getContext().getLog().info("Got an answer[{}] from {}", message.answer, message.from);
+      getContext().getLog().info("Got an answer[{}] from {}", message.answer(), message.from());
       return Behaviors.same();
     }
 
     private Behavior<Command> onNoAnswerFrom(NoAnswerFrom message) {
-      getContext().getLog().info("Did not get an answer from {}", message.whom);
+      getContext().getLog().info("Did not get an answer from {}", message.whom());
       return Behaviors.same();
     }
   }
@@ -298,7 +240,7 @@ public class SyncTestingExampleTest {
     Hello.Question question = askee.receiveMessage();
     // Note that the replyTo address in the message is not a priori predictable, so shouldn't be
     // asserted against
-    assertEquals(question.q, "do you know who I am?");
+    assertEquals(question.q(), "do you know who I am?");
 
     // Retrieve a description of the performed ask
     @SuppressWarnings("unchecked")
@@ -321,7 +263,8 @@ public class SyncTestingExampleTest {
 
     // The response adaptation can be tested as many times as you want without completing the ask
     Hello.Command response1 = effect.adaptResponse(new Hello.Answer("No.  Who are you?"));
-    assertEquals("No.  Who are you?", ((Hello.GotAnAnswer) response1).answer);
+    Hello.GotAnAnswer gotAnAnswer = assertInstanceOf(Hello.GotAnAnswer.class, response1);
+    assertEquals("No.  Who are you?", gotAnAnswer.answer());
 
     // ... as can the message sent on a timeout
     assertInstanceOf(Hello.NoAnswerFrom.class, effect.adaptTimeout());

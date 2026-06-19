@@ -35,13 +35,7 @@ class StreamFeeder extends AbstractBehavior<StreamFeeder.Emitted> {
 
   public interface Event {}
 
-  public static class Element implements Event {
-    public final String content;
-
-    public Element(String content) {
-      this.content = content;
-    }
-
+  public record Element(String content) implements Event {
     @Override
     public String toString() {
       return "Element(" + content + ")";
@@ -52,13 +46,7 @@ class StreamFeeder extends AbstractBehavior<StreamFeeder.Emitted> {
     INSTANCE;
   }
 
-  public static class FailureOccured implements Event {
-    public final Exception ex;
-
-    public FailureOccured(Exception ex) {
-      this.ex = ex;
-    }
-  }
+  public record FailureOccured(Exception ex) implements Event {}
 
   public static Behavior<Emitted> create() {
     return Behaviors.setup(StreamFeeder::new);
@@ -89,7 +77,7 @@ class StreamFeeder extends AbstractBehavior<StreamFeeder.Emitted> {
               else return Optional.empty();
             },
             (msg) -> {
-              if (msg instanceof FailureOccured failure) return Optional.of(failure.ex);
+              if (msg instanceof FailureOccured failure) return Optional.of(failure.ex());
               else return Optional.empty();
             });
 

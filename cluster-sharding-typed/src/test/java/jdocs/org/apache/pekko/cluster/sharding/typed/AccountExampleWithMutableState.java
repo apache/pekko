@@ -13,7 +13,6 @@
 
 package jdocs.org.apache.pekko.cluster.sharding.typed;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import java.math.BigDecimal;
 import org.apache.pekko.Done;
 import org.apache.pekko.actor.typed.ActorRef;
@@ -47,62 +46,20 @@ public interface AccountExampleWithMutableState {
     // Command
     interface Command extends CborSerializable {}
 
-    public static class CreateAccount implements Command {
-      public final ActorRef<StatusReply<Done>> replyTo;
+    public record CreateAccount(ActorRef<StatusReply<Done>> replyTo) implements Command {}
 
-      @JsonCreator
-      public CreateAccount(ActorRef<StatusReply<Done>> replyTo) {
-        this.replyTo = replyTo;
-      }
-    }
+    public record Deposit(BigDecimal amount, ActorRef<StatusReply<Done>> replyTo)
+        implements Command {}
 
-    public static class Deposit implements Command {
-      public final BigDecimal amount;
-      public final ActorRef<StatusReply<Done>> replyTo;
+    public record Withdraw(BigDecimal amount, ActorRef<StatusReply<Done>> replyTo)
+        implements Command {}
 
-      public Deposit(BigDecimal amount, ActorRef<StatusReply<Done>> replyTo) {
-        this.replyTo = replyTo;
-        this.amount = amount;
-      }
-    }
+    public record GetBalance(ActorRef<CurrentBalance> replyTo) implements Command {}
 
-    public static class Withdraw implements Command {
-      public final BigDecimal amount;
-      public final ActorRef<StatusReply<Done>> replyTo;
-
-      public Withdraw(BigDecimal amount, ActorRef<StatusReply<Done>> replyTo) {
-        this.amount = amount;
-        this.replyTo = replyTo;
-      }
-    }
-
-    public static class GetBalance implements Command {
-      public final ActorRef<CurrentBalance> replyTo;
-
-      @JsonCreator
-      public GetBalance(ActorRef<CurrentBalance> replyTo) {
-        this.replyTo = replyTo;
-      }
-    }
-
-    public static class CloseAccount implements Command {
-      public final ActorRef<StatusReply<Done>> replyTo;
-
-      @JsonCreator
-      public CloseAccount(ActorRef<StatusReply<Done>> replyTo) {
-        this.replyTo = replyTo;
-      }
-    }
+    public record CloseAccount(ActorRef<StatusReply<Done>> replyTo) implements Command {}
 
     // Reply
-    public static class CurrentBalance implements CborSerializable {
-      public final BigDecimal balance;
-
-      @JsonCreator
-      public CurrentBalance(BigDecimal balance) {
-        this.balance = balance;
-      }
-    }
+    public record CurrentBalance(BigDecimal balance) implements CborSerializable {}
 
     // Event
     interface Event extends CborSerializable {}
@@ -111,25 +68,11 @@ public interface AccountExampleWithMutableState {
       INSTANCE
     }
 
-    public static class Deposited implements Event {
-      public final BigDecimal amount;
+    public record Deposited(BigDecimal amount) implements Event {}
 
-      @JsonCreator
-      Deposited(BigDecimal amount) {
-        this.amount = amount;
-      }
-    }
+    public record Withdrawn(BigDecimal amount) implements Event {}
 
-    public static class Withdrawn implements Event {
-      public final BigDecimal amount;
-
-      @JsonCreator
-      Withdrawn(BigDecimal amount) {
-        this.amount = amount;
-      }
-    }
-
-    public static class AccountClosed implements Event {}
+    public record AccountClosed() implements Event {}
 
     // State
     interface Account extends CborSerializable {}
@@ -208,40 +151,41 @@ public interface AccountExampleWithMutableState {
     private ReplyEffect<Event, Account> createAccount(EmptyAccount account, CreateAccount command) {
       return Effect()
           .persist(AccountCreated.INSTANCE)
-          .thenReply(command.replyTo, account2 -> StatusReply.ack());
+          .thenReply(command.replyTo(), account2 -> StatusReply.ack());
     }
 
     private ReplyEffect<Event, Account> deposit(OpenedAccount account, Deposit command) {
       return Effect()
-          .persist(new Deposited(command.amount))
-          .thenReply(command.replyTo, account2 -> StatusReply.ack());
+          .persist(new Deposited(command.amount()))
+          .thenReply(command.replyTo(), account2 -> StatusReply.ack());
     }
 
     private ReplyEffect<Event, Account> withdraw(OpenedAccount account, Withdraw command) {
-      if (!account.canWithdraw(command.amount)) {
+      if (!account.canWithdraw(command.amount())) {
         return Effect()
             .reply(
-                command.replyTo,
-                StatusReply.error("not enough funds to withdraw " + command.amount));
+                command.replyTo(),
+                StatusReply.error("not enough funds to withdraw " + command.amount()));
       } else {
         return Effect()
-            .persist(new Withdrawn(command.amount))
-            .thenReply(command.replyTo, account2 -> StatusReply.ack());
+            .persist(new Withdrawn(command.amount()))
+            .thenReply(command.replyTo(), account2 -> StatusReply.ack());
       }
     }
 
     private ReplyEffect<Event, Account> getBalance(OpenedAccount account, GetBalance command) {
-      return Effect().reply(command.replyTo, new CurrentBalance(account.balance));
+      return Effect().reply(command.replyTo(), new CurrentBalance(account.balance));
     }
 
     private ReplyEffect<Event, Account> closeAccount(OpenedAccount account, CloseAccount command) {
       if (account.getBalance().equals(BigDecimal.ZERO)) {
         return Effect()
             .persist(new AccountClosed())
-            .thenReply(command.replyTo, account2 -> StatusReply.ack());
+            .thenReply(command.replyTo(), account2 -> StatusReply.ack());
       } else {
         return Effect()
-            .reply(command.replyTo, StatusReply.error("balance must be zero for closing account"));
+            .reply(
+                command.replyTo(), StatusReply.error("balance must be zero for closing account"));
       }
     }
 
@@ -258,13 +202,13 @@ public interface AccountExampleWithMutableState {
           .onEvent(
               Deposited.class,
               (account, deposited) -> {
-                account.makeDeposit(deposited.amount);
+                account.makeDeposit(deposited.amount());
                 return account;
               })
           .onEvent(
               Withdrawn.class,
               (account, withdrawn) -> {
-                account.makeWithdraw(withdrawn.amount);
+                account.makeWithdraw(withdrawn.amount());
                 return account;
               })
           .onEvent(AccountClosed.class, (account, closed) -> account.closedAccount());

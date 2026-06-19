@@ -48,27 +48,10 @@ interface WorkPullingDocExample {
   public class ImageConverter {
     interface Command {}
 
-    public static class ConversionJob {
-      public final UUID resultId;
-      public final String fromFormat;
-      public final String toFormat;
-      public final byte[] image;
+    public record ConversionJob(UUID resultId, String fromFormat, String toFormat, byte[] image) {}
 
-      public ConversionJob(UUID resultId, String fromFormat, String toFormat, byte[] image) {
-        this.resultId = resultId;
-        this.fromFormat = fromFormat;
-        this.toFormat = toFormat;
-        this.image = image;
-      }
-    }
-
-    private static class WrappedDelivery implements Command {
-      final ConsumerController.Delivery<ConversionJob> delivery;
-
-      private WrappedDelivery(ConsumerController.Delivery<ConversionJob> delivery) {
-        this.delivery = delivery;
-      }
-    }
+    private record WrappedDelivery(ConsumerController.Delivery<ConversionJob> delivery)
+        implements Command {}
 
     public static ServiceKey<ConsumerController.Command<ConversionJob>> serviceKey =
         ServiceKey.create(ConsumerController.serviceKeyClass(), "ImageConverter");
@@ -89,14 +72,14 @@ interface WorkPullingDocExample {
     }
 
     private static Behavior<Command> onDelivery(WrappedDelivery w) {
-      byte[] image = w.delivery.message().image;
-      String fromFormat = w.delivery.message().fromFormat;
-      String toFormat = w.delivery.message().toFormat;
+      byte[] image = w.delivery().message().image();
+      String fromFormat = w.delivery().message().fromFormat();
+      String toFormat = w.delivery().message().toFormat();
       // convert image...
       // store result with resultId key for later retrieval
 
       // and when completed confirm
-      w.delivery.confirmTo().tell(ConsumerController.confirmed());
+      w.delivery().confirmTo().tell(ConsumerController.confirmed());
 
       return Behaviors.same();
     }
@@ -109,87 +92,33 @@ interface WorkPullingDocExample {
 
     interface Command {}
 
-    public static class Convert implements Command {
-      public final String fromFormat;
-      public final String toFormat;
-      public final byte[] image;
+    public record Convert(String fromFormat, String toFormat, byte[] image) implements Command {}
 
-      public Convert(String fromFormat, String toFormat, byte[] image) {
-        this.fromFormat = fromFormat;
-        this.toFormat = toFormat;
-        this.image = image;
-      }
-    }
+    public record GetResult(UUID resultId, ActorRef<Optional<byte[]>> replyTo) implements Command {}
 
-    public static class GetResult implements Command {
-      public final UUID resultId;
-      public final ActorRef<Optional<byte[]>> replyTo;
-
-      public GetResult(UUID resultId, ActorRef<Optional<byte[]>> replyTo) {
-        this.resultId = resultId;
-        this.replyTo = replyTo;
-      }
-    }
-
-    private static class WrappedRequestNext implements Command {
-      final WorkPullingProducerController.RequestNext<ImageConverter.ConversionJob> next;
-
-      private WrappedRequestNext(
-          WorkPullingProducerController.RequestNext<ImageConverter.ConversionJob> next) {
-        this.next = next;
-      }
-    }
+    private record WrappedRequestNext(
+        WorkPullingProducerController.RequestNext<ImageConverter.ConversionJob> next)
+        implements Command {}
 
     // #producer
     // #ask
-    public static class ConvertRequest implements Command {
-      public final String fromFormat;
-      public final String toFormat;
-      public final byte[] image;
-      public final ActorRef<ConvertResponse> replyTo;
-
-      public ConvertRequest(
-          String fromFormat, String toFormat, byte[] image, ActorRef<ConvertResponse> replyTo) {
-        this.fromFormat = fromFormat;
-        this.toFormat = toFormat;
-        this.image = image;
-        this.replyTo = replyTo;
-      }
-    }
+    public record ConvertRequest(
+        String fromFormat, String toFormat, byte[] image, ActorRef<ConvertResponse> replyTo)
+        implements Command {}
 
     interface ConvertResponse {}
 
-    public static class ConvertAccepted implements ConvertResponse {
-      public final UUID resultId;
-
-      public ConvertAccepted(UUID resultId) {
-        this.resultId = resultId;
-      }
-    }
+    public record ConvertAccepted(UUID resultId) implements ConvertResponse {}
 
     enum ConvertRejected implements ConvertResponse {
       INSTANCE
     }
 
-    public static class ConvertTimedOut implements ConvertResponse {
-      public final UUID resultId;
+    public record ConvertTimedOut(UUID resultId) implements ConvertResponse {}
 
-      public ConvertTimedOut(UUID resultId) {
-        this.resultId = resultId;
-      }
-    }
-
-    private static class AskReply implements Command {
-      final UUID resultId;
-      final ActorRef<ConvertResponse> originalReplyTo;
-      final boolean timeout;
-
-      private AskReply(UUID resultId, ActorRef<ConvertResponse> originalReplyTo, boolean timeout) {
-        this.resultId = resultId;
-        this.originalReplyTo = originalReplyTo;
-        this.timeout = timeout;
-      }
-    }
+    private record AskReply(
+        UUID resultId, ActorRef<ConvertResponse> originalReplyTo, boolean timeout)
+        implements Command {}
 
     // #ask
     // #producer
@@ -249,7 +178,7 @@ interface WorkPullingDocExample {
     }
 
     private Behavior<Command> onWrappedRequestNext(WrappedRequestNext w) {
-      return stashBuffer.unstashAll(active(w.next));
+      return stashBuffer.unstashAll(active(w.next()));
     }
 
     private Behavior<Command> onConvertWait(Convert convert) {
@@ -287,7 +216,7 @@ interface WorkPullingDocExample {
       next.sendNextTo()
           .tell(
               new ImageConverter.ConversionJob(
-                  resultId, convert.fromFormat, convert.toFormat, convert.image));
+                  resultId, convert.fromFormat(), convert.toFormat(), convert.image()));
       return waitForNext();
     }
 
@@ -307,7 +236,7 @@ interface WorkPullingDocExample {
 
           private Behavior<Command> onConvertRequestWait(ConvertRequest convert) {
             if (stashBuffer.isFull()) {
-              convert.replyTo.tell(ConvertRejected.INSTANCE);
+              convert.replyTo().tell(ConvertRejected.INSTANCE);
               return Behaviors.same();
             } else {
               stashBuffer.stash(convert);
@@ -316,13 +245,14 @@ interface WorkPullingDocExample {
           }
 
           private Behavior<Command> onAskReply(AskReply reply) {
-            if (reply.timeout) reply.originalReplyTo.tell(new ConvertTimedOut(reply.resultId));
-            else reply.originalReplyTo.tell(new ConvertAccepted(reply.resultId));
+            if (reply.timeout())
+              reply.originalReplyTo().tell(new ConvertTimedOut(reply.resultId()));
+            else reply.originalReplyTo().tell(new ConvertAccepted(reply.resultId()));
             return Behaviors.same();
           }
 
           private Behavior<Command> onWrappedRequestNext(WrappedRequestNext w) {
-            return stashBuffer.unstashAll(active(w.next));
+            return stashBuffer.unstashAll(active(w.next()));
           }
 
           private Behavior<Command> onGetResult(GetResult get) {
@@ -352,11 +282,11 @@ interface WorkPullingDocExample {
                 askReplyTo ->
                     new WorkPullingProducerController.MessageWithConfirmation<>(
                         new ImageConverter.ConversionJob(
-                            resultId, convert.fromFormat, convert.toFormat, convert.image),
+                            resultId, convert.fromFormat(), convert.toFormat(), convert.image()),
                         askReplyTo),
                 (done, exc) -> {
-                  if (exc == null) return new AskReply(resultId, convert.replyTo, false);
-                  else return new AskReply(resultId, convert.replyTo, true);
+                  if (exc == null) return new AskReply(resultId, convert.replyTo(), false);
+                  else return new AskReply(resultId, convert.replyTo(), true);
                 });
 
             return waitForNext();

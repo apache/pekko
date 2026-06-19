@@ -190,25 +190,11 @@ public class PersistentActorCompileOnlyTest {
 
     interface MyCommand {}
 
-    public static class Cmd implements MyCommand {
-      private final String data;
-      private final ActorRef<Ack> replyTo;
-
-      public Cmd(String data, ActorRef<Ack> replyTo) {
-        this.data = data;
-        this.replyTo = replyTo;
-      }
-    }
+    public record Cmd(String data, ActorRef<Ack> replyTo) implements MyCommand {}
 
     interface MyEvent {}
 
-    public static class Evt implements MyEvent {
-      private final String data;
-
-      public Evt(String data) {
-        this.data = data;
-      }
-    }
+    public record Evt(String data) implements MyEvent {}
 
     static class ExampleState {
       private List<String> events = new ArrayList<>();
@@ -238,8 +224,8 @@ public class PersistentActorCompileOnlyTest {
                     Cmd.class,
                     (state, cmd) ->
                         Effect()
-                            .persist(new Evt(cmd.data))
-                            .thenRun(() -> cmd.replyTo.tell(new Ack()))
+                            .persist(new Evt(cmd.data()))
+                            .thenRun(() -> cmd.replyTo().tell(new Ack()))
                             .thenRun(commonChainedEffect))
                 .build();
           }
@@ -264,41 +250,15 @@ public class PersistentActorCompileOnlyTest {
   abstract static class RecoveryComplete {
     interface Command {}
 
-    static class DoSideEffect implements Command {
-      final String data;
+    record DoSideEffect(String data) implements Command {}
 
-      DoSideEffect(String data) {
-        this.data = data;
-      }
-    }
-
-    static class AcknowledgeSideEffect implements Command {
-      final int correlationId;
-
-      AcknowledgeSideEffect(int correlationId) {
-        this.correlationId = correlationId;
-      }
-    }
+    record AcknowledgeSideEffect(int correlationId) implements Command {}
 
     interface Event {}
 
-    static class IntentRecord implements Event {
-      final int correlationId;
-      final String data;
+    record IntentRecord(int correlationId, String data) implements Event {}
 
-      IntentRecord(int correlationId, String data) {
-        this.correlationId = correlationId;
-        this.data = data;
-      }
-    }
-
-    static class SideEffectAcknowledged implements Event {
-      final int correlationId;
-
-      SideEffectAcknowledged(int correlationId) {
-        this.correlationId = correlationId;
-      }
-    }
+    record SideEffectAcknowledged(int correlationId) implements Event {}
 
     static class EventsInFlight {
       final int nextCorrelationId;
@@ -375,18 +335,18 @@ public class PersistentActorCompileOnlyTest {
                 DoSideEffect.class,
                 (state, cmd) ->
                     Effect()
-                        .persist(new IntentRecord(state.nextCorrelationId, cmd.data))
+                        .persist(new IntentRecord(state.nextCorrelationId, cmd.data()))
                         .thenRun(
                             () ->
                                 performSideEffect(
                                     ctx.getSelf().narrow(),
                                     state.nextCorrelationId,
-                                    cmd.data,
+                                    cmd.data(),
                                     ctx.getSystem().scheduler())))
             .onCommand(
                 AcknowledgeSideEffect.class,
                 (state, command) ->
-                    Effect().persist(new SideEffectAcknowledged(command.correlationId)))
+                    Effect().persist(new SideEffectAcknowledged(command.correlationId())))
             .build();
       }
 
@@ -397,16 +357,16 @@ public class PersistentActorCompileOnlyTest {
             .onEvent(
                 IntentRecord.class,
                 (state, event) -> {
-                  int nextCorrelationId = event.correlationId;
+                  int nextCorrelationId = event.correlationId();
                   Map<Integer, String> newOutstanding = new HashMap<>(state.dataByCorrelationId);
-                  newOutstanding.put(event.correlationId, event.data);
+                  newOutstanding.put(event.correlationId(), event.data());
                   return new EventsInFlight(nextCorrelationId, newOutstanding);
                 })
             .onEvent(
                 SideEffectAcknowledged.class,
                 (state, event) -> {
                   Map<Integer, String> newOutstanding = new HashMap<>(state.dataByCorrelationId);
-                  newOutstanding.remove(event.correlationId);
+                  newOutstanding.remove(event.correlationId());
                   return new EventsInFlight(state.nextCorrelationId, newOutstanding);
                 })
             .build();

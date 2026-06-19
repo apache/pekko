@@ -51,33 +51,11 @@ interface ReplicatedShoppingCartExample {
 
     public interface Command {}
 
-    public static final class AddItem implements Command {
-      public final String productId;
-      public final int count;
+    public record AddItem(String productId, int count) implements Command {}
 
-      public AddItem(String productId, int count) {
-        this.productId = productId;
-        this.count = count;
-      }
-    }
+    public record RemoveItem(String productId, int count) implements Command {}
 
-    public static final class RemoveItem implements Command {
-      public final String productId;
-      public final int count;
-
-      public RemoveItem(String productId, int count) {
-        this.productId = productId;
-        this.count = count;
-      }
-    }
-
-    public static class GetCartItems implements Command {
-      public final ActorRef<CartItems> replyTo;
-
-      public GetCartItems(ActorRef<CartItems> replyTo) {
-        this.replyTo = replyTo;
-      }
-    }
+    public record GetCartItems(ActorRef<CartItems> replyTo) implements Command {}
 
     public static final class CartItems {
       public final Map<String, Integer> items;
@@ -121,16 +99,16 @@ interface ReplicatedShoppingCartExample {
 
     private Effect<Event, State> onAddItem(State state, AddItem command) {
       return Effect()
-          .persist(new ItemUpdated(command.productId, new Counter.Updated(command.count)));
+          .persist(new ItemUpdated(command.productId(), new Counter.Updated(command.count())));
     }
 
     private Effect<Event, State> onRemoveItem(State state, RemoveItem command) {
       return Effect()
-          .persist(new ItemUpdated(command.productId, new Counter.Updated(-command.count)));
+          .persist(new ItemUpdated(command.productId(), new Counter.Updated(-command.count())));
     }
 
     private Effect<Event, State> onGetCartItems(State state, GetCartItems command) {
-      command.replyTo.tell(new CartItems(filterEmptyAndNegative(state.items)));
+      command.replyTo().tell(new CartItems(filterEmptyAndNegative(state.items)));
       return Effect().none();
     }
 

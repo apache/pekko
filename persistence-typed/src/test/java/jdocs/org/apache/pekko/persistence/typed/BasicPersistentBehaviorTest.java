@@ -96,13 +96,7 @@ public class BasicPersistentBehaviorTest {
       // #command
       interface Command {}
 
-      public static class Add implements Command {
-        public final String data;
-
-        public Add(String data) {
-          this.data = data;
-        }
-      }
+      public record Add(String data) implements Command {}
 
       public enum Clear implements Command {
         INSTANCE
@@ -110,13 +104,7 @@ public class BasicPersistentBehaviorTest {
 
       interface Event {}
 
-      public static class Added implements Event {
-        public final String data;
-
-        public Added(String data) {
-          this.data = data;
-        }
-      }
+      public record Added(String data) implements Event {}
 
       public enum Cleared implements Event {
         INSTANCE
@@ -168,7 +156,7 @@ public class BasicPersistentBehaviorTest {
       public CommandHandler<Command, Event, State> commandHandler() {
         return newCommandHandlerBuilder()
             .forAnyState()
-            .onCommand(Add.class, command -> Effect().persist(new Added(command.data)))
+            .onCommand(Add.class, command -> Effect().persist(new Added(command.data())))
             .onCommand(Clear.class, command -> Effect().persist(Cleared.INSTANCE))
             .build();
       }
@@ -180,7 +168,7 @@ public class BasicPersistentBehaviorTest {
       public EventHandler<State, Event> eventHandler() {
         return newEventHandlerBuilder()
             .forAnyState()
-            .onEvent(Added.class, (state, event) -> state.addItem(event.data))
+            .onEvent(Added.class, (state, event) -> state.addItem(event.data()))
             .onEvent(Cleared.class, () -> new State())
             .build();
       }
@@ -197,13 +185,7 @@ public class BasicPersistentBehaviorTest {
 
       interface Command {}
 
-      public static class Add implements Command {
-        public final String data;
-
-        public Add(String data) {
-          this.data = data;
-        }
-      }
+      public record Add(String data) implements Command {}
 
       public enum Clear implements Command {
         INSTANCE
@@ -211,13 +193,7 @@ public class BasicPersistentBehaviorTest {
 
       interface Event {}
 
-      public static class Added implements Event {
-        public final String data;
-
-        public Added(String data) {
-          this.data = data;
-        }
-      }
+      public record Added(String data) implements Event {}
 
       public enum Cleared implements Event {
         INSTANCE
@@ -272,7 +248,7 @@ public class BasicPersistentBehaviorTest {
 
       private Effect<Event, State> onAdd(Add command) {
         return Effect()
-            .persist(new Added(command.data))
+            .persist(new Added(command.data()))
             .thenRun(newState -> subscriber.tell(newState));
       }
 
@@ -289,7 +265,7 @@ public class BasicPersistentBehaviorTest {
       public EventHandler<State, Event> eventHandler() {
         return newEventHandlerBuilder()
             .forAnyState()
-            .onEvent(Added.class, (state, event) -> state.addItem(event.data))
+            .onEvent(Added.class, (state, event) -> state.addItem(event.data()))
             .onEvent(Cleared.class, () -> new State())
             .build();
       }

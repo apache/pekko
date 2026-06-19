@@ -46,13 +46,8 @@ interface PointToPointDocExample {
 
     interface Command {}
 
-    private static class WrappedRequestNext implements Command {
-      final ProducerController.RequestNext<FibonacciConsumer.Command> next;
-
-      private WrappedRequestNext(ProducerController.RequestNext<FibonacciConsumer.Command> next) {
-        this.next = next;
-      }
-    }
+    private record WrappedRequestNext(
+        ProducerController.RequestNext<FibonacciConsumer.Command> next) implements Command {}
 
     private FibonacciProducer(ActorContext<Command> context) {
       super(context);
@@ -80,7 +75,7 @@ interface PointToPointDocExample {
 
     private Behavior<Command> onWrappedRequestNext(WrappedRequestNext w) {
       getContext().getLog().info("Generated fibonacci {}: {}", n, a);
-      w.next.sendNextTo().tell(new FibonacciConsumer.FibonacciNumber(n, a));
+      w.next().sendNextTo().tell(new FibonacciConsumer.FibonacciNumber(n, a));
 
       if (n == 1000) {
         return Behaviors.stopped();
@@ -100,23 +95,10 @@ interface PointToPointDocExample {
 
     interface Command {}
 
-    public static class FibonacciNumber implements Command {
-      public final long n;
-      public final BigInteger value;
+    public record FibonacciNumber(long n, BigInteger value) implements Command {}
 
-      public FibonacciNumber(long n, BigInteger value) {
-        this.n = n;
-        this.value = value;
-      }
-    }
-
-    private static class WrappedDelivery implements Command {
-      final ConsumerController.Delivery<Command> delivery;
-
-      private WrappedDelivery(ConsumerController.Delivery<Command> delivery) {
-        this.delivery = delivery;
-      }
-    }
+    private record WrappedDelivery(ConsumerController.Delivery<Command> delivery)
+        implements Command {}
 
     public static Behavior<Command> create(
         ActorRef<ConsumerController.Command<FibonacciConsumer.Command>> consumerController) {
@@ -140,9 +122,9 @@ interface PointToPointDocExample {
     }
 
     private Behavior<Command> onDelivery(WrappedDelivery w) {
-      FibonacciNumber number = (FibonacciNumber) w.delivery.message();
-      getContext().getLog().info("Processed fibonacci {}: {}", number.n, number.value);
-      w.delivery.confirmTo().tell(ConsumerController.confirmed());
+      FibonacciNumber number = (FibonacciNumber) w.delivery().message();
+      getContext().getLog().info("Processed fibonacci {}: {}", number.n(), number.value());
+      w.delivery().confirmTo().tell(ConsumerController.confirmed());
       return this;
     }
   }

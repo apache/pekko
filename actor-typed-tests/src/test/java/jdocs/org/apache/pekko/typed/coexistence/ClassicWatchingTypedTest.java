@@ -16,7 +16,6 @@ package jdocs.org.apache.pekko.typed.coexistence;
 import static org.apache.pekko.actor.typed.javadsl.Behaviors.same;
 
 import org.apache.pekko.actor.AbstractActor;
-import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.javadsl.Adapter;
@@ -69,13 +68,7 @@ public class ClassicWatchingTypedTest {
   public abstract static class Typed {
     interface Command {}
 
-    public static class Ping implements Command {
-      public final org.apache.pekko.actor.typed.ActorRef<Pong> replyTo;
-
-      public Ping(ActorRef<Pong> replyTo) {
-        this.replyTo = replyTo;
-      }
-    }
+    public record Ping(org.apache.pekko.actor.typed.ActorRef<Pong> replyTo) implements Command {}
 
     public static class Pong {}
 
@@ -84,7 +77,7 @@ public class ClassicWatchingTypedTest {
           .onMessage(
               Typed.Ping.class,
               message -> {
-                message.replyTo.tell(new Pong());
+                message.replyTo().tell(new Pong());
                 return same();
               })
           .build();
