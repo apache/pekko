@@ -19,6 +19,7 @@ package org.apache.pekko.stream
 
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicLong
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -26,7 +27,6 @@ import scala.concurrent.duration._
 import org.openjdk.jmh.annotations._
 
 import org.apache.pekko
-import pekko.actor.ActorRef
 import pekko.actor.ActorSystem
 import pekko.stream.scaladsl.Keep
 import pekko.stream.scaladsl.Sink
@@ -44,9 +44,6 @@ class ActorRefSourceBenchmark {
 
   implicit val system: ActorSystem = ActorSystem("ActorRefSourceBenchmark")
 
-  private var sourceRef: ActorRef = _
-  private var doneLatch: CountDownLatch = _
-
   @Setup
   def setup(): Unit = {
     SystemMaterializer(system).materializer
@@ -59,17 +56,16 @@ class ActorRefSourceBenchmark {
 
   @Benchmark
   @OperationsPerInvocation(OperationsPerInvocation)
-  def actorRef_source_push_100k(): Unit = {
-    doneLatch = new CountDownLatch(1)
-    val mat = Source
+  def actorRef_source_no_buffer_100k(): Unit = {
+    val doneLatch = new CountDownLatch(1)
+    val sourceRef = Source
       .actorRef[Any](
         completionMatcher = { case "done" => CompletionStrategy.draining },
         failureMatcher = PartialFunction.empty,
-        bufferSize = 1024,
+        bufferSize = 0,
         overflowStrategy = OverflowStrategy.dropHead)
       .toMat(Sink.ignore)(Keep.left)
       .run()
-    sourceRef = mat
 
     val sender = new Thread(() => {
       var i = 0
@@ -84,5 +80,28 @@ class ActorRefSourceBenchmark {
     if (!doneLatch.await(30, TimeUnit.SECONDS))
       throw new RuntimeException("ActorRefSource benchmark timed out")
     sender.join()
+  }
+
+  @Benchmark
+  @OperationsPerInvocation(OperationsPerInvocation)
+  def actorRef_source_pingpong_100k(): Unit = {
+    val counter = new AtomicLong(0)
+    val sourceRef = Source
+      .actorRef[Long](
+        completionMatcher = { case -1L => CompletionStrategy.draining },
+        failureMatcher = PartialFunction.empty,
+        bufferSize = 1,
+        overflowStrategy = OverflowStrategy.dropHead)
+      .toMat(Sink.foreach[Long](_ => counter.incrementAndGet()))(Keep.left)
+      .run()
+
+    var i = 0L
+    while (i < OperationsPerInvocation) {
+      sourceRef ! i
+      val expected = i + 1
+      while (counter.get() < expected) () // spin-wait for consumption
+      i += 1
+    }
+    sourceRef ! -1L
   }
 }
