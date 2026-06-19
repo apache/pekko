@@ -100,7 +100,11 @@ import pekko.util.OptionVal
             } else Terminated(ActorRefAdapter(ref))
           handleSignal(msg)
         case classic.ReceiveTimeout =>
-          handleMessage(ctx.receiveTimeoutMsg)
+          // cancelReceiveTimeout() sets receiveTimeoutMsg to null, but a classic ReceiveTimeout
+          // that was already enqueued in the mailbox before the cancel cannot be retracted.
+          // Discard the stale timeout to avoid passing null into the typed behavior stack (#3084).
+          val timeoutMsg = ctx.receiveTimeoutMsg
+          if (timeoutMsg != null) handleMessage(timeoutMsg)
         case wrapped: AdaptMessage[Any, T] @unchecked =>
           withSafelyAdapted(() => wrapped.adapt()) {
             case AdaptWithRegisteredMessageAdapter(msg) =>
