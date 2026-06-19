@@ -188,20 +188,18 @@ public class PersistentFsmToTypedMigrationCompileOnlyTest {
 
       eventHandlerBuilder
           .forStateType(LookingAround.class)
-          .onEvent(ItemAdded.class, item -> new Shopping(new ShoppingCart(item.getItem())));
+          .onEvent(ItemAdded.class, item -> new Shopping(new ShoppingCart(item.item())));
 
       eventHandlerBuilder
           .forStateType(Shopping.class)
-          .onEvent(
-              ItemAdded.class, (state, item) -> new Shopping(state.cart.addItem(item.getItem())))
+          .onEvent(ItemAdded.class, (state, item) -> new Shopping(state.cart.addItem(item.item())))
           .onEvent(OrderExecuted.class, (state, item) -> new Paid(state.cart))
           .onEvent(OrderDiscarded.class, (state, item) -> state) // will be stopped
           .onEvent(CustomerInactive.class, (state, event) -> new Inactive(state.cart));
 
       eventHandlerBuilder
           .forStateType(Inactive.class)
-          .onEvent(
-              ItemAdded.class, (state, item) -> new Shopping(state.cart.addItem(item.getItem())))
+          .onEvent(ItemAdded.class, (state, item) -> new Shopping(state.cart.addItem(item.item())))
           .onEvent(OrderDiscarded.class, (state, item) -> state); // will be stopped
 
       return eventHandlerBuilder.build();
