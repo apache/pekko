@@ -434,6 +434,24 @@ lazy val remote =
     .settings(OSGi.remote)
     .settings(Protobuf.settings)
     .settings(Test / parallelExecution := false)
+    .settings(
+      // Isolate SendConsistency specs that create multiple ActorSystems
+      // with TLS-TCP and 1000 round-trip message exchanges into their own
+      // JVM fork. These specs are sensitive to thread contention from
+      // lingering ActorSystem threads of other test classes in the same JVM.
+      Test / testGrouping := {
+        val allTests = (Test / definedTests).value
+        val (sendConsistencyTests, otherTests) =
+          allTests.partition(_.name.contains("SendConsistency"))
+        val defaultForkOptions = ForkOptions()
+          .withRunJVMOptions((Test / javaOptions).value.toVector)
+        val otherGroup =
+          Tests.Group("other", otherTests, Tests.SubProcess(defaultForkOptions))
+        val sendConsistencyGroups = sendConsistencyTests.map { t =>
+          Tests.Group(t.name, Seq(t), Tests.SubProcess(defaultForkOptions))
+        }
+        otherGroup +: sendConsistencyGroups
+      })
     .enablePlugins(DependWalkerPlugin, SbtOsgi)
 
 lazy val remoteTests = pekkoModule("remote-tests")
