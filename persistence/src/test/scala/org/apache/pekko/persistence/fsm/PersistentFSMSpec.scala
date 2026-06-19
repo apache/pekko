@@ -73,6 +73,30 @@ abstract class PersistentFSMSpec(config: Config) extends PersistenceSpec(config)
       expectTerminated(fsmRef)
     }
 
+    "remove stopped transition listeners" in {
+      val persistenceId = name
+      val listener = TestProbe()
+      val fsmRef = system.actorOf(SimpleTransitionFSM.props(persistenceId, TestProbe().ref))
+
+      fsmRef ! SubscribeTransitionCallBack(listener.ref)
+      listener.expectMsg(CurrentState(fsmRef, LookingAround, None))
+      fsmRef ! ListenerCount
+      expectMsg(1)
+
+      watch(listener.ref)
+      system.stop(listener.ref)
+      expectTerminated(listener.ref)
+
+      awaitAssert {
+        fsmRef ! ListenerCount
+        expectMsg(0)
+      }
+
+      watch(fsmRef)
+      fsmRef ! PoisonPill
+      expectTerminated(fsmRef)
+    }
+
     "function as a regular FSM on state timeout" taggedAs TimingTest in {
       val persistenceId = name
       val fsmRef = system.actorOf(WebStoreCustomerFSM.props(persistenceId, dummyReportActorRef))
@@ -450,6 +474,7 @@ object PersistentFSMSpec {
   case object Leave extends Command
   case object GetCurrentCart extends Command
   // #customer-commands
+  case object ListenerCount
 
   // #customer-domain-events
   sealed trait DomainEvent
@@ -472,8 +497,9 @@ object PersistentFSMSpec {
     startWith(LookingAround, EmptyShoppingCart)
 
     when(LookingAround) {
-      case Event("stay", _) => stay()
-      case Event(_, _)      => goto(LookingAround)
+      case Event("stay", _)        => stay()
+      case Event(ListenerCount, _) => stay().replying(listeners.size)
+      case Event(_, _)             => goto(LookingAround)
     }
 
     onTransition {
