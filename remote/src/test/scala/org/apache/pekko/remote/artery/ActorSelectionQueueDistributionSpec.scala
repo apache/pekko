@@ -23,6 +23,7 @@ import org.apache.pekko
 import pekko.actor.SelectChildName
 import pekko.actor.SelectionPathElement
 import pekko.protobufv3.internal.ByteString
+import pekko.protobufv3.internal.UnknownFieldSet
 import pekko.remote.ContainerFormats
 import pekko.remote.ContainerFormats.PatternType
 
@@ -53,6 +54,31 @@ class ActorSelectionQueueDistributionSpec extends AnyWordSpec with Matchers {
           .newBuilder()
           .setType(PatternType.CHILD_NAME)
           .setMatcher(name))
+    }
+
+    builder.build()
+  }
+
+  private def unknownField(fieldNumber: Int): UnknownFieldSet =
+    UnknownFieldSet
+      .newBuilder()
+      .addField(fieldNumber, UnknownFieldSet.Field.newBuilder().addVarint(17L).build())
+      .build()
+
+  private def selectionEnvelopeWithUnknownFields(names: String*): ContainerFormats.SelectionEnvelope = {
+    val builder = ContainerFormats.SelectionEnvelope
+      .newBuilder()
+      .setEnclosedMessage(ByteString.EMPTY)
+      .setSerializerId(0)
+      .setUnknownFields(unknownField(42))
+
+    names.foreach { name =>
+      builder.addPattern(
+        ContainerFormats.Selection
+          .newBuilder()
+          .setType(PatternType.CHILD_NAME)
+          .setMatcher(name)
+          .setUnknownFields(unknownField(43)))
     }
 
     builder.build()
@@ -149,7 +175,8 @@ class ActorSelectionQueueDistributionSpec extends AnyWordSpec with Matchers {
     }
 
     "parse ActorSelection path hash without moving the envelope buffer position" in {
-      val bytes = selectionEnvelope("user", "echoA2").toByteArray
+      val envelope = selectionEnvelope("user", "echoA2")
+      val bytes = envelope.toByteArray
       val byteBuffer = ByteBuffer.allocate(bytes.length + 4)
       byteBuffer.putInt(17)
       byteBuffer.put(bytes)
@@ -157,9 +184,18 @@ class ActorSelectionQueueDistributionSpec extends AnyWordSpec with Matchers {
       byteBuffer.position(4)
 
       val positionBefore = byteBuffer.position()
-      ArteryTransport.actorSelectionMessagePathHash(byteBuffer).isDefined shouldBe true
+      ArteryTransport.actorSelectionMessagePathHash(byteBuffer) shouldBe Some(
+        ArteryTransport.actorSelectionMessagePathHash(envelope))
 
       byteBuffer.position() shouldBe positionBefore
+    }
+
+    "skip unknown fields when parsing ActorSelection path hash" in {
+      val envelope = selectionEnvelopeWithUnknownFields("user", "echoA2")
+      val byteBuffer = ByteBuffer.wrap(envelope.toByteArray)
+
+      ArteryTransport.actorSelectionMessagePathHash(byteBuffer) shouldBe Some(
+        ArteryTransport.actorSelectionMessagePathHash(envelope))
     }
 
     "ignore invalid ActorSelection envelopes when computing path hash" in {

@@ -38,6 +38,7 @@ import pekko.event.Logging
 import pekko.event.MarkerLoggingAdapter
 import pekko.remote.AddressUidExtension
 import pekko.remote.ContainerFormats
+import pekko.protobufv3.internal.CodedInputStream
 import pekko.remote.RemoteActorRef
 import pekko.remote.RemoteActorRefProvider
 import pekko.remote.RemoteTransport
@@ -993,9 +994,63 @@ private[remote] object ArteryTransport {
 
   def actorSelectionMessagePathHash(byteBuffer: ByteBuffer): Option[Int] = {
     val copy = byteBuffer.asReadOnlyBuffer()
-    try Some(actorSelectionMessagePathHash(ContainerFormats.SelectionEnvelope.parseFrom(copy)))
+    try Some(actorSelectionMessagePathHash(CodedInputStream.newInstance(copy)))
     catch {
       case NonFatal(_) => None
+    }
+  }
+
+  private val SelectionEnvelopePatternTag = 26
+  private val SelectionTypeTag = 8
+  private val SelectionMatcherTag = 18
+
+  private def actorSelectionMessagePathHash(input: CodedInputStream): Int = {
+    var hash = 23
+    var done = false
+    while (!done) {
+      input.readTag() match {
+        case 0 =>
+          done = true
+        case SelectionEnvelopePatternTag =>
+          hash = actorSelectionMessagePathHash(input, input.readRawVarint32(), hash)
+        case tag =>
+          if (!input.skipField(tag))
+            done = true
+      }
+    }
+    hash
+  }
+
+  private def actorSelectionMessagePathHash(input: CodedInputStream, length: Int, currentHash: Int): Int = {
+    val oldLimit = input.pushLimit(length)
+    var patternType = -1
+    var matcherHash: Option[Int] = None
+    var done = false
+    try {
+      while (!done) {
+        input.readTag() match {
+          case 0 =>
+            done = true
+          case SelectionTypeTag =>
+            patternType = input.readEnum()
+          case SelectionMatcherTag =>
+            matcherHash = Some(input.readStringRequireUtf8().hashCode)
+          case tag =>
+            if (!input.skipField(tag))
+              done = true
+        }
+      }
+    } finally {
+      input.popLimit(oldLimit)
+    }
+
+    if (patternType == -1)
+      throw new IllegalArgumentException("ActorSelection Selection pattern without type")
+
+    val hash = 23 * currentHash + patternType
+    matcherHash match {
+      case Some(matcher) => 23 * hash + matcher
+      case None          => hash
     }
   }
 
