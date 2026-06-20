@@ -13,8 +13,8 @@
 
 package org.apache.pekko.stream.stage
 
-import java.util.Spliterator
 import java.lang.invoke.{ MethodHandles, VarHandle }
+import java.util.Spliterator
 import java.util.concurrent.{ CompletionStage, ConcurrentHashMap }
 import java.util.concurrent.atomic.AtomicReference
 
@@ -359,9 +359,8 @@ object GraphStageLogic {
      *    object (one allocation per StageActor, one fewer field deref on the producer hot path).
      *  - Implements `Any => Unit` directly — serves as both the producer callback and the drain callback,
      *    eliminating the separate `drainCallback` lambda allocation.
-     *  - `state` is a plain `@volatile var Int` driven by a static `VarHandle` in the companion object
-     *    (via `MethodHandles.privateLookupIn`), same pattern as `AbstractNodeQueue` itself;
-     *    avoids per-instance `AtomicInteger`.
+     *  - `state` is a plain `@volatile var Int` driven by a static `VarHandle`; volatile state access
+     *    keeps the election protocol conservative and avoids per-instance `AtomicInteger`.
      *  - `drainBatchSize` is read once into a stack-local at the top of `drain` so the JIT can treat the loop
      *    bound as a constant.
      *  - Per-tell allocation = 1 Node (`AbstractNodeQueue.Node`, ~24 bytes) + 1 Tuple2 (~24 bytes). The
@@ -378,18 +377,14 @@ object GraphStageLogic {
         extends AbstractNodeQueue[(ActorRef, Any)]
         with (Any => Unit) {
 
-      // IDLE/SCHEDULED election state. VarHandle avoids per-instance AtomicInteger;
-      // the handle lives in the companion object (true JVM static), same pattern as
-      // AbstractNodeQueue._tailDoNotCallMeDirectly.
+      // IDLE/SCHEDULED election state. VarHandle avoids per-instance AtomicInteger.
       @volatile var state: Int = SchedStateIdle
 
-      // Typed local witnesses the Int-returning signature-polymorphic VarHandle.get overload
-      // (required for Scala 3 cross-compile; on Scala 2 this is a no-op).
       private def getState(): Int = {
-        val v: Int = LazyDispatch.stateHandle.get(this)
+        val v: Int = LazyDispatch.stateHandle.getVolatile(this)
         v
       }
-      private def setState(v: Int): Unit = LazyDispatch.stateHandle.set(this, v)
+      private def setState(v: Int): Unit = LazyDispatch.stateHandle.setVolatile(this, v)
       private def casState(expect: Int, update: Int): Boolean =
         LazyDispatch.stateHandle.compareAndSet(this, expect, update)
 
@@ -448,6 +443,7 @@ object GraphStageLogic {
         lookup.findVarHandle(classOf[LazyDispatch], "state", Integer.TYPE)
       }
     }
+
   }
 
   /**
