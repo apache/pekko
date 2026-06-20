@@ -161,6 +161,26 @@ class FlowIdleInjectSpec extends StreamSpec("""
       downstream.expectNext(0)
     }
 
+    "not inject idle element before timeout elapses from stream start" in {
+      val upstream = TestPublisher.probe[Int]()
+      val downstream = TestSubscriber.probe[Int]()
+      val timeout = 500.millis
+
+      Source.fromPublisher(upstream).keepAlive(timeout, () => 0).runWith(Sink.fromSubscriber(downstream))
+
+      downstream.ensureSubscription()
+      // No idle element should appear before the timeout period, even though
+      // the stage is constructed before preStart runs.
+      downstream.expectNoMessage(timeout - 100.millis)
+
+      // After timeout, the injected element should arrive
+      downstream.request(1)
+      downstream.expectNext(0)
+
+      upstream.sendComplete()
+      downstream.expectComplete()
+    }
+
   }
 
 }

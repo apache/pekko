@@ -105,7 +105,7 @@ import pekko.stream.stage._
 
     override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
       new TimerGraphStageLogic(shape) with InHandler with OutHandler {
-        private var nextDeadline: Long = System.nanoTime + timeout.toNanos
+        private var nextDeadline: Long = 0L
 
         setHandlers(in, out, this)
 
@@ -120,8 +120,10 @@ import pekko.stream.stage._
           if (nextDeadline - System.nanoTime < 0)
             failStage(new StreamIdleTimeoutException(s"No elements passed in the last ${timeout.toCoarsest}."))
 
-        override def preStart(): Unit =
+        override def preStart(): Unit = {
+          nextDeadline = System.nanoTime + timeout.toNanos
           scheduleWithFixedDelay(GraphStageLogicTimer, timeoutCheckInterval(timeout), timeoutCheckInterval(timeout))
+        }
       }
 
     override def toString = "IdleTimeout"
@@ -133,7 +135,7 @@ import pekko.stream.stage._
 
     override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
       new TimerGraphStageLogic(shape) with InHandler with OutHandler {
-        private var nextDeadline: Long = System.nanoTime + timeout.toNanos
+        private var nextDeadline: Long = 0L
         private var waitingDemand: Boolean = true
 
         setHandlers(in, out, this)
@@ -153,8 +155,10 @@ import pekko.stream.stage._
           if (waitingDemand && (nextDeadline - System.nanoTime < 0))
             failStage(new BackpressureTimeoutException(s"No demand signalled in the last ${timeout.toCoarsest}."))
 
-        override def preStart(): Unit =
+        override def preStart(): Unit = {
+          nextDeadline = System.nanoTime + timeout.toNanos
           scheduleWithFixedDelay(GraphStageLogicTimer, timeoutCheckInterval(timeout), timeoutCheckInterval(timeout))
+        }
       }
 
     override def toString = "BackpressureTimeout"
@@ -171,7 +175,7 @@ import pekko.stream.stage._
     override def initialAttributes = DefaultAttributes.idleTimeoutBidi
 
     override def createLogic(inheritedAttributes: Attributes): GraphStageLogic = new TimerGraphStageLogic(shape) {
-      private var nextDeadline: Long = System.nanoTime + timeout.toNanos
+      private var nextDeadline: Long = 0L
 
       setHandlers(in1, out1, new IdleBidiHandler(in1, out1))
       setHandlers(in2, out2, new IdleBidiHandler(in2, out2))
@@ -182,8 +186,10 @@ import pekko.stream.stage._
         if (nextDeadline - System.nanoTime < 0)
           failStage(new StreamIdleTimeoutException(s"No elements passed in the last ${timeout.toCoarsest}."))
 
-      override def preStart(): Unit =
+      override def preStart(): Unit = {
+        nextDeadline = System.nanoTime + timeout.toNanos
         scheduleWithFixedDelay(GraphStageLogicTimer, timeoutCheckInterval(timeout), timeoutCheckInterval(timeout))
+      }
 
       class IdleBidiHandler[P](in: Inlet[P], out: Outlet[P]) extends InHandler with OutHandler {
         override def onPush(): Unit = {
@@ -240,13 +246,16 @@ import pekko.stream.stage._
 
     override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
       new TimerGraphStageLogic(shape) with StageLogging with InHandler with OutHandler {
-        private var nextDeadline: Long = System.nanoTime + timeout.toNanos
+        private var nextDeadline: Long = 0L
         private val contextPropagation = ContextPropagation()
 
         setHandlers(in, out, this)
 
         // Prefetching to ensure priority of actual upstream elements
-        override def preStart(): Unit = pull(in)
+        override def preStart(): Unit = {
+          nextDeadline = System.nanoTime + timeout.toNanos
+          pull(in)
+        }
 
         override def onPush(): Unit = {
           nextDeadline = System.nanoTime + timeout.toNanos
