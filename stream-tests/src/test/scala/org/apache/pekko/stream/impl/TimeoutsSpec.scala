@@ -170,7 +170,7 @@ class TimeoutsSpec extends StreamSpec {
       // Each stream should get -1 (idle timeout after proper wait) or None (takeWithin)
       // It should NOT fail immediately upon materialization
       results.foreach { result =>
-        result should (be(Some(-1)) or be(None))
+        result should (be(Some(-1)).or(be(None)))
       }
     }
 
