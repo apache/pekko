@@ -21,6 +21,8 @@ import java.nio.ByteBuffer
 
 import org.apache.pekko
 import pekko.actor.SelectChildName
+import pekko.actor.SelectChildPattern
+import pekko.actor.SelectParent
 import pekko.actor.SelectionPathElement
 import pekko.protobufv3.internal.ByteString
 import pekko.protobufv3.internal.UnknownFieldSet
@@ -54,6 +56,35 @@ class ActorSelectionQueueDistributionSpec extends AnyWordSpec with Matchers {
           .newBuilder()
           .setType(PatternType.CHILD_NAME)
           .setMatcher(name))
+    }
+
+    builder.build()
+  }
+
+  private def selectionEnvelopeFromElements(elements: SelectionPathElement*): ContainerFormats.SelectionEnvelope = {
+    val builder = ContainerFormats.SelectionEnvelope
+      .newBuilder()
+      .setEnclosedMessage(ByteString.EMPTY)
+      .setSerializerId(0)
+
+    elements.foreach {
+      case SelectChildName(name) =>
+        builder.addPattern(
+          ContainerFormats.Selection
+            .newBuilder()
+            .setType(PatternType.CHILD_NAME)
+            .setMatcher(name))
+      case SelectChildPattern(patternStr) =>
+        builder.addPattern(
+          ContainerFormats.Selection
+            .newBuilder()
+            .setType(PatternType.CHILD_PATTERN)
+            .setMatcher(patternStr))
+      case SelectParent =>
+        builder.addPattern(
+          ContainerFormats.Selection
+            .newBuilder()
+            .setType(PatternType.PARENT))
     }
 
     builder.build()
@@ -202,6 +233,56 @@ class ActorSelectionQueueDistributionSpec extends AnyWordSpec with Matchers {
       val byteBuffer = ByteBuffer.wrap(Array[Byte](1, 2, 3))
 
       ArteryTransport.actorSelectionMessagePathHash(byteBuffer) shouldBe None
+    }
+
+    "produce consistent hash for SelectParent elements between ByteBuffer and SelectionEnvelope parsing" in {
+      val envelope = selectionEnvelopeFromElements(SelectChildName("user"), SelectParent, SelectChildName("echo"))
+      val byteBuffer = ByteBuffer.wrap(envelope.toByteArray)
+
+      ArteryTransport.actorSelectionMessagePathHash(byteBuffer) shouldBe Some(
+        ArteryTransport.actorSelectionMessagePathHash(envelope))
+    }
+
+    "produce consistent hash for SelectChildPattern elements between ByteBuffer and SelectionEnvelope parsing" in {
+      val envelope =
+        selectionEnvelopeFromElements(SelectChildName("user"), SelectChildPattern("echo*"))
+      val byteBuffer = ByteBuffer.wrap(envelope.toByteArray)
+
+      ArteryTransport.actorSelectionMessagePathHash(byteBuffer) shouldBe Some(
+        ArteryTransport.actorSelectionMessagePathHash(envelope))
+    }
+
+    "produce distinct hashes for different SelectionPathElement types" in {
+      val childNameEnvelope = selectionEnvelopeFromElements(SelectChildName("user"), SelectChildName("echo"))
+      val selectParentEnvelope =
+        selectionEnvelopeFromElements(SelectChildName("user"), SelectParent, SelectChildName("echo"))
+      val childPatternEnvelope =
+        selectionEnvelopeFromElements(SelectChildName("user"), SelectChildPattern("echo*"))
+
+      val childNameHash = ArteryTransport.actorSelectionMessagePathHash(childNameEnvelope)
+      val selectParentHash = ArteryTransport.actorSelectionMessagePathHash(selectParentEnvelope)
+      val childPatternHash = ArteryTransport.actorSelectionMessagePathHash(childPatternEnvelope)
+
+      childNameHash should not be selectParentHash
+      childNameHash should not be childPatternHash
+      selectParentHash should not be childPatternHash
+    }
+
+    "distribute paths with SelectParent across inbound lanes" in {
+      val inboundLanes = 3
+      val originUid = 42L
+      val elements = Seq(
+        Seq[SelectionPathElement](SelectChildName("user"), SelectParent, SelectChildName("echoA")),
+        Seq[SelectionPathElement](SelectChildName("user"), SelectParent, SelectChildName("echoB")),
+        Seq[SelectionPathElement](SelectChildName("user"), SelectParent, SelectChildName("echoC")))
+
+      val lanes = elements.map { elems =>
+        val envelope = selectionEnvelopeFromElements(elems: _*)
+        val selectionHash = ArteryTransport.actorSelectionMessagePathHash(envelope)
+        math.abs(ArteryTransport.inboundLanePartitionHash(selectionHash, originUid) % inboundLanes)
+      }
+
+      lanes.distinct.size should be > 1
     }
   }
 }
