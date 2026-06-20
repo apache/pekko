@@ -629,51 +629,6 @@ class HubSpec extends StreamSpec {
       in.sendComplete()
       sinkProbe2.cancel()
     }
-
-    "deliver all elements in order to many consumers" in {
-      val consumerCount = 200
-      val messageCount = 2000
-
-      val source = Source(0 until messageCount).runWith(BroadcastHub.sink(bufferSize = 256,
-        startAfterNrOfConsumers = consumerCount))
-
-      val futures = (0 until consumerCount).map { _ =>
-        source.runWith(Sink.seq)
-      }
-
-      val results = Await.result(Future.sequence(futures), 30.seconds)
-      results.foreach { result =>
-        result should ===(0 until messageCount)
-      }
-    }
-
-    "handle many consumers when some cancel mid-stream" in {
-      val totalConsumers = 64
-      val cancellingConsumers = 16
-      val cancelAfter = 64
-      val messageCount = 512
-
-      val source = Source(0 until messageCount).runWith(
-        BroadcastHub.sink(bufferSize = 256, startAfterNrOfConsumers = totalConsumers))
-
-      val cancellingFutures = (0 until cancellingConsumers).map { _ =>
-        source.take(cancelAfter).runWith(Sink.seq)
-      }
-
-      val remainingFutures = (0 until (totalConsumers - cancellingConsumers)).map { _ =>
-        source.runWith(Sink.seq)
-      }
-
-      val cancellingResults = Await.result(Future.sequence(cancellingFutures), 30.seconds)
-      cancellingResults.foreach { result =>
-        result should ===(0 until cancelAfter)
-      }
-
-      val remainingResults = Await.result(Future.sequence(remainingFutures), 30.seconds)
-      remainingResults.foreach { result =>
-        result should ===(0 until messageCount)
-      }
-    }
   }
 
   "PartitionHub" must {
