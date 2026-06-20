@@ -347,6 +347,46 @@ class FlowThrottleSpec extends StreamSpec("""
         .expectError(ex)
     }
 
+    "resume on cost calculation exception with supervision strategy" in {
+      Source(1 to 5)
+        .throttle(2, 200.millis, 0, e => if (e == 3) throw new RuntimeException("boom") else 1, Shaping)
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+        .runWith(TestSink[Int]())
+        .request(5)
+        .expectNext(1, 2, 4, 5)
+        .expectComplete()
+    }
+
+    "resume on cost calculation exception with supervision in Enforcing mode" in {
+      Source(1 to 5)
+        .throttle(2, 200.millis, 10, e => if (e == 3) throw new RuntimeException("boom") else 1, Enforcing)
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+        .runWith(TestSink[Int]())
+        .request(5)
+        .expectNext(1, 2, 4, 5)
+        .expectComplete()
+    }
+
+    "restart on cost calculation exception with restarting decider" in {
+      Source(1 to 5)
+        .throttle(2, 200.millis, 0, e => if (e == 3) throw new RuntimeException("boom") else 1, Shaping)
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.restartingDecider))
+        .runWith(TestSink[Int]())
+        .request(5)
+        .expectNext(1, 2, 4, 5)
+        .expectComplete()
+    }
+
+    "fail on cost calculation exception by default" in {
+      val ex = new RuntimeException("cost boom") with NoStackTrace
+      Source(1 to 5)
+        .throttle(2, 200.millis, 0, e => if (e == 3) throw ex else 1, Shaping)
+        .runWith(TestSink[Int]())
+        .request(5)
+        .expectNext(1, 2)
+        .expectError(ex)
+    }
+
     "work for real scenario with automatic burst size" taggedAs TimingTest in {
       val startTime = System.nanoTime()
       val counter1 = new AtomicInteger

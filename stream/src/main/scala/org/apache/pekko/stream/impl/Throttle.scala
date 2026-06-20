@@ -14,10 +14,12 @@
 package org.apache.pekko.stream.impl
 
 import scala.concurrent.duration.{ FiniteDuration, _ }
+import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.stream._
+import pekko.stream.ActorAttributes.SupervisionStrategy
 import pekko.stream.ThrottleMode.Enforcing
 import pekko.stream.impl.fusing.GraphStages.SimpleLinearGraphStage
 import pekko.stream.stage._
@@ -57,9 +59,10 @@ import pekko.util.NanoTimeTokenBucket
   require(!(mode == ThrottleMode.Enforcing && effectiveMaximumBurst < 0), "maximumBurst must be > 0 in Enforcing mode")
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
-    new TimerGraphStageLogic(shape) with InHandler with OutHandler {
+    new TimerGraphStageLogic(shape) with StageLogging with InHandler with OutHandler {
       private val tokenBucket = new NanoTimeTokenBucket(effectiveMaximumBurst, nanosBetweenTokens)
       private var currentElement: T = _
+      private lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
 
       override def preStart(): Unit = tokenBucket.init()
 
@@ -70,16 +73,28 @@ import pekko.util.NanoTimeTokenBucket
 
       override def onPush(): Unit = {
         val elem = grab(in)
-        val cost = costCalculation(elem)
-        val delayNanos = tokenBucket.offer(cost)
+        try {
+          val cost = costCalculation(elem)
+          val delayNanos = tokenBucket.offer(cost)
 
-        if (delayNanos == 0L) push(out, elem)
-        else {
-          if (mode eq Enforcing) failStage(new RateExceededException("Maximum throttle throughput exceeded."))
+          if (delayNanos == 0L) push(out, elem)
           else {
-            currentElement = elem
-            scheduleOnce(Throttle.TimerKey, delayNanos.nanos)
+            if (mode eq Enforcing) failStage(new RateExceededException("Maximum throttle throughput exceeded."))
+            else {
+              currentElement = elem
+              scheduleOnce(Throttle.TimerKey, delayNanos.nanos)
+            }
           }
+        } catch {
+          case NonFatal(ex) =>
+            val directive = decider(ex)
+            directive match {
+              case Supervision.Stop => failStage(ex)
+              case _                =>
+                log.debug("Exception in costCalculation for element [{}]: {}. Supervision strategy: {}.",
+                  elem, ex.getMessage, directive)
+                pull(in)
+            }
         }
       }
 
