@@ -476,3 +476,15 @@ Affirmer's express Statement of Purpose.
 
 For more information, please see
 <http://creativecommons.org/publicdomain/zero/1.0/>
+
+---------------
+
+pekko-stream contains code derived from akka.net <https://github.com/akkadotnet/akka.net>.
+
+- stream/src/main/scala/org/apache/pekko/stream/scaladsl/Hub.scala
+- stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/HubSpec.scala
+
+This code was released under the Apache 2.0 license.
+
+Copyright (c) .NET Foundation and Contributors
+All Rights Reserved

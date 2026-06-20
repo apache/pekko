@@ -11,6 +11,13 @@
  * Copyright (C) 2015-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
+//-----------------------------------------------------------------------
+// <copyright file="HubSpec.cs" company="Akka.NET Project">
+//     Copyright (C) 2009-2022 Lightbend Inc. <http://www.lightbend.com>
+//     Copyright (C) 2013-2025 .NET Foundation <https://github.com/akkadotnet/akka.net>
+// </copyright>
+//-----------------------------------------------------------------------
+
 package org.apache.pekko.stream.scaladsl
 
 import scala.collection.immutable
@@ -630,6 +637,8 @@ class HubSpec extends StreamSpec {
       sinkProbe2.cancel()
     }
 
+    // start of tests derived from https://github.com/akkadotnet/akka.net/pull/8264
+
     "deliver all elements in order to many consumers" in {
       val consumerCount = 200
       val messageCount = 2000
@@ -674,6 +683,8 @@ class HubSpec extends StreamSpec {
         result should ===(0 until messageCount)
       }
     }
+
+    // end of tests derived from https://github.com/akkadotnet/akka.net/pull/8264
   }
 
   "PartitionHub" must {

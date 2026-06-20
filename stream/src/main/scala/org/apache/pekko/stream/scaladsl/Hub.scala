@@ -11,6 +11,13 @@
  * Copyright (C) 2015-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
+//-----------------------------------------------------------------------
+// <copyright file="Hub.cs" company="Akka.NET Project">
+//     Copyright (C) 2009-2022 Lightbend Inc. <http://www.lightbend.com>
+//     Copyright (C) 2013-2025 .NET Foundation <https://github.com/akkadotnet/akka.net>
+// </copyright>
+//-----------------------------------------------------------------------
+
 package org.apache.pekko.stream.scaladsl
 
 import java.util
@@ -544,6 +551,9 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
      * Each slot uses a LongMap keyed by Consumer.id for O(1) add/remove without Long boxing.
      * Empty slots are null (no backing map allocated), reducing baseline memory and GC pressure.
      * When a slot drains to zero consumers, its map is released (set to null).
+     * 
+     * The refactor to use the LongMap and related code changes is based on
+     * https://github.com/akkadotnet/akka.net/pull/8264
      */
     private val consumerWheel =
       new Array[LongMap[Consumer]](bufferSize * 2)
