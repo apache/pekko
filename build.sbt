@@ -443,12 +443,13 @@ lazy val remote =
         val allTests = (Test / definedTests).value
         val (sendConsistencyTests, otherTests) =
           allTests.partition(_.name.contains("SendConsistency"))
-        val defaultForkOptions = ForkOptions()
+        val forkOptions = ForkOptions()
           .withRunJVMOptions((Test / javaOptions).value.toVector)
+          .withWorkingDirectory(Some(new File(System.getProperty("user.dir"))))
         val otherGroup =
-          Tests.Group("other", otherTests, Tests.SubProcess(defaultForkOptions))
+          Tests.Group("other", otherTests, Tests.SubProcess(forkOptions))
         val sendConsistencyGroups = sendConsistencyTests.map { t =>
-          Tests.Group(t.name, Seq(t), Tests.SubProcess(defaultForkOptions))
+          Tests.Group(t.name, Seq(t), Tests.SubProcess(forkOptions))
         }
         otherGroup +: sendConsistencyGroups
       })
