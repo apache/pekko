@@ -551,7 +551,7 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
      * Each slot uses a LongMap keyed by Consumer.id for O(1) add/remove without Long boxing.
      * Empty slots are null (no backing map allocated), reducing baseline memory and GC pressure.
      * When a slot drains to zero consumers, its map is released (set to null).
-     * 
+     *
      * The refactor to use the LongMap and related code changes is based on
      * https://github.com/akkadotnet/akka.net/pull/8264
      */
