@@ -26,11 +26,19 @@ import pekko.stream.scaladsl.Source
 import pekko.stream.stage._
 import pekko.util.{ OptionVal, PrettyDuration }
 
+import java.util.concurrent.atomic.AtomicBoolean
+
 /** INTERNAL API: Implementation class, not intended to be touched directly by end-users */
 @InternalApi
 private[stream] final case class SourceRefImpl[T](initialPartnerRef: ActorRef) extends SourceRef[T] {
+  private val materialized = new AtomicBoolean(false)
+
+  private[stream] def tryClaimMaterialization(): Boolean =
+    materialized.compareAndSet(false, true)
+
   def source: Source[T, NotUsed] =
-    Source.fromGraph(new SourceRefStageImpl(OptionVal.Some(initialPartnerRef))).mapMaterializedValue(_ => NotUsed)
+    Source.fromGraph(new SourceRefStageImpl(OptionVal.Some(initialPartnerRef), this))
+      .mapMaterializedValue(_ => NotUsed)
 }
 
 /**
@@ -107,7 +115,9 @@ private[stream] final case class SourceRefImpl[T](initialPartnerRef: ActorRef) e
  * If it is none, then we are the side creating the ref.
  */
 @InternalApi
-private[stream] final class SourceRefStageImpl[Out](val initialPartnerRef: OptionVal[ActorRef])
+private[stream] final class SourceRefStageImpl[Out](
+    val initialPartnerRef: OptionVal[ActorRef],
+    private val owner: SourceRefImpl[?] = null)
     extends GraphStageWithMaterializedValue[SourceShape[Out], SinkRef[Out]] { stage =>
   import SourceRefStageImpl._
 
@@ -126,6 +136,10 @@ private[stream] final class SourceRefStageImpl[Out](val initialPartnerRef: Optio
   private[pekko] override def createLogicAndMaterializedValue(
       inheritedAttributes: Attributes,
       eagerMaterializer: Materializer): (GraphStageLogic, SinkRef[Out]) = {
+    if (owner != null && !owner.tryClaimMaterialization())
+      throw new IllegalStateException(
+        "This SourceRef has already been materialized. " +
+        "SourceRef is single-use: calling .source and materializing it more than once is not supported.")
 
     val logic = new TimerGraphStageLogic(shape) with StageLogging with ActorRefStage with OutHandler {
       override protected def logSource: Class[?] = classOf[SourceRefStageImpl[?]]

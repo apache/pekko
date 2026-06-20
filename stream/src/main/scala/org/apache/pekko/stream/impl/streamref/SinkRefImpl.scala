@@ -27,11 +27,19 @@ import pekko.stream.scaladsl.Sink
 import pekko.stream.stage._
 import pekko.util.{ OptionVal, PrettyDuration }
 
+import java.util.concurrent.atomic.AtomicBoolean
+
 /** INTERNAL API: Implementation class, not intended to be touched directly by end-users */
 @InternalApi
 private[stream] final case class SinkRefImpl[In](initialPartnerRef: ActorRef) extends SinkRef[In] {
+  private val materialized = new AtomicBoolean(false)
+
+  private[stream] def tryClaimMaterialization(): Boolean =
+    materialized.compareAndSet(false, true)
+
   override def sink(): Sink[In, NotUsed] =
-    Sink.fromGraph(new SinkRefStageImpl[In](OptionVal.Some(initialPartnerRef))).mapMaterializedValue(_ => NotUsed)
+    Sink.fromGraph(new SinkRefStageImpl[In](OptionVal.Some(initialPartnerRef), this))
+      .mapMaterializedValue(_ => NotUsed)
 }
 
 /**
@@ -48,7 +56,9 @@ private[stream] final case class SinkRefImpl[In](initialPartnerRef: ActorRef) ex
  * the ref.
  */
 @InternalApi
-private[stream] final class SinkRefStageImpl[In] private[pekko] (val initialPartnerRef: OptionVal[ActorRef])
+private[stream] final class SinkRefStageImpl[In] private[pekko] (
+    val initialPartnerRef: OptionVal[ActorRef],
+    private val owner: SinkRefImpl[?] = null)
     extends GraphStageWithMaterializedValue[SinkShape[In], SourceRef[In]] {
   import SinkRefStageImpl.ActorRefStage
 
@@ -67,6 +77,10 @@ private[stream] final class SinkRefStageImpl[In] private[pekko] (val initialPart
   private[pekko] override def createLogicAndMaterializedValue(
       inheritedAttributes: Attributes,
       eagerMaterializer: Materializer): (GraphStageLogic, SourceRef[In]) = {
+    if (owner != null && !owner.tryClaimMaterialization())
+      throw new IllegalStateException(
+        "This SinkRef has already been materialized. " +
+        "SinkRef is single-use: calling .sink() and materializing it more than once is not supported.")
 
     val logic = new TimerGraphStageLogic(shape) with StageLogging with ActorRefStage with InHandler {
       override protected def logSource: Class[?] = classOf[SinkRefStageImpl[?]]
