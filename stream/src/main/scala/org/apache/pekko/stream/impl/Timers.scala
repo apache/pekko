@@ -105,7 +105,7 @@ import pekko.stream.stage._
 
     override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
       new TimerGraphStageLogic(shape) with InHandler with OutHandler {
-        private var nextDeadline: Long = 0L
+        private var nextDeadline: Long = Long.MaxValue
 
         setHandlers(in, out, this)
 
@@ -135,7 +135,7 @@ import pekko.stream.stage._
 
     override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
       new TimerGraphStageLogic(shape) with InHandler with OutHandler {
-        private var nextDeadline: Long = 0L
+        private var nextDeadline: Long = Long.MaxValue
         private var waitingDemand: Boolean = true
 
         setHandlers(in, out, this)
@@ -175,7 +175,7 @@ import pekko.stream.stage._
     override def initialAttributes = DefaultAttributes.idleTimeoutBidi
 
     override def createLogic(inheritedAttributes: Attributes): GraphStageLogic = new TimerGraphStageLogic(shape) {
-      private var nextDeadline: Long = 0L
+      private var nextDeadline: Long = Long.MaxValue
 
       setHandlers(in1, out1, new IdleBidiHandler(in1, out1))
       setHandlers(in2, out2, new IdleBidiHandler(in2, out2))
@@ -246,7 +246,7 @@ import pekko.stream.stage._
 
     override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
       new TimerGraphStageLogic(shape) with StageLogging with InHandler with OutHandler {
-        private var nextDeadline: Long = 0L
+        private var nextDeadline: Long = Long.MaxValue
         private val contextPropagation = ContextPropagation()
 
         setHandlers(in, out, this)

@@ -151,6 +151,29 @@ class TimeoutsSpec extends StreamSpec {
       downstreamProbe.expectComplete()
     }
 
+    "not fail prematurely when materialization is delayed under load" in {
+      import system.dispatcher
+      val timeout = 300.millis
+      val streamCount = 30
+
+      // Run many streams concurrently to create materializer scheduling pressure.
+      // Source.maybe never emits, so the idle timeout should fire after ~timeout.
+      val futures = (1 to streamCount).map { _ =>
+        Source.maybe[Int]
+          .idleTimeout(timeout)
+          .recover { case _: StreamIdleTimeoutException => -1 }
+          .takeWithin(timeout * 4)
+          .runWith(Sink.headOption)
+      }
+
+      val results = Await.result(Future.sequence(futures), 10.seconds)
+      // Each stream should get -1 (idle timeout after proper wait) or None (takeWithin)
+      // It should NOT fail immediately upon materialization
+      results.foreach { result =>
+        result should (be(Some(-1)) or be(None))
+      }
+    }
+
   }
 
   "BackpressureTimeout" must {

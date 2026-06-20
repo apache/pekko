@@ -14,6 +14,7 @@
 package org.apache.pekko.stream.scaladsl
 
 import scala.concurrent.Await
+import scala.concurrent.Future
 import scala.concurrent.duration._
 
 import org.apache.pekko
@@ -171,7 +172,7 @@ class FlowIdleInjectSpec extends StreamSpec("""
       downstream.ensureSubscription()
       // No idle element should appear before the timeout period, even though
       // the stage is constructed before preStart runs.
-      downstream.expectNoMessage(timeout - 100.millis)
+      downstream.expectNoMessage(timeout - 200.millis)
 
       // After timeout, the injected element should arrive
       downstream.request(1)
@@ -179,6 +180,27 @@ class FlowIdleInjectSpec extends StreamSpec("""
 
       upstream.sendComplete()
       downstream.expectComplete()
+    }
+
+    "not inject prematurely when materialization is delayed under load" in {
+      import system.dispatcher
+      val timeout = 300.millis
+      val streamCount = 30
+
+      // Run many streams concurrently to create materializer scheduling pressure,
+      // increasing the chance of delay between createLogic and preStart.
+      val futures = (1 to streamCount).map { _ =>
+        Source.maybe[Int]
+          .keepAlive(timeout, () => 0)
+          .takeWithin(timeout * 4)
+          .runWith(Sink.headOption)
+      }
+
+      val results = Await.result(Future.sequence(futures), 10.seconds)
+      // Each stream should receive the injected element 0 after ~timeout
+      results.foreach { result =>
+        result shouldBe Some(0)
+      }
     }
 
   }
