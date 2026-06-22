@@ -1296,10 +1296,36 @@ private[stream] object Collect {
   override val shape = FlowShape(in, out)
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
-    new GraphStageLogic(shape) with InHandler with OutHandler {
+    new GraphStageLogic(shape) with InHandler with OutHandler with StageLogging {
+
+      override protected def logSource: Class[?] = classOf[MapAsync[?, ?]]
 
       lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
       var buffer: BufferImpl[Holder[Out]] = _
+
+      private def logSupervisionFailure(ex: Throwable): Unit = {
+        val logAt: LogLevel = inheritedAttributes.get[LogLevels] match {
+          case Some(levels) => levels.onFailure
+          case None         => LogLevels.defaultErrorLevel(materializer.system)
+        }
+        logAt match {
+          case Logging.ErrorLevel =>
+            log.error(ex, "Supervision strategy resumed after exception in MapAsync: {}", ex.getMessage)
+          case Logging.WarningLevel =>
+            log.warning(ex, "Supervision strategy resumed after exception in MapAsync: {}", ex.getMessage)
+          case Logging.InfoLevel =>
+            log.info(
+              "Supervision strategy resumed after exception in MapAsync: {}: {}",
+              Logging.simpleName(ex.getClass),
+              ex.getMessage)
+          case Logging.DebugLevel =>
+            log.debug(
+              "Supervision strategy resumed after exception in MapAsync: {}: {}",
+              Logging.simpleName(ex.getClass),
+              ex.getMessage)
+          case _ => // Off, nop
+        }
+      }
 
       private val futureCB = getAsyncCallback[Holder[Out]](holder =>
         holder.elem match {
@@ -1348,7 +1374,9 @@ private[stream] object Collect {
 
         } catch {
           // this logic must only be executed if f throws, not if the future is failed
-          case NonFatal(ex) => if (decider(ex) == Supervision.Stop) failStage(ex)
+          case NonFatal(ex) =>
+            if (decider(ex) == Supervision.Stop) failStage(ex)
+            else logSupervisionFailure(ex)
         }
 
         pullIfNeeded()
@@ -1380,6 +1408,7 @@ private[stream] object Collect {
                 case Supervision.Stop => failStage(ex)
                 case _                =>
                   // try next element
+                  logSupervisionFailure(ex)
                   pushNextIfPossible()
               }
             case Failure(ex) =>
@@ -1413,8 +1442,10 @@ private[stream] object Collect {
   override val shape = FlowShape(in, out)
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
-    new GraphStageLogic(shape) with InHandler with OutHandler {
+    new GraphStageLogic(shape) with InHandler with OutHandler with StageLogging {
       override def toString = s"MapAsyncUnordered.Logic(inFlight=$inFlight, buffer=$buffer)"
+
+      override protected def logSource: Class[?] = classOf[MapAsyncUnordered[?, ?]]
 
       private lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
 
@@ -1423,6 +1454,30 @@ private[stream] object Collect {
       private val invokeFutureCB: Try[Out] => Unit = getAsyncCallback(futureCompleted).invoke
 
       private def todo: Int = inFlight + buffer.used
+
+      private def logSupervisionFailure(ex: Throwable): Unit = {
+        val logAt: LogLevel = inheritedAttributes.get[LogLevels] match {
+          case Some(levels) => levels.onFailure
+          case None         => LogLevels.defaultErrorLevel(materializer.system)
+        }
+        logAt match {
+          case Logging.ErrorLevel =>
+            log.error(ex, "Supervision strategy resumed after exception in MapAsyncUnordered: {}", ex.getMessage)
+          case Logging.WarningLevel =>
+            log.warning(ex, "Supervision strategy resumed after exception in MapAsyncUnordered: {}", ex.getMessage)
+          case Logging.InfoLevel =>
+            log.info(
+              "Supervision strategy resumed after exception in MapAsyncUnordered: {}: {}",
+              Logging.simpleName(ex.getClass),
+              ex.getMessage)
+          case Logging.DebugLevel =>
+            log.debug(
+              "Supervision strategy resumed after exception in MapAsyncUnordered: {}: {}",
+              Logging.simpleName(ex.getClass),
+              ex.getMessage)
+          case _ => // Off, nop
+        }
+      }
 
       override def preStart(): Unit = buffer = BufferImpl(parallelism, inheritedAttributes)
 
@@ -1441,8 +1496,11 @@ private[stream] object Collect {
             else if (!hasBeenPulled(in)) tryPull(in)
           case Failure(ex) =>
             if (decider(ex) == Supervision.Stop) failStage(ex)
-            else if (isCompleted) completeStage()
-            else if (!hasBeenPulled(in)) tryPull(in)
+            else {
+              logSupervisionFailure(ex)
+              if (isCompleted) completeStage()
+              else if (!hasBeenPulled(in)) tryPull(in)
+            }
         }
       }
 
@@ -1455,7 +1513,9 @@ private[stream] object Collect {
             case Some(v) => futureCompleted(v)
           }
         } catch {
-          case NonFatal(ex) => if (decider(ex) == Supervision.Stop) failStage(ex)
+          case NonFatal(ex) =>
+            if (decider(ex) == Supervision.Stop) failStage(ex)
+            else logSupervisionFailure(ex)
         }
         if (todo < parallelism && !hasBeenPulled(in)) tryPull(in)
       }

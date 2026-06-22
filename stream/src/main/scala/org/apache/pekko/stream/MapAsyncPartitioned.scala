@@ -25,7 +25,10 @@ import scala.util.control.{ NoStackTrace, NonFatal }
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
+import pekko.event.Logging
+import pekko.event.Logging.LogLevel
 import pekko.stream.ActorAttributes.SupervisionStrategy
+import pekko.stream.Attributes.LogLevels
 import pekko.stream.stage._
 import pekko.util.OptionVal
 
@@ -82,8 +85,10 @@ private[stream] final class MapAsyncPartitioned[In, Out, Partition](
   override val shape: FlowShape[In, Out] = FlowShape(in, out)
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
-    new GraphStageLogic(shape) with InHandler with OutHandler {
+    new GraphStageLogic(shape) with InHandler with OutHandler with StageLogging {
       private val contextPropagation = pekko.stream.impl.ContextPropagation()
+
+      override protected def logSource: Class[?] = classOf[MapAsyncPartitioned[?, ?, ?]]
 
       private final class Contextual[T](context: AnyRef, val element: T) {
         private var suspended = false
@@ -106,6 +111,30 @@ private[stream] final class MapAsyncPartitioned[In, Out, Partition](
 
       private var partitionsInProgress: mutable.Set[Partition] = _
       private var buffer: mutable.Queue[(Partition, Contextual[Holder[In, Out]])] = _
+
+      private def logSupervisionFailure(ex: Throwable): Unit = {
+        val logAt: LogLevel = inheritedAttributes.get[LogLevels] match {
+          case Some(levels) => levels.onFailure
+          case None         => LogLevels.defaultErrorLevel(materializer.system)
+        }
+        logAt match {
+          case Logging.ErrorLevel =>
+            log.error(ex, "Supervision strategy resumed after exception in MapAsyncPartitioned: {}", ex.getMessage)
+          case Logging.WarningLevel =>
+            log.warning(ex, "Supervision strategy resumed after exception in MapAsyncPartitioned: {}", ex.getMessage)
+          case Logging.InfoLevel =>
+            log.info(
+              "Supervision strategy resumed after exception in MapAsyncPartitioned: {}: {}",
+              Logging.simpleName(ex.getClass),
+              ex.getMessage)
+          case Logging.DebugLevel =>
+            log.debug(
+              "Supervision strategy resumed after exception in MapAsyncPartitioned: {}: {}",
+              Logging.simpleName(ex.getClass),
+              ex.getMessage)
+          case _ => // Off, nop
+        }
+      }
 
       private val futureCB = getAsyncCallback[Holder[In, Out]](holder =>
         holder.out match {
@@ -142,7 +171,9 @@ private[stream] final class MapAsyncPartitioned[In, Out, Partition](
             wrappedInput.suspend()
           }
         } catch {
-          case NonFatal(ex) => if (decider(ex) == Supervision.Stop) failStage(ex)
+          case NonFatal(ex) =>
+            if (decider(ex) == Supervision.Stop) failStage(ex)
+            else logSupervisionFailure(ex)
         }
 
         pullIfNeeded()
@@ -201,7 +232,8 @@ private[stream] final class MapAsyncPartitioned[In, Out, Partition](
                   case Supervision.Stop =>
                     failStage(ex)
                   case _ =>
-                  // try next element
+                    // try next element
+                    logSupervisionFailure(ex)
                 }
               case Failure(ex) =>
                 // fatal exception in buffer, not sure that it can actually happen, but for good measure
@@ -242,7 +274,8 @@ private[stream] final class MapAsyncPartitioned[In, Out, Partition](
                     case Supervision.Stop =>
                       failStage(ex)
                     case _ =>
-                    // try next element
+                      // try next element
+                      logSupervisionFailure(ex)
                   }
                 case Failure(ex) =>
                   // fatal exception in buffer, not sure that it can actually happen, but for good measure

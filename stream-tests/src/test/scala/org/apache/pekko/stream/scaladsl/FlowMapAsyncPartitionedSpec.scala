@@ -27,10 +27,12 @@ import scala.concurrent.duration._
 import org.apache.pekko
 import pekko.Done
 import pekko.stream.ActorAttributes
+import pekko.stream.Attributes
 import pekko.stream.Supervision
 import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.stream.testkit.scaladsl.TestSource
+import pekko.testkit.EventFilter
 import pekko.testkit.TestDuration
 import pekko.testkit.TestLatch
 import pekko.testkit.TestProbe
@@ -576,6 +578,59 @@ class FlowMapAsyncPartitionedSpec extends StreamSpec with WithLogCapturing {
       deciderTest { (elem, _) =>
         if (elem) Future.failed(thisWillNotStand)
         else Future.successful(elem)
+      }
+    }
+
+    "log error when future fails with resume supervision (ordered)" in {
+      EventFilter.error(
+        start = "Supervision strategy resumed after exception in MapAsyncPartitioned",
+        occurrences = 1).intercept {
+        val result = Source(1 to 5)
+          .mapAsyncPartitioned(4)(_ % 2) { (n, _) =>
+            if (n == 3) Future.failed(TE("err3"))
+            else Future.successful(n)
+          }
+          .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+          .runWith(Sink.seq)
+
+        result.futureValue should ===(Seq(1, 2, 4, 5))
+      }
+    }
+
+    "log error when future fails with resume supervision (unordered)" in {
+      EventFilter.error(
+        start = "Supervision strategy resumed after exception in MapAsyncPartitioned",
+        occurrences = 1).intercept {
+        val result = Source(1 to 5)
+          .mapAsyncPartitionedUnordered(4)(_ % 2) { (n, _) =>
+            if (n == 3) Future.failed(TE("err3"))
+            else Future.successful(n)
+          }
+          .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+          .runWith(Sink.seq)
+
+        result.futureValue.toSet should ===(Set(1, 2, 4, 5))
+      }
+    }
+
+    "not log when log level is Off and resume supervision is used" in {
+      EventFilter.error(
+        start = "Supervision strategy resumed after exception in MapAsyncPartitioned",
+        occurrences = 0).intercept {
+        val result = Source(1 to 5)
+          .mapAsyncPartitioned(4)(_ % 2) { (n, _) =>
+            if (n == 3) Future.failed(TE("err3"))
+            else Future.successful(n)
+          }
+          .withAttributes(
+            ActorAttributes.supervisionStrategy(Supervision.resumingDecider) and
+            Attributes.logLevels(
+              onElement = Attributes.LogLevels.Off,
+              onFinish = Attributes.LogLevels.Off,
+              onFailure = Attributes.LogLevels.Off))
+          .runWith(Sink.seq)
+
+        result.futureValue should ===(Seq(1, 2, 4, 5))
       }
     }
   }
