@@ -432,7 +432,7 @@ import pekko.stream.stage._
          */
         try processEvent(connection)
         catch {
-          case NonFatal(ex) => reportStageError(ex)
+          case NonFatal(e) => reportStageError(e)
         }
         if (pendingFinalization) {
           pendingFinalization = false
@@ -468,7 +468,7 @@ import pekko.stream.stage._
           chasedPush = NoEvent
           try processPush(connection)
           catch {
-            case NonFatal(ex) => reportStageError(ex)
+            case NonFatal(e) => reportStageError(e)
           }
           if (pendingFinalization) {
             pendingFinalization = false
@@ -482,7 +482,7 @@ import pekko.stream.stage._
           chasedPull = NoEvent
           try processPull(connection)
           catch {
-            case NonFatal(ex) => reportStageError(ex)
+            case NonFatal(e) => reportStageError(e)
           }
           if (pendingFinalization) {
             pendingFinalization = false
