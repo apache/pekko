@@ -366,6 +366,49 @@ import pekko.stream.stage._
     shutdownCounter.map(x => if (x >= KeepGoingFlag) s"${x & KeepGoingMask}(KeepGoing)" else x.toString).mkString(",")
 
   /**
+   * INTERNAL API
+   *
+   * Reports a stage error: logs it according to the configured level, fails the active stage, and aborts any
+   * in-flight event chasing by re-enqueuing chased events. Lifted out of [[execute]] to shrink the hot loop's
+   * bytecode and give the JIT a tighter compile target for inlining `processPush`/`processPull` — the nested
+   * `def` that previously lived inside the loop was already compiled as a synthetic method on this class (Scala
+   * 2.13 does not allocate a fresh closure per iteration when the body only references class fields), so the
+   * gain here is purely in method-body size, not in allocation reduction.
+   */
+  private def reportStageError(e: Throwable): Unit = {
+    if (activeStage eq null) throw e
+    else {
+      val logAt: Logging.LogLevel = activeStage.attributes.get[LogLevels] match {
+        case Some(levels) => levels.onFailure
+        case None         => defaultErrorReportingLogLevel
+      }
+      logAt match {
+        case Logging.ErrorLevel =>
+          log.error(e, "Error in stage [{}]: {}", activeStage.toString, e.getMessage)
+        case Logging.WarningLevel =>
+          log.warning(e, "Error in stage [{}]: {}", activeStage.toString, e.getMessage)
+        case Logging.InfoLevel =>
+          log.info("Error in stage [{}]: {}", activeStage.toString, e.getMessage)
+        case Logging.DebugLevel =>
+          log.debug("Error in stage [{}]: {}", activeStage.toString, e.getMessage)
+        case _ => // Off, nop
+      }
+      activeStage.failStage(e)
+
+      // Abort chasing
+      chaseCounter = 0
+      if (chasedPush ne NoEvent) {
+        enqueue(chasedPush)
+        chasedPush = NoEvent
+      }
+      if (chasedPull ne NoEvent) {
+        enqueue(chasedPull)
+        chasedPull = NoEvent
+      }
+    }
+  }
+
+  /**
    * Executes pending events until the given limit is met. If there were remaining events, isSuspended will return
    * true.
    */
@@ -381,39 +424,6 @@ import pekko.stream.stage._
         val connection = dequeue()
         eventsRemaining -= 1
         chaseCounter = math.min(ChaseLimit, eventsRemaining)
-
-        def reportStageError(e: Throwable): Unit = {
-          if (activeStage eq null) throw e
-          else {
-            val logAt: Logging.LogLevel = activeStage.attributes.get[LogLevels] match {
-              case Some(levels) => levels.onFailure
-              case None         => defaultErrorReportingLogLevel
-            }
-            logAt match {
-              case Logging.ErrorLevel =>
-                log.error(e, "Error in stage [{}]: {}", activeStage.toString, e.getMessage)
-              case Logging.WarningLevel =>
-                log.warning(e, "Error in stage [{}]: {}", activeStage.toString, e.getMessage)
-              case Logging.InfoLevel =>
-                log.info("Error in stage [{}]: {}", activeStage.toString, e.getMessage)
-              case Logging.DebugLevel =>
-                log.debug("Error in stage [{}]: {}", activeStage.toString, e.getMessage)
-              case _ => // Off, nop
-            }
-            activeStage.failStage(e)
-
-            // Abort chasing
-            chaseCounter = 0
-            if (chasedPush ne NoEvent) {
-              enqueue(chasedPush)
-              chasedPush = NoEvent
-            }
-            if (chasedPull ne NoEvent) {
-              enqueue(chasedPull)
-              chasedPull = NoEvent
-            }
-          }
-        }
 
         /*
          * This is the "normal" event processing code which dequeues directly from the internal event queue. Since
