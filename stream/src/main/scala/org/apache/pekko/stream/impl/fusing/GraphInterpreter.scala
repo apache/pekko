@@ -369,10 +369,13 @@ import pekko.stream.stage._
    * INTERNAL API
    *
    * Reports a stage error: logs it according to the configured level, fails the active stage, and aborts any
-   * in-flight event chasing by re-enqueuing chased events. Extracted out of [[execute]] to keep the hot loop
-   * free of per-iteration closure captures and to give the JIT a tighter compile target.
+   * in-flight event chasing by re-enqueuing chased events. Lifted out of [[execute]] to shrink the hot loop's
+   * bytecode and give the JIT a tighter compile target for inlining `processPush`/`processPull` — the nested
+   * `def` that previously lived inside the loop was already compiled as a synthetic method on this class (Scala
+   * 2.13 does not allocate a fresh closure per iteration when the body only references class fields), so the
+   * gain here is purely in method-body size, not in allocation reduction.
    */
-  @InternalApi private[stream] def reportStageError(e: Throwable): Unit = {
+  @InternalApi private def reportStageError(e: Throwable): Unit = {
     if (activeStage eq null) throw e
     else {
       val logAt: Logging.LogLevel = activeStage.attributes.get[LogLevels] match {
@@ -465,7 +468,7 @@ import pekko.stream.stage._
           chasedPush = NoEvent
           try processPush(connection)
           catch {
-            case NonFatal(e) => reportStageError(e)
+            case NonFatal(ex) => reportStageError(ex)
           }
           if (pendingFinalization) {
             pendingFinalization = false
@@ -479,7 +482,7 @@ import pekko.stream.stage._
           chasedPull = NoEvent
           try processPull(connection)
           catch {
-            case NonFatal(e) => reportStageError(e)
+            case NonFatal(ex) => reportStageError(ex)
           }
           if (pendingFinalization) {
             pendingFinalization = false
