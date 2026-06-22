@@ -2308,7 +2308,7 @@ final class SubFlow[In, Out, Mat](
    *                        When `propagateCancellation` is `true`, cancellation or failure of
    *                        the side [[Sink]] also cancels the downstream.
    *
-   * @since 1.2.0
+   * @since 2.0.0
    */
   def alsoTo(that: Graph[SinkShape[Out], ?], propagateCancellation: Boolean): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.alsoTo(that, propagateCancellation))

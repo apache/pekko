@@ -1425,7 +1425,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *                        When `propagateCancellation` is `true`, cancellation or failure of
    *                        the side [[Sink]] also cancels the downstream.
    *
-   * @since 1.2.0
+   * @since 2.0.0
    */
   def alsoTo(that: Graph[SinkShape[Out], ?], propagateCancellation: Boolean): javadsl.Source[Out, Mat] =
     new Source(delegate.alsoTo(that, propagateCancellation))
@@ -1474,7 +1474,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * It is recommended to use the internally optimized `Keep.left` and `Keep.right` combiners
    * where appropriate instead of manually writing functions that pass through one of the values.
    *
-   * @since 1.2.0
+   * @since 2.0.0
    */
   def alsoToMat[M2, M3](
       that: Graph[SinkShape[Out], M2],

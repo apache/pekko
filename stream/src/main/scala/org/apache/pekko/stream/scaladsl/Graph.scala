@@ -794,7 +794,7 @@ private[pekko] final class ResilientAlsoTo[T] extends GraphStage[FanOutShape2[T,
   val in: Inlet[T] = Inlet[T]("ResilientAlsoTo.in")
   val outMain: Outlet[T] = Outlet[T]("ResilientAlsoTo.outMain")
   val outSide: Outlet[T] = Outlet[T]("ResilientAlsoTo.outSide")
-  override def initialAttributes: Attributes = DefaultAttributes.resilientAlsoTo
+  override def initialAttributes: Attributes = Attributes.name("resilientAlsoTo")
   override val shape: FanOutShape2[T, T, T] = new FanOutShape2(in, outMain, outSide)
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =

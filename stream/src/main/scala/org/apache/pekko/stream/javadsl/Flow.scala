@@ -3301,7 +3301,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *                        When `propagateCancellation` is `true`, cancellation or failure of
    *                        the side [[Sink]] also cancels the downstream.
    *
-   * @since 1.2.0
+   * @since 2.0.0
    */
   def alsoTo(that: Graph[SinkShape[Out], ?], propagateCancellation: Boolean): javadsl.Flow[In, Out, Mat] =
     new Flow(delegate.alsoTo(that, propagateCancellation))
@@ -3350,7 +3350,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * It is recommended to use the internally optimized `Keep.left` and `Keep.right` combiners
    * where appropriate instead of manually writing functions that pass through one of the values.
    *
-   * @since 1.2.0
+   * @since 2.0.0
    */
   def alsoToMat[M2, M3](
       that: Graph[SinkShape[Out], M2],

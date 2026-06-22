@@ -103,7 +103,6 @@ import pekko.stream.Attributes._
     val onErrorComplete = name("onErrorComplete")
     val broadcast = name("broadcast")
     val wireTap = name("wireTap")
-    val resilientAlsoTo = name("resilientAlsoTo")
     val balance = name("balance")
     val zip = name("zip")
     val zipLatest = name("zipLatest")

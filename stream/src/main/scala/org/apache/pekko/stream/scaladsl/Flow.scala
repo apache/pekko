@@ -4042,7 +4042,7 @@ trait FlowOps[+Out, +Mat] {
    *                        When `propagateCancellation` is `true`, cancellation or failure of
    *                        the side [[Sink]] also cancels the downstream.
    *
-   * @since 1.2.0
+   * @since 2.0.0
    */
   def alsoTo(that: Graph[SinkShape[Out], ?], propagateCancellation: Boolean): Repr[Out] =
     if (propagateCancellation) alsoTo(that)
@@ -4583,7 +4583,7 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    * It is recommended to use the internally optimized `Keep.left` and `Keep.right` combiners
    * where appropriate instead of manually writing functions that pass through one of the values.
    *
-   * @since 1.2.0
+   * @since 2.0.0
    */
   def alsoToMat[Mat2, Mat3](that: Graph[SinkShape[Out], Mat2], propagateCancellation: Boolean)(
       matF: (Mat, Mat2) => Mat3): ReprMat[Out, Mat3] =
