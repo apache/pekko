@@ -375,7 +375,7 @@ import pekko.stream.stage._
    * 2.13 does not allocate a fresh closure per iteration when the body only references class fields), so the
    * gain here is purely in method-body size, not in allocation reduction.
    */
-  @InternalApi private def reportStageError(e: Throwable): Unit = {
+  private def reportStageError(e: Throwable): Unit = {
     if (activeStage eq null) throw e
     else {
       val logAt: Logging.LogLevel = activeStage.attributes.get[LogLevels] match {
