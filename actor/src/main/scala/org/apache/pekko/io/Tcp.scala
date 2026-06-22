@@ -316,7 +316,7 @@ object Tcp extends ExtensionId[TcpExt] with ExtensionIdProvider {
   }
 
   /**
-   * Common supertype of [[Write]] and [[WriteFile]].
+   * Common supertype of [[Write]] and [[WritePath]].
    */
   sealed abstract class SimpleWriteCommand extends WriteCommand {
     require(ack != null, "ack must be non-null. Use NoAck if you don't want acks.")
@@ -383,7 +383,7 @@ object Tcp extends ExtensionId[TcpExt] with ExtensionIdProvider {
 
   /**
    * A write command which aggregates two other write commands. Using this construct
-   * you can chain a number of [[Write]] and/or [[WriteFile]] commands together in a way
+   * you can chain a number of [[Write]] and/or [[WritePath]] commands together in a way
    * that allows them to be handled as a single write which gets written out to the
    * network as quickly as possible.
    * If the sub commands contain `ack` requests they will be honored as soon as the
