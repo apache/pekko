@@ -4052,9 +4052,9 @@ trait FlowOps[+Out, +Mat] {
       that: Graph[SinkShape[Out], M]): Graph[FlowShape[Out @uncheckedVariance, Out], M] =
     GraphDSL.createGraph(that) { implicit b => r =>
       import GraphDSL.Implicits._
-      val stage = b.add(new ResilientAlsoTo[Out])
-      stage.out1 ~> r
-      FlowShape(stage.in, stage.out0)
+      val bcast = b.add(Broadcast[Out](2, eagerCancel = true, nonEagerCancelOutputs = Set(1)))
+      bcast.out(1) ~> r
+      FlowShape(bcast.in, bcast.out(0))
     }
 
   /**
