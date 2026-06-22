@@ -95,6 +95,14 @@ trait FlowWithContextOps[+Out, +Ctx, +Mat] {
   def alsoTo(that: Graph[SinkShape[Out], ?]): Repr[Out, Ctx]
 
   /**
+   * Data variant of [[pekko.stream.scaladsl.FlowOps.alsoTo]] with configurable cancellation propagation.
+   *
+   * @see [[pekko.stream.scaladsl.FlowOps.alsoTo]]
+   * @since 1.2.0
+   */
+  def alsoTo(that: Graph[SinkShape[Out], ?], propagateCancellation: Boolean): Repr[Out, Ctx]
+
+  /**
    * Context variant of [[pekko.stream.scaladsl.FlowOps.alsoTo]]
    *
    * @see [[pekko.stream.scaladsl.FlowOps.alsoTo]]

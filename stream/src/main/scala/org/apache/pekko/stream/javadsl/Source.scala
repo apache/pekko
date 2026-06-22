@@ -1407,6 +1407,30 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
     new Source(delegate.alsoTo(that))
 
   /**
+   * Attaches the given [[Sink]] to this [[Source]], meaning that elements that pass
+   * through will also be sent to the [[Sink]].
+   *
+   * When `propagateCancellation` is `false`, cancellation or failure of the side [[Sink]]
+   * will not cancel the main stream. Elements will continue to flow to the main downstream only.
+   *
+   * When `propagateCancellation` is `true` (the default), this behaves identically to [[#alsoTo]].
+   *
+   * '''Emits when''' element is available and demand exists both from the Sink and the downstream.
+   *
+   * '''Backpressures when''' downstream or Sink backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels (the side [[Sink]] is also cancelled).
+   *                        When `propagateCancellation` is `true`, cancellation or failure of
+   *                        the side [[Sink]] also cancels the downstream.
+   *
+   * @since 1.2.0
+   */
+  def alsoTo(that: Graph[SinkShape[Out], ?], propagateCancellation: Boolean): javadsl.Source[Out, Mat] =
+    new Source(delegate.alsoTo(that, propagateCancellation))
+
+  /**
    * Attaches the given [[Sink]]s to this [[Source]], meaning that elements that passes
    * through will also be sent to all those [[Sink]]s.
    *
@@ -1440,6 +1464,23 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
       that: Graph[SinkShape[Out], M2],
       matF: function.Function2[Mat, M2, M3]): javadsl.Source[Out, M3] =
     new Source(delegate.alsoToMat(that)(combinerToScala(matF)))
+
+  /**
+   * Attaches the given [[Sink]] to this [[Source]], meaning that elements that pass
+   * through will also be sent to the [[Sink]].
+   *
+   * @see [[#alsoTo]]
+   *
+   * It is recommended to use the internally optimized `Keep.left` and `Keep.right` combiners
+   * where appropriate instead of manually writing functions that pass through one of the values.
+   *
+   * @since 1.2.0
+   */
+  def alsoToMat[M2, M3](
+      that: Graph[SinkShape[Out], M2],
+      propagateCancellation: Boolean,
+      matF: function.Function2[Mat, M2, M3]): javadsl.Source[Out, M3] =
+    new Source(delegate.alsoToMat(that, propagateCancellation)(combinerToScala(matF)))
 
   /**
    * Attaches the given [[Sink]] to this [[Flow]], meaning that elements will be sent to the [[Sink]]

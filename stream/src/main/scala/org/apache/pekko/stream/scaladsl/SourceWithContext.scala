@@ -166,6 +166,10 @@ final class SourceWithContext[+Out, +Ctx, +Mat] private[stream] (delegate: Sourc
   override def alsoTo(that: Graph[SinkShape[Out], ?]): Repr[Out, Ctx] =
     SourceWithContext.fromTuples(delegate.alsoTo(Sink.contramapImpl(that, (in: (Out, Ctx)) => in._1)))
 
+  override def alsoTo(that: Graph[SinkShape[Out], ?], propagateCancellation: Boolean): Repr[Out, Ctx] =
+    SourceWithContext.fromTuples(
+      delegate.alsoTo(Sink.contramapImpl(that, (in: (Out, Ctx)) => in._1), propagateCancellation))
+
   override def alsoToContext(that: Graph[SinkShape[Ctx], ?]): Repr[Out, Ctx] =
     SourceWithContext.fromTuples(delegate.alsoTo(Sink.contramapImpl(that, (in: (Out, Ctx)) => in._2)))
 

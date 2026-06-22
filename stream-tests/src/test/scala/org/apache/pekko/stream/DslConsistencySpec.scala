@@ -90,6 +90,7 @@ class DslConsistencySpec extends AnyWordSpec with Matchers {
     "concatGraph",
     "prependGraph",
     "alsoToGraph",
+    "resilientAlsoToGraph",
     "wireTapGraph",
     "orElseGraph",
     "divertToGraph",

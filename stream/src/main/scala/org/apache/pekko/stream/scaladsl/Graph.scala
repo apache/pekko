@@ -30,7 +30,7 @@ import pekko.stream.impl._
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.fusing.GraphStages
 import pekko.stream.scaladsl.Partition.PartitionOutOfBoundsException
-import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
+import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler, StageLogging }
 import pekko.util.ConstantFun
 
 /**
@@ -779,6 +779,110 @@ private[stream] final class WireTap[T] extends GraphStage[FanOutShape2[T, T, T]]
       setHandlers(in, outMain, this)
     }
   override def toString = "WireTap"
+}
+
+/**
+ * INTERNAL API
+ *
+ * A `Broadcast`-like stage with two outputs where cancellation of the side output (out1)
+ * does not cancel the stage. Elements continue flowing to the main output (out0) after
+ * the side output cancels or fails. Cancellation of the main output cancels the stage.
+ *
+ * Backpressures when either output backpressures (same contract as `alsoTo` / `Broadcast`).
+ */
+private[pekko] final class ResilientAlsoTo[T] extends GraphStage[FanOutShape2[T, T, T]] {
+  val in: Inlet[T] = Inlet[T]("ResilientAlsoTo.in")
+  val outMain: Outlet[T] = Outlet[T]("ResilientAlsoTo.outMain")
+  val outSide: Outlet[T] = Outlet[T]("ResilientAlsoTo.outSide")
+  override def initialAttributes: Attributes = DefaultAttributes.resilientAlsoTo
+  override val shape: FanOutShape2[T, T, T] = new FanOutShape2(in, outMain, outSide)
+
+  override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
+    new GraphStageLogic(shape) with InHandler with OutHandler with StageLogging {
+
+      private var pendingElement: Option[T] = None
+      private var mainReady = false
+      private var sideReady = false
+
+      override def onPush(): Unit = {
+        val elem = grab(in)
+        if (isClosed(outSide)) {
+          push(outMain, elem)
+        } else if (mainReady && sideReady) {
+          push(outMain, elem)
+          push(outSide, elem)
+          mainReady = false
+          sideReady = false
+        } else {
+          pendingElement = Some(elem)
+        }
+      }
+
+      override def onPull(): Unit = {
+        mainReady = true
+        tryPushAndPull()
+      }
+
+      override def onDownstreamFinish(cause: Throwable): Unit =
+        cancelStage(cause)
+
+      private def tryPushAndPull(): Unit = {
+        pendingElement match {
+          case Some(elem) =>
+            if (isClosed(outSide)) {
+              push(outMain, elem)
+              pendingElement = None
+              mainReady = false
+            } else if (mainReady && sideReady) {
+              push(outMain, elem)
+              push(outSide, elem)
+              pendingElement = None
+              mainReady = false
+              sideReady = false
+            }
+          case None =>
+            if (mainReady && (sideReady || isClosed(outSide)) && !hasBeenPulled(in))
+              pull(in)
+        }
+      }
+
+      setHandler(
+        outSide,
+        new OutHandler {
+          override def onPull(): Unit = {
+            sideReady = true
+            tryPushAndPull()
+          }
+
+          override def onDownstreamFinish(cause: Throwable): Unit = {
+            if (!cause.isInstanceOf[SubscriptionWithCancelException.NonFailureCancellation])
+              log.warning("ResilientAlsoTo: side sink failed, continuing main stream: {}", cause.getMessage)
+            else
+              log.debug("ResilientAlsoTo: side sink cancelled")
+            pendingElement match {
+              case Some(elem) =>
+                if (mainReady) {
+                  push(outMain, elem)
+                  mainReady = false
+                }
+                pendingElement = None
+              case None =>
+            }
+            sideReady = false
+            setHandler(in,
+              new InHandler {
+                override def onPush(): Unit =
+                  push(outMain, grab(in))
+              })
+            if (mainReady && !hasBeenPulled(in))
+              pull(in)
+          }
+        })
+
+      setHandlers(in, outMain, this)
+    }
+
+  override def toString = "ResilientAlsoTo"
 }
 
 object Partition {
