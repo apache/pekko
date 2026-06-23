@@ -423,7 +423,7 @@ class NettyTransport(val settings: NettyTransportSettings, val system: ExtendedA
   private def sslHandler(isClient: Boolean): SslHandler = {
     sslEngineProvider match {
       case OptionVal.Some(sslProvider) =>
-        NettySSLSupport(sslProvider, isClient)
+        NettySSLSupport(sslProvider, isClient, log)
       case _ =>
         throw new IllegalStateException("Expected enable-ssl=on")
     }

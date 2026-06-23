@@ -21,6 +21,7 @@ import io.netty.handler.ssl.SslHandler
 import io.netty.util.concurrent.Future
 
 import com.typesafe.config.Config
+import org.apache.pekko.event.MarkerLoggingAdapter
 
 /**
  * INTERNAL API
@@ -60,13 +61,18 @@ private[pekko] object NettySSLSupport {
   /**
    * Construct a SSLHandler which can be inserted into a Netty server/client pipeline
    */
-  def apply(sslEngineProvider: SSLEngineProvider, isClient: Boolean): SslHandler = {
+  def apply(sslEngineProvider: SSLEngineProvider, isClient: Boolean, log: MarkerLoggingAdapter): SslHandler = {
     val sslEngine =
       if (isClient) sslEngineProvider.createClientSSLEngine()
       else sslEngineProvider.createServerSSLEngine()
     val handler = new SslHandler(sslEngine)
     handler.handshakeFuture().addListener((future: Future[Channel]) => {
       if (!future.isSuccess) {
+        val cause = if (future.cause() != null) future.cause() else null
+        log.warning(
+          "TLS handshake failed for remote address [{}]. {}",
+          sslEngine.getPeerHost,
+          if (cause != null) cause.getMessage else "unknown cause")
         handler.closeOutbound().channel().close()
       }
     })
