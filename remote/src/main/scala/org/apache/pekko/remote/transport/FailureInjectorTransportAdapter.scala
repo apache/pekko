@@ -14,7 +14,6 @@
 package org.apache.pekko.remote.transport
 
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ThreadLocalRandom
 
 import scala.annotation.nowarn
 import scala.concurrent.{ Future, Promise }
@@ -75,7 +74,6 @@ private[remote] class FailureInjectorTransportAdapter(
     extends AbstractTransportAdapter(wrappedTransport)(extendedSystem.dispatchers.internalDispatcher)
     with AssociationEventListener {
 
-  private def rng = ThreadLocalRandom.current()
   private val log = Logging(extendedSystem, classOf[FailureInjectorTransportAdapter])
   private val shouldDebugLog: Boolean = extendedSystem.settings.config.getBoolean("pekko.remote.classic.gremlin.debug")
 
@@ -138,7 +136,7 @@ private[remote] class FailureInjectorTransportAdapter(
     chaosMode(remoteAddress) match {
       case PassThru              => false
       case Drop(_, inboundDropP) =>
-        if (rng.nextDouble() <= inboundDropP) {
+        if (extendedSystem.randomGenerator().nextDouble() <= inboundDropP) {
           if (shouldDebugLog)
             log.debug("Dropping inbound [{}] for [{}] {}", instance.getClass, remoteAddress, debugMessage)
           true
@@ -149,7 +147,7 @@ private[remote] class FailureInjectorTransportAdapter(
     chaosMode(remoteAddress) match {
       case PassThru               => false
       case Drop(outboundDropP, _) =>
-        if (rng.nextDouble() <= outboundDropP) {
+        if (extendedSystem.randomGenerator().nextDouble() <= outboundDropP) {
           if (shouldDebugLog)
             log.debug("Dropping outbound [{}] for [{}] {}", instance.getClass, remoteAddress, debugMessage)
           true
