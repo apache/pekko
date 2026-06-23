@@ -16,6 +16,7 @@ package org.apache.pekko.persistence.typed.internal
 import org.apache.pekko
 import pekko.actor.typed.ActorSystem
 import pekko.annotation.InternalApi
+import pekko.util.Helpers.toRootLowerCase
 
 import com.typesafe.config.Config
 
@@ -53,7 +54,7 @@ import com.typesafe.config.Config
   ): EventSourcedSettings = {
     val typedConfig = config.getConfig("pekko.persistence.typed")
 
-    val stashOverflowStrategy = typedConfig.getString("stash-overflow-strategy").toLowerCase match {
+    val stashOverflowStrategy = toRootLowerCase(typedConfig.getString("stash-overflow-strategy")) match {
       case "drop"  => StashOverflowStrategy.Drop
       case "fail"  => StashOverflowStrategy.Fail
       case unknown =>

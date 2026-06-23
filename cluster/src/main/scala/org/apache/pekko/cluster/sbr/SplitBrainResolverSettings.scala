@@ -13,7 +13,6 @@
 
 package org.apache.pekko.cluster.sbr
 
-import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 import scala.concurrent.duration._
@@ -21,8 +20,7 @@ import scala.concurrent.duration._
 import org.apache.pekko
 import pekko.ConfigurationException
 import pekko.annotation.InternalApi
-import pekko.util.Helpers
-import pekko.util.Helpers.Requiring
+import pekko.util.Helpers.{ Requiring, toRootLowerCase }
 
 import com.typesafe.config.Config
 
@@ -55,7 +53,7 @@ import com.typesafe.config.Config
   }
 
   val DowningStrategy: String =
-    cc.getString("active-strategy").toLowerCase(Locale.ROOT) match {
+    toRootLowerCase(cc.getString("active-strategy")) match {
       case strategyName if allStrategyNames(strategyName) => strategyName
       case unknown                                        =>
         throw new ConfigurationException(
@@ -64,7 +62,7 @@ import com.typesafe.config.Config
 
   val DownAllWhenUnstable: FiniteDuration = {
     val key = "down-all-when-unstable"
-    Helpers.toRootLowerCase(cc.getString("down-all-when-unstable")) match {
+    toRootLowerCase(cc.getString("down-all-when-unstable")) match {
       case "on" =>
         // based on stable-after
         4.seconds.max(DowningStableAfter * 3 / 4)

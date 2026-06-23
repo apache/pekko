@@ -13,8 +13,6 @@
 
 package org.apache.pekko.cluster.sharding.passivation.simulator
 
-import java.util.Locale
-
 import scala.collection.immutable
 import scala.jdk.CollectionConverters._
 
@@ -77,7 +75,7 @@ object SimulatorSettings {
     def apply(simulatorConfig: Config, strategy: String): StrategySettings = {
       val config = simulatorConfig.getConfig(strategy)
       val fallbackConfig = simulatorConfig.getConfig("strategy-defaults")
-      lowerCase(config.getString("strategy")) match {
+      toRootLowerCase(config.getString("strategy")) match {
         case "composite" =>
           val compositeConfig = config.getConfig("composite").withFallback(fallbackConfig.getConfig("composite"))
           Composite(
@@ -95,11 +93,11 @@ object SimulatorSettings {
 
     private def settings(strategyConfig: Config, fallbackConfig: Config): StrategySettings = {
       val config = strategyConfig.withFallback(fallbackConfig)
-      lowerCase(config.getString("strategy")) match {
+      toRootLowerCase(config.getString("strategy")) match {
         case "optimal"             => Optimal(config.getInt("optimal.per-region-limit"))
         case "least-recently-used" =>
           val limit = config.getInt("least-recently-used.per-region-limit")
-          val segmented = lowerCase(config.getString("least-recently-used.segmented.levels")) match {
+          val segmented = toRootLowerCase(config.getString("least-recently-used.segmented.levels")) match {
             case "off" | "none" => Nil
             case _              =>
               val levels = config.getInt("least-recently-used.segmented.levels")
@@ -129,7 +127,7 @@ object SimulatorSettings {
           extends AdmissionFilterSettings
 
       def apply(config: Config): AdmissionFilterSettings = {
-        lowerCase(config.getString("admission.filter")) match {
+        toRootLowerCase(config.getString("admission.filter")) match {
           case "frequency-sketch" =>
             FrequencySketchFilter(
               config.getInt("admission.frequency-sketch.width-multiplier"),
@@ -153,7 +151,7 @@ object SimulatorSettings {
           extends AdmissionOptimizerSettings
 
       def apply(config: Config): AdmissionOptimizerSettings = {
-        lowerCase(config.getString("admission.optimizer")) match {
+        toRootLowerCase(config.getString("admission.optimizer")) match {
           case "hill-climbing" =>
             HillClimbingOptimizer(
               config.getDouble("admission.hill-climbing.adjust-multiplier"),
@@ -184,7 +182,7 @@ object SimulatorSettings {
 
       def apply(patternConfig: Config): Synthetic = {
         val config = patternConfig.getConfig("synthetic")
-        val generator = lowerCase(config.getString("generator")) match {
+        val generator = toRootLowerCase(config.getString("generator")) match {
           case "sequence" =>
             val start = config.getLong("sequence.start")
             Sequence(start)
@@ -210,7 +208,7 @@ object SimulatorSettings {
             val max = config.getLong("zipfian.max")
             val constant = config.getDouble("zipfian.constant")
             val scrambled = config.getBoolean("zipfian.scrambled")
-            if (lowerCase(config.getString("zipfian.shifts")) != "off") {
+            if (toRootLowerCase(config.getString("zipfian.shifts")) != "off") {
               val shifts = config.getInt("zipfian.shifts")
               ShiftingZipfian(min, max, constant, shifts, scrambled)
             } else {
@@ -227,7 +225,7 @@ object SimulatorSettings {
       def apply(patternConfig: Config): Trace = {
         val config = patternConfig.getConfig("trace")
         val path = config.getString("path")
-        val format = lowerCase(config.getString("format"))
+        val format = toRootLowerCase(config.getString("format"))
         Trace(path, format)
       }
     }
@@ -243,7 +241,7 @@ object SimulatorSettings {
 
     def apply(simulatorConfig: Config, pattern: String): PatternSettings = {
       val config = simulatorConfig.getConfig(pattern).withFallback(simulatorConfig.getConfig("pattern-defaults"))
-      lowerCase(config.getString("pattern")) match {
+      toRootLowerCase(config.getString("pattern")) match {
         case "synthetic" => Synthetic(config)
         case "trace"     => Trace(config)
         case "joined"    => Joined(simulatorConfig, config)
@@ -251,6 +249,4 @@ object SimulatorSettings {
       }
     }
   }
-
-  private def lowerCase(s: String): String = s.toLowerCase(Locale.ROOT)
 }
