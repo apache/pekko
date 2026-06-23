@@ -189,24 +189,28 @@ private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
   /**
    * Set Scheduled status, keeping primary status as is.
    */
-  @tailrec
   final def setAsScheduled(): Boolean = {
-    val s = currentStatus
-    /*
-     * Only try to add Scheduled bit if pure Open/Suspended, not Closed or with
-     * Scheduled bit already set.
-     */
-    if ((s & shouldScheduleMask) != Open) false
-    else updateStatus(s, s | Scheduled) || setAsScheduled()
+    var s = currentStatus
+    while ({
+      if ((s & shouldScheduleMask) != Open) return false
+      !updateStatus(s, s | Scheduled)
+    }) {
+      Thread.onSpinWait()
+      s = currentStatus
+    }
+    true
   }
 
   /**
    * Reset Scheduled status, keeping primary status as is.
    */
-  @tailrec
   final def setAsIdle(): Boolean = {
-    val s = currentStatus
-    updateStatus(s, s & ~Scheduled) || setAsIdle()
+    var s = currentStatus
+    while (!updateStatus(s, s & ~Scheduled)) {
+      Thread.onSpinWait()
+      s = currentStatus
+    }
+    true
   }
   /*
    * AtomicReferenceFieldUpdater for system queue.

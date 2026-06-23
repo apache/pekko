@@ -255,7 +255,7 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
           try {
             if (inhabitants == 0) shutdown() // Warning, racy
           } finally {
-            while (!updateShutdownSchedule(shutdownSchedule, UNSCHEDULED)) {}
+            while (!updateShutdownSchedule(shutdownSchedule, UNSCHEDULED)) { Thread.onSpinWait() }
           }
         case RESCHEDULED =>
           if (updateShutdownSchedule(RESCHEDULED, SCHEDULED)) scheduleShutdownAction()
