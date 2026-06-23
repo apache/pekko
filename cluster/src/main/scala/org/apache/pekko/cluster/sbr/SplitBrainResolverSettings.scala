@@ -20,7 +20,7 @@ import scala.concurrent.duration._
 import org.apache.pekko
 import pekko.ConfigurationException
 import pekko.annotation.InternalApi
-import pekko.util.Helpers.{ Requiring, toRootLowerCase }
+import pekko.util.Helpers.{ toRootLowerCase, Requiring }
 
 import com.typesafe.config.Config
 
