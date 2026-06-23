@@ -475,9 +475,9 @@ private[pekko] class ActorCell(
   }
 
   /**
-    * INTERNAL API: Generate a new unique id for a new actor cell.
-    * @since 2.0.0
-    */
+   * INTERNAL API: Generate a new unique id for a new actor cell.
+   * @since 2.0.0
+   */
   @tailrec final private[actor] def generateUid(): Int = {
     // Note that this uid is also used as hashCode in ActorRef, so be careful
     // to not break hashing if you change the way uid is generated

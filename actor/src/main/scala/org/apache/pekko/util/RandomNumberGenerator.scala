@@ -29,6 +29,7 @@ import java.util.random.RandomGenerator
  * INTERNAL API: A provider for RandomGenerators
  */
 private[pekko] trait RandomGeneratorProvider {
+
   /**
    * @return a RandomGenerator - for ThreadLocalRandom (the default), this RandomGenerator instance
    * is based on the tread. Otherwise, it is thread-safe RandomGenerator that can be used by any thread

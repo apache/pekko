@@ -846,7 +846,8 @@ private[pekko] class ActorSystemImpl(
 
   private val randomGeneratorProvider: RandomGeneratorProvider =
     RandomNumberGenerator.getGeneratorProvider(applicationConfig)
-  require(randomGeneratorProvider != null, "RandomGeneratorProvider is not initialized. This is likely a bug in the ActorSystem initialization sequence.")
+  require(randomGeneratorProvider != null,
+    "RandomGeneratorProvider is not initialized. This is likely a bug in the ActorSystem initialization sequence.")
 
   override private[pekko] def randomGenerator(): RandomGenerator = randomGeneratorProvider.get()
 

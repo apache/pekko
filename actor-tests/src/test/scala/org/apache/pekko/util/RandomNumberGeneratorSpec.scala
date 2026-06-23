@@ -39,7 +39,7 @@ class RandomNumberGeneratorSpec extends AnyWordSpec with Matchers {
         """pekko.random.generator-implementation = "Xoroshiro128PlusPlus"""")
       val randomGeneratorProvider: RandomGeneratorProvider =
         RandomNumberGenerator.getGeneratorProvider(config)
-      randomGeneratorProvider should not be(ThreadLocalRandomProvider)
+      randomGeneratorProvider should not be ThreadLocalRandomProvider
       val rng = randomGeneratorProvider.get()
       rng.nextInt(10) should (be >= 0 and be < 10)
     }
