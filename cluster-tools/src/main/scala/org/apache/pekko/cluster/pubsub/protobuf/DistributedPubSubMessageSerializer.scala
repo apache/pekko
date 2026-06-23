@@ -18,7 +18,6 @@ import java.io.NotSerializableException
 import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
 
-import scala.annotation.tailrec
 import scala.collection.immutable.TreeMap
 import scala.jdk.CollectionConverters._
 
@@ -100,16 +99,7 @@ private[pekko] class DistributedPubSubMessageSerializer(val system: ExtendedActo
   private def decompress(bytes: Array[Byte]): Array[Byte] = {
     val in = new GZIPInputStream(new UnsynchronizedByteArrayInputStream(bytes))
     val out = new ByteArrayOutputStream()
-    val buffer = new Array[Byte](BufferSize)
-
-    @tailrec def readChunk(): Unit = in.read(buffer) match {
-      case -1 => ()
-      case n  =>
-        out.write(buffer, 0, n)
-        readChunk()
-    }
-
-    try readChunk()
+    try in.transferTo(out)
     finally in.close()
     out.toByteArray
   }
