@@ -43,6 +43,7 @@ import pekko.serialization.SerializationExtension
 import pekko.serialization.SerializerWithStringManifest
 import pekko.util.ByteString
 import pekko.util.OptionVal
+import pekko.util.Helpers.toRootLowerCase
 
 import com.typesafe.config.Config
 
@@ -139,7 +140,7 @@ final class LmdbDurableStore(config: Config) extends Actor with ActorLogging {
   val serializer = serialization.serializerFor(classOf[DurableDataEnvelope]).asInstanceOf[SerializerWithStringManifest]
   val manifest = serializer.manifest(new DurableDataEnvelope(Replicator.Internal.DeletedData))
 
-  val writeBehindInterval = config.getString("lmdb.write-behind-interval").toLowerCase match {
+  val writeBehindInterval = toRootLowerCase(config.getString("lmdb.write-behind-interval")) match {
     case "off" => Duration.Zero
     case _     => config.getDuration("lmdb.write-behind-interval", MILLISECONDS).millis
   }

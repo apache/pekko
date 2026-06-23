@@ -32,6 +32,7 @@ import pekko.actor.IllegalActorStateException
 import pekko.actor.Terminated
 import pekko.annotation.InternalApi
 import pekko.util.{ BoxedType, Timeout }
+import pekko.util.Helpers.toRootLowerCase
 
 object TestActor {
   type Ignore = Option[PartialFunction[Any, Boolean]]
@@ -915,7 +916,7 @@ trait TestKitBase {
     expectMsgType[ActorRef]
   }
 
-  private def format(u: TimeUnit, d: Duration) = "%.3f %s".format(d.toUnit(u), u.toString.toLowerCase)
+  private def format(u: TimeUnit, d: Duration) = "%.3f %s".format(d.toUnit(u), toRootLowerCase(u.toString))
 }
 
 /**

@@ -13,6 +13,7 @@
 
 package org.apache.pekko.persistence
 
+import java.util.Locale
 import scala.concurrent.duration._
 import scala.util.Failure
 import scala.util.control.NoStackTrace
@@ -95,7 +96,7 @@ object AtLeastOnceDeliverySpec {
         if (payload.isEmpty)
           sender() ! InvalidReq
         else {
-          val destination = destinations(payload.take(1).toUpperCase)
+          val destination = destinations(payload.take(1).toUpperCase(Locale.ROOT))
           if (async)
             persistAsync(AcceptedReq(payload, destination)) { evt =>
               updateState(evt)

@@ -47,7 +47,7 @@ final class RemoteSettings(val config: Config) {
 
   @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
   val LogFrameSizeExceeding: Option[Int] = {
-    if (config.getString("pekko.remote.classic.log-frame-size-exceeding").toLowerCase == "off") None
+    if (toRootLowerCase(config.getString("pekko.remote.classic.log-frame-size-exceeding")) == "off") None
     else Some(getBytes("pekko.remote.classic.log-frame-size-exceeding").toInt)
   }
 
@@ -118,7 +118,7 @@ final class RemoteSettings(val config: Config) {
   @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
   val LogBufferSizeExceeding: Int = {
     val key = "pekko.remote.classic.log-buffer-size-exceeding"
-    config.getString(key).toLowerCase match {
+    toRootLowerCase(config.getString(key)) match {
       case "off" | "false" => Int.MaxValue
       case _               => config.getInt(key)
     }
@@ -152,7 +152,7 @@ final class RemoteSettings(val config: Config) {
   @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
   val QuarantineSilentSystemTimeout: FiniteDuration = {
     val key = "pekko.remote.classic.quarantine-after-silence"
-    config.getString(key).toLowerCase match {
+    toRootLowerCase(config.getString(key)) match {
       case "off" | "false" => Duration.Zero
       case _               =>
         config.getMillisDuration(key).requiring(_ > Duration.Zero, "quarantine-after-silence must be > 0")

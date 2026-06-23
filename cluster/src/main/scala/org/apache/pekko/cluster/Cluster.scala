@@ -40,6 +40,7 @@ import pekko.event.MarkerLoggingAdapter
 import pekko.japi.Util
 import pekko.pattern._
 import pekko.remote.{ UniqueAddress => _, _ }
+import pekko.util.Helpers.toRootLowerCase
 import pekko.util.Version
 
 import com.typesafe.config.{ Config, ConfigFactory }
@@ -60,7 +61,7 @@ object Cluster extends ExtensionId[Cluster] with ExtensionIdProvider {
    * INTERNAL API
    */
   private[cluster] final val isAssertInvariantsEnabled: Boolean =
-    System.getProperty("pekko.cluster.assert", "off").toLowerCase match {
+    toRootLowerCase(System.getProperty("pekko.cluster.assert", "off")) match {
       case "on" | "true" => true
       case _             => false
     }

@@ -26,6 +26,7 @@ import pekko.annotation.InternalApi
 import pekko.persistence.{ PersistentActor, RecoveryCompleted, SnapshotOffer }
 import pekko.persistence.fsm.PersistentFSM.FSMState
 import pekko.persistence.serialization.Message
+import pekko.util.Helpers.toRootLowerCase
 
 import com.typesafe.config.Config
 
@@ -48,7 +49,7 @@ private[pekko] object SnapshotAfter extends ExtensionId[SnapshotAfter] with Exte
  */
 private[pekko] class SnapshotAfter(config: Config) extends Extension {
   val key = "pekko.persistence.fsm.snapshot-after"
-  val snapshotAfterValue = config.getString(key).toLowerCase match {
+  val snapshotAfterValue = toRootLowerCase(config.getString(key)) match {
     case "off" => None
     case _     => Some(config.getInt(key))
   }

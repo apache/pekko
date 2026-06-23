@@ -14,7 +14,7 @@
 package org.apache.pekko.cluster.ddata
 
 import java.security.MessageDigest
-import java.util.Optional
+import java.util.{ Locale, Optional }
 import java.util.concurrent.ThreadLocalRandom
 import java.util.concurrent.TimeUnit
 import java.util.function.{ Function => JFunction }
@@ -145,7 +145,7 @@ object ReplicatorSettings {
    */
   @InternalApi private[pekko] def name(system: ActorSystem, modifier: Option[String]): String = {
     val name = system.settings.config.getString("pekko.cluster.distributed-data.name")
-    modifier.map(s => s + name.take(1).toUpperCase + name.drop(1)).getOrElse(name)
+    modifier.map(s => s + name.take(1).toUpperCase(Locale.ROOT) + name.drop(1)).getOrElse(name)
   }
 }
 
