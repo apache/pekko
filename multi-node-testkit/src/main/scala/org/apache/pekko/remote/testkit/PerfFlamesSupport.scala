@@ -38,9 +38,7 @@ private[pekko] trait PerfFlamesSupport { self: MultiNodeSpec =>
 
       val afterDelay = pekko.pattern.after(delay, system.scheduler)(Future.successful("GO!"))
       afterDelay.onComplete { _ =>
-        import java.lang.management._
-        val name = ManagementFactory.getRuntimeMXBean.getName
-        val pid = name.substring(0, name.indexOf('@')).toInt
+        val pid = ProcessHandle.current().pid()
 
         val perfCommand = s"$perfJavaFlamesPath $pid"
         println(s"[perf @ $myself($pid)][OUT]: " + perfCommand)
