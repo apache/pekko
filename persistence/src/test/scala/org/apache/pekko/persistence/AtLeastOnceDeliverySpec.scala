@@ -96,7 +96,7 @@ object AtLeastOnceDeliverySpec {
         if (payload.isEmpty)
           sender() ! InvalidReq
         else {
-          val destination = destinations(payload.take(1).toUpperCase(Locale.ROOT)).toString
+          val destination = destinations(payload.take(1).toUpperCase(Locale.ROOT))
           if (async)
             persistAsync(AcceptedReq(payload, destination)) { evt =>
               updateState(evt)
