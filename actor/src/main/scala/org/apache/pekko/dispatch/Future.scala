@@ -14,7 +14,6 @@
 package org.apache.pekko.dispatch
 
 import java.util.concurrent.{ Callable, Executor, ExecutorService }
-import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
 
 import scala.concurrent.{ ExecutionContext, ExecutionContextExecutor, ExecutionContextExecutorService, Future, Promise }
@@ -119,14 +118,4 @@ object Futures {
    * Creates an already completed Promise with the specified result
    */
   def successful[T](result: T): Future[T] = Future.successful(result)
-
-  /**
-   * Creates an already completed CompletionStage with the specified exception
-   */
-  @deprecated("Use `CompletableFuture#failedStage` instead.", since = "2.0.0")
-  def failedCompletionStage[T](ex: Throwable): CompletionStage[T] = {
-    val f = CompletableFuture.completedFuture[T](null.asInstanceOf[T])
-    f.obtrudeException(ex)
-    f
-  }
 }

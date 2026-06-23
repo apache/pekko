@@ -318,10 +318,9 @@ public class PatternsTest {
   }
 
   @Test
-  @SuppressWarnings("deprecation")
   public void testAfterFailedCallable() throws Exception {
     Callable<CompletionStage<String>> failedCallable =
-        () -> Futures.failedCompletionStage(new IllegalStateException("Illegal!"));
+        () -> CompletableFuture.failedStage(new IllegalStateException("Illegal!"));
 
     CompletionStage<String> delayedFuture =
         Patterns.after(Duration.ofMillis(200), system.scheduler(), ec, failedCallable);
@@ -341,7 +340,6 @@ public class PatternsTest {
   }
 
   @Test
-  @SuppressWarnings("deprecation")
   public void testAfterFailedFuture() throws Exception {
 
     CompletionStage<String> delayedFuture =
@@ -349,7 +347,7 @@ public class PatternsTest {
             Duration.ofMillis(200),
             system.scheduler(),
             ec,
-            () -> Futures.failedCompletionStage(new IllegalStateException("Illegal!")));
+            () -> CompletableFuture.failedStage(new IllegalStateException("Illegal!")));
 
     CompletionStage<String> resultFuture =
         CompletionStages.firstCompletedOf(Arrays.asList(delayedFuture));

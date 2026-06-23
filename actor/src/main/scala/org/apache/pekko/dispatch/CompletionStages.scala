@@ -151,7 +151,7 @@ object CompletionStages {
     if (iterator.hasNext) {
       iterator.next().thenCompose { v => foldWithNext[T, R](iterator, v, function) }
     } else {
-      Futures.failedCompletionStage(new NoSuchElementException("reduce of an empty iterable of CompletionStages"))
+      CompletableFuture.failedStage(new NoSuchElementException("reduce of an empty iterable of CompletionStages"))
     }
   }
 
