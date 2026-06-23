@@ -2795,7 +2795,7 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
   }
 
   private def resizeTemp(size: Int): Unit = {
-    val newtemp = java.util.Arrays.copyOf(_temp, size)
+    val newtemp = if (_temp eq null) new Array[Byte](size) else java.util.Arrays.copyOf(_temp, size)
     _temp = newtemp
     _tempCapacity = _temp.length
   }
