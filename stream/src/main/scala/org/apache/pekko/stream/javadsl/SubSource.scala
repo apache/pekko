@@ -999,7 +999,7 @@ final class SubSource[Out, Mat](
    * Examples:
    *
    * {{{
-   * Source<Integer, ?> nums = Source.from(Arrays.asList(0, 1, 2, 3));
+   * Source<Integer, ?> nums = Source.from(List.of(0, 1, 2, 3));
    * nums.intersperse(",");            //   1 , 2 , 3
    * nums.intersperse("[", ",", "]");  // [ 1 , 2 , 3 ]
    * }}}
@@ -1033,7 +1033,7 @@ final class SubSource[Out, Mat](
    * Examples:
    *
    * {{{
-   * Source<Integer, ?> nums = Source.from(Arrays.asList(0, 1, 2, 3));
+   * Source<Integer, ?> nums = Source.from(List.of(0, 1, 2, 3));
    * nums.intersperse(",");            //   1 , 2 , 3
    * nums.intersperse("[", ",", "]");  // [ 1 , 2 , 3 ]
    * }}}
@@ -2354,7 +2354,7 @@ final class SubSource[Out, Mat](
    *
    * Example:
    * {{{
-   * Source.from(Arrays.asList(1, 2, 3)).interleave(Source.from(Arrays.asList(4, 5, 6, 7), 2)
+   * Source.from(List.of(1, 2, 3)).interleave(Source.from(List.of(4, 5, 6, 7)), 2)
    * // 1, 2, 4, 5, 3, 6, 7
    * }}}
    *

@@ -1013,7 +1013,7 @@ final class SubFlow[In, Out, Mat](
    * Examples:
    *
    * {{{
-   * Source<Integer, ?> nums = Source.from(Arrays.asList(0, 1, 2, 3));
+   * Source<Integer, ?> nums = Source.from(List.of(0, 1, 2, 3));
    * nums.intersperse(",");            //   1 , 2 , 3
    * nums.intersperse("[", ",", "]");  // [ 1 , 2 , 3 ]
    * }}}
@@ -1047,7 +1047,7 @@ final class SubFlow[In, Out, Mat](
    * Examples:
    *
    * {{{
-   * Source<Integer, ?> nums = Source.from(Arrays.asList(0, 1, 2, 3));
+   * Source<Integer, ?> nums = Source.from(List.of(0, 1, 2, 3));
    * nums.intersperse(",");            //   1 , 2 , 3
    * nums.intersperse("[", ",", "]");  // [ 1 , 2 , 3 ]
    * }}}
