@@ -178,7 +178,7 @@ public class CountMinSketch {
         return hashLong(Double.doubleToRawLongBits(d), 0);
       }
       if (o instanceof Float f) {
-        return hashLong(Float.floatToRawIntBits((Float) o), 0);
+        return hashLong(Float.floatToRawIntBits(f), 0);
       }
       if (o instanceof byte[] array) {
         return bytesHash(array, 0);
