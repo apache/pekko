@@ -12,6 +12,7 @@
  */
 
 package org.apache.pekko.util
+import java.lang.StackWalker
 import java.lang.reflect.Constructor
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
@@ -36,15 +37,17 @@ private[pekko] object Reflect {
    * This optionally holds a function which looks N levels above itself
    * on the call stack and returns the `Class[_]` object for the code
    * executing in that stack frame. Implemented using
-   * `sun.reflect.Reflection.getCallerClass` if available, None otherwise.
+   * `java.lang.StackWalker` (JDK 9+).
    *
    * Hint: when comparing to Thread.currentThread().getStackTrace, add two levels.
    */
   val getCallerClass: Option[Int => Class[?]] = {
     try {
-      val c = Class.forName("sun.reflect.Reflection")
-      val m = c.getMethod("getCallerClass", Array(classOf[Int]): _*)
-      Some((i: Int) => m.invoke(null, Array[AnyRef](i.asInstanceOf[java.lang.Integer]): _*).asInstanceOf[Class[?]])
+      val walker = StackWalker.getInstance(
+        java.util.Set.of(StackWalker.Option.RETAIN_CLASS_REFERENCE))
+      Some((i: Int) =>
+        walker.walk((s: java.util.stream.Stream[StackWalker.StackFrame]) =>
+          s.skip(i.toLong).map[Class[?]](_.getDeclaringClass).findFirst().orElse(null)))
     } catch {
       case NonFatal(_) => None
     }

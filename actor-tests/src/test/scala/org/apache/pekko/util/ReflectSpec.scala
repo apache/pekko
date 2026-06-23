@@ -64,4 +64,32 @@ class ReflectSpec extends AnyWordSpec with Matchers {
     }
   }
 
+  "Reflect#getCallerClass" must {
+
+    "be defined on JDK 17+ (StackWalker is always available)" in {
+      Reflect.getCallerClass shouldBe defined
+    }
+
+    "return a non-null class for a valid stack depth" in {
+      val getCaller = Reflect.getCallerClass.get
+      // Frame 0 is the lambda inside Reflect$ calling StackWalker.walk
+      val frame0 = getCaller(0)
+      frame0 should not be null
+      frame0.getName should startWith("org.apache.pekko.util.Reflect")
+    }
+
+    "return null for index beyond stack depth" in {
+      val getCaller = Reflect.getCallerClass.get
+      getCaller(Int.MaxValue) shouldBe null
+    }
+  }
+
+  "Reflect#findClassLoader" must {
+
+    "return a non-null ClassLoader" in {
+      val cl = Reflect.findClassLoader()
+      cl should not be null
+    }
+  }
+
 }
