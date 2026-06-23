@@ -14,6 +14,7 @@
 package org.apache.pekko.cluster.client
 
 import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 import scala.collection.immutable
 import scala.collection.immutable.{ HashMap, HashSet }

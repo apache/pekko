@@ -15,6 +15,7 @@ package org.apache.pekko.cluster.sharding.typed
 package internal
 
 import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.time.Duration
 import java.util.concurrent.CompletionStage
 import java.util.concurrent.ConcurrentHashMap

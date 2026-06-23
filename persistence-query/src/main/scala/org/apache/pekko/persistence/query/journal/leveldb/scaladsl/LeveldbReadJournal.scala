@@ -14,6 +14,7 @@
 package org.apache.pekko.persistence.query.journal.leveldb.scaladsl
 
 import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 import scala.concurrent.duration._
 

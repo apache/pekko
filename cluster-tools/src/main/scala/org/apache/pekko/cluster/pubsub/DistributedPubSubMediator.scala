@@ -15,6 +15,7 @@ package org.apache.pekko.cluster.pubsub
 
 import java.net.URLDecoder
 import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.ThreadLocalRandom
 
 import scala.collection.immutable

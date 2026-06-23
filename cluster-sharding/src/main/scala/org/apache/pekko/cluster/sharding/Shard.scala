@@ -14,6 +14,7 @@
 package org.apache.pekko.cluster.sharding
 
 import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.util
 
 import scala.annotation.nowarn
