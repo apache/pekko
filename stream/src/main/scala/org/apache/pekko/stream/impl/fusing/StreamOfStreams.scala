@@ -399,7 +399,7 @@ import pekko.util.OptionVal
       lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
       private val activeSubstreamsMap = new java.util.HashMap[Any, SubstreamSource]()
       private val closedSubstreams =
-        if (allowClosedSubstreamRecreation) Collections.unmodifiableSet(Collections.emptySet[Any])
+        if (allowClosedSubstreamRecreation) Collections.emptySet[Any]
         else new java.util.HashSet[Any]()
       private val timeout: FiniteDuration =
         inheritedAttributes.mandatoryAttribute[ActorAttributes.StreamSubscriptionTimeout].timeout
