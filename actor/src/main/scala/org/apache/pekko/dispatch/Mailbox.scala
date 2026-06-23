@@ -150,14 +150,19 @@ private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
    *
    * @return true if the suspend count reached zero
    */
-  @tailrec
-  final def resume(): Boolean = currentStatus match {
-    case Closed =>
-      setStatus(Closed); false
-    case s =>
+  final def resume(): Boolean = {
+    var s = currentStatus
+    while (true) {
+      if (s == Closed) {
+        setStatus(Closed)
+        return false
+      }
       val next = if (s < suspendUnit) s else s - suspendUnit
-      if (updateStatus(s, next)) next < suspendUnit
-      else resume()
+      if (updateStatus(s, next)) return next < suspendUnit
+      Thread.onSpinWait()
+      s = currentStatus
+    }
+    throw new IllegalStateException("unreachable")
   }
 
   /**
@@ -166,47 +171,62 @@ private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
    *
    * @return true if the previous suspend count was zero
    */
-  @tailrec
-  final def suspend(): Boolean = currentStatus match {
-    case Closed =>
-      setStatus(Closed); false
-    case s =>
-      if (updateStatus(s, s + suspendUnit)) s < suspendUnit
-      else suspend()
+  final def suspend(): Boolean = {
+    var s = currentStatus
+    while (true) {
+      if (s == Closed) {
+        setStatus(Closed)
+        return false
+      }
+      if (updateStatus(s, s + suspendUnit)) return s < suspendUnit
+      Thread.onSpinWait()
+      s = currentStatus
+    }
+    throw new IllegalStateException("unreachable")
   }
 
   /**
    * set new primary status Closed. Caller does not need to worry about whether
    * status was Scheduled or not.
    */
-  @tailrec
-  final def becomeClosed(): Boolean = currentStatus match {
-    case Closed =>
-      setStatus(Closed); false
-    case s => updateStatus(s, Closed) || becomeClosed()
+  final def becomeClosed(): Boolean = {
+    var s = currentStatus
+    while (true) {
+      if (s == Closed) {
+        setStatus(Closed)
+        return false
+      }
+      if (updateStatus(s, Closed)) return true
+      Thread.onSpinWait()
+      s = currentStatus
+    }
+    throw new IllegalStateException("unreachable")
   }
 
   /**
    * Set Scheduled status, keeping primary status as is.
    */
-  @tailrec
   final def setAsScheduled(): Boolean = {
-    val s = currentStatus
-    /*
-     * Only try to add Scheduled bit if pure Open/Suspended, not Closed or with
-     * Scheduled bit already set.
-     */
-    if ((s & shouldScheduleMask) != Open) false
-    else updateStatus(s, s | Scheduled) || setAsScheduled()
+    var s = currentStatus
+    while (true) {
+      if ((s & shouldScheduleMask) != Open) return false
+      if (updateStatus(s, s | Scheduled)) return true
+      Thread.onSpinWait()
+      s = currentStatus
+    }
+    throw new IllegalStateException("unreachable")
   }
 
   /**
    * Reset Scheduled status, keeping primary status as is.
    */
-  @tailrec
   final def setAsIdle(): Boolean = {
-    val s = currentStatus
-    updateStatus(s, s & ~Scheduled) || setAsIdle()
+    var s = currentStatus
+    while (!updateStatus(s, s & ~Scheduled)) {
+      Thread.onSpinWait()
+      s = currentStatus
+    }
+    true
   }
   /*
    * AtomicReferenceFieldUpdater for system queue.
