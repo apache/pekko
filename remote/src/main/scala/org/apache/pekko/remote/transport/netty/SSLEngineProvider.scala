@@ -27,6 +27,7 @@ import javax.net.ssl.SSLEngine
 import javax.net.ssl.TrustManager
 import javax.net.ssl.TrustManagerFactory
 
+import scala.annotation.nowarn
 import scala.util.Try
 
 import org.apache.pekko
@@ -43,6 +44,13 @@ trait SSLEngineProvider {
   def createServerSSLEngine(): SSLEngine
 
   def createClientSSLEngine(): SSLEngine
+
+  /**
+   * Create a client SSLEngine with the target hostname and port for hostname verification.
+   * Default implementation delegates to [[createClientSSLEngine()]].
+   */
+  @nowarn("msg=never used")
+  def createClientSSLEngine(hostname: String, port: Int): SSLEngine = createClientSSLEngine()
 
 }
 
@@ -115,18 +123,33 @@ class ConfigSSLEngineProvider(protected val log: MarkerLoggingAdapter, private v
     SecureRandomFactory.createSecureRandom(SSLRandomNumberGenerator, log)
 
   override def createServerSSLEngine(): SSLEngine =
-    createSSLEngine(pekko.stream.Server)
+    createSSLEngine(pekko.stream.Server, None)
 
   override def createClientSSLEngine(): SSLEngine =
-    createSSLEngine(pekko.stream.Client)
+    createSSLEngine(pekko.stream.Client, None)
 
-  private def createSSLEngine(role: TLSRole): SSLEngine = {
-    createSSLEngine(sslContext, role)
+  override def createClientSSLEngine(hostname: String, port: Int): SSLEngine =
+    createSSLEngine(pekko.stream.Client, Some((hostname, port)))
+
+  private def createSSLEngine(role: TLSRole, peerHost: Option[(String, Int)]): SSLEngine = {
+    createSSLEngine(sslContext, role, peerHost)
   }
 
-  private def createSSLEngine(sslContext: SSLContext, role: TLSRole): SSLEngine = {
+  private def createSSLEngine(
+      sslContext: SSLContext,
+      role: TLSRole,
+      peerHost: Option[(String, Int)]): SSLEngine = {
 
-    val engine = sslContext.createSSLEngine()
+    val engine = peerHost match {
+      case Some((hostname, port)) => sslContext.createSSLEngine(hostname, port)
+      case None                   => sslContext.createSSLEngine()
+    }
+
+    if (SSLHostnameVerification && role == pekko.stream.Client) {
+      val sslParams = sslContext.getDefaultSSLParameters
+      sslParams.setEndpointIdentificationAlgorithm("HTTPS")
+      engine.setSSLParameters(sslParams)
+    }
 
     engine.setUseClientMode(role == pekko.stream.Client)
     engine.setEnabledCipherSuites(SSLEnabledAlgorithms.toArray)

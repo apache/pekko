@@ -49,6 +49,9 @@ private[pekko] class SSLSettings(config: Config) {
 
   val SSLRequireMutualAuthentication = getBoolean("require-mutual-authentication")
 
+  val SSLHostnameVerification: Boolean =
+    if (config.hasPath("hostname-verification")) config.getBoolean("hostname-verification")
+    else false
 }
 
 /**
@@ -63,10 +66,19 @@ private[pekko] object NettySSLSupport {
   /**
    * Construct a SSLHandler which can be inserted into a Netty server/client pipeline
    */
-  def apply(sslEngineProvider: SSLEngineProvider, isClient: Boolean, log: MarkerLoggingAdapter): SslHandler = {
+  def apply(
+      sslEngineProvider: SSLEngineProvider,
+      isClient: Boolean,
+      log: MarkerLoggingAdapter,
+      hostname: Option[String] = None,
+      port: Int = -1): SslHandler = {
     val sslEngine =
-      if (isClient) sslEngineProvider.createClientSSLEngine()
-      else sslEngineProvider.createServerSSLEngine()
+      if (isClient) {
+        hostname match {
+          case Some(h) => sslEngineProvider.createClientSSLEngine(h, port)
+          case None    => sslEngineProvider.createClientSSLEngine()
+        }
+      } else sslEngineProvider.createServerSSLEngine()
     val handler = new SslHandler(sslEngine)
     handler.handshakeFuture().addListener((future: Future[Channel]) => {
       if (!future.isSuccess) {
