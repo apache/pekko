@@ -54,7 +54,7 @@ public class UnsynchronizedByteArrayInputStream extends InputStream {
     final int arrayLength = Objects.requireNonNull(array, "byte array").length;
     if ((off | len | arrayLength) < 0 || arrayLength - len < off) {
       throw new IndexOutOfBoundsException(
-          String.format("Range [%s, %<s + %s) out of bounds for length %s", off, len, arrayLength));
+          "Range [%s, %<s + %s) out of bounds for length %s".formatted(off, len, arrayLength));
     }
   }
 
