@@ -20,7 +20,7 @@ import scala.concurrent.duration._
 import scala.util.control.{ NoStackTrace, NonFatal }
 
 import org.apache.pekko
-import pekko.actor.{ ActorRef, ReceiveTimeout }
+import pekko.actor.{ ActorRef, ReceiveTimeout, Timers }
 import pekko.actor.Status.Failure
 import pekko.annotation.InternalApi
 import pekko.io.SelectionHandler._
@@ -42,7 +42,8 @@ private[io] class TcpOutgoingConnection(
     extends TcpConnection(
       _tcp,
       SocketChannel.open().configureBlocking(false).asInstanceOf[SocketChannel],
-      connect.pullMode) {
+      connect.pullMode)
+    with Timers {
 
   import TcpOutgoingConnection._
   import connect._
@@ -126,9 +127,7 @@ private[io] class TcpOutgoingConnection(
             completeConnect(registration, commander, options)
           } else {
             if (remainingFinishConnectRetries > 0) {
-              context.system.scheduler.scheduleOnce(1.millisecond) {
-                channelRegistry.register(channel, SelectionKey.OP_CONNECT)
-              }(context.dispatcher)
+              timers.startSingleTimer(RetryFinishConnect, RetryFinishConnect, 1.millisecond)
               context.become(connecting(registration, remainingFinishConnectRetries - 1))
             } else {
               log.debug(
@@ -137,6 +136,10 @@ private[io] class TcpOutgoingConnection(
               stop(FinishConnectNeverReturnedTrueException)
             }
           }
+        }
+      case RetryFinishConnect =>
+        reportConnectFailure {
+          channelRegistry.register(channel, SelectionKey.OP_CONNECT)
         }
       case ReceiveTimeout =>
         connectionTimeout()
@@ -154,6 +157,8 @@ private[io] class TcpOutgoingConnection(
 private[io] object TcpOutgoingConnection {
   val FinishConnectNeverReturnedTrueException =
     new ConnectException("Could not establish connection because finishConnect never returned true") with NoStackTrace
+
+  private case object RetryFinishConnect
 
   def connectTimeoutExpired(timeout: Option[FiniteDuration]) =
     new ConnectException(s"Connect timeout of $timeout expired") with NoStackTrace

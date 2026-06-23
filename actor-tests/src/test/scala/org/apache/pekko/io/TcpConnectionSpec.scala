@@ -697,6 +697,48 @@ class TcpConnectionSpec extends PekkoSpec("""
       }
     }
 
+    "report failed connection when finishConnect retries are exhausted" in
+    new UnacceptedConnectionTest() {
+      override lazy val connectionActor = createConnectionActor(serverAddress = UnboundAddress)
+      run {
+        val sel = SelectorProvider.provider().openSelector()
+        try {
+          val key = clientSideChannel.register(sel, SelectionKey.OP_CONNECT | SelectionKey.OP_READ)
+          sel.select(3000)
+          key.isConnectable should ===(true)
+          connectionActor.toString // force the lazy val
+          Thread.sleep(300)
+
+          // First ChannelConnectable: finishConnect() either throws (connection refused)
+          // or returns false (connection still pending, schedules timer-based retry).
+          selector.send(connectionActor, ChannelConnectable)
+
+          // If finishConnect returned false, wait for the timer-based retry to re-register.
+          // Each retry fires after 1ms via timers.startSingleTimer (self-message).
+          var retriesObserved = 0
+          var outcome: Option[AnyRef] = None
+          val deadline = System.nanoTime() + 5.seconds.toNanos
+          while (outcome.isEmpty && System.nanoTime() < deadline) {
+            registerCallReceiver.expectNoMessage(50.millis)
+            if (registerCallReceiver.msgAvailable) {
+              registerCallReceiver.receiveWhile(100.millis) {
+                case Registration(_, ops) if ops == OP_CONNECT =>
+                  retriesObserved += 1
+                  selector.send(connectionActor, ChannelConnectable)
+              }
+            }
+            if (userHandler.msgAvailable) {
+              outcome = Some(userHandler.expectMsgType[CommandFailed])
+            }
+          }
+
+          outcome shouldBe defined
+          watch(connectionActor)
+          expectTerminated(connectionActor)
+        } finally sel.close()
+      }
+    }
+
     "close the connection when connection handler dies while connected" in new EstablishedConnectionTest() {
       run {
         watch(connectionHandler.ref)
