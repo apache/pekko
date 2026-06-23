@@ -13,7 +13,6 @@
 
 package org.apache.pekko.stream.impl.fusing
 
-import java.util.Collections
 import java.util.concurrent.atomic.AtomicReference
 
 import scala.annotation.{ nowarn, tailrec }
@@ -399,7 +398,7 @@ import pekko.util.OptionVal
       lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
       private val activeSubstreamsMap = new java.util.HashMap[Any, SubstreamSource]()
       private val closedSubstreams =
-        if (allowClosedSubstreamRecreation) Collections.unmodifiableSet(Collections.emptySet[Any])
+        if (allowClosedSubstreamRecreation) java.util.Set.of[Any]()
         else new java.util.HashSet[Any]()
       private val timeout: FiniteDuration =
         inheritedAttributes.mandatoryAttribute[ActorAttributes.StreamSubscriptionTimeout].timeout
