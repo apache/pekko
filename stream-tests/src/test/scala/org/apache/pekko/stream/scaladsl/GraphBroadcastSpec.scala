@@ -301,6 +301,51 @@ class GraphBroadcastSpec extends StreamSpec("""
       pMain.cancel()
       pIn.expectCancellation()
     }
+
+    "continue to remaining outputs when a non-eager output cancels" in {
+      val (pub, src) = TestSource[Int]().preMaterialize()
+      val (mainProbe, mainSink) = TestSink[Int]().preMaterialize()
+      val (sideProbe, sideSink) = TestSink[Int]().preMaterialize()
+
+      RunnableGraph
+        .fromGraph(GraphDSL.create() { implicit b =>
+          import GraphDSL.Implicits._
+          // eagerCancel=true but side output (index 1) is non-eager: its cancellation
+          // must not tear down the stage. Main output (index 0) keeps flowing.
+          val bcast = b.add(Broadcast[Int](2, eagerCancel = true, nonEagerCancelOutputs = Set(1)))
+          src ~> bcast.in
+          bcast.out(0) ~> mainSink
+          bcast.out(1) ~> sideSink
+          ClosedShape
+        })
+        .run()
+
+      mainProbe.request(3)
+      sideProbe.request(2)
+
+      pub.sendNext(1)
+      mainProbe.expectNext(1)
+      sideProbe.expectNext(1)
+
+      pub.sendNext(2)
+      mainProbe.expectNext(2)
+      sideProbe.expectNext(2)
+
+      sideProbe.cancel()
+
+      pub.sendNext(3)
+      mainProbe.expectNext(3)
+
+      pub.sendComplete()
+      mainProbe.expectComplete()
+    }
+
+    "reject nonEagerCancelOutputs when eagerCancel is false" in {
+      val ex = intercept[IllegalArgumentException] {
+        Broadcast[Int](2, eagerCancel = false, nonEagerCancelOutputs = Set(1))
+      }
+      ex.getMessage should include("requires eagerCancel=true")
+    }
   }
 
 }
