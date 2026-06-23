@@ -150,14 +150,19 @@ private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
    *
    * @return true if the suspend count reached zero
    */
-  @tailrec
-  final def resume(): Boolean = currentStatus match {
-    case Closed =>
-      setStatus(Closed); false
-    case s =>
+  final def resume(): Boolean = {
+    var s = currentStatus
+    while (true) {
+      if (s == Closed) {
+        setStatus(Closed)
+        return false
+      }
       val next = if (s < suspendUnit) s else s - suspendUnit
-      if (updateStatus(s, next)) next < suspendUnit
-      else resume()
+      if (updateStatus(s, next)) return next < suspendUnit
+      Thread.onSpinWait()
+      s = currentStatus
+    }
+    false // unreachable
   }
 
   /**
@@ -166,24 +171,36 @@ private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
    *
    * @return true if the previous suspend count was zero
    */
-  @tailrec
-  final def suspend(): Boolean = currentStatus match {
-    case Closed =>
-      setStatus(Closed); false
-    case s =>
-      if (updateStatus(s, s + suspendUnit)) s < suspendUnit
-      else suspend()
+  final def suspend(): Boolean = {
+    var s = currentStatus
+    while (true) {
+      if (s == Closed) {
+        setStatus(Closed)
+        return false
+      }
+      if (updateStatus(s, s + suspendUnit)) return s < suspendUnit
+      Thread.onSpinWait()
+      s = currentStatus
+    }
+    false // unreachable
   }
 
   /**
    * set new primary status Closed. Caller does not need to worry about whether
    * status was Scheduled or not.
    */
-  @tailrec
-  final def becomeClosed(): Boolean = currentStatus match {
-    case Closed =>
-      setStatus(Closed); false
-    case s => updateStatus(s, Closed) || becomeClosed()
+  final def becomeClosed(): Boolean = {
+    var s = currentStatus
+    while (true) {
+      if (s == Closed) {
+        setStatus(Closed)
+        return false
+      }
+      if (updateStatus(s, Closed)) return true
+      Thread.onSpinWait()
+      s = currentStatus
+    }
+    false // unreachable
   }
 
   /**

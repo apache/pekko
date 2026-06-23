@@ -190,18 +190,22 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
     case _                    => eventStream.publish(Error(t, getClass.getName, getClass, t.getMessage))
   }
 
-  @tailrec
   private final def ifSensibleToDoSoThenScheduleShutdown(): Unit = {
-    if (inhabitants <= 0) shutdownSchedule match {
-      case UNSCHEDULED =>
-        if (updateShutdownSchedule(UNSCHEDULED, SCHEDULED)) scheduleShutdownAction()
-        else ifSensibleToDoSoThenScheduleShutdown()
-      case SCHEDULED =>
-        if (updateShutdownSchedule(SCHEDULED, RESCHEDULED)) ()
-        else ifSensibleToDoSoThenScheduleShutdown()
-      case RESCHEDULED =>
-      case unexpected  =>
-        throw new IllegalArgumentException(s"Unexpected actor class marker: $unexpected") // will not happen, for exhaustiveness check
+    while (inhabitants <= 0) {
+      shutdownSchedule match {
+        case UNSCHEDULED =>
+          if (updateShutdownSchedule(UNSCHEDULED, SCHEDULED)) {
+            scheduleShutdownAction()
+            return
+          }
+        case SCHEDULED =>
+          if (updateShutdownSchedule(SCHEDULED, RESCHEDULED)) return
+        case RESCHEDULED =>
+          return
+        case unexpected =>
+          throw new IllegalArgumentException(s"Unexpected actor class marker: $unexpected") // will not happen, for exhaustiveness check
+      }
+      Thread.onSpinWait()
     }
   }
 
