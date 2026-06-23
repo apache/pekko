@@ -341,7 +341,7 @@ object DistributedPubSubMediator {
       override def message = msg
     }
 
-    def encName(s: String) = URLEncoder.encode(s, "utf-8")
+    def encName(s: String) = URLEncoder.encode(s, StandardCharsets.UTF_8)
 
     def mkKey(ref: ActorRef): String = mkKey(ref.path)
 
@@ -845,7 +845,7 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
       if key.startsWith(topicPrefix)
       topic = key.substring(topicPrefix.length + 1)
       if !topic.contains('/') // exclude group topics
-    } yield URLDecoder.decode(topic, "utf-8")).toSet
+    } yield URLDecoder.decode(topic, StandardCharsets.UTF_8)).toSet
   }
 
   def registerTopic(ref: ActorRef): Unit = {

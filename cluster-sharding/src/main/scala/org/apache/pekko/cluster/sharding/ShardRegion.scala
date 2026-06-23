@@ -1341,7 +1341,7 @@ private[pekko] class ShardRegion(
         .orElse(entityProps match {
           case Some(props) if !shardsByRef.values.exists(_ == id) =>
             log.debug(ShardingLogMarker.shardStarted(typeName, id), "{}: Starting shard [{}] in region", typeName, id)
-            val name = URLEncoder.encode(id, "utf-8")
+            val name = URLEncoder.encode(id, StandardCharsets.UTF_8)
             val shard = context.watch(
               context.actorOf(
                 Shard

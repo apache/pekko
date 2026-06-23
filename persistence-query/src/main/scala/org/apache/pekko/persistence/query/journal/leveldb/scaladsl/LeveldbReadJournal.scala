@@ -31,7 +31,6 @@ import pekko.persistence.query.journal.leveldb.EventsByTagStage
 import pekko.persistence.query.scaladsl._
 import pekko.persistence.query.scaladsl.ReadJournal
 import pekko.stream.scaladsl.Source
-import pekko.util.ByteString
 
 import com.typesafe.config.Config
 
@@ -245,7 +244,7 @@ class LeveldbReadJournal(system: ExtendedActorSystem, config: Config)
                   writeJournalPluginId,
                   refreshInterval,
                   mat))
-              .named("eventsByTag-" + URLEncoder.encode(tag, ByteString.UTF_8))
+              .named("eventsByTag-" + URLEncoder.encode(tag, StandardCharsets.UTF_8))
 
           case NoOffset => eventsByTag(tag, Sequence(0L)) // recursive
           case _        =>
@@ -268,7 +267,7 @@ class LeveldbReadJournal(system: ExtendedActorSystem, config: Config)
             Source
               .fromGraph(
                 new EventsByTagStage(tag, seq.value, maxBufSize, Long.MaxValue, writeJournalPluginId, None, mat))
-              .named("currentEventsByTag-" + URLEncoder.encode(tag, ByteString.UTF_8))
+              .named("currentEventsByTag-" + URLEncoder.encode(tag, StandardCharsets.UTF_8))
           case NoOffset => currentEventsByTag(tag, Sequence(0L))
           case _        =>
             throw new IllegalArgumentException(

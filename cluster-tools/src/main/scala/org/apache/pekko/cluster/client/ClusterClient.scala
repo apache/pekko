@@ -1007,7 +1007,7 @@ final class ClusterReceptionist(pubSubMediator: ActorRef, settings: ClusterRecep
   def matchingRole(m: Member): Boolean = role.forall(m.hasRole)
 
   def responseTunnel(client: ActorRef): ActorRef = {
-    val encName = URLEncoder.encode(client.path.toSerializationFormat, "utf-8")
+    val encName = URLEncoder.encode(client.path.toSerializationFormat, StandardCharsets.UTF_8)
     context.child(encName) match {
       case Some(tunnel) => tunnel
       case None         =>
