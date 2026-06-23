@@ -106,8 +106,7 @@ class SnapshotSerializer(val system: ExtendedActorSystem) extends BaseSerializer
     val manifest =
       if (remaining == 0) ""
       else {
-        val manifestBytes = new Array[Byte](remaining)
-        System.arraycopy(bytes, 4, manifestBytes, 0, remaining)
+        val manifestBytes = java.util.Arrays.copyOfRange(bytes, 4, 4 + remaining)
         migrateManifestToPekkoIfNecessary(new String(manifestBytes, UTF_8))
       }
     (serializerId, manifest)

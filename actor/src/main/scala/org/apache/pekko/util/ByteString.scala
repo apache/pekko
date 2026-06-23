@@ -2728,8 +2728,7 @@ object CompactByteString {
     val copyLength = Math.max(Math.min(array.length - copyOffset, length), 0)
     if (copyLength == 0) empty
     else {
-      val copyArray = new Array[Byte](copyLength)
-      System.arraycopy(array, copyOffset, copyArray, 0, copyLength)
+      val copyArray = java.util.Arrays.copyOfRange(array, copyOffset, copyOffset + copyLength)
       ByteString.ByteString1C(copyArray)
     }
   }
@@ -2789,16 +2788,14 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
 
   private def clearTemp(): Unit = {
     if (_tempLength > 0) {
-      val arr = new Array[Byte](_tempLength)
-      System.arraycopy(_temp, 0, arr, 0, _tempLength)
+      val arr = java.util.Arrays.copyOf(_temp, _tempLength)
       _builder += ByteString1(arr)
       _tempLength = 0
     }
   }
 
   private def resizeTemp(size: Int): Unit = {
-    val newtemp = new Array[Byte](size)
-    if (_tempLength > 0) System.arraycopy(_temp, 0, newtemp, 0, _tempLength)
+    val newtemp = if (_temp eq null) new Array[Byte](size) else java.util.Arrays.copyOf(_temp, size)
     _temp = newtemp
     _tempCapacity = _temp.length
   }
