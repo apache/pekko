@@ -20,6 +20,7 @@ import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
 import java.net.StandardProtocolFamily;
 import java.nio.channels.DatagramChannel;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.pekko.actor.AbstractActor;
@@ -100,7 +101,7 @@ public class JavaUdpMulticast {
           .match(
               Udp.Received.class,
               received -> {
-                final String txt = received.data().decodeString("utf-8");
+                final String txt = received.data().decodeString(StandardCharsets.UTF_8);
                 log.info("Received '{}' from {}", txt, received.sender());
                 sink.tell(txt, getSelf());
               })

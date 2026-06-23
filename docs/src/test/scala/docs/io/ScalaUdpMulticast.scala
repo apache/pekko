@@ -16,6 +16,7 @@ package docs.io
 import java.net.{ InetAddress, InetSocketAddress, NetworkInterface, StandardProtocolFamily }
 import java.net.DatagramSocket
 import java.nio.channels.DatagramChannel
+import java.nio.charset.StandardCharsets
 
 import org.apache.pekko.actor.{ Actor, ActorLogging, ActorRef }
 import org.apache.pekko.io.Inet.{ DatagramChannelCreator, SocketOptionV2 }
@@ -51,7 +52,7 @@ class Listener(iface: String, group: String, port: Int, sink: ActorRef) extends 
       log.info("Bound to {}", to)
       sink ! b
     case Udp.Received(data, remote) =>
-      val msg = data.decodeString("utf-8")
+      val msg = data.decodeString(StandardCharsets.UTF_8)
       log.info("Received '{}' from {}", msg, remote)
       sink ! msg
   }
