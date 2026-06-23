@@ -1177,7 +1177,7 @@ private[remote] class EndpointReader(
   private def logTransientSerializationError(msg: PekkoPduCodec.Message, error: Throwable): Unit = {
     val sm = msg.serializedMessage
     log.warning(
-      "Serializer not defined for message with serializer id [{}] and manifest [{}]. " +
+      "Could not deserialize message with serializer id [{}] and manifest [{}]. " +
       "Transient association error (association remains live). {}",
       sm.getSerializerId,
       if (sm.hasMessageManifest) sm.getMessageManifest.toStringUtf8 else "",
