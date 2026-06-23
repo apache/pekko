@@ -313,7 +313,7 @@ class GraphBroadcastSpec extends StreamSpec("""
           // eagerCancel=true but side output (index 1) is non-eager: its cancellation
           // must not tear down the stage. Main output (index 0) keeps flowing.
           val bcast = b.add(Broadcast[Int](2, eagerCancel = true, nonEagerCancelOutputs = Set(1)))
-          src ~> bcast.in
+          src          ~> bcast.in
           bcast.out(0) ~> mainSink
           bcast.out(1) ~> sideSink
           ClosedShape
