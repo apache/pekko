@@ -29,8 +29,7 @@ import org.apache.pekko.annotation.InternalApi
 
   @inline
   def emptyReadBuffer(buffer: ByteBuffer): Unit = {
-    buffer.clear()
-    buffer.flip()
+    buffer.clear().flip()
   }
 
   @inline
