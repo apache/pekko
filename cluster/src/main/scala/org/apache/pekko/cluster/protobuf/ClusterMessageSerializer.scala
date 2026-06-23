@@ -125,35 +125,43 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
       throw new IllegalArgumentException(s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
   }
 
-  def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = manifest match {
-    case HeartbeatManifest         => deserializeHeartBeat(bytes)
-    case HeartbeatRspManifest      => deserializeHeartBeatResponse(bytes)
-    case GossipStatusManifest      => deserializeGossipStatus(bytes)
-    case GossipEnvelopeManifest    => deserializeGossipEnvelope(bytes)
-    case InitJoinManifest          => deserializeInitJoin(bytes)
-    case InitJoinAckManifest       => deserializeInitJoinAck(bytes)
-    case InitJoinNackManifest      => deserializeInitJoinNack(bytes)
-    case JoinManifest              => deserializeJoin(bytes)
-    case WelcomeManifest           => deserializeWelcome(bytes)
-    case LeaveManifest             => deserializeLeave(bytes)
-    case DownManifest              => deserializeDown(bytes)
-    case ExitingConfirmedManifest  => deserializeExitingConfirmed(bytes)
-    case ClusterRouterPoolManifest => deserializeClusterRouterPool(bytes)
-    // needs to stay in Akka 2.6.5 to be able to talk to an Akka 2.5.{3,4} node during rolling upgrade
-    case HeartBeatManifestPre2523     => deserializeHeartBeatAsAddress(bytes)
-    case HeartBeatRspManifest2523     => deserializeHeartBeatRspAsUniqueAddress(bytes)
-    case OldGossipStatusManifest      => deserializeGossipStatus(bytes)
-    case OldGossipEnvelopeManifest    => deserializeGossipEnvelope(bytes)
-    case OldInitJoinManifest          => deserializeInitJoin(bytes)
-    case OldInitJoinAckManifest       => deserializeInitJoinAck(bytes)
-    case OldInitJoinNackManifest      => deserializeInitJoinNack(bytes)
-    case OldJoinManifest              => deserializeJoin(bytes)
-    case OldWelcomeManifest           => deserializeWelcome(bytes)
-    case OldLeaveManifest             => deserializeLeave(bytes)
-    case OldDownManifest              => deserializeDown(bytes)
-    case OldExitingConfirmedManifest  => deserializeExitingConfirmed(bytes)
-    case OldClusterRouterPoolManifest => deserializeClusterRouterPool(bytes)
-    case _                            => throw new IllegalArgumentException(s"Unknown manifest [$manifest]")
+  def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = {
+    val updatedManifest = {
+      if (manifest.startsWith("akka"))
+        manifest.replaceFirst("akka", "org.apache.pekko")
+      else manifest
+    }
+
+    updatedManifest match {
+      case HeartbeatManifest         => deserializeHeartBeat(bytes)
+      case HeartbeatRspManifest      => deserializeHeartBeatResponse(bytes)
+      case GossipStatusManifest      => deserializeGossipStatus(bytes)
+      case GossipEnvelopeManifest    => deserializeGossipEnvelope(bytes)
+      case InitJoinManifest          => deserializeInitJoin(bytes)
+      case InitJoinAckManifest       => deserializeInitJoinAck(bytes)
+      case InitJoinNackManifest      => deserializeInitJoinNack(bytes)
+      case JoinManifest              => deserializeJoin(bytes)
+      case WelcomeManifest           => deserializeWelcome(bytes)
+      case LeaveManifest             => deserializeLeave(bytes)
+      case DownManifest              => deserializeDown(bytes)
+      case ExitingConfirmedManifest  => deserializeExitingConfirmed(bytes)
+      case ClusterRouterPoolManifest => deserializeClusterRouterPool(bytes)
+      // needs to stay in Akka 2.6.5 to be able to talk to an Akka 2.5.{3,4} node during rolling upgrade
+      case HeartBeatManifestPre2523     => deserializeHeartBeatAsAddress(bytes)
+      case HeartBeatRspManifest2523     => deserializeHeartBeatRspAsUniqueAddress(bytes)
+      case OldGossipStatusManifest      => deserializeGossipStatus(bytes)
+      case OldGossipEnvelopeManifest    => deserializeGossipEnvelope(bytes)
+      case OldInitJoinManifest          => deserializeInitJoin(bytes)
+      case OldInitJoinAckManifest       => deserializeInitJoinAck(bytes)
+      case OldInitJoinNackManifest      => deserializeInitJoinNack(bytes)
+      case OldJoinManifest              => deserializeJoin(bytes)
+      case OldWelcomeManifest           => deserializeWelcome(bytes)
+      case OldLeaveManifest             => deserializeLeave(bytes)
+      case OldDownManifest              => deserializeDown(bytes)
+      case OldExitingConfirmedManifest  => deserializeExitingConfirmed(bytes)
+      case OldClusterRouterPoolManifest => deserializeClusterRouterPool(bytes)
+      case _                            => throw new IllegalArgumentException(s"Unknown manifest [$manifest]")
+    }
   }
 
   def compress(msg: MessageLite): Array[Byte] = {
