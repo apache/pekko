@@ -81,7 +81,7 @@ private[pekko] trait Children { this: ActorCell =>
   private[pekko] def addFunctionRef(f: (ActorRef, Any) => Unit, name: String = ""): FunctionRef = {
     val r = randomName(new java.lang.StringBuilder("$$"))
     val n = if (name != "") s"$r-$name" else r
-    val childPath = new ChildActorPath(self.path, n, ActorCell.newUid())
+    val childPath = new ChildActorPath(self.path, n, generateUid())
     val ref = new FunctionRef(childPath, provider, system, f)
 
     @tailrec def rec(): Unit = {
@@ -317,7 +317,7 @@ private[pekko] trait Children { this: ActorCell =>
       // this name will either be unreserved or overwritten with a real child below
       val actor =
         try {
-          val childPath = new ChildActorPath(cell.self.path, name, ActorCell.newUid())
+          val childPath = new ChildActorPath(cell.self.path, name, cell.generateUid())
           cell.provider.actorOf(
             cell.systemImpl,
             props,

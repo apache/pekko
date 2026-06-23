@@ -388,6 +388,7 @@ private[pekko] object ActorCell {
 
   final val undefinedUid = 0
 
+  @deprecated("Use ActorCell.generateUid() instead", "Pekko 2.0.0")
   @tailrec final def newUid(): Int = {
     // Note that this uid is also used as hashCode in ActorRef, so be careful
     // to not break hashing if you change the way uid is generated
@@ -471,6 +472,18 @@ private[pekko] class ActorCell(
     val unstashed = sysmsgStash
     sysmsgStash = SystemMessageList.LNil
     unstashed
+  }
+
+  /**
+    * INTERNAL API: Generate a new unique id for a new actor cell.
+    * @since 2.0.0
+    */
+  @tailrec final private[actor] def generateUid(): Int = {
+    // Note that this uid is also used as hashCode in ActorRef, so be careful
+    // to not break hashing if you change the way uid is generated
+    val uid = system.randomGenerator().nextInt()
+    if (uid == ActorCell.undefinedUid) generateUid()
+    else uid
   }
 
   /*

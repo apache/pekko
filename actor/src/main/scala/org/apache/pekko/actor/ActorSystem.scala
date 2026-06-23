@@ -17,6 +17,7 @@ import java.io.Closeable
 import java.util.Optional
 import java.util.concurrent._
 import java.util.concurrent.atomic.AtomicReference
+import java.util.random.RandomGenerator
 
 import scala.annotation.tailrec
 import scala.collection.immutable
@@ -820,6 +821,14 @@ abstract class ExtendedActorSystem extends ActorSystem {
    */
   @InternalApi private[pekko] def isTerminating(): Boolean
 
+  /**
+   * INTERNAL API
+   * @return a random generator (not cryptographically secure).
+   * This defaults to ThreadLocalRandom.current(). It can be overridden using the config property
+   * `pekko.random.generator-implementation`.
+   */
+  @InternalApi private[pekko] def randomGenerator(): RandomGenerator
+
 }
 
 /**
@@ -835,7 +844,13 @@ private[pekko] class ActorSystemImpl(
     setup: ActorSystemSetup)
     extends ExtendedActorSystem {
 
-  val uid: Long = ThreadLocalRandom.current.nextLong()
+  private val randomGeneratorProvider: RandomGeneratorProvider =
+    RandomNumberGenerator.getGeneratorProvider(applicationConfig)
+  require(randomGeneratorProvider != null, "RandomGeneratorProvider is not initialized. This is likely a bug in the ActorSystem initialization sequence.")
+
+  override private[pekko] def randomGenerator(): RandomGenerator = randomGeneratorProvider.get()
+
+  val uid: Long = randomGenerator().nextLong()
 
   if (!name.matches("""^[a-zA-Z0-9][a-zA-Z0-9-_]*$"""))
     throw new IllegalArgumentException(
