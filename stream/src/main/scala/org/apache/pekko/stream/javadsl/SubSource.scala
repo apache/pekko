@@ -2354,7 +2354,7 @@ final class SubSource[Out, Mat](
    *
    * Example:
    * {{{
-   * Source.from(List.of(1, 2, 3)).interleave(Source.from(List.of(4, 5, 6, 7), 2)
+   * Source.from(List.of(1, 2, 3)).interleave(Source.from(List.of(4, 5, 6, 7)), 2)
    * // 1, 2, 4, 5, 3, 6, 7
    * }}}
    *
