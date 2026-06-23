@@ -68,11 +68,10 @@ private[pekko] object NettySSLSupport {
     val handler = new SslHandler(sslEngine)
     handler.handshakeFuture().addListener((future: Future[Channel]) => {
       if (!future.isSuccess) {
-        val cause = if (future.cause() != null) future.cause() else null
         log.warning(
-          "TLS handshake failed for remote address [{}]. {}",
+          "TLS handshake failed for remote address [{}]: {}",
           sslEngine.getPeerHost,
-          if (cause != null) cause.getMessage else "unknown cause")
+          if (future.cause() != null) future.cause().getMessage else "unknown cause")
         handler.closeOutbound().channel().close()
       }
     })
