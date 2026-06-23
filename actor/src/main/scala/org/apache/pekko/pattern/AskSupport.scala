@@ -14,6 +14,7 @@
 package org.apache.pekko.pattern
 
 import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.TimeoutException
 
 import scala.annotation.{ nowarn, tailrec }
@@ -28,7 +29,7 @@ import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.dispatch.sysmsg._
-import pekko.util.{ ByteString, Timeout }
+import pekko.util.Timeout
 
 /**
  * This is what is used to complete a Future that is returned from an ask/? call,
@@ -457,7 +458,7 @@ final class AskableActorSelection(val actorSel: ActorSelection) extends AnyVal {
         if (timeout.duration.length <= 0)
           Future.failed[Any](AskableActorRef.negativeTimeoutException(actorSel, message, sender))
         else {
-          val refPrefix = URLEncoder.encode(actorSel.pathString.replace("/", "_"), ByteString.UTF_8)
+          val refPrefix = URLEncoder.encode(actorSel.pathString.replace("/", "_"), StandardCharsets.UTF_8)
           PromiseActorRef(ref.provider, timeout, targetName = actorSel, message.getClass.getName, refPrefix, sender)
             .ask(actorSel, message, timeout)
         }
@@ -486,7 +487,7 @@ final class ExplicitlyAskableActorSelection(val actorSel: ActorSelection) extend
           val message = messageFactory(ref.provider.deadLetters)
           Future.failed[Any](AskableActorRef.negativeTimeoutException(actorSel, message, sender))
         } else {
-          val refPrefix = URLEncoder.encode(actorSel.pathString.replace("/", "_"), ByteString.UTF_8)
+          val refPrefix = URLEncoder.encode(actorSel.pathString.replace("/", "_"), StandardCharsets.UTF_8)
           val a = PromiseActorRef(ref.provider, timeout, targetName = actorSel, "unknown", refPrefix, sender)
           val message = messageFactory(a)
           a.messageClassName = message.getClass.getName

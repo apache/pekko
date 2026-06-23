@@ -14,6 +14,7 @@
 package org.apache.pekko.stream
 
 import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.time.Duration
 import java.util.Optional
 
@@ -33,7 +34,6 @@ import pekko.annotation.InternalApi
 import pekko.event.Logging
 import pekko.japi.function
 import pekko.stream.impl.TraversalBuilder
-import pekko.util.ByteString
 import pekko.util.Helpers
 import pekko.util.LineNumbers
 
@@ -242,7 +242,7 @@ final class Attributes private[pekko] (
   }
 
   @InternalApi private[pekko] def nameForActorRef(default: String = "unnamed"): String = {
-    getName().map(name => URLEncoder.encode(name, ByteString.UTF_8)).getOrElse(default)
+    getName().map(name => URLEncoder.encode(name, StandardCharsets.UTF_8)).getOrElse(default)
   }
 
   /**

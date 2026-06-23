@@ -15,6 +15,7 @@ package org.apache.pekko.persistence.snapshot.local
 
 import java.io._
 import java.net.{ URLDecoder, URLEncoder }
+import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.NoSuchFileException
 
@@ -28,7 +29,6 @@ import pekko.persistence._
 import pekko.persistence.serialization._
 import pekko.persistence.snapshot._
 import pekko.serialization.SerializationExtension
-import pekko.util.ByteString.UTF_8
 
 import com.typesafe.config.Config
 
@@ -158,7 +158,7 @@ private[persistence] class LocalSnapshotStore(config: Config) extends SnapshotSt
   protected def snapshotFileForWrite(metadata: SnapshotMetadata, extension: String = ""): File =
     new File(
       snapshotDir(),
-      s"snapshot-${URLEncoder.encode(metadata.persistenceId, UTF_8)}-${metadata.sequenceNr}-${metadata.timestamp}$extension")
+      s"snapshot-${URLEncoder.encode(metadata.persistenceId, StandardCharsets.UTF_8)}-${metadata.sequenceNr}-${metadata.timestamp}$extension")
 
   private def snapshotMetadatas(
       persistenceId: String,
@@ -170,7 +170,7 @@ private[persistence] class LocalSnapshotStore(config: Config) extends SnapshotSt
         .map(_.getName)
         .flatMap { filename =>
           extractMetadata(filename).map {
-            case (pid, snr, tms) => SnapshotMetadata(URLDecoder.decode(pid, UTF_8), snr, tms)
+            case (pid, snr, tms) => SnapshotMetadata(URLDecoder.decode(pid, StandardCharsets.UTF_8), snr, tms)
           }
         }
         .filter(md => criteria.matches(md) && !saving.contains(md))

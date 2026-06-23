@@ -14,6 +14,7 @@
 package org.apache.pekko.cluster.sharding
 
 import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.util.Optional
 import java.util.concurrent.ConcurrentHashMap
 
@@ -50,7 +51,6 @@ import pekko.cluster.singleton.ClusterSingletonManager
 import pekko.event.Logging
 import pekko.pattern.BackoffOpts
 import pekko.pattern.ask
-import pekko.util.ByteString
 
 /**
  * This extension provides sharding functionality of actors in a cluster.
@@ -754,7 +754,7 @@ private[pekko] class ClusterShardingGuardian extends Actor {
       case Some(ref) => ref
       case None      =>
         val name = role match {
-          case Some(r) => URLEncoder.encode(r, ByteString.UTF_8) + "Replicator"
+          case Some(r) => URLEncoder.encode(r, StandardCharsets.UTF_8) + "Replicator"
           case None    => "replicator"
         }
         val ref = context.actorOf(Replicator.props(replicatorSettings(role, settings)), name)
@@ -799,7 +799,7 @@ private[pekko] class ClusterShardingGuardian extends Actor {
       settings: ClusterShardingSettings): Unit = {
     import settings.tuningParameters.coordinatorFailureBackoff
 
-    val encName = URLEncoder.encode(typeName, ByteString.UTF_8)
+    val encName = URLEncoder.encode(typeName, StandardCharsets.UTF_8)
     val cName = coordinatorSingletonManagerName(encName)
     if (settings.shouldHostCoordinator(cluster) && context.child(cName).isEmpty) {
       val coordinatorProps =
@@ -848,7 +848,7 @@ private[pekko] class ClusterShardingGuardian extends Actor {
           allocationStrategy,
           handOffStopMessage) =>
       try {
-        val encName = URLEncoder.encode(typeName, ByteString.UTF_8)
+        val encName = URLEncoder.encode(typeName, StandardCharsets.UTF_8)
         val cPath = coordinatorPath(encName)
         val shardRegion = context.child(encName).getOrElse {
           val remEntitiesStoreProvider = rememberEntitiesStoreProvider(typeName, settings)
@@ -880,12 +880,12 @@ private[pekko] class ClusterShardingGuardian extends Actor {
     case StartProxy(typeName, dataCenter, settings, extractEntityId, extractShardId) =>
       try {
 
-        val encName = URLEncoder.encode(s"${typeName}Proxy", ByteString.UTF_8)
-        val cPath = coordinatorPath(URLEncoder.encode(typeName, ByteString.UTF_8))
+        val encName = URLEncoder.encode(s"${typeName}Proxy", StandardCharsets.UTF_8)
+        val cPath = coordinatorPath(URLEncoder.encode(typeName, StandardCharsets.UTF_8))
         // it must be possible to start several proxies, one per data center
         val actorName = dataCenter match {
           case None    => encName
-          case Some(t) => URLEncoder.encode(typeName + "-" + t, ByteString.UTF_8)
+          case Some(t) => URLEncoder.encode(typeName + "-" + t, StandardCharsets.UTF_8)
         }
         val shardRegion = context.child(actorName).getOrElse {
           context.actorOf(

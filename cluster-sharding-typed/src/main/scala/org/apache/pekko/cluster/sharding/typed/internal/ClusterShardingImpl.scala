@@ -15,6 +15,7 @@ package org.apache.pekko.cluster.sharding.typed
 package internal
 
 import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.time.Duration
 import java.util.concurrent.CompletionStage
 import java.util.concurrent.ConcurrentHashMap
@@ -52,7 +53,7 @@ import pekko.japi.function.{ Function => JFunction }
 import pekko.pattern.AskTimeoutException
 import pekko.pattern.PromiseActorRef
 import pekko.pattern.StatusReply
-import pekko.util.{ ByteString, Timeout }
+import pekko.util.Timeout
 
 /**
  * INTERNAL API
@@ -196,7 +197,7 @@ import pekko.util.{ ByteString, Timeout }
               override def apply(t: String): ActorRef[scaladsl.ClusterSharding.ShardCommand] = {
                 system.systemActorOf(
                   ShardCommandActor.behavior(stopMessage.getOrElse(PoisonPill)),
-                  URLEncoder.encode(typeKey.name, ByteString.UTF_8) + "ShardCommandDelegator")
+                  URLEncoder.encode(typeKey.name, StandardCharsets.UTF_8) + "ShardCommandDelegator")
               }
             })
 
@@ -334,7 +335,7 @@ import pekko.util.{ ByteString, Timeout }
       case _ => false
     }
 
-  override val refPrefix = URLEncoder.encode(s"${typeKey.name}-$entityId", ByteString.UTF_8)
+  override val refPrefix = URLEncoder.encode(s"${typeKey.name}-$entityId", StandardCharsets.UTF_8)
 
   override def tell(msg: M): Unit =
     shardRegion ! ShardingEnvelope(entityId, msg)

@@ -14,6 +14,7 @@
 package org.apache.pekko.cluster.sharding
 
 import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.util
 
 import scala.annotation.nowarn
@@ -1128,7 +1129,7 @@ private[pekko] class Shard(
     entities.entity(id) match {
       case OptionVal.Some(child) => child
       case _                     =>
-        val name = URLEncoder.encode(id, "utf-8")
+        val name = URLEncoder.encode(id, StandardCharsets.UTF_8)
         val a = context.actorOf(entityProps(id), name)
         context.watchWith(a, EntityTerminated(a))
         log.debug("{}: Started entity [{}] with entity id [{}] in shard [{}]", typeName, a, id, shardId)

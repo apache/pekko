@@ -14,6 +14,7 @@
 package org.apache.pekko.remote
 
 import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeoutException
 
@@ -39,7 +40,6 @@ import pekko.remote.Remoting.TransportSupervisor
 import pekko.remote.transport._
 import pekko.remote.transport.PekkoPduCodec.Message
 import pekko.remote.transport.Transport.{ ActorAssociationEventListener, AssociationEventListener, InboundAssociation }
-import pekko.util.ByteString.UTF_8
 import pekko.util.OptionVal
 
 import com.typesafe.config.Config
@@ -48,7 +48,7 @@ import com.typesafe.config.Config
  * INTERNAL API
  */
 private[remote] object AddressUrlEncoder {
-  def apply(address: Address): String = URLEncoder.encode(address.toString, UTF_8)
+  def apply(address: Address): String = URLEncoder.encode(address.toString, StandardCharsets.UTF_8)
 }
 
 /**
