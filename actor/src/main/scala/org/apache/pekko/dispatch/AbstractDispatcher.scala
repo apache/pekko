@@ -203,7 +203,7 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
         case RESCHEDULED =>
           return
         case unexpected =>
-          throw new IllegalArgumentException(s"Unexpected actor class marker: $unexpected") // will not happen, for exhaustiveness check
+          throw new IllegalArgumentException(s"Unexpected shutdown schedule marker: $unexpected") // will not happen, for exhaustiveness check
       }
       Thread.onSpinWait()
     }
@@ -266,7 +266,7 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
           else run()
         case UNSCHEDULED =>
         case unexpected  =>
-          throw new IllegalArgumentException(s"Unexpected actor class marker: $unexpected") // will not happen, for exhaustiveness check
+          throw new IllegalArgumentException(s"Unexpected shutdown schedule marker: $unexpected") // will not happen, for exhaustiveness check
       }
     }
   }

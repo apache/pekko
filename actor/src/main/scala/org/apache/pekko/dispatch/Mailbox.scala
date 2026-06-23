@@ -162,7 +162,7 @@ private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
       Thread.onSpinWait()
       s = currentStatus
     }
-    false // unreachable
+    throw new IllegalStateException("unreachable")
   }
 
   /**
@@ -182,7 +182,7 @@ private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
       Thread.onSpinWait()
       s = currentStatus
     }
-    false // unreachable
+    throw new IllegalStateException("unreachable")
   }
 
   /**
@@ -200,7 +200,7 @@ private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
       Thread.onSpinWait()
       s = currentStatus
     }
-    false // unreachable
+    throw new IllegalStateException("unreachable")
   }
 
   /**
@@ -208,14 +208,13 @@ private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
    */
   final def setAsScheduled(): Boolean = {
     var s = currentStatus
-    while ({
+    while (true) {
       if ((s & shouldScheduleMask) != Open) return false
-      !updateStatus(s, s | Scheduled)
-    }) {
+      if (updateStatus(s, s | Scheduled)) return true
       Thread.onSpinWait()
       s = currentStatus
     }
-    true
+    throw new IllegalStateException("unreachable")
   }
 
   /**
