@@ -13,7 +13,9 @@
 
 package org.apache.pekko.testkit
 
+import java.lang.StackWalker.StackFrame
 import java.lang.reflect.Modifier
+import java.util.stream.{ Stream => JStream }
 
 import scala.util.matching.Regex
 
@@ -24,6 +26,10 @@ import org.apache.pekko.annotation.InternalApi
  */
 @InternalApi
 private[pekko] object TestKitUtils {
+
+  private val stackWalker: java.util.function.Function[JStream[StackFrame], Array[String]] =
+    (frames: JStream[StackFrame]) =>
+      frames.map(_.getClassName).toArray[String]((size: Int) => new Array[String](size))
 
   def testNameFromCallStack(classToStartFrom: Class[?], testKitRegex: Regex): String = {
 
@@ -36,8 +42,8 @@ private[pekko] object TestKitUtils {
     }
 
     val startFrom = classToStartFrom.getName
-    val filteredStack = Thread.currentThread.getStackTrace.iterator
-      .map(_.getClassName)
+    val classNames = StackWalker.getInstance().walk(stackWalker)
+    val filteredStack = classNames.iterator
       // drop until we find the first occurrence of classToStartFrom
       .dropWhile(!_.startsWith(startFrom))
       // then continue to the next entry after classToStartFrom that makes sense
