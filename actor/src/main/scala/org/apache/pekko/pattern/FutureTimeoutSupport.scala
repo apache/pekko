@@ -134,23 +134,19 @@ trait FutureTimeoutSupport {
       catch {
         case NonFatal(t) => CompletableFuture.failedStage(t)
       }
-    if (stage.toCompletableFuture.isDone) {
-      stage
-    } else {
-      val p = new CompletableFuture[T]
-      val timeout = using.scheduleOnce(duration,
-        () => {
-          p.completeExceptionally(new TimeoutException(s"Timeout of $duration expired"))
-          stage.toCompletableFuture.cancel(true)
-          ()
-        })
-      stage.handle[Unit]((v: T, ex: Throwable) => {
-        timeout.cancel()
-        if (v != null) p.complete(v)
-        if (ex ne null) p.completeExceptionally(ex)
+    val millis = if (duration.isZero || duration.isNegative) 0L else duration.toMillis
+    // Note: no explicit `isDone` fast-path is needed here because
+    // `CompletableFuture.orTimeout` already short-circuits on an already-completed stage.
+    stage.toCompletableFuture
+      .orTimeout(millis, java.util.concurrent.TimeUnit.MILLISECONDS)
+      .handle((v: T, ex: Throwable) => {
+        if (ex ne null) {
+          ex match {
+            case _: TimeoutException => throw new TimeoutException(s"Timeout of $duration expired")
+            case _                   => throw ex
+          }
+        } else v
       })
-      p
-    }
   }
 
 }
