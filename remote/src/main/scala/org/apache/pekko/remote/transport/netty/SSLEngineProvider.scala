@@ -32,6 +32,7 @@ import scala.util.Try
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
+import pekko.event.LogMarker
 import pekko.event.Logging
 import pekko.event.MarkerLoggingAdapter
 import pekko.remote.RemoteTransportException
@@ -70,7 +71,15 @@ class ConfigSSLEngineProvider(protected val log: MarkerLoggingAdapter, private v
 
   import settings._
 
-  private val sslContext: SSLContext = {
+  if (SSLHostnameVerification)
+    log.debug("TLS/SSL hostname verification is enabled.")
+  else
+    log.info(
+      LogMarker.Security,
+      "TLS/SSL hostname verification is disabled. " +
+      "Set pekko.remote.classic.netty.ssl.security.hostname-verification=on to enable.")
+
+  private lazy val sslContext: SSLContext = {
     try {
       val rng = createSecureRandom()
       val ctx = SSLContext.getInstance(SSLProtocol)
