@@ -46,6 +46,7 @@ import pekko.util.OptionVal
       private lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
       private implicit def ec: ExecutionContext = materializer.executionContext
       private var maybeResource: OptionVal[R] = OptionVal.none
+      private var inFlightRead: Future[Option[T]] = _
 
       private val createdCallback = getAsyncCallback[Try[R]] {
         case Success(resource) =>
@@ -70,7 +71,10 @@ import pekko.util.OptionVal
           }
       }
 
-      private val readCallback = getAsyncCallback[Try[Option[T]]](handle).invoke _
+      private val readCallback = getAsyncCallback[Try[Option[T]]] { result =>
+        inFlightRead = null
+        handle(result)
+      }.invoke _
 
       private def handle(result: Try[Option[T]]): Unit = result match {
         case Success(data) =>
@@ -100,9 +104,12 @@ import pekko.util.OptionVal
         case OptionVal.Some(resource) =>
           try {
             val future = readData(resource)
+            inFlightRead = future
             future.value match {
-              case Some(value) => handle(value)
-              case None        => future.onComplete(readCallback)(parasitic)
+              case Some(value) =>
+                inFlightRead = null
+                handle(value)
+              case None => future.onComplete(readCallback)(parasitic)
             }
           } catch errorHandler
 
@@ -113,8 +120,12 @@ import pekko.util.OptionVal
       }
 
       override def postStop(): Unit = maybeResource match {
-        case OptionVal.Some(resource) => close(resource)
-        case _                        => // do nothing
+        case OptionVal.Some(resource) =>
+          val pendingRead = inFlightRead
+          inFlightRead = null
+          if (pendingRead ne null) pendingRead.onComplete(_ => close(resource))(parasitic)
+          else close(resource)
+        case _ => // do nothing
       }
 
       private def restartResource(): Unit = maybeResource match {

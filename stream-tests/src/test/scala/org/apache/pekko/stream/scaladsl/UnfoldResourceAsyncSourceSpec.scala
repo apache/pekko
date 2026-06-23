@@ -129,6 +129,40 @@ class UnfoldResourceAsyncSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
       resource.closed.futureValue
     }
 
+    "wait for pending read before closing resource when stream is cancelled" in {
+      val readStarted = Promise[Done]()
+      val readCompleted = Promise[Option[Int]]()
+      val closeProbe = TestProbe()
+      val out = TestSubscriber.manualProbe[Int]()
+
+      val terminated = Source
+        .unfoldResourceAsync[Int, Unit](
+          () => Future.successful(()),
+          _ => {
+            readStarted.success(Done)
+            readCompleted.future
+          },
+          _ => {
+            closeProbe.ref ! readCompleted.isCompleted
+            Future.successful(Done)
+          })
+        .watchTermination(Keep.right)
+        .toMat(Sink.fromSubscriber(out))(Keep.left)
+        .run()
+
+      val subscription = out.expectSubscription()
+      subscription.request(1)
+      readStarted.future.futureValue
+
+      subscription.cancel()
+      terminated.futureValue
+      closeProbe.expectNoMessage(200.millis)
+
+      readCompleted.success(Some(1))
+      closeProbe.expectMsg(true)
+      closeProbe.expectNoMessage(200.millis)
+    }
+
     "fail when create throws exception" in {
       val probe = TestSubscriber.probe[Unit]()
       Source
