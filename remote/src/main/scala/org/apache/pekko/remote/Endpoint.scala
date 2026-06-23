@@ -913,7 +913,7 @@ private[remote] class EndpointWriter(
           if (pduSize > transport.maximumPayloadBytes) {
             val reasonText =
               s"Discarding oversized payload sent to ${s.recipient}: max allowed size ${transport
-                  .maximumPayloadBytes} bytes, actual size of encoded ${s.message.getClass} was ${pdu.size} bytes."
+                  .maximumPayloadBytes} bytes, actual size of encoded ${WrappedMessage.unwrap(s.message).getClass} was ${pdu.size} bytes."
             log.error(
               new OversizedPayloadException(reasonText),
               "Transient association error (association remains live)")
@@ -940,13 +940,13 @@ private[remote] class EndpointWriter(
         log.error(
           e,
           "Serializer not defined for message type [{}]. Transient association error (association remains live)",
-          s.message.getClass)
+          WrappedMessage.unwrap(s.message).getClass)
         true
       case e: IllegalArgumentException =>
         log.error(
           e,
           "Serializer not defined for message type [{}]. Transient association error (association remains live)",
-          s.message.getClass)
+          WrappedMessage.unwrap(s.message).getClass)
         true
       case e: MessageSerializer.SerializationException =>
         log.error(e, "{} Transient association error (association remains live)", e.getMessage)
@@ -1154,8 +1154,7 @@ private[remote] class EndpointReader(
           } else
             try msgDispatch.dispatch(msg.recipient, msg.recipientAddress, msg.serializedMessage, msg.senderOption)
             catch {
-              case e: NotSerializableException => logTransientSerializationError(msg, e)
-              case e: IllegalArgumentException => logTransientSerializationError(msg, e)
+              case NonFatal(e) => logTransientSerializationError(msg, e)
             }
 
         case None =>
@@ -1175,7 +1174,7 @@ private[remote] class EndpointReader(
 
   }
 
-  private def logTransientSerializationError(msg: PekkoPduCodec.Message, error: Exception): Unit = {
+  private def logTransientSerializationError(msg: PekkoPduCodec.Message, error: Throwable): Unit = {
     val sm = msg.serializedMessage
     log.warning(
       "Serializer not defined for message with serializer id [{}] and manifest [{}]. " +
@@ -1238,7 +1237,10 @@ private[remote] class EndpointReader(
     // Notify writer that some messages can be acked
     context.parent ! OutboundAck(ack)
     deliver.foreach { m =>
-      msgDispatch.dispatch(m.recipient, m.recipientAddress, m.serializedMessage, m.senderOption)
+      try msgDispatch.dispatch(m.recipient, m.recipientAddress, m.serializedMessage, m.senderOption)
+      catch {
+        case NonFatal(e) => logTransientSerializationError(m, e)
+      }
     }
   }
 
