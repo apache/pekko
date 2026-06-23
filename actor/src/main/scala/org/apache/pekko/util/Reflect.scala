@@ -12,6 +12,7 @@
  */
 
 package org.apache.pekko.util
+import java.lang.StackWalker
 import java.lang.reflect.Constructor
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
@@ -42,10 +43,10 @@ private[pekko] object Reflect {
    */
   val getCallerClass: Option[Int => Class[?]] = {
     try {
-      val walker = java.lang.StackWalker.getInstance(
-        java.util.Set.of(java.lang.StackWalker.Option.RETAIN_CLASS_REFERENCE))
+      val walker = StackWalker.getInstance(
+        java.util.Set.of(StackWalker.Option.RETAIN_CLASS_REFERENCE))
       Some((i: Int) =>
-        walker.walk((s: java.util.stream.Stream[java.lang.StackWalker.StackFrame]) =>
+        walker.walk((s: java.util.stream.Stream[StackWalker.StackFrame]) =>
           s.skip(i.toLong).map[Class[?]](_.getDeclaringClass).findFirst().orElse(null)))
     } catch {
       case NonFatal(_) => None
