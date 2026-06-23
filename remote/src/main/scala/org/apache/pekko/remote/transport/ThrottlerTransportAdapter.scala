@@ -146,6 +146,9 @@ object ThrottlerTransportAdapter {
 
     private def tokensGenerated(nanoTimeOfSend: Long): Int =
       (TimeUnit.NANOSECONDS.toMillis(nanoTimeOfSend - nanoTimeOfLastSend) * tokensPerSecond / 1000.0).toInt
+
+    private[transport] def hasSameSettings(other: TokenBucket): Boolean =
+      capacity == other.capacity && tokensPerSecond == other.tokensPerSecond
   }
 
   @SerialVersionUID(1L)
@@ -616,6 +619,43 @@ private[transport] class ThrottledAssociation(
 /**
  * INTERNAL API
  */
+private[transport] object ThrottlerHandle {
+
+  @tailrec private[transport] def tryConsume(
+      throttleRef: AtomicReference[ThrottleMode],
+      currentBucket: ThrottleMode,
+      tokens: Int): ThrottleMode = {
+    val timeOfSend = System.nanoTime()
+    val (newBucket, allow) = currentBucket.tryConsumeTokens(timeOfSend, tokens)
+    if (allow) {
+      if (throttleRef.compareAndSet(currentBucket, newBucket)) newBucket
+      else tryConsume(throttleRef, throttleRef.get(), tokens)
+    } else null
+  }
+
+  @tailrec private[transport] def refundTokens(
+      throttleRef: AtomicReference[ThrottleMode],
+      previousBucket: ThrottleMode,
+      consumedBucket: ThrottleMode,
+      tokens: Int): Unit = {
+    val currentBucket = throttleRef.get()
+    val refundedBucket =
+      if (currentBucket eq consumedBucket) previousBucket
+      else
+        (currentBucket, previousBucket) match {
+          case (bucket: TokenBucket, previous: TokenBucket) if bucket.hasSameSettings(previous) =>
+            bucket.copy(availableTokens = min(bucket.availableTokens + tokens, bucket.capacity))
+          case _ => currentBucket
+        }
+
+    if ((refundedBucket ne currentBucket) && !throttleRef.compareAndSet(currentBucket, refundedBucket))
+      refundTokens(throttleRef, previousBucket, consumedBucket, tokens)
+  }
+}
+
+/**
+ * INTERNAL API
+ */
 @nowarn("msg=deprecated")
 private[transport] final case class ThrottlerHandle(_wrappedHandle: AssociationHandle, throttlerActor: ActorRef)
     extends AbstractTransportAdapterHandle(_wrappedHandle, SchemeIdentifier) {
@@ -627,21 +667,16 @@ private[transport] final case class ThrottlerHandle(_wrappedHandle: AssociationH
   override def write(payload: ByteString): Boolean = {
     val tokens = payload.length
 
-    @tailrec def tryConsume(currentBucket: ThrottleMode): Boolean = {
-      val timeOfSend = System.nanoTime()
-      val (newBucket, allow) = currentBucket.tryConsumeTokens(timeOfSend, tokens)
-      if (allow) {
-        if (outboundThrottleMode.compareAndSet(currentBucket, newBucket)) true
-        else tryConsume(outboundThrottleMode.get())
-      } else false
-    }
-
     outboundThrottleMode.get match {
-      case Blackhole  => true
-      case bucket @ _ =>
-        val success = tryConsume(outboundThrottleMode.get())
-        if (success) wrappedHandle.write(payload) else false
-      // FIXME: this depletes the token bucket even when no write happened!! See #2825
+      case Blackhole   => true
+      case Unthrottled => wrappedHandle.write(payload)
+      case bucket      =>
+        val consumedBucket = ThrottlerHandle.tryConsume(outboundThrottleMode, bucket, tokens)
+        if (consumedBucket ne null) {
+          val written = wrappedHandle.write(payload)
+          if (!written) ThrottlerHandle.refundTokens(outboundThrottleMode, bucket, consumedBucket, tokens)
+          written
+        } else false
     }
 
   }
