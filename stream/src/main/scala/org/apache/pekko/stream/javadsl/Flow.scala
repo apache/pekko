@@ -1621,7 +1621,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * Examples:
    *
    * {{{
-   * Source<Integer, ?> nums = Source.from(Arrays.asList(0, 1, 2, 3));
+   * Source<Integer, ?> nums = Source.from(List.of(0, 1, 2, 3));
    * nums.intersperse(",");            //   1 , 2 , 3
    * nums.intersperse("[", ",", "]");  // [ 1 , 2 , 3 ]
    * }}}
@@ -1655,7 +1655,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * Examples:
    *
    * {{{
-   * Source<Integer, ?> nums = Source.from(Arrays.asList(0, 1, 2, 3));
+   * Source<Integer, ?> nums = Source.from(List.of(0, 1, 2, 3));
    * nums.intersperse(",");            //   1 , 2 , 3
    * nums.intersperse("[", ",", "]");  // [ 1 , 2 , 3 ]
    * }}}
@@ -3390,8 +3390,8 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * Example:
    * {{{
-   * Source<Integer, ?> src = Source.from(Arrays.asList(1, 2, 3))
-   * Flow<Integer, Integer, ?> flow = flow.interleave(Source.from(Arrays.asList(4, 5, 6, 7)), 2)
+   * Source<Integer, ?> src = Source.from(List.of(1, 2, 3))
+   * Flow<Integer, Integer, ?> flow = flow.interleave(Source.from(List.of(4, 5, 6, 7)), 2)
    * src.via(flow) // 1, 2, 4, 5, 3, 6, 7
    * }}}
    *

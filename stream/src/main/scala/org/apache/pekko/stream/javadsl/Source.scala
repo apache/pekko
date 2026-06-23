@@ -128,7 +128,7 @@ object Source {
    * Example usage:
    *
    * {{{
-   * Source.cycle(() -> Arrays.asList(1, 2, 3).iterator());
+   * Source.cycle(() -> List.of(1, 2, 3).iterator());
    * }}}
    *
    * Start a new 'cycled' `Source` from the given elements. The producer stream of elements
@@ -1514,7 +1514,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * Example:
    * {{{
-   * Source.from(Arrays.asList(1, 2, 3)).interleave(Source.from(Arrays.asList(4, 5, 6, 7), 2)
+   * Source.from(List.of(1, 2, 3)).interleave(Source.from(List.of(4, 5, 6, 7), 2)
    * // 1, 2, 4, 5, 3, 6, 7
    * }}}
    *
@@ -3504,7 +3504,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * Examples:
    *
    * {{{
-   * Source<Integer, ?> nums = Source.from(Arrays.asList(0, 1, 2, 3));
+   * Source<Integer, ?> nums = Source.from(List.of(0, 1, 2, 3));
    * nums.intersperse(",");            //   1 , 2 , 3
    * nums.intersperse("[", ",", "]");  // [ 1 , 2 , 3 ]
    * }}}
@@ -3537,7 +3537,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * Examples:
    *
    * {{{
-   * Source<Integer, ?> nums = Source.from(Arrays.asList(0, 1, 2, 3));
+   * Source<Integer, ?> nums = Source.from(List.of(0, 1, 2, 3));
    * nums.intersperse(",");            //   1 , 2 , 3
    * nums.intersperse("[", ",", "]");  // [ 1 , 2 , 3 ]
    * }}}

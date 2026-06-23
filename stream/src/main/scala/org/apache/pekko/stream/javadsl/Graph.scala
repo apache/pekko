@@ -726,7 +726,7 @@ object GraphDSL extends GraphCreate {
       : Graph[S, java.util.List[M]] = {
     require(!graphs.isEmpty, "The input list must have one or more Graph elements")
     val gbuilder = builder[java.util.List[M]]()
-    val toList = (m1: M) => new util.ArrayList(util.Arrays.asList(m1))
+    val toList = (m1: M) => new util.ArrayList(util.List.of(m1))
     val combine = (s: java.util.List[M], m2: M) => {
       val newList = new util.ArrayList(s)
       newList.add(m2)
