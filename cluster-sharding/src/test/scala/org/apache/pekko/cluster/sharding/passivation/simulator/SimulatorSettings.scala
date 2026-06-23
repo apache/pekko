@@ -18,6 +18,7 @@ import scala.jdk.CollectionConverters._
 
 import org.apache.pekko
 import pekko.japi.Util.immutableSeq
+import pekko.util.Helpers.toRootLowerCase
 
 import com.typesafe.config.Config
 
