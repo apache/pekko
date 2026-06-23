@@ -17,7 +17,10 @@ import scala.collection.immutable
 import scala.concurrent.{ Await, Future }
 import scala.concurrent.Promise
 import scala.concurrent.duration._
+import scala.util.Try
 import scala.util.control.NoStackTrace
+
+import java.util.concurrent.CountDownLatch
 
 import org.apache.pekko
 import pekko.{ Done, NotUsed }
@@ -26,7 +29,6 @@ import pekko.actor.Status.Failure
 import pekko.pattern._
 import pekko.stream._
 import pekko.stream.impl.streamref.{ SinkRefImpl, SourceRefImpl }
-import pekko.stream.testkit.TestPublisher
 import pekko.stream.testkit.Utils.TE
 import pekko.stream.testkit.scaladsl._
 import pekko.testkit.{ PekkoSpec, TestKit, TestProbe }
@@ -480,6 +482,36 @@ class StreamRefsSpec extends PekkoSpec(StreamRefsSpec.config()) {
       expectTerminated(sinkRefStageActorRef)
     }
 
+    "not allow materializing multiple times" in {
+      val remoteProbe = TestProbe()(remoteSystem)
+      remoteActor.tell("give", remoteProbe.ref)
+      val sourceRef = remoteProbe.expectMsgType[SourceRef[String]]
+
+      sourceRef.source.to(Sink.ignore).run()
+
+      val ex = the[IllegalStateException] thrownBy sourceRef.source.to(Sink.ignore).run()
+      ex.getMessage should include("already been materialized")
+    }
+
+    "not allow concurrent materialization" in {
+      val remoteProbe = TestProbe()(remoteSystem)
+      remoteActor.tell("give", remoteProbe.ref)
+      val sourceRef = remoteProbe.expectMsgType[SourceRef[String]]
+
+      implicit val ec: scala.concurrent.ExecutionContext = system.dispatcher
+      val latch = new CountDownLatch(1)
+      val results = (1 to 10).map { _ =>
+        Future {
+          latch.await()
+          Try(sourceRef.source.to(Sink.ignore).run())
+        }
+      }
+      latch.countDown()
+      val outcomes = Await.result(Future.sequence(results), 10.seconds)
+      outcomes.count(_.isSuccess) shouldBe 1
+      outcomes.count(_.isFailure) shouldBe 9
+    }
+
   }
 
   "A SinkRef" must {
@@ -613,15 +645,30 @@ class StreamRefsSpec extends PekkoSpec(StreamRefsSpec.config()) {
       remoteActor.tell(Command("receive", elementProbe.ref), remoteProbe.ref)
       val sinkRef = remoteProbe.expectMsgType[SinkRef[String]]
 
-      val p1: TestPublisher.Probe[String] = TestSource[String]().to(sinkRef).run()
-      val p2: TestPublisher.Probe[String] = TestSource[String]().to(sinkRef).run()
+      TestSource[String]().to(sinkRef).run()
 
-      p1.ensureSubscription()
-      p1.expectRequest()
+      val ex = the[IllegalStateException] thrownBy TestSource[String]().to(sinkRef).run()
+      ex.getMessage should include("already been materialized")
+    }
 
-      // will be cancelled immediately, since it's 2nd:
-      p2.ensureSubscription()
-      p2.expectCancellation()
+    "not allow concurrent materialization" in {
+      val remoteProbe = TestProbe()(remoteSystem)
+      val elementProbe = TestProbe()(remoteSystem)
+      remoteActor.tell(Command("receive", elementProbe.ref), remoteProbe.ref)
+      val sinkRef = remoteProbe.expectMsgType[SinkRef[String]]
+
+      implicit val ec: scala.concurrent.ExecutionContext = system.dispatcher
+      val latch = new CountDownLatch(1)
+      val results = (1 to 10).map { _ =>
+        Future {
+          latch.await()
+          Try(TestSource[String]().to(sinkRef).run())
+        }
+      }
+      latch.countDown()
+      val outcomes = Await.result(Future.sequence(results), 10.seconds)
+      outcomes.count(_.isSuccess) shouldBe 1
+      outcomes.count(_.isFailure) shouldBe 9
     }
 
   }
