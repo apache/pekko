@@ -74,8 +74,7 @@ private[ssl] object PemManagersProvider {
    */
   @InternalApi
   private[ssl] def loadPrivateKey(filename: String): PrivateKey = blocking {
-    val bytes = Files.readAllBytes(new File(filename).toPath)
-    val pemData = new String(bytes, StandardCharsets.UTF_8)
+    val pemData = Files.readString(new File(filename).toPath, StandardCharsets.UTF_8)
     DERPrivateKeyLoader.load(PEMDecoder.decode(pemData))
   }
 
