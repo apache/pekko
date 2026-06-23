@@ -135,13 +135,14 @@ trait FutureTimeoutSupport {
         case NonFatal(t) => CompletableFuture.failedStage(t)
       }
     val millis = if (duration.isZero || duration.isNegative) 0L else duration.toMillis
-    val timeoutMessage = s"Timeout of $duration expired"
+    // Note: no explicit `isDone` fast-path is needed here because
+    // `CompletableFuture.orTimeout` already short-circuits on an already-completed stage.
     stage.toCompletableFuture
       .orTimeout(millis, java.util.concurrent.TimeUnit.MILLISECONDS)
       .handle((v: T, ex: Throwable) => {
         if (ex ne null) {
           ex match {
-            case _: TimeoutException => throw new TimeoutException(timeoutMessage)
+            case _: TimeoutException => throw new TimeoutException(s"Timeout of $duration expired")
             case _                   => throw ex
           }
         } else v
