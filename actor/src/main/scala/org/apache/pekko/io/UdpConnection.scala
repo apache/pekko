@@ -130,10 +130,7 @@ private[io] class UdpConnection(
 
   def doRead(registration: ChannelRegistration, handler: ActorRef): Unit = {
     @tailrec def innerRead(readsLeft: Int, buffer: ByteBuffer): Unit = {
-      buffer.clear()
-      buffer.limit(DirectBufferSize)
-
-      if (channel.read(buffer) > 0) {
+      if (channel.read(buffer.clear().limit(DirectBufferSize)) > 0) {
         buffer.flip()
         handler ! Received(ByteString(buffer))
         innerRead(readsLeft - 1, buffer)

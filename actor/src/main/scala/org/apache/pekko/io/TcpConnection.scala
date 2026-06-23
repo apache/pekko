@@ -267,10 +267,8 @@ private[io] abstract class TcpConnection(val tcp: TcpExt, val channel: SocketCha
       @tailrec def innerRead(buffer: ByteBuffer, remainingLimit: Int): ReadResult =
         if (remainingLimit > 0) {
           // never read more than the configured limit
-          buffer.clear()
           val maxBufferSpace = math.min(DirectBufferSize, remainingLimit)
-          buffer.limit(maxBufferSpace)
-          val readBytes = channel.read(buffer)
+          val readBytes = channel.read(buffer.clear().limit(maxBufferSpace))
           buffer.flip()
 
           if (TraceLogging) log.debug("Read [{}] bytes.", readBytes)
