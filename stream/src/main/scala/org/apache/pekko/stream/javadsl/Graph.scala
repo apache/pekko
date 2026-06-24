@@ -210,6 +210,27 @@ object Broadcast {
     scaladsl.Broadcast(outputCount, eagerCancel = eagerCancel)
 
   /**
+   * Create a new `Broadcast` operator with the specified input type and per-output cancellation behavior.
+   *
+   * @param outputCount number of output ports
+   * @param eagerCancel if true, broadcast cancels upstream if any of its downstreams cancel
+   *                    (except those listed in `nonEagerCancelOutputs`).
+   * @param nonEagerCancelOutputs set of output port indices whose cancellation should not
+   *                              trigger upstream cancellation. These outputs are silently
+   *                              removed from the broadcast when they cancel, and elements
+   *                              continue flowing to the remaining outputs.
+   * @since 2.0.0
+   */
+  def create[T](
+      outputCount: Int,
+      eagerCancel: Boolean,
+      nonEagerCancelOutputs: util.Set[java.lang.Integer]): Graph[UniformFanOutShape[T, T], NotUsed] =
+    scaladsl.Broadcast(
+      outputCount,
+      eagerCancel = eagerCancel,
+      nonEagerCancelOutputs = nonEagerCancelOutputs.asScala.iterator.map(_.intValue()).toSet)
+
+  /**
    * Create a new `Broadcast` operator with the specified input type.
    *
    * @param outputCount number of output ports
