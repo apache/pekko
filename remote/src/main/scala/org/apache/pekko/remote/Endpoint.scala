@@ -366,20 +366,28 @@ private[remote] class ReliableDeliverySupervisor(
     case ack: Ack =>
       // If we are not sure about the UID just ignore the ack. Ignoring is fine.
       if (uidConfirmed) {
-        try resendBuffer = resendBuffer.acknowledge(ack)
-        catch {
-          case NonFatal(e) =>
-            throw new HopelessAssociation(
-              localAddress,
-              remoteAddress,
-              uid,
-              new IllegalStateException(
-                s"Error encountered while processing system message " +
-                s"acknowledgement buffer: $resendBuffer ack: $ack",
-                e))
-        }
+        if (ack.cumulativeAck > resendBuffer.maxSeq)
+          log.warning(
+            "Ignoring stale system message acknowledgement from remote system [{}]. Highest SEQ so far was [{}] but cumulative ACK is [{}].",
+            remoteAddress,
+            resendBuffer.maxSeq,
+            ack.cumulativeAck)
+        else {
+          try resendBuffer = resendBuffer.acknowledge(ack)
+          catch {
+            case NonFatal(e) =>
+              throw new HopelessAssociation(
+                localAddress,
+                remoteAddress,
+                uid,
+                new IllegalStateException(
+                  s"Error encountered while processing system message " +
+                  s"acknowledgement buffer: $resendBuffer ack: $ack",
+                  e))
+          }
 
-        resendNacked()
+          resendNacked()
+        }
       }
     case AttemptSysMsgRedelivery =>
       if (uidConfirmed) resendAll()

@@ -116,23 +116,25 @@ final case class AckedSendBuffer[T <: HasSequenceNumber](
 
   /**
    * Processes an incoming acknowledgement and returns a new buffer with only unacknowledged elements remaining.
+   * Acknowledgements for sequence numbers newer than this buffer has seen are stale and return this buffer unchanged.
    * @param ack The received acknowledgement
    * @return An updated buffer containing the remaining unacknowledged messages
    */
   def acknowledge(ack: Ack): AckedSendBuffer[T] = {
-    if (ack.cumulativeAck > maxSeq)
-      throw new IllegalArgumentException(s"Highest SEQ so far was $maxSeq but cumulative ACK is ${ack.cumulativeAck}")
-    val newNacked =
-      if (ack.nacks.isEmpty) Vector.empty
+    if (ack.cumulativeAck > maxSeq) this
+    else {
+      val newNacked =
+        if (ack.nacks.isEmpty) Vector.empty
+        else
+          (nacked ++ nonAcked).filter { m =>
+            ack.nacks(m.seq)
+          }
+      if (newNacked.size < ack.nacks.size) throw new ResendUnfulfillableException
       else
-        (nacked ++ nonAcked).filter { m =>
-          ack.nacks(m.seq)
-        }
-    if (newNacked.size < ack.nacks.size) throw new ResendUnfulfillableException
-    else
-      this.copy(nonAcked = nonAcked.filter { m =>
-          m.seq > ack.cumulativeAck
-        }, nacked = newNacked)
+        this.copy(nonAcked = nonAcked.filter { m =>
+            m.seq > ack.cumulativeAck
+          }, nacked = newNacked)
+    }
   }
 
   /**
