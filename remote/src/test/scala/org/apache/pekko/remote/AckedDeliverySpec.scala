@@ -150,6 +150,17 @@ class AckedDeliverySpec extends PekkoSpec {
 
     }
 
+    "ignore stale cumulative ack newer than the send buffer" in {
+      val emptyBuffer = new AckedSendBuffer[Sequenced](10)
+      emptyBuffer.acknowledge(Ack(SeqNo(2))) should ===(emptyBuffer)
+      emptyBuffer.acknowledge(Ack(SeqNo(2), nacks = Set(SeqNo(0)))) should ===(emptyBuffer)
+
+      val buffer = emptyBuffer.buffer(msg(0)).buffer(msg(1))
+      buffer.acknowledge(Ack(SeqNo(2))) should ===(buffer)
+      buffer.acknowledge(Ack(SeqNo(2), nacks = Set(SeqNo(0)))) should ===(buffer)
+      buffer.acknowledge(Ack(SeqNo(2))).acknowledge(Ack(SeqNo(0))).nonAcked should ===(Vector(msg(1)))
+    }
+
     "keep NACKed messages in buffer if selective nacks are received" in {
       val b0 = new AckedSendBuffer[Sequenced](10)
       val msg0 = msg(0)
