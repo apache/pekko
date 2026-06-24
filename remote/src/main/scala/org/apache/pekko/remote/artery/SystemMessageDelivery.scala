@@ -111,6 +111,12 @@ import pekko.util.PrettyDuration.PrettyPrintableDuration
       private def remoteAddressLogParam: String =
         outboundContext.associationState.uniqueRemoteAddress().getOrElse(remoteAddress).toString
 
+      private def isFromCurrentRemote(from: UniqueAddress): Boolean =
+        outboundContext.associationState.uniqueRemoteAddress() match {
+          case Some(uniqueRemote) => uniqueRemote == from
+          case None               => from.address == remoteAddress
+        }
+
       override protected def logSource: Class[?] = classOf[SystemMessageDelivery]
 
       override def preStart(): Unit = {
@@ -156,8 +162,8 @@ import pekko.util.PrettyDuration.PrettyPrintableDuration
       // ControlMessageObserver, external call
       override def notify(inboundEnvelope: InboundEnvelope): Unit = {
         inboundEnvelope.message match {
-          case ack: Ack   => if (ack.from.address == remoteAddress) ackCallback.invoke(ack)
-          case nack: Nack => if (nack.from.address == remoteAddress) nackCallback.invoke(nack)
+          case ack: Ack   => if (isFromCurrentRemote(ack.from)) ackCallback.invoke(ack)
+          case nack: Nack => if (isFromCurrentRemote(nack.from)) nackCallback.invoke(nack)
           case _          => // not interested
         }
       }
