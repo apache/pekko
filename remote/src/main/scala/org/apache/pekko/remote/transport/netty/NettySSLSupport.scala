@@ -13,6 +13,8 @@
 
 package org.apache.pekko.remote.transport.netty
 
+import java.net.SocketAddress
+
 import scala.annotation.nowarn
 import scala.jdk.CollectionConverters._
 
@@ -68,13 +70,20 @@ private[pekko] object NettySSLSupport {
     val handler = new SslHandler(sslEngine)
     handler.handshakeFuture().addListener((future: Future[Channel]) => {
       if (!future.isSuccess) {
+        val channel = handler.closeOutbound().channel()
         log.warning(
           "TLS handshake failed for remote address [{}]: {}",
-          sslEngine.getPeerHost,
-          if (future.cause() != null) future.cause().getMessage else "unknown cause")
-        handler.closeOutbound().channel().close()
+          formatRemoteAddress(channel.remoteAddress()),
+          formatCause(future.cause()))
+        channel.close()
       }
     })
     handler
   }
+
+  private[netty] def formatRemoteAddress(remoteAddress: SocketAddress): String =
+    Option(remoteAddress).map(_.toString).getOrElse("unknown")
+
+  private[netty] def formatCause(cause: Throwable): String =
+    Option(cause).flatMap(t => Option(t.getMessage).orElse(Some(t.toString))).getOrElse("unknown cause")
 }
