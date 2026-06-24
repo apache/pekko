@@ -146,6 +146,54 @@ class CompressionIntegrationSpec
       }
     }
 
+    "be advertised with count-min-sketch frequency sketch implementation" in {
+      val config = """
+       pekko.remote.artery.advanced.compression {
+         frequency-sketch-implementation = "count-min-sketch"
+         actor-refs.advertisement-interval = 2 seconds
+         manifests.advertisement-interval = 2 seconds
+       }
+      """
+      val systemC = newRemoteSystem(Some(config), name = Some("systemC"))
+      val systemD = newRemoteSystem(Some(config), name = Some("systemD"))
+
+      val cRefProbe = TestProbe()(systemC)
+      val dRefProbe = TestProbe()(systemD)
+      systemC.eventStream
+        .subscribe(cRefProbe.ref, classOf[CompressionProtocol.Events.ReceivedActorRefCompressionTable])
+      systemD.eventStream
+        .subscribe(dRefProbe.ref, classOf[CompressionProtocol.Events.ReceivedActorRefCompressionTable])
+
+      val echoRefD = systemD.actorOf(TestActors.echoActorProps, "echo-cms")
+
+      val cProbe = TestProbe()(systemC)
+      systemC.actorSelection(rootActorPath(systemD) / "user" / "echo-cms").tell(Identify(None), cProbe.ref)
+      val echoRefC = cProbe.expectMsgType[ActorIdentity].ref.get
+
+      (1 to messagesToExchange).foreach { _ =>
+        echoRefC.tell(TestMessage("hello"), cProbe.ref)
+      }
+      cProbe.receiveN(messagesToExchange)
+
+      within(10.seconds) {
+        awaitAssert {
+          val c1 = cRefProbe.expectMsgType[Events.ReceivedActorRefCompressionTable](2.seconds)
+          info("System [C] received: " + c1)
+          c1.table.version.toInt should be >= 1
+          c1.table.dictionary.keySet should contain(echoRefC)
+        }
+        awaitAssert {
+          val d1 = dRefProbe.expectMsgType[Events.ReceivedActorRefCompressionTable](2.seconds)
+          info("System [D] received: " + d1)
+          d1.table.version.toInt should be >= 1
+          d1.table.dictionary.keySet should contain(echoRefD)
+        }
+      }
+
+      shutdown(systemC)
+      shutdown(systemD)
+    }
+
     "not be advertised if ActorRef compression disabled" in {
       val config = """
        pekko.remote.artery.advanced.compression.actor-refs.max = off
