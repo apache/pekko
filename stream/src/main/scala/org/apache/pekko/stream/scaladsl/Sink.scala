@@ -302,9 +302,8 @@ object Sink {
    * reject any additional `Subscriber`s.
    */
   def asPublisher[T](fanout: Boolean): Sink[T, Publisher[T]] =
-    fromGraph(
-      if (fanout) new FanoutPublisherSink[T](DefaultAttributes.fanoutPublisherSink, shape("FanoutPublisherSink"))
-      else new PublisherSink[T](DefaultAttributes.publisherSink, shape("PublisherSink")))
+    if (fanout) Flow[T].async.toMat(Sink.fromGraph(new FanoutPublisherBridgeStage[T]))(Keep.right)
+    else fromGraph(new PublisherSink[T](DefaultAttributes.publisherSink, shape("PublisherSink")))
 
   /**
    * A `Sink` that materializes this `Sink` itself as a `Source`.

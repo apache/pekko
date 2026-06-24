@@ -1,0 +1,2 @@
+# Remove the remaining SinkModule wrapper around the GraphStage fanout publisher bridge
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.stream.impl.FanoutPublisherSink")

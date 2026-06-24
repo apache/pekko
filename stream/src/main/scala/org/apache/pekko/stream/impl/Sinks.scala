@@ -110,26 +110,6 @@ import org.reactivestreams.Subscriber
 
 /**
  * INTERNAL API
- */
-@InternalApi private[pekko] final class FanoutPublisherSink[In](val attributes: Attributes, shape: SinkShape[In])
-    extends SinkModule[In, Publisher[In]](shape) {
-
-  override def create(context: MaterializationContext): (Subscriber[In], Publisher[In]) = {
-    context.materializer.materialize(
-      Source
-        // Keep the SinkModule ABI but route the runtime through the new GraphStage bridge instead
-        // of reviving the legacy FanoutProcessorImpl / ActorPublisher path.
-        .asSubscriber[In]
-        .toMat(Sink.fromGraph(new FanoutPublisherBridgeStage[In]))(Keep.both),
-      context.effectiveAttributes)
-  }
-
-  override def withAttributes(attr: Attributes): SinkModule[In, Publisher[In]] =
-    new FanoutPublisherSink[In](attr, amendShape(attr))
-}
-
-/**
- * INTERNAL API
  * Attaches a subscriber to this stream.
  */
 @InternalApi private[pekko] final class SubscriberSink[In](
