@@ -1081,11 +1081,13 @@ private[stream] object Collect {
         if (agg != null) {
           push(out, agg)
           left = max
+          agg = null.asInstanceOf[Out]
         }
         if (pending != null) {
           try {
+            val cost = costFn(pending)
             agg = seed(pending)
-            left -= costFn(pending)
+            left -= cost
             pending = null.asInstanceOf[In]
           } catch {
             case NonFatal(ex) =>
@@ -1105,7 +1107,23 @@ private[stream] object Collect {
 
       def onPush(): Unit = {
         val elem = grab(in)
-        val cost = costFn(elem)
+        val cost =
+          try costFn(elem)
+          catch {
+            case NonFatal(ex) =>
+              decider(ex) match {
+                case Supervision.Stop =>
+                  failStage(ex)
+                  return
+                case Supervision.Resume =>
+                  pull(in)
+                  return
+                case Supervision.Restart =>
+                  restartState()
+                  pull(in)
+                  return
+              }
+          }
         contextPropagation.suspendContext()
 
         if (agg == null) {
@@ -1139,7 +1157,7 @@ private[stream] object Collect {
         }
 
         if (isAvailable(out)) flush()
-        if (pending == null) pull(in)
+        if (pending == null && !isClosed(in)) pull(in)
       }
 
       override def onUpstreamFinish(): Unit = {
@@ -1153,6 +1171,7 @@ private[stream] object Collect {
         } else if (isClosed(in)) {
           contextPropagation.resumeContext()
           push(out, agg)
+          agg = null.asInstanceOf[Out]
           if (pending == null) completeStage()
           else {
             try {
@@ -1160,19 +1179,21 @@ private[stream] object Collect {
             } catch {
               case NonFatal(ex) =>
                 decider(ex) match {
-                  case Supervision.Stop    => failStage(ex)
+                  case Supervision.Stop =>
+                    failStage(ex)
+                    return
                   case Supervision.Resume  =>
                   case Supervision.Restart =>
                     restartState()
-                    if (!hasBeenPulled(in)) pull(in)
                 }
             }
             pending = null.asInstanceOf[In]
+            if (agg == null) completeStage()
           }
         } else {
           contextPropagation.resumeContext()
           flush()
-          if (!hasBeenPulled(in)) pull(in)
+          if (!isClosed(in) && !hasBeenPulled(in)) pull(in)
         }
 
       }
