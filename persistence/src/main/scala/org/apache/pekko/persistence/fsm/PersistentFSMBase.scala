@@ -85,9 +85,8 @@ import pekko.routing.{ Deafen, Listen, Listeners }
  *
  * Another feature is that other actors may subscribe for transition events by
  * sending a <code>SubscribeTransitionCallback</code> message to this actor.
- * Stopping a listener without unregistering will not remove the listener from the
- * subscription list; use <code>UnsubscribeTransitionCallback</code> before stopping
- * the listener.
+ * Stopping a listener will remove it from the subscription list. Subscriptions
+ * may also be removed explicitly with <code>UnsubscribeTransitionCallback</code>.
  *
  * State timeouts set an upper bound to the time which may pass before another
  * message is received in the current state. If no external message is
@@ -482,9 +481,32 @@ trait PersistentFSMBase[S, D, E] extends Actor with Listeners with ActorLogging 
    * transition handling
    */
   private var transitionEvent: List[TransitionHandler] = Nil
+  private var watchedListeners: Set[ActorRef] = Set.empty
   private def handleTransition(prev: S, next: S): Unit = {
     val tuple = (prev, next)
     for (te <- transitionEvent) { if (te.isDefinedAt(tuple)) te(tuple) }
+  }
+
+  private def addListener(actorRef: ActorRef): Unit = {
+    if (listeners.add(actorRef)) {
+      context.asInstanceOf[ActorCell].isWatching(actorRef) match {
+        case false =>
+          context.watchWith(actorRef, ListenerTerminated(actorRef))
+          watchedListeners += actorRef
+        case true =>
+          log.warning(
+            "Listener [{}] is already watched by this FSM; it will not be automatically removed on termination. " +
+            "Use UnsubscribeTransitionCallBack explicitly.",
+            actorRef)
+      }
+    }
+  }
+
+  private def removeListener(actorRef: ActorRef): Unit = {
+    if (listeners.remove(actorRef) && watchedListeners.contains(actorRef)) {
+      watchedListeners -= actorRef
+      context.unwatch(actorRef)
+    }
   }
 
   /*
@@ -510,19 +532,20 @@ trait PersistentFSMBase[S, D, E] extends Actor with Listeners with ActorLogging 
         processMsg(msg, t)
       }
     case SubscribeTransitionCallBack(actorRef) =>
-      // TODO Use context.watch(actor) and receive Terminated(actor) to clean up list
-      listeners.add(actorRef)
+      addListener(actorRef)
       // send current state back as reference point
       actorRef ! CurrentState(self, currentState.stateName, currentState.timeout)
     case Listen(actorRef) =>
-      // TODO Use context.watch(actor) and receive Terminated(actor) to clean up list
-      listeners.add(actorRef)
+      addListener(actorRef)
       // send current state back as reference point
       actorRef ! CurrentState(self, currentState.stateName, currentState.timeout)
     case UnsubscribeTransitionCallBack(actorRef) =>
-      listeners.remove(actorRef)
+      removeListener(actorRef)
     case Deafen(actorRef) =>
+      removeListener(actorRef)
+    case ListenerTerminated(actorRef) =>
       listeners.remove(actorRef)
+      watchedListeners -= actorRef
     case value =>
       if (timeoutFuture.isDefined) {
         timeoutFuture.get.cancel()

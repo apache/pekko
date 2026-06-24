@@ -417,9 +417,8 @@ transitions use `stay()` instead of `goto(S)`.
 External monitors may be unregistered by sending
 `UnsubscribeTransitionCallBack(actorRef)` to the `FSM` actor.
 
-Stopping a listener without unregistering will not remove the listener from the
-subscription list; use `UnsubscribeTransitionCallback` before stopping
-the listener.
+Stopping a listener will remove it from the subscription list. Subscriptions may
+also be removed explicitly with `UnsubscribeTransitionCallback`.
 
 @@@ div { .group-scala }
 

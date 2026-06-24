@@ -310,6 +310,7 @@ object PersistentFSM {
   /** INTERNAL API */
   @InternalApi
   private[persistence] final case class TimeoutMarker(generation: Long)
+  private[persistence] final case class ListenerTerminated(actorRef: ActorRef)
 
   /** INTERNAL API */
   @InternalApi
