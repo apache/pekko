@@ -226,6 +226,8 @@ private[remote] object ReliableDeliverySupervisor {
   case object Ungate
   case object AttemptSysMsgRedelivery
   final case class GotUid(uid: Int, remoteAddres: Address)
+  @nowarn("msg=deprecated")
+  final case class AckFromReader(readerUid: Int, ack: Ack) extends NoSerializationVerificationNeeded
 
   case object IsIdle
   case object Idle
@@ -363,33 +365,9 @@ private[remote] class ReliableDeliverySupervisor(
     case IsIdle  => // Do not reply, we will Terminate soon, or send a GotUid
     case s: Send =>
       handleSend(s)
-    case ack: Ack =>
-      // If we are not sure about the UID just ignore the ack. Ignoring is fine.
-      if (uidConfirmed) {
-        if (ack.cumulativeAck > resendBuffer.maxSeq)
-          log.warning(
-            "Ignoring stale system message acknowledgement from remote system [{}]. Highest SEQ so far was [{}] but cumulative ACK is [{}].",
-            remoteAddress,
-            resendBuffer.maxSeq,
-            ack.cumulativeAck)
-        else {
-          try resendBuffer = resendBuffer.acknowledge(ack)
-          catch {
-            case NonFatal(e) =>
-              throw new HopelessAssociation(
-                localAddress,
-                remoteAddress,
-                uid,
-                new IllegalStateException(
-                  s"Error encountered while processing system message " +
-                  s"acknowledgement buffer: $resendBuffer ack: $ack",
-                  e))
-          }
-
-          resendNacked()
-        }
-      }
-    case AttemptSysMsgRedelivery =>
+    case AckFromReader(readerUid, ack) => handleAck(readerUid, ack)
+    case _: Ack                        => () // Ignore untagged ACKs. EndpointReader attaches its UID before forwarding ACKs.
+    case AttemptSysMsgRedelivery       =>
       if (uidConfirmed) resendAll()
     case Terminated(_) =>
       currentHandle = None
@@ -524,6 +502,33 @@ private[remote] class ReliableDeliverySupervisor(
     resendNacked()
     resendBuffer.nonAcked.take(settings.SysResendLimit).foreach { writer ! _ }
   }
+
+  private def handleAck(readerUid: Int, ack: Ack): Unit =
+    // If we are not sure about the UID just ignore the ack. Ignoring is fine.
+    if (uidConfirmed && uid.contains(readerUid)) {
+      if (ack.cumulativeAck > resendBuffer.maxSeq)
+        log.warning(
+          "Ignoring stale system message acknowledgement from remote system [{}]. Highest SEQ so far was [{}] but cumulative ACK is [{}].",
+          remoteAddress,
+          resendBuffer.maxSeq,
+          ack.cumulativeAck)
+      else {
+        try resendBuffer = resendBuffer.acknowledge(ack)
+        catch {
+          case NonFatal(e) =>
+            throw new HopelessAssociation(
+              localAddress,
+              remoteAddress,
+              uid,
+              new IllegalStateException(
+                s"Error encountered while processing system message " +
+                s"acknowledgement buffer: $resendBuffer ack: $ack",
+                e))
+        }
+
+        resendNacked()
+      }
+    }
 
   private def tryBuffer(s: Send): Unit =
     try {
@@ -1152,7 +1157,8 @@ private[remote] class EndpointReader(
     case InboundPayload(p) if p.length <= transport.maximumPayloadBytes =>
       val (ackOption, msgOption) = tryDecodeMessageAndAck(p)
 
-      for (ack <- ackOption; reliableDelivery <- reliableDeliverySupervisor) reliableDelivery ! ack
+      for (ack <- ackOption; reliableDelivery <- reliableDeliverySupervisor)
+        reliableDelivery ! ReliableDeliverySupervisor.AckFromReader(uid, ack)
 
       msgOption match {
         case Some(msg) =>
@@ -1200,7 +1206,8 @@ private[remote] class EndpointReader(
 
     case InboundPayload(p) if p.length <= transport.maximumPayloadBytes =>
       val (ackOption, msgOption) = tryDecodeMessageAndAck(p)
-      for (ack <- ackOption; reliableDelivery <- reliableDeliverySupervisor) reliableDelivery ! ack
+      for (ack <- ackOption; reliableDelivery <- reliableDeliverySupervisor)
+        reliableDelivery ! ReliableDeliverySupervisor.AckFromReader(uid, ack)
 
       if (log.isWarningEnabled)
         log.warning(
