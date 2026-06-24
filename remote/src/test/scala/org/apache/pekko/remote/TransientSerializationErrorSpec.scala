@@ -30,6 +30,7 @@ object TransientSerializationErrorSpec {
   object ToBinaryIllegal
   object NotDeserializable
   object IllegalOnDeserialize
+  object RuntimeOnDeserialize
 
   class TestSerializer(@unused system: ExtendedActorSystem) extends SerializerWithStringManifest {
     def identifier: Int = 666
@@ -40,6 +41,7 @@ object TransientSerializationErrorSpec {
       case ToBinaryIllegal         => "TI"
       case NotDeserializable       => "ND"
       case IllegalOnDeserialize    => "IOD"
+      case RuntimeOnDeserialize    => "ROD"
       case _                       => throw new NotSerializableException()
     }
     def toBinary(o: AnyRef): Array[Byte] = o match {
@@ -51,6 +53,7 @@ object TransientSerializationErrorSpec {
       manifest match {
         case "ND"  => throw new NotSerializableException() // Not sure this applies here
         case "IOD" => throw new IllegalArgumentException()
+        case "ROD" => throw new RuntimeException("simulated deserialization failure")
         case _     => throw new NotSerializableException()
       }
     }
@@ -76,6 +79,7 @@ abstract class AbstractTransientSerializationErrorSpec(config: Config)
           "org.apache.pekko.remote.TransientSerializationErrorSpec$ToBinaryIllegal$" = test
           "org.apache.pekko.remote.TransientSerializationErrorSpec$NotDeserializable$" = test
           "org.apache.pekko.remote.TransientSerializationErrorSpec$IllegalOnDeserialize$" = test
+          "org.apache.pekko.remote.TransientSerializationErrorSpec$RuntimeOnDeserialize$" = test
         }
       }
     }
@@ -109,7 +113,8 @@ abstract class AbstractTransientSerializationErrorSpec(config: Config)
         ToBinaryIllegal,
         ToBinaryNotSerializable,
         NotDeserializable,
-        IllegalOnDeserialize).foreach(msg => selection.tell(msg, this.testActor))
+        IllegalOnDeserialize,
+        RuntimeOnDeserialize).foreach(msg => selection.tell(msg, this.testActor))
 
       // make sure we still have a connection
       selection.tell("ping", this.testActor)
