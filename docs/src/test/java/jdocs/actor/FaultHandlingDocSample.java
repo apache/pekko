@@ -109,7 +109,7 @@ public class FaultHandlingDocSample {
       }
 
       public String toString() {
-        return String.format("%s(%s)", getClass().getSimpleName(), percent);
+        return "%s(%s)".formatted(getClass().getSimpleName(), percent);
       }
     }
   }
@@ -196,7 +196,7 @@ public class FaultHandlingDocSample {
       }
 
       public String toString() {
-        return String.format("%s(%s, %s)", getClass().getSimpleName(), key, count);
+        return "%s(%s, %s)".formatted(getClass().getSimpleName(), key, count);
       }
     }
 
@@ -208,7 +208,7 @@ public class FaultHandlingDocSample {
       }
 
       public String toString() {
-        return String.format("%s(%s)", getClass().getSimpleName(), n);
+        return "%s(%s)".formatted(getClass().getSimpleName(), n);
       }
     }
 
@@ -364,7 +364,7 @@ public class FaultHandlingDocSample {
       }
 
       public String toString() {
-        return String.format("%s(%s)", getClass().getSimpleName(), storage);
+        return "%s(%s)".formatted(getClass().getSimpleName(), storage);
       }
     }
   }
@@ -430,7 +430,7 @@ public class FaultHandlingDocSample {
       }
 
       public String toString() {
-        return String.format("%s(%s)", getClass().getSimpleName(), entry);
+        return "%s(%s)".formatted(getClass().getSimpleName(), entry);
       }
     }
 
@@ -444,7 +444,7 @@ public class FaultHandlingDocSample {
       }
 
       public String toString() {
-        return String.format("%s(%s, %s)", getClass().getSimpleName(), key, value);
+        return "%s(%s, %s)".formatted(getClass().getSimpleName(), key, value);
       }
     }
 
@@ -456,7 +456,7 @@ public class FaultHandlingDocSample {
       }
 
       public String toString() {
-        return String.format("%s(%s)", getClass().getSimpleName(), key);
+        return "%s(%s)".formatted(getClass().getSimpleName(), key);
       }
     }
 

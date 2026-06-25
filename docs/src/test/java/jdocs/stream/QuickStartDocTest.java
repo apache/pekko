@@ -69,7 +69,7 @@ public class QuickStartDocTest extends AbstractJavaTest {
 
     // #add-streams
     factorials
-        .zipWith(Source.range(0, 99), (num, idx) -> String.format("%d! = %s", idx, num))
+        .zipWith(Source.range(0, 99), (num, idx) -> "%d! = %s".formatted(idx, num))
         .throttle(1, Duration.ofSeconds(1))
         // #add-streams
         .take(2)
