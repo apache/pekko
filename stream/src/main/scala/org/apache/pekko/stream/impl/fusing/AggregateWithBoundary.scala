@@ -14,9 +14,12 @@
 package org.apache.pekko.stream.impl.fusing
 
 import scala.concurrent.duration._
+import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
+import pekko.stream.ActorAttributes.SupervisionStrategy
+import pekko.stream.Supervision
 import pekko.stream.{ Attributes, FlowShape, Inlet, Outlet }
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler, TimerGraphStageLogic }
 
@@ -41,6 +44,7 @@ private[pekko] final case class AggregateWithBoundary[In, Agg, Out](
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new TimerGraphStageLogic(shape) with InHandler with OutHandler {
+      private lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
 
       private var aggregated: Agg = null.asInstanceOf[Agg]
 
@@ -52,26 +56,95 @@ private[pekko] final case class AggregateWithBoundary[In, Agg, Out](
 
       override protected def onTimer(timerKey: Any): Unit = {
         emitOnTimer.foreach {
-          case (isReadyOnTimer, _) => if (aggregated != null && isReadyOnTimer(aggregated)) harvestAndEmit()
+          case (isReadyOnTimer, _) =>
+            if (aggregated != null) {
+              val maybeReadyToEmit =
+                try isReadyOnTimer(aggregated)
+                catch {
+                  case NonFatal(ex) =>
+                    decider(ex) match {
+                      case Supervision.Stop =>
+                        failStage(ex)
+                      case Supervision.Resume =>
+                        aggregated = null.asInstanceOf[Agg]
+                      case Supervision.Restart =>
+                        restartState()
+                    }
+                    false
+                }
+              if (maybeReadyToEmit) harvestAndEmitOnTimer()
+            }
         }
       }
 
       // at onPush, isAvailable(in)=true hasBeenPulled(in)=false, isAvailable(out) could be true or false due to timer triggered emit
       override def onPush(): Unit = {
-        if (aggregated == null) aggregated = allocate()
-        val (updated, result) = aggregate(aggregated, grab(in))
-        aggregated = updated
-        if (result) harvestAndEmit()
-        // the decision to pull entirely depend on isAvailable(out)=true, regardless of result of aggregate
-        // 1. aggregate=true: isAvailable(out) will be false
-        // 2. aggregate=false: if isAvailable(out)=false, this means timer has caused emit, cannot pull or it could emit indefinitely bypassing back pressure
-        if (isAvailable(out)) pull(in)
+        val inElem = grab(in)
+        if (aggregated == null)
+          try aggregated = allocate()
+          catch {
+            case NonFatal(ex) =>
+              decider(ex) match {
+                case Supervision.Stop =>
+                  failStage(ex)
+                case Supervision.Resume =>
+                  pullIfPossible()
+                case Supervision.Restart =>
+                  restartState()
+                  pullIfPossible()
+              }
+              return
+          }
+
+        val shouldEmit =
+          try {
+            val (updated, result) = aggregate(aggregated, inElem)
+            aggregated = updated
+            result
+          } catch {
+            case NonFatal(ex) =>
+              decider(ex) match {
+                case Supervision.Stop =>
+                  failStage(ex)
+                case Supervision.Resume =>
+                  restartState()
+                  pullIfPossible()
+                case Supervision.Restart =>
+                  restartState()
+                  pullIfPossible()
+              }
+              return
+          }
+
+        if (shouldEmit) harvestAndEmitFromOnPush()
+        else {
+          // the decision to pull entirely depend on isAvailable(out)=true
+          // if isAvailable(out)=false, this means timer has caused emit, cannot pull or it could emit indefinitely bypassing back pressure
+          pullIfPossible()
+        }
       }
 
       override def onUpstreamFinish(): Unit = {
         // Note that emit is asynchronous, it will keep the stage alive until downstream actually take the element
-        if (aggregated != null) emit(out, harvest(aggregated))
-        completeStage()
+        if (aggregated != null)
+          try {
+            emit(out, harvest(aggregated))
+            aggregated = null.asInstanceOf[Agg]
+            completeStage()
+          } catch {
+            case NonFatal(ex) =>
+              decider(ex) match {
+                case Supervision.Stop =>
+                  failStage(ex)
+                case Supervision.Resume =>
+                  aggregated = null.asInstanceOf[Agg]
+                  completeStage()
+                case Supervision.Restart =>
+                  restartState()
+                  completeStage()
+              }
+          }
+        else completeStage()
       }
 
       // at onPull, isAvailable(out) is always true indicating downstream is waiting
@@ -80,10 +153,45 @@ private[pekko] final case class AggregateWithBoundary[In, Agg, Out](
 
       setHandlers(in, out, this)
 
-      private def harvestAndEmit(): Unit = {
-        emit(out, harvest(aggregated))
+      private def restartState(): Unit =
         aggregated = null.asInstanceOf[Agg]
-      }
+
+      private def pullIfPossible(): Unit =
+        if (isAvailable(out) && !isClosed(in) && !hasBeenPulled(in)) pull(in)
+
+      private def harvestAndEmitFromOnPush(): Unit =
+        try {
+          emit(out, harvest(aggregated))
+          aggregated = null.asInstanceOf[Agg]
+        } catch {
+          case NonFatal(ex) =>
+            decider(ex) match {
+              case Supervision.Stop =>
+                failStage(ex)
+              case Supervision.Resume =>
+                aggregated = null.asInstanceOf[Agg]
+                pullIfPossible()
+              case Supervision.Restart =>
+                restartState()
+                pullIfPossible()
+            }
+        }
+
+      private def harvestAndEmitOnTimer(): Unit =
+        try {
+          emit(out, harvest(aggregated))
+          aggregated = null.asInstanceOf[Agg]
+        } catch {
+          case NonFatal(ex) =>
+            decider(ex) match {
+              case Supervision.Stop =>
+                failStage(ex)
+              case Supervision.Resume =>
+                aggregated = null.asInstanceOf[Agg]
+              case Supervision.Restart =>
+                restartState()
+            }
+        }
 
     }
 
