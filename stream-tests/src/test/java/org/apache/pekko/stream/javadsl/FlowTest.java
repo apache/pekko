@@ -501,7 +501,7 @@ public class FlowTest extends StreamTestJupiter {
     final List<List<String>> result =
         future.toCompletableFuture().get(1, TimeUnit.SECONDS).stream()
             .sorted(Comparator.comparingInt(list -> list.get(0).charAt(0)))
-            .collect(Collectors.toList());
+            .toList();
 
     assertEquals(
         Arrays.asList(

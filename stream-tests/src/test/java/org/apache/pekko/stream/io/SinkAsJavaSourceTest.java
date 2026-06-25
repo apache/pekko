@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.pekko.stream.StreamTestJupiter;
 import org.apache.pekko.stream.javadsl.Sink;
@@ -43,6 +42,6 @@ public class SinkAsJavaSourceTest extends StreamTestJupiter {
     final List<Integer> list = Arrays.asList(1, 2, 3);
     final Sink<Integer, Stream<Integer>> streamSink = StreamConverters.asJavaStream();
     java.util.stream.Stream<Integer> javaStream = Source.from(list).runWith(streamSink, system);
-    assertEquals(list, javaStream.collect(Collectors.toList()));
+    assertEquals(list, javaStream.toList());
   }
 }
