@@ -14,6 +14,8 @@ Partitions this stream into chunks by a delimiter function.
 
 Partitions this stream into chunks by a delimiter function.
 
+Adheres to the ActorAttributes.SupervisionStrategy attribute (applied to the key function).
+
 See also:
 
 * @ref[groupedAdjacentByWeighted](groupedAdjacentByWeighted.md) for a variant that groups with weight limit too.

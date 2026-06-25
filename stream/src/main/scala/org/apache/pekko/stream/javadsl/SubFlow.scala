@@ -742,6 +742,8 @@ final class SubFlow[In, Out, Mat](
    *
    * The `f` function must return a non-null value for all elements, otherwise the stage will fail.
    *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute (applied to the key function).
+   *
    * '''Emits when''' the delimiter function returns a different value than the previous element's result
    *
    * '''Backpressures when''' a chunk has been assembled and downstream backpressures
@@ -762,6 +764,8 @@ final class SubFlow[In, Out, Mat](
    *
    * The `f` function must return a non-null value , and the `costFn` must return a non-negative result for all inputs,
    * otherwise the stage will fail.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute (applied to both the key and cost functions). On `Supervision.Resume` the offending element is skipped; on `Supervision.Restart` the current group is dropped.
    *
    * '''Emits when''' the delimiter function returns a different value than the previous element's result, or exceeds the `maxWeight`.
    *
