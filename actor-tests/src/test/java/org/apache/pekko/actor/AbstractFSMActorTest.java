@@ -37,7 +37,7 @@ public class AbstractFSMActorTest {
     }
 
     private void logTransition(final String s1, final String s2) {
-      probe.tell(String.format("Transitioning from %1$s to %2$s.", s1, s2), getSelf());
+      probe.tell("Transitioning from %1$s to %2$s.".formatted(s1, s2), getSelf());
     }
   }
 

@@ -234,18 +234,13 @@ public class PersistentFsmToTypedMigrationCompileOnlyTest {
       return PersistentFSMMigration.snapshotAdapter(
           (stateIdentifier, snapshot, timeout) -> {
             ShoppingCart cart = (ShoppingCart) snapshot;
-            switch (stateIdentifier) {
-              case "Looking Around":
-                return new LookingAround(cart);
-              case "Shopping":
-                return new Shopping(cart);
-              case "Inactive":
-                return new Inactive(cart);
-              case "Paid":
-                return new Paid(cart);
-              default:
-                throw new IllegalStateException("Unexpected state identifier " + stateIdentifier);
-            }
+            return switch (stateIdentifier) {
+              case "Looking Around" -> new LookingAround(cart);
+              case "Shopping" -> new Shopping(cart);
+              case "Inactive" -> new Inactive(cart);
+              case "Paid" -> new Paid(cart);
+              default -> throw new IllegalStateException("Unexpected state identifier " + stateIdentifier);
+            };
           });
     }
     // #snapshot-adapter

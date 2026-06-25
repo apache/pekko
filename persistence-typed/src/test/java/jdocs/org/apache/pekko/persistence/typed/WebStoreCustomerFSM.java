@@ -49,7 +49,7 @@ public class WebStoreCustomerFSM {
   public record Item(String id, String name, float price) implements Serializable {
     @Override
     public String toString() {
-      return String.format("Item{id=%s, name=%s, price=%s}", id, price, name);
+      return "Item{id=%s, name=%s, price=%s}".formatted(id, price, name);
     }
   }
 
