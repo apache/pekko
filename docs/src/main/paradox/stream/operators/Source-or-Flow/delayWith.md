@@ -14,6 +14,8 @@ Delay every element passed through with a duration that can be controlled dynami
 
 Delay every element passed through with a duration that can be controlled dynamically, individually for each elements (via the `DelayStrategy`).
 
+This operator adheres to the ActorAttributes.SupervisionStrategy attribute. On `Supervision.Resume` the offending element is dropped; on `Supervision.Restart` the delay strategy is recreated from the supplier (already-buffered elements keep their delays).
+
 
 @@@div { .callout }
 
