@@ -14,10 +14,12 @@
 package org.apache.pekko.stream.impl
 
 import scala.concurrent.duration.{ FiniteDuration, _ }
+import scala.util.control.NonFatal
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.stream._
+import pekko.stream.ActorAttributes.SupervisionStrategy
 import pekko.stream.ThrottleMode.Enforcing
 import pekko.stream.impl.fusing.GraphStages.SimpleLinearGraphStage
 import pekko.stream.stage._
@@ -59,6 +61,7 @@ import pekko.util.NanoTimeTokenBucket
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new TimerGraphStageLogic(shape) with InHandler with OutHandler {
       private val tokenBucket = new NanoTimeTokenBucket(effectiveMaximumBurst, nanosBetweenTokens)
+      private lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
       private var currentElement: T = _
 
       override def preStart(): Unit = tokenBucket.init()
@@ -70,7 +73,21 @@ import pekko.util.NanoTimeTokenBucket
 
       override def onPush(): Unit = {
         val elem = grab(in)
-        val cost = costCalculation(elem)
+        val cost =
+          try costCalculation(elem)
+          catch {
+            case NonFatal(ex) =>
+              decider(ex) match {
+                case Supervision.Stop =>
+                  failStage(ex)
+                  return
+                // Throttle keeps no accumulated per-element state, so Restart behaves like Resume:
+                // skip the offending element. The rate-limiting token bucket is deliberately not reset.
+                case Supervision.Resume | Supervision.Restart =>
+                  pull(in)
+                  return
+              }
+          }
         val delayNanos = tokenBucket.offer(cost)
 
         if (delayNanos == 0L) push(out, elem)
