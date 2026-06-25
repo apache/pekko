@@ -25,7 +25,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import org.apache.pekko.actor.testkit.typed.annotations.JUnitJupiterTestKit;
 import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
 import org.apache.pekko.actor.testkit.typed.javadsl.JUnitJupiterTestKitBuilder;
@@ -159,7 +158,7 @@ public class AggregatorTest {
                       }
                     })
                 .sorted((a, b) -> a.price().compareTo(b.price()))
-                .collect(Collectors.toList());
+                .toList();
 
         return new AggregatedQuotes(quotes);
       }
