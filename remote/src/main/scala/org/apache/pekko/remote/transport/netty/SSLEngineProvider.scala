@@ -62,7 +62,7 @@ class ConfigSSLEngineProvider(protected val log: MarkerLoggingAdapter, private v
 
   import settings._
 
-  private lazy val sslContext: SSLContext = {
+  private val sslContext: SSLContext = {
     try {
       val rng = createSecureRandom()
       val ctx = SSLContext.getInstance(SSLProtocol)

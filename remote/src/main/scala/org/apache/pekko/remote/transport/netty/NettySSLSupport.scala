@@ -13,6 +13,8 @@
 
 package org.apache.pekko.remote.transport.netty
 
+import java.net.SocketAddress
+
 import scala.annotation.nowarn
 import scala.jdk.CollectionConverters._
 
@@ -21,6 +23,7 @@ import io.netty.handler.ssl.SslHandler
 import io.netty.util.concurrent.Future
 
 import com.typesafe.config.Config
+import org.apache.pekko.event.MarkerLoggingAdapter
 
 /**
  * INTERNAL API
@@ -60,16 +63,27 @@ private[pekko] object NettySSLSupport {
   /**
    * Construct a SSLHandler which can be inserted into a Netty server/client pipeline
    */
-  def apply(sslEngineProvider: SSLEngineProvider, isClient: Boolean): SslHandler = {
+  def apply(sslEngineProvider: SSLEngineProvider, isClient: Boolean, log: MarkerLoggingAdapter): SslHandler = {
     val sslEngine =
       if (isClient) sslEngineProvider.createClientSSLEngine()
       else sslEngineProvider.createServerSSLEngine()
     val handler = new SslHandler(sslEngine)
     handler.handshakeFuture().addListener((future: Future[Channel]) => {
       if (!future.isSuccess) {
-        handler.closeOutbound().channel().close()
+        val channel = handler.closeOutbound().channel()
+        log.warning(
+          "TLS handshake failed for remote address [{}]: {}",
+          formatRemoteAddress(channel.remoteAddress()),
+          formatCause(future.cause()))
+        channel.close()
       }
     })
     handler
   }
+
+  private[netty] def formatRemoteAddress(remoteAddress: SocketAddress): String =
+    Option(remoteAddress).map(_.toString).getOrElse("unknown")
+
+  private[netty] def formatCause(cause: Throwable): String =
+    Option(cause).flatMap(t => Option(t.getMessage).orElse(Some(t.toString))).getOrElse("unknown cause")
 }
