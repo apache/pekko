@@ -1845,6 +1845,7 @@ private[stream] object Collect {
       private var totalWeight = 0L
       private var totalNumber = 0
       private var hasElements = false
+      private lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
       private val contextPropagation = ContextPropagation()
 
       override def preStart() = {
@@ -1853,8 +1854,28 @@ private[stream] object Collect {
       }
 
       private def nextElement(elem: T): Unit = {
+        // costFn is user code and may throw; honor supervision strategy.
+        val cost =
+          try costFn(elem)
+          catch {
+            case NonFatal(ex) =>
+              decider(ex) match {
+                case Supervision.Stop =>
+                  failStage(ex)
+                  return
+                case Supervision.Resume =>
+                  // skip the offending element and keep the current group
+                  if (!hasBeenPulled(in)) pull(in)
+                  return
+                case Supervision.Restart =>
+                  // drop the current group and reset the time window, then continue from a fresh accumulator
+                  resetGroupState()
+                  scheduleWithFixedDelay(GroupedWeightedWithin.groupedWeightedWithinTimer, interval, interval)
+                  if (!hasBeenPulled(in)) pull(in)
+                  return
+              }
+          }
         groupEmitted = false
-        val cost = costFn(elem)
         if (cost < 0L)
           failStage(new IllegalArgumentException(s"Negative weight [$cost] for element [$elem] is not allowed"))
         else {
@@ -1895,6 +1916,17 @@ private[stream] object Collect {
             tryCloseGroup()
           }
         }
+      }
+
+      private def resetGroupState(): Unit = {
+        builder.clear()
+        pending = null.asInstanceOf[T]
+        pendingWeight = 0L
+        pushEagerly = false
+        groupEmitted = true
+        totalWeight = 0L
+        totalNumber = 0
+        hasElements = false
       }
 
       private def tryCloseGroup(): Unit = {

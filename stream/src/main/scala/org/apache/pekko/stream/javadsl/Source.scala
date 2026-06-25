@@ -3583,6 +3583,10 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * The last group before end-of-stream will contain the buffered elements
    * since the previously emitted group.
    *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute. On `Supervision.Resume` the
+   * offending element is skipped and the current group is kept; on `Supervision.Restart` the current
+   * group is dropped.
+   *
    * '''Emits when''' the configured time elapses since the last group has been emitted or weight limit reached
    *
    * '''Backpressures when''' downstream backpressures, and buffered group (+ pending element) weighs more than `maxWeight`
@@ -3606,6 +3610,10 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * Empty groups will not be emitted if no elements are received from upstream.
    * The last group before end-of-stream will contain the buffered elements
    * since the previously emitted group.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute. On `Supervision.Resume` the
+   * offending element is skipped and the current group is kept; on `Supervision.Restart` the current
+   * group is dropped.
    *
    * '''Emits when''' the configured time elapses since the last group has been emitted or weight limit reached
    *

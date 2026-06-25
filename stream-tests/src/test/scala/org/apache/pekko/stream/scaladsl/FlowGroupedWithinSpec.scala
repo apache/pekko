@@ -19,6 +19,8 @@ import scala.collection.immutable
 import scala.concurrent.duration._
 
 import org.apache.pekko
+import pekko.stream.ActorAttributes
+import pekko.stream.Supervision
 import pekko.stream.ThrottleMode
 import pekko.stream.testkit._
 import pekko.testkit.TimingTest
@@ -334,6 +336,131 @@ class FlowGroupedWithinSpec extends StreamSpec with ScriptedTest {
       downstream.request(1)
       // no split
       downstream.expectNext(Vector(7, 2): immutable.Seq[Long])
+      downstream.expectComplete()
+    }
+
+    // These supervision tests use a 30.seconds window that never fires, so they are deterministic and
+    // intentionally NOT tagged TimingTest — they must run in PR validation as regression guards.
+    "stop when cost function throws and supervision is Stop" in {
+      val ex = new RuntimeException("cost function boom")
+      val upstream = TestPublisher.probe[Long]()
+      val downstream = TestSubscriber.probe[immutable.Seq[Long]]()
+      Source
+        .fromPublisher(upstream)
+        .groupedWeightedWithin(100, 3, 30.seconds) { elem =>
+          if (elem == 99L) throw ex
+          else elem
+        }
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.stoppingDecider))
+        .to(Sink.fromSubscriber(downstream))
+        .run()
+
+      downstream.ensureSubscription()
+      downstream.request(1)
+      upstream.sendNext(1L)
+      upstream.sendNext(99L)
+      downstream.expectError(ex)
+    }
+
+    "stop when cost function throws with default supervision" in {
+      val ex = new RuntimeException("cost function boom")
+      Source(List(1L, 99L, 2L))
+        .groupedWeightedWithin(100, 3, 30.seconds) { elem =>
+          if (elem == 99L) throw ex
+          else elem
+        }
+        .runWith(Sink.ignore)
+        .failed
+        .futureValue shouldBe ex
+    }
+
+    "resume when cost function throws and keep current group" in {
+      val ex = new RuntimeException("cost function boom")
+      val upstream = TestPublisher.probe[Long]()
+      val downstream = TestSubscriber.probe[immutable.Seq[Long]]()
+      Source
+        .fromPublisher(upstream)
+        .groupedWeightedWithin(100, 3, 30.seconds) { elem =>
+          if (elem == 99L) throw ex
+          else elem
+        }
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+        .to(Sink.fromSubscriber(downstream))
+        .run()
+
+      downstream.ensureSubscription()
+      upstream.sendNext(1L)
+      upstream.sendNext(2L)
+      upstream.sendNext(99L)
+      upstream.sendNext(3L)
+      upstream.sendNext(4L)
+      upstream.sendNext(5L)
+      upstream.sendComplete()
+
+      downstream.request(1)
+      downstream.expectNext(Vector(1L, 2L, 3L): immutable.Seq[Long])
+      downstream.request(1)
+      downstream.expectNext(Vector(4L, 5L): immutable.Seq[Long])
+      downstream.expectComplete()
+    }
+
+    "resume keeps weight accounting when cost function throws" in {
+      val ex = new RuntimeException("cost function boom")
+      val upstream = TestPublisher.probe[Long]()
+      val downstream = TestSubscriber.probe[immutable.Seq[Long]]()
+      Source
+        .fromPublisher(upstream)
+        // maxWeight=5, large maxNumber so grouping is weight-driven; identity cost
+        .groupedWeightedWithin(5, 100, 30.seconds) { elem =>
+          if (elem == 99L) throw ex
+          else elem
+        }
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+        .to(Sink.fromSubscriber(downstream))
+        .run()
+
+      downstream.ensureSubscription()
+      upstream.sendNext(2L)
+      upstream.sendNext(2L)
+      upstream.sendNext(99L) // skipped; its weight must NOT be counted, [2,2] (weight 4) kept
+      upstream.sendNext(3L) // 4 + 3 = 7 > maxWeight 5 -> [2,2] flushed, 3 starts a new group
+      upstream.sendComplete()
+
+      downstream.request(1)
+      downstream.expectNext(Vector(2L, 2L): immutable.Seq[Long])
+      downstream.request(1)
+      downstream.expectNext(Vector(3L): immutable.Seq[Long])
+      downstream.expectComplete()
+    }
+
+    "restart when cost function throws and drop current group" in {
+      val ex = new RuntimeException("cost function boom")
+      val upstream = TestPublisher.probe[Long]()
+      val downstream = TestSubscriber.probe[immutable.Seq[Long]]()
+      Source
+        .fromPublisher(upstream)
+        .groupedWeightedWithin(100, 3, 30.seconds) { elem =>
+          if (elem == 99L) throw ex
+          else elem
+        }
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.restartingDecider))
+        .to(Sink.fromSubscriber(downstream))
+        .run()
+
+      downstream.ensureSubscription()
+      upstream.sendNext(1L)
+      upstream.sendNext(2L)
+      upstream.sendNext(99L)
+      upstream.sendNext(3L)
+      upstream.sendNext(4L)
+      upstream.sendNext(5L)
+      upstream.sendNext(6L)
+      upstream.sendComplete()
+
+      downstream.request(1)
+      downstream.expectNext(Vector(3L, 4L, 5L): immutable.Seq[Long])
+      downstream.request(1)
+      downstream.expectNext(Vector(6L): immutable.Seq[Long])
       downstream.expectComplete()
     }
   }
