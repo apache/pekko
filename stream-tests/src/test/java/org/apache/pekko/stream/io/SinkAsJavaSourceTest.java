@@ -15,7 +15,6 @@ package org.apache.pekko.stream.io;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 import org.apache.pekko.stream.StreamTestJupiter;
@@ -39,7 +38,7 @@ public class SinkAsJavaSourceTest extends StreamTestJupiter {
 
   @Test
   public void mustBeAbleToUseAsJavaStream() throws Exception {
-    final List<Integer> list = Arrays.asList(1, 2, 3);
+    final List<Integer> list = List.of(1, 2, 3);
     final Sink<Integer, Stream<Integer>> streamSink = StreamConverters.asJavaStream();
     java.util.stream.Stream<Integer> javaStream = Source.from(list).runWith(streamSink, system);
     assertEquals(list, javaStream.toList());

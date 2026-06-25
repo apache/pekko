@@ -89,7 +89,11 @@ public class SourceTest extends StreamTestJupiter {
     final var result =
         Source.combine(
                 Source.from(List.<String>of()),
+<<<<<<< Updated upstream
                 Source.from(Collections.singleton("a")),
+=======
+                Source.from(Set.of("a")),
+>>>>>>> Stashed changes
                 List.of(Source.from(List.of("b", "c"))),
                 x -> Concat.<String>create(x, false))
             .toMat(Sink.seq(), Keep.right())
@@ -1167,7 +1171,7 @@ public class SourceTest extends StreamTestJupiter {
     final List<Source<Integer, NotUsed>> sources = List.of(source1, source2, source3);
     final CompletionStage<Integer> result =
         Source.combine(sources, Concat::create)
-            .runWith(Sink.collect(Collectors.toList()), system)
+            .runWith(Sink.toList(), system)
             .thenApply(list -> list.stream().mapToInt(l -> l).sum());
     assertEquals(6, result.toCompletableFuture().get(3, TimeUnit.SECONDS).intValue());
   }
@@ -1181,7 +1185,7 @@ public class SourceTest extends StreamTestJupiter {
     final List<Source<Integer, NotUsed>> sources = List.of(Source.single(1));
     final List<List<Integer>> result =
         Source.<Integer, List<Integer>, NotUsed>combine(sources, MergeLatest::create)
-            .runWith(Sink.collect(Collectors.toList()), system)
+            .runWith(Sink.toList(), system)
             .toCompletableFuture()
             .get(3, TimeUnit.SECONDS);
     assertEquals(List.of(List.of(1)), result);

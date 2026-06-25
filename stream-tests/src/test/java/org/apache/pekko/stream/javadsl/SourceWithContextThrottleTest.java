@@ -16,7 +16,6 @@ package org.apache.pekko.stream.javadsl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.apache.pekko.japi.Pair;
@@ -40,7 +39,7 @@ public class SourceWithContextThrottleTest extends StreamTestJupiter {
   @Test
   public void mustBeAbleToUseThrottle() throws Exception {
     List<Pair<Integer, String>> list =
-        Arrays.asList(
+        List.of(
             new Pair<>(0, "context-a"), new Pair<>(1, "context-b"), new Pair<>(2, "context-c"));
     Pair<Integer, String> result =
         SourceWithContext.fromPairs(Source.from(list))

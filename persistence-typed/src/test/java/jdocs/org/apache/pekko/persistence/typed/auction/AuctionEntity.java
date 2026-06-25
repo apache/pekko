@@ -17,7 +17,7 @@ import static jdocs.org.apache.pekko.persistence.typed.auction.AuctionCommand.*;
 import static jdocs.org.apache.pekko.persistence.typed.auction.AuctionEvent.*;
 
 import java.time.Instant;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.apache.pekko.Done;
@@ -216,7 +216,7 @@ public class AuctionEntity
 
     return Effect()
         .persist(
-            Arrays.asList(
+            List.of(
                 new BidPlaced(entityUUID, new Bid(bid.bidder, now, adjustedBidPrice, bid.bidPrice)),
                 new BidPlaced(
                     entityUUID,

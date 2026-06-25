@@ -13,7 +13,7 @@
 
 package jdocs.stream;
 
-import java.util.Arrays;
+import java.util.List;
 import jdocs.AbstractJavaTest;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.stream.javadsl.Sink;
@@ -41,30 +41,30 @@ public class SubstreamDocTest extends AbstractJavaTest {
   @Test
   public void demonstrateGroupBy() throws Exception {
     // #groupBy1
-    Source.from(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)).groupBy(3, elem -> elem % 3);
+    Source.from(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)).groupBy(3, elem -> elem % 3);
     // #groupBy1
 
     // #groupBy2
-    Source.from(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+    Source.from(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
         .groupBy(3, elem -> elem % 3)
         .to(Sink.ignore())
         .run(system);
     // #groupBy2
 
     // #groupBy3
-    Source.from(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+    Source.from(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
         .groupBy(3, elem -> elem % 3)
         .mergeSubstreams()
         .runWith(Sink.ignore(), system);
     // #groupBy3
 
     // #groupBy4
-    Source.from(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+    Source.from(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
         .groupBy(3, elem -> elem % 3)
         .mergeSubstreamsWithParallelism(2)
         .runWith(Sink.ignore(), system);
     // concatSubstreams is equivalent to mergeSubstreamsWithParallelism(1)
-    Source.from(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+    Source.from(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
         .groupBy(3, elem -> elem % 3)
         .concatSubstreams()
         .runWith(Sink.ignore(), system);
@@ -74,9 +74,9 @@ public class SubstreamDocTest extends AbstractJavaTest {
   @Test
   public void demonstrateSplitWhenAfter() throws Exception {
     // #splitWhenAfter
-    Source.from(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)).splitWhen(elem -> elem == 3);
+    Source.from(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)).splitWhen(elem -> elem == 3);
 
-    Source.from(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)).splitAfter(elem -> elem == 3);
+    Source.from(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)).splitAfter(elem -> elem == 3);
     // #splitWhenAfter
 
     // #wordCount
@@ -87,7 +87,7 @@ public class SubstreamDocTest extends AbstractJavaTest {
         There is also the 3rd line
         """;
 
-    Source.from(Arrays.asList(text.split("")))
+    Source.from(List.of(text.split("")))
         .map(x -> x.charAt(0))
         .splitAfter(x -> x == '\n')
         .filter(x -> x != '\n')
@@ -102,14 +102,14 @@ public class SubstreamDocTest extends AbstractJavaTest {
   @Test
   public void demonstrateflatMapConcatMerge() throws Exception {
     // #flatMapConcat
-    Source.from(Arrays.asList(1, 2))
-        .flatMapConcat(i -> Source.from(Arrays.asList(i, i, i)))
+    Source.from(List.of(1, 2))
+        .flatMapConcat(i -> Source.from(List.of(i, i, i)))
         .runWith(Sink.ignore(), system);
     // #flatMapConcat
 
     // #flatMapMerge
-    Source.from(Arrays.asList(1, 2))
-        .flatMapMerge(2, i -> Source.from(Arrays.asList(i, i, i)))
+    Source.from(List.of(1, 2))
+        .flatMapMerge(2, i -> Source.from(List.of(i, i, i)))
         .runWith(Sink.ignore(), system);
     // #flatMapMerge
   }

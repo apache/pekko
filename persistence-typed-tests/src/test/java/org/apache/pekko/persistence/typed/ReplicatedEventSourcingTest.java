@@ -169,7 +169,7 @@ public class ReplicatedEventSourcingTest {
     ReplicaId dcA = new ReplicaId("DC-A");
     ReplicaId dcB = new ReplicaId("DC-B");
     ReplicaId dcC = new ReplicaId("DC-C");
-    Set<ReplicaId> allReplicas = new HashSet<>(Arrays.asList(dcA, dcB, dcC));
+    Set<ReplicaId> allReplicas = Set.of(dcA, dcB, dcC);
 
     ActorRef<TestBehavior.Command> replicaA =
         testKit.spawn(TestBehavior.create("id1", dcA, allReplicas));
@@ -192,7 +192,7 @@ public class ReplicatedEventSourcingTest {
           replicaA.tell(new TestBehavior.GetState(probe.ref().narrow()));
           TestBehavior.State reply = probe.expectMessageClass(TestBehavior.State.class);
           assertEquals(
-              new HashSet<>(Arrays.asList("stored-to-a", "stored-to-b", "stored-to-c")),
+              Set.of("stored-to-a", "stored-to-b", "stored-to-c"),
               reply.texts);
           return null;
         });
@@ -201,7 +201,7 @@ public class ReplicatedEventSourcingTest {
           replicaB.tell(new TestBehavior.GetState(probe.ref().narrow()));
           TestBehavior.State reply = probe.expectMessageClass(TestBehavior.State.class);
           assertEquals(
-              new HashSet<>(Arrays.asList("stored-to-a", "stored-to-b", "stored-to-c")),
+              Set.of("stored-to-a", "stored-to-b", "stored-to-c"),
               reply.texts);
           return null;
         });
@@ -210,7 +210,7 @@ public class ReplicatedEventSourcingTest {
           replicaC.tell(new TestBehavior.GetState(probe.ref().narrow()));
           TestBehavior.State reply = probe.expectMessageClass(TestBehavior.State.class);
           assertEquals(
-              new HashSet<>(Arrays.asList("stored-to-a", "stored-to-b", "stored-to-c")),
+              Set.of("stored-to-a", "stored-to-b", "stored-to-c"),
               reply.texts);
           return null;
         });

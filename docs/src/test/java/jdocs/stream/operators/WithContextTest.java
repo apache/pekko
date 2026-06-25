@@ -53,7 +53,7 @@ public class WithContextTest extends AbstractJavaTest {
 
     // values with their contexts as pairs
     Collection<Pair<String, Integer>> values =
-        Arrays.asList(Pair.create("eins", 1), Pair.create("zwei", 2), Pair.create("drei", 3));
+        List.of(Pair.create("eins", 1), Pair.create("zwei", 2), Pair.create("drei", 3));
 
     // a regular source with pairs as elements
     Source<Pair<String, Integer>, NotUsed> source = Source.from(values);
@@ -107,7 +107,7 @@ public class WithContextTest extends AbstractJavaTest {
 
     // running the flow with some sample data and asserting the outcome
     Collection<Pair<String, Integer>> values =
-        Arrays.asList(Pair.create("eins", 1), Pair.create("zwei", 2), Pair.create("drei", 3));
+        List.of(Pair.create("eins", 1), Pair.create("zwei", 2), Pair.create("drei", 3));
 
     SourceWithContext<String, Integer, NotUsed> source =
         Source.from(values).asSourceWithContext(Pair::second).map(Pair::first);

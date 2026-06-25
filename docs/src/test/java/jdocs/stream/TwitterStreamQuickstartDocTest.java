@@ -17,7 +17,7 @@ import static jdocs.stream.TwitterStreamQuickstartDocTest.Model.PEKKO;
 import static jdocs.stream.TwitterStreamQuickstartDocTest.Model.tweets;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
@@ -153,7 +153,7 @@ public class TwitterStreamQuickstartDocTest extends AbstractJavaTest {
       }
 
       public Set<Hashtag> hashtags() {
-        return Arrays.asList(body.split(" ")).stream()
+        return List.of(body.split(" ")).stream()
             .filter(a -> a.startsWith("#"))
             .map(a -> new Hashtag(a))
             .collect(Collectors.toSet());
@@ -179,7 +179,7 @@ public class TwitterStreamQuickstartDocTest extends AbstractJavaTest {
 
     public static final Source<Tweet, NotUsed> tweets =
         Source.from(
-            Arrays.asList(
+            List.of(
                 new Tweet[] {
                   new Tweet(new Author("rolandkuhn"), System.currentTimeMillis(), "#pekko rocks!"),
                   new Tweet(new Author("patriknw"), System.currentTimeMillis(), "#pekko !"),
@@ -217,7 +217,7 @@ public class TwitterStreamQuickstartDocTest extends AbstractJavaTest {
         throws TimeoutException, InterruptedException, ExecutionException {
       // #backpressure-by-readline
       final CompletionStage<Done> completion =
-          Source.from(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+          Source.from(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
               .map(
                   i -> {
                     System.out.println("map => " + i);
