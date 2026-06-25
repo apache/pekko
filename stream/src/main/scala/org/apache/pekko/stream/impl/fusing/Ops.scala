@@ -804,16 +804,35 @@ private[stream] object Collect {
   val out = Outlet[immutable.Seq[T]]("GroupedWeighted.out")
   override val shape: FlowShape[T, immutable.Seq[T]] = FlowShape(in, out)
 
-  override def initialAttributes: Attributes = DefaultAttributes.groupedWeighted
+  override def initialAttributes: Attributes = DefaultAttributes.groupedWeighted and SourceLocation.forLambda(costFn)
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new GraphStageLogic(shape) with InHandler with OutHandler {
       private var builder = Vector.newBuilder[T]
       private var left: Long = minWeight
+      private lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
 
       override def onPush(): Unit = {
         val elem = grab(in)
-        val cost = costFn(elem)
+        // costFn is user code and may throw, so honor supervision the same way as other user-provided operators.
+        val cost =
+          try costFn(elem)
+          catch {
+            case NonFatal(ex) =>
+              decider(ex) match {
+                case Supervision.Stop =>
+                  failStage(ex)
+                  return
+                case Supervision.Resume =>
+                  pull(in)
+                  return
+                case Supervision.Restart =>
+                  builder.clear()
+                  left = minWeight
+                  pull(in)
+                  return
+              }
+          }
         if (cost < 0L)
           failStage(new IllegalArgumentException(s"Negative weight [$cost] for element [$elem] is not allowed"))
         else {

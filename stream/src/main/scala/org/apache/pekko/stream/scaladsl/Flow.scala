@@ -1840,6 +1840,8 @@ trait FlowOps[+Out, +Mat] {
    * `costFn` must return a non-negative result for all inputs, otherwise the stage will fail
    * with an IllegalArgumentException.
    *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
    * '''Emits when''' the cumulative weight of elements is greater than or equal to the `minWeight` or upstream completed
    *
    * '''Backpressures when''' a buffered group weighs more than `minWeight` and downstream backpressures

@@ -19,6 +19,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import org.apache.pekko
+import pekko.stream.{ ActorAttributes, Supervision }
 import pekko.stream.testkit.{ ScriptedTest, StreamSpec, TestPublisher, TestSubscriber }
 import pekko.testkit.TimingTest
 
@@ -110,6 +111,54 @@ class FlowGroupedWeightedSpec extends StreamSpec("""
       val error = c.expectError()
       error shouldBe an[IllegalArgumentException]
       error.getMessage should be("Negative weight [-1] for element [1] is not allowed")
+    }
+
+    "fail the stream when costFn throws and supervision is Stop" in {
+      val ex = new RuntimeException("boom")
+      val result = Source(1 to 5)
+        .groupedWeighted(10)(i => if (i == 3) throw ex else i.toLong)
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.stoppingDecider))
+        .runWith(Sink.ignore)
+
+      result.failed.futureValue shouldBe ex
+    }
+
+    "fail the stream when costFn throws and no supervision attribute is set (default Stop)" in {
+      val ex = new RuntimeException("boom")
+      val result = Source(1 to 5)
+        .groupedWeighted(10)(i => if (i == 3) throw ex else i.toLong)
+        .runWith(Sink.ignore)
+
+      result.failed.futureValue shouldBe ex
+    }
+
+    "resume and keep the partially accumulated group when costFn throws (Resume)" in {
+      // minWeight=10 so [1,2] stay buffered when element 3 throws; Resume must keep them.
+      val result = Source(1 to 5)
+        .groupedWeighted(10)(i => if (i == 3) throw new RuntimeException("boom") else i.toLong)
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+        .runWith(Sink.seq)
+
+      result.futureValue shouldBe Seq(Seq(1, 2, 4, 5)) // 3 skipped, [1,2] preserved, then 4,5 fill the group
+    }
+
+    "resume and flush the buffered group at completion when costFn throws on the last element (Resume)" in {
+      // minWeight=100 is never reached, so the group is flushed only at upstream finish.
+      val result = Source(1 to 5)
+        .groupedWeighted(100)(i => if (i == 5) throw new RuntimeException("boom") else i.toLong)
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+        .runWith(Sink.seq)
+
+      result.futureValue shouldBe Seq(Seq(1, 2, 3, 4)) // 5 skipped, [1,2,3,4] flushed at completion
+    }
+
+    "restart and drop the current group when costFn throws and supervision is Restart" in {
+      val result = Source(1 to 5)
+        .groupedWeighted(6)(i => if (i == 3) throw new RuntimeException("boom") else i.toLong)
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.restartingDecider))
+        .runWith(Sink.seq)
+
+      result.futureValue shouldBe Seq(Seq(4, 5))
     }
   }
 }

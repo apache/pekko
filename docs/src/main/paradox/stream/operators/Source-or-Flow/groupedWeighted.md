@@ -14,6 +14,10 @@ Accumulate incoming events until the combined weight of elements is greater than
 
 Chunk up this stream into groups of elements that have a cumulative weight greater than or equal to the `minWeight`, with the last group possibly smaller than requested `minWeight` due to end-of-stream.
 
+The `groupedWeighted` operator adheres to the ActorAttributes.SupervisionStrategy attribute.
+A `Supervision.Restart` decision discards the elements accumulated in the current group, while
+`Supervision.Resume` skips the failing element and keeps the current group.
+
 See also:
 
 * @ref[grouped](grouped.md) for a variant that groups based on number of elements
